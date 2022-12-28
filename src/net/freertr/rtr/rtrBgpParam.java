@@ -217,9 +217,9 @@ public abstract class rtrBgpParam {
     public boolean shutdown;
 
     /**
-     * bfd enabled
+     * bfd enabled, 0=off, 1=on, 2=strict
      */
-    public boolean bfdTrigger;
+    public int bfdTrigger;
 
     /**
      * backup of peer
@@ -1503,7 +1503,8 @@ public abstract class rtrBgpParam {
         l.add(null, "6  .             <num>                 remote port");
         l.add(null, "3  4       backup-peer                 keep down if an other peer is up");
         l.add(null, "4  .         <addr>                    other address");
-        l.add(null, "3  .       bfd                         enable bfd triggered down");
+        l.add(null, "3  4,.     bfd                         enable bfd triggered down");
+        l.add(null, "4  .         strict                    enable strict bfd triggered down");
         l.add(null, "3  4       multiple-labels             advertise multiple labels capability");
         getAfiList(l, "4  4,.", "use", true);
         l.add(null, "3  4       graceful-restart            advertise graceful restart capability");
@@ -1678,7 +1679,12 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, otherAdr == null, beg, nei + "other-address", "" + otherAdr);
         cmds.cfgLine(l, backupPeer == null, beg, nei + "backup-peer", "" + backupPeer);
         cmds.cfgLine(l, proxy2use == null, beg, nei + "proxy-profile", proxy2use + " " + proxy2adr + " " + proxy2prt);
-        cmds.cfgLine(l, !bfdTrigger, beg, nei + "bfd", "");
+        if (bfdTrigger == 2) {
+            s = "strict";
+        } else {
+            s = "";
+        }
+        cmds.cfgLine(l, bfdTrigger == 0, beg, nei + "bfd", s);
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "multiple-labels" + mask2string(multiLabel));
@@ -2047,7 +2053,14 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("bfd")) {
-            bfdTrigger = !negated;
+            if (negated) {
+                bfdTrigger = 0;
+                return false;
+            }
+            bfdTrigger = 1;
+            if (cmd.word().equals("strict")) {
+                bfdTrigger = 2;
+            }
             return false;
         }
         if (s.equals("soft-reconfiguration")) {

@@ -711,6 +711,11 @@ public class rtrBgpUtil {
     public static final int capaHostname = 73;
 
     /**
+     * strict bfd
+     */
+    public static final int capaStrictBfd = 74;
+
+    /**
      * compression
      */
     public static final int capaCompress = 76;

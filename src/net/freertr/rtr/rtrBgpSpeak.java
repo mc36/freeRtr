@@ -550,6 +550,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int addpathTx;
 
     /**
+     * strict bfd mode
+     */
+    public boolean strictBfd;
+
+    /**
      * compressor transmitter
      */
     public Deflater compressTx;
@@ -1149,8 +1154,27 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.monitor != null) {
             neigh.monitor.gotEvent(true, this, neigh);
         }
-        if (neigh.bfdTrigger) {
+        if (neigh.bfdTrigger != 0) {
             neigh.localIfc.bfdAdd(neigh.peerAddr, this, "bgp");
+        }
+        if (strictBfd && (neigh.bfdTrigger == 2)) {
+            for (int i = 0; i < (neigh.holdTimer / 100); i++) {
+                bits.sleep(100);
+                rtrBfdNeigh bfd = neigh.localIfc.bfdFind(neigh.peerAddr);
+                if (bfd == null) {
+                    break;
+                }
+                if (bfd.getState()) {
+                    break;
+                }
+            }
+            rtrBfdNeigh bfd = neigh.localIfc.bfdFind(neigh.peerAddr);
+            if (bfd == null) {
+                return;
+            }
+            if (!bfd.getState()) {
+                return;
+            }
         }
         lrnUni.clear();
         lrnMlt.clear();
@@ -1570,6 +1594,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaHostname, buf);
         }
+        if (neigh.bfdTrigger == 2) {
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaStrictBfd, new byte[0]);
+        }
         pck.merge2beg();
         int i = pck.dataSize();
         if ((!neigh.extOpen) && (i >= 0xff)) {
@@ -1677,6 +1704,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         buf = new byte[tlv.valDat[i] & 0xff];
                         bits.byteCopy(tlv.valDat, i + 1, buf, 0, buf.length);
                         peerDomainname = new String(buf);
+                        break;
+                    case rtrBgpUtil.capaStrictBfd:
+                        strictBfd = true;
                         break;
                     case rtrBgpUtil.capaCompress:
                         if ((neigh.compressMode & 2) == 0) {
