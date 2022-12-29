@@ -13641,3 +13641,5 @@ qc pass: lsrp database authentication
 no todo: bgp strict bfd mode
 ---------------------------------- 2022-12-28 19:51:04 22.12.28
 qc pass: ebgp with strict bfd
+---------------------------------- 2022-12-29 02:53:35 22.12.29
+qc pass: ebgp with asymmetric bfd

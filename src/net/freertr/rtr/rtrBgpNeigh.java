@@ -572,6 +572,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("hostname|" + conn.peerHostname);
         l.add("domainname|" + conn.peerDomainname);
         l.add("compression|rx=" + (conn.compressRx != null) + ", tx=" + (conn.compressTx != null));
+        l.add("strict bfd|" + conn.strictBfd);
         l.add("graceful got|" + rtrBgpParam.mask2string(conn.peerGrace));
         l.add("graceful sent|" + rtrBgpParam.mask2string(graceRestart));
         l.add("multilabel got|" + rtrBgpParam.mask2string(conn.peerMltLab));

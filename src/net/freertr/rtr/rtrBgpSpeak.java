@@ -1150,7 +1150,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         needEorAfis = peerAfis;
-        logger.warn("neighbor " + neigh.peerAddr + " up");
         if (neigh.monitor != null) {
             neigh.monitor.gotEvent(true, this, neigh);
         }
@@ -1158,6 +1157,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.localIfc.bfdAdd(neigh.peerAddr, this, "bgp");
         }
         if (strictBfd && (neigh.bfdTrigger == 2)) {
+            if (debugger.rtrBgpEvnt) {
+                logger.debug("starting bfd " + neigh.peerAddr);
+            }
+            boolean ok = false;
             for (int i = 0; i < (neigh.holdTimer / 100); i++) {
                 bits.sleep(100);
                 rtrBfdNeigh bfd = neigh.localIfc.bfdFind(neigh.peerAddr);
@@ -1165,14 +1168,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     break;
                 }
                 if (bfd.getState()) {
+                    ok = true;
                     break;
                 }
             }
-            rtrBfdNeigh bfd = neigh.localIfc.bfdFind(neigh.peerAddr);
-            if (bfd == null) {
-                return;
-            }
-            if (!bfd.getState()) {
+            if (!ok) {
+                logger.error("neighbor " + neigh.peerAddr + " bfd timeout");
                 return;
             }
         }
@@ -1249,6 +1250,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
         }
         ready2adv = true;
+        logger.warn("neighbor " + neigh.peerAddr + " up");
         if (debugger.rtrBgpFull) {
             logger.debug("neighbor up");
         }

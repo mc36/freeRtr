@@ -2586,6 +2586,7 @@ qc pass: other colors over bgp route server
 qc pass: colors over bgp with soft-reconfig
 qc pass: other colors over bgp with soft-reconfig
 qc pass: ebgp with strict bfd
+qc pass: ebgp with asymmetric bfd
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
