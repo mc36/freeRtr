@@ -1160,19 +1160,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (debugger.rtrBgpEvnt) {
                 logger.debug("starting bfd " + neigh.peerAddr);
             }
-            boolean ok = false;
-            for (int i = 0; i < (neigh.holdTimer / 100); i++) {
-                bits.sleep(100);
-                rtrBfdNeigh bfd = neigh.localIfc.bfdFind(neigh.peerAddr);
-                if (bfd == null) {
-                    break;
-                }
-                if (bfd.getState()) {
-                    ok = true;
-                    break;
-                }
-            }
-            if (!ok) {
+            if (neigh.localIfc.bfdWait(neigh.peerAddr, neigh.holdTimer)) {
                 logger.error("neighbor " + neigh.peerAddr + " bfd timeout");
                 return;
             }
