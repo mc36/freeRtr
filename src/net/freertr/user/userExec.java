@@ -620,6 +620,7 @@ public class userExec {
         hl.add(null, "5 .            nexthop              list of nexthops");
         hl.add(null, "5 .            bestpath             best path statistics");
         hl.add(null, "5 .            graceful-restart     list of graceful restart");
+        hl.add(null, "5 .            longlived-graceful   list of long lived graceful restart");
         hl.add(null, "5 .            multiple-labels      list of multiple labels");
         hl.add(null, "5 .            afi                  list of address families");
         hl.add(null, "5 .            resolve              list of domain names");

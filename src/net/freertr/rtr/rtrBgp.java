@@ -150,6 +150,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public int restartTime;
 
     /**
+     * long lived restart time
+     */
+    public int llRestartTime;
+
+    /**
      * external distance
      */
     public int distantExt;
@@ -2521,6 +2526,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "2 .     <num>                     ms before scan");
         l.add(null, "1 2   graceful-restart            graceful restart interval");
         l.add(null, "2 .     <num>                     ms to recover");
+        l.add(null, "1 2   longlived-graceful          long lived graceful restart interval");
+        l.add(null, "2 .     <num>                     ms to recover");
         l.add(null, "1 2   template                    specify template parameters");
         l.add(tmps, "2 3     <name:loc>                name of template");
         rtrBgpParam.getParamHelp(l);
@@ -2681,6 +2688,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "scandelay " + scanDelay);
         l.add(beg + "incremental " + incrLimit);
         l.add(beg + "graceful-restart " + restartTime);
+        l.add(beg + "longlived-graceful " + llRestartTime);
         cmds.cfgLine(l, !conquer, beg, "conquer", "");
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, nhtRoumap == null, beg, "nexthop route-map", "" + nhtRoumap);
@@ -2865,6 +2873,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("graceful-restart")) {
             restartTime = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("longlived-graceful")) {
+            llRestartTime = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("nexthop")) {
@@ -3771,7 +3783,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      *
      * @param mod mode: 1=afi, 2=groups, 3=nexthops, 4=graceful, 5=addpath,
      * 6=routerid, 7=buffer, 8=description, 9=hostname, 10=compress, 11=connect,
-     * 12=resolve, 13=summary, 14=multilab
+     * 12=resolve, 13=summary, 14=multilab, 15=longlived
      * @return list of neighbors
      */
     public userFormat showSummary(int mod) {
@@ -3787,6 +3799,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "neighbor|as|reach|chg|num|uptime");
                 break;
             case 4:
+            case 15:
                 l = new userFormat("|", "neighbor|as|rx|tx");
                 break;
             case 5:

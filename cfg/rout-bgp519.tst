@@ -21,10 +21,12 @@ router bgp4 1
  no safe-ebgp
  address uni
  graceful 10000
+ longlive 10000
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 graceful uni
+ neigh 1.1.1.2 longlive uni
  red conn
  exit
 router bgp6 1
@@ -32,10 +34,12 @@ router bgp6 1
  no safe-ebgp
  address uni
  graceful 10000
+ longlive 10000
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
  neigh 1234:1::2 graceful uni
+ neigh 1234:1::2 longlive uni
  red conn
  exit
 !
@@ -67,12 +71,15 @@ router bgp4 1
  no safe-ebgp
  address uni
  graceful 10000
+ longlive 10000
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 graceful uni
+ neigh 1.1.1.1 longlive uni
  neigh 1.1.1.6 remote-as 3
  neigh 1.1.1.6 graceful uni
+ neigh 1.1.1.6 longlive uni
  red conn
  exit
 router bgp6 1
@@ -80,12 +87,15 @@ router bgp6 1
  no safe-ebgp
  address uni
  graceful 10000
+ longlive 10000
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 graceful uni
+ neigh 1234:1::1 longlive uni
  neigh 1234:2::2 remote-as 3
  neigh 1234:2::2 graceful uni
+ neigh 1234:2::2 longlive uni
  red conn
  exit
 !
@@ -155,10 +165,12 @@ router bgp4 1
  no safe-ebgp
  address uni
  graceful 10000
+ longlive 10000
  local-as 4
  router-id 4.4.4.4
  neigh 1.1.1.9 remote-as 3
  neigh 1.1.1.9 graceful uni
+ neigh 1.1.1.9 longlive uni
  red conn
  exit
 router bgp6 1
@@ -166,10 +178,12 @@ router bgp6 1
  no safe-ebgp
  address uni
  graceful 10000
+ longlive 10000
  local-as 4
  router-id 6.6.6.4
  neigh 1234:3::1 remote-as 3
  neigh 1234:3::1 graceful uni
+ neigh 1234:3::1 longlive uni
  red conn
  exit
 !

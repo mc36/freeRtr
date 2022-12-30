@@ -252,6 +252,11 @@ public abstract class rtrBgpParam {
     public int graceRestart;
 
     /**
+     * long lived graceful restart
+     */
+    public int llGraceRestart;
+
+    /**
      * multiple labels
      */
     public int multiLabel;
@@ -1076,6 +1081,7 @@ public abstract class rtrBgpParam {
         backupPeer = src.backupPeer;
         softReconfig = src.softReconfig;
         graceRestart = src.graceRestart;
+        llGraceRestart = src.llGraceRestart;
         multiLabel = src.multiLabel;
         extNextCur = src.extNextCur;
         extNextOtr = src.extNextOtr;
@@ -1509,6 +1515,8 @@ public abstract class rtrBgpParam {
         getAfiList(l, "4  4,.", "use", true);
         l.add(null, "3  4       graceful-restart            advertise graceful restart capability");
         getAfiList(l, "4  4,.", "use", true);
+        l.add(null, "3  4       longlived-graceful          advertise long lived graceful restart capability");
+        getAfiList(l, "4  4,.", "use", true);
         l.add(null, "3  4       extended-nexthop-current    advertise extended nexthop capability");
         getAfiList(l, "4  4,.", "use", true);
         l.add(null, "3  4       extended-nexthop-other      advertise extended nexthop capability");
@@ -1689,6 +1697,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "multiple-labels" + mask2string(multiLabel));
         l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
+        l.add(beg + nei + "longlived-graceful" + mask2string(llGraceRestart));
         l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
         l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOtr));
         s = "";
@@ -2092,6 +2101,13 @@ public abstract class rtrBgpParam {
             graceRestart = string2mask(cmd);
             if (negated) {
                 graceRestart = 0;
+            }
+            return false;
+        }
+        if (s.equals("longlived-graceful")) {
+            llGraceRestart = string2mask(cmd);
+            if (negated) {
+                llGraceRestart = 0;
             }
             return false;
         }

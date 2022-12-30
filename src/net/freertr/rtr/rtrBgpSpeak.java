@@ -510,6 +510,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int peerGrace;
 
     /**
+     * peer long lived graceful restart capability
+     */
+    public int peerLlGrace;
+
+    /**
      * peer multiple labels capability
      */
     public int peerMltLab;
@@ -1549,6 +1554,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaGraceRestart, buf);
         }
+        safis = parent.mask2list(neigh.llGraceRestart & neigh.addrFams);
+        if (safis.size() > 0) {
+            buf = new byte[safis.size() * 7];
+            for (int i = 0; i < safis.size(); i++) {
+                bits.msbPutD(buf, (i * 7) + 0, rtrBgpUtil.safi2triplet(safis.get(i)));
+                bits.msbPutD(buf, (i * 7) + 3, (parent.llRestartTime / 1000) & 0xffffff);
+            }
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaLongGrace, buf);
+        }
         safis = parent.mask2list(neigh.multiLabel & neigh.addrFams);
         if (safis.size() > 0) {
             buf = new byte[safis.size() * 4];
@@ -1740,6 +1754,17 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                             peerGrace |= o;
                         }
                         break;
+                    case rtrBgpUtil.capaLongGrace:
+                        for (i = 0; i < tlv.valSiz; i += 7) {
+                            int o = bits.msbGetD(tlv.valDat, i);
+                            o = rtrBgpUtil.triplet2safi(o);
+                            o = parent.safi2mask(o);
+                            if (o < 1) {
+                                continue;
+                            }
+                            peerLlGrace |= o;
+                        }
+                        break;
                     case rtrBgpUtil.capaExtNextHop:
                         for (i = 0; i < tlv.valSiz; i += 6) {
                             int o = bits.msbGetD(tlv.valDat, i + 0);
@@ -1796,6 +1821,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!neigh.capaNego) {
             peerAfis = neigh.addrFams;
             peerGrace = neigh.graceRestart;
+            peerLlGrace = neigh.llGraceRestart;
             peerMltLab = neigh.multiLabel;
             peerExtNextCur = neigh.extNextCur;
             peerExtNextOtr = neigh.extNextOtr;

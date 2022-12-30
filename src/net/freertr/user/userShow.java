@@ -3710,6 +3710,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(4));
             return;
         }
+        if (a.equals("longlived-graceful")) {
+            rdr.putStrTab(r.bgp.showSummary(15));
+            return;
+        }
         if (a.equals("multiple-labels")) {
             rdr.putStrTab(r.bgp.showSummary(14));
             return;
