@@ -10,7 +10,6 @@ bgp optimal route reflection
 bgp peer autoconfig
 bgp layer2 flowspec
 bgp flowspec v2
-bgp route policy distribution
 bgp signed path
 traffic through bgp sr-policy
 traffic through bgp nsh

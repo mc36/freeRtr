@@ -13645,3 +13645,8 @@ qc pass: ebgp with strict bfd
 qc pass: ebgp with asymmetric bfd
 ---------------------------------- 2022-12-30 03:18:28 22.12.30
 todo: bgp route policy distribution
+---------------------------------- 2022-12-30 10:04:33 22.12.30
+no todo: bgp route policy distribution
+qc pass: unicast+rpd over bgp
+qc pass: unicast+rpd over bgp with soft-reconfig
+qc pass: unicast+rpd over bgp with additional path

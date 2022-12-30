@@ -2587,6 +2587,9 @@ qc pass: colors over bgp with soft-reconfig
 qc pass: other colors over bgp with soft-reconfig
 qc pass: ebgp with strict bfd
 qc pass: ebgp with asymmetric bfd
+qc pass: unicast+rpd over bgp
+qc pass: unicast+rpd over bgp with soft-reconfig
+qc pass: unicast+rpd over bgp with additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -3084,7 +3087,6 @@ todo: bgp optimal route reflection
 todo: bgp peer autoconfig
 todo: bgp layer2 flowspec
 todo: bgp flowspec v2
-todo: bgp route policy distribution
 todo: bgp signed path
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh

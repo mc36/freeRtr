@@ -91,6 +91,11 @@ public class rtrBgpUtil {
     public final static int afiLnks = 0x40040000;
 
     /**
+     * rpd address family
+     */
+    public final static int afiRpd = 0x400e0000;
+
+    /**
      * address family mask
      */
     public final static int afiMask = 0xffff0000;
@@ -184,6 +189,11 @@ public class rtrBgpUtil {
      * segment routing traffic engineering address family
      */
     public final static int sfiSrTe = 0x49;
+
+    /**
+     * rpd address family
+     */
+    public final static int sfiRpd = 0x4b;
 
     /**
      * classful transport plane address family
@@ -304,6 +314,11 @@ public class rtrBgpUtil {
      * nsh address family
      */
     public final static int safiNsh46 = afiNsh | sfiNsh;
+
+    /**
+     * rpd address family
+     */
+    public final static int safiRpd46 = afiRpd | sfiRpd;
 
     /**
      * rtfilter address family
@@ -1167,6 +1182,22 @@ public class rtrBgpUtil {
                 pck.getCopy(ntry.prefix.network.getBytes(), 2, 0, i);
                 pck.getSkip(i);
                 return ntry;
+            case sfiRpd:
+                ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+                i = pck.getByte(0);
+                ntry.prefix.wildcard.getBytes()[0] = (byte) pck.getByte(1);
+                ntry.rouDst = pck.msbGetD(2);
+                if (i > 9) {
+                    addrIPv6 a6 = new addrIPv6();
+                    pck.getAddr(a6, 6);
+                    ntry.prefix.network.fromIPv6addr(a6);
+                } else {
+                    addrIPv4 a4 = new addrIPv4();
+                    pck.getAddr(a4, 6);
+                    ntry.prefix.network.fromIPv4addr(a4);
+                }
+                pck.getSkip(i + 1);
+                return ntry;
             case sfiVpls:
                 i = pck.msbGetW(0) * 8;
                 pck.getSkip(2);
@@ -1336,6 +1367,10 @@ public class rtrBgpUtil {
                 buf2 = new byte[0];
                 i = 0;
                 break;
+            case afiRpd:
+                buf2 = new byte[0];
+                i = 0;
+                break;
             default:
                 pck.putByte(0, 0);
                 pck.putSkip(1);
@@ -1412,6 +1447,19 @@ public class rtrBgpUtil {
                 pck.putSkip(4);
                 pck.putCopy(ntry.prefix.network.getBytes(), 2, 0, i);
                 pck.putSkip(i);
+                return;
+            case sfiRpd:
+                pck.putByte(1, ntry.prefix.wildcard.getBytes()[0]);
+                pck.msbPutD(2, (int) ntry.rouDst);
+                if (ntry.prefix.network.isIPv4()) {
+                    pck.putAddr(6, ntry.prefix.network.toIPv4());
+                    i = addrIPv4.size;
+                } else {
+                    pck.putAddr(6, ntry.prefix.network.toIPv6());
+                    i = addrIPv6.size;
+                }
+                pck.putByte(0, i + 5);
+                pck.putSkip(i + 6);
                 return;
             case sfiVpls:
                 pck.msbPutW(0, o + p);
@@ -1610,6 +1658,8 @@ public class rtrBgpUtil {
                 return "ip6vpnF";
             case safiNsh46:
                 return "nsh";
+            case safiRpd46:
+                return "rpd";
             case safiRtf46:
                 return "rtfilter";
             case safiIp4mdt:
