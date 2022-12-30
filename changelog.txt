@@ -13643,3 +13643,5 @@ no todo: bgp strict bfd mode
 qc pass: ebgp with strict bfd
 ---------------------------------- 2022-12-29 02:53:35 22.12.29
 qc pass: ebgp with asymmetric bfd
+---------------------------------- 2022-12-30 03:18:28 22.12.30
+todo: bgp route policy distribution
