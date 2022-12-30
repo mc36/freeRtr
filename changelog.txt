@@ -13650,3 +13650,5 @@ no todo: bgp route policy distribution
 qc pass: unicast+rpd over bgp
 qc pass: unicast+rpd over bgp with soft-reconfig
 qc pass: unicast+rpd over bgp with additional path
+---------------------------------- 2022-12-30 18:41:33 22.12.30
+todo: policy from bgp rpd

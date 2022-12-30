@@ -13,6 +13,7 @@ bgp flowspec v2
 bgp signed path
 traffic through bgp sr-policy
 traffic through bgp nsh
+policy from bgp rpd
 parse privilege levels from tacacs
 ldap client, server
 dhcp relay support
