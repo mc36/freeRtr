@@ -2590,6 +2590,7 @@ qc pass: ebgp with asymmetric bfd
 qc pass: unicast+rpd over bgp
 qc pass: unicast+rpd over bgp with soft-reconfig
 qc pass: unicast+rpd over bgp with additional path
+qc pass: legacy bgp session
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
