@@ -388,6 +388,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* internal-vpn-client",
         "router bgp[46] .*! no (template|neighbor) .* allow-as-in",
         "router bgp[46] .*! (template|neighbor) .* allow-as-out",
+        "router bgp[46] .*! (template|neighbor) .* wide-aspath",
+        "router bgp[46] .*! (template|neighbor) .* route-refresh",
         "router bgp[46] .*! no (template|neighbor) .* route-target-filter-in",
         "router bgp[46] .*! no (template|neighbor) .* route-target-filter-out",
         "router bgp[46] .*! no (template|neighbor) .* enforce-first-as",

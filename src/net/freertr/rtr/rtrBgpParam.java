@@ -147,6 +147,16 @@ public abstract class rtrBgpParam {
     public boolean bier;
 
     /**
+     * send wide aspath
+     */
+    public boolean wideAsPath;
+
+    /**
+     * send route refresh
+     */
+    public boolean routeRefresh;
+
+    /**
      * egress engineering index
      */
     public int egressEng;
@@ -1031,6 +1041,8 @@ public abstract class rtrBgpParam {
             localAs = lower.localAs;
             addrFams = lower.addrFams;
         }
+        wideAsPath = true;
+        routeRefresh = true;
         allowAsOut = true;
         dmzLinkBw = -1;
         socketMode = 3;
@@ -1082,6 +1094,8 @@ public abstract class rtrBgpParam {
         unknownsIn = src.unknownsIn;
         segRout = src.segRout;
         bier = src.bier;
+        wideAsPath = src.wideAsPath;
+        routeRefresh = src.routeRefresh;
         egressEng = src.egressEng;
         leakRole = src.leakRole;
         leakAttr = src.leakAttr;
@@ -1500,6 +1514,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       label-pop                   advertise pop label");
         l.add(null, "3  .       segrout                     send segment routing attribute");
         l.add(null, "3  .       bier                        send bier attribute");
+        l.add(null, "3  .       wide-aspath                 send wide aspath attribute");
+        l.add(null, "3  .       route-refresh               send route refresh capability");
         l.add(null, "3  .       internal-vpn-client         preserve attributes from peer");
         l.add(null, "3  .       allow-as-in                 allow my as to relearn from peer");
         l.add(null, "3  .       allow-as-out                allow peer as to advertised out");
@@ -1748,6 +1764,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
+        cmds.cfgLine(l, !wideAsPath, beg, nei + "wide-aspath", "");
+        cmds.cfgLine(l, !routeRefresh, beg, nei + "route-refresh", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
         s = rtrBgpUtil.leakRole2string(leakRole, leakAttr);
         if (leakForce) {
@@ -2342,6 +2360,14 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("bier")) {
             bier = !negated;
+            return false;
+        }
+        if (s.equals("wide-aspath")) {
+            wideAsPath = !negated;
+            return false;
+        }
+        if (s.equals("route-refresh")) {
+            routeRefresh = !negated;
             return false;
         }
         if (s.equals("role")) {

@@ -1536,14 +1536,17 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             bits.msbPutD(buf, 0, safis.get(i));
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaMultiProto, buf);
         }
-        byte[] buf = new byte[4];
-        bits.msbPutD(buf, 0, neigh.localAs);
-        rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capa32bitAsNum, buf);
-        buf = new byte[0];
-        rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaRouteRefresh, buf);
+        if (neigh.wideAsPath) {
+            byte[] buf = new byte[4];
+            bits.msbPutD(buf, 0, neigh.localAs);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capa32bitAsNum, buf);
+        }
+        if (neigh.routeRefresh) {
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaRouteRefresh, new byte[0]);
+        }
         safis = parent.mask2list((neigh.addpathRmode | neigh.addpathTmode) & neigh.addrFams);
         if (safis.size() > 0) {
-            buf = new byte[safis.size() * 4];
+            byte[] buf = new byte[safis.size() * 4];
             for (int i = 0; i < safis.size(); i++) {
                 int o = safis.get(i);
                 bits.msbPutD(buf, i * 4, rtrBgpUtil.safi2triplet(o));
@@ -1561,7 +1564,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         safis = parent.mask2list(neigh.extNextCur & neigh.addrFams);
         if (safis.size() > 0) {
-            buf = new byte[safis.size() * 6];
+            byte[] buf = new byte[safis.size() * 6];
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, parent.afiUni >>> 16);
@@ -1570,7 +1573,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         safis = parent.mask2list(neigh.extNextOtr & neigh.addrFams);
         if (safis.size() > 0) {
-            buf = new byte[safis.size() * 6];
+            byte[] buf = new byte[safis.size() * 6];
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, parent.afiOtrU >>> 16);
@@ -1579,7 +1582,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         safis = parent.mask2list(neigh.graceRestart & neigh.addrFams);
         if (safis.size() > 0) {
-            buf = new byte[2 + (safis.size() * 4)];
+            byte[] buf = new byte[2 + (safis.size() * 4)];
             bits.msbPutW(buf, 0, ((parent.restartTime / 1000) & 0xfff) | 0x8000);
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 4) + 2, rtrBgpUtil.safi2triplet(safis.get(i)));
@@ -1588,7 +1591,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         safis = parent.mask2list(neigh.llGraceRestart & neigh.addrFams);
         if (safis.size() > 0) {
-            buf = new byte[safis.size() * 7];
+            byte[] buf = new byte[safis.size() * 7];
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 7) + 0, rtrBgpUtil.safi2triplet(safis.get(i)));
                 bits.msbPutD(buf, (i * 7) + 3, (parent.llRestartTime / 1000) & 0xffffff);
@@ -1597,32 +1600,31 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         safis = parent.mask2list(neigh.multiLabel & neigh.addrFams);
         if (safis.size() > 0) {
-            buf = new byte[safis.size() * 4];
+            byte[] buf = new byte[safis.size() * 4];
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, i * 4, rtrBgpUtil.safi2triplet(safis.get(i)) | 16);
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaMultiLabel, buf);
         }
         if (neigh.extUpdate) {
-            buf = new byte[0];
-            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, buf);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, new byte[0]);
         }
         if ((neigh.compressMode & 1) != 0) {
             compressRx = new Inflater[8];
             for (int i = 0; i < compressRx.length; i++) {
                 compressRx[i] = new Inflater();
             }
-            buf = new byte[2];
+            byte[] buf = new byte[2];
             buf[0] = (byte) 0x87; // deflate, 32k window
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaCompress, buf);
         }
         if (neigh.leakRole >= 0) {
-            buf = new byte[1];
+            byte[] buf = new byte[1];
             buf[0] = (byte) neigh.leakRole;
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaLeakRole, buf);
         }
         if (neigh.hostname > 0) {
-            buf = encodeHostname(cfgAll.hostName);
+            byte[] buf = encodeHostname(cfgAll.hostName);
             if (neigh.hostname > 1) {
                 buf = bits.byteConcat(buf, encodeHostname(cfgAll.domainName));
             } else {
@@ -1642,8 +1644,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pck.putByte(0, rtrBgpUtil.version);
         pck.msbPutW(1, tabRouteUtil.asNum16bit(neigh.localAs));
         pck.msbPutW(3, neigh.holdTimer / 1000);
-        buf = parent.routerID.getBytes();
-        pck.putCopy(buf, 0, 5, buf.length);
+        pck.putAddr(5, parent.routerID);
         pck.putSkip(9);
         if (neigh.extOpen) {
             pck.msbPutW(0, 0xffff);
@@ -1859,8 +1860,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peerExtNextOtr = neigh.extNextOtr;
             addpathRx = neigh.addpathRmode;
             addpathTx = neigh.addpathTmode;
-            peerRefresh = true;
-            peer32bitAS = true;
+            peerRefresh = neigh.routeRefresh;
+            peer32bitAS = neigh.wideAsPath;
             if ((neigh.compressMode & 2) != 0) {
                 compressTx = new Deflater();
             }
@@ -1896,6 +1897,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         originalSafiList = peerAfis;
         originalAddRlist = addpathRx;
         originalAddTlist = addpathTx;
+        peer32bitAS &= neigh.wideAsPath;
+        peerRefresh &= neigh.routeRefresh;
         peerAfis &= neigh.addrFams;
         if (peerAfis == 0) {
             logger.info("neighbor " + neigh.peerAddr + " in wrong safi");
