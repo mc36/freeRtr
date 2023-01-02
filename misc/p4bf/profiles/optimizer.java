@@ -21,6 +21,12 @@ public class optimizer {
         System.out.println(msg);
     }
 
+    private static void log(List<String> lst) {
+        for (int i = 0; i < lst.size(); i++) {
+            log(lst.get(i));
+        }
+    }
+
     private static List<String> doRead(InputStream is) {
         List<String> res = new ArrayList<String>();
         try {
@@ -58,6 +64,8 @@ public class optimizer {
             prc = rtm.exec(arr);
             prc.waitFor();
             List<String> res = doRead(prc.getInputStream());
+            List<String> err = doRead(prc.getErrorStream());
+            log(err);
             prc.destroy();
             return res;
         } catch (Exception e) {
@@ -201,7 +209,7 @@ public class optimizer {
             log("*** no first value to optimize ***");
         } else {
             num1 = doOptimize(prof, pars, orig, true, num1, num2);
-            if (num1 < 0) {
+            if (num1 <= 0) {
                 log("*** unable to find a working first value ***");
                 return null;
             }
@@ -210,7 +218,7 @@ public class optimizer {
             log("*** no second value to optimize ***");
         } else {
             num2 = doOptimize(prof, pars, orig, false, num1, num2);
-            if (num2 < 0) {
+            if (num2 <= 0) {
                 log("*** unable to find a working second value ***");
                 return null;
             }
@@ -235,7 +243,7 @@ public class optimizer {
         log("read " + orig.size() + " lines from " + prof);
         int nums[] = doParam(prof, pars.get(0), orig);
         if (nums == null) {
-            return;
+            System.exit(1);
         }
         for (int i = 0;;) {
             if (i >= pars.size()) {
