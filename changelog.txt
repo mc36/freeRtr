@@ -13654,3 +13654,10 @@ qc pass: unicast+rpd over bgp with additional path
 todo: policy from bgp rpd
 ---------------------------------- 2022-12-31 14:56:27 22.12.31
 qc pass: legacy bgp session
+---------------------------------- 2023-01-02 20:12:39 23.1.2
+qc pass: pvrp with sr
+qc pass: pvrp with bier
+qc pass: pvrp with srgb sr
+qc pass: pvrp with selective sr
+qc pass: pvrp with selective bier
+qc pass: pvrp with polka

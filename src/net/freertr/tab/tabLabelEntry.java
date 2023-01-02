@@ -332,6 +332,12 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
             case 24:
                 s = "p4lang bridge";
                 break;
+            case 25:
+                s = "pvrp segrou gb";
+                break;
+            case 26:
+                s = "pvrp bier";
+                break;
             default:
                 s = "unknown";
                 break;

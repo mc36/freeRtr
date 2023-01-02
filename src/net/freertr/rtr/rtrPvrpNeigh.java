@@ -20,6 +20,7 @@ import net.freertr.sec.secClient;
 import net.freertr.sec.secServer;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabAverage;
+import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
@@ -80,6 +81,31 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     public boolean gotMeasure;
 
     /**
+     * advertised segrou
+     */
+    protected int gotSegrouBeg;
+
+    /**
+     * advertised segrou
+     */
+    protected int gotSegrouMax;
+
+    /**
+     * advertised bier
+     */
+    protected int gotBierBeg;
+
+    /**
+     * advertised bier
+     */
+    protected int gotBierLen;
+
+    /**
+     * advertised bier
+     */
+    protected int gotBierMax;
+
+    /**
      * time echo sent
      */
     public long echoTime;
@@ -129,6 +155,16 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
      */
     protected boolean sentMed;
 
+    /**
+     * advertised segrou
+     */
+    protected int sentSegrou;
+
+    /**
+     * advertised bier
+     */
+    protected int sentBier;
+
     private String signRx;
 
     private String signTx;
@@ -157,6 +193,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         lastHeard = bits.getTime();
         sentMet = -1;
         sentMed = false;
+        sentSegrou = -1;
+        sentBier = -1;
         gotMetric = 10;
         gotMeasure = true;
     }
@@ -602,6 +640,22 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             sentMed = iface.dynamicForbid;
             sendLn("measme " + (!sentMed));
         }
+        i = 0;
+        if (lower.segrouLab != null) {
+            i = lower.segrouLab[0].label;
+        }
+        if (sentSegrou != i) {
+            sentSegrou = i;
+            sendLn("segrou " + i + " " + lower.segrouMax);
+        }
+        i = 0;
+        if (lower.bierLab != null) {
+            i = lower.bierLab[0].label;
+        }
+        if (sentBier != i) {
+            sentBier = i;
+            sendLn("bier " + i + " " + lower.bierLen + " " + lower.bierMax);
+        }
         int sent = 0;
         for (i = 0; i < adverted.size(); i++) {
             tabRouteEntry<addrIP> ntry = adverted.get(i);
@@ -656,6 +710,12 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 a = "";
             }
         }
+        if ((lower.segrouLab != null) && (ntry.best.segrouIdx > 0)) {
+            a += " segrou=" + ntry.best.segrouIdx;
+        }
+        if ((lower.bierLab != null) && (ntry.best.bierIdx > 0)) {
+            a += " bier=" + ntry.best.bierIdx;
+        }
         sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.best.metric + iface.metricOut) + " tag=" + ntry.best.tag + " external=" + ((ntry.best.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteUtil.dumpAddrList(ntry.best.clustList));
     }
 
@@ -701,6 +761,27 @@ class rtrPvrpNeighRcvr implements Runnable {
                 }
                 ntry.best.labelRem = new ArrayList<Integer>();
                 ntry.best.labelRem.add(bits.str2num(s));
+                continue;
+            }
+            if (a.equals("segrou")) {
+                if (lower.lower.segrouLab == null) {
+                    continue;
+                }
+                ntry.best.segrouIdx = bits.str2num(s);
+                ntry.best.segrouBeg = lower.gotSegrouBeg;
+                ntry.best.segrouSiz = lower.gotSegrouMax;
+                ntry.best.labelRem = new ArrayList<Integer>();
+                ntry.best.labelRem.add(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                continue;
+            }
+            if (a.equals("bier")) {
+                if (lower.lower.bierLab == null) {
+                    continue;
+                }
+                ntry.best.bierIdx = bits.str2num(s);
+                ntry.best.bierBeg = lower.gotBierBeg;
+                ntry.best.bierHdr = lower.gotBierLen;
+                ntry.best.bierSiz = lower.gotBierMax;
                 continue;
             }
             if (a.equals("tag")) {
@@ -804,6 +885,17 @@ class rtrPvrpNeighRcvr implements Runnable {
             }
             if (a.equals("metric")) {
                 lower.gotMetric = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("segrou")) {
+                lower.gotSegrouBeg = bits.str2num(cmd.word());
+                lower.gotSegrouMax = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("bier")) {
+                lower.gotBierBeg = bits.str2num(cmd.word());
+                lower.gotBierLen = tabLabelBier.num2bsl(bits.str2num(cmd.word()));
+                lower.gotBierMax = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("reachable")) {

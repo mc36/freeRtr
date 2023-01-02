@@ -219,6 +219,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router pvrp[46] .*! no suppress-prefix",
         "router pvrp[46] .*! no labels",
         "router pvrp[46] .*! no stub",
+        "router pvrp[46] .*! no segrout",
+        "router pvrp[46] .*! no bier",
         // router lsrp
         "router lsrp[46] .*! spf-log 0",
         "router lsrp[46] .*! no spf-topolog",

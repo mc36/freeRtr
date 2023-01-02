@@ -1790,6 +1790,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no router pvrp[46] .* bfd",
         "interface .*! no router pvrp[46] .* default-originate",
         "interface .*! no router pvrp[46] .* label-pop",
+        "interface .*! no router pvrp[46] .* segrout",
+        "interface .*! no router pvrp[46] .* bier",
         "interface .*! no router pvrp[46] .* stub",
         "interface .*! no router pvrp[46] .* unstub",
         "interface .*! no router pvrp[46] .* suppress-prefix",

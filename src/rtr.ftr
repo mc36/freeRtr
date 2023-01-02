@@ -2931,6 +2931,12 @@ qc pass: pvrp dynamic inband metric
 qc pass: pvrp dynamic icmp metric
 qc pass: pvrp dynamic udp metric
 qc pass: pvrp dynamic twamp metric
+qc pass: pvrp with sr
+qc pass: pvrp with bier
+qc pass: pvrp with srgb sr
+qc pass: pvrp with selective sr
+qc pass: pvrp with selective bier
+qc pass: pvrp with polka
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip

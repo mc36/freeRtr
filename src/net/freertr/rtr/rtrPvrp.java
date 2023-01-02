@@ -15,11 +15,16 @@ import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
+import net.freertr.tab.tabLabel;
+import net.freertr.tab.tabLabelBier;
+import net.freertr.tab.tabLabelBierN;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -79,9 +84,49 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public boolean labels = false;
 
     /**
+     * segment routing index
+     */
+    public int segrouIdx = 0;
+
+    /**
+     * segment routing maximum
+     */
+    public int segrouMax = 0;
+
+    /**
+     * segment routing base
+     */
+    public int segrouBase = 0;
+
+    /**
+     * bier index
+     */
+    public int bierIdx = 0;
+
+    /**
+     * bier length
+     */
+    public int bierLen = 0;
+
+    /**
+     * bier maximum
+     */
+    public int bierMax = 0;
+
+    /**
      * suppress interface addresses
      */
     public boolean suppressAddr = false;
+
+    /**
+     * segment routing labels
+     */
+    protected tabLabelEntry[] segrouLab;
+
+    /**
+     * bier labels
+     */
+    protected tabLabelEntry[] bierLab;
 
     /**
      * notified on route change
@@ -278,6 +323,16 @@ public class rtrPvrp extends ipRtr implements Runnable {
             ntry.best.rouTyp = tabRouteAttr.routeType.conn;
             ntry.best.iface = ifc.iface;
             ntry.best.distance = tabRouteAttr.distanIfc;
+            if (ifc.segrouIdx >= 0) {
+                ntry.best.segrouIdx = ifc.segrouIdx;
+            } else {
+                ntry.best.segrouIdx = segrouIdx;
+            }
+            if (ifc.bierIdx >= 0) {
+                ntry.best.bierIdx = ifc.bierIdx;
+            } else {
+                ntry.best.bierIdx = bierIdx;
+            }
         }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrPvrpIface ifc = ifaces.get(o);
@@ -307,6 +362,8 @@ public class rtrPvrp extends ipRtr implements Runnable {
             ntry = ntry.copyBytes(tabRoute.addType.notyet);
             ntry.best.distance = tabRouteAttr.distanIfc + 1;
             ntry.best.rouSrc = 1;
+            ntry.best.segrouIdx = segrouIdx;
+            ntry.best.bierIdx = bierIdx;
             tab1.add(tabRoute.addType.better, ntry, false, false);
         }
         if (labels) {
@@ -332,6 +389,16 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
                 if (labels) {
                     ntry.best.labelLoc = fwdCore.commonLabel;
+                }
+                if (ifc.segrouIdx >= 0) {
+                    ntry.best.segrouIdx = ifc.segrouIdx;
+                } else {
+                    ntry.best.segrouIdx = segrouIdx;
+                }
+                if (ifc.bierIdx >= 0) {
+                    ntry.best.bierIdx = ifc.bierIdx;
+                } else {
+                    ntry.best.bierIdx = bierIdx;
                 }
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
@@ -366,10 +433,94 @@ public class rtrPvrp extends ipRtr implements Runnable {
         if (tab2.preserveTime(routerComputedU)) {
             return;
         }
+        tabGen<tabIndex<addrIP>> segrouUsd = new tabGen<tabIndex<addrIP>>();
+        if (segrouLab != null) {
+            for (int i = 0; i < tab2.size(); i++) {
+                ntry = tab2.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.segrouBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.segrouIdx <= 0) || (ntry.best.segrouIdx >= segrouMax)) {
+                    continue;
+                }
+                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                segrouLab[ntry.best.segrouIdx].setFwdMpls(25, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
+            }
+            if (segrouIdx > 0) {
+                segrouLab[segrouIdx].setFwdCommon(25, fwdCore);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            }
+            for (int o = 0; o < ifaces.size(); o++) {
+                rtrPvrpIface ifc = ifaces.get(o);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
+                if (ifc.segrouIdx < 1) {
+                    continue;
+                }
+                segrouLab[ifc.segrouIdx].setFwdCommon(25, fwdCore);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            }
+            for (int i = 0; i < segrouLab.length; i++) {
+                if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
+                    continue;
+                }
+                segrouLab[i].setFwdDrop(25);
+            }
+        }
+        if (bierLab != null) {
+            tabLabelBier res = new tabLabelBier(bierLab[0].label, tabLabelBier.num2bsl(bierLen));
+            res.idx = bierIdx;
+            for (int o = 0; o < ifaces.size(); o++) {
+                rtrPvrpIface ifc = ifaces.get(o);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
+                if (ifc.bierIdx < 1) {
+                    continue;
+                }
+                if (res.idx < 1) {
+                    res.idx = ifc.bierIdx;
+                } else {
+                    res.idx2 = ifc.bierIdx;
+                }
+            }
+            for (int i = 0; i < tab2.size(); i++) {
+                ntry = tab2.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.bierBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.bierIdx <= 0) || (ntry.best.bierIdx >= bierMax)) {
+                    continue;
+                }
+                tabLabelBierN per = new tabLabelBierN(ntry.best.iface, ntry.best.nextHop, ntry.best.bierBeg);
+                tabLabelBierN old = res.peers.add(per);
+                if (old != null) {
+                    per = old;
+                }
+                per.setBit(ntry.best.bierIdx - 1);
+            }
+            for (int i = 0; i < bierLab.length; i++) {
+                bierLab[i].setBierMpls(26, fwdCore, res);
+            }
+        }
         routerComputedU = tab2;
         routerComputedM = tab2;
         routerComputedF = new tabRoute<addrIP>("rx");
-        routerComputedI = new tabGen<tabIndex<addrIP>>();
+        routerComputedI = segrouUsd;
         fwdCore.routerChg(this, false);
     }
 
@@ -406,6 +557,8 @@ public class rtrPvrp extends ipRtr implements Runnable {
             ifc.unregister2udp();
             ifc.closeNeighbors();
         }
+        tabLabel.release(segrouLab, 25);
+        tabLabel.release(bierLab, 26);
     }
 
     /**
@@ -419,6 +572,15 @@ public class rtrPvrp extends ipRtr implements Runnable {
         l.add(null, "1 .   labels                      specify label mode");
         l.add(null, "1 .   stub                        stub router");
         l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
+        l.add(null, "1 2   segrout                     segment routing parameters");
+        l.add(null, "2 3     <num>                     maximum index");
+        l.add(null, "3 4,.     <num>                   this node index");
+        l.add(null, "4 5         base                  specify base");
+        l.add(null, "5 4,.         <num>               label base");
+        l.add(null, "1 2   bier                        bier parameters");
+        l.add(null, "2 3     <num>                     bitstring length");
+        l.add(null, "3 4       <num>                   maximum index");
+        l.add(null, "4 .         <num>                 this node index");
     }
 
     /**
@@ -433,6 +595,12 @@ public class rtrPvrp extends ipRtr implements Runnable {
         cmds.cfgLine(l, !stub, beg, "stub", "");
         cmds.cfgLine(l, !labels, beg, "labels", "");
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
+        String a = "";
+        if (segrouBase != 0) {
+            a += " base " + segrouBase;
+        }
+        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
     }
 
     /**
@@ -474,6 +642,50 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         if (s.equals("suppress-prefix")) {
             suppressAddr = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("segrout")) {
+            tabLabel.release(segrouLab, 25);
+            segrouLab = null;
+            if (negated) {
+                segrouIdx = 0;
+                segrouMax = 0;
+                segrouBase = 0;
+                notif.wakeup();
+                return false;
+            }
+            segrouMax = bits.str2num(cmd.word());
+            segrouIdx = bits.str2num(cmd.word());
+            segrouBase = 0;
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("base")) {
+                    segrouBase = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            segrouLab = tabLabel.allocate(25, segrouBase, segrouMax);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("bier")) {
+            tabLabel.release(bierLab, 26);
+            bierLab = null;
+            if (negated) {
+                bierIdx = 0;
+                bierMax = 0;
+                bierLen = 0;
+                notif.wakeup();
+                return false;
+            }
+            bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
+            bierMax = bits.str2num(cmd.word());
+            bierIdx = bits.str2num(cmd.word());
+            bierLab = tabLabel.allocate(26, (bierMax + bierLen - 1) / bierLen);
             notif.wakeup();
             return false;
         }
