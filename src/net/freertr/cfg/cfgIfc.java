@@ -116,6 +116,7 @@ import net.freertr.pack.packLdpPwe;
 import net.freertr.pack.packPppOE;
 import net.freertr.pack.packPtp;
 import net.freertr.prt.prt6to4;
+import net.freertr.prt.prtAplusP;
 import net.freertr.prt.prtGre;
 import net.freertr.prt.prtIcmp;
 import net.freertr.prt.prtInlsp;
@@ -696,6 +697,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * 6to4 tunnel handler
      */
     public prt6to4 tun6to4;
+
+    /**
+     * a plus p tunnel handler
+     */
+    public prtAplusP tunAplusP;
 
     /**
      * srv6 tunnel handler
@@ -1280,6 +1286,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
          * 6to4 tunnel interface
          */
         Sto4,
+        /**
+         * a plus p tunnel interface
+         */
+        aplusp,
         /**
          * srv6 tunnel interface
          */
@@ -2321,6 +2331,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return "ipip";
             case Sto4:
                 return "6to4";
+            case aplusp:
+                return "aplusp";
             case srv6:
                 return "srv6";
             case ipsec:
@@ -2454,6 +2466,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (s.equals("6to4")) {
             return tunnelType.Sto4;
+        }
+        if (s.equals("aplusp")) {
+            return tunnelType.aplusp;
         }
         if (s.equals("srv6")) {
             return tunnelType.srv6;
@@ -3893,6 +3908,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             tun6to4.closeDn();
             tun6to4 = null;
         }
+        if (tunAplusP != null) {
+            tunAplusP.closeDn();
+            tunAplusP = null;
+        }
         if (tunSrv6 != null) {
             tunSrv6.closeDn();
             tunSrv6 = null;
@@ -4365,6 +4384,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tun6to4 = new prt6to4(tunTrg, tunKey);
                 tun6to4.setUpper(ethtyp);
                 lower = tun6to4;
+                break;
+            case aplusp:
+                if (tunFQDN == null) {
+                    return true;
+                }
+                tunAplusP = new prtAplusP(tunVrf, tunFQDN);
+                tunAplusP.setUpper(ethtyp);
+                lower = tunAplusP;
                 break;
             case srv6:
                 tunSrv6 = new prtSrv6(tunTrg, ethtyp, tunVrf.fwd4, tunVrf.fwd6);
@@ -6658,6 +6685,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       ipenc                     ip encapsulation protocol");
         l.add(null, "3 .       tmux                      transport multiplexing protocol");
         l.add(null, "3 .       6to4                      ipv6 to ipv4 protocol translator");
+        l.add(null, "3 .       aplusp                    address plus port protocol translator");
         l.add(null, "3 .       srv6                      segment routing v6 protocol translator");
         l.add(null, "3 .       ipip                      ip over ip encapsulation");
         l.add(null, "3 .       ipsec                     ip security encapsulation");
