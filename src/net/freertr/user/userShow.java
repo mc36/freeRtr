@@ -1353,13 +1353,13 @@ public class userShow {
                 cmd.error("no such access list");
                 return null;
             }
-            rdr.putStrTab(acl.aceslst.getStats(3));
+            rdr.putStrTab(acl.aceslst.getStats(256 | 3));
             return null;
         }
         if (a.equals("time-map")) {
             cfgTime rtmp = cfgAll.timeFind(cmd.word(), false);
             if (rtmp == null) {
-                cmd.error("no such route map");
+                cmd.error("no such time map");
                 return null;
             }
             long tim;
@@ -1378,7 +1378,7 @@ public class userShow {
                 cmd.error("no such route map");
                 return null;
             }
-            rdr.putStrTab(rtmp.roumap.getStats(3));
+            rdr.putStrTab(rtmp.roumap.getStats(256 | 3));
             return null;
         }
         if (a.equals("route-policy")) {
@@ -1396,7 +1396,7 @@ public class userShow {
                 cmd.error("no such prefix list");
                 return null;
             }
-            rdr.putStrTab(prfx.prflst.getStats(3));
+            rdr.putStrTab(prfx.prflst.getStats(256 | 3));
             return null;
         }
         if (a.equals("terminal")) {

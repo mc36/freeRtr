@@ -85,7 +85,11 @@ public class tabListing<Te extends tabListingEntry<Ta>, Ta extends addrType> {
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.sequence + ntry.getCounters(wht) + "|" + bits.timePast(ntry.lastMatch) + "|" + bits.timeDump(ntry.timeout / 1000) + "|" + ntry);
+            a = "";
+            if ((wht & 0x100) != 0) {
+                a = ntry.action + " ";
+            }
+            l.add(ntry.sequence + ntry.getCounters(wht) + "|" + bits.timePast(ntry.lastMatch) + "|" + bits.timeDump(ntry.timeout / 1000) + "|" + a + ntry);
         }
         return l;
     }
