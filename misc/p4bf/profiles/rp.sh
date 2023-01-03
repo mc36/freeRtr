@@ -31,10 +31,6 @@ optimize_target () {
     nprocs=0
     dir=$sde_version/$target
     echo "Optimizing for SDE $sde_version, target $target"
-    test -e $dir && {
-	echo "$sde_version/$target already exists"
-	exit 1
-    }
     mkdir -p $dir
     for fn in profile-*.tmpl ; do
 	profile=$(echo $fn | sed -e 's/.*profile-\(.*\)\.tmpl/\1/' | tr [:lower:] [:upper:] | tr - _)
