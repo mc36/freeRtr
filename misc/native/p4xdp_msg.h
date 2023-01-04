@@ -366,6 +366,32 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "droproute4") == 0) {
+        inet_pton(AF_INET, arg[2], buf2);
+        rou4.vrf = atoi(arg[4]);
+        memcpy(rou4.addr, buf2, sizeof(rou4.addr));
+        rou4.bits = routes_bits + atoi(arg[3]);
+        rour.cmd = 5;
+        if (del == 0) {
+            if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(route4_fd, &rou4, &rour, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "droproute6") == 0) {
+        inet_pton(AF_INET6, arg[2], buf2);
+        rou6.vrf = atoi(arg[4]);
+        memcpy(rou6.addr, buf2, sizeof(rou6.addr));
+        rou6.bits = routes_bits + atoi(arg[3]);
+        rour.cmd = 5;
+        if (del == 0) {
+            if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(route6_fd, &rou6, &rour, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "mylabel4") == 0) {
         i = atoi(arg[2]);
         labr.vrf = atoi(arg[3]);

@@ -159,6 +159,8 @@ struct {
         ethtyp = ETHERTYPE_MPLS_UCAST;                              \
         neik = res->hop;                                            \
         goto ethtyp_tx;                                             \
+    case 5:                                                         \
+        goto drop;                                                  \
     default:                                                        \
         goto drop;                                                  \
     }

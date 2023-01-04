@@ -37,7 +37,7 @@ struct route6_key {
 };
 
 struct routes_res {
-    __u32 cmd; // 1=route, 2=cpu, 3=mpls1, 4=mpls2
+    __u32 cmd; // 1=route, 2=cpu, 3=mpls1, 4=mpls2, 5=drop
     __u32 hop;
     __u32 label1;
     __u32 label2;
