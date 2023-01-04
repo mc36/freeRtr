@@ -459,6 +459,15 @@ interface ethernet9
  no log-link-change
  exit
 !
+interface null0
+ description null
+ vrf forwarding v1
+ ipv4 address 192.0.2.0 255.255.255.0
+ ipv6 address 100:: ffff:ffff:ffff:ffff::
+ no shutdown
+ no log-link-change
+ exit
+!
 router bgp4 65535
  vrf v1
  local-as 65535

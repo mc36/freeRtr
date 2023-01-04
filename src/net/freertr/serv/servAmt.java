@@ -10,6 +10,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -139,7 +140,7 @@ public class servAmt extends servGeneric implements prtServP {
                 cmd.error("no such interface");
                 return false;
             }
-            if (tempIfc.type != cfgIfc.ifaceType.template) {
+            if (tempIfc.type != tabRouteIface.ifaceType.template) {
                 cmd.error("not template interface");
                 tempIfc = null;
                 return false;

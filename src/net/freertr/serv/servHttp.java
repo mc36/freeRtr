@@ -9,7 +9,6 @@ import java.util.zip.Deflater;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
-import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.clnt.clntProxy;
@@ -20,6 +19,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -704,7 +704,7 @@ public class servHttp extends servGeneric implements prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if (ntry.allowSstp.type != cfgIfc.ifaceType.dialer) {
+            if (ntry.allowSstp.type != tabRouteIface.ifaceType.dialer) {
                 cmd.error("not dialer interface");
                 ntry.allowSstp = null;
                 return false;
@@ -721,7 +721,7 @@ public class servHttp extends servGeneric implements prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if (ntry.allowAnyconn.type != cfgIfc.ifaceType.dialer) {
+            if (ntry.allowAnyconn.type != tabRouteIface.ifaceType.dialer) {
                 cmd.error("not dialer interface");
                 ntry.allowAnyconn = null;
                 return false;
@@ -738,7 +738,7 @@ public class servHttp extends servGeneric implements prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if (ntry.allowForti.type != cfgIfc.ifaceType.dialer) {
+            if (ntry.allowForti.type != tabRouteIface.ifaceType.dialer) {
                 cmd.error("not dialer interface");
                 ntry.allowForti = null;
                 return false;

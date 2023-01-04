@@ -563,7 +563,7 @@ public class servP4langCfg implements ifcUp {
                 cmd.error("no need to export subinterface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bundle) && (ifc.type != cfgIfc.ifaceType.bridge) && (ifc.type != cfgIfc.ifaceType.dialer) && (ifc.type != cfgIfc.ifaceType.hairpin) && (ifc.type != cfgIfc.ifaceType.tunnel) && (ifc.type != cfgIfc.ifaceType.virtppp) && (ifc.type != cfgIfc.ifaceType.template)) {
+            if ((ifc.type != tabRouteIface.ifaceType.sdn) && (ifc.type != tabRouteIface.ifaceType.bundle) && (ifc.type != tabRouteIface.ifaceType.bridge) && (ifc.type != tabRouteIface.ifaceType.dialer) && (ifc.type != tabRouteIface.ifaceType.hairpin) && (ifc.type != tabRouteIface.ifaceType.tunnel) && (ifc.type != tabRouteIface.ifaceType.virtppp) && (ifc.type != tabRouteIface.ifaceType.template)) {
                 cmd.error("not p4lang interface");
                 return false;
             }
@@ -607,7 +607,7 @@ public class servP4langCfg implements ifcUp {
             ntry.errCorr = servP4langMgcN.toNum(fwderrcr, cmd.word(), 0);
             ntry.autoNeg = servP4langMgcN.toNum(autonegs, cmd.word(), 0);
             ntry.flowCtrl = servP4langMgcN.toNum(flwctrls, cmd.word(), 0);
-            boolean need = ifc.type == cfgIfc.ifaceType.sdn;
+            boolean need = ifc.type == tabRouteIface.ifaceType.sdn;
             ntry.dynamic = !need;
             if (ntry.speed == -1) {
                 switch (ifc.type) {
@@ -1492,7 +1492,7 @@ public class servP4langCfg implements ifcUp {
         if (ifc == null) {
             return rou;
         }
-        if (ifc.ifc.type != cfgIfc.ifaceType.tunnel) {
+        if (ifc.ifc.type != tabRouteIface.ifaceType.tunnel) {
             return rou;
         }
         switch (ifc.ifc.tunMode) {

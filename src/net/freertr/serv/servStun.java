@@ -15,6 +15,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -84,7 +85,7 @@ public class servStun extends servGeneric implements prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if (clnIfc.type != cfgIfc.ifaceType.dialer) {
+            if (clnIfc.type != tabRouteIface.ifaceType.dialer) {
                 cmd.error("not dialer interface");
                 clnIfc = null;
                 return false;

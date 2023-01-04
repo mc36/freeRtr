@@ -10,6 +10,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -161,7 +162,7 @@ public class servPckOudp extends servGeneric implements prtServP {
                 cmd.error("no such interface");
                 return false;
             }
-            if (dialIfc.type != cfgIfc.ifaceType.dialer) {
+            if (dialIfc.type != tabRouteIface.ifaceType.dialer) {
                 cmd.error("not dialer interface");
                 dialIfc = null;
                 return false;

@@ -47,6 +47,7 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packLdpPwe;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -819,7 +820,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 cmd.error("no such interface");
                 return;
             }
-            if (ifaceDialer.type != cfgIfc.ifaceType.dialer) {
+            if (ifaceDialer.type != tabRouteIface.ifaceType.dialer) {
                 cmd.error("not a dialer");
                 ifaceDialer = null;
                 return;

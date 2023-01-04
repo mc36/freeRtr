@@ -96,6 +96,7 @@ import net.freertr.serv.servXotPad;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabRouteAttr;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -2036,7 +2037,7 @@ public class cfgAll {
      * @param wrkr worker threads
      * @return descriptor, null on error
      */
-    public static cfgIfc ifcAdd(String nam, cfgIfc.ifaceType typ, ifcThread thrd, int wrkr) {
+    public static cfgIfc ifcAdd(String nam, tabRouteIface.ifaceType typ, ifcThread thrd, int wrkr) {
         nam = cfgIfc.dissectName(nam)[0];
         if (nam.length() < 1) {
             return null;
@@ -2159,47 +2160,47 @@ public class cfgAll {
             return ntry;
         }
         if (nam.startsWith("tunnel")) {
-            ntry.type = cfgIfc.ifaceType.tunnel;
+            ntry.type = tabRouteIface.ifaceType.tunnel;
             ntry.clear2tunnel(false);
             return ntry;
         }
         if (nam.startsWith("dialer")) {
-            ntry.type = cfgIfc.ifaceType.dialer;
+            ntry.type = tabRouteIface.ifaceType.dialer;
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("sdn")) {
-            ntry.type = cfgIfc.ifaceType.sdn;
+            ntry.type = tabRouteIface.ifaceType.sdn;
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("pwether")) {
-            ntry.type = cfgIfc.ifaceType.pweth;
+            ntry.type = tabRouteIface.ifaceType.pweth;
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("virtualppp")) {
-            ntry.type = cfgIfc.ifaceType.virtppp;
+            ntry.type = tabRouteIface.ifaceType.virtppp;
             ntry.initPhysical();
             return ntry;
         }
         if (nam.startsWith("loopback")) {
-            ntry.type = cfgIfc.ifaceType.loopback;
+            ntry.type = tabRouteIface.ifaceType.loopback;
             ntry.initLoopback();
             return ntry;
         }
         if (nam.startsWith("null")) {
-            ntry.type = cfgIfc.ifaceType.nul;
+            ntry.type = tabRouteIface.ifaceType.nul;
             ntry.initTemplate();
             return ntry;
         }
         if (nam.startsWith("template")) {
-            ntry.type = cfgIfc.ifaceType.template;
+            ntry.type = tabRouteIface.ifaceType.template;
             ntry.initTemplate();
             return ntry;
         }
         if (nam.startsWith("access")) {
-            ntry.type = cfgIfc.ifaceType.dialer;
+            ntry.type = tabRouteIface.ifaceType.dialer;
             ntry.initPhysical();
             return ntry;
         }
@@ -3004,7 +3005,7 @@ public class cfgAll {
         if (old != null) {
             return old;
         }
-        cfgIfc ifc = ifcAdd(ntry.getIntName(), cfgIfc.ifaceType.bridge, null, 1);
+        cfgIfc ifc = ifcAdd(ntry.getIntName(), tabRouteIface.ifaceType.bridge, null, 1);
         if (ifc == null) {
             bridges.del(ntry);
             return null;
@@ -3064,7 +3065,7 @@ public class cfgAll {
         if (old != null) {
             return old;
         }
-        cfgIfc ifc = ifcAdd(ntry.getIntName(), cfgIfc.ifaceType.bundle, null, 1);
+        cfgIfc ifc = ifcAdd(ntry.getIntName(), tabRouteIface.ifaceType.bundle, null, 1);
         if (ifc == null) {
             bundles.del(ntry);
             return null;
@@ -3125,12 +3126,12 @@ public class cfgAll {
             return old;
         }
         ntry.hairpinHed = new ifcHairpin();
-        cfgIfc ifc1 = ifcAdd(ntry.getIntName(true), cfgIfc.ifaceType.hairpin, null, 1);
+        cfgIfc ifc1 = ifcAdd(ntry.getIntName(true), tabRouteIface.ifaceType.hairpin, null, 1);
         if (ifc1 == null) {
             hairpins.del(ntry);
             return null;
         }
-        cfgIfc ifc2 = ifcAdd(ntry.getIntName(false), cfgIfc.ifaceType.hairpin, null, 1);
+        cfgIfc ifc2 = ifcAdd(ntry.getIntName(false), tabRouteIface.ifaceType.hairpin, null, 1);
         if (ifc2 == null) {
             hairpins.del(ntry);
             return null;

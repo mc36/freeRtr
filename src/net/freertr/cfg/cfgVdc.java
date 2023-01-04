@@ -14,6 +14,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeShell;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -592,7 +593,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("local")) {
             a = cfgIfc.dissectName(cmd.word())[0];
-            cfgIfc.ifaceType typ = cfgIfc.string2type(a);
+            tabRouteIface.ifaceType typ = cfgIfc.string2type(a);
             if (typ == null) {
                 cmd.error("bad name");
                 return;
@@ -615,7 +616,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 return;
             }
             ntry.port = cfgInit.vdcPortBeg;
-            ifcUdpInt hdr = new ifcUdpInt("127.0.0.1", cfgInit.vdcPortBeg, "127.0.0.1", cfgInit.vdcPortBeg + 1, "-", typ != cfgIfc.ifaceType.ether, false);
+            ifcUdpInt hdr = new ifcUdpInt("127.0.0.1", cfgInit.vdcPortBeg, "127.0.0.1", cfgInit.vdcPortBeg + 1, "-", typ != tabRouteIface.ifaceType.ether, false);
             cfgIfc ifc = cfgAll.ifcAdd(a, typ, hdr, 1);
             if (ifc == null) {
                 return;

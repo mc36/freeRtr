@@ -154,6 +154,7 @@ import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteAttr;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabSession;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
@@ -194,11 +195,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public String followTrack = null;
 
     /**
-     * type of this interface
-     */
-    public ifaceType type;
-
-    /**
      * where it was cloned, null if not
      */
     public cfgIfc cloned;
@@ -222,6 +218,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * packet handler
      */
     public ifcDn lower = new ifcNull();
+
+    /**
+     * type of this interface
+     */
+    public tabRouteIface.ifaceType type;
 
     /**
      * parent interface
@@ -1154,78 +1155,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public tabGen<clntMplsTrg> mplsTarget = new tabGen<clntMplsTrg>();
 
     /**
-     * interface type
-     */
-    public enum ifaceType {
-
-        /**
-         * null interface
-         */
-        nul,
-        /**
-         * loopback interface
-         */
-        loopback,
-        /**
-         * template interface
-         */
-        template,
-        /**
-         * dialer interface
-         */
-        dialer,
-        /**
-         * sdn interface
-         */
-        sdn,
-        /**
-         * pw headend interface
-         */
-        pweth,
-        /**
-         * virtual ppp interface
-         */
-        virtppp,
-        /**
-         * ethernet interface
-         */
-        ether,
-        /**
-         * serial interface
-         */
-        serial,
-        /**
-         * arcnet interface
-         */
-        arcnet,
-        /**
-         * infiniband interface
-         */
-        infiniband,
-        /**
-         * atm interface
-         */
-        atm,
-        /**
-         * bridged head interface
-         */
-        bridge,
-        /**
-         * bundle head interface
-         */
-        bundle,
-        /**
-         * hairpin interface
-         */
-        hairpin,
-        /**
-         * tunnel interface
-         */
-        tunnel
-
-    }
-
-    /**
      * tunnel type
      */
     public enum tunnelType {
@@ -2068,7 +1997,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param s name of interface
      * @return type
      */
-    public static ifaceType string2type(String s) {
+    public static tabRouteIface.ifaceType string2type(String s) {
         if (s == null) {
             return null;
         }
@@ -2076,21 +2005,21 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return null;
         }
         s = s.substring(0, 3);
-        cfgIfc.ifaceType typ = null;
+        tabRouteIface.ifaceType typ = null;
         if (s.equals("eth")) {
-            typ = cfgIfc.ifaceType.ether;
+            typ = tabRouteIface.ifaceType.ether;
         }
         if (s.equals("ser")) {
-            typ = cfgIfc.ifaceType.serial;
+            typ = tabRouteIface.ifaceType.serial;
         }
         if (s.equals("atm")) {
-            typ = cfgIfc.ifaceType.atm;
+            typ = tabRouteIface.ifaceType.atm;
         }
         if (s.equals("arc")) {
-            typ = cfgIfc.ifaceType.arcnet;
+            typ = tabRouteIface.ifaceType.arcnet;
         }
         if (s.equals("inf")) {
-            typ = cfgIfc.ifaceType.infiniband;
+            typ = tabRouteIface.ifaceType.infiniband;
         }
         return typ;
     }
@@ -3769,6 +3698,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (ip4 && (addr4 != null)) {
             ipIf4 = new ipIfc4(ifaceNeedArp());
             fwdIf4 = vrfFor.fwd4.ifaceAdd(ipIf4);
+            fwdIf4.ifwTyp = type;
             ipIf4.setIPv4addr(addr4, mask4.toNetmask());
             ethtyp.addET(ipIfc4.type, "ip4", ipIf4);
             ethtyp.updateET(ipIfc4.type, ipIf4);
@@ -3783,6 +3713,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (ip6 && (addr6 != null)) {
             ipIf6 = new ipIfc6(ifaceNeedArp());
             fwdIf6 = vrfFor.fwd6.ifaceAdd(ipIf6);
+            fwdIf6.ifwTyp = type;
             ipIf6.setIPv6addr(addr6, mask6.toNetmask());
             ethtyp.addET(ipIfc6.type, "ip6", ipIf6);
             ethtyp.updateET(ipIfc6.type, ipIf6);
@@ -3796,6 +3727,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (ipx && (ipxAddr != null)) {
             ipxIfc = vrfFor.ipx.ifaceAdd(ethtyp);
+            ipxIfc.ifwTyp = type;
             vrfFor.ipx.ifaceAddr(ipxIfc, ipxAddr);
             ethtyp.addET(ipxIface.type, "ipx", ipxIfc);
             ethtyp.updateET(ipxIface.type, ipxIfc);
@@ -4915,10 +4847,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param ifc source interface
      */
     public synchronized void setup2template(cfgIfc ifc) {
-        if (type == ifaceType.template) {
+        if (type == tabRouteIface.ifaceType.template) {
             return;
         }
-        if (ifc.type != ifaceType.template) {
+        if (ifc.type != tabRouteIface.ifaceType.template) {
             return;
         }
         template = ifc;
@@ -5064,7 +4996,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (dialer == null) {
             return true;
         }
-        if (dialer.type != ifaceType.dialer) {
+        if (dialer.type != tabRouteIface.ifaceType.dialer) {
             return true;
         }
         ifcUp enc = dialer.getEncapProto();
@@ -5100,7 +5032,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (dialer == null) {
             return true;
         }
-        if (dialer.type != ifaceType.dialer) {
+        if (dialer.type != tabRouteIface.ifaceType.dialer) {
             return true;
         }
         dialer.lower = new ifcNull();
@@ -5590,7 +5522,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * look up tunnel domain name
      */
     public void tunnelDomainName() {
-        if (type != ifaceType.tunnel) {
+        if (type != tabRouteIface.ifaceType.tunnel) {
             return;
         }
         if (tunFQDN == null) {
@@ -7006,7 +6938,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     public synchronized void doCfgStr(cmds cmd) {
-        if (type == ifaceType.template) {
+        if (type == tabRouteIface.ifaceType.template) {
             cfgAll.templateConfig(this, cmd);
         }
         String a = cmd.word();
@@ -8824,7 +8756,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     private void doCfgTunnel(cmds cmd) {
-        if (type != ifaceType.tunnel) {
+        if (type != tabRouteIface.ifaceType.tunnel) {
             cmd.error("not a tunnel interface");
             return;
         }
@@ -8949,7 +8881,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     private void doCfgNoTunnel(cmds cmd) {
-        if (type != ifaceType.tunnel) {
+        if (type != tabRouteIface.ifaceType.tunnel) {
             cmd.error("not a tunnel interface");
             return;
         }

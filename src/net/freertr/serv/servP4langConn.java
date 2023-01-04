@@ -53,6 +53,7 @@ import net.freertr.tab.tabPbrN;
 import net.freertr.tab.tabQosN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabSession;
 import net.freertr.tab.tabSessionEntry;
 import net.freertr.util.bits;
@@ -1618,7 +1619,7 @@ public class servP4langConn implements Runnable {
             br.macs.put(ntry);
             servP4langIfc ifc = lower.findIfc(ntry.ifc);
             if (ifc != null) {
-                if ((ifc.ifc.type != cfgIfc.ifaceType.dialer) && (ifc.ifc.type != cfgIfc.ifaceType.tunnel) && (ifc.ifc.type != cfgIfc.ifaceType.virtppp)) {
+                if ((ifc.ifc.type != tabRouteIface.ifaceType.dialer) && (ifc.ifc.type != tabRouteIface.ifaceType.tunnel) && (ifc.ifc.type != tabRouteIface.ifaceType.virtppp)) {
                     lower.sendLine("bridgemac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + ifc.id);
                     continue;
                 }
@@ -1630,7 +1631,7 @@ public class servP4langConn implements Runnable {
                     continue;
                 }
                 String p = "0";
-                if ((ifc.ifc.type == cfgIfc.ifaceType.dialer) || (ifc.ifc.type == cfgIfc.ifaceType.virtppp)) {
+                if ((ifc.ifc.type == tabRouteIface.ifaceType.dialer) || (ifc.ifc.type == tabRouteIface.ifaceType.virtppp)) {
                     p = "1";
                 }
                 lower.sendLine("routedmac_" + a + " " + br.br.num + " " + ntry.adr.toEmuStr() + " " + nei.id + " " + p);
@@ -2827,7 +2828,7 @@ public class servP4langConn implements Runnable {
             }
             return;
         }
-        if (ifc.ifc.type == cfgIfc.ifaceType.virtppp) {
+        if (ifc.ifc.type == tabRouteIface.ifaceType.virtppp) {
             servP4langNei nei = lower.findNei(ifc.ifc.fwdIf4, new addrIP());
             if (nei == null) {
                 nei = lower.findNei(ifc.ifc.fwdIf6, new addrIP());
@@ -2903,7 +2904,7 @@ public class servP4langConn implements Runnable {
             lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.pwhe.adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun + " " + frg);
             return;
         }
-        if (ifc.ifc.type == cfgIfc.ifaceType.tunnel) {
+        if (ifc.ifc.type == tabRouteIface.ifaceType.tunnel) {
             servP4langNei nei = lower.findNei(ifc.ifc.fwdIf4, new addrIP());
             if (nei == null) {
                 nei = lower.findNei(ifc.ifc.fwdIf6, new addrIP());
@@ -3025,7 +3026,7 @@ public class servP4langConn implements Runnable {
             lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + par);
             return;
         }
-        if (ifc.ifc.type == cfgIfc.ifaceType.dialer) {
+        if (ifc.ifc.type == tabRouteIface.ifaceType.dialer) {
             if (ifc.pppoe == null) {
                 return;
             }
@@ -3721,6 +3722,13 @@ public class servP4langConn implements Runnable {
                 a = "" + addrPrefix.ip2ip4(ntry.prefix);
             } else {
                 a = "" + addrPrefix.ip2ip6(ntry.prefix);
+            }
+            if (ntry.best.iface != null) {
+                ipFwdIface ifc = (ipFwdIface) ntry.best.iface;
+                if (ifc.ifwTyp == tabRouteIface.ifaceType.nul) {
+                    lower.sendLine("droproute" + afi + "_" + act + " " + a + " " + vrf);
+                    continue;
+                }
             }
             if (ntry.best.nextHop == null) {
                 servP4langIfc fif = lower.findIfc(ntry.best.iface);

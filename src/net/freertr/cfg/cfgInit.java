@@ -101,6 +101,7 @@ import net.freertr.serv.servVxlan;
 import net.freertr.enc.encUrl;
 import net.freertr.serv.servXotPad;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userConfig;
 import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
@@ -546,7 +547,7 @@ public class cfgInit implements Runnable {
                 if (stat != 0) {
                     s = cmd.word().toLowerCase();
                 }
-                cfgIfc.ifaceType typ = cfgIfc.string2type(s);
+                tabRouteIface.ifaceType typ = cfgIfc.string2type(s);
                 if (typ == null) {
                     continue;
                 }
@@ -557,7 +558,7 @@ public class cfgInit implements Runnable {
                 int rem = bits.str2num(cmd.word());
                 int thrd = bits.str2num(cmd.word());
                 ifcUdpInt hdr = new ifcUdpInt(loop, loc, peer, rem, mac,
-                        typ != cfgIfc.ifaceType.ether, stat == 1);
+                        typ != tabRouteIface.ifaceType.ether, stat == 1);
                 switch (stat) {
                     case 2:
                         hdr.booter = true;

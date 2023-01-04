@@ -13,6 +13,7 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
@@ -314,7 +315,7 @@ public class userLine {
                 if (execIface == null) {
                     return false;
                 }
-                if (execIface.type != cfgIfc.ifaceType.dialer) {
+                if (execIface.type != tabRouteIface.ifaceType.dialer) {
                     execIface = null;
                     return false;
                 }

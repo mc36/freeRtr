@@ -13,6 +13,7 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabSession;
 import net.freertr.util.counter;
 import net.freertr.util.state;
@@ -389,7 +390,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         if (ifc == null) {
             return true;
         }
-        return (master != null) || (ifc.type == cfgIfc.ifaceType.bundle) || (ifc.type == cfgIfc.ifaceType.bridge) || (ifc.type == cfgIfc.ifaceType.dialer) || (ifc.type == cfgIfc.ifaceType.hairpin) || (ifc.type == cfgIfc.ifaceType.tunnel) || (ifc.type == cfgIfc.ifaceType.virtppp);
+        return (master != null) || (ifc.type == tabRouteIface.ifaceType.bundle) || (ifc.type == tabRouteIface.ifaceType.bridge) || (ifc.type == tabRouteIface.ifaceType.dialer) || (ifc.type == tabRouteIface.ifaceType.hairpin) || (ifc.type == tabRouteIface.ifaceType.tunnel) || (ifc.type == tabRouteIface.ifaceType.virtppp);
     }
 
     /**
@@ -415,7 +416,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
             lower.sendLine("state " + id + " 0 " + getStateEnding());
             lower.sendLine("ports_del " + id + " " + getStateEnding());
         }
-        if ((ifc.type == cfgIfc.ifaceType.sdn) && (ifc.vlanNum == 0)) {
+        if ((ifc.type == tabRouteIface.ifaceType.sdn) && (ifc.vlanNum == 0)) {
             ifcNull nul = new ifcNull();
             nul.setUpper(ifc.ethtyp);
         }

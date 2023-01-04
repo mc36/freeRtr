@@ -44,6 +44,7 @@ import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.util.state;
 import net.freertr.enc.encTlv;
+import net.freertr.tab.tabRouteIface;
 
 /**
  * openflow server
@@ -192,7 +193,7 @@ public class servOpenflow extends servGeneric implements prtServS {
                 cmd.error("no such interface");
                 return false;
             }
-            if ((ifc.type != cfgIfc.ifaceType.sdn) && (ifc.type != cfgIfc.ifaceType.bridge)) {
+            if ((ifc.type != tabRouteIface.ifaceType.sdn) && (ifc.type != tabRouteIface.ifaceType.bridge)) {
                 cmd.error("not openflow interface");
                 return false;
             }
@@ -200,7 +201,7 @@ public class servOpenflow extends servGeneric implements prtServS {
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
             ntry.lower = this;
-            if (ifc.type == cfgIfc.ifaceType.bridge) {
+            if (ifc.type == tabRouteIface.ifaceType.bridge) {
                 ntry.id = tabGrp;
                 ntry.grp = ifc.bridgeHed.num;
             }
@@ -235,7 +236,7 @@ public class servOpenflow extends servGeneric implements prtServS {
             servOpenflowIfc1 ntry = new servOpenflowIfc1();
             ntry.id = bits.str2num(cmd.word());
             ntry.ifc = ifc;
-            if (ifc.type == cfgIfc.ifaceType.bridge) {
+            if (ifc.type == tabRouteIface.ifaceType.bridge) {
                 ntry.id = tabGrp;
                 ntry.grp = bits.str2num(ifc.bridgeHed.name);
             }
