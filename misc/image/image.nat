@@ -1,3 +1,4 @@
+include ../misc/image/image.bas
 include ../misc/image/image.beg
 
 select-one zlib1g

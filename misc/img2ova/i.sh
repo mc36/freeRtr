@@ -44,8 +44,8 @@ rm $MNT/cpio
 rm -rf $MNT/lib/modules
 
 cp ../image/boot.cfg $MNT/syslinux.cfg
-echo -n `cd $MNT/;tar cf $IMG/rtr.root *`
-tar -vf $IMG/rtr.root --delete rtr/
+echo -n `cd $MNT/;tar cf $IMG/rtr.update *`
+tar -vf $IMG/rtr.update --delete rtr/
 extlinux -i $MNT
 sync
 fstrim -v $MNT

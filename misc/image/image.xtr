@@ -1,0 +1,14 @@
+include ../misc/image/image.bas
+
+select-one libbpf0                        #dataplane requirement
+select-one libmnl0                        #dataplane requirement
+select-one librte-meta-all                #dataplane requirement
+
+select-lst
+select-sum
+package-down
+package-inst
+
+exec du -sh %tmp%
+exec cd %tmp%;tar cf %img%.extra *
+del-alw %tmp%

@@ -1,7 +1,6 @@
 #!/bin/sh
 IMG=`cd ../../binImg/;pwd`
 qemu-img create $IMG/rtr.dsk 2G
-touch $IMG/rtr.root
 mkdir ../../binMnt
 sudo ./i.sh
 rm -rf ../../binMnt
