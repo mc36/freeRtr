@@ -12,8 +12,11 @@ import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabNatTraN;
 import net.freertr.tab.tabPbrN;
+import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRtrplcN;
 
 /**
  * one p4lang vrf
@@ -31,6 +34,36 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
      * vrf handler
      */
     protected cfgVrf vrf;
+
+    /**
+     * export prefix list
+     */
+    protected tabListing<tabPrfxlstN, addrIP> prflst4;
+
+    /**
+     * export prefix list
+     */
+    protected tabListing<tabPrfxlstN, addrIP> prflst6;
+
+    /**
+     * export route map
+     */
+    protected tabListing<tabRtrmapN, addrIP> roumap4;
+
+    /**
+     * export route map
+     */
+    protected tabListing<tabRtrmapN, addrIP> roumap6;
+
+    /**
+     * export route policy
+     */
+    protected tabListing<tabRtrplcN, addrIP> roupol4;
+
+    /**
+     * export route policy
+     */
+    protected tabListing<tabRtrplcN, addrIP> roupol6;
 
     /**
      * sent multicast

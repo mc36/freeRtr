@@ -1,5 +1,4 @@
 tcam compression to tabRoute
-route filtering to p4lang
 mpls inband network telemetry
 backup path support to the spf class
 wcmp support to the spf class

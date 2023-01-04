@@ -8,6 +8,9 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgBndl;
 import net.freertr.cfg.cfgBrdg;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgPrfxlst;
+import net.freertr.cfg.cfgRoump;
+import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcBridge;
 import net.freertr.ifc.ifcBridgeIfc;
@@ -325,6 +328,12 @@ public class servP4langCfg implements ifcUp {
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
             l.add(beg + mid + "export-vrf " + ntry.vrf.name);
+            cmds.cfgLine(l, ntry.prflst4 == null, beg, mid + "export-list4 " + ntry.vrf.name, "" + ntry.prflst4);
+            cmds.cfgLine(l, ntry.prflst6 == null, beg, mid + "export-list6 " + ntry.vrf.name, "" + ntry.prflst6);
+            cmds.cfgLine(l, ntry.roumap4 == null, beg, mid + "export-map4 " + ntry.vrf.name, "" + ntry.roumap4);
+            cmds.cfgLine(l, ntry.roumap6 == null, beg, mid + "export-map6 " + ntry.vrf.name, "" + ntry.roumap6);
+            cmds.cfgLine(l, ntry.roupol4 == null, beg, mid + "export-policy4 " + ntry.vrf.name, "" + ntry.roupol4);
+            cmds.cfgLine(l, ntry.roupol6 == null, beg, mid + "export-policy6 " + ntry.vrf.name, "" + ntry.roupol6);
         }
         for (int i = 0; i < expBr.size(); i++) {
             servP4langBr ntry = expBr.get(i);
@@ -356,16 +365,8 @@ public class servP4langCfg implements ifcUp {
         } else {
             l.add(beg + mid + "export-srv6 " + expSrv6.name);
         }
-        if (expCopp4 == null) {
-            l.add(beg + "no " + mid + "export-copp4");
-        } else {
-            l.add(beg + mid + "export-copp4 " + expCopp4.listName);
-        }
-        if (expCopp6 == null) {
-            l.add(beg + "no " + mid + "export-copp6");
-        } else {
-            l.add(beg + mid + "export-copp6 " + expCopp6.listName);
-        }
+        cmds.cfgLine(l, expCopp4 == null, beg, mid + "export-copp4", "" + expCopp4);
+        cmds.cfgLine(l, expCopp6 == null, beg, mid + "export-copp6", "" + expCopp6);
         cmds.cfgLine(l, !expSck, beg, mid + "export-socket", "");
         l.add(beg + mid + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, mid + "interconnect", "" + interconn);
@@ -528,6 +529,120 @@ public class servP4langCfg implements ifcUp {
             expCopp6 = acl.aceslst;
             return false;
         }
+        if (s.equals("export-list4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
+                cmd.error("no such prefix list");
+                return false;
+            }
+            pv.prflst4 = pfx.prflst;
+            return false;
+        }
+        if (s.equals("export-list6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+            if (pfx == null) {
+                cmd.error("no such prefix list");
+                return false;
+            }
+            pv.prflst6 = pfx.prflst;
+            return false;
+        }
+        if (s.equals("export-map4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+            if (rm == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            pv.roumap4 = rm.roumap;
+            return false;
+        }
+        if (s.equals("export-map6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            cfgRoump rm = cfgAll.rtmpFind(cmd.word(), false);
+            if (rm == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            pv.roumap6 = rm.roumap;
+            return false;
+        }
+        if (s.equals("export-policy4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            cfgRouplc rp = cfgAll.rtplFind(cmd.word(), false);
+            if (rp == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            pv.roupol4 = rp.rouplc;
+            return false;
+        }
+        if (s.equals("export-policy6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            cfgRouplc rp = cfgAll.rtplFind(cmd.word(), false);
+            if (rp == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            pv.roupol6 = rp.rouplc;
+            return false;
+        }
         if (s.equals("api-stat")) {
             apiStatTx = new tabGen<servP4langMsg>();
             apiStatRx = new tabGen<servP4langMsg>();
@@ -688,6 +803,90 @@ public class servP4langCfg implements ifcUp {
             expCopp6 = null;
             return false;
         }
+        if (s.equals("export-list4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.prflst4 = null;
+            return false;
+        }
+        if (s.equals("export-list6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.prflst6 = null;
+            return false;
+        }
+        if (s.equals("export-map4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.roumap4 = null;
+            return false;
+        }
+        if (s.equals("export-map6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.roumap6 = null;
+            return false;
+        }
+        if (s.equals("export-policy4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.roupol4 = null;
+            return false;
+        }
+        if (s.equals("export-policy6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.roupol6 = null;
+            return false;
+        }
         if (s.equals("api-stat")) {
             apiStatTx = null;
             apiStatRx = null;
@@ -832,6 +1031,24 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 1) + " .    <name:acl>              acl name");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-copp6              specify copp acl to export");
         l.add(null, (p + 1) + " .    <name:acl>              acl name");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-list4              specify prefixes to export");
+        l.add(null, (p + 1) + " " + (p + 2) + ",.  <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:pl>             prefix list name");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-list6              specify prefixes to export");
+        l.add(null, (p + 1) + " " + (p + 2) + ",.  <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:pl>             prefix list name");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-map4               specify prefixes to export");
+        l.add(null, (p + 1) + " " + (p + 2) + ",.  <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:rm>             route map name");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-map6               specify prefixes to export");
+        l.add(null, (p + 1) + " " + (p + 2) + ",.  <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:rm>             route map name");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-policy4            specify prefixes to export");
+        l.add(null, (p + 1) + " " + (p + 2) + ",.  <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:rpl>            route policy name");
+        l.add(null, (p + 0) + " " + (p + 1) + "  export-policy6            specify prefixes to export");
+        l.add(null, (p + 1) + " " + (p + 2) + ",.  <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:rpl>            route policy name");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-interval           specify export interval");
         l.add(null, (p + 1) + " .    <num>                   time in ms");
         l.add(null, (p + 0) + " " + (p + 1) + "  downlink                  specify downlink for packetin");
@@ -904,7 +1121,7 @@ public class servP4langCfg implements ifcUp {
         userFormat res = new userFormat("|", "sent|name");
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
-            res.add(ntry.id + "|ifc " + ntry.vrf.name);
+            res.add(ntry.id + "|vrf " + ntry.vrf.name);
         }
         return res;
     }

@@ -34,6 +34,7 @@ import net.freertr.prt.prtGenServ;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrBgpEvpnPeer;
+import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabConnect;
 import net.freertr.tab.tabConnectEntry;
@@ -50,10 +51,13 @@ import net.freertr.tab.tabNatCfgN;
 import net.freertr.tab.tabNatTraN;
 import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabPbrN;
+import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabQosN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteIface;
+import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRtrplcN;
 import net.freertr.tab.tabSession;
 import net.freertr.tab.tabSessionEntry;
 import net.freertr.util.bits;
@@ -970,8 +974,8 @@ public class servP4langConn implements Runnable {
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
             doVrf(vrf);
-            doRoutes(true, vrf.id, vrf.vrf.fwd4.commonLabel, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4);
-            doRoutes(false, vrf.id, vrf.vrf.fwd6.commonLabel, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6);
+            doRoutes(true, vrf.id, vrf.vrf.fwd4.commonLabel, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4, vrf.prflst4, vrf.roumap4, vrf.roupol4);
+            doRoutes(false, vrf.id, vrf.vrf.fwd6.commonLabel, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6, vrf.prflst6, vrf.roumap6, vrf.roupol6);
             doIndexes("", vrf.id, vrf.vrf.fwd4.actualIU, vrf.indexUd4, vrf.vrf.fwd4.actualU, vrf.indexUs4);
             doIndexes("", vrf.id, vrf.vrf.fwd6.actualIU, vrf.indexUd6, vrf.vrf.fwd6.actualU, vrf.indexUs6);
             doIndexes("m", vrf.id, vrf.vrf.fwd4.actualIC, vrf.indexCd4, vrf.vrf.fwd4.actualU, vrf.indexCs4);
@@ -3630,7 +3634,7 @@ public class servP4langConn implements Runnable {
         return true;
     }
 
-    private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store) {
+    private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store, tabListing<tabPrfxlstN, addrIP> prflst, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol) {
         String afi;
         if (ipv4) {
             afi = "4";
@@ -3639,10 +3643,10 @@ public class servP4langConn implements Runnable {
         }
         for (int i = 0; i < need.size(); i++) {
             tabRouteEntry<addrIP> ntry = need.get(i);
+            ntry = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, ntry, roumap, roupol, prflst);
             if (ntry == null) {
                 continue;
             }
-            ntry = ntry.copyBytes(tabRoute.addType.notyet);
             tabRouteEntry<addrIP> old = done.find(ntry);
             if ((ntry.best.iface == null) && (ntry.best.rouTab != null)) {
                 tabRouteEntry<addrIP> recur;
