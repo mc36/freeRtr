@@ -2147,6 +2147,10 @@ public class userShow {
                 doShowRouteCount(4);
                 return null;
             }
+            if (a.equals("compress")) {
+                doShowRouteCompr(4);
+                return null;
+            }
             if (a.equals("route")) {
                 doShowRouteUni(4);
                 return null;
@@ -2501,6 +2505,10 @@ public class userShow {
             }
             if (a.equals("counter")) {
                 doShowRouteCount(6);
+                return null;
+            }
+            if (a.equals("compress")) {
+                doShowRouteCompr(6);
                 return null;
             }
             if (a.equals("route")) {
@@ -4162,6 +4170,12 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
+        if (a.equals("compress")) {
+            tab = new tabRoute<addrIP>(tab);
+            tab.compressTable();
+            doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            return;
+        }
         if (a.equals("labels")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
             return;
@@ -4172,7 +4186,7 @@ public class userShow {
         }
         if (a.equals("nostdcomm")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4185,7 +4199,7 @@ public class userShow {
         }
         if (a.equals("noextcomm")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4198,7 +4212,7 @@ public class userShow {
         }
         if (a.equals("nolrgcomm")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4211,7 +4225,7 @@ public class userShow {
         }
         if (a.equals("privateas")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4224,7 +4238,7 @@ public class userShow {
         }
         if (a.equals("stdcomm")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4237,7 +4251,7 @@ public class userShow {
         }
         if (a.equals("extcomm")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4250,7 +4264,7 @@ public class userShow {
         }
         if (a.equals("lrgcomm")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4263,7 +4277,7 @@ public class userShow {
         }
         if (a.equals("rd")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4276,7 +4290,7 @@ public class userShow {
         }
         if (a.equals("regexp")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4289,7 +4303,7 @@ public class userShow {
         }
         if (a.equals("pathlen")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4303,7 +4317,7 @@ public class userShow {
         }
         if (a.equals("unknowns")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4317,7 +4331,7 @@ public class userShow {
         }
         if (a.equals("asend")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4331,7 +4345,7 @@ public class userShow {
         }
         if (a.equals("asbeg")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4345,7 +4359,7 @@ public class userShow {
         }
         if (a.equals("asmid")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4359,7 +4373,7 @@ public class userShow {
         }
         if (a.equals("distance")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4373,7 +4387,7 @@ public class userShow {
         }
         if (a.equals("locpref")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4387,7 +4401,7 @@ public class userShow {
         }
         if (a.equals("validity")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4401,7 +4415,7 @@ public class userShow {
         }
         if (a.equals("aigp")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4415,7 +4429,7 @@ public class userShow {
         }
         if (a.equals("bandwidth")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4429,7 +4443,7 @@ public class userShow {
         }
         if (a.equals("origin")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4443,7 +4457,7 @@ public class userShow {
         }
         if (a.equals("metric")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4457,7 +4471,7 @@ public class userShow {
         }
         if (a.equals("tag")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4471,7 +4485,7 @@ public class userShow {
         }
         if (a.equals("network")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4485,7 +4499,7 @@ public class userShow {
         }
         if (a.equals("nexthop")) {
             a = cmd.getRemaining();
-            cmd = new cmds("", "");
+            cmd.clear();
             tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
@@ -4738,6 +4752,16 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 1);
     }
 
+    private void doShowRouteCompr(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = new tabRoute<addrIP>(fwd.actualU);
+        tab.compressTable();
+        doShowRoutes(fwd, tab, 1);
+    }
+
     private void doShowRouteLab(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4752,7 +4776,7 @@ public class userShow {
             return;
         }
         String a = cmd.getRemaining();
-        cmd = new cmds("", "");
+        cmd.clear();
         tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
         tabRtrmapN ntry = new tabRtrmapN();
         ntry.action = tabListingEntry.actionType.actPermit;

@@ -149,6 +149,13 @@ public class cmds {
     }
 
     /**
+     * clear remaining
+     */
+    public void clear() {
+        curr = "";
+    }
+
+    /**
      * get one word
      *
      * @param sep separator

@@ -804,6 +804,80 @@ public class tabRoute<T extends addrType> {
         return res;
     }
 
+    private boolean compressTable1(tabRouteEntry<T> ntry) {
+        tabRouteEntry<T> pfx = ntry.copyBytes(addType.ecmp);
+        if (ntry.prefix.maskLen < 1) {
+            return false;
+        }
+        final int bit = ntry.prefix.maskLen - 1;
+        if (ntry.prefix.network.bitValue(bit)) {
+            pfx.prefix.network.bitClear(bit);
+        } else {
+            pfx.prefix.network.bitSet(bit);
+        }
+        tabRouteEntry<T> oth = prefixes.find(pfx);
+        if (oth == null) {
+            return false;
+        }
+        if (pfx.sameFwder(oth.best) == null) {
+            return false;
+        }
+        tabRouteEntry<T> res = ntry.copyBytes(addType.ecmp);
+        res.prefix.setMask(bit);
+        oth = prefixes.find(res);
+        if (oth != null) {
+            return false;
+        }
+        prefixes.del(ntry);
+        prefixes.del(pfx);
+        prefixes.add(res);
+        return true;
+    }
+
+    private boolean compressTable2(tabRouteEntry<T> ntry) {
+        tabRouteEntry<T> pfx = ntry.copyBytes(addType.ecmp);
+        pfx = ntry.copyBytes(addType.ecmp);
+        for (int o = ntry.prefix.maskLen - 1; o >= 0; o--) {
+            pfx.prefix.setMask(o);
+            tabRouteEntry<T> oth = prefixes.find(pfx);
+            if (oth == null) {
+                continue;
+            }
+            if (oth.sameFwder(ntry.best) == null) {
+                continue;
+            }
+            prefixes.del(ntry);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * compress consecutive or subnetted entries
+     */
+    public void compressTable() {
+        for (;;) {
+            int done = 0;
+            for (int i = prefixes.size() - 1; i >= 0; i--) {
+                tabRouteEntry<T> ntry = prefixes.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (compressTable1(ntry)) {
+                    done++;
+                    continue;
+                }
+                if (compressTable2(ntry)) {
+                    done++;
+                    continue;
+                }
+            }
+            if (done < 1) {
+                break;
+            }
+        }
+    }
+
     /**
      * update entry
      *
