@@ -109,6 +109,8 @@ class RareApi(BfRtRare):
     #from .unlabel6 import
     from .vpnroute4 import writeVpnRules4
     from .vpnroute6 import writeVpnRules6
+    from .droproute4 import writeDropRules4
+    from .droproute6 import writeDropRules6
     from .xconnect import writeXconnRules
     from .loconnect import writeLoconnRules
     from .profiler import writeProfilerRules

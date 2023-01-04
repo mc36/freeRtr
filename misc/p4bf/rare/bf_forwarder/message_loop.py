@@ -101,6 +101,16 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "droproute4":
+            addr = splt[1].split("/")
+            self.writeDropRules4(
+                mode,
+                addr[0],
+                int(addr[1]),
+                int(splt[2]),
+            )
+            continue
+
         if cmds[0] == "myaddr4":
             addr = splt[1].split("/")
             self.writeMyaddrRules4(
@@ -355,6 +365,16 @@ def run(self):
                 int(splt[2]),
                 int(splt[4]),
                 splt[5],
+            )
+            continue
+
+        if cmds[0] == "droproute6":
+            addr = splt[1].split("/")
+            self.writeDropRules6(
+                mode,
+                addr[0],
+                int(addr[1]),
+                int(splt[2]),
             )
             continue
 
