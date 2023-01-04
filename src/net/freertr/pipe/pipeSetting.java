@@ -67,6 +67,11 @@ public class pipeSetting implements Comparator<pipeSetting> {
     public final static int escape = 11;
 
     /**
+     * routing table lines
+     */
+    public final static int riblines = 12;
+
+    /**
      * name of the setting
      */
     protected final int name;
@@ -113,6 +118,7 @@ public class pipeSetting implements Comparator<pipeSetting> {
         l.add("table|" + pip.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         l.add("height|" + pip.settingsGet(pipeSetting.height, 25));
         l.add("width|" + pip.settingsGet(pipeSetting.width, 80));
+        l.add("riblines|" + pip.settingsGet(pipeSetting.riblines, 8192));
         l.add("origin|" + pip.settingsGet(pipeSetting.origin, "?"));
         return l;
     }

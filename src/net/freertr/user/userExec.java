@@ -1455,6 +1455,8 @@ public class userExec {
         hl.add(null, "3 .        <num>                      ascii code");
         hl.add(null, "2 3      deactivate                   set deactivate character");
         hl.add(null, "3 .        <num>                      ascii code");
+        hl.add(null, "2 3      riblines                     set routing table size");
+        hl.add(null, "3 .        <num>                      number of lines");
         hl.add(null, "2 .      monitor                      log to this terminal");
         hl.add(null, "2 .      detect                       detect size of terminal");
         hl.add(null, "2 .      timestamps                   put time before each executed command");
@@ -4474,6 +4476,10 @@ public class userExec {
         }
         if (a.equals("escape")) {
             pipe.settingsPut(pipeSetting.escape, bits.str2num(cmd.word()));
+            return;
+        }
+        if (a.equals("riblines")) {
+            pipe.settingsPut(pipeSetting.riblines, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("deactivate")) {

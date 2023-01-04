@@ -4976,7 +4976,7 @@ public class userShow {
             rdr.putStrTab(l);
             return;
         }
-        final int lines = 1024;
+        final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
         for (int pos = 0; pos < tab.size(); pos += lines) {
             l.clear();
             for (int i = 0; i < lines; i++) {
