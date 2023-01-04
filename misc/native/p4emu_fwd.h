@@ -1129,6 +1129,8 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         neigh_ntry.id = route_res->nexthop;                         \
         ethtyp = ETHERTYPE_MPOLKA;                                  \
         goto ethtyp_tx;                                             \
+    case 11:                                                        \
+        doDropper;                                                  \
 
 
 
