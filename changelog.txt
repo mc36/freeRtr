@@ -13671,3 +13671,7 @@ todo: route filtering to p4lang
 qc pass: p4lang: null routing
 ---------------------------------- 2023-01-04 08:49:14 23.1.4
 no todo: route filtering to p4lang
+---------------------------------- 2023-01-04 09:57:53 23.1.4
+qc pass: p4lang: route filtering with prefixlist
+qc pass: p4lang: route filtering with routemap
+qc pass: p4lang: route filtering with routepolicy
