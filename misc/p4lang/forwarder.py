@@ -1654,6 +1654,84 @@ def writeSrvRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask,
         ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
+def writeDropRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4.act_ipv4_fib_discard",
+        action_params={})
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4b.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4b.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4b.act_ipv4_fib_discard",
+        action_params={})
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv4c.tbl_ipv4_fib_lpm",
+        match_fields={
+            "hdr.ipv4.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv4c.act_set_drop",
+        action_params={})
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
+def writeDropRules6(delete, p4info_helper, ingress_sw, dst_ip_addr, dst_net_mask, vrf):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6.act_ipv6_fib_discard",
+        action_params={})
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6b.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6b.dst_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6b.act_ipv6_fib_discard",
+        action_params={})
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ipv6c.tbl_ipv6_fib_lpm",
+        match_fields={
+            "hdr.ipv6.src_addr": (dst_ip_addr,dst_net_mask),
+            "ig_md.vrf": vrf
+        },
+        action_name="ig_ctl.ig_ctl_ipv6c.act_set_drop",
+        action_params={})
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
 def add2dictIfNot(dic, key, val, msk, cnd):
     if msk == cnd:
         return;
@@ -3275,6 +3353,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeVpnRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
             continue
 
+        if cmds[0] == "droproute4":
+            addr = splt[1].split("/");
+            writeDropRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
+            continue
+
         if cmds[0] == "myaddr4":
             addr = splt[1].split("/");
             writeMyaddrRules4(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[3]))
@@ -3576,6 +3659,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         if cmds[0] == "vpnroute6":
             addr = splt[1].split("/");
             writeVpnRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]),int(splt[4]),int(splt[5]),int(splt[6]))
+            continue
+
+        if cmds[0] == "droproute6":
+            addr = splt[1].split("/");
+            writeDropRules6(mode,p4info_helper,sw1,addr[0],int(addr[1]),int(splt[2]))
             continue
 
         if cmds[0] == "myaddr6":
