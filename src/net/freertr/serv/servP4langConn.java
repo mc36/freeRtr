@@ -3636,9 +3636,8 @@ public class servP4langConn implements Runnable {
 
     private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store, boolean cmpr, tabListing<tabPrfxlstN, addrIP> prflst, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol) {
         if (cmpr) {
-            tabRoute<addrIP> res = new tabRoute<addrIP>("cmp");
-            tabRoute.compressTable(rtrBgpUtil.sfiUnicast, need, res, null);
-            need = res;
+            need = new tabRoute<addrIP>(need);
+            tabRoute.compressTable(rtrBgpUtil.sfiUnicast, need, null);
         }
         String afi;
         if (ipv4) {

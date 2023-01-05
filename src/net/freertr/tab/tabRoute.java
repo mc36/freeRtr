@@ -856,32 +856,27 @@ public class tabRoute<T extends addrType> {
      * compress consecutive or subnetted entries
      *
      * @param afi address family
-     * @param src source table
-     * @param trg target table
+     * @param lst table to update
      * @param pfx prefix list
      * @return number of entries removed
      */
-    public static int compressTable(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabListing<tabPrfxlstN, addrIP> pfx) {
+    public static int compressTable(int afi, tabRoute<addrIP> lst, tabListing<tabPrfxlstN, addrIP> pfx) {
         int done = 0;
-        for (int i = 0; i < src.prefixes.size(); i++) {
-            tabRouteEntry<addrIP> ntry = src.prefixes.get(i);
+        for (int i = lst.prefixes.size() - 1; i >= 0; i--) {
+            tabRouteEntry<addrIP> ntry = lst.prefixes.get(i);
             if (ntry == null) {
                 continue;
             }
-            trg.add(addType.always, ntry, false, false);
-        }
-        for (int i = trg.prefixes.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = trg.prefixes.get(i);
             if (pfx != null) {
                 if (!pfx.matches(afi, 0, ntry)) {
                     continue;
                 }
             }
-            if (compressTable1(trg, ntry)) {
+            if (compressTable1(lst, ntry)) {
                 done++;
                 continue;
             }
-            if (compressTable2(trg, ntry)) {
+            if (compressTable2(lst, ntry)) {
                 done++;
                 continue;
             }
