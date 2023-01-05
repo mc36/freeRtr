@@ -4171,9 +4171,9 @@ public class userShow {
             return;
         }
         if (a.equals("compress")) {
-            tab = new tabRoute<addrIP>(tab);
-            tabRoute.compressTable(tab, null);
-            doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("cmp");
+            tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, res, null);
+            doShowRoutes(r.bgp.fwdCore, res, dsp);
             return;
         }
         if (a.equals("labels")) {
@@ -4757,8 +4757,8 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        tabRoute<addrIP> tab = new tabRoute<addrIP>(fwd.actualU);
-        tabRoute.compressTable(tab, null);
+        tabRoute<addrIP> tab = new tabRoute<addrIP>("cmp");
+        tabRoute.compressTable(rtrBgpUtil.sfiUnicast, fwd.actualU, tab, null);
         doShowRoutes(fwd, tab, 1);
     }
 

@@ -1910,6 +1910,7 @@ qc pass: babel over point2point ethernet
 qc pass: babel ecmp connection
 qc pass: babel default address suppression
 qc pass: babel address unsuppression
+qc pass: babel auto summarization
 qc pass: ebgp in chain
 qc pass: confed bgp in chain
 qc pass: ibgp in chain
@@ -2622,6 +2623,7 @@ qc pass: eigrp over point2point ethernet
 qc pass: eigrp ecmp connection
 qc pass: eigrp default address suppression
 qc pass: eigrp address unsuppression
+qc pass: eigrp auto summarization
 qc pass: isis over ethernet
 qc pass: isis over ethernet vlan
 qc pass: isis over ethernet bridge
@@ -2825,6 +2827,7 @@ qc pass: olsr over point2point ethernet
 qc pass: olsr ecmp connection
 qc pass: olsr default address suppression
 qc pass: olsr address unsuppression
+qc pass: olsr auto summarization
 qc pass: ospf point2point connection
 qc pass: ospf point2multipoint connection
 qc pass: ospf point2multipoint nonbroadcast connection
@@ -2943,6 +2946,7 @@ qc pass: pvrp with srgb sr
 qc pass: pvrp with selective sr
 qc pass: pvrp with selective bier
 qc pass: pvrp with polka
+qc pass: pvrp auto summarization
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
@@ -3044,6 +3048,7 @@ qc pass: rip over point2point ethernet
 qc pass: rip ecmp connection
 qc pass: rip default address suppression
 qc pass: rip address unsuppression
+qc pass: rip auto summarization
 qc pass: static routing
 qc pass: static routing with distance
 qc pass: static routing with icmp tracker

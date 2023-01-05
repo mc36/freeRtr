@@ -249,7 +249,7 @@ public abstract class ipRtr implements Comparator<ipRtr> {
             ntry.filter(afi, src, trg, lab, agrR, agrA, routerProtoTyp, routerProcNum);
         }
         if (routerAutoSummary) {
-            tabRoute.compressTable(trg, routerAutoSumPfx);
+            tabRoute.compressTable(afi, src, trg, routerAutoSumPfx);
         }
     }
 

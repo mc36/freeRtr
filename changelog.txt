@@ -13681,3 +13681,9 @@ todo: tcam compression to routing protocols, p4lang
 ---------------------------------- 2023-01-05 01:27:03 23.1.5
 no todo: tcam compression to routing protocols, p4lang
 todo: tcam compression to p4lang
+---------------------------------- 2023-01-05 02:56:14 23.1.5
+qc pass: babel auto summarization
+qc pass: eigrp auto summarization
+qc pass: olsr auto summarization
+qc pass: pvrp auto summarization
+qc pass: rip auto summarization

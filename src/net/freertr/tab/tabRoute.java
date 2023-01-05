@@ -6,7 +6,6 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.ip.ipMpls;
-import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -856,27 +855,33 @@ public class tabRoute<T extends addrType> {
     /**
      * compress consecutive or subnetted entries
      *
-     * @param lst prefixes to compress
+     * @param afi address family
+     * @param src source table
+     * @param trg target table
      * @param pfx prefix list
      * @return number of entries removed
      */
-    public static int compressTable(tabRoute<addrIP> lst, tabListing<tabPrfxlstN, addrIP> pfx) {
+    public static int compressTable(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabListing<tabPrfxlstN, addrIP> pfx) {
         int done = 0;
-        for (int i = lst.prefixes.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = lst.prefixes.get(i);
+        for (int i = 0; i < src.prefixes.size(); i++) {
+            tabRouteEntry<addrIP> ntry = src.prefixes.get(i);
             if (ntry == null) {
                 continue;
             }
+            trg.add(addType.always, ntry, false, false);
+        }
+        for (int i = trg.prefixes.size() - 1; i >= 0; i--) {
+            tabRouteEntry<addrIP> ntry = trg.prefixes.get(i);
             if (pfx != null) {
-                if (!pfx.matches(rtrBgpUtil.sfiUnicast, 0, ntry)) {
+                if (!pfx.matches(afi, 0, ntry)) {
                     continue;
                 }
             }
-            if (compressTable1(lst, ntry)) {
+            if (compressTable1(trg, ntry)) {
                 done++;
                 continue;
             }
-            if (compressTable2(lst, ntry)) {
+            if (compressTable2(trg, ntry)) {
                 done++;
                 continue;
             }
