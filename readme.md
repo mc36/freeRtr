@@ -1,6 +1,9 @@
 # freeRouter source tree
 
+freeRouter is a router stack which can export the computed tables to external dataplanes
+
 more about the project at [www.freertr.org](http://www.freertr.org/)
+
 you can find the same source tree at various locations, normally all should be the same:
 * http://sources.freertr.org
 * http://github.com/rare-freertr/freeRtr
