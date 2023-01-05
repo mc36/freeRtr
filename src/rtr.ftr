@@ -1807,6 +1807,8 @@ qc pass: p4lang: null routing
 qc pass: p4lang: route filtering with prefixlist
 qc pass: p4lang: route filtering with routemap
 qc pass: p4lang: route filtering with routepolicy
+qc pass: p4lang: routing with fib compression
+qc pass: p4lang: mpls with fib compression
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

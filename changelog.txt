@@ -13692,3 +13692,6 @@ qc pass: bgp aggregation
 ---------------------------------- 2023-01-05 03:55:40 23.1.5
 no qc pass: bgp aggregation
 qc pass: bgp auto summarization
+---------------------------------- 2023-01-05 05:06:44 23.1.5
+qc pass: p4lang: routing with fib compression
+qc pass: p4lang: mpls with fib compression
