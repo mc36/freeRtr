@@ -66,6 +66,16 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     protected tabListing<tabRtrplcN, addrIP> roupol6;
 
     /**
+     * export compressed fib
+     */
+    protected boolean compress4;
+
+    /**
+     * export compressed fib
+     */
+    protected boolean compress6;
+
+    /**
      * sent multicast
      */
     protected boolean sentMcast;

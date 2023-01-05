@@ -974,8 +974,8 @@ public class servP4langConn implements Runnable {
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
             doVrf(vrf);
-            doRoutes(true, vrf.id, vrf.vrf.fwd4.commonLabel, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4, vrf.prflst4, vrf.roumap4, vrf.roupol4);
-            doRoutes(false, vrf.id, vrf.vrf.fwd6.commonLabel, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6, vrf.prflst6, vrf.roumap6, vrf.roupol6);
+            doRoutes(true, vrf.id, vrf.vrf.fwd4.commonLabel, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4, vrf.compress4, vrf.prflst4, vrf.roumap4, vrf.roupol4);
+            doRoutes(false, vrf.id, vrf.vrf.fwd6.commonLabel, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6, vrf.compress6, vrf.prflst6, vrf.roumap6, vrf.roupol6);
             doIndexes("", vrf.id, vrf.vrf.fwd4.actualIU, vrf.indexUd4, vrf.vrf.fwd4.actualU, vrf.indexUs4);
             doIndexes("", vrf.id, vrf.vrf.fwd6.actualIU, vrf.indexUd6, vrf.vrf.fwd6.actualU, vrf.indexUs6);
             doIndexes("m", vrf.id, vrf.vrf.fwd4.actualIC, vrf.indexCd4, vrf.vrf.fwd4.actualU, vrf.indexCs4);
@@ -3634,7 +3634,12 @@ public class servP4langConn implements Runnable {
         return true;
     }
 
-    private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store, tabListing<tabPrfxlstN, addrIP> prflst, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol) {
+    private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store, boolean cmpr, tabListing<tabPrfxlstN, addrIP> prflst, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol) {
+        if (cmpr) {
+            tabRoute<addrIP> res = new tabRoute<addrIP>("cmp");
+            tabRoute.compressTable(rtrBgpUtil.sfiUnicast, need, res, null);
+            need = res;
+        }
         String afi;
         if (ipv4) {
             afi = "4";

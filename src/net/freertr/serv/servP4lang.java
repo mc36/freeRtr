@@ -96,6 +96,8 @@ public class servP4lang extends servGeneric implements prtServS {
         "server p4lang .*! no export-map6 .*",
         "server p4lang .*! no export-policy4 .*",
         "server p4lang .*! no export-policy6 .*",
+        "server p4lang .*! no export-compress4 .*",
+        "server p4lang .*! no export-compress6 .*",
         "server p4lang .*! no export-socket",
         "server p4lang .*! no interconnect",
         "server p4lang .*! export-interval 1000",
@@ -111,6 +113,8 @@ public class servP4lang extends servGeneric implements prtServS {
         "server p4lang .*! no forwarder .* export-map6 .*",
         "server p4lang .*! no forwarder .* export-policy4 .*",
         "server p4lang .*! no forwarder .* export-policy6 .*",
+        "server p4lang .*! no forwarder .* export-compress4 .*",
+        "server p4lang .*! no forwarder .* export-compress6 .*",
         "server p4lang .*! no forwarder .* export-socket",
         "server p4lang .*! no forwarder .* interconnect",
         "server p4lang .*! forwarder .* export-interval 1000"
