@@ -13687,3 +13687,5 @@ qc pass: eigrp auto summarization
 qc pass: olsr auto summarization
 qc pass: pvrp auto summarization
 qc pass: rip auto summarization
+---------------------------------- 2023-01-05 03:43:48 23.1.5
+qc pass: bgp aggregation
