@@ -452,7 +452,10 @@ int main(int argc, char **argv) {
         ret = rte_eth_dev_get_name_by_port(port, (char*)&buf[0]);
         if (ret != 0) strcpy((char*)&buf[0], "unknown");
         int sock = rte_eth_dev_socket_id(port);
-        if (sock < 0) sock = 0;
+        if (sock < 0) {
+          printf("error getting socket id\n");
+          sock = 0;
+        }
         port2pool[port] = sock;
         printf("opening port %i named %s on socket %i on lcore %i for rx and %i for tx...\n", port, (char*)&buf[0], sock, port2rx[port], port2tx[port]);
         initIface(port, (char*)&buf[0]);
@@ -473,7 +476,7 @@ int main(int argc, char **argv) {
         int maxlen;
 
         ret = rte_eth_dev_info_get(port, &dev_info);
-        if (ret != 0) err("error getting device info");
+        if (ret != 0) printf("error getting device info\n");
 
         printf("devinfo: pmd=%s, mtu=%i..%i, bufs=%i, pktl=%i, rxque=%o, txque=%i, rxcapa=%08x, txcapa=%08x...\n", dev_info.driver_name, dev_info.min_mtu, dev_info.max_mtu, dev_info.min_rx_bufsize, dev_info.max_rx_pktlen, dev_info.max_rx_queues, dev_info.max_tx_queues, (int)dev_info.rx_offload_capa, (int)dev_info.tx_offload_capa);
 
@@ -514,32 +517,32 @@ int main(int argc, char **argv) {
 #endif
         printf("configuring port: offloads rx=%08x, tx=%08x, pktlen=%i\n", (int)port_conf.rxmode.offloads, (int)port_conf.txmode.offloads, maxlen);
         ret = rte_eth_dev_configure(port, 1, 1, &port_conf);
-        if (ret != 0) err("error configuring port");
+        if (ret != 0) printf("error configuring port\n");
 
         ret = rte_eth_dev_adjust_nb_rx_tx_desc(port, &nb_rxd, &nb_txd);
-        if (ret != 0) err("error adjusting descriptors");
+        if (ret != 0) printf("error adjusting descriptors\n");
 
         rxconf = dev_info.default_rxconf;
         rxconf.offloads = port_conf.rxmode.offloads;
         ret = rte_eth_rx_queue_setup(port, 0, nb_rxd, sock, &rxconf, mbuf_pool[sock]);
-        if (ret != 0) err("error setting up rx queue");
+        if (ret != 0) printf("error setting up rx queue\n");
 
         txconf = dev_info.default_txconf;
         txconf.offloads = port_conf.txmode.offloads;
         ret = rte_eth_tx_queue_setup(port, 0, nb_txd, sock, &txconf);
-        if (ret != 0) err("error setting up tx queue");
+        if (ret != 0) printf("error setting up tx queue\n");
 
         tx_ring[port] = rte_ring_create((char*)&buf[0], ring_tx, sock, RING_F_SC_DEQ);
         if (tx_ring[port] == NULL) err("error allocating tx ring");
 
         ret = rte_eth_dev_start(port);
-        if (ret != 0) err("error starting port");
+        if (ret != 0) printf("error starting port\n");
 
         ret = rte_eth_macaddr_get(port, &macaddr);
-        if (ret != 0) err("error getting mac");
+        if (ret != 0) printf("error getting mac\n");
 
         ret = rte_eth_promiscuous_enable(port);
-        if (ret != 0) err("error setting promiscuous mode");
+        if (ret != 0) printf("error setting promiscuous mode\n");
     }
 
     pthread_t threadSock;

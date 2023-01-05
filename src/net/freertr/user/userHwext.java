@@ -290,9 +290,7 @@ public class userHwext {
                 switch (dpt) {
                     case p4dpdk:
                         hwd.add("#modprobe uio_pci_generic");
-                        hwd.add("mkdir /dev/hugepages");
                         hwd.add("echo 128 > /proc/sys/vm/nr_hugepages");
-                        hwd.add("mount -t hugetlbfs hugetlbfs /dev/hugepages -o pagesize=2M");
                         hwd.add("modprobe vfio-pci");
                         for (i = 0; i < ifp.size(); i++) {
                             hwd.add("dpdk-devbind.py -b vfio-pci " + ifp.get(i));
