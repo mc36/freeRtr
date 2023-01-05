@@ -2154,7 +2154,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return true;
         }
-        if (routerAggregating.size() > 0) {
+        if (routerAutoSummary || (routerAggregating.size() > 0)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("aggregation");
             }

@@ -843,6 +843,13 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             }
             lst.add(beg + "aggregate " + aggreg2str(ntry));
         }
+        if (rtr.routerAutoSummary) {
+            String a = "";
+            if (rtr.routerAutoSumPfx != null) {
+                a += " prefix-list " + rtr.routerAutoSumPfx;
+            }
+            lst.add(beg + "autosummary" + a);
+        }
         if (rtr.routerEcmp) {
             lst.add(beg + "ecmp");
         }
@@ -929,6 +936,30 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 rtr.routerAggregating.del(ntry);
             } else {
                 rtr.routerAggregating.put(ntry);
+            }
+            fwd.routerConfigChg();
+            return false;
+        }
+        if (a.equals("autosummary")) {
+            rtr.routerAutoSummary = !neg;
+            rtr.routerAutoSumPfx = null;
+            if (neg) {
+                fwd.routerConfigChg();
+                return false;
+            }
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("prefix-list")) {
+                    cfgPrfxlst pfx = cfgAll.prfxFind(cmd.word(), false);
+                    if (pfx == null) {
+                        continue;
+                    }
+                    rtr.routerAutoSumPfx = pfx.prflst;
+                    continue;
+                }
             }
             fwd.routerConfigChg();
             return false;
@@ -1906,6 +1937,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 4) + " " + (p + 3) + ",.       <num>             value");
         l.add(null, (p + 3) + " " + (p + 3) + ",.     as-set              generate as path information");
         l.add(null, (p + 3) + " " + (p + 3) + ",.     summary-only        filter more specific prefixes");
+        l.add(null, (p + 1) + " " + (p + 2) + ",. autosummary             eliminate consecutive or subnetted prefixes");
+        l.add(null, (p + 2) + " " + (p + 3) + "     prefix-list           filter prefixes for aggregation");
+        l.add(null, (p + 3) + " " + (p + 2) + ",.     <name:pl>           name of prefix list");
     }
 
     public void getHelp(userHelping l) {

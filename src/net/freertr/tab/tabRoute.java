@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.ip.ipMpls;
+import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -804,8 +805,8 @@ public class tabRoute<T extends addrType> {
         return res;
     }
 
-    private boolean compressTable1(tabRouteEntry<T> ntry) {
-        tabRouteEntry<T> pfx = ntry.copyBytes(addType.ecmp);
+    private static boolean compressTable1(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) {
+        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.ecmp);
         if (ntry.prefix.maskLen < 1) {
             return false;
         }
@@ -815,38 +816,38 @@ public class tabRoute<T extends addrType> {
         } else {
             pfx.prefix.network.bitSet(bit);
         }
-        tabRouteEntry<T> oth = prefixes.find(pfx);
+        tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
         if (oth == null) {
             return false;
         }
         if (pfx.sameFwder(oth.best) == null) {
             return false;
         }
-        tabRouteEntry<T> res = ntry.copyBytes(addType.ecmp);
+        tabRouteEntry<addrIP> res = ntry.copyBytes(addType.ecmp);
         res.prefix.setMask(bit);
-        oth = prefixes.find(res);
+        oth = lst.prefixes.find(res);
         if (oth != null) {
             return false;
         }
-        prefixes.del(ntry);
-        prefixes.del(pfx);
-        prefixes.add(res);
+        lst.prefixes.del(ntry);
+        lst.prefixes.del(pfx);
+        lst.prefixes.add(res);
         return true;
     }
 
-    private boolean compressTable2(tabRouteEntry<T> ntry) {
-        tabRouteEntry<T> pfx = ntry.copyBytes(addType.ecmp);
+    private static boolean compressTable2(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) {
+        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.ecmp);
         pfx = ntry.copyBytes(addType.ecmp);
         for (int o = ntry.prefix.maskLen - 1; o >= 0; o--) {
             pfx.prefix.setMask(o);
-            tabRouteEntry<T> oth = prefixes.find(pfx);
+            tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
             if (oth == null) {
                 continue;
             }
             if (oth.sameFwder(ntry.best) == null) {
                 continue;
             }
-            prefixes.del(ntry);
+            lst.prefixes.del(ntry);
             return true;
         }
         return false;
@@ -854,28 +855,33 @@ public class tabRoute<T extends addrType> {
 
     /**
      * compress consecutive or subnetted entries
+     *
+     * @param lst prefixes to compress
+     * @param pfx prefix list
+     * @return number of entries removed
      */
-    public void compressTable() {
-        for (;;) {
-            int done = 0;
-            for (int i = prefixes.size() - 1; i >= 0; i--) {
-                tabRouteEntry<T> ntry = prefixes.get(i);
-                if (ntry == null) {
-                    continue;
-                }
-                if (compressTable1(ntry)) {
-                    done++;
-                    continue;
-                }
-                if (compressTable2(ntry)) {
-                    done++;
+    public static int compressTable(tabRoute<addrIP> lst, tabListing<tabPrfxlstN, addrIP> pfx) {
+        int done = 0;
+        for (int i = lst.prefixes.size() - 1; i >= 0; i--) {
+            tabRouteEntry<addrIP> ntry = lst.prefixes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (pfx != null) {
+                if (!pfx.matches(rtrBgpUtil.sfiUnicast, 0, ntry)) {
                     continue;
                 }
             }
-            if (done < 1) {
-                break;
+            if (compressTable1(lst, ntry)) {
+                done++;
+                continue;
+            }
+            if (compressTable2(lst, ntry)) {
+                done++;
+                continue;
             }
         }
+        return done;
     }
 
     /**

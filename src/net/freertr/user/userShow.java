@@ -4172,7 +4172,7 @@ public class userShow {
         }
         if (a.equals("compress")) {
             tab = new tabRoute<addrIP>(tab);
-            tab.compressTable();
+            tabRoute.compressTable(tab, null);
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
@@ -4758,7 +4758,7 @@ public class userShow {
             return;
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>(fwd.actualU);
-        tab.compressTable();
+        tabRoute.compressTable(tab, null);
         doShowRoutes(fwd, tab, 1);
     }
 

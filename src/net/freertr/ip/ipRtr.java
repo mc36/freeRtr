@@ -153,6 +153,16 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      */
     public tabListing<tabPrfxlstN, addrIP> routerAutoMesh;
 
+    /**
+     * auto summary computed prefixes
+     */
+    public boolean routerAutoSummary;
+
+    /**
+     * filter for the auto summarization
+     */
+    public tabListing<tabPrfxlstN, addrIP> routerAutoSumPfx;
+
     public int compare(ipRtr o1, ipRtr o2) {
         if (o1.routerProtoNum < o2.routerProtoNum) {
             return -1;
@@ -237,6 +247,9 @@ public abstract class ipRtr implements Comparator<ipRtr> {
                 continue;
             }
             ntry.filter(afi, src, trg, lab, agrR, agrA, routerProtoTyp, routerProcNum);
+        }
+        if (routerAutoSummary) {
+            tabRoute.compressTable(trg, routerAutoSumPfx);
         }
     }
 
