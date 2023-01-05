@@ -131,8 +131,6 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
- router rip4 1 ena
- router rip6 1 ena
  exit
 router bgp4 1
  vrf v1
