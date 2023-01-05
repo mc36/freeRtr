@@ -21,8 +21,7 @@ random=$(echo $RANDOM | md5sum | head -c 6)
 branch=optimizer_${sde_version}_$random
 git checkout -b $branch
 git add $sde_version
-git commit -m "Add optimization for rare $rare_commit (SDE $sde_version)"
-if [ -z "$(git diff --name-only HEAD)" ]; then
+if ! git commit -m "Add optimization for rare $rare_commit (SDE $sde_version)"; then
     echo "No changes detected"
     exit 0
 fi
