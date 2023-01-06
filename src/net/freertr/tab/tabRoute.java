@@ -804,11 +804,11 @@ public class tabRoute<T extends addrType> {
         return res;
     }
 
-    private static boolean compressTable1(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) {
-        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
+    private static boolean compressTable1(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // consecutives
         if (ntry.prefix.maskLen < 1) {
             return false;
         }
+        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
         final int bit = ntry.prefix.maskLen - 1;
         if (ntry.prefix.network.bitValue(bit)) {
             pfx.prefix.network.bitClear(bit);
@@ -835,7 +835,7 @@ public class tabRoute<T extends addrType> {
         return true;
     }
 
-    private static boolean compressTable2(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) {
+    private static boolean compressTable2(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // supernet
         tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
         for (int o = ntry.prefix.maskLen - 1; o >= 0; o--) {
             pfx.prefix.setMask(o);
@@ -850,6 +850,27 @@ public class tabRoute<T extends addrType> {
             return true;
         }
         return false;
+    }
+
+    private static boolean compressTable3(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // subnets
+        if (ntry.prefix.maskLen >= (addrIP.size * 8)) {
+            return false;
+        }
+        final int bit = ntry.prefix.maskLen + 1;
+        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
+        pfx.prefix.setMask(bit);
+        tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
+        if (oth == null) {
+            return false;
+        }
+        pfx.prefix.network.bitSet(bit);
+        pfx.prefix.setMask(bit);
+        oth = lst.prefixes.find(pfx);
+        if (oth == null) {
+            return false;
+        }
+        lst.prefixes.del(ntry);
+        return true;
     }
 
     /**
@@ -877,6 +898,10 @@ public class tabRoute<T extends addrType> {
                 continue;
             }
             if (compressTable2(lst, ntry)) {
+                done++;
+                continue;
+            }
+            if (compressTable3(lst, ntry)) {
                 done++;
                 continue;
             }
