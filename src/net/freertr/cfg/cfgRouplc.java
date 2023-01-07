@@ -230,6 +230,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     lrgcomm             clear large community");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, "2 .     privateas           clear private asn");
+        l.add(null, ".2 3    originator          clear originator");
+        l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 3    clustlist           clear cluster list");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 .    peeras              clear peer asn");
@@ -715,6 +717,11 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.doMode = tabRtrplcN.doType.clrLrgcomm;
+                ntry.strVal = cmd.getRemaining();
+                return;
+            }
+            if (a.equals("originator")) {
+                ntry.doMode = tabRtrplcN.doType.clrOrgntr;
                 ntry.strVal = cmd.getRemaining();
                 return;
             }

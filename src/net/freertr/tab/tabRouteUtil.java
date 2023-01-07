@@ -648,6 +648,25 @@ public class tabRouteUtil {
     }
 
     /**
+     * remove from originator
+     *
+     * @param <T> class of address
+     * @param attr attribute to update
+     * @param mtch match to remove
+     * @return number of occurences removed
+     */
+    public static <T extends addrType> int removeOrgntr(tabRouteAttr<T> attr, String mtch) {
+        if (attr.originator == null) {
+            return 0;
+        }
+        if (!("" + attr.originator).matches(mtch)) {
+            return 0;
+        }
+        attr.originator = null;
+        return 1;
+    }
+
+    /**
      * remove from cluster list
      *
      * @param <T> class of address

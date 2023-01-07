@@ -90,6 +90,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no clear stdcomm",
         "route-map .*! sequence .* no clear extcomm",
         "route-map .*! sequence .* no clear lrgcomm",
+        "route-map .*! sequence .* no clear originator",
         "route-map .*! sequence .* no clear clustlist",
         "route-map .*! sequence .* no clear privateas",
         "route-map .*! sequence .* no clear peeras",
@@ -293,6 +294,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     lrgcomm             clear large community");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, "2 .     privateas           clear private asn");
+        l.add(null, ".2 3    originator          clear originator");
+        l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 3    clustlist           clear cluster list");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 .    peeras              clear peer asn");
@@ -699,6 +702,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.lrgCommClear = cmd.getRemaining();
                 return;
             }
+            if (a.equals("originator")) {
+                ntry.orgntrClear = cmd.getRemaining();
+                return;
+            }
             if (a.equals("clustlist")) {
                 ntry.clstLstClear = cmd.getRemaining();
                 return;
@@ -1056,6 +1063,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("lrgcomm")) {
                 ntry.lrgCommClear = null;
+                return;
+            }
+            if (a.equals("originator")) {
+                ntry.orgntrClear = null;
                 return;
             }
             if (a.equals("clustlist")) {

@@ -337,6 +337,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public List<tabLargeComm> lrgCommSet;
 
     /**
+     * originator updater
+     */
+    public String orgntrClear;
+
+    /**
      * cluster list updater
      */
     public String clstLstClear;
@@ -493,6 +498,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, stdCommClear == null, beg, "clear stdcomm", stdCommClear);
         cmds.cfgLine(l, extCommClear == null, beg, "clear extcomm", extCommClear);
         cmds.cfgLine(l, lrgCommClear == null, beg, "clear lrgcomm", lrgCommClear);
+        cmds.cfgLine(l, orgntrClear == null, beg, "clear originator", orgntrClear);
         cmds.cfgLine(l, clstLstClear == null, beg, "clear clustlist", clstLstClear);
         cmds.cfgLine(l, !privasClear, beg, "clear privateas", "");
         cmds.cfgLine(l, !peerasClear, beg, "clear peeras", "");
@@ -799,6 +805,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (lrgCommClear != null) {
             tabRouteUtil.removeLrgComm(attr, lrgCommClear);
+        }
+        if (orgntrClear != null) {
+            tabRouteUtil.removeOrgntr(attr, orgntrClear);
         }
         if (clstLstClear != null) {
             tabRouteUtil.removeClstLst(attr, clstLstClear);

@@ -82,6 +82,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         clrLrgcomm,
         /**
+         * clear originator
+         */
+        clrOrgntr,
+        /**
          * clear clstlst
          */
         clrClstlst,
@@ -484,6 +488,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "clear extcomm " + strVal;
             case clrLrgcomm:
                 return "clear lrgcomm " + strVal;
+            case clrOrgntr:
+                return "clear originator " + strVal;
             case clrClstlst:
                 return "clear clustlist " + strVal;
             case clrPrivas:
@@ -837,6 +843,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case clrLrgcomm:
                 tabRouteUtil.removeLrgComm(attr, strVal);
                 return;
+            case clrOrgntr:
+                tabRouteUtil.removeOrgntr(attr, strVal);
+                break;
             case clrClstlst:
                 tabRouteUtil.removeClstLst(attr, strVal);
                 return;
