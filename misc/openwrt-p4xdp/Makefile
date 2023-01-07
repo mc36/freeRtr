@@ -17,7 +17,7 @@ define Package/p4xdp
 	CATEGORY:=Network
 	TITLE:=p4xdp
 	DEPENDS:=+libbpf $(BPF_DEPENDS)
-	URL:=https://www.freertr.org
+	URL:=http://www.freertr.org
 	SUBMENU:=VPN
 endef
 

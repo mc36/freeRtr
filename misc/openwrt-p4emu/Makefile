@@ -14,7 +14,7 @@ define Package/p4emu
 	CATEGORY:=Network
 	TITLE:=p4emu
 	DEPENDS:=+libpcap
-	URL:=https://www.freertr.org
+	URL:=http://www.freertr.org
 	SUBMENU:=VPN
 endef
 
