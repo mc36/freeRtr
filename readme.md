@@ -78,14 +78,15 @@ as a first start to get your routers up, do the following:
 * telnet 127.0.0.1 20003
 * telnet 127.0.0.1 20004
 
+## contributing
+
 to start coding on the project, take a look on the following:
 * grep me-the in the sources to see how to add a show command
 * grep ifcHdlc to see how to add a new interface encapsulation
 * take a look on rtrDownload to see an exmaple routing protocol
+* in most of the folders there is a class to extend or implment
 
-## contributing
-
-feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc.
+feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc
 
 ## additional information
 
