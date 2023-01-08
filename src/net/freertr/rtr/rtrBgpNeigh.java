@@ -590,8 +590,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("strict bfd|" + conn.strictBfd);
         l.add("graceful got|" + rtrBgpParam.mask2string(conn.peerGrace));
         l.add("graceful sent|" + rtrBgpParam.mask2string(graceRestart));
-        l.add("longlived graceful got|" + rtrBgpParam.mask2string(conn.peerLlGrace));
-        l.add("longlived graceful sent|" + rtrBgpParam.mask2string(llGraceRestart));
+        l.add("longlive graceful got|" + rtrBgpParam.mask2string(conn.peerLlGrace));
+        l.add("longlive graceful sent|" + rtrBgpParam.mask2string(llGraceRestart));
         l.add("multilabel got|" + rtrBgpParam.mask2string(conn.peerMltLab));
         l.add("multilabel sent|" + rtrBgpParam.mask2string(multiLabel));
         l.add("extnexthop cur|" + rtrBgpParam.mask2string(conn.peerExtNextCur));
@@ -635,7 +635,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("connection|" + conn.cntr.getShStat());
         l.add("lastio|" + conn.cntr.getShTraff());
         l.add("uncompressed|" + conn.compressCntr.getShStat());
-        l.add("uncomplastio|" + conn.compressCntr.getShTraff());
+        l.add("uncompress lastio|" + conn.compressCntr.getShTraff());
         l.add("buffer|" + pipeSide.getStatus(conn.pipe));
         l.add("policy reject|" + conn.repPolRej);
         l.add("aspath loop|" + conn.repAsPath);
