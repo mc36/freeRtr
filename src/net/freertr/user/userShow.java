@@ -659,6 +659,46 @@ public class userShow {
                 rdr.putStrArr(v.getShRun2(filt));
                 return null;
             }
+            if (a.equals("route-map")) {
+                cfgRoump v = cfgAll.rtmpFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such route map");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("route-policy")) {
+                cfgRouplc v = cfgAll.rtplFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such route policy");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("prefix-list")) {
+                cfgPrfxlst v = cfgAll.prfxFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such prefix list");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("access-list")) {
+                cfgAceslst v = cfgAll.aclsFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such access list");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
             if (a.equals("interface")) {
                 cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
