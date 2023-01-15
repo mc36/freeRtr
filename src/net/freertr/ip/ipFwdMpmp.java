@@ -11,6 +11,7 @@ import net.freertr.pack.packLdpMp;
 import net.freertr.rtr.rtrLdpNeigh;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -419,7 +420,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             if (ntry.labelL == null) {
                 continue;
             }
-            tabLabel.release(ntry.labelL, 5);
+            tabLabel.release(ntry.labelL, tabLabelEntry.owner.mp2mp);
         }
     }
 
@@ -439,8 +440,8 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             ntry = old;
         }
         if (alloc && (ntry.labelL == null)) {
-            ntry.labelL = tabLabel.allocate(5);
-            ntry.labelL.clrDupMpls(5);
+            ntry.labelL = tabLabel.allocate(tabLabelEntry.owner.mp2mp);
+            ntry.labelL.clrDupMpls(tabLabelEntry.owner.mp2mp);
         }
         ntry.labelR = label;
     }
@@ -470,12 +471,12 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             if (curr.labelL == null) {
                 continue;
             }
-            curr.labelL.delDupMpls(5, ntry.addr);
+            curr.labelL.delDupMpls(tabLabelEntry.owner.mp2mp, ntry.addr);
         }
         if (ntry.labelL == null) {
             return false;
         }
-        tabLabel.release(ntry.labelL, 5);
+        tabLabel.release(ntry.labelL, tabLabelEntry.owner.mp2mp);
         return false;
     }
 
@@ -651,9 +652,9 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             }
             if (nedLoc) {
                 if (vrfRx == null) {
-                    curr.labelL.setFwdCommon(5, fwd);
+                    curr.labelL.setFwdCommon(tabLabelEntry.owner.mp2mp, fwd);
                 } else {
-                    curr.labelL.setFwdCommon(5, vrfRx);
+                    curr.labelL.setFwdCommon(tabLabelEntry.owner.mp2mp, vrfRx);
                 }
                 ned = true;
             }
@@ -669,13 +670,13 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
                     continue;
                 }
                 List<Integer> labs = tabLabel.int2labels(ntry.labelR);
-                curr.labelL.addDupMpls(5, fwd, ntry.iface, ntry.addr, labs);
+                curr.labelL.addDupMpls(tabLabelEntry.owner.mp2mp, fwd, ntry.iface, ntry.addr, labs);
                 ned = true;
             }
             if (ned) {
                 continue;
             }
-            curr.labelL.clrDupMpls(5);
+            curr.labelL.clrDupMpls(tabLabelEntry.owner.mp2mp);
         }
     }
 

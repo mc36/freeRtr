@@ -1026,7 +1026,7 @@ public class rtrIsis extends ipRtr {
                 if (tab3.find(new tabIndex<addrIP>(i, null)) != null) {
                     continue;
                 }
-                segrouLab[i].setFwdDrop(7);
+                segrouLab[i].setFwdDrop(tabLabelEntry.owner.isisSrgb);
             }
         }
         if (bierLab != null) {
@@ -1050,7 +1050,7 @@ public class rtrIsis extends ipRtr {
             res.mergeFrom(level1.bierRes);
             res.mergeFrom(level2.bierRes);
             for (int i = 0; i < bierLab.length; i++) {
-                bierLab[i].setBierMpls(19, fwdCore, res);
+                bierLab[i].setBierMpls(tabLabelEntry.owner.isisBier, fwdCore, res);
             }
         }
         tab1.setProto(routerProtoTyp, routerProcNum);
@@ -1355,7 +1355,7 @@ public class rtrIsis extends ipRtr {
             return false;
         }
         if (s.equals("segrout")) {
-            tabLabel.release(segrouLab, 7);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.isisSrgb);
             segrouMax = bits.str2num(cmd.word());
             segrouBase = 0;
             for (;;) {
@@ -1368,15 +1368,15 @@ public class rtrIsis extends ipRtr {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(7, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocate(tabLabelEntry.owner.isisSrgb, segrouBase, segrouMax);
             genLsps(3);
             return false;
         }
         if (s.equals("bier")) {
-            tabLabel.release(bierLab, 19);
+            tabLabel.release(bierLab, tabLabelEntry.owner.isisBier);
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(19, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocate(tabLabelEntry.owner.isisBier, (bierMax + bierLen - 1) / bierLen);
             genLsps(3);
             return false;
         }
@@ -1455,7 +1455,7 @@ public class rtrIsis extends ipRtr {
             return false;
         }
         if (s.equals("segrout")) {
-            tabLabel.release(segrouLab, 7);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.isisSrgb);
             segrouLab = null;
             segrouMax = 0;
             segrouBase = 0;
@@ -1463,7 +1463,7 @@ public class rtrIsis extends ipRtr {
             return false;
         }
         if (s.equals("bier")) {
-            tabLabel.release(bierLab, 19);
+            tabLabel.release(bierLab, tabLabelEntry.owner.isisBier);
             bierLab = null;
             bierLen = 0;
             bierMax = 0;
@@ -1931,8 +1931,8 @@ public class rtrIsis extends ipRtr {
             ntry.unregister2eth();
             ntry.closeNeighbors();
         }
-        tabLabel.release(segrouLab, 7);
-        tabLabel.release(bierLab, 19);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.isisSrgb);
+        tabLabel.release(bierLab, tabLabelEntry.owner.isisBier);
     }
 
     /**

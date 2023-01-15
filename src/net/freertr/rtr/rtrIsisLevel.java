@@ -28,6 +28,7 @@ import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
+import net.freertr.tab.tabLabelEntry;
 
 /**
  * isis level
@@ -971,11 +972,11 @@ public class rtrIsisLevel implements Runnable {
             if (segrouUsd != null) {
                 if (ifc.srIndex > 0) {
                     tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srIndex, new addrPrefix<addrIP>(new addrIP(), 0)));
-                    lower.segrouLab[ifc.srIndex].setFwdCommon(7, lower.fwdCore);
+                    lower.segrouLab[ifc.srIndex].setFwdCommon(tabLabelEntry.owner.isisSrgb, lower.fwdCore);
                 }
                 if (lower.other.enabled && (ifc.otherEna) && (ifc.srOthIdx > 0)) {
                     tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srOthIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
-                    lower.segrouLab[ifc.srOthIdx].setFwdCommon(7, lower.other.fwd);
+                    lower.segrouLab[ifc.srOthIdx].setFwdCommon(tabLabelEntry.owner.isisSrgb, lower.other.fwd);
                 }
             }
             for (int o = 0; o < ifc.neighs.size(); o++) {
@@ -992,12 +993,12 @@ public class rtrIsisLevel implements Runnable {
                 spf.addNextHop(nei.getMetric(), new rtrIsisLevelSpf(nei.rtrID, 0), nei.ifcAddr, ifc.iface, nei.ofcAddr, ifc.oface);
             }
         }
-        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
+        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, tabLabelEntry.owner.isisSrgb, lower.segrouLab, segrouUsd);
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, lower.fwdCore.commonLabel, null, 0);
         if (lower.other.enabled) {
-            rs = spf.getOroutes(lower.fwdCore, 7, lower.segrouLab, segrouUsd);
+            rs = spf.getOroutes(lower.fwdCore, tabLabelEntry.owner.isisSrgb, lower.segrouLab, segrouUsd);
             oroutes.clear();
             tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, oroutes, rs, true, oroumapFrom, oroupolFrom, oprflstFrom);
             lower.other.routerDoAggregates(rtrBgpUtil.sfiUnicast, oroutes, oroutes, lower.other.fwd.commonLabel, null, 0);
@@ -1045,7 +1046,7 @@ public class rtrIsisLevel implements Runnable {
                     spf.addNextHop(nei.getMetric(), new rtrIsisLevelSpf(nei.rtrID, 0), nei.ifcAddr, ifc.iface, nei.ofcAddr, ifc.oface);
                 }
             }
-            rs = spf.getRoutes(lower.fwdCore, -1, null, null);
+            rs = spf.getRoutes(lower.fwdCore, null, null, null);
             if (debugger.rtrIsisEvnt) {
                 logger.debug("algo" + alg.num + " unreachable:" + spf.listReachablility(false));
                 logger.debug("algo" + alg.num + " reachable:" + spf.listReachablility(true));
@@ -1057,7 +1058,7 @@ public class rtrIsisLevel implements Runnable {
             if (!lower.other.enabled) {
                 continue;
             }
-            rs = spf.getOroutes(lower.fwdCore, -1, null, null);
+            rs = spf.getOroutes(lower.fwdCore, null, null, null);
             res.clear();
             tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, res, rs, true, oroumapFrom, oroupolFrom, oprflstFrom);
             lower.other.routerDoAggregates(rtrBgpUtil.sfiUnicast, res, res, lower.other.fwd.commonLabel, null, 0);

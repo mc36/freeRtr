@@ -266,17 +266,17 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
         }
         if (locLab.duplicate != null) {
             if (trgHop != null) {
-                locLab.delDupMpls(4, trgHop);
+                locLab.delDupMpls(tabLabelEntry.owner.rsvp, trgHop);
             }
             if (locLab.duplicate.size() > 0) {
                 return;
             }
         }
         if (isP2MP()) {
-            locLab.clrDupMpls(4);
+            locLab.clrDupMpls(tabLabelEntry.owner.rsvp);
         }
-        locLab.setFwdDrop(4);
-        tabLabel.release(locLab, 4);
+        locLab.setFwdDrop(tabLabelEntry.owner.rsvp);
+        tabLabel.release(locLab, tabLabelEntry.owner.rsvp);
         locLab = null;
     }
 

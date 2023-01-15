@@ -19,6 +19,116 @@ import net.freertr.util.counter;
 public class tabLabelEntry implements Comparator<tabLabelEntry> {
 
     /**
+     * label owner
+     */
+    public enum owner {
+        /**
+         * vrf common
+         */
+        vrfComm,
+        /**
+         * vrf unicast
+         */
+        vrfUni,
+        /**
+         * mpls pwe
+         */
+        pwe,
+        /**
+         * rsvp te
+         */
+        rsvp,
+        /**
+         * vrf mp2mp2
+         */
+        mp2mp,
+        /**
+         * lsrp sr gb
+         */
+        lsrpSrgb,
+        /**
+         * isis sr gb
+         */
+        isisSrgb,
+        /**
+         * ospf4 sr gb
+         */
+        ospf4srgb,
+        /**
+         * ospf6 sr gb
+         */
+        ospf6srgb,
+        /**
+         * bgp evpn pbb
+         */
+        evpnPbb,
+        /**
+         * bgp evpn cmac
+         */
+        evpnCmac,
+        /**
+         * bgp vpls ve
+         */
+        vplsVe,
+        /**
+         * bgp sr gb
+         */
+        bgpSrgb,
+        /**
+         * lsrp sr adj
+         */
+        lsrpAdj,
+        /**
+         * isis sr adj
+         */
+        isisAdj,
+        /**
+         * ospf4 sr adj
+         */
+        ospf4adj,
+        /**
+         * ospf6 sr adj
+         */
+        ospf6adj,
+        /**
+         * lsrp bier
+         */
+        lsrpBier,
+        /**
+         * isis bier
+         */
+        isisBier,
+        /**
+         * ospf4 bier
+         */
+        ospf4bier,
+        /**
+         * ospf6 bier
+         */
+        ospf6bier,
+        /**
+         * bgp bier
+         */
+        bgpBier,
+        /**
+         * p4lang backplane
+         */
+        p4langBp,
+        /**
+         * p4lang bridge
+         */
+        p4langBr,
+        /**
+         * pvrp sr gb
+         */
+        pvrpSrgb,
+        /**
+         * pvrv bier
+         */
+        pvrpBier,
+    }
+
+    /**
      * label value
      */
     public final int label;
@@ -26,7 +136,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
     /**
      * key value
      */
-    protected int key = 0;
+    protected owner key = null;
 
     /**
      * indicate that label is working
@@ -260,82 +370,82 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
         lst.add("lasted|" + bits.timePast(created));
         String s;
         switch (key) {
-            case 1:
+            case vrfComm:
                 s = "vrf common";
                 break;
-            case 2:
+            case vrfUni:
                 s = "vrf unicast";
                 break;
-            case 3:
+            case pwe:
                 s = "mpls pwe";
                 break;
-            case 4:
+            case rsvp:
                 s = "rsvp te";
                 break;
-            case 5:
+            case mp2mp:
                 s = "vrf mp2mp";
                 break;
-            case 6:
+            case lsrpSrgb:
                 s = "lsrp segrou gb";
                 break;
-            case 7:
+            case isisSrgb:
                 s = "isis segrou gb";
                 break;
-            case 8:
+            case ospf4srgb:
                 s = "ospf4 segrou gb";
                 break;
-            case 9:
+            case ospf6srgb:
                 s = "ospf6 segrou gb";
                 break;
-            case 10:
+            case evpnPbb:
                 s = "bgp evpn pbb";
                 break;
-            case 11:
+            case evpnCmac:
                 s = "bgp evpn cmac";
                 break;
-            case 12:
+            case vplsVe:
                 s = "bgp vpls ve";
                 break;
-            case 13:
+            case bgpSrgb:
                 s = "bgp segrou gb";
                 break;
-            case 14:
+            case lsrpAdj:
                 s = "lsrp segrou adj";
                 break;
-            case 15:
+            case isisAdj:
                 s = "isis segrou adj";
                 break;
-            case 16:
+            case ospf4adj:
                 s = "ospf4 segrou adj";
                 break;
-            case 17:
+            case ospf6adj:
                 s = "ospf6 segrou adj";
                 break;
-            case 18:
+            case lsrpBier:
                 s = "lsrp bier";
                 break;
-            case 19:
+            case isisBier:
                 s = "isis bier";
                 break;
-            case 20:
+            case ospf4bier:
                 s = "ospf4 bier";
                 break;
-            case 21:
+            case ospf6bier:
                 s = "ospf6 bier";
                 break;
-            case 22:
+            case bgpBier:
                 s = "bgp bier";
                 break;
-            case 23:
+            case p4langBp:
                 s = "p4lang backplane";
                 break;
-            case 24:
+            case p4langBr:
                 s = "p4lang bridge";
                 break;
-            case 25:
+            case pvrpSrgb:
                 s = "pvrp segrou gb";
                 break;
-            case 26:
+            case pvrpBier:
                 s = "pvrp bier";
                 break;
             default:
@@ -428,7 +538,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      *
      * @param ky key to use for deallocation
      */
-    public void setFwdDrop(int ky) {
+    public void setFwdDrop(owner ky) {
         if (key != ky) {
             return;
         }
@@ -446,7 +556,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @param ky key to use for deallocation
      * @param fwd forwarder vrf
      */
-    public void setFwdCommon(int ky, ipFwd fwd) {
+    public void setFwdCommon(owner ky, ipFwd fwd) {
         if (key != ky) {
             return;
         }
@@ -465,7 +575,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @param ifc interface id
      * @param hop next hop address
      */
-    public void setFwdRoute(int ky, ipFwd fwd, ipFwdIface ifc, addrIP hop) {
+    public void setFwdRoute(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop) {
         if (key != ky) {
             return;
         }
@@ -484,7 +594,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @param hop next hop address
      * @param lab next hop labels
      */
-    public void setFwdMpls(int ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
+    public void setFwdMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
         if (key != ky) {
             return;
         }
@@ -503,7 +613,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @param hop next hop address
      * @param lab next hop labels
      */
-    public void addDupMpls(int ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
+    public void addDupMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
         if (key != ky) {
             return;
         }
@@ -520,7 +630,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @param ky key to use for deallocation
      * @param hop next hop address
      */
-    public void delDupMpls(int ky, addrIP hop) {
+    public void delDupMpls(owner ky, addrIP hop) {
         if (key != ky) {
             return;
         }
@@ -536,7 +646,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      *
      * @param ky key to use for deallocation
      */
-    public void clrDupMpls(int ky) {
+    public void clrDupMpls(owner ky) {
         if (key != ky) {
             return;
         }
@@ -550,7 +660,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @param fwd forwarder vrf
      * @param br bier
      */
-    public void setBierMpls(int ky, ipFwd fwd, tabLabelBier br) {
+    public void setBierMpls(owner ky, ipFwd fwd, tabLabelBier br) {
         if (key != ky) {
             return;
         }
@@ -567,7 +677,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @param del bytes to delete
      * @param add bytes to add
      */
-    public void setFwdPwe(int ky, ipFwd fwd, ifcUp ifc, int del, byte[] add) {
+    public void setFwdPwe(owner ky, ipFwd fwd, ifcUp ifc, int del, byte[] add) {
         if (key != ky) {
             return;
         }

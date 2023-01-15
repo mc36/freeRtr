@@ -763,7 +763,7 @@ public class rtrRift extends ipRtr implements Runnable {
             bits.msbPutQ(adr.getBytes(), 0, ifc.rtrId);
             spf.addNextHop(ifc.getMetric(), adr, ifc.peer, ifc.iface, null, null);
         }
-        tabRoute<addrIP> rou1 = spf.getRoutes(fwdCore, -1, null, null);
+        tabRoute<addrIP> rou1 = spf.getRoutes(fwdCore, null, null, null);
         tabRoute<addrIP> rou2 = new tabRoute<addrIP>("rou");
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, rou2, rou1, true, roumapIn, roupolIn, prflstIn);
         routerDoAggregates(rtrBgpUtil.sfiUnicast, rou2, rou2, fwdCore.commonLabel, null, 0);

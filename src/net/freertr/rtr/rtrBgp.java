@@ -909,11 +909,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         octps = new tabGen<rtrBgpVrf>();
         vpls = new tabGen<rtrBgpVpls>();
         evpn = new tabGen<rtrBgpEvpn>();
-        evpnUni = tabLabel.allocate(10);
-        evpnMul = tabLabel.allocate(10);
+        evpnUni = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
+        evpnMul = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
         evpnRcv = new rtrBgpEvpnPbb(this);
-        evpnUni.setFwdPwe(10, fwdCore, evpnRcv, 0, null);
-        evpnMul.setFwdPwe(10, fwdCore, evpnRcv, 0, null);
+        evpnUni.setFwdPwe(tabLabelEntry.owner.evpnPbb, fwdCore, evpnRcv, 0, null);
+        evpnMul.setFwdPwe(tabLabelEntry.owner.evpnPbb, fwdCore, evpnRcv, 0, null);
         routerID = new addrIPv4();
         safeEbgp = true;
         addrFams = rtrBgpParam.mskUni;
@@ -1904,16 +1904,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     continue;
                 }
                 List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
-                segrouLab[ntry.best.segrouIdx].setFwdMpls(13, fwdCore, nei.localIfc, nei.peerAddr, lab);
+                segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.bgpSrgb, fwdCore, nei.localIfc, nei.peerAddr, lab);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
             }
             tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
-            segrouLab[segrouIdx].setFwdCommon(13, fwdCore);
+            segrouLab[segrouIdx].setFwdCommon(tabLabelEntry.owner.bgpSrgb, fwdCore);
             for (int i = 0; i < segrouLab.length; i++) {
                 if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
                     continue;
                 }
-                segrouLab[i].setFwdDrop(13);
+                segrouLab[i].setFwdDrop(tabLabelEntry.owner.bgpSrgb);
             }
             routerComputedI = segrouUsd;
         }
@@ -1946,7 +1946,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 per.setBit(ntry.best.bierIdx - 1);
             }
             for (int i = 0; i < bierLab.length; i++) {
-                bierLab[i].setBierMpls(22, fwdCore, res);
+                bierLab[i].setBierMpls(tabLabelEntry.owner.bgpBier, fwdCore, res);
             }
         }
         if (debugger.rtrBgpComp) {
@@ -2535,10 +2535,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).doStop();
         }
-        tabLabel.release(evpnUni, 10);
-        tabLabel.release(evpnMul, 10);
-        tabLabel.release(segrouLab, 13);
-        tabLabel.release(bierLab, 22);
+        tabLabel.release(evpnUni, tabLabelEntry.owner.evpnPbb);
+        tabLabel.release(evpnMul, tabLabelEntry.owner.evpnPbb);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.bgpSrgb);
+        tabLabel.release(bierLab, tabLabelEntry.owner.bgpBier);
         fwdCore.routerDel(this);
     }
 
@@ -2868,7 +2868,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("segrout")) {
-            tabLabel.release(segrouLab, 13);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.bgpSrgb);
             segrouLab = null;
             if (negated) {
                 segrouIdx = 0;
@@ -2891,13 +2891,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(13, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocate(tabLabelEntry.owner.bgpSrgb, segrouBase, segrouMax);
             needFull.add(1);
             compute.wakeup();
             return false;
         }
         if (s.equals("bier")) {
-            tabLabel.release(bierLab, 22);
+            tabLabel.release(bierLab, tabLabelEntry.owner.bgpBier);
             bierLab = null;
             if (negated) {
                 bierIdx = 0;
@@ -2910,7 +2910,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(22, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocate(tabLabelEntry.owner.bgpBier, (bierMax + bierLen - 1) / bierLen);
             needFull.add(1);
             compute.wakeup();
             return false;

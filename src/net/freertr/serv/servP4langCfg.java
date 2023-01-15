@@ -433,8 +433,8 @@ public class servP4langCfg implements ifcUp {
             servP4langBr ntry = new servP4langBr(br.num);
             ntry.doClear();
             ntry.br = br;
-            ntry.lab = tabLabel.allocate(24);
-            ntry.lab.setFwdDrop(24);
+            ntry.lab = tabLabel.allocate(tabLabelEntry.owner.p4langBr);
+            ntry.lab.setFwdDrop(tabLabelEntry.owner.p4langBr);
             expBr.put(ntry);
             return false;
         }
@@ -965,7 +965,7 @@ public class servP4langCfg implements ifcUp {
                 cmd.error("no such export");
                 return false;
             }
-            tabLabel.release(ntry.lab, 24);
+            tabLabel.release(ntry.lab, tabLabelEntry.owner.p4langBr);
             return false;
         }
         if (s.equals("backplane")) {

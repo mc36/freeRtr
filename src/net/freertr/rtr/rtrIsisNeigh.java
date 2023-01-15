@@ -362,8 +362,8 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             iface.oface.bfdDel(ofcAddr, this);
         }
         peerAdjState = statDown;
-        tabLabel.release(segrouLab, 15);
-        tabLabel.release(segrouOth, 15);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.isisAdj);
+        tabLabel.release(segrouOth, tabLabelEntry.owner.isisAdj);
         level.schedWork(7);
         need2run = false;
         iface.neighs.del(this);
@@ -635,8 +635,8 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             if (iface.oface != null) {
                 iface.oface.bfdDel(ofcAddr, this);
             }
-            tabLabel.release(segrouLab, 15);
-            tabLabel.release(segrouOth, 15);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.isisAdj);
+            tabLabel.release(segrouOth, tabLabelEntry.owner.isisAdj);
             peerAdjState = statDown;
             level.schedWork(7);
             return;
@@ -644,11 +644,11 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         logger.warn("neighbor level" + level.level + " " + ifcAddr + " up");
         advert.clear();
         if (lower.segrouLab != null) {
-            segrouLab = tabLabel.allocate(15);
-            segrouLab.setFwdMpls(15, lower.fwdCore, iface.iface, ifcAddr, tabLabel.int2labels(ipMpls.labelImp));
+            segrouLab = tabLabel.allocate(tabLabelEntry.owner.isisAdj);
+            segrouLab.setFwdMpls(tabLabelEntry.owner.isisAdj, lower.fwdCore, iface.iface, ifcAddr, tabLabel.int2labels(ipMpls.labelImp));
             if (iface.otherEna) {
-                segrouOth = tabLabel.allocate(15);
-                segrouOth.setFwdMpls(15, lower.other.fwd, iface.oface, ofcAddr, tabLabel.int2labels(ipMpls.labelImp));
+                segrouOth = tabLabel.allocate(tabLabelEntry.owner.isisAdj);
+                segrouOth.setFwdMpls(tabLabelEntry.owner.isisAdj, lower.other.fwd, iface.oface, ofcAddr, tabLabel.int2labels(ipMpls.labelImp));
             }
         }
         level.schedWork(7);

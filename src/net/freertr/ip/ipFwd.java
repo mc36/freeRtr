@@ -141,7 +141,6 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      */
     public List<Long> rtExp = new ArrayList<Long>();
 
-
     /**
      * color import
      */
@@ -574,7 +573,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         icmpCore = icc;
         mhostCore = mhst;
         ipVersion = ipCore.getVersion();
-        commonLabel = tabLabel.allocate(1);
+        commonLabel = tabLabel.allocate(tabLabelEntry.owner.vrfComm);
         echoes = new tabGen<ipFwdEcho>();
         trafEngs = new tabGen<ipFwdTrfng>();
         mp2mpLsp = new tabGen<ipFwdMpmp>();
@@ -641,7 +640,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             if (ntry == null) {
                 continue;
             }
-            tabLabel.release(ntry.best.labelLoc, 2);
+            tabLabel.release(ntry.best.labelLoc, tabLabelEntry.owner.vrfUni);
         }
         for (int i = 0; i < trafEngs.size(); i++) {
             ipFwdTrfng ntry = trafEngs.get(i);
@@ -685,7 +684,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             }
             ntry.workStop();
         }
-        tabLabel.release(commonLabel, 1);
+        tabLabel.release(commonLabel, tabLabelEntry.owner.vrfComm);
         for (int i = ifaces.size() - 1; i >= 0; i--) {
             ipFwdIface ifc = ifaces.get(i);
             if (ifc == null) {

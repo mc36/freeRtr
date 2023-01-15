@@ -196,7 +196,7 @@ public class rtrOspf4 extends ipRtr {
                 if (tab2.find(new tabIndex<addrIP>(i, null)) != null) {
                     continue;
                 }
-                segrouLab[i].setFwdDrop(8);
+                segrouLab[i].setFwdDrop(tabLabelEntry.owner.ospf4srgb);
             }
         }
         if (bierLab != null) {
@@ -222,7 +222,7 @@ public class rtrOspf4 extends ipRtr {
                 res.mergeFrom(ntry.bierRes);
             }
             for (int i = 0; i < bierLab.length; i++) {
-                bierLab[i].setBierMpls(20, fwdCore, res);
+                bierLab[i].setBierMpls(tabLabelEntry.owner.ospf4bier, fwdCore, res);
             }
         }
         tab1.setProto(routerProtoTyp, routerProcNum);
@@ -423,7 +423,7 @@ public class rtrOspf4 extends ipRtr {
             return false;
         }
         if (s.equals("segrout")) {
-            tabLabel.release(segrouLab, 8);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.ospf4srgb);
             segrouMax = bits.str2num(cmd.word());
             segrouBase = 0;
             for (;;) {
@@ -436,15 +436,15 @@ public class rtrOspf4 extends ipRtr {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(8, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocate(tabLabelEntry.owner.ospf4srgb, segrouBase, segrouMax);
             genLsas(3);
             return false;
         }
         if (s.equals("bier")) {
-            tabLabel.release(bierLab, 20);
+            tabLabel.release(bierLab, tabLabelEntry.owner.ospf4bier);
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(20, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocate(tabLabelEntry.owner.ospf4bier, (bierMax + bierLen - 1) / bierLen);
             genLsas(3);
             return false;
         }
@@ -625,7 +625,7 @@ public class rtrOspf4 extends ipRtr {
             return false;
         }
         if (s.equals("segrout")) {
-            tabLabel.release(segrouLab, 8);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.ospf4srgb);
             segrouLab = null;
             segrouMax = 0;
             segrouBase = 0;
@@ -633,7 +633,7 @@ public class rtrOspf4 extends ipRtr {
             return false;
         }
         if (s.equals("bier")) {
-            tabLabel.release(bierLab, 20);
+            tabLabel.release(bierLab, tabLabelEntry.owner.ospf4bier);
             bierLab = null;
             bierLen = 0;
             bierMax = 0;
@@ -777,8 +777,8 @@ public class rtrOspf4 extends ipRtr {
             ntry.unregister2ip();
             ntry.closeNeighbors(true);
         }
-        tabLabel.release(segrouLab, 8);
-        tabLabel.release(bierLab, 20);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.ospf4srgb);
+        tabLabel.release(bierLab, tabLabelEntry.owner.ospf4bier);
     }
 
     /**

@@ -427,7 +427,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             }
             logger.error("neighbor area" + area.area + " " + peer + " forgot us");
             iface.iface.bfdDel(peer, this);
-            tabLabel.release(segrouLab, 16);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.ospf4adj);
             state = stDown;
             area.schedWork(7);
             return;
@@ -701,7 +701,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
     protected void stopNow() {
         logger.error("neighbor area" + area.area + " " + peer + " down");
         iface.iface.bfdDel(peer, this);
-        tabLabel.release(segrouLab, 16);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.ospf4adj);
         state = stDown;
         seenMyself = false;
         area.schedWork(7);
@@ -881,8 +881,8 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             if (lower.segrouLab != null) {
                 addrIP per = new addrIP();
                 per.fromIPv4addr(peer);
-                segrouLab = tabLabel.allocate(16);
-                segrouLab.setFwdMpls(16, lower.fwdCore, iface.iface, per, tabLabel.int2labels(ipMpls.labelImp));
+                segrouLab = tabLabel.allocate(tabLabelEntry.owner.ospf4adj);
+                segrouLab.setFwdMpls(tabLabelEntry.owner.ospf4adj, lower.fwdCore, iface.iface, per, tabLabel.int2labels(ipMpls.labelImp));
             }
             state = stFull;
             area.schedWork(7);

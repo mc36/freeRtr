@@ -25,6 +25,7 @@ import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
+import net.freertr.tab.tabLabelEntry;
 
 /**
  * ospfv3 area
@@ -1194,7 +1195,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             }
             if ((segrouUsd != null) && (ifc.srIndex > 0)) {
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srIndex, new addrPrefix<addrIP>(new addrIP(), 0)));
-                lower.segrouLab[ifc.srIndex].setFwdCommon(9, lower.fwdCore);
+                lower.segrouLab[ifc.srIndex].setFwdCommon(tabLabelEntry.owner.ospf6srgb, lower.fwdCore);
             }
             if (ifc.needDR()) {
                 if (ifc.drAddr.isEmpty()) {
@@ -1218,7 +1219,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 spf.addNextHop(nei.getMetric(), new rtrOspf6areaSpf(nei.rtrID, 0), adr, ifc.iface, null, null);
             }
         }
-        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 9, lower.segrouLab, segrouUsd);
+        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, tabLabelEntry.owner.ospf6srgb, lower.segrouLab, segrouUsd);
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, lower.fwdCore.commonLabel, null, 0);
@@ -1273,7 +1274,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                     spf.addNextHop(nei.getMetric(), new rtrOspf6areaSpf(nei.rtrID, 0), adr, ifc.iface, null, null);
                 }
             }
-            rs = spf.getRoutes(lower.fwdCore, -1, null, null);
+            rs = spf.getRoutes(lower.fwdCore, null, null, null);
             if (debugger.rtrOspf6evnt) {
                 logger.debug("algo" + alg.num + " unreachable:" + spf.listReachablility(false));
                 logger.debug("algo" + alg.num + " reachable:" + spf.listReachablility(true));

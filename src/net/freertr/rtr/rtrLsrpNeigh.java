@@ -223,7 +223,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         if (oldrun) {
             iface.neighs.del(this);
         }
-        tabLabel.release(segrouLab, 14);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.lsrpAdj);
         lower.todo.set(0);
         lower.notif.wakeup();
         iface.iface.bfdDel(peer, this);
@@ -536,8 +536,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         logger.warn("neighbor " + name + " (" + peer + ") up");
         new rtrLsrpNeighRcvr(this).startWork();
         if (lower.segrouLab != null) {
-            segrouLab = tabLabel.allocate(14);
-            segrouLab.setFwdMpls(14, lower.fwdCore, iface.iface, peer, tabLabel.int2labels(ipMpls.labelImp));
+            segrouLab = tabLabel.allocate(tabLabelEntry.owner.lsrpAdj);
+            segrouLab.setFwdMpls(tabLabelEntry.owner.lsrpAdj, lower.fwdCore, iface.iface, peer, tabLabel.int2labels(ipMpls.labelImp));
         }
         lower.todo.set(0);
         lower.notif.wakeup();

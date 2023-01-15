@@ -1095,7 +1095,7 @@ public class ipFwdTab {
             }
             tabRouteEntry<addrIP> cur = tabL.find(old);
             if (cur == null) {
-                tabLabel.release(old.best.labelLoc, 2);
+                tabLabel.release(old.best.labelLoc, tabLabelEntry.owner.vrfUni);
                 continue;
             }
             for (int o = 0; o < cur.alts.size(); o++) {
@@ -1111,7 +1111,7 @@ public class ipFwdTab {
                 ntry.best.labelLoc = lower.commonLabel;
                 continue;
             }
-            tabLabelEntry lab = tabLabel.allocate(2);
+            tabLabelEntry lab = tabLabel.allocate(tabLabelEntry.owner.vrfUni);
             for (int o = 0; o < ntry.alts.size(); o++) {
                 ntry.alts.get(o).labelLoc = lab;
             }
@@ -1120,7 +1120,7 @@ public class ipFwdTab {
             tabRouteEntry<addrIP> ntry = tabU.get(i);
             updateTableRouteLabels(lower, tabU, ntry, tabL.find(ntry));
         }
-        lower.commonLabel.setFwdCommon(1, lower);
+        lower.commonLabel.setFwdCommon(tabLabelEntry.owner.vrfComm, lower);
         tabRoute<addrIP> tabT = new tabRoute<addrIP>("amt");
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
@@ -1198,7 +1198,7 @@ public class ipFwdTab {
                 if (rou.best.labelLoc == null) {
                     continue;
                 }
-                rou.best.labelLoc.setFwdMpls(2, lower, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
+                rou.best.labelLoc.setFwdMpls(tabLabelEntry.owner.vrfUni, lower, (ipFwdIface) rou.best.iface, rou.best.nextHop, rou.best.labelRem);
                 continue;
             }
             lower.autoMesh.add(clnt);
@@ -1296,9 +1296,9 @@ public class ipFwdTab {
                 }
             }
             if (hop != null) {
-                ntry.labelLoc.setFwdMpls(2, vrf, ifc, hop, lrs);
+                ntry.labelLoc.setFwdMpls(tabLabelEntry.owner.vrfUni, vrf, ifc, hop, lrs);
             } else {
-                ntry.labelLoc.setFwdDrop(2);
+                ntry.labelLoc.setFwdDrop(tabLabelEntry.owner.vrfUni);
             }
         }
         if (ntry.rouTab != null) {

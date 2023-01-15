@@ -815,7 +815,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 continue;
             }
             if ((segrouUsd != null) && (ifc.segrouIdx > 0)) {
-                segrouLab[ifc.segrouIdx].setFwdCommon(6, fwdCore);
+                segrouLab[ifc.segrouIdx].setFwdCommon(tabLabelEntry.owner.lsrpSrgb, fwdCore);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
             for (int i = 0; i < ifc.neighs.size(); i++) {
@@ -829,17 +829,17 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, null, null);
             }
         }
-        tabRoute<addrIP> tab1 = spf.getRoutes(fwdCore, 6, segrouLab, segrouUsd);
+        tabRoute<addrIP> tab1 = spf.getRoutes(fwdCore, tabLabelEntry.owner.lsrpSrgb, segrouLab, segrouUsd);
         if (segrouUsd != null) {
             if (segrouIdx > 0) {
-                segrouLab[segrouIdx].setFwdCommon(6, fwdCore);
+                segrouLab[segrouIdx].setFwdCommon(tabLabelEntry.owner.lsrpSrgb, fwdCore);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
             for (int i = 0; i < segrouLab.length; i++) {
                 if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
                     continue;
                 }
-                segrouLab[i].setFwdDrop(6);
+                segrouLab[i].setFwdDrop(tabLabelEntry.owner.lsrpSrgb);
             }
         }
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
@@ -862,7 +862,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 }
             }
             for (int i = 0; i < bierLab.length; i++) {
-                bierLab[i].setBierMpls(18, fwdCore, res);
+                bierLab[i].setBierMpls(tabLabelEntry.owner.lsrpBier, fwdCore, res);
             }
         }
         for (int o = 0; o < ifaces.size(); o++) {
@@ -920,7 +920,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, null, null);
                 }
             }
-            tab1 = spf.getRoutes(fwdCore, -1, null, null);
+            tab1 = spf.getRoutes(fwdCore, null, null, null);
             if (debugger.rtrLsrpEvnt) {
                 logger.debug("algo" + alg.num + " unreachable:" + spf.listReachablility(false));
                 logger.debug("algo" + alg.num + " reachable:" + spf.listReachablility(true));
@@ -961,8 +961,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
             ifc.unregister2udp();
             ifc.closeNeighbors();
         }
-        tabLabel.release(segrouLab, 6);
-        tabLabel.release(bierLab, 18);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.lsrpSrgb);
+        tabLabel.release(bierLab, tabLabelEntry.owner.lsrpBier);
     }
 
     /**
@@ -1250,7 +1250,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             return false;
         }
         if (s.equals("segrout")) {
-            tabLabel.release(segrouLab, 6);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.lsrpSrgb);
             segrouLab = null;
             if (negated) {
                 segrouIdx = 0;
@@ -1279,13 +1279,13 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(6, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocate(tabLabelEntry.owner.lsrpSrgb, segrouBase, segrouMax);
             todo.set(0);
             notif.wakeup();
             return false;
         }
         if (s.equals("bier")) {
-            tabLabel.release(bierLab, 18);
+            tabLabel.release(bierLab, tabLabelEntry.owner.lsrpBier);
             bierLab = null;
             if (negated) {
                 bierIdx = 0;
@@ -1298,7 +1298,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(18, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocate(tabLabelEntry.owner.lsrpBier, (bierMax + bierLen - 1) / bierLen);
             todo.set(0);
             notif.wakeup();
             return false;

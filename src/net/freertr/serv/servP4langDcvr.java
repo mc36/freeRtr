@@ -115,7 +115,7 @@ public class servP4langDcvr implements Runnable {
                 ifc.ifwNum = ntry.pi.id;
                 cur.bckplnSpf.addNextHop(ntry.metric, nei, nei, ifc, null, null);
             }
-            cur.bckplnRou = cur.bckplnSpf.getRoutes(null, -1, null, null);
+            cur.bckplnRou = cur.bckplnSpf.getRoutes(null, null, null, null);
         }
     }
 

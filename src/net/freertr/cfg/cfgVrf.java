@@ -1060,20 +1060,26 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         }
         if (a.equals("label4common")) {
             label4comm = bits.str2num(cmd.word());
-            tabLabelEntry[] ntry = tabLabel.allocate(1, label4comm, 1);
+            tabLabelEntry[] ntry = tabLabel.allocate(tabLabelEntry.owner.vrfComm, label4comm, 1);
+            if (ntry == null) {
+                return;
+            }
             tabLabelEntry old = fwd4.commonLabel;
             fwd4.commonLabel = ntry[0];
             fwd4.routerStaticChg();
-            tabLabel.release(old, 1);
+            tabLabel.release(old, tabLabelEntry.owner.vrfComm);
             return;
         }
         if (a.equals("label6common")) {
             label6comm = bits.str2num(cmd.word());
-            tabLabelEntry[] ntry = tabLabel.allocate(1, label6comm, 1);
+            tabLabelEntry[] ntry = tabLabel.allocate(tabLabelEntry.owner.vrfComm, label6comm, 1);
+            if (ntry == null) {
+                return;
+            }
             tabLabelEntry old = fwd6.commonLabel;
             fwd6.commonLabel = ntry[0];
             fwd6.routerStaticChg();
-            tabLabel.release(old, 1);
+            tabLabel.release(old, tabLabelEntry.owner.vrfComm);
             return;
         }
         if (a.equals("unreach-rate")) {

@@ -274,10 +274,10 @@ public class servP4lang extends servGeneric implements prtServS {
     private void restartDiscovery(boolean need) {
         need &= fwds.size() > 1;
         dscvry.need2work = false;
-        tabLabel.release(bckplnLab, 23);
-        bckplnLab = tabLabel.allocate(23, fwds.size());
+        tabLabel.release(bckplnLab, tabLabelEntry.owner.p4langBp);
+        bckplnLab = tabLabel.allocate(tabLabelEntry.owner.p4langBp, fwds.size());
         for (int i = 0; i < bckplnLab.length; i++) {
-            bckplnLab[i].setFwdDrop(23);
+            bckplnLab[i].setFwdDrop(tabLabelEntry.owner.p4langBp);
         }
         for (int i = 0; i < fwds.size(); i++) {
             servP4langCfg cur = fwds.get(i);

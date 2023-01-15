@@ -304,12 +304,12 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 break;
             case cmac:
                 if (label == null) {
-                    label = tabLabel.allocate(11);
+                    label = tabLabel.allocate(tabLabelEntry.owner.evpnCmac);
                     if (label == null) {
                         break;
                     }
                     cmacr = new rtrBgpEvpnCmac(this);
-                    label.setFwdPwe(11, parent.fwdCore, cmacr, 0, null);
+                    label.setFwdPwe(tabLabelEntry.owner.evpnCmac, parent.fwdCore, cmacr, 0, null);
                 }
                 buf[0] = 2; // mac advertisement
                 if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
@@ -339,12 +339,12 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 break;
             case vpws:
                 if (label == null) {
-                    label = tabLabel.allocate(11);
+                    label = tabLabel.allocate(tabLabelEntry.owner.evpnCmac);
                     if (label == null) {
                         break;
                     }
                     vpwsr = new rtrBgpEvpnVpws(this);
-                    label.setFwdPwe(11, parent.fwdCore, vpwsr, 0, null);
+                    label.setFwdPwe(tabLabelEntry.owner.evpnCmac, parent.fwdCore, vpwsr, 0, null);
                 }
                 buf[0] = 1; // eth advertisement
                 if (!ipMpls.putSrv6prefix(ntry, srv6, label)) {
@@ -578,7 +578,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         }
         bridge.bridgeHed.macRouter = null;
         if (label != null) {
-            tabLabel.release(label, 11);
+            tabLabel.release(label, tabLabelEntry.owner.evpnCmac);
         }
         for (int i = 0; i < peers.size(); i++) {
             rtrBgpEvpnPeer ntry = peers.get(i);

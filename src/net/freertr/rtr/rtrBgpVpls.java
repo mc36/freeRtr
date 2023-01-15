@@ -130,7 +130,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         ntry.best.extComm = new ArrayList<Long>();
         if (veId == 0) {
             if (veLab != null) {
-                tabLabel.release(veLab, 12);
+                tabLabel.release(veLab, tabLabelEntry.owner.vplsVe);
                 veLab = null;
             }
             ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
@@ -150,7 +150,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             ntry.best.extComm.add(tabRouteUtil.agi2comm(id));
         } else {
             if (veLab == null) {
-                veLab = tabLabel.allocate(12, veMax);
+                veLab = tabLabel.allocate(tabLabelEntry.owner.vplsVe, veMax);
                 if (veLab == null) {
                     return;
                 }
@@ -254,7 +254,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
                 if (ntry.veId > veMax) {
                     continue;
                 }
-                veLab[ntry.veId - 1].setFwdPwe(12, parent.fwdCore, ntry.brdg, 0, null);
+                veLab[ntry.veId - 1].setFwdPwe(tabLabelEntry.owner.vplsVe, parent.fwdCore, ntry.brdg, 0, null);
                 usd[ntry.veId - 1] = true;
                 continue;
             }
@@ -275,7 +275,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             if (usd[i]) {
                 continue;
             }
-            veLab[i].setFwdDrop(12);
+            veLab[i].setFwdDrop(tabLabelEntry.owner.vplsVe);
         }
     }
 
@@ -287,7 +287,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
             logger.debug("stop " + tabRouteUtil.rd2string(id));
         }
         if (veLab != null) {
-            tabLabel.release(veLab, 12);
+            tabLabel.release(veLab, tabLabelEntry.owner.vplsVe);
         }
         for (int i = 0; i < peers.size(); i++) {
             rtrBgpVplsPeer ntry = peers.get(i);

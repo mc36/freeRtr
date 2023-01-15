@@ -447,11 +447,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
                     continue;
                 }
                 List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
-                segrouLab[ntry.best.segrouIdx].setFwdMpls(25, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
+                segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.pvrpSrgb, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
             }
             if (segrouIdx > 0) {
-                segrouLab[segrouIdx].setFwdCommon(25, fwdCore);
+                segrouLab[segrouIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, fwdCore);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
             for (int o = 0; o < ifaces.size(); o++) {
@@ -465,14 +465,14 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if (ifc.segrouIdx < 1) {
                     continue;
                 }
-                segrouLab[ifc.segrouIdx].setFwdCommon(25, fwdCore);
+                segrouLab[ifc.segrouIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, fwdCore);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
             for (int i = 0; i < segrouLab.length; i++) {
                 if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
                     continue;
                 }
-                segrouLab[i].setFwdDrop(25);
+                segrouLab[i].setFwdDrop(tabLabelEntry.owner.pvrpSrgb);
             }
         }
         if (bierLab != null) {
@@ -514,7 +514,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 per.setBit(ntry.best.bierIdx - 1);
             }
             for (int i = 0; i < bierLab.length; i++) {
-                bierLab[i].setBierMpls(26, fwdCore, res);
+                bierLab[i].setBierMpls(tabLabelEntry.owner.pvrpBier, fwdCore, res);
             }
         }
         routerComputedU = tab2;
@@ -557,8 +557,8 @@ public class rtrPvrp extends ipRtr implements Runnable {
             ifc.unregister2udp();
             ifc.closeNeighbors();
         }
-        tabLabel.release(segrouLab, 25);
-        tabLabel.release(bierLab, 26);
+        tabLabel.release(segrouLab, tabLabelEntry.owner.pvrpSrgb);
+        tabLabel.release(bierLab, tabLabelEntry.owner.pvrpBier);
     }
 
     /**
@@ -646,7 +646,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             return false;
         }
         if (s.equals("segrout")) {
-            tabLabel.release(segrouLab, 25);
+            tabLabel.release(segrouLab, tabLabelEntry.owner.pvrpSrgb);
             segrouLab = null;
             if (negated) {
                 segrouIdx = 0;
@@ -668,12 +668,12 @@ public class rtrPvrp extends ipRtr implements Runnable {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(25, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocate(tabLabelEntry.owner.pvrpSrgb, segrouBase, segrouMax);
             notif.wakeup();
             return false;
         }
         if (s.equals("bier")) {
-            tabLabel.release(bierLab, 26);
+            tabLabel.release(bierLab, tabLabelEntry.owner.pvrpBier);
             bierLab = null;
             if (negated) {
                 bierIdx = 0;
@@ -685,7 +685,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(26, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocate(tabLabelEntry.owner.pvrpBier, (bierMax + bierLen - 1) / bierLen);
             notif.wakeup();
             return false;
         }

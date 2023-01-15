@@ -24,6 +24,7 @@ import net.freertr.spf.spfCalc;
 import net.freertr.util.state;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
+import net.freertr.tab.tabLabelEntry;
 
 /**
  * ospfv2 area
@@ -1054,7 +1055,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             }
             if ((segrouUsd != null) && (ifc.srIndex > 0)) {
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srIndex, new addrPrefix<addrIP>(new addrIP(), 0)));
-                lower.segrouLab[ifc.srIndex].setFwdCommon(8, lower.fwdCore);
+                lower.segrouLab[ifc.srIndex].setFwdCommon(tabLabelEntry.owner.ospf4srgb, lower.fwdCore);
             }
             if (ifc.needDR()) {
                 if (ifc.drAddr.isEmpty()) {
@@ -1080,7 +1081,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 spf.addNextHop(nei.getMetric(), nei.rtrID, adr, ifc.iface, null, null);
             }
         }
-        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, 8, lower.segrouLab, segrouUsd);
+        tabRoute<addrIP> rs = spf.getRoutes(lower.fwdCore, tabLabelEntry.owner.ospf4srgb, lower.segrouLab, segrouUsd);
         routes.clear();
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, lower.fwdCore.commonLabel, null, 0);
@@ -1137,7 +1138,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     spf.addNextHop(nei.getMetric(), nei.rtrID, adr, ifc.iface, null, null);
                 }
             }
-            rs = spf.getRoutes(lower.fwdCore, -1, null, null);
+            rs = spf.getRoutes(lower.fwdCore, null, null, null);
             if (debugger.rtrOspf4evnt) {
                 logger.debug("algo" + alg.num + " unreachable:" + spf.listReachablility(false));
                 logger.debug("algo" + alg.num + " reachable:" + spf.listReachablility(true));

@@ -384,11 +384,11 @@ public class clntMplsPwe implements Runnable, ifcDn {
         if (debugger.clntPweTraf) {
             logger.debug("exchanging labels");
         }
-        labelL = tabLabel.allocate(3);
+        labelL = tabLabel.allocate(tabLabelEntry.owner.pwe);
         if (labelL == null) {
             return;
         }
-        labelL.setFwdDrop(3);
+        labelL.setFwdDrop(tabLabelEntry.owner.pwe);
         pweL = new packLdpPwe();
         pweL.srcA = fwdIfc.addr.copyBytes();
         pweL.trgA = fwdTrg.copyBytes();
@@ -433,9 +433,9 @@ public class clntMplsPwe implements Runnable, ifcDn {
         }
         protStat(state.states.up);
         if (ctrlWrd) {
-            labelL.setFwdPwe(3, fwdCor, upper, 4, getL2append());
+            labelL.setFwdPwe(tabLabelEntry.owner.pwe, fwdCor, upper, 4, getL2append());
         } else {
-            labelL.setFwdPwe(3, fwdCor, upper, 0, getL2append());
+            labelL.setFwdPwe(tabLabelEntry.owner.pwe, fwdCor, upper, 0, getL2append());
         }
         bits.sleep(bits.random(1000, 9000));
         for (;;) {
@@ -478,8 +478,8 @@ public class clntMplsPwe implements Runnable, ifcDn {
             neighT.keepWorking();
         }
         if (labelL != null) {
-            labelL.setFwdDrop(3);
-            tabLabel.release(labelL, 3);
+            labelL.setFwdDrop(tabLabelEntry.owner.pwe);
+            tabLabel.release(labelL, tabLabelEntry.owner.pwe);
         }
         if ((pweL != null) && (neighL != null)) {
             neighL.pweNeed2adv.del(pweL);

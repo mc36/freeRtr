@@ -12,6 +12,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.pack.packRsvp;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabLabel;
+import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -175,9 +176,9 @@ public class rtrRsvpIface implements ipPrt {
             fwdCore.trafEngs.put(prnt);
         }
         if (prnt.locLab == null) {
-            prnt.locLab = tabLabel.allocate(4);
+            prnt.locLab = tabLabel.allocate(tabLabelEntry.owner.rsvp);
             if (ntry.isP2MP()) {
-                prnt.locLab.clrDupMpls(4);
+                prnt.locLab.clrDupMpls(tabLabelEntry.owner.rsvp);
             }
         }
         if (prnt.locLab == null) {
@@ -251,7 +252,7 @@ public class rtrRsvpIface implements ipPrt {
                         if (allocLabel(ntry)) {
                             return;
                         }
-                        ntry.locLab.setFwdCommon(4, fwdCore);
+                        ntry.locLab.setFwdCommon(tabLabelEntry.owner.rsvp, fwdCore);
                         fwdCore.tableChanger();
                         if (ntry.trgIfc.ifwNum != ntry.srcIfc.ifwNum) {
                             pckRvp.updateRecRout(ntry.trgIfc.addr, true);
@@ -318,9 +319,9 @@ public class rtrRsvpIface implements ipPrt {
                 }
                 List<Integer> labs = tabLabel.int2labels(ntry.trgLab);
                 if (ntry.isP2MP()) {
-                    ntry.locLab.addDupMpls(4, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
+                    ntry.locLab.addDupMpls(tabLabelEntry.owner.rsvp, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
                 } else {
-                    ntry.locLab.setFwdMpls(4, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
+                    ntry.locLab.setFwdMpls(tabLabelEntry.owner.rsvp, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
                 }
                 fwdCore.tableChanger();
                 pckRvp.updateRecRout(ntry.trgIfc.addr, true);

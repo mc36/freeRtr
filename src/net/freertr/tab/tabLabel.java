@@ -79,7 +79,7 @@ public class tabLabel {
      * @param key key to use for deallocation
      * @return label entry, null if nothing
      */
-    public static tabLabelEntry allocate(int key) {
+    public static tabLabelEntry allocate(tabLabelEntry.owner key) {
         for (int retry = 0; retry < 16; retry++) {
             int i = bits.random(cfgAll.labelRangeBeg, cfgAll.labelRangeEnd);
             tabLabelEntry ntry = new tabLabelEntry(i);
@@ -97,7 +97,7 @@ public class tabLabel {
         return null;
     }
 
-    private static tabLabelEntry[] allocBlock(int key, int beg, int num) {
+    private static tabLabelEntry[] allocBlock(tabLabelEntry.owner key, int beg, int num) {
         tabLabelEntry[] res = new tabLabelEntry[num];
         for (int i = 0; i < num; i++) {
             tabLabelEntry ntry = new tabLabelEntry(beg + i);
@@ -122,7 +122,7 @@ public class tabLabel {
      * @param num number of labels
      * @return label list, null if nothing
      */
-    public static tabLabelEntry[] allocate(int key, int num) {
+    public static tabLabelEntry[] allocate(tabLabelEntry.owner key, int num) {
         if (num < 1) {
             return null;
         }
@@ -145,7 +145,7 @@ public class tabLabel {
      * @param num number of labels
      * @return label list, null if nothing
      */
-    public static tabLabelEntry[] allocate(int key, int beg, int num) {
+    public static tabLabelEntry[] allocate(tabLabelEntry.owner key, int beg, int num) {
         if (num < 1) {
             return null;
         }
@@ -167,7 +167,7 @@ public class tabLabel {
      * @param key key to use
      * @return label entry, null if nothing
      */
-    public static tabLabelEntry release(tabLabelEntry label, int key) {
+    public static tabLabelEntry release(tabLabelEntry label, tabLabelEntry.owner key) {
         if (label == null) {
             return null;
         }
@@ -195,7 +195,7 @@ public class tabLabel {
      * @param key key to use
      * @return label entry, null if nothing
      */
-    public static tabLabelEntry[] release(tabLabelEntry[] label, int key) {
+    public static tabLabelEntry[] release(tabLabelEntry[] label, tabLabelEntry.owner key) {
         if (label == null) {
             return null;
         }
