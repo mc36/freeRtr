@@ -13699,3 +13699,6 @@ qc pass: p4lang: mpls with fib compression
 no todo: mpls inband network telemetry
 no todo: tcam compression to p4lang
 todo: mpls inband performance measurement
+---------------------------------- 2023-01-20 07:37:54 23.1.20
+qc pass: bgp interas vpn with multiple labels
+qc pass: bgp interas othervpn with multiple labels

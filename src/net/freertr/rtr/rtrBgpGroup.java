@@ -559,42 +559,59 @@ public class rtrBgpGroup extends rtrBgpParam {
         return null;
     }
 
-    private void nextHopSelf(int afi, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
-        if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC)) == 0))) {
-            ntry.nextHop = localOddr.copyBytes();
-        } else {
-            ntry.nextHop = localAddr.copyBytes();
+    private ipFwd getForwarder(int afi, tabRouteAttr<addrIP> ntry) {
+        if (ntry.rouTab != null) {
+            return ntry.rouTab;
         }
-        ntry.labelRem = new ArrayList<Integer>();
-        tabLabelEntry loc = ntry.labelLoc;
-        if (loc == null) {
-            ipFwd tab;
-            if (ntry.rouTab == null) {
-                if (afi == lower.afiOtrU) {
-                    tab = lower.other.fwd;
-                } else {
-                    tab = lower.fwdCore;
-                }
-            } else {
-                tab = ntry.rouTab;
-            }
-            tabRouteEntry<addrIP> org = tab.labeldR.find(route);
+        if ((afi == lower.afiOtrM) || (afi == lower.afiOtrU)) {
+            return lower.other.fwd;
+        } else {
+            return lower.fwdCore;
+        }
+    }
+
+    private void nextHopSelf(int afi, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
+        boolean done = false;
+        if (nxtHopMltlb && (ntry.nextHop != null) && (ntry.labelRem != null)) {
+            ipFwd tab = getForwarder(afi, ntry);
+            tabRouteEntry<addrIP> org = tab.labeldR.route(ntry.nextHop);
+            tabLabelEntry loc;
             if (org == null) {
                 loc = tab.commonLabel;
             } else {
                 loc = org.best.labelLoc;
             }
+            ntry.labelRem.add(0, loc.label);
+            done = true;
         }
-        int val = loc.label;
-        if (labelPop) {
-            if ((afi == lower.afiUni) && ((addrFams & (rtrBgpParam.mskLab | rtrBgpParam.mskCtp)) != 0) && (val == lower.fwdCore.commonLabel.label)) {
-                val = ipMpls.labelImp;
-            }
-            if ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC)) != 0) && (val == lower.other.fwd.commonLabel.label)) {
-                val = ipMpls.labelImp;
-            }
+        if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC)) == 0))) {
+            ntry.nextHop = localOddr.copyBytes();
+        } else {
+            ntry.nextHop = localAddr.copyBytes();
         }
-        ntry.labelRem.add(val);
+        if (!done) {
+            ntry.labelRem = new ArrayList<Integer>();
+            tabLabelEntry loc = ntry.labelLoc;
+            if (loc == null) {
+                ipFwd tab = getForwarder(afi, ntry);
+                tabRouteEntry<addrIP> org = tab.labeldR.find(route);
+                if (org == null) {
+                    loc = tab.commonLabel;
+                } else {
+                    loc = org.best.labelLoc;
+                }
+            }
+            int val = loc.label;
+            if (labelPop) {
+                if ((afi == lower.afiUni) && (val == lower.fwdCore.commonLabel.label)) {
+                    val = ipMpls.labelImp;
+                }
+                if ((afi == lower.afiOtrU) && (val == lower.other.fwd.commonLabel.label)) {
+                    val = ipMpls.labelImp;
+                }
+            }
+            ntry.labelRem.add(val);
+        }
         if (lower.segrouLab != null) {
             ntry.segrouSiz = lower.segrouMax;
             ntry.segrouBeg = lower.segrouLab[0].label;

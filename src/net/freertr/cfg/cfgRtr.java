@@ -404,6 +404,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* route-reflector-client",
         "router bgp[46] .*! no (template|neighbor) .* confederation-peer",
         "router bgp[46] .*! no (template|neighbor) .* next-hop-unchanged",
+        "router bgp[46] .*! no (template|neighbor) .* next-hop-multilabel",
         "router bgp[46] .*! no (template|neighbor) .* next-hop-self",
         "router bgp[46] .*! no (template|neighbor) .* next-hop-peer",
         "router bgp[46] .*! no (template|neighbor) .* send-community",

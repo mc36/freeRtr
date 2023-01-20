@@ -2145,7 +2145,7 @@ public class rtrBgpUtil {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = readPrefix(safi, true, pck);
+            tabRouteEntry<addrIP> res = readPrefix(safi, lower.peerMltLab == 0, pck);
             if (res == null) {
                 continue;
             }
