@@ -324,6 +324,9 @@ public class playerLyric {
             if (b.indexOf("no lyrics found") >= 0) {
                 continue;
             }
+            if (b.indexOf("bots have beat this api") >= 0) {
+                continue;
+            }
             if (b.indexOf("<title>") >= 0) {
                 return new playerLyric();
             }
