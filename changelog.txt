@@ -13702,3 +13702,6 @@ todo: mpls inband performance measurement
 ---------------------------------- 2023-01-20 07:37:54 23.1.20
 qc pass: bgp interas vpn with multiple labels
 qc pass: bgp interas othervpn with multiple labels
+---------------------------------- 2023-01-22 13:43:49 23.1.22
+qc pass: bgp interas labels with multiple labels
+qc pass: bgp interas ctp with multiple labels
