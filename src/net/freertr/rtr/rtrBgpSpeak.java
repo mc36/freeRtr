@@ -2036,7 +2036,32 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     /**
-     * send update packet
+     * send update packet without addpath
+     *
+     * @param safi safi to update
+     * @param lst list of prefixes to advertise
+     * @param reach true to reachable, false to withdraw
+     */
+    public void sendUpdate(int safi, List<tabRouteEntry<addrIP>> lst, boolean reach) {
+        if (debugger.rtrBgpTraf) {
+            String s = "";
+            for (int i = 0; i < lst.size(); i++) {
+                tabRouteEntry<addrIP> ntry = lst.get(i);
+                s += " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix;
+            }
+            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + (reach ? "reachable" : "withdraw") + s);
+        }
+        pckTx.clear();
+        if (!reach) {
+            rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, false, lst);
+        } else {
+            rtrBgpUtil.createReachable(pckTx, pckTh, safi, false, peer32bitAS, peerMltLab == 0, lst);
+        }
+        packSend(pckTx, rtrBgpUtil.msgUpdate);
+    }
+
+    /**
+     * send update packet with addpath
      *
      * @param safi safi to update
      * @param wil prefix to advertise, null to withdraw
@@ -2055,16 +2080,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + a + " " + s);
         }
-        boolean addpath = addPthTx(safi);
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         if (wil == null) {
-            if (!addpath) {
-                lst.add(don);
-                pckTx.clear();
-                rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, addpath, lst);
-                packSend(pckTx, rtrBgpUtil.msgUpdate);
-                return;
-            }
             for (int i = 0; i < don.alts.size(); i++) {
                 tabRouteEntry<addrIP> ntry = don.copyBytes(tabRoute.addType.notyet);
                 don.alts.get(i).copyBytes(ntry.best, true);
@@ -2072,19 +2089,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.add(ntry);
             }
             pckTx.clear();
-            rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, addpath, lst);
-            packSend(pckTx, rtrBgpUtil.msgUpdate);
-            return;
-        }
-        if (!addpath) {
-            if (don != null) {
-                if (wil.best.differs(don.best) == 0) {
-                    return;
-                }
-            }
-            lst.add(wil);
-            pckTx.clear();
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, peerMltLab == 0, lst);
+            rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, true, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
             return;
         }
@@ -2096,7 +2101,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.clear();
                 lst.add(ntry);
                 pckTx.clear();
-                rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, peerMltLab == 0, lst);
+                rtrBgpUtil.createReachable(pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
             }
             return;
@@ -2114,7 +2119,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.clear();
             lst.add(ntry);
             pckTx.clear();
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, addpath, peer32bitAS, peerMltLab == 0, lst);
+            rtrBgpUtil.createReachable(pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
         }
         lst.clear();
@@ -2128,7 +2133,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         pckTx.clear();
-        rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, addpath, lst);
+        rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, true, lst);
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
 

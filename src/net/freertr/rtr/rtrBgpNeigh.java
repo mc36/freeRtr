@@ -1,5 +1,6 @@
 package net.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
@@ -815,32 +816,100 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             will = new tabRoute<addrIP>(will);
             needEor = (conn.needEorAfis & mask) != 0;
         }
+        if (conn.addPthTx(safi)) {
+            for (int i = 0; i < will.size(); i++) {
+                tabRouteEntry<addrIP> wil = will.get(i);
+                if (wil == null) {
+                    continue;
+                }
+                tabRouteEntry<addrIP> don = done.find(wil);
+                if (wil.differs(tabRoute.addType.alters, don) == 0) {
+                    continue;
+                }
+                conn.sendUpdate(safi, wil, don);
+                done.add(tabRoute.addType.always, wil, false, false);
+                if (conn.txFree() < 1024) {
+                    return true;
+                }
+            }
+            for (int i = done.size() - 1; i >= 0; i--) {
+                tabRouteEntry<addrIP> don = done.get(i);
+                if (don == null) {
+                    continue;
+                }
+                if (will.find(don) != null) {
+                    continue;
+                }
+                done.del(don);
+                conn.sendUpdate(safi, null, don);
+                if (conn.txFree() < 1024) {
+                    return true;
+                }
+            }
+            if (needEor) {
+                conn.sendEndOfRib(safi);
+                conn.needEorAfis &= ~mask;
+            }
+            return false;
+        }
+        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+        tabRouteEntry<addrIP> sen = null;
         for (int i = 0; i < will.size(); i++) {
-            tabRouteEntry<addrIP> wil = will.get(i);
-            if (wil == null) {
+            tabRouteEntry<addrIP> ntry = will.get(i);
+            if (ntry == null) {
                 continue;
             }
-            tabRouteEntry<addrIP> don = done.find(wil);
-            if (wil.differs(tabRoute.addType.alters, don) == 0) {
+            if (ntry.differs(tabRoute.addType.notyet, done.find(ntry)) == 0) {
                 continue;
             }
-            conn.sendUpdate(safi, wil, don);
-            done.add(tabRoute.addType.always, wil, false, false);
-            if (conn.txFree() < 1024) {
+            if (sen != null) {
+                sen.prefix = ntry.prefix;
+            }
+            if (ntry.differs(tabRoute.addType.notyet, sen) != 0) {
+                if (lst.size() > 0) {
+                    conn.sendUpdate(safi, lst, true);
+                }
+                if (conn.txFree() < 2048) {
+                    return true;
+                }
+                lst.clear();
+                sen = ntry.copyBytes(tabRoute.addType.notyet);
+            }
+            done.add(tabRoute.addType.always, ntry, false, false);
+            lst.add(ntry);
+            if (lst.size() > 64) {
+                sen = null;
+            }
+        }
+        if (lst.size() > 0) {
+            conn.sendUpdate(safi, lst, true);
+            if (conn.txFree() < 2048) {
                 return true;
             }
         }
+        lst.clear();
         for (int i = done.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> don = done.get(i);
-            if (don == null) {
+            tabRouteEntry<addrIP> ntry = done.get(i);
+            if (ntry == null) {
                 continue;
             }
-            if (will.find(don) != null) {
+            if (will.find(ntry) != null) {
                 continue;
             }
-            done.del(don);
-            conn.sendUpdate(safi, null, don);
-            if (conn.txFree() < 1024) {
+            done.del(ntry);
+            lst.add(ntry);
+            if (lst.size() < 64) {
+                continue;
+            }
+            conn.sendUpdate(safi, lst, false);
+            if (conn.txFree() < 2048) {
+                return true;
+            }
+            lst.clear();
+        }
+        if (lst.size() > 0) {
+            conn.sendUpdate(safi, lst, false);
+            if (conn.txFree() < 2048) {
                 return true;
             }
         }
