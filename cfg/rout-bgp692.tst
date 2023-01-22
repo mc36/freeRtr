@@ -38,7 +38,7 @@ router bgp4 1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 multiple-label ctp
- red conn
+ justadvert lo1
  exit
 router bgp6 1
  vrf v1
@@ -49,12 +49,12 @@ router bgp6 1
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
  neigh 4321::2 multiple-label ctp
- red conn
+ justadvert lo1
  exit
 int pweth1
  vrf for v1
  ipv4 addr 4.4.4.1 255.255.255.0
- pseudo v1 lo0 pweompls 2.2.2.6 1234
+ pseudo v1 lo1 pweompls 3.3.3.6 1234
  exit
 int pweth2
  vrf for v1
@@ -115,7 +115,7 @@ router bgp4 1
  neigh 2.2.2.3 update lo0
  neigh 2.2.2.3 multiple-label ctp
  neigh 2.2.2.3 route-reflect
- red conn
+ justadvert lo1
  exit
 router bgp6 1
  vrf v1
@@ -131,7 +131,7 @@ router bgp6 1
  neigh 4321::3 update lo0
  neigh 4321::3 multiple-label ctp
  neigh 4321::3 route-reflect
- red conn
+ justadvert lo1
  exit
 !
 
@@ -186,7 +186,7 @@ router bgp4 1
  neigh 1.1.1.10 remote-as 2
  neigh 1.1.1.10 multiple-label ctp
  neigh 1.1.1.10 next-hop-multi
- red conn
+ justadvert lo1
  exit
 router bgp6 1
  vrf v1
@@ -201,7 +201,7 @@ router bgp6 1
  neigh 1234:3::2 remote-as 2
  neigh 1234:3::2 multiple-label ctp
  neigh 1234:3::2 next-hop-multi
- red conn
+ justadvert lo1
  exit
 !
 
@@ -256,7 +256,7 @@ router bgp4 2
  neigh 1.1.1.9 remote-as 1
  neigh 1.1.1.9 multiple-label ctp
  neigh 1.1.1.9 next-hop-multi
- red conn
+ justadvert lo1
  exit
 router bgp6 2
  vrf v1
@@ -271,7 +271,7 @@ router bgp6 2
  neigh 1234:3::1 remote-as 1
  neigh 1234:3::1 multiple-label ctp
  neigh 1234:3::1 next-hop-multi
- red conn
+ justadvert lo1
  exit
 !
 
@@ -327,7 +327,7 @@ router bgp4 2
  neigh 2.2.2.6 update lo0
  neigh 2.2.2.6 multiple-label ctp
  neigh 2.2.2.6 route-reflect
- red conn
+ justadvert lo1
  exit
 router bgp6 2
  vrf v1
@@ -343,7 +343,7 @@ router bgp6 2
  neigh 4321::6 update lo0
  neigh 4321::6 multiple-label ctp
  neigh 4321::6 route-reflect
- red conn
+ justadvert lo1
  exit
 !
 
@@ -385,7 +385,7 @@ router bgp4 2
  neigh 2.2.2.5 remote-as 2
  neigh 2.2.2.5 update lo0
  neigh 2.2.2.5 multiple-label ctp
- red conn
+ justadvert lo1
  exit
 router bgp6 2
  vrf v1
@@ -396,12 +396,12 @@ router bgp6 2
  neigh 4321::5 remote-as 2
  neigh 4321::5 update lo0
  neigh 4321::5 multiple-label ctp
- red conn
+ justadvert lo1
  exit
 int pweth1
  vrf for v1
  ipv4 addr 4.4.4.2 255.255.255.0
- pseudo v1 lo0 pweompls 2.2.2.1 1234
+ pseudo v1 lo1 pweompls 3.3.3.1 1234
  exit
 int pweth2
  vrf for v1
