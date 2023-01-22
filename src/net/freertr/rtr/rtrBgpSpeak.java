@@ -2042,7 +2042,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param lst list of prefixes to advertise
      * @param reach true to reachable, false to withdraw
      */
-    public void sendUpdate(int safi, List<tabRouteEntry<addrIP>> lst, boolean reach) {
+    public void sendUpdateSP(int safi, List<tabRouteEntry<addrIP>> lst, boolean reach) {
         if (debugger.rtrBgpTraf) {
             String s = "";
             for (int i = 0; i < lst.size(); i++) {
@@ -2067,7 +2067,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param wil prefix to advertise, null to withdraw
      * @param don old already advertised data
      */
-    public void sendUpdate(int safi, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
+    public void sendUpdateAP(int safi, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
         if (debugger.rtrBgpTraf) {
             String a;
             String s;
