@@ -2191,6 +2191,10 @@ public class userShow {
                 doShowRouteCompr(4);
                 return null;
             }
+            if (a.equals("changes")) {
+                doShowRouteChngs(4);
+                return null;
+            }
             if (a.equals("route")) {
                 doShowRouteUni(4);
                 return null;
@@ -2549,6 +2553,10 @@ public class userShow {
             }
             if (a.equals("compress")) {
                 doShowRouteCompr(6);
+                return null;
+            }
+            if (a.equals("changes")) {
+                doShowRouteChngs(6);
                 return null;
             }
             if (a.equals("route")) {
@@ -4216,6 +4224,10 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
+        if (a.equals("changes")) {
+            doShowRoutes(r.bgp.fwdCore, tab, dsp + 3000);
+            return;
+        }
         if (a.equals("labels")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
             return;
@@ -4802,6 +4814,14 @@ public class userShow {
         doShowRoutes(fwd, tab, 1);
     }
 
+    private void doShowRouteChngs(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        doShowRoutes(fwd, fwd.actualU, 10);
+    }
+
     private void doShowRouteLab(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -5033,6 +5053,11 @@ public class userShow {
             case 9:
                 l = new userFormat("|", "prefix|alts|candid|best|proto|source");
                 break;
+            case 3002:
+            case 3005:
+            case 10:
+                l = new userFormat("|", "prefix|hop|ago|last");
+                break;
             default:
                 return;
         }
@@ -5081,6 +5106,11 @@ public class userShow {
                     case 2005:
                     case 9:
                         tabRouteEntry.toShEcmp(l, prf, typ == 2005);
+                        break;
+                    case 3002:
+                    case 3005:
+                    case 10:
+                        tabRouteEntry.toShChgRoute(l, prf);
                         break;
                 }
             }

@@ -347,13 +347,24 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param prf entry to dump
      */
     public static void toShRoute(userFormat l, tabRouteEntry<addrIP> prf) {
-        String a = addrPrefix.ip2str(prf.prefix);
-        if (prf.rouDst != 0) {
-            a += " " + tabRouteUtil.rd2string(prf.rouDst);
-        }
+        String a = toShBgpFirst(prf);
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
             l.add(tabRouteAttr.rouTyp2string(attr) + "|" + a + "|" + attr.toShRoute());
+        }
+    }
+
+    /**
+     * convert to changed format
+     *
+     * @param l list to append
+     * @param prf entry to dump
+     */
+    public static void toShChgRoute(userFormat l, tabRouteEntry<addrIP> prf) {
+        String a = toShBgpFirst(prf);
+        for (int i = 0; i < prf.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = prf.alts.get(i);
+            l.add(a + "|" + attr.toShChgRoute());
         }
     }
 

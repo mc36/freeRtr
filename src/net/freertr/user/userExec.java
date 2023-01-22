@@ -258,6 +258,8 @@ public class userExec {
         hl.add(null, "4 .          <name:vrf>             name of routing table");
         hl.add(null, "3 4        compress                 compressed unicast routing table");
         hl.add(null, "4 .          <name:vrf>             name of routing table");
+        hl.add(null, "3 4        changes                  changed unicast routing table");
+        hl.add(null, "4 .          <name:vrf>             name of routing table");
         hl.add(null, "3 4        just-network             unicast routing table by network");
         hl.add(null, "4 5          <name:vrf>             name of routing table");
         hl.add(null, "5 5,.          <str>                prefix matcher");
@@ -682,6 +684,9 @@ public class userExec {
         hl.add(null, "7 8,.              [addr]           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 7,.            compress           list of compressed routes");
+        hl.add(null, "7 8,.              [addr]           prefix to view");
+        hl.add(null, "8 .                  [rd]           route distinguisher");
+        hl.add(null, "6 7,.            changes            list of changed routes");
         hl.add(null, "7 8,.              [addr]           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 7              wireformat         encode a route reachable from database");

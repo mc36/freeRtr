@@ -1702,6 +1702,15 @@ public class tabRouteAttr<T extends addrType> {
      *
      * @return converted
      */
+    public String toShChgRoute() {
+        return nextHop + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time, 3);
+    }
+
+    /**
+     * convert to route format
+     *
+     * @return converted
+     */
     public String toShRoute() {
         String s = "";
         if (rouTab != null) {
