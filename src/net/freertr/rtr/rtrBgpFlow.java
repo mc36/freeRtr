@@ -193,7 +193,7 @@ public class rtrBgpFlow {
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = prf;
-        rtrBgpUtil.writePrefix(sfi, pck, ntry);
+        rtrBgpUtil.writePrefix(sfi, true, pck, ntry);
         if (!ipv6) {
             pck.merge2end();
             return;

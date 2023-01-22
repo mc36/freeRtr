@@ -1012,7 +1012,7 @@ public class userPacket {
             pck.clear();
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
-            rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst);
+            rtrBgpUtil.createReachable(pck, tmp, safi, false, true, true, lst);
             spk.packSend(pck, rtrBgpUtil.msgUpdate);
             cmd.error("waiting");
             for (int o = 1000;; o++) {
@@ -1134,7 +1134,7 @@ public class userPacket {
                 pck.clear();
                 lst.clear();
                 lst.add(ntry);
-                rtrBgpUtil.createReachable(pck, tmp, safi, false, true, lst);
+                rtrBgpUtil.createReachable(pck, tmp, safi, false, true, true, lst);
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");
                 if (need2stop()) {

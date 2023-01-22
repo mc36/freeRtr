@@ -572,7 +572,7 @@ public class rtrBgpGroup extends rtrBgpParam {
 
     private void nextHopSelf(int afi, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
         boolean done = false;
-        if (nxtHopMltlb && (ntry.nextHop != null) && (ntry.labelRem != null)) {
+        if (nxtHopMltlb && (ntry.nextHop != null)) {
             ipFwd tab = getForwarder(afi, ntry);
             tabRouteEntry<addrIP> org = tab.labeldR.route(ntry.nextHop);
             tabLabelEntry loc;
@@ -581,7 +581,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             } else {
                 loc = org.best.labelLoc;
             }
-            ntry.labelRem.add(0, loc.label);
+            ntry.labelRem = tabLabel.prependLabel(ntry.labelRem, loc.label);
             done = true;
         }
         if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC)) == 0))) {

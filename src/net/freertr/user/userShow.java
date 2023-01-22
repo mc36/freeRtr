@@ -4158,7 +4158,7 @@ public class userShow {
             packHolder pck = new packHolder(true, true);
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
-            rtrBgpUtil.createReachable(pck, new packHolder(true, true), sfi, false, true, lst);
+            rtrBgpUtil.createReachable(pck, new packHolder(true, true), sfi, false, true, true, lst);
             rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
             List<String> l = new ArrayList<String>();
             userFlash.buf2hex(l, pck.getCopy(), 0);

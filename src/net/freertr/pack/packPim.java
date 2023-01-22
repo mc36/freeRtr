@@ -261,11 +261,11 @@ public class packPim {
         if (prf.network.isIPv4()) {
             pck.putByte(0, rtrBgpUtil.afiIpv4 >>> 16);
             pck.putSkip(3);
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, pck, pref);
+            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, true, pck, pref);
         } else {
             pck.putByte(0, rtrBgpUtil.afiIpv6 >>> 16);
             pck.putSkip(3);
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, pck, pref);
+            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, true, pck, pref);
         }
     }
 

@@ -1333,10 +1333,11 @@ public class rtrBgpUtil {
      * write prefix
      *
      * @param safi safi to write
+     * @param oneLab just one label
      * @param pck packet to use
      * @param ntry prefix to write
      */
-    public static void writePrefix(int safi, packHolder pck, tabRouteEntry<addrIP> ntry) {
+    public static void writePrefix(int safi, boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         int sfi = safi & sfiMask;
         byte[] buf2;
         int i;
@@ -1410,6 +1411,9 @@ public class rtrBgpUtil {
                 bits.msbPutD(buf1, p, ntry.best.labelRem.get(q) << 12);
                 p += 3;
                 i += 24;
+                if (oneLab) {
+                    break;
+                }
             }
             buf1[p - 1] |= 1;
         }
@@ -2313,7 +2317,7 @@ public class rtrBgpUtil {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
-        createReachable(pck, new packHolder(true, true), safiAttrib, false, true, lst);
+        createReachable(pck, new packHolder(true, true), safiAttrib, false, true, true, lst);
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
     }
@@ -2444,7 +2448,7 @@ public class rtrBgpUtil {
                     pck.msbPutD(0, ntry.best.ident);
                     pck.putSkip(4);
                 }
-                writePrefix(safiIp4uni, pck, ntry);
+                writePrefix(safiIp4uni, true, pck, ntry);
             }
             pck.merge2beg();
             pck.msbPutW(0, pck.dataSize());
@@ -2489,9 +2493,10 @@ public class rtrBgpUtil {
      * @param safi address family
      * @param addpath additional path
      * @param longAS long as number supported
+     * @param oneLab just one label
      * @param lst list of prefixes to advertise
      */
-    public static void createReachable(packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, List<tabRouteEntry<addrIP>> lst) {
+    public static void createReachable(packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
         placeUnknown(pck, hlp, ntry);
         placeOrigin(pck, hlp, ntry);
@@ -2519,7 +2524,7 @@ public class rtrBgpUtil {
             return;
         }
         if (safi != safiIp4uni) {
-            placeReachable(safi, addpath, pck, hlp, lst);
+            placeReachable(safi, addpath, oneLab, pck, hlp, lst);
             pck.merge2beg();
             pck.msbPutW(0, 0);
             pck.msbPutW(2, pck.dataSize());
@@ -2528,7 +2533,7 @@ public class rtrBgpUtil {
             return;
         }
         if (!ntry.best.nextHop.isIPv4()) {
-            placeReachable(safi, addpath, pck, hlp, lst);
+            placeReachable(safi, addpath, oneLab, pck, hlp, lst);
             pck.merge2beg();
             pck.msbPutW(0, 0);
             pck.msbPutW(2, pck.dataSize());
@@ -2548,7 +2553,7 @@ public class rtrBgpUtil {
                 pck.msbPutD(0, ntry.best.ident);
                 pck.putSkip(4);
             }
-            writePrefix(safiIp4uni, pck, ntry);
+            writePrefix(safiIp4uni, oneLab, pck, ntry);
         }
         pck.merge2end();
     }
@@ -3086,11 +3091,12 @@ public class rtrBgpUtil {
      *
      * @param safi sub address family
      * @param addpath additional path
+     * @param oneLab just one label
      * @param trg target packet
      * @param hlp helper packet
      * @param lst list of table entries
      */
-    public static void placeReachable(int safi, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
+    public static void placeReachable(int safi, boolean addpath, boolean oneLab, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         int afi = safi & afiMask;
         int sfi = safi & sfiMask;
         addrIP nextHop = lst.get(0).best.nextHop;
@@ -3123,7 +3129,7 @@ public class rtrBgpUtil {
                 hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
             }
-            writePrefix(safi, hlp, ntry);
+            writePrefix(safi, oneLab, hlp, ntry);
         }
         placeAttrib(flagOptional, attrReachable, trg, hlp);
     }
@@ -3147,7 +3153,7 @@ public class rtrBgpUtil {
                 hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
             }
-            writePrefix(safi, hlp, ntry);
+            writePrefix(safi, true, hlp, ntry);
         }
         placeAttrib(flagOptional, attrUnReach, trg, hlp);
     }
