@@ -1050,7 +1050,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             }
             return false;
         }
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> lstA = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> lstW = new ArrayList<tabRouteEntry<addrIP>>();
+        tabRouteEntry<addrIP> sen = null;
         for (int i = 0; i < chg.size(); i++) {
             tabRouteEntry<addrIP> cur = chg.get(i);
             if (cur == null) {
@@ -1063,19 +1065,48 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     continue;
                 }
                 done.del(don);
-                lst.clear();
-                lst.add(don);
-                conn.sendUpdateSP(safi, lst, false);
-            } else {
-                if (wil.differs(tabRoute.addType.notyet, don) == 0) {
+                lstW.add(don);
+                if (lstW.size() < 64) {
                     continue;
                 }
-                done.add(tabRoute.addType.always, wil, false, false);
-                lst.clear();
-                lst.add(wil);
-                conn.sendUpdateSP(safi, lst, true);
+                conn.sendUpdateSP(safi, lstW, false);
+                if (conn.txFree() < 2048) {
+                    return true;
+                }
+                lstW.clear();
+                continue;
             }
-            if (conn.txFree() < 1024) {
+            if (wil.differs(tabRoute.addType.notyet, don) == 0) {
+                continue;
+            }
+            if (sen != null) {
+                sen.prefix = wil.prefix;
+            }
+            if (wil.differs(tabRoute.addType.notyet, sen) != 0) {
+                if (lstA.size() > 0) {
+                    conn.sendUpdateSP(safi, lstA, true);
+                }
+                if (conn.txFree() < 2048) {
+                    return true;
+                }
+                lstA.clear();
+                sen = wil.copyBytes(tabRoute.addType.notyet);
+            }
+            done.add(tabRoute.addType.always, wil, false, false);
+            lstA.add(wil);
+            if (lstA.size() > 64) {
+                sen = null;
+            }
+        }
+        if (lstW.size() > 0) {
+            conn.sendUpdateSP(safi, lstW, false);
+            if (conn.txFree() < 2048) {
+                return true;
+            }
+        }
+        if (lstA.size() > 0) {
+            conn.sendUpdateSP(safi, lstA, true);
+            if (conn.txFree() < 2048) {
                 return true;
             }
         }
