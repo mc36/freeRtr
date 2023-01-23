@@ -1415,6 +1415,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
             if (debugger.ipFwdReasm) {
                 logger.debug("reasm " + pck.IPsrc + " -> " + pck.IPtrg + " id=" + pck.IPid + " ofs=" + pck.IPfrg + " mf=" + pck.IPmf);
             }
+            lower.frgCnt.rx(pck);
             int o = -1;
             for (int i = 0; i < lower.reasmBuf.size(); i++) {
                 packHolder asm = lower.reasmBuf.get(i);
@@ -1640,6 +1641,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 }
             }
             ipMpls.beginMPLSfields(snd, (mplsPropTtl | iface.mplsPropTtlAlways) & iface.mplsPropTtlAllow);
+            iface.frgCnt.tx(snd);
             forwardPacket(4, iface, hop, snd);
         }
     }

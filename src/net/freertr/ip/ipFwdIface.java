@@ -298,6 +298,11 @@ public class ipFwdIface extends tabRouteIface {
     public final counter cntr = new counter();
 
     /**
+     * fragment counter of interface
+     */
+    public final counter frgCnt = new counter();
+
+    /**
      * time when multicast flood expires
      */
     public long expires;
@@ -499,8 +504,10 @@ public class ipFwdIface extends tabRouteIface {
         l.add("cntr|" + cntr.getShStat());
         l.add("lastio|" + cntr.getShTraff());
         counter cnt = lower.getCounter();
-        l.add("ipcntr|" + cnt.getShStat());
-        l.add("iplast|" + cnt.getShTraff());
+        l.add("lowcntr|" + cnt.getShStat());
+        l.add("lowlast|" + cnt.getShTraff());
+        l.add("frgcntr|" + frgCnt.getShStat());
+        l.add("frglast|" + frgCnt.getShTraff());
         return l;
     }
 
