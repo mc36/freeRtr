@@ -9,5 +9,5 @@ cd /home/mc36/rare/p4src
 export SDE=/home/mc36/bf-sde-9.11.1
 export SDE_INSTALL=$SDE/install
 while (true); do
-  $SDE/run_tofino_model.sh -p bf_router -f /home/mc36/ports.json -q
+  $SDE/run_tofino_model.sh --arch tf1 -p bf_router -f /home/mc36/ports1.json -q
   done

@@ -3,5 +3,5 @@ cd /home/mc36/rare/p4src
 export SDE=/home/mc36/bf-sde-9.11.1
 export SDE_INSTALL=$SDE/install
 while (true); do
-  $SDE/run_switchd.sh -p bf_router
+  $SDE/run_switchd.sh --arch tf1 -p bf_router
   done

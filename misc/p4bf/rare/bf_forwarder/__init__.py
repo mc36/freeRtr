@@ -114,6 +114,40 @@ class BfForwarder(Thread, RareApi):
         self._delTableKeys(ase_name, table_dict, ase_keys)
         self._delTableKeys(apr_name, table_dict, apr_keys)
 
+        logger.warning("Bundle specific workaround: (Order matters)")
+        tbl_apr_bundle = self.bfgc.bfrt_info.table_get(apr_name)
+        apr_keys = [
+            tbl_apr_bundle.make_key(
+                [gc.KeyTuple("$ACTION_MEMBER_ID", 0x7fffffff)]
+            )
+        ]
+        apr_data = [
+            tbl_apr_bundle.make_data(
+                [],
+                "ig_ctl.ig_ctl_bundle.act_send_identical",
+            )
+        ]
+        try:
+           tbl_apr_bundle.entry_add(
+               self.bfgc.target, apr_keys, apr_data
+           )
+        except gc.BfruntimeRpcException as e:
+            logger.warning("bundle_add - %s" %  e.__str__())
+            logger.warning("bundle_add - GRPC error code: %s" % e.grpc_error.code())
+        tbl_nexthop_bundle = self.bfgc.bfrt_info.table_get(nhp_name)
+        nhp_keys = []
+        nhp_data = [
+            tbl_nexthop_bundle.make_data(
+                [
+                    gc.DataTuple("$ACTION_MEMBER_ID", 0x7fffffff),
+                ]
+            )
+        ]
+        tbl_nexthop_bundle.default_entry_set(
+            self.bfgc.target, nhp_data[0]
+        )
+
+
         logger.warning("Multicast specific clearing: (Order matters)")
 
         mgid_name = "$pre.mgid"
