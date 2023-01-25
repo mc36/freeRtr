@@ -149,7 +149,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
      */
     protected tabLabelEntry segrouLab;
 
-    private final static int lsaPerDescr = 16;
+    private final static int lsaPerDescr = 48;
 
     /**
      * hello packet
