@@ -301,7 +301,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
         pck.IPdf = false;
         pck.IPfrg = 0;
         pck.IPalrt = -1;
-        pck.IPttl = 255;
+        pck.IPttl = iface.ttlSecurity;
         pck.IPtos = 0;
         pck.IPid = 0;
         pck.IPprt = rtrOspf6.protoNum;

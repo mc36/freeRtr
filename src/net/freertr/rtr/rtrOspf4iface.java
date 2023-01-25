@@ -78,6 +78,11 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
     public boolean passiveInt;
 
     /**
+     * ttl security
+     */
+    public int ttlSecurity;
+
+    /**
      * hello timer
      */
     public int helloTimer;
@@ -262,6 +267,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         authenMode = 1;
         metric = 10;
         teMetric = 10;
+        ttlSecurity = -1;
         echoTimer = 60000;
         echoParam = new tabAverage(1, 65530);
         if (iface != null) {
@@ -343,6 +349,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(cmds.tabulator + beg + "instance " + instance);
         l.add(cmds.tabulator + beg + "cost " + metric);
         l.add(cmds.tabulator + beg + "priority " + drPriority);
+        l.add(cmds.tabulator + beg + "ttl-security " + ttlSecurity);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         l.add(cmds.tabulator + beg + "retransmit-time " + retransTimer);
@@ -505,6 +512,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         }
         if (a.equals("verify-source")) {
             connectedCheck = true;
+            return;
+        }
+        if (a.equals("ttl-security")) {
+            ttlSecurity = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("hello-time")) {
@@ -714,6 +725,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
             passiveInt = false;
             return;
         }
+        if (a.equals("ttl-security")) {
+            ttlSecurity = -1;
+            return;
+        }
         if (a.equals("bfd")) {
             bfdTrigger = false;
             return;
@@ -824,6 +839,8 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         l.add(null, "5 .           <num>                 cost");
         l.add(null, "4 5         priority                router priority");
         l.add(null, "5 .           <num>                 priority 0=disable");
+        l.add(null, "4 5         ttl-security            sending ttl value");
+        l.add(null, "5 .           <num>                 ttl value");
         l.add(null, "4 5         hello-time              time between hellos");
         l.add(null, "5 .           <num>                 time in ms");
         l.add(null, "4 5         dead-time               time before neighbor down");
@@ -1269,7 +1286,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         pck.IPdf = false;
         pck.IPfrg = 0;
         pck.IPalrt = -1;
-        pck.IPttl = 255;
+        pck.IPttl = ttlSecurity;
         pck.IPtos = 0;
         pck.IPid = 0;
         pck.IPprt = rtrOspf4.protoNum;

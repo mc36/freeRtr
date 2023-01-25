@@ -295,7 +295,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         pck.IPdf = false;
         pck.IPfrg = 0;
         pck.IPalrt = -1;
-        pck.IPttl = 255;
+        pck.IPttl = iface.ttlSecurity;
         pck.IPtos = 0;
         pck.IPid = 0;
         pck.IPprt = rtrOspf4.protoNum;
