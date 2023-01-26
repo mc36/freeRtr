@@ -2083,6 +2083,7 @@ class userTesterOne {
             boolean fancy = true;
             boolean extra = false;
             boolean swcfg = false;
+            String extcfg = null;
             String source = null;
             List<userTesterRep> reps = new ArrayList<userTesterRep>();
             List<userTesterRep> dels = new ArrayList<userTesterRep>();
@@ -2145,6 +2146,14 @@ class userTesterOne {
                 }
                 if (s.equals("nosource")) {
                     source = null;
+                    continue;
+                }
+                if (s.equals("extcfg")) {
+                    extcfg = cmd.word();
+                    continue;
+                }
+                if (s.equals("noextcfg")) {
+                    extcfg = null;
                     continue;
                 }
                 if (s.equals("replace")) {
@@ -2243,9 +2252,18 @@ class userTesterOne {
             s = jvm;
             s = s.replaceAll("%fn%", fileName);
             s = s.replaceAll("%rn%", rn);
-            s = s + " router" + window + " " + prefix + slot + rn + "-";
+            String a = "";
+            if (extcfg != null) {
+                a = "s";
+            }
+            s = s + " router" + window + a + " " + prefix + slot + rn + "-";
+            if (extcfg != null) {
+                s += cfgInit.hwCfgEnd + " " + extcfg;
+            }
             cfg.add(0, "!" + s);
-            bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
+            if (extcfg == null) {
+                bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
+            }
             userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             if (write) {
