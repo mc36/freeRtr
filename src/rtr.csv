@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v23.1.26-cur, done by cs@nop.
--;-;-;2023-01-26 22:36:01, took 00:09:09, with 80 workers, on 3102 cases, 0 failed, 0 traces, 2 retries
+-;-;-;freeRouter v23.1.27-cur, done by cs@nop.
+-;-;-;2023-01-27 05:15:03, took 00:09:00, with 80 workers, on 3102 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
