@@ -115,10 +115,10 @@ public class tabGenV2<T extends Comparator<? super T>> {
      * @return read value, null if not found
      */
     public T get(int idx) {
+        if (idx < 0) {
+            return null;
+        }
         synchronized (lck) {
-            if (idx < 0) {
-                return null;
-            }
             if (idx >= valN) {
                 return null;
             }
