@@ -1865,6 +1865,9 @@ class userTesterOne {
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -1893,6 +1896,9 @@ class userTesterOne {
             rdr.debugStat(slot + "/" + rn + ": configuring process");
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -1906,6 +1912,9 @@ class userTesterOne {
             cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -1925,6 +1934,9 @@ class userTesterOne {
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -1941,6 +1953,9 @@ class userTesterOne {
             cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -2006,6 +2021,9 @@ class userTesterOne {
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -2046,6 +2064,9 @@ class userTesterOne {
             cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -2094,6 +2115,9 @@ class userTesterOne {
                         break;
                     }
                     s = getLin();
+                    if (s == null) {
+                        break;
+                    }
                     if (s.equals("!")) {
                         break;
                     }
@@ -2185,6 +2209,9 @@ class userTesterOne {
             List<String> cfg = new ArrayList<String>();
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
@@ -2213,6 +2240,9 @@ class userTesterOne {
             }
             for (;;) {
                 s = getLin();
+                if (s == null) {
+                    break;
+                }
                 if (s.equals("!")) {
                     break;
                 }
