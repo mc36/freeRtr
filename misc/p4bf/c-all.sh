@@ -2,11 +2,11 @@
 #sudo apt-get install psmisc iproute2 net-tools socat tshark iperf gcc git telnet python3-yappi python3-grpcio default-jdk-headless default-jre-headless bc jq
 #sudo $SDE/p4studio/install-p4studio-dependencies.sh
 #$SDE/p4studio/p4studio profile apply ~/model.yaml
-#rm -rf $SDE/build
-#rm -rf $SDE/packages
-#rm -rf $SDE/install/p4i
-#rm -rf $SDE/p4studio/dependencies
-#rm -f `find $SDE -name *.a`
+#sudo rm -rf $SDE/build
+#sudo rm -rf $SDE/packages
+#sudo rm -rf $SDE/install/p4i
+#sudo rm -rf $SDE/p4studio/dependencies
+#sudo rm -f `find $SDE -name *.a`
 #
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare.git
 #git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare-bf2556x-1t.git
@@ -29,7 +29,7 @@
 #fallocate -d p4bf.img
 #
 cd ~/rare/p4src
-export SDE=/home/mc36/bf-sde-9.11.1
+export SDE=/home/mc36/bf-sde-9.12.0
 export SDE_INSTALL=$SDE/install
 rm -rf $SDE/install/bf_router.tofino
 #-b tofino2 -a t2na
