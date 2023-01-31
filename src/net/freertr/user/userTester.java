@@ -59,6 +59,8 @@ public class userTester {
 
     private String path = "../cfg/";
 
+    private String temp = "../binTmp/";
+
     private String discard = "^$";
 
     private String url = path;
@@ -482,6 +484,14 @@ public class userTester {
                 cfgarch = "./";
                 continue;
             }
+            if (s.equals("tmppath")) {
+                temp = cmd.word();
+                continue;
+            }
+            if (s.equals("notmppath")) {
+                temp = "./";
+                continue;
+            }
             if (s.equals("window")) {
                 window = true;
                 continue;
@@ -689,10 +699,10 @@ public class userTester {
             s = "";
         }
         jvp = jvp.replaceAll("XmxZZZm", s);
-        userTesterPrc prc = new userTesterPrc(rdr, slot, "release", jvn + jvp + " show version brief");
+        userTesterPrc prc = new userTesterPrc(rdr, temp, slot, "release", jvn + jvp + " show version brief");
         releaseN = prc.getLine();
         prc.stopNow();
-        prc = new userTesterPrc(rdr, slot, "version", jvn + jvp + " show version number");
+        prc = new userTesterPrc(rdr, temp, slot, "version", jvn + jvp + " show version number");
         releaseV = prc.getLine();
         prc.stopNow();
         if (beg.length() < 2) {
@@ -796,7 +806,7 @@ public class userTester {
                 s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
             }
             persistP += (4 * bits.str2num(persistD.remove(0)));
-            persistC = new userTesterPrc(rdr, slot, "persist", s);
+            persistC = new userTesterPrc(rdr, temp, slot, "persist", s);
             persistC.persistent = true;
             bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
             s = persistD.remove(0);
@@ -991,6 +1001,8 @@ public class userTester {
 
     private userTesterOne getTester(int slt) {
         userTesterOne lt = new userTesterOne();
+        lt.path = temp;
+        lt.prefix = temp + "slot";
         lt.slot = slot + slt;
         lt.config = config;
         lt.wait = wait;
@@ -1199,6 +1211,8 @@ class userTesterPrc implements Comparator<userTesterPrc> {
 
     public int slot = 0;
 
+    public String prefix;
+
     public String name;
 
     public pipeShell shell;
@@ -1213,10 +1227,11 @@ class userTesterPrc implements Comparator<userTesterPrc> {
 
     public tabGen<userTesterCon> conns;
 
-    public userTesterPrc(pipeProgress reader, int slt, String nam, String command) {
+    public userTesterPrc(pipeProgress reader, String pfx, int slt, String nam, String command) {
         slot = slt;
         name = nam;
         rdr = reader;
+        prefix = pfx;
         if (command == null) {
             return;
         }
@@ -1258,7 +1273,7 @@ class userTesterPrc implements Comparator<userTesterPrc> {
         pipe.setClose();
     }
 
-    public static String getLogName(int slt, String nam, int mod) {
+    public static String getLogName(String pfx, int slt, String nam, int mod) {
         String s;
         switch (mod) {
             case 1:
@@ -1277,11 +1292,11 @@ class userTesterPrc implements Comparator<userTesterPrc> {
                 s = "log";
                 break;
         }
-        return userTesterOne.prefix + slt + nam + "-log." + s;
+        return pfx + slt + nam + "-log." + s;
     }
 
     public String getLogName(int mod) {
-        return getLogName(slot, name, mod);
+        return getLogName(prefix, slot, name, mod);
     }
 
     public void putChar(int i) {
@@ -1454,7 +1469,7 @@ class userTesterPrc implements Comparator<userTesterPrc> {
 
     public void readConns() {
         conns = new tabGen<userTesterCon>();
-        List<String> l = bits.txt2buf(userTesterOne.prefix + slot + name + "-" + cfgInit.hwCfgEnd);
+        List<String> l = bits.txt2buf(prefix + slot + name + "-" + cfgInit.hwCfgEnd);
         if (l == null) {
             return;
         }
@@ -1498,9 +1513,9 @@ class userTesterOne {
 
     public int slot = 0;
 
-    public static final String path = "../binTmp/";
+    public String path;
 
-    public static final String prefix = path + "slot";
+    public String prefix;
 
     public String fileName;
 
@@ -1946,7 +1961,7 @@ class userTesterOne {
             s = "telnet " + remoteA + " " + remoteP;
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
-            userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
+            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
             p.syncr = remoteS;
             procs.add(p);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
@@ -1982,7 +1997,7 @@ class userTesterOne {
                     break;
                 }
                 if (s.equals("controller")) {
-                    ctP = new userTesterPrc(rdr, slot, cmd.word(), null);
+                    ctP = new userTesterPrc(rdr, prefix, slot, cmd.word(), null);
                     ctP.stopNow();
                     ctP = procs.find(ctP);
                     ctV = cmd.word();
@@ -2056,7 +2071,7 @@ class userTesterOne {
             s = img.convert(img.otherC3, prefix + slot + rn, ctL, lps, rps, mcs);
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
-            userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
+            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
             p.pipe.setTime(5 * 60000);
             p.syncr = img.otherS;
             procs.add(p);
@@ -2226,10 +2241,10 @@ class userTesterOne {
             cfg.add("");
             cfg.add("");
             cfg.add(fileName + " - " + rn + " - " + testName + ":");
-            bits.buf2txt(true, cfg, userTesterPrc.getLogName(slot, rn, 1));
+            bits.buf2txt(true, cfg, userTesterPrc.getLogName(prefix, slot, rn, 1));
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
-            cfg.add("logging file debug " + userTesterPrc.getLogName(slot, rn, 1));
+            cfg.add("logging file debug " + userTesterPrc.getLogName(prefix, slot, rn, 1));
             if (telnet) {
                 cfg.add("vrf definition tester");
                 cfg.add(" exit");
@@ -2294,14 +2309,14 @@ class userTesterOne {
             if (extcfg == null) {
                 bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
             }
-            userTesterPrc p = new userTesterPrc(rdr, slot, rn, s);
+            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             if (write) {
                 for (int i = 0; i < restart; i++) {
                     p.putLine("write");
                     p.putLine("reload force");
                     p.waitFor();
-                    p = new userTesterPrc(rdr, slot, rn, s);
+                    p = new userTesterPrc(rdr, prefix, slot, rn, s);
                 }
             }
             procs.add(p);
