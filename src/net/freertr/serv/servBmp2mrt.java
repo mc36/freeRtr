@@ -915,25 +915,28 @@ class servBmp2mrtConn implements Runnable {
                 lower.relays.get(i).gotMessage(as, peer, adr, typ, pck);
             }
             pck.getSkip(rtrBgpMon.size - servBmp2mrt.size);
+            boolean dir = (flg & 0x10) != 0;
             switch (typ) {
                 case rtrBgpMon.typMon:
+                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
                     break;
                 case rtrBgpMon.typPerUp:
                     pck.getSkip(20);
+                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
                     lower.gotState(as, adr, peer, true);
                     break;
                 case rtrBgpMon.typPerDn:
                     pck.getSkip(1);
+                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
                     lower.gotState(as, adr, peer, false);
                     break;
                 case rtrBgpMon.typStat:
                     pck.getSkip(4);
                     lower.gotCounts(as, adr, peer, pck);
-                    continue;
+                    break;
                 default:
-                    continue;
+                    break;
             }
-            lower.gotMessage(as, adr, peer, (flg & 0x10) != 0, pck.getCopy());
         }
         lower.gotState(peer, false);
         logger.error("neighbor " + peer + " down");
