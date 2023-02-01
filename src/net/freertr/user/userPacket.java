@@ -18,9 +18,11 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgPlymp;
+import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntHttp;
 import net.freertr.clnt.clntModem;
 import net.freertr.clnt.clntNrpe;
 import net.freertr.clnt.clntNtp;
@@ -32,6 +34,7 @@ import net.freertr.clnt.clntSpeed;
 import net.freertr.clnt.clntVconf;
 import net.freertr.clnt.clntVoice;
 import net.freertr.clnt.clntXotPad;
+import net.freertr.enc.encJson;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ip.ipCor;
@@ -78,6 +81,7 @@ import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
+import net.freertr.util.version;
 
 /**
  * process packet commands
@@ -224,6 +228,80 @@ public class userPacket {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.pckt, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("ris2bmp")) {
+            clntHttp htp = new clntHttp(cmd.pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
+            encUrl src = new encUrl();
+            if (src.fromString(cmd.word())) {
+                cmd.error("bad url");
+                return null;
+            }
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy profile");
+                return null;
+            }
+            addrIP adr = userTerminal.justResolv(cmd.word(), prx.proxy.prefer);
+            if (adr == null) {
+                cmd.error("unable to resolve bmp");
+                return null;
+            }
+            pipeSide pipe = prx.proxy.doConnect(servGeneric.protoTcp, adr, bits.str2num(cmd.word()), "ris2bmp");
+            if (pipe == null) {
+                cmd.error("unable to connect bmp");
+                return null;
+            }
+            if (htp.doConnect(src)) {
+                cmd.error("unable to connect ris");
+                return null;
+            }
+            htp.pipe.linePut("GET " + src.toURL(false, false, true) + " HTTP/1.1");
+            htp.pipe.linePut("User-Agent: " + version.usrAgnt);
+            htp.pipe.linePut("Host: " + src.server);
+            htp.pipe.linePut("");
+            htp.pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+            packHolder pck = new packHolder(true, true);
+            for (;;) {
+                if (pipe.isClosed() != 0) {
+                    break;
+                }
+                if (htp.pipe.isClosed() != 0) {
+                    break;
+                }
+                if (need2stop()) {
+                    break;
+                }
+                a = htp.pipe.lineGet(0x11);
+                if (!a.startsWith("data:")) {
+                    continue;
+                }
+                String s = encJson.getValue(a, "peer");
+                if (s == null) {
+                    continue;
+                }
+                adr.fromString(s);
+                s = encJson.getValue(a, "peer_asn");
+                if (s == null) {
+                    continue;
+                }
+                int p = bits.str2num(s);
+                s = encJson.getValue(a, "raw");
+                if (s == null) {
+                    continue;
+                }
+                pck.clear();
+                int o = s.length() / 2;
+                for (int i = 0; i < o; i++) {
+                    pck.putByte(0, bits.fromHex(s.substring(i * 2, i * 2 + 2)));
+                    pck.putSkip(1);
+                }
+                pck.merge2end();
+                rtrBgpMon.createHeader(pck, bits.getTime() + cfgAll.timeServerOffset, false, rtrBgpMon.typMon, adr, p, adr.toIPv4());
+                pck.pipeSend(pipe, 0, pck.dataSize(), 1);
+            }
+            htp.pipe.setClose();
+            pipe.setClose();
+            return null;
         }
         if (a.equals("pmtud")) {
             String rem = cmd.word();

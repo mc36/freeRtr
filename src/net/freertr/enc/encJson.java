@@ -185,4 +185,24 @@ public class encJson {
         return l;
     }
 
+    /**
+     * get one value
+     *
+     * @param a json
+     * @param t tag
+     * @return value, null if not found
+     */
+    public static String getValue(String a, String t) {
+        int i = a.indexOf("\"" + t + "\":\"");
+        if (i < 0) {
+            return null;
+        }
+        a = a.substring(i + t.length() + 4, a.length());
+        i = a.indexOf("\"");
+        if (i < 0) {
+            return null;
+        }
+        return a.substring(0, i);
+    }
+
 }

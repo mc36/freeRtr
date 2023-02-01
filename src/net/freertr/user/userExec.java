@@ -1974,6 +1974,11 @@ public class userExec {
         hl.add(null, "2 3      wakeup                       wake up one host");
         hl.add(null, "3 4        <name:ifc>                 name of interface");
         hl.add(null, "4 .          <addr>                   address of host");
+        hl.add(null, "2 3      ris2bmp                      ris to bmp");
+        hl.add(null, "3 4        <url>                      url of ris live server");
+        hl.add(null, "4 5          <name:prx>               proxy profile");
+        hl.add(null, "5 6            <str>                  hostname");
+        hl.add(null, "6 .              <num>                port number");
         hl.add(null, ".2 3     mrtfilter                    filter mrt file using filters of a peer");
         cfgRtr.getRouterList(hl, 1, " to filter with");
         hl.add(null, ".4 5         <num>                    process number");
