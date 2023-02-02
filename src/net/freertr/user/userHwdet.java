@@ -63,6 +63,10 @@ public class userHwdet {
 
     private tabGen<userHwdetIface> macLst = new tabGen<userHwdetIface>();
 
+    private String exclIfc = "";
+
+    private String exclSer = "";
+
     private void addComment(String s) {
         starter.add("");
         starter.add("### " + s + " ###");
@@ -250,6 +254,9 @@ public class userHwdet {
             if (unneeded.indexOf("/" + s.toLowerCase() + "/") >= 0) {
                 continue;
             }
+            if (exclIfc.indexOf("/" + s + "/") >= 0) {
+                continue;
+            }
             userHwdetIface ntry = new userHwdetIface();
             ntry.name = s.trim();
             ntry = macLst.find(ntry);
@@ -276,6 +283,9 @@ public class userHwdet {
             }
             String a = s.substring(0, i).trim();
             if (a.length() > 2) {
+                continue;
+            }
+            if (exclSer.indexOf("/" + a + "/") >= 0) {
                 continue;
             }
             s = s.substring(i + 1, s.length()).trim();
@@ -420,6 +430,14 @@ public class userHwdet {
             }
             if (s.equals("hwid")) {
                 hwId = cmd.word();
+                continue;
+            }
+            if (s.equals("exclifc")) {
+                exclIfc = cmd.word();
+                continue;
+            }
+            if (s.equals("exclser")) {
+                exclSer = cmd.word();
                 continue;
             }
             cmd.badCmd();
