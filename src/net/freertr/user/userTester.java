@@ -2306,12 +2306,12 @@ class userTesterOne {
                 s += cfgInit.hwCfgEnd + " " + extcfg;
             }
             cfg.add(0, "!" + s);
-            String cfn = prefix + slot + rn + "-" + cfgInit.swCfgEnd;
             if (extcfg == null) {
-                bits.buf2txt(true, cfg, cfn);
-            }
-            if (!new File(cfn).exists()) {
-                bits.buf2txt(true, cfg, cfn);
+                bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
+            } else {
+                if (!new File(extcfg).exists()) {
+                    bits.buf2txt(true, cfg, extcfg);
+                }
             }
             userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
