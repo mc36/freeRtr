@@ -8441,7 +8441,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 a = "/" + new addrIPv4().maxBits();
             }
             if (a.startsWith("/")) {
-                addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, bits.str2num(a.substring(1, a.length())));
+                int i = bits.str2num(a.substring(1, a.length()));
+                if ((i < 0) || (i > new addrIPv4().maxBits())) {
+                    cmd.error("invalid netmask");
+                    return;
+                }
+                addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(adr, i);
                 msk = prf.mask;
             } else {
                 if (msk.fromString(a)) {
@@ -8577,7 +8582,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 a = "/" + new addrIPv6().maxBits();
             }
             if (a.startsWith("/")) {
-                addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr, bits.str2num(a.substring(1, a.length())));
+                int i = bits.str2num(a.substring(1, a.length()));
+                if ((i < 0) || (i > new addrIPv6().maxBits())) {
+                    cmd.error("invalid netmask");
+                    return;
+                }
+                addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(adr, i);
                 msk = prf.mask;
             } else {
                 if (msk.fromString(a)) {
