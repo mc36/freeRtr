@@ -433,11 +433,11 @@ public class userHwdet {
                 continue;
             }
             if (s.equals("exclifc")) {
-                exclIfc = cmd.word();
+                exclIfc = "/" + cmd.word() + "/";
                 continue;
             }
             if (s.equals("exclser")) {
-                exclSer = cmd.word();
+                exclSer = "/" + cmd.word() + "/";
                 continue;
             }
             cmd.badCmd();
