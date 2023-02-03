@@ -35,7 +35,12 @@ public class userNetconf {
     /**
      * get-config
      */
-    public final static String getConfig = "/?xml/rpc/get-config/filter/config";
+    public final static String getCfgFlt = "/?xml/rpc/get-config/filter/config";
+
+    /**
+     * get-config
+     */
+    public final static String getCfgFul = "/?xml/rpc/get-config/source/running";
 
     /**
      * edit-config
@@ -273,10 +278,17 @@ public class userNetconf {
                 rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
                 continue;
             }
-            if (a.startsWith(getConfig)) {
+            if (a.startsWith(getCfgFul)) {
                 List<String> cfg = cfgAll.getShRun(0);
                 List<userFilter> sec = userFilter.text2section(cfg);
-                n = a.substring(getConfig.length(), a.length());
+                userFilter.section2xml(rep, "/rpc-reply/data/config", sec);
+                rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
+                continue;
+            }
+            if (a.startsWith(getCfgFlt)) {
+                List<String> cfg = cfgAll.getShRun(0);
+                List<userFilter> sec = userFilter.text2section(cfg);
+                n = a.substring(getCfgFlt.length(), a.length());
                 List<userFilter> res = new ArrayList<userFilter>();
                 for (; n.length() > 0;) {
                     a = encXml.unescId(n).replaceAll("/", " ");
