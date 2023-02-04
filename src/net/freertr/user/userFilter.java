@@ -199,8 +199,12 @@ public class userFilter implements Comparator<userFilter> {
                 if (a.length() < 1) {
                     break;
                 }
-                a = "/" + encXml.escId(a);
-                s += a;
+                if (!encXml.needEsc(a)) {
+                    s += "/" + a;
+                    continue;
+                }
+                s += "/" + encXml.value;
+                rep.data.add(new encXmlEntry(null, s, "", a));
             }
             rep.data.add(new encXmlEntry(null, s, "", ""));
             rep.data.add(new encXmlEntry(null, beg, "", ""));

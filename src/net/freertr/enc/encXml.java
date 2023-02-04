@@ -64,17 +64,33 @@ public class encXml {
     }
 
     /**
+     * check if name needs escaping
+     *
+     * @param s string
+     * @return true if yes, false if not
+     */
+    public static boolean needEsc(String s) {
+        if (s.length() < 1) {
+            return true;
+        }
+        char c = s.charAt(0);
+        if ((c >= 'a') && (c <= 'z')) {
+            return false;
+        }
+        if ((c >= 'A') && (c <= 'Z')) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * unescape identifier
      *
      * @param s identifier
      * @return unescaped
      */
     public static String escId(String s) {
-        char c = s.charAt(0);
-        if ((c >= 'a') && (c <= 'z')) {
-            return s;
-        }
-        if ((c >= 'A') && (c <= 'Z')) {
+        if (!needEsc(s)) {
             return s;
         }
         return escape + s;
