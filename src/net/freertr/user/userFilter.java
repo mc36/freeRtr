@@ -192,8 +192,15 @@ public class userFilter implements Comparator<userFilter> {
             if (a.equals(cmds.finish)) {
                 continue;
             }
+            if (a.equals(cmds.comment)) {
+                continue;
+            }
             cmds cmd = new cmds("x", a);
             String s = beg;
+            if (cur.section.length() > 0) {
+                s += "/" + cur.section.replaceAll(" ", "/");
+            }
+            String t = s;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -207,7 +214,7 @@ public class userFilter implements Comparator<userFilter> {
                 rep.data.add(new encXmlEntry(null, s, "", a));
             }
             rep.data.add(new encXmlEntry(null, s, "", ""));
-            rep.data.add(new encXmlEntry(null, beg, "", ""));
+            rep.data.add(new encXmlEntry(null, t, "", ""));
         }
     }
 
