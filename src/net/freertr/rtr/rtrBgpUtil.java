@@ -731,6 +731,11 @@ public class rtrBgpUtil {
     public static final int capaStrictBfd = 74;
 
     /**
+     * software version
+     */
+    public static final int capaSoftware = 75;
+
+    /**
      * compression
      */
     public static final int capaCompress = 76;

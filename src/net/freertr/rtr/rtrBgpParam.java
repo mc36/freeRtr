@@ -287,6 +287,11 @@ public abstract class rtrBgpParam {
     public int hostname;
 
     /**
+     * software version
+     */
+    public boolean software;
+
+    /**
      * extended open
      */
     public boolean extOpen;
@@ -1117,6 +1122,7 @@ public abstract class rtrBgpParam {
         extNextCur = src.extNextCur;
         extNextOtr = src.extNextOtr;
         hostname = src.hostname;
+        software = src.software;
         extOpen = src.extOpen;
         extUpdate = src.extUpdate;
         unidirection = src.unidirection;
@@ -1561,6 +1567,7 @@ public abstract class rtrBgpParam {
         getAfiList(l, "4  4,.", "use", true);
         l.add(null, "3  4,.     hostname                    advertise hostname capability");
         l.add(null, "4  .         domain                    advertise domain too");
+        l.add(null, "3  .       software                    advertise software version capability");
         l.add(null, "3  .       extended-open               send open in extended format");
         l.add(null, "3  .       extended-update             advertise extended update capability");
         l.add(null, "3  .       unidirection                not advertise when receiving");
@@ -1743,6 +1750,7 @@ public abstract class rtrBgpParam {
             s = "domain";
         }
         cmds.cfgLine(l, hostname < 1, beg, nei + "hostname", s);
+        cmds.cfgLine(l, !software, beg, nei + "software", "");
         cmds.cfgLine(l, !extOpen, beg, nei + "extended-open", "");
         cmds.cfgLine(l, !extUpdate, beg, nei + "extended-update", "");
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
@@ -2162,6 +2170,10 @@ public abstract class rtrBgpParam {
             if (s.equals("domain")) {
                 hostname = 2;
             }
+            return false;
+        }
+        if (s.equals("software")) {
+            software = !negated;
             return false;
         }
         if (s.equals("extended-open")) {

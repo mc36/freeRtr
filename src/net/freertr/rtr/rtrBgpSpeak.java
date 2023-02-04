@@ -26,6 +26,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
+import net.freertr.util.version;
 
 /**
  * bgp4 speaker
@@ -553,6 +554,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * peer hostname capability
      */
     public String peerHostname;
+
+    /**
+     * peer software capability
+     */
+    public String peerSoftware;
 
     /**
      * peer domain capability
@@ -1632,6 +1638,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaHostname, buf);
         }
+        if (neigh.software) {
+            byte[] buf = encodeHostname(version.usrAgnt);
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaSoftware, buf);
+        }
         if (neigh.bfdTrigger == 2) {
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaStrictBfd, new byte[0]);
         }
@@ -1741,6 +1751,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         buf = new byte[tlv.valDat[i] & 0xff];
                         bits.byteCopy(tlv.valDat, i + 1, buf, 0, buf.length);
                         peerDomainname = new String(buf);
+                        break;
+                    case rtrBgpUtil.capaSoftware:
+                        buf = new byte[tlv.valDat[0] & 0xff];
+                        bits.byteCopy(tlv.valDat, 1, buf, 0, buf.length);
+                        peerSoftware = new String(buf);
                         break;
                     case rtrBgpUtil.capaStrictBfd:
                         strictBfd = true;

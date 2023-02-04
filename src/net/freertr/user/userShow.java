@@ -3802,6 +3802,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(9));
             return;
         }
+        if (a.equals("software")) {
+            rdr.putStrTab(r.bgp.showSummary(16));
+            return;
+        }
         if (a.equals("compression")) {
             rdr.putStrTab(r.bgp.showSummary(10));
             return;

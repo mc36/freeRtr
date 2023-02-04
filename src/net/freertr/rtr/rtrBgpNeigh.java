@@ -587,6 +587,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("description|" + description);
         l.add("hostname|" + conn.peerHostname);
         l.add("domainname|" + conn.peerDomainname);
+        l.add("software|" + conn.peerSoftware);
         l.add("compression|rx=" + (conn.compressRx != null) + ", tx=" + (conn.compressTx != null));
         l.add("strict bfd|" + conn.strictBfd);
         l.add("graceful got|" + rtrBgpParam.mask2string(conn.peerGrace));
@@ -1978,6 +1979,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerMltLab) + "|" + rtrBgpParam.mask2string(multiLabel & addrFams);
             case 15:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerLlGrace) + "|" + rtrBgpParam.mask2string(llGraceRestart & addrFams);
+            case 16:
+                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.peerSoftware;
             default:
                 return null;
         }

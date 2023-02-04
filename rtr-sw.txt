@@ -504,6 +504,7 @@ router bgp4 65535
  template r monitor bmp
  template r dump mrt
  template r hostname domain
+ template r software
  template r extended-open
  template r extended-update
  template r aigp
@@ -565,6 +566,7 @@ router bgp6 65535
  template r monitor bmp
  template r dump mrt
  template r hostname domain
+ template r software
  template r extended-open
  template r extended-update
  template r aigp
