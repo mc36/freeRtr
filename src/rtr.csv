@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v23.2.4-cur, done by cs@nop.
--;-;-;2023-02-04 19:32:18, took 00:09:22, with 80 workers, on 3102 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2023-02-04 20:04:44, took 00:10:08, with 80 workers, on 3104 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2609,6 +2609,8 @@ http://sources.freertr.org/cfg/rout-bgp689.tst;rout-bgp689.tst;success;bgp inter
 http://sources.freertr.org/cfg/rout-bgp690.tst;rout-bgp690.tst;success;bgp interas othervpn with multiple labels
 http://sources.freertr.org/cfg/rout-bgp691.tst;rout-bgp691.tst;success;bgp interas labels with multiple labels
 http://sources.freertr.org/cfg/rout-bgp692.tst;rout-bgp692.tst;success;bgp interas ctp with multiple labels
+http://sources.freertr.org/cfg/rout-bgp693.tst;rout-bgp693.tst;success;ebgp with hostname
+http://sources.freertr.org/cfg/rout-bgp694.tst;rout-bgp694.tst;success;ebgp with software
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

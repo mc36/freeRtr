@@ -13705,3 +13705,6 @@ qc pass: bgp interas othervpn with multiple labels
 ---------------------------------- 2023-01-22 13:43:49 23.1.22
 qc pass: bgp interas labels with multiple labels
 qc pass: bgp interas ctp with multiple labels
+---------------------------------- 2023-02-04 19:54:36 23.2.4
+qc pass: ebgp with hostname
+qc pass: ebgp with software
