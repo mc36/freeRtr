@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.enc.encXml;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
@@ -152,6 +153,10 @@ public class userReader implements Comparator<String> {
          * htmlized
          */
         html,
+        /**
+         * xmlized
+         */
+        xml,
         /**
          * prepend line numbers
          */
@@ -760,6 +765,11 @@ public class userReader implements Comparator<String> {
                 return doSecond(lst);
             case html:
                 lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.html);
+                return doSecond(lst);
+            case xml:
+                encXml xml = new encXml();
+                userFilter.section2xml(xml, "/config", userFilter.text2section(lst));
+                lst = xml.toXMLlst();
                 return doSecond(lst);
             case linenum:
                 lst = bits.lst2lin(lst, true);
@@ -1579,6 +1589,10 @@ public class userReader implements Comparator<String> {
             }
             if (a.equals("html")) {
                 filterM = mode.html;
+                return cmd;
+            }
+            if (a.equals("xml")) {
+                filterM = mode.xml;
                 return cmd;
             }
             if (a.equals("setdel")) {
