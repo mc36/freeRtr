@@ -221,7 +221,7 @@ public class ipMpls implements ifcUp {
      * register to ethtyp
      */
     public void register2eth() {
-        fwdE.addET(typeM, "mplsMulti", this);
+        fwdE.addET(typeM, "mplsMlt", this);
         fwdE.updateET(typeM, this);
         fwdE.addET(typeU, "mplsUni", this);
         fwdE.updateET(typeU, this);

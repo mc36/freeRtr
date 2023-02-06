@@ -3701,11 +3701,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             fwdIf4 = vrfFor.fwd4.ifaceAdd(ipIf4);
             fwdIf4.ifwTyp = type;
             ipIf4.setIPv4addr(addr4, mask4.toNetmask());
-            ethtyp.addET(ipIfc4.type, "ip4", ipIf4);
+            ethtyp.addET(ipIfc4.type, "ipv4", ipIf4);
             ethtyp.updateET(ipIfc4.type, ipIf4);
             ifcUp arp = ipIf4.getPeerHdr();
             if (arp != null) {
-                ethtyp.addET(ipIfc4arp.type, "arp4", arp);
+                ethtyp.addET(ipIfc4arp.type, "arp", arp);
                 ethtyp.updateET(ipIfc4arp.type, arp);
             }
             ethtyp.propagateState();
@@ -3716,7 +3716,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             fwdIf6 = vrfFor.fwd6.ifaceAdd(ipIf6);
             fwdIf6.ifwTyp = type;
             ipIf6.setIPv6addr(addr6, mask6.toNetmask());
-            ethtyp.addET(ipIfc6.type, "ip6", ipIf6);
+            ethtyp.addET(ipIfc6.type, "ipv6", ipIf6);
             ethtyp.updateET(ipIfc6.type, ipIf6);
             if (addr6.isLinkLocal()) {
                 addrIP ad = new addrIP();
@@ -4870,11 +4870,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void setup2transproxy(clntProxy clnt) {
         clear2transproxy();
         transProxy = new ipProxy(clnt);
-        ethtyp.addET(ipIfc4.type, "ip4", transProxy);
+        ethtyp.addET(ipIfc4.type, "ipv4", transProxy);
         ethtyp.updateET(ipIfc4.type, transProxy);
-        ethtyp.addET(ipIfc4arp.type, "arp4", transProxy);
+        ethtyp.addET(ipIfc4arp.type, "arp", transProxy);
         ethtyp.updateET(ipIfc4arp.type, transProxy);
-        ethtyp.addET(ipIfc6.type, "ip6", transProxy);
+        ethtyp.addET(ipIfc6.type, "ipv6", transProxy);
         ethtyp.updateET(ipIfc6.type, transProxy);
     }
 
