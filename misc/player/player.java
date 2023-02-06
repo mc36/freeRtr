@@ -193,7 +193,7 @@ public class player implements Runnable {
         stopProc("ffplay");
         stopProc("cvlc");
         stopProc("vlc");
-        stopProc("youtube-dl");
+        stopProc("yt-dlp");
         stopProc("amixer");
     }
 
@@ -265,7 +265,7 @@ public class player implements Runnable {
             ply = "mplayer -ao alsa -vo none -srate " + srate + " {}";
         }
         cmd = new String[7];
-        cmd[0] = "youtube-dl";
+        cmd[0] = "yt-dlp";
         cmd[1] = "-x";
         cmd[2] = "--output";
         cmd[3] = "/tmp/player.url";
