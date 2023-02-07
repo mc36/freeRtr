@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v23.2.7-cur, done by cs@nop.
--;-;-;2023-02-07 04:05:15, took 00:09:26, with 80 workers, on 3104 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2023-02-07 04:32:58, took 00:10:31, with 80 workers, on 3105 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -3003,6 +3003,7 @@ http://sources.freertr.org/cfg/rout-redist40.tst;rout-redist40.tst;success;redis
 http://sources.freertr.org/cfg/rout-redist41.tst;rout-redist41.tst;success;redistribution with bgp ctp
 http://sources.freertr.org/cfg/rout-redist42.tst;rout-redist42.tst;success;redistribution with octp bgp
 http://sources.freertr.org/cfg/rout-redist43.tst;rout-redist43.tst;success;redistribution route limit
+http://sources.freertr.org/cfg/rout-redist44.tst;rout-redist44.tst;success;redistribution with rift
 http://sources.freertr.org/cfg/rout-rift01.tst;rout-rift01.tst;success;rift point2point connection
 http://sources.freertr.org/cfg/rout-rift02.tst;rout-rift02.tst;success;rift point2point chain
 http://sources.freertr.org/cfg/rout-rift03.tst;rout-rift03.tst;success;rift metric

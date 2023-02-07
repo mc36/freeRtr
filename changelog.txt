@@ -13708,3 +13708,5 @@ qc pass: bgp interas ctp with multiple labels
 ---------------------------------- 2023-02-04 19:54:36 23.2.4
 qc pass: ebgp with hostname
 qc pass: ebgp with software
+---------------------------------- 2023-02-07 04:22:27 23.2.7
+qc pass: redistribution with rift
