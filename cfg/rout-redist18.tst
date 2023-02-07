@@ -11,6 +11,7 @@ int eth7 eth 0000.0000.1111 $7a$ $7b$
 int eth8 eth 0000.0000.1111 $8a$ $8b$
 int eth9 eth 0000.0000.1111 $9a$ $9b$
 int eth10 eth 0000.0000.1111 $10a$ $10b$
+int eth11 eth 0000.0000.1111 $11a$ $11b$
 !
 vrf def v1
  rd 1:1
@@ -34,6 +35,7 @@ router isis4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router isis6 1
  vrf v1
@@ -49,6 +51,7 @@ router isis6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
  exit
 router ospf4 1
  vrf v1
@@ -64,6 +67,7 @@ router ospf4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router ospf6 1
  vrf v1
@@ -79,6 +83,7 @@ router ospf6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
  exit
 router pvrp4 1
  vrf v1
@@ -93,6 +98,7 @@ router pvrp4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router pvrp6 1
  vrf v1
@@ -107,6 +113,7 @@ router pvrp6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
  exit
 router lsrp4 1
  vrf v1
@@ -121,6 +128,7 @@ router lsrp4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router lsrp6 1
  vrf v1
@@ -135,6 +143,7 @@ router lsrp6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
  exit
 router eigrp4 1
  vrf v1
@@ -150,6 +159,7 @@ router eigrp4 1
  red lsrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router eigrp6 1
  vrf v1
@@ -165,6 +175,7 @@ router eigrp6 1
  red lsrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
  exit
 router rip4 1
  vrf v1
@@ -178,6 +189,7 @@ router rip4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router rip6 1
  vrf v1
@@ -191,6 +203,7 @@ router rip6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
  exit
 router babel4 1
  vrf v1
@@ -205,6 +218,7 @@ router babel4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router babel6 1
  vrf v1
@@ -219,6 +233,7 @@ router babel6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
  exit
 router olsr4 1
  vrf v1
@@ -232,6 +247,7 @@ router olsr4 1
  red eigrp4 1
  red bgp4 1
  red bgp4 2
+ red rift4 1
  exit
 router olsr6 1
  vrf v1
@@ -245,6 +261,37 @@ router olsr6 1
  red eigrp6 1
  red bgp6 1
  red bgp6 2
+ red rift6 1
+ exit
+router rift4 1
+ vrf v1
+ router 41
+ red conn
+ red isis4 1
+ red ospf4 1
+ red rip4 1
+ red babel4 1
+ red pvrp4 1
+ red lsrp4 1
+ red eigrp4 1
+ red bgp4 1
+ red bgp4 2
+ red olsr4 1
+ exit
+router rift6 1
+ vrf v1
+ router 61
+ red conn
+ red isis6 1
+ red ospf6 1
+ red rip6 1
+ red babel6 1
+ red pvrp6 1
+ red lsrp6 1
+ red eigrp6 1
+ red bgp6 1
+ red bgp6 2
+ red olsr6 1
  exit
 router bgp4 1
  vrf v1
@@ -263,6 +310,7 @@ router bgp4 1
  red lsrp4 1
  red eigrp4 1
  red bgp4 2
+ red rift4 1
  exit
 router bgp6 1
  vrf v1
@@ -281,6 +329,7 @@ router bgp6 1
  red lsrp6 1
  red eigrp6 1
  red bgp6 2
+ red rift6 1
  exit
 router bgp4 2
  vrf v2
@@ -301,6 +350,7 @@ router bgp4 2
  afi-vrf v1 red lsrp4 1
  afi-vrf v1 red eigrp4 1
  afi-vrf v1 red bgp4 1
+ afi-vrf v1 red rift4 1
  exit
 router bgp6 2
  vrf v2
@@ -321,6 +371,7 @@ router bgp6 2
  afi-vrf v1 red lsrp6 1
  afi-vrf v1 red eigrp6 1
  afi-vrf v1 red bgp6 1
+ afi-vrf v1 red rift6 1
  exit
 int lo1
  vrf for v1
@@ -424,6 +475,16 @@ int eth10.12
  vrf for v1
  ipv6 addr 1234:10::1 ffff:ffff::
  router olsr6 1 ena
+ exit
+int eth11.11
+ vrf for v1
+ ipv4 addr 1.1.1.41 255.255.255.252
+ router rift4 1 ena
+ exit
+int eth11.12
+ vrf for v1
+ ipv6 addr 1234:11::1 ffff:ffff::
+ router rift6 1 ena
  exit
 !
 
@@ -785,6 +846,39 @@ int eth1.12
  exit
 !
 
+addrouter r12
+int eth1 eth 0000.0000.cccc $11b$ $11a$
+!
+vrf def v1
+ rd 1:1
+ exit
+router rift4 1
+ vrf v1
+ router 42
+ red conn
+ exit
+router rift6 1
+ vrf v1
+ router 62
+ red conn
+ exit
+int lo1
+ vrf for v1
+ ipv4 addr 2.2.2.12 255.255.255.255
+ ipv6 addr 4321::12 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int eth1.11
+ vrf for v1
+ ipv4 addr 1.1.1.42 255.255.255.252
+ router rift4 1 ena
+ exit
+int eth1.12
+ vrf for v1
+ ipv6 addr 1234:11::2 ffff:ffff::
+ router rift6 1 ena
+ exit
+!
+
 
 r1 tping 100 60 2.2.2.2 vrf v1
 r1 tping 100 60 2.2.2.3 vrf v1
@@ -796,6 +890,7 @@ r1 tping 100 60 2.2.2.8 vrf v1
 r1 tping 100 60 2.2.2.9 vrf v1
 r1 tping 100 60 2.2.2.10 vrf v1
 r1 tping 100 60 2.2.2.11 vrf v1
+r1 tping 100 60 2.2.2.12 vrf v1
 r1 tping 100 60 4321::2 vrf v1
 r1 tping 100 60 4321::3 vrf v1
 r1 tping 100 60 4321::4 vrf v1
@@ -806,6 +901,7 @@ r1 tping 100 60 4321::8 vrf v1
 r1 tping 100 60 4321::9 vrf v1
 r1 tping 100 60 4321::10 vrf v1
 r1 tping 100 60 4321::11 vrf v1
+r1 tping 100 60 4321::12 vrf v1
 
 r2 tping 100 60 2.2.2.1 vrf v1
 r2 tping 100 60 2.2.2.3 vrf v1
@@ -817,6 +913,7 @@ r2 tping 100 60 2.2.2.8 vrf v1
 r2 tping 100 60 2.2.2.9 vrf v1
 r2 tping 100 60 2.2.2.10 vrf v1
 r2 tping 100 60 2.2.2.11 vrf v1
+r2 tping 100 60 2.2.2.12 vrf v1
 r2 tping 100 60 4321::1 vrf v1
 r2 tping 100 60 4321::3 vrf v1
 r2 tping 100 60 4321::4 vrf v1
@@ -827,6 +924,7 @@ r2 tping 100 60 4321::8 vrf v1
 r2 tping 100 60 4321::9 vrf v1
 r2 tping 100 60 4321::10 vrf v1
 r2 tping 100 60 4321::11 vrf v1
+r2 tping 100 60 4321::12 vrf v1
 
 r3 tping 100 60 2.2.2.1 vrf v1
 r3 tping 100 60 2.2.2.2 vrf v1
@@ -838,6 +936,7 @@ r3 tping 100 60 2.2.2.8 vrf v1
 r3 tping 100 60 2.2.2.9 vrf v1
 r3 tping 100 60 2.2.2.10 vrf v1
 r3 tping 100 60 2.2.2.11 vrf v1
+r3 tping 100 60 2.2.2.12 vrf v1
 r3 tping 100 60 4321::1 vrf v1
 r3 tping 100 60 4321::2 vrf v1
 r3 tping 100 60 4321::4 vrf v1
@@ -848,6 +947,7 @@ r3 tping 100 60 4321::8 vrf v1
 r3 tping 100 60 4321::9 vrf v1
 r3 tping 100 60 4321::10 vrf v1
 r3 tping 100 60 4321::11 vrf v1
+r3 tping 100 60 4321::12 vrf v1
 
 r4 tping 100 60 2.2.2.1 vrf v1
 r4 tping 100 60 2.2.2.2 vrf v1
@@ -859,6 +959,7 @@ r4 tping 100 60 2.2.2.7 vrf v1
 !r4 tping 100 60 2.2.2.9 vrf v1
 r4 tping 100 60 2.2.2.10 vrf v1
 r4 tping 100 60 2.2.2.11 vrf v1
+r4 tping 100 60 2.2.2.12 vrf v1
 r4 tping 100 60 4321::1 vrf v1
 r4 tping 100 60 4321::2 vrf v1
 r4 tping 100 60 4321::3 vrf v1
@@ -869,6 +970,7 @@ r4 tping 100 60 4321::7 vrf v1
 !r4 tping 100 60 4321::9 vrf v1
 r4 tping 100 60 4321::10 vrf v1
 r4 tping 100 60 4321::11 vrf v1
+r4 tping 100 60 4321::12 vrf v1
 
 r5 tping 100 60 2.2.2.1 vrf v1
 r5 tping 100 60 2.2.2.2 vrf v1
@@ -880,6 +982,7 @@ r5 tping 100 60 2.2.2.8 vrf v1
 r5 tping 100 60 2.2.2.9 vrf v1
 r5 tping 100 60 2.2.2.10 vrf v1
 r5 tping 100 60 2.2.2.11 vrf v1
+r5 tping 100 60 2.2.2.12 vrf v1
 r5 tping 100 60 4321::1 vrf v1
 r5 tping 100 60 4321::2 vrf v1
 r5 tping 100 60 4321::3 vrf v1
@@ -890,6 +993,7 @@ r5 tping 100 60 4321::8 vrf v1
 r5 tping 100 60 4321::9 vrf v1
 r5 tping 100 60 4321::10 vrf v1
 r5 tping 100 60 4321::11 vrf v1
+r5 tping 100 60 4321::12 vrf v1
 
 r6 tping 100 60 2.2.2.1 vrf v1
 r6 tping 100 60 2.2.2.2 vrf v1
@@ -901,6 +1005,7 @@ r6 tping 100 60 2.2.2.8 vrf v1
 r6 tping 100 60 2.2.2.9 vrf v1
 r6 tping 100 60 2.2.2.10 vrf v1
 r6 tping 100 60 2.2.2.11 vrf v1
+r6 tping 100 60 2.2.2.12 vrf v1
 r6 tping 100 60 4321::1 vrf v1
 r6 tping 100 60 4321::2 vrf v1
 r6 tping 100 60 4321::3 vrf v1
@@ -911,6 +1016,7 @@ r6 tping 100 60 4321::8 vrf v1
 r6 tping 100 60 4321::9 vrf v1
 r6 tping 100 60 4321::10 vrf v1
 r6 tping 100 60 4321::11 vrf v1
+r6 tping 100 60 4321::12 vrf v1
 
 r7 tping 100 60 2.2.2.1 vrf v1
 r7 tping 100 60 2.2.2.2 vrf v1
@@ -922,6 +1028,7 @@ r7 tping 100 60 2.2.2.8 vrf v1
 r7 tping 100 60 2.2.2.9 vrf v1
 r7 tping 100 60 2.2.2.10 vrf v1
 r7 tping 100 60 2.2.2.11 vrf v1
+r7 tping 100 60 2.2.2.12 vrf v1
 r7 tping 100 60 4321::1 vrf v1
 r7 tping 100 60 4321::2 vrf v1
 r7 tping 100 60 4321::3 vrf v1
@@ -932,6 +1039,7 @@ r7 tping 100 60 4321::8 vrf v1
 r7 tping 100 60 4321::9 vrf v1
 r7 tping 100 60 4321::10 vrf v1
 r7 tping 100 60 4321::11 vrf v1
+r7 tping 100 60 4321::12 vrf v1
 
 r8 tping 100 60 2.2.2.1 vrf v1
 r8 tping 100 60 2.2.2.2 vrf v1
@@ -943,6 +1051,7 @@ r8 tping 100 60 2.2.2.7 vrf v1
 r8 tping 100 60 2.2.2.9 vrf v1
 r8 tping 100 60 2.2.2.10 vrf v1
 r8 tping 100 60 2.2.2.11 vrf v1
+r8 tping 100 60 2.2.2.12 vrf v1
 r8 tping 100 60 4321::1 vrf v1
 r8 tping 100 60 4321::2 vrf v1
 r8 tping 100 60 4321::3 vrf v1
@@ -953,6 +1062,7 @@ r8 tping 100 60 4321::7 vrf v1
 r8 tping 100 60 4321::9 vrf v1
 r8 tping 100 60 4321::10 vrf v1
 r8 tping 100 60 4321::11 vrf v1
+r8 tping 100 60 4321::12 vrf v1
 
 r9 tping 100 60 2.2.2.1 vrf v1
 r9 tping 100 60 2.2.2.2 vrf v1
@@ -964,6 +1074,7 @@ r9 tping 100 60 2.2.2.7 vrf v1
 !r9 tping 100 60 2.2.2.8 vrf v1
 r9 tping 100 60 2.2.2.10 vrf v1
 r9 tping 100 60 2.2.2.11 vrf v1
+r9 tping 100 60 2.2.2.12 vrf v1
 r9 tping 100 60 4321::1 vrf v1
 r9 tping 100 60 4321::2 vrf v1
 r9 tping 100 60 4321::3 vrf v1
@@ -974,6 +1085,7 @@ r9 tping 100 60 4321::7 vrf v1
 !r9 tping 100 60 4321::8 vrf v1
 r9 tping 100 60 4321::10 vrf v1
 r9 tping 100 60 4321::11 vrf v1
+r9 tping 100 60 2.2.2.12 vrf v1
 
 r10 tping 100 60 2.2.2.1 vrf v1
 r10 tping 100 60 2.2.2.2 vrf v1
@@ -985,6 +1097,7 @@ r10 tping 100 60 2.2.2.7 vrf v1
 r10 tping 100 60 2.2.2.8 vrf v1
 r10 tping 100 60 2.2.2.9 vrf v1
 r10 tping 100 60 2.2.2.11 vrf v1
+r10 tping 100 60 2.2.2.12 vrf v1
 r10 tping 100 60 4321::1 vrf v1
 r10 tping 100 60 4321::2 vrf v1
 r10 tping 100 60 4321::3 vrf v1
@@ -995,6 +1108,7 @@ r10 tping 100 60 4321::7 vrf v1
 r10 tping 100 60 4321::8 vrf v1
 r10 tping 100 60 4321::9 vrf v1
 r10 tping 100 60 4321::11 vrf v1
+r10 tping 100 60 4321::12 vrf v1
 
 r11 tping 100 60 2.2.2.1 vrf v1
 r11 tping 100 60 2.2.2.2 vrf v1
@@ -1006,6 +1120,7 @@ r11 tping 100 60 2.2.2.7 vrf v1
 !r11 tping 100 60 2.2.2.8 vrf v1
 !r11 tping 100 60 2.2.2.9 vrf v1
 r11 tping 100 60 2.2.2.10 vrf v1
+r11 tping 100 60 2.2.2.12 vrf v1
 r11 tping 100 60 4321::1 vrf v1
 r11 tping 100 60 4321::2 vrf v1
 r11 tping 100 60 4321::3 vrf v1
@@ -1016,3 +1131,27 @@ r11 tping 100 60 4321::7 vrf v1
 !r11 tping 100 60 4321::8 vrf v1
 !r11 tping 100 60 4321::9 vrf v1
 r11 tping 100 60 4321::10 vrf v1
+r11 tping 100 60 4321::12 vrf v1
+
+r12 tping 100 60 2.2.2.1 vrf v1
+r12 tping 100 60 2.2.2.2 vrf v1
+r12 tping 100 60 2.2.2.3 vrf v1
+r12 tping 100 60 2.2.2.4 vrf v1
+r12 tping 100 60 2.2.2.5 vrf v1
+r12 tping 100 60 2.2.2.6 vrf v1
+r12 tping 100 60 2.2.2.7 vrf v1
+r12 tping 100 60 2.2.2.8 vrf v1
+r12 tping 100 60 2.2.2.9 vrf v1
+r12 tping 100 60 2.2.2.11 vrf v1
+r12 tping 100 60 2.2.2.12 vrf v1
+r12 tping 100 60 4321::1 vrf v1
+r12 tping 100 60 4321::2 vrf v1
+r12 tping 100 60 4321::3 vrf v1
+r12 tping 100 60 4321::4 vrf v1
+r12 tping 100 60 4321::5 vrf v1
+r12 tping 100 60 4321::6 vrf v1
+r12 tping 100 60 4321::7 vrf v1
+r12 tping 100 60 4321::8 vrf v1
+r12 tping 100 60 4321::9 vrf v1
+r12 tping 100 60 4321::11 vrf v1
+r12 tping 100 60 4321::12 vrf v1
