@@ -1,4 +1,4 @@
-description ibgp with php ctp
+description ibgp with php car
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -31,7 +31,7 @@ ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 ipv6 route v1 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 router bgp4 1
  vrf v1
- address ctp
+ address car
  local-as 1
  router-id 4.4.4.1
  neigh 2.2.2.3 remote-as 1
@@ -41,7 +41,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
- address ctp
+ address car
  local-as 1
  router-id 6.6.6.1
  neigh 4321::3 remote-as 1
@@ -127,7 +127,7 @@ ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 router bgp4 1
  vrf v1
- address ctp
+ address car
  local-as 1
  router-id 4.4.4.3
  neigh 2.2.2.1 remote-as 1
@@ -137,7 +137,7 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
- address ctp
+ address car
  local-as 1
  router-id 6.6.6.3
  neigh 4321::1 remote-as 1

@@ -1,4 +1,4 @@
-description octp bgp egress route filtering with prefixlist
+description ocar bgp egress route filtering with prefixlist
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -38,7 +38,7 @@ prefix-list p6
 router bgp4 1
  vrf v1
  no safe-ebgp
- address octp
+ address ocar
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
@@ -49,7 +49,7 @@ router bgp4 1
 router bgp6 1
  vrf v1
  no safe-ebgp
- address octp
+ address ocar
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
@@ -89,7 +89,7 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address octp
+ address ocar
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
@@ -99,7 +99,7 @@ router bgp4 1
 router bgp6 1
  vrf v1
  no safe-ebgp
- address octp
+ address ocar
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1

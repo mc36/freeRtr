@@ -1,4 +1,4 @@
-description unicast+octp over bgp with additional path
+description unicast+ocar over bgp with additional path
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -20,24 +20,24 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address uni octp
+ address uni ocar
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 additional-path-rx uni octp
- neigh 1.1.1.2 additional-path-tx uni octp
+ neigh 1.1.1.2 additional-path-rx uni ocar
+ neigh 1.1.1.2 additional-path-tx uni ocar
  afi-other ena
  afi-other red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address uni octp
+ address uni ocar
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 additional-path-rx uni octp
- neigh 1234:1::2 additional-path-Tx uni octp
+ neigh 1234:1::2 additional-path-rx uni ocar
+ neigh 1234:1::2 additional-path-Tx uni ocar
  afi-other ena
  afi-other red conn
  exit
@@ -73,24 +73,24 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address uni octp
+ address uni ocar
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 additional-path-rx uni octp
- neigh 1.1.1.1 additional-path-tx uni octp
+ neigh 1.1.1.1 additional-path-rx uni ocar
+ neigh 1.1.1.1 additional-path-tx uni ocar
  afi-other ena
  afi-other red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address uni octp
+ address uni ocar
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 additional-path-rx uni octp
- neigh 1234:1::1 additional-path-tx uni octp
+ neigh 1234:1::1 additional-path-rx uni ocar
+ neigh 1234:1::1 additional-path-tx uni ocar
  afi-other ena
  afi-other red conn
  exit

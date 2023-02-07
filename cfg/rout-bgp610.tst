@@ -36,7 +36,7 @@ router bgp4 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 label-pop
- neigh 1.1.1.2 additional-path-tx lab
+ neigh 1.1.1.2 additional-path-tx ctp
  red conn
  exit
 router bgp6 1
@@ -47,7 +47,7 @@ router bgp6 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
  neigh 1234:1::2 label-pop
- neigh 1234:1::2 additional-path-tx lab
+ neigh 1234:1::2 additional-path-tx ctp
  red conn
  exit
 int pweth1
@@ -107,10 +107,10 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 label-pop
- neigh 1.1.1.1 additional-path-rx lab
+ neigh 1.1.1.1 additional-path-rx ctp
  neigh 1.1.1.6 remote-as 3
  neigh 1.1.1.6 label-pop
- neigh 1.1.1.6 additional-path-rx lab
+ neigh 1.1.1.6 additional-path-rx ctp
  red conn
  exit
 router bgp6 1

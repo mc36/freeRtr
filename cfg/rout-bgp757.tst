@@ -1,4 +1,4 @@
-description bgp interas ctp with multiple labels
+description bgp interas car with multiple labels
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -32,23 +32,23 @@ ipv6 route v1 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 4.4.4.1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
- neigh 2.2.2.2 multiple-label ctp
+ neigh 2.2.2.2 multiple-label car
  justadvert lo1
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 6.6.6.1
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
- neigh 4321::2 multiple-label ctp
+ neigh 4321::2 multiple-label car
  justadvert lo1
  exit
 int pweth1
@@ -104,32 +104,32 @@ ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 4.4.4.2
  neigh 2.2.2.1 remote-as 1
  neigh 2.2.2.1 update lo0
- neigh 2.2.2.1 multiple-label ctp
+ neigh 2.2.2.1 multiple-label car
  neigh 2.2.2.1 route-reflect
  neigh 2.2.2.3 remote-as 1
  neigh 2.2.2.3 update lo0
- neigh 2.2.2.3 multiple-label ctp
+ neigh 2.2.2.3 multiple-label car
  neigh 2.2.2.3 route-reflect
  justadvert lo1
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 6.6.6.2
  neigh 4321::1 remote-as 1
  neigh 4321::1 update lo0
- neigh 4321::1 multiple-label ctp
+ neigh 4321::1 multiple-label car
  neigh 4321::1 route-reflect
  neigh 4321::3 remote-as 1
  neigh 4321::3 update lo0
- neigh 4321::3 multiple-label ctp
+ neigh 4321::3 multiple-label car
  neigh 4321::3 route-reflect
  justadvert lo1
  exit
@@ -176,30 +176,30 @@ ipv6 route v1 1234:3::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2 mplsim
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 4.4.4.3
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
- neigh 2.2.2.2 multiple-label ctp
+ neigh 2.2.2.2 multiple-label car
  neigh 2.2.2.2 next-hop-multi
  neigh 1.1.1.10 remote-as 2
- neigh 1.1.1.10 multiple-label ctp
+ neigh 1.1.1.10 multiple-label car
  neigh 1.1.1.10 next-hop-multi
  justadvert lo1
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 6.6.6.3
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
- neigh 4321::2 multiple-label ctp
+ neigh 4321::2 multiple-label car
  neigh 4321::2 next-hop-multi
  neigh 1234:3::2 remote-as 2
- neigh 1234:3::2 multiple-label ctp
+ neigh 1234:3::2 multiple-label car
  neigh 1234:3::2 next-hop-multi
  justadvert lo1
  exit
@@ -246,30 +246,30 @@ ipv6 route v1 1234:3::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1 mplsim
 router bgp4 2
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 4.4.4.4
  neigh 2.2.2.5 remote-as 2
  neigh 2.2.2.5 update lo0
- neigh 2.2.2.5 multiple-label ctp
+ neigh 2.2.2.5 multiple-label car
  neigh 2.2.2.5 next-hop-multi
  neigh 1.1.1.9 remote-as 1
- neigh 1.1.1.9 multiple-label ctp
+ neigh 1.1.1.9 multiple-label car
  neigh 1.1.1.9 next-hop-multi
  justadvert lo1
  exit
 router bgp6 2
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 6.6.6.4
  neigh 4321::5 remote-as 2
  neigh 4321::5 update lo0
- neigh 4321::5 multiple-label ctp
+ neigh 4321::5 multiple-label car
  neigh 4321::5 next-hop-multi
  neigh 1234:3::1 remote-as 1
- neigh 1234:3::1 multiple-label ctp
+ neigh 1234:3::1 multiple-label car
  neigh 1234:3::1 next-hop-multi
  justadvert lo1
  exit
@@ -316,32 +316,32 @@ ipv6 route v1 4321::6 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:5::2
 router bgp4 2
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 4.4.4.5
  neigh 2.2.2.4 remote-as 2
  neigh 2.2.2.4 update lo0
- neigh 2.2.2.4 multiple-label ctp
+ neigh 2.2.2.4 multiple-label car
  neigh 2.2.2.4 route-reflect
  neigh 2.2.2.6 remote-as 2
  neigh 2.2.2.6 update lo0
- neigh 2.2.2.6 multiple-label ctp
+ neigh 2.2.2.6 multiple-label car
  neigh 2.2.2.6 route-reflect
  justadvert lo1
  exit
 router bgp6 2
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 6.6.6.5
  neigh 4321::4 remote-as 2
  neigh 4321::4 update lo0
- neigh 4321::4 multiple-label ctp
+ neigh 4321::4 multiple-label car
  neigh 4321::4 route-reflect
  neigh 4321::6 remote-as 2
  neigh 4321::6 update lo0
- neigh 4321::6 multiple-label ctp
+ neigh 4321::6 multiple-label car
  neigh 4321::6 route-reflect
  justadvert lo1
  exit
@@ -379,23 +379,23 @@ ipv6 route v1 4321::5 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:5::1
 router bgp4 2
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 4.4.4.6
  neigh 2.2.2.5 remote-as 2
  neigh 2.2.2.5 update lo0
- neigh 2.2.2.5 multiple-label ctp
+ neigh 2.2.2.5 multiple-label car
  justadvert lo1
  exit
 router bgp6 2
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 6.6.6.6
  neigh 4321::5 remote-as 2
  neigh 4321::5 update lo0
- neigh 4321::5 multiple-label ctp
+ neigh 4321::5 multiple-label car
  justadvert lo1
  exit
 int pweth1

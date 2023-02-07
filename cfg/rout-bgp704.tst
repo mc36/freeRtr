@@ -1,4 +1,4 @@
-description bgp soft-reconfig with ctp
+description bgp soft-reconfig with car
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -21,7 +21,7 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
@@ -31,7 +31,7 @@ router bgp4 1
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
@@ -78,7 +78,7 @@ int eth2
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
@@ -90,7 +90,7 @@ router bgp4 1
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
@@ -122,7 +122,7 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 3
  router-id 4.4.4.3
  neigh 1.1.1.5 remote-as 2
@@ -132,7 +132,7 @@ router bgp4 1
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 3
  router-id 6.6.6.3
  neigh 1234:2::1 remote-as 2

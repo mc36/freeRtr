@@ -1,4 +1,4 @@
-description bgp additional path with php ctp
+description bgp additional path with php car
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -31,7 +31,7 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
@@ -42,7 +42,7 @@ router bgp4 1
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
@@ -102,29 +102,29 @@ int eth2
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 label-pop
- neigh 1.1.1.1 additional-path-rx lab
+ neigh 1.1.1.1 additional-path-rx car
  neigh 1.1.1.6 remote-as 3
  neigh 1.1.1.6 label-pop
- neigh 1.1.1.6 additional-path-rx lab
+ neigh 1.1.1.6 additional-path-rx car
  red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 label-pop
- neigh 1234:1::1 additional-path-rx lab
+ neigh 1234:1::1 additional-path-rx car
  neigh 1234:2::2 remote-as 3
  neigh 1234:2::2 label-pop
- neigh 1234:2::2 additional-path-rx lab
+ neigh 1234:2::2 additional-path-rx car
  red conn
  exit
 !
@@ -160,25 +160,25 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 3
  router-id 4.4.4.3
  neigh 1.1.1.5 remote-as 2
  neigh 1.1.1.5 label-pop
- neigh 1.1.1.5 additional-path-rx lab
- neigh 1.1.1.5 additional-path-tx lab
+ neigh 1.1.1.5 additional-path-rx car
+ neigh 1.1.1.5 additional-path-tx car
  red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address ctp
+ address car
  local-as 3
  router-id 6.6.6.3
  neigh 1234:2::1 remote-as 2
  neigh 1234:2::1 label-pop
- neigh 1234:2::1 additional-path-tx lab
- neigh 1234:2::1 additional-path-tx lab
+ neigh 1234:2::1 additional-path-tx car
+ neigh 1234:2::1 additional-path-tx car
  red conn
  exit
 int pweth1
