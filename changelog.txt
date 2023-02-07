@@ -13710,3 +13710,69 @@ qc pass: ebgp with hostname
 qc pass: ebgp with software
 ---------------------------------- 2023-02-07 04:22:27 23.2.7
 qc pass: redistribution with rift
+---------------------------------- 2023-02-07 07:37:30 23.2.7
+qc pass: bgp with car over sr
+qc pass: bgp with php car over sr
+qc pass: ebgp with ctp
+qc pass: ibgp with ctp
+qc pass: bgp additional path with ctp
+qc pass: ebgp with php ctp
+qc pass: ibgp with php ctp
+qc pass: bgp additional path with php ctp
+qc pass: ibgp rr with ctp
+qc pass: confed bgp with ctp
+qc pass: bgp route server with ctp
+qc pass: bgp soft-reconfig with ctp
+qc pass: ctp bgp ingress route filtering with prefixlist
+qc pass: ctp bgp egress route filtering with prefixlist
+qc pass: ctp bgp ingress route filtering with routemap
+qc pass: ctp bgp egress route filtering with routemap
+qc pass: ctp bgp ingress route filtering with prefixlist with soft-reconfig
+qc pass: ctp bgp egress route filtering with prefixlist with soft-reconfig
+qc pass: ctp bgp ingress route filtering with routemap with soft-reconfig
+qc pass: ctp bgp egress route filtering with routemap with soft-reconfig
+qc pass: ctp bgp ingress route filtering with routepolicy
+qc pass: ctp bgp egress route filtering with routepolicy
+qc pass: ctp bgp ingress route filtering with routepolicy with soft-reconfig
+qc pass: ctp bgp egress route filtering with routepolicy with soft-reconfig
+qc pass: ctp bgp default route
+qc pass: ctp bgp aggregation
+qc pass: bgp change in metric with ctp
+qc pass: ibgp rr prefix movement with ctp
+qc pass: ibgp rr prefix withdraw with ctp
+qc pass: unicast+octp over ebgp
+qc pass: unicast+octp over bgp with soft-reconfig
+qc pass: unicast+octp over bgp with additional path
+qc pass: unicast+octp over bgp route server
+qc pass: unicast+octp over ibgp
+qc pass: unicast+octp over ibgp rr
+qc pass: unicast+octp over confed bgp
+qc pass: octp over srv6 over ibgp
+qc pass: octp over srv6 over ebgp
+qc pass: octp over srv6 over ibgp rr
+qc pass: octp over srv6 over confed bgp
+qc pass: octp over srv6 over bgp route server
+qc pass: octp over srv6 over bgp with soft-reconfig
+qc pass: octp over srv6 over bgp additional path
+qc pass: octp bgp default route
+qc pass: octp bgp ingress route filtering with prefixlist
+qc pass: octp bgp egress route filtering with prefixlist
+qc pass: octp bgp ingress route filtering with routemap
+qc pass: octp bgp egress route filtering with routemap
+qc pass: octp bgp ingress route filtering with prefixlist with soft-reconfig
+qc pass: octp bgp egress route filtering with prefixlist with soft-reconfig
+qc pass: octp bgp ingress route filtering with routemap with soft-reconfig
+qc pass: octp bgp egress route filtering with routemap with soft-reconfig
+qc pass: octp bgp ingress route filtering with routepolicy
+qc pass: octp bgp egress route filtering with routepolicy
+qc pass: octp bgp ingress route filtering with routepolicy with soft-reconfig
+qc pass: octp bgp egress route filtering with routepolicy with soft-reconfig
+qc pass: octp bgp aggregation
+qc pass: octp bgp change in metric
+qc pass: octp ibgp rr prefix movement
+qc pass: octp ibgp rr prefix withdraw
+qc pass: octp ibgp fullmesh prefix withdraw
+qc pass: olab+octp over ebgp
+qc pass: ocar+octp over ebgp
+qc pass: bgp csc vpn with ctp
+qc pass: bgp interas ctp with multiple labels
