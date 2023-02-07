@@ -2593,7 +2593,7 @@ qc pass: other ctp colors over ibgp rr
 qc pass: ctp colors over confed bgp
 qc pass: other ctp colors over confed bgp
 qc pass: ctp colors over bgp route server
-qc pass: other colors over bgp route server
+qc pass: other ctp colors over bgp route server
 qc pass: ctp colors over bgp with soft-reconfig
 qc pass: other ctp colors over bgp with soft-reconfig
 qc pass: ebgp with strict bfd
@@ -2672,6 +2672,20 @@ qc pass: olab+octp over ebgp
 qc pass: ocar+octp over ebgp
 qc pass: bgp csc vpn with ctp
 qc pass: bgp interas ctp with multiple labels
+qc pass: car colors over ebgp
+qc pass: other car colors over ebgp
+qc pass: car colors over ibgp
+qc pass: other car colors over ibgp
+qc pass: car colors over bgp additional path
+qc pass: other car colors over bgp additional path
+qc pass: car colors over ibgp rr
+qc pass: other car colors over ibgp rr
+qc pass: car colors over confed bgp
+qc pass: other car colors over confed bgp
+qc pass: car colors over bgp route server
+qc pass: other car colors over bgp route server
+qc pass: car colors over bgp with soft-reconfig
+qc pass: other car colors over bgp with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

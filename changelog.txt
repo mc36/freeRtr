@@ -13803,3 +13803,20 @@ qc pass: other ctp colors over confed bgp
 qc pass: ctp colors over bgp route server
 qc pass: ctp colors over bgp with soft-reconfig
 qc pass: other ctp colors over bgp with soft-reconfig
+---------------------------------- 2023-02-07 08:05:50 23.2.7
+no qc pass: other colors over bgp route server
+qc pass: other ctp colors over bgp route server
+qc pass: car colors over ebgp
+qc pass: other car colors over ebgp
+qc pass: car colors over ibgp
+qc pass: other car colors over ibgp
+qc pass: car colors over bgp additional path
+qc pass: other car colors over bgp additional path
+qc pass: car colors over ibgp rr
+qc pass: other car colors over ibgp rr
+qc pass: car colors over confed bgp
+qc pass: other car colors over confed bgp
+qc pass: car colors over bgp route server
+qc pass: other car colors over bgp route server
+qc pass: car colors over bgp with soft-reconfig
+qc pass: other car colors over bgp with soft-reconfig
