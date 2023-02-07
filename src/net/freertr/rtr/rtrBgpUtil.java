@@ -133,7 +133,7 @@ public class rtrBgpUtil {
     /**
      * tunnel encapsulation address family
      */
-    public final static int sfiTunnel = 0x07;
+    public final static int sfiEncap = 0x07;
 
     /**
      * multicast vpls address family
@@ -144,6 +144,11 @@ public class rtrBgpUtil {
      * nsh address family
      */
     public final static int sfiNsh = 0x09;
+
+    /**
+     * tunnel address family
+     */
+    public final static int sfiTunnel = 0x40;
 
     /**
      * l2vpn address family
@@ -191,6 +196,11 @@ public class rtrBgpUtil {
     public final static int sfiSrTe = 0x49;
 
     /**
+     * sd-wan capability address family
+     */
+    public final static int sfiSdwan = 0x4a;
+
+    /**
      * rpd address family
      */
     public final static int sfiRpd = 0x4b;
@@ -199,6 +209,41 @@ public class rtrBgpUtil {
      * classful transport plane address family
      */
     public final static int sfiClsTrnPl = 0x4c;
+
+    /**
+     * tunneled flowspec address family
+     */
+    public final static int sfiTunFlw = 0x4d;
+
+    /**
+     * mcast tree address family
+     */
+    public final static int sfiMcsTre = 0x4e;
+
+    /**
+     * dynamic path selection address family
+     */
+    public final static int sfiDps = 0x4f;
+
+    /**
+     * bgp ls sfp address family
+     */
+    public final static int sfiLsSfp = 0x50;
+
+    /**
+     * color aware routing address family
+     */
+    public final static int sfiClrAwRtg = 0x53;
+
+    /**
+     * car vpn address family
+     */
+    public final static int sfiCarVpn = 0x54;
+
+    /**
+     * mobile user plane address family
+     */
+    public final static int sfiMobPln = 0x55;
 
     /**
      * vpn unicast address family
@@ -211,19 +256,24 @@ public class rtrBgpUtil {
     public final static int sfiMplsVpnM = 0x81;
 
     /**
-     * route target constrain
+     * route target constrain address family
      */
     public final static int sfiRtFltr = 0x84;
 
     /**
-     * flow specification
+     * flow specification address family
      */
     public final static int sfiFlwSpc = 0x85;
 
     /**
-     * mpls vpn flowspec
+     * mpls vpn flowspec address family
      */
     public final static int sfiVpnFlw = 0x86;
+
+    /**
+     * vpn auto discovery address family
+     */
+    public final static int sfiAutDsc = 0x8c;
 
     /**
      * attributes dump
@@ -269,6 +319,16 @@ public class rtrBgpUtil {
      * ipv6 classful transport plane address family
      */
     public final static int safiIp6ctp = afiIpv6 | sfiClsTrnPl;
+
+    /**
+     * ipv4 color aware routing address family
+     */
+    public final static int safiIp4car = afiIpv4 | sfiClrAwRtg;
+
+    /**
+     * ipv6 color aware routing plane address family
+     */
+    public final static int safiIp6car = afiIpv6 | sfiClrAwRtg;
 
     /**
      * ipv4 flowspec address family
@@ -1649,6 +1709,10 @@ public class rtrBgpUtil {
                 return "ip4classful";
             case safiIp6ctp:
                 return "ip6classful";
+            case safiIp4car:
+                return "ip4color";
+            case safiIp6car:
+                return "ip6color";
             case safiIp4flow:
                 return "ip4flowspec";
             case safiIp6flow:

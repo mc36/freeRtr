@@ -215,6 +215,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final int afiCtp;
 
     /**
+     * color aware routing afi
+     */
+    protected final int afiCar;
+
+    /**
      * multicast afi
      */
     protected final int afiMlt;
@@ -228,6 +233,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * other classful transport plane afi
      */
     protected final int afiOtrC;
+
+    /**
+     * other color aware routing afi
+     */
+    protected final int afiOtrA;
 
     /**
      * other unicast afi
@@ -924,9 +934,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiUni = rtrBgpUtil.safiIp4uni;
                 afiLab = rtrBgpUtil.safiIp4lab;
                 afiCtp = rtrBgpUtil.safiIp4ctp;
+                afiCar = rtrBgpUtil.safiIp4car;
                 afiMlt = rtrBgpUtil.safiIp4multi;
                 afiOtrL = rtrBgpUtil.safiIp6lab;
                 afiOtrC = rtrBgpUtil.safiIp6ctp;
+                afiOtrA = rtrBgpUtil.safiIp6car;
                 afiOtrU = rtrBgpUtil.safiIp6uni;
                 afiOtrM = rtrBgpUtil.safiIp6multi;
                 afiOtrF = rtrBgpUtil.safiIp6flow;
@@ -956,9 +968,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiUni = rtrBgpUtil.safiIp6uni;
                 afiLab = rtrBgpUtil.safiIp6lab;
                 afiCtp = rtrBgpUtil.safiIp6ctp;
+                afiCar = rtrBgpUtil.safiIp6car;
                 afiMlt = rtrBgpUtil.safiIp6multi;
                 afiOtrL = rtrBgpUtil.safiIp4lab;
                 afiOtrC = rtrBgpUtil.safiIp4ctp;
+                afiOtrA = rtrBgpUtil.safiIp4car;
                 afiOtrU = rtrBgpUtil.safiIp4uni;
                 afiOtrM = rtrBgpUtil.safiIp4multi;
                 afiOtrF = rtrBgpUtil.safiIp4flow;
@@ -988,9 +1002,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiUni = 0;
                 afiLab = 0;
                 afiCtp = 0;
+                afiCar = 0;
                 afiMlt = 0;
                 afiOtrL = 0;
                 afiOtrC = 0;
+                afiOtrA = 0;
                 afiOtrU = 0;
                 afiOtrM = 0;
                 afiOtrF = 0;
