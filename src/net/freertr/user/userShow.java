@@ -4653,7 +4653,7 @@ public class userShow {
             case rtrBgpParam.mskMvpn:
             case rtrBgpParam.mskMvpo:
             case rtrBgpParam.mskFlw:
-            case rtrBgpParam.mskOtrF:
+            case rtrBgpParam.mskOflw:
             case rtrBgpParam.mskVpnF:
             case rtrBgpParam.mskVpoF:
             case rtrBgpParam.mskNsh:

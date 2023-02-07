@@ -699,7 +699,7 @@ public abstract class rtrBgpParam {
     /**
      * other labeled unicast
      */
-    public final static int mskOtrL = 0x8000;
+    public final static int mskOlab = 0x8000;
 
     /**
      * mspw
@@ -719,22 +719,22 @@ public abstract class rtrBgpParam {
     /**
      * other unicast
      */
-    public final static int mskOtrU = 0x80000;
+    public final static int mskOuni = 0x80000;
 
     /**
      * other multicast
      */
-    public final static int mskOtrM = 0x100000;
+    public final static int mskOmlt = 0x100000;
 
     /**
      * other flowspec
      */
-    public final static int mskOtrF = 0x200000;
+    public final static int mskOflw = 0x200000;
 
     /**
      * other srte
      */
-    public final static int mskOtrS = 0x400000;
+    public final static int mskOsrt = 0x400000;
 
     /**
      * nsh
@@ -754,7 +754,7 @@ public abstract class rtrBgpParam {
     /**
      * other classful transport plane
      */
-    public final static int mskOtrC = 0x4000000;
+    public final static int mskOct = 0x4000000;
 
     /**
      * rpd
@@ -769,12 +769,12 @@ public abstract class rtrBgpParam {
     /**
      * other color aware routing
      */
-    public final static int mskOtrA = 0x20000000;
+    public final static int mskOcr = 0x20000000;
 
     /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrC | mskOtrA | mskOtrU | mskOtrM | mskOtrF | mskOtrS | mskMspw | mskNsh | mskRpd | mskRtf;
+    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOct | mskOcr | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf;
 
     /**
      * string to afi mask
@@ -876,25 +876,25 @@ public abstract class rtrBgpParam {
                 i |= mskVpoF;
             }
             if (a.equals("olab")) {
-                i |= mskOtrL;
+                i |= mskOlab;
             }
             if (a.equals("octp")) {
-                i |= mskOtrC;
+                i |= mskOct;
             }
             if (a.equals("ocar")) {
-                i |= mskOtrA;
+                i |= mskOcr;
             }
             if (a.equals("ouni")) {
-                i |= mskOtrU;
+                i |= mskOuni;
             }
             if (a.equals("omlt")) {
-                i |= mskOtrM;
+                i |= mskOmlt;
             }
             if (a.equals("oflw")) {
-                i |= mskOtrF;
+                i |= mskOflw;
             }
             if (a.equals("osrt")) {
-                i |= mskOtrS;
+                i |= mskOsrt;
             }
         }
         i = exclusiveMsk(i, mskUni, mskLab);
@@ -903,12 +903,12 @@ public abstract class rtrBgpParam {
         i = exclusiveMsk(i, mskLab, mskCtp);
         i = exclusiveMsk(i, mskLab, mskCar);
         i = exclusiveMsk(i, mskCtp, mskCar);
-        i = exclusiveMsk(i, mskOtrU, mskOtrL);
-        i = exclusiveMsk(i, mskOtrU, mskOtrC);
-        i = exclusiveMsk(i, mskOtrU, mskOtrA);
-        i = exclusiveMsk(i, mskOtrL, mskOtrC);
-        i = exclusiveMsk(i, mskOtrL, mskOtrA);
-        i = exclusiveMsk(i, mskOtrC, mskOtrA);
+        i = exclusiveMsk(i, mskOuni, mskOlab);
+        i = exclusiveMsk(i, mskOuni, mskOct);
+        i = exclusiveMsk(i, mskOuni, mskOcr);
+        i = exclusiveMsk(i, mskOlab, mskOct);
+        i = exclusiveMsk(i, mskOlab, mskOcr);
+        i = exclusiveMsk(i, mskOct, mskOcr);
         return i;
     }
 
@@ -945,25 +945,25 @@ public abstract class rtrBgpParam {
         if ((i & mskMlt) != 0) {
             a += " multicast";
         }
-        if ((i & mskOtrL) != 0) {
+        if ((i & mskOlab) != 0) {
             a += " olab";
         }
-        if ((i & mskOtrC) != 0) {
+        if ((i & mskOct) != 0) {
             a += " octp";
         }
-        if ((i & mskOtrA) != 0) {
+        if ((i & mskOcr) != 0) {
             a += " ocar";
         }
-        if ((i & mskOtrU) != 0) {
+        if ((i & mskOuni) != 0) {
             a += " ouni";
         }
-        if ((i & mskOtrM) != 0) {
+        if ((i & mskOmlt) != 0) {
             a += " omlt";
         }
         if ((i & mskFlw) != 0) {
             a += " flowspec";
         }
-        if ((i & mskOtrF) != 0) {
+        if ((i & mskOflw) != 0) {
             a += " oflw";
         }
         if ((i & mskVpnU) != 0) {
@@ -1008,7 +1008,7 @@ public abstract class rtrBgpParam {
         if ((i & mskSrte) != 0) {
             a += " srte";
         }
-        if ((i & mskOtrS) != 0) {
+        if ((i & mskOsrt) != 0) {
             a += " osrt";
         }
         if ((i & mskLnks) != 0) {
@@ -1949,7 +1949,7 @@ public abstract class rtrBgpParam {
                 return true;
             }
         }
-        if ((addrFams & mskOtrU) != 0) {
+        if ((addrFams & mskOuni) != 0) {
             if ((oroumapIn == null) && (oroupolIn == null) && (oprflstIn == null)) {
                 return true;
             }

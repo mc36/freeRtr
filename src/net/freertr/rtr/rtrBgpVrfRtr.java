@@ -194,13 +194,13 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOtrU : parent.afiUni);
+            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOuni : parent.afiUni);
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
             ntry.best.aggrAs = parent.localAs;
             doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
             ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOtrU : parent.afiUni);
+            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOuni : parent.afiUni);
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
             ntry.best.aggrAs = parent.localAs;
