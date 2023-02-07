@@ -1,4 +1,4 @@
-description other colors over ibgp
+description other ctp colors over ibgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

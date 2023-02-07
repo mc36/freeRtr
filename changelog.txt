@@ -13776,3 +13776,30 @@ qc pass: olab+octp over ebgp
 qc pass: ocar+octp over ebgp
 qc pass: bgp csc vpn with ctp
 qc pass: bgp interas ctp with multiple labels
+---------------------------------- 2023-02-07 07:49:15 23.2.7
+no qc pass: other colors over bgp with soft-reconfig
+no qc pass: colors over bgp with soft-reconfig
+no qc pass: colors over bgp route server
+no qc pass: other colors over confed bgp
+no qc pass: colors over confed bgp
+no qc pass: other colors over ibgp rr
+no qc pass: colors over ibgp rr
+no qc pass: other colors over bgp additional path
+no qc pass: colors over bgp additional path
+no qc pass: other colors over ibgp
+no qc pass: colors over ibgp
+no qc pass: other colors over ebgp
+no qc pass: colors over ebgp
+qc pass: ctp colors over ebgp
+qc pass: other ctp colors over ebgp
+qc pass: ctp colors over ibgp
+qc pass: other ctp colors over ibgp
+qc pass: ctp colors over bgp additional path
+qc pass: other ctp colors over bgp additional path
+qc pass: ctp colors over ibgp rr
+qc pass: other ctp colors over ibgp rr
+qc pass: ctp colors over confed bgp
+qc pass: other ctp colors over confed bgp
+qc pass: ctp colors over bgp route server
+qc pass: ctp colors over bgp with soft-reconfig
+qc pass: other ctp colors over bgp with soft-reconfig
