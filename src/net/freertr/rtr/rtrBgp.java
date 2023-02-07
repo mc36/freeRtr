@@ -1086,6 +1086,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiCtp) {
             return rtrBgpParam.mskCtp;
         }
+        if (safi == afiCar) {
+            return rtrBgpParam.mskCar;
+        }
         if (safi == afiMlt) {
             return rtrBgpParam.mskMlt;
         }
@@ -1094,6 +1097,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (safi == afiOtrC) {
             return rtrBgpParam.mskOtrC;
+        }
+        if (safi == afiOtrA) {
+            return rtrBgpParam.mskOtrA;
         }
         if (safi == afiOtrU) {
             return rtrBgpParam.mskOtrU;
@@ -1179,12 +1185,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return afiLab;
             case rtrBgpParam.mskCtp:
                 return afiCtp;
+            case rtrBgpParam.mskCar:
+                return afiCar;
             case rtrBgpParam.mskMlt:
                 return afiMlt;
             case rtrBgpParam.mskOtrL:
                 return afiOtrL;
             case rtrBgpParam.mskOtrC:
                 return afiOtrC;
+            case rtrBgpParam.mskOtrA:
+                return afiOtrA;
             case rtrBgpParam.mskOtrU:
                 return afiOtrU;
             case rtrBgpParam.mskOtrM:
@@ -1252,6 +1262,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if ((mask & rtrBgpParam.mskCtp) != 0) {
             safis.add(afiCtp);
         }
+        if ((mask & rtrBgpParam.mskCar) != 0) {
+            safis.add(afiCar);
+        }
         if ((mask & rtrBgpParam.mskMlt) != 0) {
             safis.add(afiMlt);
         }
@@ -1260,6 +1273,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if ((mask & rtrBgpParam.mskOtrC) != 0) {
             safis.add(afiOtrC);
+        }
+        if ((mask & rtrBgpParam.mskOtrA) != 0) {
+            safis.add(afiOtrA);
         }
         if ((mask & rtrBgpParam.mskOtrU) != 0) {
             safis.add(afiOtrU);
@@ -1346,6 +1362,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiCtp) {
             return routerComputedU;
         }
+        if (safi == afiCar) {
+            return routerComputedU;
+        }
         if (safi == afiMlt) {
             return routerComputedM;
         }
@@ -1353,6 +1372,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return computedOtrU;
         }
         if (safi == afiOtrC) {
+            return computedOtrU;
+        }
+        if (safi == afiOtrA) {
             return computedOtrU;
         }
         if (safi == afiOtrU) {
@@ -1441,6 +1463,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiCtp) {
             return changedUni;
         }
+        if (safi == afiCar) {
+            return changedUni;
+        }
         if (safi == afiMlt) {
             return changedMlt;
         }
@@ -1448,6 +1473,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return changedOtrU;
         }
         if (safi == afiOtrC) {
+            return changedOtrU;
+        }
+        if (safi == afiOtrA) {
             return changedOtrU;
         }
         if (safi == afiOtrU) {
@@ -1970,6 +1998,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         otherTrigger = (addrFams & rtrBgpParam.mskLab) != 0;
         otherTrigger |= (addrFams & rtrBgpParam.mskCtp) != 0;
+        otherTrigger |= (addrFams & rtrBgpParam.mskCar) != 0;
         otherTrigger |= linkStates.size() > 0;
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
@@ -2208,6 +2237,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
             labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCtp) != 0;
+            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCar) != 0;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -2223,6 +2253,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
             labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCtp) != 0;
+            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCar) != 0;
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " purge");

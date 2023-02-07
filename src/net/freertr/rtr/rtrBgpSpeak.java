@@ -678,6 +678,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiCtp) {
             return (val & rtrBgpParam.mskCtp) != 0;
         }
+        if (safi == parent.afiCar) {
+            return (val & rtrBgpParam.mskCar) != 0;
+        }
         if (safi == parent.afiMlt) {
             return (val & rtrBgpParam.mskMlt) != 0;
         }
@@ -686,6 +689,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (safi == parent.afiOtrC) {
             return (val & rtrBgpParam.mskOtrC) != 0;
+        }
+        if (safi == parent.afiOtrA) {
+            return (val & rtrBgpParam.mskOtrA) != 0;
         }
         if (safi == parent.afiOtrU) {
             return (val & rtrBgpParam.mskOtrU) != 0;
@@ -772,6 +778,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiCtp) {
             return lrnUni;
         }
+        if (safi == parent.afiCar) {
+            return lrnUni;
+        }
         if (safi == parent.afiMlt) {
             return lrnMlt;
         }
@@ -779,6 +788,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return lrnOtrU;
         }
         if (safi == parent.afiOtrC) {
+            return lrnOtrU;
+        }
+        if (safi == parent.afiOtrA) {
             return lrnOtrU;
         }
         if (safi == parent.afiOtrU) {
@@ -867,6 +879,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiCtp) {
             return advUni;
         }
+        if (safi == parent.afiCar) {
+            return advUni;
+        }
         if (safi == parent.afiMlt) {
             return advMlt;
         }
@@ -874,6 +889,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return advOtrU;
         }
         if (safi == parent.afiOtrC) {
+            return advOtrU;
+        }
+        if (safi == parent.afiOtrA) {
             return advOtrU;
         }
         if (safi == parent.afiOtrU) {
@@ -2247,9 +2265,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribedTab(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currUni, parent.afiCtp, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currUni, parent.afiCar, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currOtrU, parent.afiOtrL, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
         addAttribedTab(currOtrU, parent.afiOtrC, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currOtrU, parent.afiOtrA, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
         addAttribedTab(currOtrU, parent.afiOtrU, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
         addAttribedTab(currOtrM, parent.afiOtrM, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
         addAttribedTab(currFlw, parent.afiFlw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
@@ -2472,6 +2492,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiCtp) {
             trg = currUni;
         }
+        if (safi == parent.afiCar) {
+            trg = currUni;
+        }
         if (safi == parent.afiMlt) {
             trg = currMlt;
         }
@@ -2479,6 +2502,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             trg = currOtrU;
         }
         if (safi == parent.afiOtrC) {
+            trg = currOtrU;
+        }
+        if (safi == parent.afiOtrA) {
             trg = currOtrU;
         }
         if (safi == parent.afiOtrU) {

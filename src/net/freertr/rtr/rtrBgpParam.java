@@ -762,9 +762,19 @@ public abstract class rtrBgpParam {
     public final static int mskRpd = 0x8000000;
 
     /**
+     * color aware routing
+     */
+    public final static int mskCar = 0x10000000;
+
+    /**
+     * other color aware routing
+     */
+    public final static int mskOtrA = 0x20000000;
+
+    /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskCtp | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrC | mskOtrU | mskOtrM | mskOtrF | mskOtrS | mskMspw | mskNsh | mskRpd | mskRtf;
+    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOtrL | mskOtrC | mskOtrA | mskOtrU | mskOtrM | mskOtrF | mskOtrS | mskMspw | mskNsh | mskRpd | mskRtf;
 
     /**
      * string to afi mask
@@ -804,6 +814,9 @@ public abstract class rtrBgpParam {
             }
             if (a.equals("ctp")) {
                 i |= mskCtp;
+            }
+            if (a.equals("car")) {
+                i |= mskCar;
             }
             if (a.equals("multicast")) {
                 i |= mskMlt;
@@ -868,6 +881,9 @@ public abstract class rtrBgpParam {
             if (a.equals("octp")) {
                 i |= mskOtrC;
             }
+            if (a.equals("ocar")) {
+                i |= mskOtrA;
+            }
             if (a.equals("ouni")) {
                 i |= mskOtrU;
             }
@@ -883,10 +899,16 @@ public abstract class rtrBgpParam {
         }
         i = exclusiveMsk(i, mskUni, mskLab);
         i = exclusiveMsk(i, mskUni, mskCtp);
+        i = exclusiveMsk(i, mskUni, mskCar);
         i = exclusiveMsk(i, mskLab, mskCtp);
+        i = exclusiveMsk(i, mskLab, mskCar);
+        i = exclusiveMsk(i, mskCtp, mskCar);
         i = exclusiveMsk(i, mskOtrU, mskOtrL);
         i = exclusiveMsk(i, mskOtrU, mskOtrC);
+        i = exclusiveMsk(i, mskOtrU, mskOtrA);
         i = exclusiveMsk(i, mskOtrL, mskOtrC);
+        i = exclusiveMsk(i, mskOtrL, mskOtrA);
+        i = exclusiveMsk(i, mskOtrC, mskOtrA);
         return i;
     }
 
@@ -917,6 +939,9 @@ public abstract class rtrBgpParam {
         if ((i & mskCtp) != 0) {
             a += " ctp";
         }
+        if ((i & mskCar) != 0) {
+            a += " car";
+        }
         if ((i & mskMlt) != 0) {
             a += " multicast";
         }
@@ -925,6 +950,9 @@ public abstract class rtrBgpParam {
         }
         if ((i & mskOtrC) != 0) {
             a += " octp";
+        }
+        if ((i & mskOtrA) != 0) {
+            a += " ocar";
         }
         if ((i & mskOtrU) != 0) {
             a += " ouni";
@@ -1011,8 +1039,10 @@ public abstract class rtrBgpParam {
         hl.add(null, beg + "  unicast       address family to " + end);
         hl.add(null, beg + "  labeled       address family to " + end);
         hl.add(null, beg + "  ctp           address family to " + end);
+        hl.add(null, beg + "  car           address family to " + end);
         hl.add(null, beg + "  olab          address family to " + end);
         hl.add(null, beg + "  octp          address family to " + end);
+        hl.add(null, beg + "  ocar          address family to " + end);
         hl.add(null, beg + "  ouni          address family to " + end);
         hl.add(null, beg + "  omlt          address family to " + end);
         hl.add(null, beg + "  oflw          address family to " + end);

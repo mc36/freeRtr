@@ -1212,6 +1212,35 @@ public class rtrBgpUtil {
         int i;
         int p = 0;
         switch (sfi) {
+            case sfiClrAwRtg:
+                i = pck.getByte(0);
+                p = pck.getByte(1);
+                if (pck.getByte(2) != 1) {
+                    return null;
+                }
+                byte[] buf = new byte[128];
+                pck.getCopy(buf, 0, 4, buf.length);
+                if (readPrefix(safi, ntry, pck.getByte(3), buf)) {
+                    return null;
+                }
+                ntry.rouDst = pck.msbGetD(p - 1);
+                pck.getSkip(p + 3);
+                if (pck.getByte(0) != 1) {
+                    return null;
+                }
+                i = pck.getByte(1);
+                pck.getSkip(2);
+                ntry.best.labelRem = new ArrayList<Integer>();
+                for (;;) {
+                    if (i < 3) {
+                        break;
+                    }
+                    p = pck.msbGetD(0) >>> 8;
+                    pck.getSkip(3);
+                    i -= 3;
+                    ntry.best.labelRem.add(p >>> 4);
+                }
+                return ntry;
             case sfiLnkSt:
                 p = pck.msbGetW(0);
                 i = pck.msbGetW(2);
@@ -1365,32 +1394,39 @@ public class rtrBgpUtil {
             ntry.prefix = new addrPrefix<addrIP>(adr, i);
             return ntry;
         }
+        if ((safi & afiMask) == afiL2vpn) {
+            if (o >= addrIPv6.size) {
+                addrIPv6 a6 = new addrIPv6();
+                a6.fromBuf(buf, 0);
+                ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, i));
+            } else {
+                addrIPv4 a4 = new addrIPv4();
+                a4.fromBuf(buf, 0);
+                ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, i));
+            }
+            return ntry;
+        }
+        if (readPrefix(safi, ntry, i, buf)) {
+            return null;
+        }
+        return ntry;
+    }
+
+    private static boolean readPrefix(int safi, tabRouteEntry<addrIP> ntry, int siz, byte[] buf) {
         switch (safi & afiMask) {
             case afiIpv4:
                 addrIPv4 a4 = new addrIPv4();
                 a4.fromBuf(buf, 0);
-                ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, i));
-                return ntry;
+                ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, siz));
+                return false;
             case afiIpv6:
                 addrIPv6 a6 = new addrIPv6();
                 a6.fromBuf(buf, 0);
-                ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, i));
-                return ntry;
-            case afiL2vpn:
-                if (o >= addrIPv6.size) {
-                    a6 = new addrIPv6();
-                    a6.fromBuf(buf, 0);
-                    ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, i));
-                    return ntry;
-                } else {
-                    a4 = new addrIPv4();
-                    a4.fromBuf(buf, 0);
-                    ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, i));
-                }
-                return ntry;
+                ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, siz));
+                return false;
             default:
                 logger.info("unknown safi (" + safi + ") requested");
-                return null;
+                return true;
         }
     }
 
@@ -1471,7 +1507,7 @@ public class rtrBgpUtil {
         int o = (i + 7) / 8;
         byte[] buf1 = new byte[128];
         int p = 0;
-        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU) || (sfi == sfiClsTrnPl)) {
+        if ((sfi == sfiLabeled) || (sfi == sfiMplsVpnU) || (sfi == sfiClsTrnPl) || (sfi == sfiClrAwRtg)) {
             for (int q = 0; q < ntry.best.labelRem.size(); q++) {
                 bits.msbPutD(buf1, p, ntry.best.labelRem.get(q) << 12);
                 p += 3;
@@ -1488,6 +1524,22 @@ public class rtrBgpUtil {
             i += 64;
         }
         switch (sfi) {
+            case sfiClrAwRtg:
+                pck.putByte(0, o + p + 9);
+                pck.putByte(1, o + 5);
+                pck.putByte(2, 1);
+                pck.putByte(3, i - (p * 8));
+                pck.putSkip(4);
+                pck.putCopy(buf2, 0, 0, o);
+                pck.putSkip(o);
+                pck.msbPutD(0, (int) ntry.rouDst);
+                pck.putSkip(4);
+                pck.putByte(0, 1);
+                pck.putByte(1, p);
+                pck.putSkip(2);
+                pck.putCopy(buf1, 0, 0, p);
+                pck.putSkip(p);
+                return;
             case sfiLnkSt:
                 o = ntry.nlri.length - 2;
                 pck.putCopy(ntry.nlri, 0, 0, 2);

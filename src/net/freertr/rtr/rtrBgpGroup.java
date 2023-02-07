@@ -385,6 +385,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiCtp) {
             return wilUni;
         }
+        if (safi == lower.afiCar) {
+            return wilUni;
+        }
         if (safi == lower.afiMlt) {
             return wilMlt;
         }
@@ -392,6 +395,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             return wilOtrU;
         }
         if (safi == lower.afiOtrC) {
+            return wilOtrU;
+        }
+        if (safi == lower.afiOtrA) {
             return wilOtrU;
         }
         if (safi == lower.afiOtrU) {
@@ -480,6 +486,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiCtp) {
             return chgUni;
         }
+        if (safi == lower.afiCar) {
+            return chgUni;
+        }
         if (safi == lower.afiMlt) {
             return chgMlt;
         }
@@ -487,6 +496,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             return chgOtrU;
         }
         if (safi == lower.afiOtrC) {
+            return chgOtrU;
+        }
+        if (safi == lower.afiOtrA) {
             return chgOtrU;
         }
         if (safi == lower.afiOtrU) {
@@ -584,7 +596,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.labelRem = tabLabel.prependLabel(ntry.labelRem, loc.label);
             done = true;
         }
-        if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC)) == 0))) {
+        if ((afi == lower.afiOtrM) || ((afi == lower.afiOtrU) && ((addrFams & (rtrBgpParam.mskOtrL | rtrBgpParam.mskOtrC | rtrBgpParam.mskOtrA)) == 0))) {
             ntry.nextHop = localOddr.copyBytes();
         } else {
             ntry.nextHop = localAddr.copyBytes();
@@ -941,7 +953,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             nextHopSelf(afi, ntry);
             return ntry;
         }
-        if ((afi != lower.afiUni) || ((addrFams & (rtrBgpParam.mskLab | rtrBgpParam.mskCtp)) == 0)) {
+        if ((afi != lower.afiUni) || ((addrFams & (rtrBgpParam.mskLab | rtrBgpParam.mskCtp | rtrBgpParam.mskCar)) == 0)) {
             return ntry;
         }
         for (int i = 0; i < ntry.alts.size(); i++) {
