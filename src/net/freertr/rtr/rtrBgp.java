@@ -792,12 +792,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * list of vrfs
      */
-    protected tabGen<rtrBgpVrf> ctps;
+    protected tabGen<rtrBgpVrf> clrs;
 
     /**
      * list of other vrfs
      */
-    protected tabGen<rtrBgpVrf> octps;
+    protected tabGen<rtrBgpVrf> oclrs;
 
     /**
      * list of vpls
@@ -915,8 +915,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tcpCore = protoT;
         vrfs = new tabGen<rtrBgpVrf>();
         ovrfs = new tabGen<rtrBgpVrf>();
-        ctps = new tabGen<rtrBgpVrf>();
-        octps = new tabGen<rtrBgpVrf>();
+        clrs = new tabGen<rtrBgpVrf>();
+        oclrs = new tabGen<rtrBgpVrf>();
         vpls = new tabGen<rtrBgpVpls>();
         evpn = new tabGen<rtrBgpEvpn>();
         evpnUni = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
@@ -1774,11 +1774,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < ovrfs.size(); i++) {
             ovrfs.get(i).doer.doAdvertise(nVpoU, nVpoM, nVpoF, nMvpo, nRtf);
         }
-        for (int i = 0; i < ctps.size(); i++) {
-            ctps.get(i).doer.doAdvertise(nUni, nMlt, nFlw, nMvpn, nRtf);
+        for (int i = 0; i < clrs.size(); i++) {
+            clrs.get(i).doer.doAdvertise(nUni, nMlt, nFlw, nMvpn, nRtf);
         }
-        for (int i = 0; i < octps.size(); i++) {
-            octps.get(i).doer.doAdvertise(nOuni, nOmlt, nOflw, nMvpo, nRtf);
+        for (int i = 0; i < oclrs.size(); i++) {
+            oclrs.get(i).doer.doAdvertise(nOuni, nOmlt, nOflw, nMvpo, nRtf);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doAdvertise(nVpls, nRtf);
@@ -2010,11 +2010,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < ovrfs.size(); i++) {
             otherTrigger |= ovrfs.get(i).doer.doPeersFull(nVpoU, nVpoM, nVpoF);
         }
-        for (int i = 0; i < ctps.size(); i++) {
-            otherTrigger |= ctps.get(i).doer.doPeersFull(nUni, nMlt, nFlw);
+        for (int i = 0; i < clrs.size(); i++) {
+            otherTrigger |= clrs.get(i).doer.doPeersFull(nUni, nMlt, nFlw);
         }
-        for (int i = 0; i < octps.size(); i++) {
-            otherTrigger |= octps.get(i).doer.doPeersFull(nOuni, nOmlt, nOflw);
+        for (int i = 0; i < oclrs.size(); i++) {
+            otherTrigger |= oclrs.get(i).doer.doPeersFull(nOuni, nOmlt, nOflw);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers(nVpls);
@@ -2365,11 +2365,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < ovrfs.size(); i++) {
             ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF);
         }
-        for (int i = 0; i < ctps.size(); i++) {
-            ctps.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, changedUni, changedMlt, changedFlw);
+        for (int i = 0; i < clrs.size(); i++) {
+            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, changedUni, changedMlt, changedFlw);
         }
-        for (int i = 0; i < octps.size(); i++) {
-            octps.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, changedOuni, changedOmlt, changedOflw);
+        for (int i = 0; i < oclrs.size(); i++) {
+            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, changedOuni, changedOmlt, changedOflw);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {
@@ -2570,11 +2570,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < ovrfs.size(); i++) {
             ovrfs.get(i).doer.unregister2ip();
         }
-        for (int i = 0; i < ctps.size(); i++) {
-            ctps.get(i).doer.unregister2ip();
+        for (int i = 0; i < clrs.size(); i++) {
+            clrs.get(i).doer.unregister2ip();
         }
-        for (int i = 0; i < octps.size(); i++) {
-            octps.get(i).doer.unregister2ip();
+        for (int i = 0; i < oclrs.size(); i++) {
+            oclrs.get(i).doer.unregister2ip();
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doStop();
@@ -2715,7 +2715,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "3 4       flowspec-advert         specify flowspec parameter");
         l.add(null, "4 .         <name:pm>             name of policy map");
         cfgRtr.getRedistHelp(l, 2);
-        l.add(null, "1 2   afi-ctp                     select vrf to advertise");
+        l.add(null, "1 2   afi-clr                     select vrf to advertise");
         l.add(null, "2 3     <name:vrf>                name of routing table");
         l.add(null, "3 .       enable                  enable processing");
         l.add(null, "3 4       distance                set import distance");
@@ -2725,7 +2725,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "3 4       flowspec-advert         specify flowspec parameter");
         l.add(null, "4 .         <name:pm>             name of policy map");
         cfgRtr.getRedistHelp(l, 2);
-        l.add(null, "1 2   afi-octp                    select other vrf to advertise");
+        l.add(null, "1 2   afi-oclr                    select other vrf to advertise");
         l.add(null, "2 3     <name:vrf>                name of routing table");
         l.add(null, "3 .       enable                  enable processing");
         l.add(null, "3 4       distance                set import distance");
@@ -2821,11 +2821,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < ovrfs.size(); i++) {
             ovrfs.get(i).doer.getConfig(l, beg, "afi-ovrf ");
         }
-        for (int i = 0; i < ctps.size(); i++) {
-            ctps.get(i).doer.getConfig(l, beg, "afi-ctp ");
+        for (int i = 0; i < clrs.size(); i++) {
+            clrs.get(i).doer.getConfig(l, beg, "afi-clr ");
         }
-        for (int i = 0; i < octps.size(); i++) {
-            octps.get(i).doer.getConfig(l, beg, "afi-octp ");
+        for (int i = 0; i < oclrs.size(); i++) {
+            oclrs.get(i).doer.getConfig(l, beg, "afi-oclr ");
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).getConfig(l, beg);
@@ -3349,7 +3349,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             compute.wakeup();
             return false;
         }
-        if (s.equals("afi-ctp")) {
+        if (s.equals("afi-clr")) {
             cfgVrf cfv = cfgAll.vrfFind(cmd.word(), false);
             if (cfv == null) {
                 cmd.error("no such vrf");
@@ -3358,13 +3358,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpVrf cur = new rtrBgpVrf(this, cfv, false);
             s = cmd.word();
             if (s.equals("enable")) {
-                rtrBgpVrf old = ctps.find(cur);
+                rtrBgpVrf old = clrs.find(cur);
                 if (old != null) {
                     if (!negated) {
                         return false;
                     }
                     old.doer.unregister2ip();
-                    ctps.del(old);
+                    clrs.del(old);
                     needFull.add(1);
                     compute.wakeup();
                     return false;
@@ -3373,12 +3373,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     return false;
                 }
                 cur.doer.register2ip();
-                ctps.put(cur);
+                clrs.put(cur);
                 needFull.add(1);
                 compute.wakeup();
                 return false;
             }
-            cur = ctps.find(cur);
+            cur = clrs.find(cur);
             if (cur == null) {
                 cmd.error("vrf not enabled");
                 return false;
@@ -3428,7 +3428,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             compute.wakeup();
             return false;
         }
-        if (s.equals("afi-octp")) {
+        if (s.equals("afi-oclr")) {
             cfgVrf cfv = cfgAll.vrfFind(cmd.word(), false);
             if (cfv == null) {
                 cmd.error("no such vrf");
@@ -3437,13 +3437,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpVrf cur = new rtrBgpVrf(this, cfv, true);
             s = cmd.word();
             if (s.equals("enable")) {
-                rtrBgpVrf old = octps.find(cur);
+                rtrBgpVrf old = oclrs.find(cur);
                 if (old != null) {
                     if (!negated) {
                         return false;
                     }
                     old.doer.unregister2ip();
-                    octps.del(old);
+                    oclrs.del(old);
                     needFull.add(1);
                     compute.wakeup();
                     return false;
@@ -3452,12 +3452,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     return false;
                 }
                 cur.doer.register2ip();
-                octps.put(cur);
+                oclrs.put(cur);
                 needFull.add(1);
                 compute.wakeup();
                 return false;
             }
-            cur = octps.find(cur);
+            cur = oclrs.find(cur);
             if (cur == null) {
                 cmd.error("vrf not enabled");
                 return false;
@@ -4069,11 +4069,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < ovrfs.size(); i++) {
             ovrfs.get(i).doer.getPeerList(tab);
         }
-        for (int i = 0; i < ctps.size(); i++) {
-            ctps.get(i).doer.getPeerList(tab);
+        for (int i = 0; i < clrs.size(); i++) {
+            clrs.get(i).doer.getPeerList(tab);
         }
-        for (int i = 0; i < octps.size(); i++) {
-            octps.get(i).doer.getPeerList(tab);
+        for (int i = 0; i < oclrs.size(); i++) {
+            oclrs.get(i).doer.getPeerList(tab);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).getPeerList(tab);

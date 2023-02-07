@@ -58,12 +58,12 @@ router bgp4 1
  neigh 2.2.2.2 remote-as 2
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
- afi-ctp v2 ena
- afi-ctp v2 red conn
- afi-ctp v3 ena
- afi-ctp v3 red conn
- afi-ctp v4 ena
- afi-ctp v4 red conn
+ afi-clr v2 ena
+ afi-clr v2 red conn
+ afi-clr v3 ena
+ afi-clr v3 red conn
+ afi-clr v4 ena
+ afi-clr v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -74,12 +74,12 @@ router bgp6 1
  neigh 4321::2 remote-as 2
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
- afi-ctp v2 ena
- afi-ctp v2 red conn
- afi-ctp v3 ena
- afi-ctp v3 red conn
- afi-ctp v4 ena
- afi-ctp v4 red conn
+ afi-clr v2 ena
+ afi-clr v2 red conn
+ afi-clr v3 ena
+ afi-clr v3 red conn
+ afi-clr v4 ena
+ afi-clr v4 red conn
  exit
 !
 
@@ -141,12 +141,12 @@ router bgp4 1
  neigh 2.2.2.1 remote-as 1
  neigh 2.2.2.1 update lo0
  neigh 2.2.2.1 send-comm both
- afi-ctp v2 ena
- afi-ctp v2 red conn
- afi-ctp v3 ena
- afi-ctp v3 red conn
- afi-ctp v4 ena
- afi-ctp v4 red conn
+ afi-clr v2 ena
+ afi-clr v2 red conn
+ afi-clr v3 ena
+ afi-clr v3 red conn
+ afi-clr v4 ena
+ afi-clr v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -157,12 +157,12 @@ router bgp6 1
  neigh 4321::1 remote-as 1
  neigh 4321::1 update lo0
  neigh 4321::1 send-comm both
- afi-ctp v2 ena
- afi-ctp v2 red conn
- afi-ctp v3 ena
- afi-ctp v3 red conn
- afi-ctp v4 ena
- afi-ctp v4 red conn
+ afi-clr v2 ena
+ afi-clr v2 red conn
+ afi-clr v3 ena
+ afi-clr v3 red conn
+ afi-clr v4 ena
+ afi-clr v4 red conn
  exit
 !
 

@@ -61,12 +61,12 @@ router bgp4 1
  neigh 2.2.2.2 additional-path-rx octp
  neigh 2.2.2.2 additional-path-tx octp
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -80,12 +80,12 @@ router bgp6 1
  neigh 4321::2 additional-path-rx octp
  neigh 4321::2 additional-path-tx octp
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 !
 
@@ -150,12 +150,12 @@ router bgp4 1
  neigh 2.2.2.1 additional-path-rx octp
  neigh 2.2.2.1 additional-path-tx octp
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -169,12 +169,12 @@ router bgp6 1
  neigh 4321::1 additional-path-rx octp
  neigh 4321::1 additional-path-tx octp
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 !
 

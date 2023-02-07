@@ -59,12 +59,12 @@ router bgp4 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -76,12 +76,12 @@ router bgp6 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 !
 
@@ -144,12 +144,12 @@ router bgp4 1
  neigh 2.2.2.1 update lo0
  neigh 2.2.2.1 send-comm both
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -161,12 +161,12 @@ router bgp6 1
  neigh 4321::1 update lo0
  neigh 4321::1 send-comm both
  afi-other enable
- afi-octp v2 ena
- afi-octp v2 red conn
- afi-octp v3 ena
- afi-octp v3 red conn
- afi-octp v4 ena
- afi-octp v4 red conn
+ afi-oclr v2 ena
+ afi-oclr v2 red conn
+ afi-oclr v3 ena
+ afi-oclr v3 red conn
+ afi-oclr v4 ena
+ afi-oclr v4 red conn
  exit
 !
 
