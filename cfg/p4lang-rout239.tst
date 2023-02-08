@@ -1,4 +1,4 @@
-description p4lang: route filtering with routemap
+description p4lang: fib filtering with routemap
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
