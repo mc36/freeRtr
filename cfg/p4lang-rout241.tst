@@ -66,8 +66,8 @@ int sdn4
 server p4lang p4
  interconnect eth2
  export-vrf v1
- export-compress4 v1
- export-compress6 v1
+ filter-compress4 v1
+ filter-compress6 v1
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10

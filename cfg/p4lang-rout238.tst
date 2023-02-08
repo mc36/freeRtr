@@ -79,8 +79,8 @@ prefix-list p6
 server p4lang p4
  interconnect eth2
  export-vrf v1
- export-list4 v1 p4
- export-list6 v1 p6
+ filter-list4 v1 p4
+ filter-list6 v1 p6
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10

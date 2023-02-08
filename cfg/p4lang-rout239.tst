@@ -83,8 +83,8 @@ route-map p6
 server p4lang p4
  interconnect eth2
  export-vrf v1
- export-map4 v1 p4
- export-map6 v1 p6
+ filter-map4 v1 p4
+ filter-map6 v1 p6
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10
