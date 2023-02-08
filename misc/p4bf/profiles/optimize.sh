@@ -6,7 +6,7 @@ credentials=$2
 
 ./c.sh
 [ -d rare-nix ] || git clone https://bitbucket.software.geant.org/scm/rare/rare-nix.git
-rare_commit=$(cd rare-nix && git log -1 --format="%h")
+rare_nix_commmit=$(cd rare-nix && git log -1 --format="%h")
 sde_version=$(nix eval --raw --impure --expr '(with import ./rare-nix {}; bf-sde.version)')
 nix-build -j auto -A bf-sde.envCommand rare-nix
 if ! result/bin/sde-env-$sde_version --platform model --command './rp.sh;exit \$?'; then
@@ -21,12 +21,12 @@ random=$(echo $RANDOM | md5sum | head -c 6)
 branch=optimizer_${sde_version}_$random
 git checkout -b $branch
 git add $sde_version
-if ! git commit -m "Add optimization for rare $rare_commit (SDE $sde_version)"; then
+if ! git commit -m "Add optimization for RARE-NIX $rare_nix_commmit (SDE $sde_version)"; then
     echo "No changes detected"
     exit 0
 fi
 git push origin $branch
 curl -u "$credentials" -H "Content-Type:application/json" $api_url/pull-requests \
-     -X POST --data '{"title": "Profile optimization for RARE version '$rare_commit'", "fromRef": { "id": "refs/heads/'$branch'" }, "toRef": { "id": "refs/heads/master" }} }'
+     -X POST --data '{"title": "Profile optimization for RARE-NIX version '$rare_nix_commmit'", "fromRef": { "id": "refs/heads/'$branch'" }, "toRef": { "id": "refs/heads/master" }} }'
 
 exit 0
