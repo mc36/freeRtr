@@ -1806,8 +1806,8 @@ qc pass: p4lang: multilink l2tp mpls over vlan
 qc pass: p4lang: multilink l2tp routing over bundle
 qc pass: p4lang: multilink l2tp mpls over bundle
 qc pass: p4lang: null routing
-qc pass: p4lang: fib route filtering with prefixlist
-qc pass: p4lang: route filtering with routemap
+qc pass: p4lang: fib filtering with prefixlist
+qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression

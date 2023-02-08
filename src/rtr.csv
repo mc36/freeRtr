@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v23.2.8-cur, done by cs@nop.
--;-;-;2023-02-08 20:12:30, took 00:09:32, with 80 workers, on 3184 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2023-02-08 20:24:40, took 00:09:39, with 80 workers, on 3184 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1810,8 +1810,8 @@ http://sources.freertr.org/cfg/p4lang-rout234.tst;p4lang-rout234.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout235.tst;p4lang-rout235.tst;success;p4lang: multilink l2tp routing over bundle
 http://sources.freertr.org/cfg/p4lang-rout236.tst;p4lang-rout236.tst;success;p4lang: multilink l2tp mpls over bundle
 http://sources.freertr.org/cfg/p4lang-rout237.tst;p4lang-rout237.tst;success;p4lang: null routing
-http://sources.freertr.org/cfg/p4lang-rout238.tst;p4lang-rout238.tst;success;p4lang: fib route filtering with prefixlist
-http://sources.freertr.org/cfg/p4lang-rout239.tst;p4lang-rout239.tst;success;p4lang: route filtering with routemap
+http://sources.freertr.org/cfg/p4lang-rout238.tst;p4lang-rout238.tst;success;p4lang: fib filtering with prefixlist
+http://sources.freertr.org/cfg/p4lang-rout239.tst;p4lang-rout239.tst;success;p4lang: fib filtering with routemap
 http://sources.freertr.org/cfg/p4lang-rout240.tst;p4lang-rout240.tst;success;p4lang: fib filtering with routepolicy
 http://sources.freertr.org/cfg/p4lang-rout241.tst;p4lang-rout241.tst;success;p4lang: routing with fib compression
 http://sources.freertr.org/cfg/p4lang-rout242.tst;p4lang-rout242.tst;success;p4lang: mpls with fib compression

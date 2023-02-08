@@ -13950,3 +13950,8 @@ no qc pass: p4lang: route filtering with routepolicy
 no qc pass: p4lang: route filtering with prefixlist
 qc pass: p4lang: fib route filtering with prefixlist
 qc pass: p4lang: fib filtering with routepolicy
+---------------------------------- 2023-02-08 20:15:01 23.2.8
+no qc pass: p4lang: route filtering with routemap
+no qc pass: p4lang: fib route filtering with prefixlist
+qc pass: p4lang: fib filtering with prefixlist
+qc pass: p4lang: fib filtering with routemap
