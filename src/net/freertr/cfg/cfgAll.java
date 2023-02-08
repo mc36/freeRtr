@@ -732,6 +732,11 @@ public class cfgAll {
     public static byte[] banner = new byte[0];
 
     /**
+     * locale of this host
+     */
+    public static String locale = null;
+
+    /**
      * minimum tls version to use
      */
     public static int tlsVerMin = 0;
@@ -1258,6 +1263,7 @@ public class cfgAll {
         "!banner encoded ",
         "!no password-encrypt",
         "!no enable",
+        "!no locale",
         // client
         "!client label-range 32 1048560",
         "!client cpuhog 0",
@@ -3630,6 +3636,7 @@ public class cfgAll {
         List<String> l = new ArrayList<String>();
         l.add("hostname " + hostName);
         cmds.cfgLine(l, verCore.release, "", "buggy", "");
+        cmds.cfgLine(l, locale == null, "", "locale", locale);
         cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc, (filter & 2) != 0));
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));
         l.add("banner encoded " + encBase64.encodeBytes(banner));

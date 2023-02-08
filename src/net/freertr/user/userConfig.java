@@ -355,6 +355,8 @@ public class userConfig {
         l.add(null, "1  2  hostname                       set name of system");
         l.add(null, "2  .    <str>                        name of system");
         l.add(null, "1  .  buggy                          enable dangerous things");
+        l.add(null, "1  2  locale                         set locale of system");
+        l.add(null, "2  .    <str>                        enable password");
         l.add(null, "1  2  enable                         set enable password");
         l.add(null, "2  .    <str>                        enable password");
         l.add(null, "1  2  password-encrypt               set password encryption key");
@@ -859,6 +861,10 @@ public class userConfig {
         String a = cmd.word();
         if (a.equals("hostname")) {
             cfgAll.hostName = cmd.word();
+            return;
+        }
+        if (a.equals("locale")) {
+            cfgAll.locale = cmd.word();
             return;
         }
         if (a.equals("enable")) {
@@ -1751,6 +1757,10 @@ public class userConfig {
             return;
         }
         a = cmd.word();
+        if (a.equals("locale")) {
+            cfgAll.locale = null;
+            return;
+        }
         if (a.equals("enable")) {
             cfgAll.enaPass = null;
             return;

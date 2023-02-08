@@ -244,7 +244,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
             return;
         }
         if (a.equals("rename")) {
-            a = cmd.word();
+            a = c.word();
             cfgAuther v = cfgAll.autherFind(a, null);
             if (v != null) {
                 cmd.error("already exists");
@@ -255,7 +255,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
             return;
         }
         if (a.equals("description")) {
-            description = cmd.getRemaining();
+            description = c.getRemaining();
             if (neg) {
                 description = null;
             }
