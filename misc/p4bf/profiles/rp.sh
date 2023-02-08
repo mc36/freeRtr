@@ -16,8 +16,9 @@ trap cleanup INT TERM EXIT
 optimize_one () {
     local profile=$(basename --suffix .tmpl $1) rc=0
     echo "Starting optimization for $profile"
-    if ! java optimizer $1 $2 >${profile}.log; then
+    if java optimizer $1 $2 >${profile}.log; then
 	cp $profile.p4 $3
+    else
 	rc=1
     fi
     echo -n "Optimization for $profile finished: "
