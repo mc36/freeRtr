@@ -67,6 +67,14 @@ public class userHwdet {
 
     private String exclSer = "";
 
+    private String inclIfc = "";
+
+    private String inclSer = "";
+
+    private String justIfc = "";
+
+    private String justSer = "";
+
     private void addComment(String s) {
         starter.add("");
         starter.add("### " + s + " ###");
@@ -135,7 +143,16 @@ public class userHwdet {
         lst.add("ethtool --set-eee " + nam + " eee off");
     }
 
-    private void createIface(String nam, String adr) {
+    private void createIface(String nam) {
+        userHwdetIface ntry = new userHwdetIface();
+        ntry.name = nam.trim();
+        ntry = macLst.find(ntry);
+        String adr;
+        if (ntry == null) {
+            adr = "-";
+        } else {
+            adr = ntry.mac;
+        }
         ifcNum += 1;
         int p1 = nextPort + 1;
         int p2 = nextPort + 2;
@@ -183,6 +200,34 @@ public class userHwdet {
         }
         makeLoop("lin" + linNum + ".sh", bits.str2lst(path + "modem.bin " + nam + " \"speedset 9600\" \"ctrlset 3\""), cmd);
         config.add("line tty" + linNum + " 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
+    }
+
+    private void createIfaces(String s) {
+        cmds cmd = new cmds("lst", s);
+        for (;;) {
+            if (cmd.size() < 1) {
+                break;
+            }
+            s = cmd.word("/");
+            if (s.length() < 1) {
+                continue;
+            }
+            createIface(s);
+        }
+    }
+
+    private void createLines(String s) {
+        cmds cmd = new cmds("lst", s);
+        for (;;) {
+            if (cmd.size() < 1) {
+                break;
+            }
+            s = cmd.word("/");
+            if (s.length() < 1) {
+                continue;
+            }
+            createLine(s);
+        }
     }
 
     private void createCross() {
@@ -235,6 +280,10 @@ public class userHwdet {
 
     private void detectIfaces(String fn) {
         addComment("interfaces");
+        if (justIfc.length() > 0) {
+            createIfaces(justIfc);
+            return;
+        }
         final String unneeded = "/lo/dummy0/";
         List<String> res = bits.txt2buf(fn);
         if (res == null) {
@@ -257,19 +306,17 @@ public class userHwdet {
             if (exclIfc.indexOf("/" + s + "/") >= 0) {
                 continue;
             }
-            userHwdetIface ntry = new userHwdetIface();
-            ntry.name = s.trim();
-            ntry = macLst.find(ntry);
-            if (ntry == null) {
-                createIface(s, "-");
-            } else {
-                createIface(s, ntry.mac);
-            }
+            createIface(s);
         }
+        createIfaces(inclIfc);
     }
 
     private void detectLines(String fn) {
         addComment("lines");
+        if (justSer.length() > 0) {
+            createLines(justSer);
+            return;
+        }
         List<String> res = bits.txt2buf(fn);
         if (res == null) {
             return;
@@ -299,6 +346,7 @@ public class userHwdet {
             }
             createLine(a);
         }
+        createLines(inclSer);
     }
 
     private void detectCrosses(String num) {
@@ -438,6 +486,22 @@ public class userHwdet {
             }
             if (s.equals("exclser")) {
                 exclSer = "/" + cmd.word() + "/";
+                continue;
+            }
+            if (s.equals("inclifc")) {
+                inclIfc = "/" + cmd.word() + "/";
+                continue;
+            }
+            if (s.equals("inclser")) {
+                inclSer = "/" + cmd.word() + "/";
+                continue;
+            }
+            if (s.equals("justifc")) {
+                justIfc = "/" + cmd.word() + "/";
+                continue;
+            }
+            if (s.equals("justser")) {
+                justSer = "/" + cmd.word() + "/";
                 continue;
             }
             cmd.badCmd();
