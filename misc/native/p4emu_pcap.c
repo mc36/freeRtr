@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
     printf("connecting %s %i.\n", inet_ntoa(addr.sin_addr), port);
     commandSock = socket(AF_INET, SOCK_STREAM, 0);
     if (commandSock < 0) err("unable to open socket");
-    if(connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
+    if (connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
     cpuPort = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
