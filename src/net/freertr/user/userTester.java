@@ -105,6 +105,8 @@ public class userTester {
 
     private boolean wait = false;
 
+    private boolean unexit = false;
+
     private boolean config = false;
 
     private boolean mdfile = false;
@@ -552,6 +554,14 @@ public class userTester {
                 config = false;
                 continue;
             }
+            if (s.equals("unexit")) {
+                unexit = true;
+                continue;
+            }
+            if (s.equals("nounexit")) {
+                unexit = false;
+                continue;
+            }
             if (s.equals("mdfile")) {
                 mdfile = true;
                 continue;
@@ -779,6 +789,7 @@ public class userTester {
         rdr.debugStat("window=" + window);
         rdr.debugStat("wait=" + wait);
         rdr.debugStat("config=" + config);
+        rdr.debugStat("unexit=" + unexit);
         rdr.debugStat("reapply=" + reapply);
         rdr.debugStat("restart=" + restart);
         rdr.debugStat("chatty=" + chatty);
@@ -1005,6 +1016,7 @@ public class userTester {
         lt.prefix = temp + "slot";
         lt.slot = slot + slt;
         lt.config = config;
+        lt.unexit = unexit;
         lt.wait = wait;
         lt.reapply = reapply;
         lt.restart = restart;
@@ -1525,6 +1537,8 @@ class userTesterOne {
 
     public boolean config;
 
+    public boolean unexit;
+
     public boolean wait;
 
     public int reapply;
@@ -1871,6 +1885,9 @@ class userTesterOne {
             return;
         }
         if (s.equals("exit")) {
+            if (unexit) {
+                return;
+            }
             success();
             return;
         }
