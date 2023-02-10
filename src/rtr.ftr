@@ -1110,6 +1110,8 @@ qc pass: interop8: isis lsp md5 authentication
 qc pass: interop8: isis md5 authentication
 qc pass: interop8: ldp lsp
 qc pass: interop8: ldp php lsp
+qc pass: interop1: igmp3/mld2
+qc pass: interop1: pim
 qc pass: interop8: point2point ospf
 qc pass: interop8: ospf dr
 qc pass: interop8: ospf nondr

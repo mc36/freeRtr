@@ -13955,3 +13955,6 @@ no qc pass: p4lang: route filtering with routemap
 no qc pass: p4lang: fib route filtering with prefixlist
 qc pass: p4lang: fib filtering with prefixlist
 qc pass: p4lang: fib filtering with routemap
+---------------------------------- 2023-02-10 09:44:07 23.2.10
+qc pass: interop1: igmp3/mld2
+qc pass: interop1: pim
