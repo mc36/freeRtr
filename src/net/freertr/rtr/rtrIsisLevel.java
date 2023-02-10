@@ -998,7 +998,7 @@ public class rtrIsisLevel implements Runnable {
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, lower.fwdCore.commonLabel, null, 0);
         if (lower.other.enabled) {
-            rs = spf.getOroutes(lower.fwdCore, tabLabelEntry.owner.isisSrgb, lower.segrouLab, segrouUsd);
+            rs = spf.getOroutes(lower.other.fwd, tabLabelEntry.owner.isisSrgb, lower.segrouLab, segrouUsd);
             oroutes.clear();
             tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, oroutes, rs, true, oroumapFrom, oroupolFrom, oprflstFrom);
             lower.other.routerDoAggregates(rtrBgpUtil.sfiUnicast, oroutes, oroutes, lower.other.fwd.commonLabel, null, 0);
@@ -1058,7 +1058,7 @@ public class rtrIsisLevel implements Runnable {
             if (!lower.other.enabled) {
                 continue;
             }
-            rs = spf.getOroutes(lower.fwdCore, null, null, null);
+            rs = spf.getOroutes(lower.other.fwd, null, null, null);
             res.clear();
             tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, res, rs, true, oroumapFrom, oroupolFrom, oprflstFrom);
             lower.other.routerDoAggregates(rtrBgpUtil.sfiUnicast, res, res, lower.other.fwd.commonLabel, null, 0);
