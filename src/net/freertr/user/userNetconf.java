@@ -55,7 +55,7 @@ public class userNetconf {
     /**
      * namespace
      */
-    public final static String namespace = "xmlns:nc=\"urn:ietf:params:xml:ns:netconf:base:1.0\"";
+    public final static String namespace = "xmlns:\"urn:ietf:params:xml:ns:netconf:base:1.0\"";
 
     /**
      * port
