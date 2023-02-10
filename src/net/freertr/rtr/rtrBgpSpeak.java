@@ -1299,6 +1299,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
         }
         ready2adv = true;
+        neigh.sessNum++;
         logger.warn("neighbor " + neigh.peerAddr + " up");
         if (debugger.rtrBgpFull) {
             logger.debug("neighbor up");

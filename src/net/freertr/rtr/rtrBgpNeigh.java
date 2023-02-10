@@ -454,6 +454,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public long reachNum;
 
     /**
+     * neighbor session change number
+     */
+    public long sessNum;
+
+    /**
      * speaker
      */
     public rtrBgpSpeak conn;
@@ -566,6 +571,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("reachable state|" + reachable);
         l.add("reachable changed|" + bits.timePast(reachTim) + " ago, at " + bits.time2str(cfgAll.timeZoneName, reachTim + cfgAll.timeServerOffset, 3));
         l.add("reachable changes|" + reachNum);
+        l.add("session changes|" + sessNum);
         l.add("fallover|" + sendingIfc);
         l.add("update group|" + groupMember);
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
@@ -1976,7 +1982,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 2:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + groupMember + "|" + bits.timePast(conn.upTime);
             case 3:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + reachable + "|" + bits.timePast(reachTim) + "|" + reachNum + "|" + bits.timePast(conn.upTime);
+                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + reachable + "|" + bits.timePast(reachTim) + "|" + reachNum + "|" + sessNum + "|" + bits.timePast(conn.upTime);
             case 4:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerGrace) + "|" + rtrBgpParam.mask2string(graceRestart & addrFams);
             case 5:

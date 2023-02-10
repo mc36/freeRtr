@@ -1,7 +1,5 @@
 description interop8: bgp with labels
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
@@ -94,6 +92,19 @@ router bgp 2
   no neighbor 1234:1::1 activate
   no neighbor 1.1.2.1 activate
   no neighbor 1234:2::1 activate
+  neighbor 1.1.1.1 route-map all in
+  neighbor 1.1.1.1 route-map all out
+  neighbor 1.1.2.1 route-map all in
+  neighbor 1.1.2.1 route-map all out
+ address-family ipv6 unicast
+  no neighbor 1.1.1.1 activate
+  no neighbor 1234:1::1 activate
+  no neighbor 1.1.2.1 activate
+  no neighbor 1234:2::1 activate
+  neighbor 1234:1::1 route-map all in
+  neighbor 1234:1::1 route-map all out
+  neighbor 1234:2::1 route-map all in
+  neighbor 1234:2::1 route-map all out
  address-family ipv4 label
   neighbor 1.1.1.1 activate
   neighbor 1.1.1.1 route-map all in
