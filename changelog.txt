@@ -13960,3 +13960,5 @@ qc pass: interop1: igmp3/mld2
 qc pass: interop1: pim
 ---------------------------------- 2023-02-11 00:13:06 23.2.10
 todo: more tabbables
+---------------------------------- 2023-02-11 02:58:09 23.2.11
+todo: rework snmp to use sensors
