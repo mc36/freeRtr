@@ -13962,3 +13962,6 @@ qc pass: interop1: pim
 todo: more tabbables
 ---------------------------------- 2023-02-11 02:58:09 23.2.11
 todo: rework snmp to use sensors
+---------------------------------- 2023-02-11 05:09:19 23.2.11
+todo: router asdf vrf qwer, converted to current form
+todo: interface lo0 as lo-core, persistently
