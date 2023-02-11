@@ -70,6 +70,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     public cfgVrf vrf;
 
     /**
+     * embed vrf name to router knob
+     */
+    public boolean embedVrf;
+
+    /**
      * forwarder of this router
      */
     public ipFwd fwd;
@@ -201,6 +206,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router *
         "router .*! no automesh",
         "router .*! no description",
+        "router .*! no upgrade-cli",
         // router rift
         "router rift[46] .*! no suppress-prefix",
         "router rift[46] .*! level 24",
@@ -1762,12 +1768,19 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             default:
                 return l;
         }
-        l.add("router " + num2name(type) + " " + number);
+        String a = "";
+        if (embedVrf) {
+            a = " vrf " + vrf.name;
+        }
+        l.add("router " + num2name(type) + " " + number + a);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
-        if (vrf == null) {
-            l.add(cmds.tabulator + "no vrf");
-        } else {
-            l.add(cmds.tabulator + "vrf " + vrf.name);
+        cmds.cfgLine(l, !embedVrf, cmds.tabulator, "upgrade-cli", "");
+        if (!embedVrf) {
+            if (vrf == null) {
+                l.add(cmds.tabulator + "no vrf");
+            } else {
+                l.add(cmds.tabulator + "vrf " + vrf.name);
+            }
         }
         ipRtr rtr = getRouter();
         if (rtr != null) {
@@ -1951,6 +1964,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, "2 .     <name:vrf>            name of table");
         l.add(null, "1 2   automesh                specify auto mesh te tunnels");
         l.add(null, "2 .     <name:pl>             name of prefix list");
+        l.add(null, "1 .   upgrade-cli             embed vrf name to router knob");
         getRedistHelp(l, 0);
         ipRtr rtr = getRouter();
         if (rtr != null) {
@@ -1969,6 +1983,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         boolean neg = a.equals("no");
         if (neg) {
             a = cmd.word();
+        }
+        if (a.equals("upgrade-cli")) {
+            embedVrf = !neg;
+            return;
         }
         if (a.equals("description")) {
             description = cmd.getRemaining();

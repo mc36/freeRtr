@@ -13965,3 +13965,7 @@ todo: rework snmp to use sensors
 ---------------------------------- 2023-02-11 05:09:19 23.2.11
 todo: router asdf vrf qwer, converted to current form
 todo: interface lo0 as lo-core, persistently
+---------------------------------- 2023-02-11 11:03:46 23.2.11
+todo: consider term caps
+todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
+todo: more upgrade-cli knobs

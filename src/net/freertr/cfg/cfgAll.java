@@ -2859,8 +2859,7 @@ public class cfgAll {
      * @param create create new on this number if not found
      * @return descriptor, null if not found
      */
-    public static cfgRtr rtrFind(tabRouteAttr.routeType typ, int num,
-            boolean create) {
+    public static cfgRtr rtrFind(tabRouteAttr.routeType typ, int num, boolean create) {
         if (num < 1) {
             return null;
         }

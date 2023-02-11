@@ -726,7 +726,9 @@ public class userConfig {
         l.add(null, "5  .          optional               parameters allowed");
         l.add(null, "1  2  router                         enable a routing protocol");
         cfgRtr.getRouterList(l, 0, " to configure");
-        l.add(null, "3  .      <num>                      process id");
+        l.add(null, "3  4,.    <num>                      process id");
+        l.add(null, "4  5        vrf                      bind a vrf");
+        l.add(null, "5  .          <name:vrf>             vrf to bind to");
         l.add(null, "1  2  chat-script                    build a chat script");
         l.add(null, "2  .    <name:cht>                   name of script");
         l.add(null, "1  2  object-group                   build an object group");
@@ -1039,12 +1041,29 @@ public class userConfig {
                 cmd.error("invalid routing protocol");
                 return;
             }
-            modeDconfig = cfgAll.rtrFind(o, bits.str2num(cmd.word()), true);
-            if (modeDconfig == null) {
+            cfgRtr rtr = cfgAll.rtrFind(o, bits.str2num(cmd.word()), true);
+            if (rtr == null) {
                 cmd.error("bad process number");
                 return;
             }
+            modeDconfig = rtr;
+            cmds c = cmd.copyBytes(false);
             modeV = modes.config;
+            if (!cmd.word().equals("vrf")) {
+                return;
+            }
+            a = c.getRemaining();
+            userHelping hlp = getHelping(false, true, true);
+            reader.setContext(hlp, "");
+            String b = hlp.repairLine(a);
+            if (b.length() < 1) {
+                pipe.linePut("bad: " + a);
+                modeV = modes.global;
+                reader.setContext(hlp, "");
+                return;
+            }
+            rtr.embedVrf = true;
+            executeCommand(c.getRemaining());
             return;
         }
         if (a.equals("scheduler")) {
