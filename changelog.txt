@@ -13969,3 +13969,5 @@ todo: interface lo0 as lo-core, persistently
 todo: consider term caps
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
 todo: more upgrade-cli knobs
+---------------------------------- 2023-02-11 11:29:25 23.2.11
+no todo: router asdf vrf qwer, converted to current form

@@ -3185,7 +3185,6 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: consider term caps
-todo: router asdf vrf qwer, converted to current form
 todo: interface lo0 as lo-core, persistently
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
 todo: rework snmp to use sensors
