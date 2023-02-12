@@ -790,12 +790,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabGen<rtrBgpVrf> ovrfs;
 
     /**
-     * list of vrfs
+     * list of colors
      */
     protected tabGen<rtrBgpVrf> clrs;
 
     /**
-     * list of other vrfs
+     * list of other colors
      */
     protected tabGen<rtrBgpVrf> oclrs;
 
