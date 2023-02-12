@@ -1,5 +1,6 @@
 package net.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
@@ -191,8 +192,13 @@ public class rtrMsdp extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
+        List<String> neis = new ArrayList<String>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrMsdpNeigh ntry = neighs.get(i);
+            neis.add("" + ntry.peer);
+        }
         l.add(null, "1 2   neighbor                    specify neighbor parameters");
-        l.add(null, "2 3     <addr>                    address of peer");
+        l.add(neis, "2 3     <addr:loc>                address of peer");
         l.add(null, "3 .       enable                  enable this peer");
         l.add(null, "3 4       description             describe this neighbor");
         l.add(null, "4 4,.       <text>                description of neighbor");

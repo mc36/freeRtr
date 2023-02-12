@@ -2600,6 +2600,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpTemp ntry = temps.get(i);
             tmps.add(ntry.tempName);
         }
+        List<String> neis = new ArrayList<String>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpNeigh ntry = neighs.get(i);
+            neis.add("" + ntry.peerAddr);
+        }
         l.add(null, "1 2   address-family              specify address families");
         rtrBgpParam.getAfiList(l, "2 2,.", "to use", true);
         l.add(null, "1 2   local-as                    specify local as number");
@@ -2648,7 +2653,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   flowspec-advert             specify flowspec parameter");
         l.add(null, "2 .     <name:pm>                 name of policy map");
         l.add(null, "1 2   neighbor                    specify neighbor parameters");
-        l.add(null, "2 3     <addr>                    address of peer");
+        l.add(neis, "2 3     <addr:loc>                address of peer");
         l.add(null, "3 4       template                get configuration from template");
         l.add(tmps, "4 5,.       <name:loc>            name of source template");
         l.add(null, "5 .           shutdown            connection disabled for this peer");
