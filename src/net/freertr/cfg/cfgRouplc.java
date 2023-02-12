@@ -120,7 +120,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     protocol            match source protocol");
         cfgRtr.getRouterList(l, "3 .", "");
         cfgRtr.getRouterList(l, 1, "");
-        l.add(null, "4 .         <num>           process id");
+        l.add(null, "4 .         <num:rtr>       process id");
         l.add(null, "2 3     aspath              match as path");
         l.add(null, "3 3,.     <str>             regexp against as path");
         l.add(null, "2 3     peerstd             match standard community based on peer asn");

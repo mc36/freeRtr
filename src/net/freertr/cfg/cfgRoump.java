@@ -203,7 +203,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     protocol            match source protocol");
         cfgRtr.getRouterList(l, "3 .", "");
         cfgRtr.getRouterList(l, 1, "");
-        l.add(null, "4 .         <num>           process id");
+        l.add(null, "4 .         <num:rtr>       process id");
         l.add(null, "2 3     peerasn             match peer asn");
         l.add(null, "3 .       <num>             asn");
         l.add(null, "3 .       all               any value");

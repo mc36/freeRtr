@@ -1902,7 +1902,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 1) + " " + (p + 2) + "   redistribute            redistribute prefixes from other protocols");
         getRouterList(l, (p + 2) + " " + (p + 4) + ",.", "");
         getRouterList(l, p, " routes");
-        l.add(null, (p + 3) + " " + (p + 4) + ",.     <num>               process id");
+        l.add(null, (p + 3) + " " + (p + 4) + ",.     <num:rtr>               process id");
         l.add(null, (p + 4) + " " + (p + 4) + ",.       ecmp              process ecmp alternatives also");
         l.add(null, (p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
         l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:rm>       name of route map");

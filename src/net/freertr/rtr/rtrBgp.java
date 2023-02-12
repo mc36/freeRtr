@@ -2642,7 +2642,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "4 .         <num>                 this node index");
         l.add(null, "1 2   afi-links                   specify link state parameter");
         cfgRtr.getRouterList(l, 0, " to advertise");
-        l.add(null, "3 4       <num>                   process id");
+        l.add(null, "3 4       <num:rtr>               process id");
         l.add(null, "4 .         <num>                 area/level number");
         l.add(null, "1 .   flowspec-install            specify flowspec installation");
         l.add(null, "1 2   flowspec-advert             specify flowspec parameter");

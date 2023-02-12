@@ -656,7 +656,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 .       <name:acl>                name of access list");
         l.add(null, "2 3     autoroute                   point routes from routing protocol");
         cfgRtr.getRouterList(l, 1, "");
-        l.add(null, "4  5        <num>                   process id");
+        l.add(null, "4  5        <num:rtr>               process id");
         l.add(null, "5  6          <addr>                source router");
         l.add(null, "6  7,.          <addr>              nexthop");
         l.add(null, "7  7,.            recursive         process bgp routes");

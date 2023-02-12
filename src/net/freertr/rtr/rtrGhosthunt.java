@@ -513,7 +513,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         l.add(null, "2 .     redist                    select redistribted");
         l.add(null, "2 3     router                    select an other router");
         cfgRtr.getRouterList(l, 1, " to use");
-        l.add(null, "4 .         <num>                 process id");
+        l.add(null, "4 .         <num:rtr>             process id");
         l.add(null, "1 2   afi                         set address family");
         l.add(null, "2 .     unicast                   select unicast");
         l.add(null, "2 .     multicast                 select multicast");

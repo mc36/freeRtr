@@ -28,6 +28,7 @@ import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
+import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgSched;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgSensor;
@@ -622,6 +623,18 @@ public class userHelping {
                 }
                 userHelpingData res = d.copyBytes();
                 res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("rtr")) {
+            for (i = 0; i < cfgAll.routers.size(); i++) {
+                cfgRtr ntry = cfgAll.routers.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = "" + ntry.number;
                 lines.add(res);
             }
             return;

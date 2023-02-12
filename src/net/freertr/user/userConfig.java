@@ -726,7 +726,7 @@ public class userConfig {
         l.add(null, "5  .          optional               parameters allowed");
         l.add(null, "1  2  router                         enable a routing protocol");
         cfgRtr.getRouterList(l, 0, " to configure");
-        l.add(null, "3  4,.    <num>                      process id");
+        l.add(null, "3  4,.    <num:rtr>                  process id");
         l.add(null, "4  5        vrf                      bind a vrf");
         l.add(null, "5  .          <name:vrf>             vrf to bind to");
         l.add(null, "1  2  chat-script                    build a chat script");
