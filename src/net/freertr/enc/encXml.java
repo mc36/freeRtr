@@ -63,6 +63,19 @@ public class encXml {
         return s.replaceAll(escape, "");
     }
 
+    private static boolean needEsc(char c, int p) {
+        if ((c >= 'a') && (c <= 'z')) {
+            return false;
+        }
+        if ((c >= 'A') && (c <= 'Z')) {
+            return false;
+        }
+        if ((c >= '0') && (c <= '9')) {
+            return p < 1;
+        }
+        return true;
+    }
+
     /**
      * check if name needs escaping
      *
@@ -70,17 +83,12 @@ public class encXml {
      * @return true if yes, false if not
      */
     public static boolean needEsc(String s) {
-        if (s.length() < 1) {
-            return true;
+        for (int i = 0; i < s.length(); i++) {
+            if (needEsc(s.charAt(i), i)) {
+                return true;
+            }
         }
-        char c = s.charAt(0);
-        if ((c >= 'a') && (c <= 'z')) {
-            return false;
-        }
-        if ((c >= 'A') && (c <= 'Z')) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
@@ -93,7 +101,16 @@ public class encXml {
         if (!needEsc(s)) {
             return s;
         }
-        return escape + s;
+        String res = escape;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!needEsc(c, i)) {
+                res += c;
+                continue;
+            }
+            res += "&#" + (int) c + ";";
+        }
+        return res;
     }
 
     /**

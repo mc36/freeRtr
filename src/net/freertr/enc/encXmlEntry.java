@@ -117,6 +117,7 @@ public class encXmlEntry {
             }
             if (a.startsWith(encXml.escape)) {
                 a = a.substring(encXml.escape.length(), a.length());
+                a = encXml.decodeQuoted(a);
             }
             if (a.length() < 1) {
                 continue;
