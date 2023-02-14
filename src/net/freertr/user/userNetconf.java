@@ -335,7 +335,7 @@ public class userNetconf {
         if (rpc == null) {
             rpc = "";
         }
-        rep.data.add(0, new encXmlEntry(null, "/rpc-reply", rpc, ""));
+        rep.data.add(0, new encXmlEntry(null, "/rpc-reply", rpc + " xmlns:nc=\"urn:ietf:params:xml:ns:netconf:base:1.0\" xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
         rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
         return rep;
     }
