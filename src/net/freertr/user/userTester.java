@@ -2252,6 +2252,10 @@ class userTesterOne {
             }
             cfg.add("hwid tester-slot" + slot);
             cfg.add("tcp2vrf " + (oobase + (slot * userTester.portSlot) + procs.size()) + " tester 23");
+            int i = userTester.portBase + (slot * userTester.portSlot);
+            int o = userTester.portSlot / 2;
+            i += procs.size() * o;
+            cfg.add("port " + (i + o) + " " + (i + o + o));
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             cfg = new ArrayList<String>();
             cfg.add("");
@@ -2288,9 +2292,9 @@ class userTesterOne {
                 }
                 cfg.addAll(src);
             }
-            for (int o = 0; o < reps.size(); o++) {
+            for (o = 0; o < reps.size(); o++) {
                 userTesterRep rep = reps.get(o);
-                for (int i = 0; i < cfg.size(); i++) {
+                for (i = 0; i < cfg.size(); i++) {
                     s = cfg.get(i);
                     s = s.replaceAll(rep.src, rep.trg);
                     cfg.set(i, s);
@@ -2298,14 +2302,14 @@ class userTesterOne {
             }
             if (dels.size() > 0) {
                 List<userFilter> secs = userFilter.text2section(cfg);
-                for (int o = 0; o < dels.size(); o++) {
+                for (o = 0; o < dels.size(); o++) {
                     userTesterRep del = dels.get(o);
                     secs = userFilter.getSection(secs, del.src, true, true, true);
                 }
                 cfg = userFilter.section2text(secs, false);
             }
             if (swcfg) {
-                for (int i = 0; i < cfg.size(); i++) {
+                for (i = 0; i < cfg.size(); i++) {
                     s = cfg.get(i);
                     s = repairHwCfg(s);
                     cfg.set(i, s);
@@ -2333,7 +2337,7 @@ class userTesterOne {
             userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             if (write) {
-                for (int i = 0; i < restart; i++) {
+                for (i = 0; i < restart; i++) {
                     p.putLine("write");
                     p.putLine("reload force");
                     p.waitFor();
@@ -2343,7 +2347,7 @@ class userTesterOne {
             procs.add(p);
             p.putLine("terminal no monitor");
             p.putLine("terminal length 0");
-            for (int i = 0; i < capture.size(); i++) {
+            for (i = 0; i < capture.size(); i++) {
                 userTesterCap cap = capture.get(i);
                 if (!rn.equals(cap.rtr)) {
                     continue;
@@ -2360,7 +2364,7 @@ class userTesterOne {
                 p.putLine("reload in 10");
                 p.putLine("y");
             }
-            for (int i = 0; i < reapply; i++) {
+            for (i = 0; i < reapply; i++) {
                 p.putLine("configure reapply");
             }
             if (config) {
