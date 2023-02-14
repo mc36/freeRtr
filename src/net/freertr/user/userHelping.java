@@ -1,6 +1,7 @@
 package net.freertr.user;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
@@ -628,14 +629,25 @@ public class userHelping {
             return;
         }
         if (a.equals("rtr")) {
+            List<Integer> nums = new ArrayList<Integer>();
             for (i = 0; i < cfgAll.routers.size(); i++) {
                 cfgRtr ntry = cfgAll.routers.get(i);
                 if (ntry == null) {
                     continue;
                 }
+                nums.add(ntry.number);
+            }
+            Collections.sort(nums);
+            int o = -1;
+            for (i = 1; i < nums.size(); i++) {
+                int p = nums.get(i);
+                if (o == p) {
+                    continue;
+                }
                 userHelpingData res = d.copyBytes();
-                res.command = "" + ntry.number;
+                res.command = "" + p;
                 lines.add(res);
+                o = p;
             }
             return;
         }
