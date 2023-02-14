@@ -922,6 +922,7 @@ public class player implements Runnable {
             putMenu(buf);
             String a = "<br/>downloading song, please wait.<br/>";
             buf.write(a.getBytes());
+            startPlayNormal(-1, "0");
             startPlayUrl(song);
             return -1;
         }
