@@ -296,7 +296,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.rouDst = 0;
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-            attr.rouTab = parent.fwdCore;
+            if (attr.rouTab == null) {
+                attr.rouTab = parent.fwdCore;
+            }
             if (attr.segrouPrf != null) {
                 attr.rouTab = parent.vrfCore.fwd6;
             }

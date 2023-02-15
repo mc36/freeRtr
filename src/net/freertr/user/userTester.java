@@ -2288,6 +2288,8 @@ class userTesterOne {
                 cfg.add("server telnet tester");
                 cfg.add(" security protocol telnet");
                 cfg.add(" vrf tester");
+                cfg.add(" exec colorize header");
+                cfg.add(" exec monitor");
                 cfg.add(" exit");
             }
             for (;;) {
