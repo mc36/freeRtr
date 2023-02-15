@@ -384,7 +384,7 @@ public class servP4lang extends servGeneric implements prtServS {
             case 1:
                 return cur.bckplnSpf.listTree();
             case 2:
-                return cur.bckplnSpf.listGraphviz(false, false, false);
+                return cur.bckplnSpf.listGraphviz(0);
             default:
                 return null;
         }

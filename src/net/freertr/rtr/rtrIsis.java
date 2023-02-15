@@ -2262,14 +2262,12 @@ public class rtrIsis extends ipRtr {
      * show graph
      *
      * @param level level number
-     * @param nocli no cli
-     * @param nonets no nets
-     * @param noints no ints
+     * @param msk masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(int level, boolean nocli, boolean nonets, boolean noints) {
+    public List<String> showSpfGraph(int level, int msk) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.lastSpf.listGraphviz(nocli, nonets, noints);
+        return lev.lastSpf.listGraphviz(msk);
     }
 
     /**

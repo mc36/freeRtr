@@ -463,13 +463,11 @@ public class rtrRift extends ipRtr implements Runnable {
      * show graph
      *
      * @param dir direction
-     * @param nocli no cli
-     * @param nonets no nets
-     * @param noints no ints
+     * @param msk masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(String dir, boolean nocli, boolean nonets, boolean noints) {
-        return getSpf(dir).listGraphviz(nocli, nonets, noints);
+    public List<String> showSpfGraph(String dir, int msk) {
+        return getSpf(dir).listGraphviz(msk);
     }
 
     /**

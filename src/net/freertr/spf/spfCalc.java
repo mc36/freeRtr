@@ -1391,31 +1391,32 @@ public class spfCalc<Ta extends addrType> {
     /**
      * list graphviz
      *
-     * @param nocli no cli
-     * @param nonets no nets
-     * @param noints no ints
+     * @param msk masks: 1=cli, 2=svg, 4=nets, 8=ints
      * @return list
      */
-    public List<String> listGraphviz(boolean nocli, boolean nonets, boolean noints) {
+    public List<String> listGraphviz(int msk) {
         List<String> res = new ArrayList<String>();
-        if (!nocli) {
+        if ((msk & 0x1) == 0) {
             res.add(graphBeg1);
         }
         res.add(graphBeg2);
+        if ((msk & 0x2) == 0) {
+            res.add(graphBeg3);
+        }
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
             res.add("//" + ntry);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cur = ntry.conn.get(i);
                 String a;
-                if (noints) {
+                if ((msk & 0x8) == 0) {
                     a = "";
                 } else {
                     a = " [taillabel=\"" + cur.ident + "\"]";
                 }
                 res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "]" + a);
             }
-            if (nonets) {
+            if ((msk & 0x4) == 0) {
                 continue;
             }
             for (int i = 0; i < ntry.prfAdd.size(); i++) {
@@ -1436,7 +1437,7 @@ public class spfCalc<Ta extends addrType> {
             }
         }
         res.add(graphEnd1);
-        if (!nocli) {
+        if ((msk & 0x1) == 0) {
             res.add(graphEnd2);
         }
         return res;

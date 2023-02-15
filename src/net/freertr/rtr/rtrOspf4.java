@@ -1123,18 +1123,16 @@ public class rtrOspf4 extends ipRtr {
      * show graph
      *
      * @param area area number
-     * @param nocli no cli
-     * @param nonets no nets
-     * @param noints no ints
+     * @param msk masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(int area, boolean nocli, boolean nonets, boolean noints) {
+    public List<String> showSpfGraph(int area, int msk) {
         rtrOspf4area ara = new rtrOspf4area(this, area);
         ara = areas.find(ara);
         if (ara == null) {
             return new ArrayList<String>();
         }
-        return ara.lastSpf.listGraphviz(nocli, nonets, noints);
+        return ara.lastSpf.listGraphviz(msk);
     }
 
     /**

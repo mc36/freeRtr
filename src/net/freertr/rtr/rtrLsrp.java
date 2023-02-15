@@ -610,13 +610,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * show graph
      *
-     * @param nocli no cli
-     * @param nonets no nets
-     * @param noints no ints
+     * @param msk masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(boolean nocli, boolean nonets, boolean noints) {
-        return lastSpf.listGraphviz(nocli, nonets, noints);
+    public List<String> showSpfGraph(int msk) {
+        return lastSpf.listGraphviz(msk);
     }
 
     /**

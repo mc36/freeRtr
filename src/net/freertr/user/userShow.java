@@ -2015,28 +2015,8 @@ public class userShow {
                 }
                 if (a.equals("graph")) {
                     int i = bits.str2num(cmd.word());
-                    boolean nocli = false;
-                    boolean nonets = false;
-                    boolean noints = false;
-                    for (;;) {
-                        a = cmd.word();
-                        if (a.length() < 1) {
-                            break;
-                        }
-                        if (a.equals("nocli")) {
-                            nocli = true;
-                            continue;
-                        }
-                        if (a.equals("nonets")) {
-                            nonets = true;
-                            continue;
-                        }
-                        if (a.equals("noints")) {
-                            noints = true;
-                            continue;
-                        }
-                    }
-                    rdr.putStrArr(r.ospf4.showSpfGraph(i, nocli, nonets, noints));
+                    int o = getGraphMask();
+                    rdr.putStrArr(r.ospf4.showSpfGraph(i, o));
                     return null;
                 }
                 if (a.equals("nhinconsistent")) {
@@ -2379,28 +2359,8 @@ public class userShow {
                 }
                 if (a.equals("graph")) {
                     int i = bits.str2num(cmd.word());
-                    boolean nocli = false;
-                    boolean nonets = false;
-                    boolean noints = false;
-                    for (;;) {
-                        a = cmd.word();
-                        if (a.length() < 1) {
-                            break;
-                        }
-                        if (a.equals("nocli")) {
-                            nocli = true;
-                            continue;
-                        }
-                        if (a.equals("nonets")) {
-                            nonets = true;
-                            continue;
-                        }
-                        if (a.equals("noints")) {
-                            noints = true;
-                            continue;
-                        }
-                    }
-                    rdr.putStrArr(r.ospf6.showSpfGraph(i, nocli, nonets, noints));
+                    int o = getGraphMask();
+                    rdr.putStrArr(r.ospf6.showSpfGraph(i, o));
                     return null;
                 }
                 if (a.equals("nhinconsistent")) {
@@ -2754,6 +2714,33 @@ public class userShow {
         return encUrl.percentEncode(s);
     }
 
+    private int getGraphMask() {
+        int i = 0;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("nocli")) {
+                i |= 0x1;
+                continue;
+            }
+            if (a.equals("nosvg")) {
+                i |= 0x2;
+                continue;
+            }
+            if (a.equals("nonets")) {
+                i |= 0x4;
+                continue;
+            }
+            if (a.equals("noints")) {
+                i |= 0x8;
+                continue;
+            }
+        }
+        return i;
+    }
+
     private List<String> getDashRtr(String u, List<String> r) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.routers.size(); i++) {
@@ -2928,28 +2915,8 @@ public class userShow {
             return;
         }
         if (a.equals("graph")) {
-            boolean nocli = false;
-            boolean nonets = false;
-            boolean noints = false;
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (a.equals("nocli")) {
-                    nocli = true;
-                    continue;
-                }
-                if (a.equals("nonets")) {
-                    nonets = true;
-                    continue;
-                }
-                if (a.equals("noints")) {
-                    noints = true;
-                    continue;
-                }
-            }
-            rdr.putStrArr(r.lsrp.showSpfGraph(nocli, nonets, noints));
+            int i = getGraphMask();
+            rdr.putStrArr(r.lsrp.showSpfGraph(i));
             return;
         }
         if (a.equals("nhinconsistent")) {
@@ -3034,28 +3001,8 @@ public class userShow {
         }
         if (a.equals("graph")) {
             String dir = cmd.word();
-            boolean nocli = false;
-            boolean nonets = false;
-            boolean noints = false;
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (a.equals("nocli")) {
-                    nocli = true;
-                    continue;
-                }
-                if (a.equals("nonets")) {
-                    nonets = true;
-                    continue;
-                }
-                if (a.equals("noints")) {
-                    noints = true;
-                    continue;
-                }
-            }
-            rdr.putStrArr(r.rift.showSpfGraph(dir, nocli, nonets, noints));
+            int i = getGraphMask();
+            rdr.putStrArr(r.rift.showSpfGraph(dir, i));
             return;
         }
         if (a.equals("nhinconsistent")) {
@@ -3202,28 +3149,8 @@ public class userShow {
         }
         if (a.equals("graph")) {
             int i = bits.str2num(cmd.word());
-            boolean nocli = false;
-            boolean nonets = false;
-            boolean noints = false;
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (a.equals("nocli")) {
-                    nocli = true;
-                    continue;
-                }
-                if (a.equals("nonets")) {
-                    nonets = true;
-                    continue;
-                }
-                if (a.equals("noints")) {
-                    noints = true;
-                    continue;
-                }
-            }
-            rdr.putStrArr(r.isis.showSpfGraph(i, nocli, nonets, noints));
+            int o = getGraphMask();
+            rdr.putStrArr(r.isis.showSpfGraph(i, o));
             return;
         }
         if (a.equals("nhinconsistent")) {

@@ -1,4 +1,4 @@
-description interop1: igmp3/mld2
+description interop8: igmp3/mld2
 
 exit
 
