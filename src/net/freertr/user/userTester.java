@@ -1879,6 +1879,21 @@ class userTesterOne {
         if (s.startsWith("!")) {
             return;
         }
+        if (s.equals("comment")) {
+            return;
+        }
+        if (s.equals("comments")) {
+            for (;;) {
+                s = getLin();
+                if (s == null) {
+                    break;
+                }
+                if (s.equals("!")) {
+                    break;
+                }
+            }
+            return;
+        }
         if (s.equals("description")) {
             testName = cmd.getRemaining();
             rdr.debugRes("test: " + testName);
