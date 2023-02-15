@@ -206,7 +206,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         // router *
         "router .*! no automesh",
         "router .*! no description",
-        "router .*! no upgrade-cli",
         // router rift
         "router rift[46] .*! no suppress-prefix",
         "router rift[46] .*! level 24",
@@ -1774,7 +1773,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         }
         l.add("router " + num2name(type) + " " + number + a);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
-        cmds.cfgLine(l, !embedVrf, cmds.tabulator, "upgrade-cli", "");
         if (!embedVrf) {
             if (vrf == null) {
                 l.add(cmds.tabulator + "no vrf");
