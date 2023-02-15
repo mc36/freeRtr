@@ -359,6 +359,7 @@ public class rtrBgpVrfRtr extends ipRtr {
 
     private void doUpdateRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> chg, tabRoute<addrIP> trg, tabRoute<addrIP> cmp, List<Long> rt) {
         tabRouteEntry<addrIP> res = trg.find(ntry.prefix);
+logger.debug("here "+ntry+" "+res);//////////////////////
         if (chg == null) {
             chg = new tabRoute<addrIP>("empty");
         }

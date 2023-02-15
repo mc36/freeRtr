@@ -13973,3 +13973,5 @@ todo: more upgrade-cli knobs
 no todo: router asdf vrf qwer, converted to current form
 ---------------------------------- 2023-02-11 11:44:40 23.2.11
 todo: more renamers
+---------------------------------- 2023-02-15 13:46:45 23.2.15
+todo: show ipv4 isis 1 graph 2 pretty

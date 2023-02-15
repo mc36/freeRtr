@@ -3184,6 +3184,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: show ipv4 isis 1 graph 2 pretty
 todo: consider term caps
 todo: interface lo0 as lo-core, persistently
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli

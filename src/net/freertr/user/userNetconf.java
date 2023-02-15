@@ -335,9 +335,18 @@ public class userNetconf {
         if (rpc == null) {
             rpc = "";
         }
-        rep.data.add(0, new encXmlEntry(null, "/rpc-reply", rpc + " xmlns:nc=\"urn:ietf:params:xml:ns:netconf:base:1.0\" xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"", ""));
+        rpc = addNamespaceTags(rpc, "xmlns:nc=\"urn:ietf:params:xml:ns:netconf:base:1.0\"");
+        rpc = addNamespaceTags(rpc, "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"");
+        rep.data.add(0, new encXmlEntry(null, "/rpc-reply", rpc, ""));
         rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
         return rep;
+    }
+
+    private static String addNamespaceTags(String old, String add) {
+        if (old.indexOf(add) >= 0) {
+            return old;
+        }
+        return old + " " + add;
     }
 
     private static cfgSensor getSensor(String a) {
