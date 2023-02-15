@@ -486,11 +486,11 @@ public class userTester {
                 cfgarch = "./";
                 continue;
             }
-            if (s.equals("tmppath")) {
+            if (s.equals("temp")) {
                 temp = cmd.word();
                 continue;
             }
-            if (s.equals("notmppath")) {
+            if (s.equals("notemp")) {
                 temp = "./";
                 continue;
             }
@@ -782,6 +782,7 @@ public class userTester {
         rdr.debugStat("version=" + releaseV);
         rdr.debugStat("url=" + url);
         rdr.debugStat("path=" + path);
+        rdr.debugStat("temp=" + temp);
         rdr.debugStat("discard=" + discard);
         rdr.debugStat("mdfile=" + mdfile);
         rdr.debugStat("summary=" + summary);
