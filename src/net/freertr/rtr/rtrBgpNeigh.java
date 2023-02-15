@@ -1279,6 +1279,24 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     }
 
     /**
+     * check if labeled peer
+     *
+     * @return true if yes, false if no
+     */
+    public boolean getLabeledPeer() {
+        if ((conn.peerAfis & rtrBgpParam.mskLab) != 0) {
+            return true;
+        }
+        if ((conn.peerAfis & rtrBgpParam.mskCtp) != 0) {
+            return true;
+        }
+        if ((conn.peerAfis & rtrBgpParam.mskCar) != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * set accepted list
      */
     public void setAccepted() {

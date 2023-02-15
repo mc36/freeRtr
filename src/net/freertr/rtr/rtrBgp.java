@@ -2235,9 +2235,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.reachOld != nei.reachable) {
                 return true;
             }
-            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
-            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCtp) != 0;
-            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCar) != 0;
+            labPer |= nei.getLabeledPeer();
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -2251,9 +2249,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.reachOld != nei.reachable) {
                 return true;
             }
-            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskLab) != 0;
-            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCtp) != 0;
-            labPer |= (nei.conn.peerAfis & rtrBgpParam.mskCar) != 0;
+            labPer |= nei.getLabeledPeer();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " purge");
@@ -2366,10 +2362,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, changedUni, changedMlt, changedFlw);
+            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, changedOuni, changedOmlt, changedOflw);
+            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, other.routerChangedU, other.routerChangedM, other.routerChangedF);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {

@@ -359,7 +359,6 @@ public class rtrBgpVrfRtr extends ipRtr {
 
     private void doUpdateRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> chg, tabRoute<addrIP> trg, tabRoute<addrIP> cmp, List<Long> rt) {
         tabRouteEntry<addrIP> res = trg.find(ntry.prefix);
-logger.debug("here "+ntry+" "+res);//////////////////////
         if (chg == null) {
             chg = new tabRoute<addrIP>("empty");
         }
@@ -401,6 +400,14 @@ logger.debug("here "+ntry+" "+res);//////////////////////
      * @return other changes trigger full recomputation
      */
     public boolean doPeersIncr(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF) {
+        if ((chgU == null) || (chgM == null) || (chgF == null)) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("changes disappeared");
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return true;
+        }
         final List<Long> rt = getRtList();
         routerChangedU = new tabRoute<addrIP>("chg");
         routerChangedM = new tabRoute<addrIP>("chg");
