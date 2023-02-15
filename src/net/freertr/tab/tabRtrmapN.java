@@ -8,6 +8,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
+import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;
@@ -230,6 +231,16 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * next hop updater
      */
     public addrIP nexthopSet;
+
+    /**
+     * vrf forwarder updater
+     */
+    public ipFwd vrfSetF;
+
+    /**
+     * vrf afi type updater
+     */
+    public boolean vrfSetT;
 
     /**
      * old hop matcher
@@ -536,6 +547,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "set lrgcomm " + tabRouteUtil.lrgComms2string(lrgCommSet));
         }
+        if (vrfSetF == null) {
+            l.add(beg + "no set vrf");
+        } else {
+            l.add(beg + "set vrf " + vrfSetF.cfgName + " " + (vrfSetT ? "ipv4" : "ipv6"));
+        }
         if (nexthopSet == null) {
             l.add(beg + "no set nexthop");
         } else {
@@ -828,6 +844,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             tabRouteUtil.removeFirstAs(attr);
         }
         attr.stdComm = tabLabel.prependLabels(attr.stdComm, stdCommSet);
+        if (vrfSetF != null) {
+            attr.rouTab = vrfSetF;
+        }
         if (nexthopSet != null) {
             attr.nextHop = nexthopSet.copyBytes();
         }

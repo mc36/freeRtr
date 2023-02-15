@@ -105,6 +105,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no set extcomm",
         "route-map .*! sequence .* no set lrgcomm",
         "route-map .*! sequence .* no set nexthop",
+        "route-map .*! sequence .* no set vrf",
         "route-map .*! sequence .* set distance leave",
         "route-map .*! sequence .* set locpref leave",
         "route-map .*! sequence .* set aigp leave",
@@ -317,6 +318,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "3 3,.     <num>             community");
         l.add(null, "2 3     nexthop             set next hop");
         l.add(null, "3 .       <addr>            address");
+        l.add(null, "2 3     vrf                 set vrf");
+        l.add(null, "3 4       <name:vrf>        name of vrf");
+        l.add(null, "4 .         ipv4            select ipv4");
+        l.add(null, "4 .         ipv6            select ipv6");
         l.add(null, "2 3     distance            set administrative distance");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
@@ -748,6 +753,22 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.lrgCommSet = tabRouteUtil.string2lrgComms(cmd.getRemaining());
                 return;
             }
+            if (a.equals("vrf")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return;
+                }
+                a = cmd.word();
+                if (a.equals("ipv4")) {
+                    ntry.vrfSetF = vrf.fwd4;
+                    ntry.vrfSetT = true;
+                } else {
+                    ntry.vrfSetF = vrf.fwd6;
+                    ntry.vrfSetT = false;
+                }
+                return;
+            }
             if (a.equals("nexthop")) {
                 ntry.nexthopSet = new addrIP();
                 ntry.nexthopSet.fromString(cmd.getRemaining());
@@ -1101,6 +1122,11 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("stdcomm")) {
                 ntry.stdCommSet = null;
+                return;
+            }
+            if (a.equals("vrf")) {
+                ntry.vrfSetF = null;
+                ntry.vrfSetT = false;
                 return;
             }
             if (a.equals("nexthop")) {

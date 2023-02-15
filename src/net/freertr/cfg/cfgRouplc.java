@@ -251,6 +251,10 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "3 3,.     <num>             community");
         l.add(null, "2 3     lrgcomm             add large community");
         l.add(null, "3 3,.     <num>             community");
+        l.add(null, "2 3     vrf                 set vrf");
+        l.add(null, "3 4       <name:vrf>        name of vrf");
+        l.add(null, "4 .         ipv4            select ipv4");
+        l.add(null, "4 .         ipv6            select ipv6");
         l.add(null, "2 3     nexthop             set next hop");
         l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     distance            set administrative distance");
@@ -772,6 +776,23 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             if (a.equals("lrgcomm")) {
                 ntry.doMode = tabRtrplcN.doType.setLrgcomm;
                 ntry.lrgLst = tabRouteUtil.string2lrgComms(cmd.getRemaining());
+                return;
+            }
+            if (a.equals("vrf")) {
+                ntry.doMode = tabRtrplcN.doType.setVrf;
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return;
+                }
+                a = cmd.word();
+                if (a.equals("ipv4")) {
+                    ntry.vrfSetF = vrf.fwd4;
+                    ntry.vrfSetT = true;
+                } else {
+                    ntry.vrfSetF = vrf.fwd6;
+                    ntry.vrfSetT = false;
+                }
                 return;
             }
             if (a.equals("nexthop")) {

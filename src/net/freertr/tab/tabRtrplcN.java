@@ -8,6 +8,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
+import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;
@@ -117,6 +118,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * set lrgcomm
          */
         setLrgcomm,
+        /**
+         * set vrf
+         */
+        setVrf,
         /**
          * set nexthop
          */
@@ -456,6 +461,16 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     public addrIP nexthopSet;
 
     /**
+     * vrf forwarder updater
+     */
+    public ipFwd vrfSetF;
+
+    /**
+     * vrf afi type updater
+     */
+    public boolean vrfSetT;
+
+    /**
      * interface matcher
      */
     public cfgIfc ifaceMatch;
@@ -506,6 +521,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set extcomm " + tabRouteUtil.extComms2string(lngLst);
             case setLrgcomm:
                 return "set lrgcomm " + tabRouteUtil.lrgComms2string(lrgLst);
+            case setVrf:
+                return "set vrf " + vrfSetF.cfgName + " " + (vrfSetT ? "ipv4" : "ipv6");
             case setNexthop:
                 return "set nexthop " + nexthopSet;
             case setAspath:
@@ -878,6 +895,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                     attr.lrgComm = new ArrayList<tabLargeComm>();
                 }
                 attr.lrgComm.addAll(lrgLst);
+                return;
+            case setVrf:
+                attr.rouTab = vrfSetF;
                 return;
             case setNexthop:
                 attr.nextHop = nexthopSet.copyBytes();
