@@ -568,6 +568,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         userFormat l = new userFormat("|", "category|value");
         l.add("peer|" + peerAddr);
         l.add("shutdown|" + checkShutdown());
+        l.add("ready2adv|" + conn.ready2adv);
         l.add("reachable state|" + reachable);
         l.add("reachable changed|" + bits.timePast(reachTim) + " ago, at " + bits.time2str(cfgAll.timeZoneName, reachTim + cfgAll.timeServerOffset, 3));
         l.add("reachable changes|" + reachNum);
