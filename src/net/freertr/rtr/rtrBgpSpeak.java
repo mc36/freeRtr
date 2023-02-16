@@ -1200,6 +1200,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (typ != rtrBgpUtil.msgOpen) {
+            logger.info("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
             sendNotify(1, 3);
             return;
         }
