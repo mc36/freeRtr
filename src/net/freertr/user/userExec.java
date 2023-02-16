@@ -1492,7 +1492,7 @@ public class userExec {
         hl.add(null, "2 .      monitor                      log to this terminal");
         hl.add(null, "2 .      detect                       detect size of terminal");
         hl.add(null, "2 .      timestamps                   put time before each executed command");
-        hl.add(null, "2 3      colorize                     sending to ansi terminal");
+        hl.add(null, "2 3,.    colorize                     sending to ansi terminal");
         hl.add(null, "3 .        normal                     select normal mode");
         hl.add(null, "3 .        header                     select header mode");
         hl.add(null, "3 .        rainbow                    select rainbow mode");
@@ -4496,7 +4496,12 @@ public class userExec {
             return;
         }
         if (a.equals("colorize")) {
-            pipe.settingsPut(pipeSetting.colors, userFormat.str2colmod(cmd.word()));
+            a = cmd.word();
+            if (a.length() < 1) {
+                pipe.settingsPut(pipeSetting.colors, userFormat.colorMode.header);
+                return;
+            }
+            pipe.settingsPut(pipeSetting.colors, userFormat.str2colmod(a));
             return;
         }
         if (a.equals("spacetab")) {
@@ -4538,6 +4543,10 @@ public class userExec {
         }
         if (a.equals("timestamps")) {
             pipe.settingsPut(pipeSetting.times, false);
+            return;
+        }
+        if (a.equals("colorize")) {
+            pipe.settingsPut(pipeSetting.colors, userFormat.colorMode.normal);
             return;
         }
         if (a.equals("spacetab")) {
