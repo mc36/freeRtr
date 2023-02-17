@@ -3,7 +3,6 @@ package net.freertr.enc;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.util.bits;
-import net.freertr.util.logger;
 
 /**
  * extensible markup language

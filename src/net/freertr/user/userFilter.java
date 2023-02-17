@@ -185,24 +185,40 @@ public class userFilter implements Comparator<userFilter> {
     public static void section2xml(encXml rep, String beg, List<userFilter> sec) {
         for (int i = 0; i < sec.size(); i++) {
             userFilter cur = sec.get(i);
-            String a = cur.command.trim();
-            if (a.length() < 1) {
+            String b = cur.command.trim();
+            if (b.length() < 1) {
                 continue;
             }
-            if (a.equals(cmds.finish)) {
+            if (b.equals(cmds.finish)) {
                 continue;
             }
-            if (a.equals(cmds.comment)) {
+            if (b.equals(cmds.comment)) {
                 continue;
             }
-            cmds cmd = new cmds("x", a);
             String s = beg;
             if (cur.section.length() > 0) {
                 s += "/" + cur.section.replaceAll(" ", "/");
             }
-            String t = s;
+            if (s.length() > 0) {
+                s = s.substring(1, s.length());
+            }
+            cmds cmd = new cmds("x", s);
+            String t = "";
             for (;;) {
-                a = cmd.word();
+                String a = cmd.word("/");
+                if (a.length() < 1) {
+                    break;
+                }
+                if (!encXml.needEsc(a)) {
+                    t += "/" + a;
+                    continue;
+                }
+                t += "/" + encXml.value;
+            }
+            s = t;
+            cmd = new cmds("x", b);
+            for (;;) {
+                String a = cmd.word();
                 if (a.length() < 1) {
                     break;
                 }
