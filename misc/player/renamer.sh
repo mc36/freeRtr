@@ -1,5 +1,5 @@
 #!/bin/sh
-java -cp /nfs/own/web/player renamer /nfs2/temp/\!new/
+java -cp /nfs/own/web/player renamer /nfs2/temp/new/
 java -cp /nfs/own/web/player renamer /nfs2/music/0/
 java -cp /nfs/own/web/player renamer /nfs2/music/a/
 java -cp /nfs/own/web/player renamer /nfs2/music/b/

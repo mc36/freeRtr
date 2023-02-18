@@ -1,5 +1,5 @@
 #!/bin/sh
-java -cp /nfs/own/web/player duplicates /nfs/temp/\!new/
+java -cp /nfs/own/web/player duplicates /nfs/temp/new/
 java -cp /nfs/own/web/player duplicates /nfs/music/0/
 java -cp /nfs/own/web/player duplicates /nfs/music/a/
 java -cp /nfs/own/web/player duplicates /nfs/music/b/

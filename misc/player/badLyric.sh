@@ -1,5 +1,5 @@
 #!/bin/sh
-java -cp /nfs/own/web/player badLyric /nfs2/temp/\!new/
+java -cp /nfs/own/web/player badLyric /nfs2/temp/new/
 java -cp /nfs/own/web/player badLyric /nfs2/musica/
 java -cp /nfs/own/web/player badLyric /nfs2/music/0/
 java -cp /nfs/own/web/player badLyric /nfs2/music/a/
