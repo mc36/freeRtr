@@ -607,7 +607,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
             a = template.err;
         }
         if (a == null) {
-            a = "lines(s) changed";
+            a = "line(s) in diff";
         }
         s += a + " ";
         b = sendMyId;
