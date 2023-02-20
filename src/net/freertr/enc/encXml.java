@@ -73,7 +73,15 @@ public class encXml {
         if ((c >= '0') && (c <= '9')) {
             return p < 1;
         }
-        return true;
+        switch (c) {
+            case ':':
+            case '_':
+            case '-':
+            case '.':
+                return false;
+            default:
+                return true;
+        }
     }
 
     /**
