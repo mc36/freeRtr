@@ -74,7 +74,7 @@ public class encXml {
             return p < 1;
         }
         switch (c) {
-            case ':':
+            //case ':':
             case '_':
             case '-':
             case '.':
