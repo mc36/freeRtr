@@ -188,6 +188,7 @@ public class userReader implements Comparator<String> {
         ".*! no exec timestamp",
         ".*! exec colorize normal",
         ".*! no exec spacetab",
+        ".*! no exec capslock",
         ".*! exec tablemode normal",
         ".*! exec welcome welcome",
         ".*! exec before before:",
@@ -233,6 +234,7 @@ public class userReader implements Comparator<String> {
         if (parent == null) {
             setHistory(64);
             pipe.settingsAdd(pipeSetting.spacTab, false);
+            pipe.settingsAdd(pipeSetting.capsLock, false);
             pipe.settingsAdd(pipeSetting.logging, false);
             pipe.settingsAdd(pipeSetting.times, false);
             pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
@@ -245,6 +247,7 @@ public class userReader implements Comparator<String> {
         }
         setHistory(parent.execHistory);
         pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
+        pipe.settingsAdd(pipeSetting.capsLock, parent.execCaps);
         pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
         pipe.settingsAdd(pipeSetting.colors, parent.execColor);
@@ -1014,6 +1017,9 @@ public class userReader implements Comparator<String> {
     }
 
     private void cmdInsStr(String st) {
+        if (pipe.settingsGet(pipeSetting.capsLock, false)) {
+            st = st.toUpperCase();
+        }
         curr = part(0, pos) + st + part(pos, len);
         pos += st.length();
         curr = part(0, 65536);

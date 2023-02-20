@@ -13981,3 +13981,5 @@ no qc pass: interop1: pim
 no qc pass: interop1: igmp3/mld2
 qc pass: interop8: igmp3/mld2
 qc pass: interop8: pim
+---------------------------------- 2023-02-20 10:54:28 23.2.20
+no todo: consider term caps

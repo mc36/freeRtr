@@ -1498,6 +1498,7 @@ public class userExec {
         hl.add(null, "3 .        rainbow                    select rainbow mode");
         hl.add(null, "3 .        prompt                     select prompt mode");
         hl.add(null, "2 .      spacetab                     treat space as tabulator");
+        hl.add(null, "2 .      capslock                     treat lowercase as uppercase");
         hl.add(null, "2 3      tablemode                    select table formatting mode");
         hl.add(null, "3 .        normal                     select normal mode");
         hl.add(null, "3 .        table                      select table mode");
@@ -4508,6 +4509,10 @@ public class userExec {
             pipe.settingsPut(pipeSetting.spacTab, true);
             return;
         }
+        if (a.equals("capslock")) {
+            pipe.settingsPut(pipeSetting.capsLock, true);
+            return;
+        }
         if (a.equals("histroy")) {
             reader.setHistory(bits.str2num(cmd.word()));
             return;
@@ -4551,6 +4556,10 @@ public class userExec {
         }
         if (a.equals("spacetab")) {
             pipe.settingsPut(pipeSetting.spacTab, false);
+            return;
+        }
+        if (a.equals("capslock")) {
+            pipe.settingsPut(pipeSetting.capsLock, false);
             return;
         }
         cmd.badCmd();
