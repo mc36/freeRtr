@@ -857,6 +857,13 @@ public class ipFwdTab {
                 prf.best.rouTyp = tabRouteAttr.routeType.conn;
                 prf.best.distance = ifc.gateDstC;
             }
+            if (ifc.hostRemote != null) {
+                tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(ifc.hostRemote, ifc.hostRemote.maxBits()), null);
+                prf.best.iface = ifc;
+                prf.best.rouTyp = tabRouteAttr.routeType.remote;
+                prf.best.distance = ifc.gateDstR;
+                prf.best.nextHop = ifc.hostRemote.copyBytes();
+            }
             addrIP gtw = ifc.gateAddr;
             if (gtw == null) {
                 continue;

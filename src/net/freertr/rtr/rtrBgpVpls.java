@@ -93,19 +93,19 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
      * generate configuration
      *
      * @param l list to append
-     * @param beg beginning
+     * @param beg2 beginning
      */
-    public void getConfig(List<String> l, String beg) {
-        beg = beg + "afi-vpls " + tabRouteUtil.rd2string(id) + " ";
-        l.add(beg + "bridge-group " + bridge.name);
-        l.add(beg + "ve-id " + veId + " " + veMax);
+    public void getConfig(List<String> l, String beg1) {
+        String beg2 = beg1 + "afi-vpls " + tabRouteUtil.rd2string(id) + " ";
+        l.add(beg2 + "bridge-group " + bridge.name);
+        l.add(beg2 + "ve-id " + veId + " " + veMax);
         if (ctrlWrd) {
-            l.add(beg + "control-word");
+            l.add(beg2 + "control-word");
         }
         if (iface != null) {
-            l.add(beg + "update-source " + iface.name);
+            l.add(beg2 + "update-source " + iface.name);
         }
-        l.add(beg + cmds.comment);
+        l.add(beg1 + cmds.comment);
     }
 
     /**

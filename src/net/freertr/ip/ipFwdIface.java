@@ -368,6 +368,11 @@ public class ipFwdIface extends tabRouteIface {
     public ipHostWatch hostWatch;
 
     /**
+     * address of remote
+     */
+    public addrIP hostRemote;
+
+    /**
      * autoroute type
      */
     public tabRouteAttr.routeType autRouTyp;
@@ -627,6 +632,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "2 3     host-static                 set static next hop cache entry");
         l.add(null, "3 4       <addr>                    ip address");
         l.add(null, "4 .         <addr>                  mac address");
+        l.add(null, "2 3     host-remote                 set static remote peer");
+        l.add(null, "3 .       <addr>                    address");
         l.add(null, "2 .     host-learn                  allow next hop learn");
         l.add(null, "2 3,.   host-watch                  monitor next hop changes");
         l.add(null, "3 4       appear                    script on appearance");
@@ -842,6 +849,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, hostRate == null, cmds.tabulator, beg + "host-rate", "" + hostRate);
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
         l.add(cmds.tabulator + beg + "host-retry " + lower.getCacheRetry());
+        cmds.cfgLine(l, hostRemote == null, cmds.tabulator, beg + "host-remote", "" + hostRemote);
         lower.getL2info(l, cmds.tabulator + beg + "host-static ");
         for (int i = 0; i < pbrCfg.size(); i++) {
             tabPbrN pbr = pbrCfg.get(i);
@@ -1017,6 +1025,12 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             answerFilter = ntry.aceslst;
+            return false;
+        }
+        if (a.equals("host-remote")) {
+            hostRemote = new addrIP();
+            hostRemote.fromString(cmd.word());
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("host-learn")) {
@@ -1691,6 +1705,11 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("proxy-filter")) {
             answerFilter = null;
+            return false;
+        }
+        if (a.equals("host-remote")) {
+            hostRemote = null;
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("host-learn")) {

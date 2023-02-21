@@ -175,15 +175,15 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
      * generate configuration
      *
      * @param l list to append
-     * @param beg beginning
+     * @param beg2 beginning
      */
-    public void getConfig(List<String> l, String beg) {
-        beg = beg + "afi-evpn " + id + " ";
-        l.add(beg + "bridge-group " + bridge.name);
+    public void getConfig(List<String> l, String beg1) {
+        String beg2 = beg1 + "afi-evpn " + id + " ";
+        l.add(beg2 + "bridge-group " + bridge.name);
         if (srv6 != null) {
-            l.add(beg + "srv6 " + srv6.name);
+            l.add(beg2 + "srv6 " + srv6.name);
         }
-        l.add(beg + "bmac " + bbmac);
+        l.add(beg2 + "bmac " + bbmac);
         String a = "";
         switch (encap) {
             case pbb:
@@ -199,11 +199,11 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
                 a = "vpws";
                 break;
         }
-        l.add(beg + "encapsulation " + a);
+        l.add(beg2 + "encapsulation " + a);
         if (iface != null) {
-            l.add(beg + "update-source " + iface.name);
+            l.add(beg2 + "update-source " + iface.name);
         }
-        l.add(beg + cmds.comment);
+        l.add(beg1 + cmds.comment);
     }
 
     private void putPmsi(tabRouteEntry<addrIP> ntry, int lab) {
