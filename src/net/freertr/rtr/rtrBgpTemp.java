@@ -2,6 +2,7 @@ package net.freertr.rtr;
 
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.util.cmds;
 
 /**
  * bgp4 template
@@ -54,6 +55,7 @@ public class rtrBgpTemp extends rtrBgpParam implements Comparator<rtrBgpTemp> {
      */
     public void getConfig(List<String> l, String beg, int filter) {
         l.addAll(getParamCfg(beg, "template " + tempName + " ", filter));
+        l.add(beg + cmds.comment);
     }
 
 }

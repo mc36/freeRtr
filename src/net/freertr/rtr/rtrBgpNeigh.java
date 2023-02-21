@@ -22,6 +22,7 @@ import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrplc;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
+import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
@@ -533,6 +534,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
 
     public void getConfig(List<String> l, String beg, int filter) {
         l.addAll(getParamCfg(beg, "neighbor " + peerAddr + " ", filter));
+        l.add(beg + cmds.comment);
     }
 
     /**

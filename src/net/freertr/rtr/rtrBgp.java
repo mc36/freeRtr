@@ -2793,6 +2793,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
+        cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
+        cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
         for (int i = 0; i < mons.size(); i++) {
             mons.get(i).getConfig(l, beg);
         }
@@ -2802,6 +2804,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < rpkis.size(); i++) {
             rpkis.get(i).getConfig(l, beg);
         }
+        l.add(beg + cmds.comment);
         for (int i = 0; i < temps.size(); i++) {
             temps.get(i).getConfig(l, beg, filter);
         }
@@ -2838,8 +2841,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpLnkst ls = linkStates.get(i);
             l.add(beg + "afi-links " + ls.rtr.routerGetName() + " " + ls.par);
         }
-        cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
-        cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
+        l.add(beg + cmds.comment);
     }
 
     /**

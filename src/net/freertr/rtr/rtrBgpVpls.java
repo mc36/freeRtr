@@ -18,6 +18,7 @@ import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
+import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
@@ -104,6 +105,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         if (iface != null) {
             l.add(beg + "update-source " + iface.name);
         }
+        l.add(beg + cmds.comment);
     }
 
     /**
