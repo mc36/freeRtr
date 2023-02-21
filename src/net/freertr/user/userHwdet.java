@@ -271,6 +271,12 @@ public class userHwdet {
                 continue;
             }
             ntry.mac = a.substring(11, 28);
+            a = ntry.name;
+            i = a.indexOf("@");
+            if (i >= 0) {
+                a = a.substring(0, i);
+            }
+            ntry.name = a;
             macLst.add(ntry);
         }
         for (int i = 0; i < macLst.size(); i++) {
