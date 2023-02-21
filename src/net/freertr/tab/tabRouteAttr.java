@@ -1752,7 +1752,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShRpki() {
-        return metric + "|" + rouSrc;
+        return metric + "|" + bits.num2str(rouSrc);
     }
 
     /**
