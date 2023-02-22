@@ -78,7 +78,7 @@ public class encXml {
             case '_':
             case '-':
             case '.':
-                return false;
+                return p < 1;
             default:
                 return true;
         }
