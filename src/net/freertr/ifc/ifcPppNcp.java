@@ -1,11 +1,13 @@
 package net.freertr.ifc;
 
+import java.util.List;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
+import net.freertr.util.cmds;
 
 /**
  * one network control protocol for ppp
@@ -111,6 +113,11 @@ public abstract class ifcPppNcp {
     public final static int sawFrcClsd = 0x80;
 
     /**
+     * forced to optional
+     */
+    public final static int sawFrcOptn = 0x100;
+
+    /**
      * preserve state
      */
     public final static int sawPreserv = 0x10;
@@ -177,7 +184,7 @@ public abstract class ifcPppNcp {
      */
     public void clearUpperState(boolean prs) {
         int i = sawBit;
-        sawBit &= (sawFrcOpen | sawFrcClsd);
+        sawBit &= (sawFrcOpen | sawFrcClsd | sawFrcOptn);
         if (prs && ((i & sawPreserv) != 0)) {
             sawBit = i & ~sawPreserv;
         }
@@ -219,6 +226,19 @@ public abstract class ifcPppNcp {
     }
 
     /**
+     * force to optional state
+     *
+     * @param b true to force closed, false to not
+     */
+    public void forceOptional(boolean b) {
+        if (b) {
+            sawBit |= sawFrcOptn;
+        } else {
+            sawBit &= ~sawFrcOptn;
+        }
+    }
+
+    /**
      * check if forced to open
      *
      * @return true if forced, false if not
@@ -237,12 +257,21 @@ public abstract class ifcPppNcp {
     }
 
     /**
+     * check if forced to optional
+     *
+     * @return true if forced, false if not
+     */
+    public boolean forced2optional() {
+        return (sawBit & sawFrcOptn) != 0;
+    }
+
+    /**
      * get force value
      *
      * @return force
      */
     public int getForceVal() {
-        return sawBit & (sawFrcClsd | sawFrcOpen);
+        return sawBit & (sawFrcClsd | sawFrcOpen | sawFrcOptn);
     }
 
     /**
@@ -250,6 +279,58 @@ public abstract class ifcPppNcp {
      */
     public void setLocalNeed() {
         sawBit |= sawLocNeed;
+    }
+
+    /**
+     * perform generic configuration
+     *
+     * @param a config
+     */
+    public void doConfig(String a) {
+        if (a.equals("open")) {
+            forceOpen(true);
+            return;
+        }
+        if (a.equals("close")) {
+            forceClose(true);
+            return;
+        }
+        if (a.equals("optional")) {
+            forceOptional(true);
+            return;
+        }
+    }
+
+    /**
+     * perform generic configuration
+     *
+     * @param a config
+     */
+    public void unConfig(String a) {
+        if (a.equals("open")) {
+            forceOpen(false);
+            return;
+        }
+        if (a.equals("close")) {
+            forceClose(false);
+            return;
+        }
+        if (a.equals("optional")) {
+            forceOptional(false);
+            return;
+        }
+    }
+
+    /**
+     * get generic configuration
+     *
+     * @param l list to append
+     * @param beg beginning
+     */
+    public void getConfig(List<String> l, String beg) {
+        cmds.cfgLine(l, !forced2close(), cmds.tabulator, beg + " close", "");
+        cmds.cfgLine(l, !forced2open(), cmds.tabulator, beg + " open", "");
+        cmds.cfgLine(l, !forced2optional(), cmds.tabulator, beg + " optional", "");
     }
 
     /**
@@ -313,6 +394,9 @@ public abstract class ifcPppNcp {
     public void sendReq() {
         sawReq2++;
         if (sawReq2 > 32) {
+            if ((sawBit & sawFrcOptn) != 0) {
+                return;
+            }
             parent.clearState();
             return;
         }

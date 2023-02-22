@@ -484,6 +484,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(null, "2 3     ip4cp                       ipv4 control protocol");
         l.add(null, "3 .       open                      force to open state");
         l.add(null, "3 .       close                     force to close state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       reqaddr                   require local address");
         l.add(null, "3 4       peer                      set peer address");
         l.add(null, "4 .         <text>                  address");
@@ -496,6 +497,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(null, "2 3     ip6cp                       ipv6 control protocol");
         l.add(null, "3 .       open                      force to open state");
         l.add(null, "3 .       close                     force to close state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       keep                      keet configured address");
         l.add(null, "3 4       local                     set local address");
         l.add(null, "4 .         <text>                  address");
@@ -503,30 +505,39 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(null, "4 .         <text>                  address");
         l.add(null, "2 3     bcp                         bridge control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     mplscp                      multiprotocol label switching control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     osicp                       open systems interconnect control protocol");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       open                      force to open state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     ipxcp                       ipx control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     ecp                         encryption control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     nshcp                       service control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     sgtcp                       sgt control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     polkacp                     polka control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
         l.add(null, "2 3     mpolkacp                    mpolka control protocol");
         l.add(null, "3 .       open                      force to open state");
+        l.add(null, "3 .       optional                  force to optional state");
         l.add(null, "3 .       close                     force to close state");
     }
 
@@ -565,36 +576,25 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(beg + "reqrst " + reqResetLimit);
         l.add(beg + "accm " + sentAccm);
         l.add(beg + "mru " + sentMru);
-        cmds.cfgLine(l, !ctrlIp4.forced2close(), cmds.tabulator, "ppp ip4cp close", "");
-        cmds.cfgLine(l, !ctrlIp4.forced2open(), cmds.tabulator, "ppp ip4cp open", "");
+        ctrlIp4.getConfig(l, "ppp ip4cp");
         cmds.cfgLine(l, remAddrCfg == null, cmds.tabulator, "ppp ip4cp peer", "" + remAddrCfg);
         cmds.cfgLine(l, locAddrCfg == null, cmds.tabulator, "ppp ip4cp local", "" + locAddrCfg);
         cmds.cfgLine(l, dns1addrCfg == null, cmds.tabulator, "ppp ip4cp dns1", "" + dns1addrCfg);
         cmds.cfgLine(l, dns2addrCfg == null, cmds.tabulator, "ppp ip4cp dns2", "" + dns2addrCfg);
         cmds.cfgLine(l, !locAddrReq, cmds.tabulator, "ppp ip4cp reqaddr", "");
-        cmds.cfgLine(l, !ctrlIp6.forced2close(), cmds.tabulator, "ppp ip6cp close", "");
-        cmds.cfgLine(l, !ctrlIp6.forced2open(), cmds.tabulator, "ppp ip6cp open", "");
+        ctrlIp6.getConfig(l, "ppp ip6cp");
         cmds.cfgLine(l, remIfIdCfg == null, cmds.tabulator, "ppp ip6cp peer", "" + remIfIdCfg);
         cmds.cfgLine(l, locIfIdCfg == null, cmds.tabulator, "ppp ip6cp local", "" + locIfIdCfg);
         cmds.cfgLine(l, !keepIpv6addr, cmds.tabulator, "ppp ip6cp keep", "");
-        cmds.cfgLine(l, !ctrlBrdg.forced2close(), cmds.tabulator, "ppp bcp close", "");
-        cmds.cfgLine(l, !ctrlBrdg.forced2open(), cmds.tabulator, "ppp bcp open", "");
-        cmds.cfgLine(l, !ctrlMpls.forced2close(), cmds.tabulator, "ppp mplscp close", "");
-        cmds.cfgLine(l, !ctrlMpls.forced2open(), cmds.tabulator, "ppp mplscp open", "");
-        cmds.cfgLine(l, !ctrlOsi.forced2close(), cmds.tabulator, "ppp osicp close", "");
-        cmds.cfgLine(l, !ctrlOsi.forced2open(), cmds.tabulator, "ppp osicp open", "");
-        cmds.cfgLine(l, !ctrlIpx.forced2close(), cmds.tabulator, "ppp ipxcp close", "");
-        cmds.cfgLine(l, !ctrlIpx.forced2open(), cmds.tabulator, "ppp ipxcp open", "");
-        cmds.cfgLine(l, !ctrlCrypt.forced2close(), cmds.tabulator, "ppp ecp close", "");
-        cmds.cfgLine(l, !ctrlCrypt.forced2open(), cmds.tabulator, "ppp ecp open", "");
-        cmds.cfgLine(l, !ctrlNsh.forced2close(), cmds.tabulator, "ppp nshcp close", "");
-        cmds.cfgLine(l, !ctrlNsh.forced2open(), cmds.tabulator, "ppp nshcp open", "");
-        cmds.cfgLine(l, !ctrlSgt.forced2close(), cmds.tabulator, "ppp sgtcp close", "");
-        cmds.cfgLine(l, !ctrlSgt.forced2open(), cmds.tabulator, "ppp sgtcp open", "");
-        cmds.cfgLine(l, !ctrlPolka.forced2close(), cmds.tabulator, "ppp polkacp close", "");
-        cmds.cfgLine(l, !ctrlPolka.forced2open(), cmds.tabulator, "ppp polkacp open", "");
-        cmds.cfgLine(l, !ctrlMpolka.forced2close(), cmds.tabulator, "ppp mpolkacp close", "");
-        cmds.cfgLine(l, !ctrlMpolka.forced2open(), cmds.tabulator, "ppp mpolkacp open", "");
+        ctrlBrdg.getConfig(l, "ppp bcp");
+        ctrlMpls.getConfig(l, "ppp mplscp");
+        ctrlOsi.getConfig(l, "ppp osicp");
+        ctrlIpx.getConfig(l, "ppp ipxcp");
+        ctrlCrypt.getConfig(l, "ppp ecp");
+        ctrlNsh.getConfig(l, "ppp nshcp");
+        ctrlSgt.getConfig(l, "ppp sgtcp");
+        ctrlPolka.getConfig(l, "ppp polkacp");
+        ctrlMpolka.getConfig(l, "ppp mpolkacp");
     }
 
     /**
@@ -623,14 +623,6 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
         if (a.equals("ip4cp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlIp4.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlIp4.forceClose(true);
-                return;
-            }
             if (a.equals("peer")) {
                 addrIPv4 adr = new addrIPv4();
                 if (adr.fromString(cmd.word())) {
@@ -672,19 +664,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 dns2addrCfg = adr;
                 return;
             }
-            cmd.badCmd();
+            ctrlIp4.doConfig(a);
             return;
         }
         if (a.equals("ip6cp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlIp6.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlIp6.forceClose(true);
-                return;
-            }
             if (a.equals("local")) {
                 addrEui adr = new addrEui();
                 if (adr.fromString(cmd.word())) {
@@ -707,105 +691,53 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 keepIpv6addr = true;
                 return;
             }
+            ctrlIp6.doConfig(a);
+            return;
         }
         if (a.equals("bcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlBrdg.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlBrdg.forceClose(true);
-                return;
-            }
+            ctrlBrdg.doConfig(a);
+            return;
         }
         if (a.equals("mplscp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlMpls.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlMpls.forceClose(true);
-                return;
-            }
+            ctrlMpls.doConfig(a);
+            return;
         }
         if (a.equals("osicp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlOsi.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlOsi.forceClose(true);
-                return;
-            }
+            ctrlOsi.doConfig(a);
+            return;
         }
         if (a.equals("ipxcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlIpx.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlIpx.forceClose(true);
-                return;
-            }
+            ctrlIpx.doConfig(a);
+            return;
         }
         if (a.equals("ecp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlCrypt.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlCrypt.forceClose(true);
-                return;
-            }
+            ctrlCrypt.doConfig(a);
+            return;
         }
         if (a.equals("nshcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlNsh.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlNsh.forceClose(true);
-                return;
-            }
+            ctrlNsh.doConfig(a);
+            return;
         }
         if (a.equals("sgtcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlSgt.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlSgt.forceClose(true);
-                return;
-            }
+            ctrlSgt.doConfig(a);
+            return;
         }
         if (a.equals("polkacp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlPolka.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlPolka.forceClose(true);
-                return;
-            }
+            ctrlPolka.doConfig(a);
+            return;
         }
         if (a.equals("mpolkacp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlMpolka.forceOpen(true);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlMpolka.forceClose(true);
-                return;
-            }
+            ctrlMpolka.doConfig(a);
+            return;
         }
         if (a.equals("keepalive")) {
             keepaliveInterval = bits.str2num(cmd.word());
@@ -919,26 +851,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 dns2addrCfg = null;
                 return;
             }
-            if (a.equals("open")) {
-                ctrlIp4.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlIp4.forceClose(false);
-                return;
-            }
-            cmd.badCmd();
+            ctrlIp4.unConfig(a);
+            return;
         }
         if (a.equals("ip6cp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlIp6.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlIp6.forceClose(false);
-                return;
-            }
             if (a.equals("local")) {
                 locIfIdCfg = null;
                 return;
@@ -951,105 +868,53 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 keepIpv6addr = false;
                 return;
             }
+            ctrlIp6.unConfig(a);
+            return;
         }
         if (a.equals("bcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlBrdg.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlBrdg.forceClose(false);
-                return;
-            }
+            ctrlBrdg.unConfig(a);
+            return;
         }
         if (a.equals("mplscp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlMpls.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlMpls.forceClose(false);
-                return;
-            }
+            ctrlMpls.unConfig(a);
+            return;
         }
         if (a.equals("osicp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlOsi.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlOsi.forceClose(false);
-                return;
-            }
+            ctrlOsi.unConfig(a);
+            return;
         }
         if (a.equals("ipxcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlIpx.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlIpx.forceClose(false);
-                return;
-            }
+            ctrlIpx.unConfig(a);
+            return;
         }
         if (a.equals("ecp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlCrypt.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlCrypt.forceClose(false);
-                return;
-            }
+            ctrlCrypt.unConfig(a);
+            return;
         }
         if (a.equals("nshcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlNsh.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlNsh.forceClose(false);
-                return;
-            }
+            ctrlNsh.unConfig(a);
+            return;
         }
         if (a.equals("sgtcp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlSgt.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlSgt.forceClose(false);
-                return;
-            }
+            ctrlSgt.unConfig(a);
+            return;
         }
         if (a.equals("polkacp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlPolka.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlPolka.forceClose(false);
-                return;
-            }
+            ctrlPolka.unConfig(a);
+            return;
         }
         if (a.equals("mpolkacp")) {
             a = cmd.word();
-            if (a.equals("open")) {
-                ctrlMpolka.forceOpen(false);
-                return;
-            }
-            if (a.equals("close")) {
-                ctrlMpolka.forceClose(false);
-                return;
-            }
+            ctrlMpolka.unConfig(a);
+            return;
         }
         if (a.equals("username")) {
             sentUser = null;
@@ -1756,7 +1621,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     }
 
     private void getShow(userFormat res, ifcPppNcp nc) {
-        res.add(nc.getPPPname() + "|" + bits.toHexB(nc.sawBit) + "|" + nc.cntr.getShStat());
+        res.add(nc.getPPPname() + "|" + bits.toHexW(nc.sawBit) + "|" + nc.cntr.getShStat());
     }
 
     /**
