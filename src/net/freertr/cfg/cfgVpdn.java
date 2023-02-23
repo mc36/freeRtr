@@ -1203,6 +1203,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 l2f = new clntL2f();
                 l2f.target = target;
                 l2f.prefer = prefer;
@@ -1216,6 +1219,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prL2tp2:
                 if (ifaceDialer == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 l2tp2 = new clntL2tp2();
@@ -1234,6 +1240,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prL2tp3:
                 if ((ifaceDialer == null) && (ifaceBridge == null)) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 l2tp3 = new clntL2tp3();
@@ -1278,6 +1287,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                     return;
                 }
                 if (password == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 sdwan = new clntSdwan();
@@ -1374,6 +1386,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 tdm = new clntTdmOudp();
                 tdm.target = target;
                 tdm.chanMin = pwmtu / 1000;
@@ -1466,6 +1481,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 gtp = new clntGtp();
                 gtp.target = target;
                 gtp.prefer = prefer;
@@ -1484,6 +1502,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 pptp = new clntPptp();
                 pptp.target = target;
                 pptp.prefer = prefer;
@@ -1497,6 +1518,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prPou:
                 if ((ifaceDialer == null) && (ifaceBridge == null)) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 pou = new clntPckOudp();
@@ -1559,6 +1583,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 pog = new clntGrePpp();
                 pog.target = target;
                 pog.prefer = prefer;
@@ -1571,6 +1598,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prTog:
                 if (ifaceBridge == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 tog = new clntGreTap();
@@ -1588,6 +1618,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceDialer == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 ax25 = new clntAx25();
                 ax25.target = target;
                 ax25.prefer = prefer;
@@ -1599,6 +1632,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prPwom:
                 if ((ifaceDialer == null) && (ifaceBridge == null)) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 pwom = new clntMplsPwe();
@@ -1624,6 +1660,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceBridge == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 erspan = new clntErspan();
                 erspan.target = target;
                 erspan.prefer = prefer;
@@ -1640,6 +1679,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceBridge == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 dlsw = new clntDlsw();
                 dlsw.target = target;
                 dlsw.prefer = prefer;
@@ -1652,6 +1694,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prEtherip:
                 if (ifaceBridge == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 etherip = new clntEtherIp();
@@ -1668,6 +1713,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceBridge == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 sreth = new clntSrEth();
                 sreth.target = target;
                 sreth.prefer = prefer;
@@ -1680,6 +1728,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prUti:
                 if (ifaceBridge == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 uti = new clntUti();
@@ -1697,6 +1748,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceBridge == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 nvgre = new clntNvGre();
                 nvgre.target = target;
                 nvgre.prefer = prefer;
@@ -1710,6 +1764,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prVxlan:
                 if (ifaceBridge == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 vxl = new clntVxlan();
@@ -1729,6 +1786,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceBridge == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 gnv = new clntGeneve();
                 gnv.target = target;
                 gnv.prefer = prefer;
@@ -1742,6 +1802,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prLlcudp:
                 if (ifaceBridge == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 lcu = new clntLlcudp();
@@ -1758,6 +1821,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceBridge == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 tzs = new clntTzsp();
                 tzs.target = target;
                 tzs.prefer = prefer;
@@ -1772,6 +1838,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 if (ifaceBridge == null) {
                     return;
                 }
+                if (proxy.vrf == null) {
+                    return;
+                }
                 cpw = new clntCapwap();
                 cpw.target = target;
                 cpw.prefer = prefer;
@@ -1784,6 +1853,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 break;
             case prLwapp:
                 if (ifaceBridge == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
                     return;
                 }
                 lwp = new clntLwapp();
