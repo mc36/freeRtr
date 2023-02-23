@@ -35,13 +35,13 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
  exit
-server dns dns
- resolv test.corp 1234::1
- vrf v1
- exit
 proxy-profile p1
  vrf v1
  source ethernet1
+ exit
+server dns dns
+ resolv test.corp p1 1234::1
+ vrf v1
  exit
 client proxy p1
 client name-server 1.1.1.1

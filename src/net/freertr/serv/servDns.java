@@ -173,10 +173,12 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "2  .     6to4nothing             clear 6to4 prefix");
         l.add(null, "2  3     via                     define root");
         l.add(null, "3  4       <str>                 zone name");
-        l.add(null, "4  4,.       <addr>              address of resolver");
+        l.add(null, "4  5         <name:prx>          proxy to use");
+        l.add(null, "5  5,.         <addr>            address of resolver");
         l.add(null, "1  2   resolver                  define resolver");
         l.add(null, "2  3     <str>                   zone name");
-        l.add(null, "3  3,.     <addr>                address of resolver");
+        l.add(null, "3  4       <name:prx>            proxy to use");
+        l.add(null, "4  4,.       <addr>              address of resolver");
         l.add(null, "1  2   zone                      name of a zone");
         List<String> lst = new ArrayList<String>();
         for (int i = 0; i < zones.size(); i++) {
@@ -404,6 +406,8 @@ class servDnsResolv implements Comparator<servDnsResolv> {
 
     public final String name;
 
+    public cfgProxy proxy;
+
     public List<addrIP> addr;
 
     public servDnsResolv(String nam) {
@@ -418,7 +422,7 @@ class servDnsResolv implements Comparator<servDnsResolv> {
     }
 
     public String toString() {
-        String a = "";
+        String a = " " + proxy.name;
         for (int i = 0; i < addr.size(); i++) {
             a += " " + addr.get(i);
         }
@@ -430,6 +434,10 @@ class servDnsResolv implements Comparator<servDnsResolv> {
     }
 
     public boolean fromString(cmds cmd) {
+        proxy = cfgAll.proxyFind(cmd.word(), false);
+        if (proxy == null) {
+            return true;
+        }
         addr = new ArrayList<addrIP>();
         for (;;) {
             String a = cmd.word();
@@ -490,6 +498,7 @@ class servDnsDoer implements Runnable {
 
     private boolean doSlaves(servDnsResolv ntry, List<packDnsRec> res, int typ, String nam) {
         clntDns clnt = new clntDns();
+        clnt.curPrx = ntry.proxy;
         if (clnt.doResolvList(ntry.addr, nam, false, typ) != 0) {
             return false;
         }
@@ -509,6 +518,7 @@ class servDnsDoer implements Runnable {
 
     private boolean doSlaver(servDnsResolv ntry, List<packDnsRec> res, int typ, String nam) {
         clntDns clnt = new clntDns();
+        clnt.curPrx = ntry.proxy;
         packDnsZone zon = clnt.doRecursive(ntry.addr, nam, typ);
         if (zon == null) {
             return false;
