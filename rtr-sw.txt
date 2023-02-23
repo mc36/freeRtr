@@ -249,16 +249,13 @@ vrf definition vpn
  mdt6
  exit
 !
-router blackhole4 1
- vrf rtbh
+router blackhole4 1 vrf rtbh
  exit
 !
-router blackhole6 1
- vrf rtbh
+router blackhole6 1 vrf rtbh
  exit
 !
-router lsrp4 1
- vrf v1
+router lsrp4 1 vrf v1
  router-id 10.10.10.227
  refresh 600000
  lifetime 2147483000
@@ -272,8 +269,7 @@ router lsrp4 1
  ecmp
  exit
 !
-router lsrp6 1
- vrf v1
+router lsrp6 1 vrf v1
  router-id 10.10.10.227
  refresh 600000
  lifetime 2147483000
@@ -287,26 +283,22 @@ router lsrp6 1
  ecmp
  exit
 !
-router logger4 1
- vrf v1
+router logger4 1 vrf v1
  flapstat
  redistribute lsrp4 1
  exit
 !
-router logger4 65535
- vrf v1
+router logger4 65535 vrf v1
  flapstat
  redistribute bgp4 65535
  exit
 !
-router logger6 1
- vrf v1
+router logger6 1 vrf v1
  flapstat
  redistribute lsrp6 1
  exit
 !
-router logger6 65535
- vrf v1
+router logger6 65535 vrf v1
  flapstat
  redistribute bgp6 65535
  exit
@@ -484,14 +476,14 @@ interface null0
  no log-link-change
  exit
 !
-router bgp4 65535
- vrf v1
+router bgp4 65535 vrf v1
  local-as 65535
  router-id 10.10.10.227
  address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  flapstat
  monitor bmp p1 10.10.10.227 17971
  dump mrt bgp4.log
+ !
  template r remote-as 65535
  template r local-as 65535
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
@@ -518,42 +510,53 @@ router bgp4 65535
  template r bier
  template r role attrib
  template r send-community all
+ !
  neighbor 10.5.1.10 template r
+ !
  neighbor 10.26.26.2 template r
+ !
  afi-vrf dn42 enable
  afi-vrf dn42 mvpn loopback0
  afi-vrf dn42 redistribute connected
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
+ !
  afi-vrf dptest enable
  afi-vrf dptest redistribute connected
  afi-vrf dptest redistribute static
+ !
  afi-vrf niif enable
+ !
  afi-vrf rtbh enable
  afi-vrf rtbh redistribute blackhole4 1
+ !
  afi-vrf vpn enable
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected
  afi-vrf vpn redistribute static
+ !
  afi-vpls 65535:1 bridge-group 1
  afi-vpls 65535:1 update-source loopback0
+ !
  afi-evpn 2 bridge-group 2
  afi-evpn 2 bmac 006e.085c.1743
  afi-evpn 2 encapsulation pbb
  afi-evpn 2 update-source loopback0
+ !
+ !
  redistribute connected
  redistribute static
  ecmp
  exit
 !
-router bgp6 65535
- vrf v1
+router bgp6 65535 vrf v1
  local-as 65535
  router-id 10.10.10.227
  address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  flapstat
  monitor bmp p1 2001:db8:1101::227:227 17971
  dump mrt bgp6.log
+ !
  template r remote-as 65535
  template r local-as 65535
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
@@ -580,29 +583,40 @@ router bgp6 65535
  template r bier
  template r role attrib
  template r send-community all
+ !
  neighbor 2001:db8:36::2 template r
+ !
  neighbor 2001:db8:1026:1001::2 template r
+ !
  afi-vrf dn42 enable
  afi-vrf dn42 mvpn loopback0
  afi-vrf dn42 redistribute connected
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
+ !
  afi-vrf dptest enable
  afi-vrf dptest redistribute connected
  afi-vrf dptest redistribute static
+ !
  afi-vrf niif enable
+ !
  afi-vrf rtbh enable
  afi-vrf rtbh redistribute blackhole6 1
+ !
  afi-vrf vpn enable
  afi-vrf vpn mvpn loopback0
  afi-vrf vpn redistribute connected
  afi-vrf vpn redistribute static
+ !
  afi-vpls 65535:1 bridge-group 3
  afi-vpls 65535:1 update-source loopback0
+ !
  afi-evpn 2 bridge-group 4
  afi-evpn 2 bmac 0002.4276.7a16
  afi-evpn 2 encapsulation pbb
  afi-evpn 2 update-source loopback0
+ !
+ !
  redistribute connected
  redistribute static
  ecmp
