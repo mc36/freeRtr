@@ -72,12 +72,12 @@ router bgp6 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
  neigh 4321::2 segrou
- afi-vrf v2 ena
- afi-vrf v2 srv6 tun1
- afi-vrf v2 red conn
- afi-vrf v3 ena
- afi-vrf v3 srv6 tun1
- afi-vrf v3 red conn
+ afi-ovrf v2 ena
+ afi-ovrf v2 srv6 tun1
+ afi-ovrf v2 red conn
+ afi-ovrf v3 ena
+ afi-ovrf v3 srv6 tun1
+ afi-ovrf v3 red conn
  exit
 !
 
@@ -123,33 +123,34 @@ interface loopback3
  ipv6 address 9993::2/128
  exit
 segment-routing srv6 locators locator a prefix 1111:1111:1111:1111::/64
+segment-routing srv6 encapsulation source-address 4321::2
 router bgp 1
  segment-routing srv6 locator a
  address-family vpnv4 unicast segment-routing srv6 locator a
  address-family vpnv6 unicast segment-routing srv6 locator a
- neighbor 2.2.2.1
-  remote-as 1
-  update-source loopback0
-  address-family vpnv4 unicast
-! neighbor 4321::1
+! neighbor 2.2.2.1
 !  remote-as 1
 !  update-source loopback0
-!  address-family vpnv6 unicast
+!  address-family vpnv4 unicast
+ neighbor 4321::1
+  remote-as 1
+  update-source loopback0
+  address-family vpnv6 unicast
  vrf v2
   rd 1:2
   address-family ipv4 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
   address-family ipv6 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
  vrf v3
   rd 1:3
   address-family ipv4 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
   address-family ipv6 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
 root
 commit
