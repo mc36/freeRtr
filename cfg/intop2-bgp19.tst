@@ -65,13 +65,14 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
- address vpnuni
+ address ovpnuni
  local-as 1
  router-id 6.6.6.1
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
  neigh 4321::2 segrou
+ neigh 4321::2 extended-nexthop-current ovpnuni
  afi-ovrf v2 ena
  afi-ovrf v2 srv6 tun1
  afi-ovrf v2 red conn
@@ -128,14 +129,10 @@ router bgp 1
  segment-routing srv6 locator a
  address-family vpnv4 unicast segment-routing srv6 locator a
  address-family vpnv6 unicast segment-routing srv6 locator a
-! neighbor 2.2.2.1
-!  remote-as 1
-!  update-source loopback0
-!  address-family vpnv4 unicast
  neighbor 4321::1
   remote-as 1
   update-source loopback0
-  address-family vpnv6 unicast
+  address-family vpnv4 unicast
  vrf v2
   rd 1:2
   address-family ipv4 unicast
