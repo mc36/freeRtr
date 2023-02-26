@@ -639,7 +639,7 @@ public class userHelping {
             }
             Collections.sort(nums);
             int o = -1;
-            for (i = 1; i < nums.size(); i++) {
+            for (i = 0; i < nums.size(); i++) {
                 int p = nums.get(i);
                 if (o == p) {
                     continue;
