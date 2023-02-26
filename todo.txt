@@ -1,3 +1,4 @@
+dn42ix-vm-switch#terminal no tablemode [fancy]--- % unknown exec command entered
 vnc console to the vdc definition
 boot order to vdc definition
 interface lo0 as lo-core, persistently
