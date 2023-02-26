@@ -451,6 +451,7 @@ public class userConfig {
         l.add(null, "3  .      <name:prc>                 name of process");
         l.add(null, "1  2  interface                      select an interface to configure");
         l.add(null, "2  .    <name:ifc>                   name of interface");
+        l.add(null, "1  .  console0                       select a line to configure");
         l.add(null, "1  2  line                           select a line to configure");
         l.add(null, "2  .    <name:lin>                   name of line");
         l.add(null, "1  2  bridge                         transparent bridging parameters");
@@ -1260,6 +1261,11 @@ public class userConfig {
                 cmd.error("bad policy map name");
                 return;
             }
+            modeV = modes.config;
+            return;
+        }
+        if (a.equals("console0")) {
+            modeDconfig = cfgAll.con0;
             modeV = modes.config;
             return;
         }

@@ -275,9 +275,7 @@ public class userTest {
                 cmd.error("failed");
                 return null;
             }
-            userLine lin = new userLine();
-            lin.execTimeOut = 0;
-            lin.createHandler(pipWin, "window", 2);
+            cfgAll.con0.line.createHandler(pipWin, "window", 2);
             return null;
         }
         if (a.equals("otppass")) {

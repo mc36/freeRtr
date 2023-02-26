@@ -622,6 +622,12 @@ router bgp6 65535 vrf v1
  ecmp
  exit
 !
+console0
+ exec colorize header
+ no exec authorization
+ no login authentication
+ exit
+!
 proxy-profile dn42
  vrf dn42
  exit

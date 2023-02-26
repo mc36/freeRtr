@@ -137,9 +137,14 @@ public class cfgAll {
     public static final tabGen<cfgIfc> ifaces = new tabGen<cfgIfc>();
 
     /**
-     * list of interfaces
+     * list of lines
      */
     public static final tabGen<cfgLin> lines = new tabGen<cfgLin>();
+
+    /**
+     * console template
+     */
+    public static final cfgCons con0 = new cfgCons();
 
     /**
      * list of key menus
@@ -3839,6 +3844,7 @@ public class cfgAll {
         for (int i = 0; i < routers.size(); i++) {
             l.addAll(routers.get(i).getShRun2(filter));
         }
+        l.addAll(con0.getShRun(filter));
         servGenList.listGetRun(l, lines, filter);
         servGenList.listGetRun(l, proxys, filter);
         servGenList.listGetRun(l, vpdns, filter);

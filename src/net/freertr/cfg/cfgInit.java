@@ -854,6 +854,7 @@ public class cfgInit implements Runnable {
         cfgRtr.defaultF = createFilter(cfgRtr.defaultL);
         cfgIfc.defaultF = createFilter(cfgIfc.defaultL);
         cfgLin.defaultF = createFilter(cfgLin.defaultL, userReader.linedefF);
+        cfgCons.defaultF = createFilter(cfgCons.defaultL, userReader.linedefF);
         cfgSched.defaultF = createFilter(cfgSched.defaultL);
         cfgScrpt.defaultF = createFilter(cfgScrpt.defaultL);
         cfgTlmtry.defaultF = createFilter(cfgTlmtry.defaultL);
@@ -1122,9 +1123,7 @@ public class cfgInit implements Runnable {
             ps.linePut(logo.get(i));
         }
         doInit(null, httpGet(url), null);
-        userLine lin = new userLine();
-        lin.execTimeOut = 0;
-        lin.createHandler(ps, "applet", 2);
+        cfgAll.con0.line.createHandler(ps, "applet", 2);
         img.doRound(true);
         img.doImage();
         return img;
@@ -1211,14 +1210,10 @@ public class cfgInit implements Runnable {
                 if (det) {
                     userScreen.updtSiz(pipCon);
                 }
-                userLine lin = new userLine();
-                lin.execTimeOut = 0;
-                lin.createHandler(pipCon, "console", 2);
+                cfgAll.con0.line.createHandler(pipCon, "console", 2);
             }
             if (pipWin != null) {
-                userLine lin = new userLine();
-                lin.execTimeOut = 0;
-                lin.createHandler(pipWin, "window", 2);
+                cfgAll.con0.line.createHandler(pipWin, "window", 2);
             }
             return;
         }

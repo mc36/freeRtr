@@ -43,7 +43,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 25;
+    public final static int day = 26;
 
     /**
      * statement of release
@@ -68,10 +68,10 @@ public class verCore {
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
         "quote1: make the world better",
         "quote2: if a machine can learn the value of human life, maybe we can too",
-        "quote4: let bloom all the flowers",
-        "quote5: keep it stupid simple",
-        "quote6: be liberal in what you accept, and conservative in what you send",
-        "quote7: the beer-ware license for selected group of people:",
+        "quote3: let bloom all the flowers",
+        "quote4: keep it stupid simple",
+        "quote5: be liberal in what you accept, and conservative in what you send",
+        "quote6: the beer-ware license for selected group of people:",
         author + " wrote these files. as long as you retain this notice you",
         "can do whatever you want with this stuff. if we meet some day, and",
         "you think this stuff is worth it, you can buy me a beer in return"

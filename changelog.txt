@@ -13983,3 +13983,6 @@ qc pass: interop8: igmp3/mld2
 qc pass: interop8: pim
 ---------------------------------- 2023-02-20 10:54:28 23.2.20
 no todo: consider term caps
+---------------------------------- 2023-02-26 06:23:16 23.2.26
+todo: vnc console to the vdc definition
+todo: boot order to vdc definition
