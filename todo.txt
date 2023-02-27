@@ -1,4 +1,3 @@
-vnc console to the vdc definition
 interface lo0 as lo-core, persistently
 bgp to have xr-alike neighbor/template statements with upgrade-cli
 rework snmp to use sensors

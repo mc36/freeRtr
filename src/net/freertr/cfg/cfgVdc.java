@@ -102,6 +102,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String bootName = null;
 
     /**
+     * vga to vnc
+     */
+    public String vga2vnc = null;
+
+    /**
      * cdrom to use
      */
     public String cdromName = null;
@@ -248,6 +253,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! disk4 null",
         "vdc definition .*! cdrom null",
         "vdc definition .*! bios null",
+        "vdc definition .*! vga2vnc null",
         "vdc definition .*! boot null",
         "vdc definition .*! pinning null",
         "vdc definition .*! uuid null",
@@ -322,6 +328,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.nicType = nicType;
         n.biosName = biosName;
         n.bootName = bootName;
+        n.vga2vnc = vga2vnc;
         n.cdromName = cdromName;
         if (macBase != null) {
             n.macBase = macBase.copyBytes();
@@ -418,6 +425,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "1  2      usb                        pass through usb device");
         l.add(null, "2  3        <num>                    bus");
         l.add(null, "3  .          <num>                  port");
+        l.add(null, "1  2      vga2vnc                    enable vnc access");
+        l.add(null, "2  .        <str>                    vnc address");
         l.add(null, "1  2      tcp2vrf                    pass host port in");
         l.add(null, "2  3        <num>                    host port");
         l.add(null, "3  4          <str>                  vdc vrf");
@@ -458,6 +467,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "user " + userValue);
         l.add(cmds.tabulator + "pinning " + cpuPinning);
         l.add(cmds.tabulator + "cpu " + cpuType);
+        l.add(cmds.tabulator + "vga2vnc " + vga2vnc);
         l.add(cmds.tabulator + "bios " + biosName);
         l.add(cmds.tabulator + "boot " + bootName);
         l.add(cmds.tabulator + "config " + configFile);
@@ -690,6 +700,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             usbs.add(dev);
             return;
         }
+        if (a.equals("vga2vnc")) {
+            vga2vnc = cmd.word();
+            return;
+        }
         if (a.equals("tcp2vrf")) {
             cfgVdcTcp dev = new cfgVdcTcp();
             dev.portH = bits.str2num(cmd.word());
@@ -850,6 +864,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             usbs.del(dev);
             return;
         }
+        if (a.equals("vga2vnc")) {
+            vga2vnc = null;
+            return;
+        }
         if (a.equals("tcp2vrf")) {
             cfgVdcTcp dev = new cfgVdcTcp();
             dev.portH = bits.str2num(cmd.word());
@@ -958,6 +976,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             cmd = version.getJvmExec() + " " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + version.getFileName() + " routercs " + a + " " + s;
         } else {
             cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -drive file=" + image1name + ",format=raw,cache=unsafe -m " + imageMem;
+            if (vga2vnc != null) {
+                cmd += " -vnc " + vga2vnc;
+            }
             if (biosName != null) {
                 cmd += " -bios " + biosName;
             }
