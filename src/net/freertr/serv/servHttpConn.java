@@ -1721,6 +1721,9 @@ public class servHttpConn implements Runnable {
                 }
                 a += webdavProp(pn, new File(gotHost.path + pn), typ, len, tag, mod, crt, dsp, cnt, usd, fre);
                 File[] fl = userFlash.dirList(gotHost.path + pn);
+                if (fl == null) {
+                    fl = new File[0];
+                }
                 for (int i = 0; i < fl.length; i++) {
                     a += webdavProp(pn + fl[i].getName(), fl[i], typ, len, tag, mod, crt, dsp, cnt, usd, fre);
                 }
