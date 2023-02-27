@@ -13990,3 +13990,5 @@ todo: boot order to vdc definition
 todo: dn42ix-vm-switch#terminal no tablemode [fancy]--- % unknown exec command entered
 ---------------------------------- 2023-02-26 12:02:25 23.2.26
 todo: fuckup from yesterday: the colsole times out now, go for it asap you crazy fool XD
+---------------------------------- 2023-02-27 09:29:28 23.2.27
+no todo: fuckup from yesterday: the colsole times out now, go for it asap you crazy fool XD

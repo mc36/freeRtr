@@ -1,4 +1,3 @@
-fuckup from yesterday: the colsole times out now, go for it asap you crazy fool XD
 dn42ix-vm-switch#terminal no tablemode [fancy]--- % unknown exec command entered
 vnc console to the vdc definition
 boot order to vdc definition
