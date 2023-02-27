@@ -13999,3 +13999,5 @@ no todo: dn42ix-vm-switch#terminal no tablemode [fancy]--- % unknown exec comman
 no todo: vnc console to the vdc definition
 ---------------------------------- 2023-02-27 20:25:01 23.2.27
 todo: pastebin for the cli
+---------------------------------- 2023-02-27 22:16:18 23.2.27
+todo: server http and : in the file names
