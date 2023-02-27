@@ -623,7 +623,6 @@ router bgp6 65535 vrf v1
  exit
 !
 console0
- exec timeout 0
  exec colorize header
  no exec authorization
  no login authentication

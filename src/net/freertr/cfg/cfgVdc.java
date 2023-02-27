@@ -97,6 +97,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String biosName = null;
 
     /**
+     * boot to use
+     */
+    public String bootName = null;
+
+    /**
      * cdrom to use
      */
     public String cdromName = null;
@@ -243,6 +248,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! disk4 null",
         "vdc definition .*! cdrom null",
         "vdc definition .*! bios null",
+        "vdc definition .*! boot null",
         "vdc definition .*! pinning null",
         "vdc definition .*! uuid null",
         "vdc definition .*! user null",
@@ -315,6 +321,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.imageCpu = imageCpu;
         n.nicType = nicType;
         n.biosName = biosName;
+        n.bootName = bootName;
         n.cdromName = cdromName;
         if (macBase != null) {
             n.macBase = macBase.copyBytes();
@@ -372,6 +379,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "2  2,.      <str>                    name of image");
         l.add(null, "1  2      bios                       set bios image to use");
         l.add(null, "2  2,.      <str>                    name of image");
+        l.add(null, "1  2      boot                       set boot arguments to use");
+        l.add(null, "2  2,.      <str>                    parameters");
         l.add(null, "1  2      image                      set external image to use");
         l.add(null, "2  2,.      <str>                    name of image");
         l.add(null, "1  2      disk2                      set external image to use");
@@ -450,6 +459,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "pinning " + cpuPinning);
         l.add(cmds.tabulator + "cpu " + cpuType);
         l.add(cmds.tabulator + "bios " + biosName);
+        l.add(cmds.tabulator + "boot " + bootName);
         l.add(cmds.tabulator + "config " + configFile);
         l.add(cmds.tabulator + "image " + image1name);
         l.add(cmds.tabulator + "disk2 " + image2name);
@@ -513,6 +523,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("bios")) {
             biosName = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("boot")) {
+            bootName = cmd.getRemaining();
             return;
         }
         if (a.equals("config")) {
@@ -741,6 +755,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             biosName = null;
             return;
         }
+        if (a.equals("boot")) {
+            bootName = null;
+            return;
+        }
         if (a.equals("config")) {
             configFile = null;
             return;
@@ -942,6 +960,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -drive file=" + image1name + ",format=raw,cache=unsafe -m " + imageMem;
             if (biosName != null) {
                 cmd += " -bios " + biosName;
+            }
+            if (bootName != null) {
+                cmd += " -boot " + bootName;
             }
             if (cdromName != null) {
                 cmd += " -cdrom " + cdromName;

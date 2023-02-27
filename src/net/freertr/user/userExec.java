@@ -1498,8 +1498,9 @@ public class userExec {
         hl.add(null, "3 .        rainbow                    select rainbow mode");
         hl.add(null, "3 .        prompt                     select prompt mode");
         hl.add(null, "2 .      spacetab                     treat space as tabulator");
+        hl.add(null, "2 .      retitle                      resend terminal title");
         hl.add(null, "2 .      capslock                     treat lowercase as uppercase");
-        hl.add(null, "2 3      tablemode                    select table formatting mode");
+        hl.add(null, "2 3,.    tablemode                    select table formatting mode");
         hl.add(null, "3 .        normal                     select normal mode");
         hl.add(null, "3 .        table                      select table mode");
         hl.add(null, "3 .        fancy                      select fancy mode");
@@ -4505,6 +4506,10 @@ public class userExec {
             pipe.settingsPut(pipeSetting.colors, userFormat.str2colmod(a));
             return;
         }
+        if (a.equals("retitle")) {
+            userScreen.sendTit(pipe, cfgAll.hostName);
+            return;
+        }
         if (a.equals("spacetab")) {
             pipe.settingsPut(pipeSetting.spacTab, true);
             return;
@@ -4534,7 +4539,12 @@ public class userExec {
             return;
         }
         if (a.equals("tablemode")) {
-            pipe.settingsPut(pipeSetting.tabMod, userFormat.str2tabmod(cmd.word()));
+            a = cmd.word();
+            if (a.length() < 1) {
+                pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.fancy);
+                return;
+            }
+            pipe.settingsPut(pipeSetting.tabMod, userFormat.str2tabmod(a));
             return;
         }
         if (!a.equals("no")) {
@@ -4560,6 +4570,10 @@ public class userExec {
         }
         if (a.equals("capslock")) {
             pipe.settingsPut(pipeSetting.capsLock, false);
+            return;
+        }
+        if (a.equals("tablemode")) {
+            pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
             return;
         }
         cmd.badCmd();

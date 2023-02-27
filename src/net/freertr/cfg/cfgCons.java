@@ -23,7 +23,9 @@ public class cfgCons implements cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
+    public final static String[] defaultL = {
+        "console0! exec timeout 0"
+    };
 
     /**
      * defaults filter
