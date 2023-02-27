@@ -44,6 +44,7 @@ the following directories will appear here:
 * captures: script to stream captures
 * sniffer: web based packet capture
 * mailer: web based mail reader
+* paster: web based pastebin service
 * gallery: web based album viewer
 * motion: web based alarm/recorder
 * player: web based music player/streamer/receiver
