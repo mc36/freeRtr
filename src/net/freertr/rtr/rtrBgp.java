@@ -4505,6 +4505,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public userFormat getBestpath() {
         userFormat l = new userFormat("|", "category|value|addition");
+        l.add("asn|" + localAs);
+        l.add("routerid|" + routerID);
         l.add("version|" + compRound);
         l.add("full run|" + fullCount + "|times");
         l.add("full last|" + bits.timePast(fullLast) + "|" + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3));
