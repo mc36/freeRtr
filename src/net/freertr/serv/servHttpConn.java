@@ -927,6 +927,7 @@ public class servHttpConn implements Runnable {
                 c = "" + len;
                 totalF.update(len, mod);
             }
+            a = a.replaceAll(":", "%3A");
             rsp += "<tr><td>" + bits.time2str(cfgAll.timeZoneName, mod, 3) + "</td><td>" + c + "</td><td><a href=\"" + a + "\">" + b + "</a></td></tr>\n";
         }
         rsp += "</tbody></table><br/>\n";
