@@ -1399,9 +1399,14 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             }
             return;
         }
+        ///////////////
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiUni, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLab, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiCtp, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOuni, remoteAs, accOuni, conn.lrnOuni, true, oroumapIn, oroupolIn, oprflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOlab, remoteAs, accOuni, conn.lrnOuni, true, oroumapIn, oroupolIn, oprflstIn);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOctp, remoteAs, accOuni, conn.lrnOuni, true, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOmlt, remoteAs, accOmlt, conn.lrnOmlt, true, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOflw, remoteAs, accOflw, conn.lrnOflw, true, wroumapIn, wroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOsrt, remoteAs, accOsrt, conn.lrnOsrt, true, wroumapIn, wroupolIn, null);
