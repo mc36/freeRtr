@@ -14009,3 +14009,5 @@ todo: noflash -hw.txt knob, automatically on for vdcs
 no todo: noflash -hw.txt knob, automatically on for vdcs
 ---------------------------------- 2023-02-28 17:33:09 23.2.28
 todo: send ttyX exec command
+---------------------------------- 2023-02-28 20:27:52 23.2.28
+no todo: send ttyX exec command
