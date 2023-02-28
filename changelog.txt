@@ -14003,3 +14003,5 @@ todo: pastebin for the cli
 todo: server http and : in the file names
 ---------------------------------- 2023-02-28 00:58:52 23.2.28
 no todo: server http and : in the file names
+---------------------------------- 2023-02-28 15:53:45 23.2.28
+todo: noflash -hw.txt knob, automatically on for vdcs
