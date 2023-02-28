@@ -14005,3 +14005,5 @@ todo: server http and : in the file names
 no todo: server http and : in the file names
 ---------------------------------- 2023-02-28 15:53:45 23.2.28
 todo: noflash -hw.txt knob, automatically on for vdcs
+---------------------------------- 2023-02-28 17:18:05 23.2.28
+no todo: noflash -hw.txt knob, automatically on for vdcs
