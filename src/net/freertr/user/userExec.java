@@ -1599,6 +1599,7 @@ public class userExec {
         cfgRtr.getRouterList(hl, 2, " to use");
         hl.add(null, "5 3,.          <num:rtr>              process id");
         hl.add(null, "3 3,.      lookup                     lookup intermediate hops");
+        hl.add(null, "1 .    send                           send a message to logged in users");
         hl.add(null, "1 2    ping                           send echo request");
         hl.add(null, "2 3,.    <host>                       name of host");
         hl.add(null, "3 3,.      dontfrag                   specify dont fragment");
@@ -2377,6 +2378,10 @@ public class userExec {
         }
         if (a.equals("mtr")) {
             doMtr();
+            return cmdRes.command;
+        }
+        if (a.equals("send")) {
+            doSend();
             return cmdRes.command;
         }
         if (a.equals("ping")) {
@@ -3745,6 +3750,23 @@ public class userExec {
                 pipe.linePut(strt + a + " is " + res.err + " at " + res.rtr);
             }
         }
+    }
+
+    private void doSend() {
+        List<String> txt = new ArrayList<String>();
+        userEditor e = new userEditor(new userScreen(pipe), txt, "send", false);
+        if (e.doEdit()) {
+            return;
+        }
+        String a = "\r\n\r\nmessage from " + cmd.pipe.settingsGet(pipeSetting.authed, new authResult()).user + ":\r\n";
+        for (int i = 0; i < txt.size(); i++) {
+            a += txt.get(i) + "\r\n";
+        }
+        byte[] buf = a.getBytes();
+        for (int i = 0; i < userLine.loggedUsers.size(); i++) {
+            userLine.loggedUsers.get(i).pipe.morePut(buf, 0, buf.length);
+        }
+        return;
     }
 
     private void doPing() {
