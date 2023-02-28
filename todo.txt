@@ -1,3 +1,4 @@
+send ttyX exec command
 pastebin for the cli
 interface lo0 as lo-core, persistently
 bgp to have xr-alike neighbor/template statements with upgrade-cli

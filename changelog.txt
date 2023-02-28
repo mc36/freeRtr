@@ -14007,3 +14007,5 @@ no todo: server http and : in the file names
 todo: noflash -hw.txt knob, automatically on for vdcs
 ---------------------------------- 2023-02-28 17:18:05 23.2.28
 no todo: noflash -hw.txt knob, automatically on for vdcs
+---------------------------------- 2023-02-28 17:33:09 23.2.28
+todo: send ttyX exec command
