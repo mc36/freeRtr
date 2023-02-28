@@ -15,11 +15,15 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabIntMatcher;
+import net.freertr.tab.tabListing;
+import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
+import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabRtrplc;
+import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -1299,6 +1303,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         return false;
     }
 
+    private void addUpdateTableUni(int afi, int mask, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+        if ((conn.peerAfis & mask) == 0) {
+            return;
+        }
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, trg, src, true, rouMap, rouPlc, prfLst);
+    }
+
     /**
      * set accepted list
      */
@@ -1399,14 +1410,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             }
             return;
         }
-        ///////////////
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiUni, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLab, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiCtp, remoteAs, accUni, conn.lrnUni, true, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(lower.afiUni, rtrBgpParam.mskUni, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(lower.afiLab, rtrBgpParam.mskLab, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(lower.afiCtp, rtrBgpParam.mskCtp, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(lower.afiCar, rtrBgpParam.mskCar, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOuni, remoteAs, accOuni, conn.lrnOuni, true, oroumapIn, oroupolIn, oprflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOlab, remoteAs, accOuni, conn.lrnOuni, true, oroumapIn, oroupolIn, oprflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOctp, remoteAs, accOuni, conn.lrnOuni, true, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(lower.afiOuni, rtrBgpParam.mskOuni, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(lower.afiOlab, rtrBgpParam.mskOlab, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(lower.afiOctp, rtrBgpParam.mskOct, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(lower.afiOcar, rtrBgpParam.mskOcr, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOmlt, remoteAs, accOmlt, conn.lrnOmlt, true, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOflw, remoteAs, accOflw, conn.lrnOflw, true, wroumapIn, wroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOsrt, remoteAs, accOsrt, conn.lrnOsrt, true, wroumapIn, wroupolIn, null);
