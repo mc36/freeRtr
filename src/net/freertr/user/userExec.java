@@ -4263,6 +4263,40 @@ public class userExec {
             c.doChat();
             return;
         }
+        if (a.equals("script")) {
+            cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such script");
+                return;
+            }
+            if (ntry.con != null) {
+                ntry.con.setClose();
+            }
+            pipeLine pl = new pipeLine(65536, false);
+            ntry.con = pl.getSide();
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            trm.doTerm();
+            return;
+        }
+        if (a.equals("scheduler")) {
+            cfgSched ntry = cfgAll.schedFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such scheduler");
+                return;
+            }
+            if (ntry.con != null) {
+                ntry.con.setClose();
+            }
+            pipeLine pl = new pipeLine(65536, false);
+            ntry.con = pl.getSide();
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            trm.doTerm();
+            return;
+        }
+        if (cfgAll.limited) {
+            cmd.error("not in a vdc");
+            return;
+        }
         if (a.equals("vdc")) {
             cfgVdc ntry = new cfgVdc(cmd.word());
             ntry = cfgInit.vdcLst.find(ntry);
@@ -4283,36 +4317,6 @@ public class userExec {
             cfgPrcss ntry = cfgAll.prcFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such process");
-                return;
-            }
-            if (ntry.con != null) {
-                ntry.con.setClose();
-            }
-            pipeLine pl = new pipeLine(65536, false);
-            ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
-            trm.doTerm();
-            return;
-        }
-        if (a.equals("script")) {
-            cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
-            if (ntry == null) {
-                cmd.error("no such script");
-                return;
-            }
-            if (ntry.con != null) {
-                ntry.con.setClose();
-            }
-            pipeLine pl = new pipeLine(65536, false);
-            ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
-            trm.doTerm();
-            return;
-        }
-        if (a.equals("scheduler")) {
-            cfgSched ntry = cfgAll.schedFind(cmd.word(), false);
-            if (ntry == null) {
-                cmd.error("no such scheduler");
                 return;
             }
             if (ntry.con != null) {

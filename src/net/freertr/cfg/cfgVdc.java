@@ -1113,6 +1113,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("hwid " + cfgInit.hwIdNum + "-" + name);
         l.add("hwsn " + uuidValue);
         l.add("rwpath " + version.getRWpath());
+        l.add("limited");
         l.add("port " + beg + " " + end);
         l.add("prio " + redunPrio);
         addParam(l, "enc", password);

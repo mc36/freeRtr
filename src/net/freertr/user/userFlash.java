@@ -70,6 +70,10 @@ public class userFlash {
      * @return command to execute, null if nothing
      */
     public cfgAlias doer() {
+        if (cfgAll.limited) {
+            cmd.error("not in a vdc");
+            return null;
+        }
         String a = cmd.word();
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.flsh, false);
         if (alias != null) {

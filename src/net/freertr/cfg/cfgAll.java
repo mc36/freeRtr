@@ -742,6 +742,11 @@ public class cfgAll {
     public static String locale = null;
 
     /**
+     * limit into a vdc
+     */
+    public static boolean limited = false;
+    
+    /**
      * minimum tls version to use
      */
     public static int tlsVerMin = 0;

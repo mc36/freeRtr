@@ -903,6 +903,10 @@ public class userConfig {
             return;
         }
         if (a.equals("vdc")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return;
+            }
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
@@ -918,6 +922,10 @@ public class userConfig {
             return;
         }
         if (a.equals("process")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return;
+            }
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
