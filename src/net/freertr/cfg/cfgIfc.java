@@ -5626,28 +5626,28 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 l.add(cmds.tabulator + "description: " + description);
                 l.add(cmds.tabulator + "state changed " + cntr.getShTrans());
                 l.add(cmds.tabulator + "last packet " + cntr.getShTraff());
-                String a = ", hwaddr=" + ethtyp.getHwAddr() + ", mtu=" + ethtyp.getMTUsize() + ", bw=" + bits.bandwidth(ethtyp.getBandwidth());
+                String a = " hwaddr is " + ethtyp.getHwAddr() + " mtu is " + ethtyp.getMTUsize() + " bw is " + bits.bandwidth(ethtyp.getBandwidth());
                 if (vrfFor != null) {
-                    a += ", vrf=" + vrfFor.name;
+                    a += " vrf is " + vrfFor.name;
                 }
                 if (bridgeIfc != null) {
-                    a += ", bridge=" + bridgeHed.name;
+                    a += " bridge is " + bridgeHed.name;
                 }
                 if (bundleIfc != null) {
-                    a += ", bundle=" + bundleHed.name;
+                    a += " bundle is " + bundleHed.name;
                 }
                 if (carrierDelay != 0) {
-                    a += ", carrdel=" + carrierDelay;
+                    a += " carrdel is " + carrierDelay;
                 }
                 l.add(cmds.tabulator + "type is " + type2string() + a);
                 if (fwdIf4 != null) {
-                    l.add(cmds.tabulator + "ipv4 address=" + addr4 + "/" + mask4.toNetmask() + ", mask=" + mask4 + ", ifcid=" + fwdIf4.ifwNum);
+                    l.add(cmds.tabulator + "ipv4 address is " + addr4 + "/" + mask4.toNetmask() + " ifcid=" + fwdIf4.ifwNum);
                 }
                 if (fwdIf6 != null) {
-                    l.add(cmds.tabulator + "ipv6 address=" + addr6 + "/" + mask6.toNetmask() + ", mask=" + mask6 + ", ifcid=" + fwdIf6.ifwNum);
+                    l.add(cmds.tabulator + "ipv6 address is " + addr6 + "/" + mask6.toNetmask() + " ifcid=" + fwdIf6.ifwNum);
                 }
                 if (ipxIfc != null) {
-                    l.add(cmds.tabulator + "ipx address=" + ipxAddr + ", ifcid=" + ipxIfc.ifwNum);
+                    l.add(cmds.tabulator + "ipx address is " + ipxAddr + " ifcid=" + ipxIfc.ifwNum);
                 }
                 l.addAll(ethtyp.getCounter().getShFull(ethtyp.getMacsec(), ethtyp.getSgt()));
                 break;
