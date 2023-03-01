@@ -1,3 +1,5 @@
+afi-vrf asdf setvrf
+asn for remote-as -1 in shows
 curl
 terminal background and foreground
 interface lo0 as lo-core, persistently

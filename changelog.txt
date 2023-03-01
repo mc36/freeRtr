@@ -14016,3 +14016,6 @@ todo: terminal background and foreground
 ---------------------------------- 2023-03-01 16:51:43 23.3.1
 no todo: pastebin for the cli
 todo: curl
+---------------------------------- 2023-03-01 17:04:00 23.3.1
+todo: afi-vrf asdf setvrf
+todo: asn for remote-as -1 in shows
