@@ -1503,6 +1503,9 @@ public class userPacket {
                 return null;
             }
             a += ".pcap";
+            if (cfgAll.capturePath != null) {
+                a = cfgAll.capturePath + a;
+            }
             if (cmd.size() > 0) {
                 a = cmd.word();
             }

@@ -745,7 +745,7 @@ public class cfgAll {
      * limit into a vdc
      */
     public static boolean limited = false;
-    
+
     /**
      * minimum tls version to use
      */
@@ -1182,6 +1182,11 @@ public class cfgAll {
     public static int sctpRangeMax = 0xf000;
 
     /**
+     * capture location
+     */
+    public static String capturePath = null;
+
+    /**
      * l2tp2 hello ticks
      */
     public static int l2fTimer = 5000;
@@ -1275,6 +1280,7 @@ public class cfgAll {
         "!no enable",
         "!no locale",
         // client
+        "!no client capture-path",
         "!client label-range 32 1048560",
         "!client cpuhog 0",
         "!client ifacestall 60000",
@@ -3729,6 +3735,7 @@ public class cfgAll {
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
         cmds.cfgLine(l, !tcpEcn, "", "client tcp-ecn", "");
         cmds.cfgLine(l, !tcpKeepalive, "", "client tcp-keepalive", "");
+        cmds.cfgLine(l, capturePath == null, "", "client capture-path", capturePath);
         l.add("client tcp-timer work " + tcpTimeWork);
         l.add("client tcp-timer alive " + tcpTimeAlive);
         l.add("client tcp-timer fin " + tcpTimeFin);
