@@ -256,10 +256,6 @@ public class userShow {
             return null;
         }
         if (a.equals("flash")) {
-            if (cfgAll.limited) {
-                cmd.error("not in a vdc");
-                return null;
-            }
             a = cmd.getRemaining();
             if (verCore.release) {
                 a = "";

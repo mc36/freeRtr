@@ -4279,6 +4279,10 @@ public class userExec {
     }
 
     private void doAttach() {
+        if (cfgAll.limited) {
+            cmd.error("not in a vdc");
+            return;
+        }
         String a = cmd.word();
         if (a.equals("chat")) {
             userChat c = new userChat(pipe, reader);
@@ -4313,10 +4317,6 @@ public class userExec {
             ntry.con = pl.getSide();
             pipeTerm trm = new pipeTerm(pipe, pl.getSide());
             trm.doTerm();
-            return;
-        }
-        if (cfgAll.limited) {
-            cmd.error("not in a vdc");
             return;
         }
         if (a.equals("vdc")) {

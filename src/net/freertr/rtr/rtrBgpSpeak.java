@@ -688,10 +688,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return (val & rtrBgpParam.mskOlab) != 0;
         }
         if (safi == parent.afiOctp) {
-            return (val & rtrBgpParam.mskOct) != 0;
+            return (val & rtrBgpParam.mskOctp) != 0;
         }
         if (safi == parent.afiOcar) {
-            return (val & rtrBgpParam.mskOcr) != 0;
+            return (val & rtrBgpParam.mskOcar) != 0;
         }
         if (safi == parent.afiOuni) {
             return (val & rtrBgpParam.mskOuni) != 0;

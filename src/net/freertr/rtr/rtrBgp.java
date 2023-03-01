@@ -1096,10 +1096,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return rtrBgpParam.mskOlab;
         }
         if (safi == afiOctp) {
-            return rtrBgpParam.mskOct;
+            return rtrBgpParam.mskOctp;
         }
         if (safi == afiOcar) {
-            return rtrBgpParam.mskOcr;
+            return rtrBgpParam.mskOcar;
         }
         if (safi == afiOuni) {
             return rtrBgpParam.mskOuni;
@@ -1191,9 +1191,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return afiMlt;
             case rtrBgpParam.mskOlab:
                 return afiOlab;
-            case rtrBgpParam.mskOct:
+            case rtrBgpParam.mskOctp:
                 return afiOctp;
-            case rtrBgpParam.mskOcr:
+            case rtrBgpParam.mskOcar:
                 return afiOcar;
             case rtrBgpParam.mskOuni:
                 return afiOuni;
@@ -1271,10 +1271,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if ((mask & rtrBgpParam.mskOlab) != 0) {
             safis.add(afiOlab);
         }
-        if ((mask & rtrBgpParam.mskOct) != 0) {
+        if ((mask & rtrBgpParam.mskOctp) != 0) {
             safis.add(afiOctp);
         }
-        if ((mask & rtrBgpParam.mskOcr) != 0) {
+        if ((mask & rtrBgpParam.mskOcar) != 0) {
             safis.add(afiOcar);
         }
         if ((mask & rtrBgpParam.mskOuni) != 0) {

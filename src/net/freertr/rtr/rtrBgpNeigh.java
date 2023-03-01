@@ -954,10 +954,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, conn.advOuni)) {
             return true;
         }
-        if (advertFullTable(lower.afiOctp, rtrBgpParam.mskOct, wilOuni, conn.advOuni)) {
+        if (advertFullTable(lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, conn.advOuni)) {
             return true;
         }
-        if (advertFullTable(lower.afiOcar, rtrBgpParam.mskOcr, wilOuni, conn.advOuni)) {
+        if (advertFullTable(lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, conn.advOuni)) {
             return true;
         }
         if (advertFullTable(lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, conn.advOuni)) {
@@ -1153,10 +1153,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, chgOuni, conn.advOuni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOctp, rtrBgpParam.mskOct, wilOuni, chgOuni, conn.advOuni)) {
+        if (advertIncrTable(lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, chgOuni, conn.advOuni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOcar, rtrBgpParam.mskOcr, wilOuni, chgOuni, conn.advOuni)) {
+        if (advertIncrTable(lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, chgOuni, conn.advOuni)) {
             return true;
         }
         if (advertIncrTable(lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, chgOuni, conn.advOuni)) {
@@ -1417,8 +1417,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
         addUpdateTableUni(lower.afiOuni, rtrBgpParam.mskOuni, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
         addUpdateTableUni(lower.afiOlab, rtrBgpParam.mskOlab, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(lower.afiOctp, rtrBgpParam.mskOct, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(lower.afiOcar, rtrBgpParam.mskOcr, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(lower.afiOctp, rtrBgpParam.mskOctp, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(lower.afiOcar, rtrBgpParam.mskOcar, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOmlt, remoteAs, accOmlt, conn.lrnOmlt, true, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOflw, remoteAs, accOflw, conn.lrnOflw, true, wroumapIn, wroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOsrt, remoteAs, accOsrt, conn.lrnOsrt, true, wroumapIn, wroupolIn, null);

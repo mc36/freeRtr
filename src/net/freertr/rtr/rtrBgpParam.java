@@ -754,7 +754,7 @@ public abstract class rtrBgpParam {
     /**
      * other classful transport plane
      */
-    public final static int mskOct = 0x4000000;
+    public final static int mskOctp = 0x4000000;
 
     /**
      * rpd
@@ -769,12 +769,12 @@ public abstract class rtrBgpParam {
     /**
      * other color aware routing
      */
-    public final static int mskOcr = 0x20000000;
+    public final static int mskOcar = 0x20000000;
 
     /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOct | mskOcr | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf;
+    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf;
 
     /**
      * string to afi mask
@@ -879,10 +879,10 @@ public abstract class rtrBgpParam {
                 i |= mskOlab;
             }
             if (a.equals("octp")) {
-                i |= mskOct;
+                i |= mskOctp;
             }
             if (a.equals("ocar")) {
-                i |= mskOcr;
+                i |= mskOcar;
             }
             if (a.equals("ouni")) {
                 i |= mskOuni;
@@ -904,11 +904,11 @@ public abstract class rtrBgpParam {
         i = exclusiveMsk(i, mskLab, mskCar);
         i = exclusiveMsk(i, mskCtp, mskCar);
         i = exclusiveMsk(i, mskOuni, mskOlab);
-        i = exclusiveMsk(i, mskOuni, mskOct);
-        i = exclusiveMsk(i, mskOuni, mskOcr);
-        i = exclusiveMsk(i, mskOlab, mskOct);
-        i = exclusiveMsk(i, mskOlab, mskOcr);
-        i = exclusiveMsk(i, mskOct, mskOcr);
+        i = exclusiveMsk(i, mskOuni, mskOctp);
+        i = exclusiveMsk(i, mskOuni, mskOcar);
+        i = exclusiveMsk(i, mskOlab, mskOctp);
+        i = exclusiveMsk(i, mskOlab, mskOcar);
+        i = exclusiveMsk(i, mskOctp, mskOcar);
         return i;
     }
 
@@ -948,10 +948,10 @@ public abstract class rtrBgpParam {
         if ((i & mskOlab) != 0) {
             a += " olab";
         }
-        if ((i & mskOct) != 0) {
+        if ((i & mskOctp) != 0) {
             a += " octp";
         }
-        if ((i & mskOcr) != 0) {
+        if ((i & mskOcar) != 0) {
             a += " ocar";
         }
         if ((i & mskOuni) != 0) {
