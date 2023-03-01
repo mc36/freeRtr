@@ -1099,4 +1099,25 @@ public class tabRouteUtil {
         }
     }
 
+    /**
+     * append extended community list
+     *
+     * @param trg target list
+     * @param src what to append
+     * @return updated list
+     */
+    public static List<Long> updateExtcomms(List<Long> trg, List<Long> src) {
+        if (trg == null) {
+            trg = new ArrayList<Long>();
+        }
+        for (int i = 0; i < src.size(); i++) {
+            Long rt = src.get(i);
+            if (trg.indexOf(rt) >= 0) {
+                continue;
+            }
+            trg.add(rt);
+        }
+        return trg;
+    }
+
 }
