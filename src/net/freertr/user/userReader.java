@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntHttp;
+import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
+import net.freertr.pipe.pipeConnect;
+import net.freertr.pipe.pipeReader;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
@@ -12,6 +17,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.version;
 
 /**
  * reading one line from the user
@@ -47,6 +53,8 @@ public class userReader implements Comparator<String> {
     private mode filterM; // filter mode
 
     private mode filterF; // filter final mode
+
+    private String filterO; // original command
 
     private int columnN; // column number
 
@@ -137,6 +145,10 @@ public class userReader implements Comparator<String> {
          * redirection
          */
         redirect,
+        /**
+         * pastebin
+         */
+        pastebin,
         /**
          * text viewer
          */
@@ -715,6 +727,32 @@ public class userReader implements Comparator<String> {
                     return bits.str2lst("no such column");
                 }
                 lst = doUniq(lst);
+                return doSecond(lst);
+            case pastebin:
+                if (cfgAll.pasteBin == null) {
+                    return doSecond(lst);
+                }
+                encUrl url = new encUrl();
+                a = cfgAll.hostName + "#" + filterO + "\r\n";
+                for (int i = 0; i < lst.size(); i++) {
+                    a += lst.get(i) + "\r\n";
+                }
+                a = cfgAll.pasteBin + encUrl.percentEncode(a);
+                url.fromString(a);
+                clntHttp http = new clntHttp(null, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
+                if (http.doConnect(url)) {
+                    return doSecond(lst);
+                }
+                http.sendLine("GET " + url.toURL(true, true, true) + " HTTP/1.1");
+                http.sendLine("User-Agent: " + version.usrAgnt);
+                http.sendLine("Host: " + url.server);
+                http.sendLine("Connection: Close");
+                http.sendLine("");
+                pipeReader rdr = new pipeReader();
+                rdr.setLineMode(pipeSide.modTyp.modeCRorLF);
+                pipeConnect.connect(http.pipe, rdr.getPipe(), true);
+                rdr.waitFor();
+                lst.addAll(rdr.getResult());
                 return doSecond(lst);
             case redirect:
                 bits.buf2txt(true, lst, filterS);
@@ -1563,6 +1601,7 @@ public class userReader implements Comparator<String> {
             return null;
         }
         String a = cmd.getRemaining();
+        filterO = a;
         int i = a.indexOf("|");
         if (i < 0) {
             return cmd;
@@ -1573,6 +1612,10 @@ public class userReader implements Comparator<String> {
         a = a.substring(i + 1, a.length()).trim();
         i = a.indexOf(" ");
         if (i < 0) {
+            if (a.equals("pastebin")) {
+                filterM = mode.pastebin;
+                return cmd;
+            }
             if (a.equals("headers")) {
                 filterM = mode.headers;
                 return cmd;

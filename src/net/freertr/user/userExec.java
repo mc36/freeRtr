@@ -940,6 +940,7 @@ public class userExec {
         hl.add(null, (beg + 1) + " .      raw                   unfiltered");
         hl.add(null, (beg + 1) + " .      count                 count entities");
         hl.add(null, (beg + 1) + " .      viewer                display in viewer");
+        hl.add(null, (beg + 1) + " .      pastebin              redirect output to pastebin service");
         if (!privi) {
             return;
         }

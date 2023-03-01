@@ -1182,6 +1182,11 @@ public class cfgAll {
     public static int sctpRangeMax = 0xf000;
 
     /**
+     * pastebin location
+     */
+    public static String pasteBin = null;
+
+    /**
      * capture location
      */
     public static String capturePath = null;
@@ -1280,6 +1285,7 @@ public class cfgAll {
         "!no enable",
         "!no locale",
         // client
+        "!no client pastebin",
         "!no client capture-path",
         "!client label-range 32 1048560",
         "!client cpuhog 0",
@@ -3736,6 +3742,7 @@ public class cfgAll {
         cmds.cfgLine(l, !tcpEcn, "", "client tcp-ecn", "");
         cmds.cfgLine(l, !tcpKeepalive, "", "client tcp-keepalive", "");
         cmds.cfgLine(l, capturePath == null, "", "client capture-path", capturePath);
+        cmds.cfgLine(l, pasteBin == null, "", "client pastebin", pasteBin);
         l.add("client tcp-timer work " + tcpTimeWork);
         l.add("client tcp-timer alive " + tcpTimeAlive);
         l.add("client tcp-timer fin " + tcpTimeFin);

@@ -494,6 +494,8 @@ public class userConfig {
         l.add(null, "3  .      <num>                      timeout in ms");
         l.add(null, "2  3    capture-path                 specify default capture location");
         l.add(null, "3  .      <str>                      path on the flash");
+        l.add(null, "2  3    pastebin                     specify default pastebin service");
+        l.add(null, "3  .      <str>                      url on the internet");
         l.add(null, "2  3    l2f-timer                    specify l2f parameters");
         l.add(null, "3  4      <num>                      retransmit in ms");
         l.add(null, "4  .        <num>                    retry times");
@@ -1337,6 +1339,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("pastebin")) {
+                cfgAll.pasteBin = cmd.word();
+                return;
+            }
             if (a.equals("capture-path")) {
                 cfgAll.capturePath = cmd.word();
                 return;
@@ -2194,6 +2200,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("pastebin")) {
+                cfgAll.pasteBin = null;
+                return;
+            }
             if (a.equals("capture-path")) {
                 cfgAll.capturePath = null;
                 return;
