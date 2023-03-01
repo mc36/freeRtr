@@ -14013,3 +14013,6 @@ todo: send ttyX exec command
 no todo: send ttyX exec command
 ---------------------------------- 2023-03-01 09:33:37 23.3.1
 todo: terminal background and foreground
+---------------------------------- 2023-03-01 16:51:43 23.3.1
+no todo: pastebin for the cli
+todo: curl
