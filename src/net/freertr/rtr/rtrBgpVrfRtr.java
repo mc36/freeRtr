@@ -159,7 +159,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             if (attr.labelLoc == null) {
                 attr.labelLoc = fwd.commonLabel;
             }
-            attr.extComm = tabRouteUtil.updateExtcomms(attr.extComm, rt);
+            attr.extComm = tabRouteUtil.appendLongList(attr.extComm, rt);
             attr.rouSrc = rtrBgpUtil.peerOriginate;
         }
         ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);

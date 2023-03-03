@@ -1106,7 +1106,7 @@ public class tabRouteUtil {
      * @param src what to append
      * @return updated list
      */
-    public static List<Long> updateExtcomms(List<Long> trg, List<Long> src) {
+    public static List<Long> appendLongList(List<Long> trg, List<Long> src) {
         if (trg == null) {
             trg = new ArrayList<Long>();
         }
