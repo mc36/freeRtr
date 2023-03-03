@@ -14019,3 +14019,6 @@ todo: curl
 ---------------------------------- 2023-03-01 17:04:00 23.3.1
 todo: afi-vrf asdf setvrf
 todo: asn for remote-as -1 in shows
+---------------------------------- 2023-03-03 12:24:49 23.3.3
+no todo: afi-vrf asdf setvrf
+todo: test for afi-vrf asdf setvrf
