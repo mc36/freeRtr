@@ -507,6 +507,13 @@ public class rtrBgpVrfRtr extends ipRtr {
         l.add(beg1 + cmds.comment);
     }
 
+    /**
+     * configure the vrf
+     *
+     * @param negated negated command effect
+     * @param cmd command parameters
+     * @param s command to execute
+     */
     public void doConfig(boolean negated, cmds cmd, String s) {
         if (s.equals("distance")) {
             distance = bits.str2num(cmd.word());

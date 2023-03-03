@@ -16,6 +16,12 @@ import net.freertr.util.cmds;
 public class cfgCons implements cfgGeneric {
 
     /**
+     * create instance
+     */
+    public cfgCons() {
+    }
+
+    /**
      * line handler
      */
     public userLine line = new userLine();

@@ -93,7 +93,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
      * generate configuration
      *
      * @param l list to append
-     * @param beg2 beginning
+     * @param beg1 beginning
      */
     public void getConfig(List<String> l, String beg1) {
         String beg2 = beg1 + "afi-vpls " + tabRouteUtil.rd2string(id) + " ";
