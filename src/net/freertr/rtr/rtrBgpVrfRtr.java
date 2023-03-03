@@ -6,7 +6,9 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgPlymp;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
@@ -22,6 +24,7 @@ import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userHelping;
+import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -62,6 +65,16 @@ public class rtrBgpVrfRtr extends ipRtr {
      * default information originate
      */
     public boolean defRou;
+
+    /**
+     * forwarder override
+     */
+    public ipFwd setVrfF;
+
+    /**
+     * vrf afi type updater
+     */
+    public boolean setVrfT;
 
     /**
      * forwarder to use
@@ -299,6 +312,9 @@ public class rtrBgpVrfRtr extends ipRtr {
             if (attr.segrouPrf != null) {
                 attr.rouTab = parent.vrfCore.fwd6;
             }
+            if (setVrfF != null) {
+                attr.rouTab = setVrfF;
+            }
             if (distance > 0) {
                 attr.distance = distance;
             }
@@ -484,8 +500,102 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (srv6 != null) {
             l.add(beg1 + beg2 + "srv6 " + srv6.name);
         }
+        if (setVrfF != null) {
+            l.add(beg1 + beg2 + "set-vrf " + setVrfF.cfgName + " " + (setVrfT ? "ipv4" : "ipv6"));
+        }
         cfgRtr.getShRedist(l, beg1 + beg2, this);
         l.add(beg1 + cmds.comment);
+    }
+
+    public void doConfig(boolean negated, cmds cmd, String s) {
+        if (s.equals("distance")) {
+            distance = bits.str2num(cmd.word());
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("mvpn")) {
+            if (negated) {
+                mvpn = null;
+            } else {
+                mvpn = cfgAll.ifcFind(cmd.word(), 0);
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("srv6")) {
+            if (negated) {
+                srv6 = null;
+            } else {
+                srv6 = cfgAll.ifcFind(cmd.word(), 0);
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("set-vrf")) {
+            if (negated) {
+                setVrfF = null;
+                setVrfT = false;
+                parent.needFull.add(1);
+                parent.compute.wakeup();
+                return;
+            }
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            s = cmd.word();
+            if (s.equals("ipv4")) {
+                setVrfF = vrf.fwd4;
+                setVrfT = true;
+            } else {
+                setVrfF = vrf.fwd6;
+                setVrfT = false;
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("default-originate")) {
+            defRou = !negated;
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("flowspec-install")) {
+            flowInst = !negated;
+            if (negated) {
+                fwd.flowspec = null;
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("flowspec-advert")) {
+            if (negated) {
+                flowSpec = null;
+                parent.needFull.add(1);
+                parent.compute.wakeup();
+                return;
+            }
+            cfgPlymp ntry = cfgAll.plmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such policy map");
+                return;
+            }
+            flowSpec = ntry.plcmap;
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (cfgRtr.doCfgRedist(this, fwd, negated, s, cmd)) {
+            cmd.badCmd();
+        }
+        parent.needFull.add(1);
+        parent.compute.wakeup();
     }
 
     /**

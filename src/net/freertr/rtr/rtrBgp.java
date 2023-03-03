@@ -2695,6 +2695,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "4 .         <name:ifc>            select source to advertise");
         l.add(null, "3 4       srv6                    srv6 advertisement");
         l.add(null, "4 .         <name:ifc>            select source to advertise");
+        l.add(null, "3 4       set-vrf                 configure forwarder override");
+        l.add(null, "4 5         <name:vrf>            select vrf to use");
+        l.add(null, "5 .           ipv4                select ipv4 to use");
+        l.add(null, "5 .           ipv6                select ipv6 to use");
         l.add(null, "3 4       distance                set import distance");
         l.add(null, "4 .         <num>                 distance");
         l.add(null, "3 .       default-originate       generate default route");
@@ -2709,6 +2713,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "4 .         <name:ifc>            select source to advertise");
         l.add(null, "3 4       srv6                    srv6 advertisement");
         l.add(null, "4 .         <name:ifc>            select source to advertise");
+        l.add(null, "3 4       set-vrf                 configure forwarder override");
+        l.add(null, "4 5         <name:vrf>            select vrf to use");
+        l.add(null, "5 .           ipv4                select ipv4 to use");
+        l.add(null, "5 .           ipv6                select ipv6 to use");
         l.add(null, "3 4       distance                set import distance");
         l.add(null, "4 .         <num>                 distance");
         l.add(null, "3 .       default-originate       generate default route");
@@ -3188,69 +3196,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cmd.error("vrf not enabled");
                 return false;
             }
-            if (s.equals("distance")) {
-                cur.doer.distance = bits.str2num(cmd.word());
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("mvpn")) {
-                if (negated) {
-                    cur.doer.mvpn = null;
-                } else {
-                    cur.doer.mvpn = cfgAll.ifcFind(cmd.word(), 0);
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("srv6")) {
-                if (negated) {
-                    cur.doer.srv6 = null;
-                } else {
-                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), 0);
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("default-originate")) {
-                cur.doer.defRou = !negated;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-install")) {
-                cur.doer.flowInst = !negated;
-                if (negated) {
-                    cur.doer.fwd.flowspec = null;
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-advert")) {
-                if (negated) {
-                    cur.doer.flowSpec = null;
-                    needFull.add(1);
-                    compute.wakeup();
-                    return false;
-                }
-                cfgPlymp ntry = cfgAll.plmpFind(cmd.word(), false);
-                if (ntry == null) {
-                    cmd.error("no such policy map");
-                    return false;
-                }
-                cur.doer.flowSpec = ntry.plcmap;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (cfgRtr.doCfgRedist(cur.doer, cur.doer.fwd, negated, s, cmd)) {
-                cmd.badCmd();
-            }
-            needFull.add(1);
-            compute.wakeup();
+            cur.doer.doConfig(negated, cmd, s);
             return false;
         }
         if (s.equals("afi-ovrf")) {
@@ -3287,69 +3233,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cmd.error("vrf not enabled");
                 return false;
             }
-            if (s.equals("distance")) {
-                cur.doer.distance = bits.str2num(cmd.word());
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("mvpn")) {
-                if (negated) {
-                    cur.doer.mvpn = null;
-                } else {
-                    cur.doer.mvpn = cfgAll.ifcFind(cmd.word(), 0);
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("srv6")) {
-                if (negated) {
-                    cur.doer.srv6 = null;
-                } else {
-                    cur.doer.srv6 = cfgAll.ifcFind(cmd.word(), 0);
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("default-originate")) {
-                cur.doer.defRou = !negated;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-install")) {
-                cur.doer.flowInst = !negated;
-                if (negated) {
-                    cur.doer.fwd.flowspec = null;
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-advert")) {
-                if (negated) {
-                    cur.doer.flowSpec = null;
-                    needFull.add(1);
-                    compute.wakeup();
-                    return false;
-                }
-                cfgPlymp ntry = cfgAll.plmpFind(cmd.word(), false);
-                if (ntry == null) {
-                    cmd.error("no such policy map");
-                    return false;
-                }
-                cur.doer.flowSpec = ntry.plcmap;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (cfgRtr.doCfgRedist(cur.doer, cur.doer.fwd, negated, s, cmd)) {
-                cmd.badCmd();
-            }
-            needFull.add(1);
-            compute.wakeup();
+            cur.doer.doConfig(negated, cmd, s);
             return false;
         }
         if (s.equals("afi-clr")) {
@@ -3386,49 +3270,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cmd.error("vrf not enabled");
                 return false;
             }
-            if (s.equals("distance")) {
-                cur.doer.distance = bits.str2num(cmd.word());
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("default-originate")) {
-                cur.doer.defRou = !negated;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-install")) {
-                cur.doer.flowInst = !negated;
-                if (negated) {
-                    cur.doer.fwd.flowspec = null;
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-advert")) {
-                if (negated) {
-                    cur.doer.flowSpec = null;
-                    needFull.add(1);
-                    compute.wakeup();
-                    return false;
-                }
-                cfgPlymp ntry = cfgAll.plmpFind(cmd.word(), false);
-                if (ntry == null) {
-                    cmd.error("no such policy map");
-                    return false;
-                }
-                cur.doer.flowSpec = ntry.plcmap;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (cfgRtr.doCfgRedist(cur.doer, cur.doer.fwd, negated, s, cmd)) {
-                cmd.badCmd();
-            }
-            needFull.add(1);
-            compute.wakeup();
+            cur.doer.doConfig(negated, cmd, s);
             return false;
         }
         if (s.equals("afi-oclr")) {
@@ -3465,49 +3307,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cmd.error("vrf not enabled");
                 return false;
             }
-            if (s.equals("distance")) {
-                cur.doer.distance = bits.str2num(cmd.word());
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("default-originate")) {
-                cur.doer.defRou = !negated;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-install")) {
-                cur.doer.flowInst = !negated;
-                if (negated) {
-                    cur.doer.fwd.flowspec = null;
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (s.equals("flowspec-advert")) {
-                if (negated) {
-                    cur.doer.flowSpec = null;
-                    needFull.add(1);
-                    compute.wakeup();
-                    return false;
-                }
-                cfgPlymp ntry = cfgAll.plmpFind(cmd.word(), false);
-                if (ntry == null) {
-                    cmd.error("no such policy map");
-                    return false;
-                }
-                cur.doer.flowSpec = ntry.plcmap;
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-            if (cfgRtr.doCfgRedist(cur.doer, cur.doer.fwd, negated, s, cmd)) {
-                cmd.badCmd();
-            }
-            needFull.add(1);
-            compute.wakeup();
+            cur.doer.doConfig(negated, cmd, s);
             return false;
         }
         if (s.equals("afi-vpls")) {
