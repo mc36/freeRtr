@@ -1,3 +1,4 @@
+zenmaster cli knob
 test for afi-vrf asdf setvrf
 asn for remote-as -1 in shows
 curl
