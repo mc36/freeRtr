@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v23.3.6-cur, done by cs@nop.
--;-;-;2023-03-06 19:40:41, took 00:10:12, with 80 workers, on 3186 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2023-03-06 20:21:11, took 00:09:41, with 80 workers, on 3188 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2692,6 +2692,8 @@ http://sources.freertr.org/cfg/rout-bgp768.tst;rout-bgp768.tst;success;car color
 http://sources.freertr.org/cfg/rout-bgp769.tst;rout-bgp769.tst;success;other car colors over bgp route server
 http://sources.freertr.org/cfg/rout-bgp770.tst;rout-bgp770.tst;success;car colors over bgp with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp771.tst;rout-bgp771.tst;success;other car colors over bgp with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp772.tst;rout-bgp772.tst;success;vpn colors over ebgp
+http://sources.freertr.org/cfg/rout-bgp773.tst;rout-bgp773.tst;success;vpn colors over ibgp
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

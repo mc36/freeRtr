@@ -14026,3 +14026,6 @@ todo: test for afi-vrf asdf setvrf
 todo: zenmaster cli knob
 ---------------------------------- 2023-03-06 05:49:01 23.3.6
 no todo: zenmaster cli knob
+---------------------------------- 2023-03-06 20:11:29 23.3.6
+qc pass: vpn colors over ebgp
+qc pass: vpn colors over ibgp
