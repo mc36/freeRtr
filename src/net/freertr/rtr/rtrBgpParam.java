@@ -47,6 +47,11 @@ public abstract class rtrBgpParam {
     public int remoteAs;
 
     /**
+     * any as allowed
+     */
+    public boolean remoteAny;
+
+    /**
      * local as
      */
     public int localAs;
@@ -1489,6 +1494,7 @@ public abstract class rtrBgpParam {
      */
     public static void getParamHelp(userHelping l) {
         l.add(null, "3  4       remote-as                   remote as number");
+        l.add(null, "4  5,.       any                       any autonomous system number");
         l.add(null, "4  5,.       <num>                     autonomous system number");
         l.add(null, "5  .           shutdown                connection disabled for this peer");
         l.add(null, "3  4       password                    set session password");
@@ -1695,7 +1701,11 @@ public abstract class rtrBgpParam {
         } else {
             l.add(beg + nei + "template " + template.tempName);
         }
-        l.add(beg + nei + "remote-as " + bits.num2str(remoteAs));
+        String s = "" + bits.num2str(remoteAs);
+        if (remoteAny) {
+            s = "any";
+        }
+        l.add(beg + nei + "remote-as " + s);
         cmds.cfgLine(l, description == null, beg, nei + "description", description);
         if (keyId < 0) {
             l.add(beg + nei + "authen-type md5");
@@ -1710,7 +1720,6 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "distance " + distance);
         l.add(beg + nei + "timer " + keepAlive + " " + holdTimer);
         l.add(beg + nei + "dmz-link-bw " + dmzLinkBw);
-        String s;
         switch (socketMode) {
             case 1:
                 s = "active";
@@ -1991,7 +2000,14 @@ public abstract class rtrBgpParam {
             doTempCfg(s + " " + cmd.getRemaining(), negated);
         }
         if (s.equals("remote-as")) {
-            remoteAs = bits.str2num(cmd.word());
+            s = cmd.word();
+            remoteAs = bits.str2num(s);
+            if (s.equals("any")) {
+                remoteAs = -1;
+                remoteAny = true;
+            } else {
+                remoteAny = false;
+            }
             if (negated) {
                 remoteAs = 0;
                 return false;

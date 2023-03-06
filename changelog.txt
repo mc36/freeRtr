@@ -14029,3 +14029,6 @@ no todo: zenmaster cli knob
 ---------------------------------- 2023-03-06 20:11:29 23.3.6
 qc pass: vpn colors over ebgp
 qc pass: vpn colors over ibgp
+---------------------------------- 2023-03-06 21:10:20 23.3.6
+no todo: asn for remote-as -1 in shows
+no todo: test for afi-vrf asdf setvrf

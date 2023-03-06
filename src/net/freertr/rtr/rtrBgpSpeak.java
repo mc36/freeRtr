@@ -1701,7 +1701,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return true;
         }
         int i = pck.msbGetW(1);
-        if ((neigh.remoteAs != -1) && (i != tabRouteUtil.asNum16bit(neigh.remoteAs))) {
+        if (neigh.remoteAny) {
+            neigh.remoteAs = i;
+        }
+        if (i != tabRouteUtil.asNum16bit(neigh.remoteAs)) {
             logger.info("neighbor " + neigh.peerAddr + " in wrong (" + i + ") as");
             sendNotify(2, 2);
             return true;
@@ -1753,7 +1756,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 switch (tlv.valTyp) {
                     case rtrBgpUtil.capa32bitAsNum:
                         i = bits.msbGetD(tlv.valDat, 0);
-                        if ((neigh.remoteAs != -1) && (i != neigh.remoteAs)) {
+                        if (neigh.remoteAny) {
+                            neigh.remoteAs = i;
+                        }
+                        if (i != neigh.remoteAs) {
                             logger.info("neighbor " + neigh.peerAddr + " in wrong (" + bits.num2str(i) + ") as");
                             sendNotify(2, 2);
                             return true;
