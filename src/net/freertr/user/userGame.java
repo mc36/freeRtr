@@ -399,6 +399,11 @@ public class userGame {
         }
     }
 
+    /**
+     * random quotes from zen master
+     *
+     * @param cmd command line to use
+     */
     public void doZenmaster(cmds cmd) {
         servQuote ntry = new servQuote();
         ntry.srvName = cmd.word();
