@@ -1655,6 +1655,8 @@ public class userExec {
         hl.add(null, "2 .      fire                         view demo");
         hl.add(null, "2 .      life                         view demo");
         hl.add(null, "2 .      antball                      view demo");
+        hl.add(null, "2 3      zenmaster                    play demo");
+        hl.add(cfgAll.dmnQuote.listServers(), "3  .      <name:loc>                 name of server");
         hl.add(null, "2 3,.    title                        view demo");
         hl.add(null, "3 3,.      [str]                      text");
         hl.add(null, "2 3,.    text                         view demo");

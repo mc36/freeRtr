@@ -120,7 +120,7 @@ public class servQuote extends servGeneric implements prtServS {
      * @return line
      */
     public String getOneLine() {
-        servQuoteLine ntry = lines.get(bits.random(0, lines.size()));
+        servQuoteLine ntry = lines.get(bits.random(0, lines.size() + 1));
         if (ntry == null) {
             return "n/a";
         }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.pipe.pipeWindow;
+import net.freertr.serv.servQuote;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.version;
@@ -398,6 +399,32 @@ public class userGame {
         }
     }
 
+    public void doZenmaster(cmds cmd) {
+        servQuote ntry = new servQuote();
+        ntry.srvName = cmd.word();
+        ntry = cfgAll.dmnQuote.find(ntry, false);
+        if (ntry == null) {
+            cmd.error("no such server");
+            return;
+        }
+        for (;;) {
+            cmd.pipe.strPut("you: ");
+            String a = cmd.pipe.lineGet(0x12);
+            cmd.pipe.linePut("");
+            if (a.length() < 1) {
+                if (cmd.pipe.isClosed() != 0) {
+                    break;
+                }
+                continue;
+            }
+            String b = a.trim().toLowerCase();
+            if (b.equals("quit") || b.equals("exit")) {
+                break;
+            }
+            cmd.pipe.linePut("zen: " + ntry.getOneLine());
+        }
+    }
+
     /**
      * do one command
      *
@@ -410,6 +437,10 @@ public class userGame {
             t.doStart();
             t.doGame();
             t.doFinish();
+            return;
+        }
+        if (a.equals("zenmaster")) {
+            doZenmaster(cmd);
             return;
         }
         if (a.equals("tetris")) {
@@ -489,6 +520,10 @@ public class userGame {
             return;
         }
         if (a.equals("image")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return;
+            }
             doText(pipeWindow.imageText(new File(cmd.getRemaining()), console.sizX, console.sizY, userFonts.imageData));
             return;
         }

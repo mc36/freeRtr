@@ -733,7 +733,7 @@ public class userReader implements Comparator<String> {
                     return doSecond(lst);
                 }
                 encUrl url = new encUrl();
-                a = cfgAll.hostName + "#" + filterO + "\r\n";
+                a = cfgAll.hostName + "#" + filterO + "\r\n" + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + "\r\n";
                 for (int i = 0; i < lst.size(); i++) {
                     a += lst.get(i) + "\r\n";
                 }
@@ -1601,7 +1601,7 @@ public class userReader implements Comparator<String> {
             return null;
         }
         String a = cmd.getRemaining();
-        filterO = a;
+        filterO = cmd.getOriginal();
         int i = a.indexOf("|");
         if (i < 0) {
             return cmd;
