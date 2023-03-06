@@ -1,4 +1,4 @@
-description vpn colors over ebgp
+description vpn colors over ibgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -75,11 +75,10 @@ ipv4 route v3 2.2.2.2 255.255.255.255 1.1.1.2
 ipv6 route v3 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 router bgp4 1
  vrf v1
- no safe-ebgp
  address vpnuni
  local-as 1
  router-id 4.4.4.1
- neigh 2.2.2.2 remote-as 2
+ neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
  afi-vrf v4 ena
@@ -91,11 +90,10 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
- no safe-ebgp
  address vpnuni
  local-as 1
  router-id 6.6.6.1
- neigh 4321::2 remote-as 2
+ neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
  afi-vrf v4 ena
@@ -182,9 +180,8 @@ ipv4 route v3 2.2.2.1 255.255.255.255 1.1.1.1
 ipv6 route v3 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 router bgp4 1
  vrf v1
- no safe-ebgp
  address vpnuni
- local-as 2
+ local-as 1
  router-id 4.4.4.2
  neigh 2.2.2.1 remote-as 1
  neigh 2.2.2.1 update lo0
@@ -198,9 +195,8 @@ router bgp4 1
  exit
 router bgp6 1
  vrf v1
- no safe-ebgp
  address vpnuni
- local-as 2
+ local-as 1
  router-id 6.6.6.2
  neigh 4321::1 remote-as 1
  neigh 4321::1 update lo0
