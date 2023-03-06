@@ -410,7 +410,6 @@ public class userGame {
         for (;;) {
             cmd.pipe.strPut("you: ");
             String a = cmd.pipe.lineGet(0x12);
-            cmd.pipe.linePut("");
             if (a.length() < 1) {
                 if (cmd.pipe.isClosed() != 0) {
                     break;
