@@ -923,6 +923,7 @@ public class player implements Runnable {
             String a = "<br/>downloading song, please wait.<br/>";
             buf.write(a.getBytes());
             startPlayNormal(-1, "0");
+            stopFull();
             startPlayUrl(song);
             return -1;
         }
