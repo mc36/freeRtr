@@ -14032,3 +14032,6 @@ qc pass: vpn colors over ibgp
 ---------------------------------- 2023-03-06 21:10:20 23.3.6
 no todo: asn for remote-as -1 in shows
 no todo: test for afi-vrf asdf setvrf
+---------------------------------- 2023-03-11 08:50:49 23.3.11
+qc pass: ebgp with any remote
+qc pass: ibgp with any remote

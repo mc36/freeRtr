@@ -2690,6 +2690,8 @@ qc pass: car colors over bgp with soft-reconfig
 qc pass: other car colors over bgp with soft-reconfig
 qc pass: vpn colors over ebgp
 qc pass: vpn colors over ibgp
+qc pass: ebgp with any remote
+qc pass: ibgp with any remote
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
