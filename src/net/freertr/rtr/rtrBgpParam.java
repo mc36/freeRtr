@@ -1110,6 +1110,7 @@ public abstract class rtrBgpParam {
      */
     public void copyFrom(rtrBgpParam src) {
         remoteAs = src.remoteAs;
+        remoteAny = src.remoteAny;
         localAs = src.localAs;
         addrFams = src.addrFams;
         template = src.template;
