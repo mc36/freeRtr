@@ -14041,3 +14041,5 @@ todo: server smtp auto-reply editor/text/etc
 todo: ignorance kills
 ---------------------------------- 2023-03-15 21:16:50 23.3.15
 no todo: ignorance kills
+---------------------------------- 2023-03-15 21:59:25 23.3.15
+todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----"));

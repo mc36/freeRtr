@@ -1,3 +1,4 @@
+in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----"));
 server smtp auto-reply editor/text/etc
 curl
 terminal background and foreground
