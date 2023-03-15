@@ -14035,3 +14035,5 @@ no todo: test for afi-vrf asdf setvrf
 ---------------------------------- 2023-03-11 08:50:49 23.3.11
 qc pass: ebgp with any remote
 qc pass: ibgp with any remote
+---------------------------------- 2023-03-15 17:24:03 23.3.13
+todo: server smtp auto-reply editor/text/etc
