@@ -1,3 +1,4 @@
+ignorance kills
 server smtp auto-reply editor/text/etc
 curl
 terminal background and foreground
