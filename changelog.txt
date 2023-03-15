@@ -14043,3 +14043,6 @@ todo: ignorance kills
 no todo: ignorance kills
 ---------------------------------- 2023-03-15 21:59:25 23.3.15
 todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----"));
+---------------------------------- 2023-03-15 22:23:41 23.3.15
+no todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----"));
+todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
