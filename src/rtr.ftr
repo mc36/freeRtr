@@ -3188,6 +3188,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: renew the signing key!
 todo: config committed with check for saved and backup config
 todo: server smtp auto-reply editor/text/etc
 todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
