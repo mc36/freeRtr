@@ -219,6 +219,10 @@ public class userShow {
                 rdr.putStrArr(version.shSecret(3));
                 return null;
             }
+            if (a.equals("review")) {
+                rdr.putStrArr(version.shSecret(4));
+                return null;
+            }
             return null;
         }
         if (a.equals("users")) {

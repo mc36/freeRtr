@@ -999,6 +999,7 @@ public class userExec {
         hl.add(null, "3 .        love                  show some love");
         hl.add(null, "3 .        key                   show some key");
         hl.add(null, "3 .        bug                   show some bug");
+        hl.add(null, "3 .        review                show some reasons");
         hl.add(null, "2 3      process                 list processes");
         hl.add(null, "3 4,.      cpu                   internal router threads");
         hl.add(null, "4 .          <num>               thread id");

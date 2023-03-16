@@ -227,6 +227,28 @@ public class version {
                 l.add("             /           \\");
                 l.add("");
                 break;
+            case 4:
+                l.add("dear code reviewers");
+                l.add("sorry for hurting your eyeballs");
+                l.add("lemme mansplain a bit");
+                l.add("so please don't get it a way too seriously:)");
+                l.add("peace");
+                l.add("once we'll see , hopefullly.....");
+                l.add("at the moment i'm fine with my ~3k integration tests");
+                l.add("that usually ends in 7-8 minutes on a random xeon with graal-vm-community");
+                l.add("but when i emergency-playing then openjdk.org all the way");
+                l.add("or even better, freertr.org behind a cloudflare.com to shake shit out of the bag");
+                l.add("i'm a programmer and not a vegetable dealer nor anything else....");
+                l.add("so dear reviewers team sorry 4 hurtin' your eyes tonight.....:)");
+                l.add("obviously you'll grep shit out like _and_ in my c files.... :)");
+                l.add("but it's the same dpdk forwarder and it all-way stackable already..........");
+                l.add("i've already shit-tested it, lemme try again please :)");
+                l.add("ps : freertr.org warm-welcomes openjdk.org project's new versioning scheme! :)");
+                l.add("to be homest im fine about the tonight and that's all the way enough 4 me :)");
+                l.add("long-live creativity!");
+                l.add("imho this commit is my insurance :)");
+                l.add("" + verCore.author);
+                break;
         }
         return l;
     }
