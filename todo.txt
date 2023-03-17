@@ -1,3 +1,5 @@
+rfc9340
+rfc9373
 renew the signing key!
 config committed with check for saved and backup config
 server smtp auto-reply editor/text/etc
