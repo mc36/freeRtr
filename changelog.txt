@@ -14062,3 +14062,7 @@ todo: bgp/msdp: neigh x.x.x.x path-mtu-discovery
 todo: bgp/msdp: neigh x.x.x.x single-session
 todo: bgp/msdp: neigh x.x.x.x multi-session
 todo: bgp/msdp: neigh x.x.x.x zero-session
+---------------------------------- 2023-03-18 20:37:15 23.3.18
+no todo: bgp/msdp: neigh x.x.x.x zero-session
+no todo: bgp/msdp: neigh x.x.x.x multi-session
+no todo: bgp/msdp: neigh x.x.x.x single-session
