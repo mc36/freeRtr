@@ -13,7 +13,7 @@ mpls inband performance measurement
 backup path support to the spf class
 wcmp support to the spf class
 allow command to be a substring of an other
-quic
+quic when it have at least adjustmss...
 update gtp stack to the latest standards
 nat and pbr config to have reindex
 bgp shadow route reflection
