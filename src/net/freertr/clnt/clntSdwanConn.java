@@ -147,7 +147,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
     /**
      * stop connection
      */
-    public void workStop() {
+    public synchronized void workStop() {
         if (debugger.clntSdwanTraf) {
             logger.debug("stopping peer " + addr + " " + port);
         }
@@ -271,7 +271,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         return 8000000;
     }
 
-    public void sendPack(packHolder pck) {
+    public synchronized void sendPack(packHolder pck) {
         if (conn == null) {
             cntr.drop(pck, counter.reasons.notUp);
             return;
