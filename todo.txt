@@ -1,3 +1,8 @@
+lsrp / pvrp path-mtu-discovery / single-session
+bgp/msdp: neigh x.x.x.x path-mtu-discovery
+bgp/msdp: neigh x.x.x.x single-session
+bgp/msdp: neigh x.x.x.x multi-session
+bgp/msdp: neigh x.x.x.x zero-session
 rfc9340
 rfc9373
 renew the signing key!

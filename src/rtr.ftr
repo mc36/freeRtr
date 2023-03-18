@@ -3188,6 +3188,11 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: lsrp / pvrp path-mtu-discovery / single-session
+todo: bgp/msdp: neigh x.x.x.x path-mtu-discovery
+todo: bgp/msdp: neigh x.x.x.x single-session
+todo: bgp/msdp: neigh x.x.x.x multi-session
+todo: bgp/msdp: neigh x.x.x.x zero-session
 todo: rfc9340
 todo: rfc9373
 todo: renew the signing key!
