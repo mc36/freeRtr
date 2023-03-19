@@ -229,18 +229,16 @@ public class version {
                 break;
             case 4:
                 l.add("dear code reviewers");
-                l.add("sorry for hurting your eyeballs");
                 l.add("lemme mansplain a bit");
-                l.add("so please don't get it a way too seriously:)");
-                l.add("peace");
-                l.add("once we'll see , hopefullly.....");
-                l.add("at the moment i'm fine with my integration tests");
+                l.add("so please don't get it a way too seriously");
+                l.add("once we'll see, and i do regular refactorings as the world changes");
+                l.add("at the moment i'm fine with my integration and interop tests against the big vendors");
                 l.add("that usually ends in 7-8 minutes on a random xeon with graal-vm-community");
-                l.add("i'm an networker and just hobby programmer and not a vegetable dealer nor anything else....");
-                l.add("so dear reviewers team sorry 4 hurtin' your eyes tonight.....:)");
-                l.add("my code smells and you'll grep shit out like _and_ in my c files....");
-                l.add("but it's a way crazier if you do the same to the linux kernel.... :)");
-                l.add("long-live creativity!");
+                l.add("i'm an networker and just hobby programmer and not a vegetable dealer nor anything");
+                l.add("so dear reviewers team sorry 4 hurtin' your eyes tonight:)");
+                l.add("my code smells and you'll grep some shit out like _and_ in the sources");
+                l.add("but it's a way crazier if you do the same to the linux kernel");
+                l.add("so long-live creativity! ;)");
                 l.add(verCore.author);
                 break;
         }
