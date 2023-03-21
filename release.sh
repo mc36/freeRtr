@@ -6,7 +6,8 @@ cd ../misc/native/
 ./c.sh
 cd ../image/
 ./cj.sh
-./cx.sh
+./cn.sh
+./ci.sh
 cd ../native/
 ./p.sh
 cd ../img2ova/

@@ -1,3 +1,5 @@
+server smtp / ptmud
+server http / host * ptmud
 server smtp auto-reply editor/text/etc
 server http / host * searchbar
 lsrp / pvrp path-mtu-discovery / single-session
