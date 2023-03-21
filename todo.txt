@@ -1,10 +1,11 @@
+server smtp auto-reply editor/text/etc
+server http / host * searchbar
 lsrp / pvrp path-mtu-discovery / single-session
 bgp/msdp: neigh x.x.x.x path-mtu-discovery
 rfc9340
 rfc9373
 renew the signing key!
 config committed with check for saved and backup config
-server smtp auto-reply editor/text/etc
 in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
 curl
 terminal background and foreground
