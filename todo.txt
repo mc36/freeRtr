@@ -1,4 +1,6 @@
 server smtp / ptmud
+server http / host * user-agent matcher
+server http / host * custom-header
 server http / host * ptmud
 server smtp auto-reply editor/text/etc
 server http / host * searchbar
