@@ -3189,6 +3189,8 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: server smtp / ptmud
+todo: server http / host * user-agent matcher
+todo: server http / host * custom-header
 todo: server http / host * ptmud
 todo: server smtp auto-reply editor/text/etc
 todo: server http / host * searchbar
