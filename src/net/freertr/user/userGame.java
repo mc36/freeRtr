@@ -16,7 +16,7 @@ import net.freertr.util.version;
  * @author matecsaba
  */
 public class userGame {
-    
+
     private final userScreen console;
 
     /**
@@ -167,7 +167,7 @@ public class userGame {
             bits.sleep(5000);
         }
     }
-    
+
     private byte[] getMatrixStr() {
         byte[] res = new byte[bits.random(4, console.curY * 3)];
         for (int i = 0; i < res.length; i++) {
@@ -175,7 +175,7 @@ public class userGame {
         }
         return res;
     }
-    
+
     private boolean doMatrix(int x, int pos, byte[] str) {
         int len = str.length;
         for (int o = 0; o < console.sizY; o++) {
@@ -376,7 +376,7 @@ public class userGame {
             bits.sleep(500);
         }
     }
-    
+
     private void doAntBall() {
         console.putCls();
         for (;;) {
@@ -534,25 +534,25 @@ public class userGame {
         }
         cmd.badCmd();
     }
-    
+
 }
 
 class userGameMinesweep {
-    
+
     private boolean[][] bomb;
-    
+
     private boolean[][] mark;
-    
+
     private boolean[][] show;
-    
+
     private int curX;
-    
+
     private int curY;
-    
+
     private userScreen scr;
-    
+
     private final static int sizeX = 60;
-    
+
     private final static int sizeY = 20;
 
     /**
@@ -664,7 +664,7 @@ class userGameMinesweep {
         scr.putCls();
         scr.refresh();
     }
-    
+
     private boolean get(int y, int x) {
         try {
             return bomb[y][x];
@@ -672,7 +672,7 @@ class userGameMinesweep {
             return false;
         }
     }
-    
+
     private int bombs(int y, int x) {
         if (get(y, x)) {
             return -1;
@@ -704,7 +704,7 @@ class userGameMinesweep {
         }
         return res;
     }
-    
+
     private void shows(int y, int x) {
         try {
             if (show[y][x]) {
@@ -726,21 +726,21 @@ class userGameMinesweep {
         shows(y, x + 1);
         shows(y + 1, x + 1);
     }
-    
+
 }
 
 class userGameGomoku {
-    
+
     private int[][] store;
-    
+
     private int curX;
-    
+
     private int curY;
-    
+
     private userScreen scr;
-    
+
     private final static int sizeX = 30;
-    
+
     private final static int sizeY = 20;
 
     /**
@@ -851,7 +851,7 @@ class userGameGomoku {
         scr.putCls();
         scr.refresh();
     }
-    
+
     private int get(int x, int y) {
         try {
             return store[x][y];
@@ -859,7 +859,7 @@ class userGameGomoku {
             return 99;
         }
     }
-    
+
     private int evalDir(int x, int y, int dx, int dy, int ai) {
         int free = 0;
         int mine = 0;
@@ -899,7 +899,7 @@ class userGameGomoku {
         }
         return mine;
     }
-    
+
     private int evalScore(int x, int y, int ai) {
         final int[] scoreOwn = {0, 2, 4, 6, 100, 1000};
         final int[] scoreOtr = {0, 1, 3, 7, 51, 500};
@@ -916,7 +916,7 @@ class userGameGomoku {
                 + scoreOtr[evalDir(x, y, 1, 1, pl)]
                 + scoreOtr[evalDir(x, y, 1, -1, pl)];
     }
-    
+
     private int[] evalMove(int ai) {
         int score = 0;
         int[] pos = new int[2];
@@ -938,31 +938,31 @@ class userGameGomoku {
         }
         return pos;
     }
-    
+
 }
 
 class userGameTetris implements Runnable {
-    
+
     private userScreen scr;
-    
+
     private List<userGameTetrisThing> things;
-    
+
     private int[][] tab;
-    
+
     private int curX;
-    
+
     private int curY;
-    
+
     private int lines;
-    
+
     private userGameTetrisThing thg;
-    
+
     private userGameTetrisThing nxt;
-    
+
     private boolean need2run;
-    
+
     private final static int sizeX = 10;
-    
+
     private final static int sizeY = 20;
 
     /**
@@ -1107,7 +1107,7 @@ class userGameTetris implements Runnable {
             }
         }
     }
-    
+
     private void doLines() {
         for (int o = sizeY - 1; o >= 0; o--) {
             int p = 0;
@@ -1131,7 +1131,7 @@ class userGameTetris implements Runnable {
             o++;
         }
     }
-    
+
     public void run() {
         for (;;) {
             doPrint();
@@ -1156,17 +1156,17 @@ class userGameTetris implements Runnable {
             }
         }
     }
-    
+
 }
 
 class userGameTetrisThing {
-    
+
     private byte[][] tab;
-    
+
     private int sizeX;
-    
+
     private int sizeY;
-    
+
     public userGameTetrisThing(int sx, int sy) {
         sizeX = sx;
         sizeY = sy;
@@ -1178,7 +1178,7 @@ class userGameTetrisThing {
             }
         }
     }
-    
+
     public static userGameTetrisThing fromString(String[] lst, byte col) {
         userGameTetrisThing t = new userGameTetrisThing(lst[0].length(), lst.length);
         for (int o = 0; o < t.sizeY; o++) {
@@ -1189,7 +1189,7 @@ class userGameTetrisThing {
         }
         return t;
     }
-    
+
     public userGameTetrisThing copyBytes() {
         userGameTetrisThing t = new userGameTetrisThing(sizeX, sizeY);
         for (int o = 0; o < sizeY; o++) {
@@ -1197,7 +1197,7 @@ class userGameTetrisThing {
         }
         return t;
     }
-    
+
     public userGameTetrisThing doRotate() {
         userGameTetrisThing t = new userGameTetrisThing(sizeY, sizeX);
         for (int o = 0; o < sizeY; o++) {
@@ -1207,7 +1207,7 @@ class userGameTetrisThing {
         }
         return t;
     }
-    
+
     public void doPrint(int x, int y, userScreen scr) {
         for (int o = 0; o < sizeY; o++) {
             for (int i = 0; i < sizeX; i++) {
@@ -1218,7 +1218,7 @@ class userGameTetrisThing {
             }
         }
     }
-    
+
     public boolean isSpace(int[][] t, int x, int y) {
         if (x < 0) {
             return false;
@@ -1241,7 +1241,7 @@ class userGameTetrisThing {
         }
         return true;
     }
-    
+
     public void putThing(int[][] t, int x, int y) {
         for (int o = 0; o < sizeY; o++) {
             for (int i = 0; i < sizeX; i++) {
@@ -1252,5 +1252,5 @@ class userGameTetrisThing {
             }
         }
     }
-    
+
 }
