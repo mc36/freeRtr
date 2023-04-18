@@ -195,6 +195,12 @@ public class userFilter implements Comparator<userFilter> {
             if (b.equals(cmds.comment)) {
                 continue;
             }
+            if ((i + 1) < sec.size()) {
+                userFilter nxt = sec.get(i + 1);
+                if (b.equals(nxt.section.trim())) {
+                    continue;
+                }
+            }
             String s = beg;
             if (cur.section.length() > 0) {
                 s += "/" + cur.section.replaceAll(" ", "/");
