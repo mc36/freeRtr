@@ -47,6 +47,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public boolean respawn = true;
 
     /**
+     * priviledged vdc
+     */
+    public boolean priviledged = false;
+
+    /**
      * kill children on termination
      */
     public boolean children = true;
@@ -245,6 +250,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public final static String[] defaultL = {
         "vdc definition .*! no description",
         "vdc definition .*! respawn",
+        "vdc definition .*! no priviledged",
         "vdc definition .*! children",
         "vdc definition .*! config null",
         "vdc definition .*! image null",
@@ -308,6 +314,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.password = password;
         n.redunPrio = redunPrio;
         n.respawn = respawn;
+        n.priviledged = priviledged;
         n.children = children;
         n.uuidValue = uuidValue;
         n.userValue = userValue;
@@ -371,6 +378,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "1  2,.    description                description of this vdc");
         l.add(null, "2  2,.      [text]                   text describing this vdc");
         l.add(null, "1  .      respawn                    restart on termination");
+        l.add(null, "1  .      priviledged                allow excessive commands");
         l.add(null, "1  .      children                   kill children on termination");
         l.add(null, "1  2      rename                     rename this vdc");
         l.add(null, "2  .        <str>                    set new name of vdc");
@@ -453,6 +461,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("vdc definition " + name);
         cmds.cfgLine(l, description.length() < 1, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
+        cmds.cfgLine(l, !priviledged, cmds.tabulator, "priviledged", "");
         cmds.cfgLine(l, !children, cmds.tabulator, "children", "");
         for (int i = 0; i < ifaces.size(); i++) {
             l.add(cmds.tabulator + "interface " + ifaces.get(i));
@@ -521,6 +530,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("respawn")) {
             respawn = true;
+            return;
+        }
+        if (a.equals("priviledged")) {
+            priviledged = true;
             return;
         }
         if (a.equals("children")) {
@@ -755,6 +768,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         a = cmd.word();
         if (a.equals("respawn")) {
             respawn = false;
+            return;
+        }
+        if (a.equals("priviledged")) {
+            priviledged = false;
             return;
         }
         if (a.equals("children")) {
@@ -1113,7 +1130,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add("hwid " + cfgInit.hwIdNum + "-" + name);
         l.add("hwsn " + uuidValue);
         l.add("rwpath " + version.getRWpath());
-        l.add("limited");
+        if (!priviledged) {
+            l.add("limited");
+        }
         l.add("port " + beg + " " + end);
         l.add("prio " + redunPrio);
         addParam(l, "enc", password);
