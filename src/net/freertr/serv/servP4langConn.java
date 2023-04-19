@@ -283,7 +283,7 @@ public class servP4langConn implements Runnable {
                 lower.expIfc.del(ntry);
                 servP4langBkpl bckpln = lower.backPlanes.del(new servP4langBkpl(lower, ntry));
                 ntry.id = prt;
-                ntry.speed = bits.str2num(cmd.word());
+                ntry.speed = cmd.word();
                 ntry.errCorr = servP4langMgcN.toNum(lower.fwderrcr, cmd.word(), 0);
                 ntry.autoNeg = servP4langMgcN.toNum(lower.autonegs, cmd.word(), 0);
                 ntry.flowCtrl = servP4langMgcN.toNum(lower.flwctrls, cmd.word(), 0);

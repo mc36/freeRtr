@@ -748,13 +748,13 @@ public class servP4langCfg implements ifcUp {
                     return false;
                 }
             }
-            ntry.speed = bits.str2num(cmd.word());
+            ntry.speed = cmd.word();
             ntry.errCorr = servP4langMgcN.toNum(fwderrcr, cmd.word(), 0);
             ntry.autoNeg = servP4langMgcN.toNum(autonegs, cmd.word(), 0);
             ntry.flowCtrl = servP4langMgcN.toNum(flwctrls, cmd.word(), 0);
             boolean need = ifc.type == tabRouteIface.ifaceType.sdn;
             ntry.dynamic = !need;
-            if (ntry.speed == -1) {
+            if (ntry.speed.equals("-1")) {
                 switch (ifc.type) {
                     case hairpin:
                     case bundle:
