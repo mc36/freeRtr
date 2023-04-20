@@ -3663,6 +3663,9 @@ public class servP4langConn implements Runnable {
                 if (recur == null) {
                     continue;
                 }
+                if (recur.best.nextHop == null) {
+                    continue;
+                }
                 servP4langNei hop = lower.findNei(recur.best.iface, recur.best.nextHop);
                 if (hop == null) {
                     String a;
