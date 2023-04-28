@@ -14074,3 +14074,6 @@ todo: server http / host * ptmud
 ---------------------------------- 2023-03-21 10:58:53 23.3.21
 todo: server http / host * user-agent matcher
 todo: server http / host * custom-header
+---------------------------------- 2023-04-28 03:40:47 23.4.28
+no qc pass: qos ingress shaper action
+failed: qos ingress shaper action

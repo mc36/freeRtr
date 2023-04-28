@@ -1823,7 +1823,7 @@ qc pass: qos ingress priority action
 qc pass: qos egress priority action
 qc pass: qos ingress bandwidth action
 qc pass: qos egress bandwidth action
-qc pass: qos ingress shaper action
+failed: qos ingress shaper action
 qc pass: qos egress shaper action
 qc pass: qos ingress hierarchical action
 qc pass: qos egress hierarchical action
