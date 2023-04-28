@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v23.4.28-cur, done by cs@nop.
--;-;-;2023-04-28 03:52:36, took 00:11:49, with 80 workers, on 3190 cases, 1 failed, 0 traces, 9 retries
+-;-;-;2023-04-28 04:03:36, took 00:09:37, with 80 workers, on 3190 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1827,7 +1827,7 @@ http://sources.freertr.org/cfg/qos-action07.tst;qos-action07.tst;success;qos ing
 http://sources.freertr.org/cfg/qos-action08.tst;qos-action08.tst;success;qos egress priority action
 http://sources.freertr.org/cfg/qos-action09.tst;qos-action09.tst;success;qos ingress bandwidth action
 http://sources.freertr.org/cfg/qos-action10.tst;qos-action10.tst;success;qos egress bandwidth action
-http://sources.freertr.org/cfg/qos-action11.tst;qos-action11.tst;#6-run-r1 tping 100 5 1.1.1.2 vrf v1 rep 100 tim 500 siz 100;qos ingress shaper action
+http://sources.freertr.org/cfg/qos-action11.tst;qos-action11.tst;success;qos ingress shaper action
 http://sources.freertr.org/cfg/qos-action12.tst;qos-action12.tst;success;qos egress shaper action
 http://sources.freertr.org/cfg/qos-action13.tst;qos-action13.tst;success;qos ingress hierarchical action
 http://sources.freertr.org/cfg/qos-action14.tst;qos-action14.tst;success;qos egress hierarchical action
