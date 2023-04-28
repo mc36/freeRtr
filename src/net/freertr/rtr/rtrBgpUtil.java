@@ -1687,6 +1687,29 @@ public class rtrBgpUtil {
     }
 
     /**
+     * convert leak to inverted leak
+     *
+     * @param old old role
+     * @return inverted role, -1 on error
+     */
+    public static int leakInverter(int old) {
+        switch (old) {
+            case rtrBgpUtil.roleProv:
+                return rtrBgpUtil.roleCust;
+            case rtrBgpUtil.roleRs:
+                return rtrBgpUtil.roleRsc;
+            case rtrBgpUtil.roleRsc:
+                return rtrBgpUtil.roleRs;
+            case rtrBgpUtil.roleCust:
+                return rtrBgpUtil.roleProv;
+            case rtrBgpUtil.rolePeer:
+                return rtrBgpUtil.rolePeer;
+            default:
+                return -1;
+        }
+    }
+
+    /**
      * convert peer role to string
      *
      * @param role role

@@ -167,7 +167,7 @@ public abstract class rtrBgpParam {
     public int egressEng;
 
     /**
-     * leak prevention role
+     * leak prevention local role
      */
     public int leakRole;
 
@@ -1525,7 +1525,7 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <num>                     tos value");
         l.add(null, "3  4       egress-engineering          set egress engineering");
         l.add(null, "4  .         <num>                     index value");
-        l.add(null, "3  4       role                        leak prevention role");
+        l.add(null, "3  4       role                        remote leak prevention role");
         l.add(null, "4  5,.       disabled                  disable processing");
         l.add(null, "4  5,.       attrib                    only send otc attribute");
         l.add(null, "4  5,.       provider                  provider");
@@ -1825,7 +1825,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !wideAsPath, beg, nei + "wide-aspath", "");
         cmds.cfgLine(l, !routeRefresh, beg, nei + "route-refresh", "");
         cmds.cfgLine(l, egressEng == 0, beg, nei + "egress-engineering", "" + egressEng);
-        s = rtrBgpUtil.leakRole2string(leakRole, leakAttr);
+        s = rtrBgpUtil.leakRole2string(rtrBgpUtil.leakInverter(leakRole), leakAttr);
         if (leakForce) {
             s += " enforce";
         }
@@ -2465,6 +2465,7 @@ public abstract class rtrBgpParam {
             if (s.equals("attrib")) {
                 leakAttr = true;
             }
+            leakRole = rtrBgpUtil.leakInverter(leakRole);
             leakAttr |= leakRole >= 0;
             s = cmd.word();
             leakForce = s.equals("enforce");

@@ -1646,7 +1646,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (neigh.leakRole >= 0) {
             byte[] buf = new byte[1];
-            buf[0] = (byte) neigh.leakRole;
+            buf[0] = (byte) rtrBgpUtil.leakInverter(neigh.leakRole);
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaLeakRole, buf);
         }
         if (neigh.hostname > 0) {
@@ -1908,28 +1908,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         if (neigh.leakForce || ((neigh.leakRole >= 0) && (peerLeakRole >= 0))) {
-            int ned;
-            switch (neigh.leakRole) {
-                case rtrBgpUtil.roleProv:
-                    ned = rtrBgpUtil.roleCust;
-                    break;
-                case rtrBgpUtil.roleRs:
-                    ned = rtrBgpUtil.roleRsc;
-                    break;
-                case rtrBgpUtil.roleRsc:
-                    ned = rtrBgpUtil.roleRs;
-                    break;
-                case rtrBgpUtil.roleCust:
-                    ned = rtrBgpUtil.roleProv;
-                    break;
-                case rtrBgpUtil.rolePeer:
-                    ned = rtrBgpUtil.rolePeer;
-                    break;
-                default:
-                    ned = -1;
-                    break;
-            }
-            if (peerLeakRole != ned) {
+            if (peerLeakRole != neigh.leakRole) {
                 logger.info("neighbor " + neigh.peerAddr + " sent wrong role " + rtrBgpUtil.leakRole2string(peerLeakRole, false));
                 sendNotify(2, 8);
                 return true;
