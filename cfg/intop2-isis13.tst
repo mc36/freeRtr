@@ -1,5 +1,7 @@
 description interop2: isis te with pcep
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
 int eth2 eth 0000.0000.1112 $per2$
