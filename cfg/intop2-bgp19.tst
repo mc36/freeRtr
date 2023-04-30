@@ -1,7 +1,5 @@
 description interop2: bgp vpnv4 over srv6
 
-exit
-
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
 !
@@ -52,7 +50,7 @@ router bgp4 1
  address vpnuni
  local-as 1
  router-id 4.4.4.1
- neigh 2.2.2.2 remote-as 1
+ neigh 2.2.2.2 remote-as 2
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
  neigh 2.2.2.2 segrou
@@ -68,7 +66,7 @@ router bgp6 1
  address ovpnuni
  local-as 1
  router-id 6.6.6.1
- neigh 4321::2 remote-as 1
+ neigh 4321::2 remote-as 2
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
  neigh 4321::2 segrou
@@ -125,7 +123,7 @@ interface loopback3
  exit
 segment-routing srv6 locators locator a prefix 1111:1111:1111:1111::/64
 segment-routing srv6 encapsulation source-address 4321::2
-router bgp 1
+router bgp 2
  segment-routing srv6 locator a
  address-family vpnv4 unicast segment-routing srv6 locator a
  address-family vpnv6 unicast segment-routing srv6 locator a
