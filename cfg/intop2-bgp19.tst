@@ -1,5 +1,7 @@
 description interop2: bgp vpnv4 over srv6
 
+exit
+
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
 !
