@@ -14080,3 +14080,6 @@ failed: qos ingress shaper action
 ---------------------------------- 2023-04-28 03:53:58 23.4.28
 no failed: qos ingress shaper action
 qc pass: qos ingress shaper action
+---------------------------------- 2023-05-02 16:50:00 23.5.2
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
