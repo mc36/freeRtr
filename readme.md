@@ -12,7 +12,7 @@ part of the subdirectories under misc/ are somewhere else too:
 * p4bf at http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
 * p4lang at http://github.com/rare-freertr/RARE-bmv2
 
-parts of the files under misc/natives are rewritten from c to rust at https://git.famfo.xyz/famfo/freertr_native-rs
+parts of the files under misc/natives are rewritten from c to rust at http://git.famfo.xyz/famfo/freertr_native-rs
 
 ## dependencies
 
