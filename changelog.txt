@@ -14088,3 +14088,5 @@ no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
 ---------------------------------- 2023-05-08 00:05:09 23.5.7
 todo: change the flash upgrade key
+---------------------------------- 2023-05-08 02:59:05 23.5.8
+todo: make polka configurable like the crypto stuff

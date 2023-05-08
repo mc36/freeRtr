@@ -1,3 +1,4 @@
+make polka configurable like the crypto stuff
 change the flash upgrade key
 server smtp / ptmud
 server http / host * user-agent matcher
