@@ -8,6 +8,7 @@
 
 #define HAVE_DEBUG
 //#undef HAVE_NOCRYPTO
+//#define HAVE_POLKA
 
 #include "p4emu_hdr.h"
 

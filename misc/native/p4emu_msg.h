@@ -159,7 +159,12 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh polka racl inspect mpolka sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
+    return "punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
+
+#ifdef HAVE_POLKA
+       "mpolka polka "
+#endif
+
 #ifndef HAVE_NOCRYPTO
            " macsec ipsec openvpn wireguard"
 #endif
@@ -201,10 +206,12 @@ int doOneCommand(unsigned char* buf) {
     printf("\n");
     int del = strcmp(arg[1], "del");
     if (del != 0) del = 1;
+#ifdef HAVE_POLKA
     struct polkaIdx_entry polkaIdx_ntry;
     memset(&polkaIdx_ntry, 0, sizeof(polkaIdx_ntry));
     struct polkaPoly_entry polkaPoly_ntry;
     memset(&polkaPoly_ntry, 0, sizeof(polkaPoly_ntry));
+#endif
     struct nsh_entry nsh_ntry;
     memset(&nsh_ntry, 0, sizeof(nsh_ntry));
     struct mpls_entry *mpls_res;
@@ -357,6 +364,7 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
+#ifdef HAVE_POLKA
     if (strcmp(arg[0], "polkaidx") == 0) {
         vrf2rib_ntry.vrf = atoi(arg[3]);
         vrf2rib_res = vrf2rib_init4;
@@ -391,6 +399,7 @@ int doOneCommand(unsigned char* buf) {
         else table_add(&mpolkaPoly_table, &polkaPoly_ntry);
         return 0;
     }
+#endif
     if (strcmp(arg[0], "nshfwd") == 0) {
         nsh_ntry.sp = atoi(arg[2]);
         nsh_ntry.si = atoi(arg[3]);
@@ -781,6 +790,7 @@ int doOneCommand(unsigned char* buf) {
         else tree_add(&vrf2rib_res->rou, &route4_ntry);
         return 0;
     }
+#ifdef HAVE_POLKA
     if (strcmp(arg[0], "polroute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
@@ -807,6 +817,7 @@ int doOneCommand(unsigned char* buf) {
         else tree_add(&vrf2rib_res->rou, &route4_ntry);
         return 0;
     }
+#endif
     if (strcmp(arg[0], "droproute4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[4]);
@@ -920,6 +931,7 @@ int doOneCommand(unsigned char* buf) {
         else tree_add(&vrf2rib_res->rou, &route6_ntry);
         return 0;
     }
+#ifdef HAVE_POLKA
     if (strcmp(arg[0], "polroute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[6]);
@@ -952,6 +964,7 @@ int doOneCommand(unsigned char* buf) {
         else tree_add(&vrf2rib_res->rou, &route6_ntry);
         return 0;
     }
+#endif
     if (strcmp(arg[0], "droproute6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[4]);
@@ -2443,6 +2456,7 @@ void doStatRound_mcst6(void* buffer, int fixed, void* param) {
     }
 }
 
+#ifdef HAVE_POLKA
 void doStatRound_polka(void* buffer, int ver, int fixed, void* param) {
     FILE *commands = param;
     struct table_head *polkaIdx_table = buffer;
@@ -2455,6 +2469,7 @@ void doStatRound_polka(void* buffer, int ver, int fixed, void* param) {
         fprintf(commands, "%spolka_cnt %i %i %li %li\r\n", wer, fixed, ntry->index, ntry->pack, ntry->byte);
     }
 }
+#endif
 
 void doStatRound_ipvX(struct table_head *tab, void doer(void *, int, void *), void natter(void *, int, void *), void tunner(void *, int, void *), void mcaster(void *, int, void *), int ver, void*param) {
     FILE *commands = param;
@@ -2465,7 +2480,9 @@ void doStatRound_ipvX(struct table_head *tab, void doer(void *, int, void *), vo
         natter(&res->nat, res->vrf, param);
         tunner(&res->tun, res->vrf, param);
         mcaster(&res->mcst, res->vrf, param);
+#ifdef HAVE_POLKA
         doStatRound_polka(&res->plk, ver, res->vrf, param);
+#endif
     }
 }
 
@@ -2588,8 +2605,10 @@ void doStatRound(FILE *commands, int round) {
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, packIpv6[i], byteIpv6[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
+#ifdef HAVE_POLKA
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPOLKA, packMpolka[i], byteMpolka[i]);
+#endif
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
     }
     for (int i=0; i<nsh_table.size; i++) {
