@@ -33,8 +33,8 @@ exec cp ../binTmp/*.bin %tmp%/rtr/
 #catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
 #catalog-read liq gz https://liquorix.net/debian/ sid main
 #catalog-read xan gz http://deb.xanmod.org/ releases main
-catalog-read sid xz http://ftp.at.debian.org/debian/ sid main
-catalog-read exp xz http://ftp.at.debian.org/debian/ experimental main
+catalog-read sid xz http://deb.debian.org/debian/ sid main
+catalog-read exp xz http://deb.debian.org/debian/ experimental main
 
 select-dis debconf.*
 select-dis adduser.*
