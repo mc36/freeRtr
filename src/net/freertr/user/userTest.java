@@ -310,6 +310,16 @@ public class userTest {
             doShow(encAsn1.dumpPack("", pck));
             return null;
         }
+        if (a.equals("macaddr")) {
+            addrMac adr = new addrMac();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            cmd.error("default: " + adr);
+            cmd.error("linux: " + adr.toEmuStr());
+            return null;
+        }
         if (a.equals("base64")) {
             a = cmd.getRemaining();
             cmd.error("data: " + a);

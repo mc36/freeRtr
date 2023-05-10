@@ -2136,6 +2136,8 @@ public class userExec {
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    base64                       decode base64 encoded bytes");
         hl.add(null, "3 3,.      <str>                      parameter");
+        hl.add(null, "2 3,.    macaddr                      convert mac address");
+        hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    url                          decode url");
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    xml                          decode xml");

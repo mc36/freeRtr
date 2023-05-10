@@ -14095,3 +14095,5 @@ no todo: make polka configurable like the crypto stuff
 ---------------------------------- 2023-05-10 07:56:46 23.5.10
 todo: test macaddr to convert to colon format
 todo: stop undver vpdn
+---------------------------------- 2023-05-10 11:15:19 23.5.10
+no todo: test macaddr to convert to colon format

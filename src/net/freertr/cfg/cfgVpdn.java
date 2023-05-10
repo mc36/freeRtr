@@ -703,6 +703,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         cmds.cfgLine(l, !physInt, cmds.tabulator, "physical-interface", "");
         cmds.cfgLine(l, pwtype < 1, cmds.tabulator, "pwtype", packLdpPwe.type2string(pwtype));
         cmds.cfgLine(l, proto == null, cmds.tabulator, "protocol", type2str(proto));
+        if (running) {
+            l.add(cmds.tabulator + "start");
+        } else {
+            l.add(cmds.tabulator + "stop");
+        }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -785,6 +790,9 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .    <num>                        vc id");
         l.add(null, "1 .  control-word                   enable/disable control word");
         l.add(null, "1 .  physical-interface             adding as physical to bridge");
+        l.add(null, "1 .  start                          start working");
+        l.add(null, "1 2  stop                           stop working");
+        l.add(null, "2 .    <num>                        delay in ms");
         l.add(null, "1 2  mtu                            specify vc mtu");
         l.add(null, "2 .    <num>                        mtu");
         l.add(null, "1 2  pwtype                         type of pseudowire");
@@ -813,6 +821,20 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
 
     public synchronized void doCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("stop")) {
+            int i = bits.str2num(cmd.word());
+            if (i < 1) {
+                cmd.error("bad delay");
+                return;
+            }
+            bits.sleep(i);
+            stop2run();
+            return;
+        }
+        if (s.equals("start")) {
+            setup2run();
+            return;
+        }
         if (s.equals("interface")) {
             stop2run();
             ifaceDialer = cfgAll.ifcFind(cmd.word(), 0);
@@ -1035,7 +1057,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     /**
      * stop process
      */
-    public void stop2run() {
+    public synchronized void stop2run() {
         if (!running) {
             return;
         }
@@ -1185,7 +1207,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     /**
      * restart process
      */
-    public void setup2run() {
+    public synchronized void setup2run() {
         if (running) {
             return;
         }
