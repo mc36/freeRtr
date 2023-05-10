@@ -3189,7 +3189,6 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: change the flash upgrade key
-todo: stop undver vpdn
 todo: server smtp / ptmud
 todo: server http / host * user-agent matcher
 todo: server http / host * custom-header
