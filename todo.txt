@@ -1,4 +1,6 @@
 change the flash upgrade key
+test macaddr to convert to colon format
+stop undver vpdn
 server smtp / ptmud
 server http / host * user-agent matcher
 server http / host * custom-header
