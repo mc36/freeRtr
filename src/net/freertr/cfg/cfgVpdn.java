@@ -401,6 +401,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
 
     private boolean running;
 
+    private int stopTime = -1;
+
     /**
      * defaults text
      */
@@ -706,7 +708,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (running) {
             l.add(cmds.tabulator + "start");
         } else {
-            l.add(cmds.tabulator + "stop");
+            l.add(cmds.tabulator + "stop " + stopTime);
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -717,95 +719,95 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2  protocol                       specify protocol to use");
-        l.add(null, "2 .    l2f                          select l2f");
-        l.add(null, "2 .    l2tp2                        select l2tp v2");
-        l.add(null, "2 .    l2tp3                        select l2tp v3");
-        l.add(null, "2 .    sstp                         select sstp");
-        l.add(null, "2 .    sdwan                        select sdwan");
-        l.add(null, "2 .    anyconn                      select anyconnect");
-        l.add(null, "2 .    forti                        select fortinet");
-        l.add(null, "2 .    pulse                        select pulsevpn");
-        l.add(null, "2 .    stun                         select stun");
-        l.add(null, "2 .    bstun                        select bstun");
-        l.add(null, "2 .    tdmoudp                      select tdm over udp");
-        l.add(null, "2 .    telnet                       select telnet");
-        l.add(null, "2 .    tls                          select tls");
-        l.add(null, "2 .    ssh                          select ssh");
-        l.add(null, "2 .    tcp                          select tcp");
-        l.add(null, "2 .    gtp                          select gtp");
-        l.add(null, "2 .    greppp                       select ppp over gre");
-        l.add(null, "2 .    gretap                       select tap over gre");
-        l.add(null, "2 .    ax25                         select ax25");
-        l.add(null, "2 .    pptp                         select pptp");
-        l.add(null, "2 .    pckoudp                      select packet over udp");
-        l.add(null, "2 .    pckodtls                     select packet over dtls");
-        l.add(null, "2 .    pckotcp                      select packet over tcp");
-        l.add(null, "2 .    pckOtxt                      select packet over txt");
-        l.add(null, "2 .    pweompls                     select pwe over mpls");
-        l.add(null, "2 .    erspan                       select erspan");
-        l.add(null, "2 .    dlsw                         select dlsw");
-        l.add(null, "2 .    etherip                      select etherip");
-        l.add(null, "2 .    sreth                        select sreth");
-        l.add(null, "2 .    uti                          select uti");
-        l.add(null, "2 .    nvgre                        select nvgre");
-        l.add(null, "2 .    vxlan                        select vxlan");
-        l.add(null, "2 .    geneve                       select geneve");
-        l.add(null, "2 .    llcudp                       select llcudp");
-        l.add(null, "2 .    tzsp                         select tzsp");
-        l.add(null, "2 .    capwap                       select capwap");
-        l.add(null, "2 .    lwapp                        select lwapp");
-        l.add(null, "1 2  prefer                         prefer ip protocol");
-        l.add(null, "2 .    none                         default");
-        l.add(null, "2 .    ipv4                         ipv4");
-        l.add(null, "2 .    ipv6                         ipv6");
-        l.add(null, "1 2  direction                      specify direction of connection");
-        l.add(null, "2 .    incoming                     act as incoming call");
-        l.add(null, "2 .    outgoing                     act as outgoing call");
-        l.add(null, "1 2  proxy                          proxy profile to use");
-        l.add(null, "2 .    <name:prx>                   proxy name");
-        l.add(null, "1 2  script                         name of chat script to use");
-        l.add(null, "2 .    <name:scr>                   script name");
-        l.add(null, "1 2  target                         specify target of tunnel");
-        l.add(null, "2 .    <str>                        name or address of target");
-        l.add(null, "1 2  description                    specify description");
-        l.add(null, "2 2,.  <str>                        description");
-        l.add(null, "1 2  rename                         rename this vpdn");
-        l.add(null, "2 .    <str>                        set new name");
-        l.add(null, "1 2  interface                      name of interface to serve");
-        l.add(null, "2 .    <name:ifc>                   interface name");
-        l.add(null, "1 2  bridge-group                   name of bridge group to serve");
-        l.add(null, "2 .    <num>                        bridge group number");
-        l.add(null, "1 2  called                         specify called number");
-        l.add(null, "2 .    <str>                        called number");
-        l.add(null, "1 2  calling                        specify calling number");
-        l.add(null, "2 .    <str>                        calling number");
-        l.add(null, "1 2  pubkey                         specify public key");
-        l.add(null, "2 2,.  <str>                        public key");
-        l.add(null, "1 2  username                       specify username");
-        l.add(null, "2 .    <str>                        username");
-        l.add(null, "1 2  password                       specify password");
-        l.add(null, "2 .    <str>                        password");
-        l.add(null, "1 2  vcid                           specify vc id");
-        l.add(null, "2 .    <num>                        vc id");
-        l.add(null, "1 .  control-word                   enable/disable control word");
-        l.add(null, "1 .  physical-interface             adding as physical to bridge");
-        l.add(null, "1 .  start                          start working");
-        l.add(null, "1 2  stop                           stop working");
-        l.add(null, "2 .    <num>                        delay in ms");
-        l.add(null, "1 2  mtu                            specify vc mtu");
-        l.add(null, "2 .    <num>                        mtu");
-        l.add(null, "1 2  pwtype                         type of pseudowire");
-        l.add(null, "2 .    ethernet                     ethernet mode");
-        l.add(null, "2 .    vlan                         vlan mode");
-        l.add(null, "2 .    hdlc                         hdlc mode");
-        l.add(null, "2 .    ppp                          ppp mode");
-        l.add(null, "2 .    ip                           ip mode");
-        l.add(null, "2 .    fr-dlci                      fr dlci mode");
-        l.add(null, "2 .    atm-aal5                     atm aal5 mode");
-        l.add(null, "2 .    atm-vcc                      atm vcc mode");
-        l.add(null, "2 .    atm-vpc                      atm vpc mode");
-        l.add(null, "2 .    atm-port                     atm port mode");
+        l.add(null, "1 2    protocol                       specify protocol to use");
+        l.add(null, "2 .      l2f                          select l2f");
+        l.add(null, "2 .      l2tp2                        select l2tp v2");
+        l.add(null, "2 .      l2tp3                        select l2tp v3");
+        l.add(null, "2 .      sstp                         select sstp");
+        l.add(null, "2 .      sdwan                        select sdwan");
+        l.add(null, "2 .      anyconn                      select anyconnect");
+        l.add(null, "2 .      forti                        select fortinet");
+        l.add(null, "2 .      pulse                        select pulsevpn");
+        l.add(null, "2 .      stun                         select stun");
+        l.add(null, "2 .      bstun                        select bstun");
+        l.add(null, "2 .      tdmoudp                      select tdm over udp");
+        l.add(null, "2 .      telnet                       select telnet");
+        l.add(null, "2 .      tls                          select tls");
+        l.add(null, "2 .      ssh                          select ssh");
+        l.add(null, "2 .      tcp                          select tcp");
+        l.add(null, "2 .      gtp                          select gtp");
+        l.add(null, "2 .      greppp                       select ppp over gre");
+        l.add(null, "2 .      gretap                       select tap over gre");
+        l.add(null, "2 .      ax25                         select ax25");
+        l.add(null, "2 .      pptp                         select pptp");
+        l.add(null, "2 .      pckoudp                      select packet over udp");
+        l.add(null, "2 .      pckodtls                     select packet over dtls");
+        l.add(null, "2 .      pckotcp                      select packet over tcp");
+        l.add(null, "2 .      pckOtxt                      select packet over txt");
+        l.add(null, "2 .      pweompls                     select pwe over mpls");
+        l.add(null, "2 .      erspan                       select erspan");
+        l.add(null, "2 .      dlsw                         select dlsw");
+        l.add(null, "2 .      etherip                      select etherip");
+        l.add(null, "2 .      sreth                        select sreth");
+        l.add(null, "2 .      uti                          select uti");
+        l.add(null, "2 .      nvgre                        select nvgre");
+        l.add(null, "2 .      vxlan                        select vxlan");
+        l.add(null, "2 .      geneve                       select geneve");
+        l.add(null, "2 .      llcudp                       select llcudp");
+        l.add(null, "2 .      tzsp                         select tzsp");
+        l.add(null, "2 .      capwap                       select capwap");
+        l.add(null, "2 .      lwapp                        select lwapp");
+        l.add(null, "1 2    prefer                         prefer ip protocol");
+        l.add(null, "2 .      none                         default");
+        l.add(null, "2 .      ipv4                         ipv4");
+        l.add(null, "2 .      ipv6                         ipv6");
+        l.add(null, "1 2    direction                      specify direction of connection");
+        l.add(null, "2 .      incoming                     act as incoming call");
+        l.add(null, "2 .      outgoing                     act as outgoing call");
+        l.add(null, "1 2    proxy                          proxy profile to use");
+        l.add(null, "2 .      <name:prx>                   proxy name");
+        l.add(null, "1 2    script                         name of chat script to use");
+        l.add(null, "2 .      <name:scr>                   script name");
+        l.add(null, "1 2    target                         specify target of tunnel");
+        l.add(null, "2 .      <str>                        name or address of target");
+        l.add(null, "1 2    description                    specify description");
+        l.add(null, "2 2,.    <str>                        description");
+        l.add(null, "1 2    rename                         rename this vpdn");
+        l.add(null, "2 .      <str>                        set new name");
+        l.add(null, "1 2    interface                      name of interface to serve");
+        l.add(null, "2 .      <name:ifc>                   interface name");
+        l.add(null, "1 2    bridge-group                   name of bridge group to serve");
+        l.add(null, "2 .      <num>                        bridge group number");
+        l.add(null, "1 2    called                         specify called number");
+        l.add(null, "2 .      <str>                        called number");
+        l.add(null, "1 2    calling                        specify calling number");
+        l.add(null, "2 .      <str>                        calling number");
+        l.add(null, "1 2    pubkey                         specify public key");
+        l.add(null, "2 2,.    <str>                        public key");
+        l.add(null, "1 2    username                       specify username");
+        l.add(null, "2 .      <str>                        username");
+        l.add(null, "1 2    password                       specify password");
+        l.add(null, "2 .      <str>                        password");
+        l.add(null, "1 2    vcid                           specify vc id");
+        l.add(null, "2 .      <num>                        vc id");
+        l.add(null, "1 .    control-word                   enable/disable control word");
+        l.add(null, "1 .    physical-interface             adding as physical to bridge");
+        l.add(null, "1 .    start                          start working");
+        l.add(null, "1 2,.  stop                           stop working");
+        l.add(null, "2 .      <num>                        delay in ms");
+        l.add(null, "1 2    mtu                            specify vc mtu");
+        l.add(null, "2 .      <num>                        mtu");
+        l.add(null, "1 2    pwtype                         type of pseudowire");
+        l.add(null, "2 .      ethernet                     ethernet mode");
+        l.add(null, "2 .      vlan                         vlan mode");
+        l.add(null, "2 .      hdlc                         hdlc mode");
+        l.add(null, "2 .      ppp                          ppp mode");
+        l.add(null, "2 .      ip                           ip mode");
+        l.add(null, "2 .      fr-dlci                      fr dlci mode");
+        l.add(null, "2 .      atm-aal5                     atm aal5 mode");
+        l.add(null, "2 .      atm-vcc                      atm vcc mode");
+        l.add(null, "2 .      atm-vpc                      atm vpc mode");
+        l.add(null, "2 .      atm-port                     atm port mode");
     }
 
     /**
@@ -822,12 +824,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     public synchronized void doCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("stop")) {
-            int i = bits.str2num(cmd.word());
-            if (i < 1) {
-                cmd.error("bad delay");
-                return;
+            stopTime = bits.str2num(cmd.word());
+            if (stopTime < 1) {
+                stopTime = 111;
             }
-            bits.sleep(i);
+            bits.sleep(stopTime);
             stop2run();
             return;
         }
