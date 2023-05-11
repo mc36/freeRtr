@@ -570,24 +570,24 @@ public class userUpgrade {
     private cryKeyRSA readUpKey(String s) {
         List<String> l = cfgInit.httpGet(s);
         if (l == null) {
-            cmd.error("got nothing!");
+            cmd.error("got empty key!");
             return null;
         }
         if (l.size() < 2) {
-            cmd.error("got too small!");
+            cmd.error("got too small key!");
             return null;
         }
         cryKeyRSA k = new cryKeyRSA();
         if (k.pemReadStr(l.get(0), true)) {
-            cmd.error("error reading public part!");
+            cmd.error("error reading public key!");
             return null;
         }
         if (k.pemReadStr(l.get(1), false)) {
-            cmd.error("error reading private part!");
+            cmd.error("error reading private key!");
             return null;
         }
         if (k.keyVerify()) {
-            cmd.error("error verifying them!");
+            cmd.error("error verifying private to public!");
             return null;
         }
         return k;

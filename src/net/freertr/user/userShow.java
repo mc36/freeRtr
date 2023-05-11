@@ -593,14 +593,26 @@ public class userShow {
             return null;
         }
         if (a.equals("rollback-config")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return null;
+            }
             rdr.putStrArr(userFilter.getDiffs(cfgAll.getShRun(1), bits.txt2buf(cfgInit.cfgFileSw)));
             return null;
         }
         if (a.equals("config-differences")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return null;
+            }
             rdr.putStrArr(userFilter.getDiffs(bits.txt2buf(cfgInit.cfgFileSw), cfgAll.getShRun(1)));
             return null;
         }
         if (a.equals("startup-config")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return null;
+            }
             List<String> lst = bits.txt2buf(cfgInit.cfgFileSw);
             if (cmd.size() > 0) {
                 lst = userFilter.getSection(lst, userReader.filter2reg(cmd.getRemaining()));
@@ -609,6 +621,10 @@ public class userShow {
             return null;
         }
         if (a.equals("running-config")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return null;
+            }
             a = cmd.word();
             if (a.equals("this")) {
                 if (cfg == null) {

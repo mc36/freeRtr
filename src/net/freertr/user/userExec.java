@@ -2423,6 +2423,10 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("limited")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return cmdRes.command;
+            }
             cfgAll.limited = true;
             return cmdRes.command;
         }
