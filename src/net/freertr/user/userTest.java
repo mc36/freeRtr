@@ -150,6 +150,10 @@ public class userTest {
         if (alias != null) {
             return alias;
         }
+        if (a.equals("swapkeys")) {
+            cfgAll.passEnh = cmd.getRemaining();
+            return null;
+        }
         if (a.equals("yangconfig")) {
             String src = cmd.word();
             cmd.error("reading " + src);

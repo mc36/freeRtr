@@ -129,7 +129,7 @@ public class userUpgrade {
     public void doRelease() {
         cryKeyRSA ky = readUpKey(cmd.word());
         if (ky == null) {
-            cmd.error("failed to get key!");
+            cmd.error("failed to get current key!");
             return;
         }
         userUpgradeBlob blb = new userUpgradeBlob();
@@ -570,19 +570,24 @@ public class userUpgrade {
     private cryKeyRSA readUpKey(String s) {
         List<String> l = cfgInit.httpGet(s);
         if (l == null) {
+            cmd.error("got nothing!");
             return null;
         }
         if (l.size() < 2) {
+            cmd.error("got too small!");
             return null;
         }
         cryKeyRSA k = new cryKeyRSA();
         if (k.pemReadStr(l.get(0), true)) {
+            cmd.error("error reading public part!");
             return null;
         }
         if (k.pemReadStr(l.get(1), false)) {
+            cmd.error("error reading private part!");
             return null;
         }
         if (k.keyVerify()) {
+            cmd.error("error verifying them!");
             return null;
         }
         return k;

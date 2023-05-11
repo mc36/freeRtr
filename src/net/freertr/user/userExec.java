@@ -1572,6 +1572,7 @@ public class userExec {
         hl.add(null, "4 .          [server]                 address of ns server");
         hl.add(null, "1 .    disable                        drop privileges");
         hl.add(null, "1 .    enable                         gain privileges");
+        hl.add(null, "1 .    limited                        drop privileges");
         hl.add(null, "1 2,.  tclsh                          run tcl shell");
         hl.add(null, "2 .      [file]                       name of script");
         hl.add(null, "1 2    traceroute                     trace route to target");
@@ -2115,6 +2116,8 @@ public class userExec {
         hl.add(null, "2 3      yangconfig                   create yang from config");
         hl.add(null, "3 4        <file>                     source");
         hl.add(null, "4 .          <file>                   target");
+        hl.add(null, ".2 3     swapkeys                     swap hidden keys");
+        hl.add(null, "3 .        <str>                      new master secret");
         hl.add(null, "2 3      dns                          dns zone creator");
         hl.add(null, "3 .        <str>                      name of zone");
         hl.add(null, "2 3      translation                  translation rule");
@@ -2419,6 +2422,10 @@ public class userExec {
             doTerminal();
             return cmdRes.command;
         }
+        if (a.equals("limited")) {
+            cfgAll.limited = true;
+            return cmdRes.command;
+        }
         if (a.equals("enable")) {
             if (cfgAll.enaPass == null) {
                 cmd.error("no enable configured");
@@ -2437,6 +2444,7 @@ public class userExec {
                 return cmdRes.command;
             }
             privileged = true;
+            cfgAll.limited = false;
             return cmdRes.command;
         }
         if (a.equals("disable")) {
