@@ -139,7 +139,7 @@ public class userExec {
          * configuration requested
          */
         config
-
+        
     }
 
     /**
@@ -152,7 +152,7 @@ public class userExec {
         pipe = pip;
         reader = rdr;
     }
-
+    
     private void getHelpClearIpX(userHelping hl) {
         hl.add(null, "3 4        route                 routing table");
         hl.add(null, "4 .          <name:vrf>          vrf name");
@@ -234,7 +234,7 @@ public class userExec {
         hl.add(null, "5 .            stop              stop processing");
         hl.add(null, "5 .            start             start processing");
     }
-
+    
     private static void getHelpShowIpX(userHelping hl) {
         hl.add(null, "3 4,.      interface                interface information");
         hl.add(null, "4 .          [name:ifc]             name of interface");
@@ -1389,7 +1389,7 @@ public class userExec {
         getHelpShowIpX(hl);
         cfgAll.aliasHelps(cfgAlias.aliasType.show, 2, hl);
     }
-
+    
     private void getHelpFlood(userHelping hl) {
         hl.add(null, ".5 6           tcp                          select tcp");
         hl.add(null, ".5 6           udp                          select udp");
@@ -1404,7 +1404,7 @@ public class userExec {
         hl.add(null, ".11 12                     <num>            size");
         hl.add(null, ".12 .                        <name:pm>      policy map");
     }
-
+    
     private void getHelpTelnet(userHelping hl) {
         hl.add(null, "2 3,4,.  <host>                  name of host");
         hl.add(null, "3 4,.      [port]                port on host");
@@ -2427,6 +2427,10 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("enable")) {
+            if (cfgAll.limited) {
+                cmd.error("not in a vdc");
+                return cmdRes.command;
+            }
             if (cfgAll.enaPass == null) {
                 cmd.error("no enable configured");
                 return cmdRes.command;
@@ -3023,7 +3027,7 @@ public class userExec {
             return "success";
         }
     }
-
+    
     private boolean need2stop() {
         if (pipe.isClosed() != 0) {
             return true;
@@ -3096,7 +3100,7 @@ public class userExec {
         }
         cfg.executeCommand(a);
     }
-
+    
     private void doMenuK() {
         String a = cmd.word();
         cfgMenuK ntry = cfgAll.menuKfind(a, false);
@@ -3122,7 +3126,7 @@ public class userExec {
         }
         exe.executeCommand(s);
     }
-
+    
     private void doMenuT() {
         String a = cmd.word();
         cfgMenuT ntry = cfgAll.menuTfind(a, false);
@@ -3132,7 +3136,7 @@ public class userExec {
         }
         ntry.doMenu(pipe, reader, privileged);
     }
-
+    
     private void doPortscan() {
         String rem = cmd.word();
         cfgVrf vrf = cfgAll.getClntVrf();
@@ -3224,7 +3228,7 @@ public class userExec {
             return ipCor6.size + ipIcmp6.size;
         }
     }
-
+    
     private void doBwmon() {
         int interval = 0;
         int counter = 0;
@@ -3280,7 +3284,7 @@ public class userExec {
         edtr.doClear();
         reader.keyFlush();
     }
-
+    
     private void doMtr() {
         String rem = cmd.word();
         cfgVrf vrf = cfgAll.getClntVrf();
@@ -3465,7 +3469,7 @@ public class userExec {
         edtr.doClear();
         reader.keyFlush();
     }
-
+    
     private void doTraceroute() {
         String rem = cmd.word();
         cfgVrf vrf = cfgAll.getClntVrf();
@@ -3620,7 +3624,7 @@ public class userExec {
         }
         trc.unregister2ip();
     }
-
+    
     private void doHostscan() {
         addrIP strt = new addrIP();
         addrIP incr = new addrIP();
@@ -3765,7 +3769,7 @@ public class userExec {
             }
         }
     }
-
+    
     private void doSend() {
         List<String> txt = new ArrayList<String>();
         userEditor e = new userEditor(new userScreen(pipe), txt, "send", false);
@@ -3782,7 +3786,7 @@ public class userExec {
         }
         return;
     }
-
+    
     private void doPing() {
         String rem = cmd.word();
         cfgVrf vrf = cfgAll.getClntVrf();
@@ -4034,7 +4038,7 @@ public class userExec {
         pipe.linePut("");
         pipe.linePut("result=" + bits.percent(recv, sent) + ", recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", took " + (bits.getTime() - timBeg) + ", min/avg/max/dev rtt=" + timS.res() + ", ttl " + ttlS.res() + ", tos " + tosS.res());
     }
-
+    
     private void doListen() {
         int port = bits.str2num(cmd.word());
         int trns = servGeneric.protoTcp;
@@ -4158,7 +4162,7 @@ public class userExec {
         pipeTerm trm = new pipeTerm(pipe, conn);
         trm.doTerm();
     }
-
+    
     private void doTelnet(int secur) {
         String rem = cmd.word();
         cmd = cmd.copyBytes(false);
@@ -4291,7 +4295,7 @@ public class userExec {
         pipeTerm trm = new pipeTerm(pipe, strm);
         trm.doTerm();
     }
-
+    
     private void doAttach() {
         if (cfgAll.limited) {
             cmd.error("not in a vdc");
@@ -4404,7 +4408,7 @@ public class userExec {
         }
         cmd.badCmd();
     }
-
+    
     private void doLookup() {
         String a = cmd.word();
         int i = -1;
@@ -4483,7 +4487,7 @@ public class userExec {
         }
         reader.putStrArr(res.toUserStr(" ", "", false));
     }
-
+    
     private void doTclsh() {
         if (cmd.size() > 0) {
             List<String> l = bits.txt2buf(cmd.getRemaining());
@@ -4518,7 +4522,7 @@ public class userExec {
             pipe.linePut("tcl:" + a);
         }
     }
-
+    
     private void doTerminal() {
         String a = cmd.word();
         if (a.equals("detect")) {
@@ -4618,7 +4622,7 @@ public class userExec {
         }
         cmd.badCmd();
     }
-
+    
     private void doXml(boolean xml) {
         boolean frm = false;
         boolean ech = false;
@@ -4642,7 +4646,7 @@ public class userExec {
             new userNetconf(pipe, privileged, frm, ech).doServer();
         }
     }
-
+    
     private void doPpp() {
         if (framedIface == null) {
             cmd.error("not allowed on this line");
@@ -4660,7 +4664,7 @@ public class userExec {
             i.cloneStop();
         }
     }
-
+    
     private void doReload(boolean mod, long at) {
         if (at >= 0) {
             if (at <= bits.getTime()) {
@@ -4677,7 +4681,7 @@ public class userExec {
         }
         cfgAll.reload = new userReload(mod, at);
     }
-
+    
     private pipeSide getShPipe(boolean col) {
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
@@ -4705,7 +4709,7 @@ public class userExec {
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;
         return pip;
     }
-
+    
     private void doView() {
         List<String> lst = new ArrayList<String>();
         packText pt = new packText(getShPipe(false));
@@ -4713,7 +4717,7 @@ public class userExec {
         userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
         edtr.doView();
     }
-
+    
     private void doWatch() {
         reader.keyFlush();
         boolean color = pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal) != userFormat.colorMode.normal;
@@ -4742,7 +4746,7 @@ public class userExec {
         }
         reader.keyFlush();
     }
-
+    
     private void doDisplay() {
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
@@ -4758,7 +4762,7 @@ public class userExec {
         edtr.doClear();
         reader.keyFlush();
     }
-
+    
     private void doDiffers() {
         List<String> r1 = new packText(getShPipe(false)).recvAll();
         reader.keyFlush();
@@ -4777,7 +4781,7 @@ public class userExec {
         edtr.doClear();
         reader.keyFlush();
     }
-
+    
     private void doCfgBackup() {
         if (cfgAll.configBackup == null) {
             return;
@@ -4800,21 +4804,21 @@ public class userExec {
         boolean b = bits.buf2txt(true, old, a);
         cmd.error(doneFail(b));
     }
-
+    
 }
 
 class userExecStats {
-
+    
     private long min;
-
+    
     private long max;
-
+    
     private long seq;
-
+    
     private float ak;
-
+    
     private float qk;
-
+    
     public userExecStats(int l, int h) {
         min = h;
         max = l;
@@ -4822,7 +4826,7 @@ class userExecStats {
         ak = 0;
         qk = 0;
     }
-
+    
     public void val(int v) {
         seq++;
         if (v < min) {
@@ -4837,9 +4841,9 @@ class userExecStats {
         ak = ak1 + ((x - ak1) / seq);
         qk = qk1 + ((x - ak1) * (x - ak));
     }
-
+    
     public String res() {
         return min + "/" + bits.toPrecise(ak) + "/" + max + "/" + bits.toPrecise(qk / seq);
     }
-
+    
 }
