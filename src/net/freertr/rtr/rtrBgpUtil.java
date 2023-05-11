@@ -1694,16 +1694,16 @@ public class rtrBgpUtil {
      */
     public static int leakInverter(int old) {
         switch (old) {
-            case rtrBgpUtil.roleProv:
-                return rtrBgpUtil.roleCust;
-            case rtrBgpUtil.roleRs:
-                return rtrBgpUtil.roleRsc;
-            case rtrBgpUtil.roleRsc:
-                return rtrBgpUtil.roleRs;
-            case rtrBgpUtil.roleCust:
-                return rtrBgpUtil.roleProv;
-            case rtrBgpUtil.rolePeer:
-                return rtrBgpUtil.rolePeer;
+            case roleProv:
+                return roleCust;
+            case roleRs:
+                return roleRsc;
+            case roleRsc:
+                return roleRs;
+            case roleCust:
+                return roleProv;
+            case rolePeer:
+                return rolePeer;
             default:
                 return -1;
         }
