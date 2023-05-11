@@ -136,6 +136,9 @@ public class userFormat {
      * @return color mode
      */
     public static colorMode str2colmod(String a) {
+        if (a.length() < 1) {
+            return colorMode.header;
+        }
         if (a.equals("normal")) {
             return colorMode.normal;
         }

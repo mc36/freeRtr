@@ -595,7 +595,7 @@ public class userLine {
         l.add(null, "3 .      <name:ifc>                 name of interface");
         l.add(null, "2 .    logging                      enable logging");
         l.add(null, "2 .    timestamp                    enable timestamps");
-        l.add(null, "2 3    colorize                     enable colorization");
+        l.add(null, "2 3,.  colorize                     enable colorization");
         l.add(null, "3 .      normal                     select normal mode");
         l.add(null, "3 .      header                     select header mode");
         l.add(null, "3 .      rainbow                    select rainbow mode");
