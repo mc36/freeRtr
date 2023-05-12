@@ -66,7 +66,8 @@ public class verCore {
     public final static String[] license = {
         "place on the web: " + homeUrl,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
-        "quote-2: true random comes from weather forecasts and political announcements",
+        "quote-3: true random comes from weather forecasts and political announcements",
+        "quote-2: stupid question deserves stupid answers",
         "quote-1: use your brain",
         "quote0: know your shit",
         "quote1: do or not to do but don't try",
