@@ -127,7 +127,7 @@ public class userUpgrade {
      * generate release version file
      */
     public void doRelease() {
-        cryKeyRSA ky = readUpKey(cmd.word());
+        cryKeyRSA ky = readUpKey(cmd.word(), "current");
         if (ky == null) {
             cmd.error("failed to get current key!");
             return;
@@ -155,12 +155,12 @@ public class userUpgrade {
      * update version core file
      */
     public void doVerCore() {
-        cryKeyRSA kc = readUpKey(cmd.word());
+        cryKeyRSA kc = readUpKey(cmd.word(), "current");
         if (kc == null) {
             cmd.error("failed to get current key!");
             return;
         }
-        cryKeyRSA ko = readUpKey(cmd.word());
+        cryKeyRSA ko = readUpKey(cmd.word(), "old");
         if (ko == null) {
             cmd.error("failed to get old key!");
             return;
@@ -567,27 +567,27 @@ public class userUpgrade {
         return false;
     }
 
-    private cryKeyRSA readUpKey(String s) {
+    private cryKeyRSA readUpKey(String s, String v) {
         List<String> l = cfgInit.httpGet(s);
         if (l == null) {
-            cmd.error("got empty key!");
+            cmd.error("got empty " + v + " key!");
             return null;
         }
         if (l.size() < 2) {
-            cmd.error("got too small key!");
+            cmd.error("got too small " + v + " key!");
             return null;
         }
         cryKeyRSA k = new cryKeyRSA();
         if (k.pemReadStr(l.get(0), true)) {
-            cmd.error("error reading public key!");
+            cmd.error("error reading public " + v + " key!");
             return null;
         }
         if (k.pemReadStr(l.get(1), false)) {
-            cmd.error("error reading private key!");
+            cmd.error("error reading private " + v + " key!");
             return null;
         }
         if (k.keyVerify()) {
-            cmd.error("error verifying private to public!");
+            cmd.error("error verifying private to public " + v + " key!");
             return null;
         }
         return k;
