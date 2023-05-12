@@ -593,7 +593,7 @@ public class userShow {
             return null;
         }
         if (a.equals("rollback-config")) {
-            if (cfgAll.limited) {
+            if ((!verCore.release) && (cfgAll.limited)) {
                 cmd.error("not in a vdc");
                 return null;
             }
@@ -601,7 +601,7 @@ public class userShow {
             return null;
         }
         if (a.equals("config-differences")) {
-            if (cfgAll.limited) {
+            if ((!verCore.release) && (cfgAll.limited)) {
                 cmd.error("not in a vdc");
                 return null;
             }
@@ -609,7 +609,7 @@ public class userShow {
             return null;
         }
         if (a.equals("startup-config")) {
-            if (cfgAll.limited) {
+            if ((!verCore.release) && (cfgAll.limited)) {
                 cmd.error("not in a vdc");
                 return null;
             }
@@ -621,7 +621,7 @@ public class userShow {
             return null;
         }
         if (a.equals("running-config")) {
-            if (cfgAll.limited) {
+            if ((!verCore.release) && (cfgAll.limited)) {
                 cmd.error("not in a vdc");
                 return null;
             }
