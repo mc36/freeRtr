@@ -1,4 +1,3 @@
-bgp neigh xxx collect-unknowns
 server smtp / ptmud
 server http / host * user-agent matcher
 server http / host * custom-header

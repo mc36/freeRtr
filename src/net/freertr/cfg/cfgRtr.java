@@ -420,6 +420,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* attribute-filter",
         "router bgp[46] .*! no (template|neighbor) .* unknowns-in",
         "router bgp[46] .*! no (template|neighbor) .* unknowns-out",
+        "router bgp[46] .*! no (template|neighbor) .* unknowns-collect",
         "router bgp[46] .*! no (template|neighbor) .* dampening",
         "router bgp[46] .*! no (template|neighbor) .* prefix-list-in",
         "router bgp[46] .*! no (template|neighbor) .* prefix-list-out",

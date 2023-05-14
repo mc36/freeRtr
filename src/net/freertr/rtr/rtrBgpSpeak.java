@@ -2192,6 +2192,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currLnks.clear();
         currMvpn.clear();
         currMvpo.clear();
+        packHolder origPck = null;
+        if (neigh.unknownsColl != null) {
+            origPck = pck.copyBytes(false, false);
+        }
         currChg = 0;
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
@@ -2247,6 +2251,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             res.best.ident = ident;
             res.best.nextHop = ntry.best.nextHop;
             prefixReach(rtrBgpUtil.safiIp4uni, addpath, res);
+        }
+        if ((origPck != null) && (ntry.best.unknown != null)) {
+            neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
         addAttribedTab(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);

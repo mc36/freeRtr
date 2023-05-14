@@ -132,6 +132,11 @@ public abstract class rtrBgpParam {
     public boolean attribSet;
 
     /**
+     * collect unknown attributes
+     */
+    public rtrBgpMrt unknownsColl;
+
+    /**
      * receive unknown attributes
      */
     public tabIntMatcher unknownsIn;
@@ -1136,6 +1141,7 @@ public abstract class rtrBgpParam {
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
+        unknownsColl = src.unknownsColl;
         unknownsOut = src.unknownsOut;
         unknownsIn = src.unknownsIn;
         segRout = src.segRout;
@@ -1559,6 +1565,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
         l.add(null, "3  .       attribset                   send attribute set attribute");
+        l.add(null, "3  4       unknowns-collect            bgp dump to use");
+        l.add(null, "4  .         <str>                     name of mrt");
         l.add(null, "3  4       unknowns-out                send unknown attributes");
         l.add(null, "4  .         <num>                     allowed attributes");
         l.add(null, "3  4       unknowns-in                 receive unknown attributes");
@@ -1818,6 +1826,11 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
+        if (unknownsColl == null) {
+            l.add(beg + "no " + nei + "unknowns-collect");
+        } else {
+            l.add(beg + nei + "unknowns-collect " + unknownsColl.dumpName);
+        }
         cmds.cfgLine(l, unknownsOut == null, beg, nei + "unknowns-out", "" + unknownsOut);
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
@@ -2404,6 +2417,19 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("attribset")) {
             attribSet = !negated;
+            return false;
+        }
+        if (s.equals("unknowns-collect")) {
+            if (negated) {
+                unknownsColl = null;
+                return false;
+            }
+            rtrBgpMrt mon = new rtrBgpMrt(cmd.word());
+            unknownsColl = lower.dmps.find(mon);
+            if (unknownsColl == null) {
+                cmd.error("no such dump");
+                return false;
+            }
             return false;
         }
         if (s.equals("unknowns-out")) {
