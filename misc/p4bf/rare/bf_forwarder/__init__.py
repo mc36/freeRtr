@@ -35,7 +35,21 @@ class BfForwarder(Thread, RareApi):
         self.active_ports = {}
         self._clearTable()
 
+        ## TODO: We need a better way to manage platform properties
+        if platform == "accton_as9516_32d":
+            self.asic = "tofino2"
+        else:
+            self.asic = "tofino"
+
     from .message_loop import run
+
+    def haveSAL(self):
+        if self.platform == "stordis_bf2556x_1t":
+            if self.salgc is not None:
+                return True
+            self.controlPlaneMsg("%s: gearbox ports are not supported in BSP-less mode"
+                                 % self.platform)
+        return False
 
     def tearDown(self):
         os._exit(0)

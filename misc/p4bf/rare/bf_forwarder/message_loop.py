@@ -1590,7 +1590,7 @@ def run(self):
                 self.platform,
                 mode,
                 int(splt[1]),
-                int(splt[2]),
+                splt[2],
                 int(splt[3]),
                 int(splt[4]),
                 int(splt[5]),

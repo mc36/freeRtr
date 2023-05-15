@@ -6,7 +6,6 @@ SAL_PORT_ID = {
                 28:13, 29:14, 30:15, 31:16
                 }
 
-PORT_SPEED = [1,10,25,40, 50,100]
 UNDEFINED_FEC = 0 ;
 FEC_NONE = 1;
 FEC_FC = 2;
