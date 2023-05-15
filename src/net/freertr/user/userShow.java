@@ -621,6 +621,7 @@ public class userShow {
             return null;
         }
         if (a.equals("running-config")) {
+            a = cmd.word();
             if (a.equals("console0")) {
                 rdr.putStrArr(cfgAll.con0.getShRun(getConfigFilter(null, cmd)));
                 return null;
@@ -636,7 +637,6 @@ public class userShow {
                 cmd.error("not in a vdc");
                 return null;
             }
-            a = cmd.word();
             if (a.equals("all")) {
                 rdr.putStrArr(cfgAll.getShRun(getConfigFilter(a, cmd)));
                 return null;

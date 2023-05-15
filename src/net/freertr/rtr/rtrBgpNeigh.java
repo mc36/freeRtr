@@ -760,7 +760,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     if (!openConn(0)) {
                         break;
                     }
-                    openConn(bits.random(2, 15));
+                    openConn(bits.random(randomStartF, randomStartL));
                     break;
                 case 4: // dynamic
                     if (lower.lstnNei.find(this) == this) {

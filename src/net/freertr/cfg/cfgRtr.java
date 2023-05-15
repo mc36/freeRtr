@@ -348,6 +348,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* template",
         "router bgp[46] .*! no (template|neighbor) .* description",
         "router bgp[46] .*! (template|neighbor) .* dmz-link-bw -1",
+        "router bgp[46] .*! (template|neighbor) .* randomize-startup 200 1500",
         "router bgp[46] .*! (template|neighbor) .* timer 60000 180000",
         "router bgp[46] .*! (template|neighbor) .* connection-mode both",
         "router bgp[46] .*! (template|neighbor) .* buffer-size 65536",

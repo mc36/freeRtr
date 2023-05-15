@@ -212,6 +212,16 @@ public abstract class rtrBgpParam {
     public int dmzLinkBw;
 
     /**
+     * randomize session startup times
+     */
+    public int randomStartF;
+
+    /**
+     * randomize session startup times
+     */
+    public int randomStartL;
+
+    /**
      * distance
      */
     public int distance;
@@ -1095,6 +1105,8 @@ public abstract class rtrBgpParam {
         routeRefresh = true;
         allowAsOut = true;
         dmzLinkBw = -1;
+        randomStartF = 200;
+        randomStartL = 1500;
         socketMode = 3;
         bufferSize = 65536;
         ttlSecurity = -1;
@@ -1125,6 +1137,8 @@ public abstract class rtrBgpParam {
         remoteConfed = src.remoteConfed;
         reflectClnt = src.reflectClnt;
         dmzLinkBw = src.dmzLinkBw;
+        randomStartF = src.randomStartF;
+        randomStartL = src.randomStartL;
         distance = src.distance;
         keepAlive = src.keepAlive;
         holdTimer = src.holdTimer;
@@ -1648,6 +1662,9 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <num>                     interval in ms");
         l.add(null, "3  4       dmz-link-bw                 set dmz link bandwidth");
         l.add(null, "4  .         <num>                     link bandwidth in kb");
+        l.add(null, "3  4       randomize-startup           set session startup timers");
+        l.add(null, "4  5         <num>                     minimum in ms");
+        l.add(null, "5  .           <num>                   maximum in ms");
         l.add(null, "3  4       timer                       neighbor keepalive times");
         l.add(null, "4  5         <num>                     keepalive in ms");
         l.add(null, "5  .           <num>                   hold time in ms");
@@ -1729,6 +1746,7 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "distance " + distance);
         l.add(beg + nei + "timer " + keepAlive + " " + holdTimer);
         l.add(beg + nei + "dmz-link-bw " + dmzLinkBw);
+        l.add(beg + nei + "randomize-startup " + randomStartF + " " + randomStartL);
         switch (socketMode) {
             case 1:
                 s = "active";
@@ -2135,6 +2153,15 @@ public abstract class rtrBgpParam {
             dmzLinkBw = bits.str2num(cmd.word());
             if (negated) {
                 dmzLinkBw = -1;
+            }
+            return false;
+        }
+        if (s.equals("randomize-startup")) {
+            randomStartF = bits.str2num(cmd.word());
+            randomStartL = bits.str2num(cmd.word());
+            if (negated) {
+                randomStartF = 200;
+                randomStartL = 1500;
             }
             return false;
         }

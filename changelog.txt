@@ -14119,3 +14119,6 @@ todo: lsrp / pvrp pmtud
 todo: bgp/msdp: neigh x.x.x.x pmtud
 ---------------------------------- 2023-05-15 18:37:55 23.5.15
 todo: test access-list <acl> <src> <trg>
+---------------------------------- 2023-05-15 20:01:39 23.5.15
+todo: sho run check/track
+todo: more show running commands

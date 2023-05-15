@@ -5,6 +5,7 @@ rm -f *.bin* 2> /dev/null
 rm -f *.ver 2> /dev/null
 rm -f *.tmp 2> /dev/null
 rm -f *.pcap 2> /dev/null
+rm -f *.mrt 2> /dev/null
 rm -f *.log 2> /dev/null
 rm -f rtr*-.csv 2> /dev/null
 rm -f rtr*-.ftr 2> /dev/null
