@@ -621,11 +621,10 @@ public class userShow {
             return null;
         }
         if (a.equals("running-config")) {
-            if ((!verCore.release) && (cfgAll.limited)) {
-                cmd.error("not in a vdc");
+            if (a.equals("console0")) {
+                rdr.putStrArr(cfgAll.con0.getShRun(getConfigFilter(null, cmd)));
                 return null;
             }
-            a = cmd.word();
             if (a.equals("this")) {
                 if (cfg == null) {
                     return null;
@@ -633,6 +632,11 @@ public class userShow {
                 rdr.putStrArr(cfg.getShRun(getConfigFilter(null, cmd)));
                 return null;
             }
+            if ((!verCore.release) && (cfgAll.limited)) {
+                cmd.error("not in a vdc");
+                return null;
+            }
+            a = cmd.word();
             if (a.equals("all")) {
                 rdr.putStrArr(cfgAll.getShRun(getConfigFilter(a, cmd)));
                 return null;

@@ -3188,15 +3188,14 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: sho run cons
 todo: server smtp / ptmud
-todo: server http / host * user-agent matcher
-todo: server http / host * custom-header
 todo: server http / host * ptmud
-todo: server smtp auto-reply editor/text/etc
+todo: server http / host * custom-header knob
+todo: server http / host * user-agent matcher with redirect
 todo: server http / host * searchbar
-todo: lsrp / pvrp path-mtu-discovery / single-session
-todo: bgp/msdp: neigh x.x.x.x path-mtu-discovery
+todo: lsrp / pvrp pmtud
+todo: bgp/msdp: neigh x.x.x.x pmtud
+todo: server smtp auto-reply editor/text/etc
 todo: rfc9340
 todo: rfc9373
 todo: renew the signing key!

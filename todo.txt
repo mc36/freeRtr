@@ -1,4 +1,3 @@
-sho run cons
 server smtp / ptmud
 server http / host * ptmud
 server http / host * custom-header knob
