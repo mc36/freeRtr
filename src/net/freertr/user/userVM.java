@@ -1158,7 +1158,7 @@ public class userVM {
                 return 0;
             case 39: // console.execWait
                 a = fromDos(getPascii(regs[reg_src]));
-                val1 = userVM.doWork(console, allowFileIO, currDir, a,
+                val1 = doWork(console, allowFileIO, currDir, a,
                         getPascii(regs[reg_trg]));
                 regs[reg_b] = result2error(val1);
                 regs[reg_a] = result2extcod(val1);
