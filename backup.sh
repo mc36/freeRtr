@@ -20,5 +20,6 @@ echo -n `cd misc/mailer;./d.sh`
 echo -n `cd misc/paster;./d.sh`
 echo -n `cd misc/motion;./d.sh`
 echo `cd src;./d.sh`
+rm ipv*.mrt 2> /dev/null
 rm rtr.zip 2> /dev/null
 zip -r rtr.zip src cfg misc *.sh *.txt *.md >/dev/null

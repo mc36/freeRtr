@@ -1,11 +1,12 @@
+sho run cons
 server smtp / ptmud
-server http / host * user-agent matcher
-server http / host * custom-header
 server http / host * ptmud
-server smtp auto-reply editor/text/etc
+server http / host * custom-header knob
+server http / host * user-agent matcher with redirect
 server http / host * searchbar
-lsrp / pvrp path-mtu-discovery / single-session
-bgp/msdp: neigh x.x.x.x path-mtu-discovery
+lsrp / pvrp pmtud
+bgp/msdp: neigh x.x.x.x pmtud
+server smtp auto-reply editor/text/etc
 rfc9340
 rfc9373
 renew the signing key!
