@@ -1105,8 +1105,8 @@ public abstract class rtrBgpParam {
         routeRefresh = true;
         allowAsOut = true;
         dmzLinkBw = -1;
-        randomStartF = 200;
-        randomStartL = 1500;
+        randomStartF = 2;
+        randomStartL = 15;
         socketMode = 3;
         bufferSize = 65536;
         ttlSecurity = -1;
@@ -2160,8 +2160,8 @@ public abstract class rtrBgpParam {
             randomStartF = bits.str2num(cmd.word());
             randomStartL = bits.str2num(cmd.word());
             if (negated) {
-                randomStartF = 200;
-                randomStartL = 1500;
+                randomStartF = 2;
+                randomStartL = 15;
             }
             return false;
         }
