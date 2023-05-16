@@ -2347,6 +2347,7 @@ public class userExec {
         }
         if (a.equals("telnet")) {
             doTelnet(0);
+            userScreen.sendTit(pipe, cfgAll.hostName);
             return cmdRes.command;
         }
         if (a.equals("echo")) {

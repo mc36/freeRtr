@@ -463,6 +463,7 @@ public class userGame {
             return;
         }
         if (a.equals("clear")) {
+            userScreen.sendTit(console.pipe, cfgAll.hostName);
             return;
         }
         if (a.equals("color")) {
@@ -478,7 +479,11 @@ public class userGame {
             return;
         }
         if (a.equals("title")) {
-            userScreen.sendTit(console.pipe, cmd.getRemaining());
+            a = cmd.getRemaining();
+            if (a.length() < 1) {
+                a = cfgAll.hostName;
+            }
+            userScreen.sendTit(console.pipe, a);
             return;
         }
         if (a.equals("text")) {
