@@ -1525,20 +1525,13 @@ public class cfgAll {
      * find one script
      *
      * @param nam name of entry
-     * @param fxd name of fixed part
      * @param create create new on this number if not found
      * @return descriptor, null if not found
      */
-    public static cfgScrpt scrptFind(String nam, String fxd, boolean create) {
+    public static cfgScrpt scrptFind(String nam, boolean create) {
         nam = nam.trim();
         if (nam.length() < 1) {
             return null;
-        }
-        if (fxd != null) {
-            nam = nam.substring(0, fxd.length()).trim();
-            if (nam.length() < fxd.length()) {
-                return null;
-            }
         }
         cfgScrpt ntry = new cfgScrpt();
         ntry.name = nam;

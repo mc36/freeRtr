@@ -536,7 +536,7 @@ public class userShow {
         if (a.equals("logging")) {
             a = cmd.word();
             if (a.equals("script")) {
-                cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), null, false);
+                cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
                 if (ntry == null) {
                     cmd.error("no such script");
                     return null;

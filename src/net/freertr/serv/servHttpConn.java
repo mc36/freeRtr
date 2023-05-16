@@ -831,7 +831,7 @@ public class servHttpConn implements Runnable {
 
     private boolean sendOneFile(String s, String a) {
         if (gotHost.searchScript != null) {
-            cfgScrpt scr = cfgAll.scrptFind(gotHost.searchScript + s, gotHost.searchScript, false);
+            cfgScrpt scr = cfgAll.scrptFind(gotHost.searchScript + s, false);
             if (scr != null) {
                 return sendOneScript(scr.getText());
             }

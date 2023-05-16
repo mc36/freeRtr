@@ -1088,7 +1088,7 @@ public class userConfig {
             return;
         }
         if (a.equals("script")) {
-            modeDconfig = cfgAll.scrptFind(cmd.word(), null, true);
+            modeDconfig = cfgAll.scrptFind(cmd.word(), true);
             if (modeDconfig == null) {
                 return;
             }
@@ -1682,7 +1682,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("upgrade-script")) {
-                cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), null, false);
+                cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
                 if (ntry == null) {
                     cmd.error("no such script");
                     return;

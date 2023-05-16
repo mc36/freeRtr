@@ -27,6 +27,16 @@ public class cmds {
     public final static String finish = "exit";
 
     /**
+     * upgrade-cli command
+     */
+    public final static String upgradeCli = "upgrade-cli";
+
+    /**
+     * negated command
+     */
+    private final static String negated = "no";
+
+    /**
      * pipe side to use
      */
     public pipeSide pipe;
@@ -53,11 +63,6 @@ public class cmds {
         orig = str;
         mode = mod;
     }
-
-    /**
-     * negated command
-     */
-    private final static String negated = "no";
 
     /**
      * check if negated

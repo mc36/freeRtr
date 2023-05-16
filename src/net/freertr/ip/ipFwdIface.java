@@ -1048,15 +1048,15 @@ public class ipFwdIface extends tabRouteIface {
                     break;
                 }
                 if (a.equals("appear")) {
-                    hostWatch.nodeOn = cfgAll.scrptFind(cmd.word(), null, false);
+                    hostWatch.nodeOn = cfgAll.scrptFind(cmd.word(), false);
                     continue;
                 }
                 if (a.equals("change")) {
-                    hostWatch.nodeChg = cfgAll.scrptFind(cmd.word(), null, false);
+                    hostWatch.nodeChg = cfgAll.scrptFind(cmd.word(), false);
                     continue;
                 }
                 if (a.equals("disappear")) {
-                    hostWatch.nodeOff = cfgAll.scrptFind(cmd.word(), null, false);
+                    hostWatch.nodeOff = cfgAll.scrptFind(cmd.word(), false);
                     continue;
                 }
             }

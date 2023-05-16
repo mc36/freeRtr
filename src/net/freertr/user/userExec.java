@@ -2884,7 +2884,7 @@ public class userExec {
                 return null;
             }
             if (a.equals("script")) {
-                cfgScrpt sch = cfgAll.scrptFind(cmd.word(), null, false);
+                cfgScrpt sch = cfgAll.scrptFind(cmd.word(), false);
                 if (sch == null) {
                     cmd.error("no such script");
                     return null;
@@ -4316,7 +4316,7 @@ public class userExec {
             return;
         }
         if (a.equals("script")) {
-            cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), null, false);
+            cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
             if (ntry == null) {
                 cmd.error("no such script");
                 return;

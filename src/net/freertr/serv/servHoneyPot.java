@@ -95,7 +95,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("script")) {
-            script = cfgAll.scrptFind(cmd.word(), null, false);
+            script = cfgAll.scrptFind(cmd.word(), false);
             return false;
         }
         if (s.equals("resolve")) {

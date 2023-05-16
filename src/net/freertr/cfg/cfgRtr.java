@@ -1964,7 +1964,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, "2 .     <name:vrf>            name of table");
         l.add(null, "1 2   automesh                specify auto mesh te tunnels");
         l.add(null, "2 .     <name:pl>             name of prefix list");
-        l.add(null, "1 .   upgrade-cli             embed vrf name to router knob");
+        l.add(null, "1 .   " + cmds.upgradeCli + "             embed vrf name to router knob");
         getRedistHelp(l, 0);
         ipRtr rtr = getRouter();
         if (rtr != null) {
@@ -1984,7 +1984,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (neg) {
             a = cmd.word();
         }
-        if (a.equals("upgrade-cli")) {
+        if (a.equals(cmds.upgradeCli)) {
             embedVrf = !neg;
             return;
         }
