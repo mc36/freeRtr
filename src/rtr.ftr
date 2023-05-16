@@ -3197,6 +3197,9 @@ todo: server http / host * ptmud
 todo: lsrp / pvrp pmtud
 todo: bgp/msdp: neigh x.x.x.x pmtud
 todo: test access-list <acl> <src> <trg>
+todo: client upgrade-simulate url
+todo: client upgrade-force url
+todo: flash overlap-clear
 todo: server smtp auto-reply editor/text/etc
 todo: rfc9340
 todo: rfc9373

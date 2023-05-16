@@ -7,6 +7,9 @@ server http / host * ptmud
 lsrp / pvrp pmtud
 bgp/msdp: neigh x.x.x.x pmtud
 test access-list <acl> <src> <trg>
+client upgrade-simulate url
+client upgrade-force url
+flash overlap-clear
 server smtp auto-reply editor/text/etc
 rfc9340
 rfc9373
