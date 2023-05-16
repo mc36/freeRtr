@@ -1076,7 +1076,7 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 1) + " " + (p + 2) + "    <name:ifc>              interface name");
         l.add(null, (p + 2) + " " + (p + 3) + ",.    dynamic               dynamic port number");
         l.add(lst, (p + 2) + " " + (p + 3) + ",.    <num:loc>             port number");
-        l.add(null, (p + 3) + " " + (p + 4) + ",.      <num>               speed in gbps");
+        l.add(null, (p + 3) + " " + (p + 4) + ",.      <num>               speed in gbps, see hw vendor manual");
         l.add(servP4langMgcN.toHelp(fwderrcr), (p + 4) + " " + (p + 5) + ",.        <num:loc>         fec, see hw vendor manual");
         l.add(servP4langMgcN.toHelp(autonegs), (p + 5) + " " + (p + 6) + ",.          <num:loc>       autoneg, see hw vendor manual");
         l.add(servP4langMgcN.toHelp(flwctrls), (p + 6) + " .              <num:loc>     flowctrl, see hw vendor manual");

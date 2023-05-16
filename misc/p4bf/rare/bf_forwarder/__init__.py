@@ -35,11 +35,6 @@ class BfForwarder(Thread, RareApi):
         self.active_ports = {}
         self._clearTable()
 
-        ## TODO: We need a better way to manage platform properties
-        if platform == "accton_as9516_32d":
-            self.asic = "tofino2"
-        else:
-            self.asic = "tofino"
 
     from .message_loop import run
 

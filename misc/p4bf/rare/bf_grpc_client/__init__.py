@@ -48,5 +48,23 @@ class BfRuntimeGrpcClient:
         if self.bind == True:
             self.interface.bind_pipeline_config(self.p4_name)
 
+        ## Get the device configuration table. It contains the list of
+        ## external and internal ports, among other things
+        tables = self.bfrt_info.table_name_list_get()
+        if 'tf1.dev.device_configuration' in tables:
+            dev_cfg = self.bfrt_info.table_get('tf1.dev.device_configuration')
+            self.arch = "tofino"
+        elif 'tf2.dev.device_configuration' in tables:
+            dev_cfg = self.bfrt_info.table_get('tf2.dev.device_configuration')
+            self.arch = "tofino2"
+        else:
+            raise Exception("Can't fetch device configuration table")
+        resp = dev_cfg.default_entry_get(
+            self.target, { "from_hw": False}, p4_name = self.p4_name)
+        self.dev_cfg = next(resp)[0].to_dict()
+
+
+
+
     def tearDown(self):
         self.interface.tear_down_stream()

@@ -6,12 +6,11 @@ SAL_PORT_ID = {
                 28:13, 29:14, 30:15, 31:16
                 }
 
-UNDEFINED_FEC = 0 ;
-FEC_NONE = 1;
-FEC_FC = 2;
-FEC_RS = 3;
+FEC_NONE = 1
+FEC_FC = 2
+FEC_RS = 3
 
-UNDEFINED_AN = 0
+AN_AUTO = 0
 AN_OFF = 1
 AN_ON = 2
 

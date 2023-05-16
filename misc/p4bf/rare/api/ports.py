@@ -47,7 +47,7 @@ def managePort(self, platform, mode, port_id, port_speed=10,
             )
             return
         (speed, lanes) = result.groups()
-        port_speeds = PORT_SPEEDS[self.asic]
+        port_speeds = PORT_SPEEDS[self.bfgc.arch]
         if self._checkParamCoherence(int(speed), fec, autoneg, flowctrl) == False:
             self.controlPlaneMsg(
                 "%s - Error in adding port [%s], inconsistent parameters:[%s,%s,%s,%s]"

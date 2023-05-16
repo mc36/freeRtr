@@ -17,17 +17,6 @@ if_speed = {
     'BF_SPEED_400G':              400000000000
 }
 
-## Default 64
-port_range = {
-    'accton_wedge100bf_32x': 32,
-    'accton_wedge100bf_32qs': 32,
-    'accton_as9516_32d': 32,
-}
-
-## Default 4
-channels_per_port = {
-    'accton_as9516_32d': 8,
-}
 
 def _Exception():
     exc_type, exc_obj, tb = sys.exc_info()
@@ -363,14 +352,14 @@ class BfPorts(Thread):
                     data = "portname %s frontpanel-%s/%s \n" % (dev_port, conn, chnl)
                     logger.warning("tx: %s" % data.split(" "))
                     self.file.write(data)
-        self.file.write("fecname 0 auto \n")
         self.file.write("fecname 1 none \n")
         self.file.write("fecname 2 fc \n")
         self.file.write("fecname 3 rs \n")
         self.file.write("anegname 0 auto \n")
         self.file.write("anegname 1 off \n")
         self.file.write("anegname 2 on \n")
-        self.file.write("flwctrname 0 auto \n")
+        self.file.write("flwctrname 0 off \n")
+        self.file.write("flwctrname 1 on \n")
         self.file.write("dynrange 512 16383 \n")
         self.file.write("vrfrange 1 1023\r\n")
         self.file.write("nomore\r\n")

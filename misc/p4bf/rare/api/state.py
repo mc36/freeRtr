@@ -21,7 +21,7 @@ def setPortAdmStatus(self, platform, port_id, adm_status=0):
     port_enable = True if adm_status == 1 else False
     port_enable_str = "up" if port_enable else "down"
     try:
-        if platform == "stordis_bf2556x_1t" and port_id in SAL_PORT_ID:
+        if self.haveSAL() and port_id in SAL_PORT_ID:
             sal_port = SAL_PORT_ID[port_id]
             self.salgc.EnablePort(
                 sal_port,
