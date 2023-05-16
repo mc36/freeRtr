@@ -57,6 +57,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public boolean children = true;
 
     /**
+     * redundancy priority
+     */
+    protected int redunPrio = defPrio;
+
+    /**
      * action logging
      */
     public boolean logAct = false;
@@ -172,11 +177,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     protected String password;
 
     /**
-     * redundancy priority
-     */
-    protected int redunPrio;
-
-    /**
      * random time between runs
      */
     public int randInt;
@@ -244,6 +244,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
 
     private boolean need2run;
 
+    private final static int stopPrio = -9;
+
+    private final static int defPrio = 0;
+
     /**
      * defaults text
      */
@@ -252,6 +256,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! respawn",
         "vdc definition .*! no priviledged",
         "vdc definition .*! children",
+        "vdc definition .*! priority " + defPrio,
         "vdc definition .*! config null",
         "vdc definition .*! image null",
         "vdc definition .*! disk2 null",
@@ -268,7 +273,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         "vdc definition .*! cpu null",
         "vdc definition .*! memory 512",
         "vdc definition .*! no password",
-        "vdc definition .*! priority 0",
         "vdc definition .*! cores 1",
         "vdc definition .*! nic e1000",
         "vdc definition .*! time 1000",
@@ -312,10 +316,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         cfgVdc n = new cfgVdc(name);
         n.description = description;
         n.password = password;
-        n.redunPrio = redunPrio;
         n.respawn = respawn;
         n.priviledged = priviledged;
         n.children = children;
+        n.redunPrio = redunPrio;
         n.uuidValue = uuidValue;
         n.userValue = userValue;
         n.cpuPinning = cpuPinning;
@@ -380,6 +384,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "1  .      respawn                    restart on termination");
         l.add(null, "1  .      priviledged                allow excessive commands");
         l.add(null, "1  .      children                   kill children on termination");
+        l.add(null, "1  2      priority                   specify redundancy priority");
+        l.add(null, "2  .        <num>                    priority, " + stopPrio + " to stop the vdc, " + defPrio + " is the default");
         l.add(null, "1  2      rename                     rename this vdc");
         l.add(null, "2  .        <str>                    set new name of vdc");
         l.add(null, "1  2      interface                  add interface to this vdc");
@@ -416,8 +422,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "2  .        <str>                    type parameters");
         l.add(null, "1  2      memory                     memory of vdc");
         l.add(null, "2  .        <num>                    megabytes");
-        l.add(null, "1  2      priority                   specify redundancy priority");
-        l.add(null, "2  .        <num>                    priority");
         l.add(null, "1  2      password                   set password encryption key");
         l.add(null, "2  .        <str>                    encryption key");
         l.add(null, "1  2      cores                      cpu of vdc");
@@ -463,6 +467,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         cmds.cfgLine(l, !respawn, cmds.tabulator, "respawn", "");
         cmds.cfgLine(l, !priviledged, cmds.tabulator, "priviledged", "");
         cmds.cfgLine(l, !children, cmds.tabulator, "children", "");
+        l.add(cmds.tabulator + "priority " + redunPrio);
         for (int i = 0; i < ifaces.size(); i++) {
             l.add(cmds.tabulator + "interface " + ifaces.get(i));
         }
@@ -487,7 +492,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "cdrom " + cdromName);
         l.add(cmds.tabulator + "memory " + imageMem);
         cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password, (filter & 2) != 0));
-        l.add(cmds.tabulator + "priority " + redunPrio);
         l.add(cmds.tabulator + "cores " + imageCpu);
         l.add(cmds.tabulator + "nic " + nicType);
         l.add(cmds.tabulator + "mac " + macBase);
@@ -538,6 +542,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("children")) {
             children = true;
+            return;
+        }
+        if (a.equals("priority")) {
+            redunPrio = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("description")) {
@@ -598,10 +606,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("password")) {
             password = authLocal.passwdDecode(cmd.getRemaining());
-            return;
-        }
-        if (a.equals("priority")) {
-            redunPrio = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("cores")) {
@@ -778,6 +782,10 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             children = false;
             return;
         }
+        if (a.equals("priority")) {
+            redunPrio = defPrio;
+            return;
+        }
         if (a.equals("description")) {
             description = "";
             return;
@@ -836,10 +844,6 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("password")) {
             password = null;
-            return;
-        }
-        if (a.equals("priority")) {
-            redunPrio = 0;
             return;
         }
         if (a.equals("cores")) {
@@ -952,6 +956,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 logger.traceback(e);
             }
         }
+        redunPrio = stopPrio;
         if (logAct) {
             logger.info("stopped vdc " + name);
         }
@@ -1082,6 +1087,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      */
     public void stopNow() {
         need2run = false;
+        redunPrio = stopPrio;
         restartNow();
     }
 

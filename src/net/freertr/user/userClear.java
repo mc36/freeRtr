@@ -513,7 +513,7 @@ public class userClear {
             return null;
         }
         if (a.equals("script")) {
-            cfgScrpt sch = cfgAll.scrptFind(cmd.word(), false);
+            cfgScrpt sch = cfgAll.scrptFind(cmd.word(), null, false);
             if (sch == null) {
                 cmd.error("no such script");
                 return null;

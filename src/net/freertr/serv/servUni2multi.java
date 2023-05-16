@@ -205,7 +205,7 @@ public class servUni2multi extends servGeneric implements prtServP {
                 script = null;
                 return false;
             }
-            script = cfgAll.scrptFind(cmd.word(), false);
+            script = cfgAll.scrptFind(cmd.word(), null, false);
             if (script == null) {
                 cmd.error("no such script");
                 return false;

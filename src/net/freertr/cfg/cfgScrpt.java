@@ -228,7 +228,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
         }
         if (a.equals("rename")) {
             a = cmd.word();
-            cfgScrpt v = cfgAll.scrptFind(a, false);
+            cfgScrpt v = cfgAll.scrptFind(a, null, false);
             if (v != null) {
                 cmd.error("already exists");
                 return;

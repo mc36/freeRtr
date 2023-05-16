@@ -55,6 +55,27 @@ public class cmds {
     }
 
     /**
+     * negated command
+     */
+    private final static String negated = "no";
+
+    /**
+     * check if negated
+     *
+     * @param a string to check
+     * @return true if yes, false if no
+     */
+    private static boolean isNegated(String a) {
+        if (a.equals("no")) {
+            return true;
+        }
+        if (a.equals("no ")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * find word boundary
      *
      * @param str string to find in
