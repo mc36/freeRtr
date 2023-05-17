@@ -528,6 +528,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 4       <addr>                    address of interface");
         l.add(null, "4 .         dynamic                 dynamic netmask");
         l.add(null, "4 .         <mask>                  subnet mask of address");
+        l.add(null, "4 .         /<num>                  subnet mask length of address");
         l.add(null, "2 3     secondary-address           set up an additional ip address");
         l.add(null, "3 .       <addr>                    address of interface");
         l.add(null, "2 3     reassembly                  set up a reassembly buffer");
