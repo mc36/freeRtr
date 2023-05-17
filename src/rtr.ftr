@@ -3188,8 +3188,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: client cidr-notation in the generated show *configs
-todo: ipv4 dhcp XXX like fill-ciaddr
 todo: show backup-config
 todo: inter xxx / macrandomize
 todo: sho run check/track
