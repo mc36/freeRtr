@@ -60,3 +60,4 @@ more features with clean implementation
 more randomizers
 more collect commands
 default vrf for show commands
+more server quote fun like cleanups, randomizers, loggers, anything
