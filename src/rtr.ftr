@@ -3242,9 +3242,11 @@ todo: more upgrade-cli knobs
 todo: more renamers
 todo: more tabbables
 todo: more show running commands
+todo: more show config commands
 todo: more show commands
 todo: more clear commands
 todo: more interactive tools
 todo: more features with clean implementation
 todo: more randomizers
+todo: more collect commands
 todo: default vrf for show commands

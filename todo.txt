@@ -52,9 +52,11 @@ more upgrade-cli knobs
 more renamers
 more tabbables
 more show running commands
+more show config commands
 more show commands
 more clear commands
 more interactive tools
 more features with clean implementation
 more randomizers
+more collect commands
 default vrf for show commands
