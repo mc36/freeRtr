@@ -1,3 +1,6 @@
+ipv4 dhcp XXX like fill-ciaddr
+show backup-config
+inter xxx / macrandomize
 sho run check/track
 server http / host * custom-header knob
 server http / host * user-agent matcher with redirect

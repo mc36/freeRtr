@@ -410,7 +410,8 @@ public class clntDhcp4 implements prtServP {
         pckd.dhcpOp = packDhcp4.dhcpOpRequest;
         pckd.putParamReqList();
         pckd.dhcpClientId = true;
-        pckd.bootpCiaddr = locAddr.copyBytes();
+        // pckd.bootpCiaddr = locAddr.copyBytes(); // github pull req#21
+        pckd.dhcpServer = dhcpAddr.copyBytes(); // github pull req#21
         pckd.dhcpRequested = locAddr.copyBytes();
         pckd.createHeader(pck, null);
         sender.send2net(pck);
