@@ -23,6 +23,10 @@ crypto certificate ecdsa import ecdsa ecdsa $w10$N3+TUyigweVfo7FmaVrKFUE7TXQsp0k
 crypto certificate rsa import rsa rsa $w10$N3+TUxmeweRsgJlFaUrGFEE7VlQh7ygg8kL9A3Oh6uyb4dRcvDjnxmXBqgTQLUwyZx0DmKwbi3LpuyybsPMrVkVl86VeLiSgevukZTx4FdHEwrkNHud7pvGJSnfewcLYyNCkfOWI/EoRp7D0eCIm8Tv5J4aeuVPAH5E9UzzG287jAwJi2M4ZBH16DuuF0toCmv4LXGWOtyhVYnT3XWLCO1t9/CfcuCF4qFRn2umHqvW/kQH0vTyUJJr0H+xJAnhLKaIyTAqejBIbuaDnMe6Hg1qPwWY7Gsp716vWUl0tRMLWyugNi6E/2ArhhCo0SYY6nH0qwaHk2wPVRIk3J9dvFli4hJbrbYkP5p9tPiz0Yy9IWU7ZgSqlYw4qoUCdhmL3XUoMrJ68zFWoQxqMPVRfRxPgfUQWhus70cCgPSyiH2atdJnwAQA/OiGh4O5nNJdeQHHggoP0ljH/uQKgf6PAvXeysDWG9Q/GIbiEuNllv7W1oDFliWFSbQTlcW8YRM4V0wWbvY/2xsXpqHZwnN2+XQ8zx3XDulr6gg/KRIhVHZ4wsWAazLtwqzNOvyRnvYHTIHKWrPrQbRyN15XFzrNv8VRjcaTqYVn8wIsUW9NA2N8FBH6rmwbGdsd9dR3BGu/vhr9SihhVcNyUdxpbTdZvERuwdm9wQ8kFtuu07OpdzHwZvds8WND4K53YLDltVL3NhUizMtg+Xz7XuCy+UKaTmI9EabWntJHmZcDYz3OiacgL74ujS1Rf86v90DPH0w8D44xYzhxb0CU2geisPN7cqA==
 !
 aaa userlist access
+ log-failure
+ log-error
+ log-success
+ log-password
  username *
  username * anypass
  username * anykey
@@ -30,6 +34,8 @@ aaa userlist access
  username mc36
  username mc36 password $w10$HFepawSJgqct0vAiKD2PVg==
  username mc36 pubkey AAAAB3NzaC1yc2EAAAADAQABAAABgQCaC4k3QAPHJ4AmEdJVaMiqdaPQSsq5AW+lcXjSyonZK08XFel3ZrN9Bqvf1bsUc3QDNCVknI0i3JgY7tPQiTRui1p6eDxvo+gtF96d4MqTzf0MIpT7WdqZYI26Owjin1OCET06HNXF0VKf53M666QG4kgdEoOckEfYroztny1Sq8XLwMQGzbtOCh5MGFoZ82eEIN/fT5E37RebGHjgMPy/CZsDeyslAq80hjDCGJohlJCEE4ojaRL2gfhl5utzn23+WXLPkUfbz+mNxxJjTvB3YnLKer2DPe6cVvlfLPCHACMasAPFoDL4of1/F6BbYzK4S0s/BQq0yNpGQEekWU2EvwCERq5U06D8ugrN9XJmPTsvNPDQkMRSauHk44stfHr0wBtxT9QI1SCGG+kC24tySj0Adu/X4v4qjk7d6oxPMvlqFuB3/vl19ZQaqd1Fn0/n3/ME30W6RV4yvzfOwpC4P8VUD6oyZ4nhzFvBIv9kxf7JqNd2/M85u8ZIAuDFDK0=
+ forbidden ^show.*config$
+ forbidden ^show config.*$
  allowed show .*
  allowed configure terminal
  allowed interface .*
@@ -924,7 +930,7 @@ server telnet tel
  exec timestamp
  exec colorize header
  exec tablemode table
- no exec authorization
+ exec authorization access
  login authentication access
  login logging
  login last global

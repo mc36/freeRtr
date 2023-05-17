@@ -23,6 +23,7 @@ import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.logger;
 
 /**
  * local user database
@@ -32,6 +33,8 @@ import net.freertr.util.cmds;
 public class authLocal extends authGeneric {
 
     private tabGen<authLocalEntry> users;
+
+    private List<String> forbidden;
 
     private List<String> commands;
 
@@ -251,6 +254,7 @@ public class authLocal extends authGeneric {
      */
     public authLocal() {
         users = new tabGen<authLocalEntry>();
+        forbidden = new ArrayList<String>();
         commands = new ArrayList<String>();
     }
 
@@ -270,6 +274,8 @@ public class authLocal extends authGeneric {
      */
     public void getHelp(userHelping l) {
         l.add(null, "1 2  allowed             allow one command");
+        l.add(null, "2 2,.  <text>            command");
+        l.add(null, "1 2  forbidden           forbid one command");
         l.add(null, "2 2,.  <text>            command");
         l.add(null, "1 2  username            create or update user");
         List<String> lst = new ArrayList<String>();
@@ -323,6 +329,15 @@ public class authLocal extends authGeneric {
             negated = true;
             a = cmd.word();
         }
+        if (a.equals("forbidden")) {
+            a = cmd.getRemaining().trim();
+            if (negated) {
+                forbidden.remove(a);
+            } else {
+                forbidden.add(a);
+            }
+            return false;
+        }
         if (a.equals("allowed")) {
             a = cmd.getRemaining().trim();
             if (negated) {
@@ -363,6 +378,9 @@ public class authLocal extends authGeneric {
         for (int i = 0; i < users.size(); i++) {
             authLocalEntry ntry = users.get(i);
             ntry.getShRun(beg, l, filter);
+        }
+        for (int i = 0; i < forbidden.size(); i++) {
+            l.add(beg + "forbidden " + forbidden.get(i));
         }
         for (int i = 0; i < commands.size(); i++) {
             l.add(beg + "allowed " + commands.get(i));
@@ -489,6 +507,12 @@ public class authLocal extends authGeneric {
      */
     public authResult authUserCommand(String user, String cmd) {
         cmd = cmd.trim().toLowerCase();
+        for (int i = 0; i < forbidden.size(); i++) {
+            if (cmd.matches(forbidden.get(i))) {
+                logger.debug("here " + forbidden.get(i) + "|" + cmd + "|");///////////////////
+                return new authResult(this, authResult.authBadUserPass, user, cmd);
+            }
+        }
         for (int i = 0; i < commands.size(); i++) {
             if (cmd.matches(commands.get(i))) {
                 return new authResult(this, authResult.authSuccessful, user, cmd);
