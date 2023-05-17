@@ -14126,3 +14126,8 @@ todo: more show running commands
 todo: client upgrade-simulate url
 todo: client upgrade-force url
 todo: flash overlap-clear
+---------------------------------- 2023-05-17 14:59:35 23.5.17
+todo: client cidr-notation in the generated show *configs
+todo: ipv4 dhcp XXX like fill-ciaddr
+todo: show backup-config
+todo: inter xxx / macrandomize

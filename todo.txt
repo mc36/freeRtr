@@ -1,3 +1,4 @@
+client cidr-notation in the generated show *configs
 ipv4 dhcp XXX like fill-ciaddr
 show backup-config
 inter xxx / macrandomize

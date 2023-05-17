@@ -32,6 +32,11 @@ public class clntDhcp4 implements prtServP {
     public boolean earlyMode = false;
 
     /**
+     * fill ciaddr
+     */
+    public boolean fillCiaddr = true;
+
+    /**
      * broadcast mode
      */
     public boolean broadcastMode = true;
@@ -129,6 +134,7 @@ public class clntDhcp4 implements prtServP {
     public void getConfig(List<String> l, String beg, String cmd) {
         cmds.cfgLine(l, !broadcastMode, beg, cmd + "broadcast", "");
         cmds.cfgLine(l, !earlyMode, beg, cmd + "early", "");
+        cmds.cfgLine(l, !fillCiaddr, beg, cmd + "fill-ciaddr", "");
         l.add(beg + cmd + "renew-min " + leaseMin);
         l.add(beg + cmd + "renew-max " + leaseMax);
     }
@@ -147,6 +153,10 @@ public class clntDhcp4 implements prtServP {
         }
         if (a.equals("early")) {
             earlyMode = true;
+            return false;
+        }
+        if (a.equals("fill-ciaddr")) {
+            fillCiaddr = true;
             return false;
         }
         if (a.equals("renew-min")) {
@@ -173,6 +183,10 @@ public class clntDhcp4 implements prtServP {
         }
         if (a.equals("early")) {
             earlyMode = false;
+            return false;
+        }
+        if (a.equals("fill-ciaddr")) {
+            fillCiaddr = false;
             return false;
         }
         return true;
@@ -410,8 +424,11 @@ public class clntDhcp4 implements prtServP {
         pckd.dhcpOp = packDhcp4.dhcpOpRequest;
         pckd.putParamReqList();
         pckd.dhcpClientId = true;
-        // pckd.bootpCiaddr = locAddr.copyBytes(); // github pull req#21
-        pckd.dhcpServer = dhcpAddr.copyBytes(); // github pull req#21
+        if (fillCiaddr) {
+            pckd.bootpCiaddr = locAddr.copyBytes();
+        } else {
+            pckd.dhcpServer = dhcpAddr.copyBytes();
+        }
         pckd.dhcpRequested = locAddr.copyBytes();
         pckd.createHeader(pck, null);
         sender.send2net(pck);

@@ -1576,6 +1576,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[46] dhcp-client enable",
         "interface .*! no ipv6 prefix-suppress",
         "interface .*! no ipv6 slaac-client enable",
+        "interface .*! ipv4 dhcp-client fill-ciaddr",
         "interface .*! ipv6 slaac-client renew-min 60000",
         "interface .*! ipv6 slaac-client renew-max 43200000",
         "interface .*! no ipv6 prefix-dns",
@@ -6583,6 +6584,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "4 .         <num>                   time in ms");
         l.add(null, "3 4       renew-max                 maximum renew time");
         l.add(null, "4 .         <num>                   time in ms");
+        l.add(null, "3 .       fill-ciaddr               fill in bootp ciaddr or dhcpserver address");
         l.add(null, "2 3     pool                        peer address pool");
         l.add(null, "3 .       <name:pl4>                name of address pool");
         l.add(null, "1 2   ipv6                          interface internet protocol config commands");
