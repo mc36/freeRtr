@@ -14134,3 +14134,5 @@ todo: inter xxx / macrandomize
 ---------------------------------- 2023-05-17 16:10:56 23.5.17
 no todo: ipv4 dhcp XXX like fill-ciaddr
 no todo: client cidr-notation in the generated show *configs
+---------------------------------- 2023-05-17 16:30:54 23.5.17
+todo: client cidr-notation in the generated show *configs
