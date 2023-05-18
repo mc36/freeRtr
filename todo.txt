@@ -1,3 +1,17 @@
+usascii filter with configurable space to underscore for the term tab csv output
+asdf#show lldp neighbor | hinclude sdn
+interface         hostname      iface                      ipv4           ipv6
+sdn2              laborSW2      ten-gigabitEthernet 1/0/4  null           null
+sdn5              pince-SW1     gigabitEthernet 1/0/2      null           null
+sdn6              pince-SW1     gigabitEthernet 1/0/3      null           null
+sdn901            mchome-demo   ethernet11                 10.2.1.6       2001:db8:1c::2
+sdn903            mchome-nat64  ethernet12                 10.2.1.10      2001:db8:2f::2
+sdn905            wifi          sdn0/0                     10.1.1.50      2001:db8:1d::2
+asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
+it would not harm a lot to apply to the fillables like the check asdf
+
+
+
 show backup-config if available
 
 show banner needs to be include-able
@@ -50,6 +64,14 @@ client cidr-notation in the generated show *configs
 client cidr-colorize in the generated show *configs
 client http-user-agent <anything>
 
+
+hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+under vdc * / redundancy parent-name from cfgall.hostname :)
+show redundancy to display the parent-name from hw-cfg.... :)
+show redundancy to run cdp/lldp/whatever that fits like ipv46,arp/nd/why-not-more then a new video about that
+show redundancy to display the config checksum
+test redundancy <prio>
+clearredundancy <cr> ! to accept config download
 under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
 vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
 under vdc * and redundancy, parent-name from cfgall.hostname
@@ -59,8 +81,9 @@ show redundancy to display the config checksum
 test redundancy <prio>
 clear redundancy <cr> ! to accept config download
 redundancy prio from rtr-hw.txt
-flash mailer server-smtp
-flash overlap-clear
+flash mailer <server-smtp> that is a loadable module
+flash xxxxxx from the misc/mailer shitload like the http server classes knob
+flash overlap-clear should happen once one finds a nice and easy use-case for that
 
 
 test todo knob as an editor but in the running-config
@@ -79,10 +102,18 @@ test access-list <acl> <src> <trg>
 server smtp auto-reply editor/text/etc
 sho bgp * auto-summarize
 config committed with check for saved and backup config
+
+
 in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
-curl
+
+
+curl cli knob
+
+
 terminal background and foreground
+
 interface lo0 as lo-core, persistently
+
 bgp to have xr-alike neighbor/template statements with upgrade-cli
 rework snmp to use sensors
 mpls inband performance measurement
@@ -126,7 +157,9 @@ more show running commands
 more show config commands
 more show commands
 more clear commands
+
 more interactive tools
+
 more features with clean implementation
 more randomizers
 more collect commands
@@ -161,5 +194,47 @@ misc motion emails to contain a small note like check recordings here unarm rear
 misc player volume to time out to the main screen
 misc images to not blink finally in the browsers like at least send the image sizes if possible
 settle a new slide project misc slash thumbs as a small helper for misc slash album
-
 default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
+server tftp to have server http backup alike functionality
+server forwarder to have some local logging finally
+server http have some local logging finally
+
+mist natives p4fwd to report the boot messages through the control channel in dataplane-says
+mist natives p4fwd to report all the error messages in the control channel in dataplane-says
+
+
+
+
+
+
+
+
+
+
+
+scheduler asdf single-run
+
+
+
+show running-config vrf iot to display routing protocols, servers and interfaces
+
+show running-config vdc <tabbable>
+
+server * vrf <tabbable> and upgrade-cli
+
+
+server smtp / collect-failures
+server smtp / check reverse of the sender and put the info to received field...
+
+
+interface * vrf <tabbable> and upgrade-cli
+terminal clear same as game clear
+clear aaa <tabbable>
+ping and friends to accept delay as range
+router * upgrade-cli as default
+server * upgrade-cli as default
+interface * upgrade-cli as default
+show archived-consistency
+
+
+reorder this file yearly

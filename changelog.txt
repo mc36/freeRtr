@@ -14179,3 +14179,169 @@ todo: flash mailer server-smtp
 todo: reuse the clients in the important servers as config knobs
 todo: more selftests for the servers and the clients
 todo: move client stuffs to userline if possible
+---------------------------------- 2023-05-18 09:15:09 23.5.18
+no todo: default vrf for show commands
+no todo: show backup-config
+no todo: clearredundancy <cr> ! to accept config download
+no todo: portscan to have udp knob
+no todo: configure server dns http smtp
+no todo: cmds.notvdc
+todo: show backup-config if available
+todo:
+todo:
+todo:
+todo: asdf#show check track | begin result
+todo: result:
+todo: - gep;normal;icmp;10.38.5.45;up;
+todo: + gep;normal;icmp;10.38.5.45;down;
+todo: nrpe:critical ERROR 2 line(s) in diff
+todo:                                      - gep;normal;icmp;10.38.5.45;up;
+todo:                                                                      + gep;normal;icmp;10.38.5.45;down;
+todo: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^through a crlf-crlf filter to look prettyier a bit
+todo: nrpe to send out emails from error.log
+todo: nrpe to have followtracker support
+todo:
+todo:
+todo:
+todo: scheduler asdf single-run as no respawn or something
+todo:
+todo: clntportscan to have udp knob then portscan to have the knob finally
+todo:
+todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
+todo:  private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
+todo:  dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
+todo:
+todo: some more .equals("no") to cmds.negated conversions like   <!-------------------------------------
+todo:    ("no") --> cmds.negated   <!-------------------------------------------------------------------
+todo:    "no" --> cmds.negated   <!---------------------------------------------------------------------
+todo:    "no " --> cmds.negated   <!--------------------------------------------------------------------
+todo:    same for upgrade-cli  <!-----------------------------------------------------------------------
+todo:    client hide-secrets  <!------------------------------------------------------------------------
+todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
+todo:
+todo: received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
+todo:     (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
+todo:     (resolved at 1.1.1.1 or/and 2.2.2.2) <!-------------------------------------------------------
+todo:     by 217.61.xxx.xxx (helo vpn.nop.hu) <!--------------------------------------------------------
+todo:     (envelope-from fzzdw@rrbl78.rhcontrolecomercial.com) with smtp (freeRouter v23.xxx) <!--------
+todo:     for gyujto@nop.hu ; Thu, 18 May 2023 06:xxx <!------------------------------------------------
+todo: server smtp / collect-failures <!-----------------------------------------------------------------
+todo: server smtp / check reverse of the sender and put the info to received field <!-------------------
+todo:
+todo: client buggy-trigger <trigger>
+todo:
+todo: clear redundancy <cr> ! to accept config download
+todo: redundancy prio from rtr-hw.txt
+todo:
+todo:
+todo: diameter client, server
+todo:
+todo:
+todo: tester to have chatscript support
+todo: tester to have dynamips support with the proper image and magic
+todo: tester to have followtracker knob
+todo: chatscript to have followtracker knob
+todo:
+todo: upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
+todo:
+todo:
+todo: server dns to have iname support as a tricker cname like ip46a already
+todo: more fun stuff to to configure server dns http smtp and quote
+todo: more fun min-max knobs
+todo: server dns to have some more min-max configurabels from client knobs
+todo:
+todo: more fun refactorings and clever cleanups
+todo:
+todo:
+todo: pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
+todo: pcapint laters later in bidir to signal the current state too
+todo: dissect too big servers to classes properly while not opening new directories
+todo:
+todo: misc album to have some ncdu functionality like a very simple matstat
+todo: misc player volume to time out to the main screen
+todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
+todo: settle a new slide project misc slash thumbs as a small helper for misc slash album
+todo:
+todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
+---------------------------------- 2023-05-18 15:10:06 23.5.18
+no todo: curl
+no todo: flash overlap-clear
+no todo: flash mailer server-smtp
+todo: usascii filter with configurable space to underscore for the term tab csv output
+todo: asdf#show lldp neighbor | hinclude sdn
+todo: interface         hostname      iface                      ipv4           ipv6
+todo: sdn2              laborSW2      ten-gigabitEthernet 1/0/4  null           null
+todo: sdn5              pince-SW1     gigabitEthernet 1/0/2      null           null
+todo: sdn6              pince-SW1     gigabitEthernet 1/0/3      null           null
+todo: sdn901            mchome-demo   ethernet11                 10.2.1.6       2001:db8:1c::2
+todo: sdn903            mchome-nat64  ethernet12                 10.2.1.10      2001:db8:2f::2
+todo: sdn905            wifi          sdn0/0                     10.1.1.50      2001:db8:1d::2
+todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
+todo: it would not harm a lot to apply to the fillables like the check asdf
+todo: hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+todo: under vdc * / redundancy parent-name from cfgall.hostname :)
+todo: show redundancy to display the parent-name from hw-cfg.... :)
+todo: show redundancy to run cdp/lldp/whatever that fits like ipv46,arp/nd/why-not-more then a new video about that
+todo: clearredundancy <cr> ! to accept config download
+todo: show redundancy to display the config checksum
+todo: test redundancy <prio>
+todo: flash mailer <server-smtp> that is a loadable module
+todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
+todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
+todo: curl cli knob
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo: server tftp to have server http backup alike functionality
+todo: server forwarder to have some local logging finally
+todo: server http have some local logging finally
+todo:
+todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
+todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo:
+todo: scheduler asdf single-run
+todo:
+todo:
+todo:
+todo: show running-config vrf iot to display routing protocols, servers and interfaces
+todo:
+todo: show running-config vdc <tabbable>
+todo:
+todo: server * vrf <tabbable> and upgrade-cli
+todo:
+todo:
+todo: server smtp / collect-failures
+todo: server smtp / check reverse of the sender and put the info to received field...
+todo:
+todo:
+todo: interface * vrf <tabbable> and upgrade-cli
+todo: terminal clear same as game clear
+todo: clear aaa <tabbable>
+todo: ping and friends to accept delay as range
+todo: router * upgrade-cli as default
+todo: server * upgrade-cli as default
+todo: interface * upgrade-cli as default
+todo: show archived-consistency
+todo:
+todo:
+todo: reorder this file yearly
