@@ -1,3 +1,4 @@
+
 scheduler asdf single-run as no respawn or something
 
 clntportscan to have udp knob then portscan to have the knob finally
@@ -38,6 +39,9 @@ show redundancy link to run cdp/lldp/whatever????
 show redundancy to display the config checksum
 test redundancy <prio>
 clearredundancy <cr> ! to accept config download
+flash mailer server-smtp
+flash overlap-clear
+
 
 test todo knob as an editor but in the running-config
 java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/ 
@@ -102,16 +106,19 @@ more interactive tools
 more features with clean implementation
 more randomizers
 more collect commands
-default vrf for show commands
 more userLine fun like alias-text, alias-regexp, much like under checks
 more server quote fun like cleanups, randomizers, loggers, anything
 more server http fun like cleanups, randomizers, loggers, anything
 more server smtp fun like cleanups, randomizers, loggers, anything
 more server dns fun like cleanups, randomizers, loggers, anything
+server dns to have iname support as a tricker cname like ip46a already
 more server fun like cleanups, randomizers, loggers, anything
-more fun like cleanups, randomizers, loggers, anything
-more fun knobs in general
+more fun stuff to to configure server dns http smtp and quote
 all the aaa stuff to have collect-failures knob to error.log
+more fun like cleanups, randomizers, loggers, anything
+more fun refactorings and clever cleanups
+more fun knobs in general
+default vrf for show commands if an alias is not enough
 
 misc album to have some ncdu functionality like a very simple matstat
 misc player volume to time out to the main screen
@@ -119,13 +126,10 @@ misc motion emails to contain a small note like check recordings here unarm rear
 misc player volume to time out to the main screen
 settle a new slide project misc slash thumbs as a small helper for misc slash album
 
-flash mailer server-smtp
-flash overlap-clear
+
 reuse the clients in the important servers as config knobs
 more selftests for the servers and the clients
 move client stuffs to userline if possible
 pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
 pcapint laters later in bidir to signal the current state too
 dissect too big servers to classes properly while not opening new directories
-
-more fun stuff to to configure server dns http smtp and quote
