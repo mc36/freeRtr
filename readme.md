@@ -89,6 +89,7 @@ to start coding on the project, take a look on the following:
 * take a look on rtrDownload to see an exmaple routing protocol
 * in most of the folders there is a class to extend or implment
 * your eyes will bleed because of the mix of c, p4 and java
+* first you should take a look at the todo.txt and the changelog.txt
 
 feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc
 

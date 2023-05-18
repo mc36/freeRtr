@@ -37,6 +37,11 @@ public class cmds {
     private final static String negated = "no";
 
     /**
+     * give up message
+     */
+    private final static String notvdc = "no in a vdc";///
+
+    /**
      * pipe side to use
      */
     public pipeSide pipe;

@@ -14141,3 +14141,41 @@ todo: more show config commands
 todo: more collect commands
 ---------------------------------- 2023-05-17 19:50:18 23.5.17
 todo: more server quote fun like cleanups, randomizers, loggers, anything
+---------------------------------- 2023-05-18 04:25:06 23.5.18
+no todo: renew the signing key!
+no todo: rfc9373
+no todo: rfc9340
+todo: cmds.notvdc
+todo: configure server dns http smtp
+todo: show banner needs to be include-able
+todo: client password-stars to get under the userLine
+todo: portscan to have udp knob
+todo: client log-boot to be emailed error.log
+todo: client cidr-colorize in the generated show *configs
+todo: client http-user-agent <anything>
+todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
+todo: vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+todo: under vdc * and redundancy, parent-name from cfgall.hostname
+todo: show redundancy to display the parent-name from hw-cfg....
+todo: show redundancy link to run cdp/lldp/whatever????
+todo: show redundancy to display the config checksum
+todo: test redundancy <prio>
+todo: clearredundancy <cr> ! to accept config download
+todo: test todo knob as an editor but in the running-config
+todo: java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/
+todo: java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
+todo: sho bgp * auto-summarize
+todo: more userLine fun like alias-text, alias-regexp, much like under checks
+todo: more server http fun like cleanups, randomizers, loggers, anything
+todo: more server smtp fun like cleanups, randomizers, loggers, anything
+todo: more server dns fun like cleanups, randomizers, loggers, anything
+todo: more server fun like cleanups, randomizers, loggers, anything
+todo: more fun like cleanups, randomizers, loggers, anything
+todo: more fun knobs in general
+todo: all the aaa stuff to have collect-failures knob to error.log
+todo: misc player volume to time out to the main screen
+todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
+todo: flash mailer server-smtp
+todo: reuse the clients in the important servers as config knobs
+todo: more selftests for the servers and the clients
+todo: move client stuffs to userline if possible

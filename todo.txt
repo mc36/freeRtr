@@ -1,4 +1,47 @@
+scheduler asdf single-run as no respawn or something
+
+clntportscan to have udp knob then portscan to have the knob finally
+
+show banner needs to be include-able
+
+some more .equals("no") to cmds.negated conversions like   <!-------------------------------------
+   ("no") --> cmds.negated   <!-------------------------------------------------------------------
+   "no" --> cmds.negated   <!---------------------------------------------------------------------
+   "no " --> cmds.negated   <!--------------------------------------------------------------------
+   same for upgrade-cli  <!-----------------------------------------------------------------------
+   client hide-secrets  <!------------------------------------------------------------------------
+cmds.not2vdc  <!----------------------------------------------------------------------------------
+
+received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
+    (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
+    (resolved at 1.1.1.1 or/and 2.2.2.2) <!-------------------------------------------------------
+    by 217.61.xxx.xxx (helo vpn.nop.hu) <!--------------------------------------------------------
+    (envelope-from fzzdw@rrbl78.rhcontrolecomercial.com) with smtp (freeRouter v23.xxx) <!--------
+    for gyujto@nop.hu ; Thu, 18 May 2023 06:xxx <!------------------------------------------------
+server smtp / collect-failures <!-----------------------------------------------------------------
+server smtp / check reverse of the sender and put the info to received field <!-------------------
+
+client password-stars to get under the userLine
+client buggy-trigger <trigger>
+client log-boot to be emailed error.log
+client upgrade-force url
+client upgrade-simulate url
 client cidr-notation in the generated show *configs
+client cidr-colorize in the generated show *configs
+client http-user-agent <anything>
+
+under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
+vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+under vdc * and redundancy, parent-name from cfgall.hostname
+show redundancy to display the parent-name from hw-cfg....
+show redundancy link to run cdp/lldp/whatever????
+show redundancy to display the config checksum
+test redundancy <prio>
+clearredundancy <cr> ! to accept config download
+
+test todo knob as an editor but in the running-config
+java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/ 
+java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
 show backup-config
 inter xxx / macrandomize
 sho run check/track
@@ -10,13 +53,8 @@ server http / host * ptmud
 lsrp / pvrp pmtud
 bgp/msdp: neigh x.x.x.x pmtud
 test access-list <acl> <src> <trg>
-client upgrade-simulate url
-client upgrade-force url
-flash overlap-clear
 server smtp auto-reply editor/text/etc
-rfc9340
-rfc9373
-renew the signing key!
+sho bgp * auto-summarize
 config committed with check for saved and backup config
 in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
 curl
@@ -42,6 +80,11 @@ traffic through bgp nsh
 policy from bgp rpd
 parse privilege levels from tacacs
 ldap client, server
+diameter client, server
+
+tester to have dynamips support with the proper image and magic
+upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
+
 dhcp relay support
 tcp selective ack
 ilnp (rfc6740)
@@ -60,4 +103,29 @@ more features with clean implementation
 more randomizers
 more collect commands
 default vrf for show commands
+more userLine fun like alias-text, alias-regexp, much like under checks
 more server quote fun like cleanups, randomizers, loggers, anything
+more server http fun like cleanups, randomizers, loggers, anything
+more server smtp fun like cleanups, randomizers, loggers, anything
+more server dns fun like cleanups, randomizers, loggers, anything
+more server fun like cleanups, randomizers, loggers, anything
+more fun like cleanups, randomizers, loggers, anything
+more fun knobs in general
+all the aaa stuff to have collect-failures knob to error.log
+
+misc album to have some ncdu functionality like a very simple matstat
+misc player volume to time out to the main screen
+misc motion emails to contain a small note like check recordings here unarm rearm arm
+misc player volume to time out to the main screen
+settle a new slide project misc slash thumbs as a small helper for misc slash album
+
+flash mailer server-smtp
+flash overlap-clear
+reuse the clients in the important servers as config knobs
+more selftests for the servers and the clients
+move client stuffs to userline if possible
+pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
+pcapint laters later in bidir to signal the current state too
+dissect too big servers to classes properly while not opening new directories
+
+more fun stuff to to configure server dns http smtp and quote
