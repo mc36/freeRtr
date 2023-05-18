@@ -1,5 +1,20 @@
+show backup-config if available
 
 show banner needs to be include-able
+
+
+asdf#show check track | begin result
+result:
+- gep;normal;icmp;10.38.5.45;up;
++ gep;normal;icmp;10.38.5.45;down;
+nrpe:critical ERROR 2 line(s) in diff
+                                     - gep;normal;icmp;10.38.5.45;up;
+                                                                     + gep;normal;icmp;10.38.5.45;down;
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^through a crlf-crlf filter to look prettyier a bit
+nrpe to send out emails from error.log
+nrpe to have followtracker support
+
+
 
 scheduler asdf single-run as no respawn or something
 
@@ -50,7 +65,6 @@ flash overlap-clear
 test todo knob as an editor but in the running-config
 java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/ 
 java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
-show backup-config
 inter xxx / macrandomize
 sho run check/track
 server http / host * custom-header knob
@@ -90,7 +104,12 @@ parse privilege levels from tacacs
 ldap client, server
 diameter client, server
 
+
+tester to have chatscript support
 tester to have dynamips support with the proper image and magic
+tester to have followtracker knob
+chatscript to have followtracker knob
+
 upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
 
 dhcp relay support
@@ -122,7 +141,6 @@ all the aaa stuff to have collect-failures knob to error.log
 more fun like cleanups, randomizers, loggers, anything
 more fun refactorings and clever cleanups
 more fun knobs in general
-default vrf for show commands if an alias is not enough
 
 misc album to have some ncdu functionality like a very simple matstat
 misc player volume to time out to the main screen
@@ -137,3 +155,5 @@ move client stuffs to userline if possible
 pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
 pcapint laters later in bidir to signal the current state too
 dissect too big servers to classes properly while not opening new directories
+
+default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
