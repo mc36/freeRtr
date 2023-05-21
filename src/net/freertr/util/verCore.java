@@ -13,12 +13,12 @@ public class verCore {
     /**
      * os name
      */
-    public final static String name = "freeRouter";
+    public final static String name = "freeRouter-rare";
 
     /**
      * author
      */
-    public final static String author = "cs@nop";
+    public final static String author = "sprs-ccie@mr.nobody";
 
     /**
      * current public key
@@ -66,10 +66,11 @@ public class verCore {
     public final static String[] license = {
         "place on the web: " + homeUrl,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
+        "quote-4: respect the privacy of others, think before you type, with great power comes great responsibility",
         "quote-3: true random comes from weather forecasts and political announcements",
         "quote-2: stupid question deserves stupid answers",
-        "quote-1: use your brain",
-        "quote0: know your shit",
+        "quote-1: just use your brain",
+        "quote0: know test and use your shit",
         "quote1: do or not to do but don't try",
         "quote2: music heals",
         "quote3: ignorance kills",
