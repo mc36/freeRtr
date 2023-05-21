@@ -87,6 +87,8 @@ to start coding on the project, take a look on the following:
 * grep me-the in the sources to see how to add a show command
 * grep ifcHdlc to see how to add a new interface encapsulation
 * take a look on rtrDownload to see an exmaple routing protocol
+* find out how to add a new game to the command line interface
+* try to solve a puzzle from the todo.txt in the source tree
 * in most of the folders there is a class to extend or implment
 * your eyes will bleed because of the mix of c, p4 and java
 * first you should take a look at the todo.txt and the changelog.txt
