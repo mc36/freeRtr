@@ -12,6 +12,7 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.enc.enc7bit;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
@@ -447,7 +448,7 @@ class ifcLldpNeigh implements Comparator<ifcLldpNeigh> {
     public long created;
 
     public String toString() {
-        return sysName + "|" + portId + "|" + addr4 + "|" + addr6;
+        return sysName + "|" + enc7bit.doOneString(portId) + "|" + addr4 + "|" + addr6;
     }
 
     public void dump(List<String> l) {

@@ -2,6 +2,8 @@
 
 freeRouter is a router stack which can export the computed tables to external dataplanes
 
+yet another routing/forwarding network stack made by highly skilled network/electrical/engineers
+
 more about the project at [www.freertr.org](http://www.freertr.org/)
 
 you can find the same source tree at various locations, normally all should be the same:
@@ -13,6 +15,8 @@ part of the subdirectories under misc/ are somewhere else too:
 * p4lang at http://github.com/rare-freertr/RARE-bmv2
 
 parts of the files under misc/natives are rewritten from c to rust at http://git.famfo.xyz/famfo/freertr_native-rs
+
+parts of the files under misc/natives in lua when?
 
 ## dependencies
 
@@ -92,6 +96,7 @@ to start coding on the project, take a look on the following:
 * in most of the folders there is a class to extend or implment
 * your eyes will bleed because of the mix of c, p4 and java
 * first you should take a look at the todo.txt and the changelog.txt
+* try first reordering the todo.txt if you have nothing better idea
 
 feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc
 
