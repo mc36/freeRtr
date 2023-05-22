@@ -94,7 +94,12 @@ import net.freertr.serv.servSdwan;
 import net.freertr.serv.servSmtp;
 import net.freertr.serv.servStreamingMdt;
 import net.freertr.serv.servVxlan;
+import net.freertr.enc.enc7bit;
+import net.freertr.enc.encBase64;
 import net.freertr.enc.encUrl;
+import net.freertr.user.userExec;
+import net.freertr.pipe.pipeLine;
+import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -241,7 +246,15 @@ public class userShow {
             return null;
         }
         if (a.equals("banner")) {
-            cmd.pipe.strPut(new String(cfgAll.banner));
+            String s = encBase64.encodeBytes(cfgAll.banner);
+            String buf = enc7bit.doOneString(s);
+            byte[] byt = buf.getBytes();
+            List<String> lst = bits.str2lst(byt.toString());
+            int i = lst.size();
+            if (i >= 0) {
+                rdr.putStrArr(bits.str2lst("errors=" + i));
+            }
+            rdr.putStrArr(lst);
             return null;
         }
         if (a.equals("logo")) {

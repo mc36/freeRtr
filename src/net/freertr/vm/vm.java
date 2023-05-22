@@ -1,27 +1,30 @@
-package net.freertr.user;
+package net.freertr.vm;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryHashCrc32;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
+import net.freertr.tab.tabDir;
+import net.freertr.tab.tabFile;
 import net.freertr.tab.tabGen;
+import net.freertr.user.userFlash;
+import net.freertr.user.userScreen;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
 import net.freertr.util.version;
 
 /**
- * virtual machine
+ * one virtual machine
  *
  * @author matecsaba
  */
-public class userVM {
+public class vm {
 
-    private static final String rootDir = "../vm";
+    private static final String rootDir = "../vm/";
 
     private static final int reg_a = 1;
 
@@ -68,16 +71,16 @@ public class userVM {
 
     private int[] procD;
 
-    private tabGen<userVMfile> files;
+    private static tabGen<tabFile> files = new tabGen<tabFile>();
 
-    private tabGen<userVMdir> dirs;
+    private static tabGen<tabDir> dirs = new tabGen<tabDir>();
 
     private pipeSide console;
 
     private String currDir;
 
     /**
-     * do vm work
+     * z* * do vm work
      *
      * @param cons pipe to use
      * @param fio set true to allow file io
@@ -86,9 +89,9 @@ public class userVM {
      * @param param parameters to give
      * @return result code
      */
-    public static int doWork(pipeSide cons, boolean fio, String dir,
+    public final static int doWork(pipeSide cons, boolean fio, String dir,
             String name, String param) {
-        userVM vm = new userVM(cons, fio, dir);
+        vm vm = new vm(cons, fio, dir);
         int res;
         try {
             vm.doLoad(name, param);
@@ -102,7 +105,14 @@ public class userVM {
             res = 1;
         }
         try {
-            vm.doFinish();
+            for (int i = 0; i < files.size(); i++) {
+                try {
+                    tabFile g = files.get(i);
+                    g.doClose();
+                } catch (Exception e) {
+                    logger.traceback(e);
+                }
+            }
         } catch (Exception e) {
         }
         return res;
@@ -115,7 +125,7 @@ public class userVM {
      * @param fio set true to allow file io
      * @param dir working directory
      */
-    public userVM(pipeSide cons, boolean fio, String dir) {
+    public vm(pipeSide cons, boolean fio, String dir) {
         console = cons;
         allowFileIO = fio;
         currDir = "/" + encUrl.normalizePath(dir + "/");
@@ -396,7 +406,7 @@ public class userVM {
         return tab[fg] | (tab[bg] << 16);
     }
 
-    private int getKey() {
+    private final int getKey() {
         return userScreen.getKey(console);
     }
 
@@ -439,8 +449,8 @@ public class userVM {
         stackD = new byte[stackS + memBound];
         dataD = new byte[dataS];
         procD = new int[procS];
-        files = new tabGen<userVMfile>();
-        dirs = new tabGen<userVMdir>();
+        files = new tabGen<tabFile>();
+        dirs = new tabGen<tabDir>();
     }
 
     /**
@@ -458,18 +468,6 @@ public class userVM {
             }
         }
         return i;
-    }
-
-    /**
-     * finish the process
-     */
-    public void doFinish() {
-        for (int i = 0; i < files.size(); i++) {
-            try {
-                files.get(i).fil.close();
-            } catch (Exception e) {
-            }
-        }
     }
 
     /**
@@ -832,7 +830,7 @@ public class userVM {
                 if (!new File(a).exists()) {
                     return 0;
                 }
-                userVMfile fil = new userVMfile(0);
+                tabFile fil = new tabFile(0);
                 try {
                     fil.fil = new RandomAccessFile(a, "rw");
                 } catch (Exception e) {
@@ -849,7 +847,7 @@ public class userVM {
                 return 0;
             case 11: // file.read
                 regs[reg_b] = 1;
-                fil = files.find(new userVMfile(regs[reg_a]));
+                fil = files.find(new tabFile(regs[reg_a]));
                 if (fil == null) {
                     return 0;
                 }
@@ -862,7 +860,7 @@ public class userVM {
                 return 0;
             case 12: // file.write
                 regs[reg_b] = 1;
-                fil = files.find(new userVMfile(regs[reg_a]));
+                fil = files.find(new tabFile(regs[reg_a]));
                 if (fil == null) {
                     return 0;
                 }
@@ -875,7 +873,7 @@ public class userVM {
                 return 0;
             case 13: // file.seek
                 regs[reg_b] = 1;
-                fil = files.find(new userVMfile(regs[reg_a]));
+                fil = files.find(new tabFile(regs[reg_a]));
                 if (fil == null) {
                     return 0;
                 }
@@ -888,7 +886,7 @@ public class userVM {
                 return 0;
             case 14: // file.getSize
                 regs[reg_b] = 1;
-                fil = files.find(new userVMfile(regs[reg_a]));
+                fil = files.find(new tabFile(regs[reg_a]));
                 if (fil == null) {
                     return 0;
                 }
@@ -901,7 +899,7 @@ public class userVM {
                 return 0;
             case 15: // file.getPos
                 regs[reg_b] = 1;
-                fil = files.find(new userVMfile(regs[reg_a]));
+                fil = files.find(new tabFile(regs[reg_a]));
                 if (fil == null) {
                     return 0;
                 }
@@ -914,7 +912,7 @@ public class userVM {
                 return 0;
             case 16: // file.truncate
                 regs[reg_b] = 1;
-                fil = files.find(new userVMfile(regs[reg_a]));
+                fil = files.find(new tabFile(regs[reg_a]));
                 if (fil == null) {
                     return 0;
                 }
@@ -927,7 +925,7 @@ public class userVM {
                 return 0;
             case 17: // file.close
                 regs[reg_b] = 1;
-                fil = files.del(new userVMfile(regs[reg_a]));
+                fil = files.del(new tabFile(regs[reg_a]));
                 if (fil == null) {
                     return 0;
                 }
@@ -1011,7 +1009,7 @@ public class userVM {
                 if (!new File(a).exists()) {
                     return 0;
                 }
-                userVMdir dir = new userVMdir(0);
+                tabDir dir = new tabDir(0);
                 try {
                     dir.lst = new File(a).listFiles();
                 } catch (Exception e) {
@@ -1031,7 +1029,7 @@ public class userVM {
                 return 0;
             case 26: // dir.read
                 regs[reg_b] = 1;
-                dir = dirs.find(new userVMdir(regs[reg_a]));
+                dir = dirs.find(new tabDir(regs[reg_a]));
                 if (dir == null) {
                     return 0;
                 }
@@ -1076,7 +1074,7 @@ public class userVM {
                 return 0;
             case 27: // dir.close
                 regs[reg_b] = 1;
-                dir = dirs.del(new userVMdir(regs[reg_a]));
+                dir = dirs.del(new tabDir(regs[reg_a]));
                 if (dir == null) {
                     return 0;
                 }
@@ -1158,8 +1156,7 @@ public class userVM {
                 return 0;
             case 39: // console.execWait
                 a = fromDos(getPascii(regs[reg_src]));
-                val1 = userVM.doWork(console, allowFileIO, currDir, a,
-                        getPascii(regs[reg_trg]));
+                val1 = doWork(console, allowFileIO, currDir, a, getPascii(regs[reg_trg]));
                 regs[reg_b] = result2error(val1);
                 regs[reg_a] = result2extcod(val1);
                 return 0;
@@ -1265,52 +1262,6 @@ public class userVM {
         }
         regs[reg_cip] -= 2;
         throw new Exception("unknown (" + opc + ") syscall");
-    }
-
-}
-
-class userVMfile implements Comparator<userVMfile> {
-
-    public int num;
-
-    public RandomAccessFile fil;
-
-    public userVMfile(int i) {
-        num = i;
-    }
-
-    public int compare(userVMfile o1, userVMfile o2) {
-        if (o1.num < o2.num) {
-            return -1;
-        }
-        if (o1.num > o2.num) {
-            return +1;
-        }
-        return 0;
-    }
-
-}
-
-class userVMdir implements Comparator<userVMdir> {
-
-    public int num;
-
-    public File[] lst;
-
-    public int pos;
-
-    public userVMdir(int i) {
-        num = i;
-    }
-
-    public int compare(userVMdir o1, userVMdir o2) {
-        if (o1.num < o2.num) {
-            return -1;
-        }
-        if (o1.num > o2.num) {
-            return +1;
-        }
-        return 0;
     }
 
 }

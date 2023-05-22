@@ -256,6 +256,7 @@ public class userFilman {
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
         console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
     }
 
     private void doKeyF2() {
@@ -452,6 +453,7 @@ class userFilmanPanel {
         }
         a = bits.padEnd((curL + 1) + "/" + fil.size(), sizX, " ");
         con.putStr(scrX, scrY + sizY + 1, userScreen.colBlue, userScreen.colBrCyan, false, a);
+        con.putStr(con.sizX - 8, con.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
     }
 
 }

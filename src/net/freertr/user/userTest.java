@@ -106,6 +106,7 @@ import net.freertr.util.logger;
 import net.freertr.enc.encPrtbuf;
 import net.freertr.enc.encThrift;
 import net.freertr.enc.encUrl;
+import net.freertr.vm.vm;
 
 /**
  * process test commands
@@ -408,7 +409,11 @@ public class userTest {
         }
         if (a.equals("vm")) {
             a = cmd.word();
-            userVM.doWork(pip, true, "", a, cmd.getRemaining());
+            try {
+                vm.doWork(pip, true, "", a, cmd.getRemaining());
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
             return null;
         }
         if (a.equals("translation")) {

@@ -1,20 +1,48 @@
+server security to have settable tls version from client knob first
+
+
+server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
+
+show whowas from bmp mrt archive
+
+changelog to support todo.txt/md at least, later todo.html
+
+show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
+
 misc/player: Exception in thread "main" java.lang.NullPointerException: Cannot invoke "playerLyric.size()" because "<parameter2>" is null/    at playerSong.txt2pls(playerSong.java:142)/at findSongs.main(findSongs.java:62)
 server http xxx to log better the class exceptions as errors
 
 
+bgp to have at least show ipv46 bgp 66666 description
+traffic through bgp sr-policy
+traffic through bgp nsh
+policy from bgp rpd
+show ipv4 bgp 666 unicast database | include ^195.111.*$
+
+flash install as whole zip loadables
+
+client auto-save-on-upgrade flash network archive
+
+introduce risky stuffs as flash or even just as show like curl show url etc commands
 
 tabbable line asfadsasd exec autocommand at least :)
 
-alias to have config aliases
+noti#show ipv4 bgp ?
+  1     - process id
+  66666 - process id - as asdf
+  <num> - process id
+bgp to have the nexus dynamic capability exchange draft
 
-router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 
-vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
 vrf definition to have route consistency check
 
 info ifcSgt.doDecode:ifcSgt.java:104 bad type (86dd) --- okk but where? :) on sdn123.123? right? :)
 
 
+
+vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
+show config-xxx to have tabbables like routers servers etc
+router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 
 
 a terminal junos-mode knob that defaults to set-del etc as a new class
@@ -65,7 +93,6 @@ some more .equals("no") to cmds.negated conversions like   <!-------------------
    same for upgrade-cli  <!-----------------------------------------------------------------------
    client hide-secrets  <!------------------------------------------------------------------------
 cmds.not2vdc  <!----------------------------------------------------------------------------------
-
 received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
     (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
     (resolved at 1.1.1.1 or/and 2.2.2.2) <!-------------------------------------------------------
@@ -74,6 +101,10 @@ received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------
     for gyujto@nop.hu ; Thu, 18 May 2023 06:xxx <!------------------------------------------------
 server smtp / collect-failures <!-----------------------------------------------------------------
 server smtp / check reverse of the sender and put the info to received field <!-------------------
+server smtp / tag messages by subject<!-----------------------------------------------------------
+server smtp / collect-failures
+server smtp / check reverse of the sender and put the info to received field...
+server smtp / auto-reply editor/text/etc
 
 client password-stars to get under the userLine
 client buggy-trigger <trigger>
@@ -83,14 +114,19 @@ client upgrade-simulate url
 client cidr-notation in the generated show *configs
 client cidr-colorize in the generated show *configs
 client http-user-agent <anything>
+client tls randomize version if a range configured
 hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
 under vdc * / redundancy parent-name from cfgall.hostname :)
+java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
 show redundancy to display the parent-name from hw-cfg.... :)
 show redundancy to run cdp/lldp/whatever that fits like ipv46,arp/nd/why-not-more then a new video about that
 show redundancy to display the config checksum
 test redundancy <prio>
 clearredundancy <cr> ! to accept config download
+alias with regexps to ios regexps, steal cache from *ec* and idea from **
+alias to have config aliases
 under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
+default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
 vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
 under vdc * and redundancy, parent-name from cfgall.hostname
 show redundancy to display the parent-name from hw-cfg....
@@ -102,11 +138,10 @@ redundancy prio from rtr-hw.txt
 flash mailer <server-smtp> that is a loadable module
 flash xxxxxx from the misc/mailer shitload like the http server classes knob
 flash overlap-clear should happen once one finds a nice and easy use-case for that
-
+rtr-hw to have tcp2linux and vrf2linux knobs
 
 test todo knob as an editor but in the running-config
 java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/ 
-java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
 inter xxx / macrandomize
 sho run check/track
 server http / host * custom-header knob
@@ -117,7 +152,6 @@ server http / host * ptmud
 lsrp / pvrp pmtud
 bgp/msdp: neigh x.x.x.x pmtud
 test access-list <acl> <src> <trg>
-server smtp auto-reply editor/text/etc
 sho bgp * auto-summarize
 config committed with check for saved and backup config
 
@@ -147,9 +181,6 @@ bgp peer autoconfig
 bgp layer2 flowspec
 bgp flowspec v2
 bgp signed path
-traffic through bgp sr-policy
-traffic through bgp nsh
-policy from bgp rpd
 parse privilege levels from tacacs
 ldap client, server
 diameter client, server
@@ -158,6 +189,7 @@ tester to have dynamips support with the proper image and magic
 tester to have followtracker knob
 tester to have support chatscript and have followtracker knob
 tester to have support for dynamips and vm.zip stuff
+tester to have support for the hw-cfg stuff
 upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
 dhcp relay support
 tcp selective ack
@@ -209,7 +241,6 @@ misc motion emails to contain a small note like check recordings here unarm rear
 misc player volume to time out to the main screen
 misc images to not blink finally in the browsers like at least send the image sizes if possible
 settle a new slide project misc slash thumbs as a small helper for misc slash album
-default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
 server tftp to have server http backup alike functionality
 server forwarder to have some local logging finally
 server http have some local logging finally
@@ -238,9 +269,6 @@ show running-config vdc <tabbable>
 server * vrf <tabbable> and upgrade-cli
 
 
-server smtp / collect-failures
-server smtp / check reverse of the sender and put the info to received field...
-
 
 interface * vrf <tabbable> and upgrade-cli
 terminal clear same as game clear
@@ -255,3 +283,12 @@ show archived-consistency
 reorder this file yearly
 tabbable do ping and the rest of the exec commands
 tabbable everything
+more tldring to the this sh1t in every december and normally to the sources too
+
+document the vm
+.vm <--> vm20
+.vm <--> .class converter, debugger, disassembler, emulator, etc
+.vm <--> .pyc converter, debugger, disassembler, emulator, etc
+.vm <--> .pyc converter, debugger, disassembler, emulator, etc
+more clean transpilers for the vm
+more clean converters for the vm

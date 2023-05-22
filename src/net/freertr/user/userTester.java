@@ -8,6 +8,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
+import net.freertr.enc.enc7bit;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeProgress;
@@ -455,6 +456,8 @@ public class userTester {
         lst.add(" -- " + releaseV + "  " + bits.time2str(cfgAll.timeZoneName, cur.tim, 4));
     }
 
+    final String todoStr = "todo";
+
     /**
      * do the testing work
      *
@@ -896,13 +899,18 @@ public class userTester {
             beg += other0 + "-";
         }
         rdr.debugStat("writing summary " + beg);
-        List<String> txt = bits.txt2buf("../todo.txt");
+        List<String> txt = bits.txt2buf("../" + todoStr);
         if (txt == null) {
             txt = new ArrayList<String>();
         }
         for (int i = 0; i < txt.size(); i++) {
-            userTesterFtr ftr = new userTesterFtr("todo" + bits.padBeg("" + i, 4, "0"));
-            ftr.ftr = "todo: " + txt.get(i);
+            userTesterFtr ftr = new userTesterFtr(todoStr + bits.padBeg("" + i, 4, "0"));
+            String b = todoStr + ": " + txt.get(i);
+            b = enc7bit.doOneString(b);
+            if (b.length() < 1) {
+                continue;
+            }
+            ftr.ftr = b;
             finished.add(ftr);
         }
         txt = new ArrayList<String>();

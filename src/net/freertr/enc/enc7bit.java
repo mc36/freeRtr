@@ -7,6 +7,9 @@ package net.freertr.enc;
  */
 public class enc7bit {
 
+    /**
+     * default constructor
+     */
     private enc7bit() {
     }
 
@@ -32,7 +35,7 @@ public class enc7bit {
      * @param c char to convert
      * @return converted char
      */
-    public static char doOneChar(char c) {
+    public final static char doOneChar(char c) {
         int i = (byte) c;
         int r = doOneByte((char) i);
         return (char) r;
@@ -44,7 +47,7 @@ public class enc7bit {
      * @param s string to convert
      * @return converted string
      */
-    public static String doOneString(String s) {
+    public final static String doOneString(String s) {
         byte[] b = s.getBytes();
         String r = "";
         for (int i = 0; i < s.length(); i++) {

@@ -16,7 +16,7 @@ part of the subdirectories under misc/ are somewhere else too:
 
 parts of the files under misc/natives are rewritten from c to rust at http://git.famfo.xyz/famfo/freertr_native-rs
 
-parts of the files under misc/natives in lua when?
+parts of the files under misc/natives in lua-jit when?
 
 ## dependencies
 

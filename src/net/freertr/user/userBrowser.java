@@ -291,6 +291,7 @@ public class userBrowser {
         }
         a = bits.padEnd(beg + "  " + a, console.sizX, " ").substring(0, console.sizX);
         console.putStr(0, console.sizY - 1, userScreen.colBlue, userScreen.colBrCyan, false, a);
+        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
         console.refresh();
     }
 

@@ -8,7 +8,7 @@ import java.util.Comparator;
  * @param <T> type of elements in the list
  * @author matecsaba
  */
-public class tabGen<T extends Comparator<? super T>> extends tabGenV2<T> {
+public final class tabGen<T extends Comparator<? super T>> extends tabGenV2<T> {
 
     /**
      * create one generic table

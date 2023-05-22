@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class encBase64 {
 
+    /**
+     * default constructor
+     */
     private encBase64() {
     }
 
@@ -89,7 +92,7 @@ public class encBase64 {
      * @param siz bytes to encode
      * @return encoded data
      */
-    public static String encodeBytes(byte[] buf, int ofs, int siz) {
+    public static final String encodeBytes(byte[] buf, int ofs, int siz) {
         final int max = 3;
         String s = "";
         for (;;) {
@@ -113,7 +116,7 @@ public class encBase64 {
      * @param buf buffer to encode
      * @return encoded data
      */
-    public static String encodeBytes(byte[] buf) {
+    public static final String encodeBytes(byte[] buf) {
         return encodeBytes(buf, 0, buf.length);
     }
 
@@ -123,7 +126,7 @@ public class encBase64 {
      * @param str string to encode
      * @return decoded data
      */
-    public static String encodeString(String str) {
+    public static final String encodeString(String str) {
         byte[] buf = str.getBytes();
         return encodeBytes(buf, 0, buf.length);
     }
@@ -134,7 +137,7 @@ public class encBase64 {
      * @param str string to decode
      * @return decoded data
      */
-    public static byte[] decodeBytes(String str) {
+    public static final byte[] decodeBytes(String str) {
         final int max = 4;
         List<Byte> buf = new ArrayList<Byte>();
         for (;;) {
@@ -167,7 +170,7 @@ public class encBase64 {
      * @param str string to decode
      * @return decoded data
      */
-    public static String decodeString(String str) {
+    public static final String decodeString(String str) {
         byte[] res = decodeBytes(str);
         if (res == null) {
             return null;

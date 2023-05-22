@@ -14345,3 +14345,244 @@ todo: show archived-consistency
 todo:
 todo:
 todo: reorder this file yearly
+---------------------------------- 2023-05-22 02:07:56 23.5.21
+no todo: reorder this file yearly
+no todo:
+no todo:
+no todo: show archived-consistency
+no todo: interface * upgrade-cli as default
+no todo: server * upgrade-cli as default
+no todo: router * upgrade-cli as default
+no todo: ping and friends to accept delay as range
+no todo: clear aaa <tabbable>
+no todo: terminal clear same as game clear
+no todo: interface * vrf <tabbable> and upgrade-cli
+no todo:
+no todo:
+no todo: server smtp / check reverse of the sender and put the info to received field...
+no todo: server smtp / collect-failures
+no todo:
+no todo:
+no todo: server * vrf <tabbable> and upgrade-cli
+no todo:
+no todo: show running-config vdc <tabbable>
+no todo:
+no todo: show running-config vrf iot to display routing protocols, servers and interfaces
+no todo:
+no todo:
+no todo:
+no todo: scheduler asdf single-run
+no todo:
+no todo:
+no todo:
+no todo:
+no todo:
+no todo:
+no todo:
+no todo:
+no todo:
+no todo:
+no todo:
+no todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
+no todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
+no todo:
+no todo: server http have some local logging finally
+no todo: server forwarder to have some local logging finally
+no todo: server tftp to have server http backup alike functionality
+no todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
+no todo: settle a new slide project misc slash thumbs as a small helper for misc slash album
+no todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
+no todo: misc player volume to time out to the main screen
+no todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
+no todo: misc player volume to time out to the main screen
+no todo: misc album to have some ncdu functionality like a very simple matstat
+no todo:
+no todo: dissect too big servers to classes properly while not opening new directories
+no todo: pcapint laters later in bidir to signal the current state too
+no todo: pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
+no todo: move client stuffs to userline if possible
+no todo: more selftests for the servers and the clients
+no todo: reuse the clients in the important servers as config knobs
+no todo:
+no todo:
+no todo: more fun knobs in general
+no todo: more fun refactorings and clever cleanups
+no todo: more fun like cleanups, randomizers, loggers, anything
+no todo: all the aaa stuff to have collect-failures knob to error.log
+no todo:
+no todo: server dns to have some more min-max configurabels from client knobs
+no todo: more fun min-max knobs
+no todo: more fun stuff to to configure server dns http smtp and quote
+no todo: more server fun like cleanups, randomizers, loggers, anything
+no todo: server dns to have iname support as a tricker cname like ip46a already
+no todo: more server dns fun like cleanups, randomizers, loggers, anything
+no todo:
+no todo: more server smtp fun like cleanups, randomizers, loggers, anything
+no todo: more server http fun like cleanups, randomizers, loggers, anything
+no todo: more server quote fun like cleanups, randomizers, loggers, anything
+no todo: more userLine fun like alias-text, alias-regexp, much like under checks
+no todo: more collect commands
+no todo: more randomizers
+no todo: more features with clean implementation
+no todo:
+no todo: more interactive tools
+no todo:
+no todo: more clear commands
+no todo: more show commands
+no todo: more show config commands
+no todo: more show running commands
+no todo: more tabbables
+no todo: more renamers
+no todo: more upgrade-cli knobs
+no todo: hip (rfc4423)
+no todo: l2vpn for isis
+no todo: lisp4, lisp6
+no todo: ilnp (rfc6740)
+no todo: tcp selective ack
+no todo: dhcp relay support
+no todo:
+no todo: upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
+no todo:
+no todo: chatscript to have followtracker knob
+no todo: tester to have followtracker knob
+no todo: tester to have dynamips support with the proper image and magic
+no todo: tester to have chatscript support
+no todo:
+no todo:
+no todo: diameter client, server
+no todo: ldap client, server
+no todo: parse privilege levels from tacacs
+no todo: policy from bgp rpd
+no todo: traffic through bgp nsh
+no todo: traffic through bgp sr-policy
+no todo: bgp signed path
+no todo: bgp flowspec v2
+no todo: bgp layer2 flowspec
+no todo: bgp peer autoconfig
+no todo: bgp optimal route reflection
+no todo: bgp shadow route reflection
+no todo: nat and pbr config to have reindex
+no todo: update gtp stack to the latest standards
+no todo: quic when it have at least adjustmss...
+no todo: allow command to be a substring of an other
+no todo: wcmp support to the spf class
+no todo: backup path support to the spf class
+no todo: mpls inband performance measurement
+no todo: rework snmp to use sensors
+no todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
+no todo:
+no todo: interface lo0 as lo-core, persistently
+no todo:
+no todo: terminal background and foreground
+no todo:
+no todo:
+no todo: curl cli knob
+no todo:
+no todo:
+no todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
+no todo:
+no todo:
+no todo: config committed with check for saved and backup config
+no todo: sho bgp * auto-summarize
+no todo: server smtp auto-reply editor/text/etc
+no todo: test access-list <acl> <src> <trg>
+no todo: bgp/msdp: neigh x.x.x.x pmtud
+no todo: lsrp / pvrp pmtud
+no todo: server http / host * ptmud
+no todo: server smtp / ptmud
+no todo: server http / host * searchbar
+no todo: server http / host * user-agent matcher with redirect
+no todo: server http / host * custom-header knob
+no todo: sho run check/track
+no todo: inter xxx / macrandomize
+no todo: java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
+no todo: java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/
+no todo: test todo knob as an editor but in the running-config
+no todo:
+no todo:
+no todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
+no todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
+no todo: flash mailer <server-smtp> that is a loadable module
+no todo: redundancy prio from rtr-hw.txt
+no todo: clear redundancy <cr> ! to accept config download
+no todo: test redundancy <prio>
+no todo: show redundancy to display the config checksum
+no todo: show redundancy link to run cdp/lldp/whatever????
+no todo: show redundancy to display the parent-name from hw-cfg....
+no todo: under vdc * and redundancy, parent-name from cfgall.hostname
+no todo: vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+no todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
+no todo: clearredundancy <cr> ! to accept config download
+no todo: test redundancy <prio>
+no todo: show redundancy to display the config checksum
+no todo: show redundancy to run cdp/lldp/whatever that fits like ipv46,arp/nd/why-not-more then a new video about that
+no todo: show redundancy to display the parent-name from hw-cfg.... :)
+no todo: under vdc * / redundancy parent-name from cfgall.hostname :)
+no todo: hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+no todo:
+no todo:
+no todo: client http-user-agent <anything>
+no todo: client cidr-colorize in the generated show *configs
+no todo: client cidr-notation in the generated show *configs
+no todo: client upgrade-simulate url
+no todo: client upgrade-force url
+no todo: client log-boot to be emailed error.log
+no todo: client buggy-trigger <trigger>
+no todo: client password-stars to get under the userLine
+no todo:
+no todo: server smtp / check reverse of the sender and put the info to received field <!-------------------
+no todo: server smtp / collect-failures <!-----------------------------------------------------------------
+no todo:     for gyujto@nop.hu ; Thu, 18 May 2023 06:xxx <!------------------------------------------------
+no todo:     (envelope-from fzzdw@rrbl78.rhcontrolecomercial.com) with smtp (freeRouter v23.xxx) <!--------
+no todo:     by 217.61.xxx.xxx (helo vpn.nop.hu) <!--------------------------------------------------------
+no todo:     (resolved at 1.1.1.1 or/and 2.2.2.2) <!-------------------------------------------------------
+no todo:     (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
+no todo: received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
+no todo:
+no todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
+no todo:    client hide-secrets  <!------------------------------------------------------------------------
+no todo:    same for upgrade-cli  <!-----------------------------------------------------------------------
+no todo:    "no " --> cmds.negated   <!--------------------------------------------------------------------
+no todo:    "no" --> cmds.negated   <!---------------------------------------------------------------------
+no todo:    ("no") --> cmds.negated   <!-------------------------------------------------------------------
+no todo: some more .equals("no") to cmds.negated conversions like   <!-------------------------------------
+no todo:
+no todo:  dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
+no todo:  private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
+no todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
+no todo:
+no todo: clntportscan to have udp knob then portscan to have the knob finally
+no todo:
+no todo: scheduler asdf single-run as no respawn or something
+no todo:
+no todo:
+no todo:
+no todo: nrpe to have followtracker support
+no todo: nrpe to send out emails from error.log
+no todo: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^through a crlf-crlf filter to look prettyier a bit
+no todo:                                                                      + gep;normal;icmp;10.38.5.45;down;
+no todo:                                      - gep;normal;icmp;10.38.5.45;up;
+no todo: nrpe:critical ERROR 2 line(s) in diff
+no todo: + gep;normal;icmp;10.38.5.45;down;
+no todo: - gep;normal;icmp;10.38.5.45;up;
+no todo: result:
+no todo: asdf#show check track | begin result
+no todo:
+no todo:
+no todo: show banner needs to be include-able
+no todo:
+no todo: show backup-config if available
+no todo:
+no todo:
+no todo:
+no todo: it would not harm a lot to apply to the fillables like the check asdf
+no todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
+no todo: sdn905            wifi          sdn0/0                     10.1.1.50      2001:db8:1d::2
+no todo: sdn903            mchome-nat64  ethernet12                 10.2.1.10      2001:db8:2f::2
+no todo: sdn901            mchome-demo   ethernet11                 10.2.1.6       2001:db8:1c::2
+no todo: sdn6              pince-SW1     gigabitEthernet 1/0/3      null           null
+no todo: sdn5              pince-SW1     gigabitEthernet 1/0/2      null           null
+no todo: sdn2              laborSW2      ten-gigabitEthernet 1/0/4  null           null
+no todo: interface         hostname      iface                      ipv4           ipv6
+no todo: asdf#show lldp neighbor | hinclude sdn
+no todo: usascii filter with configurable space to underscore for the term tab csv output

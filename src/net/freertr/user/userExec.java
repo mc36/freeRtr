@@ -4685,7 +4685,13 @@ public class userExec {
         cfgAll.reload = new userReload(mod, at);
     }
 
-    private pipeSide getShPipe(boolean col) {
+    /**
+     * get a show from a pipeline
+     *
+     * @param col use colors
+     * @return converted pipe
+     */
+    public final pipeSide getShPipe(boolean col) {
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;

@@ -20,42 +20,52 @@ public class encUrl {
      */
     public encUrl() {
     }
+
     /**
      * original string
      */
     public String orig;
+
     /**
      * protocol id
      */
     public String proto;
+
     /**
      * name of user
      */
     public String username;
+
     /**
      * password of user
      */
     public String password;
+
     /**
      * server name
      */
     public String server;
+
     /**
      * server port
      */
     public int port;
+
     /**
      * file path
      */
     public String filPath;
+
     /**
      * file name
      */
     public String filName;
+
     /**
      * file extension
      */
     public String filExt;
+
     /**
      * parameters
      */
