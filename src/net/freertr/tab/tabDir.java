@@ -1,6 +1,5 @@
 package net.freertr.tab;
 
-import java.io.File;
 import java.util.Comparator;
 
 /**
@@ -18,7 +17,7 @@ public class tabDir implements Comparator<tabDir> {
     /**
      * position
      */
-    public final int pos;
+    public int pos;
 
     /**
      * the constructor
@@ -29,6 +28,16 @@ public class tabDir implements Comparator<tabDir> {
     public tabDir(int i, int p) {
         num = i;
         pos = p;
+    }
+
+    /**
+     * the constructor
+     *
+     * @param i the id number
+     */
+    public tabDir(int i) {
+        num = i;
+        pos = 0;
     }
 
     /**
@@ -43,6 +52,12 @@ public class tabDir implements Comparator<tabDir> {
             return -1;
         }
         if (o1.num > o2.num) {
+            return +1;
+        }
+        if (o1.pos < o2.pos) {
+            return -1;
+        }
+        if (o1.pos > o2.pos) {
             return +1;
         }
         return 0;

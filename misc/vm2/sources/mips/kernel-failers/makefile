@@ -1,0 +1,9 @@
+compASM 01-tlbModify.asm
+compASM 02-tlbLoad.asm
+compASM 03-tlbStore.asm
+compASM 04-addrLoad.asm
+compASM 05-addrStore.asm
+compASM 08-syscall.asm
+compASM 09-break.asm
+compASM 12-overflow.asm
+compASM 24-machineCheck.asm

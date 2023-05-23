@@ -1,0 +1,4 @@
+0                                       ;local Port (0=default)
+termout-ansi.code                       ;terminal filter
+c:\utils\shell.code                     ;startup process
+                                        ;startup parameters

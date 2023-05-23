@@ -1,0 +1,25 @@
+block mode pipeline should opened for this process.
+once opened, one request is passed. this request is
+answered, and the pipeline is closed.
+
+request:
+dword: media type; see below...
+string: username
+string: password
+string: information about source
+
+reply:
+dword: status; 0-ok, 1-noRight, 2-badpass, 3-nouser, 4-error
+dword: user id
+
+media types:
+001h-console
+002h-serial port
+004h-modem
+008h-telnet
+010h-ssh
+020h-ftp
+040h-ppp
+080h-radius
+100h-tacacs
+200h-ethernet

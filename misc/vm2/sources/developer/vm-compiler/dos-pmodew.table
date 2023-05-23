@@ -1,0 +1,862 @@
+--- @compiler prefix-code
+;wasm.exe filename.asm
+;wlink.exe   format os2 le   op stub=pmodew.exe   file filename.obj
+.386p
+_code segment use32 dword public 'CODE'
+assume cs:_code,ds:_data
+start:
+sti
+cld
+push ds
+pop es
+db 'WATCOM' ;this line is needed only for dos4gw...
+mov ebx,program_heap
+mov cx,bx
+shr ebx,16
+mov ax,0501h
+int 31h
+jc short start_j1
+shl ebx,16
+mov bx,cx
+mov [procTable_pos],ebx
+sub bx,bx
+mov cx,1
+mov ax,0501h
+int 31h
+jc short start_j1
+mov [procTable_hndlA],si
+mov [procTable_hndlB],di
+mov ah,1ah
+mov edx,offset dtaBuffer
+int 21h
+jmp proc_00000000;;program_main
+start_j1:
+mov ax,4cffh
+int 21h
+jmp short start_j1
+;-----------------------------------------------------------
+---
+
+--- @compiler postfix-code
+;-----------------------------------------------------------
+_code ends
+
+_data segment use32 dword public 'DATA'
+dtaBuffer db 512 dup (?)
+procTable_pos dd 0
+procTable_hndlA dw ?
+procTable_hndlB dw ?
+procTable_data dd procTable_max dup (?)
+_data ends
+
+_stack segment para stack 'STACK'
+db program_stack dup (?)
+_stack ends
+
+end start
+---
+
+
+
+--- memresize
+push ax
+push bx
+push si
+mov si,[procTable_hndlA]
+mov di,[procTable_hndlB]
+or ecx,ecx
+setz al
+or cl,al
+mov ebp,ecx
+rol ecx,16
+mov bx,cx
+rol ecx,16
+mov ax,0503h
+int 31h
+jc short @_err
+mov [procTable_hndlA],si
+mov [procTable_hndlB],di
+mov di,bx
+shl edi,16
+mov di,cx
+mov ecx,ebp
+jmp short @_vege
+@_err:
+sub ecx,ecx
+sub edi,edi
+@_vege:
+pop si
+pop bx
+pop ax
+---
+
+--- terminate
+mov ah,4ch
+int 21h
+---
+
+--- sleep
+sti
+hlt
+---
+
+--- memcopy
+rep movsb
+---
+
+--- memfillbyte
+rep stosb
+---
+
+--- memcopy2
+push esi
+push edi
+push ecx
+cmp esi,edi
+jb short @_j1
+rep movsb
+jmp short @_j2
+@_j1:
+std
+add esi,ecx
+add edi,ecx
+dec esi
+dec edi
+rep movsb
+cld
+@_j2:
+pop ecx
+pop edi
+pop esi
+---
+
+--- codecopy
+push esi
+push edi
+push ecx
+rep movsb
+pop ecx
+pop edi
+pop esi
+---
+
+--- console.clear
+mov ax,3
+int 10h
+---
+
+--- console.size
+mov ax,79
+mov bx,24
+---
+
+--- console.setcolor
+---
+
+--- console.gotoxy
+push ax
+push bx
+push dx
+mov dl,al
+mov dh,bl
+sub dx,0101h
+sub bx,bx
+mov ah,2
+int 10h
+pop dx
+pop bx
+pop ax
+---
+
+--- console.write
+push esi
+push dx
+push cx
+push ax
+@_j1:
+dec cx
+js short @_j2
+lodsb
+mov dl,al
+mov ah,2
+int 21h
+jmp short @_j1
+@_j2:
+pop ax
+pop cx
+pop dx
+pop esi
+---
+
+--- console.iskey
+mov ah,1
+int 16h
+setnz al
+---
+
+--- console.read
+push ax
+push esi
+mov ah,1
+int 16h
+jz short @_err
+mov ah,0
+int 16h
+mov esi,offset @_tab
+mov cx,ax
+@_j1:
+lodsw
+or ax,ax
+jz short @_j3
+cmp ax,cx
+je short @_j2
+lodsw
+jmp short @_j1
+@_j2:
+lodsw
+mov cx,ax
+jmp short @_ok
+@_j3:
+or cl,cl
+jz short @_err
+mov ch,0
+jmp short @_ok
+@_err:
+sub cx,cx
+jmp short @_end
+@_ok:
+xchg cl,ch
+mov [edi],cx
+mov cx,2
+jmp short @_end
+@_tab:
+dw 0f09h,8002h
+dw 0e08h,8003h
+dw 1c0dh,8004h
+dw 011bh,8005h
+dw 5200h,8006h
+dw 5300h,8007h
+dw 4700h,8008h
+dw 4f00h,8009h
+dw 4900h,800ah
+dw 5100h,800bh
+dw 4800h,800ch
+dw 5000h,800dh
+dw 4b00h,800eh
+dw 4d00h,800fh
+dw 3b00h,8014h
+dw 3c00h,8015h
+dw 3d00h,8016h
+dw 3e00h,8017h
+dw 3f00h,8018h
+dw 4000h,8019h
+dw 4100h,801ah
+dw 4200h,801bh
+dw 4300h,801ch
+dw 4400h,801dh
+dw 8500h,801eh
+dw 8600h,801fh
+dw 0
+@_end:
+pop esi
+pop ax
+---
+
+--- console.getdate
+push dx
+mov ah,4
+int 1ah
+mov ah,0
+mov al,dh
+db 0d4h,010h  ;aam 16
+db 0d5h,00ah  ;aad 10
+push ax
+mov al,dl
+db 0d4h,010h  ;aam 16
+db 0d5h,00ah  ;aad 10
+push ax
+mov al,ch
+db 0d4h,010h  ;aam 16
+db 0d5h,00ah  ;aad 10
+mov ch,al
+mov al,cl
+db 0d4h,010h  ;aam 16
+db 0d5h,00ah  ;aad 10
+mov cl,al
+mov al,ch
+imul ax,100
+mov ch,0
+add ax,cx
+pop cx
+pop bx
+pop dx
+---
+
+--- console.gettime
+push dx
+mov ah,2
+int 1ah
+mov ah,0
+mov al,ch
+db 0d4h,010h  ;aam 16
+db 0d5h,00ah  ;aad 10
+push ax
+mov al,cl
+db 0d4h,010h  ;aam 16
+db 0d5h,00ah  ;aad 10
+push ax
+mov al,dh
+db 0d4h,010h  ;aam 16
+db 0d5h,00ah  ;aad 10
+mov cx,ax
+pop bx
+pop ax
+pop dx
+---
+
+--- console.execwait
+mov bx,1
+---
+
+--- console.execnew
+mov bx,1
+---
+
+--- console.execbckgnd
+sub eax,eax
+mov bx,1
+---
+
+--- console.execinme
+sub eax,eax
+sub ecx,ecx
+mov bx,1
+---
+
+--- file.maxname
+mov ax,8
+---
+
+--- file.myname
+push ds
+push esi
+push edi
+push ax
+push bx
+mov ah,62h
+int 21h
+mov ds,bx
+pop bx
+sub esi,esi
+mov ax,[esi+2ch]
+mov ds,ax
+@_j1:
+or si,si
+js short @_j4
+lodsb
+or al,al
+jnz short @_j1
+lodsb
+or al,al
+jnz short @_j1
+lodsw
+dec ax
+jnz short @_j1
+sub cx,cx
+@_j2:
+lodsb
+or al,al
+jz short @_j3
+inc cx
+stosb
+jmp short @_j2
+@_j4:
+sub cx,cx
+@_j3:
+pop ax
+pop edi
+pop esi
+pop ds
+---
+
+--- file.myparam
+push ds
+push esi
+push edi
+push ax
+push bx
+mov ah,62h
+int 21h
+mov ds,bx
+pop bx
+pop ax
+mov esi,80h
+movzx cx,byte ptr [esi]
+or cx,cx
+jz short @_j3
+inc esi
+inc esi
+dec cx
+push cx
+@_j1:
+dec cx
+js short @_j2
+movsb
+jmp short @_j1
+@_j2:
+pop cx
+@_j3:
+pop edi
+pop esi
+pop ds
+---
+
+--- file.open
+push edx
+movzx ebx,byte ptr [esi]
+mov [esi+ebx+1],bh
+lea edx,[esi+1]
+mov ax,3d02h
+int 21h
+setc bl
+mov bh,0
+pop edx
+---
+
+--- file.close
+push ax
+mov bx,ax
+mov ah,3eh
+int 21h
+setc bl
+mov bh,0
+pop ax
+---
+
+--- file.read
+push ax
+push edx
+movzx ecx,cx
+jecxz short @_j1
+mov bx,ax
+mov edx,edi
+mov ah,3fh
+int 21h
+setc bl
+mov bh,0
+mov cx,ax
+@_j1:
+pop edx
+pop ax
+---
+
+--- file.write
+push ax
+push edx
+movzx ecx,cx
+jecxz short @_j1
+mov bx,ax
+mov edx,esi
+mov ah,40h
+int 21h
+setc bl
+mov bh,0
+mov cx,ax
+@_j1:
+pop edx
+pop ax
+---
+
+--- file.seek
+push ax
+push dx
+mov bx,ax
+mov ax,4200h
+mov dx,cx
+rol ecx,16
+int 21h
+setc bl
+mov bh,0
+rol ecx,16
+pop dx
+pop ax
+---
+
+--- file.getsize
+push ax
+push dx
+mov bx,ax
+mov ax,4201h
+sub cx,cx
+sub dx,dx
+int 21h
+jc short @_j1
+push dx
+push ax
+mov ax,4202h
+sub cx,cx
+sub dx,dx
+int 21h
+jc short @_j1
+mov bp,dx
+shl ebp,16
+mov bp,ax
+mov ax,4200h
+pop dx
+pop cx
+int 21h
+mov ecx,ebp
+@_j1:
+setc bl
+mov bh,0
+pop dx
+pop ax
+---
+
+--- file.getpos
+push ax
+push dx
+mov bx,ax
+mov ax,4201h
+sub cx,cx
+sub dx,dx
+int 21h
+setc bl
+mov bh,0
+mov cx,dx
+shl ecx,16
+mov cx,ax
+pop dx
+pop ax
+---
+
+--- file.truncate
+push ax
+push ecx
+push edx
+mov bx,ax
+mov ah,40h
+mov edx,offset dtaBuffer
+sub ecx,ecx
+int 21h
+setc bl
+mov bh,0
+pop edx
+pop ecx
+pop ax
+---
+
+--- file.create
+push edx
+push cx
+push ax
+movzx ebx,byte ptr [esi]
+mov [esi+ebx+1],bh
+lea edx,[esi+1]
+mov ah,3ch
+sub cx,cx
+int 21h
+jc short @_j1
+mov bx,ax
+mov ah,3eh
+int 21h
+@_j1:
+setc bl
+mov bh,0
+pop ax
+pop cx
+pop edx
+---
+
+--- file.erase
+push edx
+push ax
+movzx ebx,byte ptr [esi]
+mov [esi+ebx+1],bh
+lea edx,[esi+1]
+mov ah,41h
+int 21h
+setc bl
+mov bh,0
+pop ax
+pop edx
+---
+
+--- dir.current
+push ax
+push dx
+push esi
+push edi
+inc edi
+mov ah,19h
+int 21h
+add al,'a'
+stosb
+mov ax,5c3ah
+stosw
+mov ah,47h
+mov dl,0
+mov esi,edi
+int 21h
+@_j1:
+lodsb
+or al,al
+jnz short @_j1
+lea edi,[esi-1]
+mov al,'\'
+stosb
+mov ax,di
+pop edi
+sub ax,di
+dec ax
+mov [edi],al
+pop esi
+pop dx
+pop ax
+mov bx,0
+---
+
+--- dir.change
+push edx
+push ax
+movzx ebx,byte ptr [esi]
+mov [esi+ebx+1],bh
+cmp bl,3
+je short @_j0
+mov al,[esi+ebx]
+cmp al,'\'
+jne short @_j0
+mov [esi+ebx+0],bh
+@_j0:
+lea edx,[esi+1]
+mov ax,[esi+1]
+cmp ah,':'
+jne short @_j1
+push edx
+or al,20h
+sub al,'a'
+mov dl,al
+mov ah,0eh
+int 21h
+pop edx
+jc short @_j2
+@_j1:
+mov ah,3bh
+int 21h
+@_j2:
+setc bl
+mov bh,0
+pop ax
+pop edx
+---
+
+--- dir.rename
+push ax
+push edx
+movzx ebx,byte ptr [esi]
+mov [esi+ebx+1],bh
+movzx ebx,byte ptr [edi]
+mov [edi+ebx+1],bh
+lea edx,[esi+1]
+inc edi
+mov ah,56h
+int 21h
+setc bl
+mov bh,0
+dec edi
+pop edx
+pop ax
+---
+
+
+--- dir.create
+push edx
+push ax
+movzx ebx,byte ptr [esi]
+mov [esi+ebx+1],bh
+lea edx,[esi+1]
+mov ah,39h
+int 21h
+setc bl
+mov bh,0
+pop ax
+pop edx
+---
+
+--- dir.erase
+push edx
+push ax
+movzx ebx,byte ptr [esi]
+mov [esi+ebx+1],bh
+lea edx,[esi+1]
+mov ah,3ah
+int 21h
+setc bl
+mov bh,0
+pop ax
+pop edx
+---
+
+--- dir.statistic
+mov ah,36h
+mov dl,0
+int 21h
+movzx eax,ax
+movzx ecx,cx
+imul ecx,eax
+movzx eax,bx
+movzx ebx,dx
+sub ebx,eax
+mov edx,ecx
+sub ecx,ecx
+---
+
+--- dir.setrights
+mov bx,1
+---
+
+--- dir.setdate
+mov bx,1
+---
+
+--- dir.makelink
+mov bx,1
+---
+
+
+--- dir.open
+push edi
+push ecx
+mov edi,offset dtaBuffer
+add edi,256
+lodsb
+movzx ecx,al
+rep movsb
+mov eax,2a2e2ah
+stosd
+pop ecx
+pop edi
+push edx
+mov edx,offset dtaBuffer
+add edx,256
+mov cx,0ffh
+mov ah,4eh
+int 21h
+pop edx
+setc bl
+mov bh,0
+push ebx
+or bx,bx
+jnz short @_j2
+@_j1:
+mov ebx,offset dtaBuffer
+mov ebx,[ebx+1eh]
+cmp bl,2eh
+jne short @_j2
+mov ebx,offset dtaBuffer
+sub eax,eax
+mov [ebx+1eh],eax
+mov ah,4fh
+int 21h
+jnc short @_j1
+@_j2:
+pop ebx
+mov eax,12345678h
+---
+
+--- dir.close
+---
+
+--- dir.read
+mov ebx,offset dtaBuffer
+mov ebx,[ebx+1eh]
+or ebx,ebx
+jz @_j2
+push edi
+push esi
+push eax
+mov esi,offset dtaBuffer
+mov eax,[esi+1ah]
+stosd
+sub eax,eax
+mov al,[esi+15h]
+and al,10h
+shl al,3
+or al,7
+stosd
+sub eax,eax
+stosd
+push edi
+mov ax,[esi+18h]
+push ax
+shr ax,9
+add ax,1980
+stosw
+pop ax
+push ax
+shr ax,5
+and al,0fh
+stosb
+pop ax
+and al,1fh
+stosb
+mov ax,[esi+16h]
+push ax
+shr ax,11
+stosb
+pop ax
+push ax
+shr ax,5
+and al,3fh
+stosb
+pop ax
+and al,1fh
+add al,al
+stosb
+pop esi
+movsd
+movsd
+dec edi
+mov esi,offset dtaBuffer
+add esi,1eh
+push edi
+stosb
+@_j3:
+lodsb
+stosb
+or al,al
+jnz short @_j3
+lea eax,[edi-2]
+pop edi
+sub eax,edi
+stosb
+pop eax
+pop esi
+pop edi
+mov ah,4fh
+int 21h
+jnc short @_j1
+push edi
+push ecx
+push eax
+mov edi,offset dtaBuffer
+mov ecx,512
+sub eax,eax
+rep stosb
+pop eax
+pop ecx
+pop edi
+jmp short @_j1
+@_j2:
+push edi
+push ecx
+push eax
+mov ecx,32
+sub eax,eax
+rep stosb
+pop eax
+pop ecx
+pop edi
+@_j1:
+sub ebx,ebx
+---

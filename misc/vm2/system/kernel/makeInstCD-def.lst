@@ -1,0 +1,8 @@
+\system\drivers\console\sysload.code sysload.cod
+.\makeinstcd-def.cfg sysload.cfg
+\system\drivers\console\console.code
+\system\drivers\console\keyboard.code
+\system\drivers\disks\idehdd.code
+\system\otherfs\iso9660.code
+\system\otherfs\ramfs.code
+\utils\packer.code

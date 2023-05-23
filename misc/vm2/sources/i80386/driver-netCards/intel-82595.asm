@@ -1,0 +1,646 @@
+;-------------------------------
+nic_name db 'Intel EtherExpress Pro 10',0
+nic_date db %date,' ',%time,0
+nic_reqParam equ 010b
+nic_addrSize equ 6
+nic_maxPack equ 1502
+nic_minPack equ 48
+;-------------------------------
+
+;-------------------------------
+eep_RxBroad equ 000h            ;db: bit0=broadcasts, bit1=multicasts...
+eep_MemSize equ 004h            ;dd: size of memory...
+eep_RxBfSiz equ 008h            ;dd: size of rx buffer...
+eep_RxPoint equ 00ch            ;dd: receiver pointer...
+;-------------------------------
+
+;-------------------------------
+proc eep_ReadEEPROM
+;in:  bx-location...
+;     bank2 must be selected before calling it!
+;out: bx-data read...
+push eax
+push ecx
+push edx
+mov dx,10                       ;the eeprom register...
+add edx,def:[dataSeg_parPrt]
+call dword eep_readEeprom_j1
+or bx,180h                      ;the read command...
+mov al,2                        ;the eecs value...
+out dx,al
+call dword eep_readEeprom_j1
+mov ecx,8
+eep_ReadEEPROM_j3:
+mov ax,1
+shl ax,cl
+test bx,ax
+setnz al
+add al,al
+add al,al                       ;the eedi value...
+or al,2                         ;plus eecs...
+out dx,al
+call dword eep_readEeprom_j1
+or al,1                         ;plus eesk...
+out dx,al
+call dword eep_readEeprom_j1
+xor al,1                        ;minus eesk...
+out dx,al
+call dword eep_readEeprom_j1
+dec ecx
+jns byte eep_ReadEEPROM_j3
+mov al,2                        ;the eecs value...
+out dx,al
+call dword eep_readEeprom_j1
+sub ebx,ebx
+mov ecx,16
+eep_ReadEEPROM_j4:
+mov al,3                        ;load eecs + eesk...
+out dx,al
+call dword eep_readEeprom_j1
+in al,dx
+and al,8                        ;i need only eedo...
+setnz al
+shl bx,1
+or bl,al
+mov al,2                        ;the eecs value...
+out dx,al
+call dword eep_readEeprom_j1
+loopd eep_ReadEEPROM_j4
+mov al,1                        ;the eesk value...
+out dx,al
+call dword eep_readEeprom_j1
+mov al,0                        ;the nothing value...
+out dx,al
+call dword eep_readEeprom_j1
+pop edx
+pop ecx
+pop eax
+retnd
+eep_readEeprom_j1:
+push eax
+push edx
+push ecx
+mov dx,1                        ;the status register...
+add edx,def:[dataSeg_parPrt]
+mov ecx,16
+eep_readEeprom_j2:
+in al,dx
+loopd eep_readEeprom_j2
+pop ecx
+pop edx
+pop eax
+retnd
+endp
+;-------------------------------
+
+;-------------------------------
+proc nic_present
+mov edi,dataSeg_parBrd
+sub eax,eax
+dec eax
+mov def:[eep_RxBroad],al
+stosd ptr32
+stosd ptr32
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;test id register & counter...
+mov dx,2                        ;the id register...
+add edx,def:[dataSeg_parPrt]
+in al,dx
+mov ecx,20h
+nic_present_j1:
+mov bh,al
+in al,dx
+mov bl,al
+and bl,2ch
+cmp bl,24h                      ;is this my signature?
+jne word nic_present_err
+mov bl,al
+and bx,0c0c0h
+add bh,40h
+cmp bl,bh
+jne word nic_present_err
+loopd nic_present_j1
+;select bank2...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,80h                      ;select bank2...
+out dx,al
+;read eeprom contents...
+mov ecx,40h
+sub edx,edx
+mov edi,dataSeg_freMem
+nic_present_j2:
+mov ebx,edx
+call dword eep_ReadEEPROM
+mov eax,ebx
+stosw ptr32
+inc edx
+loopd nic_present_j2
+;test the checksum...
+mov ecx,40h
+sub edx,edx
+mov esi,dataSeg_freMem
+nic_present_j3:
+lodsw ptr32
+add dx,ax
+loopd nic_present_j3
+cmp dx,0babah                   ;is the checksum corrent?
+jne word nic_present_err
+mov esi,10                      ;position after the address...
+add esi,dataSeg_freMem
+mov edi,dataSeg_parAdr
+mov ecx,6
+nic_present_j4:
+dec esi
+mov al,def:[esi]
+stosb ptr32
+loopd nic_present_j4
+;stop receiver...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,11                       ;stop receiver...
+out dx,al
+;select bank1...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,40h                      ;select bank1...
+out dx,al
+;set limits out of range to avoid autowarping...
+mov dx,8                        ;the rx lower limit register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;load the limit...
+out dx,al
+mov dx,9                        ;the rx upper limit register...
+add edx,def:[dataSeg_parPrt]
+mov al,0fah                     ;load the limit...
+out dx,al
+mov dx,10                       ;the tx lower limit register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;load the limit...
+out dx,al
+mov dx,11                       ;the tx upper limit register...
+add edx,def:[dataSeg_parPrt]
+mov al,0fah                     ;load the limit...
+out dx,al
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;determine memory size...
+sub ebx,ebx
+nic_present_j5:
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+mov eax,ebx
+out dx,ax
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+mov eax,ebx
+out dx,ax
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+sub eax,eax
+out dx,ax
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+in ax,dx
+or ax,ax
+jnz byte nic_present_j6
+inc ebx
+inc ebx
+cmp ebx,0f000h
+jb byte nic_present_j5
+nic_present_j6:
+and ebx,0ff00h
+mov def:[eep_MemSize],ebx
+cmp ebx,1000h
+jb byte nic_present_err
+;test memory on card...
+mov esi,0aa55h
+sub edi,edi
+call dword nic_present_j7
+jc byte nic_present_err
+mov esi,055aah
+sub edi,edi
+call dword nic_present_j7
+jc byte nic_present_err
+sub esi,esi
+sub edi,edi
+dec edi
+call dword nic_present_j7
+jc byte nic_present_err
+sub esi,esi
+sub edi,edi
+call dword nic_present_j7
+jc byte nic_present_err
+clc
+retnd
+nic_present_err:
+stc
+retnd
+nic_present_j7: ;test memory...
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+sub eax,eax
+out dx,ax
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+mov ecx,def:[eep_MemSize]
+shr ecx,1
+mov eax,esi
+nic_present_j8:
+add eax,edi
+out dx,ax
+loopd nic_present_j8
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+sub eax,eax
+out dx,ax
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+mov ecx,def:[eep_MemSize]
+shr ecx,1
+mov ebx,esi
+nic_present_j9:
+add ebx,edi
+in ax,dx
+cmp ax,bx
+jne byte nic_present_j10
+loopd nic_present_j9
+clc
+retnd
+nic_present_j10:
+stc
+retnd
+endp
+;-------------------------------
+
+;-------------------------------
+proc nic_restart
+;reset the chip...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0eh                      ;the reset command...
+out dx,al
+;wait some time...
+mov esi,def:[dataSeg_tckSec]
+call dword timer_delay
+call dword nic_restart_j1
+;calculate buffer sizes...
+mov eax,def:[eep_MemSize]
+sub eax,700h                    ;minus the tx buffer...
+mov def:[eep_RxBfSiz],eax
+sub eax,eax
+mov def:[eep_RxPoint],eax
+;select bank1...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,40h                      ;select bank1...
+out dx,al
+;disable interrupts...
+mov dx,1                        ;the reg1 register...
+add edx,def:[dataSeg_parPrt]
+in al,dx
+and al,7fh                      ;disable interrupt enable bit...
+or al,2                         ;set word width bit...
+out dx,al
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;mask all interrupts...
+mov dx,3                        ;the interrupt mask register...
+add edx,def:[dataSeg_parPrt]
+mov al,0fh                      ;mask all the interrupts...
+out dx,al
+;clear interrupt status...
+mov dx,1                        ;the status register...
+add edx,def:[dataSeg_parPrt]
+mov al,0fh                      ;mask all the interrupts...
+out dx,al
+;select bank2...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,80h                      ;select bank2...
+out dx,al
+;set the interface address...
+mov dx,4                        ;the iadr0 register...
+add edx,def:[dataSeg_parPrt]
+mov esi,dataSeg_parAdr
+mov ecx,6
+nic_restart_j2:
+lodsb ptr32
+out dx,al
+inc edx
+loopd nic_restart_j2
+;throw bad packets, stop on error, chain tx...
+mov dx,1                        ;the reg1 register...
+add edx,def:[dataSeg_parPrt]
+in al,dx
+or al,0e0h                      ;set the bits needed...
+out dx,al
+;set receiver...
+mov dx,2                        ;the reg2 register...
+add edx,def:[dataSeg_parPrt]
+mov al,14h                      ;match broadcasts...
+out dx,al
+;clear test mode...
+mov dx,3                        ;the reg3 register...
+add edx,def:[dataSeg_parPrt]
+in al,dx
+and al,3fh                      ;clear test mode...
+out dx,al
+;select bank1...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,40h                      ;select bank1...
+out dx,al
+;setup receiver ring boundaries...
+mov dx,8                        ;the rx lower limit register...
+add edx,def:[dataSeg_parPrt]
+sub eax,eax
+out dx,al
+mov dx,9                        ;the rx upper limit register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+shr eax,8
+dec eax
+out dx,al
+mov dx,10                       ;the tx lower limit register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+shr eax,8
+out dx,al
+mov dx,11                       ;the tx upper limit register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_MemSize]
+shr eax,8
+dec eax
+out dx,al
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;initialize receiver...
+mov dx,4                        ;the rx bar register...
+add edx,def:[dataSeg_parPrt]
+sub eax,eax
+out dx,ax
+mov dx,6                        ;the rx stop register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+dec eax
+dec eax
+out dx,ax
+;initialize transmitter...
+mov dx,10                       ;the tx bar register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+add eax,10h
+out dx,ax
+;restart the chip...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,1eh                      ;the selective reset command...
+out dx,al
+;wait some time...
+mov esi,def:[dataSeg_tckSec]
+call dword timer_delay
+call dword nic_restart_j1
+;start receiver...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,08h                      ;the rx enable command...
+out dx,al
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;setup target offset...
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+out dx,ax
+;send the header...
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+mov ecx,10
+mov eax,8080h
+nic_restart_j3:
+out dx,ax
+loopd nic_restart_j3
+;receiver configuration...
+;select bank2...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,80h                      ;select bank2...
+out dx,al
+;set receiver...
+mov dx,2                        ;the reg2 register...
+add edx,def:[dataSeg_parPrt]
+mov ah,def:[eep_RxBroad]        ;read receiver status...
+mov al,14h
+test ah,1                       ;was broadcast requested?
+jnz byte nic_restart_j4
+or al,2                         ;disable broadcasts...
+nic_restart_j4:
+out dx,al
+;flush last command...
+mov dx,3                        ;the reg2 register...
+add edx,def:[dataSeg_parPrt]
+in al,dx
+out dx,al
+clc
+retnd
+nic_restart_j1: ;wait for chip to respond...
+;select bank2...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,80h                      ;select bank2...
+out dx,al
+;test for bank2...
+in al,dx
+and al,0c0h                     ;i need just the bank regs...
+cmp al,80h                      ;is this bank2?
+jne byte nic_restart_j1
+;select bank1...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,40h                      ;select bank1...
+out dx,al
+;test for bank1...
+in al,dx
+and al,0c0h                     ;i need just the bank regs...
+cmp al,40h                      ;is this bank1?
+jne byte nic_restart_j1
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;test for bank0...
+in al,dx
+and al,0c0h                     ;i need just the bank regs...
+or al,al                        ;is this bank0?
+jne byte nic_restart_j1
+retnd
+endp
+;-------------------------------
+
+;-------------------------------
+proc nic_test4dead
+clc
+retnd
+endp
+;-------------------------------
+
+;-------------------------------
+proc nic_ready4tx
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;setup source offset...
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+out dx,ax
+;read status...
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+in ax,dx
+test ax,80h                     ;was the done bit set?
+jz byte nic_ready4tx_err
+clc
+retnd
+nic_ready4tx_err:
+stc
+retnd
+endp
+;-------------------------------
+
+;-------------------------------
+proc nic_send
+mov ebp,ecx
+;build up header...
+mov edi,dataSeg_preFre
+mov ax,4                        ;the xmit command...
+stosw ptr32
+sub ax,ax                       ;the status...
+stosw ptr32
+mov eax,def:[eep_MemSize]
+sub eax,10h
+stosw ptr32
+lea eax,def:[ebp+12]            ;size of header+data...
+stosw ptr32
+mov esi,dataSeg_freMem
+movsd ptr32
+movsw ptr32
+mov ebx,esi
+mov esi,dataSeg_parAdr
+movsd ptr32
+movsw ptr32
+;setup target offset...
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+out dx,ax
+;send the header...
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+mov esi,dataSeg_preFre
+mov ecx,10
+rep
+  outsw ptr32
+;send the data...
+mov esi,ebx
+lea ecx,def:[ebp+1]
+shr ecx,1
+rep
+  outsw ptr32
+in ax,dx                        ;flush the card's cache...
+;set the pointer...
+mov dx,10                       ;the tx bar register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxBfSiz]
+out dx,ax
+;start transmit...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,4                        ;start xmit...
+out dx,al
+retnd
+endp
+;-------------------------------
+
+;-------------------------------
+proc nic_receive
+;select bank0...
+mov dx,0                        ;the command register...
+add edx,def:[dataSeg_parPrt]
+mov al,0                        ;select bank0...
+out dx,al
+;read rx bar register...
+mov dx,4                        ;the rx bar register...
+add edx,def:[dataSeg_parPrt]
+in ax,dx
+cmp ax,def:[eep_RxPoint]        ;is this my pointer?
+jne byte nic_receive_j1
+nic_receive_err:
+sub ecx,ecx
+retnd
+nic_receive_j1:
+;setup source offset...
+mov dx,12                       ;the host address register...
+add edx,def:[dataSeg_parPrt]
+mov eax,def:[eep_RxPoint]
+out dx,ax
+;read up header...
+mov dx,14                       ;the data io register...
+add edx,def:[dataSeg_parPrt]
+mov edi,dataSeg_preFre
+mov ecx,10
+rep
+  insw ptr32
+;get size of packet...
+mov esi,dataSeg_preFre
+mov ebp,def:[esi+6]             ;read size of packet...
+and ebp,3fffh                   ;get size of packet...
+sub ebp,12                      ;minus size of header...
+;get source address...
+mov edi,dataSeg_freMem
+mov eax,def:[esi+14]
+stosd ptr32
+mov ax,def:[esi+18]
+stosw ptr32
+mov ebx,def:[esi+4]             ;read next frame pointer...
+;read up the packet...
+lea ecx,def:[ebp+1]
+shr ecx,1
+rep
+  insw ptr32
+;update stop register...
+mov dx,6                        ;the rx stop register...
+add edx,def:[dataSeg_parPrt]
+mov eax,ebx
+mov def:[eep_RxPoint],eax
+or ax,ax
+jnz byte nic_receive_j2
+mov eax,def:[eep_RxBfSiz]
+nic_receive_j2:
+dec ax                          ;minus one...
+dec ax                          ;minus one...
+out dx,ax
+mov ecx,ebp
+retnd
+endp
+;-------------------------------

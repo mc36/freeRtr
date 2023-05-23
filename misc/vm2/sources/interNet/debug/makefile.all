@@ -1,0 +1,12 @@
+make portscan.make
+make protoconn.make
+make resolver.make
+make rtpconn.make
+make speedboth.make
+make speedrx.make
+make speedserv.make
+make speedtx.make
+make tcpconn.make
+make tcplisten.make
+make udpconn.make
+make wakeonlan.make

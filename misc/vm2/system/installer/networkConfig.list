@@ -1,0 +1,44 @@
+;vendor product driver                  parameters      ;comments...
+
+$10b7   $9000   3com-905.code           io=* mem=1      ;900_1
+$10b7   $9001   3com-905.code           io=* mem=1      ;900_2
+$10b7   $9004   3com-905.code           io=* mem=1      ;900_3
+$10b7   $9005   3com-905.code           io=* mem=1      ;900_4
+$10b7   $9006   3com-905.code           io=* mem=1      ;900_5
+$10b7   $900a   3com-905.code           io=* mem=1      ;900b_fl
+$10b7   $9050   3com-905.code           io=*            ;905_1
+$10b7   $9051   3com-905.code           io=*            ;905_2
+$10b7   $9055   3com-905.code           io=*            ;905b_1
+$10b7   $9058   3com-905.code           io=*            ;905b_2
+$10b7   $9200   3com-905.code           io=*            ;905c
+
+$10b7   $1700   3com-940.code           io=*            ;940
+$10b7   $80eb   3com-940.code           io=*            ;2000
+
+$1022   $2000   amd-pcnet32.code        io=*            ;pcnet32
+$1022   $2001   amd-pcnet32.code        io=*            ;pcnet32
+
+$1011   $0009   dec-21x4x.code          io=*            ;tulip
+$1011   $0019   dec-21x4x.code          io=*            ;tulip
+
+$8086   $1000   intel-82541.code        io=*            ;pro1000
+
+$8086   $1209   intel-82559.code        io=*            ;pro100
+
+$10ec   $8029   ne-x000.code            io=*            ;8029
+
+$10ec   $8139   rtl-8139.code           io=*            ;8139
+
+$10ec   $8169   rtl-8169.code           io=*            ;8169
+
+$1039   $0900   sis-900.code            io=*            ;sis900
+$1039   $7016   sis-900.code            io=*            ;sis7016
+
+$10b8   $0005   smc-9432.code           io=*            ;etherpower2
+
+$1106   $3065   via-vt6105.code         io=*            ;6102
+$1106   $3043   via-vt6105.code         io=*            ;86c100a
+$1106   $3106   via-vt6105.code         io=*            ;6105
+$1106   $3053   via-vt6105.code         io=*            ;vt6105m
+
+$14e4   $167d   bcm-57xx.code           mem=*           ;netXtreme

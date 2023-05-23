@@ -1,0 +1,46 @@
+Function doLower:Boolean;
+Var
+  buf:array[1..4*1024] of byte;
+  i,o,p,q:LongInt;
+Begin;
+doLower:=False;
+p:=sizeof(buf);
+if (pipeLineRecv(devPipe,buf,p)<>0) then p:=0;
+if (p<1) then begin;
+  pipeLineStats(devPipe,p,i,o);
+  if (p=0) then immErr('lower level closed connection!');
+  exit;
+  end;
+doLower:=True;
+dec(p,addrSiz);
+q:=addrSiz+1;
+o:=0;
+if (typeSiz>2) then begin;
+  i:=readWordMSB(buf[q]);
+  case i of
+    $800:o:=4;
+    $86dd:o:=6;
+    end;
+  inc(q,2);
+  dec(p,2);
+  end else begin;
+  o:=buf[q] shr 4;
+  end;
+case o of
+  4:begin;
+    move(buf[q],buf[5],p);
+    move(rem4ip[13],buf,4);
+    pipeLineSend(up4pipe,buf,p+4);
+    exit;
+    end;
+  6:begin;
+    move(buf[q],buf[21],p);
+    i:=0;
+    move(i,buf,sizeof(i));
+    move(rem6ip,buf[5],16);
+    pipeLineSend(up6pipe,buf,p+20);
+    exit;
+    end;
+  else WriteLn('unknown packet type!');
+  end;
+End;

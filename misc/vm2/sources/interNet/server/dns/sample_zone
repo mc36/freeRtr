@@ -1,0 +1,47 @@
+srv01.@                     ;name server for this zone...
+postmaster.@                ;administrator of zone...
+2002-03-20 01               ;serial number
+1800                        ;refresh
+300                         ;retry
+604800                      ;expire
+86400                       ;minimum
+86400                       ;ttl to use
+
+
+@               ns    srv01.@
+@               mx    10 srv01.@
+*.@             mx    11 srv01.@
+@               spf   "v=spf1 +mx -all"
+*.@             spf   "v=spf1 +mx -all"
+srv.@           cname SRv01.@
+SRv01.@         hinfo "i80686" "BugOS"
+SRv01.@         rp    "mc36.@" "srv01.@"
+SRv01.@         txt   "hello here, this is my server at home"
+
+office.@        ns    ns.mcoffice.hu
+
+;...zone nop.hu       host 1 127.0.0.1 53
+;...zone 6thecnis.hu  host 1 127.0.0.1 53
+
+10.1.0.1        ptr   SRv01.@
+10.1.0.2        ptr   SRv02.@
+10.1.0.3        ptr   SRv03.@
+1:2:3:4::1      ptr   SRv01.@
+1:2:3:4::2      ptr   SRv02.@
+1:2:3:4::3      ptr   SRv03.@
+10.1.0.50       ptr   pc01.@
+10.1.0.51       ptr   pc02.@
+10.1.0.52       ptr   pc03.@
+10.1.0.53       ptr   pc04.@
+
+SRv01.@         a     10.1.0.1
+SRv02.@         a     10.1.0.2
+SRv03.@         a     10.1.0.3
+SRv01.@         aaaa  1:2:3:4::1
+SRv02.@         aaaa  1:2:3:4::2
+SRv03.@         aaaa  1:2:3:4::3
+pc01.@          a     10.1.0.50
+pc02.@          a     10.1.0.51
+pc03.@          a     10.1.0.52
+pc04.@          a     10.1.0.53
+pc05.@          a     10.1.0.54

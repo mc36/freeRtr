@@ -1,0 +1,118 @@
+ ulti protokoll
+~~~~~~~~~~~~~~~~
+a protokoll szoveges protokoll; minden bejovo/kimeno sor vegen crlf (#13#10)
+karakterpar all. minden parancs 8 bites karakterekbol epul fel, de a 0..32
+intervallumbol nem kerulhet ki egyetlen karaktere sem. minden sor egy parancs,
+egyik parancs illetve parameter _SEM_ case-sensitive.
+ajanlott megjelenitesi mod az us-ascii.
+
+
+egy lap a kovetkezo 2 karakterrel irhato le:
+<szin><ertek>
+
+a lapok szinei a kovetkezok lehetnek:
+p - piros
+t - tok
+z - zold
+m - makk
+c - citrom-sarga (nincs szine;)
+
+a lapok ertekei a kovetkezok lehetnek:
+7 - hetes
+8 - nyolcas
+9 - kilences
+0 - tiz
+a - also
+f - felso
+k - kiraly
+s - asz
+
+minta: ps = piros asz.
+
+a mondasok a kovetkezok lehetnek:
+p - passz
+a - negy-asz
+4 - 40-100
+u - ulti
+b - betli (alapbol szintelen)
+2 - 20-100
+d - durtmars (alapbol szintelen)
+t - negy-tiz
+r - re (teritett)
+s - piros (piros az adut)
+
+minta: sr2ud = piros 20-100 ulti redurtmars
+
+a parancsok a kovetkezok lehetnek:
+
+S: sorszamod <szam>
+   a szerver a bejelentkezeskor kozli a jatekos sorszamat.
+   a <szam> 1..3 kozott van.
+
+C: nevem <nev>
+   a kliens a bejelentkezeskor kozli a sajat nevet.
+   a <nev> egy szobol all, tehat nem lehet benne space.
+
+S: hiba [barmifele szoveg]
+
+S: nevek <nev1> <nev2> <nev3>
+
+C: uzenet <szoveg>
+
+S: uzenet <szoveg>
+
+C: mennyiter <jatektipus>
+
+S: ennyiter <filler> <jatektipus> <magyarul mondva>
+
+S: ujjatek
+
+S: lapjaid <lapok>
+
+S: ellenfel <lapok>
+
+S: tarsad <lapok>
+
+S: jatek <jatekos> <jatektipus>
+
+S: mehet <jatekos>
+
+S: felvette <jatekos>
+
+S: szerinted
+
+C: mehet
+
+C: felveszem
+
+S: talon <lapok>
+
+C: licit <lapok> <jatektipus>
+
+S: szine
+
+C: szine <szin>
+
+S: jatszuk <jatekos> <szin> <jatektipus>
+
+C: vanegy <40ek> <20ak>
+
+S: vanegy <jatekos> <40ek> <20ak>
+
+C: kontra <jatektipus>
+
+S: kontra <jatekos> <jatektipus>
+
+S: ujkor
+
+S: dobott <jatekos> <lap>
+
+S: dobjal
+
+C: dobok <lap>
+
+S: renonc <lapok>
+
+S: korveg <jatekos> <dobasok>
+
+S: jatekveg <talon> <1filler> <2filler> <3filler>

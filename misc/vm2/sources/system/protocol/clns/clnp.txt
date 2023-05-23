@@ -1,0 +1,11 @@
+block pipeline should opened for this process...
+after it, udp.listen packet mush be sent by the
+initiator. this process will send an opened message,
+and an empty data packet whichin the address field
+is filled with the address of connection endpoint.
+after that, data follow
+
+data packets are encapsulated in the following format:
+ byte:size of address
+ bytes:address
+ bytes:data

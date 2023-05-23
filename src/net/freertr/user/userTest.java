@@ -103,10 +103,10 @@ import net.freertr.util.cmds;
 import net.freertr.enc.encXml;
 import net.freertr.enc.encJson;
 import net.freertr.util.logger;
+import net.freertr.util.verCore;
 import net.freertr.enc.encPrtbuf;
 import net.freertr.enc.encThrift;
 import net.freertr.enc.encUrl;
-import net.freertr.vm.vm;
 
 /**
  * process test commands
@@ -410,7 +410,14 @@ public class userTest {
         if (a.equals("vm")) {
             a = cmd.word();
             try {
-                vm.doWork(pip, true, "", a, cmd.getRemaining());
+                a = cmd.word();
+                String s = cmd.getRemaining();
+                if (s.length() < 1) {
+                    s = verCore.vmDir;
+                }
+                userVM v = new userVM(pip, true, s);
+                v.doLoad(a, s);
+                v.doWork(pip, true, "", a, s);
             } catch (Exception e) {
                 logger.traceback(e);
             }

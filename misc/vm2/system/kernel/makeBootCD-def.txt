@@ -1,0 +1,11 @@
+publisher=nop.hu
+system=i80386
+volume=BugOS boot CD
+volset=1 of 1
+preparer=mc36
+boot=\bootCD.img
+
+\
+\sources\license.txt license.txt
+\bootcd.pck bootCD.pck
+\bootcd.img bootCD.img

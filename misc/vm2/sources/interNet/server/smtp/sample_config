@@ -1,0 +1,8 @@
+0                     ;local public Port (0=default)
+0                     ;local secure Port (-1=disabled)
+sample_hosts          ;relay hosts
+sample_users          ;known users
+c:\temp\              ;temporary path
+                      ;relay server
+                      ;relay user
+                      ;relay pass

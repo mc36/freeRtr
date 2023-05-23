@@ -1,0 +1,76 @@
+  general instruction format
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+instruction [par1][,par2][,par3]...
+
+
+  syntaxes
+~~~~~~~~~~~~
+[lab] db, dw, dd <dat>.....data number /byte, word, dword
+[lab] dt <dat>.............data text /same as db
+<lab> equ <num>............constans number
+proc <lab>, endp...........procedures
+segment <lab>, ends........segments
+<lab>:.....................label
+include <filename>.........include file
+incbin <filename>..........include binary file
+db <num> dup (<dat>).......duplicate data
+org <num>..................modify beginner ip /def: 100h/
+align <num>................round up ip to a number
+%date, %time...............current date/time
+%ver1, %ver2...............compiler information
+
+
+ extra parameters
+~~~~~~~~~~~~~~~~~~
+<dat>......................<num>,'string',?,offset <lab>,segment <lab>
+segment <lab>..............segment of label, data, etc...
+offset <lab>...............offset of label, data, etc...
+
+
+  registers
+~~~~~~~~~~~~~
+a, b, c, d, e, h, l, ixh, ixl...8 bit regs
+hl, ix, iy......................point regs
+bc, de, hl, ix, iy..............16 bit regs
+
+
+  addressing modes
+~~~~~~~~~~~~~~~~~~~~
+grp={ix, iy, hl}
+num={ñnum/+ofs}
+ofs=[num] [+grp]
+
+
+  conditions
+~~~~~~~~~~~~~~
+nz, z, nc, c, po, pe, p, m......flag bits
+
+
+  CPU instructions
+~~~~~~~~~~~~~~~~~~~~
+ld.........................reg8,reg8; reg8,num; reg8,mem; mem,reg8
+ld.........................reg16,num; reg16,mem; mem,reg16; reg16,reg16
+push, pop..................reg16
+ex.........................reg16,reg16; mem,reg16
+exx, daa, cpl, neg.........<n/a>
+rlca, rla, rrca, rra.......<n/a>
+ccf, scf, nop, halt........<n/a>
+di, ei, im0, im1, im2......<n/a>
+ld, cp.....................-i; -ir; -d; -dr
+add, adc, sub, sbc.........reg8,reg; reg8,num, reg8,mem
+and, or, xor, cp...........------||------
+inc, dec...................reg8; mem8; reg16
+add, adc, sbc..............reg16, reg16
+rlc, rl, rrc, rr...........reg8; mem8
+sla, sll, sra, srl.........reg8; mem8
+bit, set, res..............reg8; mem8
+jp.........................ofs16; reg16
+call.......................ofs16
+jp, call...................cc,ofs16
+jr, djnz...................ofs8
+jr.........................cc,ofs8
+ret, reti, retn............<n/a>
+ret........................cc
+rst........................num8
+in.........................reg8,mem
+out........................mem,reg8

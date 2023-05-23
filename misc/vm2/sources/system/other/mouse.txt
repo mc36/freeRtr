@@ -1,0 +1,7 @@
+block mode pipeline should opened for this process.
+when the pipeline is opened, this process will send
+a packet when .the mouse moved, or a button pressed.
+the format is the following:
+byte: button status: bits presents buttons.
+dword: signed long integer with the x movement...
+dword: signed long integer with the y movement...

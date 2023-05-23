@@ -1,0 +1,12 @@
+make ethercomp.make
+make etherdelay.make
+make etherdisasm.make
+make etherdump.make
+make etherecho.make
+make etheremu.make
+make etherhub.make
+make etherterm.make
+make ethersend.make
+make etherspeed.make
+make etherlogger.make
+make logviewer.make

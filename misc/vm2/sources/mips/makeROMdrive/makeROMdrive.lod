@@ -1,0 +1,358 @@
+org 0h
+db 'exec'                       ;id
+dd offset lastbyte              ;size
+dd drvBuf__siz                  ;data
+dd 512                          ;stack
+;-------------------------------
+
+;-------------------------------
+ori t0,r0,2eh
+syscall 0                       ;get data offset...
+or gp,r0,t0
+addiu at,gp,drvBuf_hdr
+sw r0,0,gp
+ori t1,r0,driveLetter
+or t2,r0,gp
+ori t0,r0,29h
+syscall 0                       ;login as drive letter...
+beq t0,r0,waitCmd_j2
+noop
+waitCmd_j1:
+ori t1,r0,1
+or t0,r0,r0
+syscall 0                       ;terminate process...
+j waitCmd_j1
+noop
+waitCmd_j2:
+ori t0,r0,1
+syscall 0                       ;give away the control...
+lw t0,drvBuf_cmd,gp
+srl t1,t0,31
+beq t1,r0,waitCmd_j2
+noop
+andi t0,t0,0ffffh
+addiu t0,t0,-1
+bltz t0,finishCmd_err
+noop
+sll t0,t0,2
+ori t1,r0,offset commandList_beg
+addu t0,t0,t1
+ori t1,r0,offset commandList_end
+subu t1,t1,t0
+blez t1,finishCmd_err
+noop
+lw t0,0,t0
+jr t0
+noop
+finishCmd_err:
+ori t0,r0,1
+j finishCmd_norm
+noop
+finishCmd_ok:
+or t0,r0,r0
+finishCmd_norm:
+andi t0,t0,0ffffh
+sw t0,drvBuf_cmd,gp
+ori t0,r0,2fh                   ;terminate drive handler...
+syscall 0
+j waitCmd_j2
+noop
+;-------------------------------
+
+;-------------------------------
+proc getPath
+ori t0,r0,3
+sb t0,0,t1
+ori t0,r0,driveLetter
+sb t0,1,t1
+ori t0,r0,':'
+sb t0,2,t1
+ori t0,r0,'\'
+sb t0,3,t1
+jr ra
+noop
+endp
+;-------------------------------
+
+;-------------------------------
+proc lowerCase
+;in:  t0-char...
+;out: t0-char...
+andi t0,t0,0ffh
+addiu t0,t0,-65
+bltz t0,lowerCase_j1
+noop
+addiu t0,t0,-25
+bgtz t0,lowerCase_j2
+noop
+addiu t0,t0,5ah
+ori t0,t0,20h
+jr ra
+noop
+lowerCase_j1:
+addiu t0,t0,41h
+jr ra
+noop
+lowerCase_j2:
+addiu t0,t0,5ah
+jr ra
+noop
+endp
+;-------------------------------
+
+;------------------------------- command list...
+align 4h
+commandList_beg:
+dd offset command01,offset command02
+dd offset finishCmd_err,offset finishCmd_err,offset finishCmd_err
+dd offset finishCmd_err,offset finishCmd_err,offset finishCmd_err
+dd offset finishCmd_err,offset finishCmd_err
+dd offset command0B,offset command0C,offset command0D,offset command0E
+dd offset finishCmd_err
+dd offset command10,offset command11,offset command12,offset command13
+commandList_end:
+;-------------------------------
+
+;------------------------------- change directory: dir, fn1, usrID...
+proc command01
+addiu t1,gp,drvBuf_fn1
+jal getPath
+noop
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- drive statistics: data: free,used,bad,blockSize:dword...
+proc command02
+addiu t0,gp,drvBuf_dat
+lui t1,offset lastbyte
+ori t1,t1,offset lastbyte
+ori t2,r0,1
+sw r0,0,t0
+sw t1,4,t0
+sw r0,8,t0
+sw t2,12,t0
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- open directory: dir, fn1, usrID, hdr, data: inode,rights:dword; name:string...
+proc command0B
+addiu t1,gp,drvBuf_fn1
+jal getPath
+noop
+sw r0,drvBuf_hdr,gp
+addiu t1,gp,drvBuf_dat
+ori t2,r0,6666h
+sw t2,0,t1
+ori t2,r0,80h
+sw t2,4,t1
+addiu t1,t1,8
+jal getPath
+noop
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- read directory: hdr, data: size,right,own:dword; create,modify:time; name:string...
+proc command0C
+addiu t1,gp,drvBuf_dat
+ori t2,r0,40h
+command0C_j1:
+sw r0,0,t1
+addiu t1,t1,4
+addiu t2,t2,-1
+bgtz t2,command0C_j1
+noop
+lw t1,drvBuf_hdr,gp
+ori t2,r0,numberOfFiles
+subu t3,t2,t1
+blez t3,finishCmd_ok
+noop
+addiu t3,t1,1
+sw t3,drvBuf_hdr,gp
+sll t1,t1,3
+lw t1,offset dataBegin,t1
+addiu t2,gp,drvBuf_dat
+ori t3,t3,40h
+command0C_j2:
+lw t0,0,t1
+sw t0,0,t2
+addiu t1,t1,4
+addiu t2,t2,4
+addiu t3,t3,-1
+bgtz t3,command0C_j2
+noop
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- open file: dir, fn1, right, usrID, hdr, data: inode,rights:dword; name:string...
+proc command0D
+addiu t1,gp,drvBuf_fn1
+addiu t2,gp,drvBuf_fn1
+lbu t3,0,t1
+command0D_j1:
+blez t3,command0D_j2
+noop
+addiu t1,t1,1
+lbu t0,0,t1
+jal lowerCase
+noop
+sb t0,0,t2
+addiu t2,t2,1
+addiu t3,t3,-1
+addiu t0,t0,-92
+bne t0,r0,command0D_j1
+noop
+addiu t2,gp,drvBuf_fn1
+j command0D_j1
+noop
+command0D_j2:
+sb r0,0,t2
+ori s0,r0,numberOfFiles
+ori s1,r0,offset dataBegin
+command0D_j3:
+blez s0,finishCmd_err
+noop
+lw s2,0,s1
+addiu s0,s0,-1
+addiu s1,s1,8
+addiu t2,gp,drvBuf_fn1
+addiu t3,s2,27
+command0D_j4:
+lbu t0,0,t3
+lbu t1,0,t2
+jal lowerCase
+noop
+addiu t2,t2,1
+addiu t3,t3,1
+bne t0,t1,command0D_j3
+noop
+bne t0,r0,command0D_j4
+noop
+lw t0,0,s2
+lw t1,-4,s1
+sw r0,0,at                      ;+0 - position...
+sw t0,4,at                      ;+4 - size...
+sw t1,8,at                      ;+8 - binary...
+addiu t1,gp,drvBuf_dat
+sw s0,0,t1
+ori t2,r0,80h
+sw t2,4,t1
+addiu t1,t1,8
+jal getPath
+noop
+addiu t2,gp,drvBuf_dat
+addiu t2,t2,8
+lw t1,-8,s1
+lw t0,4,t1
+sw t0,-4,t2
+addiu t1,t1,26
+lbu t3,0,t1
+lbu t4,0,t2
+addu t0,t3,t4
+sb t0,0,t2
+addu t2,t2,t4
+command0D_j5:
+blez t3,finishCmd_ok
+noop
+addiu t1,t1,1
+addiu t2,t2,1
+addiu t3,t3,-1
+lbu t0,0,t1
+sb t0,0,t2
+j command0D_j5
+noop
+endp
+;-------------------------------
+
+;------------------------------- read file: hdr, size, data...
+proc command0E
+lw t3,drvBuf_siz,gp
+lw t1,0,at
+lw t0,4,at
+addu t2,t1,t3
+subu t0,t0,t2
+bltz t0,finishCmd_err
+noop
+sw t2,0,at
+lw t2,8,at
+addu t1,t1,t2
+addiu t2,gp,drvBuf_dat
+command0E_j1:
+blez t3,finishCmd_ok
+noop
+lbu t0,0,t1
+sb t0,0,t2
+addiu t1,t1,1
+addiu t2,t2,1
+addiu t3,t3,-1
+j command0E_j1
+noop
+endp
+;-------------------------------
+
+;------------------------------- seek file: hdr, data: position:dword...
+proc command10
+lw t0,drvBuf_dat,gp
+sw t0,0,at
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- get file size: hdr, data: filesize:dword...
+proc command11
+lw t0,4,at
+sw t0,drvBuf_dat,gp
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- get file pos: hdr, data: position:dword...
+proc command12
+lw t0,0,at
+sw t0,drvBuf_dat,gp
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- truncate file: hdr...
+proc command13
+lw t0,0,at
+lw t1,4,at
+beq t0,t1,finishCmd_err
+noop
+j finishCmd_ok
+noop
+endp
+;-------------------------------
+
+;------------------------------- drive buffer layout...
+drvBuf_cmd equ 000h             ;dd: command/result code...
+drvBuf_usr equ 004h             ;dd: user who wants to do...
+drvBuf_rgt equ 008h             ;dd: rights what user wants to do...
+drvBuf_siz equ 00ch             ;dd: buffer size...
+drvBuf_dir equ 010h             ;256: current directory...
+drvBuf_fn1 equ 110h             ;256: pathname #1...
+drvBuf_fn2 equ 210h             ;256: pathname #2...
+drvBuf_hdr equ 310h             ;512: file handle...
+drvBuf_dat equ 510h             ;64k: data buffer...
+drvBuf__siz equ 10510h          ;size of structure...
+;-------------------------------
+
+;-------------------------------
+driveLetter equ 64              ;the '@' char...
+align 10h
+;X;
+align 4
+dd 0
+lastbyte:
+;-------------------------------

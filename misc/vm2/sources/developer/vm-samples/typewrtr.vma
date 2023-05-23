@@ -1,0 +1,32 @@
+platform uniform
+syscall startup 10 512 4096
+procallocBeg 1 256
+procallocEnd 1 256
+
+label j1
+procaddr trg 1
+move uwuw c 128
+syscall console.read
+procaddr src 1
+label j2
+comp swsw c 2
+jmpc b j1
+
+movr duwuw a [src]
+comp uwuw a 1408
+jmpc e j3
+push w src
+push w c
+add w src 1
+move uwuw c 1
+syscall console.write
+pop w c
+pop w src
+sub w c 2
+add w src 1
+jump j2
+
+label j3
+procfree 1 256
+move uwuw a 0
+syscall terminate

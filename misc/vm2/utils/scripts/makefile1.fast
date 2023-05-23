@@ -1,0 +1,7 @@
+exec c:\utils\shell.code del z:\*
+exec c:\utils\shell.code copy * z:\
+noerr del c:\temp\ftp.code
+exec c:\utils\developer\spas\spas.code z:\ftp.pas i80386p
+exec c:\system\process\backgroundrun.code c:\utils\developer\utils\maker.code makefile2.fast
+exec c:\system\speedmeter.code
+exec c:\temp\ftp.code

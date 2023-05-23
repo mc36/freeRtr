@@ -254,7 +254,12 @@ public class userShow {
             if (i >= 0) {
                 rdr.putStrArr(bits.str2lst("errors=" + i));
             }
-            rdr.putStrArr(lst);
+            List<String> res = new ArrayList<String>();
+            for (i = 0; i < lst.size(); i++) {
+                a = lst.get(i);
+                res.add(a);
+            }
+            rdr.putStrArr(res);
             return null;
         }
         if (a.equals("logo")) {

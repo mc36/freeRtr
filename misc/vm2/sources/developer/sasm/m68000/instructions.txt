@@ -1,0 +1,143 @@
+  general instruction format
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+instruction[transfer size] [par1][,par2][,par3]...
+
+
+  syntaxes
+~~~~~~~~~~~~
+[lab] db, dw, dd <dat>.....data number /byte, word, dword
+[lab] dt <dat>.............data text /same as db
+<lab> equ <num>............constans number
+proc <lab>, endp...........procedures
+segment <lab>, ends........segments
+<lab>:.....................label
+include <filename>.........include file
+incbin <filename>..........include binary file
+db <num> dup (<dat>).......duplicate data
+org <num>..................modify beginner ip /def: 100h/
+align <num>................round up ip to a number
+%date, %time...............current date/time
+%ver1, %ver2...............compiler information
+
+
+ extra parameters
+~~~~~~~~~~~~~~~~~~
+<dat>......................<num>,'string',?,offset <lab>,segment <lab>
+segment <lab>..............segment of label, data, etc...
+offset <lab>...............offset of label, data, etc...
+
+
+  registers
+~~~~~~~~~~~~~
+d0, d1, d2, d3, d4, d5, d6, d7.....32 bit data regs
+a0, a1, a2, a3, a4, a5, a6, a7.....32 bit addr regs
+fp0, fp1, fp2, fp3.................64 bit fpu registers
+fp4, fp5, fp6, fp7.................------||------
+
+
+  addressing modes
+~~~~~~~~~~~~~~~~~~~~
+g1=data
+g2=addr
+g3=num
+g4=(addr)
+g5=-(addr)
+g6=(addr)+
+g7=(num)
+g8=(num16,addr)
+g9=(num,addr,reg.size*scale)
+g10=([num,addr],reg.size*scale,num)
+g11=([num,(z)pc],reg.size*scale,num)
+g12=([num,addr,reg.size*scale],num)
+g13=([num,(z)pc,reg.size*scale],num)
+ofs={g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13}
+
+
+  CPU conditions
+~~~~~~~~~~~~~~~~~~
+t, f, hi, ls, cc, cs, ne...flag bits
+eq, vc, vs, pl, mi, ge.....------||------
+lt, gt, le.................------||------
+
+
+  FPU conditions
+~~~~~~~~~~~~~~~~~~
+eq, ne, gt, ngt, ge, nge...flag bits
+lt, nlt, le, nle, gl, ngl..------||------
+gle, ngle, ogt, ule, oge...------||------
+ult, olt, uge, ole, ugt....------||------
+ogl, ueq, or, un, f, t.....------||------
+sf, st, seq, sne...........------||------
+
+
+  CPU instructions
+~~~~~~~~~~~~~~~~~~~~
+abcd, addx, sbcd, subx.....-.b; -.w; -.l; - reg,reg; -(addr),-(addr)
+add, and, or, sub..........-.b; -.w; -.l; - reg,ofs; ofs,reg
+adda, suba.................-.w; -.l; - ofs,addr
+addi, addq, andi, cmpi.....-.b; -.w; -.l; - num,ofs
+eori, ori, subi............------||------
+andi, eori, ori............-.b; - num,ccr
+asl, asr, lsl, lsr.........-.b; -.w; -.l; - reg,reg; num,ofs; ofs
+rol, ror, roxl, roxr.......------||------
+bchg, bclr, bset, btst.....reg,ofs num,ofs
+bfchg, bfclr, bfset........ofs{num:num}; ofs{reg:reg}
+bftst......................------||------
+bfexts, bfextu, bfffo......ofs{num:num},reg; ofs{reg:reg},reg
+bfins......................reg,ofs{num:num}; reg,ofs{reg:reg}
+bkpt, rtd, trp.............num
+callm......................num,ofs
+cas........................-.b; -.w; -.l; - reg,reg,ofs
+cas2.......................-.w; -.l; - reg:reg,reg:reg,reg:reg
+clr, jmp, jsr, tst, nbcd...ofs
+neg, negx, not, pea, tas...------||------
+chk, chk2, cmp, cmp2.......-.b; -.w; -.l; - ofs,reg
+cmpa, movea................------||------
+cmpm.......................-.b; -.w; -.l; - (addr)+,(addr)+
+divs, divu, muls, mulu.....-.w; -.l; -l.l; - ofs,reg; ofs,reg:reg
+eor........................-.b; -.w; -.l; - reg,ofs
+exg........................reg,reg
+ext.w, ext.l, extb.l, rtm..reg
+swap, unlk.................------||------
+lea........................ofs,reg
+link.......................-.w; -.l; - reg,num
+move.......................ofs,ofs; ccr,ofs; ofs,ccr; sr,ofs
+move16.....................(addr)+,(addr)+; (addr),(num); (addr)+,(num); (num),(addr); (num),(addr)+
+movem......................-.w; -.l; - <reglist>,ofs; ofs,<reglist>
+movep......................-.w; -.l; - reg,(num,addr); (num,addr),reg
+moveq......................num,reg
+nop, rtr, rts, trapv.......<n/a>
+pack, unpk.................reg,reg,num; -(addr),-(addr),num
+sCC........................ofs
+trapCC.....................<n/a>; num
+dbCC.......................reg,num
+bra, bsr, bCC..............num
+
+
+  FPU instructions
+~~~~~~~~~~~~~~~~~~~~
+fabs, fsabs, fdabs, fcos...-.l; -.s; -.x; -.p; -.w; -.d; -.b reg,reg; ofs,reg; reg
+facos, fasin, fatan, fint..------||------
+fatanh, fcosh, fetox.......------||------
+fetoxm1, fgetexp, fgetman..------||------
+fintrz, flog10, flog2......------||------
+flogn, flognp1, fneg.......------||------
+fsneg, fdneg, fsin, fsinh..------||------
+fsqrt, fssqrt, fdsqrt......------||------
+ftan, ftanh, ftentox.......------||------
+ftwotox....................------||------
+fadd, fsadd, fdadd, fcmp...-.l; -.s; -.x; -.p; -.w; -.d; -.b reg,reg; ofs,reg
+fdiv, fsdiv, fddiv, fmod...------||------
+fmul, fsmul, fdmul, frem...------||------
+fscale, fsgldiv, fsglmul...------||------
+fsub, fssub, fdsub.........------||------
+ftst.......................-.l; -.s; -.x; -.p; -.w; -.d; -.b reg; ofs
+fsincos....................-.l; -.s; -.x; -.p; -.w; -.d; -.b reg,reg,reg; ofs,reg,reg
+fmove, fsmove, fdmove......-.l; -.s; -.x; -.p; -.w; -.d; -.b reg,ofs; ofs,reg
+fmove......................fpcr,ofs; fpsr,ofs; fpiar,ofs; ofs,fpcr; ofs,fpsr; ofs,fpiar
+fmovecr....................num,reg
+fmovem.....................data,ofs; ofs,data; <reglist>,ofs; ofs,<reglist>
+fbCC.......................num
+fdbCC......................reg,num
+fsCC.......................ofs
+ftrapCC....................-.w; -.l <n/a>; num

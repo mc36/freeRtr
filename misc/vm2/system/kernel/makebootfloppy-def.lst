@@ -1,0 +1,4 @@
+\system\drivers\console\sysload.code sysload.cod
+.\makebootfloppy-def.cfg sysload.cfg
+\system\drivers\disks\floppy.code
+\system\filesystem\filesystem.code

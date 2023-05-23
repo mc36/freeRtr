@@ -1,0 +1,312 @@
+--- @compiler prefix-code
+org 10000h
+firstbyte:
+
+;init cpu...
+xor r0,r0,r0
+li r1,40h
+mtmsr r1
+
+;romdrive...
+lis r1,offset lastbyte
+ori r1,r1,offset lastbyte
+lis r2,memorySize
+ori r2,r2,memorySize
+srwi r2,r2,1
+sub r3,r2,r1
+srwi r3,r3,2
+copy_j1:
+lwz r4,0(r1)
+stw r4,0(r2)
+addi r1,r1,4
+addi r2,r2,4
+addi r3,r3,-1
+or. r3,r3,r3
+bc f,eq,copy_j1
+
+;code...
+lis r30,offset lastbyte
+ori r30,r30,offset lastbyte
+addi r30,r30,20h
+;stack...
+lis r1,program_stack
+ori r1,r1,program_stack
+add r30,r30,r1
+or r31,r0,r30
+addi r30,r30,20h
+;heap...
+lis r1,program_heap
+ori r1,r1,program_heap
+addi r1,r1,20h
+add r1,r1,r30
+;proctab...
+lis r2,firstFreeMem
+ori r2,r2,firstFreeMem
+add r1,r1,r2
+;extmem...
+lis r2,offset extMemBegin
+ori r2,r2,offset extMemBegin
+stw r1,0(r2)
+;freemem...
+lis r8,firstFreeMem
+ori r8,r8,firstFreeMem
+add r8,r8,r30
+stw r8,freeMemPoint(r30)
+
+b program_main
+;-----------------------------------------------------------
+
+;-----------------------------------------------------------
+proc receiveChars
+lis r2,offset consoleWrt
+ori r2,r2,offset consoleWrt
+lwz r3,0(r2)
+lis r4,offset consoleBuf
+ori r4,r4,offset consoleBuf
+receiveChars_j1:
+lis r1,uartRxStat
+ori r1,r1,uartRxStat
+lbz r1,0(r1)
+andi. r1,r1,uartRxMask
+li r5,uartRxNeed
+sub. r1,r1,r5
+bc f,eq,receiveChars_j2
+lis r1,uartRxData
+ori r1,r1,uartRxData
+lbz r1,0(r1)
+andi. r3,r3,0ffh
+add r5,r4,r3
+stb r1,0(r5)
+addi r3,r3,1
+b receiveChars_j1
+receiveChars_j2:
+andi. r3,r3,0ffh
+stw r3,0(r2)
+bclr a,eq
+endp
+;-----------------------------------------------------------
+
+;-----------------------------------------------------------
+proc sendOneChar
+lis r1,uartTxStat
+ori r1,r1,uartTxStat
+lbz r1,0(r1)
+andi. r1,r1,uartTxMask
+li r2,uartTxNeed
+sub. r1,r1,r2
+bc f,eq,receiveChars
+lis r1,uartTxData
+ori r1,r1,uartTxData
+lbz r2,0(r24)
+stb r2,0(r1)
+addi r24,r24,1
+addi r22,r22,-1
+b receiveChars
+endp
+;-----------------------------------------------------------
+---
+
+--- @compiler postfix-code
+;-----------------------------------------------------------
+align 10h
+consoleBuf db 256 dup (0)
+consoleWrt dd 0
+consoleRed dd 0
+extMemBegin dd ?  ;crc
+lastbyte:
+---
+
+--- terminate
+lis r1,restartOfs
+ori r1,r1,restartOfs
+mtspr ctr,r1
+bcctr a,eq
+---
+
+--- sleep
+---
+
+--- memcopy
+@_j1:
+or. r22,r22,r22
+bc t,eq,offset @_j2
+lbz r10,0(r24)
+stb r10,0(r25)
+addi r24,r24,1
+addi r25,r25,1
+addi r22,r22,-1
+b @_j1
+@_j2:
+---
+
+--- memfillbyte
+@_j1:
+or. r22,r22,r22
+bc t,eq,offset @_j2
+stb r1,0(r25)
+addi r25,r25,1
+addi r22,r22,-1
+b @_j1
+@_j2:
+---
+
+--- memcopy2
+sub. r10,r25,r24
+bc f,gt,@_j2
+@_j1:
+or. r22,r22,r22
+bc t,eq,offset @_j4
+lbz r10,0(r24)
+stb r10,0(r25)
+addi r24,r24,1
+addi r25,r25,1
+addi r22,r22,-1
+b @_j1
+@_j2:
+add r24,r24,r22
+add r25,r25,r22
+@_j3:
+or. r22,r22,r22
+bc t,eq,offset @_j4
+addi r24,r24,-1
+addi r25,r25,-1
+lbz r10,0(r24)
+stb r10,0(r25)
+addi r22,r22,-1
+b @_j3
+@_j4:
+---
+
+--- codecopy
+@_j1:
+or. r22,r22,r22
+bc t,eq,offset @_j2
+lbz r10,0(r24)
+stb r10,0(r25)
+addi r24,r24,1
+addi r25,r25,1
+addi r22,r22,-1
+b @_j1
+@_j2:
+---
+
+--- memresize
+lis r1,offset extMemBegin
+ori r1,r1,offset extMemBegin
+lwz r25,0(r1)
+lis r2,memorySize
+ori r2,r2,memorySize
+sub r22,r2,r25
+---
+
+--- system.uptimeinfo
+li r20,0
+li r22,0
+;mfspr r22,tbl
+;srwi r22,r22,16
+li r23,1
+---
+
+--- file.open
+li r21,1
+---
+
+--- file.read
+li r21,1
+---
+
+--- file.getsize
+li r21,1
+---
+
+--- file.close
+li r21,1
+---
+
+--- file.myparam
+addi r25,r25,-1
+lis r1,-1
+ori r1,r1,-1
+stw r1,0(r25)
+lis r1,offset extMemBegin
+ori r1,r1,offset extMemBegin
+lwz r2,0(r1)
+stw r2,4(r25)
+lis r2,memorySize
+ori r2,r2,memorySize
+srwi r2,r2,1
+stw r2,8(r25)
+lis r1,24
+ori r1,r1,79
+stw r1,12(r25)
+li r22,15
+---
+
+--- console.write
+@_j1:
+or. r22,r22,r22
+bc t,eq,@_j2
+mfspr r7,lr
+bl sendOneChar
+mtspr lr,r7
+b @_j1
+@_j2:
+---
+
+--- console.read
+mfspr r7,lr
+bl receiveChars
+mtspr lr,r7
+lis r1,offset consoleWrt
+ori r1,r1,offset consoleWrt
+lis r2,offset consoleRed
+ori r2,r2,offset consoleRed
+lwz r4,0(r1)
+lwz r3,0(r2)
+sub. r4,r4,r3
+bc t,eq,@_j1
+andi. r3,r3,0ffh
+lis r1,offset consoleBuf
+ori r1,r1,offset consoleBuf
+add r1,r1,r3
+lbz r1,0(r1)
+sth r1,0(r25)
+addi r3,r3,1
+andi. r3,r3,0ffh
+stw r3,0(r2)
+b @_j2
+@_j1:
+li r1,8000h
+sth r1,0(r25)
+@_j2:
+li r22,2
+---
+
+--- console.iskey
+mfspr r7,lr
+bl receiveChars
+mtspr lr,r7
+lis r1,offset consoleWrt
+ori r1,r1,offset consoleWrt
+lis r2,offset consoleRed
+ori r2,r2,offset consoleRed
+lwz r1,0(r1)
+lwz r2,0(r2)
+li r20,0
+sub. r1,r1,r2
+bc t,eq,@_j1
+li r20,1
+@_j1:
+---
+
+--- console.getdate
+li r20,1999
+li r21,1
+li r22,2
+---
+
+--- console.gettime
+li r20,1
+li r21,2
+li r22,3
+---

@@ -1,0 +1,7 @@
+this driver contains three files... init is used to load
+the microcode to the card... stop is used to reset and
+stop the board... the term is a terminal over a pos of
+the board... when connection estabilished, the terminal
+will send four 0 chars over the console, and when the
+connection dropped, the terminal will exit... when it
+exits, it closes the connection...

@@ -1,0 +1,25 @@
+lightoff: 73
+lighton: 81
+shift: 42
+ctrl: 29
+alt: 56
+escape: 1,89
+tab: 15,58
+backspace: 13
+enter: 28
+left: 75
+right: 77
+up: 72
+down: 80
+space: 57
+f1..f12: 63,64,65,66 , 67,68,87,88 , 62,61,60,59
+1234567890: 2..11
+qwertyuiop: 16..25
+asdfghjkl: 30..38
+zxcvbnm: 44..50
+/: 14
+\: 39
+;: 51
+': 52
+,: 41
+.: 53

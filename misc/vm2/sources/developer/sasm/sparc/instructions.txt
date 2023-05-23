@@ -1,0 +1,64 @@
+  general instruction format
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+instruction [par1][,par2][,par3]...
+
+
+  syntaxes
+~~~~~~~~~~~~
+[lab] db, dw, dd <dat>.....data number /byte, word, dword
+[lab] dt <dat>.............data text /same as db
+<lab> equ <num>............constans number
+proc <lab>, endp...........procedures
+segment <lab>, ends........segments
+<lab>:.....................label
+include <filename>.........include file
+incbin <filename>..........include binary file
+db <num> dup (<dat>).......duplicate data
+org <num>..................modify beginner ip /def: 100h/
+uppershifter...............modify opcode parameter
+align <num>................round up ip to a number
+%date, %time...............current date/time
+%ver1, %ver2...............compiler information
+
+
+ extra parameters
+~~~~~~~~~~~~~~~~~~
+<dat>......................<num>,'string',?,offset <lab>,segment <lab>
+segment <lab>..............segment of label, data, etc...
+offset <lab>...............offset of label, data, etc...
+
+
+  registers
+~~~~~~~~~~~~~
+r0=g0, r1=g1, r2=g2........32 bit cpu registers...
+r3=g3, r4=g4, r5=g5........------||------
+r6=g6, r7=g7, r8=o0........------||------
+r9=o1, r10=o2, r11=o3......------||------
+r12=o4, r13=o5, r14=o6.....------||------
+r15=o7, r16=l0, r17=l1.....------||------
+r18=l2, r19=l3, r20=l4.....------||------
+r21=l5, r22=l6, r23=l7.....------||------
+r24=i0, r25=i1, r26=i2.....------||------
+r27=i3, r28=i4, r29=i5.....------||------
+r30=i6, r31=i7.............------||------
+
+  CPU instructions
+~~~~~~~~~~~~~~~~~~~~
+add, addcc, addx, addxcc...reg,reg/num,reg
+and, andcc, andn, andncc...------||------
+jmpl, ld, ldd, ldsb, ldub..------||------
+ldstub, lduh, mulscc, or...------||------
+orcc, orn, restore, rett...------||------
+save, sll, sra, srl, sub...------||------
+subcc, subx, subxcc, swap..------||------
+taddcc, taddcctv, tsubcc...------||------
+tsubcctv, xnor, xnorcc.....------||------
+xor, xorcc.................------||------
+b<cond>, call, unimp.......num
+iflush, t<cond>............reg,reg/num
+lda, ldda, ldsba, ldsha....reg,reg,num,reg
+ldstuba, lduba, lduha......------||------
+swapa......................------||------
+sethi......................num,reg
+st, stb, std, sth..........reg,reg,reg/num
+sta, stba, stda, stha......reg,reg,reg,num

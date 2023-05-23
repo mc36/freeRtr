@@ -1,0 +1,65 @@
+Procedure ReadUpConfig(a:String);
+Var t:xtText;
+
+function gnl:string;
+var
+  i:longint;
+  a:String;
+begin;
+a:=xtReadLn(t,255);
+i:=pos(';',a);
+if (i>0) then a:=copy(a,1,i-1);
+a:=' '+a+' ';
+kicserel('  ',' ',a);
+a:=copy(a,2,length(a)-2);
+gnl:=a;
+end;
+
+function free:LongInt;
+var i,o:longint;
+begin;
+o:=0;
+for i:=ConnectionNum downto 1 do if (ConnectionDat^[i].cmnd='') and (ConnectionDat^[i].mode=0) then o:=i;
+free:=o;
+end;
+
+Var
+  i,o:LongInt;
+  b:String;
+Begin;
+if (xtOpen(t,a,true)<>0) then immErr('error opening config!');
+o:=BVal(gnl);
+if (ResizeMem(o)<>0) then immErr('error allocating memory!');
+fillchar(ConnectionDat^,ConnectionNum*sizeof(OneConnectionRecord),0);
+controlChannel:=BVal(gnl)+1;
+if (controlChannel<=ConnectionNum) then ConnectionDat^[controlChannel].mode:=1;
+if (kicsi(gnl)='dce') then pollFinalXor:=2 else pollFinalXor:=0;
+termEndptId:=(BVal(gnl) shl 1) or 1;
+myPhoneNum:=gnl;
+dialingNum:=gnl;
+while not xtEOF(t) do begin;
+  a:=gnl;
+  if (a='') then continue;
+  if (copy(a,1,1)<>'!') then begin;
+    i:=free;
+    if (i<1) then continue;
+    ConnectionDat^[i].cmnd:=a;
+    continue;
+    end;
+  i:=pos(':',a);
+  o:=BVal(copy(a,2,i-2))+1;
+  a:=copy(a,i+1,666);
+  if (ConnectionDat^[o].cmnd<>'') and (ConnectionDat^[o].mode=0) then begin;
+    i:=free;
+    if (i>0) then ConnectionDat^[i]:=ConnectionDat^[o];
+    end;
+  if (a='') then i:=1 else i:=2;
+  ConnectionDat^[o].mode:=i;
+  ConnectionDat^[o].cmnd:=a;
+  end;
+xtClose(t);
+for i:=1 to ConnectionNum do begin;
+  ConnectionDat^[i].stat:=999;
+  ConnectionDat^[i].chn:=i;
+  end;
+End;

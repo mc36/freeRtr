@@ -178,7 +178,7 @@ public class version {
             sa.add(usrAgnt);
         }
         if ((head & 0x2000) != 0) {
-            sa.add(verCore.homeUrl);
+            sa.add(verCore.homeUrl1);
         }
         return sa;
     }

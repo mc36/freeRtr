@@ -47,7 +47,7 @@ public class userBrowser {
         console = pip;
         tempFile = version.getRWpath() + "web" + bits.randomD() + ".tmp";
         if (u.length() < 1) {
-            url = verCore.homeUrl;
+            url = verCore.homeUrl1;
         } else {
             url = u;
         }

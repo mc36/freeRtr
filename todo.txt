@@ -1,5 +1,16 @@
+client irc
+
 server security to have settable tls version from client knob first
 
+server security to log the transactions
+
+server security to stick to the good protocols
+
+server security to support bgp bmp mrt
+
+serevr security maximum pendings as access-security
+
+bgp stuff more tests for rfc9234
 
 server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 

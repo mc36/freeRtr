@@ -1,0 +1,152 @@
+  general instruction format
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+instruction [par1][,par2][,par3]...
+
+
+  syntaxes
+~~~~~~~~~~~~
+[lab] db, dw, dd <dat>.....data number /byte, word, dword
+[lab] dt <dat>.............data text /same as db
+<lab> equ <num>............constans number
+proc <lab>, endp...........procedures
+segment <lab>, ends........segments
+<lab>:.....................label
+include <filename>.........include file
+incbin <filename>..........include binary file
+db <num> dup (<dat>).......duplicate data
+org <num>..................modify beginner ip /def: 100h/
+align <num>................round up ip to a number
+%date, %time...............current date/time
+%ver1, %ver2...............compiler information
+
+
+ extra parameters
+~~~~~~~~~~~~~~~~~~
+<dat>......................<num>,'string',?,offset <lab>,segment <lab>
+segment <lab>..............segment of label, data, etc...
+offset <lab>...............offset of label, data, etc...
+
+
+  cpu registers
+~~~~~~~~~~~~~~~~~
+r0=a1, r1=a2, r2=a3........32 bit cpu registers...
+r3=a4,  r4=v1, r5=v2.......------||------
+r6=v3, r6=v4, r8=v5........------||------
+r9=v6, r10=v7, r11=v8......------||------
+r12, r13, r14, r15.........------||------
+
+
+  fpu registers
+~~~~~~~~~~~~~~~~~
+c0, c1, c2, c3, c4, c5.....32 bit fpu registers...
+c6, c7, c8, c9, c10, c11...------||------
+c12, c13, c14, c15.........------||------
+
+
+  conditions
+~~~~~~~~~~~~~~
+eq, ne, cs, hs, cc, lo
+mi, pl, vs, vc, hi, ls
+ge, lt, gt, le, al
+
+
+
+  addressing modes
+~~~~~~~~~~~~~~~~~~~~
+[reg]
+[reg]!
+[reg +-num]
+[reg +-num]!
+[reg +-reg]
+[reg +-reg]!
+[reg +-reg {lsl, lsr, asr, ror} num]
+[reg +-reg {lsl, lsr, asr, ror} num]!
+
+
+  CPU instructions
+~~~~~~~~~~~~~~~~~~~~
+adc[c][s], add[c][s].......reg,reg,reg; reg,reg,num
+and[c][s], bic[c][s].......------||------
+eor[c][s], orr[c][s].......------||------
+rsb[c][s], rsc[c][s].......------||------
+sbc[c][s], sub[c][s].......------||------
+b[c], bl[c], blx, blxh.....ofs
+bkpt, srs[i/d][a/b]].......num
+blx[c], bx[c], bxj[c]......reg
+cdp[c], cdp2...............Pnum,num,creg,creg,creg,num
+clz[c], cpy[c], rev[c].....reg,reg
+rev16[c], revsh[c].........------||------
+sxtb[c], sxtb16[c].........------||------
+sxth[c], uxtb[c]...........------||------
+uxtb16[c], uxth[c].........------||------
+cmn[c], cmp[c].............reg,num
+cps........................num
+cpsie, cpsid...............flags,num
+ldc[c][l], ldc2[l].........Pnum,creg,mem
+stc[c][l], stc2[l].........------||------
+ldm[c][i/d][a/b]...........reg[!],{reglist}
+stm[c][i/d][a/b]...........------||------
+ldr[c], ldr[c]b, ldr[c]d...reg,mem
+ldr[c]bt, ldrex[c].........------||------
+ldr[c]sb, ldr[c]sh.........------||------
+ldr[c]h, ldr[c]t, str[c]...------||------
+str[c]b, str[c]bt..........------||------
+str[c]d, str[c]h...........------||------
+mcr[c], mrc[c], mcr2.......Pnum,num,reg,creg,creg,num
+mrc2.......................------||------
+mcrr[c], mrrc[c], mcrr2....Pnum,num,reg,reg,creg
+mrrc2......................------||------
+mla[c][s], smlabb[c].......reg,reg,reg,reg
+smlabt[c], smlatb[c].......------||------
+smlatt[c], smlad[c]........------||------
+smladx[c], smlal[c][s].....------||------
+smlalbb[c], smlalbt[c].....------||------
+smlaltb[c], smlaltt[c].....------||------
+smlald[c], smlaldx[c]......------||------
+smlawb[c], smlawt[c].......------||------
+smlsd[c], smlsdx[c]........------||------
+smlsld[c], smlsldx[c]......------||------
+smmla[c], smmlar[c]........------||------
+smmls[c], smmlsr[c]........------||------
+smull[c][s], umull[c][s]...------||------
+umaal[c], umlal[c][s]......------||------
+usada8[c][s]...............------||------
+mov[c][s], mvn[c][s].......reg,reg; reg,num
+mrs[c], msr[c].............reg,CPSR; reg,SPSR
+mul[c][s], qadd[c].........reg,reg,reg
+qadd16[c], qadd8[c]........------||------
+qaddsubx[c], qdadd[c]......------||------
+qdsub[c], qdsub16[c].......------||------
+qdsub8[c], qsubaddx[c].....------||------
+sadd16[c], sadd8[c]........------||------
+saddsubx[c], sel[c]........------||------
+shadd16[c], shadd8[c]......------||------
+shaddsubx[c], shsub16[c]...------||------
+shsub8[c], shsubaddx[c]....------||------
+smmul[c], smmulr[c]........------||------
+smuad[c], smuadx[c]........------||------
+smulbb[c], smulbt[c].......------||------
+smultb[c], smultt[c].......------||------
+smulwb[c], smulwt[c].......------||------
+smusd[c], smusdx[c]........------||------
+ssub16[c], ssub8[c]........------||------
+ssubaddx[c], sxtab[c]......------||------
+sxtab16[c], sxtah[c].......------||------
+uadd16[c], uadd8[c]........------||------
+uaddsubx[c], uhadd16[c]....------||------
+uhadd8[c], uhaddsubx[c]....------||------
+uhsub16[c], uhsub8[c]......------||------
+uhsubaddx[c], uqadd16[c]...------||------
+uqadd8[c], uqaddsubx[c]....------||------
+ussub16[c], uqsub8[c]......------||------
+uqsubaddx[c], usad8[c].....------||------
+usub16[c], usub8[c]........------||------
+usubaddx[c], uxtab[c]......------||------
+uxtab16[c], uxtah[c].......------||------
+pkhbt[c], pkhtb[c].........reg,reg,reg; reg,reg,reg,num
+pld........................mem
+setend.....................BE; LE
+ssat[c], ssat16[c].........reg,num,reg
+usat[c], usat16[c].........------||------
+strex[c], swp[c], swp[c]b..reg,reg,mem
+teq[c], tst[c].............reg,reg; reg,num

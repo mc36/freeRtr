@@ -1256,7 +1256,7 @@ public class userHelping {
     public List<String> getYang(String path, String prefix) {
         List<String> res = new ArrayList<String>();
         res.add("module " + prefix + " {");
-        res.add("  namespace \"" + verCore.homeUrl + "yang/" + prefix + "\";");
+        res.add("  namespace \"" + verCore.homeUrl1 + "yang/" + prefix + "\";");
         res.add("  prefix \"" + prefix + "\";");
         cmds cp = new cmds("ya", path);
         String id = "  ";

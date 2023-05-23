@@ -1,0 +1,12 @@
+make beep.make
+make connect.make
+make digibeep.make
+make duplex.make
+make echo.make
+make lineemu.make
+make mixer.make
+make modem.make
+make peak.make
+make rawPlay.make
+make rawRec.make
+make volume.make

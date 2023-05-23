@@ -1,0 +1,31 @@
+block pipeline should opened for this process...
+after it, the process acts as tcp process...
+exceptions are the following:
+
+of course, udp not support...
+
+when client tries to connect, it sends a rtp.connect
+message. it's port field will be used to identify
+the requested service... after it, the tcp.connected
+message will be sent to the client when udp has
+opened the socket... at this point, the dtls must
+negotiate things... this process will send
+information to the client indicating the current
+status of connection... each will be encapsulated
+in a message.
+information will be the following:
+
+- error:<error message>
+- locUDP:<local ip address> <local port number>
+- remUDP:<remote ip address> <remote port number>
+- version:<protocol version>
+- plan.kex:<key exchange method>
+- plan.enc:<cipher>
+- plan.mac:<hash>
+- plan.cert:<certificate type>
+- plan.exp:<yes/no=exportable status>
+- cert:<certificate>[ <certificate>]...
+- hostcert:<type> <size>
+- hostkey:<type> <size>
+- secure
+  after it, the connection is estabilished...

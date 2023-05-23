@@ -1,0 +1,41 @@
+Function getCompilerNameAsm:String;
+Var a:String;
+Begin;
+asm codeOfs src @dat;
+asm VarAddr trg a;
+asm move udud c 255;
+asm syscall codeCopy;
+getCompilerNameAsm:=copy(a,1,pos(#0,a)-1);
+exit;
+asm label @dat;
+asm defb 255,%ver2,0;
+asm align 10h;
+asm defd 0,0,0,0;
+End;
+
+Function getCompilerNamePas:String;
+Const dat=#%ver2;
+Begin;
+getCompilerNamePas:=dat;
+End;
+
+Function getCompilerPlatform:String;
+Var a:String;
+Begin;
+a:=getCompilerNameAsm;
+a:=copy(a,1,pos(' ',a)-1);
+getCompilerPlatform:=copy(a,pos('-',a)+1,255);
+End;
+
+Procedure readBytesAfterCode(ps,siz:LongInt;var buf);
+Begin;
+asm VarAddr src ps;
+asm movR dudud a   [src];
+asm VarAddr src siz;
+asm movR dudud c [src];
+asm codeOfs src lastbyte;
+asm add d src a;
+asm VarAddr trg buf;
+asm AddrLod trg [trg];
+asm syscall codeCopy;
+End;

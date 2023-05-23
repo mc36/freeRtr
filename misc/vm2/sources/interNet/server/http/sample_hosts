@@ -1,0 +1,13 @@
+;host          rights  uid path      ;locally stored page...
+;host          rights  uid :host     ;forwarded page...
+;rights: 0-must exists
+;        d-directory listing
+;        r-read files
+;        x-execute files
+;        a-authenticate
+@              0dr   1234       d:\webpage1\
+mail.@         0drx  1234       d:\webpage2\
+ftp.@          0dr   1234       d:\webpage2\
+www.@          0dr   1234       :http://@/
+192.168.0.3    0drx  $ffffffff  c:\
+10.1.0.50      0drx  $ffffffff  c:\

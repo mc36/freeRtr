@@ -1,0 +1,10 @@
+make bluetooth\makefile
+make clns\makefile
+make etherdump\makefile
+make ethernet\makefile
+make ipx\makefile
+make isdn\makefile
+make limiter\makefile
+make multiplexer\makefile
+make softmodem\makefile
+make x25\makefile

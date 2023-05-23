@@ -11,6 +11,11 @@ public class verCore {
     }
 
     /**
+     * path of vm files
+     */
+    public static final String vmDir = "../vm2/";
+
+    /**
      * os name
      */
     public final static String name = "freeRouter-rare";
@@ -18,7 +23,7 @@ public class verCore {
     /**
      * author
      */
-    public final static String author = "sprs-ccie@mr.nobody";
+    public final static String author = "sprscc13@mr.nobody";
 
     /**
      * current public key
@@ -56,28 +61,37 @@ public class verCore {
     public static boolean release = false;
 
     /**
-     * url of product
+     * url1 of product
      */
-    public final static String homeUrl = "http://www.freertr.org/";
+    public final static String homeUrl1 = "http://www.freertr.org/";
+
+    /**
+     * url2 of product
+     */
+    public final static String homeUrl2 = "http://www.freertr.net/";
 
     /**
      * license text
      */
     public final static String[] license = {
-        "place on the web: " + homeUrl,
+        "place on the web: " + homeUrl1,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
-        "quote-4: respect the privacy of others, think before you type, with great power comes great responsibility",
-        "quote-3: true random comes from weather forecasts and political announcements",
-        "quote-2: stupid question deserves stupid answers",
-        "quote-1: just use your brain",
-        "quote0: know test and use your shit",
-        "quote1: do or not to do but don't try",
-        "quote2: music heals",
-        "quote3: ignorance kills",
-        "quote4: make the world better",
-        "quote5: if a machine can learn the value of human life, maybe we can too",
-        "quote6: let bloom all the flowers",
-        "quote7: keep it stupid simple",
+        "quote-8: respect the privacy of others, think before you type, with great power comes great responsibility",
+        "quote-7: true random comes from weather forecasts and political announcements",
+        "quote-6: debug emulate know test and use your sh1t",
+        "quote-5: stupid question deserves stupid answers",
+        "quote-4: fearless, stateless, self-containing",
+        "quote-3: do or not to do but don't try",
+        "quote-2: vm vm1 vm2 and music heals",
+        "quote-1: music music, noise noise",
+        "quote0: security in obfuscation",
+        "quote1: just use your brain",
+        "quote2: ignorance kills",
+        "quote3: make the world better",
+        "quote4: keep it stupid simple",
+        "quote5: let bloom all the flowers",
+        "quote6: type safety and origins like assembly",
+        "quote7: if a machine can learn the value of human life, maybe we can too",
         "quote8: be liberal in what you accept, and conservative in what you send",
         "quote9: the beer-ware license for selected group of people:",
         author + " wrote these files. as long as you retain this notice you",

@@ -1,0 +1,7 @@
+.\sysload.code sysLoad.cod
+.\sysload.cfg
+.\serial.code
+..\!comp\prog\ansi.code
+..\!comp\prog\serialGateway.code
+..\!comp\prog\serialSetup.code
+..\!comp\prog\processLister.code

@@ -1,0 +1,3 @@
+run c:\system\kernel\v86moni.code c:\system\v86utils\turnMonitorOff.v86 i
+run c:\system\process\waitforkeypress.code
+run c:\system\kernel\v86moni.code c:\system\v86utils\turnMonitorOn.v86 i

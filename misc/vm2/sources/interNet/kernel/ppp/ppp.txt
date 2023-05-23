@@ -1,0 +1,14 @@
+this process acts as an ethernet process except that this
+operates over hdlc lines... when data mode chosen, this process
+will relay any packet received from the upper level to the
+peer, and any packet received from the peer, will be relayed
+to the upper level... but there is no arp over the hdlc (since
+this is a virtual circuit;) so arp requests are not supported,
+dummy data returned for them...
+another exception from other processes that this process
+sends SignDaemoning sequence at least twice... first, when
+the connection with lower level is estabilished, second, when
+the peer has successfully configured, and ip addresses are
+valid and available... (if future reconfiguration is done,
+then another sequences are sent;) after every sequence, a
+textural dump is done about all the current parameters...

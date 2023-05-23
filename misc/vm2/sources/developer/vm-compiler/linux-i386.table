@@ -1,0 +1,848 @@
+--- @compiler prefix-code
+;nasm -fbin filename.asm
+bits 32
+%define origin 016a0000h
+;the ELF header...
+org origin
+ehdr:                           ;elf32_ehdr
+db 7fh,"ELF",1,1,1              ;  e_ident
+db 0,0,0,0,0,0,0,0,0
+dw 2                            ;  e_type
+dw 3                            ;  e_machine
+dd 1                            ;  e_version
+dd _start                       ;  e_entry
+dd phdr - $$                    ;  e_phoff
+dd 0                            ;  e_shoff
+dd 0                            ;  e_flags
+dw ehdrsize                     ;  e_ehsize
+dw phdrsize                     ;  e_phentsize
+phdr:                           ;elf32_phdr
+dw 1                            ;  e_phnum        p_type
+dw 0                            ;  e_shentsize
+dw 0                            ;  e_shnum        p_offset
+dw 0                            ;  e_shstrndx
+ehdrsize equ $ - ehdr
+dd $$                           ;  p_vaddr
+dd $$                           ;  p_paddr
+dd filesize                     ;  p_filesz
+dd memsize                      ;  p_memsz
+dd 7                            ;  p_flags
+dd 1000h                        ;  p_align
+phdrsize equ $ - phdr
+;-----------------------------------------------------------
+_start:
+
+;read up filename...
+pop ebp
+pop esi
+mov edi,_myname
+sub ecx,ecx
+inc edi
+_start_j1:
+lodsb
+stosb
+inc ecx
+or al,al
+jnz short _start_j1
+dec ecx
+mov [_myname],cl
+
+;read up parameters...
+dec ebp
+mov edi,_myparam
+sub ecx,ecx
+_start_j2:
+dec ebp
+js short _start_j4
+mov al,20h
+stosb
+inc ecx
+pop esi
+_start_j3:
+lodsb
+or al,al
+jz short _start_j2
+stosb
+inc ecx
+jmp short _start_j3
+_start_j4:
+mov [_myparam],cl
+
+;setup extended memory...
+mov eax,192
+sub ebx,ebx
+mov ecx,4096
+mov [_extsiz],ecx
+mov edx,03h
+mov esi,22h
+sub edi,edi
+sub ebp,ebp
+int 80h
+mov [_extmem],eax
+
+mov eax,_heap
+mov [procTable_pos],eax
+mov esi,_myparam
+lea edi,[esi+1]
+call convfilename
+mov esi,_myname
+lea edi,[esi+1]
+call convfilename
+
+jmp near program_main
+
+convfilename:
+push esi
+push edi
+push ecx
+push eax
+lodsb
+movzx ecx,al
+convfilename_j1:
+dec ecx
+js short convfilename_j5
+lodsb
+cmp al,'\'
+je short convfilename_j3
+cmp al,'/'
+je short convfilename_j4
+convfilename_j2:
+stosb
+jmp short convfilename_j1
+convfilename_j5:
+sub eax,eax
+stosb
+pop eax
+pop ecx
+pop edi
+pop esi
+ret
+convfilename_j3:
+mov al,'/'
+jmp short convfilename_j2
+convfilename_j4:
+mov al,'\'
+jmp short convfilename_j2
+
+;-----------------------------------------------------------
+---
+
+--- @compiler postfix-code
+;-----------------------------------------------------------
+filesize equ $ - $$
+ABSOLUTE origin + filesize
+ALIGNB 16
+.data
+_extmem resd 1
+_extsiz resd 1
+_myname resb 260
+_myparam resb 260
+_lastdir resb 260
+_buf resb 1024
+procTable_data resd procTable_max
+procTable_pos resd 1
+;_stack resb program_stack
+_heap resb program_heap
+
+memsize equ $ - origin
+;-----------------------------------------------------------
+---
+
+
+
+
+
+--- memresize
+push eax
+push ecx
+push edx
+push ebx
+push esi
+lea edx,[ecx+4095]
+and edx,0fffff000h
+mov eax,163
+mov ebx,[_extmem]
+mov ecx,[_extsiz]
+mov esi,1
+int 80h
+cmp eax,0fffff000h
+ja short @_j1
+mov [_extsiz],edx
+mov [_extmem],eax
+@_j1:
+pop esi
+pop ebx
+pop edx
+pop ecx
+pop eax
+mov edi,[_extmem]
+mov ecx,[_extsiz]
+---
+
+--- terminate
+movzx ebx,ax
+mov eax,1
+int 80h
+---
+
+--- sleep
+---
+
+--- memcopy
+rep movsb
+---
+
+--- memfillbyte
+rep stosb
+---
+
+--- memcopy2
+push esi
+push edi
+push ecx
+cmp esi,edi
+jb short @_j1
+rep movsb
+jmp short @_j2
+@_j1:
+std
+add esi,ecx
+add edi,ecx
+dec esi
+dec edi
+rep movsb
+cld
+@_j2:
+pop ecx
+pop edi
+pop esi
+---
+
+--- codecopy
+push esi
+push edi
+push ecx
+rep cs movsb
+pop ecx
+pop edi
+pop esi
+---
+
+--- console.clear
+push edi
+push ebx
+push edx
+push ecx
+push eax
+mov dx,bx
+mov bx,ax
+mov edi,_buf
+mov ax,5b1bh
+stosw
+mov ax,4a32h
+stosw
+lea edx,[edi-_buf]
+mov ecx,_buf
+mov ebx,1
+mov eax,4
+int 80h
+pop eax
+pop ecx
+pop edx
+pop ebx
+pop edi
+---
+
+--- console.size
+mov eax,79
+mov ebx,24
+---
+
+--- console.setcolor
+push edi
+push ebx
+push edx
+push ecx
+push eax
+mov bl,al
+mov edi,_buf
+mov eax,3b305b1bh
+stosd
+mov al,'1'
+mov bh,'3'
+call @_j1
+mov al,'5'
+shr bl,4
+mov bh,'4'
+call @_j1
+mov al,'m'
+mov [edi-1],al
+lea edx,[edi-_buf]
+mov ecx,_buf
+mov ebx,1
+mov eax,4
+int 80h
+pop eax
+pop ecx
+pop edx
+pop ebx
+pop edi
+ret
+@_d1 db '0','4','2','6','1','5','3','7'
+@_j1:
+test bl,8
+jz short @_j2
+stosb
+mov al,';'
+stosb
+@_j2:
+mov al,bh
+stosb
+mov al,bl
+and al,7
+movzx eax,al
+mov al,[@_d1+eax]
+stosb
+mov al,';'
+stosb
+---
+
+--- console.gotoxy
+push edi
+push ebx
+push edx
+push ecx
+push eax
+mov dx,bx
+mov bx,ax
+mov edi,_buf
+mov ax,5b1bh
+stosw
+mov ax,dx
+call @_j1
+mov al,';'
+stosb
+mov ax,bx
+call @_j1
+mov al,'H'
+stosb
+lea edx,[edi-_buf]
+mov ecx,_buf
+mov ebx,1
+mov eax,4
+int 80h
+pop eax
+pop ecx
+pop edx
+pop ebx
+pop edi
+ret
+@_j1:
+mov ah,0
+mov cl,10
+div cl
+or al,al
+jz short @_j2
+add al,'0'
+stosb
+@_j2:
+mov al,ah
+add al,'0'
+stosb
+---
+
+--- console.write
+push eax
+push ecx
+push edx
+push ebx
+movzx edx,cx
+mov ecx,esi
+mov ebx,1
+mov eax,4
+int 80h
+pop ebx
+pop edx
+pop ecx
+pop eax
+---
+
+--- console.read
+push eax
+push ecx
+push edx
+push ebx
+movzx edx,cx
+mov ecx,edi
+mov ebx,0
+mov eax,3
+int 80h
+pop ebx
+pop edx
+pop ecx
+mov cx,ax
+pop eax
+---
+
+--- file.maxname
+mov eax,256
+---
+
+--- file.myname
+push esi
+push edi
+mov esi,_myname
+movzx ecx,byte [esi]
+inc esi
+rep movsb
+pop edi
+pop esi
+movzx ecx,byte [_myname]
+---
+
+--- file.myparam
+push esi
+push edi
+mov esi,_myparam
+movzx ecx,byte [esi]
+inc esi
+rep movsb
+pop edi
+pop esi
+movzx ecx,byte [_myparam]
+---
+
+--- file.open
+push ecx
+push edi
+mov edi,_buf
+call convfilename
+pop edi
+mov ebx,_buf
+mov ecx,02h
+sub edx,edx
+mov eax,5
+int 80h
+setc bl
+movzx ebx,bl
+pop ecx
+movzx eax,ax
+---
+
+--- file.close
+push eax
+push ecx
+mov ebx,eax
+mov eax,6
+int 80h
+setc bl
+movzx ebx,bl
+pop ecx
+pop eax
+---
+
+--- file.read
+push edx
+push ecx
+push eax
+mov edx,ecx
+mov ebx,eax
+mov ecx,edi
+mov eax,3
+int 80h
+setc bl
+movzx ebx,bl
+pop eax
+pop ecx
+pop edx
+---
+
+--- file.write
+push edx
+push ecx
+push eax
+mov edx,ecx
+mov ebx,eax
+mov ecx,esi
+mov eax,4
+int 80h
+setc bl
+movzx ebx,bl
+pop eax
+pop ecx
+pop edx
+---
+
+--- file.seek
+push eax
+push ecx
+push edx
+mov ebx,eax
+sub edx,edx
+mov eax,19
+int 80h
+setc bl
+movzx ebx,bl
+pop edx
+pop ecx
+pop eax
+---
+
+--- file.getsize
+push eax
+push edx
+push ebp
+mov ebx,eax
+mov edx,1
+sub ecx,ecx
+mov eax,19
+int 80h
+push eax
+mov edx,2
+sub ecx,ecx
+mov eax,19
+int 80h
+mov ebp,eax
+pop ecx
+sub edx,edx
+mov eax,19
+int 80h
+setc bl
+movzx ebx,bl
+mov ecx,ebp
+pop ebp
+pop edx
+pop eax
+---
+
+--- file.getpos
+push eax
+push edx
+mov ebx,eax
+sub ecx,ecx
+mov edx,1
+mov eax,19
+int 80h
+setc bl
+movzx ebx,bl
+mov ecx,eax
+pop edx
+pop eax
+---
+
+--- file.truncate
+push eax
+push edx
+mov ebx,eax
+sub ecx,ecx
+mov edx,1
+mov eax,19
+int 80h
+mov ecx,eax
+mov eax,93
+int 80h
+setc bl
+movzx ebx,bl
+pop edx
+pop eax
+---
+
+--- file.create
+push eax
+push ecx
+push edi
+mov edi,_buf
+call convfilename
+pop edi
+mov ebx,_buf
+mov eax,8
+mov ecx,1ffh
+int 80h
+mov ebx,eax
+mov eax,6
+int 80h
+pop ecx
+mov ebx,eax
+pop eax
+---
+
+--- file.erase
+push eax
+push edi
+mov edi,_buf
+call convfilename
+pop edi
+mov ebx,_buf
+mov eax,40
+int 80h
+mov ebx,eax
+pop eax
+---
+
+--- dir.current
+push esi
+push eax
+push ecx
+mov eax,183
+mov ebx,_buf+1
+mov ecx,512
+int 80h
+mov esi,_buf+1
+sub ecx,ecx
+@_j1:
+inc ecx
+lodsb
+or al,al
+jnz short @_j1
+dec ecx
+mov al,'/'
+cmp [esi-2],al
+je short @_j2
+mov [esi-1],al
+inc ecx
+@_j2:
+mov [_buf],cl
+pop ecx
+pop eax
+push edi
+mov esi,_buf
+lea edi,[esi+1]
+call convfilename
+pop edi
+push edi
+push ecx
+mov esi,_buf
+mov ecx,64
+rep movsd
+pop ecx
+pop edi
+pop esi
+sub ebx,ebx
+---
+
+--- dir.change
+push eax
+push edi
+mov edi,_buf
+call convfilename
+pop edi
+mov ebx,_buf
+mov eax,12
+int 80h
+mov ebx,eax
+pop eax
+---
+
+--- dir.rename
+push eax
+push ecx
+push esi
+push edi
+mov edi,_buf
+call convfilename
+pop esi
+push esi
+mov edi,_buf+512
+call convfilename
+pop edi
+pop esi
+mov ebx,_buf
+mov ecx,_buf+512
+mov eax,38
+int 80h
+pop ecx
+mov ebx,eax
+pop eax
+---
+
+--- dir.create
+push eax
+push edi
+mov edi,_buf
+call convfilename
+pop edi
+mov ebx,_buf
+mov eax,39
+int 80h
+mov ebx,eax
+pop eax
+---
+
+--- dir.erase
+push eax
+push edi
+mov edi,_buf
+call convfilename
+pop edi
+mov ebx,_buf
+mov eax,10
+int 80h
+mov ebx,eax
+pop eax
+---
+
+--- dir.makelink
+push eax
+push ecx
+push esi
+push edi
+mov edi,_buf
+call convfilename
+pop esi
+push esi
+mov edi,_buf+512
+call convfilename
+pop edi
+pop esi
+mov ebx,_buf
+mov ecx,_buf+512
+mov eax,9
+int 80h
+pop ecx
+mov ebx,eax
+pop eax
+---
+
+--- dir.open
+push ecx
+push edi
+push esi
+mov edi,_buf
+call convfilename
+mov esi,_buf
+mov edi,_lastdir
+sub eax,eax
+@_j1:
+mov ah,al
+lodsb
+stosb
+or al,al
+jnz short @_j1
+cmp ah,'/'
+jne @_j2
+mov [esi-2],al
+mov [edi-2],al
+@_j2:
+pop esi
+pop edi
+mov ebx,_buf
+mov ecx,10000h
+mov edx,1ffh
+mov eax,5
+int 80h
+setc bl
+movzx ebx,bl
+pop ecx
+movzx eax,ax
+---
+
+--- dir.read
+push eax
+push ecx
+push edx
+push esi
+mov ebx,eax
+@_j1:
+mov ecx,32
+sub eax,eax
+rep stosd
+sub edi,128
+mov eax,89
+mov ecx,_buf
+mov edx,1
+int 80h
+dec eax
+jnz near @_j2
+mov esi,_buf+8
+mov eax,[esi]
+cmp eax,2e2e0002h
+je short @_j1
+and eax,0ffffffh
+cmp eax,2e0001h
+je short @_j1
+lodsw
+movzx ecx,al
+push edi
+add edi,26
+stosb
+rep movsb
+sub eax,eax
+stosb
+mov edi,_buf
+mov esi,_lastdir
+@_j3:
+lodsb
+stosb
+or al,al
+jnz short @_j3
+mov byte [edi-1],'/'
+pop esi
+push esi
+add esi,26
+lodsb
+movzx ecx,al
+rep movsb
+sub eax,eax
+stosb
+mov eax,107
+mov ebx,_buf
+mov ecx,ebx
+int 80h
+pop edi
+mov eax,[_buf+14h]
+stosd
+mov ecx,[_buf+08h]
+sub eax,eax
+test cx,4000h   ;dir
+setnz al
+test cx,0e00h   ;rt
+setnz bl
+shl eax,1
+or al,bl
+test cx,001h    ;anyexec
+setnz bl
+shl eax,1
+or al,bl
+test cx,002h    ;anywrite
+setnz bl
+shl eax,1
+or al,bl
+test cx,004h    ;anyread
+setnz bl
+shl eax,1
+or al,bl
+test cx,040h    ;ownexec
+setnz bl
+shl eax,1
+or al,bl
+test cx,080h    ;ownwrite
+setnz bl
+shl eax,1
+or al,bl
+test cx,100h    ;ownread
+setnz bl
+shl eax,1
+or al,bl
+stosd
+mov eax,[_buf+0ch]
+stosd
+sub edi,12
+@_j2:
+pop esi
+pop edx
+pop ecx
+pop eax
+sub ebx,ebx
+---
+
+--- dir.close
+push eax
+push ecx
+mov ebx,eax
+mov eax,6
+int 80h
+setc bl
+movzx ebx,bl
+pop ecx
+pop eax
+---

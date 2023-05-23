@@ -1,0 +1,90 @@
+this process is used to run 8086 code in a v86 environment...
+the memory available for the v86 process is very similar to
+real machines:
+000000-000400 - interrupt vector table...
+000400-001000 - bios area (copyed from system's memory;)
+001000-0a0000 - ram... 640k enough for everyone...;)
+0a0000-0c0000 - ram too! there is no video emulation, etc...
+0c0000-0d0000 - ram! (initially the video bios is here)
+0d0000-0f0000 - ram!!!
+0f0000-100000 - ram! (initially the system bios is here)
+100000-110000 - ram, NOT mapped to 0... (acting when a20 seted!:)
+so we can say, that the whole address space is ram, so be careful!
+
+the parameter is an asciiz string at 100h:0h... the program
+is loaded to 100h:100h and executed as a v86 process, so
+begin with these: use16; org 100h... the maximum loadable
+image size is 524288 bytes, but again, you can use the whole
+1mb as ram!
+
+fortunetly, this is not a pure 8086 emulation, code can use
+the most of 80386 instructions and have 32 bit registers too!
+the programs can reach some kernel-like functions through
+clts instruction... these functions depends on parameters,
+that which are allowed and which are not... the parameters
+what these functions excepts are the same as under the kernel...
+the addresses are all linear, originating to 0:0...
+the way of kernel functions are similar to 32bit code:
+clts                            ;coded as: db 0fh,06h
+dw sysCallNumber                ;the number of system call...
+WARNiNG!!! the function number is WORD!!!!!
+
+here is the list of privileges:
+*con  - console...
+*pipe - pipeline...
+*fs   - filesystem...
+*io   - i/o...
+
+here is a list of supported kernel functions:
+00000000h - terminate process...
+00000001h - give away the control...
+0000000Dh - find process by name... *pipe
+0000000Fh - get current process info...
+00000010h - get current user info...
+00000017h - create new pipeline... *pipe
+00000018h - close pipeline side... *pipe
+00000019h - get pipeline info... *pipe
+0000001Ah - nonblocking send through pipeline... *pipe
+0000001Bh - nonblocking receive through pipeline... *pipe
+0000001Fh - get console status... *con
+00000020h - write to console... *con
+00000021h - read from console... *con
+0000002Ah - get uptime info...
+0000002Bh - get uptime info...
+0000002Ch - get system date...
+0000002Dh - get system time...
+00000031h - get current directory... *fs
+00000032h - change current directory... *fs
+00000033h - create directory... *fs
+00000034h - erase directory... *fs
+00000035h - create file... *fs
+00000036h - erase file... *fs
+00000037h - rename dir entry... *fs
+00000038h - make link to entry... *fs
+00000039h - set rights of entry... *fs
+0000003Ah - set dates of entry... *fs
+0000003Bh - get current drive statistics... *fs
+0000003Ch - open directory... *fs
+0000003Dh - read directory... *fs
+0000003Eh - close directory... *fs
+0000003Fh - open file... *fs
+00000040h - read from file... *fs
+00000041h - write to file... *fs
+00000042h - seek in file... *fs
+00000043h - get file size... *fs
+00000044h - get file position... *fs
+00000045h - truncate file... *fs
+00000046h - close file... *fs
+00000047h - execute and wait... *fs
+
+some extended commands are available:
+0000004Dh - initialize io handler...
+            in: ax:bx-address of io handler... /0:0=disabled...
+            when handler is invoked, bl is loaded as size of operation
+            (1=byte, 2=word, 4=dword), bh is loaded as type (0=in, 1=out,
+            2=ins, 3=outs, 4=repins, 5=repouts), dx is loaded with port
+            number, and stack is loaded for pop_bx;pop_dx;iret sequence...
+
+0000004Eh - initialize timer handler...
+            in: ax:bx-address of timer handler... /0:0=disabled...
+            when handler is invoked, stack is loaded for iret sequence...

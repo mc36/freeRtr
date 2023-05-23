@@ -1,0 +1,188 @@
+Procedure gotNewIncomingConnection(p:LongInt);
+Label f1,f2;
+Var
+  buf:array[1..1024] of byte;
+  i,o,q:LongInt;
+  a:String;
+Begin;
+pipeLineStats(p,q,i,i);
+BugOS_ProcessName(q,buf,i,i,o);
+if (o and $40=0) then begin;
+  f1:
+  pipeLineClose(p);
+  exit;
+  end;
+for o:=1 to ConnectionNum do if (ConnectionDat^[o].pipe=0) then goto f2;
+goto f1;
+f2:
+ConnectionDat^[o].pipe:=p;
+i:=0;
+move(i,buf[1],sizeof(i));
+i:=1400;
+move(i,buf[5],sizeof(i));
+i:=0;
+move(i,buf[9],sizeof(i));
+move(i,buf[13],sizeof(i));
+i:=17;
+a:='ipsec with '+ipAddr2string(ConnectionDat^[o].addr);
+move(a[1],buf[i],sizeof(a));
+inc(i,length(a));
+buf[i]:=0;
+pipeLineSend(p,buf,i);
+WriteLn('interface for '+ipAddr2string(ConnectionDat^[o].addr)+' logged in!');
+End;
+
+
+
+Procedure relequish2connection(var con:OneConnectionRecord);
+Label f1,f2;
+Var
+  i,o,p:LongInt;
+  ps:LongInt;
+  buf:array[1..4*1024] of byte;
+  ipsec:OneIPSECheaderRecord absolute buf;
+  a:String;
+  ab:array[0..1] of byte absolute a;
+  ab0:byte absolute a;
+Begin;
+if (con.pipe=0) then goto f2;
+f1:
+ps:=sizeof(buf);
+if (pipeLineRecv(con.pipe,buf,ps)<>0) then ps:=0;
+if (ps<1) then begin;
+  pipeLineStats(con.pipe,o,i,i);
+  if (o<>0) then goto f2;
+  pipeLineClose(con.pipe);
+  con.pipe:=0;
+  WriteLn('interface for '+ipAddr2string(con.addr)+' logged out!');
+  goto f2;
+  end;
+if (con.stat<>1000) then goto f2;
+{$ifdef debug}dumpBinaryData('orig',buf,ps);{$endif}
+inc(con.remPcks);
+ab0:=con.encCS;
+for i:=1 to ab0 do ab[i]:=random($100);
+{$ifdef debug}dumpBinaryData('iv',ab[1],ab0);{$endif}
+o:=(ps+2) mod ab0;
+if (o>0) then o:=ab0-o;
+for i:=1 to o do begin;
+  inc(ps);
+  buf[ps]:=i;
+  end;
+inc(ps);
+buf[ps]:=o;
+inc(ps);
+buf[ps]:=4;
+CryptoUpdtCipher(con.encLRc,a);
+{$ifdef debug}dumpBinaryData('before',buf,ps);{$endif}
+CryptoAddEncrypt(con.encLRc,buf,ps);
+{$ifdef debug}dumpBinaryData('after',buf,ps);{$endif}
+move(buf,buf[ab0+sizeof(ipsec)+1],ps);
+inc(ps,ab0+sizeof(ipsec));
+move(ab[1],buf[sizeof(ipsec)+1],ab0);
+ipsec.spi:=con.remSPI;
+WriteLongMSB(ipsec.seq,con.remPcks);
+o:=ps;
+hmacGenerateSum(con.macLRa,con.macLRb,buf,buf[ps+1],o);
+inc(ps,con.encHS);
+UDPsendPacket(isakmpPipe2,con.addr,con.portR,buf,ps);
+{$ifdef debug}dumpBinaryData('sent to '+ipAddr2string(con.addr)+' '+BStr(con.portR),buf,ps);{$endif}
+goto f1;
+f2:
+if (getTimePast(con.time)<20) then exit;
+con.time:=currentTime;
+inc(con.retry);
+if (con.retry>20) then begin;
+  clearOneStateRecord(con);
+  con.time:=currentTime;
+  con.retry:=0;
+  exit;
+  end;
+if (con.stat=1000) then begin;
+  a:=#255;
+  UDPsendPacket(isakmpPipe2,con.addr,con.portR,ab[1],ab0);
+  {$ifdef debug}dumpBinaryData('sent to '+ipAddr2string(con.addr)+' '+BStr(con.portR),ab[1],ab0);{$endif}
+  exit;
+  end;
+if (con.mode=0) then exit;
+p:=con.lstGot;con.lstGot:=0;
+{$ifdef debug}WriteLn('got headers='+BStr(p)+' state='+BStr(con.stat));{$endif}
+case con.stat of
+  0:begin;
+    clearOneStateRecord(con);
+    generateLocalCookie(con);
+    con.portR:=isakmpPort1;
+    con.portL:=1;
+    con.time:=-99999;
+    con.stat:=30;
+    end;
+  30:begin;
+    if (p=1) then begin;
+      generateLocalNonce(con);
+      doDiffieHellmanRound1(con);
+      con.time:=-99999;
+      con.stat:=31;
+      exit;
+      end;
+    putIsaKmpHeader(con,buf,ps);
+    addMMsecAssHeader(con,buf,ps,true);
+    addNatVendorHeader(con,buf,ps,true);
+    sendIsaKmpMessage(con,buf,ps);
+    end;
+  31:begin;
+    if (p=6) then begin;
+      doDiffieHellmanRound2(con);
+      generateSecKeys(con);
+      con.portL:=2;
+      con.portR:=isakmpPort2;
+      con.time:=-99999;
+      con.stat:=132;
+      exit;
+      end;
+    putIsaKmpHeader(con,buf,ps);
+    addKeyExHeader(con,buf,ps);
+    addNonceHeader(con,buf,ps);
+    addNatDetectHeader(con,buf,ps);
+    addNatDetectHeader(con,buf,ps);
+    sendIsaKmpMessage(con,buf,ps);
+    end;
+  132:begin;
+    if (p=24) then begin;
+      generateLocalNonce(con);
+      generateLocalSPI(con);
+      con.msgID:=random($7fffffff);
+      con.isaG:=0;
+      generateQuickModeIV(con);
+      con.time:=-99999;
+      con.stat:=233;
+      exit;
+      end;
+    putIsaKmpHeader(con,buf,ps);
+    addIdentityHeader(con,buf,ps);
+    addHashingHeader(con,buf,ps,generateMMhashVal(con,0));
+    sendIsaKmpMessage(con,buf,ps);
+    end;
+  233:begin;
+    if (p=21) then begin;
+      con.time:=-99999;
+      con.stat:=234;
+      exit;
+      end;
+    putIsaKmpHeader(con,buf,ps);
+    addHashingHeader(con,buf,ps,generateQMhashVal(con,a,0,0));
+    p:=ps;
+    addQMsecAssHeader(con,buf,ps,true);
+    addNonceHeader(con,buf,ps);
+    a:=generateQMhashVal(con,buf[p+1],ps-p,0);
+    move(ab[1],buf[p-ab0+1],ab0);
+    sendIsaKmpMessage(con,buf,ps);
+    end;
+  234:begin;
+    putIsaKmpHeader(con,buf,ps);
+    addHashingHeader(con,buf,ps,generateQMhashVal(con,a,0,0));
+    sendIsaKmpMessage(con,buf,ps);
+    generateESPkeyMaterial(con);
+    end;
+  else clearOneStateRecord(con);
+  end;
+End;

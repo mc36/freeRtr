@@ -1,0 +1,6 @@
+run c:\system\process\daemonrun.code c:\system\drivers\disks\ramdrive.code 16384
+run c:\system\process\keycodesrun.code $79 c:\system\filesystem\makefs.code ramdrive.code 0 z
+run c:\system\process\daemonrun.code c:\system\filesystem\filesystem.code ramdrive.code 0 z
+del z:\bootimage.code
+md z:\temp
+rec-chmod z:\* $1b

@@ -1,0 +1,2 @@
+;class subclass protocol filename
+8      6        80       masstorage_scsi_bulk.code

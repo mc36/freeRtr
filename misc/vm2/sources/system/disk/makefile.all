@@ -1,0 +1,12 @@
+make makeromdrive.make
+make cdplayer.make
+make diskloader.make
+make disksaver.make
+make diskviewer.make
+make fdisk.make
+make ramdrive.make
+make ramfs.make
+make cdemu.make
+make raid.make
+make crypto.make
+make romfs.make

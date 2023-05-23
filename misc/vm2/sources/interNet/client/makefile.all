@@ -1,0 +1,12 @@
+make ftp.make
+make gopher.make
+make http.make
+make linePrinter.make
+make pop3.make
+make portConnect.make
+make sftp.make
+make sftpfs.make
+make smtp.make
+make snmp.make
+make tftp.make
+make wap.make

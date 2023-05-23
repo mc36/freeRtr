@@ -1,0 +1,94 @@
+;---
+;letter/none
+;pathname
+;parameters
+;
+;the following sequences are recognized:
+;\\ - single \
+;\1 - path of current panel...
+;\2 - filename of current panel...
+;\3 - extension of current panel...
+;\4 - prompt string...
+;\5 - path of opponent panel...
+;\6 - filename of opponent panel...
+;\7 - extension of opponent panel...
+
+---
+
+build current source tree
+c:\\utils\\developer\\utils\\maker.code \1makefile
+
+---
+
+build \2\3
+c:\\utils\\developer\\utils\\maker.code \1\2\3
+
+---
+
+build current source tree in background
+c:\\system\\process\\backgroundRun.code c:\\utils\\developer\\utils\\maker.code \1makefile
+
+---
+
+start shell
+c:\\utils\\shell.code
+
+---
+
+start speed meter
+c:\\system\\speedmeter.code
+
+---
+c
+compare \2\3 to \6\7
+c:\\utils\\comparer.code \1\2\3 \5\6\7
+
+---
+s
+run \2\3 as script
+c:\\utils\\shell.code script \1\2\3
+
+---
+
+compress \2\3 file
+c:\\utils\\compressor.code c \1\2\3
+
+---
+
+decompress \2\3 file
+c:\\utils\\compressor.code d \1\2\3
+
+---
+
+pack \1 to \4
+c:\\utils\\packer.code r \4 \1
+
+---
+x
+extract \2\3 archive
+c:\\utils\\packer.code x \1\2\3
+
+---
+t
+test \2\3 archive
+c:\\utils\\packer.code t \1\2\3
+
+---
+p
+start process monitor
+c:\\system\\process\\processMonitor.code
+
+---
+
+capture \2\3 to \4
+c:\\system\\process\\captureRun.code \4 \1\2\3
+
+---
+
+start \4 daemonized
+c:\\system\\process\\daemonRun.code \4
+
+---
+
+start \4 in background
+c:\\system\\process\\backgroundRun.code \4

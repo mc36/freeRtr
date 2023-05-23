@@ -1,0 +1,10 @@
+make bfd.make
+make bgp4listener.make
+make bgp6listener.make
+make daytime.make
+make finger.make
+make netflow.make
+make ntp.make
+make riplistener.make
+make syslog.make
+make time.make

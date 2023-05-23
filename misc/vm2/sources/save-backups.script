@@ -1,0 +1,8 @@
+del \sources.pck
+del \system.pck
+del \utils.pck
+del \internet.pck
+run \utils\packer.code r \sources.pck \sources
+run \utils\packer.code r \system.pck \system
+run \utils\packer.code r \utils.pck \utils
+run \utils\packer.code r \internet.pck \internet

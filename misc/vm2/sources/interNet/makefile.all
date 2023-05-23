@@ -1,0 +1,5 @@
+make cgi\makefile.all
+make client\makefile.all
+make debug\makefile.all
+make kernel\makefile.all
+make server\makefile.all

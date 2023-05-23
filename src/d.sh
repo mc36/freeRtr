@@ -10,6 +10,7 @@ rm -f *.log 2> /dev/null
 rm -f rtr*-.csv 2> /dev/null
 rm -f rtr*-.ftr 2> /dev/null
 rm -f rtr*-.html 2> /dev/null
+rm -f javac.*.args 2> /dev/null
 rm -f ../changelog*-.txt 2> /dev/null
 rm -rf ../binTmp/* 2> /dev/null
 rm -rf ../binOut/* 2> /dev/null

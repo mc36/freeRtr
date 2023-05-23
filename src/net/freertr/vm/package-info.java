@@ -1,5 +1,5 @@
 /**
- * authentication
+ * a virtual machine
  *
  * @author matecsaba
  */

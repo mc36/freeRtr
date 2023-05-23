@@ -1,0 +1,21 @@
+Type
+  OneDiffieHellmanGroup=record
+    g:BigNumContextRecord;
+    p:BigNumContextRecord;
+    end;
+Type
+  OneDSSkeyRecord=record
+    p:BigNumContextRecord;
+    q:BigNumContextRecord;
+    g:BigNumContextRecord;
+    x:BigNumContextRecord;
+    y:BigNumContextRecord;
+    end;
+Type
+  OneRSAkeyRecord=record
+    p:BigNumContextRecord;
+    q:BigNumContextRecord;
+    e:BigNumContextRecord;
+    n:BigNumContextRecord;
+    d:BigNumContextRecord;
+    end;

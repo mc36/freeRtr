@@ -57,6 +57,8 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 
 
 
+compileFile "vm" "" "" ""
+
 for fn in p4xdp_pass p4xdp_drop p4xdp_kern p4mnl_kern; do
   compileBpf $fn
   done

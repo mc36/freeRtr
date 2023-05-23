@@ -1,0 +1,77 @@
+  general instruction format
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+instruction [par1][,par2][,par3]...
+
+
+  syntaxes
+~~~~~~~~~~~~
+[lab] db, dw, dd <dat>.....data number /byte, word, dword
+[lab] dt <dat>.............data text /same as db
+<lab> equ <num>............constans number
+proc <lab>, endp...........procedures
+segment <lab>, ends........segments
+<lab>:.....................label
+include <filename>.........include file
+incbin <filename>..........include binary file
+db <num> dup (<dat>).......duplicate data
+org <num>..................modify beginner ip /def: 100h/
+align <num>................round up ip to a number
+%date, %time...............current date/time
+%ver1, %ver2...............compiler information
+
+
+ extra parameters
+~~~~~~~~~~~~~~~~~~
+<dat>......................<num>,'string',?,offset <lab>,segment <lab>
+segment <lab>..............segment of label, data, etc...
+offset <lab>...............offset of label, data, etc...
+
+
+  registers
+~~~~~~~~~~~~~
+a, b, ccr..................8 bit regs
+x, y, sp, pc...............point regs
+d..........................16 bit regs
+
+
+  addressing modes
+~~~~~~~~~~~~~~~~~~~~
+grp={x, y}
+num={ñnum/+ofs}
+ofs=([num] [,grp])
+
+
+  conditions
+~~~~~~~~~~~~~~
+nz, z, nc, c, p, m.........flag bits
+
+
+  CPU instructions
+~~~~~~~~~~~~~~~~~~~~
+aba, abx, aby, cba, clc....<n/a>
+clra, clrb, clv, coma......------||------
+comb, daa, deca, decb......------||------
+des, dex, dey, fdiv, idiv..------||------
+inca, incb, ins, inx, iny..------||------
+mul, nega, negb, nop, rti..------||------
+psha, pshb, pshx, pshy.....------||------
+pula, pulb, pulx, puly.....------||------
+rts, sba, sec, sei, stop...------||------
+swi, tab, tap, tba, test...------||------
+tpa, tsta, tstb, tsx, tsy..------||------
+txs, tys, wai, xgdx, xgdy..------||------
+abc, add, and, bit, cmp....-a; -b; - num8; mem8
+eor, lda, ora, sbc, sub....------||------
+bclr, bset.................mem8,num8
+brclr, brset...............mem8,num8,num8
+asl, asr, lsl, lsr, rol....-a; -b; -d; mem8
+ror........................------||------
+clr, com, dec, inc, jmp....mem8
+jsr, neg, staa, stab, std..------||------
+sts, stx, sty, tst.........------||------
+addd, cpd, cpx, cpy, ldd...num16; mem16
+lds, ldx, ldy, subd........------||------
+bra, brn, bhi, bls, bhs....num8
+bcc, blo, bcs, bne, beq....------||------
+bvc, bvs, bpl, bmi, bge....------||------
+blt, bgt, ble, bsr.........------||------

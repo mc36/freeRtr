@@ -1120,7 +1120,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
     public List<String> getYang() {
         List<String> res = new ArrayList<String>();
         res.add("module " + prefix + " {");
-        res.add("  namespace \"" + verCore.homeUrl + "yang/" + prefix + "\";");
+        res.add("  namespace \"" + verCore.homeUrl1 + "yang/" + prefix + "\";");
         res.add("  prefix \"" + prefix + "\";");
         cmds cp = new cmds("ya", path);
         cmds ck = new cmds("ya", keyP);

@@ -1,0 +1,670 @@
+--- @compiler prefix-code
+org 0h
+db 'exec'                       ;id
+dd offset lastbyte              ;size
+dd program_heap                 ;data
+dd program_stack                ;stack
+;-------------------------------
+
+ori t0,r0,2eh
+syscall 0                       ;get data offset....
+or gp,r0,t0
+addiu t0,gp,firstFreeMem
+sw t0,freeMemPoint,gp
+ori t1,r0,80
+ori t2,r0,25
+sh t1,consoleSizeX,gp
+sh t2,consoleSizeY,gp
+j offset program_main
+noop
+
+
+---
+
+--- @compiler postfix-code
+lastbyte:
+---
+
+--- memresize
+or t1,r0,a2
+ori t0,r0,23h
+syscall 0
+or a2,r0,t0
+or v1,r0,t1
+---
+
+--- terminate
+or t1,r0,a0
+or t0,r0,r0
+syscall 0
+---
+
+--- sleep
+ori t0,r0,1
+syscall 0
+---
+
+--- memcopy
+@_j1:
+blez a2,offset @_j2
+noop
+lbu t0,0,v0
+sb t0,0,v1
+addiu v0,v0,1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- memfillbyte
+@_j1:
+blez a2,offset @_j2
+noop
+sb a0,0,v1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- memcopy2
+subu t0,v0,v1
+blez t0,@_j2
+noop
+addu v0,v0,a2
+addu v1,v1,a2
+@_j1:
+blez a2,offset @_j3
+noop
+addiu v0,v0,-1
+addiu v1,v1,-1
+lbu t0,0,v0
+sb t0,0,v1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+blez a2,offset @_j3
+noop
+lbu t0,0,v0
+sb t0,0,v1
+addiu v0,v0,1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j2
+noop
+@_j3:
+---
+
+--- codecopy
+@_j1:
+blez a2,offset @_j2
+noop
+lbu t0,0,v0
+sb t0,0,v1
+addiu v0,v0,1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- console.clear
+ori t0,r0,0002h
+addiu t1,gp,dummyBuffer
+sh t0,0,t1
+ori t2,r0,2
+ori t0,r0,1fh
+syscall 0
+---
+
+--- console.size
+lhu a0,consoleSizeX,gp
+lhu a1,consoleSizeY,gp
+---
+
+--- console.setcolor
+ori t0,r0,0003h
+addiu t1,gp,dummyBuffer
+sh t0,0,t1
+sb a0,2,t1
+ori t2,r0,3
+ori t0,r0,1fh
+syscall 0
+---
+
+--- console.gotoxy
+ori t0,r0,0004h
+addiu t1,gp,dummyBuffer
+sh t0,0,t1
+sh a0,2,t1
+sh a1,4,t1
+ori t2,r0,6
+ori t0,r0,1fh
+syscall 0
+---
+
+--- console.write
+or t1,r0,v0
+or t2,r0,a2
+ori t0,r0,1fh
+syscall 0
+---
+
+--- console.iskey
+ori t0,r0,1eh
+syscall 0
+slti a0,t1,1
+xori a0,a0,1
+---
+
+--- console.read
+or t1,r0,v1
+or t2,r0,a2
+ori t0,r0,20h
+syscall 0
+or a2,r0,t0
+lbu t0,0,v1
+addiu t0,t0,-128
+bne t0,r0,@_j1
+noop
+lbu t0,1,v1
+addiu t0,t0,-1
+bne t0,r0,@_j1
+noop
+addiu t1,gp,consoleSizeX
+ori t2,r0,4
+ori t0,r0,20h
+syscall 0
+@_j1:
+---
+
+--- console.getdate
+ori t0,r0,27h
+syscall 0
+or a0,r0,t0
+or a1,r0,t1
+or a2,r0,t2
+---
+
+--- console.gettime
+ori t0,r0,28h
+syscall 0
+or a0,r0,t0
+or a1,r0,t1
+or a2,r0,t2
+---
+
+--- console.execwait
+or t1,r0,v0
+or t2,r0,v1
+ori t0,r0,45h
+syscall 0
+or a0,r0,t1
+or a1,r0,t0
+---
+
+--- console.execnew
+mov ebx,1;;;implement it once...;)))
+---
+
+--- console.execbckgnd
+or t1,r0,v0
+or t2,r0,v1
+ori t0,r0,46h
+syscall 0
+or a0,r0,t1
+or a1,r0,t0
+---
+
+--- console.execinme
+or t1,r0,v0
+or t2,r0,v1
+ori t0,r0,47h
+syscall 0
+or a0,r0,t1
+or a1,r0,t0
+or a2,r0,t2
+---
+
+--- file.maxname
+mov eax,250
+---
+
+--- file.myname
+or t1,r0,v1
+ori t0,r0,11h
+syscall 0
+lbu t3,0,v1
+or a2,r0,t3
+or t0,r0,v1
+addiu t1,t0,1
+@_j1:
+blez t3,@_j2
+noop
+lbu t2,0,t1
+sb t2,0,t0
+addiu t0,t0,1
+addiu t1,t1,1
+addiu t3,t3,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- file.myparam
+or t1,r0,v1
+ori t0,r0,12h
+syscall 0
+lbu t3,0,v1
+or a2,r0,t3
+or t0,r0,v1
+addiu t1,t0,1
+@_j1:
+blez t3,@_j2
+noop
+lbu t2,0,t1
+sb t2,0,t0
+addiu t0,t0,1
+addiu t1,t1,1
+addiu t3,t3,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- file.open
+or t1,r0,v0
+or t2,r0,a0
+ori t0,r0,3dh
+syscall 0
+or a0,r0,t1
+or a1,r0,t0
+---
+
+--- file.close
+or t1,r0,a0
+ori t0,r0,44h
+syscall 0
+or a1,r0,t0
+---
+
+--- file.read
+or t1,r0,a0
+or t2,r0,v1
+or t3,r0,a2
+ori t0,r0,3eh
+syscall 0
+or a1,r0,t0
+---
+
+--- file.write
+or t1,r0,a0
+or t2,r0,v0
+or t3,r0,a2
+ori t0,r0,3fh
+syscall 0
+or a1,r0,t0
+---
+
+--- file.seek
+or t1,r0,a0
+or t2,r0,a2
+ori t0,r0,40h
+syscall 0
+or a1,r0,t0
+---
+
+--- file.getsize
+or t1,r0,a0
+ori t0,r0,41h
+syscall 0
+or a2,r0,t1
+or a1,r0,t0
+---
+
+--- file.getpos
+or t1,r0,a0
+ori t0,r0,42h
+syscall 0
+or a2,r0,t1
+or a1,r0,t0
+---
+
+--- file.truncate
+or t1,r0,a0
+ori t0,r0,43h
+syscall 0
+or a1,r0,t0
+---
+
+--- file.create
+or t1,r0,v0
+ori t0,r0,33h
+syscall 0
+or a1,r0,t0
+---
+
+--- file.erase
+or t1,r0,v0
+ori t0,r0,34h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.current
+or t1,r0,v1
+ori t0,r0,2bh
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.change
+or t1,r0,v0
+ori t0,r0,30h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.rename
+or t1,r0,v0
+or t2,r0,v1
+ori t0,r0,35h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.create
+or t1,r0,v0
+ori t0,r0,31h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.erase
+or t1,r0,v0
+ori t0,r0,32h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.statistic
+ori t0,r0,39h
+syscall 0
+or a0,r0,t1
+or a1,r0,t2
+or a2,r0,t3
+or a3,r0,t4
+---
+
+--- dir.setrights
+or t1,r0,v0
+or t2,r0,a0
+or t3,r0,a1
+ori t0,r0,37h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.setdate
+or t1,r0,v0
+or t2,r0,v1
+ori t0,r0,38h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.makelink
+or t1,r0,v0
+or t2,r0,v1
+ori t0,r0,36h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.open
+or t1,r0,v0
+ori t0,r0,3ah
+syscall 0
+or a0,r0,t1
+or a1,r0,t0
+---
+
+--- dir.close
+or t1,r0,a0
+ori t0,r0,44h
+syscall 0
+or a1,r0,t0
+---
+
+--- dir.read
+or t1,r0,a0
+or t2,r0,v1
+ori t0,r0,3bh
+syscall 0
+or a1,r0,t0
+---
+
+--- pipeline.startlisten
+ori t0,r0,13h
+syscall 0
+or a1,r0,t0
+---
+
+--- pipeline.stoplisten
+ori t0,r0,14h
+syscall 0
+or a1,r0,t0
+---
+
+--- pipeline.getincoming
+ori t0,r0,15h
+syscall 0
+or a1,r0,t0
+or a0,r0,t1
+---
+
+--- pipeline.create
+or t1,r0,a0
+or t2,r0,a2
+or t3,r0,a1
+ori t0,r0,16h
+syscall 0
+or a1,r0,t0
+or a0,r0,t1
+---
+
+--- pipeline.close
+or t1,r0,a0
+ori t0,r0,17h
+syscall 0
+or a1,r0,t0
+---
+
+--- pipeline.info
+or t1,r0,a0
+ori t0,r0,18h
+syscall 0
+or a0,r0,t1
+or a2,r0,t2
+or a3,r0,t3
+or a1,r0,t0
+---
+
+--- pipeline.receive
+or t1,r0,a0
+or t2,r0,v1
+or t3,r0,a2
+ori t0,r0,1ah
+syscall 0
+or a2,r0,t1
+or a1,r0,t0
+---
+
+--- pipeline.send
+or t1,r0,a0
+or t2,r0,v0
+or t3,r0,a2
+ori t0,r0,19h
+syscall 0
+or a1,r0,t0
+---
+
+
+--- system.sysinfomem
+ori t0,r0,7
+syscall 0
+sll a0,t0,13
+sll a2,t1,13
+sll a3,t2,13
+---
+
+--- system.sysinfonum
+ori t0,r0,8
+syscall 0
+or a0,r0,t0
+or a2,r0,t1
+or a3,r0,t2
+---
+
+--- system.procinfonum
+or t1,r0,a0
+ori t0,r0,9
+syscall 0
+sll a0,t0,13
+or a2,r0,t1
+or a3,r0,t2
+---
+
+--- system.procinfonam
+or t1,r0,a0
+or t2,r0,v1
+ori t0,r0,0ah
+syscall 0
+or a0,r0,t0
+or a2,r0,t1
+or a3,r0,t2
+---
+
+--- system.findprocnum
+or t1,r0,a0
+ori t0,r0,0bh
+syscall 0
+or a0,r0,t0
+---
+
+--- system.findprocnam
+or t1,r0,v0
+ori t0,r0,0ch
+syscall 0
+or a0,r0,t0
+---
+
+--- system.killprocess
+or t1,r0,a0
+ori t0,r0,0dh
+syscall 0
+---
+
+--- system.getpid
+ori t0,r0,0eh
+syscall 0
+or a0,r0,t0
+or a2,r0,t1
+or a3,r0,t2
+---
+
+--- system.getuid
+ori t0,r0,0fh
+syscall 0
+or a0,r0,t0
+or a1,r0,t1
+---
+
+--- system.setuid
+or t1,r0,a0
+ori t0,r0,10h
+syscall 0
+---
+
+--- system.cpuinfo
+or t1,r0,a0
+or t2,r0,v1
+ori t0,r0,1bh
+syscall 0
+or a0,r0,t0
+or a2,r0,t1
+---
+
+--- system.kernelinfo
+or t1,r0,v1
+ori t0,r0,1ch
+syscall 0
+---
+
+--- system.kernellogo
+or t1,r0,v1
+ori t0,r0,1dh
+syscall 0
+---
+
+--- system.proclive
+or t1,r0,a0
+ori t0,r0,21h
+syscall 0
+or a1,r0,t0
+---
+
+--- system.uptimeinfo
+ori t0,r0,25h
+syscall 0
+or a0,r0,t0
+or a2,r0,t1
+or a3,r0,t2
+---
+
+--- system.drivelogin
+or t1,r0,a0
+or t2,r0,v0
+ori t0,r0,29h
+syscall 0
+or a1,r0,t0
+---
+
+--- system.drivelogout
+or t1,r0,a0
+ori t0,r0,2ah
+syscall 0
+or a1,r0,t0
+---
+
+--- system.drivefinished
+ori t0,r0,2fh
+syscall 0
+---
+
+--- system.procinforun
+or t1,r0,a0
+ori t0,r0,49h
+syscall 0
+or a0,r0,t0
+or a2,r0,t1
+---
+
+--- system.sysinfoproc
+ori t0,r0,48h
+syscall 0
+or a0,r0,t0
+or a1,r0,t1
+or a2,r0,t2
+or a3,r0,t3
+---
+
+--- system.dropprivi
+ori t0,r0,2dh
+syscall 0
+---

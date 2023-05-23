@@ -1,0 +1,9 @@
+make disasm-arm.make
+make disasm-i80386.make
+make disasm-i8051.make
+make disasm-m68000.make
+make disasm-m68hc11.make
+make disasm-mips.make
+make disasm-powerpc.make
+make disasm-sparc.make
+make disasm-z80.make

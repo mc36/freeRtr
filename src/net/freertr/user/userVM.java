@@ -86,8 +86,7 @@ public class userVM {
      * @param param parameters to give
      * @return result code
      */
-    public static int doWork(pipeSide cons, boolean fio, String dir,
-            String name, String param) {
+    public int doWork(pipeSide cons, boolean fio, String dir, String name, String param) {
         userVM vm = new userVM(cons, fio, dir);
         int res;
         try {
@@ -780,7 +779,13 @@ public class userVM {
         throw new Exception("unknown (" + opc + ") opcode");
     }
 
-    private int doSyscall() throws Exception {
+    /**
+     * do a system call
+     *
+     * @return return code
+     * @throws Exception may throw an exception
+     */
+    public int doSyscall() throws Exception {
         int opc = getConst(1);
         int val1;
         switch (opc) {
@@ -1158,8 +1163,9 @@ public class userVM {
                 return 0;
             case 39: // console.execWait
                 a = fromDos(getPascii(regs[reg_src]));
-                val1 = userVM.doWork(console, allowFileIO, currDir, a,
-                        getPascii(regs[reg_trg]));
+                userVM v = new userVM(console, true, currDir);
+                v.doLoad(a, currDir);
+                val1 = v.doWork(console, true, "", a, currDir);
                 regs[reg_b] = result2error(val1);
                 regs[reg_a] = result2extcod(val1);
                 return 0;

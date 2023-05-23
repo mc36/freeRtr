@@ -1,0 +1,71 @@
+platform uniform
+syscall startup 10 512 4096
+procallocBeg 1 256
+procallocEnd 1 256
+
+codeofs src text1
+call write
+
+procaddr trg 1
+syscall file.myName
+procaddr src 1
+syscall console.write
+
+codeofs src text0
+call write
+
+codeofs src text2
+call write
+
+procaddr trg 1
+syscall file.myParam
+procaddr src 1
+syscall console.write
+
+codeofs src text0
+call write
+
+codeofs src text3
+call write
+
+procaddr trg 1
+syscall dir.current
+procaddr src 1
+movr duwub c [src]
+add d src 1
+syscall console.write
+
+codeofs src text0
+call write
+
+procfree 0 256
+move uwuw a 0
+syscall terminate
+
+
+label text0
+defb 4,34,32,13,10
+
+label text1
+defb 12,32,102,105,108,101,110,97,109,101,58,32,34
+
+label text2
+defb 12,112,97,114,97,109,101,116,101,114,58,32,34
+
+label text3
+defb 12,32,32,119,111,114,107,100,105,114,58,32,34
+
+proc write
+;in: src-offset in code...
+procallocBeg 0 256
+procallocEnd 0 256
+procaddr trg 0
+move uduw c 256
+syscall codecopy
+procaddr src 0
+movr duwub c [src]
+add d src 1
+syscall console.write
+procfree 0 256
+ret
+endp

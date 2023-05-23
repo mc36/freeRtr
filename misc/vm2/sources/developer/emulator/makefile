@@ -1,0 +1,9 @@
+make emulator-arm.make
+make emulator-i80386.make
+make emulator-i8051.make
+make emulator-m68000.make
+make emulator-m68hc11.make
+make emulator-mips.make
+make emulator-powerpc.make
+make emulator-sparc.make
+make emulator-z80.make

@@ -1,0 +1,20 @@
+Procedure Configure_user;
+Var
+  a:String;
+  i:LongInt;
+Begin;
+confgMod:=0;
+bootpNet:=0;
+if string2ipAddr(ParamStr(3),a[1]) then immErr('invalid local ip!');
+move(a[13],localNet,sizeof(localNet));
+if string2ipAddr(ParamStr(4),a[1]) then immErr('invalid gateway ip!');
+move(a[13],gatwyNet,sizeof(gatwyNet));
+if string2ipAddr(ParamStr(5),a[1]) then immErr('invalid netmask ip!');
+move(a[13],ntmskNet,sizeof(ntmskNet));
+dnsServs:='';
+a[0]:=#16;
+for i:=6 to paramCount do begin;
+  if string2ipAddr(ParamStr(i),a[1]) then immErr('invalid dns ip!');
+  dnsServs:=dnsServs+copy(a,13,4);
+  end;
+End;

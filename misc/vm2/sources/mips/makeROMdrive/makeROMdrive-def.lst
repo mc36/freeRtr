@@ -1,0 +1,5 @@
+\system\drivers\console\sysload.code sysload.cod
+\bootup\bootorder1.cfg sysload.cfg
+\system\drivers\disks\idehdd.code
+\system\drivers\disks\partition.code
+\system\filesystem\filesystem.code

@@ -1,0 +1,85 @@
+Procedure doOneQuery(b:String);
+Label f1,f2;
+Var
+  ps:LongInt;
+  w:Word;
+  t:xtText;
+  a:String;
+  i,o,p:LongInt;
+  ab:array[0..1] of byte absolute a;
+  ab0:byte absolute a;
+  bb:array[0..1] of byte absolute b;
+  bb0:byte absolute b;
+
+
+Procedure fin;
+Begin;
+inc(bb0);
+bb[bb0]:=0;
+move(descrBuf[ps+1],descrBuf[ps+bb0+1],descrSiz-ps);
+move(bb[1],descrBuf[ps+1],bb0);
+inc(descrSiz,bb0);
+inc(ps,bb0);
+bb0:=0;
+End;
+
+
+Begin;
+ps:=0;
+a:=tempBegin+extensionRes;
+xErase(a);
+xCreate(a);
+a:=tempBegin+extensionCmd;
+xCreate(a);
+if (xtOpen(t,a,false)<>0) then begin;
+  f1:
+  b:='file io error!';
+  fin;
+  exit;
+  end;
+xtSetPos(t,0);
+xtWriteLn(t,'connect '+targetServer);
+xtWriteLn(t,'action '+b);
+xtWriteLn(t,'oid '+currentObject);
+b:=tempBegin+extensionRes;
+xtWriteLn(t,'query '+b);
+xtWriteLn(t,'quit');
+xtTruncate(t);
+xtClose(t);
+gotoXY(1,scrSizY);TextColor(7);WriteLn('');
+xExec(myFavoritSnmpClnt,tempBegin+extensionCmd,w);
+if (xtOpen(t,b,true)<>0) then goto f1;
+p:=0;
+while not xtEOF(t) do begin;
+  o:=xtGetPos(t);
+  b:=xtReadLn(t,666);
+  i:=pos(' ',b);
+  if (i<1) then i:=666;
+  a:=copy(b,1,i-1);
+  b:=copy(b,i+1,666);
+  inc(o,ab0);
+  if (a='rep.oid:') then currentObject:=b;
+  if (a='dat.bin:') then p:=o;
+  end;
+if (p<1) then begin;
+  xtClose(t);
+  b:='no value received!';
+  fin;
+  exit;
+  end;
+xtSetPos(t,p);
+b:='oid: '+currentObject;
+fin;
+b:='data:';
+f2:
+a:=xtRead(t,3);
+if (ab0<>3) then begin;
+  xtClose(t);
+  if (bb0>0) then fin;
+  fin;
+  exit;
+  end;
+if (ab0+bb0>=ScrSizX) then fin;
+b:=b+a;
+goto f2;
+End;

@@ -1,0 +1,8 @@
+0                     ;local public Port (0=default)
+0                     ;local secure Port (-1=disabled)
+sample_mimetypes      ;mime types
+sample_hosts          ;hosts file
+c:\temp\              ;temporary path
+4                     ;simultaneous cgis
+8                     ;simultaneous connections from one host
+60                    ;cgi timeout

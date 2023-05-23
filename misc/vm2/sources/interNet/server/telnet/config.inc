@@ -1,0 +1,52 @@
+Procedure ReadUpConfig(a:String);
+Var t:xtText;
+
+function gnl:string;
+var
+  i:longint;
+  a:String;
+begin;
+a:=xtReadLn(t,255);
+i:=pos(';',a);
+if (i>0) then a:=copy(a,1,i-1);
+a:=' '+a+' ';
+kicserel('  ',' ',a);
+a:=copy(a,2,length(a)-2);
+gnl:=a;
+end;
+
+Var
+  b:String;
+  i,o:LongInt;
+Begin;
+if (xtOpen(t,a,true)<>0) then immErr('error opening config!');
+terminalFilter:=BugOS_findProcNam(gnl);
+if (terminalFilter=0) then immErr('terminal filter not found!');
+startProcNam:=gnl;
+startProcPar:=gnl;
+userIDtoGive:=BVal(gnl);
+while (i=i) do begin;
+  b:=gnl;
+  i:=pos(' ',b);
+  if (i<1) then i:=666;
+  a:=copy(b,i+1,666);
+  b:=copy(b,1,i-1);
+  if (b='') then break;
+  i:=BVal(a);
+  if (i<1) then i:=23;
+  inc(ProtocolNum);
+  ProtocolDat[ProtocolNum].name:=b;
+  ProtocolDat[ProtocolNum].port:=i;
+  end;
+while not xtEOF(t) do begin;
+  b:=gnl;
+  while (b<>'') do begin;
+    i:=pos(' ',b);
+    if (i<1) then i:=666;
+    a:=copy(b,1,i-1);
+    b:=copy(b,i+1,255);
+    initString:=initString+chr(BVal(a));
+    end;
+  end;
+xtClose(t);
+End;

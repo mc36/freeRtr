@@ -1,0 +1,63 @@
+Function calcShortestPaths(a,b,n:LongInt;var route):LongInt;
+Label f1,f2,f3;
+Const max=$7fff0000;
+Var
+  prnt:array[1..nodeL] of longInt;
+  dist:array[1..nodeL] of longInt;
+  nedD:array[1..nodeL] of longInt absolute route;
+  nedS:LongInt;
+  i,o,p,q:LongInt;
+Begin;
+calcShortestPaths:=-1;
+if (b<1) then exit;
+if (a<1) then exit;
+for i:=1 to n do begin;
+  prnt[i]:=0;
+  dist[i]:=max;
+  end;
+nedS:=1;
+nedD[1]:=a;
+dist[a]:=0;
+f1:
+o:=max-1;p:=0;
+for i:=1 to nedS do begin;
+  q:=nedD[i];
+  if (dist[q]>o) then continue;
+  o:=dist[q];
+  p:=i;
+  end;
+if (p<1) then goto f2;
+q:=nedD[p];
+if (q=b) then goto f3;
+nedD[p]:=nedD[nedS];
+dec(nedS);
+for i:=nodeD[q].b to nodeD[q].e do begin;
+  o:=connD[i].s+dist[q];
+  if (o>=max) then o:=max-1;
+  p:=connD[i].b;
+  if (dist[p]<=o) then continue;
+  if (dist[p]=max) then begin;
+    inc(nedS);
+    nedD[nedS]:=p;
+    end;
+  dist[p]:=o;
+  prnt[p]:=i;
+  end;
+goto f1;
+f2:
+case b-n of
+  1:for i:=1 to n do nedD[i]:=prnt[i];
+  2:for i:=1 to n do nedD[i]:=dist[i];
+  end;
+exit;
+f3:
+p:=b;
+o:=0;
+while (p<>a) do begin;
+  i:=prnt[p];
+  p:=connD[i].a;
+  inc(o);
+  nedD[o]:=i;
+  end;
+calcShortestPaths:=o;
+End;

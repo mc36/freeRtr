@@ -1,0 +1,23 @@
+publisher=nop.hu
+system=i80386
+volume=BugOS install CD
+volset=1 of 1
+preparer=mc36
+boot=\instCD.img
+
+\
+\sources\license.txt license.txt
+
+\packages
+\sources.pck
+\system.pck
+\utils.pck
+\internet.pck
+
+\install
+\instcd.img instCD.img
+\instcd.pck instCD.pck
+
+\images
+\boot.img bootDisk.img
+\net.img netInst.img

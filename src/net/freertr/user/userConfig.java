@@ -2301,7 +2301,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("upgrade-server")) {
-                cfgAll.upgradeServer = verCore.homeUrl;
+                cfgAll.upgradeServer = verCore.homeUrl1;
                 return;
             }
             if (a.equals("upgrade-script")) {

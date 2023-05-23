@@ -1,0 +1,7 @@
+block pipeline should opened for this process...
+after it, rtp.connect, or tcp.listen message should
+be sent by the client. this process responds with
+tcp.connected. after that, raw datagrams will be
+sent over the connection without any header...
+if rtp.connect was requested, the first dword
+sent by client must contain the service code.

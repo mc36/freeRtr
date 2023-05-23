@@ -1,0 +1,28 @@
+char pipeline should opened for this process...
+after it, the process acts as tcp process...
+exceptions are the following:
+
+of course, udp not support...
+
+when new incoming pipeline is estabilished, after
+the tcp.connected packet the information lines
+follows...
+
+when client tries to connect, it sends a tcp.connect
+message. this process will answer with tcp.connected,
+and will information... client replies them and this
+process will try to open x25 connection... if fails,
+the pipeline will be closed. otherwise the conn message
+will be sent, and the pipeline is forwarded to x25...
+
+information messages are the following:
+src:<source phone number, max 15 numbers>
+trg:<target phone number, max 15 numbers>
+usr:<user data, max 12 characters>
+
+each message will be terminated by cr+lf pair...
+
+reported messages:
+lcn:<number>
+err:<cause> <diag>
+conn

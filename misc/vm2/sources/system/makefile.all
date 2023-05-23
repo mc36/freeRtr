@@ -1,0 +1,12 @@
+make disk\makefile.all
+make disk\makefile.fs
+make graphicon\makefile
+make information\makefile
+make installer\makefile
+make login\makefile
+make other\makefile
+make process\makefile
+make protocol\makefile
+make serial\makefile
+make sound\makefile
+make usb\makefile

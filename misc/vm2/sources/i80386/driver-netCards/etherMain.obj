@@ -1,0 +1,908 @@
+\filebeg:etherMain.asm\                       ;
+\org:00000000\                                ;org 0h
+\                                             ;use32
+\65\78\65\63\                                 ;db 'exec'                       ;id
+\dword:ofs:lastbyte\                          ;dd offset lastbyte              ;size
+\00\20\00\00\                                 ;dd 8192                         ;data
+\00\10\00\00\                                 ;dd 4096                         ;stack
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\BE\dword:ofs:main_text01\                    ;mov esi,offset main_text01
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text02\                    ;mov esi,offset main_text02
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:nic_name\                       ;mov esi,offset nic_name
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text03\                    ;mov esi,offset main_text03
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:nic_date\                       ;mov esi,offset nic_date
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text25\                    ;mov esi,offset main_text25
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\                                             ;
+\2B\FF\                                       ;sub edi,edi
+\2B\C0\                                       ;sub eax,eax
+\B9\dword:dataseg_fremem\                     ;mov ecx,dataSeg_freMem
+\C1\E9\02\                                    ;shr ecx,2
+\F3\                                          ;rep
+\nop\AB\                                      ;  stosd ptr32
+\                                             ;
+\0F\06\                                       ;clts                            ;get uptime info...
+\2A\00\00\00\                                 ;dd 2ah
+\nop\89\15\dword:ofs?:dataseg_tcksec\         ;mov def:[dataSeg_tckSec],edx
+\                                             ;
+\B0\01\                                       ;mov al,1
+\0F\06\                                       ;clts                            ;switch io accessible mode...
+\04\00\00\00\                                 ;dd 04h
+\                                             ;
+\BF\dword:dataseg_wrtbuf\                     ;mov edi,dataSeg_wrtBuf
+\0F\06\                                       ;clts                            ;get process parameters...
+\13\00\00\00\                                 ;dd 13h
+\BE\dword:dataseg_wrtbuf\                     ;mov esi,dataSeg_wrtBuf
+\nop\0F\B6\06\                                ;movzx byte eax,def:[esi]
+\nop\8D\7C\06\01\                             ;lea edi,def:[esi+eax+1]
+\2B\C0\                                       ;sub eax,eax
+\nop\AB\                                      ;stosd ptr32
+\46\                                          ;inc esi
+\label:main_param_j1\                         ;main_param_j1:
+\nop\AC\                                      ;lodsb ptr32
+\80\F8\20\                                    ;cmp al,' '
+\74\byte:rela2end:signed:ofs?:main_param_j1\  ;je byte main_param_j1
+\0A\C0\                                       ;or al,al
+\0F\84\dword:rela2end:ofs?:main_param_j2\     ;jz dword main_param_j2
+\nop\8D\6E\FF\                                ;lea ebp,def:[esi-1]
+\BF\dword:ofs:main_text09\                    ;mov edi,offset main_text09
+\E8\dword:rela2end:ofs?:main_comp\            ;call dword main_comp
+\0F\82\dword:rela2end:ofs?:main_param_j3\     ;jc dword main_param_j3
+\BF\dword:ofs:main_text10\                    ;mov edi,offset main_text10
+\E8\dword:rela2end:ofs?:main_comp\            ;call dword main_comp
+\0F\82\dword:rela2end:ofs?:main_param_j4\     ;jc dword main_param_j4
+\BF\dword:ofs:main_text11\                    ;mov edi,offset main_text11
+\E8\dword:rela2end:ofs?:main_comp\            ;call dword main_comp
+\0F\82\dword:rela2end:ofs?:main_param_j5\     ;jc dword main_param_j5
+\BF\dword:ofs:main_text12\                    ;mov edi,offset main_text12
+\E8\dword:rela2end:ofs?:main_comp\            ;call dword main_comp
+\0F\82\dword:rela2end:ofs?:main_param_j6\     ;jc dword main_param_j6
+\E9\dword:rela2end:ofs?:main_using\           ;jmp dword main_using
+\label:main_param_j3\                         ;main_param_j3:
+\E8\dword:rela2end:ofs?:str2num\              ;call dword str2num
+\0F\82\dword:rela2end:ofs?:main_using\        ;jc dword main_using
+\nop\89\15\dword:ofs?:dataseg_parmem\         ;mov def:[dataSeg_parMem],edx
+\E9\dword:rela2end:ofs?:main_param_j1\        ;jmp dword main_param_j1
+\label:main_param_j4\                         ;main_param_j4:
+\E8\dword:rela2end:ofs?:str2num\              ;call dword str2num
+\0F\82\dword:rela2end:ofs?:main_using\        ;jc dword main_using
+\81\E2\FF\FF\00\00\                           ;and edx,0ffffh
+\nop\89\15\dword:ofs?:dataseg_parprt\         ;mov def:[dataSeg_parPrt],edx
+\E9\dword:rela2end:ofs?:main_param_j1\        ;jmp dword main_param_j1
+\label:main_param_j5\                         ;main_param_j5:
+\E8\dword:rela2end:ofs?:str2num\              ;call dword str2num
+\0F\82\dword:rela2end:ofs?:main_using\        ;jc dword main_using
+\81\E2\0F\00\00\00\                           ;and edx,0fh
+\nop\89\15\dword:ofs?:dataseg_parirq\         ;mov def:[dataSeg_parIrq],edx
+\E9\dword:rela2end:ofs?:main_param_j1\        ;jmp dword main_param_j1
+\label:main_param_j6\                         ;main_param_j6:
+\B9\dword:nic_addrsize\                       ;mov ecx,nic_addrSize
+\BF\dword:dataseg_paradr\                     ;mov edi,dataSeg_parAdr
+\label:main_param_j7\                         ;main_param_j7:
+\nop\AC\                                      ;lodsb ptr32
+\E8\dword:rela2end:ofs?:lowcase\              ;call dword lowCase
+\E8\dword:rela2end:ofs?:convdigit\            ;call dword convDigit
+\80\F8\10\                                    ;cmp al,10h
+\0F\83\dword:rela2end:ofs?:main_using\        ;jae dword main_using
+\C1\E0\04\                                    ;shl eax,4
+\8A\D8\                                       ;mov bl,al
+\nop\AC\                                      ;lodsb ptr32
+\E8\dword:rela2end:ofs?:lowcase\              ;call dword lowCase
+\E8\dword:rela2end:ofs?:convdigit\            ;call dword convDigit
+\80\F8\10\                                    ;cmp al,10h
+\0F\83\dword:rela2end:ofs?:main_using\        ;jae dword main_using
+\0A\C3\                                       ;or al,bl
+\nop\AA\                                      ;stosb ptr32
+\E2\byte:rela2end:signed:ofs?:main_param_j7\  ;loopd main_param_j7
+\E9\dword:rela2end:ofs?:main_param_j1\        ;jmp dword main_param_j1
+\label:main_param_j2\                         ;main_param_j2:
+\                                             ;
+\B0\byte:nic_reqparam\                        ;mov al,nic_reqParam
+\80\E0\04\                                    ;and al,04h
+\74\byte:rela2end:signed:ofs?:main_init_j1\   ;jz byte main_init_j1
+\nop\8B\05\dword:ofs?:dataseg_parmem\         ;mov eax,def:[dataSeg_parMem]
+\0B\C0\                                       ;or eax,eax
+\0F\84\dword:rela2end:ofs?:main_using\        ;jz dword main_using
+\label:main_init_j1\                          ;main_init_j1:
+\B0\byte:nic_reqparam\                        ;mov al,nic_reqParam
+\80\E0\02\                                    ;and al,02h
+\74\byte:rela2end:signed:ofs?:main_init_j2\   ;jz byte main_init_j2
+\nop\8B\05\dword:ofs?:dataseg_parprt\         ;mov eax,def:[dataSeg_parPrt]
+\0B\C0\                                       ;or eax,eax
+\0F\84\dword:rela2end:ofs?:main_using\        ;jz dword main_using
+\label:main_init_j2\                          ;main_init_j2:
+\B0\byte:nic_reqparam\                        ;mov al,nic_reqParam
+\80\E0\01\                                    ;and al,01h
+\74\byte:rela2end:signed:ofs?:main_init_j3\   ;jz byte main_init_j3
+\nop\8B\05\dword:ofs?:dataseg_parirq\         ;mov eax,def:[dataSeg_parIrq]
+\0B\C0\                                       ;or eax,eax
+\0F\84\dword:rela2end:ofs?:main_using\        ;jz dword main_using
+\label:main_init_j3\                          ;main_init_j3:
+\                                             ;
+\BE\dword:ofs:main_text09\                    ;mov esi,offset main_text09
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\nop\8B\15\dword:ofs?:dataseg_parmem\         ;mov edx,def:[dataSeg_parMem]
+\B1\08\                                       ;mov cl,8
+\E8\dword:rela2end:ofs?:conv2hex\             ;call dword conv2hex
+\E8\dword:rela2end:ofs?:writedatastr\         ;call dword writeDataStr
+\BE\dword:ofs:main_text13\                    ;mov esi,offset main_text13
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text10\                    ;mov esi,offset main_text10
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\nop\8B\15\dword:ofs?:dataseg_parprt\         ;mov edx,def:[dataSeg_parPrt]
+\B1\04\                                       ;mov cl,4
+\E8\dword:rela2end:ofs?:conv2hex\             ;call dword conv2hex
+\E8\dword:rela2end:ofs?:writedatastr\         ;call dword writeDataStr
+\BE\dword:ofs:main_text13\                    ;mov esi,offset main_text13
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text11\                    ;mov esi,offset main_text11
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\nop\8B\15\dword:ofs?:dataseg_parirq\         ;mov edx,def:[dataSeg_parIrq]
+\E8\dword:rela2end:ofs?:conv2dec\             ;call dword conv2dec
+\E8\dword:rela2end:ofs?:writedatastr\         ;call dword writeDataStr
+\BE\dword:ofs:main_text13\                    ;mov esi,offset main_text13
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text16\                    ;mov esi,offset main_text16
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BA\dword:nic_maxpack\                        ;mov edx,nic_maxPack
+\E8\dword:rela2end:ofs?:conv2dec\             ;call dword conv2dec
+\E8\dword:rela2end:ofs?:writedatastr\         ;call dword writeDataStr
+\BE\dword:ofs:main_textcrlf\                  ;mov esi,offset main_textCRLF
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\                                             ;
+\BE\dword:dataseg_paradr\                     ;mov esi,dataSeg_parAdr
+\B9\dword:nic_addrsize\                       ;mov ecx,nic_addrSize
+\label:main_init_j4\                          ;main_init_j4:
+\nop\AC\                                      ;lodsb ptr32
+\66\50\                                       ;push ax
+\E2\byte:rela2end:signed:ofs?:main_init_j4\   ;loopd main_init_j4
+\                                             ;
+\E8\dword:rela2end:ofs?:nic_present\          ;call dword nic_present
+\73\byte:rela2end:signed:ofs?:main_init_j5\   ;jnc byte main_init_j5
+\BE\dword:ofs:main_text17\                    ;mov esi,offset main_text17
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\E9\dword:rela2end:ofs?:main_vege\            ;jmp dword main_vege
+\label:main_init_j5\                          ;main_init_j5:
+\                                             ;
+\BE\dword:ofs:main_text20\                    ;mov esi,offset main_text20
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:dataseg_parbrd\                     ;mov esi,dataSeg_parBrd
+\E8\dword:rela2end:ofs?:main_addr\            ;call dword main_addr
+\BE\dword:ofs:main_textcrlf\                  ;mov esi,offset main_textCRLF
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text21\                    ;mov esi,offset main_text21
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:dataseg_paradr\                     ;mov esi,dataSeg_parAdr
+\E8\dword:rela2end:ofs?:main_addr\            ;call dword main_addr
+\BE\dword:ofs:main_textcrlf\                  ;mov esi,offset main_textCRLF
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BF\dword:dataseg_fremem\                     ;mov edi,dataSeg_freMem
+\B9\dword:nic_addrsize\                       ;mov ecx,nic_addrSize
+\03\F9\                                       ;add edi,ecx
+\2B\D2\                                       ;sub edx,edx
+\label:main_init_j6\                          ;main_init_j6:
+\66\58\                                       ;pop ax
+\4F\                                          ;dec edi
+\nop\88\07\                                   ;mov def:[edi],al
+\0A\C0\                                       ;or al,al
+\0F\95\C4\                                    ;setnz ah
+\02\D0\                                       ;add dl,al
+\E2\byte:rela2end:signed:ofs?:main_init_j6\   ;loopd main_init_j6
+\0A\D2\                                       ;or dl,dl
+\74\byte:rela2end:signed:ofs?:main_init_j7\   ;jz byte main_init_j7
+\BE\dword:dataseg_fremem\                     ;mov esi,dataSeg_freMem
+\BF\dword:dataseg_paradr\                     ;mov edi,dataSeg_parAdr
+\B9\dword:nic_addrsize\                       ;mov ecx,nic_addrSize
+\F3\                                          ;rep
+\nop\A4\                                      ;  movsb ptr32
+\BE\dword:ofs:main_text18\                    ;mov esi,offset main_text18
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:dataseg_paradr\                     ;mov esi,dataSeg_parAdr
+\E8\dword:rela2end:ofs?:main_addr\            ;call dword main_addr
+\BE\dword:ofs:main_textcrlf\                  ;mov esi,offset main_textCRLF
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\label:main_init_j7\                          ;main_init_j7:
+\E8\dword:rela2end:ofs?:nic_restart\          ;call dword nic_restart
+\73\byte:rela2end:signed:ofs?:main_init_j8\   ;jnc byte main_init_j8
+\BE\dword:ofs:main_text19\                    ;mov esi,offset main_text19
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\E9\dword:rela2end:ofs?:main_vege\            ;jmp dword main_vege
+\label:main_init_j8\                          ;main_init_j8:
+\                                             ;
+\0F\06\                                       ;clts                            ;start listening...
+\14\00\00\00\                                 ;dd 14h
+\0B\DB\                                       ;or ebx,ebx
+\0F\85\dword:rela2end:ofs?:main_vege\         ;jnz dword main_vege
+\                                             ;
+\BF\dword:dataseg_wrtbuf\                     ;mov edi,dataSeg_wrtBuf
+\2B\C0\                                       ;sub eax,eax
+\nop\AB\                                      ;stosd ptr32
+\BE\dword:dataseg_wrtbuf\                     ;mov esi,dataSeg_wrtBuf
+\B9\04\00\00\00\                              ;mov ecx,4
+\0F\06\                                       ;clts                            ;write to console...
+\20\00\00\00\                                 ;dd 20h
+\                                             ;
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\nop\89\05\dword:ofs?:dataseg_lasttx\         ;mov def:[dataSeg_lastTx],eax
+\nop\89\05\dword:ofs?:dataseg_lstchk\         ;mov def:[dataSeg_lstChk],eax
+\2B\C0\                                       ;sub eax,eax
+\nop\89\05\dword:ofs?:dataseg_pipeln\         ;mov def:[dataSeg_pipeLn],eax
+\B8\dword:nic_addrsize\                       ;mov eax,nic_addrSize
+\81\C0\dword:nic_maxpack\                     ;add eax,nic_maxPack
+\nop\89\05\dword:ofs?:dataseg_totmax\         ;mov def:[dataSeg_totMax],eax
+\                                             ;
+\label:main_j1\                               ;main_j1:
+\nop\8B\05\dword:ofs?:dataseg_pipeln\         ;mov eax,def:[dataSeg_pipeLn]
+\0F\06\                                       ;clts                            ;close pipeline side...
+\18\00\00\00\                                 ;dd 18h
+\2B\C0\                                       ;sub eax,eax
+\nop\89\05\dword:ofs?:dataseg_procnm\         ;mov def:[dataSeg_procNm],eax
+\nop\89\05\dword:ofs?:dataseg_pipeln\         ;mov def:[dataSeg_pipeLn],eax
+\label:main_j2\                               ;main_j2:
+\E8\dword:rela2end:ofs?:nic_test4dead\        ;call dword nic_test4dead
+\73\byte:rela2end:signed:ofs?:main_j3\        ;jnc byte main_j3
+\BE\dword:ofs:main_text22\                    ;mov esi,offset main_text22
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text24\                    ;mov esi,offset main_text24
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\nop\8B\35\dword:ofs?:dataseg_tcksec\         ;mov esi,def:[dataSeg_tckSec]
+\E8\dword:rela2end:ofs?:timer_delay\          ;call dword timer_delay
+\E8\dword:rela2end:ofs?:nic_restart\          ;call dword nic_restart
+\BE\dword:ofs:main_textcrlf\                  ;mov esi,offset main_textCRLF
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\label:main_j3\                               ;main_j3:
+\E8\dword:rela2end:ofs?:nic_receive\          ;call dword nic_receive
+\0B\C9\                                       ;or ecx,ecx
+\75\byte:rela2end:signed:ofs?:main_j3\        ;jnz byte main_j3
+\0F\06\                                       ;clts                            ;give away the control...
+\01\00\00\00\                                 ;dd 01h
+\0F\06\                                       ;clts                            ;get next incoming pipeline...
+\16\00\00\00\                                 ;dd 16h
+\0B\DB\                                       ;or ebx,ebx
+\75\byte:rela2end:signed:ofs?:main_j2\        ;jnz byte main_j2
+\nop\89\05\dword:ofs?:dataseg_pipeln\         ;mov def:[dataSeg_pipeLn],eax
+\0F\06\                                       ;clts                            ;get pipeline info...
+\19\00\00\00\                                 ;dd 19h
+\nop\89\05\dword:ofs?:dataseg_procnm\         ;mov def:[dataSeg_procNm],eax
+\BF\dword:dataseg_fremem\                     ;mov edi,dataSeg_freMem
+\0F\06\                                       ;clts                            ;get other process name...
+\0B\00\00\00\                                 ;dd 0bh
+\F6\C2\40\                                    ;test dl,40h
+\0F\84\dword:rela2end:ofs?:main_j1\           ;jz dword main_j1
+\BF\dword:dataseg_fremem\                     ;mov edi,dataSeg_freMem
+\B8\dword:nic_addrsize\                       ;mov eax,nic_addrSize
+\nop\AB\                                      ;stosd ptr32
+\B8\dword:nic_maxpack\                        ;mov eax,nic_maxPack
+\nop\AB\                                      ;stosd ptr32
+\nop\8B\05\dword:ofs?:dataseg_parprt\         ;mov eax,def:[dataSeg_parPrt]
+\nop\AB\                                      ;stosd ptr32
+\nop\8B\05\dword:ofs?:dataseg_parmem\         ;mov eax,def:[dataSeg_parMem]
+\nop\AB\                                      ;stosd ptr32
+\BE\dword:dataseg_paradr\                     ;mov esi,dataSeg_parAdr
+\B9\dword:nic_addrsize\                       ;mov ecx,nic_addrSize
+\F3\                                          ;rep
+\nop\A4\                                      ;  movsb ptr32
+\BE\dword:dataseg_parbrd\                     ;mov esi,dataSeg_parBrd
+\B9\dword:nic_addrsize\                       ;mov ecx,nic_addrSize
+\F3\                                          ;rep
+\nop\A4\                                      ;  movsb ptr32
+\BE\dword:ofs:nic_name\                       ;mov esi,offset nic_name
+\label:main_j4\                               ;main_j4:
+\2E\AC\                                       ;lodsb cs,ptr32
+\nop\AA\                                      ;stosb ptr32
+\0A\C0\                                       ;or al,al
+\75\byte:rela2end:signed:ofs?:main_j4\        ;jnz byte main_j4
+\8B\CF\                                       ;mov ecx,edi
+\BE\dword:dataseg_fremem\                     ;mov esi,dataSeg_freMem
+\2B\CE\                                       ;sub ecx,esi
+\nop\8B\05\dword:ofs?:dataseg_pipeln\         ;mov eax,def:[dataSeg_pipeLn]
+\0F\06\                                       ;clts                            ;nonblocking send through pipeline...
+\1A\00\00\00\                                 ;dd 1ah
+\                                             ;
+\                                             ;
+\nop\C7\05\dword:ofs?:dataseg_pckcnt\00\00\00\00\ ;mov dword def:[dataSeg_pckCnt],0
+\                                             ;
+\label:main_recv_j1\                          ;main_recv_j1:
+\nop\8B\05\dword:ofs?:dataseg_pipeln\         ;mov eax,def:[dataSeg_pipeLn]
+\0F\06\                                       ;clts                            ;get pipeline info...
+\19\00\00\00\                                 ;dd 19h
+\0B\C0\                                       ;or eax,eax
+\0F\84\dword:rela2end:ofs?:main_j1\           ;jz dword main_j1
+\nop\3B\0D\dword:ofs?:dataseg_totmax\         ;cmp ecx,def:[dataSeg_totMax]
+\72\byte:rela2end:signed:ofs?:main_recv_j2\   ;jb byte main_recv_j2
+\E8\dword:rela2end:ofs?:nic_receive\          ;call dword nic_receive
+\0B\C9\                                       ;or ecx,ecx
+\74\byte:rela2end:signed:ofs?:main_recv_j2\   ;jz byte main_recv_j2
+\BE\dword:dataseg_fremem\                     ;mov esi,dataSeg_freMem
+\nop\8B\05\dword:ofs?:dataseg_pipeln\         ;mov eax,def:[dataSeg_pipeLn]
+\81\C1\dword:nic_addrsize\                    ;add ecx,nic_addrSize
+\0F\06\                                       ;clts                            ;nonblocking send through pipeline...
+\1A\00\00\00\                                 ;dd 1ah
+\nop\FF\05\dword:ofs?:dataseg_pckcnt\         ;inc dword def:[dataSeg_pckCnt]
+\EB\byte:rela2end:signed:ofs?:main_recv_j1\   ;jmp byte main_recv_j1
+\label:main_recv_j2\                          ;main_recv_j2:
+\                                             ;
+\label:main_send_j1\                          ;main_send_j1:
+\E8\dword:rela2end:ofs?:nic_ready4tx\         ;call dword nic_ready4tx
+\72\byte:rela2end:signed:ofs?:main_send_j2\   ;jc byte main_send_j2
+\BF\dword:dataseg_fremem\                     ;mov edi,dataSeg_freMem
+\nop\8B\0D\dword:ofs?:dataseg_totmax\         ;mov ecx,def:[dataSeg_totMax]
+\nop\8B\05\dword:ofs?:dataseg_pipeln\         ;mov eax,def:[dataSeg_pipeLn]
+\0F\06\                                       ;clts                            ;nonblocking receive through pipeline...
+\1B\00\00\00\                                 ;dd 1bh
+\0B\DB\                                       ;or ebx,ebx
+\75\byte:rela2end:signed:ofs?:main_send_j2\   ;jnz byte main_send_j2
+\81\E9\dword:nic_addrsize\                    ;sub ecx,nic_addrSize
+\72\byte:rela2end:signed:ofs?:main_send_j1\   ;jb byte main_send_j1
+\81\F9\dword:nic_maxpack\                     ;cmp ecx,nic_maxPack
+\77\byte:rela2end:signed:ofs?:main_send_j1\   ;ja byte main_send_j1
+\51\                                          ;push ecx
+\nop\8D\B9\dword:ofs?:dataseg_fremem\         ;lea edi,def:[dataSeg_freMem+ecx]
+\81\C7\dword:nic_addrsize\                    ;add edi,nic_addrSize
+\F7\D9\                                       ;neg ecx
+\81\C1\dword:nic_maxpack\                     ;add ecx,nic_maxPack
+\81\C1\03\00\00\00\                           ;add ecx,3
+\C1\E9\02\                                    ;shr ecx,2
+\2B\C0\                                       ;sub eax,eax
+\F3\                                          ;rep
+\nop\AB\                                      ;  stosd ptr32
+\59\                                          ;pop ecx
+\label:main_send_j4\                          ;main_send_j4:
+\81\F9\dword:nic_minpack\                     ;cmp ecx,nic_minPack
+\72\byte:rela2end:signed:ofs?:main_send_j3\   ;jb byte main_send_j3
+\E8\dword:rela2end:ofs?:nic_send\             ;call dword nic_send
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\nop\89\05\dword:ofs?:dataseg_lasttx\         ;mov def:[dataSeg_lastTx],eax
+\EB\byte:rela2end:signed:ofs?:main_send_j1\   ;jmp byte main_send_j1
+\label:main_send_j3\                          ;main_send_j3:
+\B9\dword:nic_minpack\                        ;mov ecx,nic_minPack
+\EB\byte:rela2end:signed:ofs?:main_send_j4\   ;jmp byte main_send_j4
+\label:main_send_j2\                          ;main_send_j2:
+\                                             ;
+\label:main_test_j1\                          ;main_test_j1:
+\nop\8B\05\dword:ofs?:dataseg_pckcnt\         ;mov eax,def:[dataSeg_pckCnt]
+\0B\C0\                                       ;or eax,eax
+\74\byte:rela2end:signed:ofs?:main_test_j6\   ;jz byte main_test_j6
+\nop\C7\05\dword:ofs?:dataseg_pckcnt\00\00\00\00\ ;mov dword def:[dataSeg_pckCnt],0
+\nop\8B\05\dword:ofs?:dataseg_procnm\         ;mov eax,def:[dataSeg_procNm]
+\0F\06\                                       ;clts                            ;give away the control...
+\02\00\00\00\                                 ;dd 02h
+\EB\byte:rela2end:signed:ofs?:main_test_j7\   ;jmp byte main_test_j7
+\label:main_test_j6\                          ;main_test_j6:
+\0F\06\                                       ;clts                            ;give away the control...
+\01\00\00\00\                                 ;dd 01h
+\label:main_test_j7\                          ;main_test_j7:
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\nop\2B\05\dword:ofs?:dataseg_lstchk\         ;sub eax,def:[dataSeg_lstChk]
+\nop\2B\05\dword:ofs?:dataseg_tcksec\         ;sub eax,def:[dataSeg_tckSec]
+\0F\88\dword:rela2end:ofs?:main_recv_j1\      ;js dword main_recv_j1
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\nop\89\05\dword:ofs?:dataseg_lstchk\         ;mov def:[dataSeg_lstChk],eax
+\E8\dword:rela2end:ofs?:nic_test4dead\        ;call dword nic_test4dead
+\BE\dword:ofs:main_text22\                    ;mov esi,offset main_text22
+\72\byte:rela2end:signed:ofs?:main_test_j2\   ;jc byte main_test_j2
+\nop\8B\05\dword:ofs?:dataseg_lstchk\         ;mov eax,def:[dataSeg_lstChk]
+\nop\2B\05\dword:ofs?:dataseg_lasttx\         ;sub eax,def:[dataSeg_lastTx]
+\2B\D2\                                       ;sub edx,edx
+\nop\F7\35\dword:ofs?:dataseg_tcksec\         ;div dword def:[dataSeg_tckSec]
+\81\F8\02\00\00\00\                           ;cmp eax,2
+\72\byte:rela2end:signed:ofs?:main_test_j3\   ;jb byte main_test_j3
+\nop\8B\05\dword:ofs?:dataseg_lstchk\         ;mov eax,def:[dataSeg_lstChk]
+\nop\89\05\dword:ofs?:dataseg_lasttx\         ;mov def:[dataSeg_lastTx],eax
+\E8\dword:rela2end:ofs?:nic_ready4tx\         ;call dword nic_ready4tx
+\BE\dword:ofs:main_text23\                    ;mov esi,offset main_text23
+\72\byte:rela2end:signed:ofs?:main_test_j2\   ;jc byte main_test_j2
+\label:main_test_j3\                          ;main_test_j3:
+\E9\dword:rela2end:ofs?:main_recv_j1\         ;jmp dword main_recv_j1
+\                                             ;
+\label:main_test_j2\                          ;main_test_j2:
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BE\dword:ofs:main_text24\                    ;mov esi,offset main_text24
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\B9\10\00\00\00\                              ;mov ecx,16
+\label:main_test_j4\                          ;main_test_j4:
+\nop\8B\35\dword:ofs?:dataseg_tcksec\         ;mov esi,def:[dataSeg_tckSec]
+\E8\dword:rela2end:ofs?:timer_delay\          ;call dword timer_delay
+\51\                                          ;push ecx
+\E8\dword:rela2end:ofs?:nic_restart\          ;call dword nic_restart
+\59\                                          ;pop ecx
+\73\byte:rela2end:signed:ofs?:main_test_j5\   ;jnc byte main_test_j5
+\nop\8B\35\dword:ofs?:dataseg_tcksec\         ;mov esi,def:[dataSeg_tckSec]
+\49\                                          ;dec ecx
+\79\byte:rela2end:signed:ofs?:main_test_j4\   ;jns byte main_test_j4
+\label:main_test_j5\                          ;main_test_j5:
+\BE\dword:ofs:main_textcrlf\                  ;mov esi,offset main_textCRLF
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\nop\89\05\dword:ofs?:dataseg_lstchk\         ;mov def:[dataSeg_lstChk],eax
+\nop\89\05\dword:ofs?:dataseg_lasttx\         ;mov def:[dataSeg_lastTx],eax
+\EB\byte:rela2end:signed:ofs?:main_test_j3\   ;jmp byte main_test_j3
+\                                             ;
+\                                             ;
+\                                             ;
+\                                             ;
+\                                             ;
+\                                             ;
+\                                             ;
+\                                             ;
+\label:main_addr\                             ;main_addr:
+\56\                                          ;push esi
+\BE\dword:ofs:main_text12\                    ;mov esi,offset main_text12
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\5E\                                          ;pop esi
+\B9\dword:nic_addrsize\                       ;mov ecx,nic_addrSize
+\label:main_addr_j1\                          ;main_addr_j1:
+\nop\AC\                                      ;lodsb ptr32
+\8A\D0\                                       ;mov dl,al
+\56\                                          ;push esi
+\51\                                          ;push ecx
+\B1\02\                                       ;mov cl,2
+\E8\dword:rela2end:ofs?:conv2hex\             ;call dword conv2hex
+\46\                                          ;inc esi
+\E8\dword:rela2end:ofs?:writedatastr\         ;call dword writeDataStr
+\BE\dword:ofs:main_text14\                    ;mov esi,offset main_text14
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\59\                                          ;pop ecx
+\5E\                                          ;pop esi
+\E2\byte:rela2end:signed:ofs?:main_addr_j1\   ;loopd main_addr_j1
+\BE\dword:ofs:main_text15\                    ;mov esi,offset main_text15
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\C3\                                          ;retnd
+\                                             ;
+\label:main_comp\                             ;main_comp:
+\8B\F5\                                       ;mov esi,ebp
+\label:main_comp_j1\                          ;main_comp_j1:
+\2E\8A\27\                                    ;mov ah,cs:[edi]
+\47\                                          ;inc edi
+\0A\E4\                                       ;or ah,ah
+\74\byte:rela2end:signed:ofs?:main_comp_j2\   ;jz byte main_comp_j2
+\nop\AC\                                      ;lodsb ptr32
+\E8\dword:rela2end:ofs?:lowcase\              ;call dword lowCase
+\3A\C4\                                       ;cmp al,ah
+\74\byte:rela2end:signed:ofs?:main_comp_j1\   ;je byte main_comp_j1
+\F8\                                          ;clc
+\C3\                                          ;retnd
+\label:main_comp_j2\                          ;main_comp_j2:
+\8B\EE\                                       ;mov ebp,esi
+\F9\                                          ;stc
+\C3\                                          ;retnd
+\                                             ;
+\label:main_using\                            ;main_using:
+\BE\dword:ofs:main_text04\                    ;mov esi,offset main_text04
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\BF\dword:dataseg_wrtbuf\                     ;mov edi,dataSeg_wrtBuf
+\0F\06\                                       ;clts                            ;get process pathname...
+\12\00\00\00\                                 ;dd 12h
+\BE\dword:dataseg_wrtbuf\                     ;mov esi,dataSeg_wrtBuf
+\nop\0F\B6\06\                                ;movzx byte eax,def:[esi]
+\46\                                          ;inc esi
+\nop\88\24\06\                                ;mov def:[esi+eax],ah
+\8B\FE\                                       ;mov edi,esi
+\label:main_using_j1\                         ;main_using_j1:
+\nop\AC\                                      ;lodsb ptr32
+\0A\C0\                                       ;or al,al
+\74\byte:rela2end:signed:ofs?:main_using_j2\  ;jz byte main_using_j2
+\80\F8\5C\                                    ;cmp al,'\'
+\75\byte:rela2end:signed:ofs?:main_using_j1\  ;jne byte main_using_j1
+\8B\FE\                                       ;mov edi,esi
+\EB\byte:rela2end:signed:ofs?:main_using_j1\  ;jmp byte main_using_j1
+\label:main_using_j2\                         ;main_using_j2:
+\8B\F7\                                       ;mov esi,edi
+\E8\dword:rela2end:ofs?:writedatastr\         ;call dword writeDataStr
+\B0\byte:nic_reqparam\                        ;mov al,nic_reqParam
+\80\E0\04\                                    ;and al,04h
+\74\byte:rela2end:signed:ofs?:main_using_j3\  ;jz byte main_using_j3
+\BE\dword:ofs:main_text05\                    ;mov esi,offset main_text05
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\label:main_using_j3\                         ;main_using_j3:
+\B0\byte:nic_reqparam\                        ;mov al,nic_reqParam
+\80\E0\02\                                    ;and al,02h
+\74\byte:rela2end:signed:ofs?:main_using_j4\  ;jz byte main_using_j4
+\BE\dword:ofs:main_text06\                    ;mov esi,offset main_text06
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\label:main_using_j4\                         ;main_using_j4:
+\B0\byte:nic_reqparam\                        ;mov al,nic_reqParam
+\80\E0\01\                                    ;and al,01h
+\74\byte:rela2end:signed:ofs?:main_using_j5\  ;jz byte main_using_j5
+\BE\dword:ofs:main_text07\                    ;mov esi,offset main_text07
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\label:main_using_j5\                         ;main_using_j5:
+\BE\dword:ofs:main_text08\                    ;mov esi,offset main_text08
+\E8\dword:rela2end:ofs?:writecodestr\         ;call dword writeCodeStr
+\                                             ;
+\label:main_vege\                             ;main_vege:
+\2B\C0\                                       ;sub eax,eax
+\0F\06\                                       ;clts                            ;terminate process...
+\00\00\00\00\                                 ;dd 00h
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;
+\                                             ;;-------------------------------
+\label:writecodestr\                          ;proc writeCodeStr
+\                                             ;;in: cs:esi-offset of text
+\56\                                          ;push esi
+\57\                                          ;push edi
+\51\                                          ;push ecx
+\50\                                          ;push eax
+\2B\C9\                                       ;sub ecx,ecx
+\BF\dword:dataseg_wrtbuf\                     ;mov edi,dataSeg_wrtBuf
+\label:writecodestr_j1\                       ;writeCodeStr_j1:
+\41\                                          ;inc ecx
+\2E\AC\                                       ;lodsb cs,ptr32
+\nop\AA\                                      ;stosb ptr32
+\0A\C0\                                       ;or al,al
+\75\byte:rela2end:signed:ofs?:writecodestr_j1\ ;jnz byte writeCodeStr_j1
+\49\                                          ;dec ecx
+\BE\dword:dataseg_wrtbuf\                     ;mov esi,dataSeg_wrtBuf
+\0F\06\                                       ;clts                            ;write to console...
+\20\00\00\00\                                 ;dd 20h
+\58\                                          ;pop eax
+\59\                                          ;pop ecx
+\5F\                                          ;pop edi
+\5E\                                          ;pop esi
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:writedatastr\                          ;proc writeDataStr
+\                                             ;;in: cs:esi-offset of text
+\51\                                          ;push ecx
+\50\                                          ;push eax
+\56\                                          ;push esi
+\2B\C9\                                       ;sub ecx,ecx
+\label:writedatastr_j1\                       ;writeDataStr_j1:
+\41\                                          ;inc ecx
+\nop\AC\                                      ;lodsb ptr32
+\0A\C0\                                       ;or al,al
+\75\byte:rela2end:signed:ofs?:writedatastr_j1\ ;jnz byte writeDataStr_j1
+\49\                                          ;dec ecx
+\5E\                                          ;pop esi
+\0F\06\                                       ;clts                            ;write to console...
+\20\00\00\00\                                 ;dd 20h
+\58\                                          ;pop eax
+\59\                                          ;pop ecx
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:conv2dec\                              ;proc conv2dec
+\                                             ;;in:  edx-value to write...
+\                                             ;;out: esi-where converted...
+\BE\dword:ofs:conv2dec_d1\                    ;mov esi,offset conv2dec_d1
+\BF\dword:dataseg_wrtbuf\                     ;mov edi,dataSeg_wrtBuf
+\label:conv2dec_j3\                           ;conv2dec_j3:
+\81\FE\dword:ofs:conv2dec_d2\                 ;cmp esi,offset conv2dec_d2
+\73\byte:rela2end:signed:ofs?:conv2dec_j4\    ;jae byte conv2dec_j4
+\2E\AD\                                       ;lodsd cs,ptr32
+\0B\C0\                                       ;or eax,eax
+\74\byte:rela2end:signed:ofs?:conv2dec_j3\    ;jz byte conv2dec_j3
+\3B\D0\                                       ;cmp edx,eax
+\72\byte:rela2end:signed:ofs?:conv2dec_j3\    ;jb byte conv2dec_j3
+\label:conv2dec_j4\                           ;conv2dec_j4:
+\81\EE\04\00\00\00\                           ;sub esi,4
+\label:conv2dec_j1\                           ;conv2dec_j1:
+\2E\AD\                                       ;lodsd cs,ptr32
+\0B\C0\                                       ;or eax,eax
+\75\byte:rela2end:signed:ofs?:conv2dec_j2\    ;jnz byte conv2dec_j2
+\B0\20\                                       ;mov al,' '
+\nop\AA\                                      ;stosb ptr32
+\EB\byte:rela2end:signed:ofs?:conv2dec_j1\    ;jmp byte conv2dec_j1
+\label:conv2dec_j2\                           ;conv2dec_j2:
+\8B\C8\                                       ;mov ecx,eax
+\8B\C2\                                       ;mov eax,edx
+\2B\D2\                                       ;sub edx,edx
+\F7\F1\                                       ;div ecx
+\80\C0\30\                                    ;add al,'0'
+\nop\AA\                                      ;stosb ptr32
+\81\FE\dword:ofs:conv2dec_d2\                 ;cmp esi,offset conv2dec_d2
+\72\byte:rela2end:signed:ofs?:conv2dec_j1\    ;jb byte conv2dec_j1
+\2B\C0\                                       ;sub eax,eax
+\nop\AA\                                      ;stosb ptr32
+\4F\                                          ;dec edi
+\BE\dword:dataseg_wrtbuf\                     ;mov esi,dataSeg_wrtBuf
+\C3\                                          ;retnd
+\label:conv2dec_d1\                           ;conv2dec_d1:
+\00\CA\9A\3B\00\E1\F5\05\80\96\98\00\40\42\0F\00\A0\86\01\00\10\27\00\00\E8\03\00\00\64\00\00\00\0A\00\00\00\01\00\00\00\ ;dd 1000000000,100000000,10000000,1000000,100000,10000,1000,100,10,1
+\label:conv2dec_d2\                           ;conv2dec_d2:
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:conv2hex\                              ;proc conv2hex
+\                                             ;;in:  edx-value to write...
+\                                             ;;     cl-digits to convert...
+\                                             ;;out: esi-where converted...
+\BF\dword:dataseg_wrtbuf\                     ;mov edi,dataSeg_wrtBuf
+\B0\24\                                       ;mov al,'$'
+\nop\AA\                                      ;stosb ptr32
+\49\                                          ;dec ecx
+\81\E1\07\00\00\00\                           ;and ecx,7
+\41\                                          ;inc ecx
+\51\                                          ;push ecx
+\F6\D9\                                       ;neg cl
+\80\C1\08\                                    ;add cl,8
+\C0\E1\02\                                    ;shl cl,2
+\D3\C2\                                       ;rol edx,cl
+\59\                                          ;pop ecx
+\label:conv2hex_j1\                           ;conv2hex_j1:
+\C1\C2\04\                                    ;rol edx,4
+\0F\B6\C2\                                    ;movzx eax,dl
+\80\E0\0F\                                    ;and al,0fh
+\B4\30\                                       ;mov ah,'0'
+\80\F8\0A\                                    ;cmp al,10
+\72\byte:rela2end:signed:ofs?:conv2hex_j2\    ;jb byte conv2hex_j2
+\B4\41\                                       ;mov ah,'A'
+\80\E8\0A\                                    ;sub al,10
+\label:conv2hex_j2\                           ;conv2hex_j2:
+\02\C4\                                       ;add al,ah
+\nop\AA\                                      ;stosb ptr32
+\E2\byte:rela2end:signed:ofs?:conv2hex_j1\    ;loopd conv2hex_j1
+\2B\C0\                                       ;sub eax,eax
+\nop\AB\                                      ;stosd ptr32
+\BE\dword:dataseg_wrtbuf\                     ;mov esi,dataSeg_wrtBuf
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:lowcase\                               ;proc lowCase
+\                                             ;;in: al-char to convert...
+\80\F8\41\                                    ;cmp al,'A'
+\72\byte:rela2end:signed:ofs?:lowcase_j1\     ;jb byte lowCase_j1
+\80\F8\5A\                                    ;cmp al,'Z'
+\77\byte:rela2end:signed:ofs?:lowcase_j1\     ;ja byte lowCase_j1
+\80\C8\20\                                    ;or al,20h
+\label:lowcase_j1\                            ;lowCase_j1:
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:convdigit\                             ;proc convDigit
+\                                             ;;in:  al-byte...
+\                                             ;;out: eax-value...
+\8A\E0\                                       ;mov ah,al
+\80\E8\30\                                    ;sub al,'0'
+\80\F8\0A\                                    ;cmp al,10
+\72\byte:rela2end:signed:ofs?:convdigit_j1\   ;jb byte convDigit_j1
+\8A\C4\                                       ;mov al,ah
+\80\E8\61\                                    ;sub al,'a'
+\80\C0\0A\                                    ;add al,10
+\label:convdigit_j1\                          ;convDigit_j1:
+\0F\B6\C0\                                    ;movzx eax,al
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:str2num\                               ;proc str2num
+\                                             ;;in:  esi-where data is...
+\                                             ;;out: carry-cleared if successful...
+\                                             ;;     edx-number...
+\50\                                          ;push eax
+\53\                                          ;push ebx
+\BB\0A\00\00\00\                              ;mov ebx,10
+\2B\D2\                                       ;sub edx,edx
+\nop\8A\06\                                   ;mov al,def:[esi]
+\80\F8\24\                                    ;cmp al,'$'
+\75\byte:rela2end:signed:ofs?:str2num_j1\     ;jne byte str2num_j1
+\46\                                          ;inc esi
+\BB\10\00\00\00\                              ;mov ebx,16
+\label:str2num_j1\                            ;str2num_j1:
+\nop\AC\                                      ;lodsb ptr32
+\E8\dword:rela2end:ofs?:lowcase\              ;call dword lowCase
+\0A\C0\                                       ;or al,al
+\74\byte:rela2end:signed:ofs?:str2num_j2\     ;jz byte str2num_j2
+\80\F8\20\                                    ;cmp al,' '
+\74\byte:rela2end:signed:ofs?:str2num_j2\     ;je byte str2num_j2
+\E8\dword:rela2end:ofs?:convdigit\            ;call dword convDigit
+\3B\C3\                                       ;cmp eax,ebx
+\73\byte:rela2end:signed:ofs?:str2num_err\    ;jae byte str2num_err
+\0F\AF\D3\                                    ;imul edx,ebx
+\03\D0\                                       ;add edx,eax
+\EB\byte:rela2end:signed:ofs?:str2num_j1\     ;jmp byte str2num_j1
+\label:str2num_j2\                            ;str2num_j2:
+\4E\                                          ;dec esi
+\F8\                                          ;clc
+\label:str2num_vege\                          ;str2num_vege:
+\5B\                                          ;pop ebx
+\58\                                          ;pop eax
+\C3\                                          ;retnd
+\label:str2num_err\                           ;str2num_err:
+\2B\D2\                                       ;sub edx,edx
+\F9\                                          ;stc
+\EB\byte:rela2end:signed:ofs?:str2num_vege\   ;jmp byte str2num_vege
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:timer_past\                            ;proc timer_past
+\                                             ;;in:  ebp-timer value...
+\                                             ;;     eax-seconds past...
+\52\                                          ;push edx
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\2B\C5\                                       ;sub eax,ebp
+\2B\D2\                                       ;sub edx,edx
+\nop\F7\35\dword:ofs?:dataseg_tcksec\         ;div dword def:[dataSeg_tckSec]
+\5A\                                          ;pop edx
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:timer_delay\                           ;proc timer_delay
+\                                             ;;in: esi-ticks to wait...
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\8B\E8\                                       ;mov ebp,eax
+\label:timer_delay_j1\                        ;timer_delay_j1:
+\0F\06\                                       ;clts                            ;give away the control...
+\01\00\00\00\                                 ;dd 01h
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\2B\C5\                                       ;sub eax,ebp
+\2B\C6\                                       ;sub eax,esi
+\78\byte:rela2end:signed:ofs?:timer_delay_j1\ ;js byte timer_delay_j1
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:timer_start\                           ;proc timer_start
+\                                             ;;out: ebp-timer value....
+\50\                                          ;push eax
+\0F\06\                                       ;clts                            ;get uptime info...
+\2B\00\00\00\                                 ;dd 2bh
+\8B\E8\                                       ;mov ebp,eax
+\58\                                          ;pop eax
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:timer_relequish\                       ;proc timer_relequish
+\0F\06\                                       ;clts                            ;give away the control...
+\01\00\00\00\                                 ;dd 01h
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:system_mapmem\                         ;proc system_mapMem
+\                                             ;; in: eax-physical memory offset...
+\                                             ;;     ecx-bytes to map in...
+\                                             ;;out: ebx-error code...
+\                                             ;;     edi-offset where mapped...
+\                                             ;;     eax-physical memory offset...
+\                                             ;;     ecx-bytes mapped in...
+\0F\06\                                       ;clts                            ;map system memory...
+\03\00\00\00\                                 ;dd 03h
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:system_alloccont\                      ;proc system_allocCont
+\                                             ;; in: ecx-size of continuous memory in bytes...
+\                                             ;;out: ebx-error code...
+\                                             ;;     ecx-size of continuous memory in bytes...
+\                                             ;;     edi-offset of continuous memory...
+\                                             ;;     eax-physical memory offset...
+\0F\06\                                       ;clts                            ;allocate continuous memory...
+\26\00\00\00\                                 ;dd 26h
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:system_allocdmable\                    ;proc system_allocDmable
+\                                             ;; in: ecx-size of dma memory in bytes...
+\                                             ;;out: ebx-error code...
+\                                             ;;     ecx-size of dma memory in bytes...
+\                                             ;;     edi-offset of dma memory...
+\                                             ;;     eax-physical memory offset...
+\0F\06\                                       ;clts                            ;allocate dma-able memory...
+\25\00\00\00\                                 ;dd 25h
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:system_hookirq\                        ;proc system_hookIrq
+\                                             ;; in: al-irq number: 0..15...
+\                                             ;;     esi-offset of handler...
+\                                             ;;     edi-stack pointer...
+\                                             ;;out: ebx-error code...
+\0F\06\                                       ;clts                            ;hook irq line...
+\05\00\00\00\                                 ;dd 05h
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:system_missdirq\                       ;proc system_missdIrq
+\                                             ;;out: eax-number of missed irqs...
+\0F\06\                                       ;clts                            ;get number of missed irqs...
+\4C\00\00\00\                                 ;dd 4ch
+\C3\                                          ;retnd
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\label:system_stopirq\                        ;proc system_stopIrq
+\0F\06\                                       ;clts                            ;terminate irq handler...
+\07\00\00\00\                                 ;dd 07h
+\EB\byte:rela2end:signed:ofs?:system_stopirq\ ;jmp byte system_stopIrq
+\                                             ;endp
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;
+\                                             ;;-------------------------------
+\label:main_textcrlf\0D\0A\00\                ;main_textCRLF db 13,10,0
+\label:main_text01\6E\65\74\77\6F\72\6B\20\63\61\72\64\20\64\72\69\76\65\72\20\76\31\2E\30\2C\20\64\6F\6E\65\20\62\79\20\4D\63\20\61\74\20\32\30\30\39\2D\30\31\2D\31\35\20\31\31\3A\35\36\3A\35\38\2E\0D\0A\00\ ;main_text01 db 'network card driver v1.0, done by Mc at ',%date,' ',%time,'.',13,10,0
+\label:main_text02\6E\65\74\77\6F\72\6B\20\69\6E\74\65\72\66\61\63\65\20\63\61\72\64\3A\20\00\ ;main_text02 db 'network interface card: ',0
+\label:main_text03\20\28\00\                  ;main_text03 db ' (',0
+\label:main_text04\75\73\69\6E\67\3A\20\00\   ;main_text04 db 'using: ',0
+\label:main_text05\20\3C\6D\65\6D\3D\4E\55\4D\3E\00\ ;main_text05 db ' <mem=NUM>',0
+\label:main_text06\20\3C\69\6F\3D\4E\55\4D\3E\00\ ;main_text06 db ' <io=NUM>',0
+\label:main_text07\20\3C\69\72\71\3D\4E\55\4D\3E\00\ ;main_text07 db ' <irq=NUM>',0
+\label:main_text08\20\5B\61\64\64\72\3D\4E\55\4D\5D\00\ ;main_text08 db ' [addr=NUM]',0
+\label:main_text09\6D\65\6D\3D\00\            ;main_text09 db 'mem=',0
+\label:main_text10\69\6F\3D\00\               ;main_text10 db 'io=',0
+\label:main_text11\69\72\71\3D\00\            ;main_text11 db 'irq=',0
+\label:main_text12\61\64\64\72\3D\00\         ;main_text12 db 'addr=',0
+\label:main_text13\20\20\00\                  ;main_text13 db '  ',0
+\label:main_text14\2D\00\                     ;main_text14 db '-',0
+\label:main_text15\08\20\08\00\               ;main_text15 db 8,' ',8,0
+\label:main_text16\6D\74\75\3D\00\            ;main_text16 db 'mtu=',0
+\label:main_text17\66\61\69\6C\65\64\20\74\6F\20\66\69\6E\64\20\64\65\76\69\63\65\20\61\74\20\73\70\65\63\69\66\69\65\64\20\6C\6F\63\61\74\69\6F\6E\21\00\ ;main_text17 db 'failed to find device at specified location!',0
+\label:main_text18\66\6F\72\63\65\64\20\00\   ;main_text18 db 'forced ',0
+\label:main_text19\66\61\69\6C\65\64\20\74\6F\20\69\6E\69\74\69\61\6C\69\7A\65\20\64\65\76\69\63\65\21\00\ ;main_text19 db 'failed to initialize device!',0
+\label:main_text20\62\72\6F\61\64\63\61\73\74\20\00\ ;main_text20 db 'broadcast ',0
+\label:main_text21\6C\6F\63\61\6C\20\00\      ;main_text21 db 'local ',0
+\label:main_text22\6E\69\63\20\68\61\6C\74\65\64\00\ ;main_text22 db 'nic halted',0
+\label:main_text23\74\78\20\74\69\6D\65\6F\75\74\00\ ;main_text23 db 'tx timeout',0
+\label:main_text24\2C\20\72\65\73\65\74\74\69\6E\67\20\63\61\72\64\2E\2E\2E\00\ ;main_text24 db ', resetting card...',0
+\label:main_text25\29\0D\0A\00\               ;main_text25 db ')',13,10,0
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;-------------------------------
+\                                             ;;|;;
+\                                             ;;-------------------------------
+\                                             ;
+\                                             ;;------------------------------- data segment layout...
+\const:dataseg_client:0\                      ;dataSeg_client equ 0000h        ;4k: client datas...
+\const:dataseg_wrtbuf:1000\                   ;dataSeg_wrtBuf equ 1000h        ;256: write buffer...
+\const:dataseg_tcksec:1100\                   ;dataSeg_tckSec equ 1100h        ;dd: ticks per second...
+\const:dataseg_paradr:1104\                   ;dataSeg_parAdr equ 1104h        ;16: local address...
+\const:dataseg_parbrd:1114\                   ;dataSeg_parBrd equ 1114h        ;16: broadcast address...
+\const:dataseg_parmem:1124\                   ;dataSeg_parMem equ 1124h        ;dd: memory parameter...
+\const:dataseg_parprt:1128\                   ;dataSeg_parPrt equ 1128h        ;dd: io parameter...
+\const:dataseg_parirq:112C\                   ;dataSeg_parIrq equ 112ch        ;dd: irq parameter...
+\const:dataseg_lasttx:1130\                   ;dataSeg_lastTx equ 1130h        ;dd: tick when last sent...
+\const:dataseg_lstchk:1134\                   ;dataSeg_lstChk equ 1134h        ;dd: tick when last checked...
+\const:dataseg_pipeln:1138\                   ;dataSeg_pipeLn equ 1138h        ;dd: pipeline number...
+\const:dataseg_procnm:113C\                   ;dataSeg_procNm equ 113ch        ;dd: process number...
+\const:dataseg_pckcnt:1140\                   ;dataSeg_pckCnt equ 1140h        ;dd: packet counter/tick...
+\const:dataseg_totmax:1144\                   ;dataSeg_totMax equ 1144h        ;dd: max packet size...
+\const:dataseg_prefre:1148\                   ;dataSeg_preFre equ 1148h        ;64: dummy memory...
+\const:dataseg_fremem:1188\                   ;dataSeg_freMem equ 1188h        ;free memory...
+\                                             ;;-------------------------------
+\                                             ;
+\label:lastbyte\                              ;lastbyte:
+\fileend\                                     ;

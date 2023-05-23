@@ -1,0 +1,471 @@
+--- @compiler prefix-code
+org 0h
+use32
+db 'exec'                       ;id
+dd offset lastbyte              ;size
+dd program_heap                 ;data
+dd program_stack                ;stack
+;-------------------------------
+
+mov dword def:[freeMemPoint],firstFreeMem
+mov dword def:[consoleSizeX],00190050h
+jmp dword program_main
+---
+
+--- @compiler postfix-code
+lastbyte:
+---
+
+--- memresize
+clts                            ;resize extended memory...
+dd 24h
+---
+
+--- terminate
+movzx eax,ax
+clts                            ;terminate process...
+dd 00h
+---
+
+--- sleep
+clts                            ;give away the control...
+dd 01h
+---
+
+--- memcopy
+rep
+  movsb ptr32
+---
+
+--- memfillbyte
+rep
+  stosb ptr32
+---
+
+--- memcopy2
+push esi
+push edi
+push ecx
+cmp esi,edi
+jb byte @_j1
+rep
+  movsb ptr32
+jmp byte @_j2
+@_j1:
+std
+add esi,ecx
+add edi,ecx
+dec esi
+dec edi
+rep
+  movsb ptr32
+cld
+@_j2:
+pop ecx
+pop edi
+pop esi
+---
+
+--- codecopy
+rep
+  movsb cs,ptr32
+---
+
+--- console.clear
+push esi
+push ecx
+mov esi,dummyBuffer
+mov ecx,0200h
+mov def:[esi],ecx
+mov ecx,2
+clts                            ;write to console...
+dd 20h
+pop ecx
+pop esi
+---
+
+--- console.size
+mov ax,def:[consoleSizeX]
+mov bx,def:[consoleSizeY]
+---
+
+--- console.setcolor
+push esi
+push ecx
+mov cl,al
+shl ecx,16
+mov cx,0300h
+mov esi,dummyBuffer
+mov def:[esi],ecx
+mov ecx,3
+clts                            ;write to console...
+dd 20h
+pop ecx
+pop esi
+---
+
+--- console.gotoxy
+push esi
+push ecx
+mov esi,dummyBuffer
+mov def:[esi+2],ax
+mov def:[esi+4],bx
+mov word def:[esi],0400h
+mov ecx,6
+clts                            ;write to console...
+dd 20h
+pop ecx
+pop esi
+---
+
+--- console.write
+clts                            ;write to console...
+dd 20h
+---
+
+--- console.iskey
+push ecx
+push edx
+clts                            ;get console status...
+dd 1fh
+or edx,edx
+setnz al
+pop edx
+pop ecx
+---
+
+--- console.read
+clts                            ;read from console...
+dd 21h
+cmp word def:[edi],8001h
+jne byte @_j1
+push edi
+push ecx
+mov edi,consoleSizeX
+mov ecx,4
+clts                            ;read from console...
+dd 21h
+pop ecx
+pop edi
+@_j1:
+---
+
+--- console.getdate
+clts                            ;get system date...
+dd 2ch
+---
+
+--- console.gettime
+clts                            ;get system time...
+dd 2dh
+---
+
+--- console.execwait
+clts
+dd 47h
+---
+
+--- console.execbckgnd
+clts                            ;execute in background...
+dd 48h
+---
+
+--- console.execinme
+clts                            ;execute inside me...
+dd 49h
+---
+
+--- file.maxname
+mov eax,250
+---
+
+--- file.myname
+push esi
+push edi
+clts                            ;get process pathname...
+dd 12h
+lea esi,def:[edi+1]
+movzx byte ecx,def:[edi]
+push ecx
+rep
+  movsb ptr32
+pop ecx
+pop edi
+pop esi
+---
+
+--- file.myparam
+push esi
+push edi
+clts                            ;get process parameters...
+dd 13h
+lea esi,def:[edi+1]
+movzx byte ecx,def:[edi]
+push ecx
+rep
+  movsb ptr32
+pop ecx
+pop edi
+pop esi
+---
+
+--- file.open
+clts                            ;open file...
+dd 3fh
+---
+
+--- file.close
+clts                            ;close file...
+dd 46h
+---
+
+--- file.read
+clts                            ;read from file...
+dd 40h
+---
+
+--- file.write
+clts                            ;write to file...
+dd 41h
+---
+
+--- file.seek
+clts                            ;seek in file...
+dd 42h
+---
+
+--- file.getsize
+clts                            ;get file size...
+dd 43h
+---
+
+--- file.getpos
+clts                            ;get file position...
+dd 44h
+---
+
+--- file.truncate
+clts                            ;truncate file...
+dd 45h
+---
+
+--- file.create
+clts                            ;create file...
+dd 35h
+---
+
+--- file.erase
+clts                            ;erase file...
+dd 36h
+---
+
+--- dir.current
+clts                            ;get current directory...
+dd 31h
+sub ebx,ebx
+---
+
+--- dir.change
+clts                            ;change current directory...
+dd 32h
+---
+
+--- dir.rename
+clts                            ;rename dir entry...
+dd 37h
+---
+
+--- dir.create
+clts                            ;create directory...
+dd 33h
+---
+
+--- dir.erase
+clts                            ;erase directory...
+dd 34h
+---
+
+--- dir.statistic
+clts                            ;get current drive statistics...
+dd 3bh
+---
+
+--- dir.setrights
+clts                            ;set rights of entry...
+dd 39h
+---
+
+--- dir.setdate
+clts                            ;set dates of entry...
+dd 3ah
+---
+
+--- dir.makelink
+clts                            ;make link to entry...
+dd 38h
+---
+
+--- dir.open
+clts                            ;open directory...
+dd 3ch
+---
+
+--- dir.close
+clts                            ;close directory...
+dd 3eh
+---
+
+--- dir.read
+clts                            ;read directory...
+dd 3dh
+---
+
+--- pipeline.startlisten
+clts                            ;start listening...
+dd 14h
+---
+
+--- pipeline.stoplisten
+clts                            ;stop listening...
+dd 15h
+---
+
+--- pipeline.getincoming
+clts                            ;get next incoming pipeline...
+dd 16h
+---
+
+--- pipeline.create
+clts                            ;create new pipeline...
+dd 17h
+---
+
+--- pipeline.close
+clts                            ;close pipeline side...
+dd 18h
+---
+
+--- pipeline.info
+clts                            ;get pipeline info...
+dd 19h
+---
+
+--- pipeline.receive
+clts                            ;nonblocking receive through pipeline...
+dd 1bh
+---
+
+--- pipeline.send
+clts                            ;nonblocking send through pipeline...
+dd 1ah
+---
+
+
+--- system.sysinfomem
+clts                            ;get total memory info...
+dd 08h
+shl eax,12
+shl ecx,12
+shl edx,12
+---
+
+--- system.sysinfonum
+clts                            ;get total system info...
+dd 09h
+---
+
+--- system.procinfonum
+clts                            ;get other process info...
+dd 0ah
+shl eax,12
+---
+
+--- system.procinfonam
+clts                            ;get other process name...
+dd 0bh
+---
+
+--- system.findprocnum
+clts                            ;find process by number...
+dd 0ch
+---
+
+--- system.findprocnam
+clts                            ;find process by name...
+dd 0dh
+---
+
+--- system.killprocess
+clts                            ;kill another process...
+dd 0eh
+---
+
+--- system.getpid
+clts                            ;get current process info...
+dd 0fh
+---
+
+--- system.getuid
+clts                            ;get current user info...
+dd 10h
+---
+
+--- system.setuid
+clts                            ;set user info...
+dd 11h
+---
+
+--- system.cpuinfo
+clts                            ;get cpu info...
+dd 1ch
+---
+
+--- system.kernelinfo
+clts                            ;get kernel info...
+dd 1dh
+---
+
+--- system.kernellogo
+clts                            ;get kernel logo...
+dd 1eh
+---
+
+--- system.proclive
+clts                            ;check for process existence...
+dd 22h
+---
+
+--- system.uptimeinfo
+clts                            ;get uptime info...
+dd 2ah
+---
+
+--- system.drivelogin
+clts                            ;login as drive letter...
+dd 2eh
+---
+
+--- system.drivelogout
+clts                            ;logout as drive letter...
+dd 2fh
+---
+
+--- system.drivefinished
+clts                            ;terminate drive handler...
+dd 30h
+---
+
+--- system.procinforun
+clts                            ;get other process info...
+dd 4bh
+---
+
+--- system.sysinfoproc
+clts                            ;get system performance counters...
+dd 4ah
+---
+
+--- system.dropprivi
+clts                            ;get other process info...
+dd 4fh
+---

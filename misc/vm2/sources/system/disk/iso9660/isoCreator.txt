@@ -1,0 +1,12 @@
+publisher=M+P Kft.
+system=i80386
+volume=1 of 1
+volset=BugOS installation CD
+preparer=mc36
+boot=boot.image
+
+\
+read.me
+
+\packages
+\temp\read.me

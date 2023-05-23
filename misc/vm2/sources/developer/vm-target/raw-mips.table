@@ -1,0 +1,334 @@
+--- @compiler prefix-code
+org 80010000h
+firstbyte:
+
+;init cpu...
+xor r0,r0,r0
+lui t1,0400h
+noop
+mtc0 t1,12
+noop
+
+;romdrive...
+lui t1,offset lastbyte
+ori t1,t1,offset lastbyte
+lui t2,memorySize
+ori t2,t2,memorySize
+srl t2,t2,1
+lui t3,8000h
+or t2,t2,t3
+subu t3,t2,t1
+srl t3,t3,2
+copy_j1:
+lw t0,0,t1
+sw t0,0,t2
+addiu t1,t1,4
+addiu t2,t2,4
+addiu t3,t3,-1
+bgtz t3,copy_j1
+noop
+
+;code...
+lui gp,offset lastbyte
+ori gp,gp,offset lastbyte
+addiu gp,gp,20h
+;stack...
+lui t1,program_stack
+ori t1,t1,program_stack
+addu gp,gp,t1
+or sp,r0,gp
+addiu gp,gp,20h
+;heap...
+lui t1,program_heap
+ori t1,t1,program_heap
+addiu t1,t1,20h
+addu t1,t1,gp
+;proctab...
+lui t2,firstFreeMem
+ori t2,t2,firstFreeMem
+addu t1,t1,t2
+lui t2,offset extMemBegin
+ori t2,t2,offset extMemBegin
+sw t1,0,t2
+;freemem...
+lui t1,firstFreeMem
+ori t1,t1,firstFreeMem
+addu t1,t1,gp
+sw t1,freeMemPoint,gp
+
+j program_main
+noop
+;-----------------------------------------------------------
+
+;-----------------------------------------------------------
+proc receiveChars
+lui t1,offset consoleBuf
+ori t1,t1,offset consoleBuf
+lui t2,offset consoleWrt
+ori t2,t2,offset consoleWrt
+lw t3,0,t2
+receiveChars_j1:
+lui t4,uartRxStat
+ori t4,t4,uartRxStat
+lbu t4,0,t4
+andi t4,t4,uartRxMask
+ori t5,r0,uartRxNeed
+bne t4,t5,receiveChars_j2
+noop
+lui t4,uartRxData
+ori t4,t4,uartRxData
+lbu t4,0,t4
+andi t3,t3,0ffh
+addu t5,t3,t1
+sb t4,0,t5
+addiu t3,t3,1
+j receiveChars_j1
+noop
+receiveChars_j2:
+andi t3,t3,0ffh
+sw t3,0,t2
+jr ra
+noop
+endp
+;-----------------------------------------------------------
+
+;-----------------------------------------------------------
+proc sendOneChar
+lui t1,uartTxStat
+ori t1,t1,uartTxStat
+lbu t2,0,t1
+andi t2,t2,uartTxMask
+ori t1,r0,uartTxNeed
+bne t2,t1,receiveChars
+noop
+lui t1,uartTxData
+ori t1,t1,uartTxData
+lbu t2,0,v0
+sb t2,0,t1
+addiu v0,v0,1
+addiu a2,a2,-1
+j receiveChars
+noop
+endp
+;-----------------------------------------------------------
+---
+
+--- @compiler postfix-code
+;-----------------------------------------------------------
+align 10h
+consoleBuf db 256 dup (0)
+consoleWrt dd 0
+consoleRed dd 0
+extMemBegin dd ?  ;crc
+lastbyte:
+---
+
+--- terminate
+lui t0,restartOfs
+ori t0,t0,restartOfs
+jr t0
+noop
+---
+
+--- sleep
+---
+
+--- memcopy
+@_j1:
+blez a2,offset @_j2
+noop
+lbu t0,0,v0
+sb t0,0,v1
+addiu v0,v0,1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- memfillbyte
+@_j1:
+blez a2,offset @_j2
+noop
+sb a0,0,v1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- memcopy2
+subu t0,v0,v1
+blez t0,@_j2
+noop
+addu v0,v0,a2
+addu v1,v1,a2
+@_j1:
+blez a2,offset @_j3
+noop
+addiu v0,v0,-1
+addiu v1,v1,-1
+lbu t0,0,v0
+sb t0,0,v1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+blez a2,offset @_j3
+noop
+lbu t0,0,v0
+sb t0,0,v1
+addiu v0,v0,1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j2
+noop
+@_j3:
+---
+
+--- codecopy
+@_j1:
+blez a2,offset @_j2
+noop
+lbu t0,0,v0
+sb t0,0,v1
+addiu v0,v0,1
+addiu v1,v1,1
+addiu a2,a2,-1
+j @_j1
+noop
+@_j2:
+---
+
+--- memresize
+lui t1,offset extMemBegin
+ori t1,t1,offset extMemBegin
+lw v1,0,t1
+lui t2,memorySize
+ori t2,t2,memorySize
+lui t1,8000h
+addu t2,t2,t1
+subu a2,t2,v1
+---
+
+--- system.uptimeinfo
+ori a0,r0,0
+ori a2,r0,0
+;mfc0 a2,9
+;srl a2,a2,16
+ori a3,r0,1
+---
+
+--- file.open
+ori a1,r0,1
+---
+
+--- file.read
+ori a1,r0,1
+---
+
+--- file.getsize
+ori a1,r0,1
+---
+
+--- file.close
+ori a1,r0,1
+---
+
+--- file.myparam
+addiu v1,v1,-1
+lui t0,-1
+ori t0,t0,-1
+sw t0,0,v1
+lui t1,offset extMemBegin
+ori t1,t1,offset extMemBegin
+lw t1,0,t1
+sw t1,4,v1
+lui t1,memorySize
+ori t1,t1,memorySize
+srl t1,t1,1
+lui t2,8000h
+or t1,t1,t2
+sw t1,8,v1
+lui t1,24
+ori t1,t1,79
+sw t1,12,v1
+ori a2,r0,15
+---
+
+--- console.write
+@_j1:
+blez a2,@_j2
+noop
+or t0,ra,ra
+jal sendOneChar
+noop
+or ra,t0,t0
+j @_j1
+noop
+@_j2:
+---
+
+--- console.read
+or t0,ra,ra
+jal receiveChars
+noop
+or ra,t0,t0
+lui t1,offset consoleWrt
+ori t1,t1,offset consoleWrt
+lui t2,offset consoleRed
+ori t2,t2,offset consoleRed
+lw t1,0,t1
+lw t3,0,t2
+subu t1,t1,t2
+beq t1,r0,@_j1
+andi t3,t3,0ffh
+lui t1,offset consoleBuf
+ori t1,t1,offset consoleBuf
+addu t1,t1,t3
+lbu t0,0,t1
+sh t0,0,v1
+addiu t3,t3,1
+andi t3,t3,0ffh
+sw t3,0,t2
+j @_j2
+noop
+@_j1:
+ori t0,r0,8000h
+sh t0,0,v1
+@_j2:
+ori a2,r0,2
+---
+
+--- console.iskey
+or t0,ra,ra
+jal receiveChars
+noop
+or ra,t0,t0
+lui t1,offset consoleWrt
+ori t1,t1,offset consoleWrt
+lui t2,offset consoleRed
+ori t2,t2,offset consoleRed
+lw t1,0,t1
+lw t2,0,t2
+subu t1,t1,t2
+xor a0,a0,a0
+beq t1,r0,@_j1
+noop
+ori a0,r0,1
+@_j1:
+---
+
+--- console.getdate
+ori a0,r0,1999
+ori a1,r0,1
+ori a2,r0,2
+---
+
+--- console.gettime
+ori a0,r0,1
+ori a1,r0,2
+ori a2,r0,3
+---

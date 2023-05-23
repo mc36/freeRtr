@@ -884,7 +884,7 @@ public class cfgAll {
     /**
      * upgrade server url
      */
-    public static String upgradeServer = verCore.homeUrl;
+    public static String upgradeServer = verCore.homeUrl1;
 
     /**
      * upgrade script
@@ -1310,7 +1310,7 @@ public class cfgAll {
         "!no client ssh-agent",
         "!no client time-server",
         "!no client upgrade-pubkey",
-        "!client upgrade-server " + verCore.homeUrl,
+        "!client upgrade-server " + verCore.homeUrl1,
         "!no client upgrade-config",
         "!no client upgrade-backup",
         "!no client upgrade-revert",

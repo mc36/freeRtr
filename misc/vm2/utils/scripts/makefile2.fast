@@ -1,0 +1,10 @@
+exec c:\utils\developer\vm-compiler\bugos-i80386.code z:\ftp.vma z:\ftp.asm
+del z:\ftp.vma
+exec c:\utils\developer\sasm\sasm-i80386.code z:\ftp.asm
+del z:\ftp.asm
+exec c:\utils\developer\sasm\link4sasm.code z:\ftp.obj
+exec c:\utils\developer\utils\appendcrc32.code z:\ftp.code
+del z:\ftp.obj
+copyOW z:\ftp.code c:\temp\ftp.code
+del z:\ftp.code
+chmode c:\temp\ftp.code $44

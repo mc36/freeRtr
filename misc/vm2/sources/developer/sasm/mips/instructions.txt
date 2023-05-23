@@ -1,0 +1,90 @@
+  general instruction format
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+instruction [par1][,par2][,par3]...
+
+
+  syntaxes
+~~~~~~~~~~~~
+[lab] db, dw, dd <dat>.....data number /byte, word, dword
+[lab] dt <dat>.............data text /same as db
+<lab> equ <num>............constans number
+proc <lab>, endp...........procedures
+segment <lab>, ends........segments
+<lab>:.....................label
+include <filename>.........include file
+incbin <filename>..........include binary file
+db <num> dup (<dat>).......duplicate data
+org <num>..................modify beginner ip /def: 100h/
+uppershifter...............modify opcode parameter
+align <num>................round up ip to a number
+%date, %time...............current date/time
+%ver1, %ver2...............compiler information
+
+
+ extra parameters
+~~~~~~~~~~~~~~~~~~
+<dat>......................<num>,'string',?,offset <lab>,segment <lab>
+segment <lab>..............segment of label, data, etc...
+offset <lab>...............offset of label, data, etc...
+
+
+  registers
+~~~~~~~~~~~~~
+r0=r0, r8=t0, r16=s0.......32 bit cpu registers...
+r24=t8, r1=at, r9=t1.......------||------
+r17=s1, r25=t9, r2=v0......------||------
+r10=t2, r18=s2, r26=k0.....------||------
+r3=v1, r11=t3, r19=s3......------||------
+r27=k1, r4=a0, r12=t4......------||------
+r20=s4, r28=gp, r5=a1......------||------
+r13=t5, r21=s5, r29=sp.....------||------
+r6=a2, r14=t6, r22=s6......------||------
+r30=s8, r7=a3, r15=t7......------||------
+r23=s7, r31=ra.............------||------
+
+
+  CPU instructions
+~~~~~~~~~~~~~~~~~~~~
+add, addu, and, nor, or....reg,reg,reg
+sllv, slt, sltu, srav......------||------
+srlv, sub, subu, dadd......------||------
+daddu, dsllv, dsrav, movn..------||------
+dsrlv, dsub, dsubu, movz...------||------
+addi, addiu, andi, ori.....reg,reg,num
+sll, slti, sltiu, sra......------||------
+srl, daddi, daddiu, dsll...------||------
+dsll32, dsra, dsra32.......------||------
+dsrl, dsrl32...............------||------
+beq, bne, beql, bnel.......reg,reg,ofs
+bgez, bgezal, bgtz, blez...reg,ofs
+bltz, bltzal, bgezall......------||------
+bgezl, bgtzl, blezl........------||------
+bltzall, bltzl.............------||------
+div, divu, jalr, mult......reg,reg
+multu, teq, tge, tgeu......------||------
+tlt, tltu, tne, ddiv.......------||------
+ddivu, dmult, dmultu.......------||------
+j, jal.....................ofs
+jr, mfhi, mflo, mthi.......reg
+mtlo.......................------||------
+lb, lbu, lh, lhu, lw, sb...reg,num,reg
+lwc0, lwc1, lwc2, lwc3.....------||------
+ldc0, ldc1, ldc2, ldc3.....------||------
+sdc0, sdc1, sdc2, sdc3.....------||------
+lwl, lwr, sh, sw, swc0.....------||------
+swc1, swc2, swc3, swl, ll..------||------
+swr, sc, ld, ldl, ldr, sd..------||------
+lld, lwu, scd, sdl, sdr....------||------
+pref, cache................num,ofs,reg
+lui, teqi, tgei, tgeiu.....reg,num
+tlti, tltiu, tnei, mfc0....------||------
+mfc1, mfc2, mfc3, mtc0.....------||------
+mtc1, mtc2, mtc3, dmfc0....------||------
+dmfc1, dmfc2, dmfc3........------||------
+dmtc0, dmtc1, dmtc2........------||------
+dmtc3......................------||------
+break, cop0, cop1, cop2....num
+cop3, syscall..............------||------
+noop, sync, wait, tlbr.....<n/a>
+tlbwi, tlbwr, tlbp, eret...------||------
+deret......................------||------
