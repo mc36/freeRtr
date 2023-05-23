@@ -509,7 +509,6 @@ public class authLocal extends authGeneric {
         cmd = cmd.trim().toLowerCase();
         for (int i = 0; i < forbidden.size(); i++) {
             if (cmd.matches(forbidden.get(i))) {
-                logger.debug("here " + forbidden.get(i) + "|" + cmd + "|");///////////////////
                 return new authResult(this, authResult.authBadUserPass, user, cmd);
             }
         }

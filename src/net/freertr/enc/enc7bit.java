@@ -23,6 +23,9 @@ public class enc7bit {
      * @return true if ok false otherwise
      */
     public static boolean checkByte(int i) {
+        if (i == 0x20) {
+            return true;
+        }
         if (i < 0x20) {
             return false;
         }
@@ -65,20 +68,31 @@ public class enc7bit {
      * @return converted string
      */
     public final static String doOneString(String s) {
+        if (s == null) {
+            return "";
+        }
         byte[] buf = s.getBytes();
         String r = "";
+        boolean pok = true;
         for (int i = 0; i < s.length(); i++) {
-            byte bt = doOneByte(buf[i]);
-            char ch = (char) bt;
-            r += "" + ch;
+            int o = buf[i];
+            if (!checkByte(o)) {
+                if (!pok) {
+                    continue;
+                }
+                pok = false;
+            }
+            r += "" + (char) doOneByte(o);
+            pok = true;
         }
-        return r;
+        return r.trim();
     }
 
     /**
      * convert one array to string
      *
      * @param buf bytes to convert
+     * @param beg beginning to prepend
      * @return converted array
      */
     public final static List<String> doOneArray(byte[] buf, String beg) {
@@ -87,13 +101,13 @@ public class enc7bit {
         for (int i = 0; i < buf.length; i++) {
             byte o = buf[i];
             if (checkByte(o)) {
-                s +=  (char) o;
+                s += (char) o;
                 continue;
             }
             if (s.length() < 1) {
                 continue;
             }
-            res.add(beg + res.size() +":"+ s);
+            res.add(beg + res.size() + ":" + s.trim());
             s = "";
         }
         return res;

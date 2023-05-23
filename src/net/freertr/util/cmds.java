@@ -39,7 +39,7 @@ public class cmds {
     /**
      * give up message
      */
-    private final static String notvdc = "no in a vdc";///
+    private final static String notvdc = "no in a vdc";
 
     /**
      * pipe side to use

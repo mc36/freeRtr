@@ -1,3 +1,5 @@
+userline to have terminal bell :)
+
 client irc
 
 server security to have settable tls version from client knob first
