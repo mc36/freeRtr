@@ -204,7 +204,7 @@ public class userBrowser {
         curX = 0;
         curY = 0;
         userFlash.delete(tempFile);
-        if (userFlash.doReceive(console.pipe, encUrl.parseOne(url), new File(tempFile))) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(url), new File(tempFile), true)) {
             return "error downloading";
         }
         console.pipe.linePut("reading");
@@ -542,7 +542,7 @@ public class userBrowser {
             return;
         }
         doChg2txt();
-        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(b))) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(b), true)) {
             console.pipe.linePut("error downloading");
             userScreen.getKey(console.pipe);
         }

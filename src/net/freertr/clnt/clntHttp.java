@@ -266,15 +266,24 @@ public class clntHttp {
         }
     }
 
+    private void doDebug(String s) {
+        if (!debug) {
+            return;
+        }
+        logger.debug(s);
+        if (cons == null) {
+            return;
+        }
+        cons.debugStat(s);
+    }
+
     /**
      * send line
      *
      * @param s line
      */
     public void sendLine(String s) {
-        if (debug) {
-            logger.debug("tx:" + s);
-        }
+        doDebug("tx:" + s);
         cons.debugTx(s);
         pipe.linePut(s);
     }
@@ -292,9 +301,7 @@ public class clntHttp {
         if (s == null) {
             s = "";
         }
-        if (debug) {
-            logger.debug("rx:" + s);
-        }
+        doDebug("rx:" + s);
         cons.debugRx(s);
         return s;
     }
@@ -312,24 +319,18 @@ public class clntHttp {
         if (proxy == null) {
             return true;
         }
-        if (debug) {
-            logger.debug("resolving " + url.dump());
-        }
+        doDebug("resolving " + url.dump());
         addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
         if (trg == null) {
             return true;
         }
-        if (debug) {
-            logger.debug("connecting " + trg + " " + url.getPort(0));
-        }
+        doDebug("connecting " + trg + " " + url.getPort(0));
         pipe = proxy.doConnect(servGeneric.protoTcp, trg, url.getPort(0), "http");
         if (pipe == null) {
             return true;
         }
         pipe.settingsAdd(pipeSetting.origin, url.server);
-        if (debug) {
-            logger.debug("securing " + url.dump());
-        }
+        doDebug("securing " + url.dump());
         pipe = secClient.openSec(pipe, url.getSecurity(), pubkey, url.username, url.password);
         if (pipe == null) {
             return true;

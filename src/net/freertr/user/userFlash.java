@@ -118,7 +118,7 @@ public class userFlash {
         }
         if (a.equals("receive")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a))));
+            cmd.error(userExec.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true)));
             return null;
         }
         if (a.equals("transmit")) {
@@ -826,12 +826,13 @@ public class userFlash {
      * @param pipe pipeline to use
      * @param url url to get
      * @param f file to write to
+     * @param debug enable debugging
      * @return result, false on success, true on error
      */
-    public static boolean doReceive(pipeSide pipe, encUrl url, File f) {
+    public static boolean doReceive(pipeSide pipe, encUrl url, File f, boolean debug) {
         String a = url.proto.trim().toLowerCase();
         if (a.startsWith("http")) {
-            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
+            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, debug);
             boolean b = c.download(url, f);
             c.cleanUp();
             return b;

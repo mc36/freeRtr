@@ -2609,7 +2609,7 @@ public class userExec {
             }
             if (a.equals("reload")) {
                 a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
-                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
+                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a), true);
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
                 if (dl) {
@@ -2629,7 +2629,7 @@ public class userExec {
             }
             if (a.equals("overwrite-network")) {
                 a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
-                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
+                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a), true);
                 List<String> c2 = bits.txt2buf(a);
                 userFlash.delete(a);
                 if (dl) {
@@ -2651,7 +2651,7 @@ public class userExec {
             }
             if (a.equals("network")) {
                 a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
-                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
+                boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a), true);
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
                 if (dl) {
