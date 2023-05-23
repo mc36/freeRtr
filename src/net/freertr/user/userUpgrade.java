@@ -19,6 +19,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
@@ -390,7 +391,7 @@ public class userUpgrade {
         encUrl url = encUrl.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
-        userFlash.doReceive(cmd.pipe, url, new File(tmp), true);
+        userFlash.doReceive(cmd.pipe, url, new File(tmp), debugger.clntHttpTraf);
         List<String> txt = bits.txt2buf(tmp);
         userFlash.delete(tmp);
         if (txt == null) {

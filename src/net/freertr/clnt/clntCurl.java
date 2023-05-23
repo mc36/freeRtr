@@ -18,6 +18,12 @@ import net.freertr.util.version;
 public class clntCurl {
 
     /**
+     * default constructor
+     */
+    private clntCurl() {
+    }
+
+    /**
      * download one url
      *
      * @param p pipeline to log to
