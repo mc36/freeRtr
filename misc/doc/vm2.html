@@ -15,12 +15,12 @@
 
 
 <p align="center">
-  <u><font size="+2"><b><i>Virtual Machine</i></b></font> <i>(definition)</i></u><br>
-  <b>version 1.0</b><i>, done by Mc in 2002</i><br>
+  <u><font size="+2"><b><i>Virtual Machine</i></b></font> <i>(definition)</i></u><br/>
+  <b>version 1.0</b><i>, done by Mc in 2002</i><br/>
 </p>
 
 
-<br>
+<br/>
 <a name="toc"></a>
 <i><u>table of contents:</u></i>
 <ul>
@@ -61,12 +61,12 @@ higher level languages and the machine code. Because of this,
 virtual machine is defined with minimal set of instructions and
 registers, so every existing (and hopefully future) processors
 could used as target machine.
-<br>
+<br/>
 The only things what higher level compilers should know about
 target environment are the size of address, and the default integer
 size, but of course this knowledge is not required, a well chosen
 address size could be enough for every platform.
-<br>
+<br/>
 Another partition of this idea is the way how applications make
 system calls (such as file handling, etc). To make a general purpose
 virtual machine, we need to define these complex things at 'processor'
@@ -293,11 +293,11 @@ specific code to binary output.
 <a href="#toc">table of contents</a><hr>
 
 <a name="instructions"></a>
-<i><u>instructions:</u></i><br>
+<i><u>instructions:</u></i><br/>
 note1: the upper remainder parts of registers are not tested,
-and have invalid contents after execution.<br>
+and have invalid contents after execution.<br/>
 note2: the conditions are destroied by instructions, so a jmpc
-or setc must preceded by a comp instruction.<br>
+or setc must preceded by a comp instruction.<br/>
 <table border="1">
   <tr>
     <td>add</td>
@@ -680,7 +680,7 @@ or setc must preceded by a comp instruction.<br>
     <td>file.open</td>
     <td>src d:a</td>
     <td>d:a w:b</td>
-    <td>open file on pascii name src with a rights, handler returned in a (b=error)<br></td>
+    <td>open file on pascii name src with a rights, handler returned in a (b=error)<br/></td>
   </tr>
   <tr>
     <td>file.read</td>
@@ -789,8 +789,8 @@ or setc must preceded by a comp instruction.<br>
     <td>dir.read</td>
     <td>d:a trg</td>
     <td>w:b</td>
-    <td>read dir entry to trg memory from dir handler a (b=error)<br>
-     format: d:size, d:rights, d:owner, t:create, t:modify, pascii:name<br>
+    <td>read dir entry to trg memory from dir handler a (b=error)<br/>
+     format: d:size, d:rights, d:owner, t:create, t:modify, pascii:name<br/>
      t: w:year, b:month, b:day, b:hour, b:minute, b:second</td>
   </tr>
   <tr>
@@ -1016,7 +1016,7 @@ syscalls require extra privileges:
     <td>system.DMAstart</td>
     <td>w:d d:a d:c b:b</td>
     <td>&nbsp;</td>
-    <td>start dma channel a=physical, c=count, b=mode:<br>
+    <td>start dma channel a=physical, c=count, b=mode:<br/>
       0=demand, 1=single, 2=block, 3=cascade;
       00h=verify, 10h=card>>mem, 20h=mem>>card</td>
   </tr>
@@ -1130,7 +1130,7 @@ syscalls require extra privileges:
 <a href="#toc">table of contents</a><hr>
 
 <a name="keys"></a>
-<i><u>keys:</u></i><br>
+<i><u>keys:</u></i><br/>
 first byte bits:
 <table border="1">
   <tr>
@@ -1256,7 +1256,7 @@ extended keys:
 <a href="#toc">table of contents</a><hr>
 
 <a name="rights"></a>
-<i><u>rights:</u></i><br>
+<i><u>rights:</u></i><br/>
 <table border="1">
   <tr>
     <td>001h</td>
@@ -1302,7 +1302,7 @@ extended keys:
 <a href="#toc">table of contents</a><hr>
 
 <a name="sysdrive"></a>
-<i><u>filesys:</u></i><br>
+<i><u>filesys:</u></i><br/>
 buffer:
 <table border="1">
   <tr>

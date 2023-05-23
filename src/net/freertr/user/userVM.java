@@ -15,13 +15,13 @@ import net.freertr.util.logger;
 import net.freertr.util.version;
 
 /**
- * virtual machine
+ * a virtual machine
  *
  * @author matecsaba
  */
 public class userVM {
 
-    private static final String rootDir = "../vm";
+    private static final String rootDir = "../vm2/";
 
     private static final int reg_a = 1;
 
