@@ -8,6 +8,7 @@ import java.util.List;
 import net.freertr.cfg.cfgAlias;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
+import net.freertr.clnt.clntCurl;
 import net.freertr.clnt.clntFtp;
 import net.freertr.clnt.clntHttp;
 import net.freertr.clnt.clntSmtp;
@@ -119,6 +120,16 @@ public class userFlash {
         if (a.equals("receive")) {
             a = cmd.word();
             cmd.error(userExec.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true)));
+            return null;
+        }
+        if (a.equals("show")) {
+            a = cmd.getRemaining();
+            List<String> res = clntCurl.doGetUrl(pip, a);
+            cmd.error(userExec.doneFail(res == null));
+            if (res == null) {
+                return null;
+            }
+            rdr.putStrArr(res);
             return null;
         }
         if (a.equals("transmit")) {
@@ -826,7 +837,7 @@ public class userFlash {
      * @param pipe pipeline to use
      * @param url url to get
      * @param f file to write to
-     * @param debug enable debugging
+     * @param debug force debugging
      * @return result, false on success, true on error
      */
     public static boolean doReceive(pipeSide pipe, encUrl url, File f, boolean debug) {
