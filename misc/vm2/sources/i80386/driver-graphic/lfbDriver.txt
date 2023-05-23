@@ -1,9 +1,0 @@
-block mode pipeline should be opened for video drivers...
-after the pipeline is opened, the video driver sends
-a packet, containing x and y resolution (each a dword)..
-after it, the client is ready to pass screen data to
-the driver... each packet begins with x and y coordiates
-(each a dword).. this is the point, where writing will
-begin. the remaining bytes are byte triplets. they make
-up the video data in (db:red,green,blue format). they will
-be displaied at the specified location.

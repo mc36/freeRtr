@@ -1,6 +1,0 @@
-run c:\system\kernel\v86moni.code c:\system\v86utils\turnMonitorOff.v86
-run c:\system\kernel\v86moni.code c:\system\v86utils\turnSystemOff.v86
-run c:\system\drivers\disks\idehddoff.code
-run c:\system\kernel\v86moni.code c:\system\v86utils\turnMonitorOff.v86 i
-run c:\system\kernel\v86moni.code c:\system\v86utils\turnSystemOff.v86 i
-run c:\system\kernel\v86moni.code c:\system\v86utils\turnMonitorOn.v86 i

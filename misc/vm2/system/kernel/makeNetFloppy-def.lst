@@ -1,7 +1,0 @@
-\system\drivers\console\sysload.code sysload.cod
-.\makenetfloppy-def.cfg sysload.cfg
-\system\otherfs\ramfs.code
-\utils\compressor.code
-\makeNetFloppysysdrv.pc sysdrv.pc
-\makeNetFloppyramimg.pc ramimg.pc
-\makeNetFloppypacker.pc packer.pc

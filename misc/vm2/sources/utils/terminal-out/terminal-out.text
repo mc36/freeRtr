@@ -1,7 +1,0 @@
-character mode pipeline should opened for these processes.
-when first pipeline is opened, the next must be opened immediately,
-and the second's id must be transmitted in a dword over the first
-one... after this, the connnection is ready to relay to the internet.
-the first pipeline is used to communicate with the remote telnet
-clients, and the second pipeline is used to communicate with local
-processes.

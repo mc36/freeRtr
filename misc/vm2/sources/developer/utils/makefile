@@ -1,9 +1,0 @@
-make maker.make
-make makeelf.make
-make makeexe.make
-make makerom.make
-make bin2srec.make
-make srec2bin.make
-make splitRom.make
-make mergeRom.make
-make appendCrc32.make

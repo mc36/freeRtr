@@ -1,8 +1,0 @@
-0                     ;local Port (0=default)
-c:\temp\              ;temporary path
-600                   ;refresh interval
-1                     ;forward requests (0=no, 1=yes)
-
-
-...zone mcHome.HU     file 1 sample_zone
-...zone MChoME.hu     host 0 127.0.0.1 53

@@ -1,6 +1,0 @@
-0                               ;server port...
-
-default       deny
-123456789012  shutdown
-000e83f608bc allow  vlan0002
-000b601e0406 allow  alma

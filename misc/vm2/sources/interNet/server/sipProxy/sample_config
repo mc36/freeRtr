@@ -1,6 +1,0 @@
-0                                       ;my port to listen on...
-
-;list of users: name    ipaddr  routing...
-ildi            -
-mc36            -
-cisco           10.1.0.2        *

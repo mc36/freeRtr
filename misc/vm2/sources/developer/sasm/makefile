@@ -1,9 +1,0 @@
-make arm\makefile
-make i80386\makefile
-make i8051\makefile
-make m68000\makefile
-make m68hc11\makefile
-make mips\makefile
-make powerpc\makefile
-make sparc\makefile
-make z80\makefile

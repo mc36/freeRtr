@@ -1,9 +1,0 @@
-block mode pipeline should be opened for this process...
-when the pipeline is estabilished, the caller can send
-packets over the line. each packet has the following
-format:
-frequency:dword  (0..1193180 in HZ)
-duartion:dword   (0..60000 in MS)
-note that 1000 microsecond = 1 second.
-this process serializes incoming notes, and plays
-them continously... zero frequency means silence...

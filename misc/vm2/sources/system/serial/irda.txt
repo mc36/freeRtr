@@ -1,4 +1,0 @@
-stream or block mode pipeline should be opened for this process.
-once opened, a command and an address byte must be written to it.
-when connected, a zero byte is sent back. the commands are the
-following: 1=connect, 2=listen, 3=TTPconnect, 4=TTPlisten.

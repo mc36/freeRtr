@@ -1,9 +1,0 @@
-platform uniform
-syscall startup 10 512 4096
-
-move udud c 16384
-syscall memResize
-movW dudud [trg] a
-
-sub w a a
-syscall terminate

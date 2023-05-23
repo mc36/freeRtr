@@ -1,3 +1,0 @@
-make driver-comm\makefile
-make kernel-core\makefile
-make makeromdrive\makefile
