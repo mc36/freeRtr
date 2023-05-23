@@ -231,7 +231,7 @@ public class ifcLldp implements ifcUp {
                     nei.sysName = tlv.getStr();
                     break;
                 case ttypSysDesc:
-                    nei.sysDesc = tlv.getStr().replaceAll("\r", " ").replaceAll("\n", " ");
+                    nei.sysDesc = tlv.getStr();
                     break;
                 case ttypSysCapa:
                     nei.capaSys = bits.msbGetW(tlv.valDat, 0);
@@ -448,19 +448,19 @@ class ifcLldpNeigh implements Comparator<ifcLldpNeigh> {
     public long created;
 
     public String toString() {
-        return sysName + "|" + enc7bit.doOneString(portId) + "|" + addr4 + "|" + addr6;
+        return enc7bit.doOneString(sysName) + "|" + enc7bit.doOneString(portId) + "|" + addr4 + "|" + addr6;
     }
 
     public void dump(List<String> l) {
         l.add("");
         l.add("peer|" + peer);
-        l.add("system name|" + sysName);
-        l.add("port id|" + portId);
-        l.add("port desc|" + portDesc);
+        l.add("system name|" + enc7bit.doOneString(sysName));
+        l.add("port id|" + enc7bit.doOneString(portId));
+        l.add("port desc|" + enc7bit.doOneString(portDesc));
         l.add("ipv4 addr|" + addr4);
         l.add("ipv6 addr|" + addr6);
         l.add("mac addr|" + addrM);
-        l.add("system desc|" + sysDesc);
+        l.add("system desc|" + enc7bit.doOneString(sysDesc));
         l.add("ttl|" + ttl);
         l.add("sys capa|" + ifcLldp.capability2string(capaSys));
         l.add("cfg capa|" + ifcLldp.capability2string(capaCfg));

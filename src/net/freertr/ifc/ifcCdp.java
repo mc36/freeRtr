@@ -12,6 +12,7 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.enc.enc7bit;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.pack.packHolder;
@@ -225,7 +226,7 @@ public class ifcCdp implements ifcUp {
                     nei.hostName = tlv.getStr();
                     break;
                 case ttypVer:
-                    nei.swVer = tlv.getStr().replaceAll("\r", " ").replaceAll("\n", " ");
+                    nei.swVer = tlv.getStr();
                     break;
                 case ttypPlat:
                     nei.platform = tlv.getStr();
@@ -450,20 +451,21 @@ class ifcCdpNeigh implements Comparator<ifcCdpNeigh> {
     public int vlan;
 
     public String toString() {
-        return hostName + "|" + portId + "|" + addr4 + "|" + addr6;
+        return enc7bit.doOneString(hostName) + "|" + enc7bit.doOneString(portId) + "|" + addr4 + "|" + addr6;
     }
 
     public void dump(List<String> l) {
         l.add("");
         l.add("peer|" + peer);
-        l.add("hostname|" + hostName);
-        l.add("port id|" + portId);
-        l.add("platform|" + platform);
+        l.add("hostname|" + enc7bit.doOneString(hostName));
+        l.add("port id|" + enc7bit.doOneString(portId));
+        l.add("platform|" + enc7bit.doOneString(platform));
         l.add("ipv4 addr|" + addr4);
         l.add("ipv6 addr|" + addr6);
-        l.add("sw version|" + swVer);
+        l.addAll(enc7bit.doOneArray(swVer.getBytes(), "versions"));
+        l.add("sw version|" + enc7bit.doOneString(swVer));
         l.add("vlan|" + vlan);
-        l.add("vtp|" + vtp);
+        l.add("vtp|" + enc7bit.doOneString(vtp));
         l.add("hold|" + holdTime);
         l.add("capa|" + ifcCdp.capability2string(capa));
     }
