@@ -1,3 +1,14 @@
+configure startup to have config committed but 4 now, only conf start tabbable stuffs
+
+
+
+
+
+display asdfsdfas | asciinema <--- same as | pastebin....
+
+
+
+
 userline to have terminal bell :)
 
 client irc
