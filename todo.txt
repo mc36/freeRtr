@@ -1,9 +1,31 @@
+upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
+
+
+
+bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
+
+
+
+
+
+
+
+
+
+
+
+server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
+
+
+route-map <--> route-policy converter
+
+
+icmptunnel and l2tp3 to the dataplanes :)
+
 player: disable volume in multicast streamer mode
 
 disable playlist loading in multicast receiver mode
 
-
-icmptunnel to the dataplanes :)
 
 
 ctrl+l/r to try to redetect the screen resolution
