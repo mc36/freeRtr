@@ -1,3 +1,11 @@
+server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
+
+
+
+
+configure diff to have chance to change the sho config-differences
+
+
 configure startup to have config committed but 4 now, only conf start tabbable stuffs
 
 

@@ -107,6 +107,7 @@ import net.freertr.util.verCore;
 import net.freertr.enc.encPrtbuf;
 import net.freertr.enc.encThrift;
 import net.freertr.enc.encUrl;
+import net.freertr.vm2.vm2;
 
 /**
  * process test commands
@@ -407,7 +408,7 @@ public class userTest {
             cmd.error("converted=" + s);
             return null;
         }
-        if (a.equals("vm")) {
+        if (a.equals("vm2")) {
             a = cmd.word();
             try {
                 a = cmd.word();
@@ -415,7 +416,7 @@ public class userTest {
                 if (s.length() < 1) {
                     s = verCore.vmDir;
                 }
-                userVM v = new userVM(pip, true, s);
+                vm2 v = new vm2(pip, true, s);
                 v.doLoad(a, s);
                 v.doWork(pip, true, "", a, s);
             } catch (Exception e) {

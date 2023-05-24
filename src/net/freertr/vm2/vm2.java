@@ -1,4 +1,4 @@
-package net.freertr.user;
+package net.freertr.vm2;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -10,16 +10,18 @@ import net.freertr.cry.cryHashCrc32;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
+import net.freertr.user.userFlash;
+import net.freertr.user.userScreen;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
 import net.freertr.util.version;
 
 /**
- * a virtual machine
+ * virtual machine v2
  *
  * @author matecsaba
  */
-public class userVM {
+public class vm2 {
 
     private static final String rootDir = "../vm2/";
 
@@ -87,7 +89,7 @@ public class userVM {
      * @return result code
      */
     public int doWork(pipeSide cons, boolean fio, String dir, String name, String param) {
-        userVM vm = new userVM(cons, fio, dir);
+        vm2 vm = new vm2(cons, fio, dir);
         int res;
         try {
             vm.doLoad(name, param);
@@ -108,13 +110,13 @@ public class userVM {
     }
 
     /**
-     * construct vm
+     * construct a vm2
      *
      * @param cons pipe to use
      * @param fio set true to allow file io
      * @param dir working directory
      */
-    public userVM(pipeSide cons, boolean fio, String dir) {
+    public vm2(pipeSide cons, boolean fio, String dir) {
         console = cons;
         allowFileIO = fio;
         currDir = "/" + encUrl.normalizePath(dir + "/");
@@ -1163,7 +1165,7 @@ public class userVM {
                 return 0;
             case 39: // console.execWait
                 a = fromDos(getPascii(regs[reg_src]));
-                userVM v = new userVM(console, true, currDir);
+                vm2 v = new vm2(console, true, currDir);
                 v.doLoad(a, currDir);
                 val1 = v.doWork(console, true, "", a, currDir);
                 regs[reg_b] = result2error(val1);
