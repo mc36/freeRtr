@@ -1,3 +1,13 @@
+player: disable volume in multicast streamer mode
+
+disable playlist loading in multicast receiver mode
+
+
+icmptunnel to the dataplanes :)
+
+
+ctrl+l/r to try to redetect the screen resolution
+
 some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
 
 
