@@ -1,3 +1,9 @@
+some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
+
+
+some cli errored keys should send terminal bell as terminal bell character
+
+
 server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
 
 
