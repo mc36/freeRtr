@@ -1,3 +1,11 @@
+as-name cache
+
+sho as-name
+
+terminal asname-lookup
+
+
+
 upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 
 
