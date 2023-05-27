@@ -355,6 +355,19 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
     }
 
     /**
+     * convert to asname format
+     *
+     * @param l list to append
+     * @param prf entry to dump
+     */
+    public static void toShAsname(userFormat l, tabRouteEntry<addrIP> prf) {
+        for (int i = 0; i < prf.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = prf.alts.get(i);
+            l.add(tabRouteAttr.rouTyp2string(attr) + "|" + attr.toShAsname());
+        }
+    }
+
+    /**
      * convert to changed format
      *
      * @param l list to append

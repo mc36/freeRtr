@@ -130,6 +130,7 @@ public class clntWhois {
         }
         clntWhois w = new clntWhois(null, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer);
         if (w.doQuery("as" + i) == null) {
+            asnameCache.put(new clntWhoisAsName(i));
             return null;
         }
         ntry = new clntWhoisAsName(i);
@@ -137,6 +138,7 @@ public class clntWhois {
         if (ntry != null) {
             return ntry.name;
         }
+        asnameCache.put(new clntWhoisAsName(i));
         return null;
     }
 

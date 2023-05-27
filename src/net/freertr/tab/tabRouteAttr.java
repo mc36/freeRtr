@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntWhois;
 import net.freertr.ip.ipFwd;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -1717,6 +1718,47 @@ public class tabRouteAttr<T extends addrType> {
             s = "@" + rouTab.vrfName;
         }
         return distance + "/" + metric + "|" + iface + s + "|" + nextHop + "|" + bits.timePast(time);
+    }
+
+    /**
+     * convert to route format
+     *
+     * @return converted
+     */
+    public String toShAsname() {
+        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asNameStr();
+    }
+
+    /**
+     * get the as name string
+     *
+     * @return string
+     */
+    public String asNameStr() {
+        return asNameStr(confSeq, "(", ") ")
+                + asNameStr(confSet, "[", "] ")
+                + asNameStr(pathSeq, "", "")
+                + asNameStr(pathSet, " {", "}");
+    }
+
+    private static String asNameStr(List<Integer> l, String beg, String end) {
+        if (l == null) {
+            return "";
+        }
+        if (l.size() < 1) {
+            return "";
+        }
+        String s = "";
+        for (int i = 0; i < l.size(); i++) {
+            int o = l.get(i);
+            s += " " + bits.num2str(o);
+            String a = clntWhois.asn2name(o, true);
+            if (a == null) {
+                continue;
+            }
+            s += "-" + a;
+        }
+        return beg + s.substring(1, s.length()) + end;
     }
 
     /**

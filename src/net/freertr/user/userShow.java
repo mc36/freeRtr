@@ -4184,6 +4184,10 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
+        if (a.equals("asnames")) {
+            doShowRoutes(r.bgp.fwdCore, tab, 11);
+            return;
+        }
         if (a.equals("changes")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 3000);
             return;
@@ -5018,6 +5022,9 @@ public class userShow {
             case 10:
                 l = new userFormat("|", "prefix|hop|ago|last");
                 break;
+            case 11:
+                l = new userFormat("|", "prefix|hop|metric|aspath");
+                break;
             default:
                 return;
         }
@@ -5071,6 +5078,9 @@ public class userShow {
                     case 3005:
                     case 10:
                         tabRouteEntry.toShChgRoute(l, prf);
+                        break;
+                    case 11:
+                        tabRouteEntry.toShAsname(l, prf);
                         break;
                 }
             }
