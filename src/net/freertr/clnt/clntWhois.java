@@ -3,6 +3,7 @@ package net.freertr.clnt;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.cfg.cfgAll;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeReader;
@@ -79,10 +80,13 @@ public class clntWhois {
         String asNam = null;
         for (int i = 0; i < res.size(); i++) {
             String s = res.get(i);
-            s = s.replaceAll(" ", "").toLowerCase();
+            s = s.replaceAll(" ", "").trim();
             int o = s.indexOf(":");
-            String a = s.substring(0, o);
-            s = s.substring(o, s.length());
+            if (o < 1) {
+                continue;
+            }
+            String a = s.substring(0, o).toLowerCase();
+            s = s.substring(o + 1, s.length()).trim();
             if (a.equals("aut-num")) {
                 asNum = s;
                 continue;
@@ -92,13 +96,48 @@ public class clntWhois {
                 continue;
             }
         }
-        if (!asNam.startsWith("AS")) {
+        if (asNam == null) {
             return res;
         }
-        clntWhoisAsName ntry = new clntWhoisAsName(bits.str2num(asNam.substring(2, asNam.length())));
+        if (asNum == null) {
+            return res;
+        }
+        asNum = asNum.trim().toLowerCase();
+        if (!asNum.startsWith("as")) {
+            return res;
+        }
+        clntWhoisAsName ntry = new clntWhoisAsName(bits.str2num(asNum.substring(2, asNum.length())));
         ntry.name = asNam;
         asnameCache.put(ntry);
         return res;
+    }
+
+    /**
+     * find name of asn
+     *
+     * @param i asn number
+     * @param b true if do a lookup on a cache miss
+     * @return name, null if not found
+     */
+    public static String asn2name(int i, boolean b) {
+        clntWhoisAsName ntry = new clntWhoisAsName(i);
+        ntry = asnameCache.find(ntry);
+        if (ntry != null) {
+            return ntry.name;
+        }
+        if (!b) {
+            return null;
+        }
+        clntWhois w = new clntWhois(null, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer);
+        if (w.doQuery("as" + i) == null) {
+            return null;
+        }
+        ntry = new clntWhoisAsName(i);
+        ntry = asnameCache.find(ntry);
+        if (ntry != null) {
+            return ntry.name;
+        }
+        return null;
     }
 
 }
@@ -123,4 +162,7 @@ class clntWhoisAsName implements Comparator<clntWhoisAsName> {
         return 0;
     }
 
+    public String toString() {
+        return asn + "|" + name;
+    }
 }
