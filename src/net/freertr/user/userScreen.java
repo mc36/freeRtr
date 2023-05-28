@@ -526,8 +526,33 @@ public class userScreen {
      * @param pip pipeline to use
      * @param mus music to play
      */
-    public static void sendMusic(pipeSide pip, String mus) {
+    public static void sendMusicAnsi(pipeSide pip, String mus) {
         pip.strPut("\033[M" + mus + "\016");
+    }
+
+    /**
+     * send terminal music
+     *
+     * @param pip pipeline to use
+     * @param vol volume 0..7
+     * @param ton tone 1..5
+     * @param dur duration 0..255
+     * @param mus music to play 1..25, 101..125, 41..137
+     */
+    public static void sendMusicDecps(pipeSide pip, int vol, int ton, int dur, List<Integer> mus) {
+        pip.strPut("\033[[" + vol);
+        if (ton > 0) {
+            pip.strPut(":" + ton);
+        }
+        pip.strPut(";" + dur);
+        for (int i = 0; i < mus.size(); i++) {
+            int o = mus.get(i);
+            if (o < 0) {
+                continue;
+            }
+            pip.strPut(";" + o);
+        }
+        pip.strPut("],~");
     }
 
     /**
