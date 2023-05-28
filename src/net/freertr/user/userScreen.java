@@ -521,6 +521,16 @@ public class userScreen {
     }
 
     /**
+     * send terminal music
+     *
+     * @param pip pipeline to use
+     * @param mus music to play
+     */
+    public static void sendMusic(pipeSide pip, String mus) {
+        pip.strPut("\033[M" + mus + "\016");
+    }
+
+    /**
      * send terminal bell
      *
      * @param pip pipeline to use
