@@ -21,6 +21,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgSensor;
 import net.freertr.cfg.cfgTrnsltn;
+import net.freertr.clnt.clntWhois;
 import net.freertr.enc.encAsn1;
 import net.freertr.enc.encBase64;
 import net.freertr.cry.cryCertificate;
@@ -151,6 +152,13 @@ public class userTest {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.test, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("whois")) {
+            a = cmd.word();
+            int i = bits.str2num(a);
+            a = clntWhois.asn2name(i, true);
+            cmd.error("asn " + i + " is " + a);
+            return null;
         }
         if (a.equals("swapkeys")) {
             cfgAll.passEnh = cmd.getRemaining();

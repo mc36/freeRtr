@@ -30,6 +30,7 @@ import net.freertr.cfg.cfgVpdn;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntSmtp;
+import net.freertr.clnt.clntWhois;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
@@ -532,6 +533,10 @@ public class userClear {
         }
         if (a.equals("name-cache")) {
             clntDns.purgeLocalCache(true);
+            return null;
+        }
+        if (a.equals("asn-cache")) {
+            clntWhois.purgeLocalCache();
             return null;
         }
         if (a.equals("logging")) {

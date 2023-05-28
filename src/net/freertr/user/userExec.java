@@ -1007,6 +1007,7 @@ public class userExec {
         hl.add(null, "3 .        external              external processes");
         hl.add(null, "2 .      redundancy              redundancy information");
         hl.add(null, "2 .      name-cache              local dns cache");
+        hl.add(null, "2 .      asn-cache               local asn cache");
         hl.add(null, "2 3      watchdog                watchdog information");
         hl.add(null, "3 .        gc                    garbage collector information");
         hl.add(null, "3 .        sys                   system information");
@@ -1768,6 +1769,7 @@ public class userExec {
         hl.add(null, "2 .      follow-tracker               set interfaces based on trackers");
         hl.add(null, "2 .      tunnel-domain                resolve destination domain names");
         hl.add(null, "2 .      name-cache                   dns local cache");
+        hl.add(null, "2 .      asn-cache                    asn local cache");
         hl.add(null, "2 3,.    watchdog                     watchdog");
         hl.add(null, "3 3,.      [name]                     parameter");
         hl.add(null, "2 3      line                         disconnect line");
@@ -2113,6 +2115,8 @@ public class userExec {
         hl.add(null, "8 .                  <str>            target address");
         cfgAll.aliasHelps(cfgAlias.aliasType.pckt, 2, hl);
         hl.add(null, "1 2    test                           test various things");
+        hl.add(null, "2 3      whois                        asn name cache");
+        hl.add(null, "3 .        <num>                      asn number");
         hl.add(null, "2 3      acl                          access list merge, unroll");
         hl.add(null, "3 4,.      <name:acl>                 name of first acl");
         hl.add(null, "4 .          <name:acl>               name of second acl");

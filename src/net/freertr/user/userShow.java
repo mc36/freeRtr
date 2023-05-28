@@ -470,6 +470,10 @@ public class userShow {
             rdr.putStrTab(prtRedun.doShow());
             return null;
         }
+        if (a.equals("asn-cache")) {
+            rdr.putStrTab(clntWhois.showLocalCache());
+            return null;
+        }
         if (a.equals("name-cache")) {
             rdr.putStrTab(clntDns.showLocalCache(false));
             rdr.putStrTab(clntDns.showLocalCache(true));

@@ -10,6 +10,7 @@ import net.freertr.pipe.pipeReader;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
+import net.freertr.user.userFormat;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 
@@ -29,6 +30,30 @@ public class clntWhois {
      * asn name cache
      */
     public final static tabGen<clntWhoisAsName> asnameCache = new tabGen<clntWhoisAsName>();
+
+    /**
+     * show local cache
+     *
+     * @return text
+     */
+    public static userFormat showLocalCache() {
+        userFormat res = new userFormat("|", "asn|name|ago|created");
+        for (int i = 0; i < asnameCache.size(); i++) {
+            clntWhoisAsName ntry = asnameCache.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.add("" + ntry);
+        }
+        return res;
+    }
+
+    /**
+     * clear local cache
+     */
+    public static void purgeLocalCache() {
+        asnameCache.clear();
+    }
 
     private final clntProxy proxy;
 
@@ -116,7 +141,7 @@ public class clntWhois {
      * find name of asn
      *
      * @param i asn number
-     * @param b true if do a lookup on a cache miss
+     * @param b true to do an external lookup on local cache miss
      * @return name, null if not found
      */
     public static String asn2name(int i, boolean b) {
@@ -148,10 +173,13 @@ class clntWhoisAsName implements Comparator<clntWhoisAsName> {
 
     public final int asn;
 
+    public final long created;
+
     public String name;
 
     public clntWhoisAsName(int i) {
         asn = i;
+        created = bits.getTime();
     }
 
     public int compare(clntWhoisAsName o1, clntWhoisAsName o2) {
@@ -165,6 +193,6 @@ class clntWhoisAsName implements Comparator<clntWhoisAsName> {
     }
 
     public String toString() {
-        return asn + "|" + name;
+        return asn + "|" + name + "|" + bits.timePast(created) + "|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3);
     }
 }
