@@ -1,6 +1,3 @@
-as-name cache
-
-sho as-name
 
 terminal asname-lookup
 

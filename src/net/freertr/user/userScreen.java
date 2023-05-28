@@ -521,6 +521,15 @@ public class userScreen {
     }
 
     /**
+     * send terminal bell
+     *
+     * @param pip pipeline to use
+     */
+    public static void sendBeep(pipeSide pip) {
+        pip.strPut("\007");
+    }
+
+    /**
      * send color change
      *
      * @param pip pipeline to use
