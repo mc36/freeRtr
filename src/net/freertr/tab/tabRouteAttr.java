@@ -1753,7 +1753,7 @@ public class tabRouteAttr<T extends addrType> {
             int o = l.get(i);
             String a = clntWhois.asn2name(o, true);
             if (a == null) {
-                a = "asn#" + bits.num2str(o);
+                a = "as#" + bits.num2str(o);
             }
             s += " " + a;
         }

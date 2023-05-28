@@ -85,6 +85,9 @@ public class clntWhois {
         if (proxy == null) {
             return null;
         }
+        if (server == null) {
+            return null;
+        }
         addrIP trg = userTerminal.justResolv(server, 0);
         if (trg == null) {
             return null;
