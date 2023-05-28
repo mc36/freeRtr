@@ -193,6 +193,6 @@ class clntWhoisAsName implements Comparator<clntWhoisAsName> {
     }
 
     public String toString() {
-        return asn + "|" + name + "|" + bits.timePast(created) + "|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3);
+        return bits.num2str(asn) + "|" + name + "|" + bits.timePast(created) + "|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3);
     }
 }
