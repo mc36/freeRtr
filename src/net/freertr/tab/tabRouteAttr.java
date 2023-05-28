@@ -1725,7 +1725,7 @@ public class tabRouteAttr<T extends addrType> {
      *
      * @return converted
      */
-    public String toShAsname() {
+    public String toShAsName() {
         return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asNameStr();
     }
 
@@ -1751,12 +1751,11 @@ public class tabRouteAttr<T extends addrType> {
         String s = "";
         for (int i = 0; i < l.size(); i++) {
             int o = l.get(i);
-            s += " " + bits.num2str(o);
             String a = clntWhois.asn2name(o, true);
             if (a == null) {
-                continue;
+                a = "asn#" + bits.num2str(o);
             }
-            s += "-" + a;
+            s += " " + a;
         }
         return beg + s.substring(1, s.length()) + end;
     }

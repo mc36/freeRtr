@@ -40,6 +40,9 @@ aaa userlist access
  allowed configure terminal
  allowed interface .*
  allowed description .*
+ allowed display .*
+ allowed watch .*
+ allowed differs .*
  exit
 !
 aaa radius rad

@@ -360,10 +360,11 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param l list to append
      * @param prf entry to dump
      */
-    public static void toShAsname(userFormat l, tabRouteEntry<addrIP> prf) {
+    public static void toShAsName(userFormat l, tabRouteEntry<addrIP> prf) {
+        String a = toShBgpFirst(prf);
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
-            l.add(tabRouteAttr.rouTyp2string(attr) + "|" + attr.toShAsname());
+            l.add(a + attr.toShAsName());
         }
     }
 

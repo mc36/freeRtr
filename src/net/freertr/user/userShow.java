@@ -5084,7 +5084,7 @@ public class userShow {
                         tabRouteEntry.toShChgRoute(l, prf);
                         break;
                     case 11:
-                        tabRouteEntry.toShAsname(l, prf);
+                        tabRouteEntry.toShAsName(l, prf);
                         break;
                 }
             }
