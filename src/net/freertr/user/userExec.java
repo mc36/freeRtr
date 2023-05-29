@@ -3418,19 +3418,20 @@ public class userExec {
         int label[] = new int[256];
         addrIP reportA[] = new addrIP[256];
         String reportN[] = new String[256];
-        String path[] = new String[256];
+        String path1[] = new String[256];
+        String path2[] = new String[256];
         for (int i = 0; i < request.length; i++) {
             timeMin[i] = Integer.MAX_VALUE;
             timeMax[i] = Integer.MIN_VALUE;
         }
         for (;;) {
-            userFormat res = new userFormat("|", "hop|req|rep|los|addr|name|tim|min|avg|max|mpls|path");
+            userFormat res = new userFormat("|", "hop|req|rep|los|addr|name|tim|min|avg|max|mpls|path|names");
             for (int i = 1; i < request.length; i++) {
                 int o = reply[i];
                 if (o < 1) {
                     o = 1;
                 }
-                res.add(i + "|" + request[i] + "|" + reply[i] + "|" + (request[i] - reply[i]) + "|" + reportA[i] + "|" + reportN[i] + "|" + timeCur[i] + "|" + timeMin[i] + "|" + (timeSum[i] / o) + "|" + timeMax[i] + "|" + label[i] + "|" + path[i]);
+                res.add(i + "|" + request[i] + "|" + reply[i] + "|" + (request[i] - reply[i]) + "|" + reportA[i] + "|" + reportN[i] + "|" + timeCur[i] + "|" + timeMin[i] + "|" + (timeSum[i] / o) + "|" + timeMax[i] + "|" + label[i] + "|" + path1[i] + "|" + path2[i]);
             }
             lst.clear();
             lst.addAll(res.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)));
@@ -3467,7 +3468,8 @@ public class userExec {
             if (rtr != null) {
                 tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(trc.errRtr);
                 if (ntry != null) {
-                    path[ttl] = ntry.best.asPathStr();
+                    path1[ttl] = ntry.best.asPathStr();
+                    path2[ttl] = ntry.best.asNameStr();
                 }
             }
             if (resolv) {
@@ -3624,7 +3626,7 @@ public class userExec {
             if ((rtr != null) && (trc.errRtr != null)) {
                 tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(trc.errRtr);
                 if (ntry != null) {
-                    a += ", path=" + ntry.best.asPathStr();
+                    a += ", path=" + ntry.best.asPathStr() + " name=" + ntry.best.asNameStr();
                 }
             }
             pipe.linePut(ttl + " " + trc.errRtr + " time=" + trc.errTim + a);

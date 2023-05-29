@@ -2943,6 +2943,9 @@ public class servP4langConn implements Runnable {
                     }
                     break;
                 case openvpn:
+                    if (ifc.ifc.tunOpenvpn == null) {
+                        return;
+                    }
                     if (ifc.ifc.tunOpenvpn.keyEncr == null) {
                         return;
                     }
@@ -2954,6 +2957,9 @@ public class servP4langConn implements Runnable {
                     par = " " + lp + " " + ifc.ifc.tunOpenvpn.getRemPort() + " " + ifc.ifc.tunOpenvpn.timTx + " " + ifc.ifc.tunOpenvpn.cphrSiz + " " + ifc.ifc.tunOpenvpn.hashSiz + " " + ifc.ifc.tunOpenvpn.transform.encr2str() + " " + ifc.ifc.tunOpenvpn.transform.hash2str() + " " + bits.toHex(ifc.ifc.tunOpenvpn.keyEncr) + " " + bits.toHex(ifc.ifc.tunOpenvpn.keyHash);
                     break;
                 case wireguard:
+                    if (ifc.ifc.tunWireguard == null) {
+                        return;
+                    }
                     if (ifc.ifc.tunWireguard.keyTx == null) {
                         return;
                     }
@@ -2965,6 +2971,9 @@ public class servP4langConn implements Runnable {
                     par = " " + lp + " " + ifc.ifc.tunWireguard.getRemPort() + " " + ifc.ifc.tunWireguard.idxTx + " " + bits.toHex(ifc.ifc.tunWireguard.keyTx) + " " + bits.toHex(ifc.ifc.tunWireguard.keyRx);
                     break;
                 case amt:
+                    if (ifc.ifc.tunAmt == null) {
+                        return;
+                    }
                     lp = ifc.ifc.tunAmt.getLocPort();
                     if (lp < 1) {
                         return;
@@ -2973,6 +2982,9 @@ public class servP4langConn implements Runnable {
                     par = " " + lp + " " + ifc.ifc.tunAmt.getRemPort();
                     break;
                 case gtp:
+                    if (ifc.ifc.tunGtp == null) {
+                        return;
+                    }
                     lp = ifc.ifc.tunGtp.getLocPort();
                     if (lp < 1) {
                         return;

@@ -1261,6 +1261,18 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * get the as name string
+     *
+     * @return string
+     */
+    public String asNameStr() {
+        return clntWhois.asnList2str(confSeq, "(", ") ")
+                + clntWhois.asnList2str(confSet, "[", "] ")
+                + clntWhois.asnList2str(pathSeq, "", "")
+                + clntWhois.asnList2str(pathSet, " {", "}");
+    }
+
+    /**
      * get ignore help
      *
      * @param hl help to append
@@ -1665,6 +1677,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "originator|" + originator);
         lst.add(beg + "cluster list|" + tabRouteUtil.dumpAddrList(clustList));
         lst.add(beg + "aspath|" + asPathStr());
+        lst.add(beg + "asname|" + asNameStr());
         lst.add(beg + "path length|" + asPathLen());
         lst.add(beg + "standard community|" + tabRouteUtil.stdComms2string(stdComm));
         lst.add(beg + "extended community|" + tabRouteUtil.extComms2string(extComm));
@@ -1721,46 +1734,6 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
-     * convert to route format
-     *
-     * @return converted
-     */
-    public String toShAsName() {
-        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asNameStr();
-    }
-
-    /**
-     * get the as name string
-     *
-     * @return string
-     */
-    public String asNameStr() {
-        return asNameStr(confSeq, "(", ") ")
-                + asNameStr(confSet, "[", "] ")
-                + asNameStr(pathSeq, "", "")
-                + asNameStr(pathSet, " {", "}");
-    }
-
-    private static String asNameStr(List<Integer> l, String beg, String end) {
-        if (l == null) {
-            return "";
-        }
-        if (l.size() < 1) {
-            return "";
-        }
-        String s = "";
-        for (int i = 0; i < l.size(); i++) {
-            int o = l.get(i);
-            String a = clntWhois.asn2name(o, true);
-            if (a == null) {
-                a = "as#" + bits.num2str(o);
-            }
-            s += " " + a;
-        }
-        return beg + s.substring(1, s.length()) + end;
-    }
-
-    /**
      * convert to bgp format
      *
      * @return converted
@@ -1776,6 +1749,15 @@ public class tabRouteAttr<T extends addrType> {
      */
     public String toShBgpLast() {
         return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asPathStr();
+    }
+
+    /**
+     * convert to route format
+     *
+     * @return converted
+     */
+    public String toShAsName() {
+        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asNameStr();
     }
 
     /**
