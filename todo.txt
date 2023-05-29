@@ -82,8 +82,6 @@ server asdf instead of server daytime asdf, and only if a single hit exists othe
 
 show whowas from bmp mrt archive
 
-changelog to support todo.txt/md at least, later todo.html
-
 show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
 
 misc/player: Exception in thread "main" java.lang.NullPointerException: Cannot invoke "playerLyric.size()" because "<parameter2>" is null/    at playerSong.txt2pls(playerSong.java:142)/at findSongs.main(findSongs.java:62)

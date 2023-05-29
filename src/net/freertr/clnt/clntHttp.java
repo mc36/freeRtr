@@ -319,7 +319,7 @@ public class clntHttp {
         if (proxy == null) {
             return true;
         }
-        doDebug("resolving " + url.dump());
+        doDebug("resolving " + url.toURL(true, false, false));
         addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
         if (trg == null) {
             return true;
@@ -330,7 +330,7 @@ public class clntHttp {
             return true;
         }
         pipe.settingsAdd(pipeSetting.origin, url.server);
-        doDebug("securing " + url.dump());
+        doDebug("securing " + url.toURL(true, false, false));
         pipe = secClient.openSec(pipe, url.getSecurity(), pubkey, url.username, url.password);
         if (pipe == null) {
             return true;

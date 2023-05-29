@@ -243,7 +243,7 @@ public class clntSstp implements Runnable, ifcDn {
     private void workDoer() {
         encUrl url = encUrl.parseOne(target + "sra_{BA195980-CD49-458b-9E23-C84EE0ADCD75}/");
         if (debugger.clntSstpTraf) {
-            logger.debug("resolving " + url.dump());
+            logger.debug("resolving " + url.toURL(true, false, false));
         }
         addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
         if (trg == null) {

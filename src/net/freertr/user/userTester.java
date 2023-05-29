@@ -456,8 +456,6 @@ public class userTester {
         lst.add(" -- " + releaseV + "  " + bits.time2str(cfgAll.timeZoneName, cur.tim, 4));
     }
 
-    final String todoStr = "todo";
-
     /**
      * do the testing work
      *
@@ -899,13 +897,19 @@ public class userTester {
             beg += other0 + "-";
         }
         rdr.debugStat("writing summary " + beg);
-        List<String> txt = bits.txt2buf("../" + todoStr);
+        final String todoStr = "todo";
+        List<String> txt = bits.txt2buf("../" + todoStr + ".txt");
         if (txt == null) {
             txt = new ArrayList<String>();
         }
         for (int i = 0; i < txt.size(); i++) {
+            String b = txt.get(i);
+            b = b.trim();
+            if (b.length() < 1) {
+                continue;
+            }
             userTesterFtr ftr = new userTesterFtr(todoStr + bits.padBeg("" + i, 4, "0"));
-            String b = todoStr + ": " + txt.get(i);
+            b = todoStr + ": " + b;
             b = enc7bit.doOneString(b);
             if (b.length() < 1) {
                 continue;

@@ -1,4 +1,4 @@
-package net.freertr.vm2;
+package net.freertr.user;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -21,7 +21,7 @@ import net.freertr.util.version;
  *
  * @author matecsaba
  */
-public class vm2 {
+public class userVM {
 
     private static final String rootDir = "../vm2/";
 
@@ -89,7 +89,7 @@ public class vm2 {
      * @return result code
      */
     public int doWork(pipeSide cons, boolean fio, String dir, String name, String param) {
-        vm2 vm = new vm2(cons, fio, dir);
+        userVM vm = new userVM(cons, fio, dir);
         int res;
         try {
             vm.doLoad(name, param);
@@ -116,7 +116,7 @@ public class vm2 {
      * @param fio set true to allow file io
      * @param dir working directory
      */
-    public vm2(pipeSide cons, boolean fio, String dir) {
+    public userVM(pipeSide cons, boolean fio, String dir) {
         console = cons;
         allowFileIO = fio;
         currDir = "/" + encUrl.normalizePath(dir + "/");
@@ -1165,7 +1165,7 @@ public class vm2 {
                 return 0;
             case 39: // console.execWait
                 a = fromDos(getPascii(regs[reg_src]));
-                vm2 v = new vm2(console, true, currDir);
+                userVM v = new userVM(console, true, currDir);
                 v.doLoad(a, currDir);
                 val1 = v.doWork(console, true, "", a, currDir);
                 regs[reg_b] = result2error(val1);
