@@ -121,23 +121,14 @@ router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 
 
 a terminal junos-mode knob that defaults to set-del etc as a new class
-usascii filter with configurable space to underscore for the term tab csv output
-asdf#show lldp neighbor | hinclude sdn
-interface         hostname      iface                      ipv4           ipv6
-sdn2              laborSW2      ten-gigabitEthernet 1/0/4  null           null
-sdn5              pince-SW1     gigabitEthernet 1/0/2      null           null
-sdn6              pince-SW1     gigabitEthernet 1/0/3      null           null
-sdn901            mchome-demo   ethernet11                 10.2.1.6       2001:db8:1c::2
-sdn903            mchome-nat64  ethernet12                 10.2.1.10      2001:db8:2f::2
-sdn905            wifi          sdn0/0                     10.1.1.50      2001:db8:1d::2
+
 asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
 it would not harm a lot to apply to the fillables like the check asdf
 
 
 
-show backup-config if available
+show config-backup if available
 
-show banner needs to be include-able
 
 
 asdf#show check track | begin result

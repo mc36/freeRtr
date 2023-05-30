@@ -14832,3 +14832,16 @@ todo: more clean transpilers for the vm
 todo: more clean converters for the vm
 ---------------------------------- 2023-05-30 08:15:12 23.5.30
 todo: terminal bell
+---------------------------------- 2023-05-30 11:04:41 23.5.30
+no todo: show banner needs to be include-able
+no todo: show backup-config if available
+no todo: sdn905            wifi          sdn0/0                     10.1.1.50      2001:db8:1d::2
+no todo: sdn903            mchome-nat64  ethernet12                 10.2.1.10      2001:db8:2f::2
+no todo: sdn901            mchome-demo   ethernet11                 10.2.1.6       2001:db8:1c::2
+no todo: sdn6              pince-SW1     gigabitEthernet 1/0/3      null           null
+no todo: sdn5              pince-SW1     gigabitEthernet 1/0/2      null           null
+no todo: sdn2              laborSW2      ten-gigabitEthernet 1/0/4  null           null
+no todo: interface         hostname      iface                      ipv4           ipv6
+no todo: asdf#show lldp neighbor | hinclude sdn
+no todo: usascii filter with configurable space to underscore for the term tab csv output
+todo: show config-backup if available

@@ -3238,19 +3238,9 @@ todo: vrf def xxx to have dynamic readvertisements as static rotues that disappe
 todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 todo: a terminal junos-mode knob that defaults to set-del etc as a new class
-todo: usascii filter with configurable space to underscore for the term tab csv output
-todo: asdf#show lldp neighbor | hinclude sdn
-todo: interface         hostname      iface                      ipv4           ipv6
-todo: sdn2              laborSW2      ten-gigabitEthernet 1/0/4  null           null
-todo: sdn5              pince-SW1     gigabitEthernet 1/0/2      null           null
-todo: sdn6              pince-SW1     gigabitEthernet 1/0/3      null           null
-todo: sdn901            mchome-demo   ethernet11                 10.2.1.6       2001:db8:1c::2
-todo: sdn903            mchome-nat64  ethernet12                 10.2.1.10      2001:db8:2f::2
-todo: sdn905            wifi          sdn0/0                     10.1.1.50      2001:db8:1d::2
 todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
 todo: it would not harm a lot to apply to the fillables like the check asdf
-todo: show backup-config if available
-todo: show banner needs to be include-able
+todo: show config-backup if available
 todo: asdf#show check track | begin result
 todo: result:
 todo: - gep;normal;icmp;10.38.5.45;up;
