@@ -201,6 +201,7 @@ public class userReader implements Comparator<String> {
         ".*! exec colorize normal",
         ".*! no exec spacetab",
         ".*! no exec capslock",
+        ".*! no exec bells",
         ".*! exec tablemode normal",
         ".*! exec welcome welcome",
         ".*! exec before before:",
@@ -247,6 +248,7 @@ public class userReader implements Comparator<String> {
             setHistory(64);
             pipe.settingsAdd(pipeSetting.spacTab, false);
             pipe.settingsAdd(pipeSetting.capsLock, false);
+            pipe.settingsAdd(pipeSetting.termBells, false);
             pipe.settingsAdd(pipeSetting.logging, false);
             pipe.settingsAdd(pipeSetting.times, false);
             pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
@@ -260,6 +262,7 @@ public class userReader implements Comparator<String> {
         setHistory(parent.execHistory);
         pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
         pipe.settingsAdd(pipeSetting.capsLock, parent.execCaps);
+        pipe.settingsAdd(pipeSetting.termBells, parent.execBells);
         pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
         pipe.settingsAdd(pipeSetting.colors, parent.execColor);
@@ -372,6 +375,8 @@ public class userReader implements Comparator<String> {
                 case 3: // ctrl+c
                 case 113: // q
                 case 81: // Q
+                    buf = new byte[32];
+                    pipe.nonBlockGet(buf, 0, buf.length);
                     return 3;
             }
         }
@@ -1083,15 +1088,26 @@ public class userReader implements Comparator<String> {
         cmdInsStr("" + ((char) ch));
     }
 
-    private void cmdBackspace() {
+    private void cmdBackspace(boolean bells) {
+        if (curr.length() < 1) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         curr = part(0, pos - 1) + part(pos, len);
         clear = true;
         pos--;
     }
 
-    private void cmdTabulator() {
+    private void cmdTabulator(boolean bells) {
         String s = help.guessLine(curr);
         if (s == null) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
             return;
         }
         curr = s;
@@ -1217,6 +1233,7 @@ public class userReader implements Comparator<String> {
 
     private boolean cmdHistFind() {
         final int width = pipe.settingsGet(pipeSetting.width, 80) - 10;
+        final boolean bells = pipe.settingsGet(pipeSetting.termBells, false);
         String oldPrm = prompt;
         String oldCur = curr;
         String text = curr;
@@ -1246,6 +1263,10 @@ public class userReader implements Comparator<String> {
                     return false;
                 case 0x8003: // backspace
                     if (text.length() < 1) {
+                        if (!bells) {
+                            break;
+                        }
+                        userScreen.sendBeep(pipe);
                         break;
                     }
                     text = text.substring(0, text.length() - 1);
@@ -1390,6 +1411,7 @@ public class userReader implements Comparator<String> {
     public String readLine(String exit) {
         final int deactivate = pipe.settingsGet(pipeSetting.deactive, 65536);
         final boolean spacetab = pipe.settingsGet(pipeSetting.spacTab, false);
+        final boolean bells = pipe.settingsGet(pipeSetting.termBells, false);
         setFilter(null);
         if (debugger.userReaderEvnt) {
             logger.debug("reading");
@@ -1413,14 +1435,14 @@ public class userReader implements Comparator<String> {
                         }
                         return null;
                     case 0x8003: // backspace
-                        cmdBackspace();
+                        cmdBackspace(bells);
                         break;
                     case 0x8002: // tabulator
-                        cmdTabulator();
+                        cmdTabulator(bells);
                         break;
                     case 0x8004: // enter
                         if (spacetab) {
-                            cmdTabulator();
+                            cmdTabulator(bells);
                         }
                         String s = cmdEnter();
                         if (s == null) {
@@ -1544,7 +1566,7 @@ public class userReader implements Comparator<String> {
                         break;
                     case 32: // space
                         if (spacetab && (pos >= len)) {
-                            cmdTabulator();
+                            cmdTabulator(bells);
                         } else {
                             cmdInsChr(ch);
                         }

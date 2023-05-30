@@ -82,6 +82,11 @@ public class userLine {
     public boolean execCaps;
 
     /**
+     * term bell
+     */
+    public boolean execBells;
+
+    /**
      * table mode
      */
     public userFormat.tableMode execTables = userFormat.tableMode.normal;
@@ -250,6 +255,7 @@ public class userLine {
         cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
         cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
         cmds.cfgLine(lst, !execCaps, beg, "exec capslock", "");
+        cmds.cfgLine(lst, !execBells, beg, "exec bells", "");
         lst.add(beg + "exec colorize " + userFormat.colmod2str(execColor));
         lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
         lst.add(beg + "exec welcome " + promptWelcome);
@@ -361,6 +367,10 @@ public class userLine {
             }
             if (s.equals("capslock")) {
                 execCaps = true;
+                return false;
+            }
+            if (s.equals("bells")) {
+                execBells = true;
                 return false;
             }
             if (s.equals("tablemode")) {
@@ -523,6 +533,10 @@ public class userLine {
                 execCaps = false;
                 return false;
             }
+            if (s.equals("bells")) {
+                execBells = false;
+                return false;
+            }
             if (s.equals("interface")) {
                 execIface = null;
                 return false;
@@ -602,6 +616,7 @@ public class userLine {
         l.add(null, "3 .      prompt                     select prompt mode");
         l.add(null, "2 .    spacetab                     enable space as tab");
         l.add(null, "2 .    capslock                     enable caps lock");
+        l.add(null, "2 .    bells                        enable beep boops");
         l.add(null, "2 3    tablemode                    set table mode");
         l.add(null, "3 .      csv                        select csv mode");
         l.add(null, "3 .      fancy                      select fancy mode");

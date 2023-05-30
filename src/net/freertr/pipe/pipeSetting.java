@@ -77,6 +77,11 @@ public class pipeSetting implements Comparator<pipeSetting> {
     public final static int capsLock = 13;
 
     /**
+     * bells
+     */
+    public final static int termBells = 14;
+
+    /**
      * name of the setting
      */
     protected final int name;
@@ -118,6 +123,7 @@ public class pipeSetting implements Comparator<pipeSetting> {
         l.add("colorize|" + pip.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
         l.add("spacetab|" + pip.settingsGet(pipeSetting.spacTab, false));
         l.add("capslock|" + pip.settingsGet(pipeSetting.capsLock, false));
+        l.add("bells|" + pip.settingsGet(pipeSetting.termBells, false));
         l.add("timestamps|" + pip.settingsGet(pipeSetting.times, false));
         l.add("deactivate|" + pip.settingsGet(pipeSetting.deactive, 65536));
         l.add("escape|" + pip.settingsGet(pipeSetting.escape, 65536));
