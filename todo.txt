@@ -1,6 +1,6 @@
 sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 
-
+terminal bell
 terminal asname-lookup
 
 

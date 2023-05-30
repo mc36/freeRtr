@@ -14830,3 +14830,5 @@ todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: more clean transpilers for the vm
 todo: more clean converters for the vm
+---------------------------------- 2023-05-30 08:15:12 23.5.30
+todo: terminal bell
