@@ -123,14 +123,6 @@ show config-backup if available
 
 
 
-asdf#show check track | begin result
-result:
-- gep;normal;icmp;10.38.5.45;up;
-+ gep;normal;icmp;10.38.5.45;down;
-nrpe:critical ERROR 2 line(s) in diff
-                                     - gep;normal;icmp;10.38.5.45;up;
-                                                                     + gep;normal;icmp;10.38.5.45;down;
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^through a crlf-crlf filter to look prettyier a bit
 nrpe to send out emails from error.log
 nrpe to have followtracker support
 
@@ -189,8 +181,6 @@ vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfasfads i
 under vdc * and redundancy, parent-name from cfgall.hostname
 show redundancy to display the parent-name from hw-cfg....
 show redundancy link to run cdp/lldp/whatever????
-show redundancy to display the config checksum
-test redundancy <prio>
 clear redundancy <cr> ! to accept config download
 redundancy prio from rtr-hw.txt
 flash mailer <server-smtp> that is a loadable module
@@ -294,7 +284,6 @@ pcapint laters later in bidir to signal the current state too
 dissect too big servers to classes properly while not opening new directories
 
 misc album to have some ncdu functionality like a very simple matstat
-misc player volume to time out to the main screen
 misc motion emails to contain a small note like check recordings here unarm rearm arm
 misc player volume to time out to the main screen
 misc images to not blink finally in the browsers like at least send the image sizes if possible
@@ -346,7 +335,6 @@ more tldring to the this sh1t in every december and normally to the sources too
 document the vm
 .vm <--> vm20
 .vm <--> .class converter, debugger, disassembler, emulator, etc
-.vm <--> .pyc converter, debugger, disassembler, emulator, etc
 .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 more clean transpilers for the vm
 more clean converters for the vm

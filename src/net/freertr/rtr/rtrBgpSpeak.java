@@ -1352,6 +1352,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             if (typ == rtrBgpUtil.msgCapability) {
+                dynCapaRx++;
                 /////////////////////
                 break;
             }

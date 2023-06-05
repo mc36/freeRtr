@@ -818,21 +818,45 @@ public class userClear {
             }
             return;
         }
-        boolean in = a.equals("in");
-        int sfi = rtrBgpParam.string2mask(cmd.word());
-        if (sfi < 1) {
+        int mod = 0;
+        if (a.equals("in")) {
+            mod = 1;
+        }
+        if (a.equals("out")) {
+            mod = 2;
+        }
+        if (a.equals("add")) {
+            mod = 3;
+        }
+        if (a.equals("del")) {
+            mod = 4;
+        }
+        if (mod < 1) {
             return;
         }
-        sfi = r.bgp.mask2safi(sfi);
+        int safi = rtrBgpParam.string2mask(cmd.word());
+        if (safi < 1) {
+            return;
+        }
+        int sfi = r.bgp.mask2safi(safi);
         if (sfi < 1) {
             return;
         }
         for (int i = 0; i < neis.size(); i++) {
             rtrBgpNeigh nei = neis.get(i);
-            if (in) {
-                nei.conn.sendRefresh(sfi);
-            } else {
-                nei.conn.gotRefresh(sfi);
+            switch (mod) {
+                case 1:
+                    nei.conn.sendRefresh(sfi);
+                    break;
+                case 2:
+                    nei.conn.gotRefresh(sfi);
+                    break;
+                case 3:
+                    nei.conn.sendDynamicCapa(true, true, sfi);
+                    break;
+                case 4:
+                    nei.conn.sendDynamicCapa(true, false, sfi);
+                    break;
             }
         }
     }

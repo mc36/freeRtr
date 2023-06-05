@@ -786,7 +786,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         res.addAll(doCheckText());
         packNrpe nrp = new packNrpe();
         getReportNrpe(nrp);
-        res.add("nrpe:" + packNrpe.code2string(nrp.cod) + " " + nrp.str);
+        res.add("nrpe:" + packNrpe.code2string(nrp.cod).replaceAll("\n", "\r\n") + " " + nrp.str);
         return res;
     }
 
