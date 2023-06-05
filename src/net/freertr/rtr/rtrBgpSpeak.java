@@ -2039,23 +2039,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         byte[] buf = new byte[4];
         bits.msbPutD(buf, 0, safi);
         rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
-        tabRoute<addrIP> learned = getLearned(safi);
-        tabRoute<addrIP> adverted = getAdverted(safi);
-        if (learned != null) {
-            learned.clear();
+        tabRoute<addrIP> tab = getLearned(safi);
+        if (tab != null) {
+            tab.clear();
         }
-        if (adverted != null) {
-            adverted.clear();
+        tab = getAdverted(safi);
+        if (tab != null) {
+            tab.clear();
         }
         if (debugger.rtrBgpFull) {
             logger.debug("dynamic capability exchange");
         }
         needFull.set(3);
-        adversion.sub(1);
-        neigh.transmit.wakeup();
         parent.needFull.add(1);
         parent.compute.wakeup();
-        packSend(pck, rtrBgpUtil.msgRefrsh);
+        packSend(pck, rtrBgpUtil.msgCapability);
         if (debugger.rtrBgpTraf) {
             logger.debug("sent dynamic capability to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + " add=" + add);
         }

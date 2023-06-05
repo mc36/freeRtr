@@ -420,7 +420,7 @@ public class encUrl {
         return s;
     }
 
-    private static String percentEncodeIf(String s, boolean needed) {
+    private static String percentEncode2(String s, boolean needed) {
         if (!needed) {
             return s;
         }
@@ -446,12 +446,12 @@ public class encUrl {
             a = "";
         }
         if (new addrIPv6().fromString(server)) {
-            b = percentEncodeIf(server, percent);
+            b = percentEncode2(server, percent);
         } else {
             b = "[" + server + "]";
         }
         if (userpass && (username.length() > 0)) {
-            b = percentEncodeIf(username, percent) + ":" + percentEncodeIf(password, percent) + "@" + b;
+            b = percentEncode2(username, percent) + ":" + percentEncode2(password, percent) + "@" + b;
         }
         c = "";
         if (params) {
@@ -460,15 +460,11 @@ public class encUrl {
         if (c.length() > 0) {
             c = "?" + c;
         }
-        if (percent) {
-            c = "/" + percentEncodeIf(filPath, percent) + percentEncodeIf(filName, percent) + percentEncodeIf(filExt, percent) + c;
-        } else {
-            c = "/" + filPath + filName + filExt + c;
-        }
+        c = "/" + percentEncode2(filPath, percent) + percentEncode2(filName, percent) + percentEncode2(filExt, percent) + c;
         if (!hostname) {
             return c;
         }
-        return percentEncodeIf(proto, percent) + "://" + b + a + c;
+        return percentEncode2(proto, percent) + "://" + b + a + c;
     }
 
     /**
@@ -551,6 +547,7 @@ public class encUrl {
     public List<String> show() {
         List<String> l = new ArrayList<String>();
         l.add("url=" + toURL(true, true, true, true));
+        l.add("url=" + toURL(true, true, true, false));
         l.add("dump=" + dump());
         l.add("filename=" + toFileName());
         l.add("pathname=" + toPathName());
