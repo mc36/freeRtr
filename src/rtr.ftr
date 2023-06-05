@@ -3239,14 +3239,6 @@ todo: a terminal junos-mode knob that defaults to set-del etc as a new class
 todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
 todo: it would not harm a lot to apply to the fillables like the check asdf
 todo: show config-backup if available
-todo: asdf#show check track | begin result
-todo: result:
-todo: - gep;normal;icmp;10.38.5.45;up;
-todo: + gep;normal;icmp;10.38.5.45;down;
-todo: nrpe:critical ERROR 2 line(s) in diff
-todo: - gep;normal;icmp;10.38.5.45;up;
-todo: + gep;normal;icmp;10.38.5.45;down;
-todo: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^through a crlf-crlf filter to look prettyier a bit
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
 todo: scheduler asdf single-run as no respawn or something
@@ -3298,8 +3290,6 @@ todo: vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfas
 todo: under vdc * and redundancy, parent-name from cfgall.hostname
 todo: show redundancy to display the parent-name from hw-cfg....
 todo: show redundancy link to run cdp/lldp/whatever????
-todo: show redundancy to display the config checksum
-todo: test redundancy <prio>
 todo: clear redundancy <cr> ! to accept config download
 todo: redundancy prio from rtr-hw.txt
 todo: flash mailer <server-smtp> that is a loadable module
@@ -3387,7 +3377,6 @@ todo: pcapint to flap its interfaces on request with the 1byte inline signaling 
 todo: pcapint laters later in bidir to signal the current state too
 todo: dissect too big servers to classes properly while not opening new directories
 todo: misc album to have some ncdu functionality like a very simple matstat
-todo: misc player volume to time out to the main screen
 todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
 todo: misc player volume to time out to the main screen
 todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
@@ -3416,7 +3405,6 @@ todo: more tldring to the this sh1t in every december and normally to the source
 todo: document the vm
 todo: .vm <--> vm20
 todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
-todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: more clean transpilers for the vm
 todo: more clean converters for the vm

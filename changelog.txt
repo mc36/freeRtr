@@ -14856,3 +14856,16 @@ no todo: terminal bell
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4
 ---------------------------------- 2023-06-05 17:25:48 23.6.5
 todo: ping to have ip flags settable like  rfc3514
+---------------------------------- 2023-06-05 23:07:58 23.6.5
+no todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
+no todo: misc player volume to time out to the main screen
+no todo: test redundancy <prio>
+no todo: show redundancy to display the config checksum
+no todo: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^through a crlf-crlf filter to look prettyier a bit
+no todo: + gep;normal;icmp;10.38.5.45;down;
+no todo: - gep;normal;icmp;10.38.5.45;up;
+no todo: nrpe:critical ERROR 2 line(s) in diff
+no todo: + gep;normal;icmp;10.38.5.45;down;
+no todo: - gep;normal;icmp;10.38.5.45;up;
+no todo: result:
+no todo: asdf#show check track | begin result
