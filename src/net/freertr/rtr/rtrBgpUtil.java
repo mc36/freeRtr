@@ -986,6 +986,19 @@ public class rtrBgpUtil {
                     default:
                         return "refresh/" + sub;
                 }
+            case 8: // capamsg
+                switch (sub) {
+                    case 1:
+                        return "badSeq";
+                    case 2:
+                        return "badLen";
+                    case 3:
+                        return "malfrmd";
+                    case 4:
+                        return "unsupp";
+                    default:
+                        return "capamsg/" + sub;
+                }
             default:
                 return err + "/" + sub;
         }

@@ -337,6 +337,11 @@ public abstract class rtrBgpParam {
     public int compressMode;
 
     /**
+     * dynamic capability exchange
+     */
+    public boolean dynamicCapab;
+
+    /**
      * buffer size
      */
     public int bufferSize;
@@ -1183,6 +1188,7 @@ public abstract class rtrBgpParam {
         extUpdate = src.extUpdate;
         unidirection = src.unidirection;
         compressMode = src.compressMode;
+        dynamicCapab = src.dynamicCapab;
         socketMode = src.socketMode;
         bufferSize = src.bufferSize;
         ttlSecurity = src.ttlSecurity;
@@ -1560,6 +1566,7 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         active                    this router will initiate session");
         l.add(null, "4  .         passive                   remote router will initiate session");
         l.add(null, "4  .         both                      both modes allowed");
+        l.add(null, "3  .       dynamic-capability          allow dynamic capability exchange");
         l.add(null, "3  4       compression                 compression mode allowed");
         l.add(null, "4  .         none                      not allowed");
         l.add(null, "4  .         receive                   receive direction");
@@ -1759,6 +1766,7 @@ public abstract class rtrBgpParam {
                 break;
         }
         l.add(beg + nei + "connection-mode " + s);
+        cmds.cfgLine(l, !dynamicCapab, beg, nei + "dynamic-capability", "");
         switch (compressMode) {
             case 1:
                 s = "receive";
@@ -2291,6 +2299,10 @@ public abstract class rtrBgpParam {
             if (s.equals("passive")) {
                 socketMode = 2;
             }
+            return false;
+        }
+        if (s.equals("dynamic-capability")) {
+            dynamicCapab = !negated;
             return false;
         }
         if (s.equals("compression")) {

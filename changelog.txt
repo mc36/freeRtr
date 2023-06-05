@@ -14854,3 +14854,5 @@ no todo: userline to have terminal bell :)
 no todo: some cli errored keys should send terminal bell as terminal bell character
 no todo: terminal bell
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4
+---------------------------------- 2023-06-05 17:25:48 23.6.5
+todo: ping to have ip flags settable like  rfc3514

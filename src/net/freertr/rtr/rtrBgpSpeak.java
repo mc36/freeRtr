@@ -491,6 +491,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int peerAfis;
 
     /**
+     * peer dynamic capability exchange
+     */
+    public boolean peerDynCap;
+
+    /**
+     * dynamic capabilities sent
+     */
+    public int dynCapaTx;
+
+    /**
+     * dynamic capabilities received
+     */
+    public int dynCapaRx;
+
+    /**
      * peer route refresh capability
      */
     public boolean peerRefresh;
@@ -1336,6 +1351,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 continue;
             }
+            if (typ == rtrBgpUtil.msgCapability) {
+                /////////////////////
+                break;
+            }
             if (typ != rtrBgpUtil.msgCompress) {
                 logger.info("got unknown type (" + typ + ") from " + neigh.peerAddr);
                 sendNotify(1, 3);
@@ -1561,6 +1580,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, safis.get(i));
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaMultiProto, buf);
+        }
+        if (neigh.dynamicCapab) {
+            byte[] buf = new byte[1];
+            buf[0] = rtrBgpUtil.capaMultiProto;
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaDynamicCapa, buf);
         }
         if (neigh.wideAsPath) {
             byte[] buf = new byte[4];
@@ -1792,6 +1816,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         }
                         compressTx = new Deflater();
                         break;
+                    case rtrBgpUtil.capaDynamicCapa:
+                        for (i = 0; i < tlv.valSiz; i++) {
+                            if (tlv.valDat[i] == rtrBgpUtil.capaMultiProto) {
+                                peerDynCap = true;
+                                break;
+                            }
+                        }
+                        break;
                     case rtrBgpUtil.capaMultiProto:
                         mpGot = true;
                         for (i = 0; i < tlv.valSiz; i += 4) {
@@ -1894,6 +1926,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (!neigh.capaNego) {
             peerAfis = neigh.addrFams;
+            peerDynCap = neigh.dynamicCapab;
             peerGrace = neigh.graceRestart;
             peerLlGrace = neigh.llGraceRestart;
             peerMltLab = neigh.multiLabel;
@@ -1974,6 +2007,57 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.transmit.wakeup();
         if (debugger.rtrBgpTraf) {
             logger.debug("got refresh from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+        }
+    }
+
+    /**
+     * send one dynamic capability
+     *
+     * @param init true to start the exchange, false to answer
+     * @param add set true to add, false to remove
+     * @param safi safi to configure
+     */
+    public void sendDynamicCapa(boolean init, boolean add, int safi) {
+        if (!peerDynCap) {
+            return;
+        }
+        if (afiMsk(peerAfis, safi) == add) {
+            return;
+        }
+        dynCapaTx++;
+        packHolder pck = new packHolder(true, true);
+        int i = 0x40; // ackreq
+        if (!init) {
+            i |= 0x80;
+        }
+        if (!add) {
+            i |= 1;
+        }
+        pck.putByte(0, i); // flags
+        pck.msbPutD(1, dynCapaTx);
+        pck.putSkip(5);
+        byte[] buf = new byte[4];
+        bits.msbPutD(buf, 0, safi);
+        rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
+        tabRoute<addrIP> learned = getLearned(safi);
+        tabRoute<addrIP> adverted = getAdverted(safi);
+        if (learned != null) {
+            learned.clear();
+        }
+        if (adverted != null) {
+            adverted.clear();
+        }
+        if (debugger.rtrBgpFull) {
+            logger.debug("dynamic capability exchange");
+        }
+        needFull.set(3);
+        adversion.sub(1);
+        neigh.transmit.wakeup();
+        parent.needFull.add(1);
+        parent.compute.wakeup();
+        packSend(pck, rtrBgpUtil.msgRefrsh);
+        if (debugger.rtrBgpTraf) {
+            logger.debug("sent dynamic capability to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + " add=" + add);
         }
     }
 

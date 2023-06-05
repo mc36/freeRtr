@@ -498,6 +498,7 @@ router bgp4 65535 vrf v1
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  template r distance 200
  template r connection-mode active
+ template r dynamic-capability
  template r compression both
  template r additional-path-rx unicast multicast vpnuni vpnmlt
  template r additional-path-tx unicast multicast vpnuni vpnmlt
@@ -571,6 +572,7 @@ router bgp6 65535 vrf v1
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  template r distance 200
  template r connection-mode active
+ template r dynamic-capability
  template r compression both
  template r additional-path-rx unicast multicast vpnuni vpnmlt
  template r additional-path-tx unicast multicast vpnuni vpnmlt
@@ -632,6 +634,7 @@ router bgp6 65535 vrf v1
  exit
 !
 console0
+ exec bells
  exec colorize header
  no exec authorization
  no login authentication
@@ -931,6 +934,7 @@ server telnet tel
  access-blackhole6 1
  second-port 22
  exec timestamp
+ exec bells
  exec colorize header
  exec tablemode table
  exec authorization access
