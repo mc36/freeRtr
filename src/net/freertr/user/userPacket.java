@@ -259,7 +259,7 @@ public class userPacket {
                 cmd.error("unable to connect ris");
                 return null;
             }
-            htp.pipe.linePut("GET " + src.toURL(false, false, true) + " HTTP/1.1");
+            htp.pipe.linePut("GET " + src.toURL(false, false, true, true) + " HTTP/1.1");
             htp.pipe.linePut("User-Agent: " + version.usrAgnt);
             htp.pipe.linePut("Host: " + src.server);
             htp.pipe.linePut("");

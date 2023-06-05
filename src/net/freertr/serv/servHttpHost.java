@@ -268,7 +268,7 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
         }
         cnn.lineTx = pipeSide.modTyp.modeCRLF;
         cnn.lineRx = pipeSide.modTyp.modeCRtryLF;
-        cnn.linePut("GET " + srvUrl.toURL(false, false, true) + " HTTP/1.1");
+        cnn.linePut("GET " + srvUrl.toURL(false, false, true, true) + " HTTP/1.1");
         cnn.linePut("User-Agent: " + version.usrAgnt + " [streaming]");
         cnn.linePut("Host: " + srvUrl.server);
         cnn.linePut("Accept: */*");

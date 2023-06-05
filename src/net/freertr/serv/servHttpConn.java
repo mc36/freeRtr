@@ -532,7 +532,7 @@ public class servHttpConn implements Runnable {
                 par[i] = "" + gotUrl.param.get(i);
             }
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            obj = mth[o].invoke(obj, gotUrl.toURL(true, false, false), gotHost.path + s, "" + peer, gotAgent, gotAuth, par, buf);
+            obj = mth[o].invoke(obj, gotUrl.toURL(true, false, false, true), gotHost.path + s, "" + peer, gotAgent, gotAuth, par, buf);
             s = (String) obj;
             res = buf.toByteArray();
         } catch (Exception e) {
@@ -730,7 +730,7 @@ public class servHttpConn implements Runnable {
         try {
             File f = new File(s);
             if (f.isDirectory()) {
-                sendFoundAt(gotUrl.toURL(true, false, false) + "/");
+                sendFoundAt(gotUrl.toURL(true, false, false, false) + "/");
                 return false;
             }
             fr = new RandomAccessFile(f, "r");
@@ -1289,7 +1289,7 @@ public class servHttpConn implements Runnable {
         if (gotHost.translate == null) {
             return;
         }
-        String a = cfgTrnsltn.doTranslate(gotHost.translate, gotUrl.toURL(true, true, true));
+        String a = cfgTrnsltn.doTranslate(gotHost.translate, gotUrl.toURL(true, true, true, true));
         srvUrl.fromString(a);
     }
 
@@ -1382,7 +1382,7 @@ public class servHttpConn implements Runnable {
         gotHost.askNum++;
         gotHost.askTim = bits.getTime();
         if (gotHost.logging) {
-            logger.info(peer + " accessed " + gotUrl.toURL(true, false, true));
+            logger.info(peer + " accessed " + gotUrl.toURL(true, false, true, true));
         }
         if (gotHost.allowForti != null) {
             if (gotUrl.toPathName().equals("remote/logincheck")) {
@@ -1453,7 +1453,7 @@ public class servHttpConn implements Runnable {
             }
             headers.add("Set-Cookie: webvpncontext=00@defctx; path=/; Secure");
             if (gotUrl.toPathName().length() <= 0) {
-                headers.add("Location: " + gotUrl.toURL(true, false, false) + "webvpn.html");
+                headers.add("Location: " + gotUrl.toURL(true, false, false, false) + "webvpn.html");
                 sendRespHeader("303 see other", -1, "text/html");
                 return;
             }
@@ -1574,7 +1574,7 @@ public class servHttpConn implements Runnable {
                 fin = cons[i];
                 pipeSide.modTyp old = fin.lineTx;
                 fin.lineTx = pipeSide.modTyp.modeCRLF;
-                fin.linePut(gotCmd.toUpperCase() + " " + urls.get(i).toURL(false, false, true) + " HTTP/1.1");
+                fin.linePut(gotCmd.toUpperCase() + " " + urls.get(i).toURL(false, false, true, true) + " HTTP/1.1");
                 fin.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + peer + "]");
                 fin.linePut("X-Forwarded-For: " + peer);
                 fin.linePut("Referer: " + gotReferer);
@@ -1613,11 +1613,11 @@ public class servHttpConn implements Runnable {
                 return;
             }
             if (debugger.servHttpTraf) {
-                logger.debug("reconnect " + srvUrl.toURL(true, false, true));
+                logger.debug("reconnect " + srvUrl.toURL(true, false, true, true));
             }
             pipeSide.modTyp old = cnn.lineTx;
             cnn.lineTx = pipeSide.modTyp.modeCRLF;
-            cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, false, true) + " HTTP/1.1");
+            cnn.linePut(gotCmd.toUpperCase() + " " + srvUrl.toURL(false, false, true, true) + " HTTP/1.1");
             cnn.linePut("User-Agent: " + gotAgent + " [" + version.usrAgnt + " by " + peer + "]");
             cnn.linePut("X-Forwarded-For: " + peer);
             cnn.linePut("Referer: " + gotReferer);
@@ -1640,7 +1640,7 @@ public class servHttpConn implements Runnable {
             encUrl srvUrl = encUrl.parseOne(gotHost.redir);
             doTranslate(srvUrl);
             doSubconn(srvUrl);
-            sendFoundAt(srvUrl.toURL(true, true, true));
+            sendFoundAt(srvUrl.toURL(true, true, true, false));
             return;
         }
         if (gotCmd.equals("options")) {

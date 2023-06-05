@@ -748,7 +748,7 @@ public class userReader implements Comparator<String> {
                 if (http.doConnect(url)) {
                     return doSecond(lst);
                 }
-                http.sendLine("GET " + url.toURL(true, true, true) + " HTTP/1.1");
+                http.sendLine("GET " + url.toURL(true, true, true, true) + " HTTP/1.1");
                 http.sendLine("User-Agent: " + version.usrAgnt);
                 http.sendLine("Host: " + url.server);
                 http.sendLine("Connection: Close");

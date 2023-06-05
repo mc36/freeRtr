@@ -242,8 +242,8 @@ public class clntAnyconn implements Runnable, ifcDn {
         if (cln.doConnect(url)) {
             return;
         }
-        String cntx = encXml.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(true, false, true) + "</group-access></config-auth>";
-        cln.sendLine("POST " + url.toURL(false, false, false) + " HTTP/1.1");
+        String cntx = encXml.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(true, false, true, true) + "</group-access></config-auth>";
+        cln.sendLine("POST " + url.toURL(false, false, false, true) + " HTTP/1.1");
         cln.sendLine("User-Agent: " + version.usrAgnt);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Connection: keep-alive");
@@ -264,7 +264,7 @@ public class clntAnyconn implements Runnable, ifcDn {
             return;
         }
         cntx = "username=" + encUrl.percentEncode(username) + "&password=" + encUrl.percentEncode(password);
-        cln.sendLine("POST " + url.toURL(false, false, false) + " HTTP/1.1");
+        cln.sendLine("POST " + url.toURL(false, false, false, true) + " HTTP/1.1");
         cln.sendLine("User-Agent: " + version.usrAgnt);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Cookie: " + cookie1);

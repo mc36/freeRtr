@@ -243,7 +243,7 @@ public class clntSstp implements Runnable, ifcDn {
     private void workDoer() {
         encUrl url = encUrl.parseOne(target + "sra_{BA195980-CD49-458b-9E23-C84EE0ADCD75}/");
         if (debugger.clntSstpTraf) {
-            logger.debug("resolving " + url.toURL(true, false, false));
+            logger.debug("resolving " + url.toURL(true, false, false, true));
         }
         addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
         if (trg == null) {
@@ -263,7 +263,7 @@ public class clntSstp implements Runnable, ifcDn {
         pipe.setTime(120000);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        sendLine("SSTP_DUPLEX_POST " + url.toURL(false, false, true) + " HTTP/1.1");
+        sendLine("SSTP_DUPLEX_POST " + url.toURL(false, false, true, true) + " HTTP/1.1");
         sendLine("User-Agent: " + version.usrAgnt);
         sendLine("Content-Length: 18446744073709551615");
         sendLine("Host: " + url.server);

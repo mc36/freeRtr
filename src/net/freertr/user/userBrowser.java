@@ -456,7 +456,7 @@ public class userBrowser {
                 b = b.substring(i + 1, b.length());
             }
         }
-        return doUrl(b).toURL(true, true, true);
+        return doUrl(b).toURL(true, true, true, true);
     }
 
     private void doKeyLft() {
@@ -716,7 +716,7 @@ public class userBrowser {
             res.addParam(a, lst.get(i).value);
         }
         oldurl = url;
-        url = res.toURL(true, true, true);
+        url = res.toURL(true, true, true, true);
         doKeyRead();
     }
 

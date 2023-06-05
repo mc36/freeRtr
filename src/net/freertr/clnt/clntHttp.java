@@ -319,7 +319,7 @@ public class clntHttp {
         if (proxy == null) {
             return true;
         }
-        doDebug("resolving " + url.toURL(true, false, false));
+        doDebug("resolving " + url.toURL(true, false, false, true));
         addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
         if (trg == null) {
             return true;
@@ -330,7 +330,7 @@ public class clntHttp {
             return true;
         }
         pipe.settingsAdd(pipeSetting.origin, url.server);
-        doDebug("securing " + url.toURL(true, false, false));
+        doDebug("securing " + url.toURL(true, false, false, true));
         pipe = secClient.openSec(pipe, url.getSecurity(), pubkey, url.username, url.password);
         if (pipe == null) {
             return true;
@@ -507,7 +507,7 @@ public class clntHttp {
         if (doConnect(src)) {
             return true;
         }
-        sendLine("GET " + src.toURL(false, false, true) + " HTTP/1.1");
+        sendLine("GET " + src.toURL(false, false, true, true) + " HTTP/1.1");
         sendLine("User-Agent: " + version.usrAgnt);
         sendLine("Host: " + src.server);
         sendLine("Accept: */*");
@@ -623,7 +623,7 @@ public class clntHttp {
         } catch (Exception e) {
             return true;
         }
-        sendLine("PUT " + trg.toURL(false, false, true) + " HTTP/1.1");
+        sendLine("PUT " + trg.toURL(false, false, true, true) + " HTTP/1.1");
         sendLine("User-Agent: " + version.usrAgnt);
         sendLine("Host: " + trg.server);
         sendLine("Accept: */*");

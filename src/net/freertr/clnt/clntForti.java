@@ -231,7 +231,7 @@ public class clntForti implements Runnable, ifcDn {
         url.addParam("credential", password);
         url.filPath = "remote/";
         url.filName = "logincheck";
-        cln.sendLine("POST " + url.toURL(false, false, true) + " HTTP/1.1");
+        cln.sendLine("POST " + url.toURL(false, false, true, true) + " HTTP/1.1");
         cln.sendLine("User-Agent: " + version.usrAgnt);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Connection: keep-alive");

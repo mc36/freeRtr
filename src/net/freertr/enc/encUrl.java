@@ -420,15 +420,23 @@ public class encUrl {
         return s;
     }
 
+    private static String percentEncodeIf(String s, boolean needed) {
+        if (!needed) {
+            return s;
+        }
+        return percentEncode(s);
+    }
+
     /**
      * convert to url
      *
      * @param hostname put hostname
      * @param userpass put password
      * @param params put parameters
+     * @param percent percent encode
      * @return url format
      */
-    public String toURL(boolean hostname, boolean userpass, boolean params) {
+    public String toURL(boolean hostname, boolean userpass, boolean params, boolean percent) {
         String a;
         String b;
         String c;
@@ -438,12 +446,12 @@ public class encUrl {
             a = "";
         }
         if (new addrIPv6().fromString(server)) {
-            b = percentEncode(server);
+            b = percentEncodeIf(server, percent);
         } else {
             b = "[" + server + "]";
         }
         if (userpass && (username.length() > 0)) {
-            b = percentEncode(username) + ":" + percentEncode(password) + "@" + b;
+            b = percentEncodeIf(username, percent) + ":" + percentEncodeIf(password, percent) + "@" + b;
         }
         c = "";
         if (params) {
@@ -452,11 +460,15 @@ public class encUrl {
         if (c.length() > 0) {
             c = "?" + c;
         }
-        c = "/" + percentEncode(filPath) + percentEncode(filName) + percentEncode(filExt) + c;
+        if (percent) {
+            c = "/" + percentEncodeIf(filPath, percent) + percentEncodeIf(filName, percent) + percentEncodeIf(filExt, percent) + c;
+        } else {
+            c = "/" + filPath + filName + filExt + c;
+        }
         if (!hostname) {
             return c;
         }
-        return percentEncode(proto) + "://" + b + a + c;
+        return percentEncodeIf(proto, percent) + "://" + b + a + c;
     }
 
     /**
@@ -538,7 +550,7 @@ public class encUrl {
      */
     public List<String> show() {
         List<String> l = new ArrayList<String>();
-        l.add("url=" + toURL(true, true, true));
+        l.add("url=" + toURL(true, true, true, true));
         l.add("dump=" + dump());
         l.add("filename=" + toFileName());
         l.add("pathname=" + toPathName());
