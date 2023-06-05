@@ -3189,7 +3189,7 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
-todo: terminal bell
+todo: p4lang interpreter like interface xxxx / p4lang asdf.p4
 todo: terminal asname-lookup
 todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
@@ -3200,12 +3200,10 @@ todo: player: disable volume in multicast streamer mode
 todo: disable playlist loading in multicast receiver mode
 todo: ctrl+l/r to try to redetect the screen resolution
 todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
-todo: some cli errored keys should send terminal bell as terminal bell character
 todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
 todo: configure diff to have chance to change the sho config-differences
 todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
 todo: display asdfsdfas | asciinema <--- same as | pastebin....
-todo: userline to have terminal bell :)
 todo: client irc
 todo: server security to have settable tls version from client knob first
 todo: server security to log the transactions
@@ -3222,7 +3220,6 @@ todo: bgp to have at least show ipv46 bgp 66666 description
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: policy from bgp rpd
-todo: show ipv4 bgp 666 unicast database | include ^195.111.*$
 todo: flash install as whole zip loadables
 todo: client auto-save-on-upgrade flash network archive
 todo: introduce risky stuffs as flash or even just as show like curl show url etc commands

@@ -1,6 +1,7 @@
 sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 
-terminal bell
+p4lang interpreter like interface xxxx / p4lang asdf.p4
+
 terminal asname-lookup
 
 
@@ -10,13 +11,6 @@ upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 
 
 bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
-
-
-
-
-
-
-
 
 
 
@@ -40,8 +34,6 @@ ctrl+l/r to try to redetect the screen resolution
 some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
 
 
-some cli errored keys should send terminal bell as terminal bell character
-
 
 server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
 
@@ -62,11 +54,10 @@ display asdfsdfas | asciinema <--- same as | pastebin....
 
 
 
-userline to have terminal bell :)
-
 client irc
 
 server security to have settable tls version from client knob first
+
 
 server security to log the transactions
 
@@ -92,7 +83,6 @@ bgp to have at least show ipv46 bgp 66666 description
 traffic through bgp sr-policy
 traffic through bgp nsh
 policy from bgp rpd
-show ipv4 bgp 666 unicast database | include ^195.111.*$
 
 flash install as whole zip loadables
 
