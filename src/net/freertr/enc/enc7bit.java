@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * a 8 bit to 7 bit filter
  *
- * @author mc36
+ * @author matecsaba
  */
 public class enc7bit {
 

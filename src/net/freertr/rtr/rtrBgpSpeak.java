@@ -1357,25 +1357,71 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     sendNotify(8, 4);
                     break;
                 }
-                logger.debug("here " + pckRx.dump());//////////////
                 int i = pckRx.getByte(0);
-                boolean init = (i & 0x80) != 0;
+                boolean init = (i & 0x80) == 0;
                 boolean ack = (i & 0x40) != 0;
                 boolean add = (i & 0x1) == 0;
                 int seq = pckRx.msbGetD(1);
-                if ((!init) && (seq != dynCapaTx)) {
-                    sendNotify(8, 1);
-                    break;
+                if (debugger.rtrBgpTraf) {
+                    logger.debug("got dynamic capability from peer " + neigh.peerAddr + " init=" + init + " ack=" + ack + " add=" + add + " seq=" + seq);
+                }
+                if (!init) {
+                    continue;
                 }
                 pckRx.getSkip(5);
                 encTlv tlv = rtrBgpUtil.getCapabilityTlv(peerExtOpen);
                 if (tlv.getBytes(pckRx)) {
+                    sendNotify(8, 2);
+                    break;
+                }
+                if (tlv.valTyp != 2) {
                     sendNotify(8, 3);
                     break;
                 }
-                logger.debug("here " + tlv.dump());//////////////
-
-                /////////////////////
+                pckRh.clear();
+                pckRh.putCopy(tlv.valDat, 0, 0, tlv.valSiz);
+                pckRh.putSkip(tlv.valSiz);
+                pckRh.merge2beg();
+                List<Integer> afiS = new ArrayList<Integer>();
+                List<Integer> afiM = new ArrayList<Integer>();
+                List<Integer> afiD = new ArrayList<Integer>();
+                for (;;) {
+                    tlv = rtrBgpUtil.getCapabilityTlv(false);
+                    if (tlv.getBytes(pckRh)) {
+                        break;
+                    }
+                    if (tlv.valTyp != rtrBgpUtil.capaMultiProto) {
+                        sendNotify(8, 4);
+                        break;
+                    }
+                    parseMultiProtoCapa(tlv, afiS, afiM);
+                }
+                for (i = afiS.size() - 1; i >= 0; i--) {
+                    int o = afiS.get(i);
+                    int p = afiM.get(i);
+                    if (afiMsk(peerAfis, o) == add) {
+                        renegotiatingSafi(p, o, add, false);
+                        continue;
+                    }
+                    afiS.remove(i);
+                    afiM.remove(i);
+                    renegotiatingSafi(p, o, add, false);
+                }
+                packHolder pck = new packHolder(true, true);
+                for (i = 0; i < afiS.size(); i++) {
+                    byte[] buf = new byte[4];
+                    int o = afiS.get(i);
+                    bits.msbPutD(buf, 0, o);
+                    rtrBgpUtil.placeCapability(pck, peerExtOpen, rtrBgpUtil.capaMultiProto, buf);
+                }
+                if (ack) {
+                    sendDynCapaMsg(!init, false, add, seq, pck);
+                }
+                for (i = 0; i < afiS.size(); i++) {
+                    int o = afiS.get(i);
+                    int p = afiM.get(i);
+                    renegotiatingSafi(p, o, add, false);
+                }
                 continue;
             }
             if (typ != rtrBgpUtil.msgCompress) {
@@ -1735,6 +1781,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         packSend(pck, rtrBgpUtil.msgOpen);
     }
 
+    private int parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Integer> msk) {
+        int res = 0;
+        for (int i = 0; i < tlv.valSiz; i += 4) {
+            int p = bits.msbGetD(tlv.valDat, i);
+            int o = parent.safi2mask(p);
+            if (o < 1) {
+                if (debugger.rtrBgpError) {
+                    logger.debug("unknown (" + p + ") afi");
+                }
+                continue;
+            }
+            afi.add(p);
+            msk.add(o);
+            res |= o;
+        }
+        return res;
+    }
+
     /**
      * parse open packet
      *
@@ -1849,17 +1913,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         break;
                     case rtrBgpUtil.capaMultiProto:
                         mpGot = true;
-                        for (i = 0; i < tlv.valSiz; i += 4) {
-                            int p = bits.msbGetD(tlv.valDat, i);
-                            int o = parent.safi2mask(p);
-                            if (o < 1) {
-                                if (debugger.rtrBgpError) {
-                                    logger.debug("unknown (" + p + ") afi");
-                                }
-                                continue;
-                            }
-                            peerAfis |= o;
-                        }
+                        peerAfis |= parseMultiProtoCapa(tlv, new ArrayList<Integer>(), new ArrayList<Integer>());
                         break;
                     case rtrBgpUtil.capaMultiLabel:
                         for (i = 0; i < tlv.valSiz; i += 4) {
@@ -2048,26 +2102,34 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (afiMsk(peerAfis, safi) == add) {
             return;
         }
-        dynCapaTx++;
         packHolder pck = new packHolder(true, true);
-        int i = 0x40; // ackreq
+        byte[] buf = new byte[4];
+        bits.msbPutD(buf, 0, safi);
+        rtrBgpUtil.placeCapability(pck, peerExtOpen, rtrBgpUtil.capaMultiProto, buf);
+        dynCapaTx++;
+        sendDynCapaMsg(init, true, add, dynCapaTx, pck);
+        renegotiatingSafi(msk, safi, add, true);
+    }
+
+    private void sendDynCapaMsg(boolean init, boolean ack, boolean add, int seq, packHolder pck) {
+        pck.merge2beg();
+        int i = 0;
         if (!init) {
             i |= 0x80;
+        }
+        if (ack) {
+            i |= 0x40;
         }
         if (!add) {
             i |= 1;
         }
         pck.putByte(0, i); // flags
-        pck.msbPutD(1, dynCapaTx);
+        pck.msbPutD(1, seq);
         pck.putSkip(5);
-        byte[] buf = new byte[4];
-        bits.msbPutD(buf, 0, safi);
-        rtrBgpUtil.placeCapability(pck, peerExtOpen, rtrBgpUtil.capaMultiProto, buf);
         packSend(pck, rtrBgpUtil.msgCapability);
         if (debugger.rtrBgpTraf) {
-            logger.debug("sent dynamic capability to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + " add=" + add);
+            logger.debug("sent dynamic capability to peer " + neigh.peerAddr + " init=" + init + " ack=" + ack + " add=" + add + " seq=" + seq);
         }
-        renegotiatingSafi(msk, safi, add);
     }
 
     private static void clearOneTable(tabRoute<addrIP> tab) {
@@ -2077,7 +2139,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         tab.clear();
     }
 
-    private void renegotiatingSafi(int msk, int safi, boolean add) {
+    private void renegotiatingSafi(int msk, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
         clearOneTable(getLearned(safi));
         clearOneTable(getAdverted(safi));
@@ -2086,12 +2148,17 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         needEorAfis |= msk;
         if (add) {
             peerAfis |= msk;
-            neigh.addrFams |= msk;
             originalSafiList |= msk;
         } else {
             peerAfis &= ~msk;
-            neigh.addrFams &= ~msk;
             originalSafiList &= ~msk;
+        }
+        if (cfg) {
+            if (add) {
+                neigh.addrFams |= msk;
+            } else {
+                neigh.addrFams &= ~msk;
+            }
         }
         if (debugger.rtrBgpFull) {
             logger.debug("peer afi changed");
