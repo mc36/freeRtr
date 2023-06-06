@@ -14871,3 +14871,5 @@ no todo: result:
 no todo: asdf#show check track | begin result
 ---------------------------------- 2023-06-06 12:12:56 23.6.6
 todo: bier in layer2, rfc8296 ethertype 0xab37
+---------------------------------- 2023-06-06 18:26:17 23.6.6
+todo: last config change by to the end knob

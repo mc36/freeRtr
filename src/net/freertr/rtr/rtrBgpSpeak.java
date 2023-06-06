@@ -1353,6 +1353,28 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             if (typ == rtrBgpUtil.msgCapability) {
                 dynCapaRx++;
+                if (!neigh.dynamicCapab) {
+                    sendNotify(8, 4);
+                    break;
+                }
+                logger.debug("here " + pckRx.dump());//////////////
+                int i = pckRx.getByte(0);
+                boolean init = (i & 0x80) != 0;
+                boolean ack = (i & 0x40) != 0;
+                boolean add = (i & 0x1) == 0;
+                int seq = pckRx.msbGetD(1);
+                if ((!init) && (seq != dynCapaTx)) {
+                    sendNotify(8, 1);
+                    break;
+                }
+                pckRx.getSkip(5);
+                encTlv tlv = rtrBgpUtil.getCapabilityTlv(peerExtOpen);
+                if (tlv.getBytes(pckRx)) {
+                    sendNotify(8, 3);
+                    break;
+                }
+                logger.debug("here " + tlv.dump());//////////////
+
                 /////////////////////
                 continue;
             }
@@ -2040,7 +2062,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pck.putSkip(5);
         byte[] buf = new byte[4];
         bits.msbPutD(buf, 0, safi);
-        rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
+        rtrBgpUtil.placeCapability(pck, peerExtOpen, rtrBgpUtil.capaMultiProto, buf);
         packSend(pck, rtrBgpUtil.msgCapability);
         if (debugger.rtrBgpTraf) {
             logger.debug("sent dynamic capability to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + " add=" + add);
