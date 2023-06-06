@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.freertr.addr.addrIP;
 import net.freertr.clnt.clntDns;
-import net.freertr.enc.enc7bit;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packNrpe;
 import net.freertr.pipe.pipeLine;
@@ -787,8 +786,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         res.addAll(doCheckText());
         packNrpe nrp = new packNrpe();
         getReportNrpe(nrp);
-        res.add("nrpe:");
-        res.addAll(enc7bit.doOneArray(packNrpe.code2string(nrp.cod).getBytes(), ""));
+        res.add("nrpe:" + packNrpe.code2string(nrp.cod));
         return res;
     }
 
