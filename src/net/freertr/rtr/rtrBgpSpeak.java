@@ -1354,7 +1354,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (typ == rtrBgpUtil.msgCapability) {
                 dynCapaRx++;
                 /////////////////////
-                break;
+                continue;
             }
             if (typ != rtrBgpUtil.msgCompress) {
                 logger.info("got unknown type (" + typ + ") from " + neigh.peerAddr);
@@ -2016,9 +2016,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      *
      * @param init true to start the exchange, false to answer
      * @param add set true to add, false to remove
+     * @param msk afi mask to configure
      * @param safi safi to configure
      */
-    public void sendDynamicCapa(boolean init, boolean add, int safi) {
+    public void sendDynamicCapa(boolean init, boolean add, int msk, int safi) {
         if (!peerDynCap) {
             return;
         }
@@ -2040,24 +2041,43 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         byte[] buf = new byte[4];
         bits.msbPutD(buf, 0, safi);
         rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
-        tabRoute<addrIP> tab = getLearned(safi);
-        if (tab != null) {
-            tab.clear();
-        }
-        tab = getAdverted(safi);
-        if (tab != null) {
-            tab.clear();
-        }
-        if (debugger.rtrBgpFull) {
-            logger.debug("dynamic capability exchange");
-        }
-        needFull.set(3);
-        parent.needFull.add(1);
-        parent.compute.wakeup();
         packSend(pck, rtrBgpUtil.msgCapability);
         if (debugger.rtrBgpTraf) {
             logger.debug("sent dynamic capability to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + " add=" + add);
         }
+        renegotiatingSafi(msk, safi, add);
+    }
+
+    private static void clearOneTable(tabRoute<addrIP> tab) {
+        if (tab == null) {
+            return;
+        }
+        tab.clear();
+    }
+
+    private void renegotiatingSafi(int msk, int safi, boolean add) {
+        sendEndOfRib(safi);
+        clearOneTable(getLearned(safi));
+        clearOneTable(getAdverted(safi));
+        clearOneTable(neigh.getWilling(safi));
+        clearOneTable(neigh.getAccepted(safi));
+        needEorAfis |= msk;
+        if (add) {
+            peerAfis |= msk;
+            neigh.addrFams |= msk;
+            originalSafiList |= msk;
+        } else {
+            peerAfis &= ~msk;
+            neigh.addrFams &= ~msk;
+            originalSafiList &= ~msk;
+        }
+        if (debugger.rtrBgpFull) {
+            logger.debug("peer afi changed");
+        }
+        needFull.set(3);
+        parent.needFull.add(1);
+        parent.compute.wakeup();
+        sendEndOfRib(safi);
     }
 
     /**
