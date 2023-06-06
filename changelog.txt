@@ -14869,3 +14869,5 @@ no todo: + gep;normal;icmp;10.38.5.45;down;
 no todo: - gep;normal;icmp;10.38.5.45;up;
 no todo: result:
 no todo: asdf#show check track | begin result
+---------------------------------- 2023-06-06 12:12:56 23.6.6
+todo: bier in layer2, rfc8296 ethertype 0xab37

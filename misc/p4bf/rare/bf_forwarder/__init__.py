@@ -35,7 +35,6 @@ class BfForwarder(Thread, RareApi):
         self.active_ports = {}
         self._clearTable()
 
-
     from .message_loop import run
 
     def haveSAL(self):

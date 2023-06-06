@@ -63,8 +63,5 @@ class BfRuntimeGrpcClient:
             self.target, { "from_hw": False}, p4_name = self.p4_name)
         self.dev_cfg = next(resp)[0].to_dict()
 
-
-
-
     def tearDown(self):
         self.interface.tear_down_stream()
