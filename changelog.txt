@@ -14881,3 +14881,6 @@ qc pass: unicast+vpns over confed bgp with dynamic capability
 qc pass: unicast+vpns over ibgp rr with dynamic capability
 ---------------------------------- 2023-06-07 18:42:22 23.6.7
 no todo: bier in layer2, rfc8296 ethertype 0xab37
+---------------------------------- 2023-06-07 19:21:04 23.6.7
+qc pass: mpls over multicast ethertype
+qc pass: mpls over bier ethertype

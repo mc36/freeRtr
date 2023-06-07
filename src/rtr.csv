@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.6.7-cur, done by sprscc13@mr.nobody.
--;-;-;2023-06-07 19:18:09, took 00:10:18, with 80 workers, on 3194 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2023-06-07 19:32:03, took 00:10:59, with 80 workers, on 3196 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1205,6 +1205,8 @@ http://sources.freertr.org/cfg/mpls-bier13.tst;mpls-bier13.tst;success;bier with
 http://sources.freertr.org/cfg/mpls-bier14.tst;mpls-bier14.tst;success;bier over broadcast subnet
 http://sources.freertr.org/cfg/mpls-bier15.tst;mpls-bier15.tst;success;mixed protocol over bier
 http://sources.freertr.org/cfg/mpls-bier16.tst;mpls-bier16.tst;success;mpls over bier
+http://sources.freertr.org/cfg/mpls-bier17.tst;mpls-bier17.tst;success;mpls over multicast ethertype
+http://sources.freertr.org/cfg/mpls-bier18.tst;mpls-bier18.tst;success;mpls over bier ethertype
 http://sources.freertr.org/cfg/mpls-evc01.tst;mpls-evc01.tst;success;bridged evcs over ethernet
 http://sources.freertr.org/cfg/mpls-evc02.tst;mpls-evc02.tst;success;bridged evcs over hdlc
 http://sources.freertr.org/cfg/mpls-evc03.tst;mpls-evc03.tst;success;bridged evcs over gre

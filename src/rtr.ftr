@@ -1201,6 +1201,8 @@ qc pass: bier with 4k bsl
 qc pass: bier over broadcast subnet
 qc pass: mixed protocol over bier
 qc pass: mpls over bier
+qc pass: mpls over multicast ethertype
+qc pass: mpls over bier ethertype
 qc pass: bridged evcs over ethernet
 qc pass: bridged evcs over hdlc
 qc pass: bridged evcs over gre
