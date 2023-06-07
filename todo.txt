@@ -102,7 +102,6 @@ noti#show ipv4 bgp ?
   1     - process id
   66666 - process id - as asdf
   <num> - process id
-bgp to have the nexus dynamic capability exchange draft
 
 
 vrf definition to have route consistency check

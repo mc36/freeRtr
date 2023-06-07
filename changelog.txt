@@ -14873,3 +14873,9 @@ no todo: asdf#show check track | begin result
 todo: bier in layer2, rfc8296 ethertype 0xab37
 ---------------------------------- 2023-06-06 18:26:17 23.6.6
 todo: last config change by to the end knob
+---------------------------------- 2023-06-07 10:21:31 23.6.7
+no todo: bgp to have the nexus dynamic capability exchange draft
+qc pass: unicast+vpns over ebgp with dynamic capability
+qc pass: unicast+vpns over ibgp with dynamic capability
+qc pass: unicast+vpns over confed bgp with dynamic capability
+qc pass: unicast+vpns over ibgp rr with dynamic capability

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.6.7-cur, done by sprscc13@mr.nobody.
--;-;-;2023-06-07 02:27:16, took 00:09:51, with 80 workers, on 3190 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2023-06-07 10:32:26, took 00:10:54, with 80 workers, on 3194 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2696,6 +2696,10 @@ http://sources.freertr.org/cfg/rout-bgp772.tst;rout-bgp772.tst;success;vpn color
 http://sources.freertr.org/cfg/rout-bgp773.tst;rout-bgp773.tst;success;vpn colors over ibgp
 http://sources.freertr.org/cfg/rout-bgp774.tst;rout-bgp774.tst;success;ebgp with any remote
 http://sources.freertr.org/cfg/rout-bgp775.tst;rout-bgp775.tst;success;ibgp with any remote
+http://sources.freertr.org/cfg/rout-bgp776.tst;rout-bgp776.tst;success;unicast+vpns over ebgp with dynamic capability
+http://sources.freertr.org/cfg/rout-bgp777.tst;rout-bgp777.tst;success;unicast+vpns over ibgp with dynamic capability
+http://sources.freertr.org/cfg/rout-bgp778.tst;rout-bgp778.tst;success;unicast+vpns over confed bgp with dynamic capability
+http://sources.freertr.org/cfg/rout-bgp779.tst;rout-bgp779.tst;success;unicast+vpns over ibgp rr with dynamic capability
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

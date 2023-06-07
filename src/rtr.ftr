@@ -2692,6 +2692,10 @@ qc pass: vpn colors over ebgp
 qc pass: vpn colors over ibgp
 qc pass: ebgp with any remote
 qc pass: ibgp with any remote
+qc pass: unicast+vpns over ebgp with dynamic capability
+qc pass: unicast+vpns over ibgp with dynamic capability
+qc pass: unicast+vpns over confed bgp with dynamic capability
+qc pass: unicast+vpns over ibgp rr with dynamic capability
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -3231,7 +3235,6 @@ todo: noti#show ipv4 bgp ?
 todo: 1     - process id
 todo: 66666 - process id - as asdf
 todo: <num> - process id
-todo: bgp to have the nexus dynamic capability exchange draft
 todo: vrf definition to have route consistency check
 todo: info ifcSgt.doDecode:ifcSgt.java:104 bad type (86dd) --- okk but where? :) on sdn123.123? right? :)
 todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
