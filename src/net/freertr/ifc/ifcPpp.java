@@ -1406,6 +1406,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             case ifcPppMpls.pppDataM:
                 newProt = ifcPppMpls.ethTypM;
                 break;
+            case ifcPppMpls.pppDataB:
+                newProt = ifcPppMpls.ethTypB;
+                break;
             case ifcPppIp4.pppCtrl:
                 if (curMode != modeUp) {
                     break;
@@ -1558,6 +1561,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 break;
             case ifcPppMpls.ethTypM:
                 newProt = ifcPppMpls.pppDataM;
+                break;
+            case ifcPppMpls.ethTypB:
+                newProt = ifcPppMpls.pppDataB;
                 break;
             default:
                 cntr.drop(pck, counter.reasons.badEthTyp);

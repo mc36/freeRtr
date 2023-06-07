@@ -22,6 +22,11 @@ public class ifcPppMpls extends ifcPppNcp {
     public final static int ethTypM = ipMpls.typeM;
 
     /**
+     * ethertype (bier)
+     */
+    public final static int ethTypB = ipMpls.typeB;
+
+    /**
      * ppp name
      */
     public final static String pppName = "mplscp";
@@ -35,6 +40,11 @@ public class ifcPppMpls extends ifcPppNcp {
      * ppp data type (multicast)
      */
     public final static int pppDataM = 0x0283;
+
+    /**
+     * ppp data type (bier)
+     */
+    public final static int pppDataB = 0x0284;
 
     /**
      * ppp control type

@@ -143,9 +143,9 @@ public class ipMpls implements ifcUp {
     public boolean security;
 
     /**
-     * send bier in layer2
+     * send with this ethertype
      */
-    public boolean bierL2;
+    public int ethtyp = ipMpls.typeU;
 
     /**
      * ingress acl
@@ -231,6 +231,8 @@ public class ipMpls implements ifcUp {
      * register to ethtyp
      */
     public void register2eth() {
+        fwdE.addET(typeB, "mplsBer", this);
+        fwdE.updateET(typeB, this);
         fwdE.addET(typeM, "mplsMlt", this);
         fwdE.updateET(typeM, this);
         fwdE.addET(typeU, "mplsUni", this);
@@ -241,6 +243,7 @@ public class ipMpls implements ifcUp {
      * unregister from ethtyp
      */
     public void unregister2eth() {
+        fwdE.delET(typeB);
         fwdE.delET(typeM);
         fwdE.delET(typeU);
     }
@@ -650,6 +653,7 @@ public class ipMpls implements ifcUp {
         switch (ethTyp) {
             case typeU:
             case typeM:
+            case typeB:
                 break;
             default:
                 cntr.drop(pck, counter.reasons.badEthTyp);

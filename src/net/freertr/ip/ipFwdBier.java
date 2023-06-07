@@ -114,6 +114,7 @@ public class ipFwdBier {
         switch (orig.ETHtype) {
             case ipMpls.typeU:
             case ipMpls.typeM:
+            case ipMpls.typeB:
                 prt = ipMpls.bierLabD;
                 break;
             case ipIfc4.type:

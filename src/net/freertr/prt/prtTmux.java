@@ -192,6 +192,7 @@ public class prtTmux implements ipPrt, ifcDn {
         switch (i) {
             case ipMpls.typeU:
             case ipMpls.typeM:
+            case ipMpls.typeB:
                 return prtMplsIp.prot;
             case ipIfc4.type:
                 return ipCor4.protocolNumber;

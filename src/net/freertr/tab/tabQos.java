@@ -169,6 +169,7 @@ public class tabQos {
                 return ip4cor.parseIPheader(pck, true);
             case ipIfc6.type:
                 return ip6cor.parseIPheader(pck, true);
+            case ipMpls.typeB:
             case ipMpls.typeM:
             case ipMpls.typeU:
                 int i = pck.dataSize();
@@ -316,6 +317,7 @@ public class tabQos {
                 ip6cor.updateIPheader(pck, null, null, -1, o, i, p, -1);
                 pck.getSkip(-2);
                 return;
+            case ipMpls.typeB:
             case ipMpls.typeM:
             case ipMpls.typeU:
                 i = pck.MPLSexp;

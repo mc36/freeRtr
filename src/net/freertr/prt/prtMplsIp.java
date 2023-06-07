@@ -111,6 +111,7 @@ public class prtMplsIp implements ipPrt, ifcDn {
         switch (i) {
             case ipMpls.typeU:
             case ipMpls.typeM:
+            case ipMpls.typeB:
                 return false;
             case ipIfc4.type:
                 pck.MPLSlabel = ipMpls.labelExp4;
