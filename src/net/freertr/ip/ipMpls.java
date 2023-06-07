@@ -63,6 +63,11 @@ public class ipMpls implements ifcUp {
     public final static int typeM = 0x8848;
 
     /**
+     * bier ethertype
+     */
+    public final static int typeB = 0xab37;
+
+    /**
      * ipv4 explicit null
      */
     public final static int labelExp4 = 0;
@@ -136,6 +141,11 @@ public class ipMpls implements ifcUp {
      * label security
      */
     public boolean security;
+
+    /**
+     * send bier in layer2
+     */
+    public boolean bierL2;
 
     /**
      * ingress acl

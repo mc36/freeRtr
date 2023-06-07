@@ -1475,6 +1475,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mpls access-group-common-in",
         "interface .*! no mpls access-group-common-out",
         "interface .*! no mpls inspect",
+        "interface .*! no mpls bier-layer2",
         "interface .*! no mpls label-security",
         "interface .*! no mpls netflow-rx",
         "interface .*! no mpls netflow-tx",
@@ -6278,6 +6279,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, mpolkaPack == null, cmds.tabulator, "mpolka enable", a);
         cmds.cfgLine(l, mplsPack == null, cmds.tabulator, "mpls enable", "");
         if (mplsPack != null) {
+            cmds.cfgLine(l, !mplsPack.bierL2, cmds.tabulator, "mpls bier-layer2", "");
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
             cmds.cfgLine(l, !mplsPack.netflowRx, cmds.tabulator, "mpls netflow-rx", "");
             cmds.cfgLine(l, !mplsPack.netflowTx, cmds.tabulator, "mpls netflow-tx", "");
@@ -6779,6 +6781,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "5 .           <num>                 number of coefficients");
         l.add(null, "1 2   mpls                          multiprotocol label switching config commands");
         l.add(null, "2 .     enable                      enable/disable packet processing");
+        l.add(null, ".2 .     bier-layer2                send bier packets in layer2 mode");
         l.add(null, "2 .     label-security              enable/disable security checks");
         l.add(null, "2 .     netflow-rx                  netflow received packets");
         l.add(null, "2 .     netflow-tx                  netflow transmitted packets");
@@ -9519,6 +9522,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             mplsPack.inspect.startTimer();
             return;
         }
+        if (s.equals("bier-layer2")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.bierL2 = true;
+            return;
+        }
         if (s.equals("label-security")) {
             if (mplsPack == null) {
                 return;
@@ -9650,6 +9660,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             mplsPack.netflowTx = false;
+            return;
+        }
+        if (s.equals("bier-layer2")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.bierL2 = false;
             return;
         }
         if (s.equals("label-security")) {
