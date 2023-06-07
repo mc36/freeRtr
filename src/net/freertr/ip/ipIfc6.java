@@ -375,7 +375,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
             logger.info("protocol not enabled on " + lower);
             return;
         }
-        if (createETHheader(pck, nexthop, ipMpls.typeU)) {
+        if (createETHheader(pck, nexthop, mpls.ethtyp)) {
             cntr.drop(pck, counter.reasons.notInTab);
             return;
         }
