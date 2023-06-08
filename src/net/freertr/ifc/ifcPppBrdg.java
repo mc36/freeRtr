@@ -13,11 +13,6 @@ import net.freertr.enc.encTlv;
 public class ifcPppBrdg extends ifcPppNcp {
 
     /**
-     * ethertype
-     */
-    public final static int ethTyp = ifcBridge.serialType;
-
-    /**
      * ppp name
      */
     public final static String pppName = "bcp";
@@ -127,24 +122,6 @@ public class ifcPppBrdg extends ifcPppNcp {
      */
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    /**
-     * get data code
-     *
-     * @return code
-     */
-    public int getPPPdata() {
-        return pppData;
-    }
-
-    /**
-     * get ethertype
-     *
-     * @return ethertype
-     */
-    public int getPPPetyp() {
-        return ethTyp;
     }
 
     /**

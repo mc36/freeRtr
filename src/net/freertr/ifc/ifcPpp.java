@@ -20,7 +20,12 @@ import net.freertr.auth.autherPap;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.ip.ipIfc4;
+import net.freertr.ip.ipIfc6;
+import net.freertr.ip.ipMpls;
+import net.freertr.ipx.ipxIface;
 import net.freertr.pack.packHolder;
+import net.freertr.rtr.rtrIsis;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -1370,44 +1375,44 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         int newProt = -1;
         switch (prot) {
             case ifcPppMpls.pppDataU:
-                newProt = ifcPppMpls.ethTypU;
+                newProt = ipMpls.typeU;
                 break;
             case ifcPppIp4.pppData:
-                newProt = ifcPppIp4.ethTyp;
+                newProt = ipIfc4.type;
                 break;
             case ifcPppIp6.pppData:
-                newProt = ifcPppIp6.ethTyp;
+                newProt = ipIfc6.type;
                 break;
             case ifcPppBrdg.pppData:
                 ifcPppBrdg.patchPackRx(pck);
-                newProt = ifcPppBrdg.ethTyp;
+                newProt = ifcBridge.serialType;
                 break;
             case ifcPppOsi.pppData:
-                newProt = ifcPppOsi.ethTyp;
+                newProt = rtrIsis.ethTyp;
                 break;
             case ifcPppIpx.pppData:
-                newProt = ifcPppIpx.ethTyp;
+                newProt = ipxIface.type;
                 break;
             case ifcPppCrypt.pppData:
-                newProt = ifcPppCrypt.ethTyp;
+                newProt = ifcMacSec.ethtyp;
                 break;
             case ifcPppNsh.pppData:
-                newProt = ifcPppNsh.ethTyp;
+                newProt = ifcNshFwd.type;
                 break;
             case ifcPppSgt.pppData:
-                newProt = ifcPppSgt.ethTyp;
+                newProt = ifcSgt.type;
                 break;
             case ifcPppPolka.pppData:
-                newProt = ifcPppPolka.ethTyp;
+                newProt = ifcPolka.type;
                 break;
             case ifcPppMpolka.pppData:
-                newProt = ifcPppMpolka.ethTyp;
+                newProt = ifcMpolka.type;
                 break;
             case ifcPppMpls.pppDataM:
-                newProt = ifcPppMpls.ethTypM;
+                newProt = ipMpls.typeM;
                 break;
             case ifcPppMpls.pppDataB:
-                newProt = ifcPppMpls.ethTypB;
+                newProt = ipMpls.typeB;
                 break;
             case ifcPppIp4.pppCtrl:
                 if (curMode != modeUp) {
@@ -1525,44 +1530,44 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         pck.getSkip(2);
         int newProt = -1;
         switch (prot) {
-            case ifcPppMpls.ethTypU:
+            case ipMpls.typeU:
                 newProt = ifcPppMpls.pppDataU;
                 break;
-            case ifcPppIp4.ethTyp:
+            case ipIfc4.type:
                 newProt = ifcPppIp4.pppData;
                 break;
-            case ifcPppIp6.ethTyp:
+            case ipIfc6.type:
                 newProt = ifcPppIp6.pppData;
                 break;
-            case ifcPppBrdg.ethTyp:
+            case ifcBridge.serialType:
                 ifcPppBrdg.patchPackTx(pck);
                 newProt = ifcPppBrdg.pppData;
                 break;
-            case ifcPppOsi.ethTyp:
+            case rtrIsis.ethTyp:
                 newProt = ifcPppOsi.pppData;
                 break;
-            case ifcPppIpx.ethTyp:
+            case ipxIface.type:
                 newProt = ifcPppIpx.pppData;
                 break;
-            case ifcPppCrypt.ethTyp:
+            case ifcMacSec.ethtyp:
                 newProt = ifcPppCrypt.pppData;
                 break;
-            case ifcPppNsh.ethTyp:
+            case ifcNshFwd.type:
                 newProt = ifcPppNsh.pppData;
                 break;
-            case ifcPppSgt.ethTyp:
+            case ifcSgt.type:
                 newProt = ifcPppSgt.pppData;
                 break;
-            case ifcPppPolka.ethTyp:
+            case ifcPolka.type:
                 newProt = ifcPppPolka.pppData;
                 break;
-            case ifcPppMpolka.ethTyp:
+            case ifcMpolka.type:
                 newProt = ifcPppMpolka.pppData;
                 break;
-            case ifcPppMpls.ethTypM:
+            case ipMpls.typeM:
                 newProt = ifcPppMpls.pppDataM;
                 break;
-            case ifcPppMpls.ethTypB:
+            case ipMpls.typeB:
                 newProt = ifcPppMpls.pppDataB;
                 break;
             default:

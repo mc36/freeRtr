@@ -11,11 +11,6 @@ import net.freertr.enc.encTlv;
 public class ifcPppPolka extends ifcPppNcp {
 
     /**
-     * ethertype
-     */
-    public final static int ethTyp = ifcPolka.type;
-
-    /**
      * ppp name
      */
     public final static String pppName = "polkacp";
@@ -55,24 +50,6 @@ public class ifcPppPolka extends ifcPppNcp {
      */
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    /**
-     * get data code
-     *
-     * @return code
-     */
-    public int getPPPdata() {
-        return pppData;
-    }
-
-    /**
-     * get ethertype
-     *
-     * @return ethertype
-     */
-    public int getPPPetyp() {
-        return ethTyp;
     }
 
     /**

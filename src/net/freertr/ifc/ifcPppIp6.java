@@ -1,7 +1,6 @@
 package net.freertr.ifc;
 
 import net.freertr.addr.addrEui;
-import net.freertr.ip.ipIfc6;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
 import net.freertr.enc.encTlv;
@@ -22,11 +21,6 @@ public class ifcPppIp6 extends ifcPppNcp {
      * peer address, null=negotiated
      */
     public addrEui remAddrCur;
-
-    /**
-     * ethertype
-     */
-    public final static int ethTyp = ipIfc6.type;
 
     /**
      * ppp name
@@ -68,14 +62,6 @@ public class ifcPppIp6 extends ifcPppNcp {
 
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    public int getPPPdata() {
-        return pppData;
-    }
-
-    public int getPPPetyp() {
-        return ethTyp;
     }
 
     public void clearState() {

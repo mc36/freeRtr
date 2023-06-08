@@ -14884,3 +14884,7 @@ no todo: bier in layer2, rfc8296 ethertype 0xab37
 ---------------------------------- 2023-06-07 19:21:04 23.6.7
 qc pass: mpls over multicast ethertype
 qc pass: mpls over bier ethertype
+---------------------------------- 2023-06-08 00:36:45 23.6.8
+todo: interface to have ipv4 dhcp-static knobs
+---------------------------------- 2023-06-08 05:47:23 23.6.8
+no todo: ping to have ip flags settable like  rfc3514

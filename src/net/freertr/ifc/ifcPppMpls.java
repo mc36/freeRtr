@@ -12,21 +12,6 @@ import net.freertr.enc.encTlv;
 public class ifcPppMpls extends ifcPppNcp {
 
     /**
-     * ethertype (unicast)
-     */
-    public final static int ethTypU = ipMpls.typeU;
-
-    /**
-     * ethertype (multicast)
-     */
-    public final static int ethTypM = ipMpls.typeM;
-
-    /**
-     * ethertype (bier)
-     */
-    public final static int ethTypB = ipMpls.typeB;
-
-    /**
      * ppp name
      */
     public final static String pppName = "mplscp";
@@ -76,24 +61,6 @@ public class ifcPppMpls extends ifcPppNcp {
      */
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    /**
-     * get data code
-     *
-     * @return code
-     */
-    public int getPPPdata() {
-        return pppDataU;
-    }
-
-    /**
-     * get ethertype
-     *
-     * @return ethertype
-     */
-    public int getPPPetyp() {
-        return ethTypU;
     }
 
     /**

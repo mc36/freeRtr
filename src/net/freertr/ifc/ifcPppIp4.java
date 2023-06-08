@@ -1,7 +1,6 @@
 package net.freertr.ifc;
 
 import net.freertr.addr.addrIPv4;
-import net.freertr.ip.ipIfc4;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
 import net.freertr.enc.encTlv;
@@ -12,11 +11,6 @@ import net.freertr.enc.encTlv;
  * @author matecsaba
  */
 public class ifcPppIp4 extends ifcPppNcp {
-
-    /**
-     * ethertype
-     */
-    public final static int ethTyp = ipIfc4.type;
 
     /**
      * ppp name
@@ -123,24 +117,6 @@ public class ifcPppIp4 extends ifcPppNcp {
      */
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    /**
-     * get data code
-     *
-     * @return code
-     */
-    public int getPPPdata() {
-        return pppData;
-    }
-
-    /**
-     * get ethertype
-     *
-     * @return ethertype
-     */
-    public int getPPPetyp() {
-        return ethTyp;
     }
 
     /**

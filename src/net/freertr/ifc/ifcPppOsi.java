@@ -1,7 +1,6 @@
 package net.freertr.ifc;
 
 import net.freertr.pack.packHolder;
-import net.freertr.rtr.rtrIsis;
 import net.freertr.enc.encTlv;
 
 /**
@@ -10,11 +9,6 @@ import net.freertr.enc.encTlv;
  * @author matecsaba
  */
 public class ifcPppOsi extends ifcPppNcp {
-
-    /**
-     * ethertype
-     */
-    public final static int ethTyp = rtrIsis.ethTyp;
 
     /**
      * ppp name
@@ -56,24 +50,6 @@ public class ifcPppOsi extends ifcPppNcp {
      */
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    /**
-     * get data code
-     *
-     * @return code
-     */
-    public int getPPPdata() {
-        return pppData;
-    }
-
-    /**
-     * get ethertype
-     *
-     * @return ethertype
-     */
-    public int getPPPetyp() {
-        return ethTyp;
     }
 
     /**

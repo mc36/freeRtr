@@ -1,6 +1,6 @@
-last config change by to the end knob
+interface to have ipv4 dhcp-static knobs
 
-ping to have ip flags settable like  rfc3514
+last config change by to the end knob
 
 sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 

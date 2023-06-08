@@ -646,20 +646,6 @@ public abstract class ifcPppNcp {
     public abstract int getPPPctrl();
 
     /**
-     * get ppp data code
-     *
-     * @return value
-     */
-    public abstract int getPPPdata();
-
-    /**
-     * get ethertype
-     *
-     * @return value
-     */
-    public abstract int getPPPetyp();
-
-    /**
      * clear state of ncp
      */
     public abstract void clearState();

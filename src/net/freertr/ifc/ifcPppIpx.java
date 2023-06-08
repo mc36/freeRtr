@@ -1,6 +1,5 @@
 package net.freertr.ifc;
 
-import net.freertr.ipx.ipxIface;
 import net.freertr.pack.packHolder;
 import net.freertr.enc.encTlv;
 
@@ -10,11 +9,6 @@ import net.freertr.enc.encTlv;
  * @author matecsaba
  */
 public class ifcPppIpx extends ifcPppNcp {
-
-    /**
-     * ethertype
-     */
-    public final static int ethTyp = ipxIface.type;
 
     /**
      * ppp name
@@ -46,14 +40,6 @@ public class ifcPppIpx extends ifcPppNcp {
 
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    public int getPPPdata() {
-        return pppData;
-    }
-
-    public int getPPPetyp() {
-        return ethTyp;
     }
 
     public void clearState() {

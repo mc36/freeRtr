@@ -11,11 +11,6 @@ import net.freertr.enc.encTlv;
 public class ifcPppCrypt extends ifcPppNcp {
 
     /**
-     * ethertype
-     */
-    public final static int ethTyp = ifcMacSec.ethtyp;
-
-    /**
      * ppp name
      */
     public final static String pppName = "ecp";
@@ -45,14 +40,6 @@ public class ifcPppCrypt extends ifcPppNcp {
 
     public int getPPPctrl() {
         return pppCtrl;
-    }
-
-    public int getPPPdata() {
-        return pppData;
-    }
-
-    public int getPPPetyp() {
-        return ethTyp;
     }
 
     public void clearState() {
