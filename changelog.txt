@@ -14888,3 +14888,6 @@ qc pass: mpls over bier ethertype
 todo: interface to have ipv4 dhcp-static knobs
 ---------------------------------- 2023-06-08 05:47:23 23.6.8
 no todo: ping to have ip flags settable like  rfc3514
+---------------------------------- 2023-06-08 18:20:03 23.6.8
+no todo: p4lang interpreter like interface xxxx / p4lang asdf.p4
+todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
