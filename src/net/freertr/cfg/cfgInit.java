@@ -569,13 +569,14 @@ public class cfgInit implements Runnable {
                 int loc = bits.str2num(cmd.word());
                 String peer = cmd.word();
                 int rem = bits.str2num(cmd.word());
-                int thrd = bits.str2num(cmd.word());
+                s = cmd.word();
+                int thrd = bits.str2num(s);
                 ifcUdpInt hdr = new ifcUdpInt(loop, loc, peer, rem, mac,
                         typ != tabRouteIface.ifaceType.ether, stat == 1);
                 switch (stat) {
                     case 2:
                         hdr.booter = true;
-                        prtRedun.ifcAdd(nam, hdr, cmd.getRemaining());
+                        prtRedun.ifcAdd(nam, hdr, s);
                         break;
                     case 3:
                         hdr.booter = true;

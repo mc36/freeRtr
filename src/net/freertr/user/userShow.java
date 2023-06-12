@@ -96,6 +96,7 @@ import net.freertr.serv.servStreamingMdt;
 import net.freertr.serv.servVxlan;
 import net.freertr.enc.enc7bit;
 import net.freertr.enc.encUrl;
+import net.freertr.pack.packRedundancy;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -470,6 +471,14 @@ public class userShow {
             }
             if (a.equals("description")) {
                 rdr.putStrTab(prtRedun.doShowDescr());
+                return null;
+            }
+            if (a.equals("core")) {
+                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnCore));
+                return null;
+            }
+            if (a.equals("config")) {
+                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnStart));
                 return null;
             }
             return null;

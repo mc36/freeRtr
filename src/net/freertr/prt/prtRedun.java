@@ -1,5 +1,6 @@
 package net.freertr.prt;
 
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,13 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcThread;
 import net.freertr.ifc.ifcUp;
+import net.freertr.util.cmds;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packRedundancy;
 import net.freertr.pipe.pipeSide;
 import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
+import net.freertr.user.userUpgrade;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
@@ -109,6 +112,35 @@ public class prtRedun implements Runnable {
             l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.descr);
         }
         return l;
+    }
+
+    /**
+     * generate show output
+     *
+     * @return output
+     */
+    public static userFormat doShowHash(String fn) {
+        userFormat l = new userFormat("|", "iface|reach|state|hash");
+        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + getFileHash(wireName2fileName(fn)));
+        for (int i = 0; i < ifaces.size(); i++) {
+            prtRedunIfc ifc = ifaces.get(i);
+            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.doHash(fn));
+        }
+        return l;
+    }
+
+    public static String getFileHash(String fn) {
+        if (fn == null) {
+            return cmds.comment + "invalid filename";
+        }
+        if (!new File(fn).exists()) {
+            return cmds.comment + "file not found";
+        }
+        String a = userUpgrade.calcFileHash(fn);
+        if (a != null) {
+            return a;
+        }
+        return cmds.comment + "got no hash";
     }
 
     /**
@@ -272,6 +304,8 @@ class prtRedunIfc implements ifcUp {
 
     public String descr;
 
+    public String lastFileHash;
+
     public final syncInt reach = new syncInt(0);
 
     public packRedundancy last = new packRedundancy();
@@ -418,6 +452,22 @@ class prtRedunIfc implements ifcUp {
             userFlash.delete(filNm);
             doAck(-3);
             break;
+            case packRedundancy.typSumReq:
+                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+                b = prtRedun.wireName2fileName(a);
+                logger.info("hash file " + a + " as " + b);
+                b = prtRedun.getFileHash(b);
+                if (b.startsWith(cmds.comment)) {
+                    b = b.substring(1, b.length());
+                    logger.info(b);
+                }
+                pck.clear();
+                pck.putAsciiZ(0, 512, b, 0);
+                doPack(packRedundancy.typSumVal, pck);
+                break;
+            case packRedundancy.typSumVal:
+                lastFileHash = pck.getAsciiZ(0, 1024, 0);
+                break;
         }
     }
 
@@ -453,6 +503,25 @@ class prtRedunIfc implements ifcUp {
         }
         logger.error("peer does not respond");
         return true;
+    }
+
+    public String doHash(String fn) {
+        lastFileHash = null;
+        packHolder pck = new packHolder(true, true);
+        pck.putAsciiZ(0, 512, fn, 0);
+        doPack(packRedundancy.typSumReq, pck);
+        for (int i = 0; i < 10; i++) {
+            bits.sleep(cfgAll.redundancyKeep / 10);
+            if (lastFileHash != null) {
+                break;
+            }
+        }
+        if (lastFileHash == null) {
+            return "timeout getting hash";
+        }
+        String a = lastFileHash;
+        lastFileHash = null;
+        return a;
     }
 
     public boolean doFile(String fn, String rfn) {
