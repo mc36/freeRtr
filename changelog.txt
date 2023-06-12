@@ -14905,3 +14905,6 @@ no todo: hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-n
 ---------------------------------- 2023-06-12 14:11:51 23.6.12
 no todo: show redundancy link to run cdp/lldp/whatever????
 no todo: show redundancy to run cdp/lldp/whatever that fits like ipv46,arp/nd/why-not-more then a new video about that
+---------------------------------- 2023-06-12 14:42:47 23.6.12
+no todo: clearredundancy <cr> ! to accept config download
+no todo: test redundancy <prio>

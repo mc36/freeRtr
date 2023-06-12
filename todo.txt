@@ -167,8 +167,6 @@ client cidr-colorize in the generated show *configs
 client http-user-agent <anything>
 client tls randomize version if a range configured
 java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
-test redundancy <prio>
-clearredundancy <cr> ! to accept config download
 alias with regexps to ios regexps, steal cache from *ec* and idea from **
 alias to have config aliases
 under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob

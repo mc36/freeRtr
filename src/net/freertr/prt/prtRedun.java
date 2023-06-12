@@ -89,10 +89,10 @@ public class prtRedun implements Runnable {
      *
      * @return list
      */
-    public static List<String> getIfaces() {
+    public static List<String> getIfacesLst() {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < ifaces.size(); i++) {
-            res.add(ifaces.get(i).name);
+            res.add("3 5" + ifaces.get(i).name);
         }
         return res;
     }
@@ -182,7 +182,17 @@ public class prtRedun implements Runnable {
         if (fnd == null) {
             return true;
         }
-        return fnd.doPrio(pri);
+        if (fnd.doPrio(pri)) {
+            return true;
+        }
+        if (pri < cfgInit.redunPrio) {
+            return false;
+        }
+        if (state != packRedundancy.statActive) {
+            return false;
+        }
+        cfgInit.stopRouter(true, 14, "priority change");
+        return false;
     }
 
     /**
@@ -515,6 +525,7 @@ class prtRedunIfc implements ifcUp {
                 break;
             case packRedundancy.typSetPri:
                 cfgInit.redunPrio = pck.msbGetD(0);
+                logger.info("priority changed to " + cfgInit.redunPrio);
                 doAck(-5);
                 break;
         }
