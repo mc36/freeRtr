@@ -14919,3 +14919,6 @@ no todo: (resolved at 1.1.1.1 or/and 2.2.2.2) <!--------------------------------
 no todo: (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
 no todo: received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
 todo: server smtp / tag messages by subject
+---------------------------------- 2023-06-12 15:45:23 23.6.12
+no todo: terminal asname-lookup
+no todo: interface to have ipv4 dhcp-static knobs
