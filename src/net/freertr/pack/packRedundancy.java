@@ -64,6 +64,11 @@ public class packRedundancy {
     public static final int typSumVal = 8;
 
     /**
+     * set priority
+     */
+    public static final int typSetPri = 9;
+
+    /**
      * config file
      */
     public static final String fnStart = "config";
@@ -152,6 +157,8 @@ public class packRedundancy {
                 return "sumReq";
             case typSumVal:
                 return "sumVal";
+            case typSetPri:
+                return "setPri";
             default:
                 return "unknown=" + i;
         }

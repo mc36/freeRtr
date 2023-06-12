@@ -14902,3 +14902,6 @@ no todo: vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asd
 no todo: show redundancy to display the config checksum
 no todo: show redundancy to display the parent-name from hw-cfg.... :)
 no todo: hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+---------------------------------- 2023-06-12 14:11:51 23.6.12
+no todo: show redundancy link to run cdp/lldp/whatever????
+no todo: show redundancy to run cdp/lldp/whatever that fits like ipv46,arp/nd/why-not-more then a new video about that

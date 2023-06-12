@@ -58,6 +58,7 @@ import net.freertr.tab.tabRouteAttr;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.enc.encXml;
+import net.freertr.prt.prtRedun;
 import net.freertr.rtr.rtrRiftIface;
 import net.freertr.util.logger;
 import net.freertr.util.version;
@@ -110,6 +111,11 @@ public class userClear {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.clear, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("redundancy")) {
+            a = cmd.word();
+            cmd.error(userExec.doneFail(prtRedun.setPrio(a, bits.str2num(cmd.word()))));
+            return null;
         }
         if (a.equals("errors")) {
             File[] fls = userFlash.dirList(version.getRWpath());

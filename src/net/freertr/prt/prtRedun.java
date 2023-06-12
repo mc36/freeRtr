@@ -85,6 +85,19 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * get list of interfaces
+     *
+     * @return list
+     */
+    public static List<String> getIfaces() {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < ifaces.size(); i++) {
+            res.add(ifaces.get(i).name);
+        }
+        return res;
+    }
+
+    /**
      * generate show output
      *
      * @return output
@@ -148,6 +161,28 @@ public class prtRedun implements Runnable {
             return a;
         }
         return cmds.comment + "got no hash";
+    }
+
+    /**
+     * set peer priority
+     *
+     * @param ifc name of interface
+     * @param pri priority to use
+     * @return true on error, false on success
+     */
+    public static boolean setPrio(String ifc, int pri) {
+        prtRedunIfc fnd = null;
+        for (int i = 0; i < ifaces.size(); i++) {
+            prtRedunIfc cur = ifaces.get(i);
+            if (!cur.name.equals(ifc)) {
+                continue;
+            }
+            fnd = cur;
+        }
+        if (fnd == null) {
+            return true;
+        }
+        return fnd.doPrio(pri);
     }
 
     /**
@@ -478,6 +513,10 @@ class prtRedunIfc implements ifcUp {
             case packRedundancy.typSumVal:
                 lastFileHash = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
                 break;
+            case packRedundancy.typSetPri:
+                cfgInit.redunPrio = pck.msbGetD(0);
+                doAck(-5);
+                break;
         }
     }
 
@@ -533,6 +572,16 @@ class prtRedunIfc implements ifcUp {
         String a = lastFileHash;
         lastFileHash = null;
         return a;
+    }
+
+    public boolean doPrio(int pri) {
+        packHolder pck = new packHolder(true, true);
+        pck.msbPutD(0, pri);
+        pck.putSkip(4);
+        if (doRetry(packRedundancy.typSetPri, pck)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean doFile(String fn, String rfn) {
