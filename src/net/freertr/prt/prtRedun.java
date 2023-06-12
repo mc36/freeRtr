@@ -117,6 +117,7 @@ public class prtRedun implements Runnable {
     /**
      * generate show output
      *
+     * @param fn filename
      * @return output
      */
     public static userFormat doShowHash(String fn) {
@@ -129,6 +130,12 @@ public class prtRedun implements Runnable {
         return l;
     }
 
+    /**
+     * get file hash
+     *
+     * @param fn filename
+     * @return hash or comment started error
+     */
     public static String getFileHash(String fn) {
         if (fn == null) {
             return cmds.comment + "invalid filename";
@@ -148,6 +155,7 @@ public class prtRedun implements Runnable {
      *
      * @param name name of interface
      * @param thrd interface thread handler
+     * @param desc description
      */
     public static void ifcAdd(String name, ifcThread thrd, String desc) {
         prtRedunIfc ifc = new prtRedunIfc();
@@ -462,11 +470,12 @@ class prtRedunIfc implements ifcUp {
                     logger.info(b);
                 }
                 pck.clear();
-                pck.putAsciiZ(0, 512, b, 0);
+                pck.putAsciiZ(0, packRedundancy.dataMax, b, 0);
+                pck.putSkip(packRedundancy.dataMax);
                 doPack(packRedundancy.typSumVal, pck);
                 break;
             case packRedundancy.typSumVal:
-                lastFileHash = pck.getAsciiZ(0, 1024, 0);
+                lastFileHash = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
                 break;
         }
     }
@@ -508,7 +517,8 @@ class prtRedunIfc implements ifcUp {
     public String doHash(String fn) {
         lastFileHash = null;
         packHolder pck = new packHolder(true, true);
-        pck.putAsciiZ(0, 512, fn, 0);
+        pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
+        pck.putSkip(packRedundancy.dataMax);
         doPack(packRedundancy.typSumReq, pck);
         for (int i = 0; i < 10; i++) {
             bits.sleep(cfgAll.redundancyKeep / 10);

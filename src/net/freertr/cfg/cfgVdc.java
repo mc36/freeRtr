@@ -235,17 +235,17 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      * restart time
      */
     public long restartT;
-    
+
     private pipeShell proc;
-    
+
     private pipeSide pipe;
-    
+
     private String cfgBase;
-    
+
     private boolean need2run;
-    
+
     private final static int stopPrio = -9;
-    
+
     private final static int defPrio = 0;
 
     /**
@@ -289,11 +289,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      * defaults filter
      */
     public static tabGen<userFilter> defaultF;
-    
+
     public int compare(cfgVdc o1, cfgVdc o2) {
         return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
     }
-    
+
     public String toString() {
         return "vdc " + name;
     }
@@ -377,7 +377,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         ntry.peer.conns.del(ntry);
     }
-    
+
     public void getHelp(userHelping l) {
         l.add(null, "1  2,.    description                description of this vdc");
         l.add(null, "2  2,.      [text]                   text describing this vdc");
@@ -459,7 +459,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "1  2      log-collect                collect console activity");
         l.add(null, "2  .        <num>                    lines to store");
     }
-    
+
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("vdc definition " + name);
@@ -519,7 +519,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         return userFilter.filterText(l, defaultF);
     }
-    
+
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
         if (a.equals("rename")) {
@@ -923,11 +923,11 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         cmd.badCmd();
     }
-    
+
     public String getPrompt() {
         return "vdc";
     }
-    
+
     public void run() {
         for (;;) {
             if (!cfgInit.booting) {
@@ -961,7 +961,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             logger.info("stopped vdc " + name);
         }
     }
-    
+
     private synchronized void doRound() {
         if (time != null) {
             if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
@@ -1113,7 +1113,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public void setRespawn(boolean res) {
         respawn = res;
     }
-    
+
     private void addParam(List<String> l, String typ, String val) {
         if (val == null) {
             return;
@@ -1223,19 +1223,19 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
     public String getShow() {
         return name + "|" + restartC + "|" + pipeShell.info(proc) + "|" + bits.timePast(restartT) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3);
     }
-    
+
 }
 
 class cfgVdcTcp implements Comparator<cfgVdcTcp> {
-    
+
     public int portH;
-    
+
     public String vrf;
-    
+
     public int portV;
-    
+
     public addrIP adr;
-    
+
     public int compare(cfgVdcTcp o1, cfgVdcTcp o2) {
         if (o1.portH < o2.portH) {
             return -1;
@@ -1245,7 +1245,7 @@ class cfgVdcTcp implements Comparator<cfgVdcTcp> {
         }
         return 0;
     }
-    
+
     public String toString() {
         String a = portH + " " + vrf + " " + portV;
         if (adr == null) {
@@ -1253,17 +1253,17 @@ class cfgVdcTcp implements Comparator<cfgVdcTcp> {
         }
         return a + " " + adr;
     }
-    
+
 }
 
 class cfgVdcPci implements Comparator<cfgVdcPci> {
-    
+
     public int bus;
-    
+
     public int dev;
-    
+
     public int fnc;
-    
+
     public int compare(cfgVdcPci o1, cfgVdcPci o2) {
         if (o1.bus < o2.bus) {
             return -1;
@@ -1285,19 +1285,19 @@ class cfgVdcPci implements Comparator<cfgVdcPci> {
         }
         return 0;
     }
-    
+
     public String toString() {
         return bus + " " + dev + " " + fnc;
     }
-    
+
 }
 
 class cfgVdcUsb implements Comparator<cfgVdcUsb> {
-    
+
     public int bus;
-    
+
     public int prt;
-    
+
     public int compare(cfgVdcUsb o1, cfgVdcUsb o2) {
         if (o1.bus < o2.bus) {
             return -1;
@@ -1313,9 +1313,9 @@ class cfgVdcUsb implements Comparator<cfgVdcUsb> {
         }
         return 0;
     }
-    
+
     public String toString() {
         return bus + " " + prt;
     }
-    
+
 }
