@@ -14895,3 +14895,10 @@ todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr ov
 no todo: redundancy prio from rtr-hw.txt
 no todo: clear redundancy <cr> ! to accept config download
 no todo: under vdc * / redundancy parent-name from cfgall.hostname :)
+---------------------------------- 2023-06-12 13:18:51 23.6.12
+no todo: show redundancy to display the parent-name from hw-cfg....
+no todo: under vdc * and redundancy, parent-name from cfgall.hostname
+no todo: vdc definition, redundancy hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
+no todo: show redundancy to display the config checksum
+no todo: show redundancy to display the parent-name from hw-cfg.... :)
+no todo: hw.cfg int asdfasfsadasd redun .... desc asdfasfads instead of parent-name
