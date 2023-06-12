@@ -3219,7 +3219,6 @@ todo: bgp stuff more tests for rfc9234
 todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 todo: show whowas from bmp mrt archive
 todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
-todo: misc/player: Exception in thread "main" java.lang.NullPointerException: Cannot invoke "playerLyric.size()" because "<parameter2>" is null/    at playerSong.txt2pls(playerSong.java:142)/at findSongs.main(findSongs.java:62)
 todo: server http xxx to log better the class exceptions as errors
 todo: bgp to have at least show ipv46 bgp 66666 description
 todo: traffic through bgp sr-policy
@@ -3234,7 +3233,6 @@ todo: 1     - process id
 todo: 66666 - process id - as asdf
 todo: <num> - process id
 todo: vrf definition to have route consistency check
-todo: info ifcSgt.doDecode:ifcSgt.java:104 bad type (86dd) --- okk but where? :) on sdn123.123? right? :)
 todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
 todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
@@ -3265,11 +3263,9 @@ todo: client buggy-trigger <trigger>
 todo: client log-boot to be emailed error.log
 todo: client upgrade-force url
 todo: client upgrade-simulate url
-todo: client cidr-notation in the generated show *configs
 todo: client cidr-colorize in the generated show *configs
 todo: client http-user-agent <anything>
 todo: client tls randomize version if a range configured
-todo: java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
 todo: alias with regexps to ios regexps, steal cache from *ec* and idea from **
 todo: alias to have config aliases
 todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
@@ -3279,7 +3275,6 @@ todo: flash xxxxxx from the misc/mailer shitload like the http server classes kn
 todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
 todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
-todo: java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/
 todo: inter xxx / macrandomize
 todo: sho run check/track
 todo: server http / host * custom-header knob
