@@ -3259,15 +3259,7 @@ todo: "no " --> cmds.negated   <!-----------------------------------------------
 todo: same for upgrade-cli  <!-----------------------------------------------------------------------
 todo: client hide-secrets  <!------------------------------------------------------------------------
 todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
-todo: received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
-todo: (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
-todo: (resolved at 1.1.1.1 or/and 2.2.2.2) <!-------------------------------------------------------
-todo: by 217.61.xxx.xxx (helo vpn.nop.hu) <!--------------------------------------------------------
-todo: (envelope-from fzzdw@rrbl78.rhcontrolecomercial.com) with smtp (freeRouter v23.xxx) <!--------
-todo: for gyujto@nop.hu ; Thu, 18 May 2023 06:xxx <!------------------------------------------------
-todo: server smtp / collect-failures <!-----------------------------------------------------------------
-todo: server smtp / check reverse of the sender and put the info to received field <!-------------------
-todo: server smtp / tag messages by subject<!-----------------------------------------------------------
+todo: server smtp / tag messages by subject
 todo: server smtp / collect-failures
 todo: server smtp / check reverse of the sender and put the info to received field...
 todo: server smtp / auto-reply editor/text/etc

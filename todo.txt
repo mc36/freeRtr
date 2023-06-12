@@ -144,15 +144,7 @@ some more .equals("no") to cmds.negated conversions like   <!-------------------
    same for upgrade-cli  <!-----------------------------------------------------------------------
    client hide-secrets  <!------------------------------------------------------------------------
 cmds.not2vdc  <!----------------------------------------------------------------------------------
-received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
-    (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
-    (resolved at 1.1.1.1 or/and 2.2.2.2) <!-------------------------------------------------------
-    by 217.61.xxx.xxx (helo vpn.nop.hu) <!--------------------------------------------------------
-    (envelope-from fzzdw@rrbl78.rhcontrolecomercial.com) with smtp (freeRouter v23.xxx) <!--------
-    for gyujto@nop.hu ; Thu, 18 May 2023 06:xxx <!------------------------------------------------
-server smtp / collect-failures <!-----------------------------------------------------------------
-server smtp / check reverse of the sender and put the info to received field <!-------------------
-server smtp / tag messages by subject<!-----------------------------------------------------------
+server smtp / tag messages by subject
 server smtp / collect-failures
 server smtp / check reverse of the sender and put the info to received field...
 server smtp / auto-reply editor/text/etc
@@ -250,7 +242,6 @@ more userLine fun like alias-text, alias-regexp, much like under checks
 more server quote fun like cleanups, randomizers, loggers, anything
 more server http fun like cleanups, randomizers, loggers, anything
 more server smtp fun like cleanups, randomizers, loggers, anything
-
 more server dns fun like cleanups, randomizers, loggers, anything
 server dns to have iname support as a tricker cname like ip46a already
 more server fun like cleanups, randomizers, loggers, anything

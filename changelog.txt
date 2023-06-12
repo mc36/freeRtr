@@ -14908,3 +14908,14 @@ no todo: show redundancy to run cdp/lldp/whatever that fits like ipv46,arp/nd/wh
 ---------------------------------- 2023-06-12 14:42:47 23.6.12
 no todo: clearredundancy <cr> ! to accept config download
 no todo: test redundancy <prio>
+---------------------------------- 2023-06-12 15:01:45 23.6.12
+no todo: server smtp / tag messages by subject<!-----------------------------------------------------------
+no todo: server smtp / check reverse of the sender and put the info to received field <!-------------------
+no todo: server smtp / collect-failures <!-----------------------------------------------------------------
+no todo: for gyujto@nop.hu ; Thu, 18 May 2023 06:xxx <!------------------------------------------------
+no todo: (envelope-from fzzdw@rrbl78.rhcontrolecomercial.com) with smtp (freeRouter v23.xxx) <!--------
+no todo: by 217.61.xxx.xxx (helo vpn.nop.hu) <!--------------------------------------------------------
+no todo: (resolved at 1.1.1.1 or/and 2.2.2.2) <!-------------------------------------------------------
+no todo: (with reverse as fmfwd03.freexxx) <!----------------------------------------------------------
+no todo: received: from 46.107.16.xxx (helo fmfwd03.freexxx) <!--------------------------------------------
+todo: server smtp / tag messages by subject

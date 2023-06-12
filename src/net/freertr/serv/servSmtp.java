@@ -968,6 +968,9 @@ class servSmtpDoer implements Runnable {
             hdrA.clear();
             long tim = bits.getTime();
             hdrA.add("Received: from " + conn.peerAddr + " (helo " + helo + ")");
+            clntDns dnsCln = new clntDns();
+            dnsCln.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(conn.peerAddr), false, packDnsRec.typePTR);
+            hdrA.add("    (reverse as " + dnsCln.getPTR() + ")");
             hdrA.add("    by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ")");
             hdrA.add("    (envelope-from " + src + ") with smtp (" + version.namVer + ")");
             hdrA.add("    for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 4));
