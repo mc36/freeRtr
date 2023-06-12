@@ -1179,10 +1179,15 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         for (int i = 0; i < locals.size(); i++) {
             cfgVdcIfc ntry = locals.get(i);
             String a = "";
+            String b = "";
             if (ntry.redundancy) {
+                cfgIfc curr = cfgAll.ifcFind(ntry.name, 0);
+                if (curr != null) {
+                    b = " " + curr.description;
+                }
                 a = " red";
             }
-            l.add("int " + ntry.name + a + " " + ntry.name.substring(0, 3) + " " + mac + " 127.0.0.1 " + (ntry.port + 1) + " 127.0.0.1 " + ntry.port);
+            l.add("int " + ntry.name + a + " " + ntry.name.substring(0, 3) + " " + mac + " 127.0.0.1 " + (ntry.port + 1) + " 127.0.0.1 " + ntry.port + b);
             mac.setAdd(mac, one);
         }
         for (int i = 0; i < conns.size(); i++) {

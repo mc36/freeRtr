@@ -463,7 +463,15 @@ public class userShow {
             return null;
         }
         if (a.equals("redundancy")) {
-            rdr.putStrTab(prtRedun.doShow());
+            a = cmd.word();
+            if (a.equals("status")) {
+                rdr.putStrTab(prtRedun.doShowStatus());
+                return null;
+            }
+            if (a.equals("description")) {
+                rdr.putStrTab(prtRedun.doShowDescr());
+                return null;
+            }
             return null;
         }
         if (a.equals("asn-cache")) {

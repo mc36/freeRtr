@@ -575,7 +575,7 @@ public class cfgInit implements Runnable {
                 switch (stat) {
                     case 2:
                         hdr.booter = true;
-                        prtRedun.ifcAdd(nam, hdr);
+                        prtRedun.ifcAdd(nam, hdr, cmd.getRemaining());
                         break;
                     case 3:
                         hdr.booter = true;

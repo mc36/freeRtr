@@ -54,6 +54,11 @@ public class packRedundancy {
     public static final int typFilEnd = 6;
 
     /**
+     * file checksum
+     */
+    public static final int typFilSum = 7;
+
+    /**
      * config file
      */
     public static final String fnStart = "config";
@@ -138,6 +143,8 @@ public class packRedundancy {
                 return "filDat";
             case typFilEnd:
                 return "filEnd";
+            case typFilSum:
+                return "filSum";
             default:
                 return "unknown=" + i;
         }

@@ -86,7 +86,7 @@ public class prtRedun implements Runnable {
      *
      * @return output
      */
-    public static userFormat doShow() {
+    public static userFormat doShowStatus() {
         userFormat l = new userFormat("|", "iface|reach|state|prio|uptime|magic|heard");
         l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|" + magic + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
@@ -97,14 +97,29 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * generate show output
+     *
+     * @return output
+     */
+    public static userFormat doShowDescr() {
+        userFormat l = new userFormat("|", "iface|reach|state|descr");
+        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.prntNam);
+        for (int i = 0; i < ifaces.size(); i++) {
+            prtRedunIfc ifc = ifaces.get(i);
+            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.descr);
+        }
+        return l;
+    }
+
+    /**
      * add one physical interface
      *
      * @param name name of interface
      * @param thrd interface thread handler
      */
-    public static void ifcAdd(String name, ifcThread thrd) {
+    public static void ifcAdd(String name, ifcThread thrd, String desc) {
         prtRedunIfc ifc = new prtRedunIfc();
-        ifc.doInit(name, thrd);
+        ifc.doInit(name, thrd, desc);
         ifaces.add(ifc);
     }
 
@@ -223,6 +238,22 @@ public class prtRedun implements Runnable {
         }
     }
 
+    /**
+     * convert wire name to file name
+     *
+     * @param s wire name
+     * @return file name
+     */
+    public static String wireName2fileName(String s) {
+        if (s.equals(packRedundancy.fnCore)) {
+            return version.getFileName();
+        }
+        if (s.equals(packRedundancy.fnStart)) {
+            return cfgInit.cfgFileSw;
+        }
+        return null;
+    }
+
 }
 
 class prtRedunIfc implements ifcUp {
@@ -238,6 +269,8 @@ class prtRedunIfc implements ifcUp {
     private String filNm;
 
     public String name;
+
+    public String descr;
 
     public final syncInt reach = new syncInt(0);
 
@@ -255,7 +288,7 @@ class prtRedunIfc implements ifcUp {
         return "" + name;
     }
 
-    public void doInit(String nam, ifcThread thrd) {
+    public void doInit(String nam, ifcThread thrd, String desc) {
         reach.set(0);
         name = nam;
         lower = thrd;
@@ -375,14 +408,8 @@ class prtRedunIfc implements ifcUp {
             }
             filRx = null;
             a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
-            String b = null;
-            logger.info("received file " + a);
-            if (a.equals(packRedundancy.fnCore)) {
-                b = version.getFileName();
-            }
-            if (a.equals(packRedundancy.fnStart)) {
-                b = cfgInit.cfgFileSw;
-            }
+            String b = prtRedun.wireName2fileName(a);
+            logger.info("received file " + a + " as " + b);
             if (b == null) {
                 logger.error("got invalid filename");
                 break;

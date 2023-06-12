@@ -1015,7 +1015,9 @@ public class userExec {
         hl.add(null, "3 4,.      cpu                   internal router threads");
         hl.add(null, "4 .          <num>               thread id");
         hl.add(null, "3 .        external              external processes");
-        hl.add(null, "2 .      redundancy              redundancy information");
+        hl.add(null, "2 3      redundancy              redundancy information");
+        hl.add(null, "3 .        status                current status");
+        hl.add(null, "3 .        description           interface description");
         hl.add(null, "2 .      name-cache              local dns cache");
         hl.add(null, "2 .      asn-cache               local asn cache");
         hl.add(null, "2 3      watchdog                watchdog information");
