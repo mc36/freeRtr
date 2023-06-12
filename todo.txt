@@ -1,5 +1,3 @@
-last config change by to the end knob
-
 sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 
 p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
@@ -75,7 +73,6 @@ show whowas from bmp mrt archive
 
 show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
 
-misc/player: Exception in thread "main" java.lang.NullPointerException: Cannot invoke "playerLyric.size()" because "<parameter2>" is null/    at playerSong.txt2pls(playerSong.java:142)/at findSongs.main(findSongs.java:62)
 server http xxx to log better the class exceptions as errors
 
 
@@ -99,8 +96,6 @@ noti#show ipv4 bgp ?
 
 
 vrf definition to have route consistency check
-
-info ifcSgt.doDecode:ifcSgt.java:104 bad type (86dd) --- okk but where? :) on sdn123.123? right? :)
 
 
 
@@ -150,11 +145,9 @@ client buggy-trigger <trigger>
 client log-boot to be emailed error.log
 client upgrade-force url
 client upgrade-simulate url
-client cidr-notation in the generated show *configs
 client cidr-colorize in the generated show *configs
 client http-user-agent <anything>
 client tls randomize version if a range configured
-java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:Net.java:-2/sun.nio.ch.Net.bind:Net.java:549/sun.nio.ch.Net.bind:Net.java:538/sun.nio.ch.NioSocketImpl.bind:NioSocketImpl.java:631/java.net.ServerSocket.bind:ServerSocket.java:391/java.net.ServerSocket.bind:ServerSocket.java:342/prtLocTcp.<init>:prtLocTcp.java:60/prtLocTcp.startServer:prtLocTcp.java:78/cfgInit.executeHWcommands:cfgInit.java:438/cfgInit.doInit:cfgInit.java:965/cfgInit.doMain:cfgInit.java:1213/router.main:router.java:24/
 alias with regexps to ios regexps, steal cache from *ec* and idea from **
 alias to have config aliases
 under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
@@ -165,7 +158,6 @@ flash overlap-clear should happen once one finds a nice and easy use-case for th
 rtr-hw to have tcp2linux and vrf2linux knobs
 
 test todo knob as an editor but in the running-config
-java.lang.ArrayIndexOutOfBoundsException: Index 31 out of bounds for length 30 at bits.byteCopy:bits.java:469/packRadius.passwdEncrypt:packRadius.java:2645/packRadius.createPacket:packRadius.java:2396/clntRadius.doXchg:clntRadius.java:125/clntRadius.doPap:clntRadius.java:68/authRadius.authUserPass:authRadius.java:153/servHttpConn.checkUserAuth:servHttpConn.java:1021/servHttpConn.serveRequest:servHttpConn.java:1524/servHttpConn.run:servHttpConn.java:1887/java.lang.Thread.run:Thread.java:1623/ 
 inter xxx / macrandomize
 sho run check/track
 server http / host * custom-header knob

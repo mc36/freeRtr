@@ -100,6 +100,7 @@ import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
+import net.freertr.user.userLine;
 import net.freertr.user.userReload;
 import net.freertr.user.userUpgrade;
 import net.freertr.util.bits;
@@ -3811,6 +3812,9 @@ public class cfgAll {
         if ((endForm & 0x4) != 0) {
             a += " chksum";
         }
+        if ((endForm & 0x8) != 0) {
+            a += " user";
+        }
         cmds.cfgLine(l, endForm == 0, "", "client end-format", a.trim());
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -3956,13 +3960,16 @@ public class cfgAll {
         l.addAll(getGlobalRunEnd(filter));
         String s = "";
         if ((endForm & 0x1) != 0) {
-            s += " date=" + bits.time2str(timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3).replaceAll(" ", "_");
+            s += " date=" + bits.time2str(timeZoneName, bits.getTime() + timeServerOffset, 3).replaceAll(" ", "_");
         }
         if ((endForm & 0x2) != 0) {
             s += " image=" + version.usrAgnt;
         }
         if ((endForm & 0x4) != 0) {
             s += " chksum=" + userUpgrade.calcTextHash(l);
+        }
+        if ((endForm & 0x8) != 0) {
+            s += " user=" + userLine.prevConfiger.replaceAll(" ", "_");
         }
         l.add("end" + s);
         return l;

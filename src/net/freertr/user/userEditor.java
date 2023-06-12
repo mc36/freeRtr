@@ -520,6 +520,12 @@ public class userEditor {
         if (readOnly) {
             return;
         }
+        if (lastFind == null) {
+            return;
+        }
+        if (lastRepl == null) {
+            return;
+        }
         String a = lastFind.toLowerCase();
         for (int i = curY + 1; i < buffer.size(); i++) {
             String b = buffer.get(i);
@@ -537,6 +543,9 @@ public class userEditor {
     }
 
     private void doKeyF3() {
+        if (lastFind == null) {
+            return;
+        }
         String a = lastFind.toLowerCase();
         for (int i = curY + 1; i < buffer.size(); i++) {
             int o = buffer.get(i).toLowerCase().indexOf(a);

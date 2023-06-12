@@ -546,6 +546,7 @@ public class userConfig {
         l.add(null, "3  3,.    date                       append date");
         l.add(null, "3  3,.    image                      append image");
         l.add(null, "3  3,.    chksum                     append chksum");
+        l.add(null, "3  3,.    user                       append user");
         l.add(null, "3  3,.    none                       append nothing");
         l.add(null, "2  3    whois-server                 set whois server");
         l.add(null, "3  .      <str>                      server name");
@@ -1422,6 +1423,10 @@ public class userConfig {
                     }
                     if (a.equals("chksum")) {
                         cfgAll.endForm |= 0x4;
+                        continue;
+                    }
+                    if (a.equals("user")) {
+                        cfgAll.endForm |= 0x8;
                         continue;
                     }
                     if (a.equals("none")) {

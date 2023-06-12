@@ -17,9 +17,14 @@ public class ifcSgt {
 
     /**
      * create instance
+     *
+     * @param et handler
      */
-    public ifcSgt() {
+    public ifcSgt(ifcEthTyp et) {
+        upper = et;
     }
+
+    private final ifcEthTyp upper;
 
     /**
      * optional value
@@ -101,7 +106,7 @@ public class ifcSgt {
         int typ = pck.msbGetW(0);
         if (typ != type) {
             if (optional < 0) {
-                logger.info("bad type (" + bits.toHexW(typ) + ")" );
+                logger.info("bad type (" + bits.toHexW(typ) + ") on " + upper);
                 return true;
             }
             pck.SGTid = optional;

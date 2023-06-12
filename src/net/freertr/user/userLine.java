@@ -227,6 +227,11 @@ public class userLine {
     protected static final tabGen<userLineHandler> loggedUsers = new tabGen<userLineHandler>();
 
     /**
+     * previous configure
+     */
+    public static String prevConfiger = "<bootup>";
+
+    /**
      * previous user
      */
     protected static String prevUserGlb = "you are the first on this box";
@@ -833,6 +838,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
                 break;
         }
         String s = user.user + " from " + remote + " at " + logger.getTimestamp();
+        userLine.prevConfiger = s;
         userLine.prevUserGlb = s;
         parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);

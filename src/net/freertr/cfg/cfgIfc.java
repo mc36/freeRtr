@@ -7508,7 +7508,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     ethtyp.sgtHnd = null;
                     return;
                 }
-                ethtyp.sgtHnd = new ifcSgt();
+                ethtyp.sgtHnd = new ifcSgt(ethtyp);
                 return;
             }
             if (a.equals("assign")) {
