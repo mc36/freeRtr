@@ -189,6 +189,11 @@ public class cfgInit implements Runnable {
     public static String hwSnNum;
 
     /**
+     * hostname of parent
+     */
+    public static String prntNam;
+
+    /**
      * jvm parameters
      */
     public static String jvmParam = "";
@@ -391,6 +396,10 @@ public class cfgInit implements Runnable {
             }
             if (s.equals("hwsn")) {
                 hwSnNum = cmd.getRemaining();
+                continue;
+            }
+            if (s.equals("prnt")) {
+                prntNam = cmd.getRemaining();
                 continue;
             }
             if (s.equals("jvm")) {

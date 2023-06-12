@@ -14891,3 +14891,7 @@ no todo: ping to have ip flags settable like  rfc3514
 ---------------------------------- 2023-06-08 18:20:03 23.6.8
 no todo: p4lang interpreter like interface xxxx / p4lang asdf.p4
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
+---------------------------------- 2023-06-12 09:13:53 23.6.12
+no todo: redundancy prio from rtr-hw.txt
+no todo: clear redundancy <cr> ! to accept config download
+no todo: under vdc * / redundancy parent-name from cfgall.hostname :)

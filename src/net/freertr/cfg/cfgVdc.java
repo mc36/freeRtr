@@ -1135,6 +1135,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("hwid " + cfgInit.hwIdNum + "-" + name);
         l.add("hwsn " + uuidValue);
+        l.add("prnt " + cfgAll.hostName);
         l.add("rwpath " + version.getRWpath());
         if (!priviledged) {
             l.add("limited");
