@@ -14952,3 +14952,7 @@ todo: vrf definition to have route consistency check between the bgp peers
 no todo: l2tp3 to the dataplanes :)
 todo: l2tp3 to the dataplanes as it is for l2tp2 :)
 todo: icmptunnel to the dataplanes with a valid req-rep if possible :)
+---------------------------------- 2023-06-13 21:51:07 23.6.13
+todo: server http xxx style xxxx deduplicate on add!!!!
+todo: p4lang api: export-copp to have a vrf id, then to the dataplanes asapp, where easily applicable
+todo: server smtp / have a show-queue list at least

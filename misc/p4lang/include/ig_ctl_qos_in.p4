@@ -104,10 +104,10 @@ ig_md.sec_grp_id:
     }
 
     apply {
-        if (ig_md.ipv4_valid==1)  {
+        if (hdr.ipv4.isValid() && (ig_md.ipv4_valid==1))  {
             tbl_ipv4_qos.apply();
         }
-        if (ig_md.ipv6_valid==1)  {
+        if (hdr.ipv6.isValid() && (ig_md.ipv6_valid==1))  {
             tbl_ipv6_qos.apply();
         }
     }

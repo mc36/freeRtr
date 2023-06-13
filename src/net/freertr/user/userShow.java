@@ -484,6 +484,15 @@ public class userShow {
             }
             return null;
         }
+        if (a.equals("as-name")) {
+            long tim = bits.getTime();
+            a = cmd.word();
+            int i = bits.str2num(a);
+            a = clntWhois.asn2name(i, true);
+            tim = bits.getTime() - tim;
+            rdr.putStrArr(bits.str2lst("just queried asn " + i + " is " + a + " in " + tim + " ms"));
+            return null;
+        }
         if (a.equals("asn-cache")) {
             rdr.putStrTab(clntWhois.showLocalCache());
             return null;

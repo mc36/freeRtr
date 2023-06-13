@@ -109,14 +109,14 @@ neigh:
 
     apply {
 
-        if (ig_md.ipv4_valid!=1) return;
-
-        mode = 0;
-        tbl_port_verify.apply();
-        if (mode==0) return;
-
         port = 0;
         neigh = 0;
+        mode = 0;
+
+        if (ig_md.ipv4_valid!=1) return;
+
+        tbl_port_verify.apply();
+        if (mode==0) return;
 
         tbl_ipv4_fib_lpm.apply();
         if ((neigh==0)&&(port==0)) act_set_drop();

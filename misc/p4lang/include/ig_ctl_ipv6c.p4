@@ -110,16 +110,16 @@ neigh:
 
     apply {
 
+        port = 0;
+        neigh = 0;
+        mode = 0;
+
         if (ig_md.ipv6_valid!=1) return;
 
         if (((hdr.ipv6.src_addr >> 112) & 0xffff) == 0xfe80) return;
 
-        mode = 0;
         tbl_port_verify.apply();
         if (mode==0) return;
-
-        port = 0;
-        neigh = 0;
 
         tbl_ipv6_fib_lpm.apply();
         if ((neigh==0)&&(port==0)) act_set_drop();
