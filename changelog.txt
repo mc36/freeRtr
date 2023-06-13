@@ -14948,3 +14948,7 @@ todo: route-map --> route-policy converter
 todo: route-map <-- route-policy converter
 todo: tabbable line asfadsasd exec autocommand at least
 todo: vrf definition to have route consistency check between the bgp peers
+---------------------------------- 2023-06-13 17:11:57 23.6.13
+no todo: l2tp3 to the dataplanes :)
+todo: l2tp3 to the dataplanes as it is for l2tp2 :)
+todo: icmptunnel to the dataplanes with a valid req-rep if possible :)
