@@ -14935,3 +14935,5 @@ todo: tester to configure console0 exec timestamp and logging millis
 ---------------------------------- 2023-06-13 11:09:39 23.6.13
 no todo: introduce risky stuffs as flash or even just as show like curl show url etc commands
 todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
+---------------------------------- 2023-06-13 11:36:49 23.6.13
+no todo: curl cli knob

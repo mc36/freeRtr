@@ -24,6 +24,7 @@ import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVdc;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntCurl;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntPorts;
 import net.freertr.clnt.clntProxy;
@@ -991,10 +992,10 @@ public class userExec {
             hl.add(null, "2 3,.    disk                    flash information");
             hl.add(null, "3 3,.      [text]                directory to print");
             hl.add(null, "2 3      url                     download remote content");
-            hl.add(null, "3 3,.      [str]                 remote url to download");
+            hl.add(null, "3 3,.      <str>                 remote url to download");
         }
         hl.add(null, "2 3      whois                   query whois server");
-        hl.add(null, "3 3,.      [text]                directory to print");
+        hl.add(null, "3 3,.      <text>                directory to print");
         hl.add(null, "2 3      resolve                 query dns server");
         hl.add(null, "3 .        <addr>                name or address");
         hl.add(null, "2 3      transproxy              transparent proxy connections");
@@ -1665,6 +1666,8 @@ public class userExec {
         hl.add(null, "2 .      <num>                        milliseconds for sleep");
         hl.add(null, "1 2    echo                           print out a line");
         hl.add(null, "2 2,.    [str]                        string to write");
+        hl.add(null, "1 2    curl                           download content");
+        hl.add(null, "2 3,.    <str>                        url to download");
         hl.add(null, "1 2    whois                          perform whois query");
         hl.add(null, "2 3      <host>                       name of host to query");
         hl.add(null, "3 3,.      <text>                     query string");
@@ -2391,6 +2394,13 @@ public class userExec {
                 i = 1;
             }
             bits.sleep(i);
+            return cmdRes.command;
+        }
+        if (a.equals("curl")) {
+            a = cmd.getRemaining();
+            List<String> res = clntCurl.doGetUrl(pipe, a);
+            cmd.error(userExec.doneFail(res == null));
+            reader.putStrArr(res);
             return cmdRes.command;
         }
         if (a.equals("whois")) {

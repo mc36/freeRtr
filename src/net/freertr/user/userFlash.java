@@ -126,9 +126,6 @@ public class userFlash {
             a = cmd.getRemaining();
             List<String> res = clntCurl.doGetUrl(pip, a);
             cmd.error(userExec.doneFail(res == null));
-            if (res == null) {
-                return null;
-            }
             rdr.putStrArr(res);
             return null;
         }

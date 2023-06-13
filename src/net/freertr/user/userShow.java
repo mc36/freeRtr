@@ -518,9 +518,6 @@ public class userShow {
             a = cmd.getRemaining();
             List<String> res = clntCurl.doGetUrl(cmd.pipe, a);
             cmd.error(userExec.doneFail(res == null));
-            if (res == null) {
-                return null;
-            }
             rdr.putStrArr(res);
             return null;
         }
