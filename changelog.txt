@@ -14932,3 +14932,6 @@ no todo: info ifcSgt.doDecode:ifcSgt.java:104 bad type (86dd) --- okk but where?
 no todo: misc/player: Exception in thread "main" java.lang.NullPointerException: Cannot invoke "playerLyric.size()" because "<parameter2>" is null/    at playerSong.txt2pls(playerSong.java:142)/at findSongs.main(findSongs.java:62)
 ---------------------------------- 2023-06-13 08:53:11 23.6.13
 todo: tester to configure console0 exec timestamp and logging millis
+---------------------------------- 2023-06-13 11:09:39 23.6.13
+no todo: introduce risky stuffs as flash or even just as show like curl show url etc commands
+todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental

@@ -3197,6 +3197,7 @@ qc pass: udp forwarder server
 todo: tester to configure console0 exec timestamp and logging millis
 todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
+todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
 todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
@@ -3227,7 +3228,6 @@ todo: traffic through bgp nsh
 todo: policy from bgp rpd
 todo: flash install as whole zip loadables
 todo: client auto-save-on-upgrade flash network archive
-todo: introduce risky stuffs as flash or even just as show like curl show url etc commands
 todo: tabbable line asfadsasd exec autocommand at least :)
 todo: noti#show ipv4 bgp ?
 todo: 1     - process id
