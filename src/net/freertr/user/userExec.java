@@ -990,6 +990,8 @@ public class userExec {
             hl.add(null, "3 3,.      [text]                directory to print");
             hl.add(null, "2 3,.    disk                    flash information");
             hl.add(null, "3 3,.      [text]                directory to print");
+            hl.add(null, "2 3      url                     download remote content");
+            hl.add(null, "3 3,.      [str]                 remote url to download");
         }
         hl.add(null, "2 3      whois                   query whois server");
         hl.add(null, "3 3,.      [text]                directory to print");
@@ -1874,7 +1876,7 @@ public class userExec {
         hl.add(null, "2 3      receive                      receive file from network");
         hl.add(null, "3 4        <file>                     target file");
         hl.add(null, "4 4,.        <url>                    source url");
-        hl.add(null, "2 3      show                         display one file from network");
+        hl.add(null, "2 3      urlshow                      display one file from network");
         hl.add(null, "3 3,.      <url>                      source url");
         hl.add(null, "2 3      transmit                     send file to network");
         hl.add(null, "3 4        <file>                     source file");

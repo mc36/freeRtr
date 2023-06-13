@@ -38,6 +38,7 @@ import net.freertr.cfg.cfgVdc;
 import net.freertr.cfg.cfgVdcIfc;
 import net.freertr.cfg.cfgVpdn;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntCurl;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntNetflow;
 import net.freertr.clnt.clntWhois;
@@ -511,6 +512,16 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(res.toUserStr(" ", "", false));
+            return null;
+        }
+        if (a.equals("url")) {
+            a = cmd.getRemaining();
+            List<String> res = clntCurl.doGetUrl(cmd.pipe, a);
+            cmd.error(userExec.doneFail(res == null));
+            if (res == null) {
+                return null;
+            }
+            rdr.putStrArr(res);
             return null;
         }
         if (a.equals("whois")) {

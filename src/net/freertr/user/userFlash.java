@@ -122,7 +122,7 @@ public class userFlash {
             cmd.error(userExec.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true)));
             return null;
         }
-        if (a.equals("show")) {
+        if (a.equals("urlshow")) {
             a = cmd.getRemaining();
             List<String> res = clntCurl.doGetUrl(pip, a);
             cmd.error(userExec.doneFail(res == null));
