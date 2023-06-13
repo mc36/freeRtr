@@ -3194,6 +3194,9 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: l2tp3 to the dataplanes :)
+todo: route-map --> route-policy converter
+todo: route-map <-- route-policy converter
 todo: tester to configure console0 exec timestamp and logging millis
 todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
@@ -3201,8 +3204,6 @@ todo: flowspec-divert knob to bgp, but think this twice at least and mark as exp
 todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
-todo: route-map <--> route-policy converter
-todo: icmptunnel and l2tp3 to the dataplanes :)
 todo: player: disable volume in multicast streamer mode
 todo: disable playlist loading in multicast receiver mode
 todo: ctrl+l/r to try to redetect the screen resolution
@@ -3211,7 +3212,6 @@ todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cl
 todo: configure diff to have chance to change the sho config-differences
 todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
 todo: display asdfsdfas | asciinema <--- same as | pastebin....
-todo: client irc
 todo: server security to have settable tls version from client knob first
 todo: server security to log the transactions
 todo: server security to stick to the good protocols
@@ -3223,17 +3223,17 @@ todo: show whowas from bmp mrt archive
 todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
 todo: server http xxx to log better the class exceptions as errors
 todo: bgp to have at least show ipv46 bgp 66666 description
+todo: noti#show ipv4 bgp ?
+todo: 1     - process id
+todo: 66666 - process id - as asdf
+todo: <num> - process id
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: policy from bgp rpd
 todo: flash install as whole zip loadables
 todo: client auto-save-on-upgrade flash network archive
-todo: tabbable line asfadsasd exec autocommand at least :)
-todo: noti#show ipv4 bgp ?
-todo: 1     - process id
-todo: 66666 - process id - as asdf
-todo: <num> - process id
-todo: vrf definition to have route consistency check
+todo: tabbable line asfadsasd exec autocommand at least
+todo: vrf definition to have route consistency check between the bgp peers
 todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
 todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc

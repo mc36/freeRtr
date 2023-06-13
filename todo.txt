@@ -1,3 +1,11 @@
+l2tp3 to the dataplanes :)
+
+route-map --> route-policy converter
+
+route-map <-- route-policy converter
+
+
+
 tester to configure console0 exec timestamp and logging millis
 
 
@@ -20,11 +28,6 @@ bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with mac
 
 server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
 
-
-route-map <--> route-policy converter
-
-
-icmptunnel and l2tp3 to the dataplanes :)
 
 player: disable volume in multicast streamer mode
 
@@ -57,10 +60,7 @@ display asdfsdfas | asciinema <--- same as | pastebin....
 
 
 
-client irc
-
 server security to have settable tls version from client knob first
-
 
 server security to log the transactions
 
@@ -82,15 +82,6 @@ server http xxx to log better the class exceptions as errors
 
 
 bgp to have at least show ipv46 bgp 66666 description
-traffic through bgp sr-policy
-traffic through bgp nsh
-policy from bgp rpd
-
-flash install as whole zip loadables
-
-client auto-save-on-upgrade flash network archive
-
-tabbable line asfadsasd exec autocommand at least :)
 
 noti#show ipv4 bgp ?
   1     - process id
@@ -98,8 +89,20 @@ noti#show ipv4 bgp ?
   <num> - process id
 
 
-vrf definition to have route consistency check
+traffic through bgp sr-policy
 
+traffic through bgp nsh
+
+policy from bgp rpd
+
+flash install as whole zip loadables
+
+client auto-save-on-upgrade flash network archive
+
+tabbable line asfadsasd exec autocommand at least
+
+
+vrf definition to have route consistency check between the bgp peers
 
 
 vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config

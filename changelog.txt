@@ -14937,3 +14937,14 @@ no todo: introduce risky stuffs as flash or even just as show like curl show url
 todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
 ---------------------------------- 2023-06-13 11:36:49 23.6.13
 no todo: curl cli knob
+---------------------------------- 2023-06-13 15:46:08 23.6.13
+no todo: vrf definition to have route consistency check
+no todo: tabbable line asfadsasd exec autocommand at least :)
+no todo: client irc
+no todo: icmptunnel and l2tp3 to the dataplanes :)
+no todo: route-map <--> route-policy converter
+todo: l2tp3 to the dataplanes :)
+todo: route-map --> route-policy converter
+todo: route-map <-- route-policy converter
+todo: tabbable line asfadsasd exec autocommand at least
+todo: vrf definition to have route consistency check between the bgp peers
