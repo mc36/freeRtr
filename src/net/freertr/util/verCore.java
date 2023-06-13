@@ -92,7 +92,7 @@ public class verCore {
         "quote3: let bloom all the flowers",
         "quote4: type safety and origins like assembly",
         "quote5: care about the bits and not the bits of the bits",
-        "quote6: packet delivery on the wild-wild-net is kina best-effort",
+        "quote6: packet delivery on the wild-wild-net is best-effort, if any",
         "quote7: if a machine can learn the value of human life, maybe we can too",
         "quote8: be liberal in what you accept, and conservative in what you send",
         "quote9: the beer-ware license for selected group of people:",

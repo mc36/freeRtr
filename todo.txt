@@ -1,3 +1,6 @@
+tester to configure console0 exec timestamp and logging millis
+
+
 sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 
 p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter

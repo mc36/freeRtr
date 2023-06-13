@@ -14930,3 +14930,5 @@ no todo: java.net.BindException: Address already in use at sun.nio.ch.Net.bind0:
 no todo: client cidr-notation in the generated show *configs
 no todo: info ifcSgt.doDecode:ifcSgt.java:104 bad type (86dd) --- okk but where? :) on sdn123.123? right? :)
 no todo: misc/player: Exception in thread "main" java.lang.NullPointerException: Cannot invoke "playerLyric.size()" because "<parameter2>" is null/    at playerSong.txt2pls(playerSong.java:142)/at findSongs.main(findSongs.java:62)
+---------------------------------- 2023-06-13 08:53:11 23.6.13
+todo: tester to configure console0 exec timestamp and logging millis
