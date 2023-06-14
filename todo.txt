@@ -1,21 +1,24 @@
-menu remote asdf
+test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 
-tester to configure console0 exec timestamp and logging millis
+important protocols to be able to continue from the start at least on local, later within the vdc
+
+menu remote asdf
 
 onehit to all the menus
 
-server http xxx style xxxx deduplicate on add!!!!
-
-p4lang api: export-copp to have a vrf id, then to the dataplanes asapp, where easily applicable
+p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
 
 l2tp3 to the dataplanes as it is for l2tp2 :)
 
-icmptunnel to the dataplanes with a valid req-rep if possible :)
+icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
+
+sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre or icmptunnel
 
 route-map --> route-policy converter
 
 route-map <-- route-policy converter
 
+tcp redundancy through the redundancy link with the help of the main vdc's tcp stack as a pipe service... then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy the same way but with udp and ethertype, finally mpls ldp and rsvp and sr redundancy through the same way
 
 
 

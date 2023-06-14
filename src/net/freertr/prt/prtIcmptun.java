@@ -24,7 +24,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class prtIcmp implements ipPrt, ifcDn {
+public class prtIcmptun implements ipPrt, ifcDn {
 
     /**
      * adjust the payload size according the protocol
@@ -92,7 +92,7 @@ public class prtIcmp implements ipPrt, ifcDn {
      *
      * @param parent forwarder of encapsulated packets
      */
-    public prtIcmp(ipFwd parent) {
+    public prtIcmptun(ipFwd parent) {
         lower = parent;
         doInternals();
     }

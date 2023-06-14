@@ -28,7 +28,7 @@ import net.freertr.clnt.clntCurl;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntPorts;
 import net.freertr.clnt.clntProxy;
-import net.freertr.prt.prtTrace;
+import net.freertr.prt.prtTraceroute;
 import net.freertr.clnt.clntWhois;
 import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcNull;
@@ -57,7 +57,7 @@ import net.freertr.rtr.rtrBgpParam;
 import net.freertr.serv.servGenList;
 import net.freertr.serv.servGeneric;
 import net.freertr.enc.encUrl;
-import net.freertr.prt.prtIcmp;
+import net.freertr.prt.prtIcmptun;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
@@ -3393,7 +3393,7 @@ public class userExec {
         if (timeout < 1) {
             timeout = 1;
         }
-        prtTrace trc = new prtTrace();
+        prtTraceroute trc = new prtTraceroute();
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
@@ -3408,7 +3408,7 @@ public class userExec {
             src = ifc.getLocAddr(trg);
         }
         pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", flow=" + flow + ", len=" + len);
-        len -= prtIcmp.adjustSize(trg);
+        len -= prtIcmptun.adjustSize(trg);
         int none = 0;
         int ttl = 0;
         reader.keyFlush();
@@ -3587,7 +3587,7 @@ public class userExec {
         }
         ipFwd fwd = vrf.getFwd(trg);
         tabRouteEntry<addrIP> rou = fwd.actualU.route(trg);
-        prtTrace trc = new prtTrace();
+        prtTraceroute trc = new prtTraceroute();
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
@@ -3605,7 +3605,7 @@ public class userExec {
         if (rou != null) {
             pipe.linePut("via " + addrPrefix.ip2str(rou.prefix) + " " + rou.best.toShRoute().replaceAll("\\|", " "));
         }
-        len -= prtIcmp.adjustSize(trg);
+        len -= prtIcmptun.adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
             if (need2stop()) {
@@ -3738,7 +3738,7 @@ public class userExec {
             src = ifc.getLocAddr(strt);
         }
         pipe.linePut("scanning " + strt + ", src=" + src + ", vrf=" + vrf.name + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len + ", df=" + dntfrg + ", alrt=" + alrt);
-        len -= prtIcmp.adjustSize(strt);
+        len -= prtIcmptun.adjustSize(strt);
         for (;;) {
             if (need2stop()) {
                 break;
@@ -3938,7 +3938,7 @@ public class userExec {
         userExecStats tosS = new userExecStats(0, 256);
         long timBeg = bits.getTime();
         pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt + ", sweep=" + sweep + ", multi=" + multi);
-        size -= prtIcmp.adjustSize(trg);
+        size -= prtIcmptun.adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
                 size++;

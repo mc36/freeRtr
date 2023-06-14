@@ -2297,6 +2297,9 @@ class userTesterOne {
             if (telnet) {
                 cfg.add("vrf definition tester");
                 cfg.add(" exit");
+                cfg.add("console0");
+                cfg.add(" exec timestamp");
+                cfg.add(" exit");
                 cfg.add("server telnet tester");
                 cfg.add(" security protocol telnet");
                 cfg.add(" vrf tester");

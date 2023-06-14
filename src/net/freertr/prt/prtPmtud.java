@@ -108,7 +108,7 @@ public class prtPmtud {
      * succeeded happened
      */
     public int[] doer() {
-        int ovrh = prtIcmp.adjustSize(trg);
+        int ovrh = prtIcmptun.adjustSize(trg);
         pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", ovr=" + ovrh + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
         for (;;) {
             if (pip.isClosed() != 0) {

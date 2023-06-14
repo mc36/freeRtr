@@ -3194,15 +3194,18 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
+todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
-todo: tester to configure console0 exec timestamp and logging millis
 todo: onehit to all the menus
 todo: server http xxx style xxxx deduplicate on add!!!!
-todo: p4lang api: export-copp to have a vrf id, then to the dataplanes asapp, where easily applicable
+todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
 todo: l2tp3 to the dataplanes as it is for l2tp2 :)
-todo: icmptunnel to the dataplanes with a valid req-rep if possible :)
+todo: icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre or icmptunnel
 todo: route-map --> route-policy converter
 todo: route-map <-- route-policy converter
+todo: tcp redundancy through the redundancy link with the help of the main vdc's tcp stack as a pipe service... then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy the same way but with udp and ethertype, finally mpls ldp and rsvp and sr redundancy through the same way
 todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
 todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental

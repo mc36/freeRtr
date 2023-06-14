@@ -415,14 +415,21 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("style")) {
+            a = cmd.getRemaining();
             if (negated) {
-                ntry.style = null;
+                if (ntry.style == null) {
+                    return false;
+                }
+                ntry.style.remove(a);
                 return false;
             }
             if (ntry.style == null) {
                 ntry.style = new ArrayList<String>();
             }
-            ntry.style.add(cmd.getRemaining());
+            if (ntry.style.indexOf(a) >= 0) {
+                return false;
+            }
+            ntry.style.add(a);
             return false;
         }
         if (a.equals("redir")) {

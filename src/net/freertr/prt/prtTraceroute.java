@@ -19,12 +19,12 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class prtTrace implements prtServP, ipPrt {
+public class prtTraceroute implements prtServP, ipPrt {
 
     /**
      * create instance
      */
-    public prtTrace() {
+    public prtTraceroute() {
     }
 
     /**

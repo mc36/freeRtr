@@ -118,7 +118,7 @@ import net.freertr.pack.packPtp;
 import net.freertr.prt.prt6to4;
 import net.freertr.prt.prtAplusP;
 import net.freertr.prt.prtGre;
-import net.freertr.prt.prtIcmp;
+import net.freertr.prt.prtIcmptun;
 import net.freertr.prt.prtInlsp;
 import net.freertr.prt.prtIpIpTyp;
 import net.freertr.prt.prtIpcomp;
@@ -647,7 +647,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     /**
      * icmp tunnel handler
      */
-    public prtIcmp tunICMP;
+    public prtIcmptun tunICMP;
 
     /**
      * pim tunnel handler
@@ -4088,7 +4088,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 lower = tunAmt;
                 break;
             case icmp:
-                tunICMP = new prtIcmp(fwd);
+                tunICMP = new prtIcmptun(fwd);
                 tunICMP.setEndpoints(ifc, tunTrg);
                 tunICMP.setUpper(ethtyp);
                 tunICMP.sendingTOS = tunTOS;
