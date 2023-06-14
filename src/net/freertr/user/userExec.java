@@ -1985,8 +1985,6 @@ public class userExec {
         hl.add(null, ".4 5,.       <name:ifc>               name of interface");
         hl.add(null, ".5 5,.         ipv4                   specify ipv4 to use");
         hl.add(null, ".5 5,.         ipv6                   specify ipv6 to use");
-        hl.add(null, ".5 6           timeout                specify timeout");
-        hl.add(null, ".6 5,.           <num>                timeout in milliseconds");
         hl.add(null, ".5 6           delay                  specify delay between packets");
         hl.add(null, ".6 5,.           <num>                timeout in milliseconds");
         hl.add(null, ".5 6           repeat                 specify repeat count");

@@ -70,6 +70,7 @@ import net.freertr.serv.servGeneric;
 import net.freertr.serv.servP4lang;
 import net.freertr.enc.encUrl;
 import net.freertr.pack.packXotPad;
+import net.freertr.prt.prtArping;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
@@ -435,7 +436,6 @@ public class userPacket {
                 cmd.error("no such interface");
                 return null;
             }
-            int timeout = 1000;
             int repeat = 5;
             int proto = 0;
             int delay = 1000;
@@ -443,10 +443,6 @@ public class userPacket {
                 a = cmd.word();
                 if (a.length() < 1) {
                     break;
-                }
-                if (a.equals("timeout")) {
-                    timeout = bits.str2num(cmd.word());
-                    continue;
                 }
                 if (a.equals("delay")) {
                     delay = bits.str2num(cmd.word());
@@ -464,6 +460,9 @@ public class userPacket {
                     proto = 6;
                     continue;
                 }
+            }
+            if (delay < 1) {
+                delay = 1;
             }
             userTerminal trm = new userTerminal(cmd.pipe);
             addrIP trg = trm.resolveAddr(rem, proto);
@@ -488,21 +487,20 @@ public class userPacket {
             int sent = 0;
             int recv = 0;
             long timBeg = bits.getTime();
-            cmd.error("arpinging " + trg + ", src=" + ifc.name + ", cnt=" + repeat + ", tim=" + timeout + ", gap=" + delay);
+            cmd.error("arpinging " + trg + ", src=" + ifc.name + ", cnt=" + repeat + ", gap=" + delay);
+            prtArping ap = new prtArping(ipi, trg);
+            ap.delay = delay;
             for (int i = 0; i < repeat; i++) {
                 if (need2stop()) {
                     break;
                 }
                 sent++;
-                ipi.updateL2info(2, new addrMac(), trg);
-                ipi.createETHheader(new packHolder(true, true), trg, 0);
-                bits.sleep(delay);
-                addrType res = ipi.getL2info(trg);
-                if (res == null) {
+                addrType[] ress = ap.doRound();
+                if (ress == null) {
                     cmd.error("timeout");
                     continue;
                 }
-                cmd.error("reply from " + res);
+                cmd.error("reply from " + ress[1]);
                 recv++;
             }
             cmd.error("result=" + bits.percent(recv, sent) + "%, recv/sent/lost=" + recv + "/" + sent + "/" + (sent - recv) + ", took " + (bits.getTime() - timBeg));

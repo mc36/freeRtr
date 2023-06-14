@@ -14956,3 +14956,6 @@ todo: icmptunnel to the dataplanes with a valid req-rep if possible :)
 todo: server http xxx style xxxx deduplicate on add!!!!
 todo: p4lang api: export-copp to have a vrf id, then to the dataplanes asapp, where easily applicable
 todo: server smtp / have a show-queue list at least
+---------------------------------- 2023-06-14 03:21:14 23.6.14
+todo: onehit to all the menus
+todo: tabbable menu key/tui commands autocommand at least

@@ -3195,6 +3195,7 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: tester to configure console0 exec timestamp and logging millis
+todo: onehit to all the menus
 todo: server http xxx style xxxx deduplicate on add!!!!
 todo: p4lang api: export-copp to have a vrf id, then to the dataplanes asapp, where easily applicable
 todo: l2tp3 to the dataplanes as it is for l2tp2 :)
@@ -3236,6 +3237,7 @@ todo: policy from bgp rpd
 todo: flash install as whole zip loadables
 todo: client auto-save-on-upgrade flash network archive
 todo: tabbable line asfadsasd exec autocommand at least
+todo: tabbable menu key/tui commands autocommand at least
 todo: vrf definition to have route consistency check between the bgp peers
 todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
 todo: show config-xxx to have tabbables like routers servers etc
