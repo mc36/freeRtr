@@ -14971,3 +14971,5 @@ todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplane
 todo: icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
 todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre or icmptunnel
 todo: tcp redundancy through the redundancy link with the help of the main vdc's tcp stack as a pipe service... then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy the same way but with udp and ethertype, finally mpls ldp and rsvp and sr redundancy through the same way
+---------------------------------- 2023-06-14 12:36:33 23.6.14
+no todo: server http xxx style xxxx deduplicate on add!!!!
