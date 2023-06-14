@@ -104,29 +104,31 @@ public class prtPmtud {
     /**
      * do the process
      *
-     * @return value, -1 if error happened
+     * @return null if error, otherwise guessed overhead, then succeeded payload
+     * succeeded happened
      */
-    public int doer() {
-        pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
+    public int[] doer() {
+        int ovrh = prtIcmp.adjustSize(trg);
+        pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", ovr=" + ovrh + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
         for (;;) {
             if (pip.isClosed() != 0) {
                 pip.linePut("stopped");
-                return -1;
+                return null;
             }
             if (pip.ready2rx() > 0) {
                 pip.linePut("keypress");
-                return -1;
+                return null;
             }
             if ((max - min) < 2) {
                 break;
             }
             int mid = min + ((max - min) / 2);
             pip.strPut("trying (" + min + ".." + max + ") " + mid + " ");
-            int size = mid - prtIcmp.adjustSize(trg);
+            int size = mid - ovrh;
             ipFwdEcho ping = fwd.echoSendReq(src, trg, size, true, alrt, ttl, sgt, tos, flow, data, false);
             if (ping == null) {
                 pip.linePut("noroute");
-                return -1;
+                return null;
             }
             for (int i = 0; i < timediv; i++) {
                 if (ping.notif.totalNotifies() < 1) {
@@ -155,8 +157,11 @@ public class prtPmtud {
                 bits.sleep(delay);
             }
         }
-        pip.linePut("finished with min=" + min + " max=" + max + " last=" + last);
-        return last;
+        pip.linePut("finished with min=" + min + " max=" + max + " last=" + last + " guess=" + (last + ovrh));
+        int[] res = new int[2];
+        res[0] = ovrh;
+        res[1] = last;
+        return res;
     }
 
 }
