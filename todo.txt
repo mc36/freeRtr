@@ -1,3 +1,5 @@
+traceroute to generate the full line with routing protocols etc from mrt and friends
+
 test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 
 important protocols to be able to continue from the start at least on local, later within the vdc
@@ -18,7 +20,9 @@ route-map --> route-policy converter
 
 route-map <-- route-policy converter
 
-tcp redundancy through the redundancy link with the help of the main vdc's tcp stack as a pipe service... then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy the same way but with udp and ethertype, finally mpls ldp and rsvp and sr redundancy through the same way
+tcp redundancy through the redundancy link as table export and file sending before the switchover...
+
+then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 
 
 
