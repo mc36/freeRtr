@@ -3194,6 +3194,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: menu remote asdf
 todo: tester to configure console0 exec timestamp and logging millis
 todo: onehit to all the menus
 todo: server http xxx style xxxx deduplicate on add!!!!
