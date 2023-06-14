@@ -1,4 +1,4 @@
-package net.freertr.clnt;
+package net.freertr.prt;
 
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgIfc;
@@ -9,9 +9,6 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipPrt;
 import net.freertr.pack.packHolder;
-import net.freertr.prt.prtGenConn;
-import net.freertr.prt.prtServP;
-import net.freertr.prt.prtUdp;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.notifier;
@@ -22,12 +19,12 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class clntTrace implements prtServP, ipPrt {
+public class prtTrace implements prtServP, ipPrt {
 
     /**
      * create instance
      */
-    public clntTrace() {
+    public prtTrace() {
     }
 
     /**

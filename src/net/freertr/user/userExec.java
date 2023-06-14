@@ -28,7 +28,7 @@ import net.freertr.clnt.clntCurl;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntPorts;
 import net.freertr.clnt.clntProxy;
-import net.freertr.clnt.clntTrace;
+import net.freertr.prt.prtTrace;
 import net.freertr.clnt.clntWhois;
 import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcNull;
@@ -3393,7 +3393,7 @@ public class userExec {
         if (timeout < 1) {
             timeout = 1;
         }
-        clntTrace trc = new clntTrace();
+        prtTrace trc = new prtTrace();
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
@@ -3587,7 +3587,7 @@ public class userExec {
         }
         ipFwd fwd = vrf.getFwd(trg);
         tabRouteEntry<addrIP> rou = fwd.actualU.route(trg);
-        clntTrace trc = new clntTrace();
+        prtTrace trc = new prtTrace();
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
