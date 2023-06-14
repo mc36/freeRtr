@@ -2162,6 +2162,7 @@ class userTesterOne {
             boolean write = true;
             boolean telnet = true;
             boolean fancy = true;
+            boolean tstamp = true;
             boolean extra = false;
             boolean swcfg = false;
             String extcfg = null;
@@ -2214,6 +2215,14 @@ class userTesterOne {
                 }
                 if (s.equals("nofancy")) {
                     fancy = false;
+                    continue;
+                }
+                if (s.equals("tstamp")) {
+                    tstamp = true;
+                    continue;
+                }
+                if (s.equals("notstamp")) {
+                    tstamp = false;
                     continue;
                 }
                 if (s.equals("telnet")) {
@@ -2293,12 +2302,10 @@ class userTesterOne {
             bits.buf2txt(true, cfg, userTesterPrc.getLogName(prefix, slot, rn, 1));
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
+            cfg.add("logging milliseconds");
             cfg.add("logging file debug " + userTesterPrc.getLogName(prefix, slot, rn, 1));
             if (telnet) {
                 cfg.add("vrf definition tester");
-                cfg.add(" exit");
-                cfg.add("console0");
-                cfg.add(" exec timestamp");
                 cfg.add(" exit");
                 cfg.add("server telnet tester");
                 cfg.add(" security protocol telnet");
@@ -2389,6 +2396,9 @@ class userTesterOne {
             }
             if (fancy) {
                 p.putLine("terminal table fancy");
+            }
+            if (tstamp) {
+                p.putLine("terminal timestamps");
             }
             if (write) {
                 p.putLine("write");
