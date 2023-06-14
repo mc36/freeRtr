@@ -6,6 +6,8 @@ import net.freertr.addr.addrType;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
+import net.freertr.ip.ipCor4;
+import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipIcmp;
@@ -23,6 +25,20 @@ import net.freertr.util.state;
  * @author matecsaba
  */
 public class prtIcmp implements ipPrt, ifcDn {
+
+    /**
+     * adjust the payload size according the protocol
+     *
+     * @param adr address to check
+     * @return size bytes to subtract
+     */
+    public static int adjustSize(addrIP adr) {
+        if (adr.isIPv4()) {
+            return ipCor4.size + ipIcmp4.size;
+        } else {
+            return ipCor6.size + ipIcmp6.size;
+        }
+    }
 
     /**
      * sending ttl value, -1 means maps out

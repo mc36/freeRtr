@@ -8,6 +8,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.user.userExec;
 import net.freertr.user.userFlash;
 import net.freertr.util.bits;
+import net.freertr.util.cmds;
 import net.freertr.util.version;
 
 /**
@@ -36,7 +37,7 @@ public class clntCurl {
         userFlash.doReceive(p, encUrl.parseOne(u), new File(a), true);
         List<String> got = bits.txt2buf(a);
         userFlash.delete(a);
-        a = "result=" + userExec.doneFail(got == null);
+        a = "result=" + cmds.doneFail(got == null);
         p.linePut(a);
         return got;
     }

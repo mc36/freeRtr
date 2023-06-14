@@ -525,7 +525,7 @@ public class userShow {
         if (a.equals("url")) {
             a = cmd.getRemaining();
             List<String> res = clntCurl.doGetUrl(cmd.pipe, a);
-            cmd.error(userExec.doneFail(res == null));
+            cmd.error(cmds.doneFail(res == null));
             rdr.putStrArr(res);
             return null;
         }

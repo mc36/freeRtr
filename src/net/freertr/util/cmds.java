@@ -42,6 +42,20 @@ public class cmds {
     private final static String notvdc = "no in a vdc";
 
     /**
+     * get result text
+     *
+     * @param b status
+     * @return text
+     */
+    public static String doneFail(boolean b) {
+        if (b) {
+            return "failed";
+        } else {
+            return "success";
+        }
+    }
+
+    /**
      * pipe side to use
      */
     public pipeSide pipe;

@@ -322,7 +322,7 @@ public class userUpgrade {
      */
     public void doBackup() {
         String a = version.getFileName();
-        cons.debugStat(userExec.doneFail(userFlash.copy(a, a + bakExt, true)));
+        cons.debugStat(cmds.doneFail(userFlash.copy(a, a + bakExt, true)));
     }
 
     /**

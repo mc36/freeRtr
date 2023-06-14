@@ -90,7 +90,7 @@ public class userFlash {
             if (e.doEdit()) {
                 return null;
             }
-            cmd.error(userExec.doneFail(bits.buf2txt(true, b, a)));
+            cmd.error(cmds.doneFail(bits.buf2txt(true, b, a)));
             return null;
         }
         if (a.equals("viewer")) {
@@ -119,13 +119,13 @@ public class userFlash {
         }
         if (a.equals("receive")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true)));
+            cmd.error(cmds.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true)));
             return null;
         }
         if (a.equals("urlshow")) {
             a = cmd.getRemaining();
             List<String> res = clntCurl.doGetUrl(pip, a);
-            cmd.error(userExec.doneFail(res == null));
+            cmd.error(cmds.doneFail(res == null));
             rdr.putStrArr(res);
             return null;
         }
@@ -136,12 +136,12 @@ public class userFlash {
         }
         if (a.equals("archive")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(archive(a, cmd.word(), false)));
+            cmd.error(cmds.doneFail(archive(a, cmd.word(), false)));
             return null;
         }
         if (a.equals("extract")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(extract(a, cmd.word())));
+            cmd.error(cmds.doneFail(extract(a, cmd.word())));
             return null;
         }
         if (a.equals("hash")) {
@@ -210,20 +210,20 @@ public class userFlash {
         }
         if (a.equals("copy")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(copy(a, cmd.word(), false)));
+            cmd.error(cmds.doneFail(copy(a, cmd.word(), false)));
             return null;
         }
         if (a.equals("rename")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(rename(a, cmd.word(), false, false)));
+            cmd.error(cmds.doneFail(rename(a, cmd.word(), false, false)));
             return null;
         }
         if (a.equals("delete")) {
-            cmd.error(userExec.doneFail(delete(cmd.getRemaining())));
+            cmd.error(cmds.doneFail(delete(cmd.getRemaining())));
             return null;
         }
         if (a.equals("mkdir")) {
-            cmd.error(userExec.doneFail(mkdir(cmd.word())));
+            cmd.error(cmds.doneFail(mkdir(cmd.word())));
             return null;
         }
         if (a.equals("list")) {

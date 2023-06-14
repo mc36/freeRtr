@@ -1,5 +1,6 @@
 tester to configure console0 exec timestamp and logging millis
 
+onehit to all the menus
 
 server http xxx style xxxx deduplicate on add!!!!
 

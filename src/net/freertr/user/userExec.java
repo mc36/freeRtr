@@ -57,6 +57,7 @@ import net.freertr.rtr.rtrBgpParam;
 import net.freertr.serv.servGenList;
 import net.freertr.serv.servGeneric;
 import net.freertr.enc.encUrl;
+import net.freertr.prt.prtIcmp;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
@@ -1964,7 +1965,11 @@ public class userExec {
         hl.add(null, "4 5          data                     specify data to send");
         hl.add(null, "5 4,.          <num>                  payload byte");
         hl.add(null, "4 5          timeout                  specify timeout");
-        hl.add(null, "5 4,.          <num>                  timeout in milliseconds");
+        hl.add(null, "5 4,.          <num>                  time in milliseconds");
+        hl.add(null, "4 5          timediv                  specify time divider");
+        hl.add(null, "5 4,.          <num>                  time in milliseconds");
+        hl.add(null, "4 5          timemax                  specify maximum time");
+        hl.add(null, "5 4,.          <num>                  time in milliseconds");
         hl.add(null, "4 5          delay                    specify delay between packets");
         hl.add(null, "5 4,.          <num>                  timeout in milliseconds");
         hl.add(null, "4 5          ttl                      specify ttl value");
@@ -2401,7 +2406,7 @@ public class userExec {
         if (a.equals("curl")) {
             a = cmd.getRemaining();
             List<String> res = clntCurl.doGetUrl(pipe, a);
-            cmd.error(userExec.doneFail(res == null));
+            cmd.error(cmds.doneFail(res == null));
             reader.putStrArr(res);
             return cmdRes.command;
         }
@@ -2664,7 +2669,7 @@ public class userExec {
                 }
                 doCfgBackup();
                 boolean b = bits.buf2txt(true, cfg, cfgInit.cfgFileSw);
-                cmd.error(doneFail(b));
+                cmd.error(cmds.doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
                 return cmdRes.command;
@@ -2755,7 +2760,7 @@ public class userExec {
                 reader.putStrArr(userFilter.getDiffs(c2, c1));
                 doCfgBackup();
                 boolean b = bits.buf2txt(true, c2, cfgInit.cfgFileSw);
-                cmd.error(doneFail(b));
+                cmd.error(cmds.doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
                 return null;
@@ -2829,7 +2834,7 @@ public class userExec {
                 doCfgBackup();
                 cmd.error("erasing configuration");
                 boolean b = bits.buf2txt(true, new ArrayList<String>(), cfgInit.cfgFileSw);
-                cmd.error(doneFail(b));
+                cmd.error(cmds.doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
                 return cmdRes.command;
@@ -2841,14 +2846,14 @@ public class userExec {
             if (a.equals("file")) {
                 cmd.error("exporting configuration");
                 boolean b = bits.buf2txt(true, cfgAll.getShRun(1), cmd.getRemaining());
-                cmd.error(doneFail(b));
+                cmd.error(cmds.doneFail(b));
                 return cmdRes.command;
             }
             if (a.equals("memory")) {
                 doCfgBackup();
                 cmd.error("saving configuration");
                 boolean b = bits.buf2txt(true, cfgAll.getShRun(1), cfgInit.cfgFileSw);
-                cmd.error(doneFail(b));
+                cmd.error(cmds.doneFail(b));
                 prtRedun.doConfig();
                 prtRedun.doReload();
                 if (!cfgAll.configAbackup) {
@@ -3064,20 +3069,6 @@ public class userExec {
         return cmdRes.command;
     }
 
-    /**
-     * get result text
-     *
-     * @param b status
-     * @return text
-     */
-    public static String doneFail(boolean b) {
-        if (b) {
-            return "failed";
-        } else {
-            return "success";
-        }
-    }
-
     private boolean need2stop() {
         if (pipe.isClosed() != 0) {
             return true;
@@ -3158,13 +3149,8 @@ public class userExec {
             cmd.error("no such menu");
             return;
         }
-        ntry.putMenu(pipe);
-        a = pipe.strChr("choose:", ntry.getKeys());
-        String s = ntry.findKey(a);
+        String s = ntry.doMenu(pipe);
         if (s == null) {
-            return;
-        }
-        if (s.length() < 1) {
             return;
         }
         userExec exe = new userExec(pipe, reader);
@@ -3262,20 +3248,6 @@ public class userExec {
                 continue;
             }
             pipe.linePut("port " + i + " open");
-        }
-    }
-
-    /**
-     * adjust the payload size according the protocol
-     *
-     * @param adr address to check
-     * @return size bytes to subtract
-     */
-    public static int adjustSize(addrIP adr) {
-        if (adr.isIPv4()) {
-            return ipCor4.size + ipIcmp4.size;
-        } else {
-            return ipCor6.size + ipIcmp6.size;
         }
     }
 
@@ -3438,7 +3410,7 @@ public class userExec {
             src = ifc.getLocAddr(trg);
         }
         pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", flow=" + flow + ", len=" + len);
-        len -= adjustSize(trg);
+        len -= prtIcmp.adjustSize(trg);
         int none = 0;
         int ttl = 0;
         reader.keyFlush();
@@ -3635,7 +3607,7 @@ public class userExec {
         if (rou != null) {
             pipe.linePut("via " + addrPrefix.ip2str(rou.prefix) + " " + rou.best.toShRoute().replaceAll("\\|", " "));
         }
-        len -= adjustSize(trg);
+        len -= prtIcmp.adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
             if (need2stop()) {
@@ -3768,7 +3740,7 @@ public class userExec {
             src = ifc.getLocAddr(strt);
         }
         pipe.linePut("scanning " + strt + ", src=" + src + ", vrf=" + vrf.name + ", inc=" + incr + ", num=" + numb + ", tim=" + tim + ", len=" + len + ", df=" + dntfrg + ", alrt=" + alrt);
-        len -= adjustSize(strt);
+        len -= prtIcmp.adjustSize(strt);
         for (;;) {
             if (need2stop()) {
                 break;
@@ -3968,7 +3940,7 @@ public class userExec {
         userExecStats tosS = new userExecStats(0, 256);
         long timBeg = bits.getTime();
         pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt + ", sweep=" + sweep + ", multi=" + multi);
-        size -= adjustSize(trg);
+        size -= prtIcmp.adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
                 size++;
@@ -4578,7 +4550,7 @@ public class userExec {
     private void doTerminal() {
         String a = cmd.word();
         if (a.equals("detect")) {
-            cmd.error(doneFail(userScreen.updtSiz(pipe)));
+            cmd.error(cmds.doneFail(userScreen.updtSiz(pipe)));
             return;
         }
         if (a.equals("beep")) {
@@ -4871,7 +4843,7 @@ public class userExec {
             return;
         }
         boolean b = bits.buf2txt(true, old, a);
-        cmd.error(doneFail(b));
+        cmd.error(cmds.doneFail(b));
     }
 
 }

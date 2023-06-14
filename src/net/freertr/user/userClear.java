@@ -114,7 +114,7 @@ public class userClear {
         }
         if (a.equals("redundancy")) {
             a = cmd.word();
-            cmd.error(userExec.doneFail(prtRedun.setPrio(a, bits.str2num(cmd.word()))));
+            cmd.error(cmds.doneFail(prtRedun.setPrio(a, bits.str2num(cmd.word()))));
             return null;
         }
         if (a.equals("errors")) {

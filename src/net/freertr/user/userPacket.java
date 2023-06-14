@@ -27,6 +27,7 @@ import net.freertr.clnt.clntModem;
 import net.freertr.clnt.clntNrpe;
 import net.freertr.clnt.clntNtp;
 import net.freertr.clnt.clntPcep;
+import net.freertr.prt.prtPmtud;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntSmtp;
 import net.freertr.clnt.clntSnmp;
@@ -41,7 +42,6 @@ import net.freertr.ip.ipCor;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
-import net.freertr.ip.ipFwdEcho;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipIfc;
@@ -313,6 +313,8 @@ public class userPacket {
             cfgIfc ifc = cfgAll.getClntIfc();
             int data = 0;
             int timeout = 1000;
+            int timemax = 15000;
+            int timediv = 10;
             int sgt = 0;
             int tos = 0;
             int flow = 0;
@@ -346,6 +348,14 @@ public class userPacket {
                 }
                 if (a.equals("timeout")) {
                     timeout = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("timediv")) {
+                    timediv = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("timemax")) {
+                    timemax = bits.str2num(cmd.word());
                     continue;
                 }
                 if (a.equals("delay")) {
@@ -402,47 +412,20 @@ public class userPacket {
             if (timeout < 1) {
                 timeout = 1;
             }
-            cmd.error("pmduding " + trg + ", src=" + src + ", vrf=" + vrf.name + ", len=" + min + ".." + max + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
-            int last = -1;
-            for (;;) {
-                if (need2stop()) {
-                    break;
-                }
-                if ((max - min) < 2) {
-                    break;
-                }
-                int mid = min + ((max - min) / 2);
-                cmd.pipe.strPut("trying (" + min + ".." + max + ") " + mid + " ");
-                int size = mid - userExec.adjustSize(trg);
-                ipFwdEcho ping = fwd.echoSendReq(src, trg, size, true, alrt, ttl, sgt, tos, flow, data, false);
-                if (ping == null) {
-                    cmd.error("noroute");
-                    break;
-                }
-                if (ping.notif.totalNotifies() < 1) {
-                    ping.notif.sleep(timeout);
-                }
-                boolean res = false;
-                for (int o = 0; o < ping.res.size(); o++) {
-                    if (ping.res.get(o).err != null) {
-                        continue;
-                    }
-                    res = true;
-                    break;
-                }
-                if (res) {
-                    cmd.pipe.linePut("ok");
-                    min = mid;
-                    last = mid;
-                } else {
-                    cmd.pipe.linePut("bad");
-                    max = mid;
-                }
-                if (delay > 0) {
-                    bits.sleep(delay);
-                }
-            }
-            cmd.error("finished with min=" + min + " max=" + max + " last=" + last);
+            prtPmtud pm = new prtPmtud(cmd.pipe, trg, fwd, src);
+            pm.data = data;
+            pm.timeout = timeout;
+            pm.timediv = timediv;
+            pm.timemax = timemax;
+            pm.sgt = sgt;
+            pm.tos = tos;
+            pm.flow = flow;
+            pm.alrt = alrt;
+            pm.ttl = ttl;
+            pm.delay = delay;
+            pm.min = min;
+            pm.max = max;
+            pm.doer();
             return null;
         }
         if (a.equals("arping")) {

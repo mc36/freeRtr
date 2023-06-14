@@ -167,6 +167,23 @@ public class cfgMenuK implements Comparator<cfgMenuK>, cfgGeneric {
     }
 
     /**
+     * do menu
+     *
+     * @param pipe pipe to use
+     * @return key pressed, null if nothing
+     */
+    public String doMenu(pipeSide pipe) {
+        putMenu(pipe);
+        String k = getKeys();
+        String a = pipe.strChr("choose:", k);
+        String s = findKey(a);
+        if (s.length() < 1) {
+            return null;
+        }
+        return s;
+    }
+
+    /**
      * get keys
      *
      * @return keys
