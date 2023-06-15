@@ -3399,6 +3399,11 @@ public class userExec {
         trc.trg = trg;
         trc.port = port;
         trc.proto = proto;
+        if (resolv) {
+            trc.domainCln = new clntDns();
+            trc.domainLst = cfgAll.nameServerAddr;
+        }
+        trc.routerPrc = rtr;
         if (trc.register2ip()) {
             cmd.error("bind error");
             return;
@@ -3449,11 +3454,12 @@ public class userExec {
                 none = 0;
                 ttl = 1;
             }
-            trc.doRound(ttl, tos, flow, 0, len);
+            trc.doRound1(ttl, tos, flow, 0, len);
             if (edtr.doTimed(timeout, false)) {
                 break;
             }
             request[ttl]++;
+            trc.doRound2();
             if (trc.errRtr == null) {
                 none++;
                 continue;
@@ -3470,18 +3476,12 @@ public class userExec {
             }
             label[ttl] = trc.errLab;
             reportA[ttl] = trc.errRtr.copyBytes();
-            if (rtr != null) {
-                tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(trc.errRtr);
-                if (ntry != null) {
-                    path1[ttl] = ntry.best.asPathStr();
-                    path2[ttl] = ntry.best.asNameStr();
-                }
+            if (trc.routerNtry != null) {
+                path1[ttl] = trc.routerNtry.asPathStr();
+                path2[ttl] = trc.routerNtry.asNameStr();
             }
             if (resolv) {
-                clntDns clnt = new clntDns();
-                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(trc.errRtr), false, packDnsRec.typePTR);
-                String nam = clnt.getPTR();
-                reportN[ttl] = nam;
+                reportN[ttl] = trc.domainNam;
             }
             if (trg.compare(trg, trc.errRtr) == 0) {
                 ttl = 0;
@@ -3586,13 +3586,17 @@ public class userExec {
             timeout = 1;
         }
         ipFwd fwd = vrf.getFwd(trg);
-        tabRouteEntry<addrIP> rou = fwd.actualU.route(trg);
         prtTraceroute trc = new prtTraceroute();
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
         trc.port = port;
         trc.proto = proto;
+        if (resolv) {
+            trc.domainCln = new clntDns();
+            trc.domainLst = cfgAll.nameServerAddr;
+        }
+        trc.routerPrc = rtr;
         if (trc.register2ip()) {
             cmd.error("bind error");
             return;
@@ -3602,9 +3606,7 @@ public class userExec {
             src = ifc.getLocAddr(trg);
         }
         pipe.linePut("tracing " + trg + ", src=" + src + ", vrf=" + vrf.name + ", prt=" + proto + "/" + port + ", tim=" + timeout + ", tos=" + tos + ", flow=" + flow + ", len=" + len);
-        if (rou != null) {
-            pipe.linePut("via " + addrPrefix.ip2str(rou.prefix) + " " + rou.best.toShRoute().replaceAll("\\|", " "));
-        }
+        pipe.linePut(trc.getHeadLine());
         len -= prtIcmptun.adjustSize(trg);
         int none = 0;
         for (int ttl = 1; ttl < 255; ttl++) {
@@ -3617,24 +3619,9 @@ public class userExec {
             if (delay > 0) {
                 bits.sleep(delay);
             }
-            trc.doRound(ttl, tos, flow, timeout, len);
-            String a = "";
-            if (trc.errLab > 0) {
-                a += ", mpls=" + trc.errLab;
-            }
-            if (resolv && (trc.errRtr != null)) {
-                clntDns clnt = new clntDns();
-                clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(trc.errRtr), false, packDnsRec.typePTR);
-                String nam = clnt.getPTR();
-                a += ", name=" + nam;
-            }
-            if ((rtr != null) && (trc.errRtr != null)) {
-                tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(trc.errRtr);
-                if (ntry != null) {
-                    a += ", path=" + ntry.best.asPathStr() + " name=" + ntry.best.asNameStr();
-                }
-            }
-            pipe.linePut(ttl + " " + trc.errRtr + " time=" + trc.errTim + a);
+            trc.doRound1(ttl, tos, flow, timeout, len);
+            trc.doRound2();
+            pipe.linePut(trc.getCurrLine());
             if (trc.errRtr == null) {
                 none++;
                 continue;

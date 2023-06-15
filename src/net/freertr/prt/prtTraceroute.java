@@ -1,14 +1,22 @@
 package net.freertr.prt;
 
+import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntDns;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipPrt;
+import net.freertr.ip.ipRtr;
+import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabRoute;
+import net.freertr.tab.tabRouteAttr;
+import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.notifier;
@@ -53,6 +61,21 @@ public class prtTraceroute implements prtServP, ipPrt {
     public int proto;
 
     /**
+     * router process to use for lookups
+     */
+    public ipRtr routerPrc;
+
+    /**
+     * dns client to use for lookups
+     */
+    public clntDns domainCln;
+
+    /**
+     * dns servers to use for lookups
+     */
+    public List<addrIP> domainLst;
+
+    /**
      * reporting router
      */
     public addrIP errRtr;
@@ -72,6 +95,16 @@ public class prtTraceroute implements prtServP, ipPrt {
      */
     public int errTim;
 
+    /**
+     * reported name
+     */
+    public String domainNam;
+
+    /**
+     * reported route
+     */
+    public tabRouteAttr<addrIP> routerNtry;
+
     private prtGenConn con;
 
     private ipFwdIface ifc2;
@@ -85,6 +118,8 @@ public class prtTraceroute implements prtServP, ipPrt {
     private int magic;
 
     private long started;
+
+    private int lasTtl;
 
     public String toString() {
         return "traceroute to " + trg;
@@ -136,7 +171,7 @@ public class prtTraceroute implements prtServP, ipPrt {
     }
 
     /**
-     * do one round
+     * do the first round
      *
      * @param ttl hop number
      * @param tos type of service
@@ -145,7 +180,8 @@ public class prtTraceroute implements prtServP, ipPrt {
      * @param len size
      * @return true on error, false on success
      */
-    public boolean doRound(int ttl, int tos, int flw, int tim, int len) {
+    public boolean doRound1(int ttl, int tos, int flw, int tim, int len) {
+        lasTtl = ttl;
         errRtr = null;
         errLab = -1;
         errCod = null;
@@ -177,6 +213,76 @@ public class prtTraceroute implements prtServP, ipPrt {
             notif.misleep(tim);
         }
         return errRtr == null;
+    }
+
+    /**
+     * do the second round
+     *
+     * @return true on error, false on success
+     */
+    public boolean doRound2() {
+        domainNam = null;
+        routerNtry = null;
+        if (errRtr == null) {
+            return true;
+        }
+        if (routerPrc != null) {
+            tabRouteEntry<addrIP> ntry = routerPrc.routerComputedU.route(errRtr);
+            if (ntry != null) {
+                routerNtry = new tabRouteAttr<addrIP>();
+                ntry.best.copyBytes(routerNtry, true);
+            }
+        }
+        if (domainCln == null) {
+            return false;
+        }
+        if (domainLst == null) {
+            return false;
+        }
+        domainCln.doResolvList(domainLst, packDnsRec.generateReverse(errRtr), false, packDnsRec.typePTR);
+        domainNam = domainCln.getPTR();
+        return false;
+    }
+
+    /**
+     * get header line of traceroute
+     *
+     * @return the text
+     */
+    public String getHeadLine() {
+        domainNam = null;
+        routerNtry = null;
+        lasTtl = 0;
+        errRtr = null;
+        errLab = -1;
+        errCod = null;
+        errTim = 0;
+        tabRouteEntry<addrIP> ntry = fwd.actualU.route(trg);
+        if (ntry == null) {
+            return "via nowhere";
+        }
+        routerNtry = new tabRouteAttr<addrIP>();
+        ntry.best.copyBytes(routerNtry, true);
+        return "via " + addrPrefix.ip2str(ntry.prefix) + " " + routerNtry.toShRoute().replaceAll("\\|", " ");
+    }
+
+    /**
+     * get current line of traceroute
+     *
+     * @return the text
+     */
+    public String getCurrLine() {
+        String a = "";
+        if (errLab > 0) {
+            a += ", mpls=" + errLab;
+        }
+        if (domainNam != null) {
+            a += ", name=" + domainNam;
+        }
+        if (routerNtry != null) {
+            a += ", path=" + routerNtry.asPathStr() + ", names=" + routerNtry.asNameStr();
+        }
+        return lasTtl + " " + errRtr + " time=" + errTim + a;
     }
 
     /**
