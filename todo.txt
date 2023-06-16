@@ -1,7 +1,3 @@
-asn negative cache
-
-
-traceroute to generate the full line with routing protocols etc from mrt and friends
 
 test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 
