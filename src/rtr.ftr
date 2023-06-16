@@ -3194,6 +3194,9 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
+todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
+todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
 todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
@@ -3371,8 +3374,6 @@ todo: settle a new slide project misc slash thumbs as a small helper for misc sl
 todo: server tftp to have server http backup alike functionality
 todo: server forwarder to have some local logging finally
 todo: server http have some local logging finally
-todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
-todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
 todo: scheduler asdf single-run
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
 todo: show running-config vdc <tabbable>

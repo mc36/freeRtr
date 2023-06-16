@@ -14983,3 +14983,5 @@ todo: asn negative cache
 ---------------------------------- 2023-06-16 11:47:41 23.6.16
 no todo: traceroute to generate the full line with routing protocols etc from mrt and friends
 no todo: asn negative cache
+---------------------------------- 2023-06-16 16:08:18 23.6.16
+todo: misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto

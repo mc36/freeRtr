@@ -1,3 +1,11 @@
+misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
+
+mist natives p4fwd to report the boot messages through the control channel in dataplane-says
+
+mist natives p4fwd to report all the error messages in the control channel in dataplane-says
+
+
+
 
 test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 
@@ -282,9 +290,6 @@ settle a new slide project misc slash thumbs as a small helper for misc slash al
 server tftp to have server http backup alike functionality
 server forwarder to have some local logging finally
 server http have some local logging finally
-
-mist natives p4fwd to report the boot messages through the control channel in dataplane-says
-mist natives p4fwd to report all the error messages in the control channel in dataplane-says
 
 
 
