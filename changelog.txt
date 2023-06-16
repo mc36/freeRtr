@@ -14980,3 +14980,6 @@ todo: tcp redundancy through the redundancy link as table export and file sendin
 todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 ---------------------------------- 2023-06-15 18:44:05 23.6.15
 todo: asn negative cache
+---------------------------------- 2023-06-16 11:47:41 23.6.16
+no todo: traceroute to generate the full line with routing protocols etc from mrt and friends
+no todo: asn negative cache

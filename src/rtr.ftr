@@ -3194,8 +3194,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: asn negative cache
-todo: traceroute to generate the full line with routing protocols etc from mrt and friends
 todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
