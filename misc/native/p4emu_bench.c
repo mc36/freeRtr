@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
         char* lin = NULL;
         size_t len = 0;
         if (getline(&lin, &len, fil) < 0) break;
-        doOneCommand((unsigned char*) lin);
+        doOneCommand((unsigned char*) lin, encrCtx, hashCtx);
         free(lin);
     }
     fclose(fil);

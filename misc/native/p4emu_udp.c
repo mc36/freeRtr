@@ -83,11 +83,15 @@ void doIfaceLoop(int * param) {
 void doSockLoop() {
     FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) err("failed to open file");
-    unsigned char buf[1024];
+    EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
+    if (encrCtx == NULL) err("error getting encr context");
+    EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
+    if (hashCtx == NULL) err("error getting hash context");
+    unsigned char buf[16384];
     for (;;) {
         memset(&buf, 0, sizeof(buf));
         if (fgets((char*)&buf[0], sizeof(buf), commands) == NULL) break;
-        if (doOneCommand(&buf[0]) != 0) break;
+        if (doOneCommand(&buf[0], encrCtx, hashCtx) != 0) break;
     }
     err("command thread exited");
 }

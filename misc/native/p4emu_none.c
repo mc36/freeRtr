@@ -37,7 +37,7 @@ int initTables() {
 }
 
 
-int doOneCommand(unsigned char* buf) {
+int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     return 0;
 }
 

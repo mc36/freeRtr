@@ -4,6 +4,7 @@ mist natives p4fwd to report the boot messages through the control channel in da
 
 mist natives p4fwd to report all the error messages in the control channel in dataplane-says
 
+mist natives to have ipcomp rfc somehow
 
 
 

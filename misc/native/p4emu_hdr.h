@@ -50,7 +50,7 @@ extern int initTables();
 extern int hashDataPacket(unsigned char *bufP);
 extern void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
 extern void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
-extern int doOneCommand(unsigned char* buf);
+extern int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
 extern void doStatRound(FILE *commands, int round);
 extern int doConsoleCommand(unsigned char*buf);
 extern char* getCapas();

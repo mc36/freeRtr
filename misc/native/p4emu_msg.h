@@ -159,7 +159,7 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
+    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp route mpls vpls evpn eompls gretap pppoetap l2tptap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
 
 #ifdef HAVE_POLKA
        "mpolka polka "
@@ -174,7 +174,7 @@ char* getCapas() {
 
 
 
-int doOneCommand(unsigned char* buf) {
+int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     unsigned char buf2[1024];
     char* arg[128];
     int cnt;
@@ -2301,6 +2301,26 @@ int doOneCommand(unsigned char* buf) {
         for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[13+i]);
         if (del == 0) table_del(&mroute6_res->flood, &flood_ntry);
         else table_add(&mroute6_res->flood, &flood_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "packout") == 0) {
+        int bufS = atoi(arg[2]);
+        int prt = atoi(arg[3]);
+        int port = atoi(arg[4]);
+        int sgt = atoi(arg[5]);
+        int hash = atoi(arg[6]);
+        unsigned char bufA[16384];
+        unsigned char bufB[16384];
+        unsigned char bufC[16384];
+        unsigned char bufD[16384];
+        unsigned char bufH[preBuff];
+        for (int i=0; i<bufS; i++) {
+            sscanf(&((arg[7])[i]), "%hhx", &bufD[preBuff + i]);
+        }
+        memcpy(&bufH[0], &bufD[preBuff], 12);
+        int ethtyp = get16msb(bufD, preBuff);
+        int bufP = preBuff;
+        send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
         return 0;
     }
     return 0;
