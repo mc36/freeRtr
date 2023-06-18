@@ -2304,23 +2304,28 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         return 0;
     }
     if (strcmp(arg[0], "packout") == 0) {
-        int bufS = atoi(arg[2]);
-        int prt = atoi(arg[3]);
-        int port = atoi(arg[4]);
-        int sgt = atoi(arg[5]);
-        int hash = atoi(arg[6]);
+        int cntr = atoi(arg[2]);
+        int bufS = atoi(arg[3]);
+        int prt = atoi(arg[4]);
+        int port = atoi(arg[5]);
+        int sgt = atoi(arg[6]);
+        int hash = atoi(arg[7]);
+        unsigned char orig[16384];
         unsigned char bufA[16384];
         unsigned char bufB[16384];
         unsigned char bufC[16384];
         unsigned char bufD[16384];
         unsigned char bufH[preBuff];
         for (int i=0; i<bufS; i++) {
-            sscanf(&((arg[7])[i]), "%hhx", &bufD[preBuff + i]);
+            sscanf(&((arg[8])[i]), "%hhx", &orig[i]);
         }
-        memcpy(&bufH[0], &bufD[preBuff], 12);
-        int ethtyp = get16msb(bufD, preBuff);
-        int bufP = preBuff;
-        send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+        for (int i=0; i<cntr; i++) {
+            memcpy(&bufD[preBuff], &orig[0], bufS);
+            memcpy(&bufH[0], &orig[0], 16);
+            int ethtyp = get16msb(orig, 12);
+            int bufP = preBuff;
+            send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+        }
         return 0;
     }
     return 0;
