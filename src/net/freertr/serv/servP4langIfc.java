@@ -8,6 +8,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.ifc.ifcDn;
+import net.freertr.ifc.ifcMacSec;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
@@ -49,6 +50,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * reinit parameters
      */
     protected String reinit;
+
+    /**
+     * send packets through api
+     */
+    protected boolean apiPack;
 
     /**
      * speed
@@ -579,6 +585,15 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public long getBandwidth() {
         return 8000000;
+    }
+
+    /**
+     * send one packet through api
+     *
+     * @param pck packet to send
+     */
+    public void apiSendPack(packHolder pck) {
+        lower.sendLine(ifcMacSec.packet2packout(pck, id, id));
     }
 
     public void sendPack(packHolder pck) {

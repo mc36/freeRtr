@@ -8,6 +8,7 @@ import net.freertr.cry.cryEncrGeneric;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryKeyDH;
 import net.freertr.pack.packHolder;
+import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabWindow;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -83,6 +84,21 @@ public class ifcMacSec implements Runnable {
      * hardware counter
      */
     public counter hwCntr;
+
+    /**
+     * send through the pipe
+     */
+    public pipeSide sendPipe;
+
+    /**
+     * send with prt id
+     */
+    public int sendPrt;
+
+    /**
+     * send with port id
+     */
+    public int sendPort;
 
     private counter cntr = new counter();
 
@@ -185,6 +201,26 @@ public class ifcMacSec implements Runnable {
     }
 
     /**
+     * convert a packet to a packet out message
+     *
+     * @param pck packet to convert
+     * @return converted packet
+     */
+    public static final String packet2packout(packHolder pck, int prt, int port) {
+        String a = "packout_add 1 " + pck.dataSize() + " " + prt + " " + port;
+        if (pck.msbGetW(0) == ifcSgt.type) {
+            a += " 1";
+        } else {
+            a += " 0";
+        }
+        a += " " + ((pck.UDPsrc ^ pck.UDPtrg) & 0xf) + " ";
+        for (int i = 0; i < pck.dataSize(); i++) {
+            a += pck.getByte(i);
+        }
+        return a;
+    }
+
+    /**
      * encrypt one packet
      *
      * @param pck packet to encrypt
@@ -193,6 +229,10 @@ public class ifcMacSec implements Runnable {
     public synchronized boolean doEncrypt(packHolder pck) {
         if (hashTx == null) {
             return true;
+        }
+        if (sendPipe != null) {
+            sendPipe.linePut(packet2packout(pck, sendPrt, sendPort));
+            return false;
         }
         cntr.tx(pck);
         int pad = pck.dataSize() % cphrSiz;
@@ -266,6 +306,9 @@ public class ifcMacSec implements Runnable {
         }
         int typ = pck.msbGetW(0);
         if (typ != myTyp) { // ethertype
+            if (sendPipe != null) {
+                return false;
+            }
             if (allowClear) {
                 return false;
             }
