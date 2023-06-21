@@ -162,6 +162,7 @@ public class servP4langConn implements Runnable {
                 lower.expIfc.del(ntry);
             } else {
                 ntry.doClear();
+                ntry.setup2apiPack();
             }
         }
         for (int i = 0; i < lower.expVrf.size(); i++) {
@@ -2009,22 +2010,12 @@ public class servP4langConn implements Runnable {
                 } else {
                     lower.sendLine("macsec_add " + ifc.id + " " + a);
                 }
-                if (ifc.apiPack) {
-                    ifc.ifc.ethtyp.macSec.sendPipe = lower.conn.pipe;
-                    ifc.ifc.ethtyp.macSec.sendPort = ifc.id;
-                    ifc.ifc.ethtyp.macSec.sendPrt = ifc.id;
-                } else {
-                    ifc.ifc.ethtyp.macSec.sendPipe = null;
-                    ifc.ifc.ethtyp.macSec.sendPort = 0;
-                    ifc.ifc.ethtyp.macSec.sendPrt = 0;
-                }
+                ifc.setup2apiPack();
             } else {
                 if (ifc.sentMacsec != null) {
                     lower.sendLine("macsec_del " + ifc.id + " " + ifc.sentMacsec);
                 }
-                ifc.ifc.ethtyp.macSec.sendPipe = null;
-                ifc.ifc.ethtyp.macSec.sendPort = 0;
-                ifc.ifc.ethtyp.macSec.sendPrt = 0;
+                ifc.setup2apiPack();
             }
             ifc.sentMacsec = a;
         }

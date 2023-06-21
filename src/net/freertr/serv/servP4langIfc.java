@@ -596,7 +596,30 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         lower.sendLine(ifcMacSec.packet2packout(pck, id, id));
     }
 
+    /**
+     * setup the api packet change
+     */
+    public void setup2apiPack() {
+        ifcMacSec mcsc = ifc.ethtyp.macSec;
+        if (mcsc == null) {
+            return;
+        }
+        if (apiPack) {
+            mcsc.sendPipe = lower.conn.pipe;
+            mcsc.sendPort = id;
+            mcsc.sendPrt = id;
+        } else {
+            mcsc.sendPipe = null;
+            mcsc.sendPort = 0;
+            mcsc.sendPrt = 0;
+        }
+    }
+
     public void sendPack(packHolder pck) {
+        if (apiPack) {
+            apiSendPack(pck);
+            return;
+        }
         lower.sendPack(id, pck);
     }
 
