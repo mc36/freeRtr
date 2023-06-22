@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authGeneric;
 import net.freertr.auth.authLocal;
 import net.freertr.auth.authResult;
@@ -2146,6 +2145,10 @@ public class userExec {
         hl.add(null, "8 .                  <str>            target address");
         cfgAll.aliasHelps(cfgAlias.aliasType.pckt, 2, hl);
         hl.add(null, "1 2    test                           test various things");
+        hl.add(null, "2 3      p4lang                       send packet over the api");
+        hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
+        hl.add(null, "4 5          <name:ifc>               interface to send");
+        hl.add(null, "5 5,.          [num]                  packet contents");
         hl.add(null, "2 3      whois                        asn name cache");
         hl.add(null, "3 .        <num>                      asn number");
         hl.add(null, "2 3      acl                          access list merge, unroll");

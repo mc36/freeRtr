@@ -225,6 +225,11 @@ public class debugger {
     public static boolean servP4langErr = false;
 
     /**
+     * servP4lang traffic
+     */
+    public static boolean servP4langTraf = false;
+
+    /**
      * servModem traffic
      */
     public static boolean servModemTraf = false;
@@ -1063,9 +1068,10 @@ public class debugger {
         l.add(null, "4 .          rx              received packets");
         l.add(null, "4 .          tx              transmitted packets");
         l.add(null, "3 4        p4lang            p4lang protocol");
-        l.add(null, "4 .          rx              received packets");
-        l.add(null, "4 .          tx              transmitted packets");
-        l.add(null, "4 .          err             errored packets");
+        l.add(null, "4 .          rx              received messages");
+        l.add(null, "4 .          tx              transmitted messages");
+        l.add(null, "4 .          error           errored messages");
+        l.add(null, "4 .          traffic         messaged packets");
         l.add(null, "3 .        snmp              simple network management protocol");
         l.add(null, "3 .        iscsi             iscsi protocol");
         l.add(null, "3 .        rfb               remote frame buffer protocol");
@@ -1462,8 +1468,12 @@ public class debugger {
                     servP4langTx = v;
                     return false;
                 }
-                if (s.equals("err")) {
+                if (s.equals("error")) {
                     servP4langErr = v;
+                    return false;
+                }
+                if (s.equals("traffic")) {
+                    servP4langTraf = v;
                     return false;
                 }
                 return true;

@@ -17,6 +17,8 @@ import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabSession;
 import net.freertr.util.counter;
+import net.freertr.util.debugger;
+import net.freertr.util.logger;
 import net.freertr.util.state;
 
 /**
@@ -593,6 +595,9 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param pck packet to send
      */
     public void apiSendPack(packHolder pck) {
+        if (debugger.servP4langTraf) {
+            logger.debug("sending on #" + id + " " + pck.dataOffset());
+        }
         lower.sendLine(ifcMacSec.packet2packout(pck, id, id));
     }
 
