@@ -20,9 +20,11 @@ p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asap
 
 l2tp3 to the dataplanes as it is for l2tp2 :)
 
-icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
+consider adding icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
 
-sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre or icmptunnel
+consider adding ipcomp tunnel to the dataplanes that interworks and decodes in wireshark
+
+sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pimtunnel icmptunnel
 
 route-map --> route-policy converter
 

@@ -14987,3 +14987,9 @@ no todo: asn negative cache
 todo: misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
 ---------------------------------- 2023-06-18 11:59:59 23.6.17
 todo: mist natives to have ipcomp rfc somehow
+---------------------------------- 2023-06-22 20:39:06 23.6.22
+no todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre or icmptunnel
+no todo: icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
+todo: consider adding icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
+todo: consider adding ipcomp tunnel to the dataplanes that interworks and decodes in wireshark
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pimtunnel icmptunnel

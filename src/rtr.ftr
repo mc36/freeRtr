@@ -3204,8 +3204,9 @@ todo: menu remote asdf
 todo: onehit to all the menus
 todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
 todo: l2tp3 to the dataplanes as it is for l2tp2 :)
-todo: icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
-todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre or icmptunnel
+todo: consider adding icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
+todo: consider adding ipcomp tunnel to the dataplanes that interworks and decodes in wireshark
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pimtunnel icmptunnel
 todo: route-map --> route-policy converter
 todo: route-map <-- route-policy converter
 todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
