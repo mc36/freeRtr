@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcBridgeIfc;
+import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -550,6 +551,30 @@ public class servP4lang extends servGeneric implements prtServS {
         }
         servP4langCfg cur = fwds.get(fwd);
         cur.sendLine(str);
+    }
+
+    /**
+     * send a packet through the api
+     *
+     * @param fwdn forwarder to use
+     * @param ficn interface to use
+     * @param pck packet to send
+     * @return true on error false on success
+     */
+    public boolean send2apiPack(int fwdn, int ifcn, packHolder pck) {
+        servP4langCfg fwdc = null;
+        try {
+            fwdc = fwds.get(fwdn);
+        } catch (Exception e) {
+            return true;
+        }
+        servP4langIfc ifcc = new servP4langIfc(fwdc, ifcn);
+        ifcc = fwdc.expIfc.find(ifcc);
+        if (ifcc == null) {
+            return true;
+        }
+        ifcc.apiSendPack(pck);
+        return false;
     }
 
 }

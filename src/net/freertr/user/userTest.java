@@ -159,11 +159,8 @@ public class userTest {
                 cmd.error("no such server");
                 return null;
             }
-            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
-            if (ifc == null) {
-                cmd.error("no such interface");
-                return null;
-            }
+            int fwd = bits.str2num(cmd.word());
+            int ifc = bits.str2num(cmd.word());
             packHolder pck = new packHolder(true, true);
             for (;;) {
                 a = cmd.word();
@@ -174,8 +171,8 @@ public class userTest {
                 pck.putSkip(1);
                 pck.merge2end();
             }
-            cmd.error("sending to " + ifc + " " + pck.dump());
-///////////            srv.send2apiPack(ifc, pck);
+            cmd.error("sending to fwd=" + fwd + " ifc" + ifc + " pck=" + pck.dump());
+            srv.send2apiPack(fwd, ifc, pck);
             return null;
         }
         if (a.equals("whois")) {
@@ -857,13 +854,13 @@ public class userTest {
         cmd.badCmd();
         return null;
     }
-    
+
     private void doShow(List<String> l) {
         for (int i = 0; i < l.size(); i++) {
             cmd.error(l.get(i));
         }
     }
-    
+
     private <T extends addrType> void doTestRoutingChk(tabRoute<T> tab, boolean dmp) {
         int i = tab.checkConsistency();
         if (i >= 0) {
@@ -874,7 +871,7 @@ public class userTest {
         }
         cmd.pipe.strPut("," + tab.tableInfo() + "  ");
     }
-    
+
     private <T extends addrType> void doTestRoutingGet(tabRoute<T> tab, int idx, int add, boolean dmp, String typ) {
         for (int i = 0; i < tab.size(); i++) {
             tab.get(i).best.time = i;
@@ -929,7 +926,7 @@ public class userTest {
         beg = (rnd * 1000) / (bits.getTime() - beg);
         cmd.pipe.strPut("  " + beg + " " + typ + "l");
     }
-    
+
     private <T extends addrType> void doTestRoutingAdd(tabRoute<T> tab, T adr, int fill, int add, userTestIfc mod, boolean dmp, String typ) {
         tab.clear();
         byte[] buf = new byte[256];
@@ -951,7 +948,7 @@ public class userTest {
         cmd.pipe.strPut("  " + beg + " " + typ + "d");
         doTestRoutingChk(tab, dmp);
     }
-    
+
     private <T extends addrType> void doTestRouting(int msk, T adr, tabRoute<T> tab, int add, int fnd, int idx, boolean dmp) {
         int fill = adr.getSize() * 8;
         cmd.pipe.strPut("testing " + adr.getClass().getName() + "-" + fill + ":");
@@ -989,7 +986,7 @@ public class userTest {
         }
         cmd.pipe.linePut("");
     }
-    
+
     private void doTestPipe(String tst, pipeSide p1, pipeSide p2, int bl) {
         cmd.pipe.strPut(tst);
         p1.setReady();
@@ -1026,14 +1023,14 @@ public class userTest {
         finSpeedTest(tried + "/" + (tried - goodT) + "/" + (tried - goodR),
                 b1.length, goodR, tim);
     }
-    
+
     private void finSpeedTest(String beg, int blk, long rnd, long tim) {
         long xmit = rnd * blk;
         cmd.pipe.linePut(": " + beg + " rnd, " + xmit + " bytes, "
                 + (tim / 1000) + " sec, " + ((rnd * 1000) / tim) + " pps, "
                 + bits.bandwidth((xmit * 8000) / tim));
     }
-    
+
     private void doTestTls(boolean dtls, int min, int max) {
         cryKeyRSA rsa = new cryKeyRSA();
         cryKeyDSA dss = new cryKeyDSA();
@@ -1055,7 +1052,7 @@ public class userTest {
         doTestPipe(packTls.version2string(dtls, srvH.minVer), pip, clnH.getPipe(), 1024);
         conn.setClose();
     }
-    
+
     private void doTestEncr(cryEncrGeneric alg, int kes, String add) {
         cmd.pipe.strPut(alg.getName() + add);
         kes /= 8;
@@ -1080,7 +1077,7 @@ public class userTest {
         tim = cur - tim;
         finSpeedTest("" + goodR, b1.length, goodR, tim);
     }
-    
+
     private void doTestHash(cryHashGeneric alg) {
         cmd.pipe.strPut(alg.getName());
         byte[] b1 = new byte[1024];
@@ -1100,49 +1097,49 @@ public class userTest {
         tim = cur - tim;
         finSpeedTest("" + goodR, b1.length, goodR, tim);
     }
-    
+
 }
 
 interface userTestIfc {
-    
+
     public int forAdd(int rnd);
-    
+
     public int forDel(int len);
-    
+
 }
 
 class userTestFwd implements userTestIfc {
-    
+
     public int forAdd(int rnd) {
         return rnd;
     }
-    
+
     public int forDel(int len) {
         return len - 1;
     }
-    
+
 }
 
 class userTestBwd implements userTestIfc {
-    
+
     public int forAdd(int rnd) {
         return -rnd;
     }
-    
+
     public int forDel(int len) {
         return 0;
     }
-    
+
 }
 
 class userTestRnd implements userTestIfc {
-    
+
     public int forAdd(int rnd) {
         return bits.randomD();
     }
-    
+
     public int forDel(int len) {
         return bits.random(0, len);
     }
-    
+
 }
