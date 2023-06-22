@@ -167,7 +167,7 @@ public class userTest {
                 if (a.length() < 1) {
                     break;
                 }
-                pck.putByte(0, bits.str2num(a));
+                pck.putByte(0, bits.fromHex(a));
                 pck.putSkip(1);
                 pck.merge2end();
             }
