@@ -571,7 +571,7 @@ qc pass: ipip over ipv6 filtered
 qc pass: icmptunnel over ipv6 filtered
 qc pass: ipv4 in esp over ipv6 filtered
 qc pass: ipcomp over ipv6 filtered
-failed: swipe over ipv6 filtered
+qc pass: swipe over ipv6 filtered
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6
