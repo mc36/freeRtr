@@ -14999,3 +14999,5 @@ todo: mpls as ipv8 as december project to the guessEthtype and maybe to the data
 todo: measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
 ---------------------------------- 2023-06-23 10:54:12 23.6.23
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
+---------------------------------- 2023-06-23 13:58:05 23.6.23
+todo: mpls srv6-security in software, with a test with gre at least then to the dataplanes

@@ -2047,10 +2047,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      */
     public synchronized boolean getSRv6sec() {
         if (fwdIf4 != null) {
-            return fwdIf4.protocolSecurity;
+            if (fwdIf4.protocolSecurity) {
+                return true;
+            }
         }
         if (fwdIf6 != null) {
-            return fwdIf4.protocolSecurity;
+            if (fwdIf6.protocolSecurity) {
+                return true;
+            }
         }
         return false;
     }
