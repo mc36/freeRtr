@@ -5,12 +5,22 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.clnt.clntEtherIp;
 import net.freertr.clnt.clntMplsTeP2p;
 import net.freertr.clnt.clntNetflow;
+import net.freertr.clnt.clntSrEth;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcNshFwd;
+import net.freertr.pack.packErspan;
+import net.freertr.pack.packEsp;
 import net.freertr.pack.packHolder;
+import net.freertr.pack.packL2tp3;
+import net.freertr.pack.packRsvp;
+import net.freertr.prt.prtGre;
+import net.freertr.prt.prtIpcomp;
+import net.freertr.prt.prtMplsIp;
 import net.freertr.prt.prtTcp;
+import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrLdpIface;
 import net.freertr.rtr.rtrLdpNeigh;
 import net.freertr.rtr.rtrLdpTrgtd;
@@ -615,6 +625,43 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
         mhst.setForwarder(this, icc);
+    }
+
+    /**
+     * check if its safe between two asn
+     *
+     * @param i protocol to check
+     * @return true if drop, false if process the packet further
+     */
+    public static final boolean safeProtocol(int i) {
+        switch (i) {
+            case packEsp.protoNum:
+                return false;
+            case packL2tp3.prot:
+                return false;
+            case prtGre.protoNum:
+                return false;
+            case prtTcp.protoNum:
+                return false;
+            case prtUdp.protoNum:
+                return false;
+            case ipCor4.protocolNumber:
+                return false;
+            case ipCor6.protocolNumber:
+                return false;
+            case prtMplsIp.prot:
+                return false;
+            case clntSrEth.prot:
+                return false;
+            case clntEtherIp.prot:
+                return false;
+            case prtIpcomp.proto:
+                return false;
+            case packRsvp.proto:
+                return false;
+            default:
+                return true;
+        }
     }
 
     /**

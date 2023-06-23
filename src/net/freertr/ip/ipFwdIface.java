@@ -98,6 +98,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean mplsPropTtlAllow = true;
 
     /**
+     * check against just safe protocol numbers
+     */
+    public boolean protocolSecurity = false;
+
+    /**
      * process netflow on receiving
      */
     public boolean netflowRx = false;

@@ -1477,6 +1477,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no mpls inspect",
         "interface .*! mpls ethertype unicast",
         "interface .*! no mpls label-security",
+        "interface .*! no mpls srv6-security",
         "interface .*! no mpls netflow-rx",
         "interface .*! no mpls netflow-tx",
         "interface .*! no mpls redirection",
@@ -2037,6 +2038,35 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             typ = tabRouteIface.ifaceType.infiniband;
         }
         return typ;
+    }
+
+    /**
+     * get protocol security state
+     *
+     * @return false if disabled, true if enabled
+     */
+    public synchronized boolean getSRv6sec() {
+        if (fwdIf4 != null) {
+            return fwdIf4.protocolSecurity;
+        }
+        if (fwdIf6 != null) {
+            return fwdIf4.protocolSecurity;
+        }
+        return false;
+    }
+
+    /**
+     * set protocol security state
+     *
+     * @param b true to enable false to disable
+     */
+    public synchronized void setSRv6Sec(boolean b) {
+        if (fwdIf4 != null) {
+            fwdIf4.protocolSecurity = b;
+        }
+        if (fwdIf6 != null) {
+            fwdIf4.protocolSecurity = b;
+        }
     }
 
     /**
@@ -6295,6 +6325,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             l.add(cmds.tabulator + "mpls ethertype " + a);
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
+            cmds.cfgLine(l, !getSRv6sec(), cmds.tabulator, "mpls srv6-security", "");
             cmds.cfgLine(l, !mplsPack.netflowRx, cmds.tabulator, "mpls netflow-rx", "");
             cmds.cfgLine(l, !mplsPack.netflowTx, cmds.tabulator, "mpls netflow-tx", "");
             cmds.cfgLine(l, mplsPack.redirect == null, cmds.tabulator, "mpls redirection", "" + mplsPack.redirect);
@@ -6800,6 +6831,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, ".3 .      multicast                 use the old one");
         l.add(null, ".3 .      bier                      use the new one");
         l.add(null, "2 .     label-security              enable/disable security checks");
+        l.add(null, "2 .     srv6-security               enable/disable ip security checks");
         l.add(null, "2 .     netflow-rx                  netflow received packets");
         l.add(null, "2 .     netflow-tx                  netflow transmitted packets");
         l.add(null, "2 3     access-group-in             access list to apply to ingress packets");
@@ -9562,6 +9594,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             mplsPack.security = true;
             return;
         }
+        if (s.equals("srv6-security")) {
+            setSRv6Sec(true);
+            return;
+        }
         if (s.equals("netflow-rx")) {
             if (mplsPack == null) {
                 return;
@@ -9700,6 +9736,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 return;
             }
             mplsPack.security = false;
+            return;
+        }
+        if (s.equals("srv6-security")) {
+            setSRv6Sec(false);
             return;
         }
         if (s.equals("redirection")) {
