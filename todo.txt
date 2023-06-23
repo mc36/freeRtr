@@ -9,6 +9,7 @@ mist natives to have ipcomp rfc somehow
 
 mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
 
+measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
 
 test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 

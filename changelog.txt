@@ -14995,3 +14995,5 @@ todo: consider adding ipcomp tunnel to the dataplanes that interworks and decode
 todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pimtunnel icmptunnel
 ---------------------------------- 2023-06-23 07:26:11 23.6.23
 todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
+---------------------------------- 2023-06-23 09:00:32 23.6.23
+todo: measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
