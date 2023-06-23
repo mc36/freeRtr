@@ -47,7 +47,7 @@ public class tabLabel {
      * @return list of string
      */
     public static userFormat getShInt() {
-        userFormat lst = new userFormat("|", "interface|packet|secure|ldp4|ldp6|rsvp4|rsvp6");
+        userFormat lst = new userFormat("|", "interface|packet|mplsec|sr6sec|ldp4|ldp6|rsvp4|rsvp6");
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
             cfgIfc ntry = cfgAll.ifaces.get(i);
             if (ntry == null) {
@@ -57,7 +57,7 @@ public class tabLabel {
             if (ntry.mplsPack != null) {
                 sec = ntry.mplsPack.security;
             }
-            lst.add(ntry.name + "|" + (ntry.mplsPack != null) + "|" + sec + "|" + (ntry.mplsLdp4 != null) + "|" + (ntry.mplsLdp6 != null) + "|" + (ntry.mplsRsvp4 != null) + "|" + (ntry.mplsRsvp6 != null));
+            lst.add(ntry.name + "|" + (ntry.mplsPack != null) + "|" + sec + "|" + ntry.getSRv6sec() + "|" + (ntry.mplsLdp4 != null) + "|" + (ntry.mplsLdp6 != null) + "|" + (ntry.mplsRsvp4 != null) + "|" + (ntry.mplsRsvp6 != null));
         }
         return lst;
     }

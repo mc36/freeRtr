@@ -558,6 +558,20 @@ qc pass: ingress sgt matching access list
 qc pass: egress sgt matching access list
 qc pass: ingress fragment matching access list
 qc pass: ingress alert matching access list
+qc pass: gre over ipv4 filtered
+qc pass: sreth over ipv4 filtered
+qc pass: ipip over ipv4 filtered
+qc pass: icmptunnel over ipv4 filtered
+qc pass: ipv4 in esp over ipv4 filtered
+qc pass: ipcomp over ipv4 filtered
+qc pass: swipe over ipv4 filtered
+qc pass: gre over ipv6 filtered
+qc pass: sreth over ipv6 filtered
+qc pass: ipip over ipv6 filtered
+qc pass: icmptunnel over ipv6 filtered
+qc pass: ipv4 in esp over ipv6 filtered
+qc pass: ipcomp over ipv6 filtered
+failed: swipe over ipv6 filtered
 qc pass: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6

@@ -648,6 +648,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return false;
             case ipCor6.protocolNumber:
                 return false;
+            case ipIcmp4.protoNum:
+                return false;
+            case ipIcmp6.protoNum:
+                return false;
             case prtMplsIp.prot:
                 return false;
             case clntSrEth.prot:

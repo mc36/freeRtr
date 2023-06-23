@@ -2064,12 +2064,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      *
      * @param b true to enable false to disable
      */
-    public synchronized void setSRv6Sec(boolean b) {
+    public synchronized void setSRv6sec(boolean b) {
         if (fwdIf4 != null) {
             fwdIf4.protocolSecurity = b;
         }
         if (fwdIf6 != null) {
-            fwdIf4.protocolSecurity = b;
+            fwdIf6.protocolSecurity = b;
         }
     }
 
@@ -3720,6 +3720,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * @param ipx set true to process this protocol
      */
     public synchronized void setup2vrf(boolean ip4, boolean ip6, boolean ipx) {
+        boolean srv6sec = getSRv6sec();
         if (ip4 && (ipIf4 != null)) {
             ipIf4.closeUp();
             vrfFor.fwd4.ifaceDel(fwdIf4);
@@ -3788,6 +3789,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (fwdIf6 != null) {
             fwdIf6.otherHandler = fwdIf4;
         }
+        setSRv6sec(srv6sec);
         update2mpls();
         update2polka();
     }
@@ -9599,7 +9601,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (s.equals("srv6-security")) {
-            setSRv6Sec(true);
+            setSRv6sec(true);
             return;
         }
         if (s.equals("netflow-rx")) {
@@ -9743,7 +9745,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             return;
         }
         if (s.equals("srv6-security")) {
-            setSRv6Sec(false);
+            setSRv6sec(false);
             return;
         }
         if (s.equals("redirection")) {

@@ -13,7 +13,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter-rare v23.6.23-cur, done by sprscc13@mr.nobody.<br/>
-tested: 2023-06-23 16:12:13, took 00:09:42, with 80 workers, on 3196 cases, 0 failed, 1 traces, 5 retries<br/>
+tested: 2023-06-23 18:40:24, took 00:13:09, with 80 workers, on 3210 cases, 1 failed, 0 traces, 10 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -577,6 +577,20 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl77.tst">crypt-acl77.tst</a></td><td>success</td><td>egress sgt matching access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl78.tst">crypt-acl78.tst</a></td><td>success</td><td>ingress fragment matching access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl79.tst">crypt-acl79.tst</a></td><td>success</td><td>ingress alert matching access list</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl80.tst">crypt-acl80.tst</a></td><td>success</td><td>gre over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl81.tst">crypt-acl81.tst</a></td><td>success</td><td>sreth over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl82.tst">crypt-acl82.tst</a></td><td>success</td><td>ipip over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl83.tst">crypt-acl83.tst</a></td><td>success</td><td>icmptunnel over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl84.tst">crypt-acl84.tst</a></td><td>success</td><td>ipv4 in esp over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl85.tst">crypt-acl85.tst</a></td><td>success</td><td>ipcomp over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl86.tst">crypt-acl86.tst</a></td><td>success</td><td>swipe over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl87.tst">crypt-acl87.tst</a></td><td>success</td><td>gre over ipv6 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl88.tst">crypt-acl88.tst</a></td><td>success</td><td>sreth over ipv6 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl89.tst">crypt-acl89.tst</a></td><td>success</td><td>ipip over ipv6 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl90.tst">crypt-acl90.tst</a></td><td>success</td><td>icmptunnel over ipv6 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl91.tst">crypt-acl91.tst</a></td><td>success</td><td>ipv4 in esp over ipv6 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl92.tst">crypt-acl92.tst</a></td><td>success</td><td>ipcomp over ipv6 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl93.tst">crypt-acl93.tst</a></td><td>#6-run-r1 tping 100 5 2.2.2.2 vrf v1</td><td>swipe over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>success</td><td>dtls test</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp101.tst">crypt-esp101.tst</a></td><td>success</td><td>ipv4 in esp over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp102.tst">crypt-esp102.tst</a></td><td>success</td><td>ipv4 in esp over ipv6</td></tr>

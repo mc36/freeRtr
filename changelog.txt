@@ -15001,3 +15001,18 @@ todo: measurement framework for bandwidth, twamp, icmp and friends with offloadi
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 ---------------------------------- 2023-06-23 13:58:05 23.6.23
 todo: mpls srv6-security in software, with a test with gre at least then to the dataplanes
+---------------------------------- 2023-06-23 18:27:14 23.6.23
+qc pass: gre over ipv4 filtered
+qc pass: sreth over ipv4 filtered
+qc pass: ipip over ipv4 filtered
+qc pass: icmptunnel over ipv4 filtered
+qc pass: ipv4 in esp over ipv4 filtered
+qc pass: ipcomp over ipv4 filtered
+qc pass: swipe over ipv4 filtered
+qc pass: gre over ipv6 filtered
+qc pass: sreth over ipv6 filtered
+qc pass: ipip over ipv6 filtered
+qc pass: icmptunnel over ipv6 filtered
+qc pass: ipv4 in esp over ipv6 filtered
+qc pass: ipcomp over ipv6 filtered
+failed: swipe over ipv6 filtered
