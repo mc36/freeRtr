@@ -3198,6 +3198,7 @@ todo: misc natives p4fwd to have the packetout message too from the control chan
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
 todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
 todo: mist natives to have ipcomp rfc somehow
+todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
 todo: measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
 todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends

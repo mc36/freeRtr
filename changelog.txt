@@ -14997,3 +14997,5 @@ todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim
 todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
 ---------------------------------- 2023-06-23 09:00:32 23.6.23
 todo: measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
+---------------------------------- 2023-06-23 10:54:12 23.6.23
+todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
