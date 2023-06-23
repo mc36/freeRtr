@@ -11,7 +11,6 @@ import net.freertr.clnt.clntNetflow;
 import net.freertr.clnt.clntSrEth;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcNshFwd;
-import net.freertr.pack.packErspan;
 import net.freertr.pack.packEsp;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packL2tp3;
@@ -1357,6 +1356,12 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ipCore.parseIPheader(pck, true)) {
             lower.cntr.drop(pck, counter.reasons.badHdr);
             return;
+        }
+        if (lower.protocolSecurity) {
+            if (safeProtocol(pck.IPprt)) {
+                doDrop(pck, lower, counter.reasons.denied, 0);
+                return;
+            }
         }
         if (lower.pmtudIn > 0) {
             if (pck.dataSize() > lower.pmtudIn) {
