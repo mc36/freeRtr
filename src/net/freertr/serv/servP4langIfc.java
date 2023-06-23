@@ -592,13 +592,14 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     /**
      * send one packet through api
      *
+     * @param cnt counter to use
      * @param pck packet to send
      */
-    public void apiSendPack(packHolder pck) {
+    public void apiSendPack(int cnt, packHolder pck) {
         if (debugger.servP4langTraf) {
             logger.debug("sending on #" + id + " " + pck.dataOffset());
         }
-        lower.sendLine(ifcMacSec.packet2packout(pck, id, id));
+        lower.sendLine(ifcMacSec.packet2packout(pck, cnt, id, id));
     }
 
     /**
@@ -622,7 +623,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     public void sendPack(packHolder pck) {
         if (apiPack) {
-            apiSendPack(pck);
+            apiSendPack(1, pck);
             return;
         }
         lower.sendPack(id, pck);

@@ -206,8 +206,8 @@ public class ifcMacSec implements Runnable {
      * @param pck packet to convert
      * @return converted packet
      */
-    public static final String packet2packout(packHolder pck, int prt, int port) {
-        String a = "packout_add 1 " + pck.dataSize() + " " + prt + " " + port;
+    public static final String packet2packout(packHolder pck, int cnt, int prt, int port) {
+        String a = "packout_add " + cnt + " " + pck.dataSize() + " " + prt + " " + port;
         if (pck.msbGetW(0) == ifcSgt.type) {
             a += " 1";
         } else {
@@ -231,7 +231,7 @@ public class ifcMacSec implements Runnable {
             return true;
         }
         if (sendPipe != null) {
-            sendPipe.linePut(packet2packout(pck, sendPrt, sendPort));
+            sendPipe.linePut(packet2packout(pck, 1, sendPrt, sendPort));
             return false;
         }
         cntr.tx(pck);

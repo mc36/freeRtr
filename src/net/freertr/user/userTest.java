@@ -159,6 +159,8 @@ public class userTest {
                 cmd.error("no such server");
                 return null;
             }
+            int cnt = bits.str2num(cmd.word());
+            int slp = bits.str2num(cmd.word());
             int fwd = bits.str2num(cmd.word());
             int ifc = bits.str2num(cmd.word());
             packHolder pck = new packHolder(true, true);
@@ -171,8 +173,8 @@ public class userTest {
                 pck.putSkip(1);
                 pck.merge2end();
             }
-            cmd.error("sending to fwd=" + fwd + " ifc" + ifc + " pck=" + pck.dump());
-            srv.send2apiPack(fwd, ifc, pck);
+            cmd.error("sending cnt=" + cnt + " fwd=" + fwd + " ifc" + ifc + " pck=" + pck.dump());
+            srv.send2apiPack(cnt, fwd, ifc, pck);
             return null;
         }
         if (a.equals("whois")) {

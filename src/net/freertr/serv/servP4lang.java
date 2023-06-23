@@ -125,11 +125,11 @@ public class servP4lang extends servGeneric implements prtServS {
      * defaults filter
      */
     public static tabGen<userFilter> defaultF;
-
+    
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
-
+    
     public void srvShRun(String beg, List<String> l, int filter) {
         l.add(beg + "buffer " + bufSiz);
         l.add(beg + "dataplanes " + fwds.size());
@@ -145,7 +145,7 @@ public class servP4lang extends servGeneric implements prtServS {
             cur.getShowRun2(beg, a, l);
         }
     }
-
+    
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         boolean neg = s.equals("no");
@@ -202,7 +202,7 @@ public class servP4lang extends servGeneric implements prtServS {
         }
         return res;
     }
-
+    
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  buffer                    set buffer size on connection");
         l.add(null, "2 .    <num>                   buffer in bytes");
@@ -220,29 +220,29 @@ public class servP4lang extends servGeneric implements prtServS {
         l.add(null, "2 3    all                     every forwarder");
         fwds.get(0).getHelpText(l, 3);
     }
-
+    
     public String srvName() {
         return "p4lang";
     }
-
+    
     public int srvPort() {
         return port;
     }
-
+    
     public int srvProto() {
         return protoAllStrm;
     }
-
+    
     public boolean srvInit() {
         restartDiscovery(true);
         return genStrmStart(this, new pipeLine(bufSiz, false), 0);
     }
-
+    
     public boolean srvDeinit() {
         restartDiscovery(false);
         return genericStop(0);
     }
-
+    
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         servP4langCfg cur = null;
         for (int i = 0; i < fwds.size(); i++) {
@@ -271,7 +271,7 @@ public class servP4lang extends servGeneric implements prtServS {
         cur.conn.startWork();
         return false;
     }
-
+    
     private void restartDiscovery(boolean need) {
         need &= fwds.size() > 1;
         dscvry.need2work = false;
@@ -556,12 +556,13 @@ public class servP4lang extends servGeneric implements prtServS {
     /**
      * send a packet through the api
      *
+     * @param cntr counter to use
      * @param fwdn forwarder to use
      * @param ficn interface to use
      * @param pck packet to send
      * @return true on error false on success
      */
-    public boolean send2apiPack(int fwdn, int ifcn, packHolder pck) {
+    public boolean send2apiPack(int cntr, int fwdn, int ifcn, packHolder pck) {
         servP4langCfg fwdc = null;
         try {
             fwdc = fwds.get(fwdn);
@@ -573,8 +574,14 @@ public class servP4lang extends servGeneric implements prtServS {
         if (ifcc == null) {
             return true;
         }
-        ifcc.apiSendPack(pck);
+        if (ifcc.apiPack) {
+            ifcc.apiSendPack(cntr, pck);
+            return false;
+        }
+        for (int i = 0; i < cntr; i++) {
+            ifcc.sendPack(pck.copyBytes(true, true));
+        }
         return false;
     }
-
+    
 }

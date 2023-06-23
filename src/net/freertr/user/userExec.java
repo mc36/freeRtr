@@ -2145,11 +2145,12 @@ public class userExec {
         hl.add(null, "8 .                  <str>            target address");
         cfgAll.aliasHelps(cfgAlias.aliasType.pckt, 2, hl);
         hl.add(null, "1 2    test                           test various things");
-        hl.add(null, "2 3      p4lang                       send packet over the api");
+        hl.add(null, ".2 3      p4lang                      send packet over the api");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
-        hl.add(null, "4 5          <num>                    forwarder number");
-        hl.add(null, "5 6            <num>                  interface to send to");
-        hl.add(null, "6 6,.            [num]                packet contents");
+        hl.add(null, "4 5          <num>                    counter to use");
+        hl.add(null, "5 6            <num>                  forwarder number");
+        hl.add(null, "7 8              <num>                interface to send to");
+        hl.add(null, "8 8,.              [num]              packet contents");
         hl.add(null, "2 3      whois                        asn name cache");
         hl.add(null, "3 .        <num>                      asn number");
         hl.add(null, "2 3      acl                          access list merge, unroll");
