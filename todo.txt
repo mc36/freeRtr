@@ -15,7 +15,7 @@ mist natives to have ipcomp rfc somehow
 a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 
 
-test if bier to headend-replicate to two paths over bgp-ct vrfs
+test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 
 
 
