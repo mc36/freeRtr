@@ -15021,3 +15021,7 @@ no failed: swipe over ipv6 filtered
 qc pass: swipe over ipv6 filtered
 ---------------------------------- 2023-06-24 07:01:18 23.6.24
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs
+---------------------------------- 2023-06-24 11:43:53 23.6.24
+no todo: test if bier to headend-replicate to two paths over bgp-ct vrfs
+no todo: mpls srv6-security in software, with a test with gre at least then to the dataplanes
+todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
