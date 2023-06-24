@@ -207,13 +207,7 @@ public class ifcMacSec implements Runnable {
      * @return converted packet
      */
     public static final String packet2packout(packHolder pck, int cnt, int prt, int port) {
-        String a = "packout_add " + cnt + " " + pck.dataSize() + " " + prt + " " + port;
-        if (pck.msbGetW(0) == ifcSgt.type) {
-            a += " 1";
-        } else {
-            a += " 0";
-        }
-        a += " " + ((pck.UDPsrc ^ pck.UDPtrg) & 0xf) + " ";
+        String a = "packout_add " + cnt + " " + pck.dataSize() + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 0xf) + " ";
         for (int i = 0; i < pck.dataSize(); i++) {
             a += pck.getByte(i);
         }
