@@ -13,6 +13,9 @@ a preface forwarder for the asic offload to have at crypto and frag/reasm using 
 
 test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 
+test if bier in a ring copcept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
+
+
 
 
 mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
