@@ -1,7 +1,3 @@
-mpls srv6-security in software, with a test with gre at least then to the dataplanes
-
-
-
 misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
 
 mist natives p4fwd to report the boot messages through the control channel in dataplane-says
