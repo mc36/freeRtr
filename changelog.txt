@@ -15025,3 +15025,5 @@ todo: test if bier to headend-replicate to two paths over bgp-ct vrfs
 no todo: test if bier to headend-replicate to two paths over bgp-ct vrfs
 no todo: mpls srv6-security in software, with a test with gre at least then to the dataplanes
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
+---------------------------------- 2023-06-24 23:39:40 23.6.24
+todo: test if bier in a ring copcept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
