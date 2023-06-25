@@ -15030,3 +15030,6 @@ todo: test if bier in a ring copcept with a knob like int sdn1.111 mpls bier rep
 ---------------------------------- 2023-06-25 07:19:40 23.6.25
 no todo: mist natives to have ipcomp rfc somehow
 todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so what to link to?
+---------------------------------- 2023-06-25 07:50:59 23.6.25
+no todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so what to link to?
+todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
