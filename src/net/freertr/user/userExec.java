@@ -2150,7 +2150,9 @@ public class userExec {
         hl.add(null, "4 5          <num>                    counter to use");
         hl.add(null, "5 6            <num>                  forwarder number");
         hl.add(null, "6 7              <num>                interface to send to");
-        hl.add(null, "7 7,.              [num]              packet contents");
+        hl.add(null, "7 8                <addr>             target address");
+        hl.add(null, "8 9                  <addr>           source address");
+        hl.add(null, "9 9,.                  [num]          packet contents");
         hl.add(null, "2 3      whois                        asn name cache");
         hl.add(null, "3 .        <num>                      asn number");
         hl.add(null, "2 3      acl                          access list merge, unroll");

@@ -163,6 +163,8 @@ public class userTest {
             int fwd = bits.str2num(cmd.word());
             int ifc = bits.str2num(cmd.word());
             packHolder pck = new packHolder(true, true);
+            pck.ETHtrg.fromString(cmd.word());
+            pck.ETHsrc.fromString(cmd.word());
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -172,7 +174,7 @@ public class userTest {
                 pck.putSkip(1);
                 pck.merge2end();
             }
-            cmd.error("sending cnt=" + cnt + " fwd=" + fwd + " ifc=" + ifc + " pck=" + pck.dump());
+            cmd.error("sending cnt=" + cnt + " fwd=" + fwd + " ifc=" + ifc + " adr=" + pck.ETHsrc + "->" + pck.ETHtrg + " pck=" + pck.dump());
             srv.send2apiPack(cnt, fwd, ifc, pck);
             return null;
         }
