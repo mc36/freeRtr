@@ -3211,7 +3211,7 @@ qc pass: udp forwarder server
 todo: misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
 todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
-todo: mist natives to have ipcomp rfc somehow
+todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so what to link to?
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 todo: test if bier in a ring copcept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
