@@ -2316,12 +2316,17 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         unsigned char bufC[16384];
         unsigned char bufD[16384];
         unsigned char bufH[preBuff];
-        for (int i=0; i<bufS; i++) {
-            sscanf(&((arg[8])[i]), "%hhx", &orig[i]);
+        memset(&orig, 0, 16384);
+        str2key(arg[8], orig);
+        if (cntr != 1) {
+            printf("warning cntr=%i bufS=%i prt=%i port=%i orig=", cntr, bufS, prt, port);
+            for (i=0; i<32; i++) printf("%02x", orig[i]);
+            printf("\n");
         }
-        for (int i=0; i<cntr; i++) {
-            memcpy(&bufD[preBuff], &orig[0], bufS);
-            memcpy(&bufH[0], &orig[0], 16);
+        bufS -= 12;
+        for (i=0; i<cntr; i++) {
+            memmove(&bufD[preBuff], &orig[12], bufS);
+            memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
             send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
