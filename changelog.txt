@@ -15033,3 +15033,5 @@ todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/
 ---------------------------------- 2023-06-25 07:50:59 23.6.25
 no todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so what to link to?
 todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
+---------------------------------- 2023-06-25 20:28:29 23.6.25
+qc pass: p4lang: packout on port
