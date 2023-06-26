@@ -316,6 +316,25 @@ public class servP4langCfg implements ifcUp {
     }
 
     /**
+     * setup for api packet usage
+     *
+     * @param prnt parent to check against
+     */
+    protected void setup2apiPack(servP4langIfc prnt) {
+        prnt.apiPack = prnt.speed.equals("-2");
+        for (int i = expIfc.size() - 1; i >= 0; i--) {
+            servP4langIfc ntry = expIfc.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if ((ntry.ifc.parent != prnt.ifc) && (ntry.ifc.cloned != prnt.ifc)) {
+                continue;
+            }
+            ntry.setup2apiPack(prnt.apiPack);
+        }
+    }
+
+    /**
      * get configuration
      *
      * @param beg text to prepend
@@ -754,9 +773,7 @@ public class servP4langCfg implements ifcUp {
             ntry.flowCtrl = servP4langMgcN.toNum(flwctrls, cmd.word(), 0);
             boolean need = ifc.type == tabRouteIface.ifaceType.sdn;
             ntry.dynamic = !need;
-            int spd = bits.str2num(ntry.speed);
-            ntry.apiPack = spd == -2;
-            if (spd == -1) {
+            if (ntry.speed.equals("-1")) {
                 switch (ifc.type) {
                     case hairpin:
                     case bundle:
@@ -794,6 +811,7 @@ public class servP4langCfg implements ifcUp {
             ifc.ethtyp.hwHstry = new history();
             ifc.ethtyp.hwCntr = new counter();
             expIfc.put(ntry);
+            setup2apiPack(ntry);
             return false;
         }
         return true;

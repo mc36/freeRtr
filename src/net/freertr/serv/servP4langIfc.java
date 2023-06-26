@@ -598,6 +598,10 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     public void apiSendPack(int cnt, packHolder pck) {
         if (debugger.servP4langTraf) {
             logger.debug("sending on #" + id + " " + pck.dataOffset());
+        } else {
+            if (cnt != 1) {
+                logger.error("sending " + cnt + " of packets to #" + id + " payload=" + pck.dataOffset());
+            }
         }
         lower.sendLine(ifcMacSec.packet2packout(pck, cnt, id, id));
     }
@@ -605,20 +609,23 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     /**
      * setup the api packet change
      */
-    public void setup2apiPack() {
+    public void setup2apiPack(boolean ned) {
         ifcMacSec mcsc = ifc.ethtyp.macSec;
-        if (mcsc == null) {
-            return;
+        ned |= mcsc != null;
+        ned &= apiPack;
+        if (mcsc != null) {
+            if (ned) {
+                mcsc.sendPipe = lower.conn.pipe;
+                mcsc.sendPort = id;
+                mcsc.sendPrt = id;
+            } else {
+                mcsc.sendPipe = null;
+                mcsc.sendPort = 0;
+                mcsc.sendPrt = 0;
+            }
         }
-        if (apiPack) {
-            mcsc.sendPipe = lower.conn.pipe;
-            mcsc.sendPort = id;
-            mcsc.sendPrt = id;
-        } else {
-            mcsc.sendPipe = null;
-            mcsc.sendPort = 0;
-            mcsc.sendPrt = 0;
-        }
+        apiPack = ned;
+        lower.setup2apiPack(this);
     }
 
     public void sendPack(packHolder pck) {
