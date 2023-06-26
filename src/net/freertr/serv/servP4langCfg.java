@@ -321,7 +321,14 @@ public class servP4langCfg implements ifcUp {
      * @param prnt parent to check against
      */
     protected void setup2apiPack(servP4langIfc prnt) {
-        prnt.apiPack = prnt.speed.equals("-2");
+        if (prnt == null) {
+            return;
+        }
+        if (prnt.speed != null) {
+            prnt.apiPack = prnt.speed.equals("-2");
+        } else {
+            prnt.apiPack = false;
+        }
         for (int i = expIfc.size() - 1; i >= 0; i--) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry == null) {

@@ -56,7 +56,7 @@ interface tunnel1
 
 addpersist r2
 int eth1 eth 0000.0000.2222 $per1$
-int eth2 eth 0000.0000.2222 $per1$
+int eth2 eth 0000.0000.2222 $per2$
 !
 interface loopback0
  ipv4 addr 2.2.2.2 255.255.255.255
