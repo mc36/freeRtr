@@ -1196,13 +1196,13 @@ public class servP4langCfg implements ifcUp {
      * @return show
      */
     protected userFormat getShowIfaces() {
-        userFormat res = new userFormat("|", "sent|name");
+        userFormat res = new userFormat("|", "sent|name|apipak");
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry.ifc == null) {
-                res.add(ntry.id + "|brif " + ntry.brif.getIfcName());
+                res.add(ntry.id + "|brif " + ntry.brif.getIfcName() + "|" + ntry.apiPack);
             } else {
-                res.add(ntry.id + "|ifc " + ntry.ifc.name);
+                res.add(ntry.id + "|ifc " + ntry.ifc.name + "|" + ntry.apiPack);
             }
         }
         return res;
