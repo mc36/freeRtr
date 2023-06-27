@@ -341,7 +341,7 @@ public class servP4langCfg implements ifcUp {
             ntry.setup2apiPack(prnt.apiPack);
         }
         ////////////////
-        */
+         */
     }
 
     /**
@@ -777,7 +777,11 @@ public class servP4langCfg implements ifcUp {
                     return false;
                 }
             }
-            ntry.speed = cmd.word();
+            s = cmd.word();
+            if (s.length() < 1) {
+                s = "0";
+            }
+            ntry.speed = s;
             ntry.errCorr = servP4langMgcN.toNum(fwderrcr, cmd.word(), 0);
             ntry.autoNeg = servP4langMgcN.toNum(autonegs, cmd.word(), 0);
             ntry.flowCtrl = servP4langMgcN.toNum(flwctrls, cmd.word(), 0);
