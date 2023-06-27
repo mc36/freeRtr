@@ -629,10 +629,12 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     }
 
     public void sendPack(packHolder pck) {
+/**
         if (apiPack) {
             apiSendPack(1, pck);
             return;
         }
+**/
         lower.sendPack(id, pck);
     }
 
