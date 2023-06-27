@@ -8,6 +8,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.ifc.ifcDn;
+import net.freertr.ifc.ifcMacSec;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
@@ -16,6 +17,8 @@ import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabSession;
 import net.freertr.util.counter;
+import net.freertr.util.debugger;
+import net.freertr.util.logger;
 import net.freertr.util.state;
 
 /**
@@ -49,6 +52,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * reinit parameters
      */
     protected String reinit;
+
+    /**
+     * send packets through api
+     */
+    protected boolean apiPack;
 
     /**
      * speed
@@ -581,7 +589,53 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         return 8000000;
     }
 
+    /**
+     * send one packet through api
+     *
+     * @param cnt counter to use
+     * @param pck packet to send
+     */
+    public void apiSendPack(int cnt, packHolder pck) {
+        if (1<2)return;////////////////////////////////////////////////
+        if (debugger.servP4langTraf) {
+            logger.debug("sending on #" + id + " " + pck.dataOffset());
+        } else {
+            if (cnt != 1) {
+                logger.error("sending " + cnt + " of packets to #" + id + " payload=" + pck.dataOffset());
+            }
+        }
+        lower.sendLine(ifcMacSec.packet2packout(pck, cnt, id, id));
+    }
+
+    /**
+     * setup the api packet change
+     */
+    public void setup2apiPack(boolean ned) {
+        if (1<2)return;////////////////////////////////////////////////
+        ifcMacSec mcsc = ifc.ethtyp.macSec;
+        ned |= mcsc != null;
+        ned &= apiPack;
+        if (mcsc != null) {
+            if (ned) {
+                mcsc.sendPipe = lower.conn.pipe;
+                mcsc.sendPort = id;
+                mcsc.sendPrt = id;
+            } else {
+                mcsc.sendPipe = null;
+                mcsc.sendPort = 0;
+                mcsc.sendPrt = 0;
+            }
+        }
+        apiPack = ned;
+        lower.setup2apiPack(this);
+    }
+
     public void sendPack(packHolder pck) {
+        if (1<2){lower.sendPack(id, pck);return;}//////////////////////
+        if (apiPack) {
+            apiSendPack(1, pck);
+            return;
+        }
         lower.sendPack(id, pck);
     }
 

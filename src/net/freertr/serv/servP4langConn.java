@@ -274,6 +274,7 @@ public class servP4langConn implements Runnable {
         int nxt = lower.ifcRngBeg;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
+            lower.setup2apiPack(ntry);
             if (ntry.reinit != null) {
                 cmds cmd = new cmds("exp", ntry.reinit);
                 int prt = servP4langMgcN.toNum(lower.frontnam, cmd.word(), -1);
@@ -2009,10 +2010,12 @@ public class servP4langConn implements Runnable {
                 } else {
                     lower.sendLine("macsec_add " + ifc.id + " " + a);
                 }
+                lower.setup2apiPack(ifc);
             } else {
                 if (ifc.sentMacsec != null) {
                     lower.sendLine("macsec_del " + ifc.id + " " + ifc.sentMacsec);
                 }
+                lower.setup2apiPack(ifc);
             }
             ifc.sentMacsec = a;
         }
