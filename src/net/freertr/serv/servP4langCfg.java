@@ -316,33 +316,6 @@ public class servP4langCfg implements ifcUp {
     }
 
     /**
-     * setup for api packet usage
-     *
-     * @param prnt parent to check against
-     */
-    protected void setup2apiPack(servP4langIfc prnt) {
-        if (1<2)return;////////////////////////////////////////////////
-        if (prnt == null) {
-            return;
-        }
-        if (prnt.speed != null) {
-            prnt.apiPack = prnt.speed.equals("-2");
-        } else {
-            prnt.apiPack = false;
-        }
-        for (int i = expIfc.size() - 1; i >= 0; i--) {
-            servP4langIfc ntry = expIfc.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if ((ntry.ifc.parent != prnt.ifc) && (ntry.ifc.cloned != prnt.ifc)) {
-                continue;
-            }
-            ntry.setup2apiPack(prnt.apiPack);
-        }
-    }
-
-    /**
      * get configuration
      *
      * @param beg text to prepend
@@ -819,7 +792,6 @@ public class servP4langCfg implements ifcUp {
             ifc.ethtyp.hwHstry = new history();
             ifc.ethtyp.hwCntr = new counter();
             expIfc.put(ntry);
-            setup2apiPack(ntry);
             return false;
         }
         return true;
@@ -1222,13 +1194,13 @@ public class servP4langCfg implements ifcUp {
      * @return show
      */
     protected userFormat getShowIfaces() {
-        userFormat res = new userFormat("|", "sent|name|apipak");
+        userFormat res = new userFormat("|", "sent|name");
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry.ifc == null) {
-                res.add(ntry.id + "|brif " + ntry.brif.getIfcName() + "|" + ntry.apiPack);
+                res.add(ntry.id + "|brif " + ntry.brif.getIfcName());
             } else {
-                res.add(ntry.id + "|ifc " + ntry.ifc.name + "|" + ntry.apiPack);
+                res.add(ntry.id + "|ifc " + ntry.ifc.name);
             }
         }
         return res;

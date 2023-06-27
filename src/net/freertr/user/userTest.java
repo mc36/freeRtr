@@ -175,7 +175,7 @@ public class userTest {
                 pck.merge2end();
             }
             cmd.error("sending cnt=" + cnt + " fwd=" + fwd + " ifc=" + ifc + " adr=" + pck.ETHsrc + "->" + pck.ETHtrg + " pck=" + pck.dump());
-            srv.send2apiPack(cnt, fwd, ifc, pck);
+            //////////////////////srv.send2apiPack(cnt, fwd, ifc, pck);
             return null;
         }
         if (a.equals("whois")) {
