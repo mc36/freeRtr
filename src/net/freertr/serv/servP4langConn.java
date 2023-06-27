@@ -156,7 +156,7 @@ public class servP4langConn implements Runnable {
         lower.started = bits.getTime();
         lower.reconns++;
         lower.neighs.clear();
-        for (int i = lower.expIfc.size() - 1; i >= 0; i--) {
+        for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
             if (ntry.ifc == null) {
                 lower.expIfc.del(ntry);
