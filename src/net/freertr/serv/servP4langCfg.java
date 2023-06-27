@@ -321,6 +321,7 @@ public class servP4langCfg implements ifcUp {
      * @param prnt parent to check against
      */
     protected void setup2apiPack(servP4langIfc prnt) {
+        if (1<2)return;////////////////////////////////////////////////
         if (prnt == null) {
             return;
         }

@@ -596,6 +596,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param pck packet to send
      */
     public void apiSendPack(int cnt, packHolder pck) {
+        if (1<2)return;////////////////////////////////////////////////
         if (debugger.servP4langTraf) {
             logger.debug("sending on #" + id + " " + pck.dataOffset());
         } else {
@@ -630,7 +631,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     }
 
     public void sendPack(packHolder pck) {
-        if (1<2)lower.sendPack(id, pck);//////////////////////
+        if (1<2){lower.sendPack(id, pck);return;}//////////////////////
         if (apiPack) {
             apiSendPack(1, pck);
             return;
