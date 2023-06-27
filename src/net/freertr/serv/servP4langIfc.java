@@ -610,7 +610,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * setup the api packet change
      */
     public void setup2apiPack(boolean ned) {
-        if (1<2)return;/////////////////////////////////
+        if (1<2)return;////////////////////////////////////////////////
         ifcMacSec mcsc = ifc.ethtyp.macSec;
         ned |= mcsc != null;
         ned &= apiPack;
@@ -630,6 +630,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     }
 
     public void sendPack(packHolder pck) {
+        if (1<2)lower.sendPack(id, pck);//////////////////////
         if (apiPack) {
             apiSendPack(1, pck);
             return;
