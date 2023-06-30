@@ -62,6 +62,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * speed
      */
     protected String speed;
+    
+    /**
+     * speed converted
+     */
+    protected int spdNum;
 
     /**
      * error correction
