@@ -786,7 +786,7 @@ public class servP4langCfg implements ifcUp {
             ntry.flowCtrl = servP4langMgcN.toNum(flwctrls, cmd.word(), 0);
             boolean need = ifc.type == tabRouteIface.ifaceType.sdn;
             ntry.dynamic = !need;
-            if (ntry.speed.equals("-1")) {
+            if (ntry.spdNum == -1) {
                 switch (ifc.type) {
                     case hairpin:
                     case bundle:

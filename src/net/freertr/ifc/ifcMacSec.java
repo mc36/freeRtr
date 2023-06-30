@@ -204,6 +204,9 @@ public class ifcMacSec implements Runnable {
      * convert a packet to a packet out message
      *
      * @param pck packet to convert
+     * @param cnt counter to use
+     * @param prt port to use
+     * @param port port to use
      * @return converted packet
      */
     public static final String packet2packout(packHolder pck, int cnt, int prt, int port) {

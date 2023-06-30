@@ -62,7 +62,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * speed
      */
     protected String speed;
-    
+
     /**
      * speed converted
      */
@@ -613,12 +613,16 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
 
     /**
      * setup the api packet change
+     *
+     * @param ned needed or not
      */
     public void setup2apiPack(boolean ned) {
-        if (1<2)return;////////////////////////////////////////////////
+        if (1 < 2) {
+            return;////////////////////////////////////////////////
+        }
         ifcMacSec mcsc = ifc.ethtyp.macSec;
         ned |= mcsc != null;
-        ned &= apiPack;
+        ned &= (spdNum == -2);
         if (mcsc != null) {
             if (ned) {
                 mcsc.sendPipe = lower.conn.pipe;

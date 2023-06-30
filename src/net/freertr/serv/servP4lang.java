@@ -558,7 +558,7 @@ public class servP4lang extends servGeneric implements prtServS {
      *
      * @param cntr counter to use
      * @param fwdn forwarder to use
-     * @param ficn interface to use
+     * @param ifcn interface to use
      * @param pck packet to send
      * @return true on error false on success
      */
