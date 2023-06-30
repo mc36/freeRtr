@@ -1,3 +1,3 @@
 #!/bin/sh
-./tbq.sh $@
+./tqb.sh $@
 ./tp9.sh $@
