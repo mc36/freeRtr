@@ -654,6 +654,7 @@ public class userExec {
         hl.add(null, "5 .            rpkisum              list of servers");
         hl.add(null, "5 .            rpkitab              list of prefixes");
         hl.add(null, "5 .            summary              list of neighbors");
+        hl.add(null, "5 .            desummary            list of neighbors with description");
         hl.add(null, "5 6            template             information about template");
         hl.add(null, "6 7              <str>              template name");
         hl.add(null, "7 .                config           peer configuration");
@@ -1014,6 +1015,12 @@ public class userExec {
         hl.add(null, "3 .        key                   show some key");
         hl.add(null, "3 .        bug                   show some bug");
         hl.add(null, "3 .        review                show some reasons");
+        hl.add(null, "3 4        7bit                  show some 7bit");
+        hl.add(null, "4 4,.        [str]               string to 7bit");
+        hl.add(null, "3 4        rev7                  show some 7bit");
+        hl.add(null, "4 4,.        [str]               string to reverse 7bit");
+        hl.add(null, "3 4        hack                  show some hack");
+        hl.add(null, "4 4,.        [str]               string to hack");
         hl.add(null, "2 3      process                 list processes");
         hl.add(null, "3 4,.      cpu                   internal router threads");
         hl.add(null, "4 .          <num>               thread id");

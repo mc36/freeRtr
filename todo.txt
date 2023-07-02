@@ -352,5 +352,8 @@ document the vm
 more clean transpilers for the vm
 more clean converters for the vm
 
-
 flash commander to have file info and hash
+
+sho ipv4 bgp 666 uni hackerized 1.1.1.1
+
+banyan vines protocol in sw

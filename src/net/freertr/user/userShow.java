@@ -210,6 +210,24 @@ public class userShow {
         }
         if (a.equals("me-the")) {
             a = cmd.word();
+            if (a.equals("hack")) {
+                a = cmd.getRemaining();
+                a = enc7bit.toHackedStr(a);
+                rdr.putStrArr(bits.str2lst(a));
+                return null;
+            }
+            if (a.equals("7bit")) {
+                a = cmd.getRemaining();
+                a = enc7bit.doOneString(a);
+                rdr.putStrArr(bits.str2lst(a));
+                return null;
+            }
+            if (a.equals("rev7")) {
+                a = cmd.getRemaining();
+                a = enc7bit.decodeExtStr(a);
+                rdr.putStrArr(bits.str2lst(a));
+                return null;
+            }
             if (a.equals("key")) {
                 rdr.putStrArr(version.shSecret(1));
                 return null;
@@ -3749,6 +3767,10 @@ public class userShow {
         }
         if (a.equals("rpkitab")) {
             doShowRoutes(r.bgp.fwdCore, r.bgp.computedRpki, 4);
+            return;
+        }
+        if (a.equals("desummary")) {
+            rdr.putStrTab(r.bgp.showSummary(17));
             return;
         }
         if (a.equals("graceful-restart")) {

@@ -2011,6 +2011,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     /**
      * neighbor list entry
      *
+     * @return line of string
+     */
+    public String showSummry() {
+        return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.ready2adv + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + bits.timePast(conn.upTime);
+    }
+
+    /**
+     * neighbor list entry
+     *
      * @param mod mode
      * @return line of string
      */
@@ -2043,13 +2052,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(peerAddr), false, packDnsRec.typePTR);
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + clnt.getPTR();
             case 13:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.ready2adv + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + bits.timePast(conn.upTime);
+                return showSummry();
             case 14:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerMltLab) + "|" + rtrBgpParam.mask2string(multiLabel & addrFams);
             case 15:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerLlGrace) + "|" + rtrBgpParam.mask2string(llGraceRestart & addrFams);
             case 16:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.peerSoftware;
+            case 17:
+                return showSummry() + "|" + description;
             default:
                 return null;
         }

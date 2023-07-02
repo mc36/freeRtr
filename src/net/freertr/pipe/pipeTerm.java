@@ -139,6 +139,8 @@ class pipeTermTx implements Runnable {
     }
 
     public void run() {
+        parent.console.linePut("escape character is ascii 0x" + bits.toHexB(parent.escChr) + ".");
+        parent.console.linePut("");
         try {
             for (;;) {
                 if (!parent.runningNeed) {

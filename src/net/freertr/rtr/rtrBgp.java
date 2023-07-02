@@ -3677,7 +3677,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      *
      * @param mod mode: 1=afi, 2=groups, 3=nexthops, 4=graceful, 5=addpath,
      * 6=routerid, 7=buffer, 8=description, 9=hostname, 10=compress, 11=connect,
-     * 12=resolve, 13=summary, 14=multilab, 15=longlived, 16=software
+     * 12=resolve, 13=summary, 14=multilab, 15=longlived, 16=software, 17=desum
      * @return list of neighbors
      */
     public userFormat showSummary(int mod) {
@@ -3728,6 +3728,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 break;
             case 16:
                 l = new userFormat("|", "neighbor|as|software");
+                break;
+            case 17:
+                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|descr");
                 break;
             default:
                 return null;
