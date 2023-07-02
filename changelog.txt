@@ -15045,3 +15045,5 @@ no failed: p4lang downlink
 no failed: p4lang demultiplexer
 qc pass: p4lang demultiplexer
 qc pass: p4lang downlink
+---------------------------------- 2023-07-02 08:17:04 23.7.2
+todo: flash commander to have file info and hash

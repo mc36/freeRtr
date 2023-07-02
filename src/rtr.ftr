@@ -3418,3 +3418,4 @@ todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
 todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: more clean transpilers for the vm
 todo: more clean converters for the vm
+todo: flash commander to have file info and hash
