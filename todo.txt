@@ -357,3 +357,5 @@ flash commander to have file info and hash
 sho ipv4 bgp 666 uni hackerized 1.1.1.1
 
 banyan vines protocol in sw
+
+hackediff alias to diff with the | hacked fun filter

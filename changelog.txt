@@ -15050,3 +15050,5 @@ todo: flash commander to have file info and hash
 ---------------------------------- 2023-07-02 20:00:38 23.7.2
 todo: sho ipv4 bgp 666 uni hackerized 1.1.1.1
 todo: banyan vines protocol in sw
+---------------------------------- 2023-07-02 20:48:28 23.7.2
+todo: hackediff alias to diff with the | hacked fun filter
