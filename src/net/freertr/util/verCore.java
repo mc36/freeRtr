@@ -48,7 +48,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 2;
+    public final static int day = 5;
 
     /**
      * statement of release
@@ -96,7 +96,7 @@ public class verCore {
         "quote6: packet delivery on the wild-wild-net is best-effort, if any",
         "quote7: if a machine can learn the value of human life, maybe we can too",
         "quote8: be liberal in what you accept, and conservative in what you send",
-        "quote9: the beer-ware license for selected group of people:",
+        "quote9: the beer-ware,abandon-ware license for selected group of people:",
         author + " wrote these files. as long as you retain this notice you",
         "can do whatever you want with this stuff. if we meet some day, and",
         "you think this stuff is worth it, you can buy me a beer in return"

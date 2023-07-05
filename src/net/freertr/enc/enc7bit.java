@@ -361,8 +361,6 @@ public class enc7bit {
             default:
                 return '?';
         }
-        // case 0xf000gf:return '?'; //
-        // case 0xf000t0:return '?'; //
     }
 
     /**
@@ -406,6 +404,10 @@ public class enc7bit {
      */
     public static final byte doHackOneChar(byte c) {
         switch (c) {
+            case '0':
+                return 'o';
+            case '1':
+                return 'i';
             case 'i':
                 return '1';
             case 'l':
@@ -416,8 +418,16 @@ public class enc7bit {
                 return '3';
             case 's':
                 return 'z';
+            case 'z':
+                return 's';
             case 'a':
                 return '4';
+            case '4':
+                return 'a';
+            case 'v':
+                return 'w';
+            case 'w':
+                return 'v';
             default:
                 if (extendedByte(c)) {
                     return decodeExtByte(c);

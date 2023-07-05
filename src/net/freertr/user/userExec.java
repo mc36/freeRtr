@@ -703,6 +703,9 @@ public class userExec {
         hl.add(null, "6 7,.            compress           list of compressed routes");
         hl.add(null, "7 8,.              [addr]           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
+        hl.add(null, "6 7,.            hacked             list of hacked routes");
+        hl.add(null, "7 8,.              [addr]           prefix to view");
+        hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 7,.            changes            list of changed routes");
         hl.add(null, "7 8,.              [addr]           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
@@ -2226,6 +2229,8 @@ public class userExec {
         hl.add(null, ".2 .     gc                           run garbage collector");
         hl.add(null, "2 .      crypto                       test encryption and hash");
         hl.add(null, "2 3,.    digsig                       test digital signatures");
+        hl.add(null, "3 3,.      [str]                      parameters");
+        hl.add(null, "2 3,.    primes                       test digital primes");
         hl.add(null, "3 3,.      [str]                      parameters");
         hl.add(null, "2 3,.    window                       test window handler");
         hl.add(null, "3 4        <num>                      x size");

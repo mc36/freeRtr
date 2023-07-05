@@ -25,6 +25,7 @@ import net.freertr.clnt.clntWhois;
 import net.freertr.enc.encAsn1;
 import net.freertr.enc.encBase64;
 import net.freertr.cry.cryCertificate;
+import net.freertr.cry.cryECcurve;
 import net.freertr.cry.cryEncrCBCaes;
 import net.freertr.cry.cryEncrCBCblowfish;
 import net.freertr.cry.cryEncrCBCdes;
@@ -563,6 +564,17 @@ public class userTest {
             doTestPipe("conn", p1, p2, 1024);
             return null;
         }
+        if (a.equals("primes")) {
+            int len = bits.str2num(cmd.word());
+            cmd.error("e=2^127+-1");
+            cmd.error("p=" + cryKeyRSA.randomPrime(len));
+            cryECcurve ecp = cryECcurve.getBySize(len);
+            if (ecp == null) {
+                return null;
+            }
+            cmd.error("ec-p=" + ecp + "-" + ecp.g + "-" + ecp.a + "*" + ecp.b + "%" + ecp.n);
+            return null;
+        }
         if (a.equals("digsig")) {
             int pmsiz = 1024;
             int ecsiz = 128;
@@ -596,7 +608,7 @@ public class userTest {
             cryKeyECDSA kecdsa = new cryKeyECDSA();
             cryKeyDH kdh = new cryKeyDH();
             cryKeyECDH kecdh = new cryKeyECDH();
-            final String init = "tesging";
+            final String init = "t3st1ng";
             boolean ok = false;
             krsa.keyMake(pmsiz);
             long tim = bits.getTime();

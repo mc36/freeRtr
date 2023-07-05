@@ -15052,3 +15052,11 @@ todo: sho ipv4 bgp 666 uni hackerized 1.1.1.1
 todo: banyan vines protocol in sw
 ---------------------------------- 2023-07-02 20:48:28 23.7.2
 todo: hackediff alias to diff with the | hacked fun filter
+---------------------------------- 2023-07-05 15:37:45 23.7.5
+no todo: server http / host * custom-header knob
+no todo: bgp stuff more tests for rfc9234
+todo: bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version
+todo: server http / host * webring-local <text>
+todo: server http / host * webring-remote <path/file*>
+todo: server http / host * custom-local <text>
+todo: server http / host * custom-remote >path/file>

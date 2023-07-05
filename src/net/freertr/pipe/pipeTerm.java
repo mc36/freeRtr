@@ -18,6 +18,11 @@ public class pipeTerm {
     protected int escChr;
 
     /**
+     * escape character
+     */
+    protected String escNam;
+
+    /**
      * stream handler
      */
     protected pipeSide stream;
@@ -62,6 +67,7 @@ public class pipeTerm {
         console = con;
         stream = strm;
         escChr = con.settingsGet(pipeSetting.escape, 65536);
+        escNam = "ascii0x" + bits.toHexB(escChr);
     }
 
     /**
@@ -139,7 +145,7 @@ class pipeTermTx implements Runnable {
     }
 
     public void run() {
-        parent.console.linePut("escape character is ascii 0x" + bits.toHexB(parent.escChr) + ".");
+        parent.console.linePut("escape character is " + parent.escNam + ".");
         parent.console.linePut("");
         try {
             for (;;) {
@@ -168,8 +174,8 @@ class pipeTermTx implements Runnable {
                         parent.console.linePut("");
                         parent.console.linePut("^H - show this help message");
                         parent.console.linePut("^T - start tls client");
-                        parent.console.linePut("^C - send one ctrl+c character");
-                        parent.console.linePut("^V - send two ctrl+c characters");
+                        parent.console.linePut("^C - send one " + parent.escNam + " character");
+                        parent.console.linePut("^V - send two " + parent.escNam + " characters");
                         parent.console.linePut("^X - close terminal session");
                         break;
                     case 116: // t

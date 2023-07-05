@@ -4204,7 +4204,8 @@ public class userShow {
                     return;
                 }
             }
-            ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
+            String s = cmd.word();
+            ntry.rouDst = tabRouteUtil.string2rd(s);
             ntry = tab.find(ntry);
             if (ntry == null) {
                 cmd.error("no such prefix");
@@ -4227,6 +4228,12 @@ public class userShow {
             List<String> l = new ArrayList<String>();
             userFlash.buf2hex(l, pck.getCopy(), 0);
             rdr.putStrArr(l);
+            return;
+        }
+        if (a.equals("hacked")) {
+            a = cmd.word();
+            String s = cmd.word();
+            doShowRoutesHacked(a, s, "", r.bgp.fwdCore, tab, dsp);
             return;
         }
         if (a.equals("database")) {
@@ -5013,30 +5020,58 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualF, 5);
     }
 
+    private void doShowRoutesHacked(String str, String rd, String beg, ipFwd fwd, tabRoute<addrIP> tab, int typ) {
+        rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressing table"));
+        tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
+        if (tab.size() > 0xffff) {
+            rdr.putStrArr(bits.str2lst(cmds.errbeg + cmds.finish));
+            return;
+        }
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.str2ip(str);
+        rdr.putStrArr(doShowRouteDetail("hckd", str, rd, fwd, tab));
+    }
+
+    private tabRouteEntry<addrIP> doFindOneRoute(String str, String rd, tabRoute<addrIP> tab) {
+        if ((tab == null) || (str == null) || (rd == null)) {
+            cmd.error("getting table");
+            return null;
+        }
+        if (str.length() < 1) {
+            cmd.error("no such prefix");
+            return null;
+        }
+        tabRouteEntry<addrIP> nw = new tabRouteEntry<addrIP>();
+        nw.prefix = addrPrefix.str2ip(str);
+        nw.rouDst = tabRouteUtil.string2rd(rd);
+        nw = nw.copyBytes(tabRoute.addType.alters);
+        tabRouteEntry<addrIP> ntry = tab.find(nw);
+        if (ntry == null) {
+            cmd.error("no such route");
+            return null;
+        }
+        return ntry.copyBytes(tabRoute.addType.alters);
+    }
+
+    private List<String> doShowRouteDetail(String beg, String str, String rd, ipFwd fwd, tabRoute<addrIP> tab) {
+        if (tab == null) {
+            return null;
+        }
+        tabRouteEntry<addrIP> ntry = doFindOneRoute(str, rd, tab);
+        if (tab == null) {
+            return null;
+        }
+        userFormat lst = ntry.fullDump(beg, fwd);
+        if (lst == null) {
+            return null;
+        }
+        return lst.formatAll(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
+    }
+
     private void doShowRoutes(ipFwd fwd, tabRoute<addrIP> tab, int typ) {
         String s = cmd.word();
         if (s.length() > 0) {
-            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = addrPrefix.str2ip(s);
-            if (ntry.prefix == null) {
-                addrIP adr = new addrIP();
-                if (adr.fromString(s)) {
-                    cmd.error("bad prefix");
-                    return;
-                }
-                ntry = tab.route(adr);
-                if (ntry == null) {
-                    cmd.error("no such route");
-                    return;
-                }
-            }
-            ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
-            ntry = tab.find(ntry);
-            if (ntry == null) {
-                cmd.error("no such prefix");
-                return;
-            }
-            rdr.putStrTab(ntry.fullDump("", fwd));
+            rdr.putStrArr(doShowRouteDetail("", s, cmd.word(), fwd, tab));
             return;
         }
         userFormat l;

@@ -42,6 +42,11 @@ public class cmds {
     private final static String notvdc = "no in a vdc";
 
     /**
+     * error beginning
+     */
+    public final static String errbeg = "% ";
+
+    /**
      * get result text
      *
      * @param b status
@@ -250,7 +255,7 @@ public class cmds {
         if (cfgAll.clientShamer != null) {
             s = cfgAll.clientShamer.getOneLine() + " (" + s + ")";
         }
-        pipe.linePut("% " + s);
+        pipe.linePut(errbeg + s);
     }
 
     /**

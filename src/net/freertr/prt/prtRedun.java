@@ -104,7 +104,7 @@ public class prtRedun implements Runnable {
      */
     public static userFormat doShowStatus() {
         userFormat l = new userFormat("|", "iface|reach|state|prio|uptime|magic|heard");
-        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|" + bits.toHexD(magic) + "|-");
+        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|" + bits.padBeg(bits.toHexD(magic), 8, "0") + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
             l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.last.magic + "|" + bits.timePast(ifc.heard));

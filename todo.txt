@@ -112,7 +112,7 @@ server security to support bgp bmp mrt
 
 serevr security maximum pendings as access-security
 
-bgp stuff more tests for rfc9234
+bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version
 
 server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 
@@ -212,7 +212,10 @@ rtr-hw to have tcp2linux and vrf2linux knobs
 test todo knob as an editor but in the running-config
 inter xxx / macrandomize
 sho run check/track
-server http / host * custom-header knob
+server http / host * webring-local <text>
+server http / host * webring-remote <path/file*>
+server http / host * custom-local <text>
+server http / host * custom-remote >path/file>
 server http / host * user-agent matcher with redirect
 server http / host * searchbar
 server smtp / ptmud
