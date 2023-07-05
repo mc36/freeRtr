@@ -5027,9 +5027,14 @@ public class userShow {
             rdr.putStrArr(bits.str2lst(cmds.errbeg + cmds.finish));
             return;
         }
-        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.str2ip(str);
-        rdr.putStrArr(doShowRouteDetail("hckd", str, rd, fwd, tab));
+        List<String> res = doShowRouteDetail("hckd-", str, rd, fwd, tab);
+        if (res != null) {
+            res = enc7bit.toHackedLst(res);
+            rdr.putStrArr(res);
+            return;
+        }
+        res = enc7bit.toHackedLst(res);
+        rdr.putStrArr(res);
     }
 
     private tabRouteEntry<addrIP> doFindOneRoute(String str, String rd, tabRoute<addrIP> tab) {
@@ -5043,6 +5048,15 @@ public class userShow {
         }
         tabRouteEntry<addrIP> nw = new tabRouteEntry<addrIP>();
         nw.prefix = addrPrefix.str2ip(str);
+        if (nw.prefix == null) {
+            addrIP adr = new addrIP();
+            nw = tab.route(adr);
+            if (nw == null) {
+                cmd.error("no such route");
+                return null;
+            }
+            nw = nw.copyBytes(tabRoute.addType.alters);
+        }
         nw.rouDst = tabRouteUtil.string2rd(rd);
         nw = nw.copyBytes(tabRoute.addType.alters);
         tabRouteEntry<addrIP> ntry = tab.find(nw);
