@@ -4231,9 +4231,9 @@ public class userShow {
             return;
         }
         if (a.equals("hacked")) {
-            a = cmd.word();
-            String s = cmd.word();
-            doShowRoutesHacked(a, s, "", r.bgp.fwdCore, tab, dsp);
+            String str = cmd.word();
+            String rd = cmd.word();
+            doShowRoutesHacked(str, rd, r.bgp.fwdCore, tab, dsp);
             return;
         }
         if (a.equals("database")) {
@@ -5020,7 +5020,7 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualF, 5);
     }
 
-    private void doShowRoutesHacked(String str, String rd, String beg, ipFwd fwd, tabRoute<addrIP> tab, int typ) {
+    private void doShowRoutesHacked(String str, String rd, ipFwd fwd, tabRoute<addrIP> tab, int typ) {
         rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressing table"));
         tab = new tabRoute<addrIP>(tab);
         tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
@@ -5084,9 +5084,10 @@ public class userShow {
     }
 
     private void doShowRoutes(ipFwd fwd, tabRoute<addrIP> tab, int typ) {
-        String s = cmd.word();
-        if (s.length() > 0) {
-            rdr.putStrArr(doShowRouteDetail("", s, cmd.word(), fwd, tab));
+        String str = cmd.word();
+        if (str.length() > 0) {
+            String rd = cmd.word();
+            rdr.putStrArr(doShowRouteDetail("", str, rd, fwd, tab));
             return;
         }
         userFormat l;
