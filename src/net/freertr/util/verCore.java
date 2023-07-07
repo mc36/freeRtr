@@ -23,7 +23,7 @@ public class verCore {
     /**
      * author
      */
-    public final static String author = "sprscc13@mr.nobody";
+    public final static String author = "sprscc13@mr.n0b0dy";
 
     /**
      * current public key
