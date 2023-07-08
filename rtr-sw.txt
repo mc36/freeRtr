@@ -43,6 +43,8 @@ aaa userlist access
  allowed display .*
  allowed watch .*
  allowed differs .*
+ allowed terminal .*
+ allowed exit .*
  exit
 !
 aaa radius rad

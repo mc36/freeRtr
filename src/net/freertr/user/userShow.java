@@ -5021,17 +5021,30 @@ public class userShow {
     }
 
     private void doShowRoutesHacked(String str, String rd, ipFwd fwd, tabRoute<addrIP> tab, int typ) {
-        rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressing table"));
+        rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressing table len=" + tab.size()));
         tab = new tabRoute<addrIP>(tab);
         tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
-        if (tab.size() > 0xffff) {
-            rdr.putStrArr(bits.str2lst(cmds.errbeg + cmds.finish));
+        int tabSiz = tab.size();
+        if ((tabSiz > 0xffff) || (tabSiz < 1)) {
+            rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressed table len=" + tabSiz));
             return;
         }
-        List<String> res = doShowRouteDetail("hckd-", str, rd, fwd, tab);
-        if (res != null) {
+        if ((str.length() + rd.length()) < 1) {
+            userFormat lst = tabRoute.convertTableHead(typ);
+            if (lst == null) {
+                rdr.putStrArr(bits.str2lst(cmds.errbeg + "bad table format"));
+                return;
+            }
+            tabRoute.convertTableBody(lst, tab, typ);
+            List<String> res = lst.formatAll(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
             res = enc7bit.toHackedLst(res);
             rdr.putStrArr(res);
+            return;
+        }
+        rdr.putStrArr(bits.str2lst(cmds.errbeg + "looking up" + " pfx=" + str + " with rd=" + rd + " in len=" + tab.size()));
+        List<String> res = doShowRouteDetail("hckd-", str, rd, fwd, tab);
+        if (res == null) {
+            rdr.putStrArr(bits.str2lst(cmds.errbeg + "no such prefix"));
             return;
         }
         res = enc7bit.toHackedLst(res);
@@ -5090,107 +5103,19 @@ public class userShow {
             rdr.putStrArr(doShowRouteDetail("", str, rd, fwd, tab));
             return;
         }
-        userFormat l;
-        switch (typ) {
-            case 1:
-                l = new userFormat("|", "typ|prefix|metric|iface|hop|time");
-                break;
-            case 2:
-            case 5:
-                l = new userFormat("|", "prefix|hop|metric|aspath");
-                break;
-            case 1002:
-            case 1005:
-                l = new userFormat("|", "prefix|local|evpn*16|pmsi*16|remote|hop");
-                break;
-            case 3:
-                l = new userFormat("|", "prefix|local|remote|hop");
-                break;
-            case 4:
-                l = new userFormat("|", "prefix|max|as");
-                break;
-            case 6:
-                l = new userFormat("|", "prefix|pack|byte|pack|byte|time", "1|2transmit|2receive|1");
-                break;
-            case 7:
-                l = new userFormat("|", "prefix|index|base|oldbase");
-                break;
-            case 8:
-                l = new userFormat("|", "prefix|index|base|oldbase|size");
-                break;
-            case 2002:
-            case 2005:
-            case 9:
-                l = new userFormat("|", "prefix|alts|candid|best|proto|source");
-                break;
-            case 3002:
-            case 3005:
-            case 10:
-                l = new userFormat("|", "prefix|hop|ago|last");
-                break;
-            case 11:
-                l = new userFormat("|", "prefix|hop|metric|aspath");
-                break;
-            default:
-                return;
+        userFormat lst = tabRoute.convertTableHead(typ);
+        if (lst == null) {
+            return;
         }
         if (tab.size() < 1) {
-            rdr.putStrTab(l);
+            rdr.putStrTab(lst);
             return;
         }
         final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
         for (int pos = 0; pos < tab.size(); pos += lines) {
-            l.clear();
-            for (int i = 0; i < lines; i++) {
-                tabRouteEntry<addrIP> prf = tab.get(pos + i);
-                if (prf == null) {
-                    continue;
-                }
-                switch (typ) {
-                    case 1:
-                        tabRouteEntry.toShRoute(l, prf);
-                        break;
-                    case 2:
-                        tabRouteEntry.toShBgp(l, prf);
-                        break;
-                    case 3:
-                        tabRouteEntry.toShLdp(l, prf);
-                        break;
-                    case 1002:
-                    case 1005:
-                        tabRouteEntry.toShBgpLabels(l, prf, typ == 1005);
-                        break;
-                    case 4:
-                        tabRouteEntry.toShRpki(l, prf);
-                        break;
-                    case 5:
-                        tabRouteEntry.toShEvpn(l, prf);
-                        break;
-                    case 6:
-                        tabRouteEntry.toShCntr(l, prf);
-                        break;
-                    case 7:
-                        tabRouteEntry.toShSrRoute(l, prf);
-                        break;
-                    case 8:
-                        tabRouteEntry.toShBrRoute(l, prf);
-                        break;
-                    case 2002:
-                    case 2005:
-                    case 9:
-                        tabRouteEntry.toShEcmp(l, prf, typ == 2005);
-                        break;
-                    case 3002:
-                    case 3005:
-                    case 10:
-                        tabRouteEntry.toShChgRoute(l, prf);
-                        break;
-                    case 11:
-                        tabRouteEntry.toShAsName(l, prf);
-                        break;
-                }
-            }
-            if (rdr.putStrTab(l)) {
+            tabRoute<addrIP> sub = tab.getSubset(pos, pos + lines);
+            tabRoute.convertTableBody(lst, sub, typ);
+            if (rdr.putStrTab(lst)) {
                 break;
             }
         }

@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.ip.ipMpls;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -421,6 +422,33 @@ public class tabRoute<T extends addrType> {
      */
     public int size() {
         return prefixes.size();
+    }
+
+    /**
+     * get part of the table
+     *
+     * @param beg first index
+     * @param end last index
+     * @return subtable
+     */
+    public tabRoute<T> getSubset(int beg, int end) {
+        tabRoute<T> res = new tabRoute<T>(tabName);
+        int siz = size();
+        if (end > siz) {
+            end = siz;
+        }
+        if (beg < 0) {
+            beg = 0;
+        }
+        for (int i = beg; i < end; i++) {
+            tabRouteEntry<T> ntry = prefixes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.prefixes.put(ntry);
+        }
+        res.version = end - beg;
+        return res;
     }
 
     /**
@@ -1067,6 +1095,108 @@ public class tabRoute<T extends addrType> {
             deled++;
         }
         return deled;
+    }
+
+    /**
+     * convert table header
+     *
+     * @param typ type to format
+     * @return header
+     */
+    public final static userFormat convertTableHead(int typ) {
+        switch (typ) {
+            case 1:
+                return new userFormat("|", "typ|prefix|metric|iface|hop|time");
+            case 2:
+            case 5:
+                return new userFormat("|", "prefix|hop|metric|aspath");
+            case 1002:
+            case 1005:
+                return new userFormat("|", "prefix|local|evpn*16|pmsi*16|remote|hop");
+            case 3:
+                return new userFormat("|", "prefix|local|remote|hop");
+            case 4:
+                return new userFormat("|", "prefix|max|as");
+            case 6:
+                return new userFormat("|", "prefix|pack|byte|pack|byte|time", "1|2transmit|2receive|1");
+            case 7:
+                return new userFormat("|", "prefix|index|base|oldbase");
+            case 8:
+                return new userFormat("|", "prefix|index|base|oldbase|size");
+            case 2002:
+            case 2005:
+            case 9:
+                return new userFormat("|", "prefix|alts|candid|best|proto|source");
+            case 3002:
+            case 3005:
+            case 10:
+                return new userFormat("|", "prefix|hop|ago|last");
+            case 11:
+                return new userFormat("|", "prefix|hop|metric|aspath");
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * convert table body
+     *
+     * @param lst string to update
+     * @param tab table to convert
+     * @param typ type to format
+     */
+    public final static void convertTableBody(userFormat lst, tabRoute<addrIP> tab, int typ) {
+        lst.clear();
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            switch (typ) {
+                case 1:
+                    tabRouteEntry.toShRoute(lst, prf);
+                    break;
+                case 2:
+                    tabRouteEntry.toShBgp(lst, prf);
+                    break;
+                case 3:
+                    tabRouteEntry.toShLdp(lst, prf);
+                    break;
+                case 1002:
+                case 1005:
+                    tabRouteEntry.toShBgpLabels(lst, prf, typ == 1005);
+                    break;
+                case 4:
+                    tabRouteEntry.toShRpki(lst, prf);
+                    break;
+                case 5:
+                    tabRouteEntry.toShEvpn(lst, prf);
+                    break;
+                case 6:
+                    tabRouteEntry.toShCntr(lst, prf);
+                    break;
+                case 7:
+                    tabRouteEntry.toShSrRoute(lst, prf);
+                    break;
+                case 8:
+                    tabRouteEntry.toShBrRoute(lst, prf);
+                    break;
+                case 2002:
+                case 2005:
+                case 9:
+                    tabRouteEntry.toShEcmp(lst, prf, typ == 2005);
+                    break;
+                case 3002:
+                case 3005:
+                case 10:
+                    tabRouteEntry.toShChgRoute(lst, prf);
+                    break;
+                case 11:
+                    tabRouteEntry.toShAsName(lst, prf);
+                    break;
+            }
+        }
+
     }
 
 }
