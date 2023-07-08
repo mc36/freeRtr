@@ -2673,7 +2673,7 @@ public class userShow {
         cmd.badCmd();
         return null;
     }
-
+    
     private void doShowIpXeigrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -2723,7 +2723,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXghosthunt(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -2757,7 +2757,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXlogger(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -2786,14 +2786,14 @@ public class userShow {
             return;
         }
     }
-
+    
     private String getDashRep(String s, List<String> r) {
         for (int i = 0; i < r.size(); i += 2) {
             s = s.replaceAll(r.get(i + 0), r.get(i + 1));
         }
         return encUrl.percentEncode(s);
     }
-
+    
     private int getGraphMask() {
         int i = 0;
         for (;;) {
@@ -2820,7 +2820,7 @@ public class userShow {
         }
         return i;
     }
-
+    
     private List<String> getDashRtr(String u, List<String> r) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.routers.size(); i++) {
@@ -2837,7 +2837,7 @@ public class userShow {
         }
         return res;
     }
-
+    
     private List<String> getDashVrf(String u, List<String> r) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.vrfs.size(); i++) {
@@ -2854,7 +2854,7 @@ public class userShow {
         }
         return res;
     }
-
+    
     private List<String> getDashIfc(String u, List<String> r) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
@@ -2874,7 +2874,7 @@ public class userShow {
         }
         return res;
     }
-
+    
     private List<String> getDashText(String u, List<String> r) {
         List<String> res = new ArrayList<String>();
         String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
@@ -2885,7 +2885,7 @@ public class userShow {
         res.add(a);
         return res;
     }
-
+    
     private void doShowIpXlsrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3021,7 +3021,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXrift(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3108,7 +3108,7 @@ public class userShow {
             return;
         }
     }
-
+    
     private void doShowIpXpvrp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3162,7 +3162,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXisis(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3265,7 +3265,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private ipFwd findVrf(int ver) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -3278,7 +3278,7 @@ public class userShow {
             return vrf.fwd6;
         }
     }
-
+    
     private void doShowIpXbfd(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3291,7 +3291,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXtoptalk(int ver) {
         cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
         if (ifc == null) {
@@ -3314,7 +3314,7 @@ public class userShow {
         }
         rdr.putStrTab(ins.doShowTalk());
     }
-
+    
     private void doShowIpXinspect(int ver) {
         cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
         if (ifc == null) {
@@ -3337,7 +3337,7 @@ public class userShow {
         }
         rdr.putStrTab(ins.doShowInsp());
     }
-
+    
     private void doShowIpXnetflow(int ver) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -3357,7 +3357,7 @@ public class userShow {
         }
         doShowSession(flw.session);
     }
-
+    
     private void doShowIpXhsrp(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3370,7 +3370,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXvrrp(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3383,7 +3383,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXpim(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3400,7 +3400,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3422,7 +3422,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowPweList(tabGen<packLdpPwe> lst) {
         userFormat txt = new userFormat("|", "type|cw|group|vcid|mtu|vccv|label|description");
         for (int i = 0; i < lst.size(); i++) {
@@ -3430,7 +3430,7 @@ public class userShow {
         }
         rdr.putStrTab(txt);
     }
-
+    
     private void doShowPmpList(tabGen<packLdpMp> lst) {
         userFormat txt = new userFormat("|", "type|root|label|opaque");
         for (int i = 0; i < lst.size(); i++) {
@@ -3438,7 +3438,7 @@ public class userShow {
         }
         rdr.putStrTab(txt);
     }
-
+    
     private void doShowIpXrsvp(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3469,7 +3469,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXldp(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -3544,7 +3544,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXbabel(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3590,7 +3590,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXolsr(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3636,7 +3636,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void compareDiffs(tabRoute<addrIP> equ, tabRoute<addrIP> dif1, tabRoute<addrIP> dif2) {
         for (int i = 0; i < dif1.size(); i++) {
             tabRouteEntry<addrIP> prf1 = dif1.get(i);
@@ -3647,7 +3647,7 @@ public class userShow {
             equ.add(tabRoute.addType.always, prf1, false, false);
         }
     }
-
+    
     private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt, int safi, int asn1, int asn2, tabListing<tabRtrmapN, addrIP> upd) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
@@ -3688,7 +3688,7 @@ public class userShow {
             diff.add(tabRoute.addType.alters, prf2, false, false);
         }
     }
-
+    
     private void doShowIpXbgp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -4666,7 +4666,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private int bgpMask2filter(int mask) {
         switch (mask) {
             case rtrBgpParam.mskEvpn:
@@ -4684,7 +4684,7 @@ public class userShow {
                 return 2;
         }
     }
-
+    
     private void doShowIpXpbr(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4692,7 +4692,7 @@ public class userShow {
         }
         rdr.putStrTab(fwd.pbrCfg.getStats(3));
     }
-
+    
     private void doShowIpXnat(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4713,7 +4713,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowIpXvrf(int ver) {
         if (cmd.size() > 0) {
             ipFwd fwd = findVrf(ver);
@@ -4755,7 +4755,7 @@ public class userShow {
         }
         rdr.putStrTab(l);
     }
-
+    
     private void doShowIpXifc(ipFwdIface ifc) {
         if (ifc == null) {
             cmd.error("protocol not enabled");
@@ -4763,7 +4763,7 @@ public class userShow {
         }
         rdr.putStrTab(ifc.getShow());
     }
-
+    
     private void doShowSockets(int ver) {
         cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
         if (vrf == null) {
@@ -4772,7 +4772,7 @@ public class userShow {
         }
         rdr.putStrTab(vrf.getShSockets(ver));
     }
-
+    
     private void doShowProtocols(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4781,7 +4781,7 @@ public class userShow {
         rdr.putStrTab(ipFwdTab.statisticShow(fwd));
         rdr.putStrTab(ipFwdTab.routersShow(fwd));
     }
-
+    
     private void doShowMroute(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4813,7 +4813,7 @@ public class userShow {
         }
         rdr.putStrTab(l);
     }
-
+    
     private void doShowRouteCount(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4821,7 +4821,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualU, 6);
     }
-
+    
     private void doShowRouteUni(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4829,7 +4829,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualU, 1);
     }
-
+    
     private void doShowRouteCompr(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4839,7 +4839,7 @@ public class userShow {
         tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
         doShowRoutes(fwd, tab, 1);
     }
-
+    
     private void doShowRouteChngs(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4847,7 +4847,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualU, 10);
     }
-
+    
     private void doShowRouteLab(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4855,7 +4855,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualU, 3);
     }
-
+    
     private void doShowRouteNet(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4873,7 +4873,7 @@ public class userShow {
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
         doShowRoutes(fwd, res, 1);
     }
-
+    
     private void doShowRouteIfc(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4893,7 +4893,7 @@ public class userShow {
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
         doShowRoutes(fwd, res, 1);
     }
-
+    
     private void doShowRouteHop(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4909,7 +4909,7 @@ public class userShow {
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
         doShowRoutes(fwd, res, 1);
     }
-
+    
     private void doShowRouteRec(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4925,7 +4925,7 @@ public class userShow {
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
         doShowRoutes(fwd, res, 1);
     }
-
+    
     private void doShowRoutePrt(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4944,7 +4944,7 @@ public class userShow {
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
         doShowRoutes(fwd, res, 1);
     }
-
+    
     private void doShowRouteEcmp(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4952,7 +4952,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualU, 9);
     }
-
+    
     private void doShowDistrib(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4961,7 +4961,7 @@ public class userShow {
         rdr.putStrTab(rtrLogger.outgointInterfaces(fwd.actualU));
         rdr.putStrTab(rtrLogger.prefixLengths(fwd.actualU));
     }
-
+    
     private void doShowRouteSR(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4969,7 +4969,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualU, 7);
     }
-
+    
     private void doShowSRindex(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -4995,7 +4995,7 @@ public class userShow {
         }
         rdr.putStrTab(lst);
     }
-
+    
     private void doShowRouteBR(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -5003,7 +5003,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualU, 8);
     }
-
+    
     private void doShowRouteMul(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -5011,7 +5011,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualM, 1);
     }
-
+    
     private void doShowRouteFlw(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
@@ -5019,7 +5019,7 @@ public class userShow {
         }
         doShowRoutes(fwd, fwd.actualF, 5);
     }
-
+    
     private void doShowRoutesHacked(String str, String rd, ipFwd fwd, tabRoute<addrIP> tab, int typ) {
         int tabSiz = tab.size();
         if (tabSiz > 0xffff) {
@@ -5046,7 +5046,7 @@ public class userShow {
         res = enc7bit.toHackedLst(res);
         rdr.putStrArr(res);
     }
-
+    
     private tabRouteEntry<addrIP> doFindOneRoute(String str, String rd, tabRoute<addrIP> tab) {
         if ((tab == null) || (str == null) || (rd == null)) {
             cmd.error("getting table");
@@ -5060,6 +5060,10 @@ public class userShow {
         nw.prefix = addrPrefix.str2ip(str);
         if (nw.prefix == null) {
             addrIP adr = new addrIP();
+            if (adr.fromString(str)) {
+                cmd.error("bad prefix format");
+                return null;
+            }
             nw = tab.route(adr);
             if (nw == null) {
                 cmd.error("no such route");
@@ -5076,7 +5080,7 @@ public class userShow {
         }
         return ntry.copyBytes(tabRoute.addType.alters);
     }
-
+    
     private List<String> doShowRouteDetail(String beg, String str, String rd, ipFwd fwd, tabRoute<addrIP> tab) {
         if (tab == null) {
             return null;
@@ -5091,7 +5095,7 @@ public class userShow {
         }
         return lst.formatAll(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
     }
-
+    
     private void doShowRoutes(ipFwd fwd, tabRoute<addrIP> tab, int typ) {
         String str = cmd.word();
         if (str.length() > 0) {
@@ -5116,7 +5120,7 @@ public class userShow {
             }
         }
     }
-
+    
     private void doShowMptab(tabGen<ipFwdMpmp> tab, addrIP peer) {
         String a;
         if (peer == null) {
@@ -5134,7 +5138,7 @@ public class userShow {
         }
         rdr.putStrTab(l);
     }
-
+    
     private userFormat doShowRates(history h) {
         if (h == null) {
             return null;
@@ -5143,7 +5147,7 @@ public class userShow {
         l.add(h.getShRate());
         return l;
     }
-
+    
     private void doShowHistory(String a, history h) {
         if (a.equals("full")) {
             rdr.putStrArr(h.show(1));
@@ -5204,7 +5208,7 @@ public class userShow {
         }
         cmd.badCmd();
     }
-
+    
     private void doShowVrfRout() {
         userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2ifc|2uni|2mlt|2flw|2lab|2con");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
@@ -5213,7 +5217,7 @@ public class userShow {
         }
         rdr.putStrTab(l);
     }
-
+    
     private void doShowVrfIcmp() {
         userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2echSnt|2echGot|2echOk|2echPnd|2errSnt|2errGot");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
@@ -5222,14 +5226,14 @@ public class userShow {
         }
         rdr.putStrTab(l);
     }
-
+    
     private String doShowVrfTraff(ipFwd f) {
         counter ch = f.cntrH.sumUp(false);
         counter ct = f.cntrT.sumUp(false);
         counter cl = f.cntrL.sumUp(false);
         return f.cfgName + ":" + f.ipVersion + "|" + tabRouteUtil.rd2string(f.rd) + "|" + ch.packRx + "|" + ch.byteRx + "|" + ct.packRx + "|" + ct.byteRx + "|" + cl.packRx + "|" + cl.byteRx;
     }
-
+    
     private void doShowVrfTraff() {
         if (cmd.size() > 0) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
@@ -5254,7 +5258,7 @@ public class userShow {
         }
         rdr.putStrTab(l);
     }
-
+    
     private void doShowSession(tabSession ses) {
         if (ses == null) {
             cmd.error("not enabled");
@@ -5270,7 +5274,7 @@ public class userShow {
             return;
         }
     }
-
+    
     private static int getConfigFilter(int flt, String cmd) {
         if (cmd.equals("all")) {
             return flt & ~1;
@@ -5280,7 +5284,7 @@ public class userShow {
         }
         return flt;
     }
-
+    
     private static int getConfigFilter(String ini, cmds cmd) {
         int flt = 1;
         if (ini != null) {
@@ -5295,5 +5299,5 @@ public class userShow {
         }
         return flt;
     }
-
+    
 }
