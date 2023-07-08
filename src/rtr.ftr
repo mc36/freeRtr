@@ -3210,6 +3210,7 @@ qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
 todo: traceback as exeption knob to the lines, default set on console0
+todo: server http / host * redir to default fill /data/www/ and subconn stuff
 todo: misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
 todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says

@@ -15062,3 +15062,5 @@ todo: server http / host * custom-local <text>
 todo: server http / host * custom-remote >path/file>
 ---------------------------------- 2023-07-06 03:04:37 23.7.6
 todo: traceback as exeption knob to the lines, default set on console0
+---------------------------------- 2023-07-08 08:31:01 23.7.8
+todo: server http / host * redir to default fill /data/www/ and subconn stuff
