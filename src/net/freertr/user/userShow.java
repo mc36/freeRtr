@@ -5021,12 +5021,9 @@ public class userShow {
     }
 
     private void doShowRoutesHacked(String str, String rd, ipFwd fwd, tabRoute<addrIP> tab, int typ) {
-        rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressing table len=" + tab.size()));
-        tab = new tabRoute<addrIP>(tab);
-        tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
         int tabSiz = tab.size();
-        if ((tabSiz > 0xffff) || (tabSiz < 1)) {
-            rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressed table len=" + tabSiz));
+        if (tabSiz > 0xffff) {
+            rdr.putStrArr(bits.str2lst(cmds.errbeg + "too big " + tabSiz));
             return;
         }
         if (str.length() < 1) {
