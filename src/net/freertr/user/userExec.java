@@ -4610,7 +4610,7 @@ public class userExec {
             return;
         }
         if (a.equals("riblines")) {
-            pipe.settingsPut(pipeSetting.riblines, bits.str2num(cmd.word()));
+            userReader.setRibLin(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("deactivate")) {

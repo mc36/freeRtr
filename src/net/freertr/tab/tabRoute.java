@@ -1201,9 +1201,9 @@ public class tabRoute<T extends addrType> {
     /**
      * convert the full table
      *
-     * @param lst string to update
      * @param tab table to convert
      * @param typ type to format
+     * @return converted table
      */
     public final static userFormat convertTableFull(tabRoute<addrIP> tab, int typ) {
         userFormat res = convertTableHead(typ);

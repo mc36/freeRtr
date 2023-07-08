@@ -5029,7 +5029,7 @@ public class userShow {
             rdr.putStrArr(bits.str2lst(cmds.errbeg + "compressed table len=" + tabSiz));
             return;
         }
-        if ((str.length() + rd.length()) < 1) {
+        if (str.length() < 1) {
             userFormat lst = tabRoute.convertTableFull(tab, typ);
             if (lst == null) {
                 rdr.putStrArr(bits.str2lst(cmds.errbeg + "bad table format"));
@@ -5040,7 +5040,7 @@ public class userShow {
             rdr.putStrArr(res);
             return;
         }
-        rdr.putStrArr(bits.str2lst(cmds.errbeg + "looking up" + " pfx=" + str + " with rd=" + rd + " in len=" + tab.size()));
+        rdr.putStrArr(bits.str2lst(cmds.errbeg + "looking up" + " pfx=" + str + " rd=" + rd + " on len=" + tab.size()));
         List<String> res = doShowRouteDetail("hckd-", str, rd, fwd, tab);
         if (res == null) {
             rdr.putStrArr(bits.str2lst(cmds.errbeg + "no such prefix"));

@@ -290,6 +290,19 @@ public class userReader implements Comparator<String> {
     }
 
     /**
+     * set length of route listing
+     *
+     * @param pip pipe to set
+     * @param siz size
+     */
+    public static void setRibLin(pipeSide pip, int siz) {
+        if (siz < 5) {
+            siz = 5;
+        }
+        pip.settingsPut(pipeSetting.riblines, siz);
+    }
+
+    /**
      * set height of screen
      *
      * @param pip pipe to set

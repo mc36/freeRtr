@@ -15064,3 +15064,5 @@ todo: server http / host * custom-remote >path/file>
 todo: traceback as exeption knob to the lines, default set on console0
 ---------------------------------- 2023-07-08 08:31:01 23.7.8
 todo: server http / host * redir to default fill /data/www/ and subconn stuff
+---------------------------------- 2023-07-08 12:28:56 23.7.8
+no todo: sho ipv4 bgp 666 uni hackerized 1.1.1.1
