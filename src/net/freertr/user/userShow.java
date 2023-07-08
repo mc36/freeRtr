@@ -5030,12 +5030,11 @@ public class userShow {
             return;
         }
         if ((str.length() + rd.length()) < 1) {
-            userFormat lst = tabRoute.convertTableHead(typ);
+            userFormat lst = tabRoute.convertTableFull(tab, typ);
             if (lst == null) {
                 rdr.putStrArr(bits.str2lst(cmds.errbeg + "bad table format"));
                 return;
             }
-            tabRoute.convertTableBody(lst, tab, typ);
             List<String> res = lst.formatAll(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
             res = enc7bit.toHackedLst(res);
             rdr.putStrArr(res);
@@ -5114,7 +5113,7 @@ public class userShow {
         final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
         for (int pos = 0; pos < tab.size(); pos += lines) {
             tabRoute<addrIP> sub = tab.getSubset(pos, pos + lines);
-            tabRoute.convertTableBody(lst, sub, typ);
+            lst = tabRoute.convertTableFull(sub, typ);
             if (rdr.putStrTab(lst)) {
                 break;
             }

@@ -388,7 +388,7 @@ public class enc7bit {
      */
     public static final List<String> decodeExtLst(List<String> lst) {
         List<String> res = new ArrayList<String>();
-        for (int i = 0; i < res.size(); i++) {
+        for (int i = 0; i < lst.size(); i++) {
             String s = lst.get(i);
             String a = decodeExtStr(s);
             res.add(a);
@@ -462,7 +462,7 @@ public class enc7bit {
      */
     public static final List<String> toHackedLst(List<String> lst) {
         List<String> res = new ArrayList<String>();
-        for (int i = 0; i < res.size(); i++) {
+        for (int i = 0; i < lst.size(); i++) {
             String s = lst.get(i);
             String a = toHackedStr(s);
             res.add(a);

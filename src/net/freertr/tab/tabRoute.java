@@ -1196,7 +1196,22 @@ public class tabRoute<T extends addrType> {
                     break;
             }
         }
+    }
 
+    /**
+     * convert the full table
+     *
+     * @param lst string to update
+     * @param tab table to convert
+     * @param typ type to format
+     */
+    public final static userFormat convertTableFull(tabRoute<addrIP> tab, int typ) {
+        userFormat res = convertTableHead(typ);
+        if (res == null) {
+            return null;
+        }
+        convertTableBody(res, tab, typ);
+        return res;
     }
 
 }
