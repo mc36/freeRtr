@@ -825,6 +825,12 @@ public class servHttp extends servGeneric implements prtServS {
         return true;
     }
 
+    
+    private static final void getSubconnHelp(userHelping l) {
+        
+    }
+    
+    
     /**
      * get help
      *
