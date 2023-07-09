@@ -82,17 +82,19 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * default server path
      */
-    protected String defaultPath;
+    protected String defPath = defHostPat;
 
     /**
      * default subconnect
      */
-    protected int defaultSubcon;
+    protected int defSubcon;
 
     /**
      * buffer size
      */
     protected int bufSiz = 65536;
+
+    public final static String defHostPat = "/data/notfound/";
 
     /**
      * defaults text
@@ -103,8 +105,8 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! no proxy",
         "server http .*! no error",
         "server http .*! no single-request",
-        "server http .*! no def-path",
-        "server http .*! no def-subconn",
+        "server http .*! def-path" + defHostPat,
+        "server http .*! def-subconn",
         "server http .*! buffer 65536",
         "server http .*! no second-port",};
 
@@ -283,9 +285,9 @@ public class servHttp extends servGeneric implements prtServS {
         }
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
         l.add(beg + "buffer " + bufSiz);
+        l.add(beg + "def-path " + defPath);
+        l.add(beg + "def-subconn" + subconn2string(defSubcon));
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
-        cmds.cfgLine(l, defaultPath == null, beg, "def-path", "" + defaultPath);
-        cmds.cfgLine(l, defaultSubcon == 0, beg, "def-subconn", "" + subconn2string(defaultSubcon));
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpHost ntry = hosts.get(hn);
             if (ntry == null) {
@@ -436,14 +438,14 @@ public class servHttp extends servGeneric implements prtServS {
         }
         if (a.equals("def-path")) {
             if (negated) {
-                defaultPath = null;
+                defPath = defHostPat;
             } else {
-                defaultPath = cmd.word();
+                defPath = cmd.word();
             }
             return false;
         }
         if (a.equals("def-subconn")) {
-            defaultSubcon = string2subconn(negated, cmd);
+            defSubcon = string2subconn(negated, cmd);
             return false;
         }
         if (a.equals("proxy")) {
@@ -488,12 +490,8 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (ntry.path == null) {
-            if (defaultPath == null) {
-                ntry.path = "/data/notfound/";
-            } else {
-                ntry.path = defaultPath;
-            }
-            ntry.subconn = defaultSubcon;
+            ntry.path = defPath;
+            ntry.subconn = defSubcon;
         }
         if (a.equals("style")) {
             a = cmd.getRemaining();
@@ -825,12 +823,16 @@ public class servHttp extends servGeneric implements prtServS {
         return true;
     }
 
-    
-    private static final void getSubconnHelp(userHelping l) {
-        
+    private static final void getSubconnHelp(String b, userHelping l) {
+        l.add(null, b + "     strip-path               strip path");
+        l.add(null, b + "     strip-name               strip filename");
+        l.add(null, b + "     strip-ext                strip extension");
+        l.add(null, b + "     strip-param              strip parameters");
+        l.add(null, b + "     keep-cred                keep credentinals");
+        l.add(null, b + "     keep-host                keep hostname");
+        l.add(null, b + "     keep-path                append path");
     }
-    
-    
+
     /**
      * get help
      *
@@ -844,6 +846,10 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "2 .    <name:prx>                   proxy profile");
         l.add(null, "1 2  second-port                    enable dual binding");
         l.add(null, "2 .    <num>                        secure port");
+        l.add(null, "1 2  def-path                       set host default path");
+        l.add(null, "2 .    <str>                        path on the disk");
+        l.add(null, "1 2  def-subconn                    set host default subconnect");
+        getSubconnHelp("2 2,. ", l);
         l.add(null, "1 2  error                          set error message");
         l.add(null, "2 2,.  <str>                        error message");
         l.add(null, "1 2  host                           define one virtual server");
@@ -863,13 +869,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "3 4      translate                  translate the url");
         l.add(null, "4 4,.      <num:trn>                translation rule to use");
         l.add(null, "3 4      subconn                    reconnect only to the url");
-        l.add(null, "4 4,.      strip-path               strip path");
-        l.add(null, "4 4,.      strip-name               strip filename");
-        l.add(null, "4 4,.      strip-ext                strip extension");
-        l.add(null, "4 4,.      strip-param              strip parameters");
-        l.add(null, "4 4,.      keep-cred                keep credentinals");
-        l.add(null, "4 4,.      keep-host                keep hostname");
-        l.add(null, "4 4,.      keep-path                append path");
+        getSubconnHelp("4 4,. ", l);
         l.add(null, "3 4      stream                     stream from server");
         l.add(null, "4 5        <str>                    content type");
         l.add(null, "5 6          <name:prx>             proxy profile");
