@@ -105,7 +105,7 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! no proxy",
         "server http .*! no error",
         "server http .*! no single-request",
-        "server http .*! def-path" + defHostPat,
+        "server http .*! def-path " + defHostPat,
         "server http .*! def-subconn",
         "server http .*! buffer 65536",
         "server http .*! no second-port",};
