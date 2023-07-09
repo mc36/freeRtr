@@ -94,6 +94,9 @@ public class servHttp extends servGeneric implements prtServS {
      */
     protected int bufSiz = 65536;
 
+    /**
+     * default host path
+     */
     public final static String defHostPat = "/data/notfound/";
 
     /**
