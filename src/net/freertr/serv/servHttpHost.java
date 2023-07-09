@@ -52,7 +52,7 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
     /**
      * path of root directory
      */
-    public String path = "/";
+    public String path = null;
 
     /**
      * path of backup directory

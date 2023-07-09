@@ -87,7 +87,7 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * default subconnect
      */
-    protected int defaultStrip;
+    protected int defaultSubcon;
 
     /**
      * buffer size
@@ -285,7 +285,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(beg + "buffer " + bufSiz);
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
         cmds.cfgLine(l, defaultPath == null, beg, "def-path", "" + defaultPath);
-        cmds.cfgLine(l, defaultStrip == 0, beg, "def-subconn", "" + subconn2string(defaultStrip));
+        cmds.cfgLine(l, defaultSubcon == 0, beg, "def-subconn", "" + subconn2string(defaultSubcon));
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpHost ntry = hosts.get(hn);
             if (ntry == null) {
@@ -443,7 +443,7 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("def-subconn")) {
-            defaultStrip = string2subconn(negated, cmd);
+            defaultSubcon = string2subconn(negated, cmd);
             return false;
         }
         if (a.equals("proxy")) {
@@ -486,6 +486,14 @@ public class servHttp extends servGeneric implements prtServS {
             }
             ntry.path = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
+        }
+        if (ntry.path == null) {
+            if (defaultPath == null) {
+                ntry.path = "/data/notfound/";
+            } else {
+                ntry.path = defaultPath;
+            }
+            ntry.subconn = defaultSubcon;
         }
         if (a.equals("style")) {
             a = cmd.getRemaining();
@@ -837,7 +845,7 @@ public class servHttp extends servGeneric implements prtServS {
         for (int i = 0; i < hosts.size(); i++) {
             lst.add(hosts.get(i).host);
         }
-        l.add(lst, "2 3,.  <name:loc>                   name of server, * for any");
+        l.add(lst, "2 3     <name:loc>                   name of server, * for any");
         l.add(null, "3 4      path                       set server root");
         l.add(null, "4 .        <str>                    root directory of server");
         l.add(null, "3 4      redir                      set redirect path");
