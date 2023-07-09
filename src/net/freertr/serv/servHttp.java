@@ -80,6 +80,16 @@ public class servHttp extends servGeneric implements prtServS {
     protected boolean singleRequest;
 
     /**
+     * default server path
+     */
+    protected String defaultPath;
+
+    /**
+     * default subconnect
+     */
+    protected int defaultStrip;
+
+    /**
      * buffer size
      */
     protected int bufSiz = 65536;
@@ -93,6 +103,8 @@ public class servHttp extends servGeneric implements prtServS {
         "server http .*! no proxy",
         "server http .*! no error",
         "server http .*! no single-request",
+        "server http .*! no def-path",
+        "server http .*! no def-subconn",
         "server http .*! buffer 65536",
         "server http .*! no second-port",};
 
@@ -184,6 +196,74 @@ public class servHttp extends servGeneric implements prtServS {
         return false;
     }
 
+    private final static int string2subconn(boolean neg, cmds cmd) {
+        if (neg) {
+            return 0;
+        }
+        int res = 0;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("strip-path")) {
+                res |= 0x1;
+                continue;
+            }
+            if (a.equals("strip-name")) {
+                res |= 0x2;
+                continue;
+            }
+            if (a.equals("strip-ext")) {
+                res |= 0x4;
+                continue;
+            }
+            if (a.equals("strip-param")) {
+                res |= 0x8;
+                continue;
+            }
+            if (a.equals("keep-cred")) {
+                res |= 0x10;
+                continue;
+            }
+            if (a.equals("keep-host")) {
+                res |= 0x20;
+                continue;
+            }
+            if (a.equals("keep-path")) {
+                res |= 0x40;
+                continue;
+            }
+        }
+        return res;
+    }
+
+    private final static String subconn2string(int subconn) {
+        String s = "";
+        if ((subconn & 0x1) != 0) {
+            s += " strip-path";
+        }
+        if ((subconn & 0x2) != 0) {
+            s += " strip-name";
+        }
+        if ((subconn & 0x4) != 0) {
+            s += " strip-ext";
+        }
+        if ((subconn & 0x8) != 0) {
+            s += " strip-param";
+        }
+        if ((subconn & 0x10) != 0) {
+            s += " keep-cred";
+        }
+        if ((subconn & 0x20) != 0) {
+            s += " keep-host";
+        }
+        if ((subconn & 0x40) != 0) {
+            s += " keep-path";
+        }
+        return s;
+    }
+
     /**
      * get config
      *
@@ -204,6 +284,8 @@ public class servHttp extends servGeneric implements prtServS {
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
         l.add(beg + "buffer " + bufSiz);
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
+        cmds.cfgLine(l, defaultPath == null, beg, "def-path", "" + defaultPath);
+        cmds.cfgLine(l, defaultStrip == 0, beg, "def-subconn", "" + subconn2string(defaultStrip));
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpHost ntry = hosts.get(hn);
             if (ntry == null) {
@@ -233,28 +315,7 @@ public class servHttp extends servGeneric implements prtServS {
                 l.add(a + " translate" + s);
             }
             if (ntry.subconn != 0) {
-                String s = "";
-                if ((ntry.subconn & 0x1) != 0) {
-                    s += " strip-path";
-                }
-                if ((ntry.subconn & 0x2) != 0) {
-                    s += " strip-name";
-                }
-                if ((ntry.subconn & 0x4) != 0) {
-                    s += " strip-ext";
-                }
-                if ((ntry.subconn & 0x8) != 0) {
-                    s += " strip-param";
-                }
-                if ((ntry.subconn & 0x10) != 0) {
-                    s += " keep-cred";
-                }
-                if ((ntry.subconn & 0x20) != 0) {
-                    s += " keep-host";
-                }
-                if ((ntry.subconn & 0x40) != 0) {
-                    s += " keep-path";
-                }
+                String s = subconn2string(ntry.subconn);
                 l.add(a + " subconn" + s);
             }
             if (ntry.streamT != null) {
@@ -373,6 +434,18 @@ public class servHttp extends servGeneric implements prtServS {
             singleRequest = !negated;
             return false;
         }
+        if (a.equals("def-path")) {
+            if (negated) {
+                defaultPath = null;
+            } else {
+                defaultPath = cmd.word();
+            }
+            return false;
+        }
+        if (a.equals("def-subconn")) {
+            defaultStrip = string2subconn(negated, cmd);
+            return false;
+        }
         if (a.equals("proxy")) {
             if (negated) {
                 proxy = null;
@@ -480,44 +553,7 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("subconn")) {
-            ntry.subconn = 0;
-            if (negated) {
-                return false;
-            }
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (a.equals("strip-path")) {
-                    ntry.subconn |= 0x1;
-                    continue;
-                }
-                if (a.equals("strip-name")) {
-                    ntry.subconn |= 0x2;
-                    continue;
-                }
-                if (a.equals("strip-ext")) {
-                    ntry.subconn |= 0x4;
-                    continue;
-                }
-                if (a.equals("strip-param")) {
-                    ntry.subconn |= 0x8;
-                    continue;
-                }
-                if (a.equals("keep-cred")) {
-                    ntry.subconn |= 0x10;
-                    continue;
-                }
-                if (a.equals("keep-host")) {
-                    ntry.subconn |= 0x20;
-                    continue;
-                }
-                if (a.equals("keep-path")) {
-                    ntry.subconn |= 0x40;
-                    continue;
-                }
-            }
+            ntry.subconn = string2subconn(negated, cmd);
             return false;
         }
         if (a.equals("stream")) {
