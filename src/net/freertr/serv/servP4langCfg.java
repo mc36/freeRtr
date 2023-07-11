@@ -335,6 +335,9 @@ public class servP4langCfg implements ifcUp {
             if (ntry == null) {
                 continue;
             }
+            if (ntry.ifc == null) {
+                continue;
+            }
             if ((ntry.ifc.parent != prnt.ifc) && (ntry.ifc.cloned != prnt.ifc)) {
                 continue;
             }
