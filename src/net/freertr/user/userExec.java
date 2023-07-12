@@ -1014,6 +1014,11 @@ public class userExec {
         hl.add(null, "2 .      alias                   defined alieses");
         hl.add(null, "2 .      platform                platform information");
         hl.add(null, "2 3      me-the                  show something");
+        hl.add(null, "3 4        meme                  show some meme");
+        hl.add(null, "4 5          <str>               string to meme");
+        hl.add(null, "5 6            <str>             meme domain.tld");
+        hl.add(null, "6 7              <str>           target domain to meme");
+        hl.add(null, "7 .                <str>         your redirector www");
         hl.add(null, "3 .        love                  show some love");
         hl.add(null, "3 .        key                   show some key");
         hl.add(null, "3 .        bug                   show some bug");

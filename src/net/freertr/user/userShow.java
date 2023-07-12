@@ -210,6 +210,19 @@ public class userShow {
         }
         if (a.equals("me-the")) {
             a = cmd.word();
+            if (a.equals("meme")) {
+                String nam = cmd.word();
+                String tld = cmd.word();
+                String trg = cmd.word();
+                String red = cmd.word();
+                List<String> res = new ArrayList<String>();
+                res.add("server dns ns");
+                res.add("      zone " + tld + " rr " + nam + "." + tld + " cname " + red);
+                res.add("server http inet");
+                res.add("      host " + nam + "." + tld + " redir http://" + trg);
+                rdr.putStrArr(res);
+                return null;
+            }
             if (a.equals("hack")) {
                 a = cmd.getRemaining();
                 a = enc7bit.toHackedStr(a);
