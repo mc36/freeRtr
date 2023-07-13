@@ -144,7 +144,7 @@ public class clntWhois {
      * get info for an asn
      *
      * @param i asn to query
-     * @return info got
+     * @return info got, null if nothing
      */
     public static String asn2info(int i) {
         ///////////// have the client whois-online asdf/asX qwer/asX knob and spread this everywhere
