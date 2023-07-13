@@ -184,6 +184,7 @@ public class userTest {
             int i = bits.str2num(a);
             a = clntWhois.asn2name(i, true);
             cmd.error("asn " + i + " is " + a);
+            rdr.putStrArr(clntWhois.asn2infos(i));
             return null;
         }
         if (a.equals("swapkeys")) {
