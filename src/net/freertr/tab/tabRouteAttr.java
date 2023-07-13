@@ -1273,6 +1273,18 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * get the as info string
+     *
+     * @return string
+     */
+    public String asInfoStr() {
+        return clntWhois.asnList2info(confSeq, "(", ") ")
+                + clntWhois.asnList2info(confSet, "[", "] ")
+                + clntWhois.asnList2info(pathSeq, "", "")
+                + clntWhois.asnList2info(pathSet, " {", "}");
+    }
+
+    /**
      * get ignore help
      *
      * @param hl help to append
@@ -1678,6 +1690,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "cluster list|" + tabRouteUtil.dumpAddrList(clustList));
         lst.add(beg + "aspath|" + asPathStr());
         lst.add(beg + "asname|" + asNameStr());
+        lst.add(beg + "asinfo|" + asInfoStr());
         lst.add(beg + "path length|" + asPathLen());
         lst.add(beg + "standard community|" + tabRouteUtil.stdComms2string(stdComm));
         lst.add(beg + "extended community|" + tabRouteUtil.extComms2string(extComm));
@@ -1758,6 +1771,15 @@ public class tabRouteAttr<T extends addrType> {
      */
     public String toShAsName() {
         return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asNameStr();
+    }
+
+    /**
+     * convert to route format
+     *
+     * @return converted
+     */
+    public String toShAsInfo() {
+        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asInfoStr();
     }
 
     /**

@@ -3456,18 +3456,19 @@ public class userExec {
         String reportN[] = new String[256];
         String path1[] = new String[256];
         String path2[] = new String[256];
+        String path3[] = new String[256];
         for (int i = 0; i < request.length; i++) {
             timeMin[i] = Integer.MAX_VALUE;
             timeMax[i] = Integer.MIN_VALUE;
         }
         for (;;) {
-            userFormat res = new userFormat("|", "hop|req|rep|los|addr|name|tim|min|avg|max|mpls|path|names");
+            userFormat res = new userFormat("|", "hop|req|rep|los|addr|name|tim|min|avg|max|mpls|path|name|info");
             for (int i = 1; i < request.length; i++) {
                 int o = reply[i];
                 if (o < 1) {
                     o = 1;
                 }
-                res.add(i + "|" + request[i] + "|" + reply[i] + "|" + (request[i] - reply[i]) + "|" + reportA[i] + "|" + reportN[i] + "|" + timeCur[i] + "|" + timeMin[i] + "|" + (timeSum[i] / o) + "|" + timeMax[i] + "|" + label[i] + "|" + path1[i] + "|" + path2[i]);
+                res.add(i + "|" + request[i] + "|" + reply[i] + "|" + (request[i] - reply[i]) + "|" + reportA[i] + "|" + reportN[i] + "|" + timeCur[i] + "|" + timeMin[i] + "|" + (timeSum[i] / o) + "|" + timeMax[i] + "|" + label[i] + "|" + path1[i] + "|" + path2[i] + "|" + path3[i]);
             }
             lst.clear();
             lst.addAll(res.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)));
@@ -3505,6 +3506,7 @@ public class userExec {
             if (trc.routerNtry != null) {
                 path1[ttl] = trc.routerNtry.asPathStr();
                 path2[ttl] = trc.routerNtry.asNameStr();
+                path3[ttl] = trc.routerNtry.asInfoStr();
             }
             if (resolv) {
                 reportN[ttl] = trc.domainNam;

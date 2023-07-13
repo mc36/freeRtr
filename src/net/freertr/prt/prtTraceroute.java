@@ -280,7 +280,7 @@ public class prtTraceroute implements prtServP, ipPrt {
             a += ", name=" + domainNam;
         }
         if (routerNtry != null) {
-            a += ", path=" + routerNtry.asPathStr() + ", names=" + routerNtry.asNameStr();
+            a += ", path=" + routerNtry.asPathStr() + ", name=" + routerNtry.asNameStr() + ", info=" + routerNtry.asInfoStr();
         }
         return lasTtl + " " + errRtr + " time=" + errTim + a;
     }

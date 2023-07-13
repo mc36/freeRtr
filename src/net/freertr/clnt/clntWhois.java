@@ -233,6 +233,33 @@ public class clntWhois {
         return beg + s.substring(1, s.length()) + end;
     }
 
+    /**
+     * convert asn list to string
+     *
+     * @param lst list to convert
+     * @param beg beginning
+     * @param end ending
+     * @return list
+     */
+    public static String asnList2info(List<Integer> lst, String beg, String end) {
+        if (lst == null) {
+            return "";
+        }
+        if (lst.size() < 1) {
+            return "";
+        }
+        String s = "";
+        for (int i = 0; i < lst.size(); i++) {
+            int o = lst.get(i);
+            String a = clntWhois.asn2info(i);
+            if (a == null) {
+                a = "as#" + bits.num2str(o);
+            }
+            s += " " + a;
+        }
+        return beg + s.substring(1, s.length()) + end;
+    }
+
 }
 
 class clntWhoisAsName implements Comparator<clntWhoisAsName> {
