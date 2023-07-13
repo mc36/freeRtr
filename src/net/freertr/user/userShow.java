@@ -520,6 +520,7 @@ public class userShow {
             int i = bits.str2num(a);
             a = clntWhois.asn2info(i);
             cmd.error("asn " + i + " have info at " + a);
+            rdr.putStrArr(clntWhois.asn2infos(i));
             return null;
         }
         if (a.equals("as-name")) {

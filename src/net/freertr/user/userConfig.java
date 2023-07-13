@@ -548,6 +548,8 @@ public class userConfig {
         l.add(null, "3  3,.    chksum                     append chksum");
         l.add(null, "3  3,.    user                       append user");
         l.add(null, "3  3,.    none                       append nothing");
+        l.add(null, "2  3    whois-online                 set online information");
+        l.add(null, "3  3,.    <str>                      server name");
         l.add(null, "2  3    whois-server                 set whois server");
         l.add(null, "3  .      <str>                      server name");
         l.add(null, "2  3    whois-proxy                  specify proxy profile");
@@ -1393,6 +1395,21 @@ public class userConfig {
                 cfgAll.redundancyInit = bits.str2num(cmd.word());
                 return;
             }
+            if (a.equals("whois-online")) {
+                cfgAll.whoisOnline = new ArrayList<String>();
+                for (;;) {
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    cfgAll.whoisOnline.add(a);
+                }
+                if (cfgAll.whoisOnline.size() > 0) {
+                    return;
+                }
+                cfgAll.whoisOnline = null;
+                return;
+            }
             if (a.equals("whois-server")) {
                 cfgAll.whoisServer = cmd.getRemaining();
                 return;
@@ -2215,6 +2232,10 @@ public class userConfig {
             }
             if (a.equals("bullying")) {
                 cfgAll.clientShamer = null;
+                return;
+            }
+            if (a.equals("whois-online")) {
+                cfgAll.whoisOnline = null;
                 return;
             }
             if (a.equals("whois-server")) {

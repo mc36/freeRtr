@@ -1,5 +1,6 @@
 package net.freertr.clnt;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
@@ -147,9 +148,32 @@ public class clntWhois {
      * @return info got, null if nothing
      */
     public static String asn2info(int i) {
-        ///////////// have the client whois-online asdf/asX qwer/asX knob and spread this everywhere
-        return "http://bgp.he.net/AS" + i;
-        ///return "http://ipinfo.io/AS" + i;
+        if (cfgAll.whoisOnline == null) {
+            return null;
+        }
+        int o = cfgAll.whoisOnline.size();
+        if (o < 1) {
+            return null;
+        }
+        return cfgAll.whoisOnline.get(bits.random(0, o)) + i;
+    }
+
+    /**
+     * get all infos for an asn
+     *
+     * @param i asn to query
+     * @return info got, null if nothing
+     */
+    public static List<String> asn2infos(int i) {
+        List<String> res = new ArrayList<String>();
+        if (cfgAll.whoisOnline == null) {
+            return res;
+        }
+        int p = cfgAll.whoisOnline.size();
+        for (int o = 0; o < p; o++) {
+            res.add(cfgAll.whoisOnline.get(o) + i);
+        }
+        return res;
     }
 
     /**

@@ -1064,6 +1064,7 @@ client domain-name mchome.nop.hu
 client prefer-ipv6
 client password-stars
 client whois-server whois.ripe.net
+client whois-online http://bgp.he.net/AS http://ipinfo.io/AS
 client pastebin http://paste.nop.hu/paster.class?data=
 client name-server 10.10.10.10
 client time-server www.mchome.nop.hu

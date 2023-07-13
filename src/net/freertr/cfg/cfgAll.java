@@ -793,6 +793,11 @@ public class cfgAll {
     public static String whoisServer = null;
 
     /**
+     * list of asn tools
+     */
+    public static List<String> whoisOnline = null;
+
+    /**
      * proxy to use
      */
     public static clntProxy whoisProxy;
@@ -3725,6 +3730,13 @@ public class cfgAll {
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
         cmds.cfgLine(l, !passwdStars, "", "client password-stars", "");
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);
+        if (whoisOnline != null) {
+            String a = "";
+            for (int i = 0; i < whoisOnline.size(); i++) {
+                a += " " + whoisOnline.get(i);
+            }
+            l.add("client whois-online" + a);
+        }
         cmds.cfgLine(l, whoisProxy == null, "", "client whois-proxy", "" + whoisProxy);
         cmds.cfgLine(l, !graceReload, "", "client graceful-reload", "");
         l.add("client ipv4-tos " + ipv4sendingTOS);
