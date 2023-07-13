@@ -1132,7 +1132,9 @@ public class tabRoute<T extends addrType> {
             case 10:
                 return new userFormat("|", "prefix|hop|ago|last");
             case 11:
-                return new userFormat("|", "prefix|hop|metric|aspath");
+                return new userFormat("|", "prefix|hop|metric|asname");
+            case 12:
+                return new userFormat("|", "prefix|hop|metric|asinfo");
             default:
                 return null;
         }
@@ -1193,6 +1195,9 @@ public class tabRoute<T extends addrType> {
                     break;
                 case 11:
                     tabRouteEntry.toShAsName(lst, prf);
+                    break;
+                case 12:
+                    tabRouteEntry.toShAsInfo(lst, prf);
                     break;
             }
         }

@@ -4271,6 +4271,10 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, 11);
             return;
         }
+        if (a.equals("asinfos")) {
+            doShowRoutes(r.bgp.fwdCore, tab, 12);
+            return;
+        }
         if (a.equals("changes")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 3000);
             return;

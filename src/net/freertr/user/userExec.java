@@ -774,6 +774,7 @@ public class userExec {
         hl.add(null, "6 .              labels             remote and local labels");
         hl.add(null, "6 .              ecmp               ecmp info");
         hl.add(null, "6 .              asnames            names of the asns in the paths");
+        hl.add(null, "6 .              asinfos            infos of the asns in the paths");
         hl.add(null, "6 .              asgraph            connectivity graph of ases");
         hl.add(null, "6 .              asorigin           originating ases");
         hl.add(null, "6 .              astransit          transiting ases");

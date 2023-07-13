@@ -251,7 +251,7 @@ public class clntWhois {
         String s = "";
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
-            String a = clntWhois.asn2info(i);
+            String a = clntWhois.asn2info(o);
             if (a == null) {
                 a = "as#" + bits.num2str(o);
             }
