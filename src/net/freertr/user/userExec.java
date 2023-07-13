@@ -1041,6 +1041,8 @@ public class userExec {
         hl.add(null, "2 .      name-cache              local dns cache");
         hl.add(null, "2 3      as-name                 name of an as");
         hl.add(null, "3 .        <num>                 as name to show");
+        hl.add(null, "2 3      as-info                 information of an as");
+        hl.add(null, "3 .        <num>                 as name to show");
         hl.add(null, "2 .      asn-cache               local asn cache");
         hl.add(null, "2 3      watchdog                watchdog information");
         hl.add(null, "3 .        gc                    garbage collector information");

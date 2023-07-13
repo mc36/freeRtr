@@ -141,6 +141,18 @@ public class clntWhois {
     }
 
     /**
+     * get info for an asn
+     *
+     * @param i asn to query
+     * @return info got
+     */
+    public static String asn2info(int i) {
+        ///////////// have the client whois-online asdf/asX qwer/asX knob and spread this everywhere
+        return "http://bgp.he.net/AS" + i;
+        ///return "http://ipinfo.io/AS" + i;
+    }
+
+    /**
      * find name of asn
      *
      * @param i asn number

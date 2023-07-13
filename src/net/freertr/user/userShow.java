@@ -515,6 +515,13 @@ public class userShow {
             }
             return null;
         }
+        if (a.equals("as-info")) {
+            a = cmd.word();
+            int i = bits.str2num(a);
+            a = clntWhois.asn2info(i);
+            cmd.error("asn " + i + " have info at " + a);
+            return null;
+        }
         if (a.equals("as-name")) {
             long tim = bits.getTime();
             a = cmd.word();
