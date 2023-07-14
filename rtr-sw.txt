@@ -1059,6 +1059,7 @@ server tacacs tac
  vrf v1
  exit
 !
+client tracestop
 client proxy p1
 client domain-name mchome.nop.hu
 client prefer-ipv6
