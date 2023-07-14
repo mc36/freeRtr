@@ -938,6 +938,11 @@ public class cfgAll {
     public static int ifaceStallCheck = 60000;
 
     /**
+     * treat traceback as exception
+     */
+    public static boolean tracebackStops = false;
+
+    /**
      * redundancy keepalive time
      */
     public static int redundancyKeep = 500;
@@ -1291,6 +1296,7 @@ public class cfgAll {
         "!no enable",
         "!no locale",
         // client
+        "!no client tracestop",
         "!no client pastebin",
         "!no client capture-path",
         "!client label-range 32 1048560",
@@ -3708,6 +3714,7 @@ public class cfgAll {
 
     private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
+        cmds.cfgLine(l, !tracebackStops, "", "client tracestop", "");
         l.add("client ifacestall " + ifaceStallCheck);
         l.add("client redundancy " + redundancyKeep + " " + redundancyHold + " " + redundancyInit);
         l.add("client cpuhog " + cpuhogCheck);

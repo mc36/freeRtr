@@ -430,6 +430,10 @@ public class logger {
         } catch (Exception ee) {
         }
         logOneLine(logLev.msgExcp, "traceback", a);
+        if (!cfgAll.tracebackStops) {
+            return;
+        }
+        cfgInit.stopRouter(false, 15, "console crash");
     }
 
     /**

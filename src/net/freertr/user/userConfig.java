@@ -485,6 +485,7 @@ public class userConfig {
         l.add(null, "5  6          <num>                  new service path");
         l.add(null, "6  4,.          <num>                new service index");
         l.add(null, "1  2  client                         specify address of name server");
+        l.add(null, "2  .    tracestop                    stop on traceback");
         l.add(null, "2  3    cpuhog                       specify cpuhog parameters");
         l.add(null, "3  .      <num>                      percentage");
         l.add(null, "2  3    label-range                  specify label range parameters");
@@ -1342,6 +1343,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("tracestop")) {
+                cfgAll.tracebackStops = true;
+                return;
+            }
             if (a.equals("pastebin")) {
                 cfgAll.pasteBin = cmd.word();
                 return;
@@ -2222,6 +2227,10 @@ public class userConfig {
         }
         if (a.equals("client")) {
             a = cmd.word();
+            if (a.equals("tracestop")) {
+                cfgAll.tracebackStops = false;
+                return;
+            }
             if (a.equals("pastebin")) {
                 cfgAll.pasteBin = null;
                 return;

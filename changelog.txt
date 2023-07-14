@@ -15072,3 +15072,5 @@ no todo: server http / host * redir to default fill /data/www/ and subconn stuff
 todo: client whois-online http://ipinfo.io/AS$asn$ everywhere
 ---------------------------------- 2023-07-13 06:43:55 23.7.13
 no todo: client whois-online http://ipinfo.io/AS$asn$ everywhere
+---------------------------------- 2023-07-14 17:05:06 23.7.14
+no todo: traceback as exeption knob to the lines, default set on console0
