@@ -100,11 +100,15 @@ public class ifcSgt {
      * decode one packet
      *
      * @param pck packet to decrypt
+     * @param allowClear allot cleartext also
      * @return false on success, true on error
      */
-    public boolean doDecode(packHolder pck) {
+    public boolean doDecode(packHolder pck, boolean allowClear) {
         int typ = pck.msbGetW(0);
         if (typ != type) {
+            if (allowClear) {
+                return false;
+            }
             if (optional < 0) {
                 logger.info("bad type (" + bits.toHexW(typ) + ") on " + upper);
                 return true;

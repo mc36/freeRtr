@@ -1922,6 +1922,7 @@ public class servP4langConn implements Runnable {
         if (cfgAll.ifaces.find(ifc.ifc) == null) {
             return true;
         }
+        lower.setup2apiPack(ifc);
         int i = -1;
         if (ifc.ifc.ethtyp.monSes != null) {
             servP4langIfc res = lower.findIfc(ifc.ifc.ethtyp.monSes);
@@ -2010,12 +2011,10 @@ public class servP4langConn implements Runnable {
                 } else {
                     lower.sendLine("macsec_add " + ifc.id + " " + a);
                 }
-                lower.setup2apiPack(ifc);
             } else {
                 if (ifc.sentMacsec != null) {
                     lower.sendLine("macsec_del " + ifc.id + " " + ifc.sentMacsec);
                 }
-                lower.setup2apiPack(ifc);
             }
             ifc.sentMacsec = a;
         }

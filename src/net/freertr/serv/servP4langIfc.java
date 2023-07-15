@@ -8,7 +8,6 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.ifc.ifcDn;
-import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
@@ -16,6 +15,7 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabSession;
+import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -608,7 +608,27 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
                 logger.error("sending " + cnt + " of packets to #" + id + " payload=" + pck.dataOffset());
             }
         }
-        lower.sendLine(ifcEthTyp.packet2packout(pck, cnt, id, id));
+        lower.sendLine(packet2packout(pck, cnt, id, id));
+    }
+
+    /**
+     * convert a packet to a packet out message
+     *
+     * @param pck packet to convert
+     * @param cnt counter to use
+     * @param prt port to use
+     * @param port port to use
+     * @return converted packet
+     */
+    public static final String packet2packout(packHolder pck, int cnt, int prt, int port) {
+        String a = "packout_add " + cnt + " " + (pck.dataSize() + addrMac.sizeX2) + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 0xf) + " ";
+        byte[] buf = pck.ETHtrg.getBytes();
+        a += bits.toHex(buf);
+        buf = pck.ETHsrc.getBytes();
+        a += bits.toHex(buf);
+        buf = new byte[pck.dataSize()];
+        pck.getCopy(buf, 0, 0, buf.length);
+        return a + bits.toHex(buf);
     }
 
     /**
@@ -617,17 +637,10 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param ned needed or not
      */
     public void setup2apiPack(boolean ned) {
-        ned |= ifc.ethtyp.macSec != null;
-        ned &= (spdNum == -2);
-        ifcEthTyp ett = ifc.ethtyp;
         if (ned) {
-            ett.sendPipe = lower.conn.pipe;
-            ett.sendPort = id;
-            ett.sendPrt = id;
+            ifc.ethtyp.sendClear = this;
         } else {
-            ett.sendPipe = null;
-            ett.sendPort = 0;
-            ett.sendPrt = 0;
+            ifc.ethtyp.sendClear = null;
         }
         apiPack = ned;
     }

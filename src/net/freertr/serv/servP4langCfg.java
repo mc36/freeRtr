@@ -324,12 +324,15 @@ public class servP4langCfg implements ifcUp {
         if (prnt == null) {
             return;
         }
-        if (prnt.speed != null) {
-            prnt.apiPack = prnt.spdNum == -2;
-        } else {
-            prnt.apiPack = false;
+        if (prnt.ifc == null) {
+            return;
         }
-        prnt.setup2apiPack(prnt.apiPack);
+        boolean ned = false;
+        if (prnt.speed != null) {
+            ned = prnt.spdNum == -2;
+        }
+        prnt.apiPack = ned;
+        prnt.setup2apiPack(ned);
         for (int i = expIfc.size() - 1; i >= 0; i--) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry == null) {
@@ -338,10 +341,14 @@ public class servP4langCfg implements ifcUp {
             if (ntry.ifc == null) {
                 continue;
             }
-            if ((ntry.ifc.parent != prnt.ifc) && (ntry.ifc.cloned != prnt.ifc)) {
+            if (ntry.ifc.parent == prnt.ifc) {
+                ntry.setup2apiPack(ned);
                 continue;
             }
-            ntry.setup2apiPack(prnt.apiPack);
+            if (ntry.ifc.cloned == prnt.ifc) {
+                ntry.setup2apiPack(ned);
+                continue;
+            }
         }
     }
 
