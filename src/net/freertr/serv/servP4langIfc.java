@@ -8,7 +8,7 @@ import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcBridgeIfc;
 import net.freertr.ifc.ifcDn;
-import net.freertr.ifc.ifcMacSec;
+import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
@@ -608,7 +608,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
                 logger.error("sending " + cnt + " of packets to #" + id + " payload=" + pck.dataOffset());
             }
         }
-        lower.sendLine(ifcMacSec.packet2packout(pck, cnt, id, id));
+        lower.sendLine(ifcEthTyp.packet2packout(pck, cnt, id, id));
     }
 
     /**
@@ -617,25 +617,19 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param ned needed or not
      */
     public void setup2apiPack(boolean ned) {
-        if (1 < 2) {
-            return;////////////////////////////////////////////////
-        }
-        ifcMacSec mcsc = ifc.ethtyp.macSec;
-        ned |= mcsc != null;
+        ned |= ifc.ethtyp.macSec != null;
         ned &= (spdNum == -2);
-        if (mcsc != null) {
-            if (ned) {
-                mcsc.sendPipe = lower.conn.pipe;
-                mcsc.sendPort = id;
-                mcsc.sendPrt = id;
-            } else {
-                mcsc.sendPipe = null;
-                mcsc.sendPort = 0;
-                mcsc.sendPrt = 0;
-            }
+        ifcEthTyp ett = ifc.ethtyp;
+        if (ned) {
+            ett.sendPipe = lower.conn.pipe;
+            ett.sendPort = id;
+            ett.sendPrt = id;
+        } else {
+            ett.sendPipe = null;
+            ett.sendPort = 0;
+            ett.sendPrt = 0;
         }
         apiPack = ned;
-        lower.setup2apiPack(this);
     }
 
     public void sendPack(packHolder pck) {

@@ -8,7 +8,6 @@ import net.freertr.cry.cryEncrGeneric;
 import net.freertr.cry.cryHashGeneric;
 import net.freertr.cry.cryKeyDH;
 import net.freertr.pack.packHolder;
-import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabWindow;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -84,21 +83,6 @@ public class ifcMacSec implements Runnable {
      * hardware counter
      */
     public counter hwCntr;
-
-    /**
-     * send through the pipe
-     */
-    public pipeSide sendPipe;
-
-    /**
-     * send with prt id
-     */
-    public int sendPrt;
-
-    /**
-     * send with port id
-     */
-    public int sendPort;
 
     private counter cntr = new counter();
 
@@ -201,26 +185,6 @@ public class ifcMacSec implements Runnable {
     }
 
     /**
-     * convert a packet to a packet out message
-     *
-     * @param pck packet to convert
-     * @param cnt counter to use
-     * @param prt port to use
-     * @param port port to use
-     * @return converted packet
-     */
-    public static final String packet2packout(packHolder pck, int cnt, int prt, int port) {
-        String a = "packout_add " + cnt + " " + (pck.dataSize() + addrMac.sizeX2) + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 0xf) + " ";
-        byte[] buf = pck.ETHtrg.getBytes();
-        a += bits.toHex(buf);
-        buf = pck.ETHsrc.getBytes();
-        a += bits.toHex(buf);
-        buf = new byte[pck.dataSize()];
-        pck.getCopy(buf, 0, 0, buf.length);
-        return a + bits.toHex(buf);
-    }
-
-    /**
      * encrypt one packet
      *
      * @param pck packet to encrypt
@@ -229,10 +193,6 @@ public class ifcMacSec implements Runnable {
     public synchronized boolean doEncrypt(packHolder pck) {
         if (hashTx == null) {
             return true;
-        }
-        if (sendPipe != null) {
-            sendPipe.linePut(packet2packout(pck, 1, sendPrt, sendPort));
-            return false;
         }
         cntr.tx(pck);
         int pad = pck.dataSize() % cphrSiz;
@@ -306,9 +266,6 @@ public class ifcMacSec implements Runnable {
         }
         int typ = pck.msbGetW(0);
         if (typ != myTyp) { // ethertype
-            if (sendPipe != null) {
-                return false;
-            }
             if (allowClear) {
                 return false;
             }

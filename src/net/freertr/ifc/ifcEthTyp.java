@@ -12,6 +12,7 @@ import net.freertr.ip.ipCor;
 import net.freertr.ip.ipIfc4;
 import net.freertr.ip.ipIfc6;
 import net.freertr.pack.packHolder;
+import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
@@ -32,6 +33,21 @@ import net.freertr.util.state;
  * @author matecsaba
  */
 public class ifcEthTyp implements Runnable, ifcUp {
+
+    /**
+     * send through the pipe
+     */
+    public pipeSide sendPipe;
+
+    /**
+     * send with prt id
+     */
+    public int sendPrt;
+
+    /**
+     * send with port id
+     */
+    public int sendPort;
 
     /**
      * strict mac check
@@ -818,6 +834,10 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 monSes.doTxPack(mon);
             }
         }
+        if (sendPipe != null) {
+            sendPipe.linePut(packet2packout(pck, 1, sendPrt, sendPort));
+            return false;
+        }
         if (sgtHnd != null) {
             if (sgtHnd.doEncode(pck)) {
                 return true;
@@ -838,6 +858,26 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     public void recvPack(packHolder pck) {
         doRxWork(pck, false);
+    }
+
+    /**
+     * convert a packet to a packet out message
+     *
+     * @param pck packet to convert
+     * @param cnt counter to use
+     * @param prt port to use
+     * @param port port to use
+     * @return converted packet
+     */
+    public static final String packet2packout(packHolder pck, int cnt, int prt, int port) {
+        String a = "packout_add " + cnt + " " + (pck.dataSize() + addrMac.sizeX2) + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 0xf) + " ";
+        byte[] buf = pck.ETHtrg.getBytes();
+        a += bits.toHex(buf);
+        buf = pck.ETHsrc.getBytes();
+        a += bits.toHex(buf);
+        buf = new byte[pck.dataSize()];
+        pck.getCopy(buf, 0, 0, buf.length);
+        return a + bits.toHex(buf);
     }
 
     /**
