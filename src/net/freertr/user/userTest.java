@@ -444,14 +444,10 @@ public class userTest {
             return null;
         }
         if (a.equals("vm")) {
-            a = cmd.word();
             try {
                 a = cmd.word();
-                String s = cmd.getRemaining();
-                if (s.length() < 1) {
-                    s = verCore.vmDir;
-                }
-                userVM v = new userVM(pip, true, s);
+                String s = cmd.getRemaining().strip();
+                userVM v = new userVM(pip, true, verCore.vmDir);
                 v.doLoad(a, s);
                 v.doWork(pip, true, "", a, s);
             } catch (Exception e) {

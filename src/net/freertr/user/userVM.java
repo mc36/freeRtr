@@ -10,8 +10,6 @@ import net.freertr.cry.cryHashCrc32;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
-import net.freertr.user.userFlash;
-import net.freertr.user.userScreen;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
 import net.freertr.util.version;
@@ -23,7 +21,7 @@ import net.freertr.util.version;
  */
 public class userVM {
 
-    private static final String rootDir = "../vm2/";
+    private static final String rootDir = "../vm/";
 
     private static final int reg_a = 1;
 
