@@ -1588,6 +1588,7 @@ qc pass: p4lang: sgt egress access list
 qc pass: p4lang: sgt vlan ingress access list
 qc pass: p4lang: sgt vlan egress access list
 qc pass: p4lang: packout on port
+qc pass: p4lang: packout on vlan port
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core

@@ -15074,3 +15074,5 @@ todo: client whois-online http://ipinfo.io/AS$asn$ everywhere
 no todo: client whois-online http://ipinfo.io/AS$asn$ everywhere
 ---------------------------------- 2023-07-14 17:05:06 23.7.14
 no todo: traceback as exeption knob to the lines, default set on console0
+---------------------------------- 2023-07-15 20:20:03 23.7.15
+qc pass: p4lang: packout on vlan port
