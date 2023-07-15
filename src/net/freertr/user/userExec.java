@@ -773,10 +773,10 @@ public class userExec {
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 .              labels             remote and local labels");
         hl.add(null, "6 .              ecmp               ecmp info");
-        hl.add(null, "6 7              asnames            names of the asns in the paths");
+        hl.add(null, "6 7,.            asnames            names of the asns in the paths");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
-        hl.add(null, "6 7              asinfos            infos of the asns in the paths");
+        hl.add(null, "6 7,.            asinfos            infos of the asns in the paths");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 .              asgraph            connectivity graph of ases");
