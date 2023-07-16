@@ -139,6 +139,9 @@ public class playerSong implements Comparator<playerSong> {
             res = new ArrayList<playerSong>();
         }
         playerSong cur = new playerSong();
+        if (src == null) {
+            return res;
+        }
         for (int i = 0; i < src.size(); i++) {
             String a = src.get(i);
             int o = a.indexOf("=");

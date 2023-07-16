@@ -1,7 +1,6 @@
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ public class nonAscii {
      * @param a string to check
      * @return false if safe
      */
-    protected static final boolean doNonAscii(String a) {
+    public static final boolean doNonAscii(String a) {
         if (a == null) {
             return true;
         }
@@ -41,7 +40,7 @@ public class nonAscii {
      * @param na not ascii
      * @param oa only ascii
      */
-    protected static final void doNascii(List<File> fl, List<File> na, List<File> oa) {
+    public static final void doNascii(List<File> fl, List<File> na, List<File> oa) {
         for (int i = 0; i < fl.size(); i++) {
             File fi = fl.get(i);
             String a = fi.getAbsolutePath();
@@ -63,7 +62,6 @@ public class nonAscii {
         if (args.length > 0) {
             s = args[0];
         }
-        playerUtil.put("scanning " + s);
         List<File> na = new ArrayList<File>();
         List<File> oa = new ArrayList<File>();
         List<File> fl = findSongs.doFindDir(s);
@@ -72,7 +70,10 @@ public class nonAscii {
             File ntry = na.get(i);
             playerUtil.put("not ascii " + ntry.getAbsolutePath());
         }
-        playerUtil.put("found " + oa.size() + " ok and " + na.size() + " not ok entries");//////////////
+        if (na.size() < 1) {
+            return;
+        }
+        playerUtil.put("found " + oa.size() + " ok and " + na.size() + " not ok");
     }
 
 }
