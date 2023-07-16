@@ -1199,8 +1199,21 @@ public class servP4langCfg implements ifcUp {
      * @return show
      */
     protected userFormat getShowFront() {
-        userFormat res = new userFormat("|", "num|name");
-        servP4langMgcN.toShow("", frontnam, res);
+        userFormat res = new userFormat("|", "num|local|name");
+        for (int i = 0; i < frontnam.size(); i++) {
+            servP4langMgcN ntry = frontnam.get(i);
+            servP4langIfc ifcH = findIfc(ntry.id);
+            String ifcN = "n/a";
+            if (ifcH != null) {
+                if (ifcH.ifc != null) {
+                    ifcN = "" + ifcH.ifc.name;
+                }
+            }
+            if (ntry.id == cpuPort) {
+                ifcN = "cpu-" + interconn;
+            }
+            res.add(ntry.id + "|" + ifcN + "|" + ntry.nam);
+        }
         return res;
     }
 

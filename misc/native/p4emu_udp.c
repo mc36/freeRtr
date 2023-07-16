@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
     addrLoc.sin_family = AF_INET;
     for (int i = 0; i < dataPorts; i++) {
         unsigned char buf[1024];
-        sprintf((char*)&buf[0], "port-%i", i);
+        sprintf((char*)&buf[0], "udport-%i", i);
         initIface(i, (char*)&buf[0]);
         memset(&peers[i], 0, sizeof(peers[i]));
         if (inet_aton(argv[5], &peers[i].sin_addr) == 0) err("bad raddr address");
