@@ -53,7 +53,7 @@ public class findSongs {
         }
         playerUtil.put("scanning " + s);
         findSongs fs = new findSongs();
-        fs.doFind(s);
+        fs.doFindSongs(s);
         playerUtil.put("sorting");
         fs.doSort();
         if (args.length > 2) {
@@ -94,23 +94,34 @@ public class findSongs {
      * find files
      *
      * @param s directory, without leading /
+     * @return list of files
      */
-    protected void doFind(String s) {
+    protected final static List<File> doFindDir(String s) {
+        List<File> fa = new ArrayList<File>();
         playerUtil.put("processing " + s + "...");
         File[] fl;
         try {
             fl = new File(s).listFiles();
         } catch (Exception e) {
-            return;
+            return fa;
         }
         if (fl == null) {
-            return;
+            return fa;
         }
-        List<File> fa = new ArrayList<File>();
         for (int i = 0; i < fl.length; i++) {
             fa.add(fl[i]);
         }
         Collections.sort(fa);
+        return fa;
+    }
+
+    /**
+     * find files
+     *
+     * @param s directory, without leading /
+     */
+    protected void doFindSongs(String s) {
+        List<File> fa = doFindDir(s);
         for (int i = 0; i < fa.size(); i++) {
             File f = fa.get(i);
             String a = f.getName();
@@ -118,7 +129,7 @@ public class findSongs {
                 continue;
             }
             if (f.isDirectory()) {
-                doFind(s + "/" + a);
+                doFindSongs(s + "/" + a);
                 continue;
             }
             int o = a.lastIndexOf(".");

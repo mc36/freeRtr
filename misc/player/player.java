@@ -869,8 +869,8 @@ public class player implements Runnable {
             putStart(buf, -1);
             putMenu(buf);
             findSongs fnd = new findSongs();
-            fnd.doFind("/media");
-            fnd.doFind("/mnt");
+            fnd.doFindSongs("/media");
+            fnd.doFindSongs("/mnt");
             fnd.doSort();
             if (setPlaylist(fnd.lst, true)) {
                 buf.write("nothing selected!<br/>".getBytes());

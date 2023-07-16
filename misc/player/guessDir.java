@@ -18,7 +18,7 @@ public class guessDir {
         }
         playerUtil.put("scanning " + s);
         findSongs fs = new findSongs();
-        fs.doFind(s);
+        fs.doFindSongs(s);
         fs.doSort();
         fs.doDir();
         playerUtil.put(fs.art + " - " + fs.dat + " - " + fs.alb);
