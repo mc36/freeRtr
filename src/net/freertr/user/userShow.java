@@ -1043,7 +1043,7 @@ public class userShow {
             return null;
         }
         if (a.equals("clients")) {
-            userFormat l = new userFormat("|", "name|start|error|stop|waiting");
+            userFormat l = new userFormat("|", "name|start|error|stop|wait");
             doOneClient(l, "proxy", clntProxy.cntrStart, clntProxy.cntrError, clntProxy.cntrStop);
             doOneClient(l, "smtp", clntSmtp.cntrStart, clntSmtp.cntrError, clntSmtp.cntrStop);
             doOneClient(l, "http", clntHttp.cntrStart, clntHttp.cntrError, clntHttp.cntrStop);
