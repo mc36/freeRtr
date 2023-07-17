@@ -1817,6 +1817,7 @@ public class userExec {
         hl.add(null, "4 .          start                    start");
         hl.add(null, "2 .      logging                      logged messages");
         hl.add(null, "2 .      reload                       clear last reload reason");
+        hl.add(null, "2 .      upgrade                      clear upgrade auto-revert");
         hl.add(null, "2 .      auto-bandwidth               set auto bandwidth values");
         hl.add(null, "2 .      follow-tracker               set interfaces based on trackers");
         hl.add(null, "2 .      tunnel-domain                resolve destination domain names");

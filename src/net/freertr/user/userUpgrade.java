@@ -21,6 +21,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
 
@@ -43,7 +44,7 @@ public class userUpgrade {
     /**
      * update progress indicator, 0=none, 1=upgrade, 2=auto-revert
      */
-    public static int inProgress = 0;
+    public static final syncInt inProgress = new syncInt(0);
 
     private final static int justSimu = 0x1000000;
 
@@ -333,6 +334,39 @@ public class userUpgrade {
     }
 
     /**
+     * stop auto revert
+     *
+     * @return work done
+     */
+    public static String stopReverter() {
+        String a;
+        boolean l = false;
+        int i = inProgress.get();
+        switch (i) {
+            case 0:
+                a = "no upgrade in progess";
+                break;
+            case 1:
+                a = "upgrade in progess";
+                break;
+            case 2:
+                a = "auto-revert cancelled";
+                inProgress.set(0);
+                l = true;
+                break;
+            default:
+                a = "unknown upgrade status " + i;
+                l = true;
+                break;
+        }
+        if (!l) {
+            return a;
+        }
+        logger.info(a);
+        return a;
+    }
+
+    /**
      * do auto-revert
      */
     protected static void doAutoRevert() {
@@ -359,13 +393,13 @@ public class userUpgrade {
      * do software upgrade
      */
     public void doUpgrade() {
-        if (inProgress != 0) {
+        if (inProgress.get() != 0) {
             String s = "overlapping upgrades eliminated";
             logger.info(s);
             cons.debugStat(s);
             return;
         }
-        inProgress = 1;
+        inProgress.set(1);
         int oldf = forces;
         String s = cmd.word();
         forces = (oldf | bits.str2num(cmd.word())) ^ justSimu;
@@ -375,7 +409,7 @@ public class userUpgrade {
             logger.traceback(e);
         }
         forces = oldf;
-        inProgress = 0;
+        inProgress.set(0);
     }
 
     private boolean needStop(int i) {
@@ -656,7 +690,7 @@ class userUpgradeRevert implements Runnable {
         if (cfgAll.upgradeRevert < 1) {
             return;
         }
-        userUpgrade.inProgress = 2;
+        userUpgrade.inProgress.set(2);
         for (;;) {
             bits.sleep(1000);
             if (!cfgInit.booting) {
@@ -672,7 +706,7 @@ class userUpgradeRevert implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
-        userUpgrade.inProgress = 0;
+        userUpgrade.inProgress.set(0);
     }
 
 }

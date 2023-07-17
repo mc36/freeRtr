@@ -112,6 +112,11 @@ public class userClear {
         if (alias != null) {
             return alias;
         }
+        if (a.equals("upgrade")) {
+            a = userUpgrade.stopReverter();
+            cmd.error(a);
+            return null;
+        }
         if (a.equals("reload")) {
             a = "reload code cleared";
             logger.info(a);
