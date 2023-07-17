@@ -17,6 +17,7 @@ import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 
 /**
  * domain name protocol (rfc1035) client
@@ -24,6 +25,21 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class clntDns {
+
+    /**
+     * startup counter
+     */
+    public final static syncInt cntrStart = new syncInt(0);
+
+    /**
+     * error counter
+     */
+    public final static syncInt cntrError = new syncInt(0);
+
+    /**
+     * stop counter
+     */
+    public final static syncInt cntrStop = new syncInt(0);
 
     /**
      * working proxy

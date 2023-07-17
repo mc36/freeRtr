@@ -112,6 +112,12 @@ public class userClear {
         if (alias != null) {
             return alias;
         }
+        if (a.equals("reload")) {
+            a = "reload code cleared";
+            logger.info(a);
+            cfgInit.stopRouter(true, -16, a);
+            return null;
+        }
         if (a.equals("redundancy")) {
             a = cmd.word();
             cmd.error(cmds.doneFail(prtRedun.setPrio(a, bits.str2num(cmd.word()))));

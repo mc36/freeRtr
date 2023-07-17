@@ -1310,6 +1310,7 @@ public class userExec {
         hl.add(cfgAll.dmnDhcp4.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      dhcp6                   dhcp6 protocol information");
         hl.add(cfgAll.dmnDhcp6.listServers(), "3 .        <name:loc>            server name");
+        hl.add(null, "2 .      clients                 client information");
         hl.add(null, "2 3,.    check                   check information");
         hl.add(null, "3 .        <name:chk>            check name");
         hl.add(null, "2 3,.    sensor                  sensor information");
@@ -1815,6 +1816,7 @@ public class userExec {
         hl.add(null, "4 .          stop                     stop");
         hl.add(null, "4 .          start                    start");
         hl.add(null, "2 .      logging                      logged messages");
+        hl.add(null, "2 .      reload                       clear last reload reason");
         hl.add(null, "2 .      auto-bandwidth               set auto bandwidth values");
         hl.add(null, "2 .      follow-tracker               set interfaces based on trackers");
         hl.add(null, "2 .      tunnel-domain                resolve destination domain names");

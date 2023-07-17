@@ -23,6 +23,7 @@ import net.freertr.util.debugger;
 import net.freertr.enc.encXmlEntry;
 import net.freertr.enc.encUrl;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 import net.freertr.util.version;
 
 /**
@@ -31,6 +32,21 @@ import net.freertr.util.version;
  * @author matecsaba
  */
 public class clntHttp {
+
+    /**
+     * startup counter
+     */
+    public final static syncInt cntrStart = new syncInt(0);
+
+    /**
+     * error counter
+     */
+    public final static syncInt cntrError = new syncInt(0);
+
+    /**
+     * stop counter
+     */
+    public final static syncInt cntrStop = new syncInt(0);
 
     /**
      * pipeline in use

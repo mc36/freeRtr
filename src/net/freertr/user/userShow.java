@@ -40,7 +40,12 @@ import net.freertr.cfg.cfgVpdn;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntCurl;
 import net.freertr.clnt.clntDns;
+import net.freertr.clnt.clntFtp;
+import net.freertr.clnt.clntHttp;
 import net.freertr.clnt.clntNetflow;
+import net.freertr.clnt.clntProxy;
+import net.freertr.clnt.clntSmtp;
+import net.freertr.clnt.clntTftp;
 import net.freertr.clnt.clntWhois;
 import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcThread;
@@ -121,6 +126,7 @@ import net.freertr.util.differ;
 import net.freertr.util.history;
 import net.freertr.util.logBuf;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 import net.freertr.util.verCore;
 import net.freertr.util.version;
 
@@ -1034,6 +1040,17 @@ public class userShow {
             String p = cmd.word();
             String k = cmd.word();
             rdr.putStrTab(srv.getShow(adr, p, k));
+            return null;
+        }
+        if (a.equals("clients")) {
+            userFormat l = new userFormat("|", "name|start|error|stop|waiting");
+            doOneClient(l, "proxy", clntProxy.cntrStart, clntProxy.cntrError, clntProxy.cntrStop);
+            doOneClient(l, "smtp", clntSmtp.cntrStart, clntSmtp.cntrError, clntSmtp.cntrStop);
+            doOneClient(l, "http", clntHttp.cntrStart, clntHttp.cntrError, clntHttp.cntrStop);
+            doOneClient(l, "tftp", clntTftp.cntrStart, clntTftp.cntrError, clntTftp.cntrStop);
+            doOneClient(l, "ftp", clntFtp.cntrStart, clntFtp.cntrError, clntFtp.cntrStop);
+            doOneClient(l, "dns", clntDns.cntrStart, clntDns.cntrError, clntDns.cntrStop);
+            rdr.putStrTab(l);
             return null;
         }
         if (a.equals("check")) {
@@ -5323,6 +5340,13 @@ public class userShow {
             flt = getConfigFilter(flt, a);
         }
         return flt;
+    }
+
+    private static void doOneClient(userFormat lst, String nam, syncInt startS, syncInt errorS, syncInt stopS) {
+        int startI = startS.get();
+        int errorI = errorS.get();
+        int stopI = stopS.get();
+        lst.add(nam + "|" + startI + "|" + errorI + "|" + stopI + "|" + (startI - stopI - errorI));
     }
 
 }

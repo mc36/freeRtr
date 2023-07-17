@@ -87,6 +87,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
         l.add(null, "2 .    local                        select local vrf");
         l.add(null, "2 .    socks4                       select socks v4");
         l.add(null, "2 .    socks5                       select socks v5");
+        l.add(null, "2 .    websock                      select websocket");
         l.add(null, "2 .    http                         select http connect");
         l.add(null, "2 .    hostos                       select host os stack");
         l.add(null, "1 2  security                       select security protocol");

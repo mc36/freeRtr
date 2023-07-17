@@ -23,6 +23,7 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 
 /**
  * file transfer protocol (rfc959) client
@@ -30,6 +31,21 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class clntFtp implements prtServS {
+
+    /**
+     * startup counter
+     */
+    public final static syncInt cntrStart = new syncInt(0);
+
+    /**
+     * error counter
+     */
+    public final static syncInt cntrError = new syncInt(0);
+
+    /**
+     * stop counter
+     */
+    public final static syncInt cntrStop = new syncInt(0);
 
     private final int locprt = 12121;
 

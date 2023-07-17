@@ -19,6 +19,7 @@ import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 import net.freertr.util.version;
 
 /**
@@ -27,6 +28,21 @@ import net.freertr.util.version;
  * @author matecsaba
  */
 public class clntSmtp implements Runnable {
+
+    /**
+     * startup counter
+     */
+    public final static syncInt cntrStart = new syncInt(0);
+
+    /**
+     * error counter
+     */
+    public final static syncInt cntrError = new syncInt(0);
+
+    /**
+     * stop counter
+     */
+    public final static syncInt cntrStop = new syncInt(0);
 
     private pipeProgress cons;
 

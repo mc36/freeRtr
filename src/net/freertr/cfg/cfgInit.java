@@ -1075,7 +1075,7 @@ public class cfgInit implements Runnable {
      * stop router
      *
      * @param clean clean exit
-     * @param code exit code, negative just updates reload file
+     * @param code exit code, negative just updates reload file, used=1..16
      * @param reason reason string
      */
     public static void stopRouter(boolean clean, int code, String reason) {
@@ -1090,6 +1090,10 @@ public class cfgInit implements Runnable {
         if (fake) {
             lastReloadCode = code;
             return;
+        }
+        try {
+            debugger.setAll(false);
+        } catch (Exception e) {
         }
         if (clean && cfgAll.graceReload) {
             for (int i = 0; i < cfgAll.vrfs.size(); i++) {

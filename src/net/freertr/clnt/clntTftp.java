@@ -20,6 +20,7 @@ import net.freertr.enc.encUrl;
 import net.freertr.user.userTerminal;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 
 /**
  * trivial file transfer protocol (rfc1350) client
@@ -27,6 +28,21 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class clntTftp implements prtServS {
+
+    /**
+     * startup counter
+     */
+    public final static syncInt cntrStart = new syncInt(0);
+
+    /**
+     * error counter
+     */
+    public final static syncInt cntrError = new syncInt(0);
+
+    /**
+     * stop counter
+     */
+    public final static syncInt cntrStop = new syncInt(0);
 
     private final int locprt = 16969;
 

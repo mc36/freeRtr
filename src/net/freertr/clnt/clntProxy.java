@@ -8,6 +8,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.enc.encUrl;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -15,11 +16,13 @@ import net.freertr.prt.prtGen;
 import net.freertr.prt.prtLocTcp;
 import net.freertr.prt.prtLocUdp;
 import net.freertr.sec.secClient;
+import net.freertr.sec.secWebsock;
 import net.freertr.serv.servGeneric;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.syncInt;
 import net.freertr.util.version;
 
 /**
@@ -28,6 +31,21 @@ import net.freertr.util.version;
  * @author matecsaba
  */
 public class clntProxy {
+
+    /**
+     * startup counter
+     */
+    public final static syncInt cntrStart = new syncInt(0);
+
+    /**
+     * error counter
+     */
+    public final static syncInt cntrError = new syncInt(0);
+
+    /**
+     * stop counter
+     */
+    public final static syncInt cntrStop = new syncInt(0);
 
     /**
      * name of this proxy
@@ -117,6 +135,10 @@ public class clntProxy {
          */
         sock5,
         /**
+         * use websock proxy
+         */
+        websock,
+        /**
          * use http proxy
          */
         http,
@@ -141,6 +163,8 @@ public class clntProxy {
                 return "socks4";
             case sock5:
                 return "socks5";
+            case websock:
+                return "websock";
             case http:
                 return "http";
             case host:
@@ -165,6 +189,9 @@ public class clntProxy {
         }
         if (s.equals("socks5")) {
             return proxyType.sock5;
+        }
+        if (s.equals("websock")) {
+            return proxyType.websock;
         }
         if (s.equals("http")) {
             return proxyType.http;
@@ -212,14 +239,39 @@ public class clntProxy {
      * @return pipeline, null on error
      */
     public pipeSide doConnect(int cProto, addrIP cAddr, int cPort, String cName) {
+        cntrStart.add(1);
         if (debugger.clntProxyTraf) {
             logger.debug("connecting to " + servGeneric.proto2string(cProto) + " " + cAddr + " " + cPort);
         }
         if (cAddr == null) {
+            cntrError.add(1);
             return null;
         }
         pipeSide pip = null;
         cProto &= servGeneric.protoTrns;
+        clntProxy curPrx = lowProxy;
+        if (curPrx == null) {
+            curPrx = clntProxy.makeTemp(vrf, srcIfc);
+        }
+        if (prxProto == proxyType.websock) {
+            encUrl url = new encUrl();
+            url.fromString("http://" + target + "/");
+            url.port = port;
+            url.server = target;
+            if (debugger.clntProxyTraf) {
+                logger.debug("using websock " + url.dump());
+            }
+            pip = secWebsock.doConnect(curPrx, pubkey, url, "binary");
+            if (pip == null) {
+                cntrError.add(1);
+                return null;
+            }
+            secWebsock ws = new secWebsock(pip, new pipeLine(65536, false));
+            ws.startClient();
+            pip = ws.getPipe();
+            cntrStop.add(1);
+            return pip;
+        }
         if (prxProto == proxyType.host) {
             if (debugger.clntProxyTraf) {
                 logger.debug("using host stack");
@@ -233,6 +285,7 @@ public class clntProxy {
                     pip = pl.getSide();
                     pip.setReady();
                 } catch (Exception e) {
+                    cntrError.add(1);
                     return null;
                 }
                 break;
@@ -245,22 +298,27 @@ public class clntProxy {
                     pip = pl.getSide();
                     pip.setReady();
                 } catch (Exception e) {
+                    cntrError.add(1);
                     return null;
                 }
                 break;
             }
             if (pip == null) {
+                cntrError.add(1);
                 return null;
             }
             pip.setTime(120000);
             pip = secClient.openSec(pip, secProto, pubkey, username, password);
             if (pip == null) {
+                cntrError.add(1);
                 return null;
             }
             pip.setTime(180000);
+            cntrStop.add(1);
             return pip;
         }
         if (vrf == null) {
+            cntrError.add(1);
             return null;
         }
         if (prxProto == proxyType.local) {
@@ -295,25 +353,31 @@ public class clntProxy {
                     pil = new pipeLine(65536, true);
                     break;
                 default:
+                    cntrError.add(1);
                     return null;
             }
             pip = prt.streamConnect(pil, ipif, 0, cAddr, cPort, cName, -1, null, tim2liv, typOsrv);
             if (pip == null) {
+                cntrError.add(1);
                 return null;
             }
             pip.setTime(120000);
             if (pip.wait4ready(120000)) {
                 pip.setClose();
+                cntrError.add(1);
                 return null;
             }
             pip = secClient.openSec(pip, secProto, pubkey, username, password);
             if (pip == null) {
+                cntrError.add(1);
                 return null;
             }
             pip.setTime(180000);
+            cntrStop.add(1);
             return pip;
         }
         if (cProto != servGeneric.protoTcp) {
+            cntrError.add(1);
             return null;
         }
         if (debugger.clntProxyTraf) {
@@ -321,18 +385,17 @@ public class clntProxy {
         }
         addrIP adr = userTerminal.justResolv(target, prefer);
         if (adr == null) {
+            cntrError.add(1);
             return null;
         }
-        if (lowProxy != null) {
-            pip = lowProxy.doConnect(servGeneric.protoTcp, adr, port, cName);
-        } else {
-            pip = clntProxy.makeTemp(vrf, srcIfc).doConnect(servGeneric.protoTcp, adr, port, cName);
-        }
+        pip = curPrx.doConnect(servGeneric.protoTcp, adr, port, cName);
         if (pip == null) {
+            cntrError.add(1);
             return null;
         }
         pip = secClient.openSec(pip, secProto, pubkey, username, password);
         if (pip == null) {
+            cntrError.add(1);
             return null;
         }
         pipeSide.modTyp rm = pip.lineRx;
@@ -359,11 +422,13 @@ public class clntProxy {
         if (debugger.clntProxyTraf) {
             logger.debug("result=" + good);
         }
-        if (!good) {
-            pip.setClose();
-            return null;
+        if (good) {
+            cntrStop.add(1);
+            return pip;
         }
-        return pip;
+        cntrError.add(1);
+        pip.setClose();
+        return null;
     }
 
     private boolean doConSock4(pipeSide pip, addrIP cAddr, int cPort) {

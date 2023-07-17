@@ -1,4 +1,4 @@
-misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
+misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
 
 mist natives p4fwd to report the boot messages through the control channel in dataplane-says
 
@@ -13,7 +13,7 @@ a preface forwarder for the asic offload to have at crypto and frag/reasm using 
 
 test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 
-test if bier in a ring copcept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
+test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
 
 
 
@@ -186,7 +186,6 @@ some more .equals("no") to cmds.negated conversions like   <!-------------------
    same for upgrade-cli  <!-----------------------------------------------------------------------
    client hide-secrets  <!------------------------------------------------------------------------
 cmds.not2vdc  <!----------------------------------------------------------------------------------
-server smtp / have a show-queue list at least
 server smtp / tag messages by subject
 server smtp / collect-failures
 server smtp / check reverse of the sender and put the info to received field...
