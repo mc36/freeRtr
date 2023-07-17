@@ -96,19 +96,23 @@ public class clntTftp implements prtServS {
      * @return result code
      */
     public boolean download(encUrl src, File trg) {
+        cntrStart.add(1);
         if (openConn(src.server)) {
+            cntrError.add(1);
             return true;
         }
         try {
             trg.createNewFile();
         } catch (Exception e) {
             closeConn();
+            cntrError.add(1);
             return true;
         }
         try {
             fr = new RandomAccessFile(trg, "rw");
         } catch (Exception e) {
             closeConn();
+            cntrError.add(1);
             return true;
         }
         cons.debugStat("receiving " + cons.getMax() + " bytes");
@@ -119,6 +123,7 @@ public class clntTftp implements prtServS {
         pckTft = xchgPack(pckTft, packTftp.msgData);
         if (pckTft == null) {
             closeConn();
+            cntrError.add(1);
             return true;
         }
         long blk = 0;
@@ -129,6 +134,7 @@ public class clntTftp implements prtServS {
                     fr.write(pckTft.dat);
                 } catch (Exception e) {
                     closeConn();
+                    cntrError.add(1);
                     return true;
                 }
                 blk++;
@@ -143,11 +149,13 @@ public class clntTftp implements prtServS {
             pckTft = xchgPack(pckTft, packTftp.msgData);
             if (pckTft == null) {
                 closeConn();
+                cntrError.add(1);
                 return true;
             }
         }
         cons.debugRes(siz + " bytes done");
         closeConn();
+        cntrStop.add(1);
         return false;
     }
 
@@ -159,7 +167,9 @@ public class clntTftp implements prtServS {
      * @return result code
      */
     public boolean upload(encUrl trg, File src) {
+        cntrStart.add(1);
         if (openConn(trg.server)) {
+            cntrError.add(1);
             return true;
         }
         long siz = 0;
@@ -168,6 +178,7 @@ public class clntTftp implements prtServS {
             siz = fr.length();
         } catch (Exception e) {
             closeConn();
+            cntrError.add(1);
             return true;
         }
         cons.setMax(siz);
@@ -179,6 +190,7 @@ public class clntTftp implements prtServS {
         pckTft = xchgPack(pckTft, packTftp.msgAck);
         if (pckTft == null) {
             closeConn();
+            cntrError.add(1);
             return true;
         }
         long blk = 0;
@@ -198,6 +210,7 @@ public class clntTftp implements prtServS {
                 fr.read(pckTft.dat);
             } catch (Exception e) {
                 closeConn();
+                cntrError.add(1);
                 return true;
             }
             pckTft.blk = (int) (blk + 1);
@@ -206,6 +219,7 @@ public class clntTftp implements prtServS {
             pckTft = xchgPack(pckTft, packTftp.msgAck);
             if (pckTft == null) {
                 closeConn();
+                cntrError.add(1);
                 return true;
             }
             if (((pckTft.blk - 1) & 0xffff) == (blk & 0xffff)) {

@@ -154,10 +154,13 @@ public class clntDns {
             nam = cac.res.get(bits.random(0, cac.res.size())).target;
             cac = loPcache.findUser(nam, typ);
         }
+        cntrStart.add(1);
         if (curPrx == null) {
+            cntrError.add(1);
             return 1;
         }
         if (srv == null) {
+            cntrError.add(1);
             return 1;
         }
         query = new packDns();
@@ -207,20 +210,26 @@ public class clntDns {
             loPcache.addList(reply.servers);
             if (reply.result == packDns.resultName) {
                 loNcache.addBin(rr);
+                cntrError.add(1);
                 return 2;
             }
             if (reply.result != packDns.resultSuccess) {
+                cntrError.add(1);
                 return 1;
             }
             if (findAnswer(typ) != null) {
+                cntrError.add(1);
                 return 0;
             }
             if (findAnswer(packDnsRec.typeCNAME) != null) {
+                cntrError.add(1);
                 return 3;
             }
             loNcache.addBin(rr);
+            cntrStop.add(1);
             return 2;
         }
+        cntrError.add(1);
         return 1;
     }
 

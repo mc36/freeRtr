@@ -225,8 +225,10 @@ public class clntFtp implements prtServS {
      * @return result code
      */
     public boolean download(encUrl src, File trg) {
+        cntrStart.add(1);
         setAnonymFtp(src);
         if (doRslvCnn(src)) {
+            cntrError.add(1);
             return true;
         }
         getLine();
@@ -247,28 +249,33 @@ public class clntFtp implements prtServS {
         cons.setMax(len);
         if (begDatCon()) {
             pipe.setClose();
+            cntrError.add(1);
             return true;
         }
         sendLine("RETR " + src.toPathName());
         getLine();
         if (endDatCon()) {
             pipe.setClose();
+            cntrError.add(1);
             return true;
         }
         try {
             trg.createNewFile();
         } catch (Exception e) {
+            cntrError.add(1);
             return true;
         }
         try {
             fr = new RandomAccessFile(trg, "rw");
         } catch (Exception e) {
+            cntrError.add(1);
             return true;
         }
         long pos = 0;
         try {
             fr.setLength(pos);
         } catch (Exception e) {
+            cntrError.add(1);
             return true;
         }
         cons.debugStat("receiving " + cons.getMax() + " bytes");
@@ -284,6 +291,7 @@ public class clntFtp implements prtServS {
             try {
                 fr.write(buf, 0, siz);
             } catch (Exception ex) {
+                cntrError.add(1);
                 return true;
             }
         }
@@ -293,7 +301,12 @@ public class clntFtp implements prtServS {
         getLine();
         pipe.setClose();
         cons.debugRes(pos + " bytes done");
-        return pos < len;
+        if (pos < len) {
+            cntrError.add(1);
+            return true;
+        }
+        cntrStop.add(1);
+        return false;
     }
 
     /**
@@ -304,8 +317,10 @@ public class clntFtp implements prtServS {
      * @return result code
      */
     public boolean upload(encUrl trg, File src) {
+        cntrStart.add(1);
         setAnonymFtp(trg);
         if (doRslvCnn(trg)) {
+            cntrError.add(1);
             return true;
         }
         getLine();
@@ -321,12 +336,14 @@ public class clntFtp implements prtServS {
         getLine();
         if (begDatCon()) {
             pipe.setClose();
+            cntrError.add(1);
             return true;
         }
         sendLine("STOR " + trg.toPathName());
         getLine();
         if (endDatCon()) {
             pipe.setClose();
+            cntrError.add(1);
             return true;
         }
         long pos = 0;
@@ -335,6 +352,7 @@ public class clntFtp implements prtServS {
             fr = new RandomAccessFile(src, "r");
             siz = fr.length();
         } catch (Exception e) {
+            cntrError.add(1);
             return true;
         }
         cons.setMax(siz);
@@ -351,9 +369,11 @@ public class clntFtp implements prtServS {
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
+                cntrError.add(1);
                 return true;
             }
             if (data.morePut(buf, 0, rndi) < rndi) {
+                cntrError.add(1);
                 return true;
             }
             cons.setCurr(pos);
@@ -364,6 +384,7 @@ public class clntFtp implements prtServS {
         getLine();
         pipe.setClose();
         cons.debugRes(pos + " bytes done");
+        cntrStop.add(1);
         return false;
     }
 
