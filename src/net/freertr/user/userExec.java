@@ -1550,9 +1550,9 @@ public class userExec {
         hl.add(null, "2 .      title                        resend terminal title");
         hl.add(null, "2 .      capslock                     treat lowercase as uppercase");
         hl.add(null, "2 .      bells                        bells the terminal sometimes");
-        hl.add(null, "2 3      music                        plays the music");
+        hl.add(null, "2 3      play                         play ansi music");
         hl.add(null, "3 3,.      [str]                      music");
-        hl.add(null, "2 .      beep                         bells the terminal now");
+        hl.add(null, "2 .      beep                         bell ascii terminal");
         hl.add(null, "2 3,.    tablemode                    select table formatting mode");
         hl.add(null, "3 .        normal                     select normal mode");
         hl.add(null, "3 .        table                      select table mode");
@@ -4606,7 +4606,7 @@ public class userExec {
             pipe.settingsPut(pipeSetting.capsLock, true);
             return;
         }
-        if (a.equals("music")) {
+        if (a.equals("play")) {
             userScreen.sendMusicAnsi(pipe, cmd.getRemaining());
             return;
         }
