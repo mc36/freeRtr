@@ -529,36 +529,46 @@ public class clntSmtp implements Runnable {
         if (debugger.clntSmtpTraf) {
             logger.debug("sending from " + from + " to " + rcpt);
         }
+        cntrStart.add(1);
         try {
             boolean b = doSend(10);
             cleanUp();
             if (!b) {
                 if (!notify) {
+                    cntrStop.add(1);
                     return;
                 }
                 if (conv2rep()) {
+                    cntrStop.add(1);
                     return;
                 }
                 b = doSend(5);
                 cleanUp();
                 if (!b) {
+                    cntrStop.add(1);
                     return;
                 }
                 logger.error("giving up report email from " + from + " to " + rcpt);
+                cntrError.add(1);
                 return;
             }
+            cntrError.add(1);
             logger.error("giving up email from " + from + " to " + rcpt);
             if (conv2err()) {
                 return;
             }
+            cntrStart.add(1);
             b = doSend(5);
             cleanUp();
             if (!b) {
+                cntrStop.add(1);
                 return;
             }
             logger.error("giving up error email from " + from + " to " + rcpt);
+            cntrError.add(1);
         } catch (Exception e) {
             logger.traceback(e);
+            cntrError.add(1);
         }
         cleanUp();
     }

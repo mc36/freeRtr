@@ -590,11 +590,13 @@ public class clntHttp {
      * @return result code
      */
     public boolean download(encUrl src, File trg) {
+        cntrStart.add(1);
         try {
             trg.createNewFile();
             fr = new RandomAccessFile(trg, "rw");
             fr.setLength(0);
         } catch (Exception e) {
+            cntrError.add(1);
             return true;
         }
         int ret = 0;
@@ -603,11 +605,13 @@ public class clntHttp {
         for (;;) {
             ret++;
             if (ret > 5) {
+                cntrError.add(1);
                 return true;
             }
             try {
                 pos = fr.length();
             } catch (Exception e) {
+                cntrError.add(1);
                 return true;
             }
             if (pos != ops) {
@@ -615,6 +619,7 @@ public class clntHttp {
             }
             ops = pos;
             if (!doDown(src, pos)) {
+                cntrStop.add(1);
                 return false;
             }
         }
@@ -628,7 +633,9 @@ public class clntHttp {
      * @return result code
      */
     public boolean upload(encUrl trg, File src) {
+        cntrStart.add(1);
         if (doConnect(trg)) {
+            cntrError.add(1);
             return true;
         }
         long pos = 0;
@@ -637,6 +644,7 @@ public class clntHttp {
             fr = new RandomAccessFile(src, "r");
             siz = fr.length();
         } catch (Exception e) {
+            cntrError.add(1);
             return true;
         }
         sendLine("PUT " + trg.toURL(false, false, true, true) + " HTTP/1.1");
@@ -665,9 +673,11 @@ public class clntHttp {
             try {
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
+                cntrError.add(1);
                 return true;
             }
             if (pipe.morePut(buf, 0, rndi) < rndi) {
+                cntrError.add(1);
                 return true;
             }
             cons.setCurr(pos);
@@ -680,6 +690,7 @@ public class clntHttp {
         }
         pipe.setClose();
         cons.debugRes(pos + " bytes done");
+        cntrStop.add(1);
         return false;
     }
 
