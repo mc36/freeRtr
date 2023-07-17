@@ -15076,3 +15076,9 @@ no todo: client whois-online http://ipinfo.io/AS$asn$ everywhere
 no todo: traceback as exeption knob to the lines, default set on console0
 ---------------------------------- 2023-07-15 20:20:03 23.7.15
 qc pass: p4lang: packout on vlan port
+---------------------------------- 2023-07-17 15:24:03 23.7.17
+no todo: server smtp / have a show-queue list at least
+no todo: test if bier in a ring copcept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
+no todo: misc natives p4fwd to have the packetout message too from the control channel as planned originally 4 the asic... it'll solve the big misery of the macsec/wg/ipsec/ovpn/etc-linerate-forwarding-over-bgp for the oddline questions; fl, it was a bad decision to clean that upp b4 we had linerate crypto
+todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
+todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
