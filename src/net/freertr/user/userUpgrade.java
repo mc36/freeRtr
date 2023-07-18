@@ -352,6 +352,7 @@ public class userUpgrade {
             case 2:
                 a = "auto-revert cancelled";
                 inProgress.set(0);
+                cfgInit.stopRouter(true, -17, a);
                 l = true;
                 break;
             default:
@@ -379,7 +380,7 @@ public class userUpgrade {
         if (!dl) {
             String a = "auto-revert cancelled";
             logger.info(a);
-            cfgInit.stopRouter(true, -14, a);
+            cfgInit.stopRouter(true, -19, a);
             return;
         }
         logger.info("auto-revert was unable to reach server");

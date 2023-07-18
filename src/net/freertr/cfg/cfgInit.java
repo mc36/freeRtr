@@ -1075,7 +1075,7 @@ public class cfgInit implements Runnable {
      * stop router
      *
      * @param clean clean exit
-     * @param code exit code, negative just updates reload file, used=1..16
+     * @param code exit code, negative just updates reload file, used=1..19
      * @param reason reason string
      */
     public static void stopRouter(boolean clean, int code, String reason) {
@@ -1335,7 +1335,7 @@ public class cfgInit implements Runnable {
             } catch (Exception e) {
                 logger.exception(e);
             }
-            stopRouter(true, 1, "finished");
+            stopRouter(true, 18, "finished");
             return;
         }
         putln("java -jar " + version.getFileName() + " <parameters>");
