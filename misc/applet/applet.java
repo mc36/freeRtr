@@ -34,7 +34,7 @@ public class applet extends java.applet.Applet {
     }
 
     public void stop() {
-        cfgInit.stopRouter(true, 1, "stopped");
+        cfgInit.stopRouter(true, 20, "applet exited");
     }
 
     public void paint(Graphics g) {
