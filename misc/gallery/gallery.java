@@ -2,7 +2,8 @@
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,13 +85,34 @@ public class gallery {
         readConfig();
     }
 
-    private void readConfig() {
+    /**
+     * load buffer from text file
+     *
+     * @param fn name of file
+     * @return list of lines, null if error happened
+     */
+    public static List<String> txt2lst(String fn) {
+        List<String> ln = new ArrayList<String>();
         try {
-            String a = path.substring(0, path.lastIndexOf(".")) + ".cfg";
-            BufferedReader f = new BufferedReader(new FileReader(a));
-            album = f.readLine();
-            cols = str2int(f.readLine());
-            f.close();
+            FileInputStream in = new FileInputStream(fn);
+            BufferedReader rd = new BufferedReader(new InputStreamReader(in));
+            while (rd.ready()) {
+                ln.add(rd.readLine());
+            }
+            rd.close();
+            in.close();
+        } catch (Exception e) {
+            return null;
+        }
+        return ln;
+    }
+
+    private void readConfig() {
+        String a = path.substring(0, path.lastIndexOf(".")) + ".cfg";
+        List<String> l = txt2lst(a);
+        try {
+            album = l.get(0);
+            cols = str2int(l.get(1));
             path = path.substring(0, path.lastIndexOf("/") + 1);
         } catch (Exception e) {
         }
@@ -215,10 +237,32 @@ public class gallery {
         }
         Collections.sort(dr);
         Collections.sort(fl);
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>gallery</title></head><body>".getBytes());
-        buf.write("listing of <b>".getBytes());
-        buf.write(nam.getBytes());
-        buf.write("</b><br/>".getBytes());
+        List<String> txt = txt2lst(album + nam + "/index.txt");
+        if (txt == null) {
+            txt = new ArrayList<String>();
+        }
+        if (txt.size() < 1) {
+            txt.add("gallery of " + nam);
+            txt.add("");
+            txt.add("<pre>");
+            txt.add("listing of " + nam + ":");
+            txt.add("</pre>");
+        } else {
+            txt.add(1, "<pre>");
+            txt.add("</pre>");
+        }
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>".getBytes());
+        buf.write(txt.get(0).getBytes());
+        buf.write("</title></head><body>".getBytes());
+        buf.write("<h1><b><u>".getBytes());
+        buf.write(txt.get(0).getBytes());
+        buf.write("</u></b></h1>".getBytes());
+        for (int i = 1; i < txt.size(); i++) {
+            buf.write(txt.get(i).getBytes());
+            buf.write(13);
+            buf.write(10);
+        }
+        buf.write("<br/><hr/>".getBytes());
         for (int i = 0; i < dr.size(); i++) {
             String fn = dr.get(i);
             String a = url + "?nam=" + nam + "/" + fn;
