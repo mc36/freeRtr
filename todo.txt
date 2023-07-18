@@ -1,3 +1,6 @@
+bridge and router have renumber knob
+
+
 misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
 
 mist natives p4fwd to report the boot messages through the control channel in dataplane-says
