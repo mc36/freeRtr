@@ -262,13 +262,14 @@ public class gallery {
             buf.write(13);
             buf.write(10);
         }
-        buf.write("<br/><hr/>".getBytes());
+        buf.write("<br/><hr/><u>subfolders:</u><br/>".getBytes());
         for (int i = 0; i < dr.size(); i++) {
             String fn = dr.get(i);
             String a = url + "?nam=" + nam + "/" + fn;
             a = "<a href=\"" + a + "&cmd=browse\">" + fn + "</a><br/>";
             buf.write(a.getBytes());
         }
+        buf.write("<br/><hr/><u>files:</u><br/>".getBytes());
         buf.write("<table><tr>".getBytes());
         int don = 0;
         for (int o = 0; o < fl.size(); o++) {

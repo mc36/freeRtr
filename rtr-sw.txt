@@ -63,9 +63,12 @@ script logger
  stop
  exit
 !
-prefix-list all
- sequence 10 permit 0.0.0.0/0 ge 0 le 32
- sequence 20 permit ::/0 ge 0 le 128
+prefix-list def4
+ sequence 10 permit 0.0.0.0/0 ge 0 le 0
+ exit
+!
+prefix-list def6
+ sequence 10 permit ::/0 ge 0 le 0
  exit
 !
 route-policy nht4
@@ -124,6 +127,14 @@ bridge 4
  private-bridge
  exit
 !
+bridge 9
+ rd 65535:103
+ rt-import 65535:103
+ rt-export 65535:103
+ mac-learn
+ mac-move
+ exit
+!
 vrf definition bvi
  rd 65535:2
  exit
@@ -144,6 +155,9 @@ vrf definition dptest
  rt4export 1955:30
  rt6import 1955:30 1955:911
  rt6export 1955:30
+ exit
+!
+vrf definition freenet
  exit
 !
 vrf definition niif
@@ -448,6 +462,22 @@ interface bvi4
  no log-link-change
  exit
 !
+interface bvi9
+ description freenet
+ vrf forwarding freenet
+ ipv4 address dynamic dynamic
+ ipv4 gateway-prefix def4
+ ipv4 host-watch
+ ipv4 dhcp-client enable
+ ipv4 dhcp-client early
+ ipv6 address dynamic dynamic
+ ipv6 gateway-prefix def6
+ ipv6 host-watch
+ ipv6 slaac-client enable
+ no shutdown
+ no log-link-change
+ exit
+!
 interface ethernet1
  description uplink1
  bundle-group 1
@@ -549,6 +579,9 @@ router bgp4 65535 vrf v1
  !
  afi-vpls 65535:1 bridge-group 1
  afi-vpls 65535:1 update-source loopback0
+ !
+ afi-vpls 65535:103 bridge-group 9
+ afi-vpls 65535:103 update-source loopback0
  !
  afi-evpn 2 bridge-group 2
  afi-evpn 2 bmac 006e.085c.1743
@@ -666,6 +699,19 @@ proxy-profile p4
 proxy-profile p5
  vrf v5
  exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 !
 !
 !
