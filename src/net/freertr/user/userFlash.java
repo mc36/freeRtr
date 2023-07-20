@@ -22,6 +22,7 @@ import net.freertr.cry.cryHashSha2512;
 import net.freertr.cry.cryHashSha3256;
 import net.freertr.cry.cryHashSha3512;
 import net.freertr.cry.cryUtils;
+import net.freertr.enc.enc7bit;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
@@ -56,15 +57,6 @@ public class userFlash {
      */
     public userReader rdr;
 
-    private String calcFileHash(cryHashGeneric h, String n) {
-        File f = new File(n);
-        h.init();
-        if (cryUtils.hashFile(h, f)) {
-            return null;
-        }
-        return cryUtils.hash2hex(h);
-    }
-
     /**
      * do the work
      *
@@ -80,7 +72,7 @@ public class userFlash {
         if (alias != null) {
             return alias;
         }
-        if (a.equals("editor")) {
+        if (a.equals("edit")) {
             a = cmd.getRemaining();
             List<String> b = bits.txt2buf(a);
             if (b == null) {
@@ -93,10 +85,40 @@ public class userFlash {
             cmd.error(cmds.doneFail(bits.buf2txt(true, b, a)));
             return null;
         }
-        if (a.equals("viewer")) {
+        if (a.equals("view")) {
             a = cmd.getRemaining();
             List<String> b = bits.txt2buf(a);
             userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            v.doView();
+            return null;
+        }
+        if (a.equals("hexview")) {
+            a = cmd.getRemaining();
+            List<String> b = hexRead(a);
+            userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            v.doView();
+            return null;
+        }
+        if (a.equals("binview")) {
+            a = cmd.getRemaining();
+            List<String> b = binRead(a);
+            userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            v.doView();
+            return null;
+        }
+        if (a.equals("7bitview")) {
+            a = cmd.getRemaining();
+            List<String> l = bits.txt2buf(a);
+            l = enc7bit.decodeExtLst(l);
+            userEditor v = new userEditor(new userScreen(pip), l, a, false);
+            v.doView();
+            return null;
+        }
+        if (a.equals("hackview")) {
+            a = cmd.getRemaining();
+            List<String> l = bits.txt2buf(a);
+            l = enc7bit.toHackedLst(l);
+            userEditor v = new userEditor(new userScreen(pip), l, a, false);
             v.doView();
             return null;
         }
@@ -108,13 +130,6 @@ public class userFlash {
         if (a.equals("browser")) {
             userBrowser f = new userBrowser(new userScreen(pip), cmd.getRemaining());
             f.doWork();
-            return null;
-        }
-        if (a.equals("binviewer")) {
-            a = cmd.getRemaining();
-            List<String> b = binRead(a);
-            userEditor v = new userEditor(new userScreen(pip), b, a, false);
-            v.doView();
             return null;
         }
         if (a.equals("receive")) {
@@ -146,13 +161,8 @@ public class userFlash {
         }
         if (a.equals("hash")) {
             a = cmd.getRemaining();
-            cmd.error("file=" + a);
-            cmd.error("md5=" + calcFileHash(new cryHashMd5(), a));
-            cmd.error("sha1=" + calcFileHash(new cryHashSha1(), a));
-            cmd.error("sha2256=" + calcFileHash(new cryHashSha2256(), a));
-            cmd.error("sha2512=" + calcFileHash(new cryHashSha2512(), a));
-            cmd.error("sha3256=" + calcFileHash(new cryHashSha3256(), a));
-            cmd.error("sha3512=" + calcFileHash(new cryHashSha3512(), a));
+            List<String> txt = calcFileHashes(a);
+            rdr.putStrArr(txt);
             return null;
         }
         if (a.equals("disk")) {
@@ -204,8 +214,26 @@ public class userFlash {
             rdr.putStrArr(bits.txt2buf(cmd.getRemaining()));
             return null;
         }
+        if (a.equals("hextype")) {
+            rdr.putStrArr(hexRead(cmd.getRemaining()));
+            return null;
+        }
         if (a.equals("bintype")) {
             rdr.putStrArr(binRead(cmd.getRemaining()));
+            return null;
+        }
+        if (a.equals("7bittype")) {
+            a = cmd.getRemaining();
+            List<String> l = bits.txt2buf(a);
+            l = enc7bit.decodeExtLst(l);
+            rdr.putStrArr(l);
+            return null;
+        }
+        if (a.equals("hacktype")) {
+            a = cmd.getRemaining();
+            List<String> l = bits.txt2buf(a);
+            l = enc7bit.toHackedLst(l);
+            rdr.putStrArr(l);
             return null;
         }
         if (a.equals("copy")) {
@@ -232,6 +260,27 @@ public class userFlash {
         }
         cmd.badCmd();
         return null;
+    }
+
+    public final static String calcFileHash(cryHashGeneric h, String n) {
+        File f = new File(n);
+        h.init();
+        if (cryUtils.hashFile(h, f)) {
+            return null;
+        }
+        return cryUtils.hash2hex(h);
+    }
+
+    public final static List<String> calcFileHashes(String a) {
+        List<String> r = new ArrayList<String>();
+        r.add("file=" + a);
+        r.add("md5=" + calcFileHash(new cryHashMd5(), a));
+        r.add("sha1=" + calcFileHash(new cryHashSha1(), a));
+        r.add("sha2256=" + calcFileHash(new cryHashSha2256(), a));
+        r.add("sha2512=" + calcFileHash(new cryHashSha2512(), a));
+        r.add("sha3256=" + calcFileHash(new cryHashSha3256(), a));
+        r.add("sha3512=" + calcFileHash(new cryHashSha3512(), a));
+        return r;
     }
 
     private static int archiveChecksum(byte[] buf, boolean pad) {
@@ -774,31 +823,6 @@ public class userFlash {
     }
 
     /**
-     * convert to hex
-     *
-     * @param l list to append
-     * @param buf buffer
-     * @param beg beginning
-     */
-    public static void buf2hex(List<String> l, byte[] buf, int beg) {
-        String s = bits.toHexD(beg) + ":";
-        for (int ps = 0; ps < buf.length;) {
-            s += " " + bits.toHexB(buf[ps]);
-            ps++;
-            beg++;
-            if ((ps & 3) == 0) {
-                s += " ";
-            }
-            if ((ps & 15) != 0) {
-                continue;
-            }
-            l.add(s);
-            s = bits.toHexD(beg) + ":";
-        }
-        l.add(s);
-    }
-
-    /**
      * read binary file for viewing
      *
      * @param fn file
@@ -818,7 +842,37 @@ public class userFlash {
                 }
                 byte[] buf = new byte[(int) red];
                 fs.read(buf, 0, buf.length);
-                buf2hex(l, buf, (int) pos);
+                enc7bit.buf2bin(l, buf, (int) pos);
+                pos += buf.length;
+            }
+            fs.close();
+            return l;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * read binary file for viewing
+     *
+     * @param fn file
+     * @return converted text
+     */
+    public static List<String> hexRead(String fn) {
+        try {
+            List<String> l = new ArrayList<String>();
+            RandomAccessFile fs = new RandomAccessFile(new File(fn), "r");
+            long siz = fs.length();
+            long pos = 0;
+            for (; pos < siz;) {
+                final int max = 8192;
+                long red = siz - pos;
+                if (red > max) {
+                    red = max;
+                }
+                byte[] buf = new byte[(int) red];
+                fs.read(buf, 0, buf.length);
+                enc7bit.buf2hex(l, buf, (int) pos);
                 pos += buf.length;
             }
             fs.close();

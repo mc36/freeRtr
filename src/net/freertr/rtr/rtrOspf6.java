@@ -12,6 +12,7 @@ import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.enc.enc7bit;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipRtr;
@@ -1007,7 +1008,7 @@ public class rtrOspf6 extends ipRtr {
             packHolder pck = new packHolder(true, true);
             pck.putSkip(ntry.writeData(pck, 0, true));
             pck.merge2beg();
-            userFlash.buf2hex(l, pck.getCopy(), 0);
+            enc7bit.buf2hex(l, pck.getCopy(), 0);
             rtrOspfDump.dump6lsa(l, pck, ntry);
         }
         return l;

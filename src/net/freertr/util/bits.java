@@ -334,6 +334,20 @@ public class bits {
     }
 
     /**
+     * convert u8 to bin string
+     *
+     * @param val value to convert
+     * @return hex representation of value
+     */
+    public static String toBinB(int val) {
+        String a = Integer.toBinaryString(val & 0xff);
+        while (a.length() < 8) {
+            a = "0" + a;
+        }
+        return a;
+    }
+
+    /**
      * convert u16 to hex string
      *
      * @param val value to convert

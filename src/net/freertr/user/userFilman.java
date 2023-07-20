@@ -97,7 +97,10 @@ public class userFilman {
                 doKeyF1();
                 return false;
             case 0x0262: // ctrl+b
-                doKeyF2();
+                doKeyBin();
+                return false;
+            case 0x0268: // ctrl+h
+                doKeyHex();
                 return false;
             case 0x0276: // ctrl+v
                 doKeyF3();
@@ -230,7 +233,7 @@ public class userFilman {
     private void doKeyF1() {
         List<String> l = new ArrayList<String>();
         l.add("f1 - help");
-        l.add("f2 - hex view file");
+        l.add("f2 - view file hash");
         l.add("f3 - text view file");
         l.add("f4 - text edit file");
         l.add("f5 - copy file");
@@ -246,7 +249,8 @@ public class userFilman {
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
         l.add("ctrl+i - change panel");
-        l.add("ctrl+b - hex view file");
+        l.add("ctrl+b - bin view file");
+        l.add("ctrl+h - hex view file");
         l.add("ctrl+v - text view file");
         l.add("ctrl+e - text edit file");
         l.add("ctrl+c - copy file");
@@ -261,7 +265,21 @@ public class userFilman {
 
     private void doKeyF2() {
         String a = pan[act].getFn();
+        List<String> b = userFlash.calcFileHashes(a);
+        userEditor v = new userEditor(console, b, a, false);
+        v.doView();
+    }
+
+    private void doKeyBin() {
+        String a = pan[act].getFn();
         List<String> b = userFlash.binRead(a);
+        userEditor v = new userEditor(console, b, a, false);
+        v.doView();
+    }
+
+    private void doKeyHex() {
+        String a = pan[act].getFn();
+        List<String> b = userFlash.hexRead(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }

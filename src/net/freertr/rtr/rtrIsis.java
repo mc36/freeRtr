@@ -16,6 +16,7 @@ import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.enc.enc7bit;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -2127,7 +2128,7 @@ public class rtrIsis extends ipRtr {
             packHolder pck = new packHolder(true, true);
             pck.putSkip(ntry.writeData(pck, 0));
             pck.merge2beg();
-            userFlash.buf2hex(l, pck.getCopy(), 0);
+            enc7bit.buf2hex(l, pck.getCopy(), 0);
             rtrIsisDump.dumpLsp(l, pck);
         }
         return l;

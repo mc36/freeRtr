@@ -4222,7 +4222,7 @@ public class userShow {
             rtrBgpUtil.createReachable(pck, new packHolder(true, true), sfi, false, true, true, lst);
             rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
             List<String> l = new ArrayList<String>();
-            userFlash.buf2hex(l, pck.getCopy(), 0);
+            enc7bit.buf2hex(l, pck.getCopy(), 0);
             rdr.putStrArr(l);
             return;
         }
@@ -4264,7 +4264,7 @@ public class userShow {
             rtrBgpUtil.createWithdraw(pck, new packHolder(true, true), sfi, false, lst);
             rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
             List<String> l = new ArrayList<String>();
-            userFlash.buf2hex(l, pck.getCopy(), 0);
+            enc7bit.buf2hex(l, pck.getCopy(), 0);
             rdr.putStrArr(l);
             return;
         }

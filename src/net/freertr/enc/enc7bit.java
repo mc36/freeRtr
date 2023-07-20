@@ -2,6 +2,7 @@ package net.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.util.bits;
 
 /**
  * a 8 bit to 7 bit filter
@@ -9,6 +10,53 @@ import java.util.List;
  * @author matecsaba
  */
 public class enc7bit {
+
+    /**
+     * convert to bin
+     *
+     * @param l list to append
+     * @param buf buffer
+     * @param beg beginning
+     */
+    public static void buf2bin(List<String> l, byte[] buf, int beg) {
+        String s = bits.toHexD(beg) + ":";
+        for (int ps = 0; ps < buf.length;) {
+            s += " " + bits.toBinB(buf[ps]);
+            ps++;
+            beg++;
+            if ((ps & 3) != 0) {
+                continue;
+            }
+            l.add(s);
+            s = bits.toHexD(beg) + ":";
+        }
+        l.add(s);
+    }
+
+    /**
+     * convert to hex
+     *
+     * @param l list to append
+     * @param buf buffer
+     * @param beg beginning
+     */
+    public static void buf2hex(List<String> l, byte[] buf, int beg) {
+        String s = bits.toHexD(beg) + ":";
+        for (int ps = 0; ps < buf.length;) {
+            s += " " + bits.toHexB(buf[ps]);
+            ps++;
+            beg++;
+            if ((ps & 3) == 0) {
+                s += " ";
+            }
+            if ((ps & 15) != 0) {
+                continue;
+            }
+            l.add(s);
+            s = bits.toHexD(beg) + ":";
+        }
+        l.add(s);
+    }
 
     /**
      * default constructor
@@ -120,6 +168,9 @@ public class enc7bit {
      * @return true if extended false if not
      */
     public static boolean extendedByte(int i) {
+        if (i <= 0x20) {
+            return true;
+        }
         if (i >= 0x7f) {
             return true;
         }
