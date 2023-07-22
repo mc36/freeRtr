@@ -28,6 +28,7 @@ import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.logger;
 
 /**
  * flash handler
@@ -918,6 +919,34 @@ public class userFlash {
             return b;
         }
         return true;
+    }
+
+    /**
+     * set file permissions
+     *
+     * @param fn file name
+     * @param or owner read
+     * @param ow owner write
+     * @param ox owner exec
+     * @param er everyone read
+     * @param ew everyone write
+     * @param ex everyone exec
+     * @return true on error, false on success
+     */
+    public final static boolean setFilePerm(String fn, boolean or, boolean ow, boolean ox, boolean er, boolean ew, boolean ex) {
+        try {
+            File f = new File(fn);
+            f.setReadable(er, false);
+            f.setWritable(ew, false);
+            f.setExecutable(ex, false);
+            f.setReadable(or, true);
+            f.setWritable(ow, true);
+            f.setExecutable(ox, true);
+        } catch (Exception e) {
+            logger.traceback(e);
+            return true;
+        }
+        return false;
     }
 
     /**
