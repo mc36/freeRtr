@@ -64,6 +64,11 @@ public class gallery {
     protected String path;
 
     /**
+     * what displayed as header / folder
+     */
+    protected String index = "index.txt";
+
+    /**
      * where i'm located on net
      */
     protected String url;
@@ -71,7 +76,7 @@ public class gallery {
     /**
      * where images located on host
      */
-    protected String album = "";
+    protected String album = "/data/www/";
 
     /**
      * columns
@@ -114,6 +119,7 @@ public class gallery {
             album = l.get(0);
             cols = str2int(l.get(1));
             path = path.substring(0, path.lastIndexOf("/") + 1);
+            index = l.get(2);
         } catch (Exception e) {
         }
     }
@@ -237,7 +243,7 @@ public class gallery {
         }
         Collections.sort(dr);
         Collections.sort(fl);
-        List<String> txt = txt2lst(album + nam + "/index.txt");
+        List<String> txt = txt2lst(album + nam + "/" + index);
         if (txt == null) {
             txt = new ArrayList<String>();
         }
@@ -248,6 +254,24 @@ public class gallery {
             txt.add("listing of " + nam + ":");
             txt.add("</pre>");
         } else {
+            for (int i = txt.size() - 1; i >= 0; i--) {
+                String a = txt.get(i);
+                int pb = a.indexOf("[");
+                int pe = a.indexOf("]");
+                if (pb < 0) {
+                    continue;
+                }
+                if (pe < 0) {
+                    continue;
+                }
+                if (pb >= pe) {
+                    continue;
+                }
+                String b = a.substring(pb + 1, pe);
+                a = a.substring(0, pb) + "<a href=\"http://" + b + "\">" + b + "</a>" + a.substring(pe, a.length());
+                txt.remove(i);
+                txt.add(i, a);
+            }
             txt.add(1, "<pre>");
             txt.add("</pre>");
         }
