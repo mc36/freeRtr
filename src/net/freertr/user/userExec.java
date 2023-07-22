@@ -1909,6 +1909,9 @@ public class userExec {
         hlp.add(null, "3 .        <file>                     filename");
         getHelpPipes(hlp, 120, privileged);
         hl.addOther(hlp);
+        hl.add(null, "2 3      setperm                      set file permissions");
+        hl.add(null, "3 4        <file>                     target file");
+        hl.add(null, "4 .          <str>                    permissions");
         hl.add(null, "2 3      receive                      receive file from network");
         hl.add(null, "3 4        <file>                     target file");
         hl.add(null, "4 4,.        <url>                    source url");

@@ -145,6 +145,18 @@ public class userFlash {
             rdr.putStrArr(res);
             return null;
         }
+        if (a.equals("setperm")) {
+            a = cmd.word();
+            String s = cmd.word();
+            boolean or = s.indexOf("r") >= 0;
+            boolean ow = s.indexOf("w") >= 0;
+            boolean ox = s.indexOf("x") >= 0;
+            boolean er = s.indexOf("R") >= 0;
+            boolean ew = s.indexOf("W") >= 0;
+            boolean ex = s.indexOf("X") >= 0;
+            userFlash.setFilePerm(a, or, ow, ox, er, ew, ex);
+            return null;
+        }
         if (a.equals("transmit")) {
             a = cmd.word();
             doSend(pip, encUrl.parseOne(cmd.getRemaining()), new File(a));
