@@ -15087,3 +15087,9 @@ no todo: quic v1 and v2 when it have at least adjustmss...
 todo: quic v1, v2 and mls, when these have at least adjustmss...
 ---------------------------------- 2023-07-19 04:32:02 23.7.19
 todo: bridge and router have renumber knob
+---------------------------------- 2023-07-25 11:21:24 23.7.25
+todo: player queue up down add-again
+todo: sid(cfg-check)#show config-differences this
+todo: openflow to have 2 label support and stack to p4lang
+todo: decouple rpki from bgp process
+todo: redundancy to have the shows

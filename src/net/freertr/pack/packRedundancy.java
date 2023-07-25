@@ -79,6 +79,16 @@ public class packRedundancy {
     public static final String fnCore = "code";
 
     /**
+     * show platform
+     */
+    public static final String fnPlatform = "platform";
+
+    /**
+     * show redundancy
+     */
+    public static final String fnRemRedun = "redunstat";
+
+    /**
      * init
      */
     public final static int statInit = 0;

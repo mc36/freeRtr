@@ -30,7 +30,7 @@ import net.freertr.spf.spfCalc;
  *
  * @author matecsaba
  */
-public class servP4lang extends servGeneric implements prtServS {
+public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
 
     /**
      * create instance
@@ -406,6 +406,19 @@ public class servP4lang extends servGeneric implements prtServS {
     }
 
     /**
+     * get hardware forwarder
+     *
+     * @return offload info
+     */
+    public static final String getShowGen1liner() {
+        servP4lang ntry = cfgAll.dmnP4lang.get(0);
+        if (ntry == null) {
+            return null;
+        }
+        return "p4lang";
+    }
+
+    /**
      * get generic show
      *
      * @param mod mode: 1=dataplanes
@@ -414,10 +427,10 @@ public class servP4lang extends servGeneric implements prtServS {
     public userFormat getShowGen(int mod) {
         switch (mod) {
             case 1:
-                userFormat res = new userFormat("|", "fwd|addr|name|clsd|recon|ago|since");
+                userFormat res = new userFormat("|", "fwd|addr|name|type|clsd|recon|ago|since");
                 for (int i = 0; i < fwds.size(); i++) {
                     servP4langCfg ntry = fwds.get(i);
-                    res.add(i + "|" + ntry.remote + "|" + ntry.descr + "|" + ntry.conn.pipe.isClosed() + "|" + ntry.reconns + "|" + bits.timePast(ntry.started) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.started + cfgAll.timeServerOffset, 3));
+                    res.add(i + "|" + ntry.remote + "|" + ntry.descr + "|" + ntry.platform + "|" + ntry.conn.pipe.isClosed() + "|" + ntry.reconns + "|" + bits.timePast(ntry.started) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.started + cfgAll.timeServerOffset, 3));
                 }
                 return res;
             default:

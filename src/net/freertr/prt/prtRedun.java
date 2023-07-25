@@ -134,11 +134,17 @@ public class prtRedun implements Runnable {
      * @return output
      */
     public static userFormat doShowHash(String fn) {
-        userFormat l = new userFormat("|", "iface|reach|state|hash");
-        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + getFileHash(wireName2fileName(fn)));
+        userFormat l = new userFormat("|", "iface|reach|state|match|hash");
+        String mine = getFileHash(wireName2fileName(fn));
+        l.add("self|-|" + packRedundancy.stat2str(state) + "|-|" + mine);
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.doHash(fn));
+            String got = ifc.doHash(fn);
+            if (got == null) {
+                got = "nothing";
+            }
+            ////////////
+            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + mine.equals(got) + "|" + got);
         }
         return l;
     }

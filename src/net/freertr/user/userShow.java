@@ -519,6 +519,15 @@ public class userShow {
                 rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnStart));
                 return null;
             }
+            if (a.equals("platform")) {
+                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnPlatform));
+                return null;
+            }
+            if (a.equals("remote-status")) {
+                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnRemRedun));
+                return null;
+            }
+            rdr.putStrTab(prtRedun.doShowStatus());
             return null;
         }
         if (a.equals("as-info")) {
@@ -1126,12 +1135,21 @@ public class userShow {
             return null;
         }
         if (a.equals("p4lang")) {
-            servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
+            a = cmd.word();
+            if (a.length() < 1) {
+                cmd.error(servP4lang.getShowGen1liner());
+                return null;
+            }
+            servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, a);
             if (srv == null) {
                 cmd.error("no such server");
                 return null;
             }
             a = cmd.word();
+            if (a.equals("general")) {
+                cmd.error(servP4lang.getShowGen1liner());
+                return null;
+            }
             if (a.equals("dataplanes")) {
                 rdr.putStrTab(srv.getShowGen(1));
                 return null;
@@ -1216,7 +1234,7 @@ public class userShow {
                 return null;
             }
             if (!a.equals("port-counters")) {
-                cmd.badCmd();
+                rdr.putStrTab(srv.getShowGen(1));
                 return null;
             }
             a = cmd.word();

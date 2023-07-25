@@ -1038,11 +1038,13 @@ public class userExec {
         hl.add(null, "3 4,.      cpu                   internal router threads");
         hl.add(null, "4 .          <num>               thread id");
         hl.add(null, "3 .        external              external processes");
-        hl.add(null, "2 3      redundancy              redundancy information");
+        hl.add(null, "2 3,.    redundancy              redundancy information");
         hl.add(null, "3 .        status                current status");
         hl.add(null, "3 .        description           interface description");
         hl.add(null, "3 .        core                  core hash");
         hl.add(null, "3 .        config                config hash");
+        hl.add(null, "3 .        platform              remote platform");
+        hl.add(null, "3 .        remote-status         remote redundany");
         hl.add(null, "2 .      name-cache              local dns cache");
         hl.add(null, "2 3      as-name                 name of an as");
         hl.add(null, "3 .        <num>                 as name to show");
@@ -1328,8 +1330,9 @@ public class userExec {
         hl.add(cfgAll.dmnBmp.listServers(), "3 4,.      <name:loc>            server name");
         hl.add(null, "4 5,.        <addr>              from");
         hl.add(null, "5 .            <addr>            peer");
-        hl.add(null, "2 3      p4lang                  p4lang protocol information");
+        hl.add(null, "2 3,.    p4lang                  p4lang protocol information");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
+        hl.add(null, "4 .          general             general status");
         hl.add(null, "4 .          dataplanes          dataplanes");
         hl.add(null, "4 5,.        backplane-ports     backplane ports");
         hl.add(null, "5 .            [num]             forwarder number");

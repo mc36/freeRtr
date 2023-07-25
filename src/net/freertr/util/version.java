@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
+import net.freertr.serv.servOpenflow;
+import net.freertr.serv.servP4lang;
 
 /**
  * version utils
@@ -258,6 +260,7 @@ public class version {
         sa.add("name: " + cfgAll.hostName);
         sa.add("hwid: " + cfgInit.hwIdNum);
         sa.add("hwsn: " + cfgInit.hwSnNum);
+        sa.add("hwfw: " + getHWfwd1liner());
         sa.add("prnt: " + cfgInit.prntNam);
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.started + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.started));
         sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
@@ -273,6 +276,23 @@ public class version {
         sa.add("vmspec: " + getJavaVer("java.vm.specification"));
         sa.add("class: v" + getProp("java.class.version") + " @ " + getFileName());
         return sa;
+    }
+
+    /**
+     * get hardware forwarder
+     *
+     * @return offload info
+     */
+    public static String getHWfwd1liner() {
+        String a = servP4lang.getShowGen1liner();
+        if (a != null) {
+            return a;
+        }
+        a = servOpenflow.getShowGen1liner();
+        if (a != null) {
+            return a;
+        }
+        return "swonly";
     }
 
     /**

@@ -1,3 +1,13 @@
+player queue up down add-again
+
+sid(cfg-check)#show config-differences this
+
+openflow to have 2 label support and stack to p4lang
+
+decouple rpki from bgp process
+
+redundancy to have the shows
+
 bridge and router have renumber knob
 
 
