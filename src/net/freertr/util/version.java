@@ -278,6 +278,11 @@ public class version {
         return sa;
     }
 
+    public static String getKernelUptime() {
+        //////////////new SystemInfo().getOperatingSystem().getSystemUptime();
+        return null;
+    }
+
     /**
      * get hardware forwarder
      *
