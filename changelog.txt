@@ -15095,3 +15095,9 @@ todo: decouple rpki from bgp process
 todo: redundancy to have the shows
 ---------------------------------- 2023-07-25 22:25:18 23.7.25
 todo: flash ext-delete
+---------------------------------- 2023-07-26 07:55:12 23.7.26
+no todo: flash ext-delete
+todo: serves to have access-aaa
+todo: flash ext-delete also to commander
+todo: commander to have selection
+todo: commander to get away the cursor
