@@ -157,6 +157,11 @@ public class gallery {
     public static final String videoExt = ".avi.mp4.mov.";
 
     /**
+     * extensions
+     */
+    public static final String textExt = ".pdf.txt.docx.odt.";
+
+    /**
      * do one request
      *
      * @param par parameters
@@ -213,6 +218,11 @@ public class gallery {
             if (videoExt.indexOf(a) >= 0) {
                 todo = new String[2];
                 todo[0] = path + "thumbVid.sh";
+                todo[1] = album + nam;
+            }
+            if (textExt.indexOf(a) >= 0) {
+                todo = new String[2];
+                todo[0] = path + "thumbTxt.sh";
                 todo[1] = album + nam;
             }
             if (todo != null) {

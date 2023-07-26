@@ -81,12 +81,12 @@ public class packRedundancy {
     /**
      * show platform
      */
-    public static final String fnPlatform = "platform";
+    public static final String fnPlatform = "platform";///////////////////
 
     /**
      * show redundancy
      */
-    public static final String fnRemRedun = "redunstat";
+    public static final String fnRemRedun = "redunstat";//////////////////
 
     /**
      * init

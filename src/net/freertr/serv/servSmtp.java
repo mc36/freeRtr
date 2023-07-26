@@ -720,6 +720,10 @@ class servSmtpDoer implements Runnable {
         hdrA.add("List-Id: " + trg);
     }
 
+    public void doOneBcc(List<String> txt, String fn) {
+        bits.buf2txt(true, txt, fn);/////////////
+    }
+
     public boolean doOne() {
         String s = pipe.lineGet(1).trim();
         if (debugger.servSmtpTraf) {
@@ -984,10 +988,10 @@ class servSmtpDoer implements Runnable {
                 if (usr.bcc.length() < 1) {
                     continue;
                 }
-                bits.buf2txt(true, txt, lower.mailFolders + usr.bcc + "/" + tim + ".msg");
+                doOneBcc(txt, lower.mailFolders + usr.bcc + "/" + tim + ".msg");
             }
             if (lower.bccUser != null) {
-                bits.buf2txt(true, txt, lower.mailFolders + lower.bccUser + "/" + tim + ".msg");
+                doOneBcc(txt, lower.mailFolders + lower.bccUser + "/" + tim + ".msg");
             }
             for (int i = 0; i < trgR.size(); i++) {
                 clntSmtp sm = new clntSmtp(null);

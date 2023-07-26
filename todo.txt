@@ -1,3 +1,13 @@
+serves to have access-aaa
+
+
+
+flash ext-delete also to commander
+
+commander to have selection
+
+commander to get away the cursor
+
 player queue up down add-again
 
 sid(cfg-check)#show config-differences this

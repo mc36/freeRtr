@@ -7,4 +7,6 @@ package net.freertr.serv;
  */
 public interface servGenFwdr {
 
+    ///////////////
+    
 }

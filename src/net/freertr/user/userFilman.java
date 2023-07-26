@@ -66,7 +66,7 @@ public class userFilman {
         console.fillLines(0, console.sizY, userScreen.colBlack, 32);
         console.refresh();
         console.putCls();
-        console.putCur(0, 0);
+        console.putCur(console.sizX, console.sizY);
         console.refresh();
     }
 
@@ -450,7 +450,6 @@ class userFilmanPanel {
 
     public void doCurs() {
         int ln = scrY + curL - begL + 1;
-        con.putCur(scrX, ln);
         con.putCols(scrX, ln, userScreen.colWhite, userScreen.colBlack, sizX);
     }
 
