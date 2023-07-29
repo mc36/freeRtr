@@ -15101,3 +15101,5 @@ todo: serves to have access-aaa
 todo: flash ext-delete also to commander
 todo: commander to have selection
 todo: commander to get away the cursor
+---------------------------------- 2023-07-29 06:55:56 23.7.29
+todo: serv http InvocationTargetException to have auto logging in the traceback
