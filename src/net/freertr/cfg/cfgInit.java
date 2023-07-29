@@ -760,7 +760,7 @@ public class cfgInit implements Runnable {
                 uc.executeCommand(b);
             } catch (Exception e) {
                 err++;
-                logger.info(beg + logger.dumpException(e));
+                logger.info(beg + logger.dumpException(e, " at line " + err));
             }
             i = psS.ready2rx();
             if (i < 1) {

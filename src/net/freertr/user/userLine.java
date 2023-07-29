@@ -736,6 +736,19 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         return user.user + "|" + remote + "|" + bits.timePast(since);
     }
 
+    /**
+     * return user readable string
+     *
+     * @return
+     */
+    public String toUserStr() {
+        String s = "";
+        if (user != null) {
+            return s = "usr=" + user.user;
+        }
+        return s + " rem=" + remote + " after " + bits.timePast(since);
+    }
+
     private void doInit() {
         user = new authResult();
         user.privilege = parent.promptPrivilege;
@@ -969,7 +982,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
                 pipe.linePut(parent.promptGoodbye);
             }
         } catch (Exception e) {
-            logger.traceback(e);
+            logger.traceback(e, toUserStr() + " commands");
         }
         try {
             expTim.cancel();

@@ -45,6 +45,7 @@ aaa userlist access
  allowed differs .*
  allowed terminal .*
  allowed exit .*
+ allowed test .*
  exit
 !
 aaa radius rad

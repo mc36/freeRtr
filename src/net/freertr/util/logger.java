@@ -406,7 +406,16 @@ public class logger {
      * @param e exception
      */
     public static void exception(Throwable e) {
-        String a = dumpException(e);
+        exception(e, null);
+    }
+
+    /**
+     * exception detected
+     *
+     * @param e exception
+     */
+    public static void exception(Throwable e, String m) {
+        String a = dumpException(e, m);
         try {
             bits.buf2txt(false, bits.str2lst(a), version.myErrorFile());
         } catch (Exception ee) {
@@ -424,7 +433,16 @@ public class logger {
      * @param e exception
      */
     public static void traceback(Throwable e) {
-        String a = dumpException(e);
+        traceback(e, null);
+    }
+
+    /**
+     * not so critical exception detected
+     *
+     * @param e exception
+     */
+    public static void traceback(Throwable e, String m) {
+        String a = dumpException(e, m);
         try {
             bits.buf2txt(false, bits.str2lst(a), version.myErrorFile());
         } catch (Exception ee) {
@@ -442,8 +460,12 @@ public class logger {
      * @param e exception
      * @return dumped
      */
-    public static String dumpException(Throwable e) {
-        return e + " at " + dumpStackTrace(e.getStackTrace());
+    public static String dumpException(Throwable e, String m) {
+        String a = "";
+        if (m != null) {
+            a = m + " doing ";
+        }
+        return a + " at " + dumpStackTrace(e.getStackTrace());
     }
 
     /**

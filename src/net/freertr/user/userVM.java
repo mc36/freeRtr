@@ -93,7 +93,7 @@ public class userVM {
             vm.doLoad(name, param);
             res = vm.doProcess();
         } catch (Exception e) {
-            cons.linePut("vm error: " + logger.dumpException(e));
+            cons.linePut("vm error: " + logger.dumpException(e, "fio=" + fio + " fn=" + dir + " " + name + " pars" + param));
             List<String> txt = vm.dump();
             for (int i = 0; i < txt.size(); i++) {
                 cons.linePut(txt.get(i));

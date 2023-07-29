@@ -536,7 +536,7 @@ public class servHttpConn implements Runnable {
             s = (String) obj;
             res = buf.toByteArray();
         } catch (Exception e) {
-            logger.traceback(e);
+            logger.traceback(e, gotUrl.dump());
             return true;
         }
         if (debugger.servHttpTraf) {
