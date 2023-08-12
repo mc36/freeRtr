@@ -742,11 +742,11 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
      * @return
      */
     public String toUserStr() {
-        String s = "";
+        String s = null;
         if (user != null) {
-            return s = "usr=" + user.user;
+            s = "" + user.user;
         }
-        return s + " rem=" + remote + " after " + bits.timePast(since);
+        return "user=" + s + "rem=" + remote + " after " + bits.timePast(since);
     }
 
     private void doInit() {

@@ -469,7 +469,8 @@ public class userTest {
         if (a.equals("logging")) {
             a = cmd.word();
             if (a.equals("traceback")) {
-                logger.traceback(new Exception(cmd.getRemaining()));
+                a = cmd.word();
+                logger.traceback(new Exception(), a + " and " + cmd.getRemaining());
                 return null;
             }
             logger.logLev i = logger.string2level(a);

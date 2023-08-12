@@ -2221,7 +2221,8 @@ public class userExec {
         hl.add(null, "3 4,.      informational              informational message");
         hl.add(null, "4 4,.        <str>                    text to log");
         hl.add(null, ".3 4,.     traceback                  traceback message");
-        hl.add(null, ".4 4,.       <str>                    text to log");
+        hl.add(null, ".4 5         <str>                    message to test");
+        hl.add(null, ".5 5,.         <str>                  text to log");
         hl.add(null, "2 3,.    password                     decode encoded password");
         hl.add(null, "3 3,.      <str>                      encoded string");
         hl.add(null, "2 3,.    otppass                      generate password");

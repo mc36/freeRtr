@@ -413,6 +413,7 @@ public class logger {
      * exception detected
      *
      * @param e exception
+     * @param m message to pass or null
      */
     public static void exception(Throwable e, String m) {
         String a = dumpException(e, m);
@@ -440,6 +441,7 @@ public class logger {
      * not so critical exception detected
      *
      * @param e exception
+     * @param m message to pass or null
      */
     public static void traceback(Throwable e, String m) {
         String a = dumpException(e, m);
@@ -458,14 +460,11 @@ public class logger {
      * dump one exception
      *
      * @param e exception
+     * @param m message to pass or null
      * @return dumped
      */
     public static String dumpException(Throwable e, String m) {
-        String a = "";
-        if (m != null) {
-            a = m + " doing ";
-        }
-        return a + " at " + dumpStackTrace(e.getStackTrace());
+        return "doing " + m + " at " + dumpStackTrace(e.getStackTrace());
     }
 
     /**

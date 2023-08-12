@@ -1,5 +1,6 @@
 serv http InvocationTargetException to have auto logging in the traceback
 
+sho cdp/lldp int
 
 serves to have access-aaa
 
