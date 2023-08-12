@@ -134,6 +134,11 @@ public class temper implements Runnable {
     protected String tzdata = "Z";
 
     /**
+     * http refresh seconds
+     */
+    protected int refreshSeconds = 3;
+
+    /**
      * log file
      */
     protected String logFile = "temper.log";
@@ -517,6 +522,10 @@ public class temper implements Runnable {
                 relayPin = (int) temperUtil.str2num(s);
                 continue;
             }
+            if (a.equals("refresh-delay")) {
+                refreshSeconds = (int) temperUtil.str2num(s);
+                continue;
+            }
             if (a.equals("allowed-ip")) {
                 allowIp = s;
                 continue;
@@ -532,13 +541,16 @@ public class temper implements Runnable {
         }
     }
 
-    private static void drawRightAlighed(Graphics2D g2d, int mx10, int y, String s) {
+    protected void drawRightAlighed(Graphics2D g2d, int mx10, int y, String s) {
         FontMetrics fm = g2d.getFontMetrics();
         g2d.drawString(s, mx10 - fm.stringWidth(s), y);
     }
 
-    private static void putStart(ByteArrayOutputStream buf, String tit, String res) throws Exception {
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>".getBytes());
+    protected void putStart(ByteArrayOutputStream buf, String tit, String res) throws Exception {
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=".getBytes());
+        String a = "" + refreshSeconds;
+        buf.write(a.getBytes());
+        buf.write(";url=/index.html\"><title>".getBytes());
         buf.write(tit.getBytes());
         buf.write("</title><body>".getBytes());
         buf.write(res.getBytes());
