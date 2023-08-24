@@ -63,7 +63,7 @@ public class pipeShell {
         if (i < 0) {
             return a;
         }
-        a = a.substring(0, i) + " ago";
+        a = a.substring(0, i);
         a = a.stripTrailing().stripLeading();
         a = a.replaceAll(" up", "");
         return a;
