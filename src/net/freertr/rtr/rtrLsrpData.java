@@ -89,6 +89,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public String kernel;
 
     /**
+     * kernel
+     */
+    public String kernup;
+
+    /**
      * segment routing maximum
      */
     public int segrouMax;
@@ -338,6 +343,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             s += " hardware=" + hardware;
             s += " middleware=" + middleware;
             s += " kernel=" + kernel;
+            s += " kernup=" + kernup;
         }
         if ((typ & 0x4) != 0) {
             s += " sequence=" + sequence;
@@ -391,6 +397,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         middleware = "";
         password = "none";
         kernel = "";
+        kernup = "";
         topoSum = 0;
         sequence = 0;
         segrouBeg = 0;
@@ -488,6 +495,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             if (a.equals("kernel")) {
                 kernel = s;
+                continue;
+            }
+            if (a.equals("kernup")) {
+                kernup = s;
                 continue;
             }
             if (a.equals("segroubeg")) {

@@ -405,7 +405,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 l = new userFormat("|", "id|name|middle");
                 break;
             case 5:
-                l = new userFormat("|", "id|name|kernel");
+                l = new userFormat("|", "id|name|kernel|boot");
                 break;
             case 6:
                 l = new userFormat("|", "id|name|hardware");
@@ -432,7 +432,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.middleware);
                     break;
                 case 5:
-                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.kernel);
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.kernel + "|" + ntry.kernup);
                     break;
                 case 6:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware);
