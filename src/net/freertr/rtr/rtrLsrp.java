@@ -19,6 +19,7 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
+import net.freertr.pipe.pipeShell;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
@@ -740,6 +741,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo()).replaceAll(" ", "_");
         dat.middleware = version.getVMname().replaceAll(" ", "_");
         dat.kernel = version.getKernelName().replaceAll(" ", "_");
+        dat.kernup = pipeShell.getKernelUptime().replaceAll(" ", "_");
         if (segrouLab != null) {
             dat.segrouMax = segrouMax;
             dat.segrouBeg = segrouLab[0].label;

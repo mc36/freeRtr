@@ -288,38 +288,13 @@ public class version {
         sa.add("cpu: " + getCPUname());
         sa.add("mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
         sa.add("host: " + getKernelName());
-        sa.add("hostboot: " + getKernelUptime());
+        sa.add("hostboot: " + pipeShell.getKernelUptime());
         sa.add("java: " + getJavaVer("java") + " @ " + getProp("java.home"));
         sa.add("jspec: " + getJavaVer("java.specification"));
         sa.add("vm: " + getVMname());
         sa.add("vmspec: " + getJavaVer("java.vm.specification"));
         sa.add("class: v" + getProp("java.class.version") + " @ " + getFileName());
         return sa;
-    }
-
-    /**
-     * get kernel uptime
-     *
-     * @return uptime
-     */
-    public static String getKernelUptime() {
-        String a = "n/a";
-        List<String> res = pipeShell.exec("uptime", null, true, false, true);
-        if (res == null) {
-            return a;
-        }
-        if (res.size() < 1) {
-            return a;
-        }
-        a = res.get(0);
-        int i = a.indexOf(",");
-        if (i < 0) {
-            return a;
-        }
-        a = a.substring(0, i) + " ago";
-        a = a.stripTrailing().stripLeading();
-        a = a.replaceAll(" up", "");
-        return a;
     }
 
     /**

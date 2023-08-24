@@ -34,6 +34,41 @@ public class pipeShell {
      */
     protected int running;
 
+    private static String kernUpCache;
+
+    /**
+     * get kernel uptime
+     *
+     * @return uptime
+     */
+    public static String getKernelUptime() {
+        if (kernUpCache != null) {
+            return kernUpCache;
+        }
+        kernUpCache = getKernUp();
+        return kernUpCache;
+    }
+
+    private static String getKernUp() {
+        String a = "n/a";
+        List<String> res = pipeShell.exec("uptime", null, true, false, true);
+        if (res == null) {
+            return a;
+        }
+        if (res.size() < 1) {
+            return a;
+        }
+        a = res.get(0);
+        int i = a.indexOf(",");
+        if (i < 0) {
+            return a;
+        }
+        a = a.substring(0, i) + " ago";
+        a = a.stripTrailing().stripLeading();
+        a = a.replaceAll(" up", "");
+        return a;
+    }
+
     /**
      * create shell pipe
      *
