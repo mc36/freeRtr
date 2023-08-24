@@ -263,6 +263,16 @@ public class userShow {
                 rdr.putStrArr(version.shSecret(4));
                 return null;
             }
+            if (a.equals("tree")) {
+                rdr.putStrArr(version.shSecret(5));
+                return null;
+            }
+            if (a.equals("time")) {
+                a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
+                List<String> l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
+                rdr.putStrArr(l);
+                return null;
+            }
             return null;
         }
         if (a.equals("users")) {

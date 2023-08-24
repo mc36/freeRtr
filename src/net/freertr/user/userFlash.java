@@ -275,6 +275,13 @@ public class userFlash {
         return null;
     }
 
+    /**
+     * generate hash from file
+     *
+     * @param h hash to use
+     * @param n file to hash
+     * @return hash of the file
+     */
     public final static String calcFileHash(cryHashGeneric h, String n) {
         File f = new File(n);
         h.init();
@@ -284,6 +291,12 @@ public class userFlash {
         return cryUtils.hash2hex(h);
     }
 
+    /**
+     * generate eshash from file
+     *
+     * @param a file to hash
+     * @return hashes of the file
+     */
     public final static List<String> calcFileHashes(String a) {
         List<String> r = new ArrayList<String>();
         r.add("file=" + a);

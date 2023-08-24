@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
+import net.freertr.pipe.pipeShell;
 import net.freertr.serv.servOpenflow;
 import net.freertr.serv.servP4lang;
 
@@ -243,6 +244,23 @@ public class version {
                 l.add("so long-live creativity! ;)");
                 l.add(verCore.author);
                 break;
+            case 5:
+                l.add("                   \\ /");
+                l.add("                 -->*<--");
+                l.add("                   /o\\");
+                l.add("                  /_\\_\\");
+                l.add("                 /_/_0_\\");
+                l.add("                /_o_\\_\\_\\");
+                l.add("               /_/_/_/_/o\\");
+                l.add("              /@\\_\\_\\@\\_\\_\\");
+                l.add("             /_/_/O/_/_/_/_\\");
+                l.add("            /_\\_\\_\\_\\_\\o\\_\\_\\");
+                l.add("           /_/0/_/_/_0_/_/@/_\\");
+                l.add("          /_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\");
+                l.add("         /_/o/_/_/@/_/_/o/_/0/_\\");
+                l.add("            [___]");
+                l.add("bear pspsps sh0w mor3 r3sp3ct y0urs3lv3s");
+                break;
         }
         return l;
     }
@@ -270,6 +288,7 @@ public class version {
         sa.add("cpu: " + getCPUname());
         sa.add("mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
         sa.add("host: " + getKernelName());
+        sa.add("hostboot: " + getKernelUptime());
         sa.add("java: " + getJavaVer("java") + " @ " + getProp("java.home"));
         sa.add("jspec: " + getJavaVer("java.specification"));
         sa.add("vm: " + getVMname());
@@ -278,9 +297,29 @@ public class version {
         return sa;
     }
 
+    /**
+     * get kernel uptime
+     *
+     * @return uptime
+     */
     public static String getKernelUptime() {
-        //////////////new SystemInfo().getOperatingSystem().getSystemUptime();
-        return null;
+        String a = "n/a";
+        List<String> res = pipeShell.exec("uptime", null, true, false, true);
+        if (res == null) {
+            return a;
+        }
+        if (res.size() < 1) {
+            return a;
+        }
+        a = res.get(0);
+        int i = a.indexOf(",");
+        if (i < 0) {
+            return a;
+        }
+        a = a.substring(0, i) + " ago";
+        a = a.stripTrailing().stripLeading();
+        a = a.replaceAll(" up", "");
+        return a;
     }
 
     /**

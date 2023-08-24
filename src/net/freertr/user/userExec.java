@@ -1025,6 +1025,8 @@ public class userExec {
         hl.add(null, "6 7              <str>           target domain to meme");
         hl.add(null, "7 .                <str>         your redirector www");
         hl.add(null, "3 .        love                  show some love");
+        hl.add(null, "3 .        time                  show some time");
+        hl.add(null, "3 .        tree                  show some tree");
         hl.add(null, "3 .        key                   show some key");
         hl.add(null, "3 .        bug                   show some bug");
         hl.add(null, "3 .        review                show some reasons");
