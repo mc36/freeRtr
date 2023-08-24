@@ -38,13 +38,13 @@ public class clntWhois {
      * @return text
      */
     public static userFormat showLocalCache() {
-        userFormat res = new userFormat("|", "asn|name|ago|created");
+        userFormat res = new userFormat("|", "asn|name|ago|created|info");
         for (int i = 0; i < asnameCache.size(); i++) {
             clntWhoisAsName ntry = asnameCache.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add("" + ntry);
+            res.add("" + ntry + "|" + clntWhois.asn2infos(ntry.asn));
         }
         return res;
     }
