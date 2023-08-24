@@ -58,7 +58,7 @@ public class pipeShell {
         if (res.size() < 1) {
             return a;
         }
-        a = res.get(0);
+        a = res.get(0).replaceAll("  ", " ");
         int i = a.indexOf(",");
         if (i < 0) {
             return a;

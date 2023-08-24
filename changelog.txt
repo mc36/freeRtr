@@ -15105,3 +15105,5 @@ todo: commander to get away the cursor
 todo: serv http InvocationTargetException to have auto logging in the traceback
 ---------------------------------- 2023-07-30 05:32:57 23.7.30
 todo: sho cdp/lldp int
+---------------------------------- 2023-08-24 03:56:20 23.8.24
+todo: ioam as https://www.rfc-editor.org/rfc/rfc9452.html
