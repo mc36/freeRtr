@@ -43,10 +43,7 @@ public class userGame {
         console.refresh();
     }
 
-    /**
-     * tree
-     */
-    public void doTree() {
+    private void colorDrawer(List<String> sec) {
         int[] god = new int[6];
         god[0] = userScreen.colBrCyan;
         god[1] = userScreen.colBrWhite;
@@ -55,7 +52,6 @@ public class userGame {
         god[4] = userScreen.colBrBlue;
         god[5] = userScreen.colBrRed;
         int gods = god.length;
-        List<String> sec = version.shSecret(5);
         console.putCls();
         for (int o = 0; o < sec.size(); o++) {
             String s = sec.get(o);
@@ -85,6 +81,14 @@ public class userGame {
             }
             bits.sleep(1000);
         }
+    }
+
+    /**
+     * tree
+     */
+    public void doTree() {
+        List<String> sec = version.shSecret(5);
+        colorDrawer(sec);
     }
 
     /**
