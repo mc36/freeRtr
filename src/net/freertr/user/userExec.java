@@ -1027,6 +1027,11 @@ public class userExec {
         hl.add(null, "3 .        love                  show some love");
         hl.add(null, "3 .        time                  show some time");
         hl.add(null, "3 .        tree                  show some tree");
+        hl.add(null, "3 .        dick                  show some dick");
+        hl.add(null, "3 .        disk                  show some disk");
+        hl.add(null, "3 .        revolver              show some revolver");
+        hl.add(null, "3 .        tank                  show some tank");
+        hl.add(null, "3 .        duck                  show some duck");
         hl.add(null, "3 .        key                   show some key");
         hl.add(null, "3 .        bug                   show some bug");
         hl.add(null, "3 .        review                show some reasons");
@@ -1702,6 +1707,11 @@ public class userExec {
         hl.add(null, "2 3      <host>                       name of host to query");
         hl.add(null, "3 3,.      <text>                     query string");
         hl.add(null, "1 2    game                           play games or watch screen savers");
+        hl.add(null, "2 .      dick                         show some dick");
+        hl.add(null, "2 .      disk                         show some disk");
+        hl.add(null, "2 .      revolver                     show some revolver");
+        hl.add(null, "2 .      tank                         show some tank");
+        hl.add(null, "2 .      duck                         show some duck");
         hl.add(null, "2 .      tree                         take test");
         hl.add(null, "2 .      color                        take test");
         hl.add(null, "2 .      ascii                        take test");

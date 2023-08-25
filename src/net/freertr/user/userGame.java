@@ -92,6 +92,38 @@ public class userGame {
     }
 
     /**
+     * dick
+     */
+    public void doDick() {
+        List<String> sec = version.shSecret(6);
+        colorDrawer(sec);
+    }
+
+    /**
+     * dick
+     */
+    public void doDuck() {
+        List<String> sec = version.shSecret(7);
+        colorDrawer(sec);
+    }
+
+    /**
+     * dick
+     */
+    public void doDisk() {
+        List<String> sec = version.shSecret(8);
+        colorDrawer(sec);
+    }
+
+    /**
+     * dick
+     */
+    public void doTank() {
+        List<String> sec = version.shSecret(9);
+        colorDrawer(sec);
+    }
+
+    /**
      * palette test
      */
     public void doPalette() {
@@ -516,6 +548,14 @@ public class userGame {
         }
         if (a.equals("tree")) {
             doTree();
+            return;
+        }
+        if (a.equals("dick")) {
+            doDick();
+            return;
+        }
+        if (a.equals("duck")) {
+            doDuck();
             return;
         }
         if (a.equals("color")) {

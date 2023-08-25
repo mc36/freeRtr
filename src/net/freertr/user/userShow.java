@@ -267,6 +267,26 @@ public class userShow {
                 rdr.putStrArr(version.shSecret(5));
                 return null;
             }
+            if (a.equals("dick")) {
+                rdr.putStrArr(version.shSecret(6));
+                return null;
+            }
+            if (a.equals("duck")) {
+                rdr.putStrArr(version.shSecret(7));
+                return null;
+            }
+            if (a.equals("disk")) {
+                rdr.putStrArr(version.shSecret(8));
+                return null;
+            }
+            if (a.equals("tank")) {
+                rdr.putStrArr(version.shSecret(9));
+                return null;
+            }
+            if (a.equals("revolver")) {
+                rdr.putStrArr(version.shSecret(10));
+                return null;
+            }
             if (a.equals("time")) {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 List<String> l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
