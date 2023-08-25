@@ -1326,6 +1326,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             pm.min = neigh.pmtudMin;
             pm.max = neigh.pmtudMax;
             pm.timeout = neigh.pmtudTim;
+            pm.delay = iface.pmtudTim / 3;
             int[] res = pm.doer();
             if (res == null) {
                 logger.warn("pmtud failed to " + neigh.peerAddr);

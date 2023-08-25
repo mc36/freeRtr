@@ -428,6 +428,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             pm.min = iface.pmtudMin;
             pm.max = iface.pmtudMax;
             pm.timeout = iface.pmtudTim;
+            pm.delay = iface.pmtudTim / 3;
             int[] res = pm.doer();
             if (res == null) {
                 logger.warn("pmtud failed to " + peer);

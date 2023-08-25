@@ -3210,8 +3210,9 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: game tree
 todo: tests for bgp/msdp: neigh x.x.x.x pmtud
-todo: lsrp / pvrp pmtud
+todo: tests for lsrp / pvrp pmtud
 todo: ioam as https://www.rfc-editor.org/rfc/rfc9452.html
 todo: serv http InvocationTargetException to have auto logging in the traceback
 todo: sho cdp/lldp int
