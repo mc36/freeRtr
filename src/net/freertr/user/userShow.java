@@ -287,6 +287,14 @@ public class userShow {
                 rdr.putStrArr(version.shSecret(10));
                 return null;
             }
+            if (a.equals("riffle")) {
+                rdr.putStrArr(version.shSecret(11));
+                return null;
+            }
+            if (a.equals("knife")) {
+                rdr.putStrArr(version.shSecret(12));
+                return null;
+            }
             if (a.equals("time")) {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 List<String> l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());

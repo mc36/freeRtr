@@ -108,7 +108,7 @@ public class userGame {
     }
 
     /**
-     * dick
+     * disk
      */
     public void doDisk() {
         List<String> sec = version.shSecret(8);
@@ -116,10 +116,34 @@ public class userGame {
     }
 
     /**
-     * dick
+     * tank
      */
     public void doTank() {
         List<String> sec = version.shSecret(9);
+        colorDrawer(sec);
+    }
+
+    /**
+     * tank
+     */
+    public void doRevolver() {
+        List<String> sec = version.shSecret(10);
+        colorDrawer(sec);
+    }
+
+    /**
+     * riffle
+     */
+    public void doRiffle() {
+        List<String> sec = version.shSecret(11);
+        colorDrawer(sec);
+    }
+
+    /**
+     * knife
+     */
+    public void doKnife() {
+        List<String> sec = version.shSecret(12);
         colorDrawer(sec);
     }
 
@@ -556,6 +580,14 @@ public class userGame {
         }
         if (a.equals("duck")) {
             doDuck();
+            return;
+        }
+        if (a.equals("tank")) {
+            doTank();
+            return;
+        }
+        if (a.equals("revolver")) {
+            doRevolver();
             return;
         }
         if (a.equals("color")) {

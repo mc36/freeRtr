@@ -1030,6 +1030,8 @@ public class userExec {
         hl.add(null, "3 .        dick                  show some dick");
         hl.add(null, "3 .        disk                  show some disk");
         hl.add(null, "3 .        revolver              show some revolver");
+        hl.add(null, "3 .        riffle                show some riffle");
+        hl.add(null, "3 .        knife                 show some knife");
         hl.add(null, "3 .        tank                  show some tank");
         hl.add(null, "3 .        duck                  show some duck");
         hl.add(null, "3 .        key                   show some key");
