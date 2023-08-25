@@ -1211,6 +1211,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         prtPmtud pm = new prtPmtud(pl.getSide(), neigh.peerAddr, neigh.lower.fwdCore, neigh.localAddr);
         pm.min = neigh.pmtudMin;
         pm.max = neigh.pmtudMax;
+        pm.timeout = neigh.pmtudTim;
         int[] res = pm.doer();
         if (res != null) {
             logger.warn("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);
