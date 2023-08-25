@@ -1769,6 +1769,7 @@ public abstract class rtrBgpParam {
         }
         cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
+        l.add(beg + nei + "pmtud " + pmtudMin + " " + pmtudMax + " " + pmtudTim);
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
         l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
         l.add(beg + nei + "address-family" + mask2string(addrFams));
@@ -1881,7 +1882,6 @@ public abstract class rtrBgpParam {
         }
         cmds.cfgLine(l, unknownsOut == null, beg, nei + "unknowns-out", "" + unknownsOut);
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
-        cmds.cfgLine(l, pmtudTim < 0, beg, nei + "pmtud", pmtudMin + " " + pmtudMax + " " + pmtudTim);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, !wideAsPath, beg, nei + "wide-aspath", "");

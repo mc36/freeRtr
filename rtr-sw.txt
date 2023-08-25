@@ -557,6 +557,7 @@ router bgp4 65535 vrf v1
  !
  template r remote-as 65535
  template r local-as 65535
+ template r pmtud 512 1024 666
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  template r distance 200
  template r connection-mode active
@@ -578,7 +579,6 @@ router bgp4 65535 vrf v1
  template r attribset
  template r unknowns-out all
  template r unknowns-in all
- template r pmtud 512 1024 666
  template r segrout
  template r bier
  template r role attrib
@@ -635,6 +635,7 @@ router bgp6 65535 vrf v1
  !
  template r remote-as 65535
  template r local-as 65535
+ template r pmtud 512 1024 666
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  template r distance 200
  template r connection-mode active
@@ -656,7 +657,6 @@ router bgp6 65535 vrf v1
  template r attribset
  template r unknowns-out all
  template r unknowns-in all
- template r pmtud 0 0 0
  template r segrout
  template r bier
  template r role attrib
