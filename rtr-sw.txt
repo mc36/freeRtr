@@ -381,7 +381,6 @@ interface template1
  router lsrp4 1 dump lsrp4.log
  router lsrp4 1 accept-metric
  router lsrp4 1 bfd
- router lsrp4 1 pmtud 512 1024 666
  router lsrp4 1 dynamic-metric mode inband
  router lsrp4 1 dynamic-metric size 4
  router lsrp4 1 dynamic-metric ignore 2
@@ -389,7 +388,6 @@ interface template1
  router lsrp6 1 dump lsrp6.log
  router lsrp6 1 accept-metric
  router lsrp6 1 bfd
- router lsrp6 1 pmtud 512 1024 666
  router lsrp6 1 dynamic-metric mode inband
  router lsrp6 1 dynamic-metric size 4
  router lsrp6 1 dynamic-metric ignore 2

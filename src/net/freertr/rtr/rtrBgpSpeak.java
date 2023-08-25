@@ -1202,6 +1202,28 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         closeNow();
     }
 
+    private void measurePmtuD() {
+        if (neigh.pmtudTim < 0) {
+            return;
+        }
+        logger.warn("testing pmtud to " + neigh.peerAddr + " from " + neigh.localAddr);
+        pipeLine pl = new pipeLine(65536, true);
+        prtPmtud pm = new prtPmtud(pl.getSide(), neigh.peerAddr, neigh.lower.fwdCore, neigh.localAddr);
+        pm.min = neigh.pmtudMin;
+        pm.max = neigh.pmtudMax;
+        pm.timeout = neigh.pmtudTim;
+        pm.delay = neigh.pmtudTim / 3;
+        int[] res = pm.doer();
+        if (res != null) {
+            logger.warn("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);
+            pmtudRes = pm.last;
+            return;
+        }
+        logger.warn("pmtud failed to " + neigh.peerAddr);
+        pipeDiscard.logLines("pmtud failure to " + neigh.peerAddr, pl.getSide(), true, null);
+        sendNotify(1, 2);
+    }
+
     private void doWork() {
         if (debugger.rtrBgpEvnt) {
             logger.debug("starting neighbor " + neigh.peerAddr);
@@ -1216,6 +1238,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         sendOpen();
         sendKeepAlive();
+        measurePmtuD();
         int typ = packRecv(pckRx);
         if (typ == rtrBgpUtil.msgNotify) {
             logger.info("got notify " + rtrBgpUtil.notify2string(pckRx.getByte(0), pckRx.getByte(1)) + " from " + neigh.peerAddr);
@@ -1319,24 +1342,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accLnks = new tabRoute<addrIP>("rx");
         neigh.accMvpn = new tabRoute<addrIP>("rx");
         neigh.accMvpo = new tabRoute<addrIP>("rx");
-        if (neigh.pmtudTim > 0) {
-            logger.warn("testing pmtud to " + neigh.peerAddr + " from " + neigh.localAddr);
-            pipeLine pl = new pipeLine(65536, true);
-            prtPmtud pm = new prtPmtud(pl.getSide(), neigh.peerAddr, neigh.lower.fwdCore, neigh.localAddr);
-            pm.min = neigh.pmtudMin;
-            pm.max = neigh.pmtudMax;
-            pm.timeout = neigh.pmtudTim;
-            pm.delay = neigh.pmtudTim / 3;
-            int[] res = pm.doer();
-            if (res == null) {
-                logger.warn("pmtud failed to " + neigh.peerAddr);
-                pipeDiscard.logLines("pmtud failure to " + neigh.peerAddr, pl.getSide(), true, null);
-                sendNotify(1, 2);
-                return;
-            }
-            logger.warn("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);
-            pmtudRes = pm.last;
-        }
         if (neigh.dampenPfxs != null) {
             neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
         }
