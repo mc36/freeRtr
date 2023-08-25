@@ -3,6 +3,7 @@ package net.freertr.prt;
 import net.freertr.addr.addrIP;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
+import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
 import net.freertr.util.bits;
 
@@ -95,7 +96,7 @@ public class prtPmtud {
      * @param sou source ip to use
      */
     public prtPmtud(pipeSide con, addrIP rem, ipFwd vrf, addrIP sou) {
-        pip = con;
+        pip = pipeDiscard.needAny(con);
         trg = rem;
         fwd = vrf;
         src = sou;
@@ -109,6 +110,10 @@ public class prtPmtud {
      */
     public int[] doer() {
         int ovrh = prtIcmptun.adjustSize(trg);
+        if (fwd == null) {
+            pip.linePut("vrf not specified");
+            return null;
+        }
         pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", ovr=" + ovrh + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
         for (;;) {
             if (pip.isClosed() != 0) {

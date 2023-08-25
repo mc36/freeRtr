@@ -147,6 +147,21 @@ public abstract class rtrBgpParam {
     public tabIntMatcher unknownsOut;
 
     /**
+     * pmtud min
+     */
+    public int pmtudMin;
+
+    /**
+     * pmtud max
+     */
+    public int pmtudMax;
+
+    /**
+     * pmtud timeout
+     */
+    public int pmtudTim;
+
+    /**
      * send segment routing
      */
     public boolean segRout;
@@ -1163,6 +1178,9 @@ public abstract class rtrBgpParam {
         unknownsColl = src.unknownsColl;
         unknownsOut = src.unknownsOut;
         unknownsIn = src.unknownsIn;
+        pmtudMin = src.pmtudMin;
+        pmtudMax = src.pmtudMax;
+        pmtudTim = src.pmtudTim;
         segRout = src.segRout;
         bier = src.bier;
         wideAsPath = src.wideAsPath;
@@ -1593,6 +1611,10 @@ public abstract class rtrBgpParam {
         l.add(null, "3  4       unknowns-in                 receive unknown attributes");
         l.add(null, "4  .         <num>                     allowed attributes");
         l.add(null, "3  .       label-pop                   advertise pop label");
+        l.add(null, "3  4       pmtud                       test pmtud before accepting");
+        l.add(null, "4  5         <num>                     min mtu");
+        l.add(null, "5  6           <num>                   max mtu");
+        l.add(null, "6  .             <num>                 timeout per round");
         l.add(null, "3  .       segrout                     send segment routing attribute");
         l.add(null, "3  .       bier                        send bier attribute");
         l.add(null, "3  .       wide-aspath                 send wide aspath attribute");
@@ -1859,6 +1881,7 @@ public abstract class rtrBgpParam {
         }
         cmds.cfgLine(l, unknownsOut == null, beg, nei + "unknowns-out", "" + unknownsOut);
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
+        cmds.cfgLine(l, pmtudTim < 0, beg, nei + "pmtud", pmtudMin + " " + pmtudMax + " " + pmtudTim);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, !wideAsPath, beg, nei + "wide-aspath", "");
@@ -2487,6 +2510,24 @@ public abstract class rtrBgpParam {
             }
             unknownsIn = new tabIntMatcher();
             unknownsIn.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("pmtud")) {
+            if (negated) {
+                pmtudMin = 0;
+                pmtudMax = 0;
+                pmtudTim = 0;
+                return false;
+            }
+            pmtudMin = bits.str2num(cmd.word());
+            pmtudMax = bits.str2num(cmd.word());
+            pmtudTim = bits.str2num(cmd.word());
+            if (pmtudMin < pmtudMax) {
+                return false;
+            }
+            pmtudMin = 0;
+            pmtudMax = 0;
+            pmtudTim = 0;
             return false;
         }
         if (s.equals("segrout")) {

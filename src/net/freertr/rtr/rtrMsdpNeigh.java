@@ -11,9 +11,11 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdMcast;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.pack.packHolder;
+import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
+import net.freertr.prt.prtPmtud;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -41,6 +43,26 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
      * source interface
      */
     public cfgIfc srcIface;
+
+    /**
+     * pmtud min
+     */
+    public int pmtudMin;
+
+    /**
+     * pmtud max
+     */
+    public int pmtudMax;
+
+    /**
+     * pmtud timeout
+     */
+    public int pmtudTim;
+
+    /**
+     * pmtud result
+     */
+    public int pmtudRes;
 
     /**
      * keep alive
@@ -227,6 +249,22 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         pipe.setTime(holdTimer);
         pipe.setReady();
         pipe.wait4ready(holdTimer);
+        if (pmtudTim > 0) {
+            logger.warn("testing pmtud to " + peer + " from " + usedIfc.addr);
+            pipeLine pl = new pipeLine(65536, true);
+            prtPmtud pm = new prtPmtud(pl.getSide(), peer, parent.fwdCore, usedIfc.addr);
+            pm.min = pmtudMin;
+            pm.max = pmtudMax;
+            pm.timeout = pmtudTim;
+            int[] res = pm.doer();
+            if (res == null) {
+                logger.warn("pmtud failed to " + peer);
+                pipeDiscard.logLines("pmtud failure to " + peer, pl.getSide(), true, null);
+                return false;
+            }
+            logger.warn("pmtud measured " + pm.last + " bytes to " + peer);
+            pmtudRes = pm.last;
+        }
         if (pipe.isReady() != 3) {
             closeNow();
             return true;
@@ -398,6 +436,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
             l.add(beg + a + "update-source " + srcIface.name);
         }
         cmds.cfgLine(l, passwd == null, beg, a + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
+        cmds.cfgLine(l, pmtudTim < 0, beg, a + "pmtud", pmtudMin + " " + pmtudMax + " " + pmtudTim);
         l.add(beg + a + "timer " + keepAlive + " " + holdTimer + " " + freshTimer + " " + flushTimer);
         cmds.cfgLine(l, !shutdown, beg, a + "shutdown", "");
         cmds.cfgLine(l, !bfdTrigger, beg, a + "bfd", "");

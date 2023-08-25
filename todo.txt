@@ -5,7 +5,6 @@ serv http InvocationTargetException to have auto logging in the traceback
 
 sho cdp/lldp int
 
-serves to have access-aaa
 
 
 
@@ -140,7 +139,6 @@ server security to stick to the good protocols
 
 server security to support bgp bmp mrt
 
-serevr security maximum pendings as access-security
 
 bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version
 
@@ -252,6 +250,8 @@ server http / host * ptmud
 lsrp / pvrp pmtud
 bgp/msdp: neigh x.x.x.x pmtud
 test access-list <acl> <src> <trg>
+serevr security maximum pendings as access-security
+servers to have access-aaa
 sho bgp * auto-summarize
 config committed with check for saved and backup config
 

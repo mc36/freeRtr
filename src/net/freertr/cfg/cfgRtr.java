@@ -388,6 +388,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* tunenc",
         "router bgp[46] .*! no (template|neighbor) .* linkstate",
         "router bgp[46] .*! no (template|neighbor) .* attribset",
+        "router bgp[46] .*! no (template|neighbor) .* pmtud",
         "router bgp[46] .*! no (template|neighbor) .* segrout",
         "router bgp[46] .*! no (template|neighbor) .* bier",
         "router bgp[46] .*! no (template|neighbor) .* egress-engineering",

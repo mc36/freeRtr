@@ -8,7 +8,6 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
-import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
 import net.freertr.auth.authGeneric;
@@ -395,10 +394,6 @@ public class userPacket {
                     proto = 6;
                     continue;
                 }
-            }
-            if (vrf == null) {
-                cmd.error("vrf not specified");
-                return null;
             }
             userTerminal trm = new userTerminal(cmd.pipe);
             addrIP trg = trm.resolveAddr(rem, proto);

@@ -211,6 +211,10 @@ public class rtrMsdp extends ipRtr {
         l.add(null, "5 6           <num>               hold time in ms");
         l.add(null, "6 7             <num>             refresh time in ms");
         l.add(null, "7 .               <num>           flush time in ms");
+        l.add(null, "3  4       pmtud                  test pmtud before accepting");
+        l.add(null, "4  5         <num>                min mtu");
+        l.add(null, "5  6           <num>              max mtu");
+        l.add(null, "6  .             <num>            timeout per round");
         l.add(null, "3 .       shutdown                connection disabled for this peer");
         l.add(null, "3 .       bfd                     enable bfd triggered down");
     }
@@ -317,6 +321,24 @@ public class rtrMsdp extends ipRtr {
             ntry.holdTimer = bits.str2num(cmd.word());
             ntry.freshTimer = bits.str2num(cmd.word());
             ntry.flushTimer = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("pmtud")) {
+            if (negated) {
+                ntry.pmtudMin = 0;
+                ntry.pmtudMax = 0;
+                ntry.pmtudTim = 0;
+                return false;
+            }
+            ntry.pmtudMin = bits.str2num(cmd.word());
+            ntry.pmtudMax = bits.str2num(cmd.word());
+            ntry.pmtudTim = bits.str2num(cmd.word());
+            if (ntry.pmtudMin < ntry.pmtudMax) {
+                return false;
+            }
+            ntry.pmtudMin = 0;
+            ntry.pmtudMax = 0;
+            ntry.pmtudTim = 0;
             return false;
         }
         if (s.equals("shutdown")) {

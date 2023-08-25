@@ -26,6 +26,9 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
+import net.freertr.pipe.pipeDiscard;
+import net.freertr.pipe.pipeLine;
+import net.freertr.prt.prtPmtud;
 import net.freertr.util.version;
 
 /**
@@ -94,6 +97,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * buffer full pauses
      */
     public int buffFull = 0;
+    
+    /**
+     * pmtud result
+     */
+    public int pmtudRes;
 
     /**
      * learned unicast prefixes
@@ -1311,6 +1319,22 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accLnks = new tabRoute<addrIP>("rx");
         neigh.accMvpn = new tabRoute<addrIP>("rx");
         neigh.accMvpo = new tabRoute<addrIP>("rx");
+        if (neigh.pmtudTim > 0) {
+            logger.warn("testing pmtud to " + neigh.peerAddr + " from " + neigh.localAddr);
+            pipeLine pl = new pipeLine(65536, true);
+            prtPmtud pm = new prtPmtud(pl.getSide(), neigh.peerAddr, neigh.lower.fwdCore, neigh.localAddr);
+            pm.min = neigh.pmtudMin;
+            pm.max = neigh.pmtudMax;
+            pm.timeout = neigh.pmtudTim;
+            int[] res = pm.doer();
+            if (res == null) {
+                logger.warn("pmtud failed to " + neigh.peerAddr);
+                pipeDiscard.logLines("pmtud failure to " + neigh.peerAddr, pl.getSide(), true, null);
+                return;
+            }
+            logger.warn("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);
+            pmtudRes = pm.last;
+        }
         if (neigh.dampenPfxs != null) {
             neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
         }
