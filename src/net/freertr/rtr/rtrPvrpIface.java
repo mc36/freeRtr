@@ -44,6 +44,21 @@ import net.freertr.util.state;
 public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServP {
 
     /**
+     * pmtud min
+     */
+    public int pmtudMin;
+
+    /**
+     * pmtud max
+     */
+    public int pmtudMax;
+
+    /**
+     * pmtud timeout
+     */
+    public int pmtudTim;
+
+    /**
      * hello interval
      */
     public int helloTimer = 5000;
@@ -422,6 +437,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "metric-out " + metricOut);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
+        l.add(cmds.tabulator + beg + "pmtud " + pmtudMin + " " + pmtudMax + " " + pmtudTim);
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:
@@ -517,6 +533,10 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "5 .           <num>                     time in ms");
         l.add(null, "4 5         dead-time                   time before neighbor down");
         l.add(null, "5 .           <num>                     time in ms");
+        l.add(null, "4 5         pmtud                       test pmtud before accepting");
+        l.add(null, "5 6           <num>                     min mtu");
+        l.add(null, "6 7             <num>                   max mtu");
+        l.add(null, "7  .              <num>                 timeout per round");
         l.add(null, "4 5         route-map-in                process prefixes in ingress updates");
         l.add(null, "5 .           <name:rm>                 name of route map");
         l.add(null, "4 5         route-map-out               process prefixes in egress updates");

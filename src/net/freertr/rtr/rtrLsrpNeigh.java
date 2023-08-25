@@ -12,9 +12,11 @@ import net.freertr.clnt.clntPing;
 import net.freertr.clnt.clntTwamp;
 import net.freertr.enc.encBase64;
 import net.freertr.ip.ipMpls;
+import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
+import net.freertr.prt.prtPmtud;
 import net.freertr.sec.secClient;
 import net.freertr.sec.secServer;
 import net.freertr.serv.servGeneric;
@@ -35,6 +37,11 @@ import net.freertr.util.notifier;
  * @author matecsaba
  */
 public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNeigh> {
+
+    /**
+     * pmtud result
+     */
+    public int pmtudRes;
 
     /**
      * transport address of peer
@@ -413,6 +420,24 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             conn.lineRx = pipeSide.modTyp.modeCRtryLF;
             conn.lineTx = pipeSide.modTyp.modeCRLF;
             conn.wait4ready(iface.deadTimer);
+        }
+        if (iface.pmtudTim > 1) {
+            logger.warn("testing pmtud to " + peer + " from " + iface.iface.addr);
+            pipeLine pl = new pipeLine(65536, true);
+            prtPmtud pm = new prtPmtud(pl.getSide(), peer, lower.fwdCore, peer);
+            pm.min = iface.pmtudMin;
+            pm.max = iface.pmtudMax;
+            pm.timeout = iface.pmtudTim;
+            int[] res = pm.doer();
+            if (res == null) {
+                logger.warn("pmtud failed to " + peer);
+                pipeDiscard.logLines("pmtud failure to " + peer, pl.getSide(), true, null);
+                sendErr("notPingable");
+                return;
+            }
+            logger.warn("pmtud measured " + pm.last + " bytes to " + peer);
+            pmtudRes = pm.last;
+            return;
         }
         if (!need2run) {
             sendErr("notNeeded");

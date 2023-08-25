@@ -1330,6 +1330,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (res == null) {
                 logger.warn("pmtud failed to " + neigh.peerAddr);
                 pipeDiscard.logLines("pmtud failure to " + neigh.peerAddr, pl.getSide(), true, null);
+                sendNotify(1, 2);
                 return;
             }
             logger.warn("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);

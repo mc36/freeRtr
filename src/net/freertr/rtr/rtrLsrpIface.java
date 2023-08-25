@@ -36,6 +36,21 @@ import net.freertr.util.state;
 public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServP {
 
     /**
+     * pmtud min
+     */
+    public int pmtudMin;
+
+    /**
+     * pmtud max
+     */
+    public int pmtudMax;
+
+    /**
+     * pmtud timeout
+     */
+    public int pmtudTim;
+
+    /**
      * hello interval
      */
     public int helloTimer = 5000;
@@ -372,6 +387,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "srlg " + srlg);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
+        l.add(cmds.tabulator + beg + "pmtud " + pmtudMin + " " + pmtudMax + " " + pmtudTim);
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:
@@ -459,6 +475,10 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "5 .           <num>                     time in ms");
         l.add(null, "4 5         dead-time                   time before neighbor down");
         l.add(null, "5 .           <num>                     time in ms");
+        l.add(null, "4 5         pmtud                       test pmtud before accepting");
+        l.add(null, "5 6           <num>                     min mtu");
+        l.add(null, "6 7             <num>                   max mtu");
+        l.add(null, "7  .              <num>                 timeout per round");
         l.add(null, "4 5         dynamic-metric              dynamic peer metric");
         l.add(null, "5 .           forbid                    forbid peer measurement");
         l.add(null, "5 6           mode                      measurement mode");
@@ -705,6 +725,18 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             helloTimer = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("pmtud")) {
+            pmtudMin = bits.str2num(cmd.word());
+            pmtudMax = bits.str2num(cmd.word());
+            pmtudTim = bits.str2num(cmd.word());
+            if (pmtudMin < pmtudMax) {
+                return;
+            }
+            pmtudMin = 0;
+            pmtudMax = 0;
+            pmtudTim = 0;
+            return;
+        }
         if (a.equals("dead-time")) {
             deadTimer = bits.str2num(cmd.word());
             return;
@@ -737,6 +769,12 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
+        if (a.equals("pmtud")) {
+            pmtudMin = 0;
+            pmtudMax = 0;
+            pmtudTim = 0;
+            return;
+        }
         if (a.equals("metric")) {
             metric = 10;
             lower.todo.set(0);

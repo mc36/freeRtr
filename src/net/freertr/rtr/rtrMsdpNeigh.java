@@ -260,6 +260,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
             if (res == null) {
                 logger.warn("pmtud failed to " + peer);
                 pipeDiscard.logLines("pmtud failure to " + peer, pl.getSide(), true, null);
+                pipe.setClose();
                 return false;
             }
             logger.warn("pmtud measured " + pm.last + " bytes to " + peer);
