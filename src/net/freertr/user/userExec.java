@@ -1702,6 +1702,7 @@ public class userExec {
         hl.add(null, "2 3      <host>                       name of host to query");
         hl.add(null, "3 3,.      <text>                     query string");
         hl.add(null, "1 2    game                           play games or watch screen savers");
+        hl.add(null, "2 .      tree                         take test");
         hl.add(null, "2 .      color                        take test");
         hl.add(null, "2 .      ascii                        take test");
         hl.add(null, "2 .      keys                         take test");

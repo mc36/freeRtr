@@ -44,6 +44,50 @@ public class userGame {
     }
 
     /**
+     * tree
+     */
+    public void doTree() {
+        int[] god = new int[6];
+        god[0] = userScreen.colBrCyan;
+        god[1] = userScreen.colBrWhite;
+        god[2] = userScreen.colBrYellow;
+        god[3] = userScreen.colBrGreen;
+        god[4] = userScreen.colBrBlue;
+        god[5] = userScreen.colBrRed;
+        int gods = god.length;
+        List<String> sec = version.shSecret(5);
+        console.putCls();
+        for (int o = 0; o < sec.size(); o++) {
+            String s = sec.get(o);
+            byte[] b = s.getBytes();
+            for (int i = 0; i < b.length; i++) {
+                int ch = b[i];
+                int cl = userScreen.colBrGreen;
+                char chr = (char) ch;
+                switch (chr) {
+                    case 'o':
+                    case '0':
+                    case '@':
+                    case 'O':
+                    case '3':
+                        cl = god[bits.random(0, gods)];
+                        break;
+                    default:
+                        break;
+                }
+                console.putInt(i, o, false, cl, ch);
+            }
+        }
+        console.refresh();
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            bits.sleep(1000);
+        }
+    }
+
+    /**
      * palette test
      */
     public void doPalette() {
@@ -464,6 +508,10 @@ public class userGame {
         }
         if (a.equals("clear")) {
             userScreen.sendTit(console.pipe, cfgAll.hostName);
+            return;
+        }
+        if (a.equals("tree")) {
+            doTree();
             return;
         }
         if (a.equals("color")) {
