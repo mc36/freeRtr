@@ -1,3 +1,7 @@
+tests for bgp/msdp: neigh x.x.x.x pmtud
+
+lsrp / pvrp pmtud
+
 ioam as https://www.rfc-editor.org/rfc/rfc9452.html
 
 
@@ -247,8 +251,6 @@ server http / host * user-agent matcher with redirect
 server http / host * searchbar
 server smtp / ptmud
 server http / host * ptmud
-lsrp / pvrp pmtud
-bgp/msdp: neigh x.x.x.x pmtud
 test access-list <acl> <src> <trg>
 serevr security maximum pendings as access-security
 servers to have access-aaa

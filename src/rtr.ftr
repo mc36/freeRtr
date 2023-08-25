@@ -3210,10 +3210,11 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
+todo: tests for bgp/msdp: neigh x.x.x.x pmtud
+todo: lsrp / pvrp pmtud
 todo: ioam as https://www.rfc-editor.org/rfc/rfc9452.html
 todo: serv http InvocationTargetException to have auto logging in the traceback
 todo: sho cdp/lldp int
-todo: serves to have access-aaa
 todo: flash ext-delete also to commander
 todo: commander to have selection
 todo: commander to get away the cursor
@@ -3263,7 +3264,6 @@ todo: server security to have settable tls version from client knob first
 todo: server security to log the transactions
 todo: server security to stick to the good protocols
 todo: server security to support bgp bmp mrt
-todo: serevr security maximum pendings as access-security
 todo: bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version
 todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 todo: show whowas from bmp mrt archive
@@ -3334,9 +3334,9 @@ todo: server http / host * user-agent matcher with redirect
 todo: server http / host * searchbar
 todo: server smtp / ptmud
 todo: server http / host * ptmud
-todo: lsrp / pvrp pmtud
-todo: bgp/msdp: neigh x.x.x.x pmtud
 todo: test access-list <acl> <src> <trg>
+todo: serevr security maximum pendings as access-security
+todo: servers to have access-aaa
 todo: sho bgp * auto-summarize
 todo: config committed with check for saved and backup config
 todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm

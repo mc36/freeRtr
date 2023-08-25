@@ -97,7 +97,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * buffer full pauses
      */
     public int buffFull = 0;
-    
+
     /**
      * pmtud result
      */
