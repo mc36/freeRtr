@@ -9,6 +9,7 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.pipe.pipeShell;
 import net.freertr.serv.servOpenflow;
 import net.freertr.serv.servP4lang;
+import net.freertr.user.userHelping;
 
 /**
  * version utils
@@ -211,7 +212,24 @@ public class version {
         res.add("gear");
         res.add("nasa");
         res.add("xxxx-cotton");
+        res.add("solder");
+        res.add("xxxxx-troop");
+        res.add("xxxxxx-boobs");
         return res;
+    }
+
+    /**
+     * generate help list
+     *
+     * @param hl help to update
+     * @param beg beginning
+     */
+    public static void genSecHelp(userHelping hl, int beg) {
+        List<String> l = getSecList();
+        for (int i = 0; i < l.size(); i++) {
+            String a = l.get(i);
+            hl.add(null, beg + " .  " + a + "   sh0w m30www s0m30www " + a);
+        }
     }
 
     /**
@@ -553,6 +571,7 @@ public class version {
                 l.add("        XX  000000@@@@0000  0000  00OO  ");
                 break;
             case 17:
+                l.add("... g0d sav3 th3 qu33n ...");
                 l.add("                                00@@@@@@@@@@@@~~~");
                 l.add("    88888b.  8888b. .d8888 @@8008b.");
                 l.add("    888  88b     88 88K@@@@ 00   88b ");
@@ -573,6 +592,18 @@ public class version {
                 break;
             case 18:
                 // cotton
+                break;
+            case 19:
+                /// gray cat
+                break;
+            case 20:
+                /// solder
+                break;
+            case 21:
+                /// troop
+                break;
+            case 22:
+                // boobs
                 break;
             default:
                 l.add("");
