@@ -205,6 +205,7 @@ public class version {
         res.add("disk");
         res.add("tank");
         res.add("revolver");
+        res.add("riffle");
         res.add("knife");
         res.add("xx-virus");
         res.add("girl");
@@ -571,13 +572,15 @@ public class version {
                 l.add("        XX  000000@@@@0000  0000  00OO  ");
                 break;
             case 17:
-                l.add("... g0d sav3 th3 qu33n ...");
-                l.add("                                00@@@@@@@@@@@@~~~");
-                l.add("    88888b.  8888b. .d8888 @@8008b.");
-                l.add("    888  88b     88 88K@@@@ 00   88b ");
-                l.add("    888  888.d888888 Y888800.d888888 ");
-                l.add("    888@@888888  888    0088 88  888 ");
-                l.add("..@@888  888 Y888888 88888P' Y888888 ");
+                l.add("... g0d sav3 th3 qu33n --- http://hacknasa.mp.ls/ ...");
+                l.add("                                    00@@@@@@@@@@@@~~~");
+                l.add("        88888b.  8888b. .d8888 @@8008b.");
+                l.add("        888  88b     88 88K@@@@ 00   88b ");
+                l.add("        888  888.d888888 Y888800.d888888 ");
+                l.add("        888@@888888  888    0088 88  888 ");
+                l.add("...@@@@@888  888 Y888888 88888P' Y888888 ");
+                l.add("                        00");
+                l.add("                      00");
                 l.add("                    00");
                 l.add("                  00");
                 l.add("                00");
@@ -589,6 +592,7 @@ public class version {
                 l.add("    00");
                 l.add("  00");
                 l.add("00");
+                l.add("~");
                 break;
             case 18:
                 // cotton
