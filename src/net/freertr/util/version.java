@@ -259,7 +259,7 @@ public class version {
                 l.add("          /_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\");
                 l.add("         /_/o/_/_/@/_/_/o/_/0/_\\");
                 l.add("            [___]");
-                l.add("b3ar pspsps sh0w mor3 r3sp3ct y0urs3lv3s");
+                l.add("b3ar pspsps sh0w m0r3 r3sp3ct y0urs3lv3s");
                 break;
             case 6:
                 l.add("      /OO\\");
