@@ -295,6 +295,26 @@ public class userShow {
                 rdr.putStrArr(version.shSecret(12));
                 return null;
             }
+            if (a.equals("virus")) {
+                rdr.putStrArr(version.shSecret(13));
+                return null;
+            }
+            if (a.equals("girl")) {
+                rdr.putStrArr(version.shSecret(14));
+                return null;
+            }
+            if (a.equals("bear")) {
+                rdr.putStrArr(version.shSecret(15));
+                return null;
+            }
+            if (a.equals("gear")) {
+                rdr.putStrArr(version.shSecret(16));
+                return null;
+            }
+            if (a.equals("nasa")) {
+                rdr.putStrArr(version.shSecret(17));
+                return null;
+            }
             if (a.equals("time")) {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 List<String> l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());

@@ -148,6 +148,46 @@ public class userGame {
     }
 
     /**
+     * virus
+     */
+    public void doVirus() {
+        List<String> sec = version.shSecret(13);
+        colorDrawer(sec);
+    }
+
+    /**
+     * girl
+     */
+    public void doGirl() {
+        List<String> sec = version.shSecret(14);
+        colorDrawer(sec);
+    }
+
+    /**
+     * bear
+     */
+    public void doBear() {
+        List<String> sec = version.shSecret(15);
+        colorDrawer(sec);
+    }
+
+    /**
+     * gear
+     */
+    public void doGear() {
+        List<String> sec = version.shSecret(15);
+        colorDrawer(sec);
+    }
+
+    /**
+     * nasa
+     */
+    public void doNasa() {
+        List<String> sec = version.shSecret(17);
+        colorDrawer(sec);
+    }
+
+    /**
      * palette test
      */
     public void doPalette() {
@@ -588,6 +628,34 @@ public class userGame {
         }
         if (a.equals("revolver")) {
             doRevolver();
+            return;
+        }
+        if (a.equals("riffle")) {
+            doRiffle();
+            return;
+        }
+        if (a.equals("knife")) {
+            doKnife();
+            return;
+        }
+        if (a.equals("virus")) {
+            doVirus();
+            return;
+        }
+        if (a.equals("girl")) {
+            doGirl();
+            return;
+        }
+        if (a.equals("bear")) {
+            doBear();
+            return;
+        }
+        if (a.equals("gear")) {
+            doGear();
+            return;
+        }
+        if (a.equals("nasa")) {
+            doNasa();
             return;
         }
         if (a.equals("color")) {

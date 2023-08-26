@@ -1032,6 +1032,11 @@ public class userExec {
         hl.add(null, "3 .        revolver              show some revolver");
         hl.add(null, "3 .        riffle                show some riffle");
         hl.add(null, "3 .        knife                 show some knife");
+        hl.add(null, "3 .        virus                 show some virus");
+        hl.add(null, "3 .        girl                  show some girl");
+        hl.add(null, "3 .        bear                  show some bear");
+        hl.add(null, "3 .        gear                  show some gear");
+        hl.add(null, "3 .        nasa                  show some nasa");
         hl.add(null, "3 .        tank                  show some tank");
         hl.add(null, "3 .        duck                  show some duck");
         hl.add(null, "3 .        key                   show some key");
@@ -1712,6 +1717,13 @@ public class userExec {
         hl.add(null, "2 .      dick                         show some dick");
         hl.add(null, "2 .      disk                         show some disk");
         hl.add(null, "2 .      revolver                     show some revolver");
+        hl.add(null, "2 .      riffle                       show some riffle");
+        hl.add(null, "2 .      knife                        show some knife");
+        hl.add(null, "2 .      virus                        show some virus");
+        hl.add(null, "2 .      girl                         show some girl");
+        hl.add(null, "2 .      bear                         show some bear");
+        hl.add(null, "2 .      gear                         show some gear");
+        hl.add(null, "2 .      nasa                         show some nasa");
         hl.add(null, "2 .      tank                         show some tank");
         hl.add(null, "2 .      duck                         show some duck");
         hl.add(null, "2 .      tree                         take test");
