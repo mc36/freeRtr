@@ -247,80 +247,14 @@ public class userShow {
                 rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
-            if (a.equals("key")) {
-                rdr.putStrArr(version.shSecret(1));
-                return null;
-            }
-            if (a.equals("love")) {
-                rdr.putStrArr(version.shSecret(2));
-                return null;
-            }
-            if (a.equals("bug")) {
-                rdr.putStrArr(version.shSecret(3));
-                return null;
-            }
-            if (a.equals("review")) {
-                rdr.putStrArr(version.shSecret(4));
-                return null;
-            }
-            if (a.equals("tree")) {
-                rdr.putStrArr(version.shSecret(5));
-                return null;
-            }
-            if (a.equals("dick")) {
-                rdr.putStrArr(version.shSecret(6));
-                return null;
-            }
-            if (a.equals("duck")) {
-                rdr.putStrArr(version.shSecret(7));
-                return null;
-            }
-            if (a.equals("disk")) {
-                rdr.putStrArr(version.shSecret(8));
-                return null;
-            }
-            if (a.equals("tank")) {
-                rdr.putStrArr(version.shSecret(9));
-                return null;
-            }
-            if (a.equals("revolver")) {
-                rdr.putStrArr(version.shSecret(10));
-                return null;
-            }
-            if (a.equals("riffle")) {
-                rdr.putStrArr(version.shSecret(11));
-                return null;
-            }
-            if (a.equals("knife")) {
-                rdr.putStrArr(version.shSecret(12));
-                return null;
-            }
-            if (a.equals("virus")) {
-                rdr.putStrArr(version.shSecret(13));
-                return null;
-            }
-            if (a.equals("girl")) {
-                rdr.putStrArr(version.shSecret(14));
-                return null;
-            }
-            if (a.equals("bear")) {
-                rdr.putStrArr(version.shSecret(15));
-                return null;
-            }
-            if (a.equals("gear")) {
-                rdr.putStrArr(version.shSecret(16));
-                return null;
-            }
-            if (a.equals("nasa")) {
-                rdr.putStrArr(version.shSecret(17));
-                return null;
-            }
             if (a.equals("time")) {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 List<String> l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
                 rdr.putStrArr(l);
                 return null;
             }
+            int i = version.findSecret(a);
+            rdr.putStrArr(version.shSecret(i));
             return null;
         }
         if (a.equals("users")) {

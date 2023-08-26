@@ -43,14 +43,7 @@ public class userGame {
         console.refresh();
     }
 
-    private void colorDrawer(List<String> sec) {
-        int[] god = new int[6];
-        god[0] = userScreen.colBrCyan;
-        god[1] = userScreen.colBrWhite;
-        god[2] = userScreen.colBrYellow;
-        god[3] = userScreen.colBrGreen;
-        god[4] = userScreen.colBrBlue;
-        god[5] = userScreen.colBrRed;
+    private void colorDrawer(int[] god, List<String> sec) {
         int gods = god.length;
         console.putCls();
         for (int o = 0; o < sec.size(); o++) {
@@ -81,110 +74,6 @@ public class userGame {
             }
             bits.sleep(1000);
         }
-    }
-
-    /**
-     * tree
-     */
-    public void doTree() {
-        List<String> sec = version.shSecret(5);
-        colorDrawer(sec);
-    }
-
-    /**
-     * dick
-     */
-    public void doDick() {
-        List<String> sec = version.shSecret(6);
-        colorDrawer(sec);
-    }
-
-    /**
-     * dick
-     */
-    public void doDuck() {
-        List<String> sec = version.shSecret(7);
-        colorDrawer(sec);
-    }
-
-    /**
-     * disk
-     */
-    public void doDisk() {
-        List<String> sec = version.shSecret(8);
-        colorDrawer(sec);
-    }
-
-    /**
-     * tank
-     */
-    public void doTank() {
-        List<String> sec = version.shSecret(9);
-        colorDrawer(sec);
-    }
-
-    /**
-     * tank
-     */
-    public void doRevolver() {
-        List<String> sec = version.shSecret(10);
-        colorDrawer(sec);
-    }
-
-    /**
-     * riffle
-     */
-    public void doRiffle() {
-        List<String> sec = version.shSecret(11);
-        colorDrawer(sec);
-    }
-
-    /**
-     * knife
-     */
-    public void doKnife() {
-        List<String> sec = version.shSecret(12);
-        colorDrawer(sec);
-    }
-
-    /**
-     * virus
-     */
-    public void doVirus() {
-        List<String> sec = version.shSecret(13);
-        colorDrawer(sec);
-    }
-
-    /**
-     * girl
-     */
-    public void doGirl() {
-        List<String> sec = version.shSecret(14);
-        colorDrawer(sec);
-    }
-
-    /**
-     * bear
-     */
-    public void doBear() {
-        List<String> sec = version.shSecret(15);
-        colorDrawer(sec);
-    }
-
-    /**
-     * gear
-     */
-    public void doGear() {
-        List<String> sec = version.shSecret(15);
-        colorDrawer(sec);
-    }
-
-    /**
-     * nasa
-     */
-    public void doNasa() {
-        List<String> sec = version.shSecret(17);
-        colorDrawer(sec);
     }
 
     /**
@@ -610,52 +499,17 @@ public class userGame {
             userScreen.sendTit(console.pipe, cfgAll.hostName);
             return;
         }
-        if (a.equals("tree")) {
-            doTree();
-            return;
-        }
-        if (a.equals("dick")) {
-            doDick();
-            return;
-        }
-        if (a.equals("duck")) {
-            doDuck();
-            return;
-        }
-        if (a.equals("tank")) {
-            doTank();
-            return;
-        }
-        if (a.equals("revolver")) {
-            doRevolver();
-            return;
-        }
-        if (a.equals("riffle")) {
-            doRiffle();
-            return;
-        }
-        if (a.equals("knife")) {
-            doKnife();
-            return;
-        }
-        if (a.equals("virus")) {
-            doVirus();
-            return;
-        }
-        if (a.equals("girl")) {
-            doGirl();
-            return;
-        }
-        if (a.equals("bear")) {
-            doBear();
-            return;
-        }
-        if (a.equals("gear")) {
-            doGear();
-            return;
-        }
-        if (a.equals("nasa")) {
-            doNasa();
+        int i = version.findSecret(a);
+        if (i >= 0) {
+            List<String> sec = version.shSecret(i);
+            int[] god = new int[6];
+            god[0] = userScreen.colBrCyan;
+            god[1] = userScreen.colBrWhite;
+            god[2] = userScreen.colBrYellow;
+            god[3] = userScreen.colBrGreen;
+            god[4] = userScreen.colBrBlue;
+            god[5] = userScreen.colBrRed;
+            colorDrawer(god, sec);
             return;
         }
         if (a.equals("color")) {

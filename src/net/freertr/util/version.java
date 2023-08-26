@@ -175,7 +175,7 @@ public class version {
             sa.add(bits.time2str(cfgAll.timeZoneName, getFileDate(), 3));
         }
         if ((head & 0x800) != 0) {
-            sa.add(bits.time2str(cfgAll.timeZoneName, version.getFileDate(), 4));
+            sa.add(bits.time2str(cfgAll.timeZoneName, getFileDate(), 4));
         }
         if ((head & 0x1000) != 0) {
             sa.add(usrAgnt);
@@ -187,6 +187,51 @@ public class version {
     }
 
     /**
+     * get secret list
+     *
+     * @return list of secrets
+     */
+    public static List<String> getSecList() {
+        List<String> res = new ArrayList<String>();
+        res.add("l3n4");
+        res.add("key");
+        res.add("love");
+        res.add("bug");
+        res.add("review");
+        res.add("x-tree");
+        res.add("xxx-dick");
+        res.add("duck");
+        res.add("disk");
+        res.add("tank");
+        res.add("revolver");
+        res.add("knife");
+        res.add("xx-virus");
+        res.add("girl");
+        res.add("bear");
+        res.add("gear");
+        res.add("nasa");
+        res.add("xxxx-cotton");
+        return res;
+    }
+
+    /**
+     * find in secret list
+     *
+     * @param a string to find
+     * @return found, -1 if nothing
+     */
+    public static int findSecret(String a) {
+        List<String> lst = getSecList();
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            if (s.equals(a)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * get show secret text
      *
      * @param typ type of secret
@@ -195,6 +240,10 @@ public class version {
     public static List<String> shSecret(int typ) {
         ArrayList<String> l = new ArrayList<String>();
         switch (typ) {
+            case 0:
+                l.add("");
+                l.add(" ... g00 l3n4 g3nZ 1T 0.000v ...");
+                break;
             case 1:
                 l.add("");
                 l.add("   /~~~\\");
@@ -382,8 +431,8 @@ public class version {
                 l.add(" r1ffl3 ");
                 l.add(" ,________________________________   ");
                 l.add("|__________,----------._ [____]  \"\"-,__  __...-----===\"");
-                l.add("        (_(||||||||||||)___________/   \"\"             |");
-                l.add("           `----------' Krogg98[ ))\"-,                |");
+                l.add("        (_(||||@@@@||||)___________/   \"\"             |");
+                l.add("           `----------' Kr0gg@@[ ))\"-,                |");
                 l.add("                                \"\"    `,  _,--...___  |");
                 l.add("                                        `/          \"\"\"");
                 break;
@@ -395,20 +444,20 @@ public class version {
                 l.add("       |---|");
                 l.add("   .---^ - ^---.");
                 l.add("   :___________:");
-                l.add("      |  |//|");
-                l.add("      |  |//|");
-                l.add("      |  |//|");
-                l.add("      |  |//|");
-                l.add("      |  |//|");
-                l.add("      |  |//|");
-                l.add("      |  |.-|");
-                l.add("      |.-'**|");
-                l.add("       \\***/");
-                l.add("        \\*/");
+                l.add("      | 0|//|");
+                l.add("      |0 |//|");
+                l.add("      |@@|//|");
+                l.add("      |@@|//|");
+                l.add("      |@@|//|");
+                l.add("      |0|//|");
+                l.add("      |0 |.-|");
+                l.add("      |0-'@@|");
+                l.add("       \\@@/");
+                l.add("        \\@/");
                 l.add("         V");
                 break;
             case 13:
-                l.add("");
+                l.add("     ... th3 n3w m30wcr0n var1ant ...");
                 l.add("                                        XX ");
                 l.add("     XX   XX    XX                    XXXXX ");
                 l.add("     XX   XX   XXX                   XX   XX");
@@ -522,6 +571,13 @@ public class version {
                 l.add("  00");
                 l.add("00");
                 break;
+            case 18:
+                // cotton
+                break;
+            default:
+                l.add("");
+                l.add("   ... s0rr|/ b\\/tt th1s 0n3 1s _n0t_ _y33t_ ass1gnm3nt3d and when u enc0unt3t3r3d a r3al bug ...");
+                break;
         }
         return l;
     }
@@ -615,7 +671,7 @@ public class version {
      * @return date of jar
      */
     public static long getFileDate() {
-        return new File(version.getFileName()).lastModified();
+        return new File(getFileName()).lastModified();
     }
 
     /**
