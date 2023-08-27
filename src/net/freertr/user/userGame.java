@@ -512,6 +512,17 @@ public class userGame {
             colorDrawer(god, sec);
             return;
         }
+        if (a.equals("ansi")) {
+            userFlash.ansiArt(cmd.getRemaining(), console);
+            console.refresh();
+            for (;;) {
+                if (console.keyPress()) {
+                    break;
+                }
+                bits.sleep(1000);
+            }
+            return;
+        }
         if (a.equals("color")) {
             doPalette();
             return;

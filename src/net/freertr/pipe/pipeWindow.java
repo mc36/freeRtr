@@ -23,6 +23,12 @@ import net.freertr.util.logger;
  */
 public class pipeWindow extends JPanel {
 
+    /**
+     * create an instance
+     */
+    public pipeWindow() {
+    }
+
     private static final long serialVersionUID = 10251979;
 
     /**
@@ -40,6 +46,72 @@ public class pipeWindow extends JPanel {
      */
     protected JFrame win;
 
+    public static void imageAnsi(String fn, pipeWindow ps) {
+        /////
+    }
+
+    /**
+     * convert image to ansi
+     *
+     * @param fil file to convert
+     * @param pw image to draw to
+     * @return converted ansi
+     */
+    public static void imageAnsi(File fil, pipeWindow ps) {
+        /*
+        try {
+            maxX = (img1.getWidth() / maxX) + 1;
+            maxY = (img1.getHeight() / maxY) + 1;
+            int tmp = maxX < maxY ? maxY : maxX;
+            BufferedImage img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_USHORT_GRAY);
+            Graphics2D g = img2.createGraphics();
+            g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
+            g.dispose();
+            g.setComposite(AlphaComposite.Src);
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int[][] img3 = new int[img2.getHeight()][img2.getWidth()];
+            tmp = 0;
+            for (int y = 0; y < img3.length; y++) {
+                for (int x = 0; x < img3[0].length; x++) {
+                    int v = img2.getRGB(x, y);
+                    if (v < 0) {
+                        v = -v;
+                    }
+                    img3[y][x] = v;
+                    if (tmp < v) {
+                        tmp = v;
+                    }
+                }
+            }
+            img2 = null;
+            List<String> txt = new ArrayList<String>();
+            for (int y = 0; y < img3.length; y++) {
+                String a = "";
+                for (int x = 0; x < img3[0].length; x++) {
+                    int v = (img3[y][x] * (chrs.length - 1)) / tmp;
+                    a += chrs[v];
+                }
+                txt.add(a);
+            }
+
+        } catch (Exception e) {
+            logger.traceback(e, "error converting");
+        }
+        */
+    }
+
+    /**
+     * get keyboard listener
+     *
+     * @param pipe pipe to use
+     * @return keyboard listener
+     */
+    public static KeyListener getKeyLstnr(pipeSide pipe) {
+        return new pipeWindowKey(pipe);
+    }
+
     /**
      * create window
      *
@@ -55,7 +127,7 @@ public class pipeWindow extends JPanel {
         try {
             win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
         } catch (Exception e) {
-            logger.traceback(e);
+            logger.traceback(e, "while converting");
             return null;
         }
         win.startWindow();
@@ -65,16 +137,6 @@ public class pipeWindow extends JPanel {
         ps.setTime(0);
         ps.setReady();
         return ps;
-    }
-
-    /**
-     * get keyboard listener
-     *
-     * @param pipe pipe to use
-     * @return keyboard listener
-     */
-    public static KeyListener getKeyLstnr(pipeSide pipe) {
-        return new pipeWindowKey(pipe);
     }
 
     /**
@@ -91,6 +153,7 @@ public class pipeWindow extends JPanel {
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
+            logger.traceback(e, "while converting");
         }
         if (img1 == null) {
             return new ArrayList<String>();
@@ -191,6 +254,11 @@ public class pipeWindow extends JPanel {
         return Color.BLACK;
     }
 
+    /**
+     * paint once
+     *
+     * @param g graphics to paint
+     */
     public void paint(Graphics g) {
         updateImage(img3, img);
         g.drawImage(img3, 0, 0, null);

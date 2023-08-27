@@ -25,6 +25,7 @@ import net.freertr.cry.cryUtils;
 import net.freertr.enc.enc7bit;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
+import net.freertr.pipe.pipeWindow;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -36,6 +37,43 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class userFlash {
+
+    /**
+     * get ascii art from a file
+     *
+     * @param fn filename
+     * @param x x size
+     * @param y y size
+     * @return converted ascii
+     */
+    public static List<String> asciiArt(String fn, int x, int y) {
+        File fil = new File(fn);
+        List<String> res = null;
+        try {
+            res = pipeWindow.imageText(fil, x, y, userFonts.imageData);
+        } catch (Exception e) {
+            logger.traceback(e, "error converting " + fn);
+        }
+        if (res == null) {
+            return bits.str2lst("failed to convert " + fn + " to text ");
+        }
+        return res;
+    }
+
+    /**
+     * get ansi art from a file
+     *
+     * @param fn filename
+     * @param con console to draw
+     * @return converter pipe to play or save
+     */
+    public static pipeSide ansiArt(String fn, userScreen con) {
+        File fil = new File(fn);
+        pipeWindow pw = new pipeWindow();
+        pipeSide ps = pipeWindow.createOne(con.sizX, con.sizY, userFonts.font8x16(), userFonts.colorData);
+        pipeWindow.imageAnsi(fil, pw);
+        return ps;
+    }
 
     /**
      * create instance

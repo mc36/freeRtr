@@ -188,38 +188,6 @@ public class version {
     }
 
     /**
-     * get secret list
-     *
-     * @return list of secrets
-     */
-    public static List<String> getSecList() {
-        List<String> res = new ArrayList<String>();
-        res.add("l3n4");
-        res.add("key");
-        res.add("love");
-        res.add("bug");
-        res.add("review");
-        res.add("x-tree");
-        res.add("xxx-dick");
-        res.add("duck");
-        res.add("disk");
-        res.add("tank");
-        res.add("revolver");
-        res.add("riffle");
-        res.add("knife");
-        res.add("xx-virus");
-        res.add("girl");
-        res.add("bear");
-        res.add("gear");
-        res.add("nasa");
-        res.add("xxxx-cotton");
-        res.add("solder");
-        res.add("xxxxx-troop");
-        res.add("xxxxxx-boobs");
-        return res;
-    }
-
-    /**
      * generate help list
      *
      * @param hl help to update
@@ -416,7 +384,7 @@ public class version {
                 l.add("   $ $  ?$ $     T$ $$$      $");
                 l.add("   $ $F H$ $     M$ $$K      $  ..");
                 l.add("   $ $L $$ $     $$ $$R.     \"d$$$$Ns.");
-                l.add("   $ $~ $$ $     N$ $$X      .\"    \"%2h");
+                l.add("   $ $~ $$ $     N$ $$X      .\"    \"02h");
                 l.add("   $ 4k f  $     *$ $$&      R       \"iN");
                 l.add("   $ $$ %uz!     tuuR$$:     Buu      ?`:");
                 l.add("   $ $F          $??$8B      | '*Ned*$~L$");
@@ -595,19 +563,80 @@ public class version {
                 l.add("~");
                 break;
             case 18:
-                // cotton
+                l.add("/// cern ///");
                 break;
             case 19:
-                /// gray cat
+                l.add("/// plane ///");
                 break;
             case 20:
-                /// solder
+                l.add(" us3d c0tt@n");
+                l.add("      _   _");
+                l.add("     ( `O' )");
+                l.add("      ) \0 (");
+                l.add("      |`@'|");
+                l.add("      }-  {");
+                l.add("      }-- {");
+                l.add("      } - {");
+                l.add("      |   |");
+                l.add("      |___|");
+                l.add("     (_____)");
+                l.add("");
                 break;
             case 21:
-                /// troop
+                l.add("/// gray cat ///");
                 break;
             case 22:
-                // boobs
+                l.add("/// solder ///");
+                break;
+            case 23:
+                l.add("/// troop ///");
+                break;
+            case 24:
+                l.add("/// xxxx-boobs ///");
+                break;
+            case 25:
+                l.add("/// snake at tablefootball ///");
+                break;
+            case 26:
+                l.add(" sat3ll1t3                  rfc9450");
+                l.add("@         @");
+                l.add("@          @0@");
+                l.add("@            @0@@@");
+                l.add("@             @   @@@@");
+                l.add("@               @     @@@@");
+                l.add("@                @        @@@");
+                l.add("@                  @         @@@@");
+                l.add("@ sat3ll1t3-bas3d   @            @@@");
+                l.add("@   communications   @              0000@");
+                l.add("@      satC0M (@)     @                  0@");
+                l.add("@                      @                    a1rCraft");
+                l.add("@                       @                 @         @");
+                l.add("@                        @              @             @");
+                l.add("@                         @           @     a1r-a1r     @");
+                l.add("@                          @        @     commun1cat10ns   @");
+                l.add("@                           @     @         LDACS A/A (@)    @");
+                l.add("@                           @   @                              @");
+                l.add("@                            a1rCraft  @ @ @ @ @ @ @ @ @ @  a1rCraft");
+                l.add("@                                 0           a1r-gr0und           0");
+                l.add("@                                 0         commun1cat10ns         0");
+                l.add("@                                 0           LDACS a/g (0)        0");
+                l.add("@      commun1cat10ns 1n          0                                0");
+                l.add("@    and ar0und a1rp0rts          0                                0");
+                l.add("@         a3r0MACS (-)            0                                0");
+                l.add("@                                 0                                0");
+                l.add("@         a1rCraft-------------+  0                                0");
+                l.add("@                              0  0                                0");
+                l.add("@                              0  0                                0");
+                l.add("@         gr0und n3tw0rk       0  0         gr0und n3tw0rk         0");
+                l.add("satC@M <---------------------> a1rp0rt <----------------------> LDACS");
+                l.add("ground                          gr0und                         gr0und");
+                l.add("transc31v3r                   transc31v3r                 transc31v3r");
+                break;
+            case 27:
+                l.add("/// b-day cake ///");
+                break;
+            case 28:
+                l.add("/// skull ///");
                 break;
             default:
                 l.add("");
@@ -615,6 +644,45 @@ public class version {
                 break;
         }
         return l;
+    }
+
+    /**
+     * get secret list
+     *
+     * @return list of secrets
+     */
+    public static List<String> getSecList() {
+        List<String> res = new ArrayList<String>();
+        res.add("l3n4");
+        res.add("key");
+        res.add("love");
+        res.add("bug");
+        res.add("review");
+        res.add("x-tree");
+        res.add("xxx-dick");
+        res.add("duck");
+        res.add("disk");
+        res.add("tank");
+        res.add("revolver");
+        res.add("riffle");
+        res.add("knife");
+        res.add("xx-virus");
+        res.add("girl");
+        res.add("bear");
+        res.add("gear");
+        res.add("nasa");
+        res.add("cern");
+        res.add("plane");
+        res.add("xxxx-cotton");
+        res.add("gray");
+        res.add("solder");
+        res.add("troop");
+        res.add("xxxxx-boobs");
+        res.add("snake");
+        res.add("airport");
+        res.add("cake");
+        res.add("skull");
+        return res;
     }
 
     /**

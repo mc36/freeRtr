@@ -1019,6 +1019,10 @@ public class userExec {
         hl.add(null, "2 .      alias                   defined alieses");
         hl.add(null, "2 .      platform                platform information");
         hl.add(null, "2 3      me-the                  show something");
+        hl.add(null, "3 4        art                   show some art");
+        hl.add(null, "4 .          <str>               filename");
+        hl.add(null, "3 4        image                 show some image");
+        hl.add(null, "4 .          <str>               filename");
         hl.add(null, "3 4        meme                  show some meme");
         hl.add(null, "4 5          <str>               string to meme");
         hl.add(null, "5 6            <str>             meme domain.tld");
@@ -1698,6 +1702,8 @@ public class userExec {
         hl.add(null, "3 3,.      <text>                     query string");
         hl.add(null, "1 2    game                           play games or watch screen savers");
         version.genSecHelp(hl, 2);
+        hl.add(null, "2 3      art                          show some art");
+        hl.add(null, "3 .        <str>                      filename");
         hl.add(null, "2 .      dick                         show some dick");
         hl.add(null, "2 .      color                        take test");
         hl.add(null, "2 .      ascii                        take test");

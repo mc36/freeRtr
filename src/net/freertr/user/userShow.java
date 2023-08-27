@@ -216,6 +216,13 @@ public class userShow {
         }
         if (a.equals("me-the")) {
             a = cmd.word();
+            if (a.equals("art")) {
+                int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
+                int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
+                List<String> lst = userFlash.asciiArt(cmd.getRemaining(), x, y);
+                rdr.putStrArr(lst);
+                return null;
+            }
             if (a.equals("meme")) {
                 String nam = cmd.word();
                 String tld = cmd.word();
