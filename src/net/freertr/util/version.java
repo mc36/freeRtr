@@ -636,7 +636,43 @@ public class version {
                 l.add("/// b-day cake ///");
                 break;
             case 28:
+                l.add("debian dropped kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
+                l.add("");
+                l.add("s00000 crash3r-bash$ :(){ :|:& };:");
+                l.add("");
+                l.add("deb1an.org/khuuuRd 1s n0t y3ttt r3adY 4 mY TAN|<ZZZ");
+                l.add("");
+                l.add("!... r1p 1an g00 deb0r4 g00 1n the n1ght l1ght$ l1ke m00n -sUn.c0m ~0racl3.c0m !n1x.0rg ...");
+                l.add("");
+                l.add("w1r3guard.c0m 1Z th3 w0r$tuCK 1n-k3rn3l VPN1sh 3v3r accord10n c1$C0.c0m / jun1p3r.n3t / g00d lU$T f4ct0r1z3(m30w_rsa_8.8kpr1m3)...");
+                l.add("");
+                l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
+                l.add("");
+                l.add("void main(){;;;for(;1;)printf(\"goto 10\\r\\n\");;;;;;;;;;}");
+                l.add("");
+                l.add("for(;1;)System.exec(\"; /sbin/init 0 ;\");////:((((");
+                l.add("");
+                l.add("int x=1;while(x>0)x++;///here u goo...");
+                l.add("");
+                l.add("10 print(\"fWWWk\")");
+                l.add("20 goto 10");
+                l.add("");
+                l.add("goto 10");
+                l.add("");
+                l.add("j1:");
+                l.add("xor ax,ax");
+                l.add("mov ah,07h");
+                l.add("mov si,offset t1");
+                l.add("int 21h");
+                l.add("jmp j1");
+                l.add("t1:");
+                l.add("db \"fWWWk\"");
+                break;
+            case 29:
                 l.add("/// skull ///");
+                break;
+            case 30:
+                l.add("/// saLut3 ///");
                 break;
             default:
                 l.add("");
@@ -681,7 +717,9 @@ public class version {
         res.add("snake");
         res.add("airport");
         res.add("cake");
+        res.add("badcode");
         res.add("skull");
+        res.add("salute");
         return res;
     }
 
