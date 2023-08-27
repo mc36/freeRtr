@@ -616,7 +616,7 @@ public class version {
                 l.add("@                          @        @     commun1cat10ns   @");
                 l.add("@                           @     @         LDACS A/A (@)    @");
                 l.add("@                           @   @                              @");
-                l.add("@                            a1rCraft  @ @ @ @ @ @ @ @ @ @  a1rCraft");
+                l.add("@                            a1rCraft.o@0@0@0@0@0@0@0@0@0@o.a1rCraft");
                 l.add("@                                 0           a1r-gr0und           0");
                 l.add("@                                 0         commun1cat10ns         0");
                 l.add("@                                 0           LDACS a/g (0)        0");
