@@ -57,7 +57,7 @@ public class pipeWindow extends JPanel {
      * @param pw image to draw to
      * @return converted ansi
      */
-    public static void imageAnsi(File fil, pipeWindow ps) {
+    public static void imageAnsi(File fil, pipeWindow ps) {////////////////
         /*
         try {
             maxX = (img1.getWidth() / maxX) + 1;

@@ -636,11 +636,11 @@ public class version {
                 l.add("/// b-day cake ///");
                 break;
             case 28:
-                l.add("debian dropped kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
+                l.add("d3b1an dr0pp3d kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
                 l.add("");
                 l.add("s00000 crash3r-bash$ :(){ :|:& };:");
                 l.add("");
-                l.add("deb1an.org/khuuuRd 1s n0t y3ttt r3adY 4 mY TAN|<ZZZ");
+                l.add("d3b1an.org/khuuuRd 1s n0t y3ttt r3adY 4 mY TAN|<ZZZ");
                 l.add("");
                 l.add("!... r1p 1an g00 deb0r4 g00 1n the n1ght l1ght$ l1ke m00n -sUn.c0m ~0racl3.c0m !n1x.0rg ...");
                 l.add("");
@@ -648,7 +648,15 @@ public class version {
                 l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
                 l.add("");
+                l.add("for i:=1 to 16 do begin; printLn(\"fr33pascal.0rg\"); end;");
+                l.add("");
                 l.add("void main(){;;;for(;1;)printf(\"goto 10\\r\\n\");;;;;;;;;;}");
+                l.add("");
+                l.add("f0r(;;){");
+                l.add("  l1bpcap.s3nd('n3tbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
+                l.add("  l1bpcap.s3nd('fr33bsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
+                l.add("  l1bpcap.s3nd('0p3nbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
+                l.add("}");
                 l.add("");
                 l.add("for(;1;)System.exec(\"; /sbin/init 0 ;\");////:((((");
                 l.add("");
@@ -659,20 +667,32 @@ public class version {
                 l.add("");
                 l.add("goto 10");
                 l.add("");
+                l.add("");
                 l.add("j1:");
                 l.add("xor ax,ax");
                 l.add("mov ah,07h");
                 l.add("mov si,offset t1");
                 l.add("int 21h");
                 l.add("jmp j1");
-                l.add("t1:");
-                l.add("db \"fWWWk\"");
+                l.add("t1: db \"fWWWk\"");
                 break;
             case 29:
                 l.add("/// skull ///");
                 break;
             case 30:
                 l.add("/// saLut3 ///");
+                break;
+            case 31:
+                l.add("/// umbrella ///");
+                break;
+            case 32:
+                l.add("/// cisco ///");
+                break;
+            case 33:
+                l.add("/// juniper ///");
+                break;
+            case 34:
+                l.add("/// map ///");
                 break;
             default:
                 l.add("");
@@ -720,6 +740,10 @@ public class version {
         res.add("badcode");
         res.add("skull");
         res.add("salute");
+        res.add("umbrella");
+        res.add("cisco");
+        res.add("juniper");
+        res.add("map");
         return res;
     }
 
