@@ -229,14 +229,14 @@ public class version {
         switch (typ) {
             case 0:
                 l.add("");
-                l.add(" ... g00 l3n4 g3nZ 1T 0.000v ...");
+                l.add(" ... g00 l3n4 g3nZZZ 1T 0.000v ...");
                 break;
             case 1:
                 l.add("");
-                l.add("   /~~~\\");
-                l.add("  |     |_______");
-                l.add("  | KEY |       |");
-                l.add("   \\___/        |");
+                l.add("   /~~!~\\");
+                l.add("  |      |_______");
+                l.add("  | |<3Y |       |");
+                l.add("   \\____/        |");
                 l.add("");
                 break;
             case 2:
@@ -244,7 +244,7 @@ public class version {
                 l.add("   /~~\\   /~~\\");
                 l.add("  |    \\_/    |");
                 l.add("   \\         /");
-                l.add("    \\  L0VE /");
+                l.add("    \\  L0v3 /");
                 l.add("     \\     /");
                 l.add("      \\   /");
                 l.add("       \\ /");
@@ -259,7 +259,7 @@ public class version {
                 l.add("            /  \\ /~-~\\ /  \\");
                 l.add("                y  Y  V");
                 l.add("          ,-^-./   |   \\,-^-.");
-                l.add("         /    {   BUG   }    \\");
+                l.add("         /    {   BuG   }    \\");
                 l.add("               \\   |   /");
                 l.add("               /\\  A  /\\");
                 l.add("              /  \\/ \\/  \\");
@@ -267,9 +267,9 @@ public class version {
                 l.add("");
                 break;
             case 4:
-                l.add("dear code reviewers");
-                l.add("lemme mansplain a bit");
-                l.add("so please don't get it a way too seriously");
+                l.add("d3ar c0d3 r3v13w3r$ZZZ:");
+                l.add("l3mm3 mansplain a b1t");
+                l.add("s0 pl3a$3 d0n't g3t 1t a way t33 s3r1ously || p3r(f)S0nallY...");
                 l.add("once we'll see, and i do regular refactorings as the world changes");
                 l.add("at the moment i'm fine with my integration and interop tests against the big vendors");
                 l.add("that usually ends in 7-8 minutes on a random xeon with graal-vm-community");
