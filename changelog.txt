@@ -15116,3 +15116,7 @@ todo: servers to have access-aaa
 no todo: lsrp / pvrp pmtud
 todo: game tree
 todo: tests for lsrp / pvrp pmtud
+---------------------------------- 2023-08-28 03:34:59 23.8.27
+no todo: game tree
+todo: own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
+todo: game pinball
