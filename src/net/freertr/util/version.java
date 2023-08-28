@@ -563,7 +563,19 @@ public class version {
                 l.add("~");
                 break;
             case 18:
-                l.add("/// cern ///");
+                l.add(" http://c3rn.ch http://sw1t.ch");
+                l.add("");
+                l.add(" XXXXXXXXXXX   OO");
+                l.add("XX         XX  OO");
+                l.add("XX     @@@@@@@@@");
+                l.add("XX    OO   XX  OO");
+                l.add("XX    OO   XX  OO");
+                l.add("XX    OO   XX  OO");
+                l.add(" XXXXXOOXXXX@  OO");
+                l.add(" @    OO     @ OO");
+                l.add("  @   OO      @OO");
+                l.add("     @ @@@@@@@@@");
+                l.add("    @           @");
                 break;
             case 19:
                 l.add("/// plane ///");
@@ -657,6 +669,8 @@ public class version {
                 l.add("  l1bpcap.s3nd('fr33bsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
                 l.add("  l1bpcap.s3nd('0p3nbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
                 l.add("}");
+                l.add("");
+                l.add("void* palto[i][i];");
                 l.add("");
                 l.add("for(;1;)System.exec(\"; /sbin/init 0 ;\");////:((((");
                 l.add("");
