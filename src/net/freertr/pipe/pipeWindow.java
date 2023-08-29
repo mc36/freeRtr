@@ -66,22 +66,19 @@ public class pipeWindow extends JPanel {
         scr.putCls();
         scr.putCur(0, 0);
         try {
-            int tmp = scr.sizX < scr.sizY ? scr.sizY : scr.sizX;
             BufferedImage src = ImageIO.read(fil);
             Graphics2D g2 = src.createGraphics();
-            g2.fillRect(0, 0, scr.sizY / tmp, scr.sizX / tmp);
-            g2.drawImage(src, 0, 0, scr.sizY / tmp, scr.sizX / tmp, null);
+            g2.fillRect(0, 0, src.getWidth(), src.getHeight());
+            g2.drawImage(src, 0, 0, src.getWidth(), src.getHeight(), null);
             g2.dispose();
             g2.setComposite(AlphaComposite.Src);
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            BufferedImage rnd = new BufferedImage(scr.sizY / tmp, scr.sizX / tmp, BufferedImage.TYPE_BYTE_INDEXED);
-            g2.drawImage(rnd, 0, 0, null);
             for (int o = 0; o < scr.sizY; o++) {
                 for (int i = 0; i < scr.sizY; i++) {
-                    int v = rnd.getRGB(i, o);
-                    scr.putInt(i, o, false, v >>> 5, 0x30);
+                    ////int v = rnd.getRGB(i, o);
+                    scr.putInt(i, o, false, 13, 0x30);
                 }
             }
         } catch (Exception e) {
