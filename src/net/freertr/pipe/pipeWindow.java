@@ -77,7 +77,7 @@ public class pipeWindow extends JPanel {
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             BufferedImage rnd = new BufferedImage(scr.sizY / tmp, scr.sizX / tmp, BufferedImage.TYPE_BYTE_INDEXED);
-
+            g2.drawImage(rnd, 0, 0, null);
             for (int o = 0; o < scr.sizY; o++) {
                 for (int i = 0; i < scr.sizY; i++) {
                     int v = rnd.getRGB(i, o);

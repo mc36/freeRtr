@@ -70,8 +70,7 @@ public class userFlash {
     public static void ansiArt(String fn, userScreen con) {
         File fil = new File(fn);
         con.putCls();
-        userScreen scr = pipeWindow.imageAnsi(con.pipe, fn);
-        scr.refresh();
+        pipeWindow.imageAnsi(con.pipe, fn);
     }
 
     /**
