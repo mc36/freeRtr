@@ -1702,7 +1702,7 @@ public class userExec {
         hl.add(null, "3 3,.      <text>                     query string");
         hl.add(null, "1 2    game                           play games or watch screen savers");
         version.genSecHelp(hl, 2);
-        hl.add(null, "2 3      art                          show some art");
+        hl.add(null, "2 3      ansi                         show some art");
         hl.add(null, "3 .        <str>                      filename");
         hl.add(null, "2 .      dick                         show some dick");
         hl.add(null, "2 .      color                        take test");

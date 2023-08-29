@@ -578,7 +578,11 @@ public class version {
                 l.add("    @           @");
                 break;
             case 19:
-                l.add("/// plane ///");
+                l.add("----|------------|-----------|----");
+                l.add("    |        --/ - \\--       |");
+                l.add("   -|---------|  @  |--------|-");
+                l.add("              /\\ _ /\\");
+                l.add("           []/       \\[]");
                 break;
             case 20:
                 l.add(" us3d c0tt@n");
@@ -595,7 +599,12 @@ public class version {
                 l.add("");
                 break;
             case 21:
-                l.add("/// gray cat ///");
+                l.add("     ,/|         _.--''^``-...___.._.,;");
+                l.add("     /, \\'.     _-'          ,--,,,--'''");
+                l.add("    { \\    `_-''       '    /}");
+                l.add("     `;;'            ;   ; ;");
+                l.add(" ._.--''     ._,,, _..'  .;.'");
+                l.add("  (,_....----'''     (,..--''");
                 break;
             case 22:
                 l.add("/// solder ///");
@@ -610,7 +619,7 @@ public class version {
                 l.add("/// snake at tablefootball ///");
                 break;
             case 26:
-                l.add(" sat3ll1t3                  rfc9450");
+                l.add(" sat3ll1t3                  http://www.rfc-editor.org/rfc/rfc9450");
                 l.add("@         @");
                 l.add("@          @0@");
                 l.add("@            @0@@@");

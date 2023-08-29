@@ -14,6 +14,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import net.freertr.user.userScreen;
 import net.freertr.util.logger;
 
 /**
@@ -22,12 +23,6 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class pipeWindow extends JPanel {
-
-    /**
-     * create an instance
-     */
-    public pipeWindow() {
-    }
 
     private static final long serialVersionUID = 10251979;
 
@@ -46,97 +41,54 @@ public class pipeWindow extends JPanel {
      */
     protected JFrame win;
 
-    public static void imageAnsi(String fn, pipeWindow ps) {
-        /////
+    /**
+     * convert image to ansi
+     *
+     * @param ps pipe to draw
+     * @param fn file to convert
+     * @param maxX max x size
+     * @param maxX max y size
+     * @return converted ansi
+     */
+    public static userScreen imageAnsi(pipeSide ps, String fn) {
+        return imageAnsi(ps, new File(fn));
     }
 
     /**
      * convert image to ansi
      *
+     * @param ps pipe to draw
      * @param fil file to convert
-     * @param pw image to draw to
      * @return converted ansi
      */
-    public static void imageAnsi(File fil, pipeWindow ps) {////////////////
-        /*
+    public static userScreen imageAnsi(pipeSide ps, File fil) {
+        userScreen scr = new userScreen(ps);
+        scr.putCls();
+        scr.putCur(0, 0);
         try {
-            maxX = (img1.getWidth() / maxX) + 1;
-            maxY = (img1.getHeight() / maxY) + 1;
-            int tmp = maxX < maxY ? maxY : maxX;
-            BufferedImage img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_USHORT_GRAY);
-            Graphics2D g = img2.createGraphics();
-            g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
-            g.dispose();
-            g.setComposite(AlphaComposite.Src);
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            int[][] img3 = new int[img2.getHeight()][img2.getWidth()];
-            tmp = 0;
-            for (int y = 0; y < img3.length; y++) {
-                for (int x = 0; x < img3[0].length; x++) {
-                    int v = img2.getRGB(x, y);
-                    if (v < 0) {
-                        v = -v;
-                    }
-                    img3[y][x] = v;
-                    if (tmp < v) {
-                        tmp = v;
-                    }
-                }
-            }
-            img2 = null;
-            List<String> txt = new ArrayList<String>();
-            for (int y = 0; y < img3.length; y++) {
-                String a = "";
-                for (int x = 0; x < img3[0].length; x++) {
-                    int v = (img3[y][x] * (chrs.length - 1)) / tmp;
-                    a += chrs[v];
-                }
-                txt.add(a);
-            }
+            int tmp = scr.sizX < scr.sizY ? scr.sizY : scr.sizX;
+            BufferedImage src = ImageIO.read(fil);
+            Graphics2D g2 = src.createGraphics();
+            g2.fillRect(0, 0, scr.sizY / tmp, scr.sizX / tmp);
+            g2.drawImage(src, 0, 0, scr.sizY / tmp, scr.sizX / tmp, null);
+            g2.dispose();
+            g2.setComposite(AlphaComposite.Src);
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            BufferedImage rnd = new BufferedImage(scr.sizY / tmp, scr.sizX / tmp, BufferedImage.TYPE_BYTE_INDEXED);
 
+            for (int o = 0; o < scr.sizY; o++) {
+                for (int i = 0; i < scr.sizY; i++) {
+                    int v = rnd.getRGB(i, o);
+                    scr.putInt(i, o, false, v >>> 5, 0x30);
+                }
+            }
         } catch (Exception e) {
             logger.traceback(e, "error converting");
         }
-        */
-    }
-
-    /**
-     * get keyboard listener
-     *
-     * @param pipe pipe to use
-     * @return keyboard listener
-     */
-    public static KeyListener getKeyLstnr(pipeSide pipe) {
-        return new pipeWindowKey(pipe);
-    }
-
-    /**
-     * create window
-     *
-     * @param x x size
-     * @param y y size
-     * @param fnt font to use
-     * @param plt palette to use
-     * @return pipeline to use, null if failed
-     */
-    public static pipeSide createOne(int x, int y, byte[][][] fnt, int[] plt) {
-        pipeLine pip = new pipeLine(65536, false);
-        pipeWindow win;
-        try {
-            win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
-        } catch (Exception e) {
-            logger.traceback(e, "while converting");
-            return null;
-        }
-        win.startWindow();
-        pipeSide ps = pip.getSide();
-        ps.lineTx = pipeSide.modTyp.modeCRLF;
-        ps.lineRx = pipeSide.modTyp.modeCRorLF;
-        ps.setTime(0);
-        ps.setReady();
-        return ps;
+        scr.refresh();
+        return scr;
     }
 
     /**
@@ -243,6 +195,43 @@ public class pipeWindow extends JPanel {
         BufferedImage img3 = createImage(img);
         updateImage(img3, img);
         return img3;
+    }
+
+    /**
+     * get keyboard listener
+     *
+     * @param pipe pipe to use
+     * @return keyboard listener
+     */
+    public static KeyListener getKeyLstnr(pipeSide pipe) {
+        return new pipeWindowKey(pipe);
+    }
+
+    /**
+     * create window
+     *
+     * @param x x size
+     * @param y y size
+     * @param fnt font to use
+     * @param plt palette to use
+     * @return pipeline to use, null if failed
+     */
+    public static pipeSide createOne(int x, int y, byte[][][] fnt, int[] plt) {
+        pipeLine pip = new pipeLine(65536, false);
+        pipeWindow win;
+        try {
+            win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
+        } catch (Exception e) {
+            logger.traceback(e, "while converting");
+            return null;
+        }
+        win.startWindow();
+        pipeSide ps = pip.getSide();
+        ps.lineTx = pipeSide.modTyp.modeCRLF;
+        ps.lineRx = pipeSide.modTyp.modeCRorLF;
+        ps.setTime(0);
+        ps.setReady();
+        return ps;
     }
 
     /**

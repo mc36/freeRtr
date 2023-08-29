@@ -25,6 +25,7 @@ import net.freertr.cry.cryUtils;
 import net.freertr.enc.enc7bit;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
+import net.freertr.pipe.pipeImage;
 import net.freertr.pipe.pipeWindow;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
@@ -65,14 +66,12 @@ public class userFlash {
      *
      * @param fn filename
      * @param con console to draw
-     * @return converter pipe to play or save
      */
-    public static pipeSide ansiArt(String fn, userScreen con) {
+    public static void ansiArt(String fn, userScreen con) {
         File fil = new File(fn);
-        pipeWindow pw = new pipeWindow();
-        pipeSide ps = pipeWindow.createOne(con.sizX, con.sizY, userFonts.font8x16(), userFonts.colorData);
-        pipeWindow.imageAnsi(fil, pw);
-        return ps;
+        con.putCls();
+        userScreen scr = pipeWindow.imageAnsi(con.pipe, fn);
+        scr.refresh();
     }
 
     /**

@@ -514,7 +514,6 @@ public class userGame {
         }
         if (a.equals("ansi")) {
             userFlash.ansiArt(cmd.getRemaining(), console);
-            console.refresh();
             for (;;) {
                 if (console.keyPress()) {
                     break;
