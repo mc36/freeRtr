@@ -607,18 +607,10 @@ public class version {
                 l.add("  (,_....----'''     (,..--''");
                 break;
             case 22:
-                l.add("/// solder ///");
+                l.add("");
+                l.add("   (.)(.)");
                 break;
             case 23:
-                l.add("/// troop ///");
-                break;
-            case 24:
-                l.add("/// xxxx-boobs ///");
-                break;
-            case 25:
-                l.add("/// snake at tablefootball ///");
-                break;
-            case 26:
                 l.add(" sat3ll1t3                  http://www.rfc-editor.org/rfc/rfc9450");
                 l.add("@         @");
                 l.add("@          @0@");
@@ -653,10 +645,16 @@ public class version {
                 l.add("ground                          gr0und                         gr0und");
                 l.add("transc31v3r                   transc31v3r                 transc31v3r");
                 break;
-            case 27:
-                l.add("/// b-day cake ///");
+            case 24:
+                l.add("");
+                l.add("     )  (  )  (");
+                l.add("    (^)(^)(^)(^)");
+                l.add("    _i__i__i__i_");
+                l.add("   (____________)");
+                l.add("   |@@@@|>o<|000|");
+                l.add("   (____________)");
                 break;
-            case 28:
+            case 25:
                 l.add("d3b1an dr0pp3d kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
                 l.add("");
                 l.add("s00000 crash3r-bash$ :(){ :|:& };:");
@@ -699,23 +697,13 @@ public class version {
                 l.add("jmp j1");
                 l.add("t1: db \"fWWWk\"");
                 break;
-            case 29:
-                l.add("/// skull ///");
-                break;
-            case 30:
-                l.add("/// saLut3 ///");
-                break;
-            case 31:
-                l.add("/// umbrella ///");
-                break;
-            case 32:
-                l.add("/// cisco ///");
-                break;
-            case 33:
-                l.add("/// juniper ///");
-                break;
-            case 34:
-                l.add("/// map ///");
+            case 26:
+                l.add("        _,--',   _._.--._____");
+                l.add(" .--.--';_'-.', \";_      _.,-'");
+                l.add(".'--'.  _.'    {`'-;_ .-.>.'");
+                l.add("      '-:_      )  / `' '=.");
+                l.add("        ) >     {_/,     /~)");
+                l.add("        |/               `^ .'");
                 break;
             default:
                 l.add("");
@@ -754,18 +742,10 @@ public class version {
         res.add("plane");
         res.add("xxxx-cotton");
         res.add("gray");
-        res.add("solder");
-        res.add("troop");
         res.add("xxxxx-boobs");
-        res.add("snake");
         res.add("airport");
         res.add("cake");
         res.add("badcode");
-        res.add("skull");
-        res.add("salute");
-        res.add("umbrella");
-        res.add("cisco");
-        res.add("juniper");
         res.add("map");
         return res;
     }
