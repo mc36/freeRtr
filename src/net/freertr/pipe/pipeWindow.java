@@ -63,10 +63,24 @@ public class pipeWindow extends JPanel {
      * @return quantized color
      */
     public final static int trueColor2indexedColor(int orig, int[] pal) {
-        orig >>>= 5;
-        orig &= 0x030303;
-        /////////// quantize the orig color to ansi palette...
-        return 13;//////////////
+        int truncer = 0xe0e0e0;
+        orig &= truncer;
+        int best = 0;
+        int diff = 0;
+        for (int i = 0; i < pal.length; i++) {
+            int cur = pal[i] & truncer;
+            if (cur == orig) {
+                return i;
+            }
+            int dff = cur - orig;
+            dff >>>= 5;
+            if (diff < dff) {
+                continue;
+            }
+            diff = dff;
+            best = i;
+        }
+        return best;
     }
 
     /**
@@ -82,8 +96,8 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage src = ImageIO.read(fil);
-            int maxX = (src.getWidth() / scr.sizX) + 1;
-            int maxY = (src.getHeight() / scr.sizY) + 1;
+            int maxX = src.getWidth() + 1;
+            int maxY = src.getHeight() + 1;
             int tmp = maxX < maxY ? maxY : maxX;
             Graphics2D g = src.createGraphics();
             g.drawImage(src, 0, 0, src.getWidth(), src.getHeight(), null);
@@ -94,8 +108,9 @@ public class pipeWindow extends JPanel {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             for (int cx = 0; cx < scr.sizY; cx++) {
                 for (int cy = 0; cy < scr.sizY; cy++) {
-                    int v = src.getRGB(cy, cx);
+                    int v = src.getRGB(cy * tmp, cx);
                     v = trueColor2indexedColor(v, userFonts.colorData);
+                    v = 13;////
                     scr.putInt(cx / tmp, cy / tmp, false, v, 0x30);
                 }
             }
