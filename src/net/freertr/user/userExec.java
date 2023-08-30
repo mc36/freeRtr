@@ -1331,7 +1331,10 @@ public class userExec {
         hl.add(cfgAll.dmnBmp.listServers(), "3 4,.      <name:loc>            server name");
         hl.add(null, "4 5,.        <addr>              from");
         hl.add(null, "5 .            <addr>            peer");
+        hl.add(null, "2 3,.    openflow                openflow protocol information");
+        hl.add(cfgAll.dmnOpenflow.listServers(), "3 4      <name:loc>            server name");
         hl.add(null, "2 3,.    p4lang                  p4lang protocol information");
+        hl.add(null, "4 .          general             general status");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
         hl.add(null, "4 .          general             general status");
         hl.add(null, "4 .          dataplanes          dataplanes");
@@ -1850,6 +1853,8 @@ public class userExec {
         getHelpClearIpX(hl);
         hl.add(null, "2 3      bmp                          clear one bmp server");
         hl.add(cfgAll.dmnBmp.listServers(), "3 .        <name:loc>            server name");
+        hl.add(null, "2 3      openflow                     clear one openflow server");
+        hl.add(cfgAll.dmnOpenflow.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      p4lang                       clear one p4lang server");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4,.      <name:loc>            server name");
         hl.add(null, "4 .            [num]             forwarder number");
@@ -2045,6 +2050,9 @@ public class userExec {
         hl.add(null, "2 3      monitor                      monitor interface traffic");
         hl.add(null, "3 4,.      <name:ifc>                 name of interface");
         hl.add(null, "4 .          [name:ifc]               name of target interface");
+        hl.add(null, ".2 3      openflow                    openflow protocol api testing");
+        hl.add(cfgAll.dmnOpenflow.listServers(), ".3 4        <name:loc>            server name");
+        hl.add(null, ".4 4,.          <str>                 string to send");
         hl.add(null, ".2 3      p4lang                      p4lang protocol api testing");
         hl.add(cfgAll.dmnP4lang.listServers(), ".3 4        <name:loc>            server name");
         hl.add(null, ".4 5          <num>                   forwarder number");
@@ -2193,6 +2201,13 @@ public class userExec {
         hl.add(null, "8 .                  <str>            target address");
         cfgAll.aliasHelps(cfgAlias.aliasType.pckt, 2, hl);
         hl.add(null, "1 2    test                           test various things");
+        hl.add(null, ".2 3      openflow                    send packet over the api");
+        hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
+        hl.add(null, "4 5          <num>                    counter to use");
+        hl.add(null, "5 6              <num>                interface to send to");
+        hl.add(null, "6 7                <addr>             target address");
+        hl.add(null, "7 8                  <addr>           source address");
+        hl.add(null, "8 8,.                  [num]          packet contents");
         hl.add(null, ".2 3      p4lang                      send packet over the api");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
         hl.add(null, "4 5          <num>                    counter to use");

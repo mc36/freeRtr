@@ -103,6 +103,7 @@ import net.freertr.serv.servVxlan;
 import net.freertr.enc.enc7bit;
 import net.freertr.enc.encUrl;
 import net.freertr.pack.packRedundancy;
+import net.freertr.serv.servOpenflow;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -1133,10 +1134,36 @@ public class userShow {
             rdr.putStrTab(cln.getShow());
             return null;
         }
+        if (a.equals("openflow")) {
+            a = cmd.word();
+            servOpenflow gen = cfgAll.dmnOpenflow.get(0);
+            if (gen == null) {
+                return null;
+            }
+            if (a.length() < 1) {
+                cmd.error(gen.getShowGen1liner());
+                return null;
+            }
+            servOpenflow srv = cfgAll.srvrFind(new servOpenflow(), cfgAll.dmnOpenflow, a);
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            a = cmd.word();
+            if (a.equals("general")) {
+                cmd.error(gen.getShowGen1liner());
+                return null;
+            }
+            cmd.error(gen.getShowGen1liner());
+        }
         if (a.equals("p4lang")) {
             a = cmd.word();
+            servP4lang gen = cfgAll.dmnP4lang.get(0);
+            if (gen == null) {
+                return null;
+            }
             if (a.length() < 1) {
-                cmd.error(servP4lang.getShowGen1liner());
+                cmd.error(gen.getShowGen1liner());
                 return null;
             }
             servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, a);
@@ -1146,7 +1173,7 @@ public class userShow {
             }
             a = cmd.word();
             if (a.equals("general")) {
-                cmd.error(servP4lang.getShowGen1liner());
+                cmd.error(gen.getShowGen1liner());
                 return null;
             }
             if (a.equals("dataplanes")) {

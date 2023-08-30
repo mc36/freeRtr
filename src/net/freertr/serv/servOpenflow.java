@@ -336,6 +336,28 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         return a + " clsd=" + ntry.conn.isClosed() + " rdy=" + ntry.conn.isReady();
     }
 
+    /**
+     * send a packet through the api
+     *
+     * @param cntr counter to use
+     * @param fwdn forwarder to use
+     * @param ifcn interface to use
+     * @param pck packet to send
+     * @return true on error false on success
+     */
+    public boolean send2apiPack(int cntr, int ifcn, packHolder pck) {
+        servOpenflowIfc1 ifcc = new servOpenflowIfc1();
+        ifcc.id = ifcn;
+        ifcc = expIfc.find(ifcc);
+        if (ifcc == null) {
+            return true;
+        }
+        for (int i = 0; i < cntr; i++) {
+            ifcc.sendPack(pck.copyBytes(true, true));
+        }
+        return false;
+    }
+
 }
 
 class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
