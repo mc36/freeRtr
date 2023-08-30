@@ -47,8 +47,6 @@ public class pipeWindow extends JPanel {
      *
      * @param ps pipe to draw
      * @param fn file to convert
-     * @param maxX max x size
-     * @param maxX max y size
      * @return converted ansi
      */
     public static userScreen imageAnsi(pipeSide ps, String fn) {
