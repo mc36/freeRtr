@@ -790,11 +790,11 @@ public class version {
     public static String getHWfwd1liner() {
         servP4lang p4l = cfgAll.dmnP4lang.get(0);
         if (p4l != null) {
-            return p4l.getShowGen1liner();
+            return p4l.getShGenOneLiner();
         }
         servOpenflow ovs = cfgAll.dmnOpenflow.get(0);
         if (ovs != null) {
-            return ovs.getShowGen1liner();
+            return ovs.getShGenOneLiner();
         }
         return "swonly";
     }

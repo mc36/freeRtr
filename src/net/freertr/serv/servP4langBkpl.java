@@ -92,7 +92,7 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp, servGe
      *
      * @return offload info
      */
-    public String getShowGen1liner() {
+    public String getShGenOneLiner() {
         String a = "cpuprt=";
         if (pi == null) {
             return a + "n/a";

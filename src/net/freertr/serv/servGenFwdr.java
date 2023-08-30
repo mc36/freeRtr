@@ -12,6 +12,7 @@ public interface servGenFwdr {
      *
      * @return offload info
      */
-    public abstract String getShowGen1liner();
+    public abstract String getShGenOneLiner();
 
+    //////// try to move send through api here
 }

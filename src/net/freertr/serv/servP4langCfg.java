@@ -320,7 +320,7 @@ public class servP4langCfg implements ifcUp, servGenFwdr {
      *
      * @return offload info
      */
-    public String getShowGen1liner() {
+    public String getShGenOneLiner() {
         return "cpuprt=" + intercon;
     }
 

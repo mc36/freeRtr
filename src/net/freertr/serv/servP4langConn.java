@@ -130,7 +130,7 @@ public class servP4langConn implements Runnable, servGenFwdr {
      *
      * @return offload info
      */
-    public String getShowGen1liner() {
+    public String getShGenOneLiner() {
         return "clsd=" + pipe.isClosed() + " rdy=" + pipe.isReady();
     }
 

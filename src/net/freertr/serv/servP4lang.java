@@ -345,13 +345,13 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
      *
      * @return offload info
      */
-    public String getShowGen1liner() {
+    public String getShGenOneLiner() {
         String a = "p4lang fwds=" + bckplnLab.length;
         for (int i = 0; i < fwds.size(); i++) {
             servP4langCfg fwd = fwds.get(i);
-            a += " #" + i + "=" + fwd.getShowGen1liner();
+            a += " #" + i + "=" + fwd.getShGenOneLiner();
         }
-        return a;
+        return a.trim();
     }
 
     /**

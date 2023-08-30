@@ -1141,7 +1141,8 @@ public class userShow {
                 return null;
             }
             if (a.length() < 1) {
-                cmd.error(gen.getShowGen1liner());
+                a = gen.getShGenOneLiner();
+                rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
             servOpenflow srv = cfgAll.srvrFind(new servOpenflow(), cfgAll.dmnOpenflow, a);
@@ -1151,10 +1152,13 @@ public class userShow {
             }
             a = cmd.word();
             if (a.equals("general")) {
-                cmd.error(gen.getShowGen1liner());
+                a = gen.getShGenOneLiner();
+                rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
-            cmd.error(gen.getShowGen1liner());
+            a = gen.getShGenOneLiner();
+            rdr.putStrArr(bits.str2lst(a));
+            return null;
         }
         if (a.equals("p4lang")) {
             a = cmd.word();
@@ -1163,7 +1167,8 @@ public class userShow {
                 return null;
             }
             if (a.length() < 1) {
-                cmd.error(gen.getShowGen1liner());
+                a = gen.getShGenOneLiner();
+                rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
             servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, a);
@@ -1173,7 +1178,8 @@ public class userShow {
             }
             a = cmd.word();
             if (a.equals("general")) {
-                cmd.error(gen.getShowGen1liner());
+                a = gen.getShGenOneLiner();
+                rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
             if (a.equals("dataplanes")) {

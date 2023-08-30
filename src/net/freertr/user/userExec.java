@@ -1332,7 +1332,8 @@ public class userExec {
         hl.add(null, "4 5,.        <addr>              from");
         hl.add(null, "5 .            <addr>            peer");
         hl.add(null, "2 3,.    openflow                openflow protocol information");
-        hl.add(cfgAll.dmnOpenflow.listServers(), "3 4      <name:loc>            server name");
+        hl.add(cfgAll.dmnOpenflow.listServers(), "3 4,.    <name:loc>            server name");
+        hl.add(null, "4 .          general             general status");
         hl.add(null, "2 3,.    p4lang                  p4lang protocol information");
         hl.add(null, "4 .          general             general status");
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
