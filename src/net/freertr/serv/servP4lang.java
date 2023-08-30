@@ -30,7 +30,7 @@ import net.freertr.spf.spfCalc;
  *
  * @author matecsaba
  */
-public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
+public class servP4lang extends servGeneric implements prtServS {
 
     /**
      * create instance

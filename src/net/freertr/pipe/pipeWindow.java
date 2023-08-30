@@ -14,6 +14,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import net.freertr.user.userFonts;
 import net.freertr.user.userScreen;
 import net.freertr.util.logger;
 
@@ -55,6 +56,20 @@ public class pipeWindow extends JPanel {
     }
 
     /**
+     * quantize one color
+     *
+     * @param orig original color
+     * @param pal palette to use
+     * @return quantized color
+     */
+    public final static int trueColor2indexedColor(int orig, int[] pal) {
+        orig >>>= 5;
+        orig &= 0x030303;
+        /////////// quantize the orig color to ansi palette...
+        return 13;//////////////
+    }
+
+    /**
      * convert image to ansi
      *
      * @param ps pipe to draw
@@ -67,18 +82,21 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage src = ImageIO.read(fil);
-            Graphics2D g2 = src.createGraphics();
-            g2.fillRect(0, 0, src.getWidth(), src.getHeight());
-            g2.drawImage(src, 0, 0, src.getWidth(), src.getHeight(), null);
-            g2.dispose();
-            g2.setComposite(AlphaComposite.Src);
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            for (int o = 0; o < scr.sizY; o++) {
-                for (int i = 0; i < scr.sizY; i++) {
-                    ////int v = rnd.getRGB(i, o);
-                    scr.putInt(i, o, false, 13, 0x30);
+            int maxX = (src.getWidth() / scr.sizX) + 1;
+            int maxY = (src.getHeight() / scr.sizY) + 1;
+            int tmp = maxX < maxY ? maxY : maxX;
+            Graphics2D g = src.createGraphics();
+            g.drawImage(src, 0, 0, src.getWidth(), src.getHeight(), null);
+            g.dispose();
+            g.setComposite(AlphaComposite.Src);
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            for (int cx = 0; cx < scr.sizY; cx++) {
+                for (int cy = 0; cy < scr.sizY; cy++) {
+                    int v = src.getRGB(cy, cx);
+                    v = trueColor2indexedColor(v, userFonts.colorData);
+                    scr.putInt(cx / tmp, cy / tmp, false, v, 0x30);
                 }
             }
         } catch (Exception e) {

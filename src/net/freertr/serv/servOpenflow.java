@@ -51,7 +51,7 @@ import net.freertr.tab.tabRouteIface;
  *
  * @author matecsaba
  */
-public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
+public class servOpenflow extends servGeneric implements prtServS {
 
     /**
      * create instance
@@ -329,7 +329,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         if (ntry == null) {
             return null;
         }
-        return "opnflw";///////////////
+        return "opnflw";
     }
 
 }

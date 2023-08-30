@@ -143,7 +143,6 @@ public class prtRedun implements Runnable {
             if (got == null) {
                 got = "nothing";
             }
-            ////////////
             l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + mine.equals(got) + "|" + got);
         }
         return l;
