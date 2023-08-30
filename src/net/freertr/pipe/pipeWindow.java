@@ -61,7 +61,7 @@ public class pipeWindow extends JPanel {
      * @return quantized color
      */
     public final static int trueColor2indexedColor(int orig, int[] pal) {
-        int truncer = 0xe0e0e0;
+        int truncer = 0x00e0e0e0;
         orig &= truncer;
         int best = 0;
         int diff = 0;
@@ -71,7 +71,7 @@ public class pipeWindow extends JPanel {
                 return i;
             }
             int dff = cur - orig;
-            dff >>>= 5;
+            dff &= truncer;
             if (diff < dff) {
                 continue;
             }
@@ -106,10 +106,10 @@ public class pipeWindow extends JPanel {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             for (int cx = 0; cx < scr.sizY; cx++) {
                 for (int cy = 0; cy < scr.sizY; cy++) {
-                    int v = src.getRGB(cy * tmp, cx);
-                    v = trueColor2indexedColor(v, userFonts.colorData);
-                    v = 13;////
-                    scr.putInt(cx / tmp, cy / tmp, false, v, 0x30);
+                    int i = src.getRGB(cy * tmp, cx * tmp);
+                    int o = trueColor2indexedColor(i, userFonts.colorData);
+                    logger.debug("hereee " + i + " --> " + o);
+                    scr.putInt(cx, cy, false, o, 0x30);
                 }
             }
         } catch (Exception e) {

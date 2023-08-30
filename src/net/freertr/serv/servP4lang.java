@@ -30,7 +30,7 @@ import net.freertr.spf.spfCalc;
  *
  * @author matecsaba
  */
-public class servP4lang extends servGeneric implements prtServS {
+public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
 
     /**
      * create instance
@@ -341,6 +341,20 @@ public class servP4lang extends servGeneric implements prtServS {
     }
 
     /**
+     * get hardware forwarder
+     *
+     * @return offload info
+     */
+    public String getShowGen1liner() {
+        String a = "p4lang fwds=" + bckplnLab.length;
+        for (int i = 0; i < fwds.size(); i++) {
+            servP4langCfg fwd = fwds.get(i);
+            a += " #" + i + "=" + fwd.getShowGen1liner();
+        }
+        return a;
+    }
+
+    /**
      * get backplane show
      *
      * @param fwd forwarder
@@ -403,19 +417,6 @@ public class servP4lang extends servGeneric implements prtServS {
         }
         servP4langCfg cur = fwds.get(fwd);
         return cur.bckplnRou;
-    }
-
-    /**
-     * get hardware forwarder
-     *
-     * @return offload info
-     */
-    public static final String getShowGen1liner() {
-        servP4lang ntry = cfgAll.dmnP4lang.get(0);
-        if (ntry == null) {
-            return null;
-        }
-        return "p4lang";
     }
 
     /**

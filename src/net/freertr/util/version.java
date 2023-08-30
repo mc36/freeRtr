@@ -788,14 +788,13 @@ public class version {
      * @return offload info
      */
     public static String getHWfwd1liner() {
-        ////////////////
-        String a = servP4lang.getShowGen1liner();
-        if (a != null) {
-            return a;
+        servP4lang p4l = cfgAll.dmnP4lang.get(0);
+        if (p4l != null) {
+            return p4l.getShowGen1liner();
         }
-        a = servOpenflow.getShowGen1liner();
-        if (a != null) {
-            return a;
+        servOpenflow ovs = cfgAll.dmnOpenflow.get(0);
+        if (ovs != null) {
+            return ovs.getShowGen1liner();
         }
         return "swonly";
     }

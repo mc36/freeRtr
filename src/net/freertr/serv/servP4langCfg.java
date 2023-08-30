@@ -50,7 +50,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langCfg implements ifcUp {
+public class servP4langCfg implements ifcUp, servGenFwdr {
 
     /**
      * parent
@@ -313,6 +313,15 @@ public class servP4langCfg implements ifcUp {
 
     public String toString() {
         return "p4lang forwarder " + id;
+    }
+
+    /**
+     * get hardware forwarder info
+     *
+     * @return offload info
+     */
+    public String getShowGen1liner() {
+        return "cpuprt=" + intercon;
     }
 
     /**

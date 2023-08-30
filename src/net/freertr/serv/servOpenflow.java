@@ -51,7 +51,7 @@ import net.freertr.tab.tabRouteIface;
  *
  * @author matecsaba
  */
-public class servOpenflow extends servGeneric implements prtServS {
+public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
 
     /**
      * create instance
@@ -324,12 +324,16 @@ public class servOpenflow extends servGeneric implements prtServS {
      *
      * @return offload info
      */
-    public static final String getShowGen1liner() {
+    public String getShowGen1liner() {
         servOpenflow ntry = cfgAll.dmnOpenflow.get(0);
         if (ntry == null) {
             return null;
         }
-        return "opnflw";
+        String a = "opnflw conn=";
+        if (ntry.conn == null) {
+            return a + "n/a";
+        }
+        return a + " clsd=" + ntry.conn.isClosed() + " rdy=" + ntry.conn.isReady();
     }
 
 }

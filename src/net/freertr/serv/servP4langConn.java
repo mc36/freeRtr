@@ -73,7 +73,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langConn implements Runnable {
+public class servP4langConn implements Runnable, servGenFwdr {
 
     /**
      * pipeline in use
@@ -123,6 +123,15 @@ public class servP4langConn implements Runnable {
     protected servP4langConn(pipeSide pip, servP4langCfg upper) {
         pipe = pip;
         lower = upper;
+    }
+
+    /**
+     * get hardware forwarder info
+     *
+     * @return offload info
+     */
+    public String getShowGen1liner() {
+        return "clsd=" + pipe.isClosed() + " rdy=" + pipe.isReady();
     }
 
     /**

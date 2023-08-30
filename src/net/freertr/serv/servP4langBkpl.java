@@ -20,7 +20,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
+public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp, servGenFwdr {
 
     private final static int magic1 = 0x00010000 | ipIfc4.type;
 
@@ -85,6 +85,19 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
         pi = ifc;
         lower = prnt;
         randId = bits.randomD();
+    }
+
+    /**
+     * get hardware forwarder info
+     *
+     * @return offload info
+     */
+    public String getShowGen1liner() {
+        String a = "cpuprt=";
+        if (pi == null) {
+            return a + "n/a";
+        }
+        return a + pi.ifc;
     }
 
     public String toString() {
