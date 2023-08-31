@@ -104,7 +104,7 @@ public class pipeWindow extends JPanel {
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            for (int cx = 0; cx < scr.sizY; cx++) {
+            for (int cx = 0; cx < scr.sizX; cx++) {
                 for (int cy = 0; cy < scr.sizY; cy++) {
                     if (cx >= maxX) {
                         continue;

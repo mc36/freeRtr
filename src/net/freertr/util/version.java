@@ -599,16 +599,20 @@ public class version {
                 l.add("");
                 break;
             case 21:
-                l.add("     ,/|         _.--''^``-...___.._.,;");
-                l.add("     /, \\'.     _-'          ,--,,,--'''");
+                l.add("... mrsPssyC4t5e - !!!Umrs4Z1Z!!! ...");
+                l.add("");
+                l.add("     ,/|         _.--''^``-...___.._.,;@0o");
+                l.add("     /@ \\'.     _-'          ,--,,,--@00~");
                 l.add("    { \\    `_-''       '    /}");
                 l.add("     `;;'            ;   ; ;");
                 l.add(" ._.--''     ._,,, _..'  .;.'");
                 l.add("  (,_....----'''     (,..--''");
                 break;
             case 22:
+                l.add("    ... mrsB00B$Ssz ...");
+                l.add("... 1d3a bY w4nd3rSh13ld...");
                 l.add("");
-                l.add("   (.)(.)");
+                l.add("   (@)(0)");
                 break;
             case 23:
                 l.add(" sat3ll1t3                  http://www.rfc-editor.org/rfc/rfc9450");
@@ -741,7 +745,7 @@ public class version {
         res.add("cern");
         res.add("plane");
         res.add("xxxx-cotton");
-        res.add("gray");
+        res.add("cat");
         res.add("xxxxx-boobs");
         res.add("airport");
         res.add("cake");
