@@ -98,7 +98,7 @@ public class pipeWindow extends JPanel {
             int maxY = src.getHeight() + 1;
             int tmp = maxX < maxY ? maxY : maxX;
             Graphics2D g = src.createGraphics();
-            g.drawImage(src, 0, 0, src.getWidth(), src.getHeight(), null);
+            g.drawImage(src, 0, 0, maxX, maxY, null);
             g.dispose();
             g.setComposite(AlphaComposite.Src);
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -106,10 +106,16 @@ public class pipeWindow extends JPanel {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             for (int cx = 0; cx < scr.sizY; cx++) {
                 for (int cy = 0; cy < scr.sizY; cy++) {
-                    int i = src.getRGB(cy * tmp, cx * tmp);
+                    if (cx >= maxX) {
+                        continue;
+                    }
+                    if (cy >= maxY) {
+                        continue;
+                    }
+                    int i = src.getRGB(cx, cy);
                     int o = trueColor2indexedColor(i, userFonts.colorData);
-                    logger.debug("hereee " + i + " --> " + o);
-                    scr.putInt(cx, cy, false, o, 0x30);
+                    logger.debug("hereee " + cx + "," + cy + ";" + i + " --> " + o);
+                    scr.putInt(cx / tmp, cy / tmp, false, o, 0x30);
                 }
             }
         } catch (Exception e) {
