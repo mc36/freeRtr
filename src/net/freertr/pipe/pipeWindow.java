@@ -78,7 +78,10 @@ public class pipeWindow extends JPanel {
             int dff = cur - orig;
             dff &= truncer;
             dff >>>= 5;
-            dff = (dff & 3) + ((dff >>> 8) & 3) + ((dff >>> 16) & 3);
+            int red = (dff >>> 16) & 3;
+            int grn = (dff >>> 8) & 3;
+            int blu = dff & 3;
+            dff = (red << 16) | (grn << 8) | blu;
             if (diff < dff) {
                 continue;
             }
