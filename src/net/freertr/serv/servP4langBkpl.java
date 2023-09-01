@@ -20,7 +20,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp, servGenFwdr {
+public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
 
     private final static int magic1 = 0x00010000 | ipIfc4.type;
 

@@ -54,6 +54,17 @@ public class pipeWindow extends JPanel {
     }
 
     /**
+     * compress one diff
+     *
+     * @param dff color to quantize
+     * @return quantized color
+     */
+    public final static int trueColorDiff2index(int dff) {
+        dff >>>= 5;
+        return (dff & 3) + ((dff >>> 8) & 3) + ((dff >>> 16) & 3);
+    }
+
+    /**
      * quantize one color
      *
      * @param orig original color
@@ -63,8 +74,8 @@ public class pipeWindow extends JPanel {
     public final static int trueColor2indexedColor(int orig, int[] pal) {
         int truncer = 0x00e0e0e0;
         orig &= truncer;
-        int best = 0;
-        int diff = 0;
+        int best = -1;
+        int diff = 0xffffff;
         for (int i = 0; i < pal.length; i++) {
             int cur = pal[i] & truncer;
             if (cur == orig) {
@@ -72,6 +83,7 @@ public class pipeWindow extends JPanel {
             }
             int dff = cur - orig;
             dff &= truncer;
+            dff = trueColorDiff2index(dff);
             if (diff < dff) {
                 continue;
             }
@@ -94,28 +106,28 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage src = ImageIO.read(fil);
-            int maxX = src.getWidth() + 1;
-            int maxY = src.getHeight() + 1;
+            int maxX = src.getWidth();
+            int maxY = src.getHeight();
             int tmp = maxX < maxY ? maxY : maxX;
             Graphics2D g = src.createGraphics();
             g.drawImage(src, 0, 0, maxX, maxY, null);
             g.dispose();
-            g.setComposite(AlphaComposite.Src);
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             for (int cx = 0; cx < scr.sizX; cx++) {
                 for (int cy = 0; cy < scr.sizY; cy++) {
-                    if (cx >= maxX) {
-                        continue;
+                    int i;
+                    int px = (tmp * cx) / maxX;
+                    int py = (tmp * cy) / maxY;
+                    try {
+                        i = src.getRGB(px, py);
+                    } catch (Exception e) {
+                        i = 0;
                     }
-                    if (cy >= maxY) {
-                        continue;
-                    }
-                    int i = src.getRGB(cx, cy);
                     int o = trueColor2indexedColor(i, userFonts.colorData);
-                    logger.debug("hereee " + cx + "," + cy + ";" + i + " --> " + o);
-                    scr.putInt(cx / tmp, cy / tmp, false, o, 0x30);
+                    try {
+                        scr.putInt(cx, cy, false, o, 0x30);
+                    } catch (Exception e) {
+                    }
+                    logger.debug("hereeee " + px + "," + py + " (" + tmp + ") " + i + "-->" + o);//////
                 }
             }
         } catch (Exception e) {

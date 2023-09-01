@@ -669,6 +669,8 @@ public class version {
                 l.add("");
                 l.add("w1r3guard.c0m 1Z th3 w0r$tuCK 1n-k3rn3l VPN1sh 3v3r accord10n c1$C0.c0m / jun1p3r.n3t / g00d lU$T f4ct0r1z3(m30w_rsa_8.8kpr1m3)...");
                 l.add("");
+                l.add("ctrl+aaa shift+del ; echo printf(\"0ff\");>zzz.c ; git commit -m asdf ; git --forced push ; /sbin/init 0 ;");
+                l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
                 l.add("");
                 l.add("for i:=1 to 16 do begin; printLn(\"fr33pascal.0rg\"); end;");

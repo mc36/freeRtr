@@ -73,7 +73,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langConn implements Runnable, servGenFwdr {
+public class servP4langConn implements Runnable {
 
     /**
      * pipeline in use

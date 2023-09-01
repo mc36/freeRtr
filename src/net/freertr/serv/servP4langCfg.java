@@ -50,7 +50,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langCfg implements ifcUp, servGenFwdr {
+public class servP4langCfg implements ifcUp {
 
     /**
      * parent

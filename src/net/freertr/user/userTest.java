@@ -176,7 +176,7 @@ public class userTest {
                 pck.merge2end();
             }
             cmd.error("sending cnt=" + cnt + " ifc=" + ifc + " adr=" + pck.ETHsrc + "->" + pck.ETHtrg + " pck=" + pck.dump());
-            srv.send2apiPack(cnt, ifc, pck);
+            srv.send2apiPack(cnt, 0, ifc, pck);
             return null;
         }
         if (a.equals("p4lang")) {
