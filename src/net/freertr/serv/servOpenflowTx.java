@@ -31,11 +31,14 @@ import net.freertr.util.logger;
  */
 class servOpenflowTx implements Runnable {
 
-    public boolean working = true;
+    /**
+     * true if the transmitter is working
+     */
+    protected boolean working = true;
 
-    private pipeSide pipe;
+    private final pipeSide pipe;
 
-    private servOpenflow lower;
+    private final servOpenflow lower;
 
     private tabGen<servOpenflowFlw> tabGroup = new tabGen<servOpenflowFlw>();
 
@@ -47,6 +50,12 @@ class servOpenflowTx implements Runnable {
 
     private tabGen<servOpenflowFlw> tabIpv6 = new tabGen<servOpenflowFlw>();
 
+    /**
+     * create the transmitter
+     *
+     * @param stream
+     * @param parent
+     */
     public servOpenflowTx(pipeSide stream, servOpenflow parent) {
         pipe = stream;
         lower = parent;
@@ -1068,4 +1077,5 @@ class servOpenflowTx implements Runnable {
             lower.notif.misleep(5000);
         }
     }
+
 }

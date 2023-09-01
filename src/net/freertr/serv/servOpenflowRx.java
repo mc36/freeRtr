@@ -17,11 +17,14 @@ import net.freertr.util.state;
  */
 class servOpenflowRx implements Runnable {
 
+    /**
+     * true if the transmitter is working
+     */
     public boolean working = true;
 
-    private pipeSide pipe;
+    private final pipeSide pipe;
 
-    private servOpenflow lower;
+    private final servOpenflow lower;
 
     public servOpenflowRx(pipeSide stream, servOpenflow parent) {
         pipe = stream;

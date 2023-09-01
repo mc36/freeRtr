@@ -11,11 +11,20 @@ import net.freertr.ip.ipIfc;
  */
 class servOpenflowIfc2 implements Comparator<servOpenflowIfc2> {
 
-    public ipFwdIface ifc;
+    /**
+     * forwarder interface
+     */
+    protected ipFwdIface ifc;
 
-    public ipIfc ipi;
+    /**
+     * backing interface
+     */
+    protected ipIfc ipi;
 
-    public servOpenflowIfc1 ifo;
+    /**
+     * ovs interface
+     */
+    protected servOpenflowIfc1 ifo;
 
     public int compare(servOpenflowIfc2 o1, servOpenflowIfc2 o2) {
         return o1.ifc.compare(o1.ifc, o2.ifc);

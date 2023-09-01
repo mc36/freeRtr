@@ -8,16 +8,35 @@ import net.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class servOpenflowFlw implements Comparator<servOpenflowFlw> {
+class servOpenflowFlw implements Comparator<servOpenflowFlw> {
 
-    public byte[] match = new byte[0];
+    /**
+     * match bytes
+     */
+    protected byte[] match = new byte[0];
 
-    public byte[] action = new byte[0];
+    /**
+     * action bytes
+     */
+    protected byte[] action = new byte[0];
 
-    public int cookie;
+    /**
+     * cookie info
+     */
+    protected int cookie;
 
-    public int prio;
+    /**
+     * flow priority
+     */
+    protected int prio;
 
+    /**
+     * compare two flows
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return -1 if less, +1 if greated 0 if equals
+     */
     public int compare(servOpenflowFlw o1, servOpenflowFlw o2) {
         if (o1.match.length < o2.match.length) {
             return -1;
@@ -28,14 +47,25 @@ public class servOpenflowFlw implements Comparator<servOpenflowFlw> {
         return bits.byteComp(o1.match, 0, o2.match, 0, o1.match.length);
     }
 
-    public boolean sameAct(servOpenflowFlw other) {
+    /**
+     * compare if same action done
+     *
+     * @param other other flow
+     * @return true if yes
+     */
+    protected boolean sameAct(servOpenflowFlw other) {
         if (other.action.length != action.length) {
             return false;
         }
         return bits.byteComp(action, 0, other.action, 0, action.length) == 0;
     }
 
-    public String dump() {
+    /**
+     * dump this flow
+     *
+     * @return string
+     */
+    protected String dump() {
         return "cookie=" + cookie + " prio=" + prio + " match=" + bits.byteDump(match, 0, -1) + " action=" + bits.byteDump(action, 0, -1);
     }
 

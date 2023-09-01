@@ -18,23 +18,47 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
+class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
 
-    public int id;
+    /**
+     * interface id
+     */
+    protected int id;
 
-    public int grp;
+    /**
+     * group id
+     */
+    protected int grp;
 
-    public int cook;
+    /**
+     * cookie
+     */
+    protected int cook;
 
-    public cfgIfc ifc;
+    /**
+     * backing interface
+     */
+    protected cfgIfc ifc;
 
-    public servOpenflow lower;
+    /**
+     * openflow served
+     */
+    protected servOpenflow lower;
 
-    public ifcUp upper = new ifcNull();
+    /**
+     * ethertype layer
+     */
+    protected ifcUp upper = new ifcNull();
 
-    public counter cntr = new counter();
+    /**
+     * counter
+     */
+    protected counter cntr = new counter();
 
-    public state.states lastState = state.states.up;
+    /**
+     * last state
+     */
+    protected state.states lastState = state.states.up;
 
     public int compare(servOpenflowIfc1 o1, servOpenflowIfc1 o2) {
         if (o1.id < o2.id) {
@@ -59,7 +83,12 @@ public class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
         return "openflow port " + id;
     }
 
-    public void sendState(int cfg) {
+    /**
+     * get sent state
+     *
+     * @param cfg interface id
+     */
+    protected void sendState(int cfg) {
         if (id == servOpenflow.tabGrp) {
             return;
         }
