@@ -1019,6 +1019,7 @@ public class userExec {
         hl.add(null, "2 .      alias                   defined alieses");
         hl.add(null, "2 .      platform                platform information");
         hl.add(null, "2 3      me-the                  show something");
+        hl.add(null, "3 .        time                  show some time");
         hl.add(null, "3 4        ascii                 show some art");
         hl.add(null, "4 .          <str>               filename");
         hl.add(null, "3 4        image                 show some image");
