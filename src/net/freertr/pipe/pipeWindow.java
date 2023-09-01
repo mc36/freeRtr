@@ -54,17 +54,6 @@ public class pipeWindow extends JPanel {
     }
 
     /**
-     * compress one diff
-     *
-     * @param dff color to quantize
-     * @return quantized color
-     */
-    public final static int trueColorDiff2index(int dff) {
-        dff >>>= 5;
-        return (dff & 3) + ((dff >>> 8) & 3) + ((dff >>> 16) & 3);
-    }
-
-    /**
      * quantize one color
      *
      * @param orig original color
@@ -83,7 +72,8 @@ public class pipeWindow extends JPanel {
             }
             int dff = cur - orig;
             dff &= truncer;
-            dff = trueColorDiff2index(dff);
+            dff >>>= 5;
+            dff = (dff & 3) + ((dff >>> 8) & 3) + ((dff >>> 16) & 3);
             if (diff < dff) {
                 continue;
             }
