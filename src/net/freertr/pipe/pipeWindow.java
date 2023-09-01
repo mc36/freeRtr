@@ -103,19 +103,14 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage src = ImageIO.read(fil);
-            int maxX = src.getWidth() + 1;
-            int maxY = src.getHeight() + 1;
-            int tmp = maxX < maxY ? maxY : maxX;
             Graphics2D g = src.createGraphics();
-            g.drawImage(src, 0, 0, maxX, maxY, null);
+            g.drawImage(src, 0, 0, scr.sizX, scr.sizY, null);
             g.dispose();
             for (int cx = 0; cx < scr.sizX; cx++) {
                 for (int cy = 0; cy < scr.sizY; cy++) {
-                    int px = (tmp * cx) / maxX;
-                    int py = (tmp * cy) / maxY;
                     int i;
                     try {
-                        i = src.getRGB(px, py);
+                        i = src.getRGB(cx, cy);
                     } catch (Exception e) {
                         i = 0;
                     }
