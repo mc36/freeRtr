@@ -81,7 +81,7 @@ public class pipeWindow extends JPanel {
             int red = (dff >>> 16) & 3;
             int grn = (dff >>> 8) & 3;
             int blu = dff & 3;
-            dff = (red << 16) | (grn << 8) | blu;
+            dff = (red << 16) + (grn << 8) + blu;
             if (diff < dff) {
                 continue;
             }
@@ -106,6 +106,10 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage src = ImageIO.read(fil);
+            ///int maxX = (src.getWidth() / scr.sizX) + 1;
+            ///int maxY = (src.getHeight() / scr.sizY) + 1;
+            ////maxX /= 2;
+            ///int tmp = maxX < maxY ? maxY : maxX;
             Graphics2D g = src.createGraphics();
             g.drawImage(src, 0, 0, scr.sizX, scr.sizY, null);
             g.dispose();

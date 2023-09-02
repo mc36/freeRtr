@@ -255,7 +255,7 @@ public class version {
                 l.add("");
                 l.add("                 \\   /");
                 l.add("                 .\\-/.");
-                l.add("             /\\  () ()  /\\");
+                l.add("             /\\  @o o@  /\\");
                 l.add("            /  \\ /~-~\\ /  \\");
                 l.add("                y  Y  V");
                 l.add("          ,-^-./   |   \\,-^-.");
