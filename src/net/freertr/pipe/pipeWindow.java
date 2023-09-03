@@ -100,24 +100,39 @@ public class pipeWindow extends JPanel {
      * @return converted ansi
      */
     public static userScreen imageAnsi(pipeSide ps, File fil, int[] chr) {
+        //////        fil = new File("/nfs2/own/web/fun/cats-black18.jpg");////////////////////////
         int chs = chr.length;
+        String[] str = new String[chs];
+        for (int i = 0; i < chs; i++) {
+            str[i] = "" + chr[i];
+        }
         userScreen scr = new userScreen(ps);
         scr.putCls();
         scr.putCur(0, 0);
         try {
-            BufferedImage src = ImageIO.read(fil);
-            ///int maxX = (src.getWidth() / scr.sizX) + 1;
-            ///int maxY = (src.getHeight() / scr.sizY) + 1;
-            ////maxX /= 2;
-            ///int tmp = maxX < maxY ? maxY : maxX;
-            Graphics2D g = src.createGraphics();
-            g.drawImage(src, 0, 0, scr.sizX, scr.sizY, null);
-            g.dispose();
-            for (int cx = 0; cx < scr.sizX; cx++) {
-                for (int cy = 0; cy < scr.sizY; cy++) {
+            BufferedImage srcI = ImageIO.read(fil);
+            ////            Graphics2D g = src.createGraphics();
+            ////            g.drawImage(src, 0, 0, scr.sizX, scr.sizY, null);
+            ////            g.dispose();
+            List<String> txtD = imageText(srcI, scr.sizX, scr.sizY, str);
+            int txtS = txtD.size();
+            for (int cy = 0; cy < scr.sizY; cy++) {
+                if (cy >= txtS) {
+                    continue;
+                }
+                String a = txtD.get(cy);
+                byte[] b = a.getBytes();
+                int mx = b.length;
+                for (int cx = 0; cx < scr.sizX; cx++) {
+                    if (cx >= mx) {
+                        continue;
+                    }
+                    if (b[cx] == 0x20) {
+                        continue;
+                    }
                     int i;
                     try {
-                        i = src.getRGB(cx, cy);
+                        i = srcI.getRGB(cx * 2, cy);
                     } catch (Exception e) {
                         i = 0;
                     }
@@ -164,9 +179,11 @@ public class pipeWindow extends JPanel {
      * @return converted text
      */
     public static List<String> imageText(BufferedImage img1, int maxX, int maxY, final String[] chrs) {
+        List<String> txt = new ArrayList<String>();
         maxX = (img1.getWidth() / maxX) + 1;
         maxY = (img1.getHeight() / maxY) + 1;
         maxX /= 2;
+        txt.add("res=" + maxX + "x" + maxY);
         int tmp = maxX < maxY ? maxY : maxX;
         BufferedImage img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_USHORT_GRAY);
         Graphics2D g = img2.createGraphics();
@@ -191,8 +208,6 @@ public class pipeWindow extends JPanel {
             }
         }
         img2 = null;
-        List<String> txt = new ArrayList<String>();
-        txt.add("res=" + maxX + "*" + maxY);
         for (int y = 0; y < img3.length; y++) {
             String a = "";
             for (int x = 0; x < img3[0].length; x++) {

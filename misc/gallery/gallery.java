@@ -266,7 +266,7 @@ public class gallery {
         } else {
             for (int i = txt.size() - 1; i >= 0; i--) {
                 String a = txt.get(i);
-                int pb = a.indexOf("[");
+                int pb = a.indexOf("[") + 1;
                 int pe = a.indexOf("]");
                 if (pb < 0) {
                     continue;
@@ -277,7 +277,7 @@ public class gallery {
                 if (pb >= pe) {
                     continue;
                 }
-                String b = a.substring(pb + 1, pe);
+                String b = a.substring(pb, pe).trim();
                 a = a.substring(0, pb) + "<a href=\"http://" + b + "\">" + b + "</a>" + a.substring(pe, a.length());
                 txt.remove(i);
                 txt.add(i, a);

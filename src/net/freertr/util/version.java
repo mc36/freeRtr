@@ -666,7 +666,7 @@ public class version {
                 l.add("cabl3$... XDD p0wd3r c0rd$ n3v3r g0t l0$t acc1d3ntally u kn0w... b0nu$; al$0 d0nt f0rg3t t0 4g3t an");
                 l.add("3mpty b0ttl3 0f wh1$k3y/v0dka/kala$n1k0v-th3-gunpwd3r3d/wh1ch3v3r-ur3-l1c3n$3d2 0n th3 t0p $h3lv3$ 0f");
                 l.add("th3 $h03$... th3 ma1n 1d3a 1$ that you cl3arly d3$3rv3 a b3tt3r l1f3 and 1t$ th31r a$$ham3 aft3rall...");
-                l.add("d13 ad-minn3r$, long l1v3 add-maxxxErrZZZ, l1k3 th3 cl3v3r3r g3nZ+13rzzzzzzzzzzzzzzzzz...........");
+                l.add("d13 ad-minn3r$, long l1v3 add-maxxxErrZZZ, l1k3 th3 cl3v3r3r 99th b-day-cak3rZzz-g3nZ+13rzzzz......");
                 l.add("");
                 l.add("d3b1an dr0pp3d kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
                 l.add("");
