@@ -659,6 +659,15 @@ public class version {
                 l.add("   (____________)");
                 break;
             case 25:
+                l.add("ju$t tak3 1n a huuug3 3mpty c0k3 pap3r cup, f1ll 1t up w1th c0ff3 and plac3 1t r1ght 0n t0p 0f");
+                l.add("y0ur w0rk1n' n0t3b00k, and $l0wly put 1n all y0ur c0rp0rat3 pr0v1d3d c3llph0n3$ 3xc3pt th3 $1m card$,");
+                l.add("all 0f th3m n33d$ t0 b3 r3m0v3d b4hand... th3n $l0wly l3av3 th3 r00m and pr3t3nd that u l0$t th3");
+                l.add("3nt3ranc3 card t0 th3 $3rv3r$ r00m b4 acc1d3ntally unplugg1ng 1/3 0f th3 c0pp3r and 1/10 0f th3 f1br3");
+                l.add("cabl3$... XDD p0wd3r c0rd$ n3v3r g0t l0$t acc1d3ntally u kn0w... b0nu$; al$0 d0nt f0rg3t t0 4g3t an");
+                l.add("3mpty b0ttl3 0f wh1$k3y/v0dka/kala$n1k0v-th3-gunpwd3r3d/wh1ch3v3r-ur3-l1c3n$3d2 0n th3 t0p $h3lv3$ 0f");
+                l.add("th3 $h03$... th3 ma1n 1d3a 1$ that you cl3arly d3$3rv3 a b3tt3r l1f3 and 1t$ th31r a$$ham3 aft3rall...");
+                l.add("d13 ad-minn3r$, long l1v3 add-maxxxErrZZZ, l1k3 th3 cl3v3r3r g3nZ+13rzzzzzzzzzzzzzzzzz...........");
+                l.add("");
                 l.add("d3b1an dr0pp3d kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
                 l.add("");
                 l.add("s00000 crash3r-bash$ :(){ :|:& };:");
@@ -670,6 +679,8 @@ public class version {
                 l.add("w1r3guard.c0m 1Z th3 w0r$tuCK 1n-k3rn3l VPN1sh 3v3r accord10n c1$C0.c0m / jun1p3r.n3t / g00d lU$T f4ct0r1z3(m30w_rsa_8.8kpr1m3)...");
                 l.add("");
                 l.add("ctrl+aaa shift+del ; echo printf(\"0ff\");>zzz.c ; git commit -m asdf ; git --forced push ; /sbin/init 0 ;");
+                l.add("");
+                l.add("eval(\"((do || !do));buTTd0ntCaTTch/r3p0rtTh3-3xc3pt10n/traC3baCk\");/////sbin/init0;///byN1k3nuk33xDDD");
                 l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
                 l.add("");
