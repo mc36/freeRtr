@@ -80,8 +80,8 @@ public class pipeWindow extends JPanel {
             dff >>>= 5;
             int red = (dff >>> 16) & 3;
             int grn = (dff >>> 8) & 3;
-            int blu = dff & 3;
-            dff = (red << 16) + (grn << 8) + blu;
+            int blu = (dff >>> 0) & 3;
+            dff = (red << 16) + (grn << 8) + (blu);
             if (diff < dff) {
                 continue;
             }
@@ -100,7 +100,6 @@ public class pipeWindow extends JPanel {
      * @return converted ansi
      */
     public static userScreen imageAnsi(pipeSide ps, File fil, int[] chr) {
-        //////        fil = new File("/nfs2/own/web/fun/cats-black18.jpg");////////////////////////
         int chs = chr.length;
         String[] str = new String[chs];
         for (int i = 0; i < chs; i++) {
