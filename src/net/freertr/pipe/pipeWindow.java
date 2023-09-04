@@ -110,17 +110,16 @@ public class pipeWindow extends JPanel {
         scr.putCls();
         scr.putCur(0, 0);
         try {
-            BufferedImage srcI = ImageIO.read(fil);
-            ////            Graphics2D g = src.createGraphics();
-            ////            g.drawImage(src, 0, 0, scr.sizX, scr.sizY, null);
-            ////            g.dispose();
-            List<String> txtD = imageText(srcI, scr.sizX, scr.sizY, str);
-            int txtS = txtD.size();
+            BufferedImage img1 = ImageIO.read(fil);
+            BufferedImage img2 = scaleImage(img1, scr.sizX, scr.sizY, BufferedImage.TYPE_3BYTE_BGR);
+            List<String> img3 = imageText(img2, scr.sizX, scr.sizY, str);
+            int[][] img4 = colorImage(img2);
+            int txtS = img3.size();
             for (int cy = 0; cy < scr.sizY; cy++) {
                 if (cy >= txtS) {
                     continue;
                 }
-                String a = txtD.get(cy);
+                String a = img3.get(cy);
                 byte[] b = a.getBytes();
                 int mx = b.length;
                 for (int cx = 0; cx < scr.sizX; cx++) {
@@ -132,7 +131,7 @@ public class pipeWindow extends JPanel {
                     }
                     int i;
                     try {
-                        i = srcI.getRGB(cx * 2, cy);
+                        i = img4[cy][cx];;
                     } catch (Exception e) {
                         i = 0;
                     }
@@ -169,6 +168,59 @@ public class pipeWindow extends JPanel {
         return imageText(img1, maxX, maxY, chrs);
     }
 
+    private static BufferedImage scaleImage(BufferedImage img1, int maxX, int maxY, int col) {
+        BufferedImage img2;
+        if ((maxX < 1) || (maxY < 1)) {
+            maxX = img1.getWidth();
+            maxY = img1.getHeight();
+            img2 = new BufferedImage(maxX, maxY, col);
+        } else {
+            maxX = (img1.getWidth() / maxX) + 1;
+            maxY = (img1.getHeight() / maxY) + 1;
+            maxX /= 2;
+            int tmp = maxX < maxY ? maxY : maxX;
+            img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_USHORT_GRAY);
+        }
+        Graphics2D g = img2.createGraphics();
+        g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
+        g.dispose();
+        g.setComposite(AlphaComposite.Src);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        return img2;
+    }
+
+    private static int[][] colorImage(BufferedImage img2) {
+        int[][] img3 = new int[img2.getHeight()][img2.getWidth()];
+        for (int y = 0; y < img3.length; y++) {
+            for (int x = 0; x < img3[0].length; x++) {
+                int v = img2.getRGB(x, y);
+                if (v < 0) {
+                    v = -v;
+                }
+                img3[y][x] = v;
+            }
+        }
+        return img3;
+    }
+
+    private static int grayImage(int[][] img2) {
+        int q = 0;
+        for (int y = 0; y < img2.length; y++) {
+            for (int x = 0; x < img2[0].length; x++) {
+                int v = img2[y][x];
+                if (v < 0) {
+                    v = -v;
+                }
+                if (q < v) {
+                    q = v;
+                }
+            }
+        }
+        return q;
+    }
+
     /**
      * convert image to string
      *
@@ -180,38 +232,14 @@ public class pipeWindow extends JPanel {
      */
     public static List<String> imageText(BufferedImage img1, int maxX, int maxY, final String[] chrs) {
         List<String> txt = new ArrayList<String>();
-        maxX = (img1.getWidth() / maxX) + 1;
-        maxY = (img1.getHeight() / maxY) + 1;
-        maxX /= 2;
-        txt.add("res=" + maxX + "x" + maxY);
-        int tmp = maxX < maxY ? maxY : maxX;
-        BufferedImage img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_USHORT_GRAY);
-        Graphics2D g = img2.createGraphics();
-        g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
-        g.dispose();
-        g.setComposite(AlphaComposite.Src);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        int[][] img3 = new int[img2.getHeight()][img2.getWidth()];
-        tmp = 0;
-        for (int y = 0; y < img3.length; y++) {
-            for (int x = 0; x < img3[0].length; x++) {
-                int v = img2.getRGB(x, y);
-                if (v < 0) {
-                    v = -v;
-                }
-                img3[y][x] = v;
-                if (tmp < v) {
-                    tmp = v;
-                }
-            }
-        }
-        img2 = null;
+        txt.add("needed=" + maxX + "x" + maxY);
+        BufferedImage img2 = scaleImage(img1, maxX, maxY, BufferedImage.TYPE_USHORT_GRAY);
+        int[][] img3 = colorImage(img2);
+        int q = grayImage(img3);
         for (int y = 0; y < img3.length; y++) {
             String a = "";
             for (int x = 0; x < img3[0].length; x++) {
-                int v = (img3[y][x] * (chrs.length - 1)) / tmp;
+                int v = (img3[y][x] * (chrs.length - 1)) / q;
                 a += chrs[v];
                 a += chrs[v];
             }

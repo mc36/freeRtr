@@ -668,6 +668,8 @@ public class version {
                 l.add("th3 $h03$... th3 ma1n 1d3a 1$ that you cl3arly d3$3rv3 a b3tt3r l1f3 and 1t$ th31r a$$ham3 aft3rall...");
                 l.add("d13 ad-minn3r$, long l1v3 add-maxxxErrZZZ, l1k3 th3 cl3v3r3r 99th b-day-cak3rZzz-g3nZ+13rzzzz......");
                 l.add("");
+                l.add("s1mply thr0w a k1ds party 1n the 0ff1c3 w1th s0m3 huug3 bday cak3s");
+                l.add("");
                 l.add("d3b1an dr0pp3d kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
                 l.add("");
                 l.add("s00000 crash3r-bash$ :(){ :|:& };:");
@@ -678,7 +680,7 @@ public class version {
                 l.add("");
                 l.add("w1r3guard.c0m 1Z th3 w0r$tuCK 1n-k3rn3l VPN1sh 3v3r accord10n c1$C0.c0m / jun1p3r.n3t / g00d lU$T f4ct0r1z3(m30w_rsa_8.8kpr1m3)...");
                 l.add("");
-                l.add("ctrl+aaa shift+del ; echo printf(\"0ff\");>zzz.c ; git commit -m asdf ; git --forced push ; /sbin/init 0 ;");
+                l.add("ctrl+aaa sh1ft+d3l ; echo printf(\"0ff\");>zzz.c ; git commit -m asdf ; git --forced push ; /sbin/init 0 ;");
                 l.add("");
                 l.add("eval(\"((do || !do));buTTd0ntCaTTch/r3p0rtTh3-3xc3pt10n/traC3baCk\");/////sbin/init0;///byN1k3nuk33xDDD");
                 l.add("");
