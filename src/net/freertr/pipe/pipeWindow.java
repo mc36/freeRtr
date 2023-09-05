@@ -80,7 +80,7 @@ public class pipeWindow extends JPanel {
             dff >>>= 5;
             int red = (dff >>> 16) & 3;
             int grn = (dff >>> 8) & 3;
-            int blu = (dff >>> 0) & 3;
+            int blu = dff & 3;
             dff = (red << 16) + (grn << 8) + (blu);
             if (diff < dff) {
                 continue;
@@ -110,7 +110,7 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage img1 = ImageIO.read(fil);
-            BufferedImage img2 = scaleImage(img1, scr.sizX, scr.sizY, BufferedImage.TYPE_3BYTE_BGR);
+            BufferedImage img2 = scaleImage(img1, scr.sizX, scr.sizY, BufferedImage.TYPE_INT_RGB);
             List<String> img3 = imageText(img2, scr.sizX, scr.sizY, str);
             int[][] img4 = colorImage(img2);
             int txtS = img3.size();
@@ -123,9 +123,6 @@ public class pipeWindow extends JPanel {
                 int mx = b.length;
                 for (int cx = 0; cx < scr.sizX; cx++) {
                     if (cx >= mx) {
-                        continue;
-                    }
-                    if (b[cx] == 0x20) {
                         continue;
                     }
                     int i;
@@ -178,7 +175,7 @@ public class pipeWindow extends JPanel {
             maxY = (img1.getHeight() / maxY) + 1;
             maxX /= 2;
             int tmp = maxX < maxY ? maxY : maxX;
-            img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_USHORT_GRAY);
+            img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, col);
         }
         Graphics2D g = img2.createGraphics();
         g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
@@ -195,9 +192,6 @@ public class pipeWindow extends JPanel {
         for (int y = 0; y < img3.length; y++) {
             for (int x = 0; x < img3[0].length; x++) {
                 int v = img2.getRGB(x, y);
-                if (v < 0) {
-                    v = -v;
-                }
                 img3[y][x] = v;
             }
         }
@@ -238,7 +232,11 @@ public class pipeWindow extends JPanel {
         for (int y = 0; y < img3.length; y++) {
             String a = "";
             for (int x = 0; x < img3[0].length; x++) {
-                int v = (img3[y][x] * (chrs.length - 1)) / q;
+                int v = img3[y][x];
+                v = (v * (chrs.length - 1)) / q;
+                if (v < 0) {
+                    v = -v;
+                }
                 a += chrs[v];
                 a += chrs[v];
             }
