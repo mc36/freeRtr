@@ -349,7 +349,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
         String a = "p4lang fwds=" + bckplnLab.length;
         for (int i = 0; i < fwds.size(); i++) {
             servP4langCfg fwd = fwds.get(i);
-            a += " #" + i + "=" + fwd.getShGenOneLiner();
+            a += " fwd#" + i + "=" + fwd.getShGenOneLiner();
         }
         return a.trim();
     }

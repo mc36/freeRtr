@@ -321,7 +321,7 @@ public class servP4langCfg implements ifcUp {
      * @return offload info
      */
     public String getShGenOneLiner() {
-        return "cpuprt=" + intercon;
+        return "cpuprt=" + intercon + ",ports=" + expIfc.size();
     }
 
     /**
