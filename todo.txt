@@ -1,4 +1,8 @@
+image viewer to file manager
+
 own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
+
+experiment with freebsd as a host os
 
 
 game pinball
