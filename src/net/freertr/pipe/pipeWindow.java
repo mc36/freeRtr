@@ -110,8 +110,9 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage img1 = ImageIO.read(fil);
-            BufferedImage img2 = scaleImage(img1, scr.sizX, scr.sizY, BufferedImage.TYPE_INT_RGB);
-            List<String> img3 = imageText(img2, scr.sizX, scr.sizY, str);
+            int sx = scr.sizX / 2;
+            BufferedImage img2 = scaleImage(img1, sx, scr.sizY, BufferedImage.TYPE_INT_RGB);
+            List<String> img3 = imageText(img2, sx, scr.sizY, str);
             int[][] img4 = colorImage(img2);
             int txtS = img3.size();
             for (int cy = 0; cy < scr.sizY; cy++) {
@@ -121,7 +122,8 @@ public class pipeWindow extends JPanel {
                 String a = img3.get(cy);
                 byte[] b = a.getBytes();
                 int mx = b.length;
-                for (int cx = 0; cx < scr.sizX; cx++) {
+                for (int cx = 0; cx < sx; cx++) {
+                    int px = cx * 2;
                     if (cx >= mx) {
                         continue;
                     }
@@ -132,7 +134,8 @@ public class pipeWindow extends JPanel {
                         i = 0;
                     }
                     int o = trueColor2indexedColor(i, userFonts.colorData);
-                    scr.putInt(cx, cy, false, o, chr[bits.random(0, chs)]);
+                    scr.putInt(px, cy, false, o, chr[bits.random(0, chs)]);
+                    scr.putInt(px + 1, cy, false, o, chr[bits.random(0, chs)]);
                 }
             }
         } catch (Exception e) {

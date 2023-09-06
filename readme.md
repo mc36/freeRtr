@@ -54,6 +54,7 @@ the following directories will appear here:
 * trackmap: web based monitoring
 * voice: an answering machine
 * snmp: some snmp definitions
+* rfcs: rfc series renamer
 * consistency: old style check definitions
 * tests: some volumentric generators
 * check: some check definitions
