@@ -581,6 +581,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("session changes|" + sessNum);
         l.add("fallover|" + sendingIfc);
         l.add("update group|" + groupMember);
+        l.add("socket mode|" + socketMode);
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
         l.add("leak role|rx=" + rtrBgpUtil.leakRole2string(conn.peerLeakRole, false) + ", tx=" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
         l.add("dynamic capability|" + conn.peerDynCap + ", rx=" + conn.dynCapaRx + ", tx=" + conn.dynCapaTx);
@@ -765,12 +766,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     openConn(bits.random(randomStartF, randomStartL));
                     break;
                 case 4: // dynamic
+                case 5: // listen
                     if (lower.lstnNei.find(this) == this) {
                         lower.lstnNei.del(this);
                     }
                     stopNow();
-                    return;
-                case 5: // replay
                     return;
             }
         }
@@ -2010,12 +2010,27 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     }
 
     /**
+     * check readiness status
+     *
+     * @return peer readiness string
+     */
+    public String getReadiness() {
+        if (conn.ready2adv) {
+            return "yes";
+        }
+        if (shutdown) {
+            return "admin";
+        }
+        return "no";
+    }
+
+    /**
      * neighbor list entry
      *
      * @return line of string
      */
     public String showSummry() {
-        return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.ready2adv + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + bits.timePast(conn.upTime);
+        return peerAddr + "|" + bits.num2str(remoteAs) + "|" + getReadiness() + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + bits.timePast(conn.upTime);
     }
 
     /**
@@ -2029,7 +2044,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 1:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis) + "|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis);
             case 2:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + groupMember + "|" + bits.timePast(conn.upTime);
+                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + groupMember + "|" + socketMode + "|" + bits.timePast(conn.upTime);
             case 3:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + reachable + "|" + bits.timePast(reachTim) + "|" + reachNum + "|" + sessNum + "|" + bits.timePast(conn.upTime);
             case 4:

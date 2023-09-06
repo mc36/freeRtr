@@ -3687,7 +3687,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "neighbor|as|open|norem|noloc");
                 break;
             case 2:
-                l = new userFormat("|", "neighbor|as|group|uptime");
+                l = new userFormat("|", "neighbor|as|group|mode|uptime");
                 break;
             case 3:
                 l = new userFormat("|", "neighbor|as|reach|chg|num|sess|uptime");

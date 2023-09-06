@@ -342,7 +342,7 @@ public abstract class rtrBgpParam {
     public boolean unidirection;
 
     /**
-     * connection mode 1=active, 2=passive, 3=both, 4=dynamic, replay
+     * connection mode 1=active, 2=passive, 3=both, 4=dynamic, 5=listen, replay
      */
     public int socketMode;
 

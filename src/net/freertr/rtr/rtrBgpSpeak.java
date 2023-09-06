@@ -1220,7 +1220,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         logger.warn("pmtud failed to " + neigh.peerAddr);
         pipeDiscard.logLines("pmtud failure to " + neigh.peerAddr, pl.getSide(), true, null);
-        neigh.socketMode = 4;
         sendNotify(1, 2);
         neigh.stopNow();
         return true;

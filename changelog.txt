@@ -15120,3 +15120,6 @@ todo: tests for lsrp / pvrp pmtud
 no todo: game tree
 todo: own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
 todo: game pinball
+---------------------------------- 2023-09-06 16:04:44 23.9.6
+todo: image viewer to file manager
+todo: experiment with freebsd as a host os
