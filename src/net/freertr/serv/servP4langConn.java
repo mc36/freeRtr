@@ -131,7 +131,7 @@ public class servP4langConn implements Runnable {
      * @return offload info
      */
     public String getShGenOneLiner() {
-        return "clsd=" + pipe.isClosed() + " rdy=" + pipe.isReady();
+        return ",clsd=" + pipe.isClosed() + ",rdy=" + pipe.isReady();
     }
 
     /**

@@ -600,13 +600,9 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param cnt counter to use
      * @param pck packet to send
      */
-    public void apiSendPack(int cnt, packHolder pck) {
+    protected void apiSendPack(int cnt, packHolder pck) {
         if (debugger.servP4langTraf) {
             logger.debug("sending on #" + id + " " + pck.dataOffset());
-        } else {
-            if (cnt != 1) {
-                logger.error("sending " + cnt + " of packets to #" + id + " payload=" + pck.dataOffset());
-            }
         }
         lower.sendLine(packet2packout(pck, cnt, id, id));
     }

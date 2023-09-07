@@ -22,6 +22,7 @@ import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.tab.tabRouteIface;
+import net.freertr.util.verCore;
 
 /**
  * openflow server
@@ -306,11 +307,15 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         if (ntry == null) {
             return null;
         }
-        String a = "opnflw conn=";
-        if (ntry.conn == null) {
-            return a + "n/a";
+        String a = "n/a";
+        if (expVrf != null) {
+            a = expVrf.name;
         }
-        return a + "fwd#0clsd=" + ntry.conn.isClosed() + ",rdy=" + ntry.conn.isReady() + ",ports=" + expIfc.size();
+        a = "opnflw vrf=" + a + ",prts=" + expIfc.size();
+        if (ntry.conn == null) {
+            return a + ",disc";
+        }
+        return a + ",clsd=" + ntry.conn.isClosed() + ",rdy=" + ntry.conn.isReady();
     }
 
     /**
@@ -331,6 +336,16 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         ifcc = expIfc.find(ifcc);
         if (ifcc == null) {
             return true;
+        }
+        if (cntr < 1) {
+            return false;
+        }
+        if (cntr != 1) {
+            logger.error("sending " + cntr + " of packets to " + ifcc.ifc + " payload=" + pck.dataOffset());
+            if (verCore.release || cfgAll.limited) {
+                ifcc.cntr.drop(pck, counter.reasons.badCmd);
+                return true;
+            }
         }
         for (int i = 0; i < cntr; i++) {
             ifcc.sendPack(pck.copyBytes(true, true));

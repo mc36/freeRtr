@@ -321,7 +321,16 @@ public class servP4langCfg implements ifcUp {
      * @return offload info
      */
     public String getShGenOneLiner() {
-        return "cpuprt=" + intercon + ",ports=" + expIfc.size();
+        String a = platform + ",cpu=" + intercon + ",brd=" + expBr.size() + ",vrf=" + expVrf.size() + ",prt=" + expIfc.size();
+        if (conn == null) {
+            return a;
+        }
+        a += ",bcks=";
+        for (int i = 0; i < backPlanes.size(); i++) {
+            servP4langBkpl cur = backPlanes.get(i);
+            a += cur.getShGenOneLiner();
+        }
+        return a + conn.getShGenOneLiner();
     }
 
     /**
@@ -1184,6 +1193,7 @@ public class servP4langCfg implements ifcUp {
         userFormat res = new userFormat("|", "category|value");
         res.add("peer|" + remote);
         res.add("closed|" + conn.pipe.isClosed());
+        res.add("general|" + getShGenOneLiner());
         res.add("reconn|" + reconns);
         res.add("since|" + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3));
         res.add("for|" + bits.timePast(started));
@@ -1199,6 +1209,9 @@ public class servP4langCfg implements ifcUp {
         res.add("time took|" + rndDoneTime);
         res.add("rounds skip|" + rndSkipNum);
         res.add("last skip|" + bits.time2str(cfgAll.timeZoneName, rndSkipLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndSkipLast) + " ago)");
+        res.add("interfaces|" + expIfc.size());
+        res.add("bridges|" + expBr.size());
+        res.add("vrfs|" + expVrf.size());
         return res;
     }
 

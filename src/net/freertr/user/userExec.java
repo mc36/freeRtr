@@ -1337,7 +1337,7 @@ public class userExec {
         hl.add(null, "4 .          general             general status");
         hl.add(null, "2 3,.    p4lang                  p4lang protocol information");
         hl.add(null, "4 .          general             general status");
-        hl.add(cfgAll.dmnP4lang.listServers(), "3 4      <name:loc>            server name");
+        hl.add(cfgAll.dmnP4lang.listServers(), "3 4,.    <name:loc>            server name");
         hl.add(null, "4 .          general             general status");
         hl.add(null, "4 .          dataplanes          dataplanes");
         hl.add(null, "4 5,.        backplane-ports     backplane ports");
@@ -1354,6 +1354,8 @@ public class userExec {
         hl.add(null, "5 6,.          [num]             forwarder number");
         hl.add(null, "6 .              [addr]          prefix to view");
         hl.add(null, "4 5,.        status              current status");
+        hl.add(null, "5 .            [num]             forwarder number");
+        hl.add(null, "4 5,.        config              current config");
         hl.add(null, "5 .            [num]             forwarder number");
         hl.add(null, "4 5,.        api-tx              transmitted api message statistics");
         hl.add(null, "5 .            [num]             forwarder number");
@@ -1955,7 +1957,8 @@ public class userExec {
         hl.add(null, "2 .      revert                       revert routing software");
         hl.add(null, "2 .      backup                       backup routing software");
         hl.add(null, "2 3,.    upgrade                      upgrade routing software");
-        hl.add(null, "3 3,.      [url]                      parameter of process");
+        hl.add(null, "3 4,.      [url]                      parameter of process");
+        hl.add(null, "4 4,.        [num]                    parameter of process");
         hl.add(null, "2 3,.    simulate                     simulate upgrade process");
         hl.add(null, "3 3,.      [url]                      parameter of process");
         hl.add(null, "2 3      edit                         compose text file");

@@ -24,6 +24,8 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
 import net.freertr.spf.spfCalc;
+import net.freertr.util.counter;
+import net.freertr.util.verCore;
 
 /**
  * p4lang server
@@ -444,7 +446,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
      *
      * @param fwd forwarder
      * @param mod mode: 1=generic, 2=apiTx, 3=apiRx, 4=front, 5=ifaces,
-     * 6=neighs, 7=mpls, 8=nsh, 9=magics, 10=vrf
+     * 6=neighs, 7=mpls, 8=nsh, 9=magics, 10=vrf, 11=config
      * @return show
      */
     public userFormat getShowGen(int fwd, int mod) {
@@ -473,6 +475,12 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
                 return cur.getShowMagics();
             case 10:
                 return cur.getShowVrfs();
+            case 11:
+                List<String> cfg = new ArrayList<String>();
+                cur.getShowRun("", "", cfg);
+                userFormat hlp = new userFormat("|", "line|string");
+                hlp.add(cfg);
+                return hlp;
             default:
                 return null;
         }
@@ -587,6 +595,16 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
         ifcc = fwdc.expIfc.find(ifcc);
         if (ifcc == null) {
             return true;
+        }
+        if (cntr < 1) {
+            return false;
+        }
+        if (cntr != 1) {
+            logger.error("sending " + cntr + " of packets to " + ifcc.ifc + " payload=" + pck.dataOffset());
+            if (verCore.release || cfgAll.limited) {
+                ifcc.cntr.drop(pck, counter.reasons.badCmd);
+                return true;
+            }
         }
         if (ifcc.apiPack) {
             ifcc.apiSendPack(cntr, pck);

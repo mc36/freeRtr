@@ -1156,7 +1156,7 @@ public class userShow {
                 rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
-            a = gen.getShGenOneLiner();
+            a = srv.getShGenOneLiner();
             rdr.putStrArr(bits.str2lst(a));
             return null;
         }
@@ -1177,13 +1177,22 @@ public class userShow {
                 return null;
             }
             a = cmd.word();
+            if (a.length() < 1) {
+                a = srv.getShGenOneLiner();
+                rdr.putStrArr(bits.str2lst(a));
+                return null;
+            }
             if (a.equals("general")) {
-                a = gen.getShGenOneLiner();
+                a = srv.getShGenOneLiner();
                 rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
             if (a.equals("dataplanes")) {
                 rdr.putStrTab(srv.getShowGen(1));
+                return null;
+            }
+            if (a.equals("config")) {
+                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 1));
                 return null;
             }
             if (a.equals("status")) {
