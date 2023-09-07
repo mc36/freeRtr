@@ -793,6 +793,101 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     }
 
     /**
+     * convert number to name
+     *
+     * @param i number to convert
+     * @return name of protocol
+     */
+    public static int num2dns(tabRouteAttr.routeType i) {
+        switch (i) {
+            case rip4:
+            case babel4:
+            case blackhole4:
+            case olsr4:
+            case ospf4:
+            case isis4:
+            case rift4:
+            case pvrp4:
+            case lsrp4:
+            case eigrp4:
+            case bgp4:
+            case msdp4:
+            case flwspc4:
+            case ghosthunt4:
+            case uni2multi4:
+            case uni2flow4:
+            case logger4:
+            case download4:
+            case deaggr4:
+            case aggreg4:
+            case mobile4:
+                return 4;
+            case rip6:
+            case babel6:
+            case blackhole6:
+            case olsr6:
+            case ospf6:
+            case isis6:
+            case rift6:
+            case pvrp6:
+            case lsrp6:
+            case eigrp6:
+            case bgp6:
+            case msdp6:
+            case flwspc6:
+            case ghosthunt6:
+            case uni2multi6:
+            case uni2flow6:
+            case logger6:
+            case download6:
+            case deaggr6:
+            case aggreg6:
+            case mobile6:
+                return 6;
+            default:
+                return -1;
+        }
+    }
+
+    /**
+     * convert string to afi local address if its a name
+     *
+     * @param t type of router
+     * @param s string
+     * @param d default to return
+     * @return address, default if error happened
+     */
+    public static addrIP string2addr(tabRouteAttr.routeType t, String s, addrIP d) {
+        addrIP a = new addrIP();
+        if (!a.fromString(s)) {
+            return a;
+        }
+        int n = num2dns(t);
+        if (n < 0) {
+            return d;
+        }
+        ////////////////
+        return d;
+    }
+
+    /**
+     * convert address to string
+     *
+     * @param t type of router
+     * @param a address to convert
+     * @param d default to return
+     * @return reverse name, default on error
+     */
+    public static String addr2string(tabRouteAttr.routeType t, addrIP a, String d) {
+        int n = num2dns(t);
+        if (n < 0) {
+            return d;
+        }
+        ////////////////
+        return d;
+    }
+
+    /**
      * test if need process number
      *
      * @param i router type

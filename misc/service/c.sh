@@ -13,6 +13,8 @@ echo net.ipv6.conf.all.disable_ipv6=1 > /etc/sysctl.d/disableipv6.conf
 echo net.ipv6.conf.default.disable_ipv6=1 >> /etc/sysctl.d/disableipv6.conf
 echo kernel.panic=10 > /etc/sysctl.d/panic.conf
 
+sed -i "s\quiet\panic=10\g" /etc/default/grub
+
 cat > /etc/network/interfaces << EOF
 iface lo inet loopback
 #allow-hotplug eth0

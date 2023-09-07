@@ -3581,12 +3581,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return true;
         }
         rtrBgpNeigh ntry = new rtrBgpNeigh(this);
-        if (ntry.peerAddr.fromString(cmd.word())) {
+        s = cmd.word().trim();
+        ntry.peerAddr = cfgRtr.string2addr(rouTyp, s, null);
+        if (ntry.peerAddr == null) {
             cmd.error("bad address");
             return false;
         }
         rtrBgpNeigh old = neighs.add(ntry);
         if (old == null) {
+            if (!s.equals("" + ntry.peerAddr)) {
+                ntry.description = s;
+            } else {
+                ntry.description = cfgRtr.addr2string(rouTyp, ntry.peerAddr, null);
+            }
             ntry.startNow();
         } else {
             ntry = old;
