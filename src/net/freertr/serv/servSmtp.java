@@ -721,7 +721,7 @@ class servSmtpDoer implements Runnable {
     }
 
     public void doOneBcc(List<String> txt, String fn) {
-        bits.buf2txt(true, txt, fn);/////////////
+        bits.buf2txt(true, txt, fn);
     }
 
     public boolean doOne() {

@@ -9,7 +9,6 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
-import net.freertr.clnt.clntWhois;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
@@ -1232,7 +1231,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private boolean measurePmtuD() {
-        if (neigh.pmtudTim < 0) {
+        if (neigh.pmtudTim <= 0) {
             return false;
         }
         logger.warn("testing pmtud to " + neigh.peerAddr + " from " + neigh.localAddr);

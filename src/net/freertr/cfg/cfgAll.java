@@ -713,6 +713,11 @@ public class cfgAll {
     public static String domainName = null;
 
     /**
+     * allow domain lookup
+     */
+    public static boolean domainLookup = false;
+
+    /**
      * end format
      */
     public static int endForm = 0;
@@ -1309,6 +1314,7 @@ public class cfgAll {
         "!no client bullying",
         "!no client proxy",
         "!no client domain-name",
+        "!no client domain-lookup",
         "!no client name-proxy",
         "!client name-server",
         "!client time-zone Z",
@@ -3734,6 +3740,7 @@ public class cfgAll {
             l.add("client name-proxy " + nameServerProxy.name);
         }
         cmds.cfgLine(l, domainName == null, "", "client domain-name", domainName);
+        cmds.cfgLine(l, !domainLookup, "", "client domain-lookup", "");
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
         cmds.cfgLine(l, !passwdStars, "", "client password-stars", "");
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);

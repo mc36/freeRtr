@@ -514,6 +514,7 @@ public class userConfig {
         l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    bullying                     specify shame quote source");
         l.add(cfgAll.dmnQuote.listServers(), "3  .      <name:loc>                 name of server");
+        l.add(null, "2  .    domain-lookup                allow dns queries");
         l.add(null, "2  3    domain-name                  specify domain name");
         l.add(null, "3  .      <str>                      name of domain");
         l.add(null, "2  3    name-proxy                   specify proxy profile");
@@ -1664,6 +1665,10 @@ public class userConfig {
                 }
                 return;
             }
+            if (a.equals("domain-lookup")) {
+                cfgAll.domainLookup = true;
+                return;
+            }
             if (a.equals("domain-name")) {
                 cfgAll.domainName = cmd.word();
                 return;
@@ -2305,6 +2310,10 @@ public class userConfig {
             }
             if (a.equals("proxy")) {
                 cfgAll.clientProxy = null;
+                return;
+            }
+            if (a.equals("domain-lookup")) {
+                cfgAll.domainLookup = false;
                 return;
             }
             if (a.equals("domain-name")) {

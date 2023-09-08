@@ -5,12 +5,14 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.clnt.clntDns;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.ip.ipRtrAdv;
 import net.freertr.ip.ipRtrAgr;
 import net.freertr.ip.ipRtrInt;
 import net.freertr.ip.ipRtrRed;
+import net.freertr.pack.packDnsRec;
 import net.freertr.rtr.rtrAggreg;
 import net.freertr.rtr.rtrBabel;
 import net.freertr.rtr.rtrBgp;
@@ -39,6 +41,7 @@ import net.freertr.tab.tabIntUpdater;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
+import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
@@ -864,12 +867,29 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (!a.fromString(s)) {
             return a;
         }
+        if (!cfgAll.domainLookup) {
+            return d;
+        }
         int n = num2dns(t);
         if (n < 0) {
             return d;
         }
-        ////////////////
-        return d;
+        int r;
+        if (n == 4) {
+            r = packDnsRec.typeA;
+        } else {
+            r = packDnsRec.typeAAAA;
+        }
+        clntDns clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, s, false, r);
+        a = clnt.getAddr(n);
+        if (a == null) {
+            return d;
+        }
+        if ((n == 4) && (a.isIPv4())) {
+            return a;
+        }
+        return a;
     }
 
     /**
@@ -881,11 +901,19 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * @return reverse name, default on error
      */
     public static String addr2string(tabRouteAttr.routeType t, addrIP a, String d) {
+        if (!cfgAll.domainLookup) {
+            return d;
+        }
         int n = num2dns(t);
         if (n < 0) {
             return d;
         }
-        ////////////////
+        clntDns clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(a), false, packDnsRec.typePTR);
+        String s = clnt.getPTR();
+        if (s != null) {
+            return s;
+        }
         return d;
     }
 

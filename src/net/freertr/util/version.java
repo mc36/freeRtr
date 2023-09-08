@@ -342,7 +342,7 @@ public class version {
                 l.add("      ;   ;   | 1            ;  ;  '.: .'  ;<   ___.-'._.'------\"\"\"\"\"\"____'..'.--\"\"\";;'  o ';  ");
                 l.add("      '.   \\__:/__           ;  ;--\"\"()_   ;'  /___ .-\" ____---\"\"\"\"\"\"\" __.._ __._   '>.,  ,/;  ");
                 l.add("        \\   \\    /\"\"\"<--...__;  '_.-'/; \"\"; ;.'.'  \"-..'    \"-.      /\"/    `__. '.   \"---\"; ");
-                l.add("         '.  'v ; ;     ;;    \\  \\ .'  \\ ; ////    _.-\" \"-._   ;    : ;   .-'__ '. ;   .^\".'      ");
+                l.add("         '.  'v ; ;     ;;    \\  \\ .'  \\ ; // /    _.-\" \"-._   ;    : ;   .-'__ '. ;   .^\".'      ");
                 l.add("           '.  '; '.   .'/     '. `-.__.' /;;;   .o__.---.__o. ;    : ;   '\"\";;\"\"' ;v^\" .^ ");
                 l.add("             '-. '-.___.'<__v.^,v'.  '-.-' ;|:   '    :      ` ;v^v^'.'.    .;'.__/_..-'   ");
                 l.add("                '-...__.___...---\"\"'-.   '-'.;\\     'WW\\     .'_____..>.\"^\"-\"\"\"\"\"\"\"\" ");
@@ -682,7 +682,7 @@ public class version {
                 l.add("");
                 l.add("ctrl+aaa sh1ft+d3l ; echo printf(\"0ff\");>zzz.c ; git commit -m asdf ; git --forced push ; /sbin/init 0 ;");
                 l.add("");
-                l.add("eval(\"((do || !do));buTTd0ntCaTTch/r3p0rtTh3-3xc3pt10n/traC3baCk\");/////sbin/init0;///byN1k3nuk33xDDD");
+                l.add("eval(\"((do || !do));buTTd0ntCaTTch/r3p0rtTh3-3xc3pt10n/traC3baCk\");//sbin/init0;//byN1k3nuk33xDDD");
                 l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
                 l.add("");
@@ -698,9 +698,9 @@ public class version {
                 l.add("");
                 l.add("void* palto[i][i];");
                 l.add("");
-                l.add("for(;1;)System.exec(\"; /sbin/init 0 ;\");////:((((");
+                l.add("for(;1;)System.exec(\"; /sbin/init 0 ;\");//:((((");
                 l.add("");
-                l.add("int x=1;while(x>0)x++;///here u goo...");
+                l.add("int x=1;while(x>0)x++;//here u goo...");
                 l.add("");
                 l.add("10 print(\"fWWWk\")");
                 l.add("20 goto 10");

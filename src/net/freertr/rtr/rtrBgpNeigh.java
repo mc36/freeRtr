@@ -767,11 +767,14 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                     break;
                 case 4: // dynamic
                 case 5: // listen
-                    if (lower.lstnNei.find(this) == this) {
-                        lower.lstnNei.del(this);
-                    }
+                    rtrBgpNeigh old = lower.lstnNei.del(this);
                     stopNow();
+                    if (old == null) {
+                        return;
+                    }
+                    old.stopNow();
                     return;
+
             }
         }
     }
