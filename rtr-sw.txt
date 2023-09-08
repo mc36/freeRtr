@@ -1131,8 +1131,10 @@ server dns ns
  exit
 !
 server honeypot hp
- port 666
+ port 12345
  script logger
+ router4 bgp4 65535
+ router6 bgp6 65535
  vrf v1
  exit
 !

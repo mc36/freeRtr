@@ -14,6 +14,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
+import net.freertr.util.syncInt;
 
 /**
  * whois (rfc3912) client
@@ -21,6 +22,21 @@ import net.freertr.util.bits;
  * @author matecsaba
  */
 public class clntWhois {
+
+    /**
+     * startup counter
+     */
+    public final static syncInt cntrStart = new syncInt(0);
+
+    /**
+     * error counter
+     */
+    public final static syncInt cntrError = new syncInt(0);
+
+    /**
+     * stop counter
+     */
+    public final static syncInt cntrStop = new syncInt(0);
 
     /**
      * port number
@@ -82,19 +98,24 @@ public class clntWhois {
      * @return response, null if error
      */
     public List<String> doQuery(String quest) {
+        cntrStart.add(1);
         console.linePut("querying " + quest + " at " + server);
         if (proxy == null) {
+            cntrError.add(1);
             return null;
         }
         if (server == null) {
+            cntrError.add(1);
             return null;
         }
         addrIP trg = userTerminal.justResolv(server, 0);
         if (trg == null) {
+            cntrError.add(1);
             return null;
         }
         pipeSide pipe = proxy.doConnect(servGeneric.protoTcp, trg, port, "whois");
         if (pipe == null) {
+            cntrError.add(1);
             return null;
         }
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -125,6 +146,7 @@ public class clntWhois {
                 continue;
             }
         }
+        cntrStop.add(1);
         if (asNam == null) {
             return res;
         }

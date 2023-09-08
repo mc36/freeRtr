@@ -7,6 +7,7 @@ import java.util.zip.Inflater;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
+import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
 import net.freertr.pack.packHolder;
@@ -1013,6 +1014,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * close this session
      */
     public void closeNow() {
+        neigh.delListenPeer();
         if (pipe != null) {
             pipe.setClose();
         }
@@ -1214,10 +1216,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             logger.warn("no prefix for " + neigh.peerAddr);
             return;
         }
-        String asp = ntry.best.asPathStr();
-        String asi = ntry.best.asInfoStr();
-        String asn = ntry.best.asNameStr();
-        logger.info("neighbor " + neigh.peerAddr + " path=" + asp + " info=" + asi + " name=" + asn);
+        logger.info("neighbor " + neigh.peerAddr + " pfx=" + addrPrefix.ip2str(ntry.prefix) + " pth=" + ntry.best.asPathStr() + " nfo=" + ntry.best.asInfoStr() + " nam=" + ntry.best.asNameStr());
     }
 
     private void lookupReverse() {
@@ -2123,6 +2122,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         packSend(pck, rtrBgpUtil.msgNotify);
         closeNow();
         logger.info("sent notify " + rtrBgpUtil.notify2string(err, sub) + " to " + neigh.peerAddr);
+        neigh.delListenPeer();
     }
 
     /**

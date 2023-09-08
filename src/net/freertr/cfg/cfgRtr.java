@@ -41,7 +41,6 @@ import net.freertr.tab.tabIntUpdater;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
-import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
