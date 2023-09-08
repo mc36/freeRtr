@@ -780,10 +780,10 @@ public class version {
         sa.add("");
         Runtime rt = Runtime.getRuntime();
         sa.add("name: " + cfgAll.hostName);
+        sa.add("prnt: " + cfgInit.prntNam);
         sa.add("hwid: " + cfgInit.hwIdNum);
         sa.add("hwsn: " + cfgInit.hwSnNum);
         sa.add("hwfw: " + getHWfwd1liner());
-        sa.add("prnt: " + cfgInit.prntNam);
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.started + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.started));
         sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
         sa.add("rwpath: " + getRWpath());
