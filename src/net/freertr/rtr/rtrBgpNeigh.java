@@ -710,9 +710,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * stop this neighbor process
      */
     public void stopNow() {
+        conn.closeNow();
+        if (!need2run) {
+            return;
+        }
         need2run = false;
         shutdown = true;
-        conn.closeNow();
         delListenPeer();
     }
 
@@ -781,8 +784,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if ((socketMode > 0) && (socketMode < 4)) {
             return;
         }
-        rtrBgpNeigh old = lower.lstnNei.del(this);
         stopNow();
+        rtrBgpNeigh old = lower.lstnNei.del(this);
         if (old == null) {
             return;
         }
