@@ -8,6 +8,8 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntDns;
+import net.freertr.clnt.clntWhois;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
@@ -26,6 +28,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
+import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.prt.prtPmtud;
@@ -1202,6 +1205,32 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         closeNow();
     }
 
+    private void lookupDatabase() {
+        if (!neigh.lookupDatabase) {
+            return;
+        }
+        logger.warn("looking up " + neigh.peerAddr + " in whois");
+        tabRouteEntry<addrIP> ntry = parent.routerComputedU.route(neigh.peerAddr);
+        if (ntry == null) {
+            logger.warn("no prefix for " + neigh.peerAddr);
+            return;
+        }
+        String asp = ntry.best.asPathStr();
+        String asi = ntry.best.asInfoStr();
+        String asn = ntry.best.asNameStr();
+        logger.info("neighbor " + neigh.peerAddr + " path=" + asp + " info=" + asi + " name=" + asn);
+    }
+
+    private void lookupReverse() {
+        if (!neigh.lookupReverse) {
+            return;
+        }
+        logger.warn("looking up " + neigh.peerAddr + " in dns");
+        clntDns clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(neigh.peerAddr), false, packDnsRec.typePTR);
+        logger.info("neighbor " + neigh.peerAddr + " reverse=" + clnt.getPTR());
+    }
+
     private boolean measurePmtuD() {
         if (neigh.pmtudTim < 0) {
             return false;
@@ -1214,11 +1243,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pm.timeout = neigh.pmtudTim;
         int[] res = pm.doer();
         if (res != null) {
-            logger.warn("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);
+            logger.info("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);
             pmtudRes = pm.last;
             return false;
         }
-        logger.warn("pmtud failed to " + neigh.peerAddr);
+        logger.error("pmtud failed to " + neigh.peerAddr);
         pipeDiscard.logLines("pmtud failure to " + neigh.peerAddr, pl.getSide(), true, null);
         sendNotify(1, 2);
         neigh.stopNow();
@@ -1242,6 +1271,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (measurePmtuD()) {
             return;
         }
+        lookupReverse();
+        lookupDatabase();
         int typ = packRecv(pckRx);
         if (typ == rtrBgpUtil.msgNotify) {
             logger.info("got notify " + rtrBgpUtil.notify2string(pckRx.getByte(0), pckRx.getByte(1)) + " from " + neigh.peerAddr);
@@ -2276,9 +2307,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpTraf) {
             logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
         }
-        pckTx.clear();
-        rtrBgpUtil.createEndOfRib(pckTx, pckTh, safi);
-        packSend(pckTx, rtrBgpUtil.msgUpdate);
+        packHolder pck = new packHolder(true, true);
+        rtrBgpUtil.createEndOfRib(pck, new packHolder(true, true), safi);
+        packSend(pck, rtrBgpUtil.msgUpdate);
     }
 
     /**

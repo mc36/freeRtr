@@ -383,6 +383,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! (template|neighbor) .* advertisement-interval-rx 0",
         "router bgp[46] .*! (template|neighbor) .* advertisement-interval-tx 0",
         "router bgp[46] .*! (template|neighbor) .* pmtud 0 0 0",
+        "router bgp[46] .*! no (template|neighbor) .* lookup-database",
+        "router bgp[46] .*! no (template|neighbor) .* lookup-reverse",
         "router bgp[46] .*! no (template|neighbor) .* aigp",
         "router bgp[46] .*! no (template|neighbor) .* traffeng",
         "router bgp[46] .*! no (template|neighbor) .* pmsitun",

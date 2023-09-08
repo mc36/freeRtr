@@ -147,6 +147,16 @@ public abstract class rtrBgpParam {
     public tabIntMatcher unknownsOut;
 
     /**
+     * lookup database
+     */
+    public boolean lookupDatabase;
+
+    /**
+     * lookup dns reverse
+     */
+    public boolean lookupReverse;
+
+    /**
      * pmtud min
      */
     public int pmtudMin;
@@ -1178,6 +1188,8 @@ public abstract class rtrBgpParam {
         unknownsColl = src.unknownsColl;
         unknownsOut = src.unknownsOut;
         unknownsIn = src.unknownsIn;
+        lookupDatabase = src.lookupDatabase;
+        lookupReverse = src.lookupReverse;
         pmtudMin = src.pmtudMin;
         pmtudMax = src.pmtudMax;
         pmtudTim = src.pmtudTim;
@@ -1611,6 +1623,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  4       unknowns-in                 receive unknown attributes");
         l.add(null, "4  .         <num>                     allowed attributes");
         l.add(null, "3  .       label-pop                   advertise pop label");
+        l.add(null, "3  .       lookup-database             lookup rib before accepting");
+        l.add(null, "3  .       lookup-reverse              lookup dns before accepting");
         l.add(null, "3  4       pmtud                       test pmtud before accepting");
         l.add(null, "4  5         <num>                     min mtu");
         l.add(null, "5  6           <num>                   max mtu");
@@ -1768,6 +1782,8 @@ public abstract class rtrBgpParam {
             l.add(beg + nei + "authen-type sha1 " + keyId);
         }
         cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
+        cmds.cfgLine(l, !lookupDatabase, beg, nei + "lookup-database", "");
+        cmds.cfgLine(l, !lookupReverse, beg, nei + "lookup-reverse", "");
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
         l.add(beg + nei + "pmtud " + pmtudMin + " " + pmtudMax + " " + pmtudTim);
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
@@ -2510,6 +2526,14 @@ public abstract class rtrBgpParam {
             }
             unknownsIn = new tabIntMatcher();
             unknownsIn.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("lookup-database")) {
+            lookupDatabase = !negated;
+            return false;
+        }
+        if (s.equals("lookup-reverse")) {
+            lookupReverse = !negated;
             return false;
         }
         if (s.equals("pmtud")) {
