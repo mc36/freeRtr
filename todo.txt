@@ -1,5 +1,7 @@
 server http to have whatsmyip whatsmyasn etc services
 
+server http to have lookingglass
+
 image viewer to file manager
 
 own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep

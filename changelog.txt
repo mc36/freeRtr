@@ -15125,3 +15125,5 @@ todo: image viewer to file manager
 todo: experiment with freebsd as a host os
 ---------------------------------- 2023-09-08 04:03:21 23.9.8
 todo: server http to have whatsmyip whatsmyasn etc services
+---------------------------------- 2023-09-09 11:15:48 23.9.9
+todo: server http to have lookingglass
