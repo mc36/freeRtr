@@ -253,6 +253,14 @@ public class servHoneyPot extends servGeneric implements prtServS {
         return false;
     }
 
+    /**
+     * find one forwarder
+     *
+     * @param adr address to check
+     * @param fwd4 ipv4 candidate
+     * @param fwd6 ipv6 candidate
+     * @return proper one, null if nothing
+     */
     protected final static ipFwd findOneFwd(addrIP adr, ipFwd fwd4, ipFwd fwd6) {
         if (adr == null) {
             return null;
@@ -264,6 +272,14 @@ public class servHoneyPot extends servGeneric implements prtServS {
         }
     }
 
+    /**
+     * find one router
+     *
+     * @param adr address to check
+     * @param fwd4 ipv4 candidate
+     * @param fwd6 ipv6 candidate
+     * @return proper one, null if nothing
+     */
     protected final static ipRtr findOneRtr(addrIP adr, ipRtr rtr4, ipRtr rtr6) {
         if (adr == null) {
             return null;
@@ -275,6 +291,15 @@ public class servHoneyPot extends servGeneric implements prtServS {
         }
     }
 
+    /**
+     * find one route
+     *
+     * @param rd route distinguisher, 0 for default
+     * @param adr address to look up
+     * @param rtr router to use
+     * @param fwd forwarder to use
+     * @return route entry, null if nothing
+     */
     protected final static tabRouteEntry<addrIP> findOneRoute(long rd, addrIP adr, ipRtr rtr, ipFwd fwd) {
         if (adr == null) {
             return null;
@@ -299,6 +324,12 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     private final static String noRoute = "route not found";
 
+    /**
+     * one liner of the route
+     *
+     * @param ntry route entry
+     * @return one liner of the route
+     */
     protected static final String getRoute1liner(tabRouteEntry<addrIP> ntry) {
         if (ntry == null) {
             return noRoute;
@@ -306,6 +337,15 @@ public class servHoneyPot extends servGeneric implements prtServS {
         return addrPrefix.ip2str(ntry.prefix) + " - " + ntry.best.asPathStr() + " - " + ntry.best.asInfoStr() + " - " + ntry.best.asNameStr();
     }
 
+    /**
+     * get route in details
+     *
+     * @param fwd forwarder to use
+     * @param ntry route entry
+     * @param tm table mode
+     * @param hck hacker voiced
+     * @return text representing the route
+     */
     protected final static List<String> getRouteDetails(ipFwd fwd, tabRouteEntry<addrIP> ntry, userFormat.tableMode tm, boolean hck) {
         if (ntry == null) {
             return bits.str2lst(noRoute);
@@ -319,13 +359,20 @@ public class servHoneyPot extends servGeneric implements prtServS {
         return lst;
     }
 
+    /**
+     * get route as bytes
+     *
+     * @param lst list to convert
+     * @return converted list
+     */
     protected final static byte[] getRouteAscii(List<String> lst) {
         if (lst == null) {
             return new byte[0];
         }
+        int lss = lst.size();
         List<Integer> res = new ArrayList<Integer>();
         byte[] buf = null;
-        for (int o = 0; o < lst.size(); o++) {
+        for (int o = 0; o < lss; o++) {
             String a = lst.get(o);
             if (a == null) {
                 a = "";
