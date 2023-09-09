@@ -1138,6 +1138,8 @@ server honeypot hp
  route-details
  route-hacked
  route-distinguisher 65535:8512
+ resolve
+ interface loopback0
  vrf v1
  exit
 !

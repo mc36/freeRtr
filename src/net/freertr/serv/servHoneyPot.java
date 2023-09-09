@@ -300,7 +300,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
         l.add(null, "3 .         <num:rtr>       process id");
         l.add(null, "1 .  route-details                print prefix details");
         l.add(null, "1 .  route-hacked                 hackerize prefix details");
-        l.add(null, "1 2  route-distringuisher         rd to use");
+        l.add(null, "1 2  route-distinguisher          rd to use");
         l.add(null, "2 .    <rd>                       rd in ASnum:IDnum format");
         l.add(null, "1 2  route-vrf                    vrf to use");
         l.add(null, "2 .    <name:vrf>                 name of table");
@@ -498,7 +498,7 @@ class servHoneyPotConn implements Runnable {
     }
 
     public void run() {
-        String s = addr + " - " + port;
+        String s = addr + " :" + port;
         if (lower.resolve) {
             clntDns clnt = new clntDns();
             clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
@@ -508,6 +508,9 @@ class servHoneyPotConn implements Runnable {
         ipFwd fwd = servHoneyPot.findOneFwd(addr, lower.fwder4, lower.fwder6);
         tabRouteEntry<addrIP> ntry = servHoneyPot.findOneRoute(0, addr, rtr, fwd);
         s += " - " + servHoneyPot.getRoute1liner(fwd, ntry);
+        if (lower.routeHacked) {
+            s = enc7bit.toHackedStr(s);
+        }
         pipe.linePut("you (" + s + ") have been logged!");
         List<String> lst = null;
         if (lower.routeDetails) {
