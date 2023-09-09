@@ -95,6 +95,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
         "server honeypot .*! no router6",
         "server honeypot .*! no route-details",
         "server honeypot .*! no route-hacked",
+        "server honeypot .*! no route-rd",/////////////////////
         "server honeypot .*! no resolve"
     };
 
