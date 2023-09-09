@@ -5,5 +5,5 @@ java -Xmx512m -jar rtr.jar test tstsum
 ./te.sh
 for a in csv ftr html ; do
   echo updating $a offload
-  cp rtrp4lang-udp-.$a rtr-hw.$a
+  cp rtrp4lang-udp-.$a rtr2.$a
   done
