@@ -1135,6 +1135,8 @@ server honeypot hp
  script logger
  router4 bgp4 65535
  router6 bgp6 65535
+ route-details
+ route-hacked
  vrf v1
  exit
 !
