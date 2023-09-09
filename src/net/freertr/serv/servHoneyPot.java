@@ -7,6 +7,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgScrpt;
+import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntDns;
 import net.freertr.enc.enc7bit;
 import net.freertr.ip.ipFwd;
@@ -20,6 +21,7 @@ import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -75,6 +77,11 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public ipFwd fwder6;
 
     /**
+     * use route rd
+     */
+    public long routeDstngshr;
+
+    /**
      * add route details
      */
     public boolean routeDetails;
@@ -95,7 +102,8 @@ public class servHoneyPot extends servGeneric implements prtServS {
         "server honeypot .*! no router6",
         "server honeypot .*! no route-details",
         "server honeypot .*! no route-hacked",
-        "server honeypot .*! no route-rd",/////////////////////
+        "server honeypot .*! no route-distinguisher",
+        "server honeypot .*! no route-vrf",
         "server honeypot .*! no resolve"
     };
 
@@ -121,6 +129,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public boolean srvInit() {
+        doSanityChecks();
         return genStrmStart(this, new pipeLine(128 * 1024, false), 0);
     }
 
@@ -146,6 +155,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
         }
         cmds.cfgLine(lst, !routeDetails, beg, "route-details", "");
         cmds.cfgLine(lst, !routeHacked, beg, "route-hacked", "");
+        cmds.cfgLine(lst, routeDstngshr == 0, beg, "route-distinguisher", "" + tabRouteUtil.rd2string(routeDstngshr));
         cmds.cfgLine(lst, !resolve, beg, "resolve", "");
     }
 
@@ -153,10 +163,12 @@ public class servHoneyPot extends servGeneric implements prtServS {
         String s = cmd.word();
         if (s.equals("script")) {
             script = cfgAll.scrptFind(cmd.word(), false);
+            doSanityChecks();
             return false;
         }
         if (s.equals("resolve")) {
             resolve = true;
+            doSanityChecks();
             return false;
         }
         if (s.equals("router4")) {
@@ -173,6 +185,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
             }
             router4 = rtr.getRouter();
             fwder4 = rtr.fwd;
+            doSanityChecks();
             return false;
         }
         if (s.equals("router6")) {
@@ -189,14 +202,41 @@ public class servHoneyPot extends servGeneric implements prtServS {
             }
             router6 = rtr.getRouter();
             fwder6 = rtr.fwd;
+            doSanityChecks();
             return false;
         }
         if (s.equals("route-details")) {
             routeDetails = true;
+            doSanityChecks();
             return false;
         }
         if (s.equals("route-hacked")) {
             routeHacked = true;
+            doSanityChecks();
+            return false;
+        }
+        if (s.equals("route-distinguisher")) {
+            s = cmd.word();
+            routeDstngshr = tabRouteUtil.string2rd(s);
+            doSanityChecks();
+            return false;
+        }
+        if (s.equals("route-vrf")) {
+            s = cmd.word();
+            cfgVrf ntry = cfgAll.vrfFind(s, false);
+            if (ntry == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            fwder4 = ntry.fwd4;
+            fwder6 = ntry.fwd6;
+            if (fwder4 != null) {
+                routeDstngshr = fwder4.rd;
+            }
+            if (fwder6 != null) {
+                routeDstngshr = fwder6.rd;
+            }
+            doSanityChecks();
             return false;
         }
         if (!s.equals("no")) {
@@ -205,28 +245,44 @@ public class servHoneyPot extends servGeneric implements prtServS {
         s = cmd.word();
         if (s.equals("script")) {
             script = null;
+            doSanityChecks();
             return false;
         }
         if (s.equals("resolve")) {
             resolve = false;
+            doSanityChecks();
             return false;
         }
         if (s.equals("router4")) {
             router4 = null;
             fwder4 = null;
+            doSanityChecks();
             return false;
         }
         if (s.equals("router6")) {
             router6 = null;
             fwder6 = null;
+            doSanityChecks();
             return false;
         }
         if (s.equals("route-details")) {
             routeDetails = false;
+            doSanityChecks();
             return false;
         }
         if (s.equals("route-hacked")) {
             routeHacked = false;
+            doSanityChecks();
+            return false;
+        }
+        if (s.equals("route-distinguisher")) {
+            routeDstngshr = 0;
+            doSanityChecks();
+            return false;
+        }
+        if (s.equals("route-vrf")) {
+            routeDstngshr = 0;
+            doSanityChecks();
             return false;
         }
         return true;
@@ -244,6 +300,10 @@ public class servHoneyPot extends servGeneric implements prtServS {
         l.add(null, "3 .         <num:rtr>       process id");
         l.add(null, "1 .  route-details                print prefix details");
         l.add(null, "1 .  route-hacked                 hackerize prefix details");
+        l.add(null, "1 2  route-distringuisher         rd to use");
+        l.add(null, "2 .    <rd>                       rd in ASnum:IDnum format");
+        l.add(null, "1 2  route-vrf                    vrf to use");
+        l.add(null, "2 .    <name:vrf>                 name of table");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -293,6 +353,22 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     /**
+     * perform sanity checks
+     */
+    protected synchronized void doSanityChecks() {
+        if (router4 == null) {
+            fwder4 = null;
+        }
+        if (router6 == null) {
+            fwder6 = null;
+        }
+        if ((router4 != null) && (router6 == null)) {
+            routeDstngshr = 0;
+        }
+        resolve &= cfgAll.domainLookup;
+    }
+
+    /**
      * find one route
      *
      * @param rd route distinguisher, 0 for default
@@ -331,11 +407,17 @@ public class servHoneyPot extends servGeneric implements prtServS {
      * @param ntry route entry
      * @return one liner of the route
      */
-    protected static final String getRoute1liner(tabRouteEntry<addrIP> ntry) {
+    protected static final String getRoute1liner(ipFwd fwd, tabRouteEntry<addrIP> ntry) {
         if (ntry == null) {
             return noRoute;
         }
-        return addrPrefix.ip2str(ntry.prefix) + " - " + ntry.best.asPathStr() + " - " + ntry.best.asInfoStr() + " - " + ntry.best.asNameStr();
+        String a;
+        if (fwd != null) {
+            a = "ipv" + fwd.ipVersion + "(" + fwd.vrfName + ") ";
+        } else {
+            a = "";
+        }
+        return addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " - " + ntry.best.asPathStr() + " - " + ntry.best.asInfoStr() + " - " + ntry.best.asNameStr();
     }
 
     /**
@@ -425,7 +507,7 @@ class servHoneyPotConn implements Runnable {
         ipRtr rtr = servHoneyPot.findOneRtr(addr, lower.router4, lower.router6);
         ipFwd fwd = servHoneyPot.findOneFwd(addr, lower.fwder4, lower.fwder6);
         tabRouteEntry<addrIP> ntry = servHoneyPot.findOneRoute(0, addr, rtr, fwd);
-        s += " - " + servHoneyPot.getRoute1liner(ntry);
+        s += " - " + servHoneyPot.getRoute1liner(fwd, ntry);
         pipe.linePut("you (" + s + ") have been logged!");
         List<String> lst = null;
         if (lower.routeDetails) {

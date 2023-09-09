@@ -1137,6 +1137,7 @@ server honeypot hp
  router6 bgp6 65535
  route-details
  route-hacked
+ route-distinguisher 65535:8512
  vrf v1
  exit
 !
