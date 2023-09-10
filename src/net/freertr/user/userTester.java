@@ -148,12 +148,34 @@ public class userTester {
 
     private userTesterOne[] workers;
 
-    private String result2string(String s) {
+    private static final String result2string(String s) {
         if (s.equals("success")) {
-            return "+";
+            return "ok";
         } else {
-            return "-";
+            return "not ok";
         }
+    }
+
+    /**
+     * do the copier work
+     *
+     * @param c command to do
+     */
+    public void doCopier(cmds c) {
+        String s = cmd.word();
+        String t = cmd.word();
+        c.error("moving results " + s + " to " + t);
+        doCopier(c, s, t, "csv");
+        doCopier(c, s, t, "ftr");
+        doCopier(c, s, t, "html");
+    }
+
+    private boolean doCopier(cmds c, String s, String t, String e) {
+        s += e;
+        t += e;
+        boolean b = userFlash.rename(s, t, true, true);
+        c.error("moved " + s + " to " + t + " error=" + b);
+        return b;
     }
 
     /**
@@ -661,9 +683,9 @@ public class userTester {
                 continue;
             }
             if (s.equals("capture")) {
-                userTesterCap cap = new userTesterCap();
-                cap.rtr = cmd.word();
-                cap.ifc = cmd.word();
+                String a = cmd.word();
+                s = cmd.word();
+                userTesterCap cap = new userTesterCap(a, s);
                 capture.add(cap);
                 continue;
             }

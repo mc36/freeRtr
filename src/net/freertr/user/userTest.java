@@ -884,6 +884,11 @@ public class userTest {
             t.doSummary(cmd);
             return null;
         }
+        if (a.equals("tstmov")) {
+            userTester t = new userTester();
+            t.doCopier(cmd);
+            return null;
+        }
         if (a.equals("template")) {
             userTemplate t = new userTemplate();
             t.doer(cmd);

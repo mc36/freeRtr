@@ -7,12 +7,25 @@ package net.freertr.user;
  */
 public class userTesterCap {
 
-    public String rtr;
+    /**
+     * router
+     */
+    public final String rtr;
 
-    public String ifc;
+    /**
+     * interface
+     */
+    public final String ifc;
 
-    public userTesterCap() {
-        //////////////////
+    /**
+     * create instance
+     *
+     * @param r router
+     * @param i interface
+     */
+    public userTesterCap(String r, String i) {
+        rtr = r;
+        ifc = i;
     }
 
 }
