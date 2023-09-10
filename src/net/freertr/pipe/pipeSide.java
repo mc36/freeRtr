@@ -187,6 +187,7 @@ public class pipeSide {
      *
      * @param bufferSize size of one direction buffer
      * @param blockMode set true to keep block boundaries
+     * @param stngs settings storage to use
      */
     public pipeSide(int bufferSize, boolean blockMode, tabGen<pipeSetting> stngs) {
         settings = stngs;
