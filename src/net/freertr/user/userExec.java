@@ -1664,7 +1664,8 @@ public class userExec {
         cfgRtr.getRouterList(hl, 2, " to use");
         hl.add(null, "5 3,.          <num:rtr>              process id");
         hl.add(null, "3 3,.      lookup                     lookup intermediate hops");
-        hl.add(null, "1 .    send                           send a message to logged in users");
+        hl.add(null, "1 2,.  send                           send a message to logged in users");
+        hl.add(null, "2 2,.    [str]                        string to send");
         hl.add(null, "1 2    ping                           send echo request");
         hl.add(null, "2 3,.    <host>                       name of host");
         hl.add(null, "3 3,.      dontfrag                   specify dont fragment");
@@ -1711,6 +1712,9 @@ public class userExec {
         version.genSecHelp(hl, 2);
         hl.add(null, "2 3      ansi                         show some art");
         hl.add(null, "3 .        <str>                      filename");
+        hl.add(null, "2 .      chat                         chat with others");
+        hl.add(null, "2 3,.    send                         chat with others");
+        hl.add(null, "3 3,.      [str]                      string to send");
         hl.add(null, "2 .      dick                         show some dick");
         hl.add(null, "2 .      color                        take test");
         hl.add(null, "2 .      ascii                        take test");
@@ -2517,7 +2521,12 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("send")) {
-            doSend();
+            reader.keyFlush();
+            userGame t = new userGame(new userScreen(pipe), reader);
+            t.doStart();
+            t.doSend(cmd);
+            t.doFinish();
+            reader.keyFlush();
             return cmdRes.command;
         }
         if (a.equals("ping")) {
@@ -2588,7 +2597,7 @@ public class userExec {
         }
         if (a.equals("game")) {
             reader.keyFlush();
-            userGame t = new userGame(new userScreen(pipe));
+            userGame t = new userGame(new userScreen(pipe), reader);
             t.doStart();
             t.doCommand(cmd);
             t.doFinish();
@@ -3857,23 +3866,6 @@ public class userExec {
                 pipe.linePut(strt + a + " is " + res.err + " at " + res.rtr);
             }
         }
-    }
-
-    private void doSend() {
-        List<String> txt = new ArrayList<String>();
-        userEditor e = new userEditor(new userScreen(pipe), txt, "send", false);
-        if (e.doEdit()) {
-            return;
-        }
-        String a = "\r\n\r\nmessage from " + cmd.pipe.settingsGet(pipeSetting.authed, new authResult()).user + ":\r\n";
-        for (int i = 0; i < txt.size(); i++) {
-            a += txt.get(i) + "\r\n";
-        }
-        byte[] buf = a.getBytes();
-        for (int i = 0; i < userLine.loggedUsers.size(); i++) {
-            userLine.loggedUsers.get(i).pipe.morePut(buf, 0, buf.length);
-        }
-        return;
     }
 
     private void doPing() {

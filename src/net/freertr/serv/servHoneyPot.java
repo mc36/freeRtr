@@ -337,8 +337,8 @@ public class servHoneyPot extends servGeneric implements prtServS {
      * find one router
      *
      * @param adr address to check
-     * @param fwd4 ipv4 candidate
-     * @param fwd6 ipv6 candidate
+     * @param rtr4 ipv4 candidate
+     * @param rtr6 ipv6 candidate
      * @return proper one, null if nothing
      */
     protected final static ipRtr findOneRtr(addrIP adr, ipRtr rtr4, ipRtr rtr6) {
@@ -404,6 +404,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * one liner of the route
      *
+     * @param fwd forwarder to use
      * @param ntry route entry
      * @return one liner of the route
      */
