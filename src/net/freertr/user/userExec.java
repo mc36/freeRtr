@@ -31,14 +31,10 @@ import net.freertr.prt.prtTraceroute;
 import net.freertr.clnt.clntWhois;
 import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcNull;
-import net.freertr.ip.ipCor4;
-import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
 import net.freertr.ip.ipFwdEchod;
 import net.freertr.ip.ipFwdIface;
-import net.freertr.ip.ipIcmp4;
-import net.freertr.ip.ipIcmp6;
 import net.freertr.ip.ipRtr;
 import net.freertr.line.lineHdlc;
 import net.freertr.pack.packDnsRec;
@@ -58,7 +54,6 @@ import net.freertr.serv.servGeneric;
 import net.freertr.enc.encUrl;
 import net.freertr.prt.prtIcmptun;
 import net.freertr.tab.tabRouteAttr;
-import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
@@ -2521,12 +2516,9 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("send")) {
-            reader.keyFlush();
             userGame t = new userGame(new userScreen(pipe), reader);
-            t.doStart();
-            t.doSend(cmd);
-            t.doFinish();
-            reader.keyFlush();
+            a = t.doSend(cmd);
+            cmd.error(a);
             return cmdRes.command;
         }
         if (a.equals("ping")) {

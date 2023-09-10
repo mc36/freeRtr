@@ -156,10 +156,7 @@ public class pipeSide {
      */
     protected pipeSide peerSideOfPipeLine;
 
-    /**
-     * pipeline settings
-     */
-    protected tabGen<pipeSetting> settings;
+    private final tabGen<pipeSetting> settings; // pipeline settings
 
     private int timeout = 0; // timeout in milliseconds
 
@@ -191,7 +188,8 @@ public class pipeSide {
      * @param bufferSize size of one direction buffer
      * @param blockMode set true to keep block boundaries
      */
-    public pipeSide(int bufferSize, boolean blockMode) {
+    public pipeSide(int bufferSize, boolean blockMode, tabGen<pipeSetting> stngs) {
+        settings = stngs;
         if (blockMode) {
             headSize = 2;
         } else {
@@ -982,7 +980,9 @@ public class pipeSide {
         }
         pipeSetting ntry = new pipeSetting(nam);
         ntry.value = val;
-        settings.put(ntry);
+        synchronized (settings) {
+            settings.put(ntry);
+        }
     }
 
     /**
@@ -997,7 +997,9 @@ public class pipeSide {
         }
         pipeSetting ntry = new pipeSetting(nam);
         ntry.value = val;
-        settings.add(ntry);
+        synchronized (settings) {
+            settings.add(ntry);
+        }
     }
 
     /**
@@ -1011,7 +1013,9 @@ public class pipeSide {
     @SuppressWarnings("unchecked")
     public <T extends Object> T settingsGet(int nam, T def) {
         pipeSetting ntry = new pipeSetting(nam);
-        ntry = settings.find(ntry);
+        synchronized (settings) {
+            ntry = settings.find(ntry);
+        }
         if (ntry == null) {
             return def;
         }

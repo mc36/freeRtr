@@ -35,13 +35,12 @@ public class pipeLine {
      * @param blockMode set true to keep block boundaries
      */
     public pipeLine(int bufSize, boolean blockMode) {
+        tabGen<pipeSetting> stngs = new tabGen<pipeSetting>();
         int bufferSize = chkSiz(bufSize);
-        clnt2serv = new pipeSide(bufferSize, blockMode);
-        serv2clnt = new pipeSide(bufferSize, blockMode);
+        clnt2serv = new pipeSide(bufferSize, blockMode, stngs);
+        serv2clnt = new pipeSide(bufferSize, blockMode, stngs);
         clnt2serv.peerSideOfPipeLine = serv2clnt;
         serv2clnt.peerSideOfPipeLine = clnt2serv;
-        clnt2serv.settings = new tabGen<pipeSetting>();
-        serv2clnt.settings = clnt2serv.settings;
         clnt2serv.doInact(true);
         serv2clnt.doInact(true);
         nextEntry = 0;

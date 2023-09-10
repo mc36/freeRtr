@@ -19,6 +19,7 @@ import net.freertr.clnt.clntIrc;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntSyslog;
 import net.freertr.pipe.pipeLine;
+import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
@@ -233,6 +234,7 @@ public class logger {
                 if (ntry.pip.nonBlockPut(bb, 0, bb.length) != pipeLine.wontWork) {
                     continue;
                 }
+                ntry.pip.settingsPut(pipeSetting.logging, false);
                 logPipLst.del(ntry);
             }
         }
@@ -691,6 +693,7 @@ public class logger {
         if (pip == null) {
             return true;
         }
+        pip.settingsPut(pipeSetting.logging, true);
         return logPipLst.add(new loggerTerm(pip)) != null;
     }
 
@@ -704,6 +707,7 @@ public class logger {
         if (pip == null) {
             return true;
         }
+        pip.settingsPut(pipeSetting.logging, false);
         return logPipLst.del(new loggerTerm(pip)) != null;
     }
 

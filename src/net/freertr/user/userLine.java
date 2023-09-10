@@ -1,5 +1,6 @@
 package net.freertr.user;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
@@ -10,6 +11,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
+import net.freertr.enc.enc7bit;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
@@ -240,6 +242,70 @@ public class userLine {
      * previous user
      */
     protected String prevUserLoc = "you are the first on this line";
+
+    private static void convLine(List<Integer> bts, String a) {
+        byte[] b = a.getBytes();
+        for (int i = 0; i < b.length; i++) {
+            int o = b[i];
+            bts.add(o);
+        }
+        bts.add(13);
+        bts.add(10);
+    }
+
+    /**
+     * show logger in users
+     *
+     * @return list
+     */
+    public static userFormat listLoggedIns() {
+        userFormat res = new userFormat("|", "user|from|state|since");
+        for (int i = 0; i < loggedUsers.size(); i++) {
+            userLineHandler cur = loggedUsers.get(i);
+            if (cur == null) {
+                continue;
+            }
+            res.add("" + cur);
+        }
+        return res;
+    }
+
+    /**
+     * send broadcast message
+     *
+     * @param a source of message
+     * @param t message to be sent
+     * @return messages sent successfully
+     */
+    protected static int sendBcastMsg(String a, List<String> t) {
+        a = enc7bit.decodeExtStr("" + a);
+        List<Integer> bts = new ArrayList<Integer>();
+        convLine(bts, "");
+        convLine(bts, "");
+        convLine(bts, "message from " + a + ":");
+        for (int i = 0; i < t.size(); i++) {
+            a = t.get(i);
+            a = enc7bit.decodeExtStr(a);
+            convLine(bts, a);
+        }
+        byte[] buf = new byte[bts.size()];
+        for (int i = 0; i < buf.length; i++) {
+            int o = bts.get(i);
+            buf[i] = (byte) o;
+        }
+        int o = 0;
+        for (int i = 0; i < loggedUsers.size(); i++) {
+            userLineHandler u = loggedUsers.get(i);
+            if (u == null) {
+                continue;
+            }
+            if (u.sendBcastMsg(buf)) {
+                continue;
+            }
+            o++;
+        }
+        return o;
+    }
 
     /**
      * get running configuration
@@ -732,8 +798,58 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         new Thread(this).start();
     }
 
+    public boolean sendBcastMsg(byte[] buf) {
+        if (isClosed()) {
+            return false;
+        }
+        return pipe.nonBlockPut(buf, 0, buf.length) != buf.length;
+    }
+
+    public boolean isClosed() {
+        if (pipe == null) {
+            return true;
+        }
+        if (pipe.isClosed() == 0) {
+            return false;
+        }
+        userLine.loggedUsers.del(this);
+        return true;
+    }
+
+    public int getState() {
+        if (pipe == null) {
+            return 1;
+        }
+        if (isClosed()) {
+            return 2;
+        }
+        boolean mon;
+        mon = pipe.settingsGet(pipeSetting.logging, false);
+        if (mon) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+    public static final String state2str(int i) {
+        switch (i) {
+            case 1:
+                return "nulled";
+            case 2:
+                return "disconn";
+            case 3:
+                return "monitor";
+            case 4:
+                return "regular";
+            default:
+                return "unknown#" + i;
+        }
+    }
+
     public String toString() {
-        return user.user + "|" + remote + "|" + bits.timePast(since);
+        int i = getState();
+        return user.user + "|" + remote + "|" + state2str(getState()) + "|" + bits.timePast(since);
     }
 
     /**

@@ -56,27 +56,26 @@ public class userGame {
      * send a broadcast message
      *
      * @param cmd command parser
+     * @return messages sent
      */
-    public void doSend(cmds cmd) {
+    public String doSend(cmds cmd) {
         List<String> txt = new ArrayList<String>();
         String a = cmd.getRemaining().trim();
         if (a.length() > 0) {
             txt.add(a);
-            return;
         } else {
+            reader.keyFlush();
+            doStart();
             userEditor e = new userEditor(console, txt, "message", false);
-            if (e.doEdit()) {
-                return;
+            boolean r = e.doEdit();
+            doFinish();
+            reader.keyFlush();
+            if (r) {
+                return "send cancelled";
             }
         }
-        txt.add(0, "\r\n\r\nmessage from " + cmd.pipe.settingsGet(pipeSetting.authed, new authResult()).user + ":\r\n");
-        for (int i = 0; i < txt.size(); i++) {
-            a += txt.get(i) + "\r\n";
-        }
-        byte[] buf = a.getBytes();
-        for (int i = 0; i < userLine.loggedUsers.size(); i++) {
-            userLine.loggedUsers.get(i).pipe.morePut(buf, 0, buf.length);
-        }
+        a = cmd.pipe.settingsGet(pipeSetting.authed, new authResult()).user + " from " + cmd.pipe.settingsGet(pipeSetting.origin, "?");
+        return "sent to " + userLine.sendBcastMsg(a, txt) + " terminals";
     }
 
     private void colorDrawer(int[] god, List<String> sec) {
@@ -554,11 +553,8 @@ public class userGame {
             return;
         }
         if (a.equals("send")) {
-            reader.keyFlush();
-            doStart();
-            doSend(cmd);
-            doFinish();
-            reader.keyFlush();
+            a = doSend(cmd);
+            cmd.error(a);
             return;
         }
         if (a.equals("ansi")) {

@@ -46,6 +46,11 @@ aaa userlist access
  allowed terminal .*
  allowed exit .*
  allowed test .*
+ allowed game .*
+ allowed send .*
+ allowed terminal .*
+ allowed exit .*
+ allowed logout .*
  exit
 !
 aaa radius rad
@@ -1138,7 +1143,6 @@ server honeypot hp
  route-details
  route-hacked
  route-distinguisher 65535:8512
- resolve
  interface loopback0
  vrf v1
  exit

@@ -266,10 +266,7 @@ public class userShow {
             return null;
         }
         if (a.equals("users")) {
-            userFormat res = new userFormat("|", "user|from|since");
-            for (int i = 0; i < userLine.loggedUsers.size(); i++) {
-                res.add("" + userLine.loggedUsers.get(i));
-            }
+            userFormat res = userLine.listLoggedIns();
             rdr.putStrTab(res);
             return null;
         }
