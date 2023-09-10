@@ -162,12 +162,12 @@ public class userTester {
      * @param c command to do
      */
     public void doCopier(cmds c) {
-        String s = cmd.word();
-        String t = cmd.word();
+        String s = c.word();
+        String t = c.word();
         c.error("moving results " + s + " to " + t);
-        doCopier(c, s, t, "csv");
-        doCopier(c, s, t, "ftr");
-        doCopier(c, s, t, "html");
+        doCopier(c, s, t, ".csv");
+        doCopier(c, s, t, ".ftr");
+        doCopier(c, s, t, ".html");
     }
 
     private boolean doCopier(cmds c, String s, String t, String e) {

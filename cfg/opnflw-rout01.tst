@@ -309,16 +309,16 @@ r6 tping 100 10 4321::105 vrf v1 sou lo0
 r6 tping 100 10 2.2.2.106 vrf v1 sou lo0
 r6 tping 100 10 4321::106 vrf v1 sou lo0
 
-r1 send tclsh
-r1 output exec "telnet 10.11.12.111 2323 vrf v9 sou lo9"
 r1 output show version
 r1 output show platform
+r1 send tclsh
+r1 output exec "telnet 10.11.12.111 2323 vrf v9 sou lo9"
 
 output ../binTmp/opnflw-rout01.html
 <html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
 here are the flows:
 <pre>
-<!>show:0
+<!>show:2
 </pre>
 </body></html>
 !
@@ -327,11 +327,11 @@ output ../binTmp/basic2.html
 <html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
 here is the version information:
 <pre>
-<!>show:1
+<!>show:0
 </pre>
 here is the platform information:
 <pre>
-<!>show:2
+<!>show:1
 </pre>
 </body></html>
 !
