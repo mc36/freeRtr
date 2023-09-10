@@ -330,3 +330,19 @@ r6 tping 100 10 4321::106 vrf v1 sou lo0
 
 r1 dping sdn . r6 2.2.2.105 vrf v1 sou lo0
 r1 dping sdn . r6 4321::105 vrf v1 sou lo0
+
+r1 output show version
+r1 output show platform
+
+output ../binTmp/basic3.html
+<html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
+here is the version information:
+<pre>
+<!>show:0
+</pre>
+here is the platform information:
+<pre>
+<!>show:1
+</pre>
+</body></html>
+!

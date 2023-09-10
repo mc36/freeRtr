@@ -21,7 +21,7 @@ r1 tping 100 5 1.1.1.1 vrf v1 rep 1
 r1 output show version
 r1 output show platform
 
-output ../binTmp/basic.html
+output ../binTmp/basic1.html
 <html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
 here is the version information:
 <pre>
