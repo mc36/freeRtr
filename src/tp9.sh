@@ -7,3 +7,7 @@ for a in csv ftr html ; do
   echo updating $a offload
   cp rtrp4lang-udp-.$a rtr2.$a
   done
+for a in csv ftr html ; do
+  echo updating $a offload
+  cp rtrp4lang-.$a rtr4.$a
+  done
