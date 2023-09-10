@@ -3218,6 +3218,8 @@ todo: experiment with freebsd as a host os
 todo: game pinball
 todo: tests for bgp/msdp: neigh x.x.x.x pmtud
 todo: tests for lsrp / pvrp pmtud
+todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
+todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: ioam as https://www.rfc-editor.org/rfc/rfc9452.html
 todo: serv http InvocationTargetException to have auto logging in the traceback
 todo: sho cdp/lldp int

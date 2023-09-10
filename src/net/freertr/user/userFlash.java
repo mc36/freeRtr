@@ -2,6 +2,7 @@ package net.freertr.user;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -178,6 +179,12 @@ public class userFlash {
             List<String> res = clntCurl.doGetUrl(pip, a);
             cmd.error(cmds.doneFail(res == null));
             rdr.putStrArr(res);
+            return null;
+        }
+        if (a.equals("getperm")) {
+            a = cmd.getRemaining();
+            int i = getFilePerm(a);
+            cmd.pipe.linePut(a + " right is " + i);
             return null;
         }
         if (a.equals("setperm")) {
@@ -979,6 +986,11 @@ public class userFlash {
             return b;
         }
         return true;
+    }
+
+    public final static int getFilePerm(String a) {
+///////////            Files.isExecutable(a);
+        return 0;
     }
 
     /**

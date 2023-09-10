@@ -18,6 +18,10 @@ tests for bgp/msdp: neigh x.x.x.x pmtud
 tests for lsrp / pvrp pmtud
 
 
+acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
+
+inspection dropped sessions do be able to close the sessions properly at layer4
+
 
 
 
