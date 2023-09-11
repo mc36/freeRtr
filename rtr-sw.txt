@@ -1091,7 +1091,7 @@ server http web
  host sid.mchome.nop.hu noindex
  host sid.mchome.nop.hu search-script log
  host sid.mchome.nop.hu script exec config
- host sid.mchome.nop.hu api exec config
+ host sid.mchome.nop.hu api exec config ipinfo
  host sid.mchome.nop.hu websock
  host sid.mchome.nop.hu webdav
  host sid.mchome.nop.hu class

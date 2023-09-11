@@ -14,6 +14,7 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
+import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.version;
@@ -32,6 +33,86 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
      */
     public servHttpHost(String h) {
         host = h;
+    }
+
+    /**
+     * allow nothing
+     */
+    public final static int apiBitsNothing = 0;
+
+    /**
+     * allow something
+     */
+    public final static int apiBitsSomething = 0x01;
+
+    /**
+     * allow exec commands
+     */
+    public final static int apiBitsExec = 0x02;
+
+    /**
+     * allow config commands
+     */
+    public final static int apiBitsConfig = 0x04;
+
+    /**
+     * allow ip info commands
+     */
+    public final static int apiBitsIpinfo = 0x08;
+
+    /**
+     * string to api bits
+     *
+     * @param cmd commands
+     * @return api bits
+     */
+    public static final int string2apiBits(cmds cmd) {
+        int i = servHttpHost.apiBitsNothing;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("exec")) {
+                i |= servHttpHost.apiBitsExec;
+                continue;
+            }
+            if (a.equals("config")) {
+                i |= 4;
+                continue;
+            }
+            if (a.equals("ipinfo")) {
+                i |= 8;
+                continue;
+            }
+        }
+        if (i == servHttpHost.apiBitsSomething) {
+            return servHttpHost.apiBitsNothing;
+        }
+        return i | servHttpHost.apiBitsSomething;
+    }
+
+    /**
+     * string to api bits
+     *
+     * @param cmd commands
+     * @return api bits
+     */
+    public static final String apiBits2string(int i) {
+        if ((i & apiBitsSomething) == 0) {
+            return "bug=" + i;
+        }
+        String s = "";
+        if ((i & servHttpHost.apiBitsExec) != 0) {
+            s += " exec";
+        }
+        if ((i & servHttpHost.apiBitsConfig) != 0) {
+            s += " config";
+        }
+        if ((i & servHttpHost.apiBitsIpinfo) != 0) {
+            s += " ipinfo";
+        }
+        return s;
     }
 
     /**
@@ -165,7 +246,7 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
     public int allowScript;
 
     /**
-     * api calls allowed
+     * api calls allowed, 2=exec, 4=config, 8=ipinfo
      */
     public int allowApi;
 

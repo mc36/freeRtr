@@ -361,15 +361,8 @@ public class servHttp extends servGeneric implements prtServS {
                 }
                 l.add(a + " script" + s);
             }
-            if (ntry.allowApi != 0) {
-                String s = "";
-                if ((ntry.allowApi & 2) != 0) {
-                    s += " exec";
-                }
-                if ((ntry.allowApi & 4) != 0) {
-                    s += " config";
-                }
-                l.add(a + " api" + s);
+            if (ntry.allowApi != servHttpHost.apiBitsNothing) {
+                l.add(a + " api" + servHttpHost.apiBits2string(ntry.allowApi));
             }
             if (ntry.allowImgMap) {
                 l.add(a + " imagemap");
@@ -651,24 +644,10 @@ public class servHttp extends servGeneric implements prtServS {
         }
         if (a.equals("api")) {
             if (negated) {
-                ntry.allowApi = 0;
+                ntry.allowApi = servHttpHost.apiBitsNothing;
                 return false;
             }
-            ntry.allowApi = 1;
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (a.equals("exec")) {
-                    ntry.allowApi |= 2;
-                    continue;
-                }
-                if (a.equals("config")) {
-                    ntry.allowApi |= 4;
-                    continue;
-                }
-            }
+            ntry.allowApi = servHttpHost.string2apiBits(cmd);
             return false;
         }
         if (a.equals("search-script")) {
@@ -893,6 +872,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "3 4,.    api                        allow api calls");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
+        l.add(null, "4 4,.      ipinfo                   allow ip info commands");
         l.add(null, "3 4      search-script              allow scripts defined in configuration");
         l.add(null, "4 .        <str>                    prefix");
         l.add(null, "3 .      imagemap                   allow image map processing");

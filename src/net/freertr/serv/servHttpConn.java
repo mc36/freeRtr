@@ -366,10 +366,45 @@ public class servHttpConn implements Runnable {
     }
 
     private boolean sendOneApi(String s) {
+        if (gotHost.allowApi == servHttpHost.apiBitsNothing) {
+            return true;
+        }
+        if ((gotHost.allowApi & servHttpHost.apiBitsSomething) == 0) {
+            return true;
+        }
         cmds cmd = new cmds("api", s);
         cmd.word("/");
         s = cmd.word("/");
-        if (((gotHost.allowApi & 2) != 0) && s.equals("exec")) {
+        if (debugger.servHttpTraf) {
+            logger.debug("api queried cnd=" + s + " prm=" + cmd.getRemaining() + " from " + peer);
+        }
+        if (((gotHost.allowApi & servHttpHost.apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
+            addrIP adr = null;
+            boolean hck = false;
+            for (;;) {
+                s = cmd.word("/");
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("addr")) {
+                    adr = new addrIP();
+                    adr.fromString(cmd.word());
+                    continue;
+                }
+                if (s.equals("hack")) {
+                    hck = true;
+                    continue;
+                }
+            }
+            if (adr == null) {
+                adr = peer.copyBytes();
+            }
+            String r = "ipinfo goes here";///////////////////////
+
+            sendTextHeader("200 ok", "text/plain", r.getBytes());
+            return false;
+        }
+        if (((gotHost.allowApi & servHttpHost.apiBitsExec) != 0) && s.equals("exec")) {
             String r = "";
             String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
             for (;;) {
@@ -385,7 +420,7 @@ public class servHttpConn implements Runnable {
                 pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
                 pip.settingsPut(pipeSetting.height, 0);
                 userExec exe = new userExec(pip, rdr);
-                exe.privileged = (gotHost.allowApi & 4) != 0;
+                exe.privileged = (gotHost.allowApi & servHttpHost.apiBitsConfig) != 0;
                 pip.setTime(60000);
                 String a = exe.repairCommand(s);
                 r += "#" + a + e;
@@ -401,7 +436,7 @@ public class servHttpConn implements Runnable {
             sendTextHeader("200 ok", "text/plain", r.getBytes());
             return false;
         }
-        if (((gotHost.allowApi & 4) != 0) && s.equals("config")) {
+        if (((gotHost.allowApi & servHttpHost.apiBitsConfig) != 0) && s.equals("config")) {
             pipeLine pl = new pipeLine(65535, false);
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
@@ -838,9 +873,6 @@ public class servHttpConn implements Runnable {
         }
         if ((gotHost.allowMarkdown) && a.equals(".md")) {
             return sendOneMarkdown(s);
-        }
-        if ((gotHost.allowApi != 0) && s.startsWith(".api./")) {
-            return sendOneApi(s);
         }
         if ((gotHost.allowScript != 0) && a.equals(".tcl")) {
             return sendOneScript(s);
@@ -1853,15 +1885,23 @@ public class servHttpConn implements Runnable {
                 return;
             }
         }
+        if (gotUrl.filPath.startsWith(".api./")) {
+            b = sendOneApi(pn);
+            if (!b) {
+                return;
+            }
+            sendRespError(404, "bad api");
+            return;
+        }
         if (gotUrl.toFileName().length() > 0) {
             b = sendOneFile(pn, gotUrl.filExt);
         } else {
             b = sendOneDir(pn);
         }
-        if (b) {
-            sendRespError(404, "not found");
+        if (!b) {
             return;
         }
+        sendRespError(404, "not found");
     }
 
     public void run() {
