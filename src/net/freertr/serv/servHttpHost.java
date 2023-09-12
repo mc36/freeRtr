@@ -61,7 +61,7 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
     public final static int apiBitsIpinfo = 0x08;
 
     /**
-     * string to api bits
+     * convert string to api bits
      *
      * @param cmd commands
      * @return api bits
@@ -93,9 +93,9 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
     }
 
     /**
-     * string to api bits
+     * convert api bits to string
      *
-     * @param cmd commands
+     * @param i bits to convert
      * @return api bits
      */
     public static final String apiBits2string(int i) {
