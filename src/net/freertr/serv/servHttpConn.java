@@ -381,6 +381,7 @@ public class servHttpConn implements Runnable {
         if (((gotHost.allowApi & servHttpHost.apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
             addrIP adr = null;
             boolean hck = false;
+            boolean det = false;
             for (;;) {
                 s = cmd.word("/");
                 if (s.length() < 1) {
@@ -393,6 +394,14 @@ public class servHttpConn implements Runnable {
                 }
                 if (s.equals("hack")) {
                     hck = true;
+                    continue;
+                }
+                if (s.equals("detail")) {
+                    det = true;
+                    continue;
+                }
+                if (s.equals("short")) {
+                    det = false;
                     continue;
                 }
             }
