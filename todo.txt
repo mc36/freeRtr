@@ -27,9 +27,12 @@ inspection dropped sessions do be able to close the sessions properly at layer4
 
 
 
+consider draft-ietf-idr-performance-routing
 
 
-ioam as https://www.rfc-editor.org/rfc/rfc9452.html
+ioam as rfc9452
+
+dlep as rfc8175
 
 
 serv http InvocationTargetException to have auto logging in the traceback
@@ -300,7 +303,8 @@ mpls inband performance measurement
 backup path support to the spf class
 wcmp support to the spf class
 allow command to be a substring of an other
-quic v1, v2 and mls, when these have at least adjustmss...
+rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
+rfc8548 tcpcrypt
 update gtp stack to the latest standards
 nat and pbr config to have reindex
 bgp shadow route reflection

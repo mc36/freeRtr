@@ -408,7 +408,7 @@ public class servHttpConn implements Runnable {
             if (adr == null) {
                 adr = peer.copyBytes();
             }
-            String r = "ipinfo goes here";///////////////////////
+            String r = "real ipinfo goes here\r\n";///////////////////////
 
             sendTextHeader("200 ok", "text/plain", r.getBytes());
             return false;

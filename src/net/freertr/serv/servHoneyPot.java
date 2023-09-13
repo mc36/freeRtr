@@ -1,34 +1,19 @@
 package net.freertr.serv;
 
-import java.util.ArrayList;
 import java.util.List;
-import net.freertr.addr.addrIP;
-import net.freertr.cfg.cfgAll;
-import net.freertr.cfg.cfgRtr;
-import net.freertr.cfg.cfgVrf;
-import net.freertr.clnt.clntDns;
-import net.freertr.enc.enc7bit;
-import net.freertr.ip.ipFwd;
-import net.freertr.ip.ipRtr;
-import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRouteAttr;
-import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFilter;
-import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
-import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.logger;
 
 /**
  * honeypot server
  *
+ * @author matecsaba
  */
 public class servHoneyPot extends servGeneric implements prtServS {
 
@@ -49,14 +34,15 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server honeypot .*! port " + port,
         "server honeypot .*! protocol " + proto2string(protoAllStrm),
-        "server honeypot .*! no script",
         "server honeypot .*! no router4",
         "server honeypot .*! no router6",
         "server honeypot .*! no route-details",
         "server honeypot .*! no route-hacked",
         "server honeypot .*! no route-distinguisher",
         "server honeypot .*! no route-vrf",
-        "server honeypot .*! no resolve"
+        "server honeypot .*! no tiny-http",
+        "server honeypot .*! no resolve",
+        "server honeypot .*! no script"
     };
 
     /**
@@ -67,7 +53,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * ip information configuration
      */
-    public servGenIpInf ipInfo = new servGenIpInf();
+    public servHoneyPotCfg ipInfo = new servHoneyPotCfg();
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -94,7 +80,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        ipInfo.doGetCfg(beg, lst, filter);
+        ipInfo.doGetCfg(beg, lst, true);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -102,46 +88,13 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        servGenIpInf.getHelp(l, 0, true);
+        servHoneyPotCfg.getHelp(l, 0, true);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(60000);
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        new servHoneyPotConn(this, pipe, id.peerAddr.copyBytes(), id.portRem);
+        new servHoneyPotCon(this, pipe, id.peerAddr.copyBytes(), id.portRem);
         return false;
-    }
-
-}
-
-class servHoneyPotConn implements Runnable {
-
-    private servHoneyPot lower;
-
-    private pipeSide pipe;
-
-    private addrIP addr;
-
-    private int port;
-
-    public servHoneyPotConn(servHoneyPot parent, pipeSide conn, addrIP peer, int prt) {
-        lower = parent;
-        pipe = conn;
-        addr = peer;
-        port = prt;
-        new Thread(this).start();
-    }
-
-    public void run() {
-        logger.info("honeypot hit from " + addr + " " + port);
-        String s = lower.ipInfo.getRoute1liner(addr, port);
-        pipe.linePut("you (" + s + ") have been logged!");
-        List<String> lst = lower.ipInfo.getRouteDetails(addr, port);
-        byte[] res = servGenIpInf.getRouteAscii(lst);
-        pipe.morePut(res, 0, res.length);
-        pipe.setClose();
-        lower.ipInfo.doScript(addr);
     }
 
 }
