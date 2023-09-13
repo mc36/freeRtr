@@ -18,6 +18,7 @@ import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFormat;
+import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
@@ -78,6 +79,27 @@ public class servGenIpInf {
      */
     public servGenIpInf() {
         doSanityChecks();
+    }
+
+    public static final void getHelp(userHelping l, int b, boolean rs) {
+        l.add(null, (b + 1) + " " + (b + 2) + "  router4                      lookup addresses");
+        cfgRtr.getRouterList(l, b, "");
+        l.add(null, (b + 3) + " .         <num:rtr>       process id");
+        l.add(null, (b + 1) + " " + (b + 2) + "  router6                      lookup addresses");
+        cfgRtr.getRouterList(l, b, "");
+        l.add(null, (b + 3) + " .         <num:rtr>       process id");
+        l.add(null, (b + 1) + " .  route-details                print prefix details");
+        l.add(null, (b + 1) + " .  route-hacked                 hackerize prefix details");
+        l.add(null, (b + 1) + " " + (b + 2) + "  route-distinguisher          rd to use");
+        l.add(null, (b + 2) + " .    <rd>                       rd in ASnum:IDnum format");
+        l.add(null, (b + 1) + " " + (b + 2) + "  route-vrf                    vrf to use");
+        l.add(null, (b + 2) + " .    <name:vrf>                 name of table");
+        if (!rs) {
+            return;
+        }
+        l.add(null, (b + 1) + " " + (b + 2) + "  script                       script to execute");
+        l.add(null, (b + 2) + " .    <name:scr>                 script name");
+        l.add(null, (b + 1) + " .  resolve                      resolve addresses");
     }
 
     public void doScript(addrIP addr) {

@@ -102,21 +102,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  script                       script to execute");
-        l.add(null, "2 .    <name:scr>                 script name");
-        l.add(null, "1 .  resolve                      resolve addresses");
-        l.add(null, "1 2  router4                      lookup addresses");
-        cfgRtr.getRouterList(l, 0, "");
-        l.add(null, "3 .         <num:rtr>       process id");
-        l.add(null, "1 2  router6                      lookup addresses");
-        cfgRtr.getRouterList(l, 0, "");
-        l.add(null, "3 .         <num:rtr>       process id");
-        l.add(null, "1 .  route-details                print prefix details");
-        l.add(null, "1 .  route-hacked                 hackerize prefix details");
-        l.add(null, "1 2  route-distinguisher          rd to use");
-        l.add(null, "2 .    <rd>                       rd in ASnum:IDnum format");
-        l.add(null, "1 2  route-vrf                    vrf to use");
-        l.add(null, "2 .    <name:vrf>                 name of table");
+        servGenIpInf.getHelp(l, 0, true);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
