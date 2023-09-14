@@ -118,7 +118,8 @@ public class servHoneyPotWrk {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         if (cfg.tinyHttp) {
-            pipe.linePut(servHttp.htmlHead + "<pre>");
+            pipe.linePut(servHttp.htmlHead);
+            pipe.linePut("<pre style=\"background-color: #000000; color: #00FFFF;\">");
         }
         if (frst) {
             String s = getRoute1liner();
