@@ -162,13 +162,14 @@ public class servHoneyPotWrk {
             return;
         }
         if (!cfg.resolve) {
-            resolved = cmds.finish;
+            resolved = "";
             return;
         }
         clntDns clnt = new clntDns();
         clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
         resolved = clnt.getPTR();
         if (resolved != null) {
+            resolved = " - " + resolved;
             return;
         }
         logger.info("no dns for " + addr);
@@ -181,7 +182,7 @@ public class servHoneyPotWrk {
      */
     protected List<String> getRouteDetails() {
         if (!cfg.routeDetails) {
-            return bits.str2lst(cmds.finish);
+            return bits.str2lst("");
         }
         return getRouteDetails(fwd, ntry, userFormat.tableMode.fancy, cfg.routeHacked);
     }
@@ -192,7 +193,7 @@ public class servHoneyPotWrk {
      * @return single line of information
      */
     protected String getRoute1liner() {
-        String s = addr + " :" + port + " - " + resolved;
+        String s = addr + " :" + port + resolved;
         s += " - " + getRoute1liner(fwd, rtr, ntry);
         if (!cfg.routeHacked) {
             return s;
