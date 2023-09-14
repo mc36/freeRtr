@@ -7,6 +7,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
 import net.freertr.enc.enc7bit;
+import net.freertr.enc.encUrl;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
@@ -17,7 +18,9 @@ import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.version;
 
 /**
  * generic honeypot worker
@@ -53,7 +56,7 @@ public class servHoneyPotWrk {
     public servHoneyPotWrk(servHoneyPotCfg c, pipeSide r, addrIP a, int p) {
         cfg = c;
         pipe = r;
-        addr = a;
+        addr = a.copyBytes();
         port = p;
     }
 
@@ -71,8 +74,38 @@ public class servHoneyPotWrk {
         if (!dng) {
             return;
         }
+        doHttpXchg();
         doResolve();
         doScript();
+    }
+
+    /**
+     * do minimal http exchange
+     */
+    protected void doHttpXchg() {
+        if (!cfg.tinyHttp) {
+            return;
+        }
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+        String s = pipe.lineGet(1);
+        cmds cmd = new cmds("api", s);
+        cmd.word();
+        encUrl gotUrl = new encUrl();
+        gotUrl.fromString("tcp://" + cmd.word());
+        doHttpUrl(gotUrl.toPathName());
+        pipe.linePut("HTTP/1.1 200 ok");
+        pipe.linePut("Server: " + version.usrAgnt);
+        pipe.linePut("Content-Type: text/plain");
+        pipe.linePut("Connection: Close");
+        pipe.linePut("");
+    }
+
+    protected void doHttpUrl(String a) {
+        if (debugger.servHttpTraf) {
+            logger.debug("api queried " + a + " from " + addr + " " + port);
+        }
+        /////////////////
     }
 
     /**

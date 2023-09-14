@@ -1,6 +1,5 @@
 package net.freertr.serv;
 
-import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.pipe.pipeSide;
 import net.freertr.util.logger;
