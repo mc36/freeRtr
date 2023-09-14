@@ -3221,7 +3221,9 @@ todo: tests for lsrp / pvrp pmtud
 todo: bgp unknowns-log knob
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
-todo: ioam as https://www.rfc-editor.org/rfc/rfc9452.html
+todo: consider draft-ietf-idr-performance-routing
+todo: ioam as rfc9452
+todo: dlep as rfc8175
 todo: serv http InvocationTargetException to have auto logging in the traceback
 todo: sho cdp/lldp int
 todo: flash ext-delete also to commander
@@ -3357,7 +3359,8 @@ todo: mpls inband performance measurement
 todo: backup path support to the spf class
 todo: wcmp support to the spf class
 todo: allow command to be a substring of an other
-todo: quic v1, v2 and mls, when these have at least adjustmss...
+todo: rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
+todo: rfc8548 tcpcrypt
 todo: update gtp stack to the latest standards
 todo: nat and pbr config to have reindex
 todo: bgp shadow route reflection

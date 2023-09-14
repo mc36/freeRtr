@@ -15132,3 +15132,11 @@ todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 ---------------------------------- 2023-09-12 18:19:04 23.9.12
 todo: bgp unknowns-log knob
+---------------------------------- 2023-09-14 00:04:41 23.9.13
+no todo: quic v1, v2 and mls, when these have at least adjustmss...
+no todo: ioam as https://www.rfc-editor.org/rfc/rfc9452.html
+todo: consider draft-ietf-idr-performance-routing
+todo: ioam as rfc9452
+todo: dlep as rfc8175
+todo: rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
+todo: rfc8548 tcpcrypt
