@@ -134,6 +134,11 @@ public class debugger {
     public static boolean servScsiTraf = false;
 
     /**
+     * servHoneypot traffic
+     */
+    public static boolean servHoneyPotTraf = false;
+
+    /**
      * servHttp traffic
      */
     public static boolean servHttpTraf = false;
@@ -1077,6 +1082,7 @@ public class debugger {
         l.add(null, "3 .        rfb               remote frame buffer protocol");
         l.add(null, "3 .        scsi              scsi protocol");
         l.add(null, "3 .        http              hypertext transfer protocol");
+        l.add(null, "3 .        honepot           hypertext debugging");
         l.add(null, "3 .        lpd               line printer daemon protocol");
         l.add(null, "3 .        pop3              post office protocol");
         l.add(null, "3 .        imap4             internet mail access protocol");
@@ -1399,6 +1405,10 @@ public class debugger {
                 return false;
             }
             if (s.equals("http")) {
+                servHttpTraf = v;
+                return false;
+            }
+            if (s.equals("honeypot")) {
                 servHttpTraf = v;
                 return false;
             }

@@ -66,6 +66,9 @@ public class servHoneyPotWrk {
      * @param dng enable dangerous knobs
      */
     public void doWork(boolean dng) {
+        if (debugger.servHoneyPotTraf) {
+            logger.debug("working on " + addr + " " + port);
+        }
         fwd = findOneFwd(addr, cfg.fwder4, cfg.fwder6);
         rtr = findOneRtr(addr, cfg.router4, cfg.router6);
         ntry = findOneRoute(addr, rtr, fwd);
@@ -102,7 +105,7 @@ public class servHoneyPotWrk {
     }
 
     protected void doHttpUrl(String a) {
-        if (debugger.servHttpTraf) {
+        if (debugger.servHoneyPotTraf) {
             logger.debug("api queried " + a + " from " + addr + " " + port);
         }
         /////////////////
