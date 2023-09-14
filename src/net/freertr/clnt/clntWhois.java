@@ -177,7 +177,7 @@ public class clntWhois {
         if (o < 1) {
             return null;
         }
-        return cfgAll.whoisOnline.get(bits.random(0, o)) + i;
+        return cfgAll.whoisOnline.get(bits.random(0, o)) + bits.num2str(i);
     }
 
     /**
@@ -193,7 +193,7 @@ public class clntWhois {
         }
         int p = cfgAll.whoisOnline.size();
         for (int o = 0; o < p; o++) {
-            res.add(cfgAll.whoisOnline.get(o) + i);
+            res.add(cfgAll.whoisOnline.get(o) + bits.num2str(i));
         }
         return res;
     }

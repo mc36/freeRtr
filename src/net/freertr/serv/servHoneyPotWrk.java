@@ -16,6 +16,8 @@ import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
+import net.freertr.util.cmds;
+import net.freertr.util.logger;
 
 /**
  * generic honeypot worker
@@ -31,6 +33,14 @@ public class servHoneyPotWrk {
     private final addrIP addr;
 
     private final int port;
+
+    private String resolved = null;
+
+    private ipRtr rtr = null;
+
+    private ipFwd fwd = null;
+
+    private tabRouteEntry<addrIP> ntry = null;
 
     /**
      * create an instance
@@ -53,9 +63,16 @@ public class servHoneyPotWrk {
      * @param dng enable dangerous knobs
      */
     public void doWork(boolean dng) {
-        //////
-        doScript(addr);
+        fwd = findOneFwd(addr, cfg.fwder4, cfg.fwder6);
+        rtr = findOneRtr(addr, cfg.router4, cfg.router6);
+        ntry = findOneRoute(addr, rtr, fwd);
         //////////////
+
+        if (!dng) {
+            return;
+        }
+        doResolve();
+        doScript();
     }
 
     /**
@@ -68,11 +85,11 @@ public class servHoneyPotWrk {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         if (frst) {
-            String s = getRoute1liner(addr, port);
+            String s = getRoute1liner();
             pipe.linePut("you (" + s + ") have been logged!");
         }
-        List<String> lst = getRouteDetails(addr);
-        byte[] res = servHoneyPotWrk.getRouteAscii(lst);
+        List<String> lst = getRouteDetails();
+        byte[] res = getRouteAscii(lst);
         pipe.morePut(res, 0, res.length);
     }
 
@@ -87,49 +104,54 @@ public class servHoneyPotWrk {
 
     /**
      * execute the script
-     *
-     * @param addr address to pass
      */
-    public void doScript(addrIP addr) {
+    protected synchronized void doScript() {
         if (cfg.script == null) {
             return;
         }
         cfg.script.doRound(bits.str2lst("set remote " + addr));
+        cfg.script.doRound(bits.str2lst("set portnum " + port));
+    }
+
+    /**
+     * execute the script
+     */
+    protected synchronized void doResolve() {
+        if (resolved != null) {
+            return;
+        }
+        if (!cfg.resolve) {
+            resolved = cmds.finish;
+            return;
+        }
+        clntDns clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
+        resolved = clnt.getPTR();
+        if (resolved != null) {
+            return;
+        }
+        logger.info("no dns for " + addr);
     }
 
     /**
      * get route details
      *
-     * @param addr address to check
      * @return route details or empty list
      */
-    public List<String> getRouteDetails(addrIP addr) {
+    protected List<String> getRouteDetails() {
         if (!cfg.routeDetails) {
-            return new ArrayList<String>();
+            return bits.str2lst(cmds.finish);
         }
-        ipRtr rtr = findOneRtr(addr, cfg.router4, cfg.router6);
-        ipFwd fwd = findOneFwd(addr, cfg.fwder4, cfg.fwder6);
-        tabRouteEntry<addrIP> ntry = findOneRoute(0, addr, rtr, fwd);
         return getRouteDetails(fwd, ntry, userFormat.tableMode.fancy, cfg.routeHacked);
     }
 
     /**
      * get one liner information
      *
-     * @param addr address to check
-     * @param port port to check
      * @return single line of information
      */
-    public String getRoute1liner(addrIP addr, int port) {
-        String s = addr + " :" + port;
-        if (cfg.resolve) {
-            clntDns clnt = new clntDns();
-            clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
-            s += " - " + clnt.getPTR();
-        }
-        ipRtr rtr = findOneRtr(addr, cfg.router4, cfg.router6);
-        ipFwd fwd = findOneFwd(addr, cfg.fwder4, cfg.fwder6);
-        tabRouteEntry<addrIP> ntry = findOneRoute(0, addr, rtr, fwd);
+    protected String getRoute1liner() {
+        String s = addr + " :" + port + " - " + resolved;
         s += " - " + getRoute1liner(fwd, ntry);
         if (!cfg.routeHacked) {
             return s;
@@ -146,7 +168,7 @@ public class servHoneyPotWrk {
      * @param fwd6 ipv6 candidate
      * @return proper one, null if nothing
      */
-    public final static ipFwd findOneFwd(addrIP adr, ipFwd fwd4, ipFwd fwd6) {
+    protected final static ipFwd findOneFwd(addrIP adr, ipFwd fwd4, ipFwd fwd6) {
         if (adr == null) {
             return null;
         }
@@ -165,7 +187,7 @@ public class servHoneyPotWrk {
      * @param rtr6 ipv6 candidate
      * @return proper one, null if nothing
      */
-    public final static ipRtr findOneRtr(addrIP adr, ipRtr rtr4, ipRtr rtr6) {
+    protected final static ipRtr findOneRtr(addrIP adr, ipRtr rtr4, ipRtr rtr6) {
         if (adr == null) {
             return null;
         }
@@ -179,20 +201,22 @@ public class servHoneyPotWrk {
     /**
      * find one route
      *
-     * @param rd route distinguisher, 0 for default
      * @param adr address to look up
      * @param rtr router to use
      * @param fwd forwarder to use
      * @return route entry, null if nothing
      */
-    protected final static tabRouteEntry<addrIP> findOneRoute(long rd, addrIP adr, ipRtr rtr, ipFwd fwd) {
+    protected final static tabRouteEntry<addrIP> findOneRoute(addrIP adr, ipRtr rtr, ipFwd fwd) {
         if (adr == null) {
-            return null;
-        }
-        if (rtr == null) {
+            logger.warn("no address");
             return null;
         }
         if (fwd == null) {
+            logger.warn("no forwarder for " + adr);
+            return null;
+        }
+        if (rtr == null) {
+            logger.warn("no router for " + adr);
             return null;
         }
         tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(adr);
@@ -200,10 +224,6 @@ public class servHoneyPotWrk {
             return null;
         }
         ntry = ntry.copyBytes(tabRoute.addType.alters);
-        if (rd == 0) {
-            return ntry;
-        }
-        ntry.rouDst = rd;
         return ntry;
     }
 

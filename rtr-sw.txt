@@ -1152,13 +1152,13 @@ server honeypot hp1
  exit
 !
 server honeypot hp2
- port 80
+ port 54321
  router4 bgp4 65535
  router6 bgp6 65535
  route-details
- route-distinguisher 65535:42
  tiny-http
- vrf dn42
+ interface loopback0
+ vrf v1
  exit
 !
 server sip lab
