@@ -1140,19 +1140,18 @@ server dns ns
  vrf v1
  exit
 !
-server honeypot hp1
- port 12345
+server honeypot hp0
+ port 8881
  router4 bgp4 65535
  router6 bgp6 65535
- route-details
- route-hacked
  script logger
+ tiny-http
  interface loopback0
  vrf v1
  exit
 !
-server honeypot hp2
- port 54321
+server honeypot hp1
+ port 8882
  router4 bgp4 65535
  router6 bgp6 65535
  route-details

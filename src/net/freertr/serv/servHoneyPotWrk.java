@@ -96,7 +96,7 @@ public class servHoneyPotWrk {
         doHttpUrl(gotUrl.toPathName());
         pipe.linePut("HTTP/1.1 200 ok");
         pipe.linePut("Server: " + version.usrAgnt);
-        pipe.linePut("Content-Type: text/plain");
+        pipe.linePut("Content-Type: text/html");
         pipe.linePut("Connection: Close");
         pipe.linePut("");
     }
@@ -117,13 +117,20 @@ public class servHoneyPotWrk {
     public void putResult(pipeSide pipe, boolean frst) {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+        if (cfg.tinyHttp) {
+            pipe.linePut(servHttp.htmlHead + "<pre>");
+        }
         if (frst) {
             String s = getRoute1liner();
-            pipe.linePut("you (" + s + ") have been logged!");
+            pipe.linePut(s);
         }
         List<String> lst = getRouteDetails();
         byte[] res = getRouteAscii(lst);
         pipe.morePut(res, 0, res.length);
+        if (!cfg.tinyHttp) {
+            return;
+        }
+        pipe.linePut("</pre></body></html>");
     }
 
     /**
@@ -185,7 +192,7 @@ public class servHoneyPotWrk {
      */
     protected String getRoute1liner() {
         String s = addr + " :" + port + " - " + resolved;
-        s += " - " + getRoute1liner(fwd, ntry);
+        s += " - " + getRoute1liner(fwd, rtr, ntry);
         if (!cfg.routeHacked) {
             return s;
         }
@@ -269,17 +276,16 @@ public class servHoneyPotWrk {
      * @param ntry route entry
      * @return one liner of the route
      */
-    protected final static String getRoute1liner(ipFwd fwd, tabRouteEntry<addrIP> ntry) {
+    protected final static String getRoute1liner(ipFwd fwd, ipRtr rtr, tabRouteEntry<addrIP> ntry) {
         if (ntry == null) {
             return noRoute;
         }
-        String a;
-        if (fwd != null) {
-            a = "ipv" + fwd.ipVersion + "(" + fwd.vrfName + ") ";
-        } else {
-            a = "";
-        }
-        return addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " - " + ntry.best.asPathStr() + " - " + ntry.best.asInfoStr() + " - " + ntry.best.asNameStr();
+        return fwd.vrfName + " " + rtr.routerComputedU.size()
+                + " " + addrPrefix.ip2str(ntry.prefix)
+                + " " + tabRouteUtil.rd2string(ntry.rouDst)
+                + " " + ntry.best.asPathStr()
+                + " " + ntry.best.asInfoStr()
+                + " " + ntry.best.asNameStr();
     }
 
     /**
