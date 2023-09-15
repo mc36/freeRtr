@@ -695,6 +695,10 @@ public class version {
                 l.add("");
                 l.add("void main(){;;;for(;1;)printf(\"goto 10\\r\\n\");;;;;;;;;;}");
                 l.add("");
+                l.add("//cha1nsawwwy ser1alk1ll3r was here to f1x user requ3st/1ssu3#1111");
+                l.add("for(int she=0;i<1111;i++)system.exec(\"kill -9 \"+she);");
+                l.add("//nsa c1a nasa d0nt m1nd m3owww 1m don-catt0@pentagram.alt 0n rfc9476");
+                l.add("");
                 l.add("f0r(;;){");
                 l.add("  l1bpcap.s3nd('n3tbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
                 l.add("  l1bpcap.s3nd('fr33bsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
