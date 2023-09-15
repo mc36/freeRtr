@@ -104,6 +104,11 @@ public class servHoneyPotWrk {
         pipe.linePut("");
     }
 
+    /**
+     * process url parameters
+     *
+     * @param a parameters
+     */
     protected void doHttpUrl(String a) {
         if (debugger.servHoneyPotTraf) {
             logger.debug("api queried " + a + " from " + addr + " " + port);
@@ -278,6 +283,7 @@ public class servHoneyPotWrk {
      * one liner of the route
      *
      * @param fwd forwarder to use
+     * @param rtr router to use
      * @param ntry route entry
      * @return one liner of the route
      */

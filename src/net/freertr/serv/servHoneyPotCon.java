@@ -19,6 +19,14 @@ public class servHoneyPotCon implements Runnable {
 
     private final int port;
 
+    /**
+     * create one connection
+     *
+     * @param parent lower
+     * @param conn pipe
+     * @param peer address
+     * @param prt port
+     */
     public servHoneyPotCon(servHoneyPot parent, pipeSide conn, addrIP peer, int prt) {
         lower = parent;
         pipe = conn;

@@ -12,26 +12,55 @@ import net.freertr.util.bits;
  */
 public class userFilmanPanel {
 
-    public userScreen con;
+    private final userScreen con;
 
-    public int scrX;
+    private final int scrX;
 
-    public int scrY;
+    private final int scrY;
 
-    public int sizX;
+    private final int sizX;
 
-    public int sizY;
+    private final int sizY;
 
-    public int begL;
+    private int begL;
 
-    public int curL;
+    /**
+     * list of files
+     */
+    protected final List<String> fil = new ArrayList<String>();
 
-    public String path;
+    /**
+     * current path
+     */
+    protected String path;
 
-    public List<String> fil;
+    /**
+     * current position
+     */
+    protected int curL;
 
-    public void readUp() {
-        fil = new ArrayList<String>();
+    /**
+     * create instance
+     *
+     * @param scr screen to draw to
+     * @param bx beginning on screen
+     * @param by beginning on screen
+     * @param sx size on screen
+     * @param sy size on screen
+     */
+    protected userFilmanPanel(userScreen scr, int bx, int by, int sx, int sy) {
+        con = scr;
+        scrX = bx;
+        scrY = by;
+        sizX = sx;
+        sizY = sy;
+    }
+
+    /**
+     * read up directory
+     */
+    protected void readUp() {
+        fil.clear();
         if (path.length() > 1) {
             fil.add(path + "../");
         }
@@ -49,7 +78,10 @@ public class userFilmanPanel {
         doRange();
     }
 
-    public void doRange() {
+    /**
+     * check if in range
+     */
+    protected void doRange() {
         if (curL < 0) {
             curL = 0;
         }
@@ -70,14 +102,22 @@ public class userFilmanPanel {
         }
     }
 
-    public String getFn() {
+    /**
+     * get current file
+     *
+     * @return file, null if nothing
+     */
+    protected String getFn() {
         if (curL >= fil.size()) {
             return null;
         }
         return fil.get(curL);
     }
 
-    public void doEnter() {
+    /**
+     * process enter key
+     */
+    protected void doEnter() {
         String a = getFn();
         begL = 0;
         curL = 0;
@@ -109,12 +149,18 @@ public class userFilmanPanel {
         doRange();
     }
 
-    public void doCurs() {
+    /**
+     * put cursor
+     */
+    protected void doCurs() {
         int ln = scrY + curL - begL + 1;
         con.putCols(scrX, ln, userScreen.colWhite, userScreen.colBlack, sizX);
     }
 
-    public void doDraw() {
+    /**
+     * draw the panel
+     */
+    protected void doDraw() {
         String a = bits.padEnd(path, sizX, " ").substring(0, sizX);
         con.putStr(scrX, scrY, userScreen.colGreen, userScreen.colBrYellow, false, a);
         for (int i = 0; i < sizY; i++) {

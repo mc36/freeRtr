@@ -28,14 +28,10 @@ public class userFilman {
         console = pip;
         pan = new userFilmanPanel[2];
         int siz = console.sizX / 2;
+        String a = version.getRWpath();
         for (int i = 0; i < pan.length; i++) {
-            pan[i] = new userFilmanPanel();
-            pan[i].con = console;
-            pan[i].scrX = i * siz;
-            pan[i].scrY = 0;
-            pan[i].sizX = siz;
-            pan[i].sizY = console.sizY - 2;
-            pan[i].path = version.getRWpath();
+            pan[i] = new userFilmanPanel(console, i * siz, 0, siz, console.sizY - 2);
+            pan[i].path = a;
             pan[i].readUp();
         }
     }
