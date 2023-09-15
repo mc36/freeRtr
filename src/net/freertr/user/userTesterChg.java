@@ -2,6 +2,8 @@ package net.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.cfg.cfgAll;
+import net.freertr.util.bits;
 
 /**
  * one tester change
@@ -10,12 +12,35 @@ import java.util.List;
  */
 public class userTesterChg {
 
-    public String str;
+    /**
+     * time in text format
+     */
+    protected final String str;
 
-    public String ver;
+    /**
+     * time in binary format
+     */
+    protected final long tim;
 
-    public long tim;
+    /**
+     * changes detected
+     */
+    protected final List<String> txt = new ArrayList<String>();
 
-    public List<String> txt = new ArrayList<String>();
+    /**
+     * version information
+     */
+    protected String ver;
+
+    /**
+     * create instance
+     *
+     * @param a time
+     */
+    public userTesterChg(String a) {
+        a = a.replaceAll(" ", "_");
+        str = a;
+        tim = bits.str2time(cfgAll.timeZoneName, a);
+    }
 
 }

@@ -677,8 +677,6 @@ public class version {
                 l.add("");
                 l.add("s00000 crash3r-bash$ :(){ :|:& };:");
                 l.add("");
-                l.add("d3b1an.org/khuuuRd 1s n0t y3ttt r3adY 4 mY TAN|<ZZZ");
-                l.add("");
                 l.add("!... r1p 1an g00 deb0r4 g00 1n the n1ght l1ght$ l1ke m00n -sUn.c0m ~0racl3.c0m !n1x.0rg ...");
                 l.add("");
                 l.add("w1r3guard.c0m 1Z th3 w0r$tuCK 1n-k3rn3l VPN1sh 3v3r accord10n c1$C0.c0m / jun1p3r.n3t / g00d lU$T f4ct0r1z3(m30w_rsa_8.8kpr1m3)...");
@@ -687,9 +685,17 @@ public class version {
                 l.add("");
                 l.add("eval(\"((do || !do));buTTd0ntCaTTch/r3p0rtTh3-3xc3pt10n/traC3baCk\");//sbin/init0;//byN1k3nuk33xDDD");
                 l.add("");
+                l.add("void whiiiNotThrd()for(int whiiiNotI;whiiiNotI>-1;whiiiNotI++)new thread(whiiiNotThrd());");
+                l.add("");
                 l.add("#deinfe printf(void*buf)for(;;)if(buf[i]!=0)putchar(buf[i+random(0,10)]);else break;");
                 l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
+                l.add("");
+                l.add("for(;;)for(int i=0;i<10;i++)printf(\"doing %i\r\n\",i);");
+                l.add("");
+                l.add("for(string s=\"\";1;s+=s.length()+\"\");//medyasin");
+                l.add("");
+                l.add("d3b1an.org/khuuuRd 1s n0t y3ttt r3adY 4 mY TAN|<ZZZ");
                 l.add("");
                 l.add("for i:=1 to 16 do begin; printLn(\"fr33pascal.0rg\"); end;");
                 l.add("");

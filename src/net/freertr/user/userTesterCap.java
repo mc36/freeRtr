@@ -10,12 +10,12 @@ public class userTesterCap {
     /**
      * router
      */
-    public final String rtr;
+    protected final String rtr;
 
     /**
      * interface
      */
-    public final String ifc;
+    protected final String ifc;
 
     /**
      * create instance

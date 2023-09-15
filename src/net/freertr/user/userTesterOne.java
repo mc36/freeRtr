@@ -736,8 +736,8 @@ public class userTesterOne {
                     continue;
                 }
                 if (s.equals("replace")) {
-                    userTesterRep rep = new userTesterRep(cmd.word());
-                    rep.trg = cmd.word();
+                    s = cmd.word();
+                    userTesterRep rep = new userTesterRep(s, cmd.word());
                     reps.add(rep);
                     continue;
                 }
@@ -752,7 +752,7 @@ public class userTesterOne {
                     } else {
                         s = cmd.word();
                     }
-                    userTesterRep rep = new userTesterRep(s);
+                    userTesterRep rep = new userTesterRep(s, "");
                     dels.add(rep);
                     continue;
                 }

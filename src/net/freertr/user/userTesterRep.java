@@ -1,18 +1,25 @@
 package net.freertr.user;
 
 /**
- * one tester worker
+ * one tester replacer
  *
  * @author matecsaba
  */
 public class userTesterRep {
 
-    public final String src;
+    /**
+     * source
+     */
+    protected final String src;
 
-    public String trg;
+    /**
+     * target
+     */
+    protected final String trg;
 
-    public userTesterRep(String s) {
+    public userTesterRep(String s, String t) {
         src = s;
+        trg = t;
     }
 
 }

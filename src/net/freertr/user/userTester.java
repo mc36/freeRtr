@@ -411,20 +411,18 @@ public class userTester {
             return;
         }
         List<userTesterChg> res = new ArrayList<userTesterChg>();
-        userTesterChg cur = new userTesterChg();
+        userTesterChg cur = new userTesterChg("");
         for (int i = 0; i < lst.size(); i++) {
             String a = lst.get(i);
             if (!a.startsWith(chgLogSep)) {
                 cur.txt.add(a);
                 continue;
             }
-            cur = new userTesterChg();
             a = a.substring(chgLogSep.length(), a.length());
             cmds cm = new cmds("hed", a);
             a = cm.word() + " ";
             a += cm.word();
-            cur.str = a.replaceAll(" ", "_");
-            cur.tim = bits.str2time(cfgAll.timeZoneName, a);
+            cur = new userTesterChg(a);
             a = cm.word();
             if (a.length() < 1) {
                 a = bits.time2str(cfgAll.timeZoneName, cur.tim, 1);

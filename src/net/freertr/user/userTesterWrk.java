@@ -9,10 +9,22 @@ import net.freertr.util.logger;
  */
 public class userTesterWrk implements Runnable {
 
-    public int slot;
+    /**
+     * parent
+     */
+    protected final userTester lower;
 
-    public userTester lower;
+    /**
+     * slot to use
+     */
+    protected final int slot;
 
+    /**
+     * create instance
+     *
+     * @param parent parent
+     * @param slt slot to use
+     */
     public userTesterWrk(userTester parent, int slt) {
         lower = parent;
         slot = slt;
