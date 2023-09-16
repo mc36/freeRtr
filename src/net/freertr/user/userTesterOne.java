@@ -22,84 +22,198 @@ import net.freertr.util.cmds;
  */
 public class userTesterOne {
 
+    /**
+     * pipeline to use
+     */
+    protected final pipeSide pipe;
+
+    /**
+     * slot number
+     */
     protected int slot = 0;
 
+    /**
+     * path to use
+     */
     protected String path;
 
+    /**
+     * prefix to use
+     */
     protected String prefix;
 
+    /**
+     * filename to use
+     */
     protected String fileName;
 
+    /**
+     * name of the test
+     */
     protected String testName = "unnamed";
 
+    /**
+     * result of the test
+     */
     protected int testRes = 1;
 
+    /**
+     * just save config
+     */
     protected boolean config;
 
+    /**
+     * dont exit
+     */
     protected boolean unexit;
 
+    /**
+     * dont reload
+     */
     protected boolean wait;
 
+    /**
+     * reapply counter
+     */
     protected int reapply;
 
+    /**
+     * restart counter
+     */
     protected int restart;
 
+    /**
+     * config archive
+     */
     protected String cfgarch;
 
+    /**
+     * chattyness matcher
+     */
     protected tabIntMatcher chatty;
 
+    /**
+     * wait before start
+     */
     protected int predelay;
 
+    /**
+     * wait before stop
+     */
     protected int postdelay;
 
+    /**
+     * middleware to test
+     */
     protected String jvm;
 
+    /**
+     * local console base
+     */
     protected int oobase;
 
+    /**
+     * interfaces to capture
+     */
     protected List<userTesterCap> capture;
 
+    /**
+     * persistent image port base
+     */
     protected int persistP;
 
+    /**
+     * persistent image config
+     */
     protected List<String> persistD;
 
+    /**
+     * persistent image process
+     */
     protected userTesterPrc persistC;
 
+    /**
+     * remote image config
+     */
     protected List<String> remoteD;
 
+    /**
+     * remote image address
+     */
     protected addrIP remoteA;
 
+    /**
+     * remote image local
+     */
     protected addrIP remoteL;
 
+    /**
+     * remote image port
+     */
     protected int remoteP;
 
+    /**
+     * remote image syncer
+     */
     protected String remoteS;
 
+    /**
+     * other images to test
+     */
     protected List<userTesterImg> others = new ArrayList<userTesterImg>();
 
+    /**
+     * self parameters
+     */
     protected String window = "c";
 
+    /**
+     * console handler
+     */
     protected pipeProgress rdr;
 
-    protected pipeSide pipe;
-
+    /**
+     * verification commands
+     */
     protected List<List<String>> shows = new ArrayList<List<String>>();
 
+    /**
+     * tracebacks seen
+     */
     protected int traces;
 
+    /**
+     * commands to do
+     */
     private cmds cmd = new cmds("", "");
 
+    /**
+     * current stage
+     */
     private String stage = "init";
 
+    /**
+     * processes
+     */
     private tabGen<userTesterPrc> procs = new tabGen<userTesterPrc>();
 
+    /**
+     * lines to do
+     */
     private List<String> lineD;
 
+    /**
+     * lines done
+     */
     private int lineN = -1;
 
     /**
      * create instance
+     *
+     * @param pip pipeline to use
      */
-    public userTesterOne() {
+    protected userTesterOne(pipeSide pip) {
+        pipe = pip;
     }
 
     /**

@@ -3,7 +3,7 @@ package net.freertr.user;
 import java.util.Comparator;
 
 /**
- * one tester console
+ * one tester connection
  *
  * @author matecsaba
  */

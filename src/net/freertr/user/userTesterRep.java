@@ -17,6 +17,12 @@ public class userTesterRep {
      */
     protected final String trg;
 
+    /**
+     * create instance
+     *
+     * @param s source
+     * @param t target
+     */
     public userTesterRep(String s, String t) {
         src = s;
         trg = t;

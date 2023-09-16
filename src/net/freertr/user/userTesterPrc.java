@@ -20,30 +20,67 @@ import net.freertr.util.cmds;
  */
 public class userTesterPrc implements Comparator<userTesterPrc> {
 
-    public int slot = 0;
+    /**
+     * reader to use
+     */
+    protected final pipeProgress rdr;
 
-    public String prefix;
+    /**
+     * test name
+     */
+    protected final String name;
 
-    public String name;
+    /**
+     * slot to use
+     */
+    protected final int slot;
 
-    public pipeShell shell;
+    /**
+     * prefix to use
+     */
+    protected final String prefix;
 
-    public pipeSide pipe;
+    /**
+     * shell to use
+     */
+    protected final pipeShell shell;
 
-    public pipeProgress rdr;
+    /**
+     * pipe to use
+     */
+    protected pipeSide pipe;
 
-    public boolean persistent;
+    /**
+     * persistent process
+     */
+    protected boolean persistent;
 
-    public String syncr = "!!!hello there!!!";
+    /**
+     * syncer string
+     */
+    protected String syncr = "!!!hello there!!!";
 
-    public tabGen<userTesterCon> conns;
+    /**
+     * connections
+     */
+    protected tabGen<userTesterCon> conns;
 
-    public userTesterPrc(pipeProgress reader, String pfx, int slt, String nam, String command) {
+    /**
+     * create instance
+     *
+     * @param reader reader to use
+     * @param pfx test prefix
+     * @param slt tester slot
+     * @param nam test name
+     * @param command command, null if none
+     */
+    protected userTesterPrc(pipeProgress reader, String pfx, int slt, String nam, String command) {
         slot = slt;
         name = nam;
         rdr = reader;
         prefix = pfx;
         if (command == null) {
+            shell = null;
             return;
         }
         pipeLine pl = new pipeLine(32768, false);
@@ -62,7 +99,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return o1.name.compareTo(o2.name);
     }
 
-    public void waitFor() {
+    protected void waitFor() {
         if (shell == null) {
             return;
         }
@@ -71,7 +108,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         pipe.setClose();
     }
 
-    public void stopNow() {
+    protected void stopNow() {
         if (shell == null) {
             return;
         }
@@ -84,7 +121,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         pipe.setClose();
     }
 
-    public static String getLogName(String pfx, int slt, String nam, int mod) {
+    protected static String getLogName(String pfx, int slt, String nam, int mod) {
         String s;
         switch (mod) {
             case 1:
@@ -106,17 +143,17 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return pfx + slt + nam + "-log." + s;
     }
 
-    public String getLogName(int mod) {
+    protected String getLogName(int mod) {
         return getLogName(prefix, slot, name, mod);
     }
 
-    public void putChar(int i) {
+    protected void putChar(int i) {
         byte[] buf = new byte[1];
         buf[0] = (byte) i;
         pipe.blockingPut(buf, 0, buf.length);
     }
 
-    public String getLine() {
+    protected String getLine() {
         String s = pipe.lineGet(0x11);
         if (s == null) {
             return null;
@@ -131,12 +168,12 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return s;
     }
 
-    public void putLine(String s) {
+    protected void putLine(String s) {
         bits.buf2txt(false, bits.str2lst("tx:" + s), getLogName(4));
         pipe.linePut(s);
     }
 
-    public int doPing(String s) {
+    protected int doPing(String s) {
         putLine("ping " + s);
         for (;;) {
             s = getLine();
@@ -162,7 +199,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return bits.str2num(s);
     }
 
-    public boolean morePings(String s, tabIntMatcher ned, int round) {
+    protected boolean morePings(String s, tabIntMatcher ned, int round) {
         rdr.debugStat(slot + "/" + name + ": pinging " + s + ".");
         rdr.setMax(round);
         int i = -1;
@@ -179,7 +216,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return true;
     }
 
-    public List<String> getOutput(String s) {
+    protected List<String> getOutput(String s) {
         String beg = "!begin-command-" + s;
         String end = "!end-command-" + s;
         putLine(beg);
@@ -206,7 +243,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         }
     }
 
-    public int getSummary(String inc, String exc) {
+    protected int getSummary(String inc, String exc) {
         List<String> buf = getOutput("show interface swsummary");
         if (buf == null) {
             return -1;
@@ -246,7 +283,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return tot;
     }
 
-    public void doSync() {
+    protected void doSync() {
         if (syncr.length() < 1) {
             return;
         }
@@ -264,7 +301,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         }
     }
 
-    public void applyCfg(List<String> cfg) {
+    protected void applyCfg(List<String> cfg) {
         doSync();
         rdr.setMax(cfg.size());
         for (int i = 0; i < cfg.size(); i++) {
@@ -278,7 +315,7 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         doSync();
     }
 
-    public void readConns() {
+    protected void readConns() {
         conns = new tabGen<userTesterCon>();
         List<String> l = bits.txt2buf(prefix + slot + name + "-" + cfgInit.hwCfgEnd);
         if (l == null) {

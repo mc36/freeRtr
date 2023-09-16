@@ -29,7 +29,7 @@ public class userTester {
     /**
      * create instance
      */
-    public userTester() {
+    protected userTester() {
     }
 
     /**
@@ -162,7 +162,7 @@ public class userTester {
      *
      * @param c command to do
      */
-    public void doCopier(cmds c) {
+    protected void doCopier(cmds c) {
         String s = c.word();
         String t = c.word();
         c.error("moving results " + s + " to " + t);
@@ -184,7 +184,7 @@ public class userTester {
      *
      * @param c command to do
      */
-    public void doSummary(cmds c) {
+    protected void doSummary(cmds c) {
         cmd = c;
         String target = "rtrp4lang-";
         path = "./";
@@ -335,7 +335,7 @@ public class userTester {
      *
      * @param c command to do
      */
-    public void doChanges(cmds c) {
+    protected void doChanges(cmds c) {
         cmd = c;
         String source = "../changelog.txt";
         String target = "";
@@ -476,7 +476,7 @@ public class userTester {
      *
      * @param c command to do
      */
-    public void doTesting(cmds c) {
+    protected void doTesting(cmds c) {
         cmd = c;
         rdr = new pipeProgress(cmd.pipe);
         int mem = 256;
@@ -672,7 +672,7 @@ public class userTester {
                 continue;
             }
             if (s.equals("other")) {
-                s=cmd.word();
+                s = cmd.word();
                 userTesterImg img = new userTesterImg(s);
                 others.add(img);
                 continue;
@@ -1039,7 +1039,11 @@ public class userTester {
     }
 
     private userTesterOne getTester(int slt) {
-        userTesterOne lt = new userTesterOne();
+        pipeSide pip = cmd.pipe;
+        if (paralell > 1) {
+            pip = pipeDiscard.needAny(null);
+        }
+        userTesterOne lt = new userTesterOne(pip);
         lt.path = temp;
         lt.prefix = temp + "slot";
         lt.slot = slot + slt;
@@ -1066,11 +1070,6 @@ public class userTester {
         lt.capture = capture;
         if (window) {
             lt.window += "w";
-        }
-        pipeSide pip = cmd.pipe;
-        if (paralell > 1) {
-            pip = pipeDiscard.needAny(null);
-            lt.pipe = pip;
         }
         lt.rdr = new pipeProgress(pip);
         return lt;
