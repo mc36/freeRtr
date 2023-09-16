@@ -2,9 +2,7 @@ package net.freertr.user;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import net.freertr.cfg.cfgAlias;
 import net.freertr.cfg.cfgAll;
@@ -183,20 +181,14 @@ public class userFlash {
         }
         if (a.equals("getperm")) {
             a = cmd.getRemaining();
-            int i = getFilePerm(a);
-            cmd.pipe.linePut(a + " right is " + i);
+            int i = getFilePerm(new File(a));
+            cmd.pipe.linePut(a + " right is " + perm2str(i) + " " + i);
             return null;
         }
         if (a.equals("setperm")) {
             a = cmd.word();
             String s = cmd.word();
-            boolean or = s.indexOf("r") >= 0;
-            boolean ow = s.indexOf("w") >= 0;
-            boolean ox = s.indexOf("x") >= 0;
-            boolean er = s.indexOf("R") >= 0;
-            boolean ew = s.indexOf("W") >= 0;
-            boolean ex = s.indexOf("X") >= 0;
-            userFlash.setFilePerm(a, or, ow, ox, er, ew, ex);
+            userFlash.setFilePerm(a, s);
             return null;
         }
         if (a.equals("transmit")) {
@@ -822,15 +814,15 @@ public class userFlash {
         if (fl == null) {
             return null;
         }
-        tabGen<userFlashFile> ld = new tabGen<userFlashFile>();
-        tabGen<userFlashFile> lf = new tabGen<userFlashFile>();
+        tabGen<userFlashNtry> ld = new tabGen<userFlashNtry>();
+        tabGen<userFlashNtry> lf = new tabGen<userFlashNtry>();
         for (int i = 0; i < fl.length; i++) {
             File f = fl[i];
             try {
                 if (f.isDirectory()) {
-                    ld.put(new userFlashFile(f));
+                    ld.put(new userFlashNtry(f));
                 } else {
-                    lf.put(new userFlashFile(f));
+                    lf.put(new userFlashNtry(f));
                 }
             } catch (Exception e) {
                 continue;
@@ -876,7 +868,7 @@ public class userFlash {
         if (fl == null) {
             return null;
         }
-        userFormat l = new userFormat("|", "date|size|name");
+        userFormat l = new userFormat("|", "right|date|size|name");
         for (int i = 0; i < fl.length; i++) {
             File f = fl[i];
             String a;
@@ -885,7 +877,9 @@ public class userFlash {
             } else {
                 a = "" + f.length();
             }
-            l.add(bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3) + "|" + a + "|" + f.getName());
+            int o = getFilePerm(f);
+            String s = o + " " + perm2str(o);
+            l.add(s + "|" + bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3) + "|" + a + "|" + f.getName());
         }
         return l;
     }
@@ -989,14 +983,73 @@ public class userFlash {
     }
 
     /**
+     * convert permission to string
+     *
+     * @param i permission to convert
+     * @return converted string
+     */
+    public final static String perm2str(int i) {
+        if (i < 0) {
+            return "error";
+        }
+        String a = "";
+        if ((i & 0x1) != 0) {
+            a += "r";
+        } else {
+            a += "-";
+        }
+        if ((i & 0x2) != 0) {
+            a += "w";
+        } else {
+            a += "-";
+        }
+        if ((i & 0x4) != 0) {
+            a += "x";
+        } else {
+            a += "-";
+        }
+        return a;
+    }
+
+    /**
      * get file permissions
      *
      * @param fn file name
-     * @return file permissions, -1 on error
+     * @return file permission bits, -1 on error, 1=read, 2=write, 4=exec
      */
-    public final static int getFilePerm(String fn) {
-///////////            Files.isExecutable(a);
-        return 0;
+    public final static int getFilePerm(File f) {
+        try {
+            int i = 0;
+            if (f.canRead()) {
+                i |= 0x1;
+            }
+            if (f.canWrite()) {
+                i |= 0x2;
+            }
+            if (f.canExecute()) {
+                i |= 0x4;
+            }
+            return i;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    /**
+     * set file permissions
+     *
+     * @param fn file name
+     * @param prm file rights
+     * @return true on error, false on success
+     */
+    public final static boolean setFilePerm(String fn, String prm) {
+        boolean or = prm.indexOf("r") >= 0;
+        boolean ow = prm.indexOf("w") >= 0;
+        boolean ox = prm.indexOf("x") >= 0;
+        boolean er = prm.indexOf("R") >= 0;
+        boolean ew = prm.indexOf("W") >= 0;
+        boolean ex = prm.indexOf("X") >= 0;
+        return userFlash.setFilePerm(fn, or, ow, ox, er, ew, ex);
     }
 
     /**
@@ -1066,20 +1119,6 @@ public class userFlash {
             c.cleanUp();
             return;
         }
-    }
-
-}
-
-class userFlashFile implements Comparator<userFlashFile> {
-
-    public final File f;
-
-    public userFlashFile(File fl) {
-        f = fl;
-    }
-
-    public int compare(userFlashFile o1, userFlashFile o2) {
-        return o1.f.getName().compareTo(o2.f.getName());
     }
 
 }

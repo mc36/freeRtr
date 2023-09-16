@@ -712,6 +712,8 @@ public class version {
                 l.add("  l1bpcap.s3nd('0p3nbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
                 l.add("}");
                 l.add("");
+                l.add("calc.eval(\"(2^42)*(42!)\");///on a paper");
+                l.add("");
                 l.add("calc.eval(\"42!\")!=calc.eval(\"2^42\");///on a paper");
                 l.add("");
                 l.add("void* palto[i][i];");
