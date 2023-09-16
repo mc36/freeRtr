@@ -15,22 +15,49 @@ public class userTesterImg {
      */
     protected final String otherF;
 
+    /**
+     * ports
+     */
     protected String otherP = null;
 
+    /**
+     * command to execute
+     */
     protected String otherC1 = null;
 
+    /**
+     * command to execute
+     */
     protected String otherC2 = null;
 
+    /**
+     * command to execute
+     */
     protected String otherC3 = null;
 
+    /**
+     * number of ports
+     */
     protected int otherNS = 0;
 
+    /**
+     * ports string
+     */
     protected String otherNC = null;
 
+    /**
+     * string to wait
+     */
     protected String otherW = null;
 
+    /**
+     * syncer string
+     */
     protected String otherS = null;
 
+    /**
+     * default config
+     */
     protected List<String> otherD = null;
 
     /**
@@ -53,10 +80,10 @@ public class userTesterImg {
      * @param ad mac address
      * @return hwcfg string
      */
-    protected String convert(String cmd, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
+    protected String convert2udp(String cmd, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
         String nc = "";
         for (int i = otherNS; i < lp.size(); i++) {
-            String a = otherNC;
+            String a = "" + otherNC;
             a = a.replaceAll("\\$id\\$", "" + i);
             a = a.replaceAll("\\$lp\\$", "" + lp.get(i));
             a = a.replaceAll("\\$rp\\$", "" + rp.get(i));

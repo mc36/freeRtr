@@ -666,9 +666,9 @@ public class userTesterOne {
                 ctP.putLine("test hwcfg tcp2vrf " + ctL + " " + ctV);
                 ctP.doSync();
             }
-            pipeShell.exec(img.convert(img.otherC1, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            pipeShell.exec(img.convert(img.otherC2, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            s = img.convert(img.otherC3, prefix + slot + rn, ctL, lps, rps, mcs);
+            pipeShell.exec(img.convert2udp(img.otherC1, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            pipeShell.exec(img.convert2udp(img.otherC2, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            s = img.convert2udp(img.otherC3, prefix + slot + rn, ctL, lps, rps, mcs);
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
@@ -688,6 +688,9 @@ public class userTesterOne {
                 cfg.add(s);
             }
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.swCfgEnd);
+            if (img.otherW == null) {
+                return;
+            }
             if (img.otherW.length() < 1) {
                 return;
             }
