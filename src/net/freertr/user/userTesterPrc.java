@@ -26,9 +26,9 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
     protected final pipeProgress rdr;
 
     /**
-     * test name
+     * router name
      */
-    protected final String name;
+    protected String name;
 
     /**
      * slot to use
@@ -99,6 +99,9 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return o1.name.compareTo(o2.name);
     }
 
+    /**
+     * wait until terminates
+     */
     protected void waitFor() {
         if (shell == null) {
             return;
@@ -108,6 +111,9 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         pipe.setClose();
     }
 
+    /**
+     * forced stop process
+     */
     protected void stopNow() {
         if (shell == null) {
             return;
@@ -121,6 +127,15 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         pipe.setClose();
     }
 
+    /**
+     * get log name
+     *
+     * @param pfx prefix
+     * @param slt slot
+     * @param nam router name
+     * @param mod log to get
+     * @return log file name
+     */
     protected static String getLogName(String pfx, int slt, String nam, int mod) {
         String s;
         switch (mod) {
@@ -143,16 +158,32 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return pfx + slt + nam + "-log." + s;
     }
 
+    /**
+     * get log name
+     *
+     * @param mod log to get
+     * @return log file name
+     */
     protected String getLogName(int mod) {
         return getLogName(prefix, slot, name, mod);
     }
 
+    /**
+     * write one char
+     *
+     * @param i character
+     */
     protected void putChar(int i) {
         byte[] buf = new byte[1];
         buf[0] = (byte) i;
         pipe.blockingPut(buf, 0, buf.length);
     }
 
+    /**
+     * read one line
+     *
+     * @return line read, null if nothing
+     */
     protected String getLine() {
         String s = pipe.lineGet(0x11);
         if (s == null) {
@@ -168,11 +199,22 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return s;
     }
 
+    /**
+     * write one line
+     *
+     * @param s string
+     */
     protected void putLine(String s) {
         bits.buf2txt(false, bits.str2lst("tx:" + s), getLogName(4));
         pipe.linePut(s);
     }
 
+    /**
+     * perform ping test
+     *
+     * @param s command
+     * @return success rate
+     */
     protected int doPing(String s) {
         putLine("ping " + s);
         for (;;) {
@@ -199,6 +241,14 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return bits.str2num(s);
     }
 
+    /**
+     * perform more pings
+     *
+     * @param s command
+     * @param ned needed success rate
+     * @param round retry maximum
+     * @return false on success, true on error
+     */
     protected boolean morePings(String s, tabIntMatcher ned, int round) {
         rdr.debugStat(slot + "/" + name + ": pinging " + s + ".");
         rdr.setMax(round);
@@ -216,6 +266,12 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return true;
     }
 
+    /**
+     * get command output
+     *
+     * @param s command
+     * @return returned output, null on error
+     */
     protected List<String> getOutput(String s) {
         String beg = "!begin-command-" + s;
         String end = "!end-command-" + s;
@@ -243,6 +299,13 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         }
     }
 
+    /**
+     * get software summary
+     *
+     * @param inc include string
+     * @param exc exclude string
+     * @return counter
+     */
     protected int getSummary(String inc, String exc) {
         List<String> buf = getOutput("show interface swsummary");
         if (buf == null) {
@@ -283,6 +346,9 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         return tot;
     }
 
+    /**
+     * perform synchronization
+     */
     protected void doSync() {
         if (syncr.length() < 1) {
             return;
@@ -301,6 +367,11 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         }
     }
 
+    /**
+     * apply config
+     *
+     * @param cfg config
+     */
     protected void applyCfg(List<String> cfg) {
         doSync();
         rdr.setMax(cfg.size());
@@ -315,6 +386,9 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         doSync();
     }
 
+    /**
+     * read up connections
+     */
     protected void readConns() {
         conns = new tabGen<userTesterCon>();
         List<String> l = bits.txt2buf(prefix + slot + name + "-" + cfgInit.hwCfgEnd);

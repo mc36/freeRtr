@@ -988,7 +988,13 @@ public class userFlash {
         return true;
     }
 
-    public final static int getFilePerm(String a) {
+    /**
+     * get file permissions
+     *
+     * @param fn file name
+     * @return file permissions, -1 on error
+     */
+    public final static int getFilePerm(String fn) {
 ///////////            Files.isExecutable(a);
         return 0;
     }
