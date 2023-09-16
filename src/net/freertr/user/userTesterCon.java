@@ -9,15 +9,36 @@ import java.util.Comparator;
  */
 public class userTesterCon implements Comparator<userTesterCon> {
 
-    public int locP;
+    /**
+     * local port
+     */
+    protected int locP;
 
-    public int remP;
+    /**
+     * remote port
+     */
+    protected int remP;
 
-    public userTesterPrc perP;
+    /**
+     * persistent process
+     */
+    protected userTesterPrc perP;
 
-    public userTesterCon perC;
+    /**
+     * console of process
+     */
+    protected userTesterCon perC;
 
-    public String ifc;
+    /**
+     * interface to use
+     */
+    protected String ifc;
+
+    /**
+     * create instance
+     */
+    protected userTesterCon() {
+    }
 
     public int compare(userTesterCon o1, userTesterCon o2) {
         if (o1.locP < o2.locP) {

@@ -10,27 +10,50 @@ import net.freertr.addr.addrMac;
  */
 public class userTesterImg {
 
-    public String otherF = null;
+    /**
+     * filename
+     */
+    protected final String otherF;
 
-    public String otherP = null;
+    protected String otherP = null;
 
-    public String otherC1 = null;
+    protected String otherC1 = null;
 
-    public String otherC2 = null;
+    protected String otherC2 = null;
 
-    public String otherC3 = null;
+    protected String otherC3 = null;
 
-    public int otherNS = 0;
+    protected int otherNS = 0;
 
-    public String otherNC = null;
+    protected String otherNC = null;
 
-    public String otherW = null;
+    protected String otherW = null;
 
-    public String otherS = null;
+    protected String otherS = null;
 
-    public List<String> otherD = null;
+    protected List<String> otherD = null;
 
-    public String convert(String cmd, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
+    /**
+     * create instance
+     *
+     * @param s filename
+     */
+    protected userTesterImg(String s) {
+        otherF = s;
+    }
+
+    /**
+     * convert to udp endpoint
+     *
+     * @param cmd command to update
+     * @param fn filename
+     * @param cp control port
+     * @param lp local port
+     * @param rp remote port
+     * @param ad mac address
+     * @return hwcfg string
+     */
+    protected String convert(String cmd, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
         String nc = "";
         for (int i = otherNS; i < lp.size(); i++) {
             String a = otherNC;

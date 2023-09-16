@@ -10,23 +10,52 @@ import net.freertr.util.syncInt;
  */
 public class userTesterFtr implements Comparator<userTesterFtr> {
 
-    public final String fil;
+    /**
+     * name of file
+     */
+    protected final String fil;
 
-    public syncInt lck = new syncInt(0);
+    /**
+     * locker
+     */
+    protected final syncInt lck = new syncInt(0);
 
-    public int ret;
+    /**
+     * retries
+     */
+    protected int ret;
 
-    public int ran;
+    /**
+     * already run
+     */
+    protected int ran;
 
-    public boolean res;
+    /**
+     * result
+     */
+    protected boolean res;
 
-    public String ftr;
+    /**
+     * feature name
+     */
+    protected String ftr;
 
-    public String htm;
+    /**
+     * html line
+     */
+    protected String htm;
 
-    public String csv;
+    /**
+     * csv line
+     */
+    protected String csv;
 
-    public userTesterFtr(String fn) {
+    /**
+     * create instance
+     *
+     * @param fn name of file
+     */
+    protected userTesterFtr(String fn) {
         fil = fn;
     }
 
@@ -34,7 +63,13 @@ public class userTesterFtr implements Comparator<userTesterFtr> {
         return o1.fil.compareTo(o2.fil);
     }
 
-    public String getter(int mod) {
+    /**
+     * get one line
+     *
+     * @param mod mode
+     * @return line
+     */
+    protected String getter(int mod) {
         switch (mod) {
             case 1: // filename
                 return fil;

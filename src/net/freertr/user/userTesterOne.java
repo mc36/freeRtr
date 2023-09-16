@@ -22,69 +22,69 @@ import net.freertr.util.cmds;
  */
 public class userTesterOne {
 
-    public int slot = 0;
+    protected int slot = 0;
 
-    public String path;
+    protected String path;
 
-    public String prefix;
+    protected String prefix;
 
-    public String fileName;
+    protected String fileName;
 
-    public String testName = "unnamed";
+    protected String testName = "unnamed";
 
-    public int testRes = 1;
+    protected int testRes = 1;
 
-    public boolean config;
+    protected boolean config;
 
-    public boolean unexit;
+    protected boolean unexit;
 
-    public boolean wait;
+    protected boolean wait;
 
-    public int reapply;
+    protected int reapply;
 
-    public int restart;
+    protected int restart;
 
-    public String cfgarch;
+    protected String cfgarch;
 
-    public tabIntMatcher chatty;
+    protected tabIntMatcher chatty;
 
-    public int predelay;
+    protected int predelay;
 
-    public int postdelay;
+    protected int postdelay;
 
-    public String jvm;
+    protected String jvm;
 
-    public int oobase;
+    protected int oobase;
 
-    public List<userTesterCap> capture;
+    protected List<userTesterCap> capture;
 
-    public int persistP;
+    protected int persistP;
 
-    public List<String> persistD;
+    protected List<String> persistD;
 
-    public userTesterPrc persistC;
+    protected userTesterPrc persistC;
 
-    public List<String> remoteD;
+    protected List<String> remoteD;
 
-    public addrIP remoteA;
+    protected addrIP remoteA;
 
-    public addrIP remoteL;
+    protected addrIP remoteL;
 
-    public int remoteP;
+    protected int remoteP;
 
-    public String remoteS;
+    protected String remoteS;
 
-    public List<userTesterImg> others = new ArrayList<userTesterImg>();
+    protected List<userTesterImg> others = new ArrayList<userTesterImg>();
 
-    public String window = "c";
+    protected String window = "c";
 
-    public pipeProgress rdr;
+    protected pipeProgress rdr;
 
-    public pipeSide pipe;
+    protected pipeSide pipe;
 
-    public List<List<String>> shows = new ArrayList<List<String>>();
+    protected List<List<String>> shows = new ArrayList<List<String>>();
 
-    public int traces;
+    protected int traces;
 
     private cmds cmd = new cmds("", "");
 
@@ -96,14 +96,27 @@ public class userTesterOne {
 
     private int lineN = -1;
 
+    /**
+     * create instance
+     */
     public userTesterOne() {
     }
 
-    public boolean getSucc() {
+    /**
+     * get result
+     *
+     * @return true if successful false if not
+     */
+    protected boolean getSucc() {
         return testRes == 0;
     }
 
-    public String getFet() {
+    /**
+     * get feature line
+     *
+     * @return string
+     */
+    protected String getFet() {
         String qc;
         if (testRes != 0) {
             qc = "failed: ";
@@ -113,7 +126,12 @@ public class userTesterOne {
         return qc + testName;
     }
 
-    public String getRes() {
+    /**
+     * get result line
+     *
+     * @return string
+     */
+    protected String getRes() {
         if (testRes == 0) {
             return stage;
         } else {
@@ -121,15 +139,32 @@ public class userTesterOne {
         }
     }
 
-    public String getCsv(String url) {
+    /**
+     * get csv line
+     *
+     * @param url url to use
+     * @return string
+     */
+    protected String getCsv(String url) {
         return url + fileName + ";" + fileName + ";" + getRes() + ";" + testName;
     }
 
-    public String getHtm(String url) {
+    /**
+     * get html line
+     *
+     * @param url url to use
+     * @return string
+     */
+    protected String getHtm(String url) {
         return "<tr><td><a href=\"" + url + fileName + "\">" + fileName + "</a></td><td>" + getRes() + "</td><td>" + testName + "</td></tr>";
     }
 
-    public String getLin() {
+    /**
+     * get next line
+     *
+     * @return string, null if no more
+     */
+    protected String getLin() {
         if (lineD == null) {
             return null;
         }
@@ -140,7 +175,10 @@ public class userTesterOne {
         return lineD.get(lineN);
     }
 
-    public void stopAll() {
+    /**
+     * stop everything
+     */
+    protected void stopAll() {
         if (pipe != null) {
             pipe.setClose();
         }
@@ -158,7 +196,10 @@ public class userTesterOne {
         }
     }
 
-    public void saveMd() {
+    /**
+     * generate md file
+     */
+    protected void saveMd() {
         rdr.debugRes("generating mdfile");
         List<String> l = new ArrayList<String>();
         l.add("# Example: " + testName);
@@ -237,7 +278,13 @@ public class userTesterOne {
         bits.buf2txt(true, l, path + fileName + ".dot");
     }
 
-    public userTesterPrc getPrc(String s) {
+    /**
+     * find one router
+     *
+     * @param s string to find
+     * @return process, null if not found
+     */
+    protected userTesterPrc getPrc(String s) {
         for (int i = 0; i < procs.size(); i++) {
             userTesterPrc p = procs.get(i);
             if (s.equals(p.name)) {
@@ -260,7 +307,13 @@ public class userTesterOne {
         cmd = new cmds("", "");
     }
 
-    public void doTest(String pt, String fn) {
+    /**
+     * perform the test
+     *
+     * @param pt pathname
+     * @param fn filename
+     */
+    protected void doTest(String pt, String fn) {
         testRes = 2;
         fileName = fn;
         lineD = bits.txt2buf(pt + fn);
@@ -337,7 +390,13 @@ public class userTesterOne {
         return s;
     }
 
-    public boolean checkLogs(List<String> l) {
+    /**
+     * check the logs
+     *
+     * @param l logs to check
+     * @return false on error, true on success
+     */
+    protected boolean checkLogs(List<String> l) {
         if (l == null) {
             return true;
         }
@@ -359,7 +418,14 @@ public class userTesterOne {
         return true;
     }
 
-    public boolean doChatty(userTesterPrc p, tabIntMatcher rng) {
+    /**
+     * check chattyenss tests
+     *
+     * @param p process to check
+     * @param rng range to use
+     * @return false on success, true on error
+     */
+    protected boolean doChatty(userTesterPrc p, tabIntMatcher rng) {
         p.putLine("terminal table raw");
         p.doSync();
         int o = p.getSummary(";", "<nonexistent>");
@@ -370,7 +436,10 @@ public class userTesterOne {
         return true;
     }
 
-    public void doLine() {
+    /**
+     * do one line
+     */
+    protected void doLine() {
         String s = cmd.word();
         if (s.length() < 1) {
             return;

@@ -31,6 +31,7 @@ public class userTester {
      */
     public userTester() {
     }
+
     /**
      * port base
      */
@@ -671,8 +672,8 @@ public class userTester {
                 continue;
             }
             if (s.equals("other")) {
-                userTesterImg img = new userTesterImg();
-                img.otherF = cmd.word();
+                s=cmd.word();
+                userTesterImg img = new userTesterImg(s);
                 others.add(img);
                 continue;
             }
