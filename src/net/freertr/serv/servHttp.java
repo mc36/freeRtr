@@ -364,6 +364,9 @@ public class servHttp extends servGeneric implements prtServS {
             if (ntry.allowApi != servHttpHost.apiBitsNothing) {
                 l.add(a + " api" + servHttpHost.apiBits2string(ntry.allowApi));
             }
+            if (ntry.ipInfo != null) {
+                ntry.ipInfo.doGetCfg(a, l, false);
+            }
             if (ntry.allowImgMap) {
                 l.add(a + " imagemap");
             }
@@ -648,6 +651,15 @@ public class servHttp extends servGeneric implements prtServS {
                 return false;
             }
             ntry.allowApi = servHttpHost.string2apiBits(cmd);
+            return false;
+        }
+        if (a.equals("ipinfo")) {
+            if (negated) {
+                ntry.ipInfo = null;
+                return false;
+            }
+            ntry.ipInfo = new servHoneyPotCfg();
+            ntry.ipInfo.doCfgStr(cmd, negated);
             return false;
         }
         if (a.equals("search-script")) {

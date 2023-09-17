@@ -143,26 +143,38 @@ public class servHoneyPotCfg {
      * do config knob
      *
      * @param cmd command to interpret
+     * @param negated command was negated
      * @return true on error, false on success
      */
-    public boolean doCfgStr(cmds cmd) {
+    public boolean doCfgStr(cmds cmd, boolean negated) {
         String s = cmd.word();
         if (s.equals("script")) {
+            if (negated) {
+                script = null;
+                doSanityChecks();
+                return false;
+            }
             script = cfgAll.scrptFind(cmd.word(), false);
             doSanityChecks();
             return false;
         }
         if (s.equals("resolve")) {
-            resolve = true;
+            resolve = !negated;
             doSanityChecks();
             return false;
         }
         if (s.equals("tiny-http")) {
-            tinyHttp = true;
+            tinyHttp = !negated;
             doSanityChecks();
             return false;
         }
         if (s.equals("router4")) {
+            if (negated) {
+                router4 = null;
+                fwder4 = null;
+                doSanityChecks();
+                return false;
+            }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
             int i = bits.str2num(cmd.word());
             cfgRtr rtr = cfgAll.rtrFind(o, i, false);
@@ -180,6 +192,12 @@ public class servHoneyPotCfg {
             return false;
         }
         if (s.equals("router6")) {
+            if (negated) {
+                router6 = null;
+                fwder6 = null;
+                doSanityChecks();
+                return false;
+            }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
             int i = bits.str2num(cmd.word());
             cfgRtr rtr = cfgAll.rtrFind(o, i, false);
@@ -197,22 +215,32 @@ public class servHoneyPotCfg {
             return false;
         }
         if (s.equals("route-details")) {
-            routeDetails = true;
+            routeDetails = !negated;
             doSanityChecks();
             return false;
         }
         if (s.equals("route-hacked")) {
-            routeHacked = true;
+            routeHacked = !negated;
             doSanityChecks();
             return false;
         }
         if (s.equals("route-distinguisher")) {
+            if (negated) {
+                routeDstngshr = 0;
+                doSanityChecks();
+                return false;
+            }
             s = cmd.word();
             routeDstngshr = tabRouteUtil.string2rd(s);
             doSanityChecks();
             return false;
         }
         if (s.equals("route-vrf")) {
+            if (negated) {
+                routeDstngshr = 0;
+                doSanityChecks();
+                return false;
+            }
             s = cmd.word();
             cfgVrf ntry = cfgAll.vrfFind(s, false);
             if (ntry == null) {
@@ -230,58 +258,8 @@ public class servHoneyPotCfg {
             doSanityChecks();
             return false;
         }
-        if (!s.equals("no")) {
-            return true;
-        }
-        s = cmd.word();
-        if (s.equals("tiny-http")) {
-            tinyHttp = false;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("script")) {
-            script = null;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("resolve")) {
-            resolve = false;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("router4")) {
-            router4 = null;
-            fwder4 = null;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("router6")) {
-            router6 = null;
-            fwder6 = null;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("route-details")) {
-            routeDetails = false;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("route-hacked")) {
-            routeHacked = false;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("route-distinguisher")) {
-            routeDstngshr = 0;
-            doSanityChecks();
-            return false;
-        }
-        if (s.equals("route-vrf")) {
-            routeDstngshr = 0;
-            doSanityChecks();
-            return false;
-        }
-        return true;
+        cmd.badCmd();
+        return false;
     }
 
     /**

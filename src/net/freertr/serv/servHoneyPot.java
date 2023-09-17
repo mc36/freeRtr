@@ -84,7 +84,11 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public boolean srvCfgStr(cmds cmd) {
-        return ipInfo.doCfgStr(cmd);
+        boolean neg = cmd.word().equals("no");
+        if (!neg) {
+            cmd = cmd.copyBytes(true);
+        }
+        return ipInfo.doCfgStr(cmd, neg);
     }
 
     public void srvHelp(userHelping l) {

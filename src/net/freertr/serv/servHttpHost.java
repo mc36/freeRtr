@@ -246,9 +246,14 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
     public int allowScript;
 
     /**
-     * api calls allowed, 2=exec, 4=config, 8=ipinfo
+     * api calls allowed
      */
     public int allowApi;
+    
+    /**
+     * ip info configuration
+     */
+    public servHoneyPotCfg ipInfo;
 
     /**
      * image map decode allowed

@@ -1145,6 +1145,7 @@ server honeypot hp0
  router4 bgp4 65535
  router6 bgp6 65535
  script logger
+ resolve
  tiny-http
  interface loopback0
  vrf v1
@@ -1155,6 +1156,7 @@ server honeypot hp1
  router4 bgp4 65535
  router6 bgp6 65535
  route-details
+ resolve
  tiny-http
  interface loopback0
  vrf v1

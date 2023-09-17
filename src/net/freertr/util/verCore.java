@@ -48,7 +48,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 16;
+    public final static int day = 17;
 
     /**
      * statement of release
@@ -82,7 +82,7 @@ public class verCore {
         "quote-10: stupid question deserves stupid answers",
         "quote-9: fearless, stateless, self-containing",
         "quote-8: do or not to do but don't try",
-        "quote-7: vm vm1 vm2 and music heals",
+        "quote-7: labbing hard and music heals",
         "quote-6: music music, noise noise",
         "quote-5: security in obfuscation",
         "quote-4: just use your brain",
