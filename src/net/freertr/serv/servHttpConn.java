@@ -7,7 +7,6 @@ import java.util.zip.Deflater;
 import net.freertr.addr.addrIP;
 import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgInit;
-import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.enc.encBase64;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
@@ -167,7 +166,7 @@ public class servHttpConn implements Runnable {
         pipe.linePut(a);
     }
 
-    protected void addHeader(String s) {
+    protected void addHdr(String s) {
         headers.add(s);
     }
 
@@ -325,38 +324,6 @@ public class servHttpConn implements Runnable {
         a += "</D:prop><D:status>HTTP/1.1 200 ok</D:status></D:propstat>";
         a += "</D:response>\n";
         return a;
-    }
-
-    private String decodeAuth(String got, boolean usr) {
-        if (got == null) {
-            return null;
-        }
-        int i = got.indexOf(" ");
-        if (i < 0) {
-            return null;
-        }
-        got = got.substring(i, got.length()).trim();
-        got = encBase64.decodeString(got);
-        i = got.indexOf(":");
-        if (i < 0) {
-            return null;
-        }
-        if (usr) {
-            return got.substring(0, i);
-        } else {
-            return got.substring(i + 1, got.length());
-        }
-    }
-
-    private boolean checkUserAuth(String got) {
-        if (got == null) {
-            return true;
-        }
-        authResult res = gotHost.authenticList.authUserPass(decodeAuth(got, true), decodeAuth(got, false));
-        if (res.result != authResult.authSuccessful) {
-            return true;
-        }
-        return false;
     }
 
     private boolean readRequest() {
@@ -601,66 +568,12 @@ public class servHttpConn implements Runnable {
         return false;
     }
 
-    private void doTranslate(encUrl srvUrl) {
-        if (gotHost.translate == null) {
-            return;
-        }
-        String a = cfgTrnsltn.doTranslate(gotHost.translate, gotUrl.toURL(true, true, true, true));
-        srvUrl.fromString(a);
-    }
-
-    private void doSubconn(encUrl srvUrl) {
-        if ((gotHost.subconn & 0x1) == 0) {
-            srvUrl.filPath = gotUrl.filPath;
-        }
-        if ((gotHost.subconn & 0x2) == 0) {
-            srvUrl.filName = gotUrl.filName;
-        }
-        if ((gotHost.subconn & 0x4) == 0) {
-            srvUrl.filExt = gotUrl.filExt;
-        }
-        if ((gotHost.subconn & 0x8) == 0) {
-            srvUrl.param = gotUrl.param;
-        }
-        if ((gotHost.subconn & 0x10) != 0) {
-            srvUrl.username = gotUrl.username;
-            srvUrl.password = gotUrl.password;
-        }
-        if ((gotHost.subconn & 0x20) != 0) {
-            srvUrl.server = gotUrl.server;
-        }
-        if ((gotHost.subconn & 0x40) != 0) {
-            srvUrl.filPath = (srvUrl.filPath + "/" + gotUrl.filPath).replaceAll("//", "/");
-        }
-    }
-
     private void serveRequest() {
         gotHost = lower.findHost(gotUrl.server);
         if (gotCmd.equals("connect")) {
             if (gotHost != null) {
                 if (gotHost.allowAnyconn != null) {
-                    servHttpAnyconn ntry = new servHttpAnyconn(pipe, this);
-                    ntry.ifc = gotHost.allowAnyconn.cloneStart(ntry);
-                    headers.add("X-CSTP-Version: 1");
-                    if (ntry.ifc.ip4polA != null) {
-                        headers.add("X-CSTP-Address: " + ntry.ifc.ip4polA);
-                        headers.add("X-CSTP-Netmask: 255.255.255.255");
-                    }
-                    if (ntry.ifc.ip6polA != null) {
-                        headers.add("X-CSTP-Address-IP6: " + ntry.ifc.ip6polA + "/128");
-                    }
-                    headers.add("X-CSTP-Keep: false");
-                    headers.add("X-CSTP-Lease-Duration: 43200");
-                    headers.add("X-CSTP-MTU: 1500");
-                    headers.add("X-CSTP-DPD: 300");
-                    headers.add("X-CSTP-Disconnected-Timeout: 2100");
-                    headers.add("X-CSTP-Idle-Timeout: 2100");
-                    headers.add("X-CSTP-Session-Timeout: 0");
-                    headers.add("X-CSTP-Keepalive: 30");
-                    sendRespHeader("200 ok", -1, null);
-                    ntry.doStart();
-                    gotKeep = false;
-                    pipe = null;
+                    servHttpAnyconn ntry = new servHttpAnyconn(this, gotHost);
                     return;
                 }
             }
@@ -837,12 +750,12 @@ public class servHttpConn implements Runnable {
             return;
         }
         if (gotHost.authenticList != null) {
-            if (checkUserAuth(gotAuth)) {
+            if (gotHost.checkUserAuth(gotAuth)) {
                 headers.add("WWW-Authenticate: Basic realm=login");
                 sendRespError(401, "unauthorized");
                 return;
             }
-            gotAuth = decodeAuth(gotAuth, true);
+            gotAuth = servHttpHost.decodeAuth(gotAuth, true);
         } else {
             gotAuth = null;
         }
@@ -863,8 +776,8 @@ public class servHttpConn implements Runnable {
                     break;
                 }
                 encUrl srvUrl = encUrl.parseOne(a);
-                doTranslate(srvUrl);
-                doSubconn(srvUrl);
+                gotHost.doTranslate(this, srvUrl);
+                gotHost.doSubconn(this, srvUrl);
                 urls.add(srvUrl);
             }
             addrIP[] adrs = new addrIP[urls.size()];
@@ -916,8 +829,8 @@ public class servHttpConn implements Runnable {
         }
         if (gotHost.reconnT != null) {
             encUrl srvUrl = encUrl.parseOne(gotHost.reconnT);
-            doTranslate(srvUrl);
-            doSubconn(srvUrl);
+            gotHost.doTranslate(this, srvUrl);
+            gotHost.doSubconn(this, srvUrl);
             addrIP adr = userTerminal.justResolv(srvUrl.server, gotHost.reconnP.prefer);
             if (adr == null) {
                 sendRespError(502, "bad gateway");
@@ -954,8 +867,8 @@ public class servHttpConn implements Runnable {
         }
         if (gotHost.redir != null) {
             encUrl srvUrl = encUrl.parseOne(gotHost.redir);
-            doTranslate(srvUrl);
-            doSubconn(srvUrl);
+            gotHost.doTranslate(this, srvUrl);
+            gotHost.doSubconn(this, srvUrl);
             sendFoundAt(srvUrl.toURL(true, true, true, false));
             return;
         }

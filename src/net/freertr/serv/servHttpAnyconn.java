@@ -21,43 +21,53 @@ import net.freertr.util.state;
  */
 public class servHttpAnyconn implements Runnable, ifcDn {
 
-    /**
-     * cloned interface
-     */
-    protected cfgIfc ifc = null;
+    private cfgIfc clnd = null;
 
     private counter cntr = new counter();
 
-    private pipeSide pipe;
+    private final pipeSide pipe;
+
+    private final servHttpConn lower;
 
     private ifcUp upper = new ifcNull();
-
-    private servHttpConn lower;
 
     /**
      * create instance
      *
-     * @param conn connection
-     * @param parent lower layer
+     * @param conn lower layer
      */
-    public servHttpAnyconn(pipeSide conn, servHttpConn parent) {
-        lower = parent;
-        pipe = conn;
-    }
-
-    /**
-     * start work
-     */
-    public void doStart() {
+    public servHttpAnyconn(servHttpConn conn, servHttpHost cfg) {
+        lower = conn;
+        pipe = conn.pipe;
+        clnd = cfg.allowAnyconn.cloneStart(this);
+        lower.addHdr("X-CSTP-Version: 1");
+        if (clnd.ip4polA != null) {
+            lower.addHdr("X-CSTP-Address: " + clnd.ip4polA);
+            lower.addHdr("X-CSTP-Netmask: 255.255.255.255");
+        }
+        if (clnd.ip6polA != null) {
+            lower.addHdr("X-CSTP-Address-IP6: " + clnd.ip6polA + "/128");
+        }
+        lower.addHdr("X-CSTP-Keep: false");
+        lower.addHdr("X-CSTP-Lease-Duration: 43200");
+        lower.addHdr("X-CSTP-MTU: 1500");
+        lower.addHdr("X-CSTP-DPD: 300");
+        lower.addHdr("X-CSTP-Disconnected-Timeout: 2100");
+        lower.addHdr("X-CSTP-Idle-Timeout: 2100");
+        lower.addHdr("X-CSTP-Session-Timeout: 0");
+        lower.addHdr("X-CSTP-Keepalive: 30");
+        lower.sendRespHeader("200 ok", -1, null);
+        lower.gotKeep = false;
+        lower.pipe = null;
         new Thread(this).start();
     }
 
     public void run() {
-        if (ifc.ip4polA != null) {
-            ifc.addr4changed(ifc.addr4, ifc.mask4, ifc.ip4polA);
+        if (clnd.ip4polA != null) {
+            clnd.addr4changed(clnd.addr4, clnd.mask4, clnd.ip4polA);
         }
-        if (ifc.ip6polA != null) {
-            ifc.addr6changed(ifc.addr6, ifc.mask6, ifc.ip6polA);
+        if (clnd.ip6polA != null) {
+            clnd.addr6changed(clnd.addr6, clnd.mask6, clnd.ip6polA);
         }
         try {
             for (;;) {
@@ -69,7 +79,7 @@ public class servHttpAnyconn implements Runnable, ifcDn {
             logger.traceback(e);
         }
         pipe.setClose();
-        ifc.cloneStop();
+        clnd.cloneStop();
     }
 
     private boolean doRound() {

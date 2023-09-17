@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.auth.authGeneric;
+import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
@@ -21,6 +22,7 @@ import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.clnt.clntProxy;
+import net.freertr.enc.encBase64;
 import net.freertr.enc.encMarkDown;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
@@ -1079,7 +1081,7 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
         if (i < 0) {
             return s;
         }
-        cn.addHeader("Content-Disposition: attachment; filename=\"" + s + "\"");
+        cn.addHdr("Content-Disposition: attachment; filename=\"" + s + "\"");
         return s.substring(i + 1, s.length());
     }
 
@@ -1659,7 +1661,7 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
                 cn.sendRespHeader("200 ok", siz, cfgInit.findMimeType(a));
             }
         } else {
-            cn.addHeader("Content-Range: bytes " + ranB + "-" + ranE + "/" + siz);
+            cn.addHdr("Content-Range: bytes " + ranB + "-" + ranE + "/" + siz);
             if (!checkNoHeaders(s)) {
                 cn.sendRespHeader("206 partial", ranE - ranB + 1, cfgInit.findMimeType(a));
             }
@@ -1705,6 +1707,71 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
         } catch (Exception e) {
         }
         return false;
+    }
+
+    protected boolean checkUserAuth(String got) {
+        if (got == null) {
+            return true;
+        }
+        authResult res = authenticList.authUserPass(decodeAuth(got, true), decodeAuth(got, false));
+        if (res.result != authResult.authSuccessful) {
+            return true;
+        }
+        return false;
+    }
+
+    protected static final String decodeAuth(String got, boolean usr) {
+        if (got == null) {
+            return null;
+        }
+        int i = got.indexOf(" ");
+        if (i < 0) {
+            return null;
+        }
+        got = got.substring(i, got.length()).trim();
+        got = encBase64.decodeString(got);
+        i = got.indexOf(":");
+        if (i < 0) {
+            return null;
+        }
+        if (usr) {
+            return got.substring(0, i);
+        } else {
+            return got.substring(i + 1, got.length());
+        }
+    }
+
+    protected void doTranslate(servHttpConn cn, encUrl srvUrl) {
+        if (translate == null) {
+            return;
+        }
+        String a = cfgTrnsltn.doTranslate(translate, cn.gotUrl.toURL(true, true, true, true));
+        srvUrl.fromString(a);
+    }
+
+    protected void doSubconn(servHttpConn cn, encUrl srvUrl) {
+        if ((subconn & 0x1) == 0) {
+            srvUrl.filPath = cn.gotUrl.filPath;
+        }
+        if ((subconn & 0x2) == 0) {
+            srvUrl.filName = cn.gotUrl.filName;
+        }
+        if ((subconn & 0x4) == 0) {
+            srvUrl.filExt = cn.gotUrl.filExt;
+        }
+        if ((subconn & 0x8) == 0) {
+            srvUrl.param = cn.gotUrl.param;
+        }
+        if ((subconn & 0x10) != 0) {
+            srvUrl.username = cn.gotUrl.username;
+            srvUrl.password = cn.gotUrl.password;
+        }
+        if ((subconn & 0x20) != 0) {
+            srvUrl.server = cn.gotUrl.server;
+        }
+        if ((subconn & 0x40) != 0) {
+            srvUrl.filPath = (srvUrl.filPath + "/" + cn.gotUrl.filPath).replaceAll("//", "/");
+        }
     }
 
 }

@@ -26,9 +26,12 @@ public class servHoneyPotCfg {
      * configurable defaults text
      */
     public final static String[] cfgerdefL = {
-        " .*! no tiny-http",
-        " .*! no resolve",
-        " .*! no script"
+        " .*!.* no router4",
+        " .*!.* no router6",
+        " .*!.* no route-details",
+        " .*!.* no route-hacked",
+        " .*!.* no route-distinguisher",
+        " .*!.* no route-vrf"
     };
 
     /**
@@ -40,9 +43,9 @@ public class servHoneyPotCfg {
      * configurable defaults text
      */
     public final static String[] unsafdefL = {
-        " .*! no tiny-http",
-        " .*! no resolve",
-        " .*! no script"
+        " .*!.* no tiny-http",
+        " .*!.* no resolve",
+        " .*!.* no script"
     };
 
     /**
