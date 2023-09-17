@@ -2,7 +2,10 @@ package net.freertr.serv;
 
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrType;
+import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.enc.encUrl;
+import net.freertr.enc.encXml;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ifc.ifcNull;
@@ -36,9 +39,12 @@ public class servHttpAnyconn implements Runnable, ifcDn {
      *
      * @param conn lower layer
      */
-    public servHttpAnyconn(servHttpConn conn, servHttpHost cfg) {
+    public servHttpAnyconn(servHttpConn conn) {
         lower = conn;
         pipe = conn.pipe;
+    }
+
+    protected void doStart(servHttpHost cfg) {
         clnd = cfg.allowAnyconn.cloneStart(this);
         lower.addHdr("X-CSTP-Version: 1");
         if (clnd.ip4polA != null) {
@@ -60,6 +66,83 @@ public class servHttpAnyconn implements Runnable, ifcDn {
         lower.gotKeep = false;
         lower.pipe = null;
         new Thread(this).start();
+    }
+
+    protected void serveReq(servHttpHost gotHost) {
+        lower.gotUrl.port = lower.lower.srvPort;
+        if (lower.lower.secProto != 0) {
+            lower.gotUrl.proto = "https";
+        } else {
+            lower.gotUrl.proto = "http";
+        }
+        lower.addHdr("Set-Cookie: webvpncontext=00@defctx; path=/; Secure");
+        String pn = lower.gotUrl.toPathName();
+        if (pn.length() <= 0) {
+            lower.addHdr("Location: " + lower.gotUrl.toURL(true, false, false, false) + "webvpn.html");
+            lower.sendRespHeader("303 see other", -1, "text/html");
+            return;
+        }
+        if (pn.equals("1/index.html")) {
+            lower.sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.equals("1/Linux")) {
+            lower.sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.equals("1/Linux_64")) {
+            lower.sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.equals("1/Windows")) {
+            lower.sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.equals("1/Darwin_i386")) {
+            lower.sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.equals("1/VPNManifest.xml")) {
+            lower.sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<vpn rev=\"1.0\">\n</vpn>\n").getBytes());
+            return;
+        }
+        if (pn.equals("1/binaries/update.txt")) {
+            lower.sendTextHeader("200 ok", "text/html", "0,0,0000\\n".getBytes());
+            return;
+        }
+        if (pn.equals("logout")) {
+            lower.sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.startsWith(" CSCOT /")) {
+            lower.sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (!pn.equals("webvpn.html")) {
+            lower.sendRespError(404, "not found");
+            return;
+        }
+        String s = new String(lower.gotBytes);
+        lower.gotBytes = new byte[0];
+        encUrl srv = encUrl.parseOne("http://x/y?" + s);
+        lower.gotUrl.param.addAll(srv.param);
+        lower.gotUrl.username = lower.gotUrl.getParam("username");
+        lower.gotUrl.password = lower.gotUrl.getParam("password");
+        if (lower.gotUrl.username == null) {
+            lower.gotUrl.username = "";
+        }
+        if (lower.gotUrl.password == null) {
+            lower.gotUrl.password = "";
+        }
+        authResult res = gotHost.authenticList.authUserPass(lower.gotUrl.username, lower.gotUrl.password);
+        if (res.result != authResult.authSuccessful) {
+            lower.addHdr("X-Transcend-Version: 1");
+            lower.sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<auth id=\"main\"><title>login</title><message>enter username and password</message><form method=\"post\" action=\"webvpn.html\"><input type=\"text\" label=\"username:\" name=\"username\" value=\"\" /><input type=\"password\" label=\"password:\" name=\"password\" value=\"\" /><input type=\"submit\" name=\"login\" value=\"login\" /></form></auth>").getBytes());
+            return;
+        }
+        lower.addHdr("Set-Cookie: webvpn=00@0168430307@00071@3702439125@3326207229@defctx; path=/; Secure");
+        lower.addHdr("Set-Cookie: webvpnc=bu:0/&p:t&iu:1/&sh:%s; path=/; Secure");
+        lower.sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<auth id=\"success\"><title>vpn</title><message>success</message><success/></auth>").getBytes());
     }
 
     public void run() {

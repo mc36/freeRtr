@@ -573,7 +573,8 @@ public class servHttpConn implements Runnable {
         if (gotCmd.equals("connect")) {
             if (gotHost != null) {
                 if (gotHost.allowAnyconn != null) {
-                    servHttpAnyconn ntry = new servHttpAnyconn(this, gotHost);
+                    servHttpAnyconn ntry = new servHttpAnyconn(this);
+                    ntry.doStart(gotHost);
                     return;
                 }
             }
@@ -614,139 +615,13 @@ public class servHttpConn implements Runnable {
             logger.info(peer + " accessed " + gotUrl.toURL(true, false, true, true));
         }
         if (gotHost.allowForti != null) {
-            if (gotUrl.toPathName().equals("remote/logincheck")) {
-                headers.add("Set-Cookie: SVPNCOOKIE=" + encBase64.encodeString(gotUrl.getParam("username") + "|" + gotUrl.getParam("credential")) + "; path=/; secure; httponly");
-                sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("remote/index")) {
-                sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("remote/fortisslvpn")) {
-                sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (!gotUrl.toPathName().equals("remote/fortisslvpn_xml")) {
-                sendRespError(404, "not found");
-                return;
-            }
-            if (gotCook.size() < 1) {
-                sendRespError(401, "unauthorized");
-                return;
-            }
-            String a = gotCook.get(0);
-            int i = a.indexOf("=");
-            if (i < 0) {
-                sendRespError(401, "unauthorized");
-                return;
-            }
-            a = encBase64.decodeString(a.substring(i + 1, a.length()));
-            if (a == null) {
-                sendRespError(401, "unauthorized");
-                return;
-            }
-            i = a.indexOf("|");
-            if (i < 0) {
-                sendRespError(401, "unauthorized");
-                return;
-            }
-            authResult res = gotHost.authenticList.authUserPass(a.substring(0, i), a.substring(i + 1, a.length()));
-            if (res.result != authResult.authSuccessful) {
-                sendRespError(401, "unauthorized");
-                return;
-            }
-            sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
-            for (;;) {
-                a = pipe.lineGet(1);
-                if (debugger.servHttpTraf) {
-                    logger.debug("rx '" + a + "'");
-                }
-                if (a.length() < 1) {
-                    break;
-                }
-            }
-            servHttpForti ntry = new servHttpForti(pipe);
-            ntry.ifc = gotHost.allowForti.cloneStart(ntry);
-            ntry.doStart();
-            gotKeep = false;
-            pipe = null;
+            servHttpForti ntry = new servHttpForti(this);
+            ntry.serveReq(gotHost);
             return;
         }
         if (gotHost.allowAnyconn != null) {
-            gotUrl.port = lower.srvPort;
-            if (lower.secProto != 0) {
-                gotUrl.proto = "https";
-            } else {
-                gotUrl.proto = "http";
-            }
-            headers.add("Set-Cookie: webvpncontext=00@defctx; path=/; Secure");
-            if (gotUrl.toPathName().length() <= 0) {
-                headers.add("Location: " + gotUrl.toURL(true, false, false, false) + "webvpn.html");
-                sendRespHeader("303 see other", -1, "text/html");
-                return;
-            }
-            if (gotUrl.toPathName().equals("1/index.html")) {
-                sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("1/Linux")) {
-                sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("1/Linux_64")) {
-                sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("1/Windows")) {
-                sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("1/Darwin_i386")) {
-                sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("1/VPNManifest.xml")) {
-                sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<vpn rev=\"1.0\">\n</vpn>\n").getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("1/binaries/update.txt")) {
-                sendTextHeader("200 ok", "text/html", "0,0,0000\\n".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().equals("logout")) {
-                sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (gotUrl.toPathName().startsWith(" CSCOT /")) {
-                sendTextHeader("200 ok", "text/html", "<html></html>".getBytes());
-                return;
-            }
-            if (!gotUrl.toPathName().equals("webvpn.html")) {
-                sendRespError(404, "not found");
-                return;
-            }
-            String s = new String(gotBytes);
-            gotBytes = new byte[0];
-            encUrl srv = encUrl.parseOne("http://x/y?" + s);
-            gotUrl.param.addAll(srv.param);
-            gotUrl.username = gotUrl.getParam("username");
-            gotUrl.password = gotUrl.getParam("password");
-            if (gotUrl.username == null) {
-                gotUrl.username = "";
-            }
-            if (gotUrl.password == null) {
-                gotUrl.password = "";
-            }
-            authResult res = gotHost.authenticList.authUserPass(gotUrl.username, gotUrl.password);
-            if (res.result != authResult.authSuccessful) {
-                headers.add("X-Transcend-Version: 1");
-                sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<auth id=\"main\"><title>login</title><message>enter username and password</message><form method=\"post\" action=\"webvpn.html\"><input type=\"text\" label=\"username:\" name=\"username\" value=\"\" /><input type=\"password\" label=\"password:\" name=\"password\" value=\"\" /><input type=\"submit\" name=\"login\" value=\"login\" /></form></auth>").getBytes());
-                return;
-            }
-            headers.add("Set-Cookie: webvpn=00@0168430307@00071@3702439125@3326207229@defctx; path=/; Secure");
-            headers.add("Set-Cookie: webvpnc=bu:0/&p:t&iu:1/&sh:%s; path=/; Secure");
-            sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<auth id=\"success\"><title>vpn</title><message>success</message><success/></auth>").getBytes());
+            servHttpAnyconn ntry = new servHttpAnyconn(this);
+            ntry.serveReq(gotHost);
             return;
         }
         if (gotHost.authenticList != null) {

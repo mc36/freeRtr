@@ -2,7 +2,9 @@ package net.freertr.serv;
 
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrType;
+import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.enc.encBase64;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcPpp;
@@ -11,6 +13,7 @@ import net.freertr.pack.packForti;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 import net.freertr.util.counter;
+import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
 
@@ -21,14 +24,13 @@ import net.freertr.util.state;
  */
 public class servHttpForti implements Runnable, ifcDn {
 
-    /**
-     * cloned interface
-     */
-    protected cfgIfc ifc = null;
+    private final servHttpConn lower;
+
+    private cfgIfc clnd = null;
 
     private counter cntr = new counter();
 
-    private pipeSide pipe;
+    private final pipeSide pipe;
 
     private ifcUp upper = new ifcNull();
 
@@ -37,23 +39,77 @@ public class servHttpForti implements Runnable, ifcDn {
      *
      * @param conn connection
      */
-    public servHttpForti(pipeSide conn) {
-        pipe = conn;
+    public servHttpForti(servHttpConn conn) {
+        lower = conn;
+        pipe = conn.pipe;
     }
 
-    /**
-     * start work
-     */
-    public void doStart() {
+    protected void serveReq(servHttpHost gotHost) {
+        String pn = lower.gotUrl.toPathName();
+        if (pn.equals("remote/logincheck")) {
+            lower.addHdr("Set-Cookie: SVPNCOOKIE=" + encBase64.encodeString(lower.gotUrl.getParam("username") + "|" + lower.gotUrl.getParam("credential")) + "; path=/; secure; httponly");
+            lower.sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.equals("remote/index")) {
+            lower.sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (pn.equals("remote/fortisslvpn")) {
+            lower.sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+            return;
+        }
+        if (!pn.equals("remote/fortisslvpn_xml")) {
+            lower.sendRespError(404, "not found");
+            return;
+        }
+        if (lower.gotCook.size() < 1) {
+            lower.sendRespError(401, "unauthorized");
+            return;
+        }
+        String a = lower.gotCook.get(0);
+        int i = a.indexOf("=");
+        if (i < 0) {
+            lower.sendRespError(401, "unauthorized");
+            return;
+        }
+        a = encBase64.decodeString(a.substring(i + 1, a.length()));
+        if (a == null) {
+            lower.sendRespError(401, "unauthorized");
+            return;
+        }
+        i = a.indexOf("|");
+        if (i < 0) {
+            lower.sendRespError(401, "unauthorized");
+            return;
+        }
+        authResult res = gotHost.authenticList.authUserPass(a.substring(0, i), a.substring(i + 1, a.length()));
+        if (res.result != authResult.authSuccessful) {
+            lower.sendRespError(401, "unauthorized");
+            return;
+        }
+        lower.sendTextHeader("200 OK", "text/html", "<html></html>".getBytes());
+        for (;;) {
+            a = pipe.lineGet(1);
+            if (debugger.servHttpTraf) {
+                logger.debug("rx '" + a + "'");
+            }
+            if (a.length() < 1) {
+                break;
+            }
+        }
+        clnd = gotHost.allowForti.cloneStart(this);
         new Thread(this).start();
+        lower.gotKeep = false;
+        lower.pipe = null;
     }
 
     public void run() {
-        if (ifc.ip4polA != null) {
-            ifc.addr4changed(ifc.addr4, ifc.mask4, ifc.ip4polA);
+        if (clnd.ip4polA != null) {
+            clnd.addr4changed(clnd.addr4, clnd.mask4, clnd.ip4polA);
         }
-        if (ifc.ip6polA != null) {
-            ifc.addr6changed(ifc.addr6, ifc.mask6, ifc.ip6polA);
+        if (clnd.ip6polA != null) {
+            clnd.addr6changed(clnd.addr6, clnd.mask6, clnd.ip6polA);
         }
         try {
             for (;;) {
@@ -65,7 +121,7 @@ public class servHttpForti implements Runnable, ifcDn {
             logger.traceback(e);
         }
         pipe.setClose();
-        ifc.cloneStop();
+        clnd.cloneStop();
     }
 
     private boolean doRound() {
