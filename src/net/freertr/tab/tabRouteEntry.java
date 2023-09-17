@@ -547,10 +547,10 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         } catch (Exception e) {
             lst.add(beg + "|prefix|" + prefix);
         }
-        lst.add(beg + "|prefix network|" + prefix.network);
-        lst.add(beg + "|prefix broadcast|" + prefix.broadcast);
-        lst.add(beg + "|prefix wildcard|" + prefix.wildcard);
-        lst.add(beg + "|prefix netmask|" + prefix.mask);
+        lst.add(beg + "|prefix network|" + addrType.any2str(prefix.network));
+        lst.add(beg + "|prefix broadcast|" + addrType.any2str(prefix.broadcast));
+        lst.add(beg + "|prefix wildcard|" + addrType.any2str(prefix.wildcard));
+        lst.add(beg + "|prefix netmask|" + addrType.any2str(prefix.mask));
         lst.add(beg + "|nlri|" + bits.byteDump(nlri, 0, -1));
         lst.add(beg + "|alternates|" + alts.size());
         for (int i = 0; i < alts.size(); i++) {

@@ -45,6 +45,21 @@ public abstract class addrType implements Comparator<addrType> {
     public abstract boolean fromString(String s);
 
     /**
+     * convert any address to string
+     *
+     * @param at address to convert
+     * @return converted
+     */
+    public static final String any2str(addrType at) {
+        try {
+            addrIP ai = (addrIP) at;
+            return "" + ai;
+        } catch (Exception e) {
+            return "" + at;
+        }
+    }
+
+    /**
      * get size of this address in bits
      *
      * @return bits in the address
