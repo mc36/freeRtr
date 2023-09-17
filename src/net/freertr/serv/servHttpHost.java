@@ -54,7 +54,7 @@ import net.freertr.util.version;
  *
  * @author matecsaba
  */
-public class servHttpHost implements Runnable, Comparator<servHttpHost> {
+public class servHttpHost implements Comparator<servHttpHost> {
 
     /**
      * create instance
@@ -333,6 +333,11 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
     public List<pipeSide> streamC;
 
     /**
+     * streamer handler
+     */
+    public servHttpStrm streamR;
+
+    /**
      * proxy for multiple access
      */
     public clntProxy multiAccP;
@@ -449,98 +454,126 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
     /**
      * start streaming
      */
-    public void reStream() {
+    protected void reStream(servHttpConn cn) {
+        cn.gotKeep = false;
+        cn.sendRespHeader("200 restreaming", -1, streamM);
+        streamC.add(cn.pipe);
+        cn.pipe = null;
         if (streamS != null) {
             if (streamS.isClosed() == 0) {
                 return;
             }
         }
-        new Thread(this).start();
+        if (streamR != null) {
+            return;
+        }
+        streamR = new servHttpStrm(this);
+        new Thread(streamR).start();
     }
 
-    public void run() {
-        try {
-            doStream();
-        } catch (Exception e) {
-            logger.traceback(e);
+    protected void doMultAcc(servHttpConn cn) {
+        cmds cmd = new cmds("hst", multiAccT);
+        List<encUrl> urls = new ArrayList<encUrl>();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            encUrl srvUrl = encUrl.parseOne(a);
+            doTranslate(cn, srvUrl);
+            doSubconn(cn, srvUrl);
+            urls.add(srvUrl);
         }
+        addrIP[] adrs = new addrIP[urls.size()];
+        for (int i = 0; i < adrs.length; i++) {
+            adrs[i] = userTerminal.justResolv(urls.get(i).server, multiAccP.prefer);
+        }
+        pipeSide[] cons = new pipeSide[adrs.length];
+        for (int i = 0; i < adrs.length; i++) {
+            cons[i] = null;
+            if (adrs[i] == null) {
+                continue;
+            }
+            cons[i] = multiAccP.doConnect(servGeneric.protoTcp, adrs[i], urls.get(i).getPort(cn.lower.srvPort()), "http");
+        }
+        pipeSide fin = null;
+        for (int i = 0; i < cons.length; i++) {
+            if (cons[i] == null) {
+                continue;
+            }
+            if (fin != null) {
+                fin.setClose();
+            }
+            fin = cons[i];
+            pipeSide.modTyp old = fin.lineTx;
+            fin.lineTx = pipeSide.modTyp.modeCRLF;
+            fin.linePut(cn.gotCmd.toUpperCase() + " " + urls.get(i).toURL(false, false, true, true) + " HTTP/1.1");
+            fin.linePut("User-Agent: " + cn.gotAgent + " [" + version.usrAgnt + " by " + cn.peer + "]");
+            fin.linePut("X-Forwarded-For: " + cn.peer);
+            fin.linePut("Referer: " + cn.gotReferer);
+            fin.linePut("Host: " + cn.gotUrl.server);
+            fin.linePut("Accept: */*");
+            fin.linePut("Accept-Language: *");
+            fin.linePut("Accept-Charset: *");
+            fin.linePut("Accept-Encoding: identity");
+            if (cn.gotRange != null) {
+                fin.linePut("Range: " + cn.gotRange);
+            }
+            fin.linePut("Connection: Close");
+            fin.linePut("");
+            fin.lineTx = old;
+        }
+        if (fin == null) {
+            cn.sendRespError(504, "gateways timeout");
+            return;
+        }
+        pipeConnect.connect(cn.pipe, fin, true);
+        cn.pipe = null;
     }
 
-    private void doStream() {
-        if (debugger.servHttpTraf) {
-            logger.debug("startup");
-        }
-        bits.sleep(1000);
-        encUrl srvUrl = encUrl.parseOne(streamT);
-        addrIP adr = userTerminal.justResolv(srvUrl.server, streamP.prefer);
+    protected void doRedir(servHttpConn cn) {
+        encUrl srvUrl = encUrl.parseOne(redir);
+        doTranslate(cn, srvUrl);
+        doSubconn(cn, srvUrl);
+        cn.sendFoundAt(srvUrl.toURL(true, true, true, false));
+    }
+
+    protected void doReconn(servHttpConn cn) {
+        encUrl srvUrl = encUrl.parseOne(reconnT);
+        doTranslate(cn, srvUrl);
+        doSubconn(cn, srvUrl);
+        addrIP adr = userTerminal.justResolv(srvUrl.server, reconnP.prefer);
         if (adr == null) {
+            cn.sendRespError(502, "bad gateway");
             return;
         }
-        pipeSide cnn = streamP.doConnect(servGeneric.protoTcp, adr, srvUrl.getPort(new servHttp().srvPort()), "http");
+        pipeSide cnn = reconnP.doConnect(servGeneric.protoTcp, adr, srvUrl.getPort(cn.lower.srvPort()), "http");
         if (cnn == null) {
+            cn.sendRespError(504, "gateway timeout");
             return;
         }
-        streamS = cnn;
         if (debugger.servHttpTraf) {
-            logger.debug("conned");
+            logger.debug("reconnect " + srvUrl.toURL(true, false, true, true));
         }
+        pipeSide.modTyp old = cnn.lineTx;
         cnn.lineTx = pipeSide.modTyp.modeCRLF;
-        cnn.lineRx = pipeSide.modTyp.modeCRtryLF;
-        cnn.linePut("GET " + srvUrl.toURL(false, false, true, true) + " HTTP/1.1");
-        cnn.linePut("User-Agent: " + version.usrAgnt + " [streaming]");
+        cnn.linePut(cn.gotCmd.toUpperCase() + " " + srvUrl.toURL(false, false, true, true) + " HTTP/1.1");
+        cnn.linePut("User-Agent: " + cn.gotAgent + " [" + version.usrAgnt + " by " + cn.peer + "]");
+        cnn.linePut("X-Forwarded-For: " + cn.peer);
+        cnn.linePut("Referer: " + cn.gotReferer);
         cnn.linePut("Host: " + srvUrl.server);
         cnn.linePut("Accept: */*");
         cnn.linePut("Accept-Language: *");
         cnn.linePut("Accept-Charset: *");
         cnn.linePut("Accept-Encoding: identity");
+        if (cn.gotRange != null) {
+            cnn.linePut("Range: " + cn.gotRange);
+        }
         cnn.linePut("Connection: Close");
         cnn.linePut("");
-        for (;;) {
-            String s = cnn.lineGet(1);
-            if (s == null) {
-                break;
-            }
-            if (s.length() < 1) {
-                break;
-            }
-            if (debugger.servHttpTraf) {
-                logger.debug("rx: " + s);
-            }
-        }
-        if (debugger.servHttpTraf) {
-            logger.debug("serving");
-        }
-        for (;;) {
-            byte[] buf = new byte[1024];
-            int siz = cnn.blockingGet(buf, 0, buf.length);
-            if (siz < 1) {
-                if (cnn.isClosed() != 0) {
-                    break;
-                }
-                bits.sleep(1000);
-                continue;
-            }
-            int i = streamC.size() - 1;
-            if (i < 0) {
-                break;
-            }
-            for (; i >= 0; i--) {
-                pipeSide pip = streamC.get(i);
-                if (pip.isClosed() == 0) {
-                    pip.nonBlockPut(buf, 0, siz);
-                    continue;
-                }
-                streamC.remove(i);
-                pip.setClose();
-            }
-        }
-        cnn.setClose();
-        for (int i = streamC.size() - 1; i >= 0; i--) {
-            streamC.get(i).setClose();
-        }
-        if (debugger.servHttpTraf) {
-            logger.debug("stopped");
-        }
+        cnn.lineTx = old;
+        pipeConnect.connect(cn.pipe, cnn, true);
+        cn.pipe = null;
     }
 
     /**
@@ -1772,6 +1805,366 @@ public class servHttpHost implements Runnable, Comparator<servHttpHost> {
         if ((subconn & 0x40) != 0) {
             srvUrl.filPath = (srvUrl.filPath + "/" + cn.gotUrl.filPath).replaceAll("//", "/");
         }
+    }
+
+    protected final static boolean doConnect(servHttpConn cn) {
+        if (!cn.gotCmd.equals("connect")) {
+            return false;
+        }
+        if (cn.gotHost != null) {
+            if (cn.gotHost.allowAnyconn != null) {
+                servHttpAnyconn ntry = new servHttpAnyconn(cn);
+                ntry.doStart(cn.gotHost);
+                return true;
+            }
+        }
+        if (cn.lower.proxy == null) {
+            cn.sendRespError(405, "not allowed");
+            return true;
+        }
+        cn.gotUrl.fromString("tcp://" + cn.gotUrl.orig);
+        addrIP adr = userTerminal.justResolv(cn.gotUrl.server, cn.lower.proxy.prefer);
+        if (adr == null) {
+            cn.sendRespError(502, "bad gateway");
+            return true;
+        }
+        pipeSide cnn = cn.lower.proxy.doConnect(servGeneric.protoTcp, adr, cn.gotUrl.getPort(cn.lower.srvPort()), "http");
+        if (cnn == null) {
+            cn.sendRespError(504, "gateway timeout");
+            return true;
+        }
+        cn.sendRespHeader("200 connected", -1, null);
+        pipeConnect.connect(cn.pipe, cnn, true);
+        cn.pipe = null;
+        return true;
+    }
+
+    protected static final String webdavProp(String n, File f, boolean typ, boolean len, boolean tag, boolean mod, boolean crt, boolean dsp, boolean cnt, boolean usd, boolean fre) {
+        if (!f.exists()) {
+            return "";
+        }
+        boolean dir = f.isDirectory();
+        String a = "<D:response>";
+        if (dir && (n.length() > 0)) {
+            n += "/";
+        }
+        a += "<D:href>/" + n + "</D:href>";
+        a += "<D:propstat><D:prop>";
+        if (typ) {
+            if (dir) {
+                a += "<D:resourcetype><D:collection/></D:resourcetype>";
+            } else {
+                a += "<D:resourcetype/>";
+            }
+        }
+        if (len) {
+            a += "<D:getcontentlength>" + f.length() + "</D:getcontentlength>";
+        }
+        if (tag) {
+            a += "<D:getetag>W/\"" + f.length() + "-" + f.lastModified() + "\"</D:getetag>";
+        }
+        if (mod) {
+            a += "<D:getlastmodified>" + bits.time2str("GMT", f.lastModified(), 4) + "</D:getlastmodified>";
+        }
+        if (usd) {
+            a += "<D:quota-used-bytes>" + (f.getTotalSpace() - f.getFreeSpace()) + "</D:quota-used-bytes>";
+        }
+        if (fre) {
+            a += "<D:quota-available-bytes>" + f.getFreeSpace() + "</D:quota-available-bytes>";
+        }
+        if (crt) {
+            a += "<D:creationdate>" + bits.time2str("Z", f.lastModified(), 3).replaceAll(" ", "T") + "Z</D:creationdate>";
+        }
+        if (dsp) {
+            a += "<D:displayname><![CDATA[" + n + "]]></D:displayname>";
+        }
+        if (cnt) {
+            a += "<D:getcontenttype>" + cfgInit.findMimeType(n) + "</D:getcontenttype>";
+        }
+        a += "</D:prop><D:status>HTTP/1.1 200 ok</D:status></D:propstat>";
+        a += "</D:response>\n";
+        return a;
+    }
+
+    protected void serveRequest(servHttpConn cn) {
+        String pn = cn.gotUrl.toPathName();
+        if (cn.gotHost == null) {
+            cn.sendRespError(404, "not found");
+            return;
+        }
+        if (accessList != null) {
+            if (!accessList.matches(cn.conn)) {
+                cn.sendRespError(401, "forbidden");
+                return;
+            }
+        }
+        askNum++;
+        askTim = bits.getTime();
+        if (logging) {
+            logger.info(cn.peer + " accessed " + cn.gotUrl.toURL(true, false, true, true));
+        }
+        if (allowForti != null) {
+            servHttpForti ntry = new servHttpForti(cn);
+            ntry.serveReq(cn.gotHost);
+            return;
+        }
+        if (allowAnyconn != null) {
+            servHttpAnyconn ntry = new servHttpAnyconn(cn);
+            ntry.serveReq(cn.gotHost);
+            return;
+        }
+        if (authenticList != null) {
+            if (checkUserAuth(cn.gotAuth)) {
+                cn.addHdr("WWW-Authenticate: Basic realm=login");
+                cn.sendRespError(401, "unauthorized");
+                return;
+            }
+            cn.gotAuth = servHttpHost.decodeAuth(cn.gotAuth, true);
+        } else {
+            cn.gotAuth = null;
+        }
+        if (streamT != null) {
+            reStream(cn);
+            return;
+        }
+        if (multiAccT != null) {
+            doMultAcc(cn);
+            return;
+        }
+        if (reconnT != null) {
+            doReconn(cn);
+            return;
+        }
+        if (redir != null) {
+            doRedir(cn);
+            return;
+        }
+        if (cn.gotCmd.equals("options")) {
+            String a = "";
+            if (allowUpload) {
+                a += ", PUT";
+            }
+            if (allowWebDav) {
+                a += ", PROPFIND";
+                if (allowUpload) {
+                    a += ", DELETE, COPY, MOVE, PROTPATCH";
+                }
+                cn.addHdr("DAV: 1");
+            }
+            if (cn.lower.proxy != null) {
+                a += ", CONNECT";
+            }
+            if (allowSstp != null) {
+                a += ", SSTP_DUPLEX_POST";
+            }
+            cn.addHdr("Allow: GET, POST, HEAD, OPTIONS" + a);
+            cn.sendRespHeader("200 ok", 0, null);
+            return;
+        }
+        if (cn.gotCmd.equals("propfind")) {
+            if (!cn.gotHost.allowWebDav) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            String a = new String(cn.gotBytes).replaceAll("\r", "").replaceAll("\n", "");
+            if (a.length() < 1) {
+                a = "<?xml><propfind><allprop>";
+            }
+            encXml xml = encXml.parseOne(a);
+            servHttpHost.dumpXml(xml);
+            String beg = "/?xml/propfind/prop/";
+            boolean typ = false;
+            boolean len = false;
+            boolean tag = false;
+            boolean mod = false;
+            boolean crt = false;
+            boolean dsp = false;
+            boolean cnt = false;
+            boolean usd = false;
+            boolean fre = false;
+            for (int i = 0; i < xml.data.size(); i++) {
+                a = xml.data.get(i).name.toLowerCase();
+                if (a.equals("/?xml/propfind/allprop")) {
+                    typ = true;
+                    len = true;
+                    tag = true;
+                    mod = true;
+                    crt = true;
+                    dsp = true;
+                    cnt = true;
+                    usd = true;
+                    fre = true;
+                    continue;
+                }
+                if (!a.startsWith(beg)) {
+                    continue;
+                }
+                a = a.substring(beg.length(), a.length());
+                typ |= a.equals("resourcetype");
+                len |= a.equals("getcontentlength");
+                tag |= a.equals("getetag");
+                mod |= a.equals("getlastmodified");
+                crt |= a.equals("creationdate");
+                dsp |= a.equals("displayname");
+                cnt |= a.equals("getcontenttype");
+                usd |= a.equals("quota-used-bytes");
+                fre |= a.equals("quota-available-bytes");
+            }
+            a = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
+            a += "<D:multistatus xmlns:D=\"DAV:\">\n";
+            if (cn.gotDepth) {
+                if ((!pn.endsWith("/")) && (pn.length() > 0)) {
+                    pn += "/";
+                }
+                a += webdavProp(pn, new File(cn.gotHost.path + pn), typ, len, tag, mod, crt, dsp, cnt, usd, fre);
+                File[] fl = userFlash.dirList(cn.gotHost.path + pn);
+                if (fl == null) {
+                    fl = new File[0];
+                }
+                for (int i = 0; i < fl.length; i++) {
+                    a += webdavProp(pn + fl[i].getName(), fl[i], typ, len, tag, mod, crt, dsp, cnt, usd, fre);
+                }
+            } else {
+                a += webdavProp(pn, new File(cn.gotHost.path + pn), typ, len, tag, mod, crt, dsp, cnt, usd, fre);
+            }
+            a += "</D:multistatus>\n";
+            cn.sendRespHeader("207 multi-status", a.length(), "text/xml");
+            cn.pipe.strPut(a);
+            servHttpHost.dumpXml(a);
+            return;
+        }
+        if (cn.gotCmd.equals("proppatch")) {
+            if ((!cn.gotHost.allowWebDav) || (!cn.gotHost.allowUpload)) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            String a = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
+            a += "<D:multistatus xmlns:D=\"DAV:\">\n";
+            a += webdavProp(pn, new File(cn.gotHost.path + pn), true, true, true, true, true, true, true, true, true);
+            a += "</D:multistatus>\n";
+            cn.sendRespHeader("207 multi-status", a.length(), "text/xml");
+            cn.pipe.strPut(a);
+            servHttpHost.dumpXml(a);
+            return;
+        }
+        if (cn.gotCmd.equals("mkcol")) {
+            if ((!cn.gotHost.allowWebDav) || (!cn.gotHost.allowUpload)) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            if (userFlash.mkdir(cn.gotHost.path + pn)) {
+                cn.sendRespHeader("409 conflict", 0, null);
+            } else {
+                cn.sendRespHeader("201 created", 0, null);
+            }
+            return;
+        }
+        if (cn.gotCmd.equals("delete")) {
+            if ((!cn.gotHost.allowWebDav) || (!cn.gotHost.allowUpload)) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            if (userFlash.delete(cn.gotHost.path + pn)) {
+                cn.sendRespHeader("409 conflict", 0, null);
+            } else {
+                cn.sendRespHeader("201 created", 0, null);
+            }
+            return;
+        }
+        if (cn.gotCmd.equals("copy")) {
+            if ((!cn.gotHost.allowWebDav) || (!cn.gotHost.allowUpload) || (cn.gotDstntn == null)) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            encUrl url = encUrl.parseOne(cn.gotDstntn);
+            url.normalizePath();
+            if (userFlash.copy(cn.gotHost.path + pn, path + url.toPathName(), false)) {
+                cn.sendRespHeader("409 conflict", 0, null);
+            } else {
+                cn.sendRespHeader("201 created", 0, null);
+            }
+            return;
+        }
+        if (cn.gotCmd.equals("move")) {
+            if ((!cn.gotHost.allowWebDav) || (!cn.gotHost.allowUpload) || (cn.gotDstntn == null)) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            encUrl url = encUrl.parseOne(cn.gotDstntn);
+            url.normalizePath();
+            if (userFlash.rename(cn.gotHost.path + pn, path + url.toPathName(), false, false)) {
+                cn.sendRespHeader("409 conflict", 0, null);
+            } else {
+                cn.sendRespHeader("201 created", 0, null);
+            }
+            return;
+        }
+        if (cn.gotCmd.equals("put")) {
+            if (!cn.gotHost.allowUpload) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            if (backupPath != null) {
+                String a = backupPath + pn;
+                for (int i = backupCount - 1; i >= 0; i--) {
+                    userFlash.rename(a + i, a + (i + 1), true, false);
+                }
+                if (backupCount > 0) {
+                    a += "0";
+                }
+                userFlash.rename(cn.gotHost.path + pn, a, true, false);
+            }
+            updateVisitors(cn, pn);
+            bits.byteSave(true, cn.gotBytes, path + pn);
+            cn.sendRespError(200, "saved");
+            return;
+        }
+        if (cn.gotCmd.equals("sstp_duplex_post")) {
+            if (allowSstp == null) {
+                cn.sendRespError(405, "not allowed");
+                return;
+            }
+            cn.addHdr("Content-Length: 18446744073709551615");
+            cn.sendRespHeader("200 ok", -1, null);
+            servHttpSstp ntry = new servHttpSstp(cn);
+            ntry.doStart();
+            return;
+        }
+        if (cn.gotCmd.equals("post")) {
+            cn.gotCmd = "get";
+        }
+        if (cn.gotCmd.equals("head")) {
+            cn.gotCmd = "get";
+            cn.gotHead = true;
+        }
+        if (!cn.gotCmd.equals("get")) {
+            cn.sendRespError(501, "not implemented");
+            return;
+        }
+        updateVisitors(cn, pn);
+        boolean b = true;
+        if (allowWebSck && (cn.gotWebsock != null)) {
+            if (!cn.gotHost.sendOneWebSck(cn, pn)) {
+                return;
+            }
+        }
+        if (cn.gotUrl.filPath.startsWith(".api./")) {
+            b = sendOneApi(cn, pn);
+            if (!b) {
+                return;
+            }
+            cn.sendRespError(404, "bad api");
+            return;
+        }
+        if (cn.gotUrl.toFileName().length() > 0) {
+            b = sendOneFile(cn, pn, cn.gotUrl.filExt);
+        } else {
+            b = sendOneDir(cn, pn);
+        }
+        if (!b) {
+            return;
+        }
+        cn.sendRespError(404, "not found");
     }
 
 }

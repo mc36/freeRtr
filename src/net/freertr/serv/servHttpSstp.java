@@ -28,11 +28,11 @@ public class servHttpSstp implements Runnable, ifcDn {
 
     private counter cntr = new counter();
 
-    private pipeSide pipe;
+    private final pipeSide pipe;
 
     private ifcUp upper = new ifcNull();
 
-    private servHttpConn lower;
+    private final servHttpConn lower;
 
     /**
      * create instance
@@ -40,15 +40,20 @@ public class servHttpSstp implements Runnable, ifcDn {
      * @param conn connection
      * @param parent lower layer
      */
-    public servHttpSstp(pipeSide conn, servHttpConn parent) {
+    public servHttpSstp(servHttpConn parent) {
         lower = parent;
-        pipe = conn;
+        pipe = parent.pipe;
+    }
+
+    protected void doStart() {
+        lower.gotKeep = false;
+        lower.pipe = null;
         new Thread(this).start();
     }
 
     public void run() {
         try {
-            doStart();
+            doWork();
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -58,10 +63,7 @@ public class servHttpSstp implements Runnable, ifcDn {
         }
     }
 
-    /**
-     * start work
-     */
-    public void doStart() {
+    private void doWork() {
         packSstp pckS = new packSstp(pipe);
         packHolder pckB = pckS.recvPack();
         if (pckB == null) {
