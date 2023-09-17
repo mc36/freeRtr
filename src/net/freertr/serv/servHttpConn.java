@@ -1,11 +1,9 @@
 package net.freertr.serv;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
 import net.freertr.addr.addrIP;
-import net.freertr.cfg.cfgInit;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -237,18 +235,11 @@ public class servHttpConn implements Runnable {
         pipe.morePut(buf4, 0, buf4.length);
     }
 
-    private String getStyle() {
-        if (gotHost == null) {
-            return "";
-        }
-        return gotHost.getStyle();
-    }
-
     protected void sendRespError(int code, String text) {
         gotKeep = false;
         String s;
         if (lower.error == null) {
-            s = servHttp.htmlHead + getStyle() + "<title>error</title></head><body>error: " + text + "</body></html>";
+            s = servHttp.htmlHead + servHttpUtil.getStyle(this) + "<title>error</title></head><body>error: " + text + "</body></html>";
         } else {
             s = "" + lower.error;
             s = s.replaceAll("<errorcode>", "" + code);
@@ -263,7 +254,7 @@ public class servHttpConn implements Runnable {
 
     protected void sendFoundAt(String where) {
         gotKeep = false;
-        String s = servHttp.htmlHead + getStyle() + "<title>moved</title></head><body>moved to <a href=\"" + where + "\">" + where + "</a>. you will be redirected.</body></html>\n";
+        String s = servHttp.htmlHead + servHttpUtil.getStyle(this) + "<title>moved</title></head><body>moved to <a href=\"" + where + "\">" + where + "</a>. you will be redirected.</body></html>\n";
         headers.add("Location: " + where);
         sendRespHeader("301 moved", s.length(), "text/html");
         if (gotHead) {

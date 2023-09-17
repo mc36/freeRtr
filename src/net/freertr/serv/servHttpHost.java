@@ -66,188 +66,6 @@ public class servHttpHost implements Comparator<servHttpHost> {
     }
 
     /**
-     * allow nothing
-     */
-    public final static int apiBitsNothing = 0;
-
-    /**
-     * allow something
-     */
-    public final static int apiBitsSomething = 0x01;
-
-    /**
-     * allow exec commands
-     */
-    public final static int apiBitsExec = 0x02;
-
-    /**
-     * allow config commands
-     */
-    public final static int apiBitsConfig = 0x04;
-
-    /**
-     * allow ip info commands
-     */
-    public final static int apiBitsIpinfo = 0x08;
-
-    protected final static void dumpXml(String s) {
-        if (!debugger.servHttpXml) {
-            return;
-        }
-        dumpXml(encXml.parseOne(s.replaceAll("\r", "").replaceAll("\n", "")));
-    }
-
-    protected final static void dumpXml(encXml xml) {
-        if (!debugger.servHttpXml) {
-            return;
-        }
-        List<String> l = xml.show();
-        for (int i = 0; i < l.size(); i++) {
-            logger.debug("xml " + l.get(i));
-        }
-    }
-
-    /**
-     * convert string to api bits
-     *
-     * @param cmd commands
-     * @return api bits
-     */
-    public static final int string2apiBits(cmds cmd) {
-        int i = apiBitsNothing;
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (a.equals("exec")) {
-                i |= apiBitsExec;
-                continue;
-            }
-            if (a.equals("config")) {
-                i |= 4;
-                continue;
-            }
-            if (a.equals("ipinfo")) {
-                i |= 8;
-                continue;
-            }
-        }
-        if (i == apiBitsSomething) {
-            return apiBitsNothing;
-        }
-        return i | apiBitsSomething;
-    }
-
-    /**
-     * convert api bits to string
-     *
-     * @param i bits to convert
-     * @return api bits
-     */
-    public static final String apiBits2string(int i) {
-        if ((i & apiBitsSomething) == 0) {
-            return "bug=" + i;
-        }
-        String s = "";
-        if ((i & apiBitsExec) != 0) {
-            s += " exec";
-        }
-        if ((i & apiBitsConfig) != 0) {
-            s += " config";
-        }
-        if ((i & apiBitsIpinfo) != 0) {
-            s += " ipinfo";
-        }
-        return s;
-    }
-
-    /**
-     * subconnect to string
-     *
-     * @param subconn subconnect mode
-     * @return config string
-     */
-    protected final static String subconn2string(int subconn) {
-        String s = "";
-        if ((subconn & 0x1) != 0) {
-            s += " strip-path";
-        }
-        if ((subconn & 0x2) != 0) {
-            s += " strip-name";
-        }
-        if ((subconn & 0x4) != 0) {
-            s += " strip-ext";
-        }
-        if ((subconn & 0x8) != 0) {
-            s += " strip-param";
-        }
-        if ((subconn & 0x10) != 0) {
-            s += " keep-cred";
-        }
-        if ((subconn & 0x20) != 0) {
-            s += " keep-host";
-        }
-        if ((subconn & 0x40) != 0) {
-            s += " keep-path";
-        }
-        return s;
-    }
-
-    protected static final boolean checkNoHeaders(String s) {
-        return new File(s + ".noheaders").exists();
-    }
-
-    /**
-     * read up subconnect modes
-     *
-     * @param neg negated
-     * @param cmd commands to read
-     * @return subconnect mode
-     */
-    protected final static int string2subconn(boolean neg, cmds cmd) {
-        if (neg) {
-            return 0;
-        }
-        int res = 0;
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (a.equals("strip-path")) {
-                res |= 0x1;
-                continue;
-            }
-            if (a.equals("strip-name")) {
-                res |= 0x2;
-                continue;
-            }
-            if (a.equals("strip-ext")) {
-                res |= 0x4;
-                continue;
-            }
-            if (a.equals("strip-param")) {
-                res |= 0x8;
-                continue;
-            }
-            if (a.equals("keep-cred")) {
-                res |= 0x10;
-                continue;
-            }
-            if (a.equals("keep-host")) {
-                res |= 0x20;
-                continue;
-            }
-            if (a.equals("keep-path")) {
-                res |= 0x40;
-                continue;
-            }
-        }
-        return res;
-    }
-
-    /**
      * name of server
      */
     public final String host;
@@ -608,7 +426,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             l.add(a + " translate" + s);
         }
         if (subconn != 0) {
-            String s = subconn2string(subconn);
+            String s = servHttpUtil.subconn2string(subconn);
             l.add(a + " subconn" + s);
         }
         if (streamT != null) {
@@ -649,8 +467,8 @@ public class servHttpHost implements Comparator<servHttpHost> {
             }
             l.add(a + " script" + s);
         }
-        if (allowApi != apiBitsNothing) {
-            l.add(a + " api" + apiBits2string(allowApi));
+        if (allowApi != servHttpUtil.apiBitsNothing) {
+            l.add(a + " api" + servHttpUtil.apiBits2string(allowApi));
         }
         if (ipInfo != null) {
             ipInfo.doGetCfg(a, l, false);
@@ -768,7 +586,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             return false;
         }
         if (a.equals("subconn")) {
-            subconn = string2subconn(negated, cmd);
+            subconn = servHttpUtil.string2subconn(negated, cmd);
             return false;
         }
         if (a.equals("stream")) {
@@ -857,10 +675,10 @@ public class servHttpHost implements Comparator<servHttpHost> {
         }
         if (a.equals("api")) {
             if (negated) {
-                allowApi = apiBitsNothing;
+                allowApi = servHttpUtil.apiBitsNothing;
                 return false;
             }
-            allowApi = string2apiBits(cmd);
+            allowApi = servHttpUtil.string2apiBits(cmd);
             return false;
         }
         if (a.equals("ipinfo")) {
@@ -1027,89 +845,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return true;
     }
 
-    /**
-     * get style of host
-     *
-     * @return style
-     */
-    protected String getStyle() {
-        if (style == null) {
-            return "";
-        }
-        String s = "<style>\n";
-        for (int o = 0; o < style.size(); o++) {
-            String a = style.get(o);
-            if (!a.startsWith("@import ")) {
-                s += " " + a + "\n";
-                continue;
-            }
-            List<String> l = bits.txt2buf(path + a.substring(8, a.length()));
-            if (l == null) {
-                continue;
-            }
-            for (int i = 0; i < l.size(); i++) {
-                s += " " + l.get(i) + "\n";
-            }
-        }
-        return s + "</style>\n";
-    }
-
-    private final static String semi2comma(String a) {
-        return a.replaceAll(";", ",");
-    }
-
-    protected void updateVisitors(servHttpConn cn, String pn) {
-        pn = path + pn + ".visitors";
-        if (!new File(pn).exists()) {
-            return;
-        }
-        String a = cn.peer + ";" + logger.getTimestamp() + ";" + semi2comma(cn.gotAgent) + ";" + semi2comma(cn.gotReferer) + "\n";
-        bits.byteSave(false, a.getBytes(), pn);
-    }
-
-    protected boolean sendOneWebSck(servHttpConn cn, String pn) {
-        pn = path + pn + ".websock";
-        if (!new File(pn).exists()) {
-            return true;
-        }
-        List<String> l = bits.txt2buf(pn);
-        if (l == null) {
-            return true;
-        }
-        if (l.size() < 5) {
-            return true;
-        }
-        cfgProxy prx = cfgAll.proxyFind(l.get(0), false);
-        if (prx == null) {
-            cn.sendRespError(502, "bad proxy profile");
-            return false;
-        }
-        addrIP adr = userTerminal.justResolv(l.get(1), prx.proxy.prefer);
-        if (adr == null) {
-            cn.sendRespError(502, "bad target hostname");
-            return false;
-        }
-        pipeSide pip = prx.proxy.doConnect(servGeneric.protoTcp, adr, bits.str2num(l.get(2)), "websock");
-        if (pip == null) {
-            cn.sendRespError(502, "failed to connect");
-            return false;
-        }
-        cn.sendLn("HTTP/1.1 101 switching protocol");
-        cn.sendLn("Upgrade: websocket");
-        cn.sendLn("Connection: Upgrade");
-        cn.sendLn("Sec-WebSocket-Accept: " + secWebsock.calcHash(cn.gotWebsock));
-        cn.sendLn("Sec-WebSocket-Protocol: " + l.get(3));
-        cn.sendLn("");
-        secWebsock wsk = new secWebsock(cn.pipe, new pipeLine(cn.lower.bufSiz, false));
-        wsk.binary = l.get(4).equals("bin");
-        wsk.startServer();
-        pipeConnect.connect(pip, wsk.getPipe(), true);
-        cn.gotKeep = false;
-        cn.pipe = null;
-        return false;
-    }
-
-    private String parseFileName(servHttpConn cn, String s) {
+    private final String parseFileName(servHttpConn cn, String s) {
         int i = s.lastIndexOf(".");
         if (i < 0) {
             return s;
@@ -1295,7 +1031,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         if (l == null) {
             return true;
         }
-        String rsp = servHttp.htmlHead + getStyle() + "<title>" + s + "</title></head><body>\n";
+        String rsp = servHttp.htmlHead + servHttpUtil.getStyle(cn) + "<title>" + s + "</title></head><body>\n";
         rsp += encMarkDown.md2html(l);
         rsp += "</body></html>\n";
         cn.sendTextHeader("200 ok", "text/html", rsp.getBytes());
@@ -1303,10 +1039,10 @@ public class servHttpHost implements Comparator<servHttpHost> {
     }
 
     protected boolean sendOneApi(servHttpConn cn, String s) {
-        if (allowApi == servHttpHost.apiBitsNothing) {
+        if (allowApi == servHttpUtil.apiBitsNothing) {
             return true;
         }
-        if ((allowApi & servHttpHost.apiBitsSomething) == 0) {
+        if ((allowApi & servHttpUtil.apiBitsSomething) == 0) {
             return true;
         }
         cmds cmd = new cmds("api", s);
@@ -1315,7 +1051,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         if (debugger.servHttpTraf) {
             logger.debug("api queried cnd=" + s + " prm=" + cmd.getRemaining() + " from " + cn.peer);
         }
-        if (((allowApi & servHttpHost.apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
+        if (((allowApi & servHttpUtil.apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
             addrIP adr = null;
             boolean hck = false;
             boolean det = false;
@@ -1350,7 +1086,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             cn.sendTextHeader("200 ok", "text/plain", r.getBytes());
             return false;
         }
-        if (((allowApi & servHttpHost.apiBitsExec) != 0) && s.equals("exec")) {
+        if (((allowApi & servHttpUtil.apiBitsExec) != 0) && s.equals("exec")) {
             String r = "";
             String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
             for (;;) {
@@ -1366,7 +1102,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
                 pip.settingsPut(pipeSetting.height, 0);
                 userExec exe = new userExec(pip, rdr);
-                exe.privileged = (allowApi & servHttpHost.apiBitsConfig) != 0;
+                exe.privileged = (allowApi & servHttpUtil.apiBitsConfig) != 0;
                 pip.setTime(60000);
                 String a = exe.repairCommand(s);
                 r += "#" + a + e;
@@ -1382,7 +1118,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             cn.sendTextHeader("200 ok", "text/plain", r.getBytes());
             return false;
         }
-        if (((allowApi & servHttpHost.apiBitsConfig) != 0) && s.equals("config")) {
+        if (((allowApi & servHttpUtil.apiBitsConfig) != 0) && s.equals("config")) {
             pipeLine pl = new pipeLine(65535, false);
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
@@ -1577,7 +1313,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         if (fl == null) {
             return true;
         }
-        String rsp = servHttp.htmlHead + getStyle() + "<title>dirlist</title></head><body>\n";
+        String rsp = servHttp.htmlHead + servHttpUtil.getStyle(cn) + "<title>dirlist</title></head><body>\n";
         if ((allowList & 2) != 0) {
             rsp += encMarkDown.txt2html(bits.txt2buf(path + s + "readme.txt"));
             rsp += encMarkDown.md2html(bits.txt2buf(path + s + "readme.md"));
@@ -1633,7 +1369,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         }
         rsp += "<i>generated by </i><b>" + version.namVer + "</b>.</body></html>\n";
         cn.sendTextHeader("200 ok", "text/html", rsp.getBytes());
-        dumpXml(rsp);
+        servHttpUtil.dumpXml(rsp);
         return false;
     }
 
@@ -1654,7 +1390,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         long pos = 0;
         long ranB = -1;
         long ranE = -1;
-        if (checkNoHeaders(s)) {
+        if (servHttpUtil.checkNoHeaders(s)) {
             cn.gotKeep = false;
             cn.gotHead = false;
             cn.gotRange = null;
@@ -1690,12 +1426,12 @@ public class servHttpHost implements Comparator<servHttpHost> {
             }
         }
         if (cn.gotRange == null) {
-            if (!checkNoHeaders(s)) {
+            if (!servHttpUtil.checkNoHeaders(s)) {
                 cn.sendRespHeader("200 ok", siz, cfgInit.findMimeType(a));
             }
         } else {
             cn.addHdr("Content-Range: bytes " + ranB + "-" + ranE + "/" + siz);
-            if (!checkNoHeaders(s)) {
+            if (!servHttpUtil.checkNoHeaders(s)) {
                 cn.sendRespHeader("206 partial", ranE - ranB + 1, cfgInit.findMimeType(a));
             }
             pos = ranB;
@@ -1919,7 +1655,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 cn.sendRespError(401, "unauthorized");
                 return;
             }
-            cn.gotAuth = servHttpHost.decodeAuth(cn.gotAuth, true);
+            cn.gotAuth = decodeAuth(cn.gotAuth, true);
         } else {
             cn.gotAuth = null;
         }
@@ -1971,7 +1707,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 a = "<?xml><propfind><allprop>";
             }
             encXml xml = encXml.parseOne(a);
-            servHttpHost.dumpXml(xml);
+            servHttpUtil.dumpXml(xml);
             String beg = "/?xml/propfind/prop/";
             boolean typ = false;
             boolean len = false;
@@ -2030,7 +1766,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             a += "</D:multistatus>\n";
             cn.sendRespHeader("207 multi-status", a.length(), "text/xml");
             cn.pipe.strPut(a);
-            servHttpHost.dumpXml(a);
+            servHttpUtil.dumpXml(a);
             return;
         }
         if (cn.gotCmd.equals("proppatch")) {
@@ -2044,7 +1780,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             a += "</D:multistatus>\n";
             cn.sendRespHeader("207 multi-status", a.length(), "text/xml");
             cn.pipe.strPut(a);
-            servHttpHost.dumpXml(a);
+            servHttpUtil.dumpXml(a);
             return;
         }
         if (cn.gotCmd.equals("mkcol")) {
@@ -2114,7 +1850,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 }
                 userFlash.rename(cn.gotHost.path + pn, a, true, false);
             }
-            updateVisitors(cn, pn);
+            servHttpUtil.updateVisitors(cn, pn);
             bits.byteSave(true, cn.gotBytes, path + pn);
             cn.sendRespError(200, "saved");
             return;
@@ -2141,10 +1877,10 @@ public class servHttpHost implements Comparator<servHttpHost> {
             cn.sendRespError(501, "not implemented");
             return;
         }
-        updateVisitors(cn, pn);
+        servHttpUtil.updateVisitors(cn, pn);
         boolean b = true;
         if (allowWebSck && (cn.gotWebsock != null)) {
-            if (!cn.gotHost.sendOneWebSck(cn, pn)) {
+            if (!servHttpUtil.sendOneWebSck(cn, pn)) {
                 return;
             }
         }

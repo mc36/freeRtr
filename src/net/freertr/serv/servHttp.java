@@ -215,7 +215,7 @@ public class servHttp extends servGeneric implements prtServS {
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
         l.add(beg + "buffer " + bufSiz);
         l.add(beg + "def-path " + defPath);
-        l.add(beg + "def-subconn" + servHttpHost.subconn2string(defSubcon));
+        l.add(beg + "def-subconn" + servHttpUtil.subconn2string(defSubcon));
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpHost ntry = hosts.get(hn);
@@ -264,7 +264,7 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("def-subconn")) {
-            defSubcon = servHttpHost.string2subconn(negated, cmd);
+            defSubcon = servHttpUtil.string2subconn(negated, cmd);
             return false;
         }
         if (a.equals("proxy")) {
