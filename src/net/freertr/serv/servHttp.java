@@ -1,16 +1,10 @@
 package net.freertr.serv;
 
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
-import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
-import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgProxy;
-import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.clnt.clntProxy;
 import net.freertr.cry.cryHashCrc32;
 import net.freertr.pipe.pipeLine;
@@ -19,7 +13,6 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.enc.encUrl;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -201,79 +194,12 @@ public class servHttp extends servGeneric implements prtServS {
         return false;
     }
 
-    private final static int string2subconn(boolean neg, cmds cmd) {
-        if (neg) {
-            return 0;
-        }
-        int res = 0;
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (a.equals("strip-path")) {
-                res |= 0x1;
-                continue;
-            }
-            if (a.equals("strip-name")) {
-                res |= 0x2;
-                continue;
-            }
-            if (a.equals("strip-ext")) {
-                res |= 0x4;
-                continue;
-            }
-            if (a.equals("strip-param")) {
-                res |= 0x8;
-                continue;
-            }
-            if (a.equals("keep-cred")) {
-                res |= 0x10;
-                continue;
-            }
-            if (a.equals("keep-host")) {
-                res |= 0x20;
-                continue;
-            }
-            if (a.equals("keep-path")) {
-                res |= 0x40;
-                continue;
-            }
-        }
-        return res;
-    }
-
-    private final static String subconn2string(int subconn) {
-        String s = "";
-        if ((subconn & 0x1) != 0) {
-            s += " strip-path";
-        }
-        if ((subconn & 0x2) != 0) {
-            s += " strip-name";
-        }
-        if ((subconn & 0x4) != 0) {
-            s += " strip-ext";
-        }
-        if ((subconn & 0x8) != 0) {
-            s += " strip-param";
-        }
-        if ((subconn & 0x10) != 0) {
-            s += " keep-cred";
-        }
-        if ((subconn & 0x20) != 0) {
-            s += " keep-host";
-        }
-        if ((subconn & 0x40) != 0) {
-            s += " keep-path";
-        }
-        return s;
-    }
-
     /**
      * get config
      *
      * @param beg beginning
      * @param l list
+     * @param filter default filter
      */
     public void srvShRun(String beg, List<String> l, int filter) {
         if (proxy == null) {
@@ -289,120 +215,14 @@ public class servHttp extends servGeneric implements prtServS {
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
         l.add(beg + "buffer " + bufSiz);
         l.add(beg + "def-path " + defPath);
-        l.add(beg + "def-subconn" + subconn2string(defSubcon));
+        l.add(beg + "def-subconn" + servHttpHost.subconn2string(defSubcon));
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpHost ntry = hosts.get(hn);
             if (ntry == null) {
                 continue;
             }
-            String a = beg + "host " + ntry.host;
-            l.add(a + " path " + ntry.path);
-            if (ntry.style != null) {
-                for (int i = 0; i < ntry.style.size(); i++) {
-                    l.add(a + " style " + ntry.style.get(i));
-                }
-            }
-            if (ntry.redir != null) {
-                l.add(a + " redir " + ntry.redir);
-            }
-            if (ntry.logging) {
-                l.add(a + " logging");
-            }
-            if (ntry.reconnT != null) {
-                l.add(a + " reconn " + ntry.reconnP.name + " " + ntry.reconnT);
-            }
-            if (ntry.translate != null) {
-                String s = "";
-                for (int i = 0; i < ntry.translate.size(); i++) {
-                    s += " " + ntry.translate.get(i).name;
-                }
-                l.add(a + " translate" + s);
-            }
-            if (ntry.subconn != 0) {
-                String s = subconn2string(ntry.subconn);
-                l.add(a + " subconn" + s);
-            }
-            if (ntry.streamT != null) {
-                l.add(a + " stream " + ntry.streamM + " " + ntry.streamP.name + " " + ntry.streamT);
-            }
-            if (ntry.multiAccT != null) {
-                l.add(a + " multiacc " + ntry.multiAccP.name + " " + ntry.multiAccT);
-            }
-            if (ntry.allowList != 0) {
-                String s = "";
-                if ((ntry.allowList & 2) != 0) {
-                    s += " readme";
-                }
-                if ((ntry.allowList & 4) != 0) {
-                    s += " stats";
-                }
-                l.add(a + " dirlist" + s);
-            }
-            if (ntry.allowMarkdown) {
-                l.add(a + " markdown");
-            }
-            if (ntry.speedLimit > 0) {
-                l.add(a + " speed-limit " + ntry.speedLimit);
-            }
-            if (!ntry.autoIndex) {
-                l.add(a + " noindex");
-            }
-            if (ntry.searchScript != null) {
-                l.add(a + " search-script " + ntry.searchScript);
-            }
-            if (ntry.allowScript != 0) {
-                String s = "";
-                if ((ntry.allowScript & 2) != 0) {
-                    s += " exec";
-                }
-                if ((ntry.allowScript & 4) != 0) {
-                    s += " config";
-                }
-                l.add(a + " script" + s);
-            }
-            if (ntry.allowApi != servHttpHost.apiBitsNothing) {
-                l.add(a + " api" + servHttpHost.apiBits2string(ntry.allowApi));
-            }
-            if (ntry.ipInfo != null) {
-                ntry.ipInfo.doGetCfg(a, l, false);
-            }
-            if (ntry.allowImgMap) {
-                l.add(a + " imagemap");
-            }
-            if (ntry.allowWebSck) {
-                l.add(a + " websock");
-            }
-            if (ntry.allowWebDav) {
-                l.add(a + " webdav");
-            }
-            if (ntry.allowMediaStrm) {
-                l.add(a + " mediastream");
-            }
-            if (ntry.allowClass != null) {
-                l.add(a + " class");
-            }
-            if (ntry.allowUpload) {
-                l.add(a + " upload");
-            }
-            if (ntry.backupPath != null) {
-                l.add(a + " backup " + ntry.backupCount + " " + ntry.backupPath);
-            }
-            if (ntry.allowSstp != null) {
-                l.add(a + " sstp " + ntry.allowSstp.name);
-            }
-            if (ntry.allowAnyconn != null) {
-                l.add(a + " anyconn " + ntry.allowAnyconn.name);
-            }
-            if (ntry.allowForti != null) {
-                l.add(a + " forti " + ntry.allowForti.name);
-            }
-            if (ntry.authenticList != null) {
-                l.add(a + " authentication " + ntry.authenticList.autName);
-            }
-            if (ntry.accessList != null) {
-                l.add(a + " access-class " + ntry.accessList.listName);
-            }
+            ntry.getConfig(beg, l, filter);
         }
     }
 
@@ -444,7 +264,7 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("def-subconn")) {
-            defSubcon = string2subconn(negated, cmd);
+            defSubcon = servHttpHost.string2subconn(negated, cmd);
             return false;
         }
         if (a.equals("proxy")) {
@@ -492,329 +312,7 @@ public class servHttp extends servGeneric implements prtServS {
             ntry.path = defPath;
             ntry.subconn = defSubcon;
         }
-        if (a.equals("style")) {
-            a = cmd.getRemaining();
-            if (negated) {
-                if (ntry.style == null) {
-                    return false;
-                }
-                ntry.style.remove(a);
-                return false;
-            }
-            if (ntry.style == null) {
-                ntry.style = new ArrayList<String>();
-            }
-            if (ntry.style.indexOf(a) >= 0) {
-                return false;
-            }
-            ntry.style.add(a);
-            return false;
-        }
-        if (a.equals("redir")) {
-            if (negated) {
-                ntry.redir = null;
-                return false;
-            }
-            ntry.redir = cmd.word();
-            return false;
-        }
-        if (a.equals("logging")) {
-            ntry.logging = !negated;
-            return false;
-        }
-        if (a.equals("reconn")) {
-            if (negated) {
-                ntry.reconnP = null;
-                ntry.reconnT = null;
-                return false;
-            }
-            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-            if (prx == null) {
-                cmd.error("no such proxy");
-                return false;
-            }
-            ntry.reconnP = prx.proxy;
-            ntry.reconnT = cmd.word();
-            return false;
-        }
-        if (a.equals("translate")) {
-            if (negated) {
-                ntry.translate = null;
-                return false;
-            }
-            ntry.translate = new ArrayList<cfgTrnsltn>();
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                cfgTrnsltn trn = cfgAll.trnsltnFind(a, false);
-                if (trn == null) {
-                    cmd.error("no such rule");
-                    continue;
-                }
-                ntry.translate.add(trn);
-            }
-            return false;
-        }
-        if (a.equals("subconn")) {
-            ntry.subconn = string2subconn(negated, cmd);
-            return false;
-        }
-        if (a.equals("stream")) {
-            if (negated) {
-                ntry.streamP = null;
-                ntry.streamT = null;
-                ntry.streamM = null;
-                if (ntry.streamS == null) {
-                    return false;
-                }
-                ntry.streamS.setClose();
-                ntry.streamS = null;
-                return false;
-            }
-            a = cmd.word();
-            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-            if (prx == null) {
-                cmd.error("no such proxy");
-                return false;
-            }
-            ntry.streamM = a;
-            ntry.streamP = prx.proxy;
-            ntry.streamT = cmd.word();
-            if (ntry.streamC == null) {
-                ntry.streamC = new ArrayList<pipeSide>();
-            }
-            if (ntry.streamS == null) {
-                return false;
-            }
-            ntry.streamS.setClose();
-            ntry.streamS = null;
-            return false;
-        }
-        if (a.equals("multiacc")) {
-            if (negated) {
-                ntry.multiAccP = null;
-                ntry.multiAccT = null;
-                return false;
-            }
-            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-            if (prx == null) {
-                cmd.error("no such proxy");
-                return false;
-            }
-            ntry.multiAccP = prx.proxy;
-            ntry.multiAccT = cmd.getRemaining();
-            return false;
-        }
-        if (a.equals("speed-limit")) {
-            if (negated) {
-                ntry.speedLimit = 0;
-                return false;
-            }
-            ntry.speedLimit = bits.str2num(cmd.word());
-            return false;
-        }
-        if (a.equals("noindex")) {
-            ntry.autoIndex = negated;
-            return false;
-        }
-        if (a.equals("markdown")) {
-            ntry.allowMarkdown = !negated;
-            return false;
-        }
-        if (a.equals("dirlist")) {
-            if (negated) {
-                ntry.allowList = 0;
-                return false;
-            }
-            ntry.allowList = 1;
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (a.equals("readme")) {
-                    ntry.allowList |= 2;
-                    continue;
-                }
-                if (a.equals("stats")) {
-                    ntry.allowList |= 4;
-                    continue;
-                }
-            }
-            return false;
-        }
-        if (a.equals("api")) {
-            if (negated) {
-                ntry.allowApi = servHttpHost.apiBitsNothing;
-                return false;
-            }
-            ntry.allowApi = servHttpHost.string2apiBits(cmd);
-            return false;
-        }
-        if (a.equals("ipinfo")) {
-            if (negated) {
-                ntry.ipInfo = null;
-                return false;
-            }
-            ntry.ipInfo = new servHoneyPotCfg();
-            ntry.ipInfo.doCfgStr(cmd, negated);
-            return false;
-        }
-        if (a.equals("search-script")) {
-            if (negated) {
-                ntry.searchScript = null;
-                return false;
-            }
-            ntry.searchScript = cmd.word();
-            return false;
-        }
-        if (a.equals("script")) {
-            if (negated) {
-                ntry.allowScript = 0;
-                return false;
-            }
-            ntry.allowScript = 1;
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (a.equals("exec")) {
-                    ntry.allowScript |= 2;
-                    continue;
-                }
-                if (a.equals("config")) {
-                    ntry.allowScript |= 4;
-                    continue;
-                }
-            }
-            return false;
-        }
-        if (a.equals("imagemap")) {
-            ntry.allowImgMap = !negated;
-            return false;
-        }
-        if (a.equals("websock")) {
-            ntry.allowWebSck = !negated;
-            return false;
-        }
-        if (a.equals("webdav")) {
-            ntry.allowWebDav = !negated;
-            return false;
-        }
-        if (a.equals("mediastream")) {
-            ntry.allowMediaStrm = !negated;
-            return false;
-        }
-        if (a.equals("class")) {
-            if (negated) {
-                ntry.allowClass = null;
-                return false;
-            }
-            try {
-                URL url = new URI("file://" + ntry.path).toURL();
-                URL[] urls = new URL[1];
-                urls[0] = url;
-                ntry.allowClass = new URLClassLoader(urls);
-            } catch (Exception e) {
-                ntry.allowClass = null;
-            }
-            return false;
-        }
-        if (a.equals("upload")) {
-            ntry.allowUpload = !negated;
-            return false;
-        }
-        if (a.equals("backup")) {
-            if (negated) {
-                ntry.backupCount = 0;
-                ntry.backupPath = null;
-                return false;
-            }
-            ntry.backupCount = bits.str2num(cmd.word());
-            ntry.backupPath = "/" + encUrl.normalizePath(cmd.word() + "/");
-            return false;
-        }
-        if (a.equals("sstp")) {
-            if (negated) {
-                ntry.allowSstp = null;
-                return false;
-            }
-            ntry.allowSstp = cfgAll.ifcFind(cmd.word(), 0);
-            if (ntry.allowSstp == null) {
-                cmd.error("no such interface");
-                return false;
-            }
-            if (ntry.allowSstp.type != tabRouteIface.ifaceType.dialer) {
-                cmd.error("not dialer interface");
-                ntry.allowSstp = null;
-                return false;
-            }
-            return false;
-        }
-        if (a.equals("anyconn")) {
-            if (negated) {
-                ntry.allowAnyconn = null;
-                return false;
-            }
-            ntry.allowAnyconn = cfgAll.ifcFind(cmd.word(), 0);
-            if (ntry.allowAnyconn == null) {
-                cmd.error("no such interface");
-                return false;
-            }
-            if (ntry.allowAnyconn.type != tabRouteIface.ifaceType.dialer) {
-                cmd.error("not dialer interface");
-                ntry.allowAnyconn = null;
-                return false;
-            }
-            return false;
-        }
-        if (a.equals("forti")) {
-            if (negated) {
-                ntry.allowForti = null;
-                return false;
-            }
-            ntry.allowForti = cfgAll.ifcFind(cmd.word(), 0);
-            if (ntry.allowForti == null) {
-                cmd.error("no such interface");
-                return false;
-            }
-            if (ntry.allowForti.type != tabRouteIface.ifaceType.dialer) {
-                cmd.error("not dialer interface");
-                ntry.allowForti = null;
-                return false;
-            }
-            return false;
-        }
-        if (a.equals("access-class")) {
-            if (negated) {
-                ntry.accessList = null;
-                return false;
-            }
-            cfgAceslst lst = cfgAll.aclsFind(cmd.word(), false);
-            if (lst == null) {
-                cmd.error("no such access list");
-                return false;
-            }
-            ntry.accessList = lst.aceslst;
-            return false;
-        }
-        if (a.equals("authentication")) {
-            if (negated) {
-                ntry.authenticList = null;
-                return false;
-            }
-            cfgAuther lst = cfgAll.autherFind(cmd.word(), null);
-            if (lst == null) {
-                cmd.error("no such auth list");
-                return false;
-            }
-            ntry.authenticList = lst.getAuther();
-            return false;
-        }
-        return true;
+        return ntry.doConfig(negated, a, cmd);
     }
 
     private static final void getSubconnHelp(String b, userHelping l) {
