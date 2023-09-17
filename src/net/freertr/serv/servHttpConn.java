@@ -1,35 +1,20 @@
 package net.freertr.serv;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.RandomAccessFile;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
 import net.freertr.addr.addrIP;
 import net.freertr.auth.authResult;
-import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
-import net.freertr.cfg.cfgProxy;
-import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.enc.encBase64;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
-import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.sec.secHttp2;
-import net.freertr.sec.secWebsock;
-import net.freertr.tab.tabGen;
-import net.freertr.user.userConfig;
-import net.freertr.user.userExec;
 import net.freertr.user.userFlash;
-import net.freertr.user.userFormat;
-import net.freertr.user.userHelping;
-import net.freertr.user.userReader;
-import net.freertr.user.userScript;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -37,7 +22,6 @@ import net.freertr.util.debugger;
 import net.freertr.enc.encXml;
 import net.freertr.enc.encUrl;
 import net.freertr.util.logger;
-import net.freertr.enc.encMarkDown;
 import net.freertr.util.version;
 
 /**
@@ -176,14 +160,18 @@ public class servHttpConn implements Runnable {
         new Thread(this).start();
     }
 
-    private void sendLn(String a) {
+    protected void sendLn(String a) {
         if (debugger.servHttpTraf) {
             logger.debug("tx '" + a + "'");
         }
         pipe.linePut(a);
     }
 
-    private void sendRespHeader(String head, long size, String type) {
+    protected void addHeader(String s) {
+        headers.add(s);
+    }
+
+    protected void sendRespHeader(String head, long size, String type) {
         if (head != null) {
             sendLn("HTTP/" + (gotVer / 10) + "." + (gotVer % 10) + " " + head);
         }
@@ -209,7 +197,7 @@ public class servHttpConn implements Runnable {
         sendLn("");
     }
 
-    private void sendTextHeader(String head, String type, byte[] buf1) {
+    protected void sendTextHeader(String head, String type, byte[] buf1) {
         if (gotHead) {
             sendRespHeader(head, buf1.length, type);
             return;
@@ -261,28 +249,10 @@ public class servHttpConn implements Runnable {
         if (gotHost == null) {
             return "";
         }
-        if (gotHost.style == null) {
-            return "";
-        }
-        String s = "<style>\n";
-        for (int o = 0; o < gotHost.style.size(); o++) {
-            String a = gotHost.style.get(o);
-            if (!a.startsWith("@import ")) {
-                s += " " + a + "\n";
-                continue;
-            }
-            List<String> l = bits.txt2buf(gotHost.path + a.substring(8, a.length()));
-            if (l == null) {
-                continue;
-            }
-            for (int i = 0; i < l.size(); i++) {
-                s += " " + l.get(i) + "\n";
-            }
-        }
-        return s + "</style>\n";
+        return gotHost.getStyle();
     }
 
-    private void sendRespError(int code, String text) {
+    protected void sendRespError(int code, String text) {
         gotKeep = false;
         String s;
         if (lower.error == null) {
@@ -299,7 +269,7 @@ public class servHttpConn implements Runnable {
         pipe.strPut(s);
     }
 
-    private void sendFoundAt(String where) {
+    protected void sendFoundAt(String where) {
         gotKeep = false;
         String s = servHttp.htmlHead + getStyle() + "<title>moved</title></head><body>moved to <a href=\"" + where + "\">" + where + "</a>. you will be redirected.</body></html>\n";
         headers.add("Location: " + where);
@@ -308,683 +278,6 @@ public class servHttpConn implements Runnable {
             return;
         }
         pipe.strPut(s);
-    }
-
-    private boolean checkNoHeaders(String s) {
-        return new File(s + ".noheaders").exists();
-    }
-
-    private void updateVisitors(String s) {
-        s = gotHost.path + s + ".visitors";
-        if (!new File(s).exists()) {
-            return;
-        }
-        String a = peer + ";" + logger.getTimestamp() + ";" + gotAgent.replaceAll(";", ",") + ";" + gotReferer.replaceAll(";", ",") + "\n";
-        bits.byteSave(false, a.getBytes(), s);
-    }
-
-    private boolean sendOneWebSck(String s) {
-        s = gotHost.path + s + ".websock";
-        if (!new File(s).exists()) {
-            return true;
-        }
-        List<String> l = bits.txt2buf(s);
-        if (l == null) {
-            return true;
-        }
-        if (l.size() < 5) {
-            return true;
-        }
-        cfgProxy prx = cfgAll.proxyFind(l.get(0), false);
-        if (prx == null) {
-            sendRespError(502, "bad proxy profile");
-            return false;
-        }
-        addrIP adr = userTerminal.justResolv(l.get(1), prx.proxy.prefer);
-        if (adr == null) {
-            sendRespError(502, "bad target hostname");
-            return false;
-        }
-        pipeSide pip = prx.proxy.doConnect(servGeneric.protoTcp, adr, bits.str2num(l.get(2)), "websock");
-        if (pip == null) {
-            sendRespError(502, "failed to connect");
-            return false;
-        }
-        sendLn("HTTP/1.1 101 switching protocol");
-        sendLn("Upgrade: websocket");
-        sendLn("Connection: Upgrade");
-        sendLn("Sec-WebSocket-Accept: " + secWebsock.calcHash(gotWebsock));
-        sendLn("Sec-WebSocket-Protocol: " + l.get(3));
-        sendLn("");
-        secWebsock wsk = new secWebsock(pipe, new pipeLine(lower.bufSiz, false));
-        wsk.binary = l.get(4).equals("bin");
-        wsk.startServer();
-        pipeConnect.connect(pip, wsk.getPipe(), true);
-        gotKeep = false;
-        pipe = null;
-        return false;
-    }
-
-    private boolean sendOneApi(String s) {
-        if (gotHost.allowApi == servHttpHost.apiBitsNothing) {
-            return true;
-        }
-        if ((gotHost.allowApi & servHttpHost.apiBitsSomething) == 0) {
-            return true;
-        }
-        cmds cmd = new cmds("api", s);
-        cmd.word("/");
-        s = cmd.word("/");
-        if (debugger.servHttpTraf) {
-            logger.debug("api queried cnd=" + s + " prm=" + cmd.getRemaining() + " from " + peer);
-        }
-        if (((gotHost.allowApi & servHttpHost.apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
-            addrIP adr = null;
-            boolean hck = false;
-            boolean det = false;
-            for (;;) {
-                s = cmd.word("/");
-                if (s.length() < 1) {
-                    break;
-                }
-                if (s.equals("addr")) {
-                    adr = new addrIP();
-                    adr.fromString(cmd.word());
-                    continue;
-                }
-                if (s.equals("hack")) {
-                    hck = true;
-                    continue;
-                }
-                if (s.equals("detail")) {
-                    det = true;
-                    continue;
-                }
-                if (s.equals("short")) {
-                    det = false;
-                    continue;
-                }
-            }
-            if (adr == null) {
-                adr = peer.copyBytes();
-            }
-            String r = "real ipinfo goes here\r\n";///////////////////////
-
-            sendTextHeader("200 ok", "text/plain", r.getBytes());
-            return false;
-        }
-        if (((gotHost.allowApi & servHttpHost.apiBitsExec) != 0) && s.equals("exec")) {
-            String r = "";
-            String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
-            for (;;) {
-                s = cmd.word("/");
-                if (s.length() < 1) {
-                    break;
-                }
-                pipeLine pl = new pipeLine(1024 * 1024, false);
-                pipeSide pip = pl.getSide();
-                pip.lineTx = pipeSide.modTyp.modeCRLF;
-                pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                userReader rdr = new userReader(pip, null);
-                pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-                pip.settingsPut(pipeSetting.height, 0);
-                userExec exe = new userExec(pip, rdr);
-                exe.privileged = (gotHost.allowApi & servHttpHost.apiBitsConfig) != 0;
-                pip.setTime(60000);
-                String a = exe.repairCommand(s);
-                r += "#" + a + e;
-                exe.executeCommand(a);
-                pip = pl.getSide();
-                pl.setClose();
-                s = pip.strGet(1024 * 1024);
-                if (s == null) {
-                    continue;
-                }
-                r += s;
-            }
-            sendTextHeader("200 ok", "text/plain", r.getBytes());
-            return false;
-        }
-        if (((gotHost.allowApi & servHttpHost.apiBitsConfig) != 0) && s.equals("config")) {
-            pipeLine pl = new pipeLine(65535, false);
-            pipeSide pip = pl.getSide();
-            pip.lineTx = pipeSide.modTyp.modeCRLF;
-            pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
-            pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-            pip.settingsPut(pipeSetting.height, 0);
-            userConfig cfg = new userConfig(pip, rdr);
-            pip.setTime(60000);
-            for (;;) {
-                s = cmd.word("/");
-                if (s.length() < 1) {
-                    break;
-                }
-                userHelping hlp = cfg.getHelping(false, true, true);
-                rdr.setContext(hlp, "");
-                String b = hlp.repairLine(s);
-                if (b.length() < 1) {
-                    pip.linePut("bad: " + s);
-                    continue;
-                }
-                pip.linePut("#" + b);
-                cfg.executeCommand(b);
-            }
-            pip = pl.getSide();
-            pl.setClose();
-            s = pip.strGet(65535);
-            if (s == null) {
-                s = "";
-            }
-            sendTextHeader("200 ok", "text/plain", s.getBytes());
-            return false;
-        }
-        return true;
-    }
-
-    private boolean sendOneMarkdown(String s) {
-        List<String> l = bits.txt2buf(gotHost.path + s);
-        if (l == null) {
-            return true;
-        }
-        String rsp = servHttp.htmlHead + getStyle() + "<title>" + s + "</title></head><body>\n";
-        rsp += encMarkDown.md2html(l);
-        rsp += "</body></html>\n";
-        sendTextHeader("200 ok", "text/html", rsp.getBytes());
-        return false;
-    }
-
-    private boolean sendOneScript(String s) {
-        List<String> l = bits.txt2buf(gotHost.path + s);
-        if (l == null) {
-            return true;
-        }
-        return sendOneScript(l);
-    }
-
-    private boolean sendOneScript(List<String> l) {
-        pipeLine pl = new pipeLine(1024 * 1024, false);
-        pipeSide pip = pl.getSide();
-        pip.setTime(60000);
-        pip.lineTx = pipeSide.modTyp.modeCRLF;
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userScript t = new userScript(pip, "");
-        t.addLines(l);
-        t.allowConfig = (gotHost.allowScript & 4) != 0;
-        t.allowExec = (gotHost.allowScript & 2) != 0;
-        t.currDir = gotHost.path;
-        pip = pl.getSide();
-        pip.lineTx = pipeSide.modTyp.modeCR;
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        pip.linePut("prot=" + gotUrl.proto);
-        pip.linePut("serv=" + gotUrl.server);
-        pip.linePut("path=" + gotUrl.toPathName());
-        pip.linePut("agnt=" + gotAgent);
-        pip.linePut("refr=" + gotReferer);
-        if (gotAuth != null) {
-            pip.linePut("auth=" + gotAuth);
-        }
-        pip.linePut("clnt=" + peer);
-        for (int i = 0; i < gotUrl.param.size(); i++) {
-            pip.linePut("par." + gotUrl.param.get(i));
-        }
-        for (int i = 0; i < gotCook.size(); i++) {
-            pip.linePut("cok." + gotCook.get(i));
-        }
-        pip.linePut(".");
-        t.cmdAll();
-        pl.setClose();
-        String s = pip.strGet(1024 * 1024);
-        if (s == null) {
-            s = "";
-        }
-        sendTextHeader("200 ok", "text/html", s.getBytes());
-        return false;
-    }
-
-    private String parseFileName(String s) {
-        int i = s.lastIndexOf(".");
-        if (i < 0) {
-            return s;
-        }
-        headers.add("Content-Disposition: attachment; filename=\"" + s + "\"");
-        return s.substring(i + 1, s.length());
-    }
-
-    private boolean sendOneClass(String s) {
-        byte[] res = null;
-        try {
-            if (!new File(gotHost.path + s).exists()) {
-                return true;
-            }
-            Class<?> cls = gotHost.allowClass.loadClass(gotUrl.filPath + gotUrl.filName);
-            Object obj = cls.getDeclaredConstructor().newInstance();
-            Method[] mth = cls.getDeclaredMethods();
-            int o = -1;
-            for (int i = 0; i < mth.length; i++) {
-                if (!mth[i].getName().equals("httpRequest")) {
-                    continue;
-                }
-                o = i;
-                break;
-            }
-            if (o < 0) {
-                return true;
-            }
-            String[] par = new String[gotUrl.param.size()];
-            for (int i = 0; i < par.length; i++) {
-                par[i] = "" + gotUrl.param.get(i);
-            }
-            ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            obj = mth[o].invoke(obj, gotUrl.toURL(true, false, false, true), gotHost.path + s, "" + peer, gotAgent, gotAuth, par, buf);
-            s = (String) obj;
-            res = buf.toByteArray();
-        } catch (Exception e) {
-            logger.traceback(e, gotUrl.dump() + " peer=" + peer);
-            return true;
-        }
-        if (debugger.servHttpTraf) {
-            logger.debug("res=" + s + " bytes=" + res.length);
-        }
-        if (s == null) {
-            return true;
-        }
-        if (!s.equals("//file//")) {
-            s = parseFileName(s);
-            sendTextHeader("200 ok", cfgInit.findMimeType(s), res);
-            return false;
-        }
-        s = new String(res);
-        int i = s.indexOf("\n");
-        String a;
-        if (i < 0) {
-            a = s;
-        } else {
-            a = s.substring(0, i);
-            s = s.substring(i + 1, s.length());
-        }
-        i = s.indexOf("\n");
-        if (i < 0) {
-            s = "." + parseFileName(s);
-        } else {
-            parseFileName(s.substring(0, i));
-            s = s.substring(i + 1, s.length());
-        }
-        i = s.indexOf("\n");
-        int m;
-        if (i < 0) {
-            m = gotHost.speedLimit;
-        } else {
-            m = bits.str2num(s.substring(i + 1, s.length()));
-            s = s.substring(0, i);
-        }
-        if (!a.startsWith("/")) {
-            a = gotHost.path + a;
-        }
-        return sendBinFile(a, s, m);
-    }
-
-    private boolean sendOneImgMap(String s) {
-        List<String> buf = bits.txt2buf(gotHost.path + s);
-        if (buf == null) {
-            return true;
-        }
-        if (gotUrl.param.size() < 1) {
-            return true;
-        }
-        s = "" + gotUrl.param.get(0);
-        int i = s.indexOf("=");
-        if (i < 0) {
-            return true;
-        }
-        s = s.substring(0, i);
-        i = s.indexOf(",");
-        if (i < 0) {
-            return true;
-        }
-        int x = bits.str2num(s.substring(0, i));
-        int y = bits.str2num(s.substring(i + 1, s.length()));
-        for (i = 0; i < buf.size(); i++) {
-            cmds cmd = new cmds("line", buf.get(i));
-            s = cmd.word().toLowerCase();
-            if (s.equals("rectangle")) {
-                int bx = bits.str2num(cmd.word());
-                int by = bits.str2num(cmd.word());
-                int ex = bits.str2num(cmd.word());
-                int ey = bits.str2num(cmd.word());
-                if (x < bx) {
-                    continue;
-                }
-                if (x > ex) {
-                    continue;
-                }
-                if (y < by) {
-                    continue;
-                }
-                if (y > ey) {
-                    continue;
-                }
-                sendFoundAt(cmd.getRemaining());
-                return false;
-            }
-            if (s.equals("default")) {
-                sendFoundAt(cmd.getRemaining());
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean sendOneStream(String s, String a) {
-        gotKeep = false;
-        s = gotHost.path + s;
-        sendRespHeader("200 streaming", -1, cfgInit.findMimeType(a));
-        if (gotHead) {
-            return false;
-        }
-        long os = new File(s).length() - 65536;
-        if (os < 0) {
-            os = 0;
-        }
-        long ot = -1;
-        for (;;) {
-            if (pipe.isClosed() != 0) {
-                break;
-            }
-            File f = new File(s);
-            if (!f.exists()) {
-                break;
-            }
-            long ns = f.length();
-            long nt = f.lastModified();
-            if ((ns == os) && (nt == ot)) {
-                bits.sleep(100);
-                continue;
-            }
-            byte[] buf;
-            try {
-                RandomAccessFile fr = new RandomAccessFile(f, "r");
-                ns = fr.length();
-                if (ns < os) {
-                    os = 0;
-                }
-                buf = new byte[(int) (ns - os)];
-                fr.seek(os);
-                fr.read(buf);
-                fr.close();
-            } catch (Exception e) {
-                return true;
-            }
-            ot = nt;
-            os = ns;
-            pipe.morePut(buf, 0, buf.length);
-        }
-        pipe.setClose();
-        return false;
-    }
-
-    private boolean sendOneMotion(String s, String a) {
-        gotKeep = false;
-        s = gotHost.path + s;
-        final String bnd = "someRandomBoundaryStringThatWontOccurs";
-        sendRespHeader("200 streaming", -1,
-                "multipart/x-mixed-replace;boundary=" + bnd);
-        if (gotHead) {
-            return false;
-        }
-        long os = -1;
-        long ot = -1;
-        for (;;) {
-            if (pipe.isClosed() != 0) {
-                break;
-            }
-            File f = new File(s);
-            if (!f.exists()) {
-                break;
-            }
-            long ns = f.length();
-            long nt = f.lastModified();
-            if ((ns == os) && (nt == ot)) {
-                bits.sleep(100);
-                continue;
-            }
-            ot = nt;
-            os = ns;
-            byte[] buf;
-            try {
-                RandomAccessFile fr = new RandomAccessFile(f, "r");
-                int siz = (int) fr.length();
-                buf = new byte[siz];
-                fr.read(buf);
-                fr.close();
-            } catch (Exception e) {
-                return true;
-            }
-            sendLn("--" + bnd);
-            sendRespHeader(null, buf.length, cfgInit.findMimeType(a));
-            pipe.morePut(buf, 0, buf.length);
-        }
-        pipe.setClose();
-        return false;
-    }
-
-    private boolean sendBinFile(String s, String a, int m) {
-        RandomAccessFile fr;
-        long siz;
-        try {
-            File f = new File(s);
-            if (f.isDirectory()) {
-                sendFoundAt(gotUrl.toURL(true, false, false, false) + "/");
-                return false;
-            }
-            fr = new RandomAccessFile(f, "r");
-            siz = f.length();
-        } catch (Exception e) {
-            return true;
-        }
-        long pos = 0;
-        long ranB = -1;
-        long ranE = -1;
-        if (checkNoHeaders(s)) {
-            gotKeep = false;
-            gotHead = false;
-            gotRange = null;
-        }
-        if (gotRange != null) {
-            gotRange = gotRange.replaceAll(" ", "");
-            if (!gotRange.startsWith("bytes=")) {
-                gotRange = "";
-            } else {
-                gotRange = gotRange.substring(6, gotRange.length());
-            }
-            int i = gotRange.indexOf("-");
-            if (i < 0) {
-                gotRange = null;
-            } else if (i == 0) {
-                ranB = bits.str2long(gotRange.substring(1, gotRange.length()));
-                ranE = siz - 1;
-            } else {
-                ranB = bits.str2long(gotRange.substring(0, i));
-                ranE = bits.str2long(gotRange.substring(i + 1, gotRange.length()));
-            }
-            if (ranB < 0) {
-                ranB = 0;
-            }
-            if (ranB >= siz) {
-                ranB = siz;
-            }
-            if (ranE >= siz) {
-                ranE = siz - 1;
-            }
-            if (ranE <= ranB) {
-                ranE = siz - 1;
-            }
-        }
-        if (gotRange == null) {
-            if (!checkNoHeaders(s)) {
-                sendRespHeader("200 ok", siz, cfgInit.findMimeType(a));
-            }
-        } else {
-            headers.add("Content-Range: bytes " + ranB + "-" + ranE + "/" + siz);
-            if (!checkNoHeaders(s)) {
-                sendRespHeader("206 partial", ranE - ranB + 1, cfgInit.findMimeType(a));
-            }
-            pos = ranB;
-            siz = ranE + 1;
-        }
-        if (gotHead) {
-            siz = 0;
-        }
-        int don = 0;
-        for (; pos < siz;) {
-            final int max = 8192;
-            long rndl = siz - pos;
-            if (rndl > max) {
-                rndl = max;
-            }
-            int rndi = (int) rndl;
-            byte[] buf = new byte[rndi];
-            try {
-                fr.seek(pos);
-                fr.read(buf, 0, rndi);
-            } catch (Exception e) {
-                pipe.setClose();
-                break;
-            }
-            if (pipe.morePut(buf, 0, rndi) != rndi) {
-                pipe.setClose();
-                break;
-            }
-            pos += buf.length;
-            if (m < 1) {
-                continue;
-            }
-            don += rndi;
-            if (don < m) {
-                continue;
-            }
-            bits.sleep(1000);
-            don = 0;
-        }
-        try {
-            fr.close();
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-    private boolean sendOneFile(String s, String a) {
-        if (gotHost.searchScript != null) {
-            cfgScrpt scr = cfgAll.scrptFind(gotHost.searchScript + s, false);
-            if (scr != null) {
-                return sendOneScript(scr.getText());
-            }
-        }
-        if ((gotHost.allowMarkdown) && a.equals(".md")) {
-            return sendOneMarkdown(s);
-        }
-        if ((gotHost.allowScript != 0) && a.equals(".tcl")) {
-            return sendOneScript(s);
-        }
-        if ((gotHost.allowClass != null) && a.equals(".class")) {
-            return sendOneClass(s);
-        }
-        if ((gotHost.allowImgMap) && a.equals(".imgmap")) {
-            return sendOneImgMap(s);
-        }
-        if ((gotHost.allowMediaStrm) && a.startsWith(".stream-")) {
-            return sendOneStream(s, "." + a.substring(8, a.length()));
-        }
-        if ((gotHost.allowMediaStrm) && a.startsWith(".motion-")) {
-            return sendOneMotion(s, "." + a.substring(8, a.length()));
-        }
-        return sendBinFile(gotHost.path + s, a, gotHost.speedLimit);
-    }
-
-    private boolean sendOneDir(String s) {
-        if (gotHost.autoIndex) {
-            if (!sendOneFile(s + "index.html", ".html")) {
-                return false;
-            }
-            if (!sendOneFile(s + "index.txt", ".txt")) {
-                return false;
-            }
-            if (!sendOneFile(s + "index.md", ".md")) {
-                return false;
-            }
-            if (!sendOneFile(s + "index.class", ".class")) {
-                return false;
-            }
-            if (!sendOneFile(s + "index.tcl", ".tcl")) {
-                return false;
-            }
-        }
-        if (gotHost.allowList == 0) {
-            sendRespError(404, "not found");
-            return true;
-        }
-        File[] fl = userFlash.dirList(gotHost.path + s);
-        if (fl == null) {
-            return true;
-        }
-        String rsp = servHttp.htmlHead + getStyle() + "<title>dirlist</title></head><body>\n";
-        if ((gotHost.allowList & 2) != 0) {
-            rsp += encMarkDown.txt2html(bits.txt2buf(gotHost.path + s + "readme.txt"));
-            rsp += encMarkDown.md2html(bits.txt2buf(gotHost.path + s + "readme.md"));
-        }
-        rsp += "<b>directory listing of " + gotHost.host + "/" + s + " at " + cfgAll.getFqdn() + ":</b><br/><br/>\n";
-        rsp += "<table><thead><tr><td><b>date</b></td><td><b>size</b></td><td><b>name</b></td></tr></thead><tbody>\n";
-        rsp += "<tr><td>-</td><td>dir</td><td><a href=\"/\">root</a></td></tr>\n";
-        rsp += "<tr><td>-</td><td>dir</td><td><a href=\"../\">parent</a></td></tr>\n";
-        tabGen<servHttpDirs> stats = new tabGen<servHttpDirs>();
-        servHttpDirs totalF = new servHttpDirs(".files.");
-        servHttpDirs totalD = new servHttpDirs(".dirs.");
-        for (int i = 0; i < fl.length; i++) {
-            File f = fl[i];
-            String a = f.getName();
-            String b = a;
-            long len = f.length();
-            long mod = f.lastModified();
-            if ((gotHost.allowList & 4) != 0) {
-                servHttpDirs ntry;
-                int o = a.lastIndexOf(".");
-                if (o < 0) {
-                    ntry = new servHttpDirs(".empty.");
-                } else {
-                    ntry = new servHttpDirs(a.substring(o + 1, a.length()));
-                }
-                servHttpDirs old = stats.add(ntry);
-                if (old != null) {
-                    ntry = old;
-                }
-                ntry.update(len, mod);
-            }
-            String c;
-            if (f.isDirectory()) {
-                a += "/";
-                c = "dir";
-                totalD.update(len, mod);
-            } else {
-                c = "" + len;
-                totalF.update(len, mod);
-            }
-            a = a.replaceAll(":", "%3A");
-            rsp += "<tr><td>" + bits.time2str(cfgAll.timeZoneName, mod, 3) + "</td><td>" + c + "</td><td><a href=\"" + a + "\">" + b + "</a></td></tr>\n";
-        }
-        rsp += "</tbody></table><br/>\n";
-        if ((gotHost.allowList & 4) != 0) {
-            rsp += "<br/><table><thead><tr><td><b>extension</b></td><td><b>count</b></td><td><b>bytes</b></td><td><b>smallest</b></td><td><b>biggest</b></td><td><b>oldest</b></td><td><b>newest</b></td></tr></thead><tbody>\n";
-            rsp += totalD;
-            rsp += totalF;
-            for (int i = 0; i < stats.size(); i++) {
-                rsp += stats.get(i);
-            }
-            rsp += "</tbody></table><br/>";
-        }
-        rsp += "<i>generated by </i><b>" + version.namVer + "</b>.</body></html>\n";
-        sendTextHeader("200 ok", "text/html", rsp.getBytes());
-        dumpXml(rsp);
-        return false;
     }
 
     private String webdavProp(String n, File f, boolean typ, boolean len, boolean tag, boolean mod, boolean crt, boolean dsp, boolean cnt, boolean usd, boolean fre) {
@@ -1059,29 +352,11 @@ public class servHttpConn implements Runnable {
         if (got == null) {
             return true;
         }
-        authResult res = gotHost.authenticList.authUserPass(
-                decodeAuth(got, true), decodeAuth(got, false));
+        authResult res = gotHost.authenticList.authUserPass(decodeAuth(got, true), decodeAuth(got, false));
         if (res.result != authResult.authSuccessful) {
             return true;
         }
         return false;
-    }
-
-    private void dumpXml(String s) {
-        if (!debugger.servHttpXml) {
-            return;
-        }
-        dumpXml(encXml.parseOne(s.replaceAll("\r", "").replaceAll("\n", "")));
-    }
-
-    private void dumpXml(encXml xml) {
-        if (!debugger.servHttpXml) {
-            return;
-        }
-        List<String> l = xml.show();
-        for (int i = 0; i < l.size(); i++) {
-            logger.debug("xml " + l.get(i));
-        }
     }
 
     private boolean readRequest() {
@@ -1716,7 +991,7 @@ public class servHttpConn implements Runnable {
                 a = "<?xml><propfind><allprop>";
             }
             encXml xml = encXml.parseOne(a);
-            dumpXml(xml);
+            servHttpHost.dumpXml(xml);
             String beg = "/?xml/propfind/prop/";
             boolean typ = false;
             boolean len = false;
@@ -1775,7 +1050,7 @@ public class servHttpConn implements Runnable {
             a += "</D:multistatus>\n";
             sendRespHeader("207 multi-status", a.length(), "text/xml");
             pipe.strPut(a);
-            dumpXml(a);
+            servHttpHost.dumpXml(a);
             return;
         }
         if (gotCmd.equals("proppatch")) {
@@ -1789,7 +1064,7 @@ public class servHttpConn implements Runnable {
             a += "</D:multistatus>\n";
             sendRespHeader("207 multi-status", a.length(), "text/xml");
             pipe.strPut(a);
-            dumpXml(a);
+            servHttpHost.dumpXml(a);
             return;
         }
         if (gotCmd.equals("mkcol")) {
@@ -1859,7 +1134,7 @@ public class servHttpConn implements Runnable {
                 }
                 userFlash.rename(gotHost.path + pn, a, true, false);
             }
-            updateVisitors(pn);
+            gotHost.updateVisitors(this, pn);
             bits.byteSave(true, gotBytes, gotHost.path + pn);
             sendRespError(200, "saved");
             return;
@@ -1887,15 +1162,17 @@ public class servHttpConn implements Runnable {
             sendRespError(501, "not implemented");
             return;
         }
-        updateVisitors(pn);
+        gotHost.updateVisitors(this, pn);
         boolean b = true;
-        if ((gotHost.allowWebSck) && (gotWebsock != null)) {
-            if (!sendOneWebSck(pn)) {
-                return;
+        if (gotHost.allowWebSck) {
+            if ((gotWebsock != null)) {
+                if (!gotHost.sendOneWebSck(this, pn)) {
+                    return;
+                }
             }
         }
         if (gotUrl.filPath.startsWith(".api./")) {
-            b = sendOneApi(pn);
+            b = gotHost.sendOneApi(this, pn);
             if (!b) {
                 return;
             }
@@ -1903,9 +1180,9 @@ public class servHttpConn implements Runnable {
             return;
         }
         if (gotUrl.toFileName().length() > 0) {
-            b = sendOneFile(pn, gotUrl.filExt);
+            b = gotHost.sendOneFile(this, pn, gotUrl.filExt);
         } else {
-            b = sendOneDir(pn);
+            b = gotHost.sendOneDir(this, pn);
         }
         if (!b) {
             return;
