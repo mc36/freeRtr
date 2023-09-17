@@ -34,15 +34,6 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server honeypot .*! port " + port,
         "server honeypot .*! protocol " + proto2string(protoAllStrm),
-        "server honeypot .*! no router4",
-        "server honeypot .*! no router6",
-        "server honeypot .*! no route-details",
-        "server honeypot .*! no route-hacked",
-        "server honeypot .*! no route-distinguisher",
-        "server honeypot .*! no route-vrf",
-        "server honeypot .*! no tiny-http",
-        "server honeypot .*! no resolve",
-        "server honeypot .*! no script"
     };
 
     /**

@@ -7,8 +7,10 @@ import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
+import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteUtil;
+import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -19,6 +21,34 @@ import net.freertr.util.cmds;
  * @author matecsaba
  */
 public class servHoneyPotCfg {
+
+    /**
+     * configurable defaults text
+     */
+    public final static String[] cfgerdefL = {
+        " .*! no tiny-http",
+        " .*! no resolve",
+        " .*! no script"
+    };
+
+    /**
+     * configurable defaults filter
+     */
+    public static tabGen<userFilter> cfgerdefF;
+
+    /**
+     * configurable defaults text
+     */
+    public final static String[] unsafdefL = {
+        " .*! no tiny-http",
+        " .*! no resolve",
+        " .*! no script"
+    };
+
+    /**
+     * configurable defaults filter
+     */
+    public static tabGen<userFilter> unsafdefF;
 
     /**
      * script to run

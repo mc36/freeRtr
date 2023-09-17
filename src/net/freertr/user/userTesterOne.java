@@ -519,7 +519,10 @@ public class userTesterOne {
             if (a.indexOf("executeswcommand") >= 0) {
                 return false;
             }
-            if (a.indexOf("java.net.bindexception: address already in use") >= 0) {
+            if (a.indexOf("java.net.ServerSocket.bind") >= 0) {
+                continue;
+            }
+            if (a.indexOf("java.net.bindexception") >= 0) {
                 continue;
             }
             if (a.indexOf("exception") >= 0) {
