@@ -1831,7 +1831,9 @@ public class userExec {
         hl.add(null, "4 .          start                    start");
         hl.add(null, "2 .      logging                      logged messages");
         hl.add(null, "2 .      reload                       clear last reload reason");
-        hl.add(null, "2 .      upgrade                      clear upgrade auto-revert");
+        hl.add(null, "2 3,.    flash                        clear routing software backup");
+        hl.add(null, "3 .        [str]                      path to clean");
+        hl.add(null, "2 .      upgrade                      cancel upgrade auto-revert");
         hl.add(null, "2 .      auto-bandwidth               set auto bandwidth values");
         hl.add(null, "2 .      follow-tracker               set interfaces based on trackers");
         hl.add(null, "2 .      tunnel-domain                resolve destination domain names");
@@ -1957,6 +1959,9 @@ public class userExec {
         hl.add(null, "2 .      verify                       verify routing software");
         hl.add(null, "2 .      revert                       revert routing software");
         hl.add(null, "2 .      backup                       backup routing software");
+        hl.add(null, "2 3,.    cleanup                      clear routing software backup");
+        hl.add(null, "3 .        [str]                      path to clean");
+        hl.add(null, "2 .      cancel                       cancel auto-revert process");
         hl.add(null, "2 3,.    upgrade                      upgrade routing software");
         hl.add(null, "3 4,.      [url]                      parameter of process");
         hl.add(null, "4 4,.        [num]                    parameter of process");

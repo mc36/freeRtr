@@ -112,6 +112,12 @@ public class userClear {
         if (alias != null) {
             return alias;
         }
+        if (a.equals("flash")) {
+            a = cmd.getRemaining();
+            List<String> lst = userUpgrade.cleanBackups(a);
+            rdr.putStrArr(lst);
+            return null;
+        }
         if (a.equals("upgrade")) {
             a = userUpgrade.stopReverter();
             cmd.error(a);

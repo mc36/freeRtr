@@ -334,6 +334,63 @@ public class userUpgrade {
     }
 
     /**
+     * cleanup backups and temporary files
+     *
+     * @param a directory to clean up
+     * @return work done
+     */
+    public static List<String> cleanBackups(String a) {
+        a = a.trim();
+        List<String> l = new ArrayList<String>();
+        l.add("stop auto-revert: " + stopReverter());
+        if (a.length() < 1) {
+            doCleanUpDir(l, "./");
+            return l;
+        }
+        doCleanUpDir(l, "./");
+        doCleanUpDir(l, version.getFileName());
+        doCleanUpDir(l, version.getRWpath());
+        return l;
+    }
+
+    private final static void doCleanUpDir(List<String> l, String a) {
+        final String neededExts = ".bak.tmp.old.";
+        int i = a.lastIndexOf("/");
+        if (i >= 0) {
+            a = a.substring(0, i + 1);
+        }
+        l.add("removed files from " + a + ":");
+        File[] fl = userFlash.dirList(a);
+        if (fl == null) {
+            l.add(cmds.errbeg + "unable to read filelist");
+            return;
+        }
+        List<File> fn = new ArrayList<File>();
+        for (i = 0; i < fl.length; i++) {
+            File fc = fl[i];
+            a = fc.getName();
+            int o = a.lastIndexOf(".");
+            if (o < 0) {
+                continue;
+            }
+            String b = a.substring(o, a.length());
+            o = neededExts.indexOf(b);
+            l.add("maybe " + a + " ext=" + b + " o=" + o);//////
+            if (o < 0) {
+                continue;
+            }
+            fn.add(fc);
+        }
+        int fs = fn.size();
+        for (i = 0; i < fs; i++) {
+            File fc = fl[i];
+            a = fc.getAbsolutePath();
+            l.add("delete " + a);
+            /////////////////
+        }
+    }
+
+    /**
      * stop auto revert
      *
      * @return work done

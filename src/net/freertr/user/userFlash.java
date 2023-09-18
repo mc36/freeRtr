@@ -230,6 +230,17 @@ public class userFlash {
             rdr.putStrTab(l);
             return null;
         }
+        if (a.equals("cleanup")) {
+            a = cmd.getRemaining();
+            List<String> lst = userUpgrade.cleanBackups(a);
+            rdr.putStrArr(lst);
+            return null;
+        }
+        if (a.equals("cancel")) {
+            a = userUpgrade.stopReverter();
+            cmd.error(a);
+            return null;
+        }
         if (a.equals("upgrade")) {
             userUpgrade u = new userUpgrade(cmd);
             u.doUpgrade();
@@ -802,7 +813,7 @@ public class userFlash {
      * list directory
      *
      * @param trg target file
-     * @return result code
+     * @return list of files, null if error happened
      */
     public static File[] dirList(String trg) {
         File[] fl;
