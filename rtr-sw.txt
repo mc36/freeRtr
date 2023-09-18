@@ -1092,6 +1092,9 @@ server http web
  host sid.mchome.nop.hu search-script log
  host sid.mchome.nop.hu script exec config
  host sid.mchome.nop.hu api exec config ipinfo
+ host sid.mchome.nop.hu ipinfo router4 bgp4 65535
+ host sid.mchome.nop.hu ipinfo router6 bgp6 65535
+ host sid.mchome.nop.hu ipinfo route-details
  host sid.mchome.nop.hu websock
  host sid.mchome.nop.hu webdav
  host sid.mchome.nop.hu class
@@ -1142,7 +1145,6 @@ server honeypot hp1
  router4 bgp4 65535
  router6 bgp6 65535
  script logger
- resolve
  tiny-http
  interface loopback0
  vrf v1
@@ -1153,7 +1155,6 @@ server honeypot hp2
  router4 bgp4 65535
  router6 bgp6 65535
  route-details
- resolve
  tiny-http
  interface loopback0
  vrf v1

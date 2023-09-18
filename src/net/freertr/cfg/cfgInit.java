@@ -108,7 +108,6 @@ import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFonts;
 import net.freertr.user.userHelping;
-import net.freertr.user.userLine;
 import net.freertr.user.userNetconf;
 import net.freertr.user.userReader;
 import net.freertr.user.userScreen;
@@ -838,8 +837,6 @@ public class cfgInit implements Runnable {
         cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
         cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
         userReader.linedefF = createFilter(userReader.linedefL);
-        servHoneyPotCfg.cfgerdefF = createFilter(servHoneyPotCfg.cfgerdefL);
-        servHoneyPotCfg.unsafdefF = createFilter(servHoneyPotCfg.unsafdefL);
         cfgMenuK.defaultF = createFilter(cfgMenuK.defaultL);
         cfgMenuT.defaultF = createFilter(cfgMenuT.defaultL);
         cfgAll.defaultF = createFilter(cfgAll.defaultL);
@@ -911,7 +908,7 @@ public class cfgInit implements Runnable {
         servFtp.defaultF = createFilter(servFtp.defaultL, srvdefsF);
         servGopher.defaultF = createFilter(servGopher.defaultL, srvdefsF);
         servGtp.defaultF = createFilter(servGtp.defaultL, srvdefsF);
-        servHoneyPot.defaultF = createFilter(servHoneyPot.defaultL, srvdefsF, servHoneyPotCfg.unsafdefF);
+        servHoneyPot.defaultF = createFilter(servHoneyPot.defaultL, srvdefsF);
         servHttp.defaultF = createFilter(servHttp.defaultL, srvdefsF);
         servIscsi.defaultF = createFilter(servIscsi.defaultL, srvdefsF);
         servBmp2mrt.defaultF = createFilter(servBmp2mrt.defaultL, srvdefsF);

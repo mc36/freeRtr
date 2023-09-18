@@ -329,7 +329,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             l.add(a + " api" + servHttpUtil.apiBits2string(allowApi));
         }
         if (ipInfo != null) {
-            ipInfo.doGetCfg(a, l, false);
+            ipInfo.doGetCfg(a + " ipinfo ", l);
         }
         if (allowImgMap) {
             l.add(a + " imagemap");
@@ -529,6 +529,16 @@ public class servHttpHost implements Comparator<servHttpHost> {
                     continue;
                 }
             }
+            return false;
+        }
+        if (a.equals("ipinfo")) {
+            if (negated && (ipInfo == null)) {
+                return false;
+            }
+            if (ipInfo == null) {
+                ipInfo = new servHoneyPotCfg();
+            }
+            ipInfo.doCfgStr(cmd, negated);
             return false;
         }
         if (a.equals("api")) {

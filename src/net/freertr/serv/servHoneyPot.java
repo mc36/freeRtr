@@ -34,6 +34,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server honeypot .*! port " + port,
         "server honeypot .*! protocol " + proto2string(protoAllStrm),
+        "server honeypot .*! no tiny-http"
     };
 
     /**
@@ -71,7 +72,10 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        ipInfo.doGetCfg(beg, lst, true);
+        if (ipInfo.tinyHttp) {
+            lst.add(beg + "tiny-http");
+        }
+        ipInfo.doGetCfg(beg, lst);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -83,7 +87,8 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        servHoneyPotCfg.getHelp(l, 0, true);
+        l.add(null, "1 .  tiny-http                    pretend http server");
+        servHoneyPotCfg.getHelp(l, 0);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

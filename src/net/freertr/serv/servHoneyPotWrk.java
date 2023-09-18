@@ -33,9 +33,13 @@ public class servHoneyPotWrk {
 
     private final pipeSide pipe;
 
-    private final addrIP addr;
-
     private final int port;
+
+    private addrIP addr;
+
+    private boolean hck;
+
+    private boolean det;
 
     private String resolved = null;
 
@@ -58,26 +62,20 @@ public class servHoneyPotWrk {
         pipe = r;
         addr = a.copyBytes();
         port = p;
+        hck = c.routeHacked;
+        det = c.routeDetails;
     }
 
     /**
      * do every work
-     *
-     * @param dng enable dangerous knobs
      */
-    public void doWork(boolean dng) {
+    protected void doWork() {
         if (debugger.servHoneyPotTraf) {
             logger.debug("working on " + addr + " " + port);
         }
         fwd = findOneFwd(addr, cfg.fwder4, cfg.fwder6);
         rtr = findOneRtr(addr, cfg.router4, cfg.router6);
         ntry = findOneRoute(addr, rtr, fwd);
-        //////////////
-
-        if (!dng) {
-            return;
-        }
-        doHttpXchg();
         doResolve();
         doScript();
     }
@@ -85,7 +83,7 @@ public class servHoneyPotWrk {
     /**
      * do minimal http exchange
      */
-    protected void doHttpXchg() {
+    protected void doHttpRead() {
         if (!cfg.tinyHttp) {
             return;
         }
@@ -97,11 +95,32 @@ public class servHoneyPotWrk {
         encUrl gotUrl = new encUrl();
         gotUrl.fromString("tcp://" + cmd.word());
         doHttpUrl(gotUrl.toPathName());
+    }
+
+    /**
+     * do minimal http exchange
+     */
+    protected void doHttpWrite() {
+        if (!cfg.tinyHttp) {
+            return;
+        }
         pipe.linePut("HTTP/1.1 200 ok");
         pipe.linePut("Server: " + version.usrAgnt);
         pipe.linePut("Content-Type: text/html");
         pipe.linePut("Connection: Close");
         pipe.linePut("");
+        pipe.linePut(servHttp.htmlHead);
+        pipe.linePut("<pre style=\"background-color: #000000; color: #00FFFF;\">");
+    }
+
+    /**
+     * do minimal http exchange
+     */
+    protected void doHttpFinish() {
+        if (!cfg.tinyHttp) {
+            return;
+        }
+        pipe.linePut("</pre></body></html>");
     }
 
     /**
@@ -112,6 +131,30 @@ public class servHoneyPotWrk {
     protected void doHttpUrl(String a) {
         if (debugger.servHoneyPotTraf) {
             logger.debug("api queried " + a + " from " + addr + " " + port);
+        }
+        cmds cmd = new cmds("url", a);
+        for (;;) {
+            a = cmd.word("/");
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("addr")) {
+                addr = new addrIP();
+                addr.fromString(cmd.word());
+                continue;
+            }
+            if (a.equals("hack")) {
+                hck = true;
+                continue;
+            }
+            if (a.equals("detail")) {
+                det = true;
+                continue;
+            }
+            if (a.equals("short")) {
+                det = false;
+                continue;
+            }
         }
         /////////////////
     }
@@ -125,10 +168,6 @@ public class servHoneyPotWrk {
     public void putResult(pipeSide pipe, boolean frst) {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        if (cfg.tinyHttp) {
-            pipe.linePut(servHttp.htmlHead);
-            pipe.linePut("<pre style=\"background-color: #000000; color: #00FFFF;\">");
-        }
         if (frst) {
             String s = getRoute1liner();
             pipe.linePut(s);
@@ -136,10 +175,6 @@ public class servHoneyPotWrk {
         List<String> lst = getRouteDetails();
         byte[] res = getRouteAscii(lst);
         pipe.morePut(res, 0, res.length);
-        if (!cfg.tinyHttp) {
-            return;
-        }
-        pipe.linePut("</pre></body></html>");
     }
 
     /**

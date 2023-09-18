@@ -1222,10 +1222,10 @@ public class servHttpUtil {
      * @return false on success true on error
      */
     protected final static boolean sendOneApi(servHttpConn cn, String s) {
-        if (cn.gotHost.allowApi == servHttpUtil.apiBitsNothing) {
+        if (cn.gotHost.allowApi == apiBitsNothing) {
             return true;
         }
-        if ((cn.gotHost.allowApi & servHttpUtil.apiBitsSomething) == 0) {
+        if ((cn.gotHost.allowApi & apiBitsSomething) == 0) {
             return true;
         }
         cmds cmd = new cmds("api", s);
@@ -1234,42 +1234,19 @@ public class servHttpUtil {
         if (debugger.servHttpTraf) {
             logger.debug("api queried cmd=" + s + " prm=" + cmd.getRemaining() + " from " + cn.peer);
         }
-        if (((cn.gotHost.allowApi & servHttpUtil.apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
-            addrIP adr = null;
-            boolean hck = false;
-            boolean det = false;
-            for (;;) {
-                s = cmd.word("/");
-                if (s.length() < 1) {
-                    break;
-                }
-                if (s.equals("addr")) {
-                    adr = new addrIP();
-                    adr.fromString(cmd.word());
-                    continue;
-                }
-                if (s.equals("hack")) {
-                    hck = true;
-                    continue;
-                }
-                if (s.equals("detail")) {
-                    det = true;
-                    continue;
-                }
-                if (s.equals("short")) {
-                    det = false;
-                    continue;
-                }
+        if (((cn.gotHost.allowApi & apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
+            if (cn.gotHost.ipInfo == null) {
+                return true;
             }
-            if (adr == null) {
-                adr = cn.peer.copyBytes();
-            }
+            servHoneyPotWrk w = new servHoneyPotWrk(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
+            w.doHttpUrl(cmd.getRemaining());
+            w.doWork();
             String r = "real ipinfo goes here\r\n";///////////////////////
 
             cn.sendTextHeader("200 ok", "text/plain", r.getBytes());
             return false;
         }
-        if (((cn.gotHost.allowApi & servHttpUtil.apiBitsExec) != 0) && s.equals("exec")) {
+        if (((cn.gotHost.allowApi & apiBitsExec) != 0) && s.equals("exec")) {
             String r = "";
             String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
             for (;;) {
@@ -1285,7 +1262,7 @@ public class servHttpUtil {
                 pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
                 pip.settingsPut(pipeSetting.height, 0);
                 userExec exe = new userExec(pip, rdr);
-                exe.privileged = (cn.gotHost.allowApi & servHttpUtil.apiBitsConfig) != 0;
+                exe.privileged = (cn.gotHost.allowApi & apiBitsConfig) != 0;
                 pip.setTime(60000);
                 String a = exe.repairCommand(s);
                 r += "#" + a + e;
@@ -1301,7 +1278,7 @@ public class servHttpUtil {
             cn.sendTextHeader("200 ok", "text/plain", r.getBytes());
             return false;
         }
-        if (((cn.gotHost.allowApi & servHttpUtil.apiBitsConfig) != 0) && s.equals("config")) {
+        if (((cn.gotHost.allowApi & apiBitsConfig) != 0) && s.equals("config")) {
             pipeLine pl = new pipeLine(65535, false);
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;

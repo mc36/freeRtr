@@ -7,10 +7,8 @@ import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
-import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteUtil;
-import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -21,37 +19,6 @@ import net.freertr.util.cmds;
  * @author matecsaba
  */
 public class servHoneyPotCfg {
-
-    /**
-     * configurable defaults text
-     */
-    public final static String[] cfgerdefL = {
-        " .*!.* no router4",
-        " .*!.* no router6",
-        " .*!.* no route-details",
-        " .*!.* no route-hacked",
-        " .*!.* no route-distinguisher",
-        " .*!.* no route-vrf"
-    };
-
-    /**
-     * configurable defaults filter
-     */
-    public static tabGen<userFilter> cfgerdefF;
-
-    /**
-     * configurable defaults text
-     */
-    public final static String[] unsafdefL = {
-        " .*!.* no tiny-http",
-        " .*!.* no resolve",
-        " .*!.* no script"
-    };
-
-    /**
-     * configurable defaults filter
-     */
-    public static tabGen<userFilter> unsafdefF;
 
     /**
      * script to run
@@ -115,9 +82,8 @@ public class servHoneyPotCfg {
      *
      * @param lst help text to update
      * @param tab base level
-     * @param dng enable dangerous knobs
      */
-    public final static void getHelp(userHelping lst, int tab, boolean dng) {
+    public final static void getHelp(userHelping lst, int tab) {
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  router4                      lookup addresses");
         cfgRtr.getRouterList(lst, tab, "");
         lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
@@ -130,13 +96,9 @@ public class servHoneyPotCfg {
         lst.add(null, (tab + 2) + " .    <rd>                       rd in ASnum:IDnum format");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  route-vrf                    vrf to use");
         lst.add(null, (tab + 2) + " .    <name:vrf>                 name of table");
-        if (!dng) {
-            return;
-        }
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  script                       script to execute");
         lst.add(null, (tab + 2) + " .    <name:scr>                 script name");
         lst.add(null, (tab + 1) + " .  resolve                      resolve addresses");
-        lst.add(null, (tab + 1) + " .  tiny-http                    pretend http server");
     }
 
     /**
@@ -144,32 +106,29 @@ public class servHoneyPotCfg {
      *
      * @param beg beginning
      * @param lst list to update
-     * @param dng enable dangerous knobs
      */
-    public void doGetCfg(String beg, List<String> lst, boolean dng) {
-        if (router4 == null) {
-            lst.add(beg + "no router4");
-        } else {
+    public void doGetCfg(String beg, List<String> lst) {
+        if (router4 != null) {
             lst.add(beg + "router4 " + router4.routerGetName());
         }
-        if (router6 == null) {
-            lst.add(beg + "no router6");
-        } else {
+        if (router6 != null) {
             lst.add(beg + "router6 " + router6.routerGetName());
         }
-        cmds.cfgLine(lst, !routeDetails, beg, "route-details", "");
-        cmds.cfgLine(lst, !routeHacked, beg, "route-hacked", "");
-        cmds.cfgLine(lst, routeDstngshr == 0, beg, "route-distinguisher", "" + tabRouteUtil.rd2string(routeDstngshr));
-        if (!dng) {
-            return;
+        if (routeDetails) {
+            lst.add(beg + "route-details");
         }
-        if (script == null) {
-            lst.add(beg + "no script");
-        } else {
+        if (routeHacked) {
+            lst.add(beg + "route-hacked");
+        }
+        if (routeDstngshr != 0) {
+            lst.add(beg + "route-distinguisher " + tabRouteUtil.rd2string(routeDstngshr));
+        }
+        if (script != null) {
             lst.add(beg + "script " + script.name);
         }
-        cmds.cfgLine(lst, !resolve, beg, "resolve", "");
-        cmds.cfgLine(lst, !tinyHttp, beg, "tiny-http", "");
+        if (resolve) {
+            lst.add(beg + "resolve");
+        }
     }
 
     /**

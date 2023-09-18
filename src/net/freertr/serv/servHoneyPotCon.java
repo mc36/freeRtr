@@ -39,8 +39,11 @@ public class servHoneyPotCon implements Runnable {
         pipe.setReady();
         logger.info("honeypot hit from " + addr + " " + port);
         servHoneyPotWrk w = new servHoneyPotWrk(lower.ipInfo, pipe, addr, port);
-        w.doWork(true);
+        w.doHttpRead();
+        w.doWork();
+        w.doHttpWrite();
         w.putResult(true);
+        w.doHttpFinish();
         pipe.setClose();
     }
 
