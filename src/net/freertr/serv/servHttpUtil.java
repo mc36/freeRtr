@@ -10,6 +10,7 @@ import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.sec.secWebsock;
+import net.freertr.user.userScript;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -51,6 +52,11 @@ public class servHttpUtil {
      */
     public final static int apiBitsIpinfo = 0x08;
 
+    /**
+     * dump one xml
+     *
+     * @param s xml to dump
+     */
     protected final static void dumpXml(String s) {
         if (!debugger.servHttpXml) {
             return;
@@ -58,6 +64,11 @@ public class servHttpUtil {
         dumpXml(encXml.parseOne(s.replaceAll("\r", "").replaceAll("\n", "")));
     }
 
+    /**
+     * dump one xml
+     *
+     * @param xml to dump
+     */
     protected final static void dumpXml(encXml xml) {
         if (!debugger.servHttpXml) {
             return;
@@ -155,6 +166,12 @@ public class servHttpUtil {
         return s;
     }
 
+    /**
+     * check for no headers
+     *
+     * @param s prefix
+     * @return true if found, false if not
+     */
     protected final static boolean checkNoHeaders(String s) {
         return new File(s + ".noheaders").exists();
     }
@@ -212,6 +229,12 @@ public class servHttpUtil {
         return a.replaceAll(";", ",");
     }
 
+    /**
+     * update visitors file
+     *
+     * @param cn connection to use
+     * @param pn pathname to update
+     */
     protected final static void updateVisitors(servHttpConn cn, String pn) {
         pn = cn.gotHost.path + pn + ".visitors";
         if (!new File(pn).exists()) {
@@ -221,6 +244,13 @@ public class servHttpUtil {
         bits.byteSave(false, a.getBytes(), pn);
     }
 
+    /**
+     * send one websocket
+     *
+     * @param cn connection to use
+     * @param pn pathname
+     * @return true on error, false on success
+     */
     protected final static boolean sendOneWebSck(servHttpConn cn, String pn) {
         pn = cn.gotHost.path + pn + ".websock";
         if (!new File(pn).exists()) {
@@ -266,6 +296,7 @@ public class servHttpUtil {
     /**
      * get style of host
      *
+     * @param cn connection to use
      * @return style
      */
     protected final static String getStyle(servHttpConn cn) {
@@ -291,6 +322,54 @@ public class servHttpUtil {
             }
         }
         return s + "</style>\n";
+    }
+
+    /**
+     * run one script
+     *
+     * @param cn connection to use
+     * @param cfg config to use
+     * @param l script to run
+     * @return true on error, false on success
+     */
+    protected final static boolean sendOneScript(servHttpConn cn, servHttpHost cfg, List<String> l) {
+        pipeLine pl = new pipeLine(1024 * 1024, false);
+        pipeSide pip = pl.getSide();
+        pip.setTime(60000);
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        userScript t = new userScript(pip, "");
+        t.addLines(l);
+        t.allowConfig = (cfg.allowScript & 4) != 0;
+        t.allowExec = (cfg.allowScript & 2) != 0;
+        t.currDir = cfg.path;
+        pip = pl.getSide();
+        pip.lineTx = pipeSide.modTyp.modeCR;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        pip.linePut("prot=" + cn.gotUrl.proto);
+        pip.linePut("serv=" + cn.gotUrl.server);
+        pip.linePut("path=" + cn.gotUrl.toPathName());
+        pip.linePut("agnt=" + cn.gotAgent);
+        pip.linePut("refr=" + cn.gotReferer);
+        if (cn.gotAuth != null) {
+            pip.linePut("auth=" + cn.gotAuth);
+        }
+        pip.linePut("clnt=" + cn.peer);
+        for (int i = 0; i < cn.gotUrl.param.size(); i++) {
+            pip.linePut("par." + cn.gotUrl.param.get(i));
+        }
+        for (int i = 0; i < cn.gotCook.size(); i++) {
+            pip.linePut("cok." + cn.gotCook.get(i));
+        }
+        pip.linePut(".");
+        t.cmdAll();
+        pl.setClose();
+        String s = pip.strGet(1024 * 1024);
+        if (s == null) {
+            s = "";
+        }
+        cn.sendTextHeader("200 ok", "text/html", s.getBytes());
+        return false;
     }
 
 }

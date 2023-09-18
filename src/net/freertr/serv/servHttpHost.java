@@ -978,54 +978,6 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return true;
     }
 
-    protected boolean sendOneScript(servHttpConn cn, String fn) {
-        List<String> l = bits.txt2buf(path + fn);
-        if (l == null) {
-            return true;
-        }
-        return sendOneScript(cn, l);
-    }
-
-    protected boolean sendOneScript(servHttpConn cn, List<String> l) {
-        pipeLine pl = new pipeLine(1024 * 1024, false);
-        pipeSide pip = pl.getSide();
-        pip.setTime(60000);
-        pip.lineTx = pipeSide.modTyp.modeCRLF;
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userScript t = new userScript(pip, "");
-        t.addLines(l);
-        t.allowConfig = (allowScript & 4) != 0;
-        t.allowExec = (allowScript & 2) != 0;
-        t.currDir = path;
-        pip = pl.getSide();
-        pip.lineTx = pipeSide.modTyp.modeCR;
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        pip.linePut("prot=" + cn.gotUrl.proto);
-        pip.linePut("serv=" + cn.gotUrl.server);
-        pip.linePut("path=" + cn.gotUrl.toPathName());
-        pip.linePut("agnt=" + cn.gotAgent);
-        pip.linePut("refr=" + cn.gotReferer);
-        if (cn.gotAuth != null) {
-            pip.linePut("auth=" + cn.gotAuth);
-        }
-        pip.linePut("clnt=" + cn.peer);
-        for (int i = 0; i < cn.gotUrl.param.size(); i++) {
-            pip.linePut("par." + cn.gotUrl.param.get(i));
-        }
-        for (int i = 0; i < cn.gotCook.size(); i++) {
-            pip.linePut("cok." + cn.gotCook.get(i));
-        }
-        pip.linePut(".");
-        t.cmdAll();
-        pl.setClose();
-        String s = pip.strGet(1024 * 1024);
-        if (s == null) {
-            s = "";
-        }
-        cn.sendTextHeader("200 ok", "text/html", s.getBytes());
-        return false;
-    }
-
     protected boolean sendOneMarkdown(servHttpConn cn, String s) {
         List<String> l = bits.txt2buf(path + s);
         if (l == null) {
@@ -1251,7 +1203,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         if (searchScript != null) {
             cfgScrpt scr = cfgAll.scrptFind(searchScript + s, false);
             if (scr != null) {
-                return sendOneScript(cn, scr.getText());
+                return servHttpUtil.sendOneScript(cn, this, scr.getText());
             }
         }
         if (allowMarkdown) {
@@ -1261,7 +1213,11 @@ public class servHttpHost implements Comparator<servHttpHost> {
         }
         if (allowScript != 0) {
             if (a.equals(".tcl")) {
-                return sendOneScript(cn, s);
+                List<String> l = bits.txt2buf(path + s);
+                if (l == null) {
+                    return true;
+                }
+                return servHttpUtil.sendOneScript(cn, this, l);
             }
         }
         if (allowClass != null) {

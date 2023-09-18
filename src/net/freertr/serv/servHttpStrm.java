@@ -18,6 +18,11 @@ public class servHttpStrm implements Runnable {
 
     private final servHttpHost cfg;
 
+    /**
+     * create instance
+     *
+     * @param host config to use
+     */
     protected servHttpStrm(servHttpHost host) {
         cfg = host;
     }

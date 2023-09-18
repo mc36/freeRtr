@@ -37,7 +37,6 @@ public class servHttpSstp implements Runnable, ifcDn {
     /**
      * create instance
      *
-     * @param conn connection
      * @param parent lower layer
      */
     public servHttpSstp(servHttpConn parent) {
@@ -45,6 +44,9 @@ public class servHttpSstp implements Runnable, ifcDn {
         pipe = parent.pipe;
     }
 
+    /**
+     * do the startup
+     */
     protected void doStart() {
         lower.gotKeep = false;
         lower.pipe = null;

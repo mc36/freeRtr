@@ -44,7 +44,11 @@ public class servHttpForti implements Runnable, ifcDn {
         pipe = conn.pipe;
     }
 
-    protected void serveReq(servHttpHost gotHost) {
+    /**
+     * serve one request
+     * @param cfg config to use
+     */
+    protected void serveReq(servHttpHost cfg) {
         String pn = lower.gotUrl.toPathName();
         if (pn.equals("remote/logincheck")) {
             lower.addHdr("Set-Cookie: SVPNCOOKIE=" + encBase64.encodeString(lower.gotUrl.getParam("username") + "|" + lower.gotUrl.getParam("credential")) + "; path=/; secure; httponly");
@@ -83,7 +87,7 @@ public class servHttpForti implements Runnable, ifcDn {
             lower.sendRespError(401, "unauthorized");
             return;
         }
-        authResult res = gotHost.authenticList.authUserPass(a.substring(0, i), a.substring(i + 1, a.length()));
+        authResult res = cfg.authenticList.authUserPass(a.substring(0, i), a.substring(i + 1, a.length()));
         if (res.result != authResult.authSuccessful) {
             lower.sendRespError(401, "unauthorized");
             return;
@@ -98,7 +102,7 @@ public class servHttpForti implements Runnable, ifcDn {
                 break;
             }
         }
-        clnd = gotHost.allowForti.cloneStart(this);
+        clnd = cfg.allowForti.cloneStart(this);
         new Thread(this).start();
         lower.gotKeep = false;
         lower.pipe = null;

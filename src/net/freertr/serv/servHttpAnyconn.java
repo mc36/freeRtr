@@ -44,6 +44,11 @@ public class servHttpAnyconn implements Runnable, ifcDn {
         pipe = conn.pipe;
     }
 
+    /**
+     * start the server
+     *
+     * @param cfg config to use
+     */
     protected void doStart(servHttpHost cfg) {
         clnd = cfg.allowAnyconn.cloneStart(this);
         lower.addHdr("X-CSTP-Version: 1");
@@ -68,7 +73,11 @@ public class servHttpAnyconn implements Runnable, ifcDn {
         new Thread(this).start();
     }
 
-    protected void serveReq(servHttpHost gotHost) {
+    /**
+     * serve one request
+     * @param cfg config to use
+     */
+    protected void serveReq(servHttpHost cfg) {
         lower.gotUrl.port = lower.lower.srvPort;
         if (lower.lower.secProto != 0) {
             lower.gotUrl.proto = "https";
@@ -134,7 +143,7 @@ public class servHttpAnyconn implements Runnable, ifcDn {
         if (lower.gotUrl.password == null) {
             lower.gotUrl.password = "";
         }
-        authResult res = gotHost.authenticList.authUserPass(lower.gotUrl.username, lower.gotUrl.password);
+        authResult res = cfg.authenticList.authUserPass(lower.gotUrl.username, lower.gotUrl.password);
         if (res.result != authResult.authSuccessful) {
             lower.addHdr("X-Transcend-Version: 1");
             lower.sendTextHeader("200 ok", "text/xml", (encXml.header + "\n<auth id=\"main\"><title>login</title><message>enter username and password</message><form method=\"post\" action=\"webvpn.html\"><input type=\"text\" label=\"username:\" name=\"username\" value=\"\" /><input type=\"password\" label=\"password:\" name=\"password\" value=\"\" /><input type=\"submit\" name=\"login\" value=\"login\" /></form></auth>").getBytes());

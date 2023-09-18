@@ -1014,7 +1014,7 @@ public class userFlash {
     /**
      * get file permissions
      *
-     * @param fn file name
+     * @param f file to read
      * @return file permission bits, -1 on error, 1=read, 2=write, 4=exec
      */
     public final static int getFilePerm(File f) {
