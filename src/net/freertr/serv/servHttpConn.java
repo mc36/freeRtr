@@ -604,7 +604,7 @@ public class servHttpConn implements Runnable {
             try {
                 gotHost.serveRequest(this);
             } catch (Exception e) {
-                logger.traceback(e, gotUrl.dump());
+                logger.traceback(e, gotUrl.dump() + " " + gotHost + " " + peer);
                 break;
             }
             if (!gotKeep) {

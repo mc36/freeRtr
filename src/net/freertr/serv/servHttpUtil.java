@@ -391,6 +391,13 @@ public class servHttpUtil {
         return false;
     }
 
+    /**
+     * decode authentication string
+     *
+     * @param got string got
+     * @param usr true=user, false=password
+     * @return decoded string, null on error
+     */
     protected final static String decodeAuth(String got, boolean usr) {
         if (got == null) {
             return null;
@@ -412,6 +419,12 @@ public class servHttpUtil {
         }
     }
 
+    /**
+     * check user auth data
+     *
+     * @param cn connection to use
+     * @return false on success, true on error
+     */
     protected final static boolean checkUserAuth(servHttpConn cn) {
         if (cn.gotAuth == null) {
             return true;
@@ -425,39 +438,57 @@ public class servHttpUtil {
         return false;
     }
 
-    protected final static void doTranslate(servHttpConn cn, encUrl srvUrl) {
+    /**
+     * apply translations
+     *
+     * @param cn connection to use
+     * @param url url to update
+     */
+    protected final static void doTranslate(servHttpConn cn, encUrl url) {
         if (cn.gotHost.translate == null) {
             return;
         }
         String a = cfgTrnsltn.doTranslate(cn.gotHost.translate, cn.gotUrl.toURL(true, true, true, true));
-        srvUrl.fromString(a);
+        url.fromString(a);
     }
 
-    protected final static void doSubconn(servHttpConn cn, encUrl srvUrl) {
+    /**
+     * apply subconnect
+     *
+     * @param cn connection to use
+     * @param url url to update
+     */
+    protected final static void doSubconn(servHttpConn cn, encUrl url) {
         if ((cn.gotHost.subconn & 0x1) == 0) {
-            srvUrl.filPath = cn.gotUrl.filPath;
+            url.filPath = cn.gotUrl.filPath;
         }
         if ((cn.gotHost.subconn & 0x2) == 0) {
-            srvUrl.filName = cn.gotUrl.filName;
+            url.filName = cn.gotUrl.filName;
         }
         if ((cn.gotHost.subconn & 0x4) == 0) {
-            srvUrl.filExt = cn.gotUrl.filExt;
+            url.filExt = cn.gotUrl.filExt;
         }
         if ((cn.gotHost.subconn & 0x8) == 0) {
-            srvUrl.param = cn.gotUrl.param;
+            url.param = cn.gotUrl.param;
         }
         if ((cn.gotHost.subconn & 0x10) != 0) {
-            srvUrl.username = cn.gotUrl.username;
-            srvUrl.password = cn.gotUrl.password;
+            url.username = cn.gotUrl.username;
+            url.password = cn.gotUrl.password;
         }
         if ((cn.gotHost.subconn & 0x20) != 0) {
-            srvUrl.server = cn.gotUrl.server;
+            url.server = cn.gotUrl.server;
         }
         if ((cn.gotHost.subconn & 0x40) != 0) {
-            srvUrl.filPath = (srvUrl.filPath + "/" + cn.gotUrl.filPath).replaceAll("//", "/");
+            url.filPath = (url.filPath + "/" + cn.gotUrl.filPath).replaceAll("//", "/");
         }
     }
 
+    /**
+     * do connect
+     *
+     * @param cn connection to use
+     * @return false if not, true if done
+     */
     protected final static boolean doConnect(servHttpConn cn) {
         if (!cn.gotCmd.equals("connect")) {
             return false;
@@ -490,6 +521,22 @@ public class servHttpUtil {
         return true;
     }
 
+    /**
+     * get webdav property
+     *
+     * @param n filename
+     * @param f file to check
+     * @param typ type
+     * @param len length
+     * @param tag tag
+     * @param mod modified
+     * @param crt creation
+     * @param dsp display
+     * @param cnt content type
+     * @param usd disk usage
+     * @param fre disk free
+     * @return string
+     */
     protected final static String webdavProp(String n, File f, boolean typ, boolean len, boolean tag, boolean mod, boolean crt, boolean dsp, boolean cnt, boolean usd, boolean fre) {
         if (!f.exists()) {
             return "";
@@ -537,6 +584,13 @@ public class servHttpUtil {
         return a;
     }
 
+    /**
+     * parse file name
+     *
+     * @param cn connection to use
+     * @param s string to read
+     * @return string parsed
+     */
     protected final static String parseFileName(servHttpConn cn, String s) {
         int i = s.lastIndexOf(".");
         if (i < 0) {
@@ -546,6 +600,14 @@ public class servHttpUtil {
         return s.substring(i + 1, s.length());
     }
 
+    /**
+     * send one multipart content
+     *
+     * @param cn connection to use
+     * @param s filename
+     * @param a mime type
+     * @return true on success, false on error
+     */
     protected final static boolean sendOneMotion(servHttpConn cn, String s, String a) {
         cn.gotKeep = false;
         s = cn.gotHost.path + s;
@@ -592,6 +654,8 @@ public class servHttpUtil {
 
     /**
      * start streaming
+     *
+     * @param cn connection to use
      */
     protected final static void reStream(servHttpConn cn) {
         cn.gotKeep = false;
@@ -610,6 +674,11 @@ public class servHttpUtil {
         cn.gotHost.streamR.doStart();
     }
 
+    /**
+     * do multiple access
+     *
+     * @param cn connection to use
+     */
     protected final static void doMultAcc(servHttpConn cn) {
         cmds cmd = new cmds("hst", cn.gotHost.multiAccT);
         List<encUrl> urls = new ArrayList<encUrl>();
@@ -670,6 +739,11 @@ public class servHttpUtil {
         cn.pipe = null;
     }
 
+    /**
+     * do reconnect access
+     *
+     * @param cn connection to use
+     */
     protected final static void doReconn(servHttpConn cn) {
         encUrl srvUrl = encUrl.parseOne(cn.gotHost.reconnT);
         doTranslate(cn, srvUrl);
@@ -708,6 +782,13 @@ public class servHttpUtil {
         cn.pipe = null;
     }
 
+    /**
+     * send one class file
+     *
+     * @param cn connection to use
+     * @param s file name
+     * @return false on success, true on error
+     */
     protected final static boolean sendOneClass(servHttpConn cn, String s) {
         byte[] res = null;
         try {
@@ -781,6 +862,13 @@ public class servHttpUtil {
         return sendBinFile(cn, a, s, m);
     }
 
+    /**
+     * send one image map
+     *
+     * @param cn connection to use
+     * @param s filename
+     * @return false on success, true on error
+     */
     protected final static boolean sendOneImgMap(servHttpConn cn, String s) {
         List<String> buf = bits.txt2buf(cn.gotHost.path + s);
         if (buf == null) {
@@ -832,6 +920,13 @@ public class servHttpUtil {
         return true;
     }
 
+    /**
+     * send one markdown
+     *
+     * @param cn connection to use
+     * @param s filename
+     * @return false on success, true on error
+     */
     protected final static boolean sendOneMarkdown(servHttpConn cn, String s) {
         List<String> l = bits.txt2buf(cn.gotHost.path + s);
         if (l == null) {
@@ -844,6 +939,11 @@ public class servHttpUtil {
         return false;
     }
 
+    /**
+     * send one redirection
+     *
+     * @param cn connection to use
+     */
     protected final static void doRedir(servHttpConn cn) {
         encUrl srvUrl = encUrl.parseOne(cn.gotHost.redir);
         doTranslate(cn, srvUrl);
@@ -851,6 +951,14 @@ public class servHttpUtil {
         cn.sendFoundAt(srvUrl.toURL(true, true, true, false));
     }
 
+    /**
+     * send one streaming
+     *
+     * @param cn connection to use
+     * @param s filename
+     * @param a mime type
+     * @return false on success, true on error
+     */
     protected final static boolean sendOneStream(servHttpConn cn, String s, String a) {
         cn.gotKeep = false;
         s = cn.gotHost.path + s;
@@ -899,6 +1007,13 @@ public class servHttpUtil {
         return false;
     }
 
+    /**
+     * send one directory
+     *
+     * @param cn connection to use
+     * @param s filename
+     * @return false on success true on error
+     */
     protected final static boolean sendOneDir(servHttpConn cn, String s) {
         if (cn.gotHost.autoIndex) {
             if (!cn.gotHost.sendOneFile(cn, s + "index.html", ".html")) {
@@ -985,6 +1100,15 @@ public class servHttpUtil {
         return false;
     }
 
+    /**
+     * send one binary file
+     *
+     * @param cn connection to use
+     * @param s filename
+     * @param a mime type
+     * @param m speed limit
+     * @return false on success, true on error
+     */
     protected final static boolean sendBinFile(servHttpConn cn, String s, String a, int m) {
         RandomAccessFile fr;
         long siz;
@@ -1090,6 +1214,13 @@ public class servHttpUtil {
         return false;
     }
 
+    /**
+     * send one api
+     *
+     * @param cn connection to use
+     * @param s commands
+     * @return false on success true on error
+     */
     protected final static boolean sendOneApi(servHttpConn cn, String s) {
         if (cn.gotHost.allowApi == servHttpUtil.apiBitsNothing) {
             return true;
@@ -1101,7 +1232,7 @@ public class servHttpUtil {
         cmd.word("/");
         s = cmd.word("/");
         if (debugger.servHttpTraf) {
-            logger.debug("api queried cnd=" + s + " prm=" + cmd.getRemaining() + " from " + cn.peer);
+            logger.debug("api queried cmd=" + s + " prm=" + cmd.getRemaining() + " from " + cn.peer);
         }
         if (((cn.gotHost.allowApi & servHttpUtil.apiBitsIpinfo) != 0) && s.equals("ipinfo")) {
             addrIP adr = null;
