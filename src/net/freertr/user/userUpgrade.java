@@ -360,7 +360,7 @@ public class userUpgrade {
         if (i >= 0) {
             p = p.substring(0, i + 1);
         }
-        l.add("removed files from " + p + ":");
+        l.add("cleanup " + p);
         File[] fl = userFlash.dirList(p);
         if (fl == null) {
             l.add(cmds.errbeg + "unable to read filelist");
