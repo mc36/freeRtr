@@ -122,7 +122,7 @@ public class logger {
 
     private static logBuf logBufLst = new logBuf(512);
 
-    private static final tabGen<loggerTerm> logPipLst = new tabGen<loggerTerm>();
+    private final static tabGen<loggerTerm> logPipLst = new tabGen<loggerTerm>();
 
     private static String dumpTraceClass(StackTraceElement s) {
         final String myModule = "net.freertr.";

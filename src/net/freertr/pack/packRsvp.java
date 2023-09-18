@@ -26,12 +26,12 @@ public class packRsvp {
     /**
      * protocol number
      */
-    public static final int proto = 46;
+    public final static int proto = 46;
 
     /**
      * header size
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * true=ipv4, false=ipv6
@@ -241,37 +241,37 @@ public class packRsvp {
     /**
      * path request
      */
-    public static final int typPathReq = 1;
+    public final static int typPathReq = 1;
 
     /**
      * resv request
      */
-    public static final int typResvReq = 2;
+    public final static int typResvReq = 2;
 
     /**
      * path error
      */
-    public static final int typPathErr = 3;
+    public final static int typPathErr = 3;
 
     /**
      * resv error
      */
-    public static final int typResvErr = 4;
+    public final static int typResvErr = 4;
 
     /**
      * path tear
      */
-    public static final int typPathTear = 5;
+    public final static int typPathTear = 5;
 
     /**
      * resv tear
      */
-    public static final int typResvTear = 6;
+    public final static int typResvTear = 6;
 
     /**
      * resv confirmation
      */
-    public static final int typResvConf = 7;
+    public final static int typResvConf = 7;
 
     private encTlv tlv = new encTlv(16, 16, 0, 16, 1, 4, 4, 1, 0, 512, true);
 

@@ -41,7 +41,7 @@ public class servMplsUdp extends servGeneric implements prtServP {
     /**
      * port number
      */
-    public static final int portNum = 6635;
+    public final static int portNum = 6635;
 
     /**
      * interface to use

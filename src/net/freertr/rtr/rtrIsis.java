@@ -55,17 +55,17 @@ public class rtrIsis extends ipRtr {
     /**
      * llc type
      */
-    public static final int llcTyp = 0xfefe;
+    public final static int llcTyp = 0xfefe;
 
     /**
      * eth type
      */
-    public static final int ethTyp = 0x00fe;
+    public final static int ethTyp = 0x00fe;
 
     /**
      * protocol discriminator
      */
-    public static final int protDist = 0x83;
+    public final static int protDist = 0x83;
 
     /**
      * external distance

@@ -37,7 +37,7 @@ public class servImap4 extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 143;
+    public final static int port = 143;
 
     /**
      * mail folders

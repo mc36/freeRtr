@@ -498,357 +498,357 @@ public class rtrBgpUtil {
     /**
      * open
      */
-    public static final int msgOpen = 1;
+    public final static int msgOpen = 1;
 
     /**
      * update
      */
-    public static final int msgUpdate = 2;
+    public final static int msgUpdate = 2;
 
     /**
      * notification
      */
-    public static final int msgNotify = 3;
+    public final static int msgNotify = 3;
 
     /**
      * keep alive
      */
-    public static final int msgKeepLiv = 4;
+    public final static int msgKeepLiv = 4;
 
     /**
      * route refresh
      */
-    public static final int msgRefrsh = 5;
+    public final static int msgRefrsh = 5;
 
     /**
      * capabilities
      */
-    public static final int msgCapability = 6;
+    public final static int msgCapability = 6;
 
     /**
      * compression
      */
-    public static final int msgCompress = 7;
+    public final static int msgCompress = 7;
 
     /**
      * optional
      */
-    public static final int flagOptional = 0x80;
+    public final static int flagOptional = 0x80;
 
     /**
      * transitive
      */
-    public static final int flagTransitive = 0x40;
+    public final static int flagTransitive = 0x40;
 
     /**
      * complete
      */
-    public static final int flagComplete = 0x20;
+    public final static int flagComplete = 0x20;
 
     /**
      * length
      */
-    public static final int flagLength = 0x10;
+    public final static int flagLength = 0x10;
 
     /**
      * origin type, 0=igp, 1=egp, 2=incomplete
      */
-    public static final int attrOrigin = 1;
+    public final static int attrOrigin = 1;
 
     /**
      * as path
      */
-    public static final int attrAsPath = 2;
+    public final static int attrAsPath = 2;
 
     /**
      * next hop
      */
-    public static final int attrNextHop = 3;
+    public final static int attrNextHop = 3;
 
     /**
      * multi exit discriminator
      */
-    public static final int attrMetric = 4;
+    public final static int attrMetric = 4;
 
     /**
      * local preference
      */
-    public static final int attrLocPref = 5;
+    public final static int attrLocPref = 5;
 
     /**
      * atomic aggregate
      */
-    public static final int attrAtomicAggr = 6;
+    public final static int attrAtomicAggr = 6;
 
     /**
      * aggregate
      */
-    public static final int attrAggregator = 7;
+    public final static int attrAggregator = 7;
 
     /**
      * standard community
      */
-    public static final int attrStdComm = 8;
+    public final static int attrStdComm = 8;
 
     /**
      * originator
      */
-    public static final int attrOriginator = 9;
+    public final static int attrOriginator = 9;
 
     /**
      * cluster list
      */
-    public static final int attrClustList = 10;
+    public final static int attrClustList = 10;
 
     /**
      * mp reach nlri
      */
-    public static final int attrReachable = 14;
+    public final static int attrReachable = 14;
 
     /**
      * mp unreach nlri
      */
-    public static final int attrUnReach = 15;
+    public final static int attrUnReach = 15;
 
     /**
      * extended community
      */
-    public static final int attrExtComm = 16;
+    public final static int attrExtComm = 16;
 
     /**
      * as4 path
      */
-    public static final int attrAs4path = 17;
+    public final static int attrAs4path = 17;
 
     /**
      * as4 aggregator
      */
-    public static final int attrAs4aggr = 18;
+    public final static int attrAs4aggr = 18;
 
     /**
      * pmsi tunnel
      */
-    public static final int attrPmsiTun = 22;
+    public final static int attrPmsiTun = 22;
 
     /**
      * tunnel encapsulation
      */
-    public static final int attrTunEnc = 23;
+    public final static int attrTunEnc = 23;
 
     /**
      * traffic engineering
      */
-    public static final int attrTraffEng = 24;
+    public final static int attrTraffEng = 24;
 
     /**
      * ipv6 extended community
      */
-    public static final int attrIpv6comm = 25;
+    public final static int attrIpv6comm = 25;
 
     /**
      * accumulated igp
      */
-    public static final int attrAccIgp = 26;
+    public final static int attrAccIgp = 26;
 
     /**
      * pe distinguisher label
      */
-    public static final int attrPeDistLab = 27;
+    public final static int attrPeDistLab = 27;
 
     /**
      * entropy label
      */
-    public static final int attrEntropyLab = 28;
+    public final static int attrEntropyLab = 28;
 
     /**
      * link state
      */
-    public static final int attrLinkState = 29;
+    public final static int attrLinkState = 29;
 
     /**
      * large community
      */
-    public static final int attrLrgComm = 32;
+    public final static int attrLrgComm = 32;
 
     /**
      * bgpsec path
      */
-    public static final int attrBgpSec = 33;
+    public final static int attrBgpSec = 33;
 
     /**
      * only to customer
      */
-    public static final int attrOnlyCust = 35;
+    public final static int attrOnlyCust = 35;
 
     /**
      * prefix sid
      */
-    public static final int attrPrefSid = 40;
+    public final static int attrPrefSid = 40;
 
     /**
      * bier
      */
-    public static final int attrBier = 44;
+    public final static int attrBier = 44;
 
     /**
      * attribute set
      */
-    public static final int attrAttribSet = 128;
+    public final static int attrAttribSet = 128;
 
     /**
      * multiprotocol bgp
      */
-    public static final int capaMultiProto = 1;
+    public final static int capaMultiProto = 1;
 
     /**
      * route refresh
      */
-    public static final int capaRouteRefresh = 2;
+    public final static int capaRouteRefresh = 2;
 
     /**
      * outbound route filter
      */
-    public static final int capaRouteFilter = 3;
+    public final static int capaRouteFilter = 3;
 
     /**
      * multiple routes
      */
-    public static final int capaMultiRoute = 4;
+    public final static int capaMultiRoute = 4;
 
     /**
      * extended next hop
      */
-    public static final int capaExtNextHop = 5;
+    public final static int capaExtNextHop = 5;
 
     /**
      * extended message
      */
-    public static final int capaExtMessage = 6;
+    public final static int capaExtMessage = 6;
 
     /**
      * bgpsec
      */
-    public static final int capaBgpSec = 7;
+    public final static int capaBgpSec = 7;
 
     /**
      * multiple labels
      */
-    public static final int capaMultiLabel = 8;
+    public final static int capaMultiLabel = 8;
 
     /**
      * bgp role
      */
-    public static final int capaLeakRole = 9;
+    public final static int capaLeakRole = 9;
 
     /**
      * graceful restart
      */
-    public static final int capaGraceRestart = 64;
+    public final static int capaGraceRestart = 64;
 
     /**
      * 32bit as number
      */
-    public static final int capa32bitAsNum = 65;
+    public final static int capa32bitAsNum = 65;
 
     /**
      * dynamic capability
      */
-    public static final int capaDynamicCapa = 67;
+    public final static int capaDynamicCapa = 67;
 
     /**
      * multisession
      */
-    public static final int capaMultisession = 68;
+    public final static int capaMultisession = 68;
 
     /**
      * additional path
      */
-    public static final int capaAdditionPath = 69;
+    public final static int capaAdditionPath = 69;
 
     /**
      * enhanced route refresh
      */
-    public static final int capaEnhancedRefresh = 70;
+    public final static int capaEnhancedRefresh = 70;
 
     /**
      * long lived graceful restart
      */
-    public static final int capaLongGrace = 71;
+    public final static int capaLongGrace = 71;
 
     /**
      * routing policy distribution
      */
-    public static final int capaRoutePolicy = 72;
+    public final static int capaRoutePolicy = 72;
 
     /**
      * hostname
      */
-    public static final int capaHostname = 73;
+    public final static int capaHostname = 73;
 
     /**
      * strict bfd
      */
-    public static final int capaStrictBfd = 74;
+    public final static int capaStrictBfd = 74;
 
     /**
      * software version
      */
-    public static final int capaSoftware = 75;
+    public final static int capaSoftware = 75;
 
     /**
      * compression
      */
-    public static final int capaCompress = 76;
+    public final static int capaCompress = 76;
 
     /**
      * no export community
      */
-    public static final int commNoExport = 0xffffff01;
+    public final static int commNoExport = 0xffffff01;
 
     /**
      * no advertise community
      */
-    public static final int commNoAdvertise = 0xffffff02;
+    public final static int commNoAdvertise = 0xffffff02;
 
     /**
      * no sub confederation community
      */
-    public static final int commNoConfed = 0xffffff03;
+    public final static int commNoConfed = 0xffffff03;
 
     /**
      * no peer community
      */
-    public static final int commNoPeer = 0xffffff04;
+    public final static int commNoPeer = 0xffffff04;
 
     /**
      * graceful shutdown community
      */
-    public static final int commGraceShut = 0xffff0000;
+    public final static int commGraceShut = 0xffff0000;
 
     /**
      * accept own community
      */
-    public static final int commAcceptOwn = 0xffff0001;
+    public final static int commAcceptOwn = 0xffff0001;
 
     /**
      * long lived graceful restart community
      */
-    public static final int commLlgrStale = 0xffff0006;
+    public final static int commLlgrStale = 0xffff0006;
 
     /**
      * no llgr community
      */
-    public static final int commNoLlgr = 0xffff0007;
+    public final static int commNoLlgr = 0xffff0007;
 
     /**
      * accept own nexthop community
      */
-    public static final int commAcceptHop = 0xffff0008;
+    public final static int commAcceptHop = 0xffff0008;
 
     /**
      * blackhole community
      */
-    public static final int commBlackhole = 0xffff029a;
+    public final static int commBlackhole = 0xffff029a;
 
     /**
      * convert type to string

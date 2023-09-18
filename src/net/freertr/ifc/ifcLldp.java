@@ -57,87 +57,87 @@ public class ifcLldp implements ifcUp {
     /**
      * end of pdu
      */
-    public static final int ttypEnd = 0;
+    public final static int ttypEnd = 0;
 
     /**
      * chassis id
      */
-    public static final int ttypChassis = 1;
+    public final static int ttypChassis = 1;
 
     /**
      * port id
      */
-    public static final int ttypPrtId = 2;
+    public final static int ttypPrtId = 2;
 
     /**
      * time to live
      */
-    public static final int ttypTime = 3;
+    public final static int ttypTime = 3;
 
     /**
      * port description
      */
-    public static final int ttypPrtDesc = 4;
+    public final static int ttypPrtDesc = 4;
 
     /**
      * system name
      */
-    public static final int ttypSysName = 5;
+    public final static int ttypSysName = 5;
 
     /**
      * system description
      */
-    public static final int ttypSysDesc = 6;
+    public final static int ttypSysDesc = 6;
 
     /**
      * system capabilities
      */
-    public static final int ttypSysCapa = 7;
+    public final static int ttypSysCapa = 7;
 
     /**
      * management address
      */
-    public static final int ttypMgmtAddr = 8;
+    public final static int ttypMgmtAddr = 8;
 
     /**
      * other
      */
-    public static final int capaOther = 0x01;
+    public final static int capaOther = 0x01;
 
     /**
      * repeater
      */
-    public static final int capaRepeat = 0x02;
+    public final static int capaRepeat = 0x02;
 
     /**
      * bridge
      */
-    public static final int capaBridge = 0x04;
+    public final static int capaBridge = 0x04;
 
     /**
      * wlan access point
      */
-    public static final int capaWlan = 0x08;
+    public final static int capaWlan = 0x08;
 
     /**
      * router
      */
-    public static final int capaRouter = 0x10;
+    public final static int capaRouter = 0x10;
 
     /**
      * telephone
      */
-    public static final int capaTelephone = 0x20;
+    public final static int capaTelephone = 0x20;
 
     /**
      * docsis device
      */
-    public static final int capaDocsis = 0x40;
+    public final static int capaDocsis = 0x40;
 
     /**
      * station
      */
-    public static final int capaStation = 0x80;
+    public final static int capaStation = 0x80;
 
     /**
      * decode capabilities

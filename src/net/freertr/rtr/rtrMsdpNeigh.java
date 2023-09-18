@@ -107,42 +107,42 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
     /**
      * header size
      */
-    public static final int size = 3;
+    public final static int size = 3;
 
     /**
      * source active
      */
-    public static final int typSAact = 1;
+    public final static int typSAact = 1;
 
     /**
      * source request
      */
-    public static final int typSAreq = 2;
+    public final static int typSAreq = 2;
 
     /**
      * source response
      */
-    public static final int typSArep = 3;
+    public final static int typSArep = 3;
 
     /**
      * keepalive
      */
-    public static final int typKeep = 4;
+    public final static int typKeep = 4;
 
     /**
      * notification
      */
-    public static final int typNtfy = 5;
+    public final static int typNtfy = 5;
 
     /**
      * traceroute request
      */
-    public static final int typTRreq = 6;
+    public final static int typTRreq = 6;
 
     /**
      * traceroute reply
      */
-    public static final int typTRrep = 7;
+    public final static int typTRrep = 7;
 
     private pipeSide pipe;
 

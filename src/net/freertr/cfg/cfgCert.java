@@ -41,7 +41,7 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {};
+    public final static String[] defaultL = {};
 
     /**
      * defaults filter

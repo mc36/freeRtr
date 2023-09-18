@@ -29,7 +29,7 @@ public class servTime extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 37;
+    public final static int port = 37;
 
     /**
      * defaults text

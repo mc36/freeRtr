@@ -25,17 +25,17 @@ public class prtPipe implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int proto = 131;
+    public final static int proto = 131;
 
     /**
      * header size
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * magic number
      */
-    public static final int magic = 0xe0000000;
+    public final static int magic = 0xe0000000;
 
     /**
      * sending ttl value, -1 means maps out

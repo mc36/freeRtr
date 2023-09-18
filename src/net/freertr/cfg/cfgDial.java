@@ -59,7 +59,7 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {
+    public final static String[] defaultL = {
         "dial-peer .*! no description",
         "dial-peer .*! no skip-peers-in",
         "dial-peer .*! no skip-peers-out",

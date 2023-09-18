@@ -37,22 +37,22 @@ public class lineSlip implements Runnable, ifcDn {
     /**
      * end character
      */
-    public static final int charEnd = 192;
+    public final static int charEnd = 192;
 
     /**
      * escape character
      */
-    public static final int charEsc = 219;
+    public final static int charEsc = 219;
 
     /**
      * escaped end
      */
-    public static final int escEnd = 220;
+    public final static int escEnd = 220;
 
     /**
      * escaped end
      */
-    public static final int escEsc = 221;
+    public final static int escEsc = 221;
 
     /**
      * get counter

@@ -26,7 +26,7 @@ import net.freertr.util.logger;
  */
 public class pipeWindow extends JPanel {
 
-    private static final long serialVersionUID = 10251979;
+    private final static long serialVersionUID = 10251979;
 
     /**
      * pipe image

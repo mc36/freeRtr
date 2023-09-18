@@ -15,207 +15,207 @@ public class rtrOspf6lsa implements Comparator<rtrOspf6lsa> {
     /**
      * header size
      */
-    public static final int headSize = 20;
+    public final static int headSize = 20;
 
     /**
      * request size
      */
-    public static final int reqSize = 12;
+    public final static int reqSize = 12;
 
     /**
      * router lsa
      */
-    public static final int lsaRouter = 0x2001;
+    public final static int lsaRouter = 0x2001;
 
     /**
      * network lsa
      */
-    public static final int lsaNetwork = 0x2002;
+    public final static int lsaNetwork = 0x2002;
 
     /**
      * inter area prefix lsa
      */
-    public static final int lsaInterPrf = 0x2003;
+    public final static int lsaInterPrf = 0x2003;
 
     /**
      * inter area router lsa
      */
-    public static final int lsaInterRtr = 0x2004;
+    public final static int lsaInterRtr = 0x2004;
 
     /**
      * as external lsa
      */
-    public static final int lsaAsExt = 0x4005;
+    public final static int lsaAsExt = 0x4005;
 
     /**
      * group membership lsa
      */
-    public static final int lsaGrpMem = 0x2006;
+    public final static int lsaGrpMem = 0x2006;
 
     /**
      * nssa external lsa
      */
-    public static final int lsaNssaExt = 0x2007;
+    public final static int lsaNssaExt = 0x2007;
 
     /**
      * link lsa
      */
-    public static final int lsaLink = 0x0008;
+    public final static int lsaLink = 0x0008;
 
     /**
      * intra area prefix lsa
      */
-    public static final int lsaPrefix = 0x2009;
+    public final static int lsaPrefix = 0x2009;
 
     /**
      * intra area traffic engineering
      */
-    public static final int lsaTraffEng = 0xa00a;
+    public final static int lsaTraffEng = 0xa00a;
 
     /**
      * graceful restart
      */
-    public static final int lsaGrace = 0x000b;
+    public final static int lsaGrace = 0x000b;
 
     /**
      * router information lsa
      */
-    public static final int lsaRtrInfo = 0xa00c;
+    public final static int lsaRtrInfo = 0xa00c;
 
     /**
      * extended router lsa
      */
-    public static final int lsaErouter = 0xa021;
+    public final static int lsaErouter = 0xa021;
 
     /**
      * extended network lsa
      */
-    public static final int lsaEnetwork = 0xa022;
+    public final static int lsaEnetwork = 0xa022;
 
     /**
      * extended inter area prefix lsa
      */
-    public static final int lsaEinterPrf = 0xa023;
+    public final static int lsaEinterPrf = 0xa023;
 
     /**
      * extended inter area router lsa
      */
-    public static final int lsaEinterRtr = 0xa024;
+    public final static int lsaEinterRtr = 0xa024;
 
     /**
      * extended as external lsa
      */
-    public static final int lsaEasExt = 0xc025;
+    public final static int lsaEasExt = 0xc025;
 
     /**
      * extended group membership lsa
      */
-    public static final int lsaEgrpMem = 0xa026;
+    public final static int lsaEgrpMem = 0xa026;
 
     /**
      * extended nssa external lsa
      */
-    public static final int lsaEnssaExt = 0xa027;
+    public final static int lsaEnssaExt = 0xa027;
 
     /**
      * extended link lsa
      */
-    public static final int lsaElink = 0x8028;
+    public final static int lsaElink = 0x8028;
 
     /**
      * extended intra area prefix lsa
      */
-    public static final int lsaEprefix = 0xa029;
+    public final static int lsaEprefix = 0xa029;
 
     /**
      * segment routing v6 lsa
      */
-    public static final int lsaSegRoutV6 = 0xa666;
+    public final static int lsaSegRoutV6 = 0xa666;
 
     /**
      * point to point link
      */
-    public static final int lnkP2p = 1;
+    public final static int lnkP2p = 1;
 
     /**
      * transit network
      */
-    public static final int lnkTrns = 2;
+    public final static int lnkTrns = 2;
 
     /**
      * virtual link
      */
-    public static final int lnkVirt = 4;
+    public final static int lnkVirt = 4;
 
     /**
      * max lsa age
      */
-    public static final int lsaMaxAge = 3600000;
+    public final static int lsaMaxAge = 3600000;
 
     /**
      * no unicast
      */
-    public static final int prefNoUni = 0x01;
+    public final static int prefNoUni = 0x01;
 
     /**
      * local address
      */
-    public static final int prefLocAdr = 0x02;
+    public final static int prefLocAdr = 0x02;
 
     /**
      * propagate
      */
-    public static final int prefProp = 0x08;
+    public final static int prefProp = 0x08;
 
     /**
      * down
      */
-    public static final int prefDown = 0x10;
+    public final static int prefDown = 0x10;
 
     /**
      * node
      */
-    public static final int prefNode = 0x20;
+    public final static int prefNode = 0x20;
 
     /**
      * router link tlv
      */
-    public static final int tlvRouter = 0x0001;
+    public final static int tlvRouter = 0x0001;
 
     /**
      * attached routers tlv
      */
-    public static final int tlvAttach = 0x0002;
+    public final static int tlvAttach = 0x0002;
 
     /**
      * inter area prefix tlv
      */
-    public static final int tlvInterPrf = 0x0003;
+    public final static int tlvInterPrf = 0x0003;
 
     /**
      * inter area router tlv
      */
-    public static final int tlvInterRtr = 0x0004;
+    public final static int tlvInterRtr = 0x0004;
 
     /**
      * as external tlv
      */
-    public static final int tlvAsExt = 0x0005;
+    public final static int tlvAsExt = 0x0005;
 
     /**
      * intra area prefix tlv
      */
-    public static final int tlvPrefix = 0x0006;
+    public final static int tlvPrefix = 0x0006;
 
     /**
      * ipv6 link tlv
      */
-    public static final int tlvLink6 = 0x0007;
+    public final static int tlvLink6 = 0x0007;
 
     /**
      * ipv4 link tlv
      */
-    public static final int tlvLink4 = 0x0008;
+    public final static int tlvLink4 = 0x0008;
 
     /**
      * time when lsa created

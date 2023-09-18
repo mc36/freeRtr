@@ -137,12 +137,12 @@ public class cfgInit implements Runnable {
     /**
      * sw config end
      */
-    public static final String swCfgEnd = "sw.txt";
+    public final static String swCfgEnd = "sw.txt";
 
     /**
      * hw config end
      */
-    public static final String hwCfgEnd = "hw.txt";
+    public final static String hwCfgEnd = "hw.txt";
 
     /**
      * redundancy priority
@@ -212,17 +212,17 @@ public class cfgInit implements Runnable {
     /**
      * loaded snmp mibs
      */
-    public static final tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
+    public final static tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
 
     /**
      * list of physical interfaces
      */
-    public static final tabGen<cfgVdcIfc> ifaceLst = new tabGen<cfgVdcIfc>();
+    public final static tabGen<cfgVdcIfc> ifaceLst = new tabGen<cfgVdcIfc>();
 
     /**
      * list of started vdcs
      */
-    public static final tabGen<cfgVdc> vdcLst = new tabGen<cfgVdc>();
+    public final static tabGen<cfgVdc> vdcLst = new tabGen<cfgVdc>();
 
     /**
      * no stall check
@@ -239,13 +239,13 @@ public class cfgInit implements Runnable {
      */
     public static int vdcPortEnd = 32768;
 
-    private static final tabGen<cfgInitMime> types = new tabGen<cfgInitMime>();
+    private final static tabGen<cfgInitMime> types = new tabGen<cfgInitMime>();
 
     private static long jvmStarted = -1;
 
     private static boolean jvmSetup = false;
 
-    private static final String[] needInit = {
+    private final static String[] needInit = {
         //"interface .*",
         //"aaa .*",
         "vrf definition .*",
@@ -257,18 +257,18 @@ public class cfgInit implements Runnable {
         "proxy-profile .*",
         "vdc definition .*",};
 
-    private static final String[] needIface = {
+    private final static String[] needIface = {
         "interface .*! vrf forwarding .*",
         "interface .*! ipv4 address .*",
         "interface .*! ipv6 address .*"
     };
 
-    private static final String[] jvmMagic = {
+    private final static String[] jvmMagic = {
         "java.net.preferIPv4Stack=true",
         "java.net.preferIPv6Addresses=false"
     };
 
-    private static final int bootLogo = 0x1fd;
+    private final static int bootLogo = 0x1fd;
 
     /**
      * get mime type of an extesion
@@ -276,7 +276,7 @@ public class cfgInit implements Runnable {
      * @param s extension possibly starting with dot.
      * @return mime type
      */
-    public static final String findMimeType(String s) {
+    public final static String findMimeType(String s) {
         if (s.startsWith("//")) {
             return s.substring(2, s.length());
         }
@@ -304,7 +304,7 @@ public class cfgInit implements Runnable {
      * @param url url
      * @return text read
      */
-    public static final List<String> httpGet(String url) {
+    public final static List<String> httpGet(String url) {
         if (url == null) {
             url = "";
         }
@@ -327,7 +327,7 @@ public class cfgInit implements Runnable {
         }
     }
 
-    private static final void setupJVM() {
+    private final static void setupJVM() {
         if (jvmSetup) {
             return;
         }
@@ -370,7 +370,7 @@ public class cfgInit implements Runnable {
      * @param inhs inheritables
      * @param cfgs configs
      */
-    public static final void executeHWcommands(List<String> read, List<String> defs, List<String> inhs, List<String> cfgs) {
+    public final static void executeHWcommands(List<String> read, List<String> defs, List<String> inhs, List<String> cfgs) {
         if (read == null) {
             return;
         }
@@ -715,7 +715,7 @@ public class cfgInit implements Runnable {
      * @param quiet do not log errors
      * @return number of errors
      */
-    public static final int executeSWcommands(List<String> cs, boolean quiet) {
+    public final static int executeSWcommands(List<String> cs, boolean quiet) {
         if (cs == null) {
             return 0;
         }
@@ -781,7 +781,7 @@ public class cfgInit implements Runnable {
         return err;
     }
 
-    private static final void doInit(List<String> hw, List<String> sw, pipeSide cons) {
+    private final static void doInit(List<String> hw, List<String> sw, pipeSide cons) {
         if (jvmStarted > 0) {
             logger.info("overlapping boot eliminated");
             return;
@@ -1039,7 +1039,7 @@ public class cfgInit implements Runnable {
         logger.info("boot completed");
     }
 
-    private static final tabGen<userFilter> createFilter(String[] lst) {
+    private final static tabGen<userFilter> createFilter(String[] lst) {
         tabGen<userFilter> res = new tabGen<userFilter>();
         for (int o = 0; o < lst.length; o++) {
             String s = lst[o];
@@ -1053,20 +1053,20 @@ public class cfgInit implements Runnable {
         return res;
     }
 
-    private static final void addFilters(tabGen<userFilter> trg, tabGen<userFilter> src) {
+    private final static void addFilters(tabGen<userFilter> trg, tabGen<userFilter> src) {
         for (int i = 0; i < src.size(); i++) {
             userFilter ntry = src.get(i);
             trg.add(ntry);
         }
     }
 
-    private static final tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1) {
+    private final static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1) {
         tabGen<userFilter> r = createFilter(lst);
         addFilters(r, s1);
         return r;
     }
 
-    private static final tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1, tabGen<userFilter> s2) {
+    private final static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1, tabGen<userFilter> s2) {
         tabGen<userFilter> r = createFilter(lst);
         addFilters(r, s1);
         addFilters(r, s2);
@@ -1080,7 +1080,7 @@ public class cfgInit implements Runnable {
      * @param code exit code, negative just updates reload file, 21 already used
      * @param reason reason string
      */
-    public static final void stopRouter(boolean clean, int code, String reason) {
+    public final static void stopRouter(boolean clean, int code, String reason) {
         boolean fake = code < 0;
         if (fake) {
             code = -code;
@@ -1131,7 +1131,7 @@ public class cfgInit implements Runnable {
      * @param url config url
      * @return image
      */
-    public static final pipeImage doApplet(String url) {
+    public final static pipeImage doApplet(String url) {
         pipeLine pl = new pipeLine(65536, false);
         pipeImage img = new pipeImage(pl.getSide(), 80, 25, userFonts.font8x16(), userFonts.colorData);
         pipeSide ps = pl.getSide();
@@ -1155,7 +1155,7 @@ public class cfgInit implements Runnable {
      *
      * @param args parameters
      */
-    public static final void doMain(String[] args) {
+    public final static void doMain(String[] args) {
         String s = "";
         if (args.length > 0) {
             s = args[0];
@@ -1372,7 +1372,7 @@ public class cfgInit implements Runnable {
         }
     }
 
-    private static final void putln(String s) {
+    private final static void putln(String s) {
         System.out.println(s);
     }
 

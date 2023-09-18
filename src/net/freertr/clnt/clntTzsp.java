@@ -35,12 +35,12 @@ public class clntTzsp implements Runnable, prtServP, ifcDn {
     /**
      * port to use
      */
-    public static final int port = 37008;
+    public final static int port = 37008;
 
     /**
      * size of header
      */
-    public static final int size = 6;
+    public final static int size = 6;
 
     /**
      * upper layer

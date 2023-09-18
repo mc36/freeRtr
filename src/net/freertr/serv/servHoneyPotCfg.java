@@ -117,7 +117,7 @@ public class servHoneyPotCfg {
      * @param tab base level
      * @param dng enable dangerous knobs
      */
-    public static final void getHelp(userHelping lst, int tab, boolean dng) {
+    public final static void getHelp(userHelping lst, int tab, boolean dng) {
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  router4                      lookup addresses");
         cfgRtr.getRouterList(lst, tab, "");
         lst.add(null, (tab + 3) + " .         <num:rtr>       process id");

@@ -28,7 +28,7 @@ public class servDaytime extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 13;
+    public final static int port = 13;
 
     /**
      * defaults text

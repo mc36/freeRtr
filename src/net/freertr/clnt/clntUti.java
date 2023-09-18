@@ -35,12 +35,12 @@ public class clntUti implements Runnable, ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 120;
+    public final static int prot = 120;
 
     /**
      * header size
      */
-    public static final int size = 16;
+    public final static int size = 16;
 
     /**
      * upper layer

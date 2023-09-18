@@ -74,7 +74,7 @@ public class servHttpUtil {
      * @param cmd commands
      * @return api bits
      */
-    public static final int string2apiBits(cmds cmd) {
+    public final static int string2apiBits(cmds cmd) {
         int i = apiBitsNothing;
         for (;;) {
             String a = cmd.word();
@@ -106,7 +106,7 @@ public class servHttpUtil {
      * @param i bits to convert
      * @return api bits
      */
-    public static final String apiBits2string(int i) {
+    public final static String apiBits2string(int i) {
         if ((i & apiBitsSomething) == 0) {
             return "bug=" + i;
         }
@@ -155,7 +155,7 @@ public class servHttpUtil {
         return s;
     }
 
-    protected static final boolean checkNoHeaders(String s) {
+    protected final static boolean checkNoHeaders(String s) {
         return new File(s + ".noheaders").exists();
     }
 

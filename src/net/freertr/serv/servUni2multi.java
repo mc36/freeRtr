@@ -40,7 +40,7 @@ public class servUni2multi extends servGeneric implements prtServP {
     /**
      * default port
      */
-    public static final int portNum = 2262;
+    public final static int portNum = 2262;
 
     /**
      * timeout value

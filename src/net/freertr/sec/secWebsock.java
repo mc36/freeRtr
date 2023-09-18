@@ -55,37 +55,37 @@ public class secWebsock {
     /**
      * hash guid
      */
-    public static final String hashGuid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    public final static String hashGuid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
     /**
      * continuation
      */
-    public static final int opcCont = 0;
+    public final static int opcCont = 0;
 
     /**
      * text data
      */
-    public static final int opcText = 1;
+    public final static int opcText = 1;
 
     /**
      * binary data
      */
-    public static final int opcBinary = 2;
+    public final static int opcBinary = 2;
 
     /**
      * close
      */
-    public static final int opcClose = 8;
+    public final static int opcClose = 8;
 
     /**
      * ping
      */
-    public static final int opcPing = 9;
+    public final static int opcPing = 9;
 
     /**
      * pong
      */
-    public static final int opcPong = 10;
+    public final static int opcPong = 10;
 
     /**
      * calculate hash
@@ -93,7 +93,7 @@ public class secWebsock {
      * @param s input
      * @return output
      */
-    public static final String calcHash(String s) {
+    public final static String calcHash(String s) {
         cryHashGeneric h = new cryHashSha1();
         h.init();
         h.update(s.trim().getBytes());
@@ -107,7 +107,7 @@ public class secWebsock {
      * @param i opcode
      * @return string
      */
-    public static final String opcode2string(int i) {
+    public final static String opcode2string(int i) {
         switch (i) {
             case opcCont:
                 return "cont";
@@ -151,7 +151,7 @@ public class secWebsock {
      * @param prt protocol
      * @return pipe if success, null on error
      */
-    public static final pipeSide doConnect(clntProxy prx, byte[] pubkey, encUrl trg, String prt) {
+    public final static pipeSide doConnect(clntProxy prx, byte[] pubkey, encUrl trg, String prt) {
         addrIP adr = userTerminal.justResolv(trg.server, prx.prefer);
         if (adr == null) {
             return null;

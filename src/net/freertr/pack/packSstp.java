@@ -54,67 +54,67 @@ public class packSstp {
     /**
      * connect request
      */
-    public static final int typConnReq = 1;
+    public final static int typConnReq = 1;
 
     /**
      * connect ack
      */
-    public static final int typConnAck = 2;
+    public final static int typConnAck = 2;
 
     /**
      * connect nak
      */
-    public static final int typConnNak = 3;
+    public final static int typConnNak = 3;
 
     /**
      * connect done
      */
-    public static final int typConnDon = 4;
+    public final static int typConnDon = 4;
 
     /**
      * abort
      */
-    public static final int typAbort = 5;
+    public final static int typAbort = 5;
 
     /**
      * disconnect request
      */
-    public static final int typDiscReq = 6;
+    public final static int typDiscReq = 6;
 
     /**
      * disconnect ack
      */
-    public static final int typDiscAck = 7;
+    public final static int typDiscAck = 7;
 
     /**
      * echo request
      */
-    public static final int typEchoReq = 8;
+    public final static int typEchoReq = 8;
 
     /**
      * echo reply
      */
-    public static final int typEchoRep = 9;
+    public final static int typEchoRep = 9;
 
     /**
      * encapsulated protocol
      */
-    public static final int atrEncPrt = 1;
+    public final static int atrEncPrt = 1;
 
     /**
      * status
      */
-    public static final int atrStatus = 2;
+    public final static int atrStatus = 2;
 
     /**
      * crypto binding
      */
-    public static final int atrCryBnd = 3;
+    public final static int atrCryBnd = 3;
 
     /**
      * crypto binding request
      */
-    public static final int atrCryReq = 4;
+    public final static int atrCryReq = 4;
 
     private final pipeSide pipe;
 

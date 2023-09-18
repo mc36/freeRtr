@@ -41,22 +41,22 @@ public class authLocal extends authGeneric {
     /**
      * password beginning
      */
-    protected static final String passwdBeg = "$v10$";
+    protected final static String passwdBeg = "$v10$";
 
     /**
      * credential beginning
      */
-    protected static final String cryptoBeg = "$w10$";
+    protected final static String cryptoBeg = "$w10$";
 
     /**
      * secret beginning
      */
-    protected static final String secretBeg = "$V10$";
+    protected final static String secretBeg = "$V10$";
 
     /**
      * removed secret
      */
-    protected static final String removedEnd = "<removed>$";
+    protected final static String removedEnd = "<removed>$";
 
     /**
      * hide password

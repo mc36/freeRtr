@@ -15,62 +15,62 @@ public class packNrpe {
     /**
      * port number
      */
-    public static final int portNum = 5666;
+    public final static int portNum = 5666;
 
     /**
      * header size
      */
-    public static final int size = 10;
+    public final static int size = 10;
 
     /**
      * v2 buf size
      */
-    public static final int size2 = 1024;
+    public final static int size2 = 1024;
 
     /**
      * v2 rnd size
      */
-    public static final int size3 = 2;
+    public final static int size3 = 2;
 
     /**
      * v3 hdr size
      */
-    public static final int size4 = 6;
+    public final static int size4 = 6;
 
     /**
      * v3 size diff
      */
-    public static final int size5 = 3;
+    public final static int size5 = 3;
 
     /**
      * query
      */
-    public static final int tyReq = 1;
+    public final static int tyReq = 1;
 
     /**
      * response
      */
-    public static final int tyRep = 2;
+    public final static int tyRep = 2;
 
     /**
      * unknown
      */
-    public static final int coUnk = 3;
+    public final static int coUnk = 3;
 
     /**
      * critical
      */
-    public static final int coCri = 2;
+    public final static int coCri = 2;
 
     /**
      * warning
      */
-    public static final int coWar = 1;
+    public final static int coWar = 1;
 
     /**
      * ok
      */
-    public static final int coOk = 0;
+    public final static int coOk = 0;
 
     /**
      * convert code to string

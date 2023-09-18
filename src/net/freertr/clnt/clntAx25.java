@@ -36,7 +36,7 @@ public class clntAx25 implements Runnable, ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 93;
+    public final static int prot = 93;
 
     /**
      * upper layer

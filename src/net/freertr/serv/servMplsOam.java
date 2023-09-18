@@ -31,7 +31,7 @@ public class servMplsOam extends servGeneric implements prtServP {
     /**
      * port number
      */
-    public static final int portNum = 3503;
+    public final static int portNum = 3503;
 
     /**
      * defaults text

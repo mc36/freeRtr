@@ -21,28 +21,28 @@ import net.freertr.util.version;
  */
 public class userVM {
 
-    private static final String rootDir = "../vm/";
+    private final static String rootDir = "../vm/";
 
-    private static final int reg_a = 1;
+    private final static int reg_a = 1;
 
-    private static final int reg_b = 2;
+    private final static int reg_b = 2;
 
-    private static final int reg_c = 3;
+    private final static int reg_c = 3;
 
-    private static final int reg_d = 4;
+    private final static int reg_d = 4;
 
-    private static final int reg_src = 5;
+    private final static int reg_src = 5;
 
-    private static final int reg_trg = 6;
+    private final static int reg_trg = 6;
 
-    private static final int reg_cip = 7;
+    private final static int reg_cip = 7;
 
     /**
      * termination flag
      */
-    public static final int res_term = 0x40000000;
+    public final static int res_term = 0x40000000;
 
-    private static final int memBound = 65536;
+    private final static int memBound = 65536;
 
     private boolean allowFileIO;
 

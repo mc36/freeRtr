@@ -30,7 +30,7 @@ public class servSyslog extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 514;
+    public final static int port = 514;
 
     /**
      * log to local logging
@@ -73,7 +73,7 @@ public class servSyslog extends servGeneric implements prtServS {
      * @param i number
      * @return string
      */
-    public static final String num2facility(int i) {
+    public final static String num2facility(int i) {
         if (i < 0) {
             return null;
         }
@@ -89,7 +89,7 @@ public class servSyslog extends servGeneric implements prtServS {
      * @param s string
      * @return number, -1 if not found
      */
-    public static final int facility2num(String s) {
+    public final static int facility2num(String s) {
         for (int i = 0; i < facilities.length; i++) {
             if (s.equals(facilities[i])) {
                 return i;

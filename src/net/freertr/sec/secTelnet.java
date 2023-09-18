@@ -44,107 +44,107 @@ public class secTelnet {
     /**
      * beginning of commmand
      */
-    public static final int cmdIAC = 255;
+    public final static int cmdIAC = 255;
 
     /**
      * don't command
      */
-    public static final int cmdDONT = 254;
+    public final static int cmdDONT = 254;
 
     /**
      * do command
      */
-    public static final int cmdDO = 253;
+    public final static int cmdDO = 253;
 
     /**
      * wont command
      */
-    public static final int cmdWONT = 252;
+    public final static int cmdWONT = 252;
 
     /**
      * will command
      */
-    public static final int cmdWILL = 251;
+    public final static int cmdWILL = 251;
 
     /**
      * subnegotiation begin
      */
-    public static final int cmdSB = 250;
+    public final static int cmdSB = 250;
 
     /**
      * go ahead
      */
-    public static final int cmdGA = 249;
+    public final static int cmdGA = 249;
 
     /**
      * erase line
      */
-    public static final int cmdEL = 248;
+    public final static int cmdEL = 248;
 
     /**
      * erase line
      */
-    public static final int cmdEC = 247;
+    public final static int cmdEC = 247;
 
     /**
      * are you there
      */
-    public static final int cmdAYT = 246;
+    public final static int cmdAYT = 246;
 
     /**
      * abort
      */
-    public static final int cmdAbrt = 245;
+    public final static int cmdAbrt = 245;
 
     /**
      * interrupt process
      */
-    public static final int cmdInt = 244;
+    public final static int cmdInt = 244;
 
     /**
      * break
      */
-    public static final int cmdBrk = 243;
+    public final static int cmdBrk = 243;
 
     /**
      * data mark
      */
-    public static final int cmdMrk = 242;
+    public final static int cmdMrk = 242;
 
     /**
      * no operation
      */
-    public static final int cmdNop = 241;
+    public final static int cmdNop = 241;
 
     /**
      * subnegotiation end
      */
-    public static final int cmdSE = 240;
+    public final static int cmdSE = 240;
 
     /**
      * binary transmission
      */
-    public static final int optBin = 0;
+    public final static int optBin = 0;
 
     /**
      * echo mode
      */
-    public static final int optEcho = 1;
+    public final static int optEcho = 1;
 
     /**
      * suppress gaoptEcho
      */
-    public static final int optSuppGA = 3;
+    public final static int optSuppGA = 3;
 
     /**
      * terminal type
      */
-    public static final int optTerTyp = 24;
+    public final static int optTerTyp = 24;
 
     /**
      * window size
      */
-    public static final int optWinSiz = 31;
+    public final static int optWinSiz = 31;
 
     /**
      * convert command to string

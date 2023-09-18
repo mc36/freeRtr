@@ -29,7 +29,7 @@ public class servTelnet extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 23;
+    public final static int port = 23;
 
     /**
      * second port to use

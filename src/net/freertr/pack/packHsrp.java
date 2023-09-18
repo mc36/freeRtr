@@ -78,62 +78,62 @@ public class packHsrp {
     /**
      * hello message
      */
-    public static final int opHello = 0;
+    public final static int opHello = 0;
 
     /**
      * coup (want) message
      */
-    public static final int opCoup = 1;
+    public final static int opCoup = 1;
 
     /**
      * resign (don't want) message
      */
-    public static final int opResign = 2;
+    public final static int opResign = 2;
 
     /**
      * initial
      */
-    public static final int staInit = 1;
+    public final static int staInit = 1;
 
     /**
      * learn
      */
-    public static final int staLern = 2;
+    public final static int staLern = 2;
 
     /**
      * listen
      */
-    public static final int staLstn = 3;
+    public final static int staLstn = 3;
 
     /**
      * speak
      */
-    public static final int staSpk = 4;
+    public final static int staSpk = 4;
 
     /**
      * standby
      */
-    public static final int staStby = 5;
+    public final static int staStby = 5;
 
     /**
      * active
      */
-    public static final int staActv = 6;
+    public final static int staActv = 6;
 
     /**
      * state of group
      */
-    public static final int tlvGroup = 1;
+    public final static int tlvGroup = 1;
 
     /**
      * state of interface
      */
-    public static final int tlvIface = 2;
+    public final static int tlvIface = 2;
 
     /**
      * clear authentication
      */
-    public static final int tlvAuthClr = 3;
+    public final static int tlvAuthClr = 3;
 
     private encTlv tlv = new encTlv(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
 

@@ -56,877 +56,877 @@ public class packRadius {
     /**
      * access request
      */
-    public static final int typeAccReq = 1;
+    public final static int typeAccReq = 1;
 
     /**
      * access accept
      */
-    public static final int typeAccAcc = 2;
+    public final static int typeAccAcc = 2;
 
     /**
      * access reject
      */
-    public static final int typeAccRej = 3;
+    public final static int typeAccRej = 3;
 
     /**
      * accounting request
      */
-    public static final int typeAcoReq = 4;
+    public final static int typeAcoReq = 4;
 
     /**
      * accounting response
      */
-    public static final int typeAcoRep = 5;
+    public final static int typeAcoRep = 5;
 
     /**
      * access challenge
      */
-    public static final int typeAccChl = 11;
+    public final static int typeAccChl = 11;
 
     /**
      * status server
      */
-    public static final int typeSttSrv = 12;
+    public final static int typeSttSrv = 12;
 
     /**
      * status client
      */
-    public static final int typeSttCln = 13;
+    public final static int typeSttCln = 13;
 
     /**
      * user name
      */
-    public static final int tlvUsrNam = 1;
+    public final static int tlvUsrNam = 1;
 
     /**
      * user password
      */
-    public static final int tlvUsrPwd = 2;
+    public final static int tlvUsrPwd = 2;
 
     /**
      * chap password
      */
-    public static final int tlvChpPwd = 3;
+    public final static int tlvChpPwd = 3;
 
     /**
      * nas ip address
      */
-    public static final int tlvNasAdr4 = 4;
+    public final static int tlvNasAdr4 = 4;
 
     /**
      * nas port
      */
-    public static final int tlvNasPrt = 5;
+    public final static int tlvNasPrt = 5;
 
     /**
      * service type
      */
-    public static final int tlvSrvTyp = 6;
+    public final static int tlvSrvTyp = 6;
 
     /**
      * framed protocol
      */
-    public static final int tlvFrmPrt = 7;
+    public final static int tlvFrmPrt = 7;
 
     /**
      * framed ip addresss
      */
-    public static final int tlvFrmAdr4 = 8;
+    public final static int tlvFrmAdr4 = 8;
 
     /**
      * framed ip netmask
      */
-    public static final int tlvFrmMsk4 = 9;
+    public final static int tlvFrmMsk4 = 9;
 
     /**
      * framed routing
      */
-    public static final int tlvFrmRtn = 10;
+    public final static int tlvFrmRtn = 10;
 
     /**
      * filter id
      */
-    public static final int tlvFilter = 11;
+    public final static int tlvFilter = 11;
 
     /**
      * framed mtu
      */
-    public static final int tlvFrmMtu = 12;
+    public final static int tlvFrmMtu = 12;
 
     /**
      * framed compression
      */
-    public static final int tlvFrmCmp = 13;
+    public final static int tlvFrmCmp = 13;
 
     /**
      * login ip host
      */
-    public static final int tlvLgnHst4 = 14;
+    public final static int tlvLgnHst4 = 14;
 
     /**
      * login service
      */
-    public static final int tlvLgnSvc = 15;
+    public final static int tlvLgnSvc = 15;
 
     /**
      * login tcp port
      */
-    public static final int tlvLgnTcp = 16;
+    public final static int tlvLgnTcp = 16;
 
     /**
      * reply message
      */
-    public static final int tlvReply = 18;
+    public final static int tlvReply = 18;
 
     /**
      * callback number
      */
-    public static final int tlvCllNum = 19;
+    public final static int tlvCllNum = 19;
 
     /**
      * callback id
      */
-    public static final int tlvCllId = 20;
+    public final static int tlvCllId = 20;
 
     /**
      * framed route
      */
-    public static final int tlvFrmRou4 = 22;
+    public final static int tlvFrmRou4 = 22;
 
     /**
      * framed ipx network
      */
-    public static final int tlvFrmIpx = 23;
+    public final static int tlvFrmIpx = 23;
 
     /**
      * state
      */
-    public static final int tlvState = 24;
+    public final static int tlvState = 24;
 
     /**
      * class
      */
-    public static final int tlvClass = 25;
+    public final static int tlvClass = 25;
 
     /**
      * vendor specific
      */
-    public static final int tlvVendor = 26;
+    public final static int tlvVendor = 26;
 
     /**
      * session timeout
      */
-    public static final int tlvSesTim = 27;
+    public final static int tlvSesTim = 27;
 
     /**
      * idle timeout
      */
-    public static final int tlvIdlTim = 28;
+    public final static int tlvIdlTim = 28;
 
     /**
      * termination action
      */
-    public static final int tlvTrmAct = 29;
+    public final static int tlvTrmAct = 29;
 
     /**
      * called station id
      */
-    public static final int tlvCalled = 30;
+    public final static int tlvCalled = 30;
 
     /**
      * calling station id
      */
-    public static final int tlvCalling = 31;
+    public final static int tlvCalling = 31;
 
     /**
      * nas identifier
      */
-    public static final int tlvNasId = 32;
+    public final static int tlvNasId = 32;
 
     /**
      * proxy state
      */
-    public static final int tlvPrxSta = 33;
+    public final static int tlvPrxSta = 33;
 
     /**
      * login lat service
      */
-    public static final int tlvLatSrv = 34;
+    public final static int tlvLatSrv = 34;
 
     /**
      * login lat mode
      */
-    public static final int tlvLatMod = 35;
+    public final static int tlvLatMod = 35;
 
     /**
      * login lat group
      */
-    public static final int tlvLatGrp = 36;
+    public final static int tlvLatGrp = 36;
 
     /**
      * framed appletalk link
      */
-    public static final int tlvFrmLnk = 37;
+    public final static int tlvFrmLnk = 37;
 
     /**
      * framed appletalk network
      */
-    public static final int tlvFrmNet = 38;
+    public final static int tlvFrmNet = 38;
 
     /**
      * framed appletalk zone
      */
-    public static final int tlvFrmZon = 39;
+    public final static int tlvFrmZon = 39;
 
     /**
      * chap challenge
      */
-    public static final int tlvChpChl = 60;
+    public final static int tlvChpChl = 60;
 
     /**
      * nas port type
      */
-    public static final int tlvPrtTyp = 61;
+    public final static int tlvPrtTyp = 61;
 
     /**
      * port limit
      */
-    public static final int tlvPrtLim = 62;
+    public final static int tlvPrtLim = 62;
 
     /**
      * login lat port
      */
-    public static final int tlvLatPrt = 63;
+    public final static int tlvLatPrt = 63;
 
     /**
      * tunnel type
      */
-    public static final int tlvTunTyp = 64;
+    public final static int tlvTunTyp = 64;
 
     /**
      * tunnel medium
      */
-    public static final int tlvTunMed = 65;
+    public final static int tlvTunMed = 65;
 
     /**
      * tunnel client
      */
-    public static final int tlvTunCln = 66;
+    public final static int tlvTunCln = 66;
 
     /**
      * tunnel server
      */
-    public static final int tlvTunSrv = 67;
+    public final static int tlvTunSrv = 67;
 
     /**
      * acct tunnel connection
      */
-    public static final int tlvTunAct = 68;
+    public final static int tlvTunAct = 68;
 
     /**
      * tunnel password
      */
-    public static final int tlvTunPwd = 69;
+    public final static int tlvTunPwd = 69;
 
     /**
      * arap password
      */
-    public static final int tlvArpPwd = 70;
+    public final static int tlvArpPwd = 70;
 
     /**
      * arap features
      */
-    public static final int tlvArpFtr = 71;
+    public final static int tlvArpFtr = 71;
 
     /**
      * arap zone access
      */
-    public static final int tlvArpZon = 72;
+    public final static int tlvArpZon = 72;
 
     /**
      * arap security
      */
-    public static final int tlvArpSec = 73;
+    public final static int tlvArpSec = 73;
 
     /**
      * arap security data
      */
-    public static final int tlvArpDat = 74;
+    public final static int tlvArpDat = 74;
 
     /**
      * password retry
      */
-    public static final int tlvPwdTry = 75;
+    public final static int tlvPwdTry = 75;
 
     /**
      * prompt
      */
-    public static final int tlvPrmpt = 76;
+    public final static int tlvPrmpt = 76;
 
     /**
      * connect info
      */
-    public static final int tlvConInf = 77;
+    public final static int tlvConInf = 77;
 
     /**
      * configuration token
      */
-    public static final int tlvCfgTkn = 78;
+    public final static int tlvCfgTkn = 78;
 
     /**
      * eap message
      */
-    public static final int tlvEapMsg = 79;
+    public final static int tlvEapMsg = 79;
 
     /**
      * message authenticator
      */
-    public static final int tlvMsgAut = 80;
+    public final static int tlvMsgAut = 80;
 
     /**
      * tunnel private group id
      */
-    public static final int tlvTunPrv = 81;
+    public final static int tlvTunPrv = 81;
 
     /**
      * tunnel assignment id
      */
-    public static final int tlvTunAsg = 82;
+    public final static int tlvTunAsg = 82;
 
     /**
      * tunnel preference
      */
-    public static final int tlvTunPrf = 83;
+    public final static int tlvTunPrf = 83;
 
     /**
      * arap challenge response
      */
-    public static final int tlvArpChl = 84;
+    public final static int tlvArpChl = 84;
 
     /**
      * acct interim interval
      */
-    public static final int tlvActInt = 85;
+    public final static int tlvActInt = 85;
 
     /**
      * acct tunnel packets lost
      */
-    public static final int tlvTunLst = 86;
+    public final static int tlvTunLst = 86;
 
     /**
      * nas port id
      */
-    public static final int tlvNasPoi = 87;
+    public final static int tlvNasPoi = 87;
 
     /**
      * framed pool
      */
-    public static final int tlvFrmPol4 = 88;
+    public final static int tlvFrmPol4 = 88;
 
     /**
      * cui
      */
-    public static final int tlvCui = 89;
+    public final static int tlvCui = 89;
 
     /**
      * framed client auth id
      */
-    public static final int tlvFrmCln = 90;
+    public final static int tlvFrmCln = 90;
 
     /**
      * framed server auth id
      */
-    public static final int tlvFrmSrv = 91;
+    public final static int tlvFrmSrv = 91;
 
     /**
      * nas filter rule
      */
-    public static final int tlvNasFlt = 92;
+    public final static int tlvNasFlt = 92;
 
     /**
      * originating line info
      */
-    public static final int tlvOrgLin = 94;
+    public final static int tlvOrgLin = 94;
 
     /**
      * nas ipv6 address
      */
-    public static final int tlvNasAdr6 = 95;
+    public final static int tlvNasAdr6 = 95;
 
     /**
      * framed interface id
      */
-    public static final int tlvFrmIfi = 96;
+    public final static int tlvFrmIfi = 96;
 
     /**
      * framed ipv6 prefix
      */
-    public static final int tlvFrmPrf = 97;
+    public final static int tlvFrmPrf = 97;
 
     /**
      * login ipv6 host
      */
-    public static final int tlvLgnHst6 = 98;
+    public final static int tlvLgnHst6 = 98;
 
     /**
      * framed ipv6 route
      */
-    public static final int tlvFrmRou6 = 99;
+    public final static int tlvFrmRou6 = 99;
 
     /**
      * framed ipv6 pool
      */
-    public static final int tlvFrmPol6 = 100;
+    public final static int tlvFrmPol6 = 100;
 
     /**
      * error cause
      */
-    public static final int tlvErrCau = 101;
+    public final static int tlvErrCau = 101;
 
     /**
      * eap key name
      */
-    public static final int tlvEapKey = 102;
+    public final static int tlvEapKey = 102;
 
     /**
      * digest response
      */
-    public static final int tlvDgsRsp = 103;
+    public final static int tlvDgsRsp = 103;
 
     /**
      * digest realm
      */
-    public static final int tlvDgsRlm = 104;
+    public final static int tlvDgsRlm = 104;
 
     /**
      * digest nonce
      */
-    public static final int tlvDgsNon = 105;
+    public final static int tlvDgsNon = 105;
 
     /**
      * digest response auth
      */
-    public static final int tlvDgsAut = 106;
+    public final static int tlvDgsAut = 106;
 
     /**
      * digest next nonce
      */
-    public static final int tlvDgsNno = 107;
+    public final static int tlvDgsNno = 107;
 
     /**
      * digest method
      */
-    public static final int tlvDgsMet = 108;
+    public final static int tlvDgsMet = 108;
 
     /**
      * digest uri
      */
-    public static final int tlvDgsUri = 109;
+    public final static int tlvDgsUri = 109;
 
     /**
      * digest qop
      */
-    public static final int tlvDgsQop = 110;
+    public final static int tlvDgsQop = 110;
 
     /**
      * digest algorithm
      */
-    public static final int tlvDgsAlg = 111;
+    public final static int tlvDgsAlg = 111;
 
     /**
      * digest entity body hash
      */
-    public static final int tlvDgsEnt = 112;
+    public final static int tlvDgsEnt = 112;
 
     /**
      * digest cnonce
      */
-    public static final int tlvDgsCno = 113;
+    public final static int tlvDgsCno = 113;
 
     /**
      * digest nonce count
      */
-    public static final int tlvDgsNoc = 114;
+    public final static int tlvDgsNoc = 114;
 
     /**
      * digest username
      */
-    public static final int tlvDgsUsr = 115;
+    public final static int tlvDgsUsr = 115;
 
     /**
      * digest opaque
      */
-    public static final int tlvDgsOpq = 116;
+    public final static int tlvDgsOpq = 116;
 
     /**
      * digest auth param
      */
-    public static final int tlvDgsPrm = 117;
+    public final static int tlvDgsPrm = 117;
 
     /**
      * digest aka auts
      */
-    public static final int tlvDgsAka = 118;
+    public final static int tlvDgsAka = 118;
 
     /**
      * digest domain
      */
-    public static final int tlvDgsDom = 119;
+    public final static int tlvDgsDom = 119;
 
     /**
      * digest stale
      */
-    public static final int tlvDgsStl = 120;
+    public final static int tlvDgsStl = 120;
 
     /**
      * digest ha1
      */
-    public static final int tlvDgsHa1 = 121;
+    public final static int tlvDgsHa1 = 121;
 
     /**
      * sip aor
      */
-    public static final int tlvSipAor = 122;
+    public final static int tlvSipAor = 122;
 
     /**
      * delegated ipv6 prefix
      */
-    public static final int tlvDelPfx = 123;
+    public final static int tlvDelPfx = 123;
 
     /**
      * mip6 feature vector
      */
-    public static final int tlvMipFtr = 124;
+    public final static int tlvMipFtr = 124;
 
     /**
      * mip6 home link prefix
      */
-    public static final int tlvMipHom = 125;
+    public final static int tlvMipHom = 125;
 
     /**
      * operator name
      */
-    public static final int tlvOprNam = 126;
+    public final static int tlvOprNam = 126;
 
     /**
      * location information
      */
-    public static final int tlvLocInf = 127;
+    public final static int tlvLocInf = 127;
 
     /**
      * location data
      */
-    public static final int tlvLocDat = 128;
+    public final static int tlvLocDat = 128;
 
     /**
      * basic location policy rules
      */
-    public static final int tlvLocBas = 129;
+    public final static int tlvLocBas = 129;
 
     /**
      * extended location policy rules
      */
-    public static final int tlvLocExt = 130;
+    public final static int tlvLocExt = 130;
 
     /**
      * location capable
      */
-    public static final int tlvLocCap = 131;
+    public final static int tlvLocCap = 131;
 
     /**
      * requested location info
      */
-    public static final int tlvLocReq = 132;
+    public final static int tlvLocReq = 132;
 
     /**
      * framed management protocol
      */
-    public static final int tlvFrmMgt = 133;
+    public final static int tlvFrmMgt = 133;
 
     /**
      * management transport protection
      */
-    public static final int tlvMgtPrt = 134;
+    public final static int tlvMgtPrt = 134;
 
     /**
      * management policy id
      */
-    public static final int tlvMgtPol = 135;
+    public final static int tlvMgtPol = 135;
 
     /**
      * management privilege level
      */
-    public static final int tlvMgtPrv = 136;
+    public final static int tlvMgtPrv = 136;
 
     /**
      * pkm ss cert
      */
-    public static final int tlvPkmSsc = 137;
+    public final static int tlvPkmSsc = 137;
 
     /**
      * pkm ca cert
      */
-    public static final int tlvPkmCac = 138;
+    public final static int tlvPkmCac = 138;
 
     /**
      * pkm config settings
      */
-    public static final int tlvPkmCfg = 139;
+    public final static int tlvPkmCfg = 139;
 
     /**
      * pkm cryptosuite list
      */
-    public static final int tlvPkmCrp = 140;
+    public final static int tlvPkmCrp = 140;
 
     /**
      * pkm said
      */
-    public static final int tlvPkmSai = 141;
+    public final static int tlvPkmSai = 141;
 
     /**
      * pkm sa descriptor
      */
-    public static final int tlvPkmSad = 142;
+    public final static int tlvPkmSad = 142;
 
     /**
      * pkm auth key
      */
-    public static final int tlvPkmKey = 143;
+    public final static int tlvPkmKey = 143;
 
     /**
      * ds lite tunnel name
      */
-    public static final int tlvDslTun = 144;
+    public final static int tlvDslTun = 144;
 
     /**
      * mobile node identifier
      */
-    public static final int tlvMobNod = 145;
+    public final static int tlvMobNod = 145;
 
     /**
      * service selection
      */
-    public static final int tlvSrvSel = 146;
+    public final static int tlvSrvSel = 146;
 
     /**
      * pmip6 home lma ipv6 address
      */
-    public static final int tlvPmiHom6 = 147;
+    public final static int tlvPmiHom6 = 147;
 
     /**
      * pmip6 visited lma ipv6 address
      */
-    public static final int tlvPmiVis6 = 148;
+    public final static int tlvPmiVis6 = 148;
 
     /**
      * pmip6 home lma ipv4 address
      */
-    public static final int tlvPmiHom4 = 149;
+    public final static int tlvPmiHom4 = 149;
 
     /**
      * pmip6 visited lma ipv4 address
      */
-    public static final int tlvPmiVis4 = 150;
+    public final static int tlvPmiVis4 = 150;
 
     /**
      * pmip6 home hn prefix
      */
-    public static final int tlvPmiHomH = 151;
+    public final static int tlvPmiHomH = 151;
 
     /**
      * pmip6 visited hn prefix
      */
-    public static final int tlvPmiVisH = 152;
+    public final static int tlvPmiVisH = 152;
 
     /**
      * pmip6 home interface id
      */
-    public static final int tlvPmiHomI = 153;
+    public final static int tlvPmiHomI = 153;
 
     /**
      * pmip6 visited interface id
      */
-    public static final int tlvPmiVisI = 154;
+    public final static int tlvPmiVisI = 154;
 
     /**
      * pmip6 home ipv4 hoa
      */
-    public static final int tlvPmiHomO = 155;
+    public final static int tlvPmiHomO = 155;
 
     /**
      * pmip6 visited ipv4 hoa
      */
-    public static final int tlvPmiVisO = 156;
+    public final static int tlvPmiVisO = 156;
 
     /**
      * pmip6 home dhcp4 server address
      */
-    public static final int tlvPmiHomD4 = 157;
+    public final static int tlvPmiHomD4 = 157;
 
     /**
      * pmip6 visited dhcp4 server address
      */
-    public static final int tlvPmiVisD4 = 158;
+    public final static int tlvPmiVisD4 = 158;
 
     /**
      * pmip6 home dhcp6 server address
      */
-    public static final int tlvPmiHomD6 = 159;
+    public final static int tlvPmiHomD6 = 159;
 
     /**
      * pmip6 visited dhcp6 server address
      */
-    public static final int tlvPmiVisD6 = 160;
+    public final static int tlvPmiVisD6 = 160;
 
     /**
      * pmip6 home ipv4 gateway
      */
-    public static final int tlvPmiHomG = 161;
+    public final static int tlvPmiHomG = 161;
 
     /**
      * pmip6 visited ipv4 gateway
      */
-    public static final int tlvPmiVisG = 162;
+    public final static int tlvPmiVisG = 162;
 
     /**
      * eap lower layer
      */
-    public static final int tlvEapLay = 163;
+    public final static int tlvEapLay = 163;
 
     /**
      * gss acceptor service name
      */
-    public static final int tlvGssNam = 164;
+    public final static int tlvGssNam = 164;
 
     /**
      * gss acceptor host name
      */
-    public static final int tlvGssHst = 165;
+    public final static int tlvGssHst = 165;
 
     /**
      * gss acceptor service specifics
      */
-    public static final int tlvGssSpc = 166;
+    public final static int tlvGssSpc = 166;
 
     /**
      * gss acceptor realm name
      */
-    public static final int tlvGssRlm = 167;
+    public final static int tlvGssRlm = 167;
 
     /**
      * framed ipv6 address
      */
-    public static final int tlvFrmAdr6 = 168;
+    public final static int tlvFrmAdr6 = 168;
 
     /**
      * dns server ipv6 address
      */
-    public static final int tlvDnsSrv6 = 169;
+    public final static int tlvDnsSrv6 = 169;
 
     /**
      * route ipv6 information
      */
-    public static final int tlvRouInf6 = 170;
+    public final static int tlvRouInf6 = 170;
 
     /**
      * delegated ipv6 prefix pool
      */
-    public static final int tlvDelPol6 = 171;
+    public final static int tlvDelPol6 = 171;
 
     /**
      * stateful ipv6 address pool
      */
-    public static final int tlvStaPol6 = 172;
+    public final static int tlvStaPol6 = 172;
 
     /**
      * ipv6 6rd configuration
      */
-    public static final int tlv6rdCfg = 173;
+    public final static int tlv6rdCfg = 173;
 
     /**
      * allowed called station id
      */
-    public static final int tlvAlwSta = 174;
+    public final static int tlvAlwSta = 174;
 
     /**
      * eap peer id
      */
-    public static final int tlvEapPer = 175;
+    public final static int tlvEapPer = 175;
 
     /**
      * eap server id
      */
-    public static final int tlvEapSrv = 176;
+    public final static int tlvEapSrv = 176;
 
     /**
      * mobility domain id
      */
-    public static final int tlvMobDom = 177;
+    public final static int tlvMobDom = 177;
 
     /**
      * preauth timeout
      */
-    public static final int tlvPreTim = 178;
+    public final static int tlvPreTim = 178;
 
     /**
      * network id name
      */
-    public static final int tlvNetName = 179;
+    public final static int tlvNetName = 179;
 
     /**
      * eapol announcement
      */
-    public static final int tlvEapAno = 180;
+    public final static int tlvEapAno = 180;
 
     /**
      * wlan hessid
      */
-    public static final int tlvWlaHes = 181;
+    public final static int tlvWlaHes = 181;
 
     /**
      * wlan venue info
      */
-    public static final int tlvWlaVen = 182;
+    public final static int tlvWlaVen = 182;
 
     /**
      * wlan venue language
      */
-    public static final int tlvWlaLng = 183;
+    public final static int tlvWlaLng = 183;
 
     /**
      * wlan venue name
      */
-    public static final int tlvWlaNam = 184;
+    public final static int tlvWlaNam = 184;
 
     /**
      * wlan reason code
      */
-    public static final int tlvWlaRea = 185;
+    public final static int tlvWlaRea = 185;
 
     /**
      * wlan pairwise cipher
      */
-    public static final int tlvWlaPai = 186;
+    public final static int tlvWlaPai = 186;
 
     /**
      * wlan group cipher
      */
-    public static final int tlvWlaGrp = 187;
+    public final static int tlvWlaGrp = 187;
 
     /**
      * wlan akm suite
      */
-    public static final int tlvWlaAkm = 188;
+    public final static int tlvWlaAkm = 188;
 
     /**
      * wlan group management cipher
      */
-    public static final int tlvWlaMgt = 189;
+    public final static int tlvWlaMgt = 189;
 
     /**
      * wlan rf band
      */
-    public static final int tlvWlaBnd = 190;
+    public final static int tlvWlaBnd = 190;
 
     /**
      * user name

@@ -29,7 +29,7 @@ public class packLdp {
     /**
      * port number
      */
-    public static final int port = 646;
+    public final static int port = 646;
 
     /**
      * packet data
@@ -121,282 +121,282 @@ public class packLdp {
     /**
      * version number
      */
-    public static final int verNum = 1;
+    public final static int verNum = 1;
 
     /**
      * notification
      */
-    public static final int msgTnotify = 0x0001;
+    public final static int msgTnotify = 0x0001;
 
     /**
      * hello
      */
-    public static final int msgThello = 0x0100;
+    public final static int msgThello = 0x0100;
 
     /**
      * initialization
      */
-    public static final int msgTinit = 0x0200;
+    public final static int msgTinit = 0x0200;
 
     /**
      * keep alive
      */
-    public static final int msgTkepAlv = 0x0201;
+    public final static int msgTkepAlv = 0x0201;
 
     /**
      * capability
      */
-    public static final int msgTcapa = 0x0202;
+    public final static int msgTcapa = 0x0202;
 
     /**
      * address advertisement
      */
-    public static final int msgTadrAdv = 0x0300;
+    public final static int msgTadrAdv = 0x0300;
 
     /**
      * address withdraw
      */
-    public static final int msgTadrWdr = 0x0301;
+    public final static int msgTadrWdr = 0x0301;
 
     /**
      * label mapping
      */
-    public static final int msgTlabMap = 0x0400;
+    public final static int msgTlabMap = 0x0400;
 
     /**
      * label request
      */
-    public static final int msgTlabReq = 0x0401;
+    public final static int msgTlabReq = 0x0401;
 
     /**
      * label withdraw
      */
-    public static final int msgTlabWdr = 0x0402;
+    public final static int msgTlabWdr = 0x0402;
 
     /**
      * label release
      */
-    public static final int msgTlabRel = 0x0403;
+    public final static int msgTlabRel = 0x0403;
 
     /**
      * label abort request
      */
-    public static final int msgTlabAbr = 0x0404;
+    public final static int msgTlabAbr = 0x0404;
 
     /**
      * call setup
      */
-    public static final int msgTcalStp = 0x0500;
+    public final static int msgTcalStp = 0x0500;
 
     /**
      * call release
      */
-    public static final int msgTcalRel = 0x0501;
+    public final static int msgTcalRel = 0x0501;
 
     /**
      * forwarding equivalent class
      */
-    public static final int tlvTfec = 0x0100;
+    public final static int tlvTfec = 0x0100;
 
     /**
      * address list
      */
-    public static final int tlvTadrLst = 0x0101;
+    public final static int tlvTadrLst = 0x0101;
 
     /**
      * hop count
      */
-    public static final int tlvThopCnt = 0x0103;
+    public final static int tlvThopCnt = 0x0103;
 
     /**
      * path vector
      */
-    public static final int tlvTpatVec = 0x0104;
+    public final static int tlvTpatVec = 0x0104;
 
     /**
      * generic label
      */
-    public static final int tlvTgenLab = 0x0200;
+    public final static int tlvTgenLab = 0x0200;
 
     /**
      * atm label
      */
-    public static final int tlvTatmLab = 0x0201;
+    public final static int tlvTatmLab = 0x0201;
 
     /**
      * frame relay label
      */
-    public static final int tlvTfrLab = 0x0202;
+    public final static int tlvTfrLab = 0x0202;
 
     /**
      * ft protection
      */
-    public static final int tlvTftProt = 0x0202;
+    public final static int tlvTftProt = 0x0202;
 
     /**
      * status
      */
-    public static final int tlvTstatus = 0x0300;
+    public final static int tlvTstatus = 0x0300;
 
     /**
      * extended status
      */
-    public static final int tlvTextSta = 0x0301;
+    public final static int tlvTextSta = 0x0301;
 
     /**
      * returned pdu
      */
-    public static final int tlvTretPdu = 0x0302;
+    public final static int tlvTretPdu = 0x0302;
 
     /**
      * returned message
      */
-    public static final int tlvTretMsg = 0x0303;
+    public final static int tlvTretMsg = 0x0303;
 
     /**
      * returned tlv
      */
-    public static final int tlvTretTlv = 0x0304;
+    public final static int tlvTretTlv = 0x0304;
 
     /**
      * common hello parameters
      */
-    public static final int tlvThello = 0x0400;
+    public final static int tlvThello = 0x0400;
 
     /**
      * ipv4 transport address
      */
-    public static final int tlvTip4adr = 0x0401;
+    public final static int tlvTip4adr = 0x0401;
 
     /**
      * configuration sequence number
      */
-    public static final int tlvTcfgSeq = 0x0402;
+    public final static int tlvTcfgSeq = 0x0402;
 
     /**
      * ipv6 transport address
      */
-    public static final int tlvTip6adr = 0x0403;
+    public final static int tlvTip6adr = 0x0403;
 
     /**
      * mac
      */
-    public static final int tlvTmac = 0x0404;
+    public final static int tlvTmac = 0x0404;
 
     /**
      * common session parameters
      */
-    public static final int tlvTsess = 0x0500;
+    public final static int tlvTsess = 0x0500;
 
     /**
      * atm session parameters
      */
-    public static final int tlvTatmSes = 0x0501;
+    public final static int tlvTatmSes = 0x0501;
 
     /**
      * frame relay session parameters
      */
-    public static final int tlvTfrSes = 0x0502;
+    public final static int tlvTfrSes = 0x0502;
 
     /**
      * ft session parameters
      */
-    public static final int tlvTftSes = 0x0503;
+    public final static int tlvTftSes = 0x0503;
 
     /**
      * ft ack parameters
      */
-    public static final int tlvTftAck = 0x0504;
+    public final static int tlvTftAck = 0x0504;
 
     /**
      * ft cork parameters
      */
-    public static final int tlvTftCrk = 0x0505;
+    public final static int tlvTftCrk = 0x0505;
 
     /**
      * dynamic capability announcement
      */
-    public static final int tlvTdynCap = 0x0506;
+    public final static int tlvTdynCap = 0x0506;
 
     /**
      * upstream label assignment
      */
-    public static final int tlvTupstrm = 0x0507;
+    public final static int tlvTupstrm = 0x0507;
 
     /**
      * point-to-multipoint
      */
-    public static final int tlvTp2mp = 0x8508;
+    public final static int tlvTp2mp = 0x8508;
 
     /**
      * multipoint-to-multipoint
      */
-    public static final int tlvTmp2mp = 0x0509;
+    public final static int tlvTmp2mp = 0x0509;
 
     /**
      * typed wildcard fec capability
      */
-    public static final int tlvTtypFec = 0x050b;
+    public final static int tlvTtypFec = 0x050b;
 
     /**
      * returned message id
      */
-    public static final int tlvTmsgID = 0x0600;
+    public final static int tlvTmsgID = 0x0600;
 
     /**
      * mtu
      */
-    public static final int tlvTmtu = 0x0601;
+    public final static int tlvTmtu = 0x0601;
 
     /**
      * unrecognized notification capability
      */
-    public static final int tlvTbadNot = 0x0603;
+    public final static int tlvTbadNot = 0x0603;
 
     /**
      * pw status
      */
-    public static final int tlvTpwStat = 0x096a;
+    public final static int tlvTpwStat = 0x096a;
 
     /**
      * pw parameters
      */
-    public static final int tlvTpwParam = 0x096b;
+    public final static int tlvTpwParam = 0x096b;
 
     /**
      * pw group id
      */
-    public static final int tlvTpwGroup = 0x096c;
+    public final static int tlvTpwGroup = 0x096c;
 
     /**
      * prefix
      */
-    public static final int fecTpref = 0x02;
+    public final static int fecTpref = 0x02;
 
     /**
      * p2mp
      */
-    public static final int fecTp2mp = 0x06;
+    public final static int fecTp2mp = 0x06;
 
     /**
      * mp2mp up
      */
-    public static final int fecTmp2mpUp = 0x07;
+    public final static int fecTmp2mpUp = 0x07;
 
     /**
      * mp2mp down
      */
-    public static final int fecTmp2mpDn = 0x08;
+    public final static int fecTmp2mpDn = 0x08;
 
     /**
      * pseudowire
      */
-    public static final int fecTpwe = 0x80;
+    public final static int fecTpwe = 0x80;
 
     /**
      * generalized pseudowire
      */
-    public static final int fecTgpw = 0x81;
+    public final static int fecTgpw = 0x81;
 
     /**
      * convert type to string

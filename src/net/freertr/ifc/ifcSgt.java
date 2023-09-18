@@ -54,17 +54,17 @@ public class ifcSgt {
     /**
      * ethertype of these packets
      */
-    public static final int type = 0x8909;
+    public final static int type = 0x8909;
 
     /**
      * magic of these packets
      */
-    public static final int magic = 0x01010001;
+    public final static int magic = 0x01010001;
 
     /**
      * size of header
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * encode one packet

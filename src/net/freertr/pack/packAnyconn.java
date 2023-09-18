@@ -22,37 +22,37 @@ public class packAnyconn {
     /**
      * data
      */
-    public static final int typData = 0;
+    public final static int typData = 0;
 
     /**
      * dpd request
      */
-    public static final int typDpdReq = 3;
+    public final static int typDpdReq = 3;
 
     /**
      * dpd response
      */
-    public static final int typDpdRep = 4;
+    public final static int typDpdRep = 4;
 
     /**
      * disconnect
      */
-    public static final int typDisc = 5;
+    public final static int typDisc = 5;
 
     /**
      * keepalive
      */
-    public static final int typKeep = 7;
+    public final static int typKeep = 7;
 
     /**
      * compressed data
      */
-    public static final int typComp = 8;
+    public final static int typComp = 8;
 
     /**
      * terminate
      */
-    public static final int typTerm = 9;
+    public final static int typTerm = 9;
 
     /**
      * message type

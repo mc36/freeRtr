@@ -38,7 +38,7 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
     /**
      * port number
      */
-    public static final int port = 4445;
+    public final static int port = 4445;
 
     /**
      * upper layer

@@ -21,7 +21,7 @@ public class packSnmp {
     /**
      * port number
      */
-    public static final int port = 161;
+    public final static int port = 161;
 
     /**
      * protocol version
@@ -61,32 +61,32 @@ public class packSnmp {
     /**
      * get request
      */
-    public static final int typGetReq = 0;
+    public final static int typGetReq = 0;
 
     /**
      * get next request
      */
-    public static final int typGetNext = 1;
+    public final static int typGetNext = 1;
 
     /**
      * response
      */
-    public static final int typResponse = 2;
+    public final static int typResponse = 2;
 
     /**
      * set request
      */
-    public static final int typSetReq = 3;
+    public final static int typSetReq = 3;
 
     /**
      * trap
      */
-    public static final int typTrap = 4;
+    public final static int typTrap = 4;
 
     /**
      * get bulk request
      */
-    public static final int typGetBulk = 5;
+    public final static int typGetBulk = 5;
 
     /**
      * convert type to string

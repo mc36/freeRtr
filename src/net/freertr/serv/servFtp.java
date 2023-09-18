@@ -41,7 +41,7 @@ public class servFtp extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int portNum = 21;
+    public final static int portNum = 21;
 
     /**
      * root folder

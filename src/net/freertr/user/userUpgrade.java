@@ -44,7 +44,7 @@ public class userUpgrade {
     /**
      * update progress indicator, 0=none, 1=upgrade, 2=auto-revert
      */
-    public static final syncInt inProgress = new syncInt(0);
+    public final static syncInt inProgress = new syncInt(0);
 
     private final static int justSimu = 0x1000000;
 

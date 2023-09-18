@@ -16,7 +16,7 @@ public class packL2tp2 extends packL2tp {
     /**
      * port number
      */
-    public static final int port = 1701;
+    public final static int port = 1701;
 
     /**
      * control message

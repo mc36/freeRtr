@@ -18,7 +18,7 @@ public class authenHead {
     /**
      * size of header
      */
-    public static final int size = 4;
+    public final static int size = 4;
 
     /**
      * code

@@ -25,17 +25,17 @@ public class packPcep {
     /**
      * port number
      */
-    public static final int port = 4189;
+    public final static int port = 4189;
 
     /**
      * header size
      */
-    public static final int size1 = 4;
+    public final static int size1 = 4;
 
     /**
      * object size
      */
-    public static final int size2 = 4;
+    public final static int size2 = 4;
 
     /**
      * pipe to use
@@ -135,122 +135,122 @@ public class packPcep {
     /**
      * open
      */
-    public static final int typOpen = 1;
+    public final static int typOpen = 1;
 
     /**
      * keepalive
      */
-    public static final int typKeep = 2;
+    public final static int typKeep = 2;
 
     /**
      * request
      */
-    public static final int typReq = 3;
+    public final static int typReq = 3;
 
     /**
      * reply
      */
-    public static final int typRep = 4;
+    public final static int typRep = 4;
 
     /**
      * notify
      */
-    public static final int typNot = 5;
+    public final static int typNot = 5;
 
     /**
      * error
      */
-    public static final int typErr = 6;
+    public final static int typErr = 6;
 
     /**
      * close
      */
-    public static final int typCls = 7;
+    public final static int typCls = 7;
 
     /**
      * monitor request
      */
-    public static final int typMonReq = 8;
+    public final static int typMonReq = 8;
 
     /**
      * monitor reply
      */
-    public static final int typMonRep = 9;
+    public final static int typMonRep = 9;
 
     /**
      * report
      */
-    public static final int typRpt = 10;
+    public final static int typRpt = 10;
 
     /**
      * update
      */
-    public static final int typUpd = 11;
+    public final static int typUpd = 11;
 
     /**
      * initiate request
      */
-    public static final int typInit = 12;
+    public final static int typInit = 12;
 
     /**
      * start tls
      */
-    public static final int typTls = 13;
+    public final static int typTls = 13;
 
     /**
      * version
      */
-    public static final int version = 1;
+    public final static int version = 1;
 
     /**
      * rp
      */
-    public static final int otpRP = 0x0210;
+    public final static int otpRP = 0x0210;
 
     /**
      * ipv4 endpoint
      */
-    public static final int otpEndpt4 = 0x0410;
+    public final static int otpEndpt4 = 0x0410;
 
     /**
      * ipv6 endpoint
      */
-    public static final int otpEndpt6 = 0x0420;
+    public final static int otpEndpt6 = 0x0420;
 
     /**
      * lsp
      */
-    public static final int otpLsp = 0x2010;
+    public final static int otpLsp = 0x2010;
 
     /**
      * lsp attributes
      */
-    public static final int otpLspa = 0x0910;
+    public final static int otpLspa = 0x0910;
 
     /**
      * bandwidth
      */
-    public static final int otpBwdt = 0x0510;
+    public final static int otpBwdt = 0x0510;
 
     /**
      * metric
      */
-    public static final int otpMtrc = 0x0610;
+    public final static int otpMtrc = 0x0610;
 
     /**
      * no path
      */
-    public static final int otpNopt = 0x0310;
+    public final static int otpNopt = 0x0310;
 
     /**
      * ero
      */
-    public static final int otpEro = 0x0710;
+    public final static int otpEro = 0x0710;
 
     /**
      * rro
      */
-    public static final int otpRro = 0x0810;
+    public final static int otpRro = 0x0810;
 
     private packHolder pck1 = new packHolder(true, true);
 

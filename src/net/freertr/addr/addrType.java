@@ -50,7 +50,7 @@ public abstract class addrType implements Comparator<addrType> {
      * @param at address to convert
      * @return converted
      */
-    public static final String any2str(addrType at) {
+    public final static String any2str(addrType at) {
         try {
             addrIP ai = (addrIP) at;
             return "" + ai;
@@ -110,7 +110,7 @@ public abstract class addrType implements Comparator<addrType> {
         addr[ofs] = maskVals[len];
     }
 
-    private static final byte[] maskVals = {
+    private final static byte[] maskVals = {
         (byte) 0x00,
         (byte) 0x80, (byte) 0xc0, (byte) 0xe0, (byte) 0xf0,
         (byte) 0xf8, (byte) 0xfc, (byte) 0xfe, (byte) 0xff
@@ -144,7 +144,7 @@ public abstract class addrType implements Comparator<addrType> {
     /**
      * bit values in u32
      */
-    public static final int[] bitVals = {
+    public final static int[] bitVals = {
         0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1
     };
 

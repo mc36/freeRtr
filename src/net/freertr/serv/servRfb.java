@@ -34,7 +34,7 @@ public class servRfb extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 5900;
+    public final static int port = 5900;
 
     private userLine lin = new userLine();
 
@@ -109,37 +109,37 @@ class servRfbConn implements Runnable {
     /**
      * set pixel format
      */
-    public static final int typSetFrm = 0;
+    public final static int typSetFrm = 0;
 
     /**
      * fix colour map entries
      */
-    public static final int typSetPal = 1;
+    public final static int typSetPal = 1;
 
     /**
      * set encoding
      */
-    public static final int typSetEnc = 2;
+    public final static int typSetEnc = 2;
 
     /**
      * FramebufferUpdateRequest
      */
-    public static final int typFBupdate = 3;
+    public final static int typFBupdate = 3;
 
     /**
      * key event
      */
-    public static final int typKeyEvent = 4;
+    public final static int typKeyEvent = 4;
 
     /**
      * pointer event
      */
-    public static final int typPntrEvnt = 5;
+    public final static int typPntrEvnt = 5;
 
     /**
      * cut text
      */
-    public static final int typCutText = 6;
+    public final static int typCutText = 6;
 
     /**
      * convert type to string

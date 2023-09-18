@@ -47,7 +47,7 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {
+    public final static String[] defaultL = {
         "connect .*! no description",
         "connect .*! no side1",
         "connect .*! no side2"

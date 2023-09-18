@@ -81,7 +81,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {
+    public final static String[] defaultL = {
         "crypto ipsec .*! no description",
         "crypto ipsec .*! no group",
         "crypto ipsec .*! no cipher",

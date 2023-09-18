@@ -41,7 +41,7 @@ public class clntWhois {
     /**
      * port number
      */
-    public static final int port = 43;
+    public final static int port = 43;
 
     /**
      * asn name cache

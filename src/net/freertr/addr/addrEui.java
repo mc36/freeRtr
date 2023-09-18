@@ -18,7 +18,7 @@ public class addrEui extends addrType {
     /**
      * size of address
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     public String toString() {
         return bits.toHexB(addr[0]) + bits.toHexB(addr[1]) + "-" + bits.toHexB(addr[2]) + bits.toHexB(addr[3]) + "-"

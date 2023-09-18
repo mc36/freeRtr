@@ -303,7 +303,7 @@ public class pipeShell {
 
 class pipeShellInput implements Runnable {
 
-    private static final int maxBuf = 1024;
+    private final static int maxBuf = 1024;
 
     private pipeShell prnt;
 

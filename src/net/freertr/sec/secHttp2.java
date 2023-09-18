@@ -30,87 +30,87 @@ public class secHttp2 {
     /**
      * magic command
      */
-    public static final String magicCmd = "PRI * HTTP/2.0";
+    public final static String magicCmd = "PRI * HTTP/2.0";
 
     /**
      * magic continue
      */
-    public static final String magicCnt = "SM";
+    public final static String magicCnt = "SM";
 
     /**
      * acknowledge
      */
-    public static final int flgAck = 0x1;
+    public final static int flgAck = 0x1;
 
     /**
      * end stream
      */
-    public static final int flgStrEnd = 0x1;
+    public final static int flgStrEnd = 0x1;
 
     /**
      * end headers
      */
-    public static final int flgHdrEnd = 0x4;
+    public final static int flgHdrEnd = 0x4;
 
     /**
      * padded
      */
-    public static final int flgPadded = 0x8;
+    public final static int flgPadded = 0x8;
 
     /**
      * priority
      */
-    public static final int flgPrio = 0x20;
+    public final static int flgPrio = 0x20;
 
     /**
      * data
      */
-    public static final int typData = 0;
+    public final static int typData = 0;
 
     /**
      * headers
      */
-    public static final int typHdrs = 1;
+    public final static int typHdrs = 1;
 
     /**
      * priority
      */
-    public static final int typPrio = 2;
+    public final static int typPrio = 2;
 
     /**
      * rst stream
      */
-    public static final int typRst = 3;
+    public final static int typRst = 3;
 
     /**
      * settings
      */
-    public static final int typSett = 4;
+    public final static int typSett = 4;
 
     /**
      * push promise
      */
-    public static final int typPush = 5;
+    public final static int typPush = 5;
 
     /**
      * ping
      */
-    public static final int typPing = 6;
+    public final static int typPing = 6;
 
     /**
      * goaway
      */
-    public static final int typGoaway = 7;
+    public final static int typGoaway = 7;
 
     /**
      * window update
      */
-    public static final int typWin = 8;
+    public final static int typWin = 8;
 
     /**
      * continuation
      */
-    public static final int typCont = 9;
+    public final static int typCont = 9;
 
     /**
      * mode of operation, true=client, false=server
@@ -173,7 +173,7 @@ public class secHttp2 {
      * @param i opcode
      * @return string
      */
-    public static final String type2string(int i) {
+    public final static String type2string(int i) {
         switch (i) {
             case typData:
                 return "data";
@@ -224,7 +224,7 @@ public class secHttp2 {
     /**
      * initialize hpack
      */
-    public static final void hpackInit() {
+    public final static void hpackInit() {
         if (hpackHuf != null) {
             return;
         }
@@ -494,7 +494,7 @@ public class secHttp2 {
      * @param idx index
      * @return value, null if not found
      */
-    public static final String hpackStable(int idx) {
+    public final static String hpackStable(int idx) {
         switch (idx) {
             case 1:
                 return ":authority: ";
@@ -630,7 +630,7 @@ public class secHttp2 {
      * @param lim 1 shl size - 1
      * @return value
      */
-    public static final int hpackGetInt(packHolder pck, int lim) {
+    public final static int hpackGetInt(packHolder pck, int lim) {
         int val = pck.getByte(0) & lim;
         pck.getSkip(1);
         if (val < lim) {
@@ -656,7 +656,7 @@ public class secHttp2 {
      * @param lim 1 shl size - 1
      * @param val value
      */
-    public static final void hpackPutInt(packHolder pck, int lim, int pre, int val) {
+    public final static void hpackPutInt(packHolder pck, int lim, int pre, int val) {
         if (val < lim) {
             pck.putByte(0, pre | val);
             pck.putSkip(1);
@@ -683,7 +683,7 @@ public class secHttp2 {
      * @param pck encoded
      * @return string, null if error
      */
-    public static final String hpackGetStr(packHolder pck) {
+    public final static String hpackGetStr(packHolder pck) {
         boolean huffed = (pck.getByte(0) & 0x80) != 0;
         int len = hpackGetInt(pck, 0x7f);
         if (len > pck.dataSize()) {
@@ -743,7 +743,7 @@ public class secHttp2 {
      * @param pck encoded
      * @param val value
      */
-    public static final void hpackPutStr(packHolder pck, String val) {
+    public final static void hpackPutStr(packHolder pck, String val) {
         byte[] buf = val.getBytes();
         hpackPutInt(pck, 0x7f, 0, buf.length);
         pck.putCopy(buf, 0, 0, buf.length);
@@ -757,7 +757,7 @@ public class secHttp2 {
      * @param cur index
      * @return string, null if error
      */
-    public static final String hpackGetLit(packHolder pck, int cur) {
+    public final static String hpackGetLit(packHolder pck, int cur) {
         String nam;
         if (cur == 0) {
             nam = hpackGetStr(pck) + ": ";
@@ -786,7 +786,7 @@ public class secHttp2 {
      * @param nam name
      * @param val value
      */
-    public static final void hpackPutLit(packHolder pck, int nam, String val) {
+    public final static void hpackPutLit(packHolder pck, int nam, String val) {
         pck.putByte(0, 0x40 | (nam & 0x2f));
         pck.putSkip(1);
         hpackPutStr(pck, val);
@@ -799,7 +799,7 @@ public class secHttp2 {
      * @param nam name
      * @param val value
      */
-    public static final void hpackPutLit(packHolder pck, String nam, String val) {
+    public final static void hpackPutLit(packHolder pck, String nam, String val) {
         pck.putByte(0, 0);
         pck.putSkip(1);
         hpackPutStr(pck, nam);
@@ -813,7 +813,7 @@ public class secHttp2 {
      * @param req client side
      * @return decoded, null if error
      */
-    public static final List<String> hpackDecode(packHolder pck, boolean req) {
+    public final static List<String> hpackDecode(packHolder pck, boolean req) {
         if (debugger.secHttp2traf) {
             logger.debug("dec hdr " + req + " " + pck.dump());
         }
@@ -918,7 +918,7 @@ public class secHttp2 {
      * @param req request
      * @return encoded, null if error
      */
-    public static final packHolder hpackEncode(List<String> hdr, boolean req) {
+    public final static packHolder hpackEncode(List<String> hdr, boolean req) {
         if (hdr.size() < 1) {
             return null;
         }

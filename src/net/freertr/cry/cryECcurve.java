@@ -80,7 +80,7 @@ public class cryECcurve {
     /**
      * curves
      */
-    public static final cryECcurve[] curves = {
+    public final static cryECcurve[] curves = {
         new cryECcurve("nistp112r1", new int[]{0x2b, 0x81, 0x04, 0x00, 6}, -1,
         new BigInteger("DB7C2ABF62E35E668076BEAD208B", 16),
         new BigInteger("DB7C2ABF62E35E668076BEAD2088", 16),

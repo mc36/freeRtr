@@ -36,32 +36,32 @@ public class ifcNshFwd implements ifcUp {
     /**
      * ipv4 packet
      */
-    public static final int protIp4 = 0x01;
+    public final static int protIp4 = 0x01;
 
     /**
      * ipv6 packet
      */
-    public static final int protIp6 = 0x02;
+    public final static int protIp6 = 0x02;
 
     /**
      * ethernet packet
      */
-    public static final int protEth = 0x03;
+    public final static int protEth = 0x03;
 
     /**
      * nsh packet
      */
-    public static final int protNsh = 0x04;
+    public final static int protNsh = 0x04;
 
     /**
      * mpls packet
      */
-    public static final int protMpls = 0x05;
+    public final static int protMpls = 0x05;
 
     /**
      * gbp packet
      */
-    public static final int protGbp = 0x06;
+    public final static int protGbp = 0x06;
 
     /**
      * counter of this interface

@@ -15,87 +15,87 @@ public class rtrOspf4lsa implements Comparator<rtrOspf4lsa> {
     /**
      * header size
      */
-    public static final int headSize = 20;
+    public final static int headSize = 20;
 
     /**
      * request size
      */
-    public static final int reqSize = 12;
+    public final static int reqSize = 12;
 
     /**
      * router lsa
      */
-    public static final int lsaRouter = 1;
+    public final static int lsaRouter = 1;
 
     /**
      * network lsa
      */
-    public static final int lsaNetwork = 2;
+    public final static int lsaNetwork = 2;
 
     /**
      * network summary lsa
      */
-    public static final int lsaSumNet = 3;
+    public final static int lsaSumNet = 3;
 
     /**
      * asbr summary lsa
      */
-    public static final int lsaSumAsBr = 4;
+    public final static int lsaSumAsBr = 4;
 
     /**
      * as external lsa
      */
-    public static final int lsaAsExt = 5;
+    public final static int lsaAsExt = 5;
 
     /**
      * group membership lsa
      */
-    public static final int lsaGrpMem = 6;
+    public final static int lsaGrpMem = 6;
 
     /**
      * nssa external lsa
      */
-    public static final int lsaNssaExt = 7;
+    public final static int lsaNssaExt = 7;
 
     /**
      * link opaque lsa
      */
-    public static final int lsaOpLink = 9;
+    public final static int lsaOpLink = 9;
 
     /**
      * area opaque lsa
      */
-    public static final int lsaOpArea = 10;
+    public final static int lsaOpArea = 10;
 
     /**
      * as opaque lsa
      */
-    public static final int lsaOpWhole = 11;
+    public final static int lsaOpWhole = 11;
 
     /**
      * point to point link
      */
-    public static final int lnkP2p = 1;
+    public final static int lnkP2p = 1;
 
     /**
      * transit network
      */
-    public static final int lnkTrns = 2;
+    public final static int lnkTrns = 2;
 
     /**
      * stub network
      */
-    public static final int lnkStub = 3;
+    public final static int lnkStub = 3;
 
     /**
      * virtual link
      */
-    public static final int lnkVirt = 4;
+    public final static int lnkVirt = 4;
 
     /**
      * max lsa age
      */
-    public static final int lsaMaxAge = 3600000;
+    public final static int lsaMaxAge = 3600000;
 
     /**
      * time when lsa created

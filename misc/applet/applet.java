@@ -13,7 +13,7 @@ import net.freertr.pipe.pipeWindow;
 @SuppressWarnings("deprecation")
 public class applet extends java.applet.Applet {
 
-    private static final long serialVersionUID = 19791025;
+    private final static long serialVersionUID = 19791025;
 
     /**
      * pipe image

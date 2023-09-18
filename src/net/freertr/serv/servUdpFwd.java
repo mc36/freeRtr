@@ -36,7 +36,7 @@ public class servUdpFwd extends servGeneric implements prtServP {
     /**
      * port number
      */
-    public static final int port = 1;
+    public final static int port = 1;
 
     /**
      * target vrf

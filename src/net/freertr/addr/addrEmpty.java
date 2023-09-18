@@ -16,7 +16,7 @@ public class addrEmpty extends addrType {
     /**
      * size of address
      */
-    public static final int size = 0;
+    public final static int size = 0;
 
     public String toString() {
         return "none";

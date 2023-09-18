@@ -28,7 +28,7 @@ public class servEchoS extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 7;
+    public final static int port = 7;
 
     /**
      * delay

@@ -33,7 +33,7 @@ public class rtrMsdp extends ipRtr {
     /**
      * port to use
      */
-    public static final int port = 639;
+    public final static int port = 639;
 
     /**
      * the forwarder protocol

@@ -20,37 +20,37 @@ public class packMtrack {
     /**
      * port number
      */
-    public static final int port = 5499;
+    public final static int port = 5499;
 
     /**
      * config request
      */
-    public static final int typCfgReq = 1;
+    public final static int typCfgReq = 1;
 
     /**
      * config reply
      */
-    public static final int typCfgRep = 2;
+    public final static int typCfgRep = 2;
 
     /**
      * config reply
      */
-    public static final int typCfgEnd = 3;
+    public final static int typCfgEnd = 3;
 
     /**
      * report
      */
-    public static final int typReport = 4;
+    public final static int typReport = 4;
 
     /**
      * last report
      */
-    public static final int typLreport = 5;
+    public final static int typLreport = 5;
 
     /**
      * maximum addresses
      */
-    public static final int maxAddrs = 1024 / addrIP.size;
+    public final static int maxAddrs = 1024 / addrIP.size;
 
     /**
      * packet type

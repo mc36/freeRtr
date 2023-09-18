@@ -32,7 +32,7 @@ public class prtTmux implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int proto = 18;
+    public final static int proto = 18;
 
     /**
      * sending ttl value, -1 means maps out

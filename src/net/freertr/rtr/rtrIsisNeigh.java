@@ -142,47 +142,47 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
     /**
      * level2 hello pdu
      */
-    public static final int msgTypL1hello = 0x0f;
+    public final static int msgTypL1hello = 0x0f;
 
     /**
      * level1 hello pdu
      */
-    public static final int msgTypL2hello = 0x10;
+    public final static int msgTypL2hello = 0x10;
 
     /**
      * p2p hello pdu
      */
-    public static final int msgTypP2Phello = 0x11;
+    public final static int msgTypP2Phello = 0x11;
 
     /**
      * level1 link state pdu
      */
-    public static final int msgTypL1lsp = 0x12;
+    public final static int msgTypL1lsp = 0x12;
 
     /**
      * level2 link state pdu
      */
-    public static final int msgTypL2lsp = 0x14;
+    public final static int msgTypL2lsp = 0x14;
 
     /**
      * level1 complete sequence numbers pdu
      */
-    public static final int msgTypL1csnp = 0x18;
+    public final static int msgTypL1csnp = 0x18;
 
     /**
      * level2 complete sequence numbers pdu
      */
-    public static final int msgTypL2csnp = 0x19;
+    public final static int msgTypL2csnp = 0x19;
 
     /**
      * level1 partial sequence numbers pdu
      */
-    public static final int msgTypL1psnp = 0x1a;
+    public final static int msgTypL1psnp = 0x1a;
 
     /**
      * level2 partial sequence numbers pdu
      */
-    public static final int msgTypL2psnp = 0x1b;
+    public final static int msgTypL2psnp = 0x1b;
 
     /**
      * down

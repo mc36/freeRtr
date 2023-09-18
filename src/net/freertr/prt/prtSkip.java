@@ -28,12 +28,12 @@ public class prtSkip implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 57;
+    public final static int prot = 57;
 
     /**
      * size of header
      */
-    public static final int size = 12;
+    public final static int size = 12;
 
     /**
      * upper layer

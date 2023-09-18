@@ -26,7 +26,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 22;
+    public final static int port = 22;
 
     /**
      * defaults text

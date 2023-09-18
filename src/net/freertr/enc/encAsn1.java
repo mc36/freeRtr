@@ -51,122 +51,122 @@ public class encAsn1 {
     /**
      * end of construction
      */
-    public static final int tagEoc = 0x00;
+    public final static int tagEoc = 0x00;
 
     /**
      * boolean
      */
-    public static final int tagBoolean = 0x01;
+    public final static int tagBoolean = 0x01;
 
     /**
      * integer
      */
-    public static final int tagInteger = 0x02;
+    public final static int tagInteger = 0x02;
 
     /**
      * bit string
      */
-    public static final int tagBitString = 0x03;
+    public final static int tagBitString = 0x03;
 
     /**
      * octet string
      */
-    public static final int tagOctetString = 0x04;
+    public final static int tagOctetString = 0x04;
 
     /**
      * null
      */
-    public static final int tagNull = 0x05;
+    public final static int tagNull = 0x05;
 
     /**
      * object identifier
      */
-    public static final int tagObjectID = 0x06;
+    public final static int tagObjectID = 0x06;
 
     /**
      * object descriptor
      */
-    public static final int tagObjectDesc = 0x07;
+    public final static int tagObjectDesc = 0x07;
 
     /**
      * external
      */
-    public static final int tagExternal = 0x08;
+    public final static int tagExternal = 0x08;
 
     /**
      * real
      */
-    public static final int tagReal = 0x09;
+    public final static int tagReal = 0x09;
 
     /**
      * enumerated
      */
-    public static final int tagEnumerated = 0x0a;
+    public final static int tagEnumerated = 0x0a;
 
     /**
      * utf8 string
      */
-    public static final int tagUTF8string = 0x0c;
+    public final static int tagUTF8string = 0x0c;
 
     /**
      * sequence
      */
-    public static final int tagSequence = 0x10;
+    public final static int tagSequence = 0x10;
 
     /**
      * set
      */
-    public static final int tagSet = 0x11;
+    public final static int tagSet = 0x11;
 
     /**
      * numeric string
      */
-    public static final int tagNumericString = 0x12;
+    public final static int tagNumericString = 0x12;
 
     /**
      * printable string
      */
-    public static final int tagPrintableString = 0x13;
+    public final static int tagPrintableString = 0x13;
 
     /**
      * teletex string
      */
-    public static final int tagTeletexString = 0x14;
+    public final static int tagTeletexString = 0x14;
 
     /**
      * videotex string
      */
-    public static final int tagVideotexString = 0x15;
+    public final static int tagVideotexString = 0x15;
 
     /**
      * ia5 string
      */
-    public static final int tagIA5string = 0x16;
+    public final static int tagIA5string = 0x16;
 
     /**
      * utc time
      */
-    public static final int tagUTCtime = 0x17;
+    public final static int tagUTCtime = 0x17;
 
     /**
      * general time
      */
-    public static final int tagGeneralTime = 0x18;
+    public final static int tagGeneralTime = 0x18;
 
     /**
      * graphic string
      */
-    public static final int tagGraphicString = 0x19;
+    public final static int tagGraphicString = 0x19;
 
     /**
      * visible string
      */
-    public static final int tagVisibleString = 0x1A;
+    public final static int tagVisibleString = 0x1A;
 
     /**
      * general string
      */
-    public static final int tagGeneralString = 0x1B;
+    public final static int tagGeneralString = 0x1B;
 
     /**
      * convert tag to value

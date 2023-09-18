@@ -49,22 +49,22 @@ public class rtrRift extends ipRtr implements Runnable {
     /**
      * lie port number
      */
-    public static final int portL = 914;
+    public final static int portL = 914;
 
     /**
      * tie port number
      */
-    public static final int portT = 915;
+    public final static int portT = 915;
 
     /**
      * packet magic
      */
-    public static final int magic = 0xa1f7;
+    public final static int magic = 0xa1f7;
 
     /**
      * major version
      */
-    public static final int version = 6;
+    public final static int version = 6;
 
     /**
      * forwarding core

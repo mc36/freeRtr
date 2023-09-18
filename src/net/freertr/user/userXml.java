@@ -26,7 +26,7 @@ public class userXml {
 
     private final boolean echo;
 
-    private static final String prompt = "XML> ";
+    private final static String prompt = "XML> ";
 
     /**
      * create handler

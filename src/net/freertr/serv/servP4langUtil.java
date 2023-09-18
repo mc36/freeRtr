@@ -50,7 +50,7 @@ public class servP4langUtil {
      * @param port port to use
      * @return converted packet
      */
-    protected static final String packet2packout(packHolder pck, int cnt, int prt, int port) {
+    protected final static String packet2packout(packHolder pck, int cnt, int prt, int port) {
         String a = "packout_add " + cnt + " " + (pck.dataSize() + addrMac.sizeX2) + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 15) + " ";
         byte[] buf = pck.ETHtrg.getBytes();
         a += bits.toHex(buf);
@@ -69,7 +69,7 @@ public class servP4langUtil {
      * @param inv invalid value
      * @return id, inv if error
      */
-    protected static final int toNum(tabGen<servP4langMgcN> src, String num, int inv) {
+    protected final static int toNum(tabGen<servP4langMgcN> src, String num, int inv) {
         int i = bits.str2num(num);
         if (num.equals("" + i)) {
             return i;
@@ -89,7 +89,7 @@ public class servP4langUtil {
      * @param src source list
      * @param trg target list
      */
-    protected static final void toShow(String beg, tabGen<servP4langMgcN> src, userFormat trg) {
+    protected final static void toShow(String beg, tabGen<servP4langMgcN> src, userFormat trg) {
         for (int i = 0; i < src.size(); i++) {
             servP4langMgcN ntry = src.get(i);
             trg.add(beg + ntry.id + "|" + ntry.nam);
@@ -102,7 +102,7 @@ public class servP4langUtil {
      * @param src source list
      * @return converted text
      */
-    protected static final List<String> toHelp(tabGen<servP4langMgcN> src) {
+    protected final static List<String> toHelp(tabGen<servP4langMgcN> src) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < src.size(); i++) {
             res.add(src.get(i).nam);
@@ -117,7 +117,7 @@ public class servP4langUtil {
      * @param src source list
      * @return converted string
      */
-    protected static final String convId(int id, tabGen<servP4langMgcI> src) {
+    protected final static String convId(int id, tabGen<servP4langMgcI> src) {
         servP4langMgcI ntry = new servP4langMgcI(id, null);
         ntry = src.find(ntry);
         if (ntry == null) {
@@ -133,7 +133,7 @@ public class servP4langUtil {
      * @param ned needed
      * @return converted
      */
-    protected static final tabGen<servP4langMgcI> convTab(tabGen<servP4langMgcN> src, boolean ned) {
+    protected final static tabGen<servP4langMgcI> convTab(tabGen<servP4langMgcN> src, boolean ned) {
         tabGen<servP4langMgcI> res = new tabGen<servP4langMgcI>();
         if (!ned) {
             return res;
@@ -152,7 +152,7 @@ public class servP4langUtil {
      * @param i id
      * @return interface
      */
-    protected static final servP4langIfc forwarder2iface(servP4langCfg p, int i) {
+    protected final static servP4langIfc forwarder2iface(servP4langCfg p, int i) {
         return new servP4langIfc(p, -1 - i);
     }
 
@@ -162,7 +162,7 @@ public class servP4langUtil {
      * @param i id
      * @return address
      */
-    protected static final addrIP forwarder2addr(int i) {
+    protected final static addrIP forwarder2addr(int i) {
         addrIP adr = new addrIP();
         byte[] buf = adr.getBytes();
         bits.msbPutD(buf, 0, 0xfe800bad);
@@ -176,7 +176,7 @@ public class servP4langUtil {
      * @param i id
      * @return address
      */
-    protected static final tabRouteEntry<addrIP> forwarder2route(int i) {
+    protected final static tabRouteEntry<addrIP> forwarder2route(int i) {
         addrIP adr = forwarder2addr(i);
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
@@ -189,7 +189,7 @@ public class servP4langUtil {
      * @param cmd commands
      * @param fwd forwarder
      */
-    protected static final void updateNatTrans(cmds cmd, ipFwd fwd) {
+    protected final static void updateNatTrans(cmds cmd, ipFwd fwd) {
         tabNatTraN ntry = new tabNatTraN();
         ntry.protocol = bits.str2num(cmd.word());
         addrIP adr = new addrIP();
@@ -228,7 +228,7 @@ public class servP4langUtil {
      * @param cmd commands
      * @param insp sessions
      */
-    protected static final void updateInsp(cmds cmd, tabSession insp) {
+    protected final static void updateInsp(cmds cmd, tabSession insp) {
         if (insp == null) {
             if (debugger.servP4langErr) {
                 logger.debug("got unneeded report: " + cmd.getOriginal());
@@ -277,7 +277,7 @@ public class servP4langUtil {
      * @param cmd commands
      * @param fwd forwarder
      */
-    protected static final void updateMroute(cmds cmd, ipFwd fwd) {
+    protected final static void updateMroute(cmds cmd, ipFwd fwd) {
         addrIP src = new addrIP();
         src.fromString(cmd.word());
         addrIP grp = new addrIP();
@@ -302,7 +302,7 @@ public class servP4langUtil {
      * @param fwd forwarder
      * @param prf prefix
      */
-    protected static final void updateRoute(cmds cmd, ipFwd fwd, addrPrefix<addrIP> prf) {
+    protected final static void updateRoute(cmds cmd, ipFwd fwd, addrPrefix<addrIP> prf) {
         tabRouteEntry<addrIP> ntry = fwd.actualU.find(prf);
         if (ntry == null) {
             if (debugger.servP4langErr) {
@@ -323,7 +323,7 @@ public class servP4langUtil {
      * @param cmd commands
      * @param pbr pbr config
      */
-    protected static final void updatePbr(cmds cmd, tabListing<tabPbrN, addrIP> pbr) {
+    protected final static void updatePbr(cmds cmd, tabListing<tabPbrN, addrIP> pbr) {
         int seq = bits.str2num(cmd.word());
         tabPbrN rul = null;
         for (int i = 0; i < pbr.size(); i++) {
@@ -369,7 +369,7 @@ public class servP4langUtil {
      * @param cmd commands
      * @param acl access list
      */
-    protected static final void updateAcl(cmds cmd, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
+    protected final static void updateAcl(cmds cmd, tabListing<tabAceslstN<addrIP>, addrIP> acl) {
         tabAceslstN<addrIP> ntry = acl.get(bits.str2num(cmd.word()));
         if (ntry == null) {
             if (debugger.servP4langErr) {
@@ -401,7 +401,7 @@ public class servP4langUtil {
      * @param fwd forwarder
      * @param prt protocol
      */
-    protected static final void updateTunn(cmds cmd, ipFwd fwd, prtGen prt) {
+    protected final static void updateTunn(cmds cmd, ipFwd fwd, prtGen prt) {
         addrIP sa = new addrIP();
         sa.fromString(cmd.word());
         addrIP da = new addrIP();
@@ -433,7 +433,7 @@ public class servP4langUtil {
      * @param ifc interface
      * @return config
      */
-    protected static final int getVerifySource(ipFwdIface ifc) {
+    protected final static int getVerifySource(ipFwdIface ifc) {
         if (ifc == null) {
             return 0;
         }
@@ -447,7 +447,7 @@ public class servP4langUtil {
         }
     }
 
-    private static final String getIpsecParam(packEsp esp) {
+    private final static String getIpsecParam(packEsp esp) {
         return " " + esp.spi + " " + bits.toHex(esp.keyEncr) + " " + bits.toHex(esp.keyHash);
     }
 
@@ -459,7 +459,7 @@ public class servP4langUtil {
      * @param ts transform set
      * @return config
      */
-    protected static final String getIpsecParam(packEsp rx, packEsp tx, secTransform ts) {
+    protected final static String getIpsecParam(packEsp rx, packEsp tx, secTransform ts) {
         if (rx == null) {
             return "";
         }
@@ -484,7 +484,7 @@ public class servP4langUtil {
      * @param ntry entry to convert
      * @return config
      */
-    protected static final String natTrns2str(tabNatTraN ntry) {
+    protected final static String natTrns2str(tabNatTraN ntry) {
         return ntry.protocol + " " + ntry.origSrcAddr + " " + ntry.origSrcPort + " " + ntry.origTrgAddr + " " + ntry.origTrgPort + " " + ntry.newSrcAddr + " " + ntry.newSrcPort + " " + ntry.newTrgAddr + " " + ntry.newTrgPort;
     }
 
@@ -495,7 +495,7 @@ public class servP4langUtil {
      * @param max maximum value
      * @return config
      */
-    protected static final String numat2str(tabIntMatcher mat, int max) {
+    protected final static String numat2str(tabIntMatcher mat, int max) {
         switch (mat.action) {
             case xact:
                 return (mat.rangeMin & max) + " " + max;
@@ -515,7 +515,7 @@ public class servP4langUtil {
      * @param adr address to convert
      * @return config
      */
-    protected static final String ip2str(boolean ipv4, addrIP adr) {
+    protected final static String ip2str(boolean ipv4, addrIP adr) {
         if (ipv4) {
             return "" + adr.toIPv4();
         } else {
@@ -533,7 +533,7 @@ public class servP4langUtil {
      * @param negate negate action
      * @return config
      */
-    protected static final String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace, boolean check, boolean negate) {
+    protected final static String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace, boolean check, boolean negate) {
         if (check) {
             if (!ace.srcMask.isFilled(0)) {
                 if (ace.srcMask.isIPv4() != ipv4) {
@@ -569,7 +569,7 @@ public class servP4langUtil {
      * @param sent already sent out
      * @return true if yes, false if not
      */
-    protected static final boolean needAcl(tabListing<tabAceslstN<addrIP>, addrIP> done1, tabListing<tabAceslstN<addrIP>, addrIP> need1, tabListing<tabAceslstN<addrIP>, addrIP> done2, tabListing<tabAceslstN<addrIP>, addrIP> need2, tabSession sess, tabListing<tabAceslstN<addrIP>, addrIP> sent) {
+    protected final static boolean needAcl(tabListing<tabAceslstN<addrIP>, addrIP> done1, tabListing<tabAceslstN<addrIP>, addrIP> need1, tabListing<tabAceslstN<addrIP>, addrIP> done2, tabListing<tabAceslstN<addrIP>, addrIP> need2, tabSession sess, tabListing<tabAceslstN<addrIP>, addrIP> sent) {
         if (need1 != done1) {
             return true;
         }
@@ -595,7 +595,7 @@ public class servP4langUtil {
      * @param ntry inspect entry
      * @return config
      */
-    protected static final String sess2str(tabSessionEntry ntry) {
+    protected final static String sess2str(tabSessionEntry ntry) {
         if (ntry.dir) {
             return ntry.ipPrt + " " + ntry.trgAdr + " " + ntry.trgPrt + " " + ntry.srcAdr + " " + ntry.srcPrt;
         } else {
@@ -609,7 +609,7 @@ public class servP4langUtil {
      * @param ntry route entry
      * @return label
      */
-    protected static final int getNullLabel(tabRouteEntry<addrIP> ntry) {
+    protected final static int getNullLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.prefix.network.isIPv4()) {
             return ipMpls.labelExp4;
         } else {
@@ -623,7 +623,7 @@ public class servP4langUtil {
      * @param labs labels
      * @return label
      */
-    protected static final int getLabel(List<Integer> labs) {
+    protected final static int getLabel(List<Integer> labs) {
         if (labs == null) {
             return -1;
         }
@@ -650,7 +650,7 @@ public class servP4langUtil {
      * @param ntry route entry
      * @return label
      */
-    protected static final int getLabel(tabRouteEntry<addrIP> ntry) {
+    protected final static int getLabel(tabRouteEntry<addrIP> ntry) {
         if (ntry.best.labelRem == null) {
             return servP4langUtil.getNullLabel(ntry);
         }
@@ -679,7 +679,7 @@ public class servP4langUtil {
      * @param sis shift
      * @return label
      */
-    protected static final String getBierLabs(tabLabelBierN ntry, byte[] full, int sis) {
+    protected final static String getBierLabs(tabLabelBierN ntry, byte[] full, int sis) {
         byte[] res = ntry.getAndShr(full, sis);
         if (res == null) {
             return " 0 0 0 0 0 0 0 0";
@@ -700,7 +700,7 @@ public class servP4langUtil {
      * @param s string to negate
      * @return negated string
      */
-    protected static final String negateOneCommand(String s) {
+    protected final static String negateOneCommand(String s) {
         s = s.replaceAll("_add ", "_del ");
         s = s.replaceAll("_mod ", "_del ");
         return s;
@@ -712,7 +712,7 @@ public class servP4langUtil {
      * @param tab table to dump
      * @return dump
      */
-    protected static final userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
+    protected final static userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
         if (tab == null) {
             return null;
         }
@@ -729,7 +729,7 @@ public class servP4langUtil {
      * @param l table to dump
      * @param a message
      */
-    protected static final void updateApiStats(tabGen<servP4langMsg> l, String a) {
+    protected final static void updateApiStats(tabGen<servP4langMsg> l, String a) {
         servP4langMsg m = new servP4langMsg(a);
         servP4langMsg o = l.add(m);
         if (o != null) {

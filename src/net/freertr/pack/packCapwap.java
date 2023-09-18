@@ -16,17 +16,17 @@ public class packCapwap {
     /**
      * port to use
      */
-    public static final int port = 5247;
+    public final static int port = 5247;
 
     /**
      * header size
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * header magic
      */
-    public static final int magic = 0x100000;
+    public final static int magic = 0x100000;
 
     /**
      * parse header

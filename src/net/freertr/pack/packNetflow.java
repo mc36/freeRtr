@@ -26,17 +26,17 @@ public class packNetflow {
     /**
      * port number
      */
-    public static final int port = 2055;
+    public final static int port = 2055;
 
     /**
      * flows for ipv4
      */
-    public static final int flow4 = 32;
+    public final static int flow4 = 32;
 
     /**
      * flows for ipv6
      */
-    public static final int flow6 = 17;
+    public final static int flow6 = 17;
 
     /**
      * sequence

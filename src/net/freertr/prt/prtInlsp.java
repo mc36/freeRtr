@@ -28,12 +28,12 @@ public class prtInlsp implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 52;
+    public final static int prot = 52;
 
     /**
      * size of header
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * upper layer

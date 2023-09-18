@@ -1489,7 +1489,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return false;
     }
 
-    protected static final String decodeAuth(String got, boolean usr) {
+    protected final static String decodeAuth(String got, boolean usr) {
         if (got == null) {
             return null;
         }
@@ -1575,7 +1575,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return true;
     }
 
-    protected static final String webdavProp(String n, File f, boolean typ, boolean len, boolean tag, boolean mod, boolean crt, boolean dsp, boolean cnt, boolean usd, boolean fre) {
+    protected final static String webdavProp(String n, File f, boolean typ, boolean len, boolean tag, boolean mod, boolean crt, boolean dsp, boolean cnt, boolean usd, boolean fre) {
         if (!f.exists()) {
             return "";
         }

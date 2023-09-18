@@ -13,7 +13,7 @@ public class verCore {
     /**
      * path of vm files
      */
-    public static final String vmDir = "../vm2/";
+    public final static String vmDir = "../vm2/";
 
     /**
      * os name

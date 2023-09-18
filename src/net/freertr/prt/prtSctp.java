@@ -576,35 +576,35 @@ public class prtSctp extends prtGen {
 
 class prtSctpConn {
 
-    public static final int opcMask = 0xff00;
+    public final static int opcMask = 0xff00;
 
-    public static final int opcData = 0x0000;
+    public final static int opcData = 0x0000;
 
-    public static final int opcInitReq = 0x0100;
+    public final static int opcInitReq = 0x0100;
 
-    public static final int opcInitAck = 0x0200;
+    public final static int opcInitAck = 0x0200;
 
-    public static final int opcSelAck = 0x0300;
+    public final static int opcSelAck = 0x0300;
 
-    public static final int opcHeartReq = 0x0400;
+    public final static int opcHeartReq = 0x0400;
 
-    public static final int opcHeartAck = 0x0500;
+    public final static int opcHeartAck = 0x0500;
 
-    public static final int opcAbort = 0x0600;
+    public final static int opcAbort = 0x0600;
 
-    public static final int opcShutReq = 0x0700;
+    public final static int opcShutReq = 0x0700;
 
-    public static final int opcShutAck = 0x0800;
+    public final static int opcShutAck = 0x0800;
 
-    public static final int opcError = 0x0900;
+    public final static int opcError = 0x0900;
 
-    public static final int opcCokieDat = 0x0a00;
+    public final static int opcCokieDat = 0x0a00;
 
-    public static final int opcCokieAck = 0x0b00;
+    public final static int opcCokieAck = 0x0b00;
 
-    public static final int opcShutCmp = 0x0e00;
+    public final static int opcShutCmp = 0x0e00;
 
-    public static final int opcAuth = 0x0f00;
+    public final static int opcAuth = 0x0f00;
 
     public int seqLoc;
 

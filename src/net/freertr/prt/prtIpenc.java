@@ -25,12 +25,12 @@ public class prtIpenc implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int proto = 98;
+    public final static int proto = 98;
 
     /**
      * header size
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * sending ttl value, -1 means maps out

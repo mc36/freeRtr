@@ -420,7 +420,7 @@ public class enc7bit {
      * @param s string to decode
      * @return decoded string
      */
-    public static final String decodeExtStr(String s) {
+    public final static String decodeExtStr(String s) {
         byte[] org = s.getBytes();
         byte[] res = new byte[org.length];
         for (int i = 0; i < org.length; i++) {
@@ -437,7 +437,7 @@ public class enc7bit {
      * @param lst list to convert
      * @return converted list
      */
-    public static final List<String> decodeExtLst(List<String> lst) {
+    public final static List<String> decodeExtLst(List<String> lst) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < lst.size(); i++) {
             String s = lst.get(i);
@@ -453,7 +453,7 @@ public class enc7bit {
      * @param c character to hack
      * @return hacked character
      */
-    public static final byte doHackOneChar(byte c) {
+    public final static byte doHackOneChar(byte c) {
         switch (c) {
             case '0':
                 return 'o';
@@ -494,7 +494,7 @@ public class enc7bit {
      * @param s string to convert
      * @return converted string
      */
-    public static final String toHackedStr(String s) {
+    public final static String toHackedStr(String s) {
         byte[] org = s.getBytes();
         byte[] res = new byte[org.length];
         for (int i = 0; i < org.length; i++) {
@@ -511,7 +511,7 @@ public class enc7bit {
      * @param lst list to convert
      * @return converted list
      */
-    public static final List<String> toHackedLst(List<String> lst) {
+    public final static List<String> toHackedLst(List<String> lst) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < lst.size(); i++) {
             String s = lst.get(i);

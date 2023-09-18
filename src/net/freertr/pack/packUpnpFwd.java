@@ -18,17 +18,17 @@ public class packUpnpFwd {
     /**
      * port number
      */
-    public static final int portNum = 1900;
+    public final static int portNum = 1900;
 
     /**
      * keepalive
      */
-    public static final int typKeep = 1;
+    public final static int typKeep = 1;
 
     /**
      * data
      */
-    public static final int typData = 2;
+    public final static int typData = 2;
 
     /**
      * packet type

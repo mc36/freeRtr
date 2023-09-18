@@ -57,7 +57,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * port number
      */
-    public static final int port = 1678;
+    public final static int port = 1678;
 
     /**
      * forwarding core

@@ -15,7 +15,7 @@ public class renamer {
         return a + "/";
     }
 
-    private static final int needed = 4;
+    private final static int needed = 4;
 
     /**
      * this is needed for cli startup

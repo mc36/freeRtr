@@ -30,7 +30,7 @@ public class cfgBndl implements Comparator<cfgBndl>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {
+    public final static String[] defaultL = {
         "bundle .*! no description",
         "bundle .*! ethernet",
         "bundle .*! no backup",

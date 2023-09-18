@@ -76,7 +76,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {
+    public final static String[] defaultL = {
         "aaa userlist .*! username .* autocommand ",
         "aaa userlist .*! username .* privilege 15",
         "aaa radius .*! no secret",

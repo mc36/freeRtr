@@ -33,7 +33,7 @@ public class servLpd extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 515;
+    public final static int port = 515;
 
     /**
      * spool path

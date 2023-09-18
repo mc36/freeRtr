@@ -31,9 +31,9 @@ public class cryECcurve25519 {
      */
     public byte[] common;
 
-    private static final int NUM_LIMBS_255BIT = 10;
+    private final static int NUM_LIMBS_255BIT = 10;
 
-    private static final int NUM_LIMBS_510BIT = 20;
+    private final static int NUM_LIMBS_510BIT = 20;
 
     private int[] A;
 

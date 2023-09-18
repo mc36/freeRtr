@@ -37,37 +37,37 @@ public class rtrOlsr extends ipRtr implements prtServP {
     /**
      * port number
      */
-    public static final int port = 698;
+    public final static int port = 698;
 
     /**
      * lq hello
      */
-    public static final int typLqHello = 201;
+    public final static int typLqHello = 201;
 
     /**
      * lq tc
      */
-    public static final int typLqTc = 202;
+    public final static int typLqTc = 202;
 
     /**
      * hello
      */
-    public static final int typHello = 1;
+    public final static int typHello = 1;
 
     /**
      * tc
      */
-    public static final int typTc = 2;
+    public final static int typTc = 2;
 
     /**
      * mid
      */
-    public static final int typMid = 3;
+    public final static int typMid = 3;
 
     /**
      * hna
      */
-    public static final int typHna = 4;
+    public final static int typHna = 4;
 
     /**
      * the udp protocol

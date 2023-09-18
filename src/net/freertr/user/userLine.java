@@ -226,7 +226,7 @@ public class userLine {
     /**
      * list of users
      */
-    protected static final tabGen<userLineHandler> loggedUsers = new tabGen<userLineHandler>();
+    protected final static tabGen<userLineHandler> loggedUsers = new tabGen<userLineHandler>();
 
     /**
      * previous configure
@@ -832,7 +832,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         }
     }
 
-    public static final String state2str(int i) {
+    public final static String state2str(int i) {
         switch (i) {
             case 1:
                 return "nulled";

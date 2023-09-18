@@ -29,7 +29,7 @@ public class servEchoP extends servGeneric implements prtServP {
     /**
      * port number
      */
-    public static final int port = 7;
+    public final static int port = 7;
 
     /**
      * defaults text

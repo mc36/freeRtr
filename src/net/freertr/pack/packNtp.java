@@ -19,17 +19,17 @@ public class packNtp {
     /**
      * port number to use
      */
-    public static final int port = 123;
+    public final static int port = 123;
 
     /**
      * size of packet
      */
-    public static final int size = 48;
+    public final static int size = 48;
 
     /**
      * time difference
      */
-    public static final long timDif = 2208988800000L;
+    public final static long timDif = 2208988800000L;
 
     /**
      * leap indicator
@@ -99,27 +99,27 @@ public class packNtp {
     /**
      * symmetric active
      */
-    public static final int modSymAct = 1;
+    public final static int modSymAct = 1;
 
     /**
      * symmetric passive
      */
-    public static final int modSymPsv = 2;
+    public final static int modSymPsv = 2;
 
     /**
      * client
      */
-    public static final int modClnt = 3;
+    public final static int modClnt = 3;
 
     /**
      * server
      */
-    public static final int modServ = 4;
+    public final static int modServ = 4;
 
     /**
      * broadcast
      */
-    public static final int modBcst = 5;
+    public final static int modBcst = 5;
 
     /**
      * convert mode to string
@@ -144,9 +144,9 @@ public class packNtp {
         }
     }
 
-    private static final long base0 = 2085978496000L;
+    private final static long base0 = 2085978496000L;
 
-    private static final long base1 = -2208988800000L;
+    private final static long base1 = -2208988800000L;
 
     /**
      * decode ntp time

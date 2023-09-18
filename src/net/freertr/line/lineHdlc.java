@@ -48,17 +48,17 @@ public class lineHdlc implements Runnable, ifcDn {
     /**
      * flag character
      */
-    public static final int charFlag = 0x7e;
+    public final static int charFlag = 0x7e;
 
     /**
      * escape character
      */
-    public static final int charEsc = 0x7d;
+    public final static int charEsc = 0x7d;
 
     /**
      * escape xorer
      */
-    public static final int charXor = 0x20;
+    public final static int charXor = 0x20;
 
     /**
      * get counter

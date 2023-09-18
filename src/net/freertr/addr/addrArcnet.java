@@ -18,7 +18,7 @@ public class addrArcnet extends addrType {
     /**
      * size of address
      */
-    public static final int size = 1;
+    public final static int size = 1;
 
     public String toString() {
         return bits.toHexB(addr[0]);

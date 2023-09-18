@@ -16,7 +16,7 @@ public class nonAscii {
      * @param a string to check
      * @return false if safe
      */
-    public static final boolean doNonAscii(String a) {
+    public final static boolean doNonAscii(String a) {
         if (a == null) {
             return true;
         }
@@ -40,7 +40,7 @@ public class nonAscii {
      * @param na not ascii
      * @param oa only ascii
      */
-    public static final void doNascii(List<File> fl, List<File> na, List<File> oa) {
+    public final static void doNascii(List<File> fl, List<File> na, List<File> oa) {
         for (int i = 0; i < fl.size(); i++) {
             File fi = fl.get(i);
             String a = fi.getAbsolutePath();

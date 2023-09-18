@@ -285,7 +285,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {};
+    public final static String[] defaultL = {};
 
     /**
      * defaults filter

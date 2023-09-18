@@ -26,571 +26,571 @@ public class packOpenflow {
     /**
      * port number
      */
-    public static final int port = 6653;
+    public final static int port = 6653;
 
     /**
      * header size
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * hello
      */
-    public static final int typHello = 0;
+    public final static int typHello = 0;
 
     /**
      * error
      */
-    public static final int typError = 1;
+    public final static int typError = 1;
 
     /**
      * echo request
      */
-    public static final int typEchoReq = 2;
+    public final static int typEchoReq = 2;
 
     /**
      * echo reply
      */
-    public static final int typEchoRep = 3;
+    public final static int typEchoRep = 3;
 
     /**
      * feature request
      */
-    public static final int typFeatReq = 5;
+    public final static int typFeatReq = 5;
 
     /**
      * feature reply
      */
-    public static final int typFeatRep = 6;
+    public final static int typFeatRep = 6;
 
     /**
      * config request
      */
-    public static final int typConfReq = 7;
+    public final static int typConfReq = 7;
 
     /**
      * config reply
      */
-    public static final int typConfRep = 8;
+    public final static int typConfRep = 8;
 
     /**
      * config set
      */
-    public static final int typConfSet = 9;
+    public final static int typConfSet = 9;
 
     /**
      * packet in
      */
-    public static final int typPackIn = 10;
+    public final static int typPackIn = 10;
 
     /**
      * flow removed
      */
-    public static final int typFlowDel = 11;
+    public final static int typFlowDel = 11;
 
     /**
      * port status
      */
-    public static final int typPortStat = 12;
+    public final static int typPortStat = 12;
 
     /**
      * packet out
      */
-    public static final int typPackOut = 13;
+    public final static int typPackOut = 13;
 
     /**
      * flow mod
      */
-    public static final int typFlowMod = 14;
+    public final static int typFlowMod = 14;
 
     /**
      * group mod
      */
-    public static final int typGrpMod = 15;
+    public final static int typGrpMod = 15;
 
     /**
      * port mod
      */
-    public static final int typPortMod = 16;
+    public final static int typPortMod = 16;
 
     /**
      * table mod
      */
-    public static final int typTableMod = 17;
+    public final static int typTableMod = 17;
 
     /**
      * multipart request
      */
-    public static final int typMultiReq = 18;
+    public final static int typMultiReq = 18;
 
     /**
      * multipart reply
      */
-    public static final int typMultiRep = 19;
+    public final static int typMultiRep = 19;
 
     /**
      * barrier request
      */
-    public static final int typBarrReq = 20;
+    public final static int typBarrReq = 20;
 
     /**
      * barrier reply
      */
-    public static final int typBarrRep = 21;
+    public final static int typBarrRep = 21;
 
     /**
      * queue request
      */
-    public static final int typQueReq = 22;
+    public final static int typQueReq = 22;
 
     /**
      * queue reply
      */
-    public static final int typQueRep = 23;
+    public final static int typQueRep = 23;
 
     /**
      * role request
      */
-    public static final int typRoleReq = 24;
+    public final static int typRoleReq = 24;
 
     /**
      * role reply
      */
-    public static final int typRoleRep = 25;
+    public final static int typRoleRep = 25;
 
     /**
      * async request
      */
-    public static final int typAsyncReq = 26;
+    public final static int typAsyncReq = 26;
 
     /**
      * async reply
      */
-    public static final int typAsyncRep = 27;
+    public final static int typAsyncRep = 27;
 
     /**
      * async set
      */
-    public static final int typAsyncSet = 28;
+    public final static int typAsyncSet = 28;
 
     /**
      * meter mod
      */
-    public static final int typMeterMod = 29;
+    public final static int typMeterMod = 29;
 
     /**
      * controller port
      */
-    public static final int cntrlPort = 0xfffffffd;
+    public final static int cntrlPort = 0xfffffffd;
 
     /**
      * type mask
      */
-    public static final int matchMaskTyp = 0xfffffe;
+    public final static int matchMaskTyp = 0xfffffe;
 
     /**
      * have mask
      */
-    public static final int matchMaskVal = 1;
+    public final static int matchMaskVal = 1;
 
     /**
      * logical port
      */
-    public static final int matchPortLog = 0x800000 | 0 << 1;
+    public final static int matchPortLog = 0x800000 | 0 << 1;
 
     /**
      * physical port
      */
-    public static final int matchPortPhy = 0x800000 | 1 << 1;
+    public final static int matchPortPhy = 0x800000 | 1 << 1;
     /**
      * metadata
      */
-    public static final int matchMeta = 0x800000 | 2 << 1;
+    public final static int matchMeta = 0x800000 | 2 << 1;
 
     /**
      * ethernet destination
      */
-    public static final int matchEthDst = 0x800000 | 3 << 1;
+    public final static int matchEthDst = 0x800000 | 3 << 1;
 
     /**
      * ethernet source
      */
-    public static final int matchEthSrc = 0x800000 | 4 << 1;
+    public final static int matchEthSrc = 0x800000 | 4 << 1;
 
     /**
      * ethernet type
      */
-    public static final int matchEthTyp = 0x800000 | 5 << 1;
+    public final static int matchEthTyp = 0x800000 | 5 << 1;
 
     /**
      * vlan id
      */
-    public static final int matchVlanId = 0x800000 | 6 << 1;
+    public final static int matchVlanId = 0x800000 | 6 << 1;
 
     /**
      * vlan priority
      */
-    public static final int matchVlanPri = 0x800000 | 7 << 1;
+    public final static int matchVlanPri = 0x800000 | 7 << 1;
 
     /**
      * ip dscp
      */
-    public static final int matchIpDscp = 0x800000 | 8 << 1;
+    public final static int matchIpDscp = 0x800000 | 8 << 1;
 
     /**
      * ip ecn
      */
-    public static final int matchIpEcn = 0x800000 | 9 << 1;
+    public final static int matchIpEcn = 0x800000 | 9 << 1;
 
     /**
      * ip protocol
      */
-    public static final int matchIpProto = 0x800000 | 10 << 1;
+    public final static int matchIpProto = 0x800000 | 10 << 1;
 
     /**
      * ipv4 source
      */
-    public static final int matchIp4src = 0x800000 | 11 << 1;
+    public final static int matchIp4src = 0x800000 | 11 << 1;
 
     /**
      * ipv4 destination
      */
-    public static final int matchIp4dst = 0x800000 | 12 << 1;
+    public final static int matchIp4dst = 0x800000 | 12 << 1;
 
     /**
      * tcp source
      */
-    public static final int matchTcpSrc = 0x800000 | 13 << 1;
+    public final static int matchTcpSrc = 0x800000 | 13 << 1;
 
     /**
      * tcp destination
      */
-    public static final int matchTcpDst = 0x800000 | 14 << 1;
+    public final static int matchTcpDst = 0x800000 | 14 << 1;
 
     /**
      * udp source
      */
-    public static final int matchUdpSrc = 0x800000 | 15 << 1;
+    public final static int matchUdpSrc = 0x800000 | 15 << 1;
 
     /**
      * udp destination
      */
-    public static final int matchUdpDst = 0x800000 | 16 << 1;
+    public final static int matchUdpDst = 0x800000 | 16 << 1;
 
     /**
      * sctp source
      */
-    public static final int matchSctpSrc = 0x800000 | 17 << 1;
+    public final static int matchSctpSrc = 0x800000 | 17 << 1;
 
     /**
      * sctp destination
      */
-    public static final int matchSctpDst = 0x800000 | 18 << 1;
+    public final static int matchSctpDst = 0x800000 | 18 << 1;
 
     /**
      * icmp4 type
      */
-    public static final int matchIcmp4typ = 0x800000 | 19 << 1;
+    public final static int matchIcmp4typ = 0x800000 | 19 << 1;
 
     /**
      * icmp4 code
      */
-    public static final int matchIcmp4cod = 0x800000 | 20 << 1;
+    public final static int matchIcmp4cod = 0x800000 | 20 << 1;
 
     /**
      * arp op
      */
-    public static final int matchArpOp = 0x800000 | 21 << 1;
+    public final static int matchArpOp = 0x800000 | 21 << 1;
 
     /**
      * arp spa
      */
-    public static final int matchArpSpa = 0x800000 | 22 << 1;
+    public final static int matchArpSpa = 0x800000 | 22 << 1;
 
     /**
      * arp tpa
      */
-    public static final int matchArpTpa = 0x800000 | 23 << 1;
+    public final static int matchArpTpa = 0x800000 | 23 << 1;
 
     /**
      * arp sha
      */
-    public static final int matchArpSha = 0x800000 | 24 << 1;
+    public final static int matchArpSha = 0x800000 | 24 << 1;
 
     /**
      * arp tha
      */
-    public static final int matchArpTha = 0x800000 | 25 << 1;
+    public final static int matchArpTha = 0x800000 | 25 << 1;
 
     /**
      * ipv6 source
      */
-    public static final int matchIp6src = 0x800000 | 26 << 1;
+    public final static int matchIp6src = 0x800000 | 26 << 1;
 
     /**
      * ipv6 destination
      */
-    public static final int matchIp6dst = 0x800000 | 27 << 1;
+    public final static int matchIp6dst = 0x800000 | 27 << 1;
 
     /**
      * ipv6 flow label
      */
-    public static final int matchIp6flw = 0x800000 | 28 << 1;
+    public final static int matchIp6flw = 0x800000 | 28 << 1;
 
     /**
      * icmp6 type
      */
-    public static final int matchIcmp6typ = 0x800000 | 29 << 1;
+    public final static int matchIcmp6typ = 0x800000 | 29 << 1;
 
     /**
      * icmp6 code
      */
-    public static final int matchIcmp6cod = 0x800000 | 30 << 1;
+    public final static int matchIcmp6cod = 0x800000 | 30 << 1;
 
     /**
      * icmp6 nd target
      */
-    public static final int matchIcmp6trg = 0x800000 | 31 << 1;
+    public final static int matchIcmp6trg = 0x800000 | 31 << 1;
 
     /**
      * icmp6 nd sll
      */
-    public static final int matchIcmp6sll = 0x800000 | 32 << 1;
+    public final static int matchIcmp6sll = 0x800000 | 32 << 1;
 
     /**
      * icmp6 nd tll
      */
-    public static final int matchIcmp6tll = 0x800000 | 33 << 1;
+    public final static int matchIcmp6tll = 0x800000 | 33 << 1;
 
     /**
      * mpls label
      */
-    public static final int matchMplsLab = 0x800000 | 34 << 1;
+    public final static int matchMplsLab = 0x800000 | 34 << 1;
 
     /**
      * mpls experimental
      */
-    public static final int matchMplsExp = 0x800000 | 35 << 1;
+    public final static int matchMplsExp = 0x800000 | 35 << 1;
 
     /**
      * mpls bottom of stack
      */
-    public static final int matchMplsBos = 0x800000 | 36 << 1;
+    public final static int matchMplsBos = 0x800000 | 36 << 1;
 
     /**
      * pbb s-sid
      */
-    public static final int matchPbbIsid = 0x800000 | 37 << 1;
+    public final static int matchPbbIsid = 0x800000 | 37 << 1;
 
     /**
      * tunnel id
      */
-    public static final int matchTunId = 0x800000 | 38 << 1;
+    public final static int matchTunId = 0x800000 | 38 << 1;
 
     /**
      * ipv6 extension header
      */
-    public static final int matchIp6ext = 0x800000 | 39 << 1;
+    public final static int matchIp6ext = 0x800000 | 39 << 1;
 
     /**
      * pbb uca
      */
-    public static final int matchPbbUca = 0x800000 | 41 << 1;
+    public final static int matchPbbUca = 0x800000 | 41 << 1;
 
     /**
      * tcp flags
      */
-    public static final int matchTcpFlg = 0x800000 | 42 << 1;
+    public final static int matchTcpFlg = 0x800000 | 42 << 1;
 
     /**
      * action set
      */
-    public static final int matchActSet = 0x800000 | 43 << 1;
+    public final static int matchActSet = 0x800000 | 43 << 1;
 
     /**
      * packet type
      */
-    public static final int matchPckTyp = 0x800000 | 44 << 1;
+    public final static int matchPckTyp = 0x800000 | 44 << 1;
 
     /**
      * output to port
      */
-    public static final int actionOutput = 0;
+    public final static int actionOutput = 0;
 
     /**
      * copy ttl outwards
      */
-    public static final int actionTtlOut = 11;
+    public final static int actionTtlOut = 11;
 
     /**
      * copy ttl inwards
      */
-    public static final int actionTtlIn = 12;
+    public final static int actionTtlIn = 12;
 
     /**
      * set mpls ttl
      */
-    public static final int actionMplsTtlSet = 15;
+    public final static int actionMplsTtlSet = 15;
 
     /**
      * decrement mpls ttl
      */
-    public static final int actionMplsTtlDec = 16;
+    public final static int actionMplsTtlDec = 16;
 
     /**
      * push vlan
      */
-    public static final int actionPushVlan = 17;
+    public final static int actionPushVlan = 17;
 
     /**
      * pop vlan
      */
-    public static final int actionPopVlan = 18;
+    public final static int actionPopVlan = 18;
 
     /**
      * push mpls
      */
-    public static final int actionMplsPush = 19;
+    public final static int actionMplsPush = 19;
 
     /**
      * pop mpls
      */
-    public static final int actionMplsPop = 20;
+    public final static int actionMplsPop = 20;
 
     /**
      * set queue
      */
-    public static final int actionQueue = 21;
+    public final static int actionQueue = 21;
 
     /**
      * group
      */
-    public static final int actionGroup = 22;
+    public final static int actionGroup = 22;
 
     /**
      * set ip ttl
      */
-    public static final int actionIpTtlSet = 23;
+    public final static int actionIpTtlSet = 23;
 
     /**
      * decrement ip ttl
      */
-    public static final int actionIpTtlDec = 24;
+    public final static int actionIpTtlDec = 24;
 
     /**
      * set field
      */
-    public static final int actionField = 25;
+    public final static int actionField = 25;
 
     /**
      * push pbb
      */
-    public static final int actionPushPbb = 26;
+    public final static int actionPushPbb = 26;
 
     /**
      * pop pbb
      */
-    public static final int actionPopPbb = 27;
+    public final static int actionPopPbb = 27;
 
     /**
      * copy field
      */
-    public static final int actionCopy = 28;
+    public final static int actionCopy = 28;
 
     /**
      * meter
      */
-    public static final int actionMeter = 29;
+    public final static int actionMeter = 29;
 
     /**
      * add
      */
-    public static final int groupCmdAdd = 0;
+    public final static int groupCmdAdd = 0;
 
     /**
      * modify
      */
-    public static final int groupCmdMdf = 1;
+    public final static int groupCmdMdf = 1;
 
     /**
      * delete
      */
-    public static final int groupCmdDel = 2;
+    public final static int groupCmdDel = 2;
 
     /**
      * broadcast
      */
-    public static final int groupTypAll = 0;
+    public final static int groupTypAll = 0;
 
     /**
      * select
      */
-    public static final int groupTypSel = 1;
+    public final static int groupTypSel = 1;
 
     /**
      * indirect
      */
-    public static final int groupTypInd = 2;
+    public final static int groupTypInd = 2;
 
     /**
      * failover
      */
-    public static final int groupTypFal = 3;
+    public final static int groupTypFal = 3;
 
     /**
      * add
      */
-    public static final int flowCmdAdd = 0;
+    public final static int flowCmdAdd = 0;
 
     /**
      * modify
      */
-    public static final int flowCmdMdf = 1;
+    public final static int flowCmdMdf = 1;
 
     /**
      * modify strict
      */
-    public static final int flowCmdMdfs = 2;
+    public final static int flowCmdMdfs = 2;
 
     /**
      * delete
      */
-    public static final int flowCmdDel = 3;
+    public final static int flowCmdDel = 3;
 
     /**
      * delete strict
      */
-    public static final int flowCmdDels = 4;
+    public final static int flowCmdDels = 4;
 
     /**
      * goto table
      */
-    public static final int instGoto = 1;
+    public final static int instGoto = 1;
 
     /**
      * write metadata
      */
-    public static final int instMetWrt = 2;
+    public final static int instMetWrt = 2;
 
     /**
      * write action
      */
-    public static final int instActWrt = 3;
+    public final static int instActWrt = 3;
 
     /**
      * apply action
      */
-    public static final int instActDo = 4;
+    public final static int instActDo = 4;
 
     /**
      * clear action
      */
-    public static final int instActClr = 5;
+    public final static int instActClr = 5;
 
     /**
      * meter
      */
-    public static final int instMeter = 6;
+    public final static int instMeter = 6;
 
     /**
      * pipeline to use

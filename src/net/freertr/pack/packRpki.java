@@ -21,57 +21,57 @@ public class packRpki {
     /**
      * port number
      */
-    public static final int portNum = 323;
+    public final static int portNum = 323;
 
     /**
      * size of header
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * serial notify
      */
-    public static final int msgSerialNotify = 0;
+    public final static int msgSerialNotify = 0;
 
     /**
      * serial query
      */
-    public static final int msgSerialQuery = 1;
+    public final static int msgSerialQuery = 1;
 
     /**
      * reset query
      */
-    public static final int msgResetQuery = 2;
+    public final static int msgResetQuery = 2;
 
     /**
      * cache response
      */
-    public static final int msgCacheReply = 3;
+    public final static int msgCacheReply = 3;
 
     /**
      * ipv4 prefix
      */
-    public static final int msgIpv4addr = 4;
+    public final static int msgIpv4addr = 4;
 
     /**
      * ipv6 prefix
      */
-    public static final int msgIpv6addr = 6;
+    public final static int msgIpv6addr = 6;
 
     /**
      * end of data
      */
-    public static final int msgEndData = 7;
+    public final static int msgEndData = 7;
 
     /**
      * cache reset
      */
-    public static final int msgCacheReset = 8;
+    public final static int msgCacheReset = 8;
 
     /**
      * error report
      */
-    public static final int msgErrorReport = 10;
+    public final static int msgErrorReport = 10;
 
     /**
      * type
@@ -128,7 +128,7 @@ public class packRpki {
      * @param i type
      * @return string
      */
-    public static final String type2string(int i) {
+    public final static String type2string(int i) {
         switch (i) {
             case msgSerialNotify:
                 return "serialNotify";

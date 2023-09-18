@@ -28,7 +28,7 @@ public class servUdptn extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 23;
+    public final static int port = 23;
 
     private userLine lin = new userLine();
 

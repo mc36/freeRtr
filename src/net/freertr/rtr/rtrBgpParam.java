@@ -832,7 +832,7 @@ public abstract class rtrBgpParam {
      * @param s string
      * @return afi mask
      */
-    public static final int string2mask(String s) {
+    public final static int string2mask(String s) {
         cmds c = new cmds("afi", s);
         return string2mask(c);
     }
@@ -843,7 +843,7 @@ public abstract class rtrBgpParam {
      * @param c string
      * @return afi mask
      */
-    public static final int string2mask(cmds c) {
+    public final static int string2mask(cmds c) {
         int i = 0;
         for (;;) {
             String a = c.word();
@@ -978,7 +978,7 @@ public abstract class rtrBgpParam {
      * @param i afi mask
      * @return string
      */
-    public static final String mask2string(int i) {
+    public final static String mask2string(int i) {
         String a = "";
         if ((i & mskUni) != 0) {
             a += " unicast";

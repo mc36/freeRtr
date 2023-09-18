@@ -26,7 +26,7 @@ public class prtMplsIp implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 137;
+    public final static int prot = 137;
 
     /**
      * upper layer

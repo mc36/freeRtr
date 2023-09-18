@@ -60,62 +60,62 @@ public class ifcUdld implements ifcUp {
     /**
      * probe
      */
-    public static final int opcProbe = 1;
+    public final static int opcProbe = 1;
 
     /**
      * echo
      */
-    public static final int opcEcho = 2;
+    public final static int opcEcho = 2;
 
     /**
      * flush
      */
-    public static final int opcFlush = 3;
+    public final static int opcFlush = 3;
 
     /**
      * using default timeout
      */
-    public static final int flgDflt = 1;
+    public final static int flgDflt = 1;
 
     /**
      * resynchronization
      */
-    public static final int flgSync = 2;
+    public final static int flgSync = 2;
 
     /**
      * device id
      */
-    public static final int ttypDevId = 1;
+    public final static int ttypDevId = 1;
 
     /**
      * port id
      */
-    public static final int ttypPrtId = 2;
+    public final static int ttypPrtId = 2;
 
     /**
      * echo
      */
-    public static final int ttypEcho = 3;
+    public final static int ttypEcho = 3;
 
     /**
      * message interval
      */
-    public static final int ttypMsgInt = 4;
+    public final static int ttypMsgInt = 4;
 
     /**
      * timeout interval
      */
-    public static final int ttypTimOut = 5;
+    public final static int ttypTimOut = 5;
 
     /**
      * device name
      */
-    public static final int ttypDevNam = 6;
+    public final static int ttypDevNam = 6;
 
     /**
      * sequence number
      */
-    public static final int ttypSeqNum = 7;
+    public final static int ttypSeqNum = 7;
 
     /**
      * decode opcode

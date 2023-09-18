@@ -30,7 +30,7 @@ public class prtMinenc implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int proto = 55;
+    public final static int proto = 55;
 
     /**
      * sending ttl value, -1 means maps out

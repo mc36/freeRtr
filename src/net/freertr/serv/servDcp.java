@@ -31,7 +31,7 @@ public class servDcp extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 411;
+    public final static int port = 411;
 
     /**
      * logging

@@ -29,17 +29,17 @@ public class prtSwipe implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 53;
+    public final static int prot = 53;
 
     /**
      * size of header
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * magic
      */
-    public static final int magic = 0x03010002;
+    public final static int magic = 0x03010002;
 
     /**
      * upper layer

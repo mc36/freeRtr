@@ -15,277 +15,277 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
     /**
      * header size
      */
-    public static final int headSize = 19;
+    public final static int headSize = 19;
 
     /**
      * sequence number size
      */
-    public static final int seqSize = 16;
+    public final static int seqSize = 16;
 
     /**
      * lsp id size
      */
-    public static final int idSize = 8;
+    public final static int idSize = 8;
 
     /**
      * partition repair
      */
-    public static final int flgPart = 0x80;
+    public final static int flgPart = 0x80;
 
     /**
      * default attached
      */
-    public static final int flgAttach = 0x08;
+    public final static int flgAttach = 0x08;
 
     /**
      * overloaded
      */
-    public static final int flgOver = 0x04;
+    public final static int flgOver = 0x04;
 
     /**
      * level info
      */
-    public static final int flgLevel = 0x03;
+    public final static int flgLevel = 0x03;
 
     /**
      * area addresses
      */
-    public static final int tlvAreaAddr = 1;
+    public final static int tlvAreaAddr = 1;
 
     /**
      * is neighbor reachability
      */
-    public static final int tlvIsNeigh = 2;
+    public final static int tlvIsNeigh = 2;
 
     /**
      * es neighbor reachability
      */
-    public static final int tlvEsNeigh = 3;
+    public final static int tlvEsNeigh = 3;
 
     /**
      * prefix neighbors
      */
-    public static final int tlvPrefNeigh = 5;
+    public final static int tlvPrefNeigh = 5;
 
     /**
      * lan neighbors
      */
-    public static final int tlvLanNeigh = 6;
+    public final static int tlvLanNeigh = 6;
 
     /**
      * instance id
      */
-    public static final int tlvInstanceId = 7;
+    public final static int tlvInstanceId = 7;
 
     /**
      * padding
      */
-    public static final int tlvPadding = 8;
+    public final static int tlvPadding = 8;
 
     /**
      * lsp entries
      */
-    public static final int tlvLspEntries = 9;
+    public final static int tlvLspEntries = 9;
 
     /**
      * authentication
      */
-    public static final int tlvAuthen = 10;
+    public final static int tlvAuthen = 10;
 
     /**
      * extended sequence number
      */
-    public static final int tlvExtSeq = 11;
+    public final static int tlvExtSeq = 11;
 
     /**
      * optional checksum
      */
-    public static final int tlvChecksum = 12;
+    public final static int tlvChecksum = 12;
 
     /**
      * purge originator id
      */
-    public static final int tlvPurgeOrig = 13;
+    public final static int tlvPurgeOrig = 13;
 
     /**
      * lsp buffer size
      */
-    public static final int tlvLspBufSiz = 14;
+    public final static int tlvLspBufSiz = 14;
 
     /**
      * router fingerprint
      */
-    public static final int tlvRtrFingerprint = 15;
+    public final static int tlvRtrFingerprint = 15;
 
     /**
      * reverse metric
      */
-    public static final int tlvReverseMetric = 16;
+    public final static int tlvReverseMetric = 16;
 
     /**
      * extended is reachability
      */
-    public static final int tlvExtIsNeigh = 22;
+    public final static int tlvExtIsNeigh = 22;
 
     /**
      * is neighbor attribute
      */
-    public static final int tlvIsNeighAttr = 23;
+    public final static int tlvIsNeighAttr = 23;
 
     /**
      * is alias id
      */
-    public static final int tlvIsAlias = 24;
+    public final static int tlvIsAlias = 24;
 
     /**
      * bundle member
      */
-    public static final int tlvBundleMember = 25;
+    public final static int tlvBundleMember = 25;
 
     /**
      * segment routing v6
      */
-    public static final int tlvSegRoutV6 = 27;
+    public final static int tlvSegRoutV6 = 27;
 
     /**
      * ipv4 internal reachability
      */
-    public static final int tlvIpv4intReach = 128;
+    public final static int tlvIpv4intReach = 128;
 
     /**
      * protocol supported
      */
-    public static final int tlvProtSupp = 129;
+    public final static int tlvProtSupp = 129;
 
     /**
      * ipv4 external reachability
      */
-    public static final int tlvIpv4extReach = 130;
+    public final static int tlvIpv4extReach = 130;
 
     /**
      * idrp information
      */
-    public static final int tlvIdrpInfo = 131;
+    public final static int tlvIdrpInfo = 131;
 
     /**
      * ipv4 interface address
      */
-    public static final int tlvIpv4addr = 132;
+    public final static int tlvIpv4addr = 132;
 
     /**
      * ipv4 traffic engineering id
      */
-    public static final int tlvIpv4teId = 134;
+    public final static int tlvIpv4teId = 134;
 
     /**
      * extended ipv4 reachability
      */
-    public static final int tlvExtIpv4reach = 135;
+    public final static int tlvExtIpv4reach = 135;
 
     /**
      * dynamic name
      */
-    public static final int tlvHostName = 137;
+    public final static int tlvHostName = 137;
 
     /**
      * ipv4 shared risk link group
      */
-    public static final int tlvIpv4srlg = 138;
+    public final static int tlvIpv4srlg = 138;
 
     /**
      * ipv6 shared risk link group
      */
-    public static final int tlvIpv6srlg = 139;
+    public final static int tlvIpv6srlg = 139;
 
     /**
      * ipv6 traffic engineering id
      */
-    public static final int tlvIpv6teId = 140;
+    public final static int tlvIpv6teId = 140;
 
     /**
      * inter as reachability
      */
-    public static final int tlvInterAsReach = 141;
+    public final static int tlvInterAsReach = 141;
 
     /**
      * bfd enabled
      */
-    public static final int tlvBfdEnabled = 148;
+    public final static int tlvBfdEnabled = 148;
 
     /**
      * sid/label binding
      */
-    public static final int tlvSidBind = 149;
+    public final static int tlvSidBind = 149;
 
     /**
      * multitopology sid/label binding
      */
-    public static final int tlvMtSidBind = 150;
+    public final static int tlvMtSidBind = 150;
 
     /**
      * restart
      */
-    public static final int tlvRestart = 211;
+    public final static int tlvRestart = 211;
 
     /**
      * multi topology is neighbor reachability
      */
-    public static final int tlvMtIsNeigh = 222;
+    public final static int tlvMtIsNeigh = 222;
 
     /**
      * multi topology is neighbor attributes
      */
-    public static final int tlvMtNeighAttr = 223;
+    public final static int tlvMtNeighAttr = 223;
 
     /**
      * multi topology identified
      */
-    public static final int tlvMultiTopo = 229;
+    public final static int tlvMultiTopo = 229;
 
     /**
      * ipv6 interface address
      */
-    public static final int tlvIpv6addr = 232;
+    public final static int tlvIpv6addr = 232;
 
     /**
      * multi topology ipv4 reachability
      */
-    public static final int tlvMtIpv4reach = 235;
+    public final static int tlvMtIpv4reach = 235;
 
     /**
      * ipv6 reachability
      */
-    public static final int tlvIpv6reach = 236;
+    public final static int tlvIpv6reach = 236;
 
     /**
      * multi topology ipv6 reachability
      */
-    public static final int tlvMtIpv6reach = 237;
+    public final static int tlvMtIpv6reach = 237;
 
     /**
      * point to point 3-way adjacency state
      */
-    public static final int tlvHandshake = 240;
+    public final static int tlvHandshake = 240;
 
     /**
      * is-is router capability
      */
-    public static final int tlvRouterCapa = 242;
+    public final static int tlvRouterCapa = 242;
 
     /**
      * scope flooding
      */
-    public static final int tlvScopeFlood = 243;
+    public final static int tlvScopeFlood = 243;
 
     /**
      * generic information
      */
-    public static final int tlvGenericInfo = 251;
+    public final static int tlvGenericInfo = 251;
 
     /**
      * experimental
      */
-    public static final int tlvExperimental = 250;
+    public final static int tlvExperimental = 250;
 
     /**
      * source id

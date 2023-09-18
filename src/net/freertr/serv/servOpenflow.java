@@ -74,27 +74,27 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
     /**
      * group table
      */
-    public static final int tabGrp = -1;
+    public final static int tabGrp = -1;
 
     /**
      * port table
      */
-    public static final int tabPort = 0;
+    public final static int tabPort = 0;
 
     /**
      * mpls table
      */
-    public static final int tabMpls = 1;
+    public final static int tabMpls = 1;
 
     /**
      * ipv4 table
      */
-    public static final int tabIpv4 = 2;
+    public final static int tabIpv4 = 2;
 
     /**
      * ipv6 table
      */
-    public static final int tabIpv6 = 3;
+    public final static int tabIpv6 = 3;
 
     /**
      * exported interfaces

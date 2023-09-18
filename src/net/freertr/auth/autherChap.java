@@ -14,32 +14,32 @@ public class autherChap extends autherDoer {
     /**
      * ppp name
      */
-    public static final String pppName = "chap";
+    public final static String pppName = "chap";
 
     /**
      * ppp control type
      */
-    public static final int pppCtrl = 0xc223;
+    public final static int pppCtrl = 0xc223;
 
     /**
      * challenge
      */
-    public static final int codeChal = 1;
+    public final static int codeChal = 1;
 
     /**
      * response
      */
-    public static final int codeResp = 2;
+    public final static int codeResp = 2;
 
     /**
      * success
      */
-    public static final int codeSucc = 3;
+    public final static int codeSucc = 3;
 
     /**
      * failure
      */
-    public static final int codeFail = 4;
+    public final static int codeFail = 4;
 
     private int sentId;
 

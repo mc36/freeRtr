@@ -28,7 +28,7 @@ public class clntSyslog {
      * @param l level
      * @return severity
      */
-    public static final int level2severity(logger.logLev l) {
+    public final static int level2severity(logger.logLev l) {
         switch (l) {
             case msgDebg:
                 return 7;

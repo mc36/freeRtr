@@ -23,47 +23,47 @@ public class rtrIsisSr {
     /**
      * adjacency sid
      */
-    public static final int typAdjSid = 31;
+    public final static int typAdjSid = 31;
 
     /**
      * lan adjacency sid
      */
-    public static final int typLanAdjSid = 32;
+    public final static int typLanAdjSid = 32;
 
     /**
      * bundle adjacency sid
      */
-    public static final int typBunAdjSid = 41;
+    public final static int typBunAdjSid = 41;
 
     /**
      * bundle lan adjacency sid
      */
-    public static final int typBunLanAdjSid = 42;
+    public final static int typBunLanAdjSid = 42;
 
     /**
      * prefix segment id
      */
-    public static final int typPrfSeg = 3;
+    public final static int typPrfSeg = 3;
 
     /**
      * segment routing capability
      */
-    public static final int typSrCapa = 2;
+    public final static int typSrCapa = 2;
 
     /**
      * segment routing algorithms
      */
-    public static final int typSrAlgo = 19;
+    public final static int typSrAlgo = 19;
 
     /**
      * end segment id
      */
-    public static final int typEndSid = 5;
+    public final static int typEndSid = 5;
 
     /**
      * segment routing v6 capability
      */
-    public static final int typSrv6capa = 25;
+    public final static int typSrv6capa = 25;
 
     /**
      * create sr base

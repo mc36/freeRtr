@@ -19,112 +19,112 @@ public class packL2f {
     /**
      * port number
      */
-    public static final int port = 1701;
+    public final static int port = 1701;
 
     /**
      * management frame
      */
-    public static final int prtMgmt = 1;
+    public final static int prtMgmt = 1;
 
     /**
      * ppp frame
      */
-    public static final int prtPpp = 2;
+    public final static int prtPpp = 2;
 
     /**
      * slip frame
      */
-    public static final int prtSlip = 3;
+    public final static int prtSlip = 3;
 
     /**
      * configuration
      */
-    public static final int typConf = 1;
+    public final static int typConf = 1;
 
     /**
      * conf name
      */
-    public static final int typConfName = 2;
+    public final static int typConfName = 2;
 
     /**
      * conf challenge
      */
-    public static final int typConfChal = 3;
+    public final static int typConfChal = 3;
 
     /**
      * conf clid
      */
-    public static final int typConfClid = 4;
+    public final static int typConfClid = 4;
 
     /**
      * open
      */
-    public static final int typOpen = 2;
+    public final static int typOpen = 2;
 
     /**
      * open name
      */
-    public static final int typOpenName = 1;
+    public final static int typOpenName = 1;
 
     /**
      * open challenge
      */
-    public static final int typOpenChal = 2;
+    public final static int typOpenChal = 2;
 
     /**
      * open response
      */
-    public static final int typOpenResp = 3;
+    public final static int typOpenResp = 3;
 
     /**
      * open lcp confack accepted from client
      */
-    public static final int typOpenLcp1 = 4;
+    public final static int typOpenLcp1 = 4;
 
     /**
      * open lcp confack sent to client
      */
-    public static final int typOpenLcp2 = 5;
+    public final static int typOpenLcp2 = 5;
 
     /**
      * open authentication used
      */
-    public static final int typOpenAuth = 6;
+    public final static int typOpenAuth = 6;
 
     /**
      * open auth id
      */
-    public static final int typOpenAuid = 7;
+    public final static int typOpenAuid = 7;
 
     /**
      * open first lcp from client
      */
-    public static final int typOpenLcp0 = 8;
+    public final static int typOpenLcp0 = 8;
 
     /**
      * close
      */
-    public static final int typClose = 3;
+    public final static int typClose = 3;
 
     /**
      * close reason
      */
-    public static final int typCloseWhy = 1;
+    public final static int typCloseWhy = 1;
 
     /**
      * close string
      */
-    public static final int typCloseStr = 2;
+    public final static int typCloseStr = 2;
 
     /**
      * echo request
      */
-    public static final int typEchoReq = 4;
+    public final static int typEchoReq = 4;
 
     /**
      * echo response
      */
-    public static final int typEchoRes = 5;
+    public final static int typEchoRes = 5;
 
     /**
      * protocol

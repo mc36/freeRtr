@@ -50,37 +50,37 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
     /**
      * header size
      */
-    public static final int size = 48;
+    public final static int size = 48;
 
     /**
      * monitor
      */
-    public static final int typMon = 0;
+    public final static int typMon = 0;
 
     /**
      * statistics
      */
-    public static final int typStat = 1;
+    public final static int typStat = 1;
 
     /**
      * peer down
      */
-    public static final int typPerDn = 2;
+    public final static int typPerDn = 2;
 
     /**
      * peer up
      */
-    public static final int typPerUp = 3;
+    public final static int typPerUp = 3;
 
     /**
      * initialization
      */
-    public static final int typInit = 4;
+    public final static int typInit = 4;
 
     /**
      * termination
      */
-    public static final int typTerm = 5;
+    public final static int typTerm = 5;
 
     /**
      * create instance

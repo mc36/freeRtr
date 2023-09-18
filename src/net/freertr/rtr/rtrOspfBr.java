@@ -21,12 +21,12 @@ public class rtrOspfBr {
     /**
      * bier info
      */
-    public static final int typBierInfo = 9;
+    public final static int typBierInfo = 9;
 
     /**
      * bier mpls
      */
-    public static final int typBierMpls = 10;
+    public final static int typBierMpls = 10;
 
     /**
      * generate br prefix

@@ -149,17 +149,17 @@ public class gallery {
     /**
      * extensions
      */
-    public static final String imageExt = ".jpg.jpeg.png.gif.bmp.";
+    public final static String imageExt = ".jpg.jpeg.png.gif.bmp.";
 
     /**
      * extensions
      */
-    public static final String videoExt = ".avi.mp4.mov.";
+    public final static String videoExt = ".avi.mp4.mov.";
 
     /**
      * extensions
      */
-    public static final String textExt = ".pdf.txt.docx.odt.";
+    public final static String textExt = ".pdf.txt.docx.odt.";
 
     /**
      * do one request

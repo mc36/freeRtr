@@ -20,7 +20,7 @@ public class rtrIsisBr {
     /**
      * bier info
      */
-    public static final int typBier = 32;
+    public final static int typBier = 32;
 
     /**
      * generate br prefix

@@ -18,7 +18,7 @@ public class packL2tp3 extends packL2tp {
     /**
      * protocol number
      */
-    public static final int prot = 115;
+    public final static int prot = 115;
 
     /**
      * control message

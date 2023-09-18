@@ -73,87 +73,87 @@ public class userScreen {
     /**
      * black
      */
-    public static final byte colBlack = 0;
+    public final static byte colBlack = 0;
 
     /**
      * red
      */
-    public static final byte colRed = 1;
+    public final static byte colRed = 1;
 
     /**
      * green
      */
-    public static final byte colGreen = 2;
+    public final static byte colGreen = 2;
 
     /**
      * yellow
      */
-    public static final byte colYellow = 3;
+    public final static byte colYellow = 3;
 
     /**
      * blue
      */
-    public static final byte colBlue = 4;
+    public final static byte colBlue = 4;
 
     /**
      * magenta
      */
-    public static final byte colMagenta = 5;
+    public final static byte colMagenta = 5;
 
     /**
      * cyan
      */
-    public static final byte colCyan = 6;
+    public final static byte colCyan = 6;
 
     /**
      * white
      */
-    public static final byte colWhite = 7;
+    public final static byte colWhite = 7;
 
     /**
      * bright/blink text
      */
-    public static final byte colBright = 8;
+    public final static byte colBright = 8;
 
     /**
      * bright black
      */
-    public static final byte colBrBlack = colBright | colBlack;
+    public final static byte colBrBlack = colBright | colBlack;
 
     /**
      * bright red
      */
-    public static final byte colBrRed = colBright | colRed;
+    public final static byte colBrRed = colBright | colRed;
 
     /**
      * bright green
      */
-    public static final byte colBrGreen = colBright | colGreen;
+    public final static byte colBrGreen = colBright | colGreen;
 
     /**
      * bright yellow
      */
-    public static final byte colBrYellow = colBright | colYellow;
+    public final static byte colBrYellow = colBright | colYellow;
 
     /**
      * bright blue
      */
-    public static final byte colBrBlue = colBright | colBlue;
+    public final static byte colBrBlue = colBright | colBlue;
 
     /**
      * bright magenta
      */
-    public static final byte colBrMagenta = colBright | colMagenta;
+    public final static byte colBrMagenta = colBright | colMagenta;
 
     /**
      * bright cyan
      */
-    public static final byte colBrCyan = colBright | colCyan;
+    public final static byte colBrCyan = colBright | colCyan;
 
     /**
      * bright white
      */
-    public static final byte colBrWhite = colBright | colWhite;
+    public final static byte colBrWhite = colBright | colWhite;
 
     /**
      * create one screen

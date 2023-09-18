@@ -168,887 +168,887 @@ public class packGtp {
     /**
      * protocol type
      */
-    public static final int flgProt = 0x10;
+    public final static int flgProt = 0x10;
 
     /**
      * extension header
      */
-    public static final int flgExt = 0x04;
+    public final static int flgExt = 0x04;
 
     /**
      * sequence number
      */
-    public static final int flgSeq = 0x02;
+    public final static int flgSeq = 0x02;
 
     /**
      * no flags set
      */
-    public static final int flgNothing = 0x00;
+    public final static int flgNothing = 0x00;
 
     /**
      * n-pdu number
      */
-    public static final int flgNpdu = 0x01;
+    public final static int flgNpdu = 0x01;
 
     /**
      * ipv4
      */
-    public static final int adrIp4 = 0xf121;
+    public final static int adrIp4 = 0xf121;
 
     /**
      * ipv6
      */
-    public static final int adrIp6 = 0xf157;
+    public final static int adrIp6 = 0xf157;
 
     /**
      * ipv4 + ipv6
      */
-    public static final int adrIp46 = 0xf18d;
+    public final static int adrIp46 = 0xf18d;
 
     /**
      * ppp
      */
-    public static final int adrPpp = 0xf001;
+    public final static int adrPpp = 0xf001;
 
     /**
      * Echo Request
      */
-    public static final int typEchoReq = 1;
+    public final static int typEchoReq = 1;
 
     /**
      * Echo Response
      */
-    public static final int typEchoRep = 2;
+    public final static int typEchoRep = 2;
 
     /**
      * Version Not Supported
      */
-    public static final int typUnsupp = 3;
+    public final static int typUnsupp = 3;
 
     /**
      * Node Alive Request
      */
-    public static final int typAliveReq = 4;
+    public final static int typAliveReq = 4;
 
     /**
      * Node Alive Response
      */
-    public static final int typAliveRep = 5;
+    public final static int typAliveRep = 5;
 
     /**
      * Redirection Request
      */
-    public static final int typRedirReq = 6;
+    public final static int typRedirReq = 6;
 
     /**
      * Redirection Response
      */
-    public static final int typRedirRep = 7;
+    public final static int typRedirRep = 7;
 
     /**
      * Create PDP Context Request
      */
-    public static final int typCreateReq = 16;
+    public final static int typCreateReq = 16;
 
     /**
      * Create PDP Context Response
      */
-    public static final int typCreateRep = 17;
+    public final static int typCreateRep = 17;
 
     /**
      * Update PDP Context Request
      */
-    public static final int typUpdateReq = 18;
+    public final static int typUpdateReq = 18;
 
     /**
      * Update PDP Context Response
      */
-    public static final int typUpdateRep = 19;
+    public final static int typUpdateRep = 19;
 
     /**
      * Delete PDP Context Request
      */
-    public static final int typDeleteReq = 20;
+    public final static int typDeleteReq = 20;
 
     /**
      * Delete PDP Context Response
      */
-    public static final int typDeleteRep = 21;
+    public final static int typDeleteRep = 21;
 
     /**
      * Initiate PDP Context Activation Request
      */
-    public static final int typInitReq = 22;
+    public final static int typInitReq = 22;
 
     /**
      * Initiate PDP Context Activation Response
      */
-    public static final int typInitRep = 23;
+    public final static int typInitRep = 23;
 
     /**
      * Error Indication
      */
-    public static final int typError = 26;
+    public final static int typError = 26;
 
     /**
      * PDU Notification Request
      */
-    public static final int typNotifyReq = 27;
+    public final static int typNotifyReq = 27;
 
     /**
      * PDU Notification Response
      */
-    public static final int typNotifyRep = 28;
+    public final static int typNotifyRep = 28;
 
     /**
      * PDU Notification Reject Request
      */
-    public static final int typNotifRejReq = 29;
+    public final static int typNotifRejReq = 29;
 
     /**
      * PDU Notification Reject Response
      */
-    public static final int typNotifRejRep = 30;
+    public final static int typNotifRejRep = 30;
 
     /**
      * Supported Extension Headers Notification
      */
-    public static final int typSupported = 31;
+    public final static int typSupported = 31;
 
     /**
      * Send Routeing Information for GPRS Request
      */
-    public static final int typRoutReq = 32;
+    public final static int typRoutReq = 32;
 
     /**
      * Send Routeing Information for GPRS Response
      */
-    public static final int typRoutRep = 33;
+    public final static int typRoutRep = 33;
 
     /**
      * Failure Report Request
      */
-    public static final int typFailReq = 34;
+    public final static int typFailReq = 34;
 
     /**
      * Failure Report Response
      */
-    public static final int typFailRep = 35;
+    public final static int typFailRep = 35;
 
     /**
      * Note MS GPRS Present Request
      */
-    public static final int typPresentReq = 36;
+    public final static int typPresentReq = 36;
 
     /**
      * Note MS GPRS Present Response
      */
-    public static final int typPresentRep = 37;
+    public final static int typPresentRep = 37;
 
     /**
      * Identification Request
      */
-    public static final int typIdentReq = 48;
+    public final static int typIdentReq = 48;
 
     /**
      * Identification Response
      */
-    public static final int typIdentRep = 49;
+    public final static int typIdentRep = 49;
 
     /**
      * SGSN Context Request
      */
-    public static final int typSgsnReq = 50;
+    public final static int typSgsnReq = 50;
 
     /**
      * SGSN Context Response
      */
-    public static final int typSgsnRep = 51;
+    public final static int typSgsnRep = 51;
 
     /**
      * SGSN Context Acknowledge
      */
-    public static final int typSgsnAck = 52;
+    public final static int typSgsnAck = 52;
 
     /**
      * Forward Relocation Request
      */
-    public static final int typForwardReq = 53;
+    public final static int typForwardReq = 53;
 
     /**
      * Forward Relocation Response
      */
-    public static final int typForwardRep = 54;
+    public final static int typForwardRep = 54;
 
     /**
      * Forward Relocation Complete
      */
-    public static final int typForwardCmp = 55;
+    public final static int typForwardCmp = 55;
 
     /**
      * Relocation Cancel Request
      */
-    public static final int typReloCanReq = 56;
+    public final static int typReloCanReq = 56;
 
     /**
      * Relocation Cancel Response
      */
-    public static final int typRelocCanRep = 57;
+    public final static int typRelocCanRep = 57;
 
     /**
      * Forward SRNS Context
      */
-    public static final int typForwardSrnsReq = 58;
+    public final static int typForwardSrnsReq = 58;
 
     /**
      * Forward Relocation Complete Acknowledge
      */
-    public static final int typForwardAck = 59;
+    public final static int typForwardAck = 59;
 
     /**
      * Forward SRNS Context Acknowledge
      */
-    public static final int typForwardSrnsAck = 60;
+    public final static int typForwardSrnsAck = 60;
 
     /**
      * RAN Information Relay
      */
-    public static final int typRanRelay = 70;
+    public final static int typRanRelay = 70;
 
     /**
      * MBMS Notification Request
      */
-    public static final int typMbmsNotifReq = 96;
+    public final static int typMbmsNotifReq = 96;
 
     /**
      * MBMS Notification Response
      */
-    public static final int typMbmsNotifRep = 97;
+    public final static int typMbmsNotifRep = 97;
 
     /**
      * MBMS Notification Reject Request
      */
-    public static final int typMbmsRejReq = 98;
+    public final static int typMbmsRejReq = 98;
 
     /**
      * MBMS Notification Reject Response
      */
-    public static final int typMbmsRejRep = 99;
+    public final static int typMbmsRejRep = 99;
 
     /**
      * Create MBMS Context Request
      */
-    public static final int typCreateMbmsReq = 100;
+    public final static int typCreateMbmsReq = 100;
 
     /**
      * Create MBMS Context Response
      */
-    public static final int typCreateNbmsRep = 101;
+    public final static int typCreateNbmsRep = 101;
 
     /**
      * Update MBMS Context Request
      */
-    public static final int typUpdateMbmsReq = 102;
+    public final static int typUpdateMbmsReq = 102;
 
     /**
      * Update MBMS Context Response
      */
-    public static final int typUpdateMbmsRep = 103;
+    public final static int typUpdateMbmsRep = 103;
 
     /**
      * Delete MBMS Context Request
      */
-    public static final int typDeleteMbmsReq = 104;
+    public final static int typDeleteMbmsReq = 104;
 
     /**
      * Delete MBMS Context Response
      */
-    public static final int typDeleteMbmsRep = 105;
+    public final static int typDeleteMbmsRep = 105;
 
     /**
      * MBMS Registration Request
      */
-    public static final int typMbmsRegReq = 112;
+    public final static int typMbmsRegReq = 112;
 
     /**
      * MBMS Registration Response
      */
-    public static final int typMbmsRegRep = 113;
+    public final static int typMbmsRegRep = 113;
 
     /**
      * MBMS De-Registration Request
      */
-    public static final int typMbmsDelReq = 114;
+    public final static int typMbmsDelReq = 114;
 
     /**
      * MBMS De-Registration Response
      */
-    public static final int typMbmsDelRep = 115;
+    public final static int typMbmsDelRep = 115;
 
     /**
      * MBMS Session Start Request
      */
-    public static final int typMbmsStartReq = 116;
+    public final static int typMbmsStartReq = 116;
 
     /**
      * MBMS Session Start Response
      */
-    public static final int typMbmsStartRep = 117;
+    public final static int typMbmsStartRep = 117;
 
     /**
      * MBMS Session Stop Request
      */
-    public static final int typMbmsStopReq = 118;
+    public final static int typMbmsStopReq = 118;
 
     /**
      * MBMS Session Stop Response
      */
-    public static final int typMbmsStopRep = 119;
+    public final static int typMbmsStopRep = 119;
 
     /**
      * MBMS Session Update Request
      */
-    public static final int typMbmsUpdateReq = 120;
+    public final static int typMbmsUpdateReq = 120;
 
     /**
      * MBMS Session Update Response
      */
-    public static final int typMbmsUpdateRep = 121;
+    public final static int typMbmsUpdateRep = 121;
 
     /**
      * MS Info Change Notification Request
      */
-    public static final int typMsiChangeReq = 128;
+    public final static int typMsiChangeReq = 128;
 
     /**
      * MS Info Change Notification Response
      */
-    public static final int typMsiChangeRep = 129;
+    public final static int typMsiChangeRep = 129;
 
     /**
      * Data Record Transfer Request
      */
-    public static final int typDataRecReq = 240;
+    public final static int typDataRecReq = 240;
 
     /**
      * Data Record Transfer Response
      */
-    public static final int typDataRecRep = 241;
+    public final static int typDataRecRep = 241;
 
     /**
      * End Marker
      */
-    public static final int typEndMark = 254;
+    public final static int typEndMark = 254;
 
     /**
      * G-PDU
      */
-    public static final int typGPDU = 255;
+    public final static int typGPDU = 255;
 
     /**
      * Cause
      */
-    public static final int tlvCause = 1;
+    public final static int tlvCause = 1;
 
     /**
      * International Mobile Subscriber Identity (IMSI)
      */
-    public static final int tlvIMSI = 2;
+    public final static int tlvIMSI = 2;
 
     /**
      * Routeing Area Identity (RAI)
      */
-    public static final int tlvRAI = 3;
+    public final static int tlvRAI = 3;
 
     /**
      * Temporary Logical Link Identity (TLLI)
      */
-    public static final int tlvTLLI = 4;
+    public final static int tlvTLLI = 4;
 
     /**
      * Packet TMSI (P-TMSI)
      */
-    public static final int tlvPTMSI = 5;
+    public final static int tlvPTMSI = 5;
 
     /**
      * Reordering Required
      */
-    public static final int tlvReordReq = 8;
+    public final static int tlvReordReq = 8;
 
     /**
      * Authentication Triplet
      */
-    public static final int tlvAuthTrip = 9;
+    public final static int tlvAuthTrip = 9;
 
     /**
      * MAP Cause
      */
-    public static final int tlvMAPcause = 11;
+    public final static int tlvMAPcause = 11;
 
     /**
      * P-TMSI Signature
      */
-    public static final int tlvPTMSIsig = 12;
+    public final static int tlvPTMSIsig = 12;
 
     /**
      * MS Validated
      */
-    public static final int tlvMSvalid = 13;
+    public final static int tlvMSvalid = 13;
 
     /**
      * Recovery
      */
-    public static final int tlvRecovery = 14;
+    public final static int tlvRecovery = 14;
 
     /**
      * Selection Mode
      */
-    public static final int tlvSelectMode = 15;
+    public final static int tlvSelectMode = 15;
 
     /**
      * Tunnel Endpoint Identifier Data I
      */
-    public static final int tlvTeid1 = 16;
+    public final static int tlvTeid1 = 16;
 
     /**
      * Tunnel Endpoint Identifier Control Plane
      */
-    public static final int tlvTeidCp = 17;
+    public final static int tlvTeidCp = 17;
 
     /**
      * Tunnel Endpoint Identifier Data II
      */
-    public static final int tlvTeid2 = 18;
+    public final static int tlvTeid2 = 18;
 
     /**
      * Teardown Ind
      */
-    public static final int tlvTeardown = 19;
+    public final static int tlvTeardown = 19;
 
     /**
      * NSAPI
      */
-    public static final int tlvNSAPI = 20;
+    public final static int tlvNSAPI = 20;
 
     /**
      * RANAP Cause
      */
-    public static final int tlvRANAPcause = 21;
+    public final static int tlvRANAPcause = 21;
 
     /**
      * RAB Context
      */
-    public static final int tlvRABcontext = 22;
+    public final static int tlvRABcontext = 22;
 
     /**
      * Radio Priority SMS
      */
-    public static final int tlvRadioSMS = 23;
+    public final static int tlvRadioSMS = 23;
 
     /**
      * Radio Priority
      */
-    public static final int tlvRadioPri = 24;
+    public final static int tlvRadioPri = 24;
 
     /**
      * Packet Flow Id
      */
-    public static final int tlvPackFlowId = 25;
+    public final static int tlvPackFlowId = 25;
 
     /**
      * Charging Characteristics
      */
-    public static final int tlvChargChar = 26;
+    public final static int tlvChargChar = 26;
 
     /**
      * Trace Reference
      */
-    public static final int tlvTraceRef = 27;
+    public final static int tlvTraceRef = 27;
 
     /**
      * Trace Type
      */
-    public static final int tlvTraceTyp = 28;
+    public final static int tlvTraceTyp = 28;
 
     /**
      * MS Not Reachable Reason
      */
-    public static final int tlvMSunReach = 29;
+    public final static int tlvMSunReach = 29;
 
     /**
      * Charging ID
      */
-    public static final int tlvChargID = 127;
+    public final static int tlvChargID = 127;
 
     /**
      * End User Address
      */
-    public static final int tlvEndUserAddr = 128;
+    public final static int tlvEndUserAddr = 128;
 
     /**
      * MM Context
      */
-    public static final int tlvMMcontext = 129;
+    public final static int tlvMMcontext = 129;
 
     /**
      * PDP Context
      */
-    public static final int tlvPDPcontext = 130;
+    public final static int tlvPDPcontext = 130;
 
     /**
      * Access Point Name
      */
-    public static final int tlvAccessPointName = 131;
+    public final static int tlvAccessPointName = 131;
 
     /**
      * Protocol Configuration Options
      */
-    public static final int tlvProtCfgOpt = 132;
+    public final static int tlvProtCfgOpt = 132;
 
     /**
      * GSN Address
      */
-    public static final int tlvGSNaddr = 133;
+    public final static int tlvGSNaddr = 133;
 
     /**
      * MS International PSTN/ISDN Number (MSISDN)
      */
-    public static final int tlvMSISDN = 134;
+    public final static int tlvMSISDN = 134;
 
     /**
      * Quality of Service Profile
      */
-    public static final int tlvQOSpro = 135;
+    public final static int tlvQOSpro = 135;
 
     /**
      * Authentication Quintuplet
      */
-    public static final int tlvAuthQuin = 136;
+    public final static int tlvAuthQuin = 136;
 
     /**
      * Traffic Flow Template
      */
-    public static final int tlvTrafFlowTemp = 137;
+    public final static int tlvTrafFlowTemp = 137;
 
     /**
      * Target Identification
      */
-    public static final int tlvTargetIdent = 138;
+    public final static int tlvTargetIdent = 138;
 
     /**
      * UTRAN Transparent Container
      */
-    public static final int tlvUTRANtrans = 139;
+    public final static int tlvUTRANtrans = 139;
 
     /**
      * RAB Setup Information
      */
-    public static final int tlvRABsetup = 140;
+    public final static int tlvRABsetup = 140;
 
     /**
      * Extension Header Type List
      */
-    public static final int tlvExtHead = 141;
+    public final static int tlvExtHead = 141;
 
     /**
      * Trigger Id
      */
-    public static final int tlvTrigId = 142;
+    public final static int tlvTrigId = 142;
 
     /**
      * OMC Identity
      */
-    public static final int tlvOMCid = 143;
+    public final static int tlvOMCid = 143;
 
     /**
      * RAN Transparent Container
      */
-    public static final int tlvRANtrans = 144;
+    public final static int tlvRANtrans = 144;
 
     /**
      * PDP Context Prioritization
      */
-    public static final int tlvPDPcontPri = 145;
+    public final static int tlvPDPcontPri = 145;
 
     /**
      * Additional RAB Setup Information
      */
-    public static final int tlvAddRABsetup = 146;
+    public final static int tlvAddRABsetup = 146;
 
     /**
      * SGSN Number
      */
-    public static final int tlvSGSNnum = 147;
+    public final static int tlvSGSNnum = 147;
 
     /**
      * Common Flags
      */
-    public static final int tlvCommonFlags = 148;
+    public final static int tlvCommonFlags = 148;
 
     /**
      * APN Restriction
      */
-    public static final int tlvAPNrestrict = 149;
+    public final static int tlvAPNrestrict = 149;
 
     /**
      * Radio Priority LCS
      */
-    public static final int tlvRadioLCS = 150;
+    public final static int tlvRadioLCS = 150;
 
     /**
      * RAT Type
      */
-    public static final int tlvRATtype = 151;
+    public final static int tlvRATtype = 151;
 
     /**
      * User Location Information
      */
-    public static final int tlvUserLocInfo = 152;
+    public final static int tlvUserLocInfo = 152;
 
     /**
      * MS Time Zone
      */
-    public static final int tlvMStimZon = 153;
+    public final static int tlvMStimZon = 153;
 
     /**
      * IMEI(SV)
      */
-    public static final int tlvIMEI = 154;
+    public final static int tlvIMEI = 154;
 
     /**
      * CAMEL Charging Information Container
      */
-    public static final int tlvCAMELchargInfo = 155;
+    public final static int tlvCAMELchargInfo = 155;
 
     /**
      * MBMS UE Context
      */
-    public static final int tlvMBMSue = 156;
+    public final static int tlvMBMSue = 156;
 
     /**
      * Temporary Mobile Group Identity (TMGI)
      */
-    public static final int tlvTMGI = 157;
+    public final static int tlvTMGI = 157;
 
     /**
      * RIM Routing Address
      */
-    public static final int tlvRIMroutAddr = 158;
+    public final static int tlvRIMroutAddr = 158;
 
     /**
      * MBMS Protocol Configuration Options
      */
-    public static final int tlvMBMSprotCfg = 159;
+    public final static int tlvMBMSprotCfg = 159;
 
     /**
      * MBMS Service Area
      */
-    public static final int tlvMBMSservArea = 160;
+    public final static int tlvMBMSservArea = 160;
 
     /**
      * Source RNC PDCP context info
      */
-    public static final int tlvSrcRNCpdcp = 161;
+    public final static int tlvSrcRNCpdcp = 161;
 
     /**
      * Additional Trace Info
      */
-    public static final int tlvAddTraceInfo = 162;
+    public final static int tlvAddTraceInfo = 162;
 
     /**
      * Hop Counter
      */
-    public static final int tlvHopCount = 163;
+    public final static int tlvHopCount = 163;
 
     /**
      * Selected PLMN ID
      */
-    public static final int tlvSelectPLMN = 164;
+    public final static int tlvSelectPLMN = 164;
 
     /**
      * MBMS Session Identifier
      */
-    public static final int tlvMBMSsessId = 165;
+    public final static int tlvMBMSsessId = 165;
 
     /**
      * MBMS 2G/3G Indicator
      */
-    public static final int tlvMBMSind = 166;
+    public final static int tlvMBMSind = 166;
 
     /**
      * Enhanced NSAPI
      */
-    public static final int tlvEnhNSAPI = 167;
+    public final static int tlvEnhNSAPI = 167;
 
     /**
      * MBMS Session Duration
      */
-    public static final int tlvMBMSsessDur = 168;
+    public final static int tlvMBMSsessDur = 168;
 
     /**
      * Additional MBMS Trace Info
      */
-    public static final int tlvAddMBMStrace = 169;
+    public final static int tlvAddMBMStrace = 169;
 
     /**
      * MBMS Session Repetition Number
      */
-    public static final int tlvMBMSsessRepet = 170;
+    public final static int tlvMBMSsessRepet = 170;
 
     /**
      * MBMS Time To Data Transfer
      */
-    public static final int tlvMBMStime2data = 171;
+    public final static int tlvMBMStime2data = 171;
 
     /**
      * BSS Container
      */
-    public static final int tlvBSScont = 173;
+    public final static int tlvBSScont = 173;
 
     /**
      * Cell Identification
      */
-    public static final int tlvCellId = 174;
+    public final static int tlvCellId = 174;
 
     /**
      * PDU Numbers
      */
-    public static final int tlvPDUnums = 175;
+    public final static int tlvPDUnums = 175;
 
     /**
      * BSSGP Cause
      */
-    public static final int tlvBSSGPcause = 176;
+    public final static int tlvBSSGPcause = 176;
 
     /**
      * Required MBMS bearer capabilities
      */
-    public static final int tlvReqMBMSbearCap = 177;
+    public final static int tlvReqMBMSbearCap = 177;
 
     /**
      * RIM Routing Address Discriminator
      */
-    public static final int tlvRIMroutAddrDisc = 178;
+    public final static int tlvRIMroutAddrDisc = 178;
 
     /**
      * List of set-up PFCs
      */
-    public static final int tlvPFClist = 179;
+    public final static int tlvPFClist = 179;
 
     /**
      * PS Handover XID Parameters
      */
-    public static final int tlvPShandXID = 180;
+    public final static int tlvPShandXID = 180;
 
     /**
      * MS Info Change Reporting Action
      */
-    public static final int tlvMSIchgReport = 181;
+    public final static int tlvMSIchgReport = 181;
 
     /**
      * Direct Tunnel Flags
      */
-    public static final int tlvDirTun = 182;
+    public final static int tlvDirTun = 182;
 
     /**
      * Correlation-ID
      */
-    public static final int tlvCorrID = 183;
+    public final static int tlvCorrID = 183;
 
     /**
      * Bearer Control Mode
      */
-    public static final int tlvBearCtrl = 184;
+    public final static int tlvBearCtrl = 184;
 
     /**
      * MBMS Flow Identifier
      */
-    public static final int tlvMBMSflowId = 185;
+    public final static int tlvMBMSflowId = 185;
 
     /**
      * MBMS IP Multicast Distribution
      */
-    public static final int tlvMBMSmulticast = 186;
+    public final static int tlvMBMSmulticast = 186;
 
     /**
      * MBMS Distribution Acknowledgement
      */
-    public static final int tlvMBMSdistrib = 187;
+    public final static int tlvMBMSdistrib = 187;
 
     /**
      * Reliable INTER RAT HANDOVER INFO
      */
-    public static final int tlvRelRAThand = 188;
+    public final static int tlvRelRAThand = 188;
 
     /**
      * RFSP Index
      */
-    public static final int tlvRFSPindex = 189;
+    public final static int tlvRFSPindex = 189;
 
     /**
      * Fully Qualified Domain Name (FQDN)
      */
-    public static final int tlvFQDN = 190;
+    public final static int tlvFQDN = 190;
 
     /**
      * Evolved Allocation/Retention Priority I
      */
-    public static final int tlvAllocRetPri1 = 191;
+    public final static int tlvAllocRetPri1 = 191;
 
     /**
      * Evolved Allocation/Retention Priority II
      */
-    public static final int tlvAllocRetPri2 = 192;
+    public final static int tlvAllocRetPri2 = 192;
 
     /**
      * Extended Common Flags
      */
-    public static final int tlvExtCommFlg = 193;
+    public final static int tlvExtCommFlg = 193;
 
     /**
      * User CSG Information (UCI)
      */
-    public static final int tlvUserCSGinfo = 194;
+    public final static int tlvUserCSGinfo = 194;
 
     /**
      * CSG Information Reporting Action
      */
-    public static final int tlvCSGinfoReport = 195;
+    public final static int tlvCSGinfoReport = 195;
 
     /**
      * CSG ID
      */
-    public static final int tlvCsgID = 196;
+    public final static int tlvCsgID = 196;
 
     /**
      * CSG Membership Indication (CMI)
      */
-    public static final int tlvCSGmemberInd = 197;
+    public final static int tlvCSGmemberInd = 197;
 
     /**
      * Aggregate Maximum Bit Rate (AMBR)
      */
-    public static final int tlvAggrMaxBitRate = 198;
+    public final static int tlvAggrMaxBitRate = 198;
 
     /**
      * UE Network Capability
      */
-    public static final int tlvUEnetCapa = 199;
+    public final static int tlvUEnetCapa = 199;
 
     /**
      * UE-AMBR
      */
-    public static final int tlvUEambr = 200;
+    public final static int tlvUEambr = 200;
 
     /**
      * APN-AMBR with NSAPI
      */
-    public static final int tlvAPNambr = 201;
+    public final static int tlvAPNambr = 201;
 
     /**
      * Charging Gateway Address
      */
-    public static final int tlvChargGwAddr = 251;
+    public final static int tlvChargGwAddr = 251;
 
     /**
      * convert message type to string

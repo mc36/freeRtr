@@ -16,17 +16,17 @@ public class packTwamp {
     /**
      * port number
      */
-    public static final int port = 862;
+    public final static int port = 862;
 
     /**
      * header size
      */
-    public static final int size = 41;
+    public final static int size = 41;
 
     /**
      * error magic
      */
-    public static final int errMag = 0x3fff;
+    public final static int errMag = 0x3fff;
 
     /**
      * sequence number

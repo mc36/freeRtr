@@ -50,7 +50,7 @@ public class servSdwan extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 2554;
+    public final static int port = 2554;
 
     /**
      * list of users

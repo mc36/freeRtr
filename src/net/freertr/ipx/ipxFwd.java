@@ -25,7 +25,7 @@ public class ipxFwd implements Runnable {
     /**
      * size of header
      */
-    public static final int size = 30;
+    public final static int size = 30;
 
     /**
      * name of routing table

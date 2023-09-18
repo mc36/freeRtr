@@ -28,7 +28,7 @@ public class servQuote extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 17;
+    public final static int port = 17;
 
     /**
      * lines

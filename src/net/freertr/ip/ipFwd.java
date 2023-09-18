@@ -632,7 +632,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
      * @param i protocol to check
      * @return true if drop, false if process the packet further
      */
-    public static final boolean safeProtocol(int i) {
+    public final static boolean safeProtocol(int i) {
         switch (i) {
             case packEsp.protoNum:
                 return false;

@@ -15,13 +15,13 @@ public class cryHashBlake2s extends cryHashGeneric {
     public cryHashBlake2s() {
     }
 
-    private static final int[] blake2s_IV = {
+    private final static int[] blake2s_IV = {
         0x6a09e667, 0xbb67ae85, 0x3c6ef372,
         0xa54ff53a, 0x510e527f, 0x9b05688c,
         0x1f83d9ab, 0x5be0cd19
     };
 
-    private static final byte[][] blake2s_sigma = {
+    private final static byte[][] blake2s_sigma = {
         {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
         {14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3},
         {11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4},
@@ -33,9 +33,9 @@ public class cryHashBlake2s extends cryHashGeneric {
         {6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4, 10, 5},
         {10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0}};
 
-    private static final int ROUNDS = 10;
+    private final static int ROUNDS = 10;
 
-    private static final int BLOCK_LENGTH_BYTES = 64;
+    private final static int BLOCK_LENGTH_BYTES = 64;
 
     private int digestLength = 32;
 

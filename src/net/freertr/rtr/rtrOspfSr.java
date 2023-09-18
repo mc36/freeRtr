@@ -25,32 +25,32 @@ public class rtrOspfSr {
     /**
      * sid/label
      */
-    public static final int prfSidLab = 1;
+    public final static int prfSidLab = 1;
 
     /**
      * prefix sid
      */
-    public static final int prfPrfSid = 2;
+    public final static int prfPrfSid = 2;
 
     /**
      * sid/label
      */
-    public static final int lnkSidLab = 1;
+    public final static int lnkSidLab = 1;
 
     /**
      * adj sid
      */
-    public static final int lnkAdjSid = 2;
+    public final static int lnkAdjSid = 2;
 
     /**
      * lan adj sid
      */
-    public static final int lnkLanAdjSid = 3;
+    public final static int lnkLanAdjSid = 3;
 
     /**
      * remote
      */
-    public static final int lnkRemote = 0x8000;
+    public final static int lnkRemote = 0x8000;
 
     /**
      * put sr base

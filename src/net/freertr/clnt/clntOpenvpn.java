@@ -40,7 +40,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
     /**
      * port number
      */
-    public static final int port = 1194;
+    public final static int port = 1194;
 
     /**
      * upper layer

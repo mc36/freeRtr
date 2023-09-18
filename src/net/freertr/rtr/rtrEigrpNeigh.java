@@ -24,62 +24,62 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
     /**
      * update
      */
-    public static final int opcUpdate = 1;
+    public final static int opcUpdate = 1;
 
     /**
      * request
      */
-    public static final int opcRequest = 2;
+    public final static int opcRequest = 2;
 
     /**
      * query
      */
-    public static final int opcQuery = 3;
+    public final static int opcQuery = 3;
 
     /**
      * reply
      */
-    public static final int opcReply = 4;
+    public final static int opcReply = 4;
 
     /**
      * hello
      */
-    public static final int opcHello = 5;
+    public final static int opcHello = 5;
 
     /**
      * probe
      */
-    public static final int opcProbe = 7;
+    public final static int opcProbe = 7;
 
     /**
      * sia query
      */
-    public static final int opcSiaQuery = 10;
+    public final static int opcSiaQuery = 10;
 
     /**
      * sia reply
      */
-    public static final int opcSiaReply = 11;
+    public final static int opcSiaReply = 11;
 
     /**
      * initialize
      */
-    public static final int flagInit = 1;
+    public final static int flagInit = 1;
 
     /**
      * conditional receive
      */
-    public static final int flagCR = 2;
+    public final static int flagCR = 2;
 
     /**
      * restart
      */
-    public static final int flagRst = 4;
+    public final static int flagRst = 4;
 
     /**
      * end of table
      */
-    public static final int flagEot = 8;
+    public final static int flagEot = 8;
 
     /**
      * convert opcode to string

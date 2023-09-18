@@ -38,57 +38,57 @@ public class packPim {
     /**
      * hello
      */
-    public static final int typHello = 0;
+    public final static int typHello = 0;
 
     /**
      * register
      */
-    public static final int typReg = 1;
+    public final static int typReg = 1;
 
     /**
      * register ack
      */
-    public static final int typRegStop = 2;
+    public final static int typRegStop = 2;
 
     /**
      * join/prune
      */
-    public static final int typJoin = 3;
+    public final static int typJoin = 3;
 
     /**
      * bootstrap
      */
-    public static final int typBtstrp = 4;
+    public final static int typBtstrp = 4;
 
     /**
      * assert
      */
-    public static final int typAssert = 5;
+    public final static int typAssert = 5;
 
     /**
      * graft
      */
-    public static final int typGrft = 6;
+    public final static int typGrft = 6;
 
     /**
      * graft ack
      */
-    public static final int typGrftAck = 7;
+    public final static int typGrftAck = 7;
 
     /**
      * candidate rp
      */
-    public static final int typCndRp = 8;
+    public final static int typCndRp = 8;
 
     /**
      * state refresh
      */
-    public static final int typSttFrsh = 9;
+    public final static int typSttFrsh = 9;
 
     /**
      * designated forwarder election
      */
-    public static final int typDfElect = 10;
+    public final static int typDfElect = 10;
 
     /**
      * hold time

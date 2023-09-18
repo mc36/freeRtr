@@ -133,7 +133,7 @@ public class userTester {
 
     private String beg = "-";
 
-    private static final String sep = " ---------- ";
+    private final static String sep = " ---------- ";
 
     private tabGen<userTesterFtr> needed = new tabGen<userTesterFtr>();
 
@@ -149,7 +149,7 @@ public class userTester {
 
     private userTesterOne[] workers;
 
-    private static final String result2string(String s) {
+    private final static String result2string(String s) {
         if (s.equals("success")) {
             return "ok";
         } else {

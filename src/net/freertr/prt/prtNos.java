@@ -25,7 +25,7 @@ public class prtNos implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int proto = 94;
+    public final static int proto = 94;
 
     /**
      * sending ttl value, -1 means maps out

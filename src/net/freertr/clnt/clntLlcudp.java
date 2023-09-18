@@ -36,12 +36,12 @@ public class clntLlcudp implements Runnable, prtServP, ifcDn {
     /**
      * port to use
      */
-    public static final int port = 12002;
+    public final static int port = 12002;
 
     /**
      * size of header
      */
-    public static final int size = 10;
+    public final static int size = 10;
 
     /**
      * upper layer

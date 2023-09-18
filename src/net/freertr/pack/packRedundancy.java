@@ -16,77 +16,77 @@ public class packRedundancy {
     /**
      * ethertype
      */
-    public static final int ethtyp = 0x8087;
+    public final static int ethtyp = 0x8087;
 
     /**
      * header size
      */
-    public static final int size = 20;
+    public final static int size = 20;
 
     /**
      * hello
      */
-    public static final int typHello = 1;
+    public final static int typHello = 1;
 
     /**
      * reload
      */
-    public static final int typReload = 2;
+    public final static int typReload = 2;
 
     /**
      * acknowledge
      */
-    public static final int typAck = 3;
+    public final static int typAck = 3;
 
     /**
      * file begin
      */
-    public static final int typFilBeg = 4;
+    public final static int typFilBeg = 4;
 
     /**
      * file data
      */
-    public static final int typFilDat = 5;
+    public final static int typFilDat = 5;
 
     /**
      * file end
      */
-    public static final int typFilEnd = 6;
+    public final static int typFilEnd = 6;
 
     /**
      * file checksum request
      */
-    public static final int typSumReq = 7;
+    public final static int typSumReq = 7;
 
     /**
      * file checksum reply
      */
-    public static final int typSumVal = 8;
+    public final static int typSumVal = 8;
 
     /**
      * set priority
      */
-    public static final int typSetPri = 9;
+    public final static int typSetPri = 9;
 
     /**
      * config file
      */
-    public static final String fnStart = "config";
+    public final static String fnStart = "config";
 
     /**
      * image file
      */
-    public static final String fnCore = "code";
+    public final static String fnCore = "code";
 
     /**
      * show platform
      */
-    public static final String fnPlatform = "platform";///////////////////
+    public final static String fnPlatform = "platform";///////////////////
 
     /**
      * show redundancy
      */
-    public static final String fnRemRedun = "redunstat";//////////////////
+    public final static String fnRemRedun = "redunstat";//////////////////
 
     /**
      * init
@@ -111,7 +111,7 @@ public class packRedundancy {
     /**
      * max size
      */
-    public static final int dataMax = 1024;
+    public final static int dataMax = 1024;
 
     /**
      * type

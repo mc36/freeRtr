@@ -13,27 +13,27 @@ public class autherPap extends autherDoer {
     /**
      * ppp name
      */
-    public static final String pppName = "pap";
+    public final static String pppName = "pap";
 
     /**
      * ppp control type
      */
-    public static final int pppCtrl = 0xc023;
+    public final static int pppCtrl = 0xc023;
 
     /**
      * Authenticate Request
      */
-    public static final int codeReq = 1;
+    public final static int codeReq = 1;
 
     /**
      * Authenticate Ack
      */
-    public static final int codeAck = 2;
+    public final static int codeAck = 2;
 
     /**
      * Authenticate Nak
      */
-    public static final int codeNak = 3;
+    public final static int codeNak = 3;
 
     private int sentId;
 

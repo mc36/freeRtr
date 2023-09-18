@@ -36,7 +36,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
     /**
      * eigrp protocol number
      */
-    public static final int protoNum = 88;
+    public final static int protoNum = 88;
 
     /**
      * protocol version number
@@ -46,7 +46,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
     /**
      * eigrp header size
      */
-    public static final int sizeHead = 20;
+    public final static int sizeHead = 20;
 
     /**
      * forwarding core

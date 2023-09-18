@@ -38,7 +38,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 1;
+    public final static int port = 1;
 
     /**
      * timeout on connection

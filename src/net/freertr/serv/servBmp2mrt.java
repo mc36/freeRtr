@@ -52,12 +52,12 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 17971;
+    public final static int port = 17971;
 
     /**
      * header size
      */
-    public static final int size = 6;
+    public final static int size = 6;
 
     /**
      * relays

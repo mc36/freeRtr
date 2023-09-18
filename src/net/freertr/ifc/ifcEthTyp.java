@@ -277,7 +277,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     /**
      * looped packets depth
      */
-    public static final int loopMax = 64;
+    public final static int loopMax = 64;
 
     /**
      * get history handler

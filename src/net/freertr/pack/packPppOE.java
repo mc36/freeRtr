@@ -48,82 +48,82 @@ public class packPppOE {
     /**
      * data packet
      */
-    public static final int codeData = 0x00;
+    public final static int codeData = 0x00;
 
     /**
      * Active Discovery Initiation
      */
-    public static final int codePadI = 0x09;
+    public final static int codePadI = 0x09;
 
     /**
      * Active Discovery Offer
      */
-    public static final int codePadO = 0x07;
+    public final static int codePadO = 0x07;
 
     /**
      * Active Discovery Request
      */
-    public static final int codePadR = 0x19;
+    public final static int codePadR = 0x19;
 
     /**
      * Active Discovery Session-confirmation
      */
-    public static final int codePadS = 0x65;
+    public final static int codePadS = 0x65;
 
     /**
      * Active Discovery Terminate
      */
-    public static final int codePadT = 0xa7;
+    public final static int codePadT = 0xa7;
 
     /**
      * end of list
      */
-    public static final int typeEol = 0x0000;
+    public final static int typeEol = 0x0000;
 
     /**
      * service name
      */
-    public static final int typeSrvNam = 0x0101;
+    public final static int typeSrvNam = 0x0101;
 
     /**
      * ac name
      */
-    public static final int typeACnam = 0x0102;
+    public final static int typeACnam = 0x0102;
 
     /**
      * host uniq
      */
-    public static final int typeHstUnq = 0x0103;
+    public final static int typeHstUnq = 0x0103;
 
     /**
      * ac cookie
      */
-    public static final int typeACcok = 0x0104;
+    public final static int typeACcok = 0x0104;
 
     /**
      * vendor specific
      */
-    public static final int typeVndSpc = 0x0105;
+    public final static int typeVndSpc = 0x0105;
 
     /**
      * relay session id
      */
-    public static final int typeRlySes = 0x0110;
+    public final static int typeRlySes = 0x0110;
 
     /**
      * service name error
      */
-    public static final int typeSrvNm = 0x0201;
+    public final static int typeSrvNm = 0x0201;
 
     /**
      * ac system error
      */
-    public static final int typeSysErr = 0x0202;
+    public final static int typeSysErr = 0x0202;
 
     /**
      * generic error
      */
-    public static final int typeGenErr = 0x0203;
+    public final static int typeGenErr = 0x0203;
 
     /**
      * convert code to string

@@ -18,7 +18,7 @@ public class addrIpx extends addrType {
     /**
      * size of address
      */
-    public static final int size = 10;
+    public final static int size = 10;
 
     /**
      * get size

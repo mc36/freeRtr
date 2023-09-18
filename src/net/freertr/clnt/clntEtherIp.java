@@ -35,17 +35,17 @@ public class clntEtherIp implements Runnable, ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 97;
+    public final static int prot = 97;
 
     /**
      * header size
      */
-    public static final int size = 2;
+    public final static int size = 2;
 
     /**
      * magic
      */
-    public static final int magic = 0x0300;
+    public final static int magic = 0x0300;
 
     /**
      * upper layer

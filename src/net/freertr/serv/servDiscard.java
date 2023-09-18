@@ -27,7 +27,7 @@ public class servDiscard extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 9;
+    public final static int port = 9;
 
     /**
      * defaults text

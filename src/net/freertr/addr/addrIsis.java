@@ -18,7 +18,7 @@ public class addrIsis extends addrType {
     /**
      * size of address
      */
-    public static final int size = 6;
+    public final static int size = 6;
 
     /**
      * copy bytes

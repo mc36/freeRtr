@@ -41,7 +41,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
     /**
      * port number
      */
-    public static final int port = 1547;
+    public final static int port = 1547;
 
     /**
      * forwarding core

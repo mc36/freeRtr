@@ -111,7 +111,7 @@ public class secSsh implements Runnable {
     /**
      * default port number
      */
-    public static final int portNum = 22;
+    public final static int portNum = 22;
 
     private packSsh pckRx;
 

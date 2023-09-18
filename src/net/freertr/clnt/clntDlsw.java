@@ -35,12 +35,12 @@ public class clntDlsw implements Runnable, ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 91;
+    public final static int prot = 91;
 
     /**
      * header size
      */
-    public static final int size = 72;
+    public final static int size = 72;
 
     /**
      * upper layer

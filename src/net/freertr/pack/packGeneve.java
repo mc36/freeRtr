@@ -18,22 +18,22 @@ public class packGeneve {
     /**
      * udp port number
      */
-    public static final int port = 6081;
+    public final static int port = 6081;
 
     /**
      * size of header
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * oam frame
      */
-    public static final int flgO = 0x80;
+    public final static int flgO = 0x80;
 
     /**
      * critical options
      */
-    public static final int flgC = 0x40;
+    public final static int flgC = 0x40;
 
     /**
      * virtual network id

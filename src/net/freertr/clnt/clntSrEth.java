@@ -35,7 +35,7 @@ public class clntSrEth implements Runnable, ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int prot = 143;
+    public final static int prot = 143;
 
     /**
      * upper layer

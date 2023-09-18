@@ -37,7 +37,7 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
     /**
      * defaults text
      */
-    public static final String[] defaultL = {};
+    public final static String[] defaultL = {};
 
     /**
      * defaults filter

@@ -13,12 +13,12 @@ public class packXotPad {
     /**
      * port number
      */
-    public static final int port = 1998;
+    public final static int port = 1998;
 
     /**
      * max data size
      */
-    public static final int datMax = 128;
+    public final static int datMax = 128;
 
     private final pipeSide conn;
 

@@ -34,7 +34,7 @@ public class clntLisp implements Comparator<clntLisp>, Runnable, prtServP, ifcDn
     /**
      * port number
      */
-    public static final int portNum = 4341;
+    public final static int portNum = 4341;
 
     /**
      * upper layer

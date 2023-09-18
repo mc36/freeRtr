@@ -34,7 +34,7 @@ public class servIrc extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 6667;
+    public final static int port = 6667;
 
     /**
      * channels

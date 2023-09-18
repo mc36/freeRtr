@@ -49,7 +49,7 @@ public class servSmtp extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 25;
+    public final static int port = 25;
 
     /**
      * mail folders

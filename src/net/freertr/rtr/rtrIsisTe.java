@@ -22,112 +22,112 @@ public class rtrIsisTe {
     /**
      * administrative group
      */
-    public static final int typAdminGrp = 3;
+    public final static int typAdminGrp = 3;
 
     /**
      * link local/remote identifier
      */
-    public static final int typBothId = 4;
+    public final static int typBothId = 4;
 
     /**
      * local ipv4 address
      */
-    public static final int typLoc4adr = 6;
+    public final static int typLoc4adr = 6;
 
     /**
      * remote ipv4 address
      */
-    public static final int typRem4adr = 8;
+    public final static int typRem4adr = 8;
 
     /**
      * max bandwidth
      */
-    public static final int typMaxBndwdt = 9;
+    public final static int typMaxBndwdt = 9;
 
     /**
      * max reservable bandwidth
      */
-    public static final int typMaxReserv = 10;
+    public final static int typMaxReserv = 10;
 
     /**
      * unreservable bandwidth
      */
-    public static final int typUnReserv = 11;
+    public final static int typUnReserv = 11;
 
     /**
      * local ipv6 address
      */
-    public static final int typLoc6adr = 12;
+    public final static int typLoc6adr = 12;
 
     /**
      * remote ipv6 address
      */
-    public static final int typRem6adr = 13;
+    public final static int typRem6adr = 13;
 
     /**
      * extended administrative group
      */
-    public static final int typExtAdmin = 14;
+    public final static int typExtAdmin = 14;
 
     /**
      * link maximum sid depth
      */
-    public static final int typLinkMsd = 15;
+    public final static int typLinkMsd = 15;
 
     /**
      * te metric
      */
-    public static final int typMetric = 18;
+    public final static int typMetric = 18;
 
     /**
      * link attributes
      */
-    public static final int typLnkAttr = 19;
+    public final static int typLnkAttr = 19;
 
     /**
      * link protection type
      */
-    public static final int typLnkProt = 20;
+    public final static int typLnkProt = 20;
 
     /**
      * interface switching capability
      */
-    public static final int typSwchCapa = 21;
+    public final static int typSwchCapa = 21;
 
     /**
      * bandwidth constraints
      */
-    public static final int typBndwdtCnst = 22;
+    public final static int typBndwdtCnst = 22;
 
     /**
      * unconstrained te lsp count
      */
-    public static final int typUncnstLsp = 23;
+    public final static int typUncnstLsp = 23;
 
     /**
      * remote as number
      */
-    public static final int typASnum = 24;
+    public final static int typASnum = 24;
 
     /**
      * remote ipv4 asbr number
      */
-    public static final int typAsbr4id = 25;
+    public final static int typAsbr4id = 25;
 
     /**
      * remote ipv6 asbr number
      */
-    public static final int typAsbr6id = 26;
+    public final static int typAsbr6id = 26;
 
     /**
      * interface adjustment capability descriptor
      */
-    public static final int typIntAdjCapa = 27;
+    public final static int typIntAdjCapa = 27;
 
     /**
      * maximum transmission unit
      */
-    public static final int typMtu = 28;
+    public final static int typMtu = 28;
 
     /**
      * create te router id

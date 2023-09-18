@@ -33,7 +33,7 @@ public class servGopher extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int portNum = 70;
+    public final static int portNum = 70;
 
     /**
      * root folder

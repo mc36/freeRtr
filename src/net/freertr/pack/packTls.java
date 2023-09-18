@@ -122,22 +122,22 @@ public class packTls {
     /**
      * change cipher spec
      */
-    public static final int typeChgCipher = 20;
+    public final static int typeChgCipher = 20;
 
     /**
      * alert
      */
-    public static final int typeAlert = 21;
+    public final static int typeAlert = 21;
 
     /**
      * handshake
      */
-    public static final int typeHandshk = 22;
+    public final static int typeHandshk = 22;
 
     /**
      * application data
      */
-    public static final int typeAppDat = 23;
+    public final static int typeAppDat = 23;
 
     /**
      * convert version to dtls

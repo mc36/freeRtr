@@ -22,12 +22,12 @@ public class packVrrp {
     /**
      * protocol number
      */
-    public static final int proto = 112;
+    public final static int proto = 112;
 
     /**
      * advertisement
      */
-    public static final int typAdvert = 1;
+    public final static int typAdvert = 1;
 
     /**
      * protocol version

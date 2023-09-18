@@ -41,7 +41,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
     /**
      * port number
      */
-    public static final int port = 9081;
+    public final static int port = 9081;
 
     /**
      * cpuport interface

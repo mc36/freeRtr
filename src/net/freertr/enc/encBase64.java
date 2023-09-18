@@ -19,11 +19,11 @@ public class encBase64 {
     /**
      * default line length in cleartext form
      */
-    public static final int maxIn = 60;
+    public final static int maxIn = 60;
 
-    private static final String tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    private final static String tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    private static final String pad = "=";
+    private final static String pad = "=";
 
     private static String encodePart(byte[] buf, int ofs, int siz) {
         if (siz < 1) {
@@ -92,7 +92,7 @@ public class encBase64 {
      * @param siz bytes to encode
      * @return encoded data
      */
-    public static final String encodeBytes(byte[] buf, int ofs, int siz) {
+    public final static String encodeBytes(byte[] buf, int ofs, int siz) {
         final int max = 3;
         String s = "";
         for (;;) {
@@ -116,7 +116,7 @@ public class encBase64 {
      * @param buf buffer to encode
      * @return encoded data
      */
-    public static final String encodeBytes(byte[] buf) {
+    public final static String encodeBytes(byte[] buf) {
         return encodeBytes(buf, 0, buf.length);
     }
 
@@ -126,7 +126,7 @@ public class encBase64 {
      * @param str string to encode
      * @return decoded data
      */
-    public static final String encodeString(String str) {
+    public final static String encodeString(String str) {
         byte[] buf = str.getBytes();
         return encodeBytes(buf, 0, buf.length);
     }
@@ -137,7 +137,7 @@ public class encBase64 {
      * @param str string to decode
      * @return decoded data
      */
-    public static final byte[] decodeBytes(String str) {
+    public final static byte[] decodeBytes(String str) {
         final int max = 4;
         List<Byte> buf = new ArrayList<Byte>();
         for (;;) {
@@ -170,7 +170,7 @@ public class encBase64 {
      * @param str string to decode
      * @return decoded data
      */
-    public static final String decodeString(String str) {
+    public final static String decodeString(String str) {
         byte[] res = decodeBytes(str);
         if (res == null) {
             return null;

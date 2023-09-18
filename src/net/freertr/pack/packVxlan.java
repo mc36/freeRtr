@@ -16,37 +16,37 @@ public class packVxlan {
     /**
      * udp port number
      */
-    public static final int port = 4789;
+    public final static int port = 4789;
 
     /**
      * size of header
      */
-    public static final int size = 8;
+    public final static int size = 8;
 
     /**
      * version mask
      */
-    public static final int flgVER = 0x30;
+    public final static int flgVER = 0x30;
 
     /**
      * valid vmi
      */
-    public static final int flgVNi = 0x08;
+    public final static int flgVNi = 0x08;
 
     /**
      * valid np
      */
-    public static final int flgPRT = 0x04;
+    public final static int flgPRT = 0x04;
 
     /**
      * valid bum
      */
-    public static final int flgBUM = 0x02;
+    public final static int flgBUM = 0x02;
 
     /**
      * valid oam
      */
-    public static final int flgOAM = 0x01;
+    public final static int flgOAM = 0x01;
 
     /**
      * instance id

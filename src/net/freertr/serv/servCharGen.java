@@ -27,7 +27,7 @@ public class servCharGen extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 19;
+    public final static int port = 19;
 
     /**
      * defaults text

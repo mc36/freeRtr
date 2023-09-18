@@ -18,27 +18,27 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
     /**
      * bgp type
      */
-    public static final int typBgp = 16;
+    public final static int typBgp = 16;
 
     /**
      * remote message
      */
-    public static final int typRem32 = 4;
+    public final static int typRem32 = 4;
 
     /**
      * local message
      */
-    public static final int typLoc32 = 7;
+    public final static int typLoc32 = 7;
 
     /**
      * remote message
      */
-    public static final int typRem16 = 1;
+    public final static int typRem16 = 1;
 
     /**
      * local message
      */
-    public static final int typLoc16 = 6;
+    public final static int typLoc16 = 6;
 
     /**
      * name of dump

@@ -26,12 +26,12 @@ public class prtIpcomp implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int proto = 108;
+    public final static int proto = 108;
 
     /**
      * header size
      */
-    public static final int size = 4;
+    public final static int size = 4;
 
     /**
      * sending ttl value, -1 means maps out

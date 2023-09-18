@@ -39,7 +39,7 @@ public class servSocks extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 1080;
+    public final static int port = 1080;
 
     /**
      * target proxy

@@ -18,67 +18,67 @@ public class packBfd {
     /**
      * size of header
      */
-    public static final int size = 24;
+    public final static int size = 24;
 
     /**
      * port for one hop communication
      */
-    public static final int portLoc = 3784;
+    public final static int portLoc = 3784;
 
     /**
      * port for multi hop communication
      */
-    public static final int portRem = 4784;
+    public final static int portRem = 4784;
 
     /**
      * admin down
      */
-    public static final int stShut = 0;
+    public final static int stShut = 0;
 
     /**
      * down
      */
-    public static final int stDown = 1;
+    public final static int stDown = 1;
 
     /**
      * init
      */
-    public static final int stInit = 2;
+    public final static int stInit = 2;
 
     /**
      * up
      */
-    public static final int stUp = 3;
+    public final static int stUp = 3;
 
     /**
      * poll
      */
-    public static final int flgPoll = 0x20;
+    public final static int flgPoll = 0x20;
 
     /**
      * final
      */
-    public static final int flgFinal = 0x10;
+    public final static int flgFinal = 0x10;
 
     /**
      * control plane independent
      */
-    public static final int flgIndep = 0x08;
+    public final static int flgIndep = 0x08;
 
     /**
      * authentication
      */
-    public static final int flgAuthen = 0x04;
+    public final static int flgAuthen = 0x04;
 
     /**
      * demand mode
      */
-    public static final int flgDemand = 0x02;
+    public final static int flgDemand = 0x02;
 
     /**
      * multipoint
      */
-    public static final int flgMulti = 0x01;
+    public final static int flgMulti = 0x01;
 
     /**
      * status code

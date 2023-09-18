@@ -24,7 +24,7 @@ public class prtIsoip implements ipPrt, ifcDn {
     /**
      * protocol number
      */
-    public static final int proto = 124;
+    public final static int proto = 124;
 
     /**
      * sending ttl value, -1 means maps out

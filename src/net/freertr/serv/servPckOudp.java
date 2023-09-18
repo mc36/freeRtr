@@ -35,7 +35,7 @@ public class servPckOudp extends servGeneric implements prtServP {
     /**
      * port number
      */
-    public static final int port = 2554;
+    public final static int port = 2554;
 
     /**
      * interface to use

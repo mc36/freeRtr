@@ -44,15 +44,15 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     /**
      * port number
      */
-    public static final int port = 51902;
+    public final static int port = 51902;
 
-    private static final byte[] magicC = {
+    private final static byte[] magicC = {
         (byte) 0x60, (byte) 0xe2, (byte) 0x6d, (byte) 0xae, (byte) 0xf3, (byte) 0x27, (byte) 0xef, (byte) 0xc0,
         (byte) 0x2e, (byte) 0xc3, (byte) 0x35, (byte) 0xe2, (byte) 0xa0, (byte) 0x25, (byte) 0xd2, (byte) 0xd0,
         (byte) 0x16, (byte) 0xeb, (byte) 0x42, (byte) 0x06, (byte) 0xf8, (byte) 0x72, (byte) 0x77, (byte) 0xf5,
         (byte) 0x2d, (byte) 0x38, (byte) 0xd1, (byte) 0x98, (byte) 0x8b, (byte) 0x78, (byte) 0xcd, (byte) 0x36};
 
-    private static final byte[] magicH = {
+    private final static byte[] magicH = {
         (byte) 0x22, (byte) 0x11, (byte) 0xb3, (byte) 0x61, (byte) 0x08, (byte) 0x1a, (byte) 0xc5, (byte) 0x66,
         (byte) 0x69, (byte) 0x12, (byte) 0x43, (byte) 0xdb, (byte) 0x45, (byte) 0x8a, (byte) 0xd5, (byte) 0x32,
         (byte) 0x2d, (byte) 0x9c, (byte) 0x6c, (byte) 0x66, (byte) 0x22, (byte) 0x93, (byte) 0xe8, (byte) 0xb7,

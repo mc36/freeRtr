@@ -35,17 +35,17 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int clearPort = 80;
+    public final static int clearPort = 80;
 
     /**
      * secure port
      */
-    public static final int securePort = 443;
+    public final static int securePort = 443;
 
     /**
      * html 401 transitive
      */
-    public static final String htmlHead = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n";
+    public final static String htmlHead = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n";
 
     /**
      * list of hosts
@@ -315,7 +315,7 @@ public class servHttp extends servGeneric implements prtServS {
         return ntry.doConfig(negated, a, cmd);
     }
 
-    private static final void getSubconnHelp(String b, userHelping l) {
+    private final static void getSubconnHelp(String b, userHelping l) {
         l.add(null, b + "     strip-path               strip path");
         l.add(null, b + "     strip-name               strip filename");
         l.add(null, b + "     strip-ext                strip extension");

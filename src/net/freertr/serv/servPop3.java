@@ -40,7 +40,7 @@ public class servPop3 extends servGeneric implements prtServS {
     /**
      * port number
      */
-    public static final int port = 110;
+    public final static int port = 110;
 
     /**
      * mail folders

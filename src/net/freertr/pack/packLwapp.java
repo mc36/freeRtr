@@ -16,12 +16,12 @@ public class packLwapp {
     /**
      * port to use
      */
-    public static final int port = 12222;
+    public final static int port = 12222;
 
     /**
      * header size
      */
-    public static final int size = 6;
+    public final static int size = 6;
 
     /**
      * parse header

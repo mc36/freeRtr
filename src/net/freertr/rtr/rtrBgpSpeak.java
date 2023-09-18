@@ -44,12 +44,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * header size
      */
-    public static final int sizeU = 19;
+    public final static int sizeU = 19;
 
     /**
      * compressed header size
      */
-    public static final int sizeC = 3;
+    public final static int sizeC = 3;
 
     /**
      * connection
