@@ -20,20 +20,12 @@ import net.freertr.clnt.clntProxy;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
-import net.freertr.pipe.pipeLine;
-import net.freertr.pipe.pipeSetting;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
-import net.freertr.user.userConfig;
-import net.freertr.user.userExec;
 import net.freertr.user.userFlash;
-import net.freertr.user.userFormat;
-import net.freertr.user.userHelping;
-import net.freertr.user.userReader;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
-import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
 /**
@@ -711,6 +703,14 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return true;
     }
 
+    /**
+     * send one file
+     *
+     * @param cn connection
+     * @param s filename
+     * @param a extension
+     * @return false on success, true on error
+     */
     protected boolean sendOneFile(servHttpConn cn, String s, String a) {
         if (searchScript != null) {
             cfgScrpt scr = cfgAll.scrptFind(searchScript + s, false);
@@ -755,6 +755,11 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return servHttpUtil.sendBinFile(cn, path + s, a, speedLimit);
     }
 
+    /**
+     * serve one request
+     *
+     * @param cn connection
+     */
     protected void serveRequest(servHttpConn cn) {
         String pn = cn.gotUrl.toPathName();
         if (cn.gotHost == null) {

@@ -586,7 +586,7 @@ public class servHttpUtil {
             cn.sendRespHeader(null, buf.length, cfgInit.findMimeType(a));
             cn.pipe.morePut(buf, 0, buf.length);
         }
-        cn.pipe.setClose();
+        cn.clsPip();
         return false;
     }
 
@@ -895,7 +895,7 @@ public class servHttpUtil {
             os = ns;
             cn.pipe.morePut(buf, 0, buf.length);
         }
-        cn.pipe.setClose();
+        cn.clsPip();
         return false;
     }
 
@@ -1065,11 +1065,11 @@ public class servHttpUtil {
                 fr.seek(pos);
                 fr.read(buf, 0, rndi);
             } catch (Exception e) {
-                cn.pipe.setClose();
+                cn.clsPip();
                 break;
             }
             if (cn.pipe.morePut(buf, 0, rndi) != rndi) {
-                cn.pipe.setClose();
+                cn.clsPip();
                 break;
             }
             pos += buf.length;

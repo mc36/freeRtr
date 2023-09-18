@@ -42,11 +42,6 @@ public class servHttpConn implements Runnable {
     protected pipeSide pipe;
 
     /**
-     * pipe closed
-     */
-    private boolean pipC;
-
-    /**
      * got command
      */
     protected String gotCmd;
@@ -181,15 +176,16 @@ public class servHttpConn implements Runnable {
     }
 
     /**
-     * get the pipeline
-     *
-     * @return pipeline, null if closed
+     * close pipe
      */
-    protected pipeSide getPipe() {
-        if (pipC) {
-            return null;
+    protected void clsPip() {
+        if (pipe == null) {
+            return;
         }
-        return pipe;
+        try {
+            pipe.setClose();
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -339,8 +335,8 @@ public class servHttpConn implements Runnable {
         gotRange = null;
         gotReferer = "";
         gotWebsock = null;
-        if ((pipC) || (pipe == null)) {
-            gotCmd = "";
+        gotCmd = "";
+        if (pipe == null) {
             return true;
         }
         gotCmd = pipe.lineGet(1);
@@ -562,47 +558,63 @@ public class servHttpConn implements Runnable {
     }
 
     public void run() {
-        try {
-            if (secured) {
-                pipeSide res = lower.negoSecSess(pipe, servGeneric.protoTls, new pipeLine(lower.bufSiz, false), null);
-                if (res == null) {
-                    return;
-                }
-                res.lineRx = pipeSide.modTyp.modeCRtryLF;
-                res.lineTx = pipeSide.modTyp.modeCRLF;
-                pipe = res;
+        if (secured) {
+            pipeSide res = null;
+            try {
+                res = lower.negoSecSess(pipe, servGeneric.protoTls, new pipeLine(lower.bufSiz, false), null);
+            } catch (Exception e) {
+                logger.traceback(e);
+                clsPip();
+                return;
             }
-            for (;;) {
+            if (res == null) {
+                clsPip();
+                return;
+            }
+            res.lineRx = pipeSide.modTyp.modeCRtryLF;
+            res.lineTx = pipeSide.modTyp.modeCRLF;
+            pipe = res;
+        }
+        for (;;) {
+            try {
                 if (readRequest()) {
                     break;
                 }
-                if (debugger.servHttpTraf) {
-                    logger.debug("cmd=" + gotCmd + " ver=" + gotVer + " url="
-                            + gotUrl.dump() + " keep=" + gotKeep + " "
-                            + bits.lst2str(gotCook, " "));
-                }
+            } catch (Exception e) {
+                logger.traceback(e);
+                break;
+            }
+            if (debugger.servHttpTraf) {
+                logger.debug("cmd=" + gotCmd + " ver=" + gotVer + " url="
+                        + gotUrl.dump() + " keep=" + gotKeep + " "
+                        + bits.lst2str(gotCook, " "));
+            }
+            try {
                 gotHost = lower.findHost(gotUrl.server);
                 if (servHttpUtil.doConnect(this)) {
                     return;
                 }
-                if (debugger.servHttpTraf) {
-                    logger.debug("host=" + gotHost);
-                }
-                gotHost.serveRequest(this);
-                if (!gotKeep) {
-                    break;
-                }
-                if (lower.singleRequest) {
-                    break;
-                }
+            } catch (Exception e) {
+                logger.traceback(e);
+                break;
             }
-        } catch (Exception e) {
-            logger.traceback(e);
+            if (debugger.servHttpTraf) {
+                logger.debug("host=" + gotHost);
+            }
+            try {
+                gotHost.serveRequest(this);
+            } catch (Exception e) {
+                logger.traceback(e, gotUrl.dump());
+                break;
+            }
+            if (!gotKeep) {
+                break;
+            }
+            if (lower.singleRequest) {
+                break;
+            }
         }
-        try {
-            pipe.setClose();
-        } catch (Exception e) {
-        }
+        clsPip();
     }
 
 }
