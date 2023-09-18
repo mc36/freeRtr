@@ -155,6 +155,11 @@ public class servHttpConn implements Runnable {
         new Thread(this).start();
     }
 
+    /**
+     * send one line
+     *
+     * @param a line to send
+     */
     protected void sendLn(String a) {
         if (debugger.servHttpTraf) {
             logger.debug("tx '" + a + "'");
@@ -162,10 +167,20 @@ public class servHttpConn implements Runnable {
         pipe.linePut(a);
     }
 
+    /**
+     * add one header
+     *
+     * @param s header string
+     */
     protected void addHdr(String s) {
         headers.add(s);
     }
 
+    /**
+     * get the pipeline
+     *
+     * @return pipeline, null if closed
+     */
     protected pipeSide getPipe() {
         if (pipC) {
             return null;
@@ -173,6 +188,13 @@ public class servHttpConn implements Runnable {
         return pipe;
     }
 
+    /**
+     * send response header
+     *
+     * @param head reply code and text
+     * @param size payload size
+     * @param type content type
+     */
     protected void sendRespHeader(String head, long size, String type) {
         if (head != null) {
             sendLn("HTTP/" + (gotVer / 10) + "." + (gotVer % 10) + " " + head);
@@ -199,6 +221,13 @@ public class servHttpConn implements Runnable {
         sendLn("");
     }
 
+    /**
+     * send response header
+     *
+     * @param head reply code and text
+     * @param type content type
+     * @param buf1 content type
+     */
     protected void sendTextHeader(String head, String type, byte[] buf1) {
         if (gotHead) {
             sendRespHeader(head, buf1.length, type);
@@ -247,6 +276,12 @@ public class servHttpConn implements Runnable {
         pipe.morePut(buf4, 0, buf4.length);
     }
 
+    /**
+     * send error response
+     *
+     * @param code reply code
+     * @param text error message
+     */
     protected void sendRespError(int code, String text) {
         gotKeep = false;
         String s;
@@ -264,6 +299,11 @@ public class servHttpConn implements Runnable {
         pipe.strPut(s);
     }
 
+    /**
+     * send redirect response
+     *
+     * @param where new location
+     */
     protected void sendFoundAt(String where) {
         gotKeep = false;
         String s = servHttp.htmlHead + servHttpUtil.getStyle(this) + "<title>moved</title></head><body>moved to <a href=\"" + where + "\">" + where + "</a>. you will be redirected.</body></html>\n";
