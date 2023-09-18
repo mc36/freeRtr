@@ -27,6 +27,13 @@ public class servHttpStrm implements Runnable {
         cfg = host;
     }
 
+    /**
+     * start streaming
+     */
+    protected void doStart() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
             doWork();

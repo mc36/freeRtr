@@ -578,7 +578,7 @@ public class servHttpConn implements Runnable {
                             + bits.lst2str(gotCook, " "));
                 }
                 gotHost = lower.findHost(gotUrl.server);
-                if (servHttpHost.doConnect(this)) {
+                if (servHttpUtil.doConnect(this)) {
                     return;
                 }
                 gotHost.serveRequest(this);

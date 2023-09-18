@@ -343,7 +343,6 @@ public class userUpgrade {
         a = a.trim();
         List<String> l = new ArrayList<String>();
         l.add("got " + a + " as directory");
-        l.add("stop auto-revert: " + stopReverter());
         if (a.length() > 0) {
             doCleanUpDir(l, a);
             return l;
@@ -354,21 +353,24 @@ public class userUpgrade {
         return l;
     }
 
-    private final static void doCleanUpDir(List<String> l, String p) {
+    private final static int doCleanUpDir(List<String> l, String p) {
         final String neededExts = ".bak.tmp.old.";
         int i = p.lastIndexOf("/");
         if (i >= 0) {
             p = p.substring(0, i + 1);
         }
-        l.add("cleanup " + p);
+        l.add(cmds.errbeg + "cleanup " + p);
         File[] fl = userFlash.dirList(p);
         if (fl == null) {
             l.add(cmds.errbeg + "unable to read filelist");
-            return;
+            return -1;
         }
         List<File> fn = new ArrayList<File>();
         for (i = 0; i < fl.length; i++) {
             File fc = fl[i];
+            if (fc.isDirectory()) {
+                continue;
+            }
             String a = fc.getName();
             int o = a.lastIndexOf(".");
             if (o < 0) {
@@ -381,13 +383,23 @@ public class userUpgrade {
             }
             fn.add(fc);
         }
+        int fr = 0;
+        int ff = 0;
         int fs = fn.size();
         for (i = 0; i < fs; i++) {
             File fc = fn.get(i);
             String a = p + fc.getName();
             boolean b = userFlash.delete(a);
-            l.add("delete " + a + " " + cmds.doneFail(b));
+            if (b) {
+                l.add(cmds.errbeg + "remained " + a);
+                ff++;
+                continue;
+            }
+            l.add("removed " + a);
+            fr++;
         }
+        l.add(cmds.errbeg + fr + " removed, " + ff + " remained");
+        return fr;
     }
 
     /**
