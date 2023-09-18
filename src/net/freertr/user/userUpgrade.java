@@ -342,9 +342,10 @@ public class userUpgrade {
     public static List<String> cleanBackups(String a) {
         a = a.trim();
         List<String> l = new ArrayList<String>();
+        l.add("got " + a + " as directory");
         l.add("stop auto-revert: " + stopReverter());
-        if (a.length() < 1) {
-            doCleanUpDir(l, "./");
+        if (a.length() > 0) {
+            doCleanUpDir(l, a);
             return l;
         }
         doCleanUpDir(l, "./");
@@ -353,14 +354,14 @@ public class userUpgrade {
         return l;
     }
 
-    private final static void doCleanUpDir(List<String> l, String a) {
+    private final static void doCleanUpDir(List<String> l, String p) {
         final String neededExts = ".bak.tmp.old.";
-        int i = a.lastIndexOf("/");
+        int i = p.lastIndexOf("/");
         if (i >= 0) {
-            a = a.substring(0, i + 1);
+            p = p.substring(0, i + 1);
         }
-        l.add("removed files from " + a + ":");
-        File[] fl = userFlash.dirList(a);
+        l.add("removed files from " + p + ":");
+        File[] fl = userFlash.dirList(p);
         if (fl == null) {
             l.add(cmds.errbeg + "unable to read filelist");
             return;
@@ -368,14 +369,13 @@ public class userUpgrade {
         List<File> fn = new ArrayList<File>();
         for (i = 0; i < fl.length; i++) {
             File fc = fl[i];
-            a = fc.getName();
+            String a = fc.getName();
             int o = a.lastIndexOf(".");
             if (o < 0) {
                 continue;
             }
             String b = a.substring(o, a.length());
             o = neededExts.indexOf(b);
-            l.add("maybe " + a + " ext=" + b + " o=" + o);//////
             if (o < 0) {
                 continue;
             }
@@ -383,10 +383,10 @@ public class userUpgrade {
         }
         int fs = fn.size();
         for (i = 0; i < fs; i++) {
-            File fc = fl[i];
-            a = fc.getAbsolutePath();
-            l.add("delete " + a);
-            /////////////////
+            File fc = fn.get(i);
+            String a = p + fc.getName();
+            boolean b = userFlash.delete(a);
+            l.add("delete " + a + " " + cmds.doneFail(b));
         }
     }
 
