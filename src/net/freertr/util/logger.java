@@ -466,7 +466,12 @@ public class logger {
      * @return dumped
      */
     public static String dumpException(Throwable e, String m) {
-        return "doing " + m + " at " + dumpStackTrace(e.getStackTrace());
+        if (m == null) {
+            m = "";
+        } else {
+            m = "doing " + m + " at ";
+        }
+        return m + dumpStackTrace(e.getStackTrace());
     }
 
     /**
