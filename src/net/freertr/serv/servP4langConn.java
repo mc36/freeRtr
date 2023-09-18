@@ -286,7 +286,7 @@ public class servP4langConn implements Runnable {
             lower.setup2apiPack(ntry);
             if (ntry.reinit != null) {
                 cmds cmd = new cmds("exp", ntry.reinit);
-                int prt = servP4langMgcN.toNum(lower.frontnam, cmd.word(), -1);
+                int prt = servP4langUtil.toNum(lower.frontnam, cmd.word(), -1);
                 if (prt < 0) {
                     continue;
                 }
@@ -294,9 +294,9 @@ public class servP4langConn implements Runnable {
                 servP4langBkpl bckpln = lower.backPlanes.del(new servP4langBkpl(lower, ntry));
                 ntry.id = prt;
                 ntry.speed = cmd.word();
-                ntry.errCorr = servP4langMgcN.toNum(lower.fwderrcr, cmd.word(), 0);
-                ntry.autoNeg = servP4langMgcN.toNum(lower.autonegs, cmd.word(), 0);
-                ntry.flowCtrl = servP4langMgcN.toNum(lower.flwctrls, cmd.word(), 0);
+                ntry.errCorr = servP4langUtil.toNum(lower.fwderrcr, cmd.word(), 0);
+                ntry.autoNeg = servP4langUtil.toNum(lower.autonegs, cmd.word(), 0);
+                ntry.flowCtrl = servP4langUtil.toNum(lower.flwctrls, cmd.word(), 0);
                 ntry.reinit = null;
                 lower.expIfc.add(ntry);
                 if (bckpln != null) {

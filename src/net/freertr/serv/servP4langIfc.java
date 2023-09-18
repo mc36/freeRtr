@@ -604,27 +604,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         if (debugger.servP4langTraf) {
             logger.debug("sending on #" + id + " " + pck.dataOffset());
         }
-        lower.sendLine(packet2packout(pck, cnt, id, id));
-    }
-
-    /**
-     * convert a packet to a packet out message
-     *
-     * @param pck packet to convert
-     * @param cnt counter to use
-     * @param prt port to use
-     * @param port port to use
-     * @return converted packet
-     */
-    public static final String packet2packout(packHolder pck, int cnt, int prt, int port) {
-        String a = "packout_add " + cnt + " " + (pck.dataSize() + addrMac.sizeX2) + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 0xf) + " ";
-        byte[] buf = pck.ETHtrg.getBytes();
-        a += bits.toHex(buf);
-        buf = pck.ETHsrc.getBytes();
-        a += bits.toHex(buf);
-        buf = new byte[pck.dataSize()];
-        pck.getCopy(buf, 0, 0, buf.length);
-        return a + bits.toHex(buf);
+        lower.sendLine(servP4langUtil.packet2packout(pck, cnt, id, id));
     }
 
     /**

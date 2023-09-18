@@ -396,10 +396,10 @@ public class servP4langCfg implements ifcUp {
             servP4langBr ntry = expBr.get(i);
             l.add(beg + mid + "export-bridge " + ntry.br.num);
         }
-        tabGen<servP4langMgcI> frnt = servP4langMgcI.convTab(frontnam, expMgc);
-        tabGen<servP4langMgcI> errs = servP4langMgcI.convTab(fwderrcr, expMgc);
-        tabGen<servP4langMgcI> aung = servP4langMgcI.convTab(autonegs, expMgc);
-        tabGen<servP4langMgcI> flwc = servP4langMgcI.convTab(flwctrls, expMgc);
+        tabGen<servP4langMgcI> frnt = servP4langUtil.convTab(frontnam, expMgc);
+        tabGen<servP4langMgcI> errs = servP4langUtil.convTab(fwderrcr, expMgc);
+        tabGen<servP4langMgcI> aung = servP4langUtil.convTab(autonegs, expMgc);
+        tabGen<servP4langMgcI> flwc = servP4langUtil.convTab(flwctrls, expMgc);
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry.hidden) {
@@ -409,9 +409,9 @@ public class servP4langCfg implements ifcUp {
             if (ntry.dynamic) {
                 a = "dynamic";
             } else {
-                a = servP4langMgcI.convId(ntry.id, frnt);
+                a = servP4langUtil.convId(ntry.id, frnt);
             }
-            a += " " + ntry.speed + " " + servP4langMgcI.convId(ntry.errCorr, errs) + " " + servP4langMgcI.convId(ntry.autoNeg, aung) + " " + servP4langMgcI.convId(ntry.flowCtrl, flwc);
+            a += " " + ntry.speed + " " + servP4langUtil.convId(ntry.errCorr, errs) + " " + servP4langUtil.convId(ntry.autoNeg, aung) + " " + servP4langUtil.convId(ntry.flowCtrl, flwc);
             if (ntry.reinit != null) {
                 a = ntry.reinit;
             }
@@ -809,9 +809,9 @@ public class servP4langCfg implements ifcUp {
             }
             ntry.speed = s;
             ntry.spdNum = bits.str2num(s);
-            ntry.errCorr = servP4langMgcN.toNum(fwderrcr, cmd.word(), 0);
-            ntry.autoNeg = servP4langMgcN.toNum(autonegs, cmd.word(), 0);
-            ntry.flowCtrl = servP4langMgcN.toNum(flwctrls, cmd.word(), 0);
+            ntry.errCorr = servP4langUtil.toNum(fwderrcr, cmd.word(), 0);
+            ntry.autoNeg = servP4langUtil.toNum(autonegs, cmd.word(), 0);
+            ntry.flowCtrl = servP4langUtil.toNum(flwctrls, cmd.word(), 0);
             boolean need = ifc.type == tabRouteIface.ifaceType.sdn;
             ntry.dynamic = !need;
             if (ntry.spdNum == -1) {
@@ -1113,7 +1113,7 @@ public class servP4langCfg implements ifcUp {
             }
             return getNextDynIfc();
         }
-        return servP4langMgcN.toNum(frontnam, num, -1);
+        return servP4langUtil.toNum(frontnam, num, -1);
     }
 
     /**
@@ -1123,7 +1123,7 @@ public class servP4langCfg implements ifcUp {
      * @param p starting level
      */
     protected void getHelpText(userHelping l, int p) {
-        List<String> lst = servP4langMgcN.toHelp(frontnam);
+        List<String> lst = servP4langUtil.toHelp(frontnam);
         l.add(null, (p + 0) + " " + (p + 1) + "  remote                    address of forwarder");
         l.add(null, (p + 1) + " .    <addr>                  ip address of client");
         l.add(null, (p + 0) + " " + (p + 1) + "  name                      name of forwarder");
@@ -1138,9 +1138,9 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 2) + " " + (p + 3) + ",.    dynamic               dynamic port number");
         l.add(lst, (p + 2) + " " + (p + 3) + ",.    <num:loc>             port number");
         l.add(null, (p + 3) + " " + (p + 4) + ",.      <num>               speed in gbps, see hw vendor manual");
-        l.add(servP4langMgcN.toHelp(fwderrcr), (p + 4) + " " + (p + 5) + ",.        <num:loc>         fec, see hw vendor manual");
-        l.add(servP4langMgcN.toHelp(autonegs), (p + 5) + " " + (p + 6) + ",.          <num:loc>       autoneg, see hw vendor manual");
-        l.add(servP4langMgcN.toHelp(flwctrls), (p + 6) + " .              <num:loc>     flowctrl, see hw vendor manual");
+        l.add(servP4langUtil.toHelp(fwderrcr), (p + 4) + " " + (p + 5) + ",.        <num:loc>         fec, see hw vendor manual");
+        l.add(servP4langUtil.toHelp(autonegs), (p + 5) + " " + (p + 6) + ",.          <num:loc>       autoneg, see hw vendor manual");
+        l.add(servP4langUtil.toHelp(flwctrls), (p + 6) + " .              <num:loc>     flowctrl, see hw vendor manual");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-srv6               specify srv6 to export");
         l.add(null, (p + 1) + " .    <name:ifc>              interface name");
         l.add(null, (p + 0) + " .  export-socket             specify sockets to be exported");
@@ -1246,9 +1246,9 @@ public class servP4langCfg implements ifcUp {
      */
     protected userFormat getShowMagics() {
         userFormat res = new userFormat("|", "num|name");
-        servP4langMgcN.toShow("fec", fwderrcr, res);
-        servP4langMgcN.toShow("an", autonegs, res);
-        servP4langMgcN.toShow("flwctl", flwctrls, res);
+        servP4langUtil.toShow("fec", fwderrcr, res);
+        servP4langUtil.toShow("an", autonegs, res);
+        servP4langUtil.toShow("flwctl", flwctrls, res);
         return res;
     }
 
