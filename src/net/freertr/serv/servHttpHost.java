@@ -266,13 +266,6 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return o1.host.toLowerCase().compareTo(o2.host.toLowerCase());
     }
 
-    protected void doRedir(servHttpConn cn) {
-        encUrl srvUrl = encUrl.parseOne(redir);
-        servHttpUtil.doTranslate(cn, srvUrl);
-        servHttpUtil.doSubconn(cn, srvUrl);
-        cn.sendFoundAt(srvUrl.toURL(true, true, true, false));
-    }
-
     /**
      * get config
      *
@@ -841,54 +834,6 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return true;
     }
 
-    protected boolean sendOneStream(servHttpConn cn, String s, String a) {
-        cn.gotKeep = false;
-        s = path + s;
-        cn.sendRespHeader("200 streaming", -1, cfgInit.findMimeType(a));
-        if (cn.gotHead) {
-            return false;
-        }
-        long os = new File(s).length() - 65536;
-        if (os < 0) {
-            os = 0;
-        }
-        long ot = -1;
-        for (;;) {
-            if (cn.pipe.isClosed() != 0) {
-                break;
-            }
-            File f = new File(s);
-            if (!f.exists()) {
-                break;
-            }
-            long ns = f.length();
-            long nt = f.lastModified();
-            if ((ns == os) && (nt == ot)) {
-                bits.sleep(100);
-                continue;
-            }
-            byte[] buf;
-            try {
-                RandomAccessFile fr = new RandomAccessFile(f, "r");
-                ns = fr.length();
-                if (ns < os) {
-                    os = 0;
-                }
-                buf = new byte[(int) (ns - os)];
-                fr.seek(os);
-                fr.read(buf);
-                fr.close();
-            } catch (Exception e) {
-                return true;
-            }
-            ot = nt;
-            os = ns;
-            cn.pipe.morePut(buf, 0, buf.length);
-        }
-        cn.pipe.setClose();
-        return false;
-    }
-
     protected boolean sendOneFile(servHttpConn cn, String s, String a) {
         if (searchScript != null) {
             cfgScrpt scr = cfgAll.scrptFind(searchScript + s, false);
@@ -922,7 +867,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         }
         if (allowMediaStrm) {
             if (a.startsWith(".stream-")) {
-                return sendOneStream(cn, s, "." + a.substring(8, a.length()));
+                return servHttpUtil.sendOneStream(cn, s, "." + a.substring(8, a.length()));
             }
         }
         if (allowMediaStrm) {
@@ -1185,7 +1130,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             return;
         }
         if (redir != null) {
-            doRedir(cn);
+            servHttpUtil.doRedir(cn);
             return;
         }
         if (cn.gotCmd.equals("options")) {

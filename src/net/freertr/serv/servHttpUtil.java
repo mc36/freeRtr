@@ -822,4 +822,59 @@ public class servHttpUtil {
         return false;
     }
 
+    protected static final void doRedir(servHttpConn cn) {
+        encUrl srvUrl = encUrl.parseOne(cn.gotHost.redir);
+        servHttpUtil.doTranslate(cn, srvUrl);
+        servHttpUtil.doSubconn(cn, srvUrl);
+        cn.sendFoundAt(srvUrl.toURL(true, true, true, false));
+    }
+
+    protected static final boolean sendOneStream(servHttpConn cn, String s, String a) {
+        cn.gotKeep = false;
+        s = cn.gotHost.path + s;
+        cn.sendRespHeader("200 streaming", -1, cfgInit.findMimeType(a));
+        if (cn.gotHead) {
+            return false;
+        }
+        long os = new File(s).length() - 65536;
+        if (os < 0) {
+            os = 0;
+        }
+        long ot = -1;
+        for (;;) {
+            if (cn.pipe.isClosed() != 0) {
+                break;
+            }
+            File f = new File(s);
+            if (!f.exists()) {
+                break;
+            }
+            long ns = f.length();
+            long nt = f.lastModified();
+            if ((ns == os) && (nt == ot)) {
+                bits.sleep(100);
+                continue;
+            }
+            byte[] buf;
+            try {
+                RandomAccessFile fr = new RandomAccessFile(f, "r");
+                ns = fr.length();
+                if (ns < os) {
+                    os = 0;
+                }
+                buf = new byte[(int) (ns - os)];
+                fr.seek(os);
+                fr.read(buf);
+                fr.close();
+            } catch (Exception e) {
+                return true;
+            }
+            ot = nt;
+            os = ns;
+            cn.pipe.morePut(buf, 0, buf.length);
+        }
+        cn.pipe.setClose();
+        return false;
+    }
+
 }
