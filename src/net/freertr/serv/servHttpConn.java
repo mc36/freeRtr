@@ -155,6 +155,10 @@ public class servHttpConn implements Runnable {
         new Thread(this).start();
     }
 
+    public String toString() {
+        return "" + peer;
+    }
+
     /**
      * send one line
      *
@@ -580,6 +584,9 @@ public class servHttpConn implements Runnable {
                 gotHost = lower.findHost(gotUrl.server);
                 if (servHttpUtil.doConnect(this)) {
                     return;
+                }
+                if (debugger.servHttpTraf) {
+                    logger.debug("host=" + gotHost);
                 }
                 gotHost.serveRequest(this);
                 if (!gotKeep) {

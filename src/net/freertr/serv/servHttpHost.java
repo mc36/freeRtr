@@ -50,15 +50,6 @@ import net.freertr.util.version;
 public class servHttpHost implements Comparator<servHttpHost> {
 
     /**
-     * create instance
-     *
-     * @param h host
-     */
-    public servHttpHost(String h) {
-        host = h;
-    }
-
-    /**
      * name of server
      */
     public final String host;
@@ -257,6 +248,19 @@ public class servHttpHost implements Comparator<servHttpHost> {
      * access list
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> accessList;
+
+    /**
+     * create instance
+     *
+     * @param h host
+     */
+    public servHttpHost(String h) {
+        host = h;
+    }
+
+    public String toString() {
+        return "" + host;
+    }
 
     public int compare(servHttpHost o1, servHttpHost o2) {
         return o1.host.toLowerCase().compareTo(o2.host.toLowerCase());
