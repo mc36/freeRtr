@@ -32,12 +32,12 @@ public class ipIfc4arp implements ifcUp {
     /**
      * ethertype of my packets
      */
-    public final static int type = 0x806;
+    public static final int type = 0x806;
 
     /**
      * size of my packets
      */
-    public final static int size = 28;
+    public static final int size = 28;
 
     /**
      * arp cache dynamic
@@ -80,21 +80,21 @@ public class ipIfc4arp implements ifcUp {
 
     private int gratoitous;
 
-    private final static int opcodeARPreq = 1;
+    private static final int opcodeARPreq = 1;
 
-    private final static int opcodeARPrep = 2;
+    private static final int opcodeARPrep = 2;
 
-    private final static int opcodeRARPreq = 3;
+    private static final int opcodeRARPreq = 3;
 
-    private final static int opcodeRARPrep = 4;
+    private static final int opcodeRARPrep = 4;
 
-    private final static int opcodeDRARPreq = 5;
+    private static final int opcodeDRARPreq = 5;
 
-    private final static int opcodeDRARPrep = 6;
+    private static final int opcodeDRARPrep = 6;
 
-    private final static int opcodeInARPreq = 8;
+    private static final int opcodeInARPreq = 8;
 
-    private final static int opcodeInARPrep = 9;
+    private static final int opcodeInARPrep = 9;
 
     /**
      * create arp handler

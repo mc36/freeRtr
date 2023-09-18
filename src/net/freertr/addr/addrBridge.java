@@ -19,7 +19,7 @@ public class addrBridge implements Comparator<addrBridge> {
     /**
      * size of address
      */
-    public final static int size = 8;
+    public static final int size = 8;
 
     /**
      * priority

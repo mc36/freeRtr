@@ -24,22 +24,27 @@ public class servHttpConn implements Runnable {
     /**
      * parent
      */
-    protected servHttp lower;
-
-    /**
-     * pipe
-     */
-    protected pipeSide pipe;
-
-    /**
-     * address
-     */
-    protected addrIP peer;
+    protected final servHttp lower;
 
     /**
      * connection
      */
-    protected prtGenConn conn;
+    protected final prtGenConn conn;
+
+    /**
+     * address
+     */
+    protected final addrIP peer;
+
+    /**
+     * pipeline
+     */
+    protected pipeSide pipe;
+
+    /**
+     * pipe closed
+     */
+    private boolean pipC;
 
     /**
      * got command
@@ -94,7 +99,7 @@ public class servHttpConn implements Runnable {
     /**
      * got cookies
      */
-    protected List<String> gotCook;
+    protected final List<String> gotCook = new ArrayList<String>();
 
     /**
      * got content
@@ -122,14 +127,14 @@ public class servHttpConn implements Runnable {
     protected String gotRange;
 
     /**
-     * headers to send
-     */
-    private List<String> headers;
-
-    /**
      * through tls port
      */
     private boolean secured;
+
+    /**
+     * headers to send
+     */
+    private List<String> headers = new ArrayList<String>();
 
     /**
      * create instance
@@ -159,6 +164,13 @@ public class servHttpConn implements Runnable {
 
     protected void addHdr(String s) {
         headers.add(s);
+    }
+
+    protected pipeSide getPipe() {
+        if (pipC) {
+            return null;
+        }
+        return pipe;
     }
 
     protected void sendRespHeader(String head, long size, String type) {
@@ -272,22 +284,22 @@ public class servHttpConn implements Runnable {
         gotCompr = 0;
         int gotSize = 0;
         String gotType = "";
-        if (pipe == null) {
-            gotCmd = "";
-        } else {
-            gotCmd = pipe.lineGet(1);
-        }
         String gotExpect = null;
         String gotUpgrade = null;
         gotAuth = null;
-        gotCook = new ArrayList<String>();
-        headers = new ArrayList<String>();
+        gotCook.clear();
+        headers.clear();
         gotBytes = null;
         gotDstntn = null;
         gotAgent = "";
         gotRange = null;
         gotReferer = "";
         gotWebsock = null;
+        if ((pipC) || (pipe == null)) {
+            gotCmd = "";
+            return true;
+        }
+        gotCmd = pipe.lineGet(1);
         if (gotCmd.length() < 1) {
             return true;
         }

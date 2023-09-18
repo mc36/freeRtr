@@ -59,7 +59,7 @@ public class addrIPv4 extends addrType {
     /**
      * size of address
      */
-    public final static int size = 4;
+    public static final int size = 4;
 
     /**
      * get size

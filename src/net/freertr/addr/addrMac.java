@@ -18,12 +18,12 @@ public class addrMac extends addrType {
     /**
      * size of address
      */
-    public final static int size = 6;
+    public static final int size = 6;
 
     /**
      * size of ethernet header (dstadr,srcadr)
      */
-    public final static int sizeX2 = size * 2;
+    public static final int sizeX2 = size * 2;
 
     /**
      * convert to string

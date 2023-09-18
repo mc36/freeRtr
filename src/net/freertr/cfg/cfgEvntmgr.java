@@ -50,7 +50,7 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
+    public static final String[] defaultL = {
         "event-manager .*! no description",
         "event-manager .*! no suppress",
         "event-manager .*! no event"

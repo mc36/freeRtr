@@ -18,11 +18,11 @@ public class addrIP extends addrType {
     /**
      * size of address
      */
-    public final static int size = 16;
+    public static final int size = 16;
 
-    private final static byte[] IPv4addrBeg = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0xff, (byte) 0xff};
+    private static final byte[] IPv4addrBeg = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0xff, (byte) 0xff};
 
-    private final static byte[] IPv4maskBeg = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,
+    private static final byte[] IPv4maskBeg = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,
         (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
 
     private static int IPv4prefLen = addrIPv6.size - addrIPv4.size;

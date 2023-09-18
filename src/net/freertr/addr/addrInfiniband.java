@@ -18,7 +18,7 @@ public class addrInfiniband extends addrType {
     /**
      * size of address
      */
-    public final static int size = 2;
+    public static final int size = 2;
 
     public addrInfiniband copyBytes() {
         addrInfiniband a = new addrInfiniband();

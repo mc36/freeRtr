@@ -41,7 +41,7 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
+    public static final String[] defaultL = {
         "line .*! no script init",
         "line .*! no script activate",
         "line .*! no script hangup",

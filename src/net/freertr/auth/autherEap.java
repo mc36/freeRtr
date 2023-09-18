@@ -13,62 +13,62 @@ public class autherEap extends autherDoer {
     /**
      * ppp name
      */
-    public final static String pppName = "eap";
+    public static final String pppName = "eap";
 
     /**
      * ppp control type
      */
-    public final static int pppCtrl = 0xc227;
+    public static final int pppCtrl = 0xc227;
 
     /**
      * request
      */
-    public final static int codeReq = 1;
+    public static final int codeReq = 1;
 
     /**
      * response
      */
-    public final static int codeRep = 2;
+    public static final int codeRep = 2;
 
     /**
      * success
      */
-    public final static int codeSucc = 3;
+    public static final int codeSucc = 3;
 
     /**
      * failure
      */
-    public final static int codeFail = 4;
+    public static final int codeFail = 4;
 
     /**
      * identity
      */
-    public final static int typeId = 1;
+    public static final int typeId = 1;
 
     /**
      * notification
      */
-    public final static int typeNtfy = 2;
+    public static final int typeNtfy = 2;
 
     /**
      * negative acknowledge
      */
-    public final static int typeNak = 3;
+    public static final int typeNak = 3;
 
     /**
      * md5 Challenge
      */
-    public final static int typeChal = 4;
+    public static final int typeChal = 4;
 
     /**
      * one time password
      */
-    public final static int typeOtp = 5;
+    public static final int typeOtp = 5;
 
     /**
      * generic token card
      */
-    public final static int typeGtc = 6;
+    public static final int typeGtc = 6;
 
     private String gotId = null;
 

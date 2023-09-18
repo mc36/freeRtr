@@ -35,7 +35,7 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
+    public static final String[] defaultL = {
         "bridge .*! no description",
         "bridge .*! rd 0:0",
         "bridge .*! rt-import 0:0",

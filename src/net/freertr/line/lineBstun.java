@@ -15,7 +15,7 @@ public class lineBstun {
     /**
      * port number
      */
-    public final static int port = 1976;
+    public static final int port = 1976;
 
     private pipeSide lower;
 

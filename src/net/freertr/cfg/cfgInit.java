@@ -245,7 +245,7 @@ public class cfgInit implements Runnable {
 
     private static boolean jvmSetup = false;
 
-    private final static String[] needInit = {
+    private static final String[] needInit = {
         //"interface .*",
         //"aaa .*",
         "vrf definition .*",
@@ -257,18 +257,18 @@ public class cfgInit implements Runnable {
         "proxy-profile .*",
         "vdc definition .*",};
 
-    private final static String[] needIface = {
+    private static final String[] needIface = {
         "interface .*! vrf forwarding .*",
         "interface .*! ipv4 address .*",
         "interface .*! ipv6 address .*"
     };
 
-    private final static String[] jvmMagic = {
+    private static final String[] jvmMagic = {
         "java.net.preferIPv4Stack=true",
         "java.net.preferIPv6Addresses=false"
     };
 
-    private final static int bootLogo = 0x1fd;
+    private static final int bootLogo = 0x1fd;
 
     /**
      * get mime type of an extesion
@@ -276,7 +276,7 @@ public class cfgInit implements Runnable {
      * @param s extension possibly starting with dot.
      * @return mime type
      */
-    public static String findMimeType(String s) {
+    public static final String findMimeType(String s) {
         if (s.startsWith("//")) {
             return s.substring(2, s.length());
         }
@@ -304,7 +304,7 @@ public class cfgInit implements Runnable {
      * @param url url
      * @return text read
      */
-    public static List<String> httpGet(String url) {
+    public static final List<String> httpGet(String url) {
         if (url == null) {
             url = "";
         }
@@ -327,7 +327,7 @@ public class cfgInit implements Runnable {
         }
     }
 
-    private static void setupJVM() {
+    private static final void setupJVM() {
         if (jvmSetup) {
             return;
         }
@@ -370,7 +370,7 @@ public class cfgInit implements Runnable {
      * @param inhs inheritables
      * @param cfgs configs
      */
-    public static void executeHWcommands(List<String> read, List<String> defs, List<String> inhs, List<String> cfgs) {
+    public static final void executeHWcommands(List<String> read, List<String> defs, List<String> inhs, List<String> cfgs) {
         if (read == null) {
             return;
         }
@@ -715,7 +715,7 @@ public class cfgInit implements Runnable {
      * @param quiet do not log errors
      * @return number of errors
      */
-    public static int executeSWcommands(List<String> cs, boolean quiet) {
+    public static final int executeSWcommands(List<String> cs, boolean quiet) {
         if (cs == null) {
             return 0;
         }
@@ -781,7 +781,7 @@ public class cfgInit implements Runnable {
         return err;
     }
 
-    private static void doInit(List<String> hw, List<String> sw, pipeSide cons) {
+    private static final void doInit(List<String> hw, List<String> sw, pipeSide cons) {
         if (jvmStarted > 0) {
             logger.info("overlapping boot eliminated");
             return;
@@ -1039,7 +1039,7 @@ public class cfgInit implements Runnable {
         logger.info("boot completed");
     }
 
-    private static tabGen<userFilter> createFilter(String[] lst) {
+    private static final tabGen<userFilter> createFilter(String[] lst) {
         tabGen<userFilter> res = new tabGen<userFilter>();
         for (int o = 0; o < lst.length; o++) {
             String s = lst[o];
@@ -1053,20 +1053,20 @@ public class cfgInit implements Runnable {
         return res;
     }
 
-    private static void addFilters(tabGen<userFilter> trg, tabGen<userFilter> src) {
+    private static final void addFilters(tabGen<userFilter> trg, tabGen<userFilter> src) {
         for (int i = 0; i < src.size(); i++) {
             userFilter ntry = src.get(i);
             trg.add(ntry);
         }
     }
 
-    private static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1) {
+    private static final tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1) {
         tabGen<userFilter> r = createFilter(lst);
         addFilters(r, s1);
         return r;
     }
 
-    private static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1, tabGen<userFilter> s2) {
+    private static final tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1, tabGen<userFilter> s2) {
         tabGen<userFilter> r = createFilter(lst);
         addFilters(r, s1);
         addFilters(r, s2);
@@ -1080,7 +1080,7 @@ public class cfgInit implements Runnable {
      * @param code exit code, negative just updates reload file, 21 already used
      * @param reason reason string
      */
-    public static void stopRouter(boolean clean, int code, String reason) {
+    public static final void stopRouter(boolean clean, int code, String reason) {
         boolean fake = code < 0;
         if (fake) {
             code = -code;
@@ -1131,7 +1131,7 @@ public class cfgInit implements Runnable {
      * @param url config url
      * @return image
      */
-    public static pipeImage doApplet(String url) {
+    public static final pipeImage doApplet(String url) {
         pipeLine pl = new pipeLine(65536, false);
         pipeImage img = new pipeImage(pl.getSide(), 80, 25, userFonts.font8x16(), userFonts.colorData);
         pipeSide ps = pl.getSide();
@@ -1155,7 +1155,7 @@ public class cfgInit implements Runnable {
      *
      * @param args parameters
      */
-    public static void doMain(String[] args) {
+    public static final void doMain(String[] args) {
         String s = "";
         if (args.length > 0) {
             s = args[0];
@@ -1372,7 +1372,7 @@ public class cfgInit implements Runnable {
         }
     }
 
-    private static void putln(String s) {
+    private static final void putln(String s) {
         System.out.println(s);
     }
 

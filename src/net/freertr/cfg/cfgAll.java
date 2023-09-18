@@ -1285,7 +1285,7 @@ public class cfgAll {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
+    public static final String[] defaultL = {
         // logging
         "!logging buffered debug 512",
         "!logging monitor debug",
@@ -3248,7 +3248,7 @@ public class cfgAll {
         return ntry;
     }
 
-    private final static String dialFind(String str) {
+    private static final String dialFind(String str) {
         if (str == null) {
             return null;
         } else {

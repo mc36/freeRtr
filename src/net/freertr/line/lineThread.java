@@ -21,57 +21,57 @@ public abstract class lineThread {
     /**
      * data carrier detect
      */
-    public final static int signalDCDi = 0x1;
+    public static final int signalDCDi = 0x1;
 
     /**
      * ring indicator
      */
-    public final static int signalRIi = 0x2;
+    public static final int signalRIi = 0x2;
 
     /**
      * data set ready
      */
-    public final static int signalDSRi = 0x10;
+    public static final int signalDSRi = 0x10;
 
     /**
      * data terminal ready
      */
-    public final static int signalDTRo = 0x20;
+    public static final int signalDTRo = 0x20;
 
     /**
      * clear to send
      */
-    public final static int signalCTSi = 0x100;
+    public static final int signalCTSi = 0x100;
 
     /**
      * ready to send
      */
-    public final static int signalRTSo = 0x200;
+    public static final int signalRTSo = 0x200;
 
     /**
      * all input signals
      */
-    public final static int ctrlAllIn = signalDSRi | signalCTSi | signalDCDi | signalRIi;
+    public static final int ctrlAllIn = signalDSRi | signalCTSi | signalDCDi | signalRIi;
 
     /**
      * all output signals
      */
-    public final static int ctrlAllOut = signalDTRo | signalRTSo;
+    public static final int ctrlAllOut = signalDTRo | signalRTSo;
 
     /**
      * presence signals
      */
-    public final static int ctrlDtrRsr = signalDTRo | signalDSRi;
+    public static final int ctrlDtrRsr = signalDTRo | signalDSRi;
 
     /**
      * flow control signals
      */
-    public final static int ctrlRtsCts = signalRTSo | signalCTSi;
+    public static final int ctrlRtsCts = signalRTSo | signalCTSi;
 
     /**
      * all signals
      */
-    public final static int ctrlAll = ctrlAllIn | ctrlAllOut;
+    public static final int ctrlAll = ctrlAllIn | ctrlAllOut;
 
     /**
      * pipe line handler

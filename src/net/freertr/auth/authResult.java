@@ -17,17 +17,17 @@ public class authResult {
     /**
      * successfully authenticated
      */
-    public final static int authSuccessful = 1;
+    public static final int authSuccessful = 1;
 
     /**
      * bad authentication data
      */
-    public final static int authBadUserPass = 2;
+    public static final int authBadUserPass = 2;
 
     /**
      * server error
      */
-    public final static int authServerError = 3;
+    public static final int authServerError = 3;
 
     /**
      * result of authentication

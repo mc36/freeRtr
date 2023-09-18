@@ -161,7 +161,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
+    public static final String[] defaultL = {
         "check .*! no command",
         "check .*! no description",
         "check .*! no template",

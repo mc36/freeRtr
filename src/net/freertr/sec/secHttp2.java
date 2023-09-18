@@ -30,87 +30,87 @@ public class secHttp2 {
     /**
      * magic command
      */
-    public final static String magicCmd = "PRI * HTTP/2.0";
+    public static final String magicCmd = "PRI * HTTP/2.0";
 
     /**
      * magic continue
      */
-    public final static String magicCnt = "SM";
+    public static final String magicCnt = "SM";
 
     /**
      * acknowledge
      */
-    public final static int flgAck = 0x1;
+    public static final int flgAck = 0x1;
 
     /**
      * end stream
      */
-    public final static int flgStrEnd = 0x1;
+    public static final int flgStrEnd = 0x1;
 
     /**
      * end headers
      */
-    public final static int flgHdrEnd = 0x4;
+    public static final int flgHdrEnd = 0x4;
 
     /**
      * padded
      */
-    public final static int flgPadded = 0x8;
+    public static final int flgPadded = 0x8;
 
     /**
      * priority
      */
-    public final static int flgPrio = 0x20;
+    public static final int flgPrio = 0x20;
 
     /**
      * data
      */
-    public final static int typData = 0;
+    public static final int typData = 0;
 
     /**
      * headers
      */
-    public final static int typHdrs = 1;
+    public static final int typHdrs = 1;
 
     /**
      * priority
      */
-    public final static int typPrio = 2;
+    public static final int typPrio = 2;
 
     /**
      * rst stream
      */
-    public final static int typRst = 3;
+    public static final int typRst = 3;
 
     /**
      * settings
      */
-    public final static int typSett = 4;
+    public static final int typSett = 4;
 
     /**
      * push promise
      */
-    public final static int typPush = 5;
+    public static final int typPush = 5;
 
     /**
      * ping
      */
-    public final static int typPing = 6;
+    public static final int typPing = 6;
 
     /**
      * goaway
      */
-    public final static int typGoaway = 7;
+    public static final int typGoaway = 7;
 
     /**
      * window update
      */
-    public final static int typWin = 8;
+    public static final int typWin = 8;
 
     /**
      * continuation
      */
-    public final static int typCont = 9;
+    public static final int typCont = 9;
 
     /**
      * mode of operation, true=client, false=server
@@ -173,7 +173,7 @@ public class secHttp2 {
      * @param i opcode
      * @return string
      */
-    public final static String type2string(int i) {
+    public static final String type2string(int i) {
         switch (i) {
             case typData:
                 return "data";

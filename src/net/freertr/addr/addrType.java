@@ -110,7 +110,7 @@ public abstract class addrType implements Comparator<addrType> {
         addr[ofs] = maskVals[len];
     }
 
-    private final static byte[] maskVals = {
+    private static final byte[] maskVals = {
         (byte) 0x00,
         (byte) 0x80, (byte) 0xc0, (byte) 0xe0, (byte) 0xf0,
         (byte) 0xf8, (byte) 0xfc, (byte) 0xfe, (byte) 0xff
@@ -144,7 +144,7 @@ public abstract class addrType implements Comparator<addrType> {
     /**
      * bit values in u32
      */
-    public final static int[] bitVals = {
+    public static final int[] bitVals = {
         0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1
     };
 

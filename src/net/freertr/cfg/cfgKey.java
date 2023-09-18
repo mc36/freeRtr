@@ -46,7 +46,7 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
+    public static final String[] defaultL = {};
 
     /**
      * defaults filter

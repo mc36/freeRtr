@@ -18,7 +18,7 @@ public class addrIPv6 extends addrType {
     /**
      * size of address
      */
-    public final static int size = 16;
+    public static final int size = 16;
 
     /**
      * get size
