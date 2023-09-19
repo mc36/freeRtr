@@ -885,8 +885,7 @@ public class userTest {
             return null;
         }
         if (a.equals("tstmov")) {
-            userTester t = new userTester();
-            t.doCopier(cmd);
+            userTester.doCopier(cmd);
             return null;
         }
         if (a.equals("template")) {

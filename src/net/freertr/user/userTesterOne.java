@@ -6,6 +6,7 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
 import net.freertr.cfg.cfgInit;
+import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeShell;
 import net.freertr.pipe.pipeSide;
@@ -35,17 +36,132 @@ public class userTesterOne {
     /**
      * slot number
      */
-    protected int slot = 0;
+    protected final int slot;
 
     /**
      * path to use
      */
-    protected String path;
+    protected final String path;
 
     /**
      * prefix to use
      */
-    protected String prefix;
+    protected final String prefix;
+
+    /**
+     * just save config
+     */
+    protected final boolean config;
+
+    /**
+     * dont exit
+     */
+    protected final boolean unexit;
+
+    /**
+     * dont reload
+     */
+    protected final boolean wait;
+
+    /**
+     * reapply counter
+     */
+    protected final int reapply;
+
+    /**
+     * restart counter
+     */
+    protected final int restart;
+
+    /**
+     * config archive
+     */
+    protected final String cfgarch;
+
+    /**
+     * chattyness matcher
+     */
+    protected final tabIntMatcher chatty;
+
+    /**
+     * wait before start
+     */
+    protected final int predelay;
+
+    /**
+     * wait before stop
+     */
+    protected final int postdelay;
+
+    /**
+     * middleware to test
+     */
+    protected final String jvm;
+
+    /**
+     * local console base
+     */
+    protected final int oobase;
+
+    /**
+     * interfaces to capture
+     */
+    protected final List<userTesterCap> capture;
+
+    /**
+     * persistent image port base
+     */
+    protected final int persistP;
+
+    /**
+     * persistent image config
+     */
+    protected final List<String> persistD;
+
+    /**
+     * persistent image process
+     */
+    protected final userTesterPrc persistC;
+
+    /**
+     * remote image config
+     */
+    protected final List<String> remoteD;
+
+    /**
+     * remote image address
+     */
+    protected final addrIP remoteA;
+
+    /**
+     * remote image local
+     */
+    protected final addrIP remoteL;
+
+    /**
+     * remote image port
+     */
+    protected final int remoteP;
+
+    /**
+     * remote image syncer
+     */
+    protected final String remoteS;
+
+    /**
+     * other images to test
+     */
+    protected final List<userTesterImg> others;
+
+    /**
+     * verification commands
+     */
+    protected final List<List<String>> shows = new ArrayList<List<String>>();
+
+    /**
+     * processes
+     */
+    private final tabGen<userTesterPrc> procs = new tabGen<userTesterPrc>();
 
     /**
      * filename to use
@@ -61,121 +177,10 @@ public class userTesterOne {
      * result of the test
      */
     protected int testRes = 1;
-
-    /**
-     * just save config
-     */
-    protected boolean config;
-
-    /**
-     * dont exit
-     */
-    protected boolean unexit;
-
-    /**
-     * dont reload
-     */
-    protected boolean wait;
-
-    /**
-     * reapply counter
-     */
-    protected int reapply;
-
-    /**
-     * restart counter
-     */
-    protected int restart;
-
-    /**
-     * config archive
-     */
-    protected String cfgarch;
-
-    /**
-     * chattyness matcher
-     */
-    protected tabIntMatcher chatty;
-
-    /**
-     * wait before start
-     */
-    protected int predelay;
-
-    /**
-     * wait before stop
-     */
-    protected int postdelay;
-
-    /**
-     * middleware to test
-     */
-    protected String jvm;
-
-    /**
-     * local console base
-     */
-    protected int oobase;
-
-    /**
-     * interfaces to capture
-     */
-    protected List<userTesterCap> capture;
-
-    /**
-     * persistent image port base
-     */
-    protected int persistP;
-
-    /**
-     * persistent image config
-     */
-    protected List<String> persistD;
-
-    /**
-     * persistent image process
-     */
-    protected userTesterPrc persistC;
-
-    /**
-     * remote image config
-     */
-    protected List<String> remoteD;
-
-    /**
-     * remote image address
-     */
-    protected addrIP remoteA;
-
-    /**
-     * remote image local
-     */
-    protected addrIP remoteL;
-
-    /**
-     * remote image port
-     */
-    protected int remoteP;
-
-    /**
-     * remote image syncer
-     */
-    protected String remoteS;
-
-    /**
-     * other images to test
-     */
-    protected List<userTesterImg> others = new ArrayList<userTesterImg>();
-
     /**
      * self parameters
      */
     protected String window = "c";
-
-    /**
-     * verification commands
-     */
-    protected List<List<String>> shows = new ArrayList<List<String>>();
 
     /**
      * tracebacks seen
@@ -193,11 +198,6 @@ public class userTesterOne {
     private String stage = "init";
 
     /**
-     * processes
-     */
-    private tabGen<userTesterPrc> procs = new tabGen<userTesterPrc>();
-
-    /**
      * lines to do
      */
     private List<String> lineD;
@@ -210,12 +210,43 @@ public class userTesterOne {
     /**
      * create instance
      *
-     * @param pip pipeline to use
-     * @param read reader to use
+     * @param frm get data from
+     * @param slt slot number
      */
-    protected userTesterOne(pipeSide pip, pipeProgress read) {
+    protected userTesterOne(userTester frm, int slt) {
+        pipeSide pip = frm.cmd.pipe;
+        if (frm.paralell > 1) {
+            pip = pipeDiscard.needAny(null);
+        }
+        rdr = new pipeProgress(pip);
         pipe = pip;
-        rdr = read;
+        path = frm.temp;
+        prefix = frm.temp + "slot";
+        slot = frm.slot + slt;
+        config = frm.config;
+        unexit = frm.unexit;
+        wait = frm.wait;
+        reapply = frm.reapply;
+        restart = frm.restart;
+        cfgarch = frm.cfgarch;
+        chatty = frm.chatty;
+        predelay = frm.predelay;
+        postdelay = frm.postdelay;
+        jvm = frm.jvn + frm.jvp;
+        oobase = frm.oobase;
+        others = frm.others;
+        remoteD = frm.remoteD;
+        remoteA = frm.remoteA;
+        remoteL = frm.remoteL;
+        remoteP = frm.remoteP;
+        remoteS = frm.remoteS;
+        persistP = frm.persistP;
+        persistD = frm.persistD;
+        persistC = frm.persistC;
+        capture = frm.capture;
+        if (frm.window) {
+            window += "w";
+        }
     }
 
     /**
@@ -295,9 +326,6 @@ public class userTesterOne {
      * stop everything
      */
     protected void stopAll() {
-        if (pipe != null) {
-            pipe.setClose();
-        }
         for (int i = 0; i < procs.size(); i++) {
             userTesterPrc prc = procs.get(i);
             prc.stopNow();

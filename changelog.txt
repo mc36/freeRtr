@@ -15143,3 +15143,8 @@ todo: rfc8548 tcpcrypt
 ---------------------------------- 2023-09-19 09:59:35 23.9.19
 qc pass: ebgp with pmtud
 qc pass: ibgp with pmtud
+---------------------------------- 2023-09-19 16:18:49 23.9.19
+no todo: tests for lsrp / pvrp pmtud
+no todo: tests for bgp/msdp: neigh x.x.x.x pmtud
+todo: generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
+todo: generalize ipinfo tests for lsrp / pvrp pmtud

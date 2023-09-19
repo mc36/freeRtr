@@ -276,8 +276,9 @@ public class version {
                 l.add("i'm an networker and just hobby programmer and not a vegetable dealer nor anything");
                 l.add("so dear reviewers team sorry 4 hurtin' your eyes tonight:)");
                 l.add("my code smells and you'll grep some shit out like _and_ in the sources");
-                l.add("but it's a way crazier if you do the same to the linux kernel like _and_ and so");
-                l.add("so long-live creativity! ;)");
+                l.add("but it's a way crazier if you do the same to the kernels like _and_ and so");
+                l.add("so long-live creativity! this all means that dont debate on things like;)");
+                l.add("private static final void asdf(){} || private final static void asdf(){}");
                 l.add(verCore.author);
                 break;
             case 5:

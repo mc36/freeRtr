@@ -6,7 +6,6 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.enc.enc7bit;
-import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeProgress;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servHttp;
@@ -47,109 +46,268 @@ public class userTester {
      */
     protected final static String chgLogSep = "---------------------------------- ";
 
-    private final static String htmlStyle = "<style>\n body { background-color: black; color: white; }\n table, th, td { border: 1px solid }\n :link { color: white }\n :visited { color: white }\n :active { color: white }\n</style>";
+    /**
+     * style to use
+     */
+    protected final static String htmlStyle = "<style>\n body { background-color: black; color: white; }\n table, th, td { border: 1px solid }\n :link { color: white }\n :visited { color: white }\n :active { color: white }\n</style>";
 
-    private pipeProgress rdr;
+    /**
+     * temporary path
+     */
+    protected String temp = "../binTmp/";
 
-    private cmds cmd;
+    /**
+     * commands to use
+     */
+    protected cmds cmd;
 
-    private String path = "../cfg/";
+    /**
+     * reader to use
+     */
+    protected pipeProgress rdr;
 
-    private String temp = "../binTmp/";
+    /**
+     * config path
+     */
+    protected String path = "../cfg/";
 
-    private String discard = "^$";
+    /**
+     * discarded tests
+     */
+    protected String discard = "^$";
 
-    private String url = path;
+    /**
+     * test url
+     */
+    protected String url = path;
 
-    private int slot = 0;
+    /**
+     * slot number
+     */
+    protected int slot = 0;
 
-    private int paralell = 0;
+    /**
+     * worker count
+     */
+    protected int paralell = 0;
 
-    private int paragap = 300;
+    /**
+     * worker delay
+     */
+    protected int paragap = 300;
 
-    private String persistF = null;
+    /**
+     * persistent file
+     */
+    protected String persistF = null;
 
-    private int persistP = 0;
+    /**
+     * persistent port
+     */
+    protected int persistP = 0;
 
-    private List<String> persistD = null;
+    /**
+     * persistent config
+     */
+    protected List<String> persistD = null;
 
-    private userTesterPrc persistC = null;
+    /**
+     * persistent process
+     */
+    protected userTesterPrc persistC = null;
 
-    private String remoteF = null;
+    /**
+     * remote image file
+     */
+    protected String remoteF = null;
 
-    private List<String> remoteD = null;
+    /**
+     * remote image config
+     */
+    protected List<String> remoteD = null;
 
-    private addrIP remoteA = null;
+    /**
+     * remote image address
+     */
+    protected addrIP remoteA = null;
 
-    private addrIP remoteL = null;
+    /**
+     * remote image local
+     */
+    protected addrIP remoteL = null;
 
-    private int remoteP = 0;
+    /**
+     * remote image port
+     */
+    protected int remoteP = 0;
 
-    private String remoteS = null;
+    /**
+     * remote image syncer
+     */
+    protected String remoteS = null;
 
-    private List<userTesterImg> others = new ArrayList<userTesterImg>();
+    /**
+     * list of other images
+     */
+    protected final List<userTesterImg> others = new ArrayList<userTesterImg>();
 
-    private String other0;
+    /**
+     * other image 0th parameter
+     */
+    protected String other0;
 
-    private List<userTesterCap> capture = new ArrayList<userTesterCap>();
+    /**
+     * list of captures
+     */
+    protected final List<userTesterCap> capture = new ArrayList<userTesterCap>();
 
-    private boolean summary = false;
+    /**
+     * write summary
+     */
+    protected boolean summary = false;
 
-    private String cfgarch = "./";
+    /**
+     * config archive
+     */
+    protected String cfgarch = "./";
 
-    private boolean window = false;
+    /**
+     * open a window
+     */
+    protected boolean window = false;
 
-    private boolean wait = false;
+    /**
+     * wait after tests
+     */
+    protected boolean wait = false;
 
-    private boolean unexit = false;
+    /**
+     * dont exit
+     */
+    protected boolean unexit = false;
 
-    private boolean config = false;
+    /**
+     * save config
+     */
+    protected boolean config = false;
 
-    private boolean mdfile = false;
+    /**
+     * generate md files
+     */
+    protected boolean mdfile = false;
 
-    private boolean randord = false;
+    /**
+     * randomize test order
+     */
+    protected boolean randord = false;
 
-    private tabIntMatcher chatty;
+    /**
+     * chattyness matcher
+     */
+    protected tabIntMatcher chatty;
 
-    private String releaseN = "unknown";
+    /**
+     * release number
+     */
+    protected String releaseN = "unknown";
 
-    private String releaseV = "unknown";
+    /**
+     * release version
+     */
+    protected String releaseV = "unknown";
 
-    private int maxTry = 1;
+    /**
+     * maximum retries
+     */
+    protected int maxTry = 1;
 
-    private int reapply = 0;
+    /**
+     * reapply counter
+     */
+    protected int reapply = 0;
 
-    private int restart = 0;
+    /**
+     * restart counter
+     */
+    protected int restart = 0;
 
-    private int predelay = 0;
+    /**
+     * delay in ms
+     */
+    protected int predelay = 0;
 
-    private int postdelay = 0;
+    /**
+     * delay in ms
+     */
+    protected int postdelay = 0;
 
-    private int oobase = 20001;
+    /**
+     * oob base port
+     */
+    protected int oobase = 20001;
 
-    private String jvn = "java";
+    /**
+     * java natives
+     */
+    protected String jvn = "java";
 
-    private String jvp = " XmxZZZm -jar " + version.getFileName();
+    /**
+     * java parameters
+     */
+    protected String jvp = " XmxZZZm -jar " + version.getFileName();
 
-    private String beg = "-";
+    /**
+     * beginning to use
+     */
+    protected String beg = "-";
 
-    private final static String sep = " ---------- ";
+    /**
+     * separator to use
+     */
+    protected final static String sep = " ---------- ";
 
-    private tabGen<userTesterFtr> needed = new tabGen<userTesterFtr>();
+    /**
+     * needed tests
+     */
+    protected final tabGen<userTesterFtr> needed = new tabGen<userTesterFtr>();
 
-    private tabGen<userTesterFtr> finished = new tabGen<userTesterFtr>();
+    /**
+     * finished tests
+     */
+    protected final tabGen<userTesterFtr> finished = new tabGen<userTesterFtr>();
 
-    private long started;
+    /**
+     * startup time
+     */
+    protected long started;
 
-    private syncInt errored = new syncInt(0);
+    /**
+     * failed tests
+     */
+    protected syncInt errored = new syncInt(0);
 
-    private syncInt retries = new syncInt(0);
+    /**
+     * retries seen
+     */
+    protected syncInt retries = new syncInt(0);
 
-    private syncInt traces = new syncInt(0);
+    /**
+     * tracebacks seend
+     */
+    protected syncInt traces = new syncInt(0);
 
-    private userTesterOne[] workers;
+    /**
+     * list of workers
+     */
+    protected userTesterOne[] workers;
 
-    private final static String result2string(String s) {
+    /**
+     * convert result to string
+     *
+     * @param s string
+     * @return converted string
+     */
+    protected final static String result2string(String s) {
         if (s.equals("success")) {
             return "ok";
         } else {
@@ -162,7 +320,7 @@ public class userTester {
      *
      * @param c command to do
      */
-    protected void doCopier(cmds c) {
+    protected final static void doCopier(cmds c) {
         String s = c.word();
         String t = c.word();
         c.error("moving results " + s + " to " + t);
@@ -171,12 +329,59 @@ public class userTester {
         doCopier(c, s, t, ".html");
     }
 
-    private boolean doCopier(cmds c, String s, String t, String e) {
+    /**
+     * do the copier work
+     *
+     * @param c command to do
+     * @param s source
+     * @param t target
+     * @param e extension
+     * @return true on error, false on success
+     */
+    protected final static boolean doCopier(cmds c, String s, String t, String e) {
         s += e;
         t += e;
         boolean b = userFlash.rename(s, t, true, true);
         c.error("moved " + s + " to " + t + " error=" + b);
         return b;
+    }
+
+    /**
+     * get one tester
+     *
+     * @param slt slot to use
+     * @return tester created
+     */
+    protected userTesterOne getTester(int slt) {
+        return new userTesterOne(this, slt);
+    }
+
+    /**
+     * convert features to list
+     *
+     * @param ftr features
+     * @param mod modifier
+     * @return converted list
+     */
+    protected final static List<String> features2list(tabGen<userTesterFtr> ftr, int mod) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < ftr.size(); i++) {
+            String a = ftr.get(i).getter(mod);
+            if (a == null) {
+                continue;
+            }
+            res.add(a);
+        }
+        return res;
+    }
+
+    /**
+     * add html style
+     *
+     * @param l text to update
+     */
+    protected final static void addHtmlStyle(List<String> l) {
+        l.add(htmlStyle);
     }
 
     /**
@@ -307,7 +512,7 @@ public class userTester {
         bits.buf2txt(true, txt, target + ".csv");
         txt = new ArrayList<String>();
         txt.add(servHttp.htmlHead);
-        txt.add(htmlStyle);
+        addHtmlStyle(txt);
         txt.add("<title>dataplanes</title></head><body>");
         txt.add("release: " + releaseN + "<br/>");
         txt.add("<br/>");
@@ -889,8 +1094,8 @@ public class userTester {
                 continue;
             }
             cmd.pipe.lineGet(1);
-            listFails(finished, true, 1);
-            listFails(needed, false, 0);
+            listFails(rdr, finished, true, 1);
+            listFails(rdr, needed, false, 0);
         }
         if (persistC != null) {
             persistC.applyCfg(persistD);
@@ -901,8 +1106,8 @@ public class userTester {
         for (int i = 0; i < paralell; i++) {
             workers[i].stopAll();
         }
-        listFails(finished, true, 1);
-        listFails(needed, false, 0);
+        listFails(rdr, finished, true, 1);
+        listFails(rdr, needed, false, 0);
         String a = logger.getTimestamp() + ", took " + bits.timePast(started) + ", with " + paralell + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
         rdr.debugStat("summary: " + a);
         if (!summary) {
@@ -965,7 +1170,15 @@ public class userTester {
         bits.buf2txt(false, txt, "../changelog" + beg + ".txt");
     }
 
-    private void listFails(tabGen<userTesterFtr> lst, boolean nonres, int ranlim) {
+    /**
+     * list failed tests
+     *
+     * @param rdr reader to use
+     * @param lst tests to scan
+     * @param nonres enforced retries
+     * @param ranlim enforced run count
+     */
+    protected final static void listFails(pipeProgress rdr, tabGen<userTesterFtr> lst, boolean nonres, int ranlim) {
         for (int i = 0; i < lst.size(); i++) {
             userTesterFtr ftr = lst.get(i);
             if (ftr == null) {
@@ -993,7 +1206,12 @@ public class userTester {
         }
     }
 
-    private void doOneTest(int slt) {
+    /**
+     * perform one test
+     *
+     * @param slt slot to use
+     */
+    protected void doOneTest(int slt) {
         int cur = 0;
         if (randord) {
             cur = bits.random(0, needed.size());
@@ -1036,55 +1254,6 @@ public class userTester {
         ftr.csv = lt.getCsv(url);
         ftr.ftr = lt.getFet();
         finished.add(ftr);
-    }
-
-    private userTesterOne getTester(int slt) {
-        pipeSide pip = cmd.pipe;
-        if (paralell > 1) {
-            pip = pipeDiscard.needAny(null);
-        }
-        pipeProgress rdr = new pipeProgress(pip);
-        userTesterOne lt = new userTesterOne(pip, rdr);
-        lt.path = temp;
-        lt.prefix = temp + "slot";
-        lt.slot = slot + slt;
-        lt.config = config;
-        lt.unexit = unexit;
-        lt.wait = wait;
-        lt.reapply = reapply;
-        lt.restart = restart;
-        lt.cfgarch = cfgarch;
-        lt.chatty = chatty;
-        lt.predelay = predelay;
-        lt.postdelay = postdelay;
-        lt.jvm = jvn + jvp;
-        lt.oobase = oobase;
-        lt.others = others;
-        lt.remoteD = remoteD;
-        lt.remoteA = remoteA;
-        lt.remoteL = remoteL;
-        lt.remoteP = remoteP;
-        lt.remoteS = remoteS;
-        lt.persistP = persistP;
-        lt.persistD = persistD;
-        lt.persistC = persistC;
-        lt.capture = capture;
-        if (window) {
-            lt.window += "w";
-        }
-        return lt;
-    }
-
-    private static List<String> features2list(tabGen<userTesterFtr> ftr, int mod) {
-        List<String> res = new ArrayList<String>();
-        for (int i = 0; i < ftr.size(); i++) {
-            String a = ftr.get(i).getter(mod);
-            if (a == null) {
-                continue;
-            }
-            res.add(a);
-        }
-        return res;
     }
 
 }

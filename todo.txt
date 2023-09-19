@@ -13,9 +13,9 @@ game pinball
 
 
 
-tests for bgp/msdp: neigh x.x.x.x pmtud
+generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
 
-tests for lsrp / pvrp pmtud
+generalize ipinfo tests for lsrp / pvrp pmtud
 
 bgp unknowns-log knob
 

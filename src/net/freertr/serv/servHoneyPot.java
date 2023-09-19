@@ -93,7 +93,8 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(60000);
-        new servHoneyPotCon(this, pipe, id.peerAddr.copyBytes(), id.portRem);
+        servHoneyPotCon ntry = new servHoneyPotCon(this, pipe, id.peerAddr.copyBytes(), id.portRem);
+        ntry.doStart();
         return false;
     }
 

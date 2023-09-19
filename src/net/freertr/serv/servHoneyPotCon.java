@@ -10,13 +10,13 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class servHoneyPotCon implements Runnable {
-
+    
     private final servHoneyPot lower;
-
+    
     private final pipeSide pipe;
-
+    
     private final addrIP addr;
-
+    
     private final int port;
 
     /**
@@ -32,19 +32,29 @@ public class servHoneyPotCon implements Runnable {
         pipe = conn;
         addr = peer;
         port = prt;
+    }
+
+    /**
+     * do startup
+     */
+    public void doStart() {
         new Thread(this).start();
     }
-
+    
     public void run() {
-        pipe.setReady();
-        logger.info("honeypot hit from " + addr + " " + port);
-        servHoneyPotWrk w = new servHoneyPotWrk(lower.ipInfo, pipe, addr, port);
-        w.doHttpRead();
-        w.doWork();
-        w.doHttpWrite();
-        w.putResult(true);
-        w.doHttpFinish();
-        pipe.setClose();
+        try {
+            pipe.setReady();
+            logger.info("honeypot hit from " + addr + " " + port);
+            servHoneyPotWrk w = new servHoneyPotWrk(lower.ipInfo, pipe, addr, port);
+            w.doHttpRead();
+            w.doWork();
+            w.doHttpWrite();
+            w.putResult(true);
+            w.doHttpFinish();
+            pipe.setClose();
+        } catch (Exception e) {
+            logger.traceback(e, addr + " " + port);
+        }
     }
-
+    
 }
