@@ -380,7 +380,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
         l.add(null, "3 4,.    ipinfo                     set ipinfo parameters");
-        servHoneyPotCfg.getHelp(l, 3);
+        ipInfoCfg.getHelp(l, 3);
         l.add(null, "3 4,.    api                        allow api calls");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");

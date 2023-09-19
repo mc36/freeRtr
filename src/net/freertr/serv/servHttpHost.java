@@ -178,7 +178,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
     /**
      * ip info configuration
      */
-    public servHoneyPotCfg ipInfo;
+    public ipInfoCfg ipInfo;
 
     /**
      * image map decode allowed
@@ -536,7 +536,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 return false;
             }
             if (ipInfo == null) {
-                ipInfo = new servHoneyPotCfg();
+                ipInfo = new ipInfoCfg();
             }
             ipInfo.doCfgStr(cmd, negated);
             return false;
@@ -554,7 +554,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 ipInfo = null;
                 return false;
             }
-            ipInfo = new servHoneyPotCfg();
+            ipInfo = new ipInfoCfg();
             ipInfo.doCfgStr(cmd, negated);
             return false;
         }

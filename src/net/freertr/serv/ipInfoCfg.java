@@ -18,7 +18,7 @@ import net.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class servHoneyPotCfg {
+public class ipInfoCfg {
 
     /**
      * script to run
@@ -73,7 +73,7 @@ public class servHoneyPotCfg {
     /**
      * create instance
      */
-    public servHoneyPotCfg() {
+    public ipInfoCfg() {
         doSanityChecks();
     }
 

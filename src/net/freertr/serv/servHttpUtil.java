@@ -1238,7 +1238,7 @@ public class servHttpUtil {
             if (cn.gotHost.ipInfo == null) {
                 return true;
             }
-            servHoneyPotWrk w = new servHoneyPotWrk(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
+            ipInfoWrk w = new ipInfoWrk(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
             w.doHttpUrl(cmd.getRemaining());
             w.doWork();
             String r = "real ipinfo goes here\r\n";///////////////////////

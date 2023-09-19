@@ -27,9 +27,9 @@ import net.freertr.util.version;
  *
  * @author matecsaba
  */
-public class servHoneyPotWrk {
+public class ipInfoWrk {
 
-    private final servHoneyPotCfg cfg;
+    private final ipInfoCfg cfg;
 
     private final pipeSide pipe;
 
@@ -57,7 +57,7 @@ public class servHoneyPotWrk {
      * @param a address to check
      * @param p port number to check
      */
-    public servHoneyPotWrk(servHoneyPotCfg c, pipeSide r, addrIP a, int p) {
+    public ipInfoWrk(ipInfoCfg c, pipeSide r, addrIP a, int p) {
         cfg = c;
         pipe = r;
         addr = a.copyBytes();

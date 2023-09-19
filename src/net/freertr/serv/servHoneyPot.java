@@ -45,7 +45,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * ip information configuration
      */
-    public servHoneyPotCfg ipInfo = new servHoneyPotCfg();
+    public ipInfoCfg ipInfo = new ipInfoCfg();
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -88,7 +88,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 .  tiny-http                    pretend http server");
-        servHoneyPotCfg.getHelp(l, 0);
+        ipInfoCfg.getHelp(l, 0);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
