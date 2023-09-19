@@ -1,6 +1,10 @@
-server http to have whatsmyip whatsmyasn etc services
+server http to have show only api
 
-server http to have lookingglass
+generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
+
+generalize ipinfo tests for lsrp / pvrp pmtud
+
+bgp unknowns-log knob
 
 image viewer to file manager
 
@@ -13,11 +17,6 @@ game pinball
 
 
 
-generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
-
-generalize ipinfo tests for lsrp / pvrp pmtud
-
-bgp unknowns-log knob
 
 
 acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes

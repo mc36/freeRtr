@@ -268,17 +268,19 @@ public class version {
                 break;
             case 4:
                 l.add("d3ar c0d3 r3v13w3r$ZZZ:");
-                l.add("l3mm3 mansplain a b1t");
-                l.add("s0 pl3a$3 d0n't g3t 1t a way t33 s3r1ously || p3r(f)S0nallY...");
-                l.add("once we'll see, and i do regular refactorings as the world changes");
-                l.add("at the moment i'm fine with my integration and interop tests against the big vendors");
-                l.add("that usually ends in 7-8 minutes on a random xeon with graal-vm-community");
-                l.add("i'm an networker and just hobby programmer and not a vegetable dealer nor anything");
-                l.add("so dear reviewers team sorry 4 hurtin' your eyes tonight:)");
-                l.add("my code smells and you'll grep some shit out like _and_ in the sources");
-                l.add("but it's a way crazier if you do the same to the kernels like _and_ and so");
-                l.add("so long-live creativity! this all means that dont debate on things like;)");
-                l.add("private static final void asdf(){} || private final static void asdf(){}");
+                l.add("l3mm3 man$pla1n a b1t");
+                l.add("$0 pl3a$3 d0n't g3t 1t a way t33 $3r10u$ly || p3r(f)$0nallY...");
+                l.add("0nc3 w3'll $33, and 1 d0 r3gular r3fact0r1ng$ a$ th3 w0rld chang3$");
+                l.add("at th3 m0m3nt 1'm f1n3 w1th my 1nt3grat10n and 1nt3r0p t3$t$ aga1n$t th3 b1g v3nd0r$");
+                l.add("that u$ually 3nd$ 1n 7-8 m1nut3$ 0n a rand0m x30n w1th graal-vm-c0mmun1ty");
+                l.add("1'm an n3tw0rk3r and ju$t h0bby pr0gramm3r and n0t a v3g3tabl3$ d3al3r n0r");
+                l.add("anyth1ng $0 d3ar r3v13w3r$ t3am $0rry 4 hurt1n' y0ur 3y3$ t0n1ght:)");
+                l.add("my c0d3 $m3ll$ and y0u'll gr3p $0m3 $h1t 0ut l1k3 _and_ 1n th3 $0urc3$");
+                l.add("but 1t'$ a way craz13r 1f y0u d0 th3 $am3 t0 th3 k3rn3l$ l1k3 _and_ and $0");
+                l.add("$0 l0ng-l1v3 cr3at1v1ty! th1$ all m3an$ that d0nt d3bat3 0n th1ng$ l1k3");
+                l.add("pr1vat3 $tat1c f1nal v01d a$df(){} || pr1vat3 f1nal $tat1c v01d a$df(){}");
+                l.add("r3call $crumma$t3r$ ar3 h3r3 t0 c0nv1nc3 u$ that 9 w0m3n can carry a baby");
+                l.add("1n ju$t 1 m0nth 1f th3y r3ally want t0.");
                 l.add(verCore.author);
                 break;
             case 5:

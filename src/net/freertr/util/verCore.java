@@ -76,7 +76,8 @@ public class verCore {
     public final static String[] license = {
         "place on the web: " + homeUrl1,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
-        "quote-15: respect the privacy of others, think before you type, with great power comes great responsibility",
+        "quote-16: respect the privacy of others, think before you type, with great power comes great responsibility",
+        "quote-15: dont drive faster than your guardian angel can fly, so dont drop all the packets just some them",
         "quote-14: true random comes from weather forecasts and political announcements",
         "quote-13: imagine that your 99th bday cake will be rarely done beefsteak",
         "quote-12: debug emulate know test and use your sh1t",

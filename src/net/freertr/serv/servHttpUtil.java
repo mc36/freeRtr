@@ -16,10 +16,12 @@ import net.freertr.enc.encBase64;
 import net.freertr.enc.encMarkDown;
 import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
+import net.freertr.clnt.clntIpInfWork;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
+import net.freertr.clnt.clntIpInfUtil;
 import net.freertr.sec.secWebsock;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userConfig;
@@ -1238,12 +1240,12 @@ public class servHttpUtil {
             if (cn.gotHost.ipInfo == null) {
                 return true;
             }
-            ipInfoWrk w = new ipInfoWrk(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
+            clntIpInfWork w = new clntIpInfWork(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
             w.doHttpUrl(cmd.getRemaining());
             w.doWork();
-            String r = "real ipinfo goes here\r\n";///////////////////////
-
-            cn.sendTextHeader("200 ok", "text/plain", r.getBytes());
+            List<String> r = w.getRouteDetails();
+            byte[] b = clntIpInfUtil.getRouteAscii(r);
+            cn.sendTextHeader("200 ok", "text/plain", b);
             return false;
         }
         if (((cn.gotHost.allowApi & apiBitsExec) != 0) && s.equals("exec")) {

@@ -20,6 +20,7 @@ import net.freertr.clnt.clntProxy;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
+import net.freertr.clnt.clntIpInfConf;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
@@ -178,7 +179,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
     /**
      * ip info configuration
      */
-    public ipInfoCfg ipInfo;
+    public clntIpInfConf ipInfo;
 
     /**
      * image map decode allowed
@@ -536,7 +537,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 return false;
             }
             if (ipInfo == null) {
-                ipInfo = new ipInfoCfg();
+                ipInfo = new clntIpInfConf();
             }
             ipInfo.doCfgStr(cmd, negated);
             return false;
@@ -554,7 +555,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 ipInfo = null;
                 return false;
             }
-            ipInfo = new ipInfoCfg();
+            ipInfo = new clntIpInfConf();
             ipInfo.doCfgStr(cmd, negated);
             return false;
         }

@@ -1,7 +1,6 @@
 package net.freertr.clnt;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
@@ -14,6 +13,8 @@ import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
 import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
+import net.freertr.util.debugger;
+import net.freertr.util.logger;
 import net.freertr.util.syncInt;
 
 /**
@@ -46,7 +47,7 @@ public class clntWhois {
     /**
      * asn name cache
      */
-    public final static tabGen<clntWhoisAsName> asnameCache = new tabGen<clntWhoisAsName>();
+    private final static tabGen<clntWhoisAsn> asnameCache = new tabGen<clntWhoisAsn>();
 
     /**
      * show local cache
@@ -54,9 +55,9 @@ public class clntWhois {
      * @return text
      */
     public static userFormat showLocalCache() {
-        userFormat res = new userFormat("|", "asn|name|ago|created|info");
+        userFormat res = new userFormat("|", "asn|name|ago|created|hit|info");
         for (int i = 0; i < asnameCache.size(); i++) {
-            clntWhoisAsName ntry = asnameCache.get(i);
+            clntWhoisAsn ntry = asnameCache.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -98,6 +99,9 @@ public class clntWhois {
      * @return response, null if error
      */
     public List<String> doQuery(String quest) {
+        if (debugger.clntIpInfo) {
+            logger.debug("working on " + quest + " at " + server);
+        }
         cntrStart.add(1);
         console.linePut("querying " + quest + " at " + server);
         if (proxy == null) {
@@ -157,7 +161,7 @@ public class clntWhois {
         if (!asNum.startsWith("as")) {
             return res;
         }
-        clntWhoisAsName ntry = new clntWhoisAsName(bits.str2num(asNum.substring(2, asNum.length())));
+        clntWhoisAsn ntry = new clntWhoisAsn(bits.str2num(asNum.substring(2, asNum.length())));
         ntry.name = asNam;
         asnameCache.put(ntry);
         return res;
@@ -206,9 +210,10 @@ public class clntWhois {
      * @return name, null if not found
      */
     public static String asn2name(int i, boolean b) {
-        clntWhoisAsName ntry = new clntWhoisAsName(i);
+        clntWhoisAsn ntry = new clntWhoisAsn(i);
         ntry = asnameCache.find(ntry);
         if (ntry != null) {
+            ntry.hits++;
             return ntry.name;
         }
         if (!b) {
@@ -216,15 +221,16 @@ public class clntWhois {
         }
         clntWhois w = new clntWhois(null, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer);
         if (w.doQuery("as" + i) == null) {
-            asnameCache.put(new clntWhoisAsName(i));
+            asnameCache.put(new clntWhoisAsn(i));
             return null;
         }
-        ntry = new clntWhoisAsName(i);
+        ntry = new clntWhoisAsn(i);
         ntry = asnameCache.find(ntry);
         if (ntry != null) {
+            ntry.hits++;
             return ntry.name;
         }
-        asnameCache.put(new clntWhoisAsName(i));
+        asnameCache.put(new clntWhoisAsn(i));
         return null;
     }
 
@@ -282,32 +288,4 @@ public class clntWhois {
         return beg + s.substring(1, s.length()) + end;
     }
 
-}
-
-class clntWhoisAsName implements Comparator<clntWhoisAsName> {
-
-    public final int asn;
-
-    public final long created;
-
-    public String name;
-
-    public clntWhoisAsName(int i) {
-        asn = i;
-        created = bits.getTime();
-    }
-
-    public int compare(clntWhoisAsName o1, clntWhoisAsName o2) {
-        if (o1.asn < o2.asn) {
-            return -1;
-        }
-        if (o1.asn > o2.asn) {
-            return +1;
-        }
-        return 0;
-    }
-
-    public String toString() {
-        return bits.num2str(asn) + "|" + name + "|" + bits.timePast(created) + "|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3);
-    }
 }

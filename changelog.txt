@@ -15148,3 +15148,7 @@ no todo: tests for lsrp / pvrp pmtud
 no todo: tests for bgp/msdp: neigh x.x.x.x pmtud
 todo: generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
 todo: generalize ipinfo tests for lsrp / pvrp pmtud
+---------------------------------- 2023-09-19 22:14:27 23.9.19
+no todo: server http to have lookingglass
+no todo: server http to have whatsmyip whatsmyasn etc services
+todo: server http to have show only api

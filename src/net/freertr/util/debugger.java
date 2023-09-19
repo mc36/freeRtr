@@ -134,11 +134,6 @@ public class debugger {
     public static boolean servScsiTraf = false;
 
     /**
-     * servHoneypot traffic
-     */
-    public static boolean servHoneyPotTraf = false;
-
-    /**
      * servHttp traffic
      */
     public static boolean servHttpTraf = false;
@@ -578,6 +573,11 @@ public class debugger {
      * tabListing table events
      */
     public static boolean tabListingEvnt = false;
+
+    /**
+     * clntIpInf commands
+     */
+    public static boolean clntIpInfo = false;
 
     /**
      * clntNtp traffic
@@ -1050,6 +1050,7 @@ public class debugger {
         l.add(null, "3 .        script            chat script handler");
         l.add(null, "3 .        hwcfg             hardware config");
         l.add(null, "3 .        swcfg             software config");
+        l.add(null, "3 .        ipinfo            ipinfo events");
         l.add(null, "3 .        redundancy        redundancy events");
         l.add(null, "3 .        watchdog          watchdog events");
         l.add(null, "3 .        runner            line runner");
@@ -1082,7 +1083,6 @@ public class debugger {
         l.add(null, "3 .        rfb               remote frame buffer protocol");
         l.add(null, "3 .        scsi              scsi protocol");
         l.add(null, "3 .        http              hypertext transfer protocol");
-        l.add(null, "3 .        honepot           hypertext debugging");
         l.add(null, "3 .        lpd               line printer daemon protocol");
         l.add(null, "3 .        pop3              post office protocol");
         l.add(null, "3 .        imap4             internet mail access protocol");
@@ -1336,6 +1336,10 @@ public class debugger {
                 cfgInitSw = v;
                 return false;
             }
+            if (s.equals("ipinfo")) {
+                clntIpInfo = v;
+                return false;
+            }
             if (s.equals("redundancy")) {
                 prtRedun = v;
                 return false;
@@ -1405,10 +1409,6 @@ public class debugger {
                 return false;
             }
             if (s.equals("http")) {
-                servHttpTraf = v;
-                return false;
-            }
-            if (s.equals("honeypot")) {
                 servHttpTraf = v;
                 return false;
             }

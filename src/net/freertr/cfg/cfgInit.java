@@ -99,7 +99,6 @@ import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
 import net.freertr.serv.servVxlan;
 import net.freertr.enc.encUrl;
-import net.freertr.serv.ipInfoCfg;
 import net.freertr.serv.servXotPad;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouteIface;

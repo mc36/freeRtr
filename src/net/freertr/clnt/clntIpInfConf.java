@@ -1,4 +1,4 @@
-package net.freertr.serv;
+package net.freertr.clnt;
 
 import java.util.List;
 import net.freertr.cfg.cfgAll;
@@ -14,11 +14,11 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
 /**
- * generic honeypot configuration
+ * generic ipinfo configuration
  *
  * @author matecsaba
  */
-public class ipInfoCfg {
+public class clntIpInfConf {
 
     /**
      * script to run
@@ -73,8 +73,8 @@ public class ipInfoCfg {
     /**
      * create instance
      */
-    public ipInfoCfg() {
-        doSanityChecks();
+    public clntIpInfConf() {
+        clntIpInfUtil.doSanityChecks(this);
     }
 
     /**
@@ -143,28 +143,28 @@ public class ipInfoCfg {
         if (s.equals("script")) {
             if (negated) {
                 script = null;
-                doSanityChecks();
+                clntIpInfUtil.doSanityChecks(this);
                 return false;
             }
             script = cfgAll.scrptFind(cmd.word(), false);
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("resolve")) {
             resolve = !negated;
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("tiny-http")) {
             tinyHttp = !negated;
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("router4")) {
             if (negated) {
                 router4 = null;
                 fwder4 = null;
-                doSanityChecks();
+                clntIpInfUtil.doSanityChecks(this);
                 return false;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
@@ -180,14 +180,14 @@ public class ipInfoCfg {
             }
             router4 = rtr.getRouter();
             fwder4 = rtr.fwd;
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("router6")) {
             if (negated) {
                 router6 = null;
                 fwder6 = null;
-                doSanityChecks();
+                clntIpInfUtil.doSanityChecks(this);
                 return false;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
@@ -203,34 +203,34 @@ public class ipInfoCfg {
             }
             router6 = rtr.getRouter();
             fwder6 = rtr.fwd;
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("route-details")) {
             routeDetails = !negated;
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("route-hacked")) {
             routeHacked = !negated;
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("route-distinguisher")) {
             if (negated) {
                 routeDstngshr = 0;
-                doSanityChecks();
+                clntIpInfUtil.doSanityChecks(this);
                 return false;
             }
             s = cmd.word();
             routeDstngshr = tabRouteUtil.string2rd(s);
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         if (s.equals("route-vrf")) {
             if (negated) {
                 routeDstngshr = 0;
-                doSanityChecks();
+                clntIpInfUtil.doSanityChecks(this);
                 return false;
             }
             s = cmd.word();
@@ -247,27 +247,11 @@ public class ipInfoCfg {
             if (fwder6 != null) {
                 routeDstngshr = fwder6.rd;
             }
-            doSanityChecks();
+            clntIpInfUtil.doSanityChecks(this);
             return false;
         }
         cmd.badCmd();
         return false;
-    }
-
-    /**
-     * perform sanity checks
-     */
-    public synchronized void doSanityChecks() {
-        if (router4 == null) {
-            fwder4 = null;
-        }
-        if (router6 == null) {
-            fwder6 = null;
-        }
-        if ((router4 != null) && (router6 == null)) {
-            routeDstngshr = 0;
-        }
-        resolve &= cfgAll.domainLookup;
     }
 
 }
