@@ -28,6 +28,11 @@ public class userTesterOne {
     protected final pipeSide pipe;
 
     /**
+     * console handler
+     */
+    protected final pipeProgress rdr;
+
+    /**
      * slot number
      */
     protected int slot = 0;
@@ -168,11 +173,6 @@ public class userTesterOne {
     protected String window = "c";
 
     /**
-     * console handler
-     */
-    protected pipeProgress rdr;
-
-    /**
      * verification commands
      */
     protected List<List<String>> shows = new ArrayList<List<String>>();
@@ -211,9 +211,11 @@ public class userTesterOne {
      * create instance
      *
      * @param pip pipeline to use
+     * @param read reader to use
      */
-    protected userTesterOne(pipeSide pip) {
+    protected userTesterOne(pipeSide pip, pipeProgress read) {
         pipe = pip;
+        rdr = read;
     }
 
     /**

@@ -15140,3 +15140,6 @@ todo: ioam as rfc9452
 todo: dlep as rfc8175
 todo: rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
 todo: rfc8548 tcpcrypt
+---------------------------------- 2023-09-19 09:59:35 23.9.19
+qc pass: ebgp with pmtud
+qc pass: ibgp with pmtud

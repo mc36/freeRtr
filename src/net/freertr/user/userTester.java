@@ -1043,7 +1043,8 @@ public class userTester {
         if (paralell > 1) {
             pip = pipeDiscard.needAny(null);
         }
-        userTesterOne lt = new userTesterOne(pip);
+        pipeProgress rdr = new pipeProgress(pip);
+        userTesterOne lt = new userTesterOne(pip, rdr);
         lt.path = temp;
         lt.prefix = temp + "slot";
         lt.slot = slot + slt;
@@ -1071,7 +1072,6 @@ public class userTester {
         if (window) {
             lt.window += "w";
         }
-        lt.rdr = new pipeProgress(pip);
         return lt;
     }
 

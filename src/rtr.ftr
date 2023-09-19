@@ -2714,6 +2714,8 @@ qc pass: unicast+vpns over ebgp with dynamic capability
 qc pass: unicast+vpns over ibgp with dynamic capability
 qc pass: unicast+vpns over confed bgp with dynamic capability
 qc pass: unicast+vpns over ibgp rr with dynamic capability
+qc pass: ebgp with pmtud
+qc pass: ibgp with pmtud
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
