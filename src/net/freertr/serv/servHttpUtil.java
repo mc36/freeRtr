@@ -1243,8 +1243,17 @@ public class servHttpUtil {
             w.doHttpUrl(cmd.getRemaining());
             w.doWork();
             List<String> r = w.getRouteInfos();
+            String a = w.getHtmlLines(true);
+            if (a != null) {
+                r.add(0, a);
+            }
+            a = w.getHtmlLines(false);
+            if (a != null) {
+                r.add(a);
+            }
+            a = w.getContentType();
             byte[] b = clntIpInfWork.getRouteAscii(r);
-            cn.sendTextHeader("200 ok", "text/plain", b);
+            cn.sendTextHeader("200 ok", a, b);
             return false;
         }
         if (((cn.gotHost.allowApi & apiBitsExec) != 0) && s.equals("exec")) {

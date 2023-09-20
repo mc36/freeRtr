@@ -46,6 +46,8 @@ public class clntIpInfWork {
 
     private boolean hack;
 
+    private boolean plain;
+
     private boolean detail;
 
     private boolean single;
@@ -71,6 +73,7 @@ public class clntIpInfWork {
         pipe = r;
         port = p;
         hack = c.hacked;
+        plain = c.plain;
         style = c.style;
         detail = c.details;
         single = c.single;
@@ -119,6 +122,25 @@ public class clntIpInfWork {
     }
 
     /**
+     * get html boilerplate
+     *
+     * @param hdr true to preface, false fo closure
+     * @return string, null if nothing
+     */
+    public String getHtmlLines(boolean hdr) {
+        if (plain) {
+            return null;
+        }
+        if (!hdr) {
+            return "</pre></body></html>";
+        }
+        if (style == null) {
+            return servHttp.htmlHead + "<pre>";
+        }
+        return servHttp.htmlHead + "<pre style=\"" + style + "\">";
+    }
+
+    /**
      * do minimal http exchange
      */
     public void doHttpWrite() {
@@ -129,17 +151,14 @@ public class clntIpInfWork {
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.linePut("HTTP/1.1 200 ok");
         pipe.linePut("Server: " + version.usrAgnt);
-        pipe.linePut("Content-Type: text/html");
+        pipe.linePut("Content-Type: " + getContentType());
         pipe.linePut("Connection: Close");
         pipe.linePut("");
-        pipe.linePut(servHttp.htmlHead);
-        if (style == null) {
-            pipe.linePut("<pre>");
+        String a = getHtmlLines(true);
+        if (a == null) {
             return;
         }
-        pipe.strPut("<pre style=\"");
-        pipe.strPut(style);
-        pipe.linePut("\">");
+        pipe.linePut(a);
     }
 
     /**
@@ -149,7 +168,11 @@ public class clntIpInfWork {
         if (!http) {
             return;
         }
-        pipe.linePut("</pre></body></html>");
+        String a = getHtmlLines(false);
+        if (a == null) {
+            return;
+        }
+        pipe.linePut(a);
     }
 
     /**
@@ -159,7 +182,7 @@ public class clntIpInfWork {
      */
     public void doHttpUrl(String a) {
         if (debugger.clntIpInfo) {
-            logger.debug("api queried " + a + " from " + addr + " " + port);
+            logger.debug("api " + a + " queried " + addr + " " + port);
         }
         cmds cmd = new cmds("url", a.replaceAll("/", " "));
         for (;;) {
@@ -208,6 +231,14 @@ public class clntIpInfWork {
             hack = false;
             return false;
         }
+        if (a.equals("plain")) {
+            plain = true;
+            return false;
+        }
+        if (a.equals("unplain")) {
+            plain = false;
+            return false;
+        }
         if (a.equals("detail")) {
             detail = true;
             return false;
@@ -241,7 +272,7 @@ public class clntIpInfWork {
             return false;
         }
         if (debugger.clntIpInfo) {
-            logger.debug("bad api queried " + a + " from " + addr + " " + port);
+            logger.debug("bad api " + a + " queried " + addr + " " + port);
         }
         return false;
     }
@@ -296,7 +327,7 @@ public class clntIpInfWork {
         if (resolved != null) {
             return;
         }
-        logger.info("no reverse dns");
+        logger.info("no reverse dns " + addr + " " + port);
     }
 
     /**
@@ -305,7 +336,7 @@ public class clntIpInfWork {
      * @return single line of information
      */
     public String getRoute1liner() {
-        String s = addr + " :" + port + " " + getRoute1liner(fwd, rtr, ntry);
+        String s = addr + " " + port + " " + getRoute1liner(fwd, rtr, ntry);
         if (resolved != null) {
             s += " " + resolved;
         }
@@ -335,6 +366,19 @@ public class clntIpInfWork {
         String a = getRoute1liner();
         res.add(0, a);
         return res;
+    }
+
+    /**
+     * get content type
+     *
+     * @return string
+     */
+    public String getContentType() {
+        if (plain) {
+            return "text/plain";
+        } else {
+            return "text/html";
+        }
     }
 
     /**

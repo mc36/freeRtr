@@ -81,6 +81,11 @@ public class clntIpInfConf {
     public boolean hacked;
 
     /**
+     * plain route details
+     */
+    public boolean plain;
+
+    /**
      * style to send
      */
     public String style;
@@ -116,6 +121,7 @@ public class clntIpInfConf {
         lst.add(null, (tab + 1) + " .  details                      print prefix details");
         lst.add(null, (tab + 1) + " .  single                       print prefix summary");
         lst.add(null, (tab + 1) + " .  hacked                       hackerize prefix details");
+        lst.add(null, (tab + 1) + " .  plain                        plain prefix details");
         lst.add(null, (tab + 1) + " .  resolve                      resolve addresses");
         lst.add(null, (tab + 1) + " .  tinyhttp                     pretend http server");
         lst.add(null, (tab + 1) + " .  others                       allow any addresses");
@@ -142,6 +148,9 @@ public class clntIpInfConf {
         }
         if (hacked) {
             lst.add(beg + "hacked");
+        }
+        if (plain) {
+            lst.add(beg + "plain");
         }
         if (style != null) {
             lst.add(beg + "style " + style);
@@ -209,6 +218,11 @@ public class clntIpInfConf {
         }
         if (s.equals("hacked")) {
             hacked = !negated;
+            clntIpInfWork.doSanityChecks(this);
+            return false;
+        }
+        if (s.equals("plain")) {
+            plain = !negated;
             clntIpInfWork.doSanityChecks(this);
             return false;
         }
