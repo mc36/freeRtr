@@ -476,8 +476,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! afi-vpls .* ve-id 0 0",
         // router msdp
         "router msdp[46] .*! neighbor .* timer 30000 75000 60000 120000",
+        "router msdp[46] .*! neighbor .* pmtud 0 0 0",
         "router msdp[46] .*! no neighbor .* description",
-        "router msdp[46] .*! no neighbor .* pmtud 0 0 0",
         "router msdp[46] .*! no neighbor .* shutdown",
         "router msdp[46] .*! no neighbor .* update-source",
         "router msdp[46] .*! no neighbor .* password",
