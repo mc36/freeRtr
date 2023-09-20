@@ -75,23 +75,29 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        ipInfo.doGetCfg(beg, lst);
+        ipInfo.doGetCfg(beg + "info ", lst);
     }
 
     public boolean srvCfgStr(cmds cmd) {
-        boolean neg = cmd.word().equals("no");
-        if (!neg) {
-            cmd = cmd.copyBytes(true);
+        String a = cmd.word();
+        boolean neg = a.equals("no");
+        if (neg) {
+            a = cmd.word();
+        }
+        if (!a.equals("info")) {
+            return true;
         }
         return ipInfo.doCfgStr(cmd, neg);
     }
 
     public void srvHelp(userHelping l) {
-        clntIpInfConf.getHelp(l, 0);
+        l.add(null, "1 2  info                      check visitors");
+        clntIpInfConf.getHelp(l, 1);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(60000);
+        pipe.setReady();
         servHoneyPotConn ntry = new servHoneyPotConn(this, pipe, id.peerAddr.copyBytes(), id.portRem);
         ntry.doStart();
         return false;

@@ -1094,7 +1094,10 @@ server http web
  host sid.mchome.nop.hu api exec config ipinfo
  host sid.mchome.nop.hu ipinfo router4 bgp4 65535
  host sid.mchome.nop.hu ipinfo router6 bgp6 65535
- host sid.mchome.nop.hu ipinfo route-details
+ host sid.mchome.nop.hu ipinfo details
+ host sid.mchome.nop.hu ipinfo single
+ host sid.mchome.nop.hu ipinfo script logger
+ host sid.mchome.nop.hu ipinfo resolve
  host sid.mchome.nop.hu websock
  host sid.mchome.nop.hu webdav
  host sid.mchome.nop.hu class
@@ -1142,20 +1145,23 @@ server dns ns
 !
 server honeypot hp1
  port 8881
- router4 bgp4 65535
- router6 bgp6 65535
- script logger
- tiny-http
+ info router4 bgp4 65535
+ info router6 bgp6 65535
+ info single
+ info script logger
+ info tinyhttp
  interface loopback0
  vrf v1
  exit
 !
 server honeypot hp2
  port 8882
- router4 bgp4 65535
- router6 bgp6 65535
- route-details
- tiny-http
+ info router4 bgp4 65535
+ info router6 bgp6 65535
+ info details
+ info single
+ info resolve
+ info tinyhttp
  interface loopback0
  vrf v1
  exit

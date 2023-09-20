@@ -73,7 +73,7 @@ public class clntIpInfConf {
     /**
      * add route summary
      */
-    public boolean summary;
+    public boolean single;
 
     /**
      * hack route details
@@ -84,7 +84,7 @@ public class clntIpInfConf {
      * create instance
      */
     public clntIpInfConf() {
-        clntIpInfUtil.doSanityChecks(this);
+        clntIpInfWork.doSanityChecks(this);
     }
 
     /**
@@ -107,7 +107,7 @@ public class clntIpInfConf {
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  script                       script to execute");
         lst.add(null, (tab + 2) + " .    <name:scr>                 script name");
         lst.add(null, (tab + 1) + " .  details                      print prefix details");
-        lst.add(null, (tab + 1) + " .  summary                      print prefix summary");
+        lst.add(null, (tab + 1) + " .  single                       print prefix summary");
         lst.add(null, (tab + 1) + " .  hacked                       hackerize prefix details");
         lst.add(null, (tab + 1) + " .  resolve                      resolve addresses");
         lst.add(null, (tab + 1) + " .  tinyhttp                     pretend http server");
@@ -130,8 +130,8 @@ public class clntIpInfConf {
         if (details) {
             lst.add(beg + "details");
         }
-        if (summary) {
-            lst.add(beg + "summary");
+        if (single) {
+            lst.add(beg + "single");
         }
         if (hacked) {
             lst.add(beg + "hacked");
@@ -165,48 +165,48 @@ public class clntIpInfConf {
         if (s.equals("script")) {
             if (negated) {
                 script = null;
-                clntIpInfUtil.doSanityChecks(this);
+                clntIpInfWork.doSanityChecks(this);
                 return false;
             }
             script = cfgAll.scrptFind(cmd.word(), false);
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("resolve")) {
             resolve = !negated;
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("others")) {
             others = !negated;
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("tinyhttp")) {
             tinyHttp = !negated;
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("details")) {
             details = !negated;
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
-        if (s.equals("summary")) {
-            summary = !negated;
-            clntIpInfUtil.doSanityChecks(this);
+        if (s.equals("single")) {
+            single = !negated;
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("hacked")) {
             hacked = !negated;
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("router4")) {
             if (negated) {
                 router4 = null;
                 fwder4 = null;
-                clntIpInfUtil.doSanityChecks(this);
+                clntIpInfWork.doSanityChecks(this);
                 return false;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
@@ -222,14 +222,14 @@ public class clntIpInfConf {
             }
             router4 = rtr.getRouter();
             fwder4 = rtr.fwd;
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("router6")) {
             if (negated) {
                 router6 = null;
                 fwder6 = null;
-                clntIpInfUtil.doSanityChecks(this);
+                clntIpInfWork.doSanityChecks(this);
                 return false;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
@@ -245,24 +245,24 @@ public class clntIpInfConf {
             }
             router6 = rtr.getRouter();
             fwder6 = rtr.fwd;
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("rd")) {
             if (negated) {
                 rd = 0;
-                clntIpInfUtil.doSanityChecks(this);
+                clntIpInfWork.doSanityChecks(this);
                 return false;
             }
             s = cmd.word();
             rd = tabRouteUtil.string2rd(s);
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         if (s.equals("vrf")) {
             if (negated) {
                 rd = 0;
-                clntIpInfUtil.doSanityChecks(this);
+                clntIpInfWork.doSanityChecks(this);
                 return false;
             }
             s = cmd.word();
@@ -279,7 +279,7 @@ public class clntIpInfConf {
             if (fwder6 != null) {
                 rd = fwder6.rd;
             }
-            clntIpInfUtil.doSanityChecks(this);
+            clntIpInfWork.doSanityChecks(this);
             return false;
         }
         cmd.badCmd();
