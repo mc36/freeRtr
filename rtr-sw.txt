@@ -1096,6 +1096,7 @@ server http web
  host sid.mchome.nop.hu ipinfo router6 bgp6 65535
  host sid.mchome.nop.hu ipinfo details
  host sid.mchome.nop.hu ipinfo single
+ host sid.mchome.nop.hu ipinfo style background-color:#000000;color:#00FFFF;
  host sid.mchome.nop.hu ipinfo script logger
  host sid.mchome.nop.hu ipinfo resolve
  host sid.mchome.nop.hu websock
@@ -1148,6 +1149,7 @@ server honeypot hp1
  info router4 bgp4 65535
  info router6 bgp6 65535
  info single
+ info style background-color:#000000;color:#00FFFF;
  info script logger
  info tinyhttp
  interface loopback0
@@ -1160,6 +1162,7 @@ server honeypot hp2
  info router6 bgp6 65535
  info details
  info single
+ info style background-color:#000000;color:#00FFFF;
  info resolve
  info tinyhttp
  interface loopback0

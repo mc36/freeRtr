@@ -38,11 +38,11 @@ public class clntIpInfWork {
 
     private final boolean othrs;
 
-    private final String style = "background-color: #000000; color: #00FFFF;"; ////
-
     private final addrIP addr = new addrIP();
 
     private boolean http;
+
+    private String style;
 
     private boolean hack;
 
@@ -71,6 +71,7 @@ public class clntIpInfWork {
         pipe = r;
         port = p;
         hack = c.hacked;
+        style = c.style;
         detail = c.details;
         single = c.single;
         http = c.tinyHttp;
@@ -132,7 +133,13 @@ public class clntIpInfWork {
         pipe.linePut("Connection: Close");
         pipe.linePut("");
         pipe.linePut(servHttp.htmlHead);
-        pipe.linePut("<pre style=\" " + style + " \">");
+        if (style == null) {
+            pipe.linePut("<pre>");
+            return;
+        }
+        pipe.strPut("<pre style=\"");
+        pipe.strPut(style);
+        pipe.linePut("\">");
     }
 
     /**
@@ -225,6 +232,14 @@ public class clntIpInfWork {
             http = false;
             return false;
         }
+        if (a.equals("style")) {
+            style = doSanityStyle(cmd.word());
+            return false;
+        }
+        if (a.equals("unstyle")) {
+            style = null;
+            return false;
+        }
         if (debugger.clntIpInfo) {
             logger.debug("bad api queried " + a + " from " + addr + " " + port);
         }
@@ -272,7 +287,7 @@ public class clntIpInfWork {
             return;
         }
         if (!cfg.resolve) {
-            resolved = "no dns allowed";
+            resolved = null;
             return;
         }
         clntDns clnt = new clntDns();
@@ -290,8 +305,10 @@ public class clntIpInfWork {
      * @return single line of information
      */
     public String getRoute1liner() {
-        String s = addr + " :" + port + " - " + resolved;
-        s += " - " + getRoute1liner(fwd, rtr, ntry);
+        String s = addr + " :" + port + " " + getRoute1liner(fwd, rtr, ntry);
+        if (resolved != null) {
+            s += " " + resolved;
+        }
         if (!hack) {
             return s;
         }
@@ -321,6 +338,28 @@ public class clntIpInfWork {
     }
 
     /**
+     * preform style checks
+     *
+     * @param a string
+     * @return null on error, style if ok
+     */
+    public final static String doSanityStyle(String a) {
+        if (a == null) {
+            return null;
+        }
+        if (a.indexOf("\"") >= 0) {
+            return null;
+        }
+        if (a.indexOf("\\") >= 0) {
+            return null;
+        }
+        if (a.indexOf(">") >= 0) {
+            return null;
+        }
+        return a;
+    }
+
+    /**
      * perform sanity checks
      *
      * @param cfg config to repair
@@ -339,6 +378,15 @@ public class clntIpInfWork {
         if ((cfg.router4 != null) && (cfg.router6 == null)) {
             cfg.rd = 0;
             chg++;
+        }
+        if (cfg.style != null) {
+            String a = doSanityStyle(cfg.style);
+            if (a.length() < 1) {
+                cfg.style = null;
+                chg++;
+                a = null;
+            }
+            cfg.style = a;
         }
         if (!verCore.release) {
             return chg;
@@ -434,9 +482,9 @@ public class clntIpInfWork {
         return fwd.vrfName + " " + rtr.routerComputedU.size()
                 + " " + addrPrefix.ip2str(ntry.prefix)
                 + " " + tabRouteUtil.rd2string(ntry.rouDst)
-                + " " + ntry.best.asPathStr()
-                + " " + ntry.best.asInfoStr()
-                + " " + ntry.best.asNameStr();
+                + " " + ntry.best.asPathStr().trim()
+                + " " + ntry.best.asInfoStr().trim()
+                + " " + ntry.best.asNameStr().trim();
     }
 
     /**

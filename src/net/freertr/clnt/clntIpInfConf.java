@@ -81,6 +81,11 @@ public class clntIpInfConf {
     public boolean hacked;
 
     /**
+     * style to send
+     */
+    public String style;
+
+    /**
      * create instance
      */
     public clntIpInfConf() {
@@ -106,6 +111,8 @@ public class clntIpInfConf {
         lst.add(null, (tab + 2) + " .    <name:vrf>                 name of table");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  script                       script to execute");
         lst.add(null, (tab + 2) + " .    <name:scr>                 script name");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  style                        colorize prefix details");
+        lst.add(null, (tab + 2) + " .    <str>                      string to send");
         lst.add(null, (tab + 1) + " .  details                      print prefix details");
         lst.add(null, (tab + 1) + " .  single                       print prefix summary");
         lst.add(null, (tab + 1) + " .  hacked                       hackerize prefix details");
@@ -135,6 +142,9 @@ public class clntIpInfConf {
         }
         if (hacked) {
             lst.add(beg + "hacked");
+        }
+        if (style != null) {
+            lst.add(beg + "style " + style);
         }
         if (rd != 0) {
             lst.add(beg + "rd " + tabRouteUtil.rd2string(rd));
@@ -200,6 +210,14 @@ public class clntIpInfConf {
         if (s.equals("hacked")) {
             hacked = !negated;
             clntIpInfWork.doSanityChecks(this);
+            return false;
+        }
+        if (s.equals("style")) {
+            if (negated) {
+                style = null;
+                return false;
+            }
+            style = cmd.getRemaining();
             return false;
         }
         if (s.equals("router4")) {
