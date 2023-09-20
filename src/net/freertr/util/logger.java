@@ -469,9 +469,9 @@ public class logger {
         if (m == null) {
             m = "";
         } else {
-            m = "doing " + m + " at ";
+            m += " when ";
         }
-        return m + dumpStackTrace(e.getStackTrace());
+        return m + e + " at " + dumpStackTrace(e.getStackTrace());
     }
 
     /**

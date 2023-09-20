@@ -44,6 +44,8 @@ public class clntIpInfWork {
 
     private String style;
 
+    private userFormat.tableMode format;
+
     private boolean hack;
 
     private boolean plain;
@@ -75,6 +77,7 @@ public class clntIpInfWork {
         hack = c.hacked;
         plain = c.plain;
         style = c.style;
+        format = c.format;
         detail = c.details;
         single = c.single;
         http = c.tinyHttp;
@@ -131,13 +134,19 @@ public class clntIpInfWork {
         if (plain) {
             return null;
         }
+        String tag;
+        if (format == userFormat.tableMode.html) {
+            tag = "table";
+        } else {
+            tag = "pre";
+        }
         if (!hdr) {
-            return "</pre></body></html>";
+            return "</" + tag + "></body></html>";
         }
         if (style == null) {
-            return servHttp.htmlHead + "<pre>";
+            return servHttp.htmlHead + "<" + tag + ">";
         }
-        return servHttp.htmlHead + "<pre style=\"" + style + "\">";
+        return servHttp.htmlHead + "<" + tag + " style=\"" + style + "\">";
     }
 
     /**
@@ -271,6 +280,10 @@ public class clntIpInfWork {
             style = null;
             return false;
         }
+        if (a.equals("format")) {
+            format = userFormat.str2tabmod(cmd.word());
+            return false;
+        }
         if (debugger.clntIpInfo) {
             logger.debug("bad api " + a + " queried " + addr + " " + port);
         }
@@ -359,7 +372,7 @@ public class clntIpInfWork {
             }
             return bits.str2lst(getRoute1liner());
         }
-        List<String> res = getRouteDetails(fwd, ntry, userFormat.tableMode.fancy, hack);
+        List<String> res = getRouteDetails(fwd, ntry, format, hack);
         if (!single) {
             return res;
         }
@@ -545,7 +558,7 @@ public class clntIpInfWork {
             return bits.str2lst(noRoute);
         }
         userFormat res = ntry.fullDump("", fwd);
-        List<String> lst = res.formatAll(userFormat.tableMode.fancy);
+        List<String> lst = res.formatAll(tm);
         if (!hck) {
             return lst;
         }

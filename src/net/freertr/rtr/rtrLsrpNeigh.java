@@ -424,7 +424,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         if (iface.pmtudTim > 1) {
             logger.warn("testing pmtud to " + peer + " from " + iface.iface.addr);
             pipeLine pl = new pipeLine(65536, true);
-            prtPmtud pm = new prtPmtud(pl.getSide(), peer, lower.fwdCore, peer);
+            prtPmtud pm = new prtPmtud(pl.getSide(), peer, lower.fwdCore, iface.iface.addr);
             pm.min = iface.pmtudMin;
             pm.max = iface.pmtudMax;
             pm.timeout = iface.pmtudTim;
@@ -438,7 +438,6 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             }
             logger.warn("pmtud measured " + pm.last + " bytes to " + peer);
             pmtudRes = pm.last;
-            return;
         }
         if (!need2run) {
             sendErr("notNeeded");

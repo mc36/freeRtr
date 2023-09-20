@@ -2901,6 +2901,7 @@ qc pass: lsrp dynamic udp metric
 qc pass: lsrp dynamic twamp metric
 qc pass: lsrp with mpolka
 qc pass: lsrp flexalgo
+qc pass: lsrp with pmtud
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -3065,6 +3066,7 @@ qc pass: pvrp with selective sr
 qc pass: pvrp with selective bier
 qc pass: pvrp with polka
 qc pass: pvrp auto summarization
+qc pass: pvrp with pmtud
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
@@ -3212,7 +3214,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: server http to have show only api
 todo: generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
 todo: generalize ipinfo tests for lsrp / pvrp pmtud
 todo: bgp unknowns-log knob

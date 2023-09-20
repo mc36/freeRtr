@@ -9,6 +9,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteUtil;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -91,6 +92,11 @@ public class clntIpInfConf {
     public String style;
 
     /**
+     * set table formatter
+     */
+    public userFormat.tableMode format = userFormat.tableMode.normal;
+
+    /**
      * create instance
      */
     public clntIpInfConf() {
@@ -118,6 +124,13 @@ public class clntIpInfConf {
         lst.add(null, (tab + 2) + " .    <name:scr>                 script name");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  style                        colorize prefix details");
         lst.add(null, (tab + 2) + " .    <str>                      string to send");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  format                       format prefix details");
+        lst.add(null, (tab + 2) + " .    normal                     select normal mode");
+        lst.add(null, (tab + 2) + " .    table                      select table mode");
+        lst.add(null, (tab + 2) + " .    fancy                      select fancy mode");
+        lst.add(null, (tab + 2) + " .    csv                        select csv mode");
+        lst.add(null, (tab + 2) + " .    raw                        select raw mode");
+        lst.add(null, (tab + 2) + " .    html                       select html mode");
         lst.add(null, (tab + 1) + " .  details                      print prefix details");
         lst.add(null, (tab + 1) + " .  single                       print prefix summary");
         lst.add(null, (tab + 1) + " .  hacked                       hackerize prefix details");
@@ -154,6 +167,9 @@ public class clntIpInfConf {
         }
         if (style != null) {
             lst.add(beg + "style " + style);
+        }
+        if (format != userFormat.tableMode.normal) {
+            lst.add(beg + "format " + userFormat.tabmod2str(format));
         }
         if (rd != 0) {
             lst.add(beg + "rd " + tabRouteUtil.rd2string(rd));
@@ -232,6 +248,15 @@ public class clntIpInfConf {
                 return false;
             }
             style = cmd.getRemaining();
+            return false;
+        }
+        if (s.equals("format")) {
+            if (negated) {
+                format = userFormat.tableMode.normal;
+                return false;
+            }
+            s = cmd.word();
+            format = userFormat.str2tabmod(s);
             return false;
         }
         if (s.equals("router4")) {

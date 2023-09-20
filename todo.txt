@@ -1,4 +1,3 @@
-server http to have show only api
 
 generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
 

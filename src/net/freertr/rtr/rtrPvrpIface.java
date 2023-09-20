@@ -784,6 +784,18 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
             helloTimer = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("pmtud")) {
+            pmtudMin = bits.str2num(cmd.word());
+            pmtudMax = bits.str2num(cmd.word());
+            pmtudTim = bits.str2num(cmd.word());
+            if (pmtudMin < pmtudMax) {
+                return;
+            }
+            pmtudMin = 0;
+            pmtudMax = 0;
+            pmtudTim = 0;
+            return;
+        }
         if (a.equals("dead-time")) {
             deadTimer = bits.str2num(cmd.word());
             return;
@@ -893,6 +905,12 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
+        if (a.equals("pmtud")) {
+            pmtudMin = 0;
+            pmtudMax = 0;
+            pmtudTim = 0;
+            return;
+        }
         if (a.equals("bfd")) {
             bfdTrigger = 0;
             return;

@@ -15152,3 +15152,7 @@ todo: generalize ipinfo tests for lsrp / pvrp pmtud
 no todo: server http to have lookingglass
 no todo: server http to have whatsmyip whatsmyasn etc services
 todo: server http to have show only api
+---------------------------------- 2023-09-20 19:45:23 23.9.20
+no todo: server http to have show only api
+qc pass: lsrp with pmtud
+qc pass: pvrp with pmtud
