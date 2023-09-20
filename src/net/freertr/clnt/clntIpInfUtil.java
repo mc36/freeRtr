@@ -46,7 +46,7 @@ public class clntIpInfUtil {
             chg++;
         }
         if ((cfg.router4 != null) && (cfg.router6 == null)) {
-            cfg.routeDstngshr = 0;
+            cfg.rd = 0;
             chg++;
         }
         if (!cfg.resolve) {
@@ -61,6 +61,8 @@ public class clntIpInfUtil {
             return chg;
         }
         cfg.script = null;
+        chg++;
+        cfg.others = false;
         chg++;
         return chg;
     }

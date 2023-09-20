@@ -31,11 +31,19 @@ public class clntIpInfWork {
 
     private final int port;
 
-    private addrIP addr;
+    private final boolean othrs;
 
-    private boolean hck;
+    private final String style = "background-color: #000000; color: #00FFFF;"; ////
 
-    private boolean det;
+    private final addrIP addr;
+
+    private boolean http;
+
+    private boolean hack;
+
+    private boolean detail;
+
+    private boolean sumary;
 
     private String resolved = null;
 
@@ -58,8 +66,11 @@ public class clntIpInfWork {
         pipe = r;
         addr = a.copyBytes();
         port = p;
-        hck = c.routeHacked;
-        det = c.routeDetails;
+        hack = c.hacked;
+        detail = c.details;
+        sumary = c.summary;
+        http = c.tinyHttp;
+        othrs = c.others;
     }
 
     /**
@@ -80,7 +91,7 @@ public class clntIpInfWork {
      * do minimal http exchange
      */
     public void doHttpRead() {
-        if (!cfg.tinyHttp) {
+        if (!http) {
             return;
         }
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
@@ -97,7 +108,7 @@ public class clntIpInfWork {
      * do minimal http exchange
      */
     public void doHttpWrite() {
-        if (!cfg.tinyHttp) {
+        if (!http) {
             return;
         }
         pipe.linePut("HTTP/1.1 200 ok");
@@ -106,14 +117,14 @@ public class clntIpInfWork {
         pipe.linePut("Connection: Close");
         pipe.linePut("");
         pipe.linePut(servHttp.htmlHead);
-        pipe.linePut("<pre style=\"background-color: #000000; color: #00FFFF;\">");
+        pipe.linePut("<pre style=\" " + style + " \">");
     }
 
     /**
      * do minimal http exchange
      */
     public void doHttpFinish() {
-        if (!cfg.tinyHttp) {
+        if (!http) {
             return;
         }
         pipe.linePut("</pre></body></html>");
@@ -128,47 +139,67 @@ public class clntIpInfWork {
         if (debugger.clntIpInfo) {
             logger.debug("api queried " + a + " from " + addr + " " + port);
         }
-        cmds cmd = new cmds("url", a);
+        cmds cmd = new cmds("url", a.replaceAll("/", " "));
         for (;;) {
-            a = cmd.word("/");
-            if (a.length() < 1) {
+            if (doOneCfg(cmd)) {
                 break;
             }
-            if (a.equals("addr")) {
-                addr = new addrIP();
-                addr.fromString(cmd.word());
-                continue;
-            }
-            if (a.equals("hack")) {
-                hck = true;
-                continue;
-            }
-            if (a.equals("unhack")) {
-                hck = false;
-                continue;
-            }
-            if (a.equals("detail")) {
-                det = true;
-                continue;
-            }
-            if (a.equals("single")) {
-                det = false;
-                continue;
-            }
         }
-        /////////////////
+    }
+
+    /**
+     * do one config command
+     *
+     * @param cmd command
+     * @return true to terminate reading
+     */
+    public boolean doOneCfg(cmds cmd) {
+        String a = cmd.word();
+        if (a.length() < 1) {
+            return true;
+        }
+        if (a.equals("addr")) {
+            if (!othrs) {
+                return false;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                return false;
+            }
+            addr.fromBuf(adr.getBytes(), 0);
+            return false;
+        }
+        if (a.equals("hacked")) {
+            hack = true;
+            return false;
+        }
+        if (a.equals("unhack")) {
+            hack = false;
+            return false;
+        }
+        if (a.equals("detail")) {
+            detail = true;
+            return false;
+        }
+        if (a.equals("single")) {
+            detail = false;
+            return false;
+        }
+        if (debugger.clntIpInfo) {
+            logger.debug("bad api queried " + a + " from " + addr + " " + port);
+        }
+        return false;
     }
 
     /**
      * print out results
      *
      * @param pipe pipeline to use
-     * @param frst print summary line
      */
-    public void putResult(pipeSide pipe, boolean frst) {
+    public void putResult(pipeSide pipe) {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        if (frst) {
+        if (sumary) {
             String s = getRoute1liner();
             pipe.linePut(s);
         }
@@ -179,11 +210,9 @@ public class clntIpInfWork {
 
     /**
      * print out results
-     *
-     * @param frst print summary line
      */
-    public void putResult(boolean frst) {
-        putResult(pipe, frst);
+    public void putResult() {
+        putResult(pipe);
     }
 
     /**
@@ -205,17 +234,16 @@ public class clntIpInfWork {
             return;
         }
         if (!cfg.resolve) {
-            resolved = "";
+            resolved = "no dns allowed";
             return;
         }
         clntDns clnt = new clntDns();
         clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
         resolved = clnt.getPTR();
         if (resolved != null) {
-            resolved = " - " + resolved;
             return;
         }
-        logger.info("no dns for " + addr);
+        logger.info("no reverse dns");
     }
 
     /**
@@ -224,10 +252,10 @@ public class clntIpInfWork {
      * @return route details or empty list
      */
     public List<String> getRouteDetails() {
-        if (!det) {
+        if (!detail) {
             return bits.str2lst("");
         }
-        return clntIpInfUtil.getRouteDetails(fwd, ntry, userFormat.tableMode.fancy, hck);
+        return clntIpInfUtil.getRouteDetails(fwd, ntry, userFormat.tableMode.fancy, hack);
     }
 
     /**
@@ -236,9 +264,9 @@ public class clntIpInfWork {
      * @return single line of information
      */
     public String getRoute1liner() {
-        String s = addr + " :" + port + resolved;
+        String s = addr + " :" + port + " - " + resolved;
         s += " - " + clntIpInfUtil.getRoute1liner(fwd, rtr, ntry);
-        if (!hck) {
+        if (!hack) {
             return s;
         }
         s = enc7bit.toHackedStr(s);
