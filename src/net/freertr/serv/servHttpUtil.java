@@ -73,6 +73,11 @@ public class servHttpUtil {
     public final static int apiBitsIpinfo = 0x08;
 
     /**
+     * allow show commands
+     */
+    public final static int apiBitsShow = 0x10;
+
+    /**
      * dump one xml
      *
      * @param s xml to dump
@@ -117,11 +122,15 @@ public class servHttpUtil {
                 continue;
             }
             if (a.equals("config")) {
-                i |= 4;
+                i |= apiBitsConfig;
                 continue;
             }
             if (a.equals("ipinfo")) {
-                i |= 8;
+                i |= apiBitsIpinfo;
+                continue;
+            }
+            if (a.equals("show")) {
+                i |= apiBitsShow;
                 continue;
             }
         }
@@ -150,6 +159,9 @@ public class servHttpUtil {
         }
         if ((i & apiBitsIpinfo) != 0) {
             s += " ipinfo";
+        }
+        if ((i & apiBitsShow) != 0) {
+            s += " show";
         }
         return s;
     }
@@ -1216,6 +1228,47 @@ public class servHttpUtil {
     }
 
     /**
+     * perform one exec
+     *
+     * @param beg beginning
+     * @param cmd commands
+     * @param prv privilege
+     * @return results
+     */
+    protected final static byte[] doOneExec(String beg, cmds cmd, boolean prv) {
+        String r = "";
+        String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
+        for (;;) {
+            String s = cmd.word("/");
+            if (s.length() < 1) {
+                break;
+            }
+            s = beg + s;
+            pipeLine pl = new pipeLine(1024 * 1024, false);
+            pipeSide pip = pl.getSide();
+            pip.lineTx = pipeSide.modTyp.modeCRLF;
+            pip.lineRx = pipeSide.modTyp.modeCRorLF;
+            userReader rdr = new userReader(pip, null);
+            pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
+            pip.settingsPut(pipeSetting.height, 0);
+            userExec exe = new userExec(pip, rdr);
+            exe.privileged = prv;
+            pip.setTime(60000);
+            String a = exe.repairCommand(s);
+            r += "#" + a + e;
+            exe.executeCommand(a);
+            pip = pl.getSide();
+            pl.setClose();
+            s = pip.strGet(1024 * 1024);
+            if (s == null) {
+                continue;
+            }
+            r += s;
+        }
+        return r.getBytes();
+    }
+
+    /**
      * send one api
      *
      * @param cn connection to use
@@ -1256,36 +1309,14 @@ public class servHttpUtil {
             cn.sendTextHeader("200 ok", a, b);
             return false;
         }
+        if (((cn.gotHost.allowApi & apiBitsShow) != 0) && s.equals("show")) {
+            byte[] r = doOneExec("show ", cmd, false);
+            cn.sendTextHeader("200 ok", "text/plain", r);
+            return false;
+        }
         if (((cn.gotHost.allowApi & apiBitsExec) != 0) && s.equals("exec")) {
-            String r = "";
-            String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
-            for (;;) {
-                s = cmd.word("/");
-                if (s.length() < 1) {
-                    break;
-                }
-                pipeLine pl = new pipeLine(1024 * 1024, false);
-                pipeSide pip = pl.getSide();
-                pip.lineTx = pipeSide.modTyp.modeCRLF;
-                pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                userReader rdr = new userReader(pip, null);
-                pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
-                pip.settingsPut(pipeSetting.height, 0);
-                userExec exe = new userExec(pip, rdr);
-                exe.privileged = (cn.gotHost.allowApi & apiBitsConfig) != 0;
-                pip.setTime(60000);
-                String a = exe.repairCommand(s);
-                r += "#" + a + e;
-                exe.executeCommand(a);
-                pip = pl.getSide();
-                pl.setClose();
-                s = pip.strGet(1024 * 1024);
-                if (s == null) {
-                    continue;
-                }
-                r += s;
-            }
-            cn.sendTextHeader("200 ok", "text/plain", r.getBytes());
+            byte[] r = doOneExec("", cmd, (cn.gotHost.allowApi & apiBitsConfig) != 0);
+            cn.sendTextHeader("200 ok", "text/plain", r);
             return false;
         }
         if (((cn.gotHost.allowApi & apiBitsConfig) != 0) && s.equals("config")) {

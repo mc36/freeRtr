@@ -384,6 +384,7 @@ public class servHttp extends servGeneric implements prtServS {
         clntIpInfConf.getHelp(l, 3);
         l.add(null, "3 4,.    api                        allow api calls");
         l.add(null, "4 4,.      exec                     allow exec commands");
+        l.add(null, "4 4,.      show                     allow show commands");
         l.add(null, "4 4,.      config                   allow config commands");
         l.add(null, "4 4,.      ipinfo                   allow ip info commands");
         l.add(null, "3 4      search-script              allow scripts defined in configuration");
