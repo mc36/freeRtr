@@ -20,6 +20,8 @@ import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntIpInfCfg;
+import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.clnt.clntTrack;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryKeyDSA;
@@ -123,10 +125,20 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     protected tabListing<tabRtrplcN, addrIP> srvRouPol;
 
     /**
+     * gather info per accesses
+     */
+    protected clntIpInfCfg srvIpInf; //////////////
+
+    /**
+     * perform pmtud per accesses
+     */
+    protected clntPmtudCfg srvPmtud; //////////////
+
+    /**
      * accesses per interval
      */
     protected tabRateLimit srvAccRat;
-
+    
     /**
      * limit on startup
      */

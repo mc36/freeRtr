@@ -12,7 +12,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.enc.encUrl;
-import net.freertr.clnt.clntIpInfConf;
+import net.freertr.clnt.clntIpInfCfg;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
@@ -381,7 +381,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
         l.add(null, "3 4,.    ipinfo                     set ipinfo parameters");
-        clntIpInfConf.getHelp(l, 3);
+        clntIpInfCfg.getHelp(l, 3);
         l.add(null, "3 4,.    api                        allow api calls");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      show                     allow show commands");

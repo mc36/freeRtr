@@ -2,8 +2,8 @@ package net.freertr.serv;
 
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.clnt.clntIpInfConf;
-import net.freertr.clnt.clntIpInfWork;
+import net.freertr.clnt.clntIpInfCfg;
+import net.freertr.clnt.clntIpInfWrk;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -48,7 +48,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * ip information configuration
      */
-    public clntIpInfConf ipInfo = new clntIpInfConf();
+    public clntIpInfCfg ipInfo = new clntIpInfCfg();
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -92,7 +92,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  info                      check visitors");
-        clntIpInfConf.getHelp(l, 1);
+        clntIpInfCfg.getHelp(l, 1);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -141,7 +141,7 @@ class servHoneyPotConn implements Runnable {
         try {
             pipe.setReady();
             logger.info("honeypot hit from " + addr + " " + port);
-            clntIpInfWork w = new clntIpInfWork(lower.ipInfo, pipe, addr, port);
+            clntIpInfWrk w = new clntIpInfWrk(lower.ipInfo, pipe, addr, port);
             w.doHttpRead();
             w.doWork();
             w.doHttpWrite();

@@ -432,15 +432,13 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
-todo: server http to have whatsmyip whatsmyasn etc services
-todo: server http to have lookingglass
+todo: generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
+todo: generalize ipinfo tests for lsrp / pvrp pmtud
+todo: bgp unknowns-log knob
 todo: image viewer to file manager
 todo: own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
 todo: experiment with freebsd as a host os
 todo: game pinball
-todo: tests for bgp/msdp: neigh x.x.x.x pmtud
-todo: tests for lsrp / pvrp pmtud
-todo: bgp unknowns-log knob
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

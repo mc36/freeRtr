@@ -19,7 +19,7 @@ import net.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class clntIpInfConf {
+public class clntIpInfCfg {
 
     /**
      * script to run
@@ -99,8 +99,8 @@ public class clntIpInfConf {
     /**
      * create instance
      */
-    public clntIpInfConf() {
-        clntIpInfWork.doSanityChecks(this);
+    public clntIpInfCfg() {
+        clntIpInfWrk.doSanityChecks(this);
     }
 
     /**
@@ -200,46 +200,46 @@ public class clntIpInfConf {
         if (s.equals("script")) {
             if (negated) {
                 script = null;
-                clntIpInfWork.doSanityChecks(this);
+                clntIpInfWrk.doSanityChecks(this);
                 return false;
             }
             script = cfgAll.scrptFind(cmd.word(), false);
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("resolve")) {
             resolve = !negated;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("others")) {
             others = !negated;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("tinyhttp")) {
             tinyHttp = !negated;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("details")) {
             details = !negated;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("single")) {
             single = !negated;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("hacked")) {
             hacked = !negated;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("plain")) {
             plain = !negated;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("style")) {
@@ -263,7 +263,7 @@ public class clntIpInfConf {
             if (negated) {
                 router4 = null;
                 fwder4 = null;
-                clntIpInfWork.doSanityChecks(this);
+                clntIpInfWrk.doSanityChecks(this);
                 return false;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
@@ -279,14 +279,14 @@ public class clntIpInfConf {
             }
             router4 = rtr.getRouter();
             fwder4 = rtr.fwd;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("router6")) {
             if (negated) {
                 router6 = null;
                 fwder6 = null;
-                clntIpInfWork.doSanityChecks(this);
+                clntIpInfWrk.doSanityChecks(this);
                 return false;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
@@ -302,24 +302,24 @@ public class clntIpInfConf {
             }
             router6 = rtr.getRouter();
             fwder6 = rtr.fwd;
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("rd")) {
             if (negated) {
                 rd = 0;
-                clntIpInfWork.doSanityChecks(this);
+                clntIpInfWrk.doSanityChecks(this);
                 return false;
             }
             s = cmd.word();
             rd = tabRouteUtil.string2rd(s);
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         if (s.equals("vrf")) {
             if (negated) {
                 rd = 0;
-                clntIpInfWork.doSanityChecks(this);
+                clntIpInfWrk.doSanityChecks(this);
                 return false;
             }
             s = cmd.word();
@@ -336,7 +336,7 @@ public class clntIpInfConf {
             if (fwder6 != null) {
                 rd = fwder6.rd;
             }
-            clntIpInfWork.doSanityChecks(this);
+            clntIpInfWrk.doSanityChecks(this);
             return false;
         }
         cmd.badCmd();

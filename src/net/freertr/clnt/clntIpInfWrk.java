@@ -28,9 +28,9 @@ import net.freertr.util.version;
  *
  * @author matecsaba
  */
-public class clntIpInfWork {
+public class clntIpInfWrk {
 
-    private final clntIpInfConf cfg;
+    private final clntIpInfCfg cfg;
 
     private final pipeSide pipe;
 
@@ -70,7 +70,7 @@ public class clntIpInfWork {
      * @param a address to check
      * @param p port number to check
      */
-    public clntIpInfWork(clntIpInfConf c, pipeSide r, addrIP a, int p) {
+    public clntIpInfWrk(clntIpInfCfg c, pipeSide r, addrIP a, int p) {
         cfg = c;
         pipe = r;
         port = p;
@@ -422,7 +422,7 @@ public class clntIpInfWork {
      * @param cfg config to repair
      * @return changes made
      */
-    public final static int doSanityChecks(clntIpInfConf cfg) {
+    public final static int doSanityChecks(clntIpInfCfg cfg) {
         int chg = 0;
         if (cfg.router4 == null) {
             cfg.fwder4 = null;

@@ -16,7 +16,7 @@ import net.freertr.enc.encBase64;
 import net.freertr.enc.encMarkDown;
 import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
-import net.freertr.clnt.clntIpInfWork;
+import net.freertr.clnt.clntIpInfWrk;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
@@ -1292,7 +1292,7 @@ public class servHttpUtil {
             if (cn.gotHost.ipInfo == null) {
                 return true;
             }
-            clntIpInfWork w = new clntIpInfWork(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
+            clntIpInfWrk w = new clntIpInfWrk(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
             w.doHttpUrl(cmd.getRemaining());
             w.doWork();
             List<String> r = w.getRouteInfos();
@@ -1305,7 +1305,7 @@ public class servHttpUtil {
                 r.add(a);
             }
             a = w.getContentType();
-            byte[] b = clntIpInfWork.getRouteAscii(r);
+            byte[] b = clntIpInfWrk.getRouteAscii(r);
             cn.sendTextHeader("200 ok", a, b);
             return false;
         }

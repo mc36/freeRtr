@@ -11,6 +11,7 @@ import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
+import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.clnt.clntProxy;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
@@ -157,19 +158,9 @@ public abstract class rtrBgpParam {
     public boolean lookupReverse;
 
     /**
-     * pmtud min
+     * pmtud config
      */
-    public int pmtudMin;
-
-    /**
-     * pmtud max
-     */
-    public int pmtudMax;
-
-    /**
-     * pmtud timeout
-     */
-    public int pmtudTim;
+    public clntPmtudCfg pmtudCfg;
 
     /**
      * send segment routing
@@ -1190,9 +1181,7 @@ public abstract class rtrBgpParam {
         unknownsIn = src.unknownsIn;
         lookupDatabase = src.lookupDatabase;
         lookupReverse = src.lookupReverse;
-        pmtudMin = src.pmtudMin;
-        pmtudMax = src.pmtudMax;
-        pmtudTim = src.pmtudTim;
+        pmtudCfg = src.pmtudCfg;
         segRout = src.segRout;
         bier = src.bier;
         wideAsPath = src.wideAsPath;
@@ -1785,7 +1774,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !lookupDatabase, beg, nei + "lookup-database", "");
         cmds.cfgLine(l, !lookupReverse, beg, nei + "lookup-reverse", "");
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
-        l.add(beg + nei + "pmtud " + pmtudMin + " " + pmtudMax + " " + pmtudTim);
+        clntPmtudCfg.getConfig(l, pmtudCfg, beg + nei + "pmtud ");
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
         l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
         l.add(beg + nei + "address-family" + mask2string(addrFams));
@@ -2538,20 +2527,11 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("pmtud")) {
             if (negated) {
-                pmtudMin = 0;
-                pmtudMax = 0;
-                pmtudTim = 0;
+                pmtudCfg = null;
                 return false;
             }
-            pmtudMin = bits.str2num(cmd.word());
-            pmtudMax = bits.str2num(cmd.word());
-            pmtudTim = bits.str2num(cmd.word());
-            if (pmtudMin < pmtudMax) {
-                return false;
-            }
-            pmtudMin = 0;
-            pmtudMax = 0;
-            pmtudTim = 0;
+            pmtudCfg = new clntPmtudCfg();
+            clntPmtudCfg.doConfig(pmtudCfg, cmd, negated);
             return false;
         }
         if (s.equals("segrout")) {

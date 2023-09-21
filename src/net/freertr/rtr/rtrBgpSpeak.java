@@ -10,6 +10,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
+import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
@@ -31,7 +32,7 @@ import net.freertr.enc.encTlv;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
-import net.freertr.prt.prtPmtud;
+import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.util.version;
 
 /**
@@ -104,7 +105,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * pmtud result
      */
-    public int pmtudRes;
+    public clntPmtudWrk pmtudRes;
 
     /**
      * learned unicast prefixes
@@ -1229,29 +1230,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         logger.info("neighbor " + neigh.peerAddr + " reverse=" + clnt.getPTR());
     }
 
-    private boolean measurePmtuD() {
-        if (neigh.pmtudTim <= 0) {
-            return false;
-        }
-        logger.warn("testing pmtud to " + neigh.peerAddr + " from " + neigh.localAddr);
-        pipeLine pl = new pipeLine(65536, true);
-        prtPmtud pm = new prtPmtud(pl.getSide(), neigh.peerAddr, neigh.lower.fwdCore, neigh.localAddr);
-        pm.min = neigh.pmtudMin;
-        pm.max = neigh.pmtudMax;
-        pm.timeout = neigh.pmtudTim;
-        int[] res = pm.doer();
-        if (res != null) {
-            logger.info("pmtud measured " + pm.last + " bytes to " + neigh.peerAddr);
-            pmtudRes = pm.last;
-            return false;
-        }
-        logger.error("pmtud failed to " + neigh.peerAddr);
-        pipeDiscard.logLines("pmtud failure to " + neigh.peerAddr, pl.getSide(), true, null);
-        sendNotify(1, 2);
-        neigh.stopNow();
-        return true;
-    }
-
     private void doWork() {
         if (debugger.rtrBgpEvnt) {
             logger.debug("starting neighbor " + neigh.peerAddr);
@@ -1266,11 +1244,17 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         sendOpen();
         sendKeepAlive();
-        if (measurePmtuD()) {
-            return;
+        pmtudRes = clntPmtudCfg.getWorker(neigh.pmtudCfg, neigh.lower.fwdCore, neigh.peerAddr, neigh.localAddr);
+        if (pmtudRes != null) {
+            if (pmtudRes.doer() == null) {
+                logger.error("pmtud failed to " + neigh.peerAddr);
+                sendNotify(1, 2);
+                closeNow();
+                return;
+            }
         }
-        lookupReverse();
-        lookupDatabase();
+        lookupReverse();/////////////// ipinfo
+        lookupDatabase();/////////////// ipinfo
         int typ = packRecv(pckRx);
         if (typ == rtrBgpUtil.msgNotify) {
             logger.info("got notify " + rtrBgpUtil.notify2string(pckRx.getByte(0), pckRx.getByte(1)) + " from " + neigh.peerAddr);

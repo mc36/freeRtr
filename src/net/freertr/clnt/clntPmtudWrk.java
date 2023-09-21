@@ -1,10 +1,11 @@
-package net.freertr.prt;
+package net.freertr.clnt;
 
 import net.freertr.addr.addrIP;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
+import net.freertr.prt.prtIcmptun;
 import net.freertr.util.bits;
 
 /**
@@ -12,7 +13,7 @@ import net.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class prtPmtud {
+public class clntPmtudWrk {
 
     private final addrIP trg;
 
@@ -95,11 +96,15 @@ public class prtPmtud {
      * @param vrf forwarder to use
      * @param sou source ip to use
      */
-    public prtPmtud(pipeSide con, addrIP rem, ipFwd vrf, addrIP sou) {
+    public clntPmtudWrk(pipeSide con, addrIP rem, ipFwd vrf, addrIP sou) {
         pip = pipeDiscard.needAny(con);
         trg = rem;
         fwd = vrf;
         src = sou;
+    }
+
+    public String toString() {
+        return "" + last;
     }
 
     /**

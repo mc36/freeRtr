@@ -17,7 +17,7 @@ import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
-import net.freertr.prt.prtPmtud;
+import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.sec.secClient;
 import net.freertr.sec.secServer;
 import net.freertr.serv.servGeneric;
@@ -424,7 +424,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         if (iface.pmtudTim > 1) {
             logger.warn("testing pmtud to " + peer + " from " + iface.iface.addr);
             pipeLine pl = new pipeLine(65536, true);
-            prtPmtud pm = new prtPmtud(pl.getSide(), peer, lower.fwdCore, iface.iface.addr);
+            clntPmtudWrk pm = new clntPmtudWrk(pl.getSide(), peer, lower.fwdCore, iface.iface.addr);
             pm.min = iface.pmtudMin;
             pm.max = iface.pmtudMax;
             pm.timeout = iface.pmtudTim;

@@ -719,6 +719,8 @@ public class version {
                 l.add("");
                 l.add("calc.eval(\"(2^42)*(42!)\");//on a paper");
                 l.add("");
+                l.add("calc.eval(\"factorize(2^42);\");//on a paper");
+                l.add("");
                 l.add("calc.eval(\"42!\")!=calc.eval(\"2^42\");//on a paper");
                 l.add("");
                 l.add("void* palto[i][i];");
