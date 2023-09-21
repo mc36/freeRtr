@@ -13,7 +13,6 @@ import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.clnt.clntTwamp;
 import net.freertr.enc.encBase64;
 import net.freertr.ip.ipMpls;
-import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;

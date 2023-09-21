@@ -9,7 +9,6 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgCert;
 import net.freertr.cfg.cfgKey;
 import net.freertr.clnt.clntPmtudCfg;
-import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyRSA;

@@ -10,10 +10,10 @@ import net.freertr.auth.authConstant;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntEcho;
 import net.freertr.clnt.clntPing;
+import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.clnt.clntTwamp;
 import net.freertr.enc.encBase64;
 import net.freertr.ip.ipMpls;
-import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
@@ -45,7 +45,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
     /**
      * pmtud result
      */
-    public int pmtudRes;
+    public clntPmtudWrk pmtudRes;
 
     /**
      * transport address of peer
@@ -421,23 +421,13 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         if (conn.wait4ready(iface.deadTimer)) {
             return;
         }
-        if (iface.pmtudTim > 1) {
-            logger.warn("testing pmtud to " + peer + " from " + iface.iface.addr);
-            pipeLine pl = new pipeLine(65536, true);
-            clntPmtudWrk pm = new clntPmtudWrk(pl.getSide(), peer, lower.fwdCore, iface.iface.addr);
-            pm.min = iface.pmtudMin;
-            pm.max = iface.pmtudMax;
-            pm.timeout = iface.pmtudTim;
-            pm.delay = iface.pmtudTim / 3;
-            int[] res = pm.doer();
-            if (res == null) {
-                logger.warn("pmtud failed to " + peer);
-                pipeDiscard.logLines("pmtud failure to " + peer, pl.getSide(), true, null);
+        pmtudRes = clntPmtudCfg.getWorker(iface.pmtudCfg, lower.fwdCore, peer, iface.iface.addr);
+        if (pmtudRes != null) {
+            if (pmtudRes.doer() == null) {
+                logger.error("pmtud failed to " + peer);
                 sendErr("notPingable");
                 return;
             }
-            logger.warn("pmtud measured " + pm.last + " bytes to " + peer);
-            pmtudRes = pm.last;
         }
         if (!need2run) {
             sendErr("notNeeded");

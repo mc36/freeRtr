@@ -11,6 +11,7 @@ import net.freertr.cfg.cfgKey;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
+import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyRSA;
@@ -44,19 +45,9 @@ import net.freertr.util.state;
 public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServP {
 
     /**
-     * pmtud min
+     * pmtud config
      */
-    public int pmtudMin;
-
-    /**
-     * pmtud max
-     */
-    public int pmtudMax;
-
-    /**
-     * pmtud timeout
-     */
-    public int pmtudTim;
+    public clntPmtudCfg pmtudCfg;
 
     /**
      * hello interval
@@ -437,7 +428,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "metric-out " + metricOut);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
-        l.add(cmds.tabulator + beg + "pmtud " + pmtudMin + " " + pmtudMax + " " + pmtudTim);
+        clntPmtudCfg.getConfig(l, pmtudCfg, beg + "pmtud ");
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:
@@ -785,15 +776,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
             return;
         }
         if (a.equals("pmtud")) {
-            pmtudMin = bits.str2num(cmd.word());
-            pmtudMax = bits.str2num(cmd.word());
-            pmtudTim = bits.str2num(cmd.word());
-            if (pmtudMin < pmtudMax) {
-                return;
-            }
-            pmtudMin = 0;
-            pmtudMax = 0;
-            pmtudTim = 0;
+            pmtudCfg = new clntPmtudCfg();
+            clntPmtudCfg.doConfig(pmtudCfg, cmd, false);
             return;
         }
         if (a.equals("dead-time")) {
@@ -906,9 +890,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      */
     public void routerUnConfig(String a, cmds cmd) {
         if (a.equals("pmtud")) {
-            pmtudMin = 0;
-            pmtudMax = 0;
-            pmtudTim = 0;
+            clntPmtudCfg.doConfig(pmtudCfg, cmd, true);
             return;
         }
         if (a.equals("bfd")) {
