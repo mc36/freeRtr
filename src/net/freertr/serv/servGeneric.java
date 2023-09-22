@@ -1044,6 +1044,12 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return true;
             }
         }
+        if (srvIpInf != null) {
+            /////////
+        }
+        if (srvPmtud != null) {
+            /////////
+        }
         if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {
             return false;
         }
@@ -1413,6 +1419,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(cmds.tabulator + "access-total " + srvTotLim);
         l.add(cmds.tabulator + "access-peer " + srvPerLim);
         l.add(cmds.tabulator + "access-subnet " + srvNetLim);
+        ///////////clntIpInfCfg.
+        ///////////clntPmtudCfg.
         if (srvBlckhl4 != null) {
             l.add(cmds.tabulator + "access-blackhole4 " + srvBlckhl4.rtrNum);
         } else {
