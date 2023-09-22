@@ -138,7 +138,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * accesses per interval
      */
     protected tabRateLimit srvAccRat;
-    
+
     /**
      * limit on startup
      */

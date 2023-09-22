@@ -119,6 +119,9 @@ public class clntPmtudWrk {
             pip.linePut("vrf not specified");
             return null;
         }
+        if (trg == null) {
+            return null;
+        }
         pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", ovr=" + ovrh + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
         for (;;) {
             if (pip.isClosed() != 0) {

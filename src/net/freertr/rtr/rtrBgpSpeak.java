@@ -1244,9 +1244,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         sendOpen();
         sendKeepAlive();
-        pmtudRes = clntPmtudCfg.getWorker(neigh.pmtudCfg, neigh.lower.fwdCore, neigh.peerAddr, neigh.localAddr);
-        if (pmtudRes != null) {
-            if (pmtudRes.doer() == null) {
+        if (neigh.pmtudCfg != null) {
+            pmtudRes = clntPmtudCfg.doWork(neigh.pmtudCfg, neigh.lower.fwdCore, neigh.peerAddr, neigh.localAddr);
+            if (pmtudRes == null) {
                 logger.error("pmtud failed to " + neigh.peerAddr);
                 sendNotify(1, 2);
                 closeNow();

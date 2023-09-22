@@ -8,6 +8,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdMcast;
@@ -324,21 +325,8 @@ public class rtrMsdp extends ipRtr {
             return false;
         }
         if (s.equals("pmtud")) {
-            if (negated) {
-                ntry.pmtudMin = 0;
-                ntry.pmtudMax = 0;
-                ntry.pmtudTim = 0;
-                return false;
-            }
-            ntry.pmtudMin = bits.str2num(cmd.word());
-            ntry.pmtudMax = bits.str2num(cmd.word());
-            ntry.pmtudTim = bits.str2num(cmd.word());
-            if (ntry.pmtudMin < ntry.pmtudMax) {
-                return false;
-            }
-            ntry.pmtudMin = 0;
-            ntry.pmtudMax = 0;
-            ntry.pmtudTim = 0;
+            ntry.pmtudCfg = new clntPmtudCfg();
+            clntPmtudCfg.doConfig(ntry.pmtudCfg, cmd, negated);
             return false;
         }
         if (s.equals("shutdown")) {

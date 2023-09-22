@@ -421,10 +421,9 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             conn.lineTx = pipeSide.modTyp.modeCRLF;
             conn.wait4ready(iface.deadTimer);
         }
-        pmtudRes = clntPmtudCfg.getWorker(iface.pmtudCfg, lower.fwdCore, peer, iface.iface.addr);
-        if (pmtudRes != null) {
-            if (pmtudRes.doer() == null) {
-                logger.error("pmtud failed to " + peer);
+        if (iface.pmtudCfg != null) {
+            pmtudRes = clntPmtudCfg.doWork(iface.pmtudCfg, lower.fwdCore, peer, iface.iface.addr);
+            if (pmtudRes == null) {
                 sendErr("notPingable");
                 return;
             }

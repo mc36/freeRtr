@@ -378,7 +378,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "srlg " + srlg);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
-        clntPmtudCfg.getConfig(l, pmtudCfg, beg + "pmtud ");
+        clntPmtudCfg.getConfig(l, pmtudCfg, cmds.tabulator + beg + "pmtud ");
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:

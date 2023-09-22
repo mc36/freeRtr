@@ -7,6 +7,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdMcast;
 import net.freertr.ip.ipFwdTab;
@@ -45,24 +46,14 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
     public cfgIfc srcIface;
 
     /**
-     * pmtud min
+     * pmtud config
      */
-    public int pmtudMin;
-
-    /**
-     * pmtud max
-     */
-    public int pmtudMax;
-
-    /**
-     * pmtud timeout
-     */
-    public int pmtudTim;
+    public clntPmtudCfg pmtudCfg;
 
     /**
      * pmtud result
      */
-    public int pmtudRes;
+    public clntPmtudWrk pmtudRes;
 
     /**
      * keep alive
@@ -249,22 +240,12 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         pipe.setTime(holdTimer);
         pipe.setReady();
         pipe.wait4ready(holdTimer);
-        if (pmtudTim > 0) {
-            logger.warn("testing pmtud to " + peer + " from " + usedIfc.addr);
-            pipeLine pl = new pipeLine(65536, true);
-            clntPmtudWrk pm = new clntPmtudWrk(pl.getSide(), peer, parent.fwdCore, usedIfc.addr);
-            pm.min = pmtudMin;
-            pm.max = pmtudMax;
-            pm.timeout = pmtudTim;
-            int[] res = pm.doer();
-            if (res == null) {
-                logger.warn("pmtud failed to " + peer);
-                pipeDiscard.logLines("pmtud failure to " + peer, pl.getSide(), true, null);
-                pipe.setClose();
-                return false;
+        if (pmtudCfg != null) {
+            pmtudRes = clntPmtudCfg.doWork(pmtudCfg, parent.fwdCore, peer, usedIfc.addr);
+            if (pmtudRes == null) {
+                closeNow();
+                return true;
             }
-            logger.warn("pmtud measured " + pm.last + " bytes to " + peer);
-            pmtudRes = pm.last;
         }
         if (pipe.isReady() != 3) {
             closeNow();
@@ -437,7 +418,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
             l.add(beg + a + "update-source " + srcIface.name);
         }
         cmds.cfgLine(l, passwd == null, beg, a + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
-        l.add(beg + a + "pmtud " + pmtudMin + " " + pmtudMax + " " + pmtudTim);
+        clntPmtudCfg.getConfig(l, pmtudCfg, beg + "pmtud ");
         l.add(beg + a + "timer " + keepAlive + " " + holdTimer + " " + freshTimer + " " + flushTimer);
         cmds.cfgLine(l, !shutdown, beg, a + "shutdown", "");
         cmds.cfgLine(l, !bfdTrigger, beg, a + "bfd", "");
