@@ -15156,3 +15156,9 @@ todo: server http to have show only api
 no todo: server http to have show only api
 qc pass: lsrp with pmtud
 qc pass: pvrp with pmtud
+---------------------------------- 2023-09-23 12:18:27 23.9.23
+no todo: game pinball
+no todo: own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
+no todo: generalize ipinfo tests for lsrp / pvrp pmtud
+no todo: generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
+todo: game butterfly series reusing the fft and mdev classes from modem and ping

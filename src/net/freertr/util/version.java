@@ -687,6 +687,10 @@ public class version {
                 l.add("digging in the sands its goood 4 the gods && the industry. b4 replying me on it to chaneg my mindsets study 1bit");
                 l.add("the butterfly effect and related article at the 1st place, and just after that try ot change my mindsets...");
                 l.add("");
+                l.add("/******************************");
+                l.add("comeon pretend its 2666 && do||!do fvvvvvvvvvkkk");
+                l.add("******************************/");
+                l.add("");
                 l.add("s1mply thr0w a k1ds party 1n the 0ff1c3 w1th s0m3 huug3 bday cak3s");
                 l.add("");
                 l.add("d3b1an dr0pp3d kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
@@ -741,6 +745,13 @@ public class version {
                 l.add("for(;1;)system.exec(\"; /sbin/init 0 ;\");//:((((");
                 l.add("");
                 l.add("int x=1;while(x>0)x++;//here u goo...");
+                l.add("");
+                l.add("print(\"hello world");
+                l.add("print(whatttta(t)error\")");
+                l.add("");
+                l.add("hardcode stop using i in for(int i=0;1;i++)loops();///activist here");
+                l.add("that is after 3 hours of coding && o-hhhhh 1 found the chainsawwwy");
+                l.add("texxxxxasian serialkiller semicolon buggybug!!!");
                 l.add("");
                 l.add("10 print(\"fWWWk\")");
                 l.add("20 goto 10");

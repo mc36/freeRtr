@@ -3214,13 +3214,10 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
-todo: generalize ipinfo tests for lsrp / pvrp pmtud
 todo: bgp unknowns-log knob
 todo: image viewer to file manager
-todo: own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
+todo: game butterfly series reusing the fft and mdev classes from modem and ping
 todo: experiment with freebsd as a host os
-todo: game pinball
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
