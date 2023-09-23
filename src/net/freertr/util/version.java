@@ -749,9 +749,15 @@ public class version {
                 l.add("print(\"hello world");
                 l.add("print(whatttta(t)error\")");
                 l.add("");
-                l.add("hardcode stop using i in for(int i=0;1;i++)loops();///activist here");
+                l.add("hardcode stop using i in for(int i=0;1;i++)loops();//activist here");
                 l.add("that is after 3 hours of coding && o-hhhhh 1 found the chainsawwwy");
-                l.add("texxxxxasian serialkiller semicolon buggybug!!!");
+                l.add("texxxxxasian serialkiller semicolon buggybug! seriously, noone wants");
+                l.add("to see the i butt the \"ohhhh|p\".toCapital(); especially especially");
+                l.add("in the outer loops so go rename the whole source tree with yourname");
+                l.add("then promote this and if anybody asks you out tell them this is the");
+                l.add("1st step of self e-estate like writing a comment to a memeforum then");
+                l.add("looolzing out the act at the same time publickly. recall that were");
+                l.add("all robots and not hoomans in the big machinery like planet earth");
                 l.add("");
                 l.add("10 print(\"fWWWk\")");
                 l.add("20 goto 10");

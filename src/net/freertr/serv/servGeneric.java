@@ -1304,6 +1304,11 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <name:rpl>           route policy name");
         l.add(null, "1 2  access-total           session limit for this server");
         l.add(null, "2 .    <num>                number of connections");
+        l.add(null, "1 2  access-ipinfo          configure ipinfo query");
+        clntIpInfWrk.getHelp(l, 2);
+        //////////////l.add(null, "1 2  access-pmtud           configure pmtud query");
+        //////////////clntPmtudWrk.getHelp(l, 2);
+        
         l.add(null, "1 2  access-startup         initial downtime for this server");
         l.add(null, "2 .    <num>                time");
         l.add(null, "1 2  access-peer            per client session limit");
