@@ -767,8 +767,8 @@ public class version {
                 l.add("that is do your pillowfights if you dont loolz back, policers");
                 l.add("");
                 l.add("calc.eval(\"bead with me u dearest pedobear, there 1s no $ex with .exe$\")");
-                l.add("calc.eval(\"attach a 128gb full of virustotal hashes a horde of pigeons and\")");
-                l.add("calc.eval(\"teach them to fly alaska directly to your stepsister jennifer to\")");
+                l.add("calc.eval(\"attach a 128gb full of virustotal hashes compressed to a horde of pigeons\")");
+                l.add("calc.eval(\"and teach them to fly alaska directly to your stepsister jennifer to\")");
                 l.add("calc.eval(\"prevent her from pregnancy in the next 9 months\")");
                 l.add("");
                 l.add("10 print(\"fWWWk\")");
