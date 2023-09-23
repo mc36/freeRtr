@@ -758,6 +758,8 @@ public class version {
                 l.add("1st step of self e-estate like writing a comment to a memeforum then");
                 l.add("looolzing out the act at the same time publickly. recall that were");
                 l.add("all robots and not hoomans in the big machinery like planet earth");
+                l.add("if you dont comply youll be terminated in an allelectric-wheelchair");
+                l.add("that is do your pillowfights if you dont loolz back, policers");
                 l.add("");
                 l.add("10 print(\"fWWWk\")");
                 l.add("20 goto 10");
