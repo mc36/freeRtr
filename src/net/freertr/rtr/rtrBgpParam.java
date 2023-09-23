@@ -12,6 +12,7 @@ import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.clnt.clntPmtudCfg;
+import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.clnt.clntProxy;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
@@ -1774,7 +1775,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !lookupDatabase, beg, nei + "lookup-database", "");
         cmds.cfgLine(l, !lookupReverse, beg, nei + "lookup-reverse", "");
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
-        clntPmtudCfg.getConfig(l, pmtudCfg, beg + nei + "pmtud ");
+        clntPmtudWrk.getConfig(l, pmtudCfg, beg + nei + "pmtud ");
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
         l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
         l.add(beg + nei + "address-family" + mask2string(addrFams));

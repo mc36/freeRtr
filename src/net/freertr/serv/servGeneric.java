@@ -21,7 +21,9 @@ import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntIpInfCfg;
+import net.freertr.clnt.clntIpInfWrk;
 import net.freertr.clnt.clntPmtudCfg;
+import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.clnt.clntTrack;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryKeyDSA;
@@ -1044,12 +1046,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return true;
             }
         }
-        if (srvIpInf != null) {
-            /////////
-        }
-        if (srvPmtud != null) {
-            /////////
-        }
         if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {
             return false;
         }
@@ -1086,6 +1082,16 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return true;
             }
         }
+        if ((srvIpInf == null) && (srvPmtud == null)) {
+            return false;
+        }
+        if (srvIpInf != null) {
+            /////////////// srvIpInf
+        }
+        if (srvPmtud == null) {
+            return false;
+        }
+        /////////////////// srvPmtud
         return false;
     }
 
@@ -1419,8 +1425,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(cmds.tabulator + "access-total " + srvTotLim);
         l.add(cmds.tabulator + "access-peer " + srvPerLim);
         l.add(cmds.tabulator + "access-subnet " + srvNetLim);
-        ///////////clntIpInfCfg.
-        ///////////clntPmtudCfg.
+        clntIpInfWrk.getConfig(l, srvIpInf, cmds.tabulator + "access-ipinfo ");
+        clntPmtudWrk.getConfig(l, srvPmtud, cmds.tabulator + "access-pmtud ");
         if (srvBlckhl4 != null) {
             l.add(cmds.tabulator + "access-blackhole4 " + srvBlckhl4.rtrNum);
         } else {
@@ -1526,6 +1532,20 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         }
         if (a.equals("access-subnet")) {
             srvNetLim = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("access-ipinfo")) {
+            if (srvIpInf == null) {
+                srvIpInf = new clntIpInfCfg();
+            }
+            srvIpInf.doCfgStr(cmd, false);
+            return;
+        }
+        if (a.equals("access-pmtud")) {
+            if (srvPmtud == null) {
+                srvPmtud = new clntPmtudCfg();
+            }
+            srvIpInf.doCfgStr(cmd, false);
             return;
         }
         if (a.equals("access-blackhole4")) {
@@ -1715,6 +1735,20 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
             if (a.equals("access-subnet")) {
                 srvNetLim = 0;
+                return;
+            }
+            if (a.equals("access-ipinfo")) {
+                if (srvIpInf == null) {
+                    srvIpInf = new clntIpInfCfg();
+                }
+                srvIpInf.doCfgStr(cmd, true);
+                return;
+            }
+            if (a.equals("access-pmtud")) {
+                if (srvPmtud == null) {
+                    srvPmtud = new clntPmtudCfg();
+                }
+                srvIpInf.doCfgStr(cmd, true);
                 return;
             }
             if (a.equals("access-blackhole4")) {

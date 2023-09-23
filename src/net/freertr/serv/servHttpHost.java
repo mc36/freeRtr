@@ -21,6 +21,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
 import net.freertr.clnt.clntIpInfCfg;
+import net.freertr.clnt.clntIpInfWrk;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
@@ -329,9 +330,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         if (allowApi != servHttpUtil.apiBitsNothing) {
             l.add(a + " api" + servHttpUtil.apiBits2string(allowApi));
         }
-        if (ipInfo != null) {
-            ipInfo.doGetCfg(a + " ipinfo ", l);
-        }
+        clntIpInfWrk.getConfig(l, ipInfo, a + " ipinfo ");
         if (allowImgMap) {
             l.add(a + " imagemap");
         }

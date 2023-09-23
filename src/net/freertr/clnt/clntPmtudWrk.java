@@ -1,5 +1,6 @@
 package net.freertr.clnt;
 
+import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
@@ -14,6 +15,23 @@ import net.freertr.util.bits;
  * @author matecsaba
  */
 public class clntPmtudWrk {
+
+    /**
+     * get configuration
+     *
+     * @param lst list to update
+     * @param cfg configuration to use
+     * @param beg beginning of the lines
+     */
+    public static final void getConfig(List<String> lst, clntPmtudCfg cfg, String beg) {
+        if (cfg == null) {
+            return;
+        }
+        if (cfg.pmtudTim < 1) {
+            return;
+        }
+        lst.add(beg + cfg.pmtudMin + " " + cfg.pmtudMax + " " + cfg.pmtudTim);
+    }
 
     private final addrIP trg;
 

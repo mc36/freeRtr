@@ -1,6 +1,5 @@
 package net.freertr.clnt;
 
-import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgScrpt;
@@ -10,7 +9,6 @@ import net.freertr.ip.ipRtr;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userFormat;
-import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
@@ -101,91 +99,6 @@ public class clntIpInfCfg {
      */
     public clntIpInfCfg() {
         clntIpInfWrk.doSanityChecks(this);
-    }
-
-    /**
-     * get help messages
-     *
-     * @param lst help text to update
-     * @param tab base level
-     */
-    public final static void getHelp(userHelping lst, int tab) {
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  router4                      lookup addresses");
-        cfgRtr.getRouterList(lst, tab, "");
-        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  router6                      lookup addresses");
-        cfgRtr.getRouterList(lst, tab, "");
-        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  rd                           rd to use");
-        lst.add(null, (tab + 2) + " .    <rd>                       rd in ASnum:IDnum format");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  vrf                          vrf to use");
-        lst.add(null, (tab + 2) + " .    <name:vrf>                 name of table");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  script                       script to execute");
-        lst.add(null, (tab + 2) + " .    <name:scr>                 script name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  style                        colorize prefix details");
-        lst.add(null, (tab + 2) + " .    <str>                      string to send");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  format                       format prefix details");
-        lst.add(null, (tab + 2) + " .    normal                     select normal mode");
-        lst.add(null, (tab + 2) + " .    table                      select table mode");
-        lst.add(null, (tab + 2) + " .    fancy                      select fancy mode");
-        lst.add(null, (tab + 2) + " .    csv                        select csv mode");
-        lst.add(null, (tab + 2) + " .    raw                        select raw mode");
-        lst.add(null, (tab + 2) + " .    html                       select html mode");
-        lst.add(null, (tab + 1) + " .  details                      print prefix details");
-        lst.add(null, (tab + 1) + " .  single                       print prefix summary");
-        lst.add(null, (tab + 1) + " .  hacked                       hackerize prefix details");
-        lst.add(null, (tab + 1) + " .  plain                        plain prefix details");
-        lst.add(null, (tab + 1) + " .  resolve                      resolve addresses");
-        lst.add(null, (tab + 1) + " .  tinyhttp                     pretend http server");
-        lst.add(null, (tab + 1) + " .  others                       allow any addresses");
-    }
-
-    /**
-     * get configuration
-     *
-     * @param beg beginning
-     * @param lst list to update
-     */
-    public void doGetCfg(String beg, List<String> lst) {
-        if (router4 != null) {
-            lst.add(beg + "router4 " + router4.routerGetName());
-        }
-        if (router6 != null) {
-            lst.add(beg + "router6 " + router6.routerGetName());
-        }
-        if (details) {
-            lst.add(beg + "details");
-        }
-        if (single) {
-            lst.add(beg + "single");
-        }
-        if (hacked) {
-            lst.add(beg + "hacked");
-        }
-        if (plain) {
-            lst.add(beg + "plain");
-        }
-        if (style != null) {
-            lst.add(beg + "style " + style);
-        }
-        if (format != userFormat.tableMode.normal) {
-            lst.add(beg + "format " + userFormat.tabmod2str(format));
-        }
-        if (rd != 0) {
-            lst.add(beg + "rd " + tabRouteUtil.rd2string(rd));
-        }
-        if (script != null) {
-            lst.add(beg + "script " + script.name);
-        }
-        if (resolve) {
-            lst.add(beg + "resolve");
-        }
-        if (tinyHttp) {
-            lst.add(beg + "tinyhttp");
-        }
-        if (others) {
-            lst.add(beg + "others");
-        }
     }
 
     /**

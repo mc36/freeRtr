@@ -9,6 +9,7 @@ import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgCert;
 import net.freertr.cfg.cfgKey;
 import net.freertr.clnt.clntPmtudCfg;
+import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyRSA;
@@ -378,7 +379,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "srlg " + srlg);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
-        clntPmtudCfg.getConfig(l, pmtudCfg, cmds.tabulator + beg + "pmtud ");
+        clntPmtudWrk.getConfig(l, pmtudCfg, cmds.tabulator + beg + "pmtud ");
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:

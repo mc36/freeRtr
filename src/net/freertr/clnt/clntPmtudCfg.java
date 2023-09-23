@@ -1,6 +1,5 @@
 package net.freertr.clnt;
 
-import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.ip.ipFwd;
 import net.freertr.pipe.pipeLine;
@@ -38,23 +37,6 @@ public class clntPmtudCfg {
     }
 
     /**
-     * get configuration
-     *
-     * @param lst list to update
-     * @param cfg configuration to use
-     * @param beg beginning of the lines
-     */
-    public static void getConfig(List<String> lst, clntPmtudCfg cfg, String beg) {
-        if (cfg == null) {
-            return;
-        }
-        if (cfg.pmtudTim < 1) {
-            return;
-        }
-        lst.add(beg + cfg.pmtudMin + " " + cfg.pmtudMax + " " + cfg.pmtudTim);
-    }
-
-    /**
      * perform configuration tasks
      *
      * @param cfg config to update
@@ -83,6 +65,7 @@ public class clntPmtudCfg {
 
     /**
      * perform the work
+     *
      * @param cfg configuration to use
      * @param vrf vrf to use
      * @param trg target address

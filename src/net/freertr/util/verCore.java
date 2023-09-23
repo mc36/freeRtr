@@ -48,7 +48,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 22;
+    public final static int day = 23;
 
     /**
      * statement of release
@@ -76,14 +76,15 @@ public class verCore {
     public final static String[] license = {
         "place on the web: " + homeUrl1,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
-        "quote-16: respect the privacy of others, think before you type, with great power comes great responsibility",
-        "quote-15: dont drive faster than your guardian angel can fly, so dont drop all the packets just some them",
-        "quote-14: true random comes from weather forecasts and political announcements",
-        "quote-13: imagine that your 99th bday cake will be rarely done beefsteak",
+        "quote-17: respect the privacy of others, think before you type, with great power comes great responsibility",
+        "quote-16: dont drive faster than your guardian angel can fly, so dont drop all the packets just some them",
+        "quote-15: true random comes from weather forecasts and political announcements",
+        "quote-14: imagine that your 99th bday cake will be rarely done beefsteak",
+        "quote-13: f(l)ight add-mins @ addr(r)renaline-ma(r)xxx",
         "quote-12: debug emulate know test and use your sh1t",
         "quote-11: stupid question deserves stupid answers",
-        "quote-10: fight add-mins at addr(r)renaline-max",
-        "quote-0: fearless, stateless, self-containing",
+        "quote-10: fearless, stateless, self-containing",
+        "quote-9: science does not stops evolving",
         "quote-8: do or not to do but don't try",
         "quote-7: labbing hard and music heals",
         "quote-6: music music, noise noise",

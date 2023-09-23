@@ -75,7 +75,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        ipInfo.doGetCfg(beg + "info ", lst);
+        clntIpInfWrk.getConfig(lst, ipInfo, beg + "info ");
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -92,7 +92,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  info                      check visitors");
-        clntIpInfCfg.getHelp(l, 1);
+        clntIpInfWrk.getHelp(l, 1);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

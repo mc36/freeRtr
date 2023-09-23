@@ -418,7 +418,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
             l.add(beg + a + "update-source " + srcIface.name);
         }
         cmds.cfgLine(l, passwd == null, beg, a + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
-        clntPmtudCfg.getConfig(l, pmtudCfg, beg + "pmtud ");
+        clntPmtudWrk.getConfig(l, pmtudCfg, beg + "pmtud ");
         l.add(beg + a + "timer " + keepAlive + " " + holdTimer + " " + freshTimer + " " + flushTimer);
         cmds.cfgLine(l, !shutdown, beg, a + "shutdown", "");
         cmds.cfgLine(l, !bfdTrigger, beg, a + "bfd", "");

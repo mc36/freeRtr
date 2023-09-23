@@ -1,19 +1,12 @@
 
-generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
-
-generalize ipinfo tests for lsrp / pvrp pmtud
 
 bgp unknowns-log knob
 
 image viewer to file manager
 
-own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
+game butterfly series reusing the fft and mdev classes from modem and ping
 
 experiment with freebsd as a host os
-
-
-game pinball
-
 
 
 
