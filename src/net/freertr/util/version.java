@@ -728,6 +728,11 @@ public class version {
                 l.add("");
                 l.add("for(;1;)printf(\"lu$t$$$-f333l-g000d\r\n\");//XDDDDD");
                 l.add("");
+                l.add("i have a serious quest-ions 4 u all...");
+                l.add("priv<tab> stat<tab> fin<tab> void asdf(){};//vs");
+                l.add("stat<tab> priv<tab> fin<tab> void asdf(){};//vs");
+                l.add("ok.boomers both cummmpiles so change my minds...");
+                l.add("");
                 l.add("f0r(;;){");
                 l.add("  l1bpcap.s3nd('n3tbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
                 l.add("  l1bpcap.s3nd('fr33bsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
@@ -760,6 +765,11 @@ public class version {
                 l.add("all robots and not hoomans in the big machinery like planet earth");
                 l.add("if you dont comply youll be terminated in an allelectric-wheelchair");
                 l.add("that is do your pillowfights if you dont loolz back, policers");
+                l.add("");
+                l.add("calc.eval(\"bead with me u dearest pedobear, there 1s no $ex with .exe$\")");
+                l.add("calc.eval(\"attach a 128gb full of virustotal hashes a horde of pigeons and\")");
+                l.add("calc.eval(\"teach them to fly alaska directly to your stepsister jennifer to\")");
+                l.add("calc.eval(\"prevent her from pregnancy in the next 9 months\")");
                 l.add("");
                 l.add("10 print(\"fWWWk\")");
                 l.add("20 goto 10");
