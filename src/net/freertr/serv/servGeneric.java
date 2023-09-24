@@ -127,16 +127,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     protected tabListing<tabRtrplcN, addrIP> srvRouPol;
 
     /**
-     * gather info per accesses
-     */
-    protected clntIpInfCfg srvIpInf; //////////////
-
-    /**
-     * perform pmtud per accesses
-     */
-    protected clntPmtudCfg srvPmtud; //////////////
-
-    /**
      * accesses per interval
      */
     protected tabRateLimit srvAccRat;
@@ -160,6 +150,16 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * limit of one subnet
      */
     protected int srvNetLim;
+
+    /**
+     * gather info per accesses
+     */
+    protected clntIpInfCfg srvIpInf;
+
+    /**
+     * perform pmtud per accesses
+     */
+    protected clntPmtudCfg srvPmtud;
 
     /**
      * blackhole process
@@ -1085,13 +1085,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if ((srvIpInf == null) && (srvPmtud == null)) {
             return false;
         }
-        if (srvIpInf != null) {
-            /////////////// srvIpInf
-        }
-        if (srvPmtud == null) {
-            return false;
-        }
-        /////////////////// srvPmtud
         return false;
     }
 
@@ -1118,6 +1111,23 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return false;
     }
 
+    private boolean srvCheckAccept3(addrIP adr, int prt, ipFwdIface ifc) {
+        ipFwd fwd = srvVrf.getFwd(adr);
+        clntIpInfWrk inw = new clntIpInfWrk(srvIpInf, null, adr, prt);
+        inw.doWork();
+        if (srvPmtud == null) {
+            return false;
+        }
+        clntPmtudWrk pmw = clntPmtudCfg.doWork(srvPmtud, fwd, adr, ifc.addr);
+        if (pmw != null) {
+            return false;
+        }
+        if (srvLogDrop) {
+            logger.info("access pmtud dropped " + adr + " " + prt);
+        }
+        return true;
+    }
+
     private void srvBlackholePeer(boolean ipv4, addrIP adr) {
         if (ipv4) {
             if (srvBlckhl4 != null) {
@@ -1132,6 +1142,9 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
 
     private boolean srvCheckAccept(prtGenConn conn) {
         if (srvCheckAccept1(conn.peerAddr, conn.portLoc)) {
+            return true;
+        }
+        if (srvCheckAccept3(conn.peerAddr, conn.portLoc, conn.iface)) {
             return true;
         }
         if (srvAccess != null) {
@@ -1184,6 +1197,9 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      */
     protected boolean srvCheckAccept(ipFwdIface ifc, packHolder pck) {
         if (srvCheckAccept1(pck.IPsrc, pck.IPprt)) {
+            return true;
+        }
+        if (srvCheckAccept3(pck.IPsrc, pck.IPprt, ifc)) {
             return true;
         }
         if (srvAccess != null) {
@@ -1304,16 +1320,16 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <name:rpl>           route policy name");
         l.add(null, "1 2  access-total           session limit for this server");
         l.add(null, "2 .    <num>                number of connections");
-        l.add(null, "1 2  access-ipinfo          configure ipinfo query");
-        clntIpInfWrk.getHelp(l, 2);
-        l.add(null, "1 2  access-pmtud           configure pmtud test");
-        clntPmtudWrk.getHelp(l, 2);
         l.add(null, "1 2  access-startup         initial downtime for this server");
         l.add(null, "2 .    <num>                time");
         l.add(null, "1 2  access-peer            per client session limit");
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-subnet          per subnet session limit");
         l.add(null, "2 .    <num>                number of connections");
+        l.add(null, "1 2  access-ipinfo          configure ipinfo query");
+        clntIpInfWrk.getHelp(l, 1);
+        l.add(null, "1 2  access-pmtud           configure pmtud test");
+        clntPmtudWrk.getHelp(l, 1);
         l.add(null, "1 2  access-blackhole4      propagate and check violating prefixes");
         l.add(null, "2 .    <num>                number of process");
         l.add(null, "1 2  access-blackhole6      propagate and check violating prefixes");

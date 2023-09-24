@@ -589,7 +589,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("safi got|" + rtrBgpParam.mask2string(conn.originalSafiList));
         l.add("safi not remote|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis));
         l.add("safi not local|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis));
-        l.add("pmtud |" + conn.pmtudRes);
+        l.add("pmtud|" + conn.pmtudRes);
+        l.add("ipinfo|" + conn.ipinfoRes);
         l.add("local address|" + localAddr);
         l.add("other address|" + localOddr);
         l.add("router id|" + conn.peerRouterID);

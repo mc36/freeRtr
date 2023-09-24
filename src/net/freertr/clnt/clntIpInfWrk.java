@@ -11,6 +11,7 @@ import net.freertr.enc.encUrl;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
+import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servHttp;
 import net.freertr.tab.tabRoute;
@@ -67,35 +68,42 @@ public class clntIpInfWrk {
     /**
      * create an instance
      *
-     * @param c configuration to use
-     * @param r pipeline to use
-     * @param a address to check
-     * @param p port number to check
+     * @param ned configuration to use
+     * @param con pipeline to use
+     * @param adr address to check
+     * @param prt port number to check
      */
-    public clntIpInfWrk(clntIpInfCfg c, pipeSide r, addrIP a, int p) {
-        cfg = c;
-        pipe = r;
-        port = p;
-        if (c == null) {
-            changeWorkAddr(a);
+    public clntIpInfWrk(clntIpInfCfg ned, pipeSide con, addrIP adr, int prt) {
+        cfg = ned;
+        pipe = pipeDiscard.needAny(con);
+        port = prt;
+        if (ned == null) {
+            changeWorkAddr(adr);
             othrs = false;
             return;
         }
-        hack = c.hacked;
-        plain = c.plain;
-        style = c.style;
-        format = c.format;
-        detail = c.details;
-        single = c.single;
-        http = c.tinyHttp;
-        othrs = c.others;
-        changeWorkAddr(a);
+        hack = ned.hacked;
+        plain = ned.plain;
+        style = ned.style;
+        format = ned.format;
+        detail = ned.details;
+        single = ned.single;
+        http = ned.tinyHttp;
+        othrs = ned.others;
+        changeWorkAddr(adr);
+    }
+
+    public String toString() {
+        return getRoute1liner();
     }
 
     /**
      * do every work
      */
     public void doWork() {
+        if (cfg == null) {
+            return;
+        }
         if (debugger.clntIpInfo) {
             logger.debug("working on " + addr + " " + port);
         }

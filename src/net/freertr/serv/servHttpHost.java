@@ -338,7 +338,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             l.add(a + " api" + servHttpUtil.apiBits2string(allowApi));
         }
         clntIpInfWrk.getConfig(l, ipInfo, a + " ipinfo ");
-        clntPmtudWrk.getConfig(l, pmtuD, a + "pmtu ");
+        clntPmtudWrk.getConfig(l, pmtuD, a + " pmtu ");
         if (allowImgMap) {
             l.add(a + " imagemap");
         }

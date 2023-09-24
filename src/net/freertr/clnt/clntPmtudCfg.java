@@ -75,7 +75,7 @@ public class clntPmtudCfg {
      * @param src source address
      * @return work done, null if error happened
      */
-    public static clntPmtudWrk doWork(clntPmtudCfg cfg, ipFwd vrf, addrIP trg, addrIP src) {
+    public static final clntPmtudWrk doWork(clntPmtudCfg cfg, ipFwd vrf, addrIP trg, addrIP src) {
         clntPmtudWrk wrk = getWorker(cfg, vrf, trg, src);
         if (wrk == null) {
             return null;
@@ -89,7 +89,16 @@ public class clntPmtudCfg {
         return wrk;
     }
 
-    private static clntPmtudWrk getWorker(clntPmtudCfg cfg, ipFwd vrf, addrIP trg, addrIP src) {
+    /**
+     * perform the work
+     *
+     * @param cfg configuration to use
+     * @param vrf vrf to use
+     * @param trg target address
+     * @param src source address
+     * @return work done, null if error happened
+     */
+    public static final clntPmtudWrk getWorker(clntPmtudCfg cfg, ipFwd vrf, addrIP trg, addrIP src) {
         if (cfg == null) {
             return null;
         }

@@ -1613,7 +1613,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       lookup-reverse              lookup dns before accepting");
         l.add(null, "3  4       pmtud                       test pmtud before accepting");
         clntPmtudWrk.getHelp(l, 3);
-        l.add(null, "3   4,.    ipinfo                      test ipinfo before accepting");
+        l.add(null, "3  4,.     ipinfo                      test ipinfo before accepting");
         clntIpInfWrk.getHelp(l, 3);
         l.add(null, "3  .       segrout                     send segment routing attribute");
         l.add(null, "3  .       bier                        send bier attribute");

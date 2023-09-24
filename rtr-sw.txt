@@ -1153,6 +1153,7 @@ server honeypot hp1
  info style background-color:#000000;color:#00FFFF;
  info script logger
  info tinyhttp
+ pmtud 738 1024 666
  interface loopback0
  vrf v1
  exit
@@ -1166,6 +1167,7 @@ server honeypot hp2
  info style background-color:#000000;color:#00FFFF;
  info resolve
  info tinyhttp
+ pmtud 738 1024 666
  interface loopback0
  vrf v1
  exit

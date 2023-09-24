@@ -1226,7 +1226,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         sendOpen();
         sendKeepAlive();
         if (neigh.ipinfoCfg != null) {
-            ipinfoRes = new clntIpInfWrk(neigh.ipinfoCfg, pipe, neigh.peerAddr, rtrBgp.port);
+            ipinfoRes = new clntIpInfWrk(neigh.ipinfoCfg, null, neigh.peerAddr, rtrBgp.port);
             ipinfoRes.doWork();
         }
         if (neigh.pmtudCfg != null) {
