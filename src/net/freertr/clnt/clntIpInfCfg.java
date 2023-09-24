@@ -106,154 +106,153 @@ public class clntIpInfCfg {
      *
      * @param cmd command to interpret
      * @param negated command was negated
-     * @return true on error, false on success
+     * @return null if cleared, config on success
      */
-    public boolean doCfgStr(cmds cmd, boolean negated) {
+    public static final clntIpInfCfg doCfgStr(clntIpInfCfg cfg, cmds cmd, boolean negated) {
+        if (cfg == null) {
+            cfg = new clntIpInfCfg();
+        }
         String s = cmd.word();
         if (s.equals("script")) {
             if (negated) {
-                script = null;
-                clntIpInfWrk.doSanityChecks(this);
-                return false;
+                cfg.script = null;
+                clntIpInfWrk.doSanityChecks(cfg);
+                return cfg;
             }
-            script = cfgAll.scrptFind(cmd.word(), false);
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.script = cfgAll.scrptFind(cmd.word(), false);
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("resolve")) {
-            resolve = !negated;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.resolve = !negated;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("others")) {
-            others = !negated;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.others = !negated;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("tinyhttp")) {
-            tinyHttp = !negated;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.tinyHttp = !negated;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("details")) {
-            details = !negated;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.details = !negated;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("single")) {
-            single = !negated;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.single = !negated;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("hacked")) {
-            hacked = !negated;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.hacked = !negated;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("plain")) {
-            plain = !negated;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.plain = !negated;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("style")) {
             if (negated) {
-                style = null;
-                return false;
+                cfg.style = null;
+                return cfg;
             }
-            style = cmd.getRemaining();
-            return false;
+            cfg.style = cmd.getRemaining();
+            return cfg;
         }
         if (s.equals("format")) {
             if (negated) {
-                format = userFormat.tableMode.normal;
-                return false;
+                cfg.format = userFormat.tableMode.normal;
+                return cfg;
             }
             s = cmd.word();
-            format = userFormat.str2tabmod(s);
-            return false;
+            cfg.format = userFormat.str2tabmod(s);
+            return cfg;
         }
         if (s.equals("router4")) {
             if (negated) {
-                router4 = null;
-                fwder4 = null;
-                clntIpInfWrk.doSanityChecks(this);
-                return false;
+                cfg.router4 = null;
+                cfg.fwder4 = null;
+                clntIpInfWrk.doSanityChecks(cfg);
+                return cfg;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
             int i = bits.str2num(cmd.word());
             cfgRtr rtr = cfgAll.rtrFind(o, i, false);
             if (rtr == null) {
                 cmd.error("no such router process");
-                return false;
+                return cfg;
             }
             if (rtr.fwd == null) {
                 cmd.error("router have no vrf");
-                return false;
+                return cfg;
             }
-            router4 = rtr.getRouter();
-            fwder4 = rtr.fwd;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.router4 = rtr.getRouter();
+            cfg.fwder4 = rtr.fwd;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("router6")) {
             if (negated) {
-                router6 = null;
-                fwder6 = null;
-                clntIpInfWrk.doSanityChecks(this);
-                return false;
+                cfg.router6 = null;
+                cfg.fwder6 = null;
+                clntIpInfWrk.doSanityChecks(cfg);
+                return cfg;
             }
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
             int i = bits.str2num(cmd.word());
             cfgRtr rtr = cfgAll.rtrFind(o, i, false);
             if (rtr == null) {
                 cmd.error("no such router process");
-                return false;
+                return cfg;
             }
             if (rtr.fwd == null) {
                 cmd.error("router have no vrf");
-                return false;
+                return cfg;
             }
-            router6 = rtr.getRouter();
-            fwder6 = rtr.fwd;
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.router6 = rtr.getRouter();
+            cfg.fwder6 = rtr.fwd;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("rd")) {
             if (negated) {
-                rd = 0;
-                clntIpInfWrk.doSanityChecks(this);
-                return false;
+                cfg.rd = 0;
+                clntIpInfWrk.doSanityChecks(cfg);
+                return cfg;
             }
             s = cmd.word();
-            rd = tabRouteUtil.string2rd(s);
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.rd = tabRouteUtil.string2rd(s);
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         if (s.equals("vrf")) {
             if (negated) {
-                rd = 0;
-                clntIpInfWrk.doSanityChecks(this);
-                return false;
+                cfg.rd = 0;
+                clntIpInfWrk.doSanityChecks(cfg);
+                return cfg;
             }
             s = cmd.word();
             cfgVrf ntry = cfgAll.vrfFind(s, false);
             if (ntry == null) {
                 cmd.error("no such vrf");
-                return false;
+                return cfg;
             }
-            fwder4 = ntry.fwd4;
-            fwder6 = ntry.fwd6;
-            if (fwder4 != null) {
-                rd = fwder4.rd;
-            }
-            if (fwder6 != null) {
-                rd = fwder6.rd;
-            }
-            clntIpInfWrk.doSanityChecks(this);
-            return false;
+            cfg.fwder4 = ntry.fwd4;
+            cfg.fwder6 = ntry.fwd6;
+            cfg.rd = cfg.fwder4.rd;
+            cfg.rd = cfg.fwder6.rd;
+            clntIpInfWrk.doSanityChecks(cfg);
+            return cfg;
         }
         cmd.badCmd();
-        return false;
+        return cfg;
     }
 
 }

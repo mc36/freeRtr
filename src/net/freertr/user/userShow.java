@@ -201,7 +201,7 @@ public class userShow {
                 rdr.putStrArr(version.shLogo(0x200));
                 return null;
             }
-            rdr.putStrArr(version.shLogo(0xe0));
+            rdr.putStrArr(version.shLogo(0x40e0));
             return null;
         }
         if (a.equals("history")) {

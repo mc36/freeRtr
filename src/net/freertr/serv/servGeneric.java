@@ -1306,9 +1306,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-ipinfo          configure ipinfo query");
         clntIpInfWrk.getHelp(l, 2);
-        //////////////l.add(null, "1 2  access-pmtud           configure pmtud query");
-        //////////////clntPmtudWrk.getHelp(l, 2);
-        
+        l.add(null, "1 2  access-pmtud           configure pmtud test");
+        clntPmtudWrk.getHelp(l, 2);
         l.add(null, "1 2  access-startup         initial downtime for this server");
         l.add(null, "2 .    <num>                time");
         l.add(null, "1 2  access-peer            per client session limit");
@@ -1540,17 +1539,11 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             return;
         }
         if (a.equals("access-ipinfo")) {
-            if (srvIpInf == null) {
-                srvIpInf = new clntIpInfCfg();
-            }
-            srvIpInf.doCfgStr(cmd, false);
+            srvIpInf = clntIpInfCfg.doCfgStr(srvIpInf, cmd, false);
             return;
         }
         if (a.equals("access-pmtud")) {
-            if (srvPmtud == null) {
-                srvPmtud = new clntPmtudCfg();
-            }
-            srvIpInf.doCfgStr(cmd, false);
+            srvPmtud = clntPmtudCfg.doCfgStr(srvPmtud, cmd, false);
             return;
         }
         if (a.equals("access-blackhole4")) {
@@ -1743,17 +1736,11 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return;
             }
             if (a.equals("access-ipinfo")) {
-                if (srvIpInf == null) {
-                    srvIpInf = new clntIpInfCfg();
-                }
-                srvIpInf.doCfgStr(cmd, true);
+                srvIpInf = clntIpInfCfg.doCfgStr(srvIpInf, cmd, true);
                 return;
             }
             if (a.equals("access-pmtud")) {
-                if (srvPmtud == null) {
-                    srvPmtud = new clntPmtudCfg();
-                }
-                srvIpInf.doCfgStr(cmd, true);
+                srvPmtud = clntPmtudCfg.doCfgStr(srvPmtud, cmd, true);
                 return;
             }
             if (a.equals("access-blackhole4")) {

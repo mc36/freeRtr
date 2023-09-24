@@ -525,10 +525,6 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "5 .           <num>                     time in ms");
         l.add(null, "4 5         dead-time                   time before neighbor down");
         l.add(null, "5 .           <num>                     time in ms");
-        l.add(null, "4 5         pmtud                       test pmtud before accepting");
-        l.add(null, "5 6           <num>                     min mtu");
-        l.add(null, "6 7             <num>                   max mtu");
-        l.add(null, "7  .              <num>                 timeout per round");
         l.add(null, "4 5         route-map-in                process prefixes in ingress updates");
         l.add(null, "5 .           <name:rm>                 name of route map");
         l.add(null, "4 5         route-map-out               process prefixes in egress updates");
@@ -545,6 +541,9 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "5 .           <name:pl>                 name of prefix list");
         l.add(null, "4 5         label-out                   filter label in egress updates");
         l.add(null, "5 .           <name:pl>                 name of prefix list");
+        l.add(null, "4 5         pmtud                       test pmtud before accepting");
+        clntPmtudWrk.getHelp(l, 4);
+        ///// ipinfo
         l.add(null, "4 5         dynamic-metric              dynamic peer metric");
         l.add(null, "5 .           forbid                    forbid peer measurement");
         l.add(null, "5 6           mode                      measurement mode");
@@ -778,7 +777,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("pmtud")) {
             pmtudCfg = new clntPmtudCfg();
-            clntPmtudCfg.doConfig(pmtudCfg, cmd, false);
+            clntPmtudCfg.doCfgStr(pmtudCfg, cmd, false);
             return;
         }
         if (a.equals("dead-time")) {
@@ -891,7 +890,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      */
     public void routerUnConfig(String a, cmds cmd) {
         if (a.equals("pmtud")) {
-            clntPmtudCfg.doConfig(pmtudCfg, cmd, true);
+            clntPmtudCfg.doCfgStr(pmtudCfg, cmd, true);
             return;
         }
         if (a.equals("bfd")) {

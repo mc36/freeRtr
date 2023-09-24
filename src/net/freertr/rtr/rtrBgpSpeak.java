@@ -10,6 +10,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
+import net.freertr.clnt.clntIpInfWrk;
 import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
@@ -30,8 +31,6 @@ import net.freertr.util.logger;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
 import net.freertr.pack.packDnsRec;
-import net.freertr.pipe.pipeDiscard;
-import net.freertr.pipe.pipeLine;
 import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.util.version;
 
@@ -106,6 +105,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * pmtud result
      */
     public clntPmtudWrk pmtudRes;
+
+    /**
+     * ipinfo result
+     */
+    public clntIpInfWrk ipinfoRes;
 
     /**
      * learned unicast prefixes
@@ -1207,29 +1211,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         closeNow();
     }
 
-    private void lookupDatabase() {
-        if (!neigh.lookupDatabase) {
-            return;
-        }
-        logger.warn("looking up " + neigh.peerAddr + " in whois");
-        tabRouteEntry<addrIP> ntry = parent.routerComputedU.route(neigh.peerAddr);
-        if (ntry == null) {
-            logger.warn("no prefix for " + neigh.peerAddr);
-            return;
-        }
-        logger.info("neighbor " + neigh.peerAddr + " pfx=" + addrPrefix.ip2str(ntry.prefix) + " pth=" + ntry.best.asPathStr() + " nfo=" + ntry.best.asInfoStr() + " nam=" + ntry.best.asNameStr());
-    }
-
-    private void lookupReverse() {
-        if (!neigh.lookupReverse) {
-            return;
-        }
-        logger.warn("looking up " + neigh.peerAddr + " in dns");
-        clntDns clnt = new clntDns();
-        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(neigh.peerAddr), false, packDnsRec.typePTR);
-        logger.info("neighbor " + neigh.peerAddr + " reverse=" + clnt.getPTR());
-    }
-
     private void doWork() {
         if (debugger.rtrBgpEvnt) {
             logger.debug("starting neighbor " + neigh.peerAddr);
@@ -1244,6 +1225,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         sendOpen();
         sendKeepAlive();
+        if (neigh.ipinfoCfg != null) {
+            ipinfoRes = new clntIpInfWrk(neigh.ipinfoCfg, pipe, neigh.peerAddr, rtrBgp.port);
+            ipinfoRes.doWork();
+        }
         if (neigh.pmtudCfg != null) {
             pmtudRes = clntPmtudCfg.doWork(neigh.pmtudCfg, neigh.lower.fwdCore, neigh.peerAddr, neigh.localAddr);
             if (pmtudRes == null) {
@@ -1253,8 +1238,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 return;
             }
         }
-        lookupReverse();/////////////// ipinfo
-        lookupDatabase();/////////////// ipinfo
         int typ = packRecv(pckRx);
         if (typ == rtrBgpUtil.msgNotify) {
             logger.info("got notify " + rtrBgpUtil.notify2string(pckRx.getByte(0), pckRx.getByte(1)) + " from " + neigh.peerAddr);

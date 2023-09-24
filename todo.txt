@@ -1,4 +1,6 @@
+generalise server access- knobs
 
+generalize dynamic-metric knobs
 
 bgp unknowns-log knob
 
@@ -8,7 +10,7 @@ game butterfly series reusing the fft and mdev classes from modem and ping
 
 experiment with freebsd as a host os
 
-
+server http to have api for scripts
 
 
 acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
@@ -333,6 +335,7 @@ more interactive tools
 more features with clean implementation
 more randomizers
 more collect commands
+more knob generalizations
 more userLine fun like alias-text, alias-regexp, much like under checks
 more server quote fun like cleanups, randomizers, loggers, anything
 more server http fun like cleanups, randomizers, loggers, anything

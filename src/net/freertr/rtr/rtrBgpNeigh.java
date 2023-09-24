@@ -726,6 +726,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * delete listening peer
      */
     public void delListenPeer() {
+        logger.warn("removing dynamic " + peerAddr);
         if ((socketMode > 0) && (socketMode < 4)) {
             return;
         }

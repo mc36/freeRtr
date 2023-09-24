@@ -906,6 +906,8 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add(null, "6 .             <num>                 index");
         l.add(null, "5 6           other-index             set other index");
         l.add(null, "6 .             <num>                 index");
+        ///// clntPmtudWrk.getHelp(l, 4);
+        ///// ipinfo
         l.add(null, "4 5         dynamic-metric            dynamic peer metric");
         l.add(null, "5 6           mode                    dynamic peer metric");
         l.add(null, "6 .             disabled              forbid echo requests");

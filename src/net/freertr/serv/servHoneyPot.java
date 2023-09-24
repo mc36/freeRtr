@@ -4,6 +4,8 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.clnt.clntIpInfCfg;
 import net.freertr.clnt.clntIpInfWrk;
+import net.freertr.clnt.clntPmtudCfg;
+import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -48,7 +50,12 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * ip information configuration
      */
-    public clntIpInfCfg ipInfo = new clntIpInfCfg();
+    public clntIpInfCfg ipInfo;
+
+    /**
+     * pmtu information configuration
+     */
+    public clntPmtudCfg pmtuD; //////////
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -76,6 +83,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         clntIpInfWrk.getConfig(lst, ipInfo, beg + "info ");
+        clntPmtudWrk.getConfig(lst, pmtuD, beg + "pmtu ");
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -84,15 +92,23 @@ public class servHoneyPot extends servGeneric implements prtServS {
         if (neg) {
             a = cmd.word();
         }
-        if (!a.equals("info")) {
-            return true;
+        if (a.equals("info")) {
+            ipInfo = clntIpInfCfg.doCfgStr(ipInfo, cmd, neg);
+            return false;
         }
-        return ipInfo.doCfgStr(cmd, neg);
+        if (a.equals("pmtu")) {
+            pmtuD = clntPmtudCfg.doCfgStr(pmtuD, cmd, neg);
+            return false;
+        }
+        cmd.badCmd();
+        return false;
     }
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 2  info                      check visitors");
         clntIpInfWrk.getHelp(l, 1);
+        l.add(null, "1 2  pmtu                      check pmtu");
+        clntPmtudWrk.getHelp(l, 1);
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

@@ -326,7 +326,7 @@ public class rtrMsdp extends ipRtr {
         }
         if (s.equals("pmtud")) {
             ntry.pmtudCfg = new clntPmtudCfg();
-            clntPmtudCfg.doConfig(ntry.pmtudCfg, cmd, negated);
+            clntPmtudCfg.doCfgStr(ntry.pmtudCfg, cmd, negated);
             return false;
         }
         if (s.equals("shutdown")) {

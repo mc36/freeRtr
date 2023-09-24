@@ -42,25 +42,28 @@ public class clntPmtudCfg {
      * @param cfg config to update
      * @param cmd commands to do
      * @param negated if negation needed
-     * @return true on error, false on success
+     * @return null if cleared, config on success
      */
-    public static boolean doConfig(clntPmtudCfg cfg, cmds cmd, boolean negated) {
+    public static final clntPmtudCfg doCfgStr(clntPmtudCfg cfg, cmds cmd, boolean negated) {
+        if (cfg == null) {
+            cfg = new clntPmtudCfg();
+        }
+        cfg.pmtudMin = 0;
+        cfg.pmtudMax = 0;
+        cfg.pmtudTim = 0;
         if (negated) {
-            cfg.pmtudMin = 0;
-            cfg.pmtudMax = 0;
-            cfg.pmtudTim = 0;
-            return true;
+            return cfg;
         }
         cfg.pmtudMin = bits.str2num(cmd.word());
         cfg.pmtudMax = bits.str2num(cmd.word());
         cfg.pmtudTim = bits.str2num(cmd.word());
         if (cfg.pmtudMin < cfg.pmtudMax) {
-            return false;
+            return cfg;
         }
         cfg.pmtudMin = 0;
         cfg.pmtudMax = 0;
         cfg.pmtudTim = 0;
-        return true;
+        return cfg;
     }
 
     /**

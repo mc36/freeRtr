@@ -11,6 +11,8 @@ import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
+import net.freertr.clnt.clntIpInfCfg;
+import net.freertr.clnt.clntIpInfWrk;
 import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.clnt.clntProxy;
@@ -149,19 +151,14 @@ public abstract class rtrBgpParam {
     public tabIntMatcher unknownsOut;
 
     /**
-     * lookup database
-     */
-    public boolean lookupDatabase;
-
-    /**
-     * lookup dns reverse
-     */
-    public boolean lookupReverse;
-
-    /**
      * pmtud config
      */
     public clntPmtudCfg pmtudCfg;
+
+    /**
+     * ipinfo config
+     */
+    public clntIpInfCfg ipinfoCfg;
 
     /**
      * send segment routing
@@ -1180,9 +1177,8 @@ public abstract class rtrBgpParam {
         unknownsColl = src.unknownsColl;
         unknownsOut = src.unknownsOut;
         unknownsIn = src.unknownsIn;
-        lookupDatabase = src.lookupDatabase;
-        lookupReverse = src.lookupReverse;
         pmtudCfg = src.pmtudCfg;
+        ipinfoCfg = src.ipinfoCfg;
         segRout = src.segRout;
         bier = src.bier;
         wideAsPath = src.wideAsPath;
@@ -1616,9 +1612,9 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       lookup-database             lookup rib before accepting");
         l.add(null, "3  .       lookup-reverse              lookup dns before accepting");
         l.add(null, "3  4       pmtud                       test pmtud before accepting");
-        l.add(null, "4  5         <num>                     min mtu");
-        l.add(null, "5  6           <num>                   max mtu");
-        l.add(null, "6  .             <num>                 timeout per round");
+        clntPmtudWrk.getHelp(l, 3);
+        l.add(null, "3   4,.    ipinfo                      test ipinfo before accepting");
+        clntIpInfWrk.getHelp(l, 3);
         l.add(null, "3  .       segrout                     send segment routing attribute");
         l.add(null, "3  .       bier                        send bier attribute");
         l.add(null, "3  .       wide-aspath                 send wide aspath attribute");
@@ -1772,10 +1768,9 @@ public abstract class rtrBgpParam {
             l.add(beg + nei + "authen-type sha1 " + keyId);
         }
         cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
-        cmds.cfgLine(l, !lookupDatabase, beg, nei + "lookup-database", "");
-        cmds.cfgLine(l, !lookupReverse, beg, nei + "lookup-reverse", "");
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
         clntPmtudWrk.getConfig(l, pmtudCfg, beg + nei + "pmtud ");
+        clntIpInfWrk.getConfig(l, ipinfoCfg, beg + nei + "ipinfo ");
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
         l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
         l.add(beg + nei + "address-family" + mask2string(addrFams));
@@ -2518,21 +2513,12 @@ public abstract class rtrBgpParam {
             unknownsIn.fromString(cmd.word());
             return false;
         }
-        if (s.equals("lookup-database")) {
-            lookupDatabase = !negated;
-            return false;
-        }
-        if (s.equals("lookup-reverse")) {
-            lookupReverse = !negated;
-            return false;
-        }
         if (s.equals("pmtud")) {
-            if (negated) {
-                pmtudCfg = null;
-                return false;
-            }
-            pmtudCfg = new clntPmtudCfg();
-            clntPmtudCfg.doConfig(pmtudCfg, cmd, negated);
+            pmtudCfg = clntPmtudCfg.doCfgStr(pmtudCfg, cmd, negated);
+            return false;
+        }
+        if (s.equals("ipinfo")) {
+            ipinfoCfg = clntIpInfCfg.doCfgStr(ipinfoCfg, cmd, negated);
             return false;
         }
         if (s.equals("segrout")) {

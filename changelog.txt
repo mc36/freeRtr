@@ -15162,3 +15162,6 @@ no todo: own minimal jpython if something happens to graalvm's builtins like htt
 no todo: generalize ipinfo tests for lsrp / pvrp pmtud
 no todo: generalize ipinfo for bgp/msdp: neigh x.x.x.x pmtud instead
 todo: game butterfly series reusing the fft and mdev classes from modem and ping
+---------------------------------- 2023-09-23 21:20:20 23.9.23
+todo: generalize dynamic-metric knobs
+todo: more knob generalizations

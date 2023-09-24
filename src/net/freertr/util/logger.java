@@ -418,16 +418,16 @@ public class logger {
      * @param m message to pass or null
      */
     public static void exception(Throwable e, String m) {
-        String a = dumpException(e, m);
+        m = "exception " + dumpException(e, m);
         try {
-            bits.buf2txt(false, bits.str2lst(a), version.myErrorFile());
+            bits.buf2txt(false, bits.str2lst(m), version.myErrorFile());
         } catch (Exception ee) {
         }
-        logOneLine(logLev.msgExcp, "exception", a);
+        logOneLine(logLev.msgExcp, "", m);
         if (userUpgrade.inProgress.get() == 2) {
             userUpgrade.doRevert();
         }
-        cfgInit.stopRouter(false, 8, "exception " + a);
+        cfgInit.stopRouter(false, 8, m);
     }
 
     /**
@@ -446,14 +446,17 @@ public class logger {
      * @param m message to pass or null
      */
     public static void traceback(Throwable e, String m) {
-        String a = dumpException(e, m);
+        m = "traceback " + dumpException(e, m);
         try {
-            bits.buf2txt(false, bits.str2lst(a), version.myErrorFile());
+            bits.buf2txt(false, bits.str2lst(m), version.myErrorFile());
         } catch (Exception ee) {
         }
-        logOneLine(logLev.msgExcp, "traceback", a);
+        logOneLine(logLev.msgExcp, "", m);
         if (!cfgAll.tracebackStops) {
             return;
+        }
+        if (userUpgrade.inProgress.get() == 2) {
+            userUpgrade.doRevert();
         }
         cfgInit.stopRouter(false, 15, "console crash");
     }

@@ -2,7 +2,6 @@ package net.freertr.util;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
@@ -152,7 +151,7 @@ public class version {
             sa.add("");
         }
         if ((head & 0x08) != 0) {
-            sa.addAll(Arrays.asList(verCore.logo));
+            array2list(sa, verCore.logo);
         }
         if ((head & 0x10) != 0) {
             sa.add("");
@@ -164,7 +163,7 @@ public class version {
             sa.add("");
         }
         if ((head & 0x80) != 0) {
-            sa.addAll(Arrays.asList(verCore.license));
+            array2list(sa, verCore.license);
         }
         if ((head & 0x100) != 0) {
             sa.add("");
@@ -184,7 +183,22 @@ public class version {
         if ((head & 0x2000) != 0) {
             sa.add(verCore.homeUrl1);
         }
+        if ((head & 0x4000) != 0) {
+            array2list(sa, verCore.quotes);
+        }
         return sa;
+    }
+
+    /**
+     * put array to list
+     *
+     * @param trg target
+     * @param src source
+     */
+    public final static void array2list(List<String> trg, String[] src) {
+        for (int i = 0; i < src.length; i++) {
+            trg.add(src[i]);
+        }
     }
 
     /**

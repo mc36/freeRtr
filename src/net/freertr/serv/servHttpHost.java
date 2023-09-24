@@ -22,6 +22,8 @@ import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
 import net.freertr.clnt.clntIpInfCfg;
 import net.freertr.clnt.clntIpInfWrk;
+import net.freertr.clnt.clntPmtudCfg;
+import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
@@ -183,6 +185,11 @@ public class servHttpHost implements Comparator<servHttpHost> {
     public clntIpInfCfg ipInfo;
 
     /**
+     * pmtu information configuration
+     */
+    public clntPmtudCfg pmtuD;
+
+    /**
      * image map decode allowed
      */
     public boolean allowImgMap;
@@ -331,6 +338,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             l.add(a + " api" + servHttpUtil.apiBits2string(allowApi));
         }
         clntIpInfWrk.getConfig(l, ipInfo, a + " ipinfo ");
+        clntPmtudWrk.getConfig(l, pmtuD, a + "pmtu ");
         if (allowImgMap) {
             l.add(a + " imagemap");
         }
@@ -532,13 +540,11 @@ public class servHttpHost implements Comparator<servHttpHost> {
             return false;
         }
         if (a.equals("ipinfo")) {
-            if (negated && (ipInfo == null)) {
-                return false;
-            }
-            if (ipInfo == null) {
-                ipInfo = new clntIpInfCfg();
-            }
-            ipInfo.doCfgStr(cmd, negated);
+            ipInfo = clntIpInfCfg.doCfgStr(ipInfo, cmd, negated);
+            return false;
+        }
+        if (a.equals("pmtud")) {
+            pmtuD = clntPmtudCfg.doCfgStr(pmtuD, cmd, negated);
             return false;
         }
         if (a.equals("api")) {
@@ -547,15 +553,6 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 return false;
             }
             allowApi = servHttpUtil.string2apiBits(cmd);
-            return false;
-        }
-        if (a.equals("ipinfo")) {
-            if (negated) {
-                ipInfo = null;
-                return false;
-            }
-            ipInfo = new clntIpInfCfg();
-            ipInfo.doCfgStr(cmd, negated);
             return false;
         }
         if (a.equals("search-script")) {

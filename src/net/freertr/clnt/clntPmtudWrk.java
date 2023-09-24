@@ -7,6 +7,7 @@ import net.freertr.ip.ipFwdEcho;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtIcmptun;
+import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 
 /**
@@ -15,23 +16,6 @@ import net.freertr.util.bits;
  * @author matecsaba
  */
 public class clntPmtudWrk {
-
-    /**
-     * get configuration
-     *
-     * @param lst list to update
-     * @param cfg configuration to use
-     * @param beg beginning of the lines
-     */
-    public static final void getConfig(List<String> lst, clntPmtudCfg cfg, String beg) {
-        if (cfg == null) {
-            return;
-        }
-        if (cfg.pmtudTim < 1) {
-            return;
-        }
-        lst.add(beg + cfg.pmtudMin + " " + cfg.pmtudMax + " " + cfg.pmtudTim);
-    }
 
     private final addrIP trg;
 
@@ -129,7 +113,6 @@ public class clntPmtudWrk {
      * do the process
      *
      * @return null if error, otherwise guessed overhead, then succeeded payload
-     * succeeded happened
      */
     public int[] doer() {
         int ovrh = prtIcmptun.adjustSize(trg);
@@ -138,6 +121,7 @@ public class clntPmtudWrk {
             return null;
         }
         if (trg == null) {
+            pip.linePut("trg not specified");
             return null;
         }
         pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", ovr=" + ovrh + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
@@ -193,6 +177,35 @@ public class clntPmtudWrk {
         res[0] = ovrh;
         res[1] = last;
         return res;
+    }
+
+    /**
+     * get configuration
+     *
+     * @param lst list to update
+     * @param cfg configuration to use
+     * @param beg beginning of the lines
+     */
+    public static final void getConfig(List<String> lst, clntPmtudCfg cfg, String beg) {
+        if (cfg == null) {
+            return;
+        }
+        if (cfg.pmtudTim < 1) {
+            return;
+        }
+        lst.add(beg + cfg.pmtudMin + " " + cfg.pmtudMax + " " + cfg.pmtudTim);
+    }
+
+    /**
+     * get help messages
+     *
+     * @param lst help text to update
+     * @param tab base level
+     */
+    public final static void getHelp(userHelping lst, int tab) {
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  <num>                      min mtu");
+        lst.add(null, (tab + 2) + " " + (tab + 3) + "    <num>                    max mtu");
+        lst.add(null, (tab + 3) + " .    <num>                    timeout per round");
     }
 
 }

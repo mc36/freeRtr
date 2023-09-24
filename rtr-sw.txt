@@ -561,10 +561,10 @@ router bgp4 65535 vrf v1
  dump mrt bgp4.log
  !
  template r remote-as 65535
- template r lookup-database
- template r lookup-reverse
  template r local-as 65535
  template r pmtud 512 1024 666
+ template r ipinfo router4 bgp4 65535
+ template r ipinfo resolve
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  template r distance 200
  template r connection-mode active
@@ -641,10 +641,10 @@ router bgp6 65535 vrf v1
  dump mrt bgp6.log
  !
  template r remote-as 65535
- template r lookup-database
- template r lookup-reverse
  template r local-as 65535
  template r pmtud 512 1024 666
+ template r ipinfo router4 bgp4 65535
+ template r ipinfo resolve
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
  template r distance 200
  template r connection-mode active

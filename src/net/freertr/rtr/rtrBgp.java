@@ -1610,6 +1610,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (neighs.find(ntry) != null) {
             return true;
         }
+        logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem);
         ntry.copyFrom(lstn.temp);
         ntry.template = lstn.temp;
         if (ntry.fallOver) {

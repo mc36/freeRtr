@@ -48,7 +48,7 @@ public class verCore {
     /**
      * compile day
      */
-    public final static int day = 23;
+    public final static int day = 24;
 
     /**
      * statement of release
@@ -76,39 +76,49 @@ public class verCore {
     public final static String[] license = {
         "place on the web: " + homeUrl1,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
-        "quote-19: respect the privacy of others, think before you type, the great power comes great responsibility",
-        "quote-18: dont drive faster than your guardian angel can fly, so dont drop all the packets just some them",
-        "quote-17: there is no defence-fences on the wild-wild-clear-nets like the chinese-great-fire-walls",
-        "quote-16: true random comes from weather forecasts and political announcements",
-        "quote-15: imagine that your 99th bday cake will be rarely done beefsteak",
-        "quote-14: f(l)ight add-mins @ addr(r)renaline-ma(r)xxx",
-        "quote-13: debug emulate know test and use your sh1t",
-        "quote-12: stupid question deserves stupid answers",
-        "quote-11: isps best selling drugs are internets",
-        "quote-10: fearless, stateless, self-containing",
-        "quote-9: science does not stops evolving",
-        "quote-8: do or not to do but don't try",
-        "quote-7: labbing hard and music heals",
-        "quote-6: music music, noise noise",
-        "quote-5: security in obfuscation",
-        "quote-4: just use your brain",
-        "quote-3: ignorance kills",
-        "quote-2: make the world better",
-        "quote-1: keep it stupid simple",
-        "quote0: let bloom all the flowers",
-        "quote1: type safety and origins like assembly",
-        "quote2: we just living to die and develop --jon",
-        "quote3: every tool could be used good or bad equally",
-        "quote4: care about the bits and not the bits of the bits",
-        "quote5: i equally hate internet as most of us - isps in dfz",
-        "quote6: packet delivery on the wild-wild-net is best-effort, if any",
-        "quote7: if a machine can learn the value of human life, maybe we can too",
-        "quote8: be liberal in what you accept, and conservative in what you send",
-        "quote9: the beer-ware,abandon-ware license for selected group of people:",
+        "the beer-ware,abandon-ware license for selected group of people:",
         author + " wrote these files. as long as you retain this notice you",
         "can do whatever you want with this stuff. if we meet some day, and",
         "you think this stuff is worth it, you can buy me a beer in return"
     };
+
+    /**
+     * quotes text
+     */
+    public final static String[] quotes = {
+        "",
+        "random quotes from random devvies like " + author + ":",
+        "respect the privacy of others, think before you type, the great power comes great responsibility",
+        "dont drive faster than your guardian angel can fly, so dont drop all the packets just some",
+        "there is no defence-fences on the wild-wild-clear-nets like the chinese-great-fire-walls",
+        "work to keep pokemons on a better inter-nuts not to kick them to the floor",
+        "security in obfuscation, obscurity or randomization so tech the world",
+        "true random comes from weather forecasts and political announcements",
+        "imagine that your 99th bday cake will be a rarely done beefsteak",
+        "f(l)ight add-mins @ addr(r)renaline-ma(r)xxx",
+        "debug emulate know test and use your sh1t",
+        "stupid question deserves stupid answers",
+        "isps best selling drugs are internets",
+        "fearless, stateless, self-containing",
+        "science does not stops evolving",
+        "do or not to do butt dont try",
+        "labbing hard and music heals",
+        "just use your brains --engs",
+        "music music, noise noise",
+        "ignorance kills --hoomans",
+        "make the world better --ietf",
+        "keep it stupid simple --ietf",
+        "let bloom all the flowers --ietf",
+        "we just living to die and develop --jon",
+        "type safety and origins like assembly --coder",
+        "isps best selling drugs is internets --hoomans",
+        "care about the bits and not the bits of the bits",
+        "every tool could be used good or bad equally --krj",
+        "i equally hate internets as most of us --isps in dfz",
+        "packet delivery on the wild-wild-nets is best-effort, if any --jon",
+        "if a machine can learn the value of human life, maybe we can too --t2",
+        "be liberal in what you accept, and conservative in what you send -jon",
+        "dont believe in oligarchy but in rough consensus and running code --ietf",};
 
     /**
      * logo text
