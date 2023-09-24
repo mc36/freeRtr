@@ -76,6 +76,11 @@ public class clntIpInfWrk {
         cfg = c;
         pipe = r;
         port = p;
+        if (c == null) {
+            changeWorkAddr(a);
+            othrs = false;
+            return;
+        }
         hack = c.hacked;
         plain = c.plain;
         style = c.style;
