@@ -1,6 +1,7 @@
 package net.freertr.serv;
 
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgCheck;
 import net.freertr.pack.packNrpe;
@@ -98,7 +99,7 @@ public class servNrpe extends servGeneric implements prtServS {
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(120000);
-        new servNrpeConn(this, pipe);
+        new servNrpeConn(this, pipe, id.peerAddr);
         return false;
     }
 
@@ -106,17 +107,21 @@ public class servNrpe extends servGeneric implements prtServS {
 
 class servNrpeConn implements Runnable {
 
-    private servNrpe lower;
+    private final servNrpe lower;
 
-    private pipeSide conn;
+    private final pipeSide conn;
 
-    public servNrpeConn(servNrpe parent, pipeSide pipe) {
+    private final addrIP peer;
+
+    public servNrpeConn(servNrpe parent, pipeSide pipe, addrIP rem) {
         lower = parent;
         conn = pipe;
+        peer = rem;
         new Thread(this).start();
     }
 
     public void run() {
+        int done = 0;
         try {
             for (;;) {
                 packNrpe pck = new packNrpe();
@@ -130,6 +135,7 @@ class servNrpeConn implements Runnable {
                     pck.typ = packNrpe.tyRep;
                     pck.cod = packNrpe.coUnk;
                     pck.str = "UNKNOWN invalid packet type";
+                    logger.error(peer + " " + pck.str);
                     pck.sendPack(conn);
                     if (debugger.servNrpeTraf) {
                         logger.debug("tx " + pck.dump());
@@ -141,12 +147,14 @@ class servNrpeConn implements Runnable {
                     pck.typ = packNrpe.tyRep;
                     pck.cod = packNrpe.coUnk;
                     pck.str = "UNKNOWN no such check";
+                    logger.error(peer + " " + pck.str);
                     pck.sendPack(conn);
                     if (debugger.servNrpeTraf) {
                         logger.debug("tx " + pck.dump());
                     }
                     continue;
                 }
+                done++;
                 ntry.getReportNrpe(pck);
                 if (pck.str.length() > lower.truncState) {
                     pck.str = pck.str.substring(0, lower.truncState);
@@ -159,7 +167,26 @@ class servNrpeConn implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
-        conn.setClose();
+        try {
+            if (done < 1) {
+                packNrpe pck = new packNrpe();
+                pck.typ = packNrpe.tyRep;
+                pck.cod = packNrpe.coUnk;
+                pck.str = "UNKNOWN nothing asked";
+                logger.error(peer + " " + pck.str);
+                pck.sendPack(conn);
+                if (debugger.servNrpeTraf) {
+                    logger.debug("tx " + pck.dump());
+                }
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+        try {
+            conn.setClose();
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
 }
