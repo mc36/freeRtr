@@ -16,11 +16,12 @@ import net.freertr.enc.encBase64;
 import net.freertr.enc.encMarkDown;
 import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
-import net.freertr.clnt.clntIpInfWrk;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
+import net.freertr.sec.secInfoUtl;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.sec.secWebsock;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userConfig;
@@ -1292,9 +1293,10 @@ public class servHttpUtil {
             if (cn.gotHost.ipInfo == null) {
                 return true;
             }
-            clntIpInfWrk w = new clntIpInfWrk(cn.gotHost.ipInfo, cn.pipe, cn.peer, cn.conn.portRem);
+            secInfoWrk w = new secInfoWrk(cn.gotHost.ipInfo, null, cn.lower.srvVrf.getFwd(cn.peer), cn.peer, cn.conn.portRem, cn.conn.iface.addr);
             w.doHttpUrl(cmd.getRemaining());
             w.doWork();
+            w.need2drop();
             List<String> r = w.getRouteInfos();
             String a = w.getHtmlLines(true);
             if (a != null) {
@@ -1305,7 +1307,7 @@ public class servHttpUtil {
                 r.add(a);
             }
             a = w.getContentType();
-            byte[] b = clntIpInfWrk.getRouteAscii(r);
+            byte[] b = secInfoUtl.getRouteAscii(r);
             cn.sendTextHeader("200 ok", a, b);
             return false;
         }

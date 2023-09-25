@@ -562,7 +562,7 @@ router bgp4 65535 vrf v1
  !
  template r remote-as 65535
  template r local-as 65535
- template r pmtud 512 1024 666
+ template r ipinfo pmtud 512 1024 666
  template r ipinfo router4 bgp4 65535
  template r ipinfo resolve
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
@@ -642,7 +642,7 @@ router bgp6 65535 vrf v1
  !
  template r remote-as 65535
  template r local-as 65535
- template r pmtud 512 1024 666
+ template r ipinfo pmtud 512 1024 666
  template r ipinfo router4 bgp4 65535
  template r ipinfo resolve
  template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
@@ -1147,19 +1147,20 @@ server dns ns
 !
 server honeypot hp1
  port 8881
+ info pmtud 512 1024 666
  info router4 bgp4 65535
  info router6 bgp6 65535
  info single
  info style background-color:#000000;color:#00FFFF;
  info script logger
  info tinyhttp
- pmtud 738 1024 666
  interface loopback0
  vrf v1
  exit
 !
 server honeypot hp2
  port 8882
+ info pmtud 512 1024 666
  info router4 bgp4 65535
  info router6 bgp6 65535
  info details
@@ -1167,7 +1168,6 @@ server honeypot hp2
  info style background-color:#000000;color:#00FFFF;
  info resolve
  info tinyhttp
- pmtud 738 1024 666
  interface loopback0
  vrf v1
  exit

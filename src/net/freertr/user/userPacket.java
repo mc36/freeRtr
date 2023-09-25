@@ -26,7 +26,7 @@ import net.freertr.clnt.clntModem;
 import net.freertr.clnt.clntNrpe;
 import net.freertr.clnt.clntNtp;
 import net.freertr.clnt.clntPcep;
-import net.freertr.clnt.clntPmtudWrk;
+import net.freertr.clnt.clntPmtud;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntSmtp;
 import net.freertr.clnt.clntSnmp;
@@ -408,7 +408,7 @@ public class userPacket {
             if (timeout < 1) {
                 timeout = 1;
             }
-            clntPmtudWrk pm = new clntPmtudWrk(cmd.pipe, trg, fwd, src);
+            clntPmtud pm = new clntPmtud(cmd.pipe, trg, fwd, src);
             pm.data = data;
             pm.timeout = timeout;
             pm.timediv = timediv;

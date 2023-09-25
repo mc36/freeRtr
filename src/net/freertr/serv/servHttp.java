@@ -12,8 +12,8 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.enc.encUrl;
-import net.freertr.clnt.clntIpInfWrk;
-import net.freertr.clnt.clntPmtudWrk;
+import net.freertr.sec.secInfoUtl;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
@@ -165,7 +165,7 @@ public class servHttp extends servGeneric implements prtServS {
      * @return host descriptor, null if not found
      */
     protected servHttpHost findHost(String s) {
-        servHttpHost ntry = new servHttpHost(s);
+        servHttpHost ntry = new servHttpHost(this, s);
         ntry = hosts.find(ntry);
         if (ntry != null) {
             return ntry;
@@ -293,7 +293,7 @@ public class servHttp extends servGeneric implements prtServS {
         if (!a.equals("host")) {
             return true;
         }
-        servHttpHost ntry = new servHttpHost(cmd.word());
+        servHttpHost ntry = new servHttpHost(this, cmd.word());
         servHttpHost old = hosts.add(ntry);
         if (old != null) {
             ntry = old;
@@ -381,15 +381,12 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "3 4,.    script                     allow script running");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      config                   allow config commands");
-        l.add(null, "3 4,.    ipinfo                     set ipinfo parameters");
-        clntIpInfWrk.getHelp(l, 3);
-        l.add(null, "3 4      pmtud                      set pmtud parameters");
-        clntPmtudWrk.getHelp(l, 3);
         l.add(null, "3 4,.    api                        allow api calls");
         l.add(null, "4 4,.      exec                     allow exec commands");
         l.add(null, "4 4,.      show                     allow show commands");
         l.add(null, "4 4,.      config                   allow config commands");
         l.add(null, "4 4,.      ipinfo                   allow ip info commands");
+        secInfoUtl.getHelp(l, 3, "ipinfo            allow ipinfo api");
         l.add(null, "3 4      search-script              allow scripts defined in configuration");
         l.add(null, "4 .        <str>                    prefix");
         l.add(null, "3 .      imagemap                   allow image map processing");

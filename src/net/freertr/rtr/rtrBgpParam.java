@@ -11,11 +11,9 @@ import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
-import net.freertr.clnt.clntIpInfCfg;
-import net.freertr.clnt.clntIpInfWrk;
-import net.freertr.clnt.clntPmtudCfg;
-import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.clnt.clntProxy;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabListing;
@@ -151,14 +149,9 @@ public abstract class rtrBgpParam {
     public tabIntMatcher unknownsOut;
 
     /**
-     * pmtud config
-     */
-    public clntPmtudCfg pmtudCfg;
-
-    /**
      * ipinfo config
      */
-    public clntIpInfCfg ipinfoCfg;
+    public secInfoCfg ipInfoCfg;
 
     /**
      * send segment routing
@@ -1177,8 +1170,7 @@ public abstract class rtrBgpParam {
         unknownsColl = src.unknownsColl;
         unknownsOut = src.unknownsOut;
         unknownsIn = src.unknownsIn;
-        pmtudCfg = src.pmtudCfg;
-        ipinfoCfg = src.ipinfoCfg;
+        ipInfoCfg = src.ipInfoCfg;
         segRout = src.segRout;
         bier = src.bier;
         wideAsPath = src.wideAsPath;
@@ -1611,10 +1603,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       label-pop                   advertise pop label");
         l.add(null, "3  .       lookup-database             lookup rib before accepting");
         l.add(null, "3  .       lookup-reverse              lookup dns before accepting");
-        l.add(null, "3  4       pmtud                       test pmtud before accepting");
-        clntPmtudWrk.getHelp(l, 3);
-        l.add(null, "3  4,.     ipinfo                      test ipinfo before accepting");
-        clntIpInfWrk.getHelp(l, 3);
+        secInfoUtl.getHelp(l, 3, "ipinfo      check peers");
         l.add(null, "3  .       segrout                     send segment routing attribute");
         l.add(null, "3  .       bier                        send bier attribute");
         l.add(null, "3  .       wide-aspath                 send wide aspath attribute");
@@ -1769,8 +1758,7 @@ public abstract class rtrBgpParam {
         }
         cmds.cfgLine(l, passwd == null, beg, nei + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
         l.add(beg + nei + "local-as " + bits.num2str(localAs));
-        clntPmtudWrk.getConfig(l, pmtudCfg, beg + nei + "pmtud ");
-        clntIpInfWrk.getConfig(l, ipinfoCfg, beg + nei + "ipinfo ");
+        secInfoUtl.getConfig(l, ipInfoCfg, beg + nei + "ipinfo ");
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
         l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
         l.add(beg + nei + "address-family" + mask2string(addrFams));
@@ -2513,12 +2501,8 @@ public abstract class rtrBgpParam {
             unknownsIn.fromString(cmd.word());
             return false;
         }
-        if (s.equals("pmtud")) {
-            pmtudCfg = clntPmtudCfg.doCfgStr(pmtudCfg, cmd, negated);
-            return false;
-        }
         if (s.equals("ipinfo")) {
-            ipinfoCfg = clntIpInfCfg.doCfgStr(ipinfoCfg, cmd, negated);
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, negated);
             return false;
         }
         if (s.equals("segrout")) {

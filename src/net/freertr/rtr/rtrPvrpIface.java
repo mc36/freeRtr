@@ -11,8 +11,6 @@ import net.freertr.cfg.cfgKey;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
-import net.freertr.clnt.clntPmtudCfg;
-import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyRSA;
@@ -20,6 +18,8 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
@@ -46,9 +46,9 @@ import net.freertr.util.state;
 public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServP {
 
     /**
-     * pmtud config
+     * ipinfo config
      */
-    public clntPmtudCfg pmtudCfg;
+    public secInfoCfg ipInfoCfg;
 
     /**
      * hello interval
@@ -429,7 +429,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "metric-out " + metricOut);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
-        clntPmtudWrk.getConfig(l, pmtudCfg, cmds.tabulator + beg + "pmtud ");
+        secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + "ipinfo ");
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:
@@ -541,9 +541,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "5 .           <name:pl>                 name of prefix list");
         l.add(null, "4 5         label-out                   filter label in egress updates");
         l.add(null, "5 .           <name:pl>                 name of prefix list");
-        l.add(null, "4 5         pmtud                       test pmtud before accepting");
-        clntPmtudWrk.getHelp(l, 4);
-        ///// ipinfo
+        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
         l.add(null, "4 5         dynamic-metric              dynamic peer metric");
         l.add(null, "5 .           forbid                    forbid peer measurement");
         l.add(null, "5 6           mode                      measurement mode");
@@ -775,9 +773,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
             helloTimer = bits.str2num(cmd.word());
             return;
         }
-        if (a.equals("pmtud")) {
-            pmtudCfg = new clntPmtudCfg();
-            clntPmtudCfg.doCfgStr(pmtudCfg, cmd, false);
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
             return;
         }
         if (a.equals("dead-time")) {
@@ -889,8 +886,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
-        if (a.equals("pmtud")) {
-            clntPmtudCfg.doCfgStr(pmtudCfg, cmd, true);
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
             return;
         }
         if (a.equals("bfd")) {

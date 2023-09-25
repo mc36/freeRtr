@@ -20,10 +20,6 @@ import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.clnt.clntIpInfCfg;
-import net.freertr.clnt.clntIpInfWrk;
-import net.freertr.clnt.clntPmtudCfg;
-import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.clnt.clntTrack;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryKeyDSA;
@@ -41,6 +37,9 @@ import net.freertr.prt.prtServP;
 import net.freertr.prt.prtServS;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrBlackhole;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.sec.secServer;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
@@ -154,12 +153,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     /**
      * gather info per accesses
      */
-    protected clntIpInfCfg srvIpInf;
-
-    /**
-     * perform pmtud per accesses
-     */
-    protected clntPmtudCfg srvPmtud;
+    protected secInfoCfg srvIpInf;
 
     /**
      * blackhole process
@@ -1082,9 +1076,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return true;
             }
         }
-        if ((srvIpInf == null) && (srvPmtud == null)) {
-            return false;
-        }
         return false;
     }
 
@@ -1112,18 +1103,17 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     }
 
     private boolean srvCheckAccept3(addrIP adr, int prt, ipFwdIface ifc) {
-        ipFwd fwd = srvVrf.getFwd(adr);
-        clntIpInfWrk inw = new clntIpInfWrk(srvIpInf, null, adr, prt);
-        inw.doWork();
-        if (srvPmtud == null) {
+        if (srvIpInf == null) {
             return false;
         }
-        clntPmtudWrk pmw = clntPmtudCfg.doWork(srvPmtud, fwd, adr, ifc.addr);
-        if (pmw != null) {
+        ipFwd fwd = srvVrf.getFwd(adr);
+        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(adr), adr, prt, ifc.addr);
+        inf.doWork();
+        if (!inf.need2drop()) {
             return false;
         }
         if (srvLogDrop) {
-            logger.info("access pmtud dropped " + adr + " " + prt);
+            logger.info("access ipinfo dropped " + adr + " " + prt);
         }
         return true;
     }
@@ -1326,10 +1316,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-subnet          per subnet session limit");
         l.add(null, "2 .    <num>                number of connections");
-        l.add(null, "1 2  access-ipinfo          configure ipinfo query");
-        clntIpInfWrk.getHelp(l, 1);
-        l.add(null, "1 2  access-pmtud           configure pmtud test");
-        clntPmtudWrk.getHelp(l, 1);
+        secInfoUtl.getHelp(l, 4, "access-            check visitors");
         l.add(null, "1 2  access-blackhole4      propagate and check violating prefixes");
         l.add(null, "2 .    <num>                number of process");
         l.add(null, "1 2  access-blackhole6      propagate and check violating prefixes");
@@ -1445,8 +1432,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(cmds.tabulator + "access-total " + srvTotLim);
         l.add(cmds.tabulator + "access-peer " + srvPerLim);
         l.add(cmds.tabulator + "access-subnet " + srvNetLim);
-        clntIpInfWrk.getConfig(l, srvIpInf, cmds.tabulator + "access-ipinfo ");
-        clntPmtudWrk.getConfig(l, srvPmtud, cmds.tabulator + "access-pmtud ");
+        secInfoUtl.getConfig(l, srvIpInf, cmds.tabulator + "access-");
         if (srvBlckhl4 != null) {
             l.add(cmds.tabulator + "access-blackhole4 " + srvBlckhl4.rtrNum);
         } else {
@@ -1552,14 +1538,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         }
         if (a.equals("access-subnet")) {
             srvNetLim = bits.str2num(cmd.word());
-            return;
-        }
-        if (a.equals("access-ipinfo")) {
-            srvIpInf = clntIpInfCfg.doCfgStr(srvIpInf, cmd, false);
-            return;
-        }
-        if (a.equals("access-pmtud")) {
-            srvPmtud = clntPmtudCfg.doCfgStr(srvPmtud, cmd, false);
             return;
         }
         if (a.equals("access-blackhole4")) {
@@ -1706,6 +1684,13 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             cmd.badCmd();
             return;
         }
+        if (a.startsWith("access-")) {
+            a = a.substring(7, a.length());
+            a += cmd.getRemaining();
+            cmd = new cmds("info", a);
+            srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, false);
+            return;
+        }
         if (a.equals("no")) {
             a = cmd.word();
             if (a.equals("description")) {
@@ -1749,14 +1734,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
             if (a.equals("access-subnet")) {
                 srvNetLim = 0;
-                return;
-            }
-            if (a.equals("access-ipinfo")) {
-                srvIpInf = clntIpInfCfg.doCfgStr(srvIpInf, cmd, true);
-                return;
-            }
-            if (a.equals("access-pmtud")) {
-                srvPmtud = clntPmtudCfg.doCfgStr(srvPmtud, cmd, true);
                 return;
             }
             if (a.equals("access-blackhole4")) {
@@ -1829,7 +1806,13 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                     certecdsa = null;
                     return;
                 }
-                cmd.badCmd();
+                if (!a.startsWith("access-")) {
+                    return;
+                }
+                a = a.substring(7, a.length());
+                a += cmd.getRemaining();
+                cmd = new cmds("info", a);
+                srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, true);
                 return;
             }
         }

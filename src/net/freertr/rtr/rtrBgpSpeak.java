@@ -7,11 +7,7 @@ import java.util.zip.Inflater;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
-import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
-import net.freertr.clnt.clntDns;
-import net.freertr.clnt.clntIpInfWrk;
-import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
@@ -30,8 +26,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
-import net.freertr.pack.packDnsRec;
-import net.freertr.clnt.clntPmtudWrk;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.util.version;
 
 /**
@@ -102,14 +97,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int buffFull = 0;
 
     /**
-     * pmtud result
-     */
-    public clntPmtudWrk pmtudRes;
-
-    /**
      * ipinfo result
      */
-    public clntIpInfWrk ipinfoRes;
+    public secInfoWrk ipInfoRes;
 
     /**
      * learned unicast prefixes
@@ -1225,13 +1215,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         sendOpen();
         sendKeepAlive();
-        if (neigh.ipinfoCfg != null) {
-            ipinfoRes = new clntIpInfWrk(neigh.ipinfoCfg, null, neigh.peerAddr, rtrBgp.port);
-            ipinfoRes.doWork();
-        }
-        if (neigh.pmtudCfg != null) {
-            pmtudRes = clntPmtudCfg.doWork(neigh.pmtudCfg, neigh.lower.fwdCore, neigh.peerAddr, neigh.localAddr);
-            if (pmtudRes == null) {
+        if (neigh.ipInfoCfg != null) {
+            ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, null, parent.fwdCore, neigh.peerAddr, rtrBgp.port, neigh.localAddr);
+            ipInfoRes.doWork();
+            if (ipInfoRes.need2drop()) {
                 logger.error("pmtud failed to " + neigh.peerAddr);
                 sendNotify(1, 2);
                 closeNow();

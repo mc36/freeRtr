@@ -2,15 +2,14 @@ package net.freertr.serv;
 
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.clnt.clntIpInfCfg;
-import net.freertr.clnt.clntIpInfWrk;
-import net.freertr.clnt.clntPmtudCfg;
-import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.ip.ipFwd;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
@@ -51,12 +50,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * ip information configuration
      */
-    public clntIpInfCfg ipInfo;
-
-    /**
-     * pmtu information configuration
-     */
-    public clntPmtudCfg pmtuD;
+    public secInfoCfg ipInfo;
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -83,8 +77,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        clntIpInfWrk.getConfig(lst, ipInfo, beg + "info ");
-        clntPmtudWrk.getConfig(lst, pmtuD, beg + "pmtud ");
+        secInfoUtl.getConfig(lst, ipInfo, beg + "info ");
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -93,23 +86,16 @@ public class servHoneyPot extends servGeneric implements prtServS {
         if (neg) {
             a = cmd.word();
         }
-        if (a.equals("info")) {
-            ipInfo = clntIpInfCfg.doCfgStr(ipInfo, cmd, neg);
+        if (!a.equals("info")) {
+            cmd.badCmd();
             return false;
         }
-        if (a.equals("pmtud")) {
-            pmtuD = clntPmtudCfg.doCfgStr(pmtuD, cmd, neg);
-            return false;
-        }
-        cmd.badCmd();
+        ipInfo = secInfoUtl.doCfgStr(ipInfo, cmd, neg);
         return false;
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  info                      check visitors");
-        clntIpInfWrk.getHelp(l, 1);
-        l.add(null, "1 2  pmtud                     check pmtud");
-        clntPmtudWrk.getHelp(l, 1);
+        secInfoUtl.getHelp(l, 1, "info            report parameters");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -164,13 +150,13 @@ class servHoneyPotConn implements Runnable {
         try {
             logger.info("honeypot hit from " + remote + " " + port);
             pipe.setReady();
-            clntPmtudWrk pmd = clntPmtudCfg.doWork(lower.pmtuD, fwdr, remote, local);
-            clntIpInfWrk ipw = new clntIpInfWrk(lower.ipInfo, pipe, remote, port);
-            ipw.doHttpRead();
-            ipw.doWork();
-            ipw.doHttpWrite();
-            ipw.putResult();
-            ipw.doHttpFinish();
+            secInfoWrk ipi = new secInfoWrk(lower.ipInfo, pipe, lower.srvVrf.getFwd(remote), remote, port, local);
+            ipi.doHttpRead();
+            ipi.doWork();
+            ipi.need2drop();
+            ipi.doHttpWrite();
+            ipi.putResult();
+            ipi.doHttpFinish();
             pipe.setClose();
         } catch (Exception e) {
             logger.traceback(e, remote + " " + port);

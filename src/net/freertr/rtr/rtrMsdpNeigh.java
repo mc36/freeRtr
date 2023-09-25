@@ -7,16 +7,16 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgIfc;
-import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdMcast;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.pack.packHolder;
-import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
-import net.freertr.clnt.clntPmtudWrk;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabGen;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -46,14 +46,14 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
     public cfgIfc srcIface;
 
     /**
-     * pmtud config
+     * ipinfo result
      */
-    public clntPmtudCfg pmtudCfg;
+    public secInfoWrk ipInfoRes;
 
     /**
-     * pmtud result
+     * ipinfo config
      */
-    public clntPmtudWrk pmtudRes;
+    public secInfoCfg ipInfoCfg;
 
     /**
      * keep alive
@@ -240,9 +240,10 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         pipe.setTime(holdTimer);
         pipe.setReady();
         pipe.wait4ready(holdTimer);
-        if (pmtudCfg != null) {
-            pmtudRes = clntPmtudCfg.doWork(pmtudCfg, parent.fwdCore, peer, usedIfc.addr);
-            if (pmtudRes == null) {
+        if (ipInfoCfg != null) {
+            ipInfoRes = new secInfoWrk(ipInfoCfg, null, parent.fwdCore, peer, rtrLsrp.port, usedIfc.addr);
+            ipInfoRes.doWork();
+            if (ipInfoRes.need2drop()) {
                 closeNow();
                 return true;
             }
@@ -418,7 +419,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
             l.add(beg + a + "update-source " + srcIface.name);
         }
         cmds.cfgLine(l, passwd == null, beg, a + "password", authLocal.passwdEncode(passwd, (filter & 2) != 0));
-        clntPmtudWrk.getConfig(l, pmtudCfg, beg + "pmtud ");
+        secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + a + "ipinfo ");
         l.add(beg + a + "timer " + keepAlive + " " + holdTimer + " " + freshTimer + " " + flushTimer);
         cmds.cfgLine(l, !shutdown, beg, a + "shutdown", "");
         cmds.cfgLine(l, !bfdTrigger, beg, a + "bfd", "");

@@ -27,8 +27,8 @@ int eth1
  ipv6 addr 1234::1 ffff::
  router pvrp4 1 ena
  router pvrp6 1 ena
- router pvrp4 1 pmtu 512 1024 666
- router pvrp6 1 pmtu 512 1024 666
+ router pvrp4 1 ipinfo pmtud 512 1024 666
+ router pvrp6 1 ipinfo pmtud 512 1024 666
  exit
 !
 
@@ -59,8 +59,8 @@ int eth1
  ipv6 addr 1234::2 ffff::
  router pvrp4 1 ena
  router pvrp6 1 ena
- router pvrp4 1 pmtu 512 1024 666
- router pvrp6 1 pmtu 512 1024 666
+ router pvrp4 1 ipinfo pmtud 512 1024 666
+ router pvrp6 1 ipinfo pmtud 512 1024 666
  exit
 !
 

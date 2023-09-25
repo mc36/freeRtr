@@ -20,10 +20,8 @@ import net.freertr.clnt.clntProxy;
 import net.freertr.pipe.pipeSide;
 import net.freertr.enc.encUrl;
 import net.freertr.enc.encXml;
-import net.freertr.clnt.clntIpInfCfg;
-import net.freertr.clnt.clntIpInfWrk;
-import net.freertr.clnt.clntPmtudCfg;
-import net.freertr.clnt.clntPmtudWrk;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
@@ -38,6 +36,11 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class servHttpHost implements Comparator<servHttpHost> {
+
+    /**
+     * parent of server
+     */
+    public final servHttp parent;
 
     /**
      * name of server
@@ -182,12 +185,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
     /**
      * ip info configuration
      */
-    public clntIpInfCfg ipInfo;
-
-    /**
-     * pmtu information configuration
-     */
-    public clntPmtudCfg pmtuD;
+    public secInfoCfg ipInfo;
 
     /**
      * image map decode allowed
@@ -247,9 +245,11 @@ public class servHttpHost implements Comparator<servHttpHost> {
     /**
      * create instance
      *
+     * @param l lower
      * @param h host
      */
-    public servHttpHost(String h) {
+    public servHttpHost(servHttp l, String h) {
+        parent = l;
         host = h;
     }
 
@@ -337,8 +337,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
         if (allowApi != servHttpUtil.apiBitsNothing) {
             l.add(a + " api" + servHttpUtil.apiBits2string(allowApi));
         }
-        clntIpInfWrk.getConfig(l, ipInfo, a + " ipinfo ");
-        clntPmtudWrk.getConfig(l, pmtuD, a + " pmtu ");
+        secInfoUtl.getConfig(l, ipInfo, a + " ipinfo ");
         if (allowImgMap) {
             l.add(a + " imagemap");
         }
@@ -540,11 +539,7 @@ public class servHttpHost implements Comparator<servHttpHost> {
             return false;
         }
         if (a.equals("ipinfo")) {
-            ipInfo = clntIpInfCfg.doCfgStr(ipInfo, cmd, negated);
-            return false;
-        }
-        if (a.equals("pmtud")) {
-            pmtuD = clntPmtudCfg.doCfgStr(pmtuD, cmd, negated);
+            ipInfo = secInfoUtl.doCfgStr(ipInfo, cmd, negated);
             return false;
         }
         if (a.equals("api")) {

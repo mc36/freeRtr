@@ -9,15 +9,14 @@ import net.freertr.auth.authConstant;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntEcho;
 import net.freertr.clnt.clntPing;
-import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.clnt.clntTwamp;
 import net.freertr.enc.encBase64;
 import net.freertr.ip.ipMpls;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
-import net.freertr.clnt.clntPmtudWrk;
 import net.freertr.sec.secClient;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.sec.secServer;
 import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabAverage;
@@ -39,9 +38,9 @@ import net.freertr.util.notifier;
 public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNeigh> {
 
     /**
-     * pmtud result
+     * ipinfo result
      */
-    public clntPmtudWrk pmtudRes;
+    public secInfoWrk ipInfoRes;
 
     /**
      * transport address of peer
@@ -421,9 +420,10 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             conn.lineTx = pipeSide.modTyp.modeCRLF;
             conn.wait4ready(iface.deadTimer);
         }
-        if (iface.pmtudCfg != null) {
-            pmtudRes = clntPmtudCfg.doWork(iface.pmtudCfg, lower.fwdCore, peer, iface.iface.addr);
-            if (pmtudRes == null) {
+        if (iface.ipInfoCfg != null) {
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, null, lower.fwdCore, peer, rtrLsrp.port, iface.iface.addr);
+            ipInfoRes.doWork();
+            if (ipInfoRes.need2drop()) {
                 sendErr("notPingable");
                 return;
             }

@@ -384,7 +384,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! (template|neighbor) .* track-next-hop",
         "router bgp[46] .*! (template|neighbor) .* advertisement-interval-rx 0",
         "router bgp[46] .*! (template|neighbor) .* advertisement-interval-tx 0",
-        "router bgp[46] .*! (template|neighbor) .* pmtud 0 0 0",
         "router bgp[46] .*! no (template|neighbor) .* lookup-database",
         "router bgp[46] .*! no (template|neighbor) .* lookup-reverse",
         "router bgp[46] .*! no (template|neighbor) .* aigp",
@@ -476,7 +475,6 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! afi-vpls .* ve-id 0 0",
         // router msdp
         "router msdp[46] .*! neighbor .* timer 30000 75000 60000 120000",
-        "router msdp[46] .*! neighbor .* pmtud 0 0 0",
         "router msdp[46] .*! no neighbor .* description",
         "router msdp[46] .*! no neighbor .* shutdown",
         "router msdp[46] .*! no neighbor .* update-source",

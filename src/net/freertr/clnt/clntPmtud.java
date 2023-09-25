@@ -1,13 +1,11 @@
 package net.freertr.clnt;
 
-import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdEcho;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtIcmptun;
-import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 
 /**
@@ -15,7 +13,7 @@ import net.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class clntPmtudWrk {
+public class clntPmtud {
 
     private final addrIP trg;
 
@@ -98,7 +96,7 @@ public class clntPmtudWrk {
      * @param vrf forwarder to use
      * @param sou source ip to use
      */
-    public clntPmtudWrk(pipeSide con, addrIP rem, ipFwd vrf, addrIP sou) {
+    public clntPmtud(pipeSide con, addrIP rem, ipFwd vrf, addrIP sou) {
         pip = pipeDiscard.needAny(con);
         trg = rem;
         fwd = vrf;
@@ -177,35 +175,6 @@ public class clntPmtudWrk {
         res[0] = ovrh;
         res[1] = last;
         return res;
-    }
-
-    /**
-     * get configuration
-     *
-     * @param lst list to update
-     * @param cfg configuration to use
-     * @param beg beginning of the lines
-     */
-    public static final void getConfig(List<String> lst, clntPmtudCfg cfg, String beg) {
-        if (cfg == null) {
-            return;
-        }
-        if (cfg.pmtudTim < 1) {
-            return;
-        }
-        lst.add(beg + cfg.pmtudMin + " " + cfg.pmtudMax + " " + cfg.pmtudTim);
-    }
-
-    /**
-     * get help messages
-     *
-     * @param lst help text to update
-     * @param tab base level
-     */
-    public final static void getHelp(userHelping lst, int tab) {
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  <num>                      min mtu");
-        lst.add(null, (tab + 2) + " " + (tab + 3) + "    <num>                    max mtu");
-        lst.add(null, (tab + 3) + " .    <num>                    timeout per round");
     }
 
 }

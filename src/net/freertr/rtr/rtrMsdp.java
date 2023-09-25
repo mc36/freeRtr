@@ -8,13 +8,13 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
-import net.freertr.clnt.clntPmtudCfg;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdMcast;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipRtr;
 import net.freertr.prt.prtTcp;
+import net.freertr.sec.secInfoUtl;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
@@ -212,10 +212,7 @@ public class rtrMsdp extends ipRtr {
         l.add(null, "5 6           <num>               hold time in ms");
         l.add(null, "6 7             <num>             refresh time in ms");
         l.add(null, "7 .               <num>           flush time in ms");
-        l.add(null, "3  4       pmtud                  test pmtud before accepting");
-        l.add(null, "4  5         <num>                min mtu");
-        l.add(null, "5  6           <num>              max mtu");
-        l.add(null, "6  .             <num>            timeout per round");
+        secInfoUtl.getHelp(l, 3, "ipinfo            check peers");
         l.add(null, "3 .       shutdown                connection disabled for this peer");
         l.add(null, "3 .       bfd                     enable bfd triggered down");
     }
@@ -324,9 +321,8 @@ public class rtrMsdp extends ipRtr {
             ntry.flushTimer = bits.str2num(cmd.word());
             return false;
         }
-        if (s.equals("pmtud")) {
-            ntry.pmtudCfg = new clntPmtudCfg();
-            clntPmtudCfg.doCfgStr(ntry.pmtudCfg, cmd, negated);
+        if (s.equals("ipinfo")) {
+            ntry.ipInfoCfg = secInfoUtl.doCfgStr(ntry.ipInfoCfg, cmd, false);
             return false;
         }
         if (s.equals("shutdown")) {

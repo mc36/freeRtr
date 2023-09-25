@@ -589,8 +589,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("safi got|" + rtrBgpParam.mask2string(conn.originalSafiList));
         l.add("safi not remote|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis));
         l.add("safi not local|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis));
-        l.add("pmtud|" + conn.pmtudRes);
-        l.add("ipinfo|" + conn.ipinfoRes);
+        l.add("ipinfo|" + conn.ipInfoRes);
         l.add("local address|" + localAddr);
         l.add("other address|" + localOddr);
         l.add("router id|" + conn.peerRouterID);
@@ -727,10 +726,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * delete listening peer
      */
     public void delListenPeer() {
-        logger.warn("removing dynamic " + peerAddr);
         if ((socketMode > 0) && (socketMode < 4)) {
             return;
         }
+        logger.warn("removing dynamic " + peerAddr);
         doStopNow();
         rtrBgpNeigh old = lower.lstnNei.del(this);
         if (old == null) {
