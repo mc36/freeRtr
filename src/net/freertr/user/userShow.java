@@ -298,7 +298,7 @@ public class userShow {
         }
         if (a.equals("flash")) {
             a = cmd.getRemaining();
-            if (verCore.release) {
+            if (verCore.release || cfgAll.limited) {
                 a = "";
             }
             if (a.length() < 1) {
@@ -309,7 +309,7 @@ public class userShow {
         }
         if (a.equals("disk")) {
             a = cmd.getRemaining();
-            if (verCore.release) {
+            if (verCore.release || cfgAll.limited) {
                 a = "";
             }
             if (a.length() < 1) {
@@ -682,7 +682,7 @@ public class userShow {
             return null;
         }
         if (a.equals("rollback-config")) {
-            if ((!verCore.release) && (cfgAll.limited)) {
+            if (verCore.release || cfgAll.limited) {
                 cmd.error("not in a vdc");
                 return null;
             }
@@ -690,7 +690,7 @@ public class userShow {
             return null;
         }
         if (a.equals("config-differences")) {
-            if ((!verCore.release) && (cfgAll.limited)) {
+            if (verCore.release || cfgAll.limited) {
                 cmd.error("not in a vdc");
                 return null;
             }
@@ -698,7 +698,7 @@ public class userShow {
             return null;
         }
         if (a.equals("startup-config")) {
-            if ((!verCore.release) && (cfgAll.limited)) {
+            if (verCore.release || cfgAll.limited) {
                 cmd.error("not in a vdc");
                 return null;
             }
@@ -722,7 +722,7 @@ public class userShow {
                 rdr.putStrArr(cfg.getShRun(getConfigFilter(null, cmd)));
                 return null;
             }
-            if ((!verCore.release) && (cfgAll.limited)) {
+            if (verCore.release || cfgAll.limited) {
                 cmd.error("not in a vdc");
                 return null;
             }

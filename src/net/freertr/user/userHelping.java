@@ -1426,7 +1426,7 @@ class userHelpingData {
         variable = (command.indexOf("<") == 0) || (command.indexOf("[") == 0);
         if (hidden) {
             description = "!!!EXPERiMENTAL!!! " + description;
-            if (verCore.release) {
+            if (verCore.release || cfgAll.limited) {
                 level = 666;
             }
         }

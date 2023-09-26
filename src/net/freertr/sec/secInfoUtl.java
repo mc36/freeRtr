@@ -530,13 +530,12 @@ public class secInfoUtl {
             }
             cfg.style = a;
         }
-        if (!verCore.release) {
-            return chg;
+        if (verCore.release || cfgAll.limited) {
+            cfg.script = null;
+            chg++;
+            cfg.others = false;
+            chg++;
         }
-        cfg.script = null;
-        chg++;
-        cfg.others = false;
-        chg++;
         return chg;
     }
 
