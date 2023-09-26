@@ -13,7 +13,6 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.enc.encUrl;
 import net.freertr.sec.secInfoUtl;
-import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
@@ -472,11 +471,32 @@ public class servHttp extends servGeneric implements prtServS {
      *
      * @return result
      */
-    public userFormat getShow() {
+    public userFormat getShStat() {
         userFormat res = new userFormat("|", "host|hit|last");
         for (int i = 0; i < hosts.size(); i++) {
             servHttpHost ntry = hosts.get(i);
             res.add(ntry.host + "|" + ntry.askNum + "|" + bits.timePast(ntry.askTim));
+        }
+        return res;
+    }
+
+    /**
+     * get show
+     *
+     * @param s host to use
+     * @return result
+     */
+    public List<String> getShZone(String s) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < hosts.size(); i++) {
+            servHttpHost ntry = hosts.get(i);
+            String a = ntry.host;
+            String b = "rr " + a + " cname " + s;
+            int o = a.indexOf(".");
+            if (o > 0) {
+                b = "zone " + a.substring(o + 1, a.length()) + " " + b;
+            }
+            res.add(b);
         }
         return res;
     }

@@ -2,6 +2,7 @@ package net.freertr.pipe;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.user.userReader;
 import net.freertr.user.userScreen;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -41,8 +42,8 @@ public class pipeScreen {
     protected pipeScreen(pipeSide pip, int x, int y) {
         pipe = pip;
         pipeSide ps = pipeDiscard.needAny(null);
-        ps.settingsPut(pipeSetting.width, x);
-        ps.settingsPut(pipeSetting.height, y);
+        userReader.setTermWdt(ps, x);
+        userReader.setTermLen(ps, y);
         scr = new userScreen(ps);
     }
 

@@ -3226,7 +3226,6 @@ todo: inspection dropped sessions do be able to close the sessions properly at l
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: dlep as rfc8175
-todo: serv http InvocationTargetException to have auto logging in the traceback
 todo: sho cdp/lldp int
 todo: flash ext-delete also to commander
 todo: commander to have selection

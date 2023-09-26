@@ -85,6 +85,11 @@ public class secInfoCfg {
     public boolean plain;
 
     /**
+     * ip only headline
+     */
+    public boolean justip;
+
+    /**
      * style to send
      */
     public String style;

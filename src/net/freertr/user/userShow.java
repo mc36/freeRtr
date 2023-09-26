@@ -960,7 +960,17 @@ public class userShow {
                 cmd.error("no such server");
                 return null;
             }
-            rdr.putStrTab(srv.getShow());
+            a = cmd.word();
+            if (a.equals("stat")) {
+                rdr.putStrTab(srv.getShStat());
+                return null;
+            }
+            if (a.equals("zone")) {
+                a = cmd.word();
+                rdr.putStrArr(srv.getShZone(a));
+                return null;
+            }
+            rdr.putStrTab(srv.getShStat());
             return null;
         }
         if (a.equals("smtp")) {

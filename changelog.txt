@@ -15168,3 +15168,5 @@ todo: more knob generalizations
 ---------------------------------- 2023-09-24 06:50:43 23.9.24
 todo: generalise server access- knobs
 todo: server http to have api for scripts
+---------------------------------- 2023-09-26 10:07:27 23.9.26
+no todo: serv http InvocationTargetException to have auto logging in the traceback

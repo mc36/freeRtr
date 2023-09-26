@@ -53,6 +53,8 @@ public class secInfoWrk {
 
     private boolean plain;
 
+    private boolean justip;
+
     private boolean detail;
 
     private boolean single;
@@ -90,6 +92,7 @@ public class secInfoWrk {
         }
         hack = ned.hacked;
         plain = ned.plain;
+        justip = ned.justip;
         style = ned.style;
         format = ned.format;
         detail = ned.details;
@@ -113,6 +116,9 @@ public class secInfoWrk {
      * @return single line of information
      */
     public String getRoute1liner() {
+        if (justip) {
+            return "" + addr;
+        }
         String s = addr + " prt=" + port;
         if (pmtuD != null) {
             s += " pmtu=" + pmtuD;
@@ -205,10 +211,7 @@ public class secInfoWrk {
      * @return content type, null if no config
      */
     public String getContentType() {
-        if (cfg == null) {
-            return null;
-        }
-        if (cfg.plain) {
+        if (plain) {
             return "text/plain";
         } else {
             return "text/html";
@@ -312,6 +315,14 @@ public class secInfoWrk {
         }
         if (a.equals("unplain")) {
             plain = false;
+            return false;
+        }
+        if (a.equals("justip")) {
+            justip = true;
+            return false;
+        }
+        if (a.equals("unjustip")) {
+            justip = false;
             return false;
         }
         if (a.equals("detail")) {

@@ -69,7 +69,7 @@ public class secInfoUtl {
      * @param negated command was negated
      * @return null if cleared, config on success
      */
-    public static final secInfoCfg doCfgStr(secInfoCfg cfg, cmds cmd, boolean negated) {
+    public final static secInfoCfg doCfgStr(secInfoCfg cfg, cmds cmd, boolean negated) {
         if (cfg == null) {
             cfg = new secInfoCfg();
         }
@@ -129,6 +129,11 @@ public class secInfoUtl {
         }
         if (s.equals("plain")) {
             cfg.plain = !negated;
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("justip")) {
+            cfg.justip = !negated;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -257,7 +262,7 @@ public class secInfoUtl {
      * @param src source address
      * @return work done, null if error happened
      */
-    public static final clntPmtud doPmtud(secInfoCfg cfg, ipFwd vrf, addrIP trg, addrIP src) {
+    public final static clntPmtud doPmtud(secInfoCfg cfg, ipFwd vrf, addrIP trg, addrIP src) {
         if (cfg == null) {
             return null;
         }
@@ -304,7 +309,7 @@ public class secInfoUtl {
                 + " rd=" + tabRouteUtil.rd2string(ntry.rouDst)
                 + " pth=" + ntry.best.asPathStr().trim()
                 + " inf=" + ntry.best.asInfoStr().trim()
-                + " nam" + ntry.best.asNameStr().trim();
+                + " nam=" + ntry.best.asNameStr().trim();
     }
 
     private final static String noRoute = "route not found";
@@ -373,7 +378,7 @@ public class secInfoUtl {
      * @param cfg config to use
      * @param beg beginning
      */
-    public static final void getConfig(List<String> lst, secInfoCfg cfg, String beg) {
+    public final static void getConfig(List<String> lst, secInfoCfg cfg, String beg) {
         if (cfg == null) {
             return;
         }
@@ -397,6 +402,9 @@ public class secInfoUtl {
         }
         if (cfg.plain) {
             lst.add(beg + "plain");
+        }
+        if (cfg.justip) {
+            lst.add(beg + "justip");
         }
         if (cfg.style != null) {
             lst.add(beg + "style " + cfg.style);
@@ -459,6 +467,7 @@ public class secInfoUtl {
         lst.add(null, (tab + 1) + " .  single                       print prefix summary");
         lst.add(null, (tab + 1) + " .  hacked                       hackerize prefix details");
         lst.add(null, (tab + 1) + " .  plain                        plain prefix details");
+        lst.add(null, (tab + 1) + " .  justip                       just address headline");
         lst.add(null, (tab + 1) + " .  resolve                      resolve addresses");
         lst.add(null, (tab + 1) + " .  tinyhttp                     pretend http server");
         lst.add(null, (tab + 1) + " .  others                       allow any addresses");

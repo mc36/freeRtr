@@ -964,7 +964,12 @@ public class userReader implements Comparator<String> {
         }
         int left = width - prompt.length();
         if (s.length() > left) {
-            s = s.substring(0, left - trncd.length()) + trncd;
+            final int i = left - trncd.length();
+            if (i < 0) {
+                s = trncd;
+            } else {
+                s = s.substring(0, i) + trncd;
+            }
         }
         s = prompt + s;
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);

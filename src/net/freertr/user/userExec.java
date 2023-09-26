@@ -1302,7 +1302,10 @@ public class userExec {
         hl.add(null, "2 3      sdwan                   sdwan protocol information");
         hl.add(cfgAll.dmnSdwan.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      http                    http protocol information");
-        hl.add(cfgAll.dmnHttp.listServers(), "3 .        <name:loc>            server name");
+        hl.add(cfgAll.dmnHttp.listServers(), "3 4,.      <name:loc>            server name");
+        hl.add(null, "4 .          stat                statistics");
+        hl.add(null, "4 5          zone                host to use");
+        hl.add(null, "5 .          <str>               dns name");
         hl.add(null, "2 3      smtp                    smtp protocol information");
         hl.add(cfgAll.dmnSmtp.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      dhcp4                   dhcp4 protocol information");
@@ -4787,8 +4790,8 @@ public class userExec {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
-        pip.settingsPut(pipeSetting.width, pipe.settingsGet(pipeSetting.width, 80));
-        pip.settingsPut(pipeSetting.height, 0);
+        userReader.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
+        userReader.setTermLen(pip, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
         if (col) {

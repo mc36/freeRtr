@@ -28,8 +28,6 @@ ioam as rfc9452
 dlep as rfc8175
 
 
-serv http InvocationTargetException to have auto logging in the traceback
-
 
 
 sho cdp/lldp int
