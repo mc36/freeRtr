@@ -1,12 +1,10 @@
 package net.freertr.user;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgAll;
 import net.freertr.pipe.pipeSetting;
-import net.freertr.pipe.pipeWindow;
 import net.freertr.serv.servQuote;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -567,6 +565,11 @@ public class userGame {
             }
             return;
         }
+        if (a.equals("image")) {
+            a = cmd.getRemaining();
+            doText(userFlash.asciiArt(a, console.sizX, console.sizY));
+            return;
+        }
         if (a.equals("color")) {
             doPalette();
             return;
@@ -628,14 +631,6 @@ public class userGame {
         }
         if (a.equals("antball")) {
             doAntBall();
-            return;
-        }
-        if (a.equals("image")) {
-            if (cfgAll.limited) {
-                cmd.error("not in a vdc");
-                return;
-            }
-            doText(pipeWindow.imageText(new File(cmd.getRemaining()), console.sizX, console.sizY, userFonts.imageData));
             return;
         }
         cmd.badCmd();

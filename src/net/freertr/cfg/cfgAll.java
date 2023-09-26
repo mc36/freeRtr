@@ -3585,6 +3585,12 @@ public class cfgAll {
             case 31:
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
+            case 32:
+            case 33:
+            case 34:
+            case 35:
+                l = new userFormat("|", "name|enabled");
+                break;
             default:
                 return null;
         }

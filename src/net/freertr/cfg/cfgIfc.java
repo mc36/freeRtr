@@ -5755,7 +5755,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * 7=lldp, 8=udld, 9=trafic, 10=total, 11=psumary, 12=ptrafic, 13=ptotal,
      * 14=lacp, 15=hwsum, 16=hwpsum, 17=hwtrafic, 18=hwptrafic, 19=swsum,
      * 20=swpsum, 21=swtrafic, 22=swptrafic, 23=hwtot, 24=hwptot, 25=swtot,
-     * 26=swptot, 27=stat, 28=last, 29=bprat, 30=hwswrat, 31=hwswprat
+     * 26=swptot, 27=stat, 28=last, 29=bprat, 30=hwswrat, 31=hwswprat, 32=lldp
+     * 33=udld, 34=lacp, 35=cdp
      */
     public void getShIntTab(userFormat l, int mode) {
         switch (mode) {
@@ -5888,6 +5889,18 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 break;
             case 31:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + counter.getShPsum(ethtyp.getCounter().othRat(ethtyp.hwCntr)));
+                break;
+            case 32:
+                l.add(name + "|" + (lldp != null));
+                break;
+            case 33:
+                l.add(name + "|" + (udld != null));
+                break;
+            case 34:
+                l.add(name + "|" + (lacp != null));
+                break;
+            case 35:
+                l.add(name + "|" + (cdp != null));
                 break;
         }
     }

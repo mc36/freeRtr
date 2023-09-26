@@ -682,48 +682,73 @@ public class userShow {
             return null;
         }
         if (a.equals("rollback-config")) {
-            if (cfgAll.release || cfgAll.limited) {
-                cmd.error("not in a vdc");
+            List<String> lst = bits.txt2buf(cfgInit.cfgFileSw);
+            a = cmd.getRemaining().trim();
+            if (a.equals("this")) {
+                if (cfg == null) {
+                    return null;
+                }
+                List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
+                lst = userFilter.getSection(lst, userReader.section2filter(cur));
+                rdr.putStrArr(userFilter.getDiffs(cur, lst));
                 return null;
             }
-            rdr.putStrArr(userFilter.getDiffs(cfgAll.getShRun(1), bits.txt2buf(cfgInit.cfgFileSw)));
+            rdr.putStrArr(userFilter.getDiffs(cfgAll.getShRun(1), lst));
             return null;
         }
         if (a.equals("config-differences")) {
-            if (cfgAll.release || cfgAll.limited) {
-                cmd.error("not in a vdc");
+            List<String> lst = bits.txt2buf(cfgInit.cfgFileSw);
+            a = cmd.getRemaining().trim();
+            if (a.equals("this")) {
+                if (cfg == null) {
+                    return null;
+                }
+                List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
+                lst = userFilter.getSection(lst, userReader.section2filter(cur));
+                rdr.putStrArr(userFilter.getDiffs(lst, cur));
                 return null;
             }
-            rdr.putStrArr(userFilter.getDiffs(bits.txt2buf(cfgInit.cfgFileSw), cfgAll.getShRun(1)));
+            rdr.putStrArr(userFilter.getDiffs(lst, cfgAll.getShRun(1)));
             return null;
         }
         if (a.equals("startup-config")) {
-            if (cfgAll.release || cfgAll.limited) {
+            List<String> lst = bits.txt2buf(cfgInit.cfgFileSw);
+            a = cmd.getRemaining().trim();
+            if (a.equals("this")) {
+                if (cfg == null) {
+                    return null;
+                }
+                List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
+                lst = userFilter.getSection(lst, userReader.section2filter(cur));
+                rdr.putStrArr(lst);
+                return null;
+            }
+            if (cfgAll.limited) {
                 cmd.error("not in a vdc");
                 return null;
             }
-            List<String> lst = bits.txt2buf(cfgInit.cfgFileSw);
-            if (cmd.size() > 0) {
-                lst = userFilter.getSection(lst, userReader.filter2reg(cmd.getRemaining()));
+            if (a.length() > 0) {
+                lst = userFilter.getSection(lst, userReader.filter2reg(a));
             }
             rdr.putStrArr(lst);
             return null;
         }
         if (a.equals("running-config")) {
             a = cmd.word();
-            if (a.equals("console0")) {
-                rdr.putStrArr(cfgAll.con0.getShRun(getConfigFilter(null, cmd)));
-                return null;
-            }
             if (a.equals("this")) {
                 if (cfg == null) {
                     return null;
                 }
-                rdr.putStrArr(cfg.getShRun(getConfigFilter(null, cmd)));
+                List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
+                rdr.putStrArr(cur);
                 return null;
             }
-            if (cfgAll.release || cfgAll.limited) {
+            if (cfgAll.limited) {
                 cmd.error("not in a vdc");
+                return null;
+            }
+            if (a.equals("console0")) {
+                rdr.putStrArr(cfgAll.con0.getShRun(getConfigFilter(null, cmd)));
                 return null;
             }
             if (a.equals("all")) {
@@ -1360,6 +1385,10 @@ public class userShow {
         }
         if (a.equals("lldp")) {
             a = cmd.word();
+            if (a.equals("interface")) {
+                rdr.putStrTab(cfgAll.getShIntTab(32));
+                return null;
+            }
             if (a.equals("neighbor")) {
                 rdr.putStrTab(cfgAll.getShIntTab(7));
                 return null;
@@ -1384,6 +1413,10 @@ public class userShow {
         }
         if (a.equals("udld")) {
             a = cmd.word();
+            if (a.equals("interface")) {
+                rdr.putStrTab(cfgAll.getShIntTab(33));
+                return null;
+            }
             if (a.equals("neighbor")) {
                 rdr.putStrTab(cfgAll.getShIntTab(8));
                 return null;
@@ -1408,6 +1441,10 @@ public class userShow {
         }
         if (a.equals("lacp")) {
             a = cmd.word();
+            if (a.equals("interface")) {
+                rdr.putStrTab(cfgAll.getShIntTab(34));
+                return null;
+            }
             if (a.equals("neighbor")) {
                 rdr.putStrTab(cfgAll.getShIntTab(14));
                 return null;
@@ -1432,6 +1469,10 @@ public class userShow {
         }
         if (a.equals("cdp")) {
             a = cmd.word();
+            if (a.equals("interface")) {
+                rdr.putStrTab(cfgAll.getShIntTab(35));
+                return null;
+            }
             if (a.equals("neighbor")) {
                 rdr.putStrTab(cfgAll.getShIntTab(6));
                 return null;

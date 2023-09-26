@@ -1316,7 +1316,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-subnet          per subnet session limit");
         l.add(null, "2 .    <num>                number of connections");
-        secInfoUtl.getHelp(l, 4, "access-            check visitors");
+        secInfoUtl.getHelp(l, 0, "access-");
         l.add(null, "1 2  access-blackhole4      propagate and check violating prefixes");
         l.add(null, "2 .    <num>                number of process");
         l.add(null, "1 2  access-blackhole6      propagate and check violating prefixes");
@@ -1686,7 +1686,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         }
         if (a.startsWith("access-")) {
             a = a.substring(7, a.length());
-            a += cmd.getRemaining();
+            a += " " + cmd.getRemaining();
+            a = a.trim();
             cmd = new cmds("info", a);
             srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, false);
             return;
@@ -1806,15 +1807,17 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                     certecdsa = null;
                     return;
                 }
-                if (!a.startsWith("access-")) {
-                    return;
-                }
-                a = a.substring(7, a.length());
-                a += cmd.getRemaining();
-                cmd = new cmds("info", a);
-                srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, true);
                 return;
             }
+            if (!a.startsWith("access-")) {
+                return;
+            }
+            a = a.substring(7, a.length());
+            a += " " + cmd.getRemaining();
+            a = a.trim();
+            cmd = new cmds("info", a);
+            srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, true);
+            return;
         }
         if (srvCfgStr(cmd.copyBytes(true))) {
             cmd.badCmd();

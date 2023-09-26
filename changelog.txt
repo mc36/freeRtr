@@ -15170,3 +15170,5 @@ todo: generalise server access- knobs
 todo: server http to have api for scripts
 ---------------------------------- 2023-09-26 10:07:27 23.9.26
 no todo: serv http InvocationTargetException to have auto logging in the traceback
+---------------------------------- 2023-09-26 20:17:08 23.9.26
+no todo: sid(cfg-check)#show config-differences this

@@ -3231,7 +3231,6 @@ todo: flash ext-delete also to commander
 todo: commander to have selection
 todo: commander to get away the cursor
 todo: player queue up down add-again
-todo: sid(cfg-check)#show config-differences this
 todo: openflow to have 2 label support and stack to p4lang
 todo: decouple rpki from bgp process
 todo: redundancy to have the shows

@@ -304,7 +304,7 @@ public class secInfoUtl {
         if (ntry == null) {
             return noRoute;
         }
-        return fwd.vrfName + " " + rtr.routerComputedU.size()
+        return " vrf=" + fwd.vrfName + " len=" + rtr.routerComputedU.size()
                 + " pfx=" + addrPrefix.ip2str(ntry.prefix)
                 + " rd=" + tabRouteUtil.rd2string(ntry.rouDst)
                 + " pth=" + ntry.best.asPathStr().trim()
@@ -437,40 +437,43 @@ public class secInfoUtl {
      * @param beg beginning
      */
     public final static void getHelp(userHelping lst, int tab, String beg) {
-        lst.add(null, (tab + 0) + " " + (tab + 1) + "  " + beg + "                  test ip info before accepting");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  router4                      lookup addresses");
+        if (tab > 0) {
+            lst.add(null, (tab + 0) + " " + (tab + 1) + "  " + beg + "                  test ip info before accepting");
+            beg = "";
+        }
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "router4                      lookup addresses");
         cfgRtr.getRouterList(lst, tab, "");
         lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  router6                      lookup addresses");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "router6                      lookup addresses");
         cfgRtr.getRouterList(lst, tab, "");
         lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  rd                           rd to use");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "rd                           rd to use");
         lst.add(null, (tab + 2) + " .    <rd>                       rd in ASnum:IDnum format");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  vrf                          vrf to use");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "vrf                          vrf to use");
         lst.add(null, (tab + 2) + " .    <name:vrf>                 name of table");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  script                       script to execute");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "script                       script to execute");
         lst.add(null, (tab + 2) + " .    <name:scr>                 script name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  style                        colorize prefix details");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "style                        colorize prefix details");
         lst.add(null, (tab + 2) + " .    <str>                      string to send");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  format                       format prefix details");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "format                       format prefix details");
         lst.add(null, (tab + 2) + " .    normal                     select normal mode");
         lst.add(null, (tab + 2) + " .    table                      select table mode");
         lst.add(null, (tab + 2) + " .    fancy                      select fancy mode");
         lst.add(null, (tab + 2) + " .    csv                        select csv mode");
         lst.add(null, (tab + 2) + " .    raw                        select raw mode");
         lst.add(null, (tab + 2) + " .    html                       select html mode");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  pmtud                    test pmtud before accepting");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "pmtud                    test pmtud before accepting");
         lst.add(null, (tab + 2) + " " + (tab + 3) + "  <num>                      min mtu");
         lst.add(null, (tab + 3) + " " + (tab + 4) + "    <num>                    max mtu");
         lst.add(null, (tab + 4) + " .    <num>                    timeout per round");
-        lst.add(null, (tab + 1) + " .  details                      print prefix details");
-        lst.add(null, (tab + 1) + " .  single                       print prefix summary");
-        lst.add(null, (tab + 1) + " .  hacked                       hackerize prefix details");
-        lst.add(null, (tab + 1) + " .  plain                        plain prefix details");
-        lst.add(null, (tab + 1) + " .  justip                       just address headline");
-        lst.add(null, (tab + 1) + " .  resolve                      resolve addresses");
-        lst.add(null, (tab + 1) + " .  tinyhttp                     pretend http server");
-        lst.add(null, (tab + 1) + " .  others                       allow any addresses");
+        lst.add(null, (tab + 1) + " .  " + beg + "details                      print prefix details");
+        lst.add(null, (tab + 1) + " .  " + beg + "single                       print prefix summary");
+        lst.add(null, (tab + 1) + " .  " + beg + "hacked                       hackerize prefix details");
+        lst.add(null, (tab + 1) + " .  " + beg + "plain                        plain prefix details");
+        lst.add(null, (tab + 1) + " .  " + beg + "justip                       just address headline");
+        lst.add(null, (tab + 1) + " .  " + beg + "resolve                      resolve addresses");
+        lst.add(null, (tab + 1) + " .  " + beg + "tinyhttp                     pretend http server");
+        lst.add(null, (tab + 1) + " .  " + beg + "others                       allow any addresses");
     }
 
     /**
@@ -529,12 +532,6 @@ public class secInfoUtl {
                 a = null;
             }
             cfg.style = a;
-        }
-        if (cfgAll.release || cfgAll.limited) {
-            cfg.script = null;
-            chg++;
-            cfg.others = false;
-            chg++;
         }
         return chg;
     }

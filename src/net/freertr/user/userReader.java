@@ -1612,6 +1612,27 @@ public class userReader implements Comparator<String> {
     }
 
     /**
+     * get section name
+     *
+     * @param lst list to read
+     * @return name of section
+     */
+    public static String section2filter(List<String> lst) {
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i);
+            int o = a.indexOf(cmds.comment);
+            if (o >= 0) {
+                a = a.substring(0, o);
+            }
+            if (a.startsWith(cmds.tabulator)) {
+                continue;
+            }
+            return a;
+        }
+        return null;
+    }
+
+    /**
      * convert user filter to regexp
      *
      * @param flt user filter
