@@ -441,15 +441,14 @@ todo: experiment with freebsd as a host os
 todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
+todo: image builder to support different bootloaders
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: dlep as rfc8175
-todo: sho cdp/lldp int
 todo: flash ext-delete also to commander
 todo: commander to have selection
 todo: commander to get away the cursor
 todo: player queue up down add-again
-todo: sid(cfg-check)#show config-differences this
 todo: openflow to have 2 label support and stack to p4lang
 todo: decouple rpki from bgp process
 todo: redundancy to have the shows

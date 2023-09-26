@@ -15172,3 +15172,6 @@ todo: server http to have api for scripts
 no todo: serv http InvocationTargetException to have auto logging in the traceback
 ---------------------------------- 2023-09-26 20:17:08 23.9.26
 no todo: sid(cfg-check)#show config-differences this
+---------------------------------- 2023-09-26 21:33:19 23.9.26
+no todo: sho cdp/lldp int
+todo: image builder to support different bootloaders
