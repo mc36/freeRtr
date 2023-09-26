@@ -530,7 +530,7 @@ public class secInfoUtl {
             }
             cfg.style = a;
         }
-        if (verCore.release || cfgAll.limited) {
+        if (cfgAll.release || cfgAll.limited) {
             cfg.script = null;
             chg++;
             cfg.others = false;

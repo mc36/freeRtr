@@ -22,7 +22,6 @@ import net.freertr.util.history;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.tab.tabRouteIface;
-import net.freertr.util.verCore;
 
 /**
  * openflow server
@@ -342,7 +341,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         }
         if (cntr != 1) {
             logger.error("sending " + cntr + " of packets to " + ifcc.ifc + " payload=" + pck.dataOffset());
-            if (verCore.release || cfgAll.limited) {
+            if (cfgAll.release || cfgAll.limited) {
                 ifcc.cntr.drop(pck, counter.reasons.badCmd);
                 return true;
             }

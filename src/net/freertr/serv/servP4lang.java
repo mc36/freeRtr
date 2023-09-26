@@ -601,7 +601,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
         }
         if (cntr != 1) {
             logger.error("sending " + cntr + " of packets to " + ifcc.ifc + " payload=" + pck.dataOffset());
-            if (verCore.release || cfgAll.limited) {
+            if (cfgAll.release || cfgAll.limited) {
                 ifcc.cntr.drop(pck, counter.reasons.badCmd);
                 return true;
             }

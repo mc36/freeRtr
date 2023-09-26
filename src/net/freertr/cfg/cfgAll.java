@@ -753,6 +753,11 @@ public class cfgAll {
     public static boolean limited = false;
 
     /**
+     * set true to hide experimental features
+     */
+    public static boolean release = false;
+
+    /**
      * minimum tls version to use
      */
     public static int tlsVerMin = 0;
@@ -3674,7 +3679,7 @@ public class cfgAll {
     private static List<String> getGlobalRunBeg(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("hostname " + hostName);
-        cmds.cfgLine(l, verCore.release, "", "buggy", "");
+        cmds.cfgLine(l, release, "", "buggy", "");
         cmds.cfgLine(l, locale == null, "", "locale", locale);
         cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc, (filter & 2) != 0));
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));

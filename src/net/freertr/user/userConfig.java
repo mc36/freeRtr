@@ -888,7 +888,7 @@ public class userConfig {
             return;
         }
         if (a.equals("buggy")) {
-            verCore.release = false;
+            cfgAll.release = false;
             return;
         }
         if (a.equals("banner")) {
@@ -1847,7 +1847,7 @@ public class userConfig {
             return;
         }
         if (a.equals("buggy")) {
-            verCore.release = true;
+            cfgAll.release = true;
             return;
         }
         if (a.equals("vdc")) {

@@ -56,11 +56,6 @@ public class verCore {
     public final static String state = "-cur";
 
     /**
-     * set true to hide experimental features
-     */
-    public static boolean release = false;
-
-    /**
      * url1 of product
      */
     public final static String homeUrl1 = "http://www.freertr.org/";
@@ -103,22 +98,22 @@ public class verCore {
         "science does not stops evolving",
         "do or not to do butt dont try",
         "labbing hard and music heals",
-        "just use your brains --engs",
+        "just use your brains",
         "music music, noise noise",
-        "ignorance kills --hoomans",
-        "make the world better --ietf",
-        "keep it stupid simple --ietf",
-        "let bloom all the flowers --ietf",
-        "we just living to die and develop --jon",
-        "type safety and origins like assembly --coder",
-        "isps best selling drugs is internets --hoomans",
+        "ignorance kills",
+        "make the world better",
+        "keep it stupid simple",
+        "let bloom all the flowers",
+        "we just living to die and develop",
+        "type safety and origins like assembly",
+        "isps best selling drugs are internets",
+        "isps equally hate internets as most of us",
+        "every tool could be used good or bad equally",
         "care about the bits and not the bits of the bits",
-        "every tool could be used good or bad equally --krj",
-        "i equally hate internets as most of us --isps in dfz",
-        "packet delivery on the wild-wild-nets is best-effort, if any --jon",
-        "if a machine can learn the value of human life, maybe we can too --t2",
-        "be liberal in what you accept, and conservative in what you send -jon",
-        "dont believe in oligarchy but in rough consensus and running code --ietf",};
+        "packet delivery on the wild-wild-nets is best-effort, if any",
+        "if a machine can learn the value of human life, maybe we can too",
+        "be liberal in what you accept, and conservative in what you send",
+        "dont believe in oligarchy but in rough consensus and running code",};
 
     /**
      * logo text
