@@ -888,7 +888,7 @@ public class userConfig {
             return;
         }
         if (a.equals("buggy")) {
-            cfgAll.release = false;
+            cfgAll.buggy = true;
             return;
         }
         if (a.equals("banner")) {
@@ -912,7 +912,7 @@ public class userConfig {
             return;
         }
         if (a.equals("vdc")) {
-            if (cfgAll.limited) {
+            if (cfgAll.buggy && cfgAll.invdc) {
                 cmd.error("not in a vdc");
                 return;
             }
@@ -931,7 +931,7 @@ public class userConfig {
             return;
         }
         if (a.equals("process")) {
-            if (cfgAll.limited) {
+            if (cfgAll.buggy && cfgAll.invdc) {
                 cmd.error("not in a vdc");
                 return;
             }
@@ -1847,7 +1847,7 @@ public class userConfig {
             return;
         }
         if (a.equals("buggy")) {
-            cfgAll.release = true;
+            cfgAll.buggy = false;
             return;
         }
         if (a.equals("vdc")) {

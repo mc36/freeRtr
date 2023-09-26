@@ -98,7 +98,7 @@ public class userFlash {
      * @return command to execute, null if nothing
      */
     public cfgAlias doer() {
-        if (cfgAll.limited) {
+        if (cfgAll.buggy && cfgAll.invdc) {
             cmd.error("not in a vdc");
             return null;
         }

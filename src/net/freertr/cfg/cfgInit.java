@@ -386,7 +386,7 @@ public class cfgInit implements Runnable {
             cmds cmd = new cmds("hw", s);
             s = cmd.word().toLowerCase();
             if (s.equals("limited")) {
-                cfgAll.limited = true;
+                cfgAll.invdc = true;
                 continue;
             }
             if (s.equals("hwid")) {

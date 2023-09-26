@@ -748,14 +748,14 @@ public class cfgAll {
     public static String locale = null;
 
     /**
-     * limit into a vdc
+     * running in a vdc
      */
-    public static boolean limited = false;
+    public static boolean invdc = false;
 
     /**
-     * set true to hide experimental features
+     * enable experimental features
      */
-    public static boolean release = false;
+    public static boolean buggy = true;
 
     /**
      * minimum tls version to use
@@ -3685,7 +3685,7 @@ public class cfgAll {
     private static List<String> getGlobalRunBeg(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("hostname " + hostName);
-        cmds.cfgLine(l, release, "", "buggy", "");
+        cmds.cfgLine(l, !buggy, "", "buggy", "");
         cmds.cfgLine(l, locale == null, "", "locale", locale);
         cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc, (filter & 2) != 0));
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));

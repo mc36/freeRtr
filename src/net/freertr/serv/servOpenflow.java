@@ -341,7 +341,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         }
         if (cntr != 1) {
             logger.error("sending " + cntr + " of packets to " + ifcc.ifc + " payload=" + pck.dataOffset());
-            if (cfgAll.release || cfgAll.limited) {
+            if (!cfgAll.buggy || cfgAll.invdc) {
                 ifcc.cntr.drop(pck, counter.reasons.badCmd);
                 return true;
             }

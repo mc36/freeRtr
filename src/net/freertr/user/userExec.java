@@ -1647,7 +1647,6 @@ public class userExec {
         hl.add(null, "4 .          [server]                 address of ns server");
         hl.add(null, "1 .    disable                        drop privileges");
         hl.add(null, "1 .    enable                         gain privileges");
-        hl.add(null, "1 .    limited                        drop privileges");
         hl.add(null, "1 2,.  tclsh                          run tcl shell");
         hl.add(null, "2 .      [file]                       name of script");
         hl.add(null, "1 2    traceroute                     trace route to target");
@@ -2577,19 +2576,7 @@ public class userExec {
             doTerminal();
             return cmdRes.command;
         }
-        if (a.equals("limited")) {
-            if (cfgAll.limited) {
-                cmd.error("not in a vdc");
-                return cmdRes.command;
-            }
-            cfgAll.limited = true;
-            return cmdRes.command;
-        }
         if (a.equals("enable")) {
-            if (cfgAll.limited) {
-                cmd.error("not in a vdc");
-                return cmdRes.command;
-            }
             if (cfgAll.enaPass == null) {
                 cmd.error("no enable configured");
                 return cmdRes.command;
@@ -2607,7 +2594,6 @@ public class userExec {
                 return cmdRes.command;
             }
             privileged = true;
-            cfgAll.limited = false;
             return cmdRes.command;
         }
         if (a.equals("disable")) {
@@ -4397,7 +4383,7 @@ public class userExec {
     }
 
     private void doAttach() {
-        if (cfgAll.limited) {
+        if (cfgAll.buggy && cfgAll.invdc) {
             cmd.error("not in a vdc");
             return;
         }
