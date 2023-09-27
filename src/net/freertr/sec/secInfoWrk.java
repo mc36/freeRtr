@@ -43,31 +43,31 @@ public class secInfoWrk {
 
     private final addrIP local;
 
-    private boolean http;
+    protected boolean http;
 
-    private String style;
+    protected String style;
 
-    private userFormat.tableMode format;
+    protected userFormat.tableMode format;
 
-    private boolean hack;
+    protected boolean hack;
 
-    private boolean plain;
+    protected boolean plain;
 
-    private boolean justip;
+    protected boolean justip;
 
-    private boolean detail;
+    protected boolean detail;
 
-    private boolean single;
+    protected boolean single;
 
-    private String resolved = null;
+    protected String resolved = null;
 
-    private ipRtr rtr = null;
+    protected ipRtr rtr = null;
 
-    private ipFwd fwd = null;
+    protected ipFwd fwd = null;
 
-    private tabRouteEntry<addrIP> ntry = null;
+    protected tabRouteEntry<addrIP> ntry = null;
 
-    private clntPmtud pmtuD;
+    protected clntPmtud pmtuD;
 
     /**
      * create an instance
@@ -266,7 +266,7 @@ public class secInfoWrk {
         }
         cmds cmd = new cmds("url", a.replaceAll("/", " "));
         for (;;) {
-            if (doOneHttp(cmd)) {
+            if (secInfoUtl.doOneHttp(this, cmd)) {
                 break;
             }
         }
@@ -286,87 +286,6 @@ public class secInfoWrk {
             return;
         }
         changeWorkAddr(adr);
-    }
-
-    /**
-     * do one config command
-     *
-     * @param cmd command
-     * @return true to terminate reading
-     */
-    protected boolean doOneHttp(cmds cmd) {
-        String a = cmd.word();
-        if (a.length() < 1) {
-            return true;
-        }
-        if (a.equals("addr")) {
-            setAddr(cmd.word());
-            return false;
-        }
-        if (a.equals("hacked")) {
-            hack = true;
-            return false;
-        }
-        if (a.equals("unhack")) {
-            hack = false;
-            return false;
-        }
-        if (a.equals("plain")) {
-            plain = true;
-            return false;
-        }
-        if (a.equals("unplain")) {
-            plain = false;
-            return false;
-        }
-        if (a.equals("justip")) {
-            justip = true;
-            return false;
-        }
-        if (a.equals("unjustip")) {
-            justip = false;
-            return false;
-        }
-        if (a.equals("detail")) {
-            detail = true;
-            return false;
-        }
-        if (a.equals("undetail")) {
-            detail = false;
-            return false;
-        }
-        if (a.equals("single")) {
-            single = true;
-            return false;
-        }
-        if (a.equals("unsingle")) {
-            single = false;
-            return false;
-        }
-        if (a.equals("http")) {
-            http = true;
-            return false;
-        }
-        if (a.equals("unhttp")) {
-            http = false;
-            return false;
-        }
-        if (a.equals("style")) {
-            style = secInfoUtl.doSanityStyle(cmd.word());
-            return false;
-        }
-        if (a.equals("unstyle")) {
-            style = null;
-            return false;
-        }
-        if (a.equals("format")) {
-            format = userFormat.str2tabmod(cmd.word());
-            return false;
-        }
-        if (debugger.clntIpInfo) {
-            logger.debug("bad api " + a + " queried " + addr + " " + proto);
-        }
-        return false;
     }
 
     /**

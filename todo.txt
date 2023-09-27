@@ -1,3 +1,5 @@
+vdc to have local, connect as sdn autocreated
+
 generalise server access- knobs
 
 generalize dynamic-metric knobs

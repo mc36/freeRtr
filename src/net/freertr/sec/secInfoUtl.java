@@ -21,6 +21,7 @@ import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
 /**
@@ -552,6 +553,87 @@ public class secInfoUtl {
         } else {
             return fwd6;
         }
+    }
+
+    /**
+     * do one config command
+     *
+     * @param cmd command
+     * @return true to terminate reading
+     */
+    protected static boolean doOneHttp(secInfoWrk wrk, cmds cmd) {
+        String a = cmd.word();
+        if (a.length() < 1) {
+            return true;
+        }
+        if (a.equals("addr")) {
+            wrk.setAddr(cmd.word());
+            return false;
+        }
+        if (a.equals("hacked")) {
+            wrk.hack = true;
+            return false;
+        }
+        if (a.equals("unhack")) {
+            wrk.hack = false;
+            return false;
+        }
+        if (a.equals("plain")) {
+            wrk.plain = true;
+            return false;
+        }
+        if (a.equals("unplain")) {
+            wrk.plain = false;
+            return false;
+        }
+        if (a.equals("justip")) {
+            wrk.justip = true;
+            return false;
+        }
+        if (a.equals("unjustip")) {
+            wrk.justip = false;
+            return false;
+        }
+        if (a.equals("detail")) {
+            wrk.detail = true;
+            return false;
+        }
+        if (a.equals("undetail")) {
+            wrk.detail = false;
+            return false;
+        }
+        if (a.equals("single")) {
+            wrk.single = true;
+            return false;
+        }
+        if (a.equals("unsingle")) {
+            wrk.single = false;
+            return false;
+        }
+        if (a.equals("http")) {
+            wrk.http = true;
+            return false;
+        }
+        if (a.equals("unhttp")) {
+            wrk.http = false;
+            return false;
+        }
+        if (a.equals("style")) {
+            wrk.style = secInfoUtl.doSanityStyle(cmd.word());
+            return false;
+        }
+        if (a.equals("unstyle")) {
+            wrk.style = null;
+            return false;
+        }
+        if (a.equals("format")) {
+            wrk.format = userFormat.str2tabmod(cmd.word());
+            return false;
+        }
+        if (debugger.clntIpInfo) {
+            logger.debug("bad api " + a + " queried " + wrk);
+        }
+        return false;
     }
 
 }
