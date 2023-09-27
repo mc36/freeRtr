@@ -1610,17 +1610,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (neighs.find(ntry) != null) {
             return true;
         }
-        logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem);
         ntry.copyFrom(lstn.temp);
         ntry.template = lstn.temp;
         if (ntry.fallOver) {
             ntry.sendingIfc = ipFwdTab.findSendingIface(fwdCore, ntry.peerAddr);
         }
         ntry.updatePeer();
-        rtrBgpNeigh res = lstnNei.put(ntry);
+        rtrBgpNeigh res = lstnNei.add(ntry);
         if (res != null) {
-            res.stopNow();
+            return true;
         }
+        logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem);
         ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
         ntry.socketMode = 4;
         ntry.startNow();

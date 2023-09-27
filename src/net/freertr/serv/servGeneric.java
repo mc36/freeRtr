@@ -1174,6 +1174,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      *
      * @param ifc interface packet arrived on
      * @param rem remote address
+     * @param prt protocol to use
      * @return false if acceptable, true if not
      */
     public boolean srvCheckAcceptIp(ipFwdIface ifc, addrIP rem, ipPrt prt) {

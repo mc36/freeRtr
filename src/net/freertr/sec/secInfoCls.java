@@ -13,36 +13,61 @@ import net.freertr.prt.prtGenConn;
  */
 public class secInfoCls {
 
+    /**
+     * forwarder used
+     */
     protected final ipFwd fwder;
 
+    /**
+     * pipeside to close
+     */
     protected final pipeSide closeP;
 
+    /**
+     * connection to close
+     */
     protected final prtGenConn closeC;
 
+    /**
+     * protocol used
+     */
     protected final ipPrt protIp;
 
+    /**
+     * remote address
+     */
     protected final addrIP remote;
 
+    /**
+     * source address
+     */
     protected final addrIP local;
 
+    /**
+     * protocol number
+     */
     protected final int protNum;
 
     /**
-     * 
-     * @param clsP
-     * @param clsC
-     * @param prtI
+     * create instance
+     *
+     * @param clsP pipe to clear
+     * @param clsC connection to clear
+     * @param prtI protocol used
      * @param fwd forwarder to use
-     * @param adr address to check
-     * @param prt protocol number to check
+     * @param rem address to check
+     * @param prtN protocol number to check
      * @param loc local address
      */
-    public secInfoCls(pipeSide clsP, prtGenConn clsC, ipPrt prtI, ipFwd fwd, addrIP rem, int prt, addrIP loc) {
+    public secInfoCls(pipeSide clsP, prtGenConn clsC, ipPrt prtI, ipFwd fwd, addrIP rem, int prtN, addrIP loc) {
+        if ((prtN == 0) && (prtI != null)) {
+            prtN = prtI.getProtoNum();
+        }
         fwder = fwd;
         closeC = clsC;
         closeP = clsP;
         protIp = prtI;
-        protNum = prt;
+        protNum = prtN;
         remote = rem.copyBytes();
         local = loc.copyBytes();
     }

@@ -74,28 +74,64 @@ public class secInfoWrk implements Runnable {
      */
     protected boolean http;
 
+    /**
+     * style to send
+     */
     protected String style;
 
+    /**
+     * set table formatter
+     */
     protected userFormat.tableMode format;
 
+    /**
+     * hack route details
+     */
     protected boolean hack;
 
+    /**
+     * plain route details
+     */
     protected boolean plain;
 
+    /**
+     * ip only headline
+     */
     protected boolean justip;
 
+    /**
+     * add route details
+     */
     protected boolean detail;
 
+    /**
+     * add route summary
+     */
     protected boolean single;
 
+    /**
+     * resolution status
+     */
     protected String resolved = null;
 
+    /**
+     * router selected
+     */
     protected ipRtr rtr = null;
 
+    /**
+     * forwarder selected
+     */
     protected ipFwd fwd = null;
 
+    /**
+     * route entry found
+     */
     protected tabRouteEntry<addrIP> ntry = null;
 
+    /**
+     * pmtud result
+     */
     protected clntPmtud pmtuD;
 
     /**
@@ -128,7 +164,8 @@ public class secInfoWrk implements Runnable {
     }
 
     public void run() {
-        doTheWork();
+        doLongWork();
+        doClosures();
     }
 
     public String toString() {
@@ -178,24 +215,71 @@ public class secInfoWrk implements Runnable {
      */
     public boolean doWork(boolean thrd) {
         ////////////////////////
-        thrd &= config.resolve;
-        thrd &= config.pmtudTim > 0;
-        if (!thrd) {
-            doTheWork();
-            return false;
+        doFindRoute();
+        thrd &= config.resolve || (config.pmtudTim > 0) || (config.script != null);
+        if (thrd) {
+            new Thread(this).start();
+            return true;
         }
-        new Thread(this).start();
-        return true;
+        doLongWork();
+        return false;
     }
 
-    private void doTheWork() {
-        if (debugger.clntIpInfo) {
-            logger.debug("working on " + addr + " " + proto);
+    /**
+     * check if drop needed
+     *
+     * @return true if yes, false if no
+     */
+    public boolean need2drop() {
+        if (pmtuD == null) {
+            return false;
         }
+        if (pmtuD.last < 1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * close the connections
+     */
+    protected void doClosures() {
+        if (!need2drop()) {
+            return;
+        }
+        try {
+            if (closer.closeP != null) {
+                closer.closeP.setClose();
+            }
+            if (closer.closeC != null) {
+                closer.closeC.setClosing();
+            }
+        } catch (Exception e) {
+            logger.traceback(e, addr + " " + proto);
+        }
+    }
+
+    /**
+     * find the route
+     */
+    protected void doFindRoute() {
         try {
             fwd = secInfoUtl.findOneFwd(addr, config.fwder4, config.fwder6);
             rtr = secInfoUtl.findOneRtr(addr, config.router4, config.router6);
             ntry = secInfoUtl.findOneRoute(addr, rtr, fwd);
+        } catch (Exception e) {
+            logger.traceback(e, addr + " " + proto);
+        }
+    }
+
+    /**
+     * do time consuming work
+     */
+    protected void doLongWork() {
+        if (debugger.clntIpInfo) {
+            logger.debug("working on " + addr + " " + proto);
+        }
+        try {
             doPmtud();
             doResolve();
             doScript();
@@ -399,21 +483,6 @@ public class secInfoWrk implements Runnable {
         String a = getRoute1liner();
         res.add(0, a);
         return res;
-    }
-
-    /**
-     * check if drop needed
-     *
-     * @return true if yes, false if no
-     */
-    public boolean need2drop() {
-        if (pmtuD == null) {
-            return false;
-        }
-        if (pmtuD.last < 1) {
-            return true;
-        }
-        return false;
     }
 
 }

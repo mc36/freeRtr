@@ -559,6 +559,7 @@ public class secInfoUtl {
      * do one config command
      *
      * @param cmd command
+     * @param wrk worker to use
      * @return true to terminate reading
      */
     protected static boolean doOneHttp(secInfoWrk wrk, cmds cmd) {
