@@ -220,9 +220,6 @@ public class servEtherIp extends servGeneric implements ipPrt {
         if (brdgIfc == null) {
             return;
         }
-        if (srvCheckAccept(rxIfc, pck)) {
-            return;
-        }
         ntry.doStartup();
         ntry.doRecv(pck);
     }
@@ -279,13 +276,13 @@ public class servEtherIp extends servGeneric implements ipPrt {
 
 class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
 
-    public servEtherIp lower;
+    public final servEtherIp lower;
 
-    public ipFwd fwdCor;
+    public final ipFwd fwdCor;
 
-    public ipFwdIface iface;
+    public final ipFwdIface iface;
 
-    public addrIP peer;
+    public final addrIP peer;
 
     public clntEtherIp worker;
 
@@ -329,6 +326,9 @@ class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
     }
 
     public void run() {
+        if (lower.srvCheckAcceptIp(iface, peer, worker)) {
+            return;
+        }
         for (;;) {
             bits.sleep(lower.timeout);
             if (!seenPack) {

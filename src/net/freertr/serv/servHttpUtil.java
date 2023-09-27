@@ -21,6 +21,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtTcp;
+import net.freertr.sec.secInfoCls;
 import net.freertr.sec.secInfoUtl;
 import net.freertr.sec.secInfoWrk;
 import net.freertr.sec.secWebsock;
@@ -1296,7 +1297,7 @@ public class servHttpUtil {
             }
             secInfoWrk w = new secInfoWrk(cn.gotHost.ipInfo, null, cn.lower.srvVrf.getFwd(cn.peer), cn.peer, prtTcp.protoNum, cn.conn.iface.addr);
             w.doHttpUrl(cmd.getRemaining());
-            w.doWork(false);
+            w.doWork(false, new secInfoCls(null, null, null));
             w.need2drop();
             List<String> r = w.getRouteInfos();
             String a = w.getHtmlLines(true);

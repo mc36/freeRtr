@@ -286,9 +286,6 @@ public class servL2tp3 extends servGeneric implements ipPrt {
             old.doRecv(pck);
             return;
         }
-        if (srvCheckAccept(rxIfc, pck)) {
-            return;
-        }
         ntry.doStartup();
         ntry.doRecv(pck);
     }
@@ -429,6 +426,9 @@ class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
     }
 
     public void run() {
+        if (lower.srvCheckAcceptIp(iface, peer, lower)) {
+            return;
+        }
         try {
             for (;;) {
                 doWork();

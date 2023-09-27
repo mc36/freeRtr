@@ -39,6 +39,7 @@ import net.freertr.prt.prtTcp;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrBlackhole;
 import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoCls;
 import net.freertr.sec.secInfoUtl;
 import net.freertr.sec.secInfoWrk;
 import net.freertr.sec.secServer;
@@ -1103,20 +1104,19 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return false;
     }
 
-    private boolean srvCheckAccept3(addrIP adr, int prt, ipFwdIface ifc) {
+    private boolean srvCheckAccept3(addrIP adr, int prt, ipFwdIface ifc, secInfoCls cls) {
         if (srvIpInf == null) {
             return false;
         }
-        ipFwd fwd = srvVrf.getFwd(adr);
-        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(adr), adr, prt, ifc.addr);////////prtTcp.protoNum
-        inf.doWork(true);
-        if (!inf.need2drop()) {
-            return false;
+        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(adr), adr, prt, ifc.addr);
+        inf.doWork(true, cls);
+        if (inf.need2drop()) {
+            if (srvLogDrop) {
+                logger.info("access ipinfo dropped " + adr + " " + prt);
+            }
+            return true;
         }
-        if (srvLogDrop) {
-            logger.info("access ipinfo dropped " + adr + " " + prt);
-        }
-        return true;
+        return false;
     }
 
     private void srvBlackholePeer(boolean ipv4, addrIP adr) {
@@ -1135,7 +1135,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if (srvCheckAccept1(conn.peerAddr, conn.portLoc)) {
             return true;
         }
-        if (srvCheckAccept3(conn.peerAddr, prtTcp.protoNum, conn.iface)) {
+        secInfoCls cls = new secInfoCls(null, conn, null);
+        if (srvCheckAccept3(conn.peerAddr, prtTcp.protoNum, conn.iface, cls)) {
             return true;
         }
         if (srvAccess != null) {
@@ -1183,14 +1184,19 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * check if connection acceptable
      *
      * @param ifc interface packet arrived on
-     * @param pck packet to check
+     * @param rem remote address
      * @return false if acceptable, true if not
      */
-    protected boolean srvCheckAccept(ipFwdIface ifc, packHolder pck) {
+    public boolean srvCheckAcceptIp(ipFwdIface ifc, addrIP rem, ipPrt prt) {
+        packHolder pck = new packHolder(true, true);
+        pck.IPsrc.setAddr(rem);
+        pck.IPtrg.setAddr(ifc.addr);
+        pck.IPprt = prt.getProtoNum();
         if (srvCheckAccept1(pck.IPsrc, pck.IPprt)) {
             return true;
         }
-        if (srvCheckAccept3(pck.IPsrc, pck.IPprt, ifc)) {
+        secInfoCls cls = new secInfoCls(null, null, prt);
+        if (srvCheckAccept3(pck.IPsrc, pck.IPprt, ifc, cls)) {
             return true;
         }
         if (srvAccess != null) {

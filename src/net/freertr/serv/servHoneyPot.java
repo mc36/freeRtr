@@ -9,6 +9,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.prt.prtTcp;
 import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoCls;
 import net.freertr.sec.secInfoUtl;
 import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabGen;
@@ -150,7 +151,7 @@ class servHoneyPotConn implements Runnable {
             pipe.setReady();
             secInfoWrk ipi = new secInfoWrk(lower.ipInfo, pipe, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
             ipi.doHttpRead();
-            ipi.doWork(false);
+            ipi.doWork(false, new secInfoCls(null, null, null));
             ipi.need2drop();
             ipi.doHttpWrite();
             ipi.putResult();

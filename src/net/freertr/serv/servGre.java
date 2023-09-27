@@ -209,9 +209,6 @@ public class servGre extends servGeneric implements ipPrt {
         if (tempIfc == null) {
             return;
         }
-        if (srvCheckAccept(rxIfc, pck)) {
-            return;
-        }
         ntry.doStartup();
         ntry.doRecv(pck);
     }
@@ -268,13 +265,13 @@ public class servGre extends servGeneric implements ipPrt {
 
 class servGreConn implements Runnable, Comparator<servGreConn> {
 
-    public servGre lower;
+    public final servGre lower;
 
-    public ipFwd fwdCor;
+    public final ipFwd fwdCor;
 
-    public ipFwdIface iface;
+    public final ipFwdIface iface;
 
-    public addrIP peer;
+    public final addrIP peer;
 
     public cfgIfc acesIfc;
 
@@ -323,6 +320,9 @@ class servGreConn implements Runnable, Comparator<servGreConn> {
     }
 
     public void run() {
+        if (lower.srvCheckAcceptIp(iface, peer, worker)) {
+            return;
+        }
         for (;;) {
             bits.sleep(lower.timeout);
             if (!seenPack) {

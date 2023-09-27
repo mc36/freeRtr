@@ -27,6 +27,7 @@ import net.freertr.util.logger;
 import net.freertr.util.syncInt;
 import net.freertr.enc.encTlv;
 import net.freertr.prt.prtTcp;
+import net.freertr.sec.secInfoCls;
 import net.freertr.sec.secInfoWrk;
 import net.freertr.util.version;
 
@@ -1218,7 +1219,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         sendKeepAlive();
         if (neigh.ipInfoCfg != null) {
             ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, null, parent.fwdCore, neigh.peerAddr, prtTcp.protoNum, neigh.localAddr);
-            ipInfoRes.doWork(false);
+            ipInfoRes.doWork(false, new secInfoCls(null, null, null));
             if (ipInfoRes.need2drop()) {
                 logger.error("pmtud failed to " + neigh.peerAddr);
                 sendNotify(1, 2);

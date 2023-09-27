@@ -209,9 +209,6 @@ public class servMplsIp extends servGeneric implements ipPrt {
         if (tempIfc == null) {
             return;
         }
-        if (srvCheckAccept(rxIfc, pck)) {
-            return;
-        }
         ntry.doStartup();
         ntry.doRecv(pck);
     }
@@ -323,6 +320,9 @@ class servMplsIpConn implements Runnable, Comparator<servMplsIpConn> {
     }
 
     public void run() {
+        if (lower.srvCheckAcceptIp(iface, peer, worker)) {
+            return;
+        }
         for (;;) {
             bits.sleep(lower.timeout);
             if (!seenPack) {

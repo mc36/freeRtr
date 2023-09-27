@@ -9,10 +9,12 @@ import net.freertr.clnt.clntPmtud;
 import net.freertr.enc.enc7bit;
 import net.freertr.enc.encUrl;
 import net.freertr.ip.ipFwd;
+import net.freertr.ip.ipPrt;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
+import net.freertr.prt.prtGenConn;
 import net.freertr.serv.servHttp;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFormat;
@@ -27,7 +29,7 @@ import net.freertr.util.version;
  *
  * @author matecsaba
  */
-public class secInfoWrk {
+public class secInfoWrk implements Runnable {
 
     private final secInfoCfg cfg;
 
@@ -69,6 +71,8 @@ public class secInfoWrk {
 
     protected clntPmtud pmtuD;
 
+    protected secInfoCls closer = new secInfoCls(null, null, null);
+
     /**
      * create an instance
      *
@@ -100,6 +104,10 @@ public class secInfoWrk {
         http = ned.tinyHttp;
         othrs = ned.others;
         changeWorkAddr(adr);
+    }
+
+    public void run() {
+        doTheWork();
     }
 
     public String toString() {
@@ -145,11 +153,26 @@ public class secInfoWrk {
      * do every work
      *
      * @param thrd start new thread if needed
+     * @param cls closer to use
+     * @return true if a new thread started
      */
-    public void doWork(boolean thrd) {
+    public boolean doWork(boolean thrd, secInfoCls cls) {
         if (cfg == null) {
-            return;
+            return false;
         }
+        closer = cls;
+        ////////////////////////
+        thrd &= cfg.resolve;
+        thrd &= cfg.pmtudTim > 0;
+        if (!thrd) {
+            doTheWork();
+            return false;
+        }
+        new Thread(this).start();
+        return true;
+    }
+
+    private void doTheWork() {
         if (debugger.clntIpInfo) {
             logger.debug("working on " + addr + " " + proto);
         }

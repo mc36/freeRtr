@@ -15175,3 +15175,5 @@ no todo: sid(cfg-check)#show config-differences this
 ---------------------------------- 2023-09-26 21:33:19 23.9.26
 no todo: sho cdp/lldp int
 todo: image builder to support different bootloaders
+---------------------------------- 2023-09-27 11:06:44 23.9.27
+todo: vdc to have local, connect as sdn autocreated
