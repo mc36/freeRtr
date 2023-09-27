@@ -208,7 +208,7 @@ public class prtSctp extends prtGen {
         }
         clnt.sendPRT = protoNum;
         prtSctpConn pr = new prtSctpConn();
-        clnt.proto = pr;
+        clnt.protoDat = pr;
         pr.seqLoc = bits.randomD();
         pr.verLoc = bits.randomD();
         if (pck == null) {
@@ -262,7 +262,7 @@ public class prtSctp extends prtGen {
         if (debugger.prtSctpTraf) {
             logger.debug("close");
         }
-        prtSctpConn pr = (prtSctpConn) clnt.proto;
+        prtSctpConn pr = (prtSctpConn) clnt.protoDat;
         pr.state = 3;
     }
 
@@ -272,7 +272,7 @@ public class prtSctp extends prtGen {
      * @param clnt client
      */
     protected void connectionWork(prtGenConn clnt) {
-        prtSctpConn pr = (prtSctpConn) clnt.proto;
+        prtSctpConn pr = (prtSctpConn) clnt.protoDat;
         if (debugger.prtSctpTraf) {
             logger.debug("work");
         }
@@ -332,7 +332,7 @@ public class prtSctp extends prtGen {
      * @return bytes
      */
     protected int connectionBytes(prtGenConn ntry) {
-        prtSctpConn pr = (prtSctpConn) ntry.proto;
+        prtSctpConn pr = (prtSctpConn) ntry.protoDat;
         if (pr.state != 2) {
             return 0;
         }
@@ -351,7 +351,7 @@ public class prtSctp extends prtGen {
      * @return false if success, true if error
      */
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
-        prtSctpConn pr = (prtSctpConn) clnt.proto;
+        prtSctpConn pr = (prtSctpConn) clnt.protoDat;
         if (pr.state != 2) {
             return true;
         }
@@ -470,7 +470,7 @@ public class prtSctp extends prtGen {
      * @param pck packet
      */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
-        prtSctpConn pr = (prtSctpConn) clnt.proto;
+        prtSctpConn pr = (prtSctpConn) clnt.protoDat;
         pr.lastRx = bits.getTime();
         encTlv tlv = getTlv();
         for (;;) {
@@ -541,7 +541,7 @@ public class prtSctp extends prtGen {
     }
 
     private void sendMyPack(prtGenConn clnt, byte[] opt, int typ) {
-        prtSctpConn pr = (prtSctpConn) clnt.proto;
+        prtSctpConn pr = (prtSctpConn) clnt.protoDat;
         packHolder pck = new packHolder(true, true);
         encTlv tlv = getTlv();
         tlv.putBytes(pck, typ, opt);

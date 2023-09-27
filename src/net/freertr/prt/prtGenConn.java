@@ -29,7 +29,12 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
     /**
      * protocol data may stored in this field
      */
-    public Object proto;
+    public Object protoDat;
+
+    /**
+     * protocol number stored here
+     */
+    public final int protoNum;
 
     /**
      * sending protocol
@@ -177,8 +182,8 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
      * @param tos type of service
      */
     protected prtGenConn(prtGen low, prtServP upP, prtServS upS, pipeLine pip, boolean dir, ipFwdIface ifc, int prtL, addrIP adrR, int prtR, String nam, int kid, String pwd, int ttl, int tos) {
-        int prt = low.getProtoNum();
-        if ((pip == null) && (prt == prtTcp.protoNum)) {
+        protoNum = low.getProtoNum();
+        if ((pip == null) && (protoNum == prtTcp.protoNum)) {
             pip = new pipeLine(65536, false);
         }
         iface = ifc;
@@ -212,7 +217,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
         if (b) {
             b = pip.isBlockMode();
         } else {
-            b = prt != prtTcp.protoNum;
+            b = protoNum != prtTcp.protoNum;
         }
         pipeLine pipeHandler = pipeLine.doClone(pip, b);
         pipeNetwork = pipeHandler.getSide();
@@ -553,7 +558,7 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
      * @return string
      */
     public String dumper() {
-        return "" + proto;
+        return "" + protoDat;
     }
 
 }

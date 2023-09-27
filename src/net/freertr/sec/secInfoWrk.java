@@ -9,12 +9,10 @@ import net.freertr.clnt.clntPmtud;
 import net.freertr.enc.enc7bit;
 import net.freertr.enc.encUrl;
 import net.freertr.ip.ipFwd;
-import net.freertr.ip.ipPrt;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
-import net.freertr.prt.prtGenConn;
 import net.freertr.serv.servHttp;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFormat;
@@ -35,7 +33,10 @@ public class secInfoWrk implements Runnable {
 
     private final ipFwd pmtuF;
 
-    private final pipeSide pipe;
+    /**
+     * reporter pipe
+     */
+    private final pipeSide rePip;
 
     private final int proto;
 
@@ -77,7 +78,7 @@ public class secInfoWrk implements Runnable {
      * create an instance
      *
      * @param ned configuration to use
-     * @param con pipeline to use
+     * @param con pipeline to use for reports
      * @param fwd forwarder to use
      * @param adr address to check
      * @param prt protocol number to check
@@ -86,7 +87,7 @@ public class secInfoWrk implements Runnable {
     public secInfoWrk(secInfoCfg ned, pipeSide con, ipFwd fwd, addrIP adr, int prt, addrIP loc) {
         pmtuF = fwd;
         cfg = ned;
-        pipe = pipeDiscard.needAny(con);
+        rePip = pipeDiscard.needAny(con);
         proto = prt;
         local = loc;
         if (ned == null) {
@@ -195,9 +196,9 @@ public class secInfoWrk implements Runnable {
         if (!http) {
             return;
         }
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        String s = pipe.lineGet(1);
+        rePip.lineTx = pipeSide.modTyp.modeCRLF;
+        rePip.lineRx = pipeSide.modTyp.modeCRorLF;
+        String s = rePip.lineGet(1);
         cmds cmd = new cmds("api", s);
         cmd.word();
         encUrl gotUrl = new encUrl();
@@ -250,18 +251,18 @@ public class secInfoWrk implements Runnable {
         if (!http) {
             return;
         }
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        pipe.linePut("HTTP/1.1 200 ok");
-        pipe.linePut("Server: " + version.usrAgnt);
-        pipe.linePut("Content-Type: " + getContentType());
-        pipe.linePut("Connection: Close");
-        pipe.linePut("");
+        rePip.lineTx = pipeSide.modTyp.modeCRLF;
+        rePip.lineRx = pipeSide.modTyp.modeCRorLF;
+        rePip.linePut("HTTP/1.1 200 ok");
+        rePip.linePut("Server: " + version.usrAgnt);
+        rePip.linePut("Content-Type: " + getContentType());
+        rePip.linePut("Connection: Close");
+        rePip.linePut("");
         String a = getHtmlLines(true);
         if (a == null) {
             return;
         }
-        pipe.linePut(a);
+        rePip.linePut(a);
     }
 
     /**
@@ -275,7 +276,7 @@ public class secInfoWrk implements Runnable {
         if (a == null) {
             return;
         }
-        pipe.linePut(a);
+        rePip.linePut(a);
     }
 
     /**
@@ -328,7 +329,7 @@ public class secInfoWrk implements Runnable {
      * print out results
      */
     public void putResult() {
-        putResult(pipe);
+        putResult(rePip);
     }
 
     /**

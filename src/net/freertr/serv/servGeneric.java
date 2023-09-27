@@ -1104,21 +1104,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return false;
     }
 
-    private boolean srvCheckAccept3(addrIP adr, int prt, ipFwdIface ifc, secInfoCls cls) {
-        if (srvIpInf == null) {
-            return false;
-        }
-        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(adr), adr, prt, ifc.addr);
-        inf.doWork(true, cls);
-        if (inf.need2drop()) {
-            if (srvLogDrop) {
-                logger.info("access ipinfo dropped " + adr + " " + prt);
-            }
-            return true;
-        }
-        return false;
-    }
-
     private void srvBlackholePeer(boolean ipv4, addrIP adr) {
         if (ipv4) {
             if (srvBlckhl4 != null) {
@@ -1136,7 +1121,12 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             return true;
         }
         secInfoCls cls = new secInfoCls(null, conn, null);
-        if (srvCheckAccept3(conn.peerAddr, prtTcp.protoNum, conn.iface, cls)) {
+        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(conn.peerAddr), conn.peerAddr, conn.protoNum, conn.iface.addr);
+        inf.doWork(true, cls);
+        if (inf.need2drop()) {
+            if (srvLogDrop) {
+                logger.info("access ipinfo dropped " + conn);
+            }
             return true;
         }
         if (srvAccess != null) {
@@ -1196,7 +1186,12 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             return true;
         }
         secInfoCls cls = new secInfoCls(null, null, prt);
-        if (srvCheckAccept3(pck.IPsrc, pck.IPprt, ifc, cls)) {
+        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(rem), rem, prt.getProtoNum(), ifc.addr);
+        inf.doWork(true, cls);
+        if (inf.need2drop()) {
+            if (srvLogDrop) {
+                logger.info("access ipinfo dropped " + rem + " " + prt);
+            }
             return true;
         }
         if (srvAccess != null) {

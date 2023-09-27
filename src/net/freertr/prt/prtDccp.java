@@ -275,7 +275,7 @@ public class prtDccp extends prtGen {
         }
         clnt.sendPRT = protoNum;
         prtDccpConn pr = new prtDccpConn();
-        clnt.proto = pr;
+        clnt.protoDat = pr;
         pr.seqLocHi = bits.randomD();
         pr.seqLocLo = bits.randomD();
         if (pck == null) {
@@ -337,7 +337,7 @@ public class prtDccp extends prtGen {
     }
 
     protected void connectionWork(prtGenConn clnt) {
-        prtDccpConn pr = (prtDccpConn) clnt.proto;
+        prtDccpConn pr = (prtDccpConn) clnt.protoDat;
         if (pr.conned) {
             return;
         }
@@ -357,7 +357,7 @@ public class prtDccp extends prtGen {
      * @param pck packet
      */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
-        prtDccpConn pr = (prtDccpConn) clnt.proto;
+        prtDccpConn pr = (prtDccpConn) clnt.protoDat;
         byte[] buf;
         pr.seqRemHi = pck.TCPwin;
         pr.seqRemLo = pck.TCPseq;
@@ -430,7 +430,7 @@ public class prtDccp extends prtGen {
     }
 
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
-        prtDccpConn pr = (prtDccpConn) clnt.proto;
+        prtDccpConn pr = (prtDccpConn) clnt.protoDat;
         pr.updateSeq();
         pck.IPttl = clnt.sendTTL;
         pck.IPtos = clnt.sendTOS;
@@ -490,7 +490,7 @@ public class prtDccp extends prtGen {
     }
 
     private void sendMyPack(prtGenConn clnt, byte[] opt, int typ) {
-        prtDccpConn pr = (prtDccpConn) clnt.proto;
+        prtDccpConn pr = (prtDccpConn) clnt.protoDat;
         packHolder pck = new packHolder(true, true);
         pck.putCopy(opt, 0, 0, opt.length);
         pck.putSkip(opt.length);

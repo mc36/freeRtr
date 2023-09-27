@@ -583,7 +583,7 @@ public class prtTcp extends prtGen {
     }
 
     private int sendMyPacket(prtGenConn clnt, int flg, int datSiz) {
-        prtTcpConn pr = (prtTcpConn) clnt.proto;
+        prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         packHolder pck = new packHolder(true, true);
         synchronized (pr.lck) {
             pck.clear();
@@ -695,7 +695,7 @@ public class prtTcp extends prtGen {
         clnt.sendPRT = protoNum;
         prtTcpConn pr = new prtTcpConn();
         pr.netMax = cfgAll.tcpSegmentMin;
-        clnt.proto = pr;
+        clnt.protoDat = pr;
         clnt.timeout = cfgAll.tcpTimeSyn;
         clnt.workInterval = cfgAll.tcpTimeWork;
         pr.activWait = cfgAll.tcpTimeNow;
@@ -741,7 +741,7 @@ public class prtTcp extends prtGen {
      * @param clnt client
      */
     protected void connectionClose(prtGenConn clnt) {
-        prtTcpConn pr = (prtTcpConn) clnt.proto;
+        prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         if (debugger.prtTcpTraf) {
             logger.debug("close");
         }
@@ -793,7 +793,7 @@ public class prtTcp extends prtGen {
      * @param pck packet
      */
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
-        prtTcpConn pr = (prtTcpConn) clnt.proto;
+        prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         synchronized (pr.lck) {
             if (clnt.passwd != null) {
                 if (pck.TCPaut < 0) {
@@ -1051,7 +1051,7 @@ public class prtTcp extends prtGen {
     }
 
     private boolean flush2net(prtGenConn clnt) {
-        prtTcpConn pr = (prtTcpConn) clnt.proto;
+        prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         int bufSiz = clnt.pipeNetwork.ready2rx();
         if ((!pr.activFrcd) && (bufSiz < 1)) {
             if (clnt.pipeNetwork.isClosed() == 0) {
@@ -1109,7 +1109,7 @@ public class prtTcp extends prtGen {
      * @param clnt client
      */
     protected void connectionWork(prtGenConn clnt) {
-        prtTcpConn pr = (prtTcpConn) clnt.proto;
+        prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         long curTim = bits.getTime();
         if (pr.state == prtTcpConn.stOpened) {
             if (!flush2net(clnt)) {

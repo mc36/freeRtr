@@ -248,7 +248,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
 
     private String getMyVia() {
         String a;
-        if (conn.proto == null) {
+        if (conn.protoDat == null) {
             a = "UDP";
         } else {
             a = "TCP";

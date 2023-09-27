@@ -11,7 +11,7 @@ import net.freertr.prt.prtGenConn;
  */
 public class secInfoCls {
 
-    public secInfoCls(pipeSide clsP, prtGenConn clsC, ipPrt prtI) {
+    public secInfoCls(pipeSide clsP, prtGenConn clsC, ipPrt prtI) {////, addrIP adr, int prt, addrIP loc) {
         //////////////////////////
     }
 
