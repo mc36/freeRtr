@@ -22,7 +22,6 @@ import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logger;
-import net.freertr.util.verCore;
 
 /**
  * generic information utils

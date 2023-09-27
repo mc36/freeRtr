@@ -15,6 +15,7 @@ import net.freertr.ip.ipMpls;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
+import net.freertr.prt.prtTcp;
 import net.freertr.sec.secClient;
 import net.freertr.sec.secInfoWrk;
 import net.freertr.sec.secServer;
@@ -421,8 +422,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
             conn.wait4ready(iface.deadTimer);
         }
         if (iface.ipInfoCfg != null) {
-            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, null, lower.fwdCore, peer, rtrLsrp.port, iface.iface.addr);
-            ipInfoRes.doWork();
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, null, lower.fwdCore, peer, prtTcp.protoNum, iface.iface.addr);
+            ipInfoRes.doWork(false);
             if (ipInfoRes.need2drop()) {
                 sendErr("notPingable");
                 return;

@@ -14,6 +14,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
+import net.freertr.prt.prtTcp;
 import net.freertr.sec.secInfoCfg;
 import net.freertr.sec.secInfoUtl;
 import net.freertr.sec.secInfoWrk;
@@ -241,8 +242,8 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         pipe.setReady();
         pipe.wait4ready(holdTimer);
         if (ipInfoCfg != null) {
-            ipInfoRes = new secInfoWrk(ipInfoCfg, null, parent.fwdCore, peer, rtrLsrp.port, usedIfc.addr);
-            ipInfoRes.doWork();
+            ipInfoRes = new secInfoWrk(ipInfoCfg, null, parent.fwdCore, peer, prtTcp.protoNum, usedIfc.addr);
+            ipInfoRes.doWork(false);
             if (ipInfoRes.need2drop()) {
                 closeNow();
                 return true;

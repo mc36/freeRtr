@@ -35,6 +35,7 @@ import net.freertr.prt.prtGen;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtServS;
+import net.freertr.prt.prtTcp;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrBlackhole;
 import net.freertr.sec.secInfoCfg;
@@ -1107,8 +1108,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             return false;
         }
         ipFwd fwd = srvVrf.getFwd(adr);
-        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(adr), adr, prt, ifc.addr);
-        inf.doWork();
+        secInfoWrk inf = new secInfoWrk(srvIpInf, null, srvVrf.getFwd(adr), adr, prt, ifc.addr);////////prtTcp.protoNum
+        inf.doWork(true);
         if (!inf.need2drop()) {
             return false;
         }
@@ -1134,7 +1135,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if (srvCheckAccept1(conn.peerAddr, conn.portLoc)) {
             return true;
         }
-        if (srvCheckAccept3(conn.peerAddr, conn.portLoc, conn.iface)) {
+        if (srvCheckAccept3(conn.peerAddr, prtTcp.protoNum, conn.iface)) {
             return true;
         }
         if (srvAccess != null) {

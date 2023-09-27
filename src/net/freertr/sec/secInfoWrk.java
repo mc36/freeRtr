@@ -35,7 +35,7 @@ public class secInfoWrk {
 
     private final pipeSide pipe;
 
-    private final int port;
+    private final int proto;
 
     private final boolean othrs;
 
@@ -76,14 +76,14 @@ public class secInfoWrk {
      * @param con pipeline to use
      * @param fwd forwarder to use
      * @param adr address to check
-     * @param prt port number to check
+     * @param prt protocol number to check
      * @param loc local address
      */
     public secInfoWrk(secInfoCfg ned, pipeSide con, ipFwd fwd, addrIP adr, int prt, addrIP loc) {
         pmtuF = fwd;
         cfg = ned;
         pipe = pipeDiscard.needAny(con);
-        port = prt;
+        proto = prt;
         local = loc;
         if (ned == null) {
             changeWorkAddr(adr);
@@ -119,7 +119,7 @@ public class secInfoWrk {
         if (justip) {
             return "" + addr;
         }
-        String s = addr + " prt=" + port;
+        String s = addr + " prt=" + proto;
         if (pmtuD != null) {
             s += " pmtu=" + pmtuD;
         }
@@ -143,13 +143,15 @@ public class secInfoWrk {
 
     /**
      * do every work
+     *
+     * @param thrd start new thread if needed
      */
-    public void doWork() {
+    public void doWork(boolean thrd) {
         if (cfg == null) {
             return;
         }
         if (debugger.clntIpInfo) {
-            logger.debug("working on " + addr + " " + port);
+            logger.debug("working on " + addr + " " + proto);
         }
         try {
             fwd = secInfoUtl.findOneFwd(addr, cfg.fwder4, cfg.fwder6);
@@ -159,7 +161,7 @@ public class secInfoWrk {
             doResolve();
             doScript();
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + port);
+            logger.traceback(e, addr + " " + proto);
         }
     }
 
@@ -260,11 +262,11 @@ public class secInfoWrk {
      */
     public void doHttpUrl(String a) {
         if (debugger.clntIpInfo) {
-            logger.debug("api " + a + " queried " + addr + " " + port);
+            logger.debug("api " + a + " queried " + addr + " " + proto);
         }
         cmds cmd = new cmds("url", a.replaceAll("/", " "));
         for (;;) {
-            if (doOneCfg(cmd)) {
+            if (doOneHttp(cmd)) {
                 break;
             }
         }
@@ -292,7 +294,7 @@ public class secInfoWrk {
      * @param cmd command
      * @return true to terminate reading
      */
-    public boolean doOneCfg(cmds cmd) {
+    protected boolean doOneHttp(cmds cmd) {
         String a = cmd.word();
         if (a.length() < 1) {
             return true;
@@ -362,7 +364,7 @@ public class secInfoWrk {
             return false;
         }
         if (debugger.clntIpInfo) {
-            logger.debug("bad api " + a + " queried " + addr + " " + port);
+            logger.debug("bad api " + a + " queried " + addr + " " + proto);
         }
         return false;
     }
@@ -372,7 +374,7 @@ public class secInfoWrk {
      *
      * @param pipe pipeline to use
      */
-    public void putResult(pipeSide pipe) {
+    protected void putResult(pipeSide pipe) {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         List<String> lst = getRouteInfos();
@@ -390,7 +392,7 @@ public class secInfoWrk {
     /**
      * execute the script
      */
-    public void doScript() {
+    protected void doScript() {
         if (cfg == null) {
             return;
         }
@@ -399,14 +401,14 @@ public class secInfoWrk {
         }
         List<String> lst = new ArrayList<String>();
         lst.add("set remote " + addr);
-        lst.add("set portnum " + port);
+        lst.add("set proto " + proto);
         cfg.script.doRound(lst);
     }
 
     /**
      * execute the script
      */
-    public void doResolve() {
+    protected void doResolve() {
         if (cfg == null) {
             return;
         }
@@ -423,7 +425,7 @@ public class secInfoWrk {
         if (resolved != null) {
             return;
         }
-        logger.info("no reverse dns " + addr + " " + port);
+        logger.info("no reverse dns " + addr + " " + proto);
     }
 
     /**

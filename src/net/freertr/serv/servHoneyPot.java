@@ -7,6 +7,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.prt.prtTcp;
 import net.freertr.sec.secInfoCfg;
 import net.freertr.sec.secInfoUtl;
 import net.freertr.sec.secInfoWrk;
@@ -101,7 +102,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(60000);
         pipe.setReady();
-        servHoneyPotConn ntry = new servHoneyPotConn(this, pipe, id.peerAddr, id.iface.addr, id.portRem);
+        servHoneyPotConn ntry = new servHoneyPotConn(this, pipe, id.peerAddr, id.iface.addr);
         ntry.doStart();
         return false;
     }
@@ -118,8 +119,6 @@ class servHoneyPotConn implements Runnable {
 
     private final addrIP local;
 
-    private final int port;
-
     private final ipFwd fwdr;
 
     /**
@@ -130,12 +129,11 @@ class servHoneyPotConn implements Runnable {
      * @param rem address
      * @param prt port
      */
-    public servHoneyPotConn(servHoneyPot parent, pipeSide conn, addrIP rem, addrIP loc, int prt) {
+    public servHoneyPotConn(servHoneyPot parent, pipeSide conn, addrIP rem, addrIP loc) {
         lower = parent;
         pipe = conn;
         remote = rem;
         local = loc;
-        port = prt;
         fwdr = lower.srvVrf.getFwd(rem);
     }
 
@@ -148,18 +146,18 @@ class servHoneyPotConn implements Runnable {
 
     public void run() {
         try {
-            logger.info("honeypot hit from " + remote + " " + port);
+            logger.info("honeypot hit from " + remote);
             pipe.setReady();
-            secInfoWrk ipi = new secInfoWrk(lower.ipInfo, pipe, lower.srvVrf.getFwd(remote), remote, port, local);
+            secInfoWrk ipi = new secInfoWrk(lower.ipInfo, pipe, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
             ipi.doHttpRead();
-            ipi.doWork();
+            ipi.doWork(false);
             ipi.need2drop();
             ipi.doHttpWrite();
             ipi.putResult();
             ipi.doHttpFinish();
             pipe.setClose();
         } catch (Exception e) {
-            logger.traceback(e, remote + " " + port);
+            logger.traceback(e, "" + remote);
         }
     }
 
