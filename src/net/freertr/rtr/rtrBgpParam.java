@@ -489,6 +489,11 @@ public abstract class rtrBgpParam {
     public int dampenHalf;
 
     /**
+     * max template clones
+     */
+    public int maxClones;
+
+    /**
      * max prefix count
      */
     public int maxPrxInCnt;
@@ -1233,6 +1238,7 @@ public abstract class rtrBgpParam {
                 dampenPfxs = new tabGen<rtrBgpDamp>();
             }
         }
+        maxClones = src.maxClones;
         maxPrxInCnt = src.maxPrxInCnt;
         maxPrxInPrc = src.maxPrxInPrc;
         maxPrxOutCnt = src.maxPrxOutCnt;
@@ -1652,6 +1658,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  4       attribute-filter            filter received attributes");
         l.add(null, "4  .         <num>                     filtered attributes");
         l.add(null, "3  .       soft-reconfiguration        enable soft reconfiguration");
+        l.add(null, "3  4       maximum-clones              maximum number of accepted neighbors");
+        l.add(null, "4  .         <num>                     prefix count");
         l.add(null, "3  4       maximum-prefix-in           maximum number of accepted prefixes");
         l.add(null, "4  5         <num>                     prefix count");
         l.add(null, "5  .           <num>                   warning percent");
@@ -1850,6 +1858,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !rtfilterIn, beg, nei + "route-target-filter-in", "");
         cmds.cfgLine(l, !rtfilterOut, beg, nei + "route-target-filter-out", "");
         cmds.cfgLine(l, !enforceFirst, beg, nei + "enforce-first-as", "");
+        cmds.cfgLine(l, maxClones < 1, beg, nei + "maximum-clones", "" + maxClones);
         cmds.cfgLine(l, maxPrxInCnt < 1, beg, nei + "maximum-prefix-in", maxPrxInCnt + " " + maxPrxInPrc);
         cmds.cfgLine(l, maxPrxOutCnt < 1, beg, nei + "maximum-prefix-out", maxPrxOutCnt + " " + maxPrxOutPrc);
         cmds.cfgLine(l, (dampenWthd + dampenAnno) < 1, beg, nei + "dampening", dampenWthd + " " + dampenAnno + " " + dampenMinp + " " + dampenMaxp + " " + dampenSupp + " " + dampenReus + " " + dampenHalf);
@@ -2420,6 +2429,14 @@ public abstract class rtrBgpParam {
             dampenReus = 0;
             dampenHalf = 0;
             dampenPfxs = null;
+            return false;
+        }
+        if (s.equals("maximum-clones")) {
+            maxClones = bits.str2num(cmd.word());
+            if (!negated) {
+                return false;
+            }
+            maxClones = 0;
             return false;
         }
         if (s.equals("maximum-prefix-in")) {

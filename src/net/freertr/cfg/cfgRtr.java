@@ -421,6 +421,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* next-hop-peer",
         "router bgp[46] .*! no (template|neighbor) .* send-community",
         "router bgp[46] .*! no (template|neighbor) .* label-pop",
+        "router bgp[46] .*! no (template|neighbor) .* maximum-clones",
         "router bgp[46] .*! no (template|neighbor) .* maximum-prefix-in",
         "router bgp[46] .*! no (template|neighbor) .* maximum-prefix-out",
         "router bgp[46] .*! no (template|neighbor) .* attribute-filter",

@@ -1601,6 +1601,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (lstn == null) {
             return true;
         }
+        if (lstn.temp.maxClones > 0) {
+            int i = countClones(neighs, lstn.temp);
+            i += countClones(lstnNei, lstn.temp);
+            if (i > lstn.temp.maxClones) {
+                return true;
+            }
+        }
         id.changeSecurity(lstn.temp.keyId, lstn.temp.passwd, lstn.temp.ttlSecurity, lstn.temp.tosValue);
         rtrBgpNeigh ntry = new rtrBgpNeigh(this);
         ntry.peerAddr = id.peerAddr.copyBytes();
@@ -1625,6 +1632,21 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.socketMode = 4;
         ntry.startNow();
         return false;
+    }
+
+    private final int countClones(tabGen<rtrBgpNeigh> lst, rtrBgpTemp tmp) {
+        int o = 0;
+        for (int i = lst.size() - 1; i >= 0; i--) {
+            rtrBgpNeigh ntry = lst.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.template != tmp) {
+                continue;
+            }
+            o++;
+        }
+        return o;
     }
 
     /**
