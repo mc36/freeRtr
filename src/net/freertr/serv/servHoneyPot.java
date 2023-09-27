@@ -149,9 +149,10 @@ class servHoneyPotConn implements Runnable {
         try {
             logger.info("honeypot hit from " + remote);
             pipe.setReady();
-            secInfoWrk ipi = new secInfoWrk(lower.ipInfo, pipe, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
+            secInfoCls cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote));
+            secInfoWrk ipi = new secInfoWrk(lower.ipInfo, cls, pipe, remote, prtTcp.protoNum, local);
             ipi.doHttpRead();
-            ipi.doWork(false, new secInfoCls(null, null, null));
+            ipi.doWork(false);
             ipi.need2drop();
             ipi.doHttpWrite();
             ipi.putResult();

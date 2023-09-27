@@ -32,7 +32,12 @@ public class secInfoWrk implements Runnable {
     /**
      * configuration to use
      */
-    protected final secInfoCfg cfg;
+    protected final secInfoCfg config;
+
+    /**
+     * closer to use
+     */
+    protected final secInfoCls closer;
 
     /**
      * forwarder to use
@@ -93,24 +98,24 @@ public class secInfoWrk implements Runnable {
 
     protected clntPmtud pmtuD;
 
-    protected secInfoCls closer = new secInfoCls(null, null, null);
-
     /**
      * create an instance
      *
      * @param ned configuration to use
+     * @param cls closer to use
      * @param con pipeline to use for reports
      * @param fwd forwarder to use
      * @param adr address to check
      * @param prt protocol number to check
      * @param loc local address
      */
-    public secInfoWrk(secInfoCfg ned, pipeSide con, ipFwd fwd, addrIP adr, int prt, addrIP loc) {
+    public secInfoWrk(secInfoCfg ned, secInfoCls cls, pipeSide con, addrIP adr, int prt, addrIP loc) {
         if (ned == null) {
             ned = new secInfoCfg();
         }
-        connFwd = fwd;
-        cfg = ned;
+        closer = cls;
+        connFwd = null;/////////////
+        config = ned;
         rePip = pipeDiscard.needAny(con);
         proto = prt;
         local = loc;
@@ -166,21 +171,19 @@ public class secInfoWrk implements Runnable {
      * get pmtud result
      */
     public void doPmtud() {
-        pmtuD = secInfoUtl.doPmtud(cfg, connFwd, addr, local);
+        pmtuD = secInfoUtl.doPmtud(config, connFwd, addr, local);
     }
 
     /**
      * do every work
      *
      * @param thrd start new thread if needed
-     * @param cls closer to use
      * @return true if a new thread started
      */
-    public boolean doWork(boolean thrd, secInfoCls cls) {
-        closer = cls;
+    public boolean doWork(boolean thrd) {
         ////////////////////////
-        thrd &= cfg.resolve;
-        thrd &= cfg.pmtudTim > 0;
+        thrd &= config.resolve;
+        thrd &= config.pmtudTim > 0;
         if (!thrd) {
             doTheWork();
             return false;
@@ -194,8 +197,8 @@ public class secInfoWrk implements Runnable {
             logger.debug("working on " + addr + " " + proto);
         }
         try {
-            fwd = secInfoUtl.findOneFwd(addr, cfg.fwder4, cfg.fwder6);
-            rtr = secInfoUtl.findOneRtr(addr, cfg.router4, cfg.router6);
+            fwd = secInfoUtl.findOneFwd(addr, config.fwder4, config.fwder6);
+            rtr = secInfoUtl.findOneRtr(addr, config.router4, config.router6);
             ntry = secInfoUtl.findOneRoute(addr, rtr, fwd);
             doPmtud();
             doResolve();
@@ -352,13 +355,13 @@ public class secInfoWrk implements Runnable {
      * execute the script
      */
     protected void doScript() {
-        if (cfg.script == null) {
+        if (config.script == null) {
             return;
         }
         List<String> lst = new ArrayList<String>();
         lst.add("set remote " + addr);
         lst.add("set proto " + proto);
-        cfg.script.doRound(lst);
+        config.script.doRound(lst);
     }
 
     /**
@@ -368,7 +371,7 @@ public class secInfoWrk implements Runnable {
         if (resolved != null) {
             return;
         }
-        if (!cfg.resolve) {
+        if (!config.resolve) {
             resolved = null;
             return;
         }

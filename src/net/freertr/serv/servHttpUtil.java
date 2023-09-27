@@ -1295,20 +1295,21 @@ public class servHttpUtil {
             if (cn.gotHost.ipInfo == null) {
                 return true;
             }
-            secInfoWrk w = new secInfoWrk(cn.gotHost.ipInfo, null, cn.lower.srvVrf.getFwd(cn.peer), cn.peer, prtTcp.protoNum, cn.conn.iface.addr);
-            w.doHttpUrl(cmd.getRemaining());
-            w.doWork(false, new secInfoCls(null, null, null));
-            w.need2drop();
-            List<String> r = w.getRouteInfos();
-            String a = w.getHtmlLines(true);
+            secInfoCls cls = new secInfoCls(null, null, null, cn.lower.srvVrf.getFwd(cn.peer));
+            secInfoWrk wrk = new secInfoWrk(cn.gotHost.ipInfo, cls, null, cn.peer, prtTcp.protoNum, cn.conn.iface.addr);
+            wrk.doHttpUrl(cmd.getRemaining());
+            wrk.doWork(false);
+            wrk.need2drop();
+            List<String> r = wrk.getRouteInfos();
+            String a = wrk.getHtmlLines(true);
             if (a != null) {
                 r.add(0, a);
             }
-            a = w.getHtmlLines(false);
+            a = wrk.getHtmlLines(false);
             if (a != null) {
                 r.add(a);
             }
-            a = w.getContentType();
+            a = wrk.getContentType();
             byte[] b = secInfoUtl.getRouteAscii(r);
             cn.sendTextHeader("200 ok", a, b);
             return false;

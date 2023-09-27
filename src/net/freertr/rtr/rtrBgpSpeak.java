@@ -1218,9 +1218,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         sendOpen();
         sendKeepAlive();
         if (neigh.ipInfoCfg != null) {
-            secInfoCls cls = new secInfoCls(null, null, null);
-            ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, null, parent.fwdCore, neigh.peerAddr, prtTcp.protoNum, neigh.localAddr);
-            ipInfoRes.doWork(false, cls);
+            secInfoCls cls = new secInfoCls(null, null, null, parent.fwdCore);
+            ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, cls, null, neigh.peerAddr, prtTcp.protoNum, neigh.localAddr);
+            ipInfoRes.doWork(false);
             if (ipInfoRes.need2drop()) {
                 logger.error("pmtud failed to " + neigh.peerAddr);
                 sendNotify(1, 2);
