@@ -424,7 +424,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         }
         if (iface.ipInfoCfg != null) {
             ipInfoRes = new secInfoWrk(iface.ipInfoCfg, null, lower.fwdCore, peer, prtTcp.protoNum, iface.iface.addr);
-            ipInfoRes.doWork(false, new secInfoCls(null, null, null));
+            secInfoCls cls = new secInfoCls(null, null, null);
+            ipInfoRes.doWork(false, cls);
             if (ipInfoRes.need2drop()) {
                 sendErr("notPingable");
                 return;
