@@ -29,23 +29,44 @@ import net.freertr.util.version;
  */
 public class secInfoWrk implements Runnable {
 
-    private final secInfoCfg cfg;
+    /**
+     * configuration to use
+     */
+    protected final secInfoCfg cfg;
 
-    private final ipFwd pmtuF;
+    /**
+     * forwarder to use
+     */
+    protected final ipFwd connFwd;
 
     /**
      * reporter pipe
      */
-    private final pipeSide rePip;
+    protected final pipeSide rePip;
 
-    private final int proto;
+    /**
+     * protocol number
+     */
+    protected final int proto;
 
-    private final boolean othrs;
+    /**
+     * allow to query others
+     */
+    protected final boolean othrs;
 
-    private final addrIP addr = new addrIP();
+    /**
+     * address to query
+     */
+    protected final addrIP addr = new addrIP();
 
-    private final addrIP local;
+    /**
+     * local address
+     */
+    protected final addrIP local;
 
+    /**
+     * format as http
+     */
     protected boolean http;
 
     protected String style;
@@ -85,16 +106,14 @@ public class secInfoWrk implements Runnable {
      * @param loc local address
      */
     public secInfoWrk(secInfoCfg ned, pipeSide con, ipFwd fwd, addrIP adr, int prt, addrIP loc) {
-        pmtuF = fwd;
+        if (ned == null) {
+            ned = new secInfoCfg();
+        }
+        connFwd = fwd;
         cfg = ned;
         rePip = pipeDiscard.needAny(con);
         proto = prt;
         local = loc;
-        if (ned == null) {
-            changeWorkAddr(adr);
-            othrs = false;
-            return;
-        }
         hack = ned.hacked;
         plain = ned.plain;
         justip = ned.justip;
@@ -147,7 +166,7 @@ public class secInfoWrk implements Runnable {
      * get pmtud result
      */
     public void doPmtud() {
-        pmtuD = secInfoUtl.doPmtud(cfg, pmtuF, addr, local);
+        pmtuD = secInfoUtl.doPmtud(cfg, connFwd, addr, local);
     }
 
     /**
@@ -158,9 +177,6 @@ public class secInfoWrk implements Runnable {
      * @return true if a new thread started
      */
     public boolean doWork(boolean thrd, secInfoCls cls) {
-        if (cfg == null) {
-            return false;
-        }
         closer = cls;
         ////////////////////////
         thrd &= cfg.resolve;
@@ -336,9 +352,6 @@ public class secInfoWrk implements Runnable {
      * execute the script
      */
     protected void doScript() {
-        if (cfg == null) {
-            return;
-        }
         if (cfg.script == null) {
             return;
         }
@@ -352,9 +365,6 @@ public class secInfoWrk implements Runnable {
      * execute the script
      */
     protected void doResolve() {
-        if (cfg == null) {
-            return;
-        }
         if (resolved != null) {
             return;
         }
@@ -398,9 +408,6 @@ public class secInfoWrk implements Runnable {
      * @return true if yes, false if no
      */
     public boolean need2drop() {
-        if (cfg == null) {
-            return false;
-        }
         if (pmtuD == null) {
             return false;
         }

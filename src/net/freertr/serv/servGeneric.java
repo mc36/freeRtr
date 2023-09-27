@@ -35,7 +35,6 @@ import net.freertr.prt.prtGen;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtServS;
-import net.freertr.prt.prtTcp;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrBlackhole;
 import net.freertr.sec.secInfoCfg;
