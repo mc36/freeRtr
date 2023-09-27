@@ -114,7 +114,7 @@ public class secInfoWrk implements Runnable {
             ned = new secInfoCfg();
         }
         closer = cls;
-        connFwd = null;/////////////
+        connFwd = cls.fwder;
         config = ned;
         rePip = pipeDiscard.needAny(con);
         proto = prt;

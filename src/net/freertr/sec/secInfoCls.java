@@ -14,10 +14,17 @@ public class secInfoCls {
 
     protected final ipFwd fwder;
 
-    
-    
+    protected final pipeSide closeP;
+
+    protected final prtGenConn closeC;
+
+    protected final ipPrt ipProt;
+
     public secInfoCls(pipeSide clsP, prtGenConn clsC, ipPrt prtI, ipFwd fwd) {
         fwder = fwd;
+        closeC = clsC;
+        closeP = clsP;
+        ipProt = prtI;
 ////, addrIP adr, int prt, addrIP loc) {
         //////////////////////////
     }
