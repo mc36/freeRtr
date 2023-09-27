@@ -1218,8 +1218,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         sendOpen();
         sendKeepAlive();
         if (neigh.ipInfoCfg != null) {
-            secInfoCls cls = new secInfoCls(null, null, null, parent.fwdCore);
-            ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, cls, null, neigh.peerAddr, prtTcp.protoNum, neigh.localAddr);
+            secInfoCls cls = new secInfoCls(null, null, null, parent.fwdCore, neigh.peerAddr, prtTcp.protoNum, neigh.localAddr);
+            ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, cls, null);
             ipInfoRes.doWork(false);
             if (ipInfoRes.need2drop()) {
                 logger.error("pmtud failed to " + neigh.peerAddr);

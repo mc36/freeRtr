@@ -1295,8 +1295,8 @@ public class servHttpUtil {
             if (cn.gotHost.ipInfo == null) {
                 return true;
             }
-            secInfoCls cls = new secInfoCls(null, null, null, cn.lower.srvVrf.getFwd(cn.peer));
-            secInfoWrk wrk = new secInfoWrk(cn.gotHost.ipInfo, cls, null, cn.peer, prtTcp.protoNum, cn.conn.iface.addr);
+            secInfoCls cls = new secInfoCls(null, null, null, cn.lower.srvVrf.getFwd(cn.peer), cn.peer, prtTcp.protoNum, cn.conn.iface.addr);
+            secInfoWrk wrk = new secInfoWrk(cn.gotHost.ipInfo, cls, null);
             wrk.doHttpUrl(cmd.getRemaining());
             wrk.doWork(false);
             wrk.need2drop();

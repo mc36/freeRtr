@@ -104,12 +104,8 @@ public class secInfoWrk implements Runnable {
      * @param ned configuration to use
      * @param cls closer to use
      * @param con pipeline to use for reports
-     * @param fwd forwarder to use
-     * @param adr address to check
-     * @param prt protocol number to check
-     * @param loc local address
      */
-    public secInfoWrk(secInfoCfg ned, secInfoCls cls, pipeSide con, addrIP adr, int prt, addrIP loc) {
+    public secInfoWrk(secInfoCfg ned, secInfoCls cls, pipeSide con) {
         if (ned == null) {
             ned = new secInfoCfg();
         }
@@ -117,8 +113,8 @@ public class secInfoWrk implements Runnable {
         connFwd = cls.fwder;
         config = ned;
         rePip = pipeDiscard.needAny(con);
-        proto = prt;
-        local = loc;
+        proto = cls.protNum;
+        local = cls.local;
         hack = ned.hacked;
         plain = ned.plain;
         justip = ned.justip;
@@ -128,7 +124,7 @@ public class secInfoWrk implements Runnable {
         single = ned.single;
         http = ned.tinyHttp;
         othrs = ned.others;
-        changeWorkAddr(adr);
+        changeWorkAddr(cls.remote);
     }
 
     public void run() {

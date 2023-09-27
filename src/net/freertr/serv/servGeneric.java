@@ -1119,8 +1119,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if (srvCheckAccept1(conn.peerAddr, conn.portLoc)) {
             return true;
         }
-        secInfoCls cls = new secInfoCls(null, conn, null, srvVrf.getFwd(conn.peerAddr));
-        secInfoWrk inf = new secInfoWrk(srvIpInf, cls, null, conn.peerAddr, conn.protoNum, conn.iface.addr);
+        secInfoCls cls = new secInfoCls(null, conn, null, srvVrf.getFwd(conn.peerAddr), conn.peerAddr, conn.protoNum, conn.iface.addr);
+        secInfoWrk inf = new secInfoWrk(srvIpInf, cls, null);
         inf.doWork(true);
         if (inf.need2drop()) {
             if (srvLogDrop) {
@@ -1184,8 +1184,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if (srvCheckAccept1(pck.IPsrc, pck.IPprt)) {
             return true;
         }
-        secInfoCls cls = new secInfoCls(null, null, prt, srvVrf.getFwd(rem));
-        secInfoWrk inf = new secInfoWrk(srvIpInf, cls, null, rem, prt.getProtoNum(), ifc.addr);
+        secInfoCls cls = new secInfoCls(null, null, prt, srvVrf.getFwd(rem), rem, prt.getProtoNum(), ifc.addr);
+        secInfoWrk inf = new secInfoWrk(srvIpInf, cls, null);
         inf.doWork(true);
         if (inf.need2drop()) {
             if (srvLogDrop) {

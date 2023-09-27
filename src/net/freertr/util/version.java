@@ -711,6 +711,10 @@ public class version {
                 l.add("");
                 l.add("s00000 crash3r-bash$ :(){ :|:& };:");
                 l.add("");
+                l.add("s00000 adm1m3r-bash$ alias vi rm *");
+                l.add("");
+                l.add("s00000 c0d3r-bash$ echo srv1234.git.mycorp cname srv4321.git.oldcorp > /etc/hosts");
+                l.add("");
                 l.add("!... r1p 1an g00 deb0r4 g00 1n the n1ght l1ght$ l1ke m00n -sUn.c0m ~0racl3.c0m !n1x.0rg ...");
                 l.add("");
                 l.add("w1r3guard.c0m 1Z th3 w0r$tuCK 1n-k3rn3l VPN1sh 3v3r accord10n c1$C0.c0m / jun1p3r.n3t / g00d lU$T f4ct0r1z3(m30w_rsa_8.8kpr1m3)...");

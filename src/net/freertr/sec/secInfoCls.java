@@ -1,5 +1,6 @@
 package net.freertr.sec;
 
+import net.freertr.addr.addrIP;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipPrt;
 import net.freertr.pipe.pipeSide;
@@ -18,15 +19,32 @@ public class secInfoCls {
 
     protected final prtGenConn closeC;
 
-    protected final ipPrt ipProt;
+    protected final ipPrt protIp;
 
-    public secInfoCls(pipeSide clsP, prtGenConn clsC, ipPrt prtI, ipFwd fwd) {
+    protected final addrIP remote;
+
+    protected final addrIP local;
+
+    protected final int protNum;
+
+    /**
+     * 
+     * @param clsP
+     * @param clsC
+     * @param prtI
+     * @param fwd forwarder to use
+     * @param adr address to check
+     * @param prt protocol number to check
+     * @param loc local address
+     */
+    public secInfoCls(pipeSide clsP, prtGenConn clsC, ipPrt prtI, ipFwd fwd, addrIP rem, int prt, addrIP loc) {
         fwder = fwd;
         closeC = clsC;
         closeP = clsP;
-        ipProt = prtI;
-////, addrIP adr, int prt, addrIP loc) {
-        //////////////////////////
+        protIp = prtI;
+        protNum = prt;
+        remote = rem.copyBytes();
+        local = loc.copyBytes();
     }
 
 }
