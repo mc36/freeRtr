@@ -15,7 +15,7 @@ app:
 
    disk:
     - target-dev: hdc
-      file: rtr-amd64.qcow2
+      file: rtr-x86_64.qcow2
 
    interfaces:
     - target-dev: net1

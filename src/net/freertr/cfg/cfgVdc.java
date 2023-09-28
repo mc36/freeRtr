@@ -436,7 +436,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, "4  .            <num>                function");
         l.add(null, "1  2      usb                        pass through usb device");
         l.add(null, "2  3        <num>                    bus");
-        l.add(null, "3  .          <num>                  port");
+        l.add(null, "3  4,.        <num>                  port");
+        l.add(null, "4  .            <num>                hubport");
         l.add(null, "1  2      vga2vnc                    enable vnc access");
         l.add(null, "2  .        <str>                    vnc address");
         l.add(null, "1  2      tcp2vrf                    pass host port in");
@@ -705,16 +706,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("pci")) {
             cfgVdcPci dev = new cfgVdcPci();
-            dev.bus = bits.str2num(cmd.word());
-            dev.dev = bits.str2num(cmd.word());
-            dev.fnc = bits.str2num(cmd.word());
+            dev.fromString(cmd);
             pcis.add(dev);
             return;
         }
         if (a.equals("usb")) {
             cfgVdcUsb dev = new cfgVdcUsb();
-            dev.bus = bits.str2num(cmd.word());
-            dev.prt = bits.str2num(cmd.word());
+            dev.fromString(cmd);
             usbs.add(dev);
             return;
         }
@@ -724,13 +722,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("tcp2vrf")) {
             cfgVdcTcp dev = new cfgVdcTcp();
-            dev.portH = bits.str2num(cmd.word());
-            dev.vrf = cmd.word();
-            dev.portV = bits.str2num(cmd.word());
-            if (cmd.size() > 1) {
-                dev.adr = new addrIP();
-                dev.adr.fromString(cmd.word());
-            }
+            dev.fromString(cmd);
             tcps.add(dev);
             return;
         }
@@ -873,16 +865,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("pci")) {
             cfgVdcPci dev = new cfgVdcPci();
-            dev.bus = bits.str2num(cmd.word());
-            dev.dev = bits.str2num(cmd.word());
-            dev.fnc = bits.str2num(cmd.word());
+            dev.fromString(cmd);
             pcis.del(dev);
             return;
         }
         if (a.equals("usb")) {
             cfgVdcUsb dev = new cfgVdcUsb();
-            dev.bus = bits.str2num(cmd.word());
-            dev.prt = bits.str2num(cmd.word());
+            dev.fromString(cmd);
             usbs.del(dev);
             return;
         }
@@ -892,9 +881,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("tcp2vrf")) {
             cfgVdcTcp dev = new cfgVdcTcp();
-            dev.portH = bits.str2num(cmd.word());
-            dev.vrf = cmd.word();
-            dev.portV = bits.str2num(cmd.word());
+            dev.fromString(cmd);
             tcps.del(dev);
             return;
         }
@@ -1050,14 +1037,14 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             }
             for (int i = 0; i < pcis.size(); i++) {
                 cfgVdcPci dev = pcis.get(i);
-                cmd += " -device vfio-pci,host=" + bits.toHexB(dev.bus) + ":" + bits.toHexB(dev.dev) + "." + dev.fnc;
+                cmd += dev.toQemuStr();
             }
             if (usbs.size() > 0) {
                 cmd += " -usb";
             }
             for (int i = 0; i < usbs.size(); i++) {
                 cfgVdcUsb dev = usbs.get(i);
-                cmd += " -device usb-host,hostbus=" + dev.bus + ",hostport=" + dev.prt;
+                cmd += dev.toQemuStr();
             }
         }
         if (cpuPinning != null) {
@@ -1261,6 +1248,19 @@ class cfgVdcTcp implements Comparator<cfgVdcTcp> {
         return a + " " + adr;
     }
 
+    public void fromString(cmds cmd) {
+        portH = bits.str2num(cmd.word());
+        vrf = cmd.word();
+        portV = bits.str2num(cmd.word());
+        if (cmd.size() < 1) {
+            return;
+        }
+        adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            adr = null;
+        }
+    }
+
 }
 
 class cfgVdcPci implements Comparator<cfgVdcPci> {
@@ -1297,6 +1297,16 @@ class cfgVdcPci implements Comparator<cfgVdcPci> {
         return bus + " " + dev + " " + fnc;
     }
 
+    public void fromString(cmds cmd) {
+        bus = bits.str2num(cmd.word());
+        dev = bits.str2num(cmd.word());
+        fnc = bits.str2num(cmd.word());
+    }
+
+    public String toQemuStr() {
+        return " -device vfio-pci,host=" + bits.toHexB(bus) + ":" + bits.toHexB(dev) + "." + fnc;
+    }
+
 }
 
 class cfgVdcUsb implements Comparator<cfgVdcUsb> {
@@ -1304,6 +1314,8 @@ class cfgVdcUsb implements Comparator<cfgVdcUsb> {
     public int bus;
 
     public int prt;
+
+    public int sub;
 
     public int compare(cfgVdcUsb o1, cfgVdcUsb o2) {
         if (o1.bus < o2.bus) {
@@ -1318,11 +1330,38 @@ class cfgVdcUsb implements Comparator<cfgVdcUsb> {
         if (o1.prt > o2.prt) {
             return +1;
         }
+        if (o1.sub < o2.sub) {
+            return -1;
+        }
+        if (o1.sub > o2.sub) {
+            return +1;
+        }
         return 0;
     }
 
     public String toString() {
-        return bus + " " + prt;
+        String a = bus + " " + prt;
+        if (sub < 1) {
+            return a;
+        }
+        return a + " " + sub;
+    }
+
+    public void fromString(cmds cmd) {
+        bus = bits.str2num(cmd.word());
+        prt = bits.str2num(cmd.word());
+        if (cmd.size() < 1) {
+            return;
+        }
+        sub = bits.str2num(cmd.word());
+    }
+
+    public String toQemuStr() {
+        String a = " -device usb-host,hostbus=" + bus + ",hostport=" + prt;
+        if (sub < 1) {
+            return a;
+        }
+        return a + "." + sub;
     }
 
 }

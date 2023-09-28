@@ -1,26 +1,26 @@
 virtualbox:
-vboxmanage import rtr-amd64.ova
+vboxmanage import rtr-x86_64.ova
 vboxmanage startvm rtr-dsk --type headless
 socat - unix-connect:/tmp/rtr-dsk
 vboxmanage controlvm rtr poweroff
 
 qemu:
-tar xvf rtr-amd64.ova
-qemu-system-x86_64 -enable-kvm -m 1024 -netdev user,id=a1 -device virtio-net-pci,netdev=a1 -no-reboot -monitor none -serial stdio -nographic -hda rtr-amd64.qcow2
+tar xvf rtr-x86_64.ova
+qemu-system-x86_64 -enable-kvm -m 1024 -netdev user,id=a1 -device virtio-net-pci,netdev=a1 -no-reboot -monitor none -serial stdio -nographic -hda rtr-x86_64.qcow2
 
 libvirt:
-tar xvf rtr-amd64.ova
+tar xvf rtr-x86_64.ova
 virsh create package.vsh
 
 cisco:
 !!! set platform hardware rom-monitor virtualization rp active
 !!! set platform hardware rom-monitor virtualization rp standby
-copy http://dl.nop.hu/rtr-amd64.ova harddisk:rtr-amd64.ova
+copy http://dl.nop.hu/rtr-x86_64.ova harddisk:rtr-x86_64.ova
 conf t
 virtual-service
 signing level unsigned
 end
-virtual-service install name rtr package harddisk:rtr-amd64.ova media harddisk:
+virtual-service install name rtr package harddisk:rtr-x86_64.ova media harddisk:
 show virtual-service list
 !!! wait until status changes to installed
 conf t
