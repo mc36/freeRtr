@@ -387,7 +387,7 @@ public class servDns extends servGeneric implements prtServS {
             return false;
         }
         if (negated && s.equals("defttl")) {
-            zones.del(new packDnsZone(zon.name));
+            zones.del(zon);
             return false;
         }
         if (negated) {
