@@ -42,6 +42,12 @@ public class userImage {
 
     private String arch = "amd64";
 
+    private String boot = "x86_64";
+
+    private String kern = "x86_64";
+
+    private String uefi = "bootx64.efi";
+
     private tabGen<userImageCat> catalogs = new tabGen<userImageCat>();
 
     private tabGen<userImagePkg> allPkgs = new tabGen<userImagePkg>();
@@ -297,25 +303,46 @@ public class userImage {
         return false;
     }
 
-    /**
-     * do the work
-     *
-     * @param cmd command to do
-     * @return true on error, false on success
-     */
-    public boolean doer(cmds cmd) {
-        pip = cmd.pipe;
-        List<String> res = bits.txt2buf(cmd.word());
-        if (res == null) {
-            cmd.error("no such file");
+    private boolean doIncludeAll(cmds c) {
+        boolean res = false;
+        for (;;) {
+            String s = c.word();
+            if (s.length() < 1) {
+                break;
+            }
+            cmds cmd = getCmd(s);
+            res |= doIncludeOne(cmd);
+        }
+        return res;
+    }
+
+    private boolean doIncludeOne(cmds c) {
+        String s = c.getRemaining();
+        c.error("including " + s);
+        List<String> lst = bits.txt2buf(s);
+        if (lst == null) {
+            c.error("no such file " + s);
             return true;
         }
+        return doOneFile(lst);
+    }
+
+    private cmds getCmd(String s) {
+        cmds c = new cmds("img", s);
+        c.pipe = pip;
+        return c;
+    }
+
+    private boolean doOneFile(List<String> res) {
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String s = res.get(cnt);
             s = s.replaceAll("%tmp%", tempDir);
             s = s.replaceAll("%dwn%", downDir);
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%arch%", arch);
+            s = s.replaceAll("%boot%", boot);
+            s = s.replaceAll("%kern%", kern);
+            s = s.replaceAll("%uefi%", uefi);
             s = s.replaceAll("%find%", found);
             s = s.replaceAll("%%", "%");
             s += "#";
@@ -332,11 +359,17 @@ public class userImage {
                 execCmd(s);
                 continue;
             }
-            cmd.error("--> " + a + " " + s + " <--");
+            cmds cmd = getCmd(a + " " + s);
+            cmd.word();
+            cmd.error("--> " + cmd.getRemaining() + " <--");
             if (a.equals("include")) {
-                cmds c = new cmds("", s);
-                c.pipe = pip;
-                if (doer(c)) {
+                if (doIncludeOne(cmd)) {
+                    return true;
+                }
+                continue;
+            }
+            if (a.equals("inclall")) {
+                if (doIncludeAll(cmd)) {
                     return true;
                 }
                 continue;
@@ -353,8 +386,28 @@ public class userImage {
                 arch = s;
                 continue;
             }
+            if (a.equals("boot")) {
+                boot = s;
+                continue;
+            }
+            if (a.equals("kern")) {
+                kern = s;
+                continue;
+            }
+            if (a.equals("uefi")) {
+                uefi = s;
+                continue;
+            }
             if (a.equals("temp")) {
                 tempDir = s;
+                continue;
+            }
+            if (a.equals("down")) {
+                downDir = s;
+                continue;
+            }
+            if (a.equals("image")) {
+                imgName = s;
                 continue;
             }
             if (a.equals("exit")) {
@@ -388,8 +441,7 @@ public class userImage {
                 continue;
             }
             if (a.equals("catalog-read")) {
-                cmds c = new cmds("", s);
-                c.pipe = pip;
+                cmds c = getCmd(s);
                 if (readUpCatalog(c)) {
                     return true;
                 }
@@ -460,6 +512,17 @@ public class userImage {
             return true;
         }
         return false;
+    }
+
+    /**
+     * do the work
+     *
+     * @param cmd command to do
+     * @return true on error, false on success
+     */
+    public boolean doer(cmds cmd) {
+        pip = cmd.pipe;
+        return doIncludeAll(cmd);
     }
 
 }

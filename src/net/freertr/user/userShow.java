@@ -1009,7 +1009,7 @@ public class userShow {
             rdr.putStrTab(srv.getShow());
             return null;
         }
-        if (a.equals("npre")) {
+        if (a.equals("nrpe")) {
             servNrpe srv = cfgAll.srvrFind(new servNrpe(), cfgAll.dmnNrpe, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");

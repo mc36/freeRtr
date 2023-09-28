@@ -1,6 +1,5 @@
 download 3
 reget-time 8
-arch amd64
 
 del-ifdn %dwn%
 exec mkdir %dwn%
