@@ -1,16 +1,17 @@
 #!/bin/sh
+ARCH=-`uname -m`
 IMG=`cd ../../binImg/;pwd`
-qemu-img create $IMG/rtr.dsk 2G
+qemu-img create $IMG/rtr$ARCH.dsk 2G
 mkdir ../../binMnt
 sudo ./i.sh
 rm -rf ../../binMnt
-qemu-img convert -O qcow2 -c $IMG/rtr.dsk $IMG/rtr.qcow2
-qemu-img convert -O vmdk -o subformat=streamOptimized $IMG/rtr.dsk $IMG/rtr.vmdk
+qemu-img convert -O qcow2 -c $IMG/rtr$ARCH.dsk $IMG/rtr$ARCH.qcow2
+qemu-img convert -O vmdk -o subformat=streamOptimized $IMG/rtr$ARCH.dsk $IMG/rtr$ARCH.vmdk
 
-SIZ=`stat --printf="%s" $IMG/rtr.qcow2`
-VER=`java -jar ../../src/rtr.jar show version number | dos2unix | head -n 1`
-SUM=`md5sum $IMG/rtr.qcow2 | awk '{ print $1 }'`
-cat > $IMG/rtr.gns3a << EOF
+SIZ=`stat --printf="%s" $IMG/rtr$ARCH.qcow2`
+VER=`java -jar ../../src/rtr$ARCH.jar show version number | dos2unix | head -n 1`
+SUM=`md5sum $IMG/rtr$ARCH.qcow2 | awk '{ print $1 }'`
+cat > $IMG/rtr$ARCH.gns3a << EOF
 {
     "name": "freeRouter",
     "category": "router",
@@ -37,19 +38,19 @@ cat > $IMG/rtr.gns3a << EOF
     },
     "images": [
         {
-            "filename": "rtr.qcow2",
+            "filename": "rtr$ARCH.qcow2",
             "version": "$VER",
             "md5sum": "$SUM",
             "filesize": $SIZ,
             "download_url": "http://www.freertr.org/",
-            "direct_download_url": "http://dl.nop.hu/rtr.qcow2"
+            "direct_download_url": "http://dl.nop.hu/rtr$ARCH.qcow2"
         }
     ],
     "versions": [
         {
             "name": "$VER",
             "images": {
-                "hda_disk_image": "rtr.qcow2"
+                "hda_disk_image": "rtr$ARCH.qcow2"
             }
         }
     ]
@@ -59,18 +60,18 @@ EOF
 hashFile()
 {
 sum=`sha1sum $1 | awk '{ print $1 }'`
-echo SHA1\($2\)= $sum >> $IMG/rtr.mf
+echo SHA1\($2\)= $sum >> $IMG/rtr$ARCH.mf
 }
 
-echo -n "" > $IMG/rtr.mf
-hashFile $IMG/rtr.qcow2 rtr.qcow2
-hashFile $IMG/rtr.vmdk rtr.vmdk
+echo -n "" > $IMG/rtr$ARCH.mf
+hashFile $IMG/rtr$ARCH.qcow2 rtr$ARCH.qcow2
+hashFile $IMG/rtr$ARCH.vmdk rtr$ARCH.vmdk
 hashFile package.ovf package.ovf
 hashFile package.ver package.ver
 hashFile package.vsh package.vsh
 hashFile package.yaml package.yaml
-tar cf $IMG/rtr.ova package.ovf package.ver package.vsh package.yaml
-echo `cd $IMG/;tar rf rtr.ova rtr.qcow2`
-echo `cd $IMG/;tar rf rtr.ova rtr.vmdk`
-echo `cd $IMG/;tar rf rtr.ova rtr.mf`
+tar cf $IMG/rtr$ARCH.ova package.ovf package.ver package.vsh package.yaml
+echo `cd $IMG/;tar rf rtr$ARCH.ova rtr$ARCH.qcow2`
+echo `cd $IMG/;tar rf rtr$ARCH.ova rtr$ARCH.vmdk`
+echo `cd $IMG/;tar rf rtr$ARCH.ova rtr$ARCH.mf`
 ls -l $IMG/
