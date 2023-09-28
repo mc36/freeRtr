@@ -1029,6 +1029,12 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 cmd += " -cpu " + cpuType;
             }
             int vl = 1;
+            for (int i = 0; i < ifaces.size(); i++) {
+                cfgVdcIfc ntry = ifaces.get(i);
+                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.port + ",localaddr=:" + (ntry.port + 1) + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+                vl++;
+                mac.setAdd(mac, one);
+            }
             for (int i = 0; i < locals.size(); i++) {
                 cfgVdcIfc ntry = locals.get(i);
                 cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.port + ",localaddr=:" + (ntry.port + 1) + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
