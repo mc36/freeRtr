@@ -52,7 +52,10 @@ include ../misc/image/image.efi
 exec cp /usr/lib/ISOLINUX/isolinux.bin %tmp%/isolinux.bin
 exec cp /usr/lib/syslinux/modules/bios/ldlinux.c32 %tmp%/ldlinux.c32
 exec cp ../misc/image/boot.cfg %tmp%/syslinux.cfg
-exec xorriso -as mkisofs -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat -eltorito-alt-boot -e rtr.efi -no-emul-boot %img%.krn %img%.ird %tmp%/syslinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32 %img%.efi
+exec cp %img%.krn %tmp%/rtr.krn
+exec cp %img%.ird %tmp%/rtr.ird
+exec cp %img%.efi %tmp%/rtr.efi
+exec xorriso -as mkisofs -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat -eltorito-alt-boot -e rtr.efi -no-emul-boot %tmp%/rtr.krn %tmp%/rtr.ird %tmp%/syslinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32 %tmp%/rtr.efi
 exec isohybrid -u %img%.iso
 exec mktorrent -o %img%.torrent -w http://dl.nop.hu/rtr.iso %img%.iso
 del-alw %tmp%

@@ -1,5 +1,5 @@
 exec grub-mkimage -o %tmp%/grub.efi -c ../misc/image/boot.efi -O %boot%-efi -p grub normal search boot linux part_msdos part_gpt fat ext2 iso9660 syslinuxcfg test progress
-exec dd if=/dev/zero of=%img%.efi bs=1K count=1024
+exec dd if=/dev/zero of=%img%.efi bs=1K count=1440
 exec /sbin/mkfs.vfat %img%.efi
 exec mmd -i %img%.efi efi efi/boot
 exec mcopy -i %img%.efi %tmp%/grub.efi ::efi/boot/%uefi%
