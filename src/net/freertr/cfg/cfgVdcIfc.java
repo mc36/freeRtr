@@ -20,9 +20,14 @@ public class cfgVdcIfc implements Comparator<cfgVdcIfc> {
     public String line;
 
     /**
-     * port number
+     * local port number
      */
-    public int port;
+    public int portL;
+
+    /**
+     * remote port number
+     */
+    public int portR;
 
     /**
      * redundancy interface

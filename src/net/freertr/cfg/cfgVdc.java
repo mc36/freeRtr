@@ -656,7 +656,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             if (cfgAll.ifcFind(a, 0) != null) {
                 return;
             }
-            ntry.port = cfgInit.vdcPortBeg;
+            ntry.portL = cfgInit.vdcPortBeg;
+            ntry.portR = cfgInit.vdcPortBeg + 1;
             ifcUdpInt hdr = new ifcUdpInt("127.0.0.1", cfgInit.vdcPortBeg, "127.0.0.1", cfgInit.vdcPortBeg + 1, "-", typ != tabRouteIface.ifaceType.ether, false);
             cfgIfc ifc = cfgAll.ifcAdd(a, typ, hdr, 1);
             if (ifc == null) {
@@ -1031,13 +1032,13 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             int vl = 1;
             for (int i = 0; i < ifaces.size(); i++) {
                 cfgVdcIfc ntry = ifaces.get(i);
-                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.port + ",localaddr=:" + (ntry.port + 1) + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.portL + ",localaddr=:" + ntry.portR + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
             }
             for (int i = 0; i < locals.size(); i++) {
                 cfgVdcIfc ntry = locals.get(i);
-                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.port + ",localaddr=:" + (ntry.port + 1) + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.portL + ",localaddr=:" + ntry.portR + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
             }
@@ -1195,7 +1196,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
                 }
                 a = " red";
             }
-            l.add("int " + ntry.name + a + " " + ntry.name.substring(0, 3) + " " + mac + " 127.0.0.1 " + (ntry.port + 1) + " 127.0.0.1 " + ntry.port + b);
+            l.add("int " + ntry.name + a + " " + ntry.name.substring(0, 3) + " " + mac + " 127.0.0.1 " + ntry.portR + " 127.0.0.1 " + ntry.portL + b);
             mac.setAdd(mac, one);
         }
         for (int i = 0; i < conns.size(); i++) {

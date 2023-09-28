@@ -587,7 +587,8 @@ public class cfgInit implements Runnable {
                             continue;
                         }
                         cfgVdcIfc ntry = new cfgVdcIfc(ifc.name, old);
-                        ntry.port = loc;
+                        ntry.portL = loc;
+                        ntry.portR = rem;
                         ifaceLst.add(ntry);
                         ifc.initPhysical();
                         if (debugger.cfgInitHw) {
