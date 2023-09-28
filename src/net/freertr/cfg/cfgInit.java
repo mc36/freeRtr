@@ -586,7 +586,9 @@ public class cfgInit implements Runnable {
                         if (ifc == null) {
                             continue;
                         }
-                        ifaceLst.add(new cfgVdcIfc(ifc.name, old));
+                        cfgVdcIfc ntry = new cfgVdcIfc(ifc.name, old);
+                        ntry.port = loc;
+                        ifaceLst.add(ntry);
                         ifc.initPhysical();
                         if (debugger.cfgInitHw) {
                             logger.debug("iface " + hdr);
