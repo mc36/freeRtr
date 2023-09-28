@@ -11,6 +11,7 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -35,6 +36,16 @@ public class servNrpe extends servGeneric implements prtServS {
      */
     public int truncState = 12288;
 
+    private int cntrPrt;
+
+    private int cntrOk;
+
+    private int cntrCri;
+
+    private int cntrUnk;
+
+    private int cntrWrn;
+
     /**
      * defaults text
      */
@@ -50,6 +61,41 @@ public class servNrpe extends servGeneric implements prtServS {
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
+    }
+
+    protected void updateCntrs(int cod) {
+        switch (cod) {
+            case packNrpe.coCri:
+                cntrCri++;
+                break;
+            case packNrpe.coOk:
+                cntrOk++;
+                break;
+            case packNrpe.coUnk:
+                cntrUnk++;
+                break;
+            case packNrpe.coWar:
+                cntrWrn++;
+                break;
+            default:
+                cntrPrt++;
+                break;
+        }
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "email|hit|last");
+        res.add("ok|" + cntrOk);
+        res.add("critical|" + cntrCri);
+        res.add("unknown|" + cntrUnk);
+        res.add("warning|" + cntrWrn);
+        res.add("protocol|" + cntrPrt);
+        return res;
     }
 
     public String srvName() {
@@ -135,7 +181,7 @@ class servNrpeConn implements Runnable {
                     pck.typ = packNrpe.tyRep;
                     pck.cod = packNrpe.coUnk;
                     pck.str = "UNKNOWN invalid packet type";
-                    logger.error(peer + " " + pck.str);
+                    lower.updateCntrs(-1);
                     pck.sendPack(conn);
                     if (debugger.servNrpeTraf) {
                         logger.debug("tx " + pck.dump());
@@ -147,7 +193,7 @@ class servNrpeConn implements Runnable {
                     pck.typ = packNrpe.tyRep;
                     pck.cod = packNrpe.coUnk;
                     pck.str = "UNKNOWN no such check";
-                    logger.error(peer + " " + pck.str);
+                    lower.updateCntrs(-1);
                     pck.sendPack(conn);
                     if (debugger.servNrpeTraf) {
                         logger.debug("tx " + pck.dump());
@@ -159,6 +205,7 @@ class servNrpeConn implements Runnable {
                 if (pck.str.length() > lower.truncState) {
                     pck.str = pck.str.substring(0, lower.truncState);
                 }
+                lower.updateCntrs(pck.cod);
                 pck.sendPack(conn);
                 if (debugger.servNrpeTraf) {
                     logger.debug("tx " + pck.dump());
@@ -173,7 +220,7 @@ class servNrpeConn implements Runnable {
                 pck.typ = packNrpe.tyRep;
                 pck.cod = packNrpe.coUnk;
                 pck.str = "UNKNOWN nothing asked";
-                logger.error(peer + " " + pck.str);
+                lower.updateCntrs(-1);
                 pck.sendPack(conn);
                 if (debugger.servNrpeTraf) {
                     logger.debug("tx " + pck.dump());

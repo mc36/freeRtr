@@ -43,6 +43,7 @@ import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntFtp;
 import net.freertr.clnt.clntHttp;
 import net.freertr.clnt.clntNetflow;
+import net.freertr.clnt.clntNrpe;
 import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntSmtp;
 import net.freertr.clnt.clntTftp;
@@ -103,6 +104,7 @@ import net.freertr.serv.servVxlan;
 import net.freertr.enc.enc7bit;
 import net.freertr.enc.encUrl;
 import net.freertr.pack.packRedundancy;
+import net.freertr.serv.servNrpe;
 import net.freertr.serv.servOpenflow;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
@@ -1007,6 +1009,15 @@ public class userShow {
             rdr.putStrTab(srv.getShow());
             return null;
         }
+        if (a.equals("npre")) {
+            servNrpe srv = cfgAll.srvrFind(new servNrpe(), cfgAll.dmnNrpe, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
         if (a.equals("dhcp4")) {
             servDhcp4 srv = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, cmd.word());
             if (srv == null) {
@@ -1088,6 +1099,7 @@ public class userShow {
             doOneClient(l, "proxy", clntProxy.cntrStart, clntProxy.cntrError, clntProxy.cntrStop);
             doOneClient(l, "whois", clntWhois.cntrStart, clntWhois.cntrError, clntWhois.cntrStop);
             doOneClient(l, "smtp", clntSmtp.cntrStart, clntSmtp.cntrError, clntSmtp.cntrStop);
+            doOneClient(l, "nrpe", clntNrpe.cntrStart, clntNrpe.cntrError, clntNrpe.cntrStop);
             doOneClient(l, "http", clntHttp.cntrStart, clntHttp.cntrError, clntHttp.cntrStop);
             doOneClient(l, "tftp", clntTftp.cntrStart, clntTftp.cntrError, clntTftp.cntrStop);
             doOneClient(l, "ftp", clntFtp.cntrStart, clntFtp.cntrError, clntFtp.cntrStop);

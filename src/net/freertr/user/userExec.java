@@ -1323,6 +1323,8 @@ public class userExec {
         hl.add(null, "5 .          <str>               dns name");
         hl.add(null, "2 3      smtp                    smtp protocol information");
         hl.add(cfgAll.dmnSmtp.listServers(), "3 .        <name:loc>            server name");
+        hl.add(null, "2 3      nrpe                    nrpe protocol information");
+        hl.add(cfgAll.dmnNrpe.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      dhcp4                   dhcp4 protocol information");
         hl.add(cfgAll.dmnDhcp4.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      dhcp6                   dhcp6 protocol information");
