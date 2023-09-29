@@ -438,11 +438,9 @@ todo: generalize dynamic-metric knobs
 todo: bgp unknowns-log knob
 todo: image viewer to file manager
 todo: game butterfly series reusing the fft and mdev classes from modem and ping
-todo: experiment with freebsd as a host os
 todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
-todo: image builder to support different bootloaders
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: dlep as rfc8175
