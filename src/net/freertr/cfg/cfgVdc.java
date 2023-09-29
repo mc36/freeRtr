@@ -950,25 +950,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
     }
 
-    private synchronized void doRound() {
-        if (time != null) {
-            if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
-                return;
-            }
-        }
-        if (logAct) {
-            logger.info("restarting vdc " + name);
-        }
-        if (randInt > 0) {
-            bits.sleep(bits.random(1, randInt));
-        }
-        restartT = bits.getTime();
-        restartC++;
-        pipeLine pl = new pipeLine(65536, false);
-        pipe = pl.getSide();
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        String cmd = null;
+    private String getCommand() {
         addrMac mac;
         if (macBase == null) {
             mac = addrMac.getRandom();
@@ -977,6 +959,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         }
         addrMac one = new addrMac();
         one.fromString("0000:0000:0001");
+        String cmd;
         if (image1name == null) {
             String a = cfgBase + cfgInit.hwCfgEnd;
             String s = cfgBase + cfgInit.swCfgEnd;
@@ -1053,6 +1036,29 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         if (userValue != null) {
             cmd = "sudo -u " + userValue + " " + cmd;
         }
+        return cmd;
+    }
+
+    private synchronized void doRound() {
+        if (time != null) {
+            if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
+                return;
+            }
+        }
+        if (logAct) {
+            logger.info("restarting vdc " + name);
+        }
+        if (randInt > 0) {
+            bits.sleep(bits.random(1, randInt));
+        }
+        restartT = bits.getTime();
+        restartC++;
+        pipeLine pl = new pipeLine(65536, false);
+        pipe = pl.getSide();
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+        String cmd = getCommand();
+        bits.buf2txt(true, bits.str2lst(cmd), cfgBase + "cmd.tmp");
         proc = pipeShell.exec(pl.getSide(), cmd, null, true, true, false, children);
         if (proc == null) {
             return;

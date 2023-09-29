@@ -15177,3 +15177,6 @@ no todo: sho cdp/lldp int
 todo: image builder to support different bootloaders
 ---------------------------------- 2023-09-27 11:06:44 23.9.27
 todo: vdc to have local, connect as sdn autocreated
+---------------------------------- 2023-09-29 05:32:15 23.9.29
+no todo: image builder to support different bootloaders
+no todo: experiment with freebsd as a host os
