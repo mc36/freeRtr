@@ -63,6 +63,11 @@ public class servNrpe extends servGeneric implements prtServS {
         return defaultF;
     }
 
+    /**
+     * update counters
+     *
+     * @param cod status code
+     */
     protected void updateCntrs(int cod) {
         switch (cod) {
             case packNrpe.coCri:
