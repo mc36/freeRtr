@@ -4,27 +4,22 @@ qc pass: openflow: ip routing
 qc pass: openflow: mpls routing
 qc pass: openflow: multicast routing
 qc pass: openflow: mldp routing
-todo: server http to have whatsmyip whatsmyasn etc services
-todo: server http to have lookingglass
-todo: image viewer to file manager
-todo: own minimal jpython if something happens to graalvm's builtins like https://github.com/ninia/jep
-todo: experiment with freebsd as a host os
-todo: game pinball
-todo: tests for bgp/msdp: neigh x.x.x.x pmtud
-todo: tests for lsrp / pvrp pmtud
+todo: vdc to have local, connect as sdn autocreated
+todo: generalise server access- knobs
+todo: generalize dynamic-metric knobs
 todo: bgp unknowns-log knob
+todo: image viewer to file manager
+todo: game butterfly series reusing the fft and mdev classes from modem and ping
+todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: dlep as rfc8175
-todo: serv http InvocationTargetException to have auto logging in the traceback
-todo: sho cdp/lldp int
 todo: flash ext-delete also to commander
 todo: commander to have selection
 todo: commander to get away the cursor
 todo: player queue up down add-again
-todo: sid(cfg-check)#show config-differences this
 todo: openflow to have 2 label support and stack to p4lang
 todo: decouple rpki from bgp process
 todo: redundancy to have the shows
@@ -190,6 +185,7 @@ todo: more interactive tools
 todo: more features with clean implementation
 todo: more randomizers
 todo: more collect commands
+todo: more knob generalizations
 todo: more userLine fun like alias-text, alias-regexp, much like under checks
 todo: more server quote fun like cleanups, randomizers, loggers, anything
 todo: more server http fun like cleanups, randomizers, loggers, anything
