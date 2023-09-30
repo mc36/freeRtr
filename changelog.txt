@@ -15180,3 +15180,9 @@ todo: vdc to have local, connect as sdn autocreated
 ---------------------------------- 2023-09-29 05:32:15 23.9.29
 no todo: image builder to support different bootloaders
 no todo: experiment with freebsd as a host os
+---------------------------------- 2023-09-30 19:46:34 23.9.30
+no todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pimtunnel icmptunnel
+no todo: consider adding ipcomp tunnel to the dataplanes that interworks and decodes in wireshark
+no todo: consider adding icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
+no todo: measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim icmp ipcomp

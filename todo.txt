@@ -69,8 +69,6 @@ test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate
 
 mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
 
-measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
-
 test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 
 important protocols to be able to continue from the start at least on local, later within the vdc
@@ -83,11 +81,7 @@ p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asap
 
 l2tp3 to the dataplanes as it is for l2tp2 :)
 
-consider adding icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
-
-consider adding ipcomp tunnel to the dataplanes that interworks and decodes in wireshark
-
-sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pimtunnel icmptunnel
+sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim icmp ipcomp
 
 route-map --> route-policy converter
 
