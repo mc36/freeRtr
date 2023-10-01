@@ -187,7 +187,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * listen configurations
      */
-    public tabGen<rtrBgpLstn> lstns = new tabGen<rtrBgpLstn>();
+    public tabGen<rtrBgpLstn> lstnTmp = new tabGen<rtrBgpLstn>();
 
     /**
      * list of dynamic neighbors
@@ -1590,8 +1590,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
         rtrBgpLstn lstn = null;
-        for (int i = 0; i < lstns.size(); i++) {
-            rtrBgpLstn ntry = lstns.get(i);
+        for (int i = 0; i < lstnTmp.size(); i++) {
+            rtrBgpLstn ntry = lstnTmp.get(i);
             if (!ntry.acl.matches(id)) {
                 continue;
             }
@@ -2562,8 +2562,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpMrt ntry = dmps.get(i);
             ntry.fileHandle.close();
         }
-        for (int i = 0; i < lstns.size(); i++) {
-            rtrBgpLstn ntry = lstns.get(i);
+        for (int i = 0; i < lstnTmp.size(); i++) {
+            rtrBgpLstn ntry = lstnTmp.get(i);
             tcpCore.listenStop(ntry.iface, port, null, 0);
         }
         for (int i = lstnNei.size() - 1; i >= 0; i--) {
@@ -2839,8 +2839,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < temps.size(); i++) {
             temps.get(i).getConfig(l, beg, filter);
         }
-        for (int i = 0; i < lstns.size(); i++) {
-            lstns.get(i).getConfig(l, beg);
+        for (int i = 0; i < lstnTmp.size(); i++) {
+            lstnTmp.get(i).getConfig(l, beg);
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -3560,7 +3560,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return true;
             }
             ntry.acl = acl.aceslst;
-            rtrBgpLstn old = lstns.del(ntry);
+            rtrBgpLstn old = lstnTmp.del(ntry);
             if (old != null) {
                 tcpCore.listenStop(old.iface, port, null, 0);
             }
@@ -3580,7 +3580,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     ntry.iface = ntry.temp.srcIface.fwdIf6;
                 }
             }
-            lstns.put(ntry);
+            lstnTmp.put(ntry);
             tcpCore.streamListen(this, new pipeLine(ntry.temp.bufferSize, false), ntry.iface, port, null, 0, "bgp", ntry.temp.keyId, ntry.temp.passwd, ntry.temp.ttlSecurity, ntry.temp.tosValue);
             return false;
         }
@@ -4351,6 +4351,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("changes now|" + changedCur);
         l.add("static peers|" + neighs.size());
         l.add("dynamic peers|" + lstnNei.size());
+        l.add("dynamic templates|" + lstnTmp.size());
+        l.add("templates|" + temps.size());
+        l.add("linkstates|" + linkStates.size());
+        l.add("monitors|" + mons.size());
+        l.add("dumps|" + dmps.size());
+        l.add("flaps|" + flaps.size());
+        l.add("vrfs|" + vrfs.size());
+        l.add("other vrfs|" + ovrfs.size());
+        l.add("colors|" + clrs.size());
+        l.add("other colors|" + oclrs.size());
+        l.add("vplses|" + vpls.size());
+        l.add("evpns|" + evpn.size());
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
         l.add("rpki table|" + computedRpki.size());
         l.add("unicast table|" + routerComputedU.size() + "|" + changedUni.size());
