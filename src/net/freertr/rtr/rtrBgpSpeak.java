@@ -1529,6 +1529,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     sendNotify(3, 1);
                     break;
                 }
+                if (parent != null) {
+                    parent.msgCntRx[typ & 0xff]++;
+                }
             }
             if (pos != flg) {
                 logger.info("got compressed garbage (" + (flg - pos) + ") from " + neigh.peerAddr);
@@ -1550,9 +1553,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param typ type of packet
      */
     public void packSend(packHolder pck, int typ) {
-        parent.msgCntTx[typ & 0xff]++;
         if (pipe == null) {
             return;
+        }
+        if (parent != null) {
+            parent.msgCntTx[typ & 0xff]++;
         }
         pck.merge2beg();
         if ((compressTx != null) && (typ == rtrBgpUtil.msgUpdate)) {
@@ -1579,6 +1584,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             pck.putSkip(i + 1);
             pck.merge2beg();
             typ = rtrBgpUtil.msgCompress;
+            if (parent != null) {
+                parent.msgCntTx[typ & 0xff]++;
+            }
         }
         if (debugger.rtrBgpEvnt) {
             logger.debug("sending " + rtrBgpUtil.type2string(typ) + " to " + neigh.peerAddr);
@@ -1628,7 +1636,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         cntr.rx(pck);
-        parent.msgCntRx[typ & 0xff]++;
+        if (parent != null) {
+            parent.msgCntRx[typ & 0xff]++;
+        }
         if (debugger.rtrBgpEvnt) {
             logger.debug("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
         }
