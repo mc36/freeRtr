@@ -827,17 +827,27 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * accepts started
      */
-    public int accptStart;
+    public final static syncInt accptStart = new syncInt(0);
 
     /**
      * accepts failed
      */
-    public int accptFail;
+    public final static syncInt accptFail = new syncInt(0);
 
     /**
      * accepts succeeded
      */
-    public int accptOk;
+    public final static syncInt accptOk = new syncInt(0);
+
+    /**
+     * message types received
+     */
+    public int msgCntRx[] = new int[256];
+
+    /**
+     * message types received
+     */
+    public int msgCntTx[] = new int[256];
 
     /**
      * full compute last
@@ -1604,7 +1614,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return false if success, true if error
      */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
-        accptStart++;
+        accptStart.add(1);
         rtrBgpLstn lstn = null;
         for (int i = 0; i < lstnTmp.size(); i++) {
             rtrBgpLstn ntry = lstnTmp.get(i);
@@ -1615,14 +1625,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             break;
         }
         if (lstn == null) {
-            accptFail++;
+            accptFail.add(1);
             return true;
         }
         if (lstn.temp.maxClones > 0) {
             int i = countClones(neighs, lstn.temp);
             i += countClones(lstnNei, lstn.temp);
             if (i > lstn.temp.maxClones) {
-                accptFail++;
+                accptFail.add(1);
                 return true;
             }
         }
@@ -1633,7 +1643,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.localAddr = id.iface.addr.copyBytes();
         ntry.updateOddr();
         if (neighs.find(ntry) != null) {
-            accptFail++;
+            accptFail.add(1);
             return true;
         }
         ntry.copyFrom(lstn.temp);
@@ -1644,14 +1654,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.updatePeer();
         rtrBgpNeigh res = lstnNei.add(ntry);
         if (res != null) {
-            accptFail++;
+            accptFail.add(1);
             return true;
         }
         logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem);
         ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
         ntry.socketMode = 4;
         ntry.startNow();
-        accptOk++;
+        accptOk.add(1);
         return false;
     }
 
@@ -4373,20 +4383,20 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("accept ok|" + accptOk);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
-        l.add("static peers|" + neighs.size());
-        l.add("dynamic peers|" + lstnNei.size());
-        l.add("dynamic templates|" + lstnTmp.size());
-        l.add("templates|" + temps.size());
-        l.add("linkstates|" + linkStates.size());
-        l.add("monitors|" + mons.size());
-        l.add("dumps|" + dmps.size());
-        l.add("flaps|" + flaps.size());
-        l.add("vrfs|" + vrfs.size());
-        l.add("other vrfs|" + ovrfs.size());
-        l.add("colors|" + clrs.size());
-        l.add("other colors|" + oclrs.size());
-        l.add("vplses|" + vpls.size());
-        l.add("evpns|" + evpn.size());
+        l.add("static peers|" + rtrBgpUtil.tabSiz2str(neighs));
+        l.add("dynamic peers|" + rtrBgpUtil.tabSiz2str(lstnNei));
+        l.add("dynamic templates|" + rtrBgpUtil.tabSiz2str(lstnTmp));
+        l.add("templates|" + rtrBgpUtil.tabSiz2str(temps));
+        l.add("linkstates|" + rtrBgpUtil.tabSiz2str(linkStates));
+        l.add("flapstats|" + rtrBgpUtil.tabSiz2str(flaps));
+        l.add("monitors|" + rtrBgpUtil.tabSiz2str(mons));
+        l.add("dumps|" + rtrBgpUtil.tabSiz2str(dmps));
+        l.add("vrfs|" + rtrBgpUtil.tabSiz2str(vrfs));
+        l.add("other vrfs|" + rtrBgpUtil.tabSiz2str(ovrfs));
+        l.add("colors|" + rtrBgpUtil.tabSiz2str(clrs));
+        l.add("other colors|" + rtrBgpUtil.tabSiz2str(oclrs));
+        l.add("vplses|" + rtrBgpUtil.tabSiz2str(vpls));
+        l.add("evpns|" + rtrBgpUtil.tabSiz2str(evpn));
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
         l.add("rpki table|" + computedRpki.size());
         l.add("unicast table|" + routerComputedU.size() + "|" + changedUni.size());

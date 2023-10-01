@@ -1550,6 +1550,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param typ type of packet
      */
     public void packSend(packHolder pck, int typ) {
+        parent.msgCntTx[typ & 0xff]++;
         if (pipe == null) {
             return;
         }
@@ -1627,6 +1628,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         cntr.rx(pck);
+        parent.msgCntRx[typ & 0xff]++;
         if (debugger.rtrBgpEvnt) {
             logger.debug("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
         }

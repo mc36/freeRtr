@@ -1,6 +1,7 @@
 package net.freertr.rtr;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
@@ -19,6 +20,7 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
+import net.freertr.tab.tabGen;
 
 /**
  * bgp4 utilities
@@ -3313,6 +3315,21 @@ public class rtrBgpUtil {
             writePrefix(safi, true, hlp, ntry);
         }
         placeAttrib(flagOptional, attrUnReach, trg, hlp);
+    }
+
+    /**
+     * get size of table
+     *
+     * @param <T> type of entries
+     * @param tab table to check
+     * @return string
+     */
+    public static <T extends Comparator<? super T>> String tabSiz2str(tabGen<T> tab) {
+        if (tab == null) {
+            return "n/a";
+        } else {
+            return "" + tab.size();
+        }
     }
 
 }
