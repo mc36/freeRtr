@@ -4363,6 +4363,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * get message statistics
+     *
+     * @return list of statistics
+     */
+    public userFormat getMsgStats() {
+        userFormat l = new userFormat("|", "typ|name|tx|rx");
+        for (int i = 0; i < msgCntTx.length; i++) {
+            l.add(i + "|" + rtrBgpUtil.type2string(i) + "|" + msgCntTx[i] + "|" + msgCntRx[i]);
+        }
+        return l;
+    }
+
+    /**
      * get bestpath stats
      *
      * @return list of statistics

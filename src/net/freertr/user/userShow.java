@@ -3862,6 +3862,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.getBestpath());
             return;
         }
+        if (a.equals("messages")) {
+            rdr.putStrTab(r.bgp.getMsgStats());
+            return;
+        }
         if (a.equals("template")) {
             rtrBgpTemp tmp = r.bgp.findTemp(cmd.word());
             if (tmp == null) {
