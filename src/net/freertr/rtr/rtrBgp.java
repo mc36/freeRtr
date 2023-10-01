@@ -825,6 +825,21 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabLabelEntry evpnMul;
 
     /**
+     * accepts started
+     */
+    public int accptStart;
+
+    /**
+     * accepts failed
+     */
+    public int accptFail;
+
+    /**
+     * accepts succeeded
+     */
+    public int accptOk;
+
+    /**
      * full compute last
      */
     public long fullLast;
@@ -1589,6 +1604,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return false if success, true if error
      */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
+        accptStart++;
         rtrBgpLstn lstn = null;
         for (int i = 0; i < lstnTmp.size(); i++) {
             rtrBgpLstn ntry = lstnTmp.get(i);
@@ -1599,12 +1615,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             break;
         }
         if (lstn == null) {
+            accptFail++;
             return true;
         }
         if (lstn.temp.maxClones > 0) {
             int i = countClones(neighs, lstn.temp);
             i += countClones(lstnNei, lstn.temp);
             if (i > lstn.temp.maxClones) {
+                accptFail++;
                 return true;
             }
         }
@@ -1615,6 +1633,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.localAddr = id.iface.addr.copyBytes();
         ntry.updateOddr();
         if (neighs.find(ntry) != null) {
+            accptFail++;
             return true;
         }
         ntry.copyFrom(lstn.temp);
@@ -1625,12 +1644,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.updatePeer();
         rtrBgpNeigh res = lstnNei.add(ntry);
         if (res != null) {
+            accptFail++;
             return true;
         }
         logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem);
         ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
         ntry.socketMode = 4;
         ntry.startNow();
+        accptOk++;
         return false;
     }
 
@@ -4347,6 +4368,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr run|" + incrCount + "|times");
         l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
         l.add("incr time|" + incrTime + "|ms");
+        l.add("accept start|" + accptStart);
+        l.add("accept fail|" + accptFail);
+        l.add("accept ok|" + accptOk);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
         l.add("static peers|" + neighs.size());
