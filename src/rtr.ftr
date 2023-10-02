@@ -3217,7 +3217,6 @@ qc pass: udp forwarder server
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: generalize dynamic-metric knobs
-todo: bgp unknowns-log knob
 todo: bgp end-changes-log knob
 todo: image viewer to file manager
 todo: game butterfly series reusing the fft and mdev classes from modem and ping
