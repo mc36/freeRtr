@@ -954,6 +954,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         safeEbgp = true;
         addrFams = rtrBgpParam.mskUni;
         rtrNum = id;
+        for (int i = 0; i < msgCntTx.length; i++) {
+            msgCntRx[i] = new counter();
+            msgCntTx[i] = new counter();
+        }
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
                 rouTyp = tabRouteAttr.routeType.bgp4;
