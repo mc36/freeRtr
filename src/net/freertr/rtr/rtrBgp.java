@@ -24,6 +24,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipRtr;
+import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -828,27 +829,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * accepts started
      */
-    public final static syncInt accptStart = new syncInt(0);
-
-    /**
-     * accepts failed
-     */
-    public final static syncInt accptFail = new syncInt(0);
-
-    /**
-     * accepts succeeded
-     */
-    public final static syncInt accptOk = new syncInt(0);
+    public final static counter accptStat = new counter();
 
     /**
      * message types received
      */
-    public final counter msgCntRx[] = new counter[256];
+    public final static counter msgCntRx[] = new counter[256];
 
     /**
      * message types received
      */
-    public final counter msgCntTx[] = new counter[256];
+    public final static counter msgCntTx[] = new counter[256];
 
     /**
      * full compute last
@@ -1619,7 +1610,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return false if success, true if error
      */
     public boolean streamAccept(pipeSide pipe, prtGenConn id) {
-        accptStart.add(1);
+        packHolder pckCnt = new packHolder(true, true);
+        accptStat.rx(pckCnt);
         rtrBgpLstn lstn = null;
         for (int i = 0; i < lstnTmp.size(); i++) {
             rtrBgpLstn ntry = lstnTmp.get(i);
@@ -1630,14 +1622,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             break;
         }
         if (lstn == null) {
-            accptFail.add(1);
+            accptStat.drop(pckCnt, counter.reasons.notInTab);
             return true;
         }
         if (lstn.temp.maxClones > 0) {
             int i = countClones(neighs, lstn.temp);
             i += countClones(lstnNei, lstn.temp);
             if (i > lstn.temp.maxClones) {
-                accptFail.add(1);
+                accptStat.drop(pckCnt, counter.reasons.noBuffer);
                 return true;
             }
         }
@@ -1648,7 +1640,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.localAddr = id.iface.addr.copyBytes();
         ntry.updateOddr();
         if (neighs.find(ntry) != null) {
-            accptFail.add(1);
+            accptStat.drop(pckCnt, counter.reasons.notUp);
             return true;
         }
         ntry.copyFrom(lstn.temp);
@@ -1659,14 +1651,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.updatePeer();
         rtrBgpNeigh res = lstnNei.add(ntry);
         if (res != null) {
-            accptFail.add(1);
+            accptStat.drop(pckCnt, counter.reasons.noBuffer);
             return true;
         }
         logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem);
         ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
         ntry.socketMode = 4;
         ntry.startNow();
-        accptOk.add(1);
+        accptStat.tx(pckCnt);
         return false;
     }
 
@@ -4373,15 +4365,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getMsgStats() {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
         for (int i = 0; i < msgCntTx.length; i++) {
-            l.add(i + "|" + rtrBgpUtil.type2string(i) + "|" + msgCntTx[i].packTx + "|" + msgCntRx[i].packTx + "|" + msgCntTx[i].byteTx + "|" + msgCntRx[i].byteTx);
+            counter tx = msgCntTx[i];
+            counter rx = msgCntRx[i];
+            l.add(i + "|" + rtrBgpUtil.type2string(i) + "|" + tx.packTx + "|" + rx.packRx
+                    + "|" + tx.byteTx + "|" + rx.byteRx
+                    + "|" + bits.timePast(tx.lastTx) + "|" + bits.timePast(rx.lastRx)
+                    + "|" + bits.time2str(cfgAll.timeZoneName, tx.lastTx + cfgAll.timeServerOffset, 3)
+                    + "|" + bits.time2str(cfgAll.timeZoneName, rx.lastRx + cfgAll.timeServerOffset, 3)
+            );
         }
         return l;
     }
 
     private void getMsgStats(userFormat l, int t) {
-        l.add(rtrBgpUtil.type2string(t) + " msgs|" + msgCntTx[t] + "|" + msgCntRx[t]);
+        l.add(rtrBgpUtil.type2string(t) + " msgs|" + msgCntTx[t].packTx + "|" + msgCntRx[t].packRx);
     }
 
     /**
@@ -4400,9 +4399,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr run|" + incrCount + "|times");
         l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
         l.add("incr time|" + incrTime + "|ms");
-        l.add("accept start|" + accptStart);
-        l.add("accept fail|" + accptFail);
-        l.add("accept ok|" + accptOk);
+        l.add("accept start|" + accptStat.packRx);
+        l.add("accept fail|" + accptStat.packDr);
+        l.add("accept ok|" + accptStat.packTx);
         getMsgStats(l, rtrBgpUtil.msgOpen);
         getMsgStats(l, rtrBgpUtil.msgUpdate);
         getMsgStats(l, rtrBgpUtil.msgNotify);
