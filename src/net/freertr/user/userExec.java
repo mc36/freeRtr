@@ -645,6 +645,7 @@ public class userExec {
         hl.add(null, "5 .            description          list of description");
         hl.add(null, "5 .            hostname             list of hostname");
         hl.add(null, "5 .            software             list of software");
+        hl.add(null, "5 .            unknowns             list of unknown attributes");
         hl.add(null, "5 .            compression          list of compression");
         hl.add(null, "5 .            connection           list of connection");
         hl.add(null, "5 .            rpkisum              list of servers");

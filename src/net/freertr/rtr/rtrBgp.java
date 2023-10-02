@@ -827,19 +827,24 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabLabelEntry evpnMul;
 
     /**
-     * accepts started
+     * accept statistics
      */
-    public final static counter accptStat = new counter();
+    public final counter accptStat = new counter();
+
+    /**
+     * unknown statistics
+     */
+    public final counter unknwnStat = new counter();
 
     /**
      * message types received
      */
-    public final static counter msgCntRx[] = new counter[256];
+    public final counter msgCntRx[] = new counter[256];
 
     /**
      * message types received
      */
-    public final static counter msgCntTx[] = new counter[256];
+    public final counter msgCntTx[] = new counter[256];
 
     /**
      * full compute last
@@ -3736,6 +3741,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param mod mode: 1=afi, 2=groups, 3=nexthops, 4=graceful, 5=addpath,
      * 6=routerid, 7=buffer, 8=description, 9=hostname, 10=compress, 11=connect,
      * 12=resolve, 13=summary, 14=multilab, 15=longlived, 16=software, 17=desum
+     * 18=unknowns
      * @return list of neighbors
      */
     public userFormat showSummary(int mod) {
@@ -3789,6 +3795,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 break;
             case 17:
                 l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|descr");
+                break;
+            case 18:
+                l = new userFormat("|", "neighbor|as|updates|bytes");
                 break;
             default:
                 return null;
@@ -4405,6 +4414,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         getMsgStats(l, rtrBgpUtil.msgOpen);
         getMsgStats(l, rtrBgpUtil.msgUpdate);
         getMsgStats(l, rtrBgpUtil.msgNotify);
+        l.add("unkonwn attributes|" + unknwnStat.packRx + "|" + unknwnStat.byteRx);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
         l.add("static peers|" + rtrBgpUtil.tabSiz2str(neighs));

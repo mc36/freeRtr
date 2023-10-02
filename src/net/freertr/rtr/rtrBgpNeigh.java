@@ -2098,6 +2098,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.peerSoftware;
             case 17:
                 return showSummry() + "|" + description;
+            case 18:
+                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.unknownCntr.packRx + "|" + conn.unknownCntr.byteRx;
             default:
                 return null;
         }

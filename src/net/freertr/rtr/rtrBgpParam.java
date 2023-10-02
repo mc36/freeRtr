@@ -149,6 +149,11 @@ public abstract class rtrBgpParam {
     public tabIntMatcher unknownsOut;
 
     /**
+     * log unknown attributes
+     */
+    public boolean unknownsLog;
+
+    /**
      * ipinfo config
      */
     public secInfoCfg ipInfoCfg;
@@ -1173,6 +1178,7 @@ public abstract class rtrBgpParam {
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
         unknownsColl = src.unknownsColl;
+        unknownsLog = src.unknownsLog;
         unknownsOut = src.unknownsOut;
         unknownsIn = src.unknownsIn;
         ipInfoCfg = src.ipInfoCfg;
@@ -1606,6 +1612,7 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <num>                     allowed attributes");
         l.add(null, "3  4       unknowns-in                 receive unknown attributes");
         l.add(null, "4  .         <num>                     allowed attributes");
+        l.add(null, "3  .       unknowns-log                log received unknown attributes");
         l.add(null, "3  .       label-pop                   advertise pop label");
         l.add(null, "3  .       lookup-database             lookup rib before accepting");
         l.add(null, "3  .       lookup-reverse              lookup dns before accepting");
@@ -1880,6 +1887,7 @@ public abstract class rtrBgpParam {
         }
         cmds.cfgLine(l, unknownsOut == null, beg, nei + "unknowns-out", "" + unknownsOut);
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
+        cmds.cfgLine(l, !unknownsLog, beg, nei + "unknowns-log", "");
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, !wideAsPath, beg, nei + "wide-aspath", "");
@@ -2498,6 +2506,10 @@ public abstract class rtrBgpParam {
                 cmd.error("no such dump");
                 return false;
             }
+            return false;
+        }
+        if (s.equals("unknowns-log")) {
+            unknownsLog = !negated;
             return false;
         }
         if (s.equals("unknowns-out")) {

@@ -3979,6 +3979,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(16));
             return;
         }
+        if (a.equals("unknowns")) {
+            rdr.putStrTab(r.bgp.showSummary(18));
+            return;
+        }
         if (a.equals("compression")) {
             rdr.putStrTab(r.bgp.showSummary(10));
             return;

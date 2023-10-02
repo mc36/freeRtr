@@ -4,8 +4,6 @@ generalise server access- knobs
 
 generalize dynamic-metric knobs
 
-bgp unknowns-log knob
-
 bgp end-changes-log knob
 
 image viewer to file manager

@@ -619,6 +619,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public counter compressCntr = new counter();
 
     /**
+     * unknown counter
+     */
+    public counter unknownCntr = new counter();
+
+    /**
      * policy rejected prefixes
      */
     public int repPolRej;
@@ -2418,7 +2423,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currMvpn.clear();
         currMvpo.clear();
         packHolder origPck = null;
-        if (neigh.unknownsColl != null) {
+        if (neigh.unknownsLog || (neigh.unknownsColl != null)) {
             origPck = pck.copyBytes(false, false);
         }
         currChg = 0;
@@ -2477,8 +2482,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             res.best.nextHop = ntry.best.nextHop;
             prefixReach(rtrBgpUtil.safiIp4uni, addpath, res);
         }
-        if ((origPck != null) && (ntry.best.unknown != null)) {
-            neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
+        if (ntry.best.unknown != null) {
+            parent.unknwnStat.rx(origPck);
+            unknownCntr.rx(origPck);
+            if (neigh.unknownsColl != null) {
+                neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
+            }
+            if (neigh.unknownsLog) {
+                logger.info("got update with unknowns from " + neigh.peerAddr + " " + origPck.dump());
+            }
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
         addAttribedTab(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
