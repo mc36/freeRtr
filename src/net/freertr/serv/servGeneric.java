@@ -1812,6 +1812,10 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return;
             }
             if (!a.startsWith("access-")) {
+                if (srvCfgStr(cmd.copyBytes(true))) {
+                    cmd.badCmd();
+                    return;
+                }
                 return;
             }
             a = a.substring(7, a.length());
