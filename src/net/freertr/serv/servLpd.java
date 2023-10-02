@@ -38,7 +38,7 @@ public class servLpd extends servGeneric implements prtServS {
     /**
      * spool path
      */
-    public String spoolPath = "/";
+    public String spoolPath = "/data/";
 
     /**
      * print script
@@ -114,7 +114,7 @@ public class servLpd extends servGeneric implements prtServS {
         }
         s = cmd.word();
         if (s.equals("path")) {
-            spoolPath = "/";
+            spoolPath = "/data/";
             return false;
         }
         if (s.equals("script")) {

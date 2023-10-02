@@ -54,7 +54,7 @@ public class servSmtp extends servGeneric implements prtServS {
     /**
      * mail folders
      */
-    public String mailFolders = "/";
+    public String mailFolders = "/data/";
 
     /**
      * recursion available
@@ -296,7 +296,7 @@ public class servSmtp extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("path")) {
-            mailFolders = "/";
+            mailFolders = "/data/";
             return false;
         }
         return true;

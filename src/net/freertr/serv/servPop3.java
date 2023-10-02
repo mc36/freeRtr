@@ -45,7 +45,7 @@ public class servPop3 extends servGeneric implements prtServS {
     /**
      * mail folders
      */
-    public String mailFolders = "/";
+    public String mailFolders = "/data/";
 
     /**
      * authentication list
@@ -125,7 +125,7 @@ public class servPop3 extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("path")) {
-            mailFolders = "/";
+            mailFolders = "/data/";
             return false;
         }
         return true;

@@ -38,7 +38,7 @@ public class servGopher extends servGeneric implements prtServS {
     /**
      * root folder
      */
-    public String rootFolder = "/";
+    public String rootFolder = "/data/";
 
     /**
      * name of server
@@ -101,7 +101,7 @@ public class servGopher extends servGeneric implements prtServS {
         }
         s = cmd.word();
         if (s.equals("path")) {
-            rootFolder = "/";
+            rootFolder = "/data/";
             return false;
         }
         if (s.equals("server")) {

@@ -46,7 +46,7 @@ public class servFtp extends servGeneric implements prtServS {
     /**
      * root folder
      */
-    public String rootFolder = "/";
+    public String rootFolder = "/data/";
 
     /**
      * authentication list
@@ -155,7 +155,7 @@ public class servFtp extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("path")) {
-            rootFolder = "/";
+            rootFolder = "/data/";
             return false;
         }
         if (s.equals("readonly")) {
