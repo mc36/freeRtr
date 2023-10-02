@@ -2422,10 +2422,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currLnks.clear();
         currMvpn.clear();
         currMvpo.clear();
-        packHolder origPck = null;
-        if (neigh.unknownsLog || (neigh.unknownsColl != null)) {
-            origPck = pck.copyBytes(false, false);
-        }
+        int origOfs = pck.dataSize();
         currChg = 0;
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
@@ -2483,7 +2480,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             prefixReach(rtrBgpUtil.safiIp4uni, addpath, res);
         }
         if (ntry.best.unknown != null) {
-            parent.unknwnStat.rx(origPck);
+            packHolder origPck = pck.copyBytes(false, false);
+            origPck.setBytesLeft(origOfs);
+            if (parent != null) {
+                parent.unknwnStat.rx(origPck);
+            }
             unknownCntr.rx(origPck);
             if (neigh.unknownsColl != null) {
                 neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
