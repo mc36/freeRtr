@@ -778,6 +778,15 @@ public class version {
                 l.add("");
                 l.add("int x=1;while(x>0)x++;//here u goo...");
                 l.add("");
+                l.add("furtv on air 2008 spring bbc");
+                l.add("stereo.speak(\"pebkac, pill time\");sleep(86400ms);");
+                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
+                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
+                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
+                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
+                l.add("stereo.play(\"tablefootball.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
+                l.add("stereo.play(\"tablefootball.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
+                l.add("");
                 l.add("print(\"hello world");
                 l.add("print(whatttta(t)error\")");
                 l.add("");

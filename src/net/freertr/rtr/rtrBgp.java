@@ -55,6 +55,7 @@ import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.spf.spfCalc;
+import net.freertr.util.counter;
 import net.freertr.util.syncInt;
 
 /**
@@ -842,12 +843,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * message types received
      */
-    public int msgCntRx[] = new int[256];
+    public final counter msgCntRx[] = new counter[256];
 
     /**
      * message types received
      */
-    public int msgCntTx[] = new int[256];
+    public final counter msgCntTx[] = new counter[256];
 
     /**
      * full compute last
@@ -4368,11 +4369,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getMsgStats() {
-        userFormat l = new userFormat("|", "typ|name|tx|rx");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx");
         for (int i = 0; i < msgCntTx.length; i++) {
-            l.add(i + "|" + rtrBgpUtil.type2string(i) + "|" + msgCntTx[i] + "|" + msgCntRx[i]);
+            l.add(i + "|" + rtrBgpUtil.type2string(i) + "|" + msgCntTx[i].packTx + "|" + msgCntRx[i].packTx + "|" + msgCntTx[i].byteTx + "|" + msgCntRx[i].byteTx);
         }
         return l;
+    }
+
+    private void getMsgStats(userFormat l, int t) {
+        l.add(rtrBgpUtil.type2string(t) + " msgs|" + msgCntTx[t] + "|" + msgCntRx[t]);
     }
 
     /**
@@ -4394,6 +4399,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("accept start|" + accptStart);
         l.add("accept fail|" + accptFail);
         l.add("accept ok|" + accptOk);
+        getMsgStats(l, rtrBgpUtil.msgOpen);
+        getMsgStats(l, rtrBgpUtil.msgUpdate);
+        getMsgStats(l, rtrBgpUtil.msgNotify);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
         l.add("static peers|" + rtrBgpUtil.tabSiz2str(neighs));

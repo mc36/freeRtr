@@ -1530,7 +1530,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     break;
                 }
                 if (parent != null) {
-                    parent.msgCntRx[typ & 0xff]++;
+                    parent.msgCntRx[typ & 0xff].rx(pckRx);
                 }
             }
             if (pos != flg) {
@@ -1557,7 +1557,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (parent != null) {
-            parent.msgCntTx[typ & 0xff]++;
+            parent.msgCntTx[typ & 0xff].tx(pck);
         }
         pck.merge2beg();
         if ((compressTx != null) && (typ == rtrBgpUtil.msgUpdate)) {
@@ -1585,7 +1585,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             pck.merge2beg();
             typ = rtrBgpUtil.msgCompress;
             if (parent != null) {
-                parent.msgCntTx[typ & 0xff]++;
+                parent.msgCntTx[typ & 0xff].tx(pck);
             }
         }
         if (debugger.rtrBgpEvnt) {
@@ -1637,7 +1637,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         cntr.rx(pck);
         if (parent != null) {
-            parent.msgCntRx[typ & 0xff]++;
+            parent.msgCntRx[typ & 0xff].rx(pck);
         }
         if (debugger.rtrBgpEvnt) {
             logger.debug("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
