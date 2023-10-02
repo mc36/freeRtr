@@ -15186,3 +15186,5 @@ no todo: consider adding ipcomp tunnel to the dataplanes that interworks and dec
 no todo: consider adding icmptunnel to the dataplanes with a valid req-rep if possible with a configurable checksum field... :)
 no todo: measurement framework for bandwidth, twamp, icmp and friends with offloading by abusing the packout api
 todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim icmp ipcomp
+---------------------------------- 2023-10-02 01:13:34 23.10.2
+todo: bgp end-changes-log knob
