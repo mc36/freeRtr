@@ -121,6 +121,7 @@ public class pipeSetting implements Comparator<pipeSetting> {
         userFormat l = new userFormat("|", "category|value");
         l.add("buggy|" + cfgAll.buggy);
         l.add("invdc|" + cfgAll.invdc);
+        l.add("evalvdc|" + cfgAll.evalVdcPrivs());
         l.add("authenticate|" + pip.settingsGet(pipeSetting.authed, new authResult()));
         l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));
         l.add("colorize|" + pip.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));

@@ -4387,7 +4387,7 @@ public class userExec {
     }
 
     private void doAttach() {
-        if (cfgAll.invdc) {
+        if (cfgAll.evalVdcPrivs()) {
             cmd.error("not in a vdc");
             return;
         }

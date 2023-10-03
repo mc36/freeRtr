@@ -1429,7 +1429,7 @@ class userHelpingData {
             if (!cfgAll.buggy) {
                 level = 666;
             }
-            if (cfgAll.invdc) {
+            if (cfgAll.evalVdcPrivs()) {
                 level = 666;
             }
         }

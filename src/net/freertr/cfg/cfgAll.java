@@ -1399,6 +1399,18 @@ public class cfgAll {
     }
 
     /**
+     * check for extra vdc privileges
+     *
+     * @return true to forbid, false to allow
+     */
+    public static boolean evalVdcPrivs() {
+        if (!invdc) {
+            return true;
+        }
+        return !buggy;
+    }
+
+    /**
      * get client vrf
      *
      * @return client vrf, null if nothing

@@ -605,7 +605,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
                 ifcc.cntr.drop(pck, counter.reasons.badCmd);
                 return true;
             }
-            if (cfgAll.invdc) {
+            if (cfgAll.evalVdcPrivs()) {
                 ifcc.cntr.drop(pck, counter.reasons.badCmd);
                 return true;
             }

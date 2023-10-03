@@ -146,7 +146,7 @@ public class userTest {
      * @return command to execute, null if nothing
      */
     public cfgAlias doer() {
-        if (cfgAll.invdc) {
+        if (cfgAll.evalVdcPrivs()) {
             cmd.error("not in a vdc");
             return null;
         }

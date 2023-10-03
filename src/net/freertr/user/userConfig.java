@@ -912,7 +912,7 @@ public class userConfig {
             return;
         }
         if (a.equals("vdc")) {
-            if (cfgAll.invdc) {
+            if (cfgAll.evalVdcPrivs()) {
                 cmd.error("not in a vdc");
                 return;
             }
@@ -931,7 +931,7 @@ public class userConfig {
             return;
         }
         if (a.equals("process")) {
-            if (cfgAll.invdc) {
+            if (cfgAll.evalVdcPrivs()) {
                 cmd.error("not in a vdc");
                 return;
             }
