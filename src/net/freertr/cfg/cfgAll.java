@@ -1405,7 +1405,7 @@ public class cfgAll {
      */
     public static boolean evalVdcPrivs() {
         if (!invdc) {
-            return true;
+            return false;
         }
         return !buggy;
     }

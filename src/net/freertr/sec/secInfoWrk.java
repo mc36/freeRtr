@@ -214,7 +214,6 @@ public class secInfoWrk implements Runnable {
      * @return true if a new thread started
      */
     public boolean doWork(boolean thrd) {
-        ////////////////////////
         doFindRoute();
         thrd &= config.resolve || (config.pmtudTim > 0) || (config.script != null);
         if (thrd) {
