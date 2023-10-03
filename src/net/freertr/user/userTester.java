@@ -7,7 +7,6 @@ import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
 import net.freertr.enc.enc7bit;
 import net.freertr.pipe.pipeProgress;
-import net.freertr.pipe.pipeSide;
 import net.freertr.serv.servHttp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
