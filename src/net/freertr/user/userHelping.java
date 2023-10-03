@@ -1426,7 +1426,10 @@ class userHelpingData {
         variable = (command.indexOf("<") == 0) || (command.indexOf("[") == 0);
         if (hidden) {
             description = "!!!EXPERiMENTAL!!! " + description;
-            if (!cfgAll.buggy || cfgAll.invdc) {
+            if (!cfgAll.buggy) {
+                level = 666;
+            }
+            if (cfgAll.invdc) {
                 level = 666;
             }
         }

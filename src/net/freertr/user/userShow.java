@@ -300,7 +300,10 @@ public class userShow {
         }
         if (a.equals("flash")) {
             a = cmd.getRemaining();
-            if (!cfgAll.buggy || cfgAll.invdc) {
+            if (cfgAll.invdc) {
+                a = "";
+            }
+            if (!cfgAll.buggy) {
                 a = "";
             }
             if (a.length() < 1) {
@@ -311,7 +314,10 @@ public class userShow {
         }
         if (a.equals("disk")) {
             a = cmd.getRemaining();
-            if (!cfgAll.buggy || cfgAll.invdc) {
+            if (cfgAll.invdc) {
+                a = "";
+            }
+            if (!cfgAll.buggy) {
                 a = "";
             }
             if (a.length() < 1) {
@@ -725,7 +731,7 @@ public class userShow {
                 rdr.putStrArr(lst);
                 return null;
             }
-            if (cfgAll.buggy && cfgAll.invdc) {
+            if (cfgAll.invdc) {
                 cmd.error("not in a vdc");
                 return null;
             }
@@ -745,7 +751,7 @@ public class userShow {
                 rdr.putStrArr(cur);
                 return null;
             }
-            if (cfgAll.buggy && cfgAll.invdc) {
+            if (cfgAll.invdc) {
                 cmd.error("not in a vdc");
                 return null;
             }

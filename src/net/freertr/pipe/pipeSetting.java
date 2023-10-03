@@ -2,6 +2,7 @@ package net.freertr.pipe;
 
 import java.util.Comparator;
 import net.freertr.auth.authResult;
+import net.freertr.cfg.cfgAll;
 import net.freertr.user.userFormat;
 
 /**
@@ -118,6 +119,8 @@ public class pipeSetting implements Comparator<pipeSetting> {
      */
     public static userFormat getInfo(pipeSide pip) {
         userFormat l = new userFormat("|", "category|value");
+        l.add("buggy|" + cfgAll.buggy);
+        l.add("invdc|" + cfgAll.invdc);
         l.add("authenticate|" + pip.settingsGet(pipeSetting.authed, new authResult()));
         l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));
         l.add("colorize|" + pip.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
