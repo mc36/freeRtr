@@ -1659,7 +1659,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             accptStat.drop(pckCnt, counter.reasons.noBuffer);
             return true;
         }
-        logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem);
+        logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem + " as " + lstn.temp);
         ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
         ntry.socketMode = 4;
         ntry.startNow();
@@ -3618,8 +3618,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("template")) {
-            rtrBgpTemp ntry = new rtrBgpTemp(this);
-            ntry.tempName = cmd.word();
+            s = cmd.word();
+            rtrBgpTemp ntry = new rtrBgpTemp(this, s);
             rtrBgpTemp old = temps.add(ntry);
             if (old != null) {
                 ntry = old;
@@ -3897,8 +3897,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return template, null if not found
      */
     public rtrBgpTemp findTemp(String nam) {
-        rtrBgpTemp ntry = new rtrBgpTemp(this);
-        ntry.tempName = "" + nam;
+        rtrBgpTemp ntry = new rtrBgpTemp(this, nam);
         return temps.find(ntry);
     }
 

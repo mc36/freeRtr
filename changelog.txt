@@ -15190,3 +15190,6 @@ todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim
 todo: bgp end-changes-log knob
 ---------------------------------- 2023-10-02 20:17:00 23.10.2
 no todo: bgp unknowns-log knob
+---------------------------------- 2023-10-03 08:10:05 23.10.3
+no todo: bgp end-changes-log knob
+todo: bgp neigh log-end-changes log-route-map/policy knob

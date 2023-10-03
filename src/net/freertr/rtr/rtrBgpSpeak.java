@@ -1534,9 +1534,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     sendNotify(3, 1);
                     break;
                 }
-                if (parent != null) {
-                    parent.msgCntRx[typ & 0xff].rx(pckRx);
-                }
+                updateRxMsgCtr(pckRx, typ);
             }
             if (pos != flg) {
                 logger.info("got compressed garbage (" + (flg - pos) + ") from " + neigh.peerAddr);
@@ -1551,6 +1549,28 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         logger.error("neighbor " + neigh.peerAddr + " down");
     }
 
+    private void updateTxMsgCtr(packHolder pck, int typ) {
+        if (parent != null) {
+            parent.msgCntTx[typ & 0xff].tx(pck);
+        }
+    }
+
+    private void updateRxMsgCtr(packHolder pck, int typ) {
+        if (parent != null) {
+            parent.msgCntRx[typ & 0xff].rx(pckRx);
+        }
+        if (neigh == null) {
+            return;
+        }
+        if (!neigh.unknownsLog) {
+            return;
+        }
+        if ((typ >= rtrBgpUtil.msgOpen) && (typ <= rtrBgpUtil.msgCompress)) {
+            return;
+        }
+        logger.info("got message with unknowns " + neigh.peerAddr + "->" + neigh.localAddr + " " + pck.dump());
+    }
+
     /**
      * send one packet
      *
@@ -1561,9 +1581,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (pipe == null) {
             return;
         }
-        if (parent != null) {
-            parent.msgCntTx[typ & 0xff].tx(pck);
-        }
+        updateTxMsgCtr(pck, typ);
         pck.merge2beg();
         if ((compressTx != null) && (typ == rtrBgpUtil.msgUpdate)) {
             if (debugger.rtrBgpEvnt) {
@@ -1589,9 +1607,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             pck.putSkip(i + 1);
             pck.merge2beg();
             typ = rtrBgpUtil.msgCompress;
-            if (parent != null) {
-                parent.msgCntTx[typ & 0xff].tx(pck);
-            }
+            updateTxMsgCtr(pck, typ);
         }
         if (debugger.rtrBgpEvnt) {
             logger.debug("sending " + rtrBgpUtil.type2string(typ) + " to " + neigh.peerAddr);
@@ -1641,9 +1657,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         cntr.rx(pck);
-        if (parent != null) {
-            parent.msgCntRx[typ & 0xff].rx(pck);
-        }
+        updateRxMsgCtr(pck, typ);
         if (debugger.rtrBgpEvnt) {
             logger.debug("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
         }
@@ -2486,11 +2500,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 parent.unknwnStat.rx(origPck);
             }
             unknownCntr.rx(origPck);
-            if (neigh.unknownsColl != null) {
-                neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
-            }
-            if (neigh.unknownsLog) {
-                logger.info("got update with unknowns from " + neigh.peerAddr + " " + origPck.dump());
+            if (neigh != null) {
+                if (neigh.unknownsColl != null) {
+                    neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
+                }
+                if (neigh.unknownsLog) {
+                    logger.info("got update with unknowns " + neigh.peerAddr + "->" + neigh.localAddr + " " + origPck.dump());
+                }
             }
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);

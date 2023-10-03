@@ -14,16 +14,20 @@ public class rtrBgpTemp extends rtrBgpParam implements Comparator<rtrBgpTemp> {
     /**
      * name of template
      */
-    public String tempName;
+    public final String tempName;
 
     /**
      * create template
      *
      * @param parent bgp process
      */
-    public rtrBgpTemp(rtrBgp parent) {
+    public rtrBgpTemp(rtrBgp parent, String nam) {
         super(parent, true);
-        tempName = "";
+        tempName = "" + nam;
+    }
+
+    public String toString() {
+        return "" + tempName;
     }
 
     public int compare(rtrBgpTemp o1, rtrBgpTemp o2) {
