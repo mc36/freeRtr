@@ -175,7 +175,7 @@ public class userTest {
                 pck.putSkip(1);
                 pck.merge2end();
             }
-            cmd.error("sending cnt=" + cnt + " ifc=" + ifc + " adr=" + pck.ETHsrc + "->" + pck.ETHtrg + " pck=" + pck.dump());
+            cmd.error("sending cnt=" + cnt + " ifc=" + ifc + " adr=" + pck.ETHsrc + " -> " + pck.ETHtrg + " pck=" + pck.dump());
             srv.send2apiPack(cnt, 0, ifc, pck);
             return null;
         }
@@ -200,7 +200,7 @@ public class userTest {
                 pck.putSkip(1);
                 pck.merge2end();
             }
-            cmd.error("sending cnt=" + cnt + " fwd=" + fwd + " ifc=" + ifc + " adr=" + pck.ETHsrc + "->" + pck.ETHtrg + " pck=" + pck.dump());
+            cmd.error("sending cnt=" + cnt + " fwd=" + fwd + " ifc=" + ifc + " adr=" + pck.ETHsrc + " -> " + pck.ETHtrg + " pck=" + pck.dump());
             srv.send2apiPack(cnt, fwd, ifc, pck);
             return null;
         }

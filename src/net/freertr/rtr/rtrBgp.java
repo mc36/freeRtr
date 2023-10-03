@@ -887,6 +887,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public long changedTot;
 
     /**
+     * changed prefixes peak
+     */
+    public long changedMax;
+
+    /**
+     * changed prefixes peak
+     */
+    public long changedPek;
+
+    /**
      * the tcp protocol
      */
     public final prtTcp tcpCore;
@@ -2549,6 +2559,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 + changedMdt.size() + changedNsh.size() + changedRpd.size() + changedSrte.size()
                 + changedLnks.size() + changedRtf.size() + changedMvpn.size() + changedMvpo.size();
         changedTot += changedCur;
+        if (changedCur > changedMax) {
+            changedMax = changedCur;
+            changedPek = bits.getTime();
+        }
         if (needFull.set(0) > 0) {
             computeFull();
         } else if (computeIncr()) {
@@ -4373,7 +4387,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getMsgStats() {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
         for (int i = 0; i < msgCntTx.length; i++) {
             counter tx = msgCntTx[i];
             counter rx = msgCntRx[i];
@@ -4416,6 +4430,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("unkonwn attributes|" + unknwnStat.packRx + "|" + unknwnStat.byteRx);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
+        l.add("changes max|" + changedMax);
+        l.add("changes peak|" + bits.timePast(changedPek) + "|" + bits.time2str(cfgAll.timeZoneName, changedPek + cfgAll.timeServerOffset, 3));
         l.add("static peers|" + rtrBgpUtil.tabSiz2str(neighs));
         l.add("dynamic peers|" + rtrBgpUtil.tabSiz2str(lstnNei));
         l.add("dynamic templates|" + rtrBgpUtil.tabSiz2str(lstnTmp));

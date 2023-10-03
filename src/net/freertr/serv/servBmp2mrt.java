@@ -1,35 +1,27 @@
 package net.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
-import net.freertr.cfg.cfgProxy;
 import net.freertr.cfg.cfgRtr;
-import net.freertr.clnt.clntProxy;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
-import net.freertr.rtr.rtrBgp;
 import net.freertr.rtr.rtrBgpMon;
 import net.freertr.rtr.rtrBgpMrt;
-import net.freertr.rtr.rtrBgpNeigh;
 import net.freertr.rtr.rtrBgpSpeak;
 import net.freertr.rtr.rtrBgpTemp;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
-import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
-import net.freertr.user.userTerminal;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.logFil;
@@ -409,7 +401,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         servBmp2mrtStat res = new servBmp2mrtStat();
         res.from = from.copyBytes();
         res.peer = peer.copyBytes();
-        res.as = as;
+        res.asn = as;
         if (crt == 0) {
             return stats.find(res);
         }
@@ -417,7 +409,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         if (old != null) {
             res = old;
             if (as != 0) {
-                res.as = as;
+                res.asn = as;
             }
         } else {
             res.state = crt == 1;
@@ -654,427 +646,6 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return null;
         }
         return stat.getShow();
-    }
-
-}
-
-class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
-
-    public addrIP from;
-
-    public addrIP peer;
-
-    public int as;
-
-    public int packIn;
-
-    public int packOut;
-
-    public int packRate;
-
-    public long packLast;
-
-    public int byteIn;
-
-    public int byteOut;
-
-    public boolean state;
-
-    public long since;
-
-    public int change;
-
-    public tabRouteAttr.routeType rouT;
-
-    public int rouI;
-
-    public boolean rouD;
-
-    public rtrBgp prc;
-
-    public rtrBgpNeigh nei;
-
-    public boolean dyn;
-
-    public long repLast;
-
-    public int repPack;
-
-    public int repByte;
-
-    public int repPolRej;
-
-    public int repDupAdv;
-
-    public int repDupWit;
-
-    public int repClstrL;
-
-    public int repAsPath;
-
-    public int repOrgnId;
-
-    public int repAsConf;
-
-    public int repWitUpd;
-
-    public int repWitPrf;
-
-    public int repDupUpd;
-
-    public int compare(servBmp2mrtStat o1, servBmp2mrtStat o2) {
-        int i = o1.from.compare(o1.from, o2.from);
-        if (i != 0) {
-            return i;
-        }
-        return o1.peer.compare(o1.peer, o2.peer);
-    }
-
-    public String toString() {
-        return from + "|" + peer + "|" + as + "|" + state + "|" + change + "|" + bits.timePast(since);
-    }
-
-    public boolean fromString(cmds cmd, boolean stat) {
-        rouD = cmd.word().equals("tx");
-        tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
-        if (rt == null) {
-            cmd.error("invalid routing protocol");
-            return true;
-        }
-        int ri = bits.str2num(cmd.word());
-        cfgRtr rp = cfgAll.rtrFind(rt, ri, false);
-        if (rp == null) {
-            cmd.error("bad process number");
-            return true;
-        }
-        if (rp.bgp == null) {
-            cmd.error("not a bgp process");
-            return true;
-        }
-        prc = rp.bgp;
-        if (!stat) {
-            rouT = rt;
-            rouI = ri;
-            return false;
-        }
-        addrIP adr = new addrIP();
-        adr.fromString(cmd.word());
-        nei = rp.bgp.findPeer(adr);
-        if (nei == null) {
-            cmd.error("no such peer");
-            return true;
-        }
-        rouT = rt;
-        rouI = ri;
-        return false;
-    }
-
-    public String getCfg(boolean stat) {
-        String a = (rouD ? "tx" : "rx") + " " + cfgRtr.num2name(rouT) + " " + rouI;
-        if (stat) {
-            return a + " " + nei;
-        } else {
-            return a;
-        }
-    }
-
-    public userFormat getShow() {
-        userFormat res = new userFormat("|", "category|value");
-        res.add("from|" + from);
-        res.add("peer|" + peer);
-        res.add("as|" + as);
-        res.add("state|" + state);
-        res.add("since|" + bits.time2str(cfgAll.timeZoneName, since + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(since) + " ago)");
-        res.add("change|" + change);
-        res.add("pack in|" + packIn);
-        res.add("pack out|" + packOut);
-        res.add("byte in|" + byteIn);
-        res.add("byte out|" + byteOut);
-        res.add("pack last|" + bits.time2str(cfgAll.timeZoneName, packLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(packLast) + " ago)");
-        res.add("report pack|" + repPack);
-        res.add("report byte|" + repByte);
-        res.add("report last|" + bits.time2str(cfgAll.timeZoneName, repLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(repLast) + " ago)");
-        res.add("rep policy drp|" + repPolRej);
-        res.add("rep dup advert|" + repDupAdv);
-        res.add("rep dup withdrw|" + repDupWit);
-        res.add("rep dup update|" + repDupUpd);
-        res.add("rep cluster id|" + repClstrL);
-        res.add("rep as path|" + repAsPath);
-        res.add("rep originator|" + repOrgnId);
-        res.add("rep confed|" + repAsConf);
-        res.add("rep bad updt|" + repWitUpd);
-        res.add("rep bad prfx|" + repWitPrf);
-        res.add("process|" + rouT + " " + rouI);
-        res.add("neighbor|" + nei);
-        res.add("direction|" + rouD);
-        return res;
-    }
-
-    public void addCnts(servBmp2mrtStat oth) {
-        if (since < oth.since) {
-            since = oth.since;
-        }
-        if (packLast < oth.packLast) {
-            packLast = oth.packLast;
-        }
-        if (repLast < oth.repLast) {
-            repLast = oth.repLast;
-        }
-        change += oth.change;
-        packIn += oth.packIn;
-        packOut += oth.packOut;
-        byteIn += oth.byteIn;
-        byteOut += oth.byteOut;
-        repPack += oth.repPack;
-        repByte += oth.repByte;
-        repPolRej += oth.repPolRej;
-        repDupAdv += oth.repDupAdv;
-        repDupWit += oth.repDupWit;
-        repDupUpd += oth.repDupUpd;
-        repClstrL += oth.repClstrL;
-        repAsPath += oth.repAsPath;
-        repOrgnId += oth.repOrgnId;
-        repAsConf += oth.repAsConf;
-        repWitUpd += oth.repWitUpd;
-        repWitPrf += oth.repWitPrf;
-    }
-
-}
-
-class servBmp2mrtRate extends TimerTask {
-
-    private servBmp2mrt lower;
-
-    public servBmp2mrtRate(servBmp2mrt prnt) {
-        lower = prnt;
-    }
-
-    public void run() {
-        lower.doRates();
-    }
-
-}
-
-class servBmp2mrtConn implements Runnable {
-
-    private pipeSide pipe;
-
-    private servBmp2mrt lower;
-
-    private addrIP peer;
-
-    public servBmp2mrtConn(pipeSide pip, servBmp2mrt prnt, prtGenConn id) {
-        pipe = pip;
-        lower = prnt;
-        peer = id.peerAddr.copyBytes();
-        new Thread(this).start();
-    }
-
-    public void run() {
-        try {
-            doer();
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-        pipe.setClose();
-    }
-
-    private void doer() {
-        logger.warn("neighbor " + peer + " up");
-        packHolder pck = new packHolder(true, true);
-        addrIP adr = new addrIP();
-        for (;;) {
-            pck.clear();
-            if (pck.pipeRecv(pipe, 0, servBmp2mrt.size, 144) != servBmp2mrt.size) {
-                break;
-            }
-            if (pck.getByte(0) != 3) { // version
-                break;
-            }
-            int len = pck.msbGetD(1) - servBmp2mrt.size; // length
-            int typ = pck.getByte(5); // type
-            if (len < 1) {
-                continue;
-            }
-            pck.clear();
-            if (pck.pipeRecv(pipe, 0, len, 144) != len) {
-                break;
-            }
-            // per = pck.getByte(0); // peer type
-            int flg = pck.getByte(1); // flags
-            // int rd = pck.msbGetQ(2); // distinguisher
-            pck.getAddr(adr, 10);
-            int as = pck.msbGetD(26); // asnum
-            // pck.getAddr(rtr, 30); // rtrid
-            // int tim = pck.msbGetD(34); // seconds
-            // int tim += pck.msbGetD(38) / 1000; // microsecs
-            if ((flg & 0x80) == 0) {
-                adr.fromIPv4addr(adr.toIPv4());
-            }
-            for (int i = 0; i < lower.relays.size(); i++) {
-                lower.relays.get(i).gotMessage(as, peer, adr, typ, pck);
-            }
-            pck.getSkip(rtrBgpMon.size - servBmp2mrt.size);
-            boolean dir = (flg & 0x10) != 0;
-            switch (typ) {
-                case rtrBgpMon.typMon:
-                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
-                    break;
-                case rtrBgpMon.typPerUp:
-                    pck.getSkip(20);
-                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
-                    lower.gotState(as, adr, peer, true);
-                    break;
-                case rtrBgpMon.typPerDn:
-                    pck.getSkip(1);
-                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
-                    lower.gotState(as, adr, peer, false);
-                    break;
-                case rtrBgpMon.typStat:
-                    pck.getSkip(4);
-                    lower.gotCounts(as, adr, peer, pck);
-                    break;
-                default:
-                    break;
-            }
-        }
-        lower.gotState(peer, false);
-        logger.error("neighbor " + peer + " down");
-    }
-
-}
-
-class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable {
-
-    public clntProxy proxy;
-
-    public String server;
-
-    public int port;
-
-    private tabListing<tabAceslstN<addrIP>, addrIP> acl;
-
-    private boolean need2run;
-
-    private pipeSide pipe;
-
-    public boolean fromString(cmds cmd) {
-        cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-        if (prx == null) {
-            cmd.error("no such proxy");
-            return true;
-        }
-        proxy = prx.proxy;
-        server = cmd.word();
-        port = bits.str2num(cmd.word());
-        String a = cmd.word();
-        if (a.length() < 1) {
-            return false;
-        }
-        cfgAceslst ac = cfgAll.aclsFind(a, false);
-        if (ac == null) {
-            cmd.error("no such access list");
-            return true;
-        }
-        acl = ac.aceslst;
-        return false;
-    }
-
-    public String toString() {
-        String a = "";
-        if (acl != null) {
-            a = " " + acl.listName;
-        }
-        return proxy.name + " " + server + " " + port + a;
-    }
-
-    public int compare(servBmp2mrtRelay o1, servBmp2mrtRelay o2) {
-        if (o1.port < o2.port) {
-            return -1;
-        }
-        if (o1.port > o2.port) {
-            return +1;
-        }
-        return o1.server.compareTo(o2.server);
-    }
-
-    public void startWork() {
-        need2run = true;
-        new Thread(this).start();
-    }
-
-    public void stopWork() {
-        need2run = false;
-        if (pipe == null) {
-            return;
-        }
-        pipe.setClose();
-    }
-
-    public void run() {
-        try {
-            for (;;) {
-                doWork();
-                if (!need2run) {
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-    }
-
-    private void doWork() {
-        bits.sleep(1000);
-        addrIP adr = userTerminal.justResolv(server, proxy.prefer);
-        if (adr == null) {
-            return;
-        }
-        pipe = proxy.doConnect(servGeneric.protoTcp, adr, port, "bmp");
-        if (pipe == null) {
-            return;
-        }
-        packHolder pck = new packHolder(true, true);
-        pck.putByte(0, 3); // version
-        pck.msbPutD(1, servBmp2mrt.size); // length
-        pck.putByte(5, rtrBgpMon.typInit); // type
-        pck.putSkip(servBmp2mrt.size);
-        pck.merge2beg();
-        pck.pipeSend(pipe, 0, pck.dataSize(), 1);
-        logger.warn("relay " + server + " up");
-        for (;;) {
-            if (pipe.isClosed() != 0) {
-                break;
-            }
-            if (!need2run) {
-                break;
-            }
-            bits.sleep(1000);
-        }
-        logger.warn("relay " + server + " down");
-        pipe.setClose();
-        pipe = null;
-    }
-
-    public void gotMessage(int as, addrIP from, addrIP peer, int typ, packHolder pck) {
-        if (pipe == null) {
-            return;
-        }
-        pck = pck.copyBytes(true, true);
-        if (acl != null) {
-            pck.IPsrc.setAddr(from);
-            pck.IPtrg.setAddr(peer);
-            pck.UDPtrg = as;
-            if (!acl.matches(false, false, pck)) {
-                return;
-            }
-        }
-        pck.putByte(0, 3); // version
-        pck.msbPutD(1, servBmp2mrt.size + pck.dataSize()); // length
-        pck.putByte(5, typ); // type
-        pck.putSkip(servBmp2mrt.size);
-        pck.merge2beg();
-        pck.pipeSend(pipe, 0, pck.dataSize(), 1);
     }
 
 }

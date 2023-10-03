@@ -233,6 +233,40 @@ public class userPacket {
         if (alias != null) {
             return alias;
         }
+        if (a.equals("txt2mrt")) {
+            a = cmd.word();
+            cmd.error("reading " + a);
+            List<String> lst = bits.txt2buf(a);
+            if (lst == null) {
+                cmd.error("error reading file");
+                return null;
+            }
+            List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
+            int i = pcks.size();
+            cmd.error(i + " dumps found");
+            if (i < 1) {
+                cmd.error("no dumps found");
+                return null;
+            }
+            return null;
+        }
+        if (a.equals("txt2pcap")) {
+            a = cmd.word();
+            cmd.error("reading " + a);
+            List<String> lst = bits.txt2buf(a);
+            if (lst == null) {
+                cmd.error("error reading file");
+                return null;
+            }
+            List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
+            int i = pcks.size();
+            cmd.error(i + " dumps found");
+            if (i < 1) {
+                cmd.error("no dumps found");
+                return null;
+            }
+            return null;
+        }
         if (a.equals("ris2bmp")) {
             clntHttp htp = new clntHttp(cmd.pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
             encUrl src = new encUrl();

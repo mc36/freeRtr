@@ -10,6 +10,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
+import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLargeComm;
@@ -3330,6 +3331,64 @@ public class rtrBgpUtil {
         } else {
             return "" + tab.size();
         }
+    }
+
+    /**
+     * convert hexdump log to packet
+     *
+     * @param a string to convert
+     * @return converted packet
+     */
+    public static packHolder log2pck(String a) {
+        if (a == null) {
+            return null;
+        }
+        a = a.replaceAll("\\|", "");
+        a = a.replaceAll(" -> ", "->");
+        a = a.replaceAll("-->", "->");
+        int i = a.indexOf("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        if (i < 1) {
+            return null;
+        }
+        String s = a.substring(i, a.length());
+        a = a.substring(0, i);
+        s = s.replaceAll(" ", "");
+        packHolder pck = new packHolder(true, true);
+        pck.INTtime = bits.str2time(cfgAll.timeZoneName, a);
+        int o = s.length() & 0xfffffffe;
+        for (i = 0; i < o; i += 2) {
+            pck.putByte(0, bits.fromHex(s.substring(i, i + 2)));
+            pck.putSkip(1);
+            pck.merge2end();
+        }
+        logger.debug(pck.INTtime + " " + a + " " + pck.dataSize());///////
+        i = a.indexOf(" -> ");
+        if (i < 0) {
+            return pck;
+        }
+        return pck;
+    }
+
+    /**
+     * decode bgp dumps
+     *
+     * @param txt text to read
+     * @return list of packets
+     */
+    public static List<packHolder> logs2pcks(List<String> txt) {
+        List<packHolder> res = new ArrayList<packHolder>();
+        if (txt == null) {
+            return res;
+        }
+        for (int i = 0; i < txt.size(); i++) {
+            String a = txt.get(i);
+            packHolder p = log2pck(a);
+            if (p == null) {
+                continue;
+            }
+            res.add(p);
+        }
+        return res;
     }
 
 }

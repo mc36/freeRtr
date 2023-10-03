@@ -2114,6 +2114,12 @@ public class userExec {
         hl.add(null, "2 3      wakeup                       wake up one host");
         hl.add(null, "3 4        <name:ifc>                 name of interface");
         hl.add(null, "4 .          <addr>                   address of host");
+        hl.add(null, "2 3      txt2mrt                      text log to mrt");
+        hl.add(null, "3 4        <file>                     name of file");
+        hl.add(null, "4 .          <file>                   name of file");
+        hl.add(null, "2 3      txt2pcap                     text log to pcap");
+        hl.add(null, "3 4        <file>                     name of file");
+        hl.add(null, "4 .          <file>                   name of file");
         hl.add(null, "2 3      ris2bmp                      ris to bmp");
         hl.add(null, "3 4        <url>                      url of ris live server");
         hl.add(null, "4 5          <name:prx>               proxy profile");

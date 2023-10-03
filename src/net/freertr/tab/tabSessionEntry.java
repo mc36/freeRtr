@@ -279,7 +279,7 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         if (!logMacs) {
             return s;
         }
-        s = s + " " + srcMac + "->" + trgMac;
+        s = s + " " + srcMac + " -> " + trgMac;
         return s;
     }
 
