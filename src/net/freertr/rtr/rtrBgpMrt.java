@@ -87,6 +87,7 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      * create mrt header
      *
      * @param hdr array to update
+     * @param tim time to write
      * @param dir direction: false=rx, true=tx
      * @param asR remote as
      * @param asL local as
@@ -95,8 +96,8 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      * @param dat size of bgp message
      * @return bytes written
      */
-    public static int putMrtHeader(byte[] hdr, boolean dir, int asR, int asL, addrIP adrR, addrIP adrL, int dat) {
-        bits.msbPutD(hdr, 0, (int) (bits.getTime() / 1000));
+    public static int putMrtHeader(byte[] hdr, long tim, boolean dir, int asR, int asL, addrIP adrR, addrIP adrL, int dat) {
+        bits.msbPutD(hdr, 0, (int) (tim / 1000));
         bits.msbPutW(hdr, 4, typBgp); // type
         if (dir) {
             bits.msbPutW(hdr, 6, typLoc32); // tx
@@ -134,7 +135,7 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      */
     public void gotMessage(boolean dir, int typ, rtrBgpNeigh nei, byte[] dat) {
         byte[] hdr = new byte[128];
-        int len = putMrtHeader(hdr, dir, nei.remoteAs, nei.localAs, nei.peerAddr, nei.localAddr, dat.length + rtrBgpSpeak.sizeU);
+        int len = putMrtHeader(hdr, bits.getTime(), dir, nei.remoteAs, nei.localAs, nei.peerAddr, nei.localAddr, dat.length + rtrBgpSpeak.sizeU);
         for (int i = 0; i < 16; i++) {
             hdr[len] = (byte) 0xff;
             len++;

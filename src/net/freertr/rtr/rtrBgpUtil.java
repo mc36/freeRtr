@@ -3336,36 +3336,45 @@ public class rtrBgpUtil {
     /**
      * convert hexdump log to packet
      *
-     * @param a string to convert
+     * @param s string to convert
      * @return converted packet
      */
-    public static packHolder log2pck(String a) {
-        if (a == null) {
+    public static packHolder log2pck(String s) {
+        if (s == null) {
             return null;
         }
-        a = a.replaceAll("\\|", "");
-        a = a.replaceAll(" -> ", "->");
-        a = a.replaceAll("-->", "->");
+        String a = s.replaceAll("\\|", "");
         int i = a.indexOf("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
         if (i < 1) {
             return null;
         }
-        String s = a.substring(i, a.length());
+        s = a.substring(i, a.length());
         a = a.substring(0, i);
         s = s.replaceAll(" ", "");
         packHolder pck = new packHolder(true, true);
         pck.INTtime = bits.str2time(cfgAll.timeZoneName, a);
-        int o = s.length() & 0xfffffffe;
+        int o = s.length() & 0xfffffe;
         for (i = 0; i < o; i += 2) {
             pck.putByte(0, bits.fromHex(s.substring(i, i + 2)));
             pck.putSkip(1);
             pck.merge2end();
         }
-        logger.debug(pck.INTtime + " " + a + " " + pck.dataSize());///////
-        i = a.indexOf(" -> ");
+        i = a.indexOf("->");
         if (i < 0) {
             return pck;
         }
+        s = a.substring(i + 2, a.length()).trim();
+        a = a.substring(0, i).trim();
+        i = a.lastIndexOf(" ");
+        if (i > 0) {
+            a = a.substring(i + 1, a.length());
+        }
+        i = s.indexOf(" ");
+        if (i > 0) {
+            s = s.substring(0, i);
+        }
+        pck.IPsrc.fromString(a);
+        pck.IPtrg.fromString(s);
         return pck;
     }
 

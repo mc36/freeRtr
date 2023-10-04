@@ -580,7 +580,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return;
         }
         byte[] hdr = new byte[128];
-        int len = rtrBgpMrt.putMrtHeader(hdr, dir, as, 0, src, spk, dat.length);
+        int len = rtrBgpMrt.putMrtHeader(hdr, bits.getTime(), dir, as, 0, src, spk, dat.length);
         fileHandle.add(hdr, 0, len, dat, 0, dat.length);
     }
 

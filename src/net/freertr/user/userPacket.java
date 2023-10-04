@@ -242,29 +242,38 @@ public class userPacket {
                 return null;
             }
             List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
-            int i = pcks.size();
-            cmd.error(i + " dumps found");
-            if (i < 1) {
+            int o = pcks.size();
+            cmd.error(o + " dumps found");
+            if (o < 1) {
                 cmd.error("no dumps found");
                 return null;
             }
-            return null;
-        }
-        if (a.equals("txt2pcap")) {
             a = cmd.word();
-            cmd.error("reading " + a);
-            List<String> lst = bits.txt2buf(a);
-            if (lst == null) {
-                cmd.error("error reading file");
+            cmd.error("writing " + a);
+            RandomAccessFile f;
+            try {
+                f = new RandomAccessFile(new File(a), "rw");
+                f.setLength(0);
+            } catch (Exception e) {
                 return null;
             }
-            List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
-            int i = pcks.size();
-            cmd.error(i + " dumps found");
-            if (i < 1) {
-                cmd.error("no dumps found");
-                return null;
+            int ok = 0;
+            for (int i = 0; i < o; i++) {
+                packHolder pck = pcks.get(i);
+                byte[] b = new byte[128];
+                int p = rtrBgpMrt.putMrtHeader(b, pck.INTtime, false, 0, 0, pck.IPsrc, pck.IPtrg, pck.dataSize());
+                try {
+                    f.write(b, 0, p);
+                    f.write(pck.getCopy());
+                    ok++;
+                } catch (Exception e) {
+                }
             }
+            try {
+                f.close();
+            } catch (Exception e) {
+            }
+            cmd.error(ok + " packets converted");
             return null;
         }
         if (a.equals("ris2bmp")) {
