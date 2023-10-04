@@ -1205,6 +1205,7 @@ public class userExec {
         hl.add(null, "3 4        vdc                   vdcmessages");
         hl.add(null, "4 .          <name:vdc>          name of vdc");
         hl.add(null, "3 .        file                  saved messages");
+        hl.add(null, "3 .        bgp-dump              logged bgp dumps");
         hl.add(null, "3 .        old-file              old saved messages");
         hl.add(null, "3 4        last                  last messages");
         hl.add(null, "4 .          <num>               message count");

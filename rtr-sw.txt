@@ -305,8 +305,8 @@ router lsrp4 1 vrf v1
  spf-bidir
  spf-ecmp
  suppress-prefix
- segrout 300 39
- bier 256 300 39
+ segrout 300 227
+ bier 256 300 227
  justadvert loopback0
  ecmp
  exit
@@ -319,8 +319,8 @@ router lsrp6 1 vrf v1
  spf-bidir
  spf-ecmp
  suppress-prefix
- segrout 300 39
- bier 256 300 39
+ segrout 300 227
+ bier 256 300 227
  justadvert loopback0
  ecmp
  exit
@@ -364,7 +364,7 @@ interface template1
  ipv4 ptp receive
  ipv4 bfd 1000 3000 3
  ipv4 pim enable
- ipv4 pim bier-tunnel 39
+ ipv4 pim bier-tunnel 227
  ipv4 pim join-source loopback0
  ipv6 address dynamic ffff:ffff:ffff:ffff::
  ipv6 host-watch appear logger change logger disappear logger
@@ -373,10 +373,10 @@ interface template1
  ipv6 ptp receive
  ipv6 bfd 1000 3000 3
  ipv6 pim enable
- ipv6 pim bier-tunnel 39
+ ipv6 pim bier-tunnel 227
  ipv6 pim join-source loopback0
- polka enable 39 70000 256
- mpolka enable 39 70000 256
+ polka enable 227 70000 256
+ mpolka enable 227 70000 256
  mpls enable
  mpls ldp4
  mpls ldp6

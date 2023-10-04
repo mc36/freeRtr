@@ -50,6 +50,12 @@ public class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable 
     public servBmp2mrtRelay() {
     }
 
+    /**
+     * convert from string
+     *
+     * @param cmd commands to read
+     * @return true on error, false on success
+     */
     public boolean fromString(cmds cmd) {
         cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
         if (prx == null) {
@@ -90,11 +96,17 @@ public class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable 
         return o1.server.compareTo(o2.server);
     }
 
+    /**
+     * start work
+     */
     public void startWork() {
         need2run = true;
         new Thread(this).start();
     }
 
+    /**
+     * stop work
+     */
     public void stopWork() {
         need2run = false;
         if (pipe == null) {
@@ -148,6 +160,15 @@ public class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable 
         pipe = null;
     }
 
+    /**
+     * got a message
+     *
+     * @param as as number
+     * @param from connection source
+     * @param peer remote peer address
+     * @param typ message type
+     * @param pck message body
+     */
     public void gotMessage(int as, addrIP from, addrIP peer, int typ, packHolder pck) {
         if (pipe == null) {
             return;

@@ -672,6 +672,17 @@ public class userShow {
                 rdr.putStrArr(bits.txt2buf(logger.fileName()));
                 return null;
             }
+            if (a.equals("bgp-dump")) {
+                List<String> lst = logger.bufferRead();
+                List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
+                int o = pcks.size();
+                cmd.error(o + " dumps found");
+                for (int i = 0; i < o; i++) {
+                    packHolder pck = pcks.get(i);
+                    cmd.error(i + " " + bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + " " + pck.IPsrc + " -> " + pck.IPtrg + " " + bits.toHex(pck.getCopy()));
+                }
+                return null;
+            }
             if (a.equals("old-file")) {
                 a = logger.fileRotate();
                 if (a == null) {

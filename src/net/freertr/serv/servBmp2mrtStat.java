@@ -196,8 +196,8 @@ public class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
      * convert from string
      *
      * @param cmd command to read
-     * @param stat
-     * @return
+     * @param stat status
+     * @return true on error false on success
      */
     public boolean fromString(cmds cmd, boolean stat) {
         rouD = cmd.word().equals("tx");

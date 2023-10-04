@@ -20,6 +20,13 @@ public class servBmp2mrtConn implements Runnable {
 
     private final addrIP peer;
 
+    /**
+     * create instance
+     *
+     * @param pip pipe to use
+     * @param prnt parent to use
+     * @param id connection to use
+     */
     public servBmp2mrtConn(pipeSide pip, servBmp2mrt prnt, prtGenConn id) {
         pipe = pip;
         lower = prnt;

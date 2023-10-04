@@ -66,7 +66,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
 
     private int rateNum;
 
-    private Timer rateTim;
+    private servBmp2mrtRate rateTim;
 
     private logFil fileHandle;
 
@@ -160,12 +160,15 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             rateInt = bits.str2num(cmd.word());
             rateNum = bits.str2num(cmd.word());
             try {
-                rateTim.cancel();
+                rateTim.stopWork();
             } catch (Exception e) {
             }
-            rateTim = new Timer();
-            servBmp2mrtRate task = new servBmp2mrtRate(this);
-            rateTim.schedule(task, rateInt / 10, rateInt);
+            rateTim = null;
+            if (rateInt < 1) {
+                return false;
+            }
+            rateTim = new servBmp2mrtRate(this, rateInt);
+            rateTim.startWork();
             return false;
         }
         if (s.equals("bulk-down")) {
@@ -262,7 +265,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             rateInt = 0;
             rateNum = 0;
             try {
-                rateTim.cancel();
+                rateTim.stopWork();
             } catch (Exception e) {
             }
             rateTim = null;
