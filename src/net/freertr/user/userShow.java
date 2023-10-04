@@ -3941,6 +3941,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.showSummary(17));
             return;
         }
+        if (a.equals("asummary")) {
+            rdr.putStrTab(r.bgp.showSummary(19));
+            return;
+        }
         if (a.equals("graceful-restart")) {
             rdr.putStrTab(r.bgp.showSummary(4));
             return;

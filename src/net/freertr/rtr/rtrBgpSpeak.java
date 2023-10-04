@@ -1529,12 +1529,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     sendNotify(1, 3);
                     break;
                 }
+                updateRxMsgCtr(pckRx, typ);
                 if (parseUpdate(pckRx, pckRh)) {
                     logger.info("got malformed compressed update from " + neigh.peerAddr);
                     sendNotify(3, 1);
                     break;
                 }
-                updateRxMsgCtr(pckRx, typ);
             }
             if (pos != flg) {
                 logger.info("got compressed garbage (" + (flg - pos) + ") from " + neigh.peerAddr);

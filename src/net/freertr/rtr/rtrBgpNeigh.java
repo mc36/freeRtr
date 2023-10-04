@@ -7,6 +7,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
+import net.freertr.clnt.clntWhois;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.pack.packDnsRec;
@@ -2100,6 +2101,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 return showSummry() + "|" + description;
             case 18:
                 return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.unknownCntr.packRx + "|" + conn.unknownCntr.byteRx;
+            case 19:
+                return showSummry() + "|" + clntWhois.asn2name(remoteAs, true) + "|" + clntWhois.asn2info(remoteAs);
             default:
                 return null;
         }

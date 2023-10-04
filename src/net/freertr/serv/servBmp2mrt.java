@@ -431,7 +431,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         res.rouD = dynCfg.rouD;
         res.rouI = dynCfg.rouI;
         res.rouT = dynCfg.rouT;
-        res.nei = dynCfg.prc.addListenPeer(peer, dynTmp);
+        res.nei = dynCfg.prc.addListenPeer(peer, from, dynTmp);
         return res;
     }
 
@@ -607,7 +607,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "from|peer|as|state|change|last");
+        userFormat res = new userFormat("|", "from|peer|asnum|asname|state|change|last|ago");
         for (int i = 0; i < stats.size(); i++) {
             res.add("" + stats.get(i));
         }

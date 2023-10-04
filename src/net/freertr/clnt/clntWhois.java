@@ -135,7 +135,9 @@ public class clntWhois {
         String asNam = null;
         for (int i = 0; i < res.size(); i++) {
             String s = res.get(i);
-            s = s.replaceAll(" ", "").trim();
+            s = s.replaceAll(" ", "");
+            s = s.replaceAll("\\|", "");
+            s = s.trim();
             int o = s.indexOf(":");
             if (o < 1) {
                 continue;
@@ -172,15 +174,15 @@ public class clntWhois {
      * get info for an asn
      *
      * @param i asn to query
-     * @return info got, null if nothing
+     * @return info got
      */
     public static String asn2info(int i) {
         if (cfgAll.whoisOnline == null) {
-            return null;
+            return asn2str(i);
         }
         int o = cfgAll.whoisOnline.size();
         if (o < 1) {
-            return null;
+            return asn2str(i);
         }
         return cfgAll.whoisOnline.get(bits.random(0, o)) + bits.num2str(i);
     }
@@ -203,36 +205,46 @@ public class clntWhois {
         return res;
     }
 
+    private static String asn2str(int i) {
+        return "as#" + bits.num2str(i);
+    }
+
     /**
      * find name of asn
      *
      * @param i asn number
      * @param b true to do an external lookup on local cache miss
-     * @return name, null if not found
+     * @return name
      */
     public static String asn2name(int i, boolean b) {
         clntWhoisAsn ntry = new clntWhoisAsn(i);
         ntry = asnameCache.find(ntry);
         if (ntry != null) {
             ntry.hits++;
+            if (ntry.name == null) {
+                return asn2str(i);
+            }
             return ntry.name;
         }
         if (!b) {
-            return null;
+            return asn2str(i);
         }
         clntWhois w = new clntWhois(null, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer);
         if (w.doQuery("as" + i) == null) {
             asnameCache.put(new clntWhoisAsn(i));
-            return null;
+            return asn2str(i);
         }
         ntry = new clntWhoisAsn(i);
         ntry = asnameCache.find(ntry);
         if (ntry != null) {
             ntry.hits++;
+            if (ntry.name == null) {
+                return asn2str(i);
+            }
             return ntry.name;
         }
         asnameCache.put(new clntWhoisAsn(i));
-        return null;
+        return asn2str(i);
     }
 
     /**
@@ -254,9 +266,6 @@ public class clntWhois {
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
             String a = clntWhois.asn2name(o, true);
-            if (a == null) {
-                a = "as#" + bits.num2str(o);
-            }
             s += " " + a;
         }
         return beg + s.substring(1, s.length()) + end;
@@ -281,9 +290,6 @@ public class clntWhois {
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
             String a = clntWhois.asn2info(o);
-            if (a == null) {
-                a = "as#" + bits.num2str(o);
-            }
             s += " " + a;
         }
         return beg + s.substring(1, s.length()) + end;

@@ -1696,12 +1696,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * add listen peer
      *
      * @param peer peer address
+     * @param from from address
      * @param temp template to use
      * @return neighbor instance
      */
-    public rtrBgpNeigh addListenPeer(addrIP peer, rtrBgpTemp temp) {
+    public rtrBgpNeigh addListenPeer(addrIP peer, addrIP from, rtrBgpTemp temp) {
         rtrBgpNeigh ntry = new rtrBgpNeigh(this);
         ntry.peerAddr = peer.copyBytes();
+        ntry.localAddr = from.copyBytes();
         if (neighs.find(ntry) != null) {
             return null;
         }
@@ -3755,7 +3757,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param mod mode: 1=afi, 2=groups, 3=nexthops, 4=graceful, 5=addpath,
      * 6=routerid, 7=buffer, 8=description, 9=hostname, 10=compress, 11=connect,
      * 12=resolve, 13=summary, 14=multilab, 15=longlived, 16=software, 17=desum
-     * 18=unknowns
+     * 18=unknowns, 19=asnsum
      * @return list of neighbors
      */
     public userFormat showSummary(int mod) {
@@ -3812,6 +3814,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 break;
             case 18:
                 l = new userFormat("|", "neighbor|as|updates|bytes");
+                break;
+            case 19:
+                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|asname|asinfo");
                 break;
             default:
                 return null;

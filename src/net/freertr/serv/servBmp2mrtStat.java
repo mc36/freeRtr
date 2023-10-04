@@ -189,7 +189,7 @@ public class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
     }
 
     public String toString() {
-        return from + "|" + peer + "|" + asn + "|" + state + "|" + change + "|" + bits.timePast(since);
+        return from + "|" + peer + "|" + asn + "|" + clntWhois.asn2name(asn, true) + "|" + state + "|" + change + "|" + bits.timePast(since) + "|" + bits.time2str(cfgAll.timeZoneName, since + cfgAll.timeServerOffset, 3);
     }
 
     /**
@@ -234,6 +234,12 @@ public class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
         return false;
     }
 
+    /**
+     * get current config
+     *
+     * @param stat status
+     * @return string
+     */
     public String getCfg(boolean stat) {
         String a = (rouD ? "tx" : "rx") + " " + cfgRtr.num2name(rouT) + " " + rouI;
         if (stat) {
@@ -243,6 +249,11 @@ public class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
         }
     }
 
+    /**
+     * get show output
+     *
+     * @return output
+     */
     public userFormat getShow() {
         userFormat res = new userFormat("|", "category|value");
         res.add("from|" + from);
@@ -278,6 +289,11 @@ public class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
         return res;
     }
 
+    /**
+     * add counters
+     *
+     * @param oth where from
+     */
     public void addCnts(servBmp2mrtStat oth) {
         if (since < oth.since) {
             since = oth.since;
