@@ -1568,9 +1568,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if ((typ >= rtrBgpUtil.msgOpen) && (typ <= rtrBgpUtil.msgCompress)) {
             return;
         }
-        String a = "got message with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump();
-        logger.info(a);
-        logger.traceback(new Exception("unknowns"), a);
+        logger.info("got message with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump());
     }
 
     /**
@@ -2507,9 +2505,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
                 }
                 if (neigh.unknownsLog) {
-                    String a = "got update with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + origPck.dump();
-                    logger.info(a);
-                    logger.traceback(new Exception("unknowns"), a);
+                    logger.info("got update with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + origPck.dump());
                 }
             }
         }
