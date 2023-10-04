@@ -369,6 +369,7 @@ public class userConfig {
         l.add(null, "2  3    encoded                      set banner");
         l.add(null, "3  3,.    <cmd>                      encoded banner");
         l.add(null, "1  2  logging                        set logging parameters");
+        l.add(null, "2  .    tracestop                    stop on traceback");
         l.add(null, "2  .    milliseconds                 millisecond logging");
         l.add(null, "2  3    proxy                        set proxy to use");
         l.add(null, "3  .      <name:prx>                 proxy profile");
@@ -485,7 +486,6 @@ public class userConfig {
         l.add(null, "5  6          <num>                  new service path");
         l.add(null, "6  4,.          <num>                new service index");
         l.add(null, "1  2  client                         specify address of name server");
-        l.add(null, "2  .    tracestop                    stop on traceback");
         l.add(null, "2  3    cpuhog                       specify cpuhog parameters");
         l.add(null, "3  .      <num>                      percentage");
         l.add(null, "2  3    label-range                  specify label range parameters");
@@ -1343,490 +1343,7 @@ public class userConfig {
             return;
         }
         if (a.equals("client")) {
-            a = cmd.word();
-            if (a.equals("tracestop")) {
-                cfgAll.tracebackStops = true;
-                return;
-            }
-            if (a.equals("pastebin")) {
-                cfgAll.pasteBin = cmd.word();
-                return;
-            }
-            if (a.equals("capture-path")) {
-                cfgAll.capturePath = cmd.word();
-                return;
-            }
-            if (a.equals("l2f-timer")) {
-                cfgAll.l2fTimer = bits.str2num(cmd.word());
-                cfgAll.l2fRetry = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("l2tp2-timer")) {
-                cfgAll.l2tp2hello = bits.str2num(cmd.word());
-                cfgAll.l2tp2retry = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("l2tp3-timer")) {
-                cfgAll.l2tp3hello = bits.str2num(cmd.word());
-                cfgAll.l2tp3retry = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("bullying")) {
-                servQuote ntry = new servQuote();
-                ntry.srvName = cmd.word();
-                ntry = cfgAll.dmnQuote.find(ntry, false);
-                if (ntry == null) {
-                    cmd.error("no such server");
-                    return;
-                }
-                cfgAll.clientShamer = ntry;
-                return;
-            }
-            if (a.equals("label-range")) {
-                cfgAll.labelRangeBeg = bits.str2num(cmd.word());
-                cfgAll.labelRangeEnd = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("cpuhog")) {
-                cfgAll.cpuhogCheck = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ifacestall")) {
-                cfgAll.ifaceStallCheck = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("redundancy")) {
-                cfgAll.redundancyKeep = bits.str2num(cmd.word());
-                cfgAll.redundancyHold = bits.str2num(cmd.word());
-                cfgAll.redundancyInit = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("whois-online")) {
-                cfgAll.whoisOnline = new ArrayList<String>();
-                for (;;) {
-                    a = cmd.word();
-                    if (a.length() < 1) {
-                        break;
-                    }
-                    cfgAll.whoisOnline.add(a);
-                }
-                if (cfgAll.whoisOnline.size() > 0) {
-                    return;
-                }
-                cfgAll.whoisOnline = null;
-                return;
-            }
-            if (a.equals("whois-server")) {
-                cfgAll.whoisServer = cmd.getRemaining();
-                return;
-            }
-            if (a.equals("whois-proxy")) {
-                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-                if (prx == null) {
-                    cmd.error("no such proxy");
-                    return;
-                }
-                cfgAll.whoisProxy = prx.proxy;
-                return;
-            }
-            if (a.equals("end-format")) {
-                cfgAll.endForm = 0;
-                for (;;) {
-                    a = cmd.word();
-                    if (a.length() < 1) {
-                        break;
-                    }
-                    if (a.equals("date")) {
-                        cfgAll.endForm |= 0x1;
-                        continue;
-                    }
-                    if (a.equals("image")) {
-                        cfgAll.endForm |= 0x2;
-                        continue;
-                    }
-                    if (a.equals("chksum")) {
-                        cfgAll.endForm |= 0x4;
-                        continue;
-                    }
-                    if (a.equals("user")) {
-                        cfgAll.endForm |= 0x8;
-                        continue;
-                    }
-                    if (a.equals("none")) {
-                        cfgAll.endForm = 0;
-                        continue;
-                    }
-                }
-                return;
-            }
-            if (a.equals("graceful-reload")) {
-                cfgAll.graceReload = true;
-                return;
-            }
-            if (a.equals("password-stars")) {
-                cfgAll.passwdStars = true;
-                return;
-            }
-            if (a.equals("prefer-ipv6")) {
-                cfgAll.preferIpv6 = true;
-                return;
-            }
-            if (a.equals("prefer-ipv4")) {
-                cfgAll.preferIpv6 = false;
-                return;
-            }
-            if (a.equals("ipv4-tos")) {
-                cfgAll.ipv4sendingTOS = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ipv4-ttl")) {
-                cfgAll.ipv4sendingTTL = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ipv6-tos")) {
-                cfgAll.ipv6sendingTOS = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ipv6-ttl")) {
-                cfgAll.ipv6sendingTTL = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ipv4-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.ipv4ChecksumRx = (i & 1) != 0;
-                cfgAll.ipv4ChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("icmp4-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.icmp4ChecksumRx = (i & 1) != 0;
-                cfgAll.icmp4ChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("icmp6-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.icmp6ChecksumRx = (i & 1) != 0;
-                cfgAll.icmp6ChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("udp-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.udpChecksumRx = (i & 1) != 0;
-                cfgAll.udpChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("udp-portrange")) {
-                cfgAll.udpRangeMin = bits.str2num(cmd.word());
-                cfgAll.udpRangeMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("tcp-timer")) {
-                a = cmd.word();
-                if (a.equals("work")) {
-                    cfgAll.tcpTimeWork = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("alive")) {
-                    cfgAll.tcpTimeAlive = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("fin")) {
-                    cfgAll.tcpTimeFin = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("syn")) {
-                    cfgAll.tcpTimeSyn = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("open")) {
-                    cfgAll.tcpTimeOpen = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("close")) {
-                    cfgAll.tcpTimeClose = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("later")) {
-                    cfgAll.tcpTimeLater = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("now")) {
-                    cfgAll.tcpTimeNow = bits.str2num(cmd.word());
-                    return;
-                }
-                if (a.equals("max")) {
-                    cfgAll.tcpTimeMax = bits.str2num(cmd.word());
-                    return;
-                }
-                cmd.badCmd();
-                return;
-            }
-            if (a.equals("tcp-ecn")) {
-                cfgAll.tcpEcn = true;
-                return;
-            }
-            if (a.equals("tcp-keepalive")) {
-                cfgAll.tcpKeepalive = true;
-                return;
-            }
-            if (a.equals("tcp-timestamp")) {
-                cfgAll.tcpTimStmp = true;
-                return;
-            }
-            if (a.equals("tcp-segments")) {
-                cfgAll.tcpSegmentMin = bits.str2num(cmd.word());
-                cfgAll.tcpSegmentMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("tcp-winscale")) {
-                cfgAll.tcpWinScale = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("tcp-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.tcpChecksumRx = (i & 1) != 0;
-                cfgAll.tcpChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("tcp-portrange")) {
-                cfgAll.tcpRangeMin = bits.str2num(cmd.word());
-                cfgAll.tcpRangeMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ludp-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.ludpChecksumRx = (i & 1) != 0;
-                cfgAll.ludpChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("ludp-portrange")) {
-                cfgAll.ludpRangeMin = bits.str2num(cmd.word());
-                cfgAll.ludpRangeMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("dccp-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.dccpChecksumRx = (i & 1) != 0;
-                cfgAll.dccpChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("dccp-portrange")) {
-                cfgAll.dccpRangeMin = bits.str2num(cmd.word());
-                cfgAll.dccpRangeMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("sctp-checksum")) {
-                int i = parseUpRxtx();
-                cfgAll.sctpChecksumRx = (i & 1) != 0;
-                cfgAll.sctpChecksumTx = (i & 2) != 0;
-                return;
-            }
-            if (a.equals("sctp-portrange")) {
-                cfgAll.sctpRangeMin = bits.str2num(cmd.word());
-                cfgAll.sctpRangeMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ftp-passive")) {
-                cfgAll.ftpPassive = true;
-                return;
-            }
-            if (a.equals("ftp-active")) {
-                cfgAll.ftpPassive = false;
-                return;
-            }
-            if (a.equals("ftp-proxy")) {
-                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-                if (prx == null) {
-                    cmd.error("no such proxy");
-                    return;
-                }
-                cfgAll.ftpProxy = prx.proxy;
-                return;
-            }
-            if (a.equals("tls-version")) {
-                cfgAll.tlsVerMin = bits.str2num(cmd.word());
-                cfgAll.tlsVerMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ssh-group")) {
-                cfgAll.sshGrpMin = bits.str2num(cmd.word());
-                cfgAll.sshGrpMax = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("ssh-agent")) {
-                cfgAll.sshAgent = cmd.getRemaining();
-                return;
-            }
-            if (a.equals("proxy")) {
-                cfgAll.clientProxy = cfgAll.proxyFind(cmd.word(), false);
-                if (cfgAll.clientProxy == null) {
-                    cmd.error("no such profile");
-                    return;
-                }
-                return;
-            }
-            if (a.equals("domain-lookup")) {
-                cfgAll.domainLookup = true;
-                return;
-            }
-            if (a.equals("domain-name")) {
-                cfgAll.domainName = cmd.word();
-                return;
-            }
-            if (a.equals("name-proxy")) {
-                cfgAll.nameServerProxy = cfgAll.proxyFind(cmd.word(), false);
-                if (cfgAll.nameServerProxy == null) {
-                    cmd.error("no such profile");
-                    return;
-                }
-                return;
-            }
-            if (a.equals("name-server")) {
-                cfgAll.nameServerAddr = new ArrayList<addrIP>();
-                for (;;) {
-                    a = cmd.word();
-                    if (a.length() < 1) {
-                        break;
-                    }
-                    addrIP adr = new addrIP();
-                    if (adr.fromString(a)) {
-                        continue;
-                    }
-                    cfgAll.nameServerAddr.add(adr);
-                }
-                return;
-            }
-            if (a.equals("upgrade-config")) {
-                cfgAll.upgradeConfig = true;
-                return;
-            }
-            if (a.equals("upgrade-revert")) {
-                cfgAll.upgradeRevert = bits.str2num(cmd.word());
-                userUpgrade.startReverter();
-                return;
-            }
-            if (a.equals("upgrade-backup")) {
-                cfgAll.upgradeBackup = true;
-                return;
-            }
-            if (a.equals("upgrade-ownkey")) {
-                cfgAll.upgradeOwnKey = true;
-                return;
-            }
-            if (a.equals("upgrade-script")) {
-                cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
-                if (ntry == null) {
-                    cmd.error("no such script");
-                    return;
-                }
-                cfgAll.upgradeScript = ntry;
-                return;
-            }
-            if (a.equals("upgrade-server")) {
-                cfgAll.upgradeServer = cmd.word();
-                return;
-            }
-            if (a.equals("upgrade-pubkey")) {
-                cfgAll.upgradePubKey = cmd.word();
-                return;
-            }
-            if (a.equals("config-server")) {
-                cfgAll.configServer = cmd.word();
-                return;
-            }
-            if (a.equals("config-username")) {
-                cfgAll.configUser = cmd.word();
-                return;
-            }
-            if (a.equals("config-password")) {
-                cfgAll.configPass = authLocal.passwdDecode(cmd.word());
-                return;
-            }
-            if (a.equals("config-save")) {
-                cfgAll.configAsave = true;
-                return;
-            }
-            if (a.equals("config-archive")) {
-                cfgAll.configAbackup = true;
-                return;
-            }
-            if (a.equals("config-backup")) {
-                cfgAll.configBackup = cmd.getRemaining();
-                return;
-            }
-            if (a.equals("config-exclusive")) {
-                cfgAll.configExclusive = 1;
-                return;
-            }
-            if (a.equals("access-subnet-ipv4")) {
-                cfgAll.accessSubnet4 = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("access-subnet-ipv6")) {
-                cfgAll.accessSubnet6 = bits.str2num(cmd.word());
-                return;
-            }
-            if (a.equals("time-server")) {
-                if (cfgAll.timeServerName != null) {
-                    cfgAll.timeServerName.stopWork();
-                }
-                cfgAll.timeServerName = new clntNtp(cmd.word());
-                cfgAll.timeServerName.startWork();
-                return;
-            }
-            if (a.equals("time-zone")) {
-                cfgAll.timeZoneName = cmd.word();
-                return;
-            }
-            if (a.equals("time-proxy")) {
-                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-                if (prx == null) {
-                    cmd.error("no such proxy");
-                    return;
-                }
-                cfgAll.timeProxy = prx.proxy;
-                return;
-            }
-            if (a.equals("tftp-proxy")) {
-                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-                if (prx == null) {
-                    cmd.error("no such proxy");
-                    return;
-                }
-                cfgAll.tftpProxy = prx.proxy;
-                return;
-            }
-            if (a.equals("http-proxy")) {
-                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-                if (prx == null) {
-                    cmd.error("no such proxy");
-                    return;
-                }
-                cfgAll.httpProxy = prx.proxy;
-                return;
-            }
-            if (a.equals("mail-proxy")) {
-                cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-                if (prx == null) {
-                    cmd.error("no such proxy");
-                    return;
-                }
-                cfgAll.mailProxy = prx.proxy;
-                return;
-            }
-            if (a.equals("mail-server")) {
-                cfgAll.mailServerName = cmd.word();
-                return;
-            }
-            if (a.equals("mail-username")) {
-                cfgAll.mailServerUser = cmd.word();
-                return;
-            }
-            if (a.equals("mail-password")) {
-                cfgAll.mailServerPass = authLocal.passwdDecode(cmd.word());
-                return;
-            }
-            cmd.badCmd();
+            doCmdClient();
             return;
         }
         if (!a.equals("no")) {
@@ -2231,199 +1748,7 @@ public class userConfig {
             return;
         }
         if (a.equals("client")) {
-            a = cmd.word();
-            if (a.equals("tracestop")) {
-                cfgAll.tracebackStops = false;
-                return;
-            }
-            if (a.equals("pastebin")) {
-                cfgAll.pasteBin = null;
-                return;
-            }
-            if (a.equals("capture-path")) {
-                cfgAll.capturePath = null;
-                return;
-            }
-            if (a.equals("bullying")) {
-                cfgAll.clientShamer = null;
-                return;
-            }
-            if (a.equals("whois-online")) {
-                cfgAll.whoisOnline = null;
-                return;
-            }
-            if (a.equals("whois-server")) {
-                cfgAll.whoisServer = null;
-                return;
-            }
-            if (a.equals("whois-proxy")) {
-                cfgAll.whoisProxy = null;
-                return;
-            }
-            if (a.equals("end-format")) {
-                cfgAll.endForm = 0;
-                return;
-            }
-            if (a.equals("graceful-reload")) {
-                cfgAll.graceReload = false;
-                return;
-            }
-            if (a.equals("password-stars")) {
-                cfgAll.passwdStars = false;
-                return;
-            }
-            if (a.equals("tcp-ecn")) {
-                cfgAll.tcpEcn = false;
-                return;
-            }
-            if (a.equals("tcp-keepalive")) {
-                cfgAll.tcpKeepalive = false;
-                return;
-            }
-            if (a.equals("tcp-timestamp")) {
-                cfgAll.tcpTimStmp = false;
-                return;
-            }
-            if (a.equals("prefer-ipv6")) {
-                cfgAll.preferIpv6 = false;
-                return;
-            }
-            if (a.equals("prefer-ipv4")) {
-                cfgAll.preferIpv6 = true;
-                return;
-            }
-            if (a.equals("ftp-passive")) {
-                cfgAll.ftpPassive = false;
-                return;
-            }
-            if (a.equals("ftp-active")) {
-                cfgAll.ftpPassive = true;
-                return;
-            }
-            if (a.equals("ftp-proxy")) {
-                cfgAll.ftpProxy = null;
-                return;
-            }
-            if (a.equals("ssh-agent")) {
-                cfgAll.sshAgent = null;
-                return;
-            }
-            if (a.equals("proxy")) {
-                cfgAll.clientProxy = null;
-                return;
-            }
-            if (a.equals("domain-lookup")) {
-                cfgAll.domainLookup = false;
-                return;
-            }
-            if (a.equals("domain-name")) {
-                cfgAll.domainName = null;
-                return;
-            }
-            if (a.equals("name-proxy")) {
-                cfgAll.nameServerProxy = null;
-                return;
-            }
-            if (a.equals("name-server")) {
-                cfgAll.nameServerAddr = new ArrayList<addrIP>();
-                return;
-            }
-            if (a.equals("upgrade-config")) {
-                cfgAll.upgradeConfig = false;
-                return;
-            }
-            if (a.equals("upgrade-revert")) {
-                cfgAll.upgradeRevert = 0;
-                return;
-            }
-            if (a.equals("upgrade-backup")) {
-                cfgAll.upgradeBackup = false;
-                return;
-            }
-            if (a.equals("upgrade-ownkey")) {
-                cfgAll.upgradeOwnKey = false;
-                return;
-            }
-            if (a.equals("upgrade-server")) {
-                cfgAll.upgradeServer = verCore.homeUrl1;
-                return;
-            }
-            if (a.equals("upgrade-script")) {
-                cfgAll.upgradeScript = null;
-                return;
-            }
-            if (a.equals("upgrade-pubkey")) {
-                cfgAll.upgradePubKey = null;
-                return;
-            }
-            if (a.equals("config-server")) {
-                cfgAll.configServer = null;
-                return;
-            }
-            if (a.equals("config-username")) {
-                cfgAll.configUser = null;
-                return;
-            }
-            if (a.equals("config-password")) {
-                cfgAll.configPass = null;
-                return;
-            }
-            if (a.equals("config-save")) {
-                cfgAll.configAsave = false;
-                return;
-            }
-            if (a.equals("config-archive")) {
-                cfgAll.configAbackup = false;
-                return;
-            }
-            if (a.equals("config-backup")) {
-                cfgAll.configBackup = null;
-                return;
-            }
-            if (a.equals("config-exclusive")) {
-                cfgAll.configExclusive = 0;
-                return;
-            }
-            if (a.equals("time-server")) {
-                if (cfgAll.timeServerName != null) {
-                    cfgAll.timeServerName.stopWork();
-                }
-                cfgAll.timeServerName = null;
-                return;
-            }
-            if (a.equals("time-zone")) {
-                cfgAll.timeZoneName = "Z";
-                return;
-            }
-            if (a.equals("time-proxy")) {
-                cfgAll.timeProxy = null;
-                return;
-            }
-            if (a.equals("tftp-proxy")) {
-                cfgAll.tftpProxy = null;
-                return;
-            }
-            if (a.equals("http-proxy")) {
-                cfgAll.httpProxy = null;
-                return;
-            }
-            if (a.equals("mail-proxy")) {
-                cfgAll.mailProxy = null;
-                return;
-            }
-            if (a.equals("mail-server")) {
-                cfgAll.mailServerName = null;
-                return;
-            }
-            if (a.equals("mail-username")) {
-                cfgAll.mailServerUser = null;
-                return;
-            }
-            if (a.equals("mail-password")) {
-                cfgAll.mailServerPass = null;
-                return;
-            }
-            cmd.badCmd();
+            doCmdNoClient();
             return;
         }
         cmd.badCmd();
@@ -3089,6 +2414,10 @@ public class userConfig {
 
     private void doCmdNoLogging() {
         String s = cmd.word();
+        if (s.equals("tracestop")) {
+            cfgAll.tracebackStops = false;
+            return;
+        }
         if (s.equals("milliseconds")) {
             logger.logMillis = false;
             return;
@@ -3135,6 +2464,10 @@ public class userConfig {
 
     private void doCmdLogging() {
         String s = cmd.word();
+        if (s.equals("tracestop")) {
+            cfgAll.tracebackStops = true;
+            return;
+        }
         if (s.equals("milliseconds")) {
             logger.logMillis = true;
             return;
@@ -3199,6 +2532,681 @@ public class userConfig {
         }
         if (s.equals("format")) {
             logger.logPosForm = logger.string2format(cmd.word());
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    private void doCmdNoClient() {
+        String s = cmd.word();
+        if (s.equals("pastebin")) {
+            cfgAll.pasteBin = null;
+            return;
+        }
+        if (s.equals("capture-path")) {
+            cfgAll.capturePath = null;
+            return;
+        }
+        if (s.equals("bullying")) {
+            cfgAll.clientShamer = null;
+            return;
+        }
+        if (s.equals("whois-online")) {
+            cfgAll.whoisOnline = null;
+            return;
+        }
+        if (s.equals("whois-server")) {
+            cfgAll.whoisServer = null;
+            return;
+        }
+        if (s.equals("whois-proxy")) {
+            cfgAll.whoisProxy = null;
+            return;
+        }
+        if (s.equals("end-format")) {
+            cfgAll.endForm = 0;
+            return;
+        }
+        if (s.equals("graceful-reload")) {
+            cfgAll.graceReload = false;
+            return;
+        }
+        if (s.equals("password-stars")) {
+            cfgAll.passwdStars = false;
+            return;
+        }
+        if (s.equals("tcp-ecn")) {
+            cfgAll.tcpEcn = false;
+            return;
+        }
+        if (s.equals("tcp-keepalive")) {
+            cfgAll.tcpKeepalive = false;
+            return;
+        }
+        if (s.equals("tcp-timestamp")) {
+            cfgAll.tcpTimStmp = false;
+            return;
+        }
+        if (s.equals("prefer-ipv6")) {
+            cfgAll.preferIpv6 = false;
+            return;
+        }
+        if (s.equals("prefer-ipv4")) {
+            cfgAll.preferIpv6 = true;
+            return;
+        }
+        if (s.equals("ftp-passive")) {
+            cfgAll.ftpPassive = false;
+            return;
+        }
+        if (s.equals("ftp-active")) {
+            cfgAll.ftpPassive = true;
+            return;
+        }
+        if (s.equals("ftp-proxy")) {
+            cfgAll.ftpProxy = null;
+            return;
+        }
+        if (s.equals("ssh-agent")) {
+            cfgAll.sshAgent = null;
+            return;
+        }
+        if (s.equals("proxy")) {
+            cfgAll.clientProxy = null;
+            return;
+        }
+        if (s.equals("domain-lookup")) {
+            cfgAll.domainLookup = false;
+            return;
+        }
+        if (s.equals("domain-name")) {
+            cfgAll.domainName = null;
+            return;
+        }
+        if (s.equals("name-proxy")) {
+            cfgAll.nameServerProxy = null;
+            return;
+        }
+        if (s.equals("name-server")) {
+            cfgAll.nameServerAddr = new ArrayList<addrIP>();
+            return;
+        }
+        if (s.equals("upgrade-config")) {
+            cfgAll.upgradeConfig = false;
+            return;
+        }
+        if (s.equals("upgrade-revert")) {
+            cfgAll.upgradeRevert = 0;
+            return;
+        }
+        if (s.equals("upgrade-backup")) {
+            cfgAll.upgradeBackup = false;
+            return;
+        }
+        if (s.equals("upgrade-ownkey")) {
+            cfgAll.upgradeOwnKey = false;
+            return;
+        }
+        if (s.equals("upgrade-server")) {
+            cfgAll.upgradeServer = verCore.homeUrl1;
+            return;
+        }
+        if (s.equals("upgrade-script")) {
+            cfgAll.upgradeScript = null;
+            return;
+        }
+        if (s.equals("upgrade-pubkey")) {
+            cfgAll.upgradePubKey = null;
+            return;
+        }
+        if (s.equals("config-server")) {
+            cfgAll.configServer = null;
+            return;
+        }
+        if (s.equals("config-username")) {
+            cfgAll.configUser = null;
+            return;
+        }
+        if (s.equals("config-password")) {
+            cfgAll.configPass = null;
+            return;
+        }
+        if (s.equals("config-save")) {
+            cfgAll.configAsave = false;
+            return;
+        }
+        if (s.equals("config-archive")) {
+            cfgAll.configAbackup = false;
+            return;
+        }
+        if (s.equals("config-backup")) {
+            cfgAll.configBackup = null;
+            return;
+        }
+        if (s.equals("config-exclusive")) {
+            cfgAll.configExclusive = 0;
+            return;
+        }
+        if (s.equals("time-server")) {
+            if (cfgAll.timeServerName != null) {
+                cfgAll.timeServerName.stopWork();
+            }
+            cfgAll.timeServerName = null;
+            return;
+        }
+        if (s.equals("time-zone")) {
+            cfgAll.timeZoneName = "Z";
+            return;
+        }
+        if (s.equals("time-proxy")) {
+            cfgAll.timeProxy = null;
+            return;
+        }
+        if (s.equals("tftp-proxy")) {
+            cfgAll.tftpProxy = null;
+            return;
+        }
+        if (s.equals("http-proxy")) {
+            cfgAll.httpProxy = null;
+            return;
+        }
+        if (s.equals("mail-proxy")) {
+            cfgAll.mailProxy = null;
+            return;
+        }
+        if (s.equals("mail-server")) {
+            cfgAll.mailServerName = null;
+            return;
+        }
+        if (s.equals("mail-username")) {
+            cfgAll.mailServerUser = null;
+            return;
+        }
+        if (s.equals("mail-password")) {
+            cfgAll.mailServerPass = null;
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    private void doCmdClient() {
+        String a = cmd.word();
+        if (a.equals("pastebin")) {
+            cfgAll.pasteBin = cmd.word();
+            return;
+        }
+        if (a.equals("capture-path")) {
+            cfgAll.capturePath = cmd.word();
+            return;
+        }
+        if (a.equals("l2f-timer")) {
+            cfgAll.l2fTimer = bits.str2num(cmd.word());
+            cfgAll.l2fRetry = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("l2tp2-timer")) {
+            cfgAll.l2tp2hello = bits.str2num(cmd.word());
+            cfgAll.l2tp2retry = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("l2tp3-timer")) {
+            cfgAll.l2tp3hello = bits.str2num(cmd.word());
+            cfgAll.l2tp3retry = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("bullying")) {
+            servQuote ntry = new servQuote();
+            ntry.srvName = cmd.word();
+            ntry = cfgAll.dmnQuote.find(ntry, false);
+            if (ntry == null) {
+                cmd.error("no such server");
+                return;
+            }
+            cfgAll.clientShamer = ntry;
+            return;
+        }
+        if (a.equals("label-range")) {
+            cfgAll.labelRangeBeg = bits.str2num(cmd.word());
+            cfgAll.labelRangeEnd = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("cpuhog")) {
+            cfgAll.cpuhogCheck = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ifacestall")) {
+            cfgAll.ifaceStallCheck = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("redundancy")) {
+            cfgAll.redundancyKeep = bits.str2num(cmd.word());
+            cfgAll.redundancyHold = bits.str2num(cmd.word());
+            cfgAll.redundancyInit = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("whois-online")) {
+            cfgAll.whoisOnline = new ArrayList<String>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                cfgAll.whoisOnline.add(a);
+            }
+            if (cfgAll.whoisOnline.size() > 0) {
+                return;
+            }
+            cfgAll.whoisOnline = null;
+            return;
+        }
+        if (a.equals("whois-server")) {
+            cfgAll.whoisServer = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("whois-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.whoisProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("end-format")) {
+            cfgAll.endForm = 0;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("date")) {
+                    cfgAll.endForm |= 0x1;
+                    continue;
+                }
+                if (a.equals("image")) {
+                    cfgAll.endForm |= 0x2;
+                    continue;
+                }
+                if (a.equals("chksum")) {
+                    cfgAll.endForm |= 0x4;
+                    continue;
+                }
+                if (a.equals("user")) {
+                    cfgAll.endForm |= 0x8;
+                    continue;
+                }
+                if (a.equals("none")) {
+                    cfgAll.endForm = 0;
+                    continue;
+                }
+            }
+            return;
+        }
+        if (a.equals("graceful-reload")) {
+            cfgAll.graceReload = true;
+            return;
+        }
+        if (a.equals("password-stars")) {
+            cfgAll.passwdStars = true;
+            return;
+        }
+        if (a.equals("prefer-ipv6")) {
+            cfgAll.preferIpv6 = true;
+            return;
+        }
+        if (a.equals("prefer-ipv4")) {
+            cfgAll.preferIpv6 = false;
+            return;
+        }
+        if (a.equals("ipv4-tos")) {
+            cfgAll.ipv4sendingTOS = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ipv4-ttl")) {
+            cfgAll.ipv4sendingTTL = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ipv6-tos")) {
+            cfgAll.ipv6sendingTOS = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ipv6-ttl")) {
+            cfgAll.ipv6sendingTTL = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ipv4-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.ipv4ChecksumRx = (i & 1) != 0;
+            cfgAll.ipv4ChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("icmp4-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.icmp4ChecksumRx = (i & 1) != 0;
+            cfgAll.icmp4ChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("icmp6-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.icmp6ChecksumRx = (i & 1) != 0;
+            cfgAll.icmp6ChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("udp-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.udpChecksumRx = (i & 1) != 0;
+            cfgAll.udpChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("udp-portrange")) {
+            cfgAll.udpRangeMin = bits.str2num(cmd.word());
+            cfgAll.udpRangeMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("tcp-timer")) {
+            a = cmd.word();
+            if (a.equals("work")) {
+                cfgAll.tcpTimeWork = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("alive")) {
+                cfgAll.tcpTimeAlive = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("fin")) {
+                cfgAll.tcpTimeFin = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("syn")) {
+                cfgAll.tcpTimeSyn = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("open")) {
+                cfgAll.tcpTimeOpen = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("close")) {
+                cfgAll.tcpTimeClose = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("later")) {
+                cfgAll.tcpTimeLater = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("now")) {
+                cfgAll.tcpTimeNow = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("max")) {
+                cfgAll.tcpTimeMax = bits.str2num(cmd.word());
+                return;
+            }
+            cmd.badCmd();
+            return;
+        }
+        if (a.equals("tcp-ecn")) {
+            cfgAll.tcpEcn = true;
+            return;
+        }
+        if (a.equals("tcp-keepalive")) {
+            cfgAll.tcpKeepalive = true;
+            return;
+        }
+        if (a.equals("tcp-timestamp")) {
+            cfgAll.tcpTimStmp = true;
+            return;
+        }
+        if (a.equals("tcp-segments")) {
+            cfgAll.tcpSegmentMin = bits.str2num(cmd.word());
+            cfgAll.tcpSegmentMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("tcp-winscale")) {
+            cfgAll.tcpWinScale = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("tcp-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.tcpChecksumRx = (i & 1) != 0;
+            cfgAll.tcpChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("tcp-portrange")) {
+            cfgAll.tcpRangeMin = bits.str2num(cmd.word());
+            cfgAll.tcpRangeMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ludp-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.ludpChecksumRx = (i & 1) != 0;
+            cfgAll.ludpChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("ludp-portrange")) {
+            cfgAll.ludpRangeMin = bits.str2num(cmd.word());
+            cfgAll.ludpRangeMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("dccp-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.dccpChecksumRx = (i & 1) != 0;
+            cfgAll.dccpChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("dccp-portrange")) {
+            cfgAll.dccpRangeMin = bits.str2num(cmd.word());
+            cfgAll.dccpRangeMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("sctp-checksum")) {
+            int i = parseUpRxtx();
+            cfgAll.sctpChecksumRx = (i & 1) != 0;
+            cfgAll.sctpChecksumTx = (i & 2) != 0;
+            return;
+        }
+        if (a.equals("sctp-portrange")) {
+            cfgAll.sctpRangeMin = bits.str2num(cmd.word());
+            cfgAll.sctpRangeMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ftp-passive")) {
+            cfgAll.ftpPassive = true;
+            return;
+        }
+        if (a.equals("ftp-active")) {
+            cfgAll.ftpPassive = false;
+            return;
+        }
+        if (a.equals("ftp-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.ftpProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("tls-version")) {
+            cfgAll.tlsVerMin = bits.str2num(cmd.word());
+            cfgAll.tlsVerMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ssh-group")) {
+            cfgAll.sshGrpMin = bits.str2num(cmd.word());
+            cfgAll.sshGrpMax = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ssh-agent")) {
+            cfgAll.sshAgent = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("proxy")) {
+            cfgAll.clientProxy = cfgAll.proxyFind(cmd.word(), false);
+            if (cfgAll.clientProxy == null) {
+                cmd.error("no such profile");
+                return;
+            }
+            return;
+        }
+        if (a.equals("domain-lookup")) {
+            cfgAll.domainLookup = true;
+            return;
+        }
+        if (a.equals("domain-name")) {
+            cfgAll.domainName = cmd.word();
+            return;
+        }
+        if (a.equals("name-proxy")) {
+            cfgAll.nameServerProxy = cfgAll.proxyFind(cmd.word(), false);
+            if (cfgAll.nameServerProxy == null) {
+                cmd.error("no such profile");
+                return;
+            }
+            return;
+        }
+        if (a.equals("name-server")) {
+            cfgAll.nameServerAddr = new ArrayList<addrIP>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                addrIP adr = new addrIP();
+                if (adr.fromString(a)) {
+                    continue;
+                }
+                cfgAll.nameServerAddr.add(adr);
+            }
+            return;
+        }
+        if (a.equals("upgrade-config")) {
+            cfgAll.upgradeConfig = true;
+            return;
+        }
+        if (a.equals("upgrade-revert")) {
+            cfgAll.upgradeRevert = bits.str2num(cmd.word());
+            userUpgrade.startReverter();
+            return;
+        }
+        if (a.equals("upgrade-backup")) {
+            cfgAll.upgradeBackup = true;
+            return;
+        }
+        if (a.equals("upgrade-ownkey")) {
+            cfgAll.upgradeOwnKey = true;
+            return;
+        }
+        if (a.equals("upgrade-script")) {
+            cfgScrpt ntry = cfgAll.scrptFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such script");
+                return;
+            }
+            cfgAll.upgradeScript = ntry;
+            return;
+        }
+        if (a.equals("upgrade-server")) {
+            cfgAll.upgradeServer = cmd.word();
+            return;
+        }
+        if (a.equals("upgrade-pubkey")) {
+            cfgAll.upgradePubKey = cmd.word();
+            return;
+        }
+        if (a.equals("config-server")) {
+            cfgAll.configServer = cmd.word();
+            return;
+        }
+        if (a.equals("config-username")) {
+            cfgAll.configUser = cmd.word();
+            return;
+        }
+        if (a.equals("config-password")) {
+            cfgAll.configPass = authLocal.passwdDecode(cmd.word());
+            return;
+        }
+        if (a.equals("config-save")) {
+            cfgAll.configAsave = true;
+            return;
+        }
+        if (a.equals("config-archive")) {
+            cfgAll.configAbackup = true;
+            return;
+        }
+        if (a.equals("config-backup")) {
+            cfgAll.configBackup = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("config-exclusive")) {
+            cfgAll.configExclusive = 1;
+            return;
+        }
+        if (a.equals("access-subnet-ipv4")) {
+            cfgAll.accessSubnet4 = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("access-subnet-ipv6")) {
+            cfgAll.accessSubnet6 = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("time-server")) {
+            if (cfgAll.timeServerName != null) {
+                cfgAll.timeServerName.stopWork();
+            }
+            cfgAll.timeServerName = new clntNtp(cmd.word());
+            cfgAll.timeServerName.startWork();
+            return;
+        }
+        if (a.equals("time-zone")) {
+            cfgAll.timeZoneName = cmd.word();
+            return;
+        }
+        if (a.equals("time-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.timeProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("tftp-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.tftpProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("http-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.httpProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("mail-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.mailProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("mail-server")) {
+            cfgAll.mailServerName = cmd.word();
+            return;
+        }
+        if (a.equals("mail-username")) {
+            cfgAll.mailServerUser = cmd.word();
+            return;
+        }
+        if (a.equals("mail-password")) {
+            cfgAll.mailServerPass = authLocal.passwdDecode(cmd.word());
             return;
         }
         cmd.badCmd();

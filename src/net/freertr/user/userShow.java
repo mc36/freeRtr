@@ -299,30 +299,12 @@ public class userShow {
             return null;
         }
         if (a.equals("flash")) {
-            a = cmd.getRemaining();
-            if (!cfgAll.buggy) {
-                a = "";
-            }
-            if (cfgAll.evalVdcPrivs()) {
-                a = "";
-            }
-            if (a.length() < 1) {
-                a = "./";
-            }
+            a = getDiskPath();
             rdr.putStrTab(userFlash.dir2txt(userFlash.dirList(a)));
             return null;
         }
         if (a.equals("disk")) {
-            a = cmd.getRemaining();
-            if (!cfgAll.buggy) {
-                a = "";
-            }
-            if (cfgAll.evalVdcPrivs()) {
-                a = "";
-            }
-            if (a.length() < 1) {
-                a = "./";
-            }
+            a = getDiskPath();
             rdr.putStrTab(userFlash.diskInfo(a));
             return null;
         }
@@ -5496,6 +5478,20 @@ public class userShow {
         int errorI = errorS.get();
         int stopI = stopS.get();
         lst.add(nam + "|" + startI + "|" + errorI + "|" + stopI + "|" + (startI - stopI - errorI));
+    }
+
+    private String getDiskPath() {
+        String a = cmd.getRemaining();
+        if (a.length() < 1) {
+            return version.getRWpath();
+        }
+        if (cfgAll.buggy) {
+            return a;
+        }
+        if (cfgAll.evalVdcPrivs()) {
+            return version.getRWpath() + a;
+        }
+        return a;
     }
 
 }

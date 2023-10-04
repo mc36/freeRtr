@@ -1301,12 +1301,12 @@ public class cfgAll {
         "!no logging syslog debug kernel",
         "!no logging file debug",
         "!no logging irc debug",
+        "!no logging tracestop",
         "!banner encoded ",
         "!no password-encrypt",
         "!no enable",
         "!no locale",
         // client
-        "!no client tracestop",
         "!no client pastebin",
         "!no client capture-path",
         "!client label-range 32 1048560",
@@ -3704,6 +3704,7 @@ public class cfgAll {
         l.add("banner encoded " + encBase64.encodeBytes(banner));
         l.add(cmds.comment);
         l.add("client label-range " + labelRangeBeg + " " + labelRangeEnd);
+        cmds.cfgLine(l, !tracebackStops, "", "logging tracestop", "");
         cmds.cfgLine(l, !logger.logMillis, "", "logging milliseconds", "");
         l.add("logging buffered " + logger.level2string(logger.logBufLev) + " " + logger.getBufSize());
         l.add("logging monitor " + logger.level2string(logger.logPipLev));
@@ -3743,7 +3744,6 @@ public class cfgAll {
 
     private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
-        cmds.cfgLine(l, !tracebackStops, "", "client tracestop", "");
         l.add("client ifacestall " + ifaceStallCheck);
         l.add("client redundancy " + redundancyKeep + " " + redundancyHold + " " + redundancyInit);
         l.add("client cpuhog " + cpuhogCheck);
