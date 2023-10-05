@@ -3216,6 +3216,8 @@ qc pass: tacacs server
 qc pass: udp forwarder server
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
+todo: honeypot to use any router
+todo: honeypot to wireformat, decode
 todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
@@ -3224,7 +3226,6 @@ todo: bmp server to listeners, bmp, ris and bgp
 todo: server bgprsrr
 todo: game hanoi
 todo: server http to have api for scripts
-todo: honeypot to use any router
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

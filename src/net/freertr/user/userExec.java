@@ -200,8 +200,11 @@ public class userExec {
         hl.add(null, "7 8                del           delete an afi");
         rtrBgpParam.getAfiList(hl, "8 .", "clear", false);
         hl.add(null, "5 .            recompute         trigger full compute round");
-        hl.add(null, "5 .            flaps             collected flaps");
-        hl.add(null, "5 .            peaks             collected peaks");
+        hl.add(null, "5 .            flaps             collected flap statistics");
+        hl.add(null, "5 .            peaks             collected peak statistics");
+        hl.add(null, "5 .            attribs           collected attributes statistics");
+        hl.add(null, "5 .            unknowns          collected unkonwns statistics");
+        hl.add(null, "5 .            messages          collected message statistics");
         hl.add(null, "3 4        eigrp                 enhanced interior gateway routing protocol");
         hl.add(null, "4 5          <num:rtr>           process id");
         hl.add(null, "5 .            <addr>            neighbor address");
@@ -635,6 +638,7 @@ public class userExec {
         hl.add(null, "5 .            nexthop              list of nexthops");
         hl.add(null, "5 .            bestpath             best path statistics");
         hl.add(null, "5 .            messages             message statistics");
+        hl.add(null, "5 .            attributes           attribute statistics");
         hl.add(null, "5 .            graceful-restart     list of graceful restart");
         hl.add(null, "5 .            longlived-graceful   list of long lived graceful restart");
         hl.add(null, "5 .            multiple-labels      list of multiple labels");
@@ -2121,8 +2125,10 @@ public class userExec {
         hl.add(null, "3 4        <name:ifc>                 name of interface");
         hl.add(null, "4 .          <addr>                   address of host");
         hl.add(null, "2 3      txt2mrt                      text log to mrt");
-        hl.add(null, "3 4        <file>                     name of file");
-        hl.add(null, "4 .          <file>                   name of file");
+        hl.add(null, "3 4        <file>                     source text");
+        hl.add(null, "4 .          <file>                   target mrt");
+        hl.add(null, "2 3      txt2con                      text log to console");
+        hl.add(null, "3 .        <file>                     name of file");
         hl.add(null, "2 3      ris2bmp                      ris to bmp");
         hl.add(null, "3 4        <url>                      url of ris live server");
         hl.add(null, "4 5          <name:prx>               proxy profile");

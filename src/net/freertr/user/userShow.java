@@ -3865,6 +3865,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.getMsgStats());
             return;
         }
+        if (a.equals("attributes")) {
+            rdr.putStrTab(r.bgp.getAttrStats());
+            return;
+        }
         if (a.equals("template")) {
             rtrBgpTemp tmp = r.bgp.findTemp(cmd.word());
             if (tmp == null) {
@@ -4350,7 +4354,7 @@ public class userShow {
             packHolder pck = new packHolder(true, true);
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
-            rtrBgpUtil.createReachable(pck, new packHolder(true, true), sfi, false, true, true, lst);
+            rtrBgpUtil.createReachable(null, pck, new packHolder(true, true), sfi, false, true, true, lst);
             rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
             List<String> l = new ArrayList<String>();
             enc7bit.buf2hex(l, pck.getCopy(), 0);
@@ -4392,7 +4396,7 @@ public class userShow {
             packHolder pck = new packHolder(true, true);
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
-            rtrBgpUtil.createWithdraw(pck, new packHolder(true, true), sfi, false, lst);
+            rtrBgpUtil.createWithdraw(null, pck, new packHolder(true, true), sfi, false, lst);
             rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
             List<String> l = new ArrayList<String>();
             enc7bit.buf2hex(l, pck.getCopy(), 0);

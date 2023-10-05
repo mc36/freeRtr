@@ -1240,7 +1240,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (typ != rtrBgpUtil.msgOpen) {
-            logger.info("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
+            logger.info("got " + rtrBgpUtil.msgType2string(typ) + " from " + neigh.peerAddr);
             sendNotify(1, 3);
             return;
         }
@@ -1505,7 +1505,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 pos += len;
                 compressCntr.rx(pckRx);
                 if (debugger.rtrBgpEvnt) {
-                    logger.debug("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
+                    logger.debug("got " + rtrBgpUtil.msgType2string(typ) + " from " + neigh.peerAddr);
                 }
                 if (neigh.monitor != null) {
                     neigh.monitor.gotMessage(false, typ, this, neigh, pckRx.getCopy());
@@ -1529,7 +1529,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     sendNotify(1, 3);
                     break;
                 }
-                updateRxMsgCtr(pckRx, typ);
+                updateMsgCtrRx(pckRx, typ);
                 if (parseUpdate(pckRx, pckRh)) {
                     logger.info("got malformed compressed update from " + neigh.peerAddr);
                     sendNotify(3, 1);
@@ -1549,15 +1549,18 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         logger.error("neighbor " + neigh.peerAddr + " down");
     }
 
-    private void updateTxMsgCtr(packHolder pck, int typ) {
+    /**
+     * update transmit message counters
+     *
+     * @param pck packet to use
+     * @param typ type to use
+     */
+    protected void updateMsgCtrTx(packHolder pck, int typ) {
         if (parent != null) {
-            parent.msgCntTx[typ & 0xff].tx(pck);
+            parent.msgStats[typ & 0xff].tx(pck);
         }
-    }
-
-    private void updateRxMsgCtr(packHolder pck, int typ) {
-        if (parent != null) {
-            parent.msgCntRx[typ & 0xff].rx(pckRx);
+        if (!rtrBgpUtil.isUnknownMsg(typ)) {
+            return;
         }
         if (neigh == null) {
             return;
@@ -1565,10 +1568,79 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!neigh.unknownsLog) {
             return;
         }
-        if ((typ >= rtrBgpUtil.msgOpen) && (typ <= rtrBgpUtil.msgCompress)) {
+        logger.info("sent message with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump());
+    }
+
+    /**
+     * update receive message counters
+     *
+     * @param pck packet to use
+     * @param typ type to use
+     */
+    protected void updateMsgCtrRx(packHolder pck, int typ) {
+        if (parent != null) {
+            parent.msgStats[typ & 0xff].rx(pck);
+        }
+        if (!rtrBgpUtil.isUnknownMsg(typ)) {
+            return;
+        }
+        if (neigh == null) {
+            return;
+        }
+        if (!neigh.unknownsLog) {
             return;
         }
         logger.info("got message with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump());
+    }
+
+    /**
+     * update receive attribute counters
+     *
+     * @param pck packet to use
+     * @param typ type to use
+     */
+    protected void updateAttrCtrRx(packHolder pck, int typ) {
+        if (parent != null) {
+            parent.attrStats[typ & 0xff].rx(pck);
+        }
+        if (!rtrBgpUtil.isUnknownAttr(typ)) {
+            return;
+        }
+        if (neigh == null) {
+            return;
+        }
+        if (neigh.unknownsLog) {
+            logger.info("got update with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump());
+        }
+        /**
+         * *
+         * if (neigh != null) { if (neigh.unknownsColl != null) {
+         * neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh,
+         * origPck.getCopy()); } if (neigh.unknownsLog) { logger.info("got
+         * update with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr +
+         * " " + origPck.dump()); } }
+         */
+    }
+
+    /**
+     * update transmit attribute counters
+     *
+     * @param pck packet to use
+     * @param typ type to use
+     */
+    protected void updateAttrCtrTx(packHolder pck, int typ) {
+        if (parent != null) {
+            parent.attrStats[typ & 0xff].tx(pck);
+        }
+        if (!rtrBgpUtil.isUnknownAttr(typ)) {
+            return;
+        }
+        if (neigh == null) {
+            return;
+        }
+        if (neigh.unknownsLog) {
+            logger.info("sent update with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump());
+        }
     }
 
     /**
@@ -1581,11 +1653,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (pipe == null) {
             return;
         }
-        updateTxMsgCtr(pck, typ);
+        updateMsgCtrTx(pck, typ);
         pck.merge2beg();
         if ((compressTx != null) && (typ == rtrBgpUtil.msgUpdate)) {
             if (debugger.rtrBgpEvnt) {
-                logger.debug("sending compressed " + rtrBgpUtil.type2string(typ) + " to " + neigh.peerAddr);
+                logger.debug("sending compressed " + rtrBgpUtil.msgType2string(typ) + " to " + neigh.peerAddr);
             }
             if (neigh.monitor != null) {
                 neigh.monitor.gotMessage(true, typ, this, neigh, pck.getCopy());
@@ -1607,10 +1679,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             pck.putSkip(i + 1);
             pck.merge2beg();
             typ = rtrBgpUtil.msgCompress;
-            updateTxMsgCtr(pck, typ);
+            updateMsgCtrTx(pck, typ);
         }
         if (debugger.rtrBgpEvnt) {
-            logger.debug("sending " + rtrBgpUtil.type2string(typ) + " to " + neigh.peerAddr);
+            logger.debug("sending " + rtrBgpUtil.msgType2string(typ) + " to " + neigh.peerAddr);
         }
         if (neigh.monitor != null) {
             neigh.monitor.gotMessage(true, typ, this, neigh, pck.getCopy());
@@ -1657,9 +1729,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         cntr.rx(pck);
-        updateRxMsgCtr(pck, typ);
+        updateMsgCtrRx(pck, typ);
         if (debugger.rtrBgpEvnt) {
-            logger.debug("got " + rtrBgpUtil.type2string(typ) + " from " + neigh.peerAddr);
+            logger.debug("got " + rtrBgpUtil.msgType2string(typ) + " from " + neigh.peerAddr);
         }
         if (neigh.monitor != null) {
             neigh.monitor.gotMessage(false, typ, this, neigh, pck.getCopy());
@@ -2295,7 +2367,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
         }
         packHolder pck = new packHolder(true, true);
-        rtrBgpUtil.createEndOfRib(pck, new packHolder(true, true), safi);
+        rtrBgpUtil.createEndOfRib(this, pck, new packHolder(true, true), safi);
         packSend(pck, rtrBgpUtil.msgUpdate);
     }
 
@@ -2317,9 +2389,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         pckTx.clear();
         if (!reach) {
-            rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, false, lst);
+            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, false, lst);
         } else {
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, false, peer32bitAS, peerMltLab == 0, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, false, peer32bitAS, peerMltLab == 0, lst);
         }
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
@@ -2353,7 +2425,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.add(ntry);
             }
             pckTx.clear();
-            rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, true, lst);
+            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, true, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
             return;
         }
@@ -2365,7 +2437,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.clear();
                 lst.add(ntry);
                 pckTx.clear();
-                rtrBgpUtil.createReachable(pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
+                rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
             }
             return;
@@ -2383,7 +2455,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.clear();
             lst.add(ntry);
             pckTx.clear();
-            rtrBgpUtil.createReachable(pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
         }
         lst.clear();
@@ -2397,7 +2469,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         pckTx.clear();
-        rtrBgpUtil.createWithdraw(pckTx, pckTh, safi, true, lst);
+        rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, true, lst);
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
 
@@ -2496,10 +2568,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (ntry.best.unknown != null) {
             packHolder origPck = pck.copyBytes(false, false);
             origPck.setBytesLeft(origOfs);
-            if (parent != null) {
-                parent.unknwnStat.rx(origPck);
-            }
-            unknownCntr.rx(origPck);
             if (neigh != null) {
                 if (neigh.unknownsColl != null) {
                     neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
@@ -2990,7 +3058,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteUtil.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
         }
         if (neigh.intVpnClnt) {
-            rtrBgpUtil.encodeAttribSet(neigh.localAs, ntry);
+            rtrBgpUtil.encodeAttribSet(this, neigh.localAs, ntry);
         }
         return false;
     }

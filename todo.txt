@@ -2,6 +2,10 @@ vdc to have local, connect as sdn autocreated
 
 generalise server access- knobs
 
+honeypot to use any router
+
+honeypot to wireformat, decode
+
 generalize dynamic-metric knobs
 
 bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
@@ -18,7 +22,6 @@ game hanoi
 
 server http to have api for scripts
 
-honeypot to use any router
 
 acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 

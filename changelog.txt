@@ -15202,3 +15202,5 @@ todo: honeypot to use any router
 ---------------------------------- 2023-10-05 08:41:48 23.10.5
 no todo: bgp neigh log-end-changes log-route-map/policy knob
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
+---------------------------------- 2023-10-05 21:29:56 23.10.5
+todo: honeypot to wireformat, decode

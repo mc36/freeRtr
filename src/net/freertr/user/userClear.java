@@ -806,6 +806,18 @@ public class userClear {
             return;
         }
         String a = cmd.word();
+        if (a.equals("messages")) {
+            r.bgp.doClearMsgs();
+            return;
+        }
+        if (a.equals("attribs")) {
+            r.bgp.doClearAttrs();
+            return;
+        }
+        if (a.equals("unkonwns")) {
+            r.bgp.doClearAttrs();
+            return;
+        }
         if (a.equals("peaks")) {
             r.bgp.doClearPeaks();
             return;

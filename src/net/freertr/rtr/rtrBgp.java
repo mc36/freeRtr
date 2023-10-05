@@ -837,14 +837,24 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public final counter unknwnStat = new counter();
 
     /**
-     * message types received
+     * reachability statistics
      */
-    public final counter msgCntRx[] = new counter[256];
+    public final counter reachabCntr = new counter();
+
+    /**
+     * unreachability statistics
+     */
+    public final counter unreachCntr = new counter();
 
     /**
      * message types received
      */
-    public final counter msgCntTx[] = new counter[256];
+    public final counter[] msgStats = new counter[256];
+
+    /**
+     * attribute types received
+     */
+    public final counter[] attrStats = new counter[256];
 
     /**
      * full compute last
@@ -960,9 +970,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         safeEbgp = true;
         addrFams = rtrBgpParam.mskUni;
         rtrNum = id;
-        for (int i = 0; i < msgCntTx.length; i++) {
-            msgCntRx[i] = new counter();
-            msgCntTx[i] = new counter();
+        for (int i = 0; i < msgStats.length; i++) {
+            msgStats[i] = new counter();
+        }
+        for (int i = 0; i < attrStats.length; i++) {
+            attrStats[i] = new counter();
         }
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
@@ -1398,6 +1410,25 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public void doClearPeaks() {
         changedMax = 0;
         changedPek = 0;
+    }
+
+    /**
+     * clear msg statistics
+     */
+    public void doClearMsgs() {
+        for (int i = 0; i < msgStats.length; i++) {
+            msgStats[i].clear();
+        }
+    }
+
+    /**
+     * clear msg statistics
+     */
+    public void doClearAttrs() {
+        unknwnStat.clear();
+        for (int i = 0; i < attrStats.length; i++) {
+            attrStats[i].clear();
+        }
     }
 
     /**
@@ -4411,21 +4442,33 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public userFormat getMsgStats() {
         userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
-        for (int i = 0; i < msgCntTx.length; i++) {
-            counter tx = msgCntTx[i];
-            counter rx = msgCntRx[i];
-            l.add(i + "|" + rtrBgpUtil.type2string(i) + "|" + tx.packTx + "|" + rx.packRx
-                    + "|" + tx.byteTx + "|" + rx.byteRx
-                    + "|" + bits.timePast(tx.lastTx) + "|" + bits.timePast(rx.lastRx)
-                    + "|" + bits.time2str(cfgAll.timeZoneName, tx.lastTx + cfgAll.timeServerOffset, 3)
-                    + "|" + bits.time2str(cfgAll.timeZoneName, rx.lastRx + cfgAll.timeServerOffset, 3)
-            );
+        for (int i = 0; i < msgStats.length; i++) {
+            counter c = msgStats[i];
+            l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + rtrBgpUtil.counter2stats(c));
+        }
+        return l;
+    }
+
+    /**
+     * get message statistics
+     *
+     * @return list of statistics
+     */
+    public userFormat getAttrStats() {
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        for (int i = 0; i < attrStats.length; i++) {
+            counter c = attrStats[i];
+            l.add(i + "|" + rtrBgpUtil.attrType2string(i) + "|" + rtrBgpUtil.counter2stats(c));
         }
         return l;
     }
 
     private void getMsgStats(userFormat l, int t) {
-        l.add(rtrBgpUtil.type2string(t) + " msgs|" + msgCntTx[t].packTx + "|" + msgCntRx[t].packRx);
+        l.add(rtrBgpUtil.msgType2string(t) + " message|" + msgStats[t].packTx + "|" + msgStats[t].packRx);
+    }
+
+    private void getAttribStats(userFormat l, int t) {
+        l.add(rtrBgpUtil.attrType2string(t) + " attrib|" + msgStats[t].packTx + "|" + msgStats[t].packRx);
     }
 
     /**

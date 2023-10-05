@@ -22,6 +22,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
 import net.freertr.tab.tabGen;
+import net.freertr.util.counter;
 
 /**
  * bgp4 utilities
@@ -854,12 +855,71 @@ public class rtrBgpUtil {
     public final static int commBlackhole = 0xffff029a;
 
     /**
+     * check if an unknown message type
+     *
+     * @param i number to check
+     * @return true if yes, false if not
+     */
+    public static boolean isUnknownMsg(int i) {
+        if (i < msgOpen) {
+            return true;
+        }
+        if (i > msgCompress) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * check if an unknown attribute type
+     *
+     * @param i number to check
+     * @return true if yes, false if not
+     */
+    public static boolean isUnknownAttr(int i) {
+        switch (i) {
+            case attrOrigin:
+            case attrAsPath:
+            case attrNextHop:
+            case attrMetric:
+            case attrLocPref:
+            case attrAtomicAggr:
+            case attrAggregator:
+            case attrStdComm:
+            case attrOriginator:
+            case attrClustList:
+            case attrReachable:
+            case attrUnReach:
+            case attrExtComm:
+            case attrAs4path:
+            case attrAs4aggr:
+            case attrPmsiTun:
+            case attrTunEnc:
+            case attrTraffEng:
+            case attrIpv6comm:
+            case attrAccIgp:
+            case attrPeDistLab:
+            case attrEntropyLab:
+            case attrLinkState:
+            case attrLrgComm:
+            case attrBgpSec:
+            case attrOnlyCust:
+            case attrPrefSid:
+            case attrBier:
+            case attrAttribSet:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
      * convert type to string
      *
      * @param i type to convert
      * @return string
      */
-    public static String type2string(int i) {
+    public static String msgType2string(int i) {
         switch (i) {
             case msgOpen:
                 return "open";
@@ -875,6 +935,77 @@ public class rtrBgpUtil {
                 return "capability";
             case msgCompress:
                 return "compressed";
+            default:
+                return "unknown=" + i;
+        }
+    }
+
+    /**
+     * convert attribute type to string
+     *
+     * @param i type
+     * @return string
+     */
+    public static String attrType2string(int i) {
+        switch (i) {
+            case attrOrigin:
+                return "origin";
+            case attrAsPath:
+                return "aspath";
+            case attrNextHop:
+                return "nexthop";
+            case attrMetric:
+                return "metric";
+            case attrLocPref:
+                return "locpref";
+            case attrAtomicAggr:
+                return "atomicAggr";
+            case attrAggregator:
+                return "aggregator";
+            case attrStdComm:
+                return "stdComm";
+            case attrOriginator:
+                return "originator";
+            case attrClustList:
+                return "clustList";
+            case attrReachable:
+                return "reachable";
+            case attrUnReach:
+                return "unreachable";
+            case attrExtComm:
+                return "extComm";
+            case attrAs4path:
+                return "as4path";
+            case attrAs4aggr:
+                return "as4aggr";
+            case attrPmsiTun:
+                return "pmtiTun";
+            case attrTunEnc:
+                return "tunEnc";
+            case attrTraffEng:
+                return "traffEng";
+            case attrIpv6comm:
+                return "ipv6comm";
+            case attrAccIgp:
+                return "accIgp";
+            case attrPeDistLab:
+                return "peDistLab";
+            case attrEntropyLab:
+                return "entropyLab";
+            case attrLinkState:
+                return "linkStates";
+            case attrLrgComm:
+                return "lrgComm";
+            case attrBgpSec:
+                return "bgpSec";
+            case attrOnlyCust:
+                return "onlyCust";
+            case attrPrefSid:
+                return "prefixSid";
+            case attrBier:
+                return "bier";
+            case attrAttribSet:
+                return "attribSet";
             default:
                 return "unknown=" + i;
         }
@@ -2252,10 +2383,10 @@ public class rtrBgpUtil {
     /**
      * parse reachable attribute
      *
-     * @param lower where to signal
+     * @param spkr where to signal
      * @param pck packet to parse
      */
-    public static void parseReachable(rtrBgpSpeak lower, packHolder pck) {
+    public static void parseReachable(rtrBgpSpeak spkr, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
@@ -2302,34 +2433,34 @@ public class rtrBgpUtil {
         for (int i = 0; i < len; i++) {
             pck.getSkip(pck.getByte(0) + 1);
         }
-        boolean addpath = lower.addPthRx(safi);
+        boolean addpath = spkr.addPthRx(safi);
         int ident = 0;
         for (; pck.dataSize() > 0;) {
             if (addpath) {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = readPrefix(safi, lower.peerMltLab == 0, pck);
+            tabRouteEntry<addrIP> res = readPrefix(safi, spkr.peerMltLab == 0, pck);
             if (res == null) {
                 continue;
             }
             res.best.ident = ident;
             res.best.nextHop = nextHop;
-            lower.prefixReach(safi, addpath, res);
+            spkr.prefixReach(safi, addpath, res);
         }
     }
 
     /**
      * parse unreachable attribute
      *
-     * @param lower where to signal
+     * @param spkr where to signal
      * @param pck packet to parse
      */
-    public static void parseUnReach(rtrBgpSpeak lower, packHolder pck) {
+    public static void parseUnReach(rtrBgpSpeak spkr, packHolder pck) {
         pck.merge2beg();
         int safi = triplet2safi(pck.msbGetD(0));
         pck.getSkip(3);
-        boolean addpath = lower.addPthRx(safi);
+        boolean addpath = spkr.addPthRx(safi);
         int ident = 0;
         for (; pck.dataSize() > 0;) {
             if (addpath) {
@@ -2341,7 +2472,7 @@ public class rtrBgpUtil {
                 continue;
             }
             res.best.ident = ident;
-            lower.prefixWithdraw(safi, addpath, res);
+            spkr.prefixWithdraw(safi, addpath, res);
         }
     }
 
@@ -2423,7 +2554,19 @@ public class rtrBgpUtil {
         attr.merge2beg();
     }
 
-    private static void placeAttrib(int flg, int typ, packHolder trg, packHolder attr) {
+    /**
+     * place one attribute
+     *
+     * @param spkr where to signal
+     * @param flg flags
+     * @param typ type
+     * @param trg taget
+     * @param attr attribute
+     */
+    public static void placeAttrib(rtrBgpSpeak spkr, int flg, int typ, packHolder trg, packHolder attr) {
+        if (spkr != null) {
+            spkr.updateAttrCtrTx(attr, typ);
+        }
         attr.merge2beg();
         byte[] buf = attr.getCopy();
         if (buf.length > 0xff) {
@@ -2470,14 +2613,15 @@ public class rtrBgpUtil {
     /**
      * encode attribute set
      *
+     * @param spkr where to signal
      * @param as as number
      * @param ntry table entry
      */
-    public static void encodeAttribSet(int as, tabRouteEntry<addrIP> ntry) {
+    public static void encodeAttribSet(rtrBgpSpeak spkr, int as, tabRouteEntry<addrIP> ntry) {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
-        createReachable(pck, new packHolder(true, true), safiAttrib, false, true, true, lst);
+        createReachable(spkr, pck, new packHolder(true, true), safiAttrib, false, true, true, lst);
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
     }
@@ -2485,40 +2629,41 @@ public class rtrBgpUtil {
     /**
      * interpret attribute
      *
-     * @param lower where to signal
+     * @param spkr where to signal
      * @param ntry table entry
      * @param pck packet to parse
      */
-    public static void interpretAttribute(rtrBgpSpeak lower, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        if (lower != null) {
-            if (lower.neigh.attribFilter != null) {
-                if (lower.neigh.attribFilter.matches(pck.ETHtype)) {
-                    logger.info("filtered attribute " + pck.ETHtype + " from " + lower.neigh.peerAddr + " (" + pck.dump() + ")");
+    public static void interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        if (spkr != null) {
+            spkr.updateAttrCtrRx(pck, pck.ETHtype);
+            if (spkr.neigh.attribFilter != null) {
+                if (spkr.neigh.attribFilter.matches(pck.ETHtype)) {
+                    logger.info("filtered attribute " + pck.ETHtype + " from " + spkr.neigh.peerAddr + " (" + pck.dump() + ")");
                     return;
                 }
             }
         }
         switch (pck.ETHtype) {
             case attrReachable:
-                if (lower == null) {
+                if (spkr == null) {
                     break;
                 }
-                parseReachable(lower, pck);
+                parseReachable(spkr, pck);
                 break;
             case attrUnReach:
-                if (lower == null) {
+                if (spkr == null) {
                     break;
                 }
-                parseUnReach(lower, pck);
+                parseUnReach(spkr, pck);
                 break;
             case attrOrigin:
                 parseOrigin(ntry, pck);
                 break;
             case attrAsPath:
-                if (lower == null) {
+                if (spkr == null) {
                     parseAsPath(true, ntry, pck);
                 } else {
-                    parseAsPath(lower.peer32bitAS, ntry, pck);
+                    parseAsPath(spkr.peer32bitAS, ntry, pck);
                 }
                 break;
             case attrNextHop:
@@ -2534,10 +2679,10 @@ public class rtrBgpUtil {
                 parseAtomicAggr(ntry);
                 break;
             case attrAggregator:
-                if (lower == null) {
+                if (spkr == null) {
                     parseAggregator(true, ntry, pck);
                 } else {
-                    parseAggregator(lower.peer32bitAS, ntry, pck);
+                    parseAggregator(spkr.peer32bitAS, ntry, pck);
                 }
                 break;
             case attrStdComm:
@@ -2594,13 +2739,14 @@ public class rtrBgpUtil {
     /**
      * create withdraw message
      *
+     * @param spkr where to signal
      * @param pck packet to update
      * @param hlp helper packet
      * @param safi address family
      * @param addpath additional path
      * @param lst list of prefixes to withdraw
      */
-    public static void createWithdraw(packHolder pck, packHolder hlp, int safi, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
+    public static void createWithdraw(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
         if (safi == safiIp4uni) {
             for (int i = 0; i < lst.size(); i++) {
                 tabRouteEntry<addrIP> ntry = lst.get(i);
@@ -2619,7 +2765,7 @@ public class rtrBgpUtil {
             pck.merge2end();
             return;
         }
-        placeUnreach(safi, addpath, pck, hlp, lst);
+        placeUnreach(spkr, safi, addpath, pck, hlp, lst);
         pck.merge2beg();
         pck.msbPutW(0, pck.dataSize());
         pck.putSkip(2);
@@ -2648,6 +2794,7 @@ public class rtrBgpUtil {
     /**
      * create reachable message
      *
+     * @param spkr where to signal
      * @param pck packet to update
      * @param hlp helper packet
      * @param safi address family
@@ -2656,35 +2803,35 @@ public class rtrBgpUtil {
      * @param oneLab just one label
      * @param lst list of prefixes to advertise
      */
-    public static void createReachable(packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
+    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
-        placeUnknown(pck, hlp, ntry);
-        placeOrigin(pck, hlp, ntry);
-        placeAsPath(longAS, pck, hlp, ntry);
-        placeMetric(pck, hlp, ntry);
-        placeLocPref(pck, hlp, ntry);
-        placeAtomicAggr(pck, hlp, ntry);
-        placeAggregator(longAS, pck, hlp, ntry);
-        placeStdComm(pck, hlp, ntry);
-        placeExtComm(pck, hlp, ntry);
-        placeLrgComm(pck, hlp, ntry);
-        placeOriginator(pck, hlp, ntry);
-        placeClustList(pck, hlp, ntry);
-        placeTraffEng(pck, hlp, ntry);
-        placeAccIgp(pck, hlp, ntry);
-        placePmsiTun(pck, hlp, ntry);
-        placeTunEnc(pck, hlp, ntry);
-        placeLnkSta(pck, hlp, ntry);
-        placeOnlyCust(pck, hlp, ntry);
-        placePrefSid(safi, pck, hlp, ntry);
-        placeBier(pck, hlp, ntry);
-        placeAttribSet(pck, hlp, ntry);
+        placeUnknown(spkr, pck, hlp, ntry);
+        placeOrigin(spkr, pck, hlp, ntry);
+        placeAsPath(spkr, longAS, pck, hlp, ntry);
+        placeMetric(spkr, pck, hlp, ntry);
+        placeLocPref(spkr, pck, hlp, ntry);
+        placeAtomicAggr(spkr, pck, hlp, ntry);
+        placeAggregator(spkr, longAS, pck, hlp, ntry);
+        placeStdComm(spkr, pck, hlp, ntry);
+        placeExtComm(spkr, pck, hlp, ntry);
+        placeLrgComm(spkr, pck, hlp, ntry);
+        placeOriginator(spkr, pck, hlp, ntry);
+        placeClustList(spkr, pck, hlp, ntry);
+        placeTraffEng(spkr, pck, hlp, ntry);
+        placeAccIgp(spkr, pck, hlp, ntry);
+        placePmsiTun(spkr, pck, hlp, ntry);
+        placeTunEnc(spkr, pck, hlp, ntry);
+        placeLnkSta(spkr, pck, hlp, ntry);
+        placeOnlyCust(spkr, pck, hlp, ntry);
+        placePrefSid(spkr, safi, pck, hlp, ntry);
+        placeBier(spkr, pck, hlp, ntry);
+        placeAttribSet(spkr, pck, hlp, ntry);
         if (safi == safiAttrib) {
             pck.merge2beg();
             return;
         }
         if (safi != safiIp4uni) {
-            placeReachable(safi, addpath, oneLab, pck, hlp, lst);
+            placeReachable(spkr, safi, addpath, oneLab, pck, hlp, lst);
             pck.merge2beg();
             pck.msbPutW(0, 0);
             pck.msbPutW(2, pck.dataSize());
@@ -2693,7 +2840,7 @@ public class rtrBgpUtil {
             return;
         }
         if (!ntry.best.nextHop.isIPv4()) {
-            placeReachable(safi, addpath, oneLab, pck, hlp, lst);
+            placeReachable(spkr, safi, addpath, oneLab, pck, hlp, lst);
             pck.merge2beg();
             pck.msbPutW(0, 0);
             pck.msbPutW(2, pck.dataSize());
@@ -2701,7 +2848,7 @@ public class rtrBgpUtil {
             pck.merge2beg();
             return;
         }
-        placeNextHop(pck, hlp, ntry);
+        placeNextHop(spkr, pck, hlp, ntry);
         pck.merge2beg();
         pck.msbPutW(0, 0);
         pck.msbPutW(2, pck.dataSize());
@@ -2721,13 +2868,14 @@ public class rtrBgpUtil {
     /**
      * create end of rib message
      *
+     * @param spkr where to signal
      * @param pck packet to update
      * @param hlp helper packet
      * @param safi address family
      */
-    public static void createEndOfRib(packHolder pck, packHolder hlp, int safi) {
+    public static void createEndOfRib(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi) {
         if (safi != safiIp4uni) {
-            placeUnreach(safi, false, pck, hlp, new ArrayList<tabRouteEntry<addrIP>>());
+            placeUnreach(spkr, safi, false, pck, hlp, new ArrayList<tabRouteEntry<addrIP>>());
         }
         pck.merge2beg();
         pck.msbPutW(0, pck.dataSize());
@@ -2741,11 +2889,12 @@ public class rtrBgpUtil {
     /**
      * place unknown attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeUnknown(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeUnknown(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.unknown == null) {
             return;
         }
@@ -2754,22 +2903,23 @@ public class rtrBgpUtil {
             hlp.clear();
             hlp.putCopy(blb.data, 0, 0, blb.data.length);
             hlp.putSkip(blb.data.length);
-            placeAttrib(blb.flag, blb.type, trg, hlp);
+            placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
     }
 
     /**
      * place origin type attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeOrigin(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeOrigin(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         hlp.putByte(0, ntry.best.origin % 3);
         hlp.putSkip(1);
-        placeAttrib(flagTransitive, attrOrigin, trg, hlp);
+        placeAttrib(spkr, flagTransitive, attrOrigin, trg, hlp);
     }
 
     private static void placeAsList(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
@@ -2802,92 +2952,98 @@ public class rtrBgpUtil {
     /**
      * place as path attribute
      *
+     * @param spkr where to signal
      * @param longAs long as support
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeAsPath(boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeAsPath(rtrBgpSpeak spkr, boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         placeAsList(longAs, hlp, 3, ntry.best.confSeq); // confed seq
         placeAsList(longAs, hlp, 4, ntry.best.confSet); // confed set
         placeAsList(longAs, hlp, 2, ntry.best.pathSeq); // as seq
         placeAsList(longAs, hlp, 1, ntry.best.pathSet); // as set
-        placeAttrib(flagTransitive, attrAsPath, trg, hlp);
+        placeAttrib(spkr, flagTransitive, attrAsPath, trg, hlp);
     }
 
     /**
      * place next hop attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeNextHop(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeNextHop(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         hlp.putAddr(0, ntry.best.nextHop.toIPv4());
         hlp.putSkip(addrIPv4.size);
-        placeAttrib(flagTransitive, attrNextHop, trg, hlp);
+        placeAttrib(spkr, flagTransitive, attrNextHop, trg, hlp);
     }
 
     /**
      * place metric attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeMetric(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeMetric(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.metric < 1) {
             return;
         }
         hlp.clear();
         hlp.msbPutD(0, ntry.best.metric);
         hlp.putSkip(4);
-        placeAttrib(flagOptional, attrMetric, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrMetric, trg, hlp);
     }
 
     /**
      * place local preference attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeLocPref(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeLocPref(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.locPref < 1) {
             return;
         }
         hlp.clear();
         hlp.msbPutD(0, ntry.best.locPref);
         hlp.putSkip(4);
-        placeAttrib(flagTransitive, attrLocPref, trg, hlp);
+        placeAttrib(spkr, flagTransitive, attrLocPref, trg, hlp);
     }
 
     /**
      * place atomic aggregator attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeAtomicAggr(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeAtomicAggr(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (!ntry.best.atomicAggr) {
             return;
         }
         hlp.clear();
-        placeAttrib(flagTransitive, attrAtomicAggr, trg, hlp);
+        placeAttrib(spkr, flagTransitive, attrAtomicAggr, trg, hlp);
     }
 
     /**
      * place aggregator attribute
      *
+     * @param spkr where to signal
      * @param longAs long as support
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeAggregator(boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeAggregator(rtrBgpSpeak spkr, boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.aggrRtr == null) {
             return;
         }
@@ -2901,17 +3057,18 @@ public class rtrBgpUtil {
         }
         hlp.putAddr(0, ntry.best.aggrRtr.toIPv4());
         hlp.putSkip(addrIPv4.size);
-        placeAttrib(flagOptional | flagTransitive, attrAggregator, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrAggregator, trg, hlp);
     }
 
     /**
      * place standard community attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeStdComm(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeStdComm(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.stdComm == null) {
             return;
         }
@@ -2923,17 +3080,18 @@ public class rtrBgpUtil {
             hlp.msbPutD(0, ntry.best.stdComm.get(i));
             hlp.putSkip(4);
         }
-        placeAttrib(flagOptional | flagTransitive, attrStdComm, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrStdComm, trg, hlp);
     }
 
     /**
      * place extended community attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeExtComm(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeExtComm(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.extComm == null) {
             return;
         }
@@ -2945,17 +3103,18 @@ public class rtrBgpUtil {
             hlp.msbPutQ(0, ntry.best.extComm.get(i));
             hlp.putSkip(8);
         }
-        placeAttrib(flagOptional | flagTransitive, attrExtComm, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrExtComm, trg, hlp);
     }
 
     /**
      * place large community attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeLrgComm(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeLrgComm(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.lrgComm == null) {
             return;
         }
@@ -2970,34 +3129,36 @@ public class rtrBgpUtil {
             hlp.msbPutD(8, d.d2);
             hlp.putSkip(12);
         }
-        placeAttrib(flagOptional | flagTransitive, attrLrgComm, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrLrgComm, trg, hlp);
     }
 
     /**
      * place originator attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeOriginator(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeOriginator(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.originator == null) {
             return;
         }
         hlp.clear();
         hlp.putAddr(0, ntry.best.originator.toIPv4());
         hlp.putSkip(addrIPv4.size);
-        placeAttrib(flagOptional, attrOriginator, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrOriginator, trg, hlp);
     }
 
     /**
      * place accumulated igp attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeAccIgp(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeAccIgp(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.accIgp < 1) {
             return;
         }
@@ -3006,17 +3167,18 @@ public class rtrBgpUtil {
         hlp.msbPutW(1, 11); // length
         hlp.msbPutQ(3, ntry.best.accIgp); // value
         hlp.putSkip(11);
-        placeAttrib(flagOptional, attrAccIgp, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrAccIgp, trg, hlp);
     }
 
     /**
      * place traffic engineering attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeTraffEng(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeTraffEng(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.bandwidth < 1) {
             return;
         }
@@ -3036,17 +3198,18 @@ public class rtrBgpUtil {
         hlp.msbPutD(36, Float.floatToIntBits(1)); // minimum
         hlp.msbPutW(40, 1500); // mtu
         hlp.putSkip(42);
-        placeAttrib(flagOptional, attrTraffEng, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrTraffEng, trg, hlp);
     }
 
     /**
      * place pmsi tunnel attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placePmsiTun(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placePmsiTun(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.pmsiTun == null) {
             return;
         }
@@ -3056,17 +3219,18 @@ public class rtrBgpUtil {
         hlp.putSkip(5);
         hlp.putCopy(ntry.best.pmsiTun, 0, 0, ntry.best.pmsiTun.length);
         hlp.putSkip(ntry.best.pmsiTun.length);
-        placeAttrib(flagOptional | flagTransitive, attrPmsiTun, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrPmsiTun, trg, hlp);
     }
 
     /**
      * place tunnel encapsulation attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeTunEnc(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeTunEnc(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.tunelVal == null) {
             return;
         }
@@ -3076,34 +3240,36 @@ public class rtrBgpUtil {
         hlp.putSkip(4);
         hlp.putCopy(ntry.best.tunelVal, 0, 0, ntry.best.tunelVal.length);
         hlp.putSkip(ntry.best.tunelVal.length);
-        placeAttrib(flagOptional | flagTransitive, attrTunEnc, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrTunEnc, trg, hlp);
     }
 
     /**
      * place link state attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeLnkSta(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeLnkSta(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.linkStat == null) {
             return;
         }
         hlp.clear();
         hlp.putCopy(ntry.best.linkStat, 0, 0, ntry.best.linkStat.length);
         hlp.putSkip(ntry.best.linkStat.length);
-        placeAttrib(flagOptional, attrLinkState, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrLinkState, trg, hlp);
     }
 
     /**
      * place attribute set attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeAttribSet(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeAttribSet(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.attribVal == null) {
             return;
         }
@@ -3112,18 +3278,19 @@ public class rtrBgpUtil {
         hlp.putSkip(4);
         hlp.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
         hlp.putSkip(ntry.best.attribVal.length);
-        placeAttrib(flagOptional | flagTransitive, attrAttribSet, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrAttribSet, trg, hlp);
     }
 
     /**
      * place prefix sid attribute
      *
+     * @param spkr where to signal
      * @param safi sub address family
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placePrefSid(int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placePrefSid(rtrBgpSpeak spkr, int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         int afi = safi & afiMask;
         hlp.clear();
         encTlv tlv = getPrefSidTlv();
@@ -3181,17 +3348,18 @@ public class rtrBgpUtil {
         if (hlp.headSize() < 1) {
             return;
         }
-        placeAttrib(flagOptional | flagTransitive, attrPrefSid, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrPrefSid, trg, hlp);
     }
 
     /**
      * place bier attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeBier(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeBier(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.bierIdx == 0) {
             return;
         }
@@ -3207,17 +3375,18 @@ public class rtrBgpUtil {
             tlv.valDat[4] = (byte) (ntry.best.bierHdr << 4); // bsl
             tlv.putBytes(hlp, 2, 8, tlv.valDat);
         }
-        placeAttrib(flagOptional | flagTransitive, attrBier, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrBier, trg, hlp);
     }
 
     /**
      * place cluster list attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeClustList(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeClustList(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.clustList == null) {
             return;
         }
@@ -3226,29 +3395,31 @@ public class rtrBgpUtil {
             hlp.putAddr(0, ntry.best.clustList.get(i).toIPv4());
             hlp.putSkip(addrIPv4.size);
         }
-        placeAttrib(flagOptional, attrClustList, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrClustList, trg, hlp);
     }
 
     /**
      * place only to customer attribute
      *
+     * @param spkr where to signal
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeOnlyCust(packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeOnlyCust(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.onlyCust == 0) {
             return;
         }
         hlp.clear();
         hlp.msbPutD(0, ntry.best.onlyCust);
         hlp.putSkip(4);
-        placeAttrib(flagOptional | flagTransitive, attrOnlyCust, trg, hlp);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrOnlyCust, trg, hlp);
     }
 
     /**
      * place reachable attribute
      *
+     * @param spkr where to signal
      * @param safi sub address family
      * @param addpath additional path
      * @param oneLab just one label
@@ -3256,7 +3427,7 @@ public class rtrBgpUtil {
      * @param hlp helper packet
      * @param lst list of table entries
      */
-    public static void placeReachable(int safi, boolean addpath, boolean oneLab, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
+    public static void placeReachable(rtrBgpSpeak spkr, int safi, boolean addpath, boolean oneLab, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         int afi = safi & afiMask;
         int sfi = safi & sfiMask;
         addrIP nextHop = lst.get(0).best.nextHop;
@@ -3291,19 +3462,20 @@ public class rtrBgpUtil {
             }
             writePrefix(safi, oneLab, hlp, ntry);
         }
-        placeAttrib(flagOptional, attrReachable, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrReachable, trg, hlp);
     }
 
     /**
      * place unreachable attribute
      *
+     * @param spkr where to signal
      * @param safi sub address family
      * @param addpath additional path
      * @param trg target packet
      * @param hlp helper packet
      * @param lst list of table entries
      */
-    public static void placeUnreach(int safi, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
+    public static void placeUnreach(rtrBgpSpeak spkr, int safi, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         hlp.clear();
         hlp.msbPutD(0, safi2triplet(safi));
         hlp.putSkip(3);
@@ -3315,7 +3487,7 @@ public class rtrBgpUtil {
             }
             writePrefix(safi, true, hlp, ntry);
         }
-        placeAttrib(flagOptional, attrUnReach, trg, hlp);
+        placeAttrib(spkr, flagOptional, attrUnReach, trg, hlp);
     }
 
     /**
@@ -3398,6 +3570,19 @@ public class rtrBgpUtil {
             res.add(p);
         }
         return res;
+    }
+
+    /**
+     * counters to statistics
+     *
+     * @param c counter
+     * @return statistics
+     */
+    public static String counter2stats(counter c) {
+        return c.packTx + "|" + c.packRx + "|" + c.byteTx + "|" + c.byteRx
+                + "|" + bits.timePast(c.lastTx) + "|" + bits.timePast(c.lastRx)
+                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastTx + cfgAll.timeServerOffset, 3)
+                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastRx + cfgAll.timeServerOffset, 3);
     }
 
 }

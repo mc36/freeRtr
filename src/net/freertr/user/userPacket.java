@@ -233,6 +233,27 @@ public class userPacket {
         if (alias != null) {
             return alias;
         }
+        if (a.equals("txt2con")) {
+            a = cmd.word();
+            cmd.error("reading " + a);
+            List<String> lst = bits.txt2buf(a);
+            if (lst == null) {
+                cmd.error("error reading file");
+                return null;
+            }
+            List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
+            int o = pcks.size();
+            cmd.error(o + " dumps found");
+            if (o < 1) {
+                cmd.error("no dumps found");
+                return null;
+            }
+            for (int i=0;i<o;i++) {
+                packHolder pck = pcks.get(i);
+                /////////
+            }
+            return null;
+        }
         if (a.equals("txt2mrt")) {
             a = cmd.word();
             cmd.error("reading " + a);
@@ -1113,7 +1134,7 @@ public class userPacket {
             pck.clear();
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
-            rtrBgpUtil.createReachable(pck, tmp, safi, false, true, true, lst);
+            rtrBgpUtil.createReachable(null, pck, tmp, safi, false, true, true, lst);
             spk.packSend(pck, rtrBgpUtil.msgUpdate);
             cmd.error("waiting");
             for (int o = 1000;; o++) {
@@ -1235,7 +1256,7 @@ public class userPacket {
                 pck.clear();
                 lst.clear();
                 lst.add(ntry);
-                rtrBgpUtil.createReachable(pck, tmp, safi, false, true, true, lst);
+                rtrBgpUtil.createReachable(null, pck, tmp, safi, false, true, true, lst);
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");
                 if (need2stop()) {
