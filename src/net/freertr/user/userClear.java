@@ -806,8 +806,12 @@ public class userClear {
             return;
         }
         String a = cmd.word();
+        if (a.equals("peaks")) {
+            r.bgp.doClearPeaks();
+            return;
+        }
         if (a.equals("flaps")) {
-            r.bgp.flaps.clear();
+            r.bgp.doClearFlaps();
             return;
         }
         if (a.equals("recompute")) {

@@ -1383,6 +1383,24 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * clear flap statistics
+     */
+    public void doClearFlaps() {
+        if (flaps == null) {
+            return;
+        }
+        flaps.clear();
+    }
+
+    /**
+     * clear peak statistics
+     */
+    public void doClearPeaks() {
+        changedMax = 0;
+        changedPek = 0;
+    }
+
+    /**
      * get database
      *
      * @param safi safi to query

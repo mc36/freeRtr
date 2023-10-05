@@ -201,6 +201,7 @@ public class userExec {
         rtrBgpParam.getAfiList(hl, "8 .", "clear", false);
         hl.add(null, "5 .            recompute         trigger full compute round");
         hl.add(null, "5 .            flaps             collected flaps");
+        hl.add(null, "5 .            peaks             collected peaks");
         hl.add(null, "3 4        eigrp                 enhanced interior gateway routing protocol");
         hl.add(null, "4 5          <num:rtr>           process id");
         hl.add(null, "5 .            <addr>            neighbor address");
@@ -775,6 +776,9 @@ public class userExec {
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 7,.            asinfos            infos of the asns in the paths");
+        hl.add(null, "7 8,.              <addr>           prefix to view");
+        hl.add(null, "8 .                  [rd]           route distinguisher");
+        hl.add(null, "6 7,.            asmixed            numbers and names in the paths");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 .              asgraph            connectivity graph of ases");

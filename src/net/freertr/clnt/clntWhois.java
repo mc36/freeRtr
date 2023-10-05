@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
+import net.freertr.enc.enc7bit;
 import net.freertr.pipe.pipeConnect;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeReader;
@@ -93,6 +94,22 @@ public class clntWhois {
         proxy = prx;
     }
 
+    private String removeSpecials(String s) {
+        s = s.replaceAll("\\\\", "-");
+        s = s.replaceAll("\\ ", "");
+        s = s.replaceAll("\\!", "-");
+        s = s.replaceAll("\\|", "-");
+        s = s.replaceAll("\\:", "-");
+        s = s.replaceAll("\\;", "-");
+        s = s.replaceAll("\\,", "-");
+        s = s.replaceAll("\\#", "-");
+        s = s.replaceAll("\\(", "-");
+        s = s.replaceAll("\\)", "-");
+        s = s.replaceAll("\\[", "-");
+        s = s.replaceAll("\\]", "-");
+        return s;
+    }
+
     /**
      * do one query
      *
@@ -135,8 +152,7 @@ public class clntWhois {
         String asNam = null;
         for (int i = 0; i < res.size(); i++) {
             String s = res.get(i);
-            s = s.replaceAll(" ", "");
-            s = s.replaceAll("\\|", "");
+            s = enc7bit.decodeExtStr(s);
             s = s.trim();
             int o = s.indexOf(":");
             if (o < 1) {
@@ -144,6 +160,7 @@ public class clntWhois {
             }
             String a = s.substring(0, o).toLowerCase();
             s = s.substring(o + 1, s.length()).trim();
+            s = removeSpecials(s);
             if (a.equals("aut-num")) {
                 asNum = s;
                 continue;
@@ -266,6 +283,30 @@ public class clntWhois {
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
             String a = clntWhois.asn2name(o, true);
+            s += " " + a;
+        }
+        return beg + s.substring(1, s.length()) + end;
+    }
+
+    /**
+     * convert asn list to string
+     *
+     * @param lst list to convert
+     * @param beg beginning
+     * @param end ending
+     * @return list
+     */
+    public static String asnList2mixed(List<Integer> lst, String beg, String end) {
+        if (lst == null) {
+            return "";
+        }
+        if (lst.size() < 1) {
+            return "";
+        }
+        String s = "";
+        for (int i = 0; i < lst.size(); i++) {
+            int o = lst.get(i);
+            String a = bits.num2str(o) + "-" + clntWhois.asn2name(o, true);
             s += " " + a;
         }
         return beg + s.substring(1, s.length()) + end;

@@ -374,6 +374,20 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param l list to append
      * @param prf entry to dump
      */
+    public static void toShAsMixed(userFormat l, tabRouteEntry<addrIP> prf) {
+        String a = toShBgpFirst(prf);
+        for (int i = 0; i < prf.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = prf.alts.get(i);
+            l.add(a + attr.toShAsMixed());
+        }
+    }
+
+    /**
+     * convert to asinfo format
+     *
+     * @param l list to append
+     * @param prf entry to dump
+     */
     public static void toShAsInfo(userFormat l, tabRouteEntry<addrIP> prf) {
         String a = toShBgpFirst(prf);
         for (int i = 0; i < prf.alts.size(); i++) {

@@ -4423,6 +4423,10 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, 12);
             return;
         }
+        if (a.equals("asmixed")) {
+            doShowRoutes(r.bgp.fwdCore, tab, 13);
+            return;
+        }
         if (a.equals("changes")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 3000);
             return;

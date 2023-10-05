@@ -435,7 +435,7 @@ qc pass: p4lang: mpls with fib compression
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: generalize dynamic-metric knobs
-todo: bgp neigh log-end-changes log-route-map/policy knob
+todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
 todo: game butterfly series reusing the fft and mdev classes from modem and ping
 todo: bmp server to listeners, bmp, ris and bgp

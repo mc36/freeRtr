@@ -1,7 +1,6 @@
 package net.freertr.serv;
 
 import java.util.List;
-import java.util.Timer;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
@@ -610,7 +609,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "from|peer|asnum|asname|state|change|last|ago");
+        userFormat res = new userFormat("|", "from|peer|asnum|asname|state|change|ago|last");
         for (int i = 0; i < stats.size(); i++) {
             res.add("" + stats.get(i));
         }
