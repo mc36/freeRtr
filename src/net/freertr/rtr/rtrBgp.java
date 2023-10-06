@@ -839,12 +839,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * reachability statistics
      */
-    public final counter reachabCntr = new counter();
+    public final counter reachabStat = new counter();
 
     /**
      * unreachability statistics
      */
-    public final counter unreachCntr = new counter();
+    public final counter unreachStat = new counter();
 
     /**
      * message types received
@@ -1412,6 +1412,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changedPek = 0;
     }
 
+    public void doClearTinys() {
+        reachabStat.clear();
+        unreachStat.clear();
+        unknwnStat.clear();
+        accptStat.clear();
+    }
+
     /**
      * clear msg statistics
      */
@@ -1425,7 +1432,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * clear msg statistics
      */
     public void doClearAttrs() {
-        unknwnStat.clear();
         for (int i = 0; i < attrStats.length; i++) {
             attrStats[i].clear();
         }
@@ -4478,6 +4484,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public userFormat getBestpath() {
         userFormat l = new userFormat("|", "category|value|addition");
+        l.add("self|" + this);
+        l.add("other|" + other);
         l.add("asn|" + localAs);
         l.add("routerid|" + routerID);
         l.add("version|" + compRound);
@@ -4487,13 +4495,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr run|" + incrCount + "|times");
         l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
         l.add("incr time|" + incrTime + "|ms");
-        l.add("accept start|" + accptStat.packRx);
-        l.add("accept fail|" + accptStat.packDr);
-        l.add("accept ok|" + accptStat.packTx);
         getMsgStats(l, rtrBgpUtil.msgOpen);
         getMsgStats(l, rtrBgpUtil.msgUpdate);
         getMsgStats(l, rtrBgpUtil.msgNotify);
-        l.add("unkonwn attributes|" + unknwnStat.packRx + "|" + unknwnStat.byteRx);
+        l.add("listen accepts|" + accptStat.packTx + "|" + accptStat.packTx + " " + accptStat.packDr);
+        l.add("unknown attributes|" + unknwnStat.packRx + "|" + unknwnStat.packTx);
+        l.add("reachable messages|" + reachabStat.packRx + "|" + reachabStat.packTx);
+        l.add("unreachable messages|" + unreachStat.packRx + "|" + unreachStat.packTx);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
         l.add("changes max|" + changedMax);

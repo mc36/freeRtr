@@ -202,8 +202,8 @@ public class userExec {
         hl.add(null, "5 .            recompute         trigger full compute round");
         hl.add(null, "5 .            flaps             collected flap statistics");
         hl.add(null, "5 .            peaks             collected peak statistics");
+        hl.add(null, "5 .            tinys             collected tiny statistics");
         hl.add(null, "5 .            attribs           collected attributes statistics");
-        hl.add(null, "5 .            unknowns          collected unkonwns statistics");
         hl.add(null, "5 .            messages          collected message statistics");
         hl.add(null, "3 4        eigrp                 enhanced interior gateway routing protocol");
         hl.add(null, "4 5          <num:rtr>           process id");

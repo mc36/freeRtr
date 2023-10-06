@@ -2446,7 +2446,7 @@ public class rtrBgpUtil {
             }
             res.best.ident = ident;
             res.best.nextHop = nextHop;
-            spkr.prefixReach(safi, addpath, res);
+            spkr.prefixReach(safi, addpath, res, pck);
         }
     }
 
@@ -2472,7 +2472,7 @@ public class rtrBgpUtil {
                 continue;
             }
             res.best.ident = ident;
-            spkr.prefixWithdraw(safi, addpath, res);
+            spkr.prefixWithdraw(safi, addpath, res, pck);
         }
     }
 
@@ -2565,7 +2565,7 @@ public class rtrBgpUtil {
      */
     public static void placeAttrib(rtrBgpSpeak spkr, int flg, int typ, packHolder trg, packHolder attr) {
         if (spkr != null) {
-            spkr.updateAttrCtrTx(attr, typ);
+            spkr.updateAttrCtr(true, attr, typ);
         }
         attr.merge2beg();
         byte[] buf = attr.getCopy();
@@ -2635,7 +2635,7 @@ public class rtrBgpUtil {
      */
     public static void interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
         if (spkr != null) {
-            spkr.updateAttrCtrRx(pck, pck.ETHtype);
+            spkr.updateAttrCtr(false, pck, pck.ETHtype);
             if (spkr.neigh.attribFilter != null) {
                 if (spkr.neigh.attribFilter.matches(pck.ETHtype)) {
                     logger.info("filtered attribute " + pck.ETHtype + " from " + spkr.neigh.peerAddr + " (" + pck.dump() + ")");
@@ -2763,6 +2763,9 @@ public class rtrBgpUtil {
             pck.msbPutW(0, 0);
             pck.putSkip(2);
             pck.merge2end();
+            if (spkr != null) {
+                spkr.updateRchblCntr(3, pck);
+            }
             return;
         }
         placeUnreach(spkr, safi, addpath, pck, hlp, lst);
@@ -2773,6 +2776,9 @@ public class rtrBgpUtil {
         pck.msbPutW(0, 0);
         pck.putSkip(2);
         pck.merge2beg();
+        if (spkr != null) {
+            spkr.updateRchblCntr(3, pck);
+        }
     }
 
     /**
@@ -2837,6 +2843,9 @@ public class rtrBgpUtil {
             pck.msbPutW(2, pck.dataSize());
             pck.putSkip(4);
             pck.merge2beg();
+            if (spkr != null) {
+                spkr.updateRchblCntr(1, pck);
+            }
             return;
         }
         if (!ntry.best.nextHop.isIPv4()) {
@@ -2846,6 +2855,9 @@ public class rtrBgpUtil {
             pck.msbPutW(2, pck.dataSize());
             pck.putSkip(4);
             pck.merge2beg();
+            if (spkr != null) {
+                spkr.updateRchblCntr(1, pck);
+            }
             return;
         }
         placeNextHop(spkr, pck, hlp, ntry);
@@ -2863,6 +2875,9 @@ public class rtrBgpUtil {
             writePrefix(safiIp4uni, oneLab, pck, ntry);
         }
         pck.merge2end();
+        if (spkr != null) {
+            spkr.updateRchblCntr(1, pck);
+        }
     }
 
     /**
@@ -3583,6 +3598,23 @@ public class rtrBgpUtil {
                 + "|" + bits.timePast(c.lastTx) + "|" + bits.timePast(c.lastRx)
                 + "|" + bits.time2str(cfgAll.timeZoneName, c.lastTx + cfgAll.timeServerOffset, 3)
                 + "|" + bits.time2str(cfgAll.timeZoneName, c.lastRx + cfgAll.timeServerOffset, 3);
+    }
+
+    /**
+     * update counters
+     *
+     * @param d direction
+     * @param c counters
+     * @param t type
+     * @param p packet
+     */
+    public static void updateStats(boolean d, counter[] c, int t, packHolder p) {
+        t &= 0xff;
+        if (d) {
+            c[t].tx(p);
+        } else {
+            c[t].rx(p);
+        }
     }
 
 }

@@ -814,8 +814,8 @@ public class userClear {
             r.bgp.doClearAttrs();
             return;
         }
-        if (a.equals("unkonwns")) {
-            r.bgp.doClearAttrs();
+        if (a.equals("tinys")) {
+            r.bgp.doClearTinys();
             return;
         }
         if (a.equals("peaks")) {
