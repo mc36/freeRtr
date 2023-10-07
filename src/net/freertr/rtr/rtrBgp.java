@@ -832,11 +832,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public final counter accptStat = new counter();
 
     /**
-     * unknown statistics
-     */
-    public final counter unknwnStat = new counter();
-
-    /**
      * reachability statistics
      */
     public final counter reachabStat = new counter();
@@ -1415,7 +1410,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public void doClearTinys() {
         reachabStat.clear();
         unreachStat.clear();
-        unknwnStat.clear();
         accptStat.clear();
     }
 
@@ -3812,7 +3806,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param mod mode: 1=afi, 2=groups, 3=nexthops, 4=graceful, 5=addpath,
      * 6=routerid, 7=buffer, 8=description, 9=hostname, 10=compress, 11=connect,
      * 12=resolve, 13=summary, 14=multilab, 15=longlived, 16=software, 17=desum
-     * 18=unknowns, 19=asnsum
+     * 18=unknowns, 19=asnsum, 20=pfxsummary
      * @return list of neighbors
      */
     public userFormat showSummary(int mod) {
@@ -3872,6 +3866,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 break;
             case 19:
                 l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|asname|asinfo");
+                break;
+            case 20:
+                l = new userFormat("|", "neighbor|as|rx|tx|rx|tx", "2|2reachable|2unreachable");
                 break;
             default:
                 return null;
@@ -4447,12 +4444,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getMsgStats() {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
-        for (int i = 0; i < msgStats.length; i++) {
-            counter c = msgStats[i];
-            l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + rtrBgpUtil.counter2stats(c));
-        }
-        return l;
+        return rtrBgpUtil.getMsgStats(msgStats);
     }
 
     /**
@@ -4461,20 +4453,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getAttrStats() {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
-        for (int i = 0; i < attrStats.length; i++) {
-            counter c = attrStats[i];
-            l.add(i + "|" + rtrBgpUtil.attrType2string(i) + "|" + rtrBgpUtil.counter2stats(c));
-        }
-        return l;
-    }
-
-    private void getMsgStats(userFormat l, int t) {
-        l.add(rtrBgpUtil.msgType2string(t) + " message|" + msgStats[t].packTx + "|" + msgStats[t].packRx);
-    }
-
-    private void getAttribStats(userFormat l, int t) {
-        l.add(rtrBgpUtil.attrType2string(t) + " attrib|" + msgStats[t].packTx + "|" + msgStats[t].packRx);
+        return rtrBgpUtil.getAttrStats(attrStats);
     }
 
     /**
@@ -4495,13 +4474,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr run|" + incrCount + "|times");
         l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
         l.add("incr time|" + incrTime + "|ms");
-        getMsgStats(l, rtrBgpUtil.msgOpen);
-        getMsgStats(l, rtrBgpUtil.msgUpdate);
-        getMsgStats(l, rtrBgpUtil.msgNotify);
+        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats);
+        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats);
+        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats);
         l.add("listen accepts|" + accptStat.packTx + "|" + accptStat.packTx + " " + accptStat.packDr);
-        l.add("unknown attributes|" + unknwnStat.packRx + "|" + unknwnStat.packTx);
         l.add("reachable messages|" + reachabStat.packRx + "|" + reachabStat.packTx);
         l.add("unreachable messages|" + unreachStat.packRx + "|" + unreachStat.packTx);
+        rtrBgpUtil.printUnknwSum(l, false, msgStats);
+        rtrBgpUtil.printUnknwSum(l, true, attrStats);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
         l.add("changes max|" + changedMax);

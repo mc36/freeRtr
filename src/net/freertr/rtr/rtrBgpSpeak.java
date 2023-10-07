@@ -1560,6 +1560,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (parent != null) {
             rtrBgpUtil.updateStats(dir, parent.msgStats, typ, pck);
         }
+        if (neigh != null) {
+            rtrBgpUtil.updateStats(dir, neigh.msgStats, typ, pck);
+        }
         if (!rtrBgpUtil.isUnknownMsg(typ)) {
             return;
         }
@@ -1591,6 +1594,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (parent != null) {
             rtrBgpUtil.updateStats(dir, parent.attrStats, typ, pck);
         }
+        if (neigh != null) {
+            rtrBgpUtil.updateStats(dir, neigh.attrStats, typ, pck);
+        }
         if (!rtrBgpUtil.isUnknownAttr(typ)) {
             return;
         }
@@ -1609,21 +1615,38 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param pck packet to use
      */
     protected void updateRchblCntr(int dir, packHolder pck) {
-        if (parent == null) {
-            return;
-        }
         switch (dir) {
             case 0:
-                parent.reachabStat.rx(pck);
+                if (parent != null) {
+                    parent.reachabStat.rx(pck);
+                }
+                if (neigh != null) {
+                    neigh.reachabStat.rx(pck);
+                }
                 break;
             case 1:
-                parent.reachabStat.tx(pck);
+                if (parent != null) {
+                    parent.reachabStat.tx(pck);
+                }
+                if (neigh != null) {
+                    neigh.reachabStat.tx(pck);
+                }
                 break;
             case 2:
-                parent.unreachStat.rx(pck);
+                if (parent != null) {
+                    parent.unreachStat.rx(pck);
+                }
+                if (neigh != null) {
+                    neigh.unreachStat.rx(pck);
+                }
                 break;
             case 3:
-                parent.unreachStat.tx(pck);
+                if (parent != null) {
+                    parent.unreachStat.tx(pck);
+                }
+                if (neigh != null) {
+                    neigh.unreachStat.tx(pck);
+                }
                 break;
         }
     }

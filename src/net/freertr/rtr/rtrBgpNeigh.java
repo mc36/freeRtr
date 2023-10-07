@@ -28,6 +28,7 @@ import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
@@ -509,6 +510,26 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      */
     public notifier transmit = new notifier();
 
+    /**
+     * reachability statistics
+     */
+    public final counter reachabStat = new counter();
+
+    /**
+     * unreachability statistics
+     */
+    public final counter unreachStat = new counter();
+
+    /**
+     * message types received
+     */
+    public final counter[] msgStats = new counter[256];
+
+    /**
+     * attribute types received
+     */
+    public final counter[] attrStats = new counter[256];
+
     private boolean need2run;
 
     /**
@@ -519,6 +540,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public rtrBgpNeigh(rtrBgp parent) {
         super(parent, false);
         peerAddr = new addrIP();
+        for (int i = 0; i < msgStats.length; i++) {
+            msgStats[i] = new counter();
+        }
+        for (int i = 0; i < attrStats.length; i++) {
+            attrStats[i] = new counter();
+        }
         conn = new rtrBgpSpeak(lower, this, null);
     }
 
@@ -2028,7 +2055,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(int safi) {
-        return peerAddr + "|" + bits.num2str(remoteAs) + "|" + tabSiz(conn.getLearned(safi)) + "|" + tabSiz(getAccepted(safi)) + "|" + tabSiz(getWilling(safi)) + "|" + tabSiz(conn.getAdverted(safi)) + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + tabSiz(conn.getLearned(safi)) + "|" + tabSiz(getAccepted(safi)) + "|" + tabSiz(getWilling(safi)) + "|" + tabSiz(conn.getAdverted(safi)) + "|" + bits.timePast(conn.upTime);
     }
 
     /**
@@ -2051,8 +2078,17 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      *
      * @return line of string
      */
-    public String showSummry() {
-        return peerAddr + "|" + bits.num2str(remoteAs) + "|" + getReadiness() + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + bits.timePast(conn.upTime);
+    public String showSummry1() {
+        return peerAddr + "|" + bits.num2str(remoteAs);
+    }
+
+    /**
+     * neighbor list entry
+     *
+     * @return line of string
+     */
+    public String showSummry2() {
+        return showSummry1() + "|" + getReadiness() + "|" + conn.getPrefixGot() + "|" + conn.getPrefixSent() + "|" + bits.timePast(conn.upTime);
     }
 
     /**
@@ -2064,45 +2100,47 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public String showSummary(int mod) {
         switch (mod) {
             case 1:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis) + "|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis);
+                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis) + "|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis);
             case 2:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + groupMember + "|" + socketMode + "|" + bits.timePast(conn.upTime);
+                return showSummry1() + "|" + groupMember + "|" + socketMode + "|" + bits.timePast(conn.upTime);
             case 3:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + reachable + "|" + bits.timePast(reachTim) + "|" + reachNum + "|" + sessNum + "|" + bits.timePast(conn.upTime);
+                return showSummry1() + "|" + reachable + "|" + bits.timePast(reachTim) + "|" + reachNum + "|" + sessNum + "|" + bits.timePast(conn.upTime);
             case 4:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerGrace) + "|" + rtrBgpParam.mask2string(graceRestart & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerGrace) + "|" + rtrBgpParam.mask2string(graceRestart & addrFams);
             case 5:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(addpathRmode - conn.addpathRx) + "|" + rtrBgpParam.mask2string(addpathTmode - conn.addpathTx) + "|" + rtrBgpParam.mask2string(conn.originalAddRlist - conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx);
+                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(addpathRmode - conn.addpathRx) + "|" + rtrBgpParam.mask2string(addpathTmode - conn.addpathTx) + "|" + rtrBgpParam.mask2string(conn.originalAddRlist - conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx);
             case 6:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefresh + "|" + conn.peerDynCap + "|" + conn.peerExtOpen + "|" + conn.peerExtUpd + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr);
+                return showSummry1() + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefresh + "|" + conn.peerDynCap + "|" + conn.peerExtOpen + "|" + conn.peerExtUpd + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr);
             case 7:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + pipeSide.getStatus(conn.pipe) + "|" + conn.buffFull + "|" + conn.adversion + "|" + incrCount + "|" + fullCount + "|" + conn.needFull;
+                return showSummry1() + "|" + pipeSide.getStatus(conn.pipe) + "|" + conn.buffFull + "|" + conn.adversion + "|" + incrCount + "|" + fullCount + "|" + conn.needFull;
             case 8:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + description;
+                return showSummry1() + "|" + description;
             case 9:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.peerHostname + "|" + conn.peerDomainname;
+                return showSummry1() + "|" + conn.peerHostname + "|" + conn.peerDomainname;
             case 10:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + (conn.compressRx != null) + "|" + (conn.compressTx != null) + "|" + bits.percent(conn.cntr.byteRx, conn.compressCntr.byteRx) + "|" + bits.percent(conn.cntr.byteTx, conn.compressCntr.byteTx);
+                return showSummry1() + "|" + (conn.compressRx != null) + "|" + (conn.compressTx != null) + "|" + bits.percent(conn.cntr.byteRx, conn.compressCntr.byteRx) + "|" + bits.percent(conn.cntr.byteTx, conn.compressCntr.byteTx);
             case 11:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.cntr.packRx + "|" + conn.cntr.packTx + "|" + conn.cntr.byteRx + "|" + conn.cntr.byteTx + "|" + conn.refreshRx + "|" + conn.refreshTx + "|" + conn.dynCapaRx + "|" + conn.dynCapaTx;
+                return showSummry1() + "|" + conn.cntr.packRx + "|" + conn.cntr.packTx + "|" + conn.cntr.byteRx + "|" + conn.cntr.byteTx + "|" + conn.refreshRx + "|" + conn.refreshTx + "|" + conn.dynCapaRx + "|" + conn.dynCapaTx;
             case 12:
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(peerAddr), false, packDnsRec.typePTR);
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + clnt.getPTR();
+                return showSummry1() + "|" + clnt.getPTR();
             case 13:
-                return showSummry();
+                return showSummry2();
             case 14:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerMltLab) + "|" + rtrBgpParam.mask2string(multiLabel & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerMltLab) + "|" + rtrBgpParam.mask2string(multiLabel & addrFams);
             case 15:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + rtrBgpParam.mask2string(conn.peerLlGrace) + "|" + rtrBgpParam.mask2string(llGraceRestart & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerLlGrace) + "|" + rtrBgpParam.mask2string(llGraceRestart & addrFams);
             case 16:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.peerSoftware;
+                return showSummry1() + "|" + conn.peerSoftware;
             case 17:
-                return showSummry() + "|" + description;
+                return showSummry2() + "|" + description;
             case 18:
-                return peerAddr + "|" + bits.num2str(remoteAs) + "|" + conn.unknownCntr.packRx + "|" + conn.unknownCntr.byteRx;
+                return showSummry1() + "|" + conn.unknownCntr.packRx + "|" + conn.unknownCntr.byteRx;
             case 19:
-                return showSummry() + "|" + clntWhois.asn2name(remoteAs, true) + "|" + clntWhois.asn2info(remoteAs);
+                return showSummry2() + "|" + clntWhois.asn2name(remoteAs, true) + "|" + clntWhois.asn2info(remoteAs);
+            case 20:
+                return showSummry1() + "|" + "";//////
             default:
                 return null;
         }

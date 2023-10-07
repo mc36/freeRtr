@@ -658,6 +658,7 @@ public class userExec {
         hl.add(null, "5 .            summary              list of neighbors");
         hl.add(null, "5 .            desummary            list of neighbors with description");
         hl.add(null, "5 .            asummary             list of neighbors with as names");
+        hl.add(null, "5 .            pfxsummary           list of prefix movements");
         hl.add(null, "5 6            template             information about template");
         hl.add(null, "6 7              <str>              template name");
         hl.add(null, "7 .                config           peer configuration");

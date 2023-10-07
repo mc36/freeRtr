@@ -6,10 +6,14 @@ qc pass: openflow: multicast routing
 qc pass: openflow: mldp routing
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
+todo: honeypot to use any router
+todo: honeypot to wireformat, decode
 todo: generalize dynamic-metric knobs
-todo: bgp neigh log-end-changes log-route-map/policy knob
+todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
 todo: game butterfly series reusing the fft and mdev classes from modem and ping
+todo: bmp server to listeners, bmp, ris and bgp
+todo: server bgprsrr
 todo: game hanoi
 todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
