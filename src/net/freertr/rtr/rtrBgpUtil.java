@@ -21,7 +21,6 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
-import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
 import net.freertr.util.counter;
