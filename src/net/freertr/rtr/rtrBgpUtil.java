@@ -21,6 +21,7 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
+import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
 import net.freertr.util.counter;
@@ -3522,73 +3523,6 @@ public class rtrBgpUtil {
     }
 
     /**
-     * convert hexdump log to packet
-     *
-     * @param s string to convert
-     * @return converted packet
-     */
-    public static packHolder log2pck(String s) {
-        if (s == null) {
-            return null;
-        }
-        String a = s.replaceAll("\\|", "");
-        int i = a.indexOf("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
-        if (i < 1) {
-            return null;
-        }
-        s = a.substring(i, a.length());
-        a = a.substring(0, i);
-        s = s.replaceAll(" ", "");
-        packHolder pck = new packHolder(true, true);
-        pck.INTtime = bits.str2time(cfgAll.timeZoneName, a);
-        int o = s.length() & 0xfffffe;
-        for (i = 0; i < o; i += 2) {
-            pck.putByte(0, bits.fromHex(s.substring(i, i + 2)));
-            pck.putSkip(1);
-            pck.merge2end();
-        }
-        i = a.indexOf("->");
-        if (i < 0) {
-            return pck;
-        }
-        s = a.substring(i + 2, a.length()).trim();
-        a = a.substring(0, i).trim();
-        i = a.lastIndexOf(" ");
-        if (i > 0) {
-            a = a.substring(i + 1, a.length());
-        }
-        i = s.indexOf(" ");
-        if (i > 0) {
-            s = s.substring(0, i);
-        }
-        pck.IPsrc.fromString(a);
-        pck.IPtrg.fromString(s);
-        return pck;
-    }
-
-    /**
-     * decode bgp dumps
-     *
-     * @param txt text to read
-     * @return list of packets
-     */
-    public static List<packHolder> logs2pcks(List<String> txt) {
-        List<packHolder> res = new ArrayList<packHolder>();
-        if (txt == null) {
-            return res;
-        }
-        for (int i = 0; i < txt.size(); i++) {
-            String a = txt.get(i);
-            packHolder p = log2pck(a);
-            if (p == null) {
-                continue;
-            }
-            res.add(p);
-        }
-        return res;
-    }
-
-    /**
      * counters to statistics
      *
      * @param c counter
@@ -3711,6 +3645,18 @@ public class rtrBgpUtil {
             l.add(i + "|" + attrType2string(i) + "|" + counter2stats(c));
         }
         return l;
+    }
+
+    /**
+     * get reachable statistics
+     *
+     * @param l list to append
+     * @param r reachable statistics
+     * @param u unreachable statistics
+     */
+    public static void getUnReachStats(userFormat l, counter r, counter u) {
+        l.add("reachable messages|" + r.packRx + "|" + r.packTx);
+        l.add("unreachable messages|" + u.packRx + "|" + u.packTx);
     }
 
 }

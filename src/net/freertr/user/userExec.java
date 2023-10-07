@@ -666,6 +666,8 @@ public class userExec {
         hl.add(null, "6 7              <addr>             neighbor address");
         hl.add(null, "7 8                dampening        route flap dampening");
         hl.add(null, "8 .                  <str>          int matcher");
+        hl.add(null, "7 .                attributes       collected attributes statistics");
+        hl.add(null, "7 .                messages         collected message statistics");
         hl.add(null, "7 .                config           peer configuration");
         hl.add(null, "7 .                status           peer status");
         rtrBgpParam.getAfiList(hl, "7 8", "show", false);

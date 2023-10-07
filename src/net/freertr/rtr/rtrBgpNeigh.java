@@ -610,6 +610,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("fallover|" + sendingIfc);
         l.add("update group|" + groupMember);
         l.add("socket mode|" + socketMode);
+        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats);
+        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats);
+        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats);
+        rtrBgpUtil.getUnReachStats(l, reachabStat, unreachStat);
+        rtrBgpUtil.printUnknwSum(l, false, msgStats);
+        rtrBgpUtil.printUnknwSum(l, true, attrStats);
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
         l.add("leak role|rx=" + rtrBgpUtil.leakRole2string(conn.peerLeakRole, false) + ", tx=" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
         l.add("dynamic capability|" + conn.peerDynCap + ", rx=" + conn.dynCapaRx + ", tx=" + conn.dynCapaTx);
@@ -2136,14 +2142,32 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             case 17:
                 return showSummry2() + "|" + description;
             case 18:
-                return showSummry1() + "|" + conn.unknownCntr.packRx + "|" + conn.unknownCntr.byteRx;
+                return showSummry1() + "|" + conn.unknownCntr.packRx + "|" + conn.unknownCntr.byteRx + "|" + bits.timePast(conn.unknownCntr.lastRx);
             case 19:
                 return showSummry2() + "|" + clntWhois.asn2name(remoteAs, true) + "|" + clntWhois.asn2info(remoteAs);
             case 20:
-                return showSummry1() + "|" + "";//////
+                return showSummry1() + "|" + reachabStat.packRx + "|" + reachabStat.packTx + "|" + unreachStat.packRx + "|" + unreachStat.packTx + "|" + bits.timePast(reachabStat.lastRx) + "|" + bits.timePast(reachabStat.lastTx);
             default:
                 return null;
         }
+    }
+
+    /**
+     * get message statistics
+     *
+     * @return list of statistics
+     */
+    public userFormat getMsgStats() {
+        return rtrBgpUtil.getMsgStats(msgStats);
+    }
+
+    /**
+     * get message statistics
+     *
+     * @return list of statistics
+     */
+    public userFormat getAttrStats() {
+        return rtrBgpUtil.getAttrStats(attrStats);
     }
 
 }

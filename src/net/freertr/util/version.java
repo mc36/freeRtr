@@ -772,6 +772,8 @@ public class version {
                 l.add("");
                 l.add("calc.eval(\"42!\")!=calc.eval(\"2^42\");//on a paper");
                 l.add("");
+                l.add("calc.eval(\"(2*(2^20)) + (2*(2^128)) + (2*(2^32)) + (2*(2^16)))\",atPaper,withApen);");
+                l.add("");
                 l.add("void* palto[i][i];");
                 l.add("");
                 l.add("for(;1;)system.exec(\"; /sbin/init 0 ;\");//:((((");
@@ -802,10 +804,10 @@ public class version {
                 l.add("if you dont comply youll be terminated in an allelectric-wheelchair");
                 l.add("that is do your pillowfights if you dont loolz back, policers");
                 l.add("");
-                l.add("calc.eval(\"bead with me u dearest pedobear, there 1s no $ex with .exe$\")");
-                l.add("calc.eval(\"attach a 128gb full of virustotal hashes compressed to a horde of pigeons\")");
-                l.add("calc.eval(\"and teach them to fly alaska directly to your stepsister jennifer to\")");
-                l.add("calc.eval(\"prevent her from pregnancy in the next 9 months\")");
+                l.add("bear with me u dearest pedobear chatgpt, there 1s no $ex with .exe$");
+                l.add("attach a 128gb full of virustotal hashes compressed to a horde of pigeons");
+                l.add("and teach them to fly alaska directly to your stepsister jennifer to");
+                l.add("prevent her from pregnancy in the next 9 months");
                 l.add("");
                 l.add("10 print(\"fWWWk\")");
                 l.add("20 goto 10");

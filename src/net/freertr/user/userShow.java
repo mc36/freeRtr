@@ -104,6 +104,7 @@ import net.freertr.serv.servVxlan;
 import net.freertr.enc.enc7bit;
 import net.freertr.enc.encUrl;
 import net.freertr.pack.packRedundancy;
+import net.freertr.rtr.rtrBgpDump;
 import net.freertr.serv.servNrpe;
 import net.freertr.serv.servOpenflow;
 import net.freertr.tab.tabGen;
@@ -655,13 +656,15 @@ public class userShow {
                 return null;
             }
             if (a.equals("bgp-dump")) {
-                List<String> lst = logger.bufferRead();
-                List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
+                List<String> txt = logger.bufferRead();
+                List<packHolder> pcks = rtrBgpDump.logs2pcks(txt);
                 int o = pcks.size();
                 cmd.error(o + " dumps found");
                 for (int i = 0; i < o; i++) {
                     packHolder pck = pcks.get(i);
-                    cmd.error(i + " " + bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + " " + pck.IPsrc + " -> " + pck.IPtrg + " " + bits.toHex(pck.getCopy()));
+                    txt = rtrBgpDump.dumpPacket(pck);
+                    txt.add("");
+                    rdr.putStrArr(txt);
                 }
                 return null;
             }
@@ -4015,6 +4018,14 @@ public class userShow {
                 return;
             }
             a = cmd.word();
+            if (a.equals("attributes")) {
+                rdr.putStrTab(nei.getAttrStats());
+                return;
+            }
+            if (a.equals("messages")) {
+                rdr.putStrTab(nei.getMsgStats());
+                return;
+            }
             if (a.equals("config")) {
                 List<String> l = new ArrayList<String>();
                 nei.getConfig(l, "", 0);

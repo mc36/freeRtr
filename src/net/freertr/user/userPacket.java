@@ -70,6 +70,7 @@ import net.freertr.serv.servP4lang;
 import net.freertr.enc.encUrl;
 import net.freertr.pack.packXotPad;
 import net.freertr.prt.prtArping;
+import net.freertr.rtr.rtrBgpDump;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
@@ -236,21 +237,23 @@ public class userPacket {
         if (a.equals("txt2con")) {
             a = cmd.word();
             cmd.error("reading " + a);
-            List<String> lst = bits.txt2buf(a);
-            if (lst == null) {
+            List<String> txt = bits.txt2buf(a);
+            if (txt == null) {
                 cmd.error("error reading file");
                 return null;
             }
-            List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
+            List<packHolder> pcks = rtrBgpDump.logs2pcks(txt);
             int o = pcks.size();
             cmd.error(o + " dumps found");
             if (o < 1) {
                 cmd.error("no dumps found");
                 return null;
             }
-            for (int i=0;i<o;i++) {
+            for (int i = 0; i < o; i++) {
                 packHolder pck = pcks.get(i);
-                /////////
+                txt = rtrBgpDump.dumpPacket(pck);
+                txt.add("");
+                rdr.putStrArr(txt);
             }
             return null;
         }
@@ -262,7 +265,7 @@ public class userPacket {
                 cmd.error("error reading file");
                 return null;
             }
-            List<packHolder> pcks = rtrBgpUtil.logs2pcks(lst);
+            List<packHolder> pcks = rtrBgpDump.logs2pcks(lst);
             int o = pcks.size();
             cmd.error(o + " dumps found");
             if (o < 1) {

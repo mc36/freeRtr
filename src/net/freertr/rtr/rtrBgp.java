@@ -3862,13 +3862,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|descr");
                 break;
             case 18:
-                l = new userFormat("|", "neighbor|as|updates|bytes");
+                l = new userFormat("|", "neighbor|as|updates|bytes|ago");
                 break;
             case 19:
                 l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|asname|asinfo");
                 break;
             case 20:
-                l = new userFormat("|", "neighbor|as|rx|tx|rx|tx", "2|2reachable|2unreachable");
+                l = new userFormat("|", "neighbor|as|rx|tx|rx|tx|rx|tx", "2|2reach|2unrea|2ago");
                 break;
             default:
                 return null;
@@ -4477,11 +4477,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats);
         rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats);
         rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats);
-        l.add("listen accepts|" + accptStat.packTx + "|" + accptStat.packTx + " " + accptStat.packDr);
-        l.add("reachable messages|" + reachabStat.packRx + "|" + reachabStat.packTx);
-        l.add("unreachable messages|" + unreachStat.packRx + "|" + unreachStat.packTx);
+        rtrBgpUtil.getUnReachStats(l, reachabStat, unreachStat);
         rtrBgpUtil.printUnknwSum(l, false, msgStats);
         rtrBgpUtil.printUnknwSum(l, true, attrStats);
+        l.add("listen accepts|" + accptStat.packTx + "|" + accptStat.packTx + " " + accptStat.packDr);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);
         l.add("changes max|" + changedMax);
