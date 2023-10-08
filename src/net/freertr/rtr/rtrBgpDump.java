@@ -5,8 +5,9 @@ import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.enc.enc7bit;
 import net.freertr.pack.packHolder;
-import net.freertr.pipe.pipeSide;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
+import net.freertr.util.counter;
 
 /**
  * bgp message dumper
@@ -14,6 +15,132 @@ import net.freertr.util.bits;
  * @author matecsaba
  */
 public class rtrBgpDump {
+
+    /**
+     * counters to statistics
+     *
+     * @param c counter
+     * @return statistics
+     */
+    public static String counter2stats(counter c) {
+        return c.packTx + "|" + c.packRx + "|" + c.byteTx + "|" + c.byteRx
+                + "|" + bits.timePast(c.lastTx) + "|" + bits.timePast(c.lastRx)
+                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastTx + cfgAll.timeServerOffset, 3)
+                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastRx + cfgAll.timeServerOffset, 3);
+    }
+
+    /**
+     * summarize unknown attributes
+     *
+     * @param c counters
+     * @return summary of unknowns
+     */
+    public static counter sumUnkAttrs(counter c[]) {
+        counter res = new counter();
+        for (int i = 0; i < c.length; i++) {
+            if (!rtrBgpUtil.isUnknownAttr(i)) {
+                continue;
+            }
+            res.plus(c[i]);
+        }
+        return res;
+    }
+
+    /**
+     * summarize unknown attributes
+     *
+     * @param c counters
+     * @return summary of unknowns
+     */
+    public static counter sumUnkMsgs(counter c[]) {
+        counter res = new counter();
+        for (int i = 0; i < c.length; i++) {
+            if (!rtrBgpUtil.isUnknownMsg(i)) {
+                continue;
+            }
+            res.plus(c[i]);
+        }
+        return res;
+    }
+
+    /**
+     * get unknown summary
+     *
+     * @param l list to update
+     * @param t true to attributes, false to messages
+     * @param c counters
+     * @param sr rx separator
+     * @param su tx separator
+     */
+    public static void getUnknwSum(userFormat l, boolean t, counter c[], String sr, String st) {
+        counter r;
+        String a;
+        if (t) {
+            r = sumUnkAttrs(c);
+            a = "attributes";
+        } else {
+            r = sumUnkMsgs(c);
+            a = "messages";
+        }
+        l.add("unknown " + a + sr + r.packRx + st + r.packTx);
+    }
+
+    /**
+     * get message statistics
+     *
+     * @param l list to append
+     * @param t message type
+     * @param c counters
+     * @param sr rx separator
+     * @param su tx separator
+     */
+    public static void getMsgStats(userFormat l, int t, counter c[], String st, String sr) {
+        l.add(rtrBgpUtil.msgType2string(t) + " message" + st + c[t].packTx + sr + c[t].packRx);
+    }
+
+    /**
+     * get message statistics
+     *
+     * @param s statistics
+     * @return list of statistics
+     */
+    public static userFormat getMsgStats(counter s[]) {
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        for (int i = 0; i < s.length; i++) {
+            counter c = s[i];
+            l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + counter2stats(c));
+        }
+        return l;
+    }
+
+    /**
+     * get message statistics
+     *
+     * @param s statistics
+     * @return list of statistics
+     */
+    public static userFormat getAttrStats(counter s[]) {
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        for (int i = 0; i < s.length; i++) {
+            counter c = s[i];
+            l.add(i + "|" + rtrBgpUtil.attrType2string(i) + "|" + counter2stats(c));
+        }
+        return l;
+    }
+
+    /**
+     * get reachable statistics
+     *
+     * @param l list to append
+     * @param cr reachable statistics
+     * @param cu unreachable statistics
+     * @param sr rx separator
+     * @param su tx separator
+     */
+    public static void getUnReachStats(userFormat l, counter cr, counter cu, String sr, String st) {
+        l.add("reachable messages" + sr + cr.packRx + st + cr.packTx);
+        l.add("unreachable messages" + sr + cu.packRx + st + cu.packTx);
+    }
 
     /**
      * convert hexdump log to packet

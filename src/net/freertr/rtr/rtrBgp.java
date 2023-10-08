@@ -4444,7 +4444,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getMsgStats() {
-        return rtrBgpUtil.getMsgStats(msgStats);
+        return rtrBgpDump.getMsgStats(msgStats);
     }
 
     /**
@@ -4453,7 +4453,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return list of statistics
      */
     public userFormat getAttrStats() {
-        return rtrBgpUtil.getAttrStats(attrStats);
+        return rtrBgpDump.getAttrStats(attrStats);
     }
 
     /**
@@ -4474,12 +4474,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr run|" + incrCount + "|times");
         l.add("incr last|" + bits.timePast(incrLast) + "|" + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3));
         l.add("incr time|" + incrTime + "|ms");
-        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats);
-        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats);
-        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats);
-        rtrBgpUtil.getUnReachStats(l, reachabStat, unreachStat);
-        rtrBgpUtil.printUnknwSum(l, false, msgStats);
-        rtrBgpUtil.printUnknwSum(l, true, attrStats);
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats, "|", "|");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats, "|", "|");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats, "|", "|");
+        rtrBgpDump.getUnReachStats(l, reachabStat, unreachStat, "|", "|");
+        rtrBgpDump.getUnknwSum(l, false, msgStats, "|", "|");
+        rtrBgpDump.getUnknwSum(l, true, attrStats, "|", "|");
         l.add("listen accepts|" + accptStat.packTx + "|" + accptStat.packTx + " " + accptStat.packDr);
         l.add("changes all|" + changedTot);
         l.add("changes now|" + changedCur);

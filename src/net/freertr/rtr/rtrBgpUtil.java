@@ -3522,19 +3522,6 @@ public class rtrBgpUtil {
     }
 
     /**
-     * counters to statistics
-     *
-     * @param c counter
-     * @return statistics
-     */
-    public static String counter2stats(counter c) {
-        return c.packTx + "|" + c.packRx + "|" + c.byteTx + "|" + c.byteRx
-                + "|" + bits.timePast(c.lastTx) + "|" + bits.timePast(c.lastRx)
-                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastTx + cfgAll.timeServerOffset, 3)
-                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastRx + cfgAll.timeServerOffset, 3);
-    }
-
-    /**
      * update counters
      *
      * @param d direction
@@ -3542,120 +3529,13 @@ public class rtrBgpUtil {
      * @param t type
      * @param p packet
      */
-    public static void updateStats(boolean d, counter c[], int t, packHolder p) {
+    public static void updtStatsArr(boolean d, counter c[], int t, packHolder p) {
         t &= 0xff;
         if (d) {
             c[t].tx(p);
         } else {
             c[t].rx(p);
         }
-    }
-
-    /**
-     * summarize unknown attributes
-     *
-     * @param c counters
-     * @return summary of unknowns
-     */
-    public static counter sumUnkAttrs(counter c[]) {
-        counter res = new counter();
-        for (int i = 0; i < c.length; i++) {
-            if (!isUnknownAttr(i)) {
-                continue;
-            }
-            res.plus(c[i]);
-        }
-        return res;
-    }
-
-    /**
-     * summarize unknown attributes
-     *
-     * @param c counters
-     * @return summary of unknowns
-     */
-    public static counter sumUnkMsgs(counter c[]) {
-        counter res = new counter();
-        for (int i = 0; i < c.length; i++) {
-            if (!isUnknownMsg(i)) {
-                continue;
-            }
-            res.plus(c[i]);
-        }
-        return res;
-    }
-
-    /**
-     * print unknown summary
-     *
-     * @param l list to update
-     * @param t true to attributes, false to messages
-     * @param c counters
-     */
-    public static void printUnknwSum(userFormat l, boolean t, counter c[]) {
-        counter r;
-        String a;
-        if (t) {
-            r = sumUnkAttrs(c);
-            a = "attributes";
-        } else {
-            r = sumUnkMsgs(c);
-            a = "messages";
-        }
-        l.add("unknown " + a + "|" + r.packRx + "|" + r.packTx);
-    }
-
-    /**
-     * get message statistics
-     *
-     * @param l list to append
-     * @param t message type
-     * @param c counters
-     */
-    public static void getMsgStats(userFormat l, int t, counter c[]) {
-        l.add(msgType2string(t) + " message|" + c[t].packTx + "|" + c[t].packRx);
-    }
-
-    /**
-     * get message statistics
-     *
-     * @param s statistics
-     * @return list of statistics
-     */
-    public static userFormat getMsgStats(counter s[]) {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
-        for (int i = 0; i < s.length; i++) {
-            counter c = s[i];
-            l.add(i + "|" + msgType2string(i) + "|" + counter2stats(c));
-        }
-        return l;
-    }
-
-    /**
-     * get message statistics
-     *
-     * @param s statistics
-     * @return list of statistics
-     */
-    public static userFormat getAttrStats(counter s[]) {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
-        for (int i = 0; i < s.length; i++) {
-            counter c = s[i];
-            l.add(i + "|" + attrType2string(i) + "|" + counter2stats(c));
-        }
-        return l;
-    }
-
-    /**
-     * get reachable statistics
-     *
-     * @param l list to append
-     * @param r reachable statistics
-     * @param u unreachable statistics
-     */
-    public static void getUnReachStats(userFormat l, counter r, counter u) {
-        l.add("reachable messages|" + r.packRx + "|" + r.packTx);
-        l.add("unreachable messages|" + u.packRx + "|" + u.packTx);
     }
 
 }

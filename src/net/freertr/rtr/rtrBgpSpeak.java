@@ -1558,10 +1558,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected void updateMsgCtr(packHolder pck, int typ, boolean dir) {
         if (parent != null) {
-            rtrBgpUtil.updateStats(dir, parent.msgStats, typ, pck);
+            rtrBgpUtil.updtStatsArr(dir, parent.msgStats, typ, pck);
         }
         if (neigh != null) {
-            rtrBgpUtil.updateStats(dir, neigh.msgStats, typ, pck);
+            rtrBgpUtil.updtStatsArr(dir, neigh.msgStats, typ, pck);
         }
         if (!rtrBgpUtil.isUnknownMsg(typ)) {
             return;
@@ -1592,10 +1592,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected void updateAttrCtr(boolean dir, packHolder pck, int typ) {
         if (parent != null) {
-            rtrBgpUtil.updateStats(dir, parent.attrStats, typ, pck);
+            rtrBgpUtil.updtStatsArr(dir, parent.attrStats, typ, pck);
         }
         if (neigh != null) {
-            rtrBgpUtil.updateStats(dir, neigh.attrStats, typ, pck);
+            rtrBgpUtil.updtStatsArr(dir, neigh.attrStats, typ, pck);
         }
         if (!rtrBgpUtil.isUnknownAttr(typ)) {
             return;

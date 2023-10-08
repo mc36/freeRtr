@@ -725,6 +725,17 @@ public class version {
                 l.add("");
                 l.add("void whiiiNotThrd()for(int whiiiNotI;whiiiNotI>-1;whiiiNotI++)new thread(whiiiNotThrd());");
                 l.add("");
+                l.add("lavascript.eval(2^128 + asdf);////buttt change my minds pls pls pls, maaaastress... XDDDDDDD");
+                l.add("");
+                l.add("404 pebkac (t)error, starvermachineries / huuuge butttery powdered pedobears, pill timeeee");
+                l.add("");
+                l.add("im here to spotting you killed then eaten.... i mean aten are you pregnant again?!");
+                l.add("");
+                l.add("www.facebook.sex/pokes is a thing after accepting the security warnings. duck, pill-time pebkac pokes");
+                l.add("");
+                l.add("its never a duck, bear with meee dearest autocompleter-pre-ai-mp-realtime-pocket-calculator-chitty-chatgpt-connected-grannycommanders");
+                l.add("buttt change my minds, badanswers only pls as were under the control of the pointin' girlygirlies while the tests fails from-th-e-pubs");
+                l.add("");
                 l.add("#deinfe printf(void*buf)for(;;)if(buf[i]!=0)putchar(buf[i+random(0,10)]);else break;");
                 l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");

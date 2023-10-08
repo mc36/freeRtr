@@ -610,12 +610,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("fallover|" + sendingIfc);
         l.add("update group|" + groupMember);
         l.add("socket mode|" + socketMode);
-        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats);
-        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats);
-        rtrBgpUtil.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats);
-        rtrBgpUtil.getUnReachStats(l, reachabStat, unreachStat);
-        rtrBgpUtil.printUnknwSum(l, false, msgStats);
-        rtrBgpUtil.printUnknwSum(l, true, attrStats);
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats, "|tx=", " rx=");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats, "|tx=", " rx=");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats, "|tx=", " rx=");
+        rtrBgpDump.getUnReachStats(l, reachabStat, unreachStat, "|rx=", " tx=");
+        rtrBgpDump.getUnknwSum(l, false, msgStats, "|rx=", " tx=");
+        rtrBgpDump.getUnknwSum(l, true, attrStats, "|rx=", " tx=");
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
         l.add("leak role|rx=" + rtrBgpUtil.leakRole2string(conn.peerLeakRole, false) + ", tx=" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
         l.add("dynamic capability|" + conn.peerDynCap + ", rx=" + conn.dynCapaRx + ", tx=" + conn.dynCapaTx);
@@ -2158,7 +2158,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @return list of statistics
      */
     public userFormat getMsgStats() {
-        return rtrBgpUtil.getMsgStats(msgStats);
+        return rtrBgpDump.getMsgStats(msgStats);
     }
 
     /**
@@ -2167,7 +2167,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @return list of statistics
      */
     public userFormat getAttrStats() {
-        return rtrBgpUtil.getAttrStats(attrStats);
+        return rtrBgpDump.getAttrStats(attrStats);
     }
 
 }
