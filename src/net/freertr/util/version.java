@@ -757,6 +757,8 @@ public class version {
                 l.add("");
                 l.add("for(;1;)printf(\"lu$t$$$-f333l-g000d\r\n\");//XDDDDD");
                 l.add("");
+                l.add("the accidental inventor of internet protocol mr -jon postel never saw a graphical browser");
+                l.add("");
                 l.add("i have a serious quest-ions 4 u all...");
                 l.add("priv<tab> stat<tab> fin<tab> void asdf(){};//vs");
                 l.add("stat<tab> priv<tab> fin<tab> void asdf(){};//vs");
