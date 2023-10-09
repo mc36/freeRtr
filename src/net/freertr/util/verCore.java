@@ -109,6 +109,7 @@ public class verCore {
         "isps best selling drugs are internets",
         "isps equally hate internets as most of us",
         "every tool could be used good or bad equally",
+        "internets seems to became pepopley, an utility",
         "care about the bits and not the bits of the bits",
         "packet delivery on the wild-wild-nets is best-effort, if any",
         "if a machine can learn the value of human life, maybe we can too",

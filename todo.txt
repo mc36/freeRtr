@@ -1,3 +1,5 @@
+allow some packages to be redownloaded after a certain time expired
+
 vdc to have local, connect as sdn autocreated
 
 generalise server access- knobs
