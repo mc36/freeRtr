@@ -432,6 +432,7 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
+todo: allow some packages to be redownloaded after a certain time expired
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to use any router

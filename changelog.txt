@@ -15204,3 +15204,5 @@ no todo: bgp neigh log-end-changes log-route-map/policy knob
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 ---------------------------------- 2023-10-05 21:29:56 23.10.5
 todo: honeypot to wireformat, decode
+---------------------------------- 2023-10-09 17:27:46 23.10.9
+todo: allow some packages to be redownloaded after a certain time expired
