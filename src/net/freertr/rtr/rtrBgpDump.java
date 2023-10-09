@@ -16,6 +16,9 @@ import net.freertr.util.counter;
  */
 public class rtrBgpDump {
 
+    private rtrBgpDump() {
+    }
+
     /**
      * counters to statistics
      *
@@ -70,7 +73,7 @@ public class rtrBgpDump {
      * @param t true to attributes, false to messages
      * @param c counters
      * @param sr rx separator
-     * @param su tx separator
+     * @param st tx separator
      */
     public static void getUnknwSum(userFormat l, boolean t, counter c[], String sr, String st) {
         counter r;
@@ -92,7 +95,7 @@ public class rtrBgpDump {
      * @param t message type
      * @param c counters
      * @param sr rx separator
-     * @param su tx separator
+     * @param st tx separator
      */
     public static void getMsgStats(userFormat l, int t, counter c[], String st, String sr) {
         l.add(rtrBgpUtil.msgType2string(t) + " message" + st + c[t].packTx + sr + c[t].packRx);
@@ -135,7 +138,7 @@ public class rtrBgpDump {
      * @param cr reachable statistics
      * @param cu unreachable statistics
      * @param sr rx separator
-     * @param su tx separator
+     * @param st tx separator
      */
     public static void getUnReachStats(userFormat l, counter cr, counter cu, String sr, String st) {
         l.add("reachable messages" + sr + cr.packRx + st + cr.packTx);
@@ -213,6 +216,7 @@ public class rtrBgpDump {
      * dump one packet
      *
      * @param pck packet to dump
+     * @return text dump of the packet
      */
     public static List<String> dumpPacket(packHolder pck) {
         pck = pck.copyBytes(true, true);
@@ -223,6 +227,8 @@ public class rtrBgpDump {
         if (rtrBgpUtil.checkHeader(pck)) {
             return res;
         }
+        pck.getSkip(rtrBgpUtil.sizeU);
+        res.add("len=" + pck.IPsiz + " typ=" + pck.IPprt + ", " + rtrBgpUtil.msgType2string(pck.IPprt));
         //////////////////
         return res;
     }

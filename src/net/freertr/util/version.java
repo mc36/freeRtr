@@ -725,7 +725,7 @@ public class version {
                 l.add("");
                 l.add("void whiiiNotThrd()for(int whiiiNotI;whiiiNotI>-1;whiiiNotI++)new thread(whiiiNotThrd());");
                 l.add("");
-                l.add("lavascript.eval(2^128 + asdf);////buttt change my minds pls pls pls, maaaastress... XDDDDDDD");
+                l.add("lavascript.eval(2^128 + asdf);//buttt change my minds pls pls pls, maaaastress... XDDDDDDD");
                 l.add("");
                 l.add("404 pebkac (t)error, starvermachineries / huuuge butttery powdered pedobears, pill timeeee");
                 l.add("");

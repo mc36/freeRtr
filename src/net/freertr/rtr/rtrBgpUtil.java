@@ -30,25 +30,28 @@ import net.freertr.util.counter;
  */
 public class rtrBgpUtil {
 
+    private rtrBgpUtil() {
+    }
+
     /**
      * marker value
      */
-    public static final int markV = 255;
+    public final static int markV = 255;
+
     /**
      * marker size
      */
-    public static final int markS = 16;
+    public final static int markS = 16;
+
     /**
      * header size
      */
-    public static final int sizeU = 19;
+    public final static int sizeU = 19;
+
     /**
      * compressed header size
      */
-    public static final int sizeC = 3;
-
-    private rtrBgpUtil() {
-    }
+    public final static int sizeC = 3;
 
     /**
      * protocol version

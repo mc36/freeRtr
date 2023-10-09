@@ -10,11 +10,11 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class servBmp2mrtRate extends TimerTask {
-    
+
     private final servBmp2mrt lower;
-    
+
     private boolean need2run;
-    
+
     private int timSlp;
 
     /**
@@ -27,7 +27,7 @@ public class servBmp2mrtRate extends TimerTask {
         timSlp = tim;
         lower = prnt;
     }
-    
+
     public void run() {
         for (;;) {
             if (!need2run) {
@@ -59,5 +59,5 @@ public class servBmp2mrtRate extends TimerTask {
     public void stopWork() {
         need2run = false;
     }
-    
+
 }

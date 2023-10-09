@@ -1407,6 +1407,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changedPek = 0;
     }
 
+    /**
+     * clear tiny counters
+     */
     public void doClearTinys() {
         reachabStat.clear();
         unreachStat.clear();
