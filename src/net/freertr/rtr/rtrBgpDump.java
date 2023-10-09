@@ -215,9 +215,14 @@ public class rtrBgpDump {
      * @param pck packet to dump
      */
     public static List<String> dumpPacket(packHolder pck) {
+        pck = pck.copyBytes(true, true);
+        pck.merge2end();
         List<String> res = new ArrayList<String>();
         res.add(bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + " " + pck.IPsrc + " -> " + pck.IPtrg);
         enc7bit.buf2hex(res, pck.getCopy(), 0);
+        if (rtrBgpUtil.checkHeader(pck)) {
+            return res;
+        }
         //////////////////
         return res;
     }

@@ -10,7 +10,6 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrMac;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
-import net.freertr.cfg.cfgAll;
 import net.freertr.cry.cryHashMd5;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLargeComm;
@@ -22,7 +21,6 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
 import net.freertr.tab.tabGen;
-import net.freertr.user.userFormat;
 import net.freertr.util.counter;
 
 /**
@@ -31,6 +29,23 @@ import net.freertr.util.counter;
  * @author matecsaba
  */
 public class rtrBgpUtil {
+
+    /**
+     * marker value
+     */
+    public static final int markV = 255;
+    /**
+     * marker size
+     */
+    public static final int markS = 16;
+    /**
+     * header size
+     */
+    public static final int sizeU = 19;
+    /**
+     * compressed header size
+     */
+    public static final int sizeC = 3;
 
     private rtrBgpUtil() {
     }
@@ -2783,18 +2798,63 @@ public class rtrBgpUtil {
     }
 
     /**
+     * check if valid header received
+     *
+     * @param pck packet to read
+     * @return true if error, false if ok
+     */
+    public static boolean checkMarker(packHolder pck) {
+        for (int i = 0; i < markS; i++) {
+            if (pck.getByte(i) != markV) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * check if valid header received
+     *
+     * @param pck packet to read
+     * @return true if error, false if ok
+     */
+    public static boolean checkHeader(packHolder pck) {
+        if (rtrBgpUtil.checkMarker(pck)) {
+            return true;
+        }
+        pck.IPsiz = pck.msbGetW(16) - sizeU;
+        pck.IPprt = pck.getByte(18);
+        if (pck.IPsiz < 0) {
+            return true;
+        }
+        if (pck.IPsiz > packHolder.maxData) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * create message header
+     *
+     * @param pck packet to update
+     */
+    public static void createMarker(packHolder pck) {
+        for (int i = 0; i < markS; i++) {
+            pck.putByte(i, markV);
+        }
+    }
+
+    /**
      * create message header
      *
      * @param pck packet to update
      * @param typ message type
      */
     public static void createHeader(packHolder pck, int typ) {
-        for (int i = 0; i < 16; i++) {
-            pck.putByte(i, 0xff);
-        }
-        pck.msbPutW(16, pck.dataSize() + rtrBgpSpeak.sizeU);
+        createMarker(pck);
+        pck.msbPutW(16, pck.dataSize() + sizeU);
         pck.putByte(18, typ);
-        pck.putSkip(rtrBgpSpeak.sizeU);
+        pck.putSkip(sizeU);
         pck.merge2beg();
     }
 

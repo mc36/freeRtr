@@ -706,8 +706,8 @@ public class userPacket {
                 if (i == 2) {
                     continue;
                 }
-                int typ = pck.getByte(rtrBgpSpeak.sizeU - 1);
-                pck.getSkip(rtrBgpSpeak.sizeU);
+                int typ = pck.getByte(rtrBgpUtil.sizeU - 1);
+                pck.getSkip(rtrBgpUtil.sizeU);
                 tot++;
                 if (sip.compare(sip, pck.IPsrc) != 0) {
                     continue;
@@ -805,8 +805,8 @@ public class userPacket {
                 if (i == 2) {
                     continue;
                 }
-                int typ = pck.getByte(rtrBgpSpeak.sizeU - 1);
-                pck.getSkip(rtrBgpSpeak.sizeU);
+                int typ = pck.getByte(rtrBgpUtil.sizeU - 1);
+                pck.getSkip(rtrBgpUtil.sizeU);
                 tot++;
                 if (sip.compare(sip, pck.IPsrc) != 0) {
                     continue;
@@ -1002,10 +1002,10 @@ public class userPacket {
                 if (i == 2) {
                     continue;
                 }
-                if (pck.getByte(rtrBgpSpeak.sizeU - 1) != rtrBgpUtil.msgUpdate) {
+                if (pck.getByte(rtrBgpUtil.sizeU - 1) != rtrBgpUtil.msgUpdate) {
                     continue;
                 }
-                pck.getSkip(rtrBgpSpeak.sizeU);
+                pck.getSkip(rtrBgpUtil.sizeU);
                 tot++;
                 if (sip.compare(sip, pck.IPsrc) != 0) {
                     continue;

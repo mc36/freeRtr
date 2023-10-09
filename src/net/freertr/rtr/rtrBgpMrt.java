@@ -135,12 +135,12 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
      */
     public void gotMessage(boolean dir, int typ, rtrBgpNeigh nei, byte[] dat) {
         byte[] hdr = new byte[128];
-        int len = putMrtHeader(hdr, bits.getTime(), dir, nei.remoteAs, nei.localAs, nei.peerAddr, nei.localAddr, dat.length + rtrBgpSpeak.sizeU);
-        for (int i = 0; i < 16; i++) {
-            hdr[len] = (byte) 0xff;
+        int len = putMrtHeader(hdr, bits.getTime(), dir, nei.remoteAs, nei.localAs, nei.peerAddr, nei.localAddr, dat.length + rtrBgpUtil.sizeU);
+        for (int i = 0; i < rtrBgpUtil.markS; i++) {
+            hdr[len] = (byte) rtrBgpUtil.markV;
             len++;
         }
-        bits.msbPutW(hdr, len, dat.length + rtrBgpSpeak.sizeU);
+        bits.msbPutW(hdr, len, dat.length + rtrBgpUtil.sizeU);
         hdr[len + 2] = (byte) typ;
         len += 3;
         fileHandle.add(hdr, 0, len, dat, 0, dat.length);

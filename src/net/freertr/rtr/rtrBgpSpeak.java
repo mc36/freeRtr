@@ -39,16 +39,6 @@ import net.freertr.util.version;
 public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
 
     /**
-     * header size
-     */
-    public final static int sizeU = 19;
-
-    /**
-     * compressed header size
-     */
-    public final static int sizeC = 3;
-
-    /**
      * connection
      */
     protected pipeSide pipe;
@@ -1487,12 +1477,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             int pos;
             for (pos = 0; pos < flg;) {
-                int len = bits.msbGetW(buf, pos) - sizeU;
+                int len = bits.msbGetW(buf, pos) - rtrBgpUtil.sizeU;
                 if (len < 0) {
                     break;
                 }
                 typ = buf[pos + 2] & 0xff;
-                pos += sizeC;
+                pos += rtrBgpUtil.sizeC;
                 if ((pos + len) > flg) {
                     logger.info("got truncated compressed from " + neigh.peerAddr);
                     sendNotify(6, 10);
@@ -1674,9 +1664,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 neigh.dump.gotMessage(true, typ, neigh, pck.getCopy());
             }
             compressCntr.tx(pck);
-            pck.msbPutW(0, pck.dataSize() + sizeU);
+            pck.msbPutW(0, pck.dataSize() + rtrBgpUtil.sizeU);
             pck.putByte(2, typ);
-            pck.putSkip(sizeC);
+            pck.putSkip(rtrBgpUtil.sizeC);
             pck.merge2beg();
             compressTx.setInput(pck.getCopy());
             byte[] buf = new byte[packHolder.maxData];
@@ -1714,22 +1704,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (pipe == null) {
             return -1;
         }
-        if (pck.pipeRecv(pipe, 0, sizeU, 144) != sizeU) {
+        if (pck.pipeRecv(pipe, 0, rtrBgpUtil.sizeU, 144) != rtrBgpUtil.sizeU) {
             return -1;
         }
-        for (int i = 0; i < 16; i++) {
-            if (pck.getByte(i) != 0xff) {
-                return -1;
-            }
-        }
-        int len = pck.msbGetW(16) - sizeU;
-        int typ = pck.getByte(18);
-        if (len < 0) {
+        if (rtrBgpUtil.checkHeader(pck)) {
             return -1;
         }
-        if (len > packHolder.maxData) {
-            return -1;
-        }
+        int len = pck.IPsiz;
+        int typ = pck.IPprt;
         pck.clear();
         if (len > 0) {
             if (pck.pipeRecv(pipe, 0, len, 144) != len) {

@@ -560,8 +560,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             upd.putCopy(dat, 0, 0, dat.length);
             upd.putSkip(dat.length);
             upd.merge2beg();
-            int typ = upd.getByte(rtrBgpSpeak.sizeU - 1);
-            upd.getSkip(rtrBgpSpeak.sizeU);
+            int typ = upd.getByte(rtrBgpUtil.sizeU - 1);
+            upd.getSkip(rtrBgpUtil.sizeU);
             try {
                 switch (typ) {
                     case rtrBgpUtil.msgUpdate:
