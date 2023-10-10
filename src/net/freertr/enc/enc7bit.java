@@ -39,8 +39,9 @@ public class enc7bit {
      * @param l list to append
      * @param buf buffer
      * @param beg beginning
+     * @param tab tabulator
      */
-    public static void buf2hex(List<String> l, byte[] buf, int beg) {
+    public static void buf2hex(List<String> l, byte[] buf, int beg, String tab) {
         String s = bits.toHexD(beg) + ":";
         for (int ps = 0; ps < buf.length;) {
             s += " " + bits.toHexB(buf[ps]);
@@ -53,7 +54,7 @@ public class enc7bit {
                 continue;
             }
             l.add(s);
-            s = bits.toHexD(beg) + ":";
+            s = tab + bits.toHexD(beg) + ":";
         }
         l.add(s);
     }

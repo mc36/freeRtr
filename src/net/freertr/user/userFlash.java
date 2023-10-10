@@ -945,7 +945,7 @@ public class userFlash {
                 }
                 byte[] buf = new byte[(int) red];
                 fs.read(buf, 0, buf.length);
-                enc7bit.buf2hex(l, buf, (int) pos);
+                enc7bit.buf2hex(l, buf, (int) pos, "");
                 pos += buf.length;
             }
             fs.close();

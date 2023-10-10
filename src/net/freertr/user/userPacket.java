@@ -79,6 +79,7 @@ import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteBlob;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
+import net.freertr.tab.tabSessionEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -249,9 +250,13 @@ public class userPacket {
                 cmd.error("no dumps found");
                 return null;
             }
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
+            packHolder tmp = new packHolder(true, true);
             for (int i = 0; i < o; i++) {
                 packHolder pck = pcks.get(i);
-                txt = rtrBgpDump.dumpPacket(pck);
+                txt = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
                 txt.add("");
                 rdr.putStrArr(txt);
             }
@@ -598,7 +603,7 @@ public class userPacket {
             cmd.error("converting");
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
-            tabGen<userPacketSeq> seqs = new tabGen<userPacketSeq>();
+            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             int pk = 0;
             for (;;) {
                 int i = readMrt(pck, fs);
@@ -608,29 +613,7 @@ public class userPacket {
                 if (i == 2) {
                     continue;
                 }
-                userPacketSeq seq = new userPacketSeq(pck);
-                userPacketSeq old = seqs.add(seq);
-                if (old != null) {
-                    seq = old;
-                } else {
-                    seq.seq = bits.randomD();
-                }
-                pck.UDPsrc = rtrBgp.port;
-                pck.UDPtrg = rtrBgp.port;
-                pck.TCPwin = 8192;
-                pck.TCPseq = seq.seq;
-                seq.seq += pck.dataSize();
-                prtTcp.createTCPheader(pck, -1, null, null);
-                if (pck.IPtrg.isIPv4()) {
-                    ic4.createIPheader(pck);
-                    i = ipIfc4.type;
-                } else {
-                    ic6.createIPheader(pck);
-                    i = ipIfc6.type;
-                }
-                pck.msbPutW(0, i);
-                pck.putSkip(2);
-                pck.merge2beg();
+                rtrBgpDump.msg2pcap(ic4, ic6, ses, pck);
                 byte[] buf = pck.convertToPcap(pck.INTtime, true);
                 pk++;
                 try {
@@ -643,7 +626,7 @@ public class userPacket {
                 fs.close();
             } catch (Exception e) {
             }
-            cmd.error(pk + " packets (" + seqs.size() + " streams) converted");
+            cmd.error(pk + " packets (" + ses.size() + " streams) converted");
             return null;
         }
         if (a.equals("mrtfilter")) {
@@ -1914,29 +1897,6 @@ public class userPacket {
         }
         cmd.badCmd();
         return null;
-    }
-
-}
-
-class userPacketSeq implements Comparator<userPacketSeq> {
-
-    public addrIP src;
-
-    public addrIP trg;
-
-    public int seq;
-
-    public userPacketSeq(packHolder pck) {
-        src = pck.IPsrc.copyBytes();
-        trg = pck.IPtrg.copyBytes();
-    }
-
-    public int compare(userPacketSeq o1, userPacketSeq o2) {
-        int i = o1.src.compare(o1.src, o2.src);
-        if (i != 0) {
-            return i;
-        }
-        return o1.trg.compare(o1.trg, o2.trg);
     }
 
 }

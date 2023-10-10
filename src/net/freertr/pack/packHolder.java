@@ -1,5 +1,7 @@
 package net.freertr.pack;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
@@ -1100,7 +1102,9 @@ public class packHolder {
      * @param tim time
      * @return string representing packet in K12
      */
-    public String convertToK12(long tim) {
+    public List<String> convertToK12(long tim) {
+        List<String> res = new ArrayList<String>();
+        res.add("+---------+---------------+----------+");
         String a = " " + dump() + " ";
         a = a.replaceAll(" ", "|");
         String b = "X" + a;
@@ -1109,7 +1113,10 @@ public class packHolder {
             a = a.replaceAll("\\|\\|", "|");
         }
         b = bits.time2str(null, tim, 2) + "," + bits.padBeg((tim % 1000) + "", 3, "0") + ",000";
-        return "+---------+---------------+----------+\n" + b + "   ETHER\n" + "|0   " + a + "\n\n";
+        res.add(b + "   ETHER");
+        res.add("|0   " + a);
+        res.add("");
+        return res;
     }
 
     /**

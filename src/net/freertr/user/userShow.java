@@ -103,6 +103,8 @@ import net.freertr.serv.servStreamingMdt;
 import net.freertr.serv.servVxlan;
 import net.freertr.enc.enc7bit;
 import net.freertr.enc.encUrl;
+import net.freertr.ip.ipCor4;
+import net.freertr.ip.ipCor6;
 import net.freertr.pack.packRedundancy;
 import net.freertr.rtr.rtrBgpDump;
 import net.freertr.serv.servNrpe;
@@ -123,6 +125,7 @@ import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabSession;
+import net.freertr.tab.tabSessionEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -660,9 +663,13 @@ public class userShow {
                 List<packHolder> pcks = rtrBgpDump.logs2pcks(txt);
                 int o = pcks.size();
                 cmd.error(o + " dumps found");
+                ipCor4 ic4 = new ipCor4();
+                ipCor6 ic6 = new ipCor6();
+                packHolder tmp = new packHolder(true, true);
+                tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
                 for (int i = 0; i < o; i++) {
                     packHolder pck = pcks.get(i);
-                    txt = rtrBgpDump.dumpPacket(pck);
+                    txt = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
                     txt.add("");
                     rdr.putStrArr(txt);
                 }
@@ -4357,22 +4364,13 @@ public class userShow {
                 cmd.error("no such prefix");
                 return;
             }
-            ntry = ntry.copyBytes(tabRoute.addType.better);
-            if (ntry.best.nextHop == null) {
-                ntry.best.nextHop = new addrIP();
-                if (r.bgp.fwdCore.ipVersion == 4) {
-                    ntry.best.nextHop.fromIPv4addr(new addrIPv4());
-                } else {
-                    ntry.best.nextHop.fromIPv6addr(new addrIPv6());
-                }
-            }
             packHolder pck = new packHolder(true, true);
-            List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-            lst.add(ntry);
-            rtrBgpUtil.createReachable(null, pck, new packHolder(true, true), sfi, false, true, true, lst);
-            rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
-            List<String> l = new ArrayList<String>();
-            enc7bit.buf2hex(l, pck.getCopy(), 0);
+            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, true);
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
+            packHolder tmp = new packHolder(true, true);
+            List<String> l = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;
         }
@@ -4399,22 +4397,13 @@ public class userShow {
                 cmd.error("no such prefix");
                 return;
             }
-            ntry = ntry.copyBytes(tabRoute.addType.better);
-            if (ntry.best.nextHop == null) {
-                ntry.best.nextHop = new addrIP();
-                if (r.bgp.fwdCore.ipVersion == 4) {
-                    ntry.best.nextHop.fromIPv4addr(new addrIPv4());
-                } else {
-                    ntry.best.nextHop.fromIPv6addr(new addrIPv6());
-                }
-            }
             packHolder pck = new packHolder(true, true);
-            List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-            lst.add(ntry);
-            rtrBgpUtil.createWithdraw(null, pck, new packHolder(true, true), sfi, false, lst);
-            rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
-            List<String> l = new ArrayList<String>();
-            enc7bit.buf2hex(l, pck.getCopy(), 0);
+            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, false);
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
+            packHolder tmp = new packHolder(true, true);
+            List<String> l = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;
         }

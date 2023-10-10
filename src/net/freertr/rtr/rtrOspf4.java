@@ -965,7 +965,7 @@ public class rtrOspf4 extends ipRtr {
             packHolder pck = new packHolder(true, true);
             pck.putSkip(ntry.writeData(pck, 0, true));
             pck.merge2beg();
-            enc7bit.buf2hex(l, pck.getCopy(), 0);
+            enc7bit.buf2hex(l, pck.getCopy(), 0, "");
             rtrOspfDump.dump4lsa(l, pck, ntry);
         }
         return l;
