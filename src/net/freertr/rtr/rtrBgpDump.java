@@ -2,9 +2,12 @@ package net.freertr.rtr;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.addr.addrIP;
+import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.enc.enc7bit;
 import net.freertr.pack.packHolder;
+import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -228,7 +231,49 @@ public class rtrBgpDump {
             return res;
         }
         pck.getSkip(rtrBgpUtil.sizeU);
-        res.add("len=" + pck.IPsiz + " typ=" + pck.IPprt + ", " + rtrBgpUtil.msgType2string(pck.IPprt));
+        packHolder hlp = new packHolder(true, true);
+        res.add("len=" + pck.IPsiz + " typ=" + pck.IPprt + " " + rtrBgpUtil.msgType2string(pck.IPprt));
+        int prt = pck.msbGetW(0);
+        pck.getSkip(2);
+        res.add("withdraw len=" + prt);
+        prt = pck.dataSize() - prt;
+        tabRouteEntry<addrIP> ntry;
+        for (;;) {
+            if (pck.dataSize() <= prt) {
+                break;
+            }
+            ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            if (res == null) {
+                continue;
+            }
+            res.add("withdrawn " + addrPrefix.ip2str(ntry.prefix));
+        }
+        pck.setBytesLeft(prt);
+        prt = pck.msbGetW(0);
+        pck.getSkip(2);
+        prt = pck.dataSize() - prt;
+        res.add("attrib len=" + prt);
+        ntry = new tabRouteEntry<addrIP>();
+        for (;;) {
+            if (pck.dataSize() <= prt) {
+                break;
+            }
+            rtrBgpUtil.parseAttrib(pck, hlp);
+            res.add("  attrib typ " + hlp.ETHtype + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
+            res.add("   " + bits.byteDump(hlp.getCopy(), 0, -1));
+            rtrBgpUtil.interpretAttribute(null, ntry, hlp);
+        }
+        res.add("reachable len=" + pck.dataSize());
+        for (;;) {
+            if (pck.dataSize() < 1) {
+                break;
+            }
+            ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            if (res == null) {
+                continue;
+            }
+            res.add("  reachable " + addrPrefix.ip2str(ntry.prefix));
+        }
         //////////////////
         return res;
     }
