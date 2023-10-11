@@ -2,7 +2,7 @@ package net.freertr.sec;
 
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.ip.ipFwd;
-import net.freertr.ip.ipRtr;
+import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFormat;
 
 /**
@@ -42,12 +42,22 @@ public class secInfoCfg {
     /**
      * resolve ipv4 prefixes
      */
-    public ipRtr router4;
+    public tabRouteAttr.routeType router4typ;
 
     /**
      * resolve ipv6 prefixes
      */
-    public ipRtr router6;
+    public tabRouteAttr.routeType router6typ;
+
+    /**
+     * resolve ipv4 prefixes
+     */
+    public int router4num;
+
+    /**
+     * resolve ipv6 prefixes
+     */
+    public int router6num;
 
     /**
      * ipv4 resolver vrf

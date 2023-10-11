@@ -156,47 +156,27 @@ public class secInfoUtl {
         }
         if (s.equals("router4")) {
             if (negated) {
-                cfg.router4 = null;
+                cfg.router4typ = null;
+                cfg.router4num = 0;
                 cfg.fwder4 = null;
                 doSanityChecks(cfg);
                 return cfg;
             }
-            tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
-            int i = bits.str2num(cmd.word());
-            cfgRtr rtr = cfgAll.rtrFind(o, i, false);
-            if (rtr == null) {
-                cmd.error("no such router process");
-                return cfg;
-            }
-            if (rtr.fwd == null) {
-                cmd.error("router have no vrf");
-                return cfg;
-            }
-            cfg.router4 = rtr.getRouter();
-            cfg.fwder4 = rtr.fwd;
+            cfg.router4typ = cfgRtr.name2num(cmd.word());
+            cfg.router4num = bits.str2num(cmd.word());
             doSanityChecks(cfg);
             return cfg;
         }
         if (s.equals("router6")) {
             if (negated) {
-                cfg.router6 = null;
+                cfg.router6typ = null;
+                cfg.router6num = 0;
                 cfg.fwder6 = null;
                 doSanityChecks(cfg);
                 return cfg;
             }
-            tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
-            int i = bits.str2num(cmd.word());
-            cfgRtr rtr = cfgAll.rtrFind(o, i, false);
-            if (rtr == null) {
-                cmd.error("no such router process");
-                return cfg;
-            }
-            if (rtr.fwd == null) {
-                cmd.error("router have no vrf");
-                return cfg;
-            }
-            cfg.router6 = rtr.getRouter();
-            cfg.fwder6 = rtr.fwd;
+            cfg.router6typ = cfgRtr.name2num(cmd.word());
+            cfg.router6num = bits.str2num(cmd.word());
             doSanityChecks(cfg);
             return cfg;
         }
@@ -238,19 +218,30 @@ public class secInfoUtl {
      * find one router
      *
      * @param adr address to check
-     * @param rtr4 ipv4 candidate
-     * @param rtr6 ipv6 candidate
+     * @param rtr4 ipv4t candidate
+     * @param rtr6 ipv6t candidate
+     * @param rtr4 ipv4n candidate
+     * @param rtr6 ipv6n candidate
      * @return proper one, null if nothing
      */
-    public final static ipRtr findOneRtr(addrIP adr, ipRtr rtr4, ipRtr rtr6) {
+    public final static cfgRtr findOneRtr(addrIP adr, tabRouteAttr.routeType rtr4t, tabRouteAttr.routeType rtr6t, int rtr4n, int rtr6n) {
         if (adr == null) {
             return null;
         }
+        tabRouteAttr.routeType rt;
+        int rn;
         if (adr.isIPv4()) {
-            return rtr4;
+            rt = rtr4t;
+            rn = rtr4n;
         } else {
-            return rtr6;
+            rt = rtr6t;
+            rn = rtr6n;
         }
+        cfgRtr rtr = cfgAll.rtrFind(rt, rn, false);
+        if (rtr == null) {
+            return null;
+        }
+        return rtr;
     }
 
     /**
@@ -385,11 +376,11 @@ public class secInfoUtl {
         if (cfg.pmtudTim > 1) {
             lst.add(beg + "pmtud " + cfg.pmtudMin + " " + cfg.pmtudMax + " " + cfg.pmtudTim);
         }
-        if (cfg.router4 != null) {
-            lst.add(beg + "router4 " + cfg.router4.routerGetName());
+        if (cfg.router4typ != null) {
+            lst.add(beg + "router4 " + cfgRtr.num2name(cfg.router4typ) + " " + cfg.router4num);
         }
-        if (cfg.router6 != null) {
-            lst.add(beg + "router6 " + cfg.router6.routerGetName());
+        if (cfg.router6typ != null) {
+            lst.add(beg + "router6 " + cfgRtr.num2name(cfg.router6typ) + " " + cfg.router6num);
         }
         if (cfg.details) {
             lst.add(beg + "details");
@@ -512,15 +503,17 @@ public class secInfoUtl {
             cfg.pmtudTim = 0;
             chg++;
         }
-        if (cfg.router4 == null) {
+        if (cfg.router4typ == null) {
+            cfg.router4num = 0;
             cfg.fwder4 = null;
             chg++;
         }
-        if (cfg.router6 == null) {
+        if (cfg.router6typ == null) {
+            cfg.router6num = 0;
             cfg.fwder6 = null;
             chg++;
         }
-        if ((cfg.router4 != null) && (cfg.router6 == null)) {
+        if ((cfg.router4typ != null) || (cfg.router6typ != null)) {
             cfg.rd = 0;
             chg++;
         }

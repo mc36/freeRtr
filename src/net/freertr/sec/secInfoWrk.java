@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgRtr;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntPmtud;
 import net.freertr.enc.enc7bit;
@@ -117,7 +118,7 @@ public class secInfoWrk implements Runnable {
     /**
      * router selected
      */
-    protected ipRtr rtr = null;
+    protected cfgRtr rtrCfg = null;
 
     /**
      * forwarder selected
@@ -192,7 +193,7 @@ public class secInfoWrk implements Runnable {
         if (resolved != null) {
             s += " dns=" + resolved;
         }
-        s += secInfoUtl.getRoute1liner(fwd, rtr, ntry);
+        s += secInfoUtl.getRoute1liner(fwd, rtrCfg.getRouter(), ntry);
         if (!hack) {
             return s;
         }
@@ -264,8 +265,14 @@ public class secInfoWrk implements Runnable {
     protected void doFindRoute() {
         try {
             fwd = secInfoUtl.findOneFwd(addr, config.fwder4, config.fwder6);
-            rtr = secInfoUtl.findOneRtr(addr, config.router4, config.router6);
-            ntry = secInfoUtl.findOneRoute(addr, rtr, fwd);
+            rtrCfg = secInfoUtl.findOneRtr(addr, config.router4typ, config.router6typ, config.router4num, config.router6num);
+            if (rtrCfg == null) {
+                return;
+            }
+            if (fwd == null) {
+                fwd = rtrCfg.fwd;
+            }
+            ntry = secInfoUtl.findOneRoute(addr, rtrCfg.getRouter(), fwd);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }

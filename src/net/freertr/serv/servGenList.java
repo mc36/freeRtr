@@ -234,9 +234,9 @@ public class servGenList<T extends servGeneric> {
         l.add(null, p + "  " + (p + 1) + "    lpd                          lpd server" + e);
         l.add(cfgAll.dmnLpd.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    honeypot                     honeypot server" + e);
-        l.add(cfgAll.dmnWhois.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
-        l.add(null, p + "  " + (p + 1) + "    whois                        whois server" + e);
         l.add(cfgAll.dmnHoney.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
+        l.add(null, p + "  " + (p + 1) + "    whois                        whois server" + e);
+        l.add(cfgAll.dmnWhois.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    pop3                         pop3 server" + e);
         l.add(cfgAll.dmnPop3.listServers(), (p + 1) + "  .        <name:loc>                 name of server");
         l.add(null, p + "  " + (p + 1) + "    imap4                        imap4 server" + e);
