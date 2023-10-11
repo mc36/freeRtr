@@ -1177,6 +1177,10 @@ server honeypot hp2
  vrf v1
  exit
 !
+server whois as
+ vrf v1
+ exit
+!
 server sip lab
  protocol ipv4 ipv6 tcp udp
  interface loopback0
@@ -1203,7 +1207,7 @@ client domain-name mchome.nop.hu
 client domain-lookup
 client prefer-ipv6
 client password-stars
-client whois-server whois.ripe.net
+client whois-server www.mchome.nop.hu
 client whois-online http://bgp.he.net/AS http://ipinfo.io/AS
 client pastebin http://paste.nop.hu/paster.class?data=
 client name-server 10.10.10.10

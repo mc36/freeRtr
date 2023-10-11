@@ -92,6 +92,7 @@ import net.freertr.serv.servUpnpFwd;
 import net.freertr.serv.servUpnpHub;
 import net.freertr.serv.servVoice;
 import net.freertr.serv.servVxlan;
+import net.freertr.serv.servWhois;
 import net.freertr.serv.servXotPad;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabNshEntry;
@@ -451,6 +452,11 @@ public class cfgAll {
      * honeypot daemons
      */
     public final static servGenList<servHoneyPot> dmnHoney = new servGenList<servHoneyPot>();
+
+    /**
+     * whois daemons
+     */
+    public final static servGenList<servWhois> dmnWhois = new servGenList<servWhois>();
 
     /**
      * dhcp4 daemons
@@ -3973,6 +3979,7 @@ public class cfgAll {
         dmnDns.getShRun(l, filter);
         dmnLpd.getShRun(l, filter);
         dmnHoney.getShRun(l, filter);
+        dmnWhois.getShRun(l, filter);
         dmnPop3.getShRun(l, filter);
         dmnImap4.getShRun(l, filter);
         dmnSmtp.getShRun(l, filter);
