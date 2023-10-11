@@ -341,15 +341,15 @@ public class rtrBgpDump {
         }
         pck.setBytesLeft(prt);
         prt = pck.msbGetW(0);
+        res.add("attrib len=" + prt);
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
-        res.add("attrib len=" + prt);
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
             }
             rtrBgpUtil.parseAttrib(pck, hlp);
-            res.add("  attrib typ " + hlp.ETHtype + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
+            res.add("  attrib typ=" + hlp.ETHtype + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
             enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
             ntry = new tabRouteEntry<addrIP>();
             List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp);
@@ -362,12 +362,12 @@ public class rtrBgpDump {
                     continue;
                 }
                 String a;
-                try {
-                    a = addrPrefix.ip2str((addrPrefix<addrIP>) rou.prefix);
-                } catch (Exception e) {
+                if (rou.prefix == null) {
                     a = "" + rou;
+                } else {
+                    a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
                 }
-                res.add("    prefix=" + a + " " + tabRouteUtil.rd2string(rou.rouDst));
+                res.add("    prefix=" + a);
             }
         }
         res.add("reachable len=" + pck.dataSize());
