@@ -29,6 +29,8 @@ public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
 
     /**
      * create instance
+     *
+     * @param aspath
      */
     public rtrBgpFlapath(String a) {
         path = a;

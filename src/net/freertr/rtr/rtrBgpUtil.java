@@ -2133,7 +2133,7 @@ public class rtrBgpUtil {
     /**
      * parse aggregator attribute
      *
-     * @param longAs long as support
+     * @param spkr where to signal
      * @param ntry table entry
      * @param pck packet to parse
      */
@@ -2416,6 +2416,7 @@ public class rtrBgpUtil {
      *
      * @param spkr where to signal
      * @param pck packet to parse
+     * @return prefixed touched
      */
     public static List<tabRouteEntry<addrIP>> parseReachable(rtrBgpSpeak spkr, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
@@ -2500,6 +2501,7 @@ public class rtrBgpUtil {
      *
      * @param spkr where to signal
      * @param pck packet to parse
+     * @return prefixed touched
      */
     public static List<tabRouteEntry<addrIP>> parseUnReach(rtrBgpSpeak spkr, packHolder pck) {
         pck.merge2beg();
@@ -2688,6 +2690,7 @@ public class rtrBgpUtil {
      * @param spkr where to signal
      * @param ntry table entry
      * @param pck packet to parse
+     * @return prefixed touched
      */
     public static List<tabRouteEntry<addrIP>> interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
         if (spkr != null) {
