@@ -2567,7 +2567,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param prf prefix
      * @param pth path
      */
-    protected void prefixFlapped(int afi, long rd, addrPrefix<addrIP> prf, String pth) {
+    protected void prefixFlapped(int afi, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
+        if (pth == null) {
+            pth = new ArrayList<Integer>();
+        }
         rtrBgpFlapStat ntry = new rtrBgpFlapStat(afi, rd, prf);
         rtrBgpFlapStat old = flaps.add(ntry);
         if (old != null) {
@@ -2575,8 +2578,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         ntry.count++;
         ntry.last = bits.getTime();
-        rtrBgpFlapStr pe = new rtrBgpFlapStr(pth);
-        rtrBgpFlapStr op = ntry.paths.add(pe);
+        rtrBgpFlapLst pe = new rtrBgpFlapLst(pth);
+        rtrBgpFlapLst op = ntry.paths.add(pe);
         if (op != null) {
             pe = op;
         }
@@ -4288,7 +4291,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         userFormat res = new userFormat("|", "path|nexthops");
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapStat ntry = lst.get(i);
-            if (!mtch.matches(ntry.paths.size())) {
+            if (!mtch.matches(ntry.infos.size())) {
                 continue;
             }
             res.add("" + ntry.toIncons());
@@ -4314,7 +4317,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         userFormat res = new userFormat("|", "path|ases");
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapStat ntry = lst.get(i);
-            if (!mtch.matches(ntry.paths.size())) {
+            if (!mtch.matches(ntry.infos.size())) {
                 continue;
             }
             res.add("" + ntry.toIncons());

@@ -3710,7 +3710,7 @@ public class rtrBgpUtil {
                 a = a.substring(o + 1, a.length());
             }
             rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
-            ntry.paths.add(pth);
+            ntry.infos.add(pth);
         }
     }
 
@@ -3741,7 +3741,7 @@ public class rtrBgpUtil {
             }
             String a = "" + prf.best.nextHop;
             rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
-            ntry.paths.add(pth);
+            ntry.infos.add(pth);
         }
     }
 

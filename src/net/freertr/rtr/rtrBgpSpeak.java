@@ -652,13 +652,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * addpath list sent by the peer
      */
     public int originalAddTlist;
-
+    
     private packHolder pckRx = new packHolder(true, true);
-
+    
     private packHolder pckRh = new packHolder(true, true);
-
+    
     private packHolder pckTx = new packHolder(true, true);
-
+    
     private packHolder pckTh = new packHolder(true, true);
 
     /**
@@ -685,7 +685,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         new Thread(this).start();
     }
-
+    
     private boolean afiMsk(int val, int safi) {
         if (safi == parent.afiUni) {
             return (val & rtrBgpParam.mskUni) != 0;
@@ -1188,7 +1188,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         return pipe.ready2rx();
     }
-
+    
     public void run() {
         try {
             doWork();
@@ -1197,7 +1197,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         closeNow();
     }
-
+    
     private void doWork() {
         if (debugger.rtrBgpEvnt) {
             logger.debug("starting neighbor " + neigh.peerAddr);
@@ -1739,7 +1739,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         packHolder pck = new packHolder(true, true);
         packSend(pck, rtrBgpUtil.msgKeepLiv);
     }
-
+    
     private byte[] encodeHostname(String s) {
         byte[] buf;
         if (s == null) {
@@ -1893,7 +1893,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pck.merge2beg();
         packSend(pck, rtrBgpUtil.msgOpen);
     }
-
+    
     private int parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Integer> msk) {
         int res = 0;
         for (int i = 0; i < tlv.valSiz; i += 4) {
@@ -2224,7 +2224,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         sendDynCapaMsg(init, true, add, dynCapaTx, pck);
         renegotiatingSafi(msk, safi, add, true);
     }
-
+    
     private void sendDynCapaMsg(boolean init, boolean ack, boolean add, int seq, packHolder pck) {
         pck.merge2beg();
         int i = 0;
@@ -2245,14 +2245,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             logger.debug("sent dynamic capability to peer " + neigh.peerAddr + " init=" + init + " ack=" + ack + " add=" + add + " seq=" + seq);
         }
     }
-
+    
     private static void clearOneTable(tabRoute<addrIP> tab) {
         if (tab == null) {
             return;
         }
         tab.clear();
     }
-
+    
     private void renegotiatingSafi(int msk, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
         clearOneTable(getLearned(safi));
@@ -2606,10 +2606,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         return false;
     }
-
+    
     private void addAttribedOne(tabRouteEntry<addrIP> cur, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (parent.flaps != null) {
-            parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathStr());
+            parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathInts(-1));
         }
         if (neigh.dampenPfxs != null) {
             neigh.prefixDampen(safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
@@ -2639,7 +2639,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currChg++;
         changed.add(tabRoute.addType.always, cur, false, false);
     }
-
+    
     private void addAttribedTab(List<tabRouteEntry<addrIP>> currAdd, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (!afiMsk(peerAfis, safi)) {
             return;
@@ -2670,7 +2670,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             addAttribedOne(pref, addpath, learned, changed, safi, roumap, roupol, prflst);
         }
     }
-
+    
     private void doPrefAdd(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {
         ntry.best.time = bits.getTime();
         if (!addpath) {
@@ -2692,7 +2692,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         old.selectBest();
         tab.add(tabRoute.addType.always, old, false, false);
     }
-
+    
     private boolean doPrefDel(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {
         if (!addpath) {
             return tab.del(ntry);
@@ -2736,7 +2736,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (parent.flaps != null) {
-            parent.prefixFlapped(safi, ntry.rouDst, ntry.prefix, "gone");
+            parent.prefixFlapped(safi, ntry.rouDst, ntry.prefix, null);
         }
         if (neigh.dampenPfxs != null) {
             neigh.prefixDampen(safi, ntry.rouDst, ntry.prefix, neigh.dampenWthd);
@@ -2878,7 +2878,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         trg.add(ntry);
     }
-
+    
     private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int safi) {
         if (debugger.rtrBgpTraf) {
             logger.debug("processing " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix);
@@ -3043,5 +3043,5 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         return false;
     }
-
+    
 }

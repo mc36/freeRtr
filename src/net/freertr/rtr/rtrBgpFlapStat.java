@@ -56,7 +56,12 @@ public class rtrBgpFlapStat implements Comparator<rtrBgpFlapStat> {
     /**
      * paths seen
      */
-    public tabGen<rtrBgpFlapStr> paths = new tabGen<rtrBgpFlapStr>();
+    public tabGen<rtrBgpFlapLst> paths = new tabGen<rtrBgpFlapLst>();
+
+    /**
+     * paths seen
+     */
+    public tabGen<rtrBgpFlapStr> infos = new tabGen<rtrBgpFlapStr>();
 
     public int compare(rtrBgpFlapStat o1, rtrBgpFlapStat o2) {
         if (o1.afi < o2.afi) {
@@ -89,23 +94,11 @@ public class rtrBgpFlapStat implements Comparator<rtrBgpFlapStat> {
      * @return paths
      */
     public String toIncons() {
-        return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + getPaths();
-    }
-
-    /**
-     * get all the paths
-     *
-     * @return paths
-     */
-    public String getPaths() {
-        if (paths.size() < 1) {
-            return "";
-        }
         String s = "";
-        for (int i = 0; i < paths.size(); i++) {
-            s += " " + paths.get(i).path;
+        for (int i = 0; i < infos.size(); i++) {
+            s += " " + infos.get(i).info;
         }
-        return s.substring(1, s.length());
+        return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + s.trim();
     }
 
 }

@@ -1791,10 +1791,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @param pnlt penalty
      */
     protected void prefixDampen(int afi, long rd, addrPrefix<addrIP> prf, int pnlt) {
-        rtrBgpDamp ntry = new rtrBgpDamp();
-        ntry.afi = afi;
-        ntry.rd = rd;
-        ntry.prefix = prf.copyBytes();
+        rtrBgpDamp ntry = new rtrBgpDamp(afi, rd, prf);
         rtrBgpDamp old = dampenPfxs.add(ntry);
         if (old != null) {
             ntry = old;

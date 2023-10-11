@@ -15,25 +15,19 @@ import net.freertr.util.bits;
 public class rtrBgpDamp implements Comparator<rtrBgpDamp> {
 
     /**
-     * create instance
-     */
-    public rtrBgpDamp() {
-    }
-
-    /**
      * address family
      */
-    public int afi;
+    public final int afi;
 
     /**
      * route distinguisher
      */
-    public long rd;
+    public final long rd;
 
     /**
      * prefix
      */
-    public addrPrefix<addrIP> prefix;
+    public final addrPrefix<addrIP> prefix;
 
     /**
      * penalty
@@ -49,6 +43,19 @@ public class rtrBgpDamp implements Comparator<rtrBgpDamp> {
      * last
      */
     public long last;
+
+    /**
+     * create instance
+     *
+     * @param a afi
+     * @param r rd
+     * @param p prefix
+     */
+    public rtrBgpDamp(int a, long r, addrPrefix<addrIP> p) {
+        afi = a;
+        rd = r;
+        prefix = p.copyBytes();
+    }
 
     public int compare(rtrBgpDamp o1, rtrBgpDamp o2) {
         if (o1.afi < o2.afi) {
