@@ -15208,3 +15208,5 @@ todo: honeypot to wireformat, decode
 todo: allow some packages to be redownloaded after a certain time expired
 ---------------------------------- 2023-10-11 10:00:49 23.10.11
 todo: server whois to be cache
+---------------------------------- 2023-10-11 13:46:54 23.10.11
+no todo: server whois to be cache

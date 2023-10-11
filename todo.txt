@@ -20,8 +20,6 @@ bmp server to listeners, bmp, ris and bgp
 
 server bgprsrr
 
-server whois to be cache
-
 game hanoi
 
 server http to have api for scripts
