@@ -15206,3 +15206,5 @@ todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist
 todo: honeypot to wireformat, decode
 ---------------------------------- 2023-10-09 17:27:46 23.10.9
 todo: allow some packages to be redownloaded after a certain time expired
+---------------------------------- 2023-10-11 10:00:49 23.10.11
+todo: server whois to be cache

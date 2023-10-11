@@ -17,6 +17,7 @@ import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.tab.tabSessionEntry;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -343,7 +344,6 @@ public class rtrBgpDump {
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
         res.add("attrib len=" + prt);
-        rtrBgpSpeak spkr = new rtrBgpSpeak(null, null, null);
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
@@ -352,16 +352,23 @@ public class rtrBgpDump {
             res.add("  attrib typ " + hlp.ETHtype + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
             enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
             ntry = new tabRouteEntry<addrIP>();
-            rtrBgpUtil.interpretAttribute(spkr, ntry, hlp);
-            switch (hlp.ETHtype) {
-                case rtrBgpUtil.attrUnReach:
-                    break;
-                case rtrBgpUtil.attrReachable:
-                    break;
-                default:
-                    break;
+            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp);
+            if (pfxs == null) {
+                pfxs = new ArrayList<tabRouteEntry<addrIP>>();
             }
-            /////
+            for (int i = 0; i < pfxs.size(); i++) {
+                tabRouteEntry<addrIP> rou = pfxs.get(i);
+                if (rou == null) {
+                    continue;
+                }
+                String a;
+                try {
+                    a = addrPrefix.ip2str((addrPrefix<addrIP>) rou.prefix);
+                } catch (Exception e) {
+                    a = "" + rou;
+                }
+                res.add("    prefix=" + a + " " + tabRouteUtil.rd2string(rou.rouDst));
+            }
         }
         res.add("reachable len=" + pck.dataSize());
         for (;;) {
