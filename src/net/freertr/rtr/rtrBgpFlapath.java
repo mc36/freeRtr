@@ -13,15 +13,9 @@ import net.freertr.util.cmds;
 public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
 
     /**
-     * create instance
-     */
-    public rtrBgpFlapath() {
-    }
-
-    /**
      * path
      */
-    public String path;
+    public final String path;
 
     /**
      * counter
@@ -32,6 +26,13 @@ public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
      * last
      */
     public long last;
+
+    /**
+     * create instance
+     */
+    public rtrBgpFlapath(String a) {
+        path = a;
+    }
 
     public int compare(rtrBgpFlapath o1, rtrBgpFlapath o2) {
         return o1.path.compareTo(o2.path);

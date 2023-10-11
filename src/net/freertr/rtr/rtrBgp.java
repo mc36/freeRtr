@@ -17,6 +17,7 @@ import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntWhois;
 import net.freertr.ifc.ifcDot1ah;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -2548,16 +2549,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 attr.validity = 2;
                 continue;
             }
-            if (attr.pathSeq == null) {
-                attr.validity = 3;
-                continue;
-            }
-            int i = attr.pathSeq.size();
-            if (i < 1) {
-                attr.validity = 3;
-                continue;
-            }
-            if (attr.pathSeq.get(i - 1) != res.best.rouSrc) {
+            int i = attr.asPathEnd();
+            if (i != res.best.rouSrc) {
                 attr.validity = 3;
                 continue;
             }
@@ -2585,8 +2578,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         ntry.count++;
         ntry.last = bits.getTime();
-        rtrBgpFlapath pe = new rtrBgpFlapath();
-        pe.path = pth;
+        rtrBgpFlapath pe = new rtrBgpFlapath(pth);
         rtrBgpFlapath op = ntry.paths.add(pe);
         if (op != null) {
             pe = op;
@@ -4155,25 +4147,23 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsOrigin(int safi) {
-        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        tabGen<rtrBgpFlapasn> lst = new tabGen<rtrBgpFlapasn>();
         tabRoute<addrIP> rou = getDatabase(safi);
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (ntry.best.pathSeq == null) {
-                continue;
+            int o = ntry.best.asPathEnd();
+            if (o == -1) {
+                o = localAs;
             }
-            if (ntry.best.pathSeq.size() < 1) {
-                continue;
-            }
-            getAsOrigin(lst, ntry.best.pathSeq.get(ntry.best.pathSeq.size() - 1));
+            rtrBgpUtil.updateAsOrigin(lst, o);
         }
-        userFormat res = new userFormat("|", "as|nets");
+        userFormat res = new userFormat("|", "asnum|nets|asnam|asinfo");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapath ntry = lst.get(i);
-            res.add(ntry.path + "|" + ntry.count);
+            rtrBgpFlapasn ntry = lst.get(i);
+            res.add("" + ntry);
         }
         return res;
     }
@@ -4185,7 +4175,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsTransit(int safi) {
-        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        tabGen<rtrBgpFlapasn> lst = new tabGen<rtrBgpFlapasn>();
         tabRoute<addrIP> rou = getDatabase(safi);
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);
@@ -4195,27 +4185,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry.best.pathSeq == null) {
                 continue;
             }
-            for (int o = 0; o < (ntry.best.pathSeq.size() - 1); o++) {
-                getAsOrigin(lst, ntry.best.pathSeq.get(o));
+            ntry.best.asPathBeg();
+            List<Integer> res = ntry.best.asPathInts(localAs);
+            rtrBgpUtil.updateAsOrigin(lst, localAs);
+            for (int o = 0; o < res.size(); o++) {
+                rtrBgpUtil.updateAsOrigin(lst, res.get(o));
             }
         }
-        userFormat res = new userFormat("|", "as|nets");
+        userFormat res = new userFormat("|", "asnum|nets|asnam|asinfo");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapath ntry = lst.get(i);
-            res.add(ntry.path + "|" + ntry.count);
+            rtrBgpFlapasn ntry = lst.get(i);
+            res.add("" + ntry);
         }
         return res;
-    }
-
-    private void getAsOrigin(tabGen<rtrBgpFlapath> lst, int as) {
-        rtrBgpFlapath res = new rtrBgpFlapath();
-        res.path = bits.num2str(as);
-        res.count = 1;
-        rtrBgpFlapath old = lst.add(res);
-        if (old == null) {
-            return;
-        }
-        old.count++;
     }
 
     /**
@@ -4273,8 +4255,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (a.length() < 1) {
                     break;
                 }
-                rtrBgpFlapath ntry = new rtrBgpFlapath();
-                ntry.path = prv + " -- " + a;
+                rtrBgpFlapath ntry = new rtrBgpFlapath(prv + " -- " + a);
                 rtrBgpFlapath old = lst.add(ntry);
                 if (old != null) {
                     ntry = old;
@@ -4378,8 +4359,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ntry = old;
             }
             String a = "" + prf.best.nextHop;
-            rtrBgpFlapath pth = new rtrBgpFlapath();
-            pth.path = a;
+            rtrBgpFlapath pth = new rtrBgpFlapath(a);
             ntry.paths.add(pth);
         }
     }
@@ -4435,8 +4415,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (o >= 0) {
                 a = a.substring(o + 1, a.length());
             }
-            rtrBgpFlapath pth = new rtrBgpFlapath();
-            pth.path = a;
+            rtrBgpFlapath pth = new rtrBgpFlapath(a);
             ntry.paths.add(pth);
         }
     }

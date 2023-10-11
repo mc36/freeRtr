@@ -3601,4 +3601,20 @@ public class rtrBgpUtil {
         }
     }
 
+    /**
+     * update as origin list
+     *
+     * @param lst list to update
+     * @param as asn
+     */
+    public static void updateAsOrigin(tabGen<rtrBgpFlapasn> lst, int as) {
+        rtrBgpFlapasn res = new rtrBgpFlapasn(as);
+        res.count = 1;
+        rtrBgpFlapasn old = lst.add(res);
+        if (old == null) {
+            return;
+        }
+        old.count++;
+    }
+
 }

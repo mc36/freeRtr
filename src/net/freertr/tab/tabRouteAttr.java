@@ -1297,6 +1297,34 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * get the as path integers
+     *
+     * @return string
+     */
+    public List<Integer> asPathInts(int beg) {
+        List<Integer> res = new ArrayList<Integer>();
+        if (beg != -1) {
+            res.add(beg);
+            appendIntList(res, confSeq);
+            appendIntList(res, confSet);
+            appendIntList(res, pathSeq);
+            appendIntList(res, pathSet);
+        }
+        return res;
+    }
+
+    private static void appendIntList(List<Integer> trg, List<Integer> src) {
+        if (src == null) {
+            return;
+        }
+        int p = src.size();
+        for (int i = 0; i < p; i++) {
+            Integer o = src.get(i);
+            trg.add(0 + o);
+        }
+    }
+
+    /**
      * get ignore help
      *
      * @param hl help to append

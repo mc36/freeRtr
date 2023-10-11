@@ -343,7 +343,7 @@ public class rtrBgpDump {
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
         res.add("attrib len=" + prt);
-        rtrBgpSpeak spkr = null;
+        rtrBgpSpeak spkr = new rtrBgpSpeak(null, null, null);
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
@@ -353,6 +353,15 @@ public class rtrBgpDump {
             enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
             ntry = new tabRouteEntry<addrIP>();
             rtrBgpUtil.interpretAttribute(spkr, ntry, hlp);
+            switch (hlp.ETHtype) {
+                case rtrBgpUtil.attrUnReach:
+                    break;
+                case rtrBgpUtil.attrReachable:
+                    break;
+                default:
+                    break;
+            }
+            /////
         }
         res.add("reachable len=" + pck.dataSize());
         for (;;) {
@@ -365,7 +374,6 @@ public class rtrBgpDump {
             }
             res.add("  reachable " + addrPrefix.ip2str(ntry.prefix));
         }
-        //////////////////
         return res;
     }
 
