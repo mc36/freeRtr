@@ -3679,4 +3679,70 @@ public class rtrBgpUtil {
         }
     }
 
+    /**
+     * update as graph
+     *
+     * @param lst asn list
+     * @param nei neighbor to read
+     * @param safi safi to use
+     */
+    public static void getAsIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, prf.rouDst, prf.prefix);
+            rtrBgpFlapStat old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            String a = prf.best.asPathStr();
+            int o = a.lastIndexOf(" ");
+            if (o >= 0) {
+                a = a.substring(o + 1, a.length());
+            }
+            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
+            ntry.paths.add(pth);
+        }
+    }
+
+    /**
+     * update as graph
+     *
+     * @param lst asn list
+     * @param nei neighbor to read
+     * @param safi safi to use
+     */
+    public static void getNhIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, prf.rouDst, prf.prefix);
+            rtrBgpFlapStat old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            String a = "" + prf.best.nextHop;
+            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
+            ntry.paths.add(pth);
+        }
+    }
+
 }

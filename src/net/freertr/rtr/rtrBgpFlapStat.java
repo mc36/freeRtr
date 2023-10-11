@@ -13,28 +13,35 @@ import net.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
+public class rtrBgpFlapStat implements Comparator<rtrBgpFlapStat> {
 
     /**
      * create instance
+     *
+     * @param a afi
+     * @param r rd
+     * @param p prefix
      */
-    public rtrBgpFlap() {
+    public rtrBgpFlapStat(int a, long r, addrPrefix<addrIP> p) {
+        afi = a;
+        rd = r;
+        prefix = p.copyBytes();
     }
 
     /**
      * address family
      */
-    public int afi;
+    public final int afi;
 
     /**
      * route distinguisher
      */
-    public long rd;
+    public final long rd;
 
     /**
      * prefix
      */
-    public addrPrefix<addrIP> prefix;
+    public final addrPrefix<addrIP> prefix;
 
     /**
      * counter
@@ -51,7 +58,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
      */
     public tabGen<rtrBgpFlapStr> paths = new tabGen<rtrBgpFlapStr>();
 
-    public int compare(rtrBgpFlap o1, rtrBgpFlap o2) {
+    public int compare(rtrBgpFlapStat o1, rtrBgpFlapStat o2) {
         if (o1.afi < o2.afi) {
             return -1;
         }
@@ -67,7 +74,12 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
         return o1.prefix.compare(o1.prefix, o2.prefix);
     }
 
-    public String toString() {
+    /**
+     * get flap statistics
+     *
+     * @return string
+     */
+    public String toFlaps() {
         return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + count + "|" + paths.size() + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 

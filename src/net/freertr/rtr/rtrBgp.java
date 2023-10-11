@@ -755,7 +755,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * flap statistics
      */
-    public tabGen<rtrBgpFlap> flaps;
+    public tabGen<rtrBgpFlapStat> flaps;
 
     /**
      * list of monitors
@@ -2568,11 +2568,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param pth path
      */
     protected void prefixFlapped(int afi, long rd, addrPrefix<addrIP> prf, String pth) {
-        rtrBgpFlap ntry = new rtrBgpFlap();
-        ntry.afi = afi;
-        ntry.rd = rd;
-        ntry.prefix = prf.copyBytes();
-        rtrBgpFlap old = flaps.add(ntry);
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(afi, rd, prf);
+        rtrBgpFlapStat old = flaps.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -3037,7 +3034,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (negated) {
                 flaps = null;
             } else {
-                flaps = new tabGen<rtrBgpFlap>();
+                flaps = new tabGen<rtrBgpFlapStat>();
             }
             return false;
         }
@@ -4097,7 +4094,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return l;
         }
         for (int i = 0; i < flaps.size(); i++) {
-            rtrBgpFlap ntry = flaps.get(i);
+            rtrBgpFlapStat ntry = flaps.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -4107,7 +4104,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry.count < num) {
                 continue;
             }
-            l.add(ntry + "");
+            l.add(ntry.toFlaps());
         }
         return l;
     }
@@ -4125,10 +4122,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flaps == null) {
             return null;
         }
-        rtrBgpFlap ntry = new rtrBgpFlap();
-        ntry.afi = afi;
-        ntry.rd = rd;
-        ntry.prefix = prf.copyBytes();
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(afi, rd, prf);
         ntry = flaps.find(ntry);
         if (ntry == null) {
             return null;
@@ -4284,48 +4278,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getNhIncons(int safi, tabIntMatcher mtch) {
-        tabGen<rtrBgpFlap> lst = new tabGen<rtrBgpFlap>();
+        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            getNhIncons(lst, neighs.get(i), safi);
+            rtrBgpUtil.getNhIncons(lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            getNhIncons(lst, lstnNei.get(i), safi);
+            rtrBgpUtil.getNhIncons(lst, lstnNei.get(i), safi);
         }
         userFormat res = new userFormat("|", "path|nexthops");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlap ntry = lst.get(i);
+            rtrBgpFlapStat ntry = lst.get(i);
             if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
             res.add("" + ntry.toIncons());
         }
         return res;
-    }
-
-    private void getNhIncons(tabGen<rtrBgpFlap> lst, rtrBgpNeigh nei, int safi) {
-        if (nei == null) {
-            return;
-        }
-        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
-        if (tab == null) {
-            return;
-        }
-        for (int i = 0; i < tab.size(); i++) {
-            tabRouteEntry<addrIP> prf = tab.get(i);
-            if (prf == null) {
-                continue;
-            }
-            rtrBgpFlap ntry = new rtrBgpFlap();
-            ntry.rd = prf.rouDst;
-            ntry.prefix = prf.prefix.copyBytes();
-            rtrBgpFlap old = lst.add(ntry);
-            if (old != null) {
-                ntry = old;
-            }
-            String a = "" + prf.best.nextHop;
-            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
-            ntry.paths.add(pth);
-        }
     }
 
     /**
@@ -4336,52 +4304,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsIncons(int safi, tabIntMatcher mtch) {
-        tabGen<rtrBgpFlap> lst = new tabGen<rtrBgpFlap>();
+        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            getAsIncons(lst, neighs.get(i), safi);
+            rtrBgpUtil.getAsIncons(lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            getAsIncons(lst, lstnNei.get(i), safi);
+            rtrBgpUtil.getAsIncons(lst, lstnNei.get(i), safi);
         }
         userFormat res = new userFormat("|", "path|ases");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlap ntry = lst.get(i);
+            rtrBgpFlapStat ntry = lst.get(i);
             if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
             res.add("" + ntry.toIncons());
         }
         return res;
-    }
-
-    private void getAsIncons(tabGen<rtrBgpFlap> lst, rtrBgpNeigh nei, int safi) {
-        if (nei == null) {
-            return;
-        }
-        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
-        if (tab == null) {
-            return;
-        }
-        for (int i = 0; i < tab.size(); i++) {
-            tabRouteEntry<addrIP> prf = tab.get(i);
-            if (prf == null) {
-                continue;
-            }
-            rtrBgpFlap ntry = new rtrBgpFlap();
-            ntry.rd = prf.rouDst;
-            ntry.prefix = prf.prefix.copyBytes();
-            rtrBgpFlap old = lst.add(ntry);
-            if (old != null) {
-                ntry = old;
-            }
-            String a = prf.best.asPathStr();
-            int o = a.lastIndexOf(" ");
-            if (o >= 0) {
-                a = a.substring(o + 1, a.length());
-            }
-            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
-            ntry.paths.add(pth);
-        }
     }
 
     /**
