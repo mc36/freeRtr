@@ -349,7 +349,7 @@ public class rtrBgpDump {
                 break;
             }
             rtrBgpUtil.parseAttrib(pck, hlp);
-            res.add("  attrib typ=" + hlp.ETHtype + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
+            res.add("  attrib typ=" + hlp.ETHtype + " len=" + hlp.dataSize() + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
             enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
             ntry = new tabRouteEntry<addrIP>();
             List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp);

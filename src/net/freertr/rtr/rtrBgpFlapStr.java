@@ -10,7 +10,7 @@ import net.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
+public class rtrBgpFlapStr implements Comparator<rtrBgpFlapStr> {
 
     /**
      * path
@@ -30,13 +30,13 @@ public class rtrBgpFlapath implements Comparator<rtrBgpFlapath> {
     /**
      * create instance
      *
-     * @param aspath
+     * @param a as path
      */
-    public rtrBgpFlapath(String a) {
+    public rtrBgpFlapStr(String a) {
         path = a;
     }
 
-    public int compare(rtrBgpFlapath o1, rtrBgpFlapath o2) {
+    public int compare(rtrBgpFlapStr o1, rtrBgpFlapStr o2) {
         return o1.path.compareTo(o2.path);
     }
 

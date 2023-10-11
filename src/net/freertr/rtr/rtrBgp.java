@@ -17,7 +17,6 @@ import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.clnt.clntWhois;
 import net.freertr.ifc.ifcDot1ah;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -2578,8 +2577,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         ntry.count++;
         ntry.last = bits.getTime();
-        rtrBgpFlapath pe = new rtrBgpFlapath(pth);
-        rtrBgpFlapath op = ntry.paths.add(pe);
+        rtrBgpFlapStr pe = new rtrBgpFlapStr(pth);
+        rtrBgpFlapStr op = ntry.paths.add(pe);
         if (op != null) {
             pe = op;
         }
@@ -4147,7 +4146,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsOrigin(int safi) {
-        tabGen<rtrBgpFlapasn> lst = new tabGen<rtrBgpFlapasn>();
+        tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         tabRoute<addrIP> rou = getDatabase(safi);
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);
@@ -4162,7 +4161,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat res = new userFormat("|", "asnum|nets|asnam|asinfo");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapasn ntry = lst.get(i);
+            rtrBgpFlapAsn ntry = lst.get(i);
             res.add("" + ntry);
         }
         return res;
@@ -4175,7 +4174,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsTransit(int safi) {
-        tabGen<rtrBgpFlapasn> lst = new tabGen<rtrBgpFlapasn>();
+        tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         tabRoute<addrIP> rou = getDatabase(safi);
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);
@@ -4188,13 +4187,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.best.asPathBeg();
             List<Integer> res = ntry.best.asPathInts(localAs);
             rtrBgpUtil.updateAsOrigin(lst, localAs);
-            for (int o = 0; o < res.size(); o++) {
+            int p = res.size() - 1;
+            for (int o = 0; o < p; o++) {
                 rtrBgpUtil.updateAsOrigin(lst, res.get(o));
             }
         }
-        userFormat res = new userFormat("|", "asnum|nets|asnam|asinfo");
+        userFormat res = new userFormat("|", "asnum|asnam|nets|asinfo");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapasn ntry = lst.get(i);
+            rtrBgpFlapAsn ntry = lst.get(i);
             res.add("" + ntry);
         }
         return res;
@@ -4207,7 +4207,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public List<String> getAsGraph(int safi) {
-        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        tabGen<rtrBgpFlapStr> lst = new tabGen<rtrBgpFlapStr>();
         for (int i = 0; i < neighs.size(); i++) {
             getAsGraph(lst, neighs.get(i), safi);
         }
@@ -4216,7 +4216,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapath ntry = lst.get(i);
+            rtrBgpFlapStr ntry = lst.get(i);
             if (o < ntry.count) {
                 o = ntry.count;
             }
@@ -4226,7 +4226,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         res.add(spfCalc.graphBeg1);
         res.add(spfCalc.graphBeg2);
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapath ntry = lst.get(i);
+            rtrBgpFlapStr ntry = lst.get(i);
             res.add(ntry.path + " [weight=" + (o - ntry.count) + "]");
         }
         res.add(spfCalc.graphEnd1);
@@ -4234,7 +4234,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return res;
     }
 
-    private void getAsGraph(tabGen<rtrBgpFlapath> lst, rtrBgpNeigh nei, int safi) {
+    private void getAsGraph(tabGen<rtrBgpFlapStr> lst, rtrBgpNeigh nei, int safi) {
         if (nei == null) {
             return;
         }
@@ -4255,8 +4255,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (a.length() < 1) {
                     break;
                 }
-                rtrBgpFlapath ntry = new rtrBgpFlapath(prv + " -- " + a);
-                rtrBgpFlapath old = lst.add(ntry);
+                rtrBgpFlapStr ntry = new rtrBgpFlapStr(prv + " -- " + a);
+                rtrBgpFlapStr old = lst.add(ntry);
                 if (old != null) {
                     ntry = old;
                 }
@@ -4273,7 +4273,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsConns(int safi) {
-        tabGen<rtrBgpFlapath> lst = new tabGen<rtrBgpFlapath>();
+        tabGen<rtrBgpFlapStr> lst = new tabGen<rtrBgpFlapStr>();
         for (int i = 0; i < neighs.size(); i++) {
             getAsGraph(lst, neighs.get(i), safi);
         }
@@ -4286,7 +4286,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         String peers = "";
         String curr = "none";
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapath ntry = lst.get(i);
+            rtrBgpFlapStr ntry = lst.get(i);
             String a = ntry.path;
             int o = a.indexOf(" ");
             String b = a.substring(0, o);
@@ -4359,7 +4359,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ntry = old;
             }
             String a = "" + prf.best.nextHop;
-            rtrBgpFlapath pth = new rtrBgpFlapath(a);
+            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
             ntry.paths.add(pth);
         }
     }
@@ -4415,7 +4415,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (o >= 0) {
                 a = a.substring(o + 1, a.length());
             }
-            rtrBgpFlapath pth = new rtrBgpFlapath(a);
+            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
             ntry.paths.add(pth);
         }
     }

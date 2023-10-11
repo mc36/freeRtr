@@ -49,7 +49,7 @@ public class rtrBgpFlap implements Comparator<rtrBgpFlap> {
     /**
      * paths seen
      */
-    public tabGen<rtrBgpFlapath> paths = new tabGen<rtrBgpFlapath>();
+    public tabGen<rtrBgpFlapStr> paths = new tabGen<rtrBgpFlapStr>();
 
     public int compare(rtrBgpFlap o1, rtrBgpFlap o2) {
         if (o1.afi < o2.afi) {

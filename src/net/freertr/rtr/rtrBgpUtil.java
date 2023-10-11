@@ -3631,10 +3631,10 @@ public class rtrBgpUtil {
      * @param lst list to update
      * @param as asn
      */
-    public static void updateAsOrigin(tabGen<rtrBgpFlapasn> lst, int as) {
-        rtrBgpFlapasn res = new rtrBgpFlapasn(as);
+    public static void updateAsOrigin(tabGen<rtrBgpFlapAsn> lst, int as) {
+        rtrBgpFlapAsn res = new rtrBgpFlapAsn(as);
         res.count = 1;
-        rtrBgpFlapasn old = lst.add(res);
+        rtrBgpFlapAsn old = lst.add(res);
         if (old == null) {
             return;
         }

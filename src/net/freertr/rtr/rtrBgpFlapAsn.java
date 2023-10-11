@@ -9,7 +9,7 @@ import net.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrBgpFlapasn implements Comparator<rtrBgpFlapasn> {
+public class rtrBgpFlapAsn implements Comparator<rtrBgpFlapAsn> {
 
     /**
      * path
@@ -26,11 +26,11 @@ public class rtrBgpFlapasn implements Comparator<rtrBgpFlapasn> {
      *
      * @param as asn
      */
-    public rtrBgpFlapasn(int as) {
+    public rtrBgpFlapAsn(int as) {
         asn = as;
     }
 
-    public int compare(rtrBgpFlapasn o1, rtrBgpFlapasn o2) {
+    public int compare(rtrBgpFlapAsn o1, rtrBgpFlapAsn o2) {
         if (o1.asn < o2.asn) {
             return -1;
         }
@@ -41,7 +41,7 @@ public class rtrBgpFlapasn implements Comparator<rtrBgpFlapasn> {
     }
 
     public String toString() {
-        return bits.num2str(asn) + "|" + count + "|" + clntWhois.asn2name(asn, true) + "|" + clntWhois.asn2infos(asn);
+        return bits.num2str(asn) + "|" + clntWhois.asn2name(asn, true) + "|" + count + "|" + clntWhois.asn2infos(asn);
     }
 
 }

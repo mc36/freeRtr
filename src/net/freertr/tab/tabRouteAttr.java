@@ -1299,17 +1299,18 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * get the as path integers
      *
+     * @param beg first as, -1 if nothing
      * @return string
      */
     public List<Integer> asPathInts(int beg) {
         List<Integer> res = new ArrayList<Integer>();
         if (beg != -1) {
             res.add(beg);
-            appendIntList(res, confSeq);
-            appendIntList(res, confSet);
-            appendIntList(res, pathSeq);
-            appendIntList(res, pathSet);
         }
+        appendIntList(res, confSeq);
+        appendIntList(res, confSet);
+        appendIntList(res, pathSeq);
+        appendIntList(res, pathSet);
         return res;
     }
 
