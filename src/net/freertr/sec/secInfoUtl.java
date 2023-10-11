@@ -13,6 +13,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
+import net.freertr.rtr.rtrBgp;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -52,7 +53,8 @@ public class secInfoUtl {
         if (rtr == null) {
             return null;
         }
-        tabRouteEntry<addrIP> ntry = rtr.routerComputedU.route(adr);
+        tabRouteEntry<addrIP> ntry;
+        ntry = rtr.routerComputedU.route(adr);
         if (ntry == null) {
             logger.warn("no route " + rtr + " " + adr);
             return null;
@@ -218,10 +220,10 @@ public class secInfoUtl {
      * find one router
      *
      * @param adr address to check
-     * @param rtr4 ipv4t candidate
-     * @param rtr6 ipv6t candidate
-     * @param rtr4 ipv4n candidate
-     * @param rtr6 ipv6n candidate
+     * @param rtr4t ipv4t candidate
+     * @param rtr6t ipv6t candidate
+     * @param rtr4n ipv4n candidate
+     * @param rtr6n ipv6n candidate
      * @return proper one, null if nothing
      */
     public final static cfgRtr findOneRtr(addrIP adr, tabRouteAttr.routeType rtr4t, tabRouteAttr.routeType rtr6t, int rtr4n, int rtr6n) {

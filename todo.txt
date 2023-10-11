@@ -4,8 +4,6 @@ vdc to have local, connect as sdn autocreated
 
 generalise server access- knobs
 
-honeypot to use any router
-
 honeypot to wireformat, decode
 
 generalize dynamic-metric knobs

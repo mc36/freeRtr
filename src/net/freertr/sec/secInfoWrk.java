@@ -121,6 +121,11 @@ public class secInfoWrk implements Runnable {
     protected cfgRtr rtrCfg = null;
 
     /**
+     * router selected
+     */
+    protected ipRtr rtrIp = null;
+
+    /**
      * forwarder selected
      */
     protected ipFwd fwd = null;
@@ -193,7 +198,7 @@ public class secInfoWrk implements Runnable {
         if (resolved != null) {
             s += " dns=" + resolved;
         }
-        s += secInfoUtl.getRoute1liner(fwd, rtrCfg.getRouter(), ntry);
+        s += secInfoUtl.getRoute1liner(fwd, rtrIp, ntry);
         if (!hack) {
             return s;
         }
@@ -269,10 +274,11 @@ public class secInfoWrk implements Runnable {
             if (rtrCfg == null) {
                 return;
             }
+            rtrIp = rtrCfg.getRouter();
             if (fwd == null) {
                 fwd = rtrCfg.fwd;
             }
-            ntry = secInfoUtl.findOneRoute(addr, rtrCfg.getRouter(), fwd);
+            ntry = secInfoUtl.findOneRoute(addr, rtrIp, fwd);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }
