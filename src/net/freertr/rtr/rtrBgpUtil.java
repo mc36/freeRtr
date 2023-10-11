@@ -21,6 +21,7 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRoute;
 import net.freertr.util.counter;
 
 /**
@@ -3632,13 +3633,50 @@ public class rtrBgpUtil {
      * @param as asn
      */
     public static void updateAsOrigin(tabGen<rtrBgpFlapAsn> lst, int as) {
-        rtrBgpFlapAsn res = new rtrBgpFlapAsn(as);
+        rtrBgpFlapAsn res = new rtrBgpFlapAsn(0, as);
         res.count = 1;
         rtrBgpFlapAsn old = lst.add(res);
         if (old == null) {
             return;
         }
         old.count++;
+    }
+
+    /**
+     * update as graph
+     *
+     * @param loc local asn
+     * @param lst asn list
+     * @param nei neighbor to read
+     * @param safi safi to use
+     */
+    public static void updateAsGraph(int loc, tabGen<rtrBgpFlapAsn> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            List<Integer> asl = prf.best.asPathInts(-1);
+            int s = asl.size();
+            int p = loc;
+            for (int o = 0; o < s; o++) {
+                int c = asl.get(o);
+                rtrBgpFlapAsn ntry = new rtrBgpFlapAsn(p, c);
+                p = c;
+                rtrBgpFlapAsn old = lst.add(ntry);
+                if (old != null) {
+                    ntry = old;
+                }
+                ntry.count++;
+            }
+        }
     }
 
 }

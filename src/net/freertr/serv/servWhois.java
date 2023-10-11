@@ -129,6 +129,7 @@ class servWhoisConn implements Runnable {
             }
             int n = bits.str2num(a);
             pipe.linePut("as-block:       AS" + n + " - AS" + n);
+            pipe.linePut("aut-num:        AS" + n);
             pipe.linePut("descr:          cached at " + cfgAll.hostName);
             pipe.linePut("as-name:        " + clntWhois.asn2name(n, true));
             List<String> lst = clntWhois.asn2infos(n);

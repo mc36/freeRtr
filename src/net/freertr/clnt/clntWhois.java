@@ -63,7 +63,7 @@ public class clntWhois {
             if (ntry == null) {
                 continue;
             }
-            res.add("" + ntry + "|" + clntWhois.asn2infos(ntry.asn));
+            res.add("" + ntry + "|" + asn2infos(ntry.asn));
         }
         return res;
     }
@@ -223,7 +223,18 @@ public class clntWhois {
     }
 
     private static String asn2str(int i) {
-        return "as#" + bits.num2str(i);
+        return "as" + bits.num2str(i);
+    }
+
+    /**
+     * get all infos for an asn
+     *
+     * @param i asn to query
+     * @param b true to do an external lookup on local cache miss
+     * @return as name mixed
+     */
+    public static String asn2mixed(int i, boolean b) {
+        return bits.num2str(i) + "-" + asn2name(i, b);
     }
 
     /**
@@ -282,7 +293,7 @@ public class clntWhois {
         String s = "";
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
-            String a = clntWhois.asn2name(o, true);
+            String a = asn2name(o, true);
             s += " " + a;
         }
         return beg + s.substring(1, s.length()) + end;
@@ -306,8 +317,7 @@ public class clntWhois {
         String s = "";
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
-            String a = bits.num2str(o) + "-" + clntWhois.asn2name(o, true);
-            s += " " + a;
+            s += " " + asn2mixed(o, true);
         }
         return beg + s.substring(1, s.length()) + end;
     }
@@ -330,7 +340,7 @@ public class clntWhois {
         String s = "";
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
-            String a = clntWhois.asn2info(o);
+            String a = asn2info(o);
             s += " " + a;
         }
         return beg + s.substring(1, s.length()) + end;

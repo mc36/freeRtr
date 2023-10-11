@@ -17,6 +17,7 @@ import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
+import net.freertr.clnt.clntWhois;
 import net.freertr.ifc.ifcDot1ah;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -4207,16 +4208,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public List<String> getAsGraph(int safi) {
-        tabGen<rtrBgpFlapStr> lst = new tabGen<rtrBgpFlapStr>();
+        tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            getAsGraph(lst, neighs.get(i), safi);
+            rtrBgpUtil.updateAsGraph(localAs, lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            getAsGraph(lst, lstnNei.get(i), safi);
+            rtrBgpUtil.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
         }
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStr ntry = lst.get(i);
+            rtrBgpFlapAsn ntry = lst.get(i);
             if (o < ntry.count) {
                 o = ntry.count;
             }
@@ -4226,44 +4227,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         res.add(spfCalc.graphBeg1);
         res.add(spfCalc.graphBeg2);
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStr ntry = lst.get(i);
-            res.add(ntry.path + " [weight=" + (o - ntry.count) + "]");
+            rtrBgpFlapAsn ntry = lst.get(i);
+            res.add(bits.num2str(ntry.prev) + " -- " + bits.num2str(ntry.asn) + " [weight=" + (o - ntry.count) + "]");
         }
         res.add(spfCalc.graphEnd1);
         res.add(spfCalc.graphEnd2);
         return res;
-    }
-
-    private void getAsGraph(tabGen<rtrBgpFlapStr> lst, rtrBgpNeigh nei, int safi) {
-        if (nei == null) {
-            return;
-        }
-        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
-        if (tab == null) {
-            return;
-        }
-        cmds cmd;
-        for (int i = 0; i < tab.size(); i++) {
-            tabRouteEntry<addrIP> prf = tab.get(i);
-            if (prf == null) {
-                continue;
-            }
-            cmd = new cmds("path", prf.best.asPathStr());
-            String prv = cmd.word();
-            for (;;) {
-                String a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                rtrBgpFlapStr ntry = new rtrBgpFlapStr(prv + " -- " + a);
-                rtrBgpFlapStr old = lst.add(ntry);
-                if (old != null) {
-                    ntry = old;
-                }
-                ntry.count++;
-                prv = a;
-            }
-        }
     }
 
     /**
@@ -4273,41 +4242,36 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsConns(int safi) {
-        tabGen<rtrBgpFlapStr> lst = new tabGen<rtrBgpFlapStr>();
+        tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            getAsGraph(lst, neighs.get(i), safi);
+            rtrBgpUtil.updateAsGraph(localAs, lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            getAsGraph(lst, lstnNei.get(i), safi);
+            rtrBgpUtil.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
         }
-        userFormat res = new userFormat("|", "as|conn|net|peers");
+        userFormat res = new userFormat("|", "asnum|asnam|conn|net|peers");
         int conns = -1;
         int prefs = -1;
         String peers = "";
-        String curr = "none";
+        int curr = 0;
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStr ntry = lst.get(i);
-            String a = ntry.path;
-            int o = a.indexOf(" ");
-            String b = a.substring(0, o);
-            o = a.lastIndexOf(" ");
-            a = a.substring(o + 1, a.length());
-            if (b.equals(curr)) {
-                peers += " " + a;
+            rtrBgpFlapAsn ntry = lst.get(i);
+            if (curr == ntry.prev) {
+                peers += " " + clntWhois.asn2mixed(ntry.asn, true);
                 conns++;
                 prefs += ntry.count;
                 continue;
             }
             if (conns > 0) {
-                res.add(curr + "|" + conns + "|" + prefs + "|" + peers);
+                res.add(curr + "|" + clntWhois.asn2name(curr, true) + "|" + conns + "|" + prefs + "|" + peers);
             }
-            curr = b;
-            peers = a;
+            curr = ntry.prev;
+            peers = clntWhois.asn2mixed(ntry.asn, true);
             conns = 1;
             prefs = ntry.count;
         }
         if (conns > 0) {
-            res.add(curr + "|" + conns + "|" + prefs + "|" + peers);
+            res.add(curr + "|" + clntWhois.asn2name(curr, true) + "|" + conns + "|" + prefs + "|" + peers);
         }
         return res;
     }
