@@ -1105,7 +1105,12 @@ public class packHolder {
     public List<String> convertToK12(long tim) {
         List<String> res = new ArrayList<String>();
         res.add("+---------+---------------+----------+");
-        String a = " " + dump() + " ";
+        byte[] buf = new byte[addrMac.sizeX2];
+        ETHtrg.toBuffer(buf, 0);
+        ETHsrc.toBuffer(buf, addrMac.size);
+        String a = " " + bits.byteDump(buf, 0, -1);
+        a += bits.byteDump(getCopy(), 0, -1) + " ";
+        a = a.replaceAll("  ", " ");
         a = a.replaceAll(" ", "|");
         String b = "X" + a;
         while (!a.equals(b)) {

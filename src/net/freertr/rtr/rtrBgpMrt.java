@@ -1,10 +1,12 @@
 package net.freertr.rtr;
 
+import java.io.RandomAccessFile;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
+import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
 import net.freertr.util.logFil;
 
@@ -123,6 +125,108 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
         }
         bits.msbPutD(hdr, 8, dat + len - 12); // length
         return len;
+    }
+
+    /**
+     * read up next mrt entry
+     *
+     * @param pck packet to populate
+     * @param fa file to read
+     * @return result, 0=ok, 1=stop, 2=continue
+     */
+    public static int readNextMrt(packHolder pck, RandomAccessFile fa) {
+        pck.clear();
+        byte[] buf = new byte[12];
+        try {
+            if (fa.read(buf, 0, buf.length) != buf.length) {
+                return 1;
+            }
+        } catch (Exception e) {
+            return 1;
+        }
+        pck.INTtime = bits.msbGetD(buf, 0);
+        pck.INTtime *= 1000;
+        int typ = bits.msbGetW(buf, 4);
+        int cls = bits.msbGetW(buf, 6);
+        int i = bits.msbGetD(buf, 8);
+        if (i < 0) {
+            return 2;
+        }
+        if (i > packHolder.maxHead) {
+            return 2;
+        }
+        buf = new byte[i];
+        try {
+            if (fa.read(buf, 0, buf.length) != buf.length) {
+                return 1;
+            }
+        } catch (Exception e) {
+            return 1;
+        }
+        pck.putCopy(buf, 0, 0, buf.length);
+        pck.putSkip(buf.length);
+        pck.merge2end();
+        if (typ != typBgp) {
+            return 2;
+        }
+        boolean xchg = false;
+        switch (cls) {
+            case typLoc16:
+                pck.getSkip(4);
+                xchg = true;
+                break;
+            case typRem16:
+                pck.getSkip(4);
+                break;
+            case typLoc32:
+                xchg = true;
+                pck.getSkip(8);
+                break;
+            case typRem32:
+                pck.getSkip(8);
+                break;
+            default:
+                return 2;
+        }
+        typ = pck.msbGetW(2);
+        pck.getSkip(4);
+        switch (typ) {
+            case 1:
+                addrIPv4 a4 = new addrIPv4();
+                pck.getAddr(a4, 0);
+                pck.getSkip(addrIPv4.size);
+                pck.IPtrg.fromIPv4addr(a4);
+                pck.getAddr(a4, 0);
+                pck.getSkip(addrIPv4.size);
+                pck.IPsrc.fromIPv4addr(a4);
+                break;
+            case 2:
+                addrIPv6 a6 = new addrIPv6();
+                pck.getAddr(a6, 0);
+                pck.getSkip(addrIPv6.size);
+                pck.IPtrg.fromIPv6addr(a6);
+                pck.getAddr(a6, 0);
+                pck.getSkip(addrIPv6.size);
+                pck.IPsrc.fromIPv6addr(a6);
+                break;
+            default:
+                return 2;
+        }
+        if (pck.msbGetD(0) != -1) {
+            try {
+                fa.seek(fa.getFilePointer() - buf.length);
+            } catch (Exception e) {
+            }
+            return 2;
+        }
+        if (xchg) {
+            return 0;
+        }
+        addrIP adr = new addrIP();
+        adr.setAddr(pck.IPsrc);
+        pck.IPsrc.setAddr(pck.IPtrg);
+        pck.IPtrg.setAddr(adr);
+        return 0;
     }
 
     /**

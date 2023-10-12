@@ -7,12 +7,15 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntDns;
 import net.freertr.enc.enc7bit;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipIfc4;
 import net.freertr.ip.ipIfc6;
+import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packHolder;
+import net.freertr.pipe.pipeSetting;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRoute;
@@ -22,6 +25,7 @@ import net.freertr.tab.tabSessionEntry;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
+import net.freertr.util.differ;
 
 /**
  * bgp message dumper
@@ -308,6 +312,12 @@ public class rtrBgpDump {
         pck.merge2end();
         List<String> res = new ArrayList<String>();
         res.add(bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + " " + pck.IPsrc + " -> " + pck.IPtrg);
+        clntDns clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(pck.IPsrc), false, packDnsRec.typePTR);
+        String a = clnt.getPTR();
+        clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(pck.IPsrc), false, packDnsRec.typePTR);
+        res.add(a + " --> " + clnt.getPTR());
         enc7bit.buf2hex(res, pck.getCopy(), 0, "");
         if ((ic4 != null) && (ic6 != null)) {
             if (tmp == null) {
@@ -315,8 +325,8 @@ public class rtrBgpDump {
             }
             tmp.clear();
             tmp.copyFrom(pck, true, true);
-            packHolder pcp = pck.copyBytes(true, true);
-            res.addAll(pcp.convertToK12(pck.INTtime));
+            msg2pcap(ic4, ic6, ses, tmp);
+            res.addAll(tmp.convertToK12(tmp.INTtime));
         }
         if (rtrBgpUtil.checkHeader(pck)) {
             return res;
@@ -350,29 +360,40 @@ public class rtrBgpDump {
             }
             rtrBgpUtil.parseAttrib(pck, hlp);
             res.add("  attrib typ=" + hlp.ETHtype + " len=" + hlp.dataSize() + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
-            enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
             ntry = new tabRouteEntry<addrIP>();
-            userFormat uf1 = new userFormat("|", "|");
-            ntry.best.fullDump(uf1, "");
-            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp);
+            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp.copyBytes(true, true));
             if (pfxs == null) {
                 pfxs = new ArrayList<tabRouteEntry<addrIP>>();
             }
-            userFormat uf2 = new userFormat("|", "|");
-            ntry.best.fullDump(uf2, "");
-            /////////////////////////////
             for (int i = 0; i < pfxs.size(); i++) {
                 tabRouteEntry<addrIP> rou = pfxs.get(i);
                 if (rou == null) {
                     continue;
                 }
-                String a;
                 if (rou.prefix == null) {
                     a = "" + rou;
                 } else {
                     a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
                 }
                 res.add("    prefix=" + a);
+            }
+            if (pfxs.size() > 0) {
+                continue;
+            }
+            userFormat ufmt = new userFormat("|", "|");
+            ntry.best.fullDump(ufmt, "");
+            List<String> dump1 = ufmt.formatAll(userFormat.tableMode.normal);
+            ntry = new tabRouteEntry<addrIP>();
+            ufmt = new userFormat("|", "|");
+            ntry.best.fullDump(ufmt, "");
+            List<String> dump2 = ufmt.formatAll(userFormat.tableMode.normal);
+            differ dfr = new differ();
+            dfr.calc(dump1, dump2);
+            List<String> dft = dfr.getDiff(true, "    ");
+            if (dft.size() < 1) {
+                enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
+            } else {
+                res.addAll(dft);
             }
         }
         res.add("reachable len=" + pck.dataSize());

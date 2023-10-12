@@ -75,6 +75,30 @@ public class differ {
         return lst;
     }
 
+    /**
+     * get difference
+     *
+     * @param lft true means left, false right
+     * @param beg beginning string
+     * @return results
+     */
+    public List<String> getDiff(boolean lft, String beg) {
+        List<String> lst = new ArrayList<String>();
+        for (int i = 0; i < r1.size(); i++) {
+            String l1 = "" + r1.get(i);
+            String l2 = "" + r2.get(i);
+            if (l1.equals(l2)) {
+                continue;
+            }
+            if (lft) {
+                lst.add(beg + l1);
+            } else {
+                lst.add(beg + l2);
+            }
+        }
+        return lst;
+    }
+
     private String getLine(String s, int wid, int ofs) {
         if (ofs < s.length()) {
             s = s.substring(ofs, s.length());
