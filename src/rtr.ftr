@@ -3217,7 +3217,6 @@ qc pass: udp forwarder server
 todo: allow some packages to be redownloaded after a certain time expired
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
-todo: honeypot to use any router
 todo: honeypot to wireformat, decode
 todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
