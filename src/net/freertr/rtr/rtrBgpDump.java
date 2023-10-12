@@ -360,6 +360,7 @@ public class rtrBgpDump {
             }
             userFormat uf2 = new userFormat("|", "|");
             ntry.best.fullDump(uf2, "");
+            /////////////////////////////
             for (int i = 0; i < pfxs.size(); i++) {
                 tabRouteEntry<addrIP> rou = pfxs.get(i);
                 if (rou == null) {
