@@ -9,7 +9,7 @@ qemu-img convert -O qcow2 -c $IMG/rtr$ARCH.dsk $IMG/rtr$ARCH.qcow2
 qemu-img convert -O vmdk -o subformat=streamOptimized $IMG/rtr$ARCH.dsk $IMG/rtr$ARCH.vmdk
 
 SIZ=`stat --printf="%s" $IMG/rtr$ARCH.qcow2`
-VER=`java -jar ../../src/rtr$ARCH.jar show version number | dos2unix | head -n 1`
+VER=`java -jar ../../src/rtr.jar show version number | dos2unix | head -n 1`
 SUM=`md5sum $IMG/rtr$ARCH.qcow2 | awk '{ print $1 }'`
 cat > $IMG/rtr$ARCH.gns3a << EOF
 {

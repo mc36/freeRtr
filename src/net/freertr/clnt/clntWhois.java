@@ -113,6 +113,30 @@ public class clntWhois {
     /**
      * do one query
      *
+     * @param asn asn to question
+     * @return response, null if error
+     */
+    public String doQuery(int asn) {
+        if (doQuery("as" + bits.num2str(asn)) == null) {
+            asnameCache.put(new clntWhoisAsn(asn));
+            return asn2str(asn);
+        }
+        clntWhoisAsn ntry = new clntWhoisAsn(asn);
+        ntry = asnameCache.find(ntry);
+        if (ntry != null) {
+            ntry.hits++;
+            if (ntry.name == null) {
+                return asn2str(asn);
+            }
+            return ntry.name;
+        }
+        asnameCache.put(new clntWhoisAsn(asn));
+        return asn2str(asn);
+    }
+
+    /**
+     * do one query
+     *
      * @param quest question to ask
      * @return response, null if error
      */
@@ -258,21 +282,7 @@ public class clntWhois {
             return asn2str(i);
         }
         clntWhois w = new clntWhois(null, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer);
-        if (w.doQuery("as" + i) == null) {
-            asnameCache.put(new clntWhoisAsn(i));
-            return asn2str(i);
-        }
-        ntry = new clntWhoisAsn(i);
-        ntry = asnameCache.find(ntry);
-        if (ntry != null) {
-            ntry.hits++;
-            if (ntry.name == null) {
-                return asn2str(i);
-            }
-            return ntry.name;
-        }
-        asnameCache.put(new clntWhoisAsn(i));
-        return asn2str(i);
+        return w.doQuery(i);
     }
 
     /**

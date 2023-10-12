@@ -1,7 +1,10 @@
 package net.freertr.serv;
 
+import java.util.Comparator;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgProxy;
+import net.freertr.clnt.clntProxy;
 import net.freertr.clnt.clntWhois;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
@@ -47,6 +50,11 @@ public class servWhois extends servGeneric implements prtServS {
      */
     public static tabGen<userFilter> defaultF;
 
+    /**
+     * defaults filter
+     */
+    public tabGen<servWhoisRem> remotes = new tabGen<servWhoisRem>();
+
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
@@ -72,13 +80,51 @@ public class servWhois extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        for (int i = 0; i < remotes.size(); i++) {
+            servWhoisRem ntry = remotes.get(i);
+            lst.add(beg + "remote " + ntry);
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
-        return false;
+        String s = cmd.word();
+        if (s.equals("remote")) {
+            servWhoisRem ntry = new servWhoisRem();
+            if (ntry.rng.fromString(cmd.word())) {
+                cmd.error("bad range");
+                return false;
+            }
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy profile");
+                return false;
+            }
+            ntry.prx = prx.proxy;
+            ntry.srv = cmd.getRemaining();
+            remotes.put(ntry);
+            return false;
+        }
+        if (!s.equals("no")) {
+            return true;
+        }
+        s = cmd.word();
+        if (s.equals("remote")) {
+            servWhoisRem ntry = new servWhoisRem();
+            if (ntry.rng.fromString(cmd.word())) {
+                cmd.error("bad range");
+                return false;
+            }
+            remotes.del(ntry);
+            return false;
+        }
+        return true;
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 2  remote                       select remote resolver");
+        l.add(null, "2 3    <num>                      as number range");
+        l.add(null, "3 4      <name:prx>               proxy profile to use");
+        l.add(null, "4 .        <str>                  remote server name");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -91,16 +137,32 @@ public class servWhois extends servGeneric implements prtServS {
 
 }
 
-class servWhoisRem {
+class servWhoisRem implements Comparator<servWhoisRem> {
 
-    public final tabIntMatcher rng;
+    public final tabIntMatcher rng = new tabIntMatcher();
 
-    public final String rem;
+    public clntProxy prx;
 
-    public servWhoisRem(tabIntMatcher ra, String re) {
-        rng = ra;
-        rem = re;
-        ///////////////////////
+    public String srv;
+
+    public String toString() {
+        return rng + " " + prx.name + " " + srv;
+    }
+
+    public int compare(servWhoisRem o1, servWhoisRem o2) {
+        if (o1.rng.rangeMin < o2.rng.rangeMin) {
+            return -1;
+        }
+        if (o1.rng.rangeMin > o2.rng.rangeMin) {
+            return +1;
+        }
+        if (o1.rng.rangeMax < o2.rng.rangeMax) {
+            return -1;
+        }
+        if (o1.rng.rangeMax > o2.rng.rangeMax) {
+            return +1;
+        }
+        return 0;
     }
 
 }
@@ -143,10 +205,26 @@ class servWhoisConn implements Runnable {
                 a = a.substring(2, i);
             }
             int n = bits.str2num(a);
-            pipe.linePut("as-block:       AS" + n + " - AS" + n);
-            pipe.linePut("aut-num:        AS" + n);
+            String m = null;
+            for (i = 0; i < prnt.remotes.size(); i++) {
+                servWhoisRem ntry = prnt.remotes.get(i);
+                if (!ntry.rng.matches(n)) {
+                    continue;
+                }
+                clntWhois w = new clntWhois(pipe, ntry.prx, ntry.srv);
+                m = w.doQuery(n);
+                break;
+            }
+            if (m == null) {
+                m = clntWhois.asn2name(n, true);
+            }
+            a = bits.num2str(n);
+            pipe.linePut("% information for asn " + a + " is " + m);
+            pipe.linePut("as-block:       AS" + a + " - AS" + a);
+            pipe.linePut("aut-num:        AS" + a);
             pipe.linePut("descr:          cached at " + cfgAll.hostName);
-            pipe.linePut("as-name:        " + clntWhois.asn2name(n, true));
+            pipe.linePut("as-name:        " + m);
+            pipe.linePut("% list of other information");
             List<String> lst = clntWhois.asn2infos(n);
             for (i = 0; i < lst.size(); i++) {
                 pipe.linePut("remark:         info " + lst.get(i));
