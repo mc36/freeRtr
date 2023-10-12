@@ -122,19 +122,19 @@ public class tabIntMatcher {
             set2always();
             return false;
         }
-        int i = s.indexOf("-");
-        if (i > 0) {
-            action = actionType.range;
-            rangeMin = bits.str2num(s.substring(0, i).trim());
-            rangeMax = bits.str2num(s.substring(i + 1, s.length()).trim());
-            return false;
-        }
-        i = s.indexOf("&");
+        int i = s.indexOf("&");
         if (i >= 0) {
             action = actionType.mask;
             rangeMin = bits.str2num(s.substring(0, i).trim());
             rangeMax = bits.str2num(s.substring(i + 1, s.length()).trim());
             rangeMin &= rangeMax;
+            return false;
+        }
+        i = s.indexOf("-");
+        if (i > 0) {
+            action = actionType.range;
+            rangeMin = bits.str2num(s.substring(0, i).trim());
+            rangeMax = bits.str2num(s.substring(i + 1, s.length()).trim());
             return false;
         }
         i = s.indexOf(",");
@@ -182,15 +182,15 @@ public class tabIntMatcher {
             case always:
                 return "all";
             case xact:
-                return "" + rangeMin;
+                return bits.num2str(rangeMin);
             case range:
-                return rangeMin + "-" + rangeMax;
+                return bits.num2str(rangeMin) + "-" + bits.num2str(rangeMax);
             case mask:
-                return rangeMin + "&" + rangeMax;
+                return bits.num2str(rangeMin) + "&" + bits.num2str(rangeMax);
             case list:
                 String a = "";
                 for (int i = 0; i < allowed.size(); i++) {
-                    a += "," + allowed.get(i).val;
+                    a += "," + bits.num2str(allowed.get(i).val);
                 }
                 if (a.length() > 0) {
                     a = a.substring(1, a.length());
