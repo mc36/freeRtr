@@ -583,6 +583,7 @@ router bgp4 65535 vrf v1
  template r extended-open
  template r extended-update
  template r aigp
+ template r entropy
  template r traffeng
  template r pmsitun
  template r tunenc
@@ -664,6 +665,7 @@ router bgp6 65535 vrf v1
  template r extended-open
  template r extended-update
  template r aigp
+ template r entropy
  template r traffeng
  template r pmsitun
  template r tunenc

@@ -109,6 +109,11 @@ public abstract class rtrBgpParam {
     public boolean accIgp;
 
     /**
+     * send entropy label
+     */
+    public boolean entrLab;
+
+    /**
      * send traffic engineering
      */
     public boolean traffEng;
@@ -1172,6 +1177,7 @@ public abstract class rtrBgpParam {
         keyId = src.keyId;
         passwd = src.passwd;
         accIgp = src.accIgp;
+        entrLab = src.entrLab;
         traffEng = src.traffEng;
         pmsiTun = src.pmsiTun;
         tunEnc = src.tunEnc;
@@ -1337,6 +1343,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (accIgp != src.accIgp) {
+            return true;
+        }
+        if (entrLab != src.entrLab) {
             return true;
         }
         if (traffEng != src.traffEng) {
@@ -1601,6 +1610,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       default-originate           send default route to peer");
         l.add(null, "3  .       other-default-originate     send other default route to peer");
         l.add(null, "3  .       aigp                        send accumulated igp attribute");
+        l.add(null, "3  .       entropy                     send entropy label attribute");
         l.add(null, "3  .       traffeng                    send traffic engineering attribute");
         l.add(null, "3  .       pmsitun                     send provider multicast service interface tunnel attribute");
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
@@ -1875,6 +1885,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !overridePeerOut, beg, nei + "override-peer-as-out", "");
         cmds.cfgLine(l, !overridePeerIn, beg, nei + "override-peer-as-in", "");
         cmds.cfgLine(l, !accIgp, beg, nei + "aigp", "");
+        cmds.cfgLine(l, !entrLab, beg, nei + "entropy", "");
         cmds.cfgLine(l, !traffEng, beg, nei + "traffeng", "");
         cmds.cfgLine(l, !pmsiTun, beg, nei + "pmsitun", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
@@ -2473,6 +2484,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("aigp")) {
             accIgp = !negated;
+            return false;
+        }
+        if (s.equals("entropy")) {
+            entrLab = !negated;
             return false;
         }
         if (s.equals("traffeng")) {

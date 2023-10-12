@@ -390,11 +390,8 @@ public class rtrBgpDump {
             differ dfr = new differ();
             dfr.calc(dump1, dump2);
             List<String> dft = dfr.getDiff(true, "    ");
-            if (dft.size() < 1) {
-                enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
-            } else {
-                res.addAll(dft);
-            }
+            enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
+            res.addAll(dft);
         }
         res.add("reachable len=" + pck.dataSize());
         for (;;) {

@@ -664,6 +664,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (!accIgp) {
             ntry.accIgp = 0;
         }
+        if (!entrLab) {
+            ntry.entropyLabel = false;
+        }
         if (!traffEng) {
             ntry.bandwidth = 0;
         }

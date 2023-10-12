@@ -2132,6 +2132,15 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse entropy label attribute
+     *
+     * @param ntry table entry
+     */
+    public static void parseEntropyLab(tabRouteEntry<addrIP> ntry) {
+        ntry.best.entropyLabel = true;
+    }
+
+    /**
      * parse aggregator attribute
      *
      * @param spkr where to signal
@@ -2726,6 +2735,9 @@ public class rtrBgpUtil {
             case attrAtomicAggr:
                 parseAtomicAggr(ntry);
                 return null;
+            case attrEntropyLab:
+                parseEntropyLab(ntry);
+                return null;
             case attrAggregator:
                 parseAggregator(spkr, ntry, pck);
                 return null;
@@ -2905,6 +2917,7 @@ public class rtrBgpUtil {
         placeAsPath(spkr, longAS, pck, hlp, ntry);
         placeMetric(spkr, pck, hlp, ntry);
         placeLocPref(spkr, pck, hlp, ntry);
+        placeEntropyLab(spkr, pck, hlp, ntry);
         placeAtomicAggr(spkr, pck, hlp, ntry);
         placeAggregator(spkr, longAS, pck, hlp, ntry);
         placeStdComm(spkr, pck, hlp, ntry);
@@ -3120,6 +3133,22 @@ public class rtrBgpUtil {
         hlp.msbPutD(0, ntry.best.locPref);
         hlp.putSkip(4);
         placeAttrib(spkr, flagTransitive, attrLocPref, trg, hlp);
+    }
+
+    /**
+     * place entropy label attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeEntropyLab(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (!ntry.best.entropyLabel) {
+            return;
+        }
+        hlp.clear();
+        placeAttrib(spkr, flagTransitive, attrEntropyLab, trg, hlp);
     }
 
     /**

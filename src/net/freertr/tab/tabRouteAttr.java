@@ -401,6 +401,11 @@ public class tabRouteAttr<T extends addrType> {
     public addrType srcRtr;
 
     /**
+     * entropy label
+     */
+    public boolean entropyLabel;
+
+    /**
      * atomic aggregator
      */
     public boolean atomicAggr;
@@ -683,6 +688,7 @@ public class tabRouteAttr<T extends addrType> {
         atr.pmsiLab = pmsiLab;
         atr.evpnLab = evpnLab;
         atr.bandwidth = bandwidth;
+        atr.entropyLabel = entropyLabel;
         atr.atomicAggr = atomicAggr;
         atr.aggrAs = aggrAs;
         if (segrouPrf != null) {
@@ -1101,6 +1107,9 @@ public class tabRouteAttr<T extends addrType> {
         } else if (other.unknown != null) {
             return 101;
         }
+        if (entropyLabel != other.entropyLabel) {
+            return 102;
+        }
         return 0;
     }
 
@@ -1358,6 +1367,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
         hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
         hl.add(null, lv + " " + lv + ",.    tunnel       ignore tunnel");
+        hl.add(null, lv + " " + lv + ",.    entropy      ignore empty lists");
         hl.add(null, lv + " " + lv + ",.    empty        ignore empty lists");
     }
 
@@ -1448,6 +1458,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if (a.equals("unknown")) {
             return 0x4000000;
+        }
+        if (a.equals("entropy")) {
+            return 0x8000000;
         }
         return 0;
     }
@@ -1676,6 +1689,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x4000000) != 0) {
             ntry.unknown = null;
         }
+        if ((ign & 0x8000000) != 0) {
+            ntry.entropyLabel = false;
+        }
     }
 
     /**
@@ -1724,6 +1740,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "pmsi tunnel|" + bits.byteDump(pmsiTun, 0, -1));
         lst.add(beg + "accumulated igp|" + accIgp);
         lst.add(beg + "bandwidth|" + bandwidth);
+        lst.add(beg + "entropy label|" + entropyLabel);
         lst.add(beg + "atomic aggregator|" + atomicAggr);
         lst.add(beg + "aggregator as|" + bits.num2str(aggrAs));
         lst.add(beg + "aggregator router|" + aggrRtr);
