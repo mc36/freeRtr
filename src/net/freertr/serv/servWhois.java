@@ -8,6 +8,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabIntMatcher;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -86,6 +87,20 @@ public class servWhois extends servGeneric implements prtServS {
         servWhoisConn ntry = new servWhoisConn(this, pipe);
         ntry.doStart();
         return false;
+    }
+
+}
+
+class servWhoisRem {
+
+    public final tabIntMatcher rng;
+
+    public final String rem;
+
+    public servWhoisRem(tabIntMatcher ra, String re) {
+        rng = ra;
+        rem = re;
+        ///////////////////////
     }
 
 }
