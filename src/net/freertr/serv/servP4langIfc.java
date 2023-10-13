@@ -15,7 +15,6 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteIface;
 import net.freertr.tab.tabSession;
-import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
