@@ -4153,9 +4153,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             int o = ntry.best.asPathEnd();
             if (o == -1) {
-                o = localAs;
+                rtrBgpDump.updateAsOrigin(lst, localAs);
+            } else {
+                rtrBgpDump.updateAsOrigin(lst, o);
             }
-            rtrBgpUtil.updateAsOrigin(lst, o);
         }
         userFormat res = new userFormat("|", "asnum|nets|asnam|asinfo");
         for (int i = 0; i < lst.size(); i++) {
@@ -4182,12 +4183,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry.best.pathSeq == null) {
                 continue;
             }
-            ntry.best.asPathBeg();
             List<Integer> res = ntry.best.asPathInts(localAs);
-            rtrBgpUtil.updateAsOrigin(lst, localAs);
+            rtrBgpDump.updateAsOrigin(lst, localAs);
             int p = res.size() - 1;
             for (int o = 0; o < p; o++) {
-                rtrBgpUtil.updateAsOrigin(lst, res.get(o));
+                rtrBgpDump.updateAsOrigin(lst, res.get(o));
             }
         }
         userFormat res = new userFormat("|", "asnum|asnam|nets|asinfo");
@@ -4207,10 +4207,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public List<String> getAsGraph(int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpUtil.updateAsGraph(localAs, lst, neighs.get(i), safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpUtil.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
         }
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
@@ -4225,7 +4225,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         res.add(spfCalc.graphBeg2);
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapAsn ntry = lst.get(i);
-            res.add(bits.num2str(ntry.prev) + " -- " + bits.num2str(ntry.asn) + " [weight=" + (o - ntry.count) + "]");
+            res.add("\"" + clntWhois.asn2mixed(ntry.prev, true) + "\" -- \"" + clntWhois.asn2mixed(ntry.asn, true) + "\" [weight=" + (o - ntry.count) + "]");
         }
         res.add(spfCalc.graphEnd1);
         res.add(spfCalc.graphEnd2);
@@ -4241,10 +4241,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public userFormat getAsConns(int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpUtil.updateAsGraph(localAs, lst, neighs.get(i), safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpUtil.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
         }
         userFormat res = new userFormat("|", "asnum|asnam|conn|net|peers");
         int conns = -1;
@@ -4260,7 +4260,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 continue;
             }
             if (conns > 0) {
-                res.add(curr + "|" + clntWhois.asn2name(curr, true) + "|" + conns + "|" + prefs + "|" + peers);
+                res.add(bits.num2str(curr) + "|" + clntWhois.asn2name(curr, true) + "|" + conns + "|" + prefs + "|" + peers);
             }
             curr = ntry.prev;
             peers = clntWhois.asn2mixed(ntry.asn, true);
@@ -4283,10 +4283,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public userFormat getNhIncons(int safi, tabIntMatcher mtch) {
         tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpUtil.getNhIncons(lst, neighs.get(i), safi);
+            rtrBgpDump.updateNhIncons(lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpUtil.getNhIncons(lst, lstnNei.get(i), safi);
+            rtrBgpDump.updateNhIncons(lst, lstnNei.get(i), safi);
         }
         userFormat res = new userFormat("|", "path|nexthops");
         for (int i = 0; i < lst.size(); i++) {
@@ -4309,10 +4309,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public userFormat getAsIncons(int safi, tabIntMatcher mtch) {
         tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpUtil.getAsIncons(lst, neighs.get(i), safi);
+            rtrBgpDump.updateAsIncons(lst, neighs.get(i), safi);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpUtil.getAsIncons(lst, lstnNei.get(i), safi);
+            rtrBgpDump.updateAsIncons(lst, lstnNei.get(i), safi);
         }
         userFormat res = new userFormat("|", "path|ases");
         for (int i = 0; i < lst.size(); i++) {
