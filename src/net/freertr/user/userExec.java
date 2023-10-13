@@ -1130,6 +1130,7 @@ public class userExec {
         hl.add(null, "4 .          lossdetect          loss detection");
         hl.add(null, "4 .          packetsizes         packet sizes");
         hl.add(null, "4 .          protocols           protocol numbers");
+        hl.add(null, "4 .          timetolives         time to lives");
         hl.add(null, "4 .          trafficclasses      traffic classes");
         hl.add(null, "2 .      terminal                terminal parameters");
         hl.add(null, "2 3,.    tracker                 tracker status");

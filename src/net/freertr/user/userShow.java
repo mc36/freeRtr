@@ -1852,6 +1852,7 @@ public class userShow {
                 rdr.putStrTab(ifc.ethtyp.getShProtos());
                 rdr.putStrTab(ifc.ethtyp.getShSizes());
                 rdr.putStrTab(ifc.ethtyp.getShClasses());
+                rdr.putStrTab(ifc.ethtyp.getShTimes());
                 rdr.putStrArr(ifc.getShIntTxt(2));
                 rdr.putStrArr(ifc.getShIntTxt(11));
                 rdr.putStrTab(doShowRates(ifc.ethtyp.hwHstry));
@@ -1872,6 +1873,10 @@ public class userShow {
             }
             if (a.equals("trafficclasses")) {
                 rdr.putStrTab(ifc.ethtyp.getShClasses());
+                return null;
+            }
+            if (a.equals("timetolives")) {
+                rdr.putStrTab(ifc.ethtyp.getShTimes());
                 return null;
             }
             if (a.equals("protocols")) {

@@ -246,6 +246,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
     private final counter[] clsPrc;
 
+    private final counter[] ttlMpl;
+
+    private final counter[] ttlNsh;
+
+    private final counter[] ttlPrt;
+
     private final history hstry;
 
     /**
@@ -490,7 +496,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
                     if (doOutProcess(pck)) {
                         break;
                     }
-                    pktAccount(pck);
+                    pktAccountTx(pck);
                     lower.sendPack(pck);
                 }
                 if (lst < qosOut.lastLeft) {
@@ -520,7 +526,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             if (lossDet != null) {
                 packHolder pck = lossDet.doSync();
                 if (pck != null) {
-                    pktAccount(pck);
+                    pktAccountTx(pck);
                     if (macSec != null) {
                         macSec.doEncrypt(pck);
                     }
@@ -530,7 +536,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             if (macSec != null) {
                 packHolder pck = macSec.doSync();
                 if (pck != null) {
-                    pktAccount(pck);
+                    pktAccountTx(pck);
                     lower.sendPack(pck);
                 }
             }
@@ -588,6 +594,9 @@ public class ifcEthTyp implements Runnable, ifcUp {
         clsExp = new counter[8];
         clsPrc = new counter[8];
         protos = new counter[256];
+        ttlPrt = new counter[256];
+        ttlNsh = new counter[64];
+        ttlMpl = new counter[256];
         for (int i = 0; i < sizes.length; i++) {
             sizes[i] = new counter();
         }
@@ -602,6 +611,15 @@ public class ifcEthTyp implements Runnable, ifcUp {
         }
         for (int i = 0; i < protos.length; i++) {
             protos[i] = new counter();
+        }
+        for (int i = 0; i < ttlPrt.length; i++) {
+            ttlPrt[i] = new counter();
+        }
+        for (int i = 0; i < ttlNsh.length; i++) {
+            ttlNsh[i] = new counter();
+        }
+        for (int i = 0; i < ttlMpl.length; i++) {
+            ttlMpl[i] = new counter();
         }
         hstry = new history();
         defUpper = new ifcEthTypET(this, null);
@@ -794,7 +812,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         if (doOutProcess(pck)) {
             return;
         }
-        pktAccount(pck);
+        pktAccountTx(pck);
         lower.sendPack(pck);
     }
 
@@ -824,7 +842,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (sendClear != null) {
-            pktAccount(pck);
+            pktAccountTx(pck);
             sendClear.sendPack(pck);
             return true;
         }
@@ -860,7 +878,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
     }
 
     private void doRxWork(packHolder pck, boolean fromDp) {
-        cntr.rx(pck);
+        pktAccountRx1(pck);
         if (mtuCheckRx) {
             if ((pck.dataSize() - 2) > getMTUsize()) {
                 cntr.drop(pck, counter.reasons.badLen);
@@ -890,7 +908,6 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
-        sizes[pktsiz2bucket(pck.dataSize())].rx(pck);
         if (macSec != null) {
             if (macSec.doDecrypt(pck, fromDp)) {
                 cntr.drop(pck, counter.reasons.badSum);
@@ -937,10 +954,12 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (qosIn == null) {
+            pktAccountRx2(pck);
             doRxPack(pck);
             return;
         }
         qosIn.classifyPack(pck);
+        pktAccountRx2(pck);
         qosIn.enqueuePack(pck);
         notif.wakeup();
     }
@@ -1202,13 +1221,31 @@ public class ifcEthTyp implements Runnable, ifcUp {
         return i;
     }
 
-    private void pktAccount(packHolder pck) {
+    private void pktAccountTx(packHolder pck) {
         cntr.tx(pck);
         sizes[pktsiz2bucket(pck.dataSize())].tx(pck);
         clsCos[pck.ETHcos & 7].tx(pck);
         clsExp[pck.MPLSexp & 7].tx(pck);
         clsPrc[(pck.IPtos >>> 5) & 7].tx(pck);
         protos[pck.IPprt & 0xff].tx(pck);
+        ttlPrt[pck.IPttl & 0xff].tx(pck);
+        ttlNsh[pck.NSHttl & 0x3f].tx(pck);
+        ttlMpl[pck.MPLSttl & 7].tx(pck);
+    }
+
+    private void pktAccountRx1(packHolder pck) {
+        cntr.rx(pck);
+        sizes[pktsiz2bucket(pck.dataSize())].rx(pck);
+    }
+
+    private void pktAccountRx2(packHolder pck) {
+        clsCos[pck.ETHcos & 7].rx(pck);
+        clsExp[pck.MPLSexp & 7].rx(pck);
+        clsPrc[(pck.IPtos >>> 5) & 7].rx(pck);
+        protos[pck.IPprt & 0xff].rx(pck);
+        ttlPrt[pck.IPttl & 0xff].rx(pck);
+        ttlNsh[pck.NSHttl & 0x3f].rx(pck);
+        ttlMpl[pck.MPLSttl & 7].rx(pck);
     }
 
     /**
@@ -1231,7 +1268,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShClasses() {
-        userFormat l = new userFormat("|", "class|cos|exp|prec|cos|exp|prec", "1|3packet|3byte");
+        userFormat l = new userFormat("|", "class|cos|exp|prec|cos|exp|prec|cos|exp|prec|cos|exp|prec", "1|3tx pack|3tx byte|3rx pack|3rx byte");
         for (int i = 0; i < clsPrc.length; i++) {
             l.add(i + "|" + getShClasses(clsCos[i], clsExp[i], clsPrc[i]));
         }
@@ -1239,7 +1276,36 @@ public class ifcEthTyp implements Runnable, ifcUp {
     }
 
     private String getShClasses(counter cos, counter exp, counter prc) {
-        return cos.packTx + "|" + exp.packTx + "|" + prc.packTx + "|" + cos.byteTx + "|" + exp.byteTx + "|" + prc.byteTx;
+        return cos.packTx + "|" + exp.packTx + "|" + prc.packTx + "|"
+                + cos.byteTx + "|" + exp.byteTx + "|" + prc.byteTx + "|"
+                + cos.packRx + "|" + exp.packRx + "|" + prc.packRx + "|"
+                + cos.byteRx + "|" + exp.byteRx + "|" + prc.byteRx;
+    }
+
+    /**
+     * get show results
+     *
+     * @return table
+     */
+    public userFormat getShTimes() {
+        userFormat l = new userFormat("|", "class|mpls|nsh|ip|mpls|nsh|ip|mpls|nsh|ip|mpls|nsh|ip|", "1|3tx pack|3tx byte|3rx pack|3rx byte");
+        for (int i = 0; i < ttlPrt.length; i++) {
+            counter nsh;
+            if (i < ttlNsh.length) {
+                nsh = ttlNsh[i];
+            } else {
+                nsh = new counter();
+            }
+            l.add(i + "|" + getShTimes(ttlMpl[i], nsh, ttlPrt[i]));
+        }
+        return l;
+    }
+
+    private String getShTimes(counter mpl, counter nsh, counter prt) {
+        return mpl.packTx + "|" + nsh.packTx + "|" + prt.packTx + "|"
+                + mpl.byteTx + "|" + nsh.byteTx + "|" + prt.byteTx + "|"
+                + mpl.packRx + "|" + nsh.packRx + "|" + prt.packRx + "|"
+                + mpl.byteRx + "|" + nsh.byteRx + "|" + prt.byteRx;
     }
 
     /**
@@ -1248,12 +1314,9 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShProtos() {
-        userFormat l = new userFormat("|", "proto|pack|byte");
+        userFormat l = new userFormat("|", "proto|pack|byte|pack|byte", "1|2tx|2rx");
         for (int i = 0; i < protos.length; i++) {
-            if (protos[i].packTx == 0) {
-                continue;
-            }
-            l.add(i + "|" + protos[i].packTx + "|" + protos[i].byteTx);
+            l.add(i + "|" + protos[i].packTx + "|" + protos[i].byteTx + "|" + protos[i].packRx + "|" + protos[i].byteRx);
         }
         return l;
     }
