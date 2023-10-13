@@ -4158,7 +4158,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 rtrBgpDump.updateAsOrigin(lst, o);
             }
         }
-        userFormat res = new userFormat("|", "asnum|nets|asnam|asinfo");
+        userFormat res = new userFormat("|", "asnum|asnam|nets|asinfo");
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapAsn ntry = lst.get(i);
             res.add("" + ntry);

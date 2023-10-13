@@ -1230,7 +1230,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         protos[pck.IPprt & 0xff].tx(pck);
         ttlPrt[pck.IPttl & 0xff].tx(pck);
         ttlNsh[pck.NSHttl & 0x3f].tx(pck);
-        ttlMpl[pck.MPLSttl & 7].tx(pck);
+        ttlMpl[pck.MPLSttl & 0xff].tx(pck);
     }
 
     private void pktAccountRx1(packHolder pck) {
@@ -1245,7 +1245,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
         protos[pck.IPprt & 0xff].rx(pck);
         ttlPrt[pck.IPttl & 0xff].rx(pck);
         ttlNsh[pck.NSHttl & 0x3f].rx(pck);
-        ttlMpl[pck.MPLSttl & 7].rx(pck);
+        ttlMpl[pck.MPLSttl & 0xff].rx(pck);
     }
 
     /**
@@ -1268,18 +1268,20 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShClasses() {
-        userFormat l = new userFormat("|", "class|cos|exp|prec|cos|exp|prec|cos|exp|prec|cos|exp|prec", "1|3tx pack|3tx byte|3rx pack|3rx byte");
+        userFormat l = new userFormat("|", "class|rx|tx|rx|tx|rx|tx|rx|tx|rx|tx", "1|2cos pack|2cos byte|2exp pack|2exp byte|2prec pack|2prec byte");
         for (int i = 0; i < clsPrc.length; i++) {
-            l.add(i + "|" + getShClasses(clsCos[i], clsExp[i], clsPrc[i]));
+            l.add(i + "|" + getShClasses(i));
         }
         return l;
     }
 
-    private String getShClasses(counter cos, counter exp, counter prc) {
-        return cos.packTx + "|" + exp.packTx + "|" + prc.packTx + "|"
-                + cos.byteTx + "|" + exp.byteTx + "|" + prc.byteTx + "|"
-                + cos.packRx + "|" + exp.packRx + "|" + prc.packRx + "|"
-                + cos.byteRx + "|" + exp.byteRx + "|" + prc.byteRx;
+    private String getShClasses(int i) {
+        counter cos = clsCos[i];
+        counter exp = clsExp[i];
+        counter prc = clsPrc[i];
+        return cos.packRx + "|" + cos.packTx + "|" + cos.byteRx + "|" + cos.byteTx + "|"
+                + exp.packRx + "|" + exp.packTx + "|" + exp.byteRx + "|" + exp.byteTx + "|"
+                + prc.packRx + "|" + prc.packTx + "|" + prc.byteRx + "|" + prc.byteTx;
     }
 
     /**
@@ -1288,24 +1290,26 @@ public class ifcEthTyp implements Runnable, ifcUp {
      * @return table
      */
     public userFormat getShTimes() {
-        userFormat l = new userFormat("|", "class|mpls|nsh|ip|mpls|nsh|ip|mpls|nsh|ip|mpls|nsh|ip|", "1|3tx pack|3tx byte|3rx pack|3rx byte");
+        userFormat l = new userFormat("|", "ttl|rx|tx|rx|tx|rx|tx|rx|tx|rx|tx", "1|2nsh pack|2nshs byte|2mpls pack|2mpls byte|2ip pack|2ip byte");
         for (int i = 0; i < ttlPrt.length; i++) {
             counter nsh;
-            if (i < ttlNsh.length) {
-                nsh = ttlNsh[i];
-            } else {
-                nsh = new counter();
-            }
-            l.add(i + "|" + getShTimes(ttlMpl[i], nsh, ttlPrt[i]));
+            l.add(i + "|" + getShTimes(i));
         }
         return l;
     }
 
-    private String getShTimes(counter mpl, counter nsh, counter prt) {
-        return mpl.packTx + "|" + nsh.packTx + "|" + prt.packTx + "|"
-                + mpl.byteTx + "|" + nsh.byteTx + "|" + prt.byteTx + "|"
-                + mpl.packRx + "|" + nsh.packRx + "|" + prt.packRx + "|"
-                + mpl.byteRx + "|" + nsh.byteRx + "|" + prt.byteRx;
+    private String getShTimes(int i) {
+        counter nsh;
+        if (i < ttlNsh.length) {
+            nsh = ttlNsh[i];
+        } else {
+            nsh = new counter();
+        }
+        counter mpl = ttlMpl[i];
+        counter prt = ttlPrt[i];
+        return nsh.packRx + "|" + nsh.packTx + "|" + nsh.byteRx + "|" + nsh.byteTx + "|"
+                + mpl.packRx + "|" + mpl.packTx + "|" + mpl.byteRx + "|" + mpl.byteTx + "|"
+                + prt.packRx + "|" + prt.packTx + "|" + prt.byteRx + "|" + prt.byteTx;
     }
 
     /**
