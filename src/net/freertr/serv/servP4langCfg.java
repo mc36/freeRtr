@@ -1488,6 +1488,9 @@ public class servP4langCfg implements ifcUp {
      * @return id, -1 if error
      */
     protected synchronized int getNextDynIfc() {
+        if (ifcRngEnd < 1) {
+            return -1;
+        }
         for (int cnt = 0; cnt < 16; cnt++) {
             int nxt = bits.random(ifcRngBeg, ifcRngEnd);
             servP4langIfc ifc = new servP4langIfc(this, nxt);
@@ -1505,6 +1508,9 @@ public class servP4langCfg implements ifcUp {
      * @return id, -1 if error
      */
     protected synchronized int getNextDynVrf() {
+        if (vrfRngEnd < 1) {
+            return -1;
+        }
         for (int cnt = 0; cnt < 16; cnt++) {
             int nxt = bits.random(vrfRngBeg, vrfRngEnd);
             servP4langVrf vrf = new servP4langVrf(nxt);
