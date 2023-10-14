@@ -430,10 +430,17 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
     public userFormat getShowGen(int mod) {
         switch (mod) {
             case 1:
-                userFormat res = new userFormat("|", "fwd|addr|name|type|clsd|recon|ago|since");
+                userFormat res = new userFormat("|", "fwd|addr|name|type|bckpln|clsd|recon|ago|since");
                 for (int i = 0; i < fwds.size(); i++) {
                     servP4langCfg ntry = fwds.get(i);
-                    res.add(i + "|" + ntry.remote + "|" + ntry.descr + "|" + ntry.platform + "|" + ntry.conn.pipe.isClosed() + "|" + ntry.reconns + "|" + bits.timePast(ntry.started) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.started + cfgAll.timeServerOffset, 3));
+                    res.add(i + "|" + ntry.remote + "|" + ntry.descr + "|" + ntry.bckplnRou.size() + "|" + ntry.platform + "|" + ntry.conn.pipe.isClosed() + "|" + ntry.reconns + "|" + bits.timePast(ntry.started) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.started + cfgAll.timeServerOffset, 3));
+                }
+                return res;
+            case 2:
+                res = new userFormat("|", "fwd|oneliner");
+                for (int i = 0; i < fwds.size(); i++) {
+                    servP4langCfg ntry = fwds.get(i);
+                    res.add(i + "|" + ntry.getShGenOneLiner());
                 }
                 return res;
             default:

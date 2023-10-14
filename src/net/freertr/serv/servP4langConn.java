@@ -1642,6 +1642,7 @@ public class servP4langConn implements Runnable {
                     nei = lower.findNei(ifc.ifc.fwdIf6, new addrIP());
                 }
                 if (nei == null) {
+                    br.macs.del(ntry);
                     continue;
                 }
                 String p = "0";

@@ -1209,6 +1209,7 @@ public class servP4langCfg implements ifcUp {
         res.add("time took|" + rndDoneTime);
         res.add("rounds skip|" + rndSkipNum);
         res.add("last skip|" + bits.time2str(cfgAll.timeZoneName, rndSkipLast + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(rndSkipLast) + " ago)");
+        res.add("backroutes|" + bckplnRou.size());
         res.add("interfaces|" + expIfc.size());
         res.add("bridges|" + expBr.size());
         res.add("vrfs|" + expVrf.size());

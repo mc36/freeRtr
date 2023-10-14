@@ -1245,6 +1245,10 @@ public class userShow {
                 rdr.putStrTab(srv.getShowGen(1));
                 return null;
             }
+            if (a.equals("oneliners")) {
+                rdr.putStrTab(srv.getShowGen(2));
+                return null;
+            }
             if (a.equals("config")) {
                 rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 1));
                 return null;

@@ -1371,6 +1371,7 @@ public class userExec {
         hl.add(cfgAll.dmnP4lang.listServers(), "3 4,.    <name:loc>            server name");
         hl.add(null, "4 .          general             general status");
         hl.add(null, "4 .          dataplanes          dataplanes");
+        hl.add(null, "4 .          oneliners           general dataplane status");
         hl.add(null, "4 5,.        backplane-ports     backplane ports");
         hl.add(null, "5 .            [num]             forwarder number");
         hl.add(null, "4 5,.        backplane-spf       backplane spf");

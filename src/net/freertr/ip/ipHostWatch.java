@@ -94,7 +94,7 @@ public class ipHostWatch implements Runnable {
             ipHostWatchEntry cur = fresh.get(i);
             ipHostWatchEntry old = hosts.find(cur);
             if (old == null) {
-                logger.info("new host appeared " + cur);
+                logger.info("new host appeared " + cur + " on " + ifc);
                 if (nodeOn == null) {
                     continue;
                 }
@@ -102,7 +102,7 @@ public class ipHostWatch implements Runnable {
                 continue;
             }
             if (cur.mac.compare(cur.mac, old.mac) != 0) {
-                logger.info("host changed from " + old + " to " + cur);
+                logger.info("host changed from " + old + " to " + cur + " on " + ifc);
                 if (nodeChg == null) {
                     continue;
                 }
@@ -113,7 +113,7 @@ public class ipHostWatch implements Runnable {
         for (int i = 0; i < hosts.size(); i++) {
             ipHostWatchEntry old = hosts.get(i);
             if (fresh.find(old) == null) {
-                logger.info("host disappeared " + old);
+                logger.info("host disappeared " + old + " on " + ifc);
                 if (nodeOff == null) {
                     continue;
                 }
