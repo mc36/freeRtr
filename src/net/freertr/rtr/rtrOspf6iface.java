@@ -264,7 +264,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
     }
 
     public String toString() {
-        return "" + iface;
+        return "ospf on " + iface;
     }
 
     /**

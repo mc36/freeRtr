@@ -63,8 +63,6 @@ mist natives p4fwd to report the boot messages through the control channel in da
 
 mist natives p4fwd to report all the error messages in the control channel in dataplane-says
 
-mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
-
 
 
 a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
@@ -91,7 +89,9 @@ p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asap
 
 l2tp3 to the dataplanes as it is for l2tp2 :)
 
-sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim icmp ipcomp
+sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
+
+mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 
 route-map --> route-policy converter
 

@@ -354,8 +354,8 @@ public class userExec {
         hl.add(null, "3 4        rpki                     resource public key infra protocol");
         hl.add(null, "4 5          <num:rtr>              process id");
         hl.add(null, "5 .            neighbor             list of neighbors");
-        hl.add(null, "5 .            database4            list of ipv4 roas");
-        hl.add(null, "5 .            database6            list of ipv6 roas");
+        hl.add(null, "5 .            database             list of native roas");
+        hl.add(null, "5 .            odatabase            list of other roas");
         hl.add(null, "3 4        rsvp                     resource reservation protocol");
         hl.add(null, "4 5          <name:vrf>             specify routing table");
         hl.add(null, "5 .            summary              list of tunnels in database");

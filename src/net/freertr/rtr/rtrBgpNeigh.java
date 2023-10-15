@@ -1748,21 +1748,17 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         conn.needFull.add(1);
     }
 
-    private void setValidityTable(tabRoute<addrIP> tab) {
-        for (int i = 0; i < tab.size(); i++) {
-            lower.setValidity(tab.get(i));
-        }
-    }
-
     /**
      * validate prefixes
      */
     public void setValidity() {
-        if (lower.rpkis.size() < 1) {
+        if (lower.rpkiT == null) {
             return;
         }
-        setValidityTable(accUni);
-        setValidityTable(accMlt);
+        rtrBgpUtil.setValidityTable(accUni, lower.rpkiA);
+        rtrBgpUtil.setValidityTable(accMlt, lower.rpkiA);
+        rtrBgpUtil.setValidityTable(accOuni, lower.rpkiO);
+        rtrBgpUtil.setValidityTable(accOmlt, lower.rpkiO);
     }
 
     /**

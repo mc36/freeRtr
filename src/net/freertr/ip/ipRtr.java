@@ -183,6 +183,21 @@ public abstract class ipRtr implements Comparator<ipRtr> {
     }
 
     /**
+     * check if this is a rpki process
+     *
+     * @return true if yes, false if not
+     */
+    public static boolean isRPKI(tabRouteAttr.routeType t) {
+        switch (t) {
+            case rpki4:
+            case rpki6:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
      * check if this is a bgp process
      *
      * @return 0=no, 1=bgp, 2=vpn

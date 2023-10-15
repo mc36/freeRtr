@@ -91,8 +91,8 @@ server rpki r
 router rpki4 1
  vrf v1
  neigh 2.2.2.2 port 323
- notif bgp4 1
- notif bgp6 1
+ wakeup bgp4 1
+ wakeup bgp6 1
  exit
 router bgp4 1
  vrf v1

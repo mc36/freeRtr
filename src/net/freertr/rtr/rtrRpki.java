@@ -7,6 +7,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgRtr;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
@@ -14,7 +15,6 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipRtr;
 import net.freertr.prt.prtTcp;
-import net.freertr.sec.secInfoUtl;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
@@ -56,19 +56,29 @@ public class rtrRpki extends ipRtr implements Runnable {
     protected int rtrNum;
 
     /**
+     * scan time interval
+     */
+    public int scanTime = 1000;
+
+    /**
      * list of neighbors
      */
     protected tabGen<rtrRpkiNeigh> neighs = new tabGen<rtrRpkiNeigh>();
 
     /**
-     * accepted ipv4 roas
+     * list of notifiers
      */
-    public tabRoute<addrIP> computed4 = new tabRoute<addrIP>("roa");
+    protected tabGen<rtrRpkiWake> wakes = new tabGen<rtrRpkiWake>();
 
     /**
-     * accepted ipv6 roas
+     * accepted native roas
      */
-    public tabRoute<addrIP> computed6 = new tabRoute<addrIP>("roa");
+    public tabRoute<addrIP> computedNat = new tabRoute<addrIP>("roa");
+
+    /**
+     * accepted other roas
+     */
+    public tabRoute<addrIP> computedOtr = new tabRoute<addrIP>("roa");
 
     /**
      * notified to wake up
@@ -184,8 +194,13 @@ public class rtrRpki extends ipRtr implements Runnable {
             tab4.mergeFrom(tabRoute.addType.better, ntry.table4, tabRouteAttr.distanLim);
             tab6.mergeFrom(tabRoute.addType.better, ntry.table6, tabRouteAttr.distanLim);
         }
-        computed4 = tab4;
-        computed6 = tab6;
+        if (fwdCore.ipVersion == ipCor4.protocolVersion) {
+            computedNat = tab4;
+            computedOtr = tab6;
+        } else {
+            computedNat = tab6;
+            computedOtr = tab4;
+        }
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -223,7 +238,11 @@ public class rtrRpki extends ipRtr implements Runnable {
         l.add(null, "3 4       timer                   neighbor keepalive times");
         l.add(null, "4 5         <num>                 query time in ms");
         l.add(null, "5 .           <num>               flush time in ms");
-        secInfoUtl.getHelp(l, 3, "ipinfo               check peers");
+        l.add(null, "1 2   scantime                    scan time interval");
+        l.add(null, "2 .     <num>                     ms between scans");
+        l.add(null, "1 2   wakeup                      notify other process on changes");
+        cfgRtr.getRouterList(l, 0, "");
+        l.add(null, "3 .         <num>                 process number");
     }
 
     /**
@@ -241,6 +260,7 @@ public class rtrRpki extends ipRtr implements Runnable {
             }
             ntry.getConfig(l, beg);
         }
+        l.add(beg + "scantime " + scanTime);
     }
 
     /**
@@ -255,6 +275,14 @@ public class rtrRpki extends ipRtr implements Runnable {
         if (s.equals("no")) {
             s = cmd.word();
             negated = true;
+        }
+        if (s.equals("scantime")) {
+            scanTime = bits.str2num(cmd.word());
+            if (!negated) {
+                return false;
+            }
+            scanTime = 1000;
+            return false;
         }
         if (!s.equals("neighbor")) {
             return true;
@@ -377,7 +405,7 @@ public class rtrRpki extends ipRtr implements Runnable {
     public void run() {
         for (;;) {
             if (compute.misleep(0) > 0) {
-                bits.sleep(1000);
+                bits.sleep(scanTime);
             }
             if (debugger.rtrRpkiEvnt) {
                 logger.debug("rpki changed");

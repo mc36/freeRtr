@@ -13,7 +13,6 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
-import net.freertr.rtr.rtrBgp;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;

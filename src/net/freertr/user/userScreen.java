@@ -531,6 +531,34 @@ public class userScreen {
     }
 
     /**
+     * send indexed colors
+     *
+     * @param pip pipeline to use
+     * @param fg color index
+     * @param bg color index
+     */
+    public static void sendIdxCol(pipeSide pip, int fg, int bg) {
+        pip.strPut("\033[38;5;" + (fg & 0xff) + "m");
+        pip.strPut("\033[48;5;" + (bg & 0xff) + "m");
+    }
+
+    /**
+     * send true colors
+     *
+     * @param pip pipeline to use
+     * @param fr foreground red
+     * @param fg foreground green
+     * @param fb foreground blue
+     * @param br background red
+     * @param bg background green
+     * @param bb background blue
+     */
+    public static void sendTruCol(pipeSide pip, int fr, int fg, int fb, int br, int bg, int bb) {
+        pip.strPut("\033[38;2;" + (fr & 0xff) + ";" + (fg & 0xff) + ";" + (fb & 0xff) + "m");
+        pip.strPut("\033[48;2;" + (br & 0xff) + ";" + (bg & 0xff) + ";" + (bb & 0xff) + "m");
+    }
+
+    /**
      * send terminal music
      *
      * @param pip pipeline to use

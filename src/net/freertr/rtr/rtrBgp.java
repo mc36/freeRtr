@@ -398,14 +398,29 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected boolean flowInst;
 
     /**
-     * list of rpkis
+     * rpki type configured
      */
-    protected tabGen<rtrRpkiNeigh> rpkis;
+    protected tabRouteAttr.routeType rpkiT;
 
     /**
-     * the computed rpki routes
+     * rpki number configured
      */
-    public tabRoute<addrIP> computedRpki = new tabRoute<addrIP>("rx");
+    protected int rpkiN;
+
+    /**
+     * rpki process
+     */
+    protected rtrRpki rpkiR;
+
+    /**
+     * rpki table
+     */
+    protected tabRoute<addrIP> rpkiA = new tabRoute<addrIP>("roa");
+
+    /**
+     * other rpki table
+     */
+    protected tabRoute<addrIP> rpkiO = new tabRoute<addrIP>("roa");
 
     /**
      * the computed other unicast routes
@@ -1091,7 +1106,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         neighs = new tabGen<rtrBgpNeigh>();
         mons = new tabGen<rtrBgpMon>();
         dmps = new tabGen<rtrBgpMrt>();
-        rpkis = new tabGen<rtrRpkiNeigh>();
         temps = new tabGen<rtrBgpTemp>();
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
@@ -1932,9 +1946,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " rpki");
         }
-        computedRpki = new tabRoute<addrIP>("bgp");
-        for (int i = 0; i < rpkis.size(); i++) {
-            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table4, tabRouteAttr.distanLim);
+        rpkiR = null;
+        if (rpkiT != null) {
+            cfgRtr rtrCfg = cfgAll.rtrFind(rpkiT, rpkiN, false);
+            if (rtrCfg != null) {
+                rpkiR = (rtrRpki) rtrCfg.getRouter();
+            }
+        }
+        if (rpkiR != null) {
+            rpkiA = rpkiR.computedNat;
+            rpkiO = rpkiR.computedOtr;
+        } else {
+            rpkiA = new tabRoute<addrIP>("");
+            rpkiO = new tabRoute<addrIP>("");
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -2167,8 +2191,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry == null) {
             return best;
         }
-        if ((rpkis.size() > 0) && ((afi == afiUni) || (afi == afiMlt))) {
-            setValidity(ntry);
+        if ((rpkiT != null) && ((afi == afiUni) || (afi == afiMlt))) {
+            rtrBgpUtil.setValidity(ntry, rpkiA);
+        }
+        if ((rpkiT != null) && ((afi == afiOuni) || (afi == afiOmlt))) {
+            rtrBgpUtil.setValidity(ntry, rpkiO);
         }
         if (best == null) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
@@ -2537,29 +2564,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
-     * set validity
-     *
-     * @param ntry entry to update
-     */
-    protected void setValidity(tabRouteEntry<addrIP> ntry) {
-        tabRouteEntry<addrIP> res = computedRpki.route(ntry.prefix.broadcast);
-        for (int o = 0; o < ntry.alts.size(); o++) {
-            tabRouteAttr<addrIP> attr = ntry.alts.get(o);
-            if (res == null) {
-                attr.validity = 2;
-                continue;
-            }
-            int i = attr.asPathEnd();
-            if (i != res.best.rouSrc) {
-                attr.validity = 3;
-                continue;
-            }
-            attr.validity = 1;
-        }
-        ntry.selectBest();
-    }
-
-    /**
      * update flap statistics
      *
      * @param afi afi
@@ -2643,10 +2647,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         need2run = false;
         compute.wakeup();
-        for (int i = 0; i < rpkis.size(); i++) {
-            rtrRpkiNeigh ntry = rpkis.get(i);
-            ntry.stopNow();
-        }
         for (int i = 0; i < mons.size(); i++) {
             rtrBgpMon ntry = mons.get(i);
             ntry.stopNow();
@@ -2788,11 +2788,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "3 4       <name:prx>              proxy profile");
         l.add(null, "4 5         <str>                 hostname");
         l.add(null, "5 .           <num>               port number");
-        l.add(null, "1 2   rpki                        setup resource public key infrastructure server");
-        l.add(null, "2 3     <str>                     name of rpki");
-        l.add(null, "3 4       <name:prx>              proxy profile");
-        l.add(null, "4 5         <str>                 hostname");
-        l.add(null, "5 .           <num>               port number");
+        l.add(null, "1 2   rpki                        setup resource public key infrastructure");
+        cfgRtr.getRouterList(l, 0, "");
+        l.add(null, "3 .         <num>                 process number");
         l.add(null, "1 2   afi-other                   select other to advertise");
         l.add(null, "2 .     enable                    enable processing");
         l.add(null, "2 .     vpn-mode                  enable vpn mode");
@@ -2919,14 +2917,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
         cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
+        if (rpkiT == null) {
+            l.add(beg + "no rpki");
+        } else {
+            l.add(beg + "rpki " + cfgRtr.num2name(rpkiT) + " " + rpkiN);
+        }
         for (int i = 0; i < mons.size(); i++) {
             mons.get(i).getConfig(l, beg);
         }
         for (int i = 0; i < dmps.size(); i++) {
             dmps.get(i).getConfig(l, beg);
-        }
-        for (int i = 0; i < rpkis.size(); i++) {
-            rpkis.get(i).getConfig(l, beg);
         }
         l.add(beg + cmds.comment);
         for (int i = 0; i < temps.size(); i++) {
@@ -3623,24 +3623,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("rpki")) {
-            rtrRpkiNeigh rpki = new rtrRpkiNeigh(null);/////////////
             if (negated) {
-                rpki = rpkis.del(rpki);
-                if (rpki == null) {
-                    return false;
-                }
-                rpki.stopNow();
+                rpkiR = null;
+                rpkiT = null;
+                rpkiN = 0;
                 return false;
             }
-            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
-            if (prx == null) {
-                cmd.error("no such proxy");
+            rpkiT = cfgRtr.name2num(cmd.word());
+            rpkiN = bits.str2num(cmd.word());
+            if (!ipRtr.isRPKI(rpkiT)) {
+                cmd.error("not an rpki process");
                 return false;
             }
-            rpki.server = cmd.word();
-            rpki.port = bits.str2num(cmd.word());
-            rpki.startNow();
-            rpkis.add(rpki);
             return false;
         }
         if (s.equals("listen")) {
@@ -4371,7 +4365,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("vplses|" + rtrBgpUtil.tabSiz2str(vpls));
         l.add("evpns|" + rtrBgpUtil.tabSiz2str(evpn));
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
-        l.add("rpki table|" + computedRpki.size());
+        l.add("rpki table|" + rpkiA.size() + "|" + rpkiO.size());
         l.add("unicast table|" + routerComputedU.size() + "|" + changedUni.size());
         l.add("multicast table|" + routerComputedM.size() + "|" + changedMlt.size());
         l.add("ouni table|" + computedOuni.size() + "|" + changedOuni.size());

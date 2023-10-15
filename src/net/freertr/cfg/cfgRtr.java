@@ -60,12 +60,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
     /**
      * type of routing process
      */
-    public tabRouteAttr.routeType type;
+    public final tabRouteAttr.routeType type;
 
     /**
      * number of routing process
      */
-    public int number;
+    public final int number;
 
     /**
      * vrf of this router
@@ -342,6 +342,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! nexthop recursion 1",
         "router bgp[46] .*! incremental 1000",
         "router bgp[46] .*! no conquer",
+        "router bgp[46] .*! no rpki",
         "router bgp[46] .*! safe-ebgp",
         "router bgp[46] .*! no flapstat",
         "router bgp[46] .*! no flowspec-advert",
@@ -490,7 +491,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router msdp[46] .*! no neighbor .* password",
         "router msdp[46] .*! no neighbor .* bfd",
         // router rpki
-        "router rpki[46] .*! neighbor .* timer 30000 120000",
+        "router rpki[46] .*! scantime 1000",
+        "router rpki[46] .*! neighbor .* timers 30000 120000",
         "router rpki[46] .*! neighbor .* preference 100",
         "router rpki[46] .*! no neighbor .* description",
         "router rpki[46] .*! no neighbor .* shutdown",
