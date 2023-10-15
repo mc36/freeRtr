@@ -201,6 +201,21 @@ public class rtrRpki extends ipRtr implements Runnable {
             computedNat = tab6;
             computedOtr = tab4;
         }
+        for (int i = 0; i < wakes.size(); i++) {
+            rtrRpkiWake w = wakes.get(i);
+            if (w == null) {
+                continue;
+            }
+            cfgRtr rtrC = cfgAll.rtrFind(w.remT, w.remN, false);
+            if (rtrC == null) {
+                continue;
+            }
+            ipRtr rtrI = rtrC.getRouter();
+            if (rtrI == null) {
+                continue;
+            }
+            rtrI.routerRedistChanged();
+        }
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -260,6 +275,13 @@ public class rtrRpki extends ipRtr implements Runnable {
             }
             ntry.getConfig(l, beg);
         }
+        for (int i = 0; i < wakes.size(); i++) {
+            rtrRpkiWake w = wakes.get(i);
+            if (w == null) {
+                continue;
+            }
+            l.add(beg + "wake " + cfgRtr.num2name(w.remT) + " " + w.remN);
+        }
         l.add(beg + "scantime " + scanTime);
     }
 
@@ -275,6 +297,17 @@ public class rtrRpki extends ipRtr implements Runnable {
         if (s.equals("no")) {
             s = cmd.word();
             negated = true;
+        }
+        if (s.equals("wakeup")) {
+            tabRouteAttr.routeType t = cfgRtr.name2num(cmd.word());
+            int n = bits.str2num(cmd.word());
+            rtrRpkiWake w = new rtrRpkiWake(t, n);
+            if (negated) {
+                wakes.del(w);
+            } else {
+                wakes.add(w);
+            }
+            return false;
         }
         if (s.equals("scantime")) {
             scanTime = bits.str2num(cmd.word());

@@ -34,18 +34,6 @@ public class rtrRpkiWake implements Comparator<rtrRpkiWake> {
         remN = n;
     }
 
-    /**
-     * commands to read
-     *
-     * @param cmd
-     * @return
-     */
-    public rtrRpkiWake fromString(cmds cmd) {
-        tabRouteAttr.routeType t = cfgRtr.name2num(cmd.word());
-        int n = bits.str2num(cmd.word());
-        return new rtrRpkiWake(t, n);
-    }
-
     public int compare(rtrRpkiWake o1, rtrRpkiWake o2) {
         int i = o1.remT.compareTo(o2.remT);
         if (i != 0) {
