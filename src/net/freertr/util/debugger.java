@@ -395,6 +395,16 @@ public class debugger {
     public static boolean rtrMsdpTraf = false;
 
     /**
+     * rtrRpki events
+     */
+    public static boolean rtrRpkiEvnt = false;
+
+    /**
+     * rtrRpki traffic
+     */
+    public static boolean rtrRpkiTraf = false;
+
+    /**
      * rtrRsvp event
      */
     public static boolean rtrRsvpEvnt = false;
@@ -1130,6 +1140,9 @@ public class debugger {
         l.add(null, "3 4        msdp              multicast source discovery protocol");
         l.add(null, "4 .          event           table events");
         l.add(null, "4 .          traffic         interface packets");
+        l.add(null, "3 4        rpki              resource pulbic key infra protocol");
+        l.add(null, "4 .          event           table events");
+        l.add(null, "4 .          traffic         interface packets");
         l.add(null, "3 4        rsvp              resource reservation protocol");
         l.add(null, "4 .          event           table events");
         l.add(null, "4 .          traffic         interface packets");
@@ -1688,6 +1701,18 @@ public class debugger {
                 }
                 if (s.equals("traffic")) {
                     rtrMsdpTraf = v;
+                    return false;
+                }
+                return true;
+            }
+            if (s.equals("rpki")) {
+                s = cmd.word();
+                if (s.equals("event")) {
+                    rtrRpkiEvnt = v;
+                    return false;
+                }
+                if (s.equals("traffic")) {
+                    rtrRpkiTraf = v;
                     return false;
                 }
                 return true;

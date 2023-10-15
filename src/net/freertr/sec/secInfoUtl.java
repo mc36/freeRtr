@@ -431,7 +431,7 @@ public class secInfoUtl {
      */
     public final static void getHelp(userHelping lst, int tab, String beg) {
         if (tab > 0) {
-            lst.add(null, (tab + 0) + " " + (tab + 1) + "  " + beg + "                  test ip info before accepting");
+            lst.add(null, (tab + 0) + " " + (tab + 1) + "  " + beg);
             beg = "";
         }
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "router4                      lookup addresses");

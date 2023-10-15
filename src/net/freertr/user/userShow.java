@@ -3,8 +3,6 @@ package net.freertr.user;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.addr.addrIPv4;
-import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrIpx;
 import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authGeneric;
@@ -134,7 +132,6 @@ import net.freertr.util.history;
 import net.freertr.util.logBuf;
 import net.freertr.util.logger;
 import net.freertr.util.syncInt;
-import net.freertr.util.verCore;
 import net.freertr.util.version;
 
 /**
@@ -2332,6 +2329,10 @@ public class userShow {
                 doShowIpXmsdp(tabRouteAttr.routeType.msdp4);
                 return null;
             }
+            if (a.equals("rpki")) {
+                doShowIpXrpki(tabRouteAttr.routeType.rpki4);
+                return null;
+            }
             if (a.equals("ldp")) {
                 doShowIpXldp(4);
                 return null;
@@ -2674,6 +2675,10 @@ public class userShow {
             }
             if (a.equals("msdp")) {
                 doShowIpXmsdp(tabRouteAttr.routeType.msdp6);
+                return null;
+            }
+            if (a.equals("rpki")) {
+                doShowIpXrpki(tabRouteAttr.routeType.rpki6);
                 return null;
             }
             if (a.equals("ldp")) {
@@ -3577,6 +3582,31 @@ public class userShow {
         cmd.badCmd();
     }
 
+    private void doShowIpXrpki(tabRouteAttr.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        if (r.rpki == null) {
+            cmd.error("uninitialized process");
+            return;
+        }
+        String a = cmd.word();
+        if (a.equals("neighbor")) {
+            rdr.putStrTab(r.rpki.getNeighShow());
+            return;
+        }
+        if (a.equals("database4")) {
+            doShowRoutes(r.rpki.fwdCore, r.rpki.computed4, 4);
+            return;
+        }
+        if (a.equals("database6")) {
+            doShowRoutes(r.rpki.fwdCore, r.rpki.computed6, 4);
+            return;
+        }
+    }
+
     private void doShowIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3943,14 +3973,6 @@ public class userShow {
         }
         if (a.equals("nexthop")) {
             rdr.putStrTab(r.bgp.showSummary(3));
-            return;
-        }
-        if (a.equals("rpkisum")) {
-            rdr.putStrTab(r.bgp.showRpkiNei());
-            return;
-        }
-        if (a.equals("rpkitab")) {
-            doShowRoutes(r.bgp.fwdCore, r.bgp.computedRpki, 4);
             return;
         }
         if (a.equals("desummary")) {

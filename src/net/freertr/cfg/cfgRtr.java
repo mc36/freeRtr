@@ -34,6 +34,7 @@ import net.freertr.rtr.rtrPvrp;
 import net.freertr.rtr.rtrRift;
 import net.freertr.rtr.rtrRip4;
 import net.freertr.rtr.rtrRip6;
+import net.freertr.rtr.rtrRpki;
 import net.freertr.rtr.rtrUni2flow;
 import net.freertr.rtr.rtrUni2multi;
 import net.freertr.tab.tabGen;
@@ -150,6 +151,11 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
      * msdp handler
      */
     public rtrMsdp msdp;
+
+    /**
+     * rpki handler
+     */
+    public rtrRpki rpki;
 
     /**
      * flowspec handler
@@ -483,6 +489,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router msdp[46] .*! no neighbor .* update-source",
         "router msdp[46] .*! no neighbor .* password",
         "router msdp[46] .*! no neighbor .* bfd",
+        // router rpki
+        "router rpki[46] .*! neighbor .* timer 30000 120000",
+        "router rpki[46] .*! neighbor .* preference 100",
+        "router rpki[46] .*! no neighbor .* description",
+        "router rpki[46] .*! no neighbor .* shutdown",
+        "router rpki[46] .*! no neighbor .* update-source",
         // router flowspec
         "router flowspec[46] .*! distance 254",
         // router ghosthunt
@@ -634,6 +646,12 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         if (a.equals("msdp6")) {
             return tabRouteAttr.routeType.msdp6;
         }
+        if (a.equals("rpki4")) {
+            return tabRouteAttr.routeType.rpki4;
+        }
+        if (a.equals("rpki6")) {
+            return tabRouteAttr.routeType.rpki6;
+        }
         if (a.equals("flowspec4")) {
             return tabRouteAttr.routeType.flwspc4;
         }
@@ -747,6 +765,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 return "msdp4";
             case msdp6:
                 return "msdp6";
+            case rpki4:
+                return "rpki4";
+            case rpki6:
+                return "rpki6";
             case flwspc4:
                 return "flowspec4";
             case flwspc6:
@@ -818,6 +840,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case eigrp4:
             case bgp4:
             case msdp4:
+            case rpki4:
             case flwspc4:
             case ghosthunt4:
             case uni2multi4:
@@ -840,6 +863,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case eigrp6:
             case bgp6:
             case msdp6:
+            case rpki6:
             case flwspc6:
             case ghosthunt6:
             case uni2multi6:
@@ -1566,6 +1590,10 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             msdp.routerCloseNow();
             msdp = null;
         }
+        if (rpki != null) {
+            rpki.routerCloseNow();
+            rpki = null;
+        }
         if (flwspc != null) {
             flwspc.routerCloseNow();
             flwspc = null;
@@ -1649,6 +1677,9 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case msdp4:
             case msdp6:
                 return msdp;
+            case rpki4:
+            case rpki6:
+                return rpki;
             case flwspc4:
             case flwspc6:
                 return flwspc;
@@ -1781,6 +1812,14 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 fwd = vrf.fwd6;
                 bgp = new rtrBgp(vrf.fwd6, vrf, vrf.tcp6, number);
                 break;
+            case rpki4:
+                fwd = vrf.fwd4;
+                rpki = new rtrRpki(vrf.fwd4, vrf.tcp4, number);
+                break;
+            case rpki6:
+                fwd = vrf.fwd6;
+                rpki = new rtrRpki(vrf.fwd6, vrf.tcp6, number);
+                break;
             case msdp4:
                 fwd = vrf.fwd4;
                 msdp = new rtrMsdp(vrf.fwd4, vrf.tcp4, number);
@@ -1874,6 +1913,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             case bgp6:
             case msdp4:
             case msdp6:
+            case rpki4:
+            case rpki6:
                 need2nd = true;
                 break;
             default:
@@ -1984,6 +2025,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         l.add(null, (p + 2) + " " + (p + 3) + "     olsr6                 optimized link state routing protocol" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     msdp4                 multicast source discovery protocol" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     msdp6                 multicast source discovery protocol" + e);
+        l.add(null, (p + 2) + " " + (p + 3) + "     rpki4                 resource public key infra protocol" + e);
+        l.add(null, (p + 2) + " " + (p + 3) + "     rpki6                 resource public key infra protocol" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     flowspec4             flowspec to flowspec rewriter" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     flowspec6             flowspec to flowspec rewriter" + e);
         l.add(null, (p + 2) + " " + (p + 3) + "     ghosthunt4            ghost/zombie route hunter" + e);

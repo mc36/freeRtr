@@ -5,12 +5,12 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
-import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.ip.ipCor4;
+import net.freertr.ip.ipCor6;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
-import net.freertr.ip.ipFwdMcast;
 import net.freertr.ip.ipFwdTab;
 import net.freertr.ip.ipRtr;
 import net.freertr.prt.prtTcp;
@@ -18,6 +18,7 @@ import net.freertr.sec.secInfoUtl;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabRoute;
+import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
@@ -25,23 +26,19 @@ import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
+import net.freertr.util.notifier;
 
 /**
- * multicast source discovery (rfc3618) protocol
+ * resource public key infrastructure (rfc6810) protocol
  *
  * @author matecsaba
  */
-public class rtrMsdp extends ipRtr {
-
-    /**
-     * port to use
-     */
-    public final static int port = 639;
+public class rtrRpki extends ipRtr implements Runnable {
 
     /**
      * the forwarder protocol
      */
-    protected ipFwd fwdCore;
+    public ipFwd fwdCore;
 
     /**
      * the tcp protocol
@@ -49,9 +46,9 @@ public class rtrMsdp extends ipRtr {
     protected prtTcp tcpCore;
 
     /**
-     * list of neighbors
+     * route type
      */
-    protected tabGen<rtrMsdpNeigh> neighs = new tabGen<rtrMsdpNeigh>();
+    protected final tabRouteAttr.routeType rouTyp;
 
     /**
      * router number
@@ -59,24 +56,49 @@ public class rtrMsdp extends ipRtr {
     protected int rtrNum;
 
     /**
-     * accepted sas
+     * list of neighbors
      */
-    public tabGen<ipFwdMcast> cache = new tabGen<ipFwdMcast>();
+    protected tabGen<rtrRpkiNeigh> neighs = new tabGen<rtrRpkiNeigh>();
 
     /**
-     * create bgp process
-     *
-     * @param forwarder forwarder to update
-     * @param protocol tcp protocol to use
-     * @param id process id
+     * accepted ipv4 roas
      */
-    public rtrMsdp(ipFwd forwarder, prtTcp protocol, int id) {
-        if (debugger.rtrMsdpEvnt) {
+    public tabRoute<addrIP> computed4 = new tabRoute<addrIP>("roa");
+
+    /**
+     * accepted ipv6 roas
+     */
+    public tabRoute<addrIP> computed6 = new tabRoute<addrIP>("roa");
+
+    /**
+     * notified to wake up
+     */
+    public final notifier compute = new notifier();
+
+    private boolean need2run;
+
+    public rtrRpki(ipFwd forwarder, prtTcp protocol, int id) {
+        if (debugger.rtrRpkiEvnt) {
             logger.debug("startup");
         }
         fwdCore = forwarder;
         tcpCore = protocol;
         rtrNum = id;
+        switch (fwdCore.ipVersion) {
+            case ipCor4.protocolVersion:
+                rouTyp = tabRouteAttr.routeType.rpki4;
+                break;
+            case ipCor6.protocolVersion:
+                rouTyp = tabRouteAttr.routeType.rpki6;
+                break;
+            default:
+                rouTyp = null;
+                break;
+        }
+        routerCreateComputed();
+        need2run = true;
+        new Thread(this).start();
+        fwdCore.routerAdd(this, rouTyp, id);
     }
 
     /**
@@ -85,7 +107,7 @@ public class rtrMsdp extends ipRtr {
      * @return string
      */
     public String toString() {
-        return "msdp on " + fwdCore;
+        return "rpki on " + fwdCore;
     }
 
     /**
@@ -104,7 +126,7 @@ public class rtrMsdp extends ipRtr {
      */
     public void routerNeighList(tabRoute<addrIP> tab) {
         for (int i = 0; i < neighs.size(); i++) {
-            rtrMsdpNeigh nei = neighs.get(i);
+            rtrRpkiNeigh nei = neighs.get(i);
             if (nei == null) {
                 continue;
             }
@@ -155,25 +177,15 @@ public class rtrMsdp extends ipRtr {
      * create computed
      */
     public synchronized void routerCreateComputed() {
-        tabGen<ipFwdMcast> lst = new tabGen<ipFwdMcast>();
-        for (int o = 0; o < neighs.size(); o++) {
-            rtrMsdpNeigh nei = neighs.get(o);
-            if (nei == null) {
-                continue;
-            }
-            int ifc = getIface(nei.peer);
-            if (ifc == 0) {
-                continue;
-            }
-            for (int i = 0; i < nei.learned.size(); i++) {
-                ipFwdMcast ntry = nei.learned.get(i);
-                if (getIface(ntry.upstream) != ifc) {
-                    continue;
-                }
-                lst.add(ntry);
-            }
+        tabRoute<addrIP> tab4 = new tabRoute<addrIP>("rpki4");
+        tabRoute<addrIP> tab6 = new tabRoute<addrIP>("rpki6");
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrRpkiNeigh ntry = neighs.get(i);
+            tab4.mergeFrom(tabRoute.addType.better, ntry.table4, tabRouteAttr.distanLim);
+            tab6.mergeFrom(tabRoute.addType.better, ntry.table6, tabRouteAttr.distanLim);
         }
-        cache = lst;
+        computed4 = tab4;
+        computed6 = tab6;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -192,34 +204,26 @@ public class rtrMsdp extends ipRtr {
     public void routerOthersChanged() {
     }
 
-    /**
-     * get help
-     *
-     * @param l list
-     */
     public void routerGetHelp(userHelping l) {
         List<String> neis = new ArrayList<String>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrMsdpNeigh ntry = neighs.get(i);
+            rtrRpkiNeigh ntry = neighs.get(i);
             neis.add("" + ntry.peer);
         }
         l.add(null, "1 2   neighbor                    specify neighbor parameters");
         l.add(neis, "2 3     <addr:loc>                address of peer");
-        l.add(null, "3 .       enable                  enable this peer");
+        l.add(null, "3 4       port                    set target port");
+        l.add(null, "4 .         <num>                 value");
         l.add(null, "3 4       description             describe this neighbor");
         l.add(null, "4 4,.       <text>                description of neighbor");
-        l.add(null, "3 4       password                set session password");
-        l.add(null, "4 .         <text>                tcp password");
         l.add(null, "3 4       update-source           connection source for this peer");
         l.add(null, "4 .         <name:ifc>            name of interface");
+        l.add(null, "3 4       preference              set preference");
+        l.add(null, "4 .         <num>                 value");
         l.add(null, "3 4       timer                   neighbor keepalive times");
-        l.add(null, "4 5         <num>                 keepalive in ms");
-        l.add(null, "5 6           <num>               hold time in ms");
-        l.add(null, "6 7             <num>             refresh time in ms");
-        l.add(null, "7 .               <num>           flush time in ms");
-        secInfoUtl.getHelp(l, 3, "ipinfo            check peers");
-        l.add(null, "3 .       shutdown                connection disabled for this peer");
-        l.add(null, "3 .       bfd                     enable bfd triggered down");
+        l.add(null, "4 5         <num>                 query time in ms");
+        l.add(null, "5 .           <num>               flush time in ms");
+        secInfoUtl.getHelp(l, 3, "ipinfo               check peers");
     }
 
     /**
@@ -231,11 +235,11 @@ public class rtrMsdp extends ipRtr {
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
         for (int i = 0; i < neighs.size(); i++) {
-            rtrMsdpNeigh ntry = neighs.get(i);
+            rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            ntry.getCfg(l, beg, filter);
+            ntry.getConfig(l, beg);
         }
     }
 
@@ -255,13 +259,13 @@ public class rtrMsdp extends ipRtr {
         if (!s.equals("neighbor")) {
             return true;
         }
-        rtrMsdpNeigh ntry = new rtrMsdpNeigh(this);
+        rtrRpkiNeigh ntry = new rtrRpkiNeigh(this);
         if (ntry.peer.fromString(cmd.word())) {
             cmd.error("bad address");
             return false;
         }
         s = cmd.word();
-        if (s.equals("enable")) {
+        if (s.equals("port")) {
             if (negated) {
                 ntry = neighs.del(ntry);
                 if (ntry == null) {
@@ -272,8 +276,8 @@ public class rtrMsdp extends ipRtr {
             }
             if (neighs.add(ntry) != null) {
                 return false;
-
             }
+            ntry.port = bits.str2num(cmd.word());
             ntry.startNow();
             return false;
         }
@@ -303,14 +307,6 @@ public class rtrMsdp extends ipRtr {
             ntry.srcIface = res;
             return false;
         }
-        if (s.equals("password")) {
-            if (negated) {
-                ntry.passwd = null;
-                return false;
-            }
-            ntry.passwd = authLocal.passwdDecode(cmd.getRemaining());
-            return false;
-        }
         if (s.equals("description")) {
             if (negated) {
                 ntry.description = null;
@@ -320,25 +316,16 @@ public class rtrMsdp extends ipRtr {
             return false;
         }
         if (s.equals("timer")) {
-            ntry.keepAlive = bits.str2num(cmd.word());
-            ntry.holdTimer = bits.str2num(cmd.word());
-            ntry.freshTimer = bits.str2num(cmd.word());
+            ntry.queryTimer = bits.str2num(cmd.word());
             ntry.flushTimer = bits.str2num(cmd.word());
             return false;
         }
-        if (s.equals("ipinfo")) {
-            ntry.ipInfoCfg = secInfoUtl.doCfgStr(ntry.ipInfoCfg, cmd, false);
-            return false;
-        }
         if (s.equals("shutdown")) {
-            ntry.shutdown = !negated;
             if (!negated) {
-                ntry.closeNow();
+                ntry.stopNow();
+            } else {
+                ntry.startNow();
             }
-            return false;
-        }
-        if (s.equals("bfd")) {
-            ntry.bfdTrigger = !negated;
             return false;
         }
         return true;
@@ -349,12 +336,11 @@ public class rtrMsdp extends ipRtr {
      */
     public void routerCloseNow() {
         for (int i = 0; i < neighs.size(); i++) {
-            rtrMsdpNeigh ntry = neighs.get(i);
+            rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
             ntry.stopNow();
-            ntry.closeNow();
         }
         fwdCore.routerDel(this);
     }
@@ -365,30 +351,13 @@ public class rtrMsdp extends ipRtr {
      * @return list of neighbors
      */
     public userFormat getNeighShow() {
-        userFormat l = new userFormat("|", "address|learned|uptime");
+        userFormat l = new userFormat("|", "address|ipv6|ipv6|uptime");
         for (int i = 0; i < neighs.size(); i++) {
-            rtrMsdpNeigh ntry = neighs.get(i);
+            rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.peer + "|" + ntry.learned.size() + "|" + bits.timePast(ntry.upTime));
-        }
-        return l;
-    }
-
-    /**
-     * get sources show
-     *
-     * @return list of sources
-     */
-    public userFormat getSourcesShow() {
-        userFormat l = new userFormat("|", "source|group|upstream");
-        for (int i = 0; i < cache.size(); i++) {
-            ipFwdMcast ntry = cache.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            l.add(ntry.source + "|" + ntry.group + "|" + ntry.upstream);
+            l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + bits.timePast(ntry.upTime));
         }
         return l;
     }
@@ -399,10 +368,29 @@ public class rtrMsdp extends ipRtr {
      * @param adr address
      * @return neighbor, null if not found
      */
-    public rtrMsdpNeigh findPeer(addrIP adr) {
-        rtrMsdpNeigh nei = new rtrMsdpNeigh(this);
+    public rtrRpkiNeigh findPeer(addrIP adr) {
+        rtrRpkiNeigh nei = new rtrRpkiNeigh(this);
         nei.peer.setAddr(adr);
         return neighs.find(nei);
+    }
+
+    public void run() {
+        for (;;) {
+            if (compute.misleep(0) > 0) {
+                bits.sleep(1000);
+            }
+            if (debugger.rtrRpkiEvnt) {
+                logger.debug("rpki changed");
+            }
+            if (!need2run) {
+                break;
+            }
+            try {
+                routerCreateComputed();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+        }
     }
 
 }

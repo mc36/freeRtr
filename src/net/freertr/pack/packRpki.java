@@ -69,6 +69,11 @@ public class packRpki {
     public final static int msgCacheReset = 8;
 
     /**
+     * router key
+     */
+    public final static int msgRouterKey = 9;
+
+    /**
      * error report
      */
     public final static int msgErrorReport = 10;
@@ -146,6 +151,8 @@ public class packRpki {
                 return "end";
             case msgCacheReset:
                 return "cacheReset";
+            case msgRouterKey:
+                return "routerKey";
             case msgErrorReport:
                 return "error";
             default:
@@ -212,6 +219,8 @@ public class packRpki {
                 break;
             case msgCacheReset:
                 break;
+            case msgRouterKey:
+                break;
             case msgErrorReport:
                 break;
             default:
@@ -271,6 +280,8 @@ public class packRpki {
                 pck.putSkip(4);
                 break;
             case msgCacheReset:
+                break;
+            case msgRouterKey:
                 break;
             case msgErrorReport:
                 break;

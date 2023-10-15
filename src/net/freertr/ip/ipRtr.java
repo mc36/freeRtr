@@ -191,6 +191,8 @@ public abstract class ipRtr implements Comparator<ipRtr> {
         switch (routerProtoTyp) {
             case msdp4:
             case msdp6:
+            case rpki4:
+            case rpki6:
             case flwspc4:
             case flwspc6:
             case ghosthunt4:

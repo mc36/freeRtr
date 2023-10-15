@@ -60,6 +60,7 @@ import net.freertr.util.cmds;
 import net.freertr.enc.encXml;
 import net.freertr.prt.prtRedun;
 import net.freertr.rtr.rtrRiftIface;
+import net.freertr.rtr.rtrRpkiNeigh;
 import net.freertr.util.logger;
 import net.freertr.util.version;
 
@@ -663,6 +664,10 @@ public class userClear {
                 doClearIpXmsdp(tabRouteAttr.routeType.msdp4);
                 return null;
             }
+            if (a.equals("rpki")) {
+                doClearIpXrpki(tabRouteAttr.routeType.rpki4);
+                return null;
+            }
             if (a.equals("olsr")) {
                 doClearIpXolsr(tabRouteAttr.routeType.olsr4);
                 return null;
@@ -762,6 +767,10 @@ public class userClear {
             }
             if (a.equals("msdp")) {
                 doClearIpXmsdp(tabRouteAttr.routeType.msdp6);
+                return null;
+            }
+            if (a.equals("rpki")) {
+                doClearIpXrpki(tabRouteAttr.routeType.rpki6);
                 return null;
             }
             if (a.equals("olsr")) {
@@ -1026,6 +1035,25 @@ public class userClear {
         nei.bfdPeerDown();
     }
 
+    private void doClearIpXrpki(tabRouteAttr.routeType afi) {
+        cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
+        if (r == null) {
+            cmd.error("no such process");
+            return;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrRpkiNeigh nei = r.rpki.findPeer(adr);
+        if (nei == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        nei.flapNow();
+    }
+    
     private void doClearIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {

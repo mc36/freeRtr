@@ -400,7 +400,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * list of rpkis
      */
-    protected tabGen<rtrBgpRpki> rpkis;
+    protected tabGen<rtrRpkiNeigh> rpkis;
 
     /**
      * the computed rpki routes
@@ -1091,7 +1091,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         neighs = new tabGen<rtrBgpNeigh>();
         mons = new tabGen<rtrBgpMon>();
         dmps = new tabGen<rtrBgpMrt>();
-        rpkis = new tabGen<rtrBgpRpki>();
+        rpkis = new tabGen<rtrRpkiNeigh>();
         temps = new tabGen<rtrBgpTemp>();
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
@@ -1934,7 +1934,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         computedRpki = new tabRoute<addrIP>("bgp");
         for (int i = 0; i < rpkis.size(); i++) {
-            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table, tabRouteAttr.distanLim);
+            computedRpki.mergeFrom(tabRoute.addType.better, rpkis.get(i).table4, tabRouteAttr.distanLim);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -2644,7 +2644,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         need2run = false;
         compute.wakeup();
         for (int i = 0; i < rpkis.size(); i++) {
-            rtrBgpRpki ntry = rpkis.get(i);
+            rtrRpkiNeigh ntry = rpkis.get(i);
             ntry.stopNow();
         }
         for (int i = 0; i < mons.size(); i++) {
@@ -3623,8 +3623,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("rpki")) {
-            rtrBgpRpki rpki = new rtrBgpRpki(this);
-            rpki.rpkiName = cmd.word();
+            rtrRpkiNeigh rpki = new rtrRpkiNeigh(null);/////////////
             if (negated) {
                 rpki = rpkis.del(rpki);
                 if (rpki == null) {
@@ -3638,7 +3637,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cmd.error("no such proxy");
                 return false;
             }
-            rpki.proxy = prx.proxy;
             rpki.server = cmd.word();
             rpki.port = bits.str2num(cmd.word());
             rpki.startNow();
@@ -3754,20 +3752,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         nei.setParamCfg(new cmds("template", cmd), negated);
         nei.updatePeer();
-    }
-
-    /**
-     * list neighbors
-     *
-     * @return list of neighbors
-     */
-    public userFormat showRpkiNei() {
-        userFormat l = new userFormat("|", "learn|neighbor");
-        for (int i = 0; i < rpkis.size(); i++) {
-            rtrBgpRpki ntry = rpkis.get(i);
-            l.add(ntry.table.size() + "|" + ntry.server);
-        }
-        return l;
     }
 
     /**

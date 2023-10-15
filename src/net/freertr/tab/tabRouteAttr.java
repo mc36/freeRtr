@@ -151,6 +151,14 @@ public class tabRouteAttr<T extends addrType> {
          */
         msdp6,
         /**
+         * ipv4 rpki
+         */
+        rpki4,
+        /**
+         * ipv6 rpki
+         */
+        rpki6,
+        /**
          * ipv4 flowspec
          */
         flwspc4,
@@ -621,6 +629,9 @@ public class tabRouteAttr<T extends addrType> {
             case msdp4:
             case msdp6:
                 return "MSD";
+            case rpki4:
+            case rpki6:
+                return "RPK";
             case flwspc4:
             case flwspc6:
                 return "FLW";
