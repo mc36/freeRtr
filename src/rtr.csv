@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.10.14-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-10-14 14:09:51, took 00:11:11, with 80 workers, on 3216 cases, 0 failed, 0 traces, 2 retries
+-;-;-;freeRouter-rare v23.10.15-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2023-10-15 23:34:47, took 00:18:42, with 80 workers, on 3216 cases, 1 failed, 0 traces, 11 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1990,7 +1990,7 @@ http://sources.freertr.org/cfg/rout-bgp048.tst;rout-bgp048.tst;success;bgp liste
 http://sources.freertr.org/cfg/rout-bgp049.tst;rout-bgp049.tst;success;ebgp password
 http://sources.freertr.org/cfg/rout-bgp050.tst;rout-bgp050.tst;success;bgp routemap filtering with aigp
 http://sources.freertr.org/cfg/rout-bgp051.tst;rout-bgp051.tst;success;bgp routemap filtering with bandwidth
-http://sources.freertr.org/cfg/rout-bgp052.tst;rout-bgp052.tst;success;bgp rpki
+http://sources.freertr.org/cfg/rout-bgp052.tst;rout-bgp052.tst;#6-run-r2 tping 100 60 2.2.2.222 vrf v1;bgp rpki
 http://sources.freertr.org/cfg/rout-bgp053.tst;rout-bgp053.tst;success;bgp additional path
 http://sources.freertr.org/cfg/rout-bgp054.tst;rout-bgp054.tst;success;bgp additional path with labels
 http://sources.freertr.org/cfg/rout-bgp055.tst;rout-bgp055.tst;success;vpns over bgp additional path

@@ -15212,3 +15212,8 @@ todo: server whois to be cache
 no todo: server whois to be cache
 ---------------------------------- 2023-10-11 23:32:07 23.10.11
 no todo: honeypot to use any router
+---------------------------------- 2023-10-15 23:16:05 23.10.15
+no todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim icmp ipcomp
+no qc pass: bgp rpki
+failed: bgp rpki
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
