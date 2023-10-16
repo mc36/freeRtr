@@ -24,6 +24,10 @@ public class userScreen {
          */
         none,
         /**
+         * 8 colors
+         */
+        original,
+        /**
          * 16 colors
          */
         normal,
@@ -47,6 +51,9 @@ public class userScreen {
         if (a.equals("none")) {
             return ansiMode.none;
         }
+        if (a.equals("original")) {
+            return ansiMode.original;
+        }
         if (a.equals("normal")) {
             return ansiMode.normal;
         }
@@ -69,6 +76,8 @@ public class userScreen {
         switch (m) {
             case none:
                 return "none";
+            case original:
+                return "original";
             case normal:
                 return "normal";
             case indexed:
@@ -95,7 +104,15 @@ public class userScreen {
      */
     public final int sizY;
 
+    /**
+     * ansi mode
+     */
     public final ansiMode ansM;
+
+    /**
+     * ansi palette
+     */
+    public final int[] ansP;
 
     /**
      * cursor position
@@ -231,6 +248,26 @@ public class userScreen {
         int x = p.settingsGet(pipeSetting.width, 80);
         int y = p.settingsGet(pipeSetting.height, 25);
         ansM = p.settingsGet(pipeSetting.ansiMode, ansiMode.normal);
+        switch (ansM) {
+            case none:
+                ansP = userFonts.colorMono;
+                break;
+            case original:
+                ansP = userFonts.colorOrig;
+                break;
+            case normal:
+                ansP = userFonts.colorData;
+                break;
+            case indexed:
+                ansP = userFonts.colorIdxd;
+                break;
+            case palette:
+                ansP = userFonts.colorIdxd;
+                break;
+            default:
+                ansP = userFonts.colorData;
+                break;
+        }
         if (x < 10) {
             x = 80;
         }
@@ -662,7 +699,7 @@ public class userScreen {
      * @param pip pipeline to use
      * @param col color to use
      */
-    public static void sendAnsCol(pipeSide pip, int col) {
+    public static void sendOldCol(pipeSide pip, int col) {
         int bg = (col >>> 16) & 0xf;
         int fg = col & 0xf;
         String s = "\033[0";
@@ -674,6 +711,27 @@ public class userScreen {
             s += ";1";
         }
         s += ";3" + (fg & 7);
+        pip.strPut(s + "m");
+    }
+
+    /**
+     * send color change
+     *
+     * @param pip pipeline to use
+     * @param col color to use
+     */
+    public static void sendAnsCol(pipeSide pip, int col) {
+        int bg = (col >>> 16) & 0xf;
+        int fg = col & 0xf;
+        String s = "\033[0";
+        if ((bg & 8) != 0) {
+            bg = (bg & 7) + 60;
+        }
+        if ((fg & 8) != 0) {
+            fg = (fg & 7) + 60;
+        }
+        s += ";" + (bg + 40);
+        s += ";" + (fg + 30);
         pip.strPut(s + "m");
     }
 
@@ -706,6 +764,9 @@ public class userScreen {
             return;
         }
         switch (ansM) {
+            case original:
+                sendOldCol(pipe, col);
+                break;
             case normal:
                 sendAnsCol(pipe, col);
                 break;

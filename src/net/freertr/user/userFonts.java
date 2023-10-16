@@ -33,6 +33,28 @@ public class userFonts {
     };
 
     /**
+     * color data
+     */
+    public final static int[] colorOrig = {
+        0x000000,
+        0xa80000,
+        0x00a800,
+        0xa8a800,
+        0x0000a8,
+        0xa800a8,
+        0x00a8a8,
+        0xa8a8a8,
+    };
+    
+    /**
+     * monochrome color data
+     */
+    public final static int[] colorMono = {
+        0x000000,
+        0xffffff
+    };
+
+    /**
      * indexed color codes
      */
     public final static int[] colorIdxd = {

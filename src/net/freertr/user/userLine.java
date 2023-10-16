@@ -703,6 +703,7 @@ public class userLine {
         l.add(null, "3 .      table                      select table mode");
         l.add(null, "2 3    ansimode                     select ansi coloring mode");
         l.add(null, "3 .      none                       select black and white mode");
+        l.add(null, "3 .      original                   select 8 colors mode");
         l.add(null, "3 .      normal                     select 16 colors mode");
         l.add(null, "3 .      indexed                    select 256 colors mode");
         l.add(null, "3 .      palette                    select 16m colors mode");

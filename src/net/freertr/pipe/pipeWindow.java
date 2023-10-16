@@ -14,7 +14,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import net.freertr.user.userFonts;
 import net.freertr.user.userScreen;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
@@ -65,23 +64,100 @@ public class pipeWindow extends JPanel {
      * @param pal palette to use
      * @return quantized color
      */
-    public final static int trueColor2indexedColor(int orig, int[] pal) {
-        int truncer = 0x00e0e0e0;
-        orig &= truncer;
-        int best = -1;
-        int diff = 0xffffff;
+    public static int roundDownTrueColor(int orig, int[] pal) {
+        double diff = Integer.MAX_VALUE;
+        int best = Integer.MAX_VALUE;
         for (int i = 0; i < pal.length; i++) {
-            int cur = pal[i] & truncer;
+            double c1[] = colRgb2cie(orig);
+            double c2[] = colRgb2cie(pal[i]);
+            double sr = c1[0] - c2[0];
+            double sg = c1[1] - c2[1];
+            double sb = c1[2] - c2[2];
+            double cur = (sr * sr) + (sg * sg) + (sb * sb);
+            if (cur > diff) {
+                continue;
+            }
+            best = i;
+            diff = cur;
+        }
+        return best;
+    }
+
+    private static double[] colRgb2cie(int col) {
+        double rgb[] = new double[3];
+        rgb[0] = ((col >> 16) & 0xff) / 255.0;
+        rgb[1] = ((col >> 8) & 0xff) / 255.0;
+        rgb[2] = ((col >> 0) & 0xff) / 255.0;
+        return colXyz2lab(colRgb2xyz(rgb));
+    }
+
+    private static double[] colRgb2xyz(double[] rgb) {
+        double vr = colPivotRgb(rgb[0]);
+        double vg = colPivotRgb(rgb[1]);
+        double vb = colPivotRgb(rgb[2]);
+        double x = vr * 0.4124564 + vg * 0.3575761 + vb * 0.1804375;
+        double y = vr * 0.2126729 + vg * 0.7151522 + vb * 0.0721750;
+        double z = vr * 0.0193339 + vg * 0.1191920 + vb * 0.9503041;
+        return new double[]{x, y, z};
+    }
+
+    private static double[] colXyz2lab(double[] xyz) {
+        double fx = colPivotXyz(xyz[0]);
+        double fy = colPivotXyz(xyz[1]);
+        double fz = colPivotXyz(xyz[2]);
+        double l = 116.0 * fy - 16.0;
+        double a = 500.0 * (fx - fy);
+        double b = 200.0 * (fy - fz);
+        return new double[]{l, a, b};
+    }
+
+    private static double colPivotXyz(double n) {
+        if (n > (216.0 / 24389.0)) {
+            return Math.cbrt(n);
+        } else {
+            return ((24389.0 / 27.0) * n + 16) / 116;
+        }
+    }
+
+    private static double colPivotRgb(double n) {
+        if (n <= 0.04045) {
+            return n / 12.92;
+        } else {
+            return Math.pow((n + 0.055) / 1.055, 2.4);
+        }
+    }
+
+    private final static int diffColorComponent(int curr, int orig, int shft) {
+        curr >>>= shft;
+        orig >>>= shft;
+        curr &= 0xff;
+        orig &= 0xff;
+        int diff = curr - orig;
+        if (diff < 0) {
+            diff = -diff;
+        }
+        return diff * diff;
+    }
+
+    /**
+     * quantize one color
+     *
+     * @param orig original color
+     * @param pal palette to use
+     * @return quantized color
+     */
+    public final static int trueColor2indexedColor(int orig, int[] pal) {
+        int best = -1;
+        int diff = 0x7fffffff;
+        for (int i = 0; i < pal.length; i++) {
+            int cur = pal[i];
             if (cur == orig) {
                 return i;
             }
-            int dff = cur - orig;
-            dff &= truncer;
-            dff >>>= 5;
-            int red = (dff >>> 16) & 3;
-            int grn = (dff >>> 8) & 3;
-            int blu = dff & 3;
-            dff = (red << 16) + (grn << 8) + (blu);
+            int red = diffColorComponent(cur, orig, 16);
+            int grn = diffColorComponent(cur, orig, 8);
+            int blu = diffColorComponent(cur, orig, 0);
+            int dff = red + grn + blu;
             if (diff < dff) {
                 continue;
             }
@@ -133,7 +209,7 @@ public class pipeWindow extends JPanel {
                     } catch (Exception e) {
                         i = 0;
                     }
-                    int o = trueColor2indexedColor(i, userFonts.colorData);
+                    int o = trueColor2indexedColor(i, scr.ansP);
                     scr.putInt(px, cy, false, o, chr[bits.random(0, chs)]);
                     scr.putInt(px + 1, cy, false, o, chr[bits.random(0, chs)]);
                 }

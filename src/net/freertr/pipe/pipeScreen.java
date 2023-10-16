@@ -204,6 +204,26 @@ public class pipeScreen {
                         case 47:
                             scr.col = (scr.col & 0xfff8ffff) | ((i % 10) << 16);
                             break;
+                        case 90:
+                        case 91:
+                        case 92:
+                        case 93:
+                        case 94:
+                        case 95:
+                        case 96:
+                        case 97:
+                            scr.col = (scr.col & 0xfffffff0) | ((i % 10)) << 1;
+                            break;
+                        case 100:
+                        case 101:
+                        case 102:
+                        case 103:
+                        case 104:
+                        case 105:
+                        case 106:
+                        case 107:
+                            scr.col = (scr.col & 0xfff0ffff) | ((i % 10) << 17);
+                            break;
                     }
                 }
                 return;
