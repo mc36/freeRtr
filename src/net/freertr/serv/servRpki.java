@@ -202,78 +202,86 @@ class servRpkiConn implements Runnable {
 
     public void run() {
         try {
+            packRpki pck = new packRpki();
             for (;;) {
-                packRpki pck = new packRpki();
-                if (pck.recvPack(conn)) {
+                if (doRound(pck)) {
                     break;
-                }
-                if (debugger.servRpkiTraf) {
-                    logger.debug("rx " + pck.dump());
-                }
-                switch (pck.typ) {
-                    case packRpki.msgSerialQuery:
-                        if (pck.serial != lower.seq) {
-                            pck.typ = packRpki.msgCacheReset;
-                            pck.sendPack(conn);
-                            if (debugger.servRpkiTraf) {
-                                logger.debug("tx " + pck.dump());
-                            }
-                        } else {
-                            pck.typ = packRpki.msgCacheReply;
-                            pck.sess = session;
-                            pck.sendPack(conn);
-                            if (debugger.servRpkiTraf) {
-                                logger.debug("tx " + pck.dump());
-                            }
-                            pck.typ = packRpki.msgEndData;
-                            pck.sendPack(conn);
-                            if (debugger.servRpkiTraf) {
-                                logger.debug("tx " + pck.dump());
-                            }
-                        }
-                        break;
-                    case packRpki.msgResetQuery:
-                        pck.typ = packRpki.msgCacheReply;
-                        pck.sess = session;
-                        pck.sendPack(conn);
-                        if (debugger.servRpkiTraf) {
-                            logger.debug("tx " + pck.dump());
-                        }
-                        for (int i = 0; i < lower.pref4.size(); i++) {
-                            servRpkiEntry<addrIPv4> ntry = lower.pref4.get(i);
-                            pck.typ = packRpki.msgIpv4addr;
-                            pck.pref4 = ntry.pref;
-                            pck.max = ntry.max;
-                            pck.as = ntry.as;
-                            pck.sendPack(conn);
-                            if (debugger.servRpkiTraf) {
-                                logger.debug("tx " + pck.dump());
-                            }
-                        }
-                        for (int i = 0; i < lower.pref6.size(); i++) {
-                            servRpkiEntry<addrIPv6> ntry = lower.pref6.get(i);
-                            pck.typ = packRpki.msgIpv6addr;
-                            pck.pref6 = ntry.pref;
-                            pck.max = ntry.max;
-                            pck.as = ntry.as;
-                            pck.sendPack(conn);
-                            if (debugger.servRpkiTraf) {
-                                logger.debug("tx " + pck.dump());
-                            }
-                        }
-                        pck.typ = packRpki.msgEndData;
-                        pck.serial = lower.seq;
-                        pck.sendPack(conn);
-                        if (debugger.servRpkiTraf) {
-                            logger.debug("tx " + pck.dump());
-                        }
-                        break;
                 }
             }
         } catch (Exception e) {
             logger.traceback(e);
         }
         conn.setClose();
+    }
+
+    private boolean doRound(packRpki pck) {
+        if (pck.recvPack(conn)) {
+            return true;
+        }
+        if (debugger.servRpkiTraf) {
+            logger.debug("rx " + pck.dump());
+        }
+        switch (pck.typ) {
+            case packRpki.msgSerialQuery:
+                if (pck.serial != lower.seq) {
+                    pck.typ = packRpki.msgCacheReset;
+                    pck.sendPack(conn);
+                    if (debugger.servRpkiTraf) {
+                        logger.debug("tx " + pck.dump());
+                    }
+                    return false;
+                }
+                pck.typ = packRpki.msgCacheReply;
+                pck.sess = session;
+                pck.sendPack(conn);
+                if (debugger.servRpkiTraf) {
+                    logger.debug("tx " + pck.dump());
+                }
+                pck.typ = packRpki.msgEndData;
+                pck.sendPack(conn);
+                if (debugger.servRpkiTraf) {
+                    logger.debug("tx " + pck.dump());
+                }
+                return false;
+            case packRpki.msgResetQuery:
+                pck.typ = packRpki.msgCacheReply;
+                pck.sess = session;
+                pck.sendPack(conn);
+                if (debugger.servRpkiTraf) {
+                    logger.debug("tx " + pck.dump());
+                }
+                for (int i = 0; i < lower.pref4.size(); i++) {
+                    servRpkiEntry<addrIPv4> ntry = lower.pref4.get(i);
+                    pck.typ = packRpki.msgIpv4addr;
+                    pck.pref4 = ntry.pref;
+                    pck.max = ntry.max;
+                    pck.as = ntry.as;
+                    pck.sendPack(conn);
+                    if (debugger.servRpkiTraf) {
+                        logger.debug("tx " + pck.dump());
+                    }
+                }
+                for (int i = 0; i < lower.pref6.size(); i++) {
+                    servRpkiEntry<addrIPv6> ntry = lower.pref6.get(i);
+                    pck.typ = packRpki.msgIpv6addr;
+                    pck.pref6 = ntry.pref;
+                    pck.max = ntry.max;
+                    pck.as = ntry.as;
+                    pck.sendPack(conn);
+                    if (debugger.servRpkiTraf) {
+                        logger.debug("tx " + pck.dump());
+                    }
+                }
+                pck.typ = packRpki.msgEndData;
+                pck.serial = lower.seq;
+                pck.sendPack(conn);
+                if (debugger.servRpkiTraf) {
+                    logger.debug("tx " + pck.dump());
+                }
+                return false;
+            default:
+                return false;
+        }
     }
 
 }

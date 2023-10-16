@@ -3597,12 +3597,12 @@ public class userShow {
             rdr.putStrTab(r.rpki.getNeighShow());
             return;
         }
-        if (a.equals("database")) {
-            doShowRoutes(r.rpki.fwdCore, r.rpki.computedNat, 4);
+        if (a.equals("v4")) {
+            doShowRoutes(r.rpki.fwdCore, r.rpki.getFinalTab(4), 4);
             return;
         }
-        if (a.equals("odatabase")) {
-            doShowRoutes(r.rpki.fwdCore, r.rpki.computedOtr, 4);
+        if (a.equals("v6")) {
+            doShowRoutes(r.rpki.fwdCore, r.rpki.getFinalTab(6), 4);
             return;
         }
     }

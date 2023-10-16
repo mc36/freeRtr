@@ -38,12 +38,12 @@ public class rtrRpki extends ipRtr implements Runnable {
     /**
      * the forwarder protocol
      */
-    public ipFwd fwdCore;
+    public final ipFwd fwdCore;
 
     /**
      * the tcp protocol
      */
-    protected prtTcp tcpCore;
+    protected final prtTcp tcpCore;
 
     /**
      * route type
@@ -53,12 +53,12 @@ public class rtrRpki extends ipRtr implements Runnable {
     /**
      * router number
      */
-    protected int rtrNum;
+    protected final int rtrNum;
 
     /**
      * scan time interval
      */
-    public int scanTime = 1000;
+    protected int scanTime = 1000;
 
     /**
      * list of neighbors
@@ -73,17 +73,17 @@ public class rtrRpki extends ipRtr implements Runnable {
     /**
      * accepted native roas
      */
-    public tabRoute<addrIP> computedNat = new tabRoute<addrIP>("roa");
+    protected tabRoute<addrIP> computedV4 = new tabRoute<addrIP>("roa");
 
     /**
      * accepted other roas
      */
-    public tabRoute<addrIP> computedOtr = new tabRoute<addrIP>("roa");
+    protected tabRoute<addrIP> computedV6 = new tabRoute<addrIP>("roa");
 
     /**
      * notified to wake up
      */
-    public final notifier compute = new notifier();
+    protected final notifier compute = new notifier();
 
     private boolean need2run;
 
@@ -194,12 +194,16 @@ public class rtrRpki extends ipRtr implements Runnable {
             tab4.mergeFrom(tabRoute.addType.better, ntry.table4, tabRouteAttr.distanLim);
             tab6.mergeFrom(tabRoute.addType.better, ntry.table6, tabRouteAttr.distanLim);
         }
-        if (fwdCore.ipVersion == ipCor4.protocolVersion) {
-            computedNat = tab4;
-            computedOtr = tab6;
-        } else {
-            computedNat = tab6;
-            computedOtr = tab4;
+        tab4.setProto(routerProtoTyp, routerProcNum);
+        boolean chg = tab4.preserveTime(computedV4);
+        chg |= tab6.preserveTime(computedV6);
+        if (chg) {
+            return;
+        }
+        computedV4 = tab4;
+        computedV6 = tab6;
+        if (debugger.rtrRpkiEvnt) {
+            logger.debug("rpki changed");
         }
         for (int i = 0; i < wakes.size(); i++) {
             rtrRpkiWake w = wakes.get(i);
@@ -220,6 +224,7 @@ public class rtrRpki extends ipRtr implements Runnable {
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = new tabGen<tabIndex<addrIP>>();
+        fwdCore.routerChg(this, false);
     }
 
     /**
@@ -440,9 +445,6 @@ public class rtrRpki extends ipRtr implements Runnable {
             if (compute.misleep(0) > 0) {
                 bits.sleep(scanTime);
             }
-            if (debugger.rtrRpkiEvnt) {
-                logger.debug("rpki changed");
-            }
             if (!need2run) {
                 break;
             }
@@ -451,6 +453,14 @@ public class rtrRpki extends ipRtr implements Runnable {
             } catch (Exception e) {
                 logger.traceback(e);
             }
+        }
+    }
+
+    public tabRoute<addrIP> getFinalTab(int ipVer) {
+        if (ipVer == ipCor4.protocolVersion) {
+            return computedV4;
+        } else {
+            return computedV6;
         }
     }
 

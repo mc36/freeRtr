@@ -3662,7 +3662,10 @@ public class rtrBgpUtil {
      * @param ntry entry to update
      * @param roas route authorizations
      */
-    public static void setValidity(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> roas) {
+    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabRoute<addrIP> roas) {
+        if (roas == null) {
+            return;
+        }
         tabRouteEntry<addrIP> res = roas.route(ntry.prefix.broadcast);
         for (int o = 0; o < ntry.alts.size(); o++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(o);
@@ -3686,7 +3689,7 @@ public class rtrBgpUtil {
      * @param ntry entry to update
      * @param val result code
      */
-    public static void setValidity(tabRouteEntry<addrIP> ntry, int val) {
+    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, int val) {
         for (int o = 0; o < ntry.alts.size(); o++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(o);
             attr.validity = val;
@@ -3702,7 +3705,7 @@ public class rtrBgpUtil {
      */
     public static void setValidityTable(tabRoute<addrIP> tab, int val) {
         for (int i = 0; i < tab.size(); i++) {
-            rtrBgpUtil.setValidity(tab.get(i), val);
+            rtrBgpUtil.setValidityRoute(tab.get(i), val);
         }
     }
 
@@ -3713,8 +3716,11 @@ public class rtrBgpUtil {
      * @param roas route authorizations
      */
     public static void setValidityTable(tabRoute<addrIP> tab, tabRoute<addrIP> roas) {
+        if (roas == null) {
+            return;
+        }
         for (int i = 0; i < tab.size(); i++) {
-            rtrBgpUtil.setValidity(tab.get(i), roas);
+            rtrBgpUtil.setValidityRoute(tab.get(i), roas);
         }
     }
 

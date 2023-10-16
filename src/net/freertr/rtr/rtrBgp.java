@@ -1954,8 +1954,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
         }
         if (rpkiR != null) {
-            rpkiA = rpkiR.computedNat;
-            rpkiO = rpkiR.computedOtr;
+            rpkiA = rpkiR.getFinalTab(fwdCore.ipVersion);
+            rpkiO = rpkiR.getFinalTab(other.fwd.ipVersion);
         } else {
             rpkiA = new tabRoute<addrIP>("");
             rpkiO = new tabRoute<addrIP>("");
@@ -2191,11 +2191,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry == null) {
             return best;
         }
-        if ((rpkiT != null) && ((afi == afiUni) || (afi == afiMlt))) {
-            rtrBgpUtil.setValidity(ntry, rpkiA);
-        }
-        if ((rpkiT != null) && ((afi == afiOuni) || (afi == afiOmlt))) {
-            rtrBgpUtil.setValidity(ntry, rpkiO);
+        if (rpkiT != null) {
+            if ((afi == afiUni) || (afi == afiMlt)) {
+                rtrBgpUtil.setValidityRoute(ntry, rpkiA);
+            }
+            if ((afi == afiOuni) || (afi == afiOmlt)) {
+                rtrBgpUtil.setValidityRoute(ntry, rpkiO);
+            }
         }
         if (best == null) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);

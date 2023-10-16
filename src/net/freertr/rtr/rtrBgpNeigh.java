@@ -1752,9 +1752,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * validate prefixes
      */
     public void setValidity() {
-        if (lower.rpkiT == null) {
-            return;
-        }
         rtrBgpUtil.setValidityTable(accUni, lower.rpkiA);
         rtrBgpUtil.setValidityTable(accMlt, lower.rpkiA);
         rtrBgpUtil.setValidityTable(accOuni, lower.rpkiO);

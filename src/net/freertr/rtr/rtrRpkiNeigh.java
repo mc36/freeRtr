@@ -88,8 +88,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
 
     private int session;
 
-    private int chngCntr;
-
     /**
      * create new instance
      *
@@ -111,6 +109,9 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * stop this peer
      */
     protected void stopNow() {
+        if (debugger.rtrRpkiEvnt) {
+            logger.debug("stopping " + peer);
+        }
         need2run = false;
         if (pipe != null) {
             pipe.setClose();
@@ -121,6 +122,9 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * flap this peer
      */
     public void flapNow() {
+        if (debugger.rtrRpkiEvnt) {
+            logger.debug("flapping " + peer);
+        }
         if (pipe != null) {
             pipe.setClose();
         }
@@ -132,6 +136,9 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     protected void startNow() {
         if (need2run) {
             return;
+        }
+        if (debugger.rtrRpkiEvnt) {
+            logger.debug("starting " + peer);
         }
         need2run = true;
         new Thread(this).start();
@@ -160,6 +167,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                 if (!need2run) {
                     break;
                 }
+                bits.sleep(1000);
             }
         } catch (Exception e) {
             logger.traceback(e);
@@ -167,7 +175,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     }
 
     private void doWork() {
-        bits.sleep(1000);
         if (!need2run) {
             return;
         }
@@ -186,11 +193,24 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         if (debugger.rtrRpkiTraf) {
             logger.debug("tx " + pck.dump());
         }
-        upTime = bits.getTime();
-        logger.warn("rpki " + peer + " up");
-        chngCntr = 0;
         table4.clear();
         table6.clear();
+        for (;;) {
+            int i = doOneRound(pck);
+            if (i == 3) {
+                break;
+            }
+            if (i >= 0) {
+                continue;
+            }
+            table4.clear();
+            table6.clear();
+            pipe.setClose();
+            return;
+        }
+        lower.compute.wakeup();
+        upTime = bits.getTime();
+        logger.warn("neighbor " + peer + " up");
         long last = bits.getTime();
         for (;;) {
             if (pipe.isClosed() != 0) {
@@ -211,37 +231,37 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                     logger.debug("tx " + pck.dump());
                 }
                 last = tim;
-                if (chngCntr > 0) {
-                    lower.compute.wakeup();
-                }
-                chngCntr = 0;
             }
             if (debugger.rtrRpkiTraf) {
                 logger.debug("tx " + pck.dump());
             }
+            int chngCntr = 0;
             for (;;) {
-                if (doReceive()) {
+                if (pipe.ready2rx() < 1) {
+                    break;
+                }
+                if (doOneRound(pck) != 1) {
                     break;
                 }
             }
+            if (chngCntr > 0) {
+                lower.compute.wakeup();
+            }
+            chngCntr = 0;
         }
         upTime = bits.getTime();
         table4.clear();
         table6.clear();
         lower.compute.wakeup();
-        logger.error("rpki " + peer + " down");
+        logger.error("neighbor " + peer + " down");
         pipe.setClose();
         pipe = null;
     }
 
-    private boolean doReceive() {
-        packRpki pck = new packRpki();
-        if (pipe.ready2rx() < 1) {
-            return true;
-        }
+    private int doOneRound(packRpki pck) {
         if (pck.recvPack(pipe)) {
             pipe.setClose();
-            return true;
+            return -1;
         }
         if (debugger.rtrRpkiTraf) {
             logger.debug("rx " + pck.dump());
@@ -253,43 +273,50 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                 ntry.best.metric = pck.max;
                 ntry.best.rouSrc = pck.as;
                 ntry.best.locPref = preference;
+                ntry.best.rouTyp = lower.rouTyp;
+                ntry.best.protoNum = lower.rtrNum;
+                ntry.best.aggrRtr = peer;
                 if (pck.withdraw) {
                     table4.del(ntry);
                 } else {
                     table4.add(tabRoute.addType.always, ntry, true, true);
                 }
-                chngCntr++;
-                break;
+                return 1;
             case packRpki.msgIpv6addr:
                 ntry.prefix = addrPrefix.ip6toIP(pck.pref6);
                 ntry.best.metric = pck.max;
                 ntry.best.rouSrc = pck.as;
                 ntry.best.locPref = preference;
+                ntry.best.rouTyp = lower.rouTyp;
+                ntry.best.protoNum = lower.rtrNum;
+                ntry.best.aggrRtr = peer;
                 if (pck.withdraw) {
                     table6.del(ntry);
                 } else {
                     table6.add(tabRoute.addType.always, ntry, true, true);
                 }
-                chngCntr++;
-                break;
+                return 1;
             case packRpki.msgCacheReply:
-                break;
+                return 0;
             case packRpki.msgCacheReset:
                 table4.clear();
                 table6.clear();
-                chngCntr++;
                 pck.typ = packRpki.msgResetQuery;
                 pck.sendPack(pipe);
                 if (debugger.rtrRpkiTraf) {
                     logger.debug("tx " + pck.dump());
                 }
-                break;
+                return 2;
             case packRpki.msgEndData:
                 session = pck.sess;
                 serial = pck.serial;
-                break;
+                if (debugger.rtrRpkiEvnt) {
+                    logger.debug("neighbor " + peer + " roas " + table4.size() + " " + table6.size());
+                }
+                return 3;
+            default:
+                return 0;
         }
-        return false;
     }
 
 }
