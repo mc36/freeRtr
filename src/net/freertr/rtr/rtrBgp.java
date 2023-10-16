@@ -2193,10 +2193,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (rpkiT != null) {
             if ((afi == afiUni) || (afi == afiMlt)) {
-                rtrBgpUtil.setValidityRoute(ntry, rpkiA);
+                rtrRpkiUtil.setValidityRoute(ntry, rpkiA);
             }
             if ((afi == afiOuni) || (afi == afiOmlt)) {
-                rtrBgpUtil.setValidityRoute(ntry, rpkiO);
+                rtrRpkiUtil.setValidityRoute(ntry, rpkiO);
             }
         }
         if (best == null) {
@@ -3633,7 +3633,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             rpkiT = cfgRtr.name2num(cmd.word());
             rpkiN = bits.str2num(cmd.word());
-            if (!ipRtr.isRPKI(rpkiT)) {
+            if (ipRtr.isRPKI(rpkiT) < 0) {
                 cmd.error("not an rpki process");
                 return false;
             }

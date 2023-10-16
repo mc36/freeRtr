@@ -195,6 +195,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         }
         table4.clear();
         table6.clear();
+        logger.warn("neighbor " + peer + " up");
         for (;;) {
             int i = doOneRound(pck);
             if (i == 3) {
@@ -210,7 +211,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         }
         lower.compute.wakeup();
         upTime = bits.getTime();
-        logger.warn("neighbor " + peer + " up");
         long last = bits.getTime();
         for (;;) {
             if (pipe.isClosed() != 0) {
@@ -310,9 +310,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             case packRpki.msgEndData:
                 session = pck.sess;
                 serial = pck.serial;
-                if (debugger.rtrRpkiEvnt) {
-                    logger.debug("neighbor " + peer + " roas " + table4.size() + " " + table6.size());
-                }
+                logger.info("neighbor " + peer + " done " + table4.size() + " " + table6.size());
                 return 3;
             default:
                 return 0;

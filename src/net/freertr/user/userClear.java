@@ -1053,7 +1053,7 @@ public class userClear {
         }
         nei.flapNow();
     }
-    
+
     private void doClearIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {

@@ -87,6 +87,13 @@ public class rtrRpki extends ipRtr implements Runnable {
 
     private boolean need2run;
 
+    /**
+     * create instance
+     *
+     * @param forwarder forwarder to use
+     * @param protocol protocol to use
+     * @param id process id
+     */
     public rtrRpki(ipFwd forwarder, prtTcp protocol, int id) {
         if (debugger.rtrRpkiEvnt) {
             logger.debug("startup");
@@ -456,6 +463,12 @@ public class rtrRpki extends ipRtr implements Runnable {
         }
     }
 
+    /**
+     * get final table
+     *
+     * @param ipVer ip version
+     * @return current table
+     */
     public tabRoute<addrIP> getFinalTab(int ipVer) {
         if (ipVer == ipCor4.protocolVersion) {
             return computedV4;

@@ -32,6 +32,9 @@ public class userFonts {
         0xfcfcfc
     };
 
+    /**
+     * indexed color codes
+     */
     public final static int[] colorIdxd = {
         0x000000, 0x800000, 0x008000, 0x808000, 0x000080, 0x800080, 0x008080, 0xc0c0c0,
         0x808080, 0xff0000, 0x00ff00, 0xffff00, 0x0000ff, 0xff00ff, 0x00ffff, 0xffffff,
