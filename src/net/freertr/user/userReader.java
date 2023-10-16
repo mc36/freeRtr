@@ -869,9 +869,9 @@ public class userReader implements Comparator<String> {
                     pipe.linePut(a);
                     break;
                 case header:
-                    userScreen.sendCol(pipe, userScreen.colBrYellow);
+                    userScreen.sendAnsCol(pipe, userScreen.colBrYellow);
                     pipe.linePut(a);
-                    userScreen.sendCol(pipe, userScreen.colWhite);
+                    userScreen.sendAnsCol(pipe, userScreen.colWhite);
                     color = userFormat.colorMode.normal;
                     break;
                 case rainbow:
@@ -885,10 +885,10 @@ public class userReader implements Comparator<String> {
                         if (t > r) {
                             t = r;
                         }
-                        userScreen.sendCol(pipe, rainc[(i + q) % rainc.length]);
+                        userScreen.sendAnsCol(pipe, rainc[(i + q) % rainc.length]);
                         pipe.strPut(a.substring(s, t));
                     }
-                    userScreen.sendCol(pipe, userScreen.colWhite);
+                    userScreen.sendAnsCol(pipe, userScreen.colWhite);
                     pipe.linePut("");
                     break;
                 default:
@@ -983,11 +983,11 @@ public class userReader implements Comparator<String> {
         }
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         if (color) {
-            userScreen.sendCol(pipe, userScreen.colBrGreen);
+            userScreen.sendAnsCol(pipe, userScreen.colBrGreen);
         }
         pipe.strPut(s.substring(0, crsr));
         if (color) {
-            userScreen.sendCol(pipe, userScreen.colWhite);
+            userScreen.sendAnsCol(pipe, userScreen.colWhite);
         }
     }
 

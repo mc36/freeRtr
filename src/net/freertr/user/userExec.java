@@ -4879,11 +4879,11 @@ public class userExec {
             userScreen.sendCur(pipe, 0, 0);
             userScreen.sendCls(pipe);
             if (color) {
-                userScreen.sendCol(pipe, userScreen.colBrGreen);
+                userScreen.sendAnsCol(pipe, userScreen.colBrGreen);
             }
             pipe.linePut(cfgAll.hostName + "#show " + cmd.getRemaining());
             if (color) {
-                userScreen.sendCol(pipe, userScreen.colWhite);
+                userScreen.sendAnsCol(pipe, userScreen.colWhite);
             }
             if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(logger.getTimestamp());

@@ -1156,7 +1156,7 @@ public class userVM {
                 userScreen.sendCur(console, regs[reg_a] - 1, regs[reg_b] - 1);
                 return 0;
             case 37: // console.setColor
-                userScreen.sendCol(console, convCol(regs[reg_a]));
+                userScreen.sendAnsCol(console, convCol(regs[reg_a]));
                 return 0;
             case 38: // console.clear
                 userScreen.sendCls(console);

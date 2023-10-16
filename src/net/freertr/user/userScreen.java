@@ -95,6 +95,8 @@ public class userScreen {
      */
     public final int sizY;
 
+    public final ansiMode ansM;
+
     /**
      * cursor position
      */
@@ -228,6 +230,7 @@ public class userScreen {
     public userScreen(pipeSide p) {
         int x = p.settingsGet(pipeSetting.width, 80);
         int y = p.settingsGet(pipeSetting.height, 25);
+        ansM = p.settingsGet(pipeSetting.ansiMode, ansiMode.normal);
         if (x < 10) {
             x = 80;
         }
@@ -596,34 +599,6 @@ public class userScreen {
     }
 
     /**
-     * send indexed colors
-     *
-     * @param pip pipeline to use
-     * @param fg color index
-     * @param bg color index
-     */
-    public static void sendIdxCol(pipeSide pip, int fg, int bg) {
-        pip.strPut("\033[38;5;" + (fg & 0xff) + "m");
-        pip.strPut("\033[48;5;" + (bg & 0xff) + "m");
-    }
-
-    /**
-     * send true colors
-     *
-     * @param pip pipeline to use
-     * @param fr foreground red
-     * @param fg foreground green
-     * @param fb foreground blue
-     * @param br background red
-     * @param bg background green
-     * @param bb background blue
-     */
-    public static void sendTruCol(pipeSide pip, int fr, int fg, int fb, int br, int bg, int bb) {
-        pip.strPut("\033[38;2;" + (fr & 0xff) + ";" + (fg & 0xff) + ";" + (fb & 0xff) + "m");
-        pip.strPut("\033[48;2;" + (br & 0xff) + ";" + (bg & 0xff) + ";" + (bb & 0xff) + "m");
-    }
-
-    /**
      * send terminal music
      *
      * @param pip pipeline to use
@@ -658,12 +633,36 @@ public class userScreen {
     }
 
     /**
+     * send indexed colors
+     *
+     * @param pip pipeline to use
+     * @param fg color index
+     * @param bg color index
+     */
+    public static void sendIdxCol(pipeSide pip, int fg, int bg) {
+        pip.strPut("\033[38;5;" + (fg & 0xff) + "m");
+        pip.strPut("\033[48;5;" + (bg & 0xff) + "m");
+    }
+
+    /**
+     * send true colors
+     *
+     * @param pip pipeline to use
+     * @param fg foreground rgb
+     * @param bg background rgb
+     */
+    public static void sendTruCol(pipeSide pip, int fg, int bg) {
+        pip.strPut("\033[38;2;" + ((fg >> 16) & 0xff) + ";" + ((fg >> 8) & 0xff) + ";" + (fg & 0xff) + "m");
+        pip.strPut("\033[48;2;" + ((bg >> 16) & 0xff) + ";" + ((bg >> 8) & 0xff) + ";" + (bg & 0xff) + "m");
+    }
+
+    /**
      * send color change
      *
      * @param pip pipeline to use
      * @param col color to use
      */
-    public static void sendCol(pipeSide pip, int col) {
+    public static void sendAnsCol(pipeSide pip, int col) {
         int bg = (col >>> 16) & 0xf;
         int fg = col & 0xf;
         String s = "\033[0";
@@ -706,8 +705,18 @@ public class userScreen {
         if (remP == col) {
             return;
         }
+        switch (ansM) {
+            case normal:
+                sendAnsCol(pipe, col);
+                break;
+            case indexed:
+                sendIdxCol(pipe, col & 0xf, (col >> 16) & 0xf);
+                break;
+            case palette:
+                sendTruCol(pipe, userFonts.colorIdxd[col & 0xf], userFonts.colorIdxd[(col >> 16) & 0xf]);
+                break;
+        }
         remP = col;
-        sendCol(pipe, col);
     }
 
     private void sendChr(int ch) {
