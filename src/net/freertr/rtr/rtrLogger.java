@@ -118,18 +118,22 @@ public class rtrLogger extends ipRtr {
     /**
      * count prefix lengths
      *
+     * @param ver ip version
      * @param tab routing table
      * @return prefix length report
      */
-    public static userFormat prefixLengths(tabRoute<addrIP> tab) {
+    public static userFormat prefixLengths(tabRoute<addrIP> tab, int ver) {
         int[] res = new int[(addrIP.size * 8) + 1];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> ntry = tab.get(i);
             res[ntry.prefix.maskLen] += ntry.alts.size();
         }
         userFormat lst = new userFormat("|", "len|count");
-        for (int i = 0; i < res.length; i++) {
-            lst.add(i + "|" + res[i]);
+        if (ver == ipCor4.protocolVersion) {
+            ver = addrIP.size * 8;
+        }
+        for (int i = ver; i < res.length; i++) {
+            lst.add((i - ver) + "|" + res[i]);
         }
         return lst;
     }
@@ -167,7 +171,7 @@ public class rtrLogger extends ipRtr {
      * @return prefix length report
      */
     public userFormat prefixLengths() {
-        return prefixLengths(oldU);
+        return prefixLengths(oldU, fwdCore.ipVersion);
     }
 
     /**

@@ -879,6 +879,16 @@ public class cfgAll {
     public static int accessSubnet6 = 64;
 
     /**
+     * access subnet prefix length
+     */
+    public static int accessSupnet4 = 104;
+
+    /**
+     * access subnet prefix length
+     */
+    public static int accessSupnet6 = 18;
+
+    /**
      * proxy to use
      */
     public static clntProxy mailProxy;
@@ -1334,6 +1344,8 @@ public class cfgAll {
         "!no client http-proxy",
         "!client access-subnet-ipv4 120",
         "!client access-subnet-ipv6 64",
+        "!client access-supernet-ipv4 104",
+        "!client access-supernet-ipv6 18",
         "!client tls-version 1 4",
         "!client ssh-group 1024 4096",
         "!no client ssh-agent",
@@ -3845,6 +3857,8 @@ public class cfgAll {
         cmds.cfgLine(l, configExclusive < 1, "", "client config-exclusive", "");
         l.add("client access-subnet-ipv4 " + accessSubnet4);
         l.add("client access-subnet-ipv6 " + accessSubnet6);
+        l.add("client access-supernet-ipv4 " + accessSupnet4);
+        l.add("client access-supernet-ipv6 " + accessSupnet6);
         l.add("client tls-version " + tlsVerMin + " " + tlsVerMax);
         l.add("client ssh-group " + sshGrpMin + " " + sshGrpMax);
         cmds.cfgLine(l, sshAgent == null, "", "client ssh-agent", sshAgent);

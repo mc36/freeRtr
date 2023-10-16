@@ -18,6 +18,7 @@ import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.tab.tabRouautN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -1752,10 +1753,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * validate prefixes
      */
     public void setValidity() {
-        rtrRpkiUtil.setValidityTable(accUni, lower.rpkiA);
-        rtrRpkiUtil.setValidityTable(accMlt, lower.rpkiA);
-        rtrRpkiUtil.setValidityTable(accOuni, lower.rpkiO);
-        rtrRpkiUtil.setValidityTable(accOmlt, lower.rpkiO);
+        if (lower.rpkiT == null) {
+            return;
+        }
+        tabRouautN.setValidityTable(accUni, lower.rpkiA);
+        tabRouautN.setValidityTable(accMlt, lower.rpkiA);
+        tabRouautN.setValidityTable(accOuni, lower.rpkiO);
+        tabRouautN.setValidityTable(accOmlt, lower.rpkiO);
     }
 
     /**

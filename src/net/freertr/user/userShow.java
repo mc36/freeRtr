@@ -117,6 +117,7 @@ import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabQos;
+import net.freertr.tab.tabRouautN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -3597,12 +3598,12 @@ public class userShow {
             rdr.putStrTab(r.rpki.getNeighShow());
             return;
         }
-        if (a.equals("v4")) {
-            doShowRoutes(r.rpki.fwdCore, r.rpki.getFinalTab(4), 4);
+        if (a.equals("database4")) {
+            doShowRoas(r.rpki.getFinalTab(4), 1);
             return;
         }
-        if (a.equals("v6")) {
-            doShowRoutes(r.rpki.fwdCore, r.rpki.getFinalTab(6), 4);
+        if (a.equals("database6")) {
+            doShowRoas(r.rpki.getFinalTab(6), 1);
             return;
         }
     }
@@ -4141,7 +4142,7 @@ public class userShow {
             return;
         }
         if (a.equals("prefix-lengths")) {
-            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfi)));
+            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfi), rtrBgpUtil.safi2ipVers(sfi)));
             return;
         }
         if (a.equals("asinconsistent")) {
@@ -4452,6 +4453,10 @@ public class userShow {
             tab = new tabRoute<addrIP>(tab);
             tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            return;
+        }
+        if (a.equals("validated")) {
+            doShowRoutes(r.bgp.fwdCore, tab, 4);
             return;
         }
         if (a.equals("asnames")) {
@@ -5175,7 +5180,7 @@ public class userShow {
             return;
         }
         rdr.putStrTab(rtrLogger.outgointInterfaces(fwd.actualU));
-        rdr.putStrTab(rtrLogger.prefixLengths(fwd.actualU));
+        rdr.putStrTab(rtrLogger.prefixLengths(fwd.actualU, fwd.ipVersion));
     }
 
     private void doShowRouteSR(int ver) {
@@ -5310,6 +5315,25 @@ public class userShow {
             return null;
         }
         return lst.formatAll(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
+    }
+
+    private void doShowRoas(tabGen<tabRouautN> tab, int typ) {
+        userFormat lst = tabRouautN.convertTableHead(typ);
+        if (lst == null) {
+            return;
+        }
+        if (tab.size() < 1) {
+            rdr.putStrTab(lst);
+            return;
+        }
+        final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
+        for (int pos = 0; pos < tab.size(); pos += lines) {
+            tabGen<tabRouautN> sub = tabRouautN.getSubset(tab, pos, pos + lines);
+            lst = tabRouautN.convertTableFull(sub, typ);
+            if (rdr.putStrTab(lst)) {
+                break;
+            }
+        }
     }
 
     private void doShowRoutes(ipFwd fwd, tabRoute<addrIP> tab, int typ) {

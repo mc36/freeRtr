@@ -57,6 +57,7 @@ import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.spf.spfCalc;
+import net.freertr.tab.tabRouautN;
 import net.freertr.util.counter;
 import net.freertr.util.syncInt;
 
@@ -415,12 +416,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * rpki table
      */
-    protected tabRoute<addrIP> rpkiA = new tabRoute<addrIP>("roa");
+    protected tabGen<tabRouautN> rpkiA = new tabGen<tabRouautN>();
 
     /**
      * other rpki table
      */
-    protected tabRoute<addrIP> rpkiO = new tabRoute<addrIP>("roa");
+    protected tabGen<tabRouautN> rpkiO = new tabGen<tabRouautN>();
 
     /**
      * the computed other unicast routes
@@ -1957,8 +1958,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rpkiA = rpkiR.getFinalTab(fwdCore.ipVersion);
             rpkiO = rpkiR.getFinalTab(other.fwd.ipVersion);
         } else {
-            rpkiA = new tabRoute<addrIP>("");
-            rpkiO = new tabRoute<addrIP>("");
+            rpkiA = new tabGen<tabRouautN>();
+            rpkiO = new tabGen<tabRouautN>();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -2193,10 +2194,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (rpkiT != null) {
             if ((afi == afiUni) || (afi == afiMlt)) {
-                rtrRpkiUtil.setValidityRoute(ntry, rpkiA);
+                tabRouautN.setValidityRoute(ntry, rpkiA);
             }
             if ((afi == afiOuni) || (afi == afiOmlt)) {
-                rtrRpkiUtil.setValidityRoute(ntry, rpkiO);
+                tabRouautN.setValidityRoute(ntry, rpkiO);
             }
         }
         if (best == null) {
@@ -3626,9 +3627,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("rpki")) {
             if (negated) {
-                rpkiR = null;
                 rpkiT = null;
                 rpkiN = 0;
+                needFull.add(1);
+                compute.wakeup();
                 return false;
             }
             rpkiT = cfgRtr.name2num(cmd.word());
@@ -3637,6 +3639,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cmd.error("not an rpki process");
                 return false;
             }
+            needFull.add(1);
+            compute.wakeup();
             return false;
         }
         if (s.equals("listen")) {

@@ -17,6 +17,7 @@ import net.freertr.ip.ipRtr;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
+import net.freertr.tab.tabRouautN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -73,12 +74,12 @@ public class rtrRpki extends ipRtr implements Runnable {
     /**
      * accepted native roas
      */
-    protected tabRoute<addrIP> computedV4 = new tabRoute<addrIP>("roa");
+    protected tabGen<tabRouautN> computedV4 = new tabGen<tabRouautN>();
 
     /**
      * accepted other roas
      */
-    protected tabRoute<addrIP> computedV6 = new tabRoute<addrIP>("roa");
+    protected tabGen<tabRouautN> computedV6 = new tabGen<tabRouautN>();
 
     /**
      * notified to wake up
@@ -194,16 +195,15 @@ public class rtrRpki extends ipRtr implements Runnable {
      * create computed
      */
     public synchronized void routerCreateComputed() {
-        tabRoute<addrIP> tab4 = new tabRoute<addrIP>("rpki4");
-        tabRoute<addrIP> tab6 = new tabRoute<addrIP>("rpki6");
+        tabGen<tabRouautN> tab4 = new tabGen<tabRouautN>();
+        tabGen<tabRouautN> tab6 = new tabGen<tabRouautN>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
-            tab4.mergeFrom(tabRoute.addType.better, ntry.table4, tabRouteAttr.distanLim);
-            tab6.mergeFrom(tabRoute.addType.better, ntry.table6, tabRouteAttr.distanLim);
+            tabRouautN.mergeTwo(tab4, ntry.table4);
+            tabRouautN.mergeTwo(tab6, ntry.table6);
         }
-        tab4.setProto(routerProtoTyp, routerProcNum);
-        boolean chg = tab4.preserveTime(computedV4);
-        chg |= tab6.preserveTime(computedV6);
+        boolean chg = tabRouautN.compareTwo(tab4, computedV4);
+        chg &= tabRouautN.compareTwo(tab6, computedV6);
         if (chg) {
             return;
         }
@@ -469,7 +469,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @param ipVer ip version
      * @return current table
      */
-    public tabRoute<addrIP> getFinalTab(int ipVer) {
+    public tabGen<tabRouautN> getFinalTab(int ipVer) {
         if (ipVer == ipCor4.protocolVersion) {
             return computedV4;
         } else {

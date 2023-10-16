@@ -85,10 +85,10 @@ public class servRpki extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         for (int i = 0; i < pref4.size(); i++) {
-            lst.add(beg + "prefix " + pref4.get(i));
+            lst.add(beg + "prefix " + pref4.get(i).toConfig());
         }
         for (int i = 0; i < pref6.size(); i++) {
-            lst.add(beg + "prefix " + pref6.get(i));
+            lst.add(beg + "prefix " + pref6.get(i).toConfig());
         }
     }
 
@@ -100,7 +100,8 @@ public class servRpki extends servGeneric implements prtServS {
                 cmd.error("bad prefix");
                 return false;
             }
-            if (prf.pref.network.isIPv4()) {
+            prf.srcIP = new addrIP();
+            if (prf.prefix.network.isIPv4()) {
                 pref4.put(prf);
             } else {
                 pref6.put(prf);
@@ -118,7 +119,7 @@ public class servRpki extends servGeneric implements prtServS {
                 cmd.error("bad prefix");
                 return false;
             }
-            if (prf.pref.network.isIPv4()) {
+            if (prf.prefix.network.isIPv4()) {
                 pref4.del(prf);
             } else {
                 pref6.del(prf);
@@ -133,7 +134,8 @@ public class servRpki extends servGeneric implements prtServS {
         l.add(null, "1 2  prefix                       setup a prefix");
         l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
         l.add(null, "3 4      <num>                    maximum prefix length");
-        l.add(null, "4 .        <num>                  as number");
+        l.add(null, "4 5,.      <num>                  as number");
+        l.add(null, "5 .          [num]                preference");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

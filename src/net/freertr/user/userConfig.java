@@ -3149,6 +3149,14 @@ public class userConfig {
             cfgAll.accessSubnet6 = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("access-supernet-ipv4")) {
+            cfgAll.accessSupnet4 = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("access-supernet-ipv6")) {
+            cfgAll.accessSupnet6 = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("time-server")) {
             if (cfgAll.timeServerName != null) {
                 cfgAll.timeServerName.stopWork();

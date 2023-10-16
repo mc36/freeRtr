@@ -85,8 +85,8 @@ route-map rm1
  exit
 server rpki r
  vrf v1
- prefix 2.2.2.111/32 32 3
- prefix 4321::111/128 128 3
+ prefix 2.2.2.111/24 32 3
+ prefix 4321::111/56 128 3
  exit
 router rpki4 1
  vrf v1

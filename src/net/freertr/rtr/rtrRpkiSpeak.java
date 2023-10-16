@@ -6,6 +6,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
+import net.freertr.tab.tabRouautN;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
@@ -97,19 +98,9 @@ public class rtrRpkiSpeak {
     public boolean withdraw;
 
     /**
-     * prefix4
+     * route origin authorization
      */
-    public addrPrefix<addrIP> pref;
-
-    /**
-     * max length
-     */
-    public int max;
-
-    /**
-     * as number
-     */
-    public int as;
+    public tabRouautN roa;
 
     private final packHolder pck;
 
@@ -132,7 +123,7 @@ public class rtrRpkiSpeak {
      * @return string
      */
     public String dump() {
-        return "typ=" + type2string(typ) + " sess=" + sess + " serial=" + serial + " wd=" + withdraw + " pref=" + pref + " max=" + max + " as=" + as;
+        return "typ=" + type2string(typ) + " sess=" + sess + " serial=" + serial + " wd=" + withdraw + " roa=" + roa;
     }
 
     /**
@@ -206,22 +197,24 @@ public class rtrRpkiSpeak {
             case msgCacheReply:
                 break;
             case msgIpv4addr:
+                roa = new tabRouautN();
                 withdraw = (pck.getByte(0) & 1) == 0; // flags
-                max = pck.getByte(2); // max
+                roa.max = pck.getByte(2); // max
                 addrIPv4 adr4 = new addrIPv4();
                 pck.getAddr(adr4, 4); // address
                 addrPrefix<addrIPv4> pref4 = new addrPrefix<addrIPv4>(adr4, pck.getByte(1));
-                pref = addrPrefix.ip4toIP(pref4);
-                as = pck.msbGetD(8); // as
+                roa.prefix = addrPrefix.ip4toIP(pref4);
+                roa.asn = pck.msbGetD(8); // as
                 break;
             case msgIpv6addr:
+                roa = new tabRouautN();
                 withdraw = (pck.getByte(0) & 1) == 0; // flags
-                max = pck.getByte(2); // max
+                roa.max = pck.getByte(2); // max
                 addrIPv6 adr6 = new addrIPv6();
                 pck.getAddr(adr6, 4); // address
                 addrPrefix<addrIPv6> pref6 = new addrPrefix<addrIPv6>(adr6, pck.getByte(1));
-                pref = addrPrefix.ip6toIP(pref6);
-                as = pck.msbGetD(20); // as
+                roa.prefix = addrPrefix.ip6toIP(pref6);
+                roa.asn = pck.msbGetD(20); // as
                 break;
             case msgEndData:
                 serial = pck.msbGetD(0); // serial
@@ -265,12 +258,12 @@ public class rtrRpkiSpeak {
                 } else {
                     pck.putByte(0, 1);
                 }
-                addrPrefix<addrIPv4> pref4 = addrPrefix.ip2ip4(pref);
+                addrPrefix<addrIPv4> pref4 = addrPrefix.ip2ip4(roa.prefix);
                 pck.putByte(1, pref4.maskLen); // prefix length
-                pck.putByte(2, max); // max
+                pck.putByte(2, roa.max); // max
                 pck.putByte(3, 0); // reserved
                 pck.putAddr(4, pref4.network); // address
-                pck.msbPutD(8, as); // as
+                pck.msbPutD(8, roa.asn); // as
                 pck.putSkip(12);
                 break;
             case msgIpv6addr:
@@ -279,12 +272,12 @@ public class rtrRpkiSpeak {
                 } else {
                     pck.putByte(0, 1);
                 }
-                addrPrefix<addrIPv6> pref6 = addrPrefix.ip2ip6(pref);
+                addrPrefix<addrIPv6> pref6 = addrPrefix.ip2ip6(roa.prefix);
                 pck.putByte(1, pref6.maskLen); // prefix length
-                pck.putByte(2, max); // max
+                pck.putByte(2, roa.max); // max
                 pck.putByte(3, 0); // reserved
                 pck.putAddr(4, pref6.network); // address
-                pck.msbPutD(20, as); // as
+                pck.msbPutD(20, roa.asn); // as
                 pck.putSkip(24);
                 break;
             case msgEndData:

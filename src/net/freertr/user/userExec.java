@@ -354,8 +354,8 @@ public class userExec {
         hl.add(null, "3 4        rpki                     resource public key infra protocol");
         hl.add(null, "4 5          <num:rtr>              process id");
         hl.add(null, "5 .            summary              list of neighbors");
-        hl.add(null, "5 .            v4                   list of ipv4 roas");
-        hl.add(null, "5 .            v6                   list of ipv6 roas");
+        hl.add(null, "5 .            database4            list of ipv4 roas");
+        hl.add(null, "5 .            database6            list of ipv6 roas");
         hl.add(null, "3 4        rsvp                     resource reservation protocol");
         hl.add(null, "4 5          <name:vrf>             specify routing table");
         hl.add(null, "5 .            summary              list of tunnels in database");
@@ -661,8 +661,6 @@ public class userExec {
         hl.add(null, "5 .            unknowns             list of unknown attributes");
         hl.add(null, "5 .            compression          list of compression");
         hl.add(null, "5 .            connection           list of connection");
-        hl.add(null, "5 .            rpkisum              list of servers");
-        hl.add(null, "5 .            rpkitab              list of prefixes");
         hl.add(null, "5 .            summary              list of neighbors");
         hl.add(null, "5 .            desummary            list of neighbors with description");
         hl.add(null, "5 .            asummary             list of neighbors with as names");
@@ -787,6 +785,9 @@ public class userExec {
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 .              labels             remote and local labels");
         hl.add(null, "6 .              ecmp               ecmp info");
+        hl.add(null, "6 7,.            validated          validation status of the paths");
+        hl.add(null, "7 8,.              <addr>           prefix to view");
+        hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 7,.            asnames            names of the asns in the paths");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");

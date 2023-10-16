@@ -1876,7 +1876,8 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShRpki() {
-        return metric + "|" + bits.num2str(rouSrc) + "|" + clntWhois.asn2name(rouSrc, true) + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
+        int i = asPathEnd();
+        return bits.num2str(i) + "|" + clntWhois.asn2name(i, true) + "|" + tabRouautN.valid2str(validity) + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
     }
 
     /**

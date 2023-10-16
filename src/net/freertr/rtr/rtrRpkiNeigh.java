@@ -3,7 +3,6 @@ package net.freertr.rtr;
 import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
@@ -43,12 +42,12 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     /**
      * accepted ipv4 prefixes
      */
-    public tabRoute<addrIP> table4 = new tabRoute<addrIP>("rx");
+    public tabGen<tabRouautN> table4 = new tabGen<tabRouautN>();
 
     /**
      * accepted ipv6 prefixes
      */
-    public tabRoute<addrIP> table6 = new tabRoute<addrIP>("rx");
+    public tabGen<tabRouautN> table6 = new tabGen<tabRouautN>();
 
     /**
      * time started
@@ -250,39 +249,33 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         pipe = null;
     }
 
+    private void fillUpRoa(tabRouautN ntry) {
+        ntry.distan = preference;
+        ntry.srcRtr = lower.rouTyp;
+        ntry.srcNum = lower.rtrNum;
+        ntry.srcIP = peer.copyBytes();
+    }
+
     private int doOneRound(rtrRpkiSpeak pck) {
         if (pck.recvPack()) {
             pipe.setClose();
             return -1;
         }
-        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         switch (pck.typ) {
             case rtrRpkiSpeak.msgIpv4addr:
-                ntry.prefix = pck.pref;
-                ntry.best.metric = pck.max;
-                ntry.best.rouSrc = pck.as;
-                ntry.best.locPref = preference;
-                ntry.best.rouTyp = lower.rouTyp;
-                ntry.best.protoNum = lower.rtrNum;
-                ntry.best.aggrRtr = peer;
+                fillUpRoa(pck.roa);
                 if (pck.withdraw) {
-                    table4.del(ntry);
+                    table4.del(pck.roa);
                 } else {
-                    table4.add(tabRoute.addType.always, ntry, true, true);
+                    table4.add(pck.roa);
                 }
                 return 1;
             case rtrRpkiSpeak.msgIpv6addr:
-                ntry.prefix = pck.pref;
-                ntry.best.metric = pck.max;
-                ntry.best.rouSrc = pck.as;
-                ntry.best.locPref = preference;
-                ntry.best.rouTyp = lower.rouTyp;
-                ntry.best.protoNum = lower.rtrNum;
-                ntry.best.aggrRtr = peer;
+                fillUpRoa(pck.roa);
                 if (pck.withdraw) {
-                    table6.del(ntry);
+                    table6.del(pck.roa);
                 } else {
-                    table6.add(tabRoute.addType.always, ntry, true, true);
+                    table6.add(pck.roa);
                 }
                 return 1;
             case rtrRpkiSpeak.msgCacheReply:
@@ -319,9 +312,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                 continue;
             }
             pck.typ = typ;
-            pck.pref = ntry.pref;
-            pck.max = ntry.max;
-            pck.as = ntry.asn;
+            pck.roa = ntry;
             pck.sendPack();
             if (debugger.servRpkiTraf) {
                 logger.debug("tx " + pck.dump());

@@ -20,6 +20,8 @@ import net.freertr.util.bits;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.enc.encTlv;
+import net.freertr.ip.ipCor4;
+import net.freertr.ip.ipCor6;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
@@ -3653,6 +3655,23 @@ public class rtrBgpUtil {
             c[t].tx(p);
         } else {
             c[t].rx(p);
+        }
+    }
+
+    /**
+     * safi to ip version
+     *
+     * @param sfi safi to convert
+     * @return ip version, -1 if nothing
+     */
+    public static int safi2ipVers(int sfi) {
+        switch (sfi & rtrBgpUtil.afiMask) {
+            case rtrBgpUtil.afiIpv4:
+                return ipCor4.protocolVersion;
+            case rtrBgpUtil.afiIpv6:
+                return ipCor6.protocolVersion;
+            default:
+                return -1;
         }
     }
 
