@@ -460,7 +460,6 @@ todo: bridge and router have renumber knob
 todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
 todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
-todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
@@ -471,7 +470,8 @@ todo: menu remote asdf
 todo: onehit to all the menus
 todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
 todo: l2tp3 to the dataplanes as it is for l2tp2 :)
-todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim icmp ipcomp
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
+todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 todo: route-map --> route-policy converter
 todo: route-map <-- route-policy converter
 todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
