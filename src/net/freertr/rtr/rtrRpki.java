@@ -292,7 +292,7 @@ public class rtrRpki extends ipRtr implements Runnable {
             if (w == null) {
                 continue;
             }
-            l.add(beg + "wake " + cfgRtr.num2name(w.remT) + " " + w.remN);
+            l.add(beg + "wakeup " + cfgRtr.num2name(w.remT) + " " + w.remN);
         }
         l.add(beg + "scantime " + scanTime);
     }
@@ -424,7 +424,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @return list of neighbors
      */
     public userFormat getNeighShow() {
-        userFormat l = new userFormat("|", "address|ipv6|ipv6|uptime");
+        userFormat l = new userFormat("|", "address|ipv4|ipv6|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {

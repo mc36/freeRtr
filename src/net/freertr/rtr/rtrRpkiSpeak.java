@@ -6,6 +6,8 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
+import net.freertr.util.debugger;
+import net.freertr.util.logger;
 
 /**
  * resource public key infrastructure (rfc6810) speaker
@@ -233,6 +235,9 @@ public class rtrRpkiSpeak {
             default:
                 return true;
         }
+        if (debugger.rtrRpkiTraf) {
+            logger.debug("rx " + pck.dump());
+        }
         return false;
     }
 
@@ -303,6 +308,9 @@ public class rtrRpkiSpeak {
         pck.putSkip(size);
         pck.merge2beg();
         pck.pipeSend(conn, 0, pck.dataSize(), 2);
+        if (debugger.rtrRpkiTraf) {
+            logger.debug("tx " + pck.dump());
+        }
     }
 
 }

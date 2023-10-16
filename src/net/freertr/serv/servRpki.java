@@ -1,19 +1,16 @@
 package net.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.addr.addrIPv4;
-import net.freertr.addr.addrIPv6;
-import net.freertr.addr.addrPrefix;
-import net.freertr.addr.addrType;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrRpkiSpeak;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.rtr.rtrRpkiNeigh;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouautN;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -50,12 +47,12 @@ public class servRpki extends servGeneric implements prtServS {
     /**
      * ipv4 prefixes
      */
-    public tabGen<servRpkiEntry> pref4 = new tabGen<servRpkiEntry>();
+    public tabGen<tabRouautN> pref4 = new tabGen<tabRouautN>();
 
     /**
      * ipv6 prefixes
      */
-    public tabGen<servRpkiEntry> pref6 = new tabGen<servRpkiEntry>();
+    public tabGen<tabRouautN> pref6 = new tabGen<tabRouautN>();
 
     /**
      * sequence
@@ -88,30 +85,26 @@ public class servRpki extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         for (int i = 0; i < pref4.size(); i++) {
-            lst.add(beg + "prefix4 " + pref4.get(i));
+            lst.add(beg + "prefix " + pref4.get(i));
         }
         for (int i = 0; i < pref6.size(); i++) {
-            lst.add(beg + "prefix6 " + pref6.get(i));
+            lst.add(beg + "prefix " + pref6.get(i));
         }
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        if (s.equals("prefix4")) {
-            servRpkiEntry prf = new servRpkiEntry();
+        if (s.equals("prefix")) {
+            tabRouautN prf = new tabRouautN();
             if (prf.fromString(cmd)) {
+                cmd.error("bad prefix");
                 return false;
             }
-            pref4.put(prf);
-            seq++;
-            return false;
-        }
-        if (s.equals("prefix6")) {
-            servRpkiEntry prf = new servRpkiEntry();
-            if (prf.fromString(cmd)) {
-                return false;
+            if (prf.pref.network.isIPv4()) {
+                pref4.put(prf);
+            } else {
+                pref6.put(prf);
             }
-            pref6.put(prf);
             seq++;
             return false;
         }
@@ -119,21 +112,17 @@ public class servRpki extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
-        if (s.equals("prefix4")) {
-            servRpkiEntry prf = new servRpkiEntry();
+        if (s.equals("prefix")) {
+            tabRouautN prf = new tabRouautN();
             if (prf.fromString(cmd)) {
+                cmd.error("bad prefix");
                 return false;
             }
-            pref4.del(prf);
-            seq++;
-            return false;
-        }
-        if (s.equals("prefix6")) {
-            servRpkiEntry prf = new servRpkiEntry();
-            if (prf.fromString(cmd)) {
-                return false;
+            if (prf.pref.network.isIPv4()) {
+                pref4.del(prf);
+            } else {
+                pref6.del(prf);
             }
-            pref6.del(prf);
             seq++;
             return false;
         }
@@ -141,11 +130,7 @@ public class servRpki extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  prefix4                      set ipv4 prefix");
-        l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
-        l.add(null, "3 4      <num>                    maximum prefix length");
-        l.add(null, "4 .        <num>                  as number");
-        l.add(null, "1 2  prefix6                      set ipv6 prefix");
+        l.add(null, "1 2  prefix                       setup a prefix");
         l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
         l.add(null, "3 4      <num>                    maximum prefix length");
         l.add(null, "4 .        <num>                  as number");
@@ -153,36 +138,8 @@ public class servRpki extends servGeneric implements prtServS {
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(120000);
-        new servRpkiConn(this, pipe);
+        new servRpkiConn(this, pipe, id.peerAddr);
         return false;
-    }
-
-}
-
-class servRpkiEntry implements Comparator<servRpkiEntry> {
-
-    public addrPrefix<addrIP> pref;
-
-    public int max;
-
-    public int as;
-
-    public int compare(servRpkiEntry o1, servRpkiEntry o2) {
-        return o1.pref.compare(o1.pref, o2.pref);
-    }
-
-    public boolean fromString(cmds cmd) {
-        pref = addrPrefix.str2ip(cmd.word());
-        if (pref == null) {
-            return true;
-        }
-        max = bits.str2num(cmd.word());
-        as = bits.str2num(cmd.word());
-        return false;
-    }
-
-    public String toString() {
-        return pref + " " + max + " " + as;
     }
 
 }
@@ -193,16 +150,22 @@ class servRpkiConn implements Runnable {
 
     public final pipeSide conn;
 
+    public final addrIP peer;
+
     public int session;
 
-    public servRpkiConn(servRpki parent, pipeSide pipe) {
+    public servRpkiConn(servRpki parent, pipeSide pipe, addrIP rem) {
         lower = parent;
         conn = pipe;
+        peer = rem;
         session = bits.randomW();
         new Thread(this).start();
     }
 
     public void run() {
+        if (debugger.servRpkiTraf) {
+            logger.debug("starting " + peer);
+        }
         try {
             rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), conn);
             for (;;) {
@@ -214,72 +177,37 @@ class servRpkiConn implements Runnable {
             logger.traceback(e);
         }
         conn.setClose();
+        if (debugger.servRpkiTraf) {
+            logger.debug("stoping " + peer);
+        }
     }
 
     private boolean doRound(rtrRpkiSpeak pck) {
         if (pck.recvPack()) {
             return true;
         }
-        if (debugger.servRpkiTraf) {
-            logger.debug("rx " + pck.dump());
-        }
         switch (pck.typ) {
             case rtrRpkiSpeak.msgSerialQuery:
                 if (pck.serial != lower.seq) {
                     pck.typ = rtrRpkiSpeak.msgCacheReset;
                     pck.sendPack();
-                    if (debugger.servRpkiTraf) {
-                        logger.debug("tx " + pck.dump());
-                    }
                     return false;
                 }
                 pck.typ = rtrRpkiSpeak.msgCacheReply;
                 pck.sess = session;
                 pck.sendPack();
-                if (debugger.servRpkiTraf) {
-                    logger.debug("tx " + pck.dump());
-                }
                 pck.typ = rtrRpkiSpeak.msgEndData;
                 pck.sendPack();
-                if (debugger.servRpkiTraf) {
-                    logger.debug("tx " + pck.dump());
-                }
                 return false;
             case rtrRpkiSpeak.msgResetQuery:
                 pck.typ = rtrRpkiSpeak.msgCacheReply;
                 pck.sess = session;
                 pck.sendPack();
-                if (debugger.servRpkiTraf) {
-                    logger.debug("tx " + pck.dump());
-                }
-                for (int i = 0; i < lower.pref4.size(); i++) {
-                    servRpkiEntry ntry = lower.pref4.get(i);
-                    pck.typ = rtrRpkiSpeak.msgIpv4addr;
-                    pck.pref = ntry.pref;
-                    pck.max = ntry.max;
-                    pck.as = ntry.as;
-                    pck.sendPack();
-                    if (debugger.servRpkiTraf) {
-                        logger.debug("tx " + pck.dump());
-                    }
-                }
-                for (int i = 0; i < lower.pref6.size(); i++) {
-                    servRpkiEntry ntry = lower.pref6.get(i);
-                    pck.typ = rtrRpkiSpeak.msgIpv6addr;
-                    pck.pref = ntry.pref;
-                    pck.max = ntry.max;
-                    pck.as = ntry.as;
-                    pck.sendPack();
-                    if (debugger.servRpkiTraf) {
-                        logger.debug("tx " + pck.dump());
-                    }
-                }
+                rtrRpkiNeigh.sendOneTable(pck, rtrRpkiSpeak.msgIpv4addr, lower.pref4);
+                rtrRpkiNeigh.sendOneTable(pck, rtrRpkiSpeak.msgIpv6addr, lower.pref6);
                 pck.typ = rtrRpkiSpeak.msgEndData;
                 pck.serial = lower.seq;
                 pck.sendPack();
-                if (debugger.servRpkiTraf) {
-                    logger.debug("tx " + pck.dump());
-                }
                 return false;
             default:
                 return false;

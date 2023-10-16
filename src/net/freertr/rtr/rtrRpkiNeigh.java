@@ -9,6 +9,8 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
+import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouautN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
@@ -190,9 +192,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), pipe);
         pck.typ = rtrRpkiSpeak.msgResetQuery;
         pck.sendPack();
-        if (debugger.rtrRpkiTraf) {
-            logger.debug("tx " + pck.dump());
-        }
         table4.clear();
         table6.clear();
         logger.warn("neighbor " + peer + " up");
@@ -226,13 +225,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                 pck.sess = session;
                 pck.typ = rtrRpkiSpeak.msgSerialQuery;
                 pck.sendPack();
-                if (debugger.rtrRpkiTraf) {
-                    logger.debug("tx " + pck.dump());
-                }
                 last = tim;
-            }
-            if (debugger.rtrRpkiTraf) {
-                logger.debug("tx " + pck.dump());
             }
             int chngCntr = 0;
             for (;;) {
@@ -261,9 +254,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         if (pck.recvPack()) {
             pipe.setClose();
             return -1;
-        }
-        if (debugger.rtrRpkiTraf) {
-            logger.debug("rx " + pck.dump());
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         switch (pck.typ) {
@@ -302,17 +292,40 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                 table6.clear();
                 pck.typ = rtrRpkiSpeak.msgResetQuery;
                 pck.sendPack();
-                if (debugger.rtrRpkiTraf) {
-                    logger.debug("tx " + pck.dump());
-                }
                 return 2;
             case rtrRpkiSpeak.msgEndData:
                 session = pck.sess;
                 serial = pck.serial;
-                logger.info("neighbor " + peer + " done " + table4.size() + " " + table6.size());
+                if (debugger.rtrRpkiEvnt) {
+                    logger.info("neighbor " + peer + " done " + table4.size() + " " + table6.size());
+                }
                 return 3;
             default:
                 return 0;
+        }
+    }
+
+    /**
+     * send one table
+     *
+     * @param pck packet to use
+     * @param typ type to send
+     * @param tab table to send
+     */
+    public static void sendOneTable(rtrRpkiSpeak pck, int typ, tabGen<tabRouautN> tab) {
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouautN ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            pck.typ = typ;
+            pck.pref = ntry.pref;
+            pck.max = ntry.max;
+            pck.as = ntry.asn;
+            pck.sendPack();
+            if (debugger.servRpkiTraf) {
+                logger.debug("tx " + pck.dump());
+            }
         }
     }
 

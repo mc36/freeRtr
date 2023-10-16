@@ -3593,7 +3593,7 @@ public class userShow {
             return;
         }
         String a = cmd.word();
-        if (a.equals("neighbor")) {
+        if (a.equals("summary")) {
             rdr.putStrTab(r.rpki.getNeighShow());
             return;
         }
