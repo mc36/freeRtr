@@ -6,7 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ip.ipFwdIface;
-import net.freertr.pack.packRpki;
+import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabRoute;
@@ -187,9 +187,9 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             return;
         }
         pipe.setTime(flushTimer);
-        packRpki pck = new packRpki();
-        pck.typ = packRpki.msgResetQuery;
-        pck.sendPack(pipe);
+        rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), pipe);
+        pck.typ = rtrRpkiSpeak.msgResetQuery;
+        pck.sendPack();
         if (debugger.rtrRpkiTraf) {
             logger.debug("tx " + pck.dump());
         }
@@ -222,11 +222,10 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             bits.sleep(1000);
             long tim = bits.getTime();
             if ((tim - last) > queryTimer) {
-                pck = new packRpki();
                 pck.serial = serial;
                 pck.sess = session;
-                pck.typ = packRpki.msgSerialQuery;
-                pck.sendPack(pipe);
+                pck.typ = rtrRpkiSpeak.msgSerialQuery;
+                pck.sendPack();
                 if (debugger.rtrRpkiTraf) {
                     logger.debug("tx " + pck.dump());
                 }
@@ -258,8 +257,8 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         pipe = null;
     }
 
-    private int doOneRound(packRpki pck) {
-        if (pck.recvPack(pipe)) {
+    private int doOneRound(rtrRpkiSpeak pck) {
+        if (pck.recvPack()) {
             pipe.setClose();
             return -1;
         }
@@ -268,8 +267,8 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         switch (pck.typ) {
-            case packRpki.msgIpv4addr:
-                ntry.prefix = addrPrefix.ip4toIP(pck.pref4);
+            case rtrRpkiSpeak.msgIpv4addr:
+                ntry.prefix = pck.pref;
                 ntry.best.metric = pck.max;
                 ntry.best.rouSrc = pck.as;
                 ntry.best.locPref = preference;
@@ -282,8 +281,8 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                     table4.add(tabRoute.addType.always, ntry, true, true);
                 }
                 return 1;
-            case packRpki.msgIpv6addr:
-                ntry.prefix = addrPrefix.ip6toIP(pck.pref6);
+            case rtrRpkiSpeak.msgIpv6addr:
+                ntry.prefix = pck.pref;
                 ntry.best.metric = pck.max;
                 ntry.best.rouSrc = pck.as;
                 ntry.best.locPref = preference;
@@ -296,18 +295,18 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                     table6.add(tabRoute.addType.always, ntry, true, true);
                 }
                 return 1;
-            case packRpki.msgCacheReply:
+            case rtrRpkiSpeak.msgCacheReply:
                 return 0;
-            case packRpki.msgCacheReset:
+            case rtrRpkiSpeak.msgCacheReset:
                 table4.clear();
                 table6.clear();
-                pck.typ = packRpki.msgResetQuery;
-                pck.sendPack(pipe);
+                pck.typ = rtrRpkiSpeak.msgResetQuery;
+                pck.sendPack();
                 if (debugger.rtrRpkiTraf) {
                     logger.debug("tx " + pck.dump());
                 }
                 return 2;
-            case packRpki.msgEndData:
+            case rtrRpkiSpeak.msgEndData:
                 session = pck.sess;
                 serial = pck.serial;
                 logger.info("neighbor " + peer + " done " + table4.size() + " " + table6.size());

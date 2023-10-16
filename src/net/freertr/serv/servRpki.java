@@ -2,11 +2,13 @@ package net.freertr.serv;
 
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
-import net.freertr.pack.packRpki;
+import net.freertr.pack.packHolder;
+import net.freertr.rtr.rtrRpkiSpeak;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
@@ -36,7 +38,7 @@ public class servRpki extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server rpki .*! port " + packRpki.portNum,
+        "server rpki .*! port " + rtrRpkiSpeak.portNum,
         "server rpki .*! protocol " + proto2string(protoAllStrm)
     };
 
@@ -48,12 +50,12 @@ public class servRpki extends servGeneric implements prtServS {
     /**
      * ipv4 prefixes
      */
-    public tabGen<servRpkiEntry<addrIPv4>> pref4 = new tabGen<servRpkiEntry<addrIPv4>>();
+    public tabGen<servRpkiEntry> pref4 = new tabGen<servRpkiEntry>();
 
     /**
      * ipv6 prefixes
      */
-    public tabGen<servRpkiEntry<addrIPv6>> pref6 = new tabGen<servRpkiEntry<addrIPv6>>();
+    public tabGen<servRpkiEntry> pref6 = new tabGen<servRpkiEntry>();
 
     /**
      * sequence
@@ -69,7 +71,7 @@ public class servRpki extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return packRpki.portNum;
+        return rtrRpkiSpeak.portNum;
     }
 
     public int srvProto() {
@@ -96,8 +98,8 @@ public class servRpki extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("prefix4")) {
-            servRpkiEntry<addrIPv4> prf = new servRpkiEntry<addrIPv4>();
-            if (prf.fromString(new addrIPv4(), cmd)) {
+            servRpkiEntry prf = new servRpkiEntry();
+            if (prf.fromString(cmd)) {
                 return false;
             }
             pref4.put(prf);
@@ -105,8 +107,8 @@ public class servRpki extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("prefix6")) {
-            servRpkiEntry<addrIPv6> prf = new servRpkiEntry<addrIPv6>();
-            if (prf.fromString(new addrIPv6(), cmd)) {
+            servRpkiEntry prf = new servRpkiEntry();
+            if (prf.fromString(cmd)) {
                 return false;
             }
             pref6.put(prf);
@@ -118,8 +120,8 @@ public class servRpki extends servGeneric implements prtServS {
         }
         s = cmd.word();
         if (s.equals("prefix4")) {
-            servRpkiEntry<addrIPv4> prf = new servRpkiEntry<addrIPv4>();
-            if (prf.fromString(new addrIPv4(), cmd)) {
+            servRpkiEntry prf = new servRpkiEntry();
+            if (prf.fromString(cmd)) {
                 return false;
             }
             pref4.del(prf);
@@ -127,8 +129,8 @@ public class servRpki extends servGeneric implements prtServS {
             return false;
         }
         if (s.equals("prefix6")) {
-            servRpkiEntry<addrIPv6> prf = new servRpkiEntry<addrIPv6>();
-            if (prf.fromString(new addrIPv6(), cmd)) {
+            servRpkiEntry prf = new servRpkiEntry();
+            if (prf.fromString(cmd)) {
                 return false;
             }
             pref6.del(prf);
@@ -157,21 +159,21 @@ public class servRpki extends servGeneric implements prtServS {
 
 }
 
-class servRpkiEntry<T extends addrType> implements Comparator<servRpkiEntry<T>> {
+class servRpkiEntry implements Comparator<servRpkiEntry> {
 
-    public addrPrefix<T> pref;
+    public addrPrefix<addrIP> pref;
 
     public int max;
 
     public int as;
 
-    public int compare(servRpkiEntry<T> o1, servRpkiEntry<T> o2) {
+    public int compare(servRpkiEntry o1, servRpkiEntry o2) {
         return o1.pref.compare(o1.pref, o2.pref);
     }
 
-    public boolean fromString(T adr, cmds cmd) {
-        pref = new addrPrefix<T>(adr, 0);
-        if (pref.fromString(cmd.word())) {
+    public boolean fromString(cmds cmd) {
+        pref = addrPrefix.str2ip(cmd.word());
+        if (pref == null) {
             return true;
         }
         max = bits.str2num(cmd.word());
@@ -187,9 +189,9 @@ class servRpkiEntry<T extends addrType> implements Comparator<servRpkiEntry<T>> 
 
 class servRpkiConn implements Runnable {
 
-    public servRpki lower;
+    public final servRpki lower;
 
-    public pipeSide conn;
+    public final pipeSide conn;
 
     public int session;
 
@@ -202,7 +204,7 @@ class servRpkiConn implements Runnable {
 
     public void run() {
         try {
-            packRpki pck = new packRpki();
+            rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), conn);
             for (;;) {
                 if (doRound(pck)) {
                     break;
@@ -214,67 +216,67 @@ class servRpkiConn implements Runnable {
         conn.setClose();
     }
 
-    private boolean doRound(packRpki pck) {
-        if (pck.recvPack(conn)) {
+    private boolean doRound(rtrRpkiSpeak pck) {
+        if (pck.recvPack()) {
             return true;
         }
         if (debugger.servRpkiTraf) {
             logger.debug("rx " + pck.dump());
         }
         switch (pck.typ) {
-            case packRpki.msgSerialQuery:
+            case rtrRpkiSpeak.msgSerialQuery:
                 if (pck.serial != lower.seq) {
-                    pck.typ = packRpki.msgCacheReset;
-                    pck.sendPack(conn);
+                    pck.typ = rtrRpkiSpeak.msgCacheReset;
+                    pck.sendPack();
                     if (debugger.servRpkiTraf) {
                         logger.debug("tx " + pck.dump());
                     }
                     return false;
                 }
-                pck.typ = packRpki.msgCacheReply;
+                pck.typ = rtrRpkiSpeak.msgCacheReply;
                 pck.sess = session;
-                pck.sendPack(conn);
+                pck.sendPack();
                 if (debugger.servRpkiTraf) {
                     logger.debug("tx " + pck.dump());
                 }
-                pck.typ = packRpki.msgEndData;
-                pck.sendPack(conn);
+                pck.typ = rtrRpkiSpeak.msgEndData;
+                pck.sendPack();
                 if (debugger.servRpkiTraf) {
                     logger.debug("tx " + pck.dump());
                 }
                 return false;
-            case packRpki.msgResetQuery:
-                pck.typ = packRpki.msgCacheReply;
+            case rtrRpkiSpeak.msgResetQuery:
+                pck.typ = rtrRpkiSpeak.msgCacheReply;
                 pck.sess = session;
-                pck.sendPack(conn);
+                pck.sendPack();
                 if (debugger.servRpkiTraf) {
                     logger.debug("tx " + pck.dump());
                 }
                 for (int i = 0; i < lower.pref4.size(); i++) {
-                    servRpkiEntry<addrIPv4> ntry = lower.pref4.get(i);
-                    pck.typ = packRpki.msgIpv4addr;
-                    pck.pref4 = ntry.pref;
+                    servRpkiEntry ntry = lower.pref4.get(i);
+                    pck.typ = rtrRpkiSpeak.msgIpv4addr;
+                    pck.pref = ntry.pref;
                     pck.max = ntry.max;
                     pck.as = ntry.as;
-                    pck.sendPack(conn);
+                    pck.sendPack();
                     if (debugger.servRpkiTraf) {
                         logger.debug("tx " + pck.dump());
                     }
                 }
                 for (int i = 0; i < lower.pref6.size(); i++) {
-                    servRpkiEntry<addrIPv6> ntry = lower.pref6.get(i);
-                    pck.typ = packRpki.msgIpv6addr;
-                    pck.pref6 = ntry.pref;
+                    servRpkiEntry ntry = lower.pref6.get(i);
+                    pck.typ = rtrRpkiSpeak.msgIpv6addr;
+                    pck.pref = ntry.pref;
                     pck.max = ntry.max;
                     pck.as = ntry.as;
-                    pck.sendPack(conn);
+                    pck.sendPack();
                     if (debugger.servRpkiTraf) {
                         logger.debug("tx " + pck.dump());
                     }
                 }
-                pck.typ = packRpki.msgEndData;
+                pck.typ = rtrRpkiSpeak.msgEndData;
                 pck.serial = lower.seq;
-                pck.sendPack(conn);
+                pck.sendPack();
                 if (debugger.servRpkiTraf) {
                     logger.debug("tx " + pck.dump());
                 }

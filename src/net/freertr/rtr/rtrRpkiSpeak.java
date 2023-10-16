@@ -1,22 +1,18 @@
-package net.freertr.pack;
+package net.freertr.rtr;
 
+import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
+import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 
 /**
- * resource public key infrastructure (rfc6810) packet
+ * resource public key infrastructure (rfc6810) speaker
  *
  * @author matecsaba
  */
-public class packRpki {
-
-    /**
-     * create instance
-     */
-    public packRpki() {
-    }
+public class rtrRpkiSpeak {
 
     /**
      * port number
@@ -101,12 +97,7 @@ public class packRpki {
     /**
      * prefix4
      */
-    public addrPrefix<addrIPv4> pref4;
-
-    /**
-     * prefix6
-     */
-    public addrPrefix<addrIPv6> pref6;
+    public addrPrefix<addrIP> pref;
 
     /**
      * max length
@@ -118,13 +109,28 @@ public class packRpki {
      */
     public int as;
 
+    private final packHolder pck;
+
+    private final pipeSide conn;
+
+    /**
+     * create instance
+     *
+     * @param tmp buffer to use
+     * @param pip connection to use
+     */
+    public rtrRpkiSpeak(packHolder tmp, pipeSide pip) {
+        pck = tmp;
+        conn = pip;
+    }
+
     /**
      * dump packet
      *
      * @return string
      */
     public String dump() {
-        return "typ=" + type2string(typ) + " sess=" + sess + " serial=" + serial + " wd=" + withdraw + " pref=" + pref4 + "/" + pref6 + " max=" + max + " as=" + as;
+        return "typ=" + type2string(typ) + " sess=" + sess + " serial=" + serial + " wd=" + withdraw + " pref=" + pref + " max=" + max + " as=" + as;
     }
 
     /**
@@ -163,11 +169,10 @@ public class packRpki {
     /**
      * receive packet
      *
-     * @param conn pipe to use
      * @return false on success, true on error
      */
-    public boolean recvPack(pipeSide conn) {
-        packHolder pck = new packHolder(true, true);
+    public boolean recvPack() {
+        pck.clear();
         if (pck.pipeRecv(conn, 0, size, 144) != size) {
             return true;
         }
@@ -203,7 +208,8 @@ public class packRpki {
                 max = pck.getByte(2); // max
                 addrIPv4 adr4 = new addrIPv4();
                 pck.getAddr(adr4, 4); // address
-                pref4 = new addrPrefix<addrIPv4>(adr4, pck.getByte(1));
+                addrPrefix<addrIPv4> pref4 = new addrPrefix<addrIPv4>(adr4, pck.getByte(1));
+                pref = addrPrefix.ip4toIP(pref4);
                 as = pck.msbGetD(8); // as
                 break;
             case msgIpv6addr:
@@ -211,7 +217,8 @@ public class packRpki {
                 max = pck.getByte(2); // max
                 addrIPv6 adr6 = new addrIPv6();
                 pck.getAddr(adr6, 4); // address
-                pref6 = new addrPrefix<addrIPv6>(adr6, pck.getByte(1));
+                addrPrefix<addrIPv6> pref6 = new addrPrefix<addrIPv6>(adr6, pck.getByte(1));
+                pref = addrPrefix.ip6toIP(pref6);
                 as = pck.msbGetD(20); // as
                 break;
             case msgEndData:
@@ -231,11 +238,9 @@ public class packRpki {
 
     /**
      * send packet
-     *
-     * @param conn pipe to use
      */
-    public void sendPack(pipeSide conn) {
-        packHolder pck = new packHolder(true, true);
+    public void sendPack() {
+        pck.clear();
         switch (typ) {
             case msgSerialNotify:
                 pck.msbPutD(0, serial); // serial
@@ -255,6 +260,7 @@ public class packRpki {
                 } else {
                     pck.putByte(0, 1);
                 }
+                addrPrefix<addrIPv4> pref4 = addrPrefix.ip2ip4(pref);
                 pck.putByte(1, pref4.maskLen); // prefix length
                 pck.putByte(2, max); // max
                 pck.putByte(3, 0); // reserved
@@ -268,6 +274,7 @@ public class packRpki {
                 } else {
                     pck.putByte(0, 1);
                 }
+                addrPrefix<addrIPv6> pref6 = addrPrefix.ip2ip6(pref);
                 pck.putByte(1, pref6.maskLen); // prefix length
                 pck.putByte(2, max); // max
                 pck.putByte(3, 0); // reserved
