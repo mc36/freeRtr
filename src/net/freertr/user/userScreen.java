@@ -16,6 +16,71 @@ import net.freertr.util.logger;
 public class userScreen {
 
     /**
+     * ansi modes
+     */
+    public enum ansiMode {
+        /**
+         * normal
+         */
+        none,
+        /**
+         * 16 colors
+         */
+        normal,
+        /**
+         * 256 colors
+         */
+        indexed,
+        /**
+         * 16m colors
+         */
+        palette
+    }
+
+    /**
+     * convert string to ansi mode
+     *
+     * @param a string
+     * @return mode
+     */
+    public static ansiMode string2mode(String a) {
+        if (a.equals("none")) {
+            return ansiMode.none;
+        }
+        if (a.equals("normal")) {
+            return ansiMode.normal;
+        }
+        if (a.equals("indexed")) {
+            return ansiMode.indexed;
+        }
+        if (a.equals("palette")) {
+            return ansiMode.palette;
+        }
+        return ansiMode.normal;
+    }
+
+    /**
+     * convert ansi mode to string
+     *
+     * @param m mode
+     * @return string
+     */
+    public static String ansimod2str(ansiMode m) {
+        switch (m) {
+            case none:
+                return "none";
+            case normal:
+                return "normal";
+            case indexed:
+                return "indexed";
+            case palette:
+                return "palette";
+            default:
+                return "unknown";
+        }
+    }
+
+    /**
      * pipeline in use
      */
     public final pipeSide pipe;

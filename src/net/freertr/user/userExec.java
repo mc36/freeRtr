@@ -1604,6 +1604,11 @@ public class userExec {
         hl.add(null, "2 3      play                         play ansi music");
         hl.add(null, "3 3,.      [str]                      music");
         hl.add(null, "2 .      beep                         bell ascii terminal");
+        hl.add(null, "2 3,.    ansimode                     select ansi coloring mode");
+        hl.add(null, "3 .        none                       select black and white mode");
+        hl.add(null, "3 .        normal                     select 16 colors mode");
+        hl.add(null, "3 .        indexed                    select 256 colors mode");
+        hl.add(null, "3 .        palette                    select 16m colors mode");
         hl.add(null, "2 3,.    tablemode                    select table formatting mode");
         hl.add(null, "3 .        normal                     select normal mode");
         hl.add(null, "3 .        table                      select table mode");
@@ -4687,6 +4692,12 @@ public class userExec {
             pipe.settingsPut(pipeSetting.termBells, true);
             return;
         }
+        if (a.equals("ansimode")) {
+            a = cmd.word();
+            userScreen.ansiMode am = userScreen.string2mode(a);
+            pipe.settingsPut(pipeSetting.ansiMode, am);
+            return;
+        }
         if (a.equals("histroy")) {
             reader.setHistory(bits.str2num(cmd.word()));
             return;
@@ -4743,6 +4754,10 @@ public class userExec {
         }
         if (a.equals("bells")) {
             pipe.settingsPut(pipeSetting.termBells, false);
+            return;
+        }
+        if (a.equals("ansimode")) {
+            pipe.settingsPut(pipeSetting.ansiMode, userScreen.ansiMode.normal);
             return;
         }
         if (a.equals("tablemode")) {

@@ -74,6 +74,11 @@ public class userLine {
     public userFormat.colorMode execColor = userFormat.colorMode.normal;
 
     /**
+     * colorize
+     */
+    public userScreen.ansiMode ansiMode = userScreen.ansiMode.normal;
+
+    /**
      * space as tab
      */
     public boolean execSpace;
@@ -328,6 +333,7 @@ public class userLine {
         cmds.cfgLine(lst, !execCaps, beg, "exec capslock", "");
         cmds.cfgLine(lst, !execBells, beg, "exec bells", "");
         lst.add(beg + "exec colorize " + userFormat.colmod2str(execColor));
+        lst.add(beg + "exec ansimode " + userScreen.ansimod2str(ansiMode));
         lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
         lst.add(beg + "exec welcome " + promptWelcome);
         lst.add(beg + "exec ready " + promptSuccess);
@@ -695,6 +701,11 @@ public class userLine {
         l.add(null, "3 .      normal                     select normal mode");
         l.add(null, "3 .      raw                        select raw mode");
         l.add(null, "3 .      table                      select table mode");
+        l.add(null, "2 3    ansimode                     select ansi coloring mode");
+        l.add(null, "3 .      none                       select black and white mode");
+        l.add(null, "3 .      normal                     select 16 colors mode");
+        l.add(null, "3 .      indexed                    select 256 colors mode");
+        l.add(null, "3 .      palette                    select 16m colors mode");
         l.add(null, "2 3    timeout                      set timeout value");
         l.add(null, "3 .      <num>                      timeout in milliseconds");
         l.add(null, "2 3    width                        number of columns");

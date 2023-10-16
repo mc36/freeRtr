@@ -4,6 +4,7 @@ import java.util.Comparator;
 import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgAll;
 import net.freertr.user.userFormat;
+import net.freertr.user.userScreen;
 
 /**
  * one setting of a pipeline
@@ -83,6 +84,11 @@ public class pipeSetting implements Comparator<pipeSetting> {
     public final static int termBells = 14;
 
     /**
+     * ansi mode
+     */
+    public final static int ansiMode = 15;
+
+    /**
      * name of the setting
      */
     protected final int name;
@@ -128,6 +134,7 @@ public class pipeSetting implements Comparator<pipeSetting> {
         l.add("spacetab|" + pip.settingsGet(pipeSetting.spacTab, false));
         l.add("capslock|" + pip.settingsGet(pipeSetting.capsLock, false));
         l.add("bells|" + pip.settingsGet(pipeSetting.termBells, false));
+        l.add("ansimode|" + pip.settingsGet(pipeSetting.ansiMode, userScreen.ansiMode.normal));
         l.add("timestamps|" + pip.settingsGet(pipeSetting.times, false));
         l.add("deactivate|" + pip.settingsGet(pipeSetting.deactive, 65536));
         l.add("escape|" + pip.settingsGet(pipeSetting.escape, 65536));

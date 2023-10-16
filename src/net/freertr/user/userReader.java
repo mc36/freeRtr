@@ -199,6 +199,7 @@ public class userReader implements Comparator<String> {
         ".*! exec history 64",
         ".*! no exec timestamp",
         ".*! exec colorize normal",
+        ".*! exec ansimode normal",
         ".*! no exec spacetab",
         ".*! no exec capslock",
         ".*! no exec bells",
@@ -249,6 +250,7 @@ public class userReader implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.spacTab, false);
             pipe.settingsAdd(pipeSetting.capsLock, false);
             pipe.settingsAdd(pipeSetting.termBells, false);
+            pipe.settingsAdd(pipeSetting.ansiMode, userScreen.ansiMode.normal);
             pipe.settingsAdd(pipeSetting.logging, false);
             pipe.settingsAdd(pipeSetting.times, false);
             pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
@@ -262,6 +264,7 @@ public class userReader implements Comparator<String> {
         setHistory(parent.execHistory);
         pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
         pipe.settingsAdd(pipeSetting.capsLock, parent.execCaps);
+        pipe.settingsAdd(pipeSetting.ansiMode, parent.ansiMode);
         pipe.settingsAdd(pipeSetting.termBells, parent.execBells);
         pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
@@ -1050,19 +1053,47 @@ public class userReader implements Comparator<String> {
         histN = -1;
     }
 
-    private void cmdLeft() {
+    private void cmdLeft(boolean bells) {
+        if (pos < 1) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         pos--;
     }
 
-    private void cmdRight() {
+    private void cmdRight(boolean bells) {
+        if (pos >= len) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         pos++;
     }
 
-    private void cmdHome() {
+    private void cmdHome(boolean bells) {
+        if (pos < 1) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         pos = 0;
     }
 
-    private void cmdEnd() {
+    private void cmdEnd(boolean bells) {
+        if (pos >= len) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         pos = len;
     }
 
@@ -1107,7 +1138,7 @@ public class userReader implements Comparator<String> {
     }
 
     private void cmdBackspace(boolean bells) {
-        if (curr.length() < 1) {
+        if (pos < 1) {
             if (!bells) {
                 return;
             }
@@ -1128,18 +1159,36 @@ public class userReader implements Comparator<String> {
             userScreen.sendBeep(pipe);
             return;
         }
+        if (s.equals(curr)) {
+            userScreen.sendBeep(pipe);
+            return;
+        }
         curr = s;
         pos = curr.length();
         clear = true;
     }
 
-    private void cmdErase2end() {
+    private void cmdErase2end(boolean bells) {
+        if (pos >= len) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         clip = part(pos, len);
         curr = part(0, pos);
         clear = true;
     }
 
-    private void cmdErase2beg() {
+    private void cmdErase2beg(boolean bells) {
+        if (pos < 1) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         clip = part(0, pos);
         curr = part(pos, len);
         pos = 0;
@@ -1181,9 +1230,13 @@ public class userReader implements Comparator<String> {
         return null;
     }
 
-    private void cmdRefreshLine() {
+    private void cmdRefreshLine(boolean bells) {
         pipe.linePut("");
         putCurrLine(true);
+        if (!bells) {
+            return;
+        }
+        userScreen.sendBeep(pipe);
     }
 
     private void cmdHistNext() {
@@ -1302,27 +1355,27 @@ public class userReader implements Comparator<String> {
                 case 0x8017: // f4
                     doHistFind(false, -1, text);
                     break;
-                case 0x277: // ctrl + w
+                case 0x0277: // ctrl + w
                     text = "";
                     doHistFind(true, +1, text);
                     break;
-                case 0x26e: // ctrl + n
+                case 0x026e: // ctrl + n
                     doHistFind(false, -1, text);
                     break;
-                case 0x270: // ctrl + p
+                case 0x0270: // ctrl + p
                     doHistFind(false, +1, text);
                     break;
-                case 0x272: // ctrl + r
-                    cmdRefreshLine();
+                case 0x0272: // ctrl + r
+                    cmdRefreshLine(bells);
                     break;
-                case 0x26c: // ctrl + l
-                    cmdRefreshLine();
+                case 0x026c: // ctrl + l
+                    cmdRefreshLine(bells);
                     break;
                 case 0x8005: // escape
                 case 0x801d: // f10
-                case 0x273: // ctrl + s
-                case 0x263: // ctrl + c
-                case 0x278: // ctrl + x
+                case 0x0273: // ctrl + s
+                case 0x0263: // ctrl + c
+                case 0x0278: // ctrl + x
                     prompt = oldPrm;
                     curr = oldCur;
                     pos = curr.length();
@@ -1358,7 +1411,14 @@ public class userReader implements Comparator<String> {
         cmdInsChr(i & 0xff);
     }
 
-    private void cmdEraseBack() {
+    private void cmdEraseBack(boolean bells) {
+        if (pos < 1) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         int i = cmds.wordBound(curr, pos - 1, -1);
         if (i != 0) {
             i++;
@@ -1369,7 +1429,14 @@ public class userReader implements Comparator<String> {
         clear = true;
     }
 
-    private void cmdEraseFwrd() {
+    private void cmdEraseFwrd(boolean bells) {
+        if (pos >= len) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         int i = cmds.wordBound(curr, pos, +1);
         clip = part(pos, i);
         curr = part(0, pos) + part(i, len);
@@ -1385,14 +1452,28 @@ public class userReader implements Comparator<String> {
         putCurrLine(true);
     }
 
-    private void cmdBackward() {
+    private void cmdBackward(boolean bells) {
+        if (pos < 1) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         pos = cmds.wordBound(curr, pos - 1, -1);
         if (pos != 0) {
             pos++;
         }
     }
 
-    private void cmdForward() {
+    private void cmdForward(boolean bells) {
+        if (pos >= len) {
+            if (!bells) {
+                return;
+            }
+            userScreen.sendBeep(pipe);
+            return;
+        }
         pos = cmds.wordBound(curr, pos, +1);
     }
 
@@ -1460,7 +1541,7 @@ public class userReader implements Comparator<String> {
                         break;
                     case 0x8004: // enter
                         if (spacetab) {
-                            cmdTabulator(bells);
+                            cmdTabulator(false);
                         }
                         String s = cmdEnter();
                         if (s == null) {
@@ -1468,16 +1549,16 @@ public class userReader implements Comparator<String> {
                         }
                         return s;
                     case 0x800e: // left
-                        cmdLeft();
+                        cmdLeft(bells);
                         break;
                     case 0x800f: // right
-                        cmdRight();
+                        cmdRight(bells);
                         break;
                     case 0x820e: // ctrl+left
-                        cmdBackward();
+                        cmdBackward(bells);
                         break;
                     case 0x820f: // ctrl+right
-                        cmdForward();
+                        cmdForward(bells);
                         break;
                     case 0x800c: // up
                         cmdHistPrev();
@@ -1486,100 +1567,100 @@ public class userReader implements Comparator<String> {
                         cmdHistNext();
                         break;
                     case 0x8008: // home
-                        cmdHome();
+                        cmdHome(bells);
                         break;
                     case 0x8009: // end
-                        cmdEnd();
+                        cmdEnd(bells);
                         break;
                     case 0x8007: // delete
                         cmdDelChr();
                         break;
-                    case 0x261: // ctrl + a
-                        cmdHome();
+                    case 0x0261: // ctrl + a
+                        cmdHome(bells);
                         break;
-                    case 0x262: // ctrl + b
-                        cmdLeft();
+                    case 0x0262: // ctrl + b
+                        cmdLeft(bells);
                         break;
-                    case 0x263: // ctrl + c
+                    case 0x0263: // ctrl + c
                         cmdClear();
                         break;
-                    case 0x264: // ctrl + d
+                    case 0x0264: // ctrl + d
                         cmdDelChr();
                         break;
-                    case 0x265: // ctrl + e
-                        cmdEnd();
+                    case 0x0265: // ctrl + e
+                        cmdEnd(bells);
                         break;
-                    case 0x266: // ctrl + f
-                        cmdRight();
+                    case 0x0266: // ctrl + f
+                        cmdRight(bells);
                         break;
-                    case 0x26b: // ctrl + k
-                        cmdErase2end();
+                    case 0x026b: // ctrl + k
+                        cmdErase2end(bells);
                         break;
-                    case 0x26c: // ctrl + l
-                        cmdRefreshLine();
+                    case 0x026c: // ctrl + l
+                        cmdRefreshLine(bells);
                         break;
-                    case 0x26e: // ctrl + n
+                    case 0x026e: // ctrl + n
                         cmdHistNext();
                         break;
-                    case 0x270: // ctrl + p
+                    case 0x0270: // ctrl + p
                         cmdHistPrev();
                         break;
-                    case 0x271: // ctrl + q
+                    case 0x0271: // ctrl + q
                         cmdSpecChr();
                         break;
-                    case 0x272: // ctrl + r
-                        cmdRefreshLine();
+                    case 0x0272: // ctrl + r
+                        cmdRefreshLine(bells);
                         break;
-                    case 0x273: // ctrl + s
+                    case 0x0273: // ctrl + s
                         if (cmdHistFind()) {
                             return null;
                         }
                         clear = true;
                         break;
-                    case 0x274: // ctrl + t
+                    case 0x0274: // ctrl + t
                         cmdSwapLetters();
                         break;
-                    case 0x275: // ctrl + u
-                        cmdErase2beg();
+                    case 0x0275: // ctrl + u
+                        cmdErase2beg(bells);
                         break;
-                    case 0x276: // ctrl + v
+                    case 0x0276: // ctrl + v
                         cmdSpecChr();
                         break;
-                    case 0x277: // ctrl + w
-                        cmdEraseBack();
+                    case 0x0277: // ctrl + w
+                        cmdEraseBack(bells);
                         break;
-                    case 0x278: // ctrl + x
-                        cmdErase2beg();
+                    case 0x0278: // ctrl + x
+                        cmdErase2beg(bells);
                         break;
-                    case 0x279: // ctrl + y
+                    case 0x0279: // ctrl + y
                         cmdInsStr(clip);
                         break;
-                    case 0x27a: // ctrl + z
-                        cmdRefreshLine();
+                    case 0x027a: // ctrl + z
+                        cmdRefreshLine(false);
                         cmdClear();
                         if (exit == null) {
                             break;
                         }
                         return exit;
-                    case 0x462: // alt + b
-                        cmdBackward();
+                    case 0x0462: // alt + b
+                        cmdBackward(bells);
                         break;
-                    case 0x463: // alt + c
+                    case 0x0463: // alt + c
                         cmdCapitalize();
                         break;
-                    case 0x464: // alt + d
-                        cmdEraseFwrd();
+                    case 0x0464: // alt + d
+                        cmdEraseFwrd(bells);
                         break;
-                    case 0x466: // alt + f
-                        cmdForward();
+                    case 0x0466: // alt + f
+                        cmdForward(bells);
                         break;
-                    case 0x46c: // alt + l
+                    case 0x046c: // alt + l
                         cmdLowercase();
                         break;
-                    case 0x471: // alt + q
+                    case 0x0471: // alt + q
                         cmdSpecChr();
                         break;
-                    case 0x475: // alt + u
+                    case 0x0475: // alt + u
                         cmdUppercase();
                         break;
                     case 32: // space
