@@ -15227,3 +15227,6 @@ todo: more rpki shows like validation of protocols tables, comparison of neighbo
 ---------------------------------- 2023-10-17 17:10:25 23.10.17
 no qc pass: bgp leak prevention with customer provider
 failed: bgp leak prevention with customer provider
+---------------------------------- 2023-10-17 18:02:49 23.10.17
+no failed: bgp leak prevention with customer provider
+qc pass: bgp leak prevention with customer provider

@@ -2455,7 +2455,7 @@ qc pass: bgp extended update
 qc pass: bgp multiple labels
 qc pass: bgp graceful restart
 qc pass: bgp extended nexthop
-failed: bgp leak prevention with customer provider
+qc pass: bgp leak prevention with customer provider
 qc pass: bgp leak prevention with route server
 qc pass: bgp leak prevention with peer
 qc pass: unicast+nsh over bgp
