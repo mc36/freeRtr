@@ -15220,3 +15220,7 @@ todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim
 ---------------------------------- 2023-10-16 03:46:30 23.10.16
 no failed: bgp rpki
 qc pass: bgp rpki
+---------------------------------- 2023-10-17 09:16:21 23.10.17
+no todo: decouple rpki from bgp process
+todo: bgp astree shows from asconn
+todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc

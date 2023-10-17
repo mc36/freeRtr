@@ -5,6 +5,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
+import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouautN;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -302,6 +303,70 @@ public class rtrRpkiSpeak {
         pck.pipeSend(conn, 0, pck.dataSize(), 2);
         if (debugger.rtrRpkiTraf) {
             logger.debug("tx " + pck.dump());
+        }
+    }
+
+    /**
+     * send one table
+     *
+     * @param pck packet to use
+     * @param typ type to send
+     * @param tab table to send
+     */
+    public void sendOneTable(int typ, tabGen<tabRouautN> tab) {
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouautN ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            typ = typ;
+            roa = ntry;
+            sendPack();
+            if (debugger.servRpkiTraf) {
+                logger.debug("tx " + dump());
+            }
+        }
+    }
+
+    /**
+     * do one server round
+     *
+     * @param pck speaker to use
+     * @param seq sequence to use
+     * @param ses session to use
+     * @param tab4 ipv4 table
+     * @param tab6 ipv6 table
+     * @return true on error, false on success
+     */
+    public boolean doOneServRnd(int seq, int ses, tabGen<tabRouautN> tab4, tabGen<tabRouautN> tab6) {
+        if (recvPack()) {
+            return true;
+        }
+        switch (typ) {
+            case rtrRpkiSpeak.msgSerialQuery:
+                if (serial != seq) {
+                    typ = rtrRpkiSpeak.msgCacheReset;
+                    sendPack();
+                    return false;
+                }
+                typ = rtrRpkiSpeak.msgCacheReply;
+                sess = ses;
+                sendPack();
+                typ = rtrRpkiSpeak.msgEndData;
+                sendPack();
+                return false;
+            case rtrRpkiSpeak.msgResetQuery:
+                typ = rtrRpkiSpeak.msgCacheReply;
+                sess = ses;
+                sendPack();
+                sendOneTable(rtrRpkiSpeak.msgIpv4addr, tab4);
+                sendOneTable(rtrRpkiSpeak.msgIpv6addr, tab6);
+                typ = rtrRpkiSpeak.msgEndData;
+                serial = seq;
+                sendPack();
+                return false;
+            default:
+                return false;
         }
     }
 

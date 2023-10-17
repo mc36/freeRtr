@@ -171,7 +171,7 @@ class servRpkiConn implements Runnable {
         try {
             rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), conn);
             for (;;) {
-                if (rtrRpkiNeigh.doOneServRnd(pck, lower.sequence, session, lower.pref4, lower.pref6)) {
+                if (pck.doOneServRnd(lower.sequence, session, lower.pref4, lower.pref6)) {
                     break;
                 }
             }

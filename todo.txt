@@ -1,3 +1,7 @@
+bgp astree shows from asconn
+
+more rpki shows like validation of protocols tables, comparison of neighbors, etc
+
 allow some packages to be redownloaded after a certain time expired
 
 vdc to have local, connect as sdn autocreated
@@ -49,8 +53,6 @@ player queue up down add-again
 
 
 openflow to have 2 label support and stack to p4lang
-
-decouple rpki from bgp process
 
 redundancy to have the shows
 
