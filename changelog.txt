@@ -15230,3 +15230,6 @@ failed: bgp leak prevention with customer provider
 ---------------------------------- 2023-10-17 18:02:49 23.10.17
 no failed: bgp leak prevention with customer provider
 qc pass: bgp leak prevention with customer provider
+---------------------------------- 2023-10-17 18:37:28 23.10.17
+no todo: redundancy to have the shows
+todo: redundancy to have the remote shows and a counter on how many failures observed
