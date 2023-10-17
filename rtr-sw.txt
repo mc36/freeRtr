@@ -593,7 +593,7 @@ router bgp4 65535 vrf v1
  template r unknowns-log
  template r segrout
  template r bier
- template r role attrib
+ template r leak-role attrib
  template r send-community all
  !
  neighbor 10.5.1.10 template r
@@ -675,7 +675,7 @@ router bgp6 65535 vrf v1
  template r unknowns-log
  template r segrout
  template r bier
- template r role attrib
+ template r leak-role attrib
  template r send-community all
  !
  neighbor 2001:db8:36::2 template r

@@ -15224,3 +15224,6 @@ qc pass: bgp rpki
 no todo: decouple rpki from bgp process
 todo: bgp astree shows from asconn
 todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
+---------------------------------- 2023-10-17 17:10:25 23.10.17
+no qc pass: bgp leak prevention with customer provider
+failed: bgp leak prevention with customer provider

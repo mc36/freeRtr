@@ -376,7 +376,7 @@ public class tabRouautN implements Comparator<tabRouautN> {
      * @param attr attribute to set
      * @param res route authorization
      */
-    public final static void setValidityAttr(tabRouteAttr<addrIP> attr, tabRouautN res) {
+    protected final static void setValidityAttr(tabRouteAttr<addrIP> attr, tabRouautN res) {
         if (res == null) {
             attr.validity = 2;
             return;
@@ -396,6 +396,9 @@ public class tabRouautN implements Comparator<tabRouautN> {
      * @param roas route authorizations
      */
     public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRouautN> roas) {
+        if (ntry.best.validity != 0) {
+            return;
+        }
         tabRouautN res = tabRouautN.lookup(roas, ntry.prefix);
         for (int o = 0; o < ntry.alts.size(); o++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(o);

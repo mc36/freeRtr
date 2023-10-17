@@ -204,6 +204,16 @@ public abstract class rtrBgpParam {
     public boolean leakForce;
 
     /**
+     * rpki ingress mode
+     */
+    public int rpkiIn;
+
+    /**
+     * rpki egress mode
+     */
+    public int rpkiOut;
+
+    /**
      * advertise pop label
      */
     public boolean labelPop;
@@ -1139,6 +1149,8 @@ public abstract class rtrBgpParam {
         ttlSecurity = -1;
         tosValue = -1;
         leakRole = -1;
+        rpkiIn = 0;
+        rpkiOut = 0;
         keyId = -1;
         passwd = null;
         capaNego = true;
@@ -1195,6 +1207,8 @@ public abstract class rtrBgpParam {
         egressEng = src.egressEng;
         leakRole = src.leakRole;
         leakAttr = src.leakAttr;
+        rpkiIn = src.rpkiIn;
+        rpkiOut = src.rpkiOut;
         leakForce = src.leakForce;
         labelPop = src.labelPop;
         capaNego = src.capaNego;
@@ -1328,6 +1342,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (leakRole != src.leakRole) {
+            return true;
+        }
+        if (rpkiOut != src.rpkiOut) {
             return true;
         }
         if (remoteConfed != src.remoteConfed) {
@@ -1580,13 +1597,28 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <num>                     tos value");
         l.add(null, "3  4       egress-engineering          set egress engineering");
         l.add(null, "4  .         <num>                     index value");
-        l.add(null, "3  4       role                        remote leak prevention role");
+        l.add(null, "3  4       rpki-in                     rpki ingress mode");
+        l.add(null, "3  .         transparent               pass everything unmodified");
+        l.add(null, "3  .         accept                    accept remote markings");
+        l.add(null, "3  .         remove                    remove remote markings");
+        l.add(null, "3  4       rpki-out                    rpki egress mode");
+        l.add(null, "3  .         transparent               pass everything unmodified");
+        l.add(null, "3  .         accept                    accept remote markings");
+        l.add(null, "3  .         remove                    remove remote markings");
+        l.add(null, "3  .         rewrite                   rewrite markings");
+        l.add(null, "3  4       leak-role                   remote leak prevention role");
         l.add(null, "4  5,.       disabled                  disable processing");
+        l.add(null, "5  .           enforce                 enforce negotiation");
         l.add(null, "4  5,.       attrib                    only send otc attribute");
+        l.add(null, "5  .           enforce                 enforce negotiation");
         l.add(null, "4  5,.       provider                  provider");
+        l.add(null, "5  .           enforce                 enforce negotiation");
         l.add(null, "4  5,.       ix-server                 route server");
+        l.add(null, "5  .           enforce                 enforce negotiation");
         l.add(null, "4  5,.       ix-client                 route server client");
+        l.add(null, "5  .           enforce                 enforce negotiation");
         l.add(null, "4  5,.       customer                  customer");
+        l.add(null, "5  .           enforce                 enforce negotiation");
         l.add(null, "4  5,.       peer                      peer");
         l.add(null, "5  .           enforce                 enforce negotiation");
         l.add(null, "3  .       capability-negotiation      perform capability negosiation");
@@ -1908,7 +1940,9 @@ public abstract class rtrBgpParam {
         if (leakForce) {
             s += " enforce";
         }
-        l.add(beg + nei + "role " + s);
+        l.add(beg + nei + "leak-role " + s);
+        l.add(beg + nei + "rpki-in " + rtrBgpUtil.rpkiMode2string(rpkiIn));
+        l.add(beg + nei + "rpki-out " + rtrBgpUtil.rpkiMode2string(rpkiOut));
         cmds.cfgLine(l, !labelPop, beg, nei + "label-pop", "");
         cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "");
         cmds.cfgLine(l, !trackNxthop, beg, nei + "track-next-hop", "");
@@ -2565,7 +2599,23 @@ public abstract class rtrBgpParam {
             routeRefresh = !negated;
             return false;
         }
-        if (s.equals("role")) {
+        if (s.equals("rpki-in")) {
+            if (negated) {
+                rpkiIn = 0;
+                return false;
+            }
+            rpkiIn = rtrBgpUtil.string2rpkiMode(cmd.word());
+            return false;
+        }
+        if (s.equals("rpki-out")) {
+            if (negated) {
+                rpkiOut = 0;
+                return false;
+            }
+            rpkiOut = rtrBgpUtil.string2rpkiMode(cmd.word());
+            return false;
+        }
+        if (s.equals("leak-role")) {
             s = cmd.word();
             leakRole = -1;
             leakAttr = false;

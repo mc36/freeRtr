@@ -1880,6 +1880,49 @@ public class rtrBgpUtil {
     }
 
     /**
+     * convert rpki mode to string
+     *
+     * @param mode mode to convert
+     * @return converted string
+     */
+    public static String rpkiMode2string(int mode) {
+        switch (mode) {
+            case 0:
+                return "transparent";
+            case 1:
+                return "accept";
+            case 2:
+                return "remove";
+            case 3:
+                return "rewrite";
+            default:
+                return "unknown=" + mode;
+        }
+    }
+
+    /**
+     * convert string to rpki mode
+     *
+     * @param a string to convert
+     * @return numerical value
+     */
+    public static int string2rpkiMode(String a) {
+        if (a.equals("transparent")) {
+            return 0;
+        }
+        if (a.equals("accept")) {
+            return 1;
+        }
+        if (a.equals("remove")) {
+            return 2;
+        }
+        if (a.equals("rewrite")) {
+            return 3;
+        }
+        return 0;
+    }
+
+    /**
      * convert peer role to string
      *
      * @param role role
