@@ -3637,6 +3637,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rpkiN = bits.str2num(cmd.word());
             if (ipRtr.isRPKI(rpkiT) < 0) {
                 cmd.error("not an rpki process");
+                rpkiT = null;
+                rpkiN = 0;
                 return false;
             }
             needFull.add(1);

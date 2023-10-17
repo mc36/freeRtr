@@ -29,11 +29,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     public final rtrRpki lower;
 
     /**
-     * counter
-     */
-    public final counter cntr = new counter();
-
-    /**
      * accepted ipv4 prefixes
      */
     public tabGen<tabRouautN> table4 = new tabGen<tabRouautN>();
@@ -42,6 +37,11 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * accepted ipv6 prefixes
      */
     public tabGen<tabRouautN> table6 = new tabGen<tabRouautN>();
+
+    /**
+     * counter to use
+     */
+    public counter cntr = new counter();
 
     /**
      * server to use
@@ -190,7 +190,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             return;
         }
         pipe.setTime(flushTimer);
-        rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), pipe);
+        rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), pipe, cntr);
         pck.typ = rtrRpkiSpeak.msgResetQuery;
         pck.sendPack();
         table4.clear();

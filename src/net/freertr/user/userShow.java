@@ -107,6 +107,7 @@ import net.freertr.pack.packRedundancy;
 import net.freertr.rtr.rtrBgpDump;
 import net.freertr.serv.servNrpe;
 import net.freertr.serv.servOpenflow;
+import net.freertr.serv.servRpki;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabIntMatcher;
@@ -1009,6 +1010,15 @@ public class userShow {
         }
         if (a.equals("smtp")) {
             servSmtp srv = cfgAll.srvrFind(new servSmtp(), cfgAll.dmnSmtp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("rpki")) {
+            servRpki srv = cfgAll.srvrFind(new servRpki(), cfgAll.dmnRpki, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;
@@ -3595,6 +3605,14 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("summary")) {
+            rdr.putStrTab(r.rpki.getNeighShow());
+            return;
+        }
+        if (a.equals("connection")) {
+            rdr.putStrTab(r.rpki.showConnSumm());
+            return;
+        }
+        if (a.equals("sessions")) {
             rdr.putStrTab(r.rpki.getNeighShow());
             return;
         }

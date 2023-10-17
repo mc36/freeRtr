@@ -354,6 +354,7 @@ public class userExec {
         hl.add(null, "3 4        rpki                     resource public key infra protocol");
         hl.add(null, "4 5          <num:rtr>              process id");
         hl.add(null, "5 .            summary              list of neighbors");
+        hl.add(null, "5 .            connection           list of neighbor connections");
         hl.add(null, "5 .            database4            list of ipv4 roas");
         hl.add(null, "5 .            database6            list of ipv6 roas");
         hl.add(null, "3 4        rsvp                     resource reservation protocol");
@@ -1350,6 +1351,8 @@ public class userExec {
         hl.add(cfgAll.dmnSmtp.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      nrpe                    nrpe protocol information");
         hl.add(cfgAll.dmnNrpe.listServers(), "3 .        <name:loc>            server name");
+        hl.add(null, "2 3      rpki                    rpki protocol information");
+        hl.add(cfgAll.dmnRpki.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      dhcp4                   dhcp4 protocol information");
         hl.add(cfgAll.dmnDhcp4.listServers(), "3 .        <name:loc>            server name");
         hl.add(null, "2 3      dhcp6                   dhcp6 protocol information");

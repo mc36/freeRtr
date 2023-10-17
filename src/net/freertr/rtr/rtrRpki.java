@@ -74,12 +74,17 @@ public class rtrRpki extends ipRtr implements Runnable {
     /**
      * accepted native roas
      */
-    protected tabGen<tabRouautN> computedV4 = new tabGen<tabRouautN>();
+    private tabGen<tabRouautN> computedV4 = new tabGen<tabRouautN>();
 
     /**
      * accepted other roas
      */
-    protected tabGen<tabRouautN> computedV6 = new tabGen<tabRouautN>();
+    private tabGen<tabRouautN> computedV6 = new tabGen<tabRouautN>();
+
+    /**
+     * sequence number
+     */
+    private int seqNum;
 
     /**
      * notified to wake up
@@ -113,6 +118,7 @@ public class rtrRpki extends ipRtr implements Runnable {
                 rouTyp = null;
                 break;
         }
+        seqNum = 0;
         routerCreateComputed();
         need2run = true;
         new Thread(this).start();
@@ -195,6 +201,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      * create computed
      */
     public synchronized void routerCreateComputed() {
+        seqNum++;
         tabGen<tabRouautN> tab4 = new tabGen<tabRouautN>();
         tabGen<tabRouautN> tab6 = new tabGen<tabRouautN>();
         for (int i = 0; i < neighs.size(); i++) {
@@ -408,6 +415,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      * stop work
      */
     public void routerCloseNow() {
+        need2run = false;
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {
@@ -431,6 +439,23 @@ public class rtrRpki extends ipRtr implements Runnable {
                 continue;
             }
             l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + bits.timePast(ntry.upTime));
+        }
+        return l;
+    }
+
+    /**
+     * get neighbor show
+     *
+     * @return list of neighbors
+     */
+    public userFormat showConnSumm() {
+        userFormat l = new userFormat("|", "neighbor|rx|tx|rx|tx", "1|2pack|2byte");
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrRpkiNeigh ntry = neighs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.peer + "|" + ntry.cntr.packRx + "|" + ntry.cntr.packTx + "|" + ntry.cntr.byteRx + "|" + ntry.cntr.byteTx);
         }
         return l;
     }
@@ -475,6 +500,15 @@ public class rtrRpki extends ipRtr implements Runnable {
         } else {
             return computedV6;
         }
+    }
+
+    /**
+     * get sequence number
+     *
+     * @return sequence number
+     */
+    public int getSeqNum() {
+        return seqNum;
     }
 
 }

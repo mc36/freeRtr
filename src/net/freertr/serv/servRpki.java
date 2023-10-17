@@ -1,19 +1,27 @@
 package net.freertr.serv;
 
+import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgRtr;
+import net.freertr.ip.ipRtr;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrRpkiSpeak;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
+import net.freertr.rtr.rtrRpki;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouautN;
+import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
@@ -44,19 +52,34 @@ public class servRpki extends servGeneric implements prtServS {
     public static tabGen<userFilter> defaultF;
 
     /**
-     * ipv4 prefixes
+     * configured ipv4 prefixes
      */
-    public tabGen<tabRouautN> pref4 = new tabGen<tabRouautN>();
+    public final tabGen<tabRouautN> cfged4 = new tabGen<tabRouautN>();
 
     /**
-     * ipv6 prefixes
+     * configured ipv6 prefixes
      */
-    public tabGen<tabRouautN> pref6 = new tabGen<tabRouautN>();
+    public final tabGen<tabRouautN> cfged6 = new tabGen<tabRouautN>();
 
     /**
      * sequence
      */
     public int sequence;
+
+    /**
+     * rpki type configured
+     */
+    protected tabRouteAttr.routeType rpkiT;
+
+    /**
+     * rpki number configured
+     */
+    protected int rpkiN;
+
+    /**
+     * connected neighbors
+     */
+    protected tabGen<servRpkiConn> neighs = new tabGen<servRpkiConn>();
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -83,11 +106,16 @@ public class servRpki extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        for (int i = 0; i < pref4.size(); i++) {
-            lst.add(beg + "prefix " + pref4.get(i).toConfig());
+        if (rpkiT == null) {
+            lst.add(beg + "no rpki");
+        } else {
+            lst.add(beg + "rpki " + cfgRtr.num2name(rpkiT) + " " + rpkiN);
         }
-        for (int i = 0; i < pref6.size(); i++) {
-            lst.add(beg + "prefix " + pref6.get(i).toConfig());
+        for (int i = 0; i < cfged4.size(); i++) {
+            lst.add(beg + "prefix " + cfged4.get(i).toConfig());
+        }
+        for (int i = 0; i < cfged6.size(); i++) {
+            lst.add(beg + "prefix " + cfged6.get(i).toConfig());
         }
     }
 
@@ -101,11 +129,22 @@ public class servRpki extends servGeneric implements prtServS {
             }
             prf.srcIP = new addrIP();
             if (prf.prefix.network.isIPv4()) {
-                pref4.put(prf);
+                cfged4.put(prf);
             } else {
-                pref6.put(prf);
+                cfged6.put(prf);
             }
             sequence++;
+            return false;
+        }
+        if (s.equals("rpki")) {
+            rpkiT = cfgRtr.name2num(cmd.word());
+            rpkiN = bits.str2num(cmd.word());
+            if (ipRtr.isRPKI(rpkiT) > 0) {
+                return false;
+            }
+            cmd.error("not an rpki process");
+            rpkiT = null;
+            rpkiN = 0;
             return false;
         }
         if (!s.equals("no")) {
@@ -119,11 +158,16 @@ public class servRpki extends servGeneric implements prtServS {
                 return false;
             }
             if (prf.prefix.network.isIPv4()) {
-                pref4.del(prf);
+                cfged4.del(prf);
             } else {
-                pref6.del(prf);
+                cfged6.del(prf);
             }
             sequence++;
+            return false;
+        }
+        if (s.equals("rpki")) {
+            rpkiT = null;
+            rpkiN = 0;
             return false;
         }
         return true;
@@ -135,6 +179,9 @@ public class servRpki extends servGeneric implements prtServS {
         l.add(null, "3 4      <num>                    maximum prefix length");
         l.add(null, "4 5,.      <num>                  as number");
         l.add(null, "5 .          [num]                preference");
+        l.add(null, "1 2   rpki                        setup resource public key infrastructure");
+        cfgRtr.getRouterList(l, 0, "");
+        l.add(null, "3 .         <num>                 process number");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -143,9 +190,26 @@ public class servRpki extends servGeneric implements prtServS {
         return false;
     }
 
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat l = new userFormat("|", "neighbor|rx|tx|rx|tx", "1|2pack|2byte");
+        for (int i = 0; i < neighs.size(); i++) {
+            servRpkiConn ntry = neighs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.peer + "|" + ntry.cntr.packRx + "|" + ntry.cntr.packTx + "|" + ntry.cntr.byteRx + "|" + ntry.cntr.byteTx);
+        }
+        return l;
+    }
+
 }
 
-class servRpkiConn implements Runnable {
+class servRpkiConn implements Runnable, Comparator<servRpkiConn> {
 
     public final servRpki lower;
 
@@ -153,24 +217,39 @@ class servRpkiConn implements Runnable {
 
     public final addrIP peer;
 
-    public int session;
+    public final int sess;
+
+    public final counter cntr;
 
     public servRpkiConn(servRpki parent, pipeSide pipe, addrIP rem) {
         lower = parent;
         conn = pipe;
         peer = rem;
-        session = bits.randomW();
+        sess = bits.randomW();
+        cntr = new counter();
         new Thread(this).start();
+    }
+
+    public int compare(servRpkiConn o1, servRpkiConn o2) {
+        return o1.peer.compare(o1.peer, o2.peer);
     }
 
     public void run() {
         if (debugger.servRpkiTraf) {
             logger.debug("starting " + peer);
         }
+        lower.neighs.put(this);
         try {
-            rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), conn);
+            rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), conn, cntr);
             for (;;) {
-                if (pck.doOneServRnd(lower.sequence, session, lower.pref4, lower.pref6)) {
+                rtrRpki rpkiR = null;
+                if (lower.rpkiT != null) {
+                    cfgRtr rtrCfg = cfgAll.rtrFind(lower.rpkiT, lower.rpkiN, false);
+                    if (rtrCfg != null) {
+                        rpkiR = (rtrRpki) rtrCfg.getRouter();
+                    }
+                }
+                if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, rpkiR)) {
                     break;
                 }
             }
@@ -178,6 +257,7 @@ class servRpkiConn implements Runnable {
             logger.traceback(e);
         }
         conn.setClose();
+        lower.neighs.del(this);
         if (debugger.servRpkiTraf) {
             logger.debug("stoping " + peer);
         }

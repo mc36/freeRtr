@@ -3,10 +3,13 @@ package net.freertr.rtr;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
+import net.freertr.ip.ipCor4;
+import net.freertr.ip.ipCor6;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouautN;
+import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
@@ -107,14 +110,21 @@ public class rtrRpkiSpeak {
     private final pipeSide conn;
 
     /**
+     * counter
+     */
+    public final counter cntr;
+
+    /**
      * create instance
      *
      * @param tmp buffer to use
      * @param pip connection to use
+     * @param cnt counter to use
      */
-    public rtrRpkiSpeak(packHolder tmp, pipeSide pip) {
+    public rtrRpkiSpeak(packHolder tmp, pipeSide pip, counter cnt) {
         pck = tmp;
         conn = pip;
+        cntr = cnt;
     }
 
     /**
@@ -185,6 +195,7 @@ public class rtrRpkiSpeak {
                 return true;
             }
         }
+        cntr.rx(pck);
         switch (typ) {
             case msgSerialNotify:
                 serial = pck.msbGetD(0); // serial
@@ -301,8 +312,9 @@ public class rtrRpkiSpeak {
         pck.putSkip(size);
         pck.merge2beg();
         pck.pipeSend(conn, 0, pck.dataSize(), 2);
+        cntr.tx(pck);
         if (debugger.rtrRpkiTraf) {
-            logger.debug("tx " + pck.dump());
+            logger.debug("tx " + dump());
         }
     }
 
@@ -314,6 +326,12 @@ public class rtrRpkiSpeak {
      * @param tab table to send
      */
     public void sendOneTable(int tp, tabGen<tabRouautN> tab) {
+        if (tab == null) {
+            return;
+        }
+        if (debugger.rtrRpkiEvnt) {
+            logger.info("sending " + tab.size());
+        }
         for (int i = 0; i < tab.size(); i++) {
             tabRouautN ntry = tab.get(i);
             if (ntry == null) {
@@ -329,6 +347,32 @@ public class rtrRpkiSpeak {
     }
 
     /**
+     * send one rpki computed table
+     *
+     * @param rtr rpki router
+     */
+    public void sendOneRpki(rtrRpki rtr) {
+        if (rtr == null) {
+            return;
+        }
+        sendOneTable(rtrRpkiSpeak.msgIpv4addr, rtr.getFinalTab(ipCor4.protocolVersion));
+        sendOneTable(rtrRpkiSpeak.msgIpv6addr, rtr.getFinalTab(ipCor6.protocolVersion));
+    }
+
+    /**
+     * get rpki process sequence number
+     *
+     * @param rtr process to read
+     * @return sequence number or 0 if nothing
+     */
+    public static final int getRpkiSeq(rtrRpki rtr) {
+        if (rtr == null) {
+            return 0;
+        }
+        return rtr.getSeqNum();
+    }
+
+    /**
      * do one server round
      *
      * @param pck speaker to use
@@ -336,15 +380,17 @@ public class rtrRpkiSpeak {
      * @param ses session to use
      * @param tab4 ipv4 table
      * @param tab6 ipv6 table
+     * @param rtr rpki to send
      * @return true on error, false on success
      */
-    public boolean doOneServRnd(int seq, int ses, tabGen<tabRouautN> tab4, tabGen<tabRouautN> tab6) {
+    public boolean doOneServRnd(int seq, int ses, tabGen<tabRouautN> tab4, tabGen<tabRouautN> tab6, rtrRpki rtr) {
         if (recvPack()) {
             return true;
         }
+        int csq = getRpkiSeq(rtr) + seq;
         switch (typ) {
             case rtrRpkiSpeak.msgSerialQuery:
-                if (serial != seq) {
+                if (serial != csq) {
                     typ = rtrRpkiSpeak.msgCacheReset;
                     sendPack();
                     return false;
@@ -359,13 +405,11 @@ public class rtrRpkiSpeak {
                 typ = rtrRpkiSpeak.msgCacheReply;
                 sess = ses;
                 sendPack();
-                if (debugger.rtrRpkiEvnt) {
-                    logger.info("sending " + tab4.size() + " " + tab6.size());
-                }
+                sendOneRpki(rtr);
                 sendOneTable(rtrRpkiSpeak.msgIpv4addr, tab4);
                 sendOneTable(rtrRpkiSpeak.msgIpv6addr, tab6);
                 typ = rtrRpkiSpeak.msgEndData;
-                serial = seq;
+                serial = csq;
                 sendPack();
                 return false;
             default:
