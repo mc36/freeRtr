@@ -23,9 +23,6 @@ import net.freertr.enc.encTlv;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRouautN;
-import net.freertr.tab.tabRoute;
-import net.freertr.tab.tabRouteAttr;
 import net.freertr.util.counter;
 
 /**
@@ -877,6 +874,11 @@ public class rtrBgpUtil {
      * blackhole community
      */
     public final static int commBlackhole = 0xffff029a;
+
+    /**
+     * validity extended community
+     */
+    public final static int commValidity = 0x43000000;
 
     /**
      * check if an unknown message type

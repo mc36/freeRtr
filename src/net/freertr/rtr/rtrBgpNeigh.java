@@ -19,7 +19,8 @@ import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRouautN;
+import net.freertr.tab.tabRouautNtry;
+import net.freertr.tab.tabRouautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -45,7 +46,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     /**
      * address of peer
      */
-    public addrIP peerAddr;
+    public final addrIP peerAddr;
 
     /**
      * local interface
@@ -538,10 +539,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * create neighbor
      *
      * @param parent bgp process
+     * @param addr address of peer
      */
-    public rtrBgpNeigh(rtrBgp parent) {
+    public rtrBgpNeigh(rtrBgp parent, addrIP addr) {
         super(parent, false);
-        peerAddr = new addrIP();
+        peerAddr = addr;
         for (int i = 0; i < msgStats.length; i++) {
             msgStats[i] = new counter();
         }
@@ -1757,20 +1759,20 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (lower.rpkiT == null) {
             return;
         }
-        tabRouautN.setValidityTable(accUni, lower.rpkiA, rpkiIn);
-        tabRouautN.setValidityTable(accMlt, lower.rpkiA, rpkiIn);
-        tabRouautN.setValidityTable(accOuni, lower.rpkiO, rpkiIn);
-        tabRouautN.setValidityTable(accOmlt, lower.rpkiO, rpkiIn);
+        tabRouautUtil.setValidityTable(accUni, lower.rpkiA, rpkiIn);
+        tabRouautUtil.setValidityTable(accMlt, lower.rpkiA, rpkiIn);
+        tabRouautUtil.setValidityTable(accOuni, lower.rpkiO, rpkiIn);
+        tabRouautUtil.setValidityTable(accOmlt, lower.rpkiO, rpkiIn);
     }
 
     /**
      * validate a prefix
      */
-    public void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRouautN> roas) {
+    public void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRouautNtry> roas) {
         if (lower.rpkiT == null) {
             return;
         }
-        tabRouautN.setValidityRoute(ntry, roas, rpkiIn);
+        tabRouautUtil.setValidityRoute(ntry, roas, rpkiIn);
     }
 
     /**

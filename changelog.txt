@@ -15233,3 +15233,5 @@ qc pass: bgp leak prevention with customer provider
 ---------------------------------- 2023-10-17 18:37:28 23.10.17
 no todo: redundancy to have the shows
 todo: redundancy to have the remote shows and a counter on how many failures observed
+---------------------------------- 2023-10-17 20:56:46 23.10.17
+no todo: bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version

@@ -35,7 +35,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
     /**
      * peer address
      */
-    public final addrIP peer = new addrIP();
+    public final addrIP peer;
 
     /**
      * remote description
@@ -183,9 +183,11 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
      * create new peer
      *
      * @param lower lower to use
+     * @param addr address of peer
      */
-    public rtrMsdpNeigh(rtrMsdp lower) {
+    public rtrMsdpNeigh(rtrMsdp lower, addrIP addr) {
         parent = lower;
+        peer = addr;
     }
 
     public int compare(rtrMsdpNeigh o1, rtrMsdpNeigh o2) {

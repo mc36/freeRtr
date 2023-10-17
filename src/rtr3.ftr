@@ -456,7 +456,7 @@ todo: commander to have selection
 todo: commander to get away the cursor
 todo: player queue up down add-again
 todo: openflow to have 2 label support and stack to p4lang
-todo: redundancy to have the shows
+todo: redundancy to have the remote shows and a counter on how many failures observed
 todo: bridge and router have renumber knob
 todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
@@ -495,7 +495,6 @@ todo: server security to have settable tls version from client knob first
 todo: server security to log the transactions
 todo: server security to stick to the good protocols
 todo: server security to support bgp bmp mrt
-todo: bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version
 todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 todo: show whowas from bmp mrt archive
 todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs

@@ -118,7 +118,8 @@ import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabNshEntry;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabQos;
-import net.freertr.tab.tabRouautN;
+import net.freertr.tab.tabRouautNtry;
+import net.freertr.tab.tabRouautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -5335,8 +5336,8 @@ public class userShow {
         return lst.formatAll(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
     }
 
-    private void doShowRoas(tabGen<tabRouautN> tab, int typ) {
-        userFormat lst = tabRouautN.convertTableHead(typ);
+    private void doShowRoas(tabGen<tabRouautNtry> tab, int typ) {
+        userFormat lst = tabRouautUtil.convertTableHead(typ);
         if (lst == null) {
             return;
         }
@@ -5346,8 +5347,8 @@ public class userShow {
         }
         final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
         for (int pos = 0; pos < tab.size(); pos += lines) {
-            tabGen<tabRouautN> sub = tabRouautN.getSubset(tab, pos, pos + lines);
-            lst = tabRouautN.convertTableFull(sub, typ);
+            tabGen<tabRouautNtry> sub = tabRouautUtil.getSubset(tab, pos, pos + lines);
+            lst = tabRouautUtil.convertTableFull(sub, typ);
             if (rdr.putStrTab(lst)) {
                 break;
             }

@@ -17,7 +17,8 @@ import net.freertr.ip.ipRtr;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
-import net.freertr.tab.tabRouautN;
+import net.freertr.tab.tabRouautNtry;
+import net.freertr.tab.tabRouautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -74,12 +75,12 @@ public class rtrRpki extends ipRtr implements Runnable {
     /**
      * accepted native roas
      */
-    private tabGen<tabRouautN> computedV4 = new tabGen<tabRouautN>();
+    private tabGen<tabRouautNtry> computedV4 = new tabGen<tabRouautNtry>();
 
     /**
      * accepted other roas
      */
-    private tabGen<tabRouautN> computedV6 = new tabGen<tabRouautN>();
+    private tabGen<tabRouautNtry> computedV6 = new tabGen<tabRouautNtry>();
 
     /**
      * sequence number
@@ -202,15 +203,15 @@ public class rtrRpki extends ipRtr implements Runnable {
      */
     public synchronized void routerCreateComputed() {
         seqNum++;
-        tabGen<tabRouautN> tab4 = new tabGen<tabRouautN>();
-        tabGen<tabRouautN> tab6 = new tabGen<tabRouautN>();
+        tabGen<tabRouautNtry> tab4 = new tabGen<tabRouautNtry>();
+        tabGen<tabRouautNtry> tab6 = new tabGen<tabRouautNtry>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
-            tabRouautN.mergeTwo(tab4, ntry.table4);
-            tabRouautN.mergeTwo(tab6, ntry.table6);
+            tabRouautUtil.mergeTwo(tab4, ntry.table4);
+            tabRouautUtil.mergeTwo(tab6, ntry.table6);
         }
-        boolean chg = tabRouautN.compareTwo(tab4, computedV4);
-        chg &= tabRouautN.compareTwo(tab6, computedV6);
+        boolean chg = tabRouautUtil.compareTwo(tab4, computedV4);
+        chg &= tabRouautUtil.compareTwo(tab6, computedV6);
         if (chg) {
             return;
         }
@@ -238,7 +239,6 @@ public class rtrRpki extends ipRtr implements Runnable {
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = new tabGen<tabIndex<addrIP>>();
-        fwdCore.routerChg(this, false);
     }
 
     /**
@@ -339,11 +339,13 @@ public class rtrRpki extends ipRtr implements Runnable {
         if (!s.equals("neighbor")) {
             return true;
         }
-        rtrRpkiNeigh ntry = new rtrRpkiNeigh(this);
-        if (ntry.peer.fromString(cmd.word())) {
+        s = cmd.word().trim();
+        addrIP addr = cfgRtr.string2addr(routerProtoTyp, s, null);
+        if (addr == null) {
             cmd.error("bad address");
             return false;
         }
+        rtrRpkiNeigh ntry = new rtrRpkiNeigh(this, addr);
         s = cmd.word();
         if (s.equals("port")) {
             if (negated) {
@@ -467,8 +469,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @return neighbor, null if not found
      */
     public rtrRpkiNeigh findPeer(addrIP adr) {
-        rtrRpkiNeigh nei = new rtrRpkiNeigh(this);
-        nei.peer.setAddr(adr);
+        rtrRpkiNeigh nei = new rtrRpkiNeigh(this, adr);
         return neighs.find(nei);
     }
 
@@ -494,7 +495,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @param ipVer ip version
      * @return current table
      */
-    public tabGen<tabRouautN> getFinalTab(int ipVer) {
+    public tabGen<tabRouautNtry> getFinalTab(int ipVer) {
         if (ipVer == ipCor4.protocolVersion) {
             return computedV4;
         } else {

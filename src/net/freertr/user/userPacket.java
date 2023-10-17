@@ -854,7 +854,7 @@ public class userPacket {
                 return null;
             }
             cmd.error("sending safi=" + rtrBgpUtil.safi2string(safi) + " as=" + las + " open");
-            rtrBgpNeigh nei = new rtrBgpNeigh(null);
+            rtrBgpNeigh nei = new rtrBgpNeigh(null, trg);
             nei.localAs = las;
             nei.addrFams = safi;
             rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm);
@@ -983,7 +983,7 @@ public class userPacket {
                 return null;
             }
             cmd.error("sending open");
-            rtrBgpNeigh nei = new rtrBgpNeigh(null);
+            rtrBgpNeigh nei = new rtrBgpNeigh(null, trg);
             nei.localAs = las;
             int safi;
             if (prf.network.isIPv4()) {
@@ -1089,7 +1089,7 @@ public class userPacket {
                 return null;
             }
             cmd.error("sending open");
-            rtrBgpNeigh nei = new rtrBgpNeigh(null);
+            rtrBgpNeigh nei = new rtrBgpNeigh(null, trg);
             nei.localAs = las;
             int safi;
             if (prf.network.isIPv4()) {

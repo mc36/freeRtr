@@ -11,7 +11,8 @@ import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRouautN;
+import net.freertr.tab.tabRouautNtry;
+import net.freertr.tab.tabRouautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -657,10 +658,10 @@ public class rtrBgpGroup extends rtrBgpParam {
             return;
         }
         if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
-            tabRouautN.setValidityRoute(ntry, lower.rpkiA, rpkiOut);
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, rpkiOut);
         }
         if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
-            tabRouautN.setValidityRoute(ntry, lower.rpkiO, rpkiOut);
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, rpkiOut);
         }
     }
 

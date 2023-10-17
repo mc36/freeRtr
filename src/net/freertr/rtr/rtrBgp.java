@@ -57,7 +57,7 @@ import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.spf.spfCalc;
-import net.freertr.tab.tabRouautN;
+import net.freertr.tab.tabRouautNtry;
 import net.freertr.util.counter;
 import net.freertr.util.syncInt;
 
@@ -416,12 +416,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * rpki table
      */
-    protected tabGen<tabRouautN> rpkiA = new tabGen<tabRouautN>();
+    protected tabGen<tabRouautNtry> rpkiA = new tabGen<tabRouautNtry>();
 
     /**
      * other rpki table
      */
-    protected tabGen<tabRouautN> rpkiO = new tabGen<tabRouautN>();
+    protected tabGen<tabRouautNtry> rpkiO = new tabGen<tabRouautNtry>();
 
     /**
      * the computed other unicast routes
@@ -1717,8 +1717,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
         }
         id.changeSecurity(lstn.temp.keyId, lstn.temp.passwd, lstn.temp.ttlSecurity, lstn.temp.tosValue);
-        rtrBgpNeigh ntry = new rtrBgpNeigh(this);
-        ntry.peerAddr = id.peerAddr.copyBytes();
+        rtrBgpNeigh ntry = new rtrBgpNeigh(this, id.peerAddr);
         ntry.localIfc = id.iface;
         ntry.localAddr = id.iface.addr.copyBytes();
         ntry.updateOddr();
@@ -1769,8 +1768,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return neighbor instance
      */
     public rtrBgpNeigh addListenPeer(addrIP peer, addrIP from, rtrBgpTemp temp) {
-        rtrBgpNeigh ntry = new rtrBgpNeigh(this);
-        ntry.peerAddr = peer.copyBytes();
+        rtrBgpNeigh ntry = new rtrBgpNeigh(this, peer);
         ntry.localAddr = from.copyBytes();
         if (neighs.find(ntry) != null) {
             return null;
@@ -1958,8 +1956,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rpkiA = rpkiR.getFinalTab(fwdCore.ipVersion);
             rpkiO = rpkiR.getFinalTab(other.fwd.ipVersion);
         } else {
-            rpkiA = new tabGen<tabRouautN>();
-            rpkiO = new tabGen<tabRouautN>();
+            rpkiA = new tabGen<tabRouautNtry>();
+            rpkiO = new tabGen<tabRouautNtry>();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -2192,12 +2190,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry == null) {
             return best;
         }
-            if ((afi == afiUni) || (afi == afiMlt)) {
-                nei.setValidityRoute(ntry, rpkiA);
-            }
-            if ((afi == afiOuni) || (afi == afiOmlt)) {
-                nei.setValidityRoute(ntry, rpkiO);
-            }
+        if ((afi == afiUni) || (afi == afiMlt)) {
+            nei.setValidityRoute(ntry, rpkiA);
+        }
+        if ((afi == afiOuni) || (afi == afiOmlt)) {
+            nei.setValidityRoute(ntry, rpkiO);
+        }
         if (best == null) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }
@@ -3694,13 +3692,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (!s.equals("neighbor")) {
             return true;
         }
-        rtrBgpNeigh ntry = new rtrBgpNeigh(this);
         s = cmd.word().trim();
-        ntry.peerAddr = cfgRtr.string2addr(rouTyp, s, null);
-        if (ntry.peerAddr == null) {
+        addrIP adr = cfgRtr.string2addr(rouTyp, s, null);
+        if (adr == null) {
             cmd.error("bad address");
             return false;
         }
+        rtrBgpNeigh ntry = new rtrBgpNeigh(this, adr);
         rtrBgpNeigh old = neighs.add(ntry);
         if (old == null) {
             if (!s.equals("" + ntry.peerAddr)) {
@@ -3876,8 +3874,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return neighbor, null if not found
      */
     public rtrBgpNeigh findPeer(addrIP adr) {
-        rtrBgpNeigh ntry = new rtrBgpNeigh(this);
-        ntry.peerAddr = adr.copyBytes();
+        rtrBgpNeigh ntry = new rtrBgpNeigh(this, adr);
         rtrBgpNeigh res = neighs.find(ntry);
         if (res != null) {
             return res;

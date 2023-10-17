@@ -9,7 +9,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRouautN;
+import net.freertr.tab.tabRouautNtry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -31,12 +31,12 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     /**
      * accepted ipv4 prefixes
      */
-    public tabGen<tabRouautN> table4 = new tabGen<tabRouautN>();
+    public tabGen<tabRouautNtry> table4 = new tabGen<tabRouautNtry>();
 
     /**
      * accepted ipv6 prefixes
      */
-    public tabGen<tabRouautN> table6 = new tabGen<tabRouautN>();
+    public tabGen<tabRouautNtry> table6 = new tabGen<tabRouautNtry>();
 
     /**
      * counter to use
@@ -46,7 +46,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     /**
      * server to use
      */
-    public addrIP peer = new addrIP();
+    public final addrIP peer;
 
     /**
      * port to use
@@ -95,9 +95,11 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * create new instance
      *
      * @param parent process
+     * @param addr address of peer
      */
-    public rtrRpkiNeigh(rtrRpki parent) {
+    public rtrRpkiNeigh(rtrRpki parent, addrIP addr) {
         lower = parent;
+        peer = addr;
     }
 
     public String toString() {
@@ -156,7 +158,11 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     public void getConfig(List<String> l, String beg) {
         String s = beg + "neighbor " + peer;
         l.add(s + " port " + port);
-        cmds.cfgLine(l, srcIface == null, beg, "neighbor " + peer + " update-source", "" + srcIface);
+        String a = null;
+        if (srcIface != null) {
+            a = srcIface.name;
+        }
+        cmds.cfgLine(l, a == null, beg, "neighbor " + peer + " update-source", a);
         cmds.cfgLine(l, need2run, beg, "neighbor " + peer + " shutdown", "");
         cmds.cfgLine(l, description == null, beg, "neighbor " + peer + " description", "" + description);
         l.add(s + " preference " + preference);
@@ -256,8 +262,8 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         pipe = null;
     }
 
-    private int processRoa(rtrRpkiSpeak pck, tabGen<tabRouautN> table) {
-        tabRouautN ntry = pck.roa;
+    private int processRoa(rtrRpkiSpeak pck, tabGen<tabRouautNtry> table) {
+        tabRouautNtry ntry = pck.roa;
         ntry.distan = preference;
         ntry.srcRtr = lower.rouTyp;
         ntry.srcNum = lower.rtrNum;
@@ -266,7 +272,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             table.put(ntry);
             return 1;
         }
-        tabRouautN old = table.del(ntry);
+        tabRouautNtry old = table.del(ntry);
         if (old == null) {
             return 0;
         }

@@ -8,6 +8,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authLocal;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgRtr;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipFwdMcast;
@@ -255,11 +256,13 @@ public class rtrMsdp extends ipRtr {
         if (!s.equals("neighbor")) {
             return true;
         }
-        rtrMsdpNeigh ntry = new rtrMsdpNeigh(this);
-        if (ntry.peer.fromString(cmd.word())) {
+        s = cmd.word().trim();
+        addrIP addr = cfgRtr.string2addr(routerProtoTyp, s, null);
+        if (addr == null) {
             cmd.error("bad address");
             return false;
         }
+        rtrMsdpNeigh ntry = new rtrMsdpNeigh(this, addr);
         s = cmd.word();
         if (s.equals("enable")) {
             if (negated) {
@@ -400,8 +403,7 @@ public class rtrMsdp extends ipRtr {
      * @return neighbor, null if not found
      */
     public rtrMsdpNeigh findPeer(addrIP adr) {
-        rtrMsdpNeigh nei = new rtrMsdpNeigh(this);
-        nei.peer.setAddr(adr);
+        rtrMsdpNeigh nei = new rtrMsdpNeigh(this, adr);
         return neighs.find(nei);
     }
 
