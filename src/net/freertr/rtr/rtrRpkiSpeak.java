@@ -313,13 +313,13 @@ public class rtrRpkiSpeak {
      * @param typ type to send
      * @param tab table to send
      */
-    public void sendOneTable(int typ, tabGen<tabRouautN> tab) {
+    public void sendOneTable(int tp, tabGen<tabRouautN> tab) {
         for (int i = 0; i < tab.size(); i++) {
             tabRouautN ntry = tab.get(i);
             if (ntry == null) {
                 continue;
             }
-            typ = typ;
+            typ = tp;
             roa = ntry;
             sendPack();
             if (debugger.servRpkiTraf) {
@@ -359,6 +359,9 @@ public class rtrRpkiSpeak {
                 typ = rtrRpkiSpeak.msgCacheReply;
                 sess = ses;
                 sendPack();
+                if (debugger.rtrRpkiEvnt) {
+                    logger.info("sending " + tab4.size() + " " + tab6.size());
+                }
                 sendOneTable(rtrRpkiSpeak.msgIpv4addr, tab4);
                 sendOneTable(rtrRpkiSpeak.msgIpv6addr, tab6);
                 typ = rtrRpkiSpeak.msgEndData;

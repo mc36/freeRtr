@@ -8,7 +8,6 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
-import net.freertr.rtr.rtrRpkiNeigh;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouautN;
 import net.freertr.user.userFilter;
