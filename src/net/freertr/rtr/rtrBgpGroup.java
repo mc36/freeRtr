@@ -11,6 +11,7 @@ import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
+import net.freertr.tab.tabRouautN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -651,6 +652,18 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
     }
 
+    private void setValidity(int afi, tabRouteEntry<addrIP> ntry) {
+        if (lower.rpkiT == null) {
+            return;
+        }
+        if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
+            tabRouautN.setValidityRoute(ntry, lower.rpkiA, rpkiOut);
+        }
+        if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
+            tabRouautN.setValidityRoute(ntry, lower.rpkiO, rpkiOut);
+        }
+    }
+
     private void clearAttribs(tabRouteAttr<addrIP> ntry) {
         if ((sendCommunity & 1) == 0) {
             ntry.stdComm = null;
@@ -776,6 +789,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             default:
                 break;
         }
+        setValidity(afi, ntry);
         nextHopSelf(afi, ntry);
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
@@ -952,6 +966,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
             clearAttribs(attr);
         }
+        setValidity(afi, ntry);
         if (nxtHopSelf) {
             nextHopSelf(afi, ntry);
             return ntry;

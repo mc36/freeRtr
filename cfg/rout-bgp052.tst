@@ -102,8 +102,10 @@ router bgp4 1
  router-id 4.4.4.2
  rpki rpki4 1
  neigh 1.1.1.1 remote-as 3
+ neigh 1.1.1.1 rpki-in rew
  neigh 1.1.1.1 prefix-list-in p4
  neigh 1.1.1.6 remote-as 2
+ neigh 1.1.1.6 rpki-in rew
  neigh 1.1.1.6 prefix-list-in p4
  neigh 1.1.1.6 route-map-in rm1
  red conn
@@ -116,8 +118,10 @@ router bgp6 1
  router-id 6.6.6.2
  rpki rpki4 1
  neigh 1234:1::1 remote-as 3
+ neigh 1234:1::1 rpki-in rew
  neigh 1234:1::1 prefix-list-in p6
  neigh 1234:2::2 remote-as 2
+ neigh 1234:2::2 rpki-in rew
  neigh 1234:2::2 prefix-list-in p6
  neigh 1234:2::2 route-map-in rm1
  red conn

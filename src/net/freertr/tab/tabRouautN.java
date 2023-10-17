@@ -76,17 +76,36 @@ public class tabRouautN implements Comparator<tabRouautN> {
      * @param o other
      * @return copy
      */
-    public tabRouautN copyBytes(tabRouautN o) {
+    public tabRouautN copyBytes() {
         tabRouautN n = new tabRouautN();
-        n.prefix = o.prefix.copyBytes();
-        n.max = o.max;
-        n.asn = o.asn;
-        n.distan = o.distan;
-        n.srcIP = o.srcIP.copyBytes();
-        n.srcRtr = o.srcRtr;
-        n.srcNum = o.srcNum;
-        n.time = o.time;
+        n.prefix = prefix.copyBytes();
+        n.max = max;
+        n.asn = asn;
+        n.distan = distan;
+        n.srcIP = srcIP.copyBytes();
+        n.srcRtr = srcRtr;
+        n.srcNum = srcNum;
+        n.time = time;
         return n;
+    }
+
+    /**
+     * check if atrtibutes differs
+     *
+     * @param o other to compare to
+     * @return numerical value if differred
+     */
+    public int differs(tabRouautN o) {
+        if (o == null) {
+            return 1001;
+        }
+        if (max != o.max) {
+            return 1;
+        }
+        if (asn != o.asn) {
+            return 1;
+        }
+        return 0;
     }
 
     /**
@@ -213,6 +232,33 @@ public class tabRouautN implements Comparator<tabRouautN> {
     }
 
     /**
+     * check if two tables are identical
+     *
+     * @param t1 first table
+     * @param t2 second table
+     * @return entries missing from second table
+     */
+    private void diffTwo(tabGen<tabRouautN> uniq, tabGen<tabRouautN> diff, tabGen<tabRouautN> nei1, tabGen<tabRouautN> nei2) {
+        for (int o = 0; o < nei1.size(); o++) {
+            tabRouautN prf1 = nei1.get(o);
+            if (prf1 == null) {
+                continue;
+            }
+            prf1 = prf1.copyBytes();
+            tabRouautN prf2 = nei2.find(prf1);
+            if (prf2 == null) {
+                uniq.add(prf1);
+                continue;
+            }
+            prf2 = prf2.copyBytes();
+            if (prf1.differs(prf2) == 0) {
+                continue;
+            }
+            diff.add(prf1);
+        }
+    }
+
+    /**
      * lookup a prefix
      *
      * @param tab table to use
@@ -220,6 +266,9 @@ public class tabRouautN implements Comparator<tabRouautN> {
      * @return roa if found, null if not
      */
     public final static tabRouautN lookup(tabGen<tabRouautN> tab, addrPrefix<addrIP> pfx) {
+        if (tab.size() < 1) {
+            return null;
+        }
         boolean is4 = pfx.network.isIPv4();
         int end;
         if (is4) {
@@ -329,7 +378,7 @@ public class tabRouautN implements Comparator<tabRouautN> {
      * @param i validity
      * @return string
      */
-    public final static String valid2str(int i) {
+    public final static String validity2string(int i) {
         switch (i) {
             case 0:
                 return "unset";
@@ -347,13 +396,39 @@ public class tabRouautN implements Comparator<tabRouautN> {
     /**
      * set validity
      *
+     * @param attr attribute to set
+     * @param res route authorization
+     */
+    protected final static int calcValidityAttr(tabRouteAttr<addrIP> attr, tabRouautN res) {
+        if (res == null) {
+            return 2;
+        }
+        int asn = attr.asPathEnd();
+        if (asn != res.asn) {
+            return 3;
+        }
+        return 1;
+    }
+
+    /**
+     * set validity
+     *
      * @param ntry entry to update
      * @param val result code
      */
-    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, int val) {
+    protected static void setValidityFixed(tabRouteAttr<addrIP> attr, int val) {
+        attr.validity = val;
+    }
+
+    /**
+     * set validity
+     *
+     * @param ntry entry to update
+     * @param val result code
+     */
+    protected static void setValidityFixed(tabRouteEntry<addrIP> ntry, int val) {
         for (int o = 0; o < ntry.alts.size(); o++) {
-            tabRouteAttr<addrIP> attr = ntry.alts.get(o);
-            attr.validity = val;
+            setValidityFixed(ntry.alts.get(o), val);
         }
         ntry.selectBest();
     }
@@ -364,29 +439,10 @@ public class tabRouautN implements Comparator<tabRouautN> {
      * @param tab table to update
      * @param val result code
      */
-    public static void setValidityTable(tabRoute<addrIP> tab, int val) {
+    protected static void setValidityFixed(tabRoute<addrIP> tab, int val) {
         for (int i = 0; i < tab.size(); i++) {
-            setValidityRoute(tab.get(i), val);
+            setValidityFixed(tab.get(i), val);
         }
-    }
-
-    /**
-     * set validity
-     *
-     * @param attr attribute to set
-     * @param res route authorization
-     */
-    protected final static void setValidityAttr(tabRouteAttr<addrIP> attr, tabRouautN res) {
-        if (res == null) {
-            attr.validity = 2;
-            return;
-        }
-        int i = attr.asPathEnd();
-        if (i != res.asn) {
-            attr.validity = 3;
-            return;
-        }
-        attr.validity = 1;
     }
 
     /**
@@ -395,14 +451,15 @@ public class tabRouautN implements Comparator<tabRouautN> {
      * @param ntry entry to update
      * @param roas route authorizations
      */
-    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRouautN> roas) {
-        if (ntry.best.validity != 0) {
-            return;
+    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRouautN> roas, int mod) {
+        switch (mod) {
+            case 0:
+                return;
         }
         tabRouautN res = tabRouautN.lookup(roas, ntry.prefix);
         for (int o = 0; o < ntry.alts.size(); o++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(o);
-            setValidityAttr(attr, res);
+            attr.validity = calcValidityAttr(attr, res);
         }
         ntry.selectBest();
     }
@@ -412,10 +469,37 @@ public class tabRouautN implements Comparator<tabRouautN> {
      *
      * @param tab table to update
      * @param roas route authorizations
+     * @param mod rpki mode to use
      */
-    public static void setValidityTable(tabRoute<addrIP> tab, tabGen<tabRouautN> roas) {
+    public static void setValidityTable(tabRoute<addrIP> tab, tabGen<tabRouautN> roas, int mod) {
+        switch (mod) {
+            case 0:
+                return;
+            case 1:
+            case 2:
+            case 3:
+                break;
+            case 4:
+                setValidityFixed(tab, 0);
+                return;
+            case 5:
+                setValidityFixed(tab, 1);
+                return;
+            case 6:
+                setValidityFixed(tab, 3);
+                return;
+            case 7:
+                setValidityFixed(tab, 2);
+                return;
+            default:
+                return;
+        }
         for (int i = 0; i < tab.size(); i++) {
-            setValidityRoute(tab.get(i), roas);
+            tabRouteEntry<addrIP> ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            setValidityRoute(ntry, roas, mod);
         }
     }
 

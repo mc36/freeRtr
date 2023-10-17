@@ -166,8 +166,6 @@ server security to stick to the good protocols
 server security to support bgp bmp mrt
 
 
-bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version
-
 server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 
 show whowas from bmp mrt archive

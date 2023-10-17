@@ -23,6 +23,7 @@ import net.freertr.enc.encTlv;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouautN;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.util.counter;
@@ -1892,9 +1893,17 @@ public class rtrBgpUtil {
             case 1:
                 return "accept";
             case 2:
-                return "remove";
-            case 3:
                 return "rewrite";
+            case 3:
+                return "onlymiss";
+            case 4:
+                return "fix-unset";
+            case 5:
+                return "fix-valid";
+            case 6:
+                return "fix-invalid";
+            case 7:
+                return "fix-unknown";
             default:
                 return "unknown=" + mode;
         }
@@ -1913,11 +1922,23 @@ public class rtrBgpUtil {
         if (a.equals("accept")) {
             return 1;
         }
-        if (a.equals("remove")) {
+        if (a.equals("rewrite")) {
             return 2;
         }
-        if (a.equals("rewrite")) {
+        if (a.equals("onlymiss")) {
             return 3;
+        }
+        if (a.equals("fix-unset")) {
+            return 4;
+        }
+        if (a.equals("set-valid")) {
+            return 5;
+        }
+        if (a.equals("set-invalid")) {
+            return 6;
+        }
+        if (a.equals("set-unknown")) {
+            return 7;
         }
         return 0;
     }

@@ -15,6 +15,7 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtAccept;
 import net.freertr.serv.servGeneric;
+import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
@@ -1752,14 +1753,24 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     /**
      * validate prefixes
      */
-    public void setValidity() {
+    public void setValidityTables() {
         if (lower.rpkiT == null) {
             return;
         }
-        tabRouautN.setValidityTable(accUni, lower.rpkiA);
-        tabRouautN.setValidityTable(accMlt, lower.rpkiA);
-        tabRouautN.setValidityTable(accOuni, lower.rpkiO);
-        tabRouautN.setValidityTable(accOmlt, lower.rpkiO);
+        tabRouautN.setValidityTable(accUni, lower.rpkiA, rpkiIn);
+        tabRouautN.setValidityTable(accMlt, lower.rpkiA, rpkiIn);
+        tabRouautN.setValidityTable(accOuni, lower.rpkiO, rpkiIn);
+        tabRouautN.setValidityTable(accOmlt, lower.rpkiO, rpkiIn);
+    }
+
+    /**
+     * validate a prefix
+     */
+    public void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRouautN> roas) {
+        if (lower.rpkiT == null) {
+            return;
+        }
+        tabRouautN.setValidityRoute(ntry, roas, rpkiIn);
     }
 
     /**
