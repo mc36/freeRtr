@@ -1,6 +1,5 @@
 package net.freertr.rtr;
 
-import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;

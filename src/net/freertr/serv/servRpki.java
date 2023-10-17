@@ -57,7 +57,7 @@ public class servRpki extends servGeneric implements prtServS {
     /**
      * sequence
      */
-    public int seq;
+    public int sequence;
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -106,7 +106,7 @@ public class servRpki extends servGeneric implements prtServS {
             } else {
                 pref6.put(prf);
             }
-            seq++;
+            sequence++;
             return false;
         }
         if (!s.equals("no")) {
@@ -124,7 +124,7 @@ public class servRpki extends servGeneric implements prtServS {
             } else {
                 pref6.del(prf);
             }
-            seq++;
+            sequence++;
             return false;
         }
         return true;
@@ -171,7 +171,7 @@ class servRpkiConn implements Runnable {
         try {
             rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), conn);
             for (;;) {
-                if (doRound(pck)) {
+                if (rtrRpkiNeigh.doOneServRnd(pck, lower.sequence, session, lower.pref4, lower.pref6)) {
                     break;
                 }
             }
@@ -181,38 +181,6 @@ class servRpkiConn implements Runnable {
         conn.setClose();
         if (debugger.servRpkiTraf) {
             logger.debug("stoping " + peer);
-        }
-    }
-
-    private boolean doRound(rtrRpkiSpeak pck) {
-        if (pck.recvPack()) {
-            return true;
-        }
-        switch (pck.typ) {
-            case rtrRpkiSpeak.msgSerialQuery:
-                if (pck.serial != lower.seq) {
-                    pck.typ = rtrRpkiSpeak.msgCacheReset;
-                    pck.sendPack();
-                    return false;
-                }
-                pck.typ = rtrRpkiSpeak.msgCacheReply;
-                pck.sess = session;
-                pck.sendPack();
-                pck.typ = rtrRpkiSpeak.msgEndData;
-                pck.sendPack();
-                return false;
-            case rtrRpkiSpeak.msgResetQuery:
-                pck.typ = rtrRpkiSpeak.msgCacheReply;
-                pck.sess = session;
-                pck.sendPack();
-                rtrRpkiNeigh.sendOneTable(pck, rtrRpkiSpeak.msgIpv4addr, lower.pref4);
-                rtrRpkiNeigh.sendOneTable(pck, rtrRpkiSpeak.msgIpv6addr, lower.pref6);
-                pck.typ = rtrRpkiSpeak.msgEndData;
-                pck.serial = lower.seq;
-                pck.sendPack();
-                return false;
-            default:
-                return false;
         }
     }
 

@@ -625,6 +625,10 @@ public class userConfig {
         l.add(null, "3  .      <num>                      bits");
         l.add(null, "2  3    access-subnet-ipv6           access subnet length");
         l.add(null, "3  .      <num>                      bits");
+        l.add(null, "2  3    access-supernet-ipv4         access subnet length");
+        l.add(null, "3  .      <num>                      bits");
+        l.add(null, "2  3    access-supernet-ipv6         access subnet length");
+        l.add(null, "3  .      <num>                      bits");
         l.add(null, "2  .    ftp-passive                  use passive mode ftp");
         l.add(null, "2  .    ftp-active                   use active mode ftp");
         l.add(null, "2  3    ftp-proxy                    specify proxy profile");

@@ -10,10 +10,9 @@ import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouautN;
-import net.freertr.tab.tabRoute;
-import net.freertr.tab.tabRouteEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
 
@@ -25,19 +24,14 @@ import net.freertr.util.logger;
 public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
 
     /**
-     * server to use
+     * parent to bind to
      */
-    public String server;
+    public final rtrRpki lower;
 
     /**
-     * server to use
+     * counter
      */
-    public addrIP peer = new addrIP();
-
-    /**
-     * port to use
-     */
-    public int port;
+    public final counter cntr = new counter();
 
     /**
      * accepted ipv4 prefixes
@@ -48,6 +42,16 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * accepted ipv6 prefixes
      */
     public tabGen<tabRouautN> table6 = new tabGen<tabRouautN>();
+
+    /**
+     * server to use
+     */
+    public addrIP peer = new addrIP();
+
+    /**
+     * port to use
+     */
+    public int port;
 
     /**
      * time started
@@ -78,8 +82,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * preference
      */
     public int preference = 100;
-
-    private final rtrRpki lower;
 
     private pipeSide pipe;
 
@@ -195,7 +197,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         table6.clear();
         logger.warn("neighbor " + peer + " up");
         for (;;) {
-            int i = doOneRound(pck);
+            int i = doOneClntRnd(pck);
             if (i == 3) {
                 break;
             }
@@ -226,19 +228,24 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                 pck.sendPack();
                 last = tim;
             }
-            int chngCntr = 0;
+            int cntr = 0;
             for (;;) {
                 if (pipe.ready2rx() < 1) {
                     break;
                 }
-                if (doOneRound(pck) != 1) {
+                int i = doOneClntRnd(pck);
+                if (i == 0) {
+                    continue;
+                }
+                cntr++;
+                if (i != 1) {
                     break;
                 }
             }
-            if (chngCntr > 0) {
-                lower.compute.wakeup();
+            if (cntr < 1) {
+                continue;
             }
-            chngCntr = 0;
+            lower.compute.wakeup();
         }
         upTime = bits.getTime();
         table4.clear();
@@ -249,35 +256,33 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         pipe = null;
     }
 
-    private void fillUpRoa(tabRouautN ntry) {
+    private int processRoa(rtrRpkiSpeak pck, tabGen<tabRouautN> table) {
+        tabRouautN ntry = pck.roa;
         ntry.distan = preference;
         ntry.srcRtr = lower.rouTyp;
         ntry.srcNum = lower.rtrNum;
         ntry.srcIP = peer.copyBytes();
+        if (!pck.withdraw) {
+            table.put(ntry);
+            return 1;
+        }
+        tabRouautN old = table.del(ntry);
+        if (old == null) {
+            return 0;
+        }
+        return 1;
     }
 
-    private int doOneRound(rtrRpkiSpeak pck) {
+    private int doOneClntRnd(rtrRpkiSpeak pck) {
         if (pck.recvPack()) {
             pipe.setClose();
             return -1;
         }
         switch (pck.typ) {
             case rtrRpkiSpeak.msgIpv4addr:
-                fillUpRoa(pck.roa);
-                if (pck.withdraw) {
-                    table4.del(pck.roa);
-                } else {
-                    table4.add(pck.roa);
-                }
-                return 1;
+                return processRoa(pck, table4);
             case rtrRpkiSpeak.msgIpv6addr:
-                fillUpRoa(pck.roa);
-                if (pck.withdraw) {
-                    table6.del(pck.roa);
-                } else {
-                    table6.add(pck.roa);
-                }
-                return 1;
+                return processRoa(pck, table6);
             case rtrRpkiSpeak.msgCacheReply:
                 return 0;
             case rtrRpkiSpeak.msgCacheReset:
@@ -305,7 +310,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * @param typ type to send
      * @param tab table to send
      */
-    public static void sendOneTable(rtrRpkiSpeak pck, int typ, tabGen<tabRouautN> tab) {
+    public final static void sendOneTable(rtrRpkiSpeak pck, int typ, tabGen<tabRouautN> tab) {
         for (int i = 0; i < tab.size(); i++) {
             tabRouautN ntry = tab.get(i);
             if (ntry == null) {
@@ -317,6 +322,48 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             if (debugger.servRpkiTraf) {
                 logger.debug("tx " + pck.dump());
             }
+        }
+    }
+
+    /**
+     * do one server round
+     *
+     * @param pck speaker to use
+     * @param seq sequence to use
+     * @param ses session to use
+     * @param tab4 ipv4 table
+     * @param tab6 ipv6 table
+     * @return true on error, false on success
+     */
+    public final static boolean doOneServRnd(rtrRpkiSpeak pck, int seq, int ses, tabGen<tabRouautN> tab4, tabGen<tabRouautN> tab6) {
+        if (pck.recvPack()) {
+            return true;
+        }
+        switch (pck.typ) {
+            case rtrRpkiSpeak.msgSerialQuery:
+                if (pck.serial != seq) {
+                    pck.typ = rtrRpkiSpeak.msgCacheReset;
+                    pck.sendPack();
+                    return false;
+                }
+                pck.typ = rtrRpkiSpeak.msgCacheReply;
+                pck.sess = ses;
+                pck.sendPack();
+                pck.typ = rtrRpkiSpeak.msgEndData;
+                pck.sendPack();
+                return false;
+            case rtrRpkiSpeak.msgResetQuery:
+                pck.typ = rtrRpkiSpeak.msgCacheReply;
+                pck.sess = ses;
+                pck.sendPack();
+                sendOneTable(pck, rtrRpkiSpeak.msgIpv4addr, tab4);
+                sendOneTable(pck, rtrRpkiSpeak.msgIpv6addr, tab6);
+                pck.typ = rtrRpkiSpeak.msgEndData;
+                pck.serial = seq;
+                pck.sendPack();
+                return false;
+            default:
+                return false;
         }
     }
 
