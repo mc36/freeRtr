@@ -33,6 +33,9 @@ int eth1
 router rpki4 1
  vrf v1
  exit
+router rpki6 1
+ vrf v1
+ exit
 router bgp4 1
  vrf v1
  no safe-ebgp
@@ -49,7 +52,7 @@ router bgp6 1
  no safe-ebgp
  address uni
  local-as 3
- rpki rpki4 1
+ rpki rpki6 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 1
  neigh 1234:1::2 rpki-in acc
@@ -99,6 +102,10 @@ router rpki4 1
  vrf v1
  neigh 2.2.2.2 port 323
  wakeup bgp4 1
+ exit
+router rpki6 1
+ vrf v1
+ neigh 4321::2 port 323
  wakeup bgp6 1
  exit
 router bgp4 1
@@ -125,7 +132,7 @@ router bgp6 1
  address uni
  local-as 1
  router-id 6.6.6.2
- rpki rpki4 1
+ rpki rpki6 1
  neigh 1234:1::1 remote-as 3
  neigh 1234:1::1 rpki-in rew
  neigh 1234:1::1 send-comm both
@@ -163,6 +170,9 @@ int eth1
 router rpki4 1
  vrf v1
  exit
+router rpki6 1
+ vrf v1
+ exit
 router bgp4 1
  vrf v1
  no safe-ebgp
@@ -180,7 +190,7 @@ router bgp6 1
  address uni
  local-as 2
  router-id 6.6.6.3
- rpki rpki4 1
+ rpki rpki6 1
  neigh 1234:2::1 remote-as 1
  neigh 1234:2::1 rpki-in acc
  red conn

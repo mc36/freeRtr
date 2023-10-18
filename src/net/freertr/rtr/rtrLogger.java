@@ -159,12 +159,12 @@ public class rtrLogger extends ipRtr {
                 if (hop == null) {
                     continue;
                 }
-                rtrLoggerAdr ifc = new rtrLoggerAdr(hop);
-                rtrLoggerAdr old = res.add(ifc);
+                rtrLoggerAdr adr = new rtrLoggerAdr(hop);
+                rtrLoggerAdr old = res.add(adr);
                 if (old != null) {
-                    ifc = old;
+                    adr = old;
                 }
-                ifc.count++;
+                adr.count++;
             }
         }
         userFormat lst = new userFormat("|", "nexthop|count");

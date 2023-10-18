@@ -84,7 +84,7 @@ public class tabRouautUtil {
      * @param t2 second table
      * @return entries missing from second table
      */
-    private void diffTwo(tabGen<tabRouautNtry> uniq, tabGen<tabRouautNtry> diff, tabGen<tabRouautNtry> nei1, tabGen<tabRouautNtry> nei2) {
+    public void diffTwo(tabGen<tabRouautNtry> uniq, tabGen<tabRouautNtry> diff, tabGen<tabRouautNtry> nei1, tabGen<tabRouautNtry> nei2) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouautNtry prf1 = nei1.get(o);
             if (prf1 == null) {
