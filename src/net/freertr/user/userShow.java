@@ -105,6 +105,8 @@ import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
 import net.freertr.pack.packRedundancy;
 import net.freertr.rtr.rtrBgpDump;
+import net.freertr.rtr.rtrRpki;
+import net.freertr.rtr.rtrRpkiNeigh;
 import net.freertr.serv.servNrpe;
 import net.freertr.serv.servOpenflow;
 import net.freertr.serv.servRpki;
@@ -3610,6 +3612,44 @@ public class userShow {
         cmd.badCmd();
     }
 
+    private void doShowIpXrpkiComp(rtrRpki rtr, int ver) {
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrRpkiNeigh nei1 = rtr.findPeer(adr);
+        if (nei1 == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return;
+        }
+        rtrRpkiNeigh nei2 = rtr.findPeer(adr);
+        if (nei2 == null) {
+            cmd.error("no such neighbor");
+            return;
+        }
+        tabGen<tabRouautNtry> tab1 = nei1.getFinalTab(ver);
+        tabGen<tabRouautNtry> tab2 = nei2.getFinalTab(ver);
+        tabGen<tabRouautNtry> uni1 = new tabGen<tabRouautNtry>();
+        tabGen<tabRouautNtry> uni2 = new tabGen<tabRouautNtry>();
+        tabGen<tabRouautNtry> dif1 = new tabGen<tabRouautNtry>();
+        tabGen<tabRouautNtry> dif2 = new tabGen<tabRouautNtry>();
+        tabRouautUtil.diffTwo(uni1, dif1, tab1, tab2);
+        tabRouautUtil.diffTwo(uni2, dif2, tab2, tab1);
+        cmd.error("unique to " + nei1);
+        doShowRoas(uni1, 1);
+        cmd.error("unique to " + nei2);
+        doShowRoas(uni2, 1);
+        cmd.error("attribute differs");
+        doShowRoas(dif1, 1);
+        doShowRoas(dif2, 1);
+    }
+
     private void doShowIpXrpki(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -3639,6 +3679,14 @@ public class userShow {
         }
         if (a.equals("database6")) {
             doShowRoas(r.rpki.getFinalTab(6), 1);
+            return;
+        }
+        if (a.equals("compare4")) {
+            doShowIpXrpkiComp(r.rpki, 4);
+            return;
+        }
+        if (a.equals("compare6")) {
+            doShowIpXrpkiComp(r.rpki, 6);
             return;
         }
     }

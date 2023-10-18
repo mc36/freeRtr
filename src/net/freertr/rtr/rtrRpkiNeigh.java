@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
@@ -202,6 +203,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         table4.clear();
         table6.clear();
         logger.warn("neighbor " + peer + " up");
+        upTime = bits.getTime();
         for (;;) {
             int i = doOneClntRnd(pck);
             if (i == 3) {
@@ -212,11 +214,12 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             }
             table4.clear();
             table6.clear();
+            logger.error("neighbor " + peer + " down");
             pipe.setClose();
+            pipe = null;
             return;
         }
         lower.compute.wakeup();
-        upTime = bits.getTime();
         long last = bits.getTime();
         for (;;) {
             if (pipe.isClosed() != 0) {
@@ -253,7 +256,6 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             }
             lower.compute.wakeup();
         }
-        upTime = bits.getTime();
         table4.clear();
         table6.clear();
         lower.compute.wakeup();
@@ -262,13 +264,14 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         pipe = null;
     }
 
-    private int processRoa(rtrRpkiSpeak pck, tabGen<tabRouautNtry> table) {
+    private int processOneRoa(rtrRpkiSpeak pck, tabGen<tabRouautNtry> table) {
         tabRouautNtry ntry = pck.roa;
         ntry.distan = preference;
         ntry.srcRtr = lower.rouTyp;
         ntry.srcNum = lower.rtrNum;
         ntry.srcIP = peer.copyBytes();
         if (!pck.withdraw) {
+            ntry.time = bits.getTime();
             table.put(ntry);
             return 1;
         }
@@ -286,9 +289,9 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         }
         switch (pck.typ) {
             case rtrRpkiSpeak.msgIpv4addr:
-                return processRoa(pck, table4);
+                return processOneRoa(pck, table4);
             case rtrRpkiSpeak.msgIpv6addr:
-                return processRoa(pck, table6);
+                return processOneRoa(pck, table6);
             case rtrRpkiSpeak.msgCacheReply:
                 return 0;
             case rtrRpkiSpeak.msgCacheReset:
@@ -306,6 +309,20 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
                 return 3;
             default:
                 return 0;
+        }
+    }
+
+    /**
+     * get final table
+     *
+     * @param ipVer ip version
+     * @return current table
+     */
+    public tabGen<tabRouautNtry> getFinalTab(int ipVer) {
+        if (ipVer == ipCor4.protocolVersion) {
+            return table4;
+        } else {
+            return table6;
         }
     }
 

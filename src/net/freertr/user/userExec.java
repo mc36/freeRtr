@@ -358,6 +358,12 @@ public class userExec {
         hl.add(null, "3 4        rpki                     resource public key infra protocol");
         hl.add(null, "4 5          <num:rtr>              process id");
         hl.add(null, "5 .            summary              list of neighbors");
+        hl.add(null, "5 6            compare4             compare ipv4 feeds from neighbors");
+        hl.add(null, "6 7              <addr>             peer1 address");
+        hl.add(null, "7 .                <addr>           peer2 address");
+        hl.add(null, "5 6            compare6             compare ipv6 feeds from neighbors");
+        hl.add(null, "6 7              <addr>             peer1 address");
+        hl.add(null, "7 .                <addr>           peer2 address");
         hl.add(null, "5 .            connection           list of neighbor connections");
         hl.add(null, "5 .            database4            list of ipv4 roas");
         hl.add(null, "5 .            database6            list of ipv6 roas");

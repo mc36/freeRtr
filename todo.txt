@@ -1,3 +1,5 @@
+add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
+
 bgp astree shows from asconn
 
 more rpki shows like validation of protocols tables, comparison of neighbors, etc
