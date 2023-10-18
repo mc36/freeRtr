@@ -294,7 +294,11 @@ public class userExec {
         hl.add(null, "4 .          <name:vrf>             name of routing table");
         hl.add(null, "3 4        labels                   unicast routing table labels");
         hl.add(null, "4 .          <name:vrf>             name of routing table");
-        hl.add(null, "3 4        distribution             routing interfaces");
+        hl.add(null, "3 4        prefix-lengths           prefix length distribution");
+        hl.add(null, "4 .          <name:vrf>             vrf name");
+        hl.add(null, "3 4        out-interfaces           egress interface distribution");
+        hl.add(null, "4 .          <name:vrf>             vrf name");
+        hl.add(null, "3 4        nexthops                 egress router distribution");
         hl.add(null, "4 .          <name:vrf>             vrf name");
         hl.add(null, "3 4        route                    unicast routing table entries");
         hl.add(null, "4 5,.        <name:vrf>             name of routing table");

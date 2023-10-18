@@ -2476,8 +2476,16 @@ public class userShow {
                 doShowRoutePrt(4);
                 return null;
             }
-            if (a.equals("distribution")) {
-                doShowDistrib(4);
+            if (a.equals("nexthops")) {
+                doShowNexthops(4);
+                return null;
+            }
+            if (a.equals("out-interfaces")) {
+                doShowOutIfaces(4);
+                return null;
+            }
+            if (a.equals("prefix-lengths")) {
+                doShowPrefLens(4);
                 return null;
             }
             if (a.equals("segrout")) {
@@ -2824,8 +2832,16 @@ public class userShow {
                 doShowRoutePrt(6);
                 return null;
             }
-            if (a.equals("distribution")) {
-                doShowDistrib(6);
+            if (a.equals("nexthops")) {
+                doShowNexthops(6);
+                return null;
+            }
+            if (a.equals("out-interfaces")) {
+                doShowOutIfaces(6);
+                return null;
+            }
+            if (a.equals("prefix-lengths")) {
+                doShowPrefLens(6);
                 return null;
             }
             if (a.equals("segrout")) {
@@ -5193,13 +5209,28 @@ public class userShow {
         doShowRoutes(fwd, fwd.actualU, 9);
     }
 
-    private void doShowDistrib(int ver) {
+    private void doShowPrefLens(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        rdr.putStrTab(rtrLogger.prefixLengths(fwd.actualU, fwd.ipVersion));
+    }
+
+    private void doShowNexthops(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        rdr.putStrTab(rtrLogger.nexthopDistribution(fwd.actualU));
+    }
+
+    private void doShowOutIfaces(int ver) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
         }
         rdr.putStrTab(rtrLogger.outgointInterfaces(fwd.actualU));
-        rdr.putStrTab(rtrLogger.prefixLengths(fwd.actualU, fwd.ipVersion));
     }
 
     private void doShowRouteSR(int ver) {

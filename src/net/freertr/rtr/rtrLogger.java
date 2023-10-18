@@ -130,10 +130,46 @@ public class rtrLogger extends ipRtr {
         }
         userFormat lst = new userFormat("|", "len|count");
         if (ver == ipCor4.protocolVersion) {
-            ver = addrIP.size * 8;
+            ver = (addrIP.size - addrIPv4.size) * 8;
+        } else {
+            ver = 0;
         }
         for (int i = ver; i < res.length; i++) {
             lst.add((i - ver) + "|" + res[i]);
+        }
+        return lst;
+    }
+
+    /**
+     * count outgoing interfaces
+     *
+     * @param tab routing table
+     * @return prefix length report
+     */
+    public static userFormat nexthopDistribution(tabRoute<addrIP> tab) {
+        tabGen<rtrLoggerAdr> res = new tabGen<rtrLoggerAdr>();
+        for (int o = 0; o < tab.size(); o++) {
+            tabRouteEntry<addrIP> ntry = tab.get(o);
+            for (int i = 0; i < ntry.alts.size(); i++) {
+                tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                addrIP hop = attr.oldHop;
+                if (hop == null) {
+                    hop = attr.nextHop;
+                }
+                if (hop == null) {
+                    continue;
+                }
+                rtrLoggerAdr ifc = new rtrLoggerAdr(hop);
+                rtrLoggerAdr old = res.add(ifc);
+                if (old != null) {
+                    ifc = old;
+                }
+                ifc.count++;
+            }
+        }
+        userFormat lst = new userFormat("|", "nexthop|count");
+        for (int i = 0; i < res.size(); i++) {
+            lst.add("" + res.get(i));
         }
         return lst;
     }
@@ -561,6 +597,26 @@ class rtrLoggerIfc implements Comparator<rtrLoggerIfc> {
 
     public String toString() {
         return iface + "|" + count;
+    }
+
+}
+
+class rtrLoggerAdr implements Comparator<rtrLoggerAdr> {
+
+    public final addrIP addr;
+
+    public int count;
+
+    public rtrLoggerAdr(addrIP ifc) {
+        addr = ifc;
+    }
+
+    public int compare(rtrLoggerAdr o1, rtrLoggerAdr o2) {
+        return o1.addr.compare(o1.addr, o2.addr);
+    }
+
+    public String toString() {
+        return addr + "|" + count;
     }
 
 }
