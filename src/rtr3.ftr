@@ -432,6 +432,7 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
+todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
 todo: bgp astree shows from asconn
 todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
 todo: allow some packages to be redownloaded after a certain time expired
