@@ -807,6 +807,9 @@ public class userExec {
         hl.add(null, "6 7              validtest          perform rpki lookups for a table");
         cfgRtr.getRouterList(hl, 5, "");
         hl.add(null, "8 .                <num>            process number");
+        hl.add(null, "6 7              validmismark       verify rpki markings for a table");
+        cfgRtr.getRouterList(hl, 5, "");
+        hl.add(null, "8 .                <num>            process number");
         hl.add(null, "6 7,.            asnames            names of the asns in the paths");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");

@@ -3725,6 +3725,34 @@ public class userShow {
         }
     }
 
+    private tabGen<tabRouautNtry> getRpkiTable(int sfi) {
+        tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
+        if (ipRtr.isRPKI(rt) < 0) {
+            cmd.error("not an rpki process");
+            return null;
+        }
+        int rn = bits.str2num(cmd.word());
+        cfgRtr rc = cfgAll.rtrFind(rt, rn, false);
+        if (rc == null) {
+            cmd.error("no such process");
+            return null;
+        }
+        ipRtr ri = rc.getRouter();
+        if (ri == null) {
+            cmd.error("process not initialized");
+            return null;
+        }
+        tabGen<tabRouautNtry> rp;
+        try {
+            rtrRpki rr = (rtrRpki) ri;
+            rp = rr.getFinalTab(rtrBgpUtil.safi2ipVers(sfi));
+        } catch (Exception e) {
+            logger.traceback(e);
+            return null;
+        }
+        return rp;
+    }
+
     private void doShowIpXmsdp(tabRouteAttr.routeType afi) {
         cfgRtr r = cfgAll.rtrFind(afi, bits.str2num(cmd.word()), false);
         if (r == null) {
@@ -4601,31 +4629,8 @@ public class userShow {
             return;
         }
         if (a.equals("validtest")) {
-            tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
-            if (ipRtr.isRPKI(rt) < 0) {
-                cmd.error("not an rpki process");
-                return;
-            }
-            int rn = bits.str2num(cmd.word());
-            cfgRtr rc = cfgAll.rtrFind(rt, rn, false);
-            if (rc == null) {
-                cmd.error("no such process");
-                return;
-            }
-            ipRtr ri = rc.getRouter();
-            if (ri == null) {
-                cmd.error("process not initialized");
-                return;
-            }
-            tabGen<tabRouautNtry> rp;
-            try {
-                rtrRpki rr = (rtrRpki) ri;
-                rp = rr.getFinalTab(rtrBgpUtil.safi2ipVers(sfi));
-            } catch (Exception e) {
-                logger.traceback(e);
-                return;
-            }
-            tabRoute<addrIP> res = new tabRoute<addrIP>("rpkid");
+            tabGen<tabRouautNtry> rp = getRpkiTable(sfi);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
             for (int i = 0; i < tab.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tab.get(i);
                 if (ntry == null) {
@@ -4635,6 +4640,25 @@ public class userShow {
                 tabRouautNtry ra = tabRouautUtil.lookup(rp, ntry.prefix);
                 int o = tabRouautUtil.calcValidityValue(ntry.best, ra);
                 tabRouautUtil.setValidityRoute(ntry, rp, o);
+                res.add(tabRoute.addType.better, ntry, false, false);
+            }
+            doShowRoutes(r.bgp.fwdCore, res, 4);
+            return;
+        }
+        if (a.equals("validmismark")) {
+            tabGen<tabRouautNtry> rp = getRpkiTable(sfi);
+            tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
+            for (int i = 0; i < tab.size(); i++) {
+                tabRouteEntry<addrIP> ntry = tab.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                tabRouautNtry ra = tabRouautUtil.lookup(rp, ntry.prefix);
+                int o = tabRouautUtil.calcValidityValue(ntry.best, ra);
+                int p = tabRouteUtil.getValidityExtComm(ntry.best.extComm);
+                if (o == p) {
+                    continue;
+                }
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
