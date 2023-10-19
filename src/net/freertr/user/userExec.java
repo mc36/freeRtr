@@ -357,6 +357,7 @@ public class userExec {
         hl.add(null, "5 .            database             list of sources");
         hl.add(null, "3 4        rpki                     resource public key infra protocol");
         hl.add(null, "4 5          <num:rtr>              process id");
+        hl.add(null, "5 .            status               status of the process");
         hl.add(null, "5 .            summary              list of neighbors");
         hl.add(null, "5 6            compare4             compare ipv4 feeds from neighbors");
         hl.add(null, "6 7              <addr>             peer1 address");
@@ -367,6 +368,10 @@ public class userExec {
         hl.add(null, "5 .            connection           list of neighbor connections");
         hl.add(null, "5 .            database4            list of ipv4 roas");
         hl.add(null, "5 .            database6            list of ipv6 roas");
+        hl.add(null, "5 6            lookup4              lookup ipv4 roa for prefix");
+        hl.add(null, "6 .              <addr>             prefix to lookup");
+        hl.add(null, "5 6            lookup6              lookup ipv6 roa for prefix");
+        hl.add(null, "6 .              <addr>             prefix to lookup");
         hl.add(null, "3 4        rsvp                     resource reservation protocol");
         hl.add(null, "4 5          <name:vrf>             specify routing table");
         hl.add(null, "5 .            summary              list of tunnels in database");
@@ -799,6 +804,9 @@ public class userExec {
         hl.add(null, "6 7,.            validated          validation status of the paths");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
+        hl.add(null, "6 7              validtest          perform rpki lookups for a table");
+        cfgRtr.getRouterList(hl, 5, "");
+        hl.add(null, "8 .                <num>            process number");
         hl.add(null, "6 7,.            asnames            names of the asns in the paths");
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");

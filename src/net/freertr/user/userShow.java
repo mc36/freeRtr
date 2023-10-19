@@ -3665,6 +3665,10 @@ public class userShow {
             rdr.putStrTab(r.rpki.getNeighShow());
             return;
         }
+        if (a.equals("status")) {
+            rdr.putStrTab(r.rpki.getGenShow());
+            return;
+        }
         if (a.equals("connection")) {
             rdr.putStrTab(r.rpki.showConnSumm());
             return;
@@ -3687,6 +3691,36 @@ public class userShow {
         }
         if (a.equals("compare6")) {
             doShowIpXrpkiComp(r.rpki, 6);
+            return;
+        }
+        if (a.equals("lookup4")) {
+            addrPrefix<addrIP> pfx = addrPrefix.str2ip(cmd.word());
+            if (pfx == null) {
+                cmd.error("bad prefix");
+                return;
+            }
+            tabGen<tabRouautNtry> tab = r.rpki.getFinalTab(4);
+            tabRouautNtry ntry = tabRouautUtil.lookup(tab, pfx);
+            if (ntry == null) {
+                cmd.error("no matching roa");
+                return;
+            }
+            rdr.putStrTab(ntry.fullDump());
+            return;
+        }
+        if (a.equals("lookup6")) {
+            addrPrefix<addrIP> pfx = addrPrefix.str2ip(cmd.word());
+            if (pfx == null) {
+                cmd.error("bad prefix");
+                return;
+            }
+            tabGen<tabRouautNtry> tab = r.rpki.getFinalTab(6);
+            tabRouautNtry ntry = tabRouautUtil.lookup(tab, pfx);
+            if (ntry == null) {
+                cmd.error("no matching roa");
+                return;
+            }
+            rdr.putStrTab(ntry.fullDump());
             return;
         }
     }
@@ -4564,6 +4598,46 @@ public class userShow {
         }
         if (a.equals("ecmp")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 2000);
+            return;
+        }
+        if (a.equals("validtest")) {
+            tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
+            if (ipRtr.isRPKI(rt) < 0) {
+                cmd.error("not an rpki process");
+                return;
+            }
+            int rn = bits.str2num(cmd.word());
+            cfgRtr rc = cfgAll.rtrFind(rt, rn, false);
+            if (rc == null) {
+                cmd.error("no such process");
+                return;
+            }
+            ipRtr ri = rc.getRouter();
+            if (ri == null) {
+                cmd.error("process not initialized");
+                return;
+            }
+            tabGen<tabRouautNtry> rp;
+            try {
+                rtrRpki rr = (rtrRpki) ri;
+                rp = rr.getFinalTab(rtrBgpUtil.safi2ipVers(sfi));
+            } catch (Exception e) {
+                logger.traceback(e);
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("rpkid");
+            for (int i = 0; i < tab.size(); i++) {
+                tabRouteEntry<addrIP> ntry = tab.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                ntry = ntry.copyBytes(tabRoute.addType.better);
+                tabRouautNtry ra = tabRouautUtil.lookup(rp, ntry.prefix);
+                int o = tabRouautUtil.calcValidityValue(ntry.best, ra);
+                tabRouautUtil.setValidityRoute(ntry, rp, o);
+                res.add(tabRoute.addType.better, ntry, false, false);
+            }
+            doShowRoutes(r.bgp.fwdCore, res, 4);
             return;
         }
         if (a.equals("nostdcomm")) {

@@ -513,7 +513,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
      * @param prf entry to dump
      */
     public static void toShRpki(userFormat l, tabRouteEntry<addrIP> prf) {
-        String a = addrPrefix.ip2str(prf.prefix);
+        String a = toShBgpFirst(prf);
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
             l.add(a + "|" + attr.toShRpki());

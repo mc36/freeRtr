@@ -88,6 +88,21 @@ public class rtrRpki extends ipRtr implements Runnable {
     private int seqNum;
 
     /**
+     * sequence time
+     */
+    private long seqTim;
+
+    /**
+     * sequence notified
+     */
+    private int seqNot;
+
+    /**
+     * sequence changed
+     */
+    private long seqChg;
+
+    /**
      * notified to wake up
      */
     protected final notifier compute = new notifier();
@@ -203,6 +218,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      */
     public synchronized void routerCreateComputed() {
         seqNum++;
+        seqTim = bits.getTime();
         tabGen<tabRouautNtry> tab4 = new tabGen<tabRouautNtry>();
         tabGen<tabRouautNtry> tab6 = new tabGen<tabRouautNtry>();
         for (int i = 0; i < neighs.size(); i++) {
@@ -215,6 +231,8 @@ public class rtrRpki extends ipRtr implements Runnable {
         if (chg) {
             return;
         }
+        seqNot++;
+        seqChg = seqTim;
         computedV4 = tab4;
         computedV6 = tab6;
         if (debugger.rtrRpkiEvnt) {
@@ -442,6 +460,23 @@ public class rtrRpki extends ipRtr implements Runnable {
             }
             l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + bits.timePast(ntry.upTime));
         }
+        return l;
+    }
+
+    /**
+     * get neighbor show
+     *
+     * @return list of neighbors
+     */
+    public userFormat getGenShow() {
+        userFormat l = new userFormat("|", "category|value|additional");
+        l.add("peers|" + neighs.size());
+        l.add("ipv4 roas|" + computedV4.size());
+        l.add("ipv6 roas|" + computedV6.size());
+        l.add("sequence event|" + seqNum + "|times");
+        l.add("sequence time|" + bits.timePast(seqTim) + "|" + bits.time2str(cfgAll.timeZoneName, seqTim + cfgAll.timeServerOffset, 3));
+        l.add("wakeup event|" + seqNot + "|times");
+        l.add("sequence time|" + bits.timePast(seqChg) + "|" + bits.time2str(cfgAll.timeZoneName, seqChg + cfgAll.timeServerOffset, 3));
         return l;
     }
 

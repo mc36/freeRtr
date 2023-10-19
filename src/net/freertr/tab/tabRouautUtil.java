@@ -133,6 +133,7 @@ public class tabRouautUtil {
             if (pfx.maskLen - end > old.max) {
                 return null;
             }
+            old.hits++;
             return old;
         }
         return null;
@@ -270,7 +271,7 @@ public class tabRouautUtil {
      * @param attr attribute to set
      * @param res route authorization
      */
-    protected final static int calcValidityValue(tabRouteAttr<addrIP> attr, tabRouautNtry res) {
+    public final static int calcValidityValue(tabRouteAttr<addrIP> attr, tabRouautNtry res) {
         if (res == null) {
             return 2;
         }

@@ -3,7 +3,9 @@ package net.freertr.tab;
 import java.util.Comparator;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntWhois;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 
@@ -59,6 +61,11 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
      * information time
      */
     public long time;
+    
+    /**
+     * hit counter
+     */
+    public int hits;
 
     public int compare(tabRouautNtry o1, tabRouautNtry o2) {
         return o1.prefix.compare(o1.prefix, o2.prefix);
@@ -84,7 +91,25 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
         n.srcRtr = srcRtr;
         n.srcNum = srcNum;
         n.time = time;
+        n.hits = hits;
         return n;
+    }
+
+    /**
+     * print roa details
+     */
+    public userFormat fullDump() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("prefix|" + addrPrefix.ip2str(prefix));
+        res.add("maximum length|" + max);
+        res.add("as number|" + asn);
+        res.add("as name|" + clntWhois.asn2name(asn, true));
+        res.add("preference|" + distan);
+        res.add("source|" + srcIP);
+        res.add("type|" + srcRtr + " " + srcNum);
+        res.add("updated|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(time) + " ago)");
+        res.add("hits|" + hits);
+        return res;
     }
 
     /**
@@ -102,6 +127,9 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
         }
         if (asn != o.asn) {
             return 1;
+        }
+        if (o.compare(o, this) != 0) {
+            return 2;
         }
         return 0;
     }
@@ -169,6 +197,5 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
     public String toShRoute() {
         return addrPrefix.ip2str(prefix) + "|" + max + "|" + bits.num2str(asn) + "|" + clntWhois.asn2name(asn, true) + "|" + bits.timePast(time);
     }
-
 
 }

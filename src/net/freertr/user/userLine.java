@@ -874,7 +874,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         if (user != null) {
             s = "" + user.user;
         }
-        return "user=" + s + "rem=" + remote + " after " + bits.timePast(since);
+        return "user=" + s + " rem=" + remote + " after " + bits.timePast(since);
     }
 
     private void doInit() {
