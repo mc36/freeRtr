@@ -38,6 +38,8 @@ public class userImage {
 
     private int downMode = 1;
 
+    private int hashMode = 3;
+
     private long regeTim = bits.getTime() - Integer.MAX_VALUE;
 
     private String arch = "amd64";
@@ -280,13 +282,24 @@ public class userImage {
         }
     }
 
-    private boolean downAllFiles() {
-        for (int i = 0; i < selected.size(); i++) {
-            userImagePkg pkg = selected.get(i);
+    public boolean downOneFile(userImagePkg pkg) {
+        for (int i = 0; i < hashMode; i++) {
             if (downloadFile(pkg.cat.url + pkg.file, getPackageName(pkg), pkg.size)) {
                 return true;
             }
-            if (verifyPackage(getPackageName(pkg), pkg.sum)) {
+            boolean vrf = verifyPackage(getPackageName(pkg), pkg.sum);
+            if (!vrf) {
+                return false;
+            }
+            userFlash.delete(getPackageName(pkg));
+        }
+        return true;
+    }
+
+    private boolean downAllFiles() {
+        for (int i = 0; i < selected.size(); i++) {
+            userImagePkg pkg = selected.get(i);
+            if (downOneFile(pkg)) {
                 return true;
             }
         }
@@ -380,6 +393,10 @@ public class userImage {
             }
             if (a.equals("download")) {
                 downMode = bits.str2num(s);
+                continue;
+            }
+            if (a.equals("hashdown")) {
+                hashMode = bits.str2num(s);
                 continue;
             }
             if (a.equals("arch")) {
