@@ -214,6 +214,16 @@ public abstract class rtrBgpParam {
     public int rpkiOut;
 
     /**
+     * rpki ingress mode
+     */
+    public int vpkiIn;
+
+    /**
+     * rpki egress mode
+     */
+    public int vpkiOut;
+
+    /**
      * advertise pop label
      */
     public boolean labelPop;
@@ -1615,6 +1625,24 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         fix-valid                 fixed rewrite");
         l.add(null, "4  .         fix-invalid               fixed rewrite");
         l.add(null, "4  .         fix-unknown               fixed rewrite");
+        l.add(null, "3  4       rpki-vpn-in                 rpki ingress extcomm mode");
+        l.add(null, "4  .         transparent               pass everything unmodified");
+        l.add(null, "4  .         accept                    accept remote markings");
+        l.add(null, "4  .         fix-unset                 remove remote markings");
+        l.add(null, "4  .         onlymiss                  rewrite if miss markings");
+        l.add(null, "4  .         rewrite                   always rewrite markings");
+        l.add(null, "4  .         fix-valid                 fixed rewrite");
+        l.add(null, "4  .         fix-invalid               fixed rewrite");
+        l.add(null, "4  .         fix-unknown               fixed rewrite");
+        l.add(null, "3  4       rpki-vpn-out                rpki egress extcomm mode");
+        l.add(null, "4  .         transparent               pass everything unmodified");
+        l.add(null, "4  .         accept                    accept remote markings");
+        l.add(null, "4  .         fix-unset                 remove remote markings");
+        l.add(null, "4  .         rewrite                   always rewrite markings");
+        l.add(null, "4  .         onlymiss                  rewrite if miss markings");
+        l.add(null, "4  .         fix-valid                 fixed rewrite");
+        l.add(null, "4  .         fix-invalid               fixed rewrite");
+        l.add(null, "4  .         fix-unknown               fixed rewrite");
         l.add(null, "3  4       leak-role                   remote leak prevention role");
         l.add(null, "4  5,.       disabled                  disable processing");
         l.add(null, "5  .           enforce                 enforce negotiation");
@@ -1952,6 +1980,8 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "leak-role " + s);
         l.add(beg + nei + "rpki-in " + rtrBgpUtil.rpkiMode2string(rpkiIn));
         l.add(beg + nei + "rpki-out " + rtrBgpUtil.rpkiMode2string(rpkiOut));
+        l.add(beg + nei + "rpki-vpn-in " + rtrBgpUtil.rpkiMode2string(vpkiIn));
+        l.add(beg + nei + "rpki-vpn-out " + rtrBgpUtil.rpkiMode2string(vpkiOut));
         cmds.cfgLine(l, !labelPop, beg, nei + "label-pop", "");
         cmds.cfgLine(l, !capaNego, beg, nei + "capability-negotiation", "");
         cmds.cfgLine(l, !trackNxthop, beg, nei + "track-next-hop", "");
@@ -2622,6 +2652,22 @@ public abstract class rtrBgpParam {
                 return false;
             }
             rpkiOut = rtrBgpUtil.string2rpkiMode(cmd.word());
+            return false;
+        }
+        if (s.equals("rpki-vpn-in")) {
+            if (negated) {
+                vpkiIn = 0;
+                return false;
+            }
+            vpkiIn = rtrBgpUtil.string2rpkiMode(cmd.word());
+            return false;
+        }
+        if (s.equals("rpki-vpn-out")) {
+            if (negated) {
+                vpkiOut = 0;
+                return false;
+            }
+            vpkiOut = rtrBgpUtil.string2rpkiMode(cmd.word());
             return false;
         }
         if (s.equals("leak-role")) {
