@@ -366,6 +366,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! (template|neighbor) .* leak-role disabled",
         "router bgp[46] .*! (template|neighbor) .* rpki-in transparent",
         "router bgp[46] .*! (template|neighbor) .* rpki-out transparent",
+        "router bgp[46] .*! (template|neighbor) .* rpki-vpn-in transparent",
+        "router bgp[46] .*! (template|neighbor) .* rpki-vpn-out transparent",
         "router bgp[46] .*! (template|neighbor) .* additional-path-rx",
         "router bgp[46] .*! (template|neighbor) .* additional-path-tx",
         "router bgp[46] .*! (template|neighbor) .* authen-type md5",

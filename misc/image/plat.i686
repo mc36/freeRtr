@@ -1,4 +1,4 @@
-arch i686
+arch i386
 boot i686
 kern i686
 uefi bootia32.efi
