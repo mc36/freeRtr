@@ -3217,7 +3217,6 @@ qc pass: udp forwarder server
 todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
 todo: bgp astree shows from asconn
 todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
-todo: allow some packages to be redownloaded after a certain time expired
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
@@ -3363,6 +3362,7 @@ todo: wcmp support to the spf class
 todo: allow command to be a substring of an other
 todo: rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
 todo: rfc8548 tcpcrypt
+todo: rfc9298 rfc9484 ip/udp-proxy-in-http
 todo: update gtp stack to the latest standards
 todo: nat and pbr config to have reindex
 todo: bgp shadow route reflection

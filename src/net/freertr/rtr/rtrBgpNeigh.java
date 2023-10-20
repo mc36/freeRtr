@@ -1471,6 +1471,14 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             }
             return;
         }
+        setValidity(accUni, rpkiIn, lower.rpkiA);
+        setValidity(accMlt, rpkiIn, lower.rpkiA);
+        setValidity(accOuni, rpkiIn, lower.rpkiO);
+        setValidity(accOmlt, rpkiIn, lower.rpkiO);
+        setValidity(accVpnU, vpkiIn, lower.rpkiA);
+        setValidity(accVpnM, vpkiIn, lower.rpkiA);
+        setValidity(accVpoU, vpkiIn, lower.rpkiO);
+        setValidity(accVpoM, vpkiIn, lower.rpkiO);
         addUpdateTableUni(lower.afiUni, rtrBgpParam.mskUni, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
         addUpdateTableUni(lower.afiLab, rtrBgpParam.mskLab, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
         addUpdateTableUni(lower.afiCtp, rtrBgpParam.mskCtp, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
@@ -1753,26 +1761,34 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     }
 
     /**
-     * validate prefixes
+     * validate a prefix
+     *
+     * @param afi address family
+     * @param ntry route entry
      */
-    public void setValidityTables() {
+    public void setValidity(int afi, tabRouteEntry<addrIP> ntry) {
         if (lower.rpkiT == null) {
             return;
         }
-        tabRouautUtil.setValidityTable(accUni, lower.rpkiA, rpkiIn);
-        tabRouautUtil.setValidityTable(accMlt, lower.rpkiA, rpkiIn);
-        tabRouautUtil.setValidityTable(accOuni, lower.rpkiO, rpkiIn);
-        tabRouautUtil.setValidityTable(accOmlt, lower.rpkiO, rpkiIn);
+        if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, rpkiIn);
+        }
+        if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, rpkiIn);
+        }
+        if ((afi == lower.afiVpnU) || (afi == lower.afiVpnM)) {
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, vpkiIn);
+        }
+        if ((afi == lower.afiVpoU) || (afi == lower.afiVpoM)) {
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, vpkiIn);
+        }
     }
 
-    /**
-     * validate a prefix
-     */
-    public void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRouautNtry> roas) {
+    public void setValidity(tabRoute<addrIP> tab, int mod, tabGen<tabRouautNtry> roa) {
         if (lower.rpkiT == null) {
             return;
         }
-        tabRouautUtil.setValidityRoute(ntry, roas, rpkiIn);
+        tabRouautUtil.setValidityTable(tab, roa, mod);
     }
 
     /**

@@ -653,7 +653,13 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
     }
 
-    private void setValidity(int afi, tabRouteEntry<addrIP> ntry) {
+    /**
+     * validate a prefix
+     *
+     * @param afi address family
+     * @param ntry route entry
+     */
+    public void setValidity(int afi, tabRouteEntry<addrIP> ntry) {
         if (lower.rpkiT == null) {
             return;
         }
@@ -662,6 +668,12 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
             tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, rpkiOut);
+        }
+        if ((afi == lower.afiVpnU) || (afi == lower.afiVpnM)) {
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, vpkiOut);
+        }
+        if ((afi == lower.afiVpoU) || (afi == lower.afiVpoM)) {
+            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, vpkiOut);
         }
     }
 

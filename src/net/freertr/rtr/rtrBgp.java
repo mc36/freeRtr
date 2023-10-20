@@ -1971,7 +1971,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setValidityTables();
             nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo);
         }
         for (int i = 0; i < neighs.size(); i++) {
@@ -1981,7 +1980,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setValidityTables();
             nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo);
         }
         if (have2reflect) {
@@ -2190,12 +2188,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry == null) {
             return best;
         }
-        if ((afi == afiUni) || (afi == afiMlt)) {
-            nei.setValidityRoute(ntry, rpkiA);
-        }
-        if ((afi == afiOuni) || (afi == afiOmlt)) {
-            nei.setValidityRoute(ntry, rpkiO);
-        }
+        nei.setValidity(afi, ntry);
         if (best == null) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }

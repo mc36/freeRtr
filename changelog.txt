@@ -15237,3 +15237,6 @@ todo: redundancy to have the remote shows and a counter on how many failures obs
 no todo: bgp stuff more tests for rfc9234 and a knob to align to the frr or b1rd version
 ---------------------------------- 2023-10-19 15:11:17 23.10.19
 todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
+---------------------------------- 2023-10-20 08:52:07 23.10.20
+no todo: allow some packages to be redownloaded after a certain time expired
+todo: rfc9298 rfc9484 ip/udp-proxy-in-http

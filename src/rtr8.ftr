@@ -1,0 +1,672 @@
+qc pass: p4lang: copp
+qc pass: p4lang: ingress access list
+qc pass: p4lang: egress access list
+qc pass: p4lang: nat
+qc pass: p4lang: vlan ingress access list
+qc pass: p4lang: vlan egress access list
+qc pass: p4lang: bundle ingress access list
+qc pass: p4lang: bundle egress access list
+qc pass: p4lang: bundle vlan ingress access list
+qc pass: p4lang: bundle vlan egress access list
+qc pass: p4lang: bridge ingress access list
+qc pass: p4lang: bridge egress access list
+qc pass: p4lang: vlan bridge ingress access list
+qc pass: p4lang: vlan bridge egress access list
+qc pass: p4lang: ingress pppoe access list
+qc pass: p4lang: egress pppoe access list
+qc pass: p4lang: ingress vlan pppoe access list
+qc pass: p4lang: egress vlan pppoe access list
+qc pass: p4lang: hairpin ingress access list
+qc pass: p4lang: hairpin egress access list
+qc pass: p4lang: hairpin vlan ingress access list
+qc pass: p4lang: hairpin vlan egress access list
+qc pass: p4lang: hairpin pppoe ingress access list
+qc pass: p4lang: hairpin pppoe egress access list
+qc pass: p4lang: hairpin vlan pppoe ingress access list
+qc pass: p4lang: hairpin vlan pppoe egress access list
+qc pass: p4lang: ingress gre access list
+qc pass: p4lang: egress gre access list
+qc pass: p4lang: ingress vlan gre access list
+qc pass: p4lang: egress vlan gre access list
+qc pass: p4lang: ingress l2tp access list
+qc pass: p4lang: egress l2tp access list
+qc pass: p4lang: ingress vlan l2tp access list
+qc pass: p4lang: egress vlan l2tp access list
+qc pass: p4lang: ingress ipip access list
+qc pass: p4lang: egress ipip access list
+qc pass: p4lang: ingress vlan ipip access list
+qc pass: p4lang: egress vlan ipip access list
+qc pass: p4lang: ingress common access list
+qc pass: p4lang: egress common access list
+qc pass: p4lang: ingress hybrid access list
+qc pass: p4lang: egress hybrid access list
+qc pass: p4lang: ingress hierarchical access list
+qc pass: p4lang: egress hierarchical access list
+qc pass: p4lang: ingress policer
+qc pass: p4lang: egress policer
+qc pass: p4lang: vlan ingress policer
+qc pass: p4lang: vlan egress policer
+qc pass: p4lang: transmit flowspec
+qc pass: p4lang: drop flowspec
+qc pass: p4lang: policer flowspec
+qc pass: p4lang: priority flowspec
+qc pass: p4lang: ingress amt access list
+qc pass: p4lang: egress amt access list
+qc pass: p4lang: ingress reflexive access list
+qc pass: p4lang: egress reflexive access list
+qc pass: p4lang: interface inspection with egress drop
+qc pass: p4lang: interface inspection with ingress drop
+qc pass: p4lang: vlan interface inspection with egress drop
+qc pass: p4lang: vlan interface inspection with ingress drop
+qc pass: p4lang: bridge interface inspection with ingress drop
+qc pass: p4lang: bridge interface inspection with egress drop
+qc pass: p4lang: pppoe interface inspection with ingress drop
+qc pass: p4lang: pppoe interface inspection with egress drop
+qc pass: p4lang: gre interface inspection with ingress drop
+qc pass: p4lang: gre interface inspection with egress drop
+qc pass: p4lang: l2tp interface inspection with ingress drop
+qc pass: p4lang: l2tp interface inspection with egress drop
+qc pass: p4lang: interface verify source
+qc pass: p4lang: vlan interface verify source
+qc pass: p4lang: bridge interface verify source
+qc pass: p4lang: pppoe interface verify source
+qc pass: p4lang: gre interface verify source
+qc pass: p4lang: l2tp interface verify source
+qc pass: p4lang: interface loose verify source
+qc pass: p4lang: vlan interface loose verify source
+qc pass: p4lang: bridge interface loose verify source
+qc pass: p4lang: pppoe interface loose verify source
+qc pass: p4lang: gre interface loose verify source
+qc pass: p4lang: l2tp interface loose verify source
+qc pass: p4lang: ingress gtp access list
+qc pass: p4lang: egress gtp access list
+qc pass: p4lang: macsec with des
+qc pass: p4lang: macsec with 3des
+qc pass: p4lang: macsec with aes128cbc
+qc pass: p4lang: macsec with aes192cbc
+qc pass: p4lang: macsec with aes256cbc
+qc pass: p4lang: macsec with md5
+qc pass: p4lang: macsec with sha1
+qc pass: p4lang: macsec with sha256
+qc pass: p4lang: macsec with sha512
+qc pass: p4lang: macsec over ethernet
+qc pass: p4lang: macsec over vlan
+qc pass: p4lang: macsec over bundle vlan
+qc pass: p4lang: macsec over gre
+qc pass: p4lang: macsec over pppoe
+qc pass: p4lang: macsec over l2tp
+qc pass: p4lang: macsec over hairpin
+qc pass: p4lang: macsec ingress access list
+qc pass: p4lang: macsec egress access list
+qc pass: p4lang: macsec vlan ingress access list
+qc pass: p4lang: macsec vlan egress access list
+qc pass: p4lang: ipsec with des
+qc pass: p4lang: ipsec with 3des
+qc pass: p4lang: ipsec with aes128cbc
+qc pass: p4lang: ipsec with aes192cbc
+qc pass: p4lang: ipsec with aes256cbc
+qc pass: p4lang: ipsec with md5
+qc pass: p4lang: ipsec with sha1
+qc pass: p4lang: ipsec with sha256
+qc pass: p4lang: ipsec with sha512
+qc pass: p4lang: ipv4 over ipsec
+qc pass: p4lang: ipv6 over ipsec
+qc pass: p4lang: ipsec over ipv4
+qc pass: p4lang: ipsec over ipv6
+qc pass: p4lang: ipsec over ipv4 loopback
+qc pass: p4lang: ipsec over ipv6 loopback
+qc pass: p4lang: ipsec over vlan
+qc pass: p4lang: ipv4 over ipsec with ingress access list
+qc pass: p4lang: ipv4 over ipsec with egress access list
+qc pass: p4lang: ipv6 over ipsec with ingress access list
+qc pass: p4lang: ipv6 over ipsec with egress access list
+qc pass: p4lang: ipsec with ike1
+qc pass: p4lang: ipsec with ike2
+qc pass: p4lang: openvpn with des
+qc pass: p4lang: openvpn with 3des
+qc pass: p4lang: openvpn with aes128cbc
+qc pass: p4lang: openvpn with aes192cbc
+qc pass: p4lang: openvpn with aes256cbc
+qc pass: p4lang: openvpn with md5
+qc pass: p4lang: openvpn with sha1
+qc pass: p4lang: openvpn with sha256
+qc pass: p4lang: openvpn with sha512
+qc pass: p4lang: openvpn over ipv4
+qc pass: p4lang: openvpn over ipv6
+qc pass: p4lang: openvpn over ipv4 loopback
+qc pass: p4lang: openvpn over ipv6 loopback
+qc pass: p4lang: openvpn over asymmetric ports
+qc pass: p4lang: openvpn with ingress access list
+qc pass: p4lang: openvpn with egress access list
+qc pass: p4lang: wireguard over ipv4
+qc pass: p4lang: wireguard over ipv6
+qc pass: p4lang: wireguard over ipv4 loopback
+qc pass: p4lang: wireguard over ipv6 loopback
+qc pass: p4lang: wireguard over vlan
+qc pass: p4lang: wireguard over asymmetric ports
+qc pass: p4lang: wireguard with ingress access list
+qc pass: p4lang: wireguard with egress access list
+qc pass: p4lang: multicast routing over macsec
+qc pass: p4lang: multicast routing over vlan macsec
+qc pass: p4lang: replay window with openvpn
+qc pass: p4lang: replay window with wireguard
+qc pass: p4lang: openvpn with aes128cfb
+qc pass: p4lang: openvpn with aes192cfb
+qc pass: p4lang: openvpn with aes256cfb
+qc pass: p4lang: openvpn with aes128ecb
+qc pass: p4lang: openvpn with aes192ecb
+qc pass: p4lang: openvpn with aes256ecb
+qc pass: p4lang: openvpn with sha224
+qc pass: p4lang: openvpn with sha384
+qc pass: p4lang: macsec with aes128cfb
+qc pass: p4lang: macsec with aes192cfb
+qc pass: p4lang: macsec with aes256cfb
+qc pass: p4lang: macsec with aes128ecb
+qc pass: p4lang: macsec with aes192ecb
+qc pass: p4lang: macsec with aes256ecb
+qc pass: p4lang: macsec with sha224
+qc pass: p4lang: macsec with sha384
+qc pass: p4lang: openvpn with none encryption
+qc pass: p4lang: openvpn with none hash
+qc pass: p4lang: macsec with none encryption
+qc pass: p4lang: macsec with none hash
+qc pass: p4lang: macsec with aes128gcm and hash
+qc pass: p4lang: macsec with aes192gcm and hash
+qc pass: p4lang: macsec with aes256gcm and hash
+qc pass: p4lang: macsec with aes128gcm and aead
+qc pass: p4lang: macsec with aes192gcm and aead
+qc pass: p4lang: macsec with aes256gcm and aead
+qc pass: p4lang: sgt over ethernet
+qc pass: p4lang: sgt over vlan
+qc pass: p4lang: sgt over gre
+qc pass: p4lang: sgt over pppoe
+qc pass: p4lang: sgt over l2tp
+qc pass: p4lang: sgt over hairpin
+qc pass: p4lang: sgt over macsec over ethernet
+qc pass: p4lang: sgt over macsec over vlan
+qc pass: p4lang: sgt ingress access list
+qc pass: p4lang: sgt egress access list
+qc pass: p4lang: sgt vlan ingress access list
+qc pass: p4lang: sgt vlan egress access list
+qc pass: p4lang: packout on port
+qc pass: p4lang: packout on vlan port
+qc pass: p4lang: routing
+qc pass: p4lang: bridging
+qc pass: p4lang: mpls core
+qc pass: p4lang: mpls edge
+qc pass: p4lang: vlan routing
+qc pass: p4lang: vlan bridging
+qc pass: p4lang: vlan mpls
+qc pass: p4lang: vpn with bgp
+qc pass: p4lang: vpls/ldp with bgp
+qc pass: p4lang: evpn/cmac with bgp
+qc pass: p4lang: eompls
+qc pass: p4lang: vpn with bgp over srv6
+qc pass: p4lang: evpn/cmac with bgp over srv6
+qc pass: p4lang: bundle routing
+qc pass: p4lang: bundle mpls
+qc pass: p4lang: bundle vlan routing
+qc pass: p4lang: bundle vlan mpls
+qc pass: p4lang: bundle vlan bridging
+qc pass: p4lang: bridge routing
+qc pass: p4lang: bridge mpls
+qc pass: p4lang: vlan bridge routing
+qc pass: p4lang: vlan bridge mpls
+qc pass: p4lang: vlan vpls/ldp with bgp
+qc pass: p4lang: vlan eompls
+qc pass: p4lang: bundle vlan vpls/ldp with bgp
+qc pass: p4lang: bundle vlan eompls
+qc pass: p4lang: pppoe routing
+qc pass: p4lang: vlan pppoe routing
+qc pass: p4lang: pppoe mpls
+qc pass: p4lang: vlan pppoe mpls
+qc pass: p4lang: hairpin routing
+qc pass: p4lang: hairpin bridging
+qc pass: p4lang: hairpin mpls
+qc pass: p4lang: hairpin vlan routing
+qc pass: p4lang: hairpin vlan bridging
+qc pass: p4lang: hairpin vlan mpls
+qc pass: p4lang: hairpin pppoe routing
+qc pass: p4lang: hairpin vlan pppoe routing
+qc pass: p4lang: hairpin pppoe mpls
+qc pass: p4lang: hairpin vlan pppoe mpls
+qc pass: p4lang: hairpin vpls/ldp with bgp
+qc pass: p4lang: hairpin vlan vpls/ldp with bgp
+qc pass: p4lang: hairpin eompls
+qc pass: p4lang: hairpin vlan eompls
+qc pass: p4lang: vlan evpn/cmac with bgp
+qc pass: p4lang: bundle vlan evpn/cmac with bgp
+qc pass: p4lang: hairpin evpn/cmac with bgp
+qc pass: p4lang: hairpin vlan evpn/cmac with bgp
+qc pass: p4lang: gre routing over ipv4
+qc pass: p4lang: gre routing over ipv6
+qc pass: p4lang: gre routing over ipv4 loopback
+qc pass: p4lang: gre routing over ipv6 loopback
+qc pass: p4lang: gre routing over vlan
+qc pass: p4lang: gre routing over bundle
+qc pass: p4lang: gre routing over bundle vlan
+qc pass: p4lang: gre routing over hairpin
+qc pass: p4lang: gre routing over hairpin vlan
+qc pass: p4lang: gre routing over bridge
+qc pass: p4lang: gre routing over vlan bridge
+qc pass: p4lang: gre mpls over ipv4
+qc pass: p4lang: gre mpls over ipv6
+qc pass: p4lang: gre mpls over ipv4 loopback
+qc pass: p4lang: gre mpls over ipv6 loopback
+qc pass: p4lang: gre mpls over vlan
+qc pass: p4lang: gre mpls over bundle
+qc pass: p4lang: gre mpls over bundle vlan
+qc pass: p4lang: gre mpls over hairpin
+qc pass: p4lang: gre mpls over hairpin vlan
+qc pass: p4lang: gre mpls over bridge
+qc pass: p4lang: gre mpls over vlan bridge
+qc pass: p4lang: l2tp routing over ipv4
+qc pass: p4lang: l2tp routing over ipv6
+qc pass: p4lang: l2tp routing over ipv4 loopback
+qc pass: p4lang: l2tp routing over ipv6 loopback
+qc pass: p4lang: l2tp routing over vlan
+qc pass: p4lang: l2tp routing over bundle
+qc pass: p4lang: l2tp mpls over ipv4
+qc pass: p4lang: l2tp mpls over ipv6
+qc pass: p4lang: l2tp mpls over ipv4 loopback
+qc pass: p4lang: l2tp mpls over ipv6 loopback
+qc pass: p4lang: l2tp mpls over vlan
+qc pass: p4lang: l2tp mpls over bundle
+qc pass: p4lang: bridging over gre
+qc pass: p4lang: bridging over gre vlan
+qc pass: p4lang: bridging over pppoe
+qc pass: p4lang: bridging over pppoe vlan
+qc pass: p4lang: bridging over l2tp
+qc pass: p4lang: bridging over l2tp vlan
+qc pass: p4lang: vxlan over ipv4
+qc pass: p4lang: vxlan over ipv6
+qc pass: p4lang: vxlan over ipv4 loopback
+qc pass: p4lang: vxlan over ipv6 loopback
+qc pass: p4lang: vxlan over vlan
+qc pass: p4lang: vxlan over bundle
+qc pass: p4lang: evpn/vxlan with bgp
+qc pass: p4lang: vlan evpn/vxlan with bgp
+qc pass: p4lang: bundle vlan evpn/vxlan with bgp
+qc pass: p4lang: hairpin evpn/vxlan with bgp
+qc pass: p4lang: ipip routing over ipv4
+qc pass: p4lang: ipip routing over ipv6
+qc pass: p4lang: ipip routing over ipv4 loopback
+qc pass: p4lang: ipip routing over ipv6 loopback
+qc pass: p4lang: ipip routing over vlan
+qc pass: p4lang: ipip routing over bundle
+qc pass: p4lang: pckoudp over ipv4
+qc pass: p4lang: pckoudp over ipv6
+qc pass: p4lang: pckoudp over ipv4 loopback
+qc pass: p4lang: pckoudp over ipv6 loopback
+qc pass: p4lang: pckoudp over vlan
+qc pass: p4lang: pckoudp over bundle
+qc pass: p4lang: pckoudp server over ipv4
+qc pass: p4lang: pckoudp server over ipv6
+qc pass: p4lang: pckoudp server over ipv4 loopback
+qc pass: p4lang: pckoudp server over ipv6 loopback
+qc pass: p4lang: vxlan server over ipv4
+qc pass: p4lang: vxlan server over ipv6
+qc pass: p4lang: vxlan server over ipv4 loopback
+qc pass: p4lang: vxlan server over ipv6 loopback
+qc pass: p4lang: pppoe server routing
+qc pass: p4lang: vlan pppoe server routing
+qc pass: p4lang: pppoe server mpls
+qc pass: p4lang: vlan pppoe server mpls
+qc pass: p4lang: l2tp server routing
+qc pass: p4lang: vlan l2tp server routing
+qc pass: p4lang: l2tp server mpls
+qc pass: p4lang: vlan l2tp server mpls
+qc pass: p4lang: p2p ldp tail+head
+qc pass: p4lang: p2p ldp mid
+qc pass: p4lang: p2p te tail+head
+qc pass: p4lang: p2p te mid
+qc pass: p4lang: sr te over mpls tail+head
+qc pass: p4lang: sr te over mpls mid
+qc pass: p4lang: policy routing between vrfs
+qc pass: p4lang: policy routing with nexthop
+qc pass: p4lang: policy routing with interface and nexthop
+qc pass: p4lang: multicast routing
+qc pass: p4lang: multicast vlan routing
+qc pass: p4lang: multicast bundle routing
+qc pass: p4lang: multicast bundle vlan routing
+qc pass: p4lang: hairpin multicast routing
+qc pass: p4lang: hairpin vlan multicast routing
+qc pass: p4lang: mldp core
+qc pass: p4lang: mldp vlan core
+qc pass: p4lang: mldp core over gre
+qc pass: p4lang: mldp core over l2tp
+qc pass: p4lang: mldp bundle core
+qc pass: p4lang: mldp bundle vlan core
+qc pass: p4lang: hairpin mldp core
+qc pass: p4lang: hairpin vlan mldp core
+qc pass: p4lang: mldp egress edge
+qc pass: p4lang: mldp vlan egress edge
+qc pass: p4lang: mldp ingress edge
+qc pass: p4lang: mldp vlan ingress edge
+qc pass: p4lang: mldp core and egress edge
+qc pass: p4lang: vlan mldp core and egress edge
+qc pass: p4lang: bier core
+qc pass: p4lang: bier vlan core
+qc pass: p4lang: bier core over gre
+qc pass: p4lang: bier core over l2tp
+qc pass: p4lang: bier bundle core
+qc pass: p4lang: bier bundle vlan core
+qc pass: p4lang: hairpin bier core
+qc pass: p4lang: hairpin vlan bier core
+qc pass: p4lang: bier egress edge
+qc pass: p4lang: bier vlan egress edge
+qc pass: p4lang: bier ingress edge
+qc pass: p4lang: bier vlan ingress edge
+qc pass: p4lang: bier core and egress edge
+qc pass: p4lang: vlan bier core and egress edge
+qc pass: p4lang: amt server over ipv4
+qc pass: p4lang: amt server over ipv6
+qc pass: p4lang: amt server over ipv4 loopback
+qc pass: p4lang: amt server over ipv6 loopback
+qc pass: p4lang: autoroute to sr te over mpls
+qc pass: p4lang: autoroute to p2p te over mpls
+qc pass: p4lang: policy routing to sr te over mpls
+qc pass: p4lang: policy routing to p2p te over mpls
+qc pass: p4lang: nsh
+qc pass: p4lang: vlan nsh
+qc pass: p4lang: polka
+qc pass: p4lang: vlan polka
+qc pass: p4lang: mpolka core
+qc pass: p4lang: mpolka vlan core
+qc pass: p4lang: mpolka edge
+qc pass: p4lang: mpolka vlan edge
+qc pass: p4lang: gtp server over ipv4
+qc pass: p4lang: gtp server over ipv6
+qc pass: p4lang: gtp server over ipv4 loopback
+qc pass: p4lang: gtp server over ipv6 loopback
+qc pass: p4lang: bundle mpls pop
+qc pass: p4lang: bundle vlan mpls pop
+qc pass: p4lang: pppoe mpls pop
+qc pass: p4lang: gre mpls pop
+qc pass: p4lang: l2tp mpls pop
+qc pass: p4lang: bundle mpls push
+qc pass: p4lang: bundle vlan mpls push
+qc pass: p4lang: pppoe mpls push
+qc pass: p4lang: gre mpls push
+qc pass: p4lang: l2tp mpls push
+qc pass: p4lang: lpm routing
+qc pass: p4lang: l2vpn over bundle mpls
+qc pass: p4lang: l2vpn over bundle vlan mpls
+qc pass: p4lang: l2vpn over pppoe mpls
+qc pass: p4lang: l2vpn over gre mpls
+qc pass: p4lang: l2vpn over l2tp mpls
+qc pass: p4lang: l3vpn over bundle mpls
+qc pass: p4lang: l3vpn over bundle vlan mpls
+qc pass: p4lang: l3vpn over pppoe mpls
+qc pass: p4lang: l3vpn over gre mpls
+qc pass: p4lang: l3vpn over l2tp mpls
+qc pass: p4lang: routing over backplane
+qc pass: p4lang: bridging over backplane
+qc pass: p4lang: mpls core over backplane
+qc pass: p4lang: mpls vpn over backplane
+qc pass: p4lang: local connect
+qc pass: p4lang: vlan local connect
+qc pass: p4lang: pmtud
+qc pass: p4lang: vlan pmtud
+qc pass: p4lang: tcpmss
+qc pass: p4lang: vlan tcpmss
+qc pass: p4lang: bridge tcpmss
+qc pass: p4lang: vlan bridge tcpmss
+qc pass: p4lang: bridge pmtud
+qc pass: p4lang: vlan bridge pmtud
+qc pass: p4lang: ip ttl exceed
+qc pass: p4lang: mpls ttl exceed
+qc pass: p4lang: multilink pppoe routing
+qc pass: p4lang: multilink pppoe mpls
+qc pass: p4lang: multilink l2tp routing over ipv4
+qc pass: p4lang: multilink l2tp routing over ipv6
+qc pass: p4lang: multilink l2tp routing over vlan
+qc pass: p4lang: multilink l2tp mpls over ipv4
+qc pass: p4lang: multilink l2tp mpls over ipv6
+qc pass: p4lang: multilink l2tp mpls over vlan
+qc pass: p4lang: multilink l2tp routing over bundle
+qc pass: p4lang: multilink l2tp mpls over bundle
+qc pass: p4lang: null routing
+qc pass: p4lang: fib filtering with prefixlist
+qc pass: p4lang: fib filtering with routemap
+qc pass: p4lang: fib filtering with routepolicy
+qc pass: p4lang: routing with fib compression
+qc pass: p4lang: mpls with fib compression
+todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
+todo: bgp astree shows from asconn
+todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
+todo: vdc to have local, connect as sdn autocreated
+todo: generalise server access- knobs
+todo: honeypot to wireformat, decode
+todo: generalize dynamic-metric knobs
+todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
+todo: image viewer to file manager
+todo: game butterfly series reusing the fft and mdev classes from modem and ping
+todo: bmp server to listeners, bmp, ris and bgp
+todo: server bgprsrr
+todo: game hanoi
+todo: server http to have api for scripts
+todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
+todo: inspection dropped sessions do be able to close the sessions properly at layer4
+todo: consider draft-ietf-idr-performance-routing
+todo: ioam as rfc9452
+todo: dlep as rfc8175
+todo: flash ext-delete also to commander
+todo: commander to have selection
+todo: commander to get away the cursor
+todo: player queue up down add-again
+todo: openflow to have 2 label support and stack to p4lang
+todo: redundancy to have the remote shows and a counter on how many failures observed
+todo: bridge and router have renumber knob
+todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
+todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
+todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
+todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
+todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
+todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
+todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
+todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
+todo: important protocols to be able to continue from the start at least on local, later within the vdc
+todo: menu remote asdf
+todo: onehit to all the menus
+todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
+todo: l2tp3 to the dataplanes as it is for l2tp2 :)
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
+todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
+todo: route-map --> route-policy converter
+todo: route-map <-- route-policy converter
+todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
+todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
+todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
+todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
+todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
+todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
+todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
+todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
+todo: player: disable volume in multicast streamer mode
+todo: disable playlist loading in multicast receiver mode
+todo: ctrl+l/r to try to redetect the screen resolution
+todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
+todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
+todo: configure diff to have chance to change the sho config-differences
+todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
+todo: display asdfsdfas | asciinema <--- same as | pastebin....
+todo: server security to have settable tls version from client knob first
+todo: server security to log the transactions
+todo: server security to stick to the good protocols
+todo: server security to support bgp bmp mrt
+todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
+todo: show whowas from bmp mrt archive
+todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
+todo: server http xxx to log better the class exceptions as errors
+todo: bgp to have at least show ipv46 bgp 66666 description
+todo: noti#show ipv4 bgp ?
+todo: 1     - process id
+todo: 66666 - process id - as asdf
+todo: <num> - process id
+todo: traffic through bgp sr-policy
+todo: traffic through bgp nsh
+todo: policy from bgp rpd
+todo: flash install as whole zip loadables
+todo: client auto-save-on-upgrade flash network archive
+todo: tabbable line asfadsasd exec autocommand at least
+todo: tabbable menu key/tui commands autocommand at least
+todo: vrf definition to have route consistency check between the bgp peers
+todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
+todo: show config-xxx to have tabbables like routers servers etc
+todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
+todo: a terminal junos-mode knob that defaults to set-del etc as a new class
+todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
+todo: it would not harm a lot to apply to the fillables like the check asdf
+todo: show config-backup if available
+todo: nrpe to send out emails from error.log
+todo: nrpe to have followtracker support
+todo: scheduler asdf single-run as no respawn or something
+todo: clntportscan to have udp knob then portscan to have the knob finally
+todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
+todo: private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
+todo: dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
+todo: some more .equals("no") to cmds.negated conversions like   <!-------------------------------------
+todo: ("no") --> cmds.negated   <!-------------------------------------------------------------------
+todo: "no" --> cmds.negated   <!---------------------------------------------------------------------
+todo: "no " --> cmds.negated   <!--------------------------------------------------------------------
+todo: same for upgrade-cli  <!-----------------------------------------------------------------------
+todo: client hide-secrets  <!------------------------------------------------------------------------
+todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
+todo: server smtp / tag messages by subject
+todo: server smtp / collect-failures
+todo: server smtp / check reverse of the sender and put the info to received field...
+todo: server smtp / auto-reply editor/text/etc
+todo: client password-stars to get under the userLine
+todo: client buggy-trigger <trigger>
+todo: client log-boot to be emailed error.log
+todo: client upgrade-force url
+todo: client upgrade-simulate url
+todo: client cidr-colorize in the generated show *configs
+todo: client http-user-agent <anything>
+todo: client tls randomize version if a range configured
+todo: alias with regexps to ios regexps, steal cache from *ec* and idea from **
+todo: alias to have config aliases
+todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
+todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
+todo: flash mailer <server-smtp> that is a loadable module
+todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
+todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
+todo: rtr-hw to have tcp2linux and vrf2linux knobs
+todo: test todo knob as an editor but in the running-config
+todo: inter xxx / macrandomize
+todo: sho run check/track
+todo: server http / host * webring-local <text>
+todo: server http / host * webring-remote <path/file*>
+todo: server http / host * custom-local <text>
+todo: server http / host * custom-remote >path/file>
+todo: server http / host * user-agent matcher with redirect
+todo: server http / host * searchbar
+todo: server smtp / ptmud
+todo: server http / host * ptmud
+todo: test access-list <acl> <src> <trg>
+todo: serevr security maximum pendings as access-security
+todo: servers to have access-aaa
+todo: sho bgp * auto-summarize
+todo: config committed with check for saved and backup config
+todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
+todo: terminal background and foreground
+todo: interface lo0 as lo-core, persistently
+todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
+todo: rework snmp to use sensors
+todo: mpls inband performance measurement
+todo: backup path support to the spf class
+todo: wcmp support to the spf class
+todo: allow command to be a substring of an other
+todo: rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
+todo: rfc8548 tcpcrypt
+todo: rfc9298 rfc9484 ip/udp-proxy-in-http
+todo: update gtp stack to the latest standards
+todo: nat and pbr config to have reindex
+todo: bgp shadow route reflection
+todo: bgp optimal route reflection
+todo: bgp peer autoconfig
+todo: bgp layer2 flowspec
+todo: bgp flowspec v2
+todo: bgp signed path
+todo: parse privilege levels from tacacs
+todo: ldap client, server
+todo: diameter client, server
+todo: tester to have chatscript support
+todo: tester to have dynamips support with the proper image and magic
+todo: tester to have followtracker knob
+todo: tester to have support chatscript and have followtracker knob
+todo: tester to have support for dynamips and vm.zip stuff
+todo: tester to have support for the hw-cfg stuff
+todo: upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
+todo: dhcp relay support
+todo: tcp selective ack
+todo: ilnp (rfc6740)
+todo: lisp4, lisp6
+todo: l2vpn for isis
+todo: hip (rfc4423)
+todo: more upgrade-cli knobs
+todo: more renamers
+todo: more tabbables
+todo: more show running commands
+todo: more show config commands
+todo: more show commands
+todo: more clear commands
+todo: more interactive tools
+todo: more features with clean implementation
+todo: more randomizers
+todo: more collect commands
+todo: more knob generalizations
+todo: more userLine fun like alias-text, alias-regexp, much like under checks
+todo: more server quote fun like cleanups, randomizers, loggers, anything
+todo: more server http fun like cleanups, randomizers, loggers, anything
+todo: more server smtp fun like cleanups, randomizers, loggers, anything
+todo: more server dns fun like cleanups, randomizers, loggers, anything
+todo: server dns to have iname support as a tricker cname like ip46a already
+todo: more server fun like cleanups, randomizers, loggers, anything
+todo: more fun stuff to to configure server dns http smtp and quote
+todo: more fun min-max knobs
+todo: server dns to have some more min-max configurabels from client knobs
+todo: all the aaa stuff to have collect-failures knob to error.log
+todo: more fun like cleanups, randomizers, loggers, anything
+todo: more fun refactorings and clever cleanups
+todo: more fun knobs in general
+todo: reuse the clients in the important servers as config knobs
+todo: more selftests for the servers and the clients
+todo: move client stuffs to userline if possible
+todo: pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
+todo: pcapint laters later in bidir to signal the current state too
+todo: dissect too big servers to classes properly while not opening new directories
+todo: misc album to have some ncdu functionality like a very simple matstat
+todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
+todo: misc player volume to time out to the main screen
+todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
+todo: settle a new slide project misc slash thumbs as a small helper for misc slash album
+todo: server tftp to have server http backup alike functionality
+todo: server forwarder to have some local logging finally
+todo: server http have some local logging finally
+todo: scheduler asdf single-run
+todo: show running-config vrf iot to display routing protocols, servers and interfaces
+todo: show running-config vdc <tabbable>
+todo: server * vrf <tabbable> and upgrade-cli
+todo: interface * vrf <tabbable> and upgrade-cli
+todo: terminal clear same as game clear
+todo: clear aaa <tabbable>
+todo: ping and friends to accept delay as range
+todo: router * upgrade-cli as default
+todo: server * upgrade-cli as default
+todo: interface * upgrade-cli as default
+todo: show archived-consistency
+todo: reorder this file yearly
+todo: tabbable do ping and the rest of the exec commands
+todo: tabbable everything
+todo: more tldring to the this sh1t in every december and normally to the sources too
+todo: document the vm
+todo: .vm <--> vm20
+todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
+todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
+todo: more clean transpilers for the vm
+todo: more clean converters for the vm
+todo: flash commander to have file info and hash
+todo: banyan vines protocol in sw
+todo: hackediff alias to diff with the | hacked fun filter

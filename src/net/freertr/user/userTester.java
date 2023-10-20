@@ -318,14 +318,15 @@ public class userTester {
      * do the copier work
      *
      * @param c command to do
+     * @param m true to move, false to copy
      */
-    protected final static void doCopier(cmds c) {
+    protected final static void doMover(cmds c, boolean m) {
         String s = c.word();
         String t = c.word();
         c.error("moving results " + s + " to " + t);
-        doCopier(c, s, t, ".csv");
-        doCopier(c, s, t, ".ftr");
-        doCopier(c, s, t, ".html");
+        doMover(c, s, t, ".csv", m);
+        doMover(c, s, t, ".ftr", m);
+        doMover(c, s, t, ".html", m);
     }
 
     /**
@@ -335,12 +336,18 @@ public class userTester {
      * @param s source
      * @param t target
      * @param e extension
+     * @param m true to move, false to copy
      * @return true on error, false on success
      */
-    protected final static boolean doCopier(cmds c, String s, String t, String e) {
+    protected final static boolean doMover(cmds c, String s, String t, String e, boolean m) {
         s += e;
         t += e;
-        boolean b = userFlash.rename(s, t, true, true);
+        boolean b;
+        if (m) {
+            b = userFlash.rename(s, t, true, true);
+        } else {
+            b = userFlash.copy(s, t, true);
+        }
         c.error("moved " + s + " to " + t + " error=" + b);
         return b;
     }
@@ -390,9 +397,12 @@ public class userTester {
      */
     protected void doSummary(cmds c) {
         cmd = c;
-        String target = "rtrp4lang-";
-        path = "./";
+        String target = "rtrp4sum-";
         beg = target;
+        path = "./";
+        List<String> nams = new ArrayList<String>();
+        List<String> fils = new ArrayList<String>();
+        List<List<String>> lins = new ArrayList<List<String>>();
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {
@@ -402,46 +412,36 @@ public class userTester {
                 path = cmd.word();
                 continue;
             }
-            if (s.equals("begin")) {
-                beg = cmd.word();
-                continue;
-            }
             if (s.equals("target")) {
                 target = cmd.word();
                 continue;
             }
+            if (s.equals("begin")) {
+                beg = cmd.word();
+                continue;
+            }
+            if (s.equals("addone")) {
+                s = cmd.word();
+                nams.add(s);
+                s = cmd.word();
+                fils.add(s);
+                continue;
+            }
         }
-        List<String> nams = new ArrayList<String>();
-        List<List<String>> lins = new ArrayList<List<String>>();
-        try {
-            File[] fils = new File(path).listFiles();
-            if (fils == null) {
+        for (int i = 0; i < fils.size(); i++) {
+            String s = fils.get(i);
+            s = path + s + ".csv";
+            cmd.error("reading " + s + " as " + nams.get(i));
+            List<String> cur = bits.txt2buf(s);
+            if (cur == null) {
+                cmd.error("error reading");
                 return;
             }
-            for (int i = 0; i < fils.length; i++) {
-                if (fils[i].isDirectory()) {
-                    continue;
-                }
-                String s = fils[i].getName();
-                if (!s.endsWith("-.csv")) {
-                    continue;
-                }
-                if (!s.startsWith(beg)) {
-                    continue;
-                }
-                if (s.matches(discard)) {
-                    continue;
-                }
-                nams.add(s.substring(beg.length(), s.length() - 5));
-                List<String> res = bits.txt2buf(path + s);
-                if (res == null) {
-                    cmd.error("error reading " + s);
-                    continue;
-                }
-                lins.add(res);
-            }
-        } catch (Exception e) {
-            return;
+            cur.remove(0);
+            cur.remove(0);
+            cur.remove(0);
+            cur.remove(0);
+            lins.add(cur);
         }
         if (lins.size() < 2) {
             cmd.error("not enough summary found");
@@ -450,20 +450,11 @@ public class userTester {
         int o = lins.get(0).size();
         for (int i = 1; i < lins.size(); i++) {
             if (lins.get(i).size() != o) {
-                cmd.error("mismatching size in " + beg + nams.get(i));
+                cmd.error("mismatching size in " + nams.get(i));
                 return;
             }
         }
-        String a = lins.get(0).get(1);
-        o = a.lastIndexOf(";");
-        releaseN = a.substring(o + 1, a.length());
-        for (int i = 0; i < lins.size(); i++) {
-            List<String> cur = lins.get(i);
-            cur.remove(0);
-            cur.remove(0);
-            cur.remove(0);
-            cur.remove(0);
-        }
+        releaseN = verCore.name;
         List<String> url = new ArrayList<String>();
         List<String> fil = new ArrayList<String>();
         List<List<String>> res = new ArrayList<List<String>>();
@@ -486,7 +477,7 @@ public class userTester {
             }
             res.add(cur);
         }
-        a = "url;file";
+        String a = "url;file";
         for (int i = 0; i < lins.size(); i++) {
             a += ";" + nams.get(i);
         }
@@ -658,7 +649,7 @@ public class userTester {
         bits.buf2txt(true, lst, target);
         bits.buf2txt(true, bits.str2lst(cur.str), state);
     }
-
+    
     private void dumpOneChange(userTesterChg cur, List<String> lst) {
         if (summary) {
             lst.add("");
@@ -1254,5 +1245,5 @@ public class userTester {
         ftr.ftr = lt.getFet();
         finished.add(ftr);
     }
-
+    
 }

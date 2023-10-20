@@ -2402,6 +2402,8 @@ public class userExec {
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    tstmov                       perform test mover conversion");
         hl.add(null, "3 3,.      <str>                      parameter");
+        hl.add(null, "2 3,.    tstcpy                       perform test copier conversion");
+        hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    changelog                    perform changelog conversion");
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    template                     perform image templates");
