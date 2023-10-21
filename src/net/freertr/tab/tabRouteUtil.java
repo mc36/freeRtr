@@ -111,6 +111,7 @@ public class tabRouteUtil {
             }
             if (a.equals("validity")) {
                 attr.validity = bits.str2num(cmd.word());
+                tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
                 continue;
             }
             if (a.equals("origin")) {
