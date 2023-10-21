@@ -315,8 +315,12 @@ public class cfgInit implements Runnable {
             List<String> res = new ArrayList<String>();
             InputStream strm = new URI(url).toURL().openStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(strm));
-            while (rd.ready()) {
-                res.add(rd.readLine());
+            for (;;) {
+                String a = rd.readLine();
+                if (a == null) {
+                    break;
+                }
+                res.add(a);
             }
             rd.close();
             strm.close();
@@ -1366,7 +1370,7 @@ public class cfgInit implements Runnable {
         hlp.add(null, "2 .   <cmd>        command to execute");
         hlp.add(null, "1 2 cfgexec        execute exec command");
         hlp.add(null, "2 3   <swcfg>      config url");
-        hlp.add(null, "3 .     <cmd>      command to execute");
+        hlp.add(null, "3 3,.   <cmd>      command to execute");
         List<String> res = hlp.getUsage();
         for (int i = 0; i < res.size(); i++) {
             putln(res.get(i));

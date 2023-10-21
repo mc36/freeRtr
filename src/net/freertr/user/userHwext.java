@@ -136,13 +136,23 @@ public class userHwext {
             }
             cmd.word();
             a = cmd.word();
+            boolean sck = a.endsWith("socat");
             boolean tap = a.endsWith("tapInt.bin");
-            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !tap) {
+            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !tap && !sck) {
                 continue;
             }
             String s = cmd.word();
             if ((i + 1) >= hwc.size()) {
                 continue;
+            }
+            if (sck) {
+                int p = s.indexOf(":");
+                if (p < 1) {
+                    continue;
+                }
+                a = s.substring(0, p).toLowerCase();
+                s = s.substring(p + 1, s.length());
+                tap = a.equals("tun");
             }
             cmd = new cmds("ln", hwc.get(i + 1));
             a = cmd.word();
