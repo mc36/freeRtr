@@ -15240,3 +15240,6 @@ todo: add rpl and rm support for the new validity, entropy-label and the (atomic
 ---------------------------------- 2023-10-20 08:52:07 23.10.20
 no todo: allow some packages to be redownloaded after a certain time expired
 todo: rfc9298 rfc9484 ip/udp-proxy-in-http
+---------------------------------- 2023-10-21 04:57:15 23.10.21
+no qc pass: bgp rpki
+failed: bgp rpki
