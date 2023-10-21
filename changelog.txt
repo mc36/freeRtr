@@ -15246,3 +15246,6 @@ failed: bgp rpki
 ---------------------------------- 2023-10-21 08:20:56 23.10.21
 no failed: bgp rpki
 qc pass: bgp rpki
+---------------------------------- 2023-10-21 09:05:07 23.10.21
+no qc pass: bgp rpki
+failed: bgp rpki
