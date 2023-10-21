@@ -8,7 +8,7 @@ import net.freertr.ip.ipCor6;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRouautNtry;
+import net.freertr.tab.tabRoautNtry;
 import net.freertr.util.counter;
 import net.freertr.util.debugger;
 import net.freertr.util.logger;
@@ -103,7 +103,7 @@ public class rtrRpkiSpeak {
     /**
      * route origin authorization
      */
-    public tabRouautNtry roa;
+    public tabRoautNtry roa;
 
     private final packHolder pck;
 
@@ -208,7 +208,7 @@ public class rtrRpkiSpeak {
             case msgCacheReply:
                 break;
             case msgIpv4addr:
-                roa = new tabRouautNtry();
+                roa = new tabRoautNtry();
                 withdraw = (pck.getByte(0) & 1) == 0; // flags
                 roa.max = pck.getByte(2); // max
                 addrIPv4 adr4 = new addrIPv4();
@@ -218,7 +218,7 @@ public class rtrRpkiSpeak {
                 roa.asn = pck.msbGetD(8); // as
                 break;
             case msgIpv6addr:
-                roa = new tabRouautNtry();
+                roa = new tabRoautNtry();
                 withdraw = (pck.getByte(0) & 1) == 0; // flags
                 roa.max = pck.getByte(2); // max
                 addrIPv6 adr6 = new addrIPv6();
@@ -321,11 +321,10 @@ public class rtrRpkiSpeak {
     /**
      * send one table
      *
-     * @param pck packet to use
-     * @param typ type to send
+     * @param tp type to use
      * @param tab table to send
      */
-    public void sendOneTable(int tp, tabGen<tabRouautNtry> tab) {
+    public void sendOneTable(int tp, tabGen<tabRoautNtry> tab) {
         if (tab == null) {
             return;
         }
@@ -333,7 +332,7 @@ public class rtrRpkiSpeak {
             logger.info("sending " + tab.size());
         }
         for (int i = 0; i < tab.size(); i++) {
-            tabRouautNtry ntry = tab.get(i);
+            tabRoautNtry ntry = tab.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -365,7 +364,7 @@ public class rtrRpkiSpeak {
      * @param rtr process to read
      * @return sequence number or 0 if nothing
      */
-    public static final int getRpkiSeq(rtrRpki rtr) {
+    public final static int getRpkiSeq(rtrRpki rtr) {
         if (rtr == null) {
             return 0;
         }
@@ -375,7 +374,6 @@ public class rtrRpkiSpeak {
     /**
      * do one server round
      *
-     * @param pck speaker to use
      * @param seq sequence to use
      * @param ses session to use
      * @param tab4 ipv4 table
@@ -383,7 +381,7 @@ public class rtrRpkiSpeak {
      * @param rtr rpki to send
      * @return true on error, false on success
      */
-    public boolean doOneServRnd(int seq, int ses, tabGen<tabRouautNtry> tab4, tabGen<tabRouautNtry> tab6, rtrRpki rtr) {
+    public boolean doOneServRnd(int seq, int ses, tabGen<tabRoautNtry> tab4, tabGen<tabRoautNtry> tab6, rtrRpki rtr) {
         if (recvPack()) {
             return true;
         }

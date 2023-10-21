@@ -11,8 +11,8 @@ import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRouautNtry;
-import net.freertr.tab.tabRouautUtil;
+import net.freertr.tab.tabRoautNtry;
+import net.freertr.tab.tabRoautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -664,16 +664,16 @@ public class rtrBgpGroup extends rtrBgpParam {
             return;
         }
         if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, rpkiOut);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiA, rpkiOut);
         }
         if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, rpkiOut);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiO, rpkiOut);
         }
         if ((afi == lower.afiVpnU) || (afi == lower.afiVpnM)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, vpkiOut);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiA, vpkiOut);
         }
         if ((afi == lower.afiVpoU) || (afi == lower.afiVpoM)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, vpkiOut);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiO, vpkiOut);
         }
     }
 

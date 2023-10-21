@@ -48,7 +48,7 @@ public class userTester {
     /**
      * style to use
      */
-    protected final static String htmlStyle = "<style>\n body { background-color: black; color: white; }\n table, th, td { border: 1px solid }\n :link { color: white }\n :visited { color: white }\n :active { color: white }\n</style>";
+    protected final static String htmlStyle = "<style>\n body { background-color: black; color: white; }\n table, th, td { border: 1px solid }\n :link { color: white }\n :visited { color: white }\n :active { color: white }\n.good { color: green }\n.bad { color: red }\n</style>";
 
     /**
      * temporary path
@@ -454,7 +454,7 @@ public class userTester {
                 return;
             }
         }
-        releaseN = verCore.name;
+        releaseN = version.headLine;
         List<String> url = new ArrayList<String>();
         List<String> fil = new ArrayList<String>();
         List<List<String>> res = new ArrayList<List<String>>();
@@ -516,7 +516,14 @@ public class userTester {
             a = "<tr><td><a href=\"" + url.get(o) + "\">" + fil.get(o) + "</a></td>";
             List<String> cur = res.get(o);
             for (int i = 0; i < lins.size(); i++) {
-                a += "<td>" + cur.get(i) + "</td>";
+                String s = cur.get(i);
+                String b;
+                if (s.length() <= 2) {
+                    b = "good";
+                } else {
+                    b = "bad";
+                }
+                a += "<td class=" + b + ">" + s + "</td>";
             }
             a += "<td>" + tst.get(o) + "</td></tr>";
             txt.add(a);
@@ -649,7 +656,7 @@ public class userTester {
         bits.buf2txt(true, lst, target);
         bits.buf2txt(true, bits.str2lst(cur.str), state);
     }
-    
+
     private void dumpOneChange(userTesterChg cur, List<String> lst) {
         if (summary) {
             lst.add("");
@@ -1245,5 +1252,5 @@ public class userTester {
         ftr.ftr = lt.getFet();
         finished.add(ftr);
     }
-    
+
 }

@@ -17,8 +17,8 @@ import net.freertr.ip.ipRtr;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
-import net.freertr.tab.tabRouautNtry;
-import net.freertr.tab.tabRouautUtil;
+import net.freertr.tab.tabRoautNtry;
+import net.freertr.tab.tabRoautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -75,12 +75,12 @@ public class rtrRpki extends ipRtr implements Runnable {
     /**
      * accepted native roas
      */
-    private tabGen<tabRouautNtry> computedV4 = new tabGen<tabRouautNtry>();
+    private tabGen<tabRoautNtry> computedV4 = new tabGen<tabRoautNtry>();
 
     /**
      * accepted other roas
      */
-    private tabGen<tabRouautNtry> computedV6 = new tabGen<tabRouautNtry>();
+    private tabGen<tabRoautNtry> computedV6 = new tabGen<tabRoautNtry>();
 
     /**
      * sequence number
@@ -219,15 +219,15 @@ public class rtrRpki extends ipRtr implements Runnable {
     public synchronized void routerCreateComputed() {
         seqNum++;
         seqTim = bits.getTime();
-        tabGen<tabRouautNtry> tab4 = new tabGen<tabRouautNtry>();
-        tabGen<tabRouautNtry> tab6 = new tabGen<tabRouautNtry>();
+        tabGen<tabRoautNtry> tab4 = new tabGen<tabRoautNtry>();
+        tabGen<tabRoautNtry> tab6 = new tabGen<tabRoautNtry>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
-            tabRouautUtil.mergeTwo(tab4, ntry.table4);
-            tabRouautUtil.mergeTwo(tab6, ntry.table6);
+            tabRoautUtil.mergeTwo(tab4, ntry.table4);
+            tabRoautUtil.mergeTwo(tab6, ntry.table6);
         }
-        boolean chg = tabRouautUtil.compareTwo(tab4, computedV4);
-        chg &= tabRouautUtil.compareTwo(tab6, computedV6);
+        boolean chg = tabRoautUtil.compareTwo(tab4, computedV4);
+        chg &= tabRoautUtil.compareTwo(tab6, computedV6);
         if (chg) {
             return;
         }
@@ -530,7 +530,7 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @param ipVer ip version
      * @return current table
      */
-    public tabGen<tabRouautNtry> getFinalTab(int ipVer) {
+    public tabGen<tabRoautNtry> getFinalTab(int ipVer) {
         if (ipVer == ipCor4.protocolVersion) {
             return computedV4;
         } else {

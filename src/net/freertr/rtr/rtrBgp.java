@@ -57,7 +57,7 @@ import net.freertr.util.logFil;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.spf.spfCalc;
-import net.freertr.tab.tabRouautNtry;
+import net.freertr.tab.tabRoautNtry;
 import net.freertr.util.counter;
 import net.freertr.util.syncInt;
 
@@ -416,12 +416,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * rpki table
      */
-    protected tabGen<tabRouautNtry> rpkiA = new tabGen<tabRouautNtry>();
+    protected tabGen<tabRoautNtry> rpkiA = new tabGen<tabRoautNtry>();
 
     /**
      * other rpki table
      */
-    protected tabGen<tabRouautNtry> rpkiO = new tabGen<tabRouautNtry>();
+    protected tabGen<tabRoautNtry> rpkiO = new tabGen<tabRoautNtry>();
 
     /**
      * the computed other unicast routes
@@ -1956,8 +1956,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rpkiA = rpkiR.getFinalTab(fwdCore.ipVersion);
             rpkiO = rpkiR.getFinalTab(other.fwd.ipVersion);
         } else {
-            rpkiA = new tabGen<tabRouautNtry>();
-            rpkiO = new tabGen<tabRouautNtry>();
+            rpkiA = new tabGen<tabRoautNtry>();
+            rpkiO = new tabGen<tabRoautNtry>();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");

@@ -1714,7 +1714,7 @@ public class tabRouteAttr<T extends addrType> {
     public void fullDump(userFormat lst, String beg) {
         lst.add(beg + "type|" + rouTyp + " " + protoNum);
         lst.add(beg + "source|" + srcRtr);
-        lst.add(beg + "validity|" + tabRouautUtil.validity2string(validity));
+        lst.add(beg + "validity|" + tabRoautUtil.validity2string(validity));
         lst.add(beg + "only to customer|" + bits.num2str(onlyCust));
         lst.add(beg + "segrout index|" + segrouIdx);
         lst.add(beg + "segrout old base|" + segrouOld);
@@ -1877,7 +1877,7 @@ public class tabRouteAttr<T extends addrType> {
      */
     public String toShRpki() {
         int i = asPathEnd();
-        return bits.num2str(i) + "|" + clntWhois.asn2name(i, true) + "|" + tabRouautUtil.validity2string(validity) + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
+        return bits.num2str(i) + "|" + clntWhois.asn2name(i, true) + "|" + tabRoautUtil.validity2string(validity) + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
     }
 
     /**

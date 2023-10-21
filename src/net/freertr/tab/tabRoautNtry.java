@@ -14,12 +14,12 @@ import net.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class tabRouautNtry implements Comparator<tabRouautNtry> {
+public class tabRoautNtry implements Comparator<tabRoautNtry> {
 
     /**
      * create instance
      */
-    public tabRouautNtry() {
+    public tabRoautNtry() {
     }
 
     /**
@@ -61,13 +61,13 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
      * information time
      */
     public long time;
-    
+
     /**
      * hit counter
      */
     public int hits;
 
-    public int compare(tabRouautNtry o1, tabRouautNtry o2) {
+    public int compare(tabRoautNtry o1, tabRoautNtry o2) {
         return o1.prefix.compare(o1.prefix, o2.prefix);
     }
 
@@ -78,11 +78,10 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
     /**
      * copy bytes
      *
-     * @param o other
      * @return copy
      */
-    public tabRouautNtry copyBytes() {
-        tabRouautNtry n = new tabRouautNtry();
+    public tabRoautNtry copyBytes() {
+        tabRoautNtry n = new tabRoautNtry();
         n.prefix = prefix.copyBytes();
         n.max = max;
         n.asn = asn;
@@ -97,6 +96,8 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
 
     /**
      * print roa details
+     *
+     * @return text
      */
     public userFormat fullDump() {
         userFormat res = new userFormat("|", "category|value");
@@ -118,7 +119,7 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
      * @param o other to compare to
      * @return numerical value if differred
      */
-    public int differs(tabRouautNtry o) {
+    public int differs(tabRoautNtry o) {
         if (o == null) {
             return 1001;
         }
@@ -140,7 +141,7 @@ public class tabRouautNtry implements Comparator<tabRouautNtry> {
      * @param o other
      * @return true if yes, false if not
      */
-    public boolean isOtherBetter(tabRouautNtry o) {
+    public boolean isOtherBetter(tabRoautNtry o) {
         if (distan < o.distan) {
             return true;
         }

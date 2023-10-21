@@ -19,8 +19,8 @@ import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIntMatcher;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRouautNtry;
-import net.freertr.tab.tabRouautUtil;
+import net.freertr.tab.tabRoautNtry;
+import net.freertr.tab.tabRoautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -1771,24 +1771,31 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             return;
         }
         if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, rpkiIn);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiA, rpkiIn);
         }
         if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, rpkiIn);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiO, rpkiIn);
         }
         if ((afi == lower.afiVpnU) || (afi == lower.afiVpnM)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiA, vpkiIn);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiA, vpkiIn);
         }
         if ((afi == lower.afiVpoU) || (afi == lower.afiVpoM)) {
-            tabRouautUtil.setValidityRoute(ntry, lower.rpkiO, vpkiIn);
+            tabRoautUtil.setValidityRoute(ntry, lower.rpkiO, vpkiIn);
         }
     }
 
-    public void setValidity(tabRoute<addrIP> tab, int mod, tabGen<tabRouautNtry> roa) {
+    /**
+     * set validity
+     *
+     * @param tab table to use
+     * @param mod mode to use
+     * @param roa roa to use
+     */
+    public void setValidity(tabRoute<addrIP> tab, int mod, tabGen<tabRoautNtry> roa) {
         if (lower.rpkiT == null) {
             return;
         }
-        tabRouautUtil.setValidityTable(tab, roa, mod);
+        tabRoautUtil.setValidityTable(tab, roa, mod);
     }
 
     /**

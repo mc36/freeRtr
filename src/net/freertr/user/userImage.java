@@ -282,13 +282,19 @@ public class userImage {
         }
     }
 
+    /**
+     * download one image
+     *
+     * @param pkg package to download
+     * @return true on error, false on success
+     */
     public boolean downOneFile(userImagePkg pkg) {
         for (int i = 0; i < hashMode; i++) {
             if (downloadFile(pkg.cat.url + pkg.file, getPackageName(pkg), pkg.size)) {
                 return true;
             }
-            boolean vrf = verifyPackage(getPackageName(pkg), pkg.sum);
-            if (!vrf) {
+            boolean vrfy = verifyPackage(getPackageName(pkg), pkg.sum);
+            if (!vrfy) {
                 return false;
             }
             userFlash.delete(getPackageName(pkg));

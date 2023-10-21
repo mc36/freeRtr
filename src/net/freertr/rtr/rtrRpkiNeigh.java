@@ -10,7 +10,7 @@ import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabRouautNtry;
+import net.freertr.tab.tabRoautNtry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
@@ -32,12 +32,12 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
     /**
      * accepted ipv4 prefixes
      */
-    public tabGen<tabRouautNtry> table4 = new tabGen<tabRouautNtry>();
+    public tabGen<tabRoautNtry> table4 = new tabGen<tabRoautNtry>();
 
     /**
      * accepted ipv6 prefixes
      */
-    public tabGen<tabRouautNtry> table6 = new tabGen<tabRouautNtry>();
+    public tabGen<tabRoautNtry> table6 = new tabGen<tabRoautNtry>();
 
     /**
      * counter to use
@@ -264,8 +264,8 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         pipe = null;
     }
 
-    private int processOneRoa(rtrRpkiSpeak pck, tabGen<tabRouautNtry> table) {
-        tabRouautNtry ntry = pck.roa;
+    private int processOneRoa(rtrRpkiSpeak pck, tabGen<tabRoautNtry> table) {
+        tabRoautNtry ntry = pck.roa;
         ntry.distan = preference;
         ntry.srcRtr = lower.rouTyp;
         ntry.srcNum = lower.rtrNum;
@@ -275,7 +275,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             table.put(ntry);
             return 1;
         }
-        tabRouautNtry old = table.del(ntry);
+        tabRoautNtry old = table.del(ntry);
         if (old == null) {
             return 0;
         }
@@ -318,7 +318,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
      * @param ipVer ip version
      * @return current table
      */
-    public tabGen<tabRouautNtry> getFinalTab(int ipVer) {
+    public tabGen<tabRoautNtry> getFinalTab(int ipVer) {
         if (ipVer == ipCor4.protocolVersion) {
             return table4;
         } else {
