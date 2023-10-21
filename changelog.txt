@@ -15243,3 +15243,6 @@ todo: rfc9298 rfc9484 ip/udp-proxy-in-http
 ---------------------------------- 2023-10-21 04:57:15 23.10.21
 no qc pass: bgp rpki
 failed: bgp rpki
+---------------------------------- 2023-10-21 08:20:56 23.10.21
+no failed: bgp rpki
+qc pass: bgp rpki
