@@ -9,6 +9,7 @@ select-dis linux-image-%arch%             #regular kernel
 select-one linux-image-cloud-%arch%       #cloud kernel
 select-dis linux-initramfs-tool           #initrd tools
 select-one busybox                        #small utils
+select-one socat                          #small utils
 select-one udev                           #bring up hw
 select-one ethtool                        #disable hw chksum
 select-one libpcap0.8                     #dataplane requirement
