@@ -109,6 +109,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* set distance leave",
         "route-map .*! sequence .* set locpref leave",
         "route-map .*! sequence .* set aigp leave",
+        "route-map .*! sequence .* set validity leave",
         "route-map .*! sequence .* set bandwidth leave",
         "route-map .*! sequence .* set origin leave",
         "route-map .*! sequence .* set metric leave",
@@ -331,6 +332,9 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     aigp                set accumulated igp");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
+        l.add(null, "2 3     validity            match validity status");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 .       <num>             validity");
         l.add(null, "2 3     bandwidth           set bandwidth");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
@@ -817,6 +821,13 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("validity")) {
+                if (ntry.validitySet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("bandwidth")) {
                 if (ntry.bandwidthSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -1167,6 +1178,10 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("aigp")) {
                 ntry.accIgpSet.set2unchange();
+                return;
+            }
+            if (a.equals("validity")) {
+                ntry.validitySet.set2unchange();
                 return;
             }
             if (a.equals("bandwidth")) {

@@ -155,6 +155,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setAccIgp,
         /**
+         * set validity
+         */
+        setValidity,
+        /**
          * set bandwidth
          */
         setBandwidth,
@@ -539,6 +543,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set locpref " + intSet;
             case setAccIgp:
                 return "set aigp " + intSet;
+            case setValidity:
+                return "set validity " + intSet;
             case setBandwidth:
                 return "set bandwidth " + intSet;
             case setTag:
@@ -922,6 +928,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setAccIgp:
                 attr.accIgp = intSet.update(attr.accIgp);
+                return;
+            case setValidity:
+                attr.validity = intSet.update(attr.validity);
+                tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
                 return;
             case setBandwidth:
                 attr.bandwidth = intSet.update(attr.bandwidth);

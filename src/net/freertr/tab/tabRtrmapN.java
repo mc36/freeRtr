@@ -133,7 +133,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntUpdater accIgpSet = new tabIntUpdater();
 
     /**
-     * aigp updater
+     * validity updater
+     */
+    public tabIntUpdater validitySet = new tabIntUpdater();
+
+    /**
+     * bandwidth updater
      */
     public tabIntUpdater bandwidthSet = new tabIntUpdater();
 
@@ -560,6 +565,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set distance " + distanceSet);
         l.add(beg + "set locpref " + locPrefSet);
         l.add(beg + "set aigp " + accIgpSet);
+        l.add(beg + "set validity " + validitySet);
         l.add(beg + "set bandwidth " + bandwidthSet);
         l.add(beg + "set origin " + originSet);
         l.add(beg + "set metric " + metricSet);
@@ -803,6 +809,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.distance = distanceSet.update(attr.distance);
         attr.locPref = locPrefSet.update(attr.locPref);
         attr.accIgp = accIgpSet.update(attr.accIgp);
+        attr.validity = validitySet.update(attr.accIgp);
+        if (validitySet.action != tabIntUpdater.actionType.nothing) {
+            tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
+        }
         attr.bandwidth = bandwidthSet.update(attr.bandwidth);
         attr.origin = originSet.update(attr.origin);
         attr.metric = metricSet.update(attr.metric);

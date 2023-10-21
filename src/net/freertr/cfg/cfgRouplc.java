@@ -266,6 +266,9 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     aigp                set accumulated igp");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
+        l.add(null, "2 3     validity            match validity status");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 .       <num>             validity");
         l.add(null, "2 3     bandwidth           set bandwidth");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
@@ -845,6 +848,14 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("aigp")) {
                 ntry.doMode = tabRtrplcN.doType.setAccIgp;
+                if (ntry.intSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("validity")) {
+                ntry.doMode = tabRtrplcN.doType.setValidity;
                 if (ntry.intSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
