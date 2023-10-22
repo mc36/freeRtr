@@ -3214,9 +3214,7 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
 todo: bgp astree shows from asconn
-todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode

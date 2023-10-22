@@ -15252,3 +15252,6 @@ failed: bgp rpki
 ---------------------------------- 2023-10-21 20:51:26 23.10.21
 no failed: bgp rpki
 qc pass: bgp rpki
+---------------------------------- 2023-10-22 01:30:21 23.10.22
+no todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
+no todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
