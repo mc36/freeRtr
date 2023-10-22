@@ -931,6 +931,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setValidity:
                 attr.validity = intSet.update(attr.validity);
+                if (intSet.action == tabIntUpdater.actionType.nothing) {
+                    return;
+                }
                 tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
                 return;
             case setBandwidth:

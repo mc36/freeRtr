@@ -1933,13 +1933,13 @@ public class rtrBgpUtil {
         if (a.equals("fix-unset")) {
             return 4;
         }
-        if (a.equals("set-valid")) {
+        if (a.equals("fix-valid")) {
             return 5;
         }
-        if (a.equals("set-invalid")) {
+        if (a.equals("fix-invalid")) {
             return 6;
         }
-        if (a.equals("set-unknown")) {
+        if (a.equals("fix-unknown")) {
             return 7;
         }
         return 0;

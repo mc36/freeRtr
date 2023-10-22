@@ -339,6 +339,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("peers|" + a);
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
         l.add("leak role|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
+        l.add("rpki|" + rtrBgpUtil.rpkiMode2string(rpkiOut) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiOut));
         l.add("safi|" + mask2string(addrFams));
         l.add("local|" + localAddr);
         l.add("other|" + localOddr);

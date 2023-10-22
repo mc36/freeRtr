@@ -448,6 +448,7 @@ public class userTester {
             return;
         }
         int o = lins.get(0).size();
+        cmd.error("doing " + o + " features");
         for (int i = 1; i < lins.size(); i++) {
             if (lins.get(i).size() != o) {
                 cmd.error("mismatching size in " + nams.get(i));

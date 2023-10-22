@@ -623,6 +623,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
         l.add("leak role|rx=" + rtrBgpUtil.leakRole2string(conn.peerLeakRole, false) + ", tx=" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
         l.add("dynamic capability|" + conn.peerDynCap + ", rx=" + conn.dynCapaRx + ", tx=" + conn.dynCapaTx);
+        l.add("rpki in|" + rtrBgpUtil.rpkiMode2string(rpkiIn) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiIn));
+        l.add("rpki out|" + rtrBgpUtil.rpkiMode2string(rpkiOut) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiOut));
         l.add("safi open|" + rtrBgpParam.mask2string(conn.peerAfis));
         l.add("safi got|" + rtrBgpParam.mask2string(conn.originalSafiList));
         l.add("safi not remote|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis));
