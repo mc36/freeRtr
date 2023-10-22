@@ -84,28 +84,34 @@ int bvi1
  exit
 route-map rm1
  sequence 10 act deny
- sequence 10 match validity 4000-6000
+ sequence 10 match validity 3
  sequence 20 act perm
+ exit
+router rpki4 1 vrf v1
  exit
 router bgp4 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 soft-reconfig
  neigh 1.1.1.1 send-comm both
+ neigh 1.1.1.1 rpki-in acc
  neigh 1.1.1.1 route-map-in rm1
  red conn
  exit
 router bgp6 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 soft-reconfig
  neigh 1234:1::1 send-comm both
+ neigh 1234:1::1 rpki-in acc
  neigh 1234:1::1 route-map-in rm1
  red conn
  exit
@@ -138,27 +144,35 @@ int bvi1
  ipv6 addr 1234:1::3 ffff:ffff::
  exit
 route-map rm1
- set validity 1000
+ set validity 1
+ exit
+router rpki4 1 vrf v1
  exit
 router bgp4 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 4.4.4.3
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 soft-reconfig
  neigh 1.1.1.1 send-comm both
- red conn route-map rm1
+ neigh 1.1.1.1 rpki-out rew
+ neigh 1.1.1.1 route-map-out rm1
+ red conn
  exit
 router bgp6 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 6.6.6.3
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 soft-reconfig
  neigh 1234:1::1 send-comm both
- red conn route-map rm1
+ neigh 1234:1::1 rpki-out rew
+ neigh 1234:1::1 route-map-out rm1
+ red conn
  exit
 !
 
@@ -180,28 +194,34 @@ int eth1
  exit
 route-map rm1
  sequence 10 act deny
- sequence 10 match validity 2000-4000
+ sequence 10 match validity 2
  sequence 20 act perm
+ exit
+router rpki4 1 vrf v1
  exit
 router bgp4 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 4.4.4.4
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 soft-reconfig
  neigh 1.1.1.1 send-comm both
+ neigh 1.1.1.1 rpki-in acc
  neigh 1.1.1.1 route-map-in rm1
  red conn
  exit
 router bgp6 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 6.6.6.4
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 soft-reconfig
  neigh 1234:1::1 send-comm both
+ neigh 1234:1::1 rpki-in acc
  neigh 1234:1::1 route-map-in rm1
  red conn
  exit
@@ -237,7 +257,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set validity 3000
+r3 send set validity 2
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -272,7 +292,7 @@ r4 tping 0 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set validity 5000
+r3 send set validity 3
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -307,7 +327,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set validity 1000
+r3 send set validity 1
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1

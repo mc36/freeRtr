@@ -2716,6 +2716,12 @@ qc pass: unicast+vpns over confed bgp with dynamic capability
 qc pass: unicast+vpns over ibgp rr with dynamic capability
 qc pass: ebgp with pmtud
 qc pass: ibgp with pmtud
+qc pass: bgp routemap filtering with validity
+qc pass: bgp routemap filtering with validity with soft-reconfig
+qc pass: bgp change in validity
+qc pass: bgp change in validity with soft-reconfig
+qc pass: bgp routepolicy filtering with validity
+qc pass: bgp routepolicy filtering with validity with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

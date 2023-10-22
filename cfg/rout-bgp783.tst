@@ -77,25 +77,33 @@ int eth1
 route-map rm1
  set validity 1
  exit
+router rpki4 1 vrf v1
+ exit
 router bgp4 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 soft-reconfig
  neigh 1.1.1.1 send-comm both
- red conn route-map rm1
+ neigh 1.1.1.1 rpki-out rew
+ neigh 1.1.1.1 route-map-out rm1
+ red conn
  exit
 router bgp6 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 soft-reconfig
  neigh 1234:1::1 send-comm both
- red conn route-map rm1
+ neigh 1234:1::1 rpki-out rew
+ neigh 1234:1::1 route-map-out rm1
+ red conn
  exit
 !
 
@@ -120,24 +128,30 @@ route-map rm1
   match validity 1
  sequence 20 act permit
  exit
+router rpki4 1 vrf v1
+ exit
 router bgp4 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 4.4.4.3
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 soft-reconfig
+ neigh 1.1.1.1 rpki-in acc
  neigh 1.1.1.1 route-map-in rm1
  neigh 1.1.1.1 send-comm both
  red conn
  exit
 router bgp6 1
  vrf v1
+ rpki rpki4 1
  address uni
  local-as 1
  router-id 6.6.6.3
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 soft-reconfig
+ neigh 1234:1::1 rpki-in acc
  neigh 1234:1::1 route-map-in rm1
  neigh 1234:1::1 send-comm both
  red conn

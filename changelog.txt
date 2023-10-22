@@ -15255,3 +15255,10 @@ qc pass: bgp rpki
 ---------------------------------- 2023-10-22 01:30:21 23.10.22
 no todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
 no todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
+---------------------------------- 2023-10-22 17:31:12 23.10.22
+qc pass: bgp routemap filtering with validity
+qc pass: bgp routemap filtering with validity with soft-reconfig
+qc pass: bgp change in validity
+qc pass: bgp change in validity with soft-reconfig
+qc pass: bgp routepolicy filtering with validity
+qc pass: bgp routepolicy filtering with validity with soft-reconfig

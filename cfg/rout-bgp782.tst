@@ -83,7 +83,7 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 send-comm both
- neigh 1.1.1.1 rpki-in rew
+ neigh 1.1.1.1 rpki-out rew
  neigh 1.1.1.1 route-map-out rm1
  red conn
  exit
@@ -95,7 +95,7 @@ router bgp6 1
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 send-comm both
- neigh 1234:1::1 rpki-in rew
+ neigh 1234:1::1 rpki-out rew
  neigh 1234:1::1 route-map-out rm1
  red conn
  exit

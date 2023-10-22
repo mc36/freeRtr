@@ -1116,7 +1116,7 @@ public class tabRoute<T extends addrType> {
             case 3:
                 return new userFormat("|", "prefix|local|remote|hop");
             case 4:
-                return new userFormat("|", "prefix|asnum|asnam|valid|ago|since");
+                return new userFormat("|", "prefix|asnum|asnam|valid|encod|ago|since");
             case 6:
                 return new userFormat("|", "prefix|pack|byte|pack|byte|time", "1|2transmit|2receive|1");
             case 7:

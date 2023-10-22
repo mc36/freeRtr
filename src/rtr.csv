@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.10.22-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-10-22 06:50:50, took 00:11:04, with 80 workers, on 3216 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2023-10-22 17:44:21, took 00:13:09, with 80 workers, on 3222 cases, 0 failed, 0 traces, 8 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2720,6 +2720,12 @@ http://sources.freertr.org/cfg/rout-bgp778.tst;rout-bgp778.tst;success;unicast+v
 http://sources.freertr.org/cfg/rout-bgp779.tst;rout-bgp779.tst;success;unicast+vpns over ibgp rr with dynamic capability
 http://sources.freertr.org/cfg/rout-bgp780.tst;rout-bgp780.tst;success;ebgp with pmtud
 http://sources.freertr.org/cfg/rout-bgp781.tst;rout-bgp781.tst;success;ibgp with pmtud
+http://sources.freertr.org/cfg/rout-bgp782.tst;rout-bgp782.tst;success;bgp routemap filtering with validity
+http://sources.freertr.org/cfg/rout-bgp783.tst;rout-bgp783.tst;success;bgp routemap filtering with validity with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp784.tst;rout-bgp784.tst;success;bgp change in validity
+http://sources.freertr.org/cfg/rout-bgp785.tst;rout-bgp785.tst;success;bgp change in validity with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp786.tst;rout-bgp786.tst;success;bgp routepolicy filtering with validity
+http://sources.freertr.org/cfg/rout-bgp787.tst;rout-bgp787.tst;success;bgp routepolicy filtering with validity with soft-reconfig
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain
