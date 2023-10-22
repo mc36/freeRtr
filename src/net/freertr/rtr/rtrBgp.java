@@ -2188,7 +2188,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry == null) {
             return best;
         }
-        nei.setValidity(afi, ntry);
         if (best == null) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }

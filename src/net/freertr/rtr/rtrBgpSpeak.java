@@ -2628,6 +2628,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.dampenPfxs != null) {
             neigh.prefixDampen(safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
         }
+        neigh.setValidity(safi, cur);
         if (!neigh.softReconfig) {
             tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, neigh.remoteAs, cur, roumap, roupol, prflst);
             if (res == null) {

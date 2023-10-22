@@ -11,7 +11,6 @@ import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRoautNtry;
 import net.freertr.tab.tabRoautUtil;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
@@ -660,7 +659,7 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param ntry route entry
      */
     public void setValidity(int afi, tabRouteEntry<addrIP> ntry) {
-        if (lower.rpkiT == null) {
+        if (lower.rpkiR == null) {
             return;
         }
         if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {

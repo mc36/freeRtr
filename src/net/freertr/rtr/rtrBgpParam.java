@@ -1161,6 +1161,8 @@ public abstract class rtrBgpParam {
         leakRole = -1;
         rpkiIn = 0;
         rpkiOut = 0;
+        vpkiIn = 0;
+        vpkiOut = 0;
         keyId = -1;
         passwd = null;
         capaNego = true;
@@ -1219,6 +1221,8 @@ public abstract class rtrBgpParam {
         leakAttr = src.leakAttr;
         rpkiIn = src.rpkiIn;
         rpkiOut = src.rpkiOut;
+        vpkiIn = src.vpkiIn;
+        vpkiOut = src.vpkiOut;
         leakForce = src.leakForce;
         labelPop = src.labelPop;
         capaNego = src.capaNego;

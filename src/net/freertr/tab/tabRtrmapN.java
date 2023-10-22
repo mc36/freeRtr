@@ -809,7 +809,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.distance = distanceSet.update(attr.distance);
         attr.locPref = locPrefSet.update(attr.locPref);
         attr.accIgp = accIgpSet.update(attr.accIgp);
-        attr.validity = validitySet.update(attr.accIgp);
+        attr.validity = validitySet.update(attr.validity);
         if (validitySet.action != tabIntUpdater.actionType.nothing) {
             tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
         }

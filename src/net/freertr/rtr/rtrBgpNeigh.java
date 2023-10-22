@@ -1767,7 +1767,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @param ntry route entry
      */
     public void setValidity(int afi, tabRouteEntry<addrIP> ntry) {
-        if (lower.rpkiT == null) {
+        if (lower.rpkiR == null) {
             return;
         }
         if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
@@ -1792,7 +1792,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @param roa roa to use
      */
     public void setValidity(tabRoute<addrIP> tab, int mod, tabGen<tabRoautNtry> roa) {
-        if (lower.rpkiT == null) {
+        if (lower.rpkiR == null) {
             return;
         }
         tabRoautUtil.setValidityTable(tab, roa, mod);
