@@ -69,6 +69,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* match locpref all",
         "route-map .*! sequence .* match aigp all",
         "route-map .*! sequence .* match validity all",
+        "route-map .*! sequence .* match aggregator all",
+        "route-map .*! sequence .* match customer all",
         "route-map .*! sequence .* match pathlen all",
         "route-map .*! sequence .* match unknowns all",
         "route-map .*! sequence .* match asend all",
@@ -110,6 +112,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* set locpref leave",
         "route-map .*! sequence .* set aigp leave",
         "route-map .*! sequence .* set validity leave",
+        "route-map .*! sequence .* set aggregator leave null",
+        "route-map .*! sequence .* set customer leave",
         "route-map .*! sequence .* set bandwidth leave",
         "route-map .*! sequence .* set origin leave",
         "route-map .*! sequence .* set metric leave",
@@ -220,6 +224,12 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     validity            match validity status");
         l.add(null, "3 .       <num>             validity");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     aggregator          match aggregator");
+        l.add(null, "3 .       <num>             asn");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     customer            match customer");
+        l.add(null, "3 .       <num>             asn");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     pathlen             match as path length");
         l.add(null, "3 .       <num>             length");
@@ -332,9 +342,17 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     aigp                set accumulated igp");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
-        l.add(null, "2 3     validity            match validity status");
+        l.add(null, "2 3     validity            set validity status");
         l.add(null, "3 .       leave             leave value unchanged");
-        l.add(null, "3 .       <num>             validity");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "2 3     aggregator          set aggregator");
+        l.add(null, "3 4       leave             leave value unchanged");
+        l.add(null, "4 .         <addr>          address");
+        l.add(null, "3 4       <num>             asn");
+        l.add(null, "4 .         <addr>          address");
+        l.add(null, "2 3     customer            set customer");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 .       <num>             asn");
         l.add(null, "2 3     bandwidth           set bandwidth");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
@@ -602,6 +620,20 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("aggregator")) {
+                if (ntry.aggregatorMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("customer")) {
+                if (ntry.customerMatch.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("pathlen")) {
                 if (ntry.pathlenMatch.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -828,6 +860,27 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 }
                 return;
             }
+            if (a.equals("aggregator")) {
+                a = cmd.word();
+                if (ntry.aggregatorSet.fromString(a)) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                ntry.aggregatorRtr = new addrIP();
+                a = cmd.word();
+                if (ntry.aggregatorRtr.fromString(a)) {
+                    cmd.error("bad address");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("customer")) {
+                if (ntry.customerSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
             if (a.equals("bandwidth")) {
                 if (ntry.bandwidthSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -1027,6 +1080,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
                 ntry.validityMatch.set2always();
                 return;
             }
+            if (a.equals("aggregator")) {
+                ntry.aggregatorMatch.set2always();
+                return;
+            }
+            if (a.equals("customer")) {
+                ntry.customerMatch.set2always();
+                return;
+            }
             if (a.equals("pathlen")) {
                 ntry.pathlenMatch.set2always();
                 return;
@@ -1182,6 +1243,15 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
             }
             if (a.equals("validity")) {
                 ntry.validitySet.set2unchange();
+                return;
+            }
+            if (a.equals("aggregator")) {
+                ntry.aggregatorSet.set2unchange();
+                ntry.aggregatorRtr = null;
+                return;
+            }
+            if (a.equals("customer")) {
+                ntry.customerSet.set2unchange();
                 return;
             }
             if (a.equals("bandwidth")) {

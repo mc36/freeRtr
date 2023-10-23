@@ -55,6 +55,9 @@ public class tabRouteUtil {
         t.addLine("set oldhop " + attr.oldHop);
         t.addLine("set distance " + attr.distance);
         t.addLine("set validity " + attr.validity);
+        t.addLine("set aggras " + attr.aggrAs);
+        t.addLine("set aggrtr " + attr.aggrRtr);
+        t.addLine("set customer " + attr.onlyCust);
         t.addLine("set locpref " + attr.locPref);
         t.addLine("set aigp " + attr.accIgp);
         t.addLine("set bandwidth " + attr.bandwidth);
@@ -112,6 +115,19 @@ public class tabRouteUtil {
             if (a.equals("validity")) {
                 attr.validity = bits.str2num(cmd.word());
                 tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
+                continue;
+            }
+            if (a.equals("aggras")) {
+                attr.aggrAs = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("aggrrtr")) {
+                attr.aggrRtr = new addrIP();
+                attr.aggrRtr.fromString(cmd.word());
+                continue;
+            }
+            if (a.equals("customer")) {
+                attr.onlyCust = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("origin")) {

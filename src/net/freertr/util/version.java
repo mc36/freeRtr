@@ -738,6 +738,11 @@ public class version {
                 l.add("");
                 l.add("intern0t and politixxx dont mix well, maybe they got too much covid19 flushots now theyre acting like they have monkeypox23-sars666");
                 l.add("");
+                l.add("bossybossy, were having an issue... we dont have issues we have opportunities... ok, were have a ddos opportunity...");
+                l.add("");
+                l.add("bossybossy, we have a flooding condition.... ok, im calling the firegighters... i mean");
+                l.add("an arp flooding condition... call hte server guys instead to stop bridging their uplinks...");
+                l.add("");
                 l.add("#deinfe printf(void*buf)for(;;)if(buf[i]!=0)putchar(buf[i+random(0,10)]);else break;");
                 l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");

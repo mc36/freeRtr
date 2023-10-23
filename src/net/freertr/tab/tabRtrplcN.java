@@ -159,6 +159,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setValidity,
         /**
+         * set aggregator
+         */
+        setAggregator,
+        /**
+         * set customer
+         */
+        setCustomer,
+        /**
          * set bandwidth
          */
         setBandwidth,
@@ -304,6 +312,14 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * validity
          */
         validity,
+        /**
+         * aggregator
+         */
+        aggregator,
+        /**
+         * customer
+         */
+        customer,
         /**
          * pathlen
          */
@@ -462,7 +478,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     /**
      * next hop updater
      */
-    public addrIP nexthopSet;
+    public addrIP addrSet;
 
     /**
      * vrf forwarder updater
@@ -528,7 +544,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case setVrf:
                 return "set vrf " + vrfSetF.cfgName + " " + (vrfSetT ? "ipv4" : "ipv6");
             case setNexthop:
-                return "set nexthop " + nexthopSet;
+                return "set nexthop " + addrSet;
             case setAspath:
                 return "set aspath " + tabRouteUtil.dumpIntList(intLst, "", "");
             case setAsconf:
@@ -545,6 +561,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set aigp " + intSet;
             case setValidity:
                 return "set validity " + intSet;
+            case setAggregator:
+                return "set aggregator " + intSet + " " + addrSet;
+            case setCustomer:
+                return "set customer " + intSet;
             case setBandwidth:
                 return "set bandwidth " + intSet;
             case setTag:
@@ -643,6 +663,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "aigp " + intMatch;
             case validity:
                 return "validity " + intMatch;
+            case aggregator:
+                return "aggregator " + intMatch;
+            case customer:
+                return "customer " + intMatch;
             case pathlen:
                 return "pathlen " + intMatch;
             case unknown:
@@ -670,11 +694,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case safi:
                 return "safi " + intMatch;
             case nexthop:
-                return "nexthop " + nexthopSet;
+                return "nexthop " + addrSet;
             case iface:
                 return "interface " + ifaceMatch.name;
             case recursive:
-                return "recursive " + nexthopSet;
+                return "recursive " + addrSet;
             case protocol:
                 String a = "" + protoMatch;
                 if (cfgRtr.num2proc(protoMatch)) {
@@ -788,6 +812,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.accIgp);
             case validity:
                 return intMatch.matches(net.best.validity);
+            case aggregator:
+                return intMatch.matches(net.best.aggrAs);
+            case customer:
+                return intMatch.matches(net.best.onlyCust);
             case pathlen:
                 return intMatch.matches(net.best.asPathLen());
             case unknown:
@@ -827,7 +855,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 if (net.best.nextHop == null) {
                     return false;
                 }
-                return nexthopSet.compare(nexthopSet, net.best.nextHop) == 0;
+                return addrSet.compare(addrSet, net.best.nextHop) == 0;
             case iface:
                 if (net.best.iface == null) {
                     return false;
@@ -837,7 +865,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 if (net.best.oldHop == null) {
                     return false;
                 }
-                return nexthopSet.compare(nexthopSet, net.best.oldHop) == 0;
+                return addrSet.compare(addrSet, net.best.oldHop) == 0;
             case protocol:
                 if (net.best.rouTyp != protoMatch) {
                     return false;
@@ -906,7 +934,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 attr.rouTab = vrfSetF;
                 return;
             case setNexthop:
-                attr.nextHop = nexthopSet.copyBytes();
+                attr.nextHop = addrSet.copyBytes();
                 return;
             case setAspath:
                 attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, intLst);
@@ -930,11 +958,21 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 attr.accIgp = intSet.update(attr.accIgp);
                 return;
             case setValidity:
-                attr.validity = intSet.update(attr.validity);
                 if (intSet.action == tabIntUpdater.actionType.nothing) {
                     return;
                 }
+                attr.validity = intSet.update(attr.validity);
                 tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
+                return;
+            case setAggregator:
+                if (intSet.action == tabIntUpdater.actionType.nothing) {
+                    return;
+                }
+                attr.aggrAs = intSet.update(attr.aggrAs);
+                attr.aggrRtr = addrSet.copyBytes();
+                return;
+            case setCustomer:
+                attr.onlyCust = intSet.update(attr.onlyCust);
                 return;
             case setBandwidth:
                 attr.bandwidth = intSet.update(attr.bandwidth);

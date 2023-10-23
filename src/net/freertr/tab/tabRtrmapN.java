@@ -103,6 +103,16 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher validityMatch = new tabIntMatcher();
 
     /**
+     * aggregator matcher
+     */
+    public tabIntMatcher aggregatorMatch = new tabIntMatcher();
+
+    /**
+     * customer matcher
+     */
+    public tabIntMatcher customerMatch = new tabIntMatcher();
+
+    /**
      * aspath length matched
      */
     public tabIntMatcher pathlenMatch = new tabIntMatcher();
@@ -136,6 +146,21 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * validity updater
      */
     public tabIntUpdater validitySet = new tabIntUpdater();
+
+    /**
+     * aggregator updater
+     */
+    public tabIntUpdater aggregatorSet = new tabIntUpdater();
+
+    /**
+     * aggregator updater
+     */
+    public addrIP aggregatorRtr = null;
+
+    /**
+     * customer updater
+     */
+    public tabIntUpdater customerSet = new tabIntUpdater();
 
     /**
      * bandwidth updater
@@ -491,6 +516,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match distance " + distanceMatch);
         l.add(beg + "match locpref " + locPrefMatch);
         l.add(beg + "match validity " + validityMatch);
+        l.add(beg + "match aggregator " + aggregatorMatch);
+        l.add(beg + "match customer " + customerMatch);
         l.add(beg + "match pathlen " + pathlenMatch);
         l.add(beg + "match unknowns " + unknownMatch);
         l.add(beg + "match asend " + asendMatch);
@@ -566,6 +593,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set locpref " + locPrefSet);
         l.add(beg + "set aigp " + accIgpSet);
         l.add(beg + "set validity " + validitySet);
+        l.add(beg + "set aggregator " + aggregatorSet + " " + aggregatorRtr);
+        l.add(beg + "set customer " + customerSet);
         l.add(beg + "set bandwidth " + bandwidthSet);
         l.add(beg + "set origin " + originSet);
         l.add(beg + "set metric " + metricSet);
@@ -645,6 +674,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!validityMatch.matches(net.best.validity)) {
+            return false;
+        }
+        if (!aggregatorMatch.matches(net.best.aggrAs)) {
+            return false;
+        }
+        if (!customerMatch.matches(net.best.onlyCust)) {
             return false;
         }
         if (!pathlenMatch.matches(net.best.asPathLen())) {
@@ -809,10 +844,15 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.distance = distanceSet.update(attr.distance);
         attr.locPref = locPrefSet.update(attr.locPref);
         attr.accIgp = accIgpSet.update(attr.accIgp);
-        attr.validity = validitySet.update(attr.validity);
         if (validitySet.action != tabIntUpdater.actionType.nothing) {
+            attr.validity = validitySet.update(attr.validity);
             tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
         }
+        if (aggregatorSet.action != tabIntUpdater.actionType.nothing) {
+            attr.aggrAs = aggregatorSet.update(attr.aggrAs);
+            attr.aggrRtr = aggregatorRtr.copyBytes();
+        }
+        attr.onlyCust = customerSet.update(attr.onlyCust);
         attr.bandwidth = bandwidthSet.update(attr.bandwidth);
         attr.origin = originSet.update(attr.origin);
         attr.metric = metricSet.update(attr.metric);

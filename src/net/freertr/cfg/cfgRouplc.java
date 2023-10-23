@@ -148,6 +148,12 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     validity            match validity status");
         l.add(null, "3 .       <num>             validity");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     aggregator          match aggregator");
+        l.add(null, "3 .       <num>             asn");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     customer            match customer");
+        l.add(null, "3 .       <num>             asn");
+        l.add(null, "3 .       all               any value");
         l.add(null, "2 3     pathlen             match as path length");
         l.add(null, "3 .       <num>             length");
         l.add(null, "3 .       all               any value");
@@ -266,9 +272,17 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     aigp                set accumulated igp");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
-        l.add(null, "2 3     validity            match validity status");
+        l.add(null, "2 3     validity            set validity status");
         l.add(null, "3 .       leave             leave value unchanged");
-        l.add(null, "3 .       <num>             validity");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "2 3     aggregator          set aggregator");
+        l.add(null, "3 4       leave             leave value unchanged");
+        l.add(null, "4 .         <addr>          address");
+        l.add(null, "3 4       <num>             asn");
+        l.add(null, "4 .         <addr>          address");
+        l.add(null, "2 3     customer            set customer");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 .       <num>             asn");
         l.add(null, "2 3     bandwidth           set bandwidth");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
@@ -472,6 +486,22 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             return;
         }
+        if (a.equals("aggregator")) {
+            ntry.ifMode = tabRtrplcN.ifType.aggregator;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("customer")) {
+            ntry.ifMode = tabRtrplcN.ifType.customer;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
         if (a.equals("pathlen")) {
             ntry.ifMode = tabRtrplcN.ifType.pathlen;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
@@ -587,8 +617,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("nexthop")) {
             ntry.ifMode = tabRtrplcN.ifType.nexthop;
-            ntry.nexthopSet = new addrIP();
-            if (ntry.nexthopSet.fromString(cmd.getRemaining())) {
+            ntry.addrSet = new addrIP();
+            if (ntry.addrSet.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
             }
@@ -596,8 +626,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("recursive")) {
             ntry.ifMode = tabRtrplcN.ifType.recursive;
-            ntry.nexthopSet = new addrIP();
-            if (ntry.nexthopSet.fromString(cmd.getRemaining())) {
+            ntry.addrSet = new addrIP();
+            if (ntry.addrSet.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
             }
@@ -800,8 +830,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("nexthop")) {
                 ntry.doMode = tabRtrplcN.doType.setNexthop;
-                ntry.nexthopSet = new addrIP();
-                ntry.nexthopSet.fromString(cmd.getRemaining());
+                ntry.addrSet = new addrIP();
+                ntry.addrSet.fromString(cmd.getRemaining());
                 return;
             }
             if (a.equals("aspath")) {
@@ -856,6 +886,29 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("validity")) {
                 ntry.doMode = tabRtrplcN.doType.setValidity;
+                if (ntry.intSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("aggregator")) {
+                ntry.doMode = tabRtrplcN.doType.setAggregator;
+                a = cmd.word();
+                if (ntry.intSet.fromString(a)) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                ntry.addrSet = new addrIP();
+                a = cmd.word();
+                if (ntry.addrSet.fromString(a)) {
+                    cmd.error("bad address");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("customer")) {
+                ntry.doMode = tabRtrplcN.doType.setCustomer;
                 if (ntry.intSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
