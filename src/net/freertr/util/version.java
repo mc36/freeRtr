@@ -736,6 +736,8 @@ public class version {
                 l.add("its never a duck, bear with meee dearest autocompleter-pre-ai-mp-realtime-pocket-calculator-chitty-chatgpt-connected-grannycommanders");
                 l.add("buttt change my minds, badanswers only pls as were under the control of the pointin' girlygirlies while the tests fails from-th-e-pubs");
                 l.add("");
+                l.add("intern0t and politixxx dont mix well, maybe they got too much covid19 flushots now theyre acting like they have monkeypox23-sars666");
+                l.add("");
                 l.add("#deinfe printf(void*buf)for(;;)if(buf[i]!=0)putchar(buf[i+random(0,10)]);else break;");
                 l.add("");
                 l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
@@ -844,6 +846,56 @@ public class version {
                 l.add("        ) >     {_/,     /~)");
                 l.add("        |/               `^ .'");
                 break;
+            case 27:
+                l.add("        _____");
+                l.add("      .-'.  ':'-.");
+                l.add("    .''::: .:    '.");
+                l.add("   /   :::::'      \\");
+                l.add("  ;.    ':' `       ;");
+                l.add("  |       '..       |");
+                l.add("  ; '      ::::.    ;");
+                l.add("   \\       '::::   /");
+                l.add("   '.      :::  .'");
+                l.add("      '-.___'_.-'");
+                break;
+            case 28:
+                l.add("                  \\       \\      `      /         /");
+                l.add("                                             '");
+                l.add("            \\      `    \\     `     '    /     /   `   '");
+                l.add("    \\                       .  *  *  *  *  *  .     /");
+                l.add("         `     \\    `    *  *  *  *  *  *  *  *  *       /");
+                l.add("   \\                  * * * * * * * * * * * * * * *  '");
+                l.add("       \\     `     @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @   /");
+                l.add("\\  `             * * * * *             * * * * * * * * *   '  /");
+                l.add("           `   @ @ @ @ *                 '@@@@@@@@@@@@@@@");
+                l.add("      \\      * * * * *                     * * * * * * * *  '");
+                l.add("  `        @ @ @ @ @                        @@@@@@@@@@@@@@@    /");
+                l.add("          * * * **                            * * * * * * * *");
+                l.add("\\   `   @ @ @ @ @                             @@@@@@@@@@@@@@@  '");
+                l.add("      * * * * *                                * * * * * * * * /");
+                l.add(" `   @ @ @ @ @               good luck          @@@@@@@@@@@@@@@ .");
+                l.add("    * * * * *                                    * * * * * * * *.");
+                l.add("\\  @ @ @ @ @                                     @@@@@@@@@@@@@@@@");
+                l.add("  * * * * *                                         * * * * * * *");
+                l.add(" @ @ @ @ @                                          @@@@@@@@@@@@@@@@");
+                break;
+            case 29:
+                l.add("               |))    |))");
+                l.add(" .             |  )) /   ))");
+                l.add(" \\\\   ^ ^      |    /      ))");
+                l.add("  \\\\(((  )))   |   /        ))");
+                l.add("   / *    )))  |  /        ))");
+                l.add("  |o  _)   ))) | /       )))");
+                l.add("   --' |     ))`/      )))");
+                l.add("    ___|              )))");
+                l.add("   / __\\             ))))`()))");
+                l.add("  /\\@   /             `(())))");
+                l.add("  \\/   /  /`_______/\\   \\  ))))");
+                l.add("       | |          \\ \\  |  )))");
+                l.add("       | |           | | |   )))");
+                l.add("       |_@           |_|_@    ))");
+                l.add("      /_/           /_/_/");
+                break;
             default:
                 l.add("");
                 l.add("   ... s0rr|/ b\\/tt th1s 0n3 1s _n0t_ _y33t_ ass1gnm3nt3d and when u enc0unt3t3r3d a r3al bug ...");
@@ -886,6 +938,9 @@ public class version {
         res.add("cake");
         res.add("badcode");
         res.add("map");
+        res.add("earth");
+        res.add("rainbow");
+        res.add("unicorn");
         return res;
     }
 

@@ -1716,6 +1716,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "source|" + srcRtr);
         lst.add(beg + "validity|" + tabRoautUtil.validity2string(validity));
         lst.add(beg + "only to customer|" + bits.num2str(onlyCust));
+        lst.add(beg + "only to customas|" + clntWhois.asn2name(onlyCust, true));
         lst.add(beg + "segrout index|" + segrouIdx);
         lst.add(beg + "segrout old base|" + segrouOld);
         lst.add(beg + "segrout base|" + segrouBeg);
@@ -1741,7 +1742,8 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "origin type|" + origin);
         lst.add(beg + "local preference|" + locPref);
         lst.add(beg + "evpn label*16|" + evpnLab);
-        lst.add(beg + "attribute as|" + bits.num2str(attribAs));
+        lst.add(beg + "attribute asnum|" + bits.num2str(attribAs));
+        lst.add(beg + "attribute asnam|" + clntWhois.asn2name(attribAs, true));
         lst.add(beg + "attribute value|" + bits.byteDump(attribVal, 0, -1));
         lst.add(beg + "tunnel type|" + tunelTyp);
         lst.add(beg + "tunnel value|" + bits.byteDump(tunelVal, 0, -1));
@@ -1753,7 +1755,8 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "bandwidth|" + bandwidth);
         lst.add(beg + "entropy label|" + entropyLabel);
         lst.add(beg + "atomic aggregator|" + atomicAggr);
-        lst.add(beg + "aggregator as|" + bits.num2str(aggrAs));
+        lst.add(beg + "aggregator asnum|" + bits.num2str(aggrAs));
+        lst.add(beg + "aggregator asnam|" + clntWhois.asn2name(aggrAs, true));
         lst.add(beg + "aggregator router|" + aggrRtr);
         lst.add(beg + "originator|" + originator);
         lst.add(beg + "cluster list|" + tabRouteUtil.dumpAddrList(clustList));

@@ -15262,3 +15262,5 @@ qc pass: bgp change in validity
 qc pass: bgp change in validity with soft-reconfig
 qc pass: bgp routepolicy filtering with validity
 qc pass: bgp routepolicy filtering with validity with soft-reconfig
+---------------------------------- 2023-10-23 08:36:56 23.10.23
+todo: vpnv4 vpnv6 in evpn like address-family l2vpn evpn / advertise vpnv4 unicast

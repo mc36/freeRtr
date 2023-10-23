@@ -1,3 +1,5 @@
+vpnv4 vpnv6 in evpn like address-family l2vpn evpn / advertise vpnv4 unicast
+
 bgp astree shows from asconn
 
 vdc to have local, connect as sdn autocreated
