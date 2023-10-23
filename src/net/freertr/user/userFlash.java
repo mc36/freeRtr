@@ -316,6 +316,11 @@ public class userFlash {
             rdr.putStrTab(dir2txt(dirList(cmd.getRemaining())));
             return null;
         }
+        if (a.equals("count")) {
+            a = cmd.getRemaining();
+            cmd.error(a + " uses " + countUsage(a) + " bytes");
+            return null;
+        }
         cmd.badCmd();
         return null;
     }
@@ -867,6 +872,50 @@ public class userFlash {
         } catch (Exception e) {
         }
         return l;
+    }
+
+    /**
+     * count disk usage
+     *
+     * @param fn name of file to count
+     * @return total usage
+     */
+    public long countUsage(String fn) {
+        File[] fl = dirList(fn);
+        return recursiveUsage(fl);
+    }
+
+    /**
+     * count disk usage
+     *
+     * @param fl list of files to count
+     * @return total usage
+     */
+    protected long recursiveUsage(File[] fl) {
+        long res = 0;
+        for (int i = 0; i < fl.length; i++) {
+            File f = fl[i];
+            if (f == null) {
+                continue;
+            }
+            String a = f.getName();
+            if (a.startsWith(".")) {
+                continue;
+            }
+            if (!f.isDirectory()) {
+                try {
+                    res += f.length();
+                } catch (Exception e) {
+                }
+                continue;
+            }
+            File[] nl = dirList(f.getAbsolutePath());
+            if (nl == null) {
+                continue;
+            }
+            res += recursiveUsage(nl);
+        }
+        return res;
     }
 
     /**

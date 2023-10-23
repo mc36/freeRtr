@@ -1982,6 +1982,8 @@ public class userExec {
         hl.add(null, ".2 .     reapply                      try to reapply current configuration");
         userHelping hlp = new userHelping();
         hlp.add(null, "1 2    flash                          file system utility");
+        hlp.add(null, "2 3      count                        count directory usage");
+        hlp.add(null, "3 .        <file>                     pathname");
         hlp.add(null, "2 3      list                         list directory");
         hlp.add(null, "3 .        <file>                     pathname");
         hlp.add(null, "2 3      type                         type one ascii file");

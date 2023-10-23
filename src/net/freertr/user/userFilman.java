@@ -1,6 +1,5 @@
 package net.freertr.user;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.util.bits;
@@ -86,7 +85,7 @@ public class userFilman {
             case 0x026c: // ctrl+l
                 doClear();
                 return false;
-            case 0x0273: // ctrl+s
+            case 0x0266: // ctrl+f
                 doKeyFind();
                 return false;
             case 0x0270: // ctrl+p
@@ -241,7 +240,7 @@ public class userFilman {
         l.add("ctrl+p - help");
         l.add("ctrl+r - reread entries");
         l.add("ctrl+l - redraw screen");
-        l.add("ctrl+s - find file");
+        l.add("ctrl+f - find file");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
         l.add("ctrl+i - change panel");

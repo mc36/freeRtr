@@ -49,6 +49,10 @@ public class userBrowser {
         if (u.length() < 1) {
             url = verCore.homeUrl1;
         } else {
+            int i = u.indexOf("://");
+            if (i < 0) {
+                u = "http://" + u;
+            }
             url = u;
         }
         oldurl = url;
