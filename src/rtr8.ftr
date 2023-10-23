@@ -440,10 +440,9 @@ todo: honeypot to wireformat, decode
 todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
-todo: game butterfly series reusing the fft and mdev classes from modem and ping
+todo: game butterfly hanoy, modem, mdev
 todo: bmp server to listeners, bmp, ris and bgp
 todo: server bgprsrr
-todo: game hanoi
 todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
@@ -469,7 +468,6 @@ todo: important protocols to be able to continue from the start at least on loca
 todo: menu remote asdf
 todo: onehit to all the menus
 todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
-todo: l2tp3 to the dataplanes as it is for l2tp2 :)
 todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
 todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 todo: route-map --> route-policy converter

@@ -15264,3 +15264,8 @@ qc pass: bgp routepolicy filtering with validity
 qc pass: bgp routepolicy filtering with validity with soft-reconfig
 ---------------------------------- 2023-10-23 08:36:56 23.10.23
 todo: vpnv4 vpnv6 in evpn like address-family l2vpn evpn / advertise vpnv4 unicast
+---------------------------------- 2023-10-23 13:59:01 23.10.23
+no todo: l2tp3 to the dataplanes as it is for l2tp2 :)
+no todo: game hanoi
+no todo: game butterfly series reusing the fft and mdev classes from modem and ping
+todo: game butterfly hanoy, modem, mdev
