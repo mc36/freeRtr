@@ -466,18 +466,15 @@ public class userFlash {
 
     private boolean doArchiveDir(RandomAccessFile ft, String dir, String beg) {
         pip.linePut("adding " + beg);
-        File[] fl;
-        try {
-            File f = new File(dir);
-            fl = f.listFiles();
-            if (beg.length() > 0) {
-                ft.write(archiveHeader(beg, f));
-            }
-        } catch (Exception e) {
-            return true;
-        }
+        File[] fl = dirList(beg);
         if (fl == null) {
             return true;
+        }
+        try {
+            if (beg.length() > 0) {
+                ft.write(archiveHeader(beg, new File(dir)));
+            }
+        } catch (Exception e) {
         }
         for (int i = 0; i < fl.length; i++) {
             File f = fl[i];

@@ -1017,11 +1017,7 @@ public class userVM {
                     return 0;
                 }
                 userVMdir dir = new userVMdir(0);
-                try {
-                    dir.lst = new File(a).listFiles();
-                } catch (Exception e) {
-                    return 0;
-                }
+                dir.lst = userFlash.dirList(a);
                 if (dir.lst == null) {
                     return 0;
                 }

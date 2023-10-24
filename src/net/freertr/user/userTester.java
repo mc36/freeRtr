@@ -937,31 +937,27 @@ public class userTester {
         if (beg.length() < 2) {
             beg = "";
         }
-        try {
-            File[] fils = new File(path).listFiles();
-            if (fils == null) {
-                return;
-            }
-            for (int i = 0; i < fils.length; i++) {
-                if (fils[i].isDirectory()) {
-                    continue;
-                }
-                s = fils[i].getName();
-                if (!s.endsWith(".tst")) {
-                    continue;
-                }
-                if (!s.startsWith(beg)) {
-                    continue;
-                }
-                if (s.matches(discard)) {
-                    continue;
-                }
-                userTesterFtr ftr = new userTesterFtr(s);
-                ftr.ret = maxTry;
-                needed.add(ftr);
-            }
-        } catch (Exception e) {
+        File[] fils = userFlash.dirList(path);
+        if (fils == null) {
             return;
+        }
+        for (int i = 0; i < fils.length; i++) {
+            if (fils[i].isDirectory()) {
+                continue;
+            }
+            s = fils[i].getName();
+            if (!s.endsWith(".tst")) {
+                continue;
+            }
+            if (!s.startsWith(beg)) {
+                continue;
+            }
+            if (s.matches(discard)) {
+                continue;
+            }
+            userTesterFtr ftr = new userTesterFtr(s);
+            ftr.ret = maxTry;
+            needed.add(ftr);
         }
         if (config) {
             maxTry = 1;
