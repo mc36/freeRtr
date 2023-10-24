@@ -4196,12 +4196,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         List<String> res = new ArrayList<String>();
         res.add(spfCalc.graphBeg1);
         res.add(spfCalc.graphBeg2);
+        res.add(spfCalc.graphBeg3);
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapAsn ntry = lst.get(i);
             res.add("\"" + clntWhois.asn2mixed(ntry.prev, true) + "\" -- \"" + clntWhois.asn2mixed(ntry.asn, true) + "\" [weight=" + (o - ntry.count) + "]");
         }
         res.add(spfCalc.graphEnd1);
         res.add(spfCalc.graphEnd2);
+        return res;
+    }
+
+    /**
+     * as path tree
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public List<String> getAsTree(int safi) {
+        tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
+        }
+        List<String> res = new ArrayList<String>();
+        rtrBgpDump.drawAsTree(res, lst, localAs, "");
         return res;
     }
 

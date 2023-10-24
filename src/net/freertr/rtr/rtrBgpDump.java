@@ -8,6 +8,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.clnt.clntDns;
+import net.freertr.clnt.clntWhois;
 import net.freertr.enc.enc7bit;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -86,6 +87,42 @@ public class rtrBgpDump {
                 }
                 ntry.count++;
             }
+        }
+    }
+
+    /**
+     * draw as tree
+     *
+     * @param res target to append
+     * @param lst list of asn connectivity
+     * @param don list of connections visited
+     * @param asn current asn
+     * @param beg beginning
+     */
+    public static void drawAsTree(List<String> res, tabGen<rtrBgpFlapAsn> lst, int asn, String beg) {
+        res.add(beg + "`--" + clntWhois.asn2mixed(asn, true));
+        tabGen<rtrBgpFlapAsn> cur = new tabGen<rtrBgpFlapAsn>();
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapAsn ntry = lst.get(i);
+            if (ntry.count < 0) {
+                continue;
+            }
+            if (ntry.prev != asn) {
+                continue;
+            }
+            ntry.count = -1;
+            cur.add(ntry);
+        }
+        int o = cur.size();
+        for (int i = 0; i < o; i++) {
+            rtrBgpFlapAsn ntry = cur.get(i);
+            String a;
+            if (i < (o - 1)) {
+                a = "  |";
+            } else {
+                a = "   ";
+            }
+            drawAsTree(res, lst, ntry.asn, beg + a);
         }
     }
 

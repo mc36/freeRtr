@@ -4274,6 +4274,10 @@ public class userShow {
             rdr.putStrArr(r.bgp.getAsGraph(sfi));
             return;
         }
+        if (a.equals("astree")) {
+            rdr.putStrArr(r.bgp.getAsTree(sfi));
+            return;
+        }
         if (a.equals("asorigin")) {
             rdr.putStrTab(r.bgp.getAsOrigin(sfi));
             return;

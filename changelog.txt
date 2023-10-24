@@ -15283,3 +15283,5 @@ qc pass: bgp change in aggregator
 qc pass: bgp change in aggregator with soft-reconfig
 qc pass: bgp routepolicy filtering with aggregator
 qc pass: bgp routepolicy filtering with aggregator with soft-reconfig
+---------------------------------- 2023-10-24 11:49:51 23.10.24
+no todo: bgp astree shows from asconn

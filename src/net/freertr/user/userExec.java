@@ -820,6 +820,7 @@ public class userExec {
         hl.add(null, "7 8,.              <addr>           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 .              asgraph            connectivity graph of ases");
+        hl.add(null, "6 .              astree             connectivity tree of ases");
         hl.add(null, "6 .              asorigin           originating ases");
         hl.add(null, "6 .              astransit          transiting ases");
         hl.add(null, "6 .              asconn             connectivity of ases");
