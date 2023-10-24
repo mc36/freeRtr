@@ -1096,9 +1096,9 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
     }
     if (strcmp(arg[0], "copp4") == 0) {
         acls_ntry.dir = 4;
-        acls_ntry.port = 0;
+        acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init4;
-        readAcl4(&acl4_ntry, &arg[0]);
+        readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
@@ -1152,9 +1152,9 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
     }
     if (strcmp(arg[0], "copp6") == 0) {
         acls_ntry.dir = 4;
-        acls_ntry.port = 0;
+        acls_ntry.port = atoi(arg[2]);
         acls_res = acls_init6;
-        readAcl6(&acl6_ntry, &arg[0]);
+        readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
@@ -2530,7 +2530,7 @@ void doStatRound_acl(struct acls_entry *ntry1, int ver, FILE *commands) {
         snprintf((char*)&buf2[0], 128, "natacl%i_cnt %i", ver, ntry1->port);
         break;
     case 4:
-        snprintf((char*)&buf2[0], 128, "coppacl%i_cnt", ver);
+        snprintf((char*)&buf2[0], 128, "coppacl%i_cnt %i", ver, ntry1->port);
         break;
     case 5:
         snprintf((char*)&buf2[0], 128, "pbracl%i_cnt %i", ver, ntry1->port);

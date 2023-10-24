@@ -1806,7 +1806,7 @@ ipv4_tx:
                 doTunneled(tun4_res);
             }
             acls_ntry.dir = 4;
-            acls_ntry.port = 0;
+            acls_ntry.port = vrf2rib_ntry.vrf;
             index = table_find(&acls4_table, &acls_ntry);
             if (index >= 0) {
                 if (frag != 0) doPunting;
@@ -2123,7 +2123,7 @@ ipv6_tx:
                 doTunneled(tun6_res);
             }
             acls_ntry.dir = 4;
-            acls_ntry.port = 0;
+            acls_ntry.port = vrf2rib_ntry.vrf;
             index = table_find(&acls6_table, &acls_ntry);
             if (index >= 0) {
                 if (frag != 0) doPunting;
