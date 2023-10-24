@@ -466,7 +466,7 @@ public class userFlash {
 
     private boolean doArchiveDir(RandomAccessFile ft, String dir, String beg) {
         pip.linePut("adding " + beg);
-        File[] fl = dirList(beg);
+        File[] fl = dirList(dir);
         if (fl == null) {
             return true;
         }
@@ -479,12 +479,6 @@ public class userFlash {
         for (int i = 0; i < fl.length; i++) {
             File f = fl[i];
             String a = f.getName();
-            if (a.equals(".")) {
-                continue;
-            }
-            if (a.equals("..")) {
-                continue;
-            }
             boolean r;
             if (f.isDirectory()) {
                 r = doArchiveDir(ft, dir + a + "/", beg + a + "/");
@@ -831,6 +825,13 @@ public class userFlash {
         tabGen<userFlashNtry> lf = new tabGen<userFlashNtry>();
         for (int i = 0; i < fl.length; i++) {
             File f = fl[i];
+            String a = f.getName();
+            if (a.equals(".")) {
+                continue;
+            }
+            if (a.equals("..")) {
+                continue;
+            }
             try {
                 if (f.isDirectory()) {
                     ld.put(new userFlashNtry(f));
@@ -896,9 +897,6 @@ public class userFlash {
                 continue;
             }
             String a = f.getName();
-            if (a.startsWith(".")) {
-                continue;
-            }
             if (!f.isDirectory()) {
                 try {
                     res += f.length();

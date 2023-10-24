@@ -202,13 +202,7 @@ class servPop3doer implements Runnable {
 
     public tabGen<servPop3msg> getMsgList() {
         File f;
-        File[] fl = null;
-        try {
-            f = new File(lower.mailFolders + userN);
-            fl = f.listFiles();
-        } catch (Exception e) {
-            return null;
-        }
+        File[] fl = userFlash.dirList(lower.mailFolders + userN);
         if (fl == null) {
             return null;
         }
