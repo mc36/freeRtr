@@ -2722,6 +2722,18 @@ qc pass: bgp change in validity
 qc pass: bgp change in validity with soft-reconfig
 qc pass: bgp routepolicy filtering with validity
 qc pass: bgp routepolicy filtering with validity with soft-reconfig
+qc pass: bgp routemap filtering with leak-role
+qc pass: bgp routemap filtering with leak-role with soft-reconfig
+qc pass: bgp change in leak-role
+qc pass: bgp change in leak-role with soft-reconfig
+qc pass: bgp routepolicy filtering with leak-role
+qc pass: bgp routepolicy filtering with leak-role with soft-reconfig
+qc pass: bgp routemap filtering with aggregator
+qc pass: bgp routemap filtering with aggregator with soft-reconfig
+qc pass: bgp change in aggregator
+qc pass: bgp change in aggregator with soft-reconfig
+qc pass: bgp routepolicy filtering with aggregator
+qc pass: bgp routepolicy filtering with aggregator with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -3354,7 +3366,6 @@ todo: serevr security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: sho bgp * auto-summarize
 todo: config committed with check for saved and backup config
-todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
 todo: terminal background and foreground
 todo: interface lo0 as lo-core, persistently
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli

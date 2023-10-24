@@ -566,7 +566,6 @@ todo: serevr security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: sho bgp * auto-summarize
 todo: config committed with check for saved and backup config
-todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
 todo: terminal background and foreground
 todo: interface lo0 as lo-core, persistently
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli

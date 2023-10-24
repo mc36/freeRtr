@@ -15269,3 +15269,17 @@ no todo: l2tp3 to the dataplanes as it is for l2tp2 :)
 no todo: game hanoi
 no todo: game butterfly series reusing the fft and mdev classes from modem and ping
 todo: game butterfly hanoy, modem, mdev
+---------------------------------- 2023-10-24 09:06:54 23.10.24
+no todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
+qc pass: bgp routemap filtering with leak-role
+qc pass: bgp routemap filtering with leak-role with soft-reconfig
+qc pass: bgp change in leak-role
+qc pass: bgp change in leak-role with soft-reconfig
+qc pass: bgp routepolicy filtering with leak-role
+qc pass: bgp routepolicy filtering with leak-role with soft-reconfig
+qc pass: bgp routemap filtering with aggregator
+qc pass: bgp routemap filtering with aggregator with soft-reconfig
+qc pass: bgp change in aggregator
+qc pass: bgp change in aggregator with soft-reconfig
+qc pass: bgp routepolicy filtering with aggregator
+qc pass: bgp routepolicy filtering with aggregator with soft-reconfig

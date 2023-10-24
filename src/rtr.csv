@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.10.24-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-10-24 06:22:06, took 00:11:37, with 80 workers, on 3222 cases, 0 failed, 0 traces, 15 retries
+-;-;-;2023-10-24 09:17:45, took 00:10:51, with 80 workers, on 3234 cases, 0 failed, 0 traces, 7 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2726,6 +2726,18 @@ http://sources.freertr.org/cfg/rout-bgp784.tst;rout-bgp784.tst;success;bgp chang
 http://sources.freertr.org/cfg/rout-bgp785.tst;rout-bgp785.tst;success;bgp change in validity with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp786.tst;rout-bgp786.tst;success;bgp routepolicy filtering with validity
 http://sources.freertr.org/cfg/rout-bgp787.tst;rout-bgp787.tst;success;bgp routepolicy filtering with validity with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp788.tst;rout-bgp788.tst;success;bgp routemap filtering with leak-role
+http://sources.freertr.org/cfg/rout-bgp789.tst;rout-bgp789.tst;success;bgp routemap filtering with leak-role with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp790.tst;rout-bgp790.tst;success;bgp change in leak-role
+http://sources.freertr.org/cfg/rout-bgp791.tst;rout-bgp791.tst;success;bgp change in leak-role with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp792.tst;rout-bgp792.tst;success;bgp routepolicy filtering with leak-role
+http://sources.freertr.org/cfg/rout-bgp793.tst;rout-bgp793.tst;success;bgp routepolicy filtering with leak-role with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp794.tst;rout-bgp794.tst;success;bgp routemap filtering with aggregator
+http://sources.freertr.org/cfg/rout-bgp795.tst;rout-bgp795.tst;success;bgp routemap filtering with aggregator with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp796.tst;rout-bgp796.tst;success;bgp change in aggregator
+http://sources.freertr.org/cfg/rout-bgp797.tst;rout-bgp797.tst;success;bgp change in aggregator with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp798.tst;rout-bgp798.tst;success;bgp routepolicy filtering with aggregator
+http://sources.freertr.org/cfg/rout-bgp799.tst;rout-bgp799.tst;success;bgp routepolicy filtering with aggregator with soft-reconfig
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain
