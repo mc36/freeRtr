@@ -2,12 +2,13 @@ from ..bf_gbl_env.var_env import *
 
 
 def writeCopp4Rules(
-    self, op_type, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm
+    self, op_type, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm
 ):
     tbl_global_path = "ig_ctl.ig_ctl_copp"
     tbl_name = "%s.tbl_ipv4_copp" % (tbl_global_path)
     tbl_action_name = "%s.act_%s" % (tbl_global_path, act)
     key_field_list = [
+        gc.KeyTuple("ig_md.vrf", vrf),
         gc.KeyTuple("$MATCH_PRIORITY", pri),
         gc.KeyTuple("hdr.ipv4.protocol", pr, prm),
         gc.KeyTuple("hdr.ipv4.src_addr", sa, sam),

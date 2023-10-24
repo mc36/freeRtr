@@ -457,14 +457,14 @@ def run(self):
             self.writeCopp4Rules(
                 mode,
                 int(splt[1]),
-                splt[2],
-                int(splt[3]),
+                int(splt[2]),
+                splt[3],
                 int(splt[4]),
-                splt[5],
+                int(splt[5]),
                 splt[6],
                 splt[7],
                 splt[8],
-                int(splt[9]),
+                splt[9],
                 int(splt[10]),
                 int(splt[11]),
                 int(splt[12]),
@@ -474,6 +474,7 @@ def run(self):
                 int(splt[16]),
                 int(splt[17]),
                 int(splt[18]),
+                int(splt[19]),
             )
             continue
 
@@ -481,14 +482,14 @@ def run(self):
             self.writeCopp6Rules(
                 mode,
                 int(splt[1]),
-                splt[2],
-                int(splt[3]),
+                int(splt[2]),
+                splt[3],
                 int(splt[4]),
-                splt[5],
+                int(splt[5]),
                 splt[6],
                 splt[7],
                 splt[8],
-                int(splt[9]),
+                splt[9],
                 int(splt[10]),
                 int(splt[11]),
                 int(splt[12]),
@@ -498,6 +499,7 @@ def run(self):
                 int(splt[16]),
                 int(splt[17]),
                 int(splt[18]),
+                int(splt[19]),
             )
             continue
 

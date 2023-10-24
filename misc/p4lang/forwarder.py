@@ -1822,8 +1822,8 @@ def writeSgtSetRules(delete, p4info_helper, ingress_sw, port, group):
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
-    matches={}
+def writeCoppRules4(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
+    matches={"ig_md.vrf": vrf}
     add2dictIfNot(matches, "hdr.ipv4.protocol",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv4.src_addr",sa,sam,"0.0.0.0")
     add2dictIfNot(matches, "hdr.ipv4.dst_addr",da,dam,"0.0.0.0")
@@ -1847,8 +1847,9 @@ def writeCoppRules4(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sa
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
-def writeCoppRules6(delete, p4info_helper, ingress_sw, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
-    matches={}
+def writeCoppRules6(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
+    matches={"ig_md.vrf": vrf}
+    add2dictIfNot(matches, "ig_md.vrf",pr,vrf,0)
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
@@ -3380,11 +3381,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if cmds[0] == "copp4":
-            writeCoppRules4(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            writeCoppRules4(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
         if cmds[0] == "copp6":
-            writeCoppRules6(mode,p4info_helper,sw1,int(splt[1]),splt[2],int(splt[3]),int(splt[4]),splt[5],splt[6],splt[7],splt[8],int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            writeCoppRules6(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],int(splt[4]),int(splt[5]),splt[6],splt[7],splt[8],splt[9],int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]),int(splt[19]))
             continue
 
         if cmds[0] == "inacl4":

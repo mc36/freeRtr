@@ -95,26 +95,6 @@ public class servP4langConn implements Runnable {
     protected tabGen<tabNshEntry> nshs = new tabGen<tabNshEntry>();
 
     /**
-     * exported copp
-     */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> copp4;
-
-    /**
-     * exported copp
-     */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> copp6;
-
-    /**
-     * exported copp
-     */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
-
-    /**
-     * exported copp
-     */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
-
-    /**
      * create instance
      *
      * @param pip pipeline
@@ -597,11 +577,27 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (s.equals("coppacl4_cnt")) {
-                servP4langUtil.updateAcl(cmd, copp4f);
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                servP4langUtil.updateAcl(cmd, vrf.copp4f);
                 continue;
             }
             if (s.equals("coppacl6_cnt")) {
-                servP4langUtil.updateAcl(cmd, copp6f);
+                servP4langVrf vrf = new servP4langVrf(bits.str2num(cmd.word()));
+                vrf = lower.expVrf.find(vrf);
+                if (vrf == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                servP4langUtil.updateAcl(cmd, vrf.copp6f);
                 continue;
             }
             if (s.equals("inqos4_cnt")) {
@@ -954,16 +950,6 @@ public class servP4langConn implements Runnable {
             doBckpln(i);
             doLab0(lower.parent.bckplnLab[i], i);
         }
-        if (servP4langUtil.needAcl(copp4, lower.expCopp4, null, null, null, copp4f)) {
-            sendAcl(0, "copp4_del ", "", "", "", "", true, false, copp4f, null, null, null);
-            copp4 = lower.expCopp4;
-            sendAcl(0, "copp4_add ", "", "", "", "", true, false, copp4, null, null, copp4f);
-        }
-        if (servP4langUtil.needAcl(copp6, lower.expCopp6, null, null, null, copp6f)) {
-            sendAcl(0, "copp6_del ", "", "", "", "", false, false, copp6f, null, null, null);
-            copp6 = lower.expCopp6;
-            sendAcl(0, "copp6_add ", "", "", "", "", false, false, copp6, null, null, copp6f);
-        }
         for (int i = 0; i < lower.expBr.size(); i++) {
             doBrdg(lower.expBr.get(i));
         }
@@ -983,6 +969,16 @@ public class servP4langConn implements Runnable {
         }
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
+            if (servP4langUtil.needAcl(vrf.copp4p, vrf.conn4c, null, null, null, vrf.copp4f)) {
+                sendAcl(0, "copp4_del " + vrf.id + " ", "", "", "", "", true, false, vrf.copp4f, null, null, null);
+                vrf.copp4p = vrf.conn4c;
+                sendAcl(0, "copp4_add " + vrf.id + " ", "", "", "", "", true, false, vrf.copp4p, null, null, vrf.copp4f);
+            }
+            if (servP4langUtil.needAcl(vrf.copp6p, vrf.copp6c, null, null, null, vrf.copp6f)) {
+                sendAcl(0, "copp6_del " + vrf.id + " ", "", "", "", "", false, false, vrf.copp6f, null, null, null);
+                vrf.copp6p = vrf.copp6c;
+                sendAcl(0, "copp6_add " + vrf.id + " ", "", "", "", "", false, false, vrf.copp6p, null, null, vrf.copp6f);
+            }
             doVrf(vrf);
             doRoutes(true, vrf.id, vrf.vrf.fwd4.commonLabel, vrf.vrf.fwd4.actualU, vrf.routes4, vrf.routed4, vrf.compress4, vrf.prflst4, vrf.roumap4, vrf.roupol4);
             doRoutes(false, vrf.id, vrf.vrf.fwd6.commonLabel, vrf.vrf.fwd6.actualU, vrf.routes6, vrf.routed6, vrf.compress6, vrf.prflst6, vrf.roumap6, vrf.roupol6);

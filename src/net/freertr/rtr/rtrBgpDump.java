@@ -95,7 +95,6 @@ public class rtrBgpDump {
      *
      * @param res target to append
      * @param lst list of asn connectivity
-     * @param don list of connections visited
      * @param asn current asn
      * @param beg beginning
      */

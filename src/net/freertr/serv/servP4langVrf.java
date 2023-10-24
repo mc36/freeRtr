@@ -36,6 +36,36 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     protected cfgVrf vrf;
 
     /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> conn4c = null;
+
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp6c = null;
+
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp4p = null;
+
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp6p = null;
+
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+
+    /**
+     * exported copp
+     */
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+
+    /**
      * export prefix list
      */
     protected tabListing<tabPrfxlstN, addrIP> prflst4;
@@ -243,6 +273,10 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
      * clear tables
      */
     protected void doClear() {
+        copp4p = null;
+        copp6p = null;
+        copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
         routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
         routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
         routes4 = new tabRoute<addrIP>("sent");

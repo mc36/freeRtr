@@ -78,8 +78,8 @@ server p4lang p4
  export-port sdn2 2 10
  export-port sdn3 3 10
  export-port sdn4 4 10
- export-copp4 test4
- export-copp6 test6
+ export-copp4 v1 test4
+ export-copp6 v1 test6
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2

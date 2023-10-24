@@ -103,16 +103,6 @@ public class servP4langCfg implements ifcUp {
     protected tabGen<servP4langBr> expBr = new tabGen<servP4langBr>();
 
     /**
-     * exported copp
-     */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> expCopp4 = null;
-
-    /**
-     * exported copp
-     */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> expCopp6 = null;
-
-    /**
      * export interval
      */
     protected int expDelay = 1000;
@@ -383,6 +373,8 @@ public class servP4langCfg implements ifcUp {
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
             l.add(beg + mid + "export-vrf " + ntry.vrf.name);
+            cmds.cfgLine(l, ntry.conn4c == null, beg, mid + "export-copp4 " + ntry.vrf.name, "" + ntry.conn4c);
+            cmds.cfgLine(l, ntry.copp6c == null, beg, mid + "export-copp6 " + ntry.vrf.name, "" + ntry.copp6c);
             cmds.cfgLine(l, ntry.prflst4 == null, beg, mid + "filter-list4 " + ntry.vrf.name, "" + ntry.prflst4);
             cmds.cfgLine(l, ntry.prflst6 == null, beg, mid + "filter-list6 " + ntry.vrf.name, "" + ntry.prflst6);
             cmds.cfgLine(l, ntry.roumap4 == null, beg, mid + "filter-map4 " + ntry.vrf.name, "" + ntry.roumap4);
@@ -422,8 +414,6 @@ public class servP4langCfg implements ifcUp {
         } else {
             l.add(beg + mid + "export-srv6 " + expSrv6.name);
         }
-        cmds.cfgLine(l, expCopp4 == null, beg, mid + "export-copp4", "" + expCopp4);
-        cmds.cfgLine(l, expCopp6 == null, beg, mid + "export-copp6", "" + expCopp6);
         cmds.cfgLine(l, !expSck, beg, mid + "export-socket", "");
         l.add(beg + mid + "export-interval " + expDelay);
         cmds.cfgLine(l, interconn == null, beg, mid + "interconnect", "" + interconn);
@@ -569,21 +559,41 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("export-copp4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
             cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
             if (acl == null) {
                 cmd.error("no such access list");
                 return false;
             }
-            expCopp4 = acl.aceslst;
+            pv.conn4c = acl.aceslst;
             return false;
         }
         if (s.equals("export-copp6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
             cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
             if (acl == null) {
                 cmd.error("no such access list");
                 return false;
             }
-            expCopp6 = acl.aceslst;
+            pv.copp6c = acl.aceslst;
             return false;
         }
         if (s.equals("filter-compress4")) {
@@ -887,11 +897,31 @@ public class servP4langCfg implements ifcUp {
             return false;
         }
         if (s.equals("export-copp4")) {
-            expCopp4 = null;
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.conn4c = null;
             return false;
         }
         if (s.equals("export-copp6")) {
-            expCopp6 = null;
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            servP4langVrf pv = findVrf(vrf.fwd4);
+            if (pv == null) {
+                cmd.error("vrf not exported");
+                return false;
+            }
+            pv.copp6c = null;
             return false;
         }
         if (s.equals("filter-compress4")) {
@@ -1151,9 +1181,11 @@ public class servP4langCfg implements ifcUp {
         l.add(null, (p + 0) + " .  export-names              specify names to be exported");
         l.add(null, (p + 0) + " .  api-stat                  count the sent api messages");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-copp4              specify copp acl to export");
-        l.add(null, (p + 1) + " .    <name:acl>              acl name");
+        l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:acl>              acl name");
         l.add(null, (p + 0) + " " + (p + 1) + "  export-copp6              specify copp acl to export");
-        l.add(null, (p + 1) + " .    <name:acl>              acl name");
+        l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
+        l.add(null, (p + 2) + " .      <name:acl>              acl name");
         l.add(null, (p + 0) + " " + (p + 1) + "  filter-list4              specify prefixes to export");
         l.add(null, (p + 1) + " " + (p + 2) + "    <name:vrf>              vrf name");
         l.add(null, (p + 2) + " .      <name:pl>             prefix list name");
