@@ -2,12 +2,10 @@ del-alw %img%.*
 
 #select-dis linux-image-generic            #ubuntu generic kernel
 #select-dis linux-image-virtual            #ubuntu virtual kernel
-#select-one linux-image-kvm                #ubuntu kvm kernel
-#select-dis linux-image-liquorix-%arch%    #liquorix kernel
+#select-dis linux-image-kvm                #ubuntu kvm kernel
+#select-dis linux-image-liquorix-%kern%    #liquorix kernel
 #select-dis linux-xanmod                   #xanmod kernel
-select-dis linux-image-%arch%             #regular kernel
-select-one linux-image-cloud-%arch%       #cloud kernel
-select-dis linux-initramfs-tool           #initrd tools
+
 select-one busybox                        #small utils
 select-one socat                          #small utils
 select-one udev                           #bring up hw

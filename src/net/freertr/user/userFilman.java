@@ -122,6 +122,9 @@ public class userFilman {
             case 0x8002: // tabulator
                 doKeyTab();
                 return false;
+            case 0x8006: // insert
+                doKeyIns();
+                return false;
             case 0x8004: // enter
                 doKeyEnter();
                 return false;
@@ -181,12 +184,22 @@ public class userFilman {
         pan[act].curL++;
     }
 
+    private void doKeyIns() {
+        int i = pan[act].curL;
+        if (i >= pan[act].sel.size()) {
+            return;
+        }
+        boolean c = pan[act].sel.get(i);
+        pan[act].sel.set(i, !c);
+        pan[act].curL = i + 1;
+    }
+
     private void doKeyPgUp() {
-        pan[act].curL -= 5;
+        pan[act].curL -= pan[act].sizY / 3;
     }
 
     private void doKeyPgDn() {
-        pan[act].curL += 5;
+        pan[act].curL += pan[act].sizY / 3;
     }
 
     private void doKeyHom() {
@@ -237,6 +250,7 @@ public class userFilman {
         l.add("f8 - erase entry");
         l.add("f10 - exit");
         l.add("tab - change panel");
+        l.add("ins - change select");
         l.add("ctrl+p - help");
         l.add("ctrl+r - reread entries");
         l.add("ctrl+l - redraw screen");
@@ -259,35 +273,35 @@ public class userFilman {
     }
 
     private void doKeyF2() {
-        String a = pan[act].getFn();
+        String a = pan[act].path + pan[act].getFn();
         List<String> b = userFlash.calcFileHashes(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyBin() {
-        String a = pan[act].getFn();
+        String a = pan[act].path + pan[act].getFn();
         List<String> b = userFlash.binRead(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyHex() {
-        String a = pan[act].getFn();
+        String a = pan[act].path + pan[act].getFn();
         List<String> b = userFlash.hexRead(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyF3() {
-        String a = pan[act].getFn();
+        String a = pan[act].path + pan[act].getFn();
         List<String> b = bits.txt2buf(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyF4() {
-        String a = pan[act].getFn();
+        String a = pan[act].path + pan[act].getFn();
         List<String> b = bits.txt2buf(a);
         userEditor e = new userEditor(console, b, a, false);
         if (e.doEdit()) {
@@ -304,18 +318,19 @@ public class userFilman {
         if (b.length() < 1) {
             return;
         }
-        userFlash.copy(a, b, false);
+        userFlash.copy(pan[act].path + a, b, false);
         pan[1 - act].readUp();
         doClear();
     }
 
     private void doKeyF6() {
+        int i = pan[act].countSelected(true);
         String a = pan[act].getFn();
         String b = console.askUser("enter new name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
         if (b.length() < 1) {
             return;
         }
-        userFlash.rename(a, b, false, false);
+        userFlash.rename(pan[act].path + a, pan[act].path + b, false, false);
         pan[act].readUp();
     }
 
@@ -329,7 +344,13 @@ public class userFilman {
     }
 
     private void doKeyF8() {
-        String a = pan[act].getFn();
+        int i = pan[act].countSelected(true);
+        String a;
+        if (i < 1) {
+            a = pan[act].getFn();
+        } else {
+            a = i + " files";
+        }
         if (a.endsWith("/")) {
             a = a.substring(0, a.length() - 1);
         }
@@ -338,7 +359,15 @@ public class userFilman {
         if (!b.equals("y")) {
             return;
         }
-        userFlash.delete(a);
+        if (i < 1) {
+            userFlash.delete(pan[act].path + a);
+            pan[act].readUp();
+            return;
+        }
+        List<String> lst = pan[act].getSelected(true);
+        for (i = 0; i < lst.size(); i++) {
+            userFlash.delete(pan[act].path + lst.get(i));
+        }
         pan[act].readUp();
     }
 

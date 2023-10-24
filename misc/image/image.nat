@@ -1,6 +1,3 @@
-include ../misc/image/image.bas
-include ../misc/image/image.beg
-
 select-one zlib1g
 
 exec cp ../misc/image/init.nat %tmp%/init

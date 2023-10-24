@@ -12,22 +12,45 @@ import net.freertr.util.bits;
  */
 public class userFilmanPanel {
 
-    private final userScreen con;
+    /**
+     * the screen
+     */
+    protected final userScreen con;
 
-    private final int scrX;
+    /**
+     * beginning of screen
+     */
+    protected final int scrX;
 
-    private final int scrY;
+    /**
+     * beginning of screen
+     */
+    protected final int scrY;
 
-    private final int sizX;
+    /**
+     * size of screen
+     */
+    protected final int sizX;
 
-    private final int sizY;
+    /**
+     * size of screen
+     */
+    protected final int sizY;
 
-    private int begL;
+    /**
+     * beginning of screen
+     */
+    protected int begL;
 
     /**
      * list of files
      */
     protected final List<String> fil = new ArrayList<String>();
+
+    /**
+     * selection of files
+     */
+    protected final List<Boolean> sel = new ArrayList<Boolean>();
 
     /**
      * current path
@@ -61,8 +84,10 @@ public class userFilmanPanel {
      */
     protected void readUp() {
         fil.clear();
+        sel.clear();
         if (path.length() > 1) {
             fil.add(path + "../");
+            sel.add(false);
         }
         File[] res = userFlash.dirList(path);
         if (res == null) {
@@ -74,8 +99,40 @@ public class userFilmanPanel {
                 a += "/";
             }
             fil.add(a);
+            sel.add(false);
         }
         doRange();
+    }
+
+    /**
+     * count selected files
+     *
+     * @param sl selection
+     */
+    public int countSelected(boolean sl) {
+        int res = 0;
+        for (int i = 0; i < sel.size(); i++) {
+            if (sel.get(i) == sl) {
+                res++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * count selected files
+     *
+     * @param sl selection
+     */
+    public List<String> getSelected(boolean sl) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < sel.size(); i++) {
+            if (sel.get(i) != sl) {
+                continue;
+            }
+            res.add("" + fil.get(i));
+        }
+        return res;
     }
 
     /**
@@ -164,16 +221,20 @@ public class userFilmanPanel {
         String a = bits.padEnd(path, sizX, " ").substring(0, sizX);
         con.putStr(scrX, scrY, userScreen.colGreen, userScreen.colBrYellow, false, a);
         for (int i = 0; i < sizY; i++) {
+            int o = userScreen.colWhite;
             if ((begL + i) >= fil.size()) {
                 a = "";
             } else {
+                if (sel.get(begL + i)) {
+                    o = userScreen.colBrYellow;
+                }
                 a = fil.get(begL + i);
             }
             if (a.startsWith(path)) {
                 a = a.substring(path.length(), a.length());
             }
             a = bits.padEnd(a, sizX, " ").substring(0, sizX);
-            con.putStr(scrX, scrY + i + 1, userScreen.colBlack, userScreen.colWhite, false, a);
+            con.putStr(scrX, scrY + i + 1, userScreen.colBlack, o, false, a);
         }
         a = bits.padEnd((curL + 1) + "/" + fil.size(), sizX, " ");
         con.putStr(scrX, scrY + sizY + 1, userScreen.colBlue, userScreen.colBrCyan, false, a);

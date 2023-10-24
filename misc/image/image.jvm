@@ -1,6 +1,3 @@
-include ../misc/image/image.bas
-include ../misc/image/image.beg
-
 select-dis java-common.*                 #commons
 select-dis default-jdk-.*                #def jvm
 select-dis default-jre-.*                #def jvm

@@ -1,5 +1,7 @@
+del-alw %tmp%
 include ../misc/image/image.bas
 
+select-clr
 select-one libbpf0                        #dataplane requirement
 select-one libmnl0                        #dataplane requirement
 select-one librte-meta-all                #dataplane requirement
@@ -10,5 +12,5 @@ package-down
 package-inst
 
 exec du -sh %tmp%
-exec cd %tmp%;tar cf %img%.extra *
+exec cd %tmp%;tar cf %img%.tar *
 del-alw %tmp%

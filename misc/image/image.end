@@ -11,12 +11,10 @@ del-alw %tmp%/usr/share/bug
 del-alw %tmp%/usr/lib/%kern%-linux-gnu/gconv
 
 find-clear
-#find-file %tmp%/lib/modules/ .*-generic
-#find-file %tmp%/lib/modules/ .*-virtual
-#find-file %tmp%/lib/modules/ .*-kvm
-find-file %tmp%/lib/modules/ .*-%arch%
+find-file %tmp%/lib/modules/ .*-%kern%.*
 find-result
 del-alw %tmp%/lib/modules/%find%/kernel/sound
+del-alw %tmp%/lib/modules/%find%/kernel/drivers/accessibility/speakup
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/gpu
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/iio
 del-alw %tmp%/lib/modules/%find%/kernel/drivers/media
@@ -49,13 +47,6 @@ exec wraplinux -M -l -i %img%.ird -o %img%.wrp %img%.krn
 
 include ../misc/image/image.efi
 
-exec cp /usr/lib/ISOLINUX/isolinux.bin %tmp%/isolinux.bin
-exec cp /usr/lib/syslinux/modules/bios/ldlinux.c32 %tmp%/ldlinux.c32
-exec cp ../misc/image/boot.cfg %tmp%/syslinux.cfg
-exec cp %img%.krn %tmp%/rtr.krn
-exec cp %img%.ird %tmp%/rtr.ird
-exec cp %img%.efi %tmp%/rtr.efi
-exec xorriso -as mkisofs -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat -eltorito-alt-boot -e rtr.efi -no-emul-boot %tmp%/rtr.krn %tmp%/rtr.ird %tmp%/syslinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32 %tmp%/rtr.efi
-exec isohybrid -u %img%.iso
-exec mktorrent -o %img%.torrent -w http://dl.nop.hu/rtr.iso %img%.iso
-del-alw %tmp%
+include ../misc/image/image.iso
+
+include ../misc/image/image.xtr

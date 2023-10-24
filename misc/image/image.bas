@@ -55,6 +55,7 @@ select-dis mount.*
 select-dis x11.*
 select-dis lsb-base.*
 select-dis linux-base.*
+select-dis linux-initramfs.*
 select-dis openssl.*
 select-dis systemd.*
 select-dis libasound.*
@@ -72,3 +73,10 @@ select-dis libxext.*
 select-dis libxi.*
 select-dis libxrender.*
 select-dis libxtst.*
+
+select-one busybox                        #small utils
+select-one socat                          #small utils
+select-one udev                           #bring up hw
+select-one ethtool                        #disable hw chksum
+select-one libpcap0.8                     #dataplane requirement
+select-one libssl3                        #dataplane requirement

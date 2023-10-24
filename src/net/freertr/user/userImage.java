@@ -116,7 +116,12 @@ public class userImage {
         return execCmd("rm -rf " + s) != 0;
     }
 
-    private boolean installPackage(String name) {
+    private boolean installPackage(userImagePkg pkg) {
+        if (pkg.done) {
+            return true;
+        }
+        pkg.done = true;
+        String name = getPackageName(pkg);
         return execCmd("dpkg-deb -x " + name + " " + tempDir + "/") != 0;
     }
 
@@ -232,6 +237,7 @@ public class userImage {
             }
             userImageCat cat = new userImageCat(name + "-" + pool);
             cat.url = mirr;
+            cat.arch = arch;
             catalogs.add(cat);
             cmd.error("reading " + name + " " + pool + " list");
             String cat1 = tempDir + "/" + name + "-" + pool + ".txt";
@@ -315,7 +321,7 @@ public class userImage {
     private boolean instAllFiles() {
         for (int i = 0; i < selected.size(); i++) {
             userImagePkg pkg = selected.get(i);
-            if (installPackage(getPackageName(pkg))) {
+            if (installPackage(pkg)) {
                 return true;
             }
         }
@@ -374,13 +380,13 @@ public class userImage {
             if (a.length() < 1) {
                 continue;
             }
+            pip.linePut("--> " + a + " " + s + " <--");
             if (a.equals("exec")) {
                 execCmd(s);
                 continue;
             }
             cmds cmd = getCmd(a + " " + s);
             cmd.word();
-            cmd.error("--> " + cmd.getRemaining() + " <--");
             if (a.equals("include")) {
                 if (doIncludeOne(cmd)) {
                     return true;
@@ -488,6 +494,13 @@ public class userImage {
                 }
                 continue;
             }
+            if (a.equals("select-clr")) {
+                selected.clear();
+                forbidden.clear();
+                discarded.clear();
+                missing.clear();
+                continue;
+            }
             if (a.equals("select-sum")) {
                 cmd.error("");
                 cmd.error("available:" + dumpList(allPkgs, false));
@@ -556,6 +569,8 @@ class userImageCat implements Comparator<userImageCat> {
 
     public String url;
 
+    public String arch;
+
     public userImageCat(String n) {
         name = n.trim();
     }
@@ -573,6 +588,8 @@ class userImageCat implements Comparator<userImageCat> {
 class userImagePkg implements Comparator<userImagePkg> {
 
     public final String name;
+
+    public boolean done;
 
     public userImageCat cat;
 
