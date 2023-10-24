@@ -125,6 +125,15 @@ public class userFilman {
             case 0x8006: // insert
                 doKeyIns();
                 return false;
+            case 0x002b: // plus
+                doKeyPls();
+                return false;
+            case 0x002d: // minus
+                doKeyMns();
+                return false;
+            case 0x002a: // star
+                doKeyStr();
+                return false;
             case 0x8004: // enter
                 doKeyEnter();
                 return false;
@@ -184,8 +193,41 @@ public class userFilman {
         pan[act].curL++;
     }
 
+    private void doKeyPls() {
+        String b = console.askUser("enter regexp to select:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        doSelection(b, true);
+    }
+
+    private void doSelection(String b, boolean s) {
+        if (b.length() < 1) {
+            return;
+        }
+        for (int i = 1; i < pan[act].fil.size(); i++) {
+            if (!pan[act].fil.get(i).matches(b)) {
+                continue;
+            }
+            pan[act].sel.set(i, s);
+        }
+    }
+
+    private void doKeyMns() {
+        String b = console.askUser("enter regexp to deselect:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        doSelection(b, false);
+    }
+
+    private void doKeyStr() {
+        for (int i = 1; i < pan[act].fil.size(); i++) {
+            boolean c = pan[act].sel.get(i);
+            pan[act].sel.set(i, !c);
+        }
+    }
+
     private void doKeyIns() {
         int i = pan[act].curL;
+        if (i < 1) {
+            pan[act].curL = i + 1;
+            return;
+        }
         if (i >= pan[act].sel.size()) {
             return;
         }
@@ -251,6 +293,9 @@ public class userFilman {
         l.add("f10 - exit");
         l.add("tab - change panel");
         l.add("ins - change select");
+        l.add("plus - select files");
+        l.add("star - negate files");
+        l.add("minus - deselect files");
         l.add("ctrl+p - help");
         l.add("ctrl+r - reread entries");
         l.add("ctrl+l - redraw screen");
@@ -311,27 +356,60 @@ public class userFilman {
     }
 
     private void doKeyF5() {
-        String a = pan[act].getFn();
-        int i = a.lastIndexOf("/");
-        String b = pan[1 - act].path + a.substring(i + 1, a.length());
-        b = console.askUser("enter target name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, b);
+        int i = pan[act].cntSel(true);
+        if (i < 1) {
+            String a = pan[act].getFn();
+            i = a.lastIndexOf("/");
+            String b = pan[1 - act].path + a.substring(i + 1, a.length());
+            b = console.askUser("enter target name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, b);
+            if (b.length() < 1) {
+                return;
+            }
+            userFlash.copy(pan[act].path + a, b, false);
+            pan[1 - act].readUp();
+            doClear();
+            return;
+        }
+        String a = pan[1 - act].path;
+        String b = console.askUser("copy " + i + " files to new place:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
         if (b.length() < 1) {
             return;
         }
-        userFlash.copy(pan[act].path + a, b, false);
+        List<String> lst = pan[act].getSel(true);
+        for (i = 0; i < lst.size(); i++) {
+            a = lst.get(i);
+            userFlash.copy(pan[act].path + a, b + a, false);
+        }
         pan[1 - act].readUp();
         doClear();
     }
 
     private void doKeyF6() {
-        int i = pan[act].countSelected(true);
-        String a = pan[act].getFn();
-        String b = console.askUser("enter new name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
+        int i = pan[act].cntSel(true);
+        if (i < 1) {
+            String a = pan[act].getFn();
+            String b = console.askUser("enter new name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
+            if (b.length() < 1) {
+                return;
+            }
+            userFlash.rename(pan[act].path + a, pan[act].path + b, false, false);
+            pan[act].readUp();
+            doClear();
+            return;
+        }
+        String a = pan[1 - act].path;
+        String b = console.askUser("move " + i + " files to new place:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
         if (b.length() < 1) {
             return;
         }
-        userFlash.rename(pan[act].path + a, pan[act].path + b, false, false);
+        List<String> lst = pan[act].getSel(true);
+        for (i = 0; i < lst.size(); i++) {
+            a = lst.get(i);
+            userFlash.rename(pan[act].path + a, b + a, false, false);
+        }
         pan[act].readUp();
+        pan[1 - act].readUp();
+        doClear();
     }
 
     private void doKeyF7() {
@@ -341,10 +419,11 @@ public class userFilman {
         }
         userFlash.mkdir(b);
         pan[act].readUp();
+        doClear();
     }
 
     private void doKeyF8() {
-        int i = pan[act].countSelected(true);
+        int i = pan[act].cntSel(true);
         String a;
         if (i < 1) {
             a = pan[act].getFn();
@@ -362,13 +441,15 @@ public class userFilman {
         if (i < 1) {
             userFlash.delete(pan[act].path + a);
             pan[act].readUp();
+            doClear();
             return;
         }
-        List<String> lst = pan[act].getSelected(true);
+        List<String> lst = pan[act].getSel(true);
         for (i = 0; i < lst.size(); i++) {
             userFlash.delete(pan[act].path + lst.get(i));
         }
         pan[act].readUp();
+        doClear();
     }
 
 }

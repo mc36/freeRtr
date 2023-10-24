@@ -578,7 +578,7 @@ public class userGame {
             doAscTab();
             return;
         }
-        if (a.equals("keys")) {
+        if (a.equals("vmkeys")) {
             doKeys();
             return;
         }

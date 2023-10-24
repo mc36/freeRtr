@@ -1788,7 +1788,7 @@ public class userExec {
         hl.add(null, "2 .      dick                         show some dick");
         hl.add(null, "2 .      color                        take test");
         hl.add(null, "2 .      ascii                        take test");
-        hl.add(null, "2 .      keys                         take test");
+        hl.add(null, "2 .      vmkeys                       take test");
         hl.add(null, "2 .      clear                        clear screen");
         hl.add(null, "2 .      gomoku                       play game");
         hl.add(null, "2 .      tetris                       play game");

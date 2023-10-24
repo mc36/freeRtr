@@ -108,8 +108,9 @@ public class userFilmanPanel {
      * count selected files
      *
      * @param sl selection
+     * @return number of files
      */
-    public int countSelected(boolean sl) {
+    protected int cntSel(boolean sl) {
         int res = 0;
         for (int i = 0; i < sel.size(); i++) {
             if (sel.get(i) == sl) {
@@ -123,8 +124,9 @@ public class userFilmanPanel {
      * count selected files
      *
      * @param sl selection
+     * @return list of files
      */
-    public List<String> getSelected(boolean sl) {
+    protected List<String> getSel(boolean sl) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < sel.size(); i++) {
             if (sel.get(i) != sl) {
@@ -236,7 +238,7 @@ public class userFilmanPanel {
             a = bits.padEnd(a, sizX, " ").substring(0, sizX);
             con.putStr(scrX, scrY + i + 1, userScreen.colBlack, o, false, a);
         }
-        a = bits.padEnd((curL + 1) + "/" + fil.size(), sizX, " ");
+        a = bits.padEnd(cntSel(true) + "/" + (curL + 1) + "/" + fil.size(), sizX, " ");
         con.putStr(scrX, scrY + sizY + 1, userScreen.colBlue, userScreen.colBrCyan, false, a);
         con.putStr(con.sizX - 8, con.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
     }
