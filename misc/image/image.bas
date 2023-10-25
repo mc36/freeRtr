@@ -34,6 +34,7 @@ exec cp ../binTmp/*.bin %tmp%/rtr/
 #catalog-read xan gz http://deb.xanmod.org/ releases main
 catalog-read sid xz http://deb.debian.org/debian/ sid main
 catalog-read exp xz http://deb.debian.org/debian/ experimental main
+catalog-sum
 
 select-dis debconf.*
 select-dis adduser.*

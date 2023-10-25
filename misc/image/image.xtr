@@ -1,7 +1,3 @@
-del-alw %tmp%
-include ../misc/image/image.bas
-
-select-clr
 select-one libbpf0                        #dataplane requirement
 select-one libmnl0                        #dataplane requirement
 select-one librte-meta-all                #dataplane requirement
@@ -10,7 +6,8 @@ select-lst
 select-sum
 package-down
 package-inst
+include ../misc/image/image.cln
 
 exec du -sh %tmp%
-exec cd %tmp%;tar cf %img%.tar *
+exec cd %tmp%;tar cf %img%.xtr *
 del-alw %tmp%

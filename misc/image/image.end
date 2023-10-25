@@ -2,12 +2,7 @@ exec cp ../misc/image/init.dev %tmp%/init.dev
 exec cp ../misc/image/init.sys %tmp%/init.sys
 exec mv %tmp%/boot/vmlinuz* %img%.krn
 del-alw %tmp%/boot
-del-alw %tmp%/usr/src
-del-alw %tmp%/usr/include
-del-alw %tmp%/usr/share/info
-del-alw %tmp%/usr/share/man
-del-alw %tmp%/usr/share/doc
-del-alw %tmp%/usr/share/bug
+include ../misc/image/image.cln
 del-alw %tmp%/usr/lib/%kern%-linux-gnu/gconv
 
 find-clear
@@ -45,8 +40,8 @@ exec zstd -9 %img%.cpio
 exec mv %img%.cpio.zst %img%.ird
 exec wraplinux -M -l -i %img%.ird -o %img%.wrp %img%.krn
 
-include ../misc/image/image.efi
+include ../misc/image/image.grb
 
-include ../misc/image/image.iso
+include ../misc/image/image.cdi
 
 include ../misc/image/image.xtr

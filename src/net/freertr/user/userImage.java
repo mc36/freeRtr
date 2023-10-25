@@ -44,9 +44,11 @@ public class userImage {
 
     private String arch = "amd64";
 
-    private String boot = "x86_64";
+    private String boot = "x86_64-efi";
 
-    private String kern = "x86_64";
+    private String kern = "cloud-amd64";
+
+    private String grub = "efi-amd64-bin";
 
     private String uefi = "bootx64.efi";
 
@@ -83,7 +85,7 @@ public class userImage {
         }
     }
 
-    private String dumpList(tabGen<userImagePkg> lst, boolean detail) {
+    private String dumpList(tabGen<userImagePkg> lst, boolean done, boolean detail) {
         String s = "";
         long o = 0;
         for (int i = 0; i < lst.size(); i++) {
@@ -114,15 +116,6 @@ public class userImage {
 
     private boolean delFiles(String s) {
         return execCmd("rm -rf " + s) != 0;
-    }
-
-    private boolean installPackage(userImagePkg pkg) {
-        if (pkg.done) {
-            return true;
-        }
-        pkg.done = true;
-        String name = getPackageName(pkg);
-        return execCmd("dpkg-deb -x " + name + " " + tempDir + "/") != 0;
     }
 
     private boolean downloadFile(String url, String fil, int siz) {
@@ -289,21 +282,42 @@ public class userImage {
     }
 
     /**
+     * install one file
+     *
+     * @param pkg package to download
+     * @return true on error, false on success
+     */
+    private boolean instOneFile(userImagePkg pkg) {
+        String name = getPackageName(pkg);
+        if (pkg.done) {
+            pip.linePut("skipping " + name);
+            return false;
+        }
+        pkg.done = true;
+        return execCmd("dpkg-deb -x " + name + " " + tempDir + "/") != 0;
+    }
+
+    /**
      * download one image
      *
      * @param pkg package to download
      * @return true on error, false on success
      */
-    public boolean downOneFile(userImagePkg pkg) {
+    private boolean downOneFile(userImagePkg pkg) {
+        String name = getPackageName(pkg);
+        if (pkg.done) {
+            pip.linePut("skipping " + name);
+            return false;
+        }
         for (int i = 0; i < hashMode; i++) {
-            if (downloadFile(pkg.cat.url + pkg.file, getPackageName(pkg), pkg.size)) {
+            if (downloadFile(pkg.cat.url + pkg.file, name, pkg.size)) {
                 return true;
             }
-            boolean vrfy = verifyPackage(getPackageName(pkg), pkg.sum);
+            boolean vrfy = verifyPackage(name, pkg.sum);
             if (!vrfy) {
                 return false;
             }
-            userFlash.delete(getPackageName(pkg));
+            userFlash.delete(name);
         }
         return true;
     }
@@ -321,7 +335,7 @@ public class userImage {
     private boolean instAllFiles() {
         for (int i = 0; i < selected.size(); i++) {
             userImagePkg pkg = selected.get(i);
-            if (installPackage(pkg)) {
+            if (instOneFile(pkg)) {
                 return true;
             }
         }
@@ -367,6 +381,7 @@ public class userImage {
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
+            s = s.replaceAll("%grub%", grub);
             s = s.replaceAll("%uefi%", uefi);
             s = s.replaceAll("%find%", found);
             s = s.replaceAll("%%", "%");
@@ -423,6 +438,10 @@ public class userImage {
                 kern = s;
                 continue;
             }
+            if (a.equals("grub")) {
+                grub = s;
+                continue;
+            }
             if (a.equals("uefi")) {
                 uefi = s;
                 continue;
@@ -469,6 +488,17 @@ public class userImage {
                 }
                 continue;
             }
+            if (a.equals("catalog-sum")) {
+                tabGen<userImagePkg> lst = new tabGen<userImagePkg>();
+                for (i = 0; i < catalogs.size(); i++) {
+                    userImageCat cat = catalogs.get(i);
+                    filterCat(lst, cat, selected);
+                    cmd.error("");
+                    cmd.error("catalog " + cat + ":" + dumpList(lst, false, true));
+                }
+                cmd.error("");
+                continue;
+            }
             if (a.equals("catalog-read")) {
                 cmds c = getCmd(s);
                 if (readUpCatalog(c)) {
@@ -490,7 +520,11 @@ public class userImage {
             }
             if (a.equals("select-lst")) {
                 for (i = 0; i < selected.size(); i++) {
-                    cmd.error("" + selected.get(i));
+                    userImagePkg ntry = selected.get(i);
+                    if (ntry.done) {
+                        continue;
+                    }
+                    cmd.error("" + ntry);
                 }
                 continue;
             }
@@ -503,22 +537,17 @@ public class userImage {
             }
             if (a.equals("select-sum")) {
                 cmd.error("");
-                cmd.error("available:" + dumpList(allPkgs, false));
+                cmd.error("available:" + dumpList(allPkgs, false, false));
                 cmd.error("");
-                cmd.error("forbidden:" + dumpList(forbidden, true));
+                cmd.error("forbidden:" + dumpList(forbidden, false, true));
                 cmd.error("");
-                cmd.error("discarded:" + dumpList(discarded, true));
+                cmd.error("discarded:" + dumpList(discarded, false, true));
                 cmd.error("");
-                cmd.error("selected:" + dumpList(selected, true));
+                cmd.error("selected:" + dumpList(selected, false, true));
                 cmd.error("");
-                cmd.error("missing:" + dumpList(missing, true));
-                tabGen<userImagePkg> lst = new tabGen<userImagePkg>();
-                for (i = 0; i < catalogs.size(); i++) {
-                    userImageCat cat = catalogs.get(i);
-                    filterCat(lst, cat, selected);
-                    cmd.error("");
-                    cmd.error("from " + cat + ":" + dumpList(lst, true));
-                }
+                cmd.error("already:" + dumpList(selected, true, true));
+                cmd.error("");
+                cmd.error("missing:" + dumpList(missing, false, true));
                 cmd.error("");
                 continue;
             }
