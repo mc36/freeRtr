@@ -1,9 +1,11 @@
 #!/bin/sh
+
 ARCH=-`uname -m`
 IMG=`cd ../../binImg/;pwd`
+
 qemu-img create $IMG/rtr$ARCH.dsk 2G
 mkdir ../../binMnt
-sudo ./i.sh
+sudo ./i.sh $ARCH
 rm -rf ../../binMnt
 qemu-img convert -O qcow2 -c $IMG/rtr$ARCH.dsk $IMG/rtr$ARCH.qcow2
 qemu-img convert -O vmdk -o subformat=streamOptimized $IMG/rtr$ARCH.dsk $IMG/rtr$ARCH.vmdk

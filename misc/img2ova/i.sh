@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ARCH=-`uname -m`
+ARCH=$1
 IMG=`cd ../../binImg/;pwd`
 MNT=`cd ../../binMnt/;pwd`
 
