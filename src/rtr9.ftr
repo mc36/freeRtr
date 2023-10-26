@@ -1,0 +1,328 @@
+qc pass: interop1: ebgp
+qc pass: interop1: ibgp
+qc pass: interop1: bgp locpref
+qc pass: interop1: bgp origin
+qc pass: interop1: bgp metric
+qc pass: interop1: bgp community
+qc pass: interop1: bgp aspath
+qc pass: interop1: bgp with labels
+qc pass: interop1: bgp addpath
+qc pass: interop1: bgp prefix withdraw
+qc pass: interop1: bgp vpnv4
+qc pass: interop1: bgp authentication
+qc pass: interop1: bgp vpnv6
+qc pass: interop1: vpls/ldp over bgp
+qc pass: interop1: vpls/bgp over bgp
+qc pass: interop1: bgp extended community
+qc pass: interop1: evpn/cmac over bgp
+qc pass: interop1: bgp 6pe
+qc pass: interop1: bgp aigp
+qc pass: interop1: bgp with php labels
+qc pass: interop1: bgp large community
+qc pass: interop1: vpls/ldp cw over bgp
+qc pass: interop1: bgp ao authentication
+qc pass: interop1: dhcp server
+qc pass: interop1: dhcp client
+qc pass: interop1: dns
+qc pass: interop1: eigrp
+qc pass: interop1: eigrp prefix withdraw
+qc pass: interop1: ethernet encapsulation
+qc pass: interop1: dot1q encapsulation
+qc pass: interop1: spantree nonroot
+qc pass: interop1: spantree root
+qc pass: interop1: point2point ethernet encapsulation
+qc pass: interop1: lacp
+qc pass: interop1: fragmentation and reassembly
+qc pass: interop1: sgt encapsulation
+qc pass: interop1: verify source
+qc pass: interop1: point2point isis
+qc pass: interop1: isis dis
+qc pass: interop1: isis nondis
+qc pass: interop1: isis narrow metric
+qc pass: interop1: isis te
+qc pass: interop1: isis multi-topology
+qc pass: interop1: isis prefix withdraw
+qc pass: interop1: isis text authentication
+qc pass: interop1: isis p2mp te
+qc pass: interop1: isis sr
+qc pass: interop1: isis lsp text authentication
+qc pass: interop1: isis php sr
+qc pass: interop1: isis te with pcep
+qc pass: interop1: integrated isis
+qc pass: interop1: isis md5 authentication
+qc pass: interop1: isis lsp md5 authentication
+qc pass: interop1: l2tp2 client
+qc pass: interop1: l2tp2 server
+qc pass: interop1: l2tp3 server
+qc pass: interop1: ethernet tunneling with l2tp3
+qc pass: interop1: ldp lsp
+qc pass: interop1: ethernet over mpls
+qc pass: interop1: ldp p2mp lsp
+qc pass: interop1: ldp mp2mp lsp
+qc pass: interop1: ldp php lsp
+qc pass: interop1: ldp over point2point ethernet
+qc pass: interop1: ethernet over mpls cw
+qc pass: interop1: igmp3/mld2
+qc pass: interop1: pim
+qc pass: interop1: modem with alaw
+qc pass: interop1: modem with ulaw
+qc pass: interop1: point2point ospf
+qc pass: interop1: ospf dr
+qc pass: interop1: ospf nondr
+qc pass: interop1: ospf transit area
+qc pass: interop1: ospf stub area
+qc pass: interop1: ospf nssa area
+qc pass: interop1: ospf te
+qc pass: interop1: ospf prefix withdraw
+qc pass: interop1: ospf text authentication
+qc pass: interop1: ospf p2mp te
+qc pass: interop1: ospf sr
+qc pass: interop1: ospf php sr
+qc pass: interop1: ospf te with pcep
+qc pass: interop1: ospf md5 authentication
+qc pass: interop1: pppoe client
+qc pass: interop1: pppoe server
+qc pass: interop1: pppoe with pap
+qc pass: interop1: pppoe with chap
+qc pass: interop1: pppoe with eap
+qc pass: interop1: pppoe with long multilink fragmentation
+qc pass: interop1: radius
+qc pass: interop1: rip
+qc pass: interop1: rip prefix withdraw
+qc pass: interop1: rip authentication
+qc pass: interop1: ssh
+qc pass: interop1: tacacs
+qc pass: interop1: gre tunnel
+qc pass: interop1: ipip tunnel
+qc pass: interop1: vxlan tunnel
+todo: vdc to have local, connect as sdn autocreated
+todo: generalise server access- knobs
+todo: honeypot to wireformat, decode
+todo: generalize dynamic-metric knobs
+todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
+todo: image viewer to file manager
+todo: game butterfly hanoy, modem, mdev
+todo: bmp server to listeners, bmp, ris and bgp
+todo: server bgprsrr
+todo: server http to have api for scripts
+todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
+todo: inspection dropped sessions do be able to close the sessions properly at layer4
+todo: consider draft-ietf-idr-performance-routing
+todo: ioam as rfc9452
+todo: dlep as rfc8175
+todo: flash ext-delete also to commander
+todo: commander to have selection
+todo: commander to get away the cursor
+todo: player queue up down add-again
+todo: openflow to have 2 label support and stack to p4lang
+todo: redundancy to have the remote shows and a counter on how many failures observed
+todo: bridge and router have renumber knob
+todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
+todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
+todo: mist natives p4fwd to report all the error messages in the control channel in dataplane-says
+todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
+todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
+todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
+todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
+todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
+todo: important protocols to be able to continue from the start at least on local, later within the vdc
+todo: menu remote asdf
+todo: onehit to all the menus
+todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
+todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
+todo: route-map --> route-policy converter
+todo: route-map <-- route-policy converter
+todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
+todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
+todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
+todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
+todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
+todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
+todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
+todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
+todo: player: disable volume in multicast streamer mode
+todo: disable playlist loading in multicast receiver mode
+todo: ctrl+l/r to try to redetect the screen resolution
+todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
+todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
+todo: configure diff to have chance to change the sho config-differences
+todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
+todo: display asdfsdfas | asciinema <--- same as | pastebin....
+todo: server security to have settable tls version from client knob first
+todo: server security to log the transactions
+todo: server security to stick to the good protocols
+todo: server security to support bgp bmp mrt
+todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
+todo: show whowas from bmp mrt archive
+todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
+todo: server http xxx to log better the class exceptions as errors
+todo: bgp to have at least show ipv46 bgp 66666 description
+todo: noti#show ipv4 bgp ?
+todo: 1     - process id
+todo: 66666 - process id - as asdf
+todo: <num> - process id
+todo: traffic through bgp sr-policy
+todo: traffic through bgp nsh
+todo: policy from bgp rpd
+todo: flash install as whole zip loadables
+todo: client auto-save-on-upgrade flash network archive
+todo: tabbable line asfadsasd exec autocommand at least
+todo: tabbable menu key/tui commands autocommand at least
+todo: vrf definition to have route consistency check between the bgp peers
+todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
+todo: show config-xxx to have tabbables like routers servers etc
+todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
+todo: a terminal junos-mode knob that defaults to set-del etc as a new class
+todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
+todo: it would not harm a lot to apply to the fillables like the check asdf
+todo: show config-backup if available
+todo: nrpe to send out emails from error.log
+todo: nrpe to have followtracker support
+todo: scheduler asdf single-run as no respawn or something
+todo: clntportscan to have udp knob then portscan to have the knob finally
+todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
+todo: private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
+todo: dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
+todo: some more .equals("no") to cmds.negated conversions like   <!-------------------------------------
+todo: ("no") --> cmds.negated   <!-------------------------------------------------------------------
+todo: "no" --> cmds.negated   <!---------------------------------------------------------------------
+todo: "no " --> cmds.negated   <!--------------------------------------------------------------------
+todo: same for upgrade-cli  <!-----------------------------------------------------------------------
+todo: client hide-secrets  <!------------------------------------------------------------------------
+todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
+todo: server smtp / tag messages by subject
+todo: server smtp / collect-failures
+todo: server smtp / check reverse of the sender and put the info to received field...
+todo: server smtp / auto-reply editor/text/etc
+todo: client password-stars to get under the userLine
+todo: client buggy-trigger <trigger>
+todo: client log-boot to be emailed error.log
+todo: client upgrade-force url
+todo: client upgrade-simulate url
+todo: client cidr-colorize in the generated show *configs
+todo: client http-user-agent <anything>
+todo: client tls randomize version if a range configured
+todo: alias with regexps to ios regexps, steal cache from *ec* and idea from **
+todo: alias to have config aliases
+todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
+todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
+todo: flash mailer <server-smtp> that is a loadable module
+todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
+todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
+todo: rtr-hw to have tcp2linux and vrf2linux knobs
+todo: test todo knob as an editor but in the running-config
+todo: inter xxx / macrandomize
+todo: sho run check/track
+todo: server http / host * webring-local <text>
+todo: server http / host * webring-remote <path/file*>
+todo: server http / host * custom-local <text>
+todo: server http / host * custom-remote >path/file>
+todo: server http / host * user-agent matcher with redirect
+todo: server http / host * searchbar
+todo: server smtp / ptmud
+todo: server http / host * ptmud
+todo: test access-list <acl> <src> <trg>
+todo: serevr security maximum pendings as access-security
+todo: servers to have access-aaa
+todo: sho bgp * auto-summarize
+todo: config committed with check for saved and backup config
+todo: terminal background and foreground
+todo: interface lo0 as lo-core, persistently
+todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
+todo: rework snmp to use sensors
+todo: mpls inband performance measurement
+todo: backup path support to the spf class
+todo: wcmp support to the spf class
+todo: allow command to be a substring of an other
+todo: rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
+todo: rfc8548 tcpcrypt
+todo: rfc9298 rfc9484 ip/udp-proxy-in-http
+todo: update gtp stack to the latest standards
+todo: nat and pbr config to have reindex
+todo: bgp shadow route reflection
+todo: bgp optimal route reflection
+todo: bgp peer autoconfig
+todo: bgp layer2 flowspec
+todo: bgp flowspec v2
+todo: bgp signed path
+todo: parse privilege levels from tacacs
+todo: ldap client, server
+todo: diameter client, server
+todo: tester to have chatscript support
+todo: tester to have dynamips support with the proper image and magic
+todo: tester to have followtracker knob
+todo: tester to have support chatscript and have followtracker knob
+todo: tester to have support for dynamips and vm.zip stuff
+todo: tester to have support for the hw-cfg stuff
+todo: upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
+todo: dhcp relay support
+todo: tcp selective ack
+todo: ilnp (rfc6740)
+todo: lisp4, lisp6
+todo: l2vpn for isis
+todo: hip (rfc4423)
+todo: more upgrade-cli knobs
+todo: more renamers
+todo: more tabbables
+todo: more show running commands
+todo: more show config commands
+todo: more show commands
+todo: more clear commands
+todo: more interactive tools
+todo: more features with clean implementation
+todo: more randomizers
+todo: more collect commands
+todo: more knob generalizations
+todo: more userLine fun like alias-text, alias-regexp, much like under checks
+todo: more server quote fun like cleanups, randomizers, loggers, anything
+todo: more server http fun like cleanups, randomizers, loggers, anything
+todo: more server smtp fun like cleanups, randomizers, loggers, anything
+todo: more server dns fun like cleanups, randomizers, loggers, anything
+todo: server dns to have iname support as a tricker cname like ip46a already
+todo: more server fun like cleanups, randomizers, loggers, anything
+todo: more fun stuff to to configure server dns http smtp and quote
+todo: more fun min-max knobs
+todo: server dns to have some more min-max configurabels from client knobs
+todo: all the aaa stuff to have collect-failures knob to error.log
+todo: more fun like cleanups, randomizers, loggers, anything
+todo: more fun refactorings and clever cleanups
+todo: more fun knobs in general
+todo: reuse the clients in the important servers as config knobs
+todo: more selftests for the servers and the clients
+todo: move client stuffs to userline if possible
+todo: pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
+todo: pcapint laters later in bidir to signal the current state too
+todo: dissect too big servers to classes properly while not opening new directories
+todo: misc album to have some ncdu functionality like a very simple matstat
+todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
+todo: misc player volume to time out to the main screen
+todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
+todo: settle a new slide project misc slash thumbs as a small helper for misc slash album
+todo: server tftp to have server http backup alike functionality
+todo: server forwarder to have some local logging finally
+todo: server http have some local logging finally
+todo: scheduler asdf single-run
+todo: show running-config vrf iot to display routing protocols, servers and interfaces
+todo: show running-config vdc <tabbable>
+todo: server * vrf <tabbable> and upgrade-cli
+todo: interface * vrf <tabbable> and upgrade-cli
+todo: terminal clear same as game clear
+todo: clear aaa <tabbable>
+todo: ping and friends to accept delay as range
+todo: router * upgrade-cli as default
+todo: server * upgrade-cli as default
+todo: interface * upgrade-cli as default
+todo: show archived-consistency
+todo: reorder this file yearly
+todo: tabbable do ping and the rest of the exec commands
+todo: tabbable everything
+todo: more tldring to the this sh1t in every december and normally to the sources too
+todo: document the vm
+todo: .vm <--> vm20
+todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
+todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
+todo: more clean transpilers for the vm
+todo: more clean converters for the vm
+todo: flash commander to have file info and hash
+todo: banyan vines protocol in sw
+todo: hackediff alias to diff with the | hacked fun filter
