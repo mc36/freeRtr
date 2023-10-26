@@ -14,6 +14,8 @@ dd bs=1K conv=notrunc if=$IMG/rtr$ARCH.flp of=$IMG/rtr$ARCH.dsk seek=1024
 mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 4096 -E offset=4194304 -F $IMG/rtr$ARCH.dsk 475000
 mount -o loop,offset=4194304 $IMG/rtr$ARCH.dsk $MNT
 cp $IMG/rtr$ARCH.krn $MNT/rtr.krn
+cp $IMG/rtr$ARCH.grb $MNT/rtr.grb
+cp $IMG/rtr$ARCH.flp $MNT/rtr.flp
 
 echo -n `cd $MNT/;cpio --quiet -H newc -i <$IMG/rtr$ARCH.cpio`
 echo -n `cd $MNT/;csplit -s init /^###rootfs###$/`
