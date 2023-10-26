@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.cfg.cfgAll;
 import net.freertr.util.bits;
-import net.freertr.util.cmds;
 
 /**
  * bgp4 flap list

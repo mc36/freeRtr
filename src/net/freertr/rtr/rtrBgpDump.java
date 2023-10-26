@@ -18,6 +18,7 @@ import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabLabel;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
@@ -150,13 +151,9 @@ public class rtrBgpDump {
             if (old != null) {
                 ntry = old;
             }
-            String a = prf.best.asPathStr();
-            int o = a.lastIndexOf(" ");
-            if (o >= 0) {
-                a = a.substring(o + 1, a.length());
-            }
-            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
-            ntry.infos.add(pth);
+            int o = prf.best.asPathEnd();
+            rtrBgpFlapLst pth = new rtrBgpFlapLst(tabLabel.int2labels(o));
+            ntry.paths.add(pth);
         }
     }
 

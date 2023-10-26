@@ -4,6 +4,7 @@ import java.util.Comparator;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.clnt.clntWhois;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabRouteUtil;
 import net.freertr.util.bits;
@@ -93,10 +94,27 @@ public class rtrBgpFlapStat implements Comparator<rtrBgpFlapStat> {
      *
      * @return paths
      */
-    public String toIncons() {
+    public String toInconsStr() {
         String s = "";
         for (int i = 0; i < infos.size(); i++) {
             s += " " + infos.get(i).info;
+        }
+        return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + s.trim();
+    }
+
+    /**
+     * get inconsistency paths
+     *
+     * @return paths
+     */
+    public String toInconsPth() {
+        String s = "";
+        for (int i = 0; i < paths.size(); i++) {
+            rtrBgpFlapLst ntry = paths.get(i);
+            for (int o = 0; o < ntry.lst.size(); o++) {
+                int p = ntry.lst.get(o);
+                s += " " + clntWhois.asn2mixed(p, true);
+            }
         }
         return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + s.trim();
     }

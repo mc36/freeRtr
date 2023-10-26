@@ -4230,9 +4230,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as path tree
      *
      * @param safi safi to query
+     * @param asn asn to start from
      * @return text
      */
-    public List<String> getAsTree(int safi) {
+    public List<String> getAsTree(int safi, int asn) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), safi);
@@ -4240,8 +4241,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), safi);
         }
+        if (asn == 0) {
+            asn = localAs;
+        }
         List<String> res = new ArrayList<String>();
-        rtrBgpDump.drawAsTree(res, lst, localAs, "");
+        rtrBgpDump.drawAsTree(res, lst, asn, "");
         return res;
     }
 
@@ -4307,7 +4311,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (!mtch.matches(ntry.infos.size())) {
                 continue;
             }
-            res.add("" + ntry.toIncons());
+            res.add("" + ntry.toInconsStr());
         }
         return res;
     }
@@ -4330,10 +4334,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         userFormat res = new userFormat("|", "path|ases");
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapStat ntry = lst.get(i);
-            if (!mtch.matches(ntry.infos.size())) {
+            if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
-            res.add("" + ntry.toIncons());
+            res.add("" + ntry.toInconsPth());
         }
         return res;
     }

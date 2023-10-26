@@ -4275,7 +4275,9 @@ public class userShow {
             return;
         }
         if (a.equals("astree")) {
-            rdr.putStrArr(r.bgp.getAsTree(sfi));
+            a = cmd.word();
+            int i = bits.str2num(a);
+            rdr.putStrArr(r.bgp.getAsTree(sfi, i));
             return;
         }
         if (a.equals("asorigin")) {
