@@ -1,5 +1,4 @@
 global-options: {}
-features:
-  drivers:
-    p4rt: true
-architectures: []
+features: {}
+architectures:
+- tofino

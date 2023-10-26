@@ -432,7 +432,6 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
-todo: vpnv4 vpnv6 in evpn like address-family l2vpn evpn / advertise vpnv4 unicast
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode

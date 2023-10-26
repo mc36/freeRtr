@@ -15287,3 +15287,38 @@ qc pass: bgp routepolicy filtering with aggregator with soft-reconfig
 no todo: bgp astree shows from asconn
 ---------------------------------- 2023-10-24 16:05:18 23.10.24
 no todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
+---------------------------------- 2023-10-25 22:26:42 23.10.25
+no todo: vpnv4 vpnv6 in evpn like address-family l2vpn evpn / advertise vpnv4 unicast
+no qc pass: ibgp rr othervpns prefix withdraw
+no qc pass: ibgp rr vpns prefix withdraw
+no qc pass: bgp othervpns change in metric
+no qc pass: bgp vpns change in metric
+failed: bgp vpns change in metric
+failed: bgp othervpns change in metric
+failed: ibgp rr vpns prefix withdraw
+failed: ibgp rr othervpns prefix withdraw
+qc pass: l3evpns over ebgp
+qc pass: l3evpns over ibgp
+qc pass: l3evpns over ibgp rr
+qc pass: l3evpns over confed bgp
+qc pass: l3evpns over bgp route server
+qc pass: l3evpns over bgp with soft-reconfig
+qc pass: l3evpns over bgp additional path
+qc pass: l3evpns over bgp auto mesh tunnel
+qc pass: l3otherevpns over ebgp
+qc pass: l3eothervpns over ibgp
+qc pass: l3otherevpns over ibgp rr
+qc pass: l3otherevpns over confed bgp
+qc pass: l3otherevpns over bgp route server
+qc pass: l3otherevpns over bgp with soft-reconfig
+qc pass: l3otherevpns over bgp additional path
+qc pass: l3otherevpns over bgp auto mesh tunnel
+---------------------------------- 2023-10-26 06:18:03 23.10.26
+no failed: ibgp rr othervpns prefix withdraw
+no failed: ibgp rr vpns prefix withdraw
+no failed: bgp othervpns change in metric
+no failed: bgp vpns change in metric
+qc pass: bgp vpns change in metric
+qc pass: bgp othervpns change in metric
+qc pass: ibgp rr vpns prefix withdraw
+qc pass: ibgp rr othervpns prefix withdraw

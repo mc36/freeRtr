@@ -1,6 +1,8 @@
 #!/bin/sh
-#sudo apt-get install psmisc iproute2 net-tools socat tshark iperf gcc git telnet python3-yappi python3-grpcio default-jdk-headless default-jre-headless bc jq
+#sudo apt-get install psmisc iproute2 net-tools socat tshark iperf gcc git telnet python3-yappi python3-grpcio
+#  default-jdk-headless default-jre-headless bc jq libthrift-dev libboost-dev libboost-all-dev i2c-tools libi2c-dev linux-headers-amd64
 #sudo $SDE/p4studio/install-p4studio-dependencies.sh
+#$SDE/p4studio/p4studio interactive
 #$SDE/p4studio/p4studio profile apply ~/model.yaml
 #sudo rm -rf $SDE/build
 #sudo rm -rf $SDE/packages

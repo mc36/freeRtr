@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.10.25-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-10-25 10:52:25, took 00:11:15, with 80 workers, on 3234 cases, 0 failed, 0 traces, 9 retries
+-;-;-;freeRouter-rare v23.10.26-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2023-10-26 06:33:32, took 00:15:28, with 80 workers, on 3250 cases, 0 failed, 0 traces, 8 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2738,6 +2738,22 @@ http://sources.freertr.org/cfg/rout-bgp796.tst;rout-bgp796.tst;success;bgp chang
 http://sources.freertr.org/cfg/rout-bgp797.tst;rout-bgp797.tst;success;bgp change in aggregator with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp798.tst;rout-bgp798.tst;success;bgp routepolicy filtering with aggregator
 http://sources.freertr.org/cfg/rout-bgp799.tst;rout-bgp799.tst;success;bgp routepolicy filtering with aggregator with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp800.tst;rout-bgp800.tst;success;l3evpns over ebgp
+http://sources.freertr.org/cfg/rout-bgp801.tst;rout-bgp801.tst;success;l3evpns over ibgp
+http://sources.freertr.org/cfg/rout-bgp802.tst;rout-bgp802.tst;success;l3evpns over ibgp rr
+http://sources.freertr.org/cfg/rout-bgp803.tst;rout-bgp803.tst;success;l3evpns over confed bgp
+http://sources.freertr.org/cfg/rout-bgp804.tst;rout-bgp804.tst;success;l3evpns over bgp route server
+http://sources.freertr.org/cfg/rout-bgp805.tst;rout-bgp805.tst;success;l3evpns over bgp with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp806.tst;rout-bgp806.tst;success;l3evpns over bgp additional path
+http://sources.freertr.org/cfg/rout-bgp807.tst;rout-bgp807.tst;success;l3evpns over bgp auto mesh tunnel
+http://sources.freertr.org/cfg/rout-bgp808.tst;rout-bgp808.tst;success;l3otherevpns over ebgp
+http://sources.freertr.org/cfg/rout-bgp809.tst;rout-bgp809.tst;success;l3eothervpns over ibgp
+http://sources.freertr.org/cfg/rout-bgp810.tst;rout-bgp810.tst;success;l3otherevpns over ibgp rr
+http://sources.freertr.org/cfg/rout-bgp811.tst;rout-bgp811.tst;success;l3otherevpns over confed bgp
+http://sources.freertr.org/cfg/rout-bgp812.tst;rout-bgp812.tst;success;l3otherevpns over bgp route server
+http://sources.freertr.org/cfg/rout-bgp813.tst;rout-bgp813.tst;success;l3otherevpns over bgp with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp814.tst;rout-bgp814.tst;success;l3otherevpns over bgp additional path
+http://sources.freertr.org/cfg/rout-bgp815.tst;rout-bgp815.tst;success;l3otherevpns over bgp auto mesh tunnel
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

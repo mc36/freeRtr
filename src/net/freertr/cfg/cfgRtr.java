@@ -468,11 +468,15 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! afi-other distance -1",
         "router bgp[46] .*! afi-vrf .* distance -1",
         "router bgp[46] .*! no afi-vrf .* default-originate",
+        "router bgp[46] .*! afi-vrf .* import l3vpn",
+        "router bgp[46] .*! afi-vrf .* export l3vpn",
         "router bgp[46] .*! no afi-vrf .* flowspec-advert",
         "router bgp[46] .*! no afi-vrf .* flowspec-install",
         "router bgp[46] .*! no afi-vrf .* mvpn",
         "router bgp[46] .*! afi-ovrf .* distance -1",
         "router bgp[46] .*! no afi-ovrf .* default-originate",
+        "router bgp[46] .*! afi-vrf .* import l3vpn",
+        "router bgp[46] .*! afi-vrf .* export l3vpn",
         "router bgp[46] .*! no afi-ovrf .* flowspec-advert",
         "router bgp[46] .*! no afi-ovrf .* flowspec-install",
         "router bgp[46] .*! no afi-ovrf .* mvpn",
@@ -2178,14 +2182,17 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
                 vrf = null;
                 return;
             }
-            if (vrf != null) {
-                cmd.error("already initialized");
-                return;
-            }
             a = cmd.word();
             cfgVrf v = cfgAll.vrfFind(a, false);
             if (v == null) {
                 cmd.error("no such vrf");
+                return;
+            }
+            if (vrf == v) {
+                return;
+            }
+            if (vrf != null) {
+                cmd.error("already initialized");
                 return;
             }
             vrf = v;

@@ -2734,6 +2734,22 @@ qc pass: bgp change in aggregator
 qc pass: bgp change in aggregator with soft-reconfig
 qc pass: bgp routepolicy filtering with aggregator
 qc pass: bgp routepolicy filtering with aggregator with soft-reconfig
+qc pass: l3evpns over ebgp
+qc pass: l3evpns over ibgp
+qc pass: l3evpns over ibgp rr
+qc pass: l3evpns over confed bgp
+qc pass: l3evpns over bgp route server
+qc pass: l3evpns over bgp with soft-reconfig
+qc pass: l3evpns over bgp additional path
+qc pass: l3evpns over bgp auto mesh tunnel
+qc pass: l3otherevpns over ebgp
+qc pass: l3eothervpns over ibgp
+qc pass: l3otherevpns over ibgp rr
+qc pass: l3otherevpns over confed bgp
+qc pass: l3otherevpns over bgp route server
+qc pass: l3otherevpns over bgp with soft-reconfig
+qc pass: l3otherevpns over bgp additional path
+qc pass: l3otherevpns over bgp auto mesh tunnel
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
@@ -3232,7 +3248,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: vpnv4 vpnv6 in evpn like address-family l2vpn evpn / advertise vpnv4 unicast
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode

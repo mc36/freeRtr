@@ -1903,16 +1903,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doAdvertise(nOuni, nOmlt, nOflw);
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doAdvertise(nVpnU, nVpnM, nVpnF, nMvpn, nRtf);
+            vrfs.get(i).doer.doAdvertise(nVpnU, nVpnM, nVpnF, nEvpn, nMvpn, nRtf);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doAdvertise(nVpoU, nVpoM, nVpoF, nMvpo, nRtf);
+            ovrfs.get(i).doer.doAdvertise(nVpoU, nVpoM, nVpoF, nEvpn, nMvpo, nRtf);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doAdvertise(nUni, nMlt, nFlw, nMvpn, nRtf);
+            clrs.get(i).doer.doAdvertise(nUni, nMlt, nFlw, nEvpn, nMvpn, nRtf);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doAdvertise(nOuni, nOmlt, nOflw, nMvpo, nRtf);
+            oclrs.get(i).doer.doAdvertise(nOuni, nOmlt, nOflw, nEvpn, nMvpo, nRtf);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doAdvertise(nVpls, nRtf);
@@ -2147,16 +2147,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doPeersFull(nOuni, nOmlt, nOflw);
         for (int i = 0; i < vrfs.size(); i++) {
-            otherTrigger |= vrfs.get(i).doer.doPeersFull(nVpnU, nVpnM, nVpnF);
+            otherTrigger |= vrfs.get(i).doer.doPeersFull(nVpnU, nVpnM, nVpnF, nEvpn);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            otherTrigger |= ovrfs.get(i).doer.doPeersFull(nVpoU, nVpoM, nVpoF);
+            otherTrigger |= ovrfs.get(i).doer.doPeersFull(nVpoU, nVpoM, nVpoF, nEvpn);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            otherTrigger |= clrs.get(i).doer.doPeersFull(nUni, nMlt, nFlw);
+            otherTrigger |= clrs.get(i).doer.doPeersFull(nUni, nMlt, nFlw, nEvpn);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            otherTrigger |= oclrs.get(i).doer.doPeersFull(nOuni, nOmlt, nOflw);
+            otherTrigger |= oclrs.get(i).doer.doPeersFull(nOuni, nOmlt, nOflw, nEvpn);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers(nVpls);
@@ -2460,6 +2460,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabRoute<addrIP> chgVpoU = new tabRoute<addrIP>("chg");
         tabRoute<addrIP> chgVpoM = new tabRoute<addrIP>("chg");
         tabRoute<addrIP> chgVpoF = new tabRoute<addrIP>("chg");
+        tabRoute<addrIP> chgEvpn = new tabRoute<addrIP>("chg");
         int cntGlb = computeIncrUpdate(afiUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
         cntGlb += computeIncrUpdate(afiMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
         computeIncrUpdate(afiOuni, other.routerChangedU, changedOuni, computedOuni, origntedOuni);
@@ -2475,7 +2476,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiVpoF, chgVpoF, changedVpoF, computedVpoF, origntedVpoF);
         int cntVpls = computeIncrUpdate(afiVpls, null, changedVpls, computedVpls, origntedVpls);
         computeIncrUpdate(afiMspw, null, changedMspw, computedMspw, origntedMspw);
-        int cntEvpn = computeIncrUpdate(afiEvpn, null, changedEvpn, computedEvpn, origntedEvpn);
+        int cntEvpn = computeIncrUpdate(afiEvpn, chgEvpn, changedEvpn, computedEvpn, origntedEvpn);
         computeIncrUpdate(afiMdt, null, changedMdt, computedMdt, origntedMdt);
         computeIncrUpdate(afiNsh, null, changedNsh, computedNsh, origntedNsh);
         computeIncrUpdate(afiRpd, null, changedRpd, computedRpd, origntedRpd);
@@ -2495,16 +2496,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doPeersIncr(computedOuni, computedOmlt, computedOflw);
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeersIncr(computedVpnU, computedVpnM, computedVpnF, chgVpnU, chgVpnM, chgVpnF);
+            vrfs.get(i).doer.doPeersIncr(computedVpnU, computedVpnM, computedVpnF, computedEvpn, chgVpnU, chgVpnM, chgVpnF, chgEvpn);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF);
+            ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, computedEvpn, chgVpoU, chgVpoM, chgVpoF, chgEvpn);
         }
+        chgEvpn = new tabRoute<addrIP>("chg");
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF);
+            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, computedEvpn, routerChangedU, routerChangedM, routerChangedF, chgEvpn);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, other.routerChangedU, other.routerChangedM, other.routerChangedF);
+            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, computedEvpn, other.routerChangedU, other.routerChangedM, other.routerChangedF, chgEvpn);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {
@@ -2807,6 +2809,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "3 4       distance                set import distance");
         l.add(null, "4 .         <num>                 distance");
         l.add(null, "3 .       default-originate       generate default route");
+        l.add(null, "3 4,.     import                  specify import modes");
+        l.add(null, "4 4,.       evpn                  select evpn");
+        l.add(null, "4 4,.       l3vpn                 select l3vpn");
+        l.add(null, "3 4,.     export                  specify export modes");
+        l.add(null, "4 4,.       evpn                  select evpn");
+        l.add(null, "4 4,.       l3vpn                 select l3vpn");
+        l.add(null, "3 4       update-source           select source to advertise");
+        l.add(null, "4 .         <name:ifc>            name of interface");
         l.add(null, "3 .       flowspec-install        specify flowspec installation");
         l.add(null, "3 4       flowspec-advert         specify flowspec parameter");
         l.add(null, "4 .         <name:pm>             name of policy map");
@@ -2825,6 +2835,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "3 4       distance                set import distance");
         l.add(null, "4 .         <num>                 distance");
         l.add(null, "3 .       default-originate       generate default route");
+        l.add(null, "3 4,.     import                  specify import modes");
+        l.add(null, "4 4,.       evpn                  select evpn");
+        l.add(null, "4 4,.       l3vpn                 select l3vpn");
+        l.add(null, "3 4,.     export                  specify export modes");
+        l.add(null, "4 4,.       evpn                  select evpn");
+        l.add(null, "4 4,.       l3vpn                 select l3vpn");
+        l.add(null, "3 4       update-source           select source to advertise");
+        l.add(null, "4 .         <name:ifc>            name of interface");
         l.add(null, "3 .       flowspec-install        specify flowspec installation");
         l.add(null, "3 4       flowspec-advert         specify flowspec parameter");
         l.add(null, "4 .         <name:pm>             name of policy map");
@@ -3471,6 +3489,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
                 if (res == null) {
                     cmd.error("no such interface");
+                    return false;
                 }
                 if (res.vrfFor != vrfCore) {
                     cmd.error("in other vrf");
@@ -3538,6 +3557,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
                 if (res == null) {
                     cmd.error("no such interface");
+                    return false;
                 }
                 if (res.vrfFor != vrfCore) {
                     cmd.error("in other vrf");

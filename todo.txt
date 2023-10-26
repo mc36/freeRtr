@@ -1,5 +1,3 @@
-vpnv4 vpnv6 in evpn like address-family l2vpn evpn / advertise vpnv4 unicast
-
 vdc to have local, connect as sdn autocreated
 
 generalise server access- knobs
