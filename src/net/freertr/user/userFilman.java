@@ -318,35 +318,35 @@ public class userFilman {
     }
 
     private void doKeyF2() {
-        String a = pan[act].path + pan[act].getFn();
+        String a = pan[act].getFn();
         List<String> b = userFlash.calcFileHashes(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyBin() {
-        String a = pan[act].path + pan[act].getFn();
+        String a = pan[act].getFn();
         List<String> b = userFlash.binRead(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyHex() {
-        String a = pan[act].path + pan[act].getFn();
+        String a = pan[act].getFn();
         List<String> b = userFlash.hexRead(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyF3() {
-        String a = pan[act].path + pan[act].getFn();
+        String a = pan[act].getFn();
         List<String> b = bits.txt2buf(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
 
     private void doKeyF4() {
-        String a = pan[act].path + pan[act].getFn();
+        String a = pan[act].getFn();
         List<String> b = bits.txt2buf(a);
         userEditor e = new userEditor(console, b, a, false);
         if (e.doEdit()) {
@@ -365,7 +365,7 @@ public class userFilman {
             if (b.length() < 1) {
                 return;
             }
-            userFlash.copy(pan[act].path + a, b, false);
+            userFlash.copy(a, b, false);
             pan[1 - act].readUp();
             doClear();
             return;
@@ -378,7 +378,8 @@ public class userFilman {
         List<String> lst = pan[act].getSel(true);
         for (i = 0; i < lst.size(); i++) {
             a = lst.get(i);
-            userFlash.copy(pan[act].path + a, b + a, false);
+            int o = a.lastIndexOf("/");
+            userFlash.copy(a, b + a.substring(o + 1, a.length()), false);
         }
         pan[1 - act].readUp();
         doClear();
@@ -392,7 +393,7 @@ public class userFilman {
             if (b.length() < 1) {
                 return;
             }
-            userFlash.rename(pan[act].path + a, pan[act].path + b, false, false);
+            userFlash.rename(a, b, false, false);
             pan[act].readUp();
             doClear();
             return;
@@ -405,7 +406,8 @@ public class userFilman {
         List<String> lst = pan[act].getSel(true);
         for (i = 0; i < lst.size(); i++) {
             a = lst.get(i);
-            userFlash.rename(pan[act].path + a, b + a, false, false);
+            int o = a.lastIndexOf("/");
+            userFlash.rename(a, b + a.substring(o + 1, a.length()), false, false);
         }
         pan[act].readUp();
         pan[1 - act].readUp();
@@ -439,14 +441,14 @@ public class userFilman {
             return;
         }
         if (i < 1) {
-            userFlash.delete(pan[act].path + a);
+            userFlash.delete(a);
             pan[act].readUp();
             doClear();
             return;
         }
         List<String> lst = pan[act].getSel(true);
         for (i = 0; i < lst.size(); i++) {
-            userFlash.delete(pan[act].path + lst.get(i));
+            userFlash.delete(lst.get(i));
         }
         pan[act].readUp();
         doClear();
