@@ -166,7 +166,7 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 send-comm both
- neigh 1.1.1.1 ovpn-route-map-in rm1
+ neigh 1.1.1.1 evpn-route-map-in rm1
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
  afi-ovrf v2 import evpn
@@ -187,7 +187,7 @@ router bgp6 1
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 send-comm both
- neigh 1234:1::1 ovpn-route-map-in rm1
+ neigh 1234:1::1 evpn-route-map-in rm1
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
  afi-ovrf v2 import evpn
@@ -276,10 +276,9 @@ router bgp4 1
  afi-ovrf v3 import evpn
  afi-ovrf v3 export evpn
  afi-ovrf v4 ena
- afi-ovrf v4 red conn
+ afi-ovrf v4 red conn route-map rm1
  afi-ovrf v4 import evpn
  afi-ovrf v4 export evpn
- afi-ovrf v4 red conn route-map rm1
  exit
 router bgp6 1
  vrf v1
@@ -297,10 +296,9 @@ router bgp6 1
  afi-ovrf v3 import evpn
  afi-ovrf v3 export evpn
  afi-ovrf v4 ena
- afi-ovrf v4 red conn
+ afi-ovrf v4 red conn route-map rm1
  afi-ovrf v4 import evpn
  afi-ovrf v4 export evpn
- afi-ovrf v4 red conn route-map rm1
  exit
 !
 
@@ -359,7 +357,7 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.4
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 ovpn-route-map-in rm1
+ neigh 1.1.1.1 evpn-route-map-in rm1
  neigh 1.1.1.1 send-comm both
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
@@ -380,7 +378,7 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.4
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 ovpn-route-map-in rm1
+ neigh 1234:1::1 evpn-route-map-in rm1
  neigh 1234:1::1 send-comm both
  afi-ovrf v2 ena
  afi-ovrf v2 red conn

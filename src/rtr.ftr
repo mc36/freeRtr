@@ -2252,10 +2252,10 @@ qc pass: bgp routemap filtering with rd
 qc pass: bgp routepolicy filtering with rd
 qc pass: bgp routemap filtering with rd with soft-reconfig
 qc pass: bgp routepolicy filtering with rd with soft-reconfig
-qc pass: bgp routemap filtering with afi
-qc pass: bgp routepolicy filtering with afi
-qc pass: bgp routemap filtering with afi with soft-reconfig
-qc pass: bgp routepolicy filtering with afi with soft-reconfig
+failed: bgp routemap filtering with afi
+failed: bgp routepolicy filtering with afi
+failed: bgp routemap filtering with afi with soft-reconfig
+failed: bgp routepolicy filtering with afi with soft-reconfig
 qc pass: bgp hard reset
 qc pass: bgp hard reset with soft-reconfig
 qc pass: bgp soft in reset
@@ -2750,6 +2750,22 @@ qc pass: l3otherevpns over bgp route server
 qc pass: l3otherevpns over bgp with soft-reconfig
 qc pass: l3otherevpns over bgp additional path
 qc pass: l3otherevpns over bgp auto mesh tunnel
+qc pass: l3evpns with default route
+qc pass: otherl3evpns with default route
+qc pass: bgp l3evpns change in metric
+qc pass: ibgp rr l3evpns prefix movement
+qc pass: bgp otherl3evpns change in metric
+qc pass: ibgp rr otherl3evpns prefix movement
+qc pass: ibgp rr l3evpns prefix withdraw
+qc pass: ibgp rr otherl3evpns prefix withdraw
+qc pass: l3evpns with ingress rtfilter
+qc pass: l3evpns with egress rtfilter
+qc pass: otherl3evpns with ingress rtfilter
+qc pass: otherl3evpns with egress rtfilter
+qc pass: unicast+l3evpns over ebgp with dynamic capability
+qc pass: unicast+l3evpns over ibgp with dynamic capability
+qc pass: unicast+l3evpns over confed bgp with dynamic capability
+qc pass: unicast+l3evpns over ibgp rr with dynamic capability
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

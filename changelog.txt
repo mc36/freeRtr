@@ -15322,3 +15322,31 @@ qc pass: bgp vpns change in metric
 qc pass: bgp othervpns change in metric
 qc pass: ibgp rr vpns prefix withdraw
 qc pass: ibgp rr othervpns prefix withdraw
+---------------------------------- 2023-10-27 12:54:27 23.10.27
+qc pass: l3evpns with default route
+qc pass: otherl3evpns with default route
+qc pass: bgp l3evpns change in metric
+qc pass: ibgp rr l3evpns prefix movement
+failed: bgp otherl3evpns change in metric
+qc pass: ibgp rr otherl3evpns prefix movement
+qc pass: ibgp rr l3evpns prefix withdraw
+qc pass: ibgp rr otherl3evpns prefix withdraw
+qc pass: l3evpns with ingress rtfilter
+qc pass: l3evpns with egress rtfilter
+qc pass: otherl3evpns with ingress rtfilter
+qc pass: otherl3evpns with egress rtfilter
+qc pass: unicast+l3evpns over ebgp with dynamic capability
+qc pass: unicast+l3evpns over ibgp with dynamic capability
+qc pass: unicast+l3evpns over confed bgp with dynamic capability
+qc pass: unicast+l3evpns over ibgp rr with dynamic capability
+---------------------------------- 2023-10-27 16:10:19 23.10.27
+no failed: bgp otherl3evpns change in metric
+no qc pass: bgp routepolicy filtering with afi with soft-reconfig
+no qc pass: bgp routemap filtering with afi with soft-reconfig
+no qc pass: bgp routepolicy filtering with afi
+no qc pass: bgp routemap filtering with afi
+failed: bgp routemap filtering with afi
+failed: bgp routepolicy filtering with afi
+failed: bgp routemap filtering with afi with soft-reconfig
+failed: bgp routepolicy filtering with afi with soft-reconfig
+qc pass: bgp otherl3evpns change in metric

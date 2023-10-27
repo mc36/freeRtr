@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.10.27-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-10-27 07:31:38, took 00:11:14, with 80 workers, on 3250 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2023-10-27 16:33:12, took 00:22:52, with 80 workers, on 3266 cases, 4 failed, 0 traces, 32 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2256,10 +2256,10 @@ http://sources.freertr.org/cfg/rout-bgp314.tst;rout-bgp314.tst;success;bgp route
 http://sources.freertr.org/cfg/rout-bgp315.tst;rout-bgp315.tst;success;bgp routepolicy filtering with rd
 http://sources.freertr.org/cfg/rout-bgp316.tst;rout-bgp316.tst;success;bgp routemap filtering with rd with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp317.tst;rout-bgp317.tst;success;bgp routepolicy filtering with rd with soft-reconfig
-http://sources.freertr.org/cfg/rout-bgp318.tst;rout-bgp318.tst;success;bgp routemap filtering with afi
-http://sources.freertr.org/cfg/rout-bgp319.tst;rout-bgp319.tst;success;bgp routepolicy filtering with afi
-http://sources.freertr.org/cfg/rout-bgp320.tst;rout-bgp320.tst;success;bgp routemap filtering with afi with soft-reconfig
-http://sources.freertr.org/cfg/rout-bgp321.tst;rout-bgp321.tst;success;bgp routepolicy filtering with afi with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp318.tst;rout-bgp318.tst;#6-run-r1 tping 0 60 3333::2 vrf v1;bgp routemap filtering with afi
+http://sources.freertr.org/cfg/rout-bgp319.tst;rout-bgp319.tst;#6-run-r1 tping 0 60 3333::2 vrf v1;bgp routepolicy filtering with afi
+http://sources.freertr.org/cfg/rout-bgp320.tst;rout-bgp320.tst;#6-run-r1 tping 0 60 3333::2 vrf v1;bgp routemap filtering with afi with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp321.tst;rout-bgp321.tst;#6-run-r1 tping 0 60 3333::2 vrf v1;bgp routepolicy filtering with afi with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp322.tst;rout-bgp322.tst;success;bgp hard reset
 http://sources.freertr.org/cfg/rout-bgp323.tst;rout-bgp323.tst;success;bgp hard reset with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp324.tst;rout-bgp324.tst;success;bgp soft in reset
@@ -2754,6 +2754,22 @@ http://sources.freertr.org/cfg/rout-bgp812.tst;rout-bgp812.tst;success;l3otherev
 http://sources.freertr.org/cfg/rout-bgp813.tst;rout-bgp813.tst;success;l3otherevpns over bgp with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp814.tst;rout-bgp814.tst;success;l3otherevpns over bgp additional path
 http://sources.freertr.org/cfg/rout-bgp815.tst;rout-bgp815.tst;success;l3otherevpns over bgp auto mesh tunnel
+http://sources.freertr.org/cfg/rout-bgp816.tst;rout-bgp816.tst;success;l3evpns with default route
+http://sources.freertr.org/cfg/rout-bgp817.tst;rout-bgp817.tst;success;otherl3evpns with default route
+http://sources.freertr.org/cfg/rout-bgp818.tst;rout-bgp818.tst;success;bgp l3evpns change in metric
+http://sources.freertr.org/cfg/rout-bgp819.tst;rout-bgp819.tst;success;ibgp rr l3evpns prefix movement
+http://sources.freertr.org/cfg/rout-bgp820.tst;rout-bgp820.tst;success;bgp otherl3evpns change in metric
+http://sources.freertr.org/cfg/rout-bgp821.tst;rout-bgp821.tst;success;ibgp rr otherl3evpns prefix movement
+http://sources.freertr.org/cfg/rout-bgp822.tst;rout-bgp822.tst;success;ibgp rr l3evpns prefix withdraw
+http://sources.freertr.org/cfg/rout-bgp823.tst;rout-bgp823.tst;success;ibgp rr otherl3evpns prefix withdraw
+http://sources.freertr.org/cfg/rout-bgp824.tst;rout-bgp824.tst;success;l3evpns with ingress rtfilter
+http://sources.freertr.org/cfg/rout-bgp825.tst;rout-bgp825.tst;success;l3evpns with egress rtfilter
+http://sources.freertr.org/cfg/rout-bgp826.tst;rout-bgp826.tst;success;otherl3evpns with ingress rtfilter
+http://sources.freertr.org/cfg/rout-bgp827.tst;rout-bgp827.tst;success;otherl3evpns with egress rtfilter
+http://sources.freertr.org/cfg/rout-bgp828.tst;rout-bgp828.tst;success;unicast+l3evpns over ebgp with dynamic capability
+http://sources.freertr.org/cfg/rout-bgp829.tst;rout-bgp829.tst;success;unicast+l3evpns over ibgp with dynamic capability
+http://sources.freertr.org/cfg/rout-bgp830.tst;rout-bgp830.tst;success;unicast+l3evpns over confed bgp with dynamic capability
+http://sources.freertr.org/cfg/rout-bgp831.tst;rout-bgp831.tst;success;unicast+l3evpns over ibgp rr with dynamic capability
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

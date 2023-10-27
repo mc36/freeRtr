@@ -2286,6 +2286,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.oroumapOut, grp.oroupolOut, grp.oprflstOut);
             } else if ((afi == afiOflw) || (afi == afiOsrt) || (afi == afiMvpo) || (afi == afiVpoU) || (afi == afiVpoM) || (afi == afiVpoF)) {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.wroumapOut, grp.wroupolOut, null);
+            } else if ((afi == afiEvpn) || (afi == afiVpls)) {
+                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.eroumapOut, grp.eroupolOut, null);
             } else {
                 ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.vroumapOut, grp.vroupolOut, null);
             }

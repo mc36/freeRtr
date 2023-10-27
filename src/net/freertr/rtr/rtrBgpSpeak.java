@@ -2589,9 +2589,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribedTab(currVpoU, parent.afiVpoU, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
         addAttribedTab(currVpoM, parent.afiVpoM, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
         addAttribedTab(currVpoF, parent.afiVpoF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpls, parent.afiVpls, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currMspw, parent.afiMspw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currEvpn, parent.afiEvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currVpls, parent.afiVpls, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
+        addAttribedTab(currMspw, parent.afiMspw, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
+        addAttribedTab(currEvpn, parent.afiEvpn, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
         addAttribedTab(currMdt, parent.afiMdt, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribedTab(currNsh, parent.afiNsh, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribedTab(currRpd, parent.afiRpd, ntry, neigh.vroumapIn, neigh.vroupolIn, null);

@@ -1179,9 +1179,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         importTable(lower.afiVpoU, nVpoU, cVpoU, wroumapOut, wroupolOut, null);
         importTable(lower.afiVpoM, nVpoM, cVpoM, wroumapOut, wroupolOut, null);
         importTable(lower.afiVpoF, nVpoF, cVpoF, wroumapOut, wroupolOut, null);
-        importTable(lower.afiVpls, nVpls, cVpls, vroumapOut, vroupolOut, null);
-        importTable(lower.afiMspw, nMspw, cMspw, vroumapOut, vroupolOut, null);
-        importTable(lower.afiEvpn, nEvpn, cEvpn, vroumapOut, vroupolOut, null);
+        importTable(lower.afiVpls, nVpls, cVpls, eroumapOut, eroupolOut, null);
+        importTable(lower.afiMspw, nMspw, cMspw, eroumapOut, eroupolOut, null);
+        importTable(lower.afiEvpn, nEvpn, cEvpn, eroumapOut, eroupolOut, null);
         importTable(lower.afiMdt, nMdt, cMdt, vroumapOut, vroupolOut, null);
         importTable(lower.afiNsh, nNsh, cNsh, vroumapOut, vroupolOut, null);
         importTable(lower.afiRpd, nRpd, cRpd, vroumapOut, vroupolOut, null);

@@ -689,6 +689,26 @@ public abstract class rtrBgpParam {
     public tabListing<tabRtrplcN, addrIP> wroupolOut;
 
     /**
+     * ingress ethernet vpn route map
+     */
+    public tabListing<tabRtrmapN, addrIP> eroumapIn;
+
+    /**
+     * egress ethernet vpn route map
+     */
+    public tabListing<tabRtrmapN, addrIP> eroumapOut;
+
+    /**
+     * ingress ethernet vpn route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> eroupolIn;
+
+    /**
+     * egress ethernet vpn route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> eroupolOut;
+
+    /**
      * unicast
      */
     public final static int mskUni = 0x01;
@@ -1309,6 +1329,10 @@ public abstract class rtrBgpParam {
         wroumapOut = src.wroumapOut;
         wroupolIn = src.wroupolIn;
         wroupolOut = src.wroupolOut;
+        eroumapIn = src.eroumapIn;
+        eroumapOut = src.eroumapOut;
+        eroupolIn = src.eroupolIn;
+        eroupolOut = src.eroupolOut;
     }
 
     /**
@@ -1556,6 +1580,30 @@ public abstract class rtrBgpParam {
                 return true;
             }
             if (!wroupolOut.listName.equals(src.wroupolOut.listName)) {
+                return true;
+            }
+        }
+        if (eroumapOut == null) {
+            if (src.eroumapOut != null) {
+                return true;
+            }
+        } else {
+            if (src.eroumapOut == null) {
+                return true;
+            }
+            if (!eroumapOut.listName.equals(src.eroumapOut.listName)) {
+                return true;
+            }
+        }                        
+        if (eroupolOut == null) {
+            if (src.eroupolOut != null) {
+                return true;     
+            }                    
+        } else {                 
+            if (src.eroupolOut == null) {
+                return true;       
+            }
+            if (!eroupolOut.listName.equals(src.eroupolOut.listName)) {
                 return true;
             }
         }
@@ -1826,6 +1874,14 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <name:rpl>                name of route policy");
         l.add(null, "3  4       ovpn-route-policy-out       process other vpn prefixes in egress updates");
         l.add(null, "4  .         <name:rpl>                name of route policy");
+        l.add(null, "3  4       evpn-route-map-in           process evpn prefixes in ingress updates");
+        l.add(null, "4  .         <name:rm>                 name of route map");
+        l.add(null, "3  4       evpn-route-map-out          process evpn prefixes in egress updates");
+        l.add(null, "4  .         <name:rm>                 name of route map");
+        l.add(null, "3  4       evpn-route-policy-in        process evpn prefixes in ingress updates");
+        l.add(null, "4  .         <name:rpl>                name of route policy");
+        l.add(null, "3  4       evpn-route-policy-out       process evpn prefixes in egress updates");
+        l.add(null, "4  .         <name:rpl>                name of route policy");
     }
 
     /**
@@ -2042,6 +2098,10 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, wroumapOut == null, beg, nei + "ovpn-route-map-out", "" + wroumapOut);
         cmds.cfgLine(l, wroupolIn == null, beg, nei + "ovpn-route-policy-in", "" + wroupolIn);
         cmds.cfgLine(l, wroupolOut == null, beg, nei + "ovpn-route-policy-out", "" + wroupolOut);
+        cmds.cfgLine(l, eroumapIn == null, beg, nei + "evpn-route-map-in", "" + eroumapIn);
+        cmds.cfgLine(l, eroumapOut == null, beg, nei + "evpn-route-map-out", "" + eroumapOut);
+        cmds.cfgLine(l, eroupolIn == null, beg, nei + "evpn-route-policy-in", "" + eroupolIn);
+        cmds.cfgLine(l, eroupolOut == null, beg, nei + "evpn-route-policy-out", "" + eroupolOut);
         if ((filter & 1) == 0) {
             return l;
         }
@@ -3091,6 +3151,58 @@ public abstract class rtrBgpParam {
                 return false;
             }
             wroupolOut = ntry.rouplc;
+            return false;
+        }
+        if (s.equals("evpn-route-map-in")) {
+            if (negated) {
+                eroumapIn = null;
+                return false;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            eroumapIn = ntry.roumap;
+            return false;
+        }
+        if (s.equals("evpn-route-map-out")) {
+            if (negated) {
+                eroumapOut = null;
+                return false;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            eroumapOut = ntry.roumap;
+            return false;
+        }
+        if (s.equals("evpn-route-policy-in")) {
+            if (negated) {
+                eroupolIn = null;
+                return false;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            eroupolIn = ntry.rouplc;
+            return false;
+        }
+        if (s.equals("evpn-route-policy-out")) {
+            if (negated) {
+                eroupolOut = null;
+                return false;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            eroupolOut = ntry.rouplc;
             return false;
         }
         return true;
