@@ -437,10 +437,10 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
                 }
                 return res;
             case 2:
-                res = new userFormat("|", "fwd|oneliner");
+                res = new userFormat("|", "fwd|name|oneliner");
                 for (int i = 0; i < fwds.size(); i++) {
                     servP4langCfg ntry = fwds.get(i);
-                    res.add(i + "|" + ntry.getShGenOneLiner());
+                    res.add(i + "|" + ntry.descr + "|" + ntry.getShGenOneLiner());
                 }
                 return res;
             default:
