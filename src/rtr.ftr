@@ -2252,10 +2252,10 @@ qc pass: bgp routemap filtering with rd
 qc pass: bgp routepolicy filtering with rd
 qc pass: bgp routemap filtering with rd with soft-reconfig
 qc pass: bgp routepolicy filtering with rd with soft-reconfig
-failed: bgp routemap filtering with afi
-failed: bgp routepolicy filtering with afi
-failed: bgp routemap filtering with afi with soft-reconfig
-failed: bgp routepolicy filtering with afi with soft-reconfig
+qc pass: bgp routemap filtering with afi
+qc pass: bgp routepolicy filtering with afi
+qc pass: bgp routemap filtering with afi with soft-reconfig
+qc pass: bgp routepolicy filtering with afi with soft-reconfig
 qc pass: bgp hard reset
 qc pass: bgp hard reset with soft-reconfig
 qc pass: bgp soft in reset

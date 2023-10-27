@@ -15350,3 +15350,12 @@ failed: bgp routepolicy filtering with afi
 failed: bgp routemap filtering with afi with soft-reconfig
 failed: bgp routepolicy filtering with afi with soft-reconfig
 qc pass: bgp otherl3evpns change in metric
+---------------------------------- 2023-10-27 17:12:02 23.10.27
+no failed: bgp routepolicy filtering with afi with soft-reconfig
+no failed: bgp routemap filtering with afi with soft-reconfig
+no failed: bgp routepolicy filtering with afi
+no failed: bgp routemap filtering with afi
+qc pass: bgp routemap filtering with afi
+qc pass: bgp routepolicy filtering with afi
+qc pass: bgp routemap filtering with afi with soft-reconfig
+qc pass: bgp routepolicy filtering with afi with soft-reconfig
