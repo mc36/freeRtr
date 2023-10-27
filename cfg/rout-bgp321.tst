@@ -118,6 +118,7 @@ router bgp4 1
  neigh 2.2.2.3 send-comm both
  neigh 2.2.2.3 soft-reconfig
  neigh 2.2.2.3 vpn-route-policy-in rm1
+ neigh 2.2.2.3 evpn-route-policy-in rm1
  afi-vrf v2 ena
  afi-vrf v2 red conn
  afi-vrf v3 ena
@@ -139,6 +140,7 @@ router bgp6 1
  neigh 4321::3 send-comm both
  neigh 4321::3 soft-reconfig
  neigh 4321::3 vpn-route-policy-in rm1
+ neigh 4321::3 evpn-route-policy-in rm1
  afi-vrf v2 ena
  afi-vrf v2 red conn
  afi-vrf v3 ena
