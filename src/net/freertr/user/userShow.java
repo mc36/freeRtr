@@ -4729,6 +4729,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.stdCommMatch = tabRouteUtil.string2stdComms(a);
+            if (ntry.stdCommMatch == null) {
+                cmd.error("bad community");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4742,6 +4746,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.extCommMatch = tabRouteUtil.string2extComms(a);
+            if (ntry.extCommMatch == null) {
+                cmd.error("bad community");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4755,6 +4763,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.lrgCommMatch = tabRouteUtil.string2lrgComms(a);
+            if (ntry.lrgCommMatch == null) {
+                cmd.error("bad community");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4794,7 +4806,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.pathlenMatch = new tabIntMatcher();
-            ntry.pathlenMatch.fromString(a);
+            if (ntry.pathlenMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4808,7 +4823,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.unknownMatch = new tabIntMatcher();
-            ntry.unknownMatch.fromString(a);
+            if (ntry.unknownMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4822,7 +4840,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.asendMatch = new tabIntMatcher();
-            ntry.asendMatch.fromString(a);
+            if (ntry.asendMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4836,7 +4857,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.asbegMatch = new tabIntMatcher();
-            ntry.asbegMatch.fromString(a);
+            if (ntry.asbegMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4850,7 +4874,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.asmidMatch = new tabIntMatcher();
-            ntry.asmidMatch.fromString(a);
+            if (ntry.asmidMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4864,7 +4891,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.distanceMatch = new tabIntMatcher();
-            ntry.distanceMatch.fromString(a);
+            if (ntry.distanceMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4878,7 +4908,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.locPrefMatch = new tabIntMatcher();
-            ntry.locPrefMatch.fromString(a);
+            if (ntry.locPrefMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4892,7 +4925,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.validityMatch = new tabIntMatcher();
-            ntry.validityMatch.fromString(a);
+            if (ntry.validityMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4906,7 +4942,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.accIgpMatch = new tabIntMatcher();
-            ntry.accIgpMatch.fromString(a);
+            if (ntry.accIgpMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4920,7 +4959,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.bandwidthMatch = new tabIntMatcher();
-            ntry.bandwidthMatch.fromString(a);
+            if (ntry.bandwidthMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4934,7 +4976,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.originMatch = new tabIntMatcher();
-            ntry.originMatch.fromString(a);
+            if (ntry.originMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4948,7 +4993,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.metricMatch = new tabIntMatcher();
-            ntry.metricMatch.fromString(a);
+            if (ntry.metricMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4962,7 +5010,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.tagMatch = new tabIntMatcher();
-            ntry.tagMatch.fromString(a);
+            if (ntry.tagMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4976,7 +5027,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.networkMatch = new tabPrfxlstN();
-            ntry.networkMatch.fromString(a);
+            if (ntry.networkMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
@@ -4990,7 +5044,10 @@ public class userShow {
             tabRtrmapN ntry = new tabRtrmapN();
             ntry.action = tabListingEntry.actionType.actPermit;
             ntry.nexthopMatch = new addrIP();
-            ntry.nexthopMatch.fromString(a);
+            if (ntry.nexthopMatch.fromString(a)) {
+                cmd.error("bad matcher");
+                return;
+            }
             roumap.add(ntry);
             tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
             tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
