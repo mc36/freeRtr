@@ -197,16 +197,7 @@ public class secInfoWrk implements Runnable {
         if (justip) {
             return bits.str2lst("" + addr);
         }
-        String s = addr + " prt=" + proto;
-        if (pmtuD != null) {
-            s += " pmtu=" + pmtuD;
-        }
-        if (resolved != null) {
-            s += " dns=" + resolved;
-        }
-        List<String> res = new ArrayList<String>();
-        res.add(s);
-        res.addAll(secInfoUtl.getRoute1liner(fwd, rtrIp, ntry, separate));
+        List<String> res = secInfoUtl.getRoute1liner(this);
         if (!hack) {
             return res;
         }

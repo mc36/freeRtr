@@ -434,7 +434,7 @@ qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
-todo: honeypot to wireformat, decode, newlines per singleline
+todo: honeypot to wireformat, decode
 todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager

@@ -298,16 +298,27 @@ public class secInfoUtl {
      * @param sep separate lines of responses
      * @return one liner of the route
      */
-    public final static List<String> getRoute1liner(ipFwd fwd, ipRtr rtr, tabRouteEntry<addrIP> ntry, boolean sep) {
-        if (ntry == null) {
-            return bits.str2lst(noRoute);
+    public final static List<String> getRoute1liner(secInfoWrk wrk) {
+        String s = wrk.addr + " prt=" + wrk.proto;
+        if (wrk.pmtuD != null) {
+            s += " pmtu=" + wrk.pmtuD;
+        }
+        if (wrk.resolved != null) {
+            s += " dns=" + wrk.resolved;
+        }
+        s += " vrf=" + wrk.fwd.vrfName;
+        if (wrk.rtrIp != null) {
+            s += " len=" + wrk.rtrIp.routerComputedU.size();
+        }
+        if (wrk.ntry == null) {
+            return bits.str2lst(s + " " + noRoute);
         }
         List<String> res = new ArrayList<String>();
-        res.add("vrf=" + fwd.vrfName + " len=" + rtr.routerComputedU.size() + " pfx=" + addrPrefix.ip2str(ntry.prefix) + " rd=" + tabRouteUtil.rd2string(ntry.rouDst));
-        res.add("pth=" + ntry.best.asPathStr());
-        res.add("inf=" + ntry.best.asInfoStr());
-        res.add("nam=" + ntry.best.asNameStr());
-        if (sep) {
+        res.add(s + " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix) + " rd=" + tabRouteUtil.rd2string(wrk.ntry.rouDst));
+        res.add("pth=" + wrk.ntry.best.asPathStr());
+        res.add("inf=" + wrk.ntry.best.asInfoStr());
+        res.add("nam=" + wrk.ntry.best.asNameStr());
+        if (wrk.separate) {
             return res;
         }
         String a = "";
