@@ -111,6 +111,11 @@ public class secInfoWrk implements Runnable {
     protected boolean single;
 
     /**
+     * separate summary sections
+     */
+    protected boolean separate;
+
+    /**
      * resolution status
      */
     protected String resolved = null;
@@ -164,6 +169,7 @@ public class secInfoWrk implements Runnable {
         format = ned.format;
         detail = ned.details;
         single = ned.single;
+        separate = ned.separate;
         http = ned.tinyHttp;
         othrs = ned.others;
         changeWorkAddr(cls.remote);
@@ -175,7 +181,7 @@ public class secInfoWrk implements Runnable {
     }
 
     public String toString() {
-        return getRoute1liner();
+        return "" + addr;
     }
 
     private void changeWorkAddr(addrIP adr) {
@@ -187,9 +193,9 @@ public class secInfoWrk implements Runnable {
      *
      * @return single line of information
      */
-    public String getRoute1liner() {
+    public List<String> getRoute1liner() {
         if (justip) {
-            return "" + addr;
+            return bits.str2lst("" + addr);
         }
         String s = addr + " prt=" + proto;
         if (pmtuD != null) {
@@ -198,12 +204,14 @@ public class secInfoWrk implements Runnable {
         if (resolved != null) {
             s += " dns=" + resolved;
         }
-        s += secInfoUtl.getRoute1liner(fwd, rtrIp, ntry);
+        List<String> res = new ArrayList<String>();
+        res.add(s);
+        res.addAll(secInfoUtl.getRoute1liner(fwd, rtrIp, ntry, separate));
         if (!hack) {
-            return s;
+            return res;
         }
-        s = enc7bit.toHackedStr(s);
-        return s;
+        res = enc7bit.toHackedLst(res);
+        return res;
     }
 
     /**
@@ -482,18 +490,14 @@ public class secInfoWrk implements Runnable {
      * @return route details or empty list
      */
     public List<String> getRouteInfos() {
-        if (!detail) {
-            if (!single) {
-                return new ArrayList<String>();
-            }
-            return bits.str2lst(getRoute1liner());
+        List<String> res = new ArrayList<String>();
+        if (single) {
+            res.addAll(getRoute1liner());
         }
-        List<String> res = secInfoUtl.getRouteDetails(fwd, ntry, format, hack);
-        if (!single) {
+        if (!detail) {
             return res;
         }
-        String a = getRoute1liner();
-        res.add(0, a);
+        res.addAll(secInfoUtl.getRouteDetails(fwd, ntry, format, hack));
         return res;
     }
 

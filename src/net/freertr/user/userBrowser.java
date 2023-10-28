@@ -432,6 +432,9 @@ public class userBrowser {
         if (a.equals("a")) {
             b = "|href|";
         }
+        if (a.equals("embed")) {
+            b = "|src|";
+        }
         if (a.equals("link")) {
             b = "|href|";
         }

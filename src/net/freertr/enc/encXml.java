@@ -464,6 +464,10 @@ public class encXml {
                 str = "<iframe>";
                 pos = num;
             }
+            if (tag.equals("embed")) {
+                str = "<embed>";
+                pos = num;
+            }
             if (tag.equals("script")) {
                 str = "<script>";
                 pos = num;

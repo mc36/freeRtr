@@ -123,6 +123,11 @@ public class secInfoUtl {
             doSanityChecks(cfg);
             return cfg;
         }
+        if (s.equals("separate")) {
+            cfg.separate = !negated;
+            doSanityChecks(cfg);
+            return cfg;
+        }
         if (s.equals("hacked")) {
             cfg.hacked = !negated;
             doSanityChecks(cfg);
@@ -290,18 +295,27 @@ public class secInfoUtl {
      * @param fwd forwarder to use
      * @param rtr router to use
      * @param ntry route entry
+     * @param sep separate lines of responses
      * @return one liner of the route
      */
-    public final static String getRoute1liner(ipFwd fwd, ipRtr rtr, tabRouteEntry<addrIP> ntry) {
+    public final static List<String> getRoute1liner(ipFwd fwd, ipRtr rtr, tabRouteEntry<addrIP> ntry, boolean sep) {
         if (ntry == null) {
-            return noRoute;
+            return bits.str2lst(noRoute);
         }
-        return " vrf=" + fwd.vrfName + " len=" + rtr.routerComputedU.size()
-                + " pfx=" + addrPrefix.ip2str(ntry.prefix)
-                + " rd=" + tabRouteUtil.rd2string(ntry.rouDst)
-                + " pth=" + ntry.best.asPathStr().trim()
-                + " inf=" + ntry.best.asInfoStr().trim()
-                + " nam=" + ntry.best.asNameStr().trim();
+        List<String> res = new ArrayList<String>();
+        res.add("vrf=" + fwd.vrfName + " len=" + rtr.routerComputedU.size() + " pfx=" + addrPrefix.ip2str(ntry.prefix) + " rd=" + tabRouteUtil.rd2string(ntry.rouDst));
+        res.add("pth=" + ntry.best.asPathStr());
+        res.add("inf=" + ntry.best.asInfoStr());
+        res.add("nam=" + ntry.best.asNameStr());
+        if (sep) {
+            return res;
+        }
+        String a = "";
+        for (int i = 0; i < res.size(); i++) {
+            a += " " + res.get(i);
+        }
+        a = a.trim();
+        return bits.str2lst(a);
     }
 
     private final static String noRoute = "route not found";
@@ -389,6 +403,9 @@ public class secInfoUtl {
         if (cfg.single) {
             lst.add(beg + "single");
         }
+        if (cfg.separate) {
+            lst.add(beg + "separate");
+        }
         if (cfg.hacked) {
             lst.add(beg + "hacked");
         }
@@ -460,6 +477,7 @@ public class secInfoUtl {
         lst.add(null, (tab + 4) + " .    <num>                    timeout per round");
         lst.add(null, (tab + 1) + " .  " + beg + "details                      print prefix details");
         lst.add(null, (tab + 1) + " .  " + beg + "single                       print prefix summary");
+        lst.add(null, (tab + 1) + " .  " + beg + "separate                     separate summary sections");
         lst.add(null, (tab + 1) + " .  " + beg + "hacked                       hackerize prefix details");
         lst.add(null, (tab + 1) + " .  " + beg + "plain                        plain prefix details");
         lst.add(null, (tab + 1) + " .  " + beg + "justip                       just address headline");
@@ -603,6 +621,14 @@ public class secInfoUtl {
         }
         if (a.equals("unsingle")) {
             wrk.single = false;
+            return false;
+        }
+        if (a.equals("separate")) {
+            wrk.separate = true;
+            return false;
+        }
+        if (a.equals("unseparate")) {
+            wrk.separate = false;
             return false;
         }
         if (a.equals("http")) {

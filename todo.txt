@@ -2,7 +2,7 @@ vdc to have local, connect as sdn autocreated
 
 generalise server access- knobs
 
-honeypot to wireformat, decode
+honeypot to wireformat, decode, newlines per singleline
 
 generalize dynamic-metric knobs
 

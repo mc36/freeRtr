@@ -85,6 +85,11 @@ public class secInfoCfg {
     public boolean single;
 
     /**
+     * add crlf to summary
+     */
+    public boolean separate;
+
+    /**
      * hack route details
      */
     public boolean hacked;
