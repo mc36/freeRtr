@@ -306,7 +306,9 @@ public class secInfoUtl {
         if (wrk.resolved != null) {
             s += " dns=" + wrk.resolved;
         }
-        s += " vrf=" + wrk.fwd.vrfName;
+        if (wrk.fwd != null) {
+            s += " vrf=" + wrk.fwd.vrfName;
+        }
         if (wrk.rtrIp != null) {
             s += " len=" + wrk.rtrIp.routerComputedU.size();
         }
