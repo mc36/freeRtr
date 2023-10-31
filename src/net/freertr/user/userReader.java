@@ -985,6 +985,9 @@ public class userReader implements Comparator<String> {
         if (color) {
             userScreen.sendAnsCol(pipe, userScreen.colBrGreen);
         }
+        if (crsr > s.length()) {
+            crsr = s.length();
+        }
         pipe.strPut(s.substring(0, crsr));
         if (color) {
             userScreen.sendAnsCol(pipe, userScreen.colWhite);
