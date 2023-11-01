@@ -822,6 +822,7 @@ public class userExec {
 
     private static void getRouMapMtch(userHelping h, int b) {
         h.add(null, (b + 0) + " .              privateas          list of routes with private asn");
+        h.add(null, (b + 0) + " .              entropy            list of routes with entropy label");
         h.add(null, (b + 0) + " .              nostdcomm          list of routes without community");
         h.add(null, (b + 0) + " " + (b + 1) + "              stdcomm            list of routes with community");
         h.add(null, (b + 1) + " " + (b + 2) + ",.              <str>            community");
