@@ -72,11 +72,14 @@ import net.freertr.rtr.rtrBgpDump;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
+import net.freertr.tab.tabListing;
+import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteBlob;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
+import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabSessionEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -138,7 +141,7 @@ public class userPacket {
         if (alias != null) {
             return alias;
         }
-        if (a.equals("txt2full")) {
+        if (a.equals("txt2sum")) {
             a = cmd.word();
             cmd.error("reading " + a);
             List<String> txt = bits.txt2buf(a);
@@ -155,12 +158,13 @@ public class userPacket {
             }
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
-            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             packHolder tmp = new packHolder(true, true);
             for (int i = 0; i < o; i++) {
                 packHolder pck = pcks.get(i);
-                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, ses, tmp, pck);
-                txt.add("");
+                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, null);
+                if (txt.size() < 1) {
+                    continue;
+                }
                 rdr.putStrArr(txt);
             }
             return null;
@@ -235,6 +239,49 @@ public class userPacket {
             cmd.error(ok + " packets converted");
             return null;
         }
+        if (a.equals("ris2flt")) {
+            encUrl src = new encUrl();
+            if (src.fromString(cmd.word())) {
+                cmd.error("bad url");
+                return null;
+            }
+            addrIP trg = new addrIP();
+            if (trg.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            clntHttp htp = new clntHttp(cmd.pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
+            if (htp.doConnect(src)) {
+                cmd.error("unable to connect ris");
+                return null;
+            }
+            clntRis ris = new clntRis(htp.pipe, new addrIP());
+            ris.clntConnect(src);
+            packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            List<String> txt;
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            for (;;) {
+                if (need2stop()) {
+                    break;
+                }
+                int i = ris.readPacket(pck);
+                if (i == 1) {
+                    break;
+                }
+                if (i != 0) {
+                    continue;
+                }
+                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, trg);
+                if (txt.size() < 1) {
+                    continue;
+                }
+                rdr.putStrArr(txt);
+            }
+            htp.pipe.setClose();
+            return null;
+        }
         if (a.equals("ris2con")) {
             encUrl src = new encUrl();
             if (src.fromString(cmd.word())) {
@@ -253,7 +300,6 @@ public class userPacket {
             List<String> txt;
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
-            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             for (;;) {
                 if (need2stop()) {
                     break;
@@ -265,8 +311,10 @@ public class userPacket {
                 if (i != 0) {
                     continue;
                 }
-                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, ses, tmp, pck);
-                txt.add("");
+                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, null);
+                if (txt.size() < 1) {
+                    continue;
+                }
                 rdr.putStrArr(txt);
             }
             htp.pipe.setClose();
@@ -570,6 +618,129 @@ public class userPacket {
             } catch (Exception e) {
             }
             cmd.error(pk + " packets (" + ses.size() + " streams) converted");
+            return null;
+        }
+        if (a.equals("mrt2sum")) {
+            RandomAccessFile fs = null;
+            try {
+                a = cmd.word();
+                cmd.error("opening source " + a);
+                fs = new RandomAccessFile(new File(a), "r");
+            } catch (Exception e) {
+            }
+            packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            List<String> txt;
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            for (;;) {
+                long fp;
+                try {
+                    fp = fs.getFilePointer();
+                } catch (Exception e) {
+                    break;
+                }
+                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                if (i == 1) {
+                    break;
+                }
+                if (i == 2) {
+                    continue;
+                }
+                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, null);
+                if (txt.size() < 1) {
+                    continue;
+                }
+                rdr.putStrArr(txt);
+            }
+            try {
+                fs.close();
+            } catch (Exception e) {
+            }
+            return null;
+        }
+        if (a.equals("mrt2flt")) {
+            a = cmd.word();
+            addrIP trg = new addrIP();
+            if (trg.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            RandomAccessFile fs = null;
+            try {
+                cmd.error("opening source " + a);
+                fs = new RandomAccessFile(new File(a), "r");
+            } catch (Exception e) {
+            }
+            packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            List<String> txt;
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            for (;;) {
+                long fp;
+                try {
+                    fp = fs.getFilePointer();
+                } catch (Exception e) {
+                    break;
+                }
+                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                if (i == 1) {
+                    break;
+                }
+                if (i == 2) {
+                    continue;
+                }
+                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, trg);
+                if (txt.size() < 1) {
+                    continue;
+                }
+                rdr.putStrArr(txt);
+            }
+            try {
+                fs.close();
+            } catch (Exception e) {
+            }
+            return null;
+        }
+        if (a.equals("mrt2full")) {
+            RandomAccessFile fs = null;
+            try {
+                a = cmd.word();
+                cmd.error("opening source " + a);
+                fs = new RandomAccessFile(new File(a), "r");
+            } catch (Exception e) {
+            }
+            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
+            packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            List<String> txt;
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            for (;;) {
+                long fp;
+                try {
+                    fp = fs.getFilePointer();
+                } catch (Exception e) {
+                    break;
+                }
+                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                if (i == 1) {
+                    break;
+                }
+                if (i == 2) {
+                    continue;
+                }
+                txt = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
+                if (txt.size() < 1) {
+                    continue;
+                }
+                rdr.putStrArr(txt);
+            }
+            try {
+                fs.close();
+            } catch (Exception e) {
+            }
             return null;
         }
         if (a.equals("mrtfilter")) {

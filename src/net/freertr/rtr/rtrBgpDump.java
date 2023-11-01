@@ -16,12 +16,15 @@ import net.freertr.ip.ipIfc4;
 import net.freertr.ip.ipIfc6;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packHolder;
+import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtTcp;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
+import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
+import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabSessionEntry;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -550,12 +553,12 @@ public class rtrBgpDump {
      *
      * @param ic4 ip4 core
      * @param ic6 ip6 core
-     * @param ses sessions
      * @param hlp temporary packet
      * @param pck packet to dump
+     * @param target address to filter
      * @return text dump of the packet
      */
-    public static List<String> dumpPacketSum(ipCor4 ic4, ipCor6 ic6, tabGen<tabSessionEntry> ses, packHolder hlp, packHolder pck) {
+    public static List<String> dumpPacketSum(ipCor4 ic4, ipCor6 ic6, packHolder hlp, packHolder pck, addrIP target) {
         pck = pck.copyBytes(true, true);
         pck.merge2end();
         List<String> res = new ArrayList<String>();
@@ -573,6 +576,11 @@ public class rtrBgpDump {
                 break;
             }
             ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            if (target != null) {
+                if (!ntry.prefix.matches(target)) {
+                    continue;
+                }
+            }
             res.add(a + "|" + addrPrefix.ip2str(ntry.prefix));
         }
         pck.setBytesLeft(prt);
@@ -598,6 +606,11 @@ public class rtrBgpDump {
                 if (rou == null) {
                     continue;
                 }
+                if ((target != null) && (rou.prefix != null)) {
+                    if (!rou.prefix.matches(target)) {
+                        continue;
+                    }
+                }
                 if (rou.prefix == null) {
                     a = "" + rou;
                 } else {
@@ -612,6 +625,11 @@ public class rtrBgpDump {
                 break;
             }
             ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            if (target != null) {
+                if (!ntry.prefix.matches(target)) {
+                    continue;
+                }
+            }
             res.add(a + "|" + addrPrefix.ip2str(ntry.prefix) + "|");
         }
         String b = bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + "|" + pck.IPsrc + "|" + pck.IPtrg + "|";
