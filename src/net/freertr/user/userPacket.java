@@ -159,7 +159,7 @@ public class userPacket {
             packHolder tmp = new packHolder(true, true);
             for (int i = 0; i < o; i++) {
                 packHolder pck = pcks.get(i);
-                txt = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
+                txt = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
                 txt.add("");
                 rdr.putStrArr(txt);
             }
@@ -219,7 +219,7 @@ public class userPacket {
                 cmd.error("unable to connect ris");
                 return null;
             }
-            clntRis ris = new clntRis(htp.pipe);
+            clntRis ris = new clntRis(htp.pipe, new addrIP());
             ris.clntConnect(src);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
@@ -238,7 +238,7 @@ public class userPacket {
                 if (i != 0) {
                     continue;
                 }
-                txt = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
+                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, ses, tmp, pck);
                 txt.add("");
                 rdr.putStrArr(txt);
             }
@@ -271,7 +271,7 @@ public class userPacket {
                 cmd.error("unable to connect ris");
                 return null;
             }
-            clntRis ris = new clntRis(htp.pipe);
+            clntRis ris = new clntRis(htp.pipe, new addrIP());
             ris.clntConnect(src);
             packHolder pck = new packHolder(true, true);
             for (;;) {
@@ -288,7 +288,7 @@ public class userPacket {
                 if (i != 0) {
                     continue;
                 }
-                rtrBgpMon.createHeader(pck, bits.getTime() + cfgAll.timeServerOffset, false, rtrBgpMon.typMon, pck.IPsrc, pck.INTiface, pck.IPsrc.toIPv4());
+                rtrBgpMon.createHeader(pck, pck.INTtime + cfgAll.timeServerOffset, false, rtrBgpMon.typMon, pck.IPsrc, pck.INTiface, pck.IPsrc.toIPv4());
                 pck.pipeSend(pipe, 0, pck.dataSize(), 1);
             }
             htp.pipe.setClose();

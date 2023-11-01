@@ -671,7 +671,7 @@ public class userShow {
                 tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
                 for (int i = 0; i < o; i++) {
                     packHolder pck = pcks.get(i);
-                    txt = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
+                    txt = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
                     txt.add("");
                     rdr.putStrArr(txt);
                 }
@@ -4553,7 +4553,7 @@ public class userShow {
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             packHolder tmp = new packHolder(true, true);
-            List<String> l = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
+            List<String> l = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;
         }
@@ -4586,7 +4586,7 @@ public class userShow {
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             packHolder tmp = new packHolder(true, true);
-            List<String> l = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
+            List<String> l = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;
         }

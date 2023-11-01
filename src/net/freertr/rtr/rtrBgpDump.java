@@ -454,11 +454,11 @@ public class rtrBgpDump {
      * @param ic4 ip4 core
      * @param ic6 ip6 core
      * @param ses sessions
-     * @param tmp temporary packet
+     * @param hlp temporary packet
      * @param pck packet to dump
      * @return text dump of the packet
      */
-    public static List<String> dumpPacket(ipCor4 ic4, ipCor6 ic6, tabGen<tabSessionEntry> ses, packHolder tmp, packHolder pck) {
+    public static List<String> dumpPacketFull(ipCor4 ic4, ipCor6 ic6, tabGen<tabSessionEntry> ses, packHolder hlp, packHolder pck) {
         pck = pck.copyBytes(true, true);
         pck.merge2end();
         List<String> res = new ArrayList<String>();
@@ -467,23 +467,19 @@ public class rtrBgpDump {
         clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(pck.IPsrc), false, packDnsRec.typePTR);
         String a = clnt.getPTR();
         clnt = new clntDns();
-        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(pck.IPsrc), false, packDnsRec.typePTR);
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(pck.IPtrg), false, packDnsRec.typePTR);
         res.add(a + " --> " + clnt.getPTR());
         enc7bit.buf2hex(res, pck.getCopy(), 0, "");
         if ((ic4 != null) && (ic6 != null)) {
-            if (tmp == null) {
-                tmp = new packHolder(true, true);
-            }
-            tmp.clear();
-            tmp.copyFrom(pck, true, true);
-            msg2pcap(ic4, ic6, ses, tmp);
-            res.addAll(tmp.convertToK12(tmp.INTtime));
+            hlp.clear();
+            hlp.copyFrom(pck, true, true);
+            msg2pcap(ic4, ic6, ses, hlp);
+            res.addAll(hlp.convertToK12(hlp.INTtime));
         }
         if (rtrBgpUtil.checkHeader(pck)) {
             return res;
         }
         pck.getSkip(rtrBgpUtil.sizeU);
-        packHolder hlp = new packHolder(true, true);
         res.add("len=" + pck.IPsiz + " typ=" + pck.IPprt + " " + rtrBgpUtil.msgType2string(pck.IPprt));
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
@@ -495,9 +491,6 @@ public class rtrBgpDump {
                 break;
             }
             ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
-            if (res == null) {
-                continue;
-            }
             res.add("withdrawn " + addrPrefix.ip2str(ntry.prefix));
         }
         pck.setBytesLeft(prt);
@@ -528,9 +521,6 @@ public class rtrBgpDump {
                 }
                 res.add("    prefix=" + a);
             }
-            if (pfxs.size() > 0) {
-                continue;
-            }
             userFormat ufmt = new userFormat("|", "|");
             ntry.best.fullDump(ufmt, "");
             List<String> dump1 = ufmt.formatAll(userFormat.tableMode.normal);
@@ -550,12 +540,86 @@ public class rtrBgpDump {
                 break;
             }
             ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
-            if (res == null) {
-                continue;
-            }
             res.add("  reachable " + addrPrefix.ip2str(ntry.prefix));
         }
         return res;
     }
 
+    /**
+     * dump one packet
+     *
+     * @param ic4 ip4 core
+     * @param ic6 ip6 core
+     * @param ses sessions
+     * @param hlp temporary packet
+     * @param pck packet to dump
+     * @return text dump of the packet
+     */
+    public static List<String> dumpPacketSum(ipCor4 ic4, ipCor6 ic6, tabGen<tabSessionEntry> ses, packHolder hlp, packHolder pck) {
+        pck = pck.copyBytes(true, true);
+        pck.merge2end();
+        List<String> res = new ArrayList<String>();
+        if (rtrBgpUtil.checkHeader(pck)) {
+            return res;
+        }
+        pck.getSkip(rtrBgpUtil.sizeU);
+        int prt = pck.msbGetW(0);
+        pck.getSkip(2);
+        prt = pck.dataSize() - prt;
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        String a = rtrBgpUtil.attrType2string(rtrBgpUtil.attrUnReach);
+        for (;;) {
+            if (pck.dataSize() <= prt) {
+                break;
+            }
+            ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            res.add(a + "|" + addrPrefix.ip2str(ntry.prefix));
+        }
+        pck.setBytesLeft(prt);
+        prt = pck.msbGetW(0);
+        pck.getSkip(2);
+        prt = pck.dataSize() - prt;
+        for (;;) {
+            if (pck.dataSize() <= prt) {
+                break;
+            }
+            rtrBgpUtil.parseAttrib(pck, hlp);
+            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp.copyBytes(true, true));
+            if (pfxs == null) {
+                pfxs = new ArrayList<tabRouteEntry<addrIP>>();
+            }
+            int o = pfxs.size();
+            if (o < 1) {
+                continue;
+            }
+            String b = rtrBgpUtil.attrType2string(hlp.ETHtype);
+            for (int i = 0; i < o; i++) {
+                tabRouteEntry<addrIP> rou = pfxs.get(i);
+                if (rou == null) {
+                    continue;
+                }
+                if (rou.prefix == null) {
+                    a = "" + rou;
+                } else {
+                    a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
+                }
+                res.add(b + "|" + a);
+            }
+        }
+        a = rtrBgpUtil.attrType2string(rtrBgpUtil.attrReachable);
+        for (;;) {
+            if (pck.dataSize() < 1) {
+                break;
+            }
+            ntry = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            res.add(a + "|" + addrPrefix.ip2str(ntry.prefix) + "|");
+        }
+        String b = bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + "|" + pck.IPsrc + "|" + pck.IPtrg + "|";
+        String c = ntry.best.toShBgpLast();
+        for (int i = 0; i < res.size(); i++) {
+            a = res.get(i);
+            res.set(i, b + a + c);
+        }
+        return res;
+    }
 }

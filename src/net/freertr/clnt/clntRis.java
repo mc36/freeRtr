@@ -19,13 +19,17 @@ public class clntRis {
 
     private final pipeSide pipe;
 
+    private final addrIP peer;
+
     /**
      * create instance
      *
      * @param p pipeline to use
+     * @param a address of peer
      */
-    public clntRis(pipeSide p) {
+    public clntRis(pipeSide p, addrIP a) {
         pipe = p;
+        peer = a.copyBytes();
     }
 
     /**
@@ -79,6 +83,7 @@ public class clntRis {
         if (pck.IPsrc.fromString(s)) {
             return 2;
         }
+        pck.IPtrg.setAddr(peer);
         s = encJson.getValue(a, "peer_asn");
         if (s == null) {
             return 2;
@@ -94,6 +99,7 @@ public class clntRis {
             pck.putSkip(1);
         }
         pck.merge2end();
+        pck.INTtime = bits.getTime();
         return 0;
     }
 
@@ -110,7 +116,7 @@ public class clntRis {
         }
         pipe.linePut("");
         pipe.linePut("event: ris_message");
-        pipe.linePut("data: {\"timestamp\":" + (pck.INTtime / 1000) + ",\"peer\":\"" + pck.IPsrc + "\",\"peer_asn\":\"" + pck.INTiface + "\",\"type\":\"UPDATE\",raw\":\"" + a + "\"}");
+        pipe.linePut("data: {\"timestamp\":" + (pck.INTtime / 1000) + ",\"peer\":\"" + pck.IPsrc + "\",\"peer_asn\":\"" + pck.INTiface + "\",\"host\":\"" + peer + "\",\"type\":\"UPDATE\",raw\":\"" + a + "\"}");
     }
 
 }
