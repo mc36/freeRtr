@@ -12,7 +12,6 @@ import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServS;
 import net.freertr.rtr.rtrBgpMon;
 import net.freertr.rtr.rtrBgpMrt;
-import net.freertr.rtr.rtrBgpSpeak;
 import net.freertr.rtr.rtrBgpTemp;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.tab.tabAceslstN;
@@ -537,28 +536,26 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * @param src source of packet
      * @param spk got from speaker
      * @param dir direction: false=rx, true=tx
-     * @param dat bgp message
+     * @param hlp helper packet
+     * @param pck bgp message
      */
-    public void gotMessage(int as, addrIP src, addrIP spk, boolean dir, byte[] dat) {
+    public void gotMessage(int as, addrIP src, addrIP spk, boolean dir, packHolder hlp, packHolder pck) {
         servBmp2mrtStat stat = getStat(spk, src, 1, as);
         stat.state = true;
         if (dir) {
             stat.packOut++;
-            stat.byteOut += dat.length;
+            stat.byteOut += pck.dataSize();
         } else {
             stat.packIn++;
-            stat.byteIn += dat.length;
+            stat.byteIn += pck.dataSize();
         }
         stat.packLast = bits.getTime();
-        stat.packRate += dat.length;
+        stat.packRate += pck.dataSize();
         if (local) {
-            logger.info((dir ? "tx" : "rx") + " " + as + " " + src + " " + spk + " " + bits.byteDump(dat, 0, -1));
+            logger.info((dir ? "tx" : "rx") + " " + as + " " + src + " " + spk + " " + bits.byteDump(pck.getCopy(), 0, -1));
         }
         if ((dir == stat.rouD) && (stat.nei != null)) {
-            packHolder upd = new packHolder(true, true);
-            packHolder hlp = new packHolder(true, true);
-            upd.putCopy(dat, 0, 0, dat.length);
-            upd.putSkip(dat.length);
+            packHolder upd = pck.copyBytes(true, true);
             upd.merge2beg();
             int typ = upd.getByte(rtrBgpUtil.sizeU - 1);
             upd.getSkip(rtrBgpUtil.sizeU);
@@ -579,8 +576,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             return;
         }
         byte[] hdr = new byte[128];
-        int len = rtrBgpMrt.putMrtHeader(hdr, bits.getTime(), dir, as, 0, src, spk, dat.length);
-        fileHandle.add(hdr, 0, len, dat, 0, dat.length);
+        int len = rtrBgpMrt.putMrtHeader(hdr, bits.getTime(), dir, as, 0, src, spk, pck.dataSize());
+        fileHandle.add(hdr, 0, len, pck.getCopy(), 0, pck.dataSize());
     }
 
     /**

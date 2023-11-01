@@ -25,6 +25,7 @@ import net.freertr.clnt.clntNtp;
 import net.freertr.clnt.clntPcep;
 import net.freertr.clnt.clntPmtud;
 import net.freertr.clnt.clntProxy;
+import net.freertr.clnt.clntRis;
 import net.freertr.clnt.clntSmtp;
 import net.freertr.clnt.clntSnmp;
 import net.freertr.clnt.clntSpeed;
@@ -207,8 +208,44 @@ public class userPacket {
             cmd.error(ok + " packets converted");
             return null;
         }
-        if (a.equals("ris2bmp")) {
+        if (a.equals("ris2con")) {
+            encUrl src = new encUrl();
+            if (src.fromString(cmd.word())) {
+                cmd.error("bad url");
+                return null;
+            }
             clntHttp htp = new clntHttp(cmd.pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
+            if (htp.doConnect(src)) {
+                cmd.error("unable to connect ris");
+                return null;
+            }
+            clntRis ris = new clntRis(htp.pipe);
+            ris.clntConnect(src);
+            packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            List<String> txt;
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
+            for (;;) {
+                if (need2stop()) {
+                    break;
+                }
+                int i = ris.readPacket(pck);
+                if (i == 1) {
+                    break;
+                }
+                if (i != 0) {
+                    continue;
+                }
+                txt = rtrBgpDump.dumpPacket(ic4, ic6, ses, tmp, pck);
+                txt.add("");
+                rdr.putStrArr(txt);
+            }
+            htp.pipe.setClose();
+            return null;
+        }
+        if (a.equals("ris2bmp")) {
             encUrl src = new encUrl();
             if (src.fromString(cmd.word())) {
                 cmd.error("bad url");
@@ -229,52 +266,29 @@ public class userPacket {
                 cmd.error("unable to connect bmp");
                 return null;
             }
+            clntHttp htp = new clntHttp(cmd.pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
             if (htp.doConnect(src)) {
                 cmd.error("unable to connect ris");
                 return null;
             }
-            htp.pipe.linePut("GET " + src.toURL(false, false, true, true) + " HTTP/1.1");
-            htp.pipe.linePut("User-Agent: " + version.usrAgnt);
-            htp.pipe.linePut("Host: " + src.server);
-            htp.pipe.linePut("");
-            htp.pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+            clntRis ris = new clntRis(htp.pipe);
+            ris.clntConnect(src);
             packHolder pck = new packHolder(true, true);
             for (;;) {
                 if (pipe.isClosed() != 0) {
                     break;
                 }
-                if (htp.pipe.isClosed() != 0) {
-                    break;
-                }
                 if (need2stop()) {
                     break;
                 }
-                a = htp.pipe.lineGet(0x11);
-                if (!a.startsWith("data:")) {
+                int i = ris.readPacket(pck);
+                if (i == 1) {
+                    break;
+                }
+                if (i != 0) {
                     continue;
                 }
-                String s = encJson.getValue(a, "peer");
-                if (s == null) {
-                    continue;
-                }
-                adr.fromString(s);
-                s = encJson.getValue(a, "peer_asn");
-                if (s == null) {
-                    continue;
-                }
-                int p = bits.str2num(s);
-                s = encJson.getValue(a, "raw");
-                if (s == null) {
-                    continue;
-                }
-                pck.clear();
-                int o = s.length() / 2;
-                for (int i = 0; i < o; i++) {
-                    pck.putByte(0, bits.fromHex(s.substring(i * 2, i * 2 + 2)));
-                    pck.putSkip(1);
-                }
-                pck.merge2end();
-                rtrBgpMon.createHeader(pck, bits.getTime() + cfgAll.timeServerOffset, false, rtrBgpMon.typMon, adr, p, adr.toIPv4());
+                rtrBgpMon.createHeader(pck, bits.getTime() + cfgAll.timeServerOffset, false, rtrBgpMon.typMon, pck.IPsrc, pck.INTiface, pck.IPsrc.toIPv4());
                 pck.pipeSend(pipe, 0, pck.dataSize(), 1);
             }
             htp.pipe.setClose();

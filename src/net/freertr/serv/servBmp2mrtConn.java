@@ -20,6 +20,8 @@ public class servBmp2mrtConn implements Runnable {
 
     private final addrIP peer;
 
+    private final packHolder hlp;
+
     /**
      * create instance
      *
@@ -31,6 +33,7 @@ public class servBmp2mrtConn implements Runnable {
         pipe = pip;
         lower = prnt;
         peer = id.peerAddr.copyBytes();
+        hlp = new packHolder(true, true);
         new Thread(this).start();
     }
 
@@ -82,16 +85,16 @@ public class servBmp2mrtConn implements Runnable {
             boolean dir = (flg & 0x10) != 0;
             switch (typ) {
                 case rtrBgpMon.typMon:
-                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
+                    lower.gotMessage(as, adr, peer, dir, hlp, pck);
                     break;
                 case rtrBgpMon.typPerUp:
                     pck.getSkip(20);
-                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
+                    lower.gotMessage(as, adr, peer, dir, hlp, pck);
                     lower.gotState(as, adr, peer, true);
                     break;
                 case rtrBgpMon.typPerDn:
                     pck.getSkip(1);
-                    lower.gotMessage(as, adr, peer, dir, pck.getCopy());
+                    lower.gotMessage(as, adr, peer, dir, hlp, pck);
                     lower.gotState(as, adr, peer, false);
                     break;
                 case rtrBgpMon.typStat:

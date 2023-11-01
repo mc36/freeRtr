@@ -2182,6 +2182,8 @@ public class userExec {
         hl.add(null, "4 .          <file>                   target mrt");
         hl.add(null, "2 3      txt2con                      text log to console");
         hl.add(null, "3 .        <file>                     name of file");
+        hl.add(null, "2 3      ris2con                      ris to console");
+        hl.add(null, "3 .        <url>                      url of ris live server");
         hl.add(null, "2 3      ris2bmp                      ris to bmp");
         hl.add(null, "3 4        <url>                      url of ris live server");
         hl.add(null, "4 5          <name:prx>               proxy profile");
