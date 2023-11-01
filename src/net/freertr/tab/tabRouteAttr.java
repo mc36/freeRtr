@@ -359,6 +359,11 @@ public class tabRouteAttr<T extends addrType> {
     public int evpnLab;
 
     /**
+     * entropy label
+     */
+    public byte[] entropyLabel;
+
+    /**
      * pmsi flag and type
      */
     public int pmsiTyp;
@@ -407,11 +412,6 @@ public class tabRouteAttr<T extends addrType> {
      * source router
      */
     public addrType srcRtr;
-
-    /**
-     * entropy label
-     */
-    public boolean entropyLabel;
 
     /**
      * atomic aggregator
@@ -699,13 +699,18 @@ public class tabRouteAttr<T extends addrType> {
         atr.pmsiLab = pmsiLab;
         atr.evpnLab = evpnLab;
         atr.bandwidth = bandwidth;
-        atr.entropyLabel = entropyLabel;
         atr.atomicAggr = atomicAggr;
         atr.aggrAs = aggrAs;
         if (segrouPrf != null) {
             atr.segrouPrf = (T) segrouPrf.copyBytes();
         } else {
             atr.segrouPrf = null;
+        }
+        if (entropyLabel != null) {
+            atr.entropyLabel = new byte[entropyLabel.length];
+            bits.byteComp(entropyLabel, 0, atr.entropyLabel, 0, entropyLabel.length);
+        } else {
+            atr.entropyLabel = null;
         }
         if (attribVal != null) {
             atr.attribVal = new byte[attribVal.length];
@@ -1118,8 +1123,18 @@ public class tabRouteAttr<T extends addrType> {
         } else if (other.unknown != null) {
             return 101;
         }
-        if (entropyLabel != other.entropyLabel) {
-            return 102;
+        if (entropyLabel != null) {
+            if (other.entropyLabel == null) {
+                return 102;
+            }
+            if (entropyLabel.length != other.entropyLabel.length) {
+                return 103;
+            }
+            if (bits.byteComp(entropyLabel, 0, other.entropyLabel, 0, entropyLabel.length) != 0) {
+                return 104;
+            }
+        } else if (other.entropyLabel != null) {
+            return 105;
         }
         return 0;
     }
@@ -1701,7 +1716,7 @@ public class tabRouteAttr<T extends addrType> {
             ntry.unknown = null;
         }
         if ((ign & 0x8000000) != 0) {
-            ntry.entropyLabel = false;
+            ntry.entropyLabel = null;
         }
     }
 
@@ -1753,7 +1768,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "pmsi tunnel|" + bits.byteDump(pmsiTun, 0, -1));
         lst.add(beg + "accumulated igp|" + accIgp);
         lst.add(beg + "bandwidth|" + bandwidth);
-        lst.add(beg + "entropy label|" + entropyLabel);
+        lst.add(beg + "entropy label|" + bits.byteDump(entropyLabel, 0, -1));
         lst.add(beg + "atomic aggregator|" + atomicAggr);
         lst.add(beg + "aggregator asnum|" + bits.num2str(aggrAs));
         lst.add(beg + "aggregator asnam|" + clntWhois.asn2name(aggrAs, true));

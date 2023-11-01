@@ -308,9 +308,19 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public boolean privasMatch;
 
     /**
+     * entropy label matcher
+     */
+    public boolean entropyMatch;
+
+    /**
      * private as updates
      */
     public boolean privasClear;
+
+    /**
+     * entropys updates
+     */
+    public boolean entropyClear;
 
     /**
      * peer as updates
@@ -542,6 +552,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, !noLrgComm, beg, "match nolrgcomm", "");
         cmds.cfgLine(l, trackMatch == null, beg, "match tracker", "" + trackMatch);
         cmds.cfgLine(l, !privasMatch, beg, "match privateas", "");
+        cmds.cfgLine(l, !entropyMatch, beg, "match entropy", "");
         cmds.cfgLine(l, !logMatch, beg, "log", "");
         cmds.cfgLine(l, stdCommClear == null, beg, "clear stdcomm", stdCommClear);
         cmds.cfgLine(l, extCommClear == null, beg, "clear extcomm", extCommClear);
@@ -549,6 +560,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         cmds.cfgLine(l, orgntrClear == null, beg, "clear originator", orgntrClear);
         cmds.cfgLine(l, clstLstClear == null, beg, "clear clustlist", clstLstClear);
         cmds.cfgLine(l, !privasClear, beg, "clear privateas", "");
+        cmds.cfgLine(l, !entropyClear, beg, "clear entropy", "");
         cmds.cfgLine(l, !peerasClear, beg, "clear peeras", "");
         cmds.cfgLine(l, exactasClear == 0, beg, "clear exactas", "" + bits.num2str(exactasClear));
         cmds.cfgLine(l, !firstasClear, beg, "clear firstas", "");
@@ -648,6 +660,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             privasClear = true;
             return false;
         }
+        if (a.equals("entropy")) {
+            entropyClear = true;
+            return false;
+        }
         if (a.equals("peeras")) {
             peerasClear = true;
             return false;
@@ -694,6 +710,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (a.equals("privateas")) {
             privasClear = false;
+            return false;
+        }
+        if (a.equals("entropy")) {
+            entropyClear = false;
             return false;
         }
         if (a.equals("peeras")) {
@@ -1104,6 +1124,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             privasMatch = true;
             return false;
         }
+        if (a.equals("entropy")) {
+            entropyMatch = true;
+            return false;
+        }
         if (a.equals("tracker")) {
             trackMatch = cmd.word();
             return false;
@@ -1391,6 +1415,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             privasMatch = false;
             return false;
         }
+        if (a.equals("entropy")) {
+            entropyMatch = false;
+            return false;
+        }
         if (a.equals("tracker")) {
             trackMatch = null;
             return false;
@@ -1615,6 +1643,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 return false;
             }
         }
+        if (entropyMatch) {
+            if (net.best.entropyLabel == null) {
+                return false;
+            }
+        }
         if (ifaceMatch != null) {
             if (net.best.iface == null) {
                 return false;
@@ -1762,6 +1795,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (privasClear) {
             tabRouteUtil.removePrivateAs(attr.pathSeq);
             tabRouteUtil.removePrivateAs(attr.pathSet);
+        }
+        if (entropyClear) {
+            attr.entropyLabel = null;
         }
         if (peerasClear) {
             tabRouteUtil.removeIntList(attr.pathSeq, asn);

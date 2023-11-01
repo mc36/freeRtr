@@ -95,6 +95,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         clrPrivas,
         /**
+         * clear entropy
+         */
+        clrEntropy,
+        /**
          * clear peeras
          */
         clrPeeras,
@@ -268,6 +272,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * privas
          */
         privas,
+        /**
+         * entropy
+         */
+        entropy,
         /**
          * access list
          */
@@ -529,6 +537,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "clear clustlist " + strVal;
             case clrPrivas:
                 return "clear privateas";
+            case clrEntropy:
+                return "clear entropy";
             case clrPeeras:
                 return "clear peeras";
             case clrExactas:
@@ -641,6 +651,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "tracker " + strVal;
             case privas:
                 return "privateas";
+            case entropy:
+                return "entropy";
             case aceslst:
                 return "access-list " + aceslst;
             case prfxlst:
@@ -787,6 +799,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 i = tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
                 i += tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
                 return i > 0;
+            case entropy:
+                return net.best.entropyLabel != null;
             case aceslst:
                 packHolder pck = new packHolder(false, false);
                 pck.IPsrc.setAddr(net.prefix.network);
@@ -903,6 +917,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case clrPrivas:
                 tabRouteUtil.removePrivateAs(attr.pathSeq);
                 tabRouteUtil.removePrivateAs(attr.pathSet);
+                return;
+            case clrEntropy:
+                attr.entropyLabel = null;
                 return;
             case clrPeeras:
                 tabRouteUtil.removeIntList(attr.pathSeq, asn);

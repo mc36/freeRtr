@@ -211,6 +211,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 .     noextcomm           match empty extended community");
         l.add(null, "2 .     nolrgcomm           match empty large community");
         l.add(null, "2 .     privateas           match private asn");
+        l.add(null, "2 .     entropy             match entropy label");
         l.add(null, "2 3     tracker             match tracker state");
         l.add(null, "3 .       <name:trk>        name of tracker");
         l.add(null, "2 3     access-list         match access list");
@@ -236,6 +237,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     lrgcomm             clear large community");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, "2 .     privateas           clear private asn");
+        l.add(null, "2 .     entropy             clear entropy label");
         l.add(null, ".2 3    originator          clear originator");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 3    clustlist           clear cluster list");
@@ -383,6 +385,10 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("privateas")) {
             ntry.ifMode = tabRtrplcN.ifType.privas;
+            return;
+        }
+        if (a.equals("entropy")) {
+            ntry.ifMode = tabRtrplcN.ifType.entropy;
             return;
         }
         if (a.equals("tracker")) {
@@ -769,6 +775,10 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("privateas")) {
                 ntry.doMode = tabRtrplcN.doType.clrPrivas;
+                return;
+            }
+            if (a.equals("entropy")) {
+                ntry.doMode = tabRtrplcN.doType.clrEntropy;
                 return;
             }
             if (a.equals("peeras")) {

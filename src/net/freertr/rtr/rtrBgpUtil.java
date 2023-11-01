@@ -2204,9 +2204,10 @@ public class rtrBgpUtil {
      * parse entropy label attribute
      *
      * @param ntry table entry
+     * @param pck packet to parse
      */
-    public static void parseEntropyLab(tabRouteEntry<addrIP> ntry) {
-        ntry.best.entropyLabel = true;
+    public static void parseEntropyLab(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.entropyLabel = pck.getCopy();
     }
 
     /**
@@ -2805,7 +2806,7 @@ public class rtrBgpUtil {
                 parseAtomicAggr(ntry);
                 return null;
             case attrEntropyLab:
-                parseEntropyLab(ntry);
+                parseEntropyLab(ntry, pck);
                 return null;
             case attrAggregator:
                 parseAggregator(spkr, ntry, pck);
@@ -3213,10 +3214,15 @@ public class rtrBgpUtil {
      * @param ntry table entry
      */
     public static void placeEntropyLab(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (!ntry.best.entropyLabel) {
+        if (ntry.best.entropyLabel == null) {
+            return;
+        }
+        if (ntry.best.entropyLabel.length < 1) {
             return;
         }
         hlp.clear();
+        hlp.putCopy(ntry.best.entropyLabel, 0, 0, ntry.best.entropyLabel.length);
+        hlp.putSkip(ntry.best.entropyLabel.length);
         placeAttrib(spkr, flagTransitive, attrEntropyLab, trg, hlp);
     }
 

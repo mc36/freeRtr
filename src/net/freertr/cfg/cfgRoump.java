@@ -56,6 +56,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no match extcomm",
         "route-map .*! sequence .* no match lrgcomm",
         "route-map .*! sequence .* no match privateas",
+        "route-map .*! sequence .* no match entropy",
         "route-map .*! sequence .* no match tracker",
         "route-map .*! sequence .* no match interface",
         "route-map .*! sequence .* no match nexthop",
@@ -92,6 +93,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* no clear originator",
         "route-map .*! sequence .* no clear clustlist",
         "route-map .*! sequence .* no clear privateas",
+        "route-map .*! sequence .* no clear entropy",
         "route-map .*! sequence .* no clear peeras",
         "route-map .*! sequence .* no clear exactas",
         "route-map .*! sequence .* no clear firstas",
@@ -285,6 +287,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 .     noextcomm           match empty extended community");
         l.add(null, "2 .     nolrgcomm           match empty large community");
         l.add(null, "2 .     privateas           match private asn");
+        l.add(null, "2 .     entropy             match entropy label");
         l.add(null, "2 3     tracker             match tracker state");
         l.add(null, "3 .       <name:trk>        name of tracker");
         l.add(null, "2 3     access-list         match access list");
@@ -303,6 +306,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     lrgcomm             clear large community");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, "2 .     privateas           clear private asn");
+        l.add(null, "2 .     entropy             clear entropy label");
         l.add(null, ".2 3    originator          clear originator");
         l.add(null, "3 3,.     <str>             regexp to match");
         l.add(null, ".2 3    clustlist           clear cluster list");
