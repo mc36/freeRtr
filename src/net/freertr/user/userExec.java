@@ -756,7 +756,7 @@ public class userExec {
         hl.add(null, "6 7              lrgcomm            list of routes with community");
         hl.add(null, "7 8,.              <str>            community");
         hl.add(null, "8 8,.                [str]          community");
-        hl.add(null, "6 7              regexp             list of routes with as path");
+        hl.add(null, "6 7              aspath             list of routes with as path");
         hl.add(null, "7 8,.              <str>            as path regular expression");
         hl.add(null, "8 8,.                [str]          as path regular expression");
         hl.add(null, "6 7              distance           list of routes with distance");

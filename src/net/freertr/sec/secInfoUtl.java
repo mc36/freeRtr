@@ -292,10 +292,7 @@ public class secInfoUtl {
     /**
      * one liner of the route
      *
-     * @param fwd forwarder to use
-     * @param rtr router to use
-     * @param ntry route entry
-     * @param sep separate lines of responses
+     * @param wrk worker to use
      * @return one liner of the route
      */
     public final static List<String> getRoute1liner(secInfoWrk wrk) {

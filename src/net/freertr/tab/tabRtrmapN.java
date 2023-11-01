@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.cfg.cfgPrfxlst;
+import net.freertr.cfg.cfgRoump;
+import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
+import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrBgpUtil;
@@ -604,6 +609,882 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set segrout " + segrouSet);
         l.add(beg + "set bier " + bierSet);
         return l;
+    }
+
+    /**
+     * do clear configuratoin
+     *
+     * @param a command
+     * @param cmd parameters
+     * @return true on error, false on success
+     */
+    public boolean cfgDoClear(String a, cmds cmd) {
+        if (a.equals("stdcomm")) {
+            stdCommClear = cmd.getRemaining();
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("extcomm")) {
+            extCommClear = cmd.getRemaining();
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("lrgcomm")) {
+            lrgCommClear = cmd.getRemaining();
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("originator")) {
+            orgntrClear = cmd.getRemaining();
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("clustlist")) {
+            clstLstClear = cmd.getRemaining();
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("privateas")) {
+            privasClear = true;
+            return false;
+        }
+        if (a.equals("peeras")) {
+            peerasClear = true;
+            return false;
+        }
+        if (a.equals("exactas")) {
+            exactasClear = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("firstas")) {
+            firstasClear = true;
+            return false;
+        }
+        cmd.badCmd();
+        return true;
+    }
+
+    /**
+     * do clear configuratoin
+     *
+     * @param a command
+     * @param cmd parameters
+     * @return true on error, false on success
+     */
+    public boolean cfgNoClear(String a, cmds cmd) {
+        if (a.equals("stdcomm")) {
+            stdCommClear = null;
+            return false;
+        }
+        if (a.equals("extcomm")) {
+            extCommClear = null;
+            return false;
+        }
+        if (a.equals("lrgcomm")) {
+            lrgCommClear = null;
+            return false;
+        }
+        if (a.equals("originator")) {
+            orgntrClear = null;
+            return false;
+        }
+        if (a.equals("clustlist")) {
+            clstLstClear = null;
+            return false;
+        }
+        if (a.equals("privateas")) {
+            privasClear = false;
+            return false;
+        }
+        if (a.equals("peeras")) {
+            peerasClear = false;
+            return false;
+        }
+        if (a.equals("exactas")) {
+            exactasClear = 0;
+            return false;
+        }
+        if (a.equals("firstas")) {
+            firstasClear = false;
+            return false;
+        }
+        cmd.badCmd();
+        return true;
+    }
+
+    /**
+     * do set configuratoin
+     *
+     * @param a command
+     * @param cmd parameters
+     * @return true on error, false on success
+     */
+    public boolean cfgDoSet(String a, cmds cmd) {
+        if (a.equals("rd")) {
+            rouDstSet = tabRouteUtil.string2rd(cmd.word());
+            return false;
+        }
+        if (a.equals("stdcomm")) {
+            stdCommSet = tabRouteUtil.string2stdComms(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("extcomm")) {
+            extCommSet = tabRouteUtil.string2extComms(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("lrgcomm")) {
+            lrgCommSet = tabRouteUtil.string2lrgComms(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("vrf")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return true;
+            }
+            a = cmd.word();
+            if (a.equals("ipv4")) {
+                vrfSetF = vrf.fwd4;
+                vrfSetT = true;
+            } else {
+                vrfSetF = vrf.fwd6;
+                vrfSetT = false;
+            }
+            return false;
+        }
+        if (a.equals("nexthop")) {
+            nexthopSet = new addrIP();
+            nexthopSet.fromString(cmd.word());
+            return false;
+        }
+        if (a.equals("aspath")) {
+            aspathSet = tabRouteUtil.string2intList(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("asconfed")) {
+            aspathCnf = tabRouteUtil.string2intList(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("distance")) {
+            if (distanceSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("metric")) {
+            if (metricSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("origin")) {
+            if (originSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("locpref")) {
+            if (locPrefSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("aigp")) {
+            if (accIgpSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("validity")) {
+            if (validitySet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("aggregator")) {
+            a = cmd.word();
+            if (aggregatorSet.fromString(a)) {
+                cmd.error("invalid action");
+                return true;
+            }
+            aggregatorRtr = new addrIP();
+            a = cmd.word();
+            if (aggregatorRtr.fromString(a)) {
+                cmd.error("bad address");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("customer")) {
+            if (customerSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("bandwidth")) {
+            if (bandwidthSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("tag")) {
+            if (tagSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("label-local")) {
+            if (lablocSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("label-remote")) {
+            if (labremSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("segrout")) {
+            if (segrouSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("bier")) {
+            if (bierSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("route-map")) {
+            cfgRoump roumap = cfgAll.rtmpFind(cmd.word(), false);
+            if (roumap == null) {
+                cmd.error("no such route map");
+                return true;
+            }
+            roumapSet = roumap.roumap;
+            return false;
+        }
+        if (a.equals("route-policy")) {
+            cfgRouplc roumap = cfgAll.rtplFind(cmd.word(), false);
+            if (roumap == null) {
+                cmd.error("no such route policy");
+                return true;
+            }
+            rouplcSet = roumap.rouplc;
+            return false;
+        }
+        cmd.badCmd();
+        return true;
+    }
+
+    /**
+     * do set configuratoin
+     *
+     * @param a command
+     * @param cmd parameters
+     * @return true on error, false on success
+     */
+    public boolean cfgNoSet(String a, cmds cmd) {
+        if (a.equals("rd")) {
+            rouDstSet = -1L;
+            return false;
+        }
+        if (a.equals("stdcomm")) {
+            stdCommSet = null;
+            return false;
+        }
+        if (a.equals("vrf")) {
+            vrfSetF = null;
+            vrfSetT = false;
+            return false;
+        }
+        if (a.equals("nexthop")) {
+            nexthopSet = null;
+            return false;
+        }
+        if (a.equals("extcomm")) {
+            extCommSet = null;
+            return false;
+        }
+        if (a.equals("lrgcomm")) {
+            lrgCommSet = null;
+            return false;
+        }
+        if (a.equals("aspath")) {
+            aspathSet = null;
+            return false;
+        }
+        if (a.equals("asconfed")) {
+            aspathCnf = null;
+            return false;
+        }
+        if (a.equals("distance")) {
+            distanceSet.set2unchange();
+            return false;
+        }
+        if (a.equals("metric")) {
+            metricSet.set2unchange();
+            return false;
+        }
+        if (a.equals("origin")) {
+            originSet.set2unchange();
+            return false;
+        }
+        if (a.equals("locpref")) {
+            locPrefSet.set2unchange();
+            return false;
+        }
+        if (a.equals("aigp")) {
+            accIgpSet.set2unchange();
+            return false;
+        }
+        if (a.equals("validity")) {
+            validitySet.set2unchange();
+            return false;
+        }
+        if (a.equals("aggregator")) {
+            aggregatorSet.set2unchange();
+            aggregatorRtr = null;
+            return false;
+        }
+        if (a.equals("customer")) {
+            customerSet.set2unchange();
+            return false;
+        }
+        if (a.equals("bandwidth")) {
+            bandwidthSet.set2unchange();
+            return false;
+        }
+        if (a.equals("tag")) {
+            tagSet.set2unchange();
+            return false;
+        }
+        if (a.equals("label-local")) {
+            lablocSet.set2unchange();
+            return false;
+        }
+        if (a.equals("label-remote")) {
+            labremSet.set2unchange();
+            return false;
+        }
+        if (a.equals("segrout")) {
+            segrouSet.set2unchange();
+            return false;
+        }
+        if (a.equals("bier")) {
+            bierSet.set2unchange();
+            return false;
+        }
+        if (a.equals("route-map")) {
+            roumapSet = null;
+            return false;
+        }
+        if (a.equals("route-policy")) {
+            rouplcSet = null;
+            return false;
+        }
+        cmd.badCmd();
+        return false;
+    }
+
+    /**
+     * do match configuratoin
+     *
+     * @param a command
+     * @param cmd parameters
+     * @return true on error, false on success
+     */
+    public boolean cfgDoMatch(String a, cmds cmd) {
+        if (a.equals("interface")) {
+            ifaceMatch = cfgAll.ifcFind(cmd.word(), 0);
+            return false;
+        }
+        if (a.equals("nexthop")) {
+            nexthopMatch = new addrIP();
+            nexthopMatch.fromString(cmd.word());
+            return false;
+        }
+        if (a.equals("recursive")) {
+            oldhopMatch = new addrIP();
+            oldhopMatch.fromString(cmd.word());
+            return false;
+        }
+        if (a.equals("protocol")) {
+            protoTypMatch = cfgRtr.name2num(cmd.word());
+            if (protoTypMatch == null) {
+                cmd.error("invalid protocol");
+                return true;
+            }
+            protoNumMatch = bits.str2num(cmd.word());
+            if (!cfgRtr.num2proc(protoTypMatch)) {
+                protoNumMatch = -1;
+            }
+            return false;
+        }
+        if (a.equals("aspath")) {
+            aspathMatch = cmd.getRemaining();
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("peerstd")) {
+            peerStdMatch = tabRouteUtil.string2stdComm(cmd.word());
+            return false;
+        }
+        if (a.equals("peerlrg")) {
+            tabLargeComm d = new tabLargeComm();
+            if (d.fromString(cmd.word())) {
+                return true;
+            }
+            peerLrgMatch = d;
+            return false;
+        }
+        if (a.equals("stdcomm")) {
+            stdCommMatch = tabRouteUtil.string2stdComms(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("extcomm")) {
+            extCommMatch = tabRouteUtil.string2extComms(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("lrgcomm")) {
+            lrgCommMatch = tabRouteUtil.string2lrgComms(cmd.getRemaining());
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("rd")) {
+            rouDstMatch = tabRouteUtil.string2rd(cmd.word());
+            return false;
+        }
+        if (a.equals("network")) {
+            networkMatch = new tabPrfxlstN();
+            networkMatch.action = tabListingEntry.actionType.actPermit;
+            if (networkMatch.fromString(cmd.getRemaining())) {
+                networkMatch = null;
+                cmd.error("invalid prefix");
+                return true;
+            }
+            cmd.clear();
+            return false;
+        }
+        if (a.equals("nostdcomm")) {
+            noStdComm = true;
+            return false;
+        }
+        if (a.equals("noextcomm")) {
+            noExtComm = true;
+            return false;
+        }
+        if (a.equals("nolrgcomm")) {
+            noLrgComm = true;
+            return false;
+        }
+        if (a.equals("privateas")) {
+            privasMatch = true;
+            return false;
+        }
+        if (a.equals("tracker")) {
+            trackMatch = cmd.word();
+            return false;
+        }
+        if (a.equals("access-list")) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
+                cmd.error("no such access list");
+                return true;
+            }
+            aceslstMatch = acl.aceslst;
+            return false;
+        }
+        if (a.equals("prefix-list")) {
+            cfgPrfxlst prfxlst = cfgAll.prfxFind(cmd.word(), false);
+            if (prfxlst == null) {
+                cmd.error("no such prefix list");
+                return true;
+            }
+            prfxlstMatch = prfxlst.prflst;
+            return false;
+        }
+        if (a.equals("route-map")) {
+            cfgRoump roumap = cfgAll.rtmpFind(cmd.word(), false);
+            if (roumap == null) {
+                cmd.error("no such route map");
+                return true;
+            }
+            roumapMatch = roumap.roumap;
+            return false;
+        }
+        if (a.equals("route-policy")) {
+            cfgRouplc roumap = cfgAll.rtplFind(cmd.word(), false);
+            if (roumap == null) {
+                cmd.error("no such route policy");
+                return true;
+            }
+            rouplcMatch = roumap.rouplc;
+            return false;
+        }
+        if (a.equals("peerasn")) {
+            if (peerasnMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("distance")) {
+            if (distanceMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("metric")) {
+            if (metricMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("origin")) {
+            if (originMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("locpref")) {
+            if (locPrefMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("aigp")) {
+            if (accIgpMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("validity")) {
+            if (validityMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("aggregator")) {
+            if (aggregatorMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("customer")) {
+            if (customerMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("pathlen")) {
+            if (pathlenMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("unknowns")) {
+            if (unknownMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("asend")) {
+            if (asendMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("asbeg")) {
+            if (asbegMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("asmid")) {
+            if (asmidMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("bandwidth")) {
+            if (bandwidthMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("tag")) {
+            if (tagMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("label-local")) {
+            if (lablocMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("label-remote")) {
+            if (labremMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("segrout")) {
+            if (segrouMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("bier")) {
+            if (bierMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("afi")) {
+            if (afiMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("safi")) {
+            if (safiMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        cmd.badCmd();
+        return true;
+    }
+
+    /**
+     * do match configuratoin
+     *
+     * @param a command
+     * @param cmd parameters
+     * @return true on error, false on success
+     */
+    public boolean cfgNoMatch(String a, cmds cmd) {
+        if (a.equals("interface")) {
+            ifaceMatch = null;
+            return false;
+        }
+        if (a.equals("nexthop")) {
+            nexthopMatch = null;
+            return false;
+        }
+        if (a.equals("recursive")) {
+            oldhopMatch = null;
+            return false;
+        }
+        if (a.equals("protocol")) {
+            protoTypMatch = null;
+            protoNumMatch = 0;
+            return false;
+        }
+        if (a.equals("aspath")) {
+            aspathMatch = null;
+            return false;
+        }
+        if (a.equals("peerstd")) {
+            peerStdMatch = 0;
+            return false;
+        }
+        if (a.equals("peerlrg")) {
+            peerLrgMatch = null;
+            return false;
+        }
+        if (a.equals("stdcomm")) {
+            stdCommMatch = null;
+            return false;
+        }
+        if (a.equals("extcomm")) {
+            extCommMatch = null;
+            return false;
+        }
+        if (a.equals("lrgcomm")) {
+            lrgCommMatch = null;
+            return false;
+        }
+        if (a.equals("rd")) {
+            rouDstMatch = -1L;
+            return false;
+        }
+        if (a.equals("network")) {
+            networkMatch = null;
+            return false;
+        }
+        if (a.equals("access-list")) {
+            aceslstMatch = null;
+            return false;
+        }
+        if (a.equals("prefix-list")) {
+            prfxlstMatch = null;
+            return false;
+        }
+        if (a.equals("route-map")) {
+            roumapMatch = null;
+            return false;
+        }
+        if (a.equals("route-policy")) {
+            rouplcMatch = null;
+            return false;
+        }
+        if (a.equals("nostdcomm")) {
+            noStdComm = false;
+            return false;
+        }
+        if (a.equals("noextcomm")) {
+            noExtComm = false;
+            return false;
+        }
+        if (a.equals("nolrgcomm")) {
+            noLrgComm = false;
+            return false;
+        }
+        if (a.equals("privateas")) {
+            privasMatch = false;
+            return false;
+        }
+        if (a.equals("tracker")) {
+            trackMatch = null;
+            return false;
+        }
+        if (a.equals("peerasn")) {
+            peerasnMatch.set2always();
+            return false;
+        }
+        if (a.equals("distance")) {
+            distanceMatch.set2always();
+            return false;
+        }
+        if (a.equals("metric")) {
+            metricMatch.set2always();
+            return false;
+        }
+        if (a.equals("origin")) {
+            originMatch.set2always();
+            return false;
+        }
+        if (a.equals("locpref")) {
+            locPrefMatch.set2always();
+            return false;
+        }
+        if (a.equals("aigp")) {
+            accIgpMatch.set2always();
+            return false;
+        }
+        if (a.equals("validity")) {
+            validityMatch.set2always();
+            return false;
+        }
+        if (a.equals("aggregator")) {
+            aggregatorMatch.set2always();
+            return false;
+        }
+        if (a.equals("customer")) {
+            customerMatch.set2always();
+            return false;
+        }
+        if (a.equals("pathlen")) {
+            pathlenMatch.set2always();
+            return false;
+        }
+        if (a.equals("unknowns")) {
+            unknownMatch.set2always();
+            return false;
+        }
+        if (a.equals("asend")) {
+            asendMatch.set2always();
+            return false;
+        }
+        if (a.equals("asbeg")) {
+            asbegMatch.set2always();
+            return false;
+        }
+        if (a.equals("asmid")) {
+            asmidMatch.set2always();
+            return false;
+        }
+        if (a.equals("bandwidth")) {
+            bandwidthMatch.set2always();
+            return false;
+        }
+        if (a.equals("tag")) {
+            tagMatch.set2always();
+            return false;
+        }
+        if (a.equals("label-local")) {
+            lablocMatch.set2always();
+            return false;
+        }
+        if (a.equals("label-remote")) {
+            labremMatch.set2always();
+            return false;
+        }
+        if (a.equals("segrout")) {
+            segrouMatch.set2always();
+            return false;
+        }
+        if (a.equals("bier")) {
+            bierMatch.set2always();
+            return false;
+        }
+        if (a.equals("afi")) {
+            afiMatch.set2always();
+            return false;
+        }
+        if (a.equals("safi")) {
+            safiMatch.set2always();
+            return false;
+        }
+        cmd.badCmd();
+        return true;
     }
 
     public boolean matches(int afi, int asn, addrPrefix<addrIP> net) {

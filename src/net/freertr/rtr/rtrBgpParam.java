@@ -1594,14 +1594,14 @@ public abstract class rtrBgpParam {
             if (!eroumapOut.listName.equals(src.eroumapOut.listName)) {
                 return true;
             }
-        }                        
+        }
         if (eroupolOut == null) {
             if (src.eroupolOut != null) {
-                return true;     
-            }                    
-        } else {                 
+                return true;
+            }
+        } else {
             if (src.eroupolOut == null) {
-                return true;       
+                return true;
             }
             if (!eroupolOut.listName.equals(src.eroupolOut.listName)) {
                 return true;
