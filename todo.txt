@@ -12,10 +12,6 @@ image viewer to file manager
 
 game butterfly hanoy, modem, mdev
 
-bmp server to listeners, bmp, ris and bgp
-
-server bgprsrr
-
 server http to have api for scripts
 
 

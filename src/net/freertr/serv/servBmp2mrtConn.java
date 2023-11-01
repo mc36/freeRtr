@@ -79,10 +79,21 @@ public class servBmp2mrtConn implements Runnable {
                 adr.fromIPv4addr(adr.toIPv4());
             }
             for (int i = 0; i < lower.relays.size(); i++) {
-                lower.relays.get(i).gotMessage(as, peer, adr, typ, pck);
+                servBmp2mrtRelay ntry = lower.relays.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                ntry.gotMessage(as, peer, adr, typ, pck.copyBytes(true, true));
             }
             pck.getSkip(rtrBgpMon.size - servBmp2mrt.size);
             boolean dir = (flg & 0x10) != 0;
+            for (int i = 0; i < lower.lstns.size(); i++) {
+                servBmp2mrtLstn ntry = lower.lstns.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                ntry.doDump(as, peer, adr, typ, pck.copyBytes(true, true));
+            }
             switch (typ) {
                 case rtrBgpMon.typMon:
                     lower.gotMessage(as, adr, peer, dir, hlp, pck);

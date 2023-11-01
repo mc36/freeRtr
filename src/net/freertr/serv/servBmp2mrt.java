@@ -54,6 +54,11 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     protected final tabGen<servBmp2mrtRelay> relays = new tabGen<servBmp2mrtRelay>();
 
+    /**
+     * listeners
+     */
+    protected final tabGen<servBmp2mrtLstn> lstns = new tabGen<servBmp2mrtLstn>();
+
     private boolean bulkDown;
 
     private final tabGen<servBmp2mrtStat> stats = new tabGen<servBmp2mrtStat>();
@@ -63,6 +68,17 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     private int rateInt;
 
     private int rateNum;
+
+    private int listenBmp;
+
+    private int listenRis;
+
+    private int listenBgp;
+
+    /**
+     * as number
+     */
+    protected int listenAsn;
 
     private servBmp2mrtRate rateTim;
 
@@ -86,6 +102,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         "server bmp2mrt .*! max-time 0",
         "server bmp2mrt .*! max-pack 0",
         "server bmp2mrt .*! max-byte 0",
+        "server bmp2mrt .*! no listen-bmp",
+        "server bmp2mrt .*! no listen-bgp",
+        "server bmp2mrt .*! no listen-ris",
         "server bmp2mrt .*! no file",
         "server bmp2mrt .*! no backup",
         "server bmp2mrt .*! no dyneigh"
@@ -111,6 +130,9 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             l.add(beg + "max-pack " + fileHandle.rotateL());
             l.add(beg + "max-byte " + fileHandle.rotateS());
         }
+        cmds.cfgLine(l, listenBmp < 1, beg, "listen-bmp", "" + listenBmp);
+        cmds.cfgLine(l, listenRis < 1, beg, "listen-ris", "" + listenRis);
+        cmds.cfgLine(l, listenBgp < 1, beg, "listen-bgp", "" + listenBgp + " " + listenAsn);
         cmds.cfgLine(l, !bulkDown, beg, "bulk-down", "");
         l.add(beg + "rate-down " + rateInt + " " + rateNum);
         if (dynCfg != null) {
@@ -167,6 +189,22 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             }
             rateTim = new servBmp2mrtRate(this, rateInt);
             rateTim.startWork();
+            return false;
+        }
+        if (s.equals("listen-bmp")) {
+            listenBmp = bits.str2num(cmd.word());
+            genStrmStart(this, new pipeLine(32768, false), listenBmp);
+            return false;
+        }
+        if (s.equals("listen-ris")) {
+            listenRis = bits.str2num(cmd.word());
+            genStrmStart(this, new pipeLine(32768, false), listenRis);
+            return false;
+        }
+        if (s.equals("listen-bgp")) {
+            listenBgp = bits.str2num(cmd.word());
+            listenAsn = bits.str2num(cmd.word());
+            genStrmStart(this, new pipeLine(32768, false), listenBgp);
             return false;
         }
         if (s.equals("bulk-down")) {
@@ -269,6 +307,22 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             rateTim = null;
             return false;
         }
+        if (s.equals("listen-bmp")) {
+            genericStop(listenBmp);
+            listenBmp = 0;
+            return false;
+        }
+        if (s.equals("listen-ris")) {
+            genericStop(listenRis);
+            listenRis = 0;
+            return false;
+        }
+        if (s.equals("listen-bgp")) {
+            genericStop(listenBgp);
+            listenBmp = 0;
+            listenAsn = 0;
+            return false;
+        }
         if (s.equals("bulk-down")) {
             bulkDown = false;
             return false;
@@ -342,6 +396,13 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         l.add(null, "1 2    file                      log to file");
         l.add(null, "2 2,.    <file>                  name of file");
         l.add(null, "1 .    local                     log to syslog");
+        l.add(null, "1 2    listen-bmp                bmp listen port");
+        l.add(null, "2 .      <num>                   port number");
+        l.add(null, "1 2    listen-bgp                bgp listen port");
+        l.add(null, "2 3      <num>                   port number");
+        l.add(null, "3 .        <num>                 as number");
+        l.add(null, "1 2    listen-ris                ris listen port");
+        l.add(null, "2 .      <num>                   port number");
         l.add(null, "1 2    max-time                  maximum time");
         l.add(null, "2 .      <num>                   ms between backups");
         l.add(null, "1 2    max-byte                  maximum bytes");
@@ -385,15 +446,35 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public boolean srvInit() {
-        return genStrmStart(this, new pipeLine(32768, false), 0);
+        genStrmStart(this, new pipeLine(32768, false), listenBmp);
+        genStrmStart(this, new pipeLine(32768, false), listenRis);
+        genStrmStart(this, new pipeLine(32768, false), listenBgp);
+        genStrmStart(this, new pipeLine(32768, false), 0);
+        return false;
     }
 
     public boolean srvDeinit() {
-        return genericStop(0);
+        genericStop(listenBmp);
+        genericStop(listenRis);
+        genericStop(listenBgp);
+        genericStop(0);
+        return false;
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(120000);
+        if (id.portLoc == listenBmp) {
+            new servBmp2mrtBmp(pipe, this, id);
+            return false;
+        }
+        if (id.portLoc == listenBgp) {
+            new servBmp2mrtBgp(pipe, this, id);
+            return false;
+        }
+        if (id.portLoc == listenRis) {
+            new servBmp2mrtRis(pipe, this, id);
+            return false;
+        }
         new servBmp2mrtConn(pipe, this, id);
         return false;
     }
