@@ -2180,7 +2180,9 @@ public class userExec {
         hl.add(null, "2 3      txt2mrt                      text log to mrt");
         hl.add(null, "3 4        <file>                     source text");
         hl.add(null, "4 .          <file>                   target mrt");
-        hl.add(null, "2 3      txt2con                      text log to console");
+        hl.add(null, "2 3      txt2full                     text log to console");
+        hl.add(null, "3 .        <file>                     name of file");
+        hl.add(null, "2 3      txt2sum                      text log to console");
         hl.add(null, "3 .        <file>                     name of file");
         hl.add(null, "2 3      ris2con                      ris to console");
         hl.add(null, "3 .        <url>                      url of ris live server");

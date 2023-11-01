@@ -138,7 +138,34 @@ public class userPacket {
         if (alias != null) {
             return alias;
         }
-        if (a.equals("txt2con")) {
+        if (a.equals("txt2full")) {
+            a = cmd.word();
+            cmd.error("reading " + a);
+            List<String> txt = bits.txt2buf(a);
+            if (txt == null) {
+                cmd.error("error reading file");
+                return null;
+            }
+            List<packHolder> pcks = rtrBgpDump.logs2pcks(txt);
+            int o = pcks.size();
+            cmd.error(o + " dumps found");
+            if (o < 1) {
+                cmd.error("no dumps found");
+                return null;
+            }
+            ipCor4 ic4 = new ipCor4();
+            ipCor6 ic6 = new ipCor6();
+            tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
+            packHolder tmp = new packHolder(true, true);
+            for (int i = 0; i < o; i++) {
+                packHolder pck = pcks.get(i);
+                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, ses, tmp, pck);
+                txt.add("");
+                rdr.putStrArr(txt);
+            }
+            return null;
+        }
+        if (a.equals("txt2full")) {
             a = cmd.word();
             cmd.error("reading " + a);
             List<String> txt = bits.txt2buf(a);
