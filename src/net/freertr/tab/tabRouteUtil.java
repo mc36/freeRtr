@@ -1198,10 +1198,10 @@ public class tabRouteUtil {
     }
 
     /**
-     * convert evpn to prefix
+     * convert evpn layer3 route to prefix
      *
      * @param prefix prefix to convert
-     * @return converted prefix
+     * @return converted prefix, null if error happened
      */
     public static addrPrefix<addrIP> convertL3evpn(addrPrefix<addrIP> prefix) {
         if (prefix == null) {
@@ -1231,7 +1231,7 @@ public class tabRouteUtil {
      * @param lab label entry
      * @return false if success, true if error
      */
-    public static boolean putSrv6prefix(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelEntry lab) {
+    public static boolean generateSrv6pfx(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelEntry lab) {
         if (ifc == null) {
             return true;
         }

@@ -141,7 +141,7 @@ public class rtrBgpOther extends ipRtr {
             }
             attr.rouSrc = rtrBgpUtil.peerOriginate;
         }
-        tabRouteUtil.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
+        tabRouteUtil.generateSrv6pfx(ntry, srv6, ntry.best.labelLoc);
         tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, afi, 0, ntry, true, null, null, null);
     }
 
