@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.11.1-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-01 12:50:36, took 00:11:28, with 80 workers, on 3266 cases, 0 failed, 0 traces, 8 retries
+-;-;-;freeRouter-rare v23.11.2-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2023-11-02 07:38:43, took 00:11:48, with 80 workers, on 3282 cases, 0 failed, 0 traces, 12 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2770,6 +2770,22 @@ http://sources.freertr.org/cfg/rout-bgp828.tst;rout-bgp828.tst;success;unicast+l
 http://sources.freertr.org/cfg/rout-bgp829.tst;rout-bgp829.tst;success;unicast+l3evpns over ibgp with dynamic capability
 http://sources.freertr.org/cfg/rout-bgp830.tst;rout-bgp830.tst;success;unicast+l3evpns over confed bgp with dynamic capability
 http://sources.freertr.org/cfg/rout-bgp831.tst;rout-bgp831.tst;success;unicast+l3evpns over ibgp rr with dynamic capability
+http://sources.freertr.org/cfg/rout-bgp832.tst;rout-bgp832.tst;success;l3evpns ingress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp833.tst;rout-bgp833.tst;success;l3evpns egress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp834.tst;rout-bgp834.tst;success;l3evpns ingress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp835.tst;rout-bgp835.tst;success;l3evpns egress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp836.tst;rout-bgp836.tst;success;l3evpns ingress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp837.tst;rout-bgp837.tst;success;l3evpns egress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp838.tst;rout-bgp838.tst;success;l3evpns ingress route filtering with routepolicy with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp839.tst;rout-bgp839.tst;success;l3evpns egress route filtering with routepolicy with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp840.tst;rout-bgp840.tst;success;otherl3evpns ingress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp841.tst;rout-bgp841.tst;success;otherl3evpns egress route filtering with routemap
+http://sources.freertr.org/cfg/rout-bgp842.tst;rout-bgp842.tst;success;otherl3evpns ingress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp843.tst;rout-bgp843.tst;success;otherl3evpns egress route filtering with routemap with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp844.tst;rout-bgp844.tst;success;otherl3evpns ingress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp845.tst;rout-bgp845.tst;success;otherl3evpns egress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-bgp846.tst;rout-bgp846.tst;success;otherl3evpns ingress route filtering with routepolicy with soft-reconfig
+http://sources.freertr.org/cfg/rout-bgp847.tst;rout-bgp847.tst;success;otherl3evpns egress route filtering with routepolicy with soft-reconfig
 http://sources.freertr.org/cfg/rout-eigrp01.tst;rout-eigrp01.tst;success;eigrp point2point connection
 http://sources.freertr.org/cfg/rout-eigrp02.tst;rout-eigrp02.tst;success;eigrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-eigrp03.tst;rout-eigrp03.tst;success;eigrp point2point chain

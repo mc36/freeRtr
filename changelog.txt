@@ -15365,3 +15365,23 @@ todo: honeypot to wireformat, decode, newlines per singleline
 ---------------------------------- 2023-10-28 18:16:07 23.10.28
 no todo: honeypot to wireformat, decode, newlines per singleline
 todo: honeypot to wireformat, decode
+---------------------------------- 2023-11-01 16:29:57 23.11.1
+no todo: server bgprsrr
+no todo: bmp server to listeners, bmp, ris and bgp
+---------------------------------- 2023-11-02 07:26:55 23.11.2
+qc pass: l3evpns ingress route filtering with routemap
+qc pass: l3evpns egress route filtering with routemap
+qc pass: l3evpns ingress route filtering with routemap with soft-reconfig
+qc pass: l3evpns egress route filtering with routemap with soft-reconfig
+qc pass: l3evpns ingress route filtering with routepolicy
+qc pass: l3evpns egress route filtering with routepolicy
+qc pass: l3evpns ingress route filtering with routepolicy with soft-reconfig
+qc pass: l3evpns egress route filtering with routepolicy with soft-reconfig
+qc pass: otherl3evpns ingress route filtering with routemap
+qc pass: otherl3evpns egress route filtering with routemap
+qc pass: otherl3evpns ingress route filtering with routemap with soft-reconfig
+qc pass: otherl3evpns egress route filtering with routemap with soft-reconfig
+qc pass: otherl3evpns ingress route filtering with routepolicy
+qc pass: otherl3evpns egress route filtering with routepolicy
+qc pass: otherl3evpns ingress route filtering with routepolicy with soft-reconfig
+qc pass: otherl3evpns egress route filtering with routepolicy with soft-reconfig

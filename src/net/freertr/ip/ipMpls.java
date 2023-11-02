@@ -3,6 +3,9 @@ package net.freertr.ip;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrIPv4;
+import net.freertr.addr.addrIPv6;
+import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.clnt.clntNetflow;
 import net.freertr.ifc.ifcDn;
@@ -608,6 +611,32 @@ public class ipMpls implements ifcUp {
             attr.labelLoc = new tabLabelEntry(labelImp);
         }
         return false;
+    }
+
+    /**
+     * convert evpn to prefix
+     *
+     * @param prefix prefix to convert
+     * @return converted prefix
+     */
+    public static addrPrefix<addrIP> convertL3evpn(addrPrefix<addrIP> prefix) {
+        if (prefix == null) {
+            return null;
+        }
+        byte[] buf = new byte[addrIP.size];
+        prefix.network.toBuffer(buf, 0);
+        if (buf[0] != 5) {
+            return null;
+        }
+        if (prefix.broadcast.isIPv4()) {
+            int i = prefix.mask.toIPv4().toNetmask();
+            addrIPv4 a = prefix.broadcast.toIPv4();
+            return addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a, i));
+        } else {
+            int i = prefix.mask.toIPv6().toNetmask();
+            addrIPv6 a = prefix.broadcast.toIPv6();
+            return addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a, i));
+        }
     }
 
     /**

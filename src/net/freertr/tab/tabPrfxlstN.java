@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrBgpUtil;
 
@@ -250,7 +251,14 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
         if (net.maskLen > lenMax) {
             return false;
         }
-        return prefix.matches(net.network);
+        if ((afi & rtrBgpUtil.sfiMask) != rtrBgpUtil.sfiEthVpn) {
+            return prefix.matches(net.network);
+        }
+        addrPrefix<addrIP> pfx = ipMpls.convertL3evpn(net);
+        if (pfx == null) {
+            return false;
+        }
+        return prefix.matches(pfx.network);
     }
 
 }

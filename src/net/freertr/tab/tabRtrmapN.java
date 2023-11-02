@@ -14,6 +14,7 @@ import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
+import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;
@@ -1726,8 +1727,17 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (aceslstMatch != null) {
             packHolder pck = new packHolder(false, false);
-            pck.IPsrc.setAddr(net.prefix.network);
-            pck.IPtrg.setAddr(net.prefix.mask);
+            if ((afi & rtrBgpUtil.sfiMask) != rtrBgpUtil.sfiEthVpn) {
+                pck.IPsrc.setAddr(net.prefix.network);
+                pck.IPtrg.setAddr(net.prefix.mask);
+            } else {
+                addrPrefix<addrIP> pfx = ipMpls.convertL3evpn(net.prefix);
+                if (pfx == null) {
+                    return false;
+                }
+                pck.IPsrc.setAddr(pfx.network);
+                pck.IPtrg.setAddr(pfx.mask);
+            }
             if (!aceslstMatch.matches(false, false, pck)) {
                 return false;
             }

@@ -368,20 +368,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (ipv4 != prefix.broadcast.isIPv4()) {
             return null;
         }
-        byte[] buf = new byte[addrIP.size];
-        prefix.network.toBuffer(buf, 0);
-        if (buf[0] != 5) {
-            return null;
-        }
-        if (ipv4) {
-            int i = prefix.mask.toIPv4().toNetmask();
-            addrIPv4 a = prefix.broadcast.toIPv4();
-            return addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a, i));
-        } else {
-            int i = prefix.mask.toIPv6().toNetmask();
-            addrIPv6 a = prefix.broadcast.toIPv6();
-            return addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a, i));
-        }
+        return ipMpls.convertL3evpn(prefix);
     }
 
     private boolean doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, List<Long> rt) {
