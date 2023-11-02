@@ -217,7 +217,7 @@ public class rtrBgpVrfRtr extends ipRtr {
                 }
             }
         }
-        ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
+        tabRouteUtil.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
         if (afi != rtrBgpUtil.sfiEthVpn) {
             tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, afi, 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
             return;
@@ -368,7 +368,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (ipv4 != prefix.broadcast.isIPv4()) {
             return null;
         }
-        return ipMpls.convertL3evpn(prefix);
+        return tabRouteUtil.convertL3evpn(prefix);
     }
 
     private boolean doImportRoute(int afi, tabRouteEntry<addrIP> ntry, tabRoute<addrIP> trg, List<Long> rt) {

@@ -3,8 +3,12 @@ package net.freertr.tab;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrIPv4;
+import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
 import net.freertr.addr.addrType;
+import net.freertr.cfg.cfgIfc;
+import net.freertr.ip.ipMpls;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.rtr.rtrBgpUtil;
@@ -1191,6 +1195,58 @@ public class tabRouteUtil {
         l |= val - 1;
         lst.add(0, l);
         return lst;
+    }
+
+    /**
+     * convert evpn to prefix
+     *
+     * @param prefix prefix to convert
+     * @return converted prefix
+     */
+    public static addrPrefix<addrIP> convertL3evpn(addrPrefix<addrIP> prefix) {
+        if (prefix == null) {
+            return null;
+        }
+        byte[] buf = new byte[addrIP.size];
+        prefix.network.toBuffer(buf, 0);
+        if (buf[0] != 5) {
+            return null;
+        }
+        if (prefix.broadcast.isIPv4()) {
+            int i = prefix.mask.toIPv4().toNetmask();
+            addrIPv4 a = prefix.broadcast.toIPv4();
+            return addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a, i));
+        } else {
+            int i = prefix.mask.toIPv6().toNetmask();
+            addrIPv6 a = prefix.broadcast.toIPv6();
+            return addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a, i));
+        }
+    }
+
+    /**
+     * put srv6 prefix
+     *
+     * @param ntry route entry
+     * @param ifc srv6 interface
+     * @param lab label entry
+     * @return false if success, true if error
+     */
+    public static boolean putSrv6prefix(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelEntry lab) {
+        if (ifc == null) {
+            return true;
+        }
+        if (ifc.addr6 == null) {
+            return true;
+        }
+        addrIP adr = new addrIP();
+        adr.fromIPv6addr(ifc.addr6);
+        bits.msbPutD(adr.getBytes(), 12, lab.label);
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            attr.segrouPrf = adr.copyBytes();
+            attr.labelLoc = new tabLabelEntry(ipMpls.labelImp);
+        }
+        return false;
     }
 
 }

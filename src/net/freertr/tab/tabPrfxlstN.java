@@ -254,7 +254,7 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
         if ((afi & rtrBgpUtil.sfiMask) != rtrBgpUtil.sfiEthVpn) {
             return prefix.matches(net.network);
         }
-        addrPrefix<addrIP> pfx = ipMpls.convertL3evpn(net);
+        addrPrefix<addrIP> pfx = tabRouteUtil.convertL3evpn(net);
         if (pfx == null) {
             return false;
         }

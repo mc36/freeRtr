@@ -808,7 +808,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                     pck.IPsrc.setAddr(net.prefix.network);
                     pck.IPtrg.setAddr(net.prefix.mask);
                 } else {
-                    addrPrefix<addrIP> pfx = ipMpls.convertL3evpn(net.prefix);
+                    addrPrefix<addrIP> pfx = tabRouteUtil.convertL3evpn(net.prefix);
                     if (pfx == null) {
                         return false;
                     }

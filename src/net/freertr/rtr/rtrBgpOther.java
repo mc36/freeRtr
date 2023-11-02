@@ -17,6 +17,7 @@ import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRouteUtil;
 import net.freertr.user.userHelping;
 import net.freertr.util.cmds;
 
@@ -140,7 +141,7 @@ public class rtrBgpOther extends ipRtr {
             }
             attr.rouSrc = rtrBgpUtil.peerOriginate;
         }
-        ipMpls.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
+        tabRouteUtil.putSrv6prefix(ntry, srv6, ntry.best.labelLoc);
         tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, afi, 0, ntry, true, null, null, null);
     }
 
