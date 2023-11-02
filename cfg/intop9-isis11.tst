@@ -116,9 +116,13 @@ set protocols isis interface ge-0/0/2.0 point-to-point
 set protocols isis interface ge-0/0/3.0 point-to-point
 set protocols isis interface lo0.0
 set protocols isis traffic-engineering shortcuts
-set protocols isis level2 bier-subdomain 0
+set protocols isis bier-sub-domain 0
 set protocols bier sub-domain 0 bfr-id 3
-set protocols bier sub-domain 0 encapsulation mpls bitmask-length 256 number-sets 4
+set protocols bier sub-domain 0 bfr-id 3
+set protocols bier sub-domain 0 bfr-prefix 2.2.2.2
+set protocols bier sub-domain 0 encapsulation mpls
+set protocols bier sub-domain 0 bitstringlen 256
+set protocols bier sub-domain 0 number-sets 4
 commit
 !
 
