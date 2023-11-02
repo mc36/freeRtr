@@ -626,6 +626,21 @@ public class rtrBgpUtil {
     public final static int attrClustList = 10;
 
     /**
+     * destination preference
+     */
+    public final static int attrDestPref = 11;
+
+    /**
+     * advertiser
+     */
+    public final static int attrAdvertiser = 12;
+
+    /**
+     * clusterid
+     */
+    public final static int attrRcidPath = 13;
+
+    /**
      * mp reach nlri
      */
     public final static int attrReachable = 14;
@@ -649,6 +664,21 @@ public class rtrBgpUtil {
      * as4 aggregator
      */
     public final static int attrAs4aggr = 18;
+
+    /**
+     * safi specific
+     */
+    public final static int attrSafiSpec = 19;
+
+    /**
+     * connector attribute
+     */
+    public final static int attrConnector = 20;
+
+    /**
+     * pathlimit
+     */
+    public final static int attrPathLimit = 21;
 
     /**
      * pmsi tunnel
@@ -701,9 +731,34 @@ public class rtrBgpUtil {
     public final static int attrBgpSec = 33;
 
     /**
+     * community container
+     */
+    public final static int attrCommCntnr = 34;
+
+    /**
      * only to customer
      */
     public final static int attrOnlyCust = 35;
+
+    /**
+     * domain path
+     */
+    public final static int attrDomPath = 36;
+
+    /**
+     * service chains
+     */
+    public final static int attrSvcChn = 37;
+
+    /**
+     * bfd discriminator
+     */
+    public final static int attrBfdDisc = 38;
+
+    /**
+     * next hop capabilities
+     */
+    public final static int attrRtrCapa = 39;
 
     /**
      * prefix sid
@@ -917,18 +972,13 @@ public class rtrBgpUtil {
             case attrReachable:
             case attrUnReach:
             case attrExtComm:
-            case attrAs4path:
-            case attrAs4aggr:
             case attrPmsiTun:
             case attrTunEnc:
             case attrTraffEng:
-            case attrIpv6comm:
             case attrAccIgp:
-            case attrPeDistLab:
             case attrEntropyLab:
             case attrLinkState:
             case attrLrgComm:
-            case attrBgpSec:
             case attrOnlyCust:
             case attrPrefSid:
             case attrBier:
@@ -994,6 +1044,12 @@ public class rtrBgpUtil {
                 return "originator";
             case attrClustList:
                 return "clustList";
+            case attrDestPref:
+                return "destPref";
+            case attrAdvertiser:
+                return "adverter";
+            case attrRcidPath:
+                return "rcidPath";
             case attrReachable:
                 return "reachable";
             case attrUnReach:
@@ -1004,6 +1060,12 @@ public class rtrBgpUtil {
                 return "as4path";
             case attrAs4aggr:
                 return "as4aggr";
+            case attrSafiSpec:
+                return "safiSpec";
+            case attrConnector:
+                return "connector";
+            case attrPathLimit:
+                return "pathLim";
             case attrPmsiTun:
                 return "pmtiTun";
             case attrTunEnc:
@@ -1024,8 +1086,14 @@ public class rtrBgpUtil {
                 return "lrgComm";
             case attrBgpSec:
                 return "bgpSec";
+            case attrCommCntnr:
+                return "commCont";
             case attrOnlyCust:
                 return "onlyCust";
+            case attrDomPath:
+                return "domPath";
+            case attrRtrCapa:
+                return "rtrCapa";
             case attrPrefSid:
                 return "prefixSid";
             case attrBier:

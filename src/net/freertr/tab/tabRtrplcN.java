@@ -9,7 +9,6 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.ip.ipFwd;
-import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.util.bits;

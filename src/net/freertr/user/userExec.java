@@ -864,6 +864,10 @@ public class userExec {
         h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              tag                list of routes with tag");
         h.add(null, (b + 1) + " .                <str>            int matcher");
+        h.add(null, b + " " + (b + 1) + "              customer           list of routes with customer");
+        h.add(null, (b + 1) + " .                <str>            int matcher");
+        h.add(null, b + " " + (b + 1) + "              aggregator         list of routes with aggregator");
+        h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              rd                 list of routes with rd");
         h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              nexthop            list of routes with nexthop");

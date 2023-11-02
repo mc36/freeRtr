@@ -432,6 +432,7 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
+todo: tocustomer aggregator matchers to route-map/policy
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
@@ -439,8 +440,6 @@ todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
-todo: bmp server to listeners, bmp, ris and bgp
-todo: server bgprsrr
 todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
