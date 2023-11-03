@@ -132,7 +132,7 @@ public class paster {
         if (data.length() > 0) {
             buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>paster</title></head><body><pre>".getBytes());
             Random rnd = new Random();
-            String fn = rnd.nextInt() + "-" + rnd.nextInt() + "-" + rnd.nextInt() + ".txt";
+            String fn = (rnd.nextInt() & 0x7fffffff) + "-" + rnd.nextInt() + "-" + rnd.nextInt() + ".txt";
             try {
                 BufferedWriter wrtr = new BufferedWriter(new FileWriter(paste + fn));
                 wrtr.write(data);
