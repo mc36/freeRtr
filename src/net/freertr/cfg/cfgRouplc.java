@@ -307,8 +307,12 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
         l.add(null, "2 3     bier                set bier index");
-        l.add(null, "3 .       leave             leave value unchanged");
-        l.add(null, "3 .       <num>             value");
+        l.add(null, "3 4       leave             leave index unchanged");
+        l.add(null, "4 .         leave           leave subdomain unchanged");
+        l.add(null, "4 .         <num>           subdomain");
+        l.add(null, "3 4       <num>             index");
+        l.add(null, "4 .         leave           leave subdomain unchanged");
+        l.add(null, "4 .         <num>           subdomain");
         l.add(null, "2 3     route-map           set route map");
         l.add(null, "3 .       <name:rm>         name of route map");
         l.add(null, "2 3     route-policy        set route policy");
@@ -967,7 +971,11 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("bier")) {
                 ntry.doMode = tabRtrplcN.doType.setBier;
-                if (ntry.intSet.fromString(cmd.getRemaining())) {
+                if (ntry.intSet.fromString(cmd.word())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                if (ntry.int2set.fromString(cmd.word())) {
                     cmd.error("invalid action");
                     return;
                 }

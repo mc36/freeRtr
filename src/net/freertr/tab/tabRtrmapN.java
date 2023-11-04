@@ -238,9 +238,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher bierMatch = new tabIntMatcher();
 
     /**
-     * bier updater
+     * bier index updater
      */
-    public tabIntUpdater bierSet = new tabIntUpdater();
+    public tabIntUpdater bierIdxSet = new tabIntUpdater();
+
+    /**
+     * bier subdomain updater
+     */
+    public tabIntUpdater bierSubSet = new tabIntUpdater();
 
     /**
      * as path matcher
@@ -619,7 +624,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set label-local " + lablocSet);
         l.add(beg + "set label-remote " + labremSet);
         l.add(beg + "set segrout " + segrouSet);
-        l.add(beg + "set bier " + bierSet);
+        l.add(beg + "set bier " + bierIdxSet + " " + bierSubSet);
         return l;
     }
 
@@ -889,7 +894,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (a.equals("bier")) {
-            if (bierSet.fromString(cmd.word())) {
+            if (bierIdxSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            if (bierSubSet.fromString(cmd.word())) {
                 cmd.error("invalid action");
                 return true;
             }
@@ -1012,7 +1021,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (a.equals("bier")) {
-            bierSet.set2unchange();
+            bierIdxSet.set2unchange();
+            bierSubSet.set2unchange();
             return false;
         }
         if (a.equals("route-map")) {
@@ -1783,7 +1793,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         tabRouteUtil.updateLabloc(attr, lablocSet);
         tabRouteUtil.updateLabrem(attr, labremSet);
         attr.segrouIdx = segrouSet.update(attr.segrouIdx);
-        attr.bierIdx = bierSet.update(attr.bierIdx);
+        attr.bierIdx = bierIdxSet.update(attr.bierIdx);
+        attr.bierSub = bierSubSet.update(attr.bierSub);
         attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, aspathSet);
         attr.confSeq = tabLabel.prependLabels(attr.confSeq, aspathCnf);
         if (stdCommClear != null) {

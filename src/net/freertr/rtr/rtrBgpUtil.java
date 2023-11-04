@@ -2503,6 +2503,7 @@ public class rtrBgpUtil {
             }
             switch (tlv.valTyp) {
                 case 1: // bier
+                    ntry.best.bierSub = tlv.valDat[0]; // subdomain
                     ntry.best.bierIdx = bits.msbGetW(tlv.valDat, 1); // bfr id
                     break;
                 case 2: // mpls
@@ -3641,7 +3642,7 @@ public class rtrBgpUtil {
         }
         hlp.clear();
         encTlv tlv = getBierTlv();
-        tlv.valDat[0] = 0; // subdomain
+        tlv.valDat[0] = (byte) ntry.best.bierSub; // subdomain
         bits.msbPutW(tlv.valDat, 1, ntry.best.bierIdx); // bfr id
         tlv.putBytes(hlp, 1, 4, tlv.valDat);
         if (ntry.best.bierSiz != 0) {

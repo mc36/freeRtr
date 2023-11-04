@@ -723,6 +723,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (!bier) {
             ntry.bierIdx = 0;
+            ntry.bierSub = 0;
             ntry.bierBeg = 0;
             ntry.bierOld = 0;
             ntry.bierSiz = 0;
@@ -835,6 +836,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
             attr.segrouIdx = lower.segrouIdx;
             attr.bierIdx = lower.bierIdx;
+            attr.bierSub = lower.bierSub;
             clearAttribs(attr);
         }
         return ntry;

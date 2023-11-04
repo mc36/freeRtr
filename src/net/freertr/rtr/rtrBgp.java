@@ -119,6 +119,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public int bierIdx = 0;
 
     /**
+     * bier subdomain
+     */
+    public int bierSub = 0;
+
+    /**
      * bier length
      */
     public int bierLen = 0;
@@ -2751,7 +2756,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   bier                        bier parameters");
         l.add(null, "2 3     <num>                     bitstring length");
         l.add(null, "3 4       <num>                   maximum index");
-        l.add(null, "4 .         <num>                 this node index");
+        l.add(null, "4 5,.       <num>                 node index");
+        l.add(null, "5 .           <num>               subdomain");
         l.add(null, "1 2   afi-links                   specify link state parameter");
         cfgRtr.getRouterList(l, 0, " to advertise");
         l.add(null, "3 4       <num:rtr>               process id");
@@ -2925,7 +2931,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a += " base " + segrouBase;
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx + a);
-        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
         cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
         if (rpkiT == null) {
@@ -3086,6 +3092,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bierLab = null;
             if (negated) {
                 bierIdx = 0;
+                bierSub = 0;
                 bierMax = 0;
                 bierLen = 0;
                 needFull.add(1);
@@ -3095,6 +3102,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
+            bierSub = bits.str2num(cmd.word());
             bierLab = tabLabel.allocate(tabLabelEntry.owner.bgpBier, (bierMax + bierLen - 1) / bierLen);
             needFull.add(1);
             compute.wakeup();

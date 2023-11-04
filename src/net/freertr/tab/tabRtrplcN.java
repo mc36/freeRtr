@@ -484,6 +484,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     public tabIntUpdater intSet = new tabIntUpdater();
 
     /**
+     * integer updater
+     */
+    public tabIntUpdater int2set = new tabIntUpdater();
+
+    /**
      * next hop updater
      */
     public addrIP addrSet;
@@ -586,7 +591,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case setSegrou:
                 return "set segrout " + intSet;
             case setBier:
-                return "set bier " + intSet;
+                return "set bier " + intSet + " " + int2set;
             case setRoudst:
                 return "set rd " + tabRouteUtil.rd2string(longVal);
             case setRoumap:
@@ -1017,6 +1022,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setBier:
                 attr.bierIdx = intSet.update(attr.bierIdx);
+                attr.bierSub = int2set.update(attr.bierSub);
                 return;
             default:
                 break;

@@ -22,7 +22,7 @@ router bgp4 1
  vrf v1
  no safe-ebgp
  local-as 1
- bier 256 10 1
+ bier 256 10 1 3
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 bier
@@ -32,7 +32,7 @@ router bgp6 1
  vrf v1
  no safe-ebgp
  local-as 1
- bier 256 10 1
+ bier 256 10 1 3
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
  neigh 1234:1::2 bier
@@ -101,7 +101,7 @@ router bgp4 1
  vrf v1
  no safe-ebgp
  local-as 2
- bier 256 10 2
+ bier 256 10 2 3
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 bier
@@ -113,7 +113,7 @@ router bgp6 1
  vrf v1
  no safe-ebgp
  local-as 2
- bier 256 10 2
+ bier 256 10 2 3
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 bier
@@ -164,7 +164,7 @@ router bgp4 1
  vrf v1
  no safe-ebgp
  local-as 3
- bier 256 10 3
+ bier 256 10 3 3
  router-id 4.4.4.3
  neigh 1.1.1.5 remote-as 2
  neigh 1.1.1.5 bier
@@ -176,7 +176,7 @@ router bgp6 1
  vrf v1
  no safe-ebgp
  local-as 3
- bier 256 10 3
+ bier 256 10 3 3
  router-id 6.6.6.3
  neigh 1234:2::1 remote-as 2
  neigh 1234:2::1 bier
@@ -208,7 +208,7 @@ router bgp4 1
  vrf v1
  no safe-ebgp
  local-as 4
- bier 256 10 4
+ bier 256 10 4 3
  router-id 4.4.4.4
  neigh 1.1.1.9 remote-as 3
  neigh 1.1.1.9 bier
@@ -218,7 +218,7 @@ router bgp6 1
  vrf v1
  no safe-ebgp
  local-as 4
- bier 256 10 4
+ bier 256 10 4 3
  router-id 6.6.6.4
  neigh 1234:3::1 remote-as 3
  neigh 1234:3::1 bier

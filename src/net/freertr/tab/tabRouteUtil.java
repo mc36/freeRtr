@@ -69,7 +69,7 @@ public class tabRouteUtil {
         t.addLine("set metric " + attr.metric);
         t.addLine("set tag " + attr.tag);
         t.addLine("set segrout " + attr.segrouIdx);
-        t.addLine("set bier " + attr.bierIdx);
+        t.addLine("set bier " + attr.bierIdx + " " + attr.bierSub);
         t.addLine("set aspath \"" + attr.asPathStr() + "\"");
         t.addLine("set asend \"" + attr.asPathEnd() + "\"");
         t.addLine("set asbeg \"" + attr.asPathBeg() + "\"");
@@ -152,6 +152,7 @@ public class tabRouteUtil {
             }
             if (a.equals("bier")) {
                 attr.bierIdx = bits.str2num(cmd.word());
+                attr.bierSub = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("aspath")) {

@@ -319,6 +319,11 @@ public class tabRouteAttr<T extends addrType> {
     public int bierIdx;
 
     /**
+     * bier subdomain
+     */
+    public int bierSub;
+
+    /**
      * bier base
      */
     public int bierBeg;
@@ -686,6 +691,7 @@ public class tabRouteAttr<T extends addrType> {
         atr.segrouOfs = segrouOfs;
         atr.segrouBeg = segrouBeg;
         atr.segrouOld = segrouOld;
+        atr.bierSub = bierSub;
         atr.bierIdx = bierIdx;
         atr.bierHdr = bierHdr;
         atr.bierBeg = bierBeg;
@@ -865,6 +871,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if (bierIdx != other.bierIdx) {
             return 16;
+        }
+        if (bierSub != other.bierSub) {
+            return 106;
         }
         if (bierBeg != other.bierBeg) {
             return 17;
@@ -1681,6 +1690,7 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((ign & 0x400000) != 0) {
             ntry.bierIdx = 0;
+            ntry.bierSub = 0;
             ntry.bierBeg = 0;
             ntry.bierOld = 0;
             ntry.bierSiz = 0;
@@ -1737,6 +1747,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "segrout offset|" + segrouOfs);
         lst.add(beg + "segrout prefix|" + segrouPrf);
         lst.add(beg + "bier index|" + bierIdx);
+        lst.add(beg + "bier subdomain|" + bierSub);
         lst.add(beg + "bier old base|" + bierOld);
         lst.add(beg + "bier base|" + bierBeg);
         lst.add(beg + "bier range|" + bierSiz);
@@ -1809,7 +1820,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShBrRoute() {
-        return bierIdx + "|" + bierBeg + "|" + bierOld + "|" + bierHdr + "-" + tabLabelBier.bsl2num(bierHdr);
+        return bierIdx + "|" + bierSub + "|" + bierBeg + "|" + bierOld + "|" + bierHdr + "-" + tabLabelBier.bsl2num(bierHdr);
     }
 
     /**

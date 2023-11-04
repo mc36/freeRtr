@@ -1122,7 +1122,7 @@ public class tabRoute<T extends addrType> {
             case 7:
                 return new userFormat("|", "prefix|index|base|oldbase");
             case 8:
-                return new userFormat("|", "prefix|index|base|oldbase|size");
+                return new userFormat("|", "prefix|index|subdom|base|oldbase|size");
             case 2002:
             case 2005:
             case 9:
