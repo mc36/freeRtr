@@ -93,6 +93,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public int bierIdx = -1;
 
     /**
+     * bier subdomain
+     */
+    public int bierSub = -1;
+
+    /**
      * affinity
      */
     public int affinity = 0;
@@ -354,7 +359,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             a = " pop";
         }
         cmds.cfgLine(l, segrouIdx < 0, cmds.tabulator, beg + "segrout", "" + segrouIdx + a);
-        cmds.cfgLine(l, bierIdx < 0, cmds.tabulator, beg + "bier", "" + bierIdx);
+        cmds.cfgLine(l, bierIdx < 0, cmds.tabulator, beg + "bier", bierIdx + " " + bierSub);
         cmds.cfgLine(l, !splitHorizon, cmds.tabulator, beg + "split-horizon", "");
         cmds.cfgLine(l, !databaseFilter, cmds.tabulator, beg + "database-filter", "");
         cmds.cfgLine(l, !passiveInt, cmds.tabulator, beg + "passive", "");
@@ -432,7 +437,8 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         l.add(null, "5 6,.         <num>                     index");
         l.add(null, "6 6,.           pop                     advertise pop label");
         l.add(null, "4 5         bier                        set bier parameters");
-        l.add(null, "5 .           <num>                     index");
+        l.add(null, "5 6,.         <num>                     index");
+        l.add(null, "6 .             <num>                   subdomain");
         l.add(null, "4 .         disable-password            disable authentications");
         l.add(null, "4 .         suppress-prefix             do not advertise interface");
         l.add(null, "4 .         unsuppress-prefix           do advertise interface");
@@ -562,6 +568,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("bier")) {
             bierIdx = bits.str2num(cmd.word());
+            bierSub = bits.str2num(cmd.word());
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
@@ -789,6 +796,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("bier")) {
             bierIdx = -1;
+            bierSub = -1;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;

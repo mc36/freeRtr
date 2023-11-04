@@ -418,7 +418,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !labelPop, cmds.tabulator, beg + "label-pop", "");
         cmds.cfgLine(l, segrouIdx < 0, cmds.tabulator, beg + "segrout", "" + segrouIdx);
-        cmds.cfgLine(l, bierIdx < 0, cmds.tabulator, beg + "bier", "" + bierIdx + " " + bierSub);
+        cmds.cfgLine(l, bierIdx < 0, cmds.tabulator, beg + "bier", bierIdx + " " + bierSub);
         cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
         cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");

@@ -264,6 +264,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         boolean segrouPop = false;
         boolean external = false;
         int bierIdx = 0;
+        int bierSub = 0;
         int tag = 0;
         String iface = "";
         if ((typ & 0x10) != 0) {
@@ -334,6 +335,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 if (ntry.best.bierIdx != bierIdx) {
                     s += " bieridx=" + ntry.best.bierIdx;
                     bierIdx = ntry.best.bierIdx;
+                }
+                if (ntry.best.bierSub != bierSub) {
+                    s += " biersub=" + ntry.best.bierSub;
+                    bierSub = ntry.best.bierSub;
                 }
                 s += " network=" + addrPrefix.ip2str(ntry.prefix);
             }
@@ -407,6 +412,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         bierBeg = 0;
         bierMax = 0;
         int bierIdx = 0;
+        int bierSub = 0;
         bierLen = 0;
         time = 0;
         uptime = 0;
@@ -533,6 +539,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 bierIdx = bits.str2num(s);
                 continue;
             }
+            if (a.equals("biersub")) {
+                bierSub = bits.str2num(s);
+                continue;
+            }
             if (a.equals("bierlen")) {
                 bierLen = bits.str2num(s);
                 continue;
@@ -623,6 +633,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
                 ntry.best.metric = metric;
                 ntry.best.tag = tag;
                 ntry.best.bierIdx = bierIdx;
+                ntry.best.bierSub = bierSub;
                 ntry.best.segrouIdx = segrouIdx;
                 ntry.best.rouSrc = segrouPop ? 16 : 0;
                 if (external) {
@@ -721,6 +732,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             spf.addPref(rtrId, rou, false);
             spf.addSegRouI(rtrId, rou.best.segrouIdx);
             spf.addBierI(rtrId, rou.best.bierIdx);
+            spf.addBierS(rtrId, rou.best.bierSub);
         }
     }
 

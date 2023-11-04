@@ -107,6 +107,11 @@ public class spfNode<Ta extends addrType> implements Comparator<spfNode<Ta>> {
     protected int brIdx;
 
     /**
+     * bier subdomain
+     */
+    protected int brSub;
+
+    /**
      * bier nodes behind
      */
     protected tabGen<spfIndex> brLst = new tabGen<spfIndex>();

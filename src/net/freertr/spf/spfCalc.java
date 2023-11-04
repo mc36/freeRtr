@@ -536,6 +536,25 @@ public class spfCalc<Ta extends addrType> {
     }
 
     /**
+     * add bier subdomain
+     *
+     * @param nod node to add
+     * @param sub node subdomain
+     */
+    public void addBierS(Ta nod, int sub) {
+        if (sub < 1) {
+            return;
+        }
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.brSub = sub;
+        ntry.brLst.add(new spfIndex(sub));
+    }
+
+    /**
      * add bier index
      *
      * @param nod node to add
@@ -1210,7 +1229,7 @@ public class spfCalc<Ta extends addrType> {
         for (int i = 0; i < ntry.algo.size(); i++) {
             res.add("flexalgo|" + ntry.algo.get(i));
         }
-        res.add("bier|" + ntry.brIdx + " " + ntry.brBeg);
+        res.add("bier|" + ntry.brIdx + " " + ntry.brSub + " " + ntry.brBeg);
         String a = "";
         for (int i = 0; i < ntry.brLst.size(); i++) {
             spfIndex idx = ntry.brLst.get(i);
@@ -1272,7 +1291,8 @@ public class spfCalc<Ta extends addrType> {
             }
             res.add(ntry + "|reach|" + ntry.visited + "|" + ntry.conn.size());
             res.add(ntry + "|segrou|" + ntry.srIdx);
-            res.add(ntry + "|bier|" + ntry.brIdx);
+            res.add(ntry + "|bieri|" + ntry.brIdx);
+            res.add(ntry + "|biers|" + ntry.brSub);
             for (int o = 0; o < ntry.algo.size(); o++) {
                 res.add(ntry + "|flexalgo|" + ntry.algo.get(o));
             }
