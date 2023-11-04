@@ -731,7 +731,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
             a += " segrou=" + ntry.best.segrouIdx;
         }
         if ((lower.bierLab != null) && (ntry.best.bierIdx > 0)) {
-            a += " bier=" + ntry.best.bierIdx;
+            a += " bieri=" + ntry.best.bierIdx;
+            a += " biers=" + ntry.best.bierSub;
         }
         sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.best.metric + iface.metricOut) + " tag=" + ntry.best.tag + " external=" + ((ntry.best.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteUtil.dumpAddrList(ntry.best.clustList));
     }
@@ -791,7 +792,7 @@ class rtrPvrpNeighRcvr implements Runnable {
                 ntry.best.labelRem.add(ntry.best.segrouBeg + ntry.best.segrouIdx);
                 continue;
             }
-            if (a.equals("bier")) {
+            if (a.equals("bieri")) {
                 if (lower.lower.bierLab == null) {
                     continue;
                 }
@@ -799,6 +800,13 @@ class rtrPvrpNeighRcvr implements Runnable {
                 ntry.best.bierBeg = lower.gotBierBeg;
                 ntry.best.bierHdr = lower.gotBierLen;
                 ntry.best.bierSiz = lower.gotBierMax;
+                continue;
+            }
+            if (a.equals("biers")) {
+                if (ntry.best.bierIdx < 1) {
+                    continue;
+                }
+                ntry.best.bierSub = bits.str2num(s);
                 continue;
             }
             if (a.equals("tag")) {

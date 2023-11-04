@@ -104,6 +104,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public int bierIdx = 0;
 
     /**
+     * bier subdomain
+     */
+    public int bierSub = 0;
+
+    /**
      * bier length
      */
     public int bierLen = 0;
@@ -330,8 +335,10 @@ public class rtrPvrp extends ipRtr implements Runnable {
             }
             if (ifc.bierIdx >= 0) {
                 ntry.best.bierIdx = ifc.bierIdx;
+                ntry.best.bierSub = ifc.bierSub;
             } else {
                 ntry.best.bierIdx = bierIdx;
+                ntry.best.bierSub = bierSub;
             }
         }
         for (int o = 0; o < ifaces.size(); o++) {
@@ -364,6 +371,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             ntry.best.rouSrc = 1;
             ntry.best.segrouIdx = segrouIdx;
             ntry.best.bierIdx = bierIdx;
+            ntry.best.bierSub = bierSub;
             tab1.add(tabRoute.addType.better, ntry, false, false);
         }
         if (labels) {
@@ -397,8 +405,10 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 }
                 if (ifc.bierIdx >= 0) {
                     ntry.best.bierIdx = ifc.bierIdx;
+                    ntry.best.bierSub = ifc.bierSub;
                 } else {
                     ntry.best.bierIdx = bierIdx;
+                    ntry.best.bierSub = bierSub;
                 }
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
@@ -580,7 +590,8 @@ public class rtrPvrp extends ipRtr implements Runnable {
         l.add(null, "1 2   bier                        bier parameters");
         l.add(null, "2 3     <num>                     bitstring length");
         l.add(null, "3 4       <num>                   maximum index");
-        l.add(null, "4 .         <num>                 this node index");
+        l.add(null, "4 5,.       <num>                 node index");
+        l.add(null, "5 .           <num>               node subdomain");
     }
 
     /**
@@ -600,7 +611,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             a += " base " + segrouBase;
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
-        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
     }
 
     /**
@@ -677,6 +688,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             bierLab = null;
             if (negated) {
                 bierIdx = 0;
+                bierSub = 0;
                 bierMax = 0;
                 bierLen = 0;
                 notif.wakeup();
@@ -685,6 +697,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
+            bierSub = bits.str2num(cmd.word());
             bierLab = tabLabel.allocate(tabLabelEntry.owner.pvrpBier, (bierMax + bierLen - 1) / bierLen);
             notif.wakeup();
             return false;

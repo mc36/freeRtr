@@ -141,6 +141,11 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
     public int bierIdx = -1;
 
     /**
+     * bier subdomain
+     */
+    public int bierSub = -1;
+
+    /**
      * not advertise routes learned from interface back
      */
     public boolean splitHorizon = true;
@@ -413,7 +418,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !defOrigin, cmds.tabulator, beg + "default-originate", "");
         cmds.cfgLine(l, !labelPop, cmds.tabulator, beg + "label-pop", "");
         cmds.cfgLine(l, segrouIdx < 0, cmds.tabulator, beg + "segrout", "" + segrouIdx);
-        cmds.cfgLine(l, bierIdx < 0, cmds.tabulator, beg + "bier", "" + bierIdx);
+        cmds.cfgLine(l, bierIdx < 0, cmds.tabulator, beg + "bier", "" + bierIdx + " " + bierSub);
         cmds.cfgLine(l, !stub, cmds.tabulator, beg + "stub", "");
         cmds.cfgLine(l, !unstub, cmds.tabulator, beg + "unstub", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
@@ -485,7 +490,8 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "4 5         segrout                     set segment routing parameters");
         l.add(null, "5 .           <num>                     index");
         l.add(null, "4 5         bier                        set bier parameters");
-        l.add(null, "5 .           <num>                     index");
+        l.add(null, "5 6,.         <num>                     index");
+        l.add(null, "6 .             <num>                   subdomain");
         l.add(null, "4 .         split-horizon               dont advertise back on rx interface");
         l.add(null, "4 .         passive                     do not form neighborship");
         l.add(null, "4 .         accept-metric               accept peer metric");
@@ -613,6 +619,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("bier")) {
             bierIdx = bits.str2num(cmd.word());
+            bierSub = bits.str2num(cmd.word());
             lower.notif.wakeup();
             return;
         }
@@ -906,6 +913,7 @@ public class rtrPvrpIface implements Comparator<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("bier")) {
             bierIdx = -1;
+            bierSub = -1;
             lower.notif.wakeup();
             return;
         }
