@@ -61,7 +61,7 @@ public class rtrIsisBr {
         if (tlv.valTyp != typBier) {
             return;
         }
-        prf.best.bierSub = tlv.valDat[2]; // subdomain
+        prf.best.bierSub = tlv.valDat[2] & 0xff; // subdomain
         prf.best.bierIdx = bits.msbGetW(tlv.valDat, 3); // bfr id
         if (tlv.valDat[5] != 1) { // type
             return;

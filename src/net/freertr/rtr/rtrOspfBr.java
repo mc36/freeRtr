@@ -34,15 +34,16 @@ public class rtrOspfBr {
      * @param lab labels
      * @param bsl bitstring length
      * @param idx index
+     * @param sub subdomain
      * @return bytes generated
      */
-    protected static byte[] putPref(tabLabelEntry[] lab, int bsl, int idx) {
+    protected static byte[] putPref(tabLabelEntry[] lab, int bsl, int idx, int sub) {
         if (lab == null) {
             return new byte[0];
         }
         packHolder pck = new packHolder(true, true);
         encTlv tlv = rtrOspfTe.getTlvHandler();
-        tlv.valDat[0] = 0; // subdomain
+        tlv.valDat[0] = (byte) sub; // subdomain
         tlv.valDat[1] = 0; // mtid
         bits.msbPutW(tlv.valDat, 2, idx); // bfr id
         tlv.valDat[4] = 0; // bier algorithm
@@ -69,6 +70,7 @@ public class rtrOspfBr {
         if (tlv.valTyp != typBierInfo) {
             return;
         }
+        prf.best.bierSub = tlv.valDat[0] & 0xff; // subdomain
         prf.best.bierIdx = bits.msbGetW(tlv.valDat, 2); // brf id
         if (bits.msbGetW(tlv.valDat, 8) != typBierMpls) {
             return;

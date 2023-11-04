@@ -137,6 +137,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
     public int brIndex;
 
     /**
+     * bier index
+     */
+    public int brSub;
+
+    /**
      * segment rou node
      */
     public boolean srNode;
@@ -330,6 +335,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         if (areas.get(0).bierEna) {
             a = beg + "bier ";
             cmds.cfgLine(l, brIndex < 1, cmds.tabulator, a + "index", "" + brIndex);
+            cmds.cfgLine(l, brSub < 1, cmds.tabulator, a + "subdomain", "" + brSub);
         }
         switch (dynamicMetric) {
             case 0:
@@ -561,6 +567,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 schedWork(3);
                 return;
             }
+            if (a.equals("subdomain")) {
+                brSub = bits.str2num(cmd.word());
+                schedWork(3);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -719,6 +730,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 schedWork(3);
                 return;
             }
+            if (a.equals("subdomain")) {
+                brSub = 0;
+                schedWork(3);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -789,6 +805,8 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         l.add(null, "5 .           pop                   request php");
         l.add(null, "4 5         bier                    bier parameters");
         l.add(null, "5 6           index                 set index");
+        l.add(null, "6 .             <num>               index");
+        l.add(null, "5 6           subdomain             set subdomain");
         l.add(null, "6 .             <num>               index");
         ///// clntPmtudWrk.getHelp(l, 4);
         ///// ipinfo

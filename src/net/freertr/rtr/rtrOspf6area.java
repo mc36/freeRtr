@@ -925,7 +925,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 buf = rtrOspfSr.putPref(ifc.srIndex, ifc.srPop);
             }
             if (ifc.brIndex > 0) {
-                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ifc.brIndex));
+                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ifc.brIndex, ifc.brSub));
             }
             if (buf.length < 1) {
                 continue;
@@ -964,7 +964,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 buf = rtrOspfSr.putPref(ntry.best.segrouIdx, false);
             }
             if (ntry.best.bierIdx > 0) {
-                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.best.bierIdx));
+                buf = bits.byteConcat(buf, rtrOspfBr.putPref(lower.bierLab, lower.bierLen, ntry.best.bierIdx, ntry.best.bierSub));
             }
             if (buf.length < 1) {
                 continue;
@@ -1169,7 +1169,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                         }
                         spf.addBierB(src, pref.best.bierBeg);
                         spf.addSegRouI(src, pref.prefix, pref.best.segrouIdx, pref.best.rouSrc & 16);
-                        spf.addBierI(src, pref.prefix, pref.best.bierIdx, pref.best.bierHdr);
+                        spf.addBierI(src, pref.prefix, pref.best.bierIdx, pref.best.bierHdr, pref.best.bierSub);
                     }
                     break;
                 default:

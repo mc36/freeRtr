@@ -562,8 +562,9 @@ public class spfCalc<Ta extends addrType> {
      * @param pref prefix
      * @param idx node index
      * @param hdr header
+     * @param sub subdomain
      */
-    public void addBierI(Ta nod, addrPrefix<addrIP> pref, int idx, int hdr) {
+    public void addBierI(Ta nod, addrPrefix<addrIP> pref, int idx, int hdr, int sub) {
         if (idx < 1) {
             return;
         }
@@ -579,21 +580,25 @@ public class spfCalc<Ta extends addrType> {
         if (rou != null) {
             rou.best.bierIdx = idx;
             rou.best.bierHdr = hdr;
+            rou.best.bierSub = sub;
         }
         rou = ntry.prfAdd.find(pref);
         if (rou != null) {
             rou.best.bierIdx = idx;
             rou.best.bierHdr = hdr;
+            rou.best.bierSub = sub;
         }
         rou = ntry.othFix.find(pref);
         if (rou != null) {
             rou.best.bierIdx = idx;
             rou.best.bierHdr = hdr;
+            rou.best.bierSub = sub;
         }
         rou = ntry.othAdd.find(pref);
         if (rou != null) {
             rou.best.bierIdx = idx;
             rou.best.bierHdr = hdr;
+            rou.best.bierSub = sub;
         }
     }
 
