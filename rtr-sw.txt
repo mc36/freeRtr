@@ -307,7 +307,7 @@ router lsrp4 1 vrf v1
  spf-ecmp
  suppress-prefix
  segrout 300 227
- bier 256 300 227
+ bier 256 300 227 0
  justadvert loopback0
  ecmp
  exit
@@ -321,7 +321,7 @@ router lsrp6 1 vrf v1
  spf-ecmp
  suppress-prefix
  segrout 300 227
- bier 256 300 227
+ bier 256 300 227 0
  justadvert loopback0
  ecmp
  exit

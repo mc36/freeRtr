@@ -251,6 +251,7 @@ public class spfCalc<Ta extends addrType> {
             res.addSegRouI(nod.name, nod.srIdx);
             res.addBierB(nod.name, nod.brBeg);
             res.addBierI(nod.name, nod.brIdx);
+            res.addBierS(nod.name, nod.brSub);
         }
         return res;
     }

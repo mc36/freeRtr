@@ -668,7 +668,7 @@ public class rtrIsisLevel implements Runnable {
                 subs = bits.byteConcat(subs, rtrIsisSr.putPref(ntry.best.segrouIdx, ((ntry.best.rouSrc & 16) != 0), (ntry.best.rouSrc & 3) != 0, (ntry.best.rouSrc & 8) != 0));
             }
             if (bierEna && (ntry.best.bierIdx > 0)) {
-                subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.best.bierIdx));
+                subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.best.bierIdx, ntry.best.bierSub));
             }
             advertiseTlv(pck, lower.putAddrReach(other, ntry.prefix, ntry.best.rouSrc, ntry.best.metric, subs));
         }
@@ -718,6 +718,7 @@ public class rtrIsisLevel implements Runnable {
                     ntry.best.rouSrc |= 16;
                 }
                 ntry.best.bierIdx = ifc.brIndex;
+                ntry.best.bierSub = ifc.brSub;
                 ri.add(tabRoute.addType.better, ntry, false, false);
                 if ((ifc.circuitLevel & level) == 0) {
                     continue;
@@ -737,6 +738,7 @@ public class rtrIsisLevel implements Runnable {
                     ntry.best.rouSrc |= 16;
                 }
                 ntry.best.bierIdx = ifc.brOthIdx;
+                ntry.best.bierSub = ifc.brOthSub;
                 oi.add(tabRoute.addType.better, ntry, false, false);
                 if ((ifc.circuitLevel & level) == 0) {
                     continue;
@@ -754,6 +756,7 @@ public class rtrIsisLevel implements Runnable {
             ntry.best.rouSrc = 1;
             ntry.best.segrouIdx = 0;
             ntry.best.bierIdx = 0;
+            ntry.best.bierSub = 0;
             rs.add(tabRoute.addType.better, ntry, false, false);
         }
         if (lower.other.enabled) {
@@ -767,6 +770,7 @@ public class rtrIsisLevel implements Runnable {
                 ntry.best.rouSrc = 1;
                 ntry.best.segrouIdx = 0;
                 ntry.best.bierIdx = 0;
+                ntry.best.bierSub = 0;
                 os.add(tabRoute.addType.better, ntry, false, false);
             }
         }
@@ -931,6 +935,7 @@ public class rtrIsisLevel implements Runnable {
                         spf.addBierB(src, pref.best.bierBeg);
                         spf.addSegRouI(src, pref.best.segrouIdx);
                         spf.addBierI(src, pref.best.bierIdx);
+                        spf.addBierS(src, pref.best.bierSub);
                         if ((pref.best.rouSrc & 1) == 0) {
                             pref.best.distance = lower.distantInt;
                         } else {
@@ -951,6 +956,7 @@ public class rtrIsisLevel implements Runnable {
                     spf.addBierB(src, pref.best.bierBeg);
                     spf.addSegRouI(src, pref.best.segrouIdx);
                     spf.addBierI(src, pref.best.bierIdx);
+                    spf.addBierS(src, pref.best.bierSub);
                     if ((pref.best.rouSrc & 1) == 0) {
                         pref.best.distance = lower.other.distantInt;
                     } else {

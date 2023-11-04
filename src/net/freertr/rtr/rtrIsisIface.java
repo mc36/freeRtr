@@ -228,9 +228,19 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
     public int brIndex;
 
     /**
+     * bier subdomain
+     */
+    public int brSub;
+
+    /**
      * other bier index
      */
     public int brOthIdx;
+
+    /**
+     * other bier subdomain
+     */
+    public int brOthSub;
 
     /**
      * echo interval
@@ -405,7 +415,9 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (b) {
             s = beg + "bier ";
             cmds.cfgLine(l, brIndex < 1, cmds.tabulator, s + "index", "" + brIndex);
+            cmds.cfgLine(l, brSub < 1, cmds.tabulator, s + "subdomain", "" + brSub);
             cmds.cfgLine(l, brOthIdx < 1, cmds.tabulator, s + "other-index", "" + brOthIdx);
+            cmds.cfgLine(l, brOthSub < 1, cmds.tabulator, s + "other-subdomain", "" + brOthSub);
         }
         switch (dynamicMetric) {
             case 0:
@@ -627,8 +639,18 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 lower.genLsps(3);
                 return;
             }
+            if (a.equals("subdomain")) {
+                brSub = bits.str2num(cmd.word());
+                lower.genLsps(3);
+                return;
+            }
             if (a.equals("other-index")) {
                 brOthIdx = bits.str2num(cmd.word());
+                lower.genLsps(3);
+                return;
+            }
+            if (a.equals("other-subdomain")) {
+                brOthSub = bits.str2num(cmd.word());
                 lower.genLsps(3);
                 return;
             }
@@ -821,8 +843,18 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
                 lower.genLsps(3);
                 return;
             }
+            if (a.equals("subdomain")) {
+                brSub = 0;
+                lower.genLsps(3);
+                return;
+            }
             if (a.equals("other-index")) {
                 brOthIdx = 0;
+                lower.genLsps(3);
+                return;
+            }
+            if (a.equals("other-subdomain")) {
+                brOthSub = 0;
                 lower.genLsps(3);
                 return;
             }
@@ -904,7 +936,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add(null, "4 5         bier                      bier parameters");
         l.add(null, "5 6           index                   set index");
         l.add(null, "6 .             <num>                 index");
+        l.add(null, "5 6           subdomain               set subdomain");
+        l.add(null, "6 .             <num>                 index");
         l.add(null, "5 6           other-index             set other index");
+        l.add(null, "6 .             <num>                 index");
+        l.add(null, "5 6           other-subdomain         set other subdomain");
         l.add(null, "6 .             <num>                 index");
         ///// clntPmtudWrk.getHelp(l, 4);
         ///// ipinfo

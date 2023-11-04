@@ -27,9 +27,10 @@ public class rtrIsisBr {
      *
      * @param lower lower layer to use
      * @param idx index
+     * @param sub subdomain
      * @return bytes generated
      */
-    protected static byte[] putPref(rtrIsis lower, int idx) {
+    protected static byte[] putPref(rtrIsis lower, int idx, int sub) {
         if (lower.bierLab == null) {
             return new byte[0];
         }
@@ -37,7 +38,7 @@ public class rtrIsisBr {
         encTlv tlv = rtrIsis.getTlv();
         tlv.valDat[0] = 0; // algorithm
         tlv.valDat[1] = 0; // ipa
-        tlv.valDat[2] = 0; // subdomain
+        tlv.valDat[2] = (byte) sub; // subdomain
         bits.msbPutW(tlv.valDat, 3, idx); // bfr id
         tlv.valDat[5] = 1; // type: mpls encap
         tlv.valDat[6] = 4; // length
@@ -60,6 +61,7 @@ public class rtrIsisBr {
         if (tlv.valTyp != typBier) {
             return;
         }
+        prf.best.bierSub = tlv.valDat[2]; // subdomain
         prf.best.bierIdx = bits.msbGetW(tlv.valDat, 3); // bfr id
         if (tlv.valDat[5] != 1) { // type
             return;
