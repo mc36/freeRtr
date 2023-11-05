@@ -124,6 +124,11 @@ public abstract class rtrBgpParam {
     public boolean pmsiTun;
 
     /**
+     * send connector
+     */
+    public boolean connect;
+
+    /**
      * send tunnel encapsulation
      */
     public boolean tunEnc;
@@ -1224,6 +1229,7 @@ public abstract class rtrBgpParam {
         entrLab = src.entrLab;
         traffEng = src.traffEng;
         pmsiTun = src.pmsiTun;
+        connect = src.connect;
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
@@ -1407,6 +1413,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (pmsiTun != src.pmsiTun) {
+            return true;
+        }
+        if (connect != src.connect) {
             return true;
         }
         if (tunEnc != src.tunEnc) {
@@ -1734,6 +1743,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       entropy                     send entropy label attribute");
         l.add(null, "3  .       traffeng                    send traffic engineering attribute");
         l.add(null, "3  .       pmsitun                     send provider multicast service interface tunnel attribute");
+        l.add(null, "3  .       connector                   send connector attribute");
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
         l.add(null, "3  .       attribset                   send attribute set attribute");
@@ -2017,6 +2027,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !entrLab, beg, nei + "entropy", "");
         cmds.cfgLine(l, !traffEng, beg, nei + "traffeng", "");
         cmds.cfgLine(l, !pmsiTun, beg, nei + "pmsitun", "");
+        cmds.cfgLine(l, !connect, beg, nei + "connector", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
@@ -2633,6 +2644,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("pmsitun")) {
             pmsiTun = !negated;
+            return false;
+        }
+        if (s.equals("connector")) {
+            connect = !negated;
             return false;
         }
         if (s.equals("tunenc")) {

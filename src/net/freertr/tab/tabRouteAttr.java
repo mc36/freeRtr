@@ -434,6 +434,11 @@ public class tabRouteAttr<T extends addrType> {
     public T aggrRtr;
 
     /**
+     * connector router
+     */
+    public T connRtr;
+
+    /**
      * standard community values
      */
     public List<Integer> stdComm;
@@ -747,6 +752,11 @@ public class tabRouteAttr<T extends addrType> {
         } else {
             atr.aggrRtr = null;
         }
+        if (connRtr != null) {
+            atr.connRtr = (T) connRtr.copyBytes();
+        } else {
+            atr.connRtr = null;
+        }
         if (srcRtr != null) {
             atr.srcRtr = srcRtr.copyBytes();
         } else {
@@ -968,6 +978,16 @@ public class tabRouteAttr<T extends addrType> {
             }
         } else if (other.aggrRtr != null) {
             return 45;
+        }
+        if (connRtr != null) {
+            if (other.connRtr == null) {
+                return 107;
+            }
+            if (connRtr.compare(connRtr, other.connRtr) != 0) {
+                return 108;
+            }
+        } else if (other.connRtr != null) {
+            return 109;
         }
         if (nextHop != null) {
             if (other.nextHop == null) {
@@ -1398,6 +1418,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    bandwidth    ignore bandwidth");
         hl.add(null, lv + " " + lv + ",.    label        ignore labels");
         hl.add(null, lv + " " + lv + ",.    aggregate    ignore aggregator");
+        hl.add(null, lv + " " + lv + ",.    connector    ignore connector");
         hl.add(null, lv + " " + lv + ",.    orignted     ignore originator");
         hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
         hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
@@ -1496,6 +1517,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if (a.equals("entropy")) {
             return 0x8000000;
+        }
+        if (a.equals("connector")) {
+            return 0x10000000;
         }
         return 0;
     }
@@ -1728,6 +1752,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x8000000) != 0) {
             ntry.entropyLabel = null;
         }
+        if ((ign & 0x10000000) != 0) {
+            ntry.connRtr = null;
+        }
     }
 
     /**
@@ -1784,6 +1811,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "aggregator asnum|" + bits.num2str(aggrAs));
         lst.add(beg + "aggregator asnam|" + clntWhois.asn2name(aggrAs, true));
         lst.add(beg + "aggregator router|" + aggrRtr);
+        lst.add(beg + "connector router|" + connRtr);
         lst.add(beg + "originator|" + originator);
         lst.add(beg + "cluster list|" + tabRouteUtil.dumpAddrList(clustList));
         lst.add(beg + "aspath|" + asPathStr());

@@ -282,6 +282,8 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "4 .         <addr>          address");
         l.add(null, "3 4       <num>             asn");
         l.add(null, "4 .         <addr>          address");
+        l.add(null, "2 3     connector           set connector");
+        l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     customer            set customer");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             asn");
@@ -913,6 +915,16 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
                     cmd.error("invalid action");
                     return;
                 }
+                ntry.addrSet = new addrIP();
+                a = cmd.word();
+                if (ntry.addrSet.fromString(a)) {
+                    cmd.error("bad address");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("connector")) {
+                ntry.doMode = tabRtrplcN.doType.setConnect;
                 ntry.addrSet = new addrIP();
                 a = cmd.word();
                 if (ntry.addrSet.fromString(a)) {

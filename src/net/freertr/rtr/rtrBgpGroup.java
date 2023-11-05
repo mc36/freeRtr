@@ -701,6 +701,9 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.pmsiTyp = 0;
             ntry.pmsiTun = null;
         }
+        if (!connect) {
+            ntry.connRtr = null;
+        }
         if (!lnkSta) {
             ntry.linkStat = null;
         }

@@ -167,6 +167,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setAggregator,
         /**
+         * set connector
+         */
+        setConnect,
+        /**
          * set customer
          */
         setCustomer,
@@ -578,6 +582,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set validity " + intSet;
             case setAggregator:
                 return "set aggregator " + intSet + " " + addrSet;
+            case setConnect:
+                return "set connector " + addrSet;
             case setCustomer:
                 return "set customer " + intSet;
             case setBandwidth:
@@ -1001,6 +1007,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 }
                 attr.aggrAs = intSet.update(attr.aggrAs);
                 attr.aggrRtr = addrSet.copyBytes();
+                return;
+            case setConnect:
+                attr.connRtr = addrSet.copyBytes();
                 return;
             case setCustomer:
                 attr.onlyCust = intSet.update(attr.onlyCust);

@@ -112,6 +112,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* set aigp leave",
         "route-map .*! sequence .* set validity leave",
         "route-map .*! sequence .* set aggregator leave null",
+        "route-map .*! sequence .* set connector null",
         "route-map .*! sequence .* set customer leave",
         "route-map .*! sequence .* set bandwidth leave",
         "route-map .*! sequence .* set origin leave",
@@ -120,7 +121,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         "route-map .*! sequence .* set label-local leave",
         "route-map .*! sequence .* set label-remote leave",
         "route-map .*! sequence .* set segrout leave",
-        "route-map .*! sequence .* set bier leave",
+        "route-map .*! sequence .* set bier leave leave",
         "route-map .*! sequence .* no log"
     };
 
@@ -351,6 +352,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         l.add(null, "4 .         <addr>          address");
         l.add(null, "3 4       <num>             asn");
         l.add(null, "4 .         <addr>          address");
+        l.add(null, "2 3     connector           set connector");
+        l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     customer            set customer");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             asn");

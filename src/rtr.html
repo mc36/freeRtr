@@ -15,7 +15,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter-rare v23.11.5-cur, done by sprscc13@mr.n0b0dy.<br/>
-tested: 2023-11-05 09:56:57, took 00:11:32, with 80 workers, on 3282 cases, 0 failed, 0 traces, 4 retries<br/>
+tested: 2023-11-05 15:16:00, took 00:16:39, with 80 workers, on 3282 cases, 2 failed, 32 traces, 20 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -2172,8 +2172,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp214.tst">rout-bgp214.tst</a></td><td>success</td><td>unicast+evpn/cmac over bgp additional path</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp215.tst">rout-bgp215.tst</a></td><td>success</td><td>evpn/cmac over bgp auto mesh tunnel</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp216.tst">rout-bgp216.tst</a></td><td>success</td><td>evpn/pbb+vpls/cmac over ebgp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp217.tst">rout-bgp217.tst</a></td><td>success</td><td>ibgp with ttl-security</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp218.tst">rout-bgp218.tst</a></td><td>success</td><td>ebgp with ttl-security</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp217.tst">rout-bgp217.tst</a></td><td>#6-run-r1 tping 100 60 2.2.2.2 vrf v1</td><td>ibgp with ttl-security</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-bgp218.tst">rout-bgp218.tst</a></td><td>#6-run-r1 tping 100 60 2.2.2.2 vrf v1</td><td>ebgp with ttl-security</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp219.tst">rout-bgp219.tst</a></td><td>success</td><td>bgp routemap filtering with large community</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp220.tst">rout-bgp220.tst</a></td><td>success</td><td>bgp routemap filtering with large community with soft-reconfig</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-bgp221.tst">rout-bgp221.tst</a></td><td>success</td><td>bgp change in large community</td></tr>

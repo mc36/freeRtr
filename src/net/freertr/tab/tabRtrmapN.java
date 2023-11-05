@@ -163,6 +163,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public addrIP aggregatorRtr = null;
 
     /**
+     * connector updater
+     */
+    public addrIP connectorSet = null;
+
+    /**
      * customer updater
      */
     public tabIntUpdater customerSet = new tabIntUpdater();
@@ -616,6 +621,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set aigp " + accIgpSet);
         l.add(beg + "set validity " + validitySet);
         l.add(beg + "set aggregator " + aggregatorSet + " " + aggregatorRtr);
+        l.add(beg + "set connector " + connectorSet);
         l.add(beg + "set customer " + customerSet);
         l.add(beg + "set bandwidth " + bandwidthSet);
         l.add(beg + "set origin " + originSet);
@@ -851,6 +857,15 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("connector")) {
+            connectorSet = new addrIP();
+            a = cmd.word();
+            if (connectorSet.fromString(a)) {
+                cmd.error("bad address");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("customer")) {
             if (customerSet.fromString(cmd.word())) {
                 cmd.error("invalid action");
@@ -994,6 +1009,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (a.equals("aggregator")) {
             aggregatorSet.set2unchange();
             aggregatorRtr = null;
+            return false;
+        }
+        if (a.equals("connector")) {
+            connectorSet = null;
             return false;
         }
         if (a.equals("customer")) {
@@ -1784,6 +1803,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (aggregatorSet.action != tabIntUpdater.actionType.nothing) {
             attr.aggrAs = aggregatorSet.update(attr.aggrAs);
             attr.aggrRtr = aggregatorRtr.copyBytes();
+        }
+        if (connectorSet != null) {
+            attr.connRtr = connectorSet.copyBytes();
         }
         attr.onlyCust = customerSet.update(attr.onlyCust);
         attr.bandwidth = bandwidthSet.update(attr.bandwidth);

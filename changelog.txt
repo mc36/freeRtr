@@ -15387,3 +15387,8 @@ qc pass: otherl3evpns ingress route filtering with routepolicy with soft-reconfi
 qc pass: otherl3evpns egress route filtering with routepolicy with soft-reconfig
 ---------------------------------- 2023-11-02 19:53:49 23.11.2
 todo: tocustomer aggregator matchers to route-map/policy
+---------------------------------- 2023-11-05 14:59:21 23.11.5
+no qc pass: ebgp with ttl-security
+no qc pass: ibgp with ttl-security
+failed: ibgp with ttl-security
+failed: ebgp with ttl-security

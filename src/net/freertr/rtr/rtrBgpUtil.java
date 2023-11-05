@@ -966,6 +966,7 @@ public class rtrBgpUtil {
             case attrLocPref:
             case attrAtomicAggr:
             case attrAggregator:
+            case attrConnector:
             case attrStdComm:
             case attrOriginator:
             case attrClustList:
@@ -2279,6 +2280,21 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse connector attribute
+     *
+     * @param spkr where to signal
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseConnector(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        addrIPv4 as = new addrIPv4();
+        pck.getAddr(as, 4);
+        addrIP ax = new addrIP();
+        ax.fromIPv4addr(as);
+        ntry.best.connRtr = ax;
+    }
+
+    /**
      * parse aggregator attribute
      *
      * @param spkr where to signal
@@ -2880,6 +2896,9 @@ public class rtrBgpUtil {
             case attrAggregator:
                 parseAggregator(spkr, ntry, pck);
                 return null;
+            case attrConnector:
+                parseConnector(spkr, ntry, pck);
+                return null;
             case attrStdComm:
                 parseStdComm(ntry, pck);
                 return null;
@@ -3059,6 +3078,7 @@ public class rtrBgpUtil {
         placeEntropyLab(spkr, pck, hlp, ntry);
         placeAtomicAggr(spkr, pck, hlp, ntry);
         placeAggregator(spkr, longAS, pck, hlp, ntry);
+        placeConnector(spkr, pck, hlp, ntry);
         placeStdComm(spkr, pck, hlp, ntry);
         placeExtComm(spkr, pck, hlp, ntry);
         placeLrgComm(spkr, pck, hlp, ntry);
@@ -3335,6 +3355,26 @@ public class rtrBgpUtil {
         hlp.putAddr(0, ntry.best.aggrRtr.toIPv4());
         hlp.putSkip(addrIPv4.size);
         placeAttrib(spkr, flagOptional | flagTransitive, attrAggregator, trg, hlp);
+    }
+
+    /**
+     * place connector attribute
+     *
+     * @param spkr where to signal
+     * @param longAs long as support
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeConnector(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.connRtr == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutD(0, 1);
+        hlp.putAddr(4, ntry.best.connRtr.toIPv4());
+        hlp.putSkip(4 + addrIPv4.size);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrConnector, trg, hlp);
     }
 
     /**
