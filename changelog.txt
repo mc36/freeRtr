@@ -15392,3 +15392,8 @@ no qc pass: ebgp with ttl-security
 no qc pass: ibgp with ttl-security
 failed: ibgp with ttl-security
 failed: ebgp with ttl-security
+---------------------------------- 2023-11-05 17:05:10 23.11.5
+no failed: ebgp with ttl-security
+no failed: ibgp with ttl-security
+qc pass: ibgp with ttl-security
+qc pass: ebgp with ttl-security

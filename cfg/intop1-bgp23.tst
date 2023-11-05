@@ -22,7 +22,7 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 1
- neigh 1.1.1.2 connect pass
+ neigh 1.1.1.2 connection pass
  neigh 1.1.1.2 authen-type sha1 1
  neigh 1.1.1.2 password tester
  red conn
@@ -33,7 +33,7 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.1
  neigh 1234::2 remote-as 1
- neigh 1234::2 connect pass
+ neigh 1234::2 connection pass
  neigh 1234::2 authen-type sha1 1
  neigh 1234::2 password tester
  red conn

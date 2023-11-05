@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.5-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-05 15:16:00, took 00:16:39, with 80 workers, on 3282 cases, 2 failed, 32 traces, 20 retries
+-;-;-;2023-11-05 17:21:51, took 00:16:41, with 80 workers, on 3282 cases, 0 failed, 0 traces, 15 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2155,8 +2155,8 @@ http://sources.freertr.org/cfg/rout-bgp213.tst;rout-bgp213.tst;success;unicast+e
 http://sources.freertr.org/cfg/rout-bgp214.tst;rout-bgp214.tst;success;unicast+evpn/cmac over bgp additional path
 http://sources.freertr.org/cfg/rout-bgp215.tst;rout-bgp215.tst;success;evpn/cmac over bgp auto mesh tunnel
 http://sources.freertr.org/cfg/rout-bgp216.tst;rout-bgp216.tst;success;evpn/pbb+vpls/cmac over ebgp
-http://sources.freertr.org/cfg/rout-bgp217.tst;rout-bgp217.tst;#6-run-r1 tping 100 60 2.2.2.2 vrf v1;ibgp with ttl-security
-http://sources.freertr.org/cfg/rout-bgp218.tst;rout-bgp218.tst;#6-run-r1 tping 100 60 2.2.2.2 vrf v1;ebgp with ttl-security
+http://sources.freertr.org/cfg/rout-bgp217.tst;rout-bgp217.tst;success;ibgp with ttl-security
+http://sources.freertr.org/cfg/rout-bgp218.tst;rout-bgp218.tst;success;ebgp with ttl-security
 http://sources.freertr.org/cfg/rout-bgp219.tst;rout-bgp219.tst;success;bgp routemap filtering with large community
 http://sources.freertr.org/cfg/rout-bgp220.tst;rout-bgp220.tst;success;bgp routemap filtering with large community with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp221.tst;rout-bgp221.tst;success;bgp change in large community
