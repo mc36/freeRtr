@@ -3361,7 +3361,6 @@ public class rtrBgpUtil {
      * place connector attribute
      *
      * @param spkr where to signal
-     * @param longAs long as support
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
