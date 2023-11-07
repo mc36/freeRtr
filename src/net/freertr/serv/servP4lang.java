@@ -25,7 +25,6 @@ import net.freertr.util.cmds;
 import net.freertr.util.logger;
 import net.freertr.spf.spfCalc;
 import net.freertr.util.counter;
-import net.freertr.util.verCore;
 
 /**
  * p4lang server
@@ -141,11 +140,13 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
             return;
         }
         for (int i = 0; i < fwds.size(); i++) {
+            l.add(beg + cmds.comment);
             servP4langCfg cur = fwds.get(i);
             String a = "forwarder " + i + " ";
             cur.getShowRun(beg, a, l);
             cur.getShowRun2(beg, a, l);
         }
+        l.add(beg + cmds.comment);
     }
 
     public boolean srvCfgStr(cmds cmd) {
