@@ -917,7 +917,7 @@ public class rtrOspf6 extends ipRtr {
                 if (brief) {
                     l.add(nei.area.area + "|" + nei.rtrID + "|" + nei.status2string() + "|" + bits.timePast(nei.upTime));
                 } else {
-                    l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.status2string() + "|" + bits.timePast(nei.upTime));
+                    l.add(ifc.iface + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.status2string() + "|" + bits.timePast(nei.upTime));
                 }
             }
         }
@@ -941,7 +941,7 @@ public class rtrOspf6 extends ipRtr {
                 if (nei == null) {
                     continue;
                 }
-                l.add(ifc + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.getMetric() + "|" + nei.echoCalc);
+                l.add(ifc.iface + "|" + nei.area.area + "|" + nei.peer + "|" + nei.rtrID + "|" + nei.getMetric() + "|" + nei.echoCalc);
             }
         }
         return l;

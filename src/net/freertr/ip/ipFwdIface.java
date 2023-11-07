@@ -22,6 +22,7 @@ import net.freertr.rtr.rtrBfdClnt;
 import net.freertr.rtr.rtrBfdIface;
 import net.freertr.rtr.rtrBfdNeigh;
 import net.freertr.rtr.rtrHsrpIface;
+import net.freertr.rtr.rtrNshIface;
 import net.freertr.rtr.rtrPimIface;
 import net.freertr.rtr.rtrPtpIface;
 import net.freertr.rtr.rtrSrhIface;
@@ -328,6 +329,11 @@ public class ipFwdIface extends tabRouteIface {
     public rtrSrhIface srhCfg;
 
     /**
+     * nsh interface handler
+     */
+    public rtrNshIface nshCfg;
+
+    /**
      * multicast source override in
      */
     public addrIP mcastSrcIn;
@@ -620,6 +626,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "7 .               <str>             password");
         l.add(null, "2 3     srh                         segment routing header commands");
         l.add(null, "3 .       enable                    enable/disable processing");
+        l.add(null, "2 3     nsh                         networt service header commands");
+        l.add(null, "3 .       enable                    enable/disable processing");
         l.add(null, "2 3     ptp                         precision time protococol commands");
         l.add(null, "3 .       enable                    enable/disable processing");
         l.add(null, "3 .       receive                   allow clock adjustment");
@@ -864,6 +872,11 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + "no " + beg + "srh enable");
         } else {
             l.add(cmds.tabulator + beg + "srh enable");
+        }
+        if (nshCfg == null) {
+            l.add(cmds.tabulator + "no " + beg + "nsh enable");
+        } else {
+            l.add(cmds.tabulator + beg + "nsh enable");
         }
         if (ptpCfg == null) {
             l.add(cmds.tabulator + "no " + beg + "ptp enable");
@@ -1487,6 +1500,11 @@ public class ipFwdIface extends tabRouteIface {
             srhCfg.register2ip();
             return false;
         }
+        if (a.equals("nsh")) {
+            nshCfg = new rtrNshIface(fwd, this);
+            nshCfg.register2ip();
+            return false;
+        }
         if (a.equals("ptp")) {
             a = cmd.word();
             if (a.equals("enable")) {
@@ -1972,6 +1990,15 @@ public class ipFwdIface extends tabRouteIface {
             }
             srhCfg.unregister2ip();
             srhCfg = null;
+            return false;
+        }
+        if (a.equals("nsh")) {
+            if (nshCfg == null) {
+                return false;
+            }
+            nshCfg = new rtrNshIface(fwd, this);
+            nshCfg.unregister2ip();
+            nshCfg = null;
             return false;
         }
         if (a.equals("ptp")) {

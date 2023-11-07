@@ -361,6 +361,7 @@ interface template1
  ipv4 address dynamic 255.255.255.252
  ipv4 host-watch appear logger change logger disappear logger
  ipv4 srh enable
+ ipv4 nsh enable
  ipv4 ptp enable
  ipv4 ptp receive
  ipv4 bfd 1000 3000 3
@@ -370,6 +371,7 @@ interface template1
  ipv6 address dynamic ffff:ffff:ffff:ffff::
  ipv6 host-watch appear logger change logger disappear logger
  ipv6 srh enable
+ ipv6 nsh enable
  ipv6 ptp enable
  ipv6 ptp receive
  ipv6 bfd 1000 3000 3

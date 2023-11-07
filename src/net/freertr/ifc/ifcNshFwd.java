@@ -29,11 +29,6 @@ public class ifcNshFwd implements ifcUp {
     public final static int type = 0x894f;
 
     /**
-     * protocol
-     */
-    public final static int proto = 145;
-
-    /**
      * size
      */
     public final static int size = 8;

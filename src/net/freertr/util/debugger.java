@@ -480,6 +480,11 @@ public class debugger {
     public static boolean rtrSrhTraf = false;
 
     /**
+     * nsh traffic
+     */
+    public static boolean rtrNshTraf = false;
+
+    /**
      * bfd event
      */
     public static boolean rtrBfdEvnt = false;
@@ -1239,6 +1244,7 @@ public class debugger {
         l.add(null, "3 .        fragmentation     packet fragmentation");
         l.add(null, "3 .        reassembly        packet reassembly");
         l.add(null, "3 .        srh               source routed packets");
+        l.add(null, "3 .        nsh               service chaining packets");
         l.add(null, "2 3      mpls                multiprotocol label switching");
         l.add(null, "3 .        packet            mpls packet processing");
         l.add(null, "3 .        bier              bier packet processing");
@@ -2127,6 +2133,10 @@ public class debugger {
             }
             if (s.equals("srh")) {
                 rtrSrhTraf = v;
+                return false;
+            }
+            if (s.equals("nsh")) {
+                rtrNshTraf = v;
                 return false;
             }
             return true;

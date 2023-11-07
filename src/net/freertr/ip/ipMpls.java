@@ -807,7 +807,6 @@ public class ipMpls implements ifcUp {
     /**
      * do one nsh packet
      *
-     * @param fwdE ethernet forwarder
      * @param pck packet to read
      */
     public static void gotNshPack(packHolder pck) {
