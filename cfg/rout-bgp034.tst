@@ -36,7 +36,7 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 bfd
+ neigh 1.1.1.2 bfd-trigger
  neigh 1.1.1.2 route-map-in rm1
  neigh 1.1.1.2 route-map-out rm1
  neigh 1.1.1.6 remote-as 2
