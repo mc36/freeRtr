@@ -704,6 +704,10 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (!connect) {
             ntry.connRtr = null;
         }
+        if (!peDist) {
+            ntry.pediRtr = null;
+            ntry.pediLab = 0;
+        }
         if (!lnkSta) {
             ntry.linkStat = null;
         }

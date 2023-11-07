@@ -439,6 +439,16 @@ public class tabRouteAttr<T extends addrType> {
     public T connRtr;
 
     /**
+     * pe distinguisher router
+     */
+    public T pediRtr;
+
+    /**
+     * pe distinguisher label
+     */
+    public int pediLab;
+
+    /**
      * standard community values
      */
     public List<Integer> stdComm;
@@ -712,6 +722,7 @@ public class tabRouteAttr<T extends addrType> {
         atr.bandwidth = bandwidth;
         atr.atomicAggr = atomicAggr;
         atr.aggrAs = aggrAs;
+        atr.pediLab = pediLab;
         if (segrouPrf != null) {
             atr.segrouPrf = (T) segrouPrf.copyBytes();
         } else {
@@ -756,6 +767,11 @@ public class tabRouteAttr<T extends addrType> {
             atr.connRtr = (T) connRtr.copyBytes();
         } else {
             atr.connRtr = null;
+        }
+        if (pediRtr != null) {
+            atr.pediRtr = (T) pediRtr.copyBytes();
+        } else {
+            atr.pediRtr = null;
         }
         if (srcRtr != null) {
             atr.srcRtr = srcRtr.copyBytes();
@@ -936,6 +952,9 @@ public class tabRouteAttr<T extends addrType> {
         if (aggrAs != other.aggrAs) {
             return 32;
         }
+        if (pediLab != other.pediLab) {
+            return 110;
+        }
         if (segrouPrf != null) {
             if (other.segrouPrf == null) {
                 return 33;
@@ -988,6 +1007,16 @@ public class tabRouteAttr<T extends addrType> {
             }
         } else if (other.connRtr != null) {
             return 109;
+        }
+        if (pediRtr != null) {
+            if (other.pediRtr == null) {
+                return 111;
+            }
+            if (pediRtr.compare(pediRtr, other.pediRtr) != 0) {
+                return 112;
+            }
+        } else if (other.pediRtr != null) {
+            return 113;
         }
         if (nextHop != null) {
             if (other.nextHop == null) {
@@ -1419,6 +1448,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    label        ignore labels");
         hl.add(null, lv + " " + lv + ",.    aggregate    ignore aggregator");
         hl.add(null, lv + " " + lv + ",.    connector    ignore connector");
+        hl.add(null, lv + " " + lv + ",.    pedisting    ignore pe distinguisher");
         hl.add(null, lv + " " + lv + ",.    orignted     ignore originator");
         hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
         hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
@@ -1755,6 +1785,10 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x10000000) != 0) {
             ntry.connRtr = null;
         }
+        if ((ign & 0x20000000) != 0) {
+            ntry.pediRtr = null;
+            ntry.pediLab = 0;
+        }
     }
 
     /**
@@ -1812,6 +1846,8 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "aggregator asnam|" + clntWhois.asn2name(aggrAs, true));
         lst.add(beg + "aggregator router|" + aggrRtr);
         lst.add(beg + "connector router|" + connRtr);
+        lst.add(beg + "distinguish pe|" + pediRtr);
+        lst.add(beg + "distinguish label|" + pediLab);
         lst.add(beg + "originator|" + originator);
         lst.add(beg + "cluster list|" + tabRouteUtil.dumpAddrList(clustList));
         lst.add(beg + "aspath|" + asPathStr());

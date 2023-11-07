@@ -587,6 +587,7 @@ router bgp4 65535 vrf v1
  template r traffeng
  template r pmsitun
  template r connector
+ template r pe-distinguisher
  template r tunenc
  template r attribset
  template r unknowns-out all
@@ -670,6 +671,7 @@ router bgp6 65535 vrf v1
  template r traffeng
  template r pmsitun
  template r connector
+ template r pe-distinguisher
  template r tunenc
  template r attribset
  template r unknowns-out all

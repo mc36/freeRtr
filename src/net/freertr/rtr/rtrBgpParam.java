@@ -129,6 +129,11 @@ public abstract class rtrBgpParam {
     public boolean connect;
 
     /**
+     * send pe distinguisher
+     */
+    public boolean peDist;
+
+    /**
      * send tunnel encapsulation
      */
     public boolean tunEnc;
@@ -1744,6 +1749,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       traffeng                    send traffic engineering attribute");
         l.add(null, "3  .       pmsitun                     send provider multicast service interface tunnel attribute");
         l.add(null, "3  .       connector                   send connector attribute");
+        l.add(null, "3  .       pe-distinguisher            send pe distinguisher attribute");
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
         l.add(null, "3  .       attribset                   send attribute set attribute");
@@ -2028,6 +2034,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !traffEng, beg, nei + "traffeng", "");
         cmds.cfgLine(l, !pmsiTun, beg, nei + "pmsitun", "");
         cmds.cfgLine(l, !connect, beg, nei + "connector", "");
+        cmds.cfgLine(l, !peDist, beg, nei + "pe-distinguisher", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
@@ -2648,6 +2655,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("connector")) {
             connect = !negated;
+            return false;
+        }
+        if (s.equals("pe-distinguisher")) {
+            peDist = !negated;
             return false;
         }
         if (s.equals("tunenc")) {

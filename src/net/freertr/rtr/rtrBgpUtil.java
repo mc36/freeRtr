@@ -967,6 +967,7 @@ public class rtrBgpUtil {
             case attrAtomicAggr:
             case attrAggregator:
             case attrConnector:
+            case attrPeDistLab:
             case attrStdComm:
             case attrOriginator:
             case attrClustList:
@@ -2295,6 +2296,33 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse pe distinguisher attribute
+     *
+     * @param spkr where to signal
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parsePeDistLab(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        int i;
+        if (pck.dataSize() > 8) {
+            addrIPv4 as = new addrIPv4();
+            pck.getAddr(as, 0);
+            addrIP ax = new addrIP();
+            ax.fromIPv4addr(as);
+            ntry.best.pediRtr = ax;
+            i = addrIPv4.size;
+        } else {
+            addrIPv6 as = new addrIPv6();
+            pck.getAddr(as, 0);
+            addrIP ax = new addrIP();
+            ax.fromIPv6addr(as);
+            ntry.best.pediRtr = ax;
+            i = addrIPv6.size;
+        }
+        ntry.best.pediLab = pck.msbGetD(0) >>> 12;
+    }
+
+    /**
      * parse aggregator attribute
      *
      * @param spkr where to signal
@@ -2899,6 +2927,9 @@ public class rtrBgpUtil {
             case attrConnector:
                 parseConnector(spkr, ntry, pck);
                 return null;
+            case attrPeDistLab:
+                parsePeDistLab(spkr, ntry, pck);
+                return null;
             case attrStdComm:
                 parseStdComm(ntry, pck);
                 return null;
@@ -3079,6 +3110,7 @@ public class rtrBgpUtil {
         placeAtomicAggr(spkr, pck, hlp, ntry);
         placeAggregator(spkr, longAS, pck, hlp, ntry);
         placeConnector(spkr, pck, hlp, ntry);
+        placePeDistLab(spkr, pck, hlp, ntry);
         placeStdComm(spkr, pck, hlp, ntry);
         placeExtComm(spkr, pck, hlp, ntry);
         placeLrgComm(spkr, pck, hlp, ntry);
@@ -3374,6 +3406,31 @@ public class rtrBgpUtil {
         hlp.putAddr(4, ntry.best.connRtr.toIPv4());
         hlp.putSkip(4 + addrIPv4.size);
         placeAttrib(spkr, flagOptional | flagTransitive, attrConnector, trg, hlp);
+    }
+
+    /**
+     * place pe distinguisher attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placePeDistLab(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.pediRtr == null) {
+            return;
+        }
+        hlp.clear();
+        if (ntry.best.pediRtr.isIPv4()) {
+            hlp.putAddr(0, ntry.best.pediRtr.toIPv4());
+            hlp.putSkip(addrIPv4.size);
+        } else {
+            hlp.putAddr(0, ntry.best.pediRtr.toIPv6());
+            hlp.putSkip(addrIPv6.size);
+        }
+        hlp.msbPutD(0, ntry.best.pediLab << 12);
+        hlp.putSkip(3);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrPeDistLab, trg, hlp);
     }
 
     /**
