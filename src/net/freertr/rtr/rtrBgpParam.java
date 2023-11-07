@@ -134,6 +134,11 @@ public abstract class rtrBgpParam {
     public boolean peDist;
 
     /**
+     * send aspath limit
+     */
+    public boolean pathLim;
+
+    /**
      * send tunnel encapsulation
      */
     public boolean tunEnc;
@@ -1235,6 +1240,8 @@ public abstract class rtrBgpParam {
         traffEng = src.traffEng;
         pmsiTun = src.pmsiTun;
         connect = src.connect;
+        peDist = src.peDist;
+        pathLim = src.pathLim;
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
@@ -1421,6 +1428,12 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (connect != src.connect) {
+            return true;
+        }
+        if (peDist != src.peDist) {
+            return true;
+        }
+        if (pathLim != src.pathLim) {
             return true;
         }
         if (tunEnc != src.tunEnc) {
@@ -1750,6 +1763,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       pmsitun                     send provider multicast service interface tunnel attribute");
         l.add(null, "3  .       connector                   send connector attribute");
         l.add(null, "3  .       pe-distinguisher            send pe distinguisher attribute");
+        l.add(null, "3  .       aspath-limit                send as path limit attribute");
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
         l.add(null, "3  .       attribset                   send attribute set attribute");
@@ -2035,6 +2049,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !pmsiTun, beg, nei + "pmsitun", "");
         cmds.cfgLine(l, !connect, beg, nei + "connector", "");
         cmds.cfgLine(l, !peDist, beg, nei + "pe-distinguisher", "");
+        cmds.cfgLine(l, !pathLim, beg, nei + "aspath-limit", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
@@ -2659,6 +2674,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("pe-distinguisher")) {
             peDist = !negated;
+            return false;
+        }
+        if (s.equals("aspath-limit")) {
+            pathLim = !negated;
             return false;
         }
         if (s.equals("tunenc")) {

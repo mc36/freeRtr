@@ -708,6 +708,10 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.pediRtr = null;
             ntry.pediLab = 0;
         }
+        if (!pathLim) {
+            ntry.pathLim = 0;
+            ntry.pathAsn = 0;
+        }
         if (!lnkSta) {
             ntry.linkStat = null;
         }

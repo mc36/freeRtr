@@ -449,6 +449,16 @@ public class tabRouteAttr<T extends addrType> {
     public int pediLab;
 
     /**
+     * aspath limit
+     */
+    public int pathLim;
+
+    /**
+     * aspath originator
+     */
+    public int pathAsn;
+
+    /**
      * standard community values
      */
     public List<Integer> stdComm;
@@ -723,6 +733,8 @@ public class tabRouteAttr<T extends addrType> {
         atr.atomicAggr = atomicAggr;
         atr.aggrAs = aggrAs;
         atr.pediLab = pediLab;
+        atr.pathAsn = pathAsn;
+        atr.pathLim = pathLim;
         if (segrouPrf != null) {
             atr.segrouPrf = (T) segrouPrf.copyBytes();
         } else {
@@ -954,6 +966,12 @@ public class tabRouteAttr<T extends addrType> {
         }
         if (pediLab != other.pediLab) {
             return 110;
+        }
+        if (pathLim != other.pathLim) {
+            return 114;
+        }
+        if (pathAsn != other.pathAsn) {
+            return 115;
         }
         if (segrouPrf != null) {
             if (other.segrouPrf == null) {
@@ -1789,6 +1807,10 @@ public class tabRouteAttr<T extends addrType> {
             ntry.pediRtr = null;
             ntry.pediLab = 0;
         }
+        if ((ign & 0x40000000) != 0) {
+            ntry.pathLim = 0;
+            ntry.pathAsn = 0;
+        }
     }
 
     /**
@@ -1848,6 +1870,9 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "connector router|" + connRtr);
         lst.add(beg + "distinguish pe|" + pediRtr);
         lst.add(beg + "distinguish label|" + pediLab);
+        lst.add(beg + "path limit|" + pathLim);
+        lst.add(beg + "path asnum|" + bits.num2str(pathAsn));
+        lst.add(beg + "path asnam|" + clntWhois.asn2name(pathAsn, true));
         lst.add(beg + "originator|" + originator);
         lst.add(beg + "cluster list|" + tabRouteUtil.dumpAddrList(clustList));
         lst.add(beg + "aspath|" + asPathStr());

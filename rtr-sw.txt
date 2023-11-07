@@ -588,6 +588,7 @@ router bgp4 65535 vrf v1
  template r pmsitun
  template r connector
  template r pe-distinguisher
+ template r aspath-limit
  template r tunenc
  template r attribset
  template r unknowns-out all
@@ -672,6 +673,7 @@ router bgp6 65535 vrf v1
  template r pmsitun
  template r connector
  template r pe-distinguisher
+ template r aspath-limit
  template r tunenc
  template r attribset
  template r unknowns-out all
