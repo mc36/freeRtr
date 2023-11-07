@@ -968,6 +968,7 @@ public class rtrBgpUtil {
             case attrAggregator:
             case attrConnector:
             case attrPeDistLab:
+            case attrPathLimit:
             case attrStdComm:
             case attrOriginator:
             case attrClustList:
