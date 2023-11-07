@@ -1298,7 +1298,7 @@ public class spfCalc<Ta extends addrType> {
             res.add(ntry + "|reach|" + ntry.visited + "|" + ntry.conn.size());
             res.add(ntry + "|segrou|" + ntry.srIdx);
             res.add(ntry + "|bieri|" + ntry.brIdx);
-            res.add(ntry + "|biers|" + ntry.brSub);
+            res.add(ntry + "|bierd|" + ntry.brSub);
             for (int o = 0; o < ntry.algo.size(); o++) {
                 res.add(ntry + "|flexalgo|" + ntry.algo.get(o));
             }
