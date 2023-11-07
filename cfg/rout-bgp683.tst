@@ -36,11 +36,11 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
- neigh 1.1.1.2 bfd strict
+ neigh 1.1.1.2 bfd-trigger strict
  neigh 1.1.1.2 route-map-in rm1
  neigh 1.1.1.2 route-map-out rm1
  neigh 1.1.1.6 remote-as 2
- neigh 1.1.1.6 bfd strict
+ neigh 1.1.1.6 bfd-trigger strict
  red conn
  exit
 router bgp6 1
@@ -50,11 +50,11 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
- neigh 1234:1::2 bfd strict
+ neigh 1234:1::2 bfd-trigger strict
  neigh 1234:1::2 route-map-in rm1
  neigh 1234:1::2 route-map-out rm1
  neigh 1234:2::2 remote-as 2
- neigh 1234:2::2 bfd strict
+ neigh 1234:2::2 bfd-trigger strict
  red conn
  exit
 !
@@ -92,9 +92,9 @@ router bgp4 1
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
- neigh 1.1.1.1 bfd
+ neigh 1.1.1.1 bfd-trigger
  neigh 1.1.1.5 remote-as 1
- neigh 1.1.1.5 bfd
+ neigh 1.1.1.5 bfd-trigger
  red conn
  exit
 router bgp6 1
@@ -104,9 +104,9 @@ router bgp6 1
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
- neigh 1234:1::1 bfd
+ neigh 1234:1::1 bfd-trigger
  neigh 1234:2::1 remote-as 1
- neigh 1234:2::1 bfd
+ neigh 1234:2::1 bfd-trigger
  red conn
  exit
 !

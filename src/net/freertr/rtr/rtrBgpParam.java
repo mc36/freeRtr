@@ -1824,7 +1824,7 @@ public abstract class rtrBgpParam {
         l.add(null, "6  .             <num>                 remote port");
         l.add(null, "3  4       backup-peer                 keep down if an other peer is up");
         l.add(null, "4  .         <addr>                    other address");
-        l.add(null, "3  4,.     bfd                         enable bfd triggered down");
+        l.add(null, "3  4,.     bfd-trigger                 enable bfd triggered down");
         l.add(null, "4  .         strict                    enable strict bfd triggered down");
         l.add(null, "3  4       multiple-labels             advertise multiple labels capability");
         getAfiList(l, "4  4,.", "use", true);
@@ -2027,7 +2027,7 @@ public abstract class rtrBgpParam {
         } else {
             s = "";
         }
-        cmds.cfgLine(l, bfdTrigger == 0, beg, nei + "bfd", s);
+        cmds.cfgLine(l, bfdTrigger == 0, beg, nei + "bfd-trigger", s);
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "multiple-labels" + mask2string(multiLabel));
@@ -2437,7 +2437,7 @@ public abstract class rtrBgpParam {
             backupPeer.fromString(cmd.word());
             return false;
         }
-        if (s.equals("bfd")) {
+        if (s.equals("bfd-trigger")) {
             if (negated) {
                 bfdTrigger = 0;
                 return false;
