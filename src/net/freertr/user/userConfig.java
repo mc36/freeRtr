@@ -482,6 +482,10 @@ public class userConfig {
         l.add(null, "6  4,.          <addr>               target mac address");
         l.add(null, "4  5        route                    route normally");
         l.add(null, "5  4,.        <name:vrf>             target vrf");
+        l.add(null, "4  5        tunnel                   tunnel in ip");
+        l.add(null, "5  6          <name:vrf>             target vrf");
+        l.add(null, "6  7            <name:ifc>           source interface");
+        l.add(null, "7  4,.            <addr>             target ip address");
         l.add(null, "4  5        switch                   switch service");
         l.add(null, "5  6          <num>                  new service path");
         l.add(null, "6  4,.          <num>                new service index");

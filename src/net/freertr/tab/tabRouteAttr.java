@@ -1893,10 +1893,10 @@ public class tabRouteAttr<T extends addrType> {
             ntry.pathAsn = 0;
         }
         if ((ign & 0x80000000) != 0) {
-            ntry.nshChain = null; 
+            ntry.nshChain = null;
         }
         if ((ign & 0x100000000L) != 0) {
-            ntry.bfdDiscr = null; 
+            ntry.bfdDiscr = null;
         }
     }
 

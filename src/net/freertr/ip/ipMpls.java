@@ -13,6 +13,7 @@ import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcPolka;
 import net.freertr.ifc.ifcUp;
 import net.freertr.pack.packHolder;
+import net.freertr.rtr.rtrNshIface;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabLabel;
@@ -846,6 +847,17 @@ public class ipMpls implements ifcUp {
             } else {
                 fwd.doTxRaw(pck, ntry.target);
             }
+            return;
+        }
+        if ((ntry.tunnelV != null) && (ntry.tunnelI != null) && (ntry.tunnelA != null)) {
+            ifcNshFwd.createNSHheader(pck);
+            pck.getSkip(2);
+            pck.IPprt = rtrNshIface.protoNum;
+            pck.IPtrg.setAddr(ntry.tunnelA);
+            pck.IPsrc.setAddr(ntry.tunnelI.addr);
+            pck.merge2beg();
+            pck.putDefaults();
+            ntry.tunnelV.protoPack(ntry.tunnelI, null, pck);
             return;
         }
         if ((ntry.route4 == null) || (ntry.route6 == null)) {

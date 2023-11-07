@@ -3,6 +3,7 @@ package net.freertr.tab;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.addr.addrIP;
 import net.freertr.addr.addrMac;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgGeneric;
@@ -10,6 +11,7 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ip.ipFwd;
+import net.freertr.ip.ipFwdIface;
 import net.freertr.user.userFormat;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -67,6 +69,21 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
      * target address
      */
     public addrMac target;
+
+    /**
+     * target vrf
+     */
+    public ipFwd tunnelV;
+
+    /**
+     * target interface
+     */
+    public ipFwdIface tunnelI;
+
+    /**
+     * target address
+     */
+    public addrIP tunnelA;
 
     /**
      * target ipv4 forwarder
@@ -131,7 +148,12 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
         n.trgSi = trgSi;
         n.iface = iface;
         if (target != null) {
-            n.target = target;
+            n.target = target.copyBytes();
+        }
+        if (tunnelA != null) {
+            n.tunnelI = tunnelI;
+            n.tunnelV = tunnelV;
+            n.tunnelA = tunnelA.copyBytes();
         }
         n.route4 = route4;
         n.route6 = route6;
@@ -168,6 +190,24 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
                 return true;
             }
         }
+        if (tunnelA == null) {
+            if (o.tunnelA != null) {
+                return true;
+            }
+        } else {
+            if (o.tunnelA == null) {
+                return true;
+            }
+            if (tunnelA.compare(tunnelA, o.tunnelA) != 0) {
+                return true;
+            }
+        }
+        if (tunnelI != o.tunnelI) {
+            return true;
+        }
+        if (tunnelV != o.tunnelV) {
+            return true;
+        }
         if (route4 != o.route4) {
             return true;
         }
@@ -193,6 +233,9 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
 
     private String getCmd() {
         String a = "drop";
+        if (tunnelA != null) {
+            a = "tunnel " + tunnelV.vrfName + " " + tunnelI + " " + tunnelA;
+        }
         if (iface != null) {
             a = "interface " + iface + " " + target;
         }
@@ -238,6 +281,31 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
             if (s.length() < 1) {
                 break;
             }
+            if (s.equals("tunnel")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return;
+                }
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return;
+                }
+                addrIP adr = new addrIP();
+                if (adr.fromString(cmd.word())) {
+                    cmd.error("bad address");
+                    return;
+                }
+                tunnelI = ifc.getFwdIfc(adr);
+                tunnelV = vrf.getFwd(adr);
+                tunnelA = adr;
+                route4 = null;
+                route6 = null;
+                iface = null;
+                target = null;
+                return;
+            }
             if (s.equals("interface")) {
                 cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
@@ -253,6 +321,9 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
                 target = adr;
                 route4 = null;
                 route6 = null;
+                tunnelA = null;
+                tunnelI = null;
+                tunnelV = null;
                 continue;
             }
             if (s.equals("route")) {
@@ -265,9 +336,15 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
                 route6 = vrf.fwd6;
                 iface = null;
                 target = null;
+                tunnelA = null;
+                tunnelI = null;
+                tunnelV = null;
                 continue;
             }
             if (s.equals("drop")) {
+                tunnelA = null;
+                tunnelI = null;
+                tunnelV = null;
                 route4 = null;
                 route6 = null;
                 iface = null;
@@ -348,6 +425,9 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
         lst.add("iface|" + iface);
         lst.add("target|" + target);
         lst.add("route|" + route4 + " " + route6);
+        lst.add("tunnel vrf|" + tunnelV);
+        lst.add("tunnel iface|" + tunnelI);
+        lst.add("tunnel addr|" + tunnelA);
         lst.add("rawpack|" + rawPack);
         lst.add("keephdr|" + keepHdr);
         lst.add("counter|" + cntr.getShStat());

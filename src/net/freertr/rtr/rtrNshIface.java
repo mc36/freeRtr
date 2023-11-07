@@ -23,11 +23,11 @@ public class rtrNshIface implements ipPrt {
      * protocol
      */
     public final static int protoNum = 145;
-    
+
     private final ipFwd fwdCore;
-    
+
     private final ipFwdIface iface;
-    
+
     private counter cntr = new counter();
 
     /**
@@ -60,7 +60,7 @@ public class rtrNshIface implements ipPrt {
         }
         fwdCore.protoAdd(this, iface, null);
     }
-    
+
     public String toString() {
         return "nsh";
     }
@@ -133,9 +133,8 @@ public class rtrNshIface implements ipPrt {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
-        ifcNshFwd.parseNSHheader(pck);
         cntr.rx(pck);
         ipMpls.gotNshPack(pck);
     }
-    
+
 }
