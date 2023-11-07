@@ -4000,7 +4000,7 @@ public class userShow {
         }
     }
 
-    private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, int ign, tabListing<tabRtrmapN, addrIP> flt, int safi, int asn1, int asn2, tabListing<tabRtrmapN, addrIP> upd) {
+    private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, long ign, tabListing<tabRtrmapN, addrIP> flt, int safi, int asn1, int asn2, tabListing<tabRtrmapN, addrIP> upd) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
             if (prf1 == null) {
@@ -4411,7 +4411,7 @@ public class userShow {
                 cmd.error("no such neighbor");
                 return;
             }
-            int ign = 0;
+            long ign = 0;
             tabListing<tabRtrmapN, addrIP> flt = null;
             tabListing<tabRtrmapN, addrIP> upd = null;
             for (;;) {
@@ -4470,7 +4470,7 @@ public class userShow {
                 cmd.error("no such neighbor");
                 return;
             }
-            int ign = 0;
+            long ign = 0;
             int tim = 5000;
             tabListing<tabRtrmapN, addrIP> flt = null;
             tabListing<tabRtrmapN, addrIP> upd = null;

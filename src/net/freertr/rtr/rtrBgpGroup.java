@@ -712,6 +712,12 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.pathLim = 0;
             ntry.pathAsn = 0;
         }
+        if (!nshChain) {
+            ntry.nshChain = null;
+        }
+        if (!bfdDiscr) {
+            ntry.bfdDiscr = null;
+        }
         if (!lnkSta) {
             ntry.linkStat = null;
         }

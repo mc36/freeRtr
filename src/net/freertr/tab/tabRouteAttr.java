@@ -409,6 +409,16 @@ public class tabRouteAttr<T extends addrType> {
     public byte[] attribVal;
 
     /**
+     * nsh service chain
+     */
+    public byte[] nshChain;
+
+    /**
+     * bfd discriminator
+     */
+    public byte[] bfdDiscr;
+
+    /**
      * bandwidth
      */
     public int bandwidth;
@@ -751,6 +761,18 @@ public class tabRouteAttr<T extends addrType> {
             bits.byteCopy(attribVal, 0, atr.attribVal, 0, attribVal.length);
         } else {
             atr.attribVal = null;
+        }
+        if (nshChain != null) {
+            atr.nshChain = new byte[nshChain.length];
+            bits.byteCopy(nshChain, 0, atr.nshChain, 0, nshChain.length);
+        } else {
+            atr.nshChain = null;
+        }
+        if (bfdDiscr != null) {
+            atr.bfdDiscr = new byte[bfdDiscr.length];
+            bits.byteCopy(bfdDiscr, 0, atr.bfdDiscr, 0, bfdDiscr.length);
+        } else {
+            atr.bfdDiscr = null;
         }
         if (tunelVal != null) {
             atr.tunelVal = new byte[tunelVal.length];
@@ -1096,6 +1118,32 @@ public class tabRouteAttr<T extends addrType> {
             }
         } else if (other.attribVal != null) {
             return 64;
+        }
+        if (nshChain != null) {
+            if (other.nshChain == null) {
+                return 116;
+            }
+            if (nshChain.length != other.nshChain.length) {
+                return 117;
+            }
+            if (bits.byteComp(nshChain, 0, other.nshChain, 0, nshChain.length) != 0) {
+                return 118;
+            }
+        } else if (other.nshChain != null) {
+            return 119;
+        }
+        if (bfdDiscr != null) {
+            if (other.bfdDiscr == null) {
+                return 120;
+            }
+            if (bfdDiscr.length != other.bfdDiscr.length) {
+                return 121;
+            }
+            if (bits.byteComp(bfdDiscr, 0, other.bfdDiscr, 0, bfdDiscr.length) != 0) {
+                return 122;
+            }
+        } else if (other.bfdDiscr != null) {
+            return 123;
         }
         if (tunelVal != null) {
             if (other.tunelVal == null) {
@@ -1467,6 +1515,9 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    aggregate    ignore aggregator");
         hl.add(null, lv + " " + lv + ",.    connector    ignore connector");
         hl.add(null, lv + " " + lv + ",.    pedisting    ignore pe distinguisher");
+        hl.add(null, lv + " " + lv + ",.    aspathlimit  ignore aspath limit");
+        hl.add(null, lv + " " + lv + ",.    nshchain     ignore nsh service chain");
+        hl.add(null, lv + " " + lv + ",.    bfddiscr     ignore bfd discriminator");
         hl.add(null, lv + " " + lv + ",.    orignted     ignore originator");
         hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
         hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
@@ -1481,7 +1532,7 @@ public class tabRouteAttr<T extends addrType> {
      * @param a string
      * @return bitmap
      */
-    public static int string2ignore(String a) {
+    public static long string2ignore(String a) {
         if (a.equals("cluster")) {
             return 0x1;
         }
@@ -1569,6 +1620,18 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("connector")) {
             return 0x10000000;
         }
+        if (a.equals("pedisting")) {
+            return 0x20000000;
+        }
+        if (a.equals("aspathlimit")) {
+            return 0x40000000;
+        }
+        if (a.equals("nshchain")) {
+            return 0x80000000;
+        }
+        if (a.equals("bfddiscr")) {
+            return 0x100000000L;
+        }
         return 0;
     }
 
@@ -1578,7 +1641,7 @@ public class tabRouteAttr<T extends addrType> {
      * @param i bitmap
      * @return string
      */
-    public static String ignore2string(int i) {
+    public static String ignore2string(long i) {
         if (i == 0) {
             return "";
         }
@@ -1664,6 +1727,24 @@ public class tabRouteAttr<T extends addrType> {
         if ((i & 0x4000000) != 0) {
             a += " unknown";
         }
+        if ((i & 0x8000000) != 0) {
+            a += " entropy";
+        }
+        if ((i & 0x10000000) != 0) {
+            a += " connector";
+        }
+        if ((i & 0x20000000) != 0) {
+            a += " pedisting";
+        }
+        if ((i & 0x40000000) != 0) {
+            a += " aspathlimit";
+        }
+        if ((i & 0x80000000) != 0) {
+            a += " nshchain";
+        }
+        if ((i & 0x100000000L) != 0) {
+            a += " bfddiscr";
+        }
         return a.substring(1, a.length());
     }
 
@@ -1674,7 +1755,7 @@ public class tabRouteAttr<T extends addrType> {
      * @param ntry route entry
      * @param ign ignore bitmap
      */
-    public static <T extends addrType> void ignoreAttribs(tabRouteAttr<T> ntry, int ign) {
+    public static <T extends addrType> void ignoreAttribs(tabRouteAttr<T> ntry, long ign) {
         ntry.srcRtr = null;
         ntry.rouSrc = 0;
         ntry.rouTyp = tabRouteAttr.routeType.bgp4;
@@ -1811,6 +1892,12 @@ public class tabRouteAttr<T extends addrType> {
             ntry.pathLim = 0;
             ntry.pathAsn = 0;
         }
+        if ((ign & 0x80000000) != 0) {
+            ntry.nshChain = null; 
+        }
+        if ((ign & 0x100000000L) != 0) {
+            ntry.bfdDiscr = null; 
+        }
     }
 
     /**
@@ -1855,6 +1942,8 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "attribute asnum|" + bits.num2str(attribAs));
         lst.add(beg + "attribute asnam|" + clntWhois.asn2name(attribAs, true));
         lst.add(beg + "attribute value|" + bits.byteDump(attribVal, 0, -1));
+        lst.add(beg + "nsh chain value|" + bits.byteDump(nshChain, 0, -1));
+        lst.add(beg + "bfd discr value|" + bits.byteDump(nshChain, 0, -1));
         lst.add(beg + "tunnel type|" + tunelTyp);
         lst.add(beg + "tunnel value|" + bits.byteDump(tunelVal, 0, -1));
         lst.add(beg + "link state|" + bits.byteDump(linkStat, 0, -1));

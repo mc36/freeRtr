@@ -746,9 +746,9 @@ public class rtrBgpUtil {
     public final static int attrDomPath = 36;
 
     /**
-     * service chains
+     * nsh service chains
      */
-    public final static int attrSvcChn = 37;
+    public final static int attrNshChain = 37;
 
     /**
      * bfd discriminator
@@ -969,6 +969,8 @@ public class rtrBgpUtil {
             case attrConnector:
             case attrPeDistLab:
             case attrPathLimit:
+            case attrNshChain:
+            case attrBfdDisc:
             case attrStdComm:
             case attrOriginator:
             case attrClustList:
@@ -2490,6 +2492,26 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse nsh service chain attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseNshChain(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.nshChain = pck.getCopy();
+    }
+
+    /**
+     * parse bfd discriminator attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseBfdDiscr(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.bfdDiscr = pck.getCopy();
+    }
+
+    /**
      * parse prefix sid attribute
      *
      * @param ntry table entry
@@ -2961,6 +2983,12 @@ public class rtrBgpUtil {
             case attrAttribSet:
                 parseAttribSet(ntry, pck);
                 return null;
+            case attrNshChain:
+                parseNshChain(ntry, pck);
+                return null;
+            case attrBfdDisc:
+                parseBfdDiscr(ntry, pck);
+                return null;
             case attrPrefSid:
                 parsePrefSid(ntry, pck);
                 return null;
@@ -3125,6 +3153,8 @@ public class rtrBgpUtil {
         placeOnlyCust(spkr, pck, hlp, ntry);
         placePrefSid(spkr, safi, pck, hlp, ntry);
         placeBier(spkr, pck, hlp, ntry);
+        placeNshChain(spkr, pck, hlp, ntry);
+        placeBfdDiscr(spkr, pck, hlp, ntry);
         placeAttribSet(spkr, pck, hlp, ntry);
         if (safi == safiAttrib) {
             pck.merge2beg();
@@ -3653,6 +3683,42 @@ public class rtrBgpUtil {
         hlp.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
         hlp.putSkip(ntry.best.attribVal.length);
         placeAttrib(spkr, flagOptional | flagTransitive, attrAttribSet, trg, hlp);
+    }
+
+    /**
+     * place attribute set attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeNshChain(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.nshChain == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.nshChain, 0, 0, ntry.best.nshChain.length);
+        hlp.putSkip(ntry.best.nshChain.length);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrNshChain, trg, hlp);
+    }
+
+    /**
+     * place attribute set attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeBfdDiscr(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.bfdDiscr == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.bfdDiscr, 0, 0, ntry.best.bfdDiscr.length);
+        hlp.putSkip(ntry.best.bfdDiscr.length);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrBfdDisc, trg, hlp);
     }
 
     /**

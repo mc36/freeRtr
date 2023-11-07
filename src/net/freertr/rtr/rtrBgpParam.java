@@ -139,6 +139,16 @@ public abstract class rtrBgpParam {
     public boolean pathLim;
 
     /**
+     * send nsh service chain
+     */
+    public boolean nshChain;
+
+    /**
+     * send bfd discriminator
+     */
+    public boolean bfdDiscr;
+
+    /**
      * send tunnel encapsulation
      */
     public boolean tunEnc;
@@ -1242,6 +1252,8 @@ public abstract class rtrBgpParam {
         connect = src.connect;
         peDist = src.peDist;
         pathLim = src.pathLim;
+        nshChain = src.nshChain;
+        bfdDiscr = src.bfdDiscr;
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
@@ -1434,6 +1446,12 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (pathLim != src.pathLim) {
+            return true;
+        }
+        if (nshChain != src.nshChain) {
+            return true;
+        }
+        if (bfdDiscr != src.bfdDiscr) {
             return true;
         }
         if (tunEnc != src.tunEnc) {
@@ -1764,6 +1782,8 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       connector                   send connector attribute");
         l.add(null, "3  .       pe-distinguisher            send pe distinguisher attribute");
         l.add(null, "3  .       aspath-limit                send as path limit attribute");
+        l.add(null, "3  .       nsh-chain                   send nsh service chain attribute");
+        l.add(null, "3  .       bfd-discriminator           send bfd discriminator attribute");
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
         l.add(null, "3  .       attribset                   send attribute set attribute");
@@ -2050,6 +2070,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !connect, beg, nei + "connector", "");
         cmds.cfgLine(l, !peDist, beg, nei + "pe-distinguisher", "");
         cmds.cfgLine(l, !pathLim, beg, nei + "aspath-limit", "");
+        cmds.cfgLine(l, !nshChain, beg, nei + "nsh-chain", "");
+        cmds.cfgLine(l, !bfdDiscr, beg, nei + "bfd-discriminator", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
@@ -2678,6 +2700,14 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("aspath-limit")) {
             pathLim = !negated;
+            return false;
+        }
+        if (s.equals("nsh-chain")) {
+            nshChain = !negated;
+            return false;
+        }
+        if (s.equals("bfd-discriminator")) {
+            bfdDiscr = !negated;
             return false;
         }
         if (s.equals("tunenc")) {

@@ -122,7 +122,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     /**
      * ignore attributes
      */
-    protected int ignore;
+    protected long ignore;
 
     /**
      * advertise grace time
@@ -893,7 +893,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         if (ntry1 == null) {
             return null;
         }
-        int ign = 0;
+        long ign = 0;
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {

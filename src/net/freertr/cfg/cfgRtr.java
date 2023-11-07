@@ -404,6 +404,8 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* connector",
         "router bgp[46] .*! no (template|neighbor) .* pe-distinguisher",
         "router bgp[46] .*! no (template|neighbor) .* aspath-limit",
+        "router bgp[46] .*! no (template|neighbor) .* nsh-chain",
+        "router bgp[46] .*! no (template|neighbor) .* bfd-discriminator",
         "router bgp[46] .*! no (template|neighbor) .* tunenc",
         "router bgp[46] .*! no (template|neighbor) .* linkstate",
         "router bgp[46] .*! no (template|neighbor) .* attribset",
