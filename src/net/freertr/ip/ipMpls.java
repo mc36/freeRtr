@@ -3,10 +3,6 @@ package net.freertr.ip;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
-import net.freertr.addr.addrIPv4;
-import net.freertr.addr.addrIPv6;
-import net.freertr.addr.addrPrefix;
-import net.freertr.cfg.cfgIfc;
 import net.freertr.clnt.clntNetflow;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEthTyp;
@@ -24,7 +20,6 @@ import net.freertr.tab.tabLabelBier;
 import net.freertr.tab.tabLabelEntry;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabNshEntry;
-import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabSession;
 import net.freertr.util.bits;
@@ -815,14 +810,14 @@ public class ipMpls implements ifcUp {
      * @param fwdE ethernet forwarder
      * @param pck packet to read
      */
-    public static void gotNshPack(ifcEthTyp fwdE, packHolder pck) {
+    public static void gotNshPack(packHolder pck) {
         if (debugger.ifcNshEvnt) {
             logger.debug("fwd sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
         }
         tabNshEntry ntry = new tabNshEntry(pck.NSHsp, pck.NSHsi);
         ntry = tabNshEntry.services.find(ntry);
         if (ntry == null) {
-            logger.info("received invalid service " + pck.NSHsp + " " + pck.NSHsi + " on " + fwdE);
+            logger.info("received invalid service " + pck.NSHsp + " " + pck.NSHsi);
             return;
         }
         ntry.cntr.rx(pck);
@@ -889,7 +884,7 @@ public class ipMpls implements ifcUp {
                     ntry.cntr.drop(pck, counter.reasons.notInTab);
                     return;
                 }
-                gotNshPack(fwdE, pck);
+                gotNshPack(pck);
                 return;
             default:
                 ntry.cntr.drop(pck, counter.reasons.badProto);

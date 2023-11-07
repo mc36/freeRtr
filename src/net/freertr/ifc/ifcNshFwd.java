@@ -29,6 +29,11 @@ public class ifcNshFwd implements ifcUp {
     public final static int type = 0x894f;
 
     /**
+     * protocol
+     */
+    public final static int proto = 145;
+
+    /**
      * size
      */
     public final static int size = 8;
@@ -205,7 +210,7 @@ public class ifcNshFwd implements ifcUp {
         if (debugger.ifcNshEvnt) {
             logger.debug("rx sp=" + pck.NSHsp + " si=" + pck.NSHsi + " prt=" + pck.IPprt + " ttl=" + pck.NSHttl + " meta=" + pck.NSHmdt + "," + pck.NSHmdv.length);
         }
-        ipMpls.gotNshPack(null, pck);
+        ipMpls.gotNshPack(pck);
     }
 
     /**
