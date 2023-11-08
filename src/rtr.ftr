@@ -1269,6 +1269,8 @@ qc pass: nsh loop
 qc pass: nsh switch
 qc pass: nsh ip
 qc pass: nsh mix of ip and ethernet
+qc pass: nsh over ipv4 tunnel
+qc pass: nsh over ipv6 tunnel
 qc pass: polka over ethernet
 qc pass: polka over ethernet vlan
 qc pass: polka over ethernet bridge

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.7-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-07 19:44:07, took 00:12:12, with 80 workers, on 3282 cases, 0 failed, 0 traces, 6 retries
+-;-;-;2023-11-07 22:50:12, took 00:11:03, with 80 workers, on 3284 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1273,6 +1273,8 @@ http://sources.freertr.org/cfg/mpls-nsh10.tst;mpls-nsh10.tst;success;nsh loop
 http://sources.freertr.org/cfg/mpls-nsh11.tst;mpls-nsh11.tst;success;nsh switch
 http://sources.freertr.org/cfg/mpls-nsh12.tst;mpls-nsh12.tst;success;nsh ip
 http://sources.freertr.org/cfg/mpls-nsh13.tst;mpls-nsh13.tst;success;nsh mix of ip and ethernet
+http://sources.freertr.org/cfg/mpls-nsh14.tst;mpls-nsh14.tst;success;nsh over ipv4 tunnel
+http://sources.freertr.org/cfg/mpls-nsh15.tst;mpls-nsh15.tst;success;nsh over ipv6 tunnel
 http://sources.freertr.org/cfg/mpls-polka01.tst;mpls-polka01.tst;success;polka over ethernet
 http://sources.freertr.org/cfg/mpls-polka02.tst;mpls-polka02.tst;success;polka over ethernet vlan
 http://sources.freertr.org/cfg/mpls-polka03.tst;mpls-polka03.tst;success;polka over ethernet bridge

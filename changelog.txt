@@ -15405,3 +15405,6 @@ no failed: ebgp with bfd
 qc pass: ebgp with bfd
 ---------------------------------- 2023-11-07 19:01:13 23.11.7
 todo: rfc9491 nsh in ip
+---------------------------------- 2023-11-07 22:39:08 23.11.7
+qc pass: nsh over ipv4 tunnel
+qc pass: nsh over ipv6 tunnel

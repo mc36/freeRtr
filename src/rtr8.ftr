@@ -432,6 +432,7 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
+todo: rfc9491 nsh in ip
 todo: tocustomer aggregator matchers to route-map/policy
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
