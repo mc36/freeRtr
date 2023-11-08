@@ -81,6 +81,13 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
 
     private byte[] chlng = null;
 
+    /**
+     * create instance
+     *
+     * @param ifc interface
+     * @param adr address
+     * @param parent parent
+     */
     public servL2tp3conn(ipFwdIface ifc, addrIP adr, servL2tp3 parent) {
         iface = ifc;
         peer = adr.copyBytes();
@@ -99,7 +106,10 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         return o1.peer.compare(o1.peer, o2.peer);
     }
 
-    public void setClosed() {
+    /**
+     * close connection
+     */
+    protected void setClosed() {
         need2run = false;
         notif.wakeup();
         for (int i = session.size(); i >= 0; i--) {
@@ -113,7 +123,10 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         fwdCor.protoDel(lower, iface, peer);
     }
 
-    public void doStartup() {
+    /**
+     * start peer
+     */
+    protected void doStartup() {
         if (debugger.servL2tp3traf) {
             logger.debug("starting");
         }
@@ -151,13 +164,21 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         }
     }
 
-    public void enQueue(packL2tp3 pck) {
+    /**
+     * queue one packet
+     *
+     * @param pck packet to enqueue
+     */
+    protected void enQueue(packL2tp3 pck) {
         synchronized (queue) {
             queue.add(pck);
         }
     }
 
-    public void sendAck() {
+    /**
+     * send acknowledge
+     */
+    protected void sendAck() {
         packL2tp3 pckTx = new packL2tp3();
         pckTx.patchHeader(conRem, seqRx, seqTx);
         packHolder pckBin = new packHolder(true, true);
@@ -166,7 +187,12 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         sendProto(pckBin);
     }
 
-    public void sendProto(packHolder pck) {
+    /**
+     * send protocol packet
+     *
+     * @param pck packet to send
+     */
+    protected void sendProto(packHolder pck) {
         pck.merge2beg();
         if (lower.sendingTTL >= 0) {
             pck.IPttl = lower.sendingTTL;
@@ -186,7 +212,10 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         fwdCor.protoPack(iface, null, pck);
     }
 
-    public void doWork() {
+    /**
+     * perform work
+     */
+    protected void doWork() {
         packL2tp3 pckTx;
         packHolder pckBin = new packHolder(true, true);
         synchronized (queue) {
@@ -216,7 +245,12 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         need2run = false;
     }
 
-    public void doRecv(packHolder pckBin) {
+    /**
+     * receive one packet
+     *
+     * @param pckBin packet received
+     */
+    protected void doRecv(packHolder pckBin) {
         packL2tp3 pckRx = new packL2tp3();
         if (pckRx.parseHeader(pckBin)) {
             cntr.drop(pckBin, counter.reasons.badHdr);
@@ -322,7 +356,13 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         notif.wakeup();
     }
 
-    public servL2tp3sess newSess(packL2tp3 pck) {
+    /**
+     * create new session
+     *
+     * @param pck packet to use
+     * @return session created
+     */
+    protected servL2tp3sess newSess(packL2tp3 pck) {
         servL2tp3sess ntry = new servL2tp3sess(this);
         ntry.sesRem = pck.valLocSesId;
         ntry.pwType = pck.valPwTyp;

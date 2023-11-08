@@ -149,6 +149,11 @@ public class servL2tp3sess implements ifcDn, Comparator<servL2tp3sess> {
         lower.sendProto(pck);
     }
 
+    /**
+     * receive one packet
+     *
+     * @param pck packet to process
+     */
     public void doRecv(packHolder pck) {
         if (pwType == packLdpPwe.pwtPpp) {
             pck.msbPutW(0, ifcPpp.preamble);
