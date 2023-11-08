@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.8-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-08 18:25:10, took 00:11:31, with 80 workers, on 3286 cases, 0 failed, 0 traces, 13 retries
+-;-;-;2023-11-08 19:30:06, took 00:14:34, with 80 workers, on 3294 cases, 0 failed, 0 traces, 12 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1485,6 +1485,14 @@ http://sources.freertr.org/cfg/p4lang-acl79.tst;p4lang-acl79.tst;success;p4lang:
 http://sources.freertr.org/cfg/p4lang-acl80.tst;p4lang-acl80.tst;success;p4lang: l2tp interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl81.tst;p4lang-acl81.tst;success;p4lang: ingress gtp access list
 http://sources.freertr.org/cfg/p4lang-acl82.tst;p4lang-acl82.tst;success;p4lang: egress gtp access list
+http://sources.freertr.org/cfg/p4lang-acl83.tst;p4lang-acl83.tst;success;p4lang: ingress l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl84.tst;p4lang-acl84.tst;success;p4lang: egress l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl85.tst;p4lang-acl85.tst;success;p4lang: ingress vlan l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl86.tst;p4lang-acl86.tst;success;p4lang: egress vlan l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl87.tst;p4lang-acl87.tst;success;p4lang: l2tp3 interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl88.tst;p4lang-acl88.tst;success;p4lang: l2tp3 interface inspection with egress drop
+http://sources.freertr.org/cfg/p4lang-acl89.tst;p4lang-acl89.tst;success;p4lang: l2tp3 interface verify source
+http://sources.freertr.org/cfg/p4lang-acl90.tst;p4lang-acl90.tst;success;p4lang: l2tp3 interface loose verify source
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc

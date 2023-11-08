@@ -15415,3 +15415,12 @@ no todo: rfc9491 nsh in ip
 ---------------------------------- 2023-11-08 18:13:39 23.11.8
 qc pass: p4lang: l2tp3 routing over ipv4
 qc pass: p4lang: l2tp3 routing over ipv6
+---------------------------------- 2023-11-08 19:15:31 23.11.8
+qc pass: p4lang: ingress l2tp3 access list
+qc pass: p4lang: egress l2tp3 access list
+qc pass: p4lang: ingress vlan l2tp3 access list
+qc pass: p4lang: egress vlan l2tp3 access list
+qc pass: p4lang: l2tp3 interface inspection with ingress drop
+qc pass: p4lang: l2tp3 interface inspection with egress drop
+qc pass: p4lang: l2tp3 interface verify source
+qc pass: p4lang: l2tp3 interface loose verify source
