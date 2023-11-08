@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.clnt.clntAx25;
 import net.freertr.clnt.clntEtherIp;
 import net.freertr.clnt.clntMplsTeP2p;
 import net.freertr.clnt.clntNetflow;
@@ -15,14 +16,17 @@ import net.freertr.pack.packEsp;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packL2tp3;
 import net.freertr.pack.packRsvp;
+import net.freertr.prt.prtDccp;
 import net.freertr.prt.prtGre;
 import net.freertr.prt.prtIpcomp;
 import net.freertr.prt.prtMplsIp;
+import net.freertr.prt.prtSctp;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrLdpIface;
 import net.freertr.rtr.rtrLdpNeigh;
 import net.freertr.rtr.rtrLdpTrgtd;
+import net.freertr.rtr.rtrNshIface;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabConnect;
 import net.freertr.tab.tabGen;
@@ -644,6 +648,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return false;
             case prtUdp.protoNum:
                 return false;
+            case prtDccp.protoNum:
+                return false;
+            case prtSctp.protoNum:
+                return false;
             case ipCor4.protocolNumber:
                 return false;
             case ipCor6.protocolNumber:
@@ -658,7 +666,11 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return false;
             case clntEtherIp.prot:
                 return false;
+            case clntAx25.prot:
+                return false;
             case prtIpcomp.proto:
+                return false;
+            case rtrNshIface.protoNum:
                 return false;
             case packRsvp.proto:
                 return false;

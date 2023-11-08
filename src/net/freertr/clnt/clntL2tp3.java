@@ -230,6 +230,15 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
     }
 
     /**
+     * get remote session id
+     *
+     * @return session id, 0 if no session
+     */
+    public int getSessRem() {
+        return sesRem;
+    }
+
+    /**
      * send packet
      *
      * @param pck packet

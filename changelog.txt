@@ -15408,3 +15408,7 @@ todo: rfc9491 nsh in ip
 ---------------------------------- 2023-11-07 22:39:08 23.11.7
 qc pass: nsh over ipv4 tunnel
 qc pass: nsh over ipv6 tunnel
+---------------------------------- 2023-11-08 14:05:21 23.11.8
+no todo: commander to have selection
+no todo: tocustomer aggregator matchers to route-map/policy
+no todo: rfc9491 nsh in ip
