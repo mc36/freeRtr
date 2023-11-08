@@ -2870,7 +2870,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             if (ifc.ifc.pwhe.l2tp3 != null) {
-                int ses = ifc.ifc.pwhe.l2tp2.getSessRem();
+                int ses = ifc.ifc.pwhe.l2tp3.getSessRem();
                 if (ses == 0) {
                     return;
                 }

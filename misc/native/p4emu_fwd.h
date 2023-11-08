@@ -358,6 +358,12 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, bufP + 8, 0xff03);
 
 
+#define putL3tpHeader(bufP, ethtyp)                             \
+    put16msb(bufD, bufP, ethtyp);                               \
+    bufP -= 4;                                                  \
+    put32msb(bufD, bufP + 0, neigh_res->tid);
+
+
 #define putVxlanHeader                                          \
     bufP -= 12;                                                 \
     memcpy(&bufD[bufP], &bufH[0], 12);                          \
@@ -791,6 +797,30 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv6header(bufP, bufS, ethtyp, 17, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
+    case 19: // l3tp4
+        ethtyp2ppptyp(bufP, ethtyp);
+        if ((bufS - bufP + preBuff) < neigh_res->frag) {
+            putL3tpHeader(bufP, ethtyp);
+            putIpv4header(bufP, bufS, ethtyp, 115, neigh_res->sip1, neigh_res->dip1);
+            break;
+        }
+        doMlpppBeg;
+        putL3tpHeader(bufP, ethtyp);
+        putIpv4header(bufP, bufS, ethtyp, 115, neigh_res->sip1, neigh_res->dip1);
+        doMlpppEnd;
+        return;
+    case 20: // l3tp6
+        ethtyp2ppptyp(bufP, ethtyp);
+        if ((bufS - bufP + preBuff) < neigh_res->frag) {
+            putL3tpHeader(bufP, ethtyp);
+            putIpv6header(bufP, bufS, ethtyp, 115, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+            break;
+        }
+        doMlpppBeg;
+        putL3tpHeader(bufP, ethtyp);
+        putIpv6header(bufP, bufS, ethtyp, 115, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        doMlpppEnd;
+        return;
     default:
         doDropper;
     }
@@ -1063,6 +1093,13 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         bufP += 8;                                                  \
         guessEthtyp;                                                \
         bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ethtyp);                               \
+        break;                                                      \
+    case 12:                                                        \
+        bufP = bufT + 4;                                            \
+        if ((get16msb(bufD, bufP) & 0x8000) != 0) doCpuing;         \
+        ethtyp = get16msb(bufD, bufP);                              \
+        ppptyp2ethtyp(tun_res);                                     \
         put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
     default:                                                        \
