@@ -1,7 +1,3 @@
-rfc9491 nsh in ip
-
-tocustomer aggregator matchers to route-map/policy
-
 vdc to have local, connect as sdn autocreated
 
 generalise server access- knobs
@@ -36,8 +32,6 @@ dlep as rfc8175
 
 
 flash ext-delete also to commander
-
-commander to have selection
 
 commander to get away the cursor
 
