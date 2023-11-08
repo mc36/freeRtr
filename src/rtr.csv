@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.8-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-08 14:17:22, took 00:12:01, with 80 workers, on 3284 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2023-11-08 18:25:10, took 00:11:31, with 80 workers, on 3286 cases, 0 failed, 0 traces, 13 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1837,6 +1837,8 @@ http://sources.freertr.org/cfg/p4lang-rout239.tst;p4lang-rout239.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout240.tst;p4lang-rout240.tst;success;p4lang: fib filtering with routepolicy
 http://sources.freertr.org/cfg/p4lang-rout241.tst;p4lang-rout241.tst;success;p4lang: routing with fib compression
 http://sources.freertr.org/cfg/p4lang-rout242.tst;p4lang-rout242.tst;success;p4lang: mpls with fib compression
+http://sources.freertr.org/cfg/p4lang-rout243.tst;p4lang-rout243.tst;success;p4lang: l2tp3 routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout244.tst;p4lang-rout244.tst;success;p4lang: l2tp3 routing over ipv6
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

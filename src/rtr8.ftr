@@ -432,6 +432,8 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
+qc pass: p4lang: l2tp3 routing over ipv4
+qc pass: p4lang: l2tp3 routing over ipv6
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode

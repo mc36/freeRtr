@@ -15412,3 +15412,6 @@ qc pass: nsh over ipv6 tunnel
 no todo: commander to have selection
 no todo: tocustomer aggregator matchers to route-map/policy
 no todo: rfc9491 nsh in ip
+---------------------------------- 2023-11-08 18:13:39 23.11.8
+qc pass: p4lang: l2tp3 routing over ipv4
+qc pass: p4lang: l2tp3 routing over ipv6
