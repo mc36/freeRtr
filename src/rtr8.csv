@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.8-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-08 18:34:20, took 00:08:53, with 60 workers, on 436 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2023-11-08 22:01:25, took 00:08:01, with 60 workers, on 476 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl01.tst;p4lang-acl01.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl02.tst;p4lang-acl02.tst;success;p4lang: ingress access list
@@ -84,6 +84,14 @@ http://sources.freertr.org/cfg/p4lang-acl79.tst;p4lang-acl79.tst;success;p4lang:
 http://sources.freertr.org/cfg/p4lang-acl80.tst;p4lang-acl80.tst;success;p4lang: l2tp interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl81.tst;p4lang-acl81.tst;success;p4lang: ingress gtp access list
 http://sources.freertr.org/cfg/p4lang-acl82.tst;p4lang-acl82.tst;success;p4lang: egress gtp access list
+http://sources.freertr.org/cfg/p4lang-acl83.tst;p4lang-acl83.tst;success;p4lang: ingress l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl84.tst;p4lang-acl84.tst;success;p4lang: egress l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl85.tst;p4lang-acl85.tst;success;p4lang: ingress vlan l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl86.tst;p4lang-acl86.tst;success;p4lang: egress vlan l2tp3 access list
+http://sources.freertr.org/cfg/p4lang-acl87.tst;p4lang-acl87.tst;success;p4lang: l2tp3 interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl88.tst;p4lang-acl88.tst;success;p4lang: l2tp3 interface inspection with egress drop
+http://sources.freertr.org/cfg/p4lang-acl89.tst;p4lang-acl89.tst;success;p4lang: l2tp3 interface verify source
+http://sources.freertr.org/cfg/p4lang-acl90.tst;p4lang-acl90.tst;success;p4lang: l2tp3 interface loose verify source
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc
@@ -192,6 +200,8 @@ http://sources.freertr.org/cfg/p4lang-crypt105.tst;p4lang-crypt105.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt106.tst;p4lang-crypt106.tst;success;p4lang: sgt egress access list
 http://sources.freertr.org/cfg/p4lang-crypt107.tst;p4lang-crypt107.tst;success;p4lang: sgt vlan ingress access list
 http://sources.freertr.org/cfg/p4lang-crypt108.tst;p4lang-crypt108.tst;success;p4lang: sgt vlan egress access list
+http://sources.freertr.org/cfg/p4lang-crypt109.tst;p4lang-crypt109.tst;success;p4lang: macsec over l2tp3
+http://sources.freertr.org/cfg/p4lang-crypt110.tst;p4lang-crypt110.tst;success;p4lang: sgt over l2tp3
 http://sources.freertr.org/cfg/p4lang-packo01.tst;p4lang-packo01.tst;success;p4lang: packout on port
 http://sources.freertr.org/cfg/p4lang-packo02.tst;p4lang-packo02.tst;success;p4lang: packout on vlan port
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
@@ -438,3 +448,33 @@ http://sources.freertr.org/cfg/p4lang-rout241.tst;p4lang-rout241.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout242.tst;p4lang-rout242.tst;success;p4lang: mpls with fib compression
 http://sources.freertr.org/cfg/p4lang-rout243.tst;p4lang-rout243.tst;success;p4lang: l2tp3 routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout244.tst;p4lang-rout244.tst;success;p4lang: l2tp3 routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout245.tst;p4lang-rout245.tst;success;p4lang: l2tp3 server routing
+http://sources.freertr.org/cfg/p4lang-rout246.tst;p4lang-rout246.tst;success;p4lang: vlan l2tp3 server routing
+http://sources.freertr.org/cfg/p4lang-rout247.tst;p4lang-rout247.tst;success;p4lang: l2tp3 server mpls
+http://sources.freertr.org/cfg/p4lang-rout248.tst;p4lang-rout248.tst;success;p4lang: vlan l2tp3 server mpls
+http://sources.freertr.org/cfg/p4lang-rout249.tst;p4lang-rout249.tst;success;p4lang: mldp core over l2tp3
+http://sources.freertr.org/cfg/p4lang-rout250.tst;p4lang-rout250.tst;success;p4lang: bier core over l2tp3
+http://sources.freertr.org/cfg/p4lang-rout251.tst;p4lang-rout251.tst;success;p4lang: l2tp3 mpls pop
+http://sources.freertr.org/cfg/p4lang-rout252.tst;p4lang-rout252.tst;success;p4lang: l2tp3 mpls push
+http://sources.freertr.org/cfg/p4lang-rout253.tst;p4lang-rout253.tst;success;p4lang: l2vpn over l2tp3 mpls
+http://sources.freertr.org/cfg/p4lang-rout254.tst;p4lang-rout254.tst;success;p4lang: l3vpn over l2tp3 mpls
+http://sources.freertr.org/cfg/p4lang-rout255.tst;p4lang-rout255.tst;success;p4lang: l2tp3 routing over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout256.tst;p4lang-rout256.tst;success;p4lang: l2tp3 routing over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout257.tst;p4lang-rout257.tst;success;p4lang: l2tp3 routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout258.tst;p4lang-rout258.tst;success;p4lang: l2tp3 routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;success;p4lang: l2tp3 mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout260.tst;p4lang-rout260.tst;success;p4lang: multilink l2tp3 routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;success;p4lang: multilink l2tp3 routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout262.tst;p4lang-rout262.tst;success;p4lang: multilink l2tp3 routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout263.tst;p4lang-rout263.tst;success;p4lang: multilink l2tp3 mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;success;p4lang: multilink l2tp3 mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout265.tst;p4lang-rout265.tst;success;p4lang: multilink l2tp3 mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout266.tst;p4lang-rout266.tst;success;p4lang: multilink l2tp3 routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;success;p4lang: multilink l2tp3 mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout268.tst;p4lang-rout268.tst;success;p4lang: l2tp3 mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout269.tst;p4lang-rout269.tst;success;p4lang: l2tp3 mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout270.tst;p4lang-rout270.tst;success;p4lang: l2tp3 mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout271.tst;p4lang-rout271.tst;success;p4lang: l2tp3 mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout272.tst;p4lang-rout272.tst;success;p4lang: l2tp3 mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout273.tst;p4lang-rout273.tst;success;p4lang: bridging over l2tp3
+http://sources.freertr.org/cfg/p4lang-rout274.tst;p4lang-rout274.tst;success;p4lang: bridging over l2tp3 vlan

@@ -15424,3 +15424,36 @@ qc pass: p4lang: l2tp3 interface inspection with ingress drop
 qc pass: p4lang: l2tp3 interface inspection with egress drop
 qc pass: p4lang: l2tp3 interface verify source
 qc pass: p4lang: l2tp3 interface loose verify source
+---------------------------------- 2023-11-08 21:38:36 23.11.8
+qc pass: p4lang: macsec over l2tp3
+qc pass: p4lang: sgt over l2tp3
+qc pass: p4lang: l2tp3 server routing
+qc pass: p4lang: vlan l2tp3 server routing
+qc pass: p4lang: l2tp3 server mpls
+qc pass: p4lang: vlan l2tp3 server mpls
+qc pass: p4lang: mldp core over l2tp3
+qc pass: p4lang: bier core over l2tp3
+qc pass: p4lang: l2tp3 mpls pop
+qc pass: p4lang: l2tp3 mpls push
+qc pass: p4lang: l2vpn over l2tp3 mpls
+qc pass: p4lang: l3vpn over l2tp3 mpls
+qc pass: p4lang: l2tp3 routing over ipv4 loopback
+qc pass: p4lang: l2tp3 routing over ipv6 loopback
+qc pass: p4lang: l2tp3 routing over vlan
+qc pass: p4lang: l2tp3 routing over bundle
+qc pass: p4lang: l2tp3 mpls over ipv4
+qc pass: p4lang: multilink l2tp3 routing over ipv4
+qc pass: p4lang: multilink l2tp3 routing over ipv6
+qc pass: p4lang: multilink l2tp3 routing over vlan
+qc pass: p4lang: multilink l2tp3 mpls over ipv4
+qc pass: p4lang: multilink l2tp3 mpls over ipv6
+qc pass: p4lang: multilink l2tp3 mpls over vlan
+qc pass: p4lang: multilink l2tp3 routing over bundle
+qc pass: p4lang: multilink l2tp3 mpls over bundle
+qc pass: p4lang: l2tp3 mpls over ipv6
+qc pass: p4lang: l2tp3 mpls over ipv4 loopback
+qc pass: p4lang: l2tp3 mpls over ipv6 loopback
+qc pass: p4lang: l2tp3 mpls over vlan
+qc pass: p4lang: l2tp3 mpls over bundle
+qc pass: p4lang: bridging over l2tp3
+qc pass: p4lang: bridging over l2tp3 vlan
