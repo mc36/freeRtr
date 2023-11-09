@@ -436,6 +436,8 @@ state prs_gre {
 #ifdef HAVE_L3TP
 state prs_l3tp {
     pkt.extract(hdr.l3tp);
+    ig_md.layer4_srcprt = 0;
+    ig_md.layer4_dstprt = 0;
     transition accept;
 }
 #endif

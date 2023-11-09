@@ -317,7 +317,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.ipv6d.traffic_class = 0;
         hdr.ipv6d.flow_label = 0;
         hdr.ipv6d.payload_len = (bit<16>)eg_intr_md.packet_length - eg_md.vlan_size - 14 + 20;
-        hdr.ipv6d.next_hdr = IP_PROTOCOL_L2TP;
+        hdr.ipv6d.next_hdr = IP_PROTOCOL_UDP;
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
         hdr.ipv6d.dst_addr = dst_ip_addr;
