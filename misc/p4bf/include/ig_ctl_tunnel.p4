@@ -112,7 +112,6 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_L2TP
     action act_tunnel_l2tp(SubIntId_t port) {
         l2tp_hit = port;
-        ig_md.source_id = port;
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
@@ -123,7 +122,6 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_L3TP
     action act_tunnel_l3tp(SubIntId_t port) {
         l3tp_hit = port;
-        ig_md.source_id = port;
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
@@ -321,7 +319,7 @@ hdr.ipv6.next_hdr:
 #ifdef HAVE_L2TP
         if ((l2tp_hit != 0) && ((hdr.l2tp.flags & 0x8000)==0) && ((hdr.l2tp.ppptyp & 0x8000)==0)) {
             if (hdr.l2tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
--            else if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+            else if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
 #ifdef HAVE_SGT
             else if (hdr.l2tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
 #endif
@@ -344,6 +342,7 @@ hdr.ipv6.next_hdr:
             hdr.udp.setInvalid();
             hdr.ipv4.setInvalid();
             hdr.ipv6.setInvalid();
+            ig_md.source_id = l2tp_hit;
         }
 #endif
 
@@ -372,6 +371,7 @@ hdr.ipv6.next_hdr:
             hdr.l3tp.setInvalid();
             hdr.ipv4.setInvalid();
             hdr.ipv6.setInvalid();
+            ig_md.source_id = l3tp_hit;
         }
 #endif
 

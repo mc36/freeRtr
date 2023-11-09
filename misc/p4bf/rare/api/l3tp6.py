@@ -15,7 +15,7 @@ def writeL3tp6rules(
         gc.KeyTuple("hdr.ipv6.src_addr", dip),
         gc.KeyTuple("hdr.ipv6.dst_addr", sip),
         gc.KeyTuple("ig_md.vrf", vrf),
-        gc.KeyTuple("hdr.ipv6.next_hdr", 17),
+        gc.KeyTuple("hdr.ipv6.next_hdr", 115),
     ]
     data_field_list_1 = [
         gc.DataTuple("port", port),
