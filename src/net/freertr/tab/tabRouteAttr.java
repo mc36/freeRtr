@@ -1515,7 +1515,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    aggregate    ignore aggregator");
         hl.add(null, lv + " " + lv + ",.    connector    ignore connector");
         hl.add(null, lv + " " + lv + ",.    pedisting    ignore pe distinguisher");
-        hl.add(null, lv + " " + lv + ",.    aspathlimit  ignore aspath limit");
+        hl.add(null, lv + " " + lv + ",.    pathlimit    ignore aspath limit");
         hl.add(null, lv + " " + lv + ",.    nshchain     ignore nsh service chain");
         hl.add(null, lv + " " + lv + ",.    bfddiscr     ignore bfd discriminator");
         hl.add(null, lv + " " + lv + ",.    orignted     ignore originator");
@@ -1623,7 +1623,7 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("pedisting")) {
             return 0x20000000;
         }
-        if (a.equals("aspathlimit")) {
+        if (a.equals("pathlimit")) {
             return 0x40000000;
         }
         if (a.equals("nshchain")) {
@@ -1737,7 +1737,7 @@ public class tabRouteAttr<T extends addrType> {
             a += " pedisting";
         }
         if ((i & 0x40000000) != 0) {
-            a += " aspathlimit";
+            a += " pathlimit";
         }
         if ((i & 0x80000000) != 0) {
             a += " nshchain";
