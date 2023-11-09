@@ -347,7 +347,7 @@ hdr.ipv6.next_hdr:
 #endif
 
 #ifdef HAVE_L3TP
-        if ((l3tp_hit != 0) && ((hdr.l3tp.ppptyp & 0x8000)==0)) {
+        if ((l3tp_hit != 0) && (hdr.l3tp.tidsid != 0) && ((hdr.l3tp.ppptyp & 0x8000)==0)) {
             if (hdr.l3tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
             else if (hdr.l3tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
 #ifdef HAVE_SGT
