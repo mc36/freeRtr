@@ -61,6 +61,19 @@ control IngressControlTunnel(inout headers hdr,
     }
 
 
+    action act_tunnel_l3tp(SubIntId_t port) {
+        if (hdr.l3tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
+        if (hdr.l3tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+        if (hdr.l3tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+        if (hdr.l3tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
+        if (hdr.l3tp.ppptyp == PPPTYPE_ROUTEDMAC) hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+        if ((hdr.l3tp.ppptyp & 0x8000) != 0) ig_md.need_recir = 0;
+    }
+
+
     action act_tunnel_vxlan(SubIntId_t port) {
         ig_intr_md.egress_spec = (PortId_t)port;
         ig_md.need_recir = 1;
@@ -114,6 +127,7 @@ ig_md.layer4_dstprt:
             act_tunnel_ip4ip;
             act_tunnel_ip6ip;
             act_tunnel_l2tp;
+            act_tunnel_l3tp;
             act_tunnel_vxlan;
             act_tunnel_pckoudp;
             act_tunnel_amt;
@@ -145,6 +159,7 @@ ig_md.layer4_dstprt:
             act_tunnel_ip4ip;
             act_tunnel_ip6ip;
             act_tunnel_l2tp;
+            act_tunnel_l3tp;
             act_tunnel_vxlan;
             act_tunnel_pckoudp;
             act_tunnel_amt;
@@ -175,6 +190,7 @@ ig_md.layer4_dstprt:
 
         hdr.vxlan.setInvalid();
         hdr.l2tp.setInvalid();
+        hdr.l3tp.setInvalid();
         hdr.amt.setInvalid();
         hdr.gtp.setInvalid();
         hdr.udp.setInvalid();

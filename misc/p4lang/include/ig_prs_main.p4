@@ -327,6 +327,8 @@ IP_PROTOCOL_IPV4:
             prs_ipv4b;
 IP_PROTOCOL_IPV6:
             prs_ipv6b;
+IP_PROTOCOL_L2TP:
+            prs_l3tp;
 IP_PROTOCOL_SRL2:
             prs_eth3;
         default:
@@ -364,6 +366,19 @@ IP_PROTOCOL_SRL2:
         transition select(hdr.gre.gretyp) {
 ETHERTYPE_ROUTEDMAC:
             prs_eth5;
+        default:
+            accept;
+        }
+    }
+
+
+    state prs_l3tp {
+        pkt.extract(hdr.l3tp);
+        ig_md.layer4_srcprt = 0;
+        ig_md.layer4_dstprt = 0;
+        transition select(hdr.l3tp.ppptyp) {
+PPPTYPE_ROUTEDMAC:
+            prs_l2tpbr;
         default:
             accept;
         }

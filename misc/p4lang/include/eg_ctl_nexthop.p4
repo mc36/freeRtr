@@ -317,7 +317,93 @@ control EgressControlNexthop(inout headers hdr,
         hdr.ipv6d.traffic_class = 0;
         hdr.ipv6d.flow_label = 0;
         hdr.ipv6d.payload_len = (bit<16>)eg_intr_md.packet_length - eg_md.vlan_size - 14 + 20;
-        hdr.ipv6d.next_hdr = IP_PROTOCOL_UDP;
+        hdr.ipv6d.next_hdr = IP_PROTOCOL_L2TP;
+        hdr.ipv6d.hop_limit = 255;
+        hdr.ipv6d.src_addr = src_ip_addr;
+        hdr.ipv6d.dst_addr = dst_ip_addr;
+        eg_md.ethertype = ETHERTYPE_IPV6;
+    }
+
+
+    action act_ipv4_l3tp4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<32> tunnel_id) {
+        /*
+         * the packet header src_mac is now set to the previous header dst_mac
+         */
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+
+        /*
+         * the new packet header dst_mac is now the dst_mac
+         * set by the control plane entry
+         */
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+
+        /*
+         * the egress_spec port is set now the egress_port
+         * set by the control plane entry
+         */
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+
+        hdr.l3tp2.setValid();
+        hdr.l3tp2.tidsid = tunnel_id;
+        hdr.l3tp2.ppptyp = 0;
+        if (eg_md.ethertype == ETHERTYPE_SGT) hdr.l3tp2.ppptyp = PPPTYPE_SGT;
+        if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.l3tp2.ppptyp = PPPTYPE_IPV4;
+        if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.l3tp2.ppptyp = PPPTYPE_IPV6;
+        if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l3tp2.ppptyp = PPPTYPE_MPLS_UCAST;
+        if (eg_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l3tp2.ppptyp = PPPTYPE_ROUTEDMAC;
+
+        hdr.ipv4d.setValid();
+        hdr.ipv4d.version = 4;
+        hdr.ipv4d.ihl = 5;
+        hdr.ipv4d.diffserv = 0;
+        hdr.ipv4d.total_len = (bit<16>)eg_intr_md.packet_length - eg_md.vlan_size - 28 + 40;
+        hdr.ipv4d.identification = 0;
+        hdr.ipv4d.flags = 0;
+        hdr.ipv4d.frag_offset = 0;
+        hdr.ipv4d.ttl = 255;
+        hdr.ipv4d.protocol = IP_PROTOCOL_L2TP;
+        hdr.ipv4d.hdr_checksum = 0;
+        hdr.ipv4d.src_addr = src_ip_addr;
+        hdr.ipv4d.dst_addr = dst_ip_addr;
+        eg_md.ethertype = ETHERTYPE_IPV4;
+    }
+
+
+    action act_ipv4_l3tp6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<32> tunnel_id) {
+        /*
+         * the packet header src_mac is now set to the previous header dst_mac
+         */
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+
+        /*
+         * the new packet header dst_mac is now the dst_mac
+         * set by the control plane entry
+         */
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+
+        /*
+         * the egress_spec port is set now the egress_port
+         * set by the control plane entry
+         */
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+
+        hdr.l3tp2.setValid();
+        hdr.l3tp2.tidsid = tunnel_id;
+        hdr.l3tp2.ppptyp = 0;
+        if (eg_md.ethertype == ETHERTYPE_SGT) hdr.l3tp2.ppptyp = PPPTYPE_SGT;
+        if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.l3tp2.ppptyp = PPPTYPE_IPV4;
+        if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.l3tp2.ppptyp = PPPTYPE_IPV6;
+        if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l3tp2.ppptyp = PPPTYPE_MPLS_UCAST;
+        if (eg_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.l3tp2.ppptyp = PPPTYPE_ROUTEDMAC;
+
+        hdr.ipv6d.setValid();
+        hdr.ipv6d.version = 6;
+        hdr.ipv6d.traffic_class = 0;
+        hdr.ipv6d.flow_label = 0;
+        hdr.ipv6d.payload_len = (bit<16>)eg_intr_md.packet_length - eg_md.vlan_size - 28 + 20;
+        hdr.ipv6d.next_hdr = IP_PROTOCOL_L2TP;
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
         hdr.ipv6d.dst_addr = dst_ip_addr;
@@ -530,6 +616,8 @@ eg_md.nexthop_id:
             act_ipv4_ipip6;
             act_ipv4_l2tp4;
             act_ipv4_l2tp6;
+            act_ipv4_l3tp4;
+            act_ipv4_l3tp6;
             act_ipv4_amt4;
             act_ipv4_amt6;
             act_ipv4_gtp4;
