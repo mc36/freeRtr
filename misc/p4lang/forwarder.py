@@ -1938,7 +1938,6 @@ def writeCoppRules4(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, s
 
 def writeCoppRules6(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
     matches={"ig_md.vrf": vrf}
-    add2dictIfNot(matches, "ig_md.vrf",pr,vrf,0)
     add2dictIfNot(matches, "hdr.ipv6.next_hdr",pr,prm,0)
     add2dictIfNot(matches, "hdr.ipv6.src_addr",sa,sam,"::")
     add2dictIfNot(matches, "hdr.ipv6.dst_addr",da,dam,"::")
