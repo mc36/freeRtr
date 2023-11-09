@@ -36,6 +36,9 @@ struct headers {
 #ifdef HAVE_GRE
     gre_t gre2;
 #endif
+#ifdef HAVE_L3TP
+    l3tp_t l3tp2;
+#endif
 #ifdef NEED_UDP2
     udp_t udp2;
 #endif
@@ -78,6 +81,9 @@ struct headers {
 #endif
 #ifdef HAVE_GRE
     gre_t gre;
+#endif
+#ifdef HAVE_L3TP
+    l3tp_t l3tp;
 #endif
     tcp_t tcp;
     udp_t udp;

@@ -34,6 +34,10 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
     SubIntId_t l2tp_hit;
 #endif
 
+#ifdef HAVE_L3TP
+    SubIntId_t l3tp_hit;
+#endif
+
 
 
 
@@ -108,6 +112,17 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_L2TP
     action act_tunnel_l2tp(SubIntId_t port) {
         l2tp_hit = port;
+        ig_md.source_id = port;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
+    }
+#endif
+
+
+#ifdef HAVE_L3TP
+    action act_tunnel_l3tp(SubIntId_t port) {
+        l3tp_hit = port;
         ig_md.source_id = port;
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
@@ -203,6 +218,9 @@ hdr.ipv4.protocol:
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
 #endif
+#ifdef HAVE_L3TP
+            act_tunnel_l3tp;
+#endif
 #ifdef HAVE_VXLAN
             act_tunnel_vxlan;
 #endif
@@ -247,6 +265,9 @@ hdr.ipv6.next_hdr:
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
 #endif
+#ifdef HAVE_L3TP
+            act_tunnel_l3tp;
+#endif
 #ifdef HAVE_VXLAN
             act_tunnel_vxlan;
 #endif
@@ -269,6 +290,9 @@ hdr.ipv6.next_hdr:
 #endif
 #ifdef HAVE_L2TP
         l2tp_hit = 0;
+#endif
+#ifdef HAVE_L3TP
+        l3tp_hit = 0;
 #endif
         if (ig_md.ipv4_valid==1)  {
             tbl_tunnel4.apply();
@@ -297,7 +321,7 @@ hdr.ipv6.next_hdr:
 #ifdef HAVE_L2TP
         if ((l2tp_hit != 0) && ((hdr.l2tp.flags & 0x8000)==0) && ((hdr.l2tp.ppptyp & 0x8000)==0)) {
             if (hdr.l2tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
-            else if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+-            else if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
 #ifdef HAVE_SGT
             else if (hdr.l2tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
 #endif
@@ -322,6 +346,35 @@ hdr.ipv6.next_hdr:
             hdr.ipv6.setInvalid();
         }
 #endif
+
+#ifdef HAVE_L3TP
+        if ((l3tp_hit != 0) && ((hdr.l3tp.ppptyp & 0x8000)==0)) {
+            if (hdr.l3tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+            else if (hdr.l3tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+#ifdef HAVE_SGT
+            else if (hdr.l3tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
+#endif
+#ifdef HAVE_MPLS
+            else if (hdr.l3tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
+#endif
+#ifdef HAVE_TAP
+            else if (hdr.l3tp.ppptyp == PPPTYPE_ROUTEDMAC) hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
+#endif
+            ig_md.ipv4_valid = 0;
+            ig_md.ipv6_valid = 0;
+            hdr.vlan.setInvalid();
+            ig_tm_md.ucast_egress_port = RECIR_PORT;
+            ig_tm_md.bypass_egress = 1;
+//        recirculate(RECIR_PORT);
+            hdr.cpu.setValid();
+            hdr.cpu._padding = 0;
+            hdr.cpu.port = l3tp_hit;
+            hdr.l3tp.setInvalid();
+            hdr.ipv4.setInvalid();
+            hdr.ipv6.setInvalid();
+        }
+#endif
+
 
     }
 

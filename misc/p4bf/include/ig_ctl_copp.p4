@@ -102,9 +102,9 @@ ig_md.sec_grp_id:
     }
 
     apply {
-        if (ig_md.ipv4_valid==1)  {
+        if ((ig_md.ipv4_valid==1)&&(hdr.ipv4.isValid()))  {
             tbl_ipv4_copp.apply();
-        } else if (ig_md.ipv6_valid==1)  {
+        } else if ((ig_md.ipv6_valid==1)&&(hdr.ipv6.isValid())) {
             tbl_ipv6_copp.apply();
         }
     }

@@ -43,6 +43,8 @@ class RareApi(BfRtRare):
     from .ipip6 import writeIpip6rules
     from .l2tp4 import writeL2tp4rules
     from .l2tp6 import writeL2tp6rules
+    from .l3tp4 import writeL3tp4rules
+    from .l3tp6 import writeL3tp6rules
     from .gtp4 import writeGtp4rules
     from .gtp6 import writeGtp6rules
     from .label4 import writeMplsRules

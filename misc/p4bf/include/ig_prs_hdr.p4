@@ -385,6 +385,10 @@ state prs_ipv6 {
 IP_PROTOCOL_GRE:
         prs_gre;
 #endif
+#ifdef HAVE_L3TP
+IP_PROTOCOL_L2TP:
+        prs_l3tp;
+#endif
 IP_PROTOCOL_UDP:
         prs_udp;
 IP_PROTOCOL_TCP:
@@ -428,6 +432,14 @@ state prs_gre {
     transition accept;
 }
 #endif
+
+#ifdef HAVE_L3TP
+state prs_l3tp {
+    pkt.extract(hdr.l3tp);
+    transition accept;
+}
+#endif
+
 
 state prs_udp {
     pkt.extract(hdr.udp);

@@ -922,6 +922,36 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "l3tp4":
+            self.writeL3tp4rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                int(splt[7]),
+                splt[8],
+                int(splt[9]),
+            )
+            continue
+
+        if cmds[0] == "l3tp6":
+            self.writeL3tp6rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                int(splt[7]),
+                splt[8],
+                int(splt[9]),
+            )
+            continue
+
         if cmds[0] == "gtp4":
             self.writeGtp4rules(
                 mode,
