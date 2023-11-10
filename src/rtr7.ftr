@@ -184,12 +184,12 @@ qc pass: p4lang: macsec with aes256gcm and hash
 qc pass: p4lang: macsec with aes128gcm and aead
 qc pass: p4lang: macsec with aes192gcm and aead
 qc pass: p4lang: macsec with aes256gcm and aead
-failed: p4lang: sgt over ethernet
-failed: p4lang: sgt over vlan
+qc pass: p4lang: sgt over ethernet
+qc pass: p4lang: sgt over vlan
 qc pass: p4lang: sgt over gre
 failed: p4lang: sgt over pppoe
 qc pass: p4lang: sgt over l2tp
-failed: p4lang: sgt over hairpin
+qc pass: p4lang: sgt over hairpin
 qc pass: p4lang: sgt over macsec over ethernet
 qc pass: p4lang: sgt over macsec over vlan
 qc pass: p4lang: sgt ingress access list
@@ -200,54 +200,54 @@ qc pass: p4lang: macsec over l2tp3
 qc pass: p4lang: sgt over l2tp3
 qc pass: p4lang: packout on port
 qc pass: p4lang: packout on vlan port
-failed: p4lang: routing
-failed: p4lang: bridging
-failed: p4lang: mpls core
-failed: p4lang: mpls edge
-failed: p4lang: vlan routing
-failed: p4lang: vlan bridging
-failed: p4lang: vlan mpls
-failed: p4lang: vpn with bgp
-failed: p4lang: vpls/ldp with bgp
-failed: p4lang: evpn/cmac with bgp
-failed: p4lang: eompls
+qc pass: p4lang: routing
+qc pass: p4lang: bridging
+qc pass: p4lang: mpls core
+qc pass: p4lang: mpls edge
+qc pass: p4lang: vlan routing
+qc pass: p4lang: vlan bridging
+qc pass: p4lang: vlan mpls
+qc pass: p4lang: vpn with bgp
+qc pass: p4lang: vpls/ldp with bgp
+qc pass: p4lang: evpn/cmac with bgp
+qc pass: p4lang: eompls
 qc pass: p4lang: vpn with bgp over srv6
 qc pass: p4lang: evpn/cmac with bgp over srv6
-failed: p4lang: bundle routing
-failed: p4lang: bundle mpls
-failed: p4lang: bundle vlan routing
-failed: p4lang: bundle vlan mpls
-failed: p4lang: bundle vlan bridging
-failed: p4lang: bridge routing
-failed: p4lang: bridge mpls
-failed: p4lang: vlan bridge routing
-failed: p4lang: vlan bridge mpls
-failed: p4lang: vlan vpls/ldp with bgp
-failed: p4lang: vlan eompls
-failed: p4lang: bundle vlan vpls/ldp with bgp
-failed: p4lang: bundle vlan eompls
-failed: p4lang: pppoe routing
-failed: p4lang: vlan pppoe routing
-failed: p4lang: pppoe mpls
-failed: p4lang: vlan pppoe mpls
-failed: p4lang: hairpin routing
-failed: p4lang: hairpin bridging
-failed: p4lang: hairpin mpls
-failed: p4lang: hairpin vlan routing
-failed: p4lang: hairpin vlan bridging
-failed: p4lang: hairpin vlan mpls
-failed: p4lang: hairpin pppoe routing
-failed: p4lang: hairpin vlan pppoe routing
-failed: p4lang: hairpin pppoe mpls
-failed: p4lang: hairpin vlan pppoe mpls
-failed: p4lang: hairpin vpls/ldp with bgp
-failed: p4lang: hairpin vlan vpls/ldp with bgp
-failed: p4lang: hairpin eompls
-failed: p4lang: hairpin vlan eompls
-failed: p4lang: vlan evpn/cmac with bgp
-failed: p4lang: bundle vlan evpn/cmac with bgp
-failed: p4lang: hairpin evpn/cmac with bgp
-failed: p4lang: hairpin vlan evpn/cmac with bgp
+qc pass: p4lang: bundle routing
+qc pass: p4lang: bundle mpls
+qc pass: p4lang: bundle vlan routing
+qc pass: p4lang: bundle vlan mpls
+qc pass: p4lang: bundle vlan bridging
+qc pass: p4lang: bridge routing
+qc pass: p4lang: bridge mpls
+qc pass: p4lang: vlan bridge routing
+qc pass: p4lang: vlan bridge mpls
+qc pass: p4lang: vlan vpls/ldp with bgp
+qc pass: p4lang: vlan eompls
+qc pass: p4lang: bundle vlan vpls/ldp with bgp
+qc pass: p4lang: bundle vlan eompls
+qc pass: p4lang: pppoe routing
+qc pass: p4lang: vlan pppoe routing
+qc pass: p4lang: pppoe mpls
+qc pass: p4lang: vlan pppoe mpls
+qc pass: p4lang: hairpin routing
+qc pass: p4lang: hairpin bridging
+qc pass: p4lang: hairpin mpls
+qc pass: p4lang: hairpin vlan routing
+qc pass: p4lang: hairpin vlan bridging
+qc pass: p4lang: hairpin vlan mpls
+qc pass: p4lang: hairpin pppoe routing
+qc pass: p4lang: hairpin vlan pppoe routing
+qc pass: p4lang: hairpin pppoe mpls
+qc pass: p4lang: hairpin vlan pppoe mpls
+qc pass: p4lang: hairpin vpls/ldp with bgp
+qc pass: p4lang: hairpin vlan vpls/ldp with bgp
+qc pass: p4lang: hairpin eompls
+qc pass: p4lang: hairpin vlan eompls
+qc pass: p4lang: vlan evpn/cmac with bgp
+qc pass: p4lang: bundle vlan evpn/cmac with bgp
+qc pass: p4lang: hairpin evpn/cmac with bgp
+qc pass: p4lang: hairpin vlan evpn/cmac with bgp
 qc pass: p4lang: gre routing over ipv4
 qc pass: p4lang: gre routing over ipv6
 qc pass: p4lang: gre routing over ipv4 loopback
@@ -318,20 +318,20 @@ qc pass: p4lang: vxlan server over ipv4
 qc pass: p4lang: vxlan server over ipv6
 qc pass: p4lang: vxlan server over ipv4 loopback
 qc pass: p4lang: vxlan server over ipv6 loopback
-failed: p4lang: pppoe server routing
-failed: p4lang: vlan pppoe server routing
-failed: p4lang: pppoe server mpls
-failed: p4lang: vlan pppoe server mpls
+qc pass: p4lang: pppoe server routing
+qc pass: p4lang: vlan pppoe server routing
+qc pass: p4lang: pppoe server mpls
+qc pass: p4lang: vlan pppoe server mpls
 qc pass: p4lang: l2tp server routing
 qc pass: p4lang: vlan l2tp server routing
 qc pass: p4lang: l2tp server mpls
 qc pass: p4lang: vlan l2tp server mpls
-failed: p4lang: p2p ldp tail+head
-failed: p4lang: p2p ldp mid
-failed: p4lang: p2p te tail+head
-failed: p4lang: p2p te mid
-failed: p4lang: sr te over mpls tail+head
-failed: p4lang: sr te over mpls mid
+qc pass: p4lang: p2p ldp tail+head
+qc pass: p4lang: p2p ldp mid
+qc pass: p4lang: p2p te tail+head
+qc pass: p4lang: p2p te mid
+qc pass: p4lang: sr te over mpls tail+head
+qc pass: p4lang: sr te over mpls mid
 qc pass: p4lang: policy routing between vrfs
 qc pass: p4lang: policy routing with nexthop
 qc pass: p4lang: policy routing with interface and nexthop
@@ -373,8 +373,8 @@ qc pass: p4lang: amt server over ipv4
 qc pass: p4lang: amt server over ipv6
 qc pass: p4lang: amt server over ipv4 loopback
 qc pass: p4lang: amt server over ipv6 loopback
-failed: p4lang: autoroute to sr te over mpls
-failed: p4lang: autoroute to p2p te over mpls
+qc pass: p4lang: autoroute to sr te over mpls
+qc pass: p4lang: autoroute to p2p te over mpls
 qc pass: p4lang: policy routing to sr te over mpls
 qc pass: p4lang: policy routing to p2p te over mpls
 qc pass: p4lang: nsh
@@ -389,33 +389,33 @@ qc pass: p4lang: gtp server over ipv4
 qc pass: p4lang: gtp server over ipv6
 qc pass: p4lang: gtp server over ipv4 loopback
 qc pass: p4lang: gtp server over ipv6 loopback
-failed: p4lang: bundle mpls pop
-failed: p4lang: bundle vlan mpls pop
-failed: p4lang: pppoe mpls pop
+qc pass: p4lang: bundle mpls pop
+qc pass: p4lang: bundle vlan mpls pop
+qc pass: p4lang: pppoe mpls pop
 qc pass: p4lang: gre mpls pop
 qc pass: p4lang: l2tp mpls pop
-failed: p4lang: bundle mpls push
-failed: p4lang: bundle vlan mpls push
-failed: p4lang: pppoe mpls push
+qc pass: p4lang: bundle mpls push
+qc pass: p4lang: bundle vlan mpls push
+qc pass: p4lang: pppoe mpls push
 qc pass: p4lang: gre mpls push
 qc pass: p4lang: l2tp mpls push
-failed: p4lang: lpm routing
-failed: p4lang: l2vpn over bundle mpls
-failed: p4lang: l2vpn over bundle vlan mpls
-failed: p4lang: l2vpn over pppoe mpls
+qc pass: p4lang: lpm routing
+qc pass: p4lang: l2vpn over bundle mpls
+qc pass: p4lang: l2vpn over bundle vlan mpls
+qc pass: p4lang: l2vpn over pppoe mpls
 qc pass: p4lang: l2vpn over gre mpls
 qc pass: p4lang: l2vpn over l2tp mpls
-failed: p4lang: l3vpn over bundle mpls
-failed: p4lang: l3vpn over bundle vlan mpls
-failed: p4lang: l3vpn over pppoe mpls
+qc pass: p4lang: l3vpn over bundle mpls
+qc pass: p4lang: l3vpn over bundle vlan mpls
+qc pass: p4lang: l3vpn over pppoe mpls
 qc pass: p4lang: l3vpn over gre mpls
 qc pass: p4lang: l3vpn over l2tp mpls
-failed: p4lang: routing over backplane
-failed: p4lang: bridging over backplane
-failed: p4lang: mpls core over backplane
-failed: p4lang: mpls vpn over backplane
-failed: p4lang: local connect
-failed: p4lang: vlan local connect
+qc pass: p4lang: routing over backplane
+qc pass: p4lang: bridging over backplane
+qc pass: p4lang: mpls core over backplane
+qc pass: p4lang: mpls vpn over backplane
+qc pass: p4lang: local connect
+qc pass: p4lang: vlan local connect
 qc pass: p4lang: pmtud
 qc pass: p4lang: vlan pmtud
 qc pass: p4lang: tcpmss
@@ -424,8 +424,8 @@ qc pass: p4lang: bridge tcpmss
 qc pass: p4lang: vlan bridge tcpmss
 qc pass: p4lang: bridge pmtud
 qc pass: p4lang: vlan bridge pmtud
-failed: p4lang: ip ttl exceed
-failed: p4lang: mpls ttl exceed
+qc pass: p4lang: ip ttl exceed
+qc pass: p4lang: mpls ttl exceed
 qc pass: p4lang: multilink pppoe routing
 qc pass: p4lang: multilink pppoe mpls
 qc pass: p4lang: multilink l2tp routing over ipv4
@@ -436,12 +436,12 @@ qc pass: p4lang: multilink l2tp mpls over ipv6
 qc pass: p4lang: multilink l2tp mpls over vlan
 qc pass: p4lang: multilink l2tp routing over bundle
 qc pass: p4lang: multilink l2tp mpls over bundle
-failed: p4lang: null routing
-failed: p4lang: fib filtering with prefixlist
-failed: p4lang: fib filtering with routemap
-failed: p4lang: fib filtering with routepolicy
-failed: p4lang: routing with fib compression
-failed: p4lang: mpls with fib compression
+qc pass: p4lang: null routing
+qc pass: p4lang: fib filtering with prefixlist
+qc pass: p4lang: fib filtering with routemap
+qc pass: p4lang: fib filtering with routepolicy
+qc pass: p4lang: routing with fib compression
+qc pass: p4lang: mpls with fib compression
 qc pass: p4lang: l2tp3 routing over ipv4
 qc pass: p4lang: l2tp3 routing over ipv6
 qc pass: p4lang: l2tp3 server routing
