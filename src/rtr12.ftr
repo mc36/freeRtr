@@ -68,8 +68,6 @@ todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
-todo: bmp server to listeners, bmp, ris and bgp
-todo: server bgprsrr
 todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
@@ -77,7 +75,6 @@ todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: dlep as rfc8175
 todo: flash ext-delete also to commander
-todo: commander to have selection
 todo: commander to get away the cursor
 todo: player queue up down add-again
 todo: openflow to have 2 label support and stack to p4lang
