@@ -457,11 +457,11 @@ public class servP4langCfg implements ifcUp {
                 cmd.error("already exported");
                 return false;
             }
-            int id = getNextDynVrf();
-            if (id < 0) {
+            int i = getNextDynVrf();
+            if (i < 0) {
                 return false;
             }
-            servP4langVrf ntry = new servP4langVrf(id);
+            servP4langVrf ntry = new servP4langVrf(i);
             ntry.doClear();
             ntry.vrf = vrf;
             expVrf.put(ntry);
@@ -853,11 +853,11 @@ public class servP4langCfg implements ifcUp {
                 sendLine("ports_add " + ntry.id + " " + ntry.getStateEnding());
             }
             if (ntry.dynamic) {
-                int id = getNextDynIfc();
-                if (id < 0) {
+                i = getNextDynIfc();
+                if (i < 0) {
                     return false;
                 }
-                ntry.id = id;
+                ntry.id = i;
             }
             ifc.ethtyp.hwHstry = new history();
             ifc.ethtyp.hwCntr = new counter();
@@ -1422,10 +1422,10 @@ public class servP4langCfg implements ifcUp {
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
-        int id = pck.msbGetW(0);
+        int i = pck.msbGetW(0);
         pck.getSkip(2);
         ifcEther.parseETHheader(pck, false);
-        servP4langDlnk dlnk = new servP4langDlnk(this, id);
+        servP4langDlnk dlnk = new servP4langDlnk(this, i);
         dlnk = downLinks.find(dlnk);
         if (dlnk != null) {
             ifcEther.createETHheader(pck, false);
@@ -1434,11 +1434,11 @@ public class servP4langCfg implements ifcUp {
             dlnk.parent.sendPack(pck);
             return;
         }
-        servP4langIfc ntry = new servP4langIfc(this, id);
+        servP4langIfc ntry = new servP4langIfc(this, i);
         ntry = expIfc.find(ntry);
         if (ntry == null) {
             if (debugger.servP4langErr) {
-                logger.debug("got unneeded target: " + id);
+                logger.debug("got unneeded target: " + i);
             }
             cntr.drop(pck, counter.reasons.noIface);
             return;
@@ -1827,11 +1827,11 @@ public class servP4langCfg implements ifcUp {
      * @return neighbor, null if error
      */
     protected servP4langNei findNei(tabRouteIface ifc, addrIP hop) {
-        servP4langIfc id = findIfc(ifc);
-        if (id == null) {
+        servP4langIfc i = findIfc(ifc);
+        if (i == null) {
             return null;
         }
-        servP4langNei ntry = new servP4langNei(id, hop);
+        servP4langNei ntry = new servP4langNei(i, hop);
         servP4langNei old = neighs.find(ntry);
         if (old != null) {
             old.need++;

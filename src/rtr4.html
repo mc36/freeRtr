@@ -15,11 +15,11 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter-rare v23.11.9-cur, done by sprscc13@mr.n0b0dy.<br/>
-tested: 2023-11-09 19:12:16, took 00:50:08, with 10 workers, on 476 cases, 5 failed, 0 traces, 35 retries<br/>
+tested: 2023-11-09 23:12:25, took 00:42:07, with 10 workers, on 476 cases, 0 failed, 0 traces, 0 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl01.tst">p4lang-acl01.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: copp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl01.tst">p4lang-acl01.tst</a></td><td>success</td><td>p4lang: copp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl02.tst">p4lang-acl02.tst</a></td><td>success</td><td>p4lang: ingress access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl03.tst">p4lang-acl03.tst</a></td><td>success</td><td>p4lang: egress access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl04.tst">p4lang-acl04.tst</a></td><td>success</td><td>p4lang: nat</td></tr>
@@ -464,7 +464,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout241.tst">p4lang-rout241.tst</a></td><td>success</td><td>p4lang: routing with fib compression</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout242.tst">p4lang-rout242.tst</a></td><td>success</td><td>p4lang: mpls with fib compression</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout243.tst">p4lang-rout243.tst</a></td><td>success</td><td>p4lang: l2tp3 routing over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout244.tst">p4lang-rout244.tst</a></td><td>#6-run-r1 tping 100 30 1.1.1.2 vrf v1</td><td>p4lang: l2tp3 routing over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout244.tst">p4lang-rout244.tst</a></td><td>success</td><td>p4lang: l2tp3 routing over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout245.tst">p4lang-rout245.tst</a></td><td>success</td><td>p4lang: l2tp3 server routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout246.tst">p4lang-rout246.tst</a></td><td>success</td><td>p4lang: vlan l2tp3 server routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout247.tst">p4lang-rout247.tst</a></td><td>success</td><td>p4lang: l2tp3 server mpls</td></tr>
@@ -476,7 +476,7 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout253.tst">p4lang-rout253.tst</a></td><td>success</td><td>p4lang: l2vpn over l2tp3 mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout254.tst">p4lang-rout254.tst</a></td><td>success</td><td>p4lang: l3vpn over l2tp3 mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout255.tst">p4lang-rout255.tst</a></td><td>success</td><td>p4lang: l2tp3 routing over ipv4 loopback</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout256.tst">p4lang-rout256.tst</a></td><td>#6-run-r1 tping 100 30 1.1.1.2 vrf v1</td><td>p4lang: l2tp3 routing over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout256.tst">p4lang-rout256.tst</a></td><td>success</td><td>p4lang: l2tp3 routing over ipv6 loopback</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout257.tst">p4lang-rout257.tst</a></td><td>success</td><td>p4lang: l2tp3 routing over vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout258.tst">p4lang-rout258.tst</a></td><td>success</td><td>p4lang: l2tp3 routing over bundle</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout259.tst">p4lang-rout259.tst</a></td><td>success</td><td>p4lang: l2tp3 mpls over ipv4</td></tr>
@@ -488,9 +488,9 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout265.tst">p4lang-rout265.tst</a></td><td>not applicable</td><td>p4lang: multilink l2tp3 mpls over vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout266.tst">p4lang-rout266.tst</a></td><td>not applicable</td><td>p4lang: multilink l2tp3 routing over bundle</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout267.tst">p4lang-rout267.tst</a></td><td>not applicable</td><td>p4lang: multilink l2tp3 mpls over bundle</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout268.tst">p4lang-rout268.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.103 vrf v1 sou lo0</td><td>p4lang: l2tp3 mpls over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout268.tst">p4lang-rout268.tst</a></td><td>success</td><td>p4lang: l2tp3 mpls over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout269.tst">p4lang-rout269.tst</a></td><td>success</td><td>p4lang: l2tp3 mpls over ipv4 loopback</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout270.tst">p4lang-rout270.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.103 vrf v1 sou lo0</td><td>p4lang: l2tp3 mpls over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout270.tst">p4lang-rout270.tst</a></td><td>success</td><td>p4lang: l2tp3 mpls over ipv6 loopback</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout271.tst">p4lang-rout271.tst</a></td><td>success</td><td>p4lang: l2tp3 mpls over vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout272.tst">p4lang-rout272.tst</a></td><td>success</td><td>p4lang: l2tp3 mpls over bundle</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout273.tst">p4lang-rout273.tst</a></td><td>success</td><td>p4lang: bridging over l2tp3</td></tr>

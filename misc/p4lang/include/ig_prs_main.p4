@@ -351,6 +351,8 @@ IP_PROTOCOL_IPV4:
             prs_ipv4b;
 IP_PROTOCOL_IPV6:
             prs_ipv6b;
+IP_PROTOCOL_L2TP:
+            prs_l3tp;
 IP_PROTOCOL_SRL2:
             prs_eth3;
         default:

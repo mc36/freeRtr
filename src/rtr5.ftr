@@ -80,6 +80,14 @@ qc pass: p4lang: gre interface loose verify source
 qc pass: p4lang: l2tp interface loose verify source
 qc pass: p4lang: ingress gtp access list
 qc pass: p4lang: egress gtp access list
+qc pass: p4lang: ingress l2tp3 access list
+qc pass: p4lang: egress l2tp3 access list
+qc pass: p4lang: ingress vlan l2tp3 access list
+qc pass: p4lang: egress vlan l2tp3 access list
+qc pass: p4lang: l2tp3 interface inspection with ingress drop
+qc pass: p4lang: l2tp3 interface inspection with egress drop
+qc pass: p4lang: l2tp3 interface verify source
+qc pass: p4lang: l2tp3 interface loose verify source
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
@@ -188,6 +196,8 @@ qc pass: p4lang: sgt ingress access list
 qc pass: p4lang: sgt egress access list
 qc pass: p4lang: sgt vlan ingress access list
 qc pass: p4lang: sgt vlan egress access list
+qc pass: p4lang: macsec over l2tp3
+qc pass: p4lang: sgt over l2tp3
 qc pass: p4lang: packout on port
 qc pass: p4lang: packout on vlan port
 qc pass: p4lang: routing
@@ -432,19 +442,45 @@ qc pass: p4lang: fib filtering with routemap
 qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
-todo: add rpl and rm support for the new validity, entropy-label and the (atomic)aggregate stuffs
-todo: bgp astree shows from asconn
-todo: more rpki shows like validation of protocols tables, comparison of neighbors, etc
+qc pass: p4lang: l2tp3 routing over ipv4
+qc pass: p4lang: l2tp3 routing over ipv6
+qc pass: p4lang: l2tp3 server routing
+qc pass: p4lang: vlan l2tp3 server routing
+qc pass: p4lang: l2tp3 server mpls
+qc pass: p4lang: vlan l2tp3 server mpls
+qc pass: p4lang: mldp core over l2tp3
+qc pass: p4lang: bier core over l2tp3
+qc pass: p4lang: l2tp3 mpls pop
+qc pass: p4lang: l2tp3 mpls push
+qc pass: p4lang: l2vpn over l2tp3 mpls
+qc pass: p4lang: l3vpn over l2tp3 mpls
+qc pass: p4lang: l2tp3 routing over ipv4 loopback
+qc pass: p4lang: l2tp3 routing over ipv6 loopback
+qc pass: p4lang: l2tp3 routing over vlan
+qc pass: p4lang: l2tp3 routing over bundle
+qc pass: p4lang: l2tp3 mpls over ipv4
+qc pass: p4lang: multilink l2tp3 routing over ipv4
+qc pass: p4lang: multilink l2tp3 routing over ipv6
+qc pass: p4lang: multilink l2tp3 routing over vlan
+qc pass: p4lang: multilink l2tp3 mpls over ipv4
+qc pass: p4lang: multilink l2tp3 mpls over ipv6
+qc pass: p4lang: multilink l2tp3 mpls over vlan
+qc pass: p4lang: multilink l2tp3 routing over bundle
+qc pass: p4lang: multilink l2tp3 mpls over bundle
+qc pass: p4lang: l2tp3 mpls over ipv6
+qc pass: p4lang: l2tp3 mpls over ipv4 loopback
+qc pass: p4lang: l2tp3 mpls over ipv6 loopback
+qc pass: p4lang: l2tp3 mpls over vlan
+qc pass: p4lang: l2tp3 mpls over bundle
+qc pass: p4lang: bridging over l2tp3
+qc pass: p4lang: bridging over l2tp3 vlan
 todo: vdc to have local, connect as sdn autocreated
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
 todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
-todo: game butterfly series reusing the fft and mdev classes from modem and ping
-todo: bmp server to listeners, bmp, ris and bgp
-todo: server bgprsrr
-todo: game hanoi
+todo: game butterfly hanoy, modem, mdev
 todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
@@ -452,7 +488,6 @@ todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: dlep as rfc8175
 todo: flash ext-delete also to commander
-todo: commander to have selection
 todo: commander to get away the cursor
 todo: player queue up down add-again
 todo: openflow to have 2 label support and stack to p4lang
@@ -469,8 +504,6 @@ todo: test hwredetect that uses some external file and a p4lang process to overc
 todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
 todo: onehit to all the menus
-todo: p4lang api: export-copp to have a vrf id and a rate, then to the dataplanes asapp, where easily applicable
-todo: l2tp3 to the dataplanes as it is for l2tp2 :)
 todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
 todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 todo: route-map --> route-policy converter
@@ -569,7 +602,6 @@ todo: serevr security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: sho bgp * auto-summarize
 todo: config committed with check for saved and backup config
-todo: in servers, where applicable, introduce Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r-----")); or with http://www.java2s.com/Tutorials/Java/Java_io/1030__Java_nio_File_Owner_Permissions.htm
 todo: terminal background and foreground
 todo: interface lo0 as lo-core, persistently
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli

@@ -1,4 +1,4 @@
-failed: p4lang: copp
+qc pass: p4lang: copp
 qc pass: p4lang: ingress access list
 qc pass: p4lang: egress access list
 qc pass: p4lang: nat
@@ -443,7 +443,7 @@ qc pass: p4lang: fib filtering with routepolicy
 qc pass: p4lang: routing with fib compression
 qc pass: p4lang: mpls with fib compression
 qc pass: p4lang: l2tp3 routing over ipv4
-failed: p4lang: l2tp3 routing over ipv6
+qc pass: p4lang: l2tp3 routing over ipv6
 qc pass: p4lang: l2tp3 server routing
 qc pass: p4lang: vlan l2tp3 server routing
 qc pass: p4lang: l2tp3 server mpls
@@ -455,7 +455,7 @@ qc pass: p4lang: l2tp3 mpls push
 qc pass: p4lang: l2vpn over l2tp3 mpls
 qc pass: p4lang: l3vpn over l2tp3 mpls
 qc pass: p4lang: l2tp3 routing over ipv4 loopback
-failed: p4lang: l2tp3 routing over ipv6 loopback
+qc pass: p4lang: l2tp3 routing over ipv6 loopback
 qc pass: p4lang: l2tp3 routing over vlan
 qc pass: p4lang: l2tp3 routing over bundle
 qc pass: p4lang: l2tp3 mpls over ipv4
@@ -467,9 +467,9 @@ qc pass: p4lang: multilink l2tp3 mpls over ipv6
 qc pass: p4lang: multilink l2tp3 mpls over vlan
 qc pass: p4lang: multilink l2tp3 routing over bundle
 qc pass: p4lang: multilink l2tp3 mpls over bundle
-failed: p4lang: l2tp3 mpls over ipv6
+qc pass: p4lang: l2tp3 mpls over ipv6
 qc pass: p4lang: l2tp3 mpls over ipv4 loopback
-failed: p4lang: l2tp3 mpls over ipv6 loopback
+qc pass: p4lang: l2tp3 mpls over ipv6 loopback
 qc pass: p4lang: l2tp3 mpls over vlan
 qc pass: p4lang: l2tp3 mpls over bundle
 qc pass: p4lang: bridging over l2tp3

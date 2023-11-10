@@ -351,6 +351,10 @@ state prs_ipv4 {
 IP_PROTOCOL_GRE:
         prs_gre;
 #endif
+#ifdef HAVE_L3TP
+IP_PROTOCOL_L2TP:
+        prs_l3tp;
+#endif
 IP_PROTOCOL_UDP:
         prs_udp;
 IP_PROTOCOL_TCP:
