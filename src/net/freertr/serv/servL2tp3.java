@@ -125,7 +125,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
         if (brdgIfc == null) {
             l.add(beg + "no bridge");
         } else {
-            l.add(beg + "bridge " + brdgIfc.name);
+            l.add(beg + "bridge " + brdgIfc.number);
         }
         cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
         cmds.cfgLine(l, password == null, beg, "password", authLocal.passwdEncode(password, (filter & 2) != 0));

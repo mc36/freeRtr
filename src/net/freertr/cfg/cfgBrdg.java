@@ -18,14 +18,9 @@ import net.freertr.util.cmds;
 public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
 
     /**
-     * name of this bridge
-     */
-    public String name;
-
-    /**
      * number of this bridge
      */
-    public int num;
+    public final int number;
 
     /**
      * bridge handler
@@ -61,11 +56,17 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
     public static tabGen<userFilter> defaultF;
 
     public int compare(cfgBrdg o1, cfgBrdg o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+        if (o1.number < o2.number) {
+            return -1;
+        }
+        if (o1.number > o2.number) {
+            return +1;
+        }
+        return 0;
     }
 
     public String toString() {
-        return "brdg " + name;
+        return "brdg " + number;
     }
 
     /**
@@ -74,8 +75,7 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
      * @param nam name of bridge
      */
     public cfgBrdg(String nam) {
-        num = bits.str2num(nam);
-        name = "" + num;
+        number = bits.str2num(nam);
     }
 
     /**
@@ -90,12 +90,12 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
      * @return interface name
      */
     public String getIntName() {
-        return "bvi" + name;
+        return "bvi" + number;
     }
 
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
-        l.add("bridge " + name);
+        l.add("bridge " + number);
         bridgeHed.getConfig(l, cmds.tabulator);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);

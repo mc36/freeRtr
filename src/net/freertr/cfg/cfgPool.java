@@ -18,8 +18,11 @@ public class cfgPool<T extends addrType> implements Comparator<cfgPool<T>>, cfgG
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgPool() {
+    public cfgPool(String s) {
+        name = s;
     }
 
     /**

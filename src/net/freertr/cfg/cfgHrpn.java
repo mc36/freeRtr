@@ -20,7 +20,7 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
     /**
      * name of this hairpin
      */
-    public final String name;
+    public final int number;
 
     /**
      * hairpin handler
@@ -28,11 +28,17 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
     public ifcHairpin hairpinHed;
 
     public int compare(cfgHrpn o1, cfgHrpn o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+        if (o1.number < o2.number) {
+            return -1;
+        }
+        if (o1.number > o2.number) {
+            return +1;
+        }
+        return 0;
     }
 
     public String toString() {
-        return "hrpn " + name;
+        return "hrpn " + number;
     }
 
     /**
@@ -67,7 +73,7 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
      * @param nam name of bridge
      */
     public cfgHrpn(String nam) {
-        name = "" + bits.str2num(nam);
+        number = bits.str2num(nam);
     }
 
     /**
@@ -91,16 +97,12 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
      * @return interface name
      */
     public String getIntName(boolean side) {
-        String a = name;
-        if (a.equals("0")) {
-            a = "";
-        }
-        return "hairpin" + a + (side ? "1" : "2");
+        return "hairpin" + number + (side ? "1" : "2");
     }
 
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
-        l.add("hairpin " + name);
+        l.add("hairpin " + number);
         hairpinHed.getConfig(l, cmds.tabulator);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);

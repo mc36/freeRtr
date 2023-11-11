@@ -5675,7 +5675,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                     a += " vrf is " + vrfFor.name;
                 }
                 if (bridgeIfc != null) {
-                    a += " bridge is " + bridgeHed.name;
+                    a += " bridge is " + bridgeHed.number;
                 }
                 if (bundleIfc != null) {
                     a += " bundle is " + bundleHed.name;
@@ -6191,7 +6191,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (bridgeIfc == null) {
             l.add(cmds.tabulator + "no bridge-group");
         } else {
-            l.add(cmds.tabulator + "bridge-group " + bridgeHed.name);
+            l.add(cmds.tabulator + "bridge-group " + bridgeHed.number);
             cmds.cfgLine(l, !bridgeIfc.privatePort, cmds.tabulator, "bridge-filter private-port", "");
             cmds.cfgLine(l, !bridgeIfc.publicPort, cmds.tabulator, "bridge-filter public-port", "");
             cmds.cfgLine(l, !bridgeIfc.fltrStpIn, cmds.tabulator, "bridge-filter stp-in", "");

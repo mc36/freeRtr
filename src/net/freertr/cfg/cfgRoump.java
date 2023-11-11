@@ -132,10 +132,14 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
 
     /**
      * create new route map
+     * 
+     * @param s name
      */
-    public cfgRoump() {
+    public cfgRoump(String s) {
         roumap = new tabListing<tabRtrmapN, addrIP>();
         seq = roumap.nextseq();
+        name = s;
+        roumap.listName = s;
     }
 
     /**

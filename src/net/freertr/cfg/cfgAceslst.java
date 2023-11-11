@@ -42,9 +42,13 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
 
     /**
      * create new access list
+     *
+     * @param s name
      */
-    public cfgAceslst() {
+    public cfgAceslst(String s) {
         aceslst = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        name = s;
+        aceslst.listName = s;
     }
 
     /**

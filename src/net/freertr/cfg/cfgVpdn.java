@@ -64,8 +64,11 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgVpdn() {
+    public cfgVpdn(String s) {
+        name = s;
     }
 
     /**
@@ -664,7 +667,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         if (ifaceBridge == null) {
             l.add(cmds.tabulator + "no bridge-group");
         } else {
-            l.add(cmds.tabulator + "bridge-group " + ifaceBridge.name);
+            l.add(cmds.tabulator + "bridge-group " + ifaceBridge.number);
         }
         if (proxy == null) {
             l.add(cmds.tabulator + "no proxy");

@@ -50,10 +50,14 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
 
     /**
      * create new route policy
+     *
+     * @param s name
      */
-    public cfgRouplc() {
+    public cfgRouplc(String s) {
         rouplc = new tabListing<tabRtrplcN, addrIP>();
         seq = rouplc.nextseq();
+        name = s;
+        rouplc.listName = s;
     }
 
     /**

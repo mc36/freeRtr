@@ -72,6 +72,7 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
      */
     public cfgSessn(String nam) {
         name = nam.trim();
+        connects.name = name;
     }
 
     public String toString() {

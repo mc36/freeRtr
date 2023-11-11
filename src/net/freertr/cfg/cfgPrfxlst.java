@@ -37,9 +37,13 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
 
     /**
      * create new prefix list
+     *
+     * @param s name
      */
-    public cfgPrfxlst() {
+    public cfgPrfxlst(String s) {
         prflst = new tabListing<tabPrfxlstN, addrIP>();
+        name = s;
+        prflst.listName = s;
     }
 
     /**

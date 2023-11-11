@@ -384,7 +384,7 @@ public class servP4langCfg implements ifcUp {
         }
         for (int i = 0; i < expBr.size(); i++) {
             servP4langBr ntry = expBr.get(i);
-            l.add(beg + mid + "export-bridge " + ntry.br.num);
+            l.add(beg + mid + "export-bridge " + ntry.br.number);
         }
         tabGen<servP4langMgcI> frnt = servP4langUtil.convTab(frontnam, expMgc);
         tabGen<servP4langMgcI> errs = servP4langUtil.convTab(fwderrcr, expMgc);
@@ -473,7 +473,7 @@ public class servP4langCfg implements ifcUp {
                 cmd.error("no such bridge");
                 return false;
             }
-            servP4langBr ntry = new servP4langBr(br.num);
+            servP4langBr ntry = new servP4langBr(br.number);
             ntry.doClear();
             ntry.br = br;
             ntry.lab = tabLabel.allocate(tabLabelEntry.owner.p4langBr);

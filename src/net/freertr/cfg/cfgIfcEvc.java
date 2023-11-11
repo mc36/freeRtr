@@ -65,7 +65,7 @@ public class cfgIfcEvc implements Comparator<cfgIfcEvc> {
     public String getCfg() {
         String s = "shutdown";
         if (bridgeHed != null) {
-            s = "bridge-group " + bridgeHed.name;
+            s = "bridge-group " + bridgeHed.number;
         }
         if (xconn != null) {
             s = "xconnect " + xconn.getCfg();

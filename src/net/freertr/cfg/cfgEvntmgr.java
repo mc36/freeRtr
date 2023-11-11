@@ -63,9 +63,13 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
 
     /**
      * create new event manager
+     *
+     * @param s name
      */
-    public cfgEvntmgr() {
+    public cfgEvntmgr(String s) {
         script = new tabListing<tabEvntmgrN, addrIP>();
+        name = s;
+        script.listName = s;
     }
 
     /**

@@ -36,9 +36,13 @@ public class cfgObjprt implements Comparator<cfgObjprt>, cfgGeneric {
 
     /**
      * create object group
+     *
+     * @param s name
      */
-    public cfgObjprt() {
+    public cfgObjprt(String s) {
         objgrp = new tabListing<tabObjprtN<addrIP>, addrIP>();
+        name = s;
+        objgrp.listName = s;
     }
 
     /**

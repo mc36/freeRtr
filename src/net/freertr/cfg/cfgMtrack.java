@@ -21,8 +21,12 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgMtrack() {
+    public cfgMtrack(String s) {
+        name = s;
+        worker.name = s;
     }
 
     /**
@@ -55,8 +59,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
         "mtracker .*! port " + packMtrack.port,
         "mtracker .*! tos 0",
         "mtracker .*! ttl 255",
-        "mtracker .*! flow 0",
-    };
+        "mtracker .*! flow 0",};
 
     /**
      * defaults filter

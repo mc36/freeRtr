@@ -80,10 +80,14 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
 
     /**
      * create new policy map
+     *
+     * @param s name
      */
-    public cfgPlymp() {
+    public cfgPlymp(String s) {
         plcmap = new tabListing<tabPlcmapN, addrIP>();
         seq = plcmap.nextseq();
+        name = s;
+        plcmap.listName = s;
     }
 
     /**

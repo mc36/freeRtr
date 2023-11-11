@@ -174,6 +174,11 @@ public class cfgAll {
     public final static tabGen<cfgHrpn> hairpins = new tabGen<cfgHrpn>();
 
     /**
+     * list of vnets
+     */
+    public final static tabGen<cfgVnet> vnets = new tabGen<cfgVnet>();
+
+    /**
      * list of translation rules
      */
     public final static tabGen<cfgTrnsltn> trnsltns = new tabGen<cfgTrnsltn>();
@@ -1550,8 +1555,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgSched ntry = new cfgSched();
-        ntry.name = nam;
+        cfgSched ntry = new cfgSched(nam);
         if (!create) {
             return schedulers.find(ntry);
         }
@@ -1569,8 +1573,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgSched schedDel(String nam) {
-        cfgSched ntry = new cfgSched();
-        ntry.name = nam;
+        cfgSched ntry = new cfgSched(nam);
         return schedulers.del(ntry);
     }
 
@@ -1586,8 +1589,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgScrpt ntry = new cfgScrpt();
-        ntry.name = nam;
+        cfgScrpt ntry = new cfgScrpt(nam);
         if (!create) {
             return scripts.find(ntry);
         }
@@ -1605,8 +1607,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgScrpt scrptDel(String nam) {
-        cfgScrpt ntry = new cfgScrpt();
-        ntry.name = nam;
+        cfgScrpt ntry = new cfgScrpt(nam);
         return scripts.del(ntry);
     }
 
@@ -1622,9 +1623,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgTrack ntry = new cfgTrack();
-        ntry.name = nam;
-        ntry.worker.name = nam;
+        cfgTrack ntry = new cfgTrack(nam);
         if (!create) {
             return trackers.find(ntry);
         }
@@ -1642,8 +1641,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgTrack trackDel(String nam) {
-        cfgTrack ntry = new cfgTrack();
-        ntry.name = nam;
+        cfgTrack ntry = new cfgTrack(nam);
         return trackers.del(ntry);
     }
 
@@ -1659,9 +1657,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgMtrack ntry = new cfgMtrack();
-        ntry.name = nam;
-        ntry.worker.name = nam;
+        cfgMtrack ntry = new cfgMtrack(nam);
         if (!create) {
             return mtrackers.find(ntry);
         }
@@ -1679,8 +1675,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgMtrack mtrackDel(String nam) {
-        cfgMtrack ntry = new cfgMtrack();
-        ntry.name = nam;
+        cfgMtrack ntry = new cfgMtrack(nam);
         return mtrackers.del(ntry);
     }
 
@@ -1835,8 +1830,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgKey<T> ntry = new cfgKey<T>();
-        ntry.name = nam;
+        cfgKey<T> ntry = new cfgKey<T>(nam);
         if (!create) {
             return lst.find(ntry);
         }
@@ -1857,8 +1851,7 @@ public class cfgAll {
      */
     public static <T extends cryKeyGeneric> cfgKey<T> keyDel(
             tabGen<cfgKey<T>> lst, String nam) {
-        cfgKey<T> ntry = new cfgKey<T>();
-        ntry.name = nam;
+        cfgKey<T> ntry = new cfgKey<T>(nam);
         return lst.del(ntry);
     }
 
@@ -1877,8 +1870,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgPool<T> ntry = new cfgPool<T>();
-        ntry.name = nam;
+        cfgPool<T> ntry = new cfgPool<T>(nam);
         if (!create) {
             return lst.find(ntry);
         }
@@ -1899,8 +1891,7 @@ public class cfgAll {
      */
     public static <T extends addrType> cfgPool<T> poolDel(
             tabGen<cfgPool<T>> lst, String nam) {
-        cfgPool<T> ntry = new cfgPool<T>();
-        ntry.name = nam;
+        cfgPool<T> ntry = new cfgPool<T>(nam);
         return lst.del(ntry);
     }
 
@@ -1918,9 +1909,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgAlias ntry = new cfgAlias();
-        ntry.name = nam;
-        ntry.type = typ;
+        cfgAlias ntry = new cfgAlias(nam, typ);
         if (!create) {
             return aliases.find(ntry);
         }
@@ -1939,9 +1928,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgAlias aliasDel(String nam, cfgAlias.aliasType typ) {
-        cfgAlias ntry = new cfgAlias();
-        ntry.name = nam;
-        ntry.type = typ;
+        cfgAlias ntry = new cfgAlias(nam, typ);
         return aliases.del(ntry);
     }
 
@@ -2447,8 +2434,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgVpdn ntry = new cfgVpdn();
-        ntry.name = nam;
+        cfgVpdn ntry = new cfgVpdn(nam);
         if (!create) {
             return vpdns.find(ntry);
         }
@@ -2466,8 +2452,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgVpdn vpdnDel(String nam) {
-        cfgVpdn ntry = new cfgVpdn();
-        ntry.name = nam;
+        cfgVpdn ntry = new cfgVpdn(nam);
         ntry = vpdns.del(ntry);
         if (ntry == null) {
             return null;
@@ -2488,9 +2473,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgObjnet ntry = new cfgObjnet();
-        ntry.name = nam;
-        ntry.objgrp.listName = nam;
+        cfgObjnet ntry = new cfgObjnet(nam);
         if (!create) {
             return objgrpnets.find(ntry);
         }
@@ -2508,8 +2491,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgObjnet objnetDel(String nam) {
-        cfgObjnet ntry = new cfgObjnet();
-        ntry.name = nam;
+        cfgObjnet ntry = new cfgObjnet(nam);
         return objgrpnets.del(ntry);
     }
 
@@ -2525,9 +2507,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgObjprt ntry = new cfgObjprt();
-        ntry.name = nam;
-        ntry.objgrp.listName = nam;
+        cfgObjprt ntry = new cfgObjprt(nam);
         if (!create) {
             return objgrpprts.find(ntry);
         }
@@ -2545,8 +2525,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgObjprt objprtDel(String nam) {
-        cfgObjprt ntry = new cfgObjprt();
-        ntry.name = nam;
+        cfgObjprt ntry = new cfgObjprt(nam);
         return objgrpprts.del(ntry);
     }
 
@@ -2562,9 +2541,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgAceslst ntry = new cfgAceslst();
-        ntry.name = nam;
-        ntry.aceslst.listName = nam;
+        cfgAceslst ntry = new cfgAceslst(nam);
         if (!create) {
             return accesslsts.find(ntry);
         }
@@ -2582,8 +2559,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgAceslst aclsDel(String nam) {
-        cfgAceslst ntry = new cfgAceslst();
-        ntry.name = nam;
+        cfgAceslst ntry = new cfgAceslst(nam);
         return accesslsts.del(ntry);
     }
 
@@ -2599,8 +2575,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgTlmtry ntry = new cfgTlmtry();
-        ntry.name = nam;
+        cfgTlmtry ntry = new cfgTlmtry(nam);
         if (!create) {
             return tlmtrydst.find(ntry);
         }
@@ -2618,8 +2593,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgTlmtry tlmdsDel(String nam) {
-        cfgTlmtry ntry = new cfgTlmtry();
-        ntry.name = nam;
+        cfgTlmtry ntry = new cfgTlmtry(nam);
         return tlmtrydst.del(ntry);
     }
 
@@ -2635,9 +2609,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgEvntmgr ntry = new cfgEvntmgr();
-        ntry.name = nam;
-        ntry.script.listName = nam;
+        cfgEvntmgr ntry = new cfgEvntmgr(nam);
         if (!create) {
             return eventmgrs.find(ntry);
         }
@@ -2655,8 +2627,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgEvntmgr eemDel(String nam) {
-        cfgEvntmgr ntry = new cfgEvntmgr();
-        ntry.name = nam;
+        cfgEvntmgr ntry = new cfgEvntmgr(nam);
         return eventmgrs.del(ntry);
     }
 
@@ -2672,9 +2643,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgPrfxlst ntry = new cfgPrfxlst();
-        ntry.name = nam;
-        ntry.prflst.listName = nam;
+        cfgPrfxlst ntry = new cfgPrfxlst(nam);
         if (!create) {
             return prefixlsts.find(ntry);
         }
@@ -2692,8 +2661,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgPrfxlst prfxDel(String nam) {
-        cfgPrfxlst ntry = new cfgPrfxlst();
-        ntry.name = nam;
+        cfgPrfxlst ntry = new cfgPrfxlst(nam);
         return prefixlsts.del(ntry);
     }
 
@@ -2709,9 +2677,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgRoump ntry = new cfgRoump();
-        ntry.name = nam;
-        ntry.roumap.listName = nam;
+        cfgRoump ntry = new cfgRoump(nam);
         if (!create) {
             return routemaps.find(ntry);
         }
@@ -2729,8 +2695,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgRoump rtmpDel(String nam) {
-        cfgRoump ntry = new cfgRoump();
-        ntry.name = nam;
+        cfgRoump ntry = new cfgRoump(nam);
         return routemaps.del(ntry);
     }
 
@@ -2746,9 +2711,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgRouplc ntry = new cfgRouplc();
-        ntry.name = nam;
-        ntry.rouplc.listName = nam;
+        cfgRouplc ntry = new cfgRouplc(nam);
         if (!create) {
             return routeplcs.find(ntry);
         }
@@ -2766,8 +2729,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgRouplc rtplDel(String nam) {
-        cfgRouplc ntry = new cfgRouplc();
-        ntry.name = nam;
+        cfgRouplc ntry = new cfgRouplc(nam);
         return routeplcs.del(ntry);
     }
 
@@ -2783,8 +2745,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgTime ntry = new cfgTime();
-        ntry.name = nam;
+        cfgTime ntry = new cfgTime(nam);
         if (!create) {
             return timemaps.find(ntry);
         }
@@ -2802,8 +2763,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgTime timeDel(String nam) {
-        cfgTime ntry = new cfgTime();
-        ntry.name = nam;
+        cfgTime ntry = new cfgTime(nam);
         return timemaps.del(ntry);
     }
 
@@ -2819,9 +2779,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgPlymp ntry = new cfgPlymp();
-        ntry.name = nam;
-        ntry.plcmap.listName = nam;
+        cfgPlymp ntry = new cfgPlymp(nam);
         if (!create) {
             return policymaps.find(ntry);
         }
@@ -2839,8 +2797,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgPlymp plmpDel(String nam) {
-        cfgPlymp ntry = new cfgPlymp();
-        ntry.name = nam;
+        cfgPlymp ntry = new cfgPlymp(nam);
         return policymaps.del(ntry);
     }
 
@@ -2856,8 +2813,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgXconn ntry = new cfgXconn();
-        ntry.name = nam;
+        cfgXconn ntry = new cfgXconn(nam);
         if (!create) {
             return xconnects.find(ntry);
         }
@@ -2875,8 +2831,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgXconn xconDel(String nam) {
-        cfgXconn ntry = new cfgXconn();
-        ntry.name = nam;
+        cfgXconn ntry = new cfgXconn(nam);
         ntry = xconnects.del(ntry);
         if (ntry == null) {
             return null;
@@ -2897,8 +2852,7 @@ public class cfgAll {
         if (nam.length() < 1) {
             return null;
         }
-        cfgIconn ntry = new cfgIconn();
-        ntry.name = nam;
+        cfgIconn ntry = new cfgIconn(nam);
         if (!create) {
             return iconnects.find(ntry);
         }
@@ -2916,8 +2870,7 @@ public class cfgAll {
      * @return descriptor, null if not found
      */
     public static cfgIconn iconDel(String nam) {
-        cfgIconn ntry = new cfgIconn();
-        ntry.name = nam;
+        cfgIconn ntry = new cfgIconn(nam);
         ntry = iconnects.del(ntry);
         if (ntry == null) {
             return null;
@@ -3243,6 +3196,45 @@ public class cfgAll {
     }
 
     /**
+     * find one access list
+     *
+     * @param nam name of entry
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgVnet vnetFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgVnet ntry = new cfgVnet(nam);
+        if (!create) {
+            return vnets.find(ntry);
+        }
+        cfgVnet old = vnets.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one access list
+     *
+     * @param nam name of entry
+     * @return descriptor, null if not found
+     */
+    public static cfgVnet vnetDel(String nam) {
+        cfgVnet ntry = new cfgVnet(nam);
+        ntry = vnets.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.stop2run();
+        return ntry;
+    }
+
+    /**
      * find one session
      *
      * @param nam name of this
@@ -3262,7 +3254,6 @@ public class cfgAll {
         if (old != null) {
             return old;
         }
-        ntry.connects.name = ntry.name;
         ntry.connects.startTimer();
         return ntry;
     }
@@ -3928,6 +3919,7 @@ public class cfgAll {
         servGenList.listGetRun(l, bundles, filter);
         servGenList.listGetRun(l, bridges, filter);
         servGenList.listGetRun(l, hairpins, filter);
+        servGenList.listGetRun(l, vnets, filter);
         servGenList.listGetRun(l, vrfs, filter);
         for (int i = 0; i < routers.size(); i++) {
             l.addAll(routers.get(i).getShRun1(filter));

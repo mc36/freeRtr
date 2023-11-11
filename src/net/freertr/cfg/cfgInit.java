@@ -884,6 +884,7 @@ public class cfgInit implements Runnable {
         cfgMtrack.defaultF = createFilter(cfgMtrack.defaultL);
         cfgProxy.defaultF = createFilter(cfgProxy.defaultL);
         cfgVpdn.defaultF = createFilter(cfgVpdn.defaultL);
+        cfgVnet.defaultF = createFilter(cfgVnet.defaultL);
         cfgIconn.defaultF = createFilter(cfgIconn.defaultL);
         cfgXconn.defaultF = createFilter(cfgXconn.defaultL);
         tabGen<userFilter> srvdefsF = createFilter(servGeneric.srvdefsL);

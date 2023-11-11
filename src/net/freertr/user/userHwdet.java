@@ -23,8 +23,26 @@ public class userHwdet {
     public userHwdet() {
     }
 
-    private enum ifcTyp {
-        socat, pcap, raw, map
+    /**
+     * interface types
+     */
+    public enum ifcTyp {
+        /**
+         * socat
+         */
+        socat,
+        /**
+         * pcap
+         */
+        pcap,
+        /**
+         * raw
+         */
+        raw,
+        /**
+         * map
+         */
+        map
     }
 
     private int nextPort = 0;
@@ -105,6 +123,28 @@ public class userHwdet {
         }
         starter.addAll(pre);
         config.add("proc " + fn + " " + cmd);
+    }
+
+    /**
+     * string to interface type
+     *
+     * @param s string to convert
+     * @return interface type
+     */
+    public static ifcTyp string2type(String s) {
+        if (s.equals("socat")) {
+            return ifcTyp.socat;
+        }
+        if (s.equals("pcap")) {
+            return ifcTyp.pcap;
+        }
+        if (s.equals("raw")) {
+            return ifcTyp.raw;
+        }
+        if (s.equals("map")) {
+            return ifcTyp.map;
+        }
+        return null;
     }
 
     /**
@@ -442,28 +482,12 @@ public class userHwdet {
             }
             if (s.equals("iface")) {
                 s = cmd.word();
-                if (s.equals("socat")) {
-                    ifaceType = ifcTyp.socat;
-                }
-                if (s.equals("pcap")) {
-                    ifaceType = ifcTyp.pcap;
-                }
-                if (s.equals("raw")) {
-                    ifaceType = ifcTyp.raw;
-                }
-                if (s.equals("map")) {
-                    ifaceType = ifcTyp.map;
-                }
+                ifaceType = string2type(s);
                 continue;
             }
             if (s.equals("line")) {
                 s = cmd.word();
-                if (s.equals("socat")) {
-                    lineType = ifcTyp.socat;
-                }
-                if (s.equals("raw")) {
-                    lineType = ifcTyp.raw;
-                }
+                lineType = string2type(s);
                 continue;
             }
             if (s.equals("inline")) {

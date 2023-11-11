@@ -29,8 +29,11 @@ public class cfgSched implements Comparator<cfgSched>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgSched() {
+    public cfgSched(String s) {
+        name = s;
     }
 
     /**

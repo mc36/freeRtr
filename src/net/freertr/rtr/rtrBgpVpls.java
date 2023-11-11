@@ -97,7 +97,7 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
      */
     public void getConfig(List<String> l, String beg1) {
         String beg2 = beg1 + "afi-vpls " + tabRouteUtil.rd2string(id) + " ";
-        l.add(beg2 + "bridge-group " + bridge.name);
+        l.add(beg2 + "bridge-group " + bridge.number);
         l.add(beg2 + "ve-id " + veId + " " + veMax);
         if (ctrlWrd) {
             l.add(beg2 + "control-word");

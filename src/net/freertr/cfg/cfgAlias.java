@@ -21,8 +21,13 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
+     * @param t type
      */
-    public cfgAlias() {
+    public cfgAlias(String s, aliasType t) {
+        name = s;
+        type = t;
     }
 
     /**

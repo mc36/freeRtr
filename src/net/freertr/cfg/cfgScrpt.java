@@ -30,8 +30,11 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgScrpt() {
+    public cfgScrpt(String s) {
+        name = s;
     }
 
     /**

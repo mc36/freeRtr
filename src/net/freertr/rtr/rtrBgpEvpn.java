@@ -179,7 +179,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
      */
     public void getConfig(List<String> l, String beg1) {
         String beg2 = beg1 + "afi-evpn " + id + " ";
-        l.add(beg2 + "bridge-group " + bridge.name);
+        l.add(beg2 + "bridge-group " + bridge.number);
         if (srv6 != null) {
             l.add(beg2 + "srv6 " + srv6.name);
         }

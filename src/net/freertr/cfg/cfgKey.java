@@ -20,8 +20,11 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgKey() {
+    public cfgKey(String s) {
+        name = s;
     }
 
     /**

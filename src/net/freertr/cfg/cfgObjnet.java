@@ -36,9 +36,13 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
 
     /**
      * create object group
+     *
+     * @param s name
      */
-    public cfgObjnet() {
+    public cfgObjnet(String s) {
         objgrp = new tabListing<tabObjnetN<addrIP>, addrIP>();
+        name = s;
+        objgrp.listName = s;
     }
 
     /**

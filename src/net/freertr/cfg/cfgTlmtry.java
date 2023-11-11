@@ -52,9 +52,12 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
 
     /**
      * create new telemetry export
+     *
+     * @param s name
      */
-    public cfgTlmtry() {
+    public cfgTlmtry(String s) {
         worker = new clntTelemetry();
+        name = s;
     }
 
     public int compare(cfgTlmtry o1, cfgTlmtry o2) {

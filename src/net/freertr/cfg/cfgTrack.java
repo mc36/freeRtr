@@ -22,8 +22,12 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgTrack() {
+    public cfgTrack(String s) {
+        name = s;
+        worker.name = s;
     }
 
     /**

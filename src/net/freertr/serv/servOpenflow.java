@@ -180,7 +180,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
             ntry.lower = this;
             if (ifc.type == tabRouteIface.ifaceType.bridge) {
                 ntry.id = tabGrp;
-                ntry.grp = ifc.bridgeHed.num;
+                ntry.grp = ifc.bridgeHed.number;
             }
             expIfc.put(ntry);
             if (conn != null) {
@@ -215,7 +215,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
             ntry.ifc = ifc;
             if (ifc.type == tabRouteIface.ifaceType.bridge) {
                 ntry.id = tabGrp;
-                ntry.grp = bits.str2num(ifc.bridgeHed.name);
+                ntry.grp = ifc.bridgeHed.number;
             }
             ntry = expIfc.del(ntry);
             clearIface(ntry);

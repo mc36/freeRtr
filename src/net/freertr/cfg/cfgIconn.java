@@ -20,8 +20,11 @@ public class cfgIconn implements Comparator<cfgIconn>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgIconn() {
+    public cfgIconn(String s) {
+        name = s;
     }
 
     /**

@@ -47,6 +47,7 @@ import net.freertr.cfg.cfgTlmtry;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.cfg.cfgVdc;
+import net.freertr.cfg.cfgVnet;
 import net.freertr.cfg.cfgVpdn;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.cfg.cfgXconn;
@@ -460,6 +461,8 @@ public class userConfig {
         l.add(null, "1  2  bundle                         interface bundle parameters");
         l.add(null, "2  .    <num>                        number of bundle group");
         l.add(null, "1  2  hairpin                        interface hairpin parameters");
+        l.add(null, "2  .    <num>                        number of hairpin group");
+        l.add(null, "1  2  vnet                           external hairpin parameters");
         l.add(null, "2  .    <num>                        number of hairpin group");
         l.add(null, "1  2  session                        stateful session parameters");
         l.add(null, "2  .    <name:ses>                   name of session");
@@ -1226,6 +1229,15 @@ public class userConfig {
             modeV = modes.config;
             return;
         }
+        if (a.equals("vnet")) {
+            modeDconfig = cfgAll.vnetFind(cmd.word(), true);
+            if (modeDconfig == null) {
+                cmd.error("bad vnet name");
+                return;
+            }
+            modeV = modes.config;
+            return;
+        }
         if (a.equals("vpdn")) {
             modeDconfig = cfgAll.vpdnFind(cmd.word(), true);
             if (modeDconfig == null) {
@@ -1648,6 +1660,14 @@ public class userConfig {
             cfgIconn prf = cfgAll.iconDel(cmd.word());
             if (prf == null) {
                 cmd.error("no such connect");
+                return;
+            }
+            return;
+        }
+        if (a.equals("vnet")) {
+            cfgVnet prf = cfgAll.vnetDel(cmd.word());
+            if (prf == null) {
+                cmd.error("bad vnet name");
                 return;
             }
             return;

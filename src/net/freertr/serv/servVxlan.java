@@ -140,7 +140,7 @@ public class servVxlan extends servGeneric implements prtServP {
         if (brdgIfc == null) {
             l.add(beg + "no bridge");
         } else {
-            l.add(beg + "bridge " + brdgIfc.name);
+            l.add(beg + "bridge " + brdgIfc.number);
         }
         cmds.cfgLine(l, !physInt, beg, "physical-interface", "");
         l.add(beg + "instance " + inst);

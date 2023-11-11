@@ -433,7 +433,7 @@ class servOpenflowTx implements Runnable {
             if (ifc.ifc.bridgeIfc != null) {
                 servOpenflowIfc1 ic = new servOpenflowIfc1();
                 ic.id = servOpenflow.tabGrp;
-                ic.grp = ifc.ifc.bridgeHed.num;
+                ic.grp = ifc.ifc.bridgeHed.number;
                 ic = lower.expIfc.find(ic);
                 if (ic == null) {
                     createPortPunt(pckB, pckO, ifc, ntry);

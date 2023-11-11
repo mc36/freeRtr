@@ -20,8 +20,11 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
 
     /**
      * create instance
+     *
+     * @param s name
      */
-    public cfgXconn() {
+    public cfgXconn(String s) {
+        name = s;
     }
 
     /**

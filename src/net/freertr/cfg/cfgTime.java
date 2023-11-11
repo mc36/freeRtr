@@ -88,10 +88,13 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
 
     /**
      * create new route map
+     *
+     * @param s name
      */
-    public cfgTime() {
+    public cfgTime(String s) {
         timemap = new tabGen<tabTime>();
         seq = nextseq();
+        name = s;
     }
 
     /**
