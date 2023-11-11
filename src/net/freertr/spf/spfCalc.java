@@ -1235,7 +1235,7 @@ public class spfCalc<Ta extends addrType> {
         for (int i = 0; i < ntry.algo.size(); i++) {
             res.add("flexalgo|" + ntry.algo.get(i));
         }
-        res.add("bier|" + ntry.brIdx + " " + ntry.brSub + " " + ntry.brBeg);
+        res.add("bieri|" + ntry.brIdx + " " + ntry.brSub + " " + ntry.brBeg);
         String a = "";
         for (int i = 0; i < ntry.brLst.size(); i++) {
             spfIndex idx = ntry.brLst.get(i);
