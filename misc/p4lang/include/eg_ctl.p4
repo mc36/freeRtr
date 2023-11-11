@@ -24,6 +24,12 @@ control eg_ctl(
     /* Intrinsic */
     inout standard_metadata_t eg_intr_md)
 {
+#ifdef HAVE_NOHW
+
+    apply {
+    }
+
+#else
 
     EgressControlMcast() eg_ctl_mcast;
     EgressControlNexthop() eg_ctl_nexthop;
@@ -67,6 +73,9 @@ control eg_ctl(
         }
 
     }
+
+#endif
+
 }
 
 #endif // _EGRESS_CONTROL_P4_

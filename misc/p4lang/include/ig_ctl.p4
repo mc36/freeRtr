@@ -21,6 +21,20 @@
 control ig_ctl(inout headers hdr,
                inout ingress_metadata_t ig_md,
                inout standard_metadata_t ig_intr_md) {
+#ifdef HAVE_NOHW
+
+    apply {
+        if (ig_intr_md.ingress_port == CPU_PORT) {
+            ig_intr_md.egress_spec =(PortId_t) hdr.cpu.port;
+            hdr.cpu.setInvalid();
+        } else {
+            hdr.cpu.setValid();
+            hdr.cpu.port = (SubIntId_t) ig_intr_md.ingress_port;
+            ig_intr_md.egress_spec = CPU_PORT;
+        }
+    }
+
+#else
 
     IngressControlARP() ig_ctl_arp;
     IngressControlPPPOE() ig_ctl_pppoe;
@@ -210,6 +224,9 @@ control ig_ctl(inout headers hdr,
         }
         ig_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
     }
+
+#endif
+
 }
 
 #endif // _INGRESS_CONTROL_P4_
