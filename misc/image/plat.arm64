@@ -3,7 +3,7 @@ kern arm64
 grub efi-arm64-bin
 boot aarch64-efi
 uefi bootx64.efi
-image ../binImg/rtr-aarch64
+image ../binImg/rtr-arm64
 
 include ../misc/image/image.bas
 
