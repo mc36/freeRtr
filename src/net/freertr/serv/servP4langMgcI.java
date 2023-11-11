@@ -1,7 +1,6 @@
 package net.freertr.serv;
 
 import java.util.Comparator;
-import net.freertr.tab.tabGen;
 
 /**
  * one p4lang magic by id

@@ -1,11 +1,6 @@
 package net.freertr.serv;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import net.freertr.tab.tabGen;
-import net.freertr.user.userFormat;
-import net.freertr.util.bits;
 
 /**
  * one p4lang magic by name
