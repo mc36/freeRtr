@@ -1,6 +1,6 @@
 exec cp ../misc/image/init.dev %tmp%/init.dev
 exec cp ../misc/image/init.sys %tmp%/init.sys
-exec mv %tmp%/boot/vmlinuz* %img%.krn
+exec mv %tmp%/boot/vmlinu* %img%.krn
 del-alw %tmp%/boot
 include ../misc/image/image.cln
 del-alw %tmp%/usr/lib/%kern%-linux-gnu/gconv
