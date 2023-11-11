@@ -270,7 +270,14 @@ __u32 xdp_router(struct xdp_md *ctx) {
         return bpf_redirect(txport->idx, 0);
     }
     prt = rxport->idx;
+
     __s32 bufO = sizeof(macaddr) + 2;
+
+#ifdef HAVE_NOHW
+
+    goto cpu;
+
+#else
     __u32 hash = get32msb(macaddr, 0);
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
@@ -665,6 +672,9 @@ punt:
     if (remain == NULL) goto drop;
     if (*remain < 1) goto drop;
     (*remain)--;
+
+#endif
+
 cpu:
     bufO -= sizeof(macaddr);
     bufO -= 4;

@@ -100,6 +100,9 @@ int doOneCommand(unsigned char* buf) {
     memset(&brdk, 0, sizeof(brdk));
     struct bridge_res brdr;
     memset(&brdr, 0, sizeof(brdr));
+#ifdef HAVE_NOHW
+    return 0;
+#else
     if (strcmp(arg[0], "portvrf") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
@@ -552,4 +555,5 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     return 0;
+#endif
 }
