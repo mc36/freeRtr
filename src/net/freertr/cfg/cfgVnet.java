@@ -25,7 +25,7 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
     /**
      * description of this bridge
      */
-    public String description = "";
+    public String description;
 
     /**
      * side one
@@ -41,11 +41,11 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "bridge .*! no description",
-        "bridge .*! no side1 type",
-        "bridge .*! no side1 name",
-        "bridge .*! no side2 type",
-        "bridge .*! no side2 name"
+        "vnet .*! no description",
+        "vnet .*! no side1 type",
+        "vnet .*! no side1 name",
+        "vnet .*! no side2 type",
+        "vnet .*! no side2 name"
     };
 
     /**
@@ -83,6 +83,8 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         l.add(null, "3 .         pcap                    use pcapint");
         l.add(null, "3 .         raw                     use rawint");
         l.add(null, "3 .         map                     use mapint");
+        l.add(null, "2 3       name                      name of interface");
+        l.add(null, "3 .         <str>                   name");
     }
 
     public void getHelp(userHelping l) {
@@ -92,16 +94,12 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         getHelp(l, 2, "two");
     }
 
-    private final void getShRun(List<String> lst, String beg, int num, cfgVnetSide sid) {
-        cmds.cfgLine(lst, sid.ifcTyp == null, beg, "side" + num + " type", "" + sid.ifcTyp);
-        cmds.cfgLine(lst, sid.ifcNam == null, beg, "side" + num + " name", sid.ifcNam);
-    }
-
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("vnet " + number);
-        getShRun(l, cmds.tabulator, 1, side1);
-        getShRun(l, cmds.tabulator, 2, side2);
+        cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
+        side1.getShRun(l, cmds.tabulator, 1);
+        side2.getShRun(l, cmds.tabulator, 2);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -116,16 +114,32 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
             description = cmd.getRemaining();
             return;
         }
+        if (a.equals("side1")) {
+            side1.doCfgStr(cmd);
+            return;
+        }
+        if (a.equals("side2")) {
+            side2.doCfgStr(cmd);
+            return;
+        }
         if (!a.equals("no")) {
             cmd.badCmd();
             return;
         }
         a = cmd.word();
         if (a.equals("description")) {
-            description = "";
+            description = null;
             return;
         }
-
+        if (a.equals("side1")) {
+            side1.doUnCfg(cmd);
+            return;
+        }
+        if (a.equals("side2")) {
+            side2.doUnCfg(cmd);
+            return;
+        }
+        cmd.badCmd();
     }
 
     public String getPrompt() {
@@ -152,6 +166,38 @@ class cfgVnetSide {
         n.ifcTyp = ifcTyp;
         n.ifcNam = ifcNam;
         return n;
+    }
+
+    public void getShRun(List<String> lst, String beg, int num) {
+        cmds.cfgLine(lst, ifcTyp == null, beg, "side" + num + " type", "" + ifcTyp);
+        cmds.cfgLine(lst, ifcNam == null, beg, "side" + num + " name", ifcNam);
+    }
+
+    public void doCfgStr(cmds cmd) {
+        String a = cmd.word();
+        if (a.equals("name")) {
+            ifcNam = cmd.word();
+            return;
+        }
+        if (a.equals("type")) {
+            a = cmd.word();
+            ifcTyp = userHwdet.string2type(a);
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    public void doUnCfg(cmds cmd) {
+        String a = cmd.word();
+        if (a.equals("name")) {
+            ifcNam = null;
+            return;
+        }
+        if (a.equals("type")) {
+            ifcTyp = null;
+            return;
+        }
+        cmd.badCmd();
     }
 
 }
