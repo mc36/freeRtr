@@ -3230,7 +3230,7 @@ public class cfgAll {
         if (ntry == null) {
             return null;
         }
-        ntry.stop2run();
+        ntry.stopNow();
         return ntry;
     }
 

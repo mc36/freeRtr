@@ -224,6 +224,11 @@ public class cfgInit implements Runnable {
     public final static tabGen<cfgVdc> vdcLst = new tabGen<cfgVdc>();
 
     /**
+     * list of started vnets
+     */
+    public final static tabGen<cfgVnet> vnetLst = new tabGen<cfgVnet>();
+
+    /**
      * no stall check
      */
     public static boolean noStallCheck = false;
@@ -254,7 +259,8 @@ public class cfgInit implements Runnable {
         "route-map .*",
         "route-policy .*",
         "proxy-profile .*",
-        "vdc definition .*",};
+        "vdc definition .*",
+        "vnet .*",};
 
     private final static String[] needIface = {
         "interface .*! vrf forwarding .*",
@@ -1021,17 +1027,23 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
-        int step = cfgAll.vdcs.size();
-        if (step > 0) {
-            step = (vdcPortEnd - vdcPortBeg) / step;
+        for (i = 0; i < cfgAll.vnets.size(); i++) {
+            cfgVnet ntry = cfgAll.vnets.get(i).copyBytes();
+            ntry.startNow(vdcPortBeg + i);
+            vnetLst.add(ntry);
+        }
+        vdcPortBeg += vnetLst.size();
+        int p = cfgAll.vdcs.size();
+        if (p > 0) {
+            p = (vdcPortEnd - vdcPortBeg) / p;
         } else {
-            step = 1024;
+            p = 1024;
         }
         for (i = 0; i < cfgAll.vdcs.size(); i++) {
             cfgVdc ntry = cfgAll.vdcs.get(i).copyBytes();
             vdcLst.add(ntry);
-            int o = (i * step) + vdcPortBeg;
-            ntry.startNow(hdefs, inhs, o, o + step);
+            int o = (i * p) + vdcPortBeg;
+            ntry.startNow(hdefs, inhs, o, o + p);
         }
         try {
             prtRedun.doInit(cons);
@@ -1113,6 +1125,12 @@ public class cfgInit implements Runnable {
             prtRedun.doShut();
             prtWatch.doShut();
             bits.sleep(100);
+        }
+        for (int i = 0; i < vnetLst.size(); i++) {
+            try {
+                vnetLst.get(i).stopNow();
+            } catch (Exception e) {
+            }
         }
         for (int i = 0; i < vdcLst.size(); i++) {
             try {

@@ -28,14 +28,19 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
     public String description;
 
     /**
+     * port number to use
+     */
+    protected int port;
+
+    /**
      * side one
      */
-    public final cfgVnetSide side1 = new cfgVnetSide();
+    public final cfgVnetSide side1 = new cfgVnetSide(1);
 
     /**
      * side two
      */
-    public final cfgVnetSide side2 = new cfgVnetSide();
+    public final cfgVnetSide side2 = new cfgVnetSide(2);
 
     /**
      * defaults text
@@ -63,6 +68,19 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         return 0;
     }
 
+    /**
+     * copy bytes
+     *
+     * @return copy
+     */
+    public cfgVnet copyBytes() {
+        cfgVnet n = new cfgVnet("" + number);
+        n.description = description;
+        side1.copyBytes(n.side1);
+        side2.copyBytes(n.side2);
+        return n;
+    }
+
     public String toString() {
         return "vnet " + number;
     }
@@ -83,7 +101,9 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         l.add(null, "3 .         pcap                    use pcapint");
         l.add(null, "3 .         raw                     use rawint");
         l.add(null, "3 .         map                     use mapint");
-        l.add(null, "2 3       name                      name of interface");
+        l.add(null, "2 3       local                     name of local interface");
+        l.add(null, "3 .         <str>                   name");
+        l.add(null, "2 3       connect                   name of connected interface");
         l.add(null, "3 .         <str>                   name");
     }
 
@@ -98,8 +118,8 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("vnet " + number);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
-        side1.getShRun(l, cmds.tabulator, 1);
-        side2.getShRun(l, cmds.tabulator, 2);
+        side1.getShRun(l, cmds.tabulator);
+        side2.getShRun(l, cmds.tabulator);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -149,34 +169,53 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
     /**
      * stop work
      */
-    public void stop2run() {
+    public void stopNow() {
         ///////////
+    }
+
+    /**
+     * start work
+     */
+    public void startNow(int p) {
+        port = p;
+        ////////////
     }
 
 }
 
 class cfgVnetSide {
 
+    public final int id;
+
     public userHwdet.ifcTyp ifcTyp;
 
-    public String ifcNam;
+    public String locNam;
 
-    public cfgVnetSide copyBytes() {
-        cfgVnetSide n = new cfgVnetSide();
-        n.ifcTyp = ifcTyp;
-        n.ifcNam = ifcNam;
-        return n;
+    public String conNam;
+
+    public cfgVnetSide(int i) {
+        id = i;
     }
 
-    public void getShRun(List<String> lst, String beg, int num) {
-        cmds.cfgLine(lst, ifcTyp == null, beg, "side" + num + " type", "" + ifcTyp);
-        cmds.cfgLine(lst, ifcNam == null, beg, "side" + num + " name", ifcNam);
+    public void copyBytes(cfgVnetSide n) {
+        n.ifcTyp = ifcTyp;
+        n.locNam = locNam;
+    }
+
+    public void getShRun(List<String> lst, String beg) {
+        cmds.cfgLine(lst, ifcTyp == null, beg, "side" + id + " type", "" + ifcTyp);
+        cmds.cfgLine(lst, locNam == null, beg, "side" + id + " local", locNam);
+        cmds.cfgLine(lst, locNam == null, beg, "side" + id + " connect", conNam);
     }
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
-        if (a.equals("name")) {
-            ifcNam = cmd.word();
+        if (a.equals("local")) {
+            locNam = cmd.word();
+            return;
+        }
+        if (a.equals("connect")) {
+            conNam = cmd.word();
             return;
         }
         if (a.equals("type")) {
@@ -189,8 +228,12 @@ class cfgVnetSide {
 
     public void doUnCfg(cmds cmd) {
         String a = cmd.word();
-        if (a.equals("name")) {
-            ifcNam = null;
+        if (a.equals("local")) {
+            locNam = null;
+            return;
+        }
+        if (a.equals("connect")) {
+            conNam = null;
             return;
         }
         if (a.equals("type")) {
