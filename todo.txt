@@ -1,5 +1,3 @@
-vdc to have local, connect as sdn autocreated
-
 generalise server access- knobs
 
 honeypot to wireformat, decode

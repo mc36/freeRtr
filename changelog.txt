@@ -15457,3 +15457,5 @@ qc pass: p4lang: l2tp3 mpls over vlan
 qc pass: p4lang: l2tp3 mpls over bundle
 qc pass: p4lang: bridging over l2tp3
 qc pass: p4lang: bridging over l2tp3 vlan
+---------------------------------- 2023-11-13 14:07:24 23.11.13
+no todo: vdc to have local, connect as sdn autocreated
