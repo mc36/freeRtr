@@ -276,7 +276,7 @@ class cfgVnetSide implements Runnable {
 
     public logBuf logCol;
 
-    public pipeSide con;
+    public pipeSide cons;
 
     private pipeShell proc;
 
@@ -513,16 +513,16 @@ class cfgVnetSide implements Runnable {
             if (!proc.isRunning()) {
                 break;
             }
-            if (con == null) {
+            if (cons == null) {
                 pipeDiscard.logLines("vnet " + parent.number + " " + sideId + " said ", pipe, logCon, logCol);
                 bits.sleep(1000);
                 continue;
             }
-            boolean b = pipeConnect.redirect(pipe, con);
-            b |= pipeConnect.redirect(con, pipe);
+            boolean b = pipeConnect.redirect(pipe, cons);
+            b |= pipeConnect.redirect(cons, pipe);
             if (b) {
-                con.setClose();
-                con = null;
+                cons.setClose();
+                cons = null;
             }
             bits.sleep(100);
         }

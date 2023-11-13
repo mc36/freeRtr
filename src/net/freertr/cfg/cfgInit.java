@@ -108,6 +108,7 @@ import net.freertr.user.userExec;
 import net.freertr.user.userFilter;
 import net.freertr.user.userFonts;
 import net.freertr.user.userHelping;
+import net.freertr.user.userHwdet;
 import net.freertr.user.userNetconf;
 import net.freertr.user.userReader;
 import net.freertr.user.userScreen;
@@ -540,6 +541,34 @@ public class cfgInit implements Runnable {
                 prc.execName = cmd.getRemaining();
                 cfgPrcss old = cfgAll.prcs.put(prc);
                 prc.startNow();
+                if (old == null) {
+                    continue;
+                }
+                old.stopNow();
+                continue;
+            }
+            if (s.equals("vnet")) {
+                cfgVnet prc = new cfgVnet(cmd.word());
+                prc.hidden = true;
+                prc.side1.logAct = true;
+                prc.side2.logAct = true;
+                prc.side1.ifcTyp = userHwdet.string2type(cmd.word());
+                prc.side2.ifcTyp = prc.side1.ifcTyp;
+                s = cmd.word().trim();
+                if (s.length() > 0) {
+                    s = cfgIfc.dissectName(s)[0];
+                    if (s.length() < 1) {
+                        continue;
+                    }
+                    prc.side1.locNam = s;
+                }
+                s = cmd.word().trim();
+                if (s.length() > 0) {
+                    prc.side2.conNam = s;
+                }
+                cfgVnet old = cfgAll.vnets.put(prc);
+                prc.startNow(vdcPortBeg);
+                vdcPortBeg += 4;
                 if (old == null) {
                     continue;
                 }
