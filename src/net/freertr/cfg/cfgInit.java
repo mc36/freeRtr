@@ -1029,10 +1029,10 @@ public class cfgInit implements Runnable {
         }
         for (i = 0; i < cfgAll.vnets.size(); i++) {
             cfgVnet ntry = cfgAll.vnets.get(i).copyBytes();
-            ntry.startNow(vdcPortBeg + (i * 2));
+            ntry.startNow(vdcPortBeg + (i * 4));
             vnetLst.add(ntry);
         }
-        vdcPortBeg += (vnetLst.size() * 2);
+        vdcPortBeg += (vnetLst.size() * 4);
         int p = cfgAll.vdcs.size();
         if (p > 0) {
             p = (vdcPortEnd - vdcPortBeg) / p;

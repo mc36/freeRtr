@@ -236,8 +236,8 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         userFlash.setFilePerm(a, true, false, true, true, false, true);
         pipeShell.exec(a, null, true, true, true);
         userFlash.delete(a);
-        side1.startNow(p, p + 1);
-        side2.startNow(p + 1, p);
+        side1.startNow(p + 0, p + 1);
+        side2.startNow(p + 2, p + 3);
     }
 
 }
