@@ -1,5 +1,11 @@
 global-options:
   asic: true
-features: {}
+features:
+  drivers:
+    bfrt: true
+    grpc: true
+    thrift-driver: true
+    p4rt: true
+    pi: true
 architectures:
 - tofino
