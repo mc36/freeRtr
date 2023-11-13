@@ -253,10 +253,7 @@ public class userHwext {
         userHwdet.setupVeth(hwd, "veth1a", "veth1b");
         userHwdet.setupIface(hwd, "veth1a", 1500);
         userHwdet.setupIface(hwd, "veth1b", 8192);
-        hwd.add("ip link set veth1a up address 00:00:11:11:22:22 mtu 1500");
-        hwd.add("ip addr add 10.255.255.1/24 dev veth1a");
-        hwd.add("ip route add 0.0.0.0/0 via 10.255.255.254 dev veth1a");
-        hwd.add("echo 0 > /proc/sys/net/ipv6/conf/veth1a/disable_ipv6");
+        userHwdet.routeIface(hwd, "veth1a");
         String res = "";
         switch (dpt) {
             case opnflw:

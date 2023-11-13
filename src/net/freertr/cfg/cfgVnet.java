@@ -3,12 +3,23 @@ package net.freertr.cfg;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import net.freertr.ifc.ifcUdpInt;
+import net.freertr.pipe.pipeConnect;
+import net.freertr.pipe.pipeDiscard;
+import net.freertr.pipe.pipeLine;
+import net.freertr.pipe.pipeShell;
+import net.freertr.pipe.pipeSide;
 import net.freertr.tab.tabGen;
+import net.freertr.tab.tabRouteIface;
 import net.freertr.user.userFilter;
+import net.freertr.user.userFlash;
 import net.freertr.user.userHelping;
 import net.freertr.user.userHwdet;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
+import net.freertr.util.logBuf;
+import net.freertr.util.logger;
+import net.freertr.util.version;
 
 /**
  * virtual ethernet
@@ -23,6 +34,11 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
     public final int number;
 
     /**
+     * hidden process
+     */
+    protected boolean hidden = false;
+
+    /**
      * description of this bridge
      */
     public String description;
@@ -35,12 +51,12 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
     /**
      * side one
      */
-    public final cfgVnetSide side1 = new cfgVnetSide(1);
+    public final cfgVnetSide side1 = new cfgVnetSide(this, 1);
 
     /**
      * side two
      */
-    public final cfgVnetSide side2 = new cfgVnetSide(2);
+    public final cfgVnetSide side2 = new cfgVnetSide(this, 2);
 
     /**
      * defaults text
@@ -48,10 +64,25 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
     public final static String[] defaultL = {
         "vnet .*! no description",
         "vnet .*! no side1 type",
-        "vnet .*! no side1 name",
+        "vnet .*! no side1 local",
+        "vnet .*! no side1 connect",
+        "vnet .*! no side1 log-actions",
+        "vnet .*! no side1 log-console",
+        "vnet .*! no side1 log-collect",
+        "vnet .*! side1 time 1000",
+        "vnet .*! side1 delay 1000",
+        "vnet .*! side1 random-time 0",
+        "vnet .*! side1 random-delay 0",
         "vnet .*! no side2 type",
-        "vnet .*! no side2 name"
-    };
+        "vnet .*! no side2 local",
+        "vnet .*! no side2 connect",
+        "vnet .*! no side2 log-actions",
+        "vnet .*! no side2 log-console",
+        "vnet .*! no side2 log-collect",
+        "vnet .*! side2 time 1000",
+        "vnet .*! side2 delay 1000",
+        "vnet .*! side2 random-time 0",
+        "vnet .*! side2 random-delay 0",};
 
     /**
      * defaults filter
@@ -105,6 +136,18 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         l.add(null, "3 .         <str>                   name");
         l.add(null, "2 3       connect                   name of connected interface");
         l.add(null, "3 .         <str>                   name");
+        l.add(null, "2 .       log-actions               log actions");
+        l.add(null, "2 .       log-console               log console activity");
+        l.add(null, "2 3       log-collect               collect console activity");
+        l.add(null, "3 .         <num>                   lines to store");
+        l.add(null, "2 3       time                      specify time between runs");
+        l.add(null, "3 .         <num>                   milliseconds between runs");
+        l.add(null, "2 3       delay                     specify initial delay");
+        l.add(null, "3 .         <num>                   milliseconds before start");
+        l.add(null, "2 3       random-time               specify random time between runs");
+        l.add(null, "3 .         <num>                   milliseconds between runs");
+        l.add(null, "2 3       random-delay              specify random initial delay");
+        l.add(null, "3 .         <num>                   milliseconds before start");
     }
 
     public void getHelp(userHelping l) {
@@ -117,6 +160,9 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("vnet " + number);
+        if (hidden) {
+            return l;
+        }
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         side1.getShRun(l, cmds.tabulator);
         side2.getShRun(l, cmds.tabulator);
@@ -170,7 +216,8 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
      * stop work
      */
     public void stopNow() {
-        ///////////
+        side1.stopNow();
+        side2.stopNow();
     }
 
     /**
@@ -178,40 +225,142 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
      */
     public void startNow(int p) {
         port = p;
-        ////////////
+        List<String> lst = bits.str2lst(userHwdet.scrBeg);
+        userHwdet.setupVeth(lst, side1.getOSname(), side2.getOSname());
+        userHwdet.setupIface(lst, side1.getOSname(), 8192);
+        userHwdet.setupIface(lst, side2.getOSname(), 8192);
+        String a = version.getRWpath() + "veth" + bits.randomD() + ".tmp";
+        if (bits.buf2txt(true, lst, a)) {
+            return;
+        }
+        userFlash.setFilePerm(a, true, false, true, true, false, true);
+        pipeShell.exec(a, null, true, true, true);
+        side1.startNow(p, p + 1);
+        side2.startNow(p + 1, p);
     }
 
 }
 
-class cfgVnetSide {
+class cfgVnetSide implements Runnable {
 
-    public final int id;
+    public final cfgVnet parent;
+
+    public final int sideId;
 
     public userHwdet.ifcTyp ifcTyp;
+
+    public tabRouteIface.ifaceType locTyp;
 
     public String locNam;
 
     public String conNam;
 
-    public cfgVnetSide(int i) {
-        id = i;
+    public int prtLoc;
+
+    public int prtRem;
+
+    public boolean need2run;
+
+    protected int interval = 1000;
+
+    protected int initial = 1000;
+
+    public int randInt;
+
+    public int randIni;
+
+    public boolean logAct = false;
+
+    public boolean logCon = false;
+
+    public logBuf logCol;
+
+    public pipeSide con;
+
+    private pipeShell proc;
+
+    private pipeSide pipe;
+
+    public int restartC;
+
+    public long restartT;
+
+    public cfgVnetSide(cfgVnet p, int i) {
+        parent = p;
+        sideId = i;
     }
 
     public void copyBytes(cfgVnetSide n) {
         n.ifcTyp = ifcTyp;
+        n.locTyp = locTyp;
         n.locNam = locNam;
+        n.initial = initial;
+        n.interval = interval;
+        n.randIni = randIni;
+        n.randInt = randInt;
+        n.logAct = logAct;
+        n.logCon = logCon;
+        n.logCol = logCol;
+        n.prtLoc = prtLoc;
+        n.prtRem = prtRem;
     }
 
-    public void getShRun(List<String> lst, String beg) {
-        cmds.cfgLine(lst, ifcTyp == null, beg, "side" + id + " type", "" + ifcTyp);
-        cmds.cfgLine(lst, locNam == null, beg, "side" + id + " local", locNam);
-        cmds.cfgLine(lst, locNam == null, beg, "side" + id + " connect", conNam);
+    public void getShRun(List<String> lst, String beg1) {
+        String beg2 = "side" + sideId;
+        cmds.cfgLine(lst, ifcTyp == null, beg1, beg2 + " type", "" + ifcTyp);
+        cmds.cfgLine(lst, locNam == null, beg1, beg2 + " local", locNam);
+        cmds.cfgLine(lst, conNam == null, beg1, beg2 + " connect", conNam);
+        cmds.cfgLine(lst, !logAct, beg1, beg2 + " log-actions", "");
+        cmds.cfgLine(lst, !logCon, beg1, beg2 + " log-console", "");
+        cmds.cfgLine(lst, logCol == null, beg1, beg2 + " log-collect", "" + logBuf.getSize(logCol));
+        lst.add(beg1 + beg2 + " delay " + initial);
+        lst.add(beg1 + beg2 + " time " + interval);
+        lst.add(beg1 + beg2 + " random-time " + randInt);
+        lst.add(beg1 + beg2 + " random-delay " + randIni);
     }
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("delay")) {
+            initial = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("time")) {
+            interval = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("random-time")) {
+            randInt = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("log-actions")) {
+            logAct = true;
+            return;
+        }
+        if (a.equals("log-collect")) {
+            logCol = new logBuf(bits.str2num(cmd.word()));
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = true;
+            return;
+        }
         if (a.equals("local")) {
-            locNam = cmd.word();
+            a = cfgIfc.dissectName(cmd.word())[0];
+            locTyp = cfgIfc.string2type(a);
+            if (locTyp == null) {
+                cmd.error("bad name");
+                return;
+            }
+            if (cfgAll.ifcFind(a, 0) != null) {
+                cmd.error("interface already exists");
+                return;
+            }
+            locNam = a;
             return;
         }
         if (a.equals("connect")) {
@@ -228,8 +377,29 @@ class cfgVnetSide {
 
     public void doUnCfg(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("random-time")) {
+            randInt = 0;
+            return;
+        }
+        if (a.equals("random-delay")) {
+            randIni = 0;
+            return;
+        }
+        if (a.equals("log-actions")) {
+            logAct = false;
+            return;
+        }
+        if (a.equals("log-collect")) {
+            logCol = null;
+            return;
+        }
+        if (a.equals("log-console")) {
+            logCon = false;
+            return;
+        }
         if (a.equals("local")) {
             locNam = null;
+            locTyp = null;
             return;
         }
         if (a.equals("connect")) {
@@ -241,6 +411,121 @@ class cfgVnetSide {
             return;
         }
         cmd.badCmd();
+    }
+
+    public void startNow(int pl, int pr) {
+        prtLoc = pl;
+        prtRem = pr;
+        if (!cfgInit.booting) {
+            return;
+        }
+        if (locNam != null) {
+            ifcUdpInt hdr = new ifcUdpInt("127.0.0.1", pl, "127.0.0.1", pr, "-", locTyp != tabRouteIface.ifaceType.ether, false);
+            cfgIfc ifc = cfgAll.ifcAdd(locNam, locTyp, hdr, 1);
+            if (ifc == null) {
+                return;
+            }
+            ifc.initPhysical();
+        }
+        if (ifcTyp == null) {
+            return;
+        }
+        need2run = true;
+        new Thread(this).start();
+    }
+
+    public void stopNow() {
+        need2run = false;
+        restartNow();
+    }
+
+    public void restartNow() {
+        try {
+            proc.kill();
+        } catch (Exception e) {
+        }
+        try {
+            pipe.setClose();
+        } catch (Exception e) {
+        }
+    }
+
+    public void run() {
+        for (;;) {
+            if (!cfgInit.booting) {
+                break;
+            }
+            bits.sleep(1000);
+        }
+        int del = initial;
+        if (randIni > 0) {
+            del += bits.random(1, randIni);
+        }
+        if (del > 0) {
+            bits.sleep(del);
+        }
+        for (;;) {
+            bits.sleep(interval);
+            if (!need2run) {
+                break;
+            }
+            try {
+                doRound();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+        }
+    }
+
+    public String getOSname() {
+        return "exthrpin" + parent.number + (sideId == 1 ? "a" : "b");
+    }
+
+    private synchronized boolean doRound() {
+        String a = null;
+        if (locNam != null) {
+            a = userHwdet.interface2command("./", ifcTyp, getOSname(), prtLoc, prtRem);
+        }
+        if (conNam != null) {
+            a = userHwdet.connection2command("./", ifcTyp, conNam, getOSname());
+        }
+        if (a == null) {
+            return true;
+        }
+        if (logAct) {
+            logger.info("restarting process vnet " + parent.number + " " + sideId);
+        }
+        if (randInt > 0) {
+            bits.sleep(bits.random(1, randInt));
+        }
+        restartT = bits.getTime();
+        restartC++;
+        pipeLine pl = new pipeLine(65536, false);
+        pipe = pl.getSide();
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+        proc = pipeShell.exec(pl.getSide(), a, null, true, true, false, true);
+        if (proc == null) {
+            return false;
+        }
+        for (;;) {
+            if (!proc.isRunning()) {
+                break;
+            }
+            if (con == null) {
+                pipeDiscard.logLines("vnet " + parent.number + " " + sideId + " said ", pipe, logCon, logCol);
+                bits.sleep(1000);
+                continue;
+            }
+            boolean b = pipeConnect.redirect(pipe, con);
+            b |= pipeConnect.redirect(con, pipe);
+            if (b) {
+                con.setClose();
+                con = null;
+            }
+            bits.sleep(100);
+        }
+        return false;
     }
 
 }

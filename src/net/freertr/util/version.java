@@ -777,7 +777,7 @@ public class version {
                 l.add("for(;;)boxes.get(i).sort();");
                 l.add("");
                 l.add("why its called private chat?");
-                l.add("u mention privacy while u ask me out... nice...");
+                l.add("u mention privacy while u ask me out through a set of servers... nice...");
                 l.add("ok.boomer. hihi chatFB1 how things are doing today?");
                 l.add("");
                 l.add("f0r(;;){");

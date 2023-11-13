@@ -45,6 +45,11 @@ public class userHwdet {
         map
     }
 
+    /**
+     * beginning of scripts
+     */
+    public static String scrBeg = "#!/bin/sh";
+
     private int nextPort = 0;
 
     private int ifcNum = 0;
@@ -58,8 +63,6 @@ public class userHwdet {
     private List<String> starter;
 
     private List<String> config;
-
-    private String scrBeg = "#!/bin/sh";
 
     private String prefix = "hwdet-";
 
@@ -164,6 +167,19 @@ public class userHwdet {
      *
      * @param lst list
      * @param nam name
+     */
+    public static void routeIface(List<String> lst, String nam) {
+        lst.add("ip link set " + nam + " up address 00:00:11:11:22:22 mtu 1500");
+        lst.add("ip addr add 10.255.255.1/24 dev " + nam + "");
+        lst.add("ip route add 0.0.0.0/0 via 10.255.255.254 dev " + nam + "");
+        lst.add("echo 0 > /proc/sys/net/ipv6/conf/" + nam + "/disable_ipv6");
+    }
+
+    /**
+     * set up interface
+     *
+     * @param lst list
+     * @param nam name
      * @param mtu mtu value
      */
     public static void setupIface(List<String> lst, String nam, int mtu) {
@@ -183,6 +199,88 @@ public class userHwdet {
         lst.add("ethtool --set-eee " + nam + " eee off");
     }
 
+    /**
+     * interface to command
+     *
+     * @param path path of tools
+     * @param typ interface type
+     * @param nam name of interface
+     * @param ps port to send
+     * @param pb port to bind
+     * @return command to execute
+     */
+    public static String interface2command(String path, ifcTyp typ, String nam, int ps, int pb) {
+        switch (typ) {
+            case socat:
+                return "socat INTERFACE:" + nam + " UDP4-DATAGRAM:127.0.0.1:" + ps + ",bind=127.0.0.1:" + pb + ",reuseaddr";
+            case pcap:
+                return path + "pcapInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case raw:
+                return path + "rawInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case map:
+                return path + "mapInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * interface to command
+     *
+     * @param path path of tools
+     * @param typ interface type
+     * @param nam1 name of interface
+     * @param nam2 name of interface
+     * @return command to execute
+     */
+    public static String connection2command(String path, ifcTyp typ, String nam1, String nam2) {
+        switch (typ) {
+            case socat:
+                return "socat INTERFACE:" + nam1 + " INTERFACE:" + nam2;
+            case pcap:
+                return path + "pcap2pcap.bin " + nam1 + " " + nam2;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * interface state commands
+     *
+     * @param typ interface type
+     * @return state capability
+     */
+    public static String interface2stats(ifcTyp typ) {
+        switch (typ) {
+            case raw:
+                return "stat ";
+            case map:
+                return "stat ";
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * line to command
+     *
+     * @param path path of tools
+     * @param typ interface type
+     * @param nam name of interface
+     * @param p1 port to bind
+     * @return command to execute
+     */
+    public static String line2command(String path, ifcTyp typ, String nam, int p1) {
+        switch (typ) {
+            case socat:
+                return "socat TCP4-LISTEN:" + p1 + ",reuseaddr FILE:" + nam + ",sane,b9600,cs8,raw,echo=0,crtscts=0";
+            case raw:
+                return path + "ttyLin.bin " + nam + " " + p1;
+            default:
+                return null;
+        }
+    }
+
     private void createIface(String nam) {
         userHwdetIface ntry = new userHwdetIface();
         ntry.name = nam.trim();
@@ -197,24 +295,8 @@ public class userHwdet {
         int p1 = nextPort + 1;
         int p2 = nextPort + 2;
         nextPort += 10;
-        String stat = "";
-        String cmd = "";
-        switch (ifaceType) {
-            case socat:
-                cmd = "socat INTERFACE:" + nam + " UDP4-DATAGRAM:127.0.0.1:" + p1 + ",bind=127.0.0.1:" + p2 + ",reuseaddr";
-                break;
-            case pcap:
-                cmd = path + "pcapInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
-                break;
-            case raw:
-                cmd = path + "rawInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
-                stat = "stat ";
-                break;
-            case map:
-                cmd = path + "mapInt.bin " + nam + " " + p2 + " 127.0.0.1 " + p1 + " 127.0.0.1";
-                stat = "stat ";
-                break;
-        }
+        String stat = interface2stats(ifaceType);
+        String cmd = interface2command(path, ifaceType, nam, p1, p2);
         List<String> ifc = new ArrayList<String>();
         setupIface(ifc, nam, 1500);
         makeLoop("ifc" + ifcNum + ".sh", ifc, cmd);
@@ -227,7 +309,7 @@ public class userHwdet {
         int p2 = nextPort + 2;
         nextPort += 10;
         nam = "/dev/ttyS" + nam;
-        String cmd = "";
+        String cmd = line2command(path, lineType, nam, p1);
         switch (lineType) {
             case socat:
                 cmd = "socat TCP4-LISTEN:" + p1 + ",reuseaddr FILE:" + nam + ",sane,b9600,cs8,raw,echo=0,crtscts=0";

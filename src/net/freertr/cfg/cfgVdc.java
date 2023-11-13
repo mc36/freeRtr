@@ -328,6 +328,9 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
         n.interval = interval;
         n.randIni = randIni;
         n.randInt = randInt;
+        n.logAct = logAct;
+        n.logCon = logCon;
+        n.logCol = logCol;
         n.time = time;
         n.configFile = configFile;
         n.image1name = image1name;
