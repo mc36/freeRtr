@@ -32,9 +32,9 @@ public class rtrRsvpIface implements ipPrt {
      */
     public counter cntr = new counter();
 
-    private ipFwd fwdCore;
+    private final ipFwd fwdCore;
 
-    private ipFwdIface fwdIfc;
+    private final ipFwdIface fwdIfc;
 
     /**
      * create one interface handler

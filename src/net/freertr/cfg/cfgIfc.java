@@ -1520,6 +1520,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[46] verify-source",
         "interface .*! no ipv[46] srh enable",
         "interface .*! no ipv[46] nsh enable",
+        "interface .*! no ipv[46] dlep",
         "interface .*! ipv[46] gateway-connected",
         "interface .*! ipv[46] gateway-local",
         "interface .*! ipv[46] gateway-remote",
@@ -8590,7 +8591,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ip4polC = cfgAll.poolFind(cfgAll.ip4pool, cmd.word(), false);
             return;
         }
-        if (!fwdIf4.doConfig(a, cmd, vrfFor.core4, vrfFor.fwd4, vrfFor.udp4)) {
+        if (!fwdIf4.doConfig(a, cmd, vrfFor.core4, vrfFor.fwd4, vrfFor.udp4, vrfFor.tcp4)) {
             return;
         }
         cmd.badCmd();
@@ -8772,7 +8773,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ipIf6.rtrAdvDom = cmd.word();
             return;
         }
-        if (!fwdIf6.doConfig(a, cmd, vrfFor.core6, vrfFor.fwd6, vrfFor.udp6)) {
+        if (!fwdIf6.doConfig(a, cmd, vrfFor.core6, vrfFor.fwd6, vrfFor.udp6, vrfFor.tcp6)) {
             return;
         }
         cmd.badCmd();

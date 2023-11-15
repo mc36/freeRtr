@@ -17,6 +17,7 @@ import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.pack.packHolder;
+import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrBfdClnt;
 import net.freertr.rtr.rtrBfdIface;
@@ -379,6 +380,11 @@ public class ipFwdIface extends tabRouteIface {
     public ipHostWatch hostWatch;
 
     /**
+     * dlep configuration
+     */
+    public ipDlep dlepCfg;
+
+    /**
      * address of remote
      */
     public addrIP hostRemote;
@@ -648,6 +654,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "2 3     host-remote                 set static remote peer");
         l.add(null, "3 .       <addr>                    address");
         l.add(null, "2 .     host-learn                  allow next hop learn");
+        l.add(null, "2 3     dlep                        local next hop changes");
+        l.add(null, "3 .       client                    report next hop changes");
+        l.add(null, "3 .       server                    accept next hop changes");
         l.add(null, "2 3,.   host-watch                  monitor next hop changes");
         l.add(null, "3 4       appear                    script on appearance");
         l.add(null, "4 3,.       <name:scr>              name of script");
@@ -858,6 +867,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
         cmds.cfgLine(l, !lower.getCacheDynmc(), cmds.tabulator, beg + "host-learn", "");
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "" + hostWatch);
+        cmds.cfgLine(l, dlepCfg == null, cmds.tabulator, beg + "dlep", "" + dlepCfg);
         tabRateLimit hostRate = lower.getCacheRate();
         cmds.cfgLine(l, hostRate == null, cmds.tabulator, beg + "host-rate", "" + hostRate);
         l.add(cmds.tabulator + beg + "host-reach " + lower.getCacheTimer());
@@ -971,9 +981,10 @@ public class ipFwdIface extends tabRouteIface {
      * @param cor ip core
      * @param fwd forwarder core
      * @param udp udp core
+     * @param tcp tcp core
      * @return result code, true on error, false on success
      */
-    public boolean doConfig(String a, cmds cmd, ipCor cor, ipFwd fwd, prtUdp udp) {
+    public boolean doConfig(String a, cmds cmd, ipCor cor, ipFwd fwd, prtUdp udp, prtTcp tcp) {
         if (a.equals("enable")) {
             linkLocal = true;
             fwd.routerStaticChg();
@@ -1053,6 +1064,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-learn")) {
             lower.setCacheDynmc(true);
+            return false;
+        }
+        if (a.equals("dlep")) {
+            if (dlepCfg != null) {
+                dlepCfg.stopWork();
+            }
+            a = cmd.word();
+            dlepCfg = new ipDlep(fwd, udp, tcp, lower, a.equals("client"));
             return false;
         }
         if (a.equals("host-watch")) {
@@ -1737,6 +1756,13 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("host-learn")) {
             lower.setCacheDynmc(false);
+            return false;
+        }
+        if (a.equals("dlep")) {
+            if (dlepCfg != null) {
+                dlepCfg.stopWork();
+            }
+            dlepCfg = null;
             return false;
         }
         if (a.equals("host-watch")) {
