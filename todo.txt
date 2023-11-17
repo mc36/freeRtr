@@ -2,8 +2,6 @@ generalise server access- knobs
 
 honeypot to wireformat, decode
 
-generalize dynamic-metric knobs
-
 bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 
 image viewer to file manager
@@ -249,12 +247,9 @@ server http / host * custom-local <text>
 server http / host * custom-remote >path/file>
 server http / host * user-agent matcher with redirect
 server http / host * searchbar
-server smtp / ptmud
-server http / host * ptmud
 test access-list <acl> <src> <trg>
 serevr security maximum pendings as access-security
 servers to have access-aaa
-sho bgp * auto-summarize
 config committed with check for saved and backup config
 
 
