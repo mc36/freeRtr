@@ -222,9 +222,11 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
 
     /**
      * start work
+     *
+     * @param prt port to use
      */
-    public void startNow(int p) {
-        port = p;
+    public void startNow(int prt) {
+        port = prt;
         List<String> lst = bits.str2lst(userHwdet.scrBeg);
         userHwdet.setupVeth(lst, side1.getOSname(), side2.getOSname());
         userHwdet.setupIface(lst, side1.getOSname(), 8192);
@@ -236,8 +238,8 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         userFlash.setFilePerm(a, true, false, true, true, false, true);
         pipeShell.exec(a, null, true, true, true);
         userFlash.delete(a);
-        side1.startNow(p + 0, p + 1);
-        side2.startNow(p + 2, p + 3);
+        side1.startNow(prt + 0, prt + 1);
+        side2.startNow(prt + 2, prt + 3);
     }
 
 }

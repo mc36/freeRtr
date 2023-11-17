@@ -188,7 +188,6 @@ public class debugger {
      */
     public static boolean servDcpTraf = false;
 
-
     /**
      * servSdwan traffic
      */
@@ -790,6 +789,11 @@ public class debugger {
     public static boolean ipMPLStrafB = false;
 
     /**
+     * ipDlep event
+     */
+    public static boolean ipDlepEvnt = false;
+
+    /**
      * ipFwd events
      */
     public static boolean ipFwdEvnt = false;
@@ -1189,6 +1193,7 @@ public class debugger {
         l.add(null, "3 .        http2             http2 protocol");
         l.add(null, "3 .        ike               internet key exchange protocol");
         l.add(null, "3 .        macsec            mac securicy protocol");
+        l.add(null, "3 .        dlep              dynamic link exchange protocol");
         l.add(null, "3 .        gen               generic connections");
         l.add(null, "3 .        tcp               transmission control protocol");
         l.add(null, "3 .        udp               user datagram protocol");
@@ -1551,6 +1556,10 @@ public class debugger {
         }
         if (s.equals("proto")) {
             s = cmd.word();
+            if (s.equals("dlep")) {
+                ipDlepEvnt = v;
+                return false;
+            }
             if (s.equals("gen")) {
                 prtGenTraf = v;
                 return false;

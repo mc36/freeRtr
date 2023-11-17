@@ -382,7 +382,7 @@ public class ipFwdIface extends tabRouteIface {
     /**
      * dlep configuration
      */
-    public ipDlep dlepCfg;
+    public ipDlepIface dlepCfg;
 
     /**
      * address of remote
@@ -1071,7 +1071,7 @@ public class ipFwdIface extends tabRouteIface {
                 dlepCfg.stopWork();
             }
             a = cmd.word();
-            dlepCfg = new ipDlep(fwd, udp, tcp, lower, a.equals("client"));
+            dlepCfg = new ipDlepIface(fwd, udp, tcp, this, lower, a.equals("client"));
             return false;
         }
         if (a.equals("host-watch")) {
