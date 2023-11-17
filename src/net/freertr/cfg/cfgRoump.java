@@ -132,7 +132,7 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
 
     /**
      * create new route map
-     * 
+     *
      * @param s name
      */
     public cfgRoump(String s) {

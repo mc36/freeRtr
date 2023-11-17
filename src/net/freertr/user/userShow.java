@@ -2331,6 +2331,10 @@ public class userShow {
                 doShowIpXnetflow(4);
                 return null;
             }
+            if (a.equals("dlep")) {
+                doShowIpXdlep(4);
+                return null;
+            }
             if (a.equals("hsrp")) {
                 doShowIpXhsrp(4);
                 return null;
@@ -2685,6 +2689,10 @@ public class userShow {
             }
             if (a.equals("flow")) {
                 doShowIpXnetflow(6);
+                return null;
+            }
+            if (a.equals("dlep")) {
+                doShowIpXdlep(6);
                 return null;
             }
             if (a.equals("hsrp")) {
@@ -3580,6 +3588,37 @@ public class userShow {
             return;
         }
         cmd.badCmd();
+    }
+
+    private void doShowIpXdlep(int ver) {
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+        if (ifc == null) {
+            cmd.error("no such interface");
+            return;
+        }
+        ipFwdIface fic;
+        if (ver == 4) {
+            fic = ifc.fwdIf4;
+        } else {
+            fic = ifc.fwdIf6;
+        }
+        if (fic == null) {
+            cmd.error("not configured");
+            return;
+        }
+        if (fic.dlepCfg == null) {
+            cmd.error("not enabled");
+            return;
+        }
+        String a = cmd.word();
+        if (a.equals("neighbor")) {
+            rdr.putStrTab(fic.dlepCfg.getShNeigh());
+            return;
+        }
+        if (a.equals("clients")) {
+            rdr.putStrTab(fic.dlepCfg.getShClnts());
+            return;
+        }
     }
 
     private void doShowIpXvrrp(int ver) {

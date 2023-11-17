@@ -7,6 +7,7 @@ import net.freertr.prt.prtServP;
 import net.freertr.prt.prtTcp;
 import net.freertr.prt.prtUdp;
 import net.freertr.tab.tabGen;
+import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
 import net.freertr.util.logger;
@@ -73,11 +74,11 @@ public class ipDlepIface implements prtServP, Runnable {
      * client or server mode
      */
     public final boolean client;
-    
+
     /**
      * heartbeat interval
      */
-    public int heartBeart = 5000;
+    public int heartBeat = 5000;
 
     private prtGenConn conn;
 
@@ -214,7 +215,7 @@ public class ipDlepIface implements prtServP, Runnable {
     public void run() {
         try {
             for (;;) {
-                bits.sleep(heartBeart);
+                bits.sleep(heartBeat);
                 if (doRound()) {
                     break;
                 }
@@ -222,6 +223,34 @@ public class ipDlepIface implements prtServP, Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
+    }
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShNeigh() {
+        userFormat l = new userFormat("|", "peer|clients");
+        for (int i = 0; i < neighs.size(); i++) {
+            ipDlepNeigh ntry = neighs.get(i);
+            l.add(ntry.peer + "|" + ntry.found.size());
+        }
+        return l;
+    }
+
+    /**
+     * get show
+     *
+     * @return show
+     */
+    public userFormat getShClnts() {
+        userFormat l = new userFormat("|", "peer|client");
+        for (int i = 0; i < neighs.size(); i++) {
+            ipDlepNeigh ntry = neighs.get(i);
+            ntry.getShClnts(l);
+        }
+        return l;
     }
 
 }

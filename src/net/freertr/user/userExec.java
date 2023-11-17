@@ -341,6 +341,10 @@ public class userExec {
         hl.add(null, "3 4        bfd                      bidirectional forwarding detection protocol");
         hl.add(null, "4 5          <name:vrf>             specify routing table");
         hl.add(null, "5 .            neighbor             list of neighbors");
+        hl.add(null, "3 4        dlep                     hot dynamic link exchange neighbors");
+        hl.add(null, "4 5          <name:ifc>             specify routing table");
+        hl.add(null, "5 .            neighbor             list of neighbors");
+        hl.add(null, "5 .            clients              list of clients");
         hl.add(null, "3 4        hsrp                     hot standby router protocol");
         hl.add(null, "4 5          <name:vrf>             specify routing table");
         hl.add(null, "5 .            neighbor             list of neighbors");
