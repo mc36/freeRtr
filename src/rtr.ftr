@@ -2852,6 +2852,7 @@ qc pass: eigrp ecmp connection
 qc pass: eigrp default address suppression
 qc pass: eigrp address unsuppression
 qc pass: eigrp auto summarization
+qc pass: eigrp with pmtud
 qc pass: isis over ethernet
 qc pass: isis over ethernet vlan
 qc pass: isis over ethernet bridge
@@ -2962,6 +2963,7 @@ qc pass: isis dynamic twamp metric
 qc pass: isis with mpolka
 qc pass: isis flexalgo
 qc pass: integrated isis flexalgo
+qc pass: isis with pmtud
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -3116,6 +3118,7 @@ qc pass: ospf dynamic udp cost
 qc pass: ospf dynamic twamp cost
 qc pass: ospf with mpolka
 qc pass: ospf flexalgo
+qc pass: ospf with pmtud
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
@@ -3249,6 +3252,7 @@ qc pass: rift inter level chain
 qc pass: rift dynamic icmp metric
 qc pass: rift dynamic udp metric
 qc pass: rift dynamic twamp metric
+qc pass: rift with pmtud
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist
@@ -3326,7 +3330,6 @@ qc pass: tacacs server
 qc pass: udp forwarder server
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
-todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
@@ -3444,12 +3447,9 @@ todo: server http / host * custom-local <text>
 todo: server http / host * custom-remote >path/file>
 todo: server http / host * user-agent matcher with redirect
 todo: server http / host * searchbar
-todo: server smtp / ptmud
-todo: server http / host * ptmud
 todo: test access-list <acl> <src> <trg>
 todo: serevr security maximum pendings as access-security
 todo: servers to have access-aaa
-todo: sho bgp * auto-summarize
 todo: config committed with check for saved and backup config
 todo: terminal background and foreground
 todo: interface lo0 as lo-core, persistently

@@ -15459,3 +15459,12 @@ qc pass: p4lang: bridging over l2tp3
 qc pass: p4lang: bridging over l2tp3 vlan
 ---------------------------------- 2023-11-13 14:07:24 23.11.13
 no todo: vdc to have local, connect as sdn autocreated
+---------------------------------- 2023-11-17 22:04:10 23.11.17
+no todo: sho bgp * auto-summarize
+no todo: server http / host * ptmud
+no todo: server smtp / ptmud
+no todo: generalize dynamic-metric knobs
+qc pass: eigrp with pmtud
+qc pass: isis with pmtud
+qc pass: ospf with pmtud
+qc pass: rift with pmtud

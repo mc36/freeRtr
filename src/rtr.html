@@ -15,7 +15,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter-rare v23.11.17-cur, done by sprscc13@mr.n0b0dy.<br/>
-tested: 2023-11-17 21:15:43, took 00:16:11, with 80 workers, on 3326 cases, 0 failed, 0 traces, 7 retries<br/>
+tested: 2023-11-17 22:18:29, took 00:14:18, with 80 workers, on 3330 cases, 0 failed, 0 traces, 11 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -2873,6 +2873,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp24.tst">rout-eigrp24.tst</a></td><td>success</td><td>eigrp default address suppression</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp25.tst">rout-eigrp25.tst</a></td><td>success</td><td>eigrp address unsuppression</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp26.tst">rout-eigrp26.tst</a></td><td>success</td><td>eigrp auto summarization</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-eigrp27.tst">rout-eigrp27.tst</a></td><td>success</td><td>eigrp with pmtud</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis001.tst">rout-isis001.tst</a></td><td>success</td><td>isis over ethernet</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis002.tst">rout-isis002.tst</a></td><td>success</td><td>isis over ethernet vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis003.tst">rout-isis003.tst</a></td><td>success</td><td>isis over ethernet bridge</td></tr>
@@ -2983,6 +2984,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis108.tst">rout-isis108.tst</a></td><td>success</td><td>isis with mpolka</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis109.tst">rout-isis109.tst</a></td><td>success</td><td>isis flexalgo</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis110.tst">rout-isis110.tst</a></td><td>success</td><td>integrated isis flexalgo</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis111.tst">rout-isis111.tst</a></td><td>success</td><td>isis with pmtud</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp01.tst">rout-lsrp01.tst</a></td><td>success</td><td>lsrp point2point connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp02.tst">rout-lsrp02.tst</a></td><td>success</td><td>lsrp point2multipoint connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp03.tst">rout-lsrp03.tst</a></td><td>success</td><td>lsrp point2point chain</td></tr>
@@ -3137,6 +3139,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-ospf57.tst">rout-ospf57.tst</a></td><td>success</td><td>ospf dynamic twamp cost</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-ospf58.tst">rout-ospf58.tst</a></td><td>success</td><td>ospf with mpolka</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-ospf59.tst">rout-ospf59.tst</a></td><td>success</td><td>ospf flexalgo</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-ospf60.tst">rout-ospf60.tst</a></td><td>success</td><td>ospf with pmtud</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pbr01.tst">rout-pbr01.tst</a></td><td>success</td><td>policy routing with nexthop</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pbr02.tst">rout-pbr02.tst</a></td><td>success</td><td>policy routing with interface and nexthop between vrfs</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pbr03.tst">rout-pbr03.tst</a></td><td>success</td><td>policy routing with interface and nexthop</td></tr>
@@ -3270,6 +3273,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rift26.tst">rout-rift26.tst</a></td><td>success</td><td>rift dynamic icmp metric</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rift27.tst">rout-rift27.tst</a></td><td>success</td><td>rift dynamic udp metric</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rift28.tst">rout-rift28.tst</a></td><td>success</td><td>rift dynamic twamp metric</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift29.tst">rout-rift29.tst</a></td><td>success</td><td>rift with pmtud</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip01.tst">rout-rip01.tst</a></td><td>success</td><td>rip on one subnet</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip02.tst">rout-rip02.tst</a></td><td>success</td><td>rip in chain</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip03.tst">rout-rip03.tst</a></td><td>success</td><td>rip ingress route filtering with prefixlist</td></tr>
