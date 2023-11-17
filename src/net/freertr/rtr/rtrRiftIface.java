@@ -14,6 +14,11 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
+import net.freertr.prt.prtUdp;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoCls;
+import net.freertr.sec.secInfoUtl;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userFormat;
@@ -32,6 +37,16 @@ import net.freertr.util.state;
  * @author matecsaba
  */
 public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdClnt, prtServP {
+
+    /**
+     * ipinfo result
+     */
+    public secInfoWrk ipInfoRes;
+
+    /**
+     * ipinfo config
+     */
+    public secInfoCfg ipInfoCfg;
 
     /**
      * hello interval
@@ -274,6 +289,7 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
+        secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + "ipinfo ");
         String a;
         switch (dynamicMetric) {
             case 0:
@@ -322,8 +338,7 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
         l.add(null, "5 .           <num>                     time in ms");
         l.add(null, "4 5         dead-time                   time before neighbor down");
         l.add(null, "5 .           <num>                     time in ms");
-        ///// clntPmtudWrk.getHelp(l, 4);
-        ///// ipinfo
+        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
         l.add(null, "4 5         dynamic-metric            dynamic peer metric");
         l.add(null, "5 6           mode                    dynamic peer metric");
         l.add(null, "6 .             disabled              forbid echo requests");
@@ -367,6 +382,10 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
      * @param cmd parameters
      */
     public void routerDoConfig(String a, cmds cmd) {
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -471,6 +490,10 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -853,6 +876,11 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
                 logger.error("neighbor " + name + " (" + peer + ") miscabled");
                 return false;
             }
+            if (ipInfoCfg != null) {
+                secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, peer, prtUdp.protoNum, iface.addr);
+                ipInfoRes = new secInfoWrk(ipInfoCfg, cls, null);
+                ipInfoRes.doWork(true);
+            }
             logger.warn("neighbor " + name + " (" + peer + ") up");
             upTime = bits.getTime();
             tieCnt = 0;
@@ -975,6 +1003,18 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
                 return;
             }
             notif.sleep(helloTimer);
+            if (ipInfoRes != null) {
+                if (ipInfoRes.need2drop()) {
+                    iface.bfdDel(peer, this);
+                    if (connU != null) {
+                        connU.setClosing();
+                        connU = null;
+                    }
+                    ready = false;
+                    lower.notif.wakeup();
+                    continue;
+                }
+            }
             try {
                 sendLie();
                 if (!ready) {
@@ -1018,13 +1058,13 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
                     continue;
                 }
                 logger.error("neighbor " + name + " (" + peer + ") down");
-                lower.notif.wakeup();
                 iface.bfdDel(peer, this);
                 if (connU != null) {
                     connU.setClosing();
                     connU = null;
                 }
                 ready = false;
+                lower.notif.wakeup();
             } catch (Exception e) {
                 logger.traceback(e);
             }
@@ -1039,6 +1079,7 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
         nonceL = bits.randomW();
         nonceR = 0;
         lastHeard = 0;
+        lower.notif.wakeup();
     }
 
 }

@@ -10,6 +10,8 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipPrt;
 import net.freertr.pack.packHolder;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
 import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.user.userHelping;
@@ -26,6 +28,11 @@ import net.freertr.util.state;
  * @author matecsaba
  */
 public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
+
+    /**
+     * ipinfo config
+     */
+    public secInfoCfg ipInfoCfg;
 
     /**
      * list of neighbors
@@ -337,6 +344,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             cmds.cfgLine(l, brIndex < 1, cmds.tabulator, a + "index", "" + brIndex);
             cmds.cfgLine(l, brSub < 1, cmds.tabulator, a + "subdomain", "" + brSub);
         }
+        secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + "ipinfo ");
         switch (dynamicMetric) {
             case 0:
                 a = "disabled";
@@ -575,6 +583,10 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             cmd.badCmd();
             return;
         }
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -738,6 +750,10 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             cmd.badCmd();
             return;
         }
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -808,8 +824,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         l.add(null, "6 .             <num>               index");
         l.add(null, "5 6           subdomain             set subdomain");
         l.add(null, "6 .             <num>               index");
-        ///// clntPmtudWrk.getHelp(l, 4);
-        ///// ipinfo
+        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
         l.add(null, "4 5         dynamic-metric            dynamic peer metric");
         l.add(null, "5 6           mode                    dynamic peer metric");
         l.add(null, "6 .             disabled              forbid echo requests");

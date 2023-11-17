@@ -9,6 +9,8 @@ import net.freertr.clnt.clntPing;
 import net.freertr.clnt.clntTwamp;
 import net.freertr.ip.ipMpls;
 import net.freertr.pack.packHolder;
+import net.freertr.sec.secInfoCls;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabAverage;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabLabel;
@@ -25,6 +27,11 @@ import net.freertr.util.notifier;
  * @author matecsaba
  */
 public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6neigh> {
+
+    /**
+     * ipinfo result
+     */
+    public secInfoWrk ipInfoRes;
 
     private final rtrOspf6 lower;
 
@@ -776,6 +783,13 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
      * check timeout
      */
     protected void checkTimeout() {
+        if (ipInfoRes != null) {
+            if (ipInfoRes.need2drop()) {
+                stopNow();
+                area.schedWork(7);
+                return;
+            }
+        }
         long tim = bits.getTime();
         if ((tim - lastHeard) > deadInt) {
             stopNow();
@@ -959,6 +973,13 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
 
     public void run() {
         long last = 0;
+        if (iface.ipInfoCfg != null) {
+            addrIP adr = new addrIP();
+            adr.fromIPv6addr(peer);
+            secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, adr, rtrOspf6.protoNum, iface.iface.addr);
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls, null);
+            ipInfoRes.doWork(true);
+        }
         for (;;) {
             if (!need2run) {
                 break;

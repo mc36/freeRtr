@@ -6,6 +6,7 @@ import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrPrefix;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
+import net.freertr.sec.secInfoWrk;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -19,6 +20,11 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
+
+    /**
+     * ipinfo result
+     */
+    public secInfoWrk ipInfoRes;
 
     /**
      * prefixes learned from this neighbor

@@ -25,6 +25,8 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.state;
 import net.freertr.enc.encTlv;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
 
 /**
  * isis interface
@@ -32,6 +34,11 @@ import net.freertr.enc.encTlv;
  * @author matecsaba
  */
 public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
+
+    /**
+     * ipinfo config
+     */
+    public secInfoCfg ipInfoCfg;
 
     /**
      * the ip interface this works on
@@ -419,6 +426,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmds.cfgLine(l, brOthIdx < 1, cmds.tabulator, s + "other-index", "" + brOthIdx);
             cmds.cfgLine(l, brOthSub < 1, cmds.tabulator, s + "other-subdomain", "" + brOthSub);
         }
+        secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + "ipinfo ");
         switch (dynamicMetric) {
             case 0:
                 a = "disabled";
@@ -657,6 +665,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmd.badCmd();
             return;
         }
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -861,6 +873,10 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             cmd.badCmd();
             return;
         }
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -942,8 +958,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         l.add(null, "6 .             <num>                 index");
         l.add(null, "5 6           other-subdomain         set other subdomain");
         l.add(null, "6 .             <num>                 index");
-        ///// clntPmtudWrk.getHelp(l, 4);
-        ///// ipinfo
+        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
         l.add(null, "4 5         dynamic-metric            dynamic peer metric");
         l.add(null, "5 6           mode                    dynamic peer metric");
         l.add(null, "6 .             disabled              forbid echo requests");

@@ -20,6 +20,9 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.enc.encTlv;
+import net.freertr.prt.prtIsoip;
+import net.freertr.sec.secInfoCls;
+import net.freertr.sec.secInfoWrk;
 
 /**
  * isis neighbor
@@ -27,6 +30,11 @@ import net.freertr.enc.encTlv;
  * @author matecsaba
  */
 public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNeigh> {
+
+    /**
+     * ipinfo result
+     */
+    public secInfoWrk ipInfoRes;
 
     /**
      * peer mac address
@@ -641,6 +649,11 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             level.schedWork(7);
             return;
         }
+        if (iface.ipInfoCfg != null) {
+            secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, ifcAddr, prtIsoip.proto, iface.iface.addr);
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls, null);
+            ipInfoRes.doWork(true);
+        }
         logger.warn("neighbor level" + level.level + " " + ifcAddr + " up");
         advert.clear();
         if (lower.segrouLab != null) {
@@ -897,6 +910,13 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             stopNow();
             level.schedWork(7);
             return;
+        }
+        if (ipInfoRes != null) {
+            if (ipInfoRes.need2drop()) {
+                stopNow();
+                level.schedWork(7);
+                return;
+            }
         }
         if (peerAdjState != statUp) {
             return;

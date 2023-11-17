@@ -13,6 +13,8 @@ import net.freertr.util.debugger;
 import net.freertr.util.logger;
 import net.freertr.util.notifier;
 import net.freertr.enc.encTlv;
+import net.freertr.sec.secInfoCls;
+import net.freertr.sec.secInfoWrk;
 
 /**
  * eigrp neighbor
@@ -20,6 +22,11 @@ import net.freertr.enc.encTlv;
  * @author matecsaba
  */
 public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpNeigh> {
+
+    /**
+     * ipinfo result
+     */
+    public secInfoWrk ipInfoRes;
 
     /**
      * update
@@ -417,6 +424,15 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
     }
 
     public void run() {
+        if (iface.ipInfoCfg != null) {
+            secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, peer, rtrEigrp.protoNum, iface.iface.addr);
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls, null);
+            ipInfoRes.doWork(false);
+            if (ipInfoRes.need2drop()) {
+                stopWork();
+                return;
+            }
+        }
         logger.warn("neighbor " + peer + " up");
         if (iface.bfdTrigger) {
             iface.iface.bfdAdd(peer, this, "eigrp");

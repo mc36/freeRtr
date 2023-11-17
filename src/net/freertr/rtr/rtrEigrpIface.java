@@ -29,6 +29,8 @@ import net.freertr.util.logger;
 import net.freertr.util.state;
 import net.freertr.util.state.states;
 import net.freertr.enc.encTlv;
+import net.freertr.sec.secInfoCfg;
+import net.freertr.sec.secInfoUtl;
 
 /**
  * eigrp interface
@@ -36,6 +38,11 @@ import net.freertr.enc.encTlv;
  * @author matecsaba
  */
 public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
+
+    /**
+     * ipinfo config
+     */
+    public secInfoCfg ipInfoCfg;
 
     /**
      * hello interval
@@ -235,6 +242,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         cmds.cfgLine(l, roumapOut == null, cmds.tabulator, beg + "route-map-out", "" + roumapOut);
         cmds.cfgLine(l, roupolIn == null, cmds.tabulator, beg + "route-policy-in", "" + roupolIn);
         cmds.cfgLine(l, roupolOut == null, cmds.tabulator, beg + "route-policy-out", "" + roupolOut);
+        secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + "ipinfo ");
     }
 
     /**
@@ -273,6 +281,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         l.add(null, "5 .           <name:pl>             name of prefix list");
         l.add(null, "4 5         prefix-list-out         filter prefixes in egress updates");
         l.add(null, "5 .           <name:pl>             name of prefix list");
+        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
     }
 
     /**
@@ -314,6 +323,10 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
      * @param cmd parameters
      */
     public void routerDoConfig(String a, cmds cmd) {
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
+            return;
+        }
         if (a.equals("bfd")) {
             bfdTrigger = true;
             return;
@@ -439,6 +452,10 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
      * @param cmd parameters
      */
     public void routerUnConfig(String a, cmds cmd) {
+        if (a.equals("ipinfo")) {
+            ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
+            return;
+        }
         if (a.equals("bfd")) {
             bfdTrigger = false;
             return;
