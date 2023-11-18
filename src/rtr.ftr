@@ -3343,7 +3343,6 @@ todo: flash ext-delete also to commander
 todo: commander to get away the cursor
 todo: player queue up down add-again
 todo: openflow to have 2 label support and stack to p4lang
-todo: redundancy to have the remote shows and a counter on how many failures observed
 todo: bridge and router have renumber knob
 todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says

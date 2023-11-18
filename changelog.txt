@@ -15468,3 +15468,5 @@ qc pass: eigrp with pmtud
 qc pass: isis with pmtud
 qc pass: ospf with pmtud
 qc pass: rift with pmtud
+---------------------------------- 2023-11-18 12:54:32 23.11.18
+no todo: redundancy to have the remote shows and a counter on how many failures observed
