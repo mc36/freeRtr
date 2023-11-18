@@ -1100,8 +1100,8 @@ public class userExec {
         hl.add(null, "3 .        description           interface description");
         hl.add(null, "3 .        core                  core hash");
         hl.add(null, "3 .        config                config hash");
-        hl.add(null, "3 .        platform              remote platform");
-        hl.add(null, "3 .        remote-status         remote redundany");
+        hl.add(null, "3 4        remote                remote command");
+        hl.add(null, "4 4,.        [str]               string to execute");
         hl.add(null, "2 .      name-cache              local dns cache");
         hl.add(null, "2 3      as-name                 name of an as");
         hl.add(null, "3 .        <num>                 as name to show");

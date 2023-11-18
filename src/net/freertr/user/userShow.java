@@ -512,12 +512,8 @@ public class userShow {
                 rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnStart));
                 return null;
             }
-            if (a.equals("platform")) {
-                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnPlatform));
-                return null;
-            }
-            if (a.equals("remote-status")) {
-                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnRemRedun));
+            if (a.equals("remote")) {
+                rdr.putStrArr(prtRedun.doShowCmd(cmd.getRemaining()));
                 return null;
             }
             rdr.putStrTab(prtRedun.doShowStatus());

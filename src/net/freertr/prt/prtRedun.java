@@ -13,9 +13,13 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.util.cmds;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packRedundancy;
+import net.freertr.pipe.pipeLine;
+import net.freertr.pipe.pipeSetting;
 import net.freertr.pipe.pipeSide;
+import net.freertr.user.userExec;
 import net.freertr.user.userFlash;
 import net.freertr.user.userFormat;
+import net.freertr.user.userReader;
 import net.freertr.user.userUpgrade;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -80,6 +84,7 @@ public class prtRedun implements Runnable {
             }
             if (ifc.reach.set(0) != 0) {
                 logger.error("peer down on " + ifc);
+                ifc.changes++;
             }
         }
     }
@@ -103,11 +108,11 @@ public class prtRedun implements Runnable {
      * @return output
      */
     public static userFormat doShowStatus() {
-        userFormat l = new userFormat("|", "iface|reach|state|prio|uptime|magic|heard");
-        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|" + bits.padBeg(bits.toHexD(magic), 8, "0") + "|-");
+        userFormat l = new userFormat("|", "iface|reach|state|prio|uptime|changes|magic|heard");
+        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|-|" + bits.padBeg(bits.toHexD(magic), 8, "0") + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.last.magic + "|" + bits.timePast(ifc.heard));
+            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.changes + "|" + ifc.last.magic + "|" + bits.timePast(ifc.heard));
         }
         return l;
     }
@@ -144,6 +149,28 @@ public class prtRedun implements Runnable {
                 got = "nothing";
             }
             l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + mine.equals(got) + "|" + got);
+        }
+        return l;
+    }
+
+    /**
+     * generate show output
+     *
+     * @param cmd command
+     * @return output
+     */
+    public static List<String> doShowCmd(String cmd) {
+        List<String> l = new ArrayList<String>();
+        for (int i = 0; i < ifaces.size(); i++) {
+            prtRedunIfc ifc = ifaces.get(i);
+            l.add("");
+            l.add(cmds.errbeg + " command " + cmd + " on " + ifc.name + ", " + ifc.descr + ":");
+            List<String> got = ifc.doCmd(cmd);
+            if (got == null) {
+                l.add("nothing");
+                continue;
+            }
+            l.addAll(got);
         }
         return l;
     }
@@ -370,6 +397,8 @@ class prtRedunIfc implements ifcUp {
 
     public long heard;
 
+    public int changes;
+
     public int dualAct;
 
     public notifier notif = new notifier();
@@ -420,6 +449,7 @@ class prtRedunIfc implements ifcUp {
         if (pckP.peer == prtRedun.magic) {
             if (reach.set(3) != 3) {
                 logger.warn("peer up on " + name);
+                changes++;
             }
         } else {
             if (reach.set(1) >= 1) {
@@ -493,7 +523,7 @@ class prtRedunIfc implements ifcUp {
                 doAck(i);
                 break;
             case packRedundancy.typFilEnd:
-                try {
+            try {
                 filRx.close();
             } catch (Exception e) {
                 logger.error("unable to close file");
@@ -501,6 +531,11 @@ class prtRedunIfc implements ifcUp {
             }
             filRx = null;
             a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+            if (a.equals(packRedundancy.fnShow)) {
+                lastFileHash = filNm;
+                doAck(-3);
+                break;
+            }
             String b = prtRedun.wireName2fileName(a);
             logger.info("received file " + a + " as " + b);
             if (b == null) {
@@ -532,6 +567,39 @@ class prtRedunIfc implements ifcUp {
                 cfgInit.redunPrio = pck.msbGetD(0);
                 logger.info("priority changed to " + cfgInit.redunPrio);
                 doAck(-5);
+                break;
+            case packRedundancy.typExecCmd:
+                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+                logger.info("exec command " + a);
+                doAck(-6);
+                pipeLine pl = new pipeLine(1024 * 1024, false);
+                pipeSide pip = pl.getSide();
+                pip.lineTx = pipeSide.modTyp.modeCRLF;
+                pip.lineRx = pipeSide.modTyp.modeCRorLF;
+                userReader rdr = new userReader(pip, null);
+                pip.settingsPut(pipeSetting.height, 0);
+                userExec exe = new userExec(pip, rdr);
+                exe.privileged = true;
+                pip.setTime(120000);
+                a = exe.repairCommand(a);
+                exe.executeCommand(a);
+                pip = pl.getSide();
+                pl.setClose();
+                pip.lineTx = pipeSide.modTyp.modeCRLF;
+                pip.lineRx = pipeSide.modTyp.modeCRtryLF;
+                List<String> lst = new ArrayList<String>();
+                for (;;) {
+                    if (pip.ready2rx() < 1) {
+                        break;
+                    }
+                    a = pip.lineGet(1);
+                    if (a.length() < 1) {
+                        continue;
+                    }
+                    lst.add(a);
+                }
+                a = version.getRWpath() + "exe" + bits.randomD() + ".tmp";
+                new prtRedunExec(this, a, lst);
                 break;
         }
     }
@@ -568,6 +636,29 @@ class prtRedunIfc implements ifcUp {
         }
         logger.error("peer does not respond");
         return true;
+    }
+
+    public List<String> doCmd(String fn) {
+        packHolder pck = new packHolder(true, true);
+        pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
+        pck.putSkip(packRedundancy.dataMax);
+        doPack(packRedundancy.typExecCmd, pck);
+        for (int i = 0; i < 10; i++) {
+            bits.sleep(cfgAll.redundancyKeep / 10);
+            if (lastFileHash != null) {
+                break;
+            }
+        }
+        if (lastFileHash == null) {
+            return bits.str2lst("timeout getting show");
+        }
+        List<String> res = bits.txt2buf(lastFileHash);
+        userFlash.delete(lastFileHash);
+        lastFileHash = null;
+        if (res == null) {
+            return bits.str2lst("error reading show");
+        }
+        return res;
     }
 
     public String doHash(String fn) {
@@ -675,6 +766,34 @@ class prtRedunIfc implements ifcUp {
             return true;
         }
         return false;
+    }
+
+}
+
+class prtRedunExec implements Runnable {
+
+    public final prtRedunIfc ifc;
+
+    public final String fn;
+
+    public final List<String> txt;
+
+    public prtRedunExec(prtRedunIfc i, String a, List<String> l) {
+        ifc = i;
+        fn = a;
+        txt = l;
+        new Thread(this).start();
+    }
+
+    public void run() {
+        if (bits.buf2txt(true, txt, fn)) {
+            logger.error("unable to save file");
+            userFlash.delete(fn);
+            return;
+        }
+        txt.clear();
+        ifc.doFile(fn, packRedundancy.fnShow);
+        userFlash.delete(fn);
     }
 
 }

@@ -69,6 +69,11 @@ public class packRedundancy {
     public final static int typSetPri = 9;
 
     /**
+     * execute command
+     */
+    public final static int typExecCmd = 10;
+
+    /**
      * config file
      */
     public final static String fnStart = "config";
@@ -79,14 +84,9 @@ public class packRedundancy {
     public final static String fnCore = "code";
 
     /**
-     * show platform
+     * show file
      */
-    public final static String fnPlatform = "platform";///////////////////
-
-    /**
-     * show redundancy
-     */
-    public final static String fnRemRedun = "redunstat";//////////////////
+    public final static String fnShow = "show";
 
     /**
      * init
