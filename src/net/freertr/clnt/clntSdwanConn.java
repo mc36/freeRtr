@@ -1,6 +1,8 @@
 package net.freertr.clnt;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
@@ -69,6 +71,16 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
      */
     public String name;
 
+    /**
+     * list of protocols
+     */
+    public List<clntSdwan.protoTyp> protol;
+
+    /**
+     * selected protocol
+     */
+    public clntSdwan.protoTyp protos;
+
     private cfgIfc ifc;
 
     private ifcUp upper = new ifcNull();
@@ -124,6 +136,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         peer6 = new addrIP();
         peer6.fromString(cmd.word());
         name = cmd.word();
+        protol = new ArrayList<clntSdwan.protoTyp>();
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -141,6 +154,23 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
                 frags = bits.str2num(cmd.word());
                 continue;
             }
+            if (!a.startsWith(clntSdwan.protoBeg)) {
+                continue;
+            }
+            a = a.substring(clntSdwan.protoLen, a.length());
+            clntSdwan.protoTyp p = clntSdwan.string2proto(a);
+            if (p == null) {
+                continue;
+            }
+            protol.add(p);
+        }
+        if (protol.size() < 1) {
+            protol.add(clntSdwan.protoTyp.l2tp);
+        }
+        if (lower.myNum < num) {
+            protos = clntSdwan.selectProto(lower.protol, protol);
+        } else {
+            protos = clntSdwan.selectProto(protol, lower.protol);
         }
     }
 
@@ -234,7 +264,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
      * @param l list to update
      */
     protected void getShow(userFormat l) {
-        l.add(name + "|" + addr + "|" + port + "|" + num + "|" + ifc.name + "|" + peer4 + "|" + peer6);
+        l.add(name + "|" + protos + "|" + addr + "|" + port + "|" + num + "|" + ifc.name + "|" + peer4 + "|" + peer6);
     }
 
     public addrType getHwAddr() {

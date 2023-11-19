@@ -1,5 +1,7 @@
 package net.freertr.clnt;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
@@ -7,6 +9,7 @@ import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgInit;
+import net.freertr.cfg.cfgIpsec;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcUp;
@@ -43,6 +46,115 @@ public class clntSdwan implements Runnable, ifcDn {
      * create instance
      */
     public clntSdwan() {
+    }
+
+    /**
+     * protocol kinds
+     */
+    protected enum protoTyp {
+        /**
+         * l2tp
+         */
+        l2tp,
+        /**
+         * l3tp
+         */
+        l3tp,
+        /**
+         * gre
+         */
+        gre,
+        /**
+         * ipip
+         */
+        ipip,
+        /**
+         * gtp
+         */
+        gtp,
+        /**
+         * amt
+         */
+        amt,
+        /**
+         * ipsec
+         */
+        esp,
+        /**
+         * openvpn
+         */
+        ovpn,
+        /**
+         * wireguard
+         */
+        wg,
+    }
+
+    /**
+     * beginning of protocols
+     */
+    public final static String protoBeg = "proto-";
+
+    /**
+     * length of protocols
+     */
+    public final static int protoLen = protoBeg.length();
+
+    /**
+     * convert string to protocol
+     *
+     * @param s string to convert
+     * @return protocol or null if error
+     */
+    public static protoTyp string2proto(String s) {
+        if (s.equals("l2tp")) {
+            return protoTyp.l2tp;
+        }
+        if (s.equals("l3tp")) {
+            return protoTyp.l3tp;
+        }
+        if (s.equals("gre")) {
+            return protoTyp.gre;
+        }
+        if (s.equals("ipip")) {
+            return protoTyp.ipip;
+        }
+        if (s.equals("gtp")) {
+            return protoTyp.gtp;
+        }
+        if (s.equals("amt")) {
+            return protoTyp.amt;
+        }
+        if (s.equals("esp")) {
+            return protoTyp.esp;
+        }
+        if (s.equals("ovpn")) {
+            return protoTyp.ovpn;
+        }
+        if (s.equals("wg")) {
+            return protoTyp.wg;
+        }
+        return null;
+    }
+
+    /**
+     * select protocol
+     *
+     * @param p1 first list
+     * @param p2 second list
+     * @return selected protocol, null if none
+     */
+    public static protoTyp selectProto(List<protoTyp> p1, List<protoTyp> p2) {
+        for (int o = 0; o < p1.size(); o++) {
+            protoTyp n = p1.get(o);
+            for (int i = 0; i < p2.size(); i++) {
+                protoTyp c = p2.get(i);
+                if (c == n) {
+                    return c;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -89,6 +201,21 @@ public class clntSdwan implements Runnable, ifcDn {
      * control protocol preference
      */
     public int prefer;
+
+    /**
+     * protocol names
+     */
+    public String protos;
+
+    /**
+     * list of protocols
+     */
+    public List<protoTyp> protol;
+
+    /**
+     * ipsec protection
+     */
+    public cfgIpsec protect;
 
     /**
      * pubkey to use
@@ -312,6 +439,24 @@ public class clntSdwan implements Runnable, ifcDn {
         if (prefer < 1) {
             prefer = clntDns.getPriPref();
         }
+        protol = new ArrayList<protoTyp>();
+        if (protos != null) {
+            cmds cmd = new cmds("prt", protos);
+            for (;;) {
+                String a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                protoTyp p = string2proto(a);
+                if (p == null) {
+                    continue;
+                }
+                protol.add(p);
+            }
+        }
+        if (protol.size() < 1) {
+            protol.add(protoTyp.l2tp);
+        }
         new Thread(this).start();
     }
 
@@ -407,6 +552,9 @@ public class clntSdwan implements Runnable, ifcDn {
         sendLn("needaddr " + (clonIfc.addr4 != null) + " " + (clonIfc.addr6 != null));
         sendLn("myaddr " + clonIfc.addr4 + " " + clonIfc.addr6);
         String a = "";
+        for (int i = 0; i < protol.size(); i++) {
+            a += " proto-" + protol.get(i);
+        }
         if (clonIfc.disableMacsec) {
             a += " nomacsec";
         }
@@ -478,6 +626,9 @@ public class clntSdwan implements Runnable, ifcDn {
             if (ntry.ver != prefer) {
                 return false;
             }
+            if (ntry.protos == null) {
+                return false;
+            }
             clntSdwanConn old = peers.del(ntry);
             if (old != null) {
                 old.workStop();
@@ -508,7 +659,7 @@ public class clntSdwan implements Runnable, ifcDn {
      * @return state
      */
     public userFormat getShow() {
-        userFormat l = new userFormat("|", "user|peer|port|num|iface|addr4|addr6");
+        userFormat l = new userFormat("|", "user|proto|peer|port|num|iface|addr4|addr6");
         for (int i = 0; i < peers.size(); i++) {
             clntSdwanConn ntry = peers.get(i);
             if (ntry == null) {

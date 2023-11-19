@@ -117,6 +117,16 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
     public String calling;
 
     /**
+     * other parameters
+     */
+    public String params;
+
+    /**
+     * ipsec protection
+     */
+    public cfgIpsec protect;
+
+    /**
      * public key
      */
     public byte[] pubkey;
@@ -418,6 +428,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         "vpdn .*! no target",
         "vpdn .*! no called",
         "vpdn .*! no calling",
+        "vpdn .*! no params",
+        "vpdn .*! no crypto",
         "vpdn .*! no pubkey",
         "vpdn .*! no username",
         "vpdn .*! no password",
@@ -689,6 +701,12 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         cmds.cfgLine(l, password == null, cmds.tabulator, "password", authLocal.passwdEncode(password, (filter & 2) != 0));
         cmds.cfgLine(l, called == null, cmds.tabulator, "called", called);
         cmds.cfgLine(l, calling == null, cmds.tabulator, "calling", calling);
+        cmds.cfgLine(l, params == null, cmds.tabulator, "params", params);
+        if (protect == null) {
+            l.add(cmds.tabulator + "no crypto");
+        } else {
+            l.add(cmds.tabulator + "crypto " + protect.name);
+        }
         cmds.cfgLine(l, pwmtu == 0, cmds.tabulator, "mtu", "" + pwmtu);
         cmds.cfgLine(l, vcid == 0, cmds.tabulator, "vcid", "" + vcid);
         String s;
@@ -785,6 +803,10 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         l.add(null, "2 .      <str>                        called number");
         l.add(null, "1 2    calling                        specify calling number");
         l.add(null, "2 .      <str>                        calling number");
+        l.add(null, "1 2    crypto                         specify protection");
+        l.add(null, "2 .      <name:ips>                   name of ipsec profile");
+        l.add(null, "1 2    params                         specify other parameters");
+        l.add(null, "2 2,.    <str>                        calling number");
         l.add(null, "1 2    pubkey                         specify public key");
         l.add(null, "2 2,.    <str>                        public key");
         l.add(null, "1 2    username                       specify username");
@@ -943,6 +965,19 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             calling = cmd.word();
             return;
         }
+        if (s.equals("params")) {
+            params = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("crypto")) {
+            cfgIpsec ips = cfgAll.ipsecFind(cmd.word(), false);
+            if (ips == null) {
+                cmd.error("no such profile");
+                return;
+            }
+            protect = ips;
+            return;
+        }
         if (s.equals("mtu")) {
             pwmtu = bits.str2num(cmd.word());
             return;
@@ -1021,6 +1056,14 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("calling")) {
             calling = null;
+            return;
+        }
+        if (s.equals("params")) {
+            params = null;
+            return;
+        }
+        if (s.equals("crypto")) {
+            protect = null;
             return;
         }
         if (s.equals("mtu")) {
@@ -1326,6 +1369,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
                 sdwan.passPerc = bits.str2num("" + called);
                 sdwan.pubkey = pubkey;
                 sdwan.prefer = prefer;
+                sdwan.protos = params;
+                sdwan.protect = protect;
                 sdwan.srcVrf = proxy.vrf;
                 sdwan.srcIfc = proxy.srcIfc;
                 sdwan.username = username;

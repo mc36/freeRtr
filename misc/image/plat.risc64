@@ -1,0 +1,10 @@
+arch riscv64
+kern riscv64
+grub efi-riscv64-bin
+boot riscv64-efi
+uefi bootx64.efi
+image ../binImg/rtr-risc64
+
+include ../misc/image/image.bas
+
+select-one linux-image-%kern%             #regular kernel

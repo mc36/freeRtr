@@ -1,0 +1,10 @@
+arch armhf
+kern armmp
+grub efi-arm-bin
+boot armhf-efi
+uefi boota32.efi
+image ../binImg/rtr-arm32
+
+include ../misc/image/image.bas
+
+select-one linux-image-%kern%             #regular kernel
