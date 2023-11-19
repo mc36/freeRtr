@@ -476,7 +476,6 @@ qc pass: p4lang: bridging over l2tp3
 qc pass: p4lang: bridging over l2tp3 vlan
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
-todo: generalize dynamic-metric knobs
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
@@ -490,7 +489,6 @@ todo: flash ext-delete also to commander
 todo: commander to get away the cursor
 todo: player queue up down add-again
 todo: openflow to have 2 label support and stack to p4lang
-todo: redundancy to have the remote shows and a counter on how many failures observed
 todo: bridge and router have renumber knob
 todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
@@ -594,12 +592,9 @@ todo: server http / host * custom-local <text>
 todo: server http / host * custom-remote >path/file>
 todo: server http / host * user-agent matcher with redirect
 todo: server http / host * searchbar
-todo: server smtp / ptmud
-todo: server http / host * ptmud
 todo: test access-list <acl> <src> <trg>
 todo: serevr security maximum pendings as access-security
 todo: servers to have access-aaa
-todo: sho bgp * auto-summarize
 todo: config committed with check for saved and backup config
 todo: terminal background and foreground
 todo: interface lo0 as lo-core, persistently
