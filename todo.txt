@@ -67,8 +67,6 @@ menu remote asdf
 
 onehit to all the menus
 
-sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
-
 mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 
 route-map --> route-policy converter
