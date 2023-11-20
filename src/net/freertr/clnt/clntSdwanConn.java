@@ -10,10 +10,8 @@ import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
-import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
-import net.freertr.pack.packL2tp2;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.user.userFormat;
@@ -228,7 +226,7 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         conn.sendTTL = lower.sendingTTL;
         switch (protos) {
             case l2tp:
-                prtL2tp2.setConnection(conn, peerId, lower.myNum);
+                prtL2tp2.setConnection(conn, lower.myNum, peerId, peerId, lower.myNum);
                 break;
         }
     }
@@ -248,6 +246,8 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
                 wrkrIfDn = prtL2tp2;
                 wrkrPrtCl = prtL2tp2;
                 break;
+            default:
+                return;
         }
         doReconnect();
         ifc = lower.clonIfc.cloneStart(wrkrIfDn);
@@ -281,6 +281,23 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         new Thread(this).start();
     }
 
+    public void run() {
+        for (;;) {
+            bits.sleep(1000);
+            if (!need2work) {
+                break;
+            }
+            if (conn == null) {
+                doReconnect();
+                continue;
+            }
+            if (conn.txBytesFree() < 0) {
+                doReconnect();
+                continue;
+            }
+        }
+    }
+
     /**
      * get show
      *
@@ -288,55 +305,6 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
      */
     protected void getShow(userFormat l) {
         l.add(name + "|" + protos + "|" + addr + "|" + port + "|" + peerId + "|" + ifc.name + "|" + peer4 + "|" + peer6);
-    }
-
-    public addrType getHwAddr() {
-        return new addrEmpty();
-    }
-
-    public void setFilter(boolean promisc) {
-    }
-
-    public state.states getState() {
-        return state.states.up;
-    }
-
-    public void closeDn() {
-    }
-
-    public void flapped() {
-    }
-
-    public void setUpper(ifcUp server) {
-        upper = server;
-        upper.setParent(prtL2tp2);
-    }
-
-    public counter getCounter() {
-        return cntr;
-    }
-
-    public int getMTUsize() {
-        return 1400;
-    }
-
-    public long getBandwidth() {
-        return 8000000;
-    }
-
-    public synchronized void sendPack(packHolder pck) {
-        if (conn == null) {
-            cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
-        packL2tp2 tx = new packL2tp2();
-        tx.ctrl = false;
-        tx.sesID = peerId;
-        tx.tunID = lower.myNum;
-        tx.createHeader(pck);
-        cntr.tx(pck);
-        pck.putDefaults();
-        conn.send2net(pck);
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
@@ -379,99 +347,6 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
 
     public boolean datagramState(prtGenConn id, state.states stat) {
         return false;
-    }
-
-    /**
-     * get forwarder
-     *
-     * @return forwarder used
-     */
-    public ipFwd getFwder() {
-        return lower.fwdCor;
-    }
-
-    /**
-     * get local address
-     *
-     * @return address
-     */
-    public addrIP getAddrLoc() {
-        return lower.fwdIfc.addr;
-    }
-
-    /**
-     * get remote address
-     *
-     * @return address
-     */
-    public addrIP getAddrRem() {
-        return addr.copyBytes();
-    }
-
-    /**
-     * get local port number
-     *
-     * @return session id, 0 if no session
-     */
-    public int getPortLoc() {
-        if (ifc.ppp != null) {
-            if (ifc.ppp.getState() != state.states.up) {
-                return -1;
-            }
-        }
-        if (ifc.frmrly != null) {
-            if (ifc.frmrly.getState() != state.states.up) {
-                return -1;
-            }
-        }
-        return lower.dataPort;
-    }
-
-    /**
-     * get remote port number
-     *
-     * @return session id, 0 if no session
-     */
-    public int getPortRem() {
-        if (conn == null) {
-            return -1;
-        }
-        return conn.portRem;
-    }
-
-    /**
-     * get remote session id
-     *
-     * @return session id, 0 if no session
-     */
-    public int getSessRem() {
-        return peerId;
-    }
-
-    /**
-     * get remote tunn id
-     *
-     * @return session id, 0 if no tunnel
-     */
-    public int getTunnRem() {
-        return lower.myNum;
-    }
-
-    public void run() {
-        for (;;) {
-            bits.sleep(1000);
-            if (!need2work) {
-                break;
-            }
-            if (conn == null) {
-                doReconnect();
-                continue;
-            }
-            if (conn.txBytesFree() < 0) {
-                doReconnect();
-                continue;
-            }
-        }
     }
 
 }

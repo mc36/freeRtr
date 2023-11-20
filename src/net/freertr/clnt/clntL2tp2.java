@@ -228,15 +228,17 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
      * set connection
      *
      * @param id connection
-     * @param ses session id
-     * @param tun tunnel id
+     * @param tr tunnel id
+     * @param tl tunnel id
+     * @param sr session id
+     * @param sl session id
      */
-    public void setConnection(prtGenConn id, int tun, int ses) {
+    public void setConnection(prtGenConn id, int tr, int tl, int sr, int sl) {
         conn = id;
-        tunRem = tun;
-        tunLoc = ses;
-        sesRem = ses;
-        sesLoc = tun;
+        tunRem = tr;
+        tunLoc = tl;
+        sesRem = sr;
+        sesLoc = sl;
     }
 
     /**

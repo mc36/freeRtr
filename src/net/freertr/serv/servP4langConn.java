@@ -12,7 +12,6 @@ import net.freertr.cfg.cfgIconn;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntPckOudp;
-import net.freertr.clnt.clntSdwanConn;
 import net.freertr.clnt.clntVxlan;
 import net.freertr.ifc.ifcBridgeAdr;
 import net.freertr.ifc.ifcBridgeIfc;
@@ -2713,74 +2712,6 @@ public class servP4langConn implements Runnable {
                     afi = "6";
                 }
                 String a = "l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses + " " + frg;
-                nei.sentEnc = a;
-                lower.sendLine(a);
-            } catch (Exception e) {
-            }
-            try {
-                clntSdwanConn ntry = (clntSdwanConn) ifc.ifc.lower;
-                addrIP src = ntry.getAddrLoc();
-                if (src == null) {
-                    return;
-                }
-                addrIP trg = ntry.getAddrRem();
-                if (trg == null) {
-                    return;
-                }
-                ipFwd ofwd = ntry.getFwder();
-                servP4langVrf ovrf = lower.findVrf(ofwd);
-                if (ovrf == null) {
-                    return;
-                }
-                servP4langNei hop = lower.findHop(ofwd, trg);
-                if (hop == null) {
-                    return;
-                }
-                if (hop.mac == null) {
-                    return;
-                }
-                int tun = ntry.getTunnRem();
-                if (tun < 1) {
-                    return;
-                }
-                int ses = ntry.getSessRem();
-                if (ses < 1) {
-                    return;
-                }
-                tun = (tun << 16) | ses;
-                int lp = ntry.getPortLoc();
-                if (lp < 1) {
-                    return;
-                }
-                int rp = ntry.getPortRem();
-                if (rp < 1) {
-                    return;
-                }
-                String act;
-                if (nei.mac == null) {
-                    act = "add";
-                } else {
-                    act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
-                        return;
-                    }
-                }
-                nei.viaH = hop;
-                nei.mac = hop.mac.copyBytes();
-                nei.sentIfc = hop.sentIfc;
-                nei.sentTun = rp;
-                int frg = -1;
-                try {
-                    frg = ifc.ifc.ppp.fragLen;
-                } catch (Exception e) {
-                }
-                String afi;
-                if (trg.isIPv4()) {
-                    afi = "4";
-                } else {
-                    afi = "6";
-                }
-                String a = "l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun + " " + frg;
                 nei.sentEnc = a;
                 lower.sendLine(a);
             } catch (Exception e) {
