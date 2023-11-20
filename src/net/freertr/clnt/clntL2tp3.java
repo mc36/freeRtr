@@ -230,6 +230,56 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
     }
 
     /**
+     * set connection
+     *
+     * @param ifc interface
+     * @param adr address
+     * @param ip forwarder
+     * @param sr session id
+     * @param sl session id
+     */
+    public void setConnection(ipFwdIface ifc, addrIP adr, ipFwd ip, int sr, int sl) {
+        fwdCor = ip;
+        fwdTrg = adr.copyBytes();
+        fwdIfc = ifc;
+        sesRem = sr;
+        sesLoc = sl;
+    }
+
+    /**
+     * get remote address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrRem() {
+        if (sesRem == 0) {
+            return null;
+        }
+        return fwdTrg;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrLoc() {
+        if (sesRem == 0) {
+            return null;
+        }
+        return fwdIfc.addr;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public ipFwd getFwd() {
+        return fwdCor;
+    }
+
+    /**
      * get remote session id
      *
      * @return session id, 0 if no session

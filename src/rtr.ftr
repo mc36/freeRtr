@@ -3324,6 +3324,8 @@ qc pass: sdwan over ipv6
 qc pass: sdwan with fixed addresses
 qc pass: sdwan hub and spoke
 qc pass: sdwan with mixed addresses
+qc pass: sdwan with l2tp2 and l2tp3
+qc pass: sdwan with l2tp2 and gre
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server

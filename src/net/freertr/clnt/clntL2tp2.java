@@ -376,6 +376,7 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
         if (trg == null) {
             return;
         }
+        fwdr = vrf.getFwd(trg);
         prtUdp udp = vrf.getUdp(trg);
         servL2tp2 srv = new servL2tp2();
         ipFwdIface fwdIfc = null;

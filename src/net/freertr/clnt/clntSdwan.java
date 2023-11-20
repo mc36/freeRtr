@@ -64,30 +64,6 @@ public class clntSdwan implements Runnable, ifcDn {
          * gre
          */
         gre,
-        /**
-         * ipip
-         */
-        ipip,
-        /**
-         * gtp
-         */
-        gtp,
-        /**
-         * amt
-         */
-        amt,
-        /**
-         * ipsec
-         */
-        esp,
-        /**
-         * openvpn
-         */
-        ovpn,
-        /**
-         * wireguard
-         */
-        wg,
     }
 
     /**
@@ -115,24 +91,6 @@ public class clntSdwan implements Runnable, ifcDn {
         }
         if (s.equals("gre")) {
             return protoTyp.gre;
-        }
-        if (s.equals("ipip")) {
-            return protoTyp.ipip;
-        }
-        if (s.equals("gtp")) {
-            return protoTyp.gtp;
-        }
-        if (s.equals("amt")) {
-            return protoTyp.amt;
-        }
-        if (s.equals("esp")) {
-            return protoTyp.esp;
-        }
-        if (s.equals("ovpn")) {
-            return protoTyp.ovpn;
-        }
-        if (s.equals("wg")) {
-            return protoTyp.wg;
         }
         return null;
     }

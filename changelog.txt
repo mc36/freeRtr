@@ -15470,3 +15470,6 @@ qc pass: ospf with pmtud
 qc pass: rift with pmtud
 ---------------------------------- 2023-11-18 12:54:32 23.11.18
 no todo: redundancy to have the remote shows and a counter on how many failures observed
+---------------------------------- 2023-11-20 21:23:37 23.11.20
+qc pass: sdwan with l2tp2 and l2tp3
+qc pass: sdwan with l2tp2 and gre

@@ -3,9 +3,7 @@ package net.freertr.clnt;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
-import net.freertr.addr.addrType;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
@@ -13,6 +11,7 @@ import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
+import net.freertr.prt.prtGre;
 import net.freertr.prt.prtServP;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
@@ -98,6 +97,10 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
     private prtServP wrkrPrtCl;
 
     private clntL2tp2 prtL2tp2;
+
+    private clntL2tp3 prtL2tp3;
+
+    private prtGre prtGre;
 
     /**
      * create instance
@@ -191,11 +194,27 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         if (conn != null) {
             conn.setClosing();
         }
+        switch (protos) {
+            case l3tp:
+                lower.fwdCor.protoDel(prtL2tp3, lower.fwdIfc, addr);
+                break;
+            case gre:
+                prtGre.closeDn();
+                break;
+        }
         ifc = null;
         conn = null;
     }
 
     private void doReconnect() {
+        switch (protos) {
+            case l3tp:
+                prtL2tp3.setConnection(lower.fwdIfc, addr, lower.fwdCor, peerId, lower.myNum);
+                return;
+            case gre:
+                prtGre.setEndpoints(lower.fwdIfc, addr, true);
+                return;
+        }
         if (conn != null) {
             conn.setClosing();
             conn = null;
@@ -246,6 +265,16 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
                 wrkrIfDn = prtL2tp2;
                 wrkrPrtCl = prtL2tp2;
                 break;
+            case l3tp:
+                prtL2tp3 = new clntL2tp3();
+                wrkrIfDn = prtL2tp3;
+                lower.fwdCor.protoAdd(prtL2tp3, lower.fwdIfc, addr);
+                break;
+            case gre:
+                prtGre = new prtGre(lower.fwdCor);
+                wrkrIfDn = prtGre;
+                lower.fwdCor.protoAdd(prtGre, lower.fwdIfc, addr);
+                break;
             default:
                 return;
         }
@@ -276,6 +305,12 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         switch (protos) {
             case l2tp:
                 prtL2tp2.setUpper(upper);
+                break;
+            case l3tp:
+                prtL2tp3.setUpper(upper);
+                break;
+            case gre:
+                prtGre.setUpper(upper);
                 break;
         }
         new Thread(this).start();
