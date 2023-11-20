@@ -225,6 +225,19 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * set connection
+     *
+     * @param id connection
+     * @param ses session id
+     * @param tun tunnel id
+     */
+    public void setConnection(prtGenConn id, int ses, int tun) {
+        conn = id;
+        sesRem = ses;
+        tunRem = tun;
+    }
+
+    /**
      * get local port number
      *
      * @return session id, 0 if no session
