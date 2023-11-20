@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.20-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-20 13:47:40, took 00:10:26, with 60 workers, on 476 cases, 4 failed, 0 traces, 12 retries
+-;-;-;2023-11-20 14:19:58, took 00:10:23, with 60 workers, on 476 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl01.tst;p4lang-acl01.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl02.tst;p4lang-acl02.tst;success;p4lang: ingress access list
@@ -373,10 +373,10 @@ http://sources.freertr.org/cfg/p4lang-rout166.tst;p4lang-rout166.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout167.tst;p4lang-rout167.tst;success;p4lang: bier vlan ingress edge
 http://sources.freertr.org/cfg/p4lang-rout168.tst;p4lang-rout168.tst;success;p4lang: bier core and egress edge
 http://sources.freertr.org/cfg/p4lang-rout169.tst;p4lang-rout169.tst;success;p4lang: vlan bier core and egress edge
-http://sources.freertr.org/cfg/p4lang-rout170.tst;p4lang-rout170.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0;p4lang: amt server over ipv4
-http://sources.freertr.org/cfg/p4lang-rout171.tst;p4lang-rout171.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0;p4lang: amt server over ipv6
-http://sources.freertr.org/cfg/p4lang-rout172.tst;p4lang-rout172.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0;p4lang: amt server over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout173.tst;p4lang-rout173.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0;p4lang: amt server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout170.tst;p4lang-rout170.tst;success;p4lang: amt server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout171.tst;p4lang-rout171.tst;success;p4lang: amt server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout172.tst;p4lang-rout172.tst;success;p4lang: amt server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout173.tst;p4lang-rout173.tst;success;p4lang: amt server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout174.tst;p4lang-rout174.tst;success;p4lang: autoroute to sr te over mpls
 http://sources.freertr.org/cfg/p4lang-rout175.tst;p4lang-rout175.tst;success;p4lang: autoroute to p2p te over mpls
 http://sources.freertr.org/cfg/p4lang-rout176.tst;p4lang-rout176.tst;success;p4lang: policy routing to sr te over mpls

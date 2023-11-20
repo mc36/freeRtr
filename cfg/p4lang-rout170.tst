@@ -44,7 +44,7 @@ int sdn1
  ipv4 addr 9.9.9.1 255.255.255.0
  exit
 int temp1
- enc raw
+ enc ppp
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::

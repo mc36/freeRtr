@@ -2594,18 +2594,18 @@ public class servP4langConn implements Runnable {
                 return;
             } catch (Exception e) {
             }
-            if (ifc.ifc.ppp != null) {
-                if (ifc.ifc.ppp.getState() != state.states.up) {
-                    return;
-                }
-            }
-            if (ifc.ifc.frmrly != null) {
-                if (ifc.ifc.frmrly.getState() != state.states.up) {
-                    return;
-                }
-            }
             try {
                 clntL2tp2 ntry = (clntL2tp2) ifc.ifc.lower;
+                if (ifc.ifc.ppp != null) {
+                    if (ifc.ifc.ppp.getState() != state.states.up) {
+                        return;
+                    }
+                }
+                if (ifc.ifc.frmrly != null) {
+                    if (ifc.ifc.frmrly.getState() != state.states.up) {
+                        return;
+                    }
+                }
                 ipFwd ofwd = ntry.getFwd();
                 servP4langVrf ovrf = lower.findVrf(ofwd);
                 if (ovrf == null) {

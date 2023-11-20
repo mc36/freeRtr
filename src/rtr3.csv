@@ -371,10 +371,10 @@ http://sources.freertr.org/cfg/p4lang-rout166.tst;p4lang-rout166.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout167.tst;p4lang-rout167.tst;ok;ok;ok;ok;not ok;p4lang: bier vlan ingress edge
 http://sources.freertr.org/cfg/p4lang-rout168.tst;p4lang-rout168.tst;ok;ok;ok;ok;not ok;p4lang: bier core and egress edge
 http://sources.freertr.org/cfg/p4lang-rout169.tst;p4lang-rout169.tst;ok;ok;ok;ok;not ok;p4lang: vlan bier core and egress edge
-http://sources.freertr.org/cfg/p4lang-rout170.tst;p4lang-rout170.tst;not ok;ok;ok;not ok;not ok;p4lang: amt server over ipv4
-http://sources.freertr.org/cfg/p4lang-rout171.tst;p4lang-rout171.tst;not ok;ok;ok;not ok;not ok;p4lang: amt server over ipv6
-http://sources.freertr.org/cfg/p4lang-rout172.tst;p4lang-rout172.tst;not ok;ok;ok;not ok;not ok;p4lang: amt server over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout173.tst;p4lang-rout173.tst;not ok;ok;ok;not ok;not ok;p4lang: amt server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout170.tst;p4lang-rout170.tst;ok;ok;ok;not ok;not ok;p4lang: amt server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout171.tst;p4lang-rout171.tst;ok;ok;ok;not ok;not ok;p4lang: amt server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout172.tst;p4lang-rout172.tst;ok;ok;ok;not ok;not ok;p4lang: amt server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout173.tst;p4lang-rout173.tst;ok;ok;ok;not ok;not ok;p4lang: amt server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout174.tst;p4lang-rout174.tst;ok;ok;ok;ok;ok;p4lang: autoroute to sr te over mpls
 http://sources.freertr.org/cfg/p4lang-rout175.tst;p4lang-rout175.tst;ok;ok;ok;ok;ok;p4lang: autoroute to p2p te over mpls
 http://sources.freertr.org/cfg/p4lang-rout176.tst;p4lang-rout176.tst;ok;ok;ok;ok;not ok;p4lang: policy routing to sr te over mpls
