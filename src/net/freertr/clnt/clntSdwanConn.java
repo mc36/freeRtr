@@ -29,7 +29,7 @@ import net.freertr.util.state;
  *
  * @author matecsaba
  */
-public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clntSdwanConn> {
+public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanConn> {
 
     /**
      * parent
@@ -54,7 +54,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
     /**
      * neighbor id
      */
-    public int num;
+    public int peerId;
 
     /**
      * inner ipv4
@@ -97,6 +97,10 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
 
     private boolean need2work = true;
 
+    private prtServP wrkrPrtCl;
+
+    private clntL2tp2 prtL2tp2;
+
     /**
      * create instance
      *
@@ -130,7 +134,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         addr = new addrIP();
         addr.fromString(cmd.word());
         port = bits.str2num(cmd.word());
-        num = bits.str2num(cmd.word());
+        peerId = bits.str2num(cmd.word());
         peer4 = new addrIP();
         peer4.fromString(cmd.word());
         peer6 = new addrIP();
@@ -167,7 +171,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         if (protol.size() < 1) {
             protol.add(clntSdwan.protoTyp.l2tp);
         }
-        if (lower.myNum < num) {
+        if (lower.myNum < peerId) {
             protos = clntSdwan.selectProto(lower.protol, protol);
         } else {
             protos = clntSdwan.selectProto(protol, lower.protol);
@@ -222,6 +226,11 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         conn.sendTOS = lower.sendingTOS;
         conn.sendDFN = lower.sendingDFN;
         conn.sendTTL = lower.sendingTTL;
+        switch (protos) {
+            case l2tp:
+                prtL2tp2.setConnection(conn, peerId, lower.myNum);
+                break;
+        }
     }
 
     /**
@@ -232,8 +241,16 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
             logger.debug("starting peer " + addr + " " + port);
         }
         upper = new ifcNull();
+        ifcDn wrkrIfDn = null;
+        switch (protos) {
+            case l2tp:
+                prtL2tp2 = new clntL2tp2();
+                wrkrIfDn = prtL2tp2;
+                wrkrPrtCl = prtL2tp2;
+                break;
+        }
         doReconnect();
-        ifc = lower.clonIfc.cloneStart(this);
+        ifc = lower.clonIfc.cloneStart(wrkrIfDn);
         ifc.addr4changed(lower.myAddr4, ifc.mask4, peer4.toIPv4());
         ifc.addr6changed(lower.myAddr6, ifc.mask6, peer6.toIPv6());
         if (noMacsec) {
@@ -255,6 +272,12 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
                 ifc.frmrly.fragLen = frags;
             }
         }
+        upper = ifc.getEncapProto();
+        switch (protos) {
+            case l2tp:
+                prtL2tp2.setUpper(upper);
+                break;
+        }
         new Thread(this).start();
     }
 
@@ -264,7 +287,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
      * @param l list to update
      */
     protected void getShow(userFormat l) {
-        l.add(name + "|" + protos + "|" + addr + "|" + port + "|" + num + "|" + ifc.name + "|" + peer4 + "|" + peer6);
+        l.add(name + "|" + protos + "|" + addr + "|" + port + "|" + peerId + "|" + ifc.name + "|" + peer4 + "|" + peer6);
     }
 
     public addrType getHwAddr() {
@@ -286,7 +309,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
 
     public void setUpper(ifcUp server) {
         upper = server;
-        upper.setParent(this);
+        upper.setParent(prtL2tp2);
     }
 
     public counter getCounter() {
@@ -308,7 +331,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
         }
         packL2tp2 tx = new packL2tp2();
         tx.ctrl = false;
-        tx.sesID = num;
+        tx.sesID = peerId;
         tx.tunID = lower.myNum;
         tx.createHeader(pck);
         cntr.tx(pck);
@@ -317,25 +340,11 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        packL2tp2 rx = new packL2tp2();
-        if (rx.parseHeader(pck)) {
-            cntr.drop(pck, counter.reasons.badHdr);
+        if (conn == null) {
+            cntr.drop(pck, counter.reasons.notUp);
             return false;
         }
-        if (rx.tunID != num) {
-            cntr.drop(pck, counter.reasons.badID);
-            return false;
-        }
-        if (rx.sesID != lower.myNum) {
-            cntr.drop(pck, counter.reasons.badID);
-            return false;
-        }
-        if (rx.ctrl) {
-            cntr.drop(pck, counter.reasons.badHdr);
-            return false;
-        }
-        cntr.rx(pck);
-        upper.recvPack(pck);
+        wrkrPrtCl.datagramRecv(id, pck);
         return false;
     }
 
@@ -360,6 +369,11 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
     }
 
     public boolean datagramError(prtGenConn id, packHolder pck, addrIP rtr, counter.reasons err, int lab) {
+        if (conn == null) {
+            cntr.drop(pck, counter.reasons.notUp);
+            return false;
+        }
+        wrkrPrtCl.datagramError(id, pck, rtr, err, lab);
         return false;
     }
 
@@ -431,7 +445,7 @@ public class clntSdwanConn implements Runnable, ifcDn, prtServP, Comparator<clnt
      * @return session id, 0 if no session
      */
     public int getSessRem() {
-        return num;
+        return peerId;
     }
 
     /**
