@@ -10,6 +10,7 @@ import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgIconn;
 import net.freertr.cfg.cfgIfc;
+import net.freertr.clnt.clntL2tp2;
 import net.freertr.clnt.clntMplsPwe;
 import net.freertr.clnt.clntPckOudp;
 import net.freertr.clnt.clntVxlan;
@@ -2593,6 +2594,83 @@ public class servP4langConn implements Runnable {
                 return;
             } catch (Exception e) {
             }
+            if (ifc.ifc.ppp != null) {
+                if (ifc.ifc.ppp.getState() != state.states.up) {
+                    return;
+                }
+            }
+            if (ifc.ifc.frmrly != null) {
+                if (ifc.ifc.frmrly.getState() != state.states.up) {
+                    return;
+                }
+            }
+            try {
+                clntL2tp2 ntry = (clntL2tp2) ifc.ifc.lower;
+                ipFwd ofwd = ntry.getFwd();
+                servP4langVrf ovrf = lower.findVrf(ofwd);
+                if (ovrf == null) {
+                    return;
+                }
+                addrIP adr = ntry.getAddrRem();
+                if (adr == null) {
+                    return;
+                }
+                addrIP src = ntry.getAddrLoc();
+                if (src == null) {
+                    return;
+                }
+                servP4langNei hop = lower.findHop(ofwd, adr);
+                if (hop == null) {
+                    return;
+                }
+                if (hop.mac == null) {
+                    return;
+                }
+                int tun = ntry.getTunnRem();
+                if (tun < 1) {
+                    return;
+                }
+                int ses = ntry.getSessRem();
+                if (ses < 1) {
+                    return;
+                }
+                tun = (tun << 16) | ses;
+                int lp = ntry.getPortLoc();
+                if (lp < 1) {
+                    return;
+                }
+                int rp = ntry.getPortRem();
+                if (rp < 1) {
+                    return;
+                }
+                int frg = -1;
+                try {
+                    frg = ifc.ifc.ppp.fragLen;
+                } catch (Exception e) {
+                }
+                String act;
+                if (nei.mac == null) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == tun)) {
+                        return;
+                    }
+                }
+                nei.viaH = hop;
+                nei.mac = hop.mac.copyBytes();
+                nei.sentIfc = hop.sentIfc;
+                nei.sentTun = tun;
+                String afi;
+                if (adr.isIPv4()) {
+                    afi = "4";
+                } else {
+                    afi = "6";
+                }
+                lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun + " " + frg);
+                return;
+            } catch (Exception e) {
+            }
             try {
                 servL2tp2sess ntry = (servL2tp2sess) ifc.ifc.lower;
                 addrIP src = ntry.getAddrLoc();
@@ -2659,6 +2737,7 @@ public class servP4langConn implements Runnable {
                 String a = "l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun + " " + frg;
                 nei.sentEnc = a;
                 lower.sendLine(a);
+                return;
             } catch (Exception e) {
             }
             try {
@@ -2714,6 +2793,7 @@ public class servP4langConn implements Runnable {
                 String a = "l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses + " " + frg;
                 nei.sentEnc = a;
                 lower.sendLine(a);
+                return;
             } catch (Exception e) {
             }
             try {
@@ -2768,6 +2848,7 @@ public class servP4langConn implements Runnable {
                 String a = "amt" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp;
                 nei.sentEnc = a;
                 lower.sendLine(a);
+                return;
             } catch (Exception e) {
             }
             try {
@@ -2822,6 +2903,7 @@ public class servP4langConn implements Runnable {
                 String a = "gtp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + ntry.teidDat;
                 nei.sentEnc = a;
                 lower.sendLine(a);
+                return;
             } catch (Exception e) {
             }
             return;

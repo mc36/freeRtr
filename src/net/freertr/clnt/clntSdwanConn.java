@@ -226,7 +226,7 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         conn.sendTTL = lower.sendingTTL;
         switch (protos) {
             case l2tp:
-                prtL2tp2.setConnection(conn, lower.myNum, peerId, peerId, lower.myNum);
+                prtL2tp2.setConnection(conn, lower.fwdCor, lower.myNum, peerId, peerId, lower.myNum);
                 break;
         }
     }

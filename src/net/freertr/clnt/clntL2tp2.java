@@ -12,6 +12,7 @@ import net.freertr.cfg.cfgVrf;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
+import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.pack.packL2tp;
@@ -121,6 +122,8 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
 
     private prtGenConn conn;
 
+    private ipFwd fwdr;
+
     private List<packL2tp2> queue;
 
     private int seqRx;
@@ -228,13 +231,15 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
      * set connection
      *
      * @param id connection
+     * @param ip forwarder
      * @param tr tunnel id
      * @param tl tunnel id
      * @param sr session id
      * @param sl session id
      */
-    public void setConnection(prtGenConn id, int tr, int tl, int sr, int sl) {
+    public void setConnection(prtGenConn id, ipFwd ip, int tr, int tl, int sr, int sl) {
         conn = id;
+        fwdr = ip;
         tunRem = tr;
         tunLoc = tl;
         sesRem = sr;
@@ -263,6 +268,39 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
             return 0;
         }
         return conn.portRem;
+    }
+
+    /**
+     * get remote address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrRem() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.peerAddr;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrLoc() {
+        if (conn == null) {
+            return null;
+        }
+        return conn.iface.addr;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public ipFwd getFwd() {
+        return fwdr;
     }
 
     /**
