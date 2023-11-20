@@ -45,7 +45,7 @@ int sdn1
  ipv6 ena
  exit
 int temp1
- enc ppp
+ enc raw
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::

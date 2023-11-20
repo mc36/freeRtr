@@ -369,10 +369,10 @@ qc pass: p4lang: bier ingress edge
 qc pass: p4lang: bier vlan ingress edge
 qc pass: p4lang: bier core and egress edge
 qc pass: p4lang: vlan bier core and egress edge
-qc pass: p4lang: amt server over ipv4
-qc pass: p4lang: amt server over ipv6
-qc pass: p4lang: amt server over ipv4 loopback
-qc pass: p4lang: amt server over ipv6 loopback
+failed: p4lang: amt server over ipv4
+failed: p4lang: amt server over ipv6
+failed: p4lang: amt server over ipv4 loopback
+failed: p4lang: amt server over ipv6 loopback
 qc pass: p4lang: autoroute to sr te over mpls
 qc pass: p4lang: autoroute to p2p te over mpls
 qc pass: p4lang: policy routing to sr te over mpls
