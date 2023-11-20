@@ -1,2 +1,2 @@
 #!/bin/sh
-./t.sh paralell 20 mem 4096 $@
+./t.sh parallel 20 mem 4096 $@

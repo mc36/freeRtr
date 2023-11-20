@@ -88,7 +88,7 @@ public class userTester {
     /**
      * worker count
      */
-    protected int paralell = 0;
+    protected int parallel = 0;
 
     /**
      * worker delay
@@ -814,12 +814,12 @@ public class userTester {
                 maxTry = 1;
                 continue;
             }
-            if (s.equals("paralell")) {
-                paralell = bits.str2num(cmd.word());
+            if (s.equals("parallel")) {
+                parallel = bits.str2num(cmd.word());
                 continue;
             }
-            if (s.equals("noparalell")) {
-                paralell = 0;
+            if (s.equals("noparallel")) {
+                parallel = 0;
                 continue;
             }
             if (s.equals("paragap")) {
@@ -980,7 +980,7 @@ public class userTester {
             other0 = cmd.word();
         }
         if (remoteF != null) {
-            paralell = 0;
+            parallel = 0;
             remoteD = bits.txt2buf(path + remoteF);
             remoteA = new addrIP();
             remoteA.fromString(remoteD.remove(0));
@@ -991,7 +991,7 @@ public class userTester {
         }
         rdr.debugStat("oobase=" + oobase);
         rdr.debugStat("slot=" + slot);
-        rdr.debugStat("paralell=" + paralell);
+        rdr.debugStat("parallel=" + parallel);
         rdr.debugStat("jvm=" + jvn + jvp);
         rdr.debugStat("release=" + releaseN);
         rdr.debugStat("version=" + releaseV);
@@ -1019,7 +1019,7 @@ public class userTester {
         rdr.debugStat("capture=" + capture.size());
         rdr.debugStat("files=" + needed.size());
         if (persistF != null) {
-            paralell = 0;
+            parallel = 0;
             persistD = bits.txt2buf(path + persistF);
             persistP = portBase + (portSlot / 2) + (slot * portSlot);
             String a = persistD.remove(0);
@@ -1064,25 +1064,25 @@ public class userTester {
             persistC.applyCfg(persistD);
         }
         started = bits.getTime();
-        if (paralell > needed.size()) {
-            paralell = needed.size();
+        if (parallel > needed.size()) {
+            parallel = needed.size();
         }
-        if (paralell > 1) {
+        if (parallel > 1) {
             randord = true;
             wait = false;
         } else {
-            paralell = 1;
+            parallel = 1;
         }
-        workers = new userTesterOne[paralell];
-        rdr.debugRes(sep + "starting " + paralell + " workers" + sep);
-        for (int i = 0; i < paralell; i++) {
+        workers = new userTesterOne[parallel];
+        rdr.debugRes(sep + "starting " + parallel + " workers" + sep);
+        for (int i = 0; i < parallel; i++) {
             workers[i] = getTester(i);
             new userTesterWrk(this, i);
             bits.sleep(paragap);
         }
         for (; needed.size() > 0;) {
             bits.sleep(1000);
-            if (paralell > 1) {
+            if (parallel > 1) {
                 rdr.debugRes(sep + "err=" + errored + " trc=" + traces + " ret=" + retries + " don=" + finished.size() + " ned=" + needed.size() + " tot=" + (finished.size() + needed.size()) + " tim=" + bits.timePast(started) + sep);
             }
             if (cmd.pipe.ready2rx() < 1) {
@@ -1098,12 +1098,12 @@ public class userTester {
             persistC.persistent = false;
             persistC.stopNow();
         }
-        for (int i = 0; i < paralell; i++) {
+        for (int i = 0; i < parallel; i++) {
             workers[i].stopAll();
         }
         listFails(rdr, finished, true, 1);
         listFails(rdr, needed, false, 0);
-        String a = logger.getTimestamp() + ", took " + bits.timePast(started) + ", with " + paralell + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
+        String a = logger.getTimestamp() + ", took " + bits.timePast(started) + ", with " + parallel + " workers, on " + finished.size() + " cases, " + errored + " failed, " + traces + " traces, " + retries + " retries";
         rdr.debugStat("summary: " + a);
         if (!summary) {
             return;

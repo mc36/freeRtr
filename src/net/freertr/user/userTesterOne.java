@@ -215,7 +215,7 @@ public class userTesterOne {
      */
     protected userTesterOne(userTester frm, int slt) {
         pipeSide pip = frm.cmd.pipe;
-        if (frm.paralell > 1) {
+        if (frm.parallel > 1) {
             pip = pipeDiscard.needAny(null);
         }
         rdr = new pipeProgress(pip);

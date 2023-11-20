@@ -1,2 +1,2 @@
 #!/bin/sh
-./tb.sh paralell 80 $@
+./tb.sh parallel 80 $@
