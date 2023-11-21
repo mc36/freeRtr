@@ -10,6 +10,7 @@ import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcUp;
+import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipIcmp6;
 import net.freertr.ip.ipMhost4;
@@ -105,6 +106,8 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
 
     private prtGenConn conn;
 
+    private ipFwd fwdr;
+
     private int lasTyp;
 
     private int nonce;
@@ -161,6 +164,21 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
             return 0;
         }
         return conn.portLoc;
+    }
+
+    /**
+     * set connection
+     *
+     * @param id connection
+     * @param ip forwarder
+     * @param tr tunnel id
+     * @param tl tunnel id
+     * @param sr session id
+     * @param sl session id
+     */
+    public void setConnection(prtGenConn id, ipFwd ip) {
+        conn = id;
+        fwdr = ip;
     }
 
     /**

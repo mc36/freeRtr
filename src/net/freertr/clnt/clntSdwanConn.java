@@ -102,6 +102,8 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
 
     private prtGre prtGre;
 
+    private clntAmt prtAmt;
+    
     /**
      * create instance
      *
@@ -247,6 +249,9 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
             case l2tp:
                 prtL2tp2.setConnection(conn, lower.fwdCor, lower.myNum, peerId, peerId, lower.myNum);
                 break;
+            case amt:
+                prtAmt.setConnection(conn, lower.fwdCor);
+                break;
         }
     }
 
@@ -274,6 +279,11 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
                 prtGre = new prtGre(lower.fwdCor);
                 wrkrIfDn = prtGre;
                 lower.fwdCor.protoAdd(prtGre, lower.fwdIfc, addr);
+                break;
+            case amt:
+                prtAmt = new clntAmt();
+                wrkrIfDn = prtAmt;
+                wrkrPrtCl = prtAmt;
                 break;
             default:
                 return;
@@ -311,6 +321,9 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
                 break;
             case gre:
                 prtGre.setUpper(upper);
+                break;
+            case amt:
+                prtAmt.setUpper(upper);
                 break;
         }
         new Thread(this).start();

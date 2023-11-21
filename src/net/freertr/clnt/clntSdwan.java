@@ -64,6 +64,10 @@ public class clntSdwan implements Runnable, ifcDn {
          * gre
          */
         gre,
+        /**
+         * amt
+         */
+        amt,
     }
 
     /**
@@ -91,6 +95,9 @@ public class clntSdwan implements Runnable, ifcDn {
         }
         if (s.equals("gre")) {
             return protoTyp.gre;
+        }
+        if (s.equals("amt")) {
+            return protoTyp.amt;
         }
         return null;
     }
