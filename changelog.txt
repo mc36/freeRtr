@@ -15482,3 +15482,6 @@ qc pass: p4lang: sdwan over ipv4 with l2tp3
 qc pass: p4lang: sdwan over ipv6 with l2tp3
 qc pass: p4lang: sdwan over ipv4 with gre
 qc pass: p4lang: sdwan over ipv6 with gre
+---------------------------------- 2023-11-21 20:54:46 23.11.21
+qc pass: sdwan with l2tp2 and amt
+qc pass: sdwan with l2tp2 and gtp

@@ -68,6 +68,10 @@ public class clntSdwan implements Runnable, ifcDn {
          * amt
          */
         amt,
+        /**
+         * gtp
+         */
+        gtp,
     }
 
     /**
@@ -98,6 +102,9 @@ public class clntSdwan implements Runnable, ifcDn {
         }
         if (s.equals("amt")) {
             return protoTyp.amt;
+        }
+        if (s.equals("gtp")) {
+            return protoTyp.gtp;
         }
         return null;
     }

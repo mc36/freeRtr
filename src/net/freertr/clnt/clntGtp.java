@@ -10,6 +10,7 @@ import net.freertr.ifc.ifcEther;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcPpp;
 import net.freertr.ifc.ifcUp;
+import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packGtp;
 import net.freertr.pack.packHolder;
@@ -133,6 +134,8 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
      */
     public int teidCtr;
 
+    private ipFwd fwdr;
+
     private int seqCtr;
 
     private int seqDat;
@@ -189,6 +192,21 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
             return 0;
         }
         return connD.portLoc;
+    }
+
+    /**
+     * set connection
+     *
+     * @param id connection
+     * @param ip forwarder
+     * @param tr tunnel id
+     * @param tl tunnel id
+     */
+    public void setConnection(prtGenConn id, ipFwd ip, int tr, int tl) {
+        connD = id;
+        fwdr = ip;
+        teidDat = tr;
+        teidLoc = tl;
     }
 
     /**

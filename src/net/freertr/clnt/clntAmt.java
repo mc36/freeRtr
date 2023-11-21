@@ -171,10 +171,6 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
      *
      * @param id connection
      * @param ip forwarder
-     * @param tr tunnel id
-     * @param tl tunnel id
-     * @param sr session id
-     * @param sl session id
      */
     public void setConnection(prtGenConn id, ipFwd ip) {
         conn = id;
