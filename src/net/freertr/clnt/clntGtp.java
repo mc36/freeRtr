@@ -195,6 +195,24 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * get remote tunn id
+     *
+     * @return session id, 0 if no tunnel
+     */
+    public int getTunnRem() {
+        return teidDat;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public ipFwd getFwd() {
+        return fwdr;
+    }
+
+    /**
      * set connection
      *
      * @param id connection
