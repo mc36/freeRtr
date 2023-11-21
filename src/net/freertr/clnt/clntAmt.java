@@ -143,6 +143,15 @@ public class clntAmt implements Runnable, prtServP, ifcDn {
     }
 
     /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public ipFwd getFwd() {
+        return fwdr;
+    }
+
+    /**
      * get remote port
      *
      * @return address
