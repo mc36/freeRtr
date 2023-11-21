@@ -244,6 +244,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
         fwdIfc = ifc;
         sesRem = sr;
         sesLoc = sl;
+        pwType = packLdpPwe.pwtPpp;
     }
 
     /**

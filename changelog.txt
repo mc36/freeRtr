@@ -15475,3 +15475,10 @@ qc pass: sdwan with l2tp2 and l2tp3
 qc pass: sdwan with l2tp2 and gre
 ---------------------------------- 2023-11-20 22:17:24 23.11.20
 no todo: sdwan to be able to use more encapsulations like l2tp2, l2tp3, gre, or pim ax25 icmp ipcomp
+---------------------------------- 2023-11-21 14:15:36 23.11.21
+qc pass: p4lang: sdwan over ipv4 with l2tp
+qc pass: p4lang: sdwan over ipv6 with l2tp
+qc pass: p4lang: sdwan over ipv4 with l2tp3
+qc pass: p4lang: sdwan over ipv6 with l2tp3
+qc pass: p4lang: sdwan over ipv4 with gre
+qc pass: p4lang: sdwan over ipv6 with gre

@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.11.20-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-20 22:32:32, took 00:15:07, with 80 workers, on 3332 cases, 0 failed, 0 traces, 10 retries
+-;-;-;freeRouter-rare v23.11.21-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2023-11-21 14:27:03, took 00:11:26, with 80 workers, on 3338 cases, 0 failed, 0 traces, 8 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1879,6 +1879,12 @@ http://sources.freertr.org/cfg/p4lang-rout271.tst;p4lang-rout271.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout272.tst;p4lang-rout272.tst;success;p4lang: l2tp3 mpls over bundle
 http://sources.freertr.org/cfg/p4lang-rout273.tst;p4lang-rout273.tst;success;p4lang: bridging over l2tp3
 http://sources.freertr.org/cfg/p4lang-rout274.tst;p4lang-rout274.tst;success;p4lang: bridging over l2tp3 vlan
+http://sources.freertr.org/cfg/p4lang-rout275.tst;p4lang-rout275.tst;success;p4lang: sdwan over ipv4 with l2tp
+http://sources.freertr.org/cfg/p4lang-rout276.tst;p4lang-rout276.tst;success;p4lang: sdwan over ipv6 with l2tp
+http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;success;p4lang: sdwan over ipv4 with l2tp3
+http://sources.freertr.org/cfg/p4lang-rout278.tst;p4lang-rout278.tst;success;p4lang: sdwan over ipv6 with l2tp3
+http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;success;p4lang: sdwan over ipv4 with gre
+http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;success;p4lang: sdwan over ipv6 with gre
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

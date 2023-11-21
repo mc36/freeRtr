@@ -2603,12 +2603,12 @@ public class servP4langConn implements Runnable {
         nei.sentIfc = hop.sentIfc;
         nei.sentTun = ses;
         String afi;
-        if (ifc.ifc.pwhe.adr.isIPv4()) {
+        if (adr.isIPv4()) {
             afi = "4";
         } else {
             afi = "6";
         }
-        lower.sendLine("l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.pwhe.adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses + " " + frg);
+        lower.sendLine("l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses + " " + frg);
     }
 
     private void doL2tpClnt(clntL2tp2 ntry, servP4langNei nei, servP4langIfc ifc) {
@@ -2748,15 +2748,15 @@ public class servP4langConn implements Runnable {
             try {
                 prtGre ntry = (prtGre) ifc.ifc.lower;
                 addrIP adr = ntry.getAddrRem();
-                addrIP src = ntry.getAddrRem();
-                ipFwd ofwd = ntry.getFwd();
-                if (ofwd == null) {
-                    return;
-                }
                 if (adr == null) {
                     return;
                 }
+                addrIP src = ntry.getAddrLoc();
                 if (src == null) {
+                    return;
+                }
+                ipFwd ofwd = ntry.getFwd();
+                if (ofwd == null) {
                     return;
                 }
                 servP4langVrf ovrf = lower.findVrf(ofwd);

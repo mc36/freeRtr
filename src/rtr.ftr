@@ -1875,6 +1875,12 @@ qc pass: p4lang: l2tp3 mpls over vlan
 qc pass: p4lang: l2tp3 mpls over bundle
 qc pass: p4lang: bridging over l2tp3
 qc pass: p4lang: bridging over l2tp3 vlan
+qc pass: p4lang: sdwan over ipv4 with l2tp
+qc pass: p4lang: sdwan over ipv6 with l2tp
+qc pass: p4lang: sdwan over ipv4 with l2tp3
+qc pass: p4lang: sdwan over ipv6 with l2tp3
+qc pass: p4lang: sdwan over ipv4 with gre
+qc pass: p4lang: sdwan over ipv6 with gre
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

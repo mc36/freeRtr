@@ -371,8 +371,8 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         gtp.valIMSI = imsi; // imsi
         gtp.valRecovery = 1; // first retry
         gtp.valSelectMode = 1; // apn provided, not verified
-        gtp.valTeid1 = teidLoc | 1; // tunnel endpoint id
-        gtp.valTeidCp = teidLoc | 2; // tunnel endpoint id
+        gtp.valTeid1 = teidLoc; // tunnel endpoint id
+        gtp.valTeidCp = teidLoc; // tunnel endpoint id
         gtp.valNSAPI = 0; // nsapi
         gtp.valChargChar = 0x800; // normal charging
         gtp.fillEndUserAddr(cfger, false);
@@ -459,7 +459,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
         if (connD != null) {
             connD.setClosing();
         }
-        teidLoc = bits.randomW() << 8;
+        teidLoc = bits.randomW();
         teidCtr = 0;
         teidDat = 0;
         seqCtr = 1;
@@ -547,6 +547,10 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
             if (id.compare(id, connD) == 0) {
                 packGtp gtp = new packGtp();
                 if (gtp.parseHeader(pck)) {
+                    return false;
+                }
+                if (gtp.tunId != teidLoc) {
+                    cntr.drop(pck, counter.reasons.badID);
                     return false;
                 }
                 if (cfger.ppp != null) {

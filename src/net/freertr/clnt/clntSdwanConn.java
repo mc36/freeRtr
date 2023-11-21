@@ -209,7 +209,7 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
     private void doReconnect() {
         switch (protos) {
             case l3tp:
-                prtL2tp3.setConnection(lower.fwdIfc, addr, lower.fwdCor, peerId, lower.myNum);
+                prtL2tp3.setConnection(lower.fwdIfc, addr, lower.fwdCor, (peerId << 16) | lower.myNum, (lower.myNum << 16) | peerId);
                 return;
             case gre:
                 prtGre.setEndpoints(lower.fwdIfc, addr, true);
