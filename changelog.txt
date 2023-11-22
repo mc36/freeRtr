@@ -15490,3 +15490,12 @@ qc pass: p4lang: sdwan over ipv4 with amt
 qc pass: p4lang: sdwan over ipv6 with amt
 qc pass: p4lang: sdwan over ipv4 with gtp
 qc pass: p4lang: sdwan over ipv6 with gtp
+---------------------------------- 2023-11-22 14:05:55 23.11.22
+no todo: <num> - process id
+no todo: 66666 - process id - as asdf
+no todo: 1     - process id
+no todo: noti#show ipv4 bgp ?
+no todo: bgp to have at least show ipv46 bgp 66666 description
+no todo: server http xxx to log better the class exceptions as errors
+no todo: show whowas from bmp mrt archive
+no todo: dlep as rfc8175

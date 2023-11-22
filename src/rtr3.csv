@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter-rare v23.11.21-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;-;-;-;-;freeRouter-rare v23.11.22-cur, done by sprscc13@mr.n0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl01.tst;p4lang-acl01.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl02.tst;p4lang-acl02.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl03.tst;p4lang-acl03.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -482,3 +482,7 @@ http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout278.tst;p4lang-rout278.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with l2tp3
 http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with gre
 http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with gre
+http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv4 with amt
+http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv6 with amt
+http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv4 with gtp
+http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv6 with gtp

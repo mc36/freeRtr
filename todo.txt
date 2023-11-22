@@ -22,8 +22,6 @@ consider draft-ietf-idr-performance-routing
 
 ioam as rfc9452
 
-dlep as rfc8175
-
 
 
 
@@ -142,21 +140,7 @@ server security to support bgp bmp mrt
 
 server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 
-show whowas from bmp mrt archive
-
 show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
-
-server http xxx to log better the class exceptions as errors
-
-
-
-bgp to have at least show ipv46 bgp 66666 description
-
-noti#show ipv4 bgp ?
-  1     - process id
-  66666 - process id - as asdf
-  <num> - process id
-
 
 traffic through bgp sr-policy
 
