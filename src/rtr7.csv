@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.21-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-21 19:52:11, took 00:23:25, with 10 workers, on 482 cases, 1 failed, 0 traces, 7 retries
+-;-;-;2023-11-22 02:40:46, took 00:25:37, with 10 workers, on 486 cases, 1 failed, 0 traces, 7 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl01.tst;p4lang-acl01.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl02.tst;p4lang-acl02.tst;not applicable;p4lang: ingress access list
@@ -484,3 +484,7 @@ http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;not applica
 http://sources.freertr.org/cfg/p4lang-rout278.tst;p4lang-rout278.tst;not applicable;p4lang: sdwan over ipv6 with l2tp3
 http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;not applicable;p4lang: sdwan over ipv4 with gre
 http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;not applicable;p4lang: sdwan over ipv6 with gre
+http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;not applicable;p4lang: sdwan over ipv4 with amt
+http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;not applicable;p4lang: sdwan over ipv6 with amt
+http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;not applicable;p4lang: sdwan over ipv4 with gtp
+http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;not applicable;p4lang: sdwan over ipv6 with gtp

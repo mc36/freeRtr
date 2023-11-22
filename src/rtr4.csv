@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.11.21-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-21 17:02:59, took 00:47:32, with 10 workers, on 482 cases, 2 failed, 0 traces, 15 retries
+-;-;-;2023-11-21 23:50:51, took 00:52:32, with 10 workers, on 486 cases, 6 failed, 0 traces, 42 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl01.tst;p4lang-acl01.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl02.tst;p4lang-acl02.tst;success;p4lang: ingress access list
@@ -484,3 +484,7 @@ http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout278.tst;p4lang-rout278.tst;success;p4lang: sdwan over ipv6 with l2tp3
 http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;success;p4lang: sdwan over ipv4 with gre
 http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;success;p4lang: sdwan over ipv6 with gre
+http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;#9-run-r1 dping sdn . r6 2.2.2.105 vrf v1 sou lo0;p4lang: sdwan over ipv4 with amt
+http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;#9-run-r1 dping sdn . r6 2.2.2.105 vrf v1 sou lo0;p4lang: sdwan over ipv6 with amt
+http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0;p4lang: sdwan over ipv4 with gtp
+http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0;p4lang: sdwan over ipv6 with gtp

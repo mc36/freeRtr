@@ -480,6 +480,10 @@ qc pass: p4lang: sdwan over ipv4 with l2tp3
 qc pass: p4lang: sdwan over ipv6 with l2tp3
 qc pass: p4lang: sdwan over ipv4 with gre
 qc pass: p4lang: sdwan over ipv6 with gre
+qc pass: p4lang: sdwan over ipv4 with amt
+qc pass: p4lang: sdwan over ipv6 with amt
+qc pass: p4lang: sdwan over ipv4 with gtp
+qc pass: p4lang: sdwan over ipv6 with gtp
 todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
 todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
