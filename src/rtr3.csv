@@ -476,13 +476,13 @@ http://sources.freertr.org/cfg/p4lang-rout271.tst;p4lang-rout271.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout272.tst;p4lang-rout272.tst;ok;ok;ok;ok;not ok;p4lang: l2tp3 mpls over bundle
 http://sources.freertr.org/cfg/p4lang-rout273.tst;p4lang-rout273.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over l2tp3
 http://sources.freertr.org/cfg/p4lang-rout274.tst;p4lang-rout274.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over l2tp3 vlan
-http://sources.freertr.org/cfg/p4lang-rout275.tst;p4lang-rout275.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv4 with l2tp
-http://sources.freertr.org/cfg/p4lang-rout276.tst;p4lang-rout276.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv6 with l2tp
+http://sources.freertr.org/cfg/p4lang-rout275.tst;p4lang-rout275.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with l2tp
+http://sources.freertr.org/cfg/p4lang-rout276.tst;p4lang-rout276.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with l2tp
 http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with l2tp3
 http://sources.freertr.org/cfg/p4lang-rout278.tst;p4lang-rout278.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with l2tp3
 http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with gre
 http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with gre
-http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv4 with amt
-http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv6 with amt
-http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv4 with gtp
-http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;ok;not ok;ok;not ok;not ok;p4lang: sdwan over ipv6 with gtp
+http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;ok;ok;ok;not ok;not ok;p4lang: sdwan over ipv4 with amt
+http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;ok;ok;ok;not ok;not ok;p4lang: sdwan over ipv6 with amt
+http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with gtp
+http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with gtp
