@@ -22,16 +22,6 @@ public class ifcVnTag implements ifcUp, ifcDn {
      */
     public final static int size = 6;
 
-    /**
-     * source port
-     */
-    public int source;
-
-    /**
-     * target port
-     */
-    public int target;
-
     private ifcUp upper = new ifcNull();
 
     private ifcDn lower = new ifcNull();
@@ -53,8 +43,8 @@ public class ifcVnTag implements ifcUp, ifcDn {
         if (pck.msbGetW(0) != type) {
             return;
         }
-        target = pck.msbGetW(2);
-        source = pck.msbGetW(4);
+        pck.NSHsi = pck.msbGetW(2); // target
+        pck.NSHsp = pck.msbGetW(4); // source
         pck.getSkip(size);
         upper.recvPack(pck);
     }
@@ -62,8 +52,8 @@ public class ifcVnTag implements ifcUp, ifcDn {
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         pck.msbPutW(0, type);
-        pck.msbPutW(2, target);
-        pck.msbPutW(4, source);
+        pck.msbPutW(2, pck.NSHsi); // target
+        pck.msbPutW(4, pck.NSHsp); // source
         pck.putSkip(size);
         pck.merge2beg();
         lower.sendPack(pck);

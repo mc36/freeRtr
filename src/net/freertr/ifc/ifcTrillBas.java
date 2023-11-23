@@ -1,13 +1,16 @@
 package net.freertr.ifc;
 
+import net.freertr.addr.addrType;
 import net.freertr.pack.packHolder;
+import net.freertr.util.counter;
+import net.freertr.util.state;
 
 /**
  * trill (rfc6325) base header
  *
  * @author matecsaba
  */
-public class ifcTrillBas {
+public class ifcTrillBas implements ifcUp, ifcDn {
 
     /**
      * ethertype
@@ -19,32 +22,39 @@ public class ifcTrillBas {
      */
     public final static int size = 8;
 
+    private ifcUp upper = new ifcNull();
+
+    private ifcDn lower = new ifcNull();
+
+    private counter cntr = new counter();
+
     /**
-     * parse header
+     * create new encapsulater
      *
-     * @param pck packet to parse
-     * @return true on error, false on success
+     * @param upp upper layer
      */
-    public boolean parseHeader(packHolder pck) {
+    public ifcTrillBas(ifcUp upp) {
+        upper = upp;
+        upper.setParent(this);
+    }
+
+    public void recvPack(packHolder pck) {
+        cntr.rx(pck);
         if (pck.msbGetW(0) != type) {
-            return true;
+            return;
         }
         if ((pck.getByte(2) & 0xc0) != 0) {
-            return true;
+            return;
         }
         pck.NSHttl = pck.getByte(3) & 0x1f;
         pck.NSHsi = pck.msbGetW(4);
         pck.NSHsp = pck.msbGetW(6);
         pck.getSkip(size);
-        return false;
+        upper.recvPack(pck);
     }
 
-    /**
-     * put header
-     *
-     * @param pck packet to update
-     */
-    public void putHeader(packHolder pck) {
+    public void sendPack(packHolder pck) {
+        cntr.tx(pck);
         pck.merge2beg();
         pck.msbPutW(0, type);
         pck.msbPutW(2, pck.NSHttl & 0x1f);
@@ -52,6 +62,60 @@ public class ifcTrillBas {
         pck.msbPutW(6, pck.NSHsp);
         pck.putSkip(size);
         pck.merge2beg();
+        lower.sendPack(pck);
+    }
+
+    public void setParent(ifcDn parent) {
+        lower = parent;
+    }
+
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
+    public void setUpper(ifcUp server) {
+        upper = server;
+    }
+
+    public void setState(state.states stat) {
+        upper.setState(stat);
+    }
+
+    public void closeUp() {
+        upper.closeUp();
+    }
+
+    public counter getCounter() {
+        return cntr;
+    }
+
+    public addrType getHwAddr() {
+        return lower.getHwAddr();
+    }
+
+    public void setFilter(boolean promisc) {
+        lower.setFilter(promisc);
+    }
+
+    public state.states getState() {
+        return lower.getState();
+    }
+
+    public void closeDn() {
+        lower.closeDn();
+    }
+
+    public void flapped() {
+        lower.flapped();
+    }
+
+    public int getMTUsize() {
+        return lower.getMTUsize();
+    }
+
+    public long getBandwidth() {
+        return lower.getBandwidth();
     }
 
 }
