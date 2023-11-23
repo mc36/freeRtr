@@ -15499,3 +15499,6 @@ no todo: bgp to have at least show ipv46 bgp 66666 description
 no todo: server http xxx to log better the class exceptions as errors
 no todo: show whowas from bmp mrt archive
 no todo: dlep as rfc8175
+---------------------------------- 2023-11-23 18:20:46 23.11.23
+qc pass: ethernet trill-mt encapsulation
+qc pass: ethernet trill-fgl encapsulation

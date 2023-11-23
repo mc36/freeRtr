@@ -119,6 +119,8 @@ qc pass: monitor session over pwhe
 qc pass: verify source with ethernet encapsulation
 qc pass: loose verify source with ethernet encapsulation
 qc pass: secure arp/nd
+qc pass: ethernet trill-mt encapsulation
+qc pass: ethernet trill-fgl encapsulation
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback

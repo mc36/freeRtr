@@ -96,6 +96,8 @@ import net.freertr.ifc.ifcSep;
 import net.freertr.ifc.ifcSgt;
 import net.freertr.ifc.ifcSyncE;
 import net.freertr.ifc.ifcThread;
+import net.freertr.ifc.ifcTrillFgl;
+import net.freertr.ifc.ifcTrillMt;
 import net.freertr.ifc.ifcUdld;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ifc.ifcVlan;
@@ -3352,6 +3354,14 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             initVlan(new ifcDot1ah());
             return false;
         }
+        if (a.equals("trill-mt")) {
+            initVlan(new ifcTrillMt());
+            return false;
+        }
+        if (a.equals("trill-fgl")) {
+            initVlan(new ifcTrillFgl());
+            return false;
+        }
         if (a.equals("qinq1")) {
             initVlan(new ifcQinq1());
             return false;
@@ -6546,6 +6556,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "2 .     dot1q                       set to 802.1q encapsulation");
         l.add(null, "2 .     dot1ad                      set to 802.1ad encapsulation");
         l.add(null, "2 .     dot1ah                      set to 802.1ah encapsulation");
+        l.add(null, "2 .     trill-mt                    set to trill multi-topology encapsulation");
+        l.add(null, "2 .     trill-fgl                   set to trill fine-grained label encapsulation");
         l.add(null, "2 .     qinq1                       set to qinq1 encapsulation");
         l.add(null, "2 .     qinq2                       set to qinq2 encapsulation");
         l.add(null, "2 .     qinq3                       set to qinq3 encapsulation");
