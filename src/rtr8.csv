@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.11.23-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-23 06:38:32, took 00:08:15, with 60 workers, on 486 cases, 0 failed, 0 traces, 1 retries
+-;-;-;freeRouter-rare v23.11.24-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2023-11-24 08:08:59, took 00:06:46, with 60 workers, on 486 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl01.tst;p4lang-acl01.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl02.tst;p4lang-acl02.tst;success;p4lang: ingress access list
