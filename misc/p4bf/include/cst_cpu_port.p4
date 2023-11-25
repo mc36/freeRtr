@@ -52,7 +52,12 @@
 
  */
 
-#if defined DUAL_PIPE || defined _WEDGE100BF32X_
+#if defined _ASTERFUSIONx312p_
+
+#define CPU_PORT 66
+#define RECIR_PORT 68
+
+#elif defined DUAL_PIPE || defined _WEDGE100BF32X_
 
 #if __TARGET_TOFINO__ == 2
 

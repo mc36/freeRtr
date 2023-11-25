@@ -1,4 +1,4 @@
-import os, sys, grpc
+import os, sys
 import logging, linecache, inspect
 from threading import Thread
 from time import sleep
@@ -13,6 +13,9 @@ SDE = os.environ.get("SDE", "~/bf-sde-9.13.1")
 SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
 BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.9/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
+
+sys.path.insert(0, SDE_INSTALL + "/lib/python3.9/site-packages/")
+import grpc
 
 # set our lib path
 sys.path.append(
