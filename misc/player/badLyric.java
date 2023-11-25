@@ -1,5 +1,6 @@
 
 import java.io.File;
+import java.util.List;
 
 /**
  * collect bad lyric files
@@ -18,17 +19,14 @@ public class badLyric {
         if (args.length > 0) {
             s = args[0];
         }
-        playerUtil.put("processing " + s + "...");
-        File[] fl = new File(s).listFiles();
-        if (fl == null) {
-            return;
-        }
-        for (int i = 0; i < fl.length; i++) {
-            String a = fl[i].getName();
+        List<File> fl = findSongs.doFindDir(s);
+        for (int i = 0; i < fl.size(); i++) {
+            File f = fl.get(i);
+            String a = f.getName();
             if (a.startsWith(".")) {
                 continue;
             }
-            if (!fl[i].isDirectory()) {
+            if (!f.isDirectory()) {
                 continue;
             }
             doDir(s + a);
