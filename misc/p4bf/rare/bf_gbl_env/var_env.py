@@ -14,7 +14,7 @@ SDE_INSTALL = os.environ.get("SDE_INSTALL", SDE + "/install")
 BF_RUNTIME_LIB = SDE_INSTALL + "/lib/python3.9/site-packages/tofino/"
 BSP_FILE_PATH = SDE_INSTALL + "/lib/libpltfm_mgr.so"
 
-sys.path.insert(0, SDE_INSTALL + "/lib/python3.9/site-packages/")
+sys.path.append(SDE_INSTALL + "/lib/python3.9/site-packages/")
 import grpc
 
 # set our lib path
