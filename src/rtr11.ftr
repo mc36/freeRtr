@@ -49,7 +49,6 @@ todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
-todo: dlep as rfc8175
 todo: flash ext-delete also to commander
 todo: commander to get away the cursor
 todo: player queue up down add-again
@@ -90,14 +89,7 @@ todo: server security to log the transactions
 todo: server security to stick to the good protocols
 todo: server security to support bgp bmp mrt
 todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
-todo: show whowas from bmp mrt archive
 todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
-todo: server http xxx to log better the class exceptions as errors
-todo: bgp to have at least show ipv46 bgp 66666 description
-todo: noti#show ipv4 bgp ?
-todo: 1     - process id
-todo: 66666 - process id - as asdf
-todo: <num> - process id
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: policy from bgp rpd
