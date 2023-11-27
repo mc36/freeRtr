@@ -598,6 +598,7 @@ router bgp4 65535 vrf v1
  template r unknowns-out all
  template r unknowns-in all
  template r unknowns-log
+ template r end-changes
  template r segrout
  template r bier
  template r leak-role attrib
@@ -685,6 +686,7 @@ router bgp6 65535 vrf v1
  template r unknowns-out all
  template r unknowns-in all
  template r unknowns-log
+ template r end-changes
  template r segrout
  template r bier
  template r leak-role attrib
