@@ -8,6 +8,7 @@ import net.freertr.ifc.ifcBridge;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcMacSec;
 import net.freertr.ifc.ifcNull;
+import net.freertr.ifc.ifcSgt;
 import net.freertr.ifc.ifcUp;
 import net.freertr.ip.ipCor4;
 import net.freertr.ip.ipCor6;
@@ -202,6 +203,8 @@ public class prtTmux implements ipPrt, ifcDn {
                 return ipCor6.protocolNumber;
             case ifcMacSec.ethtyp:
                 return prtSwipe.prot;
+            case ifcSgt.type:
+                return prtSkip.prot;
             case ifcBridge.serialType:
                 return clntSrEth.prot;
             case rtrIsis.ethTyp:
@@ -229,6 +232,8 @@ public class prtTmux implements ipPrt, ifcDn {
                 return ipIfc6.type;
             case prtSwipe.prot:
                 return ifcMacSec.ethtyp;
+            case prtSkip.prot:
+                return ifcSgt.type;
             case clntSrEth.prot:
                 return ifcBridge.serialType;
             case prtIsoip.proto:
