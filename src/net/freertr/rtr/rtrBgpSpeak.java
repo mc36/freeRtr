@@ -2699,10 +2699,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (neigh != null) {
             if (neigh.endChanges) {
-                int ao = old.best.asPathEnd();
-                int ac = ntry.best.asPathEnd();
-                if (ao != ac) {
-                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " through " + neigh.peerAddr + " changed from asn " + ao + " to " + ac);
+                int o = old.best.asPathEnd();
+                int c = ntry.best.asPathEnd();
+                if (o != c) {
+                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " from " + neigh.peerAddr + " changed from lastasn " + o + " to " + c);
+                }
+            }
+            if (neigh.lengthChanges != null) {
+                int o = old.best.asPathLen();
+                int c = ntry.best.asPathLen();
+                int d = o - c;
+                if (d < 0) {
+                    d = -d;
+                }
+                if (neigh.lengthChanges.matches(d)) {
+                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " from " + neigh.peerAddr + " changed from pathlen " + o + " to " + c);
                 }
             }
         }

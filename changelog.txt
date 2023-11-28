@@ -15502,3 +15502,5 @@ no todo: dlep as rfc8175
 ---------------------------------- 2023-11-23 18:20:46 23.11.23
 qc pass: ethernet trill-mt encapsulation
 qc pass: ethernet trill-fgl encapsulation
+---------------------------------- 2023-11-28 08:51:01 23.11.28
+no todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob

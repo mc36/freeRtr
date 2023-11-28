@@ -2,8 +2,6 @@ generalise server access- knobs
 
 honeypot to wireformat, decode
 
-bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
-
 image viewer to file manager
 
 game butterfly hanoy, modem, mdev

@@ -189,6 +189,11 @@ public abstract class rtrBgpParam {
     public boolean endChanges;
 
     /**
+     * log length changes
+     */
+    public tabIntMatcher lengthChanges;
+
+    /**
      * ipinfo config
      */
     public secInfoCfg ipInfoCfg;
@@ -1327,6 +1332,11 @@ public abstract class rtrBgpParam {
         dampenSupp = src.dampenSupp;
         dampenReus = src.dampenReus;
         dampenHalf = src.dampenHalf;
+        if (src.lengthChanges == null) {
+            lengthChanges = null;
+        } else {
+            lengthChanges = src.lengthChanges.copyBytes();
+        }
         if (src.dampenPfxs == null) {
             dampenPfxs = null;
         } else {
@@ -1800,7 +1810,10 @@ public abstract class rtrBgpParam {
         l.add(null, "3  4       unknowns-in                 receive unknown attributes");
         l.add(null, "4  .         <num>                     allowed attributes");
         l.add(null, "3  .       unknowns-log                log received unknown attributes");
-        l.add(null, "3  .       end-changes                 log received origin asn changes");
+        l.add(null, "3  .       log-end-changes             log received origin asn changes");
+        l.add(null, "3  4       log-length-changes          log received aspath length changes");
+        l.add(null, "4  .         <num>                     path length");
+        l.add(null, "4  .         all                       any value");
         l.add(null, "3  .       label-pop                   advertise pop label");
         l.add(null, "3  .       lookup-database             lookup rib before accepting");
         l.add(null, "3  .       lookup-reverse              lookup dns before accepting");
@@ -2090,7 +2103,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, unknownsOut == null, beg, nei + "unknowns-out", "" + unknownsOut);
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
         cmds.cfgLine(l, !unknownsLog, beg, nei + "unknowns-log", "");
-        cmds.cfgLine(l, !endChanges, beg, nei + "end-changes", "");
+        cmds.cfgLine(l, !endChanges, beg, nei + "log-end-changes", "");
+        cmds.cfgLine(l, lengthChanges == null, beg, nei + "log-length-changes", "" + lengthChanges);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
         cmds.cfgLine(l, !wideAsPath, beg, nei + "wide-aspath", "");
@@ -2747,7 +2761,19 @@ public abstract class rtrBgpParam {
             unknownsLog = !negated;
             return false;
         }
-        if (s.equals("end-changes")) {
+        if (s.equals("log-length-changes")) {
+            if (negated) {
+                lengthChanges = null;
+                return false;
+            }
+            lengthChanges = new tabIntMatcher();
+            if (lengthChanges.fromString(cmd.word())) {
+                lengthChanges = null;
+                return false;
+            }
+            return false;
+        }
+        if (s.equals("log-end-changes")) {
             endChanges = !negated;
             return false;
         }
