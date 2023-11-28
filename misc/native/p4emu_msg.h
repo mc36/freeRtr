@@ -159,10 +159,10 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
+    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
 
 #ifdef HAVE_POLKA
-       "mpolka polka "
+           "mpolka polka "
 #endif
 
 #ifndef HAVE_NOCRYPTO
@@ -1579,6 +1579,56 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         tun6_ntry.prot = 41;
         tun6_ntry.command = 5;
+        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
+        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "tmux4") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET, arg[5], buf2);
+        tun4_ntry.trgAddr = neigh_ntry.sip1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[6], buf2);
+        tun4_ntry.srcAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
+        vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        vrf2rib_res = vrf2rib_init4;
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
+        neigh_ntry.command = 21;
+        neigh_ntry.tid = atoi(arg[10]);
+        tun4_ntry.prot = 18;
+        tun4_ntry.command = 13;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
+        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "tmux6") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET6, arg[5], buf2);
+        tun6_ntry.trgAddr1 = neigh_ntry.sip1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = neigh_ntry.sip2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = neigh_ntry.sip3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = neigh_ntry.sip4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[6], buf2);
+        tun6_ntry.srcAddr1 = neigh_ntry.dip1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = neigh_ntry.dip2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = neigh_ntry.dip3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
+        vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[8]);
+        vrf2rib_res = vrf2rib_init6;
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
+        neigh_ntry.command = 22;
+        neigh_ntry.tid = atoi(arg[10]);
+        tun6_ntry.prot = 18;
+        tun6_ntry.command = 13;
+        if (del == 0) table_del(&neigh_table, &neigh_ntry);
+        else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;

@@ -323,6 +323,34 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
+#define putTmuxHeader(bufP)                                     \
+    switch (ethtyp) {                                           \
+    case ETHERTYPE_MPLS_UCAST:                                  \
+        ethtyp = 137;                                           \
+        break;                                                  \
+    case ETHERTYPE_IPV4:                                        \
+        ethtyp = 4;                                             \
+        break;                                                  \
+    case ETHERTYPE_IPV6:                                        \
+        ethtyp = 41;                                            \
+        break;                                                  \
+    case ETHERTYPE_MACSEC:                                      \
+        ethtyp = 53;                                            \
+        break;                                                  \
+    case ETHERTYPE_ROUTEDMAC:                                   \
+        ethtyp = 143;                                           \
+        break;                                                  \
+    default:                                                    \
+        doDropper;                                              \
+    }                                                           \
+    bufP -= 2;                                                  \
+    tmp = bufS - bufP + preBuff;                                \
+    put16msb(bufD, bufP, tmp);                                  \
+    bufD[bufP + 2] = ethtyp;                                    \
+    bufD[bufP + 3] = ethtyp ^ (tmp & 0xff) ^ (tmp >> 8);
+
+
+
 #define putIpipHeader(bufP, ethtyp, res)                        \
     switch (ethtyp) {                                           \
     case ETHERTYPE_IPV4:                                        \
@@ -821,6 +849,14 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
         putIpv6header(bufP, bufS, ethtyp, 115, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         doMlpppEnd;
         return;
+    case 21: // tmux4
+        putTmuxHeader(bufP);
+        putIpv4header(bufP, bufS, ethtyp, 18, neigh_res->sip1, neigh_res->dip1);
+        break;
+    case 22: // tmux6
+        putTmuxHeader(bufP);
+        putIpv6header(bufP, bufS, ethtyp, 18, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        break;
     default:
         doDropper;
     }
@@ -1026,8 +1062,8 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             case 41:                                                \
                 ethtyp = ETHERTYPE_IPV6;                            \
                 break;                                              \
-        default:                                                    \
-            doDropper;                                              \
+            default:                                                \
+                doDropper;                                          \
         }                                                           \
         bufP -= 2;                                                  \
         put16msb(bufD, bufP, ethtyp);                               \
@@ -1101,6 +1137,35 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         ethtyp = get16msb(bufD, bufP);                              \
         ppptyp2ethtyp(tun_res);                                     \
         put16msb(bufD, bufP, ethtyp);                               \
+        break;                                                      \
+    case 13:                                                        \
+        bufP = bufT + 2;                                            \
+        tmp = get16msb(bufD, bufT);                                 \
+        ethtyp = bufD[bufP];                                        \
+        if (tmp < 4) doDropper;                                     \
+        if (tmp > (bufS - bufT + preBuff)) doDropper;               \
+        if (bufD[bufP + 1] != ((tmp & 0xff) ^ (tmp >> 8) ^ ethtyp)) doDropper;  \
+        switch (ethtyp) {                                           \
+            case 137:                                               \
+                ethtyp = ETHERTYPE_MPLS_UCAST;                      \
+                break;                                              \
+            case 4:                                                 \
+                ethtyp = ETHERTYPE_IPV4;                            \
+                break;                                              \
+            case 41:                                                \
+                ethtyp = ETHERTYPE_IPV6;                            \
+                break;                                              \
+            case 53:                                                \
+                ethtyp = ETHERTYPE_MACSEC;                          \
+                break;                                              \
+            case 143:                                               \
+                ethtyp = ETHERTYPE_ROUTEDMAC;                       \
+                break;                                              \
+            default:                                                \
+                doDropper;                                          \
+        }                                                           \
+        put16msb(bufD, bufP, ethtyp);                               \
+        bufS = tmp + bufT - preBuff;                                \
         break;                                                      \
     default:                                                        \
         doDropper;                                                  \

@@ -3,6 +3,8 @@ package net.freertr.prt;
 import net.freertr.addr.addrEmpty;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrType;
+import net.freertr.clnt.clntSrEth;
+import net.freertr.ifc.ifcBridge;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcMacSec;
 import net.freertr.ifc.ifcNull;
@@ -200,6 +202,8 @@ public class prtTmux implements ipPrt, ifcDn {
                 return ipCor6.protocolNumber;
             case ifcMacSec.ethtyp:
                 return prtSwipe.prot;
+            case ifcBridge.serialType:
+                return clntSrEth.prot;
             case rtrIsis.ethTyp:
                 return prtIsoip.proto;
             case ipxIface.type:
@@ -225,6 +229,8 @@ public class prtTmux implements ipPrt, ifcDn {
                 return ipIfc6.type;
             case prtSwipe.prot:
                 return ifcMacSec.ethtyp;
+            case clntSrEth.prot:
+                return ifcBridge.serialType;
             case prtIsoip.proto:
                 return rtrIsis.ethTyp;
             case prtIpxip.proto:
@@ -252,6 +258,11 @@ public class prtTmux implements ipPrt, ifcDn {
             return;
         }
         int i = pck.msbGetW(0); // length
+        if (i < 4) {
+            logger.info("got bad size from " + remote);
+            cntr.drop(pck, counter.reasons.badSiz);
+            return;
+        }
         int o = pck.getByte(2); // protocol
         if (pck.getByte(3) != chksum(i, o)) {
             logger.info("got bad checksum from " + remote);

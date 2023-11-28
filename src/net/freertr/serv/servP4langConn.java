@@ -3185,6 +3185,9 @@ public class servP4langConn implements Runnable {
                 case ipip:
                     prt = "ipip";
                     break;
+                case tmux:
+                    prt = "tmux";
+                    break;
                 case ipsec:
                     prt = "ipsec";
                     if (ifc.ifc.tunIPsec1 != null) {

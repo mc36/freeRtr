@@ -263,7 +263,7 @@ struct route6_entry {
 struct neigh_entry {
     int id;
     int vrf;
-    int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=ipip4, 8=ipip6, 9=esp4, 10=esp6, 11=ovpn4, 12=ovpn6, 13=wg4. 14=wg6, 15=amt4, 16=amt6, 17=gtp4, 18=gtp6, 19=l3tp4, 20=l3tp6
+    int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=ipip4, 8=ipip6, 9=esp4, 10=esp6, 11=ovpn4, 12=ovpn6, 13=wg4. 14=wg6, 15=amt4, 16=amt6, 17=gtp4, 18=gtp6, 19=l3tp4, 20=l3tp6, 21=tmux4, 22=tmux6
     int port;
     int aclport;
     int session;
@@ -633,7 +633,7 @@ struct tun4_entry {
     int srcAddr;
     int trgAddr;
     int prot;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux
     int aclport;
     int spi;
     int reasmS;
@@ -665,7 +665,7 @@ struct tun6_entry {
     int srcAddr1;
     int trgAddr1;
     int prot;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=esp, 7=pckoudp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux
     int aclport;
     int spi;
     int reasmS;
