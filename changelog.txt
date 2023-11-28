@@ -15504,3 +15504,14 @@ qc pass: ethernet trill-mt encapsulation
 qc pass: ethernet trill-fgl encapsulation
 ---------------------------------- 2023-11-28 08:51:01 23.11.28
 no todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
+---------------------------------- 2023-11-28 23:14:08 23.11.28
+qc pass: p4lang: ingress tmux access list
+qc pass: p4lang: egress tmux access list
+qc pass: p4lang: ingress vlan tmux access list
+qc pass: p4lang: egress vlan tmux access list
+qc pass: p4lang: tmux interface inspection with ingress drop
+qc pass: p4lang: tmux interface inspection with egress drop
+qc pass: p4lang: tmux interface verify source
+qc pass: p4lang: tmux interface loose verify source
+qc pass: p4lang: macsec over tmux
+qc pass: p4lang: sgt over tmux
