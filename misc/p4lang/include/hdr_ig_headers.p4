@@ -29,6 +29,7 @@ struct headers {
     ipv6_t		ipv6d;
     l3tp_t		l3tp2;
     gre_t		gre2;
+    tmux_t		tmux2;
     udp_t		udp2;
     vxlan_t		vxlan2;
     l2tp_t		l2tp2;
@@ -55,6 +56,7 @@ struct headers {
     ipv6_t		ipv6b;
     l3tp_t		l3tp;
     gre_t		gre;
+    tmux_t		tmux;
     udp_t		udp;
     l2tp_t		l2tp;
     amt_t		amt;

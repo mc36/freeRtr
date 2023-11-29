@@ -7,6 +7,7 @@ import net.freertr.clnt.clntSrEth;
 import net.freertr.ifc.ifcBridge;
 import net.freertr.ifc.ifcDn;
 import net.freertr.ifc.ifcMacSec;
+import net.freertr.ifc.ifcNshFwd;
 import net.freertr.ifc.ifcNull;
 import net.freertr.ifc.ifcSgt;
 import net.freertr.ifc.ifcUp;
@@ -21,6 +22,7 @@ import net.freertr.ip.ipPrt;
 import net.freertr.ipx.ipxIface;
 import net.freertr.pack.packHolder;
 import net.freertr.rtr.rtrIsis;
+import net.freertr.rtr.rtrNshIface;
 import net.freertr.util.counter;
 import net.freertr.util.logger;
 import net.freertr.util.state;
@@ -205,6 +207,8 @@ public class prtTmux implements ipPrt, ifcDn {
                 return prtSwipe.prot;
             case ifcSgt.type:
                 return prtSkip.prot;
+            case ifcNshFwd.type:
+                return rtrNshIface.protoNum;
             case ifcBridge.serialType:
                 return clntSrEth.prot;
             case rtrIsis.ethTyp:
@@ -234,6 +238,8 @@ public class prtTmux implements ipPrt, ifcDn {
                 return ifcMacSec.ethtyp;
             case prtSkip.prot:
                 return ifcSgt.type;
+            case rtrNshIface.protoNum:
+                return ifcNshFwd.type;
             case clntSrEth.prot:
                 return ifcBridge.serialType;
             case prtIsoip.proto:

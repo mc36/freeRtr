@@ -319,6 +319,8 @@ ETHERTYPE_IPV6:
         transition select(hdr.ipv4.protocol) {
 IP_PROTOCOL_GRE:
             prs_gre;
+IP_PROTOCOL_TMUX:
+            prs_tmux;
 IP_PROTOCOL_UDP:
             prs_udp;
 IP_PROTOCOL_TCP:
@@ -343,6 +345,8 @@ IP_PROTOCOL_SRL2:
         transition select(hdr.ipv6.next_hdr) {
 IP_PROTOCOL_GRE:
             prs_gre;
+IP_PROTOCOL_TMUX:
+            prs_tmux;
 IP_PROTOCOL_UDP:
             prs_udp;
 IP_PROTOCOL_TCP:
@@ -367,6 +371,19 @@ IP_PROTOCOL_SRL2:
         ig_md.layer4_dstprt = 0;
         transition select(hdr.gre.gretyp) {
 ETHERTYPE_ROUTEDMAC:
+            prs_eth5;
+        default:
+            accept;
+        }
+    }
+
+
+    state prs_tmux {
+        pkt.extract(hdr.tmux);
+        ig_md.layer4_srcprt = 0;
+        ig_md.layer4_dstprt = 0;
+        transition select(hdr.tmux.proto) {
+IP_PROTOCOL_SRL2:
             prs_eth5;
         default:
             accept;

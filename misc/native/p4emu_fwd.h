@@ -340,6 +340,9 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     case ETHERTYPE_SGT:                                         \
         ethtyp = 57;                                            \
         break;                                                  \
+    case ETHERTYPE_NSH:                                         \
+        ethtyp = 145;                                           \
+        break;                                                  \
     case ETHERTYPE_ROUTEDMAC:                                   \
         ethtyp = 143;                                           \
         break;                                                  \
@@ -1163,6 +1166,9 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
                 break;                                              \
             case 57:                                                \
                 ethtyp = ETHERTYPE_SGT;                             \
+                break;                                              \
+            case 145:                                               \
+                ethtyp = ETHERTYPE_NSH;                             \
                 break;                                              \
             case 143:                                               \
                 ethtyp = ETHERTYPE_ROUTEDMAC;                       \
