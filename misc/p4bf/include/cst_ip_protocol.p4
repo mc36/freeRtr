@@ -27,11 +27,13 @@ const bit <8> IP_PROTOCOL_IPV4 = 4;
 const bit <8> IP_PROTOCOL_ST = 5;
 const bit <8> IP_PROTOCOL_TCP = 6;
 const bit <8> IP_PROTOCOL_UDP = 17;
+const bit <8> IP_PROTOCOL_TMUX = 18;
 const bit <8> IP_PROTOCOL_IPV6 = 41;
 const bit <8> IP_PROTOCOL_IPV6_ROUTE = 43;
 const bit <8> IP_PROTOCOL_IPV6_FRAG = 44;
 const bit <8> IP_PROTOCOL_RSVP = 46;
 const bit <8> IP_PROTOCOL_GRE = 47;
+const bit <8> IP_PROTOCOL_SKIP = 57;
 const bit <8> IP_PROTOCOL_IPV6_ICMP = 58;
 const bit <8> IP_PROTOCOL_IPV6_NONXT = 59;
 const bit <8> IP_PROTOCOL_IPV6_OPTS = 60;
@@ -44,5 +46,7 @@ const bit <8> IP_PROTOCOL_STP = 118;
 const bit <8> IP_PROTOCOL_RSVP_E2E_IGNORE = 134;
 const bit <8> IP_PROTOCOL_MOBILITY_HEADER = 135;
 const bit <8> IP_PROTOCOL_MPLS_IN_IP = 137;
+const bit <8> IP_PROTOCOL_SRL2 = 143;
+const bit <8> IP_PROTOCOL_NSH = 145;
 
 #endif // _IP_PROTOCOL_P4_

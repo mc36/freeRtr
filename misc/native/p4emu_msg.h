@@ -591,7 +591,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         tun4_ntry.aclport = atoi(arg[9]);
         tun4_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[10]);
         tun4_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[11]);
-        tun4_ntry.prot = 17;
+        tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 3;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
         else table_add(&bridge_table, &bridge_ntry);
@@ -622,7 +622,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         tun6_ntry.aclport = atoi(arg[9]);
         tun6_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[10]);
         tun6_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[11]);
-        tun6_ntry.prot = 17;
+        tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 3;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
         else table_add(&bridge_table, &bridge_ntry);
@@ -646,7 +646,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         vrf2rib_ntry.vrf = atoi(arg[9]);
         vrf2rib_res = vrf2rib_init4;
         tun4_ntry.aclport = atoi(arg[10]);
-        tun4_ntry.prot = 17;
+        tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 7;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
         else table_add(&bridge_table, &bridge_ntry);
@@ -676,7 +676,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         vrf2rib_ntry.vrf = atoi(arg[9]);
         vrf2rib_res = vrf2rib_init6;
         tun6_ntry.aclport = atoi(arg[10]);
-        tun6_ntry.prot = 17;
+        tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 7;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
         else table_add(&bridge_table, &bridge_ntry);
@@ -1486,7 +1486,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.command = 3;
         tun4_ntry.srcPort = 0;
         tun4_ntry.trgPort = 0;
-        tun4_ntry.prot = 47;
+        tun4_ntry.prot = IP_PROTOCOL_GRE;
         tun4_ntry.command = 1;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1515,7 +1515,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.command = 4;
         tun6_ntry.srcPort = 0;
         tun6_ntry.trgPort = 0;
-        tun6_ntry.prot = 47;
+        tun6_ntry.prot = IP_PROTOCOL_GRE;
         tun6_ntry.command = 1;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1540,11 +1540,11 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&neigh_table, &neigh_ntry);
         tun4_ntry.srcPort = 0;
         tun4_ntry.trgPort = 0;
-        tun4_ntry.prot = 4;
+        tun4_ntry.prot = IP_PROTOCOL_IPV4;
         tun4_ntry.command = 4;
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
-        tun4_ntry.prot = 41;
+        tun4_ntry.prot = IP_PROTOCOL_IPV6;
         tun4_ntry.command = 5;
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
@@ -1573,11 +1573,11 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&neigh_table, &neigh_ntry);
         tun6_ntry.srcPort = 0;
         tun6_ntry.trgPort = 0;
-        tun6_ntry.prot = 4;
+        tun6_ntry.prot = IP_PROTOCOL_IPV4;
         tun6_ntry.command = 4;
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
-        tun6_ntry.prot = 41;
+        tun6_ntry.prot = IP_PROTOCOL_IPV6;
         tun6_ntry.command = 5;
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
@@ -1597,7 +1597,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 21;
         neigh_ntry.tid = atoi(arg[10]);
-        tun4_ntry.prot = 18;
+        tun4_ntry.prot = IP_PROTOCOL_TMUX;
         tun4_ntry.command = 13;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1625,7 +1625,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 22;
         neigh_ntry.tid = atoi(arg[10]);
-        tun6_ntry.prot = 18;
+        tun6_ntry.prot = IP_PROTOCOL_TMUX;
         tun6_ntry.command = 13;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1647,7 +1647,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 19;
         neigh_ntry.tid = atoi(arg[10]);
-        tun4_ntry.prot = 115;
+        tun4_ntry.prot = IP_PROTOCOL_L2TP;
         tun4_ntry.command = 12;
         neigh_ntry.frag = atoi(arg[11]);
         if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
@@ -1678,7 +1678,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 20;
         neigh_ntry.tid = atoi(arg[10]);
-        tun6_ntry.prot = 115;
+        tun6_ntry.prot = IP_PROTOCOL_L2TP;
         tun6_ntry.command = 12;
         neigh_ntry.frag = atoi(arg[11]);
         if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
@@ -1707,7 +1707,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.tid = atoi(arg[12]);
         tun4_ntry.srcPort = neigh_ntry.dprt;
         tun4_ntry.trgPort = neigh_ntry.sprt;
-        tun4_ntry.prot = 17;
+        tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 2;
         neigh_ntry.frag = atoi(arg[13]);
         if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
@@ -1742,7 +1742,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.tid = atoi(arg[12]);
         tun6_ntry.srcPort = neigh_ntry.dprt;
         tun6_ntry.trgPort = neigh_ntry.sprt;
-        tun6_ntry.prot = 17;
+        tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 2;
         neigh_ntry.frag = atoi(arg[13]);
         if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
@@ -1770,7 +1770,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.dprt = atoi(arg[11]);
         tun4_ntry.srcPort = neigh_ntry.dprt;
         tun4_ntry.trgPort = neigh_ntry.sprt;
-        tun4_ntry.prot = 17;
+        tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 10;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1801,7 +1801,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.dprt = atoi(arg[11]);
         tun6_ntry.srcPort = neigh_ntry.dprt;
         tun6_ntry.trgPort = neigh_ntry.sprt;
-        tun6_ntry.prot = 17;
+        tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 10;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1827,7 +1827,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.tid = atoi(arg[12]);
         tun4_ntry.srcPort = neigh_ntry.dprt;
         tun4_ntry.trgPort = neigh_ntry.sprt;
-        tun4_ntry.prot = 17;
+        tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 11;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1859,7 +1859,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.tid = atoi(arg[12]);
         tun6_ntry.srcPort = neigh_ntry.dprt;
         tun6_ntry.trgPort = neigh_ntry.sprt;
-        tun6_ntry.prot = 17;
+        tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 11;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1950,7 +1950,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.hashKeyLen = str2key(arg[19], neigh_ntry.hashKeyDat);
         neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
-        tun4_ntry.prot = 50;
+        tun4_ntry.prot = IP_PROTOCOL_ESP;
         tun4_ntry.command = 6;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -1995,7 +1995,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.hashKeyLen = str2key(arg[19], neigh_ntry.hashKeyDat);
         neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
-        tun6_ntry.prot = 50;
+        tun6_ntry.prot = IP_PROTOCOL_ESP;
         tun6_ntry.command = 6;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -2035,7 +2035,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         if (tun4_ntry.hashPkey == NULL) return 0;
         neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
-        tun4_ntry.prot = 17;
+        tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 8;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -2081,7 +2081,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         if (tun6_ntry.hashPkey == NULL) return 0;
         neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
-        tun6_ntry.prot = 17;
+        tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 8;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -2109,7 +2109,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.tid = atoi(arg[12]);
         neigh_ntry.encrKeyLen = str2key(arg[13], neigh_ntry.encrKeyDat);
         tun4_ntry.encrKeyLen = str2key(arg[14], tun4_ntry.encrKeyDat);
-        tun4_ntry.prot = 17;
+        tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 9;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
@@ -2143,7 +2143,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.tid = atoi(arg[12]);
         neigh_ntry.encrKeyLen = str2key(arg[13], neigh_ntry.encrKeyDat);
         tun6_ntry.encrKeyLen = str2key(arg[14], tun6_ntry.encrKeyDat);
-        tun6_ntry.prot = 17;
+        tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 9;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);

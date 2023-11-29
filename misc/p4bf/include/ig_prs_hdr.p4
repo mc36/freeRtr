@@ -351,6 +351,10 @@ state prs_ipv4 {
 IP_PROTOCOL_GRE:
         prs_gre;
 #endif
+#ifdef HAVE_TMUX
+IP_PROTOCOL_TMUX:
+        prs_tmux;
+#endif
 #ifdef HAVE_L3TP
 IP_PROTOCOL_L2TP:
         prs_l3tp;
@@ -388,6 +392,10 @@ state prs_ipv6 {
 #ifdef HAVE_GRE
 IP_PROTOCOL_GRE:
         prs_gre;
+#endif
+#ifdef HAVE_TMUX
+IP_PROTOCOL_TMUX:
+        prs_tmux;
 #endif
 #ifdef HAVE_L3TP
 IP_PROTOCOL_L2TP:
@@ -431,6 +439,15 @@ state prs_llc {
 #ifdef HAVE_GRE
 state prs_gre {
     pkt.extract(hdr.gre);
+    ig_md.layer4_srcprt = 0;
+    ig_md.layer4_dstprt = 0;
+    transition accept;
+}
+#endif
+
+#ifdef HAVE_TMUX
+state prs_tmux {
+    pkt.extract(hdr.tmux);
     ig_md.layer4_srcprt = 0;
     ig_md.layer4_dstprt = 0;
     transition accept;

@@ -682,7 +682,7 @@ qc pass: macsec over ppp
 qc pass: macsec over framerelay
 qc pass: macsec over atmdxi
 qc pass: macsec over atmsar
-qc pass: macsec over tunnel
+qc pass: macsec over gre
 qc pass: macsec with des
 qc pass: macsec with blowfish
 qc pass: macsec with 3des
@@ -811,7 +811,7 @@ qc pass: sgt framerelay encapsulation
 qc pass: sgt atmdxi encapsulation
 qc pass: sgt isdn encapsulation
 qc pass: sgt sep encapsulation
-qc pass: sgt tunnel encapsulation
+qc pass: sgt gre encapsulation
 qc pass: sgt ethernet chain encapsulation
 qc pass: sgt vlan chain encapsulation
 qc pass: sgt vlan map out encapsulation

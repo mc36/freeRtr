@@ -15607,3 +15607,8 @@ qc pass: p4lang: tmux mpls pop
 qc pass: p4lang: tmux mpls push
 qc pass: p4lang: l2vpn over tmux mpls
 qc pass: p4lang: l3vpn over tmux mpls
+---------------------------------- 2023-11-29 20:35:18 23.11.29
+no qc pass: sgt tunnel encapsulation
+no qc pass: macsec over tunnel
+qc pass: macsec over gre
+qc pass: sgt gre encapsulation

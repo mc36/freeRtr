@@ -38,6 +38,10 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
     SubIntId_t l3tp_hit;
 #endif
 
+#ifdef HAVE_TMUX
+    SubIntId_t tmux_hit;
+#endif
+
 
 
 
@@ -57,6 +61,16 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.gre.setInvalid();
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
+    }
+#endif
+
+
+#ifdef HAVE_TMUX
+    action act_tunnel_tmux(SubIntId_t port) {
+        tmux_hit = port;
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
@@ -209,6 +223,9 @@ hdr.ipv4.protocol:
 #ifdef HAVE_GRE
             act_tunnel_gre;
 #endif
+#ifdef HAVE_TMUX
+            act_tunnel_tmux;
+#endif
 #ifdef HAVE_IPIP
             act_tunnel_ip4ip;
             act_tunnel_ip6ip;
@@ -256,6 +273,9 @@ hdr.ipv6.next_hdr:
 #ifdef HAVE_GRE
             act_tunnel_gre;
 #endif
+#ifdef HAVE_TMUX
+            act_tunnel_tmux;
+#endif
 #ifdef HAVE_IPIP
             act_tunnel_ip4ip;
             act_tunnel_ip6ip;
@@ -291,6 +311,9 @@ hdr.ipv6.next_hdr:
 #endif
 #ifdef HAVE_L3TP
         l3tp_hit = 0;
+#endif
+#ifdef HAVE_TMUX
+        tmux_hit = 0;
 #endif
         if (ig_md.ipv4_valid==1)  {
             tbl_tunnel4.apply();
@@ -372,6 +395,39 @@ hdr.ipv6.next_hdr:
             hdr.ipv4.setInvalid();
             hdr.ipv6.setInvalid();
             ig_md.source_id = l3tp_hit;
+        }
+#endif
+
+
+#ifdef HAVE_TMUX
+        if (tmux_hit != 0) {
+            if (hdr.tmux.proto == IP_PROTOCOL_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+            else if (hdr.tmux.proto == IP_PROTOCOL_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+#ifdef HAVE_SGT
+            else if (hdr.tmux.proto == IP_PROTOCOL_SKIP) hdr.ethernet.ethertype = ETHERTYPE_SGT;
+#endif
+#ifdef HAVE_NSH
+            else if (hdr.tmux.proto == IP_PROTOCOL_NSH) hdr.ethernet.ethertype = ETHERTYPE_NSH;
+#endif
+#ifdef HAVE_MPLS
+            else if (hdr.tmux.proto == IP_PROTOCOL_MPLS_IN_IP) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
+#endif
+#ifdef HAVE_TAP
+            else if (hdr.tmux.proto == IP_PROTOCOL_SRL2) hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
+#endif
+            ig_md.ipv4_valid = 0;
+            ig_md.ipv6_valid = 0;
+            hdr.vlan.setInvalid();
+            ig_tm_md.ucast_egress_port = RECIR_PORT;
+            ig_tm_md.bypass_egress = 1;
+//        recirculate(RECIR_PORT);
+            hdr.cpu.setValid();
+            hdr.cpu._padding = 0;
+            hdr.cpu.port = tmux_hit;
+            hdr.tmux.setInvalid();
+            hdr.ipv4.setInvalid();
+            hdr.ipv6.setInvalid();
+            ig_md.source_id = tmux_hit;
         }
 #endif
 

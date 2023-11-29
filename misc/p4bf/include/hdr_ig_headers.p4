@@ -36,6 +36,9 @@ struct headers {
 #ifdef HAVE_GRE
     gre_t gre2;
 #endif
+#ifdef HAVE_TMUX
+    tmux_t tmux2;
+#endif
 #ifdef HAVE_L3TP
     l3tp_t l3tp2;
 #endif
@@ -81,6 +84,9 @@ struct headers {
 #endif
 #ifdef HAVE_GRE
     gre_t gre;
+#endif
+#ifdef HAVE_TMUX
+    tmux_t tmux;
 #endif
 #ifdef HAVE_L3TP
     l3tp_t l3tp;

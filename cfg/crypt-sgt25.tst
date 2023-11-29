@@ -1,4 +1,4 @@
-description sgt gre encapsulation
+description sgt l2tp3 encapsulation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -15,7 +15,8 @@ int tun1
  tun vrf v1
  tun sou eth1
  tun dest 1.1.1.2
- tun mod gre
+ tun key 1234
+ tun mod l2tp3
  sgt ena
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
@@ -38,7 +39,8 @@ int tun1
  tun vrf v1
  tun sou eth1
  tun dest 1.1.1.1
- tun mod gre
+ tun key 1234
+ tun mod l2tp3
  sgt ena
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0

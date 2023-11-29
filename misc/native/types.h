@@ -22,3 +22,20 @@
 #define PPPTYPE_MACSEC              0x0053
 #define PPPTYPE_SGT                 0x004a
 #define PPPTYPE_MULTILINK           0x003d
+
+#define IP_PROTOCOL_IGMP            2
+#define IP_PROTOCOL_IPV4            4
+#define IP_PROTOCOL_TCP             6
+#define IP_PROTOCOL_UDP             17
+#define IP_PROTOCOL_TMUX            18
+#define IP_PROTOCOL_IPV6            41
+#define IP_PROTOCOL_FRAG            44
+#define IP_PROTOCOL_RSVP            46
+#define IP_PROTOCOL_GRE             47
+#define IP_PROTOCOL_ESP             50
+#define IP_PROTOCOL_SWIPE           53
+#define IP_PROTOCOL_SKIP            57
+#define IP_PROTOCOL_L2TP            115
+#define IP_PROTOCOL_MPLS            137
+#define IP_PROTOCOL_SRL2            143
+#define IP_PROTOCOL_NSH             145

@@ -847,6 +847,34 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "tmux4":
+            self.writeTmux4rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                int(splt[7]),
+                splt[8],
+            )
+            continue
+
+        if cmds[0] == "tmux6":
+            self.writeTmux6rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                int(splt[7]),
+                splt[8],
+            )
+            continue
+
         if cmds[0] == "ipip4":
             self.writeIpip4rules(
                 mode,

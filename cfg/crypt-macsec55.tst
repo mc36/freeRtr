@@ -1,4 +1,4 @@
-description macsec over gre
+description macsec over l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -19,7 +19,8 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode gre
+ tunnel key 1234
+ tunnel mode l2tp3
  tunnel source ethernet1
  tunnel destination 9999::2
  vrf for v1
@@ -48,7 +49,8 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode gre
+ tunnel key 1234
+ tunnel mode l2tp3
  tunnel source ethernet1
  tunnel destination 9999::1
  vrf for v1
