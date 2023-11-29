@@ -15612,3 +15612,10 @@ no qc pass: sgt tunnel encapsulation
 no qc pass: macsec over tunnel
 qc pass: macsec over gre
 qc pass: sgt gre encapsulation
+---------------------------------- 2023-11-29 21:16:08 23.11.29
+qc pass: bridged ethernet over tmux
+qc pass: bridged ethernet over l2tp3
+qc pass: macsec over tmux
+qc pass: macsec over l2tp3
+qc pass: sgt tmux encapsulation
+qc pass: sgt l2tp3 encapsulation

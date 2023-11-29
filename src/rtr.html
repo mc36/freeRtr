@@ -15,7 +15,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter-rare v23.11.29-cur, done by sprscc13@mr.n0b0dy.<br/>
-tested: 2023-11-29 20:46:55, took 00:11:36, with 80 workers, on 3386 cases, 0 failed, 0 traces, 10 retries<br/>
+tested: 2023-11-29 21:27:54, took 00:11:45, with 80 workers, on 3392 cases, 0 failed, 0 traces, 7 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -55,6 +55,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-bridge16.tst">conn-bridge16.tst</a></td><td>success</td><td>bridge static address</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-bridge17.tst">conn-bridge17.tst</a></td><td>success</td><td>bridge port split horizon</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-bridge18.tst">conn-bridge18.tst</a></td><td>success</td><td>bridge port unsplit horizon</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-bridge19.tst">conn-bridge19.tst</a></td><td>success</td><td>bridged ethernet over tmux</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-bridge20.tst">conn-bridge20.tst</a></td><td>success</td><td>bridged ethernet over l2tp3</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-bstun.tst">conn-bstun.tst</a></td><td>success</td><td>ppp over bstun</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-bundle01.tst">conn-bundle01.tst</a></td><td>success</td><td>bundle of ethernet port</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-bundle02.tst">conn-bundle02.tst</a></td><td>success</td><td>bundle of serial port</td></tr>
@@ -748,6 +750,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec51.tst">crypt-macsec51.tst</a></td><td>success</td><td>macsec with aes128gcm and aead</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec52.tst">crypt-macsec52.tst</a></td><td>success</td><td>macsec with aes192gcm and aead</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec53.tst">crypt-macsec53.tst</a></td><td>success</td><td>macsec with aes256gcm and aead</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec54.tst">crypt-macsec54.tst</a></td><td>success</td><td>macsec over tmux</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec55.tst">crypt-macsec55.tst</a></td><td>success</td><td>macsec over l2tp3</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat01.tst">crypt-nat01.tst</a></td><td>success</td><td>source list translation to interface</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat02.tst">crypt-nat02.tst</a></td><td>success</td><td>source list translation to address</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat03.tst">crypt-nat03.tst</a></td><td>success</td><td>source address translation to interface</td></tr>
@@ -845,6 +849,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt21.tst">crypt-sgt21.tst</a></td><td>success</td><td>sgt encapsulation with egress allow</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt22.tst">crypt-sgt22.tst</a></td><td>success</td><td>sgt encapsulation with ingress forbid</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt23.tst">crypt-sgt23.tst</a></td><td>success</td><td>sgt encapsulation with egress forbid</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt24.tst">crypt-sgt24.tst</a></td><td>success</td><td>sgt tmux encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt25.tst">crypt-sgt25.tst</a></td><td>success</td><td>sgt l2tp3 encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip01.tst">crypt-skip01.tst</a></td><td>success</td><td>skip over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip02.tst">crypt-skip02.tst</a></td><td>success</td><td>skip over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>success</td><td>skip over skip</td></tr>
