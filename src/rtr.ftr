@@ -1897,6 +1897,36 @@ qc pass: p4lang: sdwan over ipv4 with amt
 qc pass: p4lang: sdwan over ipv6 with amt
 qc pass: p4lang: sdwan over ipv4 with gtp
 qc pass: p4lang: sdwan over ipv6 with gtp
+qc pass: p4lang: tmux routing over ipv4
+qc pass: p4lang: tmux routing over ipv6
+qc pass: p4lang: tmux routing over ipv4 loopback
+qc pass: p4lang: tmux routing over ipv6 loopback
+qc pass: p4lang: tmux routing over vlan
+qc pass: p4lang: tmux routing over bundle
+qc pass: p4lang: tmux routing over bundle vlan
+qc pass: p4lang: tmux routing over hairpin
+qc pass: p4lang: tmux routing over hairpin vlan
+qc pass: p4lang: tmux routing over bridge
+qc pass: p4lang: tmux routing over vlan bridge
+qc pass: p4lang: tmux mpls over ipv4
+qc pass: p4lang: tmux mpls over ipv6
+qc pass: p4lang: tmux mpls over ipv4 loopback
+qc pass: p4lang: tmux mpls over ipv6 loopback
+qc pass: p4lang: tmux mpls over vlan
+qc pass: p4lang: tmux mpls over bundle
+qc pass: p4lang: tmux mpls over bundle vlan
+qc pass: p4lang: tmux mpls over hairpin
+qc pass: p4lang: tmux mpls over hairpin vlan
+qc pass: p4lang: tmux mpls over bridge
+qc pass: p4lang: tmux mpls over vlan bridge
+qc pass: p4lang: bridging over tmux
+qc pass: p4lang: bridging over tmux vlan
+qc pass: p4lang: mldp core over tmux
+qc pass: p4lang: bier core over tmux
+qc pass: p4lang: tmux mpls pop
+qc pass: p4lang: tmux mpls push
+qc pass: p4lang: l2vpn over tmux mpls
+qc pass: p4lang: l3vpn over tmux mpls
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
