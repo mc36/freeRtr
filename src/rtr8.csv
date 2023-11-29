@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.11.28-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-29 00:49:35, took 00:10:13, with 60 workers, on 526 cases, 2 failed, 0 traces, 6 retries
+-;-;-;freeRouter-rare v23.11.29-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2023-11-29 07:16:11, took 00:13:11, with 60 workers, on 526 cases, 0 failed, 1 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -520,8 +520,8 @@ http://sources.freertr.org/cfg/p4lang-rout303.tst;p4lang-rout303.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout304.tst;p4lang-rout304.tst;success;p4lang: tmux mpls over hairpin vlan
 http://sources.freertr.org/cfg/p4lang-rout305.tst;p4lang-rout305.tst;success;p4lang: tmux mpls over bridge
 http://sources.freertr.org/cfg/p4lang-rout306.tst;p4lang-rout306.tst;success;p4lang: tmux mpls over vlan bridge
-http://sources.freertr.org/cfg/p4lang-rout307.tst;p4lang-rout307.tst;#6-run-r4 tping 100 10 1.1.2.5 vrf v1;p4lang: bridging over tmux
-http://sources.freertr.org/cfg/p4lang-rout308.tst;p4lang-rout308.tst;#6-run-r4 tping 100 10 1.1.2.5 vrf v1;p4lang: bridging over tmux vlan
+http://sources.freertr.org/cfg/p4lang-rout307.tst;p4lang-rout307.tst;success;p4lang: bridging over tmux
+http://sources.freertr.org/cfg/p4lang-rout308.tst;p4lang-rout308.tst;success;p4lang: bridging over tmux vlan
 http://sources.freertr.org/cfg/p4lang-rout309.tst;p4lang-rout309.tst;success;p4lang: mldp core over tmux
 http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;success;p4lang: bier core over tmux
 http://sources.freertr.org/cfg/p4lang-rout311.tst;p4lang-rout311.tst;success;p4lang: tmux mpls pop

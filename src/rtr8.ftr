@@ -516,8 +516,8 @@ qc pass: p4lang: tmux mpls over hairpin
 qc pass: p4lang: tmux mpls over hairpin vlan
 qc pass: p4lang: tmux mpls over bridge
 qc pass: p4lang: tmux mpls over vlan bridge
-failed: p4lang: bridging over tmux
-failed: p4lang: bridging over tmux vlan
+qc pass: p4lang: bridging over tmux
+qc pass: p4lang: bridging over tmux vlan
 qc pass: p4lang: mldp core over tmux
 qc pass: p4lang: bier core over tmux
 qc pass: p4lang: tmux mpls pop
