@@ -3,6 +3,7 @@ package net.freertr.sec;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.clnt.clntTrack;
 import net.freertr.ip.ipFwd;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFormat;
 
@@ -29,6 +30,16 @@ public class secInfoCfg {
      * tracker to use
      */
     public clntTrack tracker;
+
+    /**
+     * accesses per interval
+     */
+    public tabRateLimit accessRate;
+
+    /**
+     * limit on startup
+     */
+    public int startupDelay;
 
     /**
      * pretend a dumb server

@@ -12,7 +12,6 @@ import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgCert;
 import net.freertr.cfg.cfgGeneric;
 import net.freertr.cfg.cfgIfc;
-import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgKey;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
@@ -44,7 +43,6 @@ import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
-import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRtrmapN;
@@ -118,16 +116,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * access route policy
      */
     protected tabListing<tabRtrplcN, addrIP> srvRouPol;
-
-    /**
-     * accesses per interval
-     */
-    protected tabRateLimit srvAccRat;
-
-    /**
-     * limit on startup
-     */
-    protected int srvStartup;
 
     /**
      * limit of all clients
@@ -317,8 +305,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         "server .*! no access-prefix",
         "server .*! no access-map",
         "server .*! no access-policy",
-        "server .*! no access-rate",
-        "server .*! access-startup 0",
         "server .*! access-total 0",
         "server .*! access-peer 0",
         "server .*! access-subnet 0",
@@ -1009,22 +995,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     }
 
     private boolean srvCheckAccept1(addrIP adr, int prt) {
-        if (srvStartup > 0) {
-            if ((bits.getTime() - cfgInit.started) < srvStartup) {
-                if (srvLogDrop) {
-                    logger.info("access startup dropped " + adr + " " + prt);
-                }
-                return true;
-            }
-        }
-        if (srvAccRat != null) {
-            if (srvAccRat.check(1)) {
-                if (srvLogDrop) {
-                    logger.info("access rate dropped " + adr + " " + prt);
-                }
-                return true;
-            }
-        }
         if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {
             return false;
         }
@@ -1285,17 +1255,12 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <name:acl>           access list name");
         l.add(null, "1 2  access-prefix          set prefix list");
         l.add(null, "2 .    <name:pl>            prefix list name");
-        l.add(null, "1 2  access-rate            access rate for this server");
-        l.add(null, "2 3    <num>                new sessions per interval");
-        l.add(null, "3 .      <num>              interval");
         l.add(null, "1 2  access-map             set route map");
         l.add(null, "2 .    <name:rm>            route map name");
         l.add(null, "1 2  access-policy          set route policy");
         l.add(null, "2 .    <name:rpl>           route policy name");
         l.add(null, "1 2  access-total           session limit for this server");
         l.add(null, "2 .    <num>                number of connections");
-        l.add(null, "1 2  access-startup         initial downtime for this server");
-        l.add(null, "2 .    <num>                time");
         l.add(null, "1 2  access-peer            per client session limit");
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-subnet          per subnet session limit");
@@ -1406,8 +1371,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             l.add(cmds.tabulator + "no access-policy");
         }
         cmds.cfgLine(l, !srvLogDrop, cmds.tabulator, "access-log", "");
-        cmds.cfgLine(l, srvAccRat == null, cmds.tabulator, "access-rate", "" + srvAccRat);
-        l.add(cmds.tabulator + "access-startup " + srvStartup);
         l.add(cmds.tabulator + "access-total " + srvTotLim);
         l.add(cmds.tabulator + "access-peer " + srvPerLim);
         l.add(cmds.tabulator + "access-subnet " + srvNetLim);
@@ -1553,15 +1516,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return;
             }
             srvPrfLst = ntry.prflst;
-            return;
-        }
-        if (a.equals("access-startup")) {
-            srvStartup = bits.str2num(cmd.word());
-            return;
-        }
-        if (a.equals("access-rate")) {
-            int res = bits.str2num(cmd.word());
-            srvAccRat = new tabRateLimit(res, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("access-map")) {
@@ -1721,14 +1675,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
             if (a.equals("access-prefix")) {
                 srvPrfLst = null;
-                return;
-            }
-            if (a.equals("access-startup")) {
-                srvStartup = 0;
-                return;
-            }
-            if (a.equals("access-rate")) {
-                srvAccRat = null;
                 return;
             }
             if (a.equals("access-map")) {

@@ -14,6 +14,7 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
+import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRoute;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteEntry;
@@ -101,11 +102,33 @@ public class secInfoUtl {
             doSanityChecks(cfg);
             return cfg;
         }
+        if (s.equals("startup")) {
+            if (negated) {
+                cfg.startupDelay = 0;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfg.startupDelay = bits.str2num(cmd.word());
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("rate")) {
+            if (negated) {
+                cfg.accessRate = null;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            int i = bits.str2num(cmd.word());
+            cfg.accessRate = new tabRateLimit(i, bits.str2num(cmd.word()));
+            doSanityChecks(cfg);
+            return cfg;
+        }
         if (s.equals("pmtud")) {
             if (negated) {
                 cfg.pmtudMin = 0;
                 cfg.pmtudMax = 0;
                 cfg.pmtudTim = 0;
+                doSanityChecks(cfg);
                 return cfg;
             }
             cfg.pmtudMin = bits.str2num(cmd.word());
@@ -162,18 +185,22 @@ public class secInfoUtl {
         if (s.equals("style")) {
             if (negated) {
                 cfg.style = null;
+                doSanityChecks(cfg);
                 return cfg;
             }
             cfg.style = cmd.getRemaining();
+            doSanityChecks(cfg);
             return cfg;
         }
         if (s.equals("format")) {
             if (negated) {
                 cfg.format = userFormat.tableMode.normal;
+                doSanityChecks(cfg);
                 return cfg;
             }
             s = cmd.word();
             cfg.format = userFormat.str2tabmod(s);
+            doSanityChecks(cfg);
             return cfg;
         }
         if (s.equals("router4")) {
@@ -444,6 +471,12 @@ public class secInfoUtl {
         if (cfg.tracker != null) {
             lst.add(beg + "tracker " + cfg.tracker.name);
         }
+        if (cfg.accessRate != null) {
+            lst.add(beg + "rate " + cfg.accessRate);
+        }
+        if (cfg.startupDelay > 0) {
+            lst.add(beg + "startup " + cfg.startupDelay);
+        }
         if (cfg.style != null) {
             lst.add(beg + "style " + cfg.style);
         }
@@ -500,8 +533,13 @@ public class secInfoUtl {
         lst.add(null, (tab + 2) + " .    csv                        select csv mode");
         lst.add(null, (tab + 2) + " .    raw                        select raw mode");
         lst.add(null, (tab + 2) + " .    html                       select html mode");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "tracker         check tracker");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "tracker                      check tracker");
         lst.add(null, (tab + 2) + " .  <name:trk>           tracker name");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "rate                         access rate");
+        lst.add(null, (tab + 2) + " " + (tab + 3) + "    <num>                new sessions per interval");
+        lst.add(null, (tab + 3) + " .      <num>              interval");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "startup                      initial downtime");
+        lst.add(null, (tab + 2) + " .    <num>                time");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "pmtud                    test pmtud before accepting");
         lst.add(null, (tab + 2) + " " + (tab + 3) + "  <num>                      min mtu");
         lst.add(null, (tab + 3) + " " + (tab + 4) + "    <num>                    max mtu");

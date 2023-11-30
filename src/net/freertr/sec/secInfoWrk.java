@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.clnt.clntDns;
 import net.freertr.clnt.clntPmtud;
@@ -224,11 +225,11 @@ public class secInfoWrk implements Runnable {
      * @return true if a new thread started
      */
     public boolean doWork(boolean thrd) {
-        tracker = false;
-        if (config.tracker != null) {
-            tracker = !config.tracker.getStatus();
-        }
+        doTrackers();
         doFindRoute();
+        if (tracker) {
+            return false;
+        }
         thrd &= config.resolve || (config.pmtudTim > 0) || (config.script != null);
         if (thrd) {
             new Thread(this).start();
@@ -269,6 +270,26 @@ public class secInfoWrk implements Runnable {
             }
             if (closer.closeC != null) {
                 closer.closeC.setClosing();
+            }
+        } catch (Exception e) {
+            logger.traceback(e, addr + " " + proto);
+        }
+    }
+
+    /**
+     * update tracker
+     */
+    protected void doTrackers() {
+        try {
+            tracker = false;
+            if (config.tracker != null) {
+                tracker |= !config.tracker.getStatus();
+            }
+            if (config.startupDelay > 0) {
+                tracker |= (bits.getTime() - cfgInit.started) < config.startupDelay;
+            }
+            if (config.accessRate != null) {
+                tracker |= config.accessRate.check(1);
             }
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
