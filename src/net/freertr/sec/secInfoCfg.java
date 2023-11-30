@@ -49,17 +49,17 @@ public class secInfoCfg {
     /**
      * access prefix list
      */
-    public tabListing<tabPrfxlstN, addrIP> srvPrfLst;
+    public tabListing<tabPrfxlstN, addrIP> prefixList;
 
     /**
      * access route map
      */
-    public tabListing<tabRtrmapN, addrIP> srvRouMap;
+    public tabListing<tabRtrmapN, addrIP> routeMap;
 
     /**
      * access route policy
      */
-    public tabListing<tabRtrplcN, addrIP> srvRouPol;
+    public tabListing<tabRtrplcN, addrIP> routePolicy;
 
     /**
      * pretend a dumb server

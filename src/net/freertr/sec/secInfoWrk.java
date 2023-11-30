@@ -15,8 +15,10 @@ import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
+import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.serv.servHttp;
 import net.freertr.tab.tabRouteEntry;
+import net.freertr.tab.tabRtrplc;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -227,6 +229,7 @@ public class secInfoWrk implements Runnable {
     public boolean doWork(boolean thrd) {
         doTrackers();
         doFindRoute();
+        doCheckRpf();
         if (tracker) {
             return false;
         }
@@ -290,6 +293,33 @@ public class secInfoWrk implements Runnable {
             }
             if (config.accessRate != null) {
                 tracker |= config.accessRate.check(1);
+            }
+        } catch (Exception e) {
+            logger.traceback(e, addr + " " + proto);
+        }
+    }
+
+    /**
+     * check the route
+     */
+    protected void doCheckRpf() {
+        try {
+            if ((config.prefixList == null) && (config.routeMap == null) && (config.routePolicy == null)) {
+                return;
+            }
+            tabRouteEntry<addrIP> n = closer.fwder.actualU.route(addr);
+            if (n == null) {
+                tracker = true;
+                return;
+            }
+            if (config.prefixList != null) {
+                tracker |= !config.prefixList.matches(rtrBgpUtil.sfiUnicast, 0, n.prefix);
+            }
+            if (config.routeMap != null) {
+                tracker |= !config.routeMap.matches(rtrBgpUtil.sfiUnicast, 0, n);
+            }
+            if (config.routePolicy != null) {
+                tracker |= tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, n, config.routePolicy, true) == null;
             }
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);

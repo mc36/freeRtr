@@ -126,9 +126,9 @@ public class secInfoUtl {
             doSanityChecks(cfg);
             return cfg;
         }
-        if (s.equals("prefix-list")) {
+        if (s.equals("prefix")) {
             if (negated) {
-                cfg.srvPrfLst = null;
+                cfg.prefixList = null;
                 doSanityChecks(cfg);
                 return cfg;
             }
@@ -137,13 +137,13 @@ public class secInfoUtl {
                 cmd.error("no such prefix list");
                 return cfg;
             }
-            cfg.srvPrfLst = ntry.prflst;
+            cfg.prefixList = ntry.prflst;
             doSanityChecks(cfg);
             return cfg;
         }
-        if (s.equals("route-map")) {
+        if (s.equals("map")) {
             if (negated) {
-                cfg.srvRouMap = null;
+                cfg.routeMap = null;
                 doSanityChecks(cfg);
                 return cfg;
             }
@@ -152,13 +152,13 @@ public class secInfoUtl {
                 cmd.error("no such route map");
                 return cfg;
             }
-            cfg.srvRouMap = ntry.roumap;
+            cfg.routeMap = ntry.roumap;
             doSanityChecks(cfg);
             return cfg;
         }
-        if (s.equals("route-policy")) {
+        if (s.equals("policy")) {
             if (negated) {
-                cfg.srvRouPol = null;
+                cfg.routePolicy = null;
                 doSanityChecks(cfg);
                 return cfg;
             }
@@ -167,7 +167,7 @@ public class secInfoUtl {
                 cmd.error("no such route policy");
                 return cfg;
             }
-            cfg.srvRouPol = ntry.rouplc;
+            cfg.routePolicy = ntry.rouplc;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -525,14 +525,14 @@ public class secInfoUtl {
         if (cfg.startupDelay > 0) {
             lst.add(beg + "startup " + cfg.startupDelay);
         }
-        if (cfg.srvPrfLst != null) {
-            lst.add(cmds.tabulator + "prefix-list " + cfg.srvPrfLst.listName);
+        if (cfg.prefixList != null) {
+            lst.add(beg + "prefix " + cfg.prefixList.listName);
         }
-        if (cfg.srvRouMap != null) {
-            lst.add(cmds.tabulator + "route-map " + cfg.srvRouMap.listName);
+        if (cfg.routeMap != null) {
+            lst.add(beg + "map " + cfg.routeMap.listName);
         }
-        if (cfg.srvRouPol != null) {
-            lst.add(cmds.tabulator + "route-policy " + cfg.srvRouPol.listName);
+        if (cfg.routePolicy != null) {
+            lst.add(beg + "policy " + cfg.routePolicy.listName);
         }
         if (cfg.style != null) {
             lst.add(beg + "style " + cfg.style);
@@ -597,6 +597,12 @@ public class secInfoUtl {
         lst.add(null, (tab + 3) + " .      <num>              interval");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "startup                      initial downtime");
         lst.add(null, (tab + 2) + " .    <num>                time");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "prefix                       check prefix list");
+        lst.add(null, (tab + 2) + " .    <name:pl>            prefix list name");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "map                          check route map");
+        lst.add(null, (tab + 2) + " .    <name:rm>            route map name");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "policy                       check route policy");
+        lst.add(null, (tab + 2) + " .    <name:rpl>           route policy name");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "pmtud                    test pmtud before accepting");
         lst.add(null, (tab + 2) + " " + (tab + 3) + "  <num>                      min mtu");
         lst.add(null, (tab + 3) + " " + (tab + 4) + "    <num>                    max mtu");

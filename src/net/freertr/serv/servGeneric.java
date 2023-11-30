@@ -13,16 +13,12 @@ import net.freertr.cfg.cfgCert;
 import net.freertr.cfg.cfgGeneric;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.cfg.cfgKey;
-import net.freertr.cfg.cfgPrfxlst;
-import net.freertr.cfg.cfgRoump;
-import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyRSA;
-import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipPrt;
 import net.freertr.pack.packHolder;
@@ -32,7 +28,6 @@ import net.freertr.prt.prtGen;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtServP;
 import net.freertr.prt.prtServS;
-import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.rtr.rtrBlackhole;
 import net.freertr.sec.secInfoCfg;
 import net.freertr.sec.secInfoCls;
@@ -42,12 +37,7 @@ import net.freertr.sec.secServer;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabListing;
-import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRouteAttr;
-import net.freertr.tab.tabRouteEntry;
-import net.freertr.tab.tabRtrmapN;
-import net.freertr.tab.tabRtrplc;
-import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
 import net.freertr.util.bits;
@@ -287,9 +277,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         "server .*! no security dsacert",
         "server .*! no security ecdsacert",
         "server .*! no access-class",
-        "server .*! no access-prefix",
-        "server .*! no access-map",
-        "server .*! no access-policy",
         "server .*! access-total 0",
         "server .*! access-peer 0",
         "server .*! access-subnet 0",
@@ -979,46 +966,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return res;
     }
 
-    private boolean srvCheckAccept1(addrIP adr, int prt) {
-        if ((srvPrfLst == null) && (srvRouMap == null) && (srvRouPol == null)) {
-            return false;
-        }
-        ipFwd fwd = srvVrf.getFwd(adr);
-        tabRouteEntry<addrIP> ntry = fwd.actualU.route(adr);
-        if (ntry == null) {
-            if (srvLogDrop) {
-                logger.info("access rpf dropped " + adr + " " + prt);
-            }
-            return true;
-        }
-        if (srvPrfLst != null) {
-            if (!srvPrfLst.matches(rtrBgpUtil.sfiUnicast, 0, ntry.prefix)) {
-                if (srvLogDrop) {
-                    logger.info("access prefix list dropped " + adr + " " + prt);
-                }
-                return true;
-            }
-        }
-        if (srvRouMap != null) {
-            if (!srvRouMap.matches(rtrBgpUtil.sfiUnicast, 0, ntry)) {
-                if (srvLogDrop) {
-                    logger.info("access route map dropped " + adr + " " + prt);
-                }
-                return true;
-            }
-        }
-        if (srvRouPol != null) {
-            ntry = tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, ntry, srvRouPol, true);
-            if (ntry == null) {
-                if (srvLogDrop) {
-                    logger.info("access route policy dropped " + adr + " " + prt);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean srvCheckAccept2(boolean ipv4, addrIP adr, int prt) {
         if (ipv4) {
             if (srvBlckhl4 != null) {
@@ -1055,9 +1002,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     }
 
     private boolean srvCheckAccept(prtGenConn conn) {
-        if (srvCheckAccept1(conn.peerAddr, conn.portLoc)) {
-            return true;
-        }
         secInfoCls cls = new secInfoCls(null, conn, null, srvVrf.getFwd(conn.peerAddr), conn.peerAddr, conn.protoNum, conn.iface.addr);
         secInfoWrk inf = new secInfoWrk(srvIpInf, cls, null);
         inf.doWork(true);
@@ -1121,15 +1065,12 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         pck.IPsrc.setAddr(rem);
         pck.IPtrg.setAddr(ifc.addr);
         pck.IPprt = prt.getProtoNum();
-        if (srvCheckAccept1(pck.IPsrc, pck.IPprt)) {
-            return true;
-        }
-        secInfoCls cls = new secInfoCls(null, null, prt, srvVrf.getFwd(rem), rem, prt.getProtoNum(), ifc.addr);
+        secInfoCls cls = new secInfoCls(null, null, prt, srvVrf.getFwd(rem), rem, pck.IPprt, ifc.addr);
         secInfoWrk inf = new secInfoWrk(srvIpInf, cls, null);
         inf.doWork(true);
         if (inf.need2drop()) {
             if (srvLogDrop) {
-                logger.info("access ipinfo dropped " + rem + " " + prt);
+                logger.info("access ipinfo dropped " + pck.IPsrc + " " + pck.IPprt);
             }
             return true;
         }
@@ -1238,12 +1179,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <num>                port number to use");
         l.add(null, "1 2  access-class           set access list");
         l.add(null, "2 .    <name:acl>           access list name");
-        l.add(null, "1 2  access-prefix          set prefix list");
-        l.add(null, "2 .    <name:pl>            prefix list name");
-        l.add(null, "1 2  access-map             set route map");
-        l.add(null, "2 .    <name:rm>            route map name");
-        l.add(null, "1 2  access-policy          set route policy");
-        l.add(null, "2 .    <name:rpl>           route policy name");
         l.add(null, "1 2  access-total           session limit for this server");
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-peer            per client session limit");
@@ -1614,18 +1549,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
             if (a.equals("access-class")) {
                 srvAccess = null;
-                return;
-            }
-            if (a.equals("access-prefix")) {
-                srvPrfLst = null;
-                return;
-            }
-            if (a.equals("access-map")) {
-                srvRouMap = null;
-                return;
-            }
-            if (a.equals("access-policy")) {
-                srvRouPol = null;
                 return;
             }
             if (a.equals("security")) {
