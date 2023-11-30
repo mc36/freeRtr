@@ -6,7 +6,6 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.auth.authGeneric;
-import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgAuther;
 import net.freertr.cfg.cfgCert;
@@ -21,7 +20,6 @@ import net.freertr.cry.cryKeyECDSA;
 import net.freertr.cry.cryKeyRSA;
 import net.freertr.ip.ipFwdIface;
 import net.freertr.ip.ipPrt;
-import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeLine;
 import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGen;
@@ -34,9 +32,7 @@ import net.freertr.sec.secInfoCls;
 import net.freertr.sec.secInfoUtl;
 import net.freertr.sec.secInfoWrk;
 import net.freertr.sec.secServer;
-import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabGen;
-import net.freertr.tab.tabListing;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFilter;
 import net.freertr.user.userHelping;
@@ -86,11 +82,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * interface to use
      */
     protected cfgIfc srvIface;
-
-    /**
-     * access list to use
-     */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> srvAccess;
 
     /**
      * limit of all clients
@@ -276,7 +267,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         "server .*! no security rsacert",
         "server .*! no security dsacert",
         "server .*! no security ecdsacert",
-        "server .*! no access-class",
         "server .*! access-total 0",
         "server .*! access-peer 0",
         "server .*! access-subnet 0",
@@ -966,7 +956,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return res;
     }
 
-    private boolean srvCheckAccept2(boolean ipv4, addrIP adr, int prt) {
+    private boolean srvCheckBlackhole(boolean ipv4, addrIP adr, int prt) {
         if (ipv4) {
             if (srvBlckhl4 != null) {
                 if (srvBlckhl4.checkAddr(adr)) {
@@ -1011,16 +1001,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
             return true;
         }
-        if (srvAccess != null) {
-            if (!srvAccess.matches(conn)) {
-                if (srvLogDrop) {
-                    logger.info("access class dropped " + conn);
-                }
-                return true;
-            }
-        }
         boolean ipv4 = conn.peerAddr.isIPv4();
-        if (srvCheckAccept2(ipv4, conn.peerAddr, conn.portLoc)) {
+        if (srvCheckBlackhole(ipv4, conn.peerAddr, conn.portLoc)) {
             return true;
         }
         if (srvTotLim > 0) {
@@ -1061,54 +1043,43 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * @return false if acceptable, true if not
      */
     public boolean srvCheckAcceptIp(ipFwdIface ifc, addrIP rem, ipPrt prt) {
-        packHolder pck = new packHolder(true, true);
-        pck.IPsrc.setAddr(rem);
-        pck.IPtrg.setAddr(ifc.addr);
-        pck.IPprt = prt.getProtoNum();
-        secInfoCls cls = new secInfoCls(null, null, prt, srvVrf.getFwd(rem), rem, pck.IPprt, ifc.addr);
+        int pn = prt.getProtoNum();
+        secInfoCls cls = new secInfoCls(null, null, prt, srvVrf.getFwd(rem), rem, pn, ifc.addr);
         secInfoWrk inf = new secInfoWrk(srvIpInf, cls, null);
         inf.doWork(true);
         if (inf.need2drop()) {
             if (srvLogDrop) {
-                logger.info("access ipinfo dropped " + pck.IPsrc + " " + pck.IPprt);
+                logger.info("access ipinfo dropped " + rem + " " + ifc.addr);
             }
             return true;
         }
-        if (srvAccess != null) {
-            if (!srvAccess.matches(false, false, pck)) {
-                if (srvLogDrop) {
-                    logger.info("access class dropped " + pck.IPsrc + " " + pck.IPprt);
-                }
-                return true;
-            }
-        }
-        boolean ipv4 = pck.IPsrc.isIPv4();
-        if (srvCheckAccept2(ipv4, pck.IPsrc, pck.IPprt)) {
+        boolean ipv4 = rem.isIPv4();
+        if (srvCheckBlackhole(ipv4, rem, pn)) {
             return true;
         }
         if (srvTotLim > 0) {
-            if (srvCountPrtClients(ifc, pck.IPprt, ipv4, null) >= srvTotLim) {
+            if (srvCountPrtClients(ifc, pn, ipv4, null) >= srvTotLim) {
                 if (srvLogDrop) {
-                    logger.info("total limit dropped " + pck.IPsrc + " " + pck.IPprt);
+                    logger.info("total limit dropped " + rem + " " + ifc.addr);
                 }
                 return true;
             }
         }
         if (srvPerLim > 0) {
-            if (srvCountPrtClients(ifc, pck.IPprt, ipv4, pck.IPsrc) >= srvPerLim) {
+            if (srvCountPrtClients(ifc, pn, ipv4, rem) >= srvPerLim) {
                 if (srvLogDrop) {
-                    logger.info("peer limit dropped " + pck.IPsrc + " " + pck.IPprt);
+                    logger.info("peer limit dropped " + rem + " " + ifc.addr);
                 }
-                srvBlackholePeer(ipv4, pck.IPsrc);
+                srvBlackholePeer(ipv4, rem);
                 return true;
             }
         }
         if (srvNetLim > 0) {
-            if (srvCountPrtSubnet(ipv4, ifc, pck.IPprt, pck.IPsrc) >= srvNetLim) {
+            if (srvCountPrtSubnet(ipv4, ifc, pn, rem) >= srvNetLim) {
                 if (srvLogDrop) {
-                    logger.info("subnet limit dropped " + pck.IPsrc + " " + pck.IPprt);
+                    logger.info("subnet limit dropped " + rem + " " + ifc.addr);
                 }
-                srvBlackholePeer(ipv4, pck.IPsrc);
+                srvBlackholePeer(ipv4, rem);
                 return true;
             }
         }
@@ -1177,8 +1148,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <name:vrf>           name of vrf");
         l.add(null, "1 2  port                   set port to listen on");
         l.add(null, "2 .    <num>                port number to use");
-        l.add(null, "1 2  access-class           set access list");
-        l.add(null, "2 .    <name:acl>           access list name");
         l.add(null, "1 2  access-total           session limit for this server");
         l.add(null, "2 .    <num>                number of connections");
         l.add(null, "1 2  access-peer            per client session limit");
@@ -1269,11 +1238,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             l.add(cmds.tabulator + "no security ecdsacert");
         } else {
             l.add(cmds.tabulator + "security ecdsacert " + certecdsa.crtName);
-        }
-        if (srvAccess != null) {
-            l.add(cmds.tabulator + "access-class " + srvAccess.listName);
-        } else {
-            l.add(cmds.tabulator + "no access-class");
         }
         cmds.cfgLine(l, !srvLogDrop, cmds.tabulator, "access-log", "");
         l.add(cmds.tabulator + "access-total " + srvTotLim);
@@ -1403,15 +1367,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return;
             }
             srvBlckhl6 = ntry.blackhole;
-            return;
-        }
-        if (a.equals("access-class")) {
-            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
-            if (ntry == null) {
-                cmd.error("no such access list");
-                return;
-            }
-            srvAccess = ntry.aceslst;
             return;
         }
         if (a.equals("security")) {
@@ -1545,10 +1500,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
             if (a.equals("access-blackhole6")) {
                 srvBlckhl6 = null;
-                return;
-            }
-            if (a.equals("access-class")) {
-                srvAccess = null;
                 return;
             }
             if (a.equals("security")) {

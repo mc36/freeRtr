@@ -4,6 +4,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.clnt.clntTrack;
 import net.freertr.ip.ipFwd;
+import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabListing;
 import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRateLimit;
@@ -45,6 +46,11 @@ public class secInfoCfg {
      * limit on startup
      */
     public int startupDelay;
+
+    /**
+     * access list to use
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> srvAccess;
 
     /**
      * access prefix list

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.cfg.cfgAceslst;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
@@ -123,6 +124,21 @@ public class secInfoUtl {
             }
             int i = bits.str2num(cmd.word());
             cfg.accessRate = new tabRateLimit(i, bits.str2num(cmd.word()));
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("class")) {
+            if (negated) {
+                cfg.srvAccess = null;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such access list");
+                return cfg;
+            }
+            cfg.srvAccess = ntry.aceslst;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -525,6 +541,9 @@ public class secInfoUtl {
         if (cfg.startupDelay > 0) {
             lst.add(beg + "startup " + cfg.startupDelay);
         }
+        if (cfg.srvAccess != null) {
+            lst.add(beg + "class " + cfg.srvAccess.listName);
+        }
         if (cfg.prefixList != null) {
             lst.add(beg + "prefix " + cfg.prefixList.listName);
         }
@@ -597,6 +616,8 @@ public class secInfoUtl {
         lst.add(null, (tab + 3) + " .      <num>              interval");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "startup                      initial downtime");
         lst.add(null, (tab + 2) + " .    <num>                time");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "class                        check access list");
+        lst.add(null, (tab + 2) + " .    <name:acl>           access list name");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "prefix                       check prefix list");
         lst.add(null, (tab + 2) + " .    <name:pl>            prefix list name");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "map                          check route map");

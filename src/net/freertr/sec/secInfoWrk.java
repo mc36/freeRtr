@@ -13,6 +13,7 @@ import net.freertr.enc.encUrl;
 import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
+import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
 import net.freertr.rtr.rtrBgpUtil;
@@ -230,6 +231,7 @@ public class secInfoWrk implements Runnable {
         doTrackers();
         doFindRoute();
         doCheckRpf();
+        doCheckAcl();
         if (tracker) {
             return false;
         }
@@ -294,6 +296,28 @@ public class secInfoWrk implements Runnable {
             if (config.accessRate != null) {
                 tracker |= config.accessRate.check(1);
             }
+        } catch (Exception e) {
+            logger.traceback(e, addr + " " + proto);
+        }
+    }
+
+    /**
+     * check the route
+     */
+    protected void doCheckAcl() {
+        try {
+            if (config.srvAccess == null) {
+                return;
+            }
+            if (closer.closeC != null) {
+                tracker |= !config.srvAccess.matches(closer.closeC);
+                return;
+            }
+            packHolder pck = new packHolder(true, true);
+            pck.IPsrc.setAddr(addr);
+            pck.IPtrg.setAddr(closer.local);
+            pck.IPprt = proto;
+            tracker |= !config.srvAccess.matches(false, false, pck);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }
