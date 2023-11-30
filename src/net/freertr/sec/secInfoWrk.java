@@ -71,6 +71,11 @@ public class secInfoWrk implements Runnable {
     protected final addrIP local;
 
     /**
+     * tracker result
+     */
+    protected boolean tracker;
+
+    /**
      * format as http
      */
     protected boolean http;
@@ -219,6 +224,10 @@ public class secInfoWrk implements Runnable {
      * @return true if a new thread started
      */
     public boolean doWork(boolean thrd) {
+        tracker = false;
+        if (config.tracker != null) {
+            tracker = !config.tracker.getStatus();
+        }
         doFindRoute();
         thrd &= config.resolve || (config.pmtudTim > 0) || (config.script != null);
         if (thrd) {
@@ -235,6 +244,9 @@ public class secInfoWrk implements Runnable {
      * @return true if yes, false if no
      */
     public boolean need2drop() {
+        if (tracker) {
+            return true;
+        }
         if (pmtuD == null) {
             return false;
         }

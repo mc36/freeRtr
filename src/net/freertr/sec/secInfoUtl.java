@@ -6,6 +6,7 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgRtr;
+import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.clnt.clntPmtud;
 import net.freertr.enc.enc7bit;
@@ -82,6 +83,21 @@ public class secInfoUtl {
                 return cfg;
             }
             cfg.script = cfgAll.scrptFind(cmd.word(), false);
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("tracker")) {
+            if (negated) {
+                cfg.tracker = null;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfgTrack ntry = cfgAll.trackFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such tracker");
+                return cfg;
+            }
+            cfg.tracker = ntry.worker;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -425,6 +441,9 @@ public class secInfoUtl {
         if (cfg.justip) {
             lst.add(beg + "justip");
         }
+        if (cfg.tracker != null) {
+            lst.add(beg + "tracker " + cfg.tracker.name);
+        }
         if (cfg.style != null) {
             lst.add(beg + "style " + cfg.style);
         }
@@ -481,6 +500,8 @@ public class secInfoUtl {
         lst.add(null, (tab + 2) + " .    csv                        select csv mode");
         lst.add(null, (tab + 2) + " .    raw                        select raw mode");
         lst.add(null, (tab + 2) + " .    html                       select html mode");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "tracker         check tracker");
+        lst.add(null, (tab + 2) + " .  <name:trk>           tracker name");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "pmtud                    test pmtud before accepting");
         lst.add(null, (tab + 2) + " " + (tab + 3) + "  <num>                      min mtu");
         lst.add(null, (tab + 3) + " " + (tab + 4) + "    <num>                    max mtu");

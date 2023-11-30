@@ -1,6 +1,7 @@
 package net.freertr.sec;
 
 import net.freertr.cfg.cfgScrpt;
+import net.freertr.clnt.clntTrack;
 import net.freertr.ip.ipFwd;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.user.userFormat;
@@ -23,6 +24,11 @@ public class secInfoCfg {
      * script to run
      */
     public cfgScrpt script;
+
+    /**
+     * tracker to use
+     */
+    public clntTrack tracker;
 
     /**
      * pretend a dumb server

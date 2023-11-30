@@ -18,9 +18,7 @@ import net.freertr.cfg.cfgPrfxlst;
 import net.freertr.cfg.cfgRoump;
 import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
-import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
-import net.freertr.clnt.clntTrack;
 import net.freertr.cry.cryCertificate;
 import net.freertr.cry.cryKeyDSA;
 import net.freertr.cry.cryKeyECDSA;
@@ -100,11 +98,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      * interface to use
      */
     protected cfgIfc srvIface;
-
-    /**
-     * tracker to use
-     */
-    protected clntTrack srvTrckr;
 
     /**
      * access list to use
@@ -324,7 +317,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         "server .*! no access-prefix",
         "server .*! no access-map",
         "server .*! no access-policy",
-        "server .*! no access-tracker",
         "server .*! no access-rate",
         "server .*! access-startup 0",
         "server .*! access-total 0",
@@ -1017,14 +1009,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     }
 
     private boolean srvCheckAccept1(addrIP adr, int prt) {
-        if (srvTrckr != null) {
-            if (!srvTrckr.getStatus()) {
-                if (srvLogDrop) {
-                    logger.info("access tracker dropped " + adr + " " + prt);
-                }
-                return true;
-            }
-        }
         if (srvStartup > 0) {
             if ((bits.getTime() - cfgInit.started) < srvStartup) {
                 if (srvLogDrop) {
@@ -1301,8 +1285,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "2 .    <name:acl>           access list name");
         l.add(null, "1 2  access-prefix          set prefix list");
         l.add(null, "2 .    <name:pl>            prefix list name");
-        l.add(null, "1 2  access-tracker         set tracker");
-        l.add(null, "2 .    <name:trk>           tracker name");
         l.add(null, "1 2  access-rate            access rate for this server");
         l.add(null, "2 3    <num>                new sessions per interval");
         l.add(null, "3 .      <num>              interval");
@@ -1422,11 +1404,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             l.add(cmds.tabulator + "access-policy " + srvRouPol.listName);
         } else {
             l.add(cmds.tabulator + "no access-policy");
-        }
-        if (srvTrckr != null) {
-            l.add(cmds.tabulator + "access-tracker " + srvTrckr.name);
-        } else {
-            l.add(cmds.tabulator + "no access-tracker");
         }
         cmds.cfgLine(l, !srvLogDrop, cmds.tabulator, "access-log", "");
         cmds.cfgLine(l, srvAccRat == null, cmds.tabulator, "access-rate", "" + srvAccRat);
@@ -1576,15 +1553,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return;
             }
             srvPrfLst = ntry.prflst;
-            return;
-        }
-        if (a.equals("access-tracker")) {
-            cfgTrack ntry = cfgAll.trackFind(cmd.word(), false);
-            if (ntry == null) {
-                cmd.error("no such tracker");
-                return;
-            }
-            srvTrckr = ntry.worker;
             return;
         }
         if (a.equals("access-startup")) {
@@ -1753,10 +1721,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             }
             if (a.equals("access-prefix")) {
                 srvPrfLst = null;
-                return;
-            }
-            if (a.equals("access-tracker")) {
-                srvTrckr = null;
                 return;
             }
             if (a.equals("access-startup")) {
