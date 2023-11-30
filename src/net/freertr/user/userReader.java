@@ -586,7 +586,11 @@ public class userReader implements Comparator<String> {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < lst.size(); i++) {
             String s = lst.get(i);
-            boolean b = s.matches(filterS);
+            boolean b = false;
+            try {
+                b = s.matches(filterS);
+            } catch (Exception e) {
+            }
             if (!b) {
                 continue;
             }
@@ -664,7 +668,11 @@ public class userReader implements Comparator<String> {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < lst.size(); i++) {
             String s = lst.get(i);
-            boolean b = s.matches(filterS);
+            boolean b = false;
+            try {
+                b = s.matches(filterS);
+            } catch (Exception e) {
+            }
             if (b) {
                 continue;
             }

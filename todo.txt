@@ -1,5 +1,3 @@
-generalise server access- knobs
-
 honeypot to wireformat, decode
 
 image viewer to file manager
