@@ -1,10 +1,15 @@
 package net.freertr.sec;
 
+import net.freertr.addr.addrIP;
 import net.freertr.cfg.cfgScrpt;
 import net.freertr.clnt.clntTrack;
 import net.freertr.ip.ipFwd;
+import net.freertr.tab.tabListing;
+import net.freertr.tab.tabPrfxlstN;
 import net.freertr.tab.tabRateLimit;
 import net.freertr.tab.tabRouteAttr;
+import net.freertr.tab.tabRtrmapN;
+import net.freertr.tab.tabRtrplcN;
 import net.freertr.user.userFormat;
 
 /**
@@ -40,6 +45,21 @@ public class secInfoCfg {
      * limit on startup
      */
     public int startupDelay;
+
+    /**
+     * access prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> srvPrfLst;
+
+    /**
+     * access route map
+     */
+    public tabListing<tabRtrmapN, addrIP> srvRouMap;
+
+    /**
+     * access route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> srvRouPol;
 
     /**
      * pretend a dumb server

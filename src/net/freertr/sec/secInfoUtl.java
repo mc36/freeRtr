@@ -5,6 +5,9 @@ import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgPrfxlst;
+import net.freertr.cfg.cfgRoump;
+import net.freertr.cfg.cfgRouplc;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgTrack;
 import net.freertr.cfg.cfgVrf;
@@ -120,6 +123,51 @@ public class secInfoUtl {
             }
             int i = bits.str2num(cmd.word());
             cfg.accessRate = new tabRateLimit(i, bits.str2num(cmd.word()));
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("prefix-list")) {
+            if (negated) {
+                cfg.srvPrfLst = null;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return cfg;
+            }
+            cfg.srvPrfLst = ntry.prflst;
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("route-map")) {
+            if (negated) {
+                cfg.srvRouMap = null;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return cfg;
+            }
+            cfg.srvRouMap = ntry.roumap;
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("route-policy")) {
+            if (negated) {
+                cfg.srvRouPol = null;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return cfg;
+            }
+            cfg.srvRouPol = ntry.rouplc;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -476,6 +524,15 @@ public class secInfoUtl {
         }
         if (cfg.startupDelay > 0) {
             lst.add(beg + "startup " + cfg.startupDelay);
+        }
+        if (cfg.srvPrfLst != null) {
+            lst.add(cmds.tabulator + "prefix-list " + cfg.srvPrfLst.listName);
+        }
+        if (cfg.srvRouMap != null) {
+            lst.add(cmds.tabulator + "route-map " + cfg.srvRouMap.listName);
+        }
+        if (cfg.srvRouPol != null) {
+            lst.add(cmds.tabulator + "route-policy " + cfg.srvRouPol.listName);
         }
         if (cfg.style != null) {
             lst.add(beg + "style " + cfg.style);

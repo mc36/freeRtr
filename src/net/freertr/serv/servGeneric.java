@@ -103,21 +103,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     protected tabListing<tabAceslstN<addrIP>, addrIP> srvAccess;
 
     /**
-     * access prefix list
-     */
-    protected tabListing<tabPrfxlstN, addrIP> srvPrfLst;
-
-    /**
-     * access route map
-     */
-    protected tabListing<tabRtrmapN, addrIP> srvRouMap;
-
-    /**
-     * access route policy
-     */
-    protected tabListing<tabRtrplcN, addrIP> srvRouPol;
-
-    /**
      * limit of all clients
      */
     protected int srvTotLim;
@@ -1355,21 +1340,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         } else {
             l.add(cmds.tabulator + "no access-class");
         }
-        if (srvPrfLst != null) {
-            l.add(cmds.tabulator + "access-prefix " + srvPrfLst.listName);
-        } else {
-            l.add(cmds.tabulator + "no access-prefix");
-        }
-        if (srvRouMap != null) {
-            l.add(cmds.tabulator + "access-map " + srvRouMap.listName);
-        } else {
-            l.add(cmds.tabulator + "no access-map");
-        }
-        if (srvRouPol != null) {
-            l.add(cmds.tabulator + "access-policy " + srvRouPol.listName);
-        } else {
-            l.add(cmds.tabulator + "no access-policy");
-        }
         cmds.cfgLine(l, !srvLogDrop, cmds.tabulator, "access-log", "");
         l.add(cmds.tabulator + "access-total " + srvTotLim);
         l.add(cmds.tabulator + "access-peer " + srvPerLim);
@@ -1507,33 +1477,6 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
                 return;
             }
             srvAccess = ntry.aceslst;
-            return;
-        }
-        if (a.equals("access-prefix")) {
-            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
-            if (ntry == null) {
-                cmd.error("no such prefix list");
-                return;
-            }
-            srvPrfLst = ntry.prflst;
-            return;
-        }
-        if (a.equals("access-map")) {
-            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
-            if (ntry == null) {
-                cmd.error("no such route map");
-                return;
-            }
-            srvRouMap = ntry.roumap;
-            return;
-        }
-        if (a.equals("access-policy")) {
-            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
-            if (ntry == null) {
-                cmd.error("no such route policy");
-                return;
-            }
-            srvRouPol = ntry.rouplc;
             return;
         }
         if (a.equals("security")) {
