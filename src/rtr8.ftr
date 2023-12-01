@@ -524,7 +524,6 @@ qc pass: p4lang: tmux mpls pop
 qc pass: p4lang: tmux mpls push
 qc pass: p4lang: l2vpn over tmux mpls
 qc pass: p4lang: l3vpn over tmux mpls
-todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
