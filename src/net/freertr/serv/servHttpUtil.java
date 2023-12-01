@@ -11,6 +11,7 @@ import net.freertr.auth.authResult;
 import net.freertr.cfg.cfgAll;
 import net.freertr.cfg.cfgInit;
 import net.freertr.cfg.cfgProxy;
+import net.freertr.cfg.cfgScrpt;
 import net.freertr.cfg.cfgTrnsltn;
 import net.freertr.enc.encBase64;
 import net.freertr.enc.encMarkDown;
@@ -81,6 +82,11 @@ public class servHttpUtil {
     public final static int apiBitsShow = 0x10;
 
     /**
+     * allow script commands
+     */
+    public final static int apiBitsScript = 0x20;
+
+    /**
      * dump one xml
      *
      * @param s xml to dump
@@ -136,6 +142,10 @@ public class servHttpUtil {
                 i |= apiBitsShow;
                 continue;
             }
+            if (a.equals("script")) {
+                i |= apiBitsScript;
+                continue;
+            }
         }
         if (i == apiBitsSomething) {
             return apiBitsNothing;
@@ -165,6 +175,9 @@ public class servHttpUtil {
         }
         if ((i & apiBitsShow) != 0) {
             s += " show";
+        }
+        if ((i & apiBitsScript) != 0) {
+            s += " script";
         }
         return s;
     }
@@ -1318,6 +1331,13 @@ public class servHttpUtil {
             byte[] r = doOneExec("show ", cmd, false);
             cn.sendTextHeader("200 ok", "text/plain", r);
             return false;
+        }
+        if (((cn.gotHost.allowApi & apiBitsScript) != 0) && s.equals("script")) {
+            cfgScrpt scr = cfgAll.scrptFind(cmd.word("/"), false);
+            if (scr == null) {
+                return true;
+            }
+            return sendOneScript(cn, cn.gotHost, scr.getText());
         }
         if (((cn.gotHost.allowApi & apiBitsExec) != 0) && s.equals("exec")) {
             byte[] r = doOneExec("", cmd, (cn.gotHost.allowApi & apiBitsConfig) != 0);

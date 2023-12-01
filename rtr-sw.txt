@@ -1094,9 +1094,9 @@ server http web
  security dsacert dsa
  security ecdsacert ecdsa
  access-log
- access-startup 10000
  access-total 128
  access-peer 16
+ access-startup 10000
  second-port 443
  host * path /nfs2/own/web/
  host * redir http://sid.mchome.nop.hu/
@@ -1114,7 +1114,7 @@ server http web
  host sid.mchome.nop.hu noindex
  host sid.mchome.nop.hu search-script log
  host sid.mchome.nop.hu script exec config
- host sid.mchome.nop.hu api exec config ipinfo show
+ host sid.mchome.nop.hu api exec config ipinfo show script
  host sid.mchome.nop.hu ipinfo router4 bgp4 65535
  host sid.mchome.nop.hu ipinfo router6 bgp6 65535
  host sid.mchome.nop.hu ipinfo details

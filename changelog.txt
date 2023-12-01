@@ -15621,3 +15621,5 @@ qc pass: sgt tmux encapsulation
 qc pass: sgt l2tp3 encapsulation
 ---------------------------------- 2023-11-30 23:11:31 23.11.30
 no todo: generalise server access- knobs
+---------------------------------- 2023-12-01 21:57:44 23.12.1
+no todo: server http to have api for scripts
