@@ -1214,7 +1214,7 @@ public class userHelping {
             s = s.trim();
             int i = s.lastIndexOf(" ") + 1;
             if (i < 1) {
-                i = 0;
+                return getBarkBack("type " + r.command + " to " + r.description);
             }
             d = whereAm(s.substring(0, i - 1), true);
             s = s.substring(i, s.length());
