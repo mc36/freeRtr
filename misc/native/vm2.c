@@ -150,6 +150,7 @@ void emuExec_push(oneEmulatorRecord *d,int32 v,int32 s) {
 
 int32 emuExec_pop(oneEmulatorRecord *d,int32 s) {
     int32 v;
+    v=0;
     d->stackP-=s;
     memcpy(&v,d->stackD+d->stackP,s);
     return v;
