@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.12.3-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-12-03 08:41:41, took 00:11:46, with 80 workers, on 3394 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2023-12-03 13:09:17, took 00:13:27, with 80 workers, on 3396 cases, 0 failed, 0 traces, 17 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1955,6 +1955,7 @@ http://sources.freertr.org/cfg/qos-action15.tst;qos-action15.tst;success;qos ing
 http://sources.freertr.org/cfg/qos-action16.tst;qos-action16.tst;success;qos egress pps action
 http://sources.freertr.org/cfg/qos-action17.tst;qos-action17.tst;success;qos ingress rate limit action
 http://sources.freertr.org/cfg/qos-action18.tst;qos-action18.tst;success;qos egress rate limit action
+http://sources.freertr.org/cfg/qos-action19.tst;qos-action19.tst;success;qos ingress divert action
 http://sources.freertr.org/cfg/qos-copp01.tst;qos-copp01.tst;success;qos ingress transmit copp
 http://sources.freertr.org/cfg/qos-copp02.tst;qos-copp02.tst;success;qos egress transmit copp
 http://sources.freertr.org/cfg/qos-copp03.tst;qos-copp03.tst;success;qos ingress drop copp
@@ -1976,6 +1977,7 @@ http://sources.freertr.org/cfg/qos-copp18.tst;qos-copp18.tst;success;qos priorit
 http://sources.freertr.org/cfg/qos-copp19.tst;qos-copp19.tst;success;qos ingress pps copp
 http://sources.freertr.org/cfg/qos-copp20.tst;qos-copp20.tst;success;qos egress pps copp
 http://sources.freertr.org/cfg/qos-copp21.tst;qos-copp21.tst;success;qos pps dapp
+http://sources.freertr.org/cfg/qos-copp22.tst;qos-copp22.tst;success;qos dapp divert action
 http://sources.freertr.org/cfg/qos-match01.tst;qos-match01.tst;success;qos ingress length matcher
 http://sources.freertr.org/cfg/qos-match02.tst;qos-match02.tst;success;qos egress length matcher
 http://sources.freertr.org/cfg/qos-match03.tst;qos-match03.tst;success;qos ingress tos matcher

@@ -2157,6 +2157,13 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
+        if (pck.IPdivert != null) {
+            ipFwd dvrt = pck.IPdivert;
+            pck.IPdivert = null;
+            pck.INTiface = -2;
+            dvrt.forwardPacket(from, rxIfc, hop, pck);
+            return;
+        }
         if (debugger.ipFwdTraf) {
             logger.debug("fwd " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }

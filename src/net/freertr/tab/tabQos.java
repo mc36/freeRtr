@@ -431,6 +431,7 @@ public class tabQos {
             return true;
         }
         cls.updateBytes(pck.dataSize());
+        cls.updateDivert(pck);
         cls.cntr.tx(pck);
         return false;
     }
@@ -468,6 +469,7 @@ public class tabQos {
             }
             updatePack(pck, cls);
             cls.updateBytes(pck.dataSize());
+            cls.updateDivert(pck);
             cls.cntr.tx(pck);
             return pck;
         }

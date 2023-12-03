@@ -54,6 +54,7 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         "policy-map .*! sequence .* match precedence all",
         "policy-map .*! sequence .* match qosgroup all",
         "policy-map .*! sequence .* match flow all",
+        "policy-map .*! sequence .* no set vrf",
         "policy-map .*! sequence .* set sgt leave",
         "policy-map .*! sequence .* set cos leave",
         "policy-map .*! sequence .* set exp leave",
@@ -207,6 +208,8 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         l.add(null, "2 3     flow                set flow value");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
+        l.add(null, "2 3     vrf                 set vrf table");
+        l.add(null, "3 .       <name:vrf>        name of vrf");
         l.add(null, "1 2   access-rate           set access rate of traffic");
         l.add(null, "2 .     <num>               bits per second");
         l.add(null, "1 2   exceed-rate           set exceed rate of traffic");
@@ -421,6 +424,16 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         if (a.equals("set")) {
             a = cmd.word();
             tabPlcmapN ntry = getCurr();
+            if (a.equals("vrf")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return;
+                }
+                ntry.vrfSet4 = vrf.fwd4;
+                ntry.vrfSet6 = vrf.fwd6;
+                return;
+            }
             if (a.equals("precedence")) {
                 if (ntry.precedenceSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
@@ -607,6 +620,11 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         if (a.equals("set")) {
             a = cmd.word();
             tabPlcmapN ntry = getCurr();
+            if (a.equals("vrf")) {
+                ntry.vrfSet4 = null;
+                ntry.vrfSet6 = null;
+                return;
+            }
             if (a.equals("precedence")) {
                 ntry.precedenceSet.set2unchange();
                 return;

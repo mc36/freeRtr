@@ -1494,16 +1494,25 @@ public class cfgAll {
      * @return vrf, null on error
      */
     public static cfgVrf findRd(boolean ipv4, long rd) {
-        for (int i = 0; i < vrfs.size(); i++) {
-            cfgVrf ntry = vrfs.get(i);
-            if (ntry == null) {
-                continue;
+        if (ipv4) {
+            for (int i = 0; i < vrfs.size(); i++) {
+                cfgVrf ntry = vrfs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.fwd4.rd == rd) {
+                    return ntry;
+                }
             }
-            if (ipv4 && (ntry.fwd4.rd == rd)) {
-                return ntry;
-            }
-            if (!ipv4 && (ntry.fwd6.rd == rd)) {
-                return ntry;
+        } else {
+            for (int i = 0; i < vrfs.size(); i++) {
+                cfgVrf ntry = vrfs.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.fwd6.rd == rd) {
+                    return ntry;
+                }
             }
         }
         return null;

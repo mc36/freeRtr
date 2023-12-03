@@ -2,6 +2,7 @@ package net.freertr.tab;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.ip.ipCor4;
 import net.freertr.pack.packHolder;
 import net.freertr.util.bits;
 import net.freertr.util.counter;
@@ -70,6 +71,25 @@ public class tabQosN {
             return;
         }
         parent.updateBytes(add);
+    }
+
+    /**
+     * update divert
+     *
+     * @param pck packet to update
+     */
+    protected void updateDivert(packHolder pck) {
+        if ((entry.vrfSet4 != null) && (entry.vrfSet6 != null)) {
+            if (pck.IPver == ipCor4.protocolVersion) {
+                pck.IPdivert = entry.vrfSet4;
+            } else {
+                pck.IPdivert = entry.vrfSet6;
+            }
+        }
+        if (parent == null) {
+            return;
+        }
+        parent.updateDivert(pck);
     }
 
     /**

@@ -1951,6 +1951,7 @@ qc pass: qos ingress pps action
 qc pass: qos egress pps action
 qc pass: qos ingress rate limit action
 qc pass: qos egress rate limit action
+qc pass: qos ingress divert action
 qc pass: qos ingress transmit copp
 qc pass: qos egress transmit copp
 qc pass: qos ingress drop copp
@@ -1972,6 +1973,7 @@ qc pass: qos priority otherflowspec
 qc pass: qos ingress pps copp
 qc pass: qos egress pps copp
 qc pass: qos pps dapp
+qc pass: qos dapp divert action
 qc pass: qos ingress length matcher
 qc pass: qos egress length matcher
 qc pass: qos ingress tos matcher
@@ -3422,7 +3424,6 @@ todo: tcp redundancy through the redundancy link as table export and file sendin
 todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
-todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
 todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....

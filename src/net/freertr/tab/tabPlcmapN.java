@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrPrefix;
+import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
 import net.freertr.util.cmds;
 
@@ -34,6 +35,16 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
      * ttl updater
      */
     public tabIntUpdater ttlSet = new tabIntUpdater();
+
+    /**
+     * vrf forwarder updater
+     */
+    public ipFwd vrfSet4;
+
+    /**
+     * vrf forwarder updater
+     */
+    public ipFwd vrfSet6;
 
     /**
      * fragment
@@ -274,6 +285,11 @@ public class tabPlcmapN extends tabListingEntry<addrIP> {
         l.add(beg + "mark-ecn " + markEcn);
         cmds.cfgLine(l, !randomDetect, beg, "random-detect", "");
         cmds.cfgLine(l, !logMatch, beg, "log", "");
+        if (vrfSet4 == null) {
+            l.add(beg + "no set vrf");
+        } else {
+            l.add(beg + "set vrf " + vrfSet4.cfgName);
+        }
         if (child == null) {
             l.add(beg + "no service-policy");
         } else {

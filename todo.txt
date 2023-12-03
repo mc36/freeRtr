@@ -76,8 +76,6 @@ sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn
 p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
 
 
-flowspec-divert knob to bgp, but think this twice at least and mark as experimental
-
 
 upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 

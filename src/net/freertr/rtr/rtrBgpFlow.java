@@ -5,6 +5,9 @@ import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
 import net.freertr.addr.addrPrefix;
+import net.freertr.cfg.cfgAll;
+import net.freertr.cfg.cfgVrf;
+import net.freertr.ip.ipFwd;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabAceslstN;
 import net.freertr.tab.tabIntMatcher;
@@ -88,14 +91,14 @@ public class rtrBgpFlow {
         }
         if (plcy.aclMatch == null) {
             encodeOthers(pck, plcy);
-            return advertEntry(tab, pck, attr, as, rate);
+            return advertEntry(tab, pck, attr, as, rate, plcy.vrfSet4);
         }
         boolean res = true;
         for (int i = 0; i < plcy.aclMatch.size(); i++) {
             pck.clear();
             encodeAceslst(pck, plcy.aclMatch.get(i), ipv6);
             encodeOthers(pck, plcy);
-            res &= advertEntry(tab, pck, attr, as, rate);
+            res &= advertEntry(tab, pck, attr, as, rate, plcy.vrfSet4);
         }
         return res;
     }
@@ -112,10 +115,10 @@ public class rtrBgpFlow {
     public static tabRouteEntry<addrIP> advertNetwork(addrPrefix<addrIP> trg, boolean ipv6, int dir, tabRouteEntry<addrIP> attr) {
         packHolder pck = new packHolder(true, true);
         encodeAddrMtch(pck, dir, ipv6, trg.network, trg.mask);
-        return convertNetwork(pck, attr, 0, -1);
+        return convertNetwork(pck, attr, 0, -1, null);
     }
 
-    private static tabRouteEntry<addrIP> convertNetwork(packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate) {
+    private static tabRouteEntry<addrIP> convertNetwork(packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate, ipFwd dvrt) {
         int o = pck.dataSize();
         if (o < 1) {
             return null;
@@ -144,11 +147,14 @@ public class rtrBgpFlow {
         if (rate >= 0) {
             attr.best.extComm.add(tabRouteUtil.rate2comm(as, rate));
         }
+        if (dvrt != null) {
+            attr.best.extComm.add(tabRouteUtil.divert2comm(dvrt.rd));
+        }
         return attr;
     }
 
-    private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate) {
-        attr = convertNetwork(pck, attr, as, rate);
+    private static boolean advertEntry(tabRoute<addrIP> tab, packHolder pck, tabRouteEntry<addrIP> attr, int as, long rate, ipFwd dvrt) {
+        attr = convertNetwork(pck, attr, as, rate, dvrt);
         if (attr == null) {
             return true;
         }
@@ -322,17 +328,27 @@ public class rtrBgpFlow {
             return res;
         }
         for (i = 0; i < rou.best.extComm.size(); i++) {
-            long rate = rou.best.extComm.get(i);
-            rate = tabRouteUtil.comm2rate(rate);
-            if (rate < 0) {
+            long p = rou.best.extComm.get(i);
+            long o = tabRouteUtil.comm2divert(p);
+            if (o > 0) {
+                cfgVrf vrf = cfgAll.findRd(!ipv6, o);
+                if (vrf == null) {
+                    continue;
+                }
+                res.vrfSet4 = vrf.fwd4;
+                res.vrfSet6 = vrf.fwd6;
                 continue;
             }
-            if (rate == 0) {
+            o = tabRouteUtil.comm2rate(p);
+            if (o < 0) {
+                continue;
+            }
+            if (o == 0) {
                 res.action = tabListingEntry.actionType.actDeny;
                 continue;
             }
             res.action = tabListingEntry.actionType.actPolice;
-            res.accessRate = rate;
+            res.accessRate = o;
         }
         return res;
     }

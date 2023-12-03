@@ -229,6 +229,16 @@ public class tabRouteUtil {
     }
 
     /**
+     * generate flowspec divert
+     *
+     * @param rt route target
+     * @return extended community
+     */
+    public static long divert2comm(long rt) {
+        return (0x8008L << 48) | (rt & 0xffffffffffffL);
+    }
+
+    /**
      * convert string to int list
      *
      * @param s string
@@ -320,6 +330,19 @@ public class tabRouteUtil {
      */
     public static String extComm2string(long i) {
         return (i >>> 48) + ":" + ((i >>> 32) & 65535) + ":" + (int) (i & 4294967295L);
+    }
+
+    /**
+     * decode flowspec divert
+     *
+     * @param comm extended community
+     * @return 0 on error, rd if success
+     */
+    public static long comm2divert(long comm) {
+        if (((comm >>> 48) & 65535) != 0x8008) {
+            return 0;
+        }
+        return comm & 0xffffffffffffL;
     }
 
     /**

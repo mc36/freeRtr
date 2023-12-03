@@ -7,6 +7,7 @@ import net.freertr.addr.addrMac;
 import net.freertr.addr.addrType;
 import net.freertr.cry.cryEncrGeneric;
 import net.freertr.cry.cryHashGeneric;
+import net.freertr.ip.ipFwd;
 import net.freertr.pipe.pipeSide;
 import net.freertr.util.bits;
 
@@ -157,6 +158,11 @@ public class packHolder {
      * bier bitstring length
      */
     public int BIERbsl;
+
+    /**
+     * divert to vrf
+     */
+    public ipFwd IPdivert;
 
     /**
      * source ip address
@@ -376,6 +382,7 @@ public class packHolder {
         BIERsi = 0;
         BIERid = 0;
         BIERbsl = 0;
+        IPdivert = null;
         IPsrc.fillBytes(0);
         IPtrg.fillBytes(0);
         IPprt = 0;
@@ -454,6 +461,7 @@ public class packHolder {
         BIERsi = src.BIERsi;
         BIERid = src.BIERid;
         BIERbsl = src.BIERbsl;
+        IPdivert = src.IPdivert;
         IPsrc.setAddr(src.IPsrc);
         IPtrg.setAddr(src.IPtrg);
         IPprt = src.IPprt;

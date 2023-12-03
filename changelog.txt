@@ -15626,3 +15626,7 @@ no todo: server http to have api for scripts
 ---------------------------------- 2023-12-03 02:17:13 23.12.3
 qc pass: sdwan with l2tp2 and icmp
 qc pass: sdwan with l2tp2 and tmux
+---------------------------------- 2023-12-03 12:55:50 23.12.3
+no todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
+qc pass: qos ingress divert action
+qc pass: qos dapp divert action
