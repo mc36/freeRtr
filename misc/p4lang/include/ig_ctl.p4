@@ -107,14 +107,14 @@ control ig_ctl(inout headers hdr,
             ig_md.punting = 1;
             return;
         }
-        ig_ctl_qos_in.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_ipv4c.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_ipv6c.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
             mark_to_drop(ig_intr_md);
             return;
         }
         ig_ctl_vrf.apply(hdr,ig_md,ig_intr_md);
-        ig_ctl_ipv4c.apply(hdr,ig_md,ig_intr_md);
-        ig_ctl_ipv6c.apply(hdr,ig_md,ig_intr_md);
+        ig_ctl_qos_in.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
             mark_to_drop(ig_intr_md);
             return;

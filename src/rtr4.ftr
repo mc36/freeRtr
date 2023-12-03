@@ -524,11 +524,9 @@ qc pass: p4lang: tmux mpls pop
 qc pass: p4lang: tmux mpls push
 qc pass: p4lang: l2vpn over tmux mpls
 qc pass: p4lang: l3vpn over tmux mpls
-todo: generalise server access- knobs
 todo: honeypot to wireformat, decode
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
-todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
@@ -556,7 +554,6 @@ todo: tcp redundancy through the redundancy link as table export and file sendin
 todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
-todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
 todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....

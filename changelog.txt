@@ -15630,3 +15630,8 @@ qc pass: sdwan with l2tp2 and tmux
 no todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
 qc pass: qos ingress divert action
 qc pass: qos dapp divert action
+---------------------------------- 2023-12-03 14:05:20 23.12.3
+no qc pass: qos dapp divert action
+qc pass: qos divert dapp
+qc pass: qos divert flowspec
+qc pass: qos divert otherflowspec

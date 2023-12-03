@@ -31,6 +31,11 @@ control IngressControlFlowspec(inout headers hdr,
         ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
+    action act4_divert(switch_vrf_t vrf) {
+        ig_md.vrf = vrf;
+        ig_md.dropping = 0;
+    }
+
     action act4_permit(SubIntId_t metid) {
         ig_md.meter_id = metid;
         policer4.execute_meter((bit<32>)metid, ig_md.meter_res);
@@ -44,6 +49,11 @@ control IngressControlFlowspec(inout headers hdr,
     action act6_deny(SubIntId_t metid) {
         ig_md.meter_id = metid;
         ig_md.dropping = (bit<2>)ig_md.layer3_frag;
+    }
+
+    action act6_divert(switch_vrf_t vrf) {
+        ig_md.vrf = vrf;
+        ig_md.dropping = 0;
     }
 
     action act6_permit(SubIntId_t metid) {
@@ -80,6 +90,7 @@ ig_md.sec_grp_id:
         }
         actions = {
             act4_permit;
+            act4_divert;
             act4_deny;
             @defaultonly NoAction;
         }
@@ -111,6 +122,7 @@ ig_md.sec_grp_id:
         }
         actions = {
             act6_permit;
+            act6_divert;
             act6_deny;
             @defaultonly NoAction;
         }
