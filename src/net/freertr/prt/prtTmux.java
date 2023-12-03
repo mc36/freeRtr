@@ -382,4 +382,31 @@ public class prtTmux implements ipPrt, ifcDn {
         return sendingIfc.bandwidth;
     }
 
+    /**
+     * get remote address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrRem() {
+        return remote;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrLoc() {
+        return sendingIfc.addr;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public ipFwd getFwd() {
+        return lower;
+    }
+
 }

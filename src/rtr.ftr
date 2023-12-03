@@ -1933,6 +1933,8 @@ qc pass: p4lang: tmux mpls pop
 qc pass: p4lang: tmux mpls push
 qc pass: p4lang: l2vpn over tmux mpls
 qc pass: p4lang: l3vpn over tmux mpls
+qc pass: p4lang: sdwan over ipv4 with tmux
+qc pass: p4lang: sdwan over ipv6 with tmux
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -3396,7 +3398,6 @@ qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
 qc pass: udp forwarder server
-todo: honeypot to wireformat, decode
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
@@ -3414,17 +3415,14 @@ todo: mist natives p4fwd to report all the error messages in the control channel
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
-todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
 todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
 todo: onehit to all the menus
-todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 todo: route-map --> route-policy converter
 todo: route-map <-- route-policy converter
 todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
 todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
-todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
 todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
@@ -3455,8 +3453,6 @@ todo: vrf def xxx to have dynamic readvertisements as static rotues that disappe
 todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 todo: a terminal junos-mode knob that defaults to set-del etc as a new class
-todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
-todo: it would not harm a lot to apply to the fillables like the check asdf
 todo: show config-backup if available
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
@@ -3576,10 +3572,7 @@ todo: misc album to have some ncdu functionality like a very simple matstat
 todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
 todo: misc player volume to time out to the main screen
 todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
-todo: settle a new slide project misc slash thumbs as a small helper for misc slash album
 todo: server tftp to have server http backup alike functionality
-todo: server forwarder to have some local logging finally
-todo: server http have some local logging finally
 todo: scheduler asdf single-run
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
 todo: show running-config vdc <tabbable>

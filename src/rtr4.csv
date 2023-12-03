@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter-rare v23.12.3-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-12-03 15:18:13, took 00:48:23, with 10 workers, on 526 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2023-12-03 18:54:53, took 00:45:22, with 10 workers, on 528 cases, 0 failed, 0 traces, 1 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -528,3 +528,5 @@ http://sources.freertr.org/cfg/p4lang-rout311.tst;p4lang-rout311.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout312.tst;p4lang-rout312.tst;success;p4lang: tmux mpls push
 http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;success;p4lang: l2vpn over tmux mpls
 http://sources.freertr.org/cfg/p4lang-rout314.tst;p4lang-rout314.tst;success;p4lang: l3vpn over tmux mpls
+http://sources.freertr.org/cfg/p4lang-rout315.tst;p4lang-rout315.tst;success;p4lang: sdwan over ipv4 with tmux
+http://sources.freertr.org/cfg/p4lang-rout316.tst;p4lang-rout316.tst;success;p4lang: sdwan over ipv6 with tmux

@@ -36,6 +36,7 @@ import net.freertr.pipe.pipeSide;
 import net.freertr.prt.prtGenServ;
 import net.freertr.prt.prtGre;
 import net.freertr.prt.prtTcp;
+import net.freertr.prt.prtTmux;
 import net.freertr.prt.prtUdp;
 import net.freertr.rtr.rtrBgpEvpnPeer;
 import net.freertr.rtr.rtrBgpUtil;
@@ -2900,6 +2901,53 @@ public class servP4langConn implements Runnable {
                     afi = "6";
                 }
                 lower.sendLine("gre" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr());
+                return;
+            } catch (Exception e) {
+            }
+            try {
+                prtTmux ntry = (prtTmux) ifc.ifc.lower;
+                addrIP adr = ntry.getAddrRem();
+                if (adr == null) {
+                    return;
+                }
+                addrIP src = ntry.getAddrLoc();
+                if (src == null) {
+                    return;
+                }
+                ipFwd ofwd = ntry.getFwd();
+                if (ofwd == null) {
+                    return;
+                }
+                servP4langVrf ovrf = lower.findVrf(ofwd);
+                if (ovrf == null) {
+                    return;
+                }
+                servP4langNei hop = lower.findHop(ofwd, adr);
+                if (hop == null) {
+                    return;
+                }
+                if (hop.mac == null) {
+                    return;
+                }
+                String act;
+                if (nei.mac == null) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop)) {
+                        return;
+                    }
+                }
+                nei.viaH = hop;
+                nei.mac = hop.mac.copyBytes();
+                nei.sentIfc = hop.sentIfc;
+                String afi;
+                if (adr.isIPv4()) {
+                    afi = "4";
+                } else {
+                    afi = "6";
+                }
+                lower.sendLine("tmux" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr());
                 return;
             } catch (Exception e) {
             }

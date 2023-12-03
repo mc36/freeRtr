@@ -15635,3 +15635,16 @@ no qc pass: qos dapp divert action
 qc pass: qos divert dapp
 qc pass: qos divert flowspec
 qc pass: qos divert otherflowspec
+---------------------------------- 2023-12-03 17:49:20 23.12.3
+qc pass: p4lang: sdwan over ipv4 with tmux
+qc pass: p4lang: sdwan over ipv6 with tmux
+---------------------------------- 2023-12-03 21:53:57 23.12.3
+no todo: server http have some local logging finally
+no todo: server forwarder to have some local logging finally
+no todo: settle a new slide project misc slash thumbs as a small helper for misc slash album
+no todo: it would not harm a lot to apply to the fillables like the check asdf
+no todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
+no todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
+no todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
+no todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
+no todo: honeypot to wireformat, decode

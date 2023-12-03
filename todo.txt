@@ -1,5 +1,3 @@
-honeypot to wireformat, decode
-
 image viewer to file manager
 
 game butterfly hanoy, modem, mdev
@@ -48,8 +46,6 @@ test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate
 
 
 
-mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
-
 test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 
 important protocols to be able to continue from the start at least on local, later within the vdc
@@ -57,8 +53,6 @@ important protocols to be able to continue from the start at least on local, lat
 menu remote asdf
 
 onehit to all the menus
-
-mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 
 route-map --> route-policy converter
 
@@ -68,10 +62,6 @@ tcp redundancy through the redundancy link as table export and file sending befo
 
 then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 
-
-
-
-sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 
 p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
 
@@ -157,9 +147,6 @@ router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 
 
 a terminal junos-mode knob that defaults to set-del etc as a new class
-
-asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
-it would not harm a lot to apply to the fillables like the check asdf
 
 
 
@@ -304,10 +291,7 @@ misc album to have some ncdu functionality like a very simple matstat
 misc motion emails to contain a small note like check recordings here unarm rearm arm
 misc player volume to time out to the main screen
 misc images to not blink finally in the browsers like at least send the image sizes if possible
-settle a new slide project misc slash thumbs as a small helper for misc slash album
 server tftp to have server http backup alike functionality
-server forwarder to have some local logging finally
-server http have some local logging finally
 
 
 

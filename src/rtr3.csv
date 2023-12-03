@@ -526,3 +526,5 @@ http://sources.freertr.org/cfg/p4lang-rout311.tst;p4lang-rout311.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout312.tst;p4lang-rout312.tst;ok;ok;ok;ok;not ok;p4lang: tmux mpls push
 http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;ok;ok;ok;ok;not ok;p4lang: l2vpn over tmux mpls
 http://sources.freertr.org/cfg/p4lang-rout314.tst;p4lang-rout314.tst;ok;ok;ok;ok;not ok;p4lang: l3vpn over tmux mpls
+http://sources.freertr.org/cfg/p4lang-rout315.tst;p4lang-rout315.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with tmux
+http://sources.freertr.org/cfg/p4lang-rout316.tst;p4lang-rout316.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with tmux
