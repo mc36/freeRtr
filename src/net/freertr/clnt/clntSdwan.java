@@ -61,6 +61,14 @@ public class clntSdwan implements Runnable, ifcDn {
          */
         l3tp,
         /**
+         * tmux
+         */
+        tmux,
+        /**
+         * icmp
+         */
+        icmp,
+        /**
          * gre
          */
         gre,
@@ -96,6 +104,12 @@ public class clntSdwan implements Runnable, ifcDn {
         }
         if (s.equals("l3tp")) {
             return protoTyp.l3tp;
+        }
+        if (s.equals("tmux")) {
+            return protoTyp.tmux;
+        }
+        if (s.equals("icmp")) {
+            return protoTyp.icmp;
         }
         if (s.equals("gre")) {
             return protoTyp.gre;

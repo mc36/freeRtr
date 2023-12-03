@@ -3386,6 +3386,8 @@ qc pass: sdwan with l2tp2 and l2tp3
 qc pass: sdwan with l2tp2 and gre
 qc pass: sdwan with l2tp2 and amt
 qc pass: sdwan with l2tp2 and gtp
+qc pass: sdwan with l2tp2 and icmp
+qc pass: sdwan with l2tp2 and tmux
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server

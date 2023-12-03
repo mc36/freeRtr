@@ -239,12 +239,16 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
      * @param sl session id
      */
     public void setConnection(ipFwdIface ifc, addrIP adr, ipFwd ip, int sr, int sl) {
+        if (ifc != null) {
+            ip.protoDel(this, ifc, adr);
+        }
         fwdCor = ip;
         fwdTrg = adr.copyBytes();
         fwdIfc = ifc;
         sesRem = sr;
         sesLoc = sl;
         pwType = packLdpPwe.pwtPpp;
+        ip.protoAdd(this, ifc, adr);
     }
 
     /**

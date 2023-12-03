@@ -12,7 +12,9 @@ import net.freertr.ip.ipFwdIface;
 import net.freertr.pack.packHolder;
 import net.freertr.prt.prtGenConn;
 import net.freertr.prt.prtGre;
+import net.freertr.prt.prtIcmptun;
 import net.freertr.prt.prtServP;
+import net.freertr.prt.prtTmux;
 import net.freertr.user.userFormat;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
@@ -99,6 +101,10 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
     private clntL2tp2 prtL2tp2;
 
     private clntL2tp3 prtL2tp3;
+
+    private prtTmux prtTmux;
+
+    private prtIcmptun prtIcmp;
 
     private prtGre prtGre;
 
@@ -200,7 +206,13 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         }
         switch (protos) {
             case l3tp:
-                lower.fwdCor.protoDel(prtL2tp3, lower.fwdIfc, addr);
+                prtL2tp3.closeDn();
+                break;
+            case tmux:
+                prtTmux.closeDn();
+                break;
+            case icmp:
+                prtIcmp.closeDn();
                 break;
             case gre:
                 prtGre.closeDn();
@@ -214,6 +226,12 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         switch (protos) {
             case l3tp:
                 prtL2tp3.setConnection(lower.fwdIfc, addr, lower.fwdCor, (peerId << 16) | lower.myNum, (lower.myNum << 16) | peerId);
+                return;
+            case tmux:
+                prtTmux.setEndpoints(lower.fwdIfc, addr);
+                return;
+            case icmp:
+                prtIcmp.setEndpoints(lower.fwdIfc, addr);
                 return;
             case gre:
                 prtGre.setEndpoints(lower.fwdIfc, addr, true);
@@ -278,12 +296,18 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
             case l3tp:
                 prtL2tp3 = new clntL2tp3();
                 wrkrIfDn = prtL2tp3;
-                lower.fwdCor.protoAdd(prtL2tp3, lower.fwdIfc, addr);
+                break;
+            case tmux:
+                prtTmux = new prtTmux(lower.fwdCor);
+                wrkrIfDn = prtTmux;
+                break;
+            case icmp:
+                prtIcmp = new prtIcmptun(lower.fwdCor);
+                wrkrIfDn = prtIcmp;
                 break;
             case gre:
                 prtGre = new prtGre(lower.fwdCor);
                 wrkrIfDn = prtGre;
-                lower.fwdCor.protoAdd(prtGre, lower.fwdIfc, addr);
                 break;
             case amt:
                 prtAmt = new clntAmt();
@@ -328,6 +352,12 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
                 break;
             case l3tp:
                 prtL2tp3.setUpper(upper);
+                break;
+            case tmux:
+                prtTmux.setUpper(upper);
+                break;
+            case icmp:
+                prtIcmp.setUpper(upper);
                 break;
             case gre:
                 prtGre.setUpper(upper);

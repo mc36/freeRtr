@@ -15623,3 +15623,6 @@ qc pass: sgt l2tp3 encapsulation
 no todo: generalise server access- knobs
 ---------------------------------- 2023-12-01 21:57:44 23.12.1
 no todo: server http to have api for scripts
+---------------------------------- 2023-12-03 02:17:13 23.12.3
+qc pass: sdwan with l2tp2 and icmp
+qc pass: sdwan with l2tp2 and tmux
