@@ -30,11 +30,6 @@ control IngressControlQosIn(inout headers hdr,
         ig_md.dropping = (bit<2>)ig_md.layer3_frag;
     }
 
-    action act_divert(switch_vrf_t vrf) {
-        ig_md.vrf = vrf;
-        ig_md.dropping = 0;
-    }
-
     action act_permit(SubIntId_t metid) {
         ig_md.meter_id = metid;
         policer.execute_meter((bit<32>)metid, ig_md.meter_res);
@@ -69,7 +64,6 @@ ig_md.sec_grp_id:
         }
         actions = {
             act_permit;
-            act_divert;
             act_deny;
             @defaultonly NoAction;
         }
@@ -101,7 +95,6 @@ ig_md.sec_grp_id:
         }
         actions = {
             act_permit;
-            act_divert;
             act_deny;
             @defaultonly NoAction;
         }
