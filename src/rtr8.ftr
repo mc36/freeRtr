@@ -624,8 +624,7 @@ todo: server http / host * custom-local <text>
 todo: server http / host * custom-remote >path/file>
 todo: server http / host * user-agent matcher with redirect
 todo: server http / host * searchbar
-todo: test access-list <acl> <src> <trg>
-todo: serevr security maximum pendings as access-security
+todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: config committed with check for saved and backup config
 todo: terminal background and foreground

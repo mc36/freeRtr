@@ -202,8 +202,7 @@ server http / host * custom-local <text>
 server http / host * custom-remote >path/file>
 server http / host * user-agent matcher with redirect
 server http / host * searchbar
-test access-list <acl> <src> <trg>
-serevr security maximum pendings as access-security
+server security maximum pendings as access-security
 servers to have access-aaa
 config committed with check for saved and backup config
 
