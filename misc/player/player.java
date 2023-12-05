@@ -830,7 +830,10 @@ public class player implements Runnable {
                     continue;
                 }
                 playerSong ntry = playlist.get(num);
-                String a = "((<a href=\"" + urlR + "?cmd=dequeue&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
+                String a = "((<a href=\"" + urlR + "?cmd=dequeue&song=" + num + "\">R</a>))";
+                a += "((<a href=\"" + urlR + "?cmd=moveup&song=" + num + "\">U</a>))";
+                a += "((<a href=\"" + urlR + "?cmd=movedn&song=" + num + "\">D</a>))";
+                a += ntry.title + "<br/>";
                 buf.write(a.getBytes());
             }
             buf.write("<br/>previous songs:<br/>".getBytes());
@@ -843,6 +846,32 @@ public class player implements Runnable {
                 String a = "((<a href=\"" + urlR + "?cmd=play&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
                 buf.write(a.getBytes());
             }
+            return -1;
+        }
+        if (cmd.equals("moveup")) {
+            int i = playerUtil.str2int(song);
+            int o = nextSong.indexOf(Integer.valueOf(i));
+            if (o > 0) {
+                nextSong.remove(o);
+                nextSong.add(o - 1, Integer.valueOf(i));
+            }
+            String a = "song #" + i + " moved up<br/>";
+            putStart(buf, 3);
+            putMenu(buf);
+            buf.write(a.getBytes());
+            return -1;
+        }
+        if (cmd.equals("movedn")) {
+            int i = playerUtil.str2int(song);
+            int o = nextSong.indexOf(Integer.valueOf(i));
+            if ((o >= 0) && (o < nextSong.size())) {
+                nextSong.remove(o);
+                nextSong.add(o + 1, Integer.valueOf(i));
+            }
+            String a = "song #" + i + " moved down<br/>";
+            putStart(buf, 3);
+            putMenu(buf);
+            buf.write(a.getBytes());
             return -1;
         }
         if (cmd.equals("dequeue")) {

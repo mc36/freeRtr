@@ -20,9 +20,6 @@ flash ext-delete also to commander
 
 commander to get away the cursor
 
-player queue up down add-again
-
-
 openflow to have 2 label support and stack to p4lang
 
 bridge and router have renumber knob
