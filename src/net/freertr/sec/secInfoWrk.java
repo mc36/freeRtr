@@ -14,7 +14,6 @@ import net.freertr.ip.ipFwd;
 import net.freertr.ip.ipRtr;
 import net.freertr.pack.packDnsRec;
 import net.freertr.pack.packHolder;
-import net.freertr.pipe.pipeDiscard;
 import net.freertr.pipe.pipeSide;
 import net.freertr.rtr.rtrBgpUtil;
 import net.freertr.serv.servHttp;

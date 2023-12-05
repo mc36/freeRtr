@@ -1195,6 +1195,18 @@ server honeypot hp2
  vrf v1
  exit
 !
+server honeypot hp3
+ port 8883
+ info pmtud 512 1024 666
+ info router4 bgp4 65535
+ info router6 bgp6 65535
+ info details
+ info single
+ info resolve
+ interface loopback0
+ vrf v1
+ exit
+!
 server whois as
  vrf v1
  exit
