@@ -168,7 +168,7 @@ public class secInfoWrk implements Runnable {
         closer = cls;
         connFwd = cls.fwder;
         config = ned;
-        rePip = pipeDiscard.needAny(con);
+        rePip = con;
         proto = cls.protNum;
         local = cls.local;
         hack = ned.hacked;
@@ -393,6 +393,9 @@ public class secInfoWrk implements Runnable {
         if (!http) {
             return;
         }
+        if (rePip == null) {
+            return;
+        }
         rePip.lineTx = pipeSide.modTyp.modeCRLF;
         rePip.lineRx = pipeSide.modTyp.modeCRorLF;
         String s = rePip.lineGet(1);
@@ -448,6 +451,9 @@ public class secInfoWrk implements Runnable {
         if (!http) {
             return;
         }
+        if (rePip == null) {
+            return;
+        }
         rePip.lineTx = pipeSide.modTyp.modeCRLF;
         rePip.lineRx = pipeSide.modTyp.modeCRorLF;
         rePip.linePut("HTTP/1.1 200 ok");
@@ -467,6 +473,9 @@ public class secInfoWrk implements Runnable {
      */
     public void doHttpFinish() {
         if (!http) {
+            return;
+        }
+        if (rePip == null) {
             return;
         }
         String a = getHtmlLines(false);
@@ -526,6 +535,9 @@ public class secInfoWrk implements Runnable {
      * print out results
      */
     public void putResult() {
+        if (rePip == null) {
+            return;
+        }
         putResult(rePip);
     }
 
