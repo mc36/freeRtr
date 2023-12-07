@@ -313,12 +313,16 @@ public class servP4langCfg implements ifcUp {
         if (conn == null) {
             return a;
         }
+        a += conn.getShGenOneLiner();
+        if (backPlanes.size() < 1) {
+            return a;
+        }
         a += ",bcks=";
         for (int i = 0; i < backPlanes.size(); i++) {
             servP4langBkpl cur = backPlanes.get(i);
             a += cur.getShGenOneLiner();
         }
-        return a + conn.getShGenOneLiner();
+        return a.substring(0, a.length() - 1);
     }
 
     /**

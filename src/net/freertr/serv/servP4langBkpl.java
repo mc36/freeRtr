@@ -96,7 +96,7 @@ public class servP4langBkpl implements Comparator<servP4langBkpl>, ifcUp {
         if (pi == null) {
             return "n/a,";
         }
-        return pi.ifc + ",";
+        return pi.ifc.name + ",";
     }
 
     public String toString() {
