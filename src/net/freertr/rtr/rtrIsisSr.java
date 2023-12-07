@@ -253,7 +253,7 @@ public class rtrIsisSr {
         }
         encTlv tlv = rtrIsis.getTlv();
         tlv.valTyp = rtrIsisLsp.tlvSegRoutV6;
-        bits.msbPutW(tlv.valDat, 0, 0); // mtid
+        bits.msbPutW(tlv.valDat, 0, 2); // mtid
         bits.msbPutD(tlv.valDat, 2, met); // metric
         tlv.valDat[6] = 0; // flags
         tlv.valDat[7] = 0; // algo
