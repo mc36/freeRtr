@@ -173,7 +173,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         advert = new tabGen<rtrLsrpData>();
         sentMet = -1;
         sentMed = false;
-        gotMetric = 10;
+        gotMetric = -1;
         gotMeasure = true;
     }
 
@@ -245,7 +245,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
      */
     public int getMetric() {
         int met = iface.metric;
-        if (iface.acceptMetric) {
+        if (iface.acceptMetric && (gotMetric > 0)) {
             met = gotMetric;
         }
         if (met < 1) {
