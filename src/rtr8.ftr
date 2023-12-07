@@ -551,7 +551,6 @@ todo: route-map <-- route-policy converter
 todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
 todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
-todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
 todo: player: disable volume in multicast streamer mode
@@ -591,7 +590,6 @@ todo: some more .equals("no") to cmds.negated conversions like   <!-------------
 todo: ("no") --> cmds.negated   <!-------------------------------------------------------------------
 todo: "no" --> cmds.negated   <!---------------------------------------------------------------------
 todo: "no " --> cmds.negated   <!--------------------------------------------------------------------
-todo: same for upgrade-cli  <!-----------------------------------------------------------------------
 todo: client hide-secrets  <!------------------------------------------------------------------------
 todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
 todo: server smtp / tag messages by subject
@@ -701,7 +699,6 @@ todo: server tftp to have server http backup alike functionality
 todo: scheduler asdf single-run
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
 todo: show running-config vdc <tabbable>
-todo: server * vrf <tabbable> and upgrade-cli
 todo: interface * vrf <tabbable> and upgrade-cli
 todo: terminal clear same as game clear
 todo: clear aaa <tabbable>

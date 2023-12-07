@@ -1050,7 +1050,7 @@ dial-peer 1
  exit
 !
 !
-server telnet tel
+server telnet tel vrf v1 interface loopback0
  security authentication access
  security rsakey rsa
  security dsakey dsa
@@ -1069,24 +1069,21 @@ server telnet tel
  login authentication access
  login logging
  login last global
- vrf v1
  exit
 !
-server udptn ut
+server udptn ut vrf v1 interface loopback0
  no exec authorization
  no login authentication
  login logging
- vrf v1
  exit
 !
-server rfb vnc
+server rfb vnc vrf v1 interface loopback0
  no exec authorization
  no login authentication
  login logging
- vrf v1
  exit
 !
-server http web
+server http web vrf v1 interface loopback0
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
@@ -1126,32 +1123,27 @@ server http web
  host sid.mchome.nop.hu websock
  host sid.mchome.nop.hu webdav
  host sid.mchome.nop.hu class
- vrf v1
  exit
 !
-server ftp f
+server ftp f vrf v1 interface loopback0
  authentication access
  path /nfs/own/web/
- vrf v1
  exit
 !
-server tftp t
+server tftp t vrf v1 interface loopback0
  path /nfs/own/web/
- vrf v1
  exit
 !
-server ntp n
+server ntp n vrf v1 interface loopback0
  reference 0.0.0.0
- vrf v1
  exit
 !
-server bmp2mrt bmp
+server bmp2mrt bmp vrf v1 interface loopback0
  file bmp.log
  bulk-down
- vrf v1
  exit
 !
-server dns ns
+server dns ns vrf v1 interface loopback0
  logging
  recursion enable
  zone sid.mchome.nop.hu defttl 60
@@ -1165,10 +1157,9 @@ server dns ns
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu soa ns0.sid.mchome.nop.hu cs.sid.mchome.nop.hu 20210309 60000 120000 6000000 600
  zone sid.mchome.nop.hu rr ip.sid.mchome.nop.hu ip6i loopback42
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip6a 2001:db8:1101::227:227
- vrf v1
  exit
 !
-server honeypot hp1
+server honeypot hp1 vrf v1 interface loopback0
  port 8881
  info pmtud 512 1024 666
  info router4 bgp4 65535
@@ -1177,11 +1168,9 @@ server honeypot hp1
  info style background-color:#000000;color:#00FFFF;
  info script logger
  info tinyhttp
- interface loopback0
- vrf v1
  exit
 !
-server honeypot hp2
+server honeypot hp2 vrf v1 interface loopback0
  port 8882
  info pmtud 512 1024 666
  info router4 bgp4 65535
@@ -1191,11 +1180,9 @@ server honeypot hp2
  info style background-color:#000000;color:#00FFFF;
  info resolve
  info tinyhttp
- interface loopback0
- vrf v1
  exit
 !
-server honeypot hp3
+server honeypot hp3 vrf v1 interface loopback0
  port 8883
  info pmtud 512 1024 666
  info router4 bgp4 65535
@@ -1203,33 +1190,26 @@ server honeypot hp3
  info details
  info single
  info resolve
- interface loopback0
- vrf v1
  exit
 !
-server whois as
- vrf v1
+server whois as vrf v1 interface loopback0
  exit
 !
-server sip lab
+server sip lab vrf v1 interface loopback0
  protocol ipv4 ipv6 tcp udp
- interface loopback0
- vrf v1
  exit
 !
-server radius rad
+server radius rad vrf v1 interface loopback0
  authentication access
  secret $w10$GV+pcgTkgqct0vAiKD2PVg==
  logging
- vrf v1
  exit
 !
-server tacacs tac
+server tacacs tac vrf v1 interface loopback0
  authentication access
  authorization access
  secret $w10$GV+pcgTkgqct0vAiKD2PVg==
  logging
- vrf v1
  exit
 !
 client proxy p1

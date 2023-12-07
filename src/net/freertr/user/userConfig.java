@@ -871,13 +871,18 @@ public class userConfig {
         l.add(null, "3  .      <name:mnk>                 name of menu");
         l.add(null, "2  3    tui                          tui based");
         l.add(null, "3  .      <name:mnt>                 name of menu");
+        userHelping k = new userHelping();
+        k.expand = true;
+        k.add(null, "4  5        vrf                      bind a vrf");
+        k.add(null, "5  4,.        <name:vrf>             vrf to bind to");
+        k.add(null, "4  5        interface                bind an interface");
+        k.add(null, "5  4,.        <name:ifc>             interface to bind to");
         l.add(null, "1  2  server                         create new or update existing server process");
-        servGenList.srvHelp(l, 2, " to configure");
+        servGenList.srvHelp(l, 2, " to configure", k);
     }
 
     private byte[] cmdGetRem() {
-        return bits.byteConcat(cmd.getRemaining().getBytes(),
-                pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
+        return bits.byteConcat(cmd.getRemaining().getBytes(), pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
     }
 
     private void doGlobal() {
@@ -1360,6 +1365,30 @@ public class userConfig {
                 return;
             }
             modeV = modes.server;
+            boolean b = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("vrf")) {
+                    a = cmd.word();
+                    modeDserver.srvVrf = cfgAll.vrfFind(a, false);
+                    b = true;
+                    continue;
+                }
+                if (a.equals("interface")) {
+                    a = cmd.word();
+                    modeDserver.srvIface = cfgAll.ifcFind(a, 0);
+                    b = true;
+                    continue;
+                }
+            }
+            if (!b) {
+                return;
+            }
+            modeDserver.srvEmbedVrf |= b;
+            modeDserver.srvInit();
             return;
         }
         if (a.equals("client")) {

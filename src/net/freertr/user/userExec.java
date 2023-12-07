@@ -1299,7 +1299,7 @@ public class userExec {
         hl.add(null, "5 5,.          all               do not hide defaults");
         hl.add(null, "5 5,.          hide              hide passwords");
         hl.add(null, "3 4        server                specified server process");
-        servGenList.srvHelp(hl, 4, " to show");
+        servGenList.srvHelp(hl, 4, " to show", null);
         hl.add(null, "3 4        router                specified router process");
         cfgRtr.getRouterList(hl, 2, " to show");
         hl.add(null, "5 6,.          <num:rtr>         process id");

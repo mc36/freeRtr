@@ -59,6 +59,11 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     public String srvDescr = null;
 
     /**
+     * embed vrf name
+     */
+    public boolean srvEmbedVrf;
+
+    /**
      * name of server
      */
     public String srvName;
@@ -1190,6 +1195,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(null, "3 .      <name:crt>         name of certificate");
         l.add(null, "2 3    ecdsacert            set ecdsa certificate");
         l.add(null, "3 .      <name:crt>         name of certificate");
+        l.add(null, "1 .   " + cmds.upgradeCli + "             embed vrf name to router knob");
         srvHelp(l);
     }
 
@@ -1201,7 +1207,16 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      */
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
-        l.add("server " + srvName() + " " + srvName);
+        String a = "";
+        if (srvEmbedVrf) {
+            if (srvVrf != null) {
+                a += " vrf " + srvVrf.name;
+            }
+            if (srvIface != null) {
+                a += " interface " + srvIface.name;
+            }
+        }
+        l.add("server " + srvName() + " " + srvName + a);
         cmds.cfgLine(l, srvDescr == null, cmds.tabulator, "description", srvDescr);
         cmds.cfgLine(l, secProto == 0, cmds.tabulator, "security protocol", proto2string(secProto));
         if (srvAuther == null) {
@@ -1257,15 +1272,17 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         l.add(cmds.tabulator + "port " + srvPort);
         l.add(cmds.tabulator + "protocol " + proto2string(srvProto));
         srvShRun(cmds.tabulator, l, filter);
-        if (srvIface != null) {
-            l.add(cmds.tabulator + "interface " + srvIface.name);
-        } else {
-            l.add(cmds.tabulator + "no interface");
-        }
-        if (srvVrf != null) {
-            l.add(cmds.tabulator + "vrf " + srvVrf.name);
-        } else {
-            l.add(cmds.tabulator + "no vrf");
+        if (!srvEmbedVrf) {
+            if (srvIface != null) {
+                l.add(cmds.tabulator + "interface " + srvIface.name);
+            } else {
+                l.add(cmds.tabulator + "no interface");
+            }
+            if (srvVrf != null) {
+                l.add(cmds.tabulator + "vrf " + srvVrf.name);
+            } else {
+                l.add(cmds.tabulator + "no vrf");
+            }
         }
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
@@ -1280,6 +1297,10 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         if (a.equals("rename")) {
             a = cmd.word();
             srvRename(a);
+            return;
+        }
+        if (a.equals(cmds.upgradeCli)) {
+            srvEmbedVrf = true;
             return;
         }
         if (a.equals("description")) {
@@ -1449,113 +1470,117 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, false);
             return;
         }
-        if (a.equals("no")) {
-            a = cmd.word();
-            if (a.equals("description")) {
-                srvDescr = null;
+        if (!a.equals("no")) {
+            if (srvCfgStr(cmd.copyBytes(true))) {
+                cmd.badCmd();
                 return;
             }
-            if (a.equals("vrf")) {
-                srvDeinit();
-                srvVrf = null;
-                return;
-            }
-            if (a.equals("port")) {
-                srvDeinit();
-                srvPort = srvPort();
-                srvInit();
-                return;
-            }
-            if (a.equals("protocol")) {
-                srvDeinit();
-                srvProto = srvProto();
-                srvInit();
-                return;
-            }
-            if (a.equals("interface")) {
-                srvDeinit();
-                srvIface = null;
-                srvInit();
-                return;
-            }
-            if (a.equals("access-log")) {
-                srvLogDrop = false;
-                return;
-            }
-            if (a.equals("access-total")) {
-                srvTotLim = 0;
-                return;
-            }
-            if (a.equals("access-peer")) {
-                srvPerLim = 0;
-                return;
-            }
-            if (a.equals("access-subnet")) {
-                srvNetLim = 0;
-                return;
-            }
-            if (a.equals("access-blackhole4")) {
-                srvBlckhl4 = null;
-                return;
-            }
-            if (a.equals("access-blackhole6")) {
-                srvBlckhl6 = null;
-                return;
-            }
-            if (a.equals("security")) {
-                String s = cmd.word();
-                if (s.equals("protocol")) {
-                    secProto = 0;
-                    return;
-                }
-                if (s.equals("authentication")) {
-                    srvAuther = null;
-                    return;
-                }
-                if (s.equals("rsakey")) {
-                    keyrsa = null;
-                    return;
-                }
-                if (s.equals("dsakey")) {
-                    keydsa = null;
-                    return;
-                }
-                if (s.equals("ecdsakey")) {
-                    keyecdsa = null;
-                    return;
-                }
-                if (s.equals("rsacert")) {
-                    certrsa = null;
-                    return;
-                }
-                if (s.equals("dsacert")) {
-                    certdsa = null;
-                    return;
-                }
-                if (s.equals("ecdsacert")) {
-                    certecdsa = null;
-                    return;
-                }
-                return;
-            }
-            if (!a.startsWith("access-")) {
-                if (srvCfgStr(cmd.copyBytes(true))) {
-                    cmd.badCmd();
-                    return;
-                }
-                return;
-            }
-            a = a.substring(7, a.length());
-            a += " " + cmd.getRemaining();
-            a = a.trim();
-            cmd = new cmds("info", a);
-            srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, true);
             return;
         }
-        if (srvCfgStr(cmd.copyBytes(true))) {
-            cmd.badCmd();
+        a = cmd.word();
+        if (a.equals(cmds.upgradeCli)) {
+            srvEmbedVrf = false;
             return;
         }
+        if (a.equals("description")) {
+            srvDescr = null;
+            return;
+        }
+        if (a.equals("vrf")) {
+            srvDeinit();
+            srvVrf = null;
+            return;
+        }
+        if (a.equals("port")) {
+            srvDeinit();
+            srvPort = srvPort();
+            srvInit();
+            return;
+        }
+        if (a.equals("protocol")) {
+            srvDeinit();
+            srvProto = srvProto();
+            srvInit();
+            return;
+        }
+        if (a.equals("interface")) {
+            srvDeinit();
+            srvIface = null;
+            srvInit();
+            return;
+        }
+        if (a.equals("access-log")) {
+            srvLogDrop = false;
+            return;
+        }
+        if (a.equals("access-total")) {
+            srvTotLim = 0;
+            return;
+        }
+        if (a.equals("access-peer")) {
+            srvPerLim = 0;
+            return;
+        }
+        if (a.equals("access-subnet")) {
+            srvNetLim = 0;
+            return;
+        }
+        if (a.equals("access-blackhole4")) {
+            srvBlckhl4 = null;
+            return;
+        }
+        if (a.equals("access-blackhole6")) {
+            srvBlckhl6 = null;
+            return;
+        }
+        if (a.equals("security")) {
+            String s = cmd.word();
+            if (s.equals("protocol")) {
+                secProto = 0;
+                return;
+            }
+            if (s.equals("authentication")) {
+                srvAuther = null;
+                return;
+            }
+            if (s.equals("rsakey")) {
+                keyrsa = null;
+                return;
+            }
+            if (s.equals("dsakey")) {
+                keydsa = null;
+                return;
+            }
+            if (s.equals("ecdsakey")) {
+                keyecdsa = null;
+                return;
+            }
+            if (s.equals("rsacert")) {
+                certrsa = null;
+                return;
+            }
+            if (s.equals("dsacert")) {
+                certdsa = null;
+                return;
+            }
+            if (s.equals("ecdsacert")) {
+                certecdsa = null;
+                return;
+            }
+            return;
+        }
+        if (!a.startsWith("access-")) {
+            if (srvCfgStr(cmd.copyBytes(true))) {
+                cmd.badCmd();
+                return;
+            }
+            return;
+        }
+        a = a.substring(7, a.length());
+        a += " " + cmd.getRemaining();
+        a = a.trim();
+        cmd = new cmds("info", a);
+        srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, true);
         return;
     }
 

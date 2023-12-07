@@ -602,6 +602,10 @@ public class servHttpConn implements Runnable {
                 logger.debug("host=" + gotHost);
             }
             try {
+                if (gotHost == null) {
+                    sendRespError(404, "host not found");
+                    break;
+                }
                 gotHost.serveRequest(this);
             } catch (Exception e) {
                 logger.traceback(e, gotUrl.dump() + " " + gotHost + " " + peer);

@@ -15656,3 +15656,7 @@ no todo: test access-list <acl> <src> <trg>
 todo: server security maximum pendings as access-security
 ---------------------------------- 2023-12-07 09:29:03 23.12.7
 no todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
+---------------------------------- 2023-12-07 17:30:54 23.12.7
+no todo: server * vrf <tabbable> and upgrade-cli
+no todo: same for upgrade-cli  <!-----------------------------------------------------------------------
+no todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111

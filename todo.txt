@@ -64,10 +64,6 @@ p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over pac
 
 
 
-upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
-
-
-
 bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 
 
@@ -166,7 +162,6 @@ some more .equals("no") to cmds.negated conversions like   <!-------------------
    ("no") --> cmds.negated   <!-------------------------------------------------------------------
    "no" --> cmds.negated   <!---------------------------------------------------------------------
    "no " --> cmds.negated   <!--------------------------------------------------------------------
-   same for upgrade-cli  <!-----------------------------------------------------------------------
    client hide-secrets  <!------------------------------------------------------------------------
 cmds.not2vdc  <!----------------------------------------------------------------------------------
 server smtp / tag messages by subject
@@ -304,8 +299,6 @@ scheduler asdf single-run
 show running-config vrf iot to display routing protocols, servers and interfaces
 
 show running-config vdc <tabbable>
-
-server * vrf <tabbable> and upgrade-cli
 
 
 
