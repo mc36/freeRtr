@@ -278,11 +278,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
      */
     public int getMetric() {
         int met = iface.metricIn;
-        if (iface.acceptMetric && (gotMetric > 0)) {
+        if (iface.acceptMetric && (gotMetric > 0) && (met > gotMetric)) {
             met = gotMetric;
-        }
-        if (met < 1) {
-            met = 1;
         }
         if (!gotMeasure) {
             return met;
