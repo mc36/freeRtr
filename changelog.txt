@@ -15654,3 +15654,5 @@ no todo: player queue up down add-again
 no todo: serevr security maximum pendings as access-security
 no todo: test access-list <acl> <src> <trg>
 todo: server security maximum pendings as access-security
+---------------------------------- 2023-12-07 09:29:03 23.12.7
+no todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)

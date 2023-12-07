@@ -76,12 +76,12 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
     /**
      * vrf to use
      */
-    protected cfgVrf srvVrf;
+    public cfgVrf srvVrf;
 
     /**
      * interface to use
      */
-    protected cfgIfc srvIface;
+    public cfgIfc srvIface;
 
     /**
      * limit of all clients

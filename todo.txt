@@ -88,8 +88,6 @@ some more autocolorizers under the same termial propertiles like terminal colori
 
 
 
-server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
-
 
 
 

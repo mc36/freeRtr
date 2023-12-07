@@ -151,6 +151,9 @@ import net.freertr.rtr.rtrRip6iface;
 import net.freertr.rtr.rtrRsvpIface;
 import net.freertr.sec.secIke;
 import net.freertr.sec.secIsakmp;
+import net.freertr.serv.servDhcp4;
+import net.freertr.serv.servDhcp6;
+import net.freertr.serv.servGeneric;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;
 import net.freertr.tab.tabQos;
@@ -897,6 +900,16 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public prtSkip tunSkip;
 
     /**
+     * dhcp4 server
+     */
+    public servDhcp4 dhcp4s;
+
+    /**
+     * dhcp6 server
+     */
+    public servDhcp6 dhcp6s;
+
+    /**
      * babel4 routing handler
      */
     public cfgRtr rtrBabel4hnd;
@@ -1606,6 +1619,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ipv[46] multicast host-enable",
         "interface .*! no ipv[46] multicast host-proxy",
         "interface .*! ipv[46] multicast host-query 60000",
+        "interface .*! no dhcp[46]server enable",
         // babel
         "interface .*! no router babel[46] .* bfd",
         "interface .*! router babel[46] .* split-horizon",
@@ -6469,6 +6483,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (pwhe != null) {
             l.add(cmds.tabulator + "pseudowire " + pwhe.getCfg());
         }
+        dhcpServConf(l, dhcp4s, "dhcp4server", "server dhcp4 a", filter);
+        dhcpServConf(l, dhcp6s, "dhcp6server", "server dhcp6 a", filter);
         cmds.cfgLine(l, followTrack == null, cmds.tabulator, "follow-tracker", "" + followTrack);
         cmds.cfgLine(l, ethtyp.forcedUP, cmds.tabulator, "autostate", "");
         cmds.cfgLine(l, (ethtyp.forcedDN & 1) == 0, cmds.tabulator, "shutdown", "");
@@ -6493,6 +6509,31 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             l.remove(o);
         }
         return l;
+    }
+
+    private void dhcpServConf(List<String> l, servGeneric s, String b, String fn, int filter) {
+        if (s == null) {
+            l.add(cmds.tabulator + "no " + b + " enable");
+            return;
+        }
+        l.add(cmds.tabulator + b + " enable");
+        List<String> r = new ArrayList<String>();
+        s.srvShRun(" ", r, filter);
+        tabGen<userFilter> fl = s.srvDefFlt();
+        for (int i = 0; i < r.size(); i++) {
+            String a = r.get(i);
+            userFilter fv = new userFilter(fn, a, null);
+            fv = userFilter.findFilter(fv, fl);
+            if (fv != null) {
+                continue;
+            }
+            if (a.startsWith(" no")) {
+                a = "no " + b + a.substring(3, a.length());
+            } else {
+                a = b + a;
+            }
+            l.add(cmds.tabulator + a);
+        }
     }
 
     public void getHelp(userHelping l) {
@@ -7036,6 +7077,50 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "4 .         <num>                   number of bridge group");
         l.add(null, "3 4       xconnect                  cross connect vlan");
         cfgXconnSide.getHelp(l, 4);
+        l.add(null, "1 2   dhcp4server                   serve ipv4 dhcp requests");
+        l.add(null, "2 .     enable                      enable processing");
+        l.add(null, "2 3     pool                        address pool to use");
+        l.add(null, "3 4       <addr>                    first address to delegate");
+        l.add(null, "4 .         <addr>                  last address to delegate");
+        l.add(null, "2 3     gateway                     gateway address to delegate");
+        l.add(null, "3 .       <addr>                    address of gateway");
+        l.add(null, "2 3     dns-server                  address(es) of name server(s) to delegate");
+        l.add(null, "3 4,.     <addr>                    dns#1 server address");
+        l.add(null, "3 .         <addr>                  dns#2 server address");
+        l.add(null, "2 3     domain-name                 domain name to delegate");
+        l.add(null, "3 .       <str>                     domain name");
+        l.add(null, "2 3     netmask                     network to delegate");
+        l.add(null, "3 .       <mask>                    netmask to delegate");
+        l.add(null, "2 3     static                      address pool to use");
+        l.add(null, "3 4       <addr>                    mac address of client");
+        l.add(null, "4 .         <addr>                  ip address of client");
+        l.add(null, "2 3     forbidden                   address pool to use");
+        l.add(null, "3 .       <addr>                    mac address of client");
+        l.add(null, "2 3     option                      specify custom option");
+        l.add(null, "3 4,.     <num>                     type of option");
+        l.add(null, "4 4,.       <num>                   data byte");
+        l.add(null, "1 2   dhcp6server                   serve ipc6 dhcp requests");
+        l.add(null, "2 .     enable                      enable processing");
+        l.add(null, "2 3     pool                        address pool to use");
+        l.add(null, "3 4       <addr>                    first address to delegate");
+        l.add(null, "4 .         <addr>                  last address to delegate");
+        l.add(null, "2 3     gateway                     gateway address to delegate");
+        l.add(null, "3 .       <addr>                    address of gateway");
+        l.add(null, "2 3     dns-server                  address(es) of name server(s) to delegate");
+        l.add(null, "3 4,.     <addr>                    dns#1 server address");
+        l.add(null, "3 .         <addr>                  dns#2 server address");
+        l.add(null, "2 3     domain-name                 domain name to delegate");
+        l.add(null, "3 .       <str>                     domain name");
+        l.add(null, "2 3     netmask                     network to delegate");
+        l.add(null, "3 .       <mask>                    netmask to delegate");
+        l.add(null, "2 3     static                      address pool to use");
+        l.add(null, "3 4       <addr>                    mac address of client");
+        l.add(null, "4 .         <addr>                  ip address of client");
+        l.add(null, "2 3     forbidden                   address pool to use");
+        l.add(null, "3 .       <addr>                    mac address of client");
+        l.add(null, "2 3     option                      specify custom option");
+        l.add(null, "3 4,.     <num>                     type of option");
+        l.add(null, "4 4,.       <num>                   data byte");
         l.add(null, "1 2   service-policy-in             policy map to apply to ingress packets");
         l.add(null, "2 .     <name:pm>                   name of policy map");
         l.add(null, "1 2   service-policy-out            policy map to apply to egress packets");
@@ -7690,6 +7775,50 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             ethtyp.timerUpdate();
             return;
         }
+        if (a.equals("dhcp4server")) {
+            a = cmd.word();
+            if (a.equals("enable")) {
+                if (ipIf4 == null) {
+                    cmd.error("protocol not enabled");
+                    return;
+                }
+                dhcp4s = new servDhcp4();
+                dhcp4s.srvInitialize();
+                dhcp4s.srvVrf = vrfFor;
+                dhcp4s.srvIface = this;
+                dhcp4s.srvInit();
+                return;
+            }
+            if (dhcp4s == null) {
+                cmd.error("server not enabled");
+                return;
+            }
+            cmd = new cmds("srv", a + " " + cmd.getRemaining());
+            dhcp4s.srvCfgStr(cmd);
+            return;
+        }
+        if (a.equals("dhcp6server")) {
+            a = cmd.word();
+            if (a.equals("enable")) {
+                if (ipIf6 == null) {
+                    cmd.error("protocol not enabled");
+                    return;
+                }
+                dhcp6s = new servDhcp6();
+                dhcp6s.srvInitialize();
+                dhcp6s.srvVrf = vrfFor;
+                dhcp6s.srvIface = this;
+                dhcp6s.srvInit();
+                return;
+            }
+            if (dhcp6s == null) {
+                cmd.error("server not enabled");
+                return;
+            }
+            cmd = new cmds("srv", a + " " + cmd.getRemaining());
+            dhcp6s.srvCfgStr(cmd);
+            return;
+        }
         if (a.equals("vrf")) {
             a = cmd.word();
             if (a.equals("forwarding")) {
@@ -8303,6 +8432,44 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (a.equals("service-policy-out")) {
             ethtyp.qosOut = null;
             ethtyp.timerUpdate();
+            return;
+        }
+        if (a.equals("dhcp4server")) {
+            a = cmd.word();
+            if (a.equals("enable")) {
+                if (dhcp4s == null) {
+                    cmd.error("protocol not enabled");
+                    return;
+                }
+                dhcp4s.srvDeinit();
+                dhcp4s = null;
+                return;
+            }
+            if (dhcp4s == null) {
+                cmd.error("server not enabled");
+                return;
+            }
+            cmd = new cmds("srv", "no " + a + " " + cmd.getRemaining());
+            dhcp4s.srvCfgStr(cmd);
+            return;
+        }
+        if (a.equals("dhcp6server")) {
+            a = cmd.word();
+            if (a.equals("enable")) {
+                if (dhcp6s == null) {
+                    cmd.error("protocol not enabled");
+                    return;
+                }
+                dhcp6s.srvDeinit();
+                dhcp6s = null;
+                return;
+            }
+            if (dhcp6s == null) {
+                cmd.error("server not enabled");
+                return;
+            }
+            cmd = new cmds("srv", "no " + a + " " + cmd.getRemaining());
+            dhcp6s.srvCfgStr(cmd);
             return;
         }
         if (a.equals("vrf")) {
