@@ -66,6 +66,8 @@ qc pass: dhcp
 qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation
 qc pass: dhcp with excluded address
+qc pass: dhcp with upgraded server
+failed: dhcp with interface server
 qc pass: dlsw over ipv4
 qc pass: dlsw over ipv6
 qc pass: dlsw over loopback

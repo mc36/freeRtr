@@ -15660,3 +15660,6 @@ no todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade
 no todo: server * vrf <tabbable> and upgrade-cli
 no todo: same for upgrade-cli  <!-----------------------------------------------------------------------
 no todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
+---------------------------------- 2023-12-08 08:53:55 23.12.8
+qc pass: dhcp with upgraded server
+failed: dhcp with interface server
