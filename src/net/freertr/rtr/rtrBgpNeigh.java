@@ -916,7 +916,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         return false;
     }
 
-    private boolean advertFullTable(int safi, int mask, tabRoute<addrIP> will, tabRoute<addrIP> done) {
+    private boolean advertFullTable(int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> done) {
         if ((conn.peerAfis & mask) == 0) {
             return false;
         }
@@ -1139,7 +1139,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         return false;
     }
 
-    private boolean advertIncrTable(int safi, int mask, tabRoute<addrIP> will, tabRoute<addrIP> chg, tabRoute<addrIP> done) {
+    private boolean advertIncrTable(int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> chg, tabRoute<addrIP> done) {
         if ((conn.peerAfis & mask) == 0) {
             return false;
         }
@@ -1410,7 +1410,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         return false;
     }
 
-    private void addUpdateTableUni(int afi, int mask, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
+    private void addUpdateTableUni(int afi, long mask, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         if ((conn.peerAfis & mask) == 0) {
             return;
         }

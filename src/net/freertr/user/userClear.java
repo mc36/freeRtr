@@ -882,7 +882,7 @@ public class userClear {
         if (mod < 1) {
             return;
         }
-        int safi = rtrBgpParam.string2mask(cmd.word());
+        long safi = rtrBgpParam.string2mask(cmd.word());
         if (safi < 1) {
             return;
         }

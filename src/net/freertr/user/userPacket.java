@@ -1075,7 +1075,7 @@ public class userPacket {
             bits.msbPutD(buf, 0, nei.localAs);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
             buf = new byte[4];
-            bits.msbPutD(buf, 0, nei.addrFams);
+            bits.msbPutD(buf, 0, safi);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
@@ -1210,7 +1210,7 @@ public class userPacket {
             bits.msbPutD(buf, 0, nei.localAs);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
             buf = new byte[4];
-            bits.msbPutD(buf, 0, nei.addrFams);
+            bits.msbPutD(buf, 0, safi);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);
@@ -1316,7 +1316,7 @@ public class userPacket {
             bits.msbPutD(buf, 0, nei.localAs);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
             buf = new byte[4];
-            bits.msbPutD(buf, 0, nei.addrFams);
+            bits.msbPutD(buf, 0, safi);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
             pck.merge2beg();
             pck.putByte(0, rtrBgpUtil.version);

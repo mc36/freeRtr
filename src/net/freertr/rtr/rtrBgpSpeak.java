@@ -516,7 +516,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer address families
      */
-    public int peerAfis;
+    public long peerAfis;
 
     /**
      * peer dynamic capability exchange
@@ -561,32 +561,32 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * eor needs in address families
      */
-    public int needEorAfis;
+    public long needEorAfis;
 
     /**
      * peer graceful restart capability
      */
-    public int peerGrace;
+    public long peerGrace;
 
     /**
      * peer long lived graceful restart capability
      */
-    public int peerLlGrace;
+    public long peerLlGrace;
 
     /**
      * peer multiple labels capability
      */
-    public int peerMltLab;
+    public long peerMltLab;
 
     /**
      * peer extended nexthop capability
      */
-    public int peerExtNextCur;
+    public long peerExtNextCur;
 
     /**
      * peer extended nexthop capability
      */
-    public int peerExtNextOtr;
+    public long peerExtNextOtr;
 
     /**
      * peer leak prevention role capability
@@ -611,12 +611,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer sends additional paths
      */
-    public int addpathRx;
+    public long addpathRx;
 
     /**
      * peer receives additional paths
      */
-    public int addpathTx;
+    public long addpathTx;
 
     /**
      * strict bfd mode
@@ -671,17 +671,17 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * safi list sent by the peer
      */
-    public int originalSafiList;
+    public long originalSafiList;
 
     /**
      * addpath list sent by the peer
      */
-    public int originalAddRlist;
+    public long originalAddRlist;
 
     /**
      * addpath list sent by the peer
      */
-    public int originalAddTlist;
+    public long originalAddTlist;
 
     private packHolder pckRx = new packHolder(true, true);
 
@@ -716,7 +716,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         new Thread(this).start();
     }
 
-    private boolean afiMsk(int val, int safi) {
+    private boolean afiMsk(long val, long safi) {
         if (safi == parent.afiUni) {
             return (val & rtrBgpParam.mskUni) != 0;
         }
@@ -1462,7 +1462,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 pckRh.putSkip(tlv.valSiz);
                 pckRh.merge2beg();
                 List<Integer> afiS = new ArrayList<Integer>();
-                List<Integer> afiM = new ArrayList<Integer>();
+                List<Long> afiM = new ArrayList<Long>();
                 List<Integer> afiD = new ArrayList<Integer>();
                 for (;;) {
                     tlv = rtrBgpUtil.getCapabilityTlv(false);
@@ -1477,7 +1477,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 for (i = afiS.size() - 1; i >= 0; i--) {
                     int o = afiS.get(i);
-                    int p = afiM.get(i);
+                    long p = afiM.get(i);
                     if (afiMsk(peerAfis, o) == add) {
                         renegotiatingSafi(p, o, add, false);
                         continue;
@@ -1498,7 +1498,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 for (i = 0; i < afiS.size(); i++) {
                     int o = afiS.get(i);
-                    int p = afiM.get(i);
+                    long p = afiM.get(i);
                     renegotiatingSafi(p, o, add, false);
                 }
                 continue;
@@ -1846,12 +1846,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             for (int i = 0; i < safis.size(); i++) {
                 int o = safis.get(i);
                 bits.msbPutD(buf, i * 4, rtrBgpUtil.safi2triplet(o));
-                o = parent.safi2mask(o);
+                long p = parent.safi2mask(o);
                 int m = 0;
-                if ((neigh.addpathRmode & o) != 0) {
+                if ((neigh.addpathRmode & p) != 0) {
                     m |= 1;
                 }
-                if ((neigh.addpathTmode & o) != 0) {
+                if ((neigh.addpathTmode & p) != 0) {
                     m |= 2;
                 }
                 buf[(i * 4) + 3] = (byte) m;
@@ -1958,11 +1958,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         packSend(pck, rtrBgpUtil.msgOpen);
     }
 
-    private int parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Integer> msk) {
-        int res = 0;
+    private long parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Long> msk) {
+        long res = 0;
         for (int i = 0; i < tlv.valSiz; i += 4) {
             int p = bits.msbGetD(tlv.valDat, i);
-            int o = parent.safi2mask(p);
+            long o = parent.safi2mask(p);
             if (o < 1) {
                 if (debugger.rtrBgpError) {
                     logger.debug("unknown (" + p + ") afi");
@@ -2090,54 +2090,54 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         break;
                     case rtrBgpUtil.capaMultiProto:
                         mpGot = true;
-                        peerAfis |= parseMultiProtoCapa(tlv, new ArrayList<Integer>(), new ArrayList<Integer>());
+                        peerAfis |= parseMultiProtoCapa(tlv, new ArrayList<Integer>(), new ArrayList<Long>());
                         break;
                     case rtrBgpUtil.capaMultiLabel:
                         for (i = 0; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            o = parent.safi2mask(o);
-                            if (o < 1) {
+                            long p = parent.safi2mask(o);
+                            if (p < 1) {
                                 continue;
                             }
-                            peerMltLab |= o;
+                            peerMltLab |= p;
                         }
                         break;
                     case rtrBgpUtil.capaGraceRestart:
                         for (i = 2; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            o = parent.safi2mask(o);
-                            if (o < 1) {
+                            long p = parent.safi2mask(o);
+                            if (p < 1) {
                                 continue;
                             }
-                            peerGrace |= o;
+                            peerGrace |= p;
                         }
                         break;
                     case rtrBgpUtil.capaLongGrace:
                         for (i = 0; i < tlv.valSiz; i += 7) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            o = parent.safi2mask(o);
-                            if (o < 1) {
+                            long p = parent.safi2mask(o);
+                            if (p < 1) {
                                 continue;
                             }
-                            peerLlGrace |= o;
+                            peerLlGrace |= p;
                         }
                         break;
                     case rtrBgpUtil.capaExtNextHop:
                         for (i = 0; i < tlv.valSiz; i += 6) {
                             int o = bits.msbGetD(tlv.valDat, i + 0);
                             int p = bits.msbGetW(tlv.valDat, i + 4);
-                            o = parent.safi2mask(o);
-                            if (o < 1) {
+                            long q = parent.safi2mask(o);
+                            if (q < 1) {
                                 continue;
                             }
                             if (p == (parent.afiUni >>> 16)) {
-                                peerExtNextCur |= o;
+                                peerExtNextCur |= q;
                             }
                             if (p == (parent.afiOuni >>> 16)) {
-                                peerExtNextOtr |= o;
+                                peerExtNextOtr |= q;
                             }
                         }
                         break;
@@ -2145,16 +2145,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         for (i = 0; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            o = parent.safi2mask(o);
-                            if (o < 1) {
+                            long p = parent.safi2mask(o);
+                            if (p < 1) {
                                 continue;
                             }
                             int m = tlv.valDat[i + 3];
                             if ((m & 2) != 0) {
-                                addpathRx |= o;
+                                addpathRx |= p;
                             }
                             if ((m & 1) != 0) {
-                                addpathTx |= o;
+                                addpathTx |= p;
                             }
                         }
                         break;
@@ -2173,7 +2173,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         if (!mpGot) {
-            int o = parent.safi2mask(rtrBgpUtil.safiIp4uni);
+            long o = parent.safi2mask(rtrBgpUtil.safiIp4uni);
             if (o > 0) {
                 peerAfis |= o;
             }
@@ -2273,7 +2273,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param msk afi mask to configure
      * @param safi safi to configure
      */
-    public void sendDynamicCapa(boolean init, boolean add, int msk, int safi) {
+    public void sendDynamicCapa(boolean init, boolean add, long msk, int safi) {
         if (!peerDynCap) {
             return;
         }
@@ -2317,7 +2317,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         tab.clear();
     }
 
-    private void renegotiatingSafi(int msk, int safi, boolean add, boolean cfg) {
+    private void renegotiatingSafi(long msk, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
         clearOneTable(getLearned(safi));
         clearOneTable(getAdverted(safi));

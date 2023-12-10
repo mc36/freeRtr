@@ -4136,12 +4136,12 @@ public class userShow {
                 rdr.putStrTab(grp.getStatus());
                 return;
             }
-            int sfi = rtrBgpParam.string2mask(a);
-            if (sfi < 1) {
+            long sfm = rtrBgpParam.string2mask(a);
+            if (sfm < 1) {
                 return;
             }
-            int dsp = bgpMask2filter(sfi);
-            sfi = r.bgp.mask2safi(sfi);
+            int dsp = bgpMask2filter(sfm);
+            int sfi = r.bgp.mask2safi(sfm);
             if (sfi < 1) {
                 return;
             }
@@ -4261,12 +4261,12 @@ public class userShow {
                 rdr.putStrTab(nei.getStatus());
                 return;
             }
-            int sfi = rtrBgpParam.string2mask(a);
-            if (sfi < 1) {
+            long sfm = rtrBgpParam.string2mask(a);
+            if (sfm < 1) {
                 return;
             }
-            int dsp = bgpMask2filter(sfi);
-            sfi = r.bgp.mask2safi(sfi);
+            int dsp = bgpMask2filter(sfm);
+            int sfi = r.bgp.mask2safi(sfm);
             if (sfi < 1) {
                 return;
             }
@@ -4290,13 +4290,13 @@ public class userShow {
             cmd.badCmd();
             return;
         }
-        int sfi = rtrBgpParam.string2mask(a);
-        if (sfi < 1) {
+        long sfm = rtrBgpParam.string2mask(a);
+        if (sfm < 1) {
             cmd.badCmd();
             return;
         }
-        int dsp = bgpMask2filter(sfi);
-        sfi = r.bgp.mask2safi(sfi);
+        int dsp = bgpMask2filter(sfm);
+        int sfi = r.bgp.mask2safi(sfm);
         if (sfi < 1) {
             return;
         }
@@ -4756,21 +4756,11 @@ public class userShow {
         doShowRoutes(r.bgp.fwdCore, res, dsp);
     }
 
-    private int bgpMask2filter(int mask) {
-        switch (mask) {
-            case rtrBgpParam.mskEvpn:
-            case rtrBgpParam.mskMspw:
-            case rtrBgpParam.mskMdt:
-            case rtrBgpParam.mskMvpn:
-            case rtrBgpParam.mskMvpo:
-            case rtrBgpParam.mskFlw:
-            case rtrBgpParam.mskOflw:
-            case rtrBgpParam.mskVpnF:
-            case rtrBgpParam.mskVpoF:
-            case rtrBgpParam.mskNsh:
-                return 5;
-            default:
-                return 2;
+    private int bgpMask2filter(long mask) {
+        if ((mask == rtrBgpParam.mskEvpn) || (mask == rtrBgpParam.mskMspw) || (mask == rtrBgpParam.mskMdt) || (mask == rtrBgpParam.mskMvpn) || (mask == rtrBgpParam.mskMvpo) || (mask == rtrBgpParam.mskMtre) || (mask == rtrBgpParam.mskMtro) || (mask == rtrBgpParam.mskFlw) || (mask == rtrBgpParam.mskOflw) || (mask == rtrBgpParam.mskVpnF) || (mask == rtrBgpParam.mskVpoF) || (mask == rtrBgpParam.mskNsh)) {
+            return 5;
+        } else {
+            return 2;
         }
     }
 

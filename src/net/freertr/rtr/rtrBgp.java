@@ -81,7 +81,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * address families
      */
-    public int addrFams;
+    public long addrFams;
 
     /**
      * router id
@@ -1186,7 +1186,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param safi safi
      * @return mask
      */
-    public int safi2mask(int safi) {
+    public long safi2mask(int safi) {
         if (safi == afiUni) {
             return rtrBgpParam.mskUni;
         }
@@ -1293,76 +1293,105 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param mask mask
      * @return safi
      */
-    public int mask2safi(int mask) {
-        switch (mask) {
-            case rtrBgpParam.mskUni:
-                return afiUni;
-            case rtrBgpParam.mskLab:
-                return afiLab;
-            case rtrBgpParam.mskCtp:
-                return afiCtp;
-            case rtrBgpParam.mskCar:
-                return afiCar;
-            case rtrBgpParam.mskMlt:
-                return afiMlt;
-            case rtrBgpParam.mskOlab:
-                return afiOlab;
-            case rtrBgpParam.mskOctp:
-                return afiOctp;
-            case rtrBgpParam.mskOcar:
-                return afiOcar;
-            case rtrBgpParam.mskOuni:
-                return afiOuni;
-            case rtrBgpParam.mskOmlt:
-                return afiOmlt;
-            case rtrBgpParam.mskOflw:
-                return afiOflw;
-            case rtrBgpParam.mskOsrt:
-                return afiOsrt;
-            case rtrBgpParam.mskFlw:
-                return afiFlw;
-            case rtrBgpParam.mskVpnU:
-                return afiVpnU;
-            case rtrBgpParam.mskVpnM:
-                return afiVpnM;
-            case rtrBgpParam.mskVpnF:
-                return afiVpnF;
-            case rtrBgpParam.mskVpoU:
-                return afiVpoU;
-            case rtrBgpParam.mskVpoM:
-                return afiVpoM;
-            case rtrBgpParam.mskVpoF:
-                return afiVpoF;
-            case rtrBgpParam.mskVpls:
-                return afiVpls;
-            case rtrBgpParam.mskMspw:
-                return afiMspw;
-            case rtrBgpParam.mskEvpn:
-                return afiEvpn;
-            case rtrBgpParam.mskMdt:
-                return afiMdt;
-            case rtrBgpParam.mskNsh:
-                return afiNsh;
-            case rtrBgpParam.mskRpd:
-                return afiRpd;
-            case rtrBgpParam.mskRtf:
-                return afiRtf;
-            case rtrBgpParam.mskSrte:
-                return afiSrte;
-            case rtrBgpParam.mskLnks:
-                return afiLnks;
-            case rtrBgpParam.mskMvpn:
-                return afiMvpn;
-            case rtrBgpParam.mskMvpo:
-                return afiMvpo;
-            case rtrBgpParam.mskMtre:
-                return afiMtre;
-            case rtrBgpParam.mskMtro:
-                return afiMtro;
-            default:
-                logger.info("unknown safi (" + mask + ") requested");
-                return -1;
+    public int mask2safi(long mask) {
+        if (mask == rtrBgpParam.mskUni) {
+            return afiUni;
         }
+        if (mask == rtrBgpParam.mskLab) {
+            return afiLab;
+        }
+        if (mask == rtrBgpParam.mskCtp) {
+            return afiCtp;
+        }
+        if (mask == rtrBgpParam.mskCar) {
+            return afiCar;
+        }
+        if (mask == rtrBgpParam.mskMlt) {
+            return afiMlt;
+        }
+        if (mask == rtrBgpParam.mskOlab) {
+            return afiOlab;
+        }
+        if (mask == rtrBgpParam.mskOctp) {
+            return afiOctp;
+        }
+        if (mask == rtrBgpParam.mskOcar) {
+            return afiOcar;
+        }
+        if (mask == rtrBgpParam.mskOuni) {
+            return afiOuni;
+        }
+        if (mask == rtrBgpParam.mskOmlt) {
+            return afiOmlt;
+        }
+        if (mask == rtrBgpParam.mskOflw) {
+            return afiOflw;
+        }
+        if (mask == rtrBgpParam.mskOsrt) {
+            return afiOsrt;
+        }
+        if (mask == rtrBgpParam.mskFlw) {
+            return afiFlw;
+        }
+        if (mask == rtrBgpParam.mskVpnU) {
+            return afiVpnU;
+        }
+        if (mask == rtrBgpParam.mskVpnM) {
+            return afiVpnM;
+        }
+        if (mask == rtrBgpParam.mskVpnF) {
+            return afiVpnF;
+        }
+        if (mask == rtrBgpParam.mskVpoU) {
+            return afiVpoU;
+        }
+        if (mask == rtrBgpParam.mskVpoM) {
+            return afiVpoM;
+        }
+        if (mask == rtrBgpParam.mskVpoF) {
+            return afiVpoF;
+        }
+        if (mask == rtrBgpParam.mskVpls) {
+            return afiVpls;
+        }
+        if (mask == rtrBgpParam.mskMspw) {
+            return afiMspw;
+        }
+        if (mask == rtrBgpParam.mskEvpn) {
+            return afiEvpn;
+        }
+        if (mask == rtrBgpParam.mskMdt) {
+            return afiMdt;
+        }
+        if (mask == rtrBgpParam.mskNsh) {
+            return afiNsh;
+        }
+        if (mask == rtrBgpParam.mskRpd) {
+            return afiRpd;
+        }
+        if (mask == rtrBgpParam.mskRtf) {
+            return afiRtf;
+        }
+        if (mask == rtrBgpParam.mskSrte) {
+            return afiSrte;
+        }
+        if (mask == rtrBgpParam.mskLnks) {
+            return afiLnks;
+        }
+        if (mask == rtrBgpParam.mskMvpn) {
+            return afiMvpn;
+        }
+        if (mask == rtrBgpParam.mskMvpo) {
+            return afiMvpo;
+        }
+        if (mask == rtrBgpParam.mskMtre) {
+            return afiMtre;
+        }
+        if (mask == rtrBgpParam.mskMtro) {
+            return afiMtro;
+        }
+        logger.info("unknown safi (" + mask + ") requested");
+        return -1;
     }
 
     /**
@@ -1371,7 +1400,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param mask mask
      * @return list
      */
-    public List<Integer> mask2list(int mask) {
+    public List<Integer> mask2list(long mask) {
         List<Integer> safis = new ArrayList<Integer>();
         if ((mask & rtrBgpParam.mskUni) != 0) {
             safis.add(afiUni);

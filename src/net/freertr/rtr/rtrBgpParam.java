@@ -61,7 +61,7 @@ public abstract class rtrBgpParam {
     /**
      * address families
      */
-    public int addrFams;
+    public long addrFams;
 
     /**
      * source template
@@ -351,27 +351,27 @@ public abstract class rtrBgpParam {
     /**
      * graceful restart
      */
-    public int graceRestart;
+    public long graceRestart;
 
     /**
      * long lived graceful restart
      */
-    public int llGraceRestart;
+    public long llGraceRestart;
 
     /**
      * multiple labels
      */
-    public int multiLabel;
+    public long multiLabel;
 
     /**
      * extended nexthop current afi
      */
-    public int extNextCur;
+    public long extNextCur;
 
     /**
      * extended nexthop other afi
      */
-    public int extNextOtr;
+    public long extNextOtr;
 
     /**
      * hostname
@@ -431,12 +431,12 @@ public abstract class rtrBgpParam {
     /**
      * additional path receive(1) mode
      */
-    public int addpathRmode;
+    public long addpathRmode;
 
     /**
      * additional path transmit(2) mode
      */
-    public int addpathTmode;
+    public long addpathTmode;
 
     /**
      * default information originate
@@ -746,167 +746,167 @@ public abstract class rtrBgpParam {
     /**
      * unicast
      */
-    public final static int mskUni = 0x01;
+    public final static long mskUni = 0x01;
 
     /**
      * labeled unicast
      */
-    public final static int mskLab = 0x02;
+    public final static long mskLab = 0x02;
 
     /**
      * multicast
      */
-    public final static int mskMlt = 0x04;
+    public final static long mskMlt = 0x04;
 
     /**
      * vpn unicast
      */
-    public final static int mskVpnU = 0x08;
+    public final static long mskVpnU = 0x08;
 
     /**
      * vpn multicast
      */
-    public final static int mskVpnM = 0x10;
+    public final static long mskVpnM = 0x10;
 
     /**
      * vpls
      */
-    public final static int mskVpls = 0x20;
+    public final static long mskVpls = 0x20;
 
     /**
      * evpn
      */
-    public final static int mskEvpn = 0x40;
+    public final static long mskEvpn = 0x40;
 
     /**
      * mdt
      */
-    public final static int mskMdt = 0x80;
+    public final static long mskMdt = 0x80;
 
     /**
      * flowspec
      */
-    public final static int mskFlw = 0x100;
+    public final static long mskFlw = 0x100;
 
     /**
      * vpn flowspec
      */
-    public final static int mskVpnF = 0x200;
+    public final static long mskVpnF = 0x200;
 
     /**
      * other vpn unicast
      */
-    public final static int mskVpoU = 0x400;
+    public final static long mskVpoU = 0x400;
 
     /**
      * other vpn multicast
      */
-    public final static int mskVpoM = 0x800;
+    public final static long mskVpoM = 0x800;
 
     /**
      * other vpn flowspec
      */
-    public final static int mskVpoF = 0x1000;
+    public final static long mskVpoF = 0x1000;
 
     /**
      * mvpn
      */
-    public final static int mskMvpn = 0x2000;
+    public final static long mskMvpn = 0x2000;
 
     /**
      * other mvpn
      */
-    public final static int mskMvpo = 0x4000;
+    public final static long mskMvpo = 0x4000;
 
     /**
      * other labeled unicast
      */
-    public final static int mskOlab = 0x8000;
+    public final static long mskOlab = 0x8000;
 
     /**
      * mspw
      */
-    public final static int mskMspw = 0x10000;
+    public final static long mskMspw = 0x10000;
 
     /**
      * srte
      */
-    public final static int mskSrte = 0x20000;
+    public final static long mskSrte = 0x20000;
 
     /**
      * link state
      */
-    public final static int mskLnks = 0x40000;
+    public final static long mskLnks = 0x40000;
 
     /**
      * other unicast
      */
-    public final static int mskOuni = 0x80000;
+    public final static long mskOuni = 0x80000;
 
     /**
      * other multicast
      */
-    public final static int mskOmlt = 0x100000;
+    public final static long mskOmlt = 0x100000;
 
     /**
      * other flowspec
      */
-    public final static int mskOflw = 0x200000;
+    public final static long mskOflw = 0x200000;
 
     /**
      * other srte
      */
-    public final static int mskOsrt = 0x400000;
+    public final static long mskOsrt = 0x400000;
 
     /**
      * nsh
      */
-    public final static int mskNsh = 0x800000;
+    public final static long mskNsh = 0x800000;
 
     /**
      * rtfilter
      */
-    public final static int mskRtf = 0x1000000;
+    public final static long mskRtf = 0x1000000;
 
     /**
      * classful transport plane
      */
-    public final static int mskCtp = 0x2000000;
+    public final static long mskCtp = 0x2000000;
 
     /**
      * other classful transport plane
      */
-    public final static int mskOctp = 0x4000000;
+    public final static long mskOctp = 0x4000000;
 
     /**
      * rpd
      */
-    public final static int mskRpd = 0x8000000;
+    public final static long mskRpd = 0x8000000;
 
     /**
      * color aware routing
      */
-    public final static int mskCar = 0x10000000;
+    public final static long mskCar = 0x10000000;
 
     /**
      * other color aware routing
      */
-    public final static int mskOcar = 0x20000000;
+    public final static long mskOcar = 0x20000000;
 
     /**
      * mvpn
      */
-    public final static int mskMtre = 0x40000000;
+    public final static long mskMtre = 0x40000000;
 
     /**
      * other mvpn
      */
-    public final static int mskMtro = 0x80000000;
+    public final static long mskMtro = 0x80000000L;
 
     /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf | mskMtre | mskMtro;
+    public final static long mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf | mskMtre | mskMtro;
 
     /**
      * string to afi mask
@@ -914,7 +914,7 @@ public abstract class rtrBgpParam {
      * @param s string
      * @return afi mask
      */
-    public final static int string2mask(String s) {
+    public final static long string2mask(String s) {
         cmds c = new cmds("afi", s);
         return string2mask(c);
     }
@@ -925,8 +925,8 @@ public abstract class rtrBgpParam {
      * @param c string
      * @return afi mask
      */
-    public final static int string2mask(cmds c) {
-        int i = 0;
+    public final static long string2mask(cmds c) {
+        long i = 0;
         for (;;) {
             String a = c.word();
             if (a.length() < 1) {
@@ -1050,7 +1050,7 @@ public abstract class rtrBgpParam {
         return i;
     }
 
-    private static int exclusiveMsk(int cur, int bck, int pri) {
+    private static long exclusiveMsk(long cur, long bck, long pri) {
         if ((cur & bck) == 0) {
             return cur;
         }
@@ -1066,7 +1066,7 @@ public abstract class rtrBgpParam {
      * @param i afi mask
      * @return string
      */
-    public final static String mask2string(int i) {
+    public final static String mask2string(long i) {
         String a = "";
         if ((i & mskUni) != 0) {
             a += " unicast";

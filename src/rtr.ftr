@@ -67,7 +67,7 @@ qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation
 qc pass: dhcp with excluded address
 qc pass: dhcp with upgraded server
-failed: dhcp with interface server
+qc pass: dhcp with interface server
 qc pass: dlsw over ipv4
 qc pass: dlsw over ipv6
 qc pass: dlsw over loopback
@@ -2892,6 +2892,12 @@ qc pass: otherl3evpns ingress route filtering with routepolicy
 qc pass: otherl3evpns egress route filtering with routepolicy
 qc pass: otherl3evpns ingress route filtering with routepolicy with soft-reconfig
 qc pass: otherl3evpns egress route filtering with routepolicy with soft-reconfig
+qc pass: unicast+mtree over bgp
+qc pass: unicast+mtree over bgp with soft-reconfig
+qc pass: unicast+mtree over bgp with additional path
+qc pass: unicast+othermtree over bgp
+qc pass: unicast+othermtree over bgp with soft-reconfig
+qc pass: unicast+othermtree over bgp with additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
