@@ -79,19 +79,14 @@ qc pass: interop2: rip prefix withdraw
 qc pass: interop2: rip authentication
 qc pass: interop2: gre tunnel
 qc pass: interop2: ipip tunnel
-todo: generalise server access- knobs
-todo: honeypot to wireformat, decode
-todo: bgp neigh log-end-changes log-pathlen-changes log-route-map/policy/pfxlist-changes etc knob
 todo: image viewer to file manager
 todo: game butterfly hanoy, modem, mdev
-todo: server http to have api for scripts
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: flash ext-delete also to commander
 todo: commander to get away the cursor
-todo: player queue up down add-again
 todo: openflow to have 2 label support and stack to p4lang
 todo: bridge and router have renumber knob
 todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
@@ -100,27 +95,21 @@ todo: mist natives p4fwd to report all the error messages in the control channel
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
-todo: mpls as ipv8 as december project to the guessEthtype and maybe to the dataplanes (dont think so)
 todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
 todo: onehit to all the menus
-todo: mist natives to have ipcomp rfc somehow dissect this: packages.debian.org/sid/gzip so libc and deflate to link to
 todo: route-map --> route-policy converter
 todo: route-map <-- route-policy converter
 todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
 todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
-todo: sendtrhrough mode in p4lang to the dataplanes when crypto turned on like wg ovpn and ipsec if possible
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
-todo: flowspec-divert knob to bgp, but think this twice at least and mark as experimental
-todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
 todo: player: disable volume in multicast streamer mode
 todo: disable playlist loading in multicast receiver mode
 todo: ctrl+l/r to try to redetect the screen resolution
 todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
-todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
 todo: configure diff to have chance to change the sho config-differences
 todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
 todo: display asdfsdfas | asciinema <--- same as | pastebin....
@@ -142,8 +131,6 @@ todo: vrf def xxx to have dynamic readvertisements as static rotues that disappe
 todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 todo: a terminal junos-mode knob that defaults to set-del etc as a new class
-todo: asdf#show cdp neigh | hinclude sdn  is fine but once the encUtf6/7 is there
-todo: it would not harm a lot to apply to the fillables like the check asdf
 todo: show config-backup if available
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
@@ -156,7 +143,6 @@ todo: some more .equals("no") to cmds.negated conversions like   <!-------------
 todo: ("no") --> cmds.negated   <!-------------------------------------------------------------------
 todo: "no" --> cmds.negated   <!---------------------------------------------------------------------
 todo: "no " --> cmds.negated   <!--------------------------------------------------------------------
-todo: same for upgrade-cli  <!-----------------------------------------------------------------------
 todo: client hide-secrets  <!------------------------------------------------------------------------
 todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
 todo: server smtp / tag messages by subject
@@ -188,8 +174,7 @@ todo: server http / host * custom-local <text>
 todo: server http / host * custom-remote >path/file>
 todo: server http / host * user-agent matcher with redirect
 todo: server http / host * searchbar
-todo: test access-list <acl> <src> <trg>
-todo: serevr security maximum pendings as access-security
+todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: config committed with check for saved and backup config
 todo: terminal background and foreground
@@ -263,14 +248,10 @@ todo: misc album to have some ncdu functionality like a very simple matstat
 todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
 todo: misc player volume to time out to the main screen
 todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
-todo: settle a new slide project misc slash thumbs as a small helper for misc slash album
 todo: server tftp to have server http backup alike functionality
-todo: server forwarder to have some local logging finally
-todo: server http have some local logging finally
 todo: scheduler asdf single-run
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
 todo: show running-config vdc <tabbable>
-todo: server * vrf <tabbable> and upgrade-cli
 todo: interface * vrf <tabbable> and upgrade-cli
 todo: terminal clear same as game clear
 todo: clear aaa <tabbable>
