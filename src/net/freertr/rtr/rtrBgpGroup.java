@@ -159,6 +159,16 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> wilMvpo = new tabRoute<addrIP>("tx");
 
     /**
+     * willing mtree prefixes
+     */
+    public tabRoute<addrIP> wilMtre = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other mtree prefixes
+     */
+    public tabRoute<addrIP> wilMtro = new tabRoute<addrIP>("tx");
+
+    /**
      * changed unicast prefixes
      */
     public tabRoute<addrIP> chgUni = new tabRoute<addrIP>("chg");
@@ -279,6 +289,16 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> chgMvpo = new tabRoute<addrIP>("chg");
 
     /**
+     * changed mtre prefixes
+     */
+    public tabRoute<addrIP> chgMtre = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other mtro prefixes
+     */
+    public tabRoute<addrIP> chgMtro = new tabRoute<addrIP>("chg");
+
+    /**
      * local address
      */
     public addrIP localAddr;
@@ -367,6 +387,8 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("linkstate advertise|" + wilLnks.size() + ", list=" + chgLnks.size());
         l.add("mvpn advertise|" + wilMvpn.size() + ", list=" + chgMvpn.size());
         l.add("omvpn advertise|" + wilMvpo.size() + ", list=" + chgMvpo.size());
+        l.add("mtree advertise|" + wilMtre.size() + ", list=" + chgMtre.size());
+        l.add("omtree advertise|" + wilMtro.size() + ", list=" + chgMtro.size());
         l.add("version|" + minversion + " of " + lower.compRound);
         return l;
     }
@@ -468,6 +490,12 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (safi == lower.afiMvpo) {
             return wilMvpo;
         }
+        if (safi == lower.afiMtre) {
+            return wilMtre;
+        }
+        if (safi == lower.afiMtro) {
+            return wilMtro;
+        }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
@@ -568,6 +596,12 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (safi == lower.afiMvpo) {
             return chgMvpo;
+        }
+        if (safi == lower.afiMtre) {
+            return chgMtre;
+        }
+        if (safi == lower.afiMtro) {
+            return chgMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
@@ -1072,6 +1106,8 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param cRtf rtfilter
      * @param cMvpn mvpn
      * @param cMvpo omvpn
+     * @param cMtre mtree
+     * @param cMtro omtree
      */
     public void createNeeded(tabRoute<addrIP> cUni, tabRoute<addrIP> cMlt, tabRoute<addrIP> cOuni,
             tabRoute<addrIP> cOmlt, tabRoute<addrIP> cOflw, tabRoute<addrIP> cOsrt, tabRoute<addrIP> cFlw,
@@ -1080,7 +1116,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             tabRoute<addrIP> cVpls, tabRoute<addrIP> cMspw, tabRoute<addrIP> cEvpn,
             tabRoute<addrIP> cMdt, tabRoute<addrIP> cNsh, tabRoute<addrIP> cRpd,
             tabRoute<addrIP> cSrte, tabRoute<addrIP> cLnks, tabRoute<addrIP> cRtf,
-            tabRoute<addrIP> cMvpn, tabRoute<addrIP> cMvpo) {
+            tabRoute<addrIP> cMvpn, tabRoute<addrIP> cMvpo, tabRoute<addrIP> cMtre, tabRoute<addrIP> cMtro) {
         tabRoute<addrIP> nUni = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nOuni = new tabRoute<addrIP>("bgp");
@@ -1105,6 +1141,8 @@ public class rtrBgpGroup extends rtrBgpParam {
         tabRoute<addrIP> nLnks = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMvpn = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMvpo = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nMtre = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nMtro = new tabRoute<addrIP>("bgp");
         if (sendDefRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiUni);
@@ -1209,6 +1247,8 @@ public class rtrBgpGroup extends rtrBgpParam {
         importTable(lower.afiLnks, nLnks, cLnks, vroumapOut, vroupolOut, null);
         importTable(lower.afiMvpn, nMvpn, cMvpn, vroumapOut, vroupolOut, null);
         importTable(lower.afiMvpo, nMvpo, cMvpo, wroumapOut, wroupolOut, null);
+        importTable(lower.afiMtre, nMtre, cMtre, vroumapOut, vroupolOut, null);
+        importTable(lower.afiMtro, nMtro, cMtro, wroumapOut, wroupolOut, null);
         if (peerType != rtrBgpUtil.peerRflct) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), 0);
@@ -1238,6 +1278,8 @@ public class rtrBgpGroup extends rtrBgpParam {
         wilLnks = nLnks;
         wilMvpn = nMvpn;
         wilMvpo = nMvpo;
+        wilMtre = nMtre;
+        wilMtro = nMtro;
     }
 
 }

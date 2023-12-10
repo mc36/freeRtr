@@ -894,9 +894,19 @@ public abstract class rtrBgpParam {
     public final static int mskOcar = 0x20000000;
 
     /**
+     * mvpn
+     */
+    public final static int mskMtre = 0x40000000;
+
+    /**
+     * other mvpn
+     */
+    public final static int mskMtro = 0x80000000;
+
+    /**
      * all
      */
-    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf;
+    public final static int mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf | mskMtre | mskMtro;
 
     /**
      * string to afi mask
@@ -984,6 +994,12 @@ public abstract class rtrBgpParam {
             }
             if (a.equals("mvpn")) {
                 i |= mskMvpn;
+            }
+            if (a.equals("mtree")) {
+                i |= mskMtre;
+            }
+            if (a.equals("omtree")) {
+                i |= mskMtro;
             }
             if (a.equals("omvpn")) {
                 i |= mskMvpo;
@@ -1142,6 +1158,12 @@ public abstract class rtrBgpParam {
         if ((i & mskMvpo) != 0) {
             a += " omvpn";
         }
+        if ((i & mskMtre) != 0) {
+            a += " mtree";
+        }
+        if ((i & mskMtro) != 0) {
+            a += " omtree";
+        }
         return a;
     }
 
@@ -1188,6 +1210,8 @@ public abstract class rtrBgpParam {
         hl.add(null, beg + "  linkstate     address family to " + end);
         hl.add(null, beg + "  mvpn          address family to " + end);
         hl.add(null, beg + "  omvpn         address family to " + end);
+        hl.add(null, beg + "  mtree         address family to " + end);
+        hl.add(null, beg + "  omtree        address family to " + end);
     }
 
     /**

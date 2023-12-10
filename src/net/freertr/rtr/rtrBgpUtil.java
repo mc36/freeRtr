@@ -466,6 +466,16 @@ public class rtrBgpUtil {
     public final static int safiEvpn46 = afiL2vpn | sfiEthVpn;
 
     /**
+     * ipv4 multicast tree address family
+     */
+    public final static int safiIp4mtree = afiIpv4 | sfiMcsTre;
+
+    /**
+     * ipv6 multicast tree address family
+     */
+    public final static int safiIp6mtree = afiIpv6 | sfiMcsTre;
+
+    /**
      * self originate
      */
     public final static int peerOriginate = 255;
@@ -1554,6 +1564,7 @@ public class rtrBgpUtil {
                 i *= 8;
                 break;
             case sfiMvpn:
+            case sfiMcsTre:
                 p = pck.getByte(0);
                 i = pck.getByte(1) * 8;
                 pck.getSkip(2);
@@ -1581,7 +1592,7 @@ public class rtrBgpUtil {
                 }
             }
         }
-        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMcsTre)) {
             ntry.rouDst = pck.msbGetQ(0);
             pck.getSkip(8);
             i -= 64;
@@ -1595,12 +1606,12 @@ public class rtrBgpUtil {
         bits.byteFill(buf, 0, buf.length, 0);
         pck.getCopy(buf, 0, 0, o);
         pck.getSkip(o);
-        if (sfi == sfiMvpn) {
+        if ((sfi == sfiMvpn) || (sfi == sfiMcsTre)) {
             bits.byteCopy(buf, 0, buf, 1, o);
             buf[0] = (byte) p;
             o++;
         }
-        if ((sfi == sfiFlwSpc) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMspw)) {
+        if ((sfi == sfiFlwSpc) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMcsTre) || (sfi == sfiMspw)) {
             byte[] adr = new byte[addrIP.size];
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
             adr[0] = (byte) o;
@@ -1737,7 +1748,7 @@ public class rtrBgpUtil {
             bits.byteCopy(ntry.prefix.broadcast.getBytes(), 0, buf2, as, as);
             i = buf2.length * 8;
         }
-        if ((sfi == sfiFlwSpc) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMspw)) {
+        if ((sfi == sfiFlwSpc) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMcsTre) || (sfi == sfiMspw)) {
             buf2 = new byte[addrIP.size * 4];
             bits.byteCopy(ntry.prefix.network.getBytes(), 1, buf2, 0, 15);
             bits.byteCopy(ntry.prefix.broadcast.getBytes(), 0, buf2, 15, 16);
@@ -1764,7 +1775,7 @@ public class rtrBgpUtil {
             }
             buf1[p - 1] |= 1;
         }
-        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)|| (sfi == sfiMcsTre)) {
             bits.msbPutQ(buf1, p, ntry.rouDst);
             p += 8;
             i += 64;
@@ -1844,6 +1855,7 @@ public class rtrBgpUtil {
                 }
                 break;
             case sfiMvpn:
+            case sfiMcsTre:
                 o--;
                 pck.putByte(0, buf2[0]);
                 pck.putByte(1, o + p);
@@ -2135,6 +2147,10 @@ public class rtrBgpUtil {
                 return "mvpn4";
             case safiIp6mvpn:
                 return "mvpn6";
+            case safiIp4mtree:
+                return "mtree4";
+            case safiIp6mtree:
+                return "mtree6";
             case safiVpls46:
                 return "vpls";
             case safiMspw46:

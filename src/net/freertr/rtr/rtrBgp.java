@@ -359,6 +359,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final int afiMvpo;
 
     /**
+     * mtree afi
+     */
+    protected final int afiMtre;
+
+    /**
+     * other mtree afi
+     */
+    protected final int afiMtro;
+
+    /**
      * router number
      */
     protected final int rtrNum;
@@ -534,6 +544,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public tabRoute<addrIP> computedMvpo = new tabRoute<addrIP>("rx");
 
     /**
+     * the computed mtree routes
+     */
+    public tabRoute<addrIP> computedMtre = new tabRoute<addrIP>("rx");
+
+    /**
+     * the computed other mtree routes
+     */
+    public tabRoute<addrIP> computedMtro = new tabRoute<addrIP>("rx");
+
+    /**
      * the changed unicast routes
      */
     public final tabRoute<addrIP> changedUni = new tabRoute<addrIP>("rx");
@@ -654,6 +674,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public final tabRoute<addrIP> changedMvpo = new tabRoute<addrIP>("rx");
 
     /**
+     * the changed mvpn routes
+     */
+    public final tabRoute<addrIP> changedMtre = new tabRoute<addrIP>("rx");
+
+    /**
+     * the changed other mvpn routes
+     */
+    public final tabRoute<addrIP> changedMtro = new tabRoute<addrIP>("rx");
+
+    /**
      * the originated other unicast routes
      */
     public tabRoute<addrIP> origntedOuni = new tabRoute<addrIP>("tx");
@@ -762,6 +792,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * the originated other mvpn routes
      */
     public tabRoute<addrIP> origntedMvpo = new tabRoute<addrIP>("tx");
+
+    /**
+     * the originated mtree routes
+     */
+    public tabRoute<addrIP> origntedMtre = new tabRoute<addrIP>("tx");
+
+    /**
+     * the originated other mtree routes
+     */
+    public tabRoute<addrIP> origntedMtro = new tabRoute<addrIP>("tx");
 
     /**
      * incremental limit
@@ -1026,6 +1066,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiSrte = rtrBgpUtil.safiIp4srte;
                 afiMvpn = rtrBgpUtil.safiIp4mvpn;
                 afiMvpo = rtrBgpUtil.safiIp6mvpn;
+                afiMtre = rtrBgpUtil.safiIp4mtree;
+                afiMtro = rtrBgpUtil.safiIp6mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd6);
                 break;
             case ipCor6.protocolVersion:
@@ -1060,6 +1102,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiSrte = rtrBgpUtil.safiIp6srte;
                 afiMvpn = rtrBgpUtil.safiIp6mvpn;
                 afiMvpo = rtrBgpUtil.safiIp4mvpn;
+                afiMtre = rtrBgpUtil.safiIp6mtree;
+                afiMtro = rtrBgpUtil.safiIp4mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd4);
                 break;
             default:
@@ -1094,6 +1138,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiSrte = 0;
                 afiMvpn = 0;
                 afiMvpo = 0;
+                afiMtre = 0;
+                afiMtro = 0;
                 other = new rtrBgpOther(this, null);
                 break;
         }
@@ -1231,6 +1277,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiMvpo) {
             return rtrBgpParam.mskMvpo;
         }
+        if (safi == afiMtre) {
+            return rtrBgpParam.mskMtre;
+        }
+        if (safi == afiMtro) {
+            return rtrBgpParam.mskMtro;
+        }
         logger.info("unknown safi (" + safi + ") requested");
         return -1;
     }
@@ -1303,6 +1355,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return afiMvpn;
             case rtrBgpParam.mskMvpo:
                 return afiMvpo;
+            case rtrBgpParam.mskMtre:
+                return afiMtre;
+            case rtrBgpParam.mskMtro:
+                return afiMtro;
             default:
                 logger.info("unknown safi (" + mask + ") requested");
                 return -1;
@@ -1406,6 +1462,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if ((mask & rtrBgpParam.mskMvpo) != 0) {
             safis.add(afiMvpo);
+        }
+        if ((mask & rtrBgpParam.mskMtre) != 0) {
+            safis.add(afiMtre);
+        }
+        if ((mask & rtrBgpParam.mskMtro) != 0) {
+            safis.add(afiMtro);
         }
         return safis;
     }
@@ -1552,6 +1614,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiMvpo) {
             return computedMvpo;
         }
+        if (safi == afiMtre) {
+            return computedMtre;
+        }
+        if (safi == afiMtro) {
+            return computedMtro;
+        }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
@@ -1652,6 +1720,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (safi == afiMvpo) {
             return changedMvpo;
+        }
+        if (safi == afiMtre) {
+            return changedMtre;
+        }
+        if (safi == afiMtro) {
+            return changedMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
@@ -1864,6 +1938,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changedLnks.clear();
         changedMvpn.clear();
         changedMvpo.clear();
+        changedMtre.clear();
+        changedMtro.clear();
         tabRoute<addrIP> nUni = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nOuni = new tabRoute<addrIP>("bst");
@@ -1888,6 +1964,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabRoute<addrIP> nLnks = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nMvpn = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nMvpo = new tabRoute<addrIP>("bst");
+        tabRoute<addrIP> nMtre = new tabRoute<addrIP>("bst");
+        tabRoute<addrIP> nMtro = new tabRoute<addrIP>("bst");
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), afiUni == rtrBgpUtil.safiIp6uni, localAs);
         }
@@ -1947,6 +2025,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         origntedLnks = new tabRoute<addrIP>(nLnks);
         origntedMvpn = new tabRoute<addrIP>(nMvpn);
         origntedMvpo = new tabRoute<addrIP>(nMvpo);
+        origntedMtre = new tabRoute<addrIP>(nMtre);
+        origntedMtro = new tabRoute<addrIP>(nMtro);
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " rpki");
         }
@@ -1976,7 +2056,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo);
+            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -1985,7 +2065,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo);
+            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
         }
         if (have2reflect) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -2022,12 +2102,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             computeConquerTable(computedLnks, nLnks);
             computeConquerTable(computedMvpn, nMvpn);
             computeConquerTable(computedMvpo, nMvpo);
+            computeConquerTable(computedMtre, nMtre);
+            computeConquerTable(computedMtro, nMtro);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " groups");
         }
         for (int i = 0; i < groups.size(); i++) {
-            groups.get(i).createNeeded(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo);
+            groups.get(i).createNeeded(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neigroups");
@@ -2057,6 +2139,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computedLnks = nLnks;
         computedMvpn = nMvpn;
         computedMvpo = nMvpo;
+        computedMtre = nMtre;
+        computedMtro = nMtro;
         if (diffs) {
             fwdCore.routerChg(this, true);
         }
@@ -2451,6 +2535,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             computeIncrPurge(grp.minversion, grp.chgLnks);
             computeIncrPurge(grp.minversion, grp.chgMvpn);
             computeIncrPurge(grp.minversion, grp.chgMvpo);
+            computeIncrPurge(grp.minversion, grp.chgMtre);
+            computeIncrPurge(grp.minversion, grp.chgMtro);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " changes");
@@ -2492,6 +2578,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiLnks, null, changedLnks, computedLnks, origntedLnks);
         computeIncrUpdate(afiMvpn, null, changedMvpn, computedMvpn, origntedMvpn);
         computeIncrUpdate(afiMvpo, null, changedMvpo, computedMvpo, origntedMvpo);
+        computeIncrUpdate(afiMtre, null, changedMtre, computedMtre, origntedMtre);
+        computeIncrUpdate(afiMtro, null, changedMtro, computedMtro, origntedMtro);
         if (labPer || ((cntGlb + cntFlw) > 0)) {
             fwdCore.routerChg(this, labPer);
         }
@@ -2607,7 +2695,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 + changedVpoU.size() + changedVpoM.size() + changedVpoF.size()
                 + changedVpls.size() + changedMspw.size() + changedEvpn.size()
                 + changedMdt.size() + changedNsh.size() + changedRpd.size() + changedSrte.size()
-                + changedLnks.size() + changedRtf.size() + changedMvpn.size() + changedMvpo.size();
+                + changedLnks.size() + changedRtf.size() + changedMvpn.size() + changedMvpo.size()
+                + changedMtre.size() + changedMtro.size();
         changedTot += changedCur;
         if (changedCur > changedMax) {
             changedMax = changedCur;
@@ -4439,6 +4528,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("linkstate table|" + computedLnks.size() + "|" + changedLnks.size());
         l.add("mvpn table|" + computedMvpn.size() + "|" + changedMvpn.size());
         l.add("omvpn table|" + computedMvpo.size() + "|" + changedMvpo.size());
+        l.add("mtree table|" + computedMtre.size() + "|" + changedMtre.size());
+        l.add("omtree table|" + computedMtro.size() + "|" + changedMtro.size());
         return l;
     }
 

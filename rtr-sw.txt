@@ -560,7 +560,7 @@ interface null0
 router bgp4 65535 vrf v1
  local-as 65535
  router-id 10.10.10.227
- address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
+ address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn mtree omtree
  flapstat
  monitor bmp p1 10.10.10.227 17971
  dump mrt bgp4.log
@@ -570,7 +570,7 @@ router bgp4 65535 vrf v1
  template r ipinfo pmtud 512 1024 666
  template r ipinfo router4 bgp4 65535
  template r ipinfo resolve
- template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
+ template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn mtree omtree
  template r distance 200
  template r connection-mode active
  template r dynamic-capability
@@ -649,7 +649,7 @@ router bgp4 65535 vrf v1
 router bgp6 65535 vrf v1
  local-as 65535
  router-id 10.10.10.227
- address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
+ address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn mtree omtree
  flapstat
  monitor bmp p1 2001:db8:1101::227:227 17971
  dump mrt bgp6.log
@@ -659,7 +659,7 @@ router bgp6 65535 vrf v1
  template r ipinfo pmtud 512 1024 666
  template r ipinfo router4 bgp4 65535
  template r ipinfo resolve
- template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn
+ template r address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn mtree omtree
  template r distance 200
  template r connection-mode active
  template r dynamic-capability

@@ -214,6 +214,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public final tabRoute<addrIP> lrnMvpo = new tabRoute<addrIP>("rx");
 
     /**
+     * learned mtree prefixes
+     */
+    public final tabRoute<addrIP> lrnMtre = new tabRoute<addrIP>("rx");
+
+    /**
+     * learned other mtree prefixes
+     */
+    public final tabRoute<addrIP> lrnMtro = new tabRoute<addrIP>("rx");
+
+    /**
      * advertised unicast prefixes
      */
     public final tabRoute<addrIP> advUni = new tabRoute<addrIP>("tx");
@@ -334,6 +344,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public final tabRoute<addrIP> advMvpo = new tabRoute<addrIP>("tx");
 
     /**
+     * advertised mtree prefixes
+     */
+    public final tabRoute<addrIP> advMtre = new tabRoute<addrIP>("tx");
+
+    /**
+     * advertised other mtree prefixes
+     */
+    public final tabRoute<addrIP> advMtro = new tabRoute<addrIP>("tx");
+
+    /**
      * currently updating unicast prefixes
      */
     private List<tabRouteEntry<addrIP>> currUni = new ArrayList<tabRouteEntry<addrIP>>();
@@ -452,6 +472,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * currently updating other mvpn prefixes
      */
     private List<tabRouteEntry<addrIP>> currMvpo = new ArrayList<tabRouteEntry<addrIP>>();
+
+    /**
+     * currently updating mtree prefixes
+     */
+    private List<tabRouteEntry<addrIP>> currMtre = new ArrayList<tabRouteEntry<addrIP>>();
+
+    /**
+     * currently updating other mtree prefixes
+     */
+    private List<tabRouteEntry<addrIP>> currMtro = new ArrayList<tabRouteEntry<addrIP>>();
 
     /**
      * currently changed prefixes
@@ -777,6 +807,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMvpo) {
             return (val & rtrBgpParam.mskMvpo) != 0;
         }
+        if (safi == parent.afiMtre) {
+            return (val & rtrBgpParam.mskMtre) != 0;
+        }
+        if (safi == parent.afiMtro) {
+            return (val & rtrBgpParam.mskMtro) != 0;
+        }
         return false;
     }
 
@@ -876,6 +912,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (safi == parent.afiMvpo) {
             return lrnMvpo;
+        }
+        if (safi == parent.afiMtre) {
+            return lrnMtre;
+        }
+        if (safi == parent.afiMtro) {
+            return lrnMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
@@ -978,6 +1020,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (safi == parent.afiMvpo) {
             return advMvpo;
         }
+        if (safi == parent.afiMtre) {
+            return advMtre;
+        }
+        if (safi == parent.afiMtro) {
+            return advMtro;
+        }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
@@ -1037,6 +1085,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         lrnLnks.clear();
         lrnMvpn.clear();
         lrnMvpo.clear();
+        lrnMtre.clear();
+        lrnMtro.clear();
         advUni.clear();
         advMlt.clear();
         advOuni.clear();
@@ -1061,6 +1111,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         advLnks.clear();
         advMvpn.clear();
         advMvpo.clear();
+        advMtre.clear();
+        advMtro.clear();
         neigh.accUni = new tabRoute<addrIP>("rx");
         neigh.accMlt = new tabRoute<addrIP>("rx");
         neigh.accOuni = new tabRoute<addrIP>("rx");
@@ -1085,6 +1137,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accLnks = new tabRoute<addrIP>("rx");
         neigh.accMvpn = new tabRoute<addrIP>("rx");
         neigh.accMvpo = new tabRoute<addrIP>("rx");
+        neigh.accMtre = new tabRoute<addrIP>("rx");
+        neigh.accMtro = new tabRoute<addrIP>("rx");
         neigh.wilUni = new tabRoute<addrIP>("rx");
         neigh.wilMlt = new tabRoute<addrIP>("rx");
         neigh.wilOuni = new tabRoute<addrIP>("rx");
@@ -1109,6 +1163,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.wilLnks = new tabRoute<addrIP>("rx");
         neigh.wilMvpn = new tabRoute<addrIP>("rx");
         neigh.wilMvpo = new tabRoute<addrIP>("rx");
+        neigh.wilMtre = new tabRoute<addrIP>("rx");
+        neigh.wilMtro = new tabRoute<addrIP>("rx");
         neigh.chgUni = new tabRoute<addrIP>("chg");
         neigh.chgMlt = new tabRoute<addrIP>("chg");
         neigh.chgOuni = new tabRoute<addrIP>("chg");
@@ -1133,6 +1189,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.chgLnks = new tabRoute<addrIP>("chg");
         neigh.chgMvpn = new tabRoute<addrIP>("chg");
         neigh.chgMvpo = new tabRoute<addrIP>("chg");
+        neigh.chgMtre = new tabRoute<addrIP>("chg");
+        neigh.chgMtro = new tabRoute<addrIP>("chg");
         if (!ready2adv) {
             return;
         }
@@ -1278,6 +1336,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         lrnLnks.clear();
         lrnMvpn.clear();
         lrnMvpo.clear();
+        lrnMtre.clear();
+        lrnMtro.clear();
         advUni.clear();
         advMlt.clear();
         advOuni.clear();
@@ -1302,6 +1362,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         advLnks.clear();
         advMvpn.clear();
         advMvpo.clear();
+        advMtre.clear();
+        advMtro.clear();
         neigh.accUni = new tabRoute<addrIP>("rx");
         neigh.accMlt = new tabRoute<addrIP>("rx");
         neigh.accOuni = new tabRoute<addrIP>("rx");
@@ -1326,6 +1388,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accLnks = new tabRoute<addrIP>("rx");
         neigh.accMvpn = new tabRoute<addrIP>("rx");
         neigh.accMvpo = new tabRoute<addrIP>("rx");
+        neigh.accMtre = new tabRoute<addrIP>("rx");
+        neigh.accMtro = new tabRoute<addrIP>("rx");
         if (neigh.dampenPfxs != null) {
             neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
         }
@@ -2328,7 +2392,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 + lrnVpls.size() + lrnMspw.size() + lrnEvpn.size()
                 + lrnMdt.size() + lrnNsh.size() + lrnRpd.size()
                 + lrnSrte.size() + lrnLnks.size() + lrnRtf.size()
-                + lrnMvpn.size() + lrnMvpo.size();
+                + lrnMvpn.size() + lrnMvpo.size() + lrnMtre.size() + lrnMtro.size();
     }
 
     /**
@@ -2344,7 +2408,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 + advVpls.size() + advMspw.size() + advEvpn.size()
                 + advMdt.size() + advNsh.size() + advRpd.size()
                 + advSrte.size() + advLnks.size() + advRtf.size()
-                + advMvpn.size() + advMvpo.size();
+                + advMvpn.size() + advMvpo.size() + advMtre.size() + advMtro.size();
     }
 
     /**
@@ -2498,6 +2562,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         currLnks.clear();
         currMvpn.clear();
         currMvpo.clear();
+        currMtre.clear();
+        currMtro.clear();
         currChg = 0;
         int origOfs = pck.dataSize();
         int prt = pck.msbGetW(0);
@@ -2598,6 +2664,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addAttribedTab(currRtf, parent.afiRtf, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribedTab(currMvpn, parent.afiMvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         addAttribedTab(currMvpo, parent.afiMvpo, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currMtre, parent.afiMtre, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMtro, parent.afiMtro, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
         addAttribedTab(currLnks, parent.afiLnks, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         if (neigh.rtfilterOut && (currRtf.size() > 0)) {
             if (debugger.rtrBgpFull) {
@@ -2904,6 +2972,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (safi == parent.afiMvpo) {
             trg = currMvpo;
+        }
+        if (safi == parent.afiMtre) {
+            trg = currMtre;
+        }
+        if (safi == parent.afiMtro) {
+            trg = currMtro;
         }
         if (trg == null) {
             return;

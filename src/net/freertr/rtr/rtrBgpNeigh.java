@@ -189,6 +189,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public tabRoute<addrIP> accMvpo = new tabRoute<addrIP>("rx");
 
     /**
+     * accepted mtree prefixes
+     */
+    public tabRoute<addrIP> accMtre = new tabRoute<addrIP>("rx");
+
+    /**
+     * accepted other mtree prefixes
+     */
+    public tabRoute<addrIP> accMtro = new tabRoute<addrIP>("rx");
+
+    /**
      * willing unicast prefixes
      */
     public tabRoute<addrIP> wilUni = new tabRoute<addrIP>("tx");
@@ -309,6 +319,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
     public tabRoute<addrIP> wilMvpo = new tabRoute<addrIP>("tx");
 
     /**
+     * willing mtree prefixes
+     */
+    public tabRoute<addrIP> wilMtre = new tabRoute<addrIP>("tx");
+
+    /**
+     * willing other mtree prefixes
+     */
+    public tabRoute<addrIP> wilMtro = new tabRoute<addrIP>("tx");
+
+    /**
      * changed unicast prefixes
      */
     public tabRoute<addrIP> chgUni = new tabRoute<addrIP>("chg");
@@ -427,6 +447,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * changed other mvpn prefixes
      */
     public tabRoute<addrIP> chgMvpo = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed mtree prefixes
+     */
+    public tabRoute<addrIP> chgMtre = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed other mtree prefixes
+     */
+    public tabRoute<addrIP> chgMtro = new tabRoute<addrIP>("chg");
 
     /**
      * update group number
@@ -686,6 +716,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         l.add("linkstate advertised|" + conn.advLnks.size() + " of " + wilLnks.size() + ", list = " + chgLnks.size() + ", accepted = " + accLnks.size() + " of " + conn.lrnLnks.size());
         l.add("mvpn advertised|" + conn.advMvpn.size() + " of " + wilMvpn.size() + ", list = " + chgMvpn.size() + ", accepted = " + accMvpn.size() + " of " + conn.lrnMvpn.size());
         l.add("omvpn advertised|" + conn.advMvpo.size() + " of " + wilMvpo.size() + ", list = " + chgMvpo.size() + ", accepted = " + accMvpo.size() + " of " + conn.lrnMvpo.size());
+        l.add("mtree advertised|" + conn.advMtre.size() + " of " + wilMtre.size() + ", list = " + chgMtre.size() + ", accepted = " + accMtre.size() + " of " + conn.lrnMtre.size());
+        l.add("omtree advertised|" + conn.advMtro.size() + " of " + wilMtro.size() + ", list = " + chgMtro.size() + ", accepted = " + accMtro.size() + " of " + conn.lrnMtro.size());
         l.add("version|" + conn.adversion + " of " + lower.compRound + ", needfull=" + conn.needFull + ", buffull=" + conn.buffFull);
         l.add("full|" + fullCount + ", " + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(fullLast) + " ago, " + fullTime + " ms");
         l.add("incremental|" + incrCount + ", " + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(incrLast) + " ago, " + incrTime + " ms");
@@ -1086,6 +1118,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertFullTable(lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, conn.advMvpo)) {
             return true;
         }
+        if (advertFullTable(lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, conn.advMtre)) {
+            return true;
+        }
+        if (advertFullTable(lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, conn.advMtro)) {
+            return true;
+        }
         if (advertFullTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, conn.advLnks)) {
             return true;
         }
@@ -1285,6 +1323,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, chgMvpo, conn.advMvpo)) {
             return true;
         }
+        if (advertIncrTable(lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, chgMtre, conn.advMtre)) {
+            return true;
+        }
+        if (advertIncrTable(lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, chgMtro, conn.advMtro)) {
+            return true;
+        }
         if (advertIncrTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, chgLnks, conn.advLnks)) {
             return true;
         }
@@ -1401,6 +1445,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         accLnks = new tabRoute<addrIP>("bgp");
         accMvpn = new tabRoute<addrIP>("bgp");
         accMvpo = new tabRoute<addrIP>("bgp");
+        accMtre = new tabRoute<addrIP>("bgp");
+        accMtro = new tabRoute<addrIP>("bgp");
         rtfilterUsed = null;
         reachable = false;
         if (sendingIfc != null) {
@@ -1468,6 +1514,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             accLnks = conn.lrnLnks;
             accMvpn = conn.lrnMvpn;
             accMvpo = conn.lrnMvpo;
+            accMtre = conn.lrnMtre;
+            accMtro = conn.lrnMtro;
             if (rtfilterOut && ((conn.peerAfis & rtrBgpParam.mskRtf) != 0)) {
                 rtfilterUsed = accRtf;
             }
@@ -1511,6 +1559,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLnks, remoteAs, accLnks, conn.lrnLnks, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpn, remoteAs, accMvpn, conn.lrnMvpn, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpo, remoteAs, accMvpo, conn.lrnMvpo, true, wroumapIn, wroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMtre, remoteAs, accMtre, conn.lrnMtre, true, vroumapIn, vroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMtro, remoteAs, accMtro, conn.lrnMtro, true, wroumapIn, wroupolIn, null);
         if (rtfilterOut && ((conn.peerAfis & rtrBgpParam.mskRtf) != 0)) {
             rtfilterUsed = accRtf;
         }
@@ -1563,6 +1613,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
      * @param rtf rtfilter
      * @param mvpn mvpn
      * @param mvpo omvpn
+     * @param mtre mtree
+     * @param mtro omtree
      */
     public void setMerge(tabRoute<addrIP> uni, tabRoute<addrIP> mlt, tabRoute<addrIP> oUni,
             tabRoute<addrIP> oMlt, tabRoute<addrIP> oFlw, tabRoute<addrIP> oSrt, tabRoute<addrIP> flw,
@@ -1571,7 +1623,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             tabRoute<addrIP> vpls, tabRoute<addrIP> mspw, tabRoute<addrIP> evpn,
             tabRoute<addrIP> mdt, tabRoute<addrIP> nsh, tabRoute<addrIP> rpd,
             tabRoute<addrIP> srte, tabRoute<addrIP> lnks, tabRoute<addrIP> rtf,
-            tabRoute<addrIP> mvpn, tabRoute<addrIP> mvpo) {
+            tabRoute<addrIP> mvpn, tabRoute<addrIP> mvpo, tabRoute<addrIP> mtre, tabRoute<addrIP> mtro) {
         tabRoute.addType mod;
         if (lower.routerEcmp) {
             mod = tabRoute.addType.lnkEcmp;
@@ -1602,6 +1654,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         lnks.mergeFrom(mod, new tabRoute<addrIP>(accLnks), tabRouteAttr.distanLim);
         mvpn.mergeFrom(mod, new tabRoute<addrIP>(accMvpn), tabRouteAttr.distanLim);
         mvpo.mergeFrom(mod, new tabRoute<addrIP>(accMvpo), tabRouteAttr.distanLim);
+        mtre.mergeFrom(mod, new tabRoute<addrIP>(accMtre), tabRouteAttr.distanLim);
+        mtro.mergeFrom(mod, new tabRoute<addrIP>(accMtro), tabRouteAttr.distanLim);
     }
 
     /**
@@ -1684,6 +1738,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             wilLnks = new tabRoute<addrIP>("tx");
             wilMvpn = new tabRoute<addrIP>("tx");
             wilMvpo = new tabRoute<addrIP>("tx");
+            wilMtre = new tabRoute<addrIP>("tx");
+            wilMtro = new tabRoute<addrIP>("tx");
             chgUni = new tabRoute<addrIP>("chg");
             chgMlt = new tabRoute<addrIP>("chg");
             chgOuni = new tabRoute<addrIP>("chg");
@@ -1708,6 +1764,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             chgLnks = new tabRoute<addrIP>("chg");
             chgMvpn = new tabRoute<addrIP>("chg");
             chgMvpo = new tabRoute<addrIP>("chg");
+            chgMtre = new tabRoute<addrIP>("chg");
+            chgMtro = new tabRoute<addrIP>("chg");
         } else {
             rtrBgpGroup grp = lower.groups.get(groupMember);
             wilUni = grp.wilUni;
@@ -1734,6 +1792,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             wilLnks = grp.wilLnks;
             wilMvpn = grp.wilMvpn;
             wilMvpo = grp.wilMvpo;
+            wilMtre = grp.wilMtre;
+            wilMtro = grp.wilMtro;
             chgUni = grp.chgUni;
             chgMlt = grp.chgMlt;
             chgOuni = grp.chgOuni;
@@ -1758,6 +1818,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
             chgLnks = grp.chgLnks;
             chgMvpn = grp.chgMvpn;
             chgMvpo = grp.chgMvpo;
+            chgMtre = grp.chgMtre;
+            chgMtro = grp.chgMtro;
         }
         conn.needFull.add(1);
     }
@@ -1974,6 +2036,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         if (safi == lower.afiMvpo) {
             return accMvpo;
         }
+        if (safi == lower.afiMtre) {
+            return accMtre;
+        }
+        if (safi == lower.afiMtro) {
+            return accMtro;
+        }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
     }
@@ -2074,6 +2142,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         }
         if (safi == lower.afiMvpo) {
             return wilMvpo;
+        }
+        if (safi == lower.afiMtre) {
+            return wilMtre;
+        }
+        if (safi == lower.afiMtro) {
+            return wilMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
