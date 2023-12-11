@@ -528,6 +528,13 @@ public class userGame {
             t.doFinish();
             return;
         }
+        if (a.equals("hanoi")) {
+            userGameHanoi t = new userGameHanoi(console);
+            t.doStart();
+            t.doGame();
+            t.doFinish();
+            return;
+        }
         if (a.equals("clear")) {
             userScreen.sendTit(console.pipe, cfgAll.hostName);
             return;

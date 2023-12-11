@@ -1800,13 +1800,13 @@ public class userExec {
         hl.add(null, "2 .      chat                         chat with others");
         hl.add(null, "2 3,.    send                         chat with others");
         hl.add(null, "3 3,.      [str]                      string to send");
-        hl.add(null, "2 .      dick                         show some dick");
         hl.add(null, "2 .      color                        take test");
         hl.add(null, "2 .      ascii                        take test");
         hl.add(null, "2 .      vmkeys                       take test");
         hl.add(null, "2 .      clear                        clear screen");
         hl.add(null, "2 .      gomoku                       play game");
         hl.add(null, "2 .      tetris                       play game");
+        hl.add(null, "2 .      hanoi                        play game");
         hl.add(null, "2 .      minesweep                    play game");
         hl.add(null, "2 .      clock                        view demo");
         hl.add(null, "2 .      snake                        view demo");
