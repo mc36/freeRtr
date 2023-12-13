@@ -130,7 +130,7 @@ public class rtrOspf6lsa implements Comparator<rtrOspf6lsa> {
     /**
      * segment routing v6 lsa
      */
-    public final static int lsaSegRoutV6 = 0xa666;
+    public final static int lsaSegRoutV6 = 0xa02a;
 
     /**
      * point to point link

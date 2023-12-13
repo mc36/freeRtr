@@ -12,7 +12,6 @@ import net.freertr.cfg.cfgPlymp;
 import net.freertr.cfg.cfgRtr;
 import net.freertr.cfg.cfgVrf;
 import net.freertr.ip.ipFwd;
-import net.freertr.ip.ipMpls;
 import net.freertr.ip.ipRtr;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabIndex;

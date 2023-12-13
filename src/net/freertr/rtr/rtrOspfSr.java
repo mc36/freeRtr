@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
+import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.pack.packHolder;
 import net.freertr.tab.tabLabelEntry;
@@ -234,6 +235,14 @@ public class rtrOspfSr {
         ifc.addr6.toBuffer(tlv.valDat, 8); // locator
         tlv.valSiz = (len + 7) / 8;
         tlv.valSiz += 8;
+        bits.msbPutW(tlv.valDat, tlv.valSiz + 0, 1); // type
+        bits.msbPutW(tlv.valDat, tlv.valSiz + 2, 20); // length
+        tlv.valDat[tlv.valSiz + 4] = 0; // flags
+        tlv.valDat[tlv.valSiz + 5] = 0; // reserved
+        bits.msbPutW(tlv.valDat, tlv.valSiz + 6, 29); // endpoint behavior
+        tlv.valSiz += 8;
+        ifc.addr6.toBuffer(tlv.valDat, tlv.valSiz); // locator
+        tlv.valSiz += addrIPv6.size;
         tlv.putThis(pck);
         pck.merge2beg();
         return pck;

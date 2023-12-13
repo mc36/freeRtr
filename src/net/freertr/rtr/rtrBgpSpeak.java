@@ -7,6 +7,7 @@ import java.util.zip.Inflater;
 import net.freertr.addr.addrIP;
 import net.freertr.addr.addrIPv4;
 import net.freertr.addr.addrIPv6;
+import net.freertr.addr.addrPrefix;
 import net.freertr.cfg.cfgAll;
 import net.freertr.pack.packHolder;
 import net.freertr.pipe.pipeSide;
@@ -2770,7 +2771,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 int o = old.best.asPathEnd();
                 int c = ntry.best.asPathEnd();
                 if (o != c) {
-                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " from " + neigh.peerAddr + " changed from lastasn " + o + " to " + c);
+                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from lastasn " + o + " to " + c);
                 }
             }
             if (neigh.lengthChanges != null) {
@@ -2781,7 +2782,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     d = -d;
                 }
                 if (neigh.lengthChanges.matches(d)) {
-                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " from " + neigh.peerAddr + " changed from pathlen " + o + " to " + c);
+                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from pathlen " + o + " to " + c);
                 }
             }
         }

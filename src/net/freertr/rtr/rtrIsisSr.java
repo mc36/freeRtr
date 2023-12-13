@@ -3,6 +3,7 @@ package net.freertr.rtr;
 import java.util.ArrayList;
 import java.util.List;
 import net.freertr.addr.addrIP;
+import net.freertr.addr.addrIPv6;
 import net.freertr.cfg.cfgIfc;
 import net.freertr.ip.ipCor4;
 import net.freertr.pack.packHolder;
@@ -232,8 +233,18 @@ public class rtrIsisSr {
         tlv.valDat[5] = typSrv6capa; // subtlv type
         tlv.valDat[6] = 2; // subtlv length
         bits.msbPutW(tlv.valDat, 7, 0); // flags
+        tlv.valDat[9] = typSrAlgo;
+        tlv.valDat[10] = (byte) (1 + lower.algos.size()); // length
+        tlv.valDat[11] = 0; // algorithm
+        for (int i = 0; i < lower.algos.size(); i++) {
+            rtrAlgo alg = lower.algos.get(i);
+            if (alg == null) {
+                continue;
+            }
+            tlv.valDat[12 + i] = (byte) alg.num;
+        }
         tlv.valTyp = rtrIsisLsp.tlvRouterCapa;
-        tlv.valSiz = 9;
+        tlv.valSiz = 12 + lower.algos.size();
         return tlv;
     }
 
@@ -262,6 +273,15 @@ public class rtrIsisSr {
         ifc.addr6.toBuffer(tlv.valDat, 9); // locator
         tlv.valSiz = (len + 7) / 8;
         tlv.valSiz += 9;
+        tlv.valDat[tlv.valSiz] = 22; // subtlv len
+        tlv.valSiz += 1;
+        tlv.valDat[tlv.valSiz + 0] = 5; // type
+        tlv.valDat[tlv.valSiz + 1] = 20; // length
+        tlv.valDat[tlv.valSiz + 2] = 0; // flags
+        bits.msbPutW(tlv.valDat, tlv.valSiz + 3, 29); // endpoint behavior
+        tlv.valSiz += 5;
+        ifc.addr6.toBuffer(tlv.valDat, tlv.valSiz); // locator
+        tlv.valSiz += addrIPv6.size;
         tlv.valDat[tlv.valSiz] = 0; // subtlv len
         tlv.valSiz += 1;
         return tlv;
