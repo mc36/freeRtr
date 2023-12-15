@@ -527,14 +527,12 @@ qc pass: p4lang: l3vpn over tmux mpls
 qc pass: p4lang: sdwan over ipv4 with tmux
 qc pass: p4lang: sdwan over ipv6 with tmux
 todo: image viewer to file manager
-todo: game butterfly hanoy, modem, mdev
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
 todo: flash ext-delete also to commander
 todo: commander to get away the cursor
-todo: player queue up down add-again
 todo: openflow to have 2 label support and stack to p4lang
 todo: bridge and router have renumber knob
 todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
@@ -552,14 +550,12 @@ todo: route-map <-- route-policy converter
 todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
 todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
-todo: upgrade-all-the-clis config knobs.... like server asdfadsf vrf asdf int sdn1111
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
 todo: player: disable volume in multicast streamer mode
 todo: disable playlist loading in multicast receiver mode
 todo: ctrl+l/r to try to redetect the screen resolution
 todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
-todo: server dhcp4 sdnXXX ---> server dhcp4 sdnXXX  inetXXX sdnZZZ as upgrade-cli <---maybe duplicate? :)
 todo: configure diff to have chance to change the sho config-differences
 todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
 todo: display asdfsdfas | asciinema <--- same as | pastebin....
@@ -593,7 +589,6 @@ todo: some more .equals("no") to cmds.negated conversions like   <!-------------
 todo: ("no") --> cmds.negated   <!-------------------------------------------------------------------
 todo: "no" --> cmds.negated   <!---------------------------------------------------------------------
 todo: "no " --> cmds.negated   <!--------------------------------------------------------------------
-todo: same for upgrade-cli  <!-----------------------------------------------------------------------
 todo: client hide-secrets  <!------------------------------------------------------------------------
 todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
 todo: server smtp / tag messages by subject
@@ -625,8 +620,7 @@ todo: server http / host * custom-local <text>
 todo: server http / host * custom-remote >path/file>
 todo: server http / host * user-agent matcher with redirect
 todo: server http / host * searchbar
-todo: test access-list <acl> <src> <trg>
-todo: serevr security maximum pendings as access-security
+todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: config committed with check for saved and backup config
 todo: terminal background and foreground
@@ -704,7 +698,6 @@ todo: server tftp to have server http backup alike functionality
 todo: scheduler asdf single-run
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
 todo: show running-config vdc <tabbable>
-todo: server * vrf <tabbable> and upgrade-cli
 todo: interface * vrf <tabbable> and upgrade-cli
 todo: terminal clear same as game clear
 todo: clear aaa <tabbable>

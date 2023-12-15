@@ -96,7 +96,6 @@ qc pass: interop1: gre tunnel
 qc pass: interop1: ipip tunnel
 qc pass: interop1: vxlan tunnel
 todo: image viewer to file manager
-todo: game butterfly hanoy, modem, mdev
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

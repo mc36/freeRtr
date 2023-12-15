@@ -31,7 +31,7 @@ exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/drivers/scsi/
 exec chmod 755 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt
 exec cp ../misc/default.cfg %tmp%/rtr/rtr-sw.txt
-exec for a in `busybox --list`; do ln -s /bin/busybox %tmp%/bin/$a; done
+exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
 
 exec du -sh %tmp%
 exec cd %tmp%;find . | cpio --quiet -H newc --owner root:root -O ../cpio -o

@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.11.25-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-11-25 07:24:35, took 00:25:04, with 1 workers, on 41 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter-rare v23.12.15-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2023-12-15 18:29:56, took 00:25:13, with 1 workers, on 41 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/intop8-bgp01.tst;intop8-bgp01.tst;success;interop8: ebgp
 http://sources.freertr.org/cfg/intop8-bgp02.tst;intop8-bgp02.tst;success;interop8: ibgp
