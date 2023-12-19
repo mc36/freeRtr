@@ -1,0 +1,10 @@
+arch s390x
+kern s390x
+grub ieee1275-bin
+boot s390x-efi
+uefi boot390.efi
+image ../binImg/rtr-s390x
+
+include ../misc/image/image.bas
+
+select-one linux-image-%kern%             #regular kernel
