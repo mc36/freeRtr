@@ -1,4 +1,5 @@
 arch riscv64
+qemu riscv64
 kern riscv64
 grub efi-riscv64-bin
 boot riscv64-efi

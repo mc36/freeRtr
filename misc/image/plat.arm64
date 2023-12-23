@@ -1,4 +1,5 @@
 arch arm64
+qemu aarch64
 kern arm64
 grub efi-arm64-bin
 boot arm64-efi

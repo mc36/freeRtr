@@ -1,4 +1,5 @@
 arch sparc64
+qemu sparc64
 kern sparc64
 grub ieee1275-bin
 boot sparc64-ieee1275-cdcore

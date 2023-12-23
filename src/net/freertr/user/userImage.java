@@ -43,6 +43,8 @@ public class userImage {
     private long regeTim = bits.getTime() - Integer.MAX_VALUE;
 
     private String miro = "http://deb.debian.org/debian/";
+    
+    private String qemu = "x86_64";
 
     private String arch = "amd64";
 
@@ -381,6 +383,7 @@ public class userImage {
             s = s.replaceAll("%dwn%", downDir);
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%mirr%", miro);
+            s = s.replaceAll("%qemu%", qemu);
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
@@ -431,6 +434,10 @@ public class userImage {
             }
             if (a.equals("mirr")) {
                 miro = s;
+                continue;
+            }
+            if (a.equals("qemu")) {
+                qemu = s;
                 continue;
             }
             if (a.equals("arch")) {

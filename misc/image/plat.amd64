@@ -1,4 +1,5 @@
 arch amd64
+qemu x86_64
 kern amd64
 grub efi-amd64-bin
 boot x86_64-efi

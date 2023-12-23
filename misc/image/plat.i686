@@ -1,4 +1,5 @@
 arch i386
+qemu i386
 kern 686
 grub efi-ia32-bin
 boot i386-efi

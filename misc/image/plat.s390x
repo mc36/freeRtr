@@ -1,4 +1,5 @@
 arch s390x
+qemu s390x
 kern s390x
 grub ieee1275-bin
 boot s390x-efi
