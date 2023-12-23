@@ -3,7 +3,11 @@ exec cp ../misc/image/init.sys %tmp%/init.sys
 exec mv %tmp%/boot/vmlinu* %img%.krn
 del-alw %tmp%/boot
 include ../misc/image/image.cln
-del-alw %tmp%/usr/lib/%kern%-linux-gnu/gconv
+
+find-clear
+find-file %tmp%/usr/lib/ .*-linux-gnu.*
+find-result
+del-alw %tmp%/usr/lib/%find%/gconv
 
 find-clear
 find-file %tmp%/usr/lib/modules/ .*-%kern%.*
