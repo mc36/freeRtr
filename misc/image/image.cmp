@@ -16,4 +16,5 @@ exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
 
 exec proot -r %tmp% -q qemu-%qemu% -b ../:/dat/ -w /dat/misc/native/ /dat/misc/native/c.sh
 exec proot -r %tmp% -q qemu-%qemu% -b ../:/dat/ -w /dat/misc/native/ /dat/misc/native/p.sh
+
 del-alw %tmp%
