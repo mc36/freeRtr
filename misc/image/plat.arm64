@@ -1,7 +1,7 @@
 arch arm64
 kern arm64
 grub efi-arm64-bin
-boot aarch64-efi
+boot arm64-efi
 uefi bootx64.efi
 image ../binImg/rtr-arm64
 

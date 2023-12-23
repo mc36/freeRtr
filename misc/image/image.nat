@@ -10,3 +10,9 @@ package-down
 package-inst
 
 include ../misc/image/image.end
+
+include ../misc/image/image.grb
+
+include ../misc/image/image.cdi
+
+del-alw %tmp%

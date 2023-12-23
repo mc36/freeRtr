@@ -9,3 +9,5 @@ java -Xmx256m -jar rtr.jar test image ../misc/image/plat.mips64 ../misc/image/im
 java -Xmx256m -jar rtr.jar test image ../misc/image/plat.ppc64 ../misc/image/image.jvm
 java -Xmx256m -jar rtr.jar test image ../misc/image/plat.risc64 ../misc/image/image.jvm
 java -Xmx256m -jar rtr.jar test image ../misc/image/plat.s390x ../misc/image/image.jvm
+java -Xmx256m -jar rtr.jar test image ../misc/image/plat.sparc ../misc/image/image.jvm
+java -Xmx256m -jar rtr.jar test image ../misc/image/plat.sh4 ../misc/image/image.jvm

@@ -1,0 +1,11 @@
+arch sparc64
+kern sparc64
+grub ieee1275-bin
+boot sparc64-ieee1275-cdcore
+uefi bootx64.efi
+mirr http://ftp.ports.debian.org/debian-ports/
+image ../binImg/rtr-sparc
+
+include ../misc/image/image.bas
+
+select-one linux-image-%kern%             #regular kernel

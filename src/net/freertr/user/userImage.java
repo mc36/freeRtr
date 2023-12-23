@@ -42,6 +42,8 @@ public class userImage {
 
     private long regeTim = bits.getTime() - Integer.MAX_VALUE;
 
+    private String miro = "http://deb.debian.org/debian/";
+
     private String arch = "amd64";
 
     private String boot = "x86_64-efi";
@@ -378,6 +380,7 @@ public class userImage {
             s = s.replaceAll("%tmp%", tempDir);
             s = s.replaceAll("%dwn%", downDir);
             s = s.replaceAll("%img%", imgName);
+            s = s.replaceAll("%mirr%", miro);
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
@@ -424,6 +427,10 @@ public class userImage {
             }
             if (a.equals("hashdown")) {
                 hashMode = bits.str2num(s);
+                continue;
+            }
+            if (a.equals("mirr")) {
+                miro = s;
                 continue;
             }
             if (a.equals("arch")) {

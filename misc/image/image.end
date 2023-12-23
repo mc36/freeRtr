@@ -6,27 +6,27 @@ include ../misc/image/image.cln
 del-alw %tmp%/usr/lib/%kern%-linux-gnu/gconv
 
 find-clear
-find-file %tmp%/lib/modules/ .*-%kern%.*
+find-file %tmp%/usr/lib/modules/ .*-%kern%.*
 find-result
-del-alw %tmp%/lib/modules/%find%/kernel/sound
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/accessibility/speakup
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/gpu
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/iio
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/media
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/infiniband
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/net/wireless
+del-alw %tmp%/usr/lib/modules/%find%/kernel/sound
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/accessibility/speakup
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/gpu
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/iio
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/media
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/infiniband
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/net/wireless
 
-exec mv %tmp%/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
-exec mv %tmp%/lib/modules/%find%/kernel/net/core %tmp%/tmp/
-exec mv %tmp%/lib/modules/%find%/kernel/net/*.ko %tmp%/tmp/
-del-alw %tmp%/lib/modules/%find%/kernel/net
-exec mkdir %tmp%/lib/modules/%find%/kernel/net
-exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/net
+exec mv %tmp%/usr/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/net/core %tmp%/tmp/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/net/*.ko %tmp%/tmp/
+del-alw %tmp%/usr/lib/modules/%find%/kernel/net
+exec mkdir %tmp%/usr/lib/modules/%find%/kernel/net
+exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/net
 
-exec mv %tmp%/lib/modules/%find%/kernel/drivers/scsi/*.ko %tmp%/tmp/
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/scsi
-exec mkdir %tmp%/lib/modules/%find%/kernel/drivers/scsi
-exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/drivers/scsi/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/*.ko %tmp%/tmp/
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
+exec mkdir %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
+exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/
 
 exec chmod 755 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt
@@ -39,9 +39,3 @@ exec mv %tmp%/../cpio %img%.cpio
 exec zstd -9 %img%.cpio
 exec mv %img%.cpio.zst %img%.ird
 exec wraplinux -M -l -i %img%.ird -o %img%.wrp %img%.krn
-
-include ../misc/image/image.grb
-
-include ../misc/image/image.cdi
-
-include ../misc/image/image.xtr

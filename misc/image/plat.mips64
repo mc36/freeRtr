@@ -1,7 +1,7 @@
 arch mips64el
 kern mips64r2el
 grub ieee1275-bin
-boot mips64-efi
+boot mips-arc
 uefi bootx64.efi
 image ../binImg/rtr-mips64
 

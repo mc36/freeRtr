@@ -28,12 +28,8 @@ exec mkdir -m 0755 %tmp%/usr/sbin
 exec cp rtr.ver %tmp%/rtr/
 exec cp ../binTmp/*.bin %tmp%/rtr/
 
-#catalog-read dev xz http://at.archive.ubuntu.com/ubuntu/ devel main universe
-#catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
-#catalog-read liq gz https://liquorix.net/debian/ sid main
-#catalog-read xan gz http://deb.xanmod.org/ releases main
-catalog-read sid xz http://deb.debian.org/debian/ sid main
-catalog-read exp xz http://deb.debian.org/debian/ experimental main
+catalog-read sid xz %mirr% sid main
+catalog-read exp xz %mirr% experimental main
 catalog-sum
 
 select-dis debconf.*

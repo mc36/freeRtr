@@ -39,3 +39,9 @@ del-alw %tmp%/java/man
 del-alw %tmp%/java/legal
 
 include ../misc/image/image.end
+
+include ../misc/image/image.grb
+
+include ../misc/image/image.cdi
+
+del-alw %tmp%

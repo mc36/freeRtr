@@ -1,0 +1,11 @@
+arch sh4
+kern sh7785lcr
+grub ieee1275-bin
+boot ieee1275
+uefi bootsh4.efi
+mirr http://ftp.ports.debian.org/debian-ports/
+image ../binImg/rtr-sh4
+
+include ../misc/image/image.bas
+
+select-one linux-image-%kern%             #regular kernel
