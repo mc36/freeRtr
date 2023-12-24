@@ -1,11 +1,7 @@
 arch i386
 qemu i386
-kern 686
+kern 686-pae
 grub efi-ia32-bin
 boot i386-efi
 uefi bootia32.efi
 image ../binImg/rtr-i686
-
-include ../misc/image/image.bas
-
-select-one linux-image-%kern%-pae           #pae kernel

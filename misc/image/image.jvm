@@ -1,3 +1,6 @@
+include ../misc/image/image.bas
+
+select-one linux-image-%kern%            #regular kernel
 select-dis java-common.*                 #commons
 select-dis default-jdk-.*                #def jvm
 select-dis default-jre-.*                #def jvm

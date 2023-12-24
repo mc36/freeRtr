@@ -1,12 +1,7 @@
 arch arm64
 qemu aarch64
-kern arm64
+kern cloud-arm64
 grub efi-arm64-bin
 boot arm64-efi
 uefi bootx64.efi
 image ../binImg/rtr-arm64
-
-include ../misc/image/image.bas
-
-select-dis linux-image-%kern%             #regular kernel
-select-one linux-image-cloud-%kern%       #cloud kernel

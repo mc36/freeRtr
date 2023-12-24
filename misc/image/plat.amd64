@@ -1,12 +1,7 @@
 arch amd64
 qemu x86_64
-kern amd64
+kern cloud-amd64
 grub efi-amd64-bin
 boot x86_64-efi
 uefi bootx64.efi
 image ../binImg/rtr-x86_64
-
-include ../misc/image/image.bas
-
-select-dis linux-image-%kern%             #regular kernel
-select-one linux-image-cloud-%kern%       #cloud kernel

@@ -1,4 +1,7 @@
-select-one zlib1g
+include ../misc/image/image.bas
+
+select-one linux-image-%kern%            #regular kernel
+select-one zlib1g                        #dependency
 
 exec cp ../misc/image/init.nat %tmp%/init
 exec cp rtr.bin %tmp%/rtr/

@@ -5,7 +5,3 @@ grub ieee1275-bin
 boot mips-arc
 uefi bootx64.efi
 image ../binImg/rtr-mips64
-
-include ../misc/image/image.bas
-
-select-one linux-image-%kern%             #regular kernel

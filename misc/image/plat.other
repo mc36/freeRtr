@@ -1,5 +1,3 @@
-del-alw %img%.*
-
 #catalog-read dev xz http://at.archive.ubuntu.com/ubuntu/ devel main universe
 #catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
 #select-dis linux-image-generic            #ubuntu generic kernel
