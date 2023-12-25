@@ -41,7 +41,6 @@ exec mkdir %tmp%/lib/modules/%find%/kernel/drivers/scsi
 exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/drivers/scsi/
 
 exec mv %tmp%/lib/modules/%find%/kernel/fs/ext4 %tmp%/tmp/
-exec mv %tmp%/lib/modules/%find%/kernel/fs/iso %tmp%/tmp/
 exec mv %tmp%/lib/modules/%find%/kernel/fs/fat %tmp%/tmp/
 del-alw %tmp%/lib/modules/%find%/kernel/fs
 exec mkdir %tmp%/lib/modules/%find%/kernel/fs
