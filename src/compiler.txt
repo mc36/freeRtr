@@ -1,5 +1,4 @@
--source 11
--target 11
+--release 11
 
 -Xlint:all
 -deprecation
