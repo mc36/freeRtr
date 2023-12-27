@@ -21,7 +21,7 @@ router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
  traffeng 2.2.2.1
- bier 10
+ bier 256 10
  is-type level2
  both bier
  red conn
@@ -30,7 +30,7 @@ router isis6 1
  vrf v1
  net 48.6666.0000.1111.00
  traffeng 6.6.6.1
- bier 10
+ bier 256 10
  is-type level2
  both bier
  red conn
@@ -118,11 +118,10 @@ set protocols isis interface lo0.0
 set protocols isis traffic-engineering shortcuts
 set protocols isis bier-sub-domain 0
 set protocols bier sub-domain 0 bfr-id 3
-set protocols bier sub-domain 0 bfr-id 3
 set protocols bier sub-domain 0 bfr-prefix 2.2.2.2
 set protocols bier sub-domain 0 encapsulation mpls
-set protocols bier sub-domain 0 bitstringlen 256
-set protocols bier sub-domain 0 number-sets 4
+set protocols bier sub-domain 0 encapsulation bitstringlen 256
+set protocols bier sub-domain 0 encapsulation number-sets 4
 commit
 !
 
@@ -145,7 +144,7 @@ router isis4 1
  vrf v1
  net 48.4444.0000.3333.00
  traffeng 2.2.2.3
- bier 10
+ bier 256 10
  is-type level2
  both bier
  red conn
@@ -154,7 +153,7 @@ router isis6 1
  vrf v1
  net 48.6666.0000.3333.00
  traffeng 6.6.6.3
- bier 10
+ bier 256 10
  is-type level2
  both bier
  red conn
