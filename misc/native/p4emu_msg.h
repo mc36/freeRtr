@@ -2439,6 +2439,42 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         }
         return 0;
     }
+    if (strcmp(arg[0], "neighout") == 0) {
+        int cntr = atoi(arg[2]);
+        int bufS = atoi(arg[3]);
+        int nei = atoi(arg[4]);
+        int port = atoi(arg[5]);
+        int sgt = atoi(arg[6]);
+        int hash = atoi(arg[7]);
+        unsigned char orig[16384];
+        unsigned char bufA[16384];
+        unsigned char bufB[16384];
+        unsigned char bufC[16384];
+        unsigned char bufD[16384];
+        unsigned char bufH[preBuff];
+        memset(&orig, 0, 16384);
+        str2key(arg[8], orig);
+        if (cntr != 1) {
+            printf("warning cntr=%i bufS=%i nei=%i port=%i orig=", cntr, bufS, nei, port);
+            for (i=0; i<32; i++) printf("%02x", orig[i]);
+            printf("\n");
+        }
+        bufS -= 12;
+        struct neigh_entry neigh_ntry;
+        struct neigh_entry *neigh_res;
+        neigh_ntry.id = nei;
+        index = table_find(&neigh_table, &neigh_ntry);
+        if (index < 0) return 0;
+        neigh_res = table_get(&neigh_table, index);
+        for (i=0; i<cntr; i++) {
+            memmove(&bufD[preBuff], &orig[12], bufS);
+            memmove(&bufH[0], &orig[0], 16);
+            int ethtyp = get16msb(orig, 12);
+            int bufP = preBuff;
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+        }
+        return 0;
+    }
     return 0;
 }
 

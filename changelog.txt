@@ -15674,3 +15674,7 @@ qc pass: unicast+othermtree over bgp with soft-reconfig
 qc pass: unicast+othermtree over bgp with additional path
 ---------------------------------- 2023-12-11 21:28:01 23.12.11
 no todo: game butterfly hanoy, modem, mdev
+---------------------------------- 2023-12-31 08:45:49 23.12.31
+no todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
+qc pass: p4lang: packout on macsec port
+qc pass: p4lang: packout on macsec vlan port
