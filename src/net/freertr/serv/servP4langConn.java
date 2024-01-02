@@ -1049,6 +1049,7 @@ public class servP4langConn implements Runnable {
             }
         }
         old.need++;
+        old.iface.apiNeigh = old.id;
         oru = lower.bckplnRou.find(oru);
         if (oru == null) {
             return;
@@ -2699,6 +2700,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
+            nei.iface.apiNeigh = nei.id;
             nei.vrf = vrf;
             try {
                 ifcP2pOEservSess ntry = (ifcP2pOEservSess) ifc.ifc.lower;
@@ -3197,6 +3199,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
+            nei.iface.apiNeigh = nei.id;
             nei.vrf = vrf;
             if (ifc.ifc.pwhe == null) {
                 return;
@@ -3220,6 +3223,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
+            nei.iface.apiNeigh = nei.id;
             nei.vrf = vrf;
             String prt;
             String par = "";
@@ -3360,6 +3364,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
+            nei.iface.apiNeigh = nei.id;
             nei.vrf = vrf;
             int frg = -1;
             try {

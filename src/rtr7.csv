@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v23.12.31-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2023-12-31 17:15:11, took 00:23:27, with 10 workers, on 530 cases, 1 failed, 0 traces, 7 retries
+-;-;-;freeRouter-rare v24.1.2-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2024-01-02 11:56:33, took 00:26:06, with 10 workers, on 534 cases, 1 failed, 0 traces, 7 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
@@ -212,10 +212,14 @@ http://sources.freertr.org/cfg/p4lang-crypt109.tst;p4lang-crypt109.tst;not appli
 http://sources.freertr.org/cfg/p4lang-crypt110.tst;p4lang-crypt110.tst;not applicable;p4lang: sgt over l2tp3
 http://sources.freertr.org/cfg/p4lang-crypt111.tst;p4lang-crypt111.tst;not applicable;p4lang: macsec over tmux
 http://sources.freertr.org/cfg/p4lang-crypt112.tst;p4lang-crypt112.tst;not applicable;p4lang: sgt over tmux
-http://sources.freertr.org/cfg/p4lang-packo01.tst;p4lang-packo01.tst;not applicable;p4lang: packout on port
-http://sources.freertr.org/cfg/p4lang-packo02.tst;p4lang-packo02.tst;not applicable;p4lang: packout on vlan port
-http://sources.freertr.org/cfg/p4lang-packo03.tst;p4lang-packo03.tst;not applicable;p4lang: packout on macsec port
-http://sources.freertr.org/cfg/p4lang-packo04.tst;p4lang-packo04.tst;not applicable;p4lang: packout on macsec vlan port
+http://sources.freertr.org/cfg/p4lang-crypt113.tst;p4lang-crypt113.tst;not applicable;p4lang: packout on port
+http://sources.freertr.org/cfg/p4lang-crypt114.tst;p4lang-crypt114.tst;not applicable;p4lang: packout on vlan port
+http://sources.freertr.org/cfg/p4lang-crypt115.tst;p4lang-crypt115.tst;not applicable;p4lang: packout on macsec port
+http://sources.freertr.org/cfg/p4lang-crypt116.tst;p4lang-crypt116.tst;not applicable;p4lang: packout on macsec vlan port
+http://sources.freertr.org/cfg/p4lang-crypt117.tst;p4lang-crypt117.tst;not applicable;p4lang: ipsec with packout
+http://sources.freertr.org/cfg/p4lang-crypt118.tst;p4lang-crypt118.tst;not applicable;p4lang: openvpn with packout
+http://sources.freertr.org/cfg/p4lang-crypt119.tst;p4lang-crypt119.tst;not applicable;p4lang: wireguard with packout
+http://sources.freertr.org/cfg/p4lang-crypt120.tst;p4lang-crypt120.tst;not applicable;p4lang: wireguard over vlan with packout
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core

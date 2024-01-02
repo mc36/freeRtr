@@ -58,6 +58,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     protected boolean apiPack;
 
     /**
+     * api neighbor
+     */
+    protected int apiNeigh;
+
+    /**
      * speed
      */
     protected String speed;
@@ -502,6 +507,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * clear sent state
      */
     protected void doClear() {
+        apiNeigh = -1;
         if (suppressState()) {
             lastState = state.states.up;
         } else {
@@ -603,7 +609,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         if (debugger.servP4langTraf) {
             logger.debug("sending on #" + id + " " + pck.dataOffset());
         }
-        lower.sendLine(servP4langUtil.packet2packout(pck, cnt, id, id));
+        if (apiNeigh < 0) {
+            lower.sendLine(servP4langUtil.packet2packout(false, pck, cnt, id, id));
+        } else {
+            lower.sendLine(servP4langUtil.packet2packout(true, pck, cnt, apiNeigh, id));
+        }
     }
 
     /**

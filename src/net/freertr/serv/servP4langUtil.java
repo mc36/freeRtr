@@ -44,14 +44,21 @@ public class servP4langUtil {
     /**
      * convert a packet to a packet out message
      *
+     * @param nei neighbor out
      * @param pck packet to convert
      * @param cnt counter to use
      * @param prt port to use
      * @param port port to use
      * @return converted packet
      */
-    protected final static String packet2packout(packHolder pck, int cnt, int prt, int port) {
-        String a = "packout_add " + cnt + " " + (pck.dataSize() + addrMac.sizeX2) + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 15) + " ";
+    protected final static String packet2packout(boolean nei, packHolder pck, int cnt, int prt, int port) {
+        String a;
+        if (nei) {
+            a = "neighout_add ";
+        } else {
+            a = "packout_add ";
+        }
+        a += cnt + " " + (pck.dataSize() + addrMac.sizeX2) + " " + prt + " " + port + " " + pck.SGTid + " " + ((pck.UDPsrc ^ pck.UDPtrg) & 15) + " ";
         byte[] buf = pck.ETHtrg.getBytes();
         a += bits.toHex(buf);
         buf = pck.ETHsrc.getBytes();
