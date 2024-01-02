@@ -15678,3 +15678,8 @@ no todo: game butterfly hanoy, modem, mdev
 no todo: misc natives p4fwd to have more tests 4 packetout message with macsec/wg/ipsec/ovpn/etc too...
 qc pass: p4lang: packout on macsec port
 qc pass: p4lang: packout on macsec vlan port
+---------------------------------- 2024-01-02 12:00:00 24.1.2
+qc pass: p4lang: ipsec with packout
+qc pass: p4lang: openvpn with packout
+qc pass: p4lang: wireguard with packout
+qc pass: p4lang: wireguard over vlan with packout

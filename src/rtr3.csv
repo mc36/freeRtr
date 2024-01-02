@@ -210,10 +210,14 @@ http://sources.freertr.org/cfg/p4lang-crypt109.tst;p4lang-crypt109.tst;ok;not ok
 http://sources.freertr.org/cfg/p4lang-crypt110.tst;p4lang-crypt110.tst;ok;ok;ok;not ok;not ok;p4lang: sgt over l2tp3
 http://sources.freertr.org/cfg/p4lang-crypt111.tst;p4lang-crypt111.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec over tmux
 http://sources.freertr.org/cfg/p4lang-crypt112.tst;p4lang-crypt112.tst;ok;ok;ok;not ok;not ok;p4lang: sgt over tmux
-http://sources.freertr.org/cfg/p4lang-packo01.tst;p4lang-packo01.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on port
-http://sources.freertr.org/cfg/p4lang-packo02.tst;p4lang-packo02.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on vlan port
-http://sources.freertr.org/cfg/p4lang-packo03.tst;p4lang-packo03.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on macsec port
-http://sources.freertr.org/cfg/p4lang-packo04.tst;p4lang-packo04.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on macsec vlan port
+http://sources.freertr.org/cfg/p4lang-crypt113.tst;p4lang-crypt113.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on port
+http://sources.freertr.org/cfg/p4lang-crypt114.tst;p4lang-crypt114.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on vlan port
+http://sources.freertr.org/cfg/p4lang-crypt115.tst;p4lang-crypt115.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on macsec port
+http://sources.freertr.org/cfg/p4lang-crypt116.tst;p4lang-crypt116.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on macsec vlan port
+http://sources.freertr.org/cfg/p4lang-crypt117.tst;p4lang-crypt117.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec with packout
+http://sources.freertr.org/cfg/p4lang-crypt118.tst;p4lang-crypt118.tst;ok;not ok;ok;not ok;not ok;p4lang: openvpn with packout
+http://sources.freertr.org/cfg/p4lang-crypt119.tst;p4lang-crypt119.tst;ok;not ok;ok;not ok;not ok;p4lang: wireguard with packout
+http://sources.freertr.org/cfg/p4lang-crypt120.tst;p4lang-crypt120.tst;ok;not ok;ok;not ok;not ok;p4lang: wireguard over vlan with packout
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;ok;ok;ok;ok;ok;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;ok;ok;ok;ok;ok;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;ok;ok;ok;ok;ok;p4lang: mpls core
