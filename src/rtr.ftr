@@ -1626,7 +1626,7 @@ qc pass: p4lang: packout on macsec vlan port
 qc pass: p4lang: ipsec with packout
 qc pass: p4lang: openvpn with packout
 qc pass: p4lang: wireguard with packout
-qc pass: p4lang: wireguard over vlan with packout
+qc pass: p4lang: gre with packout
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core

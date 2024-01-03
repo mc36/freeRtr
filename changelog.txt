@@ -15683,3 +15683,6 @@ qc pass: p4lang: ipsec with packout
 qc pass: p4lang: openvpn with packout
 qc pass: p4lang: wireguard with packout
 qc pass: p4lang: wireguard over vlan with packout
+---------------------------------- 2024-01-03 14:33:51 24.1.3
+no qc pass: p4lang: wireguard over vlan with packout
+qc pass: p4lang: gre with packout
