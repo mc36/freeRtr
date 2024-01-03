@@ -1,4 +1,4 @@
-description p4lang: wireguard over vlan with packout
+description p4lang: gre with packout
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -40,20 +40,14 @@ int lo0
  exit
 int sdn1
  no autostat
- exit
-int sdn1.111
  vrf for v2
  ipv4 addr 9.9.9.1 255.255.255.0
  exit
-crypto ipsec ips
- key EFw2rJEdqFGDgC80um3fwMmAafwqXno+PsbMHPZ0umM=M6vDV8QdiWDQppVKjKf8xjoKtyGAeRK/Ue48kwKI5Ss=
- exit
 int tun1
  tun vrf v2
- tun source sdn1.111
+ tun source sdn1
  tun destination 9.9.9.2
- tun prot ips
- tun mode wireguard
+ tun mode gre
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -101,7 +95,7 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 controller r1 v9 9080 - feature pckout vlan route wireguard
+addother r2 controller r1 v9 9080 - feature pckout route gre
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -129,22 +123,18 @@ bridge 1
  mac-learn
  block-unicast
  exit
-int eth1.111
+int eth1
  bridge-gr 1
  exit
 int bvi1
  vrf for v2
  ipv4 addr 9.9.9.2 255.255.255.0
  exit
-crypto ipsec ips
- key 6JhyvKPutQ9DNLupOPmDnQLRWtUWlUjI6PTJ/IZ9l1w=bQMmpCaGVyq9f+v48XGmfH5DMLytkqziID+rBH+qQic=
- exit
 int tun1
  tun vrf v2
  tun source bvi1
  tun destination 9.9.9.1
- tun prot ips
- tun mode wireguard
+ tun mode gre
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
