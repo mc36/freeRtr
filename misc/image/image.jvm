@@ -20,7 +20,8 @@ select-dis openjdk-18-.*                 #old jvm
 select-dis openjdk-19-.*                 #old jvm
 select-dis openjdk-20-.*                 #old jvm
 select-one openjdk-21-.*                 #old jvm
-select-one openjdk-22-jdk-headless       #new jvm
+select-one openjdk-22-.*                 #old jvm
+select-one openjdk-23-jdk-headless       #new jvm
 
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/
