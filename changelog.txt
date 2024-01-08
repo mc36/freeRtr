@@ -15686,3 +15686,6 @@ qc pass: p4lang: wireguard over vlan with packout
 ---------------------------------- 2024-01-03 14:33:51 24.1.3
 no qc pass: p4lang: wireguard over vlan with packout
 qc pass: p4lang: gre with packout
+---------------------------------- 2024-01-08 13:21:54 24.1.8
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
