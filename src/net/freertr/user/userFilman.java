@@ -2,6 +2,7 @@ package net.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.freertr.enc.encXml;
 import net.freertr.util.bits;
 import net.freertr.util.version;
 
@@ -94,8 +95,11 @@ public class userFilman {
             case 0x0262: // ctrl+b
                 doKeyBin();
                 return false;
-            case 0x0268: // ctrl+h
+            case 0x0275: // ctrl+u
                 doKeyHex();
+                return false;
+            case 0x0274: // ctrl+t
+                doKeyHtml();
                 return false;
             case 0x0276: // ctrl+v
                 doKeyF3();
@@ -304,7 +308,8 @@ public class userFilman {
         l.add("ctrl+z - move down");
         l.add("ctrl+i - change panel");
         l.add("ctrl+b - bin view file");
-        l.add("ctrl+h - hex view file");
+        l.add("ctrl+u - hex view file");
+        l.add("ctrl+t - html view file");
         l.add("ctrl+v - text view file");
         l.add("ctrl+e - text edit file");
         l.add("ctrl+c - copy file");
@@ -334,6 +339,19 @@ public class userFilman {
     private void doKeyHex() {
         String a = pan[act].getFn();
         List<String> b = userFlash.hexRead(a);
+        userEditor v = new userEditor(console, b, a, false);
+        v.doView();
+    }
+
+    private void doKeyHtml() {
+        String a = pan[act].getFn();
+        List<String> b = bits.txt2buf(a);
+        encXml x = new encXml();
+        x.setup2html();
+        x.fromString(b, "");
+        b = new ArrayList<String>();
+        List<List<Integer>> l = new ArrayList<List<Integer>>();
+        x.formatHtml(b, l, console.sizX);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
