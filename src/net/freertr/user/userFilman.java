@@ -89,9 +89,6 @@ public class userFilman {
             case 0x0266: // ctrl+f
                 doKeyFind();
                 return false;
-            case 0x0270: // ctrl+p
-                doKeyF1();
-                return false;
             case 0x0262: // ctrl+b
                 doKeyBin();
                 return false;
@@ -103,6 +100,9 @@ public class userFilman {
                 return false;
             case 0x026f: // ctrl+o
                 doKeyImg();
+                return false;
+            case 0x0270: // ctrl+p
+                doKeyCol();
                 return false;
             case 0x0276: // ctrl+v
                 doKeyF3();
@@ -303,7 +303,6 @@ public class userFilman {
         l.add("plus - select files");
         l.add("star - negate files");
         l.add("minus - deselect files");
-        l.add("ctrl+p - help");
         l.add("ctrl+r - reread entries");
         l.add("ctrl+l - redraw screen");
         l.add("ctrl+f - find file");
@@ -314,6 +313,7 @@ public class userFilman {
         l.add("ctrl+u - hex view file");
         l.add("ctrl+t - html view file");
         l.add("ctrl+o - image view file");
+        l.add("ctrl+p - color view file");
         l.add("ctrl+v - text view file");
         l.add("ctrl+e - text edit file");
         l.add("ctrl+c - copy file");
@@ -365,6 +365,18 @@ public class userFilman {
         List<String> b = userFlash.asciiArt(a, console.sizX, console.sizY);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
+    }
+
+    private void doKeyCol() {
+        String a = pan[act].getFn();
+        userFlash.ansiArt(a, console);
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            bits.sleep(1000);
+        }
+        userScreen.getKey(console.pipe);
     }
 
     private void doKeyF3() {
