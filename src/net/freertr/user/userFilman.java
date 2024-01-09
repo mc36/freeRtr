@@ -101,6 +101,9 @@ public class userFilman {
             case 0x0274: // ctrl+t
                 doKeyHtml();
                 return false;
+            case 0x026f: // ctrl+o
+                doKeyImg();
+                return false;
             case 0x0276: // ctrl+v
                 doKeyF3();
                 return false;
@@ -310,6 +313,7 @@ public class userFilman {
         l.add("ctrl+b - bin view file");
         l.add("ctrl+u - hex view file");
         l.add("ctrl+t - html view file");
+        l.add("ctrl+o - image view file");
         l.add("ctrl+v - text view file");
         l.add("ctrl+e - text edit file");
         l.add("ctrl+c - copy file");
@@ -352,6 +356,13 @@ public class userFilman {
         b = new ArrayList<String>();
         List<List<Integer>> l = new ArrayList<List<Integer>>();
         x.formatHtml(b, l, console.sizX);
+        userEditor v = new userEditor(console, b, a, false);
+        v.doView();
+    }
+
+    private void doKeyImg() {
+        String a = pan[act].getFn();
+        List<String> b = userFlash.asciiArt(a, console.sizX, console.sizY);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
