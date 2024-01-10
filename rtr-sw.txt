@@ -52,6 +52,7 @@ aaa userlist access
  allowed exit .*
  allowed exit.*
  allowed logout.*
+ allowed flash .*
  exit
 !
 aaa radius rad

@@ -131,8 +131,11 @@ public class userBrowser {
             case 0x026c: // ctrl+l
                 doClear();
                 return false;
+            case 0x026f: // ctrl+o
+                doKeyImg();
+                return false;
             case 0x0270: // ctrl+p
-                doKeyF1();
+                doKeyCol();
                 return false;
             case 0x0271: // ctrl+q
                 return true;
@@ -310,7 +313,6 @@ public class userBrowser {
         l.add("bs - previous link");
         l.add("tab - next link");
         l.add("enter - follow link");
-        l.add("ctrl+p - help");
         l.add("ctrl+b - previous page");
         l.add("ctrl+i - next link");
         l.add("ctrl+r - reread page");
@@ -323,6 +325,8 @@ public class userBrowser {
         l.add("ctrl+e - move right");
         l.add("ctrl+s - save page");
         l.add("ctrl+d - download link");
+        l.add("ctrl+o - view image link");
+        l.add("ctrl+p - view color link");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
         console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
@@ -527,6 +531,49 @@ public class userBrowser {
             }
             break;
         }
+    }
+
+    private void doKeyImg() {
+        String s = getLink();
+        if (s == null) {
+            return;
+        }
+        doChg2txt();
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile), true)) {
+            console.pipe.linePut("error downloading");
+            userScreen.getKey(console.pipe);
+            doClear();
+            return;
+        }
+        doClear();
+        List<String> b = userFlash.asciiArt(tempFile, console.sizX, console.sizY);
+        userEditor v = new userEditor(console, b, s, false);
+        v.doView();
+        doClear();
+    }
+
+    private void doKeyCol() {
+        String s = getLink();
+        if (s == null) {
+            return;
+        }
+        doChg2txt();
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile), true)) {
+            console.pipe.linePut("error downloading");
+            userScreen.getKey(console.pipe);
+            doClear();
+            return;
+        }
+        doClear();
+        userFlash.ansiArt(tempFile, console);
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            bits.sleep(1000);
+        }
+        userScreen.getKey(console.pipe);
+        doClear();
     }
 
     private void doKeyF2() {
