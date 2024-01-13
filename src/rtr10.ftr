@@ -79,7 +79,6 @@ qc pass: interop2: rip prefix withdraw
 qc pass: interop2: rip authentication
 qc pass: interop2: gre tunnel
 qc pass: interop2: ipip tunnel
-todo: image viewer to file manager
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
