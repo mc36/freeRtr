@@ -10,7 +10,7 @@ you can find the same source tree at various locations, normally all should be t
 * http://src.freertr.org/src/
 * http://sources.freertr.org
 * http://gitlab.com/mc36mc/freertr
-* http://github.com/rare-freertr/freeRtr
+* http://github.com/mc36/freeRtr
 
 part of the subdirectories under misc/ are somewhere else too:
 * p4bf at http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
