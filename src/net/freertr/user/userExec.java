@@ -3073,7 +3073,7 @@ public class userExec {
                     cmd.error("failed to write temporary file!");
                     return cmdRes.command;
                 }
-                userFlash.doSend(pipe, url, new File(a));
+                userFlash.doSend(pipe, url, new File(a), true);
                 userFlash.delete(a);
                 return cmdRes.command;
             }

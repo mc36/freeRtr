@@ -193,7 +193,7 @@ public class userFlash {
         }
         if (a.equals("transmit")) {
             a = cmd.word();
-            doSend(pip, encUrl.parseOne(cmd.getRemaining()), new File(a));
+            doSend(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true);
             return null;
         }
         if (a.equals("archive")) {
@@ -1141,8 +1141,9 @@ public class userFlash {
      * @param pipe pipeline to use
      * @param url url to get
      * @param f file to write to
+     * @param debug force debugging
      */
-    public static void doSend(pipeSide pipe, encUrl url, File f) {
+    public static void doSend(pipeSide pipe, encUrl url, File f, boolean debug) {
         String a = url.proto.trim().toLowerCase();
         if (a.startsWith("mailto")) {
             clntSmtp c = new clntSmtp(pipe);
@@ -1151,7 +1152,7 @@ public class userFlash {
             return;
         }
         if (a.startsWith("http")) {
-            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
+            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, debug);
             c.upload(url, f);
             c.cleanUp();
             return;
