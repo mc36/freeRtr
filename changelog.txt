@@ -15700,3 +15700,6 @@ qc pass: interop8: ebgp ix role
 ---------------------------------- 2024-01-23 16:15:07 24.1.23
 no qc pass: dhcp with excluded address
 failed: dhcp with excluded address
+---------------------------------- 2024-01-24 06:23:06 24.1.24
+no failed: dhcp with excluded address
+qc pass: dhcp with excluded address
