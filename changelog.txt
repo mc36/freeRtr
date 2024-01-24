@@ -15697,3 +15697,6 @@ no todo: image viewer to file manager
 ---------------------------------- 2024-01-19 07:44:00 24.1.19
 qc pass: interop8: ebgp peer role
 qc pass: interop8: ebgp ix role
+---------------------------------- 2024-01-23 16:15:07 24.1.23
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
