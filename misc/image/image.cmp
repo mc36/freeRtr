@@ -12,6 +12,7 @@ exec mkdir -m 0755 %tmp%/binImg
 catalog-read sid xz %mirr% sid main
 catalog-sum
 
+select-dis librte.*
 select-one libc-bin                       #library
 select-one clang                          #compiler
 select-one gcc                            #compiler
