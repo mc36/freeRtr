@@ -1,4 +1,20 @@
+download 3
+reget-time 8
+
+del-ifdn %dwn%
+exec mkdir %dwn%
+del-alw %tmp%
+exec mkdir -m 0755 %tmp%
+exec mkdir -m 0755 %tmp%/bin
+exec mkdir -m 0755 %tmp%/tmp
+exec mkdir -m 0755 %tmp%/binImg
+
+catalog-read sid xz %mirr% sid main
+catalog-sum
+
+select-one libc-bin                       #library
 select-one clang                          #compiler
+select-one gcc                            #compiler
 select-one busybox                        #busybox
 select-one tar                            #archiver
 select-one dpdk-dev                       #dataplane
@@ -12,9 +28,13 @@ select-sum
 package-down
 package-inst
 
-exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
+exec for a in `busybox --list`; do ln -s ../usr/bin/busybox %tmp%/bin/$a; done
 
-exec proot -r %tmp% -q qemu-%qemu% -b ../:/dat/ -w /dat/misc/native/ /dat/misc/native/c.sh
-exec proot -r %tmp% -q qemu-%qemu% -b ../:/dat/ -w /dat/misc/native/ /dat/misc/native/p.sh
+exec cp -r ../misc %tmp%/
+exec cp /usr/bin/qemu-%qemu%-static %tmp%/
 
-del-alw %tmp%
+exec sudo chroot --userspec=1000:1000 %tmp% /qemu-%qemu%-static /bin/sh /misc/image/image.crs
+
+exec mv %tmp%/binImg/*.tar ../binImg/
+
+!del-alw %tmp%

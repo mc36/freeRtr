@@ -1,5 +1,5 @@
 arch armhf
-qemu armhf
+qemu arm
 kern armmp
 grub efi-arm-bin
 boot arm-efi
