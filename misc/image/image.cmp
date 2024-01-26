@@ -12,10 +12,10 @@ exec mkdir -m 0755 %tmp%/binImg
 catalog-read sid xz %mirr% sid main
 catalog-sum
 
-select-dis librte.*
 select-one libc-bin                       #library
-select-one clang                          #compiler
-select-one gcc                            #compiler
+select-one libc-dev-bin                   #library
+select-one %comp%                         #compiler
+select-one llvm                           #compiler
 select-one busybox                        #busybox
 select-one tar                            #archiver
 select-one dpdk-dev                       #dataplane
@@ -34,8 +34,4 @@ exec for a in `busybox --list`; do ln -s ../usr/bin/busybox %tmp%/bin/$a; done
 exec cp -r ../misc %tmp%/
 exec cp /usr/bin/qemu-%qemu%-static %tmp%/
 
-exec sudo chroot --userspec=1000:1000 %tmp% /qemu-%qemu%-static /bin/sh /misc/image/image.crs
-
-exec mv %tmp%/binImg/*.tar ../binImg/
-
-del-alw %tmp%
+exec echo sudo chroot --userspec=1000:1000 %tmp% /qemu-%qemu%-static /bin/sh /misc/image/image.crs > %tmp%/r.sh

@@ -1,0 +1,9 @@
+arch hppa
+qemu hppa
+kern parisc
+grub ieee1275-bin
+boot hppa-ieee1275
+uefi boothppa.efi
+mirr http://ftp.ports.debian.org/debian-ports/
+comp gcc
+image ../binImg/rtr-hppa

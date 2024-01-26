@@ -4,5 +4,6 @@ kern sparc64
 grub ieee1275-bin
 boot sparc64-ieee1275-cdcore
 uefi bootx64.efi
+comp gcc
 mirr http://ftp.ports.debian.org/debian-ports/
 image ../binImg/rtr-sparc
