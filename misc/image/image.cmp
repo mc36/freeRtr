@@ -37,4 +37,4 @@ exec sudo chroot --userspec=1000:1000 %tmp% /qemu-%qemu%-static /bin/sh /misc/im
 
 exec mv %tmp%/binImg/*.tar ../binImg/
 
-!del-alw %tmp%
+del-alw %tmp%
