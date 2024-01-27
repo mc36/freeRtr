@@ -43,7 +43,7 @@ public class userImage {
     private long regeTim = bits.getTime() - Integer.MAX_VALUE;
 
     private String miro = "http://deb.debian.org/debian/";
-    
+
     private String qemu = "x86_64";
 
     private String cmpr = "clang";

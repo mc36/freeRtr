@@ -1471,7 +1471,16 @@ public class rtrBgpUtil {
             case sfiClrAwRtg:
                 i = pck.getByte(0);
                 p = pck.getByte(1);
-                if (pck.getByte(2) != 1) {
+                i = pck.getByte(2);
+                if (i == 2) {
+                    byte[] buf = new byte[128];
+                    pck.getCopy(buf, 0, 4, buf.length);
+                    if (readPrefix(safi, ntry, pck.getByte(3), buf)) {
+                        return null;
+                    }
+                    return ntry;
+                }
+                if (i != 1) {
                     return null;
                 }
                 byte[] buf = new byte[128];
@@ -1775,7 +1784,7 @@ public class rtrBgpUtil {
             }
             buf1[p - 1] |= 1;
         }
-        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn)|| (sfi == sfiMcsTre)) {
+        if ((sfi == sfiMplsVpnU) || (sfi == sfiMplsVpnM) || (sfi == sfiClsTrnPl) || (sfi == sfiVpls) || (sfi == sfiMspw) || (sfi == sfiMdt) || (sfi == sfiSrTe) || (sfi == sfiVpnLnkSt) || (sfi == sfiVpnFlw) || (sfi == sfiMvpn) || (sfi == sfiMcsTre)) {
             bits.msbPutQ(buf1, p, ntry.rouDst);
             p += 8;
             i += 64;
