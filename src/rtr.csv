@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter-rare v24.1.26-cur, done by sprscc13@mr.n0b0dy.
--;-;-;2024-01-26 18:43:08, took 00:12:37, with 80 workers, on 3416 cases, 0 failed, 0 traces, 17 retries
+-;-;-;freeRouter-rare v24.1.27-cur, done by sprscc13@mr.n0b0dy.
+-;-;-;2024-01-27 06:18:46, took 00:12:27, with 80 workers, on 3416 cases, 0 failed, 0 traces, 13 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
