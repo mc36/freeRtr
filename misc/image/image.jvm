@@ -28,7 +28,6 @@ select-nod openjdk-23-jdk-headless       #new jdk
 
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/
-exec cp rtr.ver %tmp%/rtr/
 
 select-lst
 select-sum

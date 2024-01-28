@@ -1,6 +1,5 @@
 #!/bin/sh
 cd ../../src
-java -Xmx256m -jar rtr.jar test image ../misc/image/image.clr
 java -Xmx256m -jar rtr.jar test image ../misc/image/plat.i686 ../misc/image/image.cmp
 bash ../binDsk/r.sh
 mv ../binDsk/binImg/*.tar ../binImg/rtr-i686.tar

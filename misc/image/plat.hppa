@@ -1,4 +1,5 @@
 arch hppa
+unam parisc
 qemu hppa
 kern parisc
 grub ieee1275-bin

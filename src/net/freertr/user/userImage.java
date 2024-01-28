@@ -54,6 +54,8 @@ public class userImage {
 
     private String kern = "cloud-amd64";
 
+    private String unam = "x86_64";
+
     private String grub = "efi-amd64-bin";
 
     private String uefi = "bootx64.efi";
@@ -393,6 +395,7 @@ public class userImage {
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
+            s = s.replaceAll("%unam%", unam);
             s = s.replaceAll("%grub%", grub);
             s = s.replaceAll("%uefi%", uefi);
             s = s.replaceAll("%find%", found);
@@ -460,6 +463,10 @@ public class userImage {
             }
             if (a.equals("kern")) {
                 kern = s;
+                continue;
+            }
+            if (a.equals("unam")) {
+                unam = s;
                 continue;
             }
             if (a.equals("grub")) {

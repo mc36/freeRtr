@@ -1,4 +1,5 @@
 arch m68k
+unam m68k
 qemu m68k
 kern m68k
 grub ieee1275-bin

@@ -1,4 +1,5 @@
 arch armhf
+unam armv7l
 qemu arm
 kern armmp
 grub efi-arm-bin

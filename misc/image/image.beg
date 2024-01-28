@@ -1,6 +1,6 @@
 exec mkdir -m 0755 %tmp%/rtr
 exec cp rtr.ver %tmp%/rtr/
-exec cp ../binTmp/*.bin %tmp%/rtr/
+exec cd %tmp%/rtr/;tar xvf ../../binImg/rtr-%unam%.tar
 
 catalog-read sid xz %mirr% sid main
 catalog-read exp xz %mirr% experimental main
@@ -46,7 +46,6 @@ select-dis libxrender.*
 select-dis libxtst.*
 
 select-one busybox                        #small utils
-select-one socat                          #small utils
 select-one udev                           #bring up hw
 select-one ethtool                        #disable hw chksum
 select-one libpcap0.8                     #dataplane requirement

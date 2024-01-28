@@ -1,4 +1,5 @@
 arch arm64
+unam aarch64
 qemu aarch64
 kern cloud-arm64
 grub efi-arm64-bin

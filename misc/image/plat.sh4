@@ -1,4 +1,5 @@
 arch sh4
+unam sh4
 qemu sh4
 kern sh7785lcr
 grub ieee1275-bin
