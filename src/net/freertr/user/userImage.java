@@ -263,7 +263,7 @@ public class userImage {
         return false;
     }
 
-    private void selectOnePackage(int level, String nam, String by) {
+    private void selectOnePackage(int level, String nam, String by, boolean nod) {
         nam = nam.trim();
         if (nam.length() < 1) {
             return;
@@ -282,8 +282,11 @@ public class userImage {
         if (selected.add(pkt) != null) {
             return;
         }
+        if (nod) {
+            return;
+        }
         for (int i = 0; i < pkt.depend.size(); i++) {
-            selectOnePackage(level + 1, pkt.depend.get(i), nam);
+            selectOnePackage(level + 1, pkt.depend.get(i), nam, nod);
         }
     }
 
@@ -528,7 +531,11 @@ public class userImage {
                 continue;
             }
             if (a.equals("select-one")) {
-                selectOnePackage(0, s, s);
+                selectOnePackage(0, s, s, false);
+                continue;
+            }
+            if (a.equals("select-nod")) {
+                selectOnePackage(0, s, s, true);
                 continue;
             }
             if (a.equals("select-dis")) {

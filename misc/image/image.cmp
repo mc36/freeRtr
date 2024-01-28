@@ -1,12 +1,5 @@
-download 3
-reget-time 8
+include ../misc/image/image.bas
 
-del-ifdn %dwn%
-exec mkdir %dwn%
-del-alw %tmp%
-exec mkdir -m 0755 %tmp%
-exec mkdir -m 0755 %tmp%/bin
-exec mkdir -m 0755 %tmp%/tmp
 exec mkdir -m 0755 %tmp%/binImg
 
 catalog-read sid xz %mirr% sid main
