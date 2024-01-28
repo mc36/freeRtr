@@ -439,6 +439,9 @@ public class clntDhcp4 implements prtServP {
     }
 
     private void sendKeepalive() {
+        if (sender == null) {
+            return;
+        }
         switch (lastStat) {
             case 1: // sending discovery
                 lastSent++;
