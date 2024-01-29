@@ -283,6 +283,7 @@ public class userHwext {
             case p4xdp:
             case p4dpdk:
             case p4sw:
+                hwd.add("ulimit -l unlimited");
                 hwc.add("tcp2vrf " + servP4lang.port + " " + dpv + " " + servP4lang.port + " 127.0.0.1");
                 swc.add("interface ethernet0");
                 swc.add(cmds.tabulator + "description p4 cpu port");
@@ -317,6 +318,7 @@ public class userHwext {
                             a += " --vdev=net_af_packet" + i + ",iface=" + ifp.get(i);
                         }
                         hwc.add("proc p4emu " + path + "p4dpdk.bin" + a + " --vdev=net_af_packet" + ifl.size() + ",iface=veth0b -- 127.0.0.1 " + servP4lang.port + " " + ifl.size());
+                        hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                         res = ", please verify nic bindings in " + hwdn;
                         break;
                     case p4emu:
@@ -329,6 +331,7 @@ public class userHwext {
                             a += " " + ifp.get(i);
                         }
                         hwc.add("proc p4emu " + path + "p4emu.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                         break;
                     case p4map:
                         ifn = "veth0a";
@@ -340,10 +343,10 @@ public class userHwext {
                             a += " " + ifp.get(i);
                         }
                         hwc.add("proc p4emu " + path + "p4map.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        hwc.add("proc cpuport " + path + "mapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                         break;
                     case p4xdp:
                         ifn = "veth0a";
-                        hwd.add("ulimit -l unlimited");
                         userHwdet.setupVeth(hwd, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 2048);
                         userHwdet.setupIface(hwd, "veth0b", 2048);
@@ -354,18 +357,19 @@ public class userHwext {
                             a += " " + ifp.get(i);
                         }
                         hwc.add("proc p4emu " + path + "p4xdp_user.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                         break;
                     case p4sw:
                         ifn = "ens1";
                         userHwdet.setupIface(hwd, ifn, 8192);
                         hwc.add("proc bfswd " + path + "start_bfswd.sh");
                         hwc.add("proc bffwd " + path + "bf_forwarder.py");
+                        hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                         break;
                     default:
                         return;
                 }
                 hwc.add("int eth0 eth - 127.0.0.1 19999 127.0.0.1 19998");
-                hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                 break;
             default:
                 return;
