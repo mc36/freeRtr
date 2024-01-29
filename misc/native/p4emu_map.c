@@ -249,7 +249,7 @@ int main(int argc, char **argv) {
         rrq.tp_frame_nr = (rrq.tp_block_size * rrq.tp_block_nr) / rrq.tp_frame_size;
         rrq.tp_retire_blk_tov = 1;
         if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_RX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable ring buffer");
-        ifaceMem[o] = mmap(NULL, (size_t)rrq.tp_block_size * rrq.tp_block_nr, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED, ifaceSock[o], 0);
+        ifaceMem[o] = mmap(NULL, (size_t)rrq.tp_block_size * rrq.tp_block_nr, PROT_READ | PROT_WRITE, MAP_SHARED, ifaceSock[o], 0);
         if (ifaceMem[o] == MAP_FAILED) err("failed to mmap ring buffer");
         ifaceIov[o] = malloc(rrq.tp_block_nr * sizeof (*ifaceIov[o]));
         if (ifaceIov[o] == NULL) err("failed to allocate iovec memory");
