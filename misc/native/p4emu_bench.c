@@ -77,6 +77,7 @@ int main(int argc, char **argv) {
         free(lin);
     }
     fclose(fil);
+    sleep(1);
     clock_t begin = clock();
     for (int i = 0; i < count; i++) {
         memcpy(&bufD[preBuff], &origD[0], origS);
