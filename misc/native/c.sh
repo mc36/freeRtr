@@ -2,7 +2,6 @@
 TR=../../binTmp
 UM=`uname -m`
 CC="tcc"                                #tcc
-CC="llc"                                #llc
 CC="gcc"                                #gcc
 CC="clang"                              #clang
 
@@ -35,16 +34,16 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 compileLib()
 {
 echo precompiling $1.
-$CC -Wall -c $MD $3 -o$TR/$1.lib $2 $1.c
-touch -d "2010-01-01 00:00:00" $TR/$1.lib || true
+$CC -fpic -shared -Wall $MD $3 -o$TR/lib$1.so $2 $1.c
+chmod -x $TR/lib$1.so
+touch -d "2010-01-01 00:00:00" $TR/lib$1.so || true
 }
 
 linkTwoLibs()
 {
 echo linking $1.
-$CC -Wall $MD -o$TR/$1.bin $TR/$2.lib $TR/$3.lib $4
+$CC -Wall -Wl,-rpath='$ORIGIN/' $MD -o$TR/$1.bin -L$TR -l$2 -l$3 $4
 strip $TR/$1.bin || true
-touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
 compileFile()
@@ -96,8 +95,6 @@ linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "$dpkdLibs"
 linkTwoLibs "p4bench" "p4emu_bench" "p4emu_full" "-lcrypto"
 
 linkTwoLibs "p4udp" "p4emu_udp" "p4emu_full" "-lpthread -lcrypto"
-
-rm $TR/*.lib
 
 for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpthread -lpcap" ""
