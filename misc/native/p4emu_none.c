@@ -9,9 +9,6 @@
 #include "p4emu_hdr.h"
 
 #include "utils.h"
-#include "table.h"
-#include "tree.h"
-#include "types.h"
 
 
 int dataPorts;
