@@ -6,6 +6,7 @@ sudo apt-get remove apparmor
 sudo apt-get autoremove
 sudo apt-get clean
 rm p4*.bin
+rm libp4*.so
 cd ~
 mkdir a
 wget -O a/rtr.zip http://src.mchome.nop.hu/rtr.zip
@@ -14,6 +15,7 @@ cd ~/a/misc/native
 mkdir ../../binTmp/
 ./c.sh
 mv ../../binTmp/p4*.bin ~/
+mv ../../binTmp/libp4*.so ~/
 cp ../p4emu/*.sh ~/
 cd ~
 rm -rf a/

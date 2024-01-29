@@ -29,6 +29,7 @@ select-dis linux-base.*
 select-dis linux-initramfs.*
 select-dis openssl.*
 select-dis systemd.*
+select-dis libsystemd.*
 select-dis libasound.*
 select-dis libavahi.*
 select-dis libcups.*

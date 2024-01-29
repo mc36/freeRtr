@@ -70,7 +70,7 @@ for fn in p4mnl_user; do
   compileFile $fn "" "-lpthread -lbpf -lmnl" ""
   done
 
-for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp; do
+for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map; do
   compileLib $fn "" ""
   done
 
@@ -95,6 +95,12 @@ linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "$dpkdLibs"
 linkTwoLibs "p4bench" "p4emu_bench" "p4emu_full" "-lcrypto"
 
 linkTwoLibs "p4udp" "p4emu_udp" "p4emu_full" "-lpthread -lcrypto"
+
+linkTwoLibs "p4map" "p4emu_map" "p4emu_full" "-lpthread -lcrypto"
+
+linkTwoLibs "p4mapDbg" "p4emu_map" "p4emu_dbg" "-lpthread -lcrypto"
+
+linkTwoLibs "p4mapPkt" "p4emu_map" "p4emu_none" "-lpthread -lcrypto"
 
 for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpthread -lpcap" ""
