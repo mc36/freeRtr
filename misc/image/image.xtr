@@ -1,3 +1,4 @@
+select-one libpcap0.8                     #dataplane requirement
 select-one libbpf0                        #dataplane requirement
 select-one libmnl0                        #dataplane requirement
 select-one librte-meta-all                #dataplane requirement
