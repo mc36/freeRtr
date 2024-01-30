@@ -27,4 +27,4 @@ exec for a in `busybox --list`; do ln -s ../usr/bin/busybox %tmp%/bin/$a; done
 exec cp -r ../misc %tmp%/
 exec cp /usr/bin/qemu-%qemu%-static %tmp%/
 
-exec echo sudo chroot --userspec=1000:1000 %tmp% /qemu-%qemu%-static /bin/sh /misc/image/image.crs > %tmp%/r.sh
+exec echo sudo chroot --userspec=`id -u`:`id -g` %tmp% /qemu-%qemu%-static /bin/sh /misc/image/image.crs > %tmp%/r.sh
