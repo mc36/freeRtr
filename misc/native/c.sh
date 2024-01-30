@@ -53,8 +53,6 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 
 
 
-compileFile "vm2" "" "" ""
-
 for fn in p4xdp_pass p4xdp_drop p4xdp_kern p4mnl_kern; do
   compileBpf $fn
   done
@@ -111,6 +109,6 @@ for fn in ptyRun; do
   compileFile $fn "" "-lutil" ""
   done
 
-for fn in dummyCon daemonRun; do
+for fn in dummyCon daemonRun vm2; do
   compileFile $fn "" "" ""
   done
