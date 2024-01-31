@@ -3,7 +3,6 @@ exec cp rtr.ver %tmp%/rtr/
 exec cd %tmp%/rtr/;tar xf ../../binImg/rtr-%unam%.tar
 
 catalog-read sid xz %mirr% sid main
-catalog-read exp xz %mirr% experimental main
 catalog-sum
 
 select-dis debconf.*
