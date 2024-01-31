@@ -41,6 +41,7 @@ linkTwoLibs()
 echo linking $1.
 $CC -Wall -Wl,-rpath='$ORIGIN/' $MD -o$TR/$1.bin -L$TR -l$2 -l$3 $4
 strip $TR/$1.bin || true
+touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
 compileFile()
