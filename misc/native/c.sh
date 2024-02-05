@@ -30,16 +30,17 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 
 compileLib()
 {
-echo precompiling $1.
-$CC -fpic -shared -Wall $MD $3 -o$TR/lib$1.so $2 $1.c
-chmod -x $TR/lib$1.so
+echo compiling $1.
+$CC -fpic -shared -Wall -Wl,--build-id=none $MD $3 -o$TR/lib$1.so $2 $1.c
+chmod -x $TR/lib$1.so || true
+strip $TR/lib$1.so || true
 touch -d "2010-01-01 00:00:00" $TR/lib$1.so || true
 }
 
 linkTwoLibs()
 {
 echo linking $1.
-$CC -Wall -Wl,-rpath='$ORIGIN/' $MD -o$TR/$1.bin -L$TR -l$2 -l$3 $4
+$CC -Wall -Wl,-rpath='$ORIGIN/' -Wl,--build-id=none $MD -o$TR/$1.bin -L$TR -l$2 -l$3 $4
 strip $TR/$1.bin || true
 touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
@@ -47,7 +48,7 @@ touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 compileFile()
 {
 echo compiling $1.
-$CC -Wall $MD $4 -o$TR/$1.bin $2 $1.c $3
+$CC -Wall -Wl,--build-id=none $MD $4 -o$TR/$1.bin $2 $1.c $3
 strip $TR/$1.bin || true
 touch -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
