@@ -112,7 +112,7 @@ public class prtRedun implements Runnable {
         l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|-|" + bits.padBeg(bits.toHexD(magic), 8, "0") + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.changes + "|" + ifc.last.magic + "|" + bits.timePast(ifc.heard));
+            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.changes + "|" + bits.padBeg(bits.toHexD(ifc.last.magic), 8, "0") + "|" + bits.timePast(ifc.heard));
         }
         return l;
     }
@@ -494,19 +494,19 @@ class prtRedunIfc implements ifcUp {
                 break;
             case packRedundancy.typFilBeg:
                 try {
-                filRx.close();
-            } catch (Exception e) {
-            }
-            try {
-                filRx = new RandomAccessFile(filNm, "rw");
-                filRx.seek(0);
-                filRx.setLength(0);
-            } catch (Exception e) {
-                logger.error("unable to open file");
+                    filRx.close();
+                } catch (Exception e) {
+                }
+                try {
+                    filRx = new RandomAccessFile(filNm, "rw");
+                    filRx.seek(0);
+                    filRx.setLength(0);
+                } catch (Exception e) {
+                    logger.error("unable to open file");
+                    break;
+                }
+                doAck(-2);
                 break;
-            }
-            doAck(-2);
-            break;
             case packRedundancy.typFilDat:
                 int i = pck.msbGetD(0);
                 int o = pck.msbGetW(4);
@@ -523,29 +523,29 @@ class prtRedunIfc implements ifcUp {
                 doAck(i);
                 break;
             case packRedundancy.typFilEnd:
-            try {
-                filRx.close();
-            } catch (Exception e) {
-                logger.error("unable to close file");
-                break;
-            }
-            filRx = null;
-            a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
-            if (a.equals(packRedundancy.fnShow)) {
-                lastFileHash = filNm;
+                try {
+                    filRx.close();
+                } catch (Exception e) {
+                    logger.error("unable to close file");
+                    break;
+                }
+                filRx = null;
+                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+                if (a.equals(packRedundancy.fnShow)) {
+                    lastFileHash = filNm;
+                    doAck(-3);
+                    break;
+                }
+                String b = prtRedun.wireName2fileName(a);
+                logger.info("received file " + a + " as " + b);
+                if (b == null) {
+                    logger.error("got invalid filename");
+                    break;
+                }
+                userFlash.copy(filNm, b, true);
+                userFlash.delete(filNm);
                 doAck(-3);
                 break;
-            }
-            String b = prtRedun.wireName2fileName(a);
-            logger.info("received file " + a + " as " + b);
-            if (b == null) {
-                logger.error("got invalid filename");
-                break;
-            }
-            userFlash.copy(filNm, b, true);
-            userFlash.delete(filNm);
-            doAck(-3);
-            break;
             case packRedundancy.typSumReq:
                 a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
                 b = prtRedun.wireName2fileName(a);
