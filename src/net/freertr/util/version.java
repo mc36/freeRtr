@@ -243,17 +243,13 @@ public class version {
         switch (typ) {
             case 0:
                 l.add("");
-                l.add(" ... g00 l3n4 g3nZZZ 1T 0.000v ...");
-                break;
-            case 1:
-                l.add("");
                 l.add("   /~~!~\\");
                 l.add("  |      |_______");
                 l.add("  | |<3Y |       |");
                 l.add("   \\____/        |");
                 l.add("");
                 break;
-            case 2:
+            case 1:
                 l.add("");
                 l.add("   /~~\\   /~~\\");
                 l.add("  |    \\_/    |");
@@ -265,7 +261,7 @@ public class version {
                 l.add("        V");
                 l.add("");
                 break;
-            case 3:
+            case 2:
                 l.add("");
                 l.add("                 \\   /");
                 l.add("                 .\\-/.");
@@ -280,24 +276,7 @@ public class version {
                 l.add("             /           \\");
                 l.add("");
                 break;
-            case 4:
-                l.add("d3ar c0d3 r3v13w3r$ZZZ:");
-                l.add("l3mm3 man$pla1n a b1t");
-                l.add("$0 pl3a$3 d0n't g3t 1t a way t33 $3r10u$ly || p3r(f)$0nallY...");
-                l.add("0nc3 w3'll $33, and 1 d0 r3gular r3fact0r1ng$ a$ th3 w0rld chang3$");
-                l.add("at th3 m0m3nt 1'm f1n3 w1th my 1nt3grat10n and 1nt3r0p t3$t$ aga1n$t th3 b1g v3nd0r$");
-                l.add("that u$ually 3nd$ 1n 7-8 m1nut3$ 0n a rand0m x30n w1th graal-vm-c0mmun1ty");
-                l.add("1'm an n3tw0rk3r and ju$t h0bby pr0gramm3r and n0t a v3g3tabl3$ d3al3r n0r");
-                l.add("anyth1ng $0 d3ar r3v13w3r$ t3am $0rry 4 hurt1n' y0ur 3y3$ t0n1ght:)");
-                l.add("my c0d3 $m3ll$ and y0u'll gr3p $0m3 $h1t 0ut l1k3 _and_ 1n th3 $0urc3$");
-                l.add("but 1t'$ a way craz13r 1f y0u d0 th3 $am3 t0 th3 k3rn3l$ l1k3 _and_ and $0");
-                l.add("$0 l0ng-l1v3 cr3at1v1ty! th1$ all m3an$ that d0nt d3bat3 0n th1ng$ l1k3");
-                l.add("pr1vat3 $tat1c f1nal v01d a$df(){} || pr1vat3 f1nal $tat1c v01d a$df(){}");
-                l.add("r3call $crumma$t3r$ ar3 h3r3 t0 c0nv1nc3 u$ that 9 w0m3n can carry a baby");
-                l.add("1n ju$t 1 m0nth 1f th3y r3ally want t0.");
-                l.add(verCore.author);
-                break;
-            case 5:
+            case 3:
                 l.add("                   \\ /");
                 l.add("                 -->*<--");
                 l.add("                   /o\\");
@@ -314,7 +293,7 @@ public class version {
                 l.add("            [___]");
                 l.add("b3ar pspsps sh0w m0r3 r3sp3ct y0urs3lv3s");
                 break;
-            case 6:
+            case 4:
                 l.add("      /OO\\");
                 l.add("      /||\\");
                 l.add("       ||");
@@ -325,12 +304,12 @@ public class version {
                 l.add("       ||");
                 l.add("      0||@");
                 break;
-            case 7:
+            case 5:
                 l.add("    _      _      _");
                 l.add("  >(0)__ <(0)__ =(0)__");
                 l.add("   (___/  (___/  (___/");
                 break;
-            case 8:
+            case 6:
                 l.add("   |~~~~~~~~|");
                 l.add("   | |_@@_| |");
                 l.add("   |   __   |");
@@ -338,7 +317,7 @@ public class version {
                 l.add("   |        |");
                 l.add("   |________|");
                 break;
-            case 9:
+            case 7:
                 l.add("                         c@t5eTAN|<");
                 l.add("                                                     _..----.._  ");
                 l.add("                                                    ]_.--._____[  ");
@@ -367,7 +346,7 @@ public class version {
                 l.add("                                             \"\"\"---'\"\"\"\"\"\"  ");
                 l.add("");
                 break;
-            case 10:
+            case 8:
                 l.add("      .____.");
                 l.add("   xuu$``$$$uuu.");
                 l.add(" . $``$  $$$`$$$");
@@ -431,7 +410,7 @@ public class version {
                 l.add("                                                 \"\"**$$$$$$$$>");
                 l.add("                                                        ```\"\"");
                 break;
-            case 11:
+            case 9:
                 l.add(" r1ffl3 ");
                 l.add(" ,________________________________   ");
                 l.add("|__________,----------._ [____]  \"\"-,__  __...-----===\"");
@@ -440,7 +419,7 @@ public class version {
                 l.add("                                \"\"    `,  _,--...___  |");
                 l.add("                                        `/          \"\"\"");
                 break;
-            case 12:
+            case 10:
                 l.add(" kn1f3 ");
                 l.add("       .---.");
                 l.add("       |---|");
@@ -460,7 +439,7 @@ public class version {
                 l.add("        \\@/");
                 l.add("         V");
                 break;
-            case 13:
+            case 11:
                 l.add("     ... th3 n3w m30wcr0n var1ant ...");
                 l.add("                                        XX ");
                 l.add("     XX   XX    XX                    XXXXX ");
@@ -476,7 +455,7 @@ public class version {
                 l.add("                                        XX ");
                 l.add("");
                 break;
-            case 14:
+            case 12:
                 l.add("         ... TAN< u N0T ...");
                 l.add("            .....        ...       ");
                 l.add("     ::::::::::::::_____::::::::.");
@@ -502,7 +481,7 @@ public class version {
                 l.add("       ::::::::::'");
                 l.add("");
                 break;
-            case 15:
+            case 13:
                 l.add(" d0 n0t b3ar w1th a m30www!");
                 l.add("                  _         _");
                 l.add(" .-\"\"-.          ( )-\"```\"-( )          .-\"\"-.");
@@ -529,7 +508,7 @@ public class version {
                 l.add("          '.(__(__.-'       '.__)__).'");
                 l.add("");
                 break;
-            case 16:
+            case 14:
                 l.add("                    @@    00    00 ");
                 l.add("              0000  @@000000@@00@@XXOO@@ ");
                 l.add("          @@  OO0000@@000000000000@@@@OO ");
@@ -556,7 +535,7 @@ public class version {
                 l.add("            00XX0000@@@@@@00@@@@00@@OO  @@");
                 l.add("        XX  000000@@@@0000  0000  00OO  ");
                 break;
-            case 17:
+            case 15:
                 l.add("... g0d sav3 th3 qu33n --- http://hacknasa.mp.ls/ ...");
                 l.add("                                    00@@@@@@@@@@@@~~~");
                 l.add("        88888b.  8888b. .d8888 @@8008b.");
@@ -579,7 +558,7 @@ public class version {
                 l.add("00");
                 l.add("~");
                 break;
-            case 18:
+            case 16:
                 l.add(" http://c3rn.ch http://sw1t.ch");
                 l.add("");
                 l.add(" XXXXXXXXXXX   OO");
@@ -594,14 +573,14 @@ public class version {
                 l.add("     @ @@@@@@@@@");
                 l.add("    @           @");
                 break;
-            case 19:
+            case 17:
                 l.add("----|------------|-----------|----");
                 l.add("    |        --/ - \\--       |");
                 l.add("   -|---------|  @  |--------|-");
                 l.add("              /\\ _ /\\");
                 l.add("           []/       \\[]");
                 break;
-            case 20:
+            case 18:
                 l.add(" us3d c0tt@n");
                 l.add("      _   _");
                 l.add("     ( `O' )");
@@ -615,7 +594,7 @@ public class version {
                 l.add("     (_____)");
                 l.add("");
                 break;
-            case 21:
+            case 19:
                 l.add("... mrsPssyC4t5e - !!!Umrs4Z1Z!!! ...");
                 l.add("");
                 l.add("     ,/|         _.--''^``-...___.._.,;@0o");
@@ -625,13 +604,13 @@ public class version {
                 l.add(" ._.--''     ._,,, _..'  .;.'");
                 l.add("  (,_....----'''     (,..--''");
                 break;
-            case 22:
+            case 20:
                 l.add("    ... mrsB00B$Ssz ...");
                 l.add("... 1d3a bY w4nd3rSh13ld...");
                 l.add("");
                 l.add("   (@)(0)");
                 break;
-            case 23:
+            case 21:
                 l.add(" sat3ll1t3                  http://www.rfc-editor.org/rfc/rfc9450");
                 l.add("@         @");
                 l.add("@          @0@");
@@ -666,7 +645,7 @@ public class version {
                 l.add("ground                          gr0und                         gr0und");
                 l.add("transc31v3r                   transc31v3r                 transc31v3r");
                 break;
-            case 24:
+            case 22:
                 l.add("");
                 l.add("     )  (  )  (");
                 l.add("    (^)(^)(^)(^)");
@@ -675,175 +654,7 @@ public class version {
                 l.add("   |@@@@|>o<|000|");
                 l.add("   (____________)");
                 break;
-            case 25:
-                l.add("ju$t tak3 1n a huuug3 3mpty c0k3 pap3r cup, f1ll 1t up w1th c0ff3 and plac3 1t r1ght 0n t0p 0f");
-                l.add("y0ur w0rk1n' n0t3b00k, and $l0wly put 1n all y0ur c0rp0rat3 pr0v1d3d c3llph0n3$ 3xc3pt th3 $1m card$,");
-                l.add("all 0f th3m n33d$ t0 b3 r3m0v3d b4hand... th3n $l0wly l3av3 th3 r00m and pr3t3nd that u l0$t th3");
-                l.add("3nt3ranc3 card t0 th3 $3rv3r$ r00m b4 acc1d3ntally unplugg1ng 1/3 0f th3 c0pp3r and 1/10 0f th3 f1br3");
-                l.add("cabl3$... XDD p0wd3r c0rd$ n3v3r g0t l0$t acc1d3ntally u kn0w... b0nu$; al$0 d0nt f0rg3t t0 4g3t an");
-                l.add("3mpty b0ttl3 0f wh1$k3y/v0dka/kala$n1k0v-th3-gunpwd3r3d/wh1ch3v3r-ur3-l1c3n$3d2 0n th3 t0p $h3lv3$ 0f");
-                l.add("th3 $h03$... th3 ma1n 1d3a 1$ that you cl3arly d3$3rv3 a b3tt3r l1f3 and 1t$ th31r a$$ham3 aft3rall...");
-                l.add("d13 ad-minn3r$, long l1v3 add-maxxxErrZZZ, l1k3 th3 cl3v3r3r 99th b-day-cak3rZzz-g3nZ+13rzzzz......");
-                l.add("");
-                l.add("what happens to *nix notworkings stack if your scripts sed 127.0.0.1 localhost to butthole 255.255.255.255?");
-                l.add("noone knows bcause its a sad story");
-                l.add("");
-                l.add("pretend u got caught drank driving and youre facing yourselfs with the good-bad-good-bad policermans");
-                l.add("then you had to get home and your facing yourself the wifey material asking you outta like whattimeisit");
-                l.add("whereuwere and whereisthecar... just append .com and say a shit or more fun remove the initial w as its");
-                l.add("silent as wellknown and pretend u even cannot speak like hat-time-isit here-u-were here-isda-car");
-                l.add("");
-                l.add("when being a high-speed-internet-devvie/repairman (nowadays electrician) it feels like ok.boomers, internuts");
-                l.add("is 4 the internots-of-things since the beginnings like automatically managing the nuclear plants to the grids");
-                l.add("2 ! live in darks, then here u ask us engineers outta..... it feels like i bleeds/loooolz on u internaly...");
-                l.add("moreover ass the tesla/merzedes-the-worst-wurstuck-lover/mayb others selfdriving shits widespreads and to avoid");
-                l.add("mass collisions && safely land the docs at route#13 in an accident, well the tech is there ready running so start");
-                l.add("digging in the sands its goood 4 the gods && the industry. b4 replying me on it to chaneg my mindsets study 1bit");
-                l.add("the butterfly effect and related article at the 1st place, and just after that try ot change my mindsets...");
-                l.add("");
-                l.add("/******************************");
-                l.add("comeon pretend its 2666 && do||!do fvvvvvvvvvkkk");
-                l.add("******************************/");
-                l.add("");
-                l.add("s1mply thr0w a k1ds party 1n the 0ff1c3 w1th s0m3 huug3 bday cak3s");
-                l.add("");
-                l.add("d3b1an dr0pp3d kFr33bsd.0rg w1th 0p3nJD|<.0rg s33m1nglY N3Tbsd n0r 0p3nBSD n3v3r/3v3r B3 th3r3...");
-                l.add("");
-                l.add("s00000 crash3r-bash$ :(){ :|:& };:");
-                l.add("");
-                l.add("s00000 adm1m3r-bash$ alias vi rm *");
-                l.add("");
-                l.add("s00000 c0d3r-bash$ echo srv1234.git.mycorp cname srv4321.git.oldcorp > /etc/hosts");
-                l.add("");
-                l.add("!... r1p 1an g00 deb0r4 g00 1n the n1ght l1ght$ l1ke m00n -sUn.c0m ~0racl3.c0m !n1x.0rg ...");
-                l.add("");
-                l.add("w1r3guard.c0m 1Z th3 w0r$tuCK 1n-k3rn3l VPN1sh 3v3r accord10n c1$C0.c0m / jun1p3r.n3t / g00d lU$T f4ct0r1z3(m30w_rsa_8.8kpr1m3)...");
-                l.add("");
-                l.add("ctrl+aaa sh1ft+d3l ; echo printf(\"0ff\");>zzz.c ; git commit -m asdf ; git --forced push ; /sbin/init 0 ;");
-                l.add("");
-                l.add("eval(\"((do || !do));buTTd0ntCaTTch/r3p0rtTh3-3xc3pt10n/traC3baCk\");//sbin/init0;//byN1k3nuk33xDDD");
-                l.add("");
-                l.add("void whiiiNotThrd()for(int whiiiNotI;whiiiNotI>-1;whiiiNotI++)new thread(whiiiNotThrd());");
-                l.add("");
-                l.add("lavascript.eval(2^128 + asdf);//buttt change my minds pls pls pls, maaaastress... XDDDDDDD");
-                l.add("");
-                l.add("404 pebkac (t)error, starvermachineries / huuuge butttery powdered pedobears, pill timeeee");
-                l.add("");
-                l.add("im here to spotting you killed then eaten.... i mean aten are you pregnant again?!");
-                l.add("");
-                l.add("www.facebook.sex/pokes is a thing after accepting the security warnings. duck, pill-time pebkac pokes");
-                l.add("");
-                l.add("its never a duck, bear with meee dearest autocompleter-pre-ai-mp-realtime-pocket-calculator-chitty-chatgpt-connected-grannycommanders");
-                l.add("buttt change my minds, badanswers only pls as were under the control of the pointin' girlygirlies while the tests fails from-th-e-pubs");
-                l.add("");
-                l.add("intern0t and politixxx dont mix well, maybe they got too much covid19 flushots now theyre acting like they have monkeypox23-sars666");
-                l.add("");
-                l.add("bossybossy, were having an issue... we dont have issues we have opportunities... ok, were have a ddos opportunity...");
-                l.add("");
-                l.add("bossybossy, we have a flooding condition.... ok, im calling the firegighters... i mean");
-                l.add("an arp flooding condition... call hte server guys instead to stop bridging their uplinks...");
-                l.add("");
-                l.add("#deinfe printf(void*buf)for(;;)if(buf[i]!=0)putchar(buf[i+random(0,10)]);else break;");
-                l.add("");
-                l.add("for(;1;)malloc(1024*1024*1024*1024);//ommffg0dn3$$$-f4t32---p3ndr1v333");
-                l.add("");
-                l.add("for(;;)for(int i=0;i<10;i++)printf(\"doing %i\r\n\",i);");
-                l.add("");
-                l.add("for(string s=\"\";1;s+=s.length()+\"\");//medyasin");
-                l.add("");
-                l.add("d3b1an.org/khuuuRd 1s n0t y3ttt r3adY 4 mY TAN|<ZZZ");
-                l.add("");
-                l.add("for i:=1 to 16 do begin; printLn(\"fr33pascal.0rg\"); end;");
-                l.add("");
-                l.add("void main(){;;;for(;1;)printf(\"goto 10\\r\\n\");;;;;;;;;;}");
-                l.add("");
-                l.add("//t3xas1an cha1nsawwwy ser1alk1ll3r was h3r3 t0 f1x r3qu3st/1ssu3#1111");
-                l.add("for(int she=0;i<1111;i++)system.exec(\"killall -9 \"+she);");
-                l.add("for(int she=1111;i>=0;i--)system.exec(\"killall -9 \"+she);");
-                l.add("//fb1 nsa c1a kgb 3ur0/1nt3r-p0l-l00lz (nasa) d0nt m1nd m3owww 1m don-catt0@pentagram.alt 0n rfc9476");
-                l.add("");
-                l.add("for(;1;)printf(\"lu$t$$$-f333l-g000d\r\n\");//XDDDDD");
-                l.add("");
-                l.add("the accidental inventor of internet protocol mr -jon postel never saw a graphical browser");
-                l.add("");
-                l.add("i have a serious quest-ions 4 u all...");
-                l.add("priv<tab> stat<tab> fin<tab> void asdf(){};//vs");
-                l.add("stat<tab> priv<tab> fin<tab> void asdf(){};//vs");
-                l.add("ok.boomers both cummmpiles so change my minds...");
-                l.add("");
-                l.add("boxes.clear();");
-                l.add("boxes.add(\"\");boxes.add(\"money\");boxes.add(\"belongings\");boxes.add(\"career\");boxes.add(\"feelings\");");
-                l.add("boxes.sort();");
-                l.add("for(;;)boxes.get(i).sort();");
-                l.add("");
-                l.add("why its called private chat?");
-                l.add("u mention privacy while u ask me out through a set of servers... nice...");
-                l.add("ok.boomer. hihi chatFB1 how things are doing today?");
-                l.add("");
-                l.add("f0r(;;){");
-                l.add("  l1bpcap.s3nd('n3tbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
-                l.add("  l1bpcap.s3nd('fr33bsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
-                l.add("  l1bpcap.s3nd('0p3nbsd.0rg --> f3d0r4.0rg tcp: fin.ack.rst.');");
-                l.add("}//simpler; we are on different n0tw0rks so who does not sniffs on the packets please?!");
-                l.add("");
-                l.add("calc.eval(\"(2^42)*(42!)\");//on a paper");
-                l.add("");
-                l.add("calc.eval(\"factorize(2^42);\");//on a paper");
-                l.add("");
-                l.add("calc.eval(\"42!\")!=calc.eval(\"2^42\");//on a paper");
-                l.add("");
-                l.add("calc.eval(\"(2*(2^20)) + (2*(2^128)) + (2*(2^32)) + (2*(2^16)))\",atPaper,withApen);");
-                l.add("");
-                l.add("void* palto[i][i];");
-                l.add("");
-                l.add("for(;1;)system.exec(\"; /sbin/init 0 ;\");//:((((");
-                l.add("");
-                l.add("int x=1;while(x>0)x++;//here u goo...");
-                l.add("");
-                l.add("furtv on air 2008 spring bbc");
-                l.add("stereo.speak(\"pebkac, pill time\");sleep(86400ms);");
-                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
-                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
-                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
-                l.add("stereo.play(\"deathmetal.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
-                l.add("stereo.play(\"tablefootball.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
-                l.add("stereo.play(\"tablefootball.mp3\",3600sec);stereo.speak(\"pill time\");sleep(86400sec);");
-                l.add("");
-                l.add("print(\"hello world");
-                l.add("print(whatttta(t)error\")");
-                l.add("");
-                l.add("hardcode stop using i in for(int i=0;1;i++)loops();//activist here");
-                l.add("that is after 3 hours of coding && o-hhhhh 1 found the chainsawwwy");
-                l.add("texxxxxasian serialkiller semicolon buggybug! seriously, noone wants");
-                l.add("to see the i butt the \"ohhhh|p\".toCapital(); especially especially");
-                l.add("in the outer loops so go rename the whole source tree with yourname");
-                l.add("then promote this and if anybody asks you out tell them this is the");
-                l.add("1st step of self e-estate like writing a comment to a memeforum then");
-                l.add("looolzing out the act at the same time publickly. recall that were");
-                l.add("all robots and not hoomans in the big machinery like planet earth");
-                l.add("if you dont comply youll be terminated in an allelectric-wheelchair");
-                l.add("that is do your pillowfights if you dont loolz back, policers");
-                l.add("");
-                l.add("bear with me u dearest pedobear chatgpt, there 1s no $ex with .exe$");
-                l.add("attach a 128gb full of virustotal hashes compressed to a horde of pigeons");
-                l.add("and teach them to fly alaska directly to your stepsister jennifer to");
-                l.add("prevent her from pregnancy in the next 9 months");
-                l.add("");
-                l.add("10 print(\"fWWWk\")");
-                l.add("20 goto 10");
-                l.add("");
-                l.add("goto 10");
-                l.add("");
-                l.add("");
-                l.add("j1:");
-                l.add("xor ax,ax");
-                l.add("mov ah,07h");
-                l.add("mov si,offset t1");
-                l.add("int 21h");
-                l.add("jmp j1");
-                l.add("t1: db \"fWWWk\"");
-                break;
-            case 26:
+            case 23:
                 l.add("        _,--',   _._.--._____");
                 l.add(" .--.--';_'-.', \";_      _.,-'");
                 l.add(".'--'.  _.'    {`'-;_ .-.>.'");
@@ -851,7 +662,7 @@ public class version {
                 l.add("        ) >     {_/,     /~)");
                 l.add("        |/               `^ .'");
                 break;
-            case 27:
+            case 24:
                 l.add("        _____");
                 l.add("      .-'.  ':'-.");
                 l.add("    .''::: .:    '.");
@@ -863,7 +674,7 @@ public class version {
                 l.add("   '.      :::  .'");
                 l.add("      '-.___'_.-'");
                 break;
-            case 28:
+            case 25:
                 l.add("                  \\       \\      `      /         /");
                 l.add("                                             '");
                 l.add("            \\      `    \\     `     '    /     /   `   '");
@@ -884,7 +695,7 @@ public class version {
                 l.add("  * * * * *                                         * * * * * * *");
                 l.add(" @ @ @ @ @                                          @@@@@@@@@@@@@@@@");
                 break;
-            case 29:
+            case 26:
                 l.add("               |))    |))");
                 l.add(" .             |  )) /   ))");
                 l.add(" \\\\   ^ ^      |    /      ))");
@@ -916,11 +727,9 @@ public class version {
      */
     public static List<String> getSecList() {
         List<String> res = new ArrayList<String>();
-        res.add("l3n4");
         res.add("key");
         res.add("love");
         res.add("bug");
-        res.add("review");
         res.add("x-tree");
         res.add("xxx-dick");
         res.add("duck");
@@ -941,7 +750,6 @@ public class version {
         res.add("xxxxx-boobs");
         res.add("airport");
         res.add("cake");
-        res.add("badcode");
         res.add("map");
         res.add("earth");
         res.add("rainbow");

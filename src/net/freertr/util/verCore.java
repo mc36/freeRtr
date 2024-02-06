@@ -18,12 +18,12 @@ public class verCore {
     /**
      * os name
      */
-    public final static String name = "freeRouter-rare";
+    public final static String name = "freeRouter";
 
     /**
      * author
      */
-    public final static String author = "sprscc13@mr.n0b0dy";
+    public final static String author = "sprscc13@mrn0b0dy";
 
     /**
      * current public key
@@ -80,41 +80,7 @@ public class verCore {
     /**
      * quotes text
      */
-    public final static String[] quotes = {
-        "",
-        "random quotes from random devvies like " + author + ":",
-        "respect the privacy of others, think before you type, the great power comes great responsibility",
-        "dont drive faster than your guardian angel can fly, so dont drop all the packets just some",
-        "there is no defence-fences on the wild-wild-clear-nets like the chinese-great-fire-walls",
-        "work to keep pokemons on a better inter-nuts not to kick them to the floor",
-        "security in obfuscation, obscurity or randomization so tech the world",
-        "true random comes from weather forecasts and political announcements",
-        "imagine that your 99th bday cake will be a rarely done beefsteak",
-        "f(l)ight add-mins @ addr(r)renaline-ma(r)xxx",
-        "debug emulate know test and use your sh1t",
-        "stupid question deserves stupid answers",
-        "isps best selling drugs are internets",
-        "fearless, stateless, self-containing",
-        "science does not stops evolving",
-        "do or not to do butt dont try",
-        "labbing hard and music heals",
-        "just use your brains",
-        "music music, noise noise",
-        "ignorance kills",
-        "make the world better",
-        "keep it stupid simple",
-        "let bloom all the flowers",
-        "we just living to die and develop",
-        "type safety and origins like assembly",
-        "isps best selling drugs are internets",
-        "isps equally hate internets as most of us",
-        "every tool could be used good or bad equally",
-        "internets seems to became pepopley, an utility",
-        "care about the bits and not the bits of the bits",
-        "packet delivery on the wild-wild-nets is best-effort, if any",
-        "if a machine can learn the value of human life, maybe we can too",
-        "be liberal in what you accept, and conservative in what you send",
-        "dont believe in oligarchy but in rough consensus and running code",};
+    public final static String[] quotes = {};
 
     /**
      * logo text
