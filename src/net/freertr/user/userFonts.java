@@ -101,16 +101,6 @@ public class userFonts {
     };
 
     /**
-     * image data
-     */
-    public final static String[] imageData = {
-        " ",
-        "o",
-        "O",
-        "0"
-    };
-
-    /**
      * terminal font filler
      */
     public final static String fontFiller = "X";

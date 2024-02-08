@@ -49,7 +49,7 @@ public class userFlash {
         File fil = new File(fn);
         List<String> res = null;
         try {
-            res = pipeWindow.imageText(fil, x, y, userFonts.imageData);
+            res = pipeWindow.imageText(fil, x, y);
         } catch (Exception e) {
             logger.traceback(e, "error converting " + fn);
         }

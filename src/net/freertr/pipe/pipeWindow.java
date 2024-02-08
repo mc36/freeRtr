@@ -8,12 +8,15 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import net.freertr.user.userFonts;
 import net.freertr.user.userScreen;
 import net.freertr.util.bits;
 import net.freertr.util.logger;
@@ -58,116 +61,6 @@ public class pipeWindow extends JPanel {
     }
 
     /**
-     * quantize one color
-     *
-     * @param orig original color
-     * @param pal palette to use
-     * @return quantized color
-     */
-    public static int roundDownTrueColor(int orig, int[] pal) {
-        double diff = Integer.MAX_VALUE;
-        int best = Integer.MAX_VALUE;
-        for (int i = 0; i < pal.length; i++) {
-            double c1[] = colRgb2cie(orig);
-            double c2[] = colRgb2cie(pal[i]);
-            double sr = c1[0] - c2[0];
-            double sg = c1[1] - c2[1];
-            double sb = c1[2] - c2[2];
-            double cur = (sr * sr) + (sg * sg) + (sb * sb);
-            if (cur > diff) {
-                continue;
-            }
-            best = i;
-            diff = cur;
-        }
-        return best;
-    }
-
-    private static double[] colRgb2cie(int col) {
-        double rgb[] = new double[3];
-        rgb[0] = ((col >> 16) & 0xff) / 255.0;
-        rgb[1] = ((col >> 8) & 0xff) / 255.0;
-        rgb[2] = ((col >> 0) & 0xff) / 255.0;
-        return colXyz2lab(colRgb2xyz(rgb));
-    }
-
-    private static double[] colRgb2xyz(double[] rgb) {
-        double vr = colPivotRgb(rgb[0]);
-        double vg = colPivotRgb(rgb[1]);
-        double vb = colPivotRgb(rgb[2]);
-        double x = vr * 0.4124564 + vg * 0.3575761 + vb * 0.1804375;
-        double y = vr * 0.2126729 + vg * 0.7151522 + vb * 0.0721750;
-        double z = vr * 0.0193339 + vg * 0.1191920 + vb * 0.9503041;
-        return new double[]{x, y, z};
-    }
-
-    private static double[] colXyz2lab(double[] xyz) {
-        double fx = colPivotXyz(xyz[0]);
-        double fy = colPivotXyz(xyz[1]);
-        double fz = colPivotXyz(xyz[2]);
-        double l = 116.0 * fy - 16.0;
-        double a = 500.0 * (fx - fy);
-        double b = 200.0 * (fy - fz);
-        return new double[]{l, a, b};
-    }
-
-    private static double colPivotXyz(double n) {
-        if (n > (216.0 / 24389.0)) {
-            return Math.cbrt(n);
-        } else {
-            return ((24389.0 / 27.0) * n + 16) / 116;
-        }
-    }
-
-    private static double colPivotRgb(double n) {
-        if (n <= 0.04045) {
-            return n / 12.92;
-        } else {
-            return Math.pow((n + 0.055) / 1.055, 2.4);
-        }
-    }
-
-    private final static int diffColorComponent(int curr, int orig, int shft) {
-        curr >>>= shft;
-        orig >>>= shft;
-        curr &= 0xff;
-        orig &= 0xff;
-        int diff = curr - orig;
-        if (diff < 0) {
-            diff = -diff;
-        }
-        return diff * diff;
-    }
-
-    /**
-     * quantize one color
-     *
-     * @param orig original color
-     * @param pal palette to use
-     * @return quantized color
-     */
-    public final static int trueColor2indexedColor(int orig, int[] pal) {
-        int best = -1;
-        int diff = 0x7fffffff;
-        for (int i = 0; i < pal.length; i++) {
-            int cur = pal[i];
-            if (cur == orig) {
-                return i;
-            }
-            int red = diffColorComponent(cur, orig, 16);
-            int grn = diffColorComponent(cur, orig, 8);
-            int blu = diffColorComponent(cur, orig, 0);
-            int dff = red + grn + blu;
-            if (diff < dff) {
-                continue;
-            }
-            diff = dff;
-            best = i;
-        }
-        return best;
-    }
-
-    /**
      * convert image to ansi
      *
      * @param ps pipe to draw
@@ -176,42 +69,28 @@ public class pipeWindow extends JPanel {
      * @return converted ansi
      */
     public static userScreen imageAnsi(pipeSide ps, File fil, int[] chr) {
-        int chs = chr.length;
-        String[] str = new String[chs];
-        for (int i = 0; i < chs; i++) {
-            str[i] = "" + chr[i];
-        }
         userScreen scr = new userScreen(ps);
         scr.putCls();
         scr.putCur(0, 0);
         try {
             BufferedImage img1 = ImageIO.read(fil);
-            int sx = scr.sizX / 2;
-            BufferedImage img2 = scaleImage(img1, sx, scr.sizY, BufferedImage.TYPE_INT_RGB);
-            List<String> img3 = imageText(img2, sx, scr.sizY, str);
-            int[][] img4 = colorImage(img2);
-            int txtS = img3.size();
+            BufferedImage img2 = scaleImage(img1, scr.sizX, scr.sizY, scr.ansP);
+            int[][] img3 = colorImage(img2);
             for (int cy = 0; cy < scr.sizY; cy++) {
-                if (cy >= txtS) {
+                if (cy >= img3.length) {
                     continue;
                 }
-                String a = img3.get(cy);
-                byte[] b = a.getBytes();
-                int mx = b.length;
-                for (int cx = 0; cx < sx; cx++) {
-                    int px = cx * 2;
-                    if (cx >= mx) {
+                for (int cx = 0; cx < scr.sizX; cx++) {
+                    if (cx >= img3[0].length) {
                         continue;
                     }
                     int i;
                     try {
-                        i = img4[cy][cx];;
+                        i = img3[cy][cx];;
                     } catch (Exception e) {
                         i = 0;
                     }
-                    int o = trueColor2indexedColor(i, scr.ansP);
-                    scr.putInt(px, cy, false, o, chr[bits.random(0, chs)]);
-                    scr.putInt(px + 1, cy, false, o, chr[bits.random(0, chs)]);
+                    scr.putInt(cx, cy, false, i, chr[bits.random(0, chr.length)]);
                 }
             }
         } catch (Exception e) {
@@ -227,11 +106,13 @@ public class pipeWindow extends JPanel {
      * @param fil file
      * @param maxX max x value
      * @param maxY max y value
-     * @param chrs chars to use
      * @return converted text
      */
-    public static List<String> imageText(File fil, int maxX, int maxY, final String[] chrs) {
+    public static List<String> imageText(File fil, int maxX, int maxY) {
         BufferedImage img1 = null;
+        char[] chr = new char[2];
+        chr[0] = 0x20;
+        chr[1] = 0x30;
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
@@ -240,21 +121,27 @@ public class pipeWindow extends JPanel {
         if (img1 == null) {
             return new ArrayList<String>();
         }
-        return imageText(img1, maxX, maxY, chrs);
+        return imageText(img1, maxX, maxY, chr);
     }
 
-    private static BufferedImage scaleImage(BufferedImage img1, int maxX, int maxY, int col) {
+    private static BufferedImage scaleImage(BufferedImage img1, int maxX, int maxY, int[] col) {
+        byte[] cls = new byte[col.length * 3];
+        for (int i = 0; i < col.length; i++) {
+            cls[i * 3 + 0] = (byte) (col[i] >>> 16);
+            cls[i * 3 + 1] = (byte) (col[i] >>> 8);
+            cls[i * 3 + 2] = (byte) col[i];
+        }
+        IndexColorModel icm = new IndexColorModel(8, col.length, cls, 0, false);
         BufferedImage img2;
         if ((maxX < 1) || (maxY < 1)) {
             maxX = img1.getWidth();
             maxY = img1.getHeight();
-            img2 = new BufferedImage(maxX, maxY, col);
+            img2 = new BufferedImage(maxX, maxY, BufferedImage.TYPE_BYTE_INDEXED, icm);
         } else {
             maxX = (img1.getWidth() / maxX) + 1;
             maxY = (img1.getHeight() / maxY) + 1;
-            maxX /= 2;
             int tmp = maxX < maxY ? maxY : maxX;
-            img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, col);
+            img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_BYTE_INDEXED, icm);
         }
         Graphics2D g = img2.createGraphics();
         g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
@@ -266,31 +153,18 @@ public class pipeWindow extends JPanel {
         return img2;
     }
 
-    private static int[][] colorImage(BufferedImage img2) {
-        int[][] img3 = new int[img2.getHeight()][img2.getWidth()];
+    private static int[][] colorImage(BufferedImage img1) {
+        byte[] img2 = ((DataBufferByte) img1.getRaster().getDataBuffer()).getData();
+        int[][] img3 = new int[img1.getHeight()][img1.getWidth()];
+        int p = 0;
         for (int y = 0; y < img3.length; y++) {
             for (int x = 0; x < img3[0].length; x++) {
-                int v = img2.getRGB(x, y);
+                int v = img2[p];
                 img3[y][x] = v;
+                p++;
             }
         }
         return img3;
-    }
-
-    private static int grayImage(int[][] img2) {
-        int q = 0;
-        for (int y = 0; y < img2.length; y++) {
-            for (int x = 0; x < img2[0].length; x++) {
-                int v = img2[y][x];
-                if (v < 0) {
-                    v = -v;
-                }
-                if (q < v) {
-                    q = v;
-                }
-            }
-        }
-        return q;
     }
 
     /**
@@ -302,21 +176,15 @@ public class pipeWindow extends JPanel {
      * @param chrs chars to use
      * @return converted text
      */
-    public static List<String> imageText(BufferedImage img1, int maxX, int maxY, final String[] chrs) {
+    public static List<String> imageText(BufferedImage img1, int maxX, int maxY, final char[] chrs) {
         List<String> txt = new ArrayList<String>();
-        txt.add("needed=" + maxX + "x" + maxY);
-        BufferedImage img2 = scaleImage(img1, maxX, maxY, BufferedImage.TYPE_USHORT_GRAY);
+        BufferedImage img2 = scaleImage(img1, maxX, maxY, userFonts.colorMono);
         int[][] img3 = colorImage(img2);
-        int q = grayImage(img3);
         for (int y = 0; y < img3.length; y++) {
             String a = "";
             for (int x = 0; x < img3[0].length; x++) {
                 int v = img3[y][x];
-                v = (v * (chrs.length - 1)) / q;
-                if (v < 0) {
-                    v = -v;
-                }
-                a += chrs[v];
+                v = v * (chrs.length - 1);
                 a += chrs[v];
             }
             txt.add(a);
