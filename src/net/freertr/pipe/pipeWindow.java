@@ -132,17 +132,10 @@ public class pipeWindow extends JPanel {
             cls[i * 3 + 2] = (byte) col[i];
         }
         IndexColorModel icm = new IndexColorModel(8, col.length, cls, 0, false);
-        BufferedImage img2;
-        if ((maxX < 1) || (maxY < 1)) {
-            maxX = img1.getWidth();
-            maxY = img1.getHeight();
-            img2 = new BufferedImage(maxX, maxY, BufferedImage.TYPE_BYTE_INDEXED, icm);
-        } else {
-            maxX = (img1.getWidth() / maxX) + 1;
-            maxY = (img1.getHeight() / maxY) + 1;
-            int tmp = maxX < maxY ? maxY : maxX;
-            img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_BYTE_INDEXED, icm);
-        }
+        maxX = (img1.getWidth() / maxX) + 1;
+        maxY = (img1.getHeight() / maxY) + 1;
+        int tmp = maxX < maxY ? maxY : maxX;
+        BufferedImage img2 = new BufferedImage(img1.getWidth() / tmp, img1.getHeight() / tmp, BufferedImage.TYPE_BYTE_INDEXED, icm);
         Graphics2D g = img2.createGraphics();
         g.drawImage(img1, 0, 0, img2.getWidth(), img2.getHeight(), null);
         g.dispose();
