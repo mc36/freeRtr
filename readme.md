@@ -8,8 +8,9 @@ more about the project at [www.freertr.org](http://www.freertr.org/)
 
 you can find the same source tree at various locations, normally all should be the same:
 * http://src.freertr.org/src/
-* http://sources.freertr.org
-* http://gitlab.com/mc36mc/freertr
+* http://sources.freertr.org/
+* http://codeberg.org/mc36/freeRtr
+* http://gitlab.com/mc36mc/freeRtr
 * http://github.com/mc36/freeRtr
 
 part of the subdirectories under misc/ are somewhere else too:
