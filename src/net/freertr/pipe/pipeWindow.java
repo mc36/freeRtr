@@ -74,7 +74,7 @@ public class pipeWindow extends JPanel {
         scr.putCur(0, 0);
         try {
             BufferedImage img1 = ImageIO.read(fil);
-            int[][] img2 = scaleImage(img1, scr.sizX, scr.sizY, scr.ansP);
+            int[][] img2 = scaleImage(img1, scr.sizX, scr.sizY, userFonts.colorData);
             for (int y = 0; y < img2.length; y++) {
                 for (int x = 0; x < img2[0].length; x++) {
                     int v = img2[y][x];

@@ -43,7 +43,8 @@ public class userFonts {
         0x0000a8,
         0xa800a8,
         0x00a8a8,
-        0xa8a8a8,};
+        0xa8a8a8
+    };
 
     /**
      * monochrome color data

@@ -225,7 +225,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @return xor value
      */
     public int getHashB() {
-        return (label ^ (label >> 8) ^ (label >> 16)) & 0xff;
+        return (label ^ (label >>> 8) ^ (label >>> 16)) & 0xff;
     }
 
     /**
@@ -234,7 +234,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
      * @return xor value
      */
     public int getHashW() {
-        return (label ^ (label >> 16)) & 0xffff;
+        return (label ^ (label >>> 16)) & 0xffff;
     }
 
     /**

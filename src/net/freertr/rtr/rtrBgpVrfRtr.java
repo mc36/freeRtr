@@ -397,7 +397,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             }
             for (int i = 0; i < ntry.alts.size(); i++) {
                 tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                attr.labelRem = tabLabel.prependLabel(attr.labelRem, attr.evpnLab >> 4);
+                attr.labelRem = tabLabel.prependLabel(attr.labelRem, attr.evpnLab >>> 4);
             }
             afi = rtrBgpUtil.sfiUnicast;
         }

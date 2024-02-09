@@ -689,8 +689,8 @@ public class userScreen {
      * @param bg background rgb
      */
     public static void sendTruCol(pipeSide pip, int fg, int bg) {
-        pip.strPut("\033[38;2;" + ((fg >> 16) & 0xff) + ";" + ((fg >> 8) & 0xff) + ";" + (fg & 0xff) + "m");
-        pip.strPut("\033[48;2;" + ((bg >> 16) & 0xff) + ";" + ((bg >> 8) & 0xff) + ";" + (bg & 0xff) + "m");
+        pip.strPut("\033[38;2;" + ((fg >>> 16) & 0xff) + ";" + ((fg >>> 8) & 0xff) + ";" + (fg & 0xff) + "m");
+        pip.strPut("\033[48;2;" + ((bg >>> 16) & 0xff) + ";" + ((bg >>> 8) & 0xff) + ";" + (bg & 0xff) + "m");
     }
 
     /**
@@ -771,10 +771,10 @@ public class userScreen {
                 sendAnsCol(pipe, col);
                 break;
             case indexed:
-                sendIdxCol(pipe, col & 0xf, (col >> 16) & 0xf);
+                sendIdxCol(pipe, col & 0xf, (col >>> 16) & 0xf);
                 break;
             case palette:
-                sendTruCol(pipe, userFonts.colorIdxd[col & 0xf], userFonts.colorIdxd[(col >> 16) & 0xf]);
+                sendTruCol(pipe, userFonts.colorIdxd[col & 0xf], userFonts.colorIdxd[(col >>> 16) & 0xf]);
                 break;
         }
         remP = col;
