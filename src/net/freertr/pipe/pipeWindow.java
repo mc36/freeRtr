@@ -75,21 +75,11 @@ public class pipeWindow extends JPanel {
         try {
             BufferedImage img1 = ImageIO.read(fil);
             int[][] img2 = scaleImage(img1, scr.sizX, scr.sizY, scr.ansP);
-            for (int cy = 0; cy < scr.sizY; cy++) {
-                if (cy >= img2.length) {
-                    continue;
-                }
-                for (int cx = 0; cx < scr.sizX; cx++) {
-                    if (cx >= img2[0].length) {
-                        continue;
-                    }
-                    int i;
-                    try {
-                        i = img2[cy][cx];;
-                    } catch (Exception e) {
-                        i = 0;
-                    }
-                    scr.putInt(cx, cy, false, i, chr[bits.random(0, chr.length)]);
+            for (int y = 0; y < img2.length; y++) {
+                for (int x = 0; x < img2[0].length; x++) {
+                    int v = img2[y][x];
+                    int c = chr[bits.random(0, chr.length)];
+                    scr.putInt(x, y, false, v, c);
                 }
             }
         } catch (Exception e) {
