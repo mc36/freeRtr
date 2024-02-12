@@ -640,6 +640,8 @@ public class userConfig {
         l.add(null, "2  .    ftp-active                   use active mode ftp");
         l.add(null, "2  3    ftp-proxy                    specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
+        l.add(null, "2  3    pop3-proxy                   specify proxy profile");
+        l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    tls-version                  specify tls version");
         l.add(null, "3  4      <num>                      forced minimum version");
         l.add(null, "4  .        <num>                    forced maximum version");
@@ -2664,6 +2666,10 @@ public class userConfig {
             cfgAll.ftpProxy = null;
             return;
         }
+        if (s.equals("pop3-proxy")) {
+            cfgAll.pop3proxy = null;
+            return;
+        }
         if (s.equals("ssh-agent")) {
             cfgAll.sshAgent = null;
             return;
@@ -3081,6 +3087,15 @@ public class userConfig {
                 return;
             }
             cfgAll.ftpProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("pop3-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.pop3proxy = prx.proxy;
             return;
         }
         if (a.equals("tls-version")) {

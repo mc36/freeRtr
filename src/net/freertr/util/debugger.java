@@ -669,6 +669,11 @@ public class debugger {
     public static boolean clntTacacsTraf = false;
 
     /**
+     * clntPop3 traffic
+     */
+    public static boolean clntPop3traf = false;
+
+    /**
      * clntFtp traffic
      */
     public static boolean clntFtpTraf = false;
@@ -1231,6 +1236,7 @@ public class debugger {
         l.add(null, "3 .        dhcp6             ipv6 dynamic host config protocol");
         l.add(null, "3 .        slaac             stateless address autoconfiguration protocol");
         l.add(null, "3 .        dns               domain name server");
+        l.add(null, "3 .        pop3              post office protocol");
         l.add(null, "3 .        ftp               file transfer protocol");
         l.add(null, "3 .        http              hypertext transfer protocol");
         l.add(null, "3 .        smtp              simple mail transfer protocol");
@@ -2046,6 +2052,10 @@ public class debugger {
             }
             if (s.equals("mplsldp")) {
                 clntMplsLdpTraf = v;
+                return false;
+            }
+            if (s.equals("pop3")) {
+                clntPop3traf = v;
                 return false;
             }
             if (s.equals("ftp")) {

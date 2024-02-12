@@ -10,6 +10,7 @@ import net.freertr.cfg.cfgInit;
 import net.freertr.clnt.clntCurl;
 import net.freertr.clnt.clntFtp;
 import net.freertr.clnt.clntHttp;
+import net.freertr.clnt.clntPop3;
 import net.freertr.clnt.clntSmtp;
 import net.freertr.clnt.clntTftp;
 import net.freertr.clnt.clntXmodem;
@@ -1010,6 +1011,12 @@ public class userFlash {
      */
     public static boolean doReceive(pipeSide pipe, encUrl url, File f, boolean debug) {
         String a = url.proto.trim().toLowerCase();
+        if (a.startsWith("pop3")) {
+            clntPop3 c = new clntPop3(pipe);
+            boolean b = c.download(url, f, false);
+            c.cleanUp();
+            return b;
+        }
         if (a.startsWith("http")) {
             clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, debug);
             boolean b = c.download(url, f);

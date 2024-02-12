@@ -999,6 +999,11 @@ public class cfgAll {
     public static clntProxy ftpProxy;
 
     /**
+     * proxy to use
+     */
+    public static clntProxy pop3proxy;
+
+    /**
      * ipv4 sending ttl value
      */
     public static int ipv4sendingTTL = 255;
@@ -1381,6 +1386,7 @@ public class cfgAll {
         "!client graceful-reload",
         "!client ftp-passive",
         "!no client ftp-proxy",
+        "!no client pop3-proxy",
         "!client ipv4-tos 0",
         "!client ipv4-ttl 255",
         "!client ipv6-tos 0",
@@ -3837,6 +3843,7 @@ public class cfgAll {
         l.add("client name-server" + a);
         cmds.cfgLine(l, !ftpPassive, "", "client ftp-passive", "");
         cmds.cfgLine(l, ftpProxy == null, "", "client ftp-proxy", "" + ftpProxy);
+        cmds.cfgLine(l, pop3proxy == null, "", "client pop3-proxy", "" + pop3proxy);
         cmds.cfgLine(l, upgradePubKey == null, "", "client upgrade-pubkey", "" + upgradePubKey);
         cmds.cfgLine(l, upgradeServer == null, "", "client upgrade-server", "" + upgradeServer);
         cmds.cfgLine(l, !upgradeConfig, "", "client upgrade-config", "");
