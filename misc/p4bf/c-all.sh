@@ -31,7 +31,7 @@
 #fallocate -d p4bf.img
 #
 cd ~/rare/p4src
-export SDE=/home/mc36/bf-sde-9.13.1
+export SDE=/home/mc36/bf-sde-9.13.2
 export SDE_INSTALL=$SDE/install
 rm -rf $SDE/install/bf_router.tofino
 #-b tofino2 -a t2na
