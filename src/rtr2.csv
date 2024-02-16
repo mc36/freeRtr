@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.2.8-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-02-08 22:07:55, took 00:06:23, with 1 workers, on 6 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v24.2.16-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-02-16 08:43:07, took 00:06:36, with 1 workers, on 6 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/opnflw-rout01.tst;opnflw-rout01.tst;success;openflow: software routing
 http://sources.freertr.org/cfg/opnflw-rout02.tst;opnflw-rout02.tst;success;openflow: bridging and routing

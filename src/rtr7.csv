@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.2.8-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-02-09 01:55:07, took 00:23:19, with 10 workers, on 534 cases, 1 failed, 0 traces, 7 retries
+-;-;-;freeRouter v24.2.16-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-02-16 12:36:12, took 00:24:37, with 10 workers, on 534 cases, 1 failed, 0 traces, 7 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
