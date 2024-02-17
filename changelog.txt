@@ -15709,3 +15709,6 @@ failed: dhcp with excluded address
 ---------------------------------- 2024-02-15 14:00:11 24.2.15
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2024-02-17 12:26:42 24.2.17
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
