@@ -187,6 +187,7 @@ public class player implements Runnable {
     }
 
     private synchronized void stopFull() {
+        stopProc("shairport-sync");
         stopProc("gmediarender");
         stopProc("mplayer");
         stopProc("ffmpeg");
@@ -223,6 +224,16 @@ public class player implements Runnable {
         nextSong.clear();
         nextSong.add(rndSeed.nextInt(playlist.size()));
         return false;
+    }
+
+    private synchronized void startPlayAirplay() {
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("dlna receiver");
+        String[] cmd = new String[1];
+        cmd[0] = "shairport-sync";
+        replaceCurrProc(cmd);
     }
 
     private synchronized void startPlayDlna() {
@@ -421,6 +432,9 @@ public class player implements Runnable {
                 break;
             case 3:
                 startPlayRcvr();
+                break;
+            case 4:
+                startPlayAirplay();
                 break;
         }
         ready = true;
@@ -936,6 +950,8 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna receiver!</a><br/>";
             buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=airplay\">!airplay receiver!</a><br/>";
+            buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=pendrive\">!pendrive!</a><br/>";
@@ -963,6 +979,14 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             startPlayNormal(-1, "0");
             stopFull();
+            return -1;
+        }
+        if (cmd.equals("airplay")) {
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>starting airplay server.<br/>";
+            buf.write(a.getBytes());
+            startPlayAirplay();
             return -1;
         }
         if (cmd.equals("dlna")) {
