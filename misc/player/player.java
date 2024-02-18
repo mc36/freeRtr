@@ -187,6 +187,7 @@ public class player implements Runnable {
     }
 
     private synchronized void stopFull() {
+        stopProc("roc-recv");
         stopProc("shairport-sync");
         stopProc("gmediarender");
         stopProc("mplayer");
@@ -230,9 +231,23 @@ public class player implements Runnable {
         currSong = 0;
         currTime = new Date().getTime();
         currLyrc = new playerLyric();
-        currLyrc.add("dlna receiver");
+        currLyrc.add("airplay receiver");
         String[] cmd = new String[1];
         cmd[0] = "shairport-sync";
+        replaceCurrProc(cmd);
+    }
+
+    private synchronized void startPlayRoc() {
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("roc receiver");
+        String[] cmd = new String[5];
+        cmd[0] = "roc-recv";
+        cmd[1] = "-s";
+        cmd[2] = "rtp://0.0.0.0:10000";
+        cmd[3] = "-o";
+        cmd[4] = "alsa://default";
         replaceCurrProc(cmd);
     }
 
@@ -435,6 +450,9 @@ public class player implements Runnable {
                 break;
             case 4:
                 startPlayAirplay();
+                break;
+            case 5:
+                startPlayRoc();
                 break;
         }
         ready = true;
@@ -950,6 +968,8 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna receiver!</a><br/>";
             buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=roc\">!roc receiver!</a><br/>";
+            buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=airplay\">!airplay receiver!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
@@ -995,6 +1015,14 @@ public class player implements Runnable {
             String a = "<br/>starting dlna server.<br/>";
             buf.write(a.getBytes());
             startPlayDlna();
+            return -1;
+        }
+        if (cmd.equals("roc")) {
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>starting roc server.<br/>";
+            buf.write(a.getBytes());
+            startPlayRoc();
             return -1;
         }
         if (cmd.equals("headend")) {
