@@ -836,21 +836,6 @@ public class userShow {
                 rdr.putStrArr(v.getShRun(filt));
                 return null;
             }
-            if (a.equals("acl-packet")) {
-                cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
-                if (acl == null) {
-                    cmd.error("no such access list");
-                    return null;
-                }
-                packHolder pck = new packHolder(true, true);
-                pck.IPprt = bits.str2num(cmd.word());
-                pck.IPsrc.fromString(cmd.word());
-                pck.UDPsrc = bits.str2num(cmd.word());
-                pck.IPtrg.fromString(cmd.word());
-                pck.UDPtrg = bits.str2num(cmd.word());
-                cmd.error("permitted=" + acl.aceslst.matches(false, false, pck));
-                return null;
-            }
             if (a.equals("access-list")) {
                 cfgAceslst v = cfgAll.aclsFind(cmd.word(), false);
                 if (v == null) {
@@ -1658,6 +1643,21 @@ public class userShow {
                 return null;
             }
             cmd.badCmd();
+            return null;
+        }
+        if (a.equals("acl-packet")) {
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
+                cmd.error("no such access list");
+                return null;
+            }
+            packHolder pck = new packHolder(true, true);
+            pck.IPprt = bits.str2num(cmd.word());
+            pck.IPsrc.fromString(cmd.word());
+            pck.UDPsrc = bits.str2num(cmd.word());
+            pck.IPtrg.fromString(cmd.word());
+            pck.UDPtrg = bits.str2num(cmd.word());
+            cmd.error("permitted=" + acl.aceslst.matches(false, false, pck));
             return null;
         }
         if (a.equals("access-list")) {
