@@ -271,21 +271,6 @@ public class userTest {
             cmd.error("done");
             return null;
         }
-        if (a.equals("access-list")) {
-            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
-            if (acl == null) {
-                cmd.error("no such access list");
-                return null;
-            }
-            packHolder pck = new packHolder(true, true);
-            pck.IPprt = bits.str2num(cmd.word());
-            pck.IPsrc.fromString(cmd.word());
-            pck.UDPsrc = bits.str2num(cmd.word());
-            pck.IPtrg.fromString(cmd.word());
-            pck.UDPtrg = bits.str2num(cmd.word());
-            cmd.error("permitted=" + acl.aceslst.matches(false, false, pck));
-            return null;
-        }
         if (a.equals("acl-merge")) {
             cfgAceslst cfg1 = cfgAll.aclsFind(cmd.word(), false);
             cfgAceslst cfg2 = cfgAll.aclsFind(cmd.word(), false);

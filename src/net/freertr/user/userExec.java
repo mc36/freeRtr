@@ -1229,6 +1229,13 @@ public class userExec {
         hl.add(null, "4 .          <name:ogp>          name of list");
         hl.add(null, "2 3      access-list             access list statistics");
         hl.add(null, "3 .        <name:acl>            name of list");
+        hl.add(null, "2 3      acl-packet              access list action");
+        hl.add(null, "3 4        <name:acl>            name of acl");
+        hl.add(null, "4 5          <num>               protocol number");
+        hl.add(null, "5 6            <addr>            source address");
+        hl.add(null, "6 7              <num>           source port");
+        hl.add(null, "7 8                <addr>        target address");
+        hl.add(null, "8 .                  <num>       target port");
         hl.add(null, "2 3      route-map               route map statistics");
         hl.add(null, "3 .        <name:rm>             name of list");
         hl.add(null, "2 3      route-policy            route policy statistics");
@@ -2340,13 +2347,6 @@ public class userExec {
         hl.add(null, "9 9,.                  [num]          packet contents");
         hl.add(null, "2 3      whois                        asn name cache");
         hl.add(null, "3 .        <num>                      asn number");
-        hl.add(null, "2 3      access-list                  access list hit");
-        hl.add(null, "3 4        <name:acl>                 name of acl");
-        hl.add(null, "4 5          <num>                    protocol number");
-        hl.add(null, "5 6            <addr>                 source address");
-        hl.add(null, "6 7              <num>                source port");
-        hl.add(null, "7 8                <addr>             target address");
-        hl.add(null, "8 .                  <num>            target port");
         hl.add(null, "2 3      acl-merge                    access list merge, unroll");
         hl.add(null, "3 4,.      <name:acl>                 name of first acl");
         hl.add(null, "4 .          <name:acl>               name of second acl");

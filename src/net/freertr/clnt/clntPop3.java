@@ -23,11 +23,11 @@ import net.freertr.util.logger;
  * @author matecsaba
  */
 public class clntPop3 {
-    
+
     private pipeProgress cons;
-    
+
     private pipeSide pipe;
-    
+
     private RandomAccessFile fr;
 
     /**
@@ -38,7 +38,7 @@ public class clntPop3 {
     public clntPop3(pipeSide console) {
         cons = new pipeProgress(pipeDiscard.needAny(console));
     }
-    
+
     private void sendLine(String s) {
         if (debugger.clntPop3traf) {
             logger.debug("tx:" + s);
@@ -46,7 +46,7 @@ public class clntPop3 {
         cons.debugTx(s);
         pipe.linePut(s);
     }
-    
+
     private String getLine() {
         packText pck = new packText(pipe);
         String s = pck.codedRecv();
@@ -59,7 +59,7 @@ public class clntPop3 {
         cons.debugRx(s);
         return s;
     }
-    
+
     private boolean downOne(int num, File trg, boolean del) {
         sendLine("RETR " + num);
         if (!getLine().toLowerCase().startsWith("+ok")) {
@@ -146,5 +146,5 @@ public class clntPop3 {
         } catch (Exception e) {
         }
     }
-    
+
 }

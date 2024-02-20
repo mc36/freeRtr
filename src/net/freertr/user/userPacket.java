@@ -32,7 +32,6 @@ import net.freertr.clnt.clntSpeed;
 import net.freertr.clnt.clntVconf;
 import net.freertr.clnt.clntVoice;
 import net.freertr.clnt.clntXotPad;
-import net.freertr.enc.encJson;
 import net.freertr.ifc.ifcEthTyp;
 import net.freertr.ifc.ifcEther;
 import net.freertr.ip.ipCor;
@@ -72,19 +71,15 @@ import net.freertr.rtr.rtrBgpDump;
 import net.freertr.tab.tabGen;
 import net.freertr.tab.tabHop;
 import net.freertr.tab.tabIntMatcher;
-import net.freertr.tab.tabListing;
-import net.freertr.tab.tabListingEntry;
 import net.freertr.tab.tabQos;
 import net.freertr.tab.tabRouteAttr;
 import net.freertr.tab.tabRouteBlob;
 import net.freertr.tab.tabRouteEntry;
 import net.freertr.tab.tabRouteUtil;
-import net.freertr.tab.tabRtrmapN;
 import net.freertr.tab.tabSessionEntry;
 import net.freertr.util.bits;
 import net.freertr.util.cmds;
 import net.freertr.util.counter;
-import net.freertr.util.version;
 
 /**
  * process packet commands
