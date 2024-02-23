@@ -1044,6 +1044,8 @@ public class userTester {
                 a = persistC.getLine();
                 rdr.setCurr(rnd);
                 if (a == null) {
+                    persistC.persistent = false;
+                    persistC.stopNow();
                     return;
                 }
                 a = a.trim();
