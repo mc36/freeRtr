@@ -8,4 +8,4 @@
 -sourcepath ./
 
 module-info.java
-net/freertr/router.java
+org/freertr/router.java

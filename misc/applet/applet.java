@@ -1,9 +1,9 @@
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import net.freertr.cfg.cfgInit;
-import net.freertr.pipe.pipeImage;
-import net.freertr.pipe.pipeWindow;
+import org.freertr.cfg.cfgInit;
+import org.freertr.pipe.pipeImage;
+import org.freertr.pipe.pipeWindow;
 
 /**
  * main class for the applet

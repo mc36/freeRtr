@@ -3,7 +3,7 @@
  *
  * @author matecsaba
  */
-module net.freertr {
+module org.freertr {
 
     requires java.base;
 

@@ -1,0 +1,80 @@
+package org.freertr.rtr;
+
+import java.util.Comparator;
+import org.freertr.addr.addrIP;
+import org.freertr.addr.addrPrefix;
+import org.freertr.cfg.cfgAll;
+import org.freertr.tab.tabRouteUtil;
+import org.freertr.util.bits;
+
+/**
+ * bgp4 dampening statistics
+ *
+ * @author matecsaba
+ */
+public class rtrBgpDamp implements Comparator<rtrBgpDamp> {
+
+    /**
+     * address family
+     */
+    public final int afi;
+
+    /**
+     * route distinguisher
+     */
+    public final long rd;
+
+    /**
+     * prefix
+     */
+    public final addrPrefix<addrIP> prefix;
+
+    /**
+     * penalty
+     */
+    public int penalty;
+
+    /**
+     * dampened
+     */
+    public boolean dampened;
+
+    /**
+     * last
+     */
+    public long last;
+
+    /**
+     * create instance
+     *
+     * @param a afi
+     * @param r rd
+     * @param p prefix
+     */
+    public rtrBgpDamp(int a, long r, addrPrefix<addrIP> p) {
+        afi = a;
+        rd = r;
+        prefix = p.copyBytes();
+    }
+
+    public int compare(rtrBgpDamp o1, rtrBgpDamp o2) {
+        if (o1.afi < o2.afi) {
+            return -1;
+        }
+        if (o1.afi > o2.afi) {
+            return +1;
+        }
+        if (o1.rd < o2.rd) {
+            return -1;
+        }
+        if (o1.rd > o2.rd) {
+            return +1;
+        }
+        return o1.prefix.compare(o1.prefix, o2.prefix);
+    }
+
+    public String toString() {
+        return rtrBgpUtil.safi2string(afi) + "|" + addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + penalty + "|" + dampened + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+    }
+
+}
