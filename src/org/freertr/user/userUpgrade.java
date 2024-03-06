@@ -167,7 +167,7 @@ public class userUpgrade {
             cmd.error("failed to get old key!");
             return;
         }
-        final String fn = "org.freertr.util/verCore.java";
+        final String fn = "org/freertr/util/verCore.java";
         final String sy = "    public final static int year = ";
         final String sm = "    public final static int month = ";
         final String sd = "    public final static int day = ";
