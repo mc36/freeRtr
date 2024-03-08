@@ -4656,6 +4656,12 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
+        if (a.equals("unused")) {
+            List<String> res = new ArrayList<String>();
+            tabRoute.unusedPrefixes(tab, res);
+            rdr.putStrArr(res);
+            return;
+        }
         if (a.equals("validated")) {
             doShowRoutes(r.bgp.fwdCore, tab, 4);
             return;

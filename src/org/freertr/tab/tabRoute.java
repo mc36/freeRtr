@@ -938,6 +938,37 @@ public class tabRoute<T extends addrType> {
     }
 
     /**
+     * list unused prefixes
+     *
+     * @param src source table
+     * @param trg target table
+     */
+    public static void unusedPrefixes(tabRoute<addrIP> src, List<String> trg) {
+        addrIP nxt = new addrIP();
+        addrIP one = new addrIP();
+        one.fromString("::1");
+        for (int i = 0; i < src.prefixes.size(); i++) {
+            tabRouteEntry<addrIP> ntry = src.prefixes.get(i);
+            if (nxt.compare(nxt, ntry.prefix.broadcast) >= 0) {
+                continue;
+            }
+            addrIP adr = new addrIP();
+            adr.setSub(ntry.prefix.network, one);
+            unusedPrefixes1(trg, nxt, adr);
+            nxt.setAdd(one, ntry.prefix.broadcast);
+        }
+        one.fillBytes(255);
+        unusedPrefixes1(trg, nxt, one);
+    }
+
+    private static void unusedPrefixes1(List<String> lst, addrIP beg, addrIP end) {
+        if (beg.compare(beg, end) >= 0) {
+            return;
+        }
+        lst.add(beg + " - " + end);
+    }
+
+    /**
      * update entry
      *
      * @param afi address family

@@ -735,6 +735,9 @@ public class userExec {
         hl.add(null, "6 7,.            compress           list of compressed routes");
         hl.add(null, "7 8,.              [addr]           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
+        hl.add(null, "6 7,.            unused             list of unused routes");
+        hl.add(null, "7 8,.              [addr]           prefix to view");
+        hl.add(null, "8 .                  [rd]           route distinguisher");
         hl.add(null, "6 7,.            hacked             list of hacked routes");
         hl.add(null, "7 8,.              [addr]           prefix to view");
         hl.add(null, "8 .                  [rd]           route distinguisher");
