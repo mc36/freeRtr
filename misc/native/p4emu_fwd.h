@@ -781,6 +781,7 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
         putIpipHeader(bufP, ethtyp, tmp);
         putIpv6header(bufP, bufS, ethtyp, tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
+#ifndef HAVE_NOCRYPTO
     case 9: // esp4
         putIpipHeader(bufP, ethtyp, ethtyp);
         if (putEspHeader(neigh_res, encrCtx, hashCtx, bufD, &bufP, &bufS, ethtyp) != 0) doDropper;
@@ -811,6 +812,7 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
+#endif
     case 15: // amt4
         put16msb(bufD, bufP, 0x600);
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
