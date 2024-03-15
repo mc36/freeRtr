@@ -35,6 +35,36 @@ qc pass: interop1: lacp
 qc pass: interop1: fragmentation and reassembly
 qc pass: interop1: sgt encapsulation
 qc pass: interop1: verify source
+qc pass: interop1: ike1 with ipv4
+qc pass: interop1: ike1 with ipv6
+qc pass: interop1: ike1 with 3des
+qc pass: interop1: ike1 with aes128cbc
+qc pass: interop1: ike1 with aes192cbc
+qc pass: interop1: ike1 with aes256cbc
+qc pass: interop1: ike1 with sha1
+qc pass: interop1: ike1 with sha256
+qc pass: interop1: ike1 with sha512
+qc pass: interop1: ike1 with group2
+qc pass: interop1: ike1 with group5
+qc pass: interop1: ike1 with group14
+qc pass: interop1: ike1 with group15
+qc pass: interop1: ike1 with group16
+qc pass: interop1: ike1 with group24
+qc pass: interop1: ike2 with ipv4
+qc pass: interop1: ike2 with ipv6
+qc pass: interop1: ike2 with 3des
+qc pass: interop1: ike2 with aes128cbc
+qc pass: interop1: ike2 with aes192cbc
+qc pass: interop1: ike2 with aes256cbc
+qc pass: interop1: ike2 with sha1
+qc pass: interop1: ike2 with sha256
+qc pass: interop1: ike2 with sha512
+qc pass: interop1: ike2 with group2
+qc pass: interop1: ike2 with group5
+qc pass: interop1: ike2 with group14
+qc pass: interop1: ike2 with group15
+qc pass: interop1: ike2 with group16
+qc pass: interop1: ike2 with group24
 qc pass: interop1: point2point isis
 qc pass: interop1: isis dis
 qc pass: interop1: isis nondis
