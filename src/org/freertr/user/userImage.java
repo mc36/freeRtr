@@ -159,8 +159,7 @@ public class userImage {
             return true;
         }
         userFlash.rename(fil, fil + ".bak", true, true);
-        userFlash.copy(fil + ".tmp", fil, true);
-        userFlash.delete(fil + ".tmp");
+        userFlash.rename(fil + ".tmp", fil, true, true);
         return false;
     }
 
@@ -328,7 +327,7 @@ public class userImage {
             if (!vrfy) {
                 return false;
             }
-            userFlash.delete(name);
+            userFlash.rename(name, name + ".bak", true, true);
         }
         return true;
     }
