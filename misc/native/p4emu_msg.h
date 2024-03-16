@@ -647,7 +647,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         vrf2rib_res = vrf2rib_init4;
         tun4_ntry.aclport = atoi(arg[10]);
         tun4_ntry.prot = IP_PROTOCOL_UDP;
-        tun4_ntry.command = 7;
+        tun4_ntry.command = 6;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
         else table_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
@@ -677,7 +677,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         vrf2rib_res = vrf2rib_init6;
         tun6_ntry.aclport = atoi(arg[10]);
         tun6_ntry.prot = IP_PROTOCOL_UDP;
-        tun6_ntry.command = 7;
+        tun6_ntry.command = 6;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
         else table_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
@@ -1951,7 +1951,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
         tun4_ntry.prot = IP_PROTOCOL_ESP;
-        tun4_ntry.command = 6;
+        tun4_ntry.command = 7;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
@@ -1996,7 +1996,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
         if (neigh_ntry.hashPkey == NULL) return 0;
         tun6_ntry.prot = IP_PROTOCOL_ESP;
-        tun6_ntry.command = 6;
+        tun6_ntry.command = 7;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);

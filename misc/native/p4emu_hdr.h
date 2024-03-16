@@ -14,18 +14,6 @@ typedef char EVP_MD_CTX;
 typedef char EVP_CIPHER_CTX;
 typedef char EVP_MD;
 typedef char EVP_PKEY;
-#define EVP_MD_CTX_reset(p1) 2
-#define EVP_DigestSignInit(p1,p2,p3,p4,p5) 2
-#define EVP_DigestSignUpdate(p1,p2,p3) 2
-#define EVP_DigestSignFinal(p1,p2,p3) 2
-#define EVP_CIPHER_CTX_reset(p1) 2
-#define EVP_DecryptInit_ex(p1,p2,p3,p4,p5) 2
-#define EVP_CIPHER_CTX_set_padding(p1, p2) 2
-#define EVP_DecryptUpdate(p1,p2,p3,p4,p5) 2
-#define EVP_CIPHER_CTX_ctrl(p1,p2,p3,p4) 2
-#define EVP_DecryptFinal_ex(p1,p2,p3) 2
-#define EVP_CIPHER_CTX_new() malloc(1)
-#define EVP_MD_CTX_new() malloc(1)
 
 #endif
 

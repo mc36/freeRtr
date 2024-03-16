@@ -1010,7 +1010,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
     doDropper;
 
 
-#define doTunneled(tun_res)                                         \
+#define doTunnelBeg(tun_res)                                        \
     switch (tun_res->command) {                                     \
     case 1:                                                         \
         bufP = bufT + 2;                                            \
@@ -1039,6 +1039,19 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         put16msb(bufD, bufP, ETHERTYPE_IPV6);                       \
         break;                                                      \
     case 6:                                                         \
+        bufP = bufT + 8;                                            \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
+        break;                                                      \
+
+#ifdef HAVE_NOCRYPTO
+
+#define doTunnelMid(tun_res)                                        \
+
+#else
+
+#define doTunnelMid(tun_res)                                        \
+    case 7:                                                         \
         bufP = bufT;                                                \
         if (get32msb(bufD, bufP + 0) != tun_res->spi) doDropper;    \
         tun_res->seq = get32msb(bufD, bufP + 4);                    \
@@ -1075,11 +1088,6 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         }                                                           \
         bufP -= 2;                                                  \
         put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-    case 7:                                                         \
-        bufP = bufT + 8;                                            \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
         break;                                                      \
     case 8:                                                         \
         bufP = bufT + 8;                                            \
@@ -1124,6 +1132,10 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         bufP -= 2;                                                  \
         put16msb(bufD, bufP, ethtyp);                               \
         break;                                                      \
+
+#endif
+
+#define doTunnelEnd(tun_res)                                        \
     case 10:                                                        \
         bufP = bufT + 8;                                            \
         if (bufD[bufP] != 6) doCpuing;                              \
@@ -1919,7 +1931,9 @@ ipv4_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 tun4_res = table_get(&vrf2rib_res->tun, index);
-                doTunneled(tun4_res);
+                doTunnelBeg(tun4_res);
+                doTunnelMid(tun4_res);
+                doTunnelEnd(tun4_res);
             }
             acls_ntry.dir = 4;
             acls_ntry.port = vrf2rib_ntry.vrf;
@@ -2236,7 +2250,9 @@ ipv6_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 tun6_res = table_get(&vrf2rib_res->tun, index);
-                doTunneled(tun6_res);
+                doTunnelBeg(tun6_res);
+                doTunnelMid(tun6_res);
+                doTunnelEnd(tun6_res);
             }
             acls_ntry.dir = 4;
             acls_ntry.port = vrf2rib_ntry.vrf;
