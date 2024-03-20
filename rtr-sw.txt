@@ -135,14 +135,6 @@ bridge 4
  private-bridge
  exit
 !
-bridge 8
- rd 65535:102
- rt-import 65535:102
- rt-export 65535:102
- mac-learn
- mac-move
- exit
-!
 bridge 9
  rd 65535:103
  rt-import 65535:103
@@ -173,10 +165,7 @@ vrf definition dptest
  rt6export 1955:30
  exit
 !
-vrf definition freenet1
- exit
-!
-vrf definition freenet2
+vrf definition freenet
  exit
 !
 vrf definition niif
@@ -485,26 +474,9 @@ interface bvi4
  no log-link-change
  exit
 !
-interface bvi8
- description freenet
- vrf forwarding freenet2
- ipv4 address dynamic dynamic
- ipv4 gateway-prefix def4
- ipv4 host-watch
- ipv4 dhcp-client enable
- ipv4 dhcp-client early
- ipv6 address dynamic dynamic
- ipv6 gateway-prefix def6
- ipv6 host-watch
- ipv6 slaac-client enable
- ipv6 prefix-suppress
- no shutdown
- no log-link-change
- exit
-!
 interface bvi9
  description freenet
- vrf forwarding freenet1
+ vrf forwarding freenet
  ipv4 address dynamic dynamic
  ipv4 gateway-prefix def4
  ipv4 host-watch
@@ -722,9 +694,6 @@ router bgp6 65535 vrf v1
  afi-vpls 65535:1 bridge-group 3
  afi-vpls 65535:1 update-source loopback0
  !
- afi-vpls 65535:102 bridge-group 8
- afi-vpls 65535:102 update-source loopback0
- !
  afi-evpn 2 bridge-group 4
  afi-evpn 2 bmac 0002.4276.7a16
  afi-evpn 2 encapsulation pbb
@@ -767,19 +736,6 @@ proxy-profile p4
 proxy-profile p5
  vrf v5
  exit
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
 !
 !
 !
