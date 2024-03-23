@@ -121,9 +121,13 @@ int lcore_procs;
 
 void doSockLoop() {
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (encrCtx == NULL) err("error getting encr context");
+#endif
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (hashCtx == NULL) err("error getting hash context");
+#endif
     FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) err("failed to open file");
     unsigned char buf[16384];
@@ -215,9 +219,13 @@ static int doPacketLoop(__rte_unused void *arg) {
     struct rte_mbuf **mbufs = malloc(burst_size * sizeof(struct rte_mbuf*));
     if (mbufs == NULL) err("error allocating mbufptrs");
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (encrCtx == NULL) err("error getting encr context");
+#endif
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (hashCtx == NULL) err("error getting hash context");
+#endif
 
     int lcore = rte_lcore_id();
     struct lcore_conf *myconf = &lcore_conf[lcore];

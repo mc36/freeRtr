@@ -109,9 +109,13 @@ void doIfaceLoop(int * param) {
     struct tpacket_block_desc *pbd;
     struct tpacket3_hdr *ppd;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (encrCtx == NULL) err("error getting encr context");
+#endif
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (hashCtx == NULL) err("error getting hash context");
+#endif
     if (port == cpuPort) {
         for (;;) {
             packBeg;
@@ -140,9 +144,13 @@ void doSockLoop() {
     FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) err("failed to open file");
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (encrCtx == NULL) err("error getting encr context");
+#endif
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
+#ifndef HAVE_NOCRYPTO
     if (hashCtx == NULL) err("error getting hash context");
+#endif
     unsigned char buf[16384];
     for (;;) {
         memset(&buf, 0, sizeof(buf));
