@@ -10,6 +10,7 @@ import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
 
 /**
+ * etherip handler
  *
  * @author matecsaba
  */

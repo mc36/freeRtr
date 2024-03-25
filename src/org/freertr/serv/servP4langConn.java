@@ -1577,12 +1577,6 @@ public class servP4langConn implements Runnable {
             } catch (Exception e) {
             }
             try {
-                servEtherIpConn ifc = (servEtherIpConn) ntry.lowerIf;
-                addDynBr(br, ntry, ifc.worker);
-                continue;
-            } catch (Exception e) {
-            }
-            try {
                 clntPckOudp ifc = (clntPckOudp) ntry.lowerIf;
                 addDynBr(br, ntry, ifc);
                 continue;
@@ -1748,35 +1742,6 @@ public class servP4langConn implements Runnable {
             }
             try {
                 clntEtherIp iface = (clntEtherIp) ntry.ifc.lowerIf;
-                servP4langIfc brif = lower.findDynBr(ntry.ifc);
-                if (brif == null) {
-                    continue;
-                }
-                adr = iface.getRemAddr();
-                if (adr == null) {
-                    continue;
-                }
-                addrIP src = iface.getLocAddr();
-                if (src == null) {
-                    continue;
-                }
-                ipFwd ofwd = iface.vrf.getFwd(adr);
-                servP4langVrf ovrf = lower.findVrf(ofwd);
-                if (ovrf == null) {
-                    continue;
-                }
-                servP4langNei hop = lower.findHop(ofwd, adr);
-                if (hop == null) {
-                    continue;
-                }
-                a = "bridgeetherip" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + ovrf.id + " " + brif.id;
-                brif.sentBrTun = a;
-                lower.sendLine(a);
-                continue;
-            } catch (Exception e) {
-            }
-            try {
-                servEtherIpConn iface = (servEtherIpConn) ntry.ifc.lowerIf;
                 servP4langIfc brif = lower.findDynBr(ntry.ifc);
                 if (brif == null) {
                     continue;

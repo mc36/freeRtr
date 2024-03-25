@@ -134,6 +134,15 @@ public class clntEtherIp implements Runnable, ipPrt, ifcDn {
     }
 
     /**
+     * get forwarder
+     *
+     * @return forwarder used
+     */
+    public ipFwd getFwder() {
+        return fwdCor;
+    }
+
+    /**
      * sent endpoints
      *
      * @param fwd forwarder
