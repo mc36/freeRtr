@@ -30,6 +30,7 @@ struct headers {
     l3tp_t		l3tp2;
     gre_t		gre2;
     tmux_t		tmux2;
+    etherip_t		etherip2;
     udp_t		udp2;
     vxlan_t		vxlan2;
     l2tp_t		l2tp2;
@@ -57,6 +58,7 @@ struct headers {
     l3tp_t		l3tp;
     gre_t		gre;
     tmux_t		tmux;
+    etherip_t		etherip;
     udp_t		udp;
     l2tp_t		l2tp;
     amt_t		amt;

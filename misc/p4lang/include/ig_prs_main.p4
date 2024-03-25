@@ -321,6 +321,8 @@ IP_PROTOCOL_GRE:
             prs_gre;
 IP_PROTOCOL_TMUX:
             prs_tmux;
+IP_PROTOCOL_ETHERIP:
+            prs_etherip;
 IP_PROTOCOL_UDP:
             prs_udp;
 IP_PROTOCOL_TCP:
@@ -345,6 +347,8 @@ IP_PROTOCOL_SRL2:
         transition select(hdr.ipv6.next_hdr) {
 IP_PROTOCOL_GRE:
             prs_gre;
+IP_PROTOCOL_ETHERIP:
+            prs_etherip;
 IP_PROTOCOL_TMUX:
             prs_tmux;
 IP_PROTOCOL_UDP:
@@ -388,6 +392,14 @@ IP_PROTOCOL_SRL2:
         default:
             accept;
         }
+    }
+
+
+    state prs_etherip {
+        pkt.extract(hdr.etherip);
+        ig_md.layer4_srcprt = 0;
+        ig_md.layer4_dstprt = 0;
+        transition prs_eth5;
     }
 
 

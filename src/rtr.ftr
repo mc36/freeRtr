@@ -1945,6 +1945,16 @@ qc pass: p4lang: l2vpn over tmux mpls
 qc pass: p4lang: l3vpn over tmux mpls
 qc pass: p4lang: sdwan over ipv4 with tmux
 qc pass: p4lang: sdwan over ipv6 with tmux
+qc pass: p4lang: etherip over ipv4
+qc pass: p4lang: etherip over ipv6
+qc pass: p4lang: etherip over ipv4 loopback
+qc pass: p4lang: etherip over ipv6 loopback
+qc pass: p4lang: etherip over vlan
+qc pass: p4lang: etherip over bundle
+qc pass: p4lang: etherip server over ipv4
+qc pass: p4lang: etherip server over ipv6
+qc pass: p4lang: etherip server over ipv4 loopback
+qc pass: p4lang: etherip server over ipv6 loopback
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

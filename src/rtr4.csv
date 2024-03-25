@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.3.22-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-03-22 06:55:23, took 00:51:39, with 10 workers, on 534 cases, 0 failed, 0 traces, 2 retries
+-;-;-;freeRouter v24.3.25-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-03-25 09:36:36, took 00:48:07, with 10 workers, on 544 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -536,3 +536,13 @@ http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout314.tst;p4lang-rout314.tst;success;p4lang: l3vpn over tmux mpls
 http://sources.freertr.org/cfg/p4lang-rout315.tst;p4lang-rout315.tst;success;p4lang: sdwan over ipv4 with tmux
 http://sources.freertr.org/cfg/p4lang-rout316.tst;p4lang-rout316.tst;success;p4lang: sdwan over ipv6 with tmux
+http://sources.freertr.org/cfg/p4lang-rout317.tst;p4lang-rout317.tst;success;p4lang: etherip over ipv4
+http://sources.freertr.org/cfg/p4lang-rout318.tst;p4lang-rout318.tst;success;p4lang: etherip over ipv6
+http://sources.freertr.org/cfg/p4lang-rout319.tst;p4lang-rout319.tst;success;p4lang: etherip over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout320.tst;p4lang-rout320.tst;success;p4lang: etherip over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout321.tst;p4lang-rout321.tst;success;p4lang: etherip over vlan
+http://sources.freertr.org/cfg/p4lang-rout322.tst;p4lang-rout322.tst;success;p4lang: etherip over bundle
+http://sources.freertr.org/cfg/p4lang-rout323.tst;p4lang-rout323.tst;success;p4lang: etherip server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;success;p4lang: etherip server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;success;p4lang: etherip server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;success;p4lang: etherip server over ipv6 loopback

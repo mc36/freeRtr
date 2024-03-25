@@ -15721,3 +15721,14 @@ failed: dhcp with excluded address
 ---------------------------------- 2024-03-11 09:19:55 24.3.11
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2024-03-25 08:14:32 24.3.25
+qc pass: p4lang: etherip over ipv4
+qc pass: p4lang: etherip over ipv6
+qc pass: p4lang: etherip over ipv4 loopback
+qc pass: p4lang: etherip over ipv6 loopback
+qc pass: p4lang: etherip over vlan
+qc pass: p4lang: etherip over bundle
+qc pass: p4lang: etherip server over ipv4
+qc pass: p4lang: etherip server over ipv6
+qc pass: p4lang: etherip server over ipv4 loopback
+qc pass: p4lang: etherip server over ipv6 loopback
