@@ -534,3 +534,13 @@ http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout314.tst;p4lang-rout314.tst;ok;ok;ok;ok;not ok;p4lang: l3vpn over tmux mpls
 http://sources.freertr.org/cfg/p4lang-rout315.tst;p4lang-rout315.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with tmux
 http://sources.freertr.org/cfg/p4lang-rout316.tst;p4lang-rout316.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with tmux
+http://sources.freertr.org/cfg/p4lang-rout317.tst;p4lang-rout317.tst;ok;ok;ok;ok;not ok;p4lang: etherip over ipv4
+http://sources.freertr.org/cfg/p4lang-rout318.tst;p4lang-rout318.tst;ok;ok;ok;ok;not ok;p4lang: etherip over ipv6
+http://sources.freertr.org/cfg/p4lang-rout319.tst;p4lang-rout319.tst;ok;ok;ok;ok;not ok;p4lang: etherip over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout320.tst;p4lang-rout320.tst;ok;ok;ok;ok;not ok;p4lang: etherip over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout321.tst;p4lang-rout321.tst;ok;ok;ok;ok;not ok;p4lang: etherip over vlan
+http://sources.freertr.org/cfg/p4lang-rout322.tst;p4lang-rout322.tst;ok;ok;ok;ok;not ok;p4lang: etherip over bundle
+http://sources.freertr.org/cfg/p4lang-rout323.tst;p4lang-rout323.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6 loopback
