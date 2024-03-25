@@ -39,6 +39,7 @@ const bit <8> IP_PROTOCOL_IPV6_NONXT = 59;
 const bit <8> IP_PROTOCOL_IPV6_OPTS = 60;
 const bit <8> IP_PROTOCOL_EIGRP = 88;
 const bit <8> IP_PROTOCOL_OSPFIGP = 89;
+const bit <8> IP_PROTOCOL_ETHERIP = 97;
 const bit <8> IP_PROTOCOL_PIM = 103;
 const bit <8> IP_PROTOCOL_VRRP = 112;
 const bit <8> IP_PROTOCOL_L2TP = 115;

@@ -234,6 +234,10 @@ class BfForwarder(Thread, RareApi):
                 "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
                 "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_vxlan",
             },
+            "etherip": {
+                "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
+                "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_etherip",
+            },
             "l2tp": {
                 "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
                 "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_l2tp",

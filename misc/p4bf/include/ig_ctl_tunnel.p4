@@ -168,6 +168,29 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
 
 
+#ifdef HAVE_ETHERIP
+    action act_tunnel_etherip(SubIntId_t port) {
+        ig_md.source_id = port;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.ethernet.setInvalid();
+        hdr.vlan.setInvalid();
+        ig_tm_md.ucast_egress_port = RECIR_PORT;
+        ig_tm_md.bypass_egress = 1;
+//        recirculate(RECIR_PORT);
+        hdr.cpu.setValid();
+        hdr.cpu._padding = 0;
+        hdr.cpu.port = port;
+        hdr.etherip.setInvalid();
+        hdr.ipv4.setInvalid();
+        hdr.ipv6.setInvalid();
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
+    }
+#endif
+
+
 
 #ifdef HAVE_PCKOUDP
     action act_tunnel_pckoudp(SubIntId_t port) {
@@ -239,6 +262,9 @@ hdr.ipv4.protocol:
 #ifdef HAVE_VXLAN
             act_tunnel_vxlan;
 #endif
+#ifdef HAVE_ETHERIP
+            act_tunnel_etherip;
+#endif
 #ifdef HAVE_PCKOUDP
             act_tunnel_pckoudp;
 #endif
@@ -288,6 +314,9 @@ hdr.ipv6.next_hdr:
 #endif
 #ifdef HAVE_VXLAN
             act_tunnel_vxlan;
+#endif
+#ifdef HAVE_ETHERIP
+            act_tunnel_etherip;
 #endif
 #ifdef HAVE_PCKOUDP
             act_tunnel_pckoudp;

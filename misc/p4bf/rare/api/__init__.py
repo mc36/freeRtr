@@ -18,6 +18,8 @@ class RareApi(BfRtRare):
     from .bridgevpls import writeBrvplsRules
     from .bridgevxlan4 import writeVxlan4rules
     from .bridgevxlan6 import writeVxlan6rules
+    from .bridgeetherip4 import writeEtherip4rules
+    from .bridgeetherip6 import writeEtherip6rules
     from .bundlelist import setBundleAdmStatus
     from .bundlevlan import writeBunVlanRules
     from .copp4 import writeCopp4Rules

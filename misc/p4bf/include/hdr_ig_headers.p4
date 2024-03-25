@@ -42,6 +42,9 @@ struct headers {
 #ifdef HAVE_L3TP
     l3tp_t l3tp2;
 #endif
+#ifdef HAVE_ETHERIP
+    etherip_t etherip2;
+#endif
 #ifdef NEED_UDP2
     udp_t udp2;
 #endif
@@ -90,6 +93,9 @@ struct headers {
 #endif
 #ifdef HAVE_L3TP
     l3tp_t l3tp;
+#endif
+#ifdef HAVE_ETHERIP
+    etherip_t etherip;
 #endif
     tcp_t tcp;
     udp_t udp;

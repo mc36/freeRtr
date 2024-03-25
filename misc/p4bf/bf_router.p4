@@ -52,6 +52,7 @@
 #include "include/hdr_l2tp.p4"
 #include "include/hdr_l3tp.p4"
 #include "include/hdr_vxlan.p4"
+#include "include/hdr_etherip.p4"
 #include "include/hdr_gtp.p4"
 
 /*----------------------------------------------------------------------------*
