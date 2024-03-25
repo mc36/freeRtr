@@ -159,7 +159,7 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap vxlan ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
+    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp"
 
 #ifdef HAVE_POLKA
            "mpolka polka "
@@ -624,6 +624,56 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         tun6_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[11]);
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 3;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
+        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgeetherip4") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET, arg[4], buf2);
+        tun4_ntry.trgAddr = bridge_ntry.srcAddr1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[5], buf2);
+        tun4_ntry.srcAddr = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        bridge_ntry.nexthop = atoi(arg[6]);
+        bridge_ntry.command = 10;
+        vrf2rib_ntry.vrf = atoi(arg[7]);
+        vrf2rib_res = vrf2rib_init4;
+        tun4_ntry.aclport = atoi(arg[8]);
+        tun4_ntry.prot = IP_PROTOCOL_ETHERIP;
+        tun4_ntry.command = 14;
+        if (del == 0) table_del(&bridge_table, &bridge_ntry);
+        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
+        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgeetherip6") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET6, arg[4], buf2);
+        tun6_ntry.trgAddr1 = bridge_ntry.srcAddr1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = bridge_ntry.srcAddr2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = bridge_ntry.srcAddr3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = bridge_ntry.srcAddr4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[5], buf2);
+        tun6_ntry.srcAddr1 = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = bridge_ntry.trgAddr2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = bridge_ntry.trgAddr3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = bridge_ntry.trgAddr4 = get32msb(buf2, 12);
+        bridge_ntry.nexthop = atoi(arg[6]);
+        bridge_ntry.command = 11;
+        vrf2rib_ntry.vrf = atoi(arg[7]);
+        vrf2rib_res = vrf2rib_init6;
+        tun6_ntry.aclport = atoi(arg[8]);
+        tun6_ntry.prot = IP_PROTOCOL_ETHERIP;
+        tun6_ntry.command = 14;
         if (del == 0) table_del(&bridge_table, &bridge_ntry);
         else table_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);

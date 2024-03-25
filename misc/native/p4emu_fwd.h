@@ -408,6 +408,13 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put32msb(bufD, bufP + 4, tmp);
 
 
+#define putEtheripHeader                                        \
+    bufP -= 12;                                                 \
+    memcpy(&bufD[bufP], &bufH[0], 12);                          \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP + 0, 0x300);
+
+
 #define putPckoudpHeader                                        \
     bufP -= 12;                                                 \
     memcpy(&bufD[bufP], &bufH[0], 12);
@@ -1193,6 +1200,11 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         put16msb(bufD, bufP, ethtyp);                               \
         bufS = tmp + bufT - preBuff;                                \
         break;                                                      \
+    case 14:                                                        \
+        bufP = bufT + 2;                                            \
+        bufP -= 2;                                                  \
+        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
+        break;                                                      \
     default:                                                        \
         doDropper;                                                  \
     }                                                               \
@@ -1534,6 +1546,16 @@ bridgevpls_rx:
             case 9: // srv6
                 putPckoudpHeader;
                 putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_SRL2, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            case 10: // etherip4
+                putEtheripHeader;
+                putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->trgAddr1);
+                neigh_ntry.id = bridge_res->nexthop;
+                goto nethtyp_tx;
+            case 11: // etherip6
+                putEtheripHeader;
+                putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
                 neigh_ntry.id = bridge_res->nexthop;
                 goto nethtyp_tx;
             default:

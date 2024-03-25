@@ -35,6 +35,7 @@
 #define IP_PROTOCOL_ESP             50
 #define IP_PROTOCOL_SWIPE           53
 #define IP_PROTOCOL_SKIP            57
+#define IP_PROTOCOL_ETHERIP         97
 #define IP_PROTOCOL_L2TP            115
 #define IP_PROTOCOL_MPLS            137
 #define IP_PROTOCOL_SRL2            143
