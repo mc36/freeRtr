@@ -392,7 +392,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * list database
      *
      * @param mod mode: 1=summary, 2=uptime, 3=software, 4=middleware, 5=kernel,
-     * 6=hardware
+     * 6=hardware, 7=forwarder
      * @return list of database
      */
     public userFormat showDatabase(int mod) {
@@ -415,6 +415,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 break;
             case 6:
                 l = new userFormat("|", "id|name|hardware");
+                break;
+            case 7:
+                l = new userFormat("|", "id|name|forwarder");
                 break;
             default:
                 return null;
@@ -442,6 +445,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     break;
                 case 6:
                     l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.hardware);
+                    break;
+                case 7:
+                    l.add(ntry.rtrId + "|" + ntry.hostname + "|" + ntry.forwarder);
                     break;
             }
         }
@@ -748,6 +754,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
         dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo()).replaceAll(" ", "_");
+        dat.forwarder = version.getHWfwd1liner().replaceAll(" ", "_");
         dat.middleware = version.getVMname().replaceAll(" ", "_");
         dat.kernel = version.getKernelName().replaceAll(" ", "_");
         dat.kernup = pipeShell.getKernelUptime().replaceAll(" ", "_");
@@ -1059,7 +1066,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             a += " base " + segrouBase;
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
-        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx+ " " + bierSub);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
         for (int i = 0; i < algos.size(); i++) {
             l.add(beg + "flexalgo " + algos.get(i));
         }

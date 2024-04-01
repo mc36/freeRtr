@@ -79,6 +79,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public String hardware;
 
     /**
+     * forwarder
+     */
+    public String forwarder;
+
+    /**
      * middleware
      */
     public String middleware;
@@ -346,6 +351,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         if ((typ & 0x200) != 0) {
             s += " software=" + software;
             s += " hardware=" + hardware;
+            s += " forwarder=" + forwarder;
             s += " middleware=" + middleware;
             s += " kernel=" + kernel;
             s += " kernup=" + kernup;
@@ -399,6 +405,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         hostname = "";
         software = "";
         hardware = "";
+        forwarder = "";
         middleware = "";
         password = "none";
         kernel = "";
@@ -493,6 +500,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             if (a.equals("hardware")) {
                 hardware = s;
+                continue;
+            }
+            if (a.equals("forwarder")) {
+                forwarder = s;
                 continue;
             }
             if (a.equals("middleware")) {

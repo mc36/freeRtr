@@ -3191,6 +3191,10 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showDatabase(6));
             return;
         }
+        if (a.equals("forwarder")) {
+            rdr.putStrTab(r.lsrp.showDatabase(7));
+            return;
+        }
         if (a.equals("database")) {
             if (cmd.size() < 1) {
                 rdr.putStrTab(r.lsrp.showDatabase(1));
