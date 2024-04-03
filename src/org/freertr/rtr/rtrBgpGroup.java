@@ -864,19 +864,19 @@ public class rtrBgpGroup extends rtrBgpParam {
                     attr.pathSeq = tabLabel.prependLabel(attr.pathSeq, localAs);
                 }
                 break;
-            case rtrBgpUtil.peerCnfed:
+            case rtrBgpUtil.peerIntrn:
+            case rtrBgpUtil.peerRflct:
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                    attr.confSeq = tabLabel.prependLabel(attr.confSeq, localAs);
                     if (attr.locPref == 0) {
                         attr.locPref = 100;
                     }
                 }
                 break;
-            case rtrBgpUtil.peerIntrn:
-            case rtrBgpUtil.peerRflct:
+            case rtrBgpUtil.peerCnfed:
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                    attr.confSeq = tabLabel.prependLabel(attr.confSeq, localAs);
                     if (attr.locPref == 0) {
                         attr.locPref = 100;
                     }
@@ -967,24 +967,6 @@ public class rtrBgpGroup extends rtrBgpParam {
                     nextHopSelf(afi, ntry);
                 }
                 break;
-            case rtrBgpUtil.peerCnfed:
-                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
-                    return null;
-                }
-                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
-                switch (ntry.best.rouSrc) {
-                    case rtrBgpUtil.peerExtrn:
-                    case rtrBgpUtil.peerServr:
-                        if (!nxtHopUnchgd) {
-                            nextHopSelf(afi, ntry);
-                        }
-                        break;
-                }
-                for (int i = 0; i < ntry.alts.size(); i++) {
-                    tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                    attr.confSeq = tabLabel.prependLabel(attr.confSeq, localAs);
-                }
-                break;
             case rtrBgpUtil.peerIntrn:
                 switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerIntrn:
@@ -1005,12 +987,15 @@ public class rtrBgpGroup extends rtrBgpParam {
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 switch (ntry.best.rouSrc) {
                     case rtrBgpUtil.peerIntrn:
-                        if (ntry.best.clustList == null) {
-                            ntry.best.clustList = new ArrayList<addrIP>();
+                        addrIP addr = new addrIP();
+                        addr.fromIPv4addr(lower.routerID);
+                        for (int i = 0; i < ntry.alts.size(); i++) {
+                            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                            if (attr.clustList == null) {
+                                attr.clustList = new ArrayList<addrIP>();
+                            }
+                            attr.clustList.add(addr);
                         }
-                        addrIP a = new addrIP();
-                        a.fromIPv4addr(lower.routerID);
-                        ntry.best.clustList.add(a);
                         break;
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
@@ -1026,11 +1011,38 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 switch (ntry.best.rouSrc) {
-                    case rtrBgpUtil.peerExtrn:
+                    case rtrBgpUtil.peerServr:
+                        break;
+                    default:
+                        for (int i = 0; i < ntry.alts.size(); i++) {
+                            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                            attr.pathSeq = tabLabel.prependLabel(attr.pathSeq, localAs);
+                            if (attr.pathSeq.size() > 1) {
+                                attr.metric = 0;
+                            }
+                        }
                         if (!nxtHopUnchgd) {
                             nextHopSelf(afi, ntry);
                         }
                         break;
+                }
+                break;
+            case rtrBgpUtil.peerCnfed:
+                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
+                    return null;
+                }
+                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
+                switch (ntry.best.rouSrc) {
+                    case rtrBgpUtil.peerExtrn:
+                    case rtrBgpUtil.peerServr:
+                        if (!nxtHopUnchgd) {
+                            nextHopSelf(afi, ntry);
+                        }
+                        break;
+                }
+                for (int i = 0; i < ntry.alts.size(); i++) {
+                    tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                    attr.confSeq = tabLabel.prependLabel(attr.confSeq, localAs);
                 }
                 break;
             default:
