@@ -1004,6 +1004,14 @@ public class rtrBgpGroup extends rtrBgpParam {
             case rtrBgpUtil.peerRflct:
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 switch (ntry.best.rouSrc) {
+                    case rtrBgpUtil.peerIntrn:
+                        if (ntry.best.clustList == null) {
+                            ntry.best.clustList = new ArrayList<addrIP>();
+                        }
+                        addrIP a = new addrIP();
+                        a.fromIPv4addr(lower.routerID);
+                        ntry.best.clustList.add(a);
+                        break;
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
                         if (!nxtHopUnchgd) {
