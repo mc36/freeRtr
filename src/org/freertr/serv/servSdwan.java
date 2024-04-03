@@ -205,37 +205,6 @@ public class servSdwan extends servGeneric implements prtServS {
     }
 
     /**
-     * add one endpoint
-     *
-     * @param peer peer
-     */
-    protected synchronized void addEndpt(servSdwanConn peer) {
-        if (hubs == null) {
-            peer.hub = true;
-        } else {
-            peer.hub = (" " + hubs + " ").indexOf(" " + peer.username + " ") >= 0;
-        }
-        servSdwanConn old = conns.put(peer);
-        if (old != null) {
-            old.doClose();
-        }
-        for (int i = 0; i < conns.size(); i++) {
-            servSdwanConn ntry = conns.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry == peer) {
-                continue;
-            }
-            if ((ntry.hub == false) && (peer.hub == false)) {
-                continue;
-            }
-            peer.sendLn("endpoint_add " + ntry.getEndpt());
-        }
-        sendLn(peer, peer.hub, "endpoint_add " + peer.getEndpt());
-    }
-
-    /**
      * get show
      *
      * @return result
@@ -273,6 +242,8 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
     public String software = "unknown";
 
     public String hardware = "unknown";
+
+    public String forwarder = "unknown";
 
     public String middleware = "unknown";
 
@@ -410,6 +381,10 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
                 hardware = cmd.getRemaining();
                 continue;
             }
+            if (a.equals("forwarder")) {
+                forwarder = cmd.getRemaining();
+                continue;
+            }
             if (a.equals("middleware")) {
                 middleware = cmd.getRemaining();
                 continue;
@@ -466,7 +441,29 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         sendLn("youraddr " + innerAdr4 + " " + innerAdr6);
         sendLn("nomore");
         logger.info("neighbor " + connA + " up");
-        lower.addEndpt(this);
+        if (lower.hubs == null) {
+            hub = true;
+        } else {
+            hub = (" " + lower.hubs + " ").indexOf(" " + username + " ") >= 0;
+        }
+        servSdwanConn old = lower.conns.put(this);
+        if (old != null) {
+            old.doClose();
+        }
+        for (int i = 0; i < lower.conns.size(); i++) {
+            servSdwanConn ntry = lower.conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry == this) {
+                continue;
+            }
+            if ((ntry.hub == false) && (hub == false)) {
+                continue;
+            }
+            sendLn("endpoint_add " + ntry.getEndpt());
+        }
+        lower.sendLn(this, hub, "endpoint_add " + getEndpt());
         return false;
     }
 

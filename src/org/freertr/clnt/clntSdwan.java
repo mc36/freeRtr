@@ -535,6 +535,7 @@ public class clntSdwan implements Runnable, ifcDn {
         sendLn("middleware " + version.getVMname());
         sendLn("kernel " + version.getKernelName());
         sendLn("hardware " + cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo());
+        sendLn("forwarder " + version.getHWfwd1liner());
         sendLn("needaddr " + (clonIfc.addr4 != null) + " " + (clonIfc.addr6 != null));
         sendLn("myaddr " + clonIfc.addr4 + " " + clonIfc.addr6);
         String a = "";
