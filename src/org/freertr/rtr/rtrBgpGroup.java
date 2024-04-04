@@ -829,19 +829,13 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
         }
         switch (leakRole) {
+            case rtrBgpUtil.roleRs:
             case rtrBgpUtil.roleProv:
                 if (ntry.best.onlyCust != 0) {
                     return null;
                 }
                 break;
-            case rtrBgpUtil.roleRs:
-                if (ntry.best.onlyCust != 0) {
-                    return null;
-                }
-                break;
             case rtrBgpUtil.roleRsc:
-                setCustOnly(ntry);
-                break;
             case rtrBgpUtil.roleCust:
                 setCustOnly(ntry);
                 break;
@@ -865,12 +859,25 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
             case rtrBgpUtil.peerIntrn:
-            case rtrBgpUtil.peerRflct:
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
                     if (attr.locPref == 0) {
                         attr.locPref = 100;
                     }
+                }
+                break;
+            case rtrBgpUtil.peerRflct:
+                addrIP addr = new addrIP();
+                addr.fromIPv4addr(lower.routerID);
+                for (int i = 0; i < ntry.alts.size(); i++) {
+                    tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                    if (attr.locPref == 0) {
+                        attr.locPref = 100;
+                    }
+                    if (attr.clustList == null) {
+                        attr.clustList = new ArrayList<addrIP>();
+                    }
+                    attr.clustList.add(addr);
                 }
                 break;
             case rtrBgpUtil.peerCnfed:
@@ -911,30 +918,12 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
         }
         switch (leakRole) {
+            case rtrBgpUtil.rolePeer:
             case rtrBgpUtil.roleProv:
-                if (ntry.best.onlyCust != 0) {
-                    return null;
-                }
-                break;
             case rtrBgpUtil.roleRs:
                 if (ntry.best.onlyCust != 0) {
                     return null;
                 }
-                break;
-            case rtrBgpUtil.roleRsc:
-                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
-                setCustOnly(ntry);
-                break;
-            case rtrBgpUtil.roleCust:
-                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
-                setCustOnly(ntry);
-                break;
-            case rtrBgpUtil.rolePeer:
-                if (ntry.best.onlyCust != 0) {
-                    return null;
-                }
-                ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
-                setCustOnly(ntry);
                 break;
             default:
                 break;
@@ -1047,6 +1036,15 @@ public class rtrBgpGroup extends rtrBgpParam {
                 break;
             default:
                 return null;
+        }
+        switch (leakRole) {
+            case rtrBgpUtil.roleRsc:
+            case rtrBgpUtil.roleCust:
+            case rtrBgpUtil.rolePeer:
+                setCustOnly(ntry);
+                break;
+            default:
+                break;
         }
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
