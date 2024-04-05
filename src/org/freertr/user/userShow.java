@@ -336,11 +336,16 @@ public class userShow {
                 cmd.error("no such interface");
                 return null;
             }
-            if (ifc.pppoeS == null) {
-                cmd.error("not enabled");
-                return null;
+            userFormat l = new userFormat("|", "mac|sess|iface");
+            if (ifc.pppoeR != null) {
+                ifc.pppoeR.getShow(l);
             }
-            userFormat l = ifc.pppoeS.getShow();
+            if (ifc.pppoeC != null) {
+                ifc.pppoeC.getShow(l);
+            }
+            if (ifc.pppoeS != null) {
+                ifc.pppoeS.getShow(l);
+            }
             rdr.putStrTab(l);
             return null;
         }

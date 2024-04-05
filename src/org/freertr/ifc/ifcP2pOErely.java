@@ -13,6 +13,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.user.userFormat;
 
 /**
  * ppp over ethernet (rfc2516) protocol relay handler
@@ -75,6 +76,15 @@ public class ifcP2pOErely implements ifcUp {
      * dialer interface handler
      */
     public final ifcDn diaI;
+
+    /**
+     * get show
+     *
+     * @param l list to append
+     */
+    public void getShow(userFormat l) {
+        l.add(clntAdr + "|" + clntSes + "|" + clnIfc.name);
+    }
 
     public String toString() {
         String a = "";

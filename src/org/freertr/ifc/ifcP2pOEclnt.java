@@ -13,6 +13,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.user.userFormat;
 
 /**
  * ppp over ethernet (rfc2516) protocol client handler
@@ -86,6 +87,15 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     private byte[] relayId; // relay id
 
     private int sessionId = -1; // session id
+
+    /**
+     * get show
+     *
+     * @param l list to append
+     */
+    public void getShow(userFormat l) {
+        l.add(acAddr + "|" + sessionId + "|" + clnIfc.name);
+    }
 
     public counter getCounter() {
         return cntr;

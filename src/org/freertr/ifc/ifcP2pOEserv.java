@@ -81,10 +81,9 @@ public class ifcP2pOEserv implements ifcUp {
     /**
      * get show
      *
-     * @return show
+     * @param l list to append
      */
-    public userFormat getShow() {
-        userFormat l = new userFormat("|", "mac|sess|iface");
+    public void getShow(userFormat l) {
         for (int i = 0; i < clnts.size(); i++) {
             ifcP2pOEservSess ntry = clnts.get(i);
             if (ntry == null) {
@@ -92,7 +91,6 @@ public class ifcP2pOEserv implements ifcUp {
             }
             l.add(ntry.mac + "|" + ntry.sessid + "|" + ntry.ifc.name);
         }
-        return l;
     }
 
     public counter getCounter() {
