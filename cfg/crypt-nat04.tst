@@ -1,4 +1,4 @@
-description source address translation to address
+description source address translation to interface
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -30,16 +30,10 @@ int eth2
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
-access-list test4
- permit all 1.1.1.4 255.255.255.252 all 1.1.1.0 255.255.255.252 all
- exit
-access-list test6
- permit all 1234:2:: ffff:ffff:: all 1234:1:: ffff:ffff:: all
- exit
 ipv4 route v1 8.8.8.8 255.255.255.255 1.1.1.6
 ipv6 route v1 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
-ipv4 nat v1 source 8.8.8.8 1.1.1.2
-ipv6 nat v1 source 8888::8 1234:1::2
+ipv4 nat v1 source 8.8.8.8 interface eth1
+ipv6 nat v1 source 8888::8 interface eth1
 !
 
 addrouter r3

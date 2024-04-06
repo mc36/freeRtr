@@ -10,6 +10,7 @@ import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgPlymp;
+import org.freertr.cfg.cfgPool;
 import org.freertr.ip.ipIcmp;
 import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
@@ -84,6 +85,16 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public cfgIfc newSrcIface;
 
     /**
+     * new target pool
+     */
+    public cfgPool<addrIPv4> newSrcPool4;
+
+    /**
+     * new target pool
+     */
+    public cfgPool<addrIPv6> newSrcPool6;
+
+    /**
      * new source port
      */
     public int newSrcPort = -1;
@@ -128,11 +139,12 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     /**
      * convert string to address
      *
+     * @param p protocol version
      * @param s string to convert
      * @param neg parse negated
      * @return 0=ok, 1=error, 2=time, 3=range, 4=log, 5=limit, 6=rate
      */
-    public int fromString(String s, boolean neg) {
+    public int fromString(int p, String s, boolean neg) {
         cmds cmd = new cmds("", s);
         s = cmd.word();
         if (s.equals("sequence")) {
@@ -240,6 +252,21 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                 cmd.error("no such interface");
                 return 1;
             }
+        } else if (s.equals("pool")) {
+            s = cmd.word();
+            if (p == 4) {
+                newSrcPool4 = cfgAll.poolFind(cfgAll.ip4pool, s, false);
+                if (newSrcPool4 == null) {
+                    cmd.error("no such pool");
+                    return 1;
+                }
+            } else {
+                newSrcPool6 = cfgAll.poolFind(cfgAll.ip6pool, s, false);
+                if (newSrcPool6 == null) {
+                    cmd.error("no such pool");
+                    return 1;
+                }
+            }
         } else {
             if (newA.fromString(s)) {
                 return 1;
@@ -342,10 +369,14 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if ((what & 4) != 0) {
             s = s + " " + orgP;
         }
-        if (newSrcIface == null) {
-            s = s + " " + newA;
-        } else {
+        if (newSrcIface != null) {
             s = s + " interface " + newSrcIface.name;
+        } else if (newSrcPool4 != null) {
+            s = s + " pool " + newSrcPool4.name;
+        } else if (newSrcPool6 != null) {
+            s = s + " pool " + newSrcPool6.name;
+        } else {
+            s = s + " " + newA;
         }
         if ((what & 4) != 0) {
             s = s + " " + newP;

@@ -1902,7 +1902,7 @@ public class userConfig {
         }
         String s = cmd.getRemaining();
         ntry.sequence = fwd.natCfg.nextseq();
-        int res = ntry.fromString(s, neg);
+        int res = ntry.fromString(p, s, neg);
         switch (res) {
             case 0: // entry
                 if (ntry.origSrcList != null) {
@@ -1918,7 +1918,7 @@ public class userConfig {
         if (old == null) {
             return null;
         }
-        old.fromString(s, neg);
+        old.fromString(p, s, neg);
         return null;
     }
 
@@ -2072,16 +2072,22 @@ public class userConfig {
         l.add(null, "7  8              <name:acl>               access list name");
         l.add(null, "8  9                interface              translated interface");
         l.add(null, "9  .                  <name:ifc>           translated interface");
+        l.add(null, "8  9                pool                   translated pool");
+        l.add(null, "9  .                  <name:pol>           translated pool");
         l.add(null, "8  .                <new>                  translated address");
         l.add(null, "6  7            source                     source address translation");
         l.add(null, "7  8              <orig>                   original address");
         l.add(null, "8  9                interface              translated interface");
         l.add(null, "9  .                  <name:ifc>           translated interface");
+        l.add(null, "8  9                pool                   translated pool");
+        l.add(null, "9  .                  <name:pol>           translated pool");
         l.add(null, "8  .                <new>                  translated address");
         l.add(null, "7  8              interface                original interface");
         l.add(null, "8  9                <name:ifc>             original interface");
         l.add(null, "9  10                 interface            translated interface");
         l.add(null, "10 .                    <name:ifc>         translated interface");
+        l.add(null, "9  10                 pool                 translated pool");
+        l.add(null, "10 .                    <name:pol>         translated pool");
         l.add(null, "9  .                  <new>                translated address");
         l.add(null, "6  7            target                     target address translation");
         l.add(null, "7  8              <orig>                   original address");

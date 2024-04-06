@@ -7,8 +7,10 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrPrefix;
+import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgPool;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.clnt.clntMplsTeP2p;
@@ -399,6 +401,24 @@ public class ipFwdTab {
                 addrIP adr = new addrIP();
                 updateTableNat(lower, ntry.newSrcIface, adr);
                 ntry.newSrcAddr = adr;
+            }
+            if (ntry.newSrcPool4 != null) {
+                addrIPv4 a4 = ntry.newSrcPool4.pool.addrAlloc();
+                ntry.newSrcPool4.pool.addrRelease(a4);
+                addrIP a = new addrIP();
+                if (a4 != null) {
+                    a.fromIPv4addr(a4);
+                }
+                ntry.newSrcAddr = a;
+            }
+            if (ntry.newSrcPool6 != null) {
+                addrIPv6 a6 = ntry.newSrcPool6.pool.addrAlloc();
+                ntry.newSrcPool6.pool.addrRelease(a6);
+                addrIP a = new addrIP();
+                if (a6 != null) {
+                    a.fromIPv6addr(a6);
+                }
+                ntry.newSrcAddr = a;
             }
             if (ntry.origTrgIface != null) {
                 addrIP adr = new addrIP();

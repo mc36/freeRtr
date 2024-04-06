@@ -1,4 +1,4 @@
-description source interface translation to address
+description nat64 translation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -9,8 +9,12 @@ vrf def v1
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
- ipv6 addr 1234:1::1 ffff:ffff::
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 2.2.2.2 255.255.255.255
+ exit
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2
 !
 
 addrouter r2
@@ -23,23 +27,31 @@ vrf def v1
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
- ipv6 addr 1234:1::2 ffff:ffff::
  exit
 int eth2
  vrf for v1
- ipv4 addr 1.1.1.5 255.255.255.252
- ipv6 addr 1234:2::1 ffff:ffff::
+ ipv6 addr 1234::1 ffff:ffff::
  exit
-access-list test4
- permit all 1.1.1.4 255.255.255.252 all 1.1.1.0 255.255.255.252 all
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.1
+ipv6 route v1 :: :: 1234::2
+access-list nat
+ deny all fe80:: ffff:: all any all
+ deny all any all fe80:: ffff:: all
+ deny all any all ff00:: ff00:: all
+ deny all 6464:: ffff:ffff:ffff:ffff:: all 6464:: ffff:ffff:ffff:ffff:: all
+ perm all any all 6464:: ffff:ffff:ffff:ffff:: all
  exit
-access-list test6
- permit all 1234:2:: ffff:ffff:: all 1234:1:: ffff:ffff:: all
+int tun1
+ tun key 96
+ tun vrf v1
+ tun sou eth2
+ tun des 6464::a01:4042
+ tun mod 6to4
+ vrf forwarding v1
+ ipv4 addr 10.1.64.65 255.255.255.252
+ ipv6 addr 6464::a01:4042 ffff:ffff:ffff:ffff:ffff:ffff::
  exit
-ipv4 route v1 8.8.8.8 255.255.255.255 1.1.1.6
-ipv6 route v1 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
-ipv4 nat v1 source interface eth2 1.1.1.2
-ipv6 nat v1 source interface eth2 1234:1::2
+ipv6 nat v1 srclist nat int tun1
 !
 
 addrouter r3
@@ -50,20 +62,17 @@ vrf def v1
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.6 255.255.255.252
- ipv6 addr 1234:2::2 ffff:ffff::
+ ipv6 addr 1234::2 ffff:ffff::
  exit
 int lo1
  vrf for v1
- ipv4 addr 8.8.8.8 255.255.255.255
  ipv6 addr 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+ipv6 route v1 :: :: 1234::1
 !
 
 
 
-r3 tping 100 5 1.1.1.5 vrf v1 sou lo1
-r3 tping 100 5 1234:2::1 vrf v1 sou lo1
-
-r2 output show ipv4 nat v1 tran
-r2 output show ipv6 nat v1 tran
+r1 tping 100 5 1.1.1.2 vrf v1
+r3 tping 100 5 1234::1 vrf v1
+r3 tping 100 5 6464::0202:0202 vrf v1 sou lo1
