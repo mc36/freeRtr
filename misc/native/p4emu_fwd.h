@@ -1732,10 +1732,6 @@ ipv4_rx:
         route4_ntry.addr[0] = acl4_ntry.trgAddr = get32msb(bufD, bufP + 16);
         route4_ntry.mask = 32;
         hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
-        ttl = bufD[bufP + 8] - 1;
-        if (ttl <= 1) doPunting;
-        bufD[bufP + 8] = ttl;
-        update_chksum(bufP + 10, -1);
         extract_layer4(acl4_ntry);
         update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
         if (port2vrf_res->verify4 > 0) {
@@ -1840,6 +1836,10 @@ ipv4_flwed:
             if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
         }
 ipv4_natted:
+        ttl = bufD[bufP + 8] - 1;
+        if (ttl <= 1) doPunting;
+        bufD[bufP + 8] = ttl;
+        update_chksum(bufP + 10, -1);
         acls_ntry.dir = 5;
         acls_ntry.port = vrf2rib_ntry.vrf;
         index = table_find(&acls4_table, &acls_ntry);
@@ -2014,9 +2014,6 @@ ipv6_rx:
         hash ^= acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2;
         hash ^= acl6_ntry.srcAddr3 ^ acl6_ntry.trgAddr3;
         hash ^= acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
-        ttl = bufD[bufP + 7] - 1;
-        if (ttl <= 1) doPunting;
-        bufD[bufP + 7] = ttl;
         extract_layer4(acl6_ntry);
         update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
         if (port2vrf_res->verify6 > 0) {
@@ -2147,6 +2144,9 @@ ipv6_flwed:
             if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
         }
 ipv6_natted:
+        ttl = bufD[bufP + 7] - 1;
+        if (ttl <= 1) doPunting;
+        bufD[bufP + 7] = ttl;
         acls_ntry.dir = 5;
         acls_ntry.port = vrf2rib_ntry.vrf;
         index = table_find(&acls6_table, &acls_ntry);
