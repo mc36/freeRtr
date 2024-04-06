@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.4.6-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-04-06 16:34:25, took 00:16:11, with 60 workers, on 3426 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2024-04-06 18:57:14, took 00:12:28, with 60 workers, on 3428 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -739,19 +739,21 @@ http://sources.freertr.org/cfg/crypt-macsec54.tst;crypt-macsec54.tst;success;mac
 http://sources.freertr.org/cfg/crypt-macsec55.tst;crypt-macsec55.tst;success;macsec over l2tp3
 http://sources.freertr.org/cfg/crypt-nat01.tst;crypt-nat01.tst;success;source list translation to interface
 http://sources.freertr.org/cfg/crypt-nat02.tst;crypt-nat02.tst;success;source list translation to address
-http://sources.freertr.org/cfg/crypt-nat03.tst;crypt-nat03.tst;success;source address translation to interface
-http://sources.freertr.org/cfg/crypt-nat04.tst;crypt-nat04.tst;success;source address translation to address
-http://sources.freertr.org/cfg/crypt-nat05.tst;crypt-nat05.tst;success;target address translation to address
-http://sources.freertr.org/cfg/crypt-nat06.tst;crypt-nat06.tst;success;more sources translation to interface
-http://sources.freertr.org/cfg/crypt-nat07.tst;crypt-nat07.tst;success;ipv4-ipv6 protocol translation
-http://sources.freertr.org/cfg/crypt-nat08.tst;crypt-nat08.tst;success;source prefix translation
-http://sources.freertr.org/cfg/crypt-nat09.tst;crypt-nat09.tst;success;target prefix translation
-http://sources.freertr.org/cfg/crypt-nat10.tst;crypt-nat10.tst;success;nat64 translation
-http://sources.freertr.org/cfg/crypt-nat11.tst;crypt-nat11.tst;success;source port randomization
-http://sources.freertr.org/cfg/crypt-nat12.tst;crypt-nat12.tst;success;source interface translation to address
-http://sources.freertr.org/cfg/crypt-nat13.tst;crypt-nat13.tst;success;target interface translation to address
-http://sources.freertr.org/cfg/crypt-nat14.tst;crypt-nat14.tst;success;ipv4 target port selection
-http://sources.freertr.org/cfg/crypt-nat15.tst;crypt-nat15.tst;success;ipv6 target port selection
+http://sources.freertr.org/cfg/crypt-nat03.tst;crypt-nat03.tst;success;source list translation to pool
+http://sources.freertr.org/cfg/crypt-nat04.tst;crypt-nat04.tst;success;source address translation to interface
+http://sources.freertr.org/cfg/crypt-nat05.tst;crypt-nat05.tst;success;source address translation to address
+http://sources.freertr.org/cfg/crypt-nat06.tst;crypt-nat06.tst;success;source address translation to pool
+http://sources.freertr.org/cfg/crypt-nat07.tst;crypt-nat07.tst;success;target address translation to address
+http://sources.freertr.org/cfg/crypt-nat08.tst;crypt-nat08.tst;success;more sources translation to interface
+http://sources.freertr.org/cfg/crypt-nat09.tst;crypt-nat09.tst;success;ipv4-ipv6 protocol translation
+http://sources.freertr.org/cfg/crypt-nat10.tst;crypt-nat10.tst;success;source prefix translation
+http://sources.freertr.org/cfg/crypt-nat11.tst;crypt-nat11.tst;success;target prefix translation
+http://sources.freertr.org/cfg/crypt-nat12.tst;crypt-nat12.tst;success;nat64 translation
+http://sources.freertr.org/cfg/crypt-nat13.tst;crypt-nat13.tst;success;source port randomization
+http://sources.freertr.org/cfg/crypt-nat14.tst;crypt-nat14.tst;success;source interface translation to address
+http://sources.freertr.org/cfg/crypt-nat15.tst;crypt-nat15.tst;success;target interface translation to address
+http://sources.freertr.org/cfg/crypt-nat16.tst;crypt-nat16.tst;success;ipv4 target port selection
+http://sources.freertr.org/cfg/crypt-nat17.tst;crypt-nat17.tst;success;ipv6 target port selection
 http://sources.freertr.org/cfg/crypt-openvpn01.tst;crypt-openvpn01.tst;success;openvpn over ipv4
 http://sources.freertr.org/cfg/crypt-openvpn02.tst;crypt-openvpn02.tst;success;openvpn over ipv6
 http://sources.freertr.org/cfg/crypt-openvpn03.tst;crypt-openvpn03.tst;success;openvpn over openvpn

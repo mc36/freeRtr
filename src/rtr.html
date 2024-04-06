@@ -15,7 +15,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v24.4.6-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2024-04-06 16:34:25, took 00:16:11, with 60 workers, on 3426 cases, 0 failed, 0 traces, 3 retries<br/>
+tested: 2024-04-06 18:57:14, took 00:12:28, with 60 workers, on 3428 cases, 0 failed, 0 traces, 4 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -756,19 +756,21 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec55.tst">crypt-macsec55.tst</a></td><td>success</td><td>macsec over l2tp3</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat01.tst">crypt-nat01.tst</a></td><td>success</td><td>source list translation to interface</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat02.tst">crypt-nat02.tst</a></td><td>success</td><td>source list translation to address</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat03.tst">crypt-nat03.tst</a></td><td>success</td><td>source address translation to interface</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat04.tst">crypt-nat04.tst</a></td><td>success</td><td>source address translation to address</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat05.tst">crypt-nat05.tst</a></td><td>success</td><td>target address translation to address</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat06.tst">crypt-nat06.tst</a></td><td>success</td><td>more sources translation to interface</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat07.tst">crypt-nat07.tst</a></td><td>success</td><td>ipv4-ipv6 protocol translation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat08.tst">crypt-nat08.tst</a></td><td>success</td><td>source prefix translation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat09.tst">crypt-nat09.tst</a></td><td>success</td><td>target prefix translation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat10.tst">crypt-nat10.tst</a></td><td>success</td><td>nat64 translation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat11.tst">crypt-nat11.tst</a></td><td>success</td><td>source port randomization</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat12.tst">crypt-nat12.tst</a></td><td>success</td><td>source interface translation to address</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat13.tst">crypt-nat13.tst</a></td><td>success</td><td>target interface translation to address</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat14.tst">crypt-nat14.tst</a></td><td>success</td><td>ipv4 target port selection</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat15.tst">crypt-nat15.tst</a></td><td>success</td><td>ipv6 target port selection</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat03.tst">crypt-nat03.tst</a></td><td>success</td><td>source list translation to pool</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat04.tst">crypt-nat04.tst</a></td><td>success</td><td>source address translation to interface</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat05.tst">crypt-nat05.tst</a></td><td>success</td><td>source address translation to address</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat06.tst">crypt-nat06.tst</a></td><td>success</td><td>source address translation to pool</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat07.tst">crypt-nat07.tst</a></td><td>success</td><td>target address translation to address</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat08.tst">crypt-nat08.tst</a></td><td>success</td><td>more sources translation to interface</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat09.tst">crypt-nat09.tst</a></td><td>success</td><td>ipv4-ipv6 protocol translation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat10.tst">crypt-nat10.tst</a></td><td>success</td><td>source prefix translation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat11.tst">crypt-nat11.tst</a></td><td>success</td><td>target prefix translation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat12.tst">crypt-nat12.tst</a></td><td>success</td><td>nat64 translation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat13.tst">crypt-nat13.tst</a></td><td>success</td><td>source port randomization</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat14.tst">crypt-nat14.tst</a></td><td>success</td><td>source interface translation to address</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat15.tst">crypt-nat15.tst</a></td><td>success</td><td>target interface translation to address</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat16.tst">crypt-nat16.tst</a></td><td>success</td><td>ipv4 target port selection</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-nat17.tst">crypt-nat17.tst</a></td><td>success</td><td>ipv6 target port selection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn01.tst">crypt-openvpn01.tst</a></td><td>success</td><td>openvpn over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn02.tst">crypt-openvpn02.tst</a></td><td>success</td><td>openvpn over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn03.tst">crypt-openvpn03.tst</a></td><td>success</td><td>openvpn over openvpn</td></tr>

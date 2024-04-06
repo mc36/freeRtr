@@ -735,8 +735,10 @@ qc pass: macsec over tmux
 qc pass: macsec over l2tp3
 qc pass: source list translation to interface
 qc pass: source list translation to address
+qc pass: source list translation to pool
 qc pass: source address translation to interface
 qc pass: source address translation to address
+qc pass: source address translation to pool
 qc pass: target address translation to address
 qc pass: more sources translation to interface
 qc pass: ipv4-ipv6 protocol translation
