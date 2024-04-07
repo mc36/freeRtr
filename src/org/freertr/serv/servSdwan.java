@@ -293,7 +293,7 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         return o1.connA.compare(o1.connA, o2.connA);
     }
 
-    public void sendLn(String s) {
+    public synchronized void sendLn(String s) {
         if (debugger.servSdwanTraf) {
             logger.debug(connA + " tx " + s);
         }
