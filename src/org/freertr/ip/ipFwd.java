@@ -2346,6 +2346,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 return;
             }
         }
+        if (txIfc.gatePrc) {
+            protoSend(txIfc, pck);
+            return;
+        }
         if (((from & 1) != 0) && alerted) {
             if (!protoAlert(rxIfc, pck)) {
                 return;

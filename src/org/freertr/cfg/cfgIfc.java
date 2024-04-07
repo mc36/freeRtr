@@ -1539,6 +1539,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! ipv[46] gateway-connected",
         "interface .*! ipv[46] gateway-local",
         "interface .*! ipv[46] gateway-remote",
+        "interface .*! no ipv[46] gateway-process",
         "interface .*! ipv[46] gateway-distance 0 0 0 0",
         "interface .*! no ipv[46] gateway-labeled",
         "interface .*! no ipv[46] gateway-prefix",

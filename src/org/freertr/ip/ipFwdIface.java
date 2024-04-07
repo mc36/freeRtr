@@ -185,6 +185,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean gateRem = true;
 
     /**
+     * process every packet
+     */
+    public boolean gatePrc = false;
+
+    /**
      * install connected with this distance
      */
     public int gateDstC = 0;
@@ -509,6 +514,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add("name|" + lower);
         l.add("ready|" + ready);
         l.add("num|" + ifwNum);
+        l.add("typ|" + ifwTyp);
         l.add("mtu|" + mtu);
         l.add("bw|" + bits.bandwidth(bandwidth));
         l.add("addr|" + addr);
@@ -575,6 +581,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "2 .     gateway-connected           install connected route");
         l.add(null, "2 .     gateway-local               install local route");
         l.add(null, "2 .     gateway-remote              install remote route");
+        l.add(null, "2 .     gateway-process             every packet is local");
         l.add(null, "2 3     gateway-distance            install with this distance");
         l.add(null, "3 4       <num>                     connected distance");
         l.add(null, "4 5         <num>                   local distance");
@@ -818,6 +825,7 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, !gateCon, cmds.tabulator, beg + "gateway-connected", "");
         cmds.cfgLine(l, !gateLoc, cmds.tabulator, beg + "gateway-local", "");
         cmds.cfgLine(l, !gateRem, cmds.tabulator, beg + "gateway-remote", "");
+        cmds.cfgLine(l, !gatePrc, cmds.tabulator, beg + "gateway-process", "");
         l.add(cmds.tabulator + beg + "gateway-distance " + gateDstC + " " + gateDstL + " " + gateDstR + " " + gateDstP);
         switch (gateLab) {
             case 0:
@@ -1253,6 +1261,10 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("gateway-remote")) {
             gateRem = true;
             fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-process")) {
+            gatePrc = true;
             return false;
         }
         if (a.equals("gateway-distance")) {
@@ -1848,6 +1860,10 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("gateway-remote")) {
             gateRem = false;
             fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("gateway-process")) {
+            gatePrc = false;
             return false;
         }
         if (a.equals("gateway-distance")) {
