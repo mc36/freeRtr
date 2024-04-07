@@ -11,6 +11,8 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.2
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:1::2
 !
 
 addrouter r2
@@ -30,10 +32,17 @@ int eth2
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 1.1.2.1 255.255.255.0
+ ipv6 addr 1234:3::1 ffff:ffff::
+ ipv4 gateway-process
+ ipv6 gateway-process
+ exit
 ipv4 route v1 8.8.8.8 255.255.255.255 1.1.1.6
 ipv6 route v1 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
-ipv4 pool a4 1.1.1.2 0.0.0.1 1
-ipv6 pool a6 1234:1::2 ::1 1
+ipv4 pool a4 1.1.2.1 0.0.0.1 222
+ipv6 pool a6 1234:3::1 ::1234 222
 ipv4 nat v1 source 8.8.8.8 pool a4
 ipv6 nat v1 source 8888::8 pool a6
 !
