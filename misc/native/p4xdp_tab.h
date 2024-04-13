@@ -13,6 +13,8 @@ struct vrfp_res {
     __u32 hop;
     __u32 label1;
     __u32 label2;
+    __u32 pttl4;
+    __u32 pttl6;
     __u32 mpls;
     __s32 sgtSet;
     __u32 sgtTag;

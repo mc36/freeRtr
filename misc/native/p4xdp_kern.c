@@ -423,6 +423,7 @@ ipv4_rx:
             if (bufD[bufP + 9] == 46) goto cpu;
             bufD[bufP + 8] = ttl;
             update_chksum(bufP + 10, -1);
+            ttl |= vrfp->pttl4;
             struct route4_key rou4;
             rou4.bits = (sizeof(rou4) * 8) - routes_bits;
             rou4.vrf = vrfp->vrf;
@@ -440,6 +441,7 @@ ipv6_rx:
             if (ttl <= 1) goto punt;
             if (bufD[bufP + 6] == 0) goto cpu;
             bufD[bufP + 7] = ttl;
+            ttl |= vrfp->pttl6;
             struct route6_key rou6;
             rou6.bits = (sizeof(rou6) * 8) - routes_bits;
             rou6.vrf = vrfp->vrf;
