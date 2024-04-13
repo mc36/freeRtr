@@ -1773,39 +1773,38 @@ ipv4_rx:
         }
         acls_ntry.dir = 6;
         index = table_find(&acls4_table, &acls_ntry);
-        if (index >= 0) {
-            if (frag != 0) doPunting;
-            acls_res = table_get(&acls4_table, index);
-            aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
-            if (aceh_res == NULL) goto ipv4_qosed;
-            if (aceh_res->act != 0) goto ipv4_qosed;
-            policer_ntry.vrf = 0;
-            policer_ntry.meter = aceh_res->nexthop;
-            policer_ntry.dir = 1;
-            index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) doDropper;
-            policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) doDropper;
-            policer_res->avail -= bufS - bufP + preBuff;
-        }
+        if (index < 0) goto ipv4_qosed;
+        if (frag != 0) doPunting;
+        acls_res = table_get(&acls4_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        if (aceh_res == NULL) goto ipv4_qosed;
+        if (aceh_res->act != 0) goto ipv4_qosed;
+        policer_ntry.vrf = 0;
+        policer_ntry.meter = aceh_res->nexthop;
+        policer_ntry.dir = 1;
+        index = table_find(&policer_table, &policer_ntry);
+        if (index < 0) doDropper;
+        policer_res = table_get(&policer_table, index);
+        if (policer_res->avail < 1) doDropper;
+        policer_res->avail -= bufS - bufP + preBuff;
 ipv4_qosed:
         acls_ntry.dir = 8;
         acls_ntry.port = vrf2rib_ntry.vrf;
+        if (port2vrf_res->nflw4 > 0) goto ipv4_flwed;
         index = table_find(&acls4_table, &acls_ntry);
-        if (index >= 0) {
-            acls_res = table_get(&acls4_table, index);
-            aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
-            if (aceh_res == NULL) goto ipv4_flwed;
-            if (aceh_res->act != 0) goto ipv4_flwed;
-            policer_ntry.vrf = vrf2rib_ntry.vrf;
-            policer_ntry.meter = aceh_res->pri;
-            policer_ntry.dir = 3;
-            index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) doDropper;
-            policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) doDropper;
-            policer_res->avail -= bufS - bufP + preBuff;
-        }
+        if (index < 0) goto ipv4_flwed;
+        acls_res = table_get(&acls4_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        if (aceh_res == NULL) goto ipv4_flwed;
+        if (aceh_res->act != 0) goto ipv4_flwed;
+        policer_ntry.vrf = vrf2rib_ntry.vrf;
+        policer_ntry.meter = aceh_res->pri;
+        policer_ntry.dir = 3;
+        index = table_find(&policer_table, &policer_ntry);
+        if (index < 0) doDropper;
+        policer_res = table_get(&policer_table, index);
+        if (policer_res->avail < 1) doDropper;
+        policer_res->avail -= bufS - bufP + preBuff;
 ipv4_flwed:
         nat4_ntry.prot = acl4_ntry.protV;
         nat4_ntry.oSrcAddr = acl4_ntry.srcAddr;
@@ -1840,43 +1839,43 @@ ipv4_natted:
         if (ttl <= 1) doPunting;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
+        ttl |= port2vrf_res->pttl4;
         acls_ntry.dir = 5;
         acls_ntry.port = vrf2rib_ntry.vrf;
         index = table_find(&acls4_table, &acls_ntry);
-        if (index >= 0) {
-            if (frag != 0) doPunting;
-            acls_res = table_get(&acls4_table, index);
-            aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
-            if (aceh_res == NULL) goto ipv4_pbred;
-            if (aceh_res->act != 0) goto ipv4_pbred;
-            switch (aceh_res->cmd) {
-            case 1: // normal
-                break;
-            case 2: // setvrf
-                vrf2rib_ntry.vrf = aceh_res->vrf;
-                break;
-            case 3: // sethop
-                vrf2rib_ntry.vrf = aceh_res->vrf;
-                neigh_ntry.id = aceh_res->nexthop;
-                index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doDropper;
-                neigh_res = table_get(&neigh_table, index);
-                goto ipv4_tx;
-            case 4: // setlab
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                bufP -= 4;
-                label = 0x100 | ttl | (aceh_res->label << 12);
-                put32msb(bufD, bufP, label);
-                vrf2rib_ntry.vrf = aceh_res->vrf;
-                neigh_ntry.id = aceh_res->nexthop;
-                goto ethtyp_tx;
-            default:
-                doDropper;
-            }
-            index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
+        if (index < 0) goto ipv4_pbred;
+        if (frag != 0) doPunting;
+        acls_res = table_get(&acls4_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        if (aceh_res == NULL) goto ipv4_pbred;
+        if (aceh_res->act != 0) goto ipv4_pbred;
+        switch (aceh_res->cmd) {
+        case 1: // normal
+            break;
+        case 2: // setvrf
+            vrf2rib_ntry.vrf = aceh_res->vrf;
+            break;
+        case 3: // sethop
+            vrf2rib_ntry.vrf = aceh_res->vrf;
+            neigh_ntry.id = aceh_res->nexthop;
+            index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) doDropper;
-            vrf2rib_res = table_get(&vrf2rib4_table, index);
+            neigh_res = table_get(&neigh_table, index);
+            goto ipv4_tx;
+        case 4: // setlab
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            bufP -= 4;
+            label = 0x100 | ttl | (aceh_res->label << 12);
+            put32msb(bufD, bufP, label);
+            vrf2rib_ntry.vrf = aceh_res->vrf;
+            neigh_ntry.id = aceh_res->nexthop;
+            goto ethtyp_tx;
+        default:
+            doDropper;
         }
+        index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib4_table, index);
 ipv4_pbred:
         if (acl4_ntry.protV == 46) doCpuing;
         vrf2rib_res->pack++;
@@ -2064,39 +2063,38 @@ ipv6_rx:
         }
         acls_ntry.dir = 6;
         index = table_find(&acls6_table, &acls_ntry);
-        if (index >= 0) {
-            if (frag != 0) doPunting;
-            acls_res = table_get(&acls6_table, index);
-            aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
-            if (aceh_res == NULL) goto ipv6_qosed;
-            if (aceh_res->act != 0) goto ipv6_qosed;
-            policer_ntry.vrf = 0;
-            policer_ntry.meter = aceh_res->nexthop;
-            policer_ntry.dir = 1;
-            index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) doDropper;
-            policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) doDropper;
-            policer_res->avail -= bufS - bufP + preBuff;
-        }
+        if (index < 0) goto ipv6_qosed;
+        if (frag != 0) doPunting;
+        acls_res = table_get(&acls6_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        if (aceh_res == NULL) goto ipv6_qosed;
+        if (aceh_res->act != 0) goto ipv6_qosed;
+        policer_ntry.vrf = 0;
+        policer_ntry.meter = aceh_res->nexthop;
+        policer_ntry.dir = 1;
+        index = table_find(&policer_table, &policer_ntry);
+        if (index < 0) doDropper;
+        policer_res = table_get(&policer_table, index);
+        if (policer_res->avail < 1) doDropper;
+        policer_res->avail -= bufS - bufP + preBuff;
 ipv6_qosed:
         acls_ntry.dir = 8;
         acls_ntry.port = vrf2rib_ntry.vrf;
+        if (port2vrf_res->nflw6 > 0) goto ipv6_flwed;
         index = table_find(&acls6_table, &acls_ntry);
-        if (index >= 0) {
-            acls_res = table_get(&acls6_table, index);
-            aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
-            if (aceh_res == NULL) goto ipv6_flwed;
-            if (aceh_res->act != 0) goto ipv6_flwed;
-            policer_ntry.vrf = vrf2rib_ntry.vrf;
-            policer_ntry.meter = aceh_res->pri;
-            policer_ntry.dir = 4;
-            index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) doDropper;
-            policer_res = table_get(&policer_table, index);
-            if (policer_res->avail < 1) doDropper;
-            policer_res->avail -= bufS - bufP + preBuff;
-        }
+        if (index < 0) goto ipv6_flwed;
+        acls_res = table_get(&acls6_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        if (aceh_res == NULL) goto ipv6_flwed;
+        if (aceh_res->act != 0) goto ipv6_flwed;
+        policer_ntry.vrf = vrf2rib_ntry.vrf;
+        policer_ntry.meter = aceh_res->pri;
+        policer_ntry.dir = 4;
+        index = table_find(&policer_table, &policer_ntry);
+        if (index < 0) doDropper;
+        policer_res = table_get(&policer_table, index);
+        if (policer_res->avail < 1) doDropper;
+        policer_res->avail -= bufS - bufP + preBuff;
 ipv6_flwed:
         nat6_ntry.prot = acl6_ntry.protV;
         nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1;
@@ -2147,43 +2145,43 @@ ipv6_natted:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;
         bufD[bufP + 7] = ttl;
+        ttl |= port2vrf_res->pttl6;
         acls_ntry.dir = 5;
         acls_ntry.port = vrf2rib_ntry.vrf;
         index = table_find(&acls6_table, &acls_ntry);
-        if (index >= 0) {
-            if (frag != 0) doPunting;
-            acls_res = table_get(&acls6_table, index);
-            aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
-            if (aceh_res == NULL) goto ipv6_pbred;
-            if (aceh_res->act != 0) goto ipv6_pbred;
-            switch (aceh_res->cmd) {
-            case 1: // normal
-                break;
-            case 2: // setvrf
-                vrf2rib_ntry.vrf = aceh_res->vrf;
-                break;
-            case 3: // sethop
-                vrf2rib_ntry.vrf = aceh_res->vrf;
-                neigh_ntry.id = aceh_res->nexthop;
-                index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doDropper;
-                neigh_res = table_get(&neigh_table, index);
-                goto ipv6_tx;
-            case 4: // setlab
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                bufP -= 4;
-                label = 0x100 | ttl | (aceh_res->label << 12);
-                put32msb(bufD, bufP, label);
-                vrf2rib_ntry.vrf = aceh_res->vrf;
-                neigh_ntry.id = aceh_res->nexthop;
-                goto ethtyp_tx;
-            default:
-                doDropper;
-            }
-            index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (index < 0) goto ipv6_pbred;
+        if (frag != 0) doPunting;
+        acls_res = table_get(&acls6_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        if (aceh_res == NULL) goto ipv6_pbred;
+        if (aceh_res->act != 0) goto ipv6_pbred;
+        switch (aceh_res->cmd) {
+        case 1: // normal
+            break;
+        case 2: // setvrf
+            vrf2rib_ntry.vrf = aceh_res->vrf;
+            break;
+        case 3: // sethop
+            vrf2rib_ntry.vrf = aceh_res->vrf;
+            neigh_ntry.id = aceh_res->nexthop;
+            index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) doDropper;
-            vrf2rib_res = table_get(&vrf2rib6_table, index);
+            neigh_res = table_get(&neigh_table, index);
+            goto ipv6_tx;
+        case 4: // setlab
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            bufP -= 4;
+            label = 0x100 | ttl | (aceh_res->label << 12);
+            put32msb(bufD, bufP, label);
+            vrf2rib_ntry.vrf = aceh_res->vrf;
+            neigh_ntry.id = aceh_res->nexthop;
+            goto ethtyp_tx;
+        default:
+            doDropper;
         }
+        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib6_table, index);
 ipv6_pbred:
         if (acl6_ntry.protV == 0) doCpuing;
         vrf2rib_res->pack++;

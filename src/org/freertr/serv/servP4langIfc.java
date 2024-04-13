@@ -198,6 +198,26 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     protected int sentVerify6;
 
     /**
+     * sent propagate ipv4
+     */
+    protected int sentPropagate4;
+
+    /**
+     * sent propagate ipv6
+     */
+    protected int sentPropagate6;
+
+    /**
+     * sent flowspec ipv4
+     */
+    protected int sentFlowDis4;
+
+    /**
+     * sent flowspec ipv6
+     */
+    protected int sentFlowDis6;
+
+    /**
      * sent mpls
      */
     protected int sentMpls;
@@ -538,6 +558,10 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentPmtud6out = 0;
         sentVerify4 = 0;
         sentVerify6 = 0;
+        sentPropagate4 = 0;
+        sentPropagate6 = 0;
+        sentFlowDis4 = 0;
+        sentFlowDis6 = 0;
         sentMpls = 0;
         sentNsh = 0;
         sentAcl4in1 = null;

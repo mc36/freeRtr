@@ -2495,6 +2495,42 @@ public class servP4langConn implements Runnable {
             ifc.sentVerify6 = i;
         }
         i = 0;
+        o = 0;
+        if (mstr.ifc.fwdIf4 != null) {
+            if (mstr.ifc.fwdIf4.mplsPropTtlAllow) {
+                i = 1;
+            }
+            if (mstr.ifc.fwdIf4.disableFlowspec) {
+                o = 1;
+            }
+        }
+        if (i != ifc.sentPropagate4) {
+            lower.sendLine("mplsttl4_" + a + " " + ifc.id + " " + i);
+            ifc.sentPropagate4 = i;
+        }
+        if (o != ifc.sentFlowDis4) {
+            lower.sendLine("flowdis4_" + a + " " + ifc.id + " " + o);
+            ifc.sentFlowDis4 = o;
+        }
+        i = 0;
+        o = 0;
+        if (mstr.ifc.fwdIf6 != null) {
+            if (mstr.ifc.fwdIf6.mplsPropTtlAllow) {
+                i = 1;
+            }
+            if (mstr.ifc.fwdIf6.disableFlowspec) {
+                o = 1;
+            }
+        }
+        if (i != ifc.sentPropagate6) {
+            lower.sendLine("mplsttl6_" + a + " " + ifc.id + " " + i);
+            ifc.sentPropagate6 = i;
+        }
+        if (o != ifc.sentFlowDis6) {
+            lower.sendLine("flowdis6_" + a + " " + ifc.id + " " + o);
+            ifc.sentFlowDis6 = o;
+        }
+        i = 0;
         if (mstr.ifc.mplsPack != null) {
             i = 1;
         }

@@ -470,6 +470,32 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         port2vrf_res->pmtud6 = atoi(arg[3]);
         return 0;
     }
+    if (strcmp(arg[0], "mplsttl4") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->pttl4 = atoi(arg[3]);
+        if (port2vrf_res->pttl4 == 0) port2vrf_res->pttl4 = 0xff; else port2vrf_res->pttl4 = 0;
+        return 0;
+    }
+    if (strcmp(arg[0], "mplsttl6") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->pttl6 = atoi(arg[3]);
+        if (port2vrf_res->pttl6 == 0) port2vrf_res->pttl6 = 0xff; else port2vrf_res->pttl6 = 0;
+        return 0;
+    }
+    if (strcmp(arg[0], "flowdis4") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->nflw4 = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "flowdis6") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->nflw6 = atoi(arg[3]);
+        return 0;
+    }
     if (strcmp(arg[0], "mplspack") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);

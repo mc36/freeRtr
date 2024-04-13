@@ -129,6 +129,10 @@ struct port2vrf_entry {
     int verify6;
     int pmtud4;
     int pmtud6;
+    int nflw4;
+    int nflw6;
+    int pttl4;
+    int pttl6;
     int mpls;
     int nsh;
     int monTarget;
