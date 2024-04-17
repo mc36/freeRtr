@@ -1,0 +1,10 @@
+arch loong64
+unam loongarch64
+qemu loong64
+kern loong64
+grub ieee1275-bin
+boot loong64-ieee1275
+uefi bootx64.efi
+comp gcc
+mirr http://ftp.ports.debian.org/debian-ports/
+image ../binImg/rtr-loong
