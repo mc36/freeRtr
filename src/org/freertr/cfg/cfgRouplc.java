@@ -288,6 +288,13 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
         l.add(null, "4 .         <addr>          address");
         l.add(null, "2 3     connector           set connector");
         l.add(null, "3 .       <addr>            address");
+        l.add(null, "2 3     aslimit             set as path limit");
+        l.add(null, "3 4       leave             leave value unchanged");
+        l.add(null, "4 .         leave           leave value unchanged");
+        l.add(null, "4 .         <num>           asn");
+        l.add(null, "3 4       <num>             limit");
+        l.add(null, "4 .         leave           leave value unchanged");
+        l.add(null, "4 .         <num>           asn");
         l.add(null, "2 3     customer            set customer");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             asn");
@@ -933,6 +940,18 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
                 a = cmd.word();
                 if (ntry.addrSet.fromString(a)) {
                     cmd.error("bad address");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("aslimit")) {
+                ntry.doMode = tabRtrplcN.doType.setAsLimit;
+                if (ntry.intSet.fromString(cmd.word())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                if (ntry.int2set.fromString(cmd.word())) {
+                    cmd.error("invalid action");
                     return;
                 }
                 return;

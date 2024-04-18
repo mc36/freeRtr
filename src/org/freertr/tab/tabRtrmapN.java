@@ -168,6 +168,16 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public addrIP connectorSet = null;
 
     /**
+     * path limit updater
+     */
+    public tabIntUpdater pathLimSet = new tabIntUpdater();
+
+    /**
+     * path limit updater
+     */
+    public tabIntUpdater pathAsnSet = new tabIntUpdater();
+
+    /**
      * customer updater
      */
     public tabIntUpdater customerSet = new tabIntUpdater();
@@ -622,6 +632,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set validity " + validitySet);
         l.add(beg + "set aggregator " + aggregatorSet + " " + aggregatorRtr);
         l.add(beg + "set connector " + connectorSet);
+        l.add(beg + "set aslimit " + pathLimSet + " " + pathAsnSet);
         l.add(beg + "set customer " + customerSet);
         l.add(beg + "set bandwidth " + bandwidthSet);
         l.add(beg + "set origin " + originSet);
@@ -857,6 +868,17 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("aslimit")) {
+            if (pathLimSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            if (pathAsnSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("connector")) {
             connectorSet = new addrIP();
             a = cmd.word();
@@ -1009,6 +1031,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (a.equals("aggregator")) {
             aggregatorSet.set2unchange();
             aggregatorRtr = null;
+            return false;
+        }
+        if (a.equals("aslimit")) {
+            pathLimSet.set2unchange();
+            pathAsnSet.set2unchange();
             return false;
         }
         if (a.equals("connector")) {
@@ -1807,6 +1834,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (connectorSet != null) {
             attr.connRtr = connectorSet.copyBytes();
         }
+        attr.pathLim = pathLimSet.update(attr.pathLim);
+        attr.pathAsn = pathAsnSet.update(attr.pathAsn);
         attr.onlyCust = customerSet.update(attr.onlyCust);
         attr.bandwidth = bandwidthSet.update(attr.bandwidth);
         attr.origin = originSet.update(attr.origin);

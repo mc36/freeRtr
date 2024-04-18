@@ -171,6 +171,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setConnect,
         /**
+         * set path limit
+         */
+        setAsLimit,
+        /**
          * set customer
          */
         setCustomer,
@@ -584,6 +588,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set aggregator " + intSet + " " + addrSet;
             case setConnect:
                 return "set connector " + addrSet;
+            case setAsLimit:
+                return "set aslimit " + intSet + " " + int2set;
             case setCustomer:
                 return "set customer " + intSet;
             case setBandwidth:
@@ -1010,6 +1016,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setConnect:
                 attr.connRtr = addrSet.copyBytes();
+                return;
+            case setAsLimit:
+                attr.pathLim = intSet.update(attr.pathLim);
+                attr.pathAsn = int2set.update(attr.pathAsn);
                 return;
             case setCustomer:
                 attr.onlyCust = intSet.update(attr.onlyCust);
