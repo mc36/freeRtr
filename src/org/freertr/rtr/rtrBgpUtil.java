@@ -2324,6 +2324,18 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse path limit attribute
+     *
+     * @param spkr where to signal
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parsePathLimit(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.pathLim = pck.getByte(0);
+        ntry.best.pathAsn = pck.msbGetD(1);
+    }
+
+    /**
      * parse pe distinguisher attribute
      *
      * @param spkr where to signal
@@ -2975,6 +2987,9 @@ public class rtrBgpUtil {
             case attrConnector:
                 parseConnector(spkr, ntry, pck);
                 return null;
+            case attrPathLimit:
+                parsePathLimit(spkr, ntry, pck);
+                return null;
             case attrPeDistLab:
                 parsePeDistLab(spkr, ntry, pck);
                 return null;
@@ -3462,6 +3477,25 @@ public class rtrBgpUtil {
         hlp.putAddr(4, ntry.best.connRtr.toIPv4());
         hlp.putSkip(4 + addrIPv4.size);
         placeAttrib(spkr, flagOptional | flagTransitive, attrConnector, trg, hlp);
+    }
+
+    /**
+     * place path limit attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placePathLimit(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.pathLim < 1) {
+            return;
+        }
+        hlp.clear();
+        hlp.putByte(0, ntry.best.pathLim);
+        hlp.msbPutD(1, ntry.best.pathAsn);
+        hlp.putSkip(5);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrPathLimit, trg, hlp);
     }
 
     /**

@@ -941,6 +941,11 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
+                if (ntry.best.pathLim > 0) {
+                    if (ntry.best.asPathLen() >= ntry.best.pathLim) {
+                        return null;
+                    }
+                }
                 if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return null;
                 }
