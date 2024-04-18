@@ -3179,6 +3179,7 @@ public class rtrBgpUtil {
         placeAtomicAggr(spkr, pck, hlp, ntry);
         placeAggregator(spkr, longAS, pck, hlp, ntry);
         placeConnector(spkr, pck, hlp, ntry);
+        placePathLimit(spkr, pck, hlp, ntry);
         placePeDistLab(spkr, pck, hlp, ntry);
         placeStdComm(spkr, pck, hlp, ntry);
         placeExtComm(spkr, pck, hlp, ntry);
