@@ -3568,14 +3568,15 @@ public class servP4langConn implements Runnable {
     }
 
     private tabListing<tabAceslstN<addrIP>, addrIP> doNatCfg(boolean ipv4, int vrf, tabListing<tabNatCfgN, addrIP> curr, tabListing<tabAceslstN<addrIP>, addrIP> old, tabListing<tabAceslstN<addrIP>, addrIP> res) {
-        tabListing<tabAceslstN<addrIP>, addrIP> need;
-        if (curr.size() < 1) {
-            need = null;
-        } else {
-            tabNatCfgN ntry = curr.get(0);
-            need = ntry.origSrcList;
+        tabListing<tabAceslstN<addrIP>, addrIP> need = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        for (int i = 0; i < curr.size(); i++) {
+            tabNatCfgN ntry = curr.get(i);
+            if (ntry.origSrcList == null) {
+                continue;
+            }
+            need.mergeOne(ntry.origSrcList, 0);
         }
-        if (old == need) {
+        if (old.size() == need.size()) {
             return old;
         }
         String afi;

@@ -284,9 +284,9 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
         mroutes4 = new tabGen<ipFwdMcast>();
         mroutes6 = new tabGen<ipFwdMcast>();
         sentMcast = false;
-        natCfg4 = null;
+        natCfg4 = new tabListing<tabAceslstN<addrIP>, addrIP>();
         natCfg4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
-        natCfg6 = null;
+        natCfg6 = new tabListing<tabAceslstN<addrIP>, addrIP>();
         natCfg6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
         natTrns4 = new tabGen<tabNatTraN>();
         natTrns6 = new tabGen<tabNatTraN>();
