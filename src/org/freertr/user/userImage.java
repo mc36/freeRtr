@@ -102,6 +102,9 @@ public class userImage {
             if (!detail) {
                 continue;
             }
+            if (done != pkg.done) {
+                continue;
+            }
             s += " " + pkg.name;
         }
         if (detail) {
