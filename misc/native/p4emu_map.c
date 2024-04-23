@@ -234,7 +234,11 @@ int main(int argc, char **argv) {
         struct ifreq ifr;
         memset(&ifr, 0, sizeof (ifr));
         strcpy(ifr.ifr_name, ifaceName[o]);
-        if (ioctl(ifaceSock[o], SIOCGIFINDEX, &ifr) < 0) err("unable to get ifcidx");
+        if (ioctl(ifaceSock[o], SIOCGIFINDEX, &ifr) < 0) {
+          if (o < (dataPorts-1)) err("unable to get ifcidx");
+          dataPorts--;
+          break;
+        }
         ifaceIndex[o] = ifr.ifr_ifindex;
         memset(&addrIfc[o], 0, sizeof (addrIfc[o]));
         addrIfc[o].sll_family = AF_PACKET;

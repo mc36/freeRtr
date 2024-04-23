@@ -196,7 +196,11 @@ int main(int argc, char **argv) {
         if (pcap_set_snaplen(ifacePcap[i], 65536) < 0) err("unable to set snaplen");
         if (pcap_set_promisc(ifacePcap[i], 1) < 0) err("unable to set promisc");
         if (pcap_set_immediate_mode(ifacePcap[i], 1) < 0) err("unable to set immediate");
-        if (pcap_activate(ifacePcap[i]) < 0) err("activation failed");
+        if (pcap_activate(ifacePcap[i]) < 0) {
+          if (i < (dataPorts-1)) err("activation failed");
+          dataPorts--;
+          break;
+        }
         if (pcap_setdirection(ifacePcap[i], PCAP_D_IN) < 0) err("unable to set direction");
         ifaceId[i] = i;
     }
