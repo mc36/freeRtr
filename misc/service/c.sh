@@ -106,6 +106,7 @@ cp ../default.cfg $TRG/rtr-sw.txt
 cp ../../src/rtr.jar $TRG/
 cp ../../src/rtr.ver $TRG/
 cp ../../binTmp/*.bin $TRG/
+cp ../../binTmp/*.so $TRG/
 cp /proc/net/dev $TRG/hwdet.eth
 cp /proc/tty/driver/serial $TRG/hwdet.ser
 ip link show > $TRG/hwdet.mac
