@@ -8,7 +8,7 @@ logging tracestop
 logging milliseconds
 logging buffered debug 10240
 logging file debug zzz.log
-logging syslog debug system 10.10.10.10 10.10.10.4
+logging syslog debug system 169.254.3.10 169.254.3.4
 logging irc debug irc.mchome.nop.hu #routers
 !
 crypto rsakey rsa import $w10$N3+TUjOly+Vsk7tgT2zMFDIQUUYjkyk77GeEHXfy5aih8vBxwiy1zWCm7nr3AmtgcB4AiKM3nn2OnxWvncwrXRFd6eNfChOldf26eSZnScrmwNwwGcVw7OXVAjbQocKBxIOuZZ2E9VQc07z6SBd/+D3FJfWCulr7GL8OWx7po+GFBzEqtN53PAp+d/mypsUYi98nfEaq8CQ7E0XTWH/teWp1kD7yjyEKhmpIxOf0ooOdrwPyoR2Pc6n0E+pJAmxIKfkyQy/suihLsLrMHNSMkzj67n4oGs8b5enYSEtjGc7O1f9T+ps38AOT5moURa1ntkMPloD43DG8fKpzBPgbCA6Wm/LALLEUwecJADL2RXRHIEvvkRTEPgtH6kmf3hreUjgSmN2i+gSTABbMH1EOc2v/aHYeo/oS9sbhCSO9a3zJZuy1XUhFOlmIos9fM6tCO3zQqr7Ep3GGswO5XaryyUO/oSug+STvO4mCrvwDwseFnAYVjGx/eQnGVF8Rf6AiphHHnbqd+vSIhHsSv+OVbGMSoWa7/i/6l3fmR55RL4plw3Iww6J51T4IiAR5h43TRGaAi+Ppbh6Y25CVz4ULziRnXISiKAjdzY07Vvob589NHX7upSupZ8R1dinPEPL2m85bhAxCUfadZThAaYs6KDPhWmpWTsMvk4Ko8JBX50cKhfY1Co3BA86GNA4VL9y56HS2Le00VTCLgyjhS7TwmYxvVNyoy4LHTPO4xwXBfuc978rxQ3ZO9uiBrDbRsVAJw6dvtkgen1Fy0479X6ud8Aj1snVInKmW3rBUNzgEYVgtl2xDBgX24qc55F52A6Xu1CDCSJLZhk1pA4A41BSb6lvEe6/kxhsI1j1e53LZh+ExSPUNhcntuNhlZ4NPv2f23n27oItvCR+kflX5RcQbIrMlqP/aFooXjvrOZ9qEwBE+Z1MpjDZK3FQOrPe3FU2KEwLu5K7mbcdYHu4kF/nUqkJhNlAs+GXtbFZ4w7NcDTOWDq30wdobnw8jihi812YXMx+yJ9mgNO7AFxwowxvrMau5emHYVpZmVtFqOAj3dWY6NQOlJi6zDuvPUM/wtklR
@@ -57,12 +57,12 @@ aaa userlist access
 !
 aaa radius rad
  secret $w10$GV+pcgTkgqct0vAiKD2PVg==
- server 10.10.10.227
+ server 169.254.3.227
  exit
 !
 aaa tacacs tac
  secret $w10$GV+pcgTkgqct0vAiKD2PVg==
- server 10.10.10.227
+ server 169.254.3.227
  exit
 !
 script logger
@@ -289,7 +289,7 @@ router blackhole6 1 vrf rtbh
  exit
 !
 router lsrp4 1 vrf v1
- router-id 10.10.10.227
+ router-id 169.254.3.227
  refresh 600000
  lifetime 2147483000
  spf-log 500
@@ -303,7 +303,7 @@ router lsrp4 1 vrf v1
  exit
 !
 router lsrp6 1 vrf v1
- router-id 10.10.10.227
+ router-id 169.254.3.227
  refresh 600000
  lifetime 2147483000
  spf-log 500
@@ -341,7 +341,7 @@ interface template1
  monitor-buffer 10240000
  lldp enable
  cdp enable
- cdp odr4 10.1.123.91
+ cdp odr4 169.254.1.246
  cdp odr6 2001:db8:1123::91
  ptp enable
  ptp receive
@@ -398,7 +398,7 @@ interface template1
 interface loopback0
  description management
  vrf forwarding v1
- ipv4 address 10.10.10.227 255.255.255.255
+ ipv4 address 169.254.3.227 255.255.255.255
  ipv6 address 2001:db8:1101::227:227 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  template template1
  no shutdown
@@ -433,7 +433,7 @@ interface loopback65535
 interface bundle1
  description uplink
  vrf forwarding v1
- ipv4 address 10.1.123.91 255.255.255.0
+ ipv4 address 169.254.1.246 255.255.255.252
  ipv6 address 2001:db8:1123::91 ffff:ffff:ffff:ffff::
  template template1
  no shutdown
@@ -532,10 +532,10 @@ interface null0
 !
 router bgp4 65535 vrf v1
  local-as 65535
- router-id 10.10.10.227
+ router-id 169.254.3.227
  address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn mtree omtree
  flapstat
- monitor bmp p1 10.10.10.227 17971
+ monitor bmp p1 169.254.3.227 17971
  dump mrt bgp4.log
  !
  template r remote-as 65535
@@ -578,9 +578,9 @@ router bgp4 65535 vrf v1
  template r leak-role attrib
  template r send-community all
  !
- neighbor 10.5.1.10 template r
+ neighbor 169.254.3.254 template r
  !
- neighbor 10.26.26.2 template r
+ neighbor 169.254.3.255 template r
  !
  afi-vrf dn42 enable
  afi-vrf dn42 mvpn loopback0
@@ -621,7 +621,7 @@ router bgp4 65535 vrf v1
 !
 router bgp6 65535 vrf v1
  local-as 65535
- router-id 10.10.10.227
+ router-id 169.254.3.227
  address-family unicast multicast ouni omlt flowspec oflw vpnuni vpnmlt vpnflw ovpnuni ovpnmlt ovpnflw vpls mspw evpn mdt nsh rpd rtfilter srte osrt linkstate mvpn omvpn mtree omtree
  flapstat
  monitor bmp p1 2001:db8:1101::227:227 17971
@@ -960,13 +960,13 @@ translation-rule 1
  character 32
  text <sip:
  variable n
- text @10.10.10.10>
+ text @169.254.3.10>
  log
  exit
 !
 translation-rule 2
  match .*
- text "96" <sip:97@10.10.10.10>
+ text "96" <sip:97@169.254.3.10>
  exit
 !
 translation-rule 3
@@ -1106,7 +1106,7 @@ server dns ns vrf v1 interface loopback0
  zone sid.mchome.nop.hu defttl 60
  zone sid.mchome.nop.hu axfr enable
  zone sid.mchome.nop.hu rr ip.sid.mchome.nop.hu ip4i loopback42
- zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip4a 10.10.10.227
+ zone sid.mchome.nop.hu rr sid.mchome.nop.hu ip4a 169.254.3.227
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ns ns1.sid.mchome.nop.hu
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ns ns2.sid.mchome.nop.hu
  zone sid.mchome.nop.hu rr sid.mchome.nop.hu ns ns3.sid.mchome.nop.hu
@@ -1177,7 +1177,7 @@ client password-stars
 client whois-server www.mchome.nop.hu
 client whois-online http://bgp.he.net/AS http://ipinfo.io/AS
 client pastebin http://paste.nop.hu/paster.class?data=
-client name-server 10.10.10.10
+client name-server 169.254.3.10
 client time-server www.mchome.nop.hu
 client time-zone CET
 client mail-server mail.mchome.nop.hu
