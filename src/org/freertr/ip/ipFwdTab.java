@@ -849,6 +849,16 @@ public class ipFwdTab {
             if (!ifc.ready) {
                 continue;
             }
+            for (int o = 0;; o++) {
+                addrPrefix<addrIP> ntry = ifc.netGet(o);
+                if (ntry == null) {
+                    break;
+                }
+                tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ntry, null);
+                prf.best.iface = ifc;
+                prf.best.rouTyp = tabRouteAttr.routeType.conn;
+                prf.best.distance = ifc.gateDstC;
+            }
             if (ifc.gateCon) {
                 tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, ifc.network, null);
                 prf.best.iface = ifc;

@@ -460,6 +460,11 @@ public class ipFwdIface extends tabRouteIface {
     private final tabGen<ipFwdIfaceAddr> adrs = new tabGen<ipFwdIfaceAddr>();
 
     /**
+     * secondary networks
+     */
+    private final tabGen<ipFwdIfacePref> nets = new tabGen<ipFwdIfacePref>();
+
+    /**
      * ldp passwords
      */
     private final tabGen<ipFwdIfaceLdpas> ldpas = new tabGen<ipFwdIfaceLdpas>();
@@ -529,6 +534,13 @@ public class ipFwdIface extends tabRouteIface {
             }
             l.add("additional|" + adr.ip + "|" + adr.mac + "|" + adr.cfg);
         }
+        for (int i = 0; i < nets.size(); i++) {
+            ipFwdIfacePref adr = nets.get(i);
+            if (adr == null) {
+                continue;
+            }
+            l.add("additional|" + adr.adr + "|" + adr.msk);
+        }
         l.add("cntr|" + cntr.getShStat());
         l.add("lastio|" + cntr.getShTraff());
         counter cnt = lower.getCounter();
@@ -550,6 +562,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 4       dynamic                   dynamic address");
         l.add(null, "3 4       <addr>                    address of interface");
         l.add(null, "4 .         dynamic                 dynamic netmask");
+        l.add(null, "4 .         <mask>                  subnet mask of address");
+        l.add(null, "2 3     secondary-network           set up an additional ip network");
+        l.add(null, "3 4       <addr>                    address of interface");
         l.add(null, "4 .         <mask>                  subnet mask of address");
         l.add(null, "2 3     secondary-address           set up an additional ip address");
         l.add(null, "3 .       <addr>                    address of interface");
@@ -814,6 +829,13 @@ public class ipFwdIface extends tabRouteIface {
             }
             l.add(cmds.tabulator + beg + "secondary-address " + adr.ip);
         }
+        for (int i = 0; i < nets.size(); i++) {
+            ipFwdIfacePref adr = nets.get(i);
+            if (adr == null) {
+                continue;
+            }
+            l.add(cmds.tabulator + beg + "secondary-network " + adr.adr + " " + adr.msk);
+        }
         if (reasmBuf == null) {
             l.add(cmds.tabulator + "no " + beg + "reassembly");
         } else {
@@ -1005,6 +1027,16 @@ public class ipFwdIface extends tabRouteIface {
                 return false;
             }
             adrAdd(adr, (addrMac) lower.getL2info(), true);
+            return false;
+        }
+        if (a.equals("secondary-network")) {
+            ipFwdIfacePref ntry = new ipFwdIfacePref();
+            if (ntry.fromString(cmd)) {
+                return false;
+            }
+            adrAdd(ntry.adr, (addrMac) lower.getL2info(), false);
+            nets.add(ntry);
+            fwd.routerStaticChg();
             return false;
         }
         if (a.equals("fragmentation")) {
@@ -1713,6 +1745,16 @@ public class ipFwdIface extends tabRouteIface {
             adrDel(adr);
             return false;
         }
+        if (a.equals("secondary-network")) {
+            ipFwdIfacePref ntry = new ipFwdIfacePref();
+            if (ntry.fromString(cmd)) {
+                return false;
+            }
+            adrDel(ntry.adr);
+            nets.del(ntry);
+            fwd.routerStaticChg();
+            return false;
+        }
         if (a.equals("fragmentation")) {
             fragments = 0;
             return false;
@@ -2311,6 +2353,23 @@ public class ipFwdIface extends tabRouteIface {
     }
 
     /**
+     * get one network
+     *
+     * @param i id
+     * @return prefix, null if not found
+     */
+    public addrPrefix<addrIP> netGet(int i) {
+        if (i < 0) {
+            return network;
+        }
+        ipFwdIfacePref ntry = nets.get(i);
+        if (ntry == null) {
+            return null;
+        }
+        return ntry.pfx;
+    }
+
+    /**
      * get one mapping
      *
      * @param i id
@@ -2517,6 +2576,44 @@ class ipFwdIfaceAddr implements Comparator<ipFwdIfaceAddr> {
 
     public int compare(ipFwdIfaceAddr o1, ipFwdIfaceAddr o2) {
         return o1.ip.compare(o1.ip, o2.ip);
+    }
+
+}
+
+class ipFwdIfacePref implements Comparator<ipFwdIfacePref> {
+
+    public addrIP adr;
+
+    public addrIP msk;
+
+    public addrPrefix<addrIP> pfx;
+
+    public boolean fromString(cmds cmd) {
+        adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            cmd.error("bad ip address");
+            return true;
+        }
+        msk = new addrIP();
+        if (msk.fromString(cmd.word())) {
+            cmd.error("bad mask address");
+            return true;
+        }
+        addrIP a = new addrIP();
+        addrIP m = new addrIP();
+        if (adr.isIPv4()) {
+            m.fromIPv4mask(msk.toIPv4());
+            a.fromIPv4addr(adr.toIPv4());
+        } else {
+            m.fromIPv6addr(msk.toIPv6());
+            a.fromIPv6addr(adr.toIPv6());
+        }
+        pfx = new addrPrefix<>(a, m.toNetmask());
+        return false;
+    }
+
+    public int compare(ipFwdIfacePref o1, ipFwdIfacePref o2) {
+        return o1.pfx.compare(o1.pfx, o2.pfx);
     }
 
 }

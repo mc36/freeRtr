@@ -10,12 +10,12 @@ int eth1.123
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- ipv4 second 1.1.1.111
- ipv4 second 1.1.1.112
- ipv4 second 1.1.1.113
- ipv6 second 1234::111
- ipv6 second 1234::112
- ipv6 second 1234::113
+ ipv4 secondary-addr 1.1.1.111
+ ipv4 secondary-addr 1.1.1.112
+ ipv4 secondary-addr 1.1.1.113
+ ipv6 secondary-addr 1234::111
+ ipv6 secondary-addr 1234::112
+ ipv6 secondary-addr 1234::113
  exit
 !
 
