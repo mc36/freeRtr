@@ -15742,3 +15742,6 @@ qc pass: bgp routemap filtering with pathlimit with soft-reconfig
 qc pass: bgp routepolicy filtering with pathlimit with soft-reconfig
 qc pass: bgp change in pathlimit
 qc pass: bgp change in pathlimit with soft-reconfig
+---------------------------------- 2024-04-26 15:58:49 24.4.26
+qc pass: secondary networks over ethernet
+qc pass: secondary networks over dot1q vlan

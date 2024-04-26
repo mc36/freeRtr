@@ -125,6 +125,8 @@ qc pass: loose verify source with ethernet encapsulation
 qc pass: secure arp/nd
 qc pass: ethernet trill-mt encapsulation
 qc pass: ethernet trill-fgl encapsulation
+qc pass: secondary networks over ethernet
+qc pass: secondary networks over dot1q vlan
 qc pass: etherip over ipv4
 qc pass: etherip over ipv6
 qc pass: etherip over loopback

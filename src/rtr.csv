@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.4.26-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-04-26 04:52:52, took 00:12:38, with 60 workers, on 3434 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2024-04-26 16:11:23, took 00:12:34, with 60 workers, on 3436 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -129,6 +129,8 @@ http://sources.freertr.org/cfg/conn-eth28.tst;conn-eth28.tst;success;loose verif
 http://sources.freertr.org/cfg/conn-eth29.tst;conn-eth29.tst;success;secure arp/nd
 http://sources.freertr.org/cfg/conn-eth30.tst;conn-eth30.tst;success;ethernet trill-mt encapsulation
 http://sources.freertr.org/cfg/conn-eth31.tst;conn-eth31.tst;success;ethernet trill-fgl encapsulation
+http://sources.freertr.org/cfg/conn-eth32.tst;conn-eth32.tst;success;secondary networks over ethernet
+http://sources.freertr.org/cfg/conn-eth33.tst;conn-eth33.tst;success;secondary networks over dot1q vlan
 http://sources.freertr.org/cfg/conn-etherip01.tst;conn-etherip01.tst;success;etherip over ipv4
 http://sources.freertr.org/cfg/conn-etherip02.tst;conn-etherip02.tst;success;etherip over ipv6
 http://sources.freertr.org/cfg/conn-etherip03.tst;conn-etherip03.tst;success;etherip over loopback
