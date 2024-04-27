@@ -928,10 +928,10 @@ public class userTester {
             s = "";
         }
         jvp = jvp.replaceAll("XmxZZZm", s);
-        userTesterPrc prc = new userTesterPrc(rdr, temp, slot, "release", jvn + jvp + " show version brief");
+        userTesterPrc prc = new userTesterPrc(rdr, temp + "slot", slot, "release", jvn + jvp + " show version brief");
         releaseN = prc.getLine();
         prc.stopNow();
-        prc = new userTesterPrc(rdr, temp, slot, "version", jvn + jvp + " show version number");
+        prc = new userTesterPrc(rdr, temp + "slot", slot, "version", jvn + jvp + " show version number");
         releaseV = prc.getLine();
         prc.stopNow();
         if (beg.length() < 2) {
@@ -1034,7 +1034,7 @@ public class userTester {
                 s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
             }
             persistP += (4 * bits.str2num(persistD.remove(0)));
-            persistC = new userTesterPrc(rdr, temp, slot, "persist", s);
+            persistC = new userTesterPrc(rdr, temp + "slot", slot, "persist", s);
             persistC.persistent = true;
             bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
             s = persistD.remove(0);

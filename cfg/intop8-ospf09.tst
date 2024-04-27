@@ -51,11 +51,11 @@ router ospf
  exit
 router ospf6
  redistribute connected
- interface ens3 area 0.0.0.0
  exit
 interface ens3
  ip address 1.1.1.2/24
  ip ospf area 0
+ ipv6 ospf area 0
  ip ospf network point-to-point
  ip ospf authentication message-digest
  ip ospf message-digest-key 123 md5 tester

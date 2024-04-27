@@ -46,17 +46,17 @@ router ospf
  exit
 router ospf6
  area 1 stub
- interface ens3 area 0.0.0.1
- interface lo area 0.0.0.1
  exit
 interface lo
  ip addr 2.2.2.2/32
  ipv6 addr 4321::2/128
  ip ospf area 1
+ ipv6 ospf area 1
  exit
 interface ens3
  ip address 1.1.1.2/24
  ip ospf area 1
+ ipv6 ospf area 1
  ip ospf network point-to-point
  ipv6 ospf6 network point-to-point
  no shutdown

@@ -234,7 +234,6 @@ public class logger {
                 if (ntry.pip.nonBlockPut(bb, 0, bb.length) != pipeLine.wontWork) {
                     continue;
                 }
-                ntry.pip.settingsPut(pipeSetting.logging, false);
                 logPipLst.del(ntry);
             }
         }
@@ -701,7 +700,6 @@ public class logger {
         if (pip == null) {
             return true;
         }
-        pip.settingsPut(pipeSetting.logging, true);
         return logPipLst.add(new loggerTerm(pip)) != null;
     }
 
@@ -715,7 +713,6 @@ public class logger {
         if (pip == null) {
             return true;
         }
-        pip.settingsPut(pipeSetting.logging, false);
         return logPipLst.del(new loggerTerm(pip)) != null;
     }
 
