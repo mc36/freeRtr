@@ -474,7 +474,11 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 int o = pck.IPid;
                 pck.ICMPtc = icmpEchoRep;
                 adr = pck.IPsrc.copyBytes();
-                pck.IPsrc.setAddr(rxIfc.addr);
+                if (rxIfc.lower.checkMyAlias(pck.IPtrg) == null) {
+                    pck.IPsrc.setAddr(rxIfc.addr);
+                } else {
+                    pck.IPsrc.setAddr(pck.IPtrg);
+                }
                 pck.IPtrg.setAddr(adr);
                 pck.putDefaults();
                 pck.putStart();

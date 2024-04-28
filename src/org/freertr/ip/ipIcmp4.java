@@ -357,7 +357,11 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 boolean p = pck.IPdf;
                 pck.ICMPtc = icmpEchoRep;
                 addrIP adr = pck.IPsrc.copyBytes();
-                pck.IPsrc.setAddr(rxIfc.addr);
+                if (rxIfc.lower.checkMyAlias(pck.IPtrg) == null) {
+                    pck.IPsrc.setAddr(rxIfc.addr);
+                } else {
+                    pck.IPsrc.setAddr(pck.IPtrg);
+                }
                 pck.IPtrg.setAddr(adr);
                 pck.putDefaults();
                 pck.putStart();
