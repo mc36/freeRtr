@@ -594,7 +594,59 @@ vlan_tx:
             hash = ((hash >> 16) ^ hash) & 0xffff;
             hash = ((hash >> 8) ^ hash) & 0xff;
             hash = ((hash >> 4) ^ hash) & 0xf;
-            prt = bunr->out[hash];
+            switch (hash) {
+            case 0:
+                prt = bunr->out[0];
+                break;
+            case 1:
+                prt = bunr->out[1];
+                break;
+            case 2:
+                prt = bunr->out[2];
+                break;
+            case 3:
+                prt = bunr->out[3];
+                break;
+            case 4:
+                prt = bunr->out[4];
+                break;
+            case 5:
+                prt = bunr->out[5];
+                break;
+            case 6:
+                prt = bunr->out[6];
+                break;
+            case 7:
+                prt = bunr->out[7];
+                break;
+            case 8:
+                prt = bunr->out[8];
+                break;
+            case 9:
+                prt = bunr->out[9];
+                break;
+            case 10:
+                prt = bunr->out[10];
+                break;
+            case 11:
+                prt = bunr->out[11];
+                break;
+            case 12:
+                prt = bunr->out[12];
+                break;
+            case 13:
+                prt = bunr->out[13];
+                break;
+            case 14:
+                prt = bunr->out[14];
+                break;
+            case 15:
+                prt = bunr->out[15];
+                break;
+            default:
+                prt = bunr->out[0];
+                break;
+            }
             bunr->pack++;
             bunr->byte += bufE - bufD;
             tmp = bunr->cmd;
