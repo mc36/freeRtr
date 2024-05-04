@@ -33,16 +33,18 @@ void err(char*buf) {
 void doRawLoop() {
     struct pcap_pkthdr head;
     int fail = 0;
-    int len;
+    int bufS;
     const unsigned char *dat;
+    unsigned char bufD[16384];
     for (;;) {
         if (fail++ > 1024) break;
         dat = pcap_next(ifacePcap, &head);
         if (dat == NULL) continue;
-        len = head.caplen;
+        bufS = head.caplen;
+        memcpy(bufD, dat, bufS);
         packRx++;
-        byteRx += len;
-        send(commSock, dat, len, 0);
+        byteRx += bufS;
+        send(commSock, bufD, bufS, 0);
         fail = 0;
     }
     err("raw thread exited");

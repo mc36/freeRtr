@@ -31,16 +31,18 @@ void err(char*buf) {
 #define ifcLoop(SRC, TRG, BYT, PCK)                                         \
     struct pcap_pkthdr head;                                                \
     int fail = 0;                                                           \
-    int len;                                                                \
+    int bufS;                                                               \
     const unsigned char *dat;                                               \
+    unsigned char bufD[16384];                                              \
     for (;;) {                                                              \
         if (fail++ > 1024) break;                                           \
         dat = pcap_next(SRC, &head);                                        \
         if (dat == NULL) continue;                                          \
-        len = head.caplen;                                                  \
+        bufS = head.caplen;                                                 \
+        memcpy(bufD, dat, bufS);                                            \
         PCK++;                                                              \
-        BYT += len;                                                         \
-        pcap_sendpacket(TRG, dat, len);                                     \
+        BYT += bufS;                                                        \
+        pcap_sendpacket(TRG, bufD, bufS);                                   \
         fail = 0;                                                           \
     }                                                                       \
     err("iface thread exited");
