@@ -27,33 +27,28 @@ void err(char*buf) {
     exit(1);
 }
 
+void gotIfc1pack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
+    int len = hdr->caplen;
+    packRx++;
+    byteRx += len;
+    pcap_sendpacket(iface2pcap, dat, len);
+}
 
-#define ifcLoop(SRC, TRG, BYT, PCK)                                         \
-    struct pcap_pkthdr head;                                                \
-    int fail = 0;                                                           \
-    int bufS;                                                               \
-    const unsigned char *dat;                                               \
-    unsigned char bufD[16384];                                              \
-    for (;;) {                                                              \
-        if (fail++ > 1024) break;                                           \
-        dat = pcap_next(SRC, &head);                                        \
-        if (dat == NULL) continue;                                          \
-        bufS = head.caplen;                                                 \
-        memcpy(bufD, dat, bufS);                                            \
-        PCK++;                                                              \
-        BYT += bufS;                                                        \
-        pcap_sendpacket(TRG, bufD, bufS);                                   \
-        fail = 0;                                                           \
-    }                                                                       \
-    err("iface thread exited");
-
+void gotIfc2pack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
+    int len = hdr->caplen;
+    packTx++;
+    byteTx += len;
+    pcap_sendpacket(iface1pcap, dat, len);
+}
 
 void doIfc1loop() {
-    ifcLoop(iface1pcap, iface2pcap, byteRx, packRx);
+    pcap_loop(iface1pcap, 0, (pcap_handler) gotIfc1pack, NULL);
+    err("iface1 thread exited");
 }
 
 void doIfc2loop() {
-    ifcLoop(iface2pcap, iface1pcap, byteTx, packTx);
+    pcap_loop(iface2pcap, 0, (pcap_handler) gotIfc2pack, NULL);
+    err("iface2 thread exited");
 }
 
 
