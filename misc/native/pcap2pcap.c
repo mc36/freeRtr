@@ -27,28 +27,31 @@ void err(char*buf) {
     exit(1);
 }
 
-void gotIfc1pack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
-    int len = hdr->caplen;
-    packRx++;
-    byteRx += len;
-    pcap_sendpacket(iface2pcap, dat, len);
-}
 
-void gotIfc2pack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
-    int len = hdr->caplen;
-    packTx++;
-    byteTx += len;
-    pcap_sendpacket(iface1pcap, dat, len);
-}
+#define ifcLoop(SRC, TRG, BYT, PCK)                                         \
+    struct pcap_pkthdr head;                                                \
+    int fail = 0;                                                           \
+    int len;                                                                \
+    const unsigned char *dat;                                               \
+    for (;;) {                                                              \
+        if (fail++ > 1024) break;                                           \
+        dat = pcap_next(SRC, &head);                                        \
+        if (dat == NULL) continue;                                          \
+        len = head.caplen;                                                  \
+        PCK++;                                                              \
+        BYT += len;                                                         \
+        pcap_sendpacket(TRG, dat, len);                                     \
+        fail = 0;                                                           \
+    }                                                                       \
+    err("iface thread exited");
+
 
 void doIfc1loop() {
-    pcap_loop(iface1pcap, 0, (pcap_handler) gotIfc1pack, NULL);
-    err("iface1 thread exited");
+    ifcLoop(iface1pcap, iface2pcap, byteRx, packRx);
 }
 
 void doIfc2loop() {
-    pcap_loop(iface2pcap, 0, (pcap_handler) gotIfc2pack, NULL);
-    err("iface2 thread exited");
+    ifcLoop(iface2pcap, iface1pcap, byteTx, packTx);
 }
 
 

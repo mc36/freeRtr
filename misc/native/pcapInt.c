@@ -30,15 +30,21 @@ void err(char*buf) {
     exit(1);
 }
 
-void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
-    int len = hdr->caplen;
-    packRx++;
-    byteRx += len;
-    send(commSock, dat, len, 0);
-}
-
 void doRawLoop() {
-    pcap_loop(ifacePcap, 0, (pcap_handler) gotRawPack, NULL);
+    struct pcap_pkthdr head;
+    int fail = 0;
+    int len;
+    const unsigned char *dat;
+    for (;;) {
+        if (fail++ > 1024) break;
+        dat = pcap_next(ifacePcap, &head);
+        if (dat == NULL) continue;
+        len = head.caplen;
+        packRx++;
+        byteRx += len;
+        send(commSock, dat, len, 0);
+        fail = 0;
+    }
     err("raw thread exited");
 }
 
