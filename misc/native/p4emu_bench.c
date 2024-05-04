@@ -38,7 +38,7 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
 
 void err(char*buf) {
     printf("%s\n", buf);
-    exit(1);
+    abort();
 }
 
 

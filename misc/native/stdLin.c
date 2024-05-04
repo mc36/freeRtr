@@ -21,7 +21,7 @@ long int byteTx;
 void err(char*buf) {
     printf("%s\n", buf);
     fflush(stdout);
-    exit(1);
+    abort();
 }
 
 void setupOneTerm(int fd) {
@@ -118,13 +118,13 @@ help :
             printf("   or: %s <command>\n", curr);
             printf("commands: v=version\n");
             printf("          h=this help\n");
-            exit(1);
+            abort();
             break;
         default:
             err("unknown command, try -h");
             break;
         }
-        exit(1);
+        abort();
     }
 
     memset(&addrLoc, 0, sizeof (addrLoc));

@@ -12,7 +12,7 @@ unsigned char packBuf[16 * 1024];
 
 void err(char*buf) {
     printf("%s\n", buf);
-    exit(1);
+    abort();
 }
 
 void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {

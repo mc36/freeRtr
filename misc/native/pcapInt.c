@@ -27,7 +27,7 @@ long int packTx;
 
 void err(char*buf) {
     printf("%s\n", buf);
-    exit(1);
+    abort();
 }
 
 void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
@@ -144,13 +144,13 @@ help :
             printf("commands: l=list interfaces\n");
             printf("          v=version\n");
             printf("          h=this help\n");
-            exit(1);
+            abort();
             break;
         default:
             err("unknown command, try -h");
             break;
         }
-        exit(1);
+        abort();
     }
 
     portLoc = atoi(argv[2]);

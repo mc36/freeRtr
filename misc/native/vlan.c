@@ -34,7 +34,7 @@ long int packTx;
 
 void err(char*buf) {
     printf("%s\n", buf);
-    exit(1);
+    abort();
 }
 
 void doLowerLoop() {
@@ -177,13 +177,13 @@ help :
             printf("   or: %s <command>\n", curr);
             printf("commands: v=version\n");
             printf("          h=this help\n");
-            exit(1);
+            abort();
             break;
         default:
             err("unknown command, try -h");
             break;
         }
-        exit(1);
+        abort();
     }
 
     portLoc = atoi(argv[1]);
