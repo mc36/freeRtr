@@ -6,7 +6,7 @@ ip link set ens6 up promisc on
 ip link set ens7 up promisc on
 ip link set ens8 up promisc on
 cd /home/mc36/rare/p4src
-export SDE=/home/mc36/bf-sde-9.13.2
+export SDE=/home/mc36/bf-sde-9.13.3
 export SDE_INSTALL=$SDE/install
 while (true); do
   $SDE/run_tofino_model.sh --arch tf1 -p bf_router -f /home/mc36/ports1.json -q
