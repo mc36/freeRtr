@@ -4,3 +4,4 @@ ln -s /usr/bin/gcc /usr/bin/clang
 cd /misc/native
 ./c.sh
 ./p.sh
+/binTmp/p4bench.bin
