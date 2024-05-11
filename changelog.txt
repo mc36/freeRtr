@@ -15745,3 +15745,6 @@ qc pass: bgp change in pathlimit with soft-reconfig
 ---------------------------------- 2024-04-26 15:58:49 24.4.26
 qc pass: secondary networks over ethernet
 qc pass: secondary networks over dot1q vlan
+---------------------------------- 2024-05-11 06:50:36 24.5.11
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
