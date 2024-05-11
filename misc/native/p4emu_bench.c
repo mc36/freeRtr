@@ -48,6 +48,10 @@ int main(int argc, char **argv) {
     unsigned char bufC[16384];
     unsigned char bufD[16384];
     unsigned char origD[16384];
+    *((int*)(&bufC[0])) = 1;
+    printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
+    if (bufC[0] == 1) printf("lsb"); else printf("msb");
+    printf("\n");
     int origS = 0;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
@@ -58,11 +62,7 @@ int main(int argc, char **argv) {
         sscanf(argv[i], "%hhx", &origD[origS]);
         origS++;
     }
-    *((int*)(&bufC[0])) = 1;
-    printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
-    if (bufC[0] == 1) printf("lsb");
-    else printf("msb");
-    printf(", rounds=%i\n", count);
+    printf("packet=%i, rounds=%i\n", origS, count);
     hexdump(origD, 0, origS);
     dataPorts = 1;
     cpuPort = 1;
