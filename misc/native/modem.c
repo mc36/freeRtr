@@ -22,7 +22,7 @@ pthread_t threadRead;
 
 void err(char*buf) {
     printf("%s\n", buf);
-    abort();
+    _exit(1);
 }
 
 void doReadLoop() {
@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
         printf("          flush       - wait for silence\n");
         printf("          readline x  - read x line(s)\n");
         printf("          readuntil x - read until x received\n");
-        abort();
+        _exit(1);
     }
 
     ttyName = malloc(strlen(argv[1]) + 1);
@@ -292,5 +292,5 @@ int main(int argc, char **argv) {
     }
 
     printf("successfully finished.\n");
-    abort();
+    _exit(1);
 }

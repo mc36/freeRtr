@@ -8,7 +8,7 @@
 
 void err(char*buf) {
     printf("%s\n", buf);
-    abort();
+    _exit(1);
 }
 
 
