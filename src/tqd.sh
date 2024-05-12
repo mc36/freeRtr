@@ -1,4 +1,4 @@
 #!/bin/sh
 ./tqb.sh $@
-./tp91.sh $@
+./tp5.sh $@
 ./ts.sh
