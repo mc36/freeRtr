@@ -36,8 +36,8 @@ public class rtrIsisBr {
         }
         packHolder pck = new packHolder(true, true);
         encTlv tlv = rtrIsis.getTlv();
-        tlv.valDat[0] = 0; // algorithm
-        tlv.valDat[1] = 0; // ipa
+        tlv.valDat[0] = 0; // bier algorithm
+        tlv.valDat[1] = 0; // igp algorithm
         tlv.valDat[2] = (byte) sub; // subdomain
         bits.msbPutW(tlv.valDat, 3, idx); // bfr id
         tlv.valDat[5] = 1; // type: mpls encap
