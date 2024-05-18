@@ -95,8 +95,6 @@ to start coding on the project, take a look on the following:
 * try to solve a puzzle from the todo.txt in the source tree
 * in most of the folders there is a class to extend or implment
 * your eyes will bleed because of the mix of c, p4 and java
-* first you should take a look at the todo.txt and the changelog.txt
-* try first reordering the todo.txt if you have nothing better idea
 
 feel free to reach us on the mailing lists with your patches, ideas, feature requests, etc
 
