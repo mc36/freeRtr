@@ -158,7 +158,7 @@ help :
 
     unsigned int vers;
     pfring_version_noring(&vers);
-    printf("pfring version: %i.%i\n", vers >> 16, vers & 0xffff);
+    printf("pfring version: v%i.%i\n", vers >> 16, vers & 0xffff);
 
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
