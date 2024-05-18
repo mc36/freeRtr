@@ -156,6 +156,10 @@ help :
     addrRem.sin_family = AF_INET;
     addrRem.sin_port = htons(portRem);
 
+    unsigned int vers;
+    pfring_version_noring(&vers);
+    printf("pfring version: %i.%i\n", vers >> 16, vers & 0xffff);
+
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
