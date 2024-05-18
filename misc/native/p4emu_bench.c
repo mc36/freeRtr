@@ -50,7 +50,8 @@ int main(int argc, char **argv) {
     unsigned char origD[16384];
     *((int*)(&bufC[0])) = 1;
     printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
-    if (bufC[0] == 1) printf("lsb"); else printf("msb");
+    if (bufC[0] == 1) printf("lsb");
+    else printf("msb");
     printf("\n");
     int origS = 0;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();

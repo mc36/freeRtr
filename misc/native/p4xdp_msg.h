@@ -132,7 +132,8 @@ int doOneCommand(unsigned char* buf) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
         vrfr->pttl4 = atoi(arg[3]);
-        if (vrfr->pttl4 == 0) vrfr->pttl4 = 0xff; else vrfr->pttl4 = 0;
+        if (vrfr->pttl4 == 0) vrfr->pttl4 = 0xff;
+        else vrfr->pttl4 = 0;
         if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
@@ -140,7 +141,8 @@ int doOneCommand(unsigned char* buf) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
         vrfr->pttl6 = atoi(arg[3]);
-        if (vrfr->pttl6 == 0) vrfr->pttl6 = 0xff; else vrfr->pttl6 = 0;
+        if (vrfr->pttl6 == 0) vrfr->pttl6 = 0xff;
+        else vrfr->pttl6 = 0;
         if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
