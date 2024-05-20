@@ -7,13 +7,21 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <poll.h>
-#define NETMAP_WITH_LIBS
-#include <net/netmap_user.h>
+#include <xdp/xsk.h>
+#include <sys/mman.h>
 
 
+#define FRAMES_NUM 1024
 
 char *ifaceName;
-struct nm_desc *ifaceNetmap;
+int ifaceFd;
+struct xsk_umem *ifaceUmem;
+struct xsk_socket *ifaceXsk;
+struct xsk_ring_prod ifaceFq;
+struct xsk_ring_cons ifaceCq;
+struct xsk_ring_cons ifaceRx;
+struct xsk_ring_prod ifaceTx;
+char *ifaceBuf;
 struct pollfd ifacePfd;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
@@ -34,17 +42,20 @@ void err(char*buf) {
 }
 
 void doRawLoop() {
-    struct nm_pkthdr hdr;
-    unsigned char *bufP;
-    int bufS;
     for (;;) {
         poll(&ifacePfd, 1, 1);
-        bufP = nm_nextpkt(ifaceNetmap, &hdr);
-        if (bufP == NULL) continue;
-        int len = hdr.caplen;
+        int idx;
+        if (xsk_ring_cons__peek(&ifaceRx, 1, &idx) < 1) continue;
+        const struct xdp_desc *dsc = xsk_ring_cons__rx_desc(&ifaceRx, idx);
+        char *dat = xsk_umem__get_data(ifaceBuf, dsc->addr);
+        int len = dsc->len;
         packRx++;
         byteRx += len;
-        send(commSock, bufP, len, 0);
+        send(commSock, dat, len, 0);
+        xsk_ring_prod__reserve(&ifaceFq, 1, &idx);
+        *xsk_ring_prod__fill_addr(&ifaceFq, idx) = dsc->addr;
+        xsk_ring_prod__submit(&ifaceFq, 1);
+        xsk_ring_cons__release(&ifaceRx, 1);
     }
     err("raw thread exited");
 }
@@ -58,7 +69,18 @@ void doUdpLoop() {
         if (bufS < 0) break;
         packTx++;
         byteTx += bufS;
-        nm_inject(ifaceNetmap, (char*)&bufD, bufS);
+        int idx;
+        xsk_ring_prod__reserve(&ifaceTx, 1, &idx);
+        struct xdp_desc *dsc = xsk_ring_prod__tx_desc(&ifaceTx, idx);
+        dsc->addr = (FRAMES_NUM + (idx % FRAMES_NUM)) * XSK_UMEM__DEFAULT_FRAME_SIZE;
+        dsc->options = 0;
+        dsc->len = bufS;
+        memcpy(ifaceBuf + dsc->addr, bufD, bufS);
+        xsk_ring_prod__submit(&ifaceTx, 1);
+        idx = xsk_ring_cons__peek(&ifaceCq, 16, &bufS);
+        xsk_ring_cons__release(&ifaceCq, idx);
+        if (!xsk_ring_prod__needs_wakeup(&ifaceTx)) continue;
+        sendto(xsk_socket__fd(ifaceXsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
     }
     err("udp thread exited");
 }
@@ -124,7 +146,7 @@ int main(int argc, char **argv) {
         switch (curr[0]) {
         case 'V':
         case 'v':
-            err("netmap interface driver v1.0");
+            err("afxdp interface driver v1.0");
             break;
         case '?':
         case 'h':
@@ -173,11 +195,20 @@ help :
     strcpy(ifaceName, argv[1]);
     printf("opening interface %s\n", ifaceName);
 
-    ifaceNetmap = nm_open(ifaceName, NULL, 0, 0);
-    if (ifaceNetmap == NULL) err("unable to open interface");
+    posix_memalign((void**)&ifaceBuf, getpagesize(), XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * FRAMES_NUM);
+    if (ifaceBuf == NULL) err("error allocating buffer");
+
+    if (xsk_umem__create(&ifaceUmem, ifaceBuf, XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * FRAMES_NUM, &ifaceFq, &ifaceCq, NULL) != 0) err("error creating umem");
+
+    if (xsk_socket__create(&ifaceXsk, ifaceName, 0, ifaceUmem, &ifaceRx, &ifaceTx, NULL) != 0) err("error creating xsk");
+
+    int i = 0;
+    xsk_ring_prod__reserve(&ifaceFq, FRAMES_NUM, &i);
+    for (i=0; i < FRAMES_NUM; i++) *xsk_ring_prod__fill_addr(&ifaceFq, i) = i * XSK_UMEM__DEFAULT_FRAME_SIZE;
+    xsk_ring_prod__submit(&ifaceFq, FRAMES_NUM);
 
     memset(&ifacePfd, 0, sizeof (ifacePfd));
-    ifacePfd.fd = NETMAP_FD(ifaceNetmap);
+    ifacePfd.fd = xsk_socket__fd(ifaceXsk);
     ifacePfd.events = POLLIN | POLLERR;
 
     printf("serving others\n");
