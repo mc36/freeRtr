@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <linux/if.h>
 #include <poll.h>
+#include <linux/if_link.h>
 #include <xdp/xsk.h>
 #include <sys/mman.h>
 
@@ -33,8 +34,8 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     idx = xsk_ring_cons__peek(&ifaceCq[port], 16, &idx);
     xsk_ring_cons__release(&ifaceCq[port], idx);
     if (xsk_ring_prod__reserve(&ifaceTx[port], 1, &idx) < 1) {
-      pthread_mutex_unlock(&ifaceLock[port]);
-      return;
+        pthread_mutex_unlock(&ifaceLock[port]);
+        return;
     }
     struct xdp_desc *dsc = xsk_ring_prod__tx_desc(&ifaceTx[port], idx);
     dsc->addr = (framesNum + (idx % framesNum)) * XSK_UMEM__DEFAULT_FRAME_SIZE;
@@ -149,7 +150,7 @@ void doSockLoop() {
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
-    fprintf(commands, "platform %spcap\r\n", platformBase);
+    fprintf(commands, "platform %sxsk\r\n", platformBase);
     fprintf(commands, "capabilities %s\r\n", getCapas());
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
@@ -192,11 +193,11 @@ void doMainLoop() {
 int main(int argc, char **argv) {
 
     dataPorts = 0;
-    for (int i = 4; i < argc; i++) {
+    for (int i = 5; i < argc; i++) {
         initIface(dataPorts, argv[i]);
         dataPorts++;
     }
-    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <ifc0> <ifc1> [ifcN]");
+    if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <skb/drv/hw> <ifc0> <ifc1> [ifcN]");
     if (dataPorts > maxPorts) dataPorts = maxPorts;
     if (initTables() != 0) err("error initializing tables");
     int port = atoi(argv[2]);
@@ -210,6 +211,16 @@ int main(int argc, char **argv) {
     if (commandSock < 0) err("unable to open socket");
     if (connect(commandSock, (struct sockaddr*)&addr, sizeof(addr)) < 0) err("failed to connect socket");
     cpuPort = atoi(argv[3]);
+    int bpf_flag = 0;
+    if (strcmp(argv[4],"skb") == 0) {
+        bpf_flag = XDP_FLAGS_SKB_MODE;
+    }
+    if (strcmp(argv[4],"drv") == 0) {
+        bpf_flag = XDP_FLAGS_DRV_MODE;
+    }
+    if (strcmp(argv[4],"hw") == 0) {
+        bpf_flag = XDP_FLAGS_HW_MODE;
+    }
     printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
     for (int o = 0; o < dataPorts; o++) {
@@ -217,7 +228,12 @@ int main(int argc, char **argv) {
         posix_memalign((void**)&ifaceBuf[o], getpagesize(), XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * framesNum);
         if (ifaceBuf[o] == NULL) err("error allocating buffer");
         if (xsk_umem__create(&ifaceUmem[o], ifaceBuf[o], XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * framesNum, &ifaceFq[o], &ifaceCq[o], NULL) != 0) err("error creating umem");
-        if (xsk_socket__create(&ifaceXsk[o], ifaceName[o], 0, ifaceUmem[o], &ifaceRx[o], &ifaceTx[o], NULL) != 0) {
+        struct xsk_socket_config cfg;
+        memset(&cfg, 0, sizeof(cfg));
+        cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+        cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+        cfg.xdp_flags = bpf_flag;
+        if (xsk_socket__create(&ifaceXsk[o], ifaceName[o], 0, ifaceUmem[o], &ifaceRx[o], &ifaceTx[o], &cfg) != 0) {
             if (o < (dataPorts-1)) err("error creating xsk");
             dataPorts--;
             break;
