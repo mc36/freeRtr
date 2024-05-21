@@ -11,10 +11,9 @@
 #include <sys/mman.h>
 
 
-#define FRAMES_NUM 1024
+#define framesNum 1024
 
 char *ifaceName;
-int ifaceFd;
 struct xsk_umem *ifaceUmem;
 struct xsk_socket *ifaceXsk;
 struct xsk_ring_prod ifaceFq;
@@ -44,7 +43,7 @@ void err(char*buf) {
 void doRawLoop() {
     for (;;) {
         poll(&ifacePfd, 1, 1);
-        int idx;
+        unsigned int idx;
         if (xsk_ring_cons__peek(&ifaceRx, 1, &idx) < 1) continue;
         const struct xdp_desc *dsc = xsk_ring_cons__rx_desc(&ifaceRx, idx);
         char *dat = xsk_umem__get_data(ifaceBuf, dsc->addr);
@@ -69,12 +68,12 @@ void doUdpLoop() {
         if (bufS < 0) break;
         packTx++;
         byteTx += bufS;
-        int idx;
+        unsigned int idx;
         idx = xsk_ring_cons__peek(&ifaceCq, 16, &idx);
         xsk_ring_cons__release(&ifaceCq, idx);
         if (xsk_ring_prod__reserve(&ifaceTx, 1, &idx) < 1) continue;
         struct xdp_desc *dsc = xsk_ring_prod__tx_desc(&ifaceTx, idx);
-        dsc->addr = (FRAMES_NUM + (idx % FRAMES_NUM)) * XSK_UMEM__DEFAULT_FRAME_SIZE;
+        dsc->addr = (framesNum + (idx % framesNum)) * XSK_UMEM__DEFAULT_FRAME_SIZE;
         dsc->options = 0;
         dsc->len = bufS;
         memcpy(ifaceBuf + dsc->addr, bufD, bufS);
@@ -195,17 +194,17 @@ help :
     strcpy(ifaceName, argv[1]);
     printf("opening interface %s\n", ifaceName);
 
-    posix_memalign((void**)&ifaceBuf, getpagesize(), XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * FRAMES_NUM);
+    posix_memalign((void**)&ifaceBuf, getpagesize(), XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * framesNum);
     if (ifaceBuf == NULL) err("error allocating buffer");
 
-    if (xsk_umem__create(&ifaceUmem, ifaceBuf, XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * FRAMES_NUM, &ifaceFq, &ifaceCq, NULL) != 0) err("error creating umem");
+    if (xsk_umem__create(&ifaceUmem, ifaceBuf, XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * framesNum, &ifaceFq, &ifaceCq, NULL) != 0) err("error creating umem");
 
     if (xsk_socket__create(&ifaceXsk, ifaceName, 0, ifaceUmem, &ifaceRx, &ifaceTx, NULL) != 0) err("error creating xsk");
 
-    int i = 0;
-    xsk_ring_prod__reserve(&ifaceFq, FRAMES_NUM, &i);
-    for (i=0; i < FRAMES_NUM; i++) *xsk_ring_prod__fill_addr(&ifaceFq, i) = i * XSK_UMEM__DEFAULT_FRAME_SIZE;
-    xsk_ring_prod__submit(&ifaceFq, FRAMES_NUM);
+    unsigned int i = 0;
+    xsk_ring_prod__reserve(&ifaceFq, framesNum, &i);
+    for (i=0; i < framesNum; i++) *xsk_ring_prod__fill_addr(&ifaceFq, i) = i * XSK_UMEM__DEFAULT_FRAME_SIZE;
+    xsk_ring_prod__submit(&ifaceFq, framesNum);
 
     memset(&ifacePfd, 0, sizeof (ifacePfd));
     ifacePfd.fd = xsk_socket__fd(ifaceXsk);
