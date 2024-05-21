@@ -70,15 +70,15 @@ void doUdpLoop() {
         packTx++;
         byteTx += bufS;
         int idx;
-        xsk_ring_prod__reserve(&ifaceTx, 1, &idx);
+        idx = xsk_ring_cons__peek(&ifaceCq, 16, &idx);
+        xsk_ring_cons__release(&ifaceCq, idx);
+        if (xsk_ring_prod__reserve(&ifaceTx, 1, &idx) < 1) continue;
         struct xdp_desc *dsc = xsk_ring_prod__tx_desc(&ifaceTx, idx);
         dsc->addr = (FRAMES_NUM + (idx % FRAMES_NUM)) * XSK_UMEM__DEFAULT_FRAME_SIZE;
         dsc->options = 0;
         dsc->len = bufS;
         memcpy(ifaceBuf + dsc->addr, bufD, bufS);
         xsk_ring_prod__submit(&ifaceTx, 1);
-        idx = xsk_ring_cons__peek(&ifaceCq, 16, &bufS);
-        xsk_ring_cons__release(&ifaceCq, idx);
         if (!xsk_ring_prod__needs_wakeup(&ifaceTx)) continue;
         sendto(xsk_socket__fd(ifaceXsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
     }
