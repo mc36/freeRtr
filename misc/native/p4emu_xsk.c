@@ -17,6 +17,7 @@
 
 #define framesNum 1024
 
+pthread_mutex_t ifaceLock[maxPorts];
 struct xsk_umem *ifaceUmem[maxPorts];
 struct xsk_socket *ifaceXsk[maxPorts];
 struct xsk_ring_prod ifaceFq[maxPorts];
@@ -28,15 +29,20 @@ struct pollfd ifacePfd[maxPorts];
 
 void sendPack(unsigned char *bufD, int bufS, int port) {
     unsigned int idx;
+    pthread_mutex_lock(&ifaceLock[port]);
     idx = xsk_ring_cons__peek(&ifaceCq[port], 16, &idx);
     xsk_ring_cons__release(&ifaceCq[port], idx);
-    if (xsk_ring_prod__reserve(&ifaceTx[port], 1, &idx) < 1) return;
+    if (xsk_ring_prod__reserve(&ifaceTx[port], 1, &idx) < 1) {
+      pthread_mutex_unlock(&ifaceLock[port]);
+      return;
+    }
     struct xdp_desc *dsc = xsk_ring_prod__tx_desc(&ifaceTx[port], idx);
     dsc->addr = (framesNum + (idx % framesNum)) * XSK_UMEM__DEFAULT_FRAME_SIZE;
     dsc->options = 0;
     dsc->len = bufS;
     memcpy(ifaceBuf[port] + dsc->addr, bufD, bufS);
     xsk_ring_prod__submit(&ifaceTx[port], 1);
+    pthread_mutex_unlock(&ifaceLock[port]);
     if (!xsk_ring_prod__needs_wakeup(&ifaceTx[port])) return;
     sendto(xsk_socket__fd(ifaceXsk[port]), NULL, 0, MSG_DONTWAIT, NULL, 0);
 }
@@ -223,6 +229,7 @@ int main(int argc, char **argv) {
         memset(&ifacePfd[o], 0, sizeof (ifacePfd[o]));
         ifacePfd[o].fd = xsk_socket__fd(ifaceXsk[o]);
         ifacePfd[o].events = POLLIN | POLLERR;
+        pthread_mutex_init(&ifaceLock[o], NULL);
         ifaceId[o] = o;
     }
 
