@@ -44,8 +44,8 @@ void doRawLoop() {
     for (;;) {
         unsigned int idx;
         if (xsk_ring_cons__peek(&ifaceRx, 1, &idx) < 1) {
-            continue;
             poll(&ifacePfd, 1, 1);
+            continue;
         }
         const struct xdp_desc *dsc = xsk_ring_cons__rx_desc(&ifaceRx, idx);
         char *dat = xsk_umem__get_data(ifaceBuf, dsc->addr);
