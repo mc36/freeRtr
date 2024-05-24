@@ -4,7 +4,7 @@ catalog-read sid xz %mirr% sid main
 catalog-sum
 
 select-one libc-bin                       #library
-select-one openssl                        #dataplane
+select-one libssl3t64                     #dataplane
 
 select-lst
 select-sum

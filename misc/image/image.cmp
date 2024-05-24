@@ -15,6 +15,7 @@ select-one dpdk-dev                       #dataplane
 select-one libpcap-dev                    #dataplane
 select-one libssl-dev                     #dataplane
 select-one libbpf-dev                     #dataplane
+select-one libxdp-dev                     #dataplane
 select-one libmnl-dev                     #dataplane
 
 select-lst
