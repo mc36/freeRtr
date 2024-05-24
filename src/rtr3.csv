@@ -55,7 +55,7 @@ http://sources.freertr.org/cfg/p4lang-acl052.tst;p4lang-acl052.tst;ok;ok;ok;ok;n
 http://sources.freertr.org/cfg/p4lang-acl053.tst;p4lang-acl053.tst;ok;ok;ok;not ok;not ok;p4lang: ingress amt access list
 http://sources.freertr.org/cfg/p4lang-acl054.tst;p4lang-acl054.tst;ok;ok;ok;not ok;not ok;p4lang: egress amt access list
 http://sources.freertr.org/cfg/p4lang-acl055.tst;p4lang-acl055.tst;ok;ok;ok;ok;not ok;p4lang: ingress reflexive access list
-http://sources.freertr.org/cfg/p4lang-acl056.tst;p4lang-acl056.tst;ok;ok;ok;ok;not ok;p4lang: egress reflexive access list
+http://sources.freertr.org/cfg/p4lang-acl056.tst;p4lang-acl056.tst;ok;ok;ok;not ok;not ok;p4lang: egress reflexive access list
 http://sources.freertr.org/cfg/p4lang-acl057.tst;p4lang-acl057.tst;ok;ok;ok;ok;not ok;p4lang: interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl058.tst;p4lang-acl058.tst;ok;ok;ok;ok;not ok;p4lang: interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl059.tst;p4lang-acl059.tst;ok;ok;ok;ok;not ok;p4lang: vlan interface inspection with egress drop
