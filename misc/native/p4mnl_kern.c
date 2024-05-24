@@ -92,6 +92,8 @@ __u32 mnl_pckio(struct xdp_md *ctx) {
     fibpar.tot_len = 64;
     fibpar.l4_protocol = IP_PROTOCOL_GRE;
     if (bpf_fib_lookup(ctx, &fibpar, sizeof(fibpar), 0) == BPF_FIB_LKUP_RET_SUCCESS) {
+        __builtin_memcpy(&bufD[0], fibpar.dmac, 6);
+        __builtin_memcpy(&bufD[6], fibpar.smac, 6);
         return bpf_redirect(fibpar.ifindex, 0);
     }
 
