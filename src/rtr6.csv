@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.5.24-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-05-24 12:57:41, took 01:54:43, with 10 workers, on 544 cases, 1 failed, 0 traces, 9 retries
+-;-;-;freeRouter v24.5.31-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-05-31 15:36:41, took 01:41:35, with 10 workers, on 544 cases, 0 failed, 0 traces, 1 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -57,7 +57,7 @@ http://sources.freertr.org/cfg/p4lang-acl052.tst;p4lang-acl052.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl053.tst;p4lang-acl053.tst;not applicable;p4lang: ingress amt access list
 http://sources.freertr.org/cfg/p4lang-acl054.tst;p4lang-acl054.tst;not applicable;p4lang: egress amt access list
 http://sources.freertr.org/cfg/p4lang-acl055.tst;p4lang-acl055.tst;success;p4lang: ingress reflexive access list
-http://sources.freertr.org/cfg/p4lang-acl056.tst;p4lang-acl056.tst;#6-run-r4 tping 100 10 4321::101 vrf v1 sou lo0;p4lang: egress reflexive access list
+http://sources.freertr.org/cfg/p4lang-acl056.tst;p4lang-acl056.tst;success;p4lang: egress reflexive access list
 http://sources.freertr.org/cfg/p4lang-acl057.tst;p4lang-acl057.tst;success;p4lang: interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl058.tst;p4lang-acl058.tst;success;p4lang: interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl059.tst;p4lang-acl059.tst;success;p4lang: vlan interface inspection with egress drop
