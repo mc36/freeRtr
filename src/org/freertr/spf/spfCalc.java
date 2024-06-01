@@ -635,7 +635,7 @@ public class spfCalc<Ta extends addrType> {
      * @param algo algorithm
      * @return exclude list
      */
-    public tabGen<spfNode<Ta>> flexExclList(int algo) {
+    public tabGen<spfNode<Ta>> flexExcl(int algo) {
         tabGen<spfNode<Ta>> res = new tabGen<spfNode<Ta>>();
         for (int i = 0; i < nodes.size(); i++) {
             spfNode<Ta> ntry = nodes.get(i);
@@ -653,13 +653,16 @@ public class spfCalc<Ta extends addrType> {
     /**
      * find shortest path
      *
-     * @param algo algorithm
+     * @param excl exclude list
      * @param from starting node
      * @param to target node, null to every node
      * @return false on success, true on error
      */
-    public boolean doWork(int algo, Ta from, Ta to) {
+    public boolean doWork(tabGen<spfNode<Ta>> excl, Ta from, Ta to) {
         tim2 = bits.getTime();
+        if (excl == null) {
+            excl = new tabGen<spfNode<Ta>>();
+        }
         for (int i = 0; i < nodes.size(); i++) {
             spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
@@ -705,10 +708,8 @@ public class spfCalc<Ta extends addrType> {
                 }
             }
             lst.del(ntry);
-            if (algo > 0) {
-                if (ntry.algo.indexOf(algo) < 0) {
-                    continue;
-                }
+            if (excl.find(ntry) != null) {
+                continue;
             }
             ntry.visited = true;
             for (int i = 0; i < ntry.conn.size(); i++) {

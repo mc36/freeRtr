@@ -438,7 +438,7 @@ public class rtrRift extends ipRtr implements Runnable {
     public List<String> showSpfOtherTree(cmds cmd) {
         spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
         rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         return spf.listTree();
     }
 
@@ -451,7 +451,7 @@ public class rtrRift extends ipRtr implements Runnable {
     public userFormat showSpfOtherTopo(cmds cmd) {
         spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
         rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         if (cmd.size() < 1) {
             return spf.listTopology();
         }
@@ -746,7 +746,7 @@ public class rtrRift extends ipRtr implements Runnable {
             }
         }
         rtrRiftTieSpf adr = new rtrRiftTieSpf(nodeID);
-        spf.doWork(0, adr, null);
+        spf.doWork(null, adr, null);
         for (int o = 0; o < ifaces.size(); o++) {
             rtrRiftIface ifc = ifaces.get(o);
             if (ifc == null) {

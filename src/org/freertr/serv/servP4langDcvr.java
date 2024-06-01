@@ -101,7 +101,7 @@ public class servP4langDcvr implements Runnable {
         for (int o = 0; o < parent.fwds.size(); o++) {
             cur = parent.fwds.get(o);
             addrIP adr = servP4langUtil.forwarder2addr(o);
-            cur.bckplnSpf.doWork(0, adr, null);
+            cur.bckplnSpf.doWork(null, adr, null);
         }
         for (int o = 0; o < parent.fwds.size(); o++) {
             cur = parent.fwds.get(o);

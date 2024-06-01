@@ -596,7 +596,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         return spf.listTree();
     }
 
@@ -610,7 +610,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         spfCalc<addrIPv4> spf = lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         if (cmd.size() < 1) {
             return spf.listTopology();
         }
@@ -817,7 +817,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
             ntry.put2spf(spf, distance);
         }
-        spf.doWork(0, routerID, null);
+        spf.doWork(null, routerID, null);
         tabGen<tabIndex<addrIP>> segrouUsd = null;
         if (segrouLab != null) {
             segrouUsd = new tabGen<tabIndex<addrIP>>();
@@ -916,7 +916,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 continue;
             }
             spf = lastSpf.copyBytes();
-            spf.doWork(alg.num, routerID, null);
+            spf.doWork(spf.flexExcl(alg.num), routerID, null);
             for (int o = 0; o < ifaces.size(); o++) {
                 rtrLsrpIface ifc = ifaces.get(o);
                 if (ifc == null) {

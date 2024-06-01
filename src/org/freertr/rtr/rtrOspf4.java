@@ -1091,7 +1091,7 @@ public class rtrOspf4 extends ipRtr {
         spfCalc<addrIPv4> spf = ara.lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         return spf.listTree();
     }
 
@@ -1111,7 +1111,7 @@ public class rtrOspf4 extends ipRtr {
         spfCalc<addrIPv4> spf = ara.lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         if (cmd.size() < 1) {
             return spf.listTopology();
         }

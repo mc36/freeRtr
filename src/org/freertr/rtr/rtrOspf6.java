@@ -1134,7 +1134,7 @@ public class rtrOspf6 extends ipRtr {
         spfCalc<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
         rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
         ned.fromString(cmd.word());
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         return spf.listTree();
     }
 
@@ -1154,7 +1154,7 @@ public class rtrOspf6 extends ipRtr {
         spfCalc<rtrOspf6areaSpf> spf = ara.lastSpf.copyBytes();
         rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
         ned.fromString(cmd.word());
-        spf.doWork(0, ned, null);
+        spf.doWork(null, ned, null);
         if (cmd.size() < 1) {
             return spf.listTopology();
         }
