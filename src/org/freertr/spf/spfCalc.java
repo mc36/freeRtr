@@ -630,6 +630,27 @@ public class spfCalc<Ta extends addrType> {
     }
 
     /**
+     * collect exclude list
+     *
+     * @param algo algorithm
+     * @return exclude list
+     */
+    public tabGen<spfNode<Ta>> flexExclList(int algo) {
+        tabGen<spfNode<Ta>> res = new tabGen<spfNode<Ta>>();
+        for (int i = 0; i < nodes.size(); i++) {
+            spfNode<Ta> ntry = nodes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.algo.indexOf(algo) >= 0) {
+                continue;
+            }
+            res.add(ntry);
+        }
+        return res;
+    }
+
+    /**
      * find shortest path
      *
      * @param algo algorithm
