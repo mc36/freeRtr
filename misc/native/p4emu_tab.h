@@ -187,6 +187,7 @@ struct vrf2rib_entry {
     struct table_head pbr;
     struct table_head flw;
     struct table_head nat;
+    struct table_head copp;
 #ifdef HAVE_POLKA
     struct table_head plk;
 #endif
@@ -335,7 +336,7 @@ struct table_head vlanout_table;
 
 
 struct acls_entry {
-    int dir; // 1=inacl, 2=outacl, 4=copp, 6=inqos, 7=outqos
+    int dir; // 1=inacl, 2=outacl, 6=inqos, 7=outqos
     int port;
     struct table_head aces;
     struct table_head *insp;
@@ -745,6 +746,8 @@ struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry 
     tab3 = &res->flw;
     if (tab3->reclen != reclen5) table_init(tab3, reclen5, 1);
     tab3 = &res->nat;
+    if (tab3->reclen != reclen5) table_init(tab3, reclen5, 1);
+    tab3 = &res->copp;
     if (tab3->reclen != reclen5) table_init(tab3, reclen5, 1);
 #ifdef HAVE_POLKA
     tab3 = &res->plk;

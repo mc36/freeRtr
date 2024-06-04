@@ -1943,14 +1943,9 @@ ipv4_tx:
                 doTunnelMid(tun4_res);
                 doTunnelEnd(tun4_res);
             }
-            acls_ntry.dir = 4;
-            acls_ntry.port = vrf2rib_ntry.vrf;
-            index = table_find(&acls4_table, &acls_ntry);
-            if (index >= 0) {
-                if (frag != 0) doPunting;
-                acls_res = table_get(&acls4_table, index);
-                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
-            }
+            if (table_empty(&vrf2rib_res->copp)) doCpuing;
+            if (frag != 0) doPunting;
+            if (apply_acl(&vrf2rib_res->copp, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
             doCpuing;
             doRouted(route4_res, IP_PROTOCOL_IPV4);
 #ifdef HAVE_POLKA
@@ -2248,14 +2243,9 @@ ipv6_tx:
                 doTunnelMid(tun6_res);
                 doTunnelEnd(tun6_res);
             }
-            acls_ntry.dir = 4;
-            acls_ntry.port = vrf2rib_ntry.vrf;
-            index = table_find(&acls6_table, &acls_ntry);
-            if (index >= 0) {
-                if (frag != 0) doPunting;
-                acls_res = table_get(&acls6_table, index);
-                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
-            }
+            if (table_empty(&vrf2rib_res->copp)) doCpuing;
+            if (frag != 0) doPunting;
+            if (apply_acl(&vrf2rib_res->copp, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
             doCpuing;
             doRouted(route6_res, IP_PROTOCOL_IPV6);
 #ifdef HAVE_POLKA
