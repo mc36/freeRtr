@@ -1374,29 +1374,29 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         return 0;
     }
     if (strcmp(arg[0], "flowspec4") == 0) {
-        acls_ntry.dir = 8;
+        policer_ntry.vrf = vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
         policer_ntry.dir = 3;
-        policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
         acls_res = acls_init4;
         readAcl4(&acl4_ntry, &arg[4]);
         policer_ntry.meter = acl4_ntry.pri;
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&vrf2rib_res->flw, &acl4_ntry);
+        else table_add(&vrf2rib_res->flw, &acl4_ntry);
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "flowspec6") == 0) {
-        acls_ntry.dir = 8;
+        policer_ntry.vrf = vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
         policer_ntry.dir = 4;
-        policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
         acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[4]);
         policer_ntry.meter = acl6_ntry.pri;
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&vrf2rib_res->flw, &acl6_ntry);
+        else table_add(&vrf2rib_res->flw, &acl6_ntry);
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
         return 0;

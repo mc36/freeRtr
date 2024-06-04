@@ -1788,13 +1788,8 @@ ipv4_rx:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv4_qosed:
-        acls_ntry.dir = 8;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        if (port2vrf_res->nflw4 > 0) goto ipv4_flwed;
-        index = table_find(&acls4_table, &acls_ntry);
-        if (index < 0) goto ipv4_flwed;
-        acls_res = table_get(&acls4_table, index);
-        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        if (table_empty(&vrf2rib_res->flw)) goto ipv4_flwed;
+        aceh_res = search_ace(&vrf2rib_res->flw, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv4_flwed;
         if (aceh_res->act != 0) goto ipv4_flwed;
         policer_ntry.vrf = vrf2rib_ntry.vrf;
@@ -2074,13 +2069,8 @@ ipv6_rx:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv6_qosed:
-        acls_ntry.dir = 8;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        if (port2vrf_res->nflw6 > 0) goto ipv6_flwed;
-        index = table_find(&acls6_table, &acls_ntry);
-        if (index < 0) goto ipv6_flwed;
-        acls_res = table_get(&acls6_table, index);
-        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        if (table_empty(&vrf2rib_res->flw)) goto ipv6_flwed;
+        aceh_res = search_ace(&vrf2rib_res->flw, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv6_flwed;
         if (aceh_res->act != 0) goto ipv6_flwed;
         policer_ntry.vrf = vrf2rib_ntry.vrf;
