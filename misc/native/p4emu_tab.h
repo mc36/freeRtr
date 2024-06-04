@@ -184,9 +184,7 @@ struct vrf2rib_entry {
     struct table_head nat;
     struct table_head tun;
     struct table_head mcst;
-#ifdef HAVE_POLKA
     struct table_head plk;
-#endif
     long pack;
     long byte;
 };
@@ -212,8 +210,8 @@ struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry 
     if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
     tab3 = &res->mcst;
     if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
-#ifdef HAVE_POLKA
     tab3 = &res->plk;
+#ifdef HAVE_POLKA
     reclen4 = sizeof(struct polkaIdx_entry);
     if (tab3->reclen != reclen4) table_init(tab3, reclen4, 1);
 #endif
