@@ -1134,6 +1134,15 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "inacl6") == 0) {
+        acls_ntry.dir = 1;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
+        readAcl6(&acl6_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "outacl4") == 0) {
         acls_ntry.dir = 2;
         acls_ntry.port = atoi(arg[2]);
@@ -1141,6 +1150,15 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "outacl6") == 0) {
+        acls_ntry.dir = 2;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
+        readAcl6(&acl6_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inqos4") == 0) {
@@ -1153,52 +1171,6 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
-    if (strcmp(arg[0], "outqos4") == 0) {
-        acls_ntry.dir = 7;
-        acls_ntry.port = atoi(arg[2]);
-        acl4_ntry.nexthop = atoi(arg[3]);
-        acls_res = acls_init4;
-        readAcl4(&acl4_ntry, &arg[2]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
-        return 0;
-    }
-    if (strcmp(arg[0], "natcfg4") == 0) {
-        acls_ntry.dir = 3;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init4;
-        readAcl4(&acl4_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
-        return 0;
-    }
-    if (strcmp(arg[0], "copp4") == 0) {
-        acls_ntry.dir = 4;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init4;
-        readAcl4(&acl4_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
-        return 0;
-    }
-    if (strcmp(arg[0], "inacl6") == 0) {
-        acls_ntry.dir = 1;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
-        readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
-        return 0;
-    }
-    if (strcmp(arg[0], "outacl6") == 0) {
-        acls_ntry.dir = 2;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
-        readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
-        return 0;
-    }
     if (strcmp(arg[0], "inqos6") == 0) {
         acls_ntry.dir = 6;
         acls_ntry.port = atoi(arg[2]);
@@ -1207,6 +1179,16 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         readAcl6(&acl6_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "outqos4") == 0) {
+        acls_ntry.dir = 7;
+        acls_ntry.port = atoi(arg[2]);
+        acl4_ntry.nexthop = atoi(arg[3]);
+        acls_res = acls_init4;
+        readAcl4(&acl4_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outqos6") == 0) {
@@ -1219,6 +1201,15 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "natcfg4") == 0) {
+        acls_ntry.dir = 3;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
+        readAcl4(&acl4_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "natcfg6") == 0) {
         acls_ntry.dir = 3;
         acls_ntry.port = atoi(arg[2]);
@@ -1226,6 +1217,15 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         readAcl6(&acl6_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "copp4") == 0) {
+        acls_ntry.dir = 4;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
+        readAcl4(&acl4_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "copp6") == 0) {
