@@ -1822,13 +1822,9 @@ ipv4_flwed:
             update_layer4(nat4_res);
             goto ipv4_nated;
         }
-        acls_ntry.dir = 3;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        index = table_find(&acls4_table, &acls_ntry);
-        if (index < 0) goto ipv4_nated;
+        if (table_empty(&vrf2rib_res->nat)) goto ipv4_nated;
         if (frag != 0) goto ipv4_nated;
-        acls_res = table_get(&acls4_table, index);
-        if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+        if (apply_acl(&vrf2rib_res->nat, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
 ipv4_nated:
         ttl = bufD[bufP + 8] - 1;
         if (ttl <= 1) doPunting;
@@ -2120,13 +2116,9 @@ ipv6_flwed:
             update_layer4(nat6_res);
             goto ipv6_nated;
         }
-        acls_ntry.dir = 3;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        index = table_find(&acls6_table, &acls_ntry);
-        if (index < 0) goto ipv6_nated;
+        if (table_empty(&vrf2rib_res->nat)) goto ipv6_nated;
         if (frag != 0) goto ipv6_nated;
-        acls_res = table_get(&acls6_table, index);
-        if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+        if (apply_acl(&vrf2rib_res->nat, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
 ipv6_nated:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;
