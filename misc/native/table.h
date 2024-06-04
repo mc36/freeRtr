@@ -9,8 +9,6 @@ struct table_head {
 
 #define table_get(tab, idx)   (void*) ((tab)->buffer + ((idx) * (tab)->reclen))
 
-#define table_empty(tab)      ((tab)->size == 0)
-
 
 void table_init(struct table_head *tab, int reclen, int cmplen) {
     tab->reclen = reclen;

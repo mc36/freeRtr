@@ -1788,8 +1788,13 @@ ipv4_rx:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv4_qosed:
-        if (table_empty(&vrf2rib_res->flw)) goto ipv4_flwed;
-        aceh_res = search_ace(&vrf2rib_res->flw, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        acls_ntry.dir = 8;
+        acls_ntry.port = vrf2rib_ntry.vrf;
+        if (port2vrf_res->nflw4 > 0) goto ipv4_flwed;
+        index = table_find(&acls4_table, &acls_ntry);
+        if (index < 0) goto ipv4_flwed;
+        acls_res = table_get(&acls4_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv4_flwed;
         if (aceh_res->act != 0) goto ipv4_flwed;
         policer_ntry.vrf = vrf2rib_ntry.vrf;
@@ -1806,10 +1811,10 @@ ipv4_flwed:
         nat4_ntry.oTrgAddr = acl4_ntry.trgAddr;
         nat4_ntry.oSrcPort = acl4_ntry.srcPortV;
         nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
-        index = table_find(&vrf2rib_res->trns, &nat4_ntry);
+        index = table_find(&vrf2rib_res->nat, &nat4_ntry);
         if (index >= 0) {
-            if (frag != 0) goto ipv4_nated;
-            nat4_res = table_get(&vrf2rib_res->trns, index);
+            if (frag != 0) goto ipv4_natted;
+            nat4_res = table_get(&vrf2rib_res->nat, index);
             nat4_res->pack++;
             nat4_res->byte += bufS;
             acl4_ntry.srcAddr = nat4_res->nSrcAddr;
@@ -1820,20 +1825,28 @@ ipv4_flwed:
             put32msb(bufD, bufP + 16, acl4_ntry.trgAddr);
             update_chksum(bufP + 10, nat4_res->sum3);
             update_layer4(nat4_res);
-            goto ipv4_nated;
+        } else {
+            acls_ntry.dir = 3;
+            acls_ntry.port = vrf2rib_ntry.vrf;
+            index = table_find(&acls4_table, &acls_ntry);
+            if (index < 0) goto ipv4_natted;
+            if (frag != 0) goto ipv4_natted;
+            acls_res = table_get(&acls4_table, index);
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
         }
-        if (table_empty(&vrf2rib_res->nat)) goto ipv4_nated;
-        if (frag != 0) goto ipv4_nated;
-        if (apply_acl(&vrf2rib_res->nat, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
-ipv4_nated:
+ipv4_natted:
         ttl = bufD[bufP + 8] - 1;
         if (ttl <= 1) doPunting;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
         ttl |= port2vrf_res->pttl4;
-        if (table_empty(&vrf2rib_res->pbr)) goto ipv4_pbred;
+        acls_ntry.dir = 5;
+        acls_ntry.port = vrf2rib_ntry.vrf;
+        index = table_find(&acls4_table, &acls_ntry);
+        if (index < 0) goto ipv4_pbred;
         if (frag != 0) doPunting;
-        aceh_res = search_ace(&vrf2rib_res->pbr, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        acls_res = table_get(&acls4_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv4_pbred;
         if (aceh_res->act != 0) goto ipv4_pbred;
         switch (aceh_res->cmd) {
@@ -1841,9 +1854,6 @@ ipv4_nated:
             break;
         case 2: // setvrf
             vrf2rib_ntry.vrf = aceh_res->vrf;
-            index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
-            if (index < 0) doDropper;
-            vrf2rib_res = table_get(&vrf2rib4_table, index);
             break;
         case 3: // sethop
             vrf2rib_ntry.vrf = aceh_res->vrf;
@@ -1863,6 +1873,9 @@ ipv4_nated:
         default:
             doDropper;
         }
+        index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib4_table, index);
 ipv4_pbred:
         if (acl4_ntry.protV == 46) doCpuing;
         vrf2rib_res->pack++;
@@ -1943,9 +1956,14 @@ ipv4_tx:
                 doTunnelMid(tun4_res);
                 doTunnelEnd(tun4_res);
             }
-            if (table_empty(&vrf2rib_res->copp)) doCpuing;
-            if (frag != 0) doPunting;
-            if (apply_acl(&vrf2rib_res->copp, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
+            acls_ntry.dir = 4;
+            acls_ntry.port = vrf2rib_ntry.vrf;
+            index = table_find(&acls4_table, &acls_ntry);
+            if (index >= 0) {
+                if (frag != 0) doPunting;
+                acls_res = table_get(&acls4_table, index);
+                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
+            }
             doCpuing;
             doRouted(route4_res, IP_PROTOCOL_IPV4);
 #ifdef HAVE_POLKA
@@ -2060,8 +2078,13 @@ ipv6_rx:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv6_qosed:
-        if (table_empty(&vrf2rib_res->flw)) goto ipv6_flwed;
-        aceh_res = search_ace(&vrf2rib_res->flw, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        acls_ntry.dir = 8;
+        acls_ntry.port = vrf2rib_ntry.vrf;
+        if (port2vrf_res->nflw6 > 0) goto ipv6_flwed;
+        index = table_find(&acls6_table, &acls_ntry);
+        if (index < 0) goto ipv6_flwed;
+        acls_res = table_get(&acls6_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv6_flwed;
         if (aceh_res->act != 0) goto ipv6_flwed;
         policer_ntry.vrf = vrf2rib_ntry.vrf;
@@ -2084,10 +2107,10 @@ ipv6_flwed:
         nat6_ntry.oTrgAddr4 = acl6_ntry.trgAddr4;
         nat6_ntry.oSrcPort = acl6_ntry.srcPortV;
         nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
-        index = table_find(&vrf2rib_res->trns, &nat6_ntry);
+        index = table_find(&vrf2rib_res->nat, &nat6_ntry);
         if (index >= 0) {
-            if (frag != 0) goto ipv6_nated;
-            nat6_res = table_get(&vrf2rib_res->trns, index);
+            if (frag != 0) goto ipv6_natted;
+            nat6_res = table_get(&vrf2rib_res->nat, index);
             nat6_res->pack++;
             nat6_res->byte += bufS;
             acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
@@ -2109,19 +2132,27 @@ ipv6_flwed:
             put32msb(bufD, bufP + 32, acl6_ntry.trgAddr3);
             put32msb(bufD, bufP + 36, acl6_ntry.trgAddr4);
             update_layer4(nat6_res);
-            goto ipv6_nated;
+        } else {
+            acls_ntry.dir = 3;
+            acls_ntry.port = vrf2rib_ntry.vrf;
+            index = table_find(&acls6_table, &acls_ntry);
+            if (index < 0) goto ipv6_natted;
+            if (frag != 0) goto ipv6_natted;
+            acls_res = table_get(&acls6_table, index);
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
         }
-        if (table_empty(&vrf2rib_res->nat)) goto ipv6_nated;
-        if (frag != 0) goto ipv6_nated;
-        if (apply_acl(&vrf2rib_res->nat, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
-ipv6_nated:
+ipv6_natted:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;
         bufD[bufP + 7] = ttl;
         ttl |= port2vrf_res->pttl6;
-        if (table_empty(&vrf2rib_res->pbr)) goto ipv6_pbred;
+        acls_ntry.dir = 5;
+        acls_ntry.port = vrf2rib_ntry.vrf;
+        index = table_find(&acls6_table, &acls_ntry);
+        if (index < 0) goto ipv6_pbred;
         if (frag != 0) doPunting;
-        aceh_res = search_ace(&vrf2rib_res->pbr, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        acls_res = table_get(&acls6_table, index);
+        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv6_pbred;
         if (aceh_res->act != 0) goto ipv6_pbred;
         switch (aceh_res->cmd) {
@@ -2129,9 +2160,6 @@ ipv6_nated:
             break;
         case 2: // setvrf
             vrf2rib_ntry.vrf = aceh_res->vrf;
-            index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
-            if (index < 0) doDropper;
-            vrf2rib_res = table_get(&vrf2rib6_table, index);
             break;
         case 3: // sethop
             vrf2rib_ntry.vrf = aceh_res->vrf;
@@ -2151,6 +2179,9 @@ ipv6_nated:
         default:
             doDropper;
         }
+        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib6_table, index);
 ipv6_pbred:
         if (acl6_ntry.protV == 0) doCpuing;
         vrf2rib_res->pack++;
@@ -2243,9 +2274,14 @@ ipv6_tx:
                 doTunnelMid(tun6_res);
                 doTunnelEnd(tun6_res);
             }
-            if (table_empty(&vrf2rib_res->copp)) doCpuing;
-            if (frag != 0) doPunting;
-            if (apply_acl(&vrf2rib_res->copp, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
+            acls_ntry.dir = 4;
+            acls_ntry.port = vrf2rib_ntry.vrf;
+            index = table_find(&acls6_table, &acls_ntry);
+            if (index >= 0) {
+                if (frag != 0) doPunting;
+                acls_res = table_get(&acls6_table, index);
+                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
+            }
             doCpuing;
             doRouted(route6_res, IP_PROTOCOL_IPV6);
 #ifdef HAVE_POLKA

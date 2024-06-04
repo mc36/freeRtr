@@ -1134,15 +1134,6 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
-    if (strcmp(arg[0], "inacl6") == 0) {
-        acls_ntry.dir = 1;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
-        readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
-        return 0;
-    }
     if (strcmp(arg[0], "outacl4") == 0) {
         acls_ntry.dir = 2;
         acls_ntry.port = atoi(arg[2]);
@@ -1150,15 +1141,6 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         readAcl4(&acl4_ntry, &arg[1]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
-        return 0;
-    }
-    if (strcmp(arg[0], "outacl6") == 0) {
-        acls_ntry.dir = 2;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
-        readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inqos4") == 0) {
@@ -1171,16 +1153,6 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
-    if (strcmp(arg[0], "inqos6") == 0) {
-        acls_ntry.dir = 6;
-        acls_ntry.port = atoi(arg[2]);
-        acl6_ntry.nexthop = atoi(arg[3]);
-        acls_res = acls_init6;
-        readAcl6(&acl6_ntry, &arg[2]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
-        return 0;
-    }
     if (strcmp(arg[0], "outqos4") == 0) {
         acls_ntry.dir = 7;
         acls_ntry.port = atoi(arg[2]);
@@ -1189,6 +1161,52 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         readAcl4(&acl4_ntry, &arg[2]);
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "natcfg4") == 0) {
+        acls_ntry.dir = 3;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
+        readAcl4(&acl4_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "copp4") == 0) {
+        acls_ntry.dir = 4;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
+        readAcl4(&acl4_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "inacl6") == 0) {
+        acls_ntry.dir = 1;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
+        readAcl6(&acl6_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "outacl6") == 0) {
+        acls_ntry.dir = 2;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
+        readAcl6(&acl6_ntry, &arg[1]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "inqos6") == 0) {
+        acls_ntry.dir = 6;
+        acls_ntry.port = atoi(arg[2]);
+        acl6_ntry.nexthop = atoi(arg[3]);
+        acls_res = acls_init6;
+        readAcl6(&acl6_ntry, &arg[2]);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outqos6") == 0) {
@@ -1201,36 +1219,22 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
-    if (strcmp(arg[0], "natcfg4") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init4;
-        readAcl4(&acl4_ntry, &arg[1]);
-        if (del == 0) table_del(&vrf2rib_res->nat, &acl4_ntry);
-        else table_add(&vrf2rib_res->nat, &acl4_ntry);
-        return 0;
-    }
     if (strcmp(arg[0], "natcfg6") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init6;
+        acls_ntry.dir = 3;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&vrf2rib_res->nat, &acl6_ntry);
-        else table_add(&vrf2rib_res->nat, &acl6_ntry);
-        return 0;
-    }
-    if (strcmp(arg[0], "copp4") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init4;
-        readAcl4(&acl4_ntry, &arg[1]);
-        if (del == 0) table_del(&vrf2rib_res->copp, &acl4_ntry);
-        else table_add(&vrf2rib_res->copp, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "copp6") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init6;
+        acls_ntry.dir = 4;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&vrf2rib_res->copp, &acl6_ntry);
-        else table_add(&vrf2rib_res->copp, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns4") == 0) {
@@ -1259,8 +1263,8 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oTrgPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, +1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&vrf2rib_res->trns, &nat4_ntry);
-        else table_add(&vrf2rib_res->trns, &nat4_ntry);
+        if (del == 0) table_del(&vrf2rib_res->nat, &nat4_ntry);
+        else table_add(&vrf2rib_res->nat, &nat4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns6") == 0) {
@@ -1313,8 +1317,8 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.oTrgPort, -1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nSrcPort, +1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&vrf2rib_res->trns, &nat6_ntry);
-        else table_add(&vrf2rib_res->trns, &nat6_ntry);
+        if (del == 0) table_del(&vrf2rib_res->nat, &nat6_ntry);
+        else table_add(&vrf2rib_res->nat, &nat6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inspect4") == 0) {
@@ -1370,115 +1374,123 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         return 0;
     }
     if (strcmp(arg[0], "flowspec4") == 0) {
-        policer_ntry.vrf = vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init4;
+        acls_ntry.dir = 8;
         policer_ntry.dir = 3;
+        policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
         acls_res = acls_init4;
         readAcl4(&acl4_ntry, &arg[4]);
         policer_ntry.meter = acl4_ntry.pri;
-        if (del == 0) table_del(&vrf2rib_res->flw, &acl4_ntry);
-        else table_add(&vrf2rib_res->flw, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "flowspec6") == 0) {
-        policer_ntry.vrf = vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init6;
+        acls_ntry.dir = 8;
         policer_ntry.dir = 4;
+        policer_ntry.vrf = acls_ntry.port = atoi(arg[2]);
         policer_ntry.allow = readRate(&arg[1]);
         acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[4]);
         policer_ntry.meter = acl6_ntry.pri;
-        if (del == 0) table_del(&vrf2rib_res->flw, &acl6_ntry);
-        else table_add(&vrf2rib_res->flw, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         if (del == 0) table_del(&policer_table, &policer_ntry);
         else table_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr4norm") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init4;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
         acl4_ntry.cmd = 1;
         readAcl4(&acl4_ntry, &arg[3]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl4_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr6norm") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init6;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
         acl6_ntry.cmd = 1;
         readAcl6(&acl6_ntry, &arg[3]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl6_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr4vrf") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init4;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
         acl4_ntry.cmd = 2;
         acl4_ntry.vrf = atoi(arg[3]);
         readAcl4(&acl4_ntry, &arg[3]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl4_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr6vrf") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init6;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
         acl6_ntry.cmd = 2;
         acl6_ntry.vrf = atoi(arg[3]);
         readAcl6(&acl6_ntry, &arg[3]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl6_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr4hop") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init4;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
         acl4_ntry.cmd = 3;
         acl4_ntry.vrf = atoi(arg[3]);
         acl4_ntry.nexthop = atoi(arg[4]);
         readAcl4(&acl4_ntry, &arg[3]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl4_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr6hop") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init6;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
         acl6_ntry.cmd = 3;
         acl6_ntry.vrf = atoi(arg[3]);
         acl6_ntry.nexthop = atoi(arg[4]);
         readAcl6(&acl6_ntry, &arg[3]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl6_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr4lab") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init4;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init4;
         acl4_ntry.cmd = 4;
         acl4_ntry.vrf = atoi(arg[3]);
         acl4_ntry.nexthop = atoi(arg[4]);
         acl4_ntry.label = atoi(arg[5]);
         readAcl4(&acl4_ntry, &arg[4]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl4_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl4_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
+        else table_add(&acls_res->aces, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr6lab") == 0) {
-        vrf2rib_ntry.vrf = atoi(arg[2]);
-        vrf2rib_res = vrf2rib_init6;
+        acls_ntry.dir = 5;
+        acls_ntry.port = atoi(arg[2]);
+        acls_res = acls_init6;
         acl6_ntry.cmd = 4;
         acl6_ntry.vrf = atoi(arg[3]);
         acl6_ntry.nexthop = atoi(arg[4]);
         acl6_ntry.label = atoi(arg[5]);
         readAcl6(&acl6_ntry, &arg[4]);
-        if (del == 0) table_del(&vrf2rib_res->pbr, &acl6_ntry);
-        else table_add(&vrf2rib_res->pbr, &acl6_ntry);
+        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
+        else table_add(&acls_res->aces, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "hairpin") == 0) {
@@ -2715,7 +2727,7 @@ void doStatRound_ipvX(struct table_head *tab, void doer(void *, int, void *), vo
         struct vrf2rib_entry *res = table_get(tab, i);
         fprintf(commands, "vrf%i_cnt %i %li %li\r\n", ver, res->vrf, res->pack, res->byte);
         tree_walk(&res->rou, doer, res->vrf, param);
-        natter(&res->trns, res->vrf, param);
+        natter(&res->nat, res->vrf, param);
         tunner(&res->tun, res->vrf, param);
         mcaster(&res->mcst, res->vrf, param);
 #ifdef HAVE_POLKA
