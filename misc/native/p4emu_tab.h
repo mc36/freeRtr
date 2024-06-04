@@ -181,9 +181,10 @@ struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
 struct vrf2rib_entry {
     int vrf;
     struct tree_head rou;
-    struct table_head nat;
+    struct table_head trns;
     struct table_head tun;
     struct table_head mcst;
+    struct table_head pbr;
 #ifdef HAVE_POLKA
     struct table_head plk;
 #endif
@@ -197,31 +198,6 @@ struct table_head vrf2rib4_table;
 struct table_head vrf2rib6_table;
 
 
-struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int natter, int tunner, int mcaster) {
-    int index = table_find(tab, ntry);
-    if (index < 0) {
-        table_add(tab, ntry);
-        index = table_find(tab, ntry);
-    }
-    struct vrf2rib_entry* res = table_get(tab, index);
-    struct tree_head *tab2 = &res->rou;
-    if (tab2->reclen != reclen1) tree_init(tab2, reclen1);
-    struct table_head *tab3 = &res->nat;
-    if (tab3->reclen != reclen2) table_init(tab3, reclen2, natter);
-    tab3 = &res->tun;
-    if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
-    tab3 = &res->mcst;
-    if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
-#ifdef HAVE_POLKA
-    tab3 = &res->plk;
-    reclen4 = sizeof(struct polkaIdx_entry);
-    if (tab3->reclen != reclen4) table_init(tab3, reclen4, 1);
-#endif
-    return res;
-}
-
-#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), sizeof(struct mroute4_entry), 5, 5, 2)
-#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), sizeof(struct mroute6_entry), 11, 11, 8)
 
 
 struct route4_entry {
@@ -745,6 +721,35 @@ struct mroute6_entry {
 
 #define mcast_init4 table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), 3);
 #define mcast_init6 table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), 3);
+
+
+struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int reclen5, int natter, int tunner, int mcaster) {
+    int index = table_find(tab, ntry);
+    if (index < 0) {
+        table_add(tab, ntry);
+        index = table_find(tab, ntry);
+    }
+    struct vrf2rib_entry* res = table_get(tab, index);
+    struct tree_head *tab2 = &res->rou;
+    if (tab2->reclen != reclen1) tree_init(tab2, reclen1);
+    struct table_head *tab3 = &res->trns;
+    if (tab3->reclen != reclen2) table_init(tab3, reclen2, natter);
+    tab3 = &res->tun;
+    if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
+    tab3 = &res->mcst;
+    if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
+    tab3 = &res->pbr;
+    if (tab3->reclen != reclen5) table_init(tab3, reclen5, mcaster);
+#ifdef HAVE_POLKA
+    tab3 = &res->plk;
+    reclen5 = sizeof(struct polkaIdx_entry);
+    if (tab3->reclen != reclen5) table_init(tab3, reclen5, 1);
+#endif
+    return res;
+}
+
+#define vrf2rib_init4 vrf2rib_init(&vrf2rib4_table, &vrf2rib_ntry, sizeof(struct route4_entry), sizeof(struct nat4_entry), sizeof(struct tun4_entry), sizeof(struct mroute4_entry), sizeof(struct acl4_entry), 5, 5, 2)
+#define vrf2rib_init6 vrf2rib_init(&vrf2rib6_table, &vrf2rib_ntry, sizeof(struct route6_entry), sizeof(struct nat6_entry), sizeof(struct tun6_entry), sizeof(struct mroute6_entry), sizeof(struct acl6_entry), 11, 11, 8)
 
 
 
