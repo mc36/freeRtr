@@ -140,22 +140,22 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 }
 
 
-#define extract_layer4(ntry)                                    \
-    switch (ntry.protV) {                                       \
+#define extract_layer4(acl, nat)                                \
+    switch (acl.protV) {                                        \
         case IP_PROTOCOL_TCP:                                   \
-            ntry.srcPortV = get16msb(bufD, bufT + 0);           \
-            ntry.trgPortV = get16msb(bufD, bufT + 2);           \
+            nat.oSrcPort = acl.srcPortV = get16msb(bufD, bufT + 0);     \
+            nat.oTrgPort = acl.trgPortV = get16msb(bufD, bufT + 2);     \
             break;                                              \
         case IP_PROTOCOL_UDP:                                   \
-            ntry.srcPortV = get16msb(bufD, bufT + 0);           \
-            ntry.trgPortV = get16msb(bufD, bufT + 2);           \
+            nat.oSrcPort = acl.srcPortV = get16msb(bufD, bufT + 0);     \
+            nat.oTrgPort = acl.trgPortV = get16msb(bufD, bufT + 2);     \
             break;                                              \
         default:                                                \
-            ntry.srcPortV = 0;                                  \
-            ntry.trgPortV = 0;                                  \
+            nat.oSrcPort = acl.srcPortV = 0;                    \
+            nat.oTrgPort = acl.trgPortV = 0;                    \
             break;                                              \
     }                                                           \
-    hash ^= ntry.protV ^ ntry.srcPortV ^ ntry.trgPortV;
+    hash ^= acl.protV ^ acl.srcPortV ^ acl.trgPortV;
 
 
 #define update_tcpMss(ntry, mss)                                \
@@ -1725,14 +1725,14 @@ ipv4_rx:
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff; // frags
         acl4_ntry.sgtV = sgt;
-        acl4_ntry.protV = bufD[bufP + 9];
+        nat4_ntry.prot = acl4_ntry.protV = bufD[bufP + 9];
         acl4_ntry.tosV = bufD[bufP + 1];
         acl4_ntry.flowV = get16msb(bufD, bufP + 4);
-        acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
-        route4_ntry.addr[0] = acl4_ntry.trgAddr = get32msb(bufD, bufP + 16);
+        nat4_ntry.oSrcAddr = acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
+        nat4_ntry.oTrgAddr = route4_ntry.addr[0] = acl4_ntry.trgAddr = get32msb(bufD, bufP + 16);
         route4_ntry.mask = 32;
         hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
-        extract_layer4(acl4_ntry);
+        extract_layer4(acl4_ntry, nat4_ntry);
         update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
         if (port2vrf_res->verify4 > 0) {
             sroute4_ntry.addr[0] = acl4_ntry.srcAddr;
@@ -1806,11 +1806,6 @@ ipv4_qosed:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv4_flwed:
-        nat4_ntry.prot = acl4_ntry.protV;
-        nat4_ntry.oSrcAddr = acl4_ntry.srcAddr;
-        nat4_ntry.oTrgAddr = acl4_ntry.trgAddr;
-        nat4_ntry.oSrcPort = acl4_ntry.srcPortV;
-        nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
         index = table_find(&vrf2rib_res->nat, &nat4_ntry);
         if (index >= 0) {
             if (frag != 0) goto ipv4_nated;
@@ -1990,30 +1985,30 @@ ipv6_rx:
         }
         bufT = bufP + 40;
         acl6_ntry.sgtV = sgt;
-        acl6_ntry.protV = bufD[bufP + 6];
+        nat6_ntry.prot = acl6_ntry.protV = bufD[bufP + 6];
         acl6_ntry.tosV = (get16msb(bufD, bufP + 0) >> 4) & 0xff;
         acl6_ntry.flowV = get32msb(bufD, bufP + 0) & 0xfffff;
         if (acl6_ntry.protV == 44) { // frags
-            acl6_ntry.protV = bufD[bufT + 0];
+            nat6_ntry.prot = acl6_ntry.protV = bufD[bufT + 0];
             bufT += 8;
             frag = 1;
         } else {
             frag = 0;
         }
-        acl6_ntry.srcAddr1 = get32msb(bufD, bufP + 8);
-        acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
-        acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
-        acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
-        route6_ntry.addr[0] = acl6_ntry.trgAddr1 = get32msb(bufD, bufP + 24);
-        route6_ntry.addr[1] = acl6_ntry.trgAddr2 = get32msb(bufD, bufP + 28);
-        route6_ntry.addr[2] = acl6_ntry.trgAddr3 = get32msb(bufD, bufP + 32);
-        route6_ntry.addr[3] = acl6_ntry.trgAddr4 = get32msb(bufD, bufP + 36);
+        nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1 = get32msb(bufD, bufP + 8);
+        nat6_ntry.oSrcAddr2 = acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
+        nat6_ntry.oSrcAddr3 = acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
+        nat6_ntry.oSrcAddr4 = acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
+        nat6_ntry.oTrgAddr1 = route6_ntry.addr[0] = acl6_ntry.trgAddr1 = get32msb(bufD, bufP + 24);
+        nat6_ntry.oTrgAddr2 = route6_ntry.addr[1] = acl6_ntry.trgAddr2 = get32msb(bufD, bufP + 28);
+        nat6_ntry.oTrgAddr3 = route6_ntry.addr[2] = acl6_ntry.trgAddr3 = get32msb(bufD, bufP + 32);
+        nat6_ntry.oTrgAddr4 = route6_ntry.addr[3] = acl6_ntry.trgAddr4 = get32msb(bufD, bufP + 36);
         route6_ntry.mask = 128;
         hash ^= acl6_ntry.srcAddr1 ^ acl6_ntry.trgAddr1;
         hash ^= acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2;
         hash ^= acl6_ntry.srcAddr3 ^ acl6_ntry.trgAddr3;
         hash ^= acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
-        extract_layer4(acl6_ntry);
+        extract_layer4(acl6_ntry, nat6_ntry);
         update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
         if (port2vrf_res->verify6 > 0) {
             sroute6_ntry.addr[0] = acl6_ntry.srcAddr1;
@@ -2096,17 +2091,6 @@ ipv6_qosed:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv6_flwed:
-        nat6_ntry.prot = acl6_ntry.protV;
-        nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1;
-        nat6_ntry.oSrcAddr2 = acl6_ntry.srcAddr2;
-        nat6_ntry.oSrcAddr3 = acl6_ntry.srcAddr3;
-        nat6_ntry.oSrcAddr4 = acl6_ntry.srcAddr4;
-        nat6_ntry.oTrgAddr1 = acl6_ntry.trgAddr1;
-        nat6_ntry.oTrgAddr2 = acl6_ntry.trgAddr2;
-        nat6_ntry.oTrgAddr3 = acl6_ntry.trgAddr3;
-        nat6_ntry.oTrgAddr4 = acl6_ntry.trgAddr4;
-        nat6_ntry.oSrcPort = acl6_ntry.srcPortV;
-        nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
         index = table_find(&vrf2rib_res->nat, &nat6_ntry);
         if (index >= 0) {
             if (frag != 0) goto ipv6_nated;
