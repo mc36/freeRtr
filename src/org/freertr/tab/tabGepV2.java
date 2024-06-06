@@ -23,15 +23,13 @@ public class tabGepV2<T extends addrType> {
      * add one entry
      *
      * @param val value to add
-     * @return old value, null if freshly added
      */
-    public tabRouteEntry<T> add(tabRouteEntry<T> val) {
+    public void add(tabRouteEntry<T> val) {
         tabGepV2nod<T> cur = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
-                tabRouteEntry<T> old = cur.val;
                 cur.val = val;
-                return old;
+                return;
             }
             if (val.prefix.network.bitValue(p)) {
                 if (cur.one == null) {
@@ -51,15 +49,13 @@ public class tabGepV2<T extends addrType> {
      * add one entry
      *
      * @param val value to add
-     * @return removed value, null if not found
      */
-    public tabRouteEntry<T> del(tabRouteEntry<T> val) {
+    public void del(tabRouteEntry<T> val) {
         tabGepV2nod<T> cur = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
-                tabRouteEntry<T> old = cur.val;
                 cur.val = null;
-                return old;
+                return;
             }
             if (val.prefix.network.bitValue(p)) {
                 cur = cur.one;
@@ -67,7 +63,7 @@ public class tabGepV2<T extends addrType> {
                 cur = cur.zero;
             }
             if (cur == null) {
-                return null;
+                return;
             }
         }
     }
