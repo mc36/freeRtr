@@ -2,8 +2,10 @@ struct tree_node {
     struct tree_node* zero;
     struct tree_node* one;
     unsigned char* value;
+#ifndef HAVE_NOCACHE
     unsigned char* result;
     struct tree_node** cache;
+#endif
 };
 
 struct tree_value {
@@ -42,6 +44,30 @@ void tree_deinit(struct tree_head *tab) {
 }
 
 #define tree_bit(p) (val->addr[p / 32] & bitVals[p % 32])
+
+#ifdef HAVE_NOCACHE
+
+void* tree_lpm(struct tree_head *tab, void *ntry) {
+    struct tree_node* cur = tab->root;
+    struct tree_value* val = ntry;
+    int vlmsk = val->mask;
+    void* lst = NULL;
+    for (int p = 0;; p++) {
+        if (cur->value != NULL) lst = cur->value;
+        if (p >= vlmsk) return lst;
+        if (tree_bit(p) != 0) {
+            cur = cur->one;
+        } else {
+            cur = cur->zero;
+        }
+        if (cur == NULL) return lst;
+    }
+}
+
+void tree_cache(struct tree_node* bas) {
+}
+
+#else
 
 void* tree_lpm(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
@@ -83,6 +109,8 @@ void tree_cache(struct tree_node* bas) {
     if (old == NULL) return;
     free(old);
 }
+
+#endif
 
 
 void tree_add(struct tree_head *tab, void *ntry) {
