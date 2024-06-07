@@ -21,8 +21,8 @@ exec mkdir -m 0755 %tmp%/usr/sbin
 exec mkdir -m 0755 %tmp%/usr/lib
 exec mkdir -m 0755 %tmp%/usr/lib32
 exec mkdir -m 0755 %tmp%/usr/lib64
-exec ln -s %tmp%/usr/bin %tmp%/bin
-exec ln -s %tmp%/usr/lib %tmp%/lib
-exec ln -s %tmp%/usr/sbin %tmp%/sbin
-exec ln -s %tmp%/usr/lib32 %tmp%/lib32
-exec ln -s %tmp%/usr/lib64 %tmp%/lib64
+exec ln -s ./usr/bin %tmp%/bin
+exec ln -s ./usr/lib %tmp%/lib
+exec ln -s ./usr/sbin %tmp%/sbin
+exec ln -s ./usr/lib32 %tmp%/lib32
+exec ln -s ./usr/lib64 %tmp%/lib64

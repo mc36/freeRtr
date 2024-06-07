@@ -23,7 +23,7 @@ select-sum
 package-down
 package-inst
 
-exec for a in `busybox --list`; do ln -s ../usr/bin/busybox %tmp%/bin/$a; done
+exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
 
 exec cp -r ../misc %tmp%/
 exec cp /usr/bin/qemu-%qemu%-static %tmp%/

@@ -4,8 +4,6 @@ exec mv %tmp%/boot/vmlinu* %img%.krn
 del-alw %tmp%/boot
 include ../misc/image/image.cln
 
-exec ln -s ../usr/lib/modules %tmp%/lib/modules
-
 find-clear
 find-file %tmp%/usr/lib/ .*-linux-gnu.*
 find-result

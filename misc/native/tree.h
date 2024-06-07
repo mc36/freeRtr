@@ -60,23 +60,6 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
     }
 }
 
-void* tree_lpm_uncached(struct tree_head *tab, void *ntry) {
-    struct tree_node* cur = tab->root;
-    struct tree_value* val = ntry;
-    int vlmsk = val->mask;
-    void* lst = NULL;
-    for (int p = 0;; p++) {
-        if (cur->value != NULL) lst = cur->value;
-        if (p >= vlmsk) return lst;
-        if (tree_bit(p) != 0) {
-            cur = cur->one;
-        } else {
-            cur = cur->zero;
-        }
-        if (cur == NULL) return lst;
-    }
-}
-
 void tree_cacheNode(struct tree_node** res, struct tree_node* cur, unsigned char* lst, int beg, int end) {
     if (cur == NULL) return;
     if (cur->value != NULL) lst = cur->value;
