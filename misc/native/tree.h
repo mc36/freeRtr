@@ -52,8 +52,8 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
         if (cur->result != NULL) lst = cur->result;
         if (cur->cache == NULL) return lst;
         if (p >= vlmsk) return lst;
-        int i = val->addr[p / 32];
-        i >>= 24 - (p % 32);
+        int i = val->addr[p >> 5];
+        i >>= 24 - (p & 0x1f);
         i &= 0xff;
         cur = cur->cache[i];
         if (cur == NULL) return lst;

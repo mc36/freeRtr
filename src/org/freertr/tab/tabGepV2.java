@@ -3,7 +3,7 @@ package org.freertr.tab;
 import org.freertr.addr.addrType;
 
 /**
- * one prefix tree
+ * one cached prefix tree
  *
  * @param <T> type of elements in the list
  * @author matecsaba
