@@ -30,7 +30,7 @@ public class tabGepV2<T extends addrType> {
         tabGepV2nod<T> bas = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
-                cur.val = val;
+                cur.value = val;
                 cache(bas);
                 return;
             }
@@ -62,7 +62,7 @@ public class tabGepV2<T extends addrType> {
         tabGepV2nod<T> bas = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
-                cur.val = null;
+                cur.value = null;
                 cache(bas);
                 return;
             }
@@ -91,8 +91,8 @@ public class tabGepV2<T extends addrType> {
         if (cur == null) {
             return;
         }
-        if (cur.val != null) {
-            lst = cur.val;
+        if (cur.value != null) {
+            lst = cur.value;
         }
         cur.result = lst;
         for (int i = beg; i < end; i++) {
@@ -112,8 +112,8 @@ public class tabGepV2<T extends addrType> {
         tabGepV2nod<T> cur = root;
         tabRouteEntry<T> lst = null;
         for (int p = 0;; p++) {
-            if (cur.val != null) {
-                lst = cur.val;
+            if (cur.value != null) {
+                lst = cur.value;
             }
             if (p >= val.prefix.maskLen) {
                 return lst;
@@ -164,14 +164,14 @@ class tabGepV2nod<T extends addrType> {
 
     public tabGepV2nod<T> one;
 
-    public tabRouteEntry<T> val;
+    public tabRouteEntry<T> value;
 
     public tabRouteEntry<T> result;
 
     public tabGepV2nod<T> cache[];
 
     public tabGepV2nod() {
-        val = null;
+        value = null;
         zero = null;
         one = null;
     }

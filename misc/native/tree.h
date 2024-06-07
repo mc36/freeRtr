@@ -2,6 +2,8 @@ struct tree_node {
     struct tree_node* zero;
     struct tree_node* one;
     unsigned char* value;
+    unsigned char* result;
+    struct tree_node** cache;
 };
 
 struct tree_value {
@@ -46,6 +48,23 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
     struct tree_value* val = ntry;
     int vlmsk = val->mask;
     void* lst = NULL;
+    for (int p = 0;; p += 8) {
+        if (cur->result != NULL) lst = cur->result;
+        if (cur->cache == NULL) return lst;
+        if (p >= vlmsk) return lst;
+        int i = val->addr[p / 32];
+        i >>= 24 - (p % 32);
+        i &= 0xff;
+        cur = cur->cache[i];
+        if (cur == NULL) return lst;
+    }
+}
+
+void* tree_lpm_uncached(struct tree_head *tab, void *ntry) {
+    struct tree_node* cur = tab->root;
+    struct tree_value* val = ntry;
+    int vlmsk = val->mask;
+    void* lst = NULL;
     for (int p = 0;; p++) {
         if (cur->value != NULL) lst = cur->value;
         if (p >= vlmsk) return lst;
@@ -58,21 +77,53 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
     }
 }
 
+void tree_cacheNode(struct tree_node** res, struct tree_node* cur, unsigned char* lst, int beg, int end) {
+    if (cur == NULL) return;
+    if (cur->value != NULL) lst = cur->value;
+    cur->result = lst;
+    for (int i = beg; i < end; i++) res[i] = cur;
+    int mid = end - beg;
+    if (mid <= 1) return;
+    mid >>= 1;
+    mid += beg;
+    tree_cacheNode(res, cur->zero, lst, beg, mid);
+    tree_cacheNode(res, cur->one, lst, mid, end);
+}
+
+void tree_cache(struct tree_node* bas) {
+    struct tree_node** old = bas->cache;
+    struct tree_node** res = malloc(256 * sizeof(old));
+    if (res == NULL) err("error allocating memory");
+    memset(res, 0, 256 * sizeof(old));
+    tree_cacheNode(res, bas, NULL, 0, 256);
+    bas->cache = res;
+    if (old == NULL) return;
+    free(old);
+}
+
+
 void tree_add(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
+    struct tree_node* bas = tab->root;
     struct tree_value* val = ntry;
     int vlmsk = val->mask;
     for (int p = 0;; p++) {
         if (p >= vlmsk) {
             if (cur->value != NULL) {
                 memcpy(cur->value, ntry, tab->reclen);
+                tree_cache(bas);
                 return;
             }
             void* nxt = malloc(tab->reclen);
             if (nxt == NULL) err("error allocating memory");
             memcpy(nxt, ntry, tab->reclen);
             cur->value = nxt;
+            tree_cache(bas);
             return;
+        }
+        if ((p & 7) == 0) {
+            tree_cache(bas);
+            bas = cur;
         }
         if (tree_bit(p) != 0) {
             if (cur->one != NULL) {
@@ -100,6 +151,7 @@ void tree_add(struct tree_head *tab, void *ntry) {
 
 void tree_del(struct tree_head *tab, void *ntry) {
     struct tree_node* cur = tab->root;
+    struct tree_node* bas = tab->root;
     struct tree_value* val = ntry;
     int vlmsk = val->mask;
     for (int p = 0;; p++) {
@@ -107,8 +159,12 @@ void tree_del(struct tree_head *tab, void *ntry) {
             void* old = cur->value;
             if (old == NULL) return;
             cur->value = NULL;
+            tree_cache(bas);
             free(old);
             return;
+        }
+        if ((p & 7) == 0) {
+            bas = cur;
         }
         if (tree_bit(p) != 0) {
             cur = cur->one;
