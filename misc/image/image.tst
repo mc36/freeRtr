@@ -14,4 +14,4 @@ package-inst
 exec cp /usr/bin/qemu-%qemu%-static %tmp%/qemu-static
 exec mkdir -m 0755 %tmp%/rtr
 exec cd %tmp%/rtr/;tar xf ../../binImg/rtr-%unam%.tar
-exec proot -r %tmp%/ /qemu-static /rtr/p4bench.bin
+exec proot -r %tmp%/ -w / /qemu-static /rtr/p4bench.bin
