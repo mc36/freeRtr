@@ -58,7 +58,7 @@ public class pathRewrite {
         String trg = doOnePath(args[2]);
         playerUtil.put("reading " + fn + "...");
         List<playerSong> need = playerSong.txt2pls(null, playerUtil.readup(fn));
-        playerUtil.put("soring " + need.size() + " entries");
+        playerUtil.put("sorting " + need.size() + " entries");
         playerSong.sort(need);
         int don = doRewrite(need, src, trg);
         playerUtil.put("writing " + fn + "...");
