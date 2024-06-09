@@ -24,15 +24,12 @@ int ser1
  enc atmdxi
  atmdxi vpi 1
  atmdxi vci 2
+ connect ser2
  exit
 int ser2
  enc atmdxi
  atmdxi vpi 1
  atmdxi vci 2
- exit
-connect con
- side1 ser1
- side2 ser2
  exit
 !
 

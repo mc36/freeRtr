@@ -8,7 +8,6 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
-import org.freertr.cfg.cfgIconn;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.clnt.clntAmt;
 import org.freertr.clnt.clntEtherIp;
@@ -1022,9 +1021,6 @@ public class servP4langConn implements Runnable {
         for (int i = nshs.size() - 1; i >= 0; i--) {
             doNsh2(nshs.get(i));
         }
-        for (int i = 0; i < cfgAll.iconnects.size(); i++) {
-            doLocon(cfgAll.iconnects.get(i));
-        }
         for (int i = lower.neighs.size() - 1; i >= 0; i--) {
             doNeighs(lower.neighs.get(i));
         }
@@ -1091,26 +1087,6 @@ public class servP4langConn implements Runnable {
         outIfc = ifc.getUcast().id;
         lower.sendLine("nhop2port_" + act + " " + old.id + " " + ifc.id + " " + outIfc);
         old.sentIgNhop = outIfc;
-    }
-
-    private void doLocon(cfgIconn ntry) {
-        if (ntry == null) {
-            return;
-        }
-        servP4langIfc ifc1 = lower.findIfc(ntry.side1);
-        if (ifc1 == null) {
-            return;
-        }
-        servP4langIfc ifc2 = lower.findIfc(ntry.side2);
-        if (ifc2 == null) {
-            return;
-        }
-        if ((ifc1.sentVrf == -3) && (ifc2.sentVrf == -3)) {
-            return;
-        }
-        lower.sendLine("loconnect_add " + ifc1.id + " " + ifc2.id);
-        ifc1.sentVrf = -3;
-        ifc2.sentVrf = -3;
     }
 
     private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {
@@ -2373,6 +2349,18 @@ public class servP4langConn implements Runnable {
             lower.sendLine("xconnect_" + a + " " + ifc.id + " " + ifc.ifc.xconn.adr + " " + hop.id + " " + servP4langUtil.getLabel(ntry) + " " + ll + " " + lr);
             ifc.sentLabel = ll;
             ifc.sentVrf = -1;
+            return false;
+        }
+        if (ifc.ifc.iconn != null) {
+            if (ifc.sentVrf == -3) {
+                return false;
+            }
+            servP4langIfc ifc2 = lower.findIfc(ifc.ifc.iconn);
+            if (ifc2 == null) {
+                return false;
+            }
+            lower.sendLine("loconnect_" + a + " " + ifc.id + " " + ifc2.id);
+            ifc.sentVrf = -3;
             return false;
         }
         servP4langIfc mstr = ifc;

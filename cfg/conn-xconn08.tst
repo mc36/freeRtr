@@ -18,12 +18,9 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
 int eth1
+ connect eth2
  exit
 int eth2
- exit
-connect con
- side1 eth1
- side2 eth2
  exit
 !
 

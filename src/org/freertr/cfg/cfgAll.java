@@ -339,11 +339,6 @@ public class cfgAll {
     public final static tabGen<cfgXconn> xconnects = new tabGen<cfgXconn>();
 
     /**
-     * list of iconnections
-     */
-    public final static tabGen<cfgIconn> iconnects = new tabGen<cfgIconn>();
-
-    /**
      * list of aliases
      */
     public final static tabGen<cfgAlias> aliases = new tabGen<cfgAlias>();
@@ -2856,45 +2851,6 @@ public class cfgAll {
     }
 
     /**
-     * find one connect
-     *
-     * @param nam name of entry
-     * @param create create new on this number if not found
-     * @return descriptor, null if not found
-     */
-    public static cfgIconn iconFind(String nam, boolean create) {
-        nam = nam.trim();
-        if (nam.length() < 1) {
-            return null;
-        }
-        cfgIconn ntry = new cfgIconn(nam);
-        if (!create) {
-            return iconnects.find(ntry);
-        }
-        cfgIconn old = iconnects.add(ntry);
-        if (old != null) {
-            return old;
-        }
-        return ntry;
-    }
-
-    /**
-     * delete one connect
-     *
-     * @param nam name of entry
-     * @return descriptor, null if not found
-     */
-    public static cfgIconn iconDel(String nam) {
-        cfgIconn ntry = new cfgIconn(nam);
-        ntry = iconnects.del(ntry);
-        if (ntry == null) {
-            return null;
-        }
-        ntry.stop2run();
-        return ntry;
-    }
-
-    /**
      * find one router
      *
      * @param typ type of routing process
@@ -3954,7 +3910,6 @@ public class cfgAll {
             l.addAll(vrfs.get(i).getShRun2(filter));
         }
         servGenList.listGetRun(l, xconnects, filter);
-        servGenList.listGetRun(l, iconnects, filter);
         servGenList.listGetRun(l, tabNshEntry.services, filter);
         servGenList.listGetRun(l, checks, filter);
         servGenList.listGetRun(l, sensors, filter);

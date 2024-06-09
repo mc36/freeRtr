@@ -920,7 +920,6 @@ public class cfgInit implements Runnable {
         cfgProxy.defaultF = createFilter(cfgProxy.defaultL);
         cfgVpdn.defaultF = createFilter(cfgVpdn.defaultL);
         cfgVnet.defaultF = createFilter(cfgVnet.defaultL);
-        cfgIconn.defaultF = createFilter(cfgIconn.defaultL);
         cfgXconn.defaultF = createFilter(cfgXconn.defaultL);
         tabGen<userFilter> srvdefsF = createFilter(servGeneric.srvdefsL);
         servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, userReader.linedefF);

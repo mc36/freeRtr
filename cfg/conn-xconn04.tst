@@ -25,16 +25,13 @@ int ser1
  framerelay lmi ansi
  framerelay dlci 123
  framerelay mode dce
+ connect ser2
  exit
 int ser2
  enc framerelay
  framerelay lmi ansi
  framerelay dlci 123
  framerelay mode dce
- exit
-connect con
- side1 ser1
- side2 ser2
  exit
 !
 

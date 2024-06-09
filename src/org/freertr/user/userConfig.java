@@ -22,7 +22,6 @@ import org.freertr.cfg.cfgDial;
 import org.freertr.cfg.cfgEvntmgr;
 import org.freertr.cfg.cfgGeneric;
 import org.freertr.cfg.cfgHrpn;
-import org.freertr.cfg.cfgIconn;
 import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgKey;
 import org.freertr.cfg.cfgMenuK;
@@ -866,8 +865,6 @@ public class userConfig {
         l.add(null, "6  .            <name:ecd>           name of key");
         l.add(null, "1  2  xconnect                       define one protocol cross connection");
         l.add(null, "2  .    <name:xcn>                   name of connection");
-        l.add(null, "1  2  connect                        define one interface cross connection");
-        l.add(null, "2  .    <name:cnn>                   name of connection");
         l.add(null, "1  2  menu                           define one menu");
         l.add(null, "2  3    key                          letter based");
         l.add(null, "3  .      <name:mnk>                 name of menu");
@@ -1220,15 +1217,6 @@ public class userConfig {
         }
         if (a.equals("xconnect")) {
             modeDconfig = cfgAll.xconFind(cmd.word(), true);
-            if (modeDconfig == null) {
-                cmd.error("bad connect name");
-                return;
-            }
-            modeV = modes.config;
-            return;
-        }
-        if (a.equals("connect")) {
-            modeDconfig = cfgAll.iconFind(cmd.word(), true);
             if (modeDconfig == null) {
                 cmd.error("bad connect name");
                 return;
@@ -1681,14 +1669,6 @@ public class userConfig {
         }
         if (a.equals("xconnect")) {
             cfgXconn prf = cfgAll.xconDel(cmd.word());
-            if (prf == null) {
-                cmd.error("no such connect");
-                return;
-            }
-            return;
-        }
-        if (a.equals("connect")) {
-            cfgIconn prf = cfgAll.iconDel(cmd.word());
             if (prf == null) {
                 cmd.error("no such connect");
                 return;

@@ -375,6 +375,11 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public cfgXconnSide xconn;
 
     /**
+     * iconnect handler
+     */
+    public cfgIfc iconn;
+
+    /**
      * pseudowire handler
      */
     public cfgXconnSide pwhe;
@@ -3704,6 +3709,19 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * clear iconnect
+     */
+    public synchronized void clear2iconnect() {
+        if (iconn == null) {
+            return;
+        }
+        iconn.ethtyp.delET(-1);
+        iconn.iconn = null;
+        ethtyp.delET(-1);
+        iconn = null;
+    }
+
+    /**
      * clear pseudowire
      */
     public synchronized void clear2pseudowire() {
@@ -6478,6 +6496,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             l.add(cmds.tabulator + "service-instance " + ntry.getCfg());
         }
+        if (iconn != null) {
+            l.add(cmds.tabulator + "connect " + iconn.name);
+        }
         if (xconn != null) {
             l.add(cmds.tabulator + "xconnect " + xconn.getCfg());
         }
@@ -7067,6 +7088,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "1 2   macsec                        mac security protocol commands");
         l.add(null, "2 3,.   <name:ips>                  name of ipsec profile");
         l.add(null, "3 .       <num>                     ethertype to use");
+        l.add(null, "1 2   connect                       cross connect interface");
+        l.add(null, "2 .     <name:ifc>                  name of interface");
         l.add(null, "1 2   xconnect                      cross connect interface");
         cfgXconnSide.getHelp(l, 2);
         l.add(null, "1 2   pseudowire                    pseudowire of interface");
@@ -7974,6 +7997,25 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             evcs.put(ntry);
             return;
         }
+        if (a.equals("connect")) {
+            clear2iconnect();
+            cfgIfc rem = cfgAll.ifcFind(cmd.word(), 0);
+            if (rem == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            iconn = rem;
+            rem.iconn = this;
+            ifcConnect con = new ifcConnect();
+            ifcUp side = con.getSide1();
+            ethtyp.addET(-1, "connect", side);
+            ethtyp.updateET(-1, side);
+            side = con.getSide2();
+            rem.ethtyp.addET(-1, "connect", side);
+            rem.ethtyp.updateET(-1, side);
+            con.setPromiscous(true);
+            return;
+        }
         if (a.equals("xconnect")) {
             clear2xconnect();
             ifcEther eth = new ifcEther(ifaceNeedMacs());
@@ -8611,6 +8653,10 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             }
             evcs.del(ntry);
             ntry.stopWork();
+            return;
+        }
+        if (a.equals("connect")) {
+            clear2iconnect();
             return;
         }
         if (a.equals("xconnect")) {

@@ -22,13 +22,10 @@ int ser2 ser - $2a$ $2b$
 !
 int ser1
  enc ppp
+ connect ser2
  exit
 int ser2
  enc ppp
- exit
-connect con
- side1 ser1
- side2 ser2
  exit
 !
 

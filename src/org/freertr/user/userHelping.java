@@ -12,7 +12,6 @@ import org.freertr.cfg.cfgCert;
 import org.freertr.cfg.cfgChat;
 import org.freertr.cfg.cfgCheck;
 import org.freertr.cfg.cfgEvntmgr;
-import org.freertr.cfg.cfgIconn;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgIpsec;
 import org.freertr.cfg.cfgKey;
@@ -535,18 +534,6 @@ public class userHelping {
         if (a.equals("xcn")) {
             for (i = 0; i < cfgAll.xconnects.size(); i++) {
                 cfgXconn ntry = cfgAll.xconnects.get(i);
-                if (ntry == null) {
-                    continue;
-                }
-                userHelpingData res = d.copyBytes();
-                res.command = ntry.name;
-                lines.add(res);
-            }
-            return;
-        }
-        if (a.equals("cnn")) {
-            for (i = 0; i < cfgAll.iconnects.size(); i++) {
-                cfgIconn ntry = cfgAll.iconnects.get(i);
                 if (ntry == null) {
                     continue;
                 }

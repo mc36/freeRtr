@@ -20,10 +20,7 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth1.11
  exit
 int eth2.22
- exit
-connect con
- side1 eth1.11
- side2 eth2.22
+ connect eth1.11
  exit
 !
 
