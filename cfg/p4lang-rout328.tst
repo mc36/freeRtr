@@ -61,8 +61,10 @@ int tun1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
- ipv4 multi static 232.2.2.2 2.2.2.106
- ipv6 multi static ff06::1 4321::106
+ ipv4 multicast host-enable
+ ipv4 multicast host-proxy
+ ipv6 multicast host-enable
+ ipv6 multicast host-proxy
  exit
 int sdn3
  no autostat
@@ -182,6 +184,10 @@ int tun1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
+ ipv4 multicast host-enable
+ ipv4 multicast host-proxy
+ ipv6 multicast host-enable
+ ipv6 multicast host-proxy
  exit
 ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.2.1

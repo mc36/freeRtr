@@ -3870,7 +3870,7 @@ public class servP4langConn implements Runnable {
                 now++;
                 continue;
             }
-            lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.viaN.getVia().id + " " + ifc.viaN.id);
+            lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.viaN.getVia().id + " " + ifc.viaN.id + " " + ifc.id);
             now++;
         }
         if (bef) {

@@ -33,6 +33,10 @@ control EgressControlMcast(inout headers hdr,
         eg_md.target_id = (SubIntId_t)eg_intr_md.egress_rid;
     }
 
+    action act_neigh(NextHopId_t nhop) {
+        eg_md.nexthop_id = nhop;
+    }
+
     action act_duplab(NextHopId_t hop, label_t label) {
         hdr.mpls0.label = label;
         eg_md.nexthop_id = hop;
@@ -183,6 +187,7 @@ eg_intr_md.egress_rid:
         actions = {
             act_drop;
             act_rawip;
+            act_neigh;
             act_bier;
             act_decap_bier_ipv4;
             act_decap_bier_ipv6;

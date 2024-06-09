@@ -1438,6 +1438,32 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "mneiroute4":
+            self.writeMneiRoute4rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                splt[4],
+                int(splt[5]),
+                int(splt[6]),
+                int(splt[7]),
+            )
+            continue
+
+        if cmds[0] == "mneiroute6":
+            self.writeMneiRoute6rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                splt[4],
+                int(splt[5]),
+                int(splt[6]),
+                int(splt[7]),
+            )
+            continue
+
         if cmds[0] == "mlabroute4":
             self.writeMlabRouteRules(
                 mode,

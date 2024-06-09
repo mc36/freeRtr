@@ -63,6 +63,8 @@ class RareApi(BfRtRare):
     from .mlocal6 import writeMlocal6rules
     from .mroute4 import writeMroute4rules
     from .mroute6 import writeMroute6rules
+    from .mneiroute4 import writeMneiRoute4rules
+    from .mneiroute6 import writeMneiRoute6rules
     from .mtu import setPortMTU
     from .myaddr4 import writeMyaddrRules4
     from .myaddr6 import writeMyaddrRules6

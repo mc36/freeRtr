@@ -3372,6 +3372,56 @@ def writeMroute6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, in
 
 
 
+def writeMneiRoute4rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, port, nhop):
+    global mcast
+    sess = sess & 0xfff
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":nhop})
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": nhop
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_neigh",
+        action_params={
+            "nhop": nhop
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeMneiRoute6rules(delete, p4info_helper, ingress_sw, vrf, sess, dip, sip, ingr, port, nhop):
+    global mcast
+    sess = sess & 0xfff
+    if delete != 3:
+        mcast.append({"egress_port":port, "instance":nhop})
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_mcast.tbl_mcast",
+        match_fields={
+            "eg_md.clone_session": sess,
+            "eg_intr_md.egress_rid": nhop
+        },
+        action_name="eg_ctl.eg_ctl_mcast.act_neigh",
+        action_params={
+            "nhop": nhop
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+
+
 def writeDupLabelRules(delete, p4info_helper, ingress_sw, vrf, sess, inlab, port, subif, hopid, outlab):
     global mcast
     sess = sess & 0xfff
@@ -4032,6 +4082,14 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "mroute6":
             writeMroute6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),splt[8],splt[9])
+            continue
+
+        if cmds[0] == "mneiroute4":
+            writeMneiRoute4rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]))
+            continue
+
+        if cmds[0] == "mneiroute6":
+            writeMneiRoute6rules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),splt[3],splt[4],int(splt[5]),int(splt[6]),int(splt[7]))
             continue
 
         if cmds[0] == "mlabroute4":

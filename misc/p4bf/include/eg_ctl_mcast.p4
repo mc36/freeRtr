@@ -31,6 +31,12 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         eg_md.nexthop_id = 0;
         eg_md.target_id = (SubIntId_t)eg_intr_md.egress_rid;
     }
+
+
+    action act_neigh(NextHopId_t nhop) {
+        eg_md.nexthop_id = nhop;
+        eg_md.target_id = 0;
+    }
 #endif
 
 #ifdef HAVE_DUPLAB
@@ -213,6 +219,7 @@ eg_intr_md.egress_rid:
         actions = {
 #ifdef HAVE_MCAST
             act_rawip;
+            act_neigh;
 #endif
 #ifdef HAVE_DUPLAB
             act_duplab;

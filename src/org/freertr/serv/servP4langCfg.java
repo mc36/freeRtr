@@ -1307,13 +1307,13 @@ public class servP4langCfg implements ifcUp {
      * @return show
      */
     protected userFormat getShowIfaces() {
-        userFormat res = new userFormat("|", "sent|name|apipak|apinei");
+        userFormat res = new userFormat("|", "sent|name|apipak");
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry.ifc == null) {
-                res.add(ntry.id + "|brif " + ntry.brif.getIfcName() + "|" + ntry.apiPack + "|" + ntry.viaN);
+                res.add(ntry.id + "|brif " + ntry.brif.getIfcName() + "|" + ntry.apiPack);
             } else {
-                res.add(ntry.id + "|ifc " + ntry.ifc.name + "|" + ntry.apiPack + "|" + ntry.viaN);
+                res.add(ntry.id + "|ifc " + ntry.ifc.name + "|" + ntry.apiPack);
             }
         }
         return res;
