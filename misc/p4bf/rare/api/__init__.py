@@ -118,6 +118,7 @@ class RareApi(BfRtRare):
     from .droproute4 import writeDropRules4
     from .droproute6 import writeDropRules6
     from .xconnect import writeXconnRules
-    from .loconnect import writeLoconnRules
+    from .loconnifc import writeLoconnIfcRules
+    from .loconnnei import writeLoconnNeiRules
     from .profiler import writeProfilerRules
     from .stats import portStats

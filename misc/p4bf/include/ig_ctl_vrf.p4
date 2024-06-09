@@ -57,7 +57,7 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
 #endif
 
 #ifdef HAVE_LOCONN
-    action act_set_loconn (SubIntId_t port) {
+    action act_set_loconn_ifc (SubIntId_t port) {
         ig_md.vrf = 0;
 #ifdef HAVE_POLKA
         ig_md.polka_valid = 0;
@@ -78,6 +78,31 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
         ig_md.bridge_id = 0;
 #endif
         ig_md.target_id = port;
+        ig_md.nexthop_id = 0;
+    }
+
+    action act_set_loconn_nei (NextHopId_t nhop) {
+        ig_md.vrf = 0;
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_MPLS
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+#endif
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.arp_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+#ifdef HAVE_BRIDGE
+        ig_md.bridge_id = 0;
+#endif
+        ig_md.target_id = 0;
+        ig_md.nexthop_id = nhop;
     }
 #endif
 
@@ -98,7 +123,8 @@ ig_md.source_id:
             act_set_mpls_xconn_encap;
 #endif
 #ifdef HAVE_LOCONN
-            act_set_loconn;
+            act_set_loconn_ifc;
+            act_set_loconn_nei;
 #endif
 #ifdef HAVE_BRIDGE
             act_set_bridge;

@@ -254,8 +254,16 @@ def run(self):
             )
             continue
 
-        if cmds[0] == "loconnect":
-            self.writeLoconnRules(
+        if cmds[0] == "loconnifc":
+            self.writeLoconnIfcRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+            )
+            continue
+
+        if cmds[0] == "loconnnei":
+            self.writeLoconnNeiRules(
                 mode,
                 int(splt[1]),
                 int(splt[2]),
