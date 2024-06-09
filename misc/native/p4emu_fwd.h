@@ -1443,58 +1443,59 @@ ethtyp_rx:
             send2subif(port2vrf_res->monTarget, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
         }
     }
-    if (ethtyp != ETHERTYPE_ROUTEDMAC) switch (port2vrf_res->command) {
-        case 2: // bridge
-            bridge_ntry.id = port2vrf_res->bridge;
-            memcpy(&bufH[0], &bufD[preBuff], 12);
-            tmp = get16msb(bufD, bufP - 2);
-            switch (tmp) {
-            case ETHERTYPE_IPV4: // ipv4
-                bufT = bufD[bufP + 0] & 0xf; // ihl
-                if (bufT < 5) doDropper;
-                ttl = get16msb(bufD, bufP + 2) + bufP - preBuff; // len
-                if (ttl > bufS) doDropper;
-                bufS = ttl;
-                if (port2vrf_res->pmtud4 > 0) {
-                    if ((bufS - bufP + preBuff) > port2vrf_res->pmtud4) doPunting;
-                }
-                bufT = bufP + (bufT << 2);
-                acl4_ntry.protV = bufD[bufP + 9];
-                update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
-                break;
-            case ETHERTYPE_IPV6: // ipv6
-                ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
-                if (ttl > bufS) doDropper;
-                bufS = ttl;
-                if (port2vrf_res->pmtud6 > 0) {
-                    if ((bufS - bufP + preBuff) > port2vrf_res->pmtud6) doPunting;
-                }
-                bufT = bufP + 40;
-                acl6_ntry.protV = bufD[bufP + 6];
-                update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
-                break;
+    switch (port2vrf_res->command) {
+    case 2: // bridge
+        bridge_ntry.id = port2vrf_res->bridge;
+        memcpy(&bufH[0], &bufD[preBuff], 12);
+        switch (ethtyp) {
+        case ETHERTYPE_IPV4: // ipv4
+            bufT = bufD[bufP + 0] & 0xf; // ihl
+            if (bufT < 5) doDropper;
+            ttl = get16msb(bufD, bufP + 2) + bufP - preBuff; // len
+            if (ttl > bufS) doDropper;
+            bufS = ttl;
+            if (port2vrf_res->pmtud4 > 0) {
+                if ((bufS - bufP + preBuff) > port2vrf_res->pmtud4) doPunting;
             }
-            goto bridgevpls_rx;
-        case 3: // xconn
-            memcpy(&bufH[0], &bufD[preBuff], 12);
-            bufP -= 2;
-            bufP -= 12;
-            memcpy(&bufD[bufP], &bufH[0], 12);
-            ethtyp = ETHERTYPE_MPLS_UCAST;
-            bufP -= 4;
-            label = 0x1ff | (port2vrf_res->label2 << 12);
-            put32msb(bufD, bufP, label);
-            bufP -= 4;
-            label = 0xff | (port2vrf_res->label1 << 12);
-            put32msb(bufD, bufP, label);
-            neigh_ntry.id = port2vrf_res->nexthop;
-            goto ethtyp_tx;
-        case 4: // loconn
-            bufP -= 2;
-            memcpy(&bufH[0], &bufD[preBuff], 12);
-            send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
-            return;
+            bufT = bufP + (bufT << 2);
+            acl4_ntry.protV = bufD[bufP + 9];
+            update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
+            break;
+        case ETHERTYPE_IPV6: // ipv6
+            ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
+            if (ttl > bufS) doDropper;
+            bufS = ttl;
+            if (port2vrf_res->pmtud6 > 0) {
+                if ((bufS - bufP + preBuff) > port2vrf_res->pmtud6) doPunting;
+            }
+            bufT = bufP + 40;
+            acl6_ntry.protV = bufD[bufP + 6];
+            update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
+            break;
+        case ETHERTYPE_ROUTEDMAC:
+            goto etyped_rx;
         }
+        goto bridgevpls_rx;
+    case 3: // xconn
+        memcpy(&bufH[0], &bufD[preBuff], 12);
+        bufP -= 2;
+        bufP -= 12;
+        memcpy(&bufD[bufP], &bufH[0], 12);
+        ethtyp = ETHERTYPE_MPLS_UCAST;
+        bufP -= 4;
+        label = 0x1ff | (port2vrf_res->label2 << 12);
+        put32msb(bufD, bufP, label);
+        bufP -= 4;
+        label = 0xff | (port2vrf_res->label1 << 12);
+        put32msb(bufD, bufP, label);
+        neigh_ntry.id = port2vrf_res->nexthop;
+        goto ethtyp_tx;
+    case 4: // loconn
+        bufP -= 2;
+        memcpy(&bufH[0], &bufD[preBuff], 12);
+        send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+        return;
+    }
 etyped_rx:
     if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;
     switch (ethtyp) {
