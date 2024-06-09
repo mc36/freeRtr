@@ -87,7 +87,6 @@ server p4lang p4
  export-vrf v1
  export-vrf v2
  export-vrf v8
- export-br 1
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10

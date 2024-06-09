@@ -703,7 +703,7 @@ struct table_head policer_table;
 
 
 struct flood_entry {
-    int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset
+    int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset, 5=neigh
     int trg;
     int id;
     int lab;

@@ -1046,7 +1046,7 @@ public class servP4langConn implements Runnable {
             }
         }
         old.need++;
-        old.iface.apiNeigh = old.id;
+        old.iface.viaN = old;
         oru = lower.bckplnRou.find(oru);
         if (oru == null) {
             return;
@@ -2356,16 +2356,20 @@ public class servP4langConn implements Runnable {
             if (per == null) {
                 return false;
             }
-            if ((ifc.sentVrf == -3) && (ifc.sentLabel == per.apiNeigh)) {
+            i = 0;
+            if (per.viaN != null) {
+                i = per.viaN.id;
+            }
+            if ((ifc.sentVrf == -3) && (ifc.sentLabel == i)) {
                 return false;
             }
-            if (per.apiNeigh < 0) {
+            if (i == 0) {
                 lower.sendLine("loconnifc_" + a + " " + ifc.id + " " + per.id);
             } else {
-                lower.sendLine("loconnnei_" + a + " " + ifc.id + " " + per.apiNeigh);
+                lower.sendLine("loconnnei_" + a + " " + ifc.id + " " + i);
             }
             ifc.sentVrf = -3;
-            ifc.sentLabel = per.apiNeigh;
+            ifc.sentLabel = i;
             return false;
         }
         servP4langIfc mstr = ifc;
@@ -2765,7 +2769,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
-            nei.iface.apiNeigh = nei.id;
+            nei.iface.viaN = nei;
             nei.vrf = vrf;
             try {
                 ifcP2pOEservSess ntry = (ifcP2pOEservSess) ifc.ifc.lower;
@@ -3264,7 +3268,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
-            nei.iface.apiNeigh = nei.id;
+            nei.iface.viaN = nei;
             nei.vrf = vrf;
             if (ifc.ifc.pwhe == null) {
                 return;
@@ -3288,7 +3292,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
-            nei.iface.apiNeigh = nei.id;
+            nei.iface.viaN = nei;
             nei.vrf = vrf;
             String prt;
             String par = "";
@@ -3429,7 +3433,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             nei.need++;
-            nei.iface.apiNeigh = nei.id;
+            nei.iface.viaN = nei;
             nei.vrf = vrf;
             int frg = -1;
             try {
@@ -3861,7 +3865,12 @@ public class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
+            if (ifc.viaN == null) {
+                lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
+                now++;
+                continue;
+            }
+            lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.viaN.getVia().id + " " + ifc.viaN.id);
             now++;
         }
         if (bef) {

@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.6.7-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-07 18:07:15, took 00:57:58, with 10 workers, on 544 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v24.6.9-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-06-09 17:13:24, took 00:57:54, with 10 workers, on 545 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -546,3 +546,4 @@ http://sources.freertr.org/cfg/p4lang-rout323.tst;p4lang-rout323.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;success;p4lang: etherip server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;success;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;success;p4lang: etherip server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;success;p4lang: gre local connect

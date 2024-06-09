@@ -996,6 +996,17 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             neigh_res = table_get(&neigh_table, index);
             send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
+        case 5:
+            tmpE = ethtyp;
+            tmpS = bufS - bufP + preBuff + 2;
+            put16msb(bufC, preBuff, tmpE);
+            memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
+            neigh_ntry.id = flood_res->trg;
+            index = table_find(&neigh_table, &neigh_ntry);
+            if (index < 0) continue;
+            neigh_res = table_get(&neigh_table, index);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            break;
         }
     }
 }

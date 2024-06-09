@@ -1311,9 +1311,9 @@ public class servP4langCfg implements ifcUp {
         for (int i = 0; i < expIfc.size(); i++) {
             servP4langIfc ntry = expIfc.get(i);
             if (ntry.ifc == null) {
-                res.add(ntry.id + "|brif " + ntry.brif.getIfcName() + "|" + ntry.apiPack + "|" + ntry.apiNeigh);
+                res.add(ntry.id + "|brif " + ntry.brif.getIfcName() + "|" + ntry.apiPack + "|" + ntry.viaN);
             } else {
-                res.add(ntry.id + "|ifc " + ntry.ifc.name + "|" + ntry.apiPack + "|" + ntry.apiNeigh);
+                res.add(ntry.id + "|ifc " + ntry.ifc.name + "|" + ntry.apiPack + "|" + ntry.viaN);
             }
         }
         return res;
@@ -1783,21 +1783,29 @@ public class servP4langCfg implements ifcUp {
             if (ntry.id < 1) {
                 continue;
             }
-            boolean fnd = false;
-            for (int i = 0; i < neighs.size(); i++) {
-                if (neighs.get(i).id != ntry.id) {
-                    continue;
-                }
-                fnd = true;
-                break;
-            }
-            if (fnd) {
+            if (findNei(ntry.id) != null) {
                 continue;
             }
             neighs.put(ntry);
             return ntry;
         }
         logger.error("error allocating dynamic neighbor");
+        return null;
+    }
+
+    /**
+     * find neighbor
+     *
+     * @param id identifier
+     * @return neighbor, null if error
+     */
+    protected servP4langNei findNei(int id) {
+        for (int i = 0; i < neighs.size(); i++) {
+            servP4langNei ntry = neighs.get(i);
+            if (ntry.id == id) {
+                return ntry;
+            }
+        }
         return null;
     }
 

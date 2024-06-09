@@ -15761,3 +15761,6 @@ qc pass: dhcp with excluded address
 qc pass: unnamed
 ---------------------------------- 2024-06-09 09:27:23 24.6.9
 no qc pass: unnamed
+---------------------------------- 2024-06-09 12:08:32 24.6.9
+qc pass: cross connect tunnel interfaces
+qc pass: p4lang: gre local connect
