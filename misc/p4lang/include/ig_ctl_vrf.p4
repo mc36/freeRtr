@@ -59,7 +59,7 @@ control IngressControlVRF(inout headers hdr,
         hdr.mpls1.bos = 1;
     }
 
-    action act_set_loconn (SubIntId_t port) {
+    action act_set_loconn_ifc (SubIntId_t port) {
         ig_md.vrf = 0;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
@@ -69,6 +69,20 @@ control IngressControlVRF(inout headers hdr,
         ig_md.ipv6_valid = 0;
         ig_md.bridge_id = 0;
         ig_md.target_id = port;
+        ig_md.nexthop_id = 0;
+    }
+
+    action act_set_loconn_nei (NextHopId_t nhop) {
+        ig_md.vrf = 0;
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+        ig_md.arp_valid = 0;
+        ig_md.llc_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_md.bridge_id = 0;
+        ig_md.target_id = 0;
+        ig_md.nexthop_id = nhop;
     }
 
     action act_set_bridge (SubIntId_t bridge) {
@@ -90,7 +104,8 @@ ig_md.source_id:
         actions = {
             act_set_vrf;
             act_set_mpls_xconn_encap;
-            act_set_loconn;
+            act_set_loconn_ifc;
+            act_set_loconn_nei;
             act_set_bridge;
             act_set_default_vrf;
         }

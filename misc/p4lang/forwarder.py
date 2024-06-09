@@ -1321,13 +1321,13 @@ def writeXconnRules(delete, p4info_helper, ingress_sw, port, target, lab_tun, la
         ingress_sw.DeleteTableEntry(table_entry3, False)
 
 
-def writeLoconnRules(delete, p4info_helper, ingress_sw, port, target):
+def writeLoconnIfcRules(delete, p4info_helper, ingress_sw, port, target):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
         match_fields={
             "ig_md.source_id": port
         },
-        action_name="ig_ctl.ig_ctl_vrf.act_set_loconn",
+        action_name="ig_ctl.ig_ctl_vrf.act_set_loconn_ifc",
         action_params={
             "port": target,
         })
@@ -1337,21 +1337,24 @@ def writeLoconnRules(delete, p4info_helper, ingress_sw, port, target):
         ingress_sw.ModifyTableEntry(table_entry1, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry1, False)
-    table_entry2 = p4info_helper.buildTableEntry(
+
+
+def writeLoconnNeiRules(delete, p4info_helper, ingress_sw, port, target):
+    table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
         match_fields={
-            "ig_md.source_id": target
+            "ig_md.source_id": port
         },
-        action_name="ig_ctl.ig_ctl_vrf.act_set_loconn",
+        action_name="ig_ctl.ig_ctl_vrf.act_set_loconn_nei",
         action_params={
-            "port": port,
+            "nhop": target,
         })
     if delete == 1:
-        ingress_sw.WriteTableEntry(table_entry2, False)
+        ingress_sw.WriteTableEntry(table_entry1, False)
     elif delete == 2:
-        ingress_sw.ModifyTableEntry(table_entry2, False)
+        ingress_sw.ModifyTableEntry(table_entry1, False)
     else:
-        ingress_sw.DeleteTableEntry(table_entry2, False)
+        ingress_sw.DeleteTableEntry(table_entry1, False)
 
 
 def writeBrprtRules(delete, p4info_helper, ingress_sw, port, bridge):
@@ -3924,8 +3927,12 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeXconnRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[3]),int(splt[4]),int(splt[5]),int(splt[6]))
             continue
 
-        if cmds[0] == "loconnect":
-            writeLoconnRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+        if cmds[0] == "loconnifc":
+            writeLoconnIfcRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "loconnnei":
+            writeLoconnNeiRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
         if cmds[0] == "portbridge":
