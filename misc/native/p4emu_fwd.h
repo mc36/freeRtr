@@ -1490,11 +1490,15 @@ ethtyp_rx:
         put32msb(bufD, bufP, label);
         neigh_ntry.id = port2vrf_res->nexthop;
         goto ethtyp_tx;
-    case 4: // loconn
+    case 4: // loconnifc
         bufP -= 2;
         memcpy(&bufH[0], &bufD[preBuff], 12);
         send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
         return;
+    case 5: // loconnnei
+        bufP -= 2;
+        neigh_ntry.id = port2vrf_res->label1;
+        goto nethtyp_tx;
     }
 etyped_rx:
     if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;

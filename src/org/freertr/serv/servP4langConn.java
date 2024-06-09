@@ -2352,15 +2352,20 @@ public class servP4langConn implements Runnable {
             return false;
         }
         if (ifc.ifc.iconn != null) {
-            if (ifc.sentVrf == -3) {
+            servP4langIfc per = lower.findIfc(ifc.ifc.iconn);
+            if (per == null) {
                 return false;
             }
-            servP4langIfc ifc2 = lower.findIfc(ifc.ifc.iconn);
-            if (ifc2 == null) {
+            if ((ifc.sentVrf == -3) && (ifc.sentLabel == per.apiNeigh)) {
                 return false;
             }
-            lower.sendLine("loconnect_" + a + " " + ifc.id + " " + ifc2.id);
+            if (per.apiNeigh < 0) {
+                lower.sendLine("loconnifc_" + a + " " + ifc.id + " " + per.id);
+            } else {
+                lower.sendLine("loconnnei_" + a + " " + ifc.id + " " + per.apiNeigh);
+            }
             ifc.sentVrf = -3;
+            ifc.sentLabel = per.apiNeigh;
             return false;
         }
         servP4langIfc mstr = ifc;

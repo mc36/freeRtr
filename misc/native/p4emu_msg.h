@@ -510,22 +510,23 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         port2vrf_res->nsh = atoi(arg[3]);
         return 0;
     }
-    if (strcmp(arg[0], "loconnect") == 0) {
-        i = atoi(arg[2]);
-        o = atoi(arg[3]);
-        port2vrf_ntry.port = i;
+    if (strcmp(arg[0], "loconnifc") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
         port2vrf_res->command = 4;
         port2vrf_res->bridge = 0;
         port2vrf_res->vrf = 0;
-        port2vrf_res->label1 = o;
+        port2vrf_res->label1 = atoi(arg[3]);
         if (del == 0) port2vrf_res->command = 0;
-        port2vrf_ntry.port = o;
+        return 0;
+    }
+    if (strcmp(arg[0], "loconnnei") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->command = 4;
+        port2vrf_res->command = 5;
         port2vrf_res->bridge = 0;
         port2vrf_res->vrf = 0;
-        port2vrf_res->label1 = i;
+        port2vrf_res->label1 = atoi(arg[3]);
         if (del == 0) port2vrf_res->command = 0;
         return 0;
     }
