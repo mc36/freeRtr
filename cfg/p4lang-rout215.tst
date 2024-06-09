@@ -54,10 +54,7 @@ int sdn3
  exit
 int sdn4
  no autostat
- exit
-connect c
- side1 sdn3
- side2 sdn4
+ connect sdn3
  exit
 server p4lang p4
  interconnect eth2

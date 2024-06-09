@@ -51,19 +51,13 @@ int sdn3
 int sdn3.111
  exit
 int sdn3.222
+ connect sdn2
  exit
 int sdn4
  no autostat
  exit
 int sdn4.111
- exit
-connect c
- side1 sdn3.111
- side2 sdn4.111
- exit
-connect d
- side1 sdn2
- side2 sdn3.222
+ connect sdn3.111
  exit
 server p4lang p4
  interconnect eth2

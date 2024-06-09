@@ -15759,3 +15759,5 @@ no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
 ---------------------------------- 2024-06-09 08:46:25 24.6.9
 qc pass: unnamed
+---------------------------------- 2024-06-09 09:27:23 24.6.9
+no qc pass: unnamed
