@@ -477,6 +477,7 @@ qc pass: cross connect ethernet interfaces
 qc pass: cross connect vlan subinterfaces
 qc pass: cross connect vlan subinterfaces of same interface
 qc pass: cross connect tunnel interfaces
+qc pass: cross connect different tunnel interfaces
 qc pass: xot pad
 qc pass: access class
 qc pass: access map
@@ -1961,6 +1962,7 @@ qc pass: p4lang: etherip server over ipv6
 qc pass: p4lang: etherip server over ipv4 loopback
 qc pass: p4lang: etherip server over ipv6 loopback
 qc pass: p4lang: gre local connect
+qc pass: p4lang: gre multicast routing
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

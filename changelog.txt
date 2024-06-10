@@ -15764,3 +15764,6 @@ no qc pass: unnamed
 ---------------------------------- 2024-06-09 12:08:32 24.6.9
 qc pass: cross connect tunnel interfaces
 qc pass: p4lang: gre local connect
+---------------------------------- 2024-06-09 18:57:15 24.6.9
+qc pass: cross connect different tunnel interfaces
+qc pass: p4lang: gre multicast routing

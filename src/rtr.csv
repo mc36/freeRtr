@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.6.9-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-09 12:21:38, took 00:13:06, with 60 workers, on 3438 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2024-06-09 19:10:11, took 00:12:55, with 60 workers, on 3440 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -481,6 +481,7 @@ http://sources.freertr.org/cfg/conn-xconn08.tst;conn-xconn08.tst;success;cross c
 http://sources.freertr.org/cfg/conn-xconn09.tst;conn-xconn09.tst;success;cross connect vlan subinterfaces
 http://sources.freertr.org/cfg/conn-xconn10.tst;conn-xconn10.tst;success;cross connect vlan subinterfaces of same interface
 http://sources.freertr.org/cfg/conn-xconn11.tst;conn-xconn11.tst;success;cross connect tunnel interfaces
+http://sources.freertr.org/cfg/conn-xconn12.tst;conn-xconn12.tst;success;cross connect different tunnel interfaces
 http://sources.freertr.org/cfg/conn-xotpad.tst;conn-xotpad.tst;success;xot pad
 http://sources.freertr.org/cfg/crypt-access01.tst;crypt-access01.tst;success;access class
 http://sources.freertr.org/cfg/crypt-access02.tst;crypt-access02.tst;success;access map
@@ -1965,6 +1966,7 @@ http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;success;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;success;p4lang: etherip server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;success;p4lang: gre local connect
+http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;success;p4lang: gre multicast routing
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

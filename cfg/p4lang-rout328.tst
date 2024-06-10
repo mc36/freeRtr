@@ -280,6 +280,9 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
 
+r1 tping 100 10 9.9.9.2 vrf v2
+r4 tping 100 10 9.9.9.1 vrf v2
+
 r1 tping 100 10 1.1.1.2 vrf v1
 r1 tping 100 10 1234:1::2 vrf v1
 r1 tping 100 10 1.1.2.2 vrf v1
