@@ -251,8 +251,8 @@ public class cfgInit implements Runnable {
     private static boolean jvmSetup = false;
 
     private final static String[] needInit = {
-        //"interface .*",
-        //"aaa .*",
+        "interface .*",
+        "aaa .*",
         "vrf definition .*",
         "access-list .*",
         "prefix-list .*",
