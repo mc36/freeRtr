@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v24.6.9-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v24.6.10-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -544,3 +544,5 @@ http://sources.freertr.org/cfg/p4lang-rout323.tst;p4lang-rout323.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;ok;ok;ok;not ok;not ok;p4lang: gre local connect
+http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;ok;ok;ok;not ok;not ok;p4lang: gre multicast routing
