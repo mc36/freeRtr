@@ -269,6 +269,10 @@ public class userFlash {
             u.doVerify(null);
             return null;
         }
+        if (a.equals("toggle-boot")) {
+            cmd.error("next boot will be " + userUpgrade.toggleBootMode());
+            return null;
+        }
         if (a.equals("type")) {
             rdr.putStrArr(bits.txt2buf(cmd.getRemaining()));
             return null;

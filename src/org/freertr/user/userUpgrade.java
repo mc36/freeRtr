@@ -46,6 +46,8 @@ public class userUpgrade {
      */
     public final static syncInt inProgress = new syncInt(0);
 
+    private static boolean needCold = false;
+
     private final static int justSimu = 0x1000000;
 
     private final cmds cmd;
@@ -403,6 +405,20 @@ public class userUpgrade {
     }
 
     /**
+     * toggle boot mode
+     *
+     * @return next boot mode
+     */
+    public static String toggleBootMode() {
+        needCold = !needCold;
+        if (needCold) {
+            return "cold";
+        } else {
+            return "warm";
+        }
+    }
+
+    /**
      * stop auto revert
      *
      * @return work done
@@ -565,7 +581,11 @@ public class userUpgrade {
                 }
             }
             cons.debugRes("successfully finished, rebooting!");
-            cfgInit.stopRouter(true, 2, "upgrade finished");
+            i = 2;
+            if (needCold) {
+                i = 4;
+            }
+            cfgInit.stopRouter(true, i, "upgrade finished");
             return;
         }
         if (i != 0) {

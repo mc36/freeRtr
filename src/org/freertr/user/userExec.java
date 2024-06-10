@@ -2065,6 +2065,7 @@ public class userExec {
         hl.add(null, "2 3,.    cleanup                      clear routing software backup");
         hl.add(null, "3 .        [str]                      path to clean");
         hl.add(null, "2 .      cancel                       cancel auto-revert process");
+        hl.add(null, "2 .      toggle-boot                  toggle upgrade reboot mode");
         hl.add(null, "2 3,.    upgrade                      upgrade routing software");
         hl.add(null, "3 4,.      [url]                      parameter of process");
         hl.add(null, "4 4,.        [num]                    parameter of process");
