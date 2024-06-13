@@ -780,7 +780,7 @@ public class version {
         sa.add("cpu: " + getCPUname());
         sa.add("mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
         sa.add("host: " + getKernelName());
-        sa.add("hostboot: " + pipeShell.getKernelUptime() + " ago");
+        sa.add("hostboot: " + pipeShell.getKernelUptime());
         sa.add("java: " + getJavaVer("java") + " @ " + getProp("java.home"));
         sa.add("jspec: " + getJavaVer("java.specification"));
         sa.add("vm: " + getVMname());

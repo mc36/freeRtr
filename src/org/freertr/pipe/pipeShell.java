@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import org.freertr.cfg.cfgAll;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -34,39 +35,19 @@ public class pipeShell {
      */
     protected int running;
 
-    private static String kernUpCache;
-
     /**
      * get kernel uptime
      *
      * @return uptime
      */
     public static String getKernelUptime() {
-        if (kernUpCache != null) {
-            return kernUpCache;
+        long tim;
+        try {
+            tim = ProcessHandle.of(1).get().info().startInstant().get().getEpochSecond();
+        } catch (Exception e) {
+            return "n/a";
         }
-        kernUpCache = getKernUp();
-        return kernUpCache;
-    }
-
-    private static String getKernUp() {
-        String a = "n/a";
-        List<String> res = pipeShell.exec("uptime", null, true, false, true);
-        if (res == null) {
-            return a;
-        }
-        if (res.size() < 1) {
-            return a;
-        }
-        a = res.get(0).replaceAll("  ", " ");
-        int i = a.indexOf(",");
-        if (i < 0) {
-            return a;
-        }
-        a = a.substring(0, i);
-        a = a.stripTrailing().stripLeading();
-        a = a.replaceAll(" up", "");
-        return a;
+        return bits.time2str(cfgAll.timeZoneName, tim * 1000, 3);
     }
 
     /**
