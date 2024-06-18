@@ -34,12 +34,12 @@ echo -n `cd $MNT/;find sys/>>filist`
 echo -n `cd $MNT/;find proc/>>filist`
 echo -n `cd $MNT/;find mnt/>>filist`
 echo -n `cd $MNT/;find run/>>filist`
-echo -n `cd $MNT/;find lib/>>filist`
-echo -n `cd $MNT/;find lib32/>>filist`
-echo -n `cd $MNT/;find lib64/>>filist`
-echo -n `cd $MNT/;find bin/>>filist`
-echo -n `cd $MNT/;find sbin/>>filist`
 echo -n `cd $MNT/;find usr/>>filist`
+echo -n `cd $MNT/;echo lib>>filist`
+echo -n `cd $MNT/;echo lib32>>filist`
+echo -n `cd $MNT/;echo lib64>>filist`
+echo -n `cd $MNT/;echo bin>>filist`
+echo -n `cd $MNT/;echo sbin>>filist`
 echo -n `cd $MNT/;cpio --quiet -H newc -O cpio -o <filist`
 zstd -9 $MNT/cpio
 mv $MNT/cpio.zst $MNT/rtr.ird

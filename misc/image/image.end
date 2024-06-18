@@ -10,39 +10,39 @@ find-result
 del-alw %tmp%/usr/lib/%find%/gconv
 
 find-clear
-find-file %tmp%/lib/modules/ .*-%kern%.*
+find-file %tmp%/usr/lib/modules/ .*-%kern%.*
 find-result
-del-alw %tmp%/lib/modules/%find%/kernel/sound
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/accessibility/speakup
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/bluetooth
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/firewire
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/gpu
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/hid
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/iio
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/infiniband
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/media
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/md
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/nfc
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/net/wireless
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/soundwire
+del-alw %tmp%/usr/lib/modules/%find%/kernel/sound
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/accessibility/speakup
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/bluetooth
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/firewire
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/gpu
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/hid
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/iio
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/infiniband
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/media
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/md
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/nfc
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/net/wireless
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/soundwire
 
-exec mv %tmp%/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
-exec mv %tmp%/lib/modules/%find%/kernel/net/core %tmp%/tmp/
-exec mv %tmp%/lib/modules/%find%/kernel/net/*.xz %tmp%/tmp/
-del-alw %tmp%/lib/modules/%find%/kernel/net
-exec mkdir %tmp%/lib/modules/%find%/kernel/net
-exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/net
+exec mv %tmp%/usr/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/net/core %tmp%/tmp/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/net/*.xz %tmp%/tmp/
+del-alw %tmp%/usr/lib/modules/%find%/kernel/net
+exec mkdir %tmp%/usr/lib/modules/%find%/kernel/net
+exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/net
 
-exec mv %tmp%/lib/modules/%find%/kernel/drivers/scsi/*.xz %tmp%/tmp/
-del-alw %tmp%/lib/modules/%find%/kernel/drivers/scsi
-exec mkdir %tmp%/lib/modules/%find%/kernel/drivers/scsi
-exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/drivers/scsi/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/*.xz %tmp%/tmp/
+del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
+exec mkdir %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
+exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/
 
-exec mv %tmp%/lib/modules/%find%/kernel/fs/ext4 %tmp%/tmp/
-exec mv %tmp%/lib/modules/%find%/kernel/fs/fat %tmp%/tmp/
-del-alw %tmp%/lib/modules/%find%/kernel/fs
-exec mkdir %tmp%/lib/modules/%find%/kernel/fs
-exec mv %tmp%/tmp/* %tmp%/lib/modules/%find%/kernel/fs/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/fs/ext4 %tmp%/tmp/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/fs/fat %tmp%/tmp/
+del-alw %tmp%/usr/lib/modules/%find%/kernel/fs
+exec mkdir %tmp%/usr/lib/modules/%find%/kernel/fs
+exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/fs/
 
 exec chmod 755 %tmp%/init*
 exec touch %tmp%/rtr/rtr-hw.txt

@@ -307,7 +307,7 @@ public class userImage {
             return false;
         }
         pkg.done = true;
-        return execCmd("dpkg-deb -x " + name + " " + tempDir + "/") != 0;
+        return execCmd("dpkg-deb --fsys-tarfile " + name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
     }
 
     /**
