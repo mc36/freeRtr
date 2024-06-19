@@ -15770,3 +15770,6 @@ qc pass: p4lang: gre multicast routing
 ---------------------------------- 2024-06-19 09:28:02 24.6.19
 no qc pass: dhcp with excluded address
 failed: dhcp with excluded address
+---------------------------------- 2024-06-19 09:56:58 24.6.19
+no failed: dhcp with excluded address
+qc pass: dhcp with excluded address
