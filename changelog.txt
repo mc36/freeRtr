@@ -15767,3 +15767,6 @@ qc pass: p4lang: gre local connect
 ---------------------------------- 2024-06-09 18:57:15 24.6.9
 qc pass: cross connect different tunnel interfaces
 qc pass: p4lang: gre multicast routing
+---------------------------------- 2024-06-19 09:28:02 24.6.19
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
