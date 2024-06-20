@@ -2,6 +2,9 @@
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,9 +93,14 @@ public class motion {
     protected String tzdata = "Z";
 
     /**
-     * command to use
+     * server to use
      */
-    protected String command = "echo motion detected";
+    protected String server = "mail.nop.hu";
+
+    /**
+     * address to use
+     */
+    protected String address = "somebody@somewhere.org";
 
     /**
      * alarmed
@@ -155,8 +163,12 @@ public class motion {
                     tzdata = a;
                     continue;
                 }
-                if (s.equals("command")) {
-                    command = a;
+                if (s.equals("server")) {
+                    server = a;
+                    continue;
+                }
+                if (s.equals("address")) {
+                    address = a;
                     continue;
                 }
                 if (s.equals("sleep")) {
@@ -220,13 +232,34 @@ public class motion {
      * @throws java.lang.Exception
      */
     protected void sendAlert(String nam) throws Exception {
-        String[] cmd = new String[3];
-        cmd[0] = "/bin/sh";
-        cmd[1] = "-c";
-        cmd[2] = command.replaceAll("%", nam);
-        Runtime rtm = Runtime.getRuntime();
-        Process prc = rtm.exec(cmd);
-        prc.waitFor();
+        Socket socket = new Socket(server, 25);
+        PrintWriter writer = new PrintWriter(socket.getOutputStream());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String a = reader.readLine();
+        writer.print("helo motion\r\n");
+        writer.flush();
+        a = reader.readLine();
+        writer.print("mail from:<" + address + ">\r\n");
+        writer.flush();
+        a = reader.readLine();
+        writer.print("rcpt to:<" + address + ">\r\n");
+        writer.flush();
+        a = reader.readLine();
+        writer.print("data\r\n");
+        writer.flush();
+        a = reader.readLine();
+        writer.print("From: <" + address + ">\r\n");
+        writer.print("To: <" + address + ">\r\n");
+        writer.print("Subject: check recording\r\n");
+        writer.print("\r\n");
+        writer.print("motion detected, check " + nam + "\r\n");
+        writer.print(".\r\n");
+        writer.flush();
+        a = reader.readLine();
+        writer.print("quit\r\n");
+        writer.flush();
+        a = reader.readLine();
+        socket.close();
     }
 
     /**
