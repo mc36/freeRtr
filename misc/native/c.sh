@@ -119,6 +119,6 @@ for fn in ptyRun; do
   compileFile $fn "" "-lutil" ""
   done
 
-for fn in dummyCon daemonRun vm2; do
+for fn in dummyCon daemonRun vm; do
   compileFile $fn "" "" ""
   done
