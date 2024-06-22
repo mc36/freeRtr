@@ -397,12 +397,12 @@ http://sources.freertr.org/cfg/p4lang-rout176.tst;p4lang-rout176.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout177.tst;p4lang-rout177.tst;ok;ok;ok;ok;not ok;p4lang: policy routing to p2p te over mpls
 http://sources.freertr.org/cfg/p4lang-rout178.tst;p4lang-rout178.tst;ok;ok;ok;ok;not ok;p4lang: nsh
 http://sources.freertr.org/cfg/p4lang-rout179.tst;p4lang-rout179.tst;ok;ok;ok;ok;not ok;p4lang: vlan nsh
-http://sources.freertr.org/cfg/p4lang-rout180.tst;p4lang-rout180.tst;ok;not ok;not ok;ok;not ok;p4lang: polka
-http://sources.freertr.org/cfg/p4lang-rout181.tst;p4lang-rout181.tst;ok;not ok;not ok;ok;not ok;p4lang: vlan polka
-http://sources.freertr.org/cfg/p4lang-rout182.tst;p4lang-rout182.tst;ok;not ok;not ok;not ok;not ok;p4lang: mpolka core
-http://sources.freertr.org/cfg/p4lang-rout183.tst;p4lang-rout183.tst;ok;not ok;not ok;not ok;not ok;p4lang: mpolka vlan core
-http://sources.freertr.org/cfg/p4lang-rout184.tst;p4lang-rout184.tst;ok;not ok;not ok;not ok;not ok;p4lang: mpolka edge
-http://sources.freertr.org/cfg/p4lang-rout185.tst;p4lang-rout185.tst;ok;not ok;not ok;not ok;not ok;p4lang: mpolka vlan edge
+http://sources.freertr.org/cfg/p4lang-rout180.tst;p4lang-rout180.tst;ok;not ok;ok;ok;not ok;p4lang: polka
+http://sources.freertr.org/cfg/p4lang-rout181.tst;p4lang-rout181.tst;ok;not ok;ok;ok;not ok;p4lang: vlan polka
+http://sources.freertr.org/cfg/p4lang-rout182.tst;p4lang-rout182.tst;ok;not ok;ok;not ok;not ok;p4lang: mpolka core
+http://sources.freertr.org/cfg/p4lang-rout183.tst;p4lang-rout183.tst;ok;not ok;ok;not ok;not ok;p4lang: mpolka vlan core
+http://sources.freertr.org/cfg/p4lang-rout184.tst;p4lang-rout184.tst;ok;not ok;ok;not ok;not ok;p4lang: mpolka edge
+http://sources.freertr.org/cfg/p4lang-rout185.tst;p4lang-rout185.tst;ok;not ok;ok;not ok;not ok;p4lang: mpolka vlan edge
 http://sources.freertr.org/cfg/p4lang-rout186.tst;p4lang-rout186.tst;ok;ok;ok;ok;not ok;p4lang: gtp server over ipv4
 http://sources.freertr.org/cfg/p4lang-rout187.tst;p4lang-rout187.tst;ok;ok;ok;ok;not ok;p4lang: gtp server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout188.tst;p4lang-rout188.tst;ok;ok;ok;ok;not ok;p4lang: gtp server over ipv4 loopback

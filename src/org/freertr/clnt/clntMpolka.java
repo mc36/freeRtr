@@ -5,7 +5,6 @@ import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
 import org.freertr.ifc.ifcDn;
-import org.freertr.ifc.ifcMpolka;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcPolka;
 import org.freertr.ifc.ifcUp;
@@ -180,9 +179,10 @@ public class clntMpolka implements Runnable, ifcDn {
         } else {
             pck.NSHttl = pck.IPttl;
         }
+        pck.NSHmdt = 1;
         for (int i = 0; i < outs.length; i++) {
             pck.NSHmdv = outs[i].rou;
-            outs[i].ifc.lower.sendMpolka(pck.copyBytes(true, true), outs[i].hop);
+            outs[i].ifc.lower.sendPolka(pck.copyBytes(true, true), outs[i].hop);
         }
     }
 
@@ -366,7 +366,7 @@ public class clntMpolka implements Runnable, ifcDn {
             }
             clntMpolkaOut ntry = new clntMpolkaOut(rou.best.nextHop.copyBytes());
             ntry.ifc = (ipFwdIface) rou.best.iface;
-            ntry.plk = ntry.ifc.lower.getMpolka();
+            ntry.plk = ntry.ifc.lower.getPolka();
             if (ntry.plk == null) {
                 if (debugger.clntMpolkaTraf) {
                     logger.debug("mpolka not enabled for " + ntry.ifc);
@@ -462,7 +462,7 @@ public class clntMpolka implements Runnable, ifcDn {
         for (int i = 0; i < out.length; i++) {
             out[i] = outs.get(i);
             try {
-                out[i].rou = ifcMpolka.encodeRouteId(out[i].plk.coeffs, out[i].nei);
+                out[i].rou = ifcPolka.encodeRouteIdMul(out[i].plk.coeffs, out[i].nei);
             } catch (Exception e) {
                 if (debugger.clntMpolkaTraf) {
                     logger.debug("error encoding routeid for " + out[i].hop);
@@ -532,7 +532,7 @@ public class clntMpolka implements Runnable, ifcDn {
         }
         userFormat l = new userFormat("|", "index|coeff|poly|crc|equal");
         for (int o = 0; o < outputs.length; o++) {
-            ifcMpolka plk = outputs[o].ifc.lower.getMpolka();
+            ifcPolka plk = outputs[o].ifc.lower.getPolka();
             int[] pol = ifcPolka.decodeRouteIdPoly(plk.coeffs, outputs[o].rou);
             int[] crc = ifcPolka.decodeRouteIdCrc(plk.coeffs, outputs[o].rou);
             for (int i = 0; i < plk.coeffs.length; i++) {
@@ -588,7 +588,7 @@ class clntMpolkaOut implements Comparator<clntMpolkaOut> {
 
     public ipFwdIface ifc;
 
-    public ifcMpolka plk;
+    public ifcPolka plk;
 
     public tabGen<tabIndex<addrIP>> nei;
 

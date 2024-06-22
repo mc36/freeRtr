@@ -1,11 +1,14 @@
 package org.freertr.ifc;
 
 import java.math.BigInteger;
+import org.freertr.addr.addrIP;
 import org.freertr.cry.cryHashCrc16;
 import org.freertr.cry.cryPoly;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipMpls;
 import org.freertr.pack.packHolder;
+import org.freertr.tab.tabGen;
+import org.freertr.tab.tabIndex;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -152,7 +155,7 @@ public class ifcPolka implements ifcUp {
      * @param o switches to visit
      * @return routeid
      */
-    public static byte[] encodeRouteId(cryPoly[] s, int[] o) {
+    public static byte[] encodeRouteIdUni(cryPoly[] s, int[] o) {
         cryPoly pm = new cryPoly(1);
         for (int i = 0; i < o.length; i++) {
             pm = pm.mul(s[o[i]]);
@@ -172,7 +175,33 @@ public class ifcPolka implements ifcUp {
     }
 
     /**
-     * decode routeid with polynomial
+     * encode routeid polynomial
+     *
+     * @param s switch coefficients
+     * @param o switches to visit
+     * @return routeid
+     */
+    public static byte[] encodeRouteIdMul(cryPoly[] s, tabGen<tabIndex<addrIP>> o) {
+        cryPoly pm = new cryPoly(1);
+        for (int i = 0; i < o.size(); i++) {
+            pm = pm.mul(s[o.get(i).index]);
+        }
+        cryPoly r = new cryPoly(0);
+        for (int i = 0; i < o.size(); i++) {
+            tabIndex<addrIP> c = o.get(i);
+            cryPoly soi = s[c.index];
+            cryPoly mi = pm.div(soi)[0];
+            cryPoly ni = mi.modInv(soi)[0];
+            r = r.add(new cryPoly(c.bitmap).mul(mi).mul(ni));
+        }
+        r = r.div(pm)[1];
+        byte[] b = r.getCoeff().toByteArray();
+        byte[] p = new byte[16 - b.length];
+        return bits.byteConcat(p, b);
+    }
+
+    /**
+     * decode routeid polynomial
      *
      * @param s switch coefficients
      * @param v routeid
@@ -237,9 +266,7 @@ public class ifcPolka implements ifcUp {
         if (pck.dataSize() < size) {
             return true;
         }
-        if (pck.getByte(0) != 0) { // version
-            return true;
-        }
+        pck.NSHmdt = pck.getByte(0); // version
         pck.NSHttl = pck.getByte(1); // ttl
         pck.IPprt = pck.msbGetW(2); // protocol
         pck.NSHmdv = new byte[16];
@@ -254,7 +281,7 @@ public class ifcPolka implements ifcUp {
      * @param pck packet to parse
      */
     public static void createPolkaHeader(packHolder pck) {
-        pck.putByte(0, 0); // version
+        pck.putByte(0, pck.NSHmdt); // version
         pck.putByte(1, pck.NSHttl); // ttl
         pck.msbPutW(2, pck.IPprt); // protocol
         pck.putCopy(pck.NSHmdv, 0, 4, pck.NSHmdv.length);

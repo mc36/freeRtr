@@ -2873,7 +2873,6 @@ void doStatRound(FILE *commands, int round) {
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPOLKA, packMpolka[i], byteMpolka[i]);
         fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
     }
     for (int i=0; i<nsh_table.size; i++) {

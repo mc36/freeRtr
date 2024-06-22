@@ -133,11 +133,6 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     protected int sentPolka;
 
     /**
-     * sent mpolka
-     */
-    protected int sentMpolka;
-
-    /**
      * sent sgt taq
      */
     protected int sentSgtTag;
@@ -545,7 +540,6 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         sentMtu = 0;
         sentLabel = -1;
         sentPolka = -1;
-        sentMpolka = -1;
         sentSgtTag = 0;
         sentSgtSet = -1;
         sentMss4in = 0;

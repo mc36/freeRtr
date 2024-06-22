@@ -42,14 +42,14 @@ int eth1.11
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  mpls enable
- mpolka enable 1 65536 10
+ polka enable 1 65536 10
  router isis4 1 ena
  exit
 int eth1.12
  vrf for v1
  ipv6 addr 1234:1::1 ffff:ffff::
  mpls enable
- mpolka enable 1 65536 10
+ polka enable 1 65536 10
  router isis6 1 ena
  exit
 interface tun1
@@ -115,28 +115,28 @@ int eth1.11
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  mpls enable
- mpolka enable 2 65536 10
+ polka enable 2 65536 10
  router isis4 1 ena
  exit
 int eth1.12
  vrf for v1
  ipv6 addr 1234:1::2 ffff:ffff::
  mpls enable
- mpolka enable 2 65536 10
+ polka enable 2 65536 10
  router isis6 1 ena
  exit
 int eth2.11
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.252
  mpls enable
- mpolka enable 2 65536 10
+ polka enable 2 65536 10
  router isis4 1 ena
  exit
 int eth2.12
  vrf for v1
  ipv6 addr 1234:2::1 ffff:ffff::
  mpls enable
- mpolka enable 2 65536 10
+ polka enable 2 65536 10
  router isis6 1 ena
  exit
 !
@@ -183,14 +183,14 @@ int eth1.11
  vrf for v1
  ipv4 addr 1.1.1.6 255.255.255.252
  mpls enable
- mpolka enable 3 65536 10
+ polka enable 3 65536 10
  router isis4 1 ena
  exit
 int eth1.12
  vrf for v1
  ipv6 addr 1234:2::2 ffff:ffff::
  mpls enable
- mpolka enable 3 65536 10
+ polka enable 3 65536 10
  router isis6 1 ena
  exit
 interface tun1

@@ -207,9 +207,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     case ETHERTYPE_POLKA:                                       \
         ethtyp = PPPTYPE_POLKA;                                 \
         break;                                                  \
-    case ETHERTYPE_MPOLKA:                                      \
-        ethtyp = PPPTYPE_MPOLKA;                                \
-        break;                                                  \
     default:                                                    \
         doDropper;                                              \
     }
@@ -258,9 +255,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
         break;                                                  \
     case PPPTYPE_POLKA:                                         \
         ethtyp = ETHERTYPE_POLKA;                               \
-        break;                                                  \
-    case PPPTYPE_MPOLKA:                                        \
-        ethtyp = ETHERTYPE_MPOLKA;                              \
         break;                                                  \
     default:                                                    \
         doDropper;                                              \
@@ -1278,7 +1272,8 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         goto bridgevpls_rx;                                         \
     case 9:                                                         \
         bufP -= 20;                                                 \
-        put16msb(bufD, bufP + 0, ttl);                              \
+        bufD[bufP + 0] = 0;                                         \
+        bufD[bufP + 1] = ttl;                                       \
         put16msb(bufD, bufP + 2, ethtyp);                           \
         memcpy(&bufD[bufP + 4], route_res->polka, 16);              \
         neigh_ntry.id = route_res->nexthop;                         \
@@ -1286,11 +1281,12 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         goto ethtyp_tx;                                             \
     case 10:                                                        \
         bufP -= 20;                                                 \
-        put16msb(bufD, bufP + 0, ttl);                              \
+        bufD[bufP + 1] = 0;                                         \
+        bufD[bufP + 1] = ttl;                                       \
         put16msb(bufD, bufP + 2, ethtyp);                           \
         memcpy(&bufD[bufP + 4], route_res->polka, 16);              \
         neigh_ntry.id = route_res->nexthop;                         \
-        ethtyp = ETHERTYPE_MPOLKA;                                  \
+        ethtyp = ETHERTYPE_POLKA;                                   \
         goto ethtyp_tx;                                             \
     case 11:                                                        \
         doDropper;                                                  \
@@ -2319,44 +2315,33 @@ bridgevpls_rx:
         index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
         if (index < 0) doDropper;
         vrf2rib_res = table_get(&vrf2rib4_table, index);
-        ttl = get16msb(bufD, bufP + 0);
-        if ((ttl & 0xff00) != 0) doDropper;
+        ttl = bufD[bufP + 1];
         if ((ttl & 0xff) <= 1) doPunting;
         ttl--;
         bufD[bufP + 1] = ttl;
-        polkaPoly_ntry.port = prt;
-        index = table_find(&polkaPoly_table, &polkaPoly_ntry);
-        if (index < 0) doDropper;
-        polkaPoly_res = table_get(&polkaPoly_table, index);
-        polkaPoly_res->pack++;
-        polkaPoly_res->byte += bufS;
-        crc16calc(tmp, polkaPoly_res->tab, bufD, bufP + 4, 14);
-        tmp ^= get16msb(bufD, bufP + 18);
-        if (tmp == 0) {
-            ethtyp = get16msb(bufD, bufP + 2);
-            bufP += 20;
-            goto etyped_rx;
+        if (bufD[bufP + 0] == 0) {
+            polkaPoly_ntry.port = prt;
+            index = table_find(&polkaPoly_table, &polkaPoly_ntry);
+            if (index < 0) doDropper;
+            polkaPoly_res = table_get(&polkaPoly_table, index);
+            polkaPoly_res->pack++;
+            polkaPoly_res->byte += bufS;
+            crc16calc(tmp, polkaPoly_res->tab, bufD, bufP + 4, 14);
+            tmp ^= get16msb(bufD, bufP + 18);
+            if (tmp == 0) {
+                ethtyp = get16msb(bufD, bufP + 2);
+                bufP += 20;
+                goto etyped_rx;
+            }
+            polkaIdx_ntry.index = tmp;
+            index = table_find(&vrf2rib_res->plk, &polkaIdx_ntry);
+            if (index < 0) doDropper;
+            polkaIdx_res = table_get(&vrf2rib_res->plk, index);
+            polkaIdx_res->pack++;
+            polkaIdx_res->byte += bufS;
+            neigh_ntry.id = polkaIdx_res->nexthop;
+            goto ethtyp_tx;
         }
-        polkaIdx_ntry.index = tmp;
-        index = table_find(&vrf2rib_res->plk, &polkaIdx_ntry);
-        if (index < 0) doDropper;
-        polkaIdx_res = table_get(&vrf2rib_res->plk, index);
-        polkaIdx_res->pack++;
-        polkaIdx_res->byte += bufS;
-        neigh_ntry.id = polkaIdx_res->nexthop;
-        goto ethtyp_tx;
-    case ETHERTYPE_MPOLKA: // mpolka
-        if (port2vrf_res == NULL) doDropper;
-        packMpolka[port]++;
-        byteMpolka[port] += bufS;
-        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
-        if (index < 0) doDropper;
-        vrf2rib_res = table_get(&vrf2rib6_table, index);
-        ttl = get16msb(bufD, bufP + 0);
-        if ((ttl & 0xff00) != 0) doDropper;
-        if ((ttl & 0xff) <= 1) doPunting;
-        ttl--;
-        bufD[bufP + 1] = ttl;
         polkaPoly_ntry.port = prt;
         index = table_find(&mpolkaPoly_table, &polkaPoly_ntry);
         if (index < 0) doDropper;

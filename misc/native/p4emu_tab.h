@@ -23,8 +23,6 @@ long int byteBridge[maxPorts];
 long int packBridge[maxPorts];
 long int bytePolka[maxPorts];
 long int packPolka[maxPorts];
-long int byteMpolka[maxPorts];
-long int packMpolka[maxPorts];
 long int byteNsh[maxPorts];
 long int packNsh[maxPorts];
 
@@ -762,8 +760,6 @@ void initIface(int port, char *name) {
     packBridge[port] = 0;
     bytePolka[port] = 0;
     packPolka[port] = 0;
-    byteMpolka[port] = 0;
-    packMpolka[port] = 0;
     byteNsh[port] = 0;
     packNsh[port] = 0;
 }

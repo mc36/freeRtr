@@ -1939,7 +1939,22 @@ public class userShow {
         }
         if (a.equals("polka")) {
             a = cmd.word();
-            if (a.equals("routeid")) {
+            if (a.equals("routeid-multicast")) {
+                a = cmd.word();
+                cfgIfc ntry = cfgAll.ifcFind(a, 0);
+                if (ntry == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                if (ntry.tunMpolka == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                rdr.putStrTab(ntry.tunMpolka.getShRoute());
+                rdr.putStrTab(ntry.tunMpolka.getShDecode());
+                return null;
+            }
+            if (a.equals("routeid-unicast")) {
                 a = cmd.word();
                 cfgIfc ntry = cfgAll.ifcFind(a, 0);
                 if (ntry == null) {
@@ -1957,10 +1972,10 @@ public class userShow {
             if (a.equals("interfaces")) {
                 a = cmd.word();
                 if (a.length() < 1) {
-                    userFormat lst = new userFormat("|", "interface|packet|headend");
+                    userFormat lst = new userFormat("|", "interface|packet|uni-head|mul-head");
                     for (int i = 0; i < cfgAll.ifaces.size(); i++) {
                         cfgIfc ntry = cfgAll.ifaces.get(i);
-                        lst.add(ntry.name + "|" + (ntry.polkaPack != null) + "|" + (ntry.tunPolka != null));
+                        lst.add(ntry.name + "|" + (ntry.polkaPack != null) + "|" + (ntry.tunPolka != null)+ "|" + (ntry.tunMpolka != null));
                     }
                     rdr.putStrTab(lst);
                     return null;
@@ -1975,48 +1990,6 @@ public class userShow {
                     return null;
                 }
                 rdr.putStrTab(ifcPolka.getShow(ntry.polkaPack.coeffs));
-                return null;
-            }
-            return null;
-        }
-        if (a.equals("mpolka")) {
-            a = cmd.word();
-            if (a.equals("routeid")) {
-                a = cmd.word();
-                cfgIfc ntry = cfgAll.ifcFind(a, 0);
-                if (ntry == null) {
-                    cmd.error("no such interface");
-                    return null;
-                }
-                if (ntry.tunMpolka == null) {
-                    cmd.error("not enabled");
-                    return null;
-                }
-                rdr.putStrTab(ntry.tunMpolka.getShRoute());
-                rdr.putStrTab(ntry.tunMpolka.getShDecode());
-                return null;
-            }
-            if (a.equals("interfaces")) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    userFormat lst = new userFormat("|", "interface|packet|headend");
-                    for (int i = 0; i < cfgAll.ifaces.size(); i++) {
-                        cfgIfc ntry = cfgAll.ifaces.get(i);
-                        lst.add(ntry.name + "|" + (ntry.mpolkaPack != null) + "|" + (ntry.tunMpolka != null));
-                    }
-                    rdr.putStrTab(lst);
-                    return null;
-                }
-                cfgIfc ntry = cfgAll.ifcFind(a, 0);
-                if (ntry == null) {
-                    cmd.error("no such interface");
-                    return null;
-                }
-                if (ntry.mpolkaPack == null) {
-                    cmd.error("not enabled");
-                    return null;
-                }
-                rdr.putStrTab(ifcPolka.getShow(ntry.mpolkaPack.coeffs));
                 return null;
             }
             return null;

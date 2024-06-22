@@ -190,6 +190,7 @@ public class clntPolka implements Runnable, ifcDn {
         } else {
             pck.NSHttl = pck.IPttl;
         }
+        pck.NSHmdt = 0;
         nextIfc.lower.sendPolka(pck, nextHop);
     }
 
@@ -356,7 +357,7 @@ public class clntPolka implements Runnable, ifcDn {
             return;
         }
         try {
-            routeid = ifcPolka.encodeRouteId(plk.coeffs, ids);
+            routeid = ifcPolka.encodeRouteIdUni(plk.coeffs, ids);
         } catch (Exception e) {
             if (debugger.clntPolkaTraf) {
                 logger.debug("error encoding routeid for " + target);

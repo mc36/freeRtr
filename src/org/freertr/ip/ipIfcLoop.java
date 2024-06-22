@@ -6,7 +6,6 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
-import org.freertr.ifc.ifcMpolka;
 import org.freertr.ifc.ifcPolka;
 import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packHolder;
@@ -140,14 +139,6 @@ public class ipIfcLoop implements ipIfc {
     }
 
     public ifcPolka getPolka() {
-        return null;
-    }
-
-    public void sendMpolka(packHolder pck, addrIP nextHop) {
-        cntr.rx(pck);
-    }
-
-    public ifcMpolka getMpolka() {
         return null;
     }
 

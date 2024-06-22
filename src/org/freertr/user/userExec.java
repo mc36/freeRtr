@@ -1505,14 +1505,11 @@ public class userExec {
         hl.add(null, "5 .            <num>             index to view");
         hl.add(null, "3 .        interfaces            nsh interface table");
         hl.add(null, "2 3      polka                   polynomial key architecture");
-        hl.add(null, "3 4        routeid               polka routeid information");
+        hl.add(null, "3 4        routeid-unicast       polka routeid information");
+        hl.add(null, "4 .          <name:ifc>          interface to see");
+        hl.add(null, "3 4        routeid-multicast     mpolka routeid information");
         hl.add(null, "4 .          <name:ifc>          interface to see");
         hl.add(null, "3 4,.      interfaces            polka interface table");
-        hl.add(null, "4 .          [name:ifc]          interface to see");
-        hl.add(null, "2 3      mpolka                  multipath polynomial key architecture");
-        hl.add(null, "3 4        routeid               mpolka routeid information");
-        hl.add(null, "4 .          <name:ifc>          interface to see");
-        hl.add(null, "3 4,.      interfaces            mpolka interface table");
         hl.add(null, "4 .          [name:ifc]          interface to see");
         hl.add(null, "2 3      ipx                     ipx information");
         hl.add(null, "3 4        route                 routing table entries");

@@ -1024,11 +1024,6 @@ public class debugger {
     public static boolean ifcNshEvnt = false;
 
     /**
-     * ifcMpolka events
-     */
-    public static boolean ifcMpolkaEvnt = false;
-
-    /**
      * ifcPolka events
      */
     public static boolean ifcPolkaEvnt = false;
@@ -1317,7 +1312,6 @@ public class debugger {
         l.add(null, "3 .        eapols            eap over lan server");
         l.add(null, "3 .        nsh               nsh encapsulation");
         l.add(null, "3 .        polka             polka encapsulation");
-        l.add(null, "3 .        mpolka            mpolka encapsulation");
     }
 
     /**
@@ -2312,10 +2306,6 @@ public class debugger {
             }
             if (s.equals("polka")) {
                 ifcPolkaEvnt = v;
-                return false;
-            }
-            if (s.equals("mpolka")) {
-                ifcMpolkaEvnt = v;
                 return false;
             }
             return true;

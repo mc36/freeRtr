@@ -3,7 +3,6 @@
 #define ETHERTYPE_VLAN              0x8100
 #define ETHERTYPE_IPV6              0x86dd
 #define ETHERTYPE_POLKA             0x8842
-#define ETHERTYPE_MPOLKA            0x8841
 #define ETHERTYPE_NSH               0x894f
 #define ETHERTYPE_MPLS_UCAST        0x8847
 #define ETHERTYPE_MPLS_MCAST        0x8848
@@ -22,7 +21,6 @@
 #define PPPTYPE_MACSEC              0x0053
 #define PPPTYPE_SGT                 0x004a
 #define PPPTYPE_POLKA               0x004d
-#define PPPTYPE_MPOLKA              0x004c
 #define PPPTYPE_MULTILINK           0x003d
 
 #define IP_PROTOCOL_IGMP            2

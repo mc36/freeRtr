@@ -17,7 +17,6 @@ import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ifc.ifcEther;
-import org.freertr.ifc.ifcMpolka;
 import org.freertr.ifc.ifcPolka;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwd;
@@ -1930,7 +1929,7 @@ public class servP4langCfg implements ifcUp {
                 if (ifc.ifc.tunMpolka == null) {
                     return null;
                 }
-                rou.best.attribAs = ifcMpolka.type;
+                rou.best.attribAs = ifcPolka.type + 1;
                 return ifc.ifc.tunMpolka.getResultRoute(rou);
             default:
                 return rou;

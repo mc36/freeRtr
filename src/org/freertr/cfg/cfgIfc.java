@@ -75,7 +75,6 @@ import org.freertr.ifc.ifcLapb;
 import org.freertr.ifc.ifcLldp;
 import org.freertr.ifc.ifcLossDet;
 import org.freertr.ifc.ifcMacSec;
-import org.freertr.ifc.ifcMpolka;
 import org.freertr.ifc.ifcNhrp;
 import org.freertr.ifc.ifcNshFwd;
 import org.freertr.ifc.ifcNshXcn;
@@ -1145,11 +1144,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public ifcPolka polkaPack;
 
     /**
-     * mpolka packet processing
-     */
-    public ifcMpolka mpolkaPack;
-
-    /**
      * mpls ldp ipv4 discovery
      */
     public rtrLdpIface mplsLdp4;
@@ -1487,7 +1481,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no nsh enable",
         "interface .*! no nsh xconnect",
         "interface .*! no polka enable",
-        "interface .*! no mpolka enable",
         // mpls
         "interface .*! no mpls enable",
         "interface .*! no mpls access-group-in",
@@ -1953,9 +1946,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         "interface .*! no ppp polkacp close",
         "interface .*! no ppp polkacp open",
         "interface .*! no ppp polkacp optional",
-        "interface .*! no ppp mpolkacp close",
-        "interface .*! no ppp mpolkacp open",
-        "interface .*! no ppp mpolkacp optional",
         "interface .*! no ppp sgtcp close",
         "interface .*! no ppp sgtcp open",
         "interface .*! no ppp sgtcp optional",
@@ -5313,19 +5303,13 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void update2polka() {
         if (ipIf4 != null) {
             ipIf4.setPolka(polkaPack);
-            ipIf4.setMpolka(mpolkaPack);
         }
         if (ipIf6 != null) {
             ipIf6.setPolka(polkaPack);
-            ipIf6.setMpolka(mpolkaPack);
         }
         if (polkaPack != null) {
             polkaPack.fwd4 = vrfFor.fwd4;
             polkaPack.fwd6 = vrfFor.fwd6;
-        }
-        if (mpolkaPack != null) {
-            mpolkaPack.fwd4 = vrfFor.fwd4;
-            mpolkaPack.fwd6 = vrfFor.fwd6;
         }
     }
 
@@ -5353,33 +5337,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
     public synchronized void clear2polka() {
         polkaPack = null;
         ethtyp.delET(ifcPolka.type);
-        update2polka();
-    }
-
-    /**
-     * setup interface mpolka packet
-     *
-     * @param id local id
-     * @param bas crc base
-     * @param max crc max
-     */
-    public synchronized void setup2mpolka(int id, int bas, int max) {
-        if (vrfFor == null) {
-            return;
-        }
-        clear2mpolka();
-        mpolkaPack = new ifcMpolka(id, bas, max);
-        ethtyp.addET(ifcMpolka.type, "mpolka", mpolkaPack);
-        ethtyp.updateET(ifcMpolka.type, mpolkaPack);
-        update2polka();
-    }
-
-    /**
-     * clear interface polka packet
-     */
-    public synchronized void clear2mpolka() {
-        mpolkaPack = null;
-        ethtyp.delET(ifcMpolka.type);
         update2polka();
     }
 
@@ -6371,11 +6328,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             a = polkaPack.localId + " " + polkaPack.crcBase + " " + polkaPack.crcMax;
         }
         cmds.cfgLine(l, polkaPack == null, cmds.tabulator, "polka enable", a);
-        a = "";
-        if (mpolkaPack != null) {
-            a = mpolkaPack.localId + " " + mpolkaPack.crcBase + " " + mpolkaPack.crcMax;
-        }
-        cmds.cfgLine(l, mpolkaPack == null, cmds.tabulator, "mpolka enable", a);
         cmds.cfgLine(l, mplsPack == null, cmds.tabulator, "mpls enable", "");
         if (mplsPack != null) {
             switch (mplsPack.ethtyp) {
@@ -6916,11 +6868,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         l.add(null, "3 4       <num>                     service path");
         l.add(null, "4 .         <num>                   service index");
         l.add(null, "1 2   polka                         polynominal key architecture commands");
-        l.add(null, "2 3     enable                      enable/disable packet processing");
-        l.add(null, "3 4       <num>                     local node id");
-        l.add(null, "4 5         <num>                   coefficient base");
-        l.add(null, "5 .           <num>                 number of coefficients");
-        l.add(null, "1 2   mpolka                        multipath polynominal key architecture commands");
         l.add(null, "2 3     enable                      enable/disable packet processing");
         l.add(null, "3 4       <num>                     local node id");
         l.add(null, "4 5         <num>                   coefficient base");
@@ -8110,10 +8057,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             doCfgPolka(cmd);
             return;
         }
-        if (a.equals("mpolka")) {
-            doCfgMpolka(cmd);
-            return;
-        }
         if (a.equals("mpls")) {
             doCfgMpls(cmd);
             return;
@@ -8689,10 +8632,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         }
         if (a.equals("polka")) {
             doCfgNoPolka(cmd);
-            return;
-        }
-        if (a.equals("mpolka")) {
-            doCfgNoMpolka(cmd);
             return;
         }
         if (a.equals("mpls")) {
@@ -10084,26 +10023,6 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("enable")) {
             clear2polka();
-            return;
-        }
-        cmd.badCmd();
-    }
-
-    private void doCfgMpolka(cmds cmd) {
-        String s = cmd.word();
-        if (s.equals("enable")) {
-            int i = bits.str2num(cmd.word());
-            int o = bits.str2num(cmd.word());
-            setup2mpolka(i, o, bits.str2num(cmd.word()));
-            return;
-        }
-        cmd.badCmd();
-    }
-
-    private void doCfgNoMpolka(cmds cmd) {
-        String s = cmd.word();
-        if (s.equals("enable")) {
-            clear2mpolka();
             return;
         }
         cmd.badCmd();

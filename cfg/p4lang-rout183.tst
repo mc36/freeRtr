@@ -55,7 +55,7 @@ int sdn1
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  mpls enable
- mpolka enable 1 65536 10
+ polka enable 1 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit
@@ -66,7 +66,7 @@ int sdn2
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
  mpls enable
- mpolka enable 1 65536 10
+ polka enable 1 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit
@@ -79,7 +79,7 @@ int sdn3.111
  ipv6 addr 1234:3::1 ffff:ffff::
  ipv6 ena
  mpls enable
- mpolka enable 1 65536 10
+ polka enable 1 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit
@@ -90,7 +90,7 @@ int sdn4
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
  mpls enable
- mpolka enable 1 65536 10
+ polka enable 1 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit
@@ -146,7 +146,7 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
  mpls enable
- mpolka enable 3 65536 10
+ polka enable 3 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit
@@ -206,7 +206,7 @@ int eth1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
  mpls enable
- mpolka enable 4 65536 10
+ polka enable 4 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit
@@ -248,7 +248,7 @@ int eth1.111
  ipv4 addr 1.1.3.2 255.255.255.0
  ipv6 addr 1234:3::2 ffff:ffff::
  mpls enable
- mpolka enable 5 65536 10
+ polka enable 5 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit
@@ -290,7 +290,7 @@ int eth1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::
  mpls enable
- mpolka enable 6 65536 10
+ polka enable 6 65536 10
  router lsrp4 1 ena
  router lsrp6 1 ena
  exit

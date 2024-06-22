@@ -21,7 +21,6 @@ import org.freertr.ifc.ifcBridgeAdr;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcBundleIfc;
 import org.freertr.ifc.ifcDn;
-import org.freertr.ifc.ifcMpolka;
 import org.freertr.ifc.ifcP2pOEservSess;
 import org.freertr.ifc.ifcPolka;
 import org.freertr.ip.ipFwd;
@@ -2559,25 +2558,8 @@ public class servP4langConn implements Runnable {
                 a = "del";
             }
             lower.sendLine("polkapoly_" + a + " " + ifc.id + " " + o);
-            ifc.sentPolka = i;
-        }
-        i = -1;
-        o = -1;
-        if (mstr.ifc.mpolkaPack != null) {
-            i = mstr.ifc.mpolkaPack.localId;
-            o = mstr.ifc.mpolkaPack.coeffs[i].intCoeff();
-        }
-        if (i != ifc.sentMpolka) {
-            if (ifc.sentMpolka >= 0) {
-                a = "mod";
-            } else {
-                a = "add";
-            }
-            if (i < 0) {
-                a = "del";
-            }
             lower.sendLine("mpolkapoly_" + a + " " + ifc.id + " " + o);
-            ifc.sentMpolka = i;
+            ifc.sentPolka = i;
         }
         return false;
     }
@@ -3999,7 +3981,6 @@ public class servP4langConn implements Runnable {
             done.put(ntry);
             store.put(str);
             lower.sendLine(beg + "polkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
-            lower.sendLine(beg + "mpolkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
             tabIndex<addrIP> ntry = done.get(i);
@@ -4009,7 +3990,6 @@ public class servP4langConn implements Runnable {
             done.del(ntry);
             store.del(new servP4langStr<tabIndex<addrIP>>(ntry));
             lower.sendLine(beg + "polkaidx_del " + ntry.index + " " + vrf + " 0");
-            lower.sendLine(beg + "mpolkaidx_del " + ntry.index + " " + vrf + " 0");
         }
     }
 
@@ -4166,7 +4146,7 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("polroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + bits.toHex(ntry.best.attribVal));
                 continue;
             }
-            if (ntry.best.attribAs == ifcMpolka.type) {
+            if (ntry.best.attribAs == (ifcPolka.type + 1)) {
                 lower.sendLine("mpolroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + bits.toHex(ntry.best.attribVal));
                 continue;
             }

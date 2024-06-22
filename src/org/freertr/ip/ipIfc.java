@@ -3,7 +3,6 @@ package org.freertr.ip;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
-import org.freertr.ifc.ifcMpolka;
 import org.freertr.ifc.ifcPolka;
 import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packHolder;
@@ -69,26 +68,11 @@ public interface ipIfc {
     public void sendPolka(packHolder pck, addrIP nexthop);
 
     /**
-     * forward mpolka tagged packet
-     *
-     * @param pck packet to send
-     * @param nexthop next hop ip address
-     */
-    public void sendMpolka(packHolder pck, addrIP nexthop);
-
-    /**
      * get polka handler
      *
      * @return polka handler
      */
     public ifcPolka getPolka();
-
-    /**
-     * get mpolka handler
-     *
-     * @return polka handler
-     */
-    public ifcMpolka getMpolka();
 
     /**
      * send layer2 packet
