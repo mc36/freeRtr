@@ -2312,14 +2312,14 @@ bridgevpls_rx:
         if (port2vrf_res == NULL) doDropper;
         packPolka[port]++;
         bytePolka[port] += bufS;
-        index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
-        if (index < 0) doDropper;
-        vrf2rib_res = table_get(&vrf2rib4_table, index);
         ttl = bufD[bufP + 1];
         if ((ttl & 0xff) <= 1) doPunting;
         ttl--;
         bufD[bufP + 1] = ttl;
         if (bufD[bufP + 0] == 0) {
+            index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
+            if (index < 0) doDropper;
+            vrf2rib_res = table_get(&vrf2rib4_table, index);
             polkaPoly_ntry.port = prt;
             index = table_find(&polkaPoly_table, &polkaPoly_ntry);
             if (index < 0) doDropper;
@@ -2342,6 +2342,9 @@ bridgevpls_rx:
             neigh_ntry.id = polkaIdx_res->nexthop;
             goto ethtyp_tx;
         }
+        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (index < 0) doDropper;
+        vrf2rib_res = table_get(&vrf2rib6_table, index);
         polkaPoly_ntry.port = prt;
         index = table_find(&mpolkaPoly_table, &polkaPoly_ntry);
         if (index < 0) doDropper;
