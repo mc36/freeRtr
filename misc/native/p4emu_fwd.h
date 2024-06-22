@@ -1281,7 +1281,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         goto ethtyp_tx;                                             \
     case 10:                                                        \
         bufP -= 20;                                                 \
-        bufD[bufP + 1] = 0;                                         \
+        bufD[bufP + 0] = 1;                                         \
         bufD[bufP + 1] = ttl;                                       \
         put16msb(bufD, bufP + 2, ethtyp);                           \
         memcpy(&bufD[bufP + 4], route_res->polka, 16);              \

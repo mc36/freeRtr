@@ -2749,7 +2749,8 @@ void doStatRound_ipvX(struct table_head *tab, void doer(void *, int, void *), vo
         natter(&res->nat, res->vrf, param);
         tunner(&res->tun, res->vrf, param);
         mcaster(&res->mcst, res->vrf, param);
-        if (ver == 4) doStatRound_polka(&res->plk, "", res->vrf, param); else doStatRound_polka(&res->plk, "m", res->vrf, param);
+        if (ver == 4) doStatRound_polka(&res->plk, "", res->vrf, param);
+        else doStatRound_polka(&res->plk, "m", res->vrf, param);
     }
 }
 
