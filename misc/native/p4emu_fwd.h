@@ -1360,7 +1360,6 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     int ethtyp = 0;
     int tmp = 0;
     int tmp2 = 0;
-    int i = 0;
     size_t sizt = 0;
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
@@ -2353,7 +2352,7 @@ bridgevpls_rx:
         polkaPoly_res->byte += bufS;
         crc16calc(tmp, polkaPoly_res->tab, bufD, bufP + 4, 14);
         tmp ^= get16msb(bufD, bufP + 18);
-        for (i = 0; i < vrf2rib_res->plk.size; i++) {
+        for (int i = 0; i < vrf2rib_res->plk.size; i++) {
             if ((tmp & bitVals[30 - i]) == 0) continue;
             polkaIdx_res = table_get(&vrf2rib_res->plk, i);
             polkaIdx_res->pack++;
