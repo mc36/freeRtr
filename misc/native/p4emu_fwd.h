@@ -204,6 +204,12 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
         put16msb(bufD, bufP, 1);                                \
         ethtyp = PPPTYPE_ROUTEDMAC;                             \
         break;                                                  \
+    case ETHERTYPE_POLKA:                                       \
+        ethtyp = PPPTYPE_POLKA;                                 \
+        break;                                                  \
+    case ETHERTYPE_MPOLKA:                                      \
+        ethtyp = PPPTYPE_MPOLKA;                                \
+        break;                                                  \
     default:                                                    \
         doDropper;                                              \
     }
@@ -249,6 +255,12 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     case PPPTYPE_ROUTEDMAC:                                     \
         ethtyp = ETHERTYPE_ROUTEDMAC;                           \
         bufP += 2;                                              \
+        break;                                                  \
+    case PPPTYPE_POLKA:                                         \
+        ethtyp = ETHERTYPE_POLKA;                               \
+        break;                                                  \
+    case PPPTYPE_MPOLKA:                                        \
+        ethtyp = ETHERTYPE_MPOLKA;                              \
         break;                                                  \
     default:                                                    \
         doDropper;                                              \
@@ -1264,13 +1276,6 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         bufP += 12;                                                 \
         bufP += 2;                                                  \
         goto bridgevpls_rx;                                         \
-    case 11:                                                        \
-        doDropper;                                                  \
-
-
-
-
-#define doRoutedPolka(route_res, proto)                             \
     case 9:                                                         \
         bufP -= 20;                                                 \
         put16msb(bufD, bufP + 0, ttl);                              \
@@ -1287,6 +1292,8 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         neigh_ntry.id = route_res->nexthop;                         \
         ethtyp = ETHERTYPE_MPOLKA;                                  \
         goto ethtyp_tx;                                             \
+    case 11:                                                        \
+        doDropper;                                                  \
 
 
 
@@ -1296,10 +1303,8 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     byteRx[port] += bufS;
     unsigned char bufH[preBuff];
     struct nsh_entry nsh_ntry;
-#ifdef HAVE_POLKA
     struct polkaPoly_entry polkaPoly_ntry;
     struct polkaIdx_entry polkaIdx_ntry;
-#endif
     struct mpls_entry mpls_ntry;
     struct port2vrf_entry port2vrf_ntry;
     struct vrf2rib_entry vrf2rib_ntry;
@@ -1323,10 +1328,8 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     struct policer_entry policer_ntry;
     struct mroute4_entry mroute4_ntry;
     struct mroute6_entry mroute6_ntry;
-#ifdef HAVE_POLKA
     struct polkaPoly_entry *polkaPoly_res = NULL;
     struct polkaIdx_entry *polkaIdx_res = NULL;
-#endif
     struct nsh_entry *nsh_res = NULL;
     struct mpls_entry *mpls_res = NULL;
     struct port2vrf_entry *port2vrf_res = NULL;
@@ -1361,9 +1364,7 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     int ethtyp = 0;
     int tmp = 0;
     int tmp2 = 0;
-#ifdef HAVE_POLKA
     int i = 0;
-#endif
     size_t sizt = 0;
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
@@ -1891,9 +1892,6 @@ ipv4_tx:
             }
             doCpuing;
             doRouted(route4_res, IP_PROTOCOL_IPV4);
-#ifdef HAVE_POLKA
-            doRoutedPolka(route4_res, 4);
-#endif
         }
         doDropper;
     case ETHERTYPE_IPV6: // ipv6
@@ -2198,9 +2196,6 @@ ipv6_tx:
             }
             doCpuing;
             doRouted(route6_res, IP_PROTOCOL_IPV6);
-#ifdef HAVE_POLKA
-            doRoutedPolka(route6_res, 6);
-#endif
         }
         doDropper;
     case ETHERTYPE_PPPOE_DATA: // pppoe
@@ -2317,7 +2312,6 @@ bridgevpls_rx:
             return;
         }
         break;
-#ifdef HAVE_POLKA
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
         packPolka[port]++;
@@ -2391,7 +2385,6 @@ bridgevpls_rx:
         ethtyp = get16msb(bufD, bufP + 2);
         bufP += 20;
         goto etyped_rx;
-#endif
     case ETHERTYPE_NSH: // nsh
         if (port2vrf_res == NULL) doDropper;
         if (port2vrf_res->nsh == 0) doDropper;

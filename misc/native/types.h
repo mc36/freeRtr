@@ -21,6 +21,8 @@
 #define PPPTYPE_ROUTEDMAC           0x0031
 #define PPPTYPE_MACSEC              0x0053
 #define PPPTYPE_SGT                 0x004a
+#define PPPTYPE_POLKA               0x004d
+#define PPPTYPE_MPOLKA              0x004c
 #define PPPTYPE_MULTILINK           0x003d
 
 #define IP_PROTOCOL_IGMP            2

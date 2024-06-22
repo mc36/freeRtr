@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.6.22-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-22 03:52:19, took 00:07:25, with 60 workers, on 546 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2024-06-22 05:07:56, took 00:10:07, with 60 workers, on 546 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -399,12 +399,12 @@ http://sources.freertr.org/cfg/p4lang-rout176.tst;p4lang-rout176.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout177.tst;p4lang-rout177.tst;success;p4lang: policy routing to p2p te over mpls
 http://sources.freertr.org/cfg/p4lang-rout178.tst;p4lang-rout178.tst;success;p4lang: nsh
 http://sources.freertr.org/cfg/p4lang-rout179.tst;p4lang-rout179.tst;success;p4lang: vlan nsh
-http://sources.freertr.org/cfg/p4lang-rout180.tst;p4lang-rout180.tst;not applicable;p4lang: polka
-http://sources.freertr.org/cfg/p4lang-rout181.tst;p4lang-rout181.tst;not applicable;p4lang: vlan polka
-http://sources.freertr.org/cfg/p4lang-rout182.tst;p4lang-rout182.tst;not applicable;p4lang: mpolka core
-http://sources.freertr.org/cfg/p4lang-rout183.tst;p4lang-rout183.tst;not applicable;p4lang: mpolka vlan core
-http://sources.freertr.org/cfg/p4lang-rout184.tst;p4lang-rout184.tst;not applicable;p4lang: mpolka edge
-http://sources.freertr.org/cfg/p4lang-rout185.tst;p4lang-rout185.tst;not applicable;p4lang: mpolka vlan edge
+http://sources.freertr.org/cfg/p4lang-rout180.tst;p4lang-rout180.tst;success;p4lang: polka
+http://sources.freertr.org/cfg/p4lang-rout181.tst;p4lang-rout181.tst;success;p4lang: vlan polka
+http://sources.freertr.org/cfg/p4lang-rout182.tst;p4lang-rout182.tst;success;p4lang: mpolka core
+http://sources.freertr.org/cfg/p4lang-rout183.tst;p4lang-rout183.tst;success;p4lang: mpolka vlan core
+http://sources.freertr.org/cfg/p4lang-rout184.tst;p4lang-rout184.tst;success;p4lang: mpolka edge
+http://sources.freertr.org/cfg/p4lang-rout185.tst;p4lang-rout185.tst;success;p4lang: mpolka vlan edge
 http://sources.freertr.org/cfg/p4lang-rout186.tst;p4lang-rout186.tst;success;p4lang: gtp server over ipv4
 http://sources.freertr.org/cfg/p4lang-rout187.tst;p4lang-rout187.tst;success;p4lang: gtp server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout188.tst;p4lang-rout188.tst;success;p4lang: gtp server over ipv4 loopback

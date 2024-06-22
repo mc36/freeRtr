@@ -3999,6 +3999,7 @@ public class servP4langConn implements Runnable {
             done.put(ntry);
             store.put(str);
             lower.sendLine(beg + "polkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
+            lower.sendLine(beg + "mpolkaidx_" + act + " " + ntry.index + " " + vrf + " " + hop.id);
         }
         for (int i = done.size() - 1; i >= 0; i--) {
             tabIndex<addrIP> ntry = done.get(i);
@@ -4008,6 +4009,7 @@ public class servP4langConn implements Runnable {
             done.del(ntry);
             store.del(new servP4langStr<tabIndex<addrIP>>(ntry));
             lower.sendLine(beg + "polkaidx_del " + ntry.index + " " + vrf + " 0");
+            lower.sendLine(beg + "mpolkaidx_del " + ntry.index + " " + vrf + " 0");
         }
     }
 

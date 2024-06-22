@@ -21,29 +21,24 @@ long int bytePppoe[maxPorts];
 long int packPppoe[maxPorts];
 long int byteBridge[maxPorts];
 long int packBridge[maxPorts];
-#ifdef HAVE_POLKA
 long int bytePolka[maxPorts];
 long int packPolka[maxPorts];
 long int byteMpolka[maxPorts];
 long int packMpolka[maxPorts];
-#endif
 long int byteNsh[maxPorts];
 long int packNsh[maxPorts];
 
 
 
 
-#ifdef HAVE_POLKA
 struct polkaIdx_entry {
     int index;
     int nexthop;
     long pack;
     long byte;
 };
-#endif
 
 
-#ifdef HAVE_POLKA
 struct polkaPoly_entry {
     int port;
     int tab[256];
@@ -75,7 +70,6 @@ void crc16mktab(int *tab, int poly) {
     for (i = 0; i < len; i++) {                                                 \
         tmp = ((tmp << 8) & 0xffff) ^ tab[(tmp >> 8) ^ (buf[ofs + i] & 0xff)];  \
     }
-#endif
 
 
 struct nsh_entry {
@@ -184,9 +178,7 @@ struct vrf2rib_entry {
     struct table_head nat;
     struct table_head tun;
     struct table_head mcst;
-#ifdef HAVE_POLKA
     struct table_head plk;
-#endif
     long pack;
     long byte;
 };
@@ -212,11 +204,9 @@ struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry 
     if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
     tab3 = &res->mcst;
     if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
-#ifdef HAVE_POLKA
     tab3 = &res->plk;
     reclen4 = sizeof(struct polkaIdx_entry);
     if (tab3->reclen != reclen4) table_init(tab3, reclen4, 1);
-#endif
     return res;
 }
 
@@ -235,9 +225,7 @@ struct route4_entry {
     int srv2;
     int srv3;
     int srv4;
-#ifdef HAVE_POLKA
     unsigned char polka[16];
-#endif
     long packTx;
     long byteTx;
     long packRx;
@@ -256,9 +244,7 @@ struct route6_entry {
     int srv2;
     int srv3;
     int srv4;
-#ifdef HAVE_POLKA
     unsigned char polka[16];
-#endif
     long packTx;
     long byteTx;
     long packRx;
@@ -774,22 +760,18 @@ void initIface(int port, char *name) {
     packPppoe[port] = 0;
     byteBridge[port] = 0;
     packBridge[port] = 0;
-#ifdef HAVE_POLKA
     bytePolka[port] = 0;
     packPolka[port] = 0;
     byteMpolka[port] = 0;
     packMpolka[port] = 0;
-#endif
     byteNsh[port] = 0;
     packNsh[port] = 0;
 }
 
 
 int initTables() {
-#ifdef HAVE_POLKA
     table_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), 1);
     table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), 1);
-#endif
     table_init(&nsh_table, sizeof(struct nsh_entry), 2);
     table_init(&mpls_table, sizeof(struct mpls_entry), 1);
     table_init(&port2vrf_table, sizeof(struct port2vrf_entry), 1);
