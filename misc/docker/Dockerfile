@@ -16,12 +16,12 @@ WORKDIR /opt/freertr/
 RUN wget http://www.freertr.org/rtr.zip
 RUN wget http://www.freertr.org/rtr.jar
 RUN wget http://www.freertr.org/rtr.ver
-RUN wget http://www.freertr.org/rtr-`uname -m`.tar
+RUN wget http://www.freertr.org/rtr-`uname -m`.tgz
 RUN mv ./rtr.jar ./bin
 RUN mv ./rtr.ver ./bin
 RUN unzip ./rtr.zip -d /opt/freertr/src
 WORKDIR /opt/freertr/bin
-RUN tar xvf ../rtr-`uname -m`.tar
+RUN tar xvf ../rtr-`uname -m`.tgz
 
 COPY . /opt/freertr/
 

@@ -9,5 +9,5 @@ CWD=`pwd`
 cd $TRG
 LST=`find . | sort`
 touch -d "2010-01-01 00:00:00" $LST
-zip -0 $CWD/rtr.jar $LST > /dev/null
+zip -9 $CWD/rtr.jar $LST > /dev/null
 cd $CWD

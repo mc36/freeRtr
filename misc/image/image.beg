@@ -1,6 +1,6 @@
 exec mkdir -m 0755 %tmp%/rtr
 exec cp rtr.ver %tmp%/rtr/
-exec cd %tmp%/rtr/;tar xf ../../binImg/rtr-%unam%.tar
+exec cd %tmp%/rtr/;tar xfz ../../binImg/rtr-%unam%.tgz
 
 catalog-read sid xz %mirr% sid main
 catalog-sum
