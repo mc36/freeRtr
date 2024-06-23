@@ -381,11 +381,14 @@ __u32 xdp_router(struct xdp_md *ctx) {
             put32msb(bufD, bufP, ttl);
             neik = vrfp->hop;
             goto ethtyp_tx;
-        case 4: // loconn
+        case 4: // loconnifc
             prt = vrfp->label1;
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             goto subif_tx;
+        case 5: // loconnnei
+            neik = vrfp->label1;
+            goto ethtyp_tx;
         default:
             goto drop;
         }

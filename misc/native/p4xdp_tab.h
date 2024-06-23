@@ -7,7 +7,7 @@ struct port_res {
 };
 
 struct vrfp_res {
-    __u32 cmd; // 1=route, 2=bridge, 3=xconn, 4=loconn
+    __u32 cmd; // 1=route, 2=bridge, 3=xconn, 4=loconnifc, 5=loconnnei
     __u32 vrf;
     __u32 brdg;
     __u32 hop;
