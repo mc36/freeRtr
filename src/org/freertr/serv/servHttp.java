@@ -2,11 +2,9 @@ package org.freertr.serv;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Deflater;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgProxy;
 import org.freertr.clnt.clntProxy;
-import org.freertr.cry.cryHashCrc32;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -119,42 +117,6 @@ public class servHttp extends servGeneric implements prtServS {
      */
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
-    }
-
-    /**
-     * get gzip header
-     *
-     * @return header
-     */
-    public static byte[] getGzipHdr() {
-        byte[] res = new byte[10];
-        res[0] = 0x1f; // magic
-        res[1] = (byte) 0x8b; // magic
-        res[2] = Deflater.DEFLATED; // deflate
-        res[3] = 0; // flags
-        res[4] = 0; // mtime
-        res[5] = 0; // mtime
-        res[6] = 0; // mtime
-        res[7] = 0; // mtime
-        res[8] = 0; // extra flags
-        res[9] = (byte) 0xff; // os
-        return res;
-    }
-
-    /**
-     * get gzip trailer
-     *
-     * @param unc uncompressed data
-     * @return trailer
-     */
-    public static byte[] getGzipTrl(byte[] unc) {
-        byte[] res = new byte[8];
-        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i);
-        crc.init();
-        crc.update(unc);
-        bits.lsbPutD(res, 0, bits.msbGetD(crc.finish(), 0));
-        bits.lsbPutD(res, 4, unc.length);
-        return res;
     }
 
     /**

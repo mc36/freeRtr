@@ -12,6 +12,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
+import org.freertr.user.userFlash;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -200,8 +201,8 @@ class servPrometheusConn implements Runnable {
             conn.morePut(buf1, 0, buf1.length);
             return;
         }
-        buf3 = servHttp.getGzipHdr();
-        byte[] buf4 = servHttp.getGzipTrl(buf1);
+        buf3 = userFlash.getGzipHdr();
+        byte[] buf4 = userFlash.getGzipTrl(buf1);
         conn.linePut("Content-Encoding: gzip");
         conn.linePut("Content-Length: " + (buf3.length + i + buf4.length));
         conn.linePut("");

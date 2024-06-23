@@ -2040,6 +2040,12 @@ public class userExec {
         hl.add(null, "2 3      transmit                     send file to network");
         hl.add(null, "3 4        <file>                     source file");
         hl.add(null, "4 4,.        <url>                    target url");
+        hl.add(null, "2 3      compress                     compress file");
+        hl.add(null, "3 4        <src>                      source file");
+        hl.add(null, "4 .          <trg>                    target file");
+        hl.add(null, "2 3      decompress                   decompress file");
+        hl.add(null, "3 4        <src>                      source file");
+        hl.add(null, "4 .          <trg>                    target file");
         hl.add(null, "2 3      archive                      create/append archive");
         hl.add(null, "3 4        <file>                     archive file");
         hl.add(null, "4 .          <src>                    source directory");

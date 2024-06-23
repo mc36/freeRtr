@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 import org.freertr.cfg.cfgAlias;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
@@ -14,6 +16,7 @@ import org.freertr.clnt.clntPop3;
 import org.freertr.clnt.clntSmtp;
 import org.freertr.clnt.clntTftp;
 import org.freertr.clnt.clntXmodem;
+import org.freertr.cry.cryHashCrc32;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashMd5;
 import org.freertr.cry.cryHashSha1;
@@ -37,6 +40,27 @@ import org.freertr.util.logger;
  * @author matecsaba
  */
 public class userFlash {
+
+    /**
+     * create instance
+     */
+    public userFlash() {
+    }
+
+    /**
+     * command to use
+     */
+    public cmds cmd;
+
+    /**
+     * pipeline to use
+     */
+    public pipeSide pip;
+
+    /**
+     * reader of user
+     */
+    public userReader rdr;
 
     /**
      * get ascii art from a file
@@ -73,25 +97,40 @@ public class userFlash {
     }
 
     /**
-     * create instance
+     * get gzip header
+     *
+     * @return header
      */
-    public userFlash() {
+    public static byte[] getGzipHdr() {
+        byte[] res = new byte[10];
+        res[0] = 31; // magic
+        res[1] = (byte) 139; // magic
+        res[2] = Deflater.DEFLATED; // deflate
+        res[3] = 0; // flags
+        res[4] = 0; // mtime
+        res[5] = 0; // mtime
+        res[6] = 0; // mtime
+        res[7] = 0; // mtime
+        res[8] = 0; // extra flags
+        res[9] = (byte) 255; // os
+        return res;
     }
 
     /**
-     * command to use
+     * get gzip trailer
+     *
+     * @param unc uncompressed data
+     * @return trailer
      */
-    public cmds cmd;
-
-    /**
-     * pipeline to use
-     */
-    public pipeSide pip;
-
-    /**
-     * reader of user
-     */
-    public userReader rdr;
+    public static byte[] getGzipTrl(byte[] unc) {
+        byte[] res = new byte[8];
+        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i);
+        crc.init();
+        crc.update(unc);
+        bits.lsbPutD(res, 0, bits.msbGetD(crc.finish(), 0));
+        bits.lsbPutD(res, 4, unc.length);
+        return res;
+    }
 
     /**
      * do the work
@@ -189,12 +228,22 @@ public class userFlash {
         if (a.equals("setperm")) {
             a = cmd.word();
             String s = cmd.word();
-            userFlash.setFilePerm(a, s);
+            setFilePerm(a, s);
             return null;
         }
         if (a.equals("transmit")) {
             a = cmd.word();
             doSend(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true);
+            return null;
+        }
+        if (a.equals("compress")) {
+            a = cmd.word();
+            cmd.error(cmds.doneFail(compress(a, cmd.word())));
+            return null;
+        }
+        if (a.equals("decompress")) {
+            a = cmd.word();
+            cmd.error(cmds.doneFail(decompress(a, cmd.word())));
             return null;
         }
         if (a.equals("archive")) {
@@ -495,6 +544,176 @@ public class userFlash {
             }
         }
         return false;
+    }
+
+    /**
+     * compress file
+     *
+     * @param src source
+     * @param trg target
+     * @return result code
+     */
+    public boolean compress(String src, String trg) {
+        pip.linePut("compressing " + src + " to " + trg);
+        RandomAccessFile fs;
+        RandomAccessFile ft;
+        long siz;
+        try {
+            fs = new RandomAccessFile(new File(src), "r");
+            siz = fs.length();
+        } catch (Exception e) {
+            return true;
+        }
+        try {
+            ft = new RandomAccessFile(new File(trg), "rw");
+        } catch (Exception e) {
+            return true;
+        }
+        byte[] buf1 = getGzipHdr();
+        try {
+            ft.write(buf1, 0, buf1.length);
+        } catch (Exception e) {
+            return true;
+        }
+        Deflater cmp = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
+        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i);
+        crc.init();
+        long pos = 0;
+        for (; pos < siz;) {
+            final int max = 64 * 1024;
+            long rndl = siz - pos;
+            if (rndl > max) {
+                rndl = max;
+            }
+            int rndi = (int) rndl;
+            pos += rndi;
+            buf1 = new byte[rndi];
+            try {
+                rndi = fs.read(buf1, 0, rndi);
+            } catch (Exception e) {
+                return true;
+            }
+            crc.update(buf1);
+            cmp.setInput(buf1);
+            if (pos >= siz) {
+                cmp.finish();
+            }
+            byte[] buf2 = new byte[max * 2];
+            int rndo = cmp.deflate(buf2);
+            try {
+                ft.write(buf2, 0, rndo);
+            } catch (Exception ex) {
+                return true;
+            }
+        }
+        buf1 = new byte[8];
+        bits.lsbPutD(buf1, 0, bits.msbGetD(crc.finish(), 0));
+        bits.lsbPutD(buf1, 4, (int) pos);
+        try {
+            ft.write(buf1, 0, buf1.length);
+        } catch (Exception ex) {
+            return true;
+        }
+        try {
+            fs.close();
+            ft.close();
+        } catch (Exception e) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * decompress file
+     *
+     * @param src source
+     * @param trg target
+     * @return result code
+     */
+    public boolean decompress(String src, String trg) {
+        pip.linePut("compressing " + src + " to " + trg);
+        RandomAccessFile fs;
+        RandomAccessFile ft;
+        long siz;
+        try {
+            fs = new RandomAccessFile(new File(src), "r");
+            siz = fs.length();
+        } catch (Exception e) {
+            return true;
+        }
+        byte[] buf1 = getGzipHdr();
+        try {
+            int i = bits.lsbGetD(buf1, 0);
+            fs.read(buf1, 0, buf1.length);
+            if (i != bits.lsbGetD(buf1, 0)) {
+                pip.linePut("bad header");
+                fs.close();
+                return true;
+            }
+        } catch (Exception e) {
+            return true;
+        }
+        siz -= buf1.length;
+        siz -= 8;
+        try {
+            ft = new RandomAccessFile(new File(trg), "rw");
+        } catch (Exception e) {
+            return true;
+        }
+        Inflater cmp = new Inflater(true);
+        cryHashCrc32 crc = new cryHashCrc32(cryHashCrc32.polyCrc32i);
+        crc.init();
+        long pos = 0;
+        for (; pos < siz;) {
+            final int max = 64 * 1024;
+            long rndl = siz - pos;
+            if (rndl > max) {
+                rndl = max;
+            }
+            int rndi = (int) rndl;
+            pos += rndi;
+            buf1 = new byte[rndi];
+            try {
+                rndi = fs.read(buf1, 0, rndi);
+            } catch (Exception e) {
+                return true;
+            }
+            cmp.setInput(buf1);
+            for (; cmp.getRemaining() > 0;) {
+                byte[] buf2 = new byte[max * 2];
+                int rndo;
+                try {
+                    rndo = cmp.inflate(buf2);
+                } catch (Exception e) {
+                    pip.linePut("bad compression");
+                    return true;
+                }
+                crc.update(buf2, 0, rndo);
+                try {
+                    ft.write(buf2, 0, rndo);
+                } catch (Exception ex) {
+                    return true;
+                }
+            }
+        }
+        buf1 = new byte[8];
+        try {
+            fs.read(buf1, 0, buf1.length);
+        } catch (Exception e) {
+            return true;
+        }
+        try {
+            fs.close();
+            ft.close();
+        } catch (Exception e) {
+            return true;
+        }
+        int i = bits.msbGetD(crc.finish(), 0);
+        if (i == bits.lsbGetD(buf1, 0)) {
+            return false;
+        }
+        pip.linePut("bad trailer");
+        return true;
     }
 
     /**
@@ -1115,7 +1334,7 @@ public class userFlash {
         boolean er = prm.indexOf("R") >= 0;
         boolean ew = prm.indexOf("W") >= 0;
         boolean ex = prm.indexOf("X") >= 0;
-        return userFlash.setFilePerm(fn, or, ow, ox, er, ew, ex);
+        return setFilePerm(fn, or, ow, ox, er, ew, ex);
     }
 
     /**

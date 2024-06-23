@@ -11,6 +11,7 @@ import org.freertr.sec.secHttp2;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.enc.encUrl;
+import org.freertr.user.userFlash;
 import org.freertr.util.logger;
 import org.freertr.util.version;
 
@@ -252,8 +253,8 @@ public class servHttpConn implements Runnable {
             case 2:
                 cmp = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
                 enc = "gzip";
-                buf3 = servHttp.getGzipHdr();
-                buf4 = servHttp.getGzipTrl(buf1);
+                buf3 = userFlash.getGzipHdr();
+                buf4 = userFlash.getGzipTrl(buf1);
                 break;
             default:
                 sendRespHeader(head, buf1.length, type);
