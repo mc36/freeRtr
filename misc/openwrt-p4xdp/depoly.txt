@@ -8,7 +8,6 @@ mkdir package/p4xdp
 cp -r ../misc/native package/p4xdp/
 cp ../misc/openwrt-p4xdp/* package/p4xdp/
 cd package/p4xdp/native
-patch < ../insns.patch
 cd ../../..
 make package/p4xdp/compile
 

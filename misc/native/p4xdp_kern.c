@@ -271,7 +271,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     }
     prt = rxport->idx;
 
-    __s32 bufO = sizeof(macaddr) + 2;
+    __u64 bufO = sizeof(macaddr) + 2;
 
 #ifdef HAVE_NOHW
 
@@ -283,10 +283,9 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
 
-#pragma unroll
-    for (__u32 rounds = 0; rounds < 3; rounds++) {
+    for (__u32 rounds = 0; rounds < 8; rounds++) {
 
-        __s32 bufP = bufO;
+        __u64 bufP = bufO;
         revalidatePacket(bufP);
         __u32 ethtyp = get16msb(bufD, bufP - 2);
 
@@ -661,6 +660,7 @@ vlan_tx:
         __builtin_memcpy(bufD, &macaddr, sizeof(macaddr));
         bufO = sizeof(macaddr) + 2;
         if (tmp != 2) goto done;
+
     }
 
 done:
