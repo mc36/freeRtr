@@ -128,6 +128,34 @@ int doOneCommand(unsigned char* buf) {
         if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
+    if (strcmp(arg[0], "verify4") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->verify4 = atoi(arg[3]);
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
+    if (strcmp(arg[0], "verify6") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->verify6 = atoi(arg[3]);
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
+    if (strcmp(arg[0], "pmtud4in") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->pmtud4 = atoi(arg[3]);
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
+    if (strcmp(arg[0], "pmtud6in") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->pmtud6 = atoi(arg[3]);
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
     if (strcmp(arg[0], "mplsttl4") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
@@ -243,8 +271,7 @@ int doOneCommand(unsigned char* buf) {
         i = rour.hop = atoi(arg[2]);
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
-        neir.port = atoi(arg[7]);
-        neir.aclport = -1;
+        neir.aclport = neir.port = atoi(arg[7]);
         neir.cmd = 1;
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
@@ -264,8 +291,7 @@ int doOneCommand(unsigned char* buf) {
         i = rour.hop = atoi(arg[2]);
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
-        neir.port = atoi(arg[7]);
-        neir.aclport = -1;
+        neir.aclport = neir.port = atoi(arg[7]);
         neir.cmd = 1;
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");

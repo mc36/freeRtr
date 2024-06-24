@@ -18,6 +18,10 @@ struct vrfp_res {
     __u32 mpls;
     __s32 sgtSet;
     __u32 sgtTag;
+    __u32 verify4;
+    __u32 verify6;
+    __u32 pmtud4;
+    __u32 pmtud6;
     __u64 packRx;
     __u64 byteRx;
     __u64 packTx;
@@ -55,7 +59,6 @@ struct neigh_res {
     __u32 sess;
     __u8 srcAddr[16];
     __u8 trgAddr[16];
-    __u32 prot;
     __u32 srcPort;
     __u32 trgPort;
     __u64 pack;

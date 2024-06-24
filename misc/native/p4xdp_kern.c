@@ -424,6 +424,18 @@ __u32 xdp_router(struct xdp_md *ctx) {
                 break;
             case 2: // bridge
                 tmp = vrfp->brdg;
+                switch (ethtyp) {
+                case ETHERTYPE_IPV4: // ipv4
+                    if (vrfp->pmtud4 > 0) {
+                        if ((bufE - bufD - bufP) > vrfp->pmtud4) goto punt;
+                    }
+                    break;
+                case ETHERTYPE_IPV6: // ipv6
+                    if (vrfp->pmtud6 > 0) {
+                        if ((bufE - bufD - bufP) > vrfp->pmtud6) goto punt;
+                    }
+                    break;
+                }
                 goto bridge_rx;
             case 3: // xconn
                 bufP -= 2;
@@ -485,6 +497,9 @@ ipv4_rx:
             revalidatePacket(bufP + 20);
             if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
             if ((bufD[bufP + 0] & 0xf) < 5) goto drop;
+            if (vrfp->pmtud4 > 0) {
+                if ((bufE - bufD - bufP) > vrfp->pmtud4) goto punt;
+            }
             ttl = bufD[bufP + 8] - 1;
             if (ttl <= 1) goto punt;
             if (bufD[bufP + 9] == 46) goto cpu;
@@ -494,6 +509,17 @@ ipv4_rx:
             struct route4_key rou4;
             rou4.bits = (sizeof(rou4) * 8) - routes_bits;
             rou4.vrf = vrfp->vrf;
+            if (vrfp->verify4 > 0) {
+                __builtin_memcpy(rou4.addr, &bufD[bufP + 12], sizeof(rou4.addr));
+                struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
+                if (res4 == NULL) goto punt;
+                if (vrfp->verify4 > 1) {
+                    neik = res4->hop;
+                    struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);
+                    if (neir == NULL) goto punt;
+                    if (neir->aclport != prt) goto punt;
+                }
+            }
             __builtin_memcpy(rou4.addr, &bufD[bufP + 16], sizeof(rou4.addr));
             struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
             if (res4 == NULL) goto punt;
@@ -514,6 +540,9 @@ ipv4_rx:
 ipv6_rx:
             revalidatePacket(bufP + 40);
             if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
+            if (vrfp->pmtud6 > 0) {
+                if ((bufE - bufD - bufP) > vrfp->pmtud6) goto punt;
+            }
             ttl = bufD[bufP + 7] - 1;
             if (ttl <= 1) goto punt;
             if (bufD[bufP + 6] == 0) goto cpu;
@@ -522,6 +551,17 @@ ipv6_rx:
             struct route6_key rou6;
             rou6.bits = (sizeof(rou6) * 8) - routes_bits;
             rou6.vrf = vrfp->vrf;
+            if (vrfp->verify6 > 0) {
+                __builtin_memcpy(rou6.addr, &bufD[bufP + 8], sizeof(rou6.addr));
+                struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
+                if (res6 == NULL) goto punt;
+                if (vrfp->verify6 > 1) {
+                    neik = res6->hop;
+                    struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);
+                    if (neir == NULL) goto punt;
+                    if (neir->aclport != prt) goto punt;
+                }
+            }
             __builtin_memcpy(rou6.addr, &bufD[bufP + 24], sizeof(rou6.addr));
             struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
             if (res6 == NULL) goto punt;
@@ -653,7 +693,7 @@ ethtyp_tx:
         __builtin_memcpy(&macaddr[0], neir->macs, sizeof(neir->macs));
         prt = neir->aclport;
         vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
-        if (vrfp != NULL) {
+        if ((neir->cmd > 1) && (vrfp != NULL)) {
             vrfp->packTx++;
             vrfp->byteTx += bufE - bufD;
             putSgt();
