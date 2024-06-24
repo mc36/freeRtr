@@ -11,6 +11,7 @@
 #include <linux/if_link.h>
 #include <bpf/bpf.h>
 #include <bpf/libbpf.h>
+#include "types.h"
 #include "p4xdp_tab.h"
 
 // hack
@@ -40,6 +41,8 @@ int vrf_port_fd;
 int neighs_fd;
 int route4_fd;
 int route6_fd;
+int tunnel4_fd;
+int tunnel6_fd;
 int labels_fd;
 int bundles_fd;
 int vlan_in_fd;
@@ -191,9 +194,13 @@ int main(int argc, char **argv) {
     neighs_fd = bpf_object__find_map_fd_by_name(bpf_obj, "neighs");
     if (neighs_fd < 0) err("error finding table");
     route4_fd = bpf_object__find_map_fd_by_name(bpf_obj, "routes4");
-    if (vrf_port_fd < 0) err("error finding table");
+    if (route4_fd < 0) err("error finding table");
     route6_fd = bpf_object__find_map_fd_by_name(bpf_obj, "routes6");
     if (route6_fd < 0) err("error finding table");
+    tunnel4_fd = bpf_object__find_map_fd_by_name(bpf_obj, "tunnels4");
+    if (tunnel4_fd < 0) err("error finding table");
+    tunnel6_fd = bpf_object__find_map_fd_by_name(bpf_obj, "tunnels6");
+    if (tunnel6_fd < 0) err("error finding table");
     labels_fd = bpf_object__find_map_fd_by_name(bpf_obj, "labels");
     if (labels_fd < 0) err("error finding table");
     bundles_fd = bpf_object__find_map_fd_by_name(bpf_obj, "bundles");

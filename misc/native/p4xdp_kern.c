@@ -118,6 +118,22 @@ struct {
 } bridges SEC(".maps");
 
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct tunnel4_key);
+    __type(value, struct tunnel_res);
+    __uint(max_entries, 128);
+} tunnels4 SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct tunnel6_key);
+    __type(value, struct tunnel_res);
+    __uint(max_entries, 128);
+} tunnels6 SEC(".maps");
+
+
 
 
 #define revalidatePacket(size)                                      \
@@ -144,7 +160,7 @@ struct {
         neik = res->hop;                                            \
         goto ethtyp_tx;                                             \
     case 2:                                                         \
-        goto cpu;                                                   \
+        break;                                                      \
     case 3:                                                         \
         bufP -= 4;                                                  \
         put32msb(bufD, bufP, ((res->label1 << 12) | 0x100 | ttl));  \
@@ -238,6 +254,104 @@ struct {
         goto drop;
 
 
+#define extract_layer4(tun)                                         \
+    switch (tun.prot) {                                             \
+        case IP_PROTOCOL_TCP:                                       \
+            revalidatePacket(bufP + 4);                             \
+            tun.srcPort = get16msb(bufD, bufP + 0);                 \
+            tun.trgPort = get16msb(bufD, bufP + 2);                 \
+            break;                                                  \
+        case IP_PROTOCOL_UDP:                                       \
+            revalidatePacket(bufP + 4);                             \
+            tun.srcPort = get16msb(bufD, bufP + 0);                 \
+            tun.trgPort = get16msb(bufD, bufP + 2);                 \
+            break;                                                  \
+        default:                                                    \
+            tun.srcPort = 0;                                        \
+            tun.trgPort = 0;                                        \
+            break;                                                  \
+    }
+
+
+
+#define doTunnel(tun)                                               \
+    if (tunr == NULL) goto cpu;                                     \
+    tunr->pack++;                                                   \
+    tunr->byte += bufE - bufD;                                      \
+    switch (tunr->cmd) {                                            \
+        case 1:                                                     \
+            bufP += 2;                                              \
+            break;                                                  \
+        default:                                                    \
+            goto drop;                                              \
+    }                                                               \
+    prt = tunr->aclport;                                            \
+    if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr)) != 0) goto drop;   \
+    continue;
+
+
+#define putSgt()                                                \
+    if (vrfp->sgtTag != 0) {                                    \
+        bufP -= 2 * sizeof(macaddr);                            \
+        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;     \
+        bufP = 2 * sizeof(macaddr);                             \
+        revalidatePacket(3 * sizeof(macaddr));                  \
+        bufP -= 8;                                              \
+        put16msb(bufD, bufP + 2, 0x0101);                       \
+        put16msb(bufD, bufP + 4, 0x0001);                       \
+        put16msb(bufD, bufP + 6, sgt);                          \
+        ethtyp = ETHERTYPE_SGT;                                 \
+        put16msb(bufD, bufP + 0, ethtyp);                       \
+    }
+
+
+#define putIpv4header(proto)                                    \
+    bufP -= 20;                                                 \
+    put16msb(bufD, bufP + 0, 0x4500);                           \
+    ethtyp = bufE - bufD - sizeof(macaddr) - 2;                 \
+    put16msb(bufD, bufP + 2, ethtyp);                           \
+    put16msb(bufD, bufP + 4, 0);                                \
+    put16msb(bufD, bufP + 6, 0);                                \
+    bufD[bufP + 8] = 0xff;                                      \
+    bufD[bufP + 9] = proto;                                     \
+    ethtyp += 0x4500 + 0xff00 + proto;                          \
+    ethtyp += get16msb(neir->srcAddr, 0);                       \
+    ethtyp += get16msb(neir->srcAddr, 2);                       \
+    ethtyp += get16msb(neir->trgAddr, 0);                       \
+    ethtyp += get16msb(neir->trgAddr, 2);                       \
+    ethtyp = (ethtyp >> 16) + (ethtyp & 0xffff);                \
+    ethtyp += (ethtyp >> 16);                                   \
+    ethtyp = 0xffff & (~ethtyp);                                \
+    put16msb(bufD, bufP + 10, ethtyp);                          \
+    __builtin_memcpy(&bufD[bufP + 12], &neir->srcAddr, 4);      \
+    __builtin_memcpy(&bufD[bufP + 16], &neir->trgAddr, 4);      \
+    ethtyp = ETHERTYPE_IPV4;                                    \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP, ethtyp);
+
+
+
+#define putIpv6header(proto)                                    \
+    bufP -= 40;                                                 \
+    put16msb(bufD, bufP + 0, 0x6000);                           \
+    put16msb(bufD, bufP + 2, 0);                                \
+    ethtyp = bufE - bufD - sizeof(macaddr) - 42;                \
+    put16msb(bufD, bufP + 4, ethtyp);                           \
+    bufD[bufP + 6] = proto;                                     \
+    bufD[bufP + 7] = 0xff;                                      \
+    __builtin_memcpy(&bufD[bufP + 8], &neir->srcAddr, 16);      \
+    __builtin_memcpy(&bufD[bufP + 24], &neir->trgAddr, 16);     \
+    ethtyp = ETHERTYPE_IPV6;                                    \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP, ethtyp);
+
+
+
+#define putGreHeader()                                          \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP, 0x0000);
+
+
 
 
 
@@ -286,8 +400,149 @@ __u32 xdp_router(struct xdp_md *ctx) {
         __u64 bufP = sizeof(macaddr) + 2;
         revalidatePacket(bufP);
         __u32 ethtyp = get16msb(bufD, bufP - 2);
+        __u32 neik = 0;
+        __s32 ttl = 0;
+
+        struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
+        if (vrfp != NULL) {
+            vrfp->packRx++;
+            vrfp->byteRx += bufE - bufD;
+
+            if (vrfp->sgtTag != 0) {
+                revalidatePacket(bufP + 12);
+                if (ethtyp != ETHERTYPE_SGT) goto drop;
+                if (get32msb(bufD, bufP + 0) != 0x01010001) goto drop;
+                sgt = get16msb(bufD, bufP + 4);
+                ethtyp = get16msb(bufD, bufP + 6);
+                bufP += 8;
+            }
+            if (vrfp->sgtSet >= 0) {
+                sgt = vrfp->sgtSet;
+            }
+            switch (vrfp->cmd) {
+            case 1: // route
+                break;
+            case 2: // bridge
+                tmp = vrfp->brdg;
+                goto bridge_rx;
+            case 3: // xconn
+                bufP -= 2;
+                bufP -= 12;
+                bufP -= 2 * sizeof(macaddr);
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = 2 * sizeof(macaddr);
+                revalidatePacket(3 * sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                ethtyp = ETHERTYPE_MPLS_UCAST;
+                bufP -= 4;
+                ttl = 0x1ff | (vrfp->label2 << 12);
+                put32msb(bufD, bufP, ttl);
+                bufP -= 4;
+                ttl = 0xff | (vrfp->label1 << 12);
+                put32msb(bufD, bufP, ttl);
+                neik = vrfp->hop;
+                goto ethtyp_tx;
+            case 4: // loconnifc
+                prt = vrfp->label1;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                goto subif_tx;
+            case 5: // loconnnei
+                neik = vrfp->label1;
+                goto ethtyp_tx;
+            default:
+                break;
+            }
+        }
 
         switch (ethtyp) {
+        case ETHERTYPE_MPLS_UCAST:
+            if (vrfp == NULL) goto drop;
+            if (vrfp->mpls == 0) goto drop;
+            revalidatePacket(bufP + 12);
+            __u32 label;
+            struct label_res* resm;
+            readMpls();
+            switch (resm->cmd) {
+            case 1:
+                if ((tmp & 0x100) == 0) {
+                    bufD[bufP + 3] = ttl + 1;
+                    readMpls();
+                    switch (resm->cmd) {
+                    case 1:
+                        if ((tmp & 0x100) == 0) goto drop;
+                        routeMpls();
+                        switchMpls();
+                    }
+                }
+                routeMpls();
+                switchMpls();
+            }
+            goto drop;
+        case ETHERTYPE_IPV4:
+            if (vrfp == NULL) goto drop;
+ipv4_rx:
+            revalidatePacket(bufP + 20);
+            if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
+            if ((bufD[bufP + 0] & 0xf) < 5) goto drop;
+            ttl = bufD[bufP + 8] - 1;
+            if (ttl <= 1) goto punt;
+            if (bufD[bufP + 9] == 46) goto cpu;
+            bufD[bufP + 8] = ttl;
+            update_chksum(bufP + 10, -1);
+            ttl |= vrfp->pttl4;
+            struct route4_key rou4;
+            rou4.bits = (sizeof(rou4) * 8) - routes_bits;
+            rou4.vrf = vrfp->vrf;
+            __builtin_memcpy(rou4.addr, &bufD[bufP + 16], sizeof(rou4.addr));
+            struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
+            if (res4 == NULL) goto punt;
+            hash ^= get32msb(bufD, bufP + 12);
+            hash ^= get32msb(bufD, bufP + 16);
+            doRouted(res4);
+            struct tunnel4_key tun4;
+            tun4.vrf = vrfp->vrf;
+            tun4.prot = bufD[bufP + 9];
+            __builtin_memcpy(tun4.srcAddr, &bufD[bufP + 12], sizeof(tun4.srcAddr));
+            __builtin_memcpy(tun4.trgAddr, &bufD[bufP + 16], sizeof(tun4.trgAddr));
+            bufP += 20;
+            extract_layer4(tun4);
+            struct tunnel_res* tunr = bpf_map_lookup_elem(&tunnels4, &tun4);
+            doTunnel();
+        case ETHERTYPE_IPV6:
+            if (vrfp == NULL) goto drop;
+ipv6_rx:
+            revalidatePacket(bufP + 40);
+            if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
+            ttl = bufD[bufP + 7] - 1;
+            if (ttl <= 1) goto punt;
+            if (bufD[bufP + 6] == 0) goto cpu;
+            bufD[bufP + 7] = ttl;
+            ttl |= vrfp->pttl6;
+            struct route6_key rou6;
+            rou6.bits = (sizeof(rou6) * 8) - routes_bits;
+            rou6.vrf = vrfp->vrf;
+            __builtin_memcpy(rou6.addr, &bufD[bufP + 24], sizeof(rou6.addr));
+            struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
+            if (res6 == NULL) goto punt;
+            hash ^= get32msb(bufD, bufP + 8);
+            hash ^= get32msb(bufD, bufP + 12);
+            hash ^= get32msb(bufD, bufP + 16);
+            hash ^= get32msb(bufD, bufP + 20);
+            hash ^= get32msb(bufD, bufP + 24);
+            hash ^= get32msb(bufD, bufP + 28);
+            hash ^= get32msb(bufD, bufP + 32);
+            hash ^= get32msb(bufD, bufP + 36);
+            doRouted(res6);
+            struct tunnel6_key tun6;
+            tun6.vrf = vrfp->vrf;
+            tun6.prot = bufD[bufP + 6];
+            __builtin_memcpy(tun6.srcAddr, &bufD[bufP + 8], sizeof(tun6.srcAddr));
+            __builtin_memcpy(tun6.trgAddr, &bufD[bufP + 24], sizeof(tun6.trgAddr));
+            bufP += 40;
+            extract_layer4(tun6);
+            tunr = bpf_map_lookup_elem(&tunnels6, &tun6);
+            doTunnel();
         case ETHERTYPE_VLAN:
             revalidatePacket(bufP + 4);
             struct vlan_key vlnk;
@@ -333,129 +588,6 @@ __u32 xdp_router(struct xdp_md *ctx) {
             continue;
         case ETHERTYPE_PPPOE_CTRL:
             goto cpu;
-        }
-
-        struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
-        if (vrfp == NULL) goto drop;
-        vrfp->packRx++;
-        vrfp->byteRx += bufE - bufD;
-
-        if (vrfp->sgtTag != 0) {
-            revalidatePacket(bufP + 12);
-            if (ethtyp != ETHERTYPE_SGT) goto drop;
-            if (get32msb(bufD, bufP + 0) != 0x01010001) goto drop;
-            sgt = get16msb(bufD, bufP + 4);
-            ethtyp = get16msb(bufD, bufP + 6);
-            bufP += 8;
-        }
-        if (vrfp->sgtSet >= 0) {
-            sgt = vrfp->sgtSet;
-        }
-
-        __u32 neik = 0;
-        __s32 ttl = 0;
-        switch (vrfp->cmd) {
-        case 1: // route
-            break;
-        case 2: // bridge
-            tmp = vrfp->brdg;
-            goto bridge_rx;
-        case 3: // xconn
-            bufP -= 2;
-            bufP -= 12;
-            bufP -= 2 * sizeof(macaddr);
-            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = 2 * sizeof(macaddr);
-            revalidatePacket(3 * sizeof(macaddr));
-            __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
-            ethtyp = ETHERTYPE_MPLS_UCAST;
-            bufP -= 4;
-            ttl = 0x1ff | (vrfp->label2 << 12);
-            put32msb(bufD, bufP, ttl);
-            bufP -= 4;
-            ttl = 0xff | (vrfp->label1 << 12);
-            put32msb(bufD, bufP, ttl);
-            neik = vrfp->hop;
-            goto ethtyp_tx;
-        case 4: // loconnifc
-            prt = vrfp->label1;
-            bufP -= 2;
-            put16msb(bufD, bufP, ethtyp);
-            goto subif_tx;
-        case 5: // loconnnei
-            neik = vrfp->label1;
-            goto ethtyp_tx;
-        default:
-            goto drop;
-        }
-
-        switch (ethtyp) {
-        case ETHERTYPE_MPLS_UCAST:
-            if (vrfp->mpls == 0) goto drop;
-            revalidatePacket(bufP + 12);
-            __u32 label;
-            struct label_res* resm;
-            readMpls();
-            switch (resm->cmd) {
-            case 1:
-                if ((tmp & 0x100) == 0) {
-                    bufD[bufP + 3] = ttl + 1;
-                    readMpls();
-                    switch (resm->cmd) {
-                    case 1:
-                        if ((tmp & 0x100) == 0) goto drop;
-                        routeMpls();
-                        switchMpls();
-                    }
-                }
-                routeMpls();
-                switchMpls();
-            }
-            goto drop;
-        case ETHERTYPE_IPV4:
-ipv4_rx:
-            revalidatePacket(bufP + 20);
-            if ((bufD[bufP + 0] & 0xf0) != 0x40) goto drop;
-            if ((bufD[bufP + 0] & 0xf) < 5) goto drop;
-            ttl = bufD[bufP + 8] - 1;
-            if (ttl <= 1) goto punt;
-            if (bufD[bufP + 9] == 46) goto cpu;
-            bufD[bufP + 8] = ttl;
-            update_chksum(bufP + 10, -1);
-            ttl |= vrfp->pttl4;
-            struct route4_key rou4;
-            rou4.bits = (sizeof(rou4) * 8) - routes_bits;
-            rou4.vrf = vrfp->vrf;
-            __builtin_memcpy(rou4.addr, &bufD[bufP + 16], sizeof(rou4.addr));
-            struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
-            if (res4 == NULL) goto punt;
-            hash ^= get32msb(bufD, bufP + 12);
-            hash ^= get32msb(bufD, bufP + 16);
-            doRouted(res4);
-        case ETHERTYPE_IPV6:
-ipv6_rx:
-            revalidatePacket(bufP + 40);
-            if ((bufD[bufP + 0] & 0xf0) != 0x60) goto drop;
-            ttl = bufD[bufP + 7] - 1;
-            if (ttl <= 1) goto punt;
-            if (bufD[bufP + 6] == 0) goto cpu;
-            bufD[bufP + 7] = ttl;
-            ttl |= vrfp->pttl6;
-            struct route6_key rou6;
-            rou6.bits = (sizeof(rou6) * 8) - routes_bits;
-            rou6.vrf = vrfp->vrf;
-            __builtin_memcpy(rou6.addr, &bufD[bufP + 24], sizeof(rou6.addr));
-            struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
-            if (res6 == NULL) goto punt;
-            hash ^= get32msb(bufD, bufP + 8);
-            hash ^= get32msb(bufD, bufP + 12);
-            hash ^= get32msb(bufD, bufP + 16);
-            hash ^= get32msb(bufD, bufP + 20);
-            hash ^= get32msb(bufD, bufP + 24);
-            hash ^= get32msb(bufD, bufP + 28);
-            hash ^= get32msb(bufD, bufP + 32);
-            hash ^= get32msb(bufD, bufP + 36);
-            doRouted(res6);
         case ETHERTYPE_ARP:
             goto cpu;
         case ETHERTYPE_LACP:
@@ -519,11 +651,18 @@ ethtyp_tx:
         neir->pack++;
         neir->byte += bufE - bufD;
         __builtin_memcpy(&macaddr[0], neir->macs, sizeof(neir->macs));
+        prt = neir->aclport;
+        vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
+        if (vrfp != NULL) {
+            vrfp->packTx++;
+            vrfp->byteTx += bufE - bufD;
+            putSgt();
+        }
         prt = neir->port;
         switch (neir->cmd) {
-        case 1:
+        case 1: // raw
             break;
-        case 2:
+        case 2: // pppoe
             switch (ethtyp) {
             case ETHERTYPE_MPLS_UCAST:
                 ethtyp = PPPTYPE_MPLS_UCAST;
@@ -554,28 +693,33 @@ ethtyp_tx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             break;
+        case 3: // gre4
+            bufP -= sizeof(macaddr) + 24;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 24;
+            revalidatePacket(bufP);
+            putGreHeader();
+            putIpv4header(IP_PROTOCOL_GRE);
+            break;
+        case 4: // gre6
+            bufP -= sizeof(macaddr) + 44;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 44;
+            revalidatePacket(bufP);
+            putGreHeader();
+            putIpv6header(IP_PROTOCOL_GRE);
+            break;
         default:
             goto drop;
         }
 
 subif_tx:
         vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
-        if (vrfp == NULL) goto vlan_tx;
-        vrfp->packTx++;
-        vrfp->byteTx += bufE - bufD;
-        if (vrfp->sgtTag == 0) goto vlan_tx;
-        bufP -= 2 * sizeof(macaddr);
-        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-        bufP = 2 * sizeof(macaddr);
-        revalidatePacket(3 * sizeof(macaddr));
-        bufP -= 8;
-        put16msb(bufD, bufP + 2, 0x0101);
-        put16msb(bufD, bufP + 4, 0x0001);
-        put16msb(bufD, bufP + 6, sgt);
-        ethtyp = ETHERTYPE_SGT;
-        put16msb(bufD, bufP + 0, ethtyp);
-vlan_tx:
-        {}
+        if (vrfp != NULL) {
+            vrfp->packTx++;
+            vrfp->byteTx += bufE - bufD;
+            putSgt();
+        }
         struct vlan_res* vlnr = bpf_map_lookup_elem(&vlan_out, &prt);
         if (vlnr != NULL) {
             hash ^= vlnr->vlan;

@@ -244,6 +244,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
         neir.port = atoi(arg[7]);
+        neir.aclport = -1;
         neir.cmd = 1;
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
@@ -264,6 +265,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
         neir.port = atoi(arg[7]);
+        neir.aclport = -1;
         neir.cmd = 1;
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
@@ -557,7 +559,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "pppoe") == 0) {
         struct pppoe_key pppoe;
         memset(&pppoe, 0, sizeof(pppoe));
-        i = atoi(arg[2]);
+        neir.aclport = i = atoi(arg[2]);
         pppoe.port = atoi(arg[3]);
         pppoe.sess = atoi(arg[6]);
         o = atoi(arg[4]);
@@ -571,6 +573,68 @@ int doOneCommand(unsigned char* buf) {
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
             if (bpf_map_update_elem(pppoes_fd, &pppoe, &i, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "gre4") == 0) {
+        struct tunnel4_key tunk;
+        memset(&tunk, 0, sizeof(tunk));
+        struct tunnel_res tunr;
+        memset(&tunr, 0, sizeof(tunr));
+        o = atoi(arg[2]);
+        neir.aclport = tunr.aclport = atoi(arg[3]);
+        neir.port = atoi(arg[4]);
+        inet_pton(AF_INET, arg[5], buf2);
+        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        inet_pton(AF_INET, arg[6], buf2);
+        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        tunk.vrf = atoi(arg[8]);
+        str2mac(&neir.macs[0], arg[7]);
+        str2mac(&neir.macs[6], arg[9]);
+        neir.cmd = 3;
+        tunk.srcPort = 0;
+        tunk.trgPort = 0;
+        tunk.prot = IP_PROTOCOL_GRE;
+        tunr.cmd = 1;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "gre6") == 0) {
+        struct tunnel6_key tunk;
+        memset(&tunk, 0, sizeof(tunk));
+        struct tunnel_res tunr;
+        memset(&tunr, 0, sizeof(tunr));
+        o = atoi(arg[2]);
+        neir.aclport = tunr.aclport = atoi(arg[3]);
+        neir.port = atoi(arg[4]);
+        inet_pton(AF_INET6, arg[5], buf2);
+        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        inet_pton(AF_INET6, arg[6], buf2);
+        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        tunk.vrf = atoi(arg[8]);
+        str2mac(&neir.macs[0], arg[7]);
+        str2mac(&neir.macs[6], arg[9]);
+        neir.cmd = 4;
+        tunk.srcPort = 0;
+        tunk.trgPort = 0;
+        tunk.prot = IP_PROTOCOL_GRE;
+        tunr.cmd = 1;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;

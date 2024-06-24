@@ -48,10 +48,16 @@ struct routes_res {
 };
 
 struct neigh_res {
-    __u32 cmd; // 1=rawip, 2=pppoe
+    __u32 cmd; // 1=rawip, 2=pppoe, 3=gre4, 4=gre6
     __u8 macs[12];
     __u32 port;
+    __u32 aclport;
     __u32 sess;
+    __u8 srcAddr[16];
+    __u8 trgAddr[16];
+    __u32 prot;
+    __u32 srcPort;
+    __u32 trgPort;
     __u64 pack;
     __u64 byte;
 };
@@ -107,4 +113,29 @@ struct bridge_res {
     __u64 byteRx;
     __u64 packTx;
     __u64 byteTx;
+};
+
+struct tunnel4_key {
+    __u32 vrf;
+    __u8 srcAddr[4];
+    __u8 trgAddr[4];
+    __u32 prot;
+    __u32 srcPort;
+    __u32 trgPort;
+};
+
+struct tunnel6_key {
+    __u32 vrf;
+    __u8 srcAddr[16];
+    __u8 trgAddr[16];
+    __u32 prot;
+    __u32 srcPort;
+    __u32 trgPort;
+};
+
+struct tunnel_res {
+    __u32 cmd; // 1=gre
+    __u32 aclport;
+    __u64 pack;
+    __u64 byte;
 };

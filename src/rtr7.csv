@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.6.21-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-21 10:17:06, took 00:23:40, with 10 workers, on 546 cases, 1 failed, 0 traces, 7 retries
+-;-;-;freeRouter v24.6.24-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-06-24 15:48:49, took 00:12:24, with 10 workers, on 546 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
@@ -198,8 +198,8 @@ http://sources.freertr.org/cfg/p4lang-crypt095.tst;p4lang-crypt095.tst;not appli
 http://sources.freertr.org/cfg/p4lang-crypt096.tst;p4lang-crypt096.tst;not applicable;p4lang: macsec with aes256gcm and aead
 http://sources.freertr.org/cfg/p4lang-crypt097.tst;p4lang-crypt097.tst;success;p4lang: sgt over ethernet
 http://sources.freertr.org/cfg/p4lang-crypt098.tst;p4lang-crypt098.tst;success;p4lang: sgt over vlan
-http://sources.freertr.org/cfg/p4lang-crypt099.tst;p4lang-crypt099.tst;not applicable;p4lang: sgt over gre
-http://sources.freertr.org/cfg/p4lang-crypt100.tst;p4lang-crypt100.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0;p4lang: sgt over pppoe
+http://sources.freertr.org/cfg/p4lang-crypt099.tst;p4lang-crypt099.tst;success;p4lang: sgt over gre
+http://sources.freertr.org/cfg/p4lang-crypt100.tst;p4lang-crypt100.tst;success;p4lang: sgt over pppoe
 http://sources.freertr.org/cfg/p4lang-crypt101.tst;p4lang-crypt101.tst;not applicable;p4lang: sgt over l2tp
 http://sources.freertr.org/cfg/p4lang-crypt102.tst;p4lang-crypt102.tst;success;p4lang: sgt over hairpin
 http://sources.freertr.org/cfg/p4lang-crypt103.tst;p4lang-crypt103.tst;not applicable;p4lang: sgt over macsec over ethernet
@@ -268,28 +268,28 @@ http://sources.freertr.org/cfg/p4lang-rout045.tst;p4lang-rout045.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout046.tst;p4lang-rout046.tst;success;p4lang: bundle vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout047.tst;p4lang-rout047.tst;success;p4lang: hairpin evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout048.tst;p4lang-rout048.tst;success;p4lang: hairpin vlan evpn/cmac with bgp
-http://sources.freertr.org/cfg/p4lang-rout049.tst;p4lang-rout049.tst;not applicable;p4lang: gre routing over ipv4
-http://sources.freertr.org/cfg/p4lang-rout050.tst;p4lang-rout050.tst;not applicable;p4lang: gre routing over ipv6
-http://sources.freertr.org/cfg/p4lang-rout051.tst;p4lang-rout051.tst;not applicable;p4lang: gre routing over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout052.tst;p4lang-rout052.tst;not applicable;p4lang: gre routing over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout053.tst;p4lang-rout053.tst;not applicable;p4lang: gre routing over vlan
-http://sources.freertr.org/cfg/p4lang-rout054.tst;p4lang-rout054.tst;not applicable;p4lang: gre routing over bundle
-http://sources.freertr.org/cfg/p4lang-rout055.tst;p4lang-rout055.tst;not applicable;p4lang: gre routing over bundle vlan
-http://sources.freertr.org/cfg/p4lang-rout056.tst;p4lang-rout056.tst;not applicable;p4lang: gre routing over hairpin
-http://sources.freertr.org/cfg/p4lang-rout057.tst;p4lang-rout057.tst;not applicable;p4lang: gre routing over hairpin vlan
-http://sources.freertr.org/cfg/p4lang-rout058.tst;p4lang-rout058.tst;not applicable;p4lang: gre routing over bridge
-http://sources.freertr.org/cfg/p4lang-rout059.tst;p4lang-rout059.tst;not applicable;p4lang: gre routing over vlan bridge
-http://sources.freertr.org/cfg/p4lang-rout060.tst;p4lang-rout060.tst;not applicable;p4lang: gre mpls over ipv4
-http://sources.freertr.org/cfg/p4lang-rout061.tst;p4lang-rout061.tst;not applicable;p4lang: gre mpls over ipv6
-http://sources.freertr.org/cfg/p4lang-rout062.tst;p4lang-rout062.tst;not applicable;p4lang: gre mpls over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout063.tst;p4lang-rout063.tst;not applicable;p4lang: gre mpls over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout064.tst;p4lang-rout064.tst;not applicable;p4lang: gre mpls over vlan
-http://sources.freertr.org/cfg/p4lang-rout065.tst;p4lang-rout065.tst;not applicable;p4lang: gre mpls over bundle
-http://sources.freertr.org/cfg/p4lang-rout066.tst;p4lang-rout066.tst;not applicable;p4lang: gre mpls over bundle vlan
-http://sources.freertr.org/cfg/p4lang-rout067.tst;p4lang-rout067.tst;not applicable;p4lang: gre mpls over hairpin
-http://sources.freertr.org/cfg/p4lang-rout068.tst;p4lang-rout068.tst;not applicable;p4lang: gre mpls over hairpin vlan
-http://sources.freertr.org/cfg/p4lang-rout069.tst;p4lang-rout069.tst;not applicable;p4lang: gre mpls over bridge
-http://sources.freertr.org/cfg/p4lang-rout070.tst;p4lang-rout070.tst;not applicable;p4lang: gre mpls over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout049.tst;p4lang-rout049.tst;success;p4lang: gre routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout050.tst;p4lang-rout050.tst;success;p4lang: gre routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout051.tst;p4lang-rout051.tst;success;p4lang: gre routing over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout052.tst;p4lang-rout052.tst;success;p4lang: gre routing over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout053.tst;p4lang-rout053.tst;success;p4lang: gre routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout054.tst;p4lang-rout054.tst;success;p4lang: gre routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout055.tst;p4lang-rout055.tst;success;p4lang: gre routing over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout056.tst;p4lang-rout056.tst;success;p4lang: gre routing over hairpin
+http://sources.freertr.org/cfg/p4lang-rout057.tst;p4lang-rout057.tst;success;p4lang: gre routing over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout058.tst;p4lang-rout058.tst;success;p4lang: gre routing over bridge
+http://sources.freertr.org/cfg/p4lang-rout059.tst;p4lang-rout059.tst;success;p4lang: gre routing over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout060.tst;p4lang-rout060.tst;success;p4lang: gre mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout061.tst;p4lang-rout061.tst;success;p4lang: gre mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout062.tst;p4lang-rout062.tst;success;p4lang: gre mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout063.tst;p4lang-rout063.tst;success;p4lang: gre mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout064.tst;p4lang-rout064.tst;success;p4lang: gre mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout065.tst;p4lang-rout065.tst;success;p4lang: gre mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout066.tst;p4lang-rout066.tst;success;p4lang: gre mpls over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout067.tst;p4lang-rout067.tst;success;p4lang: gre mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-rout068.tst;p4lang-rout068.tst;success;p4lang: gre mpls over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout069.tst;p4lang-rout069.tst;success;p4lang: gre mpls over bridge
+http://sources.freertr.org/cfg/p4lang-rout070.tst;p4lang-rout070.tst;success;p4lang: gre mpls over vlan bridge
 http://sources.freertr.org/cfg/p4lang-rout071.tst;p4lang-rout071.tst;not applicable;p4lang: l2tp routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout072.tst;p4lang-rout072.tst;not applicable;p4lang: l2tp routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout073.tst;p4lang-rout073.tst;not applicable;p4lang: l2tp routing over ipv4 loopback
@@ -412,23 +412,23 @@ http://sources.freertr.org/cfg/p4lang-rout189.tst;p4lang-rout189.tst;not applica
 http://sources.freertr.org/cfg/p4lang-rout190.tst;p4lang-rout190.tst;success;p4lang: bundle mpls pop
 http://sources.freertr.org/cfg/p4lang-rout191.tst;p4lang-rout191.tst;success;p4lang: bundle vlan mpls pop
 http://sources.freertr.org/cfg/p4lang-rout192.tst;p4lang-rout192.tst;success;p4lang: pppoe mpls pop
-http://sources.freertr.org/cfg/p4lang-rout193.tst;p4lang-rout193.tst;not applicable;p4lang: gre mpls pop
+http://sources.freertr.org/cfg/p4lang-rout193.tst;p4lang-rout193.tst;success;p4lang: gre mpls pop
 http://sources.freertr.org/cfg/p4lang-rout194.tst;p4lang-rout194.tst;not applicable;p4lang: l2tp mpls pop
 http://sources.freertr.org/cfg/p4lang-rout195.tst;p4lang-rout195.tst;success;p4lang: bundle mpls push
 http://sources.freertr.org/cfg/p4lang-rout196.tst;p4lang-rout196.tst;success;p4lang: bundle vlan mpls push
 http://sources.freertr.org/cfg/p4lang-rout197.tst;p4lang-rout197.tst;success;p4lang: pppoe mpls push
-http://sources.freertr.org/cfg/p4lang-rout198.tst;p4lang-rout198.tst;not applicable;p4lang: gre mpls push
+http://sources.freertr.org/cfg/p4lang-rout198.tst;p4lang-rout198.tst;success;p4lang: gre mpls push
 http://sources.freertr.org/cfg/p4lang-rout199.tst;p4lang-rout199.tst;not applicable;p4lang: l2tp mpls push
 http://sources.freertr.org/cfg/p4lang-rout200.tst;p4lang-rout200.tst;success;p4lang: lpm routing
 http://sources.freertr.org/cfg/p4lang-rout201.tst;p4lang-rout201.tst;success;p4lang: l2vpn over bundle mpls
 http://sources.freertr.org/cfg/p4lang-rout202.tst;p4lang-rout202.tst;success;p4lang: l2vpn over bundle vlan mpls
 http://sources.freertr.org/cfg/p4lang-rout203.tst;p4lang-rout203.tst;success;p4lang: l2vpn over pppoe mpls
-http://sources.freertr.org/cfg/p4lang-rout204.tst;p4lang-rout204.tst;not applicable;p4lang: l2vpn over gre mpls
+http://sources.freertr.org/cfg/p4lang-rout204.tst;p4lang-rout204.tst;success;p4lang: l2vpn over gre mpls
 http://sources.freertr.org/cfg/p4lang-rout205.tst;p4lang-rout205.tst;not applicable;p4lang: l2vpn over l2tp mpls
 http://sources.freertr.org/cfg/p4lang-rout206.tst;p4lang-rout206.tst;success;p4lang: l3vpn over bundle mpls
 http://sources.freertr.org/cfg/p4lang-rout207.tst;p4lang-rout207.tst;success;p4lang: l3vpn over bundle vlan mpls
 http://sources.freertr.org/cfg/p4lang-rout208.tst;p4lang-rout208.tst;success;p4lang: l3vpn over pppoe mpls
-http://sources.freertr.org/cfg/p4lang-rout209.tst;p4lang-rout209.tst;not applicable;p4lang: l3vpn over gre mpls
+http://sources.freertr.org/cfg/p4lang-rout209.tst;p4lang-rout209.tst;success;p4lang: l3vpn over gre mpls
 http://sources.freertr.org/cfg/p4lang-rout210.tst;p4lang-rout210.tst;not applicable;p4lang: l3vpn over l2tp mpls
 http://sources.freertr.org/cfg/p4lang-rout211.tst;p4lang-rout211.tst;success;p4lang: routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout212.tst;p4lang-rout212.tst;success;p4lang: bridging over backplane
@@ -498,8 +498,8 @@ http://sources.freertr.org/cfg/p4lang-rout275.tst;p4lang-rout275.tst;not applica
 http://sources.freertr.org/cfg/p4lang-rout276.tst;p4lang-rout276.tst;not applicable;p4lang: sdwan over ipv6 with l2tp
 http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;not applicable;p4lang: sdwan over ipv4 with l2tp3
 http://sources.freertr.org/cfg/p4lang-rout278.tst;p4lang-rout278.tst;not applicable;p4lang: sdwan over ipv6 with l2tp3
-http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;not applicable;p4lang: sdwan over ipv4 with gre
-http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;not applicable;p4lang: sdwan over ipv6 with gre
+http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;success;p4lang: sdwan over ipv4 with gre
+http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;success;p4lang: sdwan over ipv6 with gre
 http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;not applicable;p4lang: sdwan over ipv4 with amt
 http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;not applicable;p4lang: sdwan over ipv6 with amt
 http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;not applicable;p4lang: sdwan over ipv4 with gtp
@@ -546,5 +546,5 @@ http://sources.freertr.org/cfg/p4lang-rout323.tst;p4lang-rout323.tst;not applica
 http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;not applicable;p4lang: etherip server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;not applicable;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;not applicable;p4lang: etherip server over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;not applicable;p4lang: gre local connect
+http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;success;p4lang: gre local connect
 http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;not applicable;p4lang: gre multicast routing
