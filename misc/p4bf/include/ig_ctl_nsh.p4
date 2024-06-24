@@ -60,8 +60,6 @@ control IngressControlNSH(inout headers hdr,
 #endif
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
-        hdr.ethernet.dst_mac_addr = dst;
-        hdr.ethernet.src_mac_addr = src;
         hdr.nsh.sp = sp;
         hdr.nsh.si = si;
     }
@@ -77,6 +75,7 @@ hdr.nsh.si:
         }
         actions = {
             act_fwd_ifc;
+            act_fwd_nei;
             act_route;
             @defaultonly NoAction;
         }
