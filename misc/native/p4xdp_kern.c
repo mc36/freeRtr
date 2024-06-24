@@ -274,18 +274,67 @@ struct {
 
 
 
-#define doTunnel(tun)                                               \
-    if (tunr == NULL) goto cpu;                                     \
-    tunr->pack++;                                                   \
-    tunr->byte += bufE - bufD;                                      \
-    switch (tunr->cmd) {                                            \
-        case 1:                                                     \
-            bufP += 2;                                              \
-            break;                                                  \
-        default:                                                    \
-            goto drop;                                              \
-    }                                                               \
-    prt = tunr->aclport;                                            \
+#define ethtyp2ppptyp()                                         \
+    switch (ethtyp) {                                           \
+    case ETHERTYPE_MPLS_UCAST:                                  \
+        ethtyp = PPPTYPE_MPLS_UCAST;                            \
+        break;                                                  \
+    case ETHERTYPE_IPV4:                                        \
+        ethtyp = PPPTYPE_IPV4;                                  \
+        break;                                                  \
+    case ETHERTYPE_IPV6:                                        \
+        ethtyp = PPPTYPE_IPV6;                                  \
+        break;                                                  \
+    case ETHERTYPE_SGT:                                         \
+        ethtyp = PPPTYPE_SGT;                                   \
+        break;                                                  \
+    default:                                                    \
+        goto drop;                                              \
+    }
+
+
+#define ppptyp2ethtyp()                                         \
+    if ((ethtyp & 0x8000) != 0) goto cpu;                       \
+    switch (ethtyp) {                                           \
+    case PPPTYPE_MPLS_UCAST:                                    \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                          \
+        break;                                                  \
+    case PPPTYPE_IPV4:                                          \
+        ethtyp = ETHERTYPE_IPV4;                                \
+        break;                                                  \
+    case PPPTYPE_IPV6:                                          \
+        ethtyp = ETHERTYPE_IPV6;                                \
+        break;                                                  \
+    case PPPTYPE_SGT:                                           \
+        ethtyp = ETHERTYPE_SGT;                                 \
+        break;                                                  \
+    default:                                                    \
+        goto drop;                                              \
+    }
+
+
+#define doTunnel(tun)                                           \
+    if (tunr == NULL) goto cpu;                                 \
+    tunr->pack++;                                               \
+    tunr->byte += bufE - bufD;                                  \
+    switch (tunr->cmd) {                                        \
+        case 1:                                                 \
+            bufP += 2;                                          \
+            break;                                              \
+        case 2:                                                 \
+            bufP += 8;                                          \
+            revalidatePacket(bufP + 12);                        \
+            if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu; \
+            bufP += 8;                                          \
+            bufP += 2;                                          \
+            ethtyp = get16msb(bufD, bufP);                      \
+            ppptyp2ethtyp();                                    \
+            put16msb(bufD, bufP, ethtyp);                       \
+            break;                                              \
+        default:                                                \
+            goto drop;                                          \
+    }                                                           \
+    prt = tunr->aclport;                                        \
     if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr)) != 0) goto drop;   \
     continue;
 
@@ -350,6 +399,24 @@ struct {
 #define putGreHeader()                                          \
     bufP -= 2;                                                  \
     put16msb(bufD, bufP, 0x0000);
+
+
+#define putUdpHeader()                                          \
+    bufP -= 8;                                                  \
+    put16msb(bufD, bufP + 0, neir->srcPort);                    \
+    put16msb(bufD, bufP + 2, neir->trgPort);                    \
+    ethtyp = bufE - bufD - bufP;                                \
+    put16msb(bufD, bufP + 4, ethtyp);                           \
+    put16msb(bufD, bufP + 6, 0);
+
+
+#define putL2tpHeader()                                         \
+    put16msb(bufD, bufP, ethtyp);                               \
+    bufP -= 10;                                                 \
+    put16msb(bufD, bufP + 0, 0x0202);                           \
+    put32msb(bufD, bufP + 2, neir->sess);                       \
+    put16msb(bufD, bufP + 6, 0);                                \
+    put16msb(bufD, bufP + 8, 0xff03);
 
 
 
@@ -604,24 +671,8 @@ ipv6_rx:
             res = bpf_map_lookup_elem(&pppoes, &pppk);
             if (res == NULL) goto drop;
             ethtyp = get16msb(bufD, bufP + 6);
-            if ((ethtyp & 0x8000) != 0) goto cpu;
             bufP += 8;
-            switch (ethtyp) {
-            case PPPTYPE_MPLS_UCAST:
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                break;
-            case PPPTYPE_IPV4:
-                ethtyp = ETHERTYPE_IPV4;
-                break;
-            case PPPTYPE_IPV6:
-                ethtyp = ETHERTYPE_IPV6;
-                break;
-            case PPPTYPE_SGT:
-                ethtyp = ETHERTYPE_SGT;
-                break;
-            default:
-                goto drop;
-            }
+            ppptyp2ethtyp();
             put16msb(bufD, bufP - 2, ethtyp);
             prt = *res;
             if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;
@@ -703,22 +754,7 @@ ethtyp_tx:
         case 1: // raw
             break;
         case 2: // pppoe
-            switch (ethtyp) {
-            case ETHERTYPE_MPLS_UCAST:
-                ethtyp = PPPTYPE_MPLS_UCAST;
-                break;
-            case ETHERTYPE_IPV4:
-                ethtyp = PPPTYPE_IPV4;
-                break;
-            case ETHERTYPE_IPV6:
-                ethtyp = PPPTYPE_IPV6;
-                break;
-            case ETHERTYPE_SGT:
-                ethtyp = PPPTYPE_SGT;
-                break;
-            default:
-                goto drop;
-            }
+            ethtyp2ppptyp();
             tmp = (bufE - bufD) - bufP;
             put16msb(bufD, bufP, ethtyp);
             bufP -= sizeof(macaddr);
@@ -748,6 +784,26 @@ ethtyp_tx:
             revalidatePacket(bufP);
             putGreHeader();
             putIpv6header(IP_PROTOCOL_GRE);
+            break;
+        case 5: // l2tp4
+            bufP -= sizeof(macaddr) + 40;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 40;
+            revalidatePacket(bufP + 2);
+            ethtyp2ppptyp();
+            putL2tpHeader();
+            putUdpHeader();
+            putIpv4header(IP_PROTOCOL_UDP);
+            break;
+        case 6: // l2tp6
+            bufP -= sizeof(macaddr) + 60;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 60;
+            revalidatePacket(bufP + 2);
+            ethtyp2ppptyp();
+            putL2tpHeader();
+            putUdpHeader();
+            putIpv6header(IP_PROTOCOL_UDP);
             break;
         default:
             goto drop;
