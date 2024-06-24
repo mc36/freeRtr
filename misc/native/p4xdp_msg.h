@@ -793,6 +793,70 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "gtp4") == 0) {
+        struct tunnel4_key tunk;
+        memset(&tunk, 0, sizeof(tunk));
+        struct tunnel_res tunr;
+        memset(&tunr, 0, sizeof(tunr));
+        o = atoi(arg[2]);
+        neir.aclport = tunr.aclport = atoi(arg[3]);
+        neir.port = atoi(arg[4]);
+        inet_pton(AF_INET, arg[5], buf2);
+        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        inet_pton(AF_INET, arg[6], buf2);
+        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        tunk.vrf = atoi(arg[8]);
+        str2mac(&neir.macs[0], arg[7]);
+        str2mac(&neir.macs[6], arg[9]);
+        neir.cmd = 9;
+        neir.srcPort = tunk.trgPort = atoi(arg[10]);
+        neir.trgPort = tunk.srcPort = atoi(arg[11]);
+        neir.sess = atoi(arg[12]);
+        tunk.prot = IP_PROTOCOL_UDP;
+        tunr.cmd = 4;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "gtp6") == 0) {
+        struct tunnel6_key tunk;
+        memset(&tunk, 0, sizeof(tunk));
+        struct tunnel_res tunr;
+        memset(&tunr, 0, sizeof(tunr));
+        o = atoi(arg[2]);
+        neir.aclport = tunr.aclport = atoi(arg[3]);
+        neir.port = atoi(arg[4]);
+        inet_pton(AF_INET6, arg[5], buf2);
+        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        inet_pton(AF_INET6, arg[6], buf2);
+        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        tunk.vrf = atoi(arg[8]);
+        str2mac(&neir.macs[0], arg[7]);
+        str2mac(&neir.macs[6], arg[9]);
+        neir.cmd = 10;
+        neir.srcPort = tunk.trgPort = atoi(arg[10]);
+        neir.trgPort = tunk.srcPort = atoi(arg[11]);
+        neir.sess = atoi(arg[12]);
+        tunk.prot = IP_PROTOCOL_UDP;
+        tunr.cmd = 4;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     return 0;
 #endif
 }

@@ -338,6 +338,14 @@ struct {
             ppptyp2ethtyp();                                    \
             put16msb(bufD, bufP, ethtyp);                       \
             break;                                              \
+        case 4:                                                 \
+            bufP += 8;                                          \
+            bufP += 8;                                          \
+            revalidatePacket(bufP + 2);                         \
+            guessEthtyp();                                      \
+            bufP -= 2;                                          \
+            put16msb(bufD, bufP, ethtyp);                       \
+            break;                                              \
         default:                                                \
             goto drop;                                          \
     }                                                           \
@@ -364,7 +372,7 @@ struct {
 #define putIpv4header(proto)                                    \
     bufP -= 20;                                                 \
     put16msb(bufD, bufP + 0, 0x4500);                           \
-    ethtyp = bufE - bufD - sizeof(macaddr) - 2;                 \
+    ethtyp = bufE - bufD  - bufP;                               \
     put16msb(bufD, bufP + 2, ethtyp);                           \
     put16msb(bufD, bufP + 4, 0);                                \
     put16msb(bufD, bufP + 6, 0);                                \
@@ -391,7 +399,7 @@ struct {
     bufP -= 40;                                                 \
     put16msb(bufD, bufP + 0, 0x6000);                           \
     put16msb(bufD, bufP + 2, 0);                                \
-    ethtyp = bufE - bufD - sizeof(macaddr) - 42;                \
+    ethtyp = bufE - bufD - bufP - 40;                           \
     put16msb(bufD, bufP + 4, ethtyp);                           \
     bufD[bufP + 6] = proto;                                     \
     bufD[bufP + 7] = 0xff;                                      \
@@ -430,6 +438,28 @@ struct {
     put16msb(bufD, bufP, ethtyp);                               \
     bufP -= 4;                                                  \
     put32msb(bufD, bufP + 0, neir->sess);
+
+
+#define guessEthtyp()                                           \
+    switch (bufD[bufP] & 0xf0) {                                \
+        case 0x40:                                              \
+            ethtyp = ETHERTYPE_IPV4;                            \
+            break;                                              \
+        case 0x60:                                              \
+            ethtyp = ETHERTYPE_IPV6;                            \
+            break;                                              \
+    default:                                                    \
+        goto drop;                                              \
+    }
+
+
+
+#define putGtpHeader()                                          \
+    bufP -= 6;                                                  \
+    put16msb(bufD, bufP + 0, 0x30ff);                           \
+    ethtyp = bufE - bufD - bufP - 8;                            \
+    put16msb(bufD, bufP + 2, ethtyp);                           \
+    put32msb(bufD, bufP + 4, neir->sess);
 
 
 
@@ -835,6 +865,26 @@ ethtyp_tx:
             ethtyp2ppptyp();
             putL3tpHeader();
             putIpv6header(IP_PROTOCOL_L2TP);
+            break;
+        case 9: // gtp4
+            bufP -= sizeof(macaddr) + 28;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 28;
+            revalidatePacket(bufP + 2);
+            ethtyp2ppptyp();
+            putGtpHeader();
+            putUdpHeader();
+            putIpv4header(IP_PROTOCOL_UDP);
+            break;
+        case 10: // gtp6
+            bufP -= sizeof(macaddr) + 48;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 48;
+            revalidatePacket(bufP + 2);
+            ethtyp2ppptyp();
+            putGtpHeader();
+            putUdpHeader();
+            putIpv6header(IP_PROTOCOL_UDP);
             break;
         default:
             goto drop;
