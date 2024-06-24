@@ -375,6 +375,9 @@ hdr.ipv6.next_hdr:
 #ifdef HAVE_SGT
             else if (hdr.l2tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
 #endif
+#ifdef HAVE_NSH
+            else if (hdr.l2tp.ppptyp == PPPTYPE_NSH) hdr.ethernet.ethertype = ETHERTYPE_NSH;
+#endif
 #ifdef HAVE_MPLS
             else if (hdr.l2tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
 #endif
@@ -404,6 +407,9 @@ hdr.ipv6.next_hdr:
             else if (hdr.l3tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
 #ifdef HAVE_SGT
             else if (hdr.l3tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
+#endif
+#ifdef HAVE_NSH
+            else if (hdr.l3tp.ppptyp == PPPTYPE_NSH) hdr.ethernet.ethertype = ETHERTYPE_NSH;
 #endif
 #ifdef HAVE_MPLS
             else if (hdr.l3tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;

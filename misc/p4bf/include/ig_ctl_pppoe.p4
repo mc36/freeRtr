@@ -75,6 +75,9 @@ ig_md.source_id:
 #ifdef HAVE_SGT
             else if (hdr.pppoeD.ppptyp == PPPTYPE_SGT) ig_md.ethertype = ETHERTYPE_SGT;
 #endif
+#ifdef HAVE_NSH
+            else if (hdr.pppoeD.ppptyp == PPPTYPE_NSH) ig_md.ethertype = ETHERTYPE_NSH;
+#endif
 #ifdef HAVE_MPLS
             else if (hdr.pppoeD.ppptyp == PPPTYPE_MPLS_UCAST) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
 #endif

@@ -31,8 +31,9 @@ control IngressControlNSH(inout headers hdr,
         if (hdr.nsh.next_proto == 5) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
     }
 
-    action act_forward(SubIntId_t port, mac_addr_t src, mac_addr_t dst, bit<24> sp, bit<8> si) {
+    action act_fwd_ifc(SubIntId_t port, mac_addr_t src, mac_addr_t dst, bit<24> sp, bit<8> si) {
         ig_md.nsh_remove = 0;
+        ig_md.nexthop_id = 0;
         ig_md.target_id = port;
         ig_md.mpls0_valid = 0;
         ig_md.mpls1_valid = 0;
@@ -40,6 +41,19 @@ control IngressControlNSH(inout headers hdr,
         ig_md.ipv6_valid = 0;
         hdr.ethernet.dst_mac_addr = dst;
         hdr.ethernet.src_mac_addr = src;
+        hdr.nsh.sp = sp;
+        hdr.nsh.si = si;
+    }
+
+
+    action act_fwd_nei(NextHopId_t nei, bit<24> sp, bit<8> si) {
+        ig_md.nsh_remove = 0;
+        ig_md.nexthop_id = nei;
+        ig_md.target_id = 0;
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
         hdr.nsh.sp = sp;
         hdr.nsh.si = si;
     }
@@ -52,7 +66,8 @@ hdr.nsh.si:
             exact;
         }
         actions = {
-            act_forward;
+            act_fwd_ifc;
+            act_fwd_nei;
             act_route;
             @defaultonly NoAction;
         }

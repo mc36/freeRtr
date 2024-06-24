@@ -403,10 +403,10 @@ http://sources.freertr.org/cfg/p4lang-rout182.tst;p4lang-rout182.tst;ok;not ok;o
 http://sources.freertr.org/cfg/p4lang-rout183.tst;p4lang-rout183.tst;ok;not ok;ok;not ok;not ok;p4lang: mpolka vlan core
 http://sources.freertr.org/cfg/p4lang-rout184.tst;p4lang-rout184.tst;ok;not ok;ok;not ok;not ok;p4lang: mpolka edge
 http://sources.freertr.org/cfg/p4lang-rout185.tst;p4lang-rout185.tst;ok;not ok;ok;not ok;not ok;p4lang: mpolka vlan edge
-http://sources.freertr.org/cfg/p4lang-rout186.tst;p4lang-rout186.tst;ok;ok;ok;ok;not ok;p4lang: gtp server over ipv4
-http://sources.freertr.org/cfg/p4lang-rout187.tst;p4lang-rout187.tst;ok;ok;ok;ok;not ok;p4lang: gtp server over ipv6
-http://sources.freertr.org/cfg/p4lang-rout188.tst;p4lang-rout188.tst;ok;ok;ok;ok;not ok;p4lang: gtp server over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout189.tst;p4lang-rout189.tst;ok;ok;ok;ok;not ok;p4lang: gtp server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout186.tst;p4lang-rout186.tst;ok;ok;ok;ok;ok;p4lang: gtp server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout187.tst;p4lang-rout187.tst;ok;ok;ok;ok;ok;p4lang: gtp server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout188.tst;p4lang-rout188.tst;ok;ok;ok;ok;ok;p4lang: gtp server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout189.tst;p4lang-rout189.tst;ok;ok;ok;ok;ok;p4lang: gtp server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout190.tst;p4lang-rout190.tst;ok;ok;ok;ok;ok;p4lang: bundle mpls pop
 http://sources.freertr.org/cfg/p4lang-rout191.tst;p4lang-rout191.tst;ok;ok;ok;ok;ok;p4lang: bundle vlan mpls pop
 http://sources.freertr.org/cfg/p4lang-rout192.tst;p4lang-rout192.tst;ok;ok;ok;ok;ok;p4lang: pppoe mpls pop
@@ -500,8 +500,8 @@ http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;ok;ok;ok;ok;ok;p4lang: sdwan over ipv6 with gre
 http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;ok;ok;ok;not ok;not ok;p4lang: sdwan over ipv4 with amt
 http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;ok;ok;ok;not ok;not ok;p4lang: sdwan over ipv6 with amt
-http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with gtp
-http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with gtp
+http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;ok;ok;ok;ok;ok;p4lang: sdwan over ipv4 with gtp
+http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;ok;ok;ok;ok;ok;p4lang: sdwan over ipv6 with gtp
 http://sources.freertr.org/cfg/p4lang-rout285.tst;p4lang-rout285.tst;ok;ok;ok;ok;not ok;p4lang: tmux routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout286.tst;p4lang-rout286.tst;ok;ok;ok;ok;not ok;p4lang: tmux routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout287.tst;p4lang-rout287.tst;ok;ok;ok;ok;not ok;p4lang: tmux routing over ipv4 loopback

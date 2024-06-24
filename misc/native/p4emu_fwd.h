@@ -199,6 +199,9 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     case ETHERTYPE_SGT:                                         \
         ethtyp = PPPTYPE_SGT;                                   \
         break;                                                  \
+    case ETHERTYPE_NSH:                                         \
+        ethtyp = PPPTYPE_NSH;                                   \
+        break;                                                  \
     case ETHERTYPE_ROUTEDMAC:                                   \
         bufP -= 2;                                              \
         put16msb(bufD, bufP, 1);                                \
@@ -248,6 +251,9 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
         break;                                                  \
     case PPPTYPE_SGT:                                           \
         ethtyp = ETHERTYPE_SGT;                                 \
+        break;                                                  \
+    case PPPTYPE_NSH:                                           \
+        ethtyp = ETHERTYPE_NSH;                                 \
         break;                                                  \
     case PPPTYPE_ROUTEDMAC:                                     \
         ethtyp = ETHERTYPE_ROUTEDMAC;                           \
@@ -2391,7 +2397,7 @@ bridgevpls_rx:
         nsh_res->pack++;
         nsh_res->byte += bufS;
         switch (nsh_res->command) {
-        case 1: // fwd
+        case 1: // ifc
             ttl = ttl - 0x40;
             put16msb(bufD, bufP + 0, ttl);
             put32msb(bufD, bufP + 4, nsh_res->trg);
@@ -2416,8 +2422,17 @@ bridgevpls_rx:
                 goto ipv6_rx;
             }
             return;
+        case 3: // nei
+            ttl = ttl - 0x40;
+            put16msb(bufD, bufP + 0, ttl);
+            put32msb(bufD, bufP + 4, nsh_res->trg);
+            ethtyp = ETHERTYPE_NSH;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            neigh_ntry.id = nsh_res->port;
+            goto ethtyp_tx;
         }
-        return;
+        doDropper;
     case ETHERTYPE_ARP: // arp
         doCpuing;
     case ETHERTYPE_PPPOE_CTRL: // pppoe ctrl

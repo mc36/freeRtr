@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.6.24-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-24 19:17:46, took 00:21:26, with 10 workers, on 546 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2024-06-24 20:20:36, took 00:25:16, with 10 workers, on 546 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
@@ -405,10 +405,10 @@ http://sources.freertr.org/cfg/p4lang-rout182.tst;p4lang-rout182.tst;not applica
 http://sources.freertr.org/cfg/p4lang-rout183.tst;p4lang-rout183.tst;not applicable;p4lang: mpolka vlan core
 http://sources.freertr.org/cfg/p4lang-rout184.tst;p4lang-rout184.tst;not applicable;p4lang: mpolka edge
 http://sources.freertr.org/cfg/p4lang-rout185.tst;p4lang-rout185.tst;not applicable;p4lang: mpolka vlan edge
-http://sources.freertr.org/cfg/p4lang-rout186.tst;p4lang-rout186.tst;not applicable;p4lang: gtp server over ipv4
-http://sources.freertr.org/cfg/p4lang-rout187.tst;p4lang-rout187.tst;not applicable;p4lang: gtp server over ipv6
-http://sources.freertr.org/cfg/p4lang-rout188.tst;p4lang-rout188.tst;not applicable;p4lang: gtp server over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout189.tst;p4lang-rout189.tst;not applicable;p4lang: gtp server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout186.tst;p4lang-rout186.tst;success;p4lang: gtp server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout187.tst;p4lang-rout187.tst;success;p4lang: gtp server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout188.tst;p4lang-rout188.tst;success;p4lang: gtp server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout189.tst;p4lang-rout189.tst;success;p4lang: gtp server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout190.tst;p4lang-rout190.tst;success;p4lang: bundle mpls pop
 http://sources.freertr.org/cfg/p4lang-rout191.tst;p4lang-rout191.tst;success;p4lang: bundle vlan mpls pop
 http://sources.freertr.org/cfg/p4lang-rout192.tst;p4lang-rout192.tst;success;p4lang: pppoe mpls pop
@@ -502,8 +502,8 @@ http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;success;p4lang: sdwan over ipv6 with gre
 http://sources.freertr.org/cfg/p4lang-rout281.tst;p4lang-rout281.tst;not applicable;p4lang: sdwan over ipv4 with amt
 http://sources.freertr.org/cfg/p4lang-rout282.tst;p4lang-rout282.tst;not applicable;p4lang: sdwan over ipv6 with amt
-http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;not applicable;p4lang: sdwan over ipv4 with gtp
-http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;not applicable;p4lang: sdwan over ipv6 with gtp
+http://sources.freertr.org/cfg/p4lang-rout283.tst;p4lang-rout283.tst;success;p4lang: sdwan over ipv4 with gtp
+http://sources.freertr.org/cfg/p4lang-rout284.tst;p4lang-rout284.tst;success;p4lang: sdwan over ipv6 with gtp
 http://sources.freertr.org/cfg/p4lang-rout285.tst;p4lang-rout285.tst;not applicable;p4lang: tmux routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout286.tst;p4lang-rout286.tst;not applicable;p4lang: tmux routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout287.tst;p4lang-rout287.tst;not applicable;p4lang: tmux routing over ipv4 loopback

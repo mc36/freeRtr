@@ -73,7 +73,7 @@ void crc16mktab(int *tab, int poly) {
 struct nsh_entry {
     int sp;
     int si;
-    int command;    // 1=swap, 2=vrf
+    int command;    // 1=fwd, 2=vrf, 3=nei
     int port;
     int vrf;
     int trg;

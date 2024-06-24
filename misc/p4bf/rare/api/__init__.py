@@ -82,7 +82,8 @@ class RareApi(BfRtRare):
     from .neigh4 import writeNeighborRules4
     from .neigh6 import writeNeighborRules6
     from .nhop2port import writeNhop2portRules
-    from .nshfwd import writeNshFwdRules
+    from .nshifc import writeNshIfcRules
+    from .nshnei import writeNshNeiRules
     from .nshloc import writeNshLocRules
     from .outacl4 import writeOutAcl4Rules
     from .outacl6 import writeOutAcl6Rules

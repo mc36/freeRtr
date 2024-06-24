@@ -162,8 +162,8 @@ def run(self):
             )
             continue
 
-        if cmds[0] == "nshfwd":
-            self.writeNshFwdRules(
+        if cmds[0] == "nshifc":
+            self.writeNshIfcRules(
                 mode,
                 int(splt[1]),
                 int(splt[2]),
@@ -172,6 +172,17 @@ def run(self):
                 splt[5],
                 int(splt[6]),
                 int(splt[7]),
+            )
+            continue
+
+        if cmds[0] == "nshnei":
+            self.writeNshNeiRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                int(splt[4]),
+                int(splt[5]),
             )
             continue
 

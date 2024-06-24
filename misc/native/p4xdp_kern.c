@@ -288,6 +288,9 @@ struct {
     case ETHERTYPE_SGT:                                         \
         ethtyp = PPPTYPE_SGT;                                   \
         break;                                                  \
+    case ETHERTYPE_NSH:                                         \
+        ethtyp = PPPTYPE_NSH;                                   \
+        break;                                                  \
     default:                                                    \
         goto drop;                                              \
     }
@@ -307,6 +310,9 @@ struct {
         break;                                                  \
     case PPPTYPE_SGT:                                           \
         ethtyp = ETHERTYPE_SGT;                                 \
+        break;                                                  \
+    case PPPTYPE_NSH:                                           \
+        ethtyp = ETHERTYPE_NSH;                                 \
         break;                                                  \
     default:                                                    \
         goto drop;                                              \

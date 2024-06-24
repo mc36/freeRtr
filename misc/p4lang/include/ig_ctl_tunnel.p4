@@ -64,6 +64,7 @@ control IngressControlTunnel(inout headers hdr,
         if ((hdr.l2tp.flags & 0x8000) != 0) return;
         if ((hdr.l2tp.ppptyp & 0x8000) != 0) return;
         if (hdr.l2tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
+        if (hdr.l2tp.ppptyp == PPPTYPE_NSH) hdr.ethernet.ethertype = ETHERTYPE_NSH;
         if (hdr.l2tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
         if (hdr.l2tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
         if (hdr.l2tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
@@ -78,6 +79,7 @@ control IngressControlTunnel(inout headers hdr,
         if (hdr.l3tp.tidsid == 0) return;
         if ((hdr.l3tp.ppptyp & 0x8000) != 0) return;
         if (hdr.l3tp.ppptyp == PPPTYPE_SGT) hdr.ethernet.ethertype = ETHERTYPE_SGT;
+        if (hdr.l3tp.ppptyp == PPPTYPE_NSH) hdr.ethernet.ethertype = ETHERTYPE_NSH;
         if (hdr.l3tp.ppptyp == PPPTYPE_IPV4) hdr.ethernet.ethertype = ETHERTYPE_IPV4;
         if (hdr.l3tp.ppptyp == PPPTYPE_IPV6) hdr.ethernet.ethertype = ETHERTYPE_IPV6;
         if (hdr.l3tp.ppptyp == PPPTYPE_MPLS_UCAST) hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;

@@ -392,10 +392,22 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&mpolkaPoly_table, &polkaPoly_ntry);
         return 0;
     }
-    if (strcmp(arg[0], "nshfwd") == 0) {
+    if (strcmp(arg[0], "nshifc") == 0) {
         nsh_ntry.sp = atoi(arg[2]);
         nsh_ntry.si = atoi(arg[3]);
         nsh_ntry.command = 1;
+        nsh_ntry.port = atoi(arg[4]);
+        str2mac(&nsh_ntry.macs[6], arg[5]);
+        str2mac(&nsh_ntry.macs[0], arg[6]);
+        nsh_ntry.trg = (atoi(arg[7]) << 8) | atoi(arg[8]);
+        if (del == 0) table_del(&nsh_table, &nsh_ntry);
+        else table_add(&nsh_table, &nsh_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "nshnei") == 0) {
+        nsh_ntry.sp = atoi(arg[2]);
+        nsh_ntry.si = atoi(arg[3]);
+        nsh_ntry.command = 3;
         nsh_ntry.port = atoi(arg[4]);
         str2mac(&nsh_ntry.macs[6], arg[5]);
         str2mac(&nsh_ntry.macs[0], arg[6]);

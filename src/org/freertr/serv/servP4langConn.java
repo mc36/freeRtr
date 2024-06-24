@@ -1417,7 +1417,10 @@ public class servP4langConn implements Runnable {
             if (ifc == null) {
                 return null;
             }
-            return "nshfwd_" + act + " " + ntry.sp + " " + ntry.si + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + ntry.target.toEmuStr() + " " + ntry.trgSp + " " + ntry.trgSi;
+            if (ifc.viaN == null) {
+                return "nshifc_" + act + " " + ntry.sp + " " + ntry.si + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + ntry.target.toEmuStr() + " " + ntry.trgSp + " " + ntry.trgSi;
+            }
+            return "nshnei_" + act + " " + ntry.sp + " " + ntry.si + " " + ifc.viaN.id + " " + ntry.trgSp + " " + ntry.trgSi;
         }
         if (ntry.route4 != null) {
             servP4langVrf vrf = lower.findVrf(ntry.route4);

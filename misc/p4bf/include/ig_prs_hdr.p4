@@ -118,6 +118,10 @@ state prs_pppoeData {
 PPPTYPE_SGT:
         prs_sgt;
 #endif
+#ifdef HAVE_NSH
+PPPTYPE_NSH:
+        prs_nsh;
+#endif
 PPPTYPE_IPV4:
         prs_ipv4;
 PPPTYPE_IPV6:
@@ -125,10 +129,6 @@ PPPTYPE_IPV6:
 #ifdef HAVE_MPLS
 PPPTYPE_MPLS_UCAST:
         prs_mpls0;
-#endif
-#ifdef HAVE_SGT
-PPPTYPE_SGT:
-        prs_sgt;
 #endif
     default:
         prs_pppoeDataCtrl;

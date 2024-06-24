@@ -39,5 +39,6 @@ const bit<16> PPPTYPE_IPV6                = 0x0057;
 const bit<16> PPPTYPE_MPLS_UCAST          = 0x0281;
 const bit<16> PPPTYPE_ROUTEDMAC           = 0x0031;
 const bit<16> PPPTYPE_SGT                 = 0x004a;
+const bit<16> PPPTYPE_NSH                 = 0x004b;
 
 #endif // _ETHERTYPE_P4_

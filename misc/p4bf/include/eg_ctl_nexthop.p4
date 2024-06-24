@@ -648,6 +648,9 @@ eg_md.nexthop_id:
 #ifdef HAVE_SGT
                 else if (eg_md.ethertype == ETHERTYPE_SGT) hdr.pppoeD.ppptyp = PPPTYPE_SGT;
 #endif
+#ifdef HAVE_NSH
+                else if (eg_md.ethertype == ETHERTYPE_NSH) hdr.pppoeD.ppptyp = PPPTYPE_NSH;
+#endif
 #ifdef HAVE_MPLS
                 else if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.pppoeD.ppptyp = PPPTYPE_MPLS_UCAST;
 #endif
@@ -663,6 +666,9 @@ eg_md.nexthop_id:
                 else if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.l2tp2.ppptyp = PPPTYPE_IPV6;
 #ifdef HAVE_SGT
                 else if (eg_md.ethertype == ETHERTYPE_SGT) hdr.l2tp2.ppptyp = PPPTYPE_SGT;
+#endif
+#ifdef HAVE_NSH
+                else if (eg_md.ethertype == ETHERTYPE_NSH) hdr.l2tp2.ppptyp = PPPTYPE_NSH;
 #endif
 #ifdef HAVE_MPLS
                 else if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l2tp2.ppptyp = PPPTYPE_MPLS_UCAST;
@@ -681,6 +687,9 @@ eg_md.nexthop_id:
                 else if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.l3tp2.ppptyp = PPPTYPE_IPV6;
 #ifdef HAVE_SGT
                 else if (eg_md.ethertype == ETHERTYPE_SGT) hdr.l3tp2.ppptyp = PPPTYPE_SGT;
+#endif
+#ifdef HAVE_NSH
+                else if (eg_md.ethertype == ETHERTYPE_NSH) hdr.l3tp2.ppptyp = PPPTYPE_NSH;
 #endif
 #ifdef HAVE_MPLS
                 else if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.l3tp2.ppptyp = PPPTYPE_MPLS_UCAST;
