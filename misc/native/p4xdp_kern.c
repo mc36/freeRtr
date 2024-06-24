@@ -271,8 +271,6 @@ __u32 xdp_router(struct xdp_md *ctx) {
     }
     prt = rxport->idx;
 
-    __u64 bufO = sizeof(macaddr) + 2;
-
 #ifdef HAVE_NOHW
 
     goto cpu;
@@ -285,11 +283,12 @@ __u32 xdp_router(struct xdp_md *ctx) {
 
     for (__u32 rounds = 0; rounds < 8; rounds++) {
 
-        __u64 bufP = bufO;
+        __u64 bufP = sizeof(macaddr) + 2;
         revalidatePacket(bufP);
         __u32 ethtyp = get16msb(bufD, bufP - 2);
 
-        if (ethtyp == ETHERTYPE_VLAN) {
+        switch (ethtyp) {
+        case ETHERTYPE_VLAN:
             revalidatePacket(bufP + 4);
             struct vlan_key vlnk;
             vlnk.port = prt;
@@ -300,16 +299,14 @@ __u32 xdp_router(struct xdp_md *ctx) {
             __u32* res = bpf_map_lookup_elem(&vlan_in, &vlnk);
             if (res == NULL) goto drop;
             prt = *res;
-            bufO = bufP;
-        }
-
-        switch (ethtyp) {
+            if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;
+            continue;
         case ETHERTYPE_PPPOE_DATA:
             revalidatePacket(bufP + 12);
             struct pppoe_key pppk;
             pppk.port = prt;
             pppk.sess = get16msb(bufD, bufP + 2);
-            __u32* res = bpf_map_lookup_elem(&pppoes, &pppk);
+            res = bpf_map_lookup_elem(&pppoes, &pppk);
             if (res == NULL) goto drop;
             ethtyp = get16msb(bufD, bufP + 6);
             if ((ethtyp & 0x8000) != 0) goto cpu;
@@ -332,8 +329,8 @@ __u32 xdp_router(struct xdp_md *ctx) {
             }
             put16msb(bufD, bufP - 2, ethtyp);
             prt = *res;
-            bufO = bufP;
-            break;
+            if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;
+            continue;
         case ETHERTYPE_PPPOE_CTRL:
             goto cpu;
         }
@@ -658,7 +655,6 @@ vlan_tx:
         bufP = 0;
         revalidatePacket(sizeof(macaddr));
         __builtin_memcpy(bufD, &macaddr, sizeof(macaddr));
-        bufO = sizeof(macaddr) + 2;
         if (tmp != 2) goto done;
 
     }
@@ -681,9 +677,7 @@ punt:
 #endif
 
 cpu:
-    bufO -= sizeof(macaddr);
-    bufO -= 4;
-    if (bpf_xdp_adjust_head(ctx, bufO) != 0) goto drop;
+    if (bpf_xdp_adjust_head(ctx, -2) != 0) goto drop;
     revalidatePacket(sizeof(macaddr) + 2);
     put16msb(bufD, 0, prt);
     __builtin_memcpy(&bufD[2], &macaddr, sizeof(macaddr));
