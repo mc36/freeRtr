@@ -52,7 +52,7 @@ struct routes_res {
 };
 
 struct neigh_res {
-    __u32 cmd; // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6
+    __u32 cmd; // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=l3tp4, 8=l3tp6
     __u8 macs[12];
     __u32 port;
     __u32 aclport;
@@ -137,7 +137,7 @@ struct tunnel6_key {
 };
 
 struct tunnel_res {
-    __u32 cmd; // 1=gre, 2=l2tp
+    __u32 cmd; // 1=gre, 2=l2tp, 3=l3tp
     __u32 aclport;
     __u64 pack;
     __u64 byte;
