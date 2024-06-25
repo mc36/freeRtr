@@ -46,8 +46,6 @@ public class userImage {
 
     private String qemu = "x86_64";
 
-    private String cmpr = "clang";
-
     private String arch = "amd64";
 
     private String boot = "x86_64-efi";
@@ -393,7 +391,6 @@ public class userImage {
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%mirr%", miro);
             s = s.replaceAll("%qemu%", qemu);
-            s = s.replaceAll("%comp%", cmpr);
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
@@ -449,10 +446,6 @@ public class userImage {
             }
             if (a.equals("qemu")) {
                 qemu = s;
-                continue;
-            }
-            if (a.equals("comp")) {
-                cmpr = s;
                 continue;
             }
             if (a.equals("arch")) {
@@ -541,6 +534,16 @@ public class userImage {
             }
             if (a.equals("select-one")) {
                 selectOnePackage(0, s, s, false);
+                continue;
+            }
+            if (a.equals("select-all")) {
+                for (;;) {
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    selectOnePackage(0, a, a, false);
+                }
                 continue;
             }
             if (a.equals("select-nod")) {

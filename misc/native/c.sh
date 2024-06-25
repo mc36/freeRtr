@@ -1,9 +1,16 @@
 #!/bin/sh
 TR=../../binTmp
 UM=`uname -m`
-CC="tcc"                                #tcc
-CC="gcc"                                #gcc
-CC="clang"                              #clang
+
+if command -v clang > /dev/null ; then
+  CC="clang"
+  BC="clang -target bpf"
+  BS="llvm-strip"
+  else
+  CC="gcc"
+  BC="bpf-gcc"
+  BS="bpf-strip"
+  fi
 
 MD="-O0 -g"                             #devel
 MD="-O3 -g"                             #debug
@@ -18,13 +25,13 @@ if [ "$UM" = "x86_64" ]; then
   MF="-march=corei7"
 fi
 
-echo arch=$UM, cc=$CC, mode=$MD, flag=$MF, out=$TR
+echo arch=$UM, cc=$CC, bc=$BC, bs=$BS, mode=$MD, flag=$MF, out=$TR
 
 compileBpf()
 {
 echo compiling $1.
-clang -Wall $MD -c -g -target bpf -I /usr/include/$UM-linux-gnu/ -o$TR/$1.bin $1.c
-llvm-strip -d $TR/$1.bin || true
+$BC -Wall $MD -c -g -I /usr/include/ -I /usr/include/$UM-linux-gnu/ -o$TR/$1.bin $1.c
+$BS -d $TR/$1.bin || true
 touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 

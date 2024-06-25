@@ -5,6 +5,5 @@ kern sh7785lcr
 grub ieee1275-bin
 boot sh4-ieee1275
 uefi bootsh4.efi
-comp gcc
 mirr http://deb.debian.org/debian-ports/
 image ../binImg/rtr-sh4

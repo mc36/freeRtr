@@ -1,6 +1,5 @@
 #!/bin/sh
 /sbin/ldconfig
-ln -s /usr/bin/gcc /usr/bin/clang
 cd /misc/native
 ./c.sh
 ./p.sh

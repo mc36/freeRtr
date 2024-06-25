@@ -1,7 +1,5 @@
 #include <linux/bpf.h>
 #include <bpf/bpf_helpers.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
 
 #include "utils.h"
 #include "types.h"
@@ -74,16 +72,14 @@ __u32 mnl_pckio(struct xdp_md *ctx) {
     case ETHERTYPE_IPV4:
         revalidatePacket(34);
         fibpar.family = 2; // AF_INET
-        struct iphdr *ip4h = (struct iphdr*)&bufD[14];
-        __builtin_memcpy(&fibpar.ipv4_src, &ip4h->saddr, 4);
-        __builtin_memcpy(&fibpar.ipv4_dst, &ip4h->daddr, 4);
+        __builtin_memcpy(&fibpar.ipv4_src, &bufD[14 + 12], 4);
+        __builtin_memcpy(&fibpar.ipv4_dst, &bufD[14 + 16], 4);
         break;
     case ETHERTYPE_IPV6:
         revalidatePacket(54);
         fibpar.family = 10; // AF_INET6
-        struct ipv6hdr *ip6h = (struct ipv6hdr*)&bufD[14];
-        __builtin_memcpy(&fibpar.ipv6_src, &ip6h->saddr, 16);
-        __builtin_memcpy(&fibpar.ipv6_dst, &ip6h->daddr, 16);
+        __builtin_memcpy(&fibpar.ipv6_src, &bufD[14 + 8], 16);
+        __builtin_memcpy(&fibpar.ipv6_dst, &bufD[14 + 24], 16);
         break;
     default:
         goto punt;

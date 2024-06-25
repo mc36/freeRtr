@@ -7,8 +7,11 @@ catalog-sum
 
 select-one libc-bin                       #library
 select-one libc-dev-bin                   #library
-select-one %comp%                         #compiler
+select-one gcc-multilib                   #compiler
+select-one gcc-bpf                        #compiler
+select-one clang                          #compiler
 select-one llvm                           #compiler
+select-one gcc                            #compiler
 select-one busybox                        #busybox
 select-one tar                            #archiver
 select-one dpdk-dev                       #dataplane
