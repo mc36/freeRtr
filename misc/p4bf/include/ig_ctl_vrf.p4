@@ -56,6 +56,39 @@ control IngressControlVRF(inout headers hdr, inout ingress_metadata_t ig_md)
     }
 #endif
 
+#ifdef HAVE_NSH
+    action act_set_nshconn(bit<24> sp, bit<8> si) {
+        ig_md.vrf = 0;
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
+#ifdef HAVE_MPLS
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+#endif
+        ig_md.arp_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_md.nsh_valid = 1;
+        hdr.eth2.setValid();
+        hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
+        hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
+        hdr.eth2.ethertype = ig_md.ethertype;
+        ig_md.ethertype = ETHERTYPE_NSH;
+        hdr.nsh.setValid();
+        hdr.nsh.version = 0;
+        hdr.nsh.oam = 0;
+        hdr.nsh.res1 = 0;
+        hdr.nsh.ttl = 63;
+        hdr.nsh.length = 2;
+        hdr.nsh.res2 = 0;
+        hdr.nsh.md_type = 2;
+        hdr.nsh.next_proto = 3;
+        hdr.nsh.sp = sp;
+        hdr.nsh.si = si;
+    }
+#endif
+
 #ifdef HAVE_LOCONN
     action act_set_loconn_ifc (SubIntId_t port) {
         ig_md.vrf = 0;
@@ -121,6 +154,9 @@ ig_md.source_id:
             act_set_vrf;
 #ifdef HAVE_MPLS
             act_set_mpls_xconn_encap;
+#endif
+#ifdef HAVE_NSH
+            act_set_nshconn;
 #endif
 #ifdef HAVE_LOCONN
             act_set_loconn_ifc;

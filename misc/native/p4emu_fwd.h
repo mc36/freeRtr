@@ -1008,7 +1008,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             neigh_res = table_get(&neigh_table, index);
             send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
-        case 5:
+        case 5: // neighbor
             tmpE = ethtyp;
             tmpS = bufS - bufP + preBuff + 2;
             put16msb(bufC, preBuff, tmpE);
@@ -1512,6 +1512,18 @@ ethtyp_rx:
         bufP -= 2;
         neigh_ntry.id = port2vrf_res->label1;
         goto nethtyp_tx;
+    case 6: // nshconn
+        memcpy(&bufH[0], &bufD[preBuff], 12);
+        bufP -= 2;
+        bufP -= 12;
+        memcpy(&bufD[bufP], &bufH[0], 12);
+        ethtyp = ETHERTYPE_NSH;
+        bufP -= 8;
+        put16msb(bufD, bufP + 0, 0xfc2);
+        put16msb(bufD, bufP + 2, 0x203);
+        tmp = (port2vrf_res->label1 << 8) | port2vrf_res->label2;
+        put32msb(bufD, bufP + 4, tmp);
+        goto nsh_rx;
     }
 etyped_rx:
     if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;
@@ -2383,6 +2395,7 @@ bridgevpls_rx:
         if (port2vrf_res->nsh == 0) doDropper;
         packNsh[port]++;
         byteNsh[port] += bufS;
+nsh_rx:
         ttl = get16msb(bufD, bufP + 0);
         if ((ttl & 0xe000) != 0) doDropper;
         if (((ttl >> 6) & 0x3f) <= 1) doPunting;
@@ -2420,6 +2433,9 @@ bridgevpls_rx:
             case 2:
                 ethtyp = ETHERTYPE_IPV6;
                 goto ipv6_rx;
+            case 3:
+                bufP += 12;
+                goto ethtyp_rx;
             }
             return;
         case 3: // nei

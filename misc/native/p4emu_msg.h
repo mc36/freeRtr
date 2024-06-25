@@ -534,6 +534,17 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         if (del == 0) port2vrf_res->command = 0;
         return 0;
     }
+    if (strcmp(arg[0], "nshconn") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->command = 6;
+        port2vrf_res->bridge = 0;
+        port2vrf_res->vrf = 0;
+        port2vrf_res->label1 = atoi(arg[3]);
+        port2vrf_res->label2 = atoi(arg[4]);
+        if (del == 0) port2vrf_res->command = 0;
+        return 0;
+    }
     if (strcmp(arg[0], "xconnect") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);

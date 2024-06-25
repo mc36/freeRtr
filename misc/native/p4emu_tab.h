@@ -109,7 +109,7 @@ struct table_head mpls_table;
 
 struct port2vrf_entry {
     int port;
-    int command;    // 1=vrf, 2=bridge, 3=xconn, 4=loconnifc, 5=loconnnei
+    int command;    // 1=vrf, 2=bridge, 3=xconn, 4=loconnifc, 5=loconnnei, 6=nshconn
     int vrf;
     int bridge;
     int nexthop;

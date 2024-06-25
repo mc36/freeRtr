@@ -31,10 +31,6 @@ control IngressControlVRF(inout headers hdr,
 
     action act_set_mpls_xconn_encap(NextHopId_t target, label_t tunlab, label_t svclab) {
         ig_md.vrf = 0;
-        ig_md.nsh_valid = 0;
-        ig_md.polka_valid = 0;
-        ig_md.mpls0_valid = 0;
-        ig_md.mpls1_valid = 0;
         ig_md.nsh_remove = 0;
         ig_md.polka_remove = 0;
         ig_md.mpls0_remove = 0;
@@ -57,6 +53,35 @@ control IngressControlVRF(inout headers hdr,
         hdr.mpls1.label = svclab;
         hdr.mpls1.ttl = 255;
         hdr.mpls1.bos = 1;
+    }
+
+    action act_set_nshconn(bit<24> sp, bit<8> si) {
+        ig_md.vrf = 0;
+        ig_md.nsh_remove = 0;
+        ig_md.polka_remove = 0;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.arp_valid = 0;
+        ig_md.llc_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_md.nsh_valid = 1;
+        hdr.eth2.setValid();
+        hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
+        hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
+        hdr.eth2.ethertype = ig_md.ethertype;
+        ig_md.ethertype = ETHERTYPE_NSH;
+        hdr.nsh.setValid();
+        hdr.nsh.version = 0;
+        hdr.nsh.oam = 0;
+        hdr.nsh.res1 = 0;
+        hdr.nsh.ttl = 63;
+        hdr.nsh.length = 2;
+        hdr.nsh.res2 = 0;
+        hdr.nsh.md_type = 2;
+        hdr.nsh.next_proto = 3;
+        hdr.nsh.sp = sp;
+        hdr.nsh.si = si;
     }
 
     action act_set_loconn_ifc (SubIntId_t port) {
@@ -104,6 +129,7 @@ ig_md.source_id:
         actions = {
             act_set_vrf;
             act_set_mpls_xconn_encap;
+            act_set_nshconn;
             act_set_loconn_ifc;
             act_set_loconn_nei;
             act_set_bridge;

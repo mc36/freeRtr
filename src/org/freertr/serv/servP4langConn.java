@@ -2353,6 +2353,14 @@ public class servP4langConn implements Runnable {
             ifc.sentVrf = -1;
             return false;
         }
+        if (ifc.ifc.nshXcon != null) {
+            if (ifc.sentVrf == -4) {
+                return false;
+            }
+            lower.sendLine("nshconn_" + a + " " + ifc.id + " " + ifc.ifc.nshXcon.sp + " " + ifc.ifc.nshXcon.si);
+            ifc.sentVrf = -4;
+            return false;
+        }
         if (ifc.ifc.iconn != null) {
             servP4langIfc per = lower.findIfc(ifc.ifc.iconn);
             if (per == null) {

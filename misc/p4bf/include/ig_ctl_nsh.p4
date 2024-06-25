@@ -91,6 +91,7 @@ hdr.nsh.si:
                 if (hdr.nsh.next_proto == 1) ig_md.ethertype = ETHERTYPE_IPV4;
                 else if (hdr.nsh.next_proto == 2) ig_md.ethertype = ETHERTYPE_IPV6;
                 else if (hdr.nsh.next_proto == 5) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+                else if (hdr.nsh.next_proto == 3) ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
             }
         }
     }

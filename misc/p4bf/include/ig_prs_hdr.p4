@@ -225,6 +225,8 @@ state prs_nsh {
 8w5:
         prs_mpls0;
 #endif
+8w3:
+        prs_eth2;
     default:
         accept;
     }

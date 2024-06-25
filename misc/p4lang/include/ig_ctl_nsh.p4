@@ -29,6 +29,7 @@ control IngressControlNSH(inout headers hdr,
         if (hdr.nsh.next_proto == 1) ig_md.ethertype = ETHERTYPE_IPV4;
         if (hdr.nsh.next_proto == 2) ig_md.ethertype = ETHERTYPE_IPV6;
         if (hdr.nsh.next_proto == 5) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        if (hdr.nsh.next_proto == 3) ig_md.ethertype = ETHERTYPE_ROUTEDMAC;
     }
 
     action act_fwd_ifc(SubIntId_t port, mac_addr_t src, mac_addr_t dst, bit<24> sp, bit<8> si) {

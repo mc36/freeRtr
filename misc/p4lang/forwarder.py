@@ -1357,6 +1357,25 @@ def writeLoconnNeiRules(delete, p4info_helper, ingress_sw, port, target):
         ingress_sw.DeleteTableEntry(table_entry1, False)
 
 
+def writeNshConnRules(delete, p4info_helper, ingress_sw, port, sp, si):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
+        match_fields={
+            "ig_md.source_id": port
+        },
+        action_name="ig_ctl.ig_ctl_vrf.act_set_nshconn",
+        action_params={
+            "sp": sp,
+            "si": si,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+
+
 def writeBrprtRules(delete, p4info_helper, ingress_sw, port, bridge):
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_vrf.tbl_vrf",
@@ -4009,6 +4028,10 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "loconnnei":
             writeLoconnNeiRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "nshconn":
+            writeNshConnRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
             continue
 
         if cmds[0] == "portbridge":

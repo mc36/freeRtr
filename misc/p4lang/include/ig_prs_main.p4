@@ -223,6 +223,8 @@ ETHERTYPE_IPV6:
             prs_ipv6;
 8w5:
             prs_mpls0;
+8w3:
+            prs_eth2;
         default:
             accept;
         }
