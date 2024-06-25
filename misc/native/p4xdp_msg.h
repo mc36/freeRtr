@@ -2,6 +2,32 @@ void str2mac(__u8 *dst, char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
 }
 
+int str2key(char *str, unsigned char *key) {
+    unsigned char buf[4];
+    int s = 0;
+    for (int i=0;;) {
+        memmove(&buf, &str[i], 2);
+        buf[2] = 0;
+        if (str[i] == 0) break;
+        sscanf((char*)buf, "%hhx", &key[s]);
+        s++;
+        i += 2;
+    }
+    return s;
+}
+
+void crc16mktab(int *tab, int poly) {
+    for (int o=0; o < 256; o++) {
+        int v = o << 8;
+        for (int i = 0; i < 8; ++i) {
+            v <<= 1;
+            if ((v & 0x10000) != 0) {
+                v ^= poly;
+            }
+        }
+        tab[o] = v & 0xffff;
+    }
+}
 
 void doStatRound(FILE *commands, int round) {
     __u32 i = 1;
@@ -460,6 +486,36 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "polroute4") == 0) {
+        inet_pton(AF_INET, arg[2], buf2);
+        rou4.vrf = atoi(arg[6]);
+        memcpy(rou4.addr, buf2, sizeof(rou4.addr));
+        rou4.bits = routes_bits + atoi(arg[3]);
+        rour.hop = atoi(arg[4]);
+        str2key(arg[7], rour.polka);
+        rour.cmd = 6;
+        if (del == 0) {
+            if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(route4_fd, &rou4, &rour, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "polroute6") == 0) {
+        inet_pton(AF_INET6, arg[2], buf2);
+        rou6.vrf = atoi(arg[6]);
+        memcpy(rou6.addr, buf2, sizeof(rou6.addr));
+        rou6.bits = routes_bits + atoi(arg[3]);
+        rour.hop = atoi(arg[4]);
+        str2key(arg[7], rour.polka);
+        rour.cmd = 6;
+        if (del == 0) {
+            if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(route6_fd, &rou6, &rour, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "mylabel4") == 0) {
         i = atoi(arg[2]);
         labr.vrf = atoi(arg[3]);
@@ -647,6 +703,32 @@ int doOneCommand(unsigned char* buf) {
             if (bpf_map_delete_elem(nsh_fd, &nshk) != 0) warn("error removing entry");
         } else {
             if (bpf_map_update_elem(nsh_fd, &nshk, &nshr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "polkaidx") == 0) {
+        struct polidx_key polk;
+        memset(&polk, 0, sizeof(polk));
+        polk.idx = atoi(arg[2]);
+        polk.vrf = atoi(arg[3]);
+        o = atoi(arg[4]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(polidx_fd, &polk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(polidx_fd, &polk, &o, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "polkapoly") == 0) {
+        struct polpol_res res;
+        memset(&res, 0, sizeof(res));
+        i = atoi(arg[2]);
+        o = atoi(arg[3]);
+        crc16mktab(res.tab, o);
+        if (del == 0) {
+            if (bpf_map_delete_elem(polpol_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(polpol_fd, &i, &res, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }

@@ -48,6 +48,8 @@ int bundles_fd;
 int vlan_in_fd;
 int vlan_out_fd;
 int pppoes_fd;
+int polpol_fd;
+int polidx_fd;
 int nsh_fd;
 int bridges_fd;
 int cpuPort;
@@ -74,7 +76,7 @@ void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform p4xdp\r\n");
-    fprintf(commands, "capabilities punting route mpls bundle vlan pppoe eompls bridge vpls evpn hairpin sgt loconn pmtud vrfysrc gre l2tp l3tp gtp nsh\r\n");
+    fprintf(commands, "capabilities punting route mpls bundle vlan pppoe eompls bridge vpls evpn hairpin sgt loconn pmtud vrfysrc gre l2tp l3tp gtp nsh polka\r\n");
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange 32768 65535\r\n");
@@ -214,6 +216,10 @@ int main(int argc, char **argv) {
     if (pppoes_fd < 0) err("error finding table");
     bridges_fd = bpf_object__find_map_fd_by_name(bpf_obj, "bridges");
     if (bridges_fd < 0) err("error finding table");
+    polpol_fd = bpf_object__find_map_fd_by_name(bpf_obj, "polpols");
+    if (polpol_fd < 0) err("error finding table");
+    polidx_fd = bpf_object__find_map_fd_by_name(bpf_obj, "polidxs");
+    if (polidx_fd < 0) err("error finding table");
     nsh_fd = bpf_object__find_map_fd_by_name(bpf_obj, "nshs");
     if (nsh_fd < 0) err("error finding table");
 

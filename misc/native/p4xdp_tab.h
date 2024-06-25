@@ -44,10 +44,11 @@ struct route6_key {
 };
 
 struct routes_res {
-    __u32 cmd; // 1=route, 2=cpu, 3=mpls1, 4=mpls2, 5=drop
+    __u32 cmd; // 1=route, 2=cpu, 3=mpls1, 4=mpls2, 5=drop, 6=polka
     __u32 hop;
     __u32 label1;
     __u32 label2;
+    __u8 polka[16];
     __u64 pack;
     __u64 byte;
 };
@@ -157,4 +158,15 @@ struct nsh_res {
     unsigned char macs[12];
     long pack;
     long byte;
+};
+
+struct polpol_res {
+    int tab[256];
+    long pack;
+    long byte;
+};
+
+struct polidx_key {
+    int vrf;
+    int idx;
 };

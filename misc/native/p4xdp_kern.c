@@ -142,6 +142,22 @@ struct {
 } nshs SEC(".maps");
 
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, __u32);
+    __type(value, struct polpol_res);
+    __uint(max_entries, 512);
+} polpols SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct polidx_key);
+    __type(value, __u32);
+    __uint(max_entries, 512);
+} polidxs SEC(".maps");
+
+
 
 
 #define revalidatePacket(size)                                      \
@@ -185,6 +201,19 @@ struct {
         goto ethtyp_tx;                                             \
     case 5:                                                         \
         goto drop;                                                  \
+    case 6:                                                         \
+        bufP -= 3 * sizeof(macaddr);                                \
+        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;         \
+        bufP = 3 * sizeof(macaddr);                                 \
+        revalidatePacket(3 * sizeof(macaddr));                      \
+        bufP -= 20;                                                 \
+        bufD[bufP + 0] = 0;                                         \
+        bufD[bufP + 1] = ttl;                                       \
+        put16msb(bufD, bufP + 2, ethtyp);                           \
+        __builtin_memcpy(&bufD[bufP + 4], res->polka, 16);          \
+        neik = res->hop;                                            \
+        ethtyp = ETHERTYPE_POLKA;                                   \
+        goto ethtyp_tx;                                             \
     default:                                                        \
         goto drop;                                                  \
     }
@@ -299,6 +328,9 @@ struct {
     case ETHERTYPE_NSH:                                         \
         ethtyp = PPPTYPE_NSH;                                   \
         break;                                                  \
+    case ETHERTYPE_POLKA:                                       \
+        ethtyp = PPPTYPE_POLKA;                                 \
+        break;                                                  \
     default:                                                    \
         goto drop;                                              \
     }
@@ -321,6 +353,9 @@ struct {
         break;                                                  \
     case PPPTYPE_NSH:                                           \
         ethtyp = ETHERTYPE_NSH;                                 \
+        break;                                                  \
+    case PPPTYPE_POLKA:                                         \
+        ethtyp = ETHERTYPE_POLKA;                               \
         break;                                                  \
     default:                                                    \
         goto drop;                                              \
@@ -474,6 +509,15 @@ struct {
     ethtyp = bufE - bufD - bufP - 8;                            \
     put16msb(bufD, bufP + 2, ethtyp);                           \
     put32msb(bufD, bufP + 4, neir->sess);
+
+
+
+#define crc16calc(tmp, tab, buf, ofs, len)                                      \
+    tmp = 0;                                                                    \
+    for (int i = 0; i < len; i++) {                                             \
+        tmp = ((tmp << 8) & 0xffff) ^ tab[((tmp >> 8) ^ buf[ofs + i]) & 0xff];  \
+    }
+
 
 
 
@@ -811,6 +855,37 @@ nsh_rx:
                 goto ethtyp_tx;
             }
             goto drop;
+        case ETHERTYPE_POLKA:
+            if (vrfp == NULL) goto drop;
+            revalidatePacket(bufP + 20);
+            struct polpol_res *polr = bpf_map_lookup_elem(&polpols, &prt);
+            if (polr == NULL) goto drop;
+            polr->pack++;
+            polr->byte += bufE - bufD;
+            ttl = bufD[bufP + 1];
+            if ((ttl & 0xff) <= 1) goto punt;
+            ttl--;
+            bufD[bufP + 1] = ttl;
+            crc16calc(tmp, polr->tab, bufD, bufP + 4, 14);
+            tmp ^= get16msb(bufD, bufP + 18);
+            if (tmp == 0) {
+                ethtyp = get16msb(bufD, bufP + 2);
+                bufP += 20;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                bufP -= sizeof(macaddr);
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                continue;
+            }
+            struct polidx_key polk;
+            polk.vrf = vrfp->vrf;
+            polk.idx = tmp;
+            res = bpf_map_lookup_elem(&polidxs, &polk);
+            if (res == NULL) goto drop;
+            ethtyp = ETHERTYPE_POLKA;
+            neik = *res;
+            goto ethtyp_tx;
         case ETHERTYPE_PPPOE_CTRL:
             goto cpu;
         case ETHERTYPE_ARP:
