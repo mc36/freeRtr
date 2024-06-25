@@ -409,9 +409,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         nsh_ntry.si = atoi(arg[3]);
         nsh_ntry.command = 3;
         nsh_ntry.port = atoi(arg[4]);
-        str2mac(&nsh_ntry.macs[6], arg[5]);
-        str2mac(&nsh_ntry.macs[0], arg[6]);
-        nsh_ntry.trg = (atoi(arg[7]) << 8) | atoi(arg[8]);
+        nsh_ntry.trg = (atoi(arg[5]) << 8) | atoi(arg[6]);
         if (del == 0) table_del(&nsh_table, &nsh_ntry);
         else table_add(&nsh_table, &nsh_ntry);
         return 0;

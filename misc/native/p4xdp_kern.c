@@ -134,6 +134,14 @@ struct {
 } tunnels6 SEC(".maps");
 
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct nsh_key);
+    __type(value, struct nsh_res);
+    __uint(max_entries, 512);
+} nshs SEC(".maps");
+
+
 
 
 #define revalidatePacket(size)                                      \
@@ -578,6 +586,22 @@ __u32 xdp_router(struct xdp_md *ctx) {
             case 5: // loconnnei
                 neik = vrfp->label1;
                 goto ethtyp_tx;
+            case 6: // nshconn
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                bufP -= 12;
+                bufP -= 2 * sizeof(macaddr);
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = 2 * sizeof(macaddr);
+                revalidatePacket(3 * sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                ethtyp = ETHERTYPE_NSH;
+                bufP -= 8;
+                put16msb(bufD, bufP + 0, 0xfc2);
+                put16msb(bufD, bufP + 2, 0x203);
+                tmp = (vrfp->label1 << 8) | vrfp->label2;
+                put32msb(bufD, bufP + 4, tmp);
+                goto nsh_rx;
             default:
                 break;
             }
@@ -726,6 +750,67 @@ ipv6_rx:
             prt = *res;
             if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;
             continue;
+        case ETHERTYPE_NSH:
+            if (vrfp == NULL) goto drop;
+            if (vrfp->nsh == 0) goto drop;
+nsh_rx:
+            revalidatePacket(bufP + 8);
+            ttl = get16msb(bufD, bufP + 0);
+            if ((ttl & 0xe000) != 0) goto drop;
+            if (((ttl >> 6) & 0x3f) <= 1) goto punt;
+            tmp = get32msb(bufD, bufP + 4);
+            ethtyp = bufD[bufP + 3];
+            struct nsh_key nshk;
+            nshk.sp = tmp >> 8;
+            nshk.si = tmp & 0xff;
+            hash ^= tmp;
+            struct nsh_res *nshr = bpf_map_lookup_elem(&nshs, &nshk);
+            if (nshr == NULL) goto drop;
+            nshr->pack++;
+            nshr->byte += bufE - bufD;
+            switch (nshr->cmd) {
+            case 1:
+                ttl = ttl - 0x40;
+                put16msb(bufD, bufP + 0, ttl);
+                put32msb(bufD, bufP + 4, nshr->trg);
+                ethtyp = ETHERTYPE_NSH;
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                __builtin_memcpy(&macaddr[0], &nshr->macs, 12);
+                prt = nshr->port;
+                goto subif_tx;
+            case 2:
+                bufP += 8;
+                switch (ethtyp) {
+                case 5:
+                    ethtyp = ETHERTYPE_MPLS_UCAST;
+                    break;
+                case 1:
+                    ethtyp = ETHERTYPE_IPV4;
+                    break;
+                case 2:
+                    ethtyp = ETHERTYPE_IPV6;
+                    break;
+                case 3:
+                    if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                    continue;
+                }
+                revalidatePacket(bufP + 2);
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                bufP -= sizeof(macaddr);
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                continue;
+            case 3:
+                ttl = ttl - 0x40;
+                put16msb(bufD, bufP + 0, ttl);
+                put32msb(bufD, bufP + 4, nshr->trg);
+                ethtyp = ETHERTYPE_NSH;
+                neik = nshr->port;
+                goto ethtyp_tx;
+            }
+            goto drop;
         case ETHERTYPE_PPPOE_CTRL:
             goto cpu;
         case ETHERTYPE_ARP:

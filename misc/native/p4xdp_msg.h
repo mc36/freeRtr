@@ -181,6 +181,13 @@ int doOneCommand(unsigned char* buf) {
         if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
+    if (strcmp(arg[0], "nshpack") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->nsh = atoi(arg[3]);
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
     if (strcmp(arg[0], "loconnifc") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
@@ -194,6 +201,15 @@ int doOneCommand(unsigned char* buf) {
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
         vrfr->cmd = 5;
         vrfr->label1 = atoi(arg[3]);
+        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        return 0;
+    }
+    if (strcmp(arg[0], "nshconn") == 0) {
+        i = atoi(arg[2]);
+        bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
+        vrfr->cmd = 6;
+        vrfr->label1 = atoi(arg[3]);
+        vrfr->label2 = atoi(arg[4]);
         if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
     }
@@ -579,6 +595,58 @@ int doOneCommand(unsigned char* buf) {
             if (bpf_map_delete_elem(vlan_in_fd, &vlnk) != 0) warn("error removing entry");
         } else {
             if (bpf_map_update_elem(vlan_in_fd, &vlnk, &i, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "nshifc") == 0) {
+        struct nsh_key nshk;
+        memset(&nshk, 0, sizeof(nshk));
+        struct nsh_res nshr;
+        memset(&nshr, 0, sizeof(nshr));
+        nshk.sp = atoi(arg[2]);
+        nshk.si = atoi(arg[3]);
+        nshr.cmd = 1;
+        nshr.port = atoi(arg[4]);
+        str2mac(&nshr.macs[6], arg[5]);
+        str2mac(&nshr.macs[0], arg[6]);
+        nshr.trg = (atoi(arg[7]) << 8) | atoi(arg[8]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(nsh_fd, &nshk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(nsh_fd, &nshk, &nshr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "nshnei") == 0) {
+        struct nsh_key nshk;
+        memset(&nshk, 0, sizeof(nshk));
+        struct nsh_res nshr;
+        memset(&nshr, 0, sizeof(nshr));
+        nshk.sp = atoi(arg[2]);
+        nshk.si = atoi(arg[3]);
+        nshr.cmd = 3;
+        nshr.port = atoi(arg[4]);
+        nshr.trg = (atoi(arg[5]) << 8) | atoi(arg[6]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(nsh_fd, &nshk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(nsh_fd, &nshk, &nshr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "nshloc") == 0) {
+        struct nsh_key nshk;
+        memset(&nshk, 0, sizeof(nshk));
+        struct nsh_res nshr;
+        memset(&nshr, 0, sizeof(nshr));
+        nshk.sp = atoi(arg[2]);
+        nshk.si = atoi(arg[3]);
+        nshr.cmd = 2;
+        nshr.vrf = atoi(arg[4]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(nsh_fd, &nshk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(nsh_fd, &nshk, &nshr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }

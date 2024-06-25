@@ -7,7 +7,7 @@ struct port_res {
 };
 
 struct vrfp_res {
-    __u32 cmd; // 1=route, 2=bridge, 3=xconn, 4=loconnifc, 5=loconnnei
+    __u32 cmd; // 1=route, 2=bridge, 3=xconn, 4=loconnifc, 5=loconnnei, 6=nshconn
     __u32 vrf;
     __u32 brdg;
     __u32 hop;
@@ -16,6 +16,7 @@ struct vrfp_res {
     __u32 pttl4;
     __u32 pttl6;
     __u32 mpls;
+    __u32 nsh;
     __s32 sgtSet;
     __u32 sgtTag;
     __u32 verify4;
@@ -141,4 +142,19 @@ struct tunnel_res {
     __u32 aclport;
     __u64 pack;
     __u64 byte;
+};
+
+struct nsh_key {
+    __u32 sp;
+    __u32 si;
+};
+
+struct nsh_res {
+    __u32 cmd; //  1=fwd, 2=vrf, 3=nei
+    int port;
+    int vrf;
+    int trg;
+    unsigned char macs[12];
+    long pack;
+    long byte;
 };
