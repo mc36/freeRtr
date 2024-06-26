@@ -6,7 +6,6 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.auth.authGeneric;
 import org.freertr.auth.authResult;
-import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgAuther;
 import org.freertr.clnt.clntDns;
@@ -19,9 +18,12 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.enc.encUrl;
-import org.freertr.tab.tabAceslstN;
+import org.freertr.prt.prtTcp;
+import org.freertr.sec.secInfoCfg;
+import org.freertr.sec.secInfoCls;
+import org.freertr.sec.secInfoUtl;
+import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabListing;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
@@ -69,7 +71,7 @@ public class servSmtp extends servGeneric implements prtServS {
     /**
      * access list to use
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> recursAcl;
+    protected secInfoCfg recursAcl;
 
     /**
      * authentication list
@@ -122,7 +124,6 @@ public class servSmtp extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server smtp .*! port " + port,
         "server smtp .*! protocol " + proto2string(protoAllStrm),
-        "server smtp .*! no recursion access-class",
         "server smtp .*! no recursion authentication",
         "server smtp .*! no recursion enable",
         "server smtp .*! no dsn",
@@ -155,9 +156,7 @@ public class servSmtp extends servGeneric implements prtServS {
             lst.add(beg + "rbl-server " + rbls.get(i));
         }
         if (recursAcl != null) {
-            lst.add(beg + "recursion access-class " + recursAcl.listName);
-        } else {
-            lst.add(beg + "no recursion access-class");
+            secInfoUtl.getConfig(lst, recursAcl, beg + "recursion access-");
         }
         if (recursAut == null) {
             lst.add(beg + "no recursion authentication");
@@ -186,13 +185,12 @@ public class servSmtp extends servGeneric implements prtServS {
                 recursEna = true;
                 return false;
             }
-            if (s.equals("access-class")) {
-                cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
-                if (ntry == null) {
-                    cmd.error("no such access list");
-                    return false;
-                }
-                recursAcl = ntry.aceslst;
+            if (s.startsWith("access-")) {
+                s = s.substring(7, s.length());
+                s += " " + cmd.getRemaining();
+                s = s.trim();
+                cmd = new cmds("info", s);
+                recursAcl = secInfoUtl.doCfgStr(recursAcl, cmd, false);
                 return false;
             }
             if (s.equals("authentication")) {
@@ -257,8 +255,12 @@ public class servSmtp extends servGeneric implements prtServS {
                 recursEna = false;
                 return false;
             }
-            if (s.equals("access-class")) {
-                recursAcl = null;
+            if (s.startsWith("access-")) {
+                s = s.substring(7, s.length());
+                s += " " + cmd.getRemaining();
+                s = s.trim();
+                cmd = new cmds("info", s);
+                recursAcl = secInfoUtl.doCfgStr(recursAcl, cmd, true);
                 return false;
             }
             if (s.equals("authentication")) {
@@ -306,8 +308,7 @@ public class servSmtp extends servGeneric implements prtServS {
         l.add(null, "1 .  dsn                          allow delivery notification");
         l.add(null, "1 2  recursion                    recursive parameters");
         l.add(null, "2 .    enable                     allow recursion");
-        l.add(null, "2 3    access-class               set access list");
-        l.add(null, "3 .      <name:acl>               port number to use");
+        secInfoUtl.getHelp(l, 1, "access-");
         l.add(null, "2 3    authentication             set authentication");
         l.add(null, "3 .      <name:aaa>               name of authentication list");
         l.add(null, "1 2  bcc                          set bcc user");
@@ -687,10 +688,6 @@ class servSmtpDoer implements Runnable {
         lower = parent;
         pipe = stream;
         conn = id;
-        recurAva = lower.recursEna;
-        if (lower.recursAcl != null) {
-            recurAva &= lower.recursAcl.matches(conn);
-        }
         new Thread(this).start();
     }
 
@@ -1050,6 +1047,22 @@ class servSmtpDoer implements Runnable {
         return false;
     }
 
+    public void doRecur() {
+        recurAva = lower.recursEna;
+        if (lower.recursAcl == null) {
+            return;
+        }
+        if (!recurAva) {
+            return;
+        }
+        secInfoCls cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(conn.peerAddr), conn.peerAddr, prtTcp.protoNum, conn.iface.addr);
+        secInfoWrk wrk = new secInfoWrk(lower.recursAcl, cls);
+        wrk.doWork(false);
+        if (wrk.need2drop()) {
+            recurAva = false;
+        }
+    }
+
     public void doRbls() {
         rblRes = 0;
         if (lower.rbls.size() < 1) {
@@ -1093,6 +1106,7 @@ class servSmtpDoer implements Runnable {
         try {
             doLine("220 server ready");
             doRbls();
+            doRecur();
             doClear();
             for (;;) {
                 if (doOne()) {

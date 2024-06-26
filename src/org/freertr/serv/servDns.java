@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
-import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgProxy;
 import org.freertr.clnt.clntDns;
@@ -18,9 +17,12 @@ import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
-import org.freertr.tab.tabAceslstN;
+import org.freertr.prt.prtTcp;
+import org.freertr.sec.secInfoCfg;
+import org.freertr.sec.secInfoCls;
+import org.freertr.sec.secInfoUtl;
+import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabListing;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
@@ -74,7 +76,7 @@ public class servDns extends servGeneric implements prtServS {
     /**
      * access list to use
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> recursAcl;
+    protected secInfoCfg recursAcl;
 
     /**
      * 6to4 prefix
@@ -87,7 +89,6 @@ public class servDns extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server dns .*! port " + packDns.portNum,
         "server dns .*! protocol " + proto2string(protoAll),
-        "server dns .*! recursion access-all",
         "server dns .*! recursion 6to4nothing",
         "server dns .*! recursion disable",
         "server dns .*! no logging"
@@ -132,9 +133,7 @@ public class servDns extends servGeneric implements prtServS {
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !logging, beg, "logging", "");
         if (recursAcl != null) {
-            lst.add(beg + "recursion access-class " + recursAcl.listName);
-        } else {
-            lst.add(beg + "recursion access-all");
+            secInfoUtl.getConfig(lst, recursAcl, beg + "recursion access-");
         }
         if (recurs6to4 != null) {
             lst.add(beg + "recursion 6to4prefix " + recurs6to4);
@@ -165,9 +164,7 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, "1  2   recursion                 recursive parameters");
         l.add(null, "2  .     enable                  allow recursion");
         l.add(null, "2  .     disable                 forbid recursion");
-        l.add(null, "2  .     access-all              clear access list");
-        l.add(null, "2  3     access-class            set access list");
-        l.add(null, "3  .       <name:acl>            access list to use");
+        secInfoUtl.getHelp(l, 1, "access-");
         l.add(null, "2  3     6to4prefix              setup 6to4 prefix");
         l.add(null, "3  .       <addr>                address to prepend");
         l.add(null, "2  .     6to4nothing             clear 6to4 prefix");
@@ -295,21 +292,12 @@ public class servDns extends servGeneric implements prtServS {
                 recursEna = negated;
                 return false;
             }
-            if (s.equals("access-class")) {
-                if (negated) {
-                    recursAcl = null;
-                    return false;
-                }
-                cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
-                if (ntry == null) {
-                    cmd.error("no such access list");
-                    return false;
-                }
-                recursAcl = ntry.aceslst;
-                return false;
-            }
-            if (s.equals("access-all")) {
-                recursAcl = null;
+            if (s.startsWith("access-")) {
+                s = s.substring(7, s.length());
+                s += " " + cmd.getRemaining();
+                s = s.trim();
+                cmd = new cmds("info", s);
+                recursAcl = secInfoUtl.doCfgStr(recursAcl, cmd, negated);
                 return false;
             }
             if (s.equals("6to4prefix")) {
@@ -680,8 +668,13 @@ class servDnsDoer implements Runnable {
             logger.debug("rx " + pckD);
         }
         recurse = parent.recursEna;
-        if (parent.recursAcl != null) {
-            recurse &= parent.recursAcl.matches(conn);
+        if (recurse && (parent.recursAcl != null)) {
+            secInfoCls cls = new secInfoCls(null, null, null, parent.srvVrf.getFwd(conn.peerAddr), conn.peerAddr, prtTcp.protoNum, conn.iface.addr);
+            secInfoWrk wrk = new secInfoWrk(parent.recursAcl, cls);
+            wrk.doWork(false);
+            if (wrk.need2drop()) {
+                recurse = false;
+            }
         }
         int i = pckD.opcode;
         pckD.opcode = packDns.opcodeQuery;

@@ -15773,3 +15773,9 @@ failed: dhcp with excluded address
 ---------------------------------- 2024-06-19 09:56:58 24.6.19
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2024-06-26 19:29:32 24.6.26
+no todo: server http / host * searchbar
+no todo: server http / host * custom-remote >path/file>
+no todo: server http / host * custom-local <text>
+no todo: server http / host * webring-remote <path/file*>
+no todo: server http / host * webring-local <text>
