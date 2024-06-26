@@ -2767,6 +2767,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (neigh != null) {
+            if (neigh.hopChanges) {
+                if ((old.best.nextHop != null) && (ntry.best.nextHop != null)) {
+                    if (old.best.nextHop.compare(old.best.nextHop, ntry.best.nextHop) != 0) {
+                        logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from nexthop " + old.best.nextHop + " to " + ntry.best.nextHop);
+                    }
+                }
+            }
             if (neigh.endChanges) {
                 int o = old.best.asPathEnd();
                 int c = ntry.best.asPathEnd();

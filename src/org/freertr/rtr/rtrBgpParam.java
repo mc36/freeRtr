@@ -189,6 +189,11 @@ public abstract class rtrBgpParam {
     public boolean endChanges;
 
     /**
+     * log hop changes
+     */
+    public boolean hopChanges;
+
+    /**
      * log length changes
      */
     public tabIntMatcher lengthChanges;
@@ -1292,6 +1297,7 @@ public abstract class rtrBgpParam {
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
         endChanges = src.endChanges;
+        hopChanges = src.hopChanges;
         unknownsColl = src.unknownsColl;
         unknownsLog = src.unknownsLog;
         unknownsOut = src.unknownsOut;
@@ -1835,6 +1841,7 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <num>                     allowed attributes");
         l.add(null, "3  .       unknowns-log                log received unknown attributes");
         l.add(null, "3  .       log-end-changes             log received origin asn changes");
+        l.add(null, "3  .       log-nexthop-changes         log received origin hop changes");
         l.add(null, "3  4       log-length-changes          log received aspath length changes");
         l.add(null, "4  .         <num>                     path length");
         l.add(null, "4  .         all                       any value");
@@ -2128,6 +2135,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
         cmds.cfgLine(l, !unknownsLog, beg, nei + "unknowns-log", "");
         cmds.cfgLine(l, !endChanges, beg, nei + "log-end-changes", "");
+        cmds.cfgLine(l, !hopChanges, beg, nei + "log-nexthop-changes", "");
         cmds.cfgLine(l, lengthChanges == null, beg, nei + "log-length-changes", "" + lengthChanges);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
         cmds.cfgLine(l, !bier, beg, nei + "bier", "");
@@ -2799,6 +2807,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("log-end-changes")) {
             endChanges = !negated;
+            return false;
+        }
+        if (s.equals("log-nexthop-changes")) {
+            hopChanges = !negated;
             return false;
         }
         if (s.equals("unknowns-out")) {

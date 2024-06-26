@@ -447,6 +447,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         "router bgp[46] .*! no (template|neighbor) .* unknowns-log",
         "router bgp[46] .*! no (template|neighbor) .* unknowns-collect",
         "router bgp[46] .*! no (template|neighbor) .* log-end-changes",
+        "router bgp[46] .*! no (template|neighbor) .* log-nexthop-changes",
         "router bgp[46] .*! no (template|neighbor) .* log-length-changes",
         "router bgp[46] .*! no (template|neighbor) .* dampening",
         "router bgp[46] .*! no (template|neighbor) .* prefix-list-in",
