@@ -52,6 +52,11 @@ public class servHttp extends servGeneric implements prtServS {
     protected tabGen<servHttpHost> hosts = new tabGen<servHttpHost>();
 
     /**
+     * list of bots
+     */
+    protected List<String> bots = new ArrayList<String>();
+
+    /**
      * proxy to use
      */
     protected clntProxy proxy;
@@ -122,6 +127,22 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * find one host
      *
+     * @param s agent name
+     * @return true if found
+     */
+    protected boolean findBot(String s) {
+        for (int i = 0; i < bots.size(); i++) {
+            String a = bots.get(i);
+            if (s.matches(a)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * find one host
+     *
      * @param s host name
      * @return host descriptor, null if not found
      */
@@ -180,6 +201,9 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(beg + "def-path " + defPath);
         l.add(beg + "def-subconn" + servHttpUtil.subconn2string(defSubcon));
         cmds.cfgLine(l, !singleRequest, beg, "single-request", "");
+        for (int i = 0; i < bots.size(); i++) {
+            l.add(beg + "bad-agent " + bots.get(i));
+        }
         for (int hn = 0; hn < hosts.size(); hn++) {
             servHttpHost ntry = hosts.get(hn);
             if (ntry == null) {
@@ -201,6 +225,18 @@ public class servHttp extends servGeneric implements prtServS {
         if (a.equals("no")) {
             negated = true;
             a = cmd.word();
+        }
+        if (a.equals("bad-agent")) {
+            a = cmd.getRemaining();
+            if (negated) {
+                bots.remove(a);
+                return false;
+            }
+            if (bots.indexOf(a) >= 0) {
+                return false;
+            }
+            bots.add(a);
+            return false;
         }
         if (a.equals("second-port")) {
             if (negated) {
@@ -301,6 +337,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "2 .    <name:prx>                   proxy profile");
         l.add(null, "1 2  second-port                    enable dual binding");
         l.add(null, "2 .    <num>                        secure port");
+        l.add(null, "1 2  bad-agent                      set host default path");
+        l.add(null, "2 2,.  <str>                        user agent to deny");
         l.add(null, "1 2  def-path                       set host default path");
         l.add(null, "2 .    <str>                        path on the disk");
         l.add(null, "1 2  def-subconn                    set host default subconnect");

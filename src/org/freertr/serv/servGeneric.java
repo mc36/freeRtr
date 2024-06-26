@@ -984,7 +984,13 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return false;
     }
 
-    private void srvBlackholePeer(boolean ipv4, addrIP adr) {
+    /**
+     * blackhole peer
+     *
+     * @param ipv4 address family
+     * @param adr address to block
+     */
+    protected void srvBlackholePeer(boolean ipv4, addrIP adr) {
         if (ipv4) {
             if (srvBlckhl4 != null) {
                 srvBlckhl4.blockAddr(adr);

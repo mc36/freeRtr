@@ -19,7 +19,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.enc.encUrl;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
-import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
 import org.freertr.util.verCore;
@@ -460,7 +459,7 @@ public class userUpgrade {
         encUrl url = encUrl.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
-        boolean dl = userFlash.doReceive(pipeDiscard.needAny(null), url, new File(tmp), true);
+        boolean dl = userFlash.doReceive(pipeDiscard.needAny(null), url, new File(tmp));
         userFlash.delete(tmp);
         if (!dl) {
             String a = "auto-revert cancelled";
@@ -511,7 +510,7 @@ public class userUpgrade {
         encUrl url = encUrl.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
-        userFlash.doReceive(cmd.pipe, url, new File(tmp), debugger.clntHttpTraf);
+        userFlash.doReceive(cmd.pipe, url, new File(tmp));
         List<String> txt = bits.txt2buf(tmp);
         userFlash.delete(tmp);
         if (txt == null) {
@@ -747,7 +746,7 @@ public class userUpgrade {
         cons.debugStat("downloading " + loc);
         encUrl url = encUrl.parseOne(rem);
         userFlash.delete(tmp);
-        userFlash.doReceive(cmd.pipe, url, new File(tmp), true);
+        userFlash.doReceive(cmd.pipe, url, new File(tmp));
         cons.debugStat("upgrading " + loc);
         if (!sumN.equals(calcFileHash(tmp))) {
             cons.debugRes("checksum mismatch, aborting!");

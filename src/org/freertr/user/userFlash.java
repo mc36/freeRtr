@@ -209,7 +209,7 @@ public class userFlash {
         }
         if (a.equals("receive")) {
             a = cmd.word();
-            cmd.error(cmds.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true)));
+            cmd.error(cmds.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a))));
             return null;
         }
         if (a.equals("urlshow")) {
@@ -233,7 +233,7 @@ public class userFlash {
         }
         if (a.equals("transmit")) {
             a = cmd.word();
-            doSend(pip, encUrl.parseOne(cmd.getRemaining()), new File(a), true);
+            doSend(pip, encUrl.parseOne(cmd.getRemaining()), new File(a));
             return null;
         }
         if (a.equals("compress")) {
@@ -1229,10 +1229,9 @@ public class userFlash {
      * @param pipe pipeline to use
      * @param url url to get
      * @param f file to write to
-     * @param debug force debugging
      * @return result, false on success, true on error
      */
-    public static boolean doReceive(pipeSide pipe, encUrl url, File f, boolean debug) {
+    public static boolean doReceive(pipeSide pipe, encUrl url, File f) {
         String a = url.proto.trim().toLowerCase();
         if (a.startsWith("pop3")) {
             clntPop3 c = new clntPop3(pipe);
@@ -1241,7 +1240,7 @@ public class userFlash {
             return b;
         }
         if (a.startsWith("http")) {
-            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, debug);
+            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
             boolean b = c.download(url, f);
             c.cleanUp();
             return b;
@@ -1371,9 +1370,8 @@ public class userFlash {
      * @param pipe pipeline to use
      * @param url url to get
      * @param f file to write to
-     * @param debug force debugging
      */
-    public static void doSend(pipeSide pipe, encUrl url, File f, boolean debug) {
+    public static void doSend(pipeSide pipe, encUrl url, File f) {
         String a = url.proto.trim().toLowerCase();
         if (a.startsWith("mailto")) {
             clntSmtp c = new clntSmtp(pipe);
@@ -1382,7 +1380,7 @@ public class userFlash {
             return;
         }
         if (a.startsWith("http")) {
-            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, debug);
+            clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
             c.upload(url, f);
             c.cleanUp();
             return;

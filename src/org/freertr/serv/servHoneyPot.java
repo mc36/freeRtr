@@ -43,7 +43,10 @@ public class servHoneyPot extends servGeneric implements prtServS {
      */
     public final static String[] defaultL = {
         "server honeypot .*! port " + port,
-        "server honeypot .*! protocol " + proto2string(protoAllStrm)
+        "server honeypot .*! protocol " + proto2string(protoAllStrm),
+        "server honeypot .*! no tiny-http",
+        "server honeypot .*! no blackhole",
+        "server honeypot .*! no closed"
     };
 
     /**
@@ -57,9 +60,19 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public secInfoCfg ipInfo;
 
     /**
-     * pretend a dumb server
+     * pretend a http server
      */
     public boolean tinyHttp;
+
+    /**
+     * pretend closed port
+     */
+    public boolean closed;
+
+    /**
+     * blackhole immediately
+     */
+    public boolean blackhole;
 
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
@@ -86,9 +99,9 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        if (tinyHttp) {
-            lst.add(beg + "tinyhttp");
-        }
+        cmds.cfgLine(lst, !tinyHttp, beg, "tiny-http", "");
+        cmds.cfgLine(lst, !closed, beg, "closed", "");
+        cmds.cfgLine(lst, !blackhole, beg, "blackhole", "");
         secInfoUtl.getConfig(lst, ipInfo, beg + "info ");
     }
 
@@ -98,8 +111,16 @@ public class servHoneyPot extends servGeneric implements prtServS {
         if (neg) {
             a = cmd.word();
         }
-        if (a.equals("tinyhttp")) {
+        if (a.equals("tiny-http")) {
             tinyHttp = !neg;
+            return false;
+        }
+        if (a.equals("blackhole")) {
+            blackhole = !neg;
+            return false;
+        }
+        if (a.equals("closed")) {
+            closed = !neg;
             return false;
         }
         if (!a.equals("info")) {
@@ -111,11 +132,19 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  tinyhttp                     pretend http server");
+        l.add(null, "1 .  tiny-http                     pretend http server");
+        l.add(null, "1 .  closed                        pretend closed port");
+        l.add(null, "1 .  blackhole                     blackhole immediately");
         secInfoUtl.getHelp(l, 1, "info            report parameters");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        if (blackhole) {
+            srvBlackholePeer(id.peerAddr.isIPv4(), id.peerAddr);
+        }
+        if (closed) {
+            return true;
+        }
         pipe.setTime(60000);
         pipe.setReady();
         servHoneyPotConn ntry = new servHoneyPotConn(this, pipe, id.peerAddr, id.iface.addr);
@@ -185,6 +214,12 @@ class servHoneyPotConn implements Runnable {
         encUrl gotUrl = new encUrl();
         gotUrl.fromString("tcp://" + cmd.word());
         ipi.doHttpUrl(gotUrl.toPathName());
+        for (;;) {
+            s = pipe.lineGet(1);
+            if (s.length() < 1) {
+                break;
+            }
+        }
     }
 
     /**

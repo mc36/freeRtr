@@ -183,7 +183,6 @@ rtr-hw to have tcp2linux and vrf2linux knobs
 test todo knob as an editor but in the running-config
 inter xxx / macrandomize
 sho run check/track
-server http / host * user-agent matcher with redirect
 server security maximum pendings as access-security
 servers to have access-aaa
 config committed with check for saved and backup config

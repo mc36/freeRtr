@@ -1119,7 +1119,7 @@ server dns ns vrf v1 interface loopback0
 !
 server honeypot hp1 vrf v1 interface loopback0
  port 8881
- tinyhttp
+ tiny-http
  info pmtud 512 1024 666
  info router4 bgp4 65535
  info router6 bgp6 65535
@@ -1130,7 +1130,7 @@ server honeypot hp1 vrf v1 interface loopback0
 !
 server honeypot hp2 vrf v1 interface loopback0
  port 8882
- tinyhttp
+ tiny-http
  info pmtud 512 1024 666
  info router4 bgp4 65535
  info router6 bgp6 65535

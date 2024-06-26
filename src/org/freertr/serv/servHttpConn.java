@@ -591,6 +591,10 @@ public class servHttpConn implements Runnable {
                         + bits.lst2str(gotCook, " "));
             }
             try {
+                if (lower.findBot(gotAgent)) {
+                    sendRespError(404, "never found");
+                    break;
+                }
                 gotHost = lower.findHost(gotUrl.server);
                 if (servHttpUtil.doConnect(this)) {
                     return;

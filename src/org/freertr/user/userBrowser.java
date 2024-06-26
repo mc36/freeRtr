@@ -211,7 +211,7 @@ public class userBrowser {
         curX = 0;
         curY = 0;
         userFlash.delete(tempFile);
-        if (userFlash.doReceive(console.pipe, encUrl.parseOne(url), new File(tempFile), true)) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(url), new File(tempFile))) {
             return "error downloading";
         }
         console.pipe.linePut("reading");
@@ -539,7 +539,7 @@ public class userBrowser {
             return;
         }
         doChg2txt();
-        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile), true)) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile))) {
             console.pipe.linePut("error downloading");
             userScreen.getKey(console.pipe);
             doClear();
@@ -558,7 +558,7 @@ public class userBrowser {
             return;
         }
         doChg2txt();
-        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile), true)) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile))) {
             console.pipe.linePut("error downloading");
             userScreen.getKey(console.pipe);
             doClear();
@@ -596,7 +596,7 @@ public class userBrowser {
             return;
         }
         doChg2txt();
-        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(b), true)) {
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(b))) {
             console.pipe.linePut("error downloading");
             userScreen.getKey(console.pipe);
         }

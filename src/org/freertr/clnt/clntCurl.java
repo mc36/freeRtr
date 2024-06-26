@@ -33,7 +33,7 @@ public class clntCurl {
     public final static List<String> doGetUrl(pipeSide p, String u) {
         List<String> res = new ArrayList<String>();
         String a = version.getRWpath() + "curl" + bits.randomD() + ".tmp";
-        userFlash.doReceive(p, encUrl.parseOne(u), new File(a), true);
+        userFlash.doReceive(p, encUrl.parseOne(u), new File(a));
         List<String> got = bits.txt2buf(a);
         userFlash.delete(a);
         a = "result=" + cmds.doneFail(got == null);

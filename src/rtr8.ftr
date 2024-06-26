@@ -630,7 +630,6 @@ todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
 todo: inter xxx / macrandomize
 todo: sho run check/track
-todo: server http / host * user-agent matcher with redirect
 todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: config committed with check for saved and backup config

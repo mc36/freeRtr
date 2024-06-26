@@ -215,7 +215,7 @@ public class rtrDownload extends ipRtr {
         pip.setTime(120000);
         String tmp = version.getRWpath() + "rou" + bits.randomD() + ".tmp";
         userFlash.delete(tmp);
-        if (userFlash.doReceive(pip, encUrl.parseOne(url), new File(tmp), false)) {
+        if (userFlash.doReceive(pip, encUrl.parseOne(url), new File(tmp))) {
             logger.warn("error downloading " + url);
             return;
         }
