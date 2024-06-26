@@ -651,7 +651,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         }
         if (iface.ipInfoCfg != null) {
             secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, ifcAddr, prtIsoip.proto, iface.iface.addr);
-            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls, null);
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls);
             ipInfoRes.doWork(true);
         }
         logger.warn("neighbor level" + level.level + " " + ifcAddr + " up");

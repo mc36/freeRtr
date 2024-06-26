@@ -1119,17 +1119,18 @@ server dns ns vrf v1 interface loopback0
 !
 server honeypot hp1 vrf v1 interface loopback0
  port 8881
+ tinyhttp
  info pmtud 512 1024 666
  info router4 bgp4 65535
  info router6 bgp6 65535
  info single
  info style background-color:#000000;color:#00FFFF;
  info script logger
- info tinyhttp
  exit
 !
 server honeypot hp2 vrf v1 interface loopback0
  port 8882
+ tinyhttp
  info pmtud 512 1024 666
  info router4 bgp4 65535
  info router6 bgp6 65535
@@ -1137,7 +1138,6 @@ server honeypot hp2 vrf v1 interface loopback0
  info single
  info style background-color:#000000;color:#00FFFF;
  info resolve
- info tinyhttp
  exit
 !
 server honeypot hp3 vrf v1 interface loopback0

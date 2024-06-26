@@ -246,7 +246,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         pipe.wait4ready(holdTimer);
         if (ipInfoCfg != null) {
             secInfoCls cls = new secInfoCls(null, null, null, parent.fwdCore, peer, prtTcp.protoNum, usedIfc.addr);
-            ipInfoRes = new secInfoWrk(ipInfoCfg, cls, null);
+            ipInfoRes = new secInfoWrk(ipInfoCfg, cls);
             ipInfoRes.doWork(false);
             if (ipInfoRes.need2drop()) {
                 closeNow();

@@ -368,10 +368,9 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 .        <name:ifc>               name of interface");
         l.add(null, "3 4      authentication             require authentication to access");
         l.add(null, "4 .        <name:aaa>               authentication list");
-        l.add(null, "3 4      access-class               require ip to access");
-        l.add(null, "4 .        <name:acl>               access list");
         l.add(null, "3 4      style                      set page style tags");
         l.add(null, "4 4,.      <text>                   text to send");
+        secInfoUtl.getHelp(l, 2, "access-");
     }
 
     /**

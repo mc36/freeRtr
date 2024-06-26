@@ -129,7 +129,7 @@ public class secInfoUtl {
         }
         if (s.equals("class")) {
             if (negated) {
-                cfg.srvAccess = null;
+                cfg.accessList = null;
                 doSanityChecks(cfg);
                 return cfg;
             }
@@ -138,7 +138,7 @@ public class secInfoUtl {
                 cmd.error("no such access list");
                 return cfg;
             }
-            cfg.srvAccess = ntry.aceslst;
+            cfg.accessList = ntry.aceslst;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -208,11 +208,6 @@ public class secInfoUtl {
         }
         if (s.equals("others")) {
             cfg.others = !negated;
-            doSanityChecks(cfg);
-            return cfg;
-        }
-        if (s.equals("tinyhttp")) {
-            cfg.tinyHttp = !negated;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -541,8 +536,8 @@ public class secInfoUtl {
         if (cfg.startupDelay > 0) {
             lst.add(beg + "startup " + cfg.startupDelay);
         }
-        if (cfg.srvAccess != null) {
-            lst.add(beg + "class " + cfg.srvAccess.listName);
+        if (cfg.accessList != null) {
+            lst.add(beg + "class " + cfg.accessList.listName);
         }
         if (cfg.prefixList != null) {
             lst.add(beg + "prefix " + cfg.prefixList.listName);
@@ -568,9 +563,6 @@ public class secInfoUtl {
         if (cfg.resolve) {
             lst.add(beg + "resolve");
         }
-        if (cfg.tinyHttp) {
-            lst.add(beg + "tinyhttp");
-        }
         if (cfg.others) {
             lst.add(beg + "others");
         }
@@ -584,7 +576,7 @@ public class secInfoUtl {
      * @param beg beginning
      */
     public final static void getHelp(userHelping lst, int tab, String beg) {
-        if (tab > 0) {
+        if (!beg.endsWith("-")) {
             lst.add(null, (tab + 0) + " " + (tab + 1) + "  " + beg);
             beg = "";
         }
@@ -635,7 +627,6 @@ public class secInfoUtl {
         lst.add(null, (tab + 1) + " .  " + beg + "plain                        plain prefix details");
         lst.add(null, (tab + 1) + " .  " + beg + "justip                       just address headline");
         lst.add(null, (tab + 1) + " .  " + beg + "resolve                      resolve addresses");
-        lst.add(null, (tab + 1) + " .  " + beg + "tinyhttp                     pretend http server");
         lst.add(null, (tab + 1) + " .  " + beg + "others                       allow any addresses");
     }
 
@@ -782,14 +773,6 @@ public class secInfoUtl {
         }
         if (a.equals("unseparate")) {
             wrk.separate = false;
-            return false;
-        }
-        if (a.equals("http")) {
-            wrk.http = true;
-            return false;
-        }
-        if (a.equals("unhttp")) {
-            wrk.http = false;
             return false;
         }
         if (a.equals("style")) {

@@ -1309,7 +1309,7 @@ public class servHttpUtil {
                 return true;
             }
             secInfoCls cls = new secInfoCls(null, null, null, cn.lower.srvVrf.getFwd(cn.peer), cn.peer, prtTcp.protoNum, cn.conn.iface.addr);
-            secInfoWrk wrk = new secInfoWrk(cn.gotHost.ipInfo, cls, null);
+            secInfoWrk wrk = new secInfoWrk(cn.gotHost.ipInfo, cls);
             wrk.doHttpUrl(cmd.getRemaining());
             wrk.doWork(false);
             wrk.need2drop();

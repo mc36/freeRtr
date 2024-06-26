@@ -50,7 +50,7 @@ public class secInfoCfg {
     /**
      * access list to use
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> srvAccess;
+    public tabListing<tabAceslstN<addrIP>, addrIP> accessList;
 
     /**
      * access prefix list
@@ -66,11 +66,6 @@ public class secInfoCfg {
      * access route policy
      */
     public tabListing<tabRtrplcN, addrIP> routePolicy;
-
-    /**
-     * pretend a dumb server
-     */
-    public boolean tinyHttp;
 
     /**
      * allow to query others

@@ -814,7 +814,7 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
             }
             if (ipInfoCfg != null) {
                 secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, peer, prtUdp.protoNum, iface.addr);
-                ipInfoRes = new secInfoWrk(ipInfoCfg, cls, null);
+                ipInfoRes = new secInfoWrk(ipInfoCfg, cls);
                 ipInfoRes.doWork(true);
             }
             logger.warn("neighbor " + name + " (" + peer + ") up");

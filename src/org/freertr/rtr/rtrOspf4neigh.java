@@ -981,7 +981,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             addrIP adr = new addrIP();
             adr.fromIPv4addr(peer);
             secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, adr, rtrOspf4.protoNum, iface.iface.addr);
-            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls, null);
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls);
             ipInfoRes.doWork(true);
         }
         for (;;) {

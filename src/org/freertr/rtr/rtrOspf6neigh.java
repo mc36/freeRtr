@@ -977,7 +977,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf6n
             addrIP adr = new addrIP();
             adr.fromIPv6addr(peer);
             secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, adr, rtrOspf6.protoNum, iface.iface.addr);
-            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls, null);
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls);
             ipInfoRes.doWork(true);
         }
         for (;;) {

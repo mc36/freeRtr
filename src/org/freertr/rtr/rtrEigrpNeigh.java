@@ -426,7 +426,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
     public void run() {
         if (iface.ipInfoCfg != null) {
             secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, peer, rtrEigrp.protoNum, iface.iface.addr);
-            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls, null);
+            ipInfoRes = new secInfoWrk(iface.ipInfoCfg, cls);
             ipInfoRes.doWork(false);
             if (ipInfoRes.need2drop()) {
                 stopWork();

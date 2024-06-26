@@ -49,11 +49,6 @@ public class secInfoWrk implements Runnable {
     protected final ipFwd connFwd;
 
     /**
-     * reporter pipe
-     */
-    protected final pipeSide rePip;
-
-    /**
      * protocol number
      */
     protected final int proto;
@@ -77,11 +72,6 @@ public class secInfoWrk implements Runnable {
      * tracker result
      */
     protected boolean tracker;
-
-    /**
-     * format as http
-     */
-    protected boolean http;
 
     /**
      * style to send
@@ -158,16 +148,14 @@ public class secInfoWrk implements Runnable {
      *
      * @param ned configuration to use
      * @param cls closer to use
-     * @param con pipeline to use for reports
      */
-    public secInfoWrk(secInfoCfg ned, secInfoCls cls, pipeSide con) {
+    public secInfoWrk(secInfoCfg ned, secInfoCls cls) {
         if (ned == null) {
             ned = new secInfoCfg();
         }
         closer = cls;
         connFwd = cls.fwder;
         config = ned;
-        rePip = con;
         proto = cls.protNum;
         local = cls.local;
         hack = ned.hacked;
@@ -178,7 +166,6 @@ public class secInfoWrk implements Runnable {
         detail = ned.details;
         single = ned.single;
         separate = ned.separate;
-        http = ned.tinyHttp;
         othrs = ned.others;
         changeWorkAddr(cls.remote);
     }
@@ -305,18 +292,18 @@ public class secInfoWrk implements Runnable {
      */
     protected void doCheckAcl() {
         try {
-            if (config.srvAccess == null) {
+            if (config.accessList == null) {
                 return;
             }
             if (closer.closeC != null) {
-                tracker |= !config.srvAccess.matches(closer.closeC);
+                tracker |= !config.accessList.matches(closer.closeC);
                 return;
             }
             packHolder pck = new packHolder(true, true);
             pck.IPsrc.setAddr(addr);
             pck.IPtrg.setAddr(closer.local);
             pck.IPprt = proto;
-            tracker |= !config.srvAccess.matches(false, false, pck);
+            tracker |= !config.accessList.matches(false, false, pck);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }
@@ -386,26 +373,6 @@ public class secInfoWrk implements Runnable {
     }
 
     /**
-     * do minimal http exchange
-     */
-    public void doHttpRead() {
-        if (!http) {
-            return;
-        }
-        if (rePip == null) {
-            return;
-        }
-        rePip.lineTx = pipeSide.modTyp.modeCRLF;
-        rePip.lineRx = pipeSide.modTyp.modeCRorLF;
-        String s = rePip.lineGet(1);
-        cmds cmd = new cmds("api", s);
-        cmd.word();
-        encUrl gotUrl = new encUrl();
-        gotUrl.fromString("tcp://" + cmd.word());
-        doHttpUrl(gotUrl.toPathName());
-    }
-
-    /**
      * get html boilerplate
      *
      * @param hdr true to preface, false fo closure
@@ -441,47 +408,6 @@ public class secInfoWrk implements Runnable {
         } else {
             return "text/html";
         }
-    }
-
-    /**
-     * do minimal http exchange
-     */
-    public void doHttpWrite() {
-        if (!http) {
-            return;
-        }
-        if (rePip == null) {
-            return;
-        }
-        rePip.lineTx = pipeSide.modTyp.modeCRLF;
-        rePip.lineRx = pipeSide.modTyp.modeCRorLF;
-        rePip.linePut("HTTP/1.1 200 ok");
-        rePip.linePut("Server: " + version.usrAgnt);
-        rePip.linePut("Content-Type: " + getContentType());
-        rePip.linePut("Connection: Close");
-        rePip.linePut("");
-        String a = getHtmlLines(true);
-        if (a == null) {
-            return;
-        }
-        rePip.linePut(a);
-    }
-
-    /**
-     * do minimal http exchange
-     */
-    public void doHttpFinish() {
-        if (!http) {
-            return;
-        }
-        if (rePip == null) {
-            return;
-        }
-        String a = getHtmlLines(false);
-        if (a == null) {
-            return;
-        }
-        rePip.linePut(a);
     }
 
     /**
@@ -522,22 +448,12 @@ public class secInfoWrk implements Runnable {
      *
      * @param pipe pipeline to use
      */
-    protected void putResult(pipeSide pipe) {
+    public void putResult(pipeSide pipe) {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         List<String> lst = getRouteInfos();
         byte[] res = secInfoUtl.getRouteAscii(lst);
         pipe.morePut(res, 0, res.length);
-    }
-
-    /**
-     * print out results
-     */
-    public void putResult() {
-        if (rePip == null) {
-            return;
-        }
-        putResult(rePip);
     }
 
     /**

@@ -2,6 +2,7 @@ package org.freertr.serv;
 
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.enc.encUrl;
 import org.freertr.ip.ipFwd;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -17,6 +18,7 @@ import org.freertr.user.userFilter;
 import org.freertr.user.userHelping;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
+import org.freertr.util.version;
 
 /**
  * honeypot server
@@ -54,6 +56,11 @@ public class servHoneyPot extends servGeneric implements prtServS {
      */
     public secInfoCfg ipInfo;
 
+    /**
+     * pretend a dumb server
+     */
+    public boolean tinyHttp;
+
     public tabGen<userFilter> srvDefFlt() {
         return defaultF;
     }
@@ -79,6 +86,9 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        if (tinyHttp) {
+            lst.add(beg + "tinyhttp");
+        }
         secInfoUtl.getConfig(lst, ipInfo, beg + "info ");
     }
 
@@ -87,6 +97,10 @@ public class servHoneyPot extends servGeneric implements prtServS {
         boolean neg = a.equals("no");
         if (neg) {
             a = cmd.word();
+        }
+        if (a.equals("tinyhttp")) {
+            tinyHttp = !neg;
+            return false;
         }
         if (!a.equals("info")) {
             cmd.badCmd();
@@ -97,6 +111,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 .  tinyhttp                     pretend http server");
         secInfoUtl.getHelp(l, 1, "info            report parameters");
     }
 
@@ -115,6 +130,8 @@ class servHoneyPotConn implements Runnable {
     private final servHoneyPot lower;
 
     private final pipeSide pipe;
+
+    private final secInfoWrk ipi;
 
     private final addrIP remote;
 
@@ -136,6 +153,9 @@ class servHoneyPotConn implements Runnable {
         remote = rem;
         local = loc;
         fwdr = lower.srvVrf.getFwd(rem);
+        secInfoCls cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
+        ipi = new secInfoWrk(lower.ipInfo, cls);
+        logger.info("honeypot hit from " + remote);
     }
 
     /**
@@ -145,18 +165,86 @@ class servHoneyPotConn implements Runnable {
         new Thread(this).start();
     }
 
+    /**
+     * do minimal http exchange
+     */
+    public void doHttpRead() {
+        if (!lower.tinyHttp) {
+            return;
+        }
+        if (pipe == null) {
+            return;
+        }
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+        String s = pipe.lineGet(1);
+        cmds cmd = new cmds("api", s);
+        cmd.word();
+        encUrl gotUrl = new encUrl();
+        gotUrl.fromString("tcp://" + cmd.word());
+        ipi.doHttpUrl(gotUrl.toPathName());
+    }
+
+    /**
+     * do minimal http exchange
+     */
+    public void doHttpWrite() {
+        if (!lower.tinyHttp) {
+            return;
+        }
+        if (pipe == null) {
+            return;
+        }
+        pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+        pipe.linePut("HTTP/1.1 200 ok");
+        pipe.linePut("Server: " + version.usrAgnt);
+        pipe.linePut("Content-Type: " + ipi.getContentType());
+        pipe.linePut("Connection: Close");
+        pipe.linePut("");
+        String a = ipi.getHtmlLines(true);
+        if (a == null) {
+            return;
+        }
+        pipe.linePut(a);
+    }
+
+    /**
+     * do minimal http exchange
+     */
+    public void doHttpFinish() {
+        if (!lower.tinyHttp) {
+            return;
+        }
+        if (pipe == null) {
+            return;
+        }
+        String a = ipi.getHtmlLines(false);
+        if (a == null) {
+            return;
+        }
+        pipe.linePut(a);
+    }
+
+    /**
+     * print out results
+     */
+    public void putResult() {
+        if (pipe == null) {
+            return;
+        }
+        ipi.putResult(pipe);
+    }
+
     public void run() {
         try {
-            logger.info("honeypot hit from " + remote);
             pipe.setReady();
-            secInfoCls cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
-            secInfoWrk ipi = new secInfoWrk(lower.ipInfo, cls, pipe);
-            ipi.doHttpRead();
+            doHttpRead();
             ipi.doWork(false);
             ipi.need2drop();
-            ipi.doHttpWrite();
-            ipi.putResult();
-            ipi.doHttpFinish();
+            doHttpWrite();
+            putResult();
+            doHttpFinish();
             pipe.setClose();
         } catch (Exception e) {
             logger.traceback(e, "" + remote);

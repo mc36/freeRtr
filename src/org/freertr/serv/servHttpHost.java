@@ -7,9 +7,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import org.freertr.addr.addrIP;
 import org.freertr.auth.authGeneric;
-import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgAuther;
 import org.freertr.cfg.cfgIfc;
@@ -20,10 +18,11 @@ import org.freertr.clnt.clntProxy;
 import org.freertr.pipe.pipeSide;
 import org.freertr.enc.encUrl;
 import org.freertr.enc.encXml;
+import org.freertr.prt.prtTcp;
 import org.freertr.sec.secInfoCfg;
+import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoUtl;
-import org.freertr.tab.tabAceslstN;
-import org.freertr.tab.tabListing;
+import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFlash;
 import org.freertr.util.bits;
@@ -238,9 +237,9 @@ public class servHttpHost implements Comparator<servHttpHost> {
     public authGeneric authenticList;
 
     /**
-     * access list
+     * gather info per accesses
      */
-    public tabListing<tabAceslstN<addrIP>, addrIP> accessList;
+    protected secInfoCfg accessControl;
 
     /**
      * create instance
@@ -371,8 +370,8 @@ public class servHttpHost implements Comparator<servHttpHost> {
         if (authenticList != null) {
             l.add(a + " authentication " + authenticList.autName);
         }
-        if (accessList != null) {
-            l.add(a + " access-class " + accessList.listName);
+        if (accessControl != null) {
+            secInfoUtl.getConfig(l, accessControl, a + " access-");
         }
     }
 
@@ -676,17 +675,12 @@ public class servHttpHost implements Comparator<servHttpHost> {
             }
             return false;
         }
-        if (a.equals("access-class")) {
-            if (negated) {
-                accessList = null;
-                return false;
-            }
-            cfgAceslst lst = cfgAll.aclsFind(cmd.word(), false);
-            if (lst == null) {
-                cmd.error("no such access list");
-                return false;
-            }
-            accessList = lst.aceslst;
+        if (a.startsWith("access-")) {
+            a = a.substring(7, a.length());
+            a += " " + cmd.getRemaining();
+            a = a.trim();
+            cmd = new cmds("info", a);
+            accessControl = secInfoUtl.doCfgStr(accessControl, cmd, negated);
             return false;
         }
         if (a.equals("authentication")) {
@@ -768,8 +762,11 @@ public class servHttpHost implements Comparator<servHttpHost> {
             cn.sendRespError(404, "not found");
             return;
         }
-        if (accessList != null) {
-            if (!accessList.matches(cn.conn)) {
+        if (accessControl != null) {
+            secInfoCls cls = new secInfoCls(null, null, null, cn.lower.srvVrf.getFwd(cn.peer), cn.peer, prtTcp.protoNum, cn.conn.iface.addr);
+            secInfoWrk wrk = new secInfoWrk(accessControl, cls);
+            wrk.doWork(false);
+            if (wrk.need2drop()) {
                 cn.sendRespError(401, "forbidden");
                 return;
             }
