@@ -349,7 +349,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
             options.put(opt);
             return false;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

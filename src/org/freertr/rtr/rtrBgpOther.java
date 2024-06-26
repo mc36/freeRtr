@@ -340,12 +340,12 @@ public class rtrBgpOther extends ipRtr {
         if (enabled) {
             l.add(beg + "enable");
         } else {
-            l.add(cmds.tabulator + "no" + beg + "enable");
+            l.add(cmds.tabulator + cmds.negated + beg + "enable");
         }
         if (routerVpn) {
             l.add(beg + "vpn-mode");
         } else {
-            l.add(cmds.tabulator + "no" + beg + "vpn-mode");
+            l.add(cmds.tabulator + cmds.negated + beg + "vpn-mode");
         }
         l.add(beg + "distance " + distance);
         if (flowInst) {

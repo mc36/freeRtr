@@ -112,7 +112,7 @@ public class servPrometheus extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        boolean negated = s.equals("no");
+        boolean negated = s.equals(cmds.negated);
         if (negated) {
             s = cmd.word();
         }

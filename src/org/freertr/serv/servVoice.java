@@ -123,7 +123,7 @@ public class servVoice extends servGeneric implements prtServS {
             messageScript = cmd.getRemaining();
             return false;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

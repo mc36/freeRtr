@@ -220,7 +220,7 @@ public class packDnsZone implements Comparator<packDnsZone> {
             defttl = bits.str2num(cmd.word());
             return false;
         }
-        if (s.equals("no")) {
+        if (s.equals(cmds.negated)) {
             s = cmd.word();
             if (!s.equals("rr")) {
                 return true;

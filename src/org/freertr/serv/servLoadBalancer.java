@@ -156,7 +156,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
             servLst.put(ntry);
             return false;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

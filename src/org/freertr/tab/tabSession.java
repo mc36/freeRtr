@@ -183,7 +183,7 @@ public class tabSession implements Runnable {
         String s = "";
         for (int i = 0; i < cfg.size(); i++) {
             String a = cfg.get(i);
-            if (a.startsWith("no")) {
+            if (a.startsWith(cmds.negated)) {
                 continue;
             }
             s += a + " ";
@@ -233,7 +233,7 @@ public class tabSession implements Runnable {
             if (a.length() < 1) {
                 break;
             }
-            boolean negated = a.equals("no");
+            boolean negated = a.equals(cmds.negated);
             if (negated) {
                 a = cmd.word();
             }

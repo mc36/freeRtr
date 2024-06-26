@@ -89,7 +89,7 @@ public class servQuote extends servGeneric implements prtServS {
             lines.put(l);
             return false;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

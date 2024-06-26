@@ -139,7 +139,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
             ports.add(ntry);
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

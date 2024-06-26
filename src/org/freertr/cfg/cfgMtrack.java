@@ -233,7 +233,7 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
             worker.startNow();
             return true;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return false;
         }

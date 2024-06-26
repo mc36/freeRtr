@@ -6487,12 +6487,12 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
 
     private void dhcpServConf(List<String> l, servGeneric s, String b, String fn, int filter) {
         if (s == null) {
-            l.add(cmds.tabulator + "no " + b + " enable");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + b + " enable");
             return;
         }
         l.add(cmds.tabulator + b + " enable");
         List<String> r = new ArrayList<String>();
-        s.srvShRun(" ", r, filter);
+        s.srvShRun(cmds.tabulator, r, filter);
         tabGen<userFilter> fl = s.srvDefFlt();
         for (int i = 0; i < r.size(); i++) {
             String a = r.get(i);
@@ -6501,8 +6501,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             if (fv != null) {
                 continue;
             }
-            if (a.startsWith(" no")) {
-                a = "no " + b + a.substring(3, a.length());
+            if (a.startsWith(cmds.tabulator + cmds.negated)) {
+                a = cmds.negated + cmds.tabulator + b + a.substring(3, a.length());
             } else {
                 a = b + a;
             }
@@ -8065,7 +8065,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             doCfgNsh(cmd);
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }
@@ -8435,7 +8435,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmd.error("server not enabled");
                 return;
             }
-            cmd = new cmds("srv", "no " + a + " " + cmd.getRemaining());
+            cmd = new cmds("srv", cmds.negated + cmds.tabulator + a + " " + cmd.getRemaining());
             dhcp4s.srvCfgStr(cmd);
             return;
         }
@@ -8454,7 +8454,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 cmd.error("server not enabled");
                 return;
             }
-            cmd = new cmds("srv", "no " + a + " " + cmd.getRemaining());
+            cmd = new cmds("srv", cmds.negated + cmds.tabulator + a + " " + cmd.getRemaining());
             dhcp6s.srvCfgStr(cmd);
             return;
         }

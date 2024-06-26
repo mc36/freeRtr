@@ -222,7 +222,7 @@ public class servHttp extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
         boolean negated = false;
-        if (a.equals("no")) {
+        if (a.equals(cmds.negated)) {
             negated = true;
             a = cmd.word();
         }

@@ -547,7 +547,7 @@ public class ifcBridge implements ifcDn {
             stpPrio = bits.str2num(cmd.word());
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

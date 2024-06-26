@@ -178,7 +178,7 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
-        boolean negated = a.equals("no");
+        boolean negated = a.equals(cmds.negated);
         if (negated) {
             a = cmd.word();
         }

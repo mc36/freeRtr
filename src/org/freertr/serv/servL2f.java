@@ -183,7 +183,7 @@ public class servL2f extends servGeneric implements prtServP {
             password = authLocal.passwdDecode(cmd.getRemaining());
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

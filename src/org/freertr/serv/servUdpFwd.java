@@ -142,7 +142,7 @@ public class servUdpFwd extends servGeneric implements prtServP {
             }
             return true;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

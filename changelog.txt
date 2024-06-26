@@ -15781,3 +15781,10 @@ no todo: server http / host * webring-remote <path/file*>
 no todo: server http / host * webring-local <text>
 ---------------------------------- 2024-06-26 20:36:39 24.6.26
 no todo: server http / host * user-agent matcher with redirect
+---------------------------------- 2024-06-26 21:52:46 24.6.26
+no todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
+no todo: client hide-secrets  <!------------------------------------------------------------------------
+no todo: "no " --> cmds.negated   <!--------------------------------------------------------------------
+no todo: "no" --> cmds.negated   <!---------------------------------------------------------------------
+no todo: ("no") --> cmds.negated   <!-------------------------------------------------------------------
+no todo: some more .equals("no") to cmds.negated conversions like   <!-------------------------------------

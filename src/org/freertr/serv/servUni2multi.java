@@ -134,7 +134,7 @@ public class servUni2multi extends servGeneric implements prtServP {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
-        if (s.equals("no")) {
+        if (s.equals(cmds.negated)) {
             negated = true;
             s = cmd.word();
         }

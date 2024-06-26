@@ -3323,7 +3323,7 @@ public class userExec {
             return;
         }
         if (last && negated) {
-            a = "no " + a;
+            a = cmds.negated + cmds.tabulator + a;
         }
         cfg.executeCommand(a);
         if (last) {
@@ -3338,7 +3338,7 @@ public class userExec {
             return;
         }
         if (negated) {
-            a = "no " + a;
+            a = cmds.negated + cmds.tabulator + a;
         }
         cfg.executeCommand(a);
     }
@@ -4801,7 +4801,7 @@ public class userExec {
             pipe.settingsPut(pipeSetting.tabMod, userFormat.str2tabmod(a));
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

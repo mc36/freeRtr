@@ -34,7 +34,7 @@ public class cmds {
     /**
      * negated command
      */
-    private final static String negated = "no";
+    public final static String negated = "no";
 
     /**
      * give up message
@@ -95,10 +95,10 @@ public class cmds {
      * @return true if yes, false if no
      */
     private static boolean isNegated(String a) {
-        if (a.equals("no")) {
+        if (a.equals(negated)) {
             return true;
         }
-        if (a.equals("no ")) {
+        if (a.equals(negated + tabulator)) {
             return true;
         }
         return false;
@@ -157,7 +157,7 @@ public class cmds {
             par = " " + par;
         }
         if (no) {
-            beg += "no ";
+            beg += negated + tabulator;
             par = "";
         }
         l.add(beg + cmd + par);

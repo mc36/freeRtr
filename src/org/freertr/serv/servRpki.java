@@ -147,7 +147,7 @@ public class servRpki extends servGeneric implements prtServS {
             rpkiN = 0;
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

@@ -188,7 +188,7 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
             side2.doCfgStr(cmd);
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

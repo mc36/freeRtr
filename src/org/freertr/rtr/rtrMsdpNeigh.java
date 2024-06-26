@@ -419,7 +419,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         l.add(beg + a + "enable");
         cmds.cfgLine(l, description == null, beg, a + "description", description);
         if (srcIface == null) {
-            l.add(beg + "no " + a + "update-source");
+            l.add(beg + cmds.negated + cmds.tabulator + a + "update-source");
         } else {
             l.add(beg + a + "update-source " + srcIface.name);
         }

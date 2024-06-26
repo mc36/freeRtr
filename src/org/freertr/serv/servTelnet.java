@@ -80,7 +80,7 @@ public class servTelnet extends servGeneric implements prtServS {
             secondPort = bits.str2num(cmd.word());
             return false;
         }
-        if (a.equals("no")) {
+        if (a.equals(cmds.negated)) {
             a = cmd.word();
             if (a.equals("second-port")) {
                 secondPort = -1;

@@ -331,7 +331,7 @@ public class rtrRpki extends ipRtr implements Runnable {
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
-        if (s.equals("no")) {
+        if (s.equals(cmds.negated)) {
             s = cmd.word();
             negated = true;
         }

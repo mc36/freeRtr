@@ -837,7 +837,7 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + beg + "secondary-network " + adr.adr + " " + adr.msk);
         }
         if (reasmBuf == null) {
-            l.add(cmds.tabulator + "no " + beg + "reassembly");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "reassembly");
         } else {
             l.add(cmds.tabulator + beg + "reassembly " + reasmBuf.size());
         }
@@ -909,23 +909,23 @@ public class ipFwdIface extends tabRouteIface {
             l.addAll(pbr.usrString(cmds.tabulator + beg + "pbr ", filter));
         }
         if (srhCfg == null) {
-            l.add(cmds.tabulator + "no " + beg + "srh enable");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "srh enable");
         } else {
             l.add(cmds.tabulator + beg + "srh enable");
         }
         if (nshCfg == null) {
-            l.add(cmds.tabulator + "no " + beg + "nsh enable");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "nsh enable");
         } else {
             l.add(cmds.tabulator + beg + "nsh enable");
         }
         if (ptpCfg == null) {
-            l.add(cmds.tabulator + "no " + beg + "ptp enable");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "ptp enable");
         } else {
             l.add(cmds.tabulator + beg + "ptp enable");
             cmds.cfgLine(l, !ptpCfg.receive, cmds.tabulator, beg + "ptp receive", "");
         }
         if (bfdCfg == null) {
-            l.add(cmds.tabulator + "no " + beg + "bfd");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "bfd");
         } else {
             a = "";
             if (bfdCfg.password != null) {
@@ -965,14 +965,14 @@ public class ipFwdIface extends tabRouteIface {
             l.add(cmds.tabulator + beg + "pim hello-time " + pimCfg.helloInterval);
             cmds.cfgLine(l, !pimCfg.bfdTrigger, cmds.tabulator, beg + "pim bfd", "");
         } else {
-            l.add(cmds.tabulator + "no " + beg + "pim enable");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "pim enable");
         }
         if (mhostCfg != null) {
             l.add(cmds.tabulator + beg + "multicast host-enable");
             cmds.cfgLine(l, !mhostCfg.sendJoins, cmds.tabulator, beg + "multicast host-proxy", "");
             l.add(cmds.tabulator + beg + "multicast host-query " + mhostCfg.queryInterval);
         } else {
-            l.add(cmds.tabulator + "no " + beg + "multicast host-enable");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "multicast host-enable");
         }
         cmds.cfgLine(l, mldpCfg == null, cmds.tabulator, beg + "multicast mldp-enable", "");
         if (hsrpCfg != null) {
@@ -987,7 +987,7 @@ public class ipFwdIface extends tabRouteIface {
             cmds.cfgLine(l, hsrpCfg.trackR == null, cmds.tabulator, beg + "hsrp tracker", hsrpCfg.trackR + " " + hsrpCfg.trackD);
             cmds.cfgLine(l, !hsrpCfg.bfdTrigger, cmds.tabulator, beg + "hsrp bfd", "");
         } else {
-            l.add(cmds.tabulator + "no " + beg + "hsrp address");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "hsrp address");
         }
         if (vrrpCfg != null) {
             l.add(cmds.tabulator + beg + "vrrp address " + vrrpCfg.ip);
@@ -999,7 +999,7 @@ public class ipFwdIface extends tabRouteIface {
             cmds.cfgLine(l, vrrpCfg.trackR == null, cmds.tabulator, beg + "vrrp tracker", vrrpCfg.trackR + " " + vrrpCfg.trackD);
             cmds.cfgLine(l, !vrrpCfg.bfdTrigger, cmds.tabulator, beg + "vrrp bfd", "");
         } else {
-            l.add(cmds.tabulator + "no " + beg + "vrrp address");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "vrrp address");
         }
     }
 

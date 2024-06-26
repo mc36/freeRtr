@@ -235,7 +235,7 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
         authGeneric aut = getAuther();
         cmds c = cmd.copyBytes(false);
         String a = c.word();
-        boolean neg = a.equals("no");
+        boolean neg = a.equals(cmds.negated);
         if (neg) {
             a = c.word();
         }

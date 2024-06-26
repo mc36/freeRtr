@@ -1045,7 +1045,7 @@ public class cfgRouplc implements Comparator<cfgRouplc>, cfgGeneric {
             indent();
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

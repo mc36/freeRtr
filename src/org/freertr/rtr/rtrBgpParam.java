@@ -1996,7 +1996,7 @@ public abstract class rtrBgpParam {
     public List<String> getParamCfg(String beg, String nei, int filter) {
         List<String> l = new ArrayList<String>();
         if (template == null) {
-            l.add(beg + "no " + nei + "template");
+            l.add(beg + cmds.negated + cmds.tabulator + nei + "template");
         } else {
             l.add(beg + nei + "template " + template.tempName);
         }
@@ -2056,17 +2056,17 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "additional-path-tx" + mask2string(addpathTmode));
         cmds.cfgLine(l, !shutdown, beg, nei + "shutdown", "");
         if (srcIface == null) {
-            l.add(beg + "no " + nei + "update-source");
+            l.add(beg + cmds.negated + cmds.tabulator + nei + "update-source");
         } else {
             l.add(beg + nei + "update-source " + srcIface.name);
         }
         if (monitor == null) {
-            l.add(beg + "no " + nei + "monitor");
+            l.add(beg + cmds.negated + cmds.tabulator + nei + "monitor");
         } else {
             l.add(beg + nei + "monitor " + monitor.monName);
         }
         if (dump == null) {
-            l.add(beg + "no " + nei + "dump");
+            l.add(beg + cmds.negated + cmds.tabulator + nei + "dump");
         } else {
             l.add(beg + nei + "dump " + dump.dumpName);
         }
@@ -2127,7 +2127,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
         cmds.cfgLine(l, !attribSet, beg, nei + "attribset", "");
         if (unknownsColl == null) {
-            l.add(beg + "no " + nei + "unknowns-collect");
+            l.add(beg + cmds.negated + cmds.tabulator + nei + "unknowns-collect");
         } else {
             l.add(beg + nei + "unknowns-collect " + unknownsColl.dumpName);
         }

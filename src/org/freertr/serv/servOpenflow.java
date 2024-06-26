@@ -194,7 +194,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
             notif.wakeup();
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

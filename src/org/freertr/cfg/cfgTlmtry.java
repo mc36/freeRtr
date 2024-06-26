@@ -126,7 +126,7 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String s = cmd.word();
-        boolean negated = s.equals("no");
+        boolean negated = s.equals(cmds.negated);
         if (negated) {
             s = cmd.word();
         }

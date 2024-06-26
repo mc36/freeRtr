@@ -325,7 +325,7 @@ public class authLocal extends authGeneric {
     public boolean fromString(cmds cmd) {
         String a = cmd.word();
         boolean negated = false;
-        if (a.equals("no")) {
+        if (a.equals(cmds.negated)) {
             negated = true;
             a = cmd.word();
         }

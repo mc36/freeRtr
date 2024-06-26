@@ -89,7 +89,7 @@ public class cfgObjprt implements Comparator<cfgObjprt>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
-        if (a.equals("no")) {
+        if (a.equals(cmds.negated)) {
             a = cmd.word();
             if (a.equals("description")) {
                 description = null;

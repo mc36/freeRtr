@@ -97,7 +97,7 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
 
     public synchronized void doCfgStr(cmds cmd) {
         String a = cmd.word();
-        if (a.equals("no")) {
+        if (a.equals(cmds.negated)) {
             a = cmd.word();
             if (a.equals("description")) {
                 description = null;

@@ -592,7 +592,7 @@ public class userLine {
             }
             return true;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

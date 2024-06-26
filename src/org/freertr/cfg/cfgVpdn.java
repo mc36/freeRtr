@@ -1006,7 +1006,7 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
             password = authLocal.passwdDecode(cmd.getRemaining());
             return;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

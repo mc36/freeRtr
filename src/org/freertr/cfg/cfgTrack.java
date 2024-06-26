@@ -428,7 +428,7 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
             worker.doRound();
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

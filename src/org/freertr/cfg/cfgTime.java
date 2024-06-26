@@ -319,7 +319,7 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
             }
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

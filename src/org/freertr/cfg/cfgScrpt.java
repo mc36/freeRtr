@@ -304,7 +304,7 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
             script.reindex(i, bits.str2num(cmd.word()));
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

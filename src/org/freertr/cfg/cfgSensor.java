@@ -354,7 +354,7 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String s = cmd.word();
-        boolean negated = s.equals("no");
+        boolean negated = s.equals(cmds.negated);
         if (negated) {
             s = cmd.word();
         }

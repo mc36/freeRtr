@@ -151,7 +151,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
-        boolean neg = s.equals("no");
+        boolean neg = s.equals(cmds.negated);
         if (neg) {
             s = cmd.word();
         }
@@ -416,7 +416,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr {
      */
     public tabRoute<addrIP> getShowBp3(int fwd) {
         if ((fwd < 0) || (fwd >= fwds.size())) {
-            return new tabRoute<addrIP>("no");
+            return new tabRoute<addrIP>("bp");
         }
         servP4langCfg cur = fwds.get(fwd);
         return cur.bckplnRou;

@@ -67,7 +67,7 @@ public class servIscsi extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         boolean neg = false;
-        if (s.equals("no")) {
+        if (s.equals(cmds.negated)) {
             neg = true;
             s = cmd.word();
         }

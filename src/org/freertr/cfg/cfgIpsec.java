@@ -224,7 +224,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
             replay = bits.str2num(cmd.word());
             return;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

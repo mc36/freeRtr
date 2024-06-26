@@ -247,7 +247,7 @@ public class servDns extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         cmds old = cmd.copyBytes(false);
         String s = cmd.word();
-        boolean negated = s.equals("no");
+        boolean negated = s.equals(cmds.negated);
         if (negated) {
             s = cmd.word();
         }

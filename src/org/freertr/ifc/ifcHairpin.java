@@ -215,7 +215,7 @@ public class ifcHairpin {
             cmd.badCmd();
             return;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

@@ -81,7 +81,7 @@ public class servSnmp extends servGeneric implements prtServS {
             authenticList = lst.getAuther();
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

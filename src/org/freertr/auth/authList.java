@@ -50,7 +50,7 @@ public class authList extends authGeneric {
 
     public boolean fromString(cmds cmd) {
         String a = cmd.word();
-        if (a.equals("no")) {
+        if (a.equals(cmds.negated)) {
             a = cmd.word();
             if (a.equals("sequence")) {
                 tabAuthlstN ntry = new tabAuthlstN();

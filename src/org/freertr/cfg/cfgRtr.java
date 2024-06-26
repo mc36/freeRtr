@@ -2173,7 +2173,7 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
             }
         }
         String a = cmd.word();
-        boolean neg = a.equals("no");
+        boolean neg = a.equals(cmds.negated);
         if (neg) {
             a = cmd.word();
         }

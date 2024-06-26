@@ -141,10 +141,10 @@ public class userFilter implements Comparator<userFilter> {
         if (c.equals(cmds.finish)) {
             return null;
         }
-        if (c.startsWith("no ")) {
+        if (c.startsWith(cmds.negated + cmds.tabulator)) {
             return new userFilter(section, b + c.substring(3, c.length()), listing);
         } else {
-            return new userFilter(section, b + "no " + c, listing);
+            return new userFilter(section, b + cmds.negated + cmds.tabulator + c, listing);
         }
     }
 
@@ -309,7 +309,7 @@ public class userFilter implements Comparator<userFilter> {
                 case setdel:
                     String a = ntry.command.trim();
                     String s = "set";
-                    if (a.startsWith("no ")) {
+                    if (a.startsWith(cmds.negated + cmds.tabulator)) {
                         s = "delete";
                         a = a.substring(3, a.length());
                     }

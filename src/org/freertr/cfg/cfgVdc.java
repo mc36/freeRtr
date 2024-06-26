@@ -761,7 +761,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
             time = cfgAll.timeFind(cmd.word(), false);
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

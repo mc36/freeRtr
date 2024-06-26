@@ -470,7 +470,7 @@ public class rtrRip4 extends ipRtr implements prtServP {
     public boolean routerConfigure(cmds cmd) {
         String s = cmd.word();
         boolean negated = false;
-        if (s.equals("no")) {
+        if (s.equals(cmds.negated)) {
             s = cmd.word();
             negated = true;
         }

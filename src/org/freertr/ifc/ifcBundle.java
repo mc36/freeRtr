@@ -479,7 +479,7 @@ public class ifcBundle implements Runnable, ifcDn {
             timer2.schedule(task, 500, reporter);
             return;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

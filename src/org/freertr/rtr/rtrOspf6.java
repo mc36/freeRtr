@@ -634,7 +634,7 @@ public class rtrOspf6 extends ipRtr {
             }
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

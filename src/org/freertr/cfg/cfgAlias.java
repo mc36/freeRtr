@@ -368,7 +368,7 @@ public class cfgAlias implements Comparator<cfgAlias>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String a = cmd.word();
-        boolean neg = a.equals("no");
+        boolean neg = a.equals(cmds.negated);
         if (neg) {
             a = cmd.word();
         }

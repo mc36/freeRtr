@@ -152,7 +152,7 @@ public class rtrIsisOther extends ipRtr {
         if (enabled) {
             l.add(beg + "enable");
         } else {
-            l.add(cmds.tabulator + "no" + beg + "enable");
+            l.add(cmds.tabulator + cmds.negated + beg + "enable");
         }
         l.add(beg + "distance " + distantInt + " " + distantExt);
         cfgRtr.getShRedist(l, beg, this);

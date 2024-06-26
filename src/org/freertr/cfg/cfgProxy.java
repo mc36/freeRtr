@@ -265,7 +265,7 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
             }
             return;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

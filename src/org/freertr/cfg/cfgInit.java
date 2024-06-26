@@ -507,7 +507,7 @@ public class cfgInit implements Runnable {
                     if (s.length() < 1) {
                         break;
                     }
-                    boolean neg = s.startsWith("no");
+                    boolean neg = s.startsWith(cmds.negated);
                     if (neg) {
                         s = s.substring(2, s.length());
                     }

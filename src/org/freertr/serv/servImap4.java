@@ -98,7 +98,7 @@ public class servImap4 extends servGeneric implements prtServS {
             mailFolders = "/" + encUrl.normalizePath(cmd.word() + "/");
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

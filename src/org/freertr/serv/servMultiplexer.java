@@ -165,7 +165,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
             old.stopWork();
             return false;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

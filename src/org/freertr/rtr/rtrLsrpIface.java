@@ -344,7 +344,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
     public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(cmds.tabulator + beg + "enable");
         if (dumpFile == null) {
-            l.add(cmds.tabulator + "no " + beg + "dump");
+            l.add(cmds.tabulator + cmds.negated + cmds.tabulator + beg + "dump");
         } else {
             String a = dumpFile.rotate2();
             if (a == null) {

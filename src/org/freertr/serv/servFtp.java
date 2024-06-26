@@ -146,7 +146,7 @@ public class servFtp extends servGeneric implements prtServS {
             passiveOnly = true;
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

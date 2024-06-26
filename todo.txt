@@ -152,12 +152,6 @@ eddsa value for ipsexkey cannot be that bad <!----------------------------------
  private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
  dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
 
-some more .equals("no") to cmds.negated conversions like   <!-------------------------------------
-   ("no") --> cmds.negated   <!-------------------------------------------------------------------
-   "no" --> cmds.negated   <!---------------------------------------------------------------------
-   "no " --> cmds.negated   <!--------------------------------------------------------------------
-   client hide-secrets  <!------------------------------------------------------------------------
-cmds.not2vdc  <!----------------------------------------------------------------------------------
 server smtp / tag messages by subject
 server smtp / collect-failures
 server smtp / check reverse of the sender and put the info to received field...

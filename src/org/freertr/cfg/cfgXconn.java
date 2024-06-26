@@ -155,7 +155,7 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
             start2run();
             return;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

@@ -411,7 +411,7 @@ public class servP4langCfg implements ifcUp {
             l.add(beg + mid + "export-port " + ntry.ifc.name + " " + a);
         }
         if (expSrv6 == null) {
-            l.add(beg + "no " + mid + "export-srv6");
+            l.add(beg + cmds.negated + cmds.tabulator + mid + "export-srv6");
         } else {
             l.add(beg + mid + "export-srv6 " + expSrv6.name);
         }

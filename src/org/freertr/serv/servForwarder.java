@@ -244,7 +244,7 @@ public class servForwarder extends servGeneric implements prtServS {
             }
             return true;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

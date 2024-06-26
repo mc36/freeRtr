@@ -102,7 +102,7 @@ public class servSip extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
-        boolean negated = a.equals("no");
+        boolean negated = a.equals(cmds.negated);
         if (negated) {
             a = cmd.word();
         }

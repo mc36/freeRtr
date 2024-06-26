@@ -86,7 +86,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             }
             return false;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();

@@ -142,7 +142,7 @@ public class servSdwan extends servGeneric implements prtServS {
             pool6 = ntry.pool;
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

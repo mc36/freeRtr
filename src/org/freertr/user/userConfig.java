@@ -1385,7 +1385,7 @@ public class userConfig {
             doCmdClient();
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }
@@ -1598,7 +1598,7 @@ public class userConfig {
         if (a.equals("alias")) {
             a = cmd.word();
             cfgAlias ntry = cfgAll.aliasFind(cmd.word(), cfgAlias.string2type(a), true);
-            cmd = new cmds("c", "no " + cmd.getRemaining());
+            cmd = new cmds("c", cmds.negated + cmds.tabulator + cmd.getRemaining());
             ntry.doCfgStr(cmd);
             if (ntry.command.length() > 0) {
                 return;

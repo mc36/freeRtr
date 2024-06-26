@@ -104,7 +104,7 @@ public class servWhois extends servGeneric implements prtServS {
             remotes.put(ntry);
             return false;
         }
-        if (!s.equals("no")) {
+        if (!s.equals(cmds.negated)) {
             return true;
         }
         s = cmd.word();

@@ -107,7 +107,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
-        boolean neg = a.equals("no");
+        boolean neg = a.equals(cmds.negated);
         if (neg) {
             a = cmd.word();
         }

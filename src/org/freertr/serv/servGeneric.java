@@ -1476,7 +1476,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             srvIpInf = secInfoUtl.doCfgStr(srvIpInf, cmd, false);
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             if (srvCfgStr(cmd.copyBytes(true))) {
                 cmd.badCmd();
                 return;

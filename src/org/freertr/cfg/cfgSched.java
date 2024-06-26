@@ -291,7 +291,7 @@ public class cfgSched implements Comparator<cfgSched>, cfgGeneric {
             doRound();
             return;
         }
-        if (!a.equals("no")) {
+        if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
         }

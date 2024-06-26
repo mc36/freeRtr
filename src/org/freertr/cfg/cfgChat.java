@@ -73,7 +73,7 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
 
     public void doCfgStr(cmds cmd) {
         String s = cmd.word();
-        boolean neg = s.equals("no");
+        boolean neg = s.equals(cmds.negated);
         if (!neg) {
             cmd = cmd.copyBytes(true);
         }
