@@ -725,26 +725,12 @@ public class userShow {
             rdr.putStrArr(userFilter.getDiffs(lst, cfgAll.getShRun(1)));
             return null;
         }
+        if (a.equals("backup-config")) {
+            doStatCfg(cfgInit.getBackupCfgName());
+            return null;
+        }
         if (a.equals("startup-config")) {
-            List<String> lst = bits.txt2buf(cfgInit.cfgFileSw);
-            a = cmd.getRemaining().trim();
-            if (a.equals("this")) {
-                if (cfg == null) {
-                    return null;
-                }
-                List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-                lst = userFilter.getSection(lst, userReader.section2filter(cur));
-                rdr.putStrArr(lst);
-                return null;
-            }
-            if (cfgAll.evalVdcPrivs()) {
-                cmd.error("not in a vdc");
-                return null;
-            }
-            if (a.length() > 0) {
-                lst = userFilter.getSection(lst, userReader.filter2reg(a));
-            }
-            rdr.putStrArr(lst);
+            doStatCfg(cfgInit.cfgFileSw);
             return null;
         }
         if (a.equals("running-config")) {
@@ -1975,7 +1961,7 @@ public class userShow {
                     userFormat lst = new userFormat("|", "interface|packet|uni-head|mul-head");
                     for (int i = 0; i < cfgAll.ifaces.size(); i++) {
                         cfgIfc ntry = cfgAll.ifaces.get(i);
-                        lst.add(ntry.name + "|" + (ntry.polkaPack != null) + "|" + (ntry.tunPolka != null)+ "|" + (ntry.tunMpolka != null));
+                        lst.add(ntry.name + "|" + (ntry.polkaPack != null) + "|" + (ntry.tunPolka != null) + "|" + (ntry.tunMpolka != null));
                     }
                     rdr.putStrTab(lst);
                     return null;
@@ -2088,12 +2074,12 @@ public class userShow {
                 cmd.error("invalid process");
                 return null;
             }
-            cfgRtr cfg = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
-            if (cfg == null) {
+            cfgRtr rcfg = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
+            if (rcfg == null) {
                 cmd.error("no such process");
                 return null;
             }
-            ipRtr rtr = cfg.getRouter();
+            ipRtr rtr = rcfg.getRouter();
             if (rtr == null) {
                 cmd.error("not running");
                 return null;
@@ -5435,6 +5421,32 @@ public class userShow {
             return version.getRWpath() + a;
         }
         return a;
+    }
+
+    private void doStatCfg(String a) {
+        List<String> lst = bits.txt2buf(a);
+        if (lst == null) {
+            cmd.error("error reading file");
+            return;
+        }
+        a = cmd.getRemaining().trim();
+        if (a.equals("this")) {
+            if (cfg == null) {
+                return;
+            }
+            List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
+            lst = userFilter.getSection(lst, userReader.section2filter(cur));
+            rdr.putStrArr(lst);
+            return;
+        }
+        if (cfgAll.evalVdcPrivs()) {
+            cmd.error("not in a vdc");
+            return;
+        }
+        if (a.length() > 0) {
+            lst = userFilter.getSection(lst, userReader.filter2reg(a));
+        }
+        rdr.putStrArr(lst);
     }
 
 }

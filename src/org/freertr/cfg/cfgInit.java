@@ -305,6 +305,28 @@ public class cfgInit implements Runnable {
     }
 
     /**
+     * name of backup configuration
+     *
+     * @return null if disabled, file name
+     */
+    public final static String getBackupCfgName() {
+        if (cfgAll.configBackup == null) {
+            return null;
+        }
+        String a = cfgAll.configBackup;
+        if (a.length() > 0) {
+            return a;
+        }
+        a = cfgFileSw;
+        int i = a.lastIndexOf(".");
+        if (i > 0) {
+            a = a.substring(0, i);
+        }
+        a = a + ".bak";
+        return a;
+    }
+
+    /**
      * get http url
      *
      * @param url url

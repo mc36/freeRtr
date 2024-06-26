@@ -3490,7 +3490,6 @@ todo: a terminal junos-mode knob that defaults to set-del etc as a new class
 todo: show config-backup if available
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
-todo: scheduler asdf single-run as no respawn or something
 todo: clntportscan to have udp knob then portscan to have the knob finally
 todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
 todo: private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032

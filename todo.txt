@@ -135,16 +135,9 @@ a terminal junos-mode knob that defaults to set-del etc as a new class
 
 
 
-show config-backup if available
-
-
-
 nrpe to send out emails from error.log
 nrpe to have followtracker support
 
-
-
-scheduler asdf single-run as no respawn or something
 
 clntportscan to have udp knob then portscan to have the knob finally
 

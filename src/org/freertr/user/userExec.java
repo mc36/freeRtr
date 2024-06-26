@@ -1288,6 +1288,11 @@ public class userExec {
         hl.add(null, "3 4,.      this                  current subconfiguration");
         hl.add(null, "4 4,.        all                 do not hide defaults");
         hl.add(null, "4 4,.        hide                hide passwords");
+        hl.add(null, "2 3,.    backup-config           backup configuration");
+        hl.add(null, "3 3,.      [name]                name of section");
+        hl.add(null, "3 4,.      this                  current subconfiguration");
+        hl.add(null, "4 4,.        all                 do not hide defaults");
+        hl.add(null, "4 4,.        hide                hide passwords");
         hl.add(null, "2 3,.    startup-config          startup configuration");
         hl.add(null, "3 3,.      [name]                name of section");
         hl.add(null, "3 4,.      this                  current subconfiguration");
@@ -5007,19 +5012,11 @@ public class userExec {
     }
 
     private void doCfgBackup() {
-        if (cfgAll.configBackup == null) {
+        String a = cfgInit.getBackupCfgName();
+        if (a == null) {
             return;
         }
         cmd.error("backing up configuration");
-        String a = cfgAll.configBackup;
-        if (a.length() < 1) {
-            a = cfgInit.cfgFileSw;
-            int i = a.lastIndexOf(".");
-            if (i > 0) {
-                a = a.substring(0, i);
-            }
-            a = a + ".bak";
-        }
         List<String> old = bits.txt2buf(cfgInit.cfgFileSw);
         if (old == null) {
             cmd.error("error reading file");
