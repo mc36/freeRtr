@@ -131,6 +131,8 @@ class servHoneyPotConn implements Runnable {
 
     private final pipeSide pipe;
 
+    private final secInfoCls cls;
+
     private final secInfoWrk ipi;
 
     private final addrIP remote;
@@ -153,7 +155,7 @@ class servHoneyPotConn implements Runnable {
         remote = rem;
         local = loc;
         fwdr = lower.srvVrf.getFwd(rem);
-        secInfoCls cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
+        cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
         ipi = new secInfoWrk(lower.ipInfo, cls);
         logger.info("honeypot hit from " + remote);
     }

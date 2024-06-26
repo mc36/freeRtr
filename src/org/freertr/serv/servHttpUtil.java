@@ -47,7 +47,7 @@ import org.freertr.util.version;
  * @author matecsaba
  */
 public class servHttpUtil {
-
+    
     private servHttpUtil() {
     }
 
@@ -272,7 +272,7 @@ public class servHttpUtil {
         }
         return res;
     }
-
+    
     private final static String semi2comma(String a) {
         return a.replaceAll(";", ",");
     }
@@ -981,6 +981,18 @@ public class servHttpUtil {
     }
 
     /**
+     * send one redirection
+     *
+     * @param cn connection to use
+     */
+    protected final static void doWebring(servHttpConn cn) {
+        encUrl srvUrl = encUrl.parseOne(cn.gotHost.webring.get(bits.random(1, cn.gotHost.webring.size())));
+        doTranslate(cn, srvUrl);
+        doSubconn(cn, srvUrl);
+        cn.sendFoundAt(srvUrl.toURL(true, true, true, false));
+    }
+
+    /**
      * send one streaming
      *
      * @param cn connection to use
@@ -1380,5 +1392,5 @@ public class servHttpUtil {
         }
         return true;
     }
-
+    
 }

@@ -317,6 +317,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, "4 .        <str>                    root directory of server");
         l.add(null, "3 4      redir                      set redirect path");
         l.add(null, "4 .        <url>                    url to redirect to");
+        l.add(null, "3 4      webring                    set redirect file");
+        l.add(null, "4 .        <file>                   path to redirect list");
         l.add(null, "3 .      logging                    log to syslog");
         l.add(null, "3 4      reconn                     reconnect to server");
         l.add(null, "4 5        <name:prx>               proxy profile");

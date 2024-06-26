@@ -147,6 +147,11 @@ public class servHttpHost implements Comparator<servHttpHost> {
     public List<String> style;
 
     /**
+     * webring list
+     */
+    public List<String> webring;
+
+    /**
      * speed limit
      */
     public int speedLimit;
@@ -275,6 +280,9 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 l.add(a + " style " + style.get(i));
             }
         }
+        if (webring != null) {
+            l.add(a + " webring " + webring.get(0));
+        }
         if (redir != null) {
             l.add(a + " redir " + redir);
         }
@@ -400,6 +408,25 @@ public class servHttpHost implements Comparator<servHttpHost> {
                 return false;
             }
             style.add(a);
+            return false;
+        }
+        if (a.equals("webring")) {
+            if (negated) {
+                webring = null;
+                return false;
+            }
+            a = cmd.word();
+            List<String> res = bits.txt2buf(a);
+            if (res == null) {
+                cmd.error("no such file");
+                return false;
+            }
+            if (res.size() < 1) {
+                cmd.error("empty file");
+                return false;
+            }
+            res.add(0, a);
+            webring = res;
             return false;
         }
         if (a.equals("redir")) {
@@ -810,6 +837,10 @@ public class servHttpHost implements Comparator<servHttpHost> {
         }
         if (redir != null) {
             servHttpUtil.doRedir(cn);
+            return;
+        }
+        if (webring != null) {
+            servHttpUtil.doWebring(cn);
             return;
         }
         if (cn.gotCmd.equals("options")) {
