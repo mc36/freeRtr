@@ -2,7 +2,7 @@
 TR=../../binTmp
 UM=`uname -m`
 
-if command -v clang > /dev/null ; then
+if which clang > /dev/null ; then
   CC="clang"
   BC="clang -target bpf"
   BS="llvm-strip"
