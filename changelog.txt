@@ -15792,3 +15792,6 @@ no todo: some more .equals("no") to cmds.negated conversions like   <!----------
 no todo: scheduler asdf single-run as no respawn or something
 ---------------------------------- 2024-06-26 22:40:01 24.6.26
 no todo: show config-backup if available
+---------------------------------- 2024-06-27 04:30:20 24.6.27
+no todo: banyan vines protocol in sw
+todo: banyan vines appletalk and firends protocols in sw

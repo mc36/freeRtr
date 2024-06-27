@@ -206,7 +206,6 @@ tester to have followtracker knob
 tester to have support chatscript and have followtracker knob
 tester to have support for dynamips and vm.zip stuff
 tester to have support for the hw-cfg stuff
-upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
 dhcp relay support
 tcp selective ack
 ilnp (rfc6740)
@@ -301,6 +300,6 @@ more clean converters for the vm
 
 flash commander to have file info and hash
 
-banyan vines protocol in sw
+banyan vines appletalk and firends protocols in sw
 
 hackediff alias to diff with the | hacked fun filter

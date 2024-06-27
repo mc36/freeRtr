@@ -3613,5 +3613,5 @@ todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: more clean transpilers for the vm
 todo: more clean converters for the vm
 todo: flash commander to have file info and hash
-todo: banyan vines protocol in sw
+todo: banyan vines appletalk and firends protocols in sw
 todo: hackediff alias to diff with the | hacked fun filter
