@@ -1895,10 +1895,10 @@ qc pass: p4lang: l2tp3 routing over vlan
 qc pass: p4lang: l2tp3 routing over bundle
 qc pass: p4lang: multilink l2tp3 routing over ipv4
 qc pass: p4lang: multilink l2tp3 routing over ipv6
-qc pass: p4lang: multilink l2tp3 routing over ipv4
+qc pass: p4lang: multilink l2tp3 routing over vlan
 qc pass: p4lang: multilink l2tp3 mpls over ipv4
 qc pass: p4lang: multilink l2tp3 mpls over ipv6
-qc pass: p4lang: multilink l2tp3 mpls over ipv4
+qc pass: p4lang: multilink l2tp3 mpls over vlan
 qc pass: p4lang: multilink l2tp3 routing over bundle
 qc pass: p4lang: multilink l2tp3 mpls over bundle
 qc pass: p4lang: l2tp3 mpls over ipv4

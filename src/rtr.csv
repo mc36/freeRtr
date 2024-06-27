@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.6.27-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-27 12:18:21, took 00:12:42, with 60 workers, on 3440 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2024-06-27 12:55:19, took 00:13:03, with 60 workers, on 3440 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1899,10 +1899,10 @@ http://sources.freertr.org/cfg/p4lang-rout257.tst;p4lang-rout257.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout258.tst;p4lang-rout258.tst;success;p4lang: l2tp3 routing over bundle
 http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;success;p4lang: multilink l2tp3 routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout260.tst;p4lang-rout260.tst;success;p4lang: multilink l2tp3 routing over ipv6
-http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;success;p4lang: multilink l2tp3 routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;success;p4lang: multilink l2tp3 routing over vlan
 http://sources.freertr.org/cfg/p4lang-rout262.tst;p4lang-rout262.tst;success;p4lang: multilink l2tp3 mpls over ipv4
 http://sources.freertr.org/cfg/p4lang-rout263.tst;p4lang-rout263.tst;success;p4lang: multilink l2tp3 mpls over ipv6
-http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;success;p4lang: multilink l2tp3 mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;success;p4lang: multilink l2tp3 mpls over vlan
 http://sources.freertr.org/cfg/p4lang-rout265.tst;p4lang-rout265.tst;success;p4lang: multilink l2tp3 routing over bundle
 http://sources.freertr.org/cfg/p4lang-rout266.tst;p4lang-rout266.tst;success;p4lang: multilink l2tp3 mpls over bundle
 http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;success;p4lang: l2tp3 mpls over ipv4

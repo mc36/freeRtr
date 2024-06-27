@@ -15802,3 +15802,8 @@ no qc pass: p4lang: multilink l2tp3 mpls over vlan
 no qc pass: p4lang: multilink l2tp3 routing over vlan
 qc pass: p4lang: multilink l2tp3 routing over ipv4
 qc pass: p4lang: multilink l2tp3 mpls over ipv4
+---------------------------------- 2024-06-27 12:42:16 24.6.27
+no qc pass: p4lang: multilink l2tp3 mpls over ipv4
+no qc pass: p4lang: multilink l2tp3 routing over ipv4
+qc pass: p4lang: multilink l2tp3 routing over vlan
+qc pass: p4lang: multilink l2tp3 mpls over vlan
