@@ -478,7 +478,7 @@ qc pass: cross connect vlan subinterfaces
 qc pass: cross connect vlan subinterfaces of same interface
 qc pass: cross connect tunnel interfaces
 qc pass: cross connect different tunnel interfaces
-failed: xot pad
+qc pass: xot pad
 qc pass: access class
 qc pass: access map
 qc pass: access policy
