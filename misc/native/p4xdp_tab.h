@@ -109,7 +109,7 @@ struct bridge_key {
 };
 
 struct bridge_res {
-    __u32 cmd; // 1=port, 2=vpls
+    __u32 cmd; // 1=port, 2=vpls, 3=route
     __u32 port;
     __u32 hop;
     __u32 label1;

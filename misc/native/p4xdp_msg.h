@@ -279,6 +279,18 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "routedmac") == 0) {
+        brdk.id = atoi(arg[2]);
+        str2mac(brdk.mac, arg[3]);
+        brdr.hop = atoi(arg[4]);
+        brdr.cmd = 3;
+        if (del == 0) {
+            if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "bridgevpls") == 0) {
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);

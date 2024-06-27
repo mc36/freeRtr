@@ -328,6 +328,11 @@ struct {
     case ETHERTYPE_NSH:                                         \
         ethtyp = PPPTYPE_NSH;                                   \
         break;                                                  \
+    case ETHERTYPE_ROUTEDMAC:                                   \
+        bufP -= 2;                                              \
+        put16msb(bufD, bufP, 1);                                \
+        ethtyp = PPPTYPE_ROUTEDMAC;                             \
+        break;                                                  \
     case ETHERTYPE_POLKA:                                       \
         ethtyp = PPPTYPE_POLKA;                                 \
         break;                                                  \
@@ -354,6 +359,10 @@ struct {
     case PPPTYPE_NSH:                                           \
         ethtyp = ETHERTYPE_NSH;                                 \
         break;                                                  \
+    case PPPTYPE_ROUTEDMAC:                                     \
+        ethtyp = ETHERTYPE_ROUTEDMAC;                           \
+        bufP += 2;                                              \
+        break;                                                  \
     case PPPTYPE_POLKA:                                         \
         ethtyp = ETHERTYPE_POLKA;                               \
         break;                                                  \
@@ -372,7 +381,7 @@ struct {
             break;                                              \
         case 2:                                                 \
             bufP += 8;                                          \
-            revalidatePacket(bufP + 12);                        \
+            revalidatePacket(bufP + 14);                        \
             if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu; \
             bufP += 8;                                          \
             bufP += 2;                                          \
@@ -382,7 +391,7 @@ struct {
             break;                                              \
         case 3:                                                 \
             bufP += 4;                                          \
-            revalidatePacket(bufP + 2);                         \
+            revalidatePacket(bufP + 4);                         \
             ethtyp = get16msb(bufD, bufP);                      \
             ppptyp2ethtyp();                                    \
             put16msb(bufD, bufP, ethtyp);                       \
@@ -390,7 +399,7 @@ struct {
         case 4:                                                 \
             bufP += 8;                                          \
             bufP += 8;                                          \
-            revalidatePacket(bufP + 2);                         \
+            revalidatePacket(bufP + 4);                         \
             guessEthtyp();                                      \
             bufP -= 2;                                          \
             put16msb(bufD, bufP, ethtyp);                       \
@@ -572,85 +581,87 @@ __u32 xdp_router(struct xdp_md *ctx) {
         __s32 ttl = 0;
 
         struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
-        if (vrfp != NULL) {
-            vrfp->packRx++;
-            vrfp->byteRx += bufE - bufD;
-
-            if (vrfp->sgtTag != 0) {
-                revalidatePacket(bufP + 12);
-                if (ethtyp != ETHERTYPE_SGT) goto drop;
-                if (get32msb(bufD, bufP + 0) != 0x01010001) goto drop;
-                sgt = get16msb(bufD, bufP + 4);
-                ethtyp = get16msb(bufD, bufP + 6);
-                bufP += 8;
-            }
-            if (vrfp->sgtSet >= 0) {
-                sgt = vrfp->sgtSet;
-            }
-            switch (vrfp->cmd) {
-            case 1: // route
-                break;
-            case 2: // bridge
-                tmp = vrfp->brdg;
-                switch (ethtyp) {
-                case ETHERTYPE_IPV4: // ipv4
-                    if (vrfp->pmtud4 > 0) {
-                        if ((bufE - bufD - bufP) > vrfp->pmtud4) goto punt;
-                    }
-                    break;
-                case ETHERTYPE_IPV6: // ipv6
-                    if (vrfp->pmtud6 > 0) {
-                        if ((bufE - bufD - bufP) > vrfp->pmtud6) goto punt;
-                    }
-                    break;
+        if (vrfp == NULL) goto etyped_rx;
+        vrfp->packRx++;
+        vrfp->byteRx += bufE - bufD;
+        if (vrfp->sgtTag != 0) {
+            revalidatePacket(bufP + 12);
+            if (ethtyp != ETHERTYPE_SGT) goto drop;
+            if (get32msb(bufD, bufP + 0) != 0x01010001) goto drop;
+            sgt = get16msb(bufD, bufP + 4);
+            ethtyp = get16msb(bufD, bufP + 6);
+            bufP += 8;
+        }
+        if (vrfp->sgtSet >= 0) {
+            sgt = vrfp->sgtSet;
+        }
+        switch (vrfp->cmd) {
+        case 1: // route
+            break;
+        case 2: // bridge
+            tmp = vrfp->brdg;
+            switch (ethtyp) {
+            case ETHERTYPE_IPV4: // ipv4
+                if (vrfp->pmtud4 > 0) {
+                    if ((bufE - bufD - bufP) > vrfp->pmtud4) goto punt;
                 }
-                goto bridge_rx;
-            case 3: // xconn
-                bufP -= 2;
-                bufP -= 12;
-                bufP -= 2 * sizeof(macaddr);
-                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-                bufP = 2 * sizeof(macaddr);
-                revalidatePacket(3 * sizeof(macaddr));
-                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
-                ethtyp = ETHERTYPE_MPLS_UCAST;
-                bufP -= 4;
-                ttl = 0x1ff | (vrfp->label2 << 12);
-                put32msb(bufD, bufP, ttl);
-                bufP -= 4;
-                ttl = 0xff | (vrfp->label1 << 12);
-                put32msb(bufD, bufP, ttl);
-                neik = vrfp->hop;
-                goto ethtyp_tx;
-            case 4: // loconnifc
-                prt = vrfp->label1;
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
-                goto subif_tx;
-            case 5: // loconnnei
-                neik = vrfp->label1;
-                goto ethtyp_tx;
-            case 6: // nshconn
-                bufP -= 2;
-                put16msb(bufD, bufP, ethtyp);
-                bufP -= 12;
-                bufP -= 2 * sizeof(macaddr);
-                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-                bufP = 2 * sizeof(macaddr);
-                revalidatePacket(3 * sizeof(macaddr));
-                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
-                ethtyp = ETHERTYPE_NSH;
-                bufP -= 8;
-                put16msb(bufD, bufP + 0, 0xfc2);
-                put16msb(bufD, bufP + 2, 0x203);
-                tmp = (vrfp->label1 << 8) | vrfp->label2;
-                put32msb(bufD, bufP + 4, tmp);
-                goto nsh_rx;
-            default:
+                break;
+            case ETHERTYPE_IPV6: // ipv6
+                if (vrfp->pmtud6 > 0) {
+                    if ((bufE - bufD - bufP) > vrfp->pmtud6) goto punt;
+                }
+                break;
+            case ETHERTYPE_ROUTEDMAC:
+                goto etyped_rx;
                 break;
             }
+            goto bridge_rx;
+        case 3: // xconn
+            bufP -= 2;
+            bufP -= 12;
+            bufP -= 2 * sizeof(macaddr);
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = 2 * sizeof(macaddr);
+            revalidatePacket(3 * sizeof(macaddr));
+            __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            bufP -= 4;
+            ttl = 0x1ff | (vrfp->label2 << 12);
+            put32msb(bufD, bufP, ttl);
+            bufP -= 4;
+            ttl = 0xff | (vrfp->label1 << 12);
+            put32msb(bufD, bufP, ttl);
+            neik = vrfp->hop;
+            goto ethtyp_tx;
+        case 4: // loconnifc
+            prt = vrfp->label1;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            goto subif_tx;
+        case 5: // loconnnei
+            neik = vrfp->label1;
+            goto ethtyp_tx;
+        case 6: // nshconn
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            bufP -= 12;
+            bufP -= 2 * sizeof(macaddr);
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = 2 * sizeof(macaddr);
+            revalidatePacket(3 * sizeof(macaddr));
+            __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+            ethtyp = ETHERTYPE_NSH;
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, 0xfc2);
+            put16msb(bufD, bufP + 2, 0x203);
+            tmp = (vrfp->label1 << 8) | vrfp->label2;
+            put32msb(bufD, bufP + 4, tmp);
+            goto nsh_rx;
+        default:
+            break;
         }
 
+etyped_rx:
         switch (ethtyp) {
         case ETHERTYPE_MPLS_UCAST:
             if (vrfp == NULL) goto drop;
@@ -886,6 +897,66 @@ nsh_rx:
             ethtyp = ETHERTYPE_POLKA;
             neik = *res;
             goto ethtyp_tx;
+        case ETHERTYPE_ROUTEDMAC:
+            if (vrfp == NULL) goto drop;
+            if (vrfp->cmd != 2) goto drop;
+            revalidatePacket(bufP + 20);
+            __builtin_memcpy(&macaddr[0], &bufD[bufP], 12);
+            bufP += 12;
+            ethtyp = get16msb(bufD, bufP);
+            bufP += 2;
+            tmp = vrfp->brdg;
+bridge_rx:
+            {}
+            struct bridge_key brdk;
+            __builtin_memcpy(brdk.mac, &macaddr[6], 6);
+            brdk.id = tmp;
+            brdk.mac[6] = 0;
+            brdk.mac[7] = 0;
+            struct bridge_res* brdr = bpf_map_lookup_elem(&bridges, &brdk);
+            if (brdr == NULL) goto cpu;
+            brdr->packRx++;
+            brdr->byteRx += bufE - bufD;
+            __builtin_memcpy(brdk.mac, &macaddr[0], 6);
+            brdr = bpf_map_lookup_elem(&bridges, &brdk);
+            if (brdr == NULL) goto cpu;
+            brdr->packTx++;
+            brdr->byteTx += bufE - bufD;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            switch (brdr->cmd) {
+            case 1:
+                prt = brdr->port;
+                goto subif_tx;
+            case 2:
+                bufP -= 12;
+                bufP -= 2 * sizeof(macaddr);
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = 2 * sizeof(macaddr);
+                revalidatePacket(3 * sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                ethtyp = ETHERTYPE_MPLS_UCAST;
+                bufP -= 4;
+                tmp = 0x1ff | (brdr->label2 << 12);
+                put32msb(bufD, bufP, tmp);
+                bufP -= 4;
+                tmp = 0xff | (brdr->label1 << 12);
+                put32msb(bufD, bufP, tmp);
+                neik = brdr->hop;
+                goto ethtyp_tx;
+            case 3:
+                bufP -= 12;
+                bufP -= 2 * sizeof(macaddr);
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = 2 * sizeof(macaddr);
+                revalidatePacket(3 * sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                ethtyp = ETHERTYPE_ROUTEDMAC;
+                neik = brdr->hop;
+                goto ethtyp_tx;
+            default:
+                goto drop;
+            }
         case ETHERTYPE_PPPOE_CTRL:
             goto cpu;
         case ETHERTYPE_ARP:
@@ -897,50 +968,6 @@ nsh_rx:
         default:
             if (ethtyp < 1500) goto cpu;
             goto punt;
-        }
-
-bridge_rx:
-        {}
-        struct bridge_key brdk;
-        __builtin_memcpy(brdk.mac, &macaddr[6], 6);
-        brdk.id = tmp;
-        brdk.mac[6] = 0;
-        brdk.mac[7] = 0;
-        struct bridge_res* brdr = bpf_map_lookup_elem(&bridges, &brdk);
-        if (brdr == NULL) goto cpu;
-        brdr->packRx++;
-        brdr->byteRx += bufE - bufD;
-        __builtin_memcpy(brdk.mac, &macaddr[0], 6);
-        brdr = bpf_map_lookup_elem(&bridges, &brdk);
-        if (brdr == NULL) goto cpu;
-        brdr->packTx++;
-        brdr->byteTx += bufE - bufD;
-        switch (brdr->cmd) {
-        case 1:
-            bufP -= 2;
-            put16msb(bufD, bufP, ethtyp);
-            prt = brdr->port;
-            goto subif_tx;
-        case 2:
-            bufP -= 2;
-            put16msb(bufD, bufP, ethtyp);
-            bufP -= 12;
-            bufP -= 2 * sizeof(macaddr);
-            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = 2 * sizeof(macaddr);
-            revalidatePacket(3 * sizeof(macaddr));
-            __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
-            ethtyp = ETHERTYPE_MPLS_UCAST;
-            bufP -= 4;
-            tmp = 0x1ff | (brdr->label2 << 12);
-            put32msb(bufD, bufP, tmp);
-            bufP -= 4;
-            tmp = 0xff | (brdr->label1 << 12);
-            put32msb(bufD, bufP, tmp);
-            neik = brdr->hop;
-            goto ethtyp_tx;
-        default:
-            goto drop;
         }
 
 ethtyp_tx:
@@ -979,25 +1006,25 @@ ethtyp_tx:
             put16msb(bufD, bufP, ethtyp);
             break;
         case 3: // gre4
-            bufP -= sizeof(macaddr) + 24;
+            bufP -= sizeof(macaddr) + 26;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 24;
+            bufP = sizeof(macaddr) + 26;
             revalidatePacket(bufP);
             putGreHeader();
             putIpv4header(IP_PROTOCOL_GRE);
             break;
         case 4: // gre6
-            bufP -= sizeof(macaddr) + 44;
+            bufP -= sizeof(macaddr) + 46;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 44;
+            bufP = sizeof(macaddr) + 46;
             revalidatePacket(bufP);
             putGreHeader();
             putIpv6header(IP_PROTOCOL_GRE);
             break;
         case 5: // l2tp4
-            bufP -= sizeof(macaddr) + 40;
+            bufP -= sizeof(macaddr) + 42;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 40;
+            bufP = sizeof(macaddr) + 42;
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL2tpHeader();
@@ -1005,9 +1032,9 @@ ethtyp_tx:
             putIpv4header(IP_PROTOCOL_UDP);
             break;
         case 6: // l2tp6
-            bufP -= sizeof(macaddr) + 60;
+            bufP -= sizeof(macaddr) + 62;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 60;
+            bufP = sizeof(macaddr) + 62;
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL2tpHeader();
@@ -1015,39 +1042,37 @@ ethtyp_tx:
             putIpv6header(IP_PROTOCOL_UDP);
             break;
         case 7: // l3tp4
-            bufP -= sizeof(macaddr) + 26;
+            bufP -= sizeof(macaddr) + 28;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 26;
+            bufP = sizeof(macaddr) + 28;
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL3tpHeader();
             putIpv4header(IP_PROTOCOL_L2TP);
             break;
         case 8: // l3tp6
-            bufP -= sizeof(macaddr) + 46;
+            bufP -= sizeof(macaddr) + 48;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 46;
+            bufP = sizeof(macaddr) + 48;
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL3tpHeader();
             putIpv6header(IP_PROTOCOL_L2TP);
             break;
         case 9: // gtp4
-            bufP -= sizeof(macaddr) + 28;
+            bufP -= sizeof(macaddr) + 30;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 28;
+            bufP = sizeof(macaddr) + 30;
             revalidatePacket(bufP + 2);
-            ethtyp2ppptyp();
             putGtpHeader();
             putUdpHeader();
             putIpv4header(IP_PROTOCOL_UDP);
             break;
         case 10: // gtp6
-            bufP -= sizeof(macaddr) + 48;
+            bufP -= sizeof(macaddr) + 50;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr) + 48;
+            bufP = sizeof(macaddr) + 50;
             revalidatePacket(bufP + 2);
-            ethtyp2ppptyp();
             putGtpHeader();
             putUdpHeader();
             putIpv6header(IP_PROTOCOL_UDP);
