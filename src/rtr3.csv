@@ -300,42 +300,42 @@ http://sources.freertr.org/cfg/p4lang-rout079.tst;p4lang-rout079.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout080.tst;p4lang-rout080.tst;ok;ok;ok;ok;ok;p4lang: l2tp mpls over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout081.tst;p4lang-rout081.tst;ok;ok;ok;ok;ok;p4lang: l2tp mpls over vlan
 http://sources.freertr.org/cfg/p4lang-rout082.tst;p4lang-rout082.tst;ok;ok;ok;ok;ok;p4lang: l2tp mpls over bundle
-http://sources.freertr.org/cfg/p4lang-rout083.tst;p4lang-rout083.tst;ok;ok;ok;ok;not ok;p4lang: bridging over gre
-http://sources.freertr.org/cfg/p4lang-rout084.tst;p4lang-rout084.tst;ok;ok;ok;ok;not ok;p4lang: bridging over gre vlan
-http://sources.freertr.org/cfg/p4lang-rout085.tst;p4lang-rout085.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over pppoe
-http://sources.freertr.org/cfg/p4lang-rout086.tst;p4lang-rout086.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over pppoe vlan
-http://sources.freertr.org/cfg/p4lang-rout087.tst;p4lang-rout087.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over l2tp
-http://sources.freertr.org/cfg/p4lang-rout088.tst;p4lang-rout088.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over l2tp vlan
-http://sources.freertr.org/cfg/p4lang-rout089.tst;p4lang-rout089.tst;ok;ok;ok;ok;not ok;p4lang: vxlan over ipv4
-http://sources.freertr.org/cfg/p4lang-rout090.tst;p4lang-rout090.tst;ok;ok;ok;ok;not ok;p4lang: vxlan over ipv6
-http://sources.freertr.org/cfg/p4lang-rout091.tst;p4lang-rout091.tst;ok;ok;ok;ok;not ok;p4lang: vxlan over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout092.tst;p4lang-rout092.tst;ok;ok;ok;ok;not ok;p4lang: vxlan over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout093.tst;p4lang-rout093.tst;ok;ok;ok;ok;not ok;p4lang: vxlan over vlan
-http://sources.freertr.org/cfg/p4lang-rout094.tst;p4lang-rout094.tst;ok;ok;ok;ok;not ok;p4lang: vxlan over bundle
-http://sources.freertr.org/cfg/p4lang-rout095.tst;p4lang-rout095.tst;ok;ok;ok;ok;not ok;p4lang: evpn/vxlan with bgp
-http://sources.freertr.org/cfg/p4lang-rout096.tst;p4lang-rout096.tst;ok;ok;ok;ok;not ok;p4lang: vlan evpn/vxlan with bgp
-http://sources.freertr.org/cfg/p4lang-rout097.tst;p4lang-rout097.tst;ok;ok;ok;ok;not ok;p4lang: bundle vlan evpn/vxlan with bgp
-http://sources.freertr.org/cfg/p4lang-rout098.tst;p4lang-rout098.tst;ok;ok;ok;ok;not ok;p4lang: hairpin evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout083.tst;p4lang-rout083.tst;ok;ok;ok;ok;ok;p4lang: bridging over gre
+http://sources.freertr.org/cfg/p4lang-rout084.tst;p4lang-rout084.tst;ok;ok;ok;ok;ok;p4lang: bridging over gre vlan
+http://sources.freertr.org/cfg/p4lang-rout085.tst;p4lang-rout085.tst;ok;ok;ok;not ok;ok;p4lang: bridging over pppoe
+http://sources.freertr.org/cfg/p4lang-rout086.tst;p4lang-rout086.tst;ok;ok;ok;not ok;ok;p4lang: bridging over pppoe vlan
+http://sources.freertr.org/cfg/p4lang-rout087.tst;p4lang-rout087.tst;ok;ok;ok;not ok;ok;p4lang: bridging over l2tp
+http://sources.freertr.org/cfg/p4lang-rout088.tst;p4lang-rout088.tst;ok;ok;ok;not ok;ok;p4lang: bridging over l2tp vlan
+http://sources.freertr.org/cfg/p4lang-rout089.tst;p4lang-rout089.tst;ok;ok;ok;ok;ok;p4lang: vxlan over ipv4
+http://sources.freertr.org/cfg/p4lang-rout090.tst;p4lang-rout090.tst;ok;ok;ok;ok;ok;p4lang: vxlan over ipv6
+http://sources.freertr.org/cfg/p4lang-rout091.tst;p4lang-rout091.tst;ok;ok;ok;ok;ok;p4lang: vxlan over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout092.tst;p4lang-rout092.tst;ok;ok;ok;ok;ok;p4lang: vxlan over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout093.tst;p4lang-rout093.tst;ok;ok;ok;ok;ok;p4lang: vxlan over vlan
+http://sources.freertr.org/cfg/p4lang-rout094.tst;p4lang-rout094.tst;ok;ok;ok;ok;ok;p4lang: vxlan over bundle
+http://sources.freertr.org/cfg/p4lang-rout095.tst;p4lang-rout095.tst;ok;ok;ok;ok;ok;p4lang: evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout096.tst;p4lang-rout096.tst;ok;ok;ok;ok;ok;p4lang: vlan evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout097.tst;p4lang-rout097.tst;ok;ok;ok;ok;ok;p4lang: bundle vlan evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout098.tst;p4lang-rout098.tst;ok;ok;ok;ok;ok;p4lang: hairpin evpn/vxlan with bgp
 http://sources.freertr.org/cfg/p4lang-rout099.tst;p4lang-rout099.tst;ok;ok;ok;ok;not ok;p4lang: ipip routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout100.tst;p4lang-rout100.tst;ok;ok;ok;ok;not ok;p4lang: ipip routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout101.tst;p4lang-rout101.tst;ok;ok;ok;ok;not ok;p4lang: ipip routing over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout102.tst;p4lang-rout102.tst;ok;ok;ok;ok;not ok;p4lang: ipip routing over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout103.tst;p4lang-rout103.tst;ok;ok;ok;ok;not ok;p4lang: ipip routing over vlan
 http://sources.freertr.org/cfg/p4lang-rout104.tst;p4lang-rout104.tst;ok;ok;ok;ok;not ok;p4lang: ipip routing over bundle
-http://sources.freertr.org/cfg/p4lang-rout105.tst;p4lang-rout105.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp over ipv4
-http://sources.freertr.org/cfg/p4lang-rout106.tst;p4lang-rout106.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp over ipv6
-http://sources.freertr.org/cfg/p4lang-rout107.tst;p4lang-rout107.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout108.tst;p4lang-rout108.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout109.tst;p4lang-rout109.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp over vlan
-http://sources.freertr.org/cfg/p4lang-rout110.tst;p4lang-rout110.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp over bundle
-http://sources.freertr.org/cfg/p4lang-rout111.tst;p4lang-rout111.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp server over ipv4
-http://sources.freertr.org/cfg/p4lang-rout112.tst;p4lang-rout112.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp server over ipv6
-http://sources.freertr.org/cfg/p4lang-rout113.tst;p4lang-rout113.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp server over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout114.tst;p4lang-rout114.tst;ok;ok;ok;ok;not ok;p4lang: pckoudp server over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout115.tst;p4lang-rout115.tst;ok;ok;ok;ok;not ok;p4lang: vxlan server over ipv4
-http://sources.freertr.org/cfg/p4lang-rout116.tst;p4lang-rout116.tst;ok;ok;ok;ok;not ok;p4lang: vxlan server over ipv6
-http://sources.freertr.org/cfg/p4lang-rout117.tst;p4lang-rout117.tst;ok;ok;ok;ok;not ok;p4lang: vxlan server over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout118.tst;p4lang-rout118.tst;ok;ok;ok;ok;not ok;p4lang: vxlan server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout105.tst;p4lang-rout105.tst;ok;ok;ok;ok;ok;p4lang: pckoudp over ipv4
+http://sources.freertr.org/cfg/p4lang-rout106.tst;p4lang-rout106.tst;ok;ok;ok;ok;ok;p4lang: pckoudp over ipv6
+http://sources.freertr.org/cfg/p4lang-rout107.tst;p4lang-rout107.tst;ok;ok;ok;ok;ok;p4lang: pckoudp over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout108.tst;p4lang-rout108.tst;ok;ok;ok;ok;ok;p4lang: pckoudp over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout109.tst;p4lang-rout109.tst;ok;ok;ok;ok;ok;p4lang: pckoudp over vlan
+http://sources.freertr.org/cfg/p4lang-rout110.tst;p4lang-rout110.tst;ok;ok;ok;ok;ok;p4lang: pckoudp over bundle
+http://sources.freertr.org/cfg/p4lang-rout111.tst;p4lang-rout111.tst;ok;ok;ok;ok;ok;p4lang: pckoudp server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout112.tst;p4lang-rout112.tst;ok;ok;ok;ok;ok;p4lang: pckoudp server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout113.tst;p4lang-rout113.tst;ok;ok;ok;ok;ok;p4lang: pckoudp server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout114.tst;p4lang-rout114.tst;ok;ok;ok;ok;ok;p4lang: pckoudp server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout115.tst;p4lang-rout115.tst;ok;ok;ok;ok;ok;p4lang: vxlan server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout116.tst;p4lang-rout116.tst;ok;ok;ok;ok;ok;p4lang: vxlan server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout117.tst;p4lang-rout117.tst;ok;ok;ok;ok;ok;p4lang: vxlan server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout118.tst;p4lang-rout118.tst;ok;ok;ok;ok;ok;p4lang: vxlan server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout119.tst;p4lang-rout119.tst;ok;ok;ok;ok;ok;p4lang: pppoe server routing
 http://sources.freertr.org/cfg/p4lang-rout120.tst;p4lang-rout120.tst;ok;ok;ok;ok;ok;p4lang: vlan pppoe server routing
 http://sources.freertr.org/cfg/p4lang-rout121.tst;p4lang-rout121.tst;ok;ok;ok;ok;ok;p4lang: pppoe server mpls
@@ -476,22 +476,22 @@ http://sources.freertr.org/cfg/p4lang-rout255.tst;p4lang-rout255.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout256.tst;p4lang-rout256.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 routing over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout257.tst;p4lang-rout257.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 routing over vlan
 http://sources.freertr.org/cfg/p4lang-rout258.tst;p4lang-rout258.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 routing over bundle
-http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv4
-http://sources.freertr.org/cfg/p4lang-rout260.tst;p4lang-rout260.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over ipv4
-http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over ipv6
-http://sources.freertr.org/cfg/p4lang-rout262.tst;p4lang-rout262.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over vlan
-http://sources.freertr.org/cfg/p4lang-rout263.tst;p4lang-rout263.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over ipv4
-http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over ipv6
-http://sources.freertr.org/cfg/p4lang-rout265.tst;p4lang-rout265.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over vlan
-http://sources.freertr.org/cfg/p4lang-rout266.tst;p4lang-rout266.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over bundle
-http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;ok;ok;ok;ok;ok;p4lang: multilink l2tp3 routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout260.tst;p4lang-rout260.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout262.tst;p4lang-rout262.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout263.tst;p4lang-rout263.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout265.tst;p4lang-rout265.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout266.tst;p4lang-rout266.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;ok;not ok;ok;not ok;not ok;p4lang: l2tp3 mpls over ipv4
 http://sources.freertr.org/cfg/p4lang-rout268.tst;p4lang-rout268.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv6
 http://sources.freertr.org/cfg/p4lang-rout269.tst;p4lang-rout269.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout270.tst;p4lang-rout270.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout271.tst;p4lang-rout271.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over vlan
 http://sources.freertr.org/cfg/p4lang-rout272.tst;p4lang-rout272.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over bundle
-http://sources.freertr.org/cfg/p4lang-rout273.tst;p4lang-rout273.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over l2tp3
-http://sources.freertr.org/cfg/p4lang-rout274.tst;p4lang-rout274.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over l2tp3 vlan
+http://sources.freertr.org/cfg/p4lang-rout273.tst;p4lang-rout273.tst;ok;ok;ok;not ok;ok;p4lang: bridging over l2tp3
+http://sources.freertr.org/cfg/p4lang-rout274.tst;p4lang-rout274.tst;ok;ok;ok;not ok;ok;p4lang: bridging over l2tp3 vlan
 http://sources.freertr.org/cfg/p4lang-rout275.tst;p4lang-rout275.tst;ok;ok;ok;ok;ok;p4lang: sdwan over ipv4 with l2tp
 http://sources.freertr.org/cfg/p4lang-rout276.tst;p4lang-rout276.tst;ok;ok;ok;ok;ok;p4lang: sdwan over ipv6 with l2tp
 http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;ok;ok;ok;ok;ok;p4lang: sdwan over ipv4 with l2tp3

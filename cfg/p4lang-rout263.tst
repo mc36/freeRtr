@@ -1,4 +1,4 @@
-description p4lang: multilink l2tp3 mpls over ipv4
+description p4lang: multilink l2tp3 mpls over ipv6
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -42,13 +42,14 @@ int lo0
 int sdn1
  no autostat
  vrf for v2
- ipv4 addr 9.9.9.1 255.255.255.0
+ ipv6 addr 9999::1 ffff:ffff::
+ ipv6 ena
  exit
 int virt1
  enc ppp
  ppp multi 1500 long
  ppp frag 512
- pseudo v2 sdn1 l2tp3 9.9.9.2 1234
+ pseudo v2 sdn1 l2tp3 9999::2 1234
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -152,13 +153,13 @@ int eth1
  exit
 int bvi1
  vrf for v2
- ipv4 addr 9.9.9.2 255.255.255.0
+ ipv6 addr 9999::2 ffff:ffff::
  exit
 int virt1
  enc ppp
  ppp multi 1500 long
  ppp frag 512
- pseudo v2 bvi1 l2tp3 9.9.9.1 1234
+ pseudo v2 bvi1 l2tp3 9999::1 1234
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
@@ -331,8 +332,8 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
 
-r1 tping 100 30 9.9.9.2 vrf v2
-r3 tping 100 30 9.9.9.1 vrf v2
+r1 tping 100 30 9999::2 vrf v2
+r3 tping 100 30 9999::1 vrf v2
 
 r1 tping 100 30 2.2.2.101 vrf v1 sou lo0
 r1 tping 100 30 4321::101 vrf v1 sou lo0

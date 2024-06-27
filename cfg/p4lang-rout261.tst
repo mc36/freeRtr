@@ -1,4 +1,4 @@
-description p4lang: multilink l2tp3 routing over ipv6
+description p4lang: multilink l2tp3 routing over vlan
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -40,15 +40,16 @@ int lo0
  exit
 int sdn1
  no autostat
+ exit
+int sdn1.222
  vrf for v2
- ipv6 addr 9999::1 ffff:ffff::
- ipv6 ena
+ ipv4 addr 9.9.9.1 255.255.255.0
  exit
 int virt1
  enc ppp
  ppp multi 1500 long
  ppp frag 512
- pseudo v2 sdn1 l2tp3 9999::2 1234
+ pseudo v2 sdn1.222 l2tp3 9.9.9.2 1234
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -96,7 +97,7 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 controller r1 v9 9080 - feature l3tp mlppp route
+addother r2 controller r1 v9 9080 - feature l3tp mlppp route vlan
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -129,15 +130,15 @@ int eth1
  enforce-mtu both
  bridge-gr 1
  exit
-int bvi1
+int bvi1.222
  vrf for v2
- ipv6 addr 9999::2 ffff:ffff::
+ ipv4 addr 9.9.9.2 255.255.255.0
  exit
 int virt1
  enc ppp
  ppp multi 1500 long
  ppp frag 512
- pseudo v2 bvi1 l2tp3 9999::1 1234
+ pseudo v2 bvi1.222 l2tp3 9.9.9.1 1234
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
@@ -255,8 +256,8 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
 
-r1 tping 100 30 9999::2 vrf v2
-r3 tping 100 30 9999::1 vrf v2
+r1 tping 100 30 9.9.9.2 vrf v2
+r3 tping 100 30 9.9.9.1 vrf v2
 
 r1 tping 100 30 1.1.1.2 vrf v1
 r1 tping 100 30 1234:1::2 vrf v1
