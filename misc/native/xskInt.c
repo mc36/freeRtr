@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <poll.h>
+#include <linux/if_link.h>
 #include <xdp/xsk.h>
 #include <sys/mman.h>
 
@@ -140,7 +141,7 @@ doer:
 
 int main(int argc, char **argv) {
 
-    if (argc < 5) {
+    if (argc < 6) {
         if (argc <= 1) goto help;
         char*curr = argv[1];
         if ((curr[0] == '-') || (curr[0] == '/')) curr++;
@@ -154,7 +155,7 @@ int main(int argc, char **argv) {
         case 'H':
 help :
             curr = argv[0];
-            printf("using: %s <iface> <lport> <raddr> <rport> [laddr]\n", curr);
+            printf("using: %s <iface> <skb/drv/hw> <lport> <raddr> <rport> [laddr]\n", curr);
             printf("   or: %s <command>\n", curr);
             printf("commands: v=version\n");
             printf("          h=this help\n");
@@ -167,13 +168,24 @@ help :
         _exit(1);
     }
 
-    portLoc = atoi(argv[2]);
-    portRem = atoi(argv[4]);
+    int bpf_flag = 0;
+    if (strcmp(argv[2],"skb") == 0) {
+        bpf_flag = XDP_FLAGS_SKB_MODE;
+    }
+    if (strcmp(argv[2],"drv") == 0) {
+        bpf_flag = XDP_FLAGS_DRV_MODE;
+    }
+    if (strcmp(argv[2],"hw") == 0) {
+        bpf_flag = XDP_FLAGS_HW_MODE;
+    }
+
+    portLoc = atoi(argv[3]);
+    portRem = atoi(argv[5]);
     memset(&addrLoc, 0, sizeof (addrLoc));
     memset(&addrRem, 0, sizeof (addrRem));
-    if (inet_aton(argv[3], &addrRem.sin_addr) == 0) err("bad raddr address");
+    if (inet_aton(argv[4], &addrRem.sin_addr) == 0) err("bad raddr address");
     if (argc > 5) {
-        if (inet_aton(argv[5], &addrLoc.sin_addr) == 0) err("bad laddr address");
+        if (inet_aton(argv[6], &addrLoc.sin_addr) == 0) err("bad laddr address");
     } else {
         addrLoc.sin_addr.s_addr = htonl(INADDR_ANY);
     }
@@ -201,7 +213,12 @@ help :
 
     if (xsk_umem__create(&ifaceUmem, ifaceBuf, XSK_UMEM__DEFAULT_FRAME_SIZE * 2 * framesNum, &ifaceFq, &ifaceCq, NULL) != 0) err("error creating umem");
 
-    if (xsk_socket__create(&ifaceXsk, ifaceName, 0, ifaceUmem, &ifaceRx, &ifaceTx, NULL) != 0) err("error creating xsk");
+    struct xsk_socket_config cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+    cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+    cfg.xdp_flags = bpf_flag;
+    if (xsk_socket__create(&ifaceXsk, ifaceName, 0, ifaceUmem, &ifaceRx, &ifaceTx, &cfg) != 0) err("error creating xsk");
 
     unsigned int i = 0;
     xsk_ring_prod__reserve(&ifaceFq, framesNum, &i);

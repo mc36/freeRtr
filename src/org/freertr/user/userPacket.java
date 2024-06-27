@@ -1813,12 +1813,12 @@ public class userPacket {
                 cmd.error("bad address");
                 return null;
             }
-            pipeSide pip = cfgAll.getClntPrx(null).doConnect(servGeneric.protoTcp, adr, packXotPad.port, "xotpad");
-            if (pip == null) {
+            pipeSide con = cfgAll.getClntPrx(null).doConnect(servGeneric.protoTcp, adr, packXotPad.port, "xotpad");
+            if (con == null) {
                 cmd.error("error connecting");
                 return null;
             }
-            clntXotPad pad = new clntXotPad(pip);
+            clntXotPad pad = new clntXotPad(con);
             String b = cmd.word();
             if (pad.startWork(b, cmd.word())) {
                 cmd.error("error calling");
