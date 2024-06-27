@@ -1606,7 +1606,7 @@ public class userExec {
         hl.add(null, "1 2    differs                        running system difference information");
         getHelpShow(hl, privileged);
         hl.add(null, "1 .    logout                         close this exec session");
-        hl.add(null, "1 .    exit                           close this exec session");
+        hl.add(null, "1 .   " + cmds.finish + "                         close this exec session");
         hl.add(null, "1 2,.  bwmon                          start bandwidth monitor session");
         hl.add(null, "2 2,.    software                     use software counters");
         hl.add(null, "2 2,.    hardware                     use hardware counters");
@@ -1631,7 +1631,7 @@ public class userExec {
         hl.add(null, "2 3      tui                          tui based");
         hl.add(null, "3 .        <name:mnt>                 name of menu");
         hl.add(null, "1 2    terminal                       terminal specific parameters");
-        hl.add(null, "2 2      no                           negate a parameter");
+        hl.add(null, "2 2    " + cmds.negated + "                         negate a parameter");
         hl.add(null, "2 3      width                        set terminal width");
         hl.add(null, "3 .        <num>                      width in columns");
         hl.add(null, "2 3      length                       set terminal length");

@@ -80,12 +80,12 @@ public class userHelping {
      * @param l help text
      */
     protected static void getCfgGen(userHelping l) {
-        l.add(null, "1 .    exit                go back to previous mode");
+        l.add(null, "1 .    " + cmds.finish + "               go back to previous mode");
         l.add(null, "1 2,.  end                 close this config session");
         l.add(null, "2 2,.    <cmd>             parameters");
         l.add(null, "1 2    do                  execute one exec command");
         l.add(null, "2 2,.    <cmd>             exec command");
-        l.add(null, "1 1    no                  negate a command");
+        l.add(null, "1 1  " + cmds.negated + "                negate a command");
     }
 
     /**

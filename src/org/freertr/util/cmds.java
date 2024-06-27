@@ -37,11 +37,6 @@ public class cmds {
     public final static String negated = "no";
 
     /**
-     * give up message
-     */
-    private final static String notvdc = "no in a vdc";
-
-    /**
      * error beginning
      */
     public final static String errbeg = "% ";
