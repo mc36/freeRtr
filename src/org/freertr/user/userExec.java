@@ -1,6 +1,7 @@
 package org.freertr.user;
 
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -1570,6 +1571,10 @@ public class userExec {
         hl.add(null, "4 4,.        telnet              specify telnet protocol");
         hl.add(null, "4 4,.        ipv4                specify ipv4 to use");
         hl.add(null, "4 4,.        ipv6                specify ipv6 to use");
+        if (privileged) {
+            hl.add(null, "4 5          record              specify record file");
+            hl.add(null, "5 4,.          <str>             name of file");
+        }
         hl.add(null, "4 5          vrf                 specify vrf to use");
         hl.add(null, "5 4,.          <name:vrf>        name of vrf");
         hl.add(null, "4 5          pubkey              specify public key to expect");
@@ -4361,7 +4366,7 @@ public class userExec {
             cmd.error("timed out");
             return;
         }
-        pipeTerm trm = new pipeTerm(pipe, conn);
+        pipeTerm trm = new pipeTerm(pipe, conn, null);
         trm.doTerm();
     }
 
@@ -4382,10 +4387,15 @@ public class userExec {
         byte[] pubkey = null;
         int proto = 0;
         int dgrm = servGeneric.protoTcp;
+        String recn = null;
         for (;;) {
             a = cmd.word();
             if (a.length() < 1) {
                 break;
+            }
+            if (a.equals("record")) {
+                recn = cmd.word();
+                continue;
             }
             if (a.equals("vrf")) {
                 vrf = cfgAll.vrfFind(cmd.word(), false);
@@ -4475,6 +4485,17 @@ public class userExec {
                 prt = 22;
             }
         }
+        if (!privileged) {
+            recn = null;
+        }
+        RandomAccessFile recf = null;
+        if (recn != null) {
+            try {
+                recf = new RandomAccessFile(new File(recn), "rw");
+            } catch (Exception e) {
+                pipe.linePut("file open error");
+            }
+        }
         userTerminal term = new userTerminal(pipe);
         addrIP adr = term.resolveAddr(rem, proto);
         if (prx == null) {
@@ -4494,8 +4515,15 @@ public class userExec {
         if (cht != null) {
             cht.script.doScript(strm);
         }
-        pipeTerm trm = new pipeTerm(pipe, strm);
+        pipeTerm trm = new pipeTerm(pipe, strm, recf);
         trm.doTerm();
+        if (recf == null) {
+            return;
+        }
+        try {
+            recf.close();
+        } catch (Exception e) {
+        }
     }
 
     private void doAttach() {
@@ -4520,7 +4548,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -4535,7 +4563,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -4551,7 +4579,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -4566,7 +4594,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide());
+            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -4604,7 +4632,7 @@ public class userExec {
                 cmd.error("no such line");
                 return;
             }
-            pipeTerm trm = new pipeTerm(pipe, lin.runner.doAttach());
+            pipeTerm trm = new pipeTerm(pipe, lin.runner.doAttach(), null);
             trm.doTerm();
             return;
         }

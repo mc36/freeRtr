@@ -88,13 +88,6 @@ configure startup to have config committed but 4 now, only conf start tabbable s
 
 
 
-
-
-display asdfsdfas | asciinema <--- same as | pastebin....
-
-
-
-
 server security to have settable tls version from client knob first
 
 server security to log the transactions

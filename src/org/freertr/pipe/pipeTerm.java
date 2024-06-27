@@ -1,5 +1,6 @@
 package org.freertr.pipe;
 
+import java.io.RandomAccessFile;
 import org.freertr.sec.secClient;
 import org.freertr.serv.servGeneric;
 import org.freertr.util.bits;
@@ -15,12 +16,7 @@ public class pipeTerm {
     /**
      * escape character
      */
-    protected int escChr;
-
-    /**
-     * escape character
-     */
-    protected String escNam;
+    protected final int escChr;
 
     /**
      * stream handler
@@ -30,7 +26,12 @@ public class pipeTerm {
     /**
      * console handler
      */
-    protected pipeSide console;
+    protected final pipeSide console;
+
+    /**
+     * record handler
+     */
+    protected final RandomAccessFile record;
 
     /**
      * rx thread running
@@ -62,12 +63,22 @@ public class pipeTerm {
      *
      * @param con console to use
      * @param strm stream to use
+     * @param rec recording
      */
-    public pipeTerm(pipeSide con, pipeSide strm) {
+    public pipeTerm(pipeSide con, pipeSide strm, RandomAccessFile rec) {
         console = con;
         stream = strm;
+        record = rec;
         escChr = con.settingsGet(pipeSetting.escape, 65536);
-        escNam = "ascii0x" + bits.toHexB(escChr);
+    }
+
+    /**
+     * get escape character name
+     *
+     * @return
+     */
+    protected String getEscNam() {
+        return "ascii0x" + bits.toHexB(escChr);
     }
 
     /**
@@ -83,6 +94,8 @@ public class pipeTerm {
         runningRx = true;
         runningTx = true;
         runningNeed = true;
+        console.linePut("");
+        console.linePut("escape character is " + getEscNam() + ".");
         console.linePut("");
         new Thread(new pipeTermRx(this)).start();
         new Thread(new pipeTermTx(this)).start();
@@ -108,7 +121,7 @@ public class pipeTerm {
 
 class pipeTermRx implements Runnable {
 
-    private pipeTerm parent;
+    private final pipeTerm parent;
 
     public pipeTermRx(pipeTerm prnt) {
         parent = prnt;
@@ -127,6 +140,10 @@ class pipeTermRx implements Runnable {
                     continue;
                 }
                 parent.console.blockingPut(buf, 0, siz);
+                if (parent.record == null) {
+                    continue;
+                }
+                parent.record.write(buf, 0, siz);
             }
         } catch (Exception e) {
             logger.traceback(e);
@@ -138,15 +155,13 @@ class pipeTermRx implements Runnable {
 
 class pipeTermTx implements Runnable {
 
-    private pipeTerm parent;
+    private final pipeTerm parent;
 
     public pipeTermTx(pipeTerm prnt) {
         parent = prnt;
     }
 
     public void run() {
-        parent.console.linePut("escape character is " + parent.escNam + ".");
-        parent.console.linePut("");
         try {
             for (;;) {
                 if (!parent.runningNeed) {
@@ -174,8 +189,8 @@ class pipeTermTx implements Runnable {
                         parent.console.linePut("");
                         parent.console.linePut("^H - show this help message");
                         parent.console.linePut("^T - start tls client");
-                        parent.console.linePut("^C - send one " + parent.escNam + " character");
-                        parent.console.linePut("^V - send two " + parent.escNam + " characters");
+                        parent.console.linePut("^C - send one " + parent.getEscNam() + " character");
+                        parent.console.linePut("^V - send two " + parent.getEscNam() + " characters");
                         parent.console.linePut("^X - close terminal session");
                         break;
                     case 116: // t

@@ -1576,7 +1576,7 @@ public class userPacket {
                 return null;
             }
             sv.prompt = true;
-            pipeTerm trm = new pipeTerm(pip, usr);
+            pipeTerm trm = new pipeTerm(pip, usr, null);
             trm.doTerm();
             usr.setClose();
             return null;
@@ -1597,7 +1597,7 @@ public class userPacket {
             List<String> l = bits.txt2buf(cmd.word());
             if (l == null) {
                 sv.setPrompt(true);
-                pipeTerm trm = new pipeTerm(pip, usr);
+                pipeTerm trm = new pipeTerm(pip, usr, null);
                 trm.doTerm();
             } else {
                 usr.setTime(120000);
@@ -1625,7 +1625,7 @@ public class userPacket {
                 cmd.error("failed to place call");
                 return null;
             }
-            pipeTerm trm = new pipeTerm(pip, sm.getPipe());
+            pipeTerm trm = new pipeTerm(pip, sm.getPipe(), null);
             trm.doTerm();
             sm.callStop();
             return null;
@@ -1824,7 +1824,7 @@ public class userPacket {
                 cmd.error("error calling");
                 return null;
             }
-            pipeTerm trm = new pipeTerm(cmd.pipe, pad.getPipe());
+            pipeTerm trm = new pipeTerm(pip, pad.getPipe(), null);
             trm.doTerm();
             return null;
         }
@@ -1841,7 +1841,7 @@ public class userPacket {
             }
             secWebsock ws = new secWebsock(strm, new pipeLine(65536, false));
             ws.startClient();
-            pipeTerm trm = new pipeTerm(cmd.pipe, ws.getPipe());
+            pipeTerm trm = new pipeTerm(pip, ws.getPipe(), null);
             trm.doTerm();
             return null;
         }
