@@ -411,6 +411,14 @@ struct {
             ethtyp = ETHERTYPE_ROUTEDMAC;                       \
             put16msb(bufD, bufP, ethtyp);                       \
             break;                                              \
+        case 6:                                                 \
+            bufP += 8;                                          \
+            bufP += 8;                                          \
+            revalidatePacket(bufP + 4);                         \
+            bufP -= 2;                                          \
+            ethtyp = ETHERTYPE_ROUTEDMAC;                       \
+            put16msb(bufD, bufP, ethtyp);                       \
+            break;                                              \
         default:                                                \
             goto drop;                                          \
     }                                                           \
@@ -525,6 +533,15 @@ struct {
     ethtyp = bufE - bufD - bufP - 8;                            \
     put16msb(bufD, bufP + 2, ethtyp);                           \
     put32msb(bufD, bufP + 4, neir->sess);
+
+
+
+#define putVxlanHeader()                                        \
+    bufP -= 8;                                                  \
+    put16msb(bufD, bufP + 0, 0x800);                            \
+    put16msb(bufD, bufP + 2, 0);                                \
+    tmp = brdr->label1 << 8;                                    \
+    put32msb(bufD, bufP + 4, tmp);
 
 
 
@@ -980,6 +997,32 @@ bridge_rx:
                 bufP = sizeof(macaddr) + 46;
                 revalidatePacket(bufP + sizeof(macaddr));
                 __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                putUdpHeader(brdr);
+                putIpv6header(brdr, IP_PROTOCOL_UDP);
+                bufP += 2;
+                neik = brdr->hop;
+                goto ethtyp_tx;
+            case 6: // vxlan4
+                bufP -= 12;
+                bufP -= sizeof(macaddr) + 36;
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = sizeof(macaddr) + 36;
+                revalidatePacket(bufP + sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                putVxlanHeader();
+                putUdpHeader(brdr);
+                putIpv4header(brdr, IP_PROTOCOL_UDP);
+                bufP += 2;
+                neik = brdr->hop;
+                goto ethtyp_tx;
+            case 7: // vxlan6
+                bufP -= 12;
+                bufP -= sizeof(macaddr) + 56;
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = sizeof(macaddr) + 56;
+                revalidatePacket(bufP + sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                putVxlanHeader();
                 putUdpHeader(brdr);
                 putIpv6header(brdr, IP_PROTOCOL_UDP);
                 bufP += 2;

@@ -76,7 +76,7 @@ void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
     fprintf(commands, "platform p4xdp\r\n");
-    fprintf(commands, "capabilities punting route mpls bundle vlan pppoe eompls bridge vpls evpn hairpin sgt loconn pmtud vrfysrc gre l2tp l3tp gtp nsh polka\r\n");
+    fprintf(commands, "capabilities punting route mpls bundle vlan pppoe eompls bridge vpls evpn hairpin sgt loconn pmtud vrfysrc gre l2tp l3tp gtp nsh polka gretap pppoetap l2tptap l3tptap pckoudp vxlan\r\n");
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange 32768 65535\r\n");

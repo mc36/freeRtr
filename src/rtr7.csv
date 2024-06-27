@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.6.27-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-27 09:29:25, took 00:21:27, with 10 workers, on 546 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2024-06-27 12:03:46, took 00:28:02, with 10 workers, on 546 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
@@ -308,16 +308,16 @@ http://sources.freertr.org/cfg/p4lang-rout085.tst;p4lang-rout085.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout086.tst;p4lang-rout086.tst;success;p4lang: bridging over pppoe vlan
 http://sources.freertr.org/cfg/p4lang-rout087.tst;p4lang-rout087.tst;success;p4lang: bridging over l2tp
 http://sources.freertr.org/cfg/p4lang-rout088.tst;p4lang-rout088.tst;success;p4lang: bridging over l2tp vlan
-http://sources.freertr.org/cfg/p4lang-rout089.tst;p4lang-rout089.tst;not applicable;p4lang: vxlan over ipv4
-http://sources.freertr.org/cfg/p4lang-rout090.tst;p4lang-rout090.tst;not applicable;p4lang: vxlan over ipv6
-http://sources.freertr.org/cfg/p4lang-rout091.tst;p4lang-rout091.tst;not applicable;p4lang: vxlan over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout092.tst;p4lang-rout092.tst;not applicable;p4lang: vxlan over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout093.tst;p4lang-rout093.tst;not applicable;p4lang: vxlan over vlan
-http://sources.freertr.org/cfg/p4lang-rout094.tst;p4lang-rout094.tst;not applicable;p4lang: vxlan over bundle
-http://sources.freertr.org/cfg/p4lang-rout095.tst;p4lang-rout095.tst;not applicable;p4lang: evpn/vxlan with bgp
-http://sources.freertr.org/cfg/p4lang-rout096.tst;p4lang-rout096.tst;not applicable;p4lang: vlan evpn/vxlan with bgp
-http://sources.freertr.org/cfg/p4lang-rout097.tst;p4lang-rout097.tst;not applicable;p4lang: bundle vlan evpn/vxlan with bgp
-http://sources.freertr.org/cfg/p4lang-rout098.tst;p4lang-rout098.tst;not applicable;p4lang: hairpin evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout089.tst;p4lang-rout089.tst;success;p4lang: vxlan over ipv4
+http://sources.freertr.org/cfg/p4lang-rout090.tst;p4lang-rout090.tst;success;p4lang: vxlan over ipv6
+http://sources.freertr.org/cfg/p4lang-rout091.tst;p4lang-rout091.tst;success;p4lang: vxlan over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout092.tst;p4lang-rout092.tst;success;p4lang: vxlan over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout093.tst;p4lang-rout093.tst;success;p4lang: vxlan over vlan
+http://sources.freertr.org/cfg/p4lang-rout094.tst;p4lang-rout094.tst;success;p4lang: vxlan over bundle
+http://sources.freertr.org/cfg/p4lang-rout095.tst;p4lang-rout095.tst;success;p4lang: evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout096.tst;p4lang-rout096.tst;success;p4lang: vlan evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout097.tst;p4lang-rout097.tst;success;p4lang: bundle vlan evpn/vxlan with bgp
+http://sources.freertr.org/cfg/p4lang-rout098.tst;p4lang-rout098.tst;success;p4lang: hairpin evpn/vxlan with bgp
 http://sources.freertr.org/cfg/p4lang-rout099.tst;p4lang-rout099.tst;not applicable;p4lang: ipip routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout100.tst;p4lang-rout100.tst;not applicable;p4lang: ipip routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout101.tst;p4lang-rout101.tst;not applicable;p4lang: ipip routing over ipv4 loopback
@@ -334,10 +334,10 @@ http://sources.freertr.org/cfg/p4lang-rout111.tst;p4lang-rout111.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout112.tst;p4lang-rout112.tst;success;p4lang: pckoudp server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout113.tst;p4lang-rout113.tst;success;p4lang: pckoudp server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout114.tst;p4lang-rout114.tst;success;p4lang: pckoudp server over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout115.tst;p4lang-rout115.tst;not applicable;p4lang: vxlan server over ipv4
-http://sources.freertr.org/cfg/p4lang-rout116.tst;p4lang-rout116.tst;not applicable;p4lang: vxlan server over ipv6
-http://sources.freertr.org/cfg/p4lang-rout117.tst;p4lang-rout117.tst;not applicable;p4lang: vxlan server over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout118.tst;p4lang-rout118.tst;not applicable;p4lang: vxlan server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout115.tst;p4lang-rout115.tst;success;p4lang: vxlan server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout116.tst;p4lang-rout116.tst;success;p4lang: vxlan server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout117.tst;p4lang-rout117.tst;success;p4lang: vxlan server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout118.tst;p4lang-rout118.tst;success;p4lang: vxlan server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout119.tst;p4lang-rout119.tst;success;p4lang: pppoe server routing
 http://sources.freertr.org/cfg/p4lang-rout120.tst;p4lang-rout120.tst;success;p4lang: vlan pppoe server routing
 http://sources.freertr.org/cfg/p4lang-rout121.tst;p4lang-rout121.tst;success;p4lang: pppoe server mpls
