@@ -109,11 +109,15 @@ struct bridge_key {
 };
 
 struct bridge_res {
-    __u32 cmd; // 1=port, 2=vpls, 3=route
+    __u32 cmd; // 1=port, 2=vpls, 3=route, 4=pckoudp4, 5=pckoudp6
     __u32 port;
     __u32 hop;
     __u32 label1;
     __u32 label2;
+    __u8 srcAddr[16];
+    __u8 trgAddr[16];
+    __u32 srcPort;
+    __u32 trgPort;
     __u64 packRx;
     __u64 byteRx;
     __u64 packTx;
@@ -139,7 +143,7 @@ struct tunnel6_key {
 };
 
 struct tunnel_res {
-    __u32 cmd; // 1=gre, 2=l2tp, 3=l3tp, 4=gtp
+    __u32 cmd; // 1=gre, 2=l2tp, 3=l3tp, 4=gtp, 5=pckoudp
     __u32 aclport;
     __u64 pack;
     __u64 byte;

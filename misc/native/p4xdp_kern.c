@@ -404,6 +404,13 @@ struct {
             bufP -= 2;                                          \
             put16msb(bufD, bufP, ethtyp);                       \
             break;                                              \
+        case 5:                                                 \
+            bufP += 8;                                          \
+            revalidatePacket(bufP + 4);                         \
+            bufP -= 2;                                          \
+            ethtyp = ETHERTYPE_ROUTEDMAC;                       \
+            put16msb(bufD, bufP, ethtyp);                       \
+            break;                                              \
         default:                                                \
             goto drop;                                          \
     }                                                           \
@@ -427,7 +434,7 @@ struct {
     }
 
 
-#define putIpv4header(proto)                                    \
+#define putIpv4header(ntry, proto)                              \
     bufP -= 20;                                                 \
     put16msb(bufD, bufP + 0, 0x4500);                           \
     ethtyp = bufE - bufD  - bufP;                               \
@@ -437,23 +444,23 @@ struct {
     bufD[bufP + 8] = 0xff;                                      \
     bufD[bufP + 9] = proto;                                     \
     ethtyp += 0x4500 + 0xff00 + proto;                          \
-    ethtyp += get16msb(neir->srcAddr, 0);                       \
-    ethtyp += get16msb(neir->srcAddr, 2);                       \
-    ethtyp += get16msb(neir->trgAddr, 0);                       \
-    ethtyp += get16msb(neir->trgAddr, 2);                       \
+    ethtyp += get16msb(ntry->srcAddr, 0);                       \
+    ethtyp += get16msb(ntry->srcAddr, 2);                       \
+    ethtyp += get16msb(ntry->trgAddr, 0);                       \
+    ethtyp += get16msb(ntry->trgAddr, 2);                       \
     ethtyp = (ethtyp >> 16) + (ethtyp & 0xffff);                \
     ethtyp += (ethtyp >> 16);                                   \
     ethtyp = 0xffff & (~ethtyp);                                \
     put16msb(bufD, bufP + 10, ethtyp);                          \
-    __builtin_memcpy(&bufD[bufP + 12], &neir->srcAddr, 4);      \
-    __builtin_memcpy(&bufD[bufP + 16], &neir->trgAddr, 4);      \
+    __builtin_memcpy(&bufD[bufP + 12], &ntry->srcAddr, 4);      \
+    __builtin_memcpy(&bufD[bufP + 16], &ntry->trgAddr, 4);      \
     ethtyp = ETHERTYPE_IPV4;                                    \
     bufP -= 2;                                                  \
     put16msb(bufD, bufP, ethtyp);
 
 
 
-#define putIpv6header(proto)                                    \
+#define putIpv6header(ntry, proto)                              \
     bufP -= 40;                                                 \
     put16msb(bufD, bufP + 0, 0x6000);                           \
     put16msb(bufD, bufP + 2, 0);                                \
@@ -461,8 +468,8 @@ struct {
     put16msb(bufD, bufP + 4, ethtyp);                           \
     bufD[bufP + 6] = proto;                                     \
     bufD[bufP + 7] = 0xff;                                      \
-    __builtin_memcpy(&bufD[bufP + 8], &neir->srcAddr, 16);      \
-    __builtin_memcpy(&bufD[bufP + 24], &neir->trgAddr, 16);     \
+    __builtin_memcpy(&bufD[bufP + 8], &ntry->srcAddr, 16);      \
+    __builtin_memcpy(&bufD[bufP + 24], &ntry->trgAddr, 16);     \
     ethtyp = ETHERTYPE_IPV6;                                    \
     bufP -= 2;                                                  \
     put16msb(bufD, bufP, ethtyp);
@@ -474,10 +481,10 @@ struct {
     put16msb(bufD, bufP, 0x0000);
 
 
-#define putUdpHeader()                                          \
+#define putUdpHeader(ntry)                                      \
     bufP -= 8;                                                  \
-    put16msb(bufD, bufP + 0, neir->srcPort);                    \
-    put16msb(bufD, bufP + 2, neir->trgPort);                    \
+    put16msb(bufD, bufP + 0, ntry->srcPort);                    \
+    put16msb(bufD, bufP + 2, ntry->trgPort);                    \
     ethtyp = bufE - bufD - bufP;                                \
     put16msb(bufD, bufP + 4, ethtyp);                           \
     put16msb(bufD, bufP + 6, 0);
@@ -925,10 +932,10 @@ bridge_rx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             switch (brdr->cmd) {
-            case 1:
+            case 1: // port
                 prt = brdr->port;
                 goto subif_tx;
-            case 2:
+            case 2: // vpls
                 bufP -= 12;
                 bufP -= 2 * sizeof(macaddr);
                 if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
@@ -944,7 +951,7 @@ bridge_rx:
                 put32msb(bufD, bufP, tmp);
                 neik = brdr->hop;
                 goto ethtyp_tx;
-            case 3:
+            case 3: // routed
                 bufP -= 12;
                 bufP -= 2 * sizeof(macaddr);
                 if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
@@ -952,6 +959,30 @@ bridge_rx:
                 revalidatePacket(3 * sizeof(macaddr));
                 __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
                 ethtyp = ETHERTYPE_ROUTEDMAC;
+                neik = brdr->hop;
+                goto ethtyp_tx;
+            case 4: // pckoudp4
+                bufP -= 12;
+                bufP -= sizeof(macaddr) + 26;
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = sizeof(macaddr) + 26;
+                revalidatePacket(bufP + sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                putUdpHeader(brdr);
+                putIpv4header(brdr, IP_PROTOCOL_UDP);
+                bufP += 2;
+                neik = brdr->hop;
+                goto ethtyp_tx;
+            case 5: // pckoudp6
+                bufP -= 12;
+                bufP -= sizeof(macaddr) + 46;
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = sizeof(macaddr) + 46;
+                revalidatePacket(bufP + sizeof(macaddr));
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                putUdpHeader(brdr);
+                putIpv6header(brdr, IP_PROTOCOL_UDP);
+                bufP += 2;
                 neik = brdr->hop;
                 goto ethtyp_tx;
             default:
@@ -1011,7 +1042,7 @@ ethtyp_tx:
             bufP = sizeof(macaddr) + 26;
             revalidatePacket(bufP);
             putGreHeader();
-            putIpv4header(IP_PROTOCOL_GRE);
+            putIpv4header(neir, IP_PROTOCOL_GRE);
             break;
         case 4: // gre6
             bufP -= sizeof(macaddr) + 46;
@@ -1019,7 +1050,7 @@ ethtyp_tx:
             bufP = sizeof(macaddr) + 46;
             revalidatePacket(bufP);
             putGreHeader();
-            putIpv6header(IP_PROTOCOL_GRE);
+            putIpv6header(neir, IP_PROTOCOL_GRE);
             break;
         case 5: // l2tp4
             bufP -= sizeof(macaddr) + 42;
@@ -1028,8 +1059,8 @@ ethtyp_tx:
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL2tpHeader();
-            putUdpHeader();
-            putIpv4header(IP_PROTOCOL_UDP);
+            putUdpHeader(neir);
+            putIpv4header(neir, IP_PROTOCOL_UDP);
             break;
         case 6: // l2tp6
             bufP -= sizeof(macaddr) + 62;
@@ -1038,8 +1069,8 @@ ethtyp_tx:
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL2tpHeader();
-            putUdpHeader();
-            putIpv6header(IP_PROTOCOL_UDP);
+            putUdpHeader(neir);
+            putIpv6header(neir, IP_PROTOCOL_UDP);
             break;
         case 7: // l3tp4
             bufP -= sizeof(macaddr) + 28;
@@ -1048,7 +1079,7 @@ ethtyp_tx:
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL3tpHeader();
-            putIpv4header(IP_PROTOCOL_L2TP);
+            putIpv4header(neir, IP_PROTOCOL_L2TP);
             break;
         case 8: // l3tp6
             bufP -= sizeof(macaddr) + 48;
@@ -1057,7 +1088,7 @@ ethtyp_tx:
             revalidatePacket(bufP + 2);
             ethtyp2ppptyp();
             putL3tpHeader();
-            putIpv6header(IP_PROTOCOL_L2TP);
+            putIpv6header(neir, IP_PROTOCOL_L2TP);
             break;
         case 9: // gtp4
             bufP -= sizeof(macaddr) + 30;
@@ -1065,8 +1096,8 @@ ethtyp_tx:
             bufP = sizeof(macaddr) + 30;
             revalidatePacket(bufP + 2);
             putGtpHeader();
-            putUdpHeader();
-            putIpv4header(IP_PROTOCOL_UDP);
+            putUdpHeader(neir);
+            putIpv4header(neir, IP_PROTOCOL_UDP);
             break;
         case 10: // gtp6
             bufP -= sizeof(macaddr) + 50;
@@ -1074,8 +1105,8 @@ ethtyp_tx:
             bufP = sizeof(macaddr) + 50;
             revalidatePacket(bufP + 2);
             putGtpHeader();
-            putUdpHeader();
-            putIpv6header(IP_PROTOCOL_UDP);
+            putUdpHeader(neir);
+            putIpv6header(neir, IP_PROTOCOL_UDP);
             break;
         default:
             goto drop;

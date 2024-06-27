@@ -291,6 +291,66 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "bridgepckoudp4") == 0) {
+        struct tunnel4_key tunk;
+        memset(&tunk, 0, sizeof(tunk));
+        struct tunnel_res tunr;
+        memset(&tunr, 0, sizeof(tunr));
+        brdk.id = atoi(arg[2]);
+        str2mac(brdk.mac, arg[3]);
+        inet_pton(AF_INET, arg[4], buf2);
+        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        inet_pton(AF_INET, arg[5], buf2);
+        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        tunk.trgPort = brdr.srcPort = atoi(arg[6]);
+        tunk.srcPort = brdr.trgPort = atoi(arg[7]);
+        brdr.hop = atoi(arg[8]);
+        brdr.cmd = 4;
+        tunk.vrf = atoi(arg[9]);
+        tunr.aclport = atoi(arg[10]);
+        tunk.prot = IP_PROTOCOL_UDP;
+        tunr.cmd = 5;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgepckoudp6") == 0) {
+        struct tunnel6_key tunk;
+        memset(&tunk, 0, sizeof(tunk));
+        struct tunnel_res tunr;
+        memset(&tunr, 0, sizeof(tunr));
+        brdk.id = atoi(arg[2]);
+        str2mac(brdk.mac, arg[3]);
+        inet_pton(AF_INET6, arg[4], buf2);
+        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        inet_pton(AF_INET6, arg[5], buf2);
+        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        tunk.trgPort = brdr.srcPort = atoi(arg[6]);
+        tunk.srcPort = brdr.trgPort = atoi(arg[7]);
+        brdr.hop = atoi(arg[8]);
+        brdr.cmd = 5;
+        tunk.vrf = atoi(arg[9]);
+        tunr.aclport = atoi(arg[10]);
+        tunk.prot = IP_PROTOCOL_UDP;
+        tunr.cmd = 5;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "bridgevpls") == 0) {
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);
