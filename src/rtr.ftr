@@ -3487,7 +3487,6 @@ todo: vrf def xxx to have dynamic readvertisements as static rotues that disappe
 todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 todo: a terminal junos-mode knob that defaults to set-del etc as a new class
-todo: show config-backup if available
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
 todo: clntportscan to have udp knob then portscan to have the knob finally
