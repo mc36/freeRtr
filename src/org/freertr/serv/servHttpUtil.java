@@ -47,7 +47,7 @@ import org.freertr.util.version;
  * @author matecsaba
  */
 public class servHttpUtil {
-    
+
     private servHttpUtil() {
     }
 
@@ -272,7 +272,7 @@ public class servHttpUtil {
         }
         return res;
     }
-    
+
     private final static String semi2comma(String a) {
         return a.replaceAll(";", ",");
     }
@@ -1392,5 +1392,5 @@ public class servHttpUtil {
         }
         return true;
     }
-    
+
 }

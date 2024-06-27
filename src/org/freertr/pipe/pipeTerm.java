@@ -75,7 +75,7 @@ public class pipeTerm {
     /**
      * get escape character name
      *
-     * @return
+     * @return text
      */
     protected String getEscNam() {
         return "ascii0x" + bits.toHexB(escChr);
