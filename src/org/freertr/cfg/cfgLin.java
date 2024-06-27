@@ -42,12 +42,12 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "line .*! no script init",
-        "line .*! no script activate",
-        "line .*! no script hangup",
-        "line .*! no dedicated",
-        "line .*! no disabled",
-        "line .*! log-monitor"
+        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script init",
+        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script activate",
+        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script hangup",
+        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dedicated",
+        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "disabled",
+        "line .*!" + cmds.tabulator + "log-monitor"
     };
 
     /**

@@ -132,18 +132,18 @@ public class cfgSched implements Comparator<cfgSched>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "scheduler .*! no description",
-        "scheduler .*! respawn",
-        "scheduler .*! time 0",
-        "scheduler .*! delay 0",
-        "scheduler .*! random-time 0",
-        "scheduler .*! random-delay 0",
-        "scheduler .*! command exit",
-        "scheduler .*! no hidden",
-        "scheduler .*! no log-actions",
-        "scheduler .*! no log-console",
-        "scheduler .*! no log-collect",
-        "scheduler .*! no range"
+        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "scheduler .*!" + cmds.tabulator + "respawn",
+        "scheduler .*!" + cmds.tabulator + "time 0",
+        "scheduler .*!" + cmds.tabulator + "delay 0",
+        "scheduler .*!" + cmds.tabulator + "random-time 0",
+        "scheduler .*!" + cmds.tabulator + "random-delay 0",
+        "scheduler .*!" + cmds.tabulator + "command exit",
+        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hidden",
+        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
+        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
+        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
+        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
     };
 
     /**

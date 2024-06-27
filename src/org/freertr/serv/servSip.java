@@ -42,9 +42,9 @@ public class servSip extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server sip .*! port " + packSip.port,
-        "server sip .*! protocol " + proto2string(protoAllDgrm),
-        "server sip .*! no mypeer",};
+        "server sip .*!" + cmds.tabulator + "port " + packSip.port,
+        "server sip .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server sip .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mypeer",};
 
     /**
      * defaults filter

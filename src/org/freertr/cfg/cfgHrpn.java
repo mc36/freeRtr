@@ -45,21 +45,21 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "hairpin .*! no description",
-        "hairpin .*! ethernet",
-        "hairpin .*! random12drop 0",
-        "hairpin .*! random12burst 0 0 0",
-        "hairpin .*! random12duplicate 0",
-        "hairpin .*! random12reorder 0",
-        "hairpin .*! random12delay 0 0 0",
-        "hairpin .*! random12corrupt 0",
-        "hairpin .*! random21drop 0",
-        "hairpin .*! random21burst 0 0 0",
-        "hairpin .*! random21duplicate 0",
-        "hairpin .*! random21reorder 0",
-        "hairpin .*! random21delay 0 0 0",
-        "hairpin .*! random21corrupt 0",
-        "hairpin .*! buffer 65536"
+        "hairpin .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "hairpin .*!" + cmds.tabulator + "ethernet",
+        "hairpin .*!" + cmds.tabulator + "random12drop 0",
+        "hairpin .*!" + cmds.tabulator + "random12burst 0 0 0",
+        "hairpin .*!" + cmds.tabulator + "random12duplicate 0",
+        "hairpin .*!" + cmds.tabulator + "random12reorder 0",
+        "hairpin .*!" + cmds.tabulator + "random12delay 0 0 0",
+        "hairpin .*!" + cmds.tabulator + "random12corrupt 0",
+        "hairpin .*!" + cmds.tabulator + "random21drop 0",
+        "hairpin .*!" + cmds.tabulator + "random21burst 0 0 0",
+        "hairpin .*!" + cmds.tabulator + "random21duplicate 0",
+        "hairpin .*!" + cmds.tabulator + "random21reorder 0",
+        "hairpin .*!" + cmds.tabulator + "random21delay 0 0 0",
+        "hairpin .*!" + cmds.tabulator + "random21corrupt 0",
+        "hairpin .*!" + cmds.tabulator + "buffer 65536"
     };
 
     /**

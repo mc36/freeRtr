@@ -44,9 +44,9 @@ public class servNtp extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server ntp .*! port " + packNtp.port,
-        "server ntp .*! protocol " + proto2string(protoAll),
-        "server ntp .*! stratum 2"
+        "server ntp .*!" + cmds.tabulator + "port " + packNtp.port,
+        "server ntp .*!" + cmds.tabulator + "protocol " + proto2string(protoAll),
+        "server ntp .*!" + cmds.tabulator + "stratum 2"
     };
 
     /**

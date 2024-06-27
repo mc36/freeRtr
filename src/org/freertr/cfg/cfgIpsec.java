@@ -82,18 +82,18 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "crypto ipsec .*! no description",
-        "crypto ipsec .*! no group",
-        "crypto ipsec .*! no cipher",
-        "crypto ipsec .*! no hash",
-        "crypto ipsec .*! no seconds",
-        "crypto ipsec .*! no random",
-        "crypto ipsec .*! no bytes",
-        "crypto ipsec .*! no key",
-        "crypto ipsec .*! role static",
-        "crypto ipsec .*! protected ipv4",
-        "crypto ipsec .*! isakmp 1",
-        "crypto ipsec .*! replay 1024"
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "group",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "cipher",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hash",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "seconds",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "random",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bytes",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "key",
+        "crypto ipsec .*!" + cmds.tabulator + "role static",
+        "crypto ipsec .*!" + cmds.tabulator + "protected ipv4",
+        "crypto ipsec .*!" + cmds.tabulator + "isakmp 1",
+        "crypto ipsec .*!" + cmds.tabulator + "replay 1024"
     };
 
     /**

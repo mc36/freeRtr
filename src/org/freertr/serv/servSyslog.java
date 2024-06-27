@@ -46,11 +46,11 @@ public class servSyslog extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server syslog .*! port " + port,
-        "server syslog .*! protocol " + proto2string(protoAllDgrm),
-        "server syslog .*! no local",
-        "server syslog .*! no file",
-        "server syslog .*! no rotate"
+        "server syslog .*!" + cmds.tabulator + "port " + port,
+        "server syslog .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local",
+        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "file",
+        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rotate"
     };
 
     /**

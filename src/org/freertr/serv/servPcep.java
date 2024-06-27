@@ -53,10 +53,10 @@ public class servPcep extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server pcep .*! port " + packPcep.port,
-        "server pcep .*! protocol " + proto2string(protoAllStrm),
-        "server pcep .*! no explicit",
-        "server pcep .*! no logging"
+        "server pcep .*!" + cmds.tabulator + "port " + packPcep.port,
+        "server pcep .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server pcep .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "explicit",
+        "server pcep .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging"
     };
 
     /**

@@ -263,23 +263,23 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
      */
     public final static String[] srvdefsL = {
         // generic server
-        "server .*! no description",
-        "server .*! no security protocol",
-        "server .*! no security authentication",
-        "server .*! no security rsakey",
-        "server .*! no security dsakey",
-        "server .*! no security ecdsakey",
-        "server .*! no security rsacert",
-        "server .*! no security dsacert",
-        "server .*! no security ecdsacert",
-        "server .*! access-total 0",
-        "server .*! access-peer 0",
-        "server .*! access-subnet 0",
-        "server .*! no access-blackhole4",
-        "server .*! no access-blackhole6",
-        "server .*! no access-log",
-        "server .*! no interface",
-        "server .*! no vrf"
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security protocol",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security authentication",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security rsakey",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security dsakey",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsakey",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security rsacert",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security dsacert",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsacert",
+        "server .*!" + cmds.tabulator + "access-total 0",
+        "server .*!" + cmds.tabulator + "access-peer 0",
+        "server .*!" + cmds.tabulator + "access-subnet 0",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "access-blackhole4",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "access-blackhole6",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "access-log",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "interface",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf"
     };
 
     /**

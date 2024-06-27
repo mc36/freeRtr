@@ -53,8 +53,8 @@ public class servImap4 extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server imap4 .*! port " + port,
-        "server imap4 .*! protocol " + proto2string(protoAllStrm)
+        "server imap4 .*!" + cmds.tabulator + "port " + port,
+        "server imap4 .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

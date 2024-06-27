@@ -42,8 +42,8 @@ public class servRpki extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server rpki .*! port " + rtrRpkiSpeak.portNum,
-        "server rpki .*! protocol " + proto2string(protoAllStrm)
+        "server rpki .*!" + cmds.tabulator + "port " + rtrRpkiSpeak.portNum,
+        "server rpki .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

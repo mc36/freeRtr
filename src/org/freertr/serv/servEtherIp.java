@@ -81,10 +81,10 @@ public class servEtherIp extends servGeneric implements ipPrt {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server etherip .*! port " + clntEtherIp.prot,
-        "server etherip .*! protocol " + proto2string(protoAllDgrm),
-        "server etherip .*! no physical-interface",
-        "server etherip .*! timeout 60000"
+        "server etherip .*!" + cmds.tabulator + "port " + clntEtherIp.prot,
+        "server etherip .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server etherip .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface",
+        "server etherip .*!" + cmds.tabulator + "timeout 60000"
     };
 
     /**

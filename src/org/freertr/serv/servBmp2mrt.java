@@ -94,20 +94,20 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server bmp2mrt .*! port " + port,
-        "server bmp2mrt .*! protocol " + proto2string(protoAllStrm),
-        "server bmp2mrt .*! no local",
-        "server bmp2mrt .*! no bulk-down",
-        "server bmp2mrt .*! rate-down 0 0",
-        "server bmp2mrt .*! max-time 0",
-        "server bmp2mrt .*! max-pack 0",
-        "server bmp2mrt .*! max-byte 0",
-        "server bmp2mrt .*! no listen-bmp",
-        "server bmp2mrt .*! no listen-bgp",
-        "server bmp2mrt .*! no listen-ris",
-        "server bmp2mrt .*! no file",
-        "server bmp2mrt .*! no backup",
-        "server bmp2mrt .*! no dyneigh"
+        "server bmp2mrt .*!" + cmds.tabulator + "port " + port,
+        "server bmp2mrt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local",
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bulk-down",
+        "server bmp2mrt .*!" + cmds.tabulator + "rate-down 0 0",
+        "server bmp2mrt .*!" + cmds.tabulator + "max-time 0",
+        "server bmp2mrt .*!" + cmds.tabulator + "max-pack 0",
+        "server bmp2mrt .*!" + cmds.tabulator + "max-byte 0",
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "listen-bmp",
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "listen-bgp",
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "listen-ris",
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "file",
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "backup",
+        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dyneigh"
     };
 
     /**

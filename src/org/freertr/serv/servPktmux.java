@@ -69,8 +69,8 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server pktmux .*! port " + port,
-        "server pktmux .*! protocol " + proto2string(protoAll)
+        "server pktmux .*!" + cmds.tabulator + "port " + port,
+        "server pktmux .*!" + cmds.tabulator + "protocol " + proto2string(protoAll)
     };
 
     /**

@@ -48,18 +48,18 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "mtracker .*! no description",
-        "mtracker .*! no vrf",
-        "mtracker .*! no source",
-        "mtracker .*! no group",
-        "mtracker .*! no logging",
-        "mtracker .*! interval 30000",
-        "mtracker .*! timeout 10",
-        "mtracker .*! packet 10",
-        "mtracker .*! port " + packMtrack.port,
-        "mtracker .*! tos 0",
-        "mtracker .*! ttl 255",
-        "mtracker .*! flow 0",};
+        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf",
+        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source",
+        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "group",
+        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
+        "mtracker .*!" + cmds.tabulator + "interval 30000",
+        "mtracker .*!" + cmds.tabulator + "timeout 10",
+        "mtracker .*!" + cmds.tabulator + "packet 10",
+        "mtracker .*!" + cmds.tabulator + "port " + packMtrack.port,
+        "mtracker .*!" + cmds.tabulator + "tos 0",
+        "mtracker .*!" + cmds.tabulator + "ttl 255",
+        "mtracker .*!" + cmds.tabulator + "flow 0",};
 
     /**
      * defaults filter

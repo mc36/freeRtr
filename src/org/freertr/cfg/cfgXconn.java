@@ -61,11 +61,11 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "xconnect .*! no description",
-        "xconnect .*! mtu 1500",
-        "xconnect .*! type ethernet",
-        "xconnect .*! no side1",
-        "xconnect .*! no side2"
+        "xconnect .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "xconnect .*!" + cmds.tabulator + "mtu 1500",
+        "xconnect .*!" + cmds.tabulator + "type ethernet",
+        "xconnect .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1",
+        "xconnect .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2"
     };
 
     /**

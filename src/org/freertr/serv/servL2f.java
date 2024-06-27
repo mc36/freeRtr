@@ -96,10 +96,10 @@ public class servL2f extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server l2f .*! port " + packL2f.port,
-        "server l2f .*! protocol " + proto2string(protoAllDgrm),
-        "server l2f .*! timer 5 8",
-        "server l2f .*! no password"
+        "server l2f .*!" + cmds.tabulator + "port " + packL2f.port,
+        "server l2f .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server l2f .*!" + cmds.tabulator + "timer 5 8",
+        "server l2f .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password"
     };
 
     /**

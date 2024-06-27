@@ -49,8 +49,8 @@ public class servPckOdtls extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server pckodtls .*! port " + port,
-        "server pckodtls .*! protocol " + proto2string(protoAllDgrm)
+        "server pckodtls .*!" + cmds.tabulator + "port " + port,
+        "server pckodtls .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm)
     };
 
     /**

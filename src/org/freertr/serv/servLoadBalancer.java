@@ -78,13 +78,13 @@ public class servLoadBalancer extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server loadbalancer .*! port " + port,
-        "server loadbalancer .*! protocol " + proto2string(protoAllStrm),
-        "server loadbalancer .*! no proxy",
-        "server loadbalancer .*! no source",
-        "server loadbalancer .*! timeout 60000",
-        "server loadbalancer .*! buffer 65536",
-        "server loadbalancer .*! no logging",};
+        "server loadbalancer .*!" + cmds.tabulator + "port " + port,
+        "server loadbalancer .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server loadbalancer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
+        "server loadbalancer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source",
+        "server loadbalancer .*!" + cmds.tabulator + "timeout 60000",
+        "server loadbalancer .*!" + cmds.tabulator + "buffer 65536",
+        "server loadbalancer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
 
     /**
      * defaults filter

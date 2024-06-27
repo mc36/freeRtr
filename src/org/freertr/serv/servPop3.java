@@ -56,8 +56,8 @@ public class servPop3 extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server pop3 .*! port " + port,
-        "server pop3 .*! protocol " + proto2string(protoAllStrm)
+        "server pop3 .*!" + cmds.tabulator + "port " + port,
+        "server pop3 .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

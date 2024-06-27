@@ -26,7 +26,7 @@ public class cfgMenuT implements Comparator<cfgMenuT>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "menu tui .*! no description",};
+        "menu tui .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",};
 
     /**
      * defaults filter

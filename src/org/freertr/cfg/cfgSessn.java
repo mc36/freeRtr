@@ -35,25 +35,25 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "session .*! no description",
-        "session .*! no timeout",
-        "session .*! no sessions",
-        "session .*! no rate",
-        "session .*! no mac",
-        "session .*! no before",
-        "session .*! no after",
-        "session .*! no dropped",
-        "session .*! no allow-routing",
-        "session .*! no allow-sending",
-        "session .*! no allow-linklocal",
-        "session .*! no allow-multicast",
-        "session .*! no allow-broadcast",
-        "session .*! no allow-list",
-        "session .*! no allow-url",
-        "session .*! no drop-rx",
-        "session .*! no drop-tx",
-        "session .*! no drop-frg",
-        "session .*! no member"
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "timeout",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sessions",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rate",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "before",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "after",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dropped",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-routing",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-sending",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-linklocal",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-multicast",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-broadcast",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-list",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-url",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-rx",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-tx",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-frg",
+        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "member"
     };
 
     /**

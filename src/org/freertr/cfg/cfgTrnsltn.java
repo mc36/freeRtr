@@ -33,11 +33,11 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "translation-rule .*! no description",
-        "translation-rule .*! no track",
-        "translation-rule .*! no time",
-        "translation-rule .*! no log",
-        "translation-rule .*! no last",};
+        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "track",
+        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "time",
+        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log",
+        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "last",};
 
     /**
      * defaults filter

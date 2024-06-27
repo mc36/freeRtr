@@ -37,9 +37,9 @@ public class servIscsi extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server iscsi .*! port " + packIscsi.port,
-        "server iscsi .*! protocol " + proto2string(protoAllStrm),
-        "server iscsi .*! target .* block 512"
+        "server iscsi .*!" + cmds.tabulator + "port " + packIscsi.port,
+        "server iscsi .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server iscsi .*!" + cmds.tabulator + "target .* block 512"
     };
 
     /**

@@ -37,13 +37,13 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "telemetry .*! port " + servStreamingMdt.port,
-        "telemetry .*! interval 5000",
-        "telemetry .*! delay 0",
-        "telemetry .*! random-interval 0",
-        "telemetry .*! random-delay 0",
-        "telemetry .*! no range",
-        "telemetry .*! no description",};
+        "telemetry .*!" + cmds.tabulator + "port " + servStreamingMdt.port,
+        "telemetry .*!" + cmds.tabulator + "interval 5000",
+        "telemetry .*!" + cmds.tabulator + "delay 0",
+        "telemetry .*!" + cmds.tabulator + "random-interval 0",
+        "telemetry .*!" + cmds.tabulator + "random-delay 0",
+        "telemetry .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range",
+        "telemetry .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",};
 
     /**
      * defaults filter

@@ -41,8 +41,8 @@ public class servWhois extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server whois .*! port " + port,
-        "server whois .*! protocol " + proto2string(protoAllStrm)
+        "server whois .*!" + cmds.tabulator + "port " + port,
+        "server whois .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

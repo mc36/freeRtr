@@ -86,9 +86,9 @@ public class servPckOudp extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server pckoudp .*! port " + port,
-        "server pckoudp .*! protocol " + proto2string(protoAllDgrm),
-        "server pckoudp .*! no physical-interface"
+        "server pckoudp .*!" + cmds.tabulator + "port " + port,
+        "server pckoudp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server pckoudp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface"
     };
 
     /**

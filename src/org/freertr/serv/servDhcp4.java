@@ -125,14 +125,14 @@ public class servDhcp4 extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server dhcp4 .*! port " + packDhcp4.portSnum,
-        "server dhcp4 .*! protocol " + proto2string(protoIp4 + protoUdp),
-        "server dhcp4 .*! boot-server ",
-        "server dhcp4 .*! boot-file ",
-        "server dhcp4 .*! lease 43200000",
-        "server dhcp4 .*! renew 21600000",
-        "server dhcp4 .*! remember 0",
-        "server dhcp4 .*! no bind-file",};
+        "server dhcp4 .*!" + cmds.tabulator + "port " + packDhcp4.portSnum,
+        "server dhcp4 .*!" + cmds.tabulator + "protocol " + proto2string(protoIp4 + protoUdp),
+        "server dhcp4 .*!" + cmds.tabulator + "boot-server ",
+        "server dhcp4 .*!" + cmds.tabulator + "boot-file ",
+        "server dhcp4 .*!" + cmds.tabulator + "lease 43200000",
+        "server dhcp4 .*!" + cmds.tabulator + "renew 21600000",
+        "server dhcp4 .*!" + cmds.tabulator + "remember 0",
+        "server dhcp4 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file",};
 
     /**
      * defaults filter

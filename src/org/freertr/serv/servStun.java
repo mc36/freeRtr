@@ -51,8 +51,8 @@ public class servStun extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server stun .*! port " + packStun.port,
-        "server stun .*! protocol " + proto2string(protoAllStrm)
+        "server stun .*!" + cmds.tabulator + "port " + packStun.port,
+        "server stun .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

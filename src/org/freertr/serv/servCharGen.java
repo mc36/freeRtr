@@ -33,8 +33,8 @@ public class servCharGen extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server chargen .*! port " + port,
-        "server chargen .*! protocol " + proto2string(protoAllStrm)
+        "server chargen .*!" + cmds.tabulator + "port " + port,
+        "server chargen .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

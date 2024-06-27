@@ -72,10 +72,10 @@ public class servFtp extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server ftp .*! port " + portNum,
-        "server ftp .*! protocol " + proto2string(protoAllStrm),
-        "server ftp .*! readonly",
-        "server ftp .*! passiveonly"
+        "server ftp .*!" + cmds.tabulator + "port " + portNum,
+        "server ftp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server ftp .*!" + cmds.tabulator + "readonly",
+        "server ftp .*!" + cmds.tabulator + "passiveonly"
     };
 
     /**

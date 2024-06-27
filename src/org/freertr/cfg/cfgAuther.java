@@ -77,19 +77,19 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "aaa userlist .*! username .* autocommand ",
-        "aaa userlist .*! username .* privilege 15",
-        "aaa radius .*! no secret",
-        "aaa radius .*! no proxy",
-        "aaa radius .*! privilege 15",
-        "aaa tacacs .*! no secret",
-        "aaa tacacs .*! no proxy",
-        "aaa tacacs .*! privilege 15",
-        "aaa .*! no description",
-        "aaa .*! no log-error",
-        "aaa .*! no log-failure",
-        "aaa .*! no log-success",
-        "aaa .*! no log-password"
+        "aaa userlist .*!" + cmds.tabulator + "username .* autocommand ",
+        "aaa userlist .*!" + cmds.tabulator + "username .* privilege 15",
+        "aaa radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
+        "aaa radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
+        "aaa radius .*!" + cmds.tabulator + "privilege 15",
+        "aaa tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
+        "aaa tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
+        "aaa tacacs .*!" + cmds.tabulator + "privilege 15",
+        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-error",
+        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-failure",
+        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-success",
+        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-password"
     };
 
     /**

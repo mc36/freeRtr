@@ -67,12 +67,12 @@ public class servRadius extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server radius .*! port " + packRadius.port,
-        "server radius .*! protocol " + proto2string(protoAllDgrm),
-        "server radius .*! no secret",
-        "server radius .*! no logging",
-        "server radius .*! success successful",
-        "server radius .*! failure failed"
+        "server radius .*!" + cmds.tabulator + "port " + packRadius.port,
+        "server radius .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
+        "server radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
+        "server radius .*!" + cmds.tabulator + "success successful",
+        "server radius .*!" + cmds.tabulator + "failure failed"
     };
 
     /**

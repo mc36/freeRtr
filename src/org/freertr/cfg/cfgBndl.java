@@ -31,17 +31,17 @@ public class cfgBndl implements Comparator<cfgBndl>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "bundle .*! no description",
-        "bundle .*! ethernet",
-        "bundle .*! no backup",
-        "bundle .*! no logging",
-        "bundle .*! no loadbalance",
-        "bundle .*! no replicate",
-        "bundle .*! no reporter",
-        "bundle .*! no dynamic",
-        "bundle .*! no sequence",
-        "bundle .*! no dejitter",
-        "bundle .*! no peering"
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "bundle .*!" + cmds.tabulator + "ethernet",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "backup",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "loadbalance",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "replicate",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "reporter",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dynamic",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sequence",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dejitter",
+        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "peering"
     };
 
     /**

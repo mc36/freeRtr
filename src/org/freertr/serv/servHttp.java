@@ -100,15 +100,15 @@ public class servHttp extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server http .*! port " + clearPort,
-        "server http .*! protocol " + proto2string(protoAllStrm),
-        "server http .*! no proxy",
-        "server http .*! no error",
-        "server http .*! no single-request",
-        "server http .*! def-path " + defHostPat,
-        "server http .*! def-subconn",
-        "server http .*! buffer 65536",
-        "server http .*! no second-port",};
+        "server http .*!" + cmds.tabulator + "port " + clearPort,
+        "server http .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
+        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error",
+        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "single-request",
+        "server http .*!" + cmds.tabulator + "def-path " + defHostPat,
+        "server http .*!" + cmds.tabulator + "def-subconn",
+        "server http .*!" + cmds.tabulator + "buffer 65536",
+        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "second-port",};
 
     /**
      * defaults filter

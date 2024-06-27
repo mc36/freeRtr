@@ -45,9 +45,9 @@ public class servTwamp extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server twamp .*! port " + packTwamp.port,
-        "server twamp .*! protocol " + proto2string(protoAllDgrm),
-        "server twamp .*! timeout 10000"
+        "server twamp .*!" + cmds.tabulator + "port " + packTwamp.port,
+        "server twamp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server twamp .*!" + cmds.tabulator + "timeout 10000"
     };
 
     /**

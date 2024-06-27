@@ -75,14 +75,14 @@ public class servSocks extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server socks .*! port " + port,
-        "server socks .*! protocol " + proto2string(protoAllStrm),
-        "server socks .*! no target proxy",
-        "server socks .*! no target vrf",
-        "server socks .*! no target interface",
-        "server socks .*! timeout 60000",
-        "server socks .*! buffer 65536",
-        "server socks .*! no logging",};
+        "server socks .*!" + cmds.tabulator + "port " + port,
+        "server socks .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target proxy",
+        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target vrf",
+        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target interface",
+        "server socks .*!" + cmds.tabulator + "timeout 60000",
+        "server socks .*!" + cmds.tabulator + "buffer 65536",
+        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
 
     /**
      * defaults filter

@@ -62,27 +62,27 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "vnet .*! no description",
-        "vnet .*! no side1 type",
-        "vnet .*! no side1 local",
-        "vnet .*! no side1 connect",
-        "vnet .*! no side1 log-actions",
-        "vnet .*! no side1 log-console",
-        "vnet .*! no side1 log-collect",
-        "vnet .*! side1 time 1000",
-        "vnet .*! side1 delay 1000",
-        "vnet .*! side1 random-time 0",
-        "vnet .*! side1 random-delay 0",
-        "vnet .*! no side2 type",
-        "vnet .*! no side2 local",
-        "vnet .*! no side2 connect",
-        "vnet .*! no side2 log-actions",
-        "vnet .*! no side2 log-console",
-        "vnet .*! no side2 log-collect",
-        "vnet .*! side2 time 1000",
-        "vnet .*! side2 delay 1000",
-        "vnet .*! side2 random-time 0",
-        "vnet .*! side2 random-delay 0",};
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 type",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 local",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 connect",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-actions",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-console",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-collect",
+        "vnet .*!" + cmds.tabulator + "side1 time 1000",
+        "vnet .*!" + cmds.tabulator + "side1 delay 1000",
+        "vnet .*!" + cmds.tabulator + "side1 random-time 0",
+        "vnet .*!" + cmds.tabulator + "side1 random-delay 0",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 type",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 local",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 connect",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-actions",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-console",
+        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-collect",
+        "vnet .*!" + cmds.tabulator + "side2 time 1000",
+        "vnet .*!" + cmds.tabulator + "side2 delay 1000",
+        "vnet .*!" + cmds.tabulator + "side2 random-time 0",
+        "vnet .*!" + cmds.tabulator + "side2 random-delay 0",};
 
     /**
      * defaults filter

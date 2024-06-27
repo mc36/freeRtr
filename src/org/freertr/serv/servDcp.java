@@ -47,9 +47,9 @@ public class servDcp extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server dcp .*! port " + port,
-        "server dcp .*! protocol " + proto2string(protoAllStrm),
-        "server dcp .*! no logging"
+        "server dcp .*!" + cmds.tabulator + "port " + port,
+        "server dcp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server dcp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging"
     };
 
     /**

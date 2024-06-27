@@ -99,11 +99,11 @@ public class servL2tp3 extends servGeneric implements ipPrt {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server l2tp3 .*! port " + packL2tp3.prot,
-        "server l2tp3 .*! protocol " + proto2string(protoAllDgrm),
-        "server l2tp3 .*! timer 5 8",
-        "server l2tp3 .*! no physical-interface",
-        "server l2tp3 .*! no password"
+        "server l2tp3 .*!" + cmds.tabulator + "port " + packL2tp3.prot,
+        "server l2tp3 .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server l2tp3 .*!" + cmds.tabulator + "timer 5 8",
+        "server l2tp3 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface",
+        "server l2tp3 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password"
     };
 
     /**

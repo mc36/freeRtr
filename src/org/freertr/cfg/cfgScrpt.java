@@ -133,17 +133,17 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "script .*! no description",
-        "script .*! respawn",
-        "script .*! time 0",
-        "script .*! delay 0",
-        "script .*! random-time 0",
-        "script .*! random-delay 0",
-        "script .*! no hidden",
-        "script .*! no log-actions",
-        "script .*! no log-console",
-        "script .*! no log-collect",
-        "script .*! no range"
+        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "script .*!" + cmds.tabulator + "respawn",
+        "script .*!" + cmds.tabulator + "time 0",
+        "script .*!" + cmds.tabulator + "delay 0",
+        "script .*!" + cmds.tabulator + "random-time 0",
+        "script .*!" + cmds.tabulator + "random-delay 0",
+        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hidden",
+        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
+        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
+        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
+        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
     };
 
     /**

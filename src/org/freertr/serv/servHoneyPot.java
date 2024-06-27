@@ -42,11 +42,11 @@ public class servHoneyPot extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server honeypot .*! port " + port,
-        "server honeypot .*! protocol " + proto2string(protoAllStrm),
-        "server honeypot .*! no tiny-http",
-        "server honeypot .*! no blackhole",
-        "server honeypot .*! no closed"
+        "server honeypot .*!" + cmds.tabulator + "port " + port,
+        "server honeypot .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server honeypot .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tiny-http",
+        "server honeypot .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "blackhole",
+        "server honeypot .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "closed"
     };
 
     /**

@@ -69,11 +69,11 @@ public class servMultiplexer extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server multiplexer .*! port " + port,
-        "server multiplexer .*! protocol " + proto2string(protoAllStrm),
-        "server multiplexer .*! timeout 60000",
-        "server multiplexer .*! buffer 65536",
-        "server multiplexer .*! no logging",};
+        "server multiplexer .*!" + cmds.tabulator + "port " + port,
+        "server multiplexer .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server multiplexer .*!" + cmds.tabulator + "timeout 60000",
+        "server multiplexer .*!" + cmds.tabulator + "buffer 65536",
+        "server multiplexer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
 
     /**
      * defaults filter

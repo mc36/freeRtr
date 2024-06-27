@@ -86,13 +86,13 @@ public class servUni2multi extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server uni2multi .*! port " + portNum,
-        "server uni2multi .*! protocol " + proto2string(protoAllDgrm),
-        "server uni2multi .*! source port -1",
-        "server uni2multi .*! target port 1234",
-        "server uni2multi .*! no logging",
-        "server uni2multi .*! no script",
-        "server uni2multi .*! timeout 60000"
+        "server uni2multi .*!" + cmds.tabulator + "port " + portNum,
+        "server uni2multi .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server uni2multi .*!" + cmds.tabulator + "source port -1",
+        "server uni2multi .*!" + cmds.tabulator + "target port 1234",
+        "server uni2multi .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
+        "server uni2multi .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script",
+        "server uni2multi .*!" + cmds.tabulator + "timeout 60000"
     };
 
     /**

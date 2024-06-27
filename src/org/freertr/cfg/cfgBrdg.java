@@ -31,23 +31,23 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "bridge .*! no description",
-        "bridge .*! rd 0:0",
-        "bridge .*! rt-import 0:0",
-        "bridge .*! rt-export 0:0",
-        "bridge .*! no mac-learn",
-        "bridge .*! no mac-move",
-        "bridge .*! no inspect",
-        "bridge .*! stp-mode none",
-        "bridge .*! no mac-address",
-        "bridge .*! no private-bridge",
-        "bridge .*! no block-unicast",
-        "bridge .*! no block-multicast",
-        "bridge .*! no padup-small",
-        "bridge .*! mac-age 600000",
-        "bridge .*! mac-limit 0",
-        "bridge .*! stp-priority 32768",
-        "bridge .*! stp-time 2000 20000 15000"
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "bridge .*!" + cmds.tabulator + "rd 0:0",
+        "bridge .*!" + cmds.tabulator + "rt-import 0:0",
+        "bridge .*!" + cmds.tabulator + "rt-export 0:0",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac-learn",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac-move",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "inspect",
+        "bridge .*!" + cmds.tabulator + "stp-mode none",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac-address",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "private-bridge",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "block-unicast",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "block-multicast",
+        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "padup-small",
+        "bridge .*!" + cmds.tabulator + "mac-age 600000",
+        "bridge .*!" + cmds.tabulator + "mac-limit 0",
+        "bridge .*!" + cmds.tabulator + "stp-priority 32768",
+        "bridge .*!" + cmds.tabulator + "stp-time 2000 20000 15000"
     };
 
     /**

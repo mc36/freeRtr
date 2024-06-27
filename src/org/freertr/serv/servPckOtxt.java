@@ -50,8 +50,8 @@ public class servPckOtxt extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server pckotxt .*! port " + port,
-        "server pckotxt .*! protocol " + proto2string(protoAllStrm)
+        "server pckotxt .*!" + cmds.tabulator + "port " + port,
+        "server pckotxt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

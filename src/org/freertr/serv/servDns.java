@@ -87,11 +87,11 @@ public class servDns extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server dns .*! port " + packDns.portNum,
-        "server dns .*! protocol " + proto2string(protoAll),
-        "server dns .*! recursion 6to4nothing",
-        "server dns .*! recursion disable",
-        "server dns .*! no logging"
+        "server dns .*!" + cmds.tabulator + "port " + packDns.portNum,
+        "server dns .*!" + cmds.tabulator + "protocol " + proto2string(protoAll),
+        "server dns .*!" + cmds.tabulator + "recursion 6to4nothing",
+        "server dns .*!" + cmds.tabulator + "recursion disable",
+        "server dns .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging"
     };
 
     /**

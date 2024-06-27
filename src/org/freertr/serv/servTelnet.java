@@ -45,9 +45,9 @@ public class servTelnet extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server telnet .*! port " + port,
-        "server telnet .*! no second-port",
-        "server telnet .*! protocol " + proto2string(protoAllStrm)
+        "server telnet .*!" + cmds.tabulator + "port " + port,
+        "server telnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "second-port",
+        "server telnet .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

@@ -37,8 +37,8 @@ public class servMplsOam extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server mplsoam .*! port " + portNum,
-        "server mplsoam .*! protocol " + proto2string(protoAllDgrm),};
+        "server mplsoam .*!" + cmds.tabulator + "port " + portNum,
+        "server mplsoam .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),};
 
     /**
      * defaults filter

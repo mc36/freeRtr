@@ -43,8 +43,8 @@ public class servSnmp extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server snmp .*! port " + packSnmp.port,
-        "server snmp .*! protocol " + proto2string(protoAllDgrm)
+        "server snmp .*!" + cmds.tabulator + "port " + packSnmp.port,
+        "server snmp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm)
     };
 
     /**

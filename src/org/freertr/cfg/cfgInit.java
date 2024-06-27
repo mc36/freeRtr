@@ -264,9 +264,9 @@ public class cfgInit implements Runnable {
         "vnet .*",};
 
     private final static String[] needIface = {
-        "interface .*! vrf forwarding .*",
-        "interface .*! ipv4 address .*",
-        "interface .*! ipv6 address .*"
+        "interface .*!" + cmds.tabulator + "vrf forwarding .*",
+        "interface .*!" + cmds.tabulator + "ipv4 address .*",
+        "interface .*!" + cmds.tabulator + "ipv6 address .*"
     };
 
     private final static String[] jvmMagic = {

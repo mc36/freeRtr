@@ -162,15 +162,15 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "check .*! no command",
-        "check .*! no description",
-        "check .*! no template",
-        "check .*! no error-text",
-        "check .*! no alternate",
-        "check .*! severity critical",
-        "check .*! no error-states",
-        "check .*! no error-commands",
-        "check .*! no error-hostname",};
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "command",
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "template",
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-text",
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "alternate",
+        "check .*!" + cmds.tabulator + "severity critical",
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-states",
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-commands",
+        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-hostname",};
 
     /**
      * defaults filter

@@ -35,8 +35,8 @@ public class servTime extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server time .*! port " + port,
-        "server time .*! protocol " + proto2string(protoAll)
+        "server time .*!" + cmds.tabulator + "port " + port,
+        "server time .*!" + cmds.tabulator + "protocol " + proto2string(protoAll)
     };
 
     /**

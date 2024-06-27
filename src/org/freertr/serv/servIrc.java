@@ -60,11 +60,11 @@ public class servIrc extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server irc .*! port " + port,
-        "server irc .*! protocol " + proto2string(protoAllStrm),
-        "server irc .*! no local",
-        "server irc .*! no file",
-        "server irc .*! no rotate"
+        "server irc .*!" + cmds.tabulator + "port " + port,
+        "server irc .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server irc .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local",
+        "server irc .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "file",
+        "server irc .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rotate"
     };
 
     /**

@@ -420,27 +420,27 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "vpdn .*! no description",
-        "vpdn .*! no interface",
-        "vpdn .*! no bridge-group",
-        "vpdn .*! no proxy",
-        "vpdn .*! no script",
-        "vpdn .*! no target",
-        "vpdn .*! no called",
-        "vpdn .*! no calling",
-        "vpdn .*! no params",
-        "vpdn .*! no crypto",
-        "vpdn .*! no pubkey",
-        "vpdn .*! no username",
-        "vpdn .*! no password",
-        "vpdn .*! no mtu",
-        "vpdn .*! no vcid",
-        "vpdn .*! direction outgoing",
-        "vpdn .*! no control-word",
-        "vpdn .*! no physical-interface",
-        "vpdn .*! no pwtype",
-        "vpdn .*! prefer none",
-        "vpdn .*! no protocol"
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "interface",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-group",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "called",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "calling",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "params",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "crypto",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pubkey",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "username",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mtu",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vcid",
+        "vpdn .*!" + cmds.tabulator + "direction outgoing",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "control-word",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pwtype",
+        "vpdn .*!" + cmds.tabulator + "prefer none",
+        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "protocol"
     };
 
     /**

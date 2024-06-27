@@ -104,9 +104,9 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server openflow .*! port " + packOpenflow.port,
-        "server openflow .*! protocol " + proto2string(protoAllStrm),
-        "server openflow .*! version 4"
+        "server openflow .*!" + cmds.tabulator + "port " + packOpenflow.port,
+        "server openflow .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server openflow .*!" + cmds.tabulator + "version 4"
     };
 
     /**

@@ -36,9 +36,9 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server upnpfwd .*! port " + packUpnpFwd.portNum,
-        "server upnpfwd .*! protocol " + proto2string(protoNets + protoUdp),
-        "server upnpfwd .*! target null"
+        "server upnpfwd .*!" + cmds.tabulator + "port " + packUpnpFwd.portNum,
+        "server upnpfwd .*!" + cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp),
+        "server upnpfwd .*!" + cmds.tabulator + "target null"
     };
 
     /**

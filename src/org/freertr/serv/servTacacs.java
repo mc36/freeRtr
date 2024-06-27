@@ -76,14 +76,14 @@ public class servTacacs extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server tacacs .*! port " + packTacacs.port,
-        "server tacacs .*! protocol " + proto2string(protoAllStrm),
-        "server tacacs .*! no secret",
-        "server tacacs .*! no logging",
-        "server tacacs .*! username user:",
-        "server tacacs .*! password pass:",
-        "server tacacs .*! success successful",
-        "server tacacs .*! failure failed"
+        "server tacacs .*!" + cmds.tabulator + "port " + packTacacs.port,
+        "server tacacs .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
+        "server tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
+        "server tacacs .*!" + cmds.tabulator + "username user:",
+        "server tacacs .*!" + cmds.tabulator + "password pass:",
+        "server tacacs .*!" + cmds.tabulator + "success successful",
+        "server tacacs .*!" + cmds.tabulator + "failure failed"
     };
 
     /**

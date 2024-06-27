@@ -36,8 +36,8 @@ public class servUdptn extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server udptn .*! port " + port,
-        "server udptn .*! protocol " + proto2string(protoAllDgrm)
+        "server udptn .*!" + cmds.tabulator + "port " + port,
+        "server udptn .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm)
     };
 
     /**

@@ -177,8 +177,8 @@ public class servStreamingMdt extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server streamingmdt .*! port " + port,
-        "server streamingmdt .*! protocol " + proto2string(protoAllStrm),};
+        "server streamingmdt .*!" + cmds.tabulator + "port " + port,
+        "server streamingmdt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),};
 
     /**
      * defaults filter

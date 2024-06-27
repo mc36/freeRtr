@@ -105,14 +105,14 @@ public class servDhcp6 extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server dhcp6 .*! port " + packDhcp6.portSnum,
-        "server dhcp6 .*! protocol " + proto2string(protoIp6 + protoUdp),
-        "server dhcp6 .*! boot-url ",
-        "server dhcp6 .*! preference 0",
-        "server dhcp6 .*! lease 43200000",
-        "server dhcp6 .*! renew 21600000",
-        "server dhcp6 .*! remember 0",
-        "server dhcp6 .*! no bind-file",};
+        "server dhcp6 .*!" + cmds.tabulator + "port " + packDhcp6.portSnum,
+        "server dhcp6 .*!" + cmds.tabulator + "protocol " + proto2string(protoIp6 + protoUdp),
+        "server dhcp6 .*!" + cmds.tabulator + "boot-url ",
+        "server dhcp6 .*!" + cmds.tabulator + "preference 0",
+        "server dhcp6 .*!" + cmds.tabulator + "lease 43200000",
+        "server dhcp6 .*!" + cmds.tabulator + "renew 21600000",
+        "server dhcp6 .*!" + cmds.tabulator + "remember 0",
+        "server dhcp6 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file",};
 
     /**
      * defaults filter

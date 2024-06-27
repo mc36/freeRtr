@@ -54,9 +54,9 @@ public class servGopher extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server gopher .*! port " + portNum,
-        "server gopher .*! protocol " + proto2string(protoAllStrm),
-        "server gopher .*! no dirlist"
+        "server gopher .*!" + cmds.tabulator + "port " + portNum,
+        "server gopher .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server gopher .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dirlist"
     };
 
     /**

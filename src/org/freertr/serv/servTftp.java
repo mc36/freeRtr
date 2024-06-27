@@ -45,9 +45,9 @@ public class servTftp extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server tftp .*! port " + packTftp.port,
-        "server tftp .*! protocol " + proto2string(protoAllDgrm),
-        "server tftp .*! readonly"
+        "server tftp .*!" + cmds.tabulator + "port " + packTftp.port,
+        "server tftp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server tftp .*!" + cmds.tabulator + "readonly"
     };
 
     /**

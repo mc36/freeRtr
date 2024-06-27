@@ -55,10 +55,10 @@ public class servModem extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server modem .*! port " + packSip.port,
-        "server modem .*! protocol " + proto2string(protoAllDgrm),
-        "server modem .*! codec alaw",
-        "server modem .*! mode answer",};
+        "server modem .*!" + cmds.tabulator + "port " + packSip.port,
+        "server modem .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server modem .*!" + cmds.tabulator + "codec alaw",
+        "server modem .*!" + cmds.tabulator + "mode answer",};
 
     /**
      * defaults filter

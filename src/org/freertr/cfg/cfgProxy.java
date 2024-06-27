@@ -39,20 +39,20 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "proxy-profile .*! no description",
-        "proxy-profile .*! protocol local",
-        "proxy-profile .*! no security",
-        "proxy-profile .*! no pubkey",
-        "proxy-profile .*! no username",
-        "proxy-profile .*! no password",
-        "proxy-profile .*! no recursive",
-        "proxy-profile .*! no vrf",
-        "proxy-profile .*! no tos",
-        "proxy-profile .*! no ttl",
-        "proxy-profile .*! no source",
-        "proxy-profile .*! no target",
-        "proxy-profile .*! no port",
-        "proxy-profile .*! prefer none"
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "proxy-profile .*!" + cmds.tabulator + "protocol local",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pubkey",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "username",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "recursive",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tos",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ttl",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target",
+        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "port",
+        "proxy-profile .*!" + cmds.tabulator + "prefer none"
     };
 
     /**

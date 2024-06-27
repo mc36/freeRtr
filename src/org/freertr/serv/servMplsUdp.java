@@ -82,9 +82,9 @@ public class servMplsUdp extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server mplsudp .*! port " + portNum,
-        "server mplsudp .*! protocol " + proto2string(protoAllDgrm),
-        "server mplsudp .*! timeout 60000"
+        "server mplsudp .*!" + cmds.tabulator + "port " + portNum,
+        "server mplsudp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server mplsudp .*!" + cmds.tabulator + "timeout 60000"
     };
 
     /**

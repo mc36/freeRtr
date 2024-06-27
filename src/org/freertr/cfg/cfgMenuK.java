@@ -20,8 +20,8 @@ public class cfgMenuK implements Comparator<cfgMenuK>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "menu key .*! no description",
-        "menu key .*! no ignore-case"
+        "menu key .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "menu key .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ignore-case"
     };
 
     /**

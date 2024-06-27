@@ -122,14 +122,14 @@ public class servSmtp extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server smtp .*! port " + port,
-        "server smtp .*! protocol " + proto2string(protoAllStrm),
-        "server smtp .*! no recursion authentication",
-        "server smtp .*! no recursion enable",
-        "server smtp .*! no dsn",
-        "server smtp .*! no bcc",
-        "server smtp .*! rbl-threshold 0",
-        "server smtp .*! rbl-timeout 5000"
+        "server smtp .*!" + cmds.tabulator + "port " + port,
+        "server smtp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "recursion authentication",
+        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "recursion enable",
+        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dsn",
+        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bcc",
+        "server smtp .*!" + cmds.tabulator + "rbl-threshold 0",
+        "server smtp .*!" + cmds.tabulator + "rbl-timeout 5000"
     };
 
     /**

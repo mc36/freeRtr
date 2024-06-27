@@ -50,9 +50,9 @@ public class servNrpe extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server nrpe .*! port " + packNrpe.portNum,
-        "server nrpe .*! protocol " + proto2string(protoAllStrm),
-        "server nrpe .*! truncate 12288",};
+        "server nrpe .*!" + cmds.tabulator + "port " + packNrpe.portNum,
+        "server nrpe .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server nrpe .*!" + cmds.tabulator + "truncate 12288",};
 
     /**
      * defaults filter

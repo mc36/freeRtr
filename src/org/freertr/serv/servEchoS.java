@@ -39,9 +39,9 @@ public class servEchoS extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server echo .*! port " + port,
-        "server echo .*! protocol " + proto2string(protoAll),
-        "server echo .*! delay 0"
+        "server echo .*!" + cmds.tabulator + "port " + port,
+        "server echo .*!" + cmds.tabulator + "protocol " + proto2string(protoAll),
+        "server echo .*!" + cmds.tabulator + "delay 0"
     };
 
     /**

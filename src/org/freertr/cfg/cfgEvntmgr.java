@@ -51,9 +51,9 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "event-manager .*! no description",
-        "event-manager .*! no suppress",
-        "event-manager .*! no event"
+        "event-manager .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "event-manager .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "suppress",
+        "event-manager .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "event"
     };
 
     /**

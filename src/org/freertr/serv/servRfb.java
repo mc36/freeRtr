@@ -42,8 +42,8 @@ public class servRfb extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server rfb .*! port " + port,
-        "server rfb .*! protocol " + proto2string(protoAllStrm)
+        "server rfb .*!" + cmds.tabulator + "port " + port,
+        "server rfb .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
     /**

@@ -71,10 +71,10 @@ public class servUdpFwd extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server udpfwd .*! port " + port,
-        "server udpfwd .*! protocol " + proto2string(protoAllDgrm),
-        "server udpfwd .*! no target interface",
-        "server udpfwd .*! no logging",};
+        "server udpfwd .*!" + cmds.tabulator + "port " + port,
+        "server udpfwd .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target interface",
+        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
 
     /**
      * defaults filter

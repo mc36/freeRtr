@@ -37,26 +37,26 @@ public class servNetflow extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server netflow .*! port " + packNetflow.port,
-        "server netflow .*! protocol " + proto2string(protoAllDgrm),
-        "server netflow .*! no timeout",
-        "server netflow .*! no sessions",
-        "server netflow .*! no rate",
-        "server netflow .*! no mac",
-        "server netflow .*! no before",
-        "server netflow .*! no after",
-        "server netflow .*! no dropped",
-        "server netflow .*! no allow-routing",
-        "server netflow .*! no allow-sending",
-        "server netflow .*! no allow-linklocal",
-        "server netflow .*! no allow-multicast",
-        "server netflow .*! no allow-broadcast",
-        "server netflow .*! no allow-list",
-        "server netflow .*! no allow-url",
-        "server netflow .*! no drop-rx",
-        "server netflow .*! no drop-tx",
-        "server netflow .*! no drop-frg",
-        "server netflow .*! no member"
+        "server netflow .*!" + cmds.tabulator + "port " + packNetflow.port,
+        "server netflow .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "timeout",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sessions",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rate",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "before",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "after",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dropped",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-routing",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-sending",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-linklocal",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-multicast",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-broadcast",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-list",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-url",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-rx",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-tx",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-frg",
+        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "member"
     };
 
     /**

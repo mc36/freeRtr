@@ -91,9 +91,9 @@ public class servGeneve extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server geneve .*! port " + packGeneve.port,
-        "server geneve .*! protocol " + proto2string(protoAllDgrm),
-        "server geneve .*! no physical-interface"
+        "server geneve .*!" + cmds.tabulator + "port " + packGeneve.port,
+        "server geneve .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server geneve .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface"
     };
 
     /**

@@ -111,19 +111,19 @@ public class servForwarder extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server forwarder .*! port " + port,
-        "server forwarder .*! protocol " + proto2string(protoAllStrm),
-        "server forwarder .*! no target proxy",
-        "server forwarder .*! no target vrf",
-        "server forwarder .*! no target interface",
-        "server forwarder .*! no target security",
-        "server forwarder .*! no target username",
-        "server forwarder .*! no target password",
-        "server forwarder .*! no target pubkey",
-        "server forwarder .*! target protocol tcp",
-        "server forwarder .*! timeout 300000",
-        "server forwarder .*! buffer 65536",
-        "server forwarder .*! no logging",};
+        "server forwarder .*!" + cmds.tabulator + "port " + port,
+        "server forwarder .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target proxy",
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target vrf",
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target interface",
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target security",
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target username",
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target password",
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target pubkey",
+        "server forwarder .*!" + cmds.tabulator + "target protocol tcp",
+        "server forwarder .*!" + cmds.tabulator + "timeout 300000",
+        "server forwarder .*!" + cmds.tabulator + "buffer 65536",
+        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
 
     /**
      * defaults filter

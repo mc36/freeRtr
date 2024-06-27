@@ -71,9 +71,9 @@ public class servAmt extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server amt .*! port " + clntAmt.portNum,
-        "server amt .*! protocol " + proto2string(protoAllDgrm),
-        "server amt .*! timeout 120000"
+        "server amt .*!" + cmds.tabulator + "port " + clntAmt.portNum,
+        "server amt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server amt .*!" + cmds.tabulator + "timeout 120000"
     };
 
     /**

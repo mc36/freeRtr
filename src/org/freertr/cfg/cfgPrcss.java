@@ -133,21 +133,21 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "process definition .*! no description",
-        "process definition .*! respawn",
-        "process definition .*! children",
-        "process definition .*! pinning null",
-        "process definition .*! user null",
-        "process definition .*! exec null",
-        "process definition .*! final null",
-        "process definition .*! time 1000",
-        "process definition .*! delay 1000",
-        "process definition .*! random-time 0",
-        "process definition .*! random-delay 0",
-        "process definition .*! no log-actions",
-        "process definition .*! no log-console",
-        "process definition .*! no log-collect",
-        "process definition .*! no range"
+        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "process definition .*!" + cmds.tabulator + "respawn",
+        "process definition .*!" + cmds.tabulator + "children",
+        "process definition .*!" + cmds.tabulator + "pinning null",
+        "process definition .*!" + cmds.tabulator + "user null",
+        "process definition .*!" + cmds.tabulator + "exec null",
+        "process definition .*!" + cmds.tabulator + "final null",
+        "process definition .*!" + cmds.tabulator + "time 1000",
+        "process definition .*!" + cmds.tabulator + "delay 1000",
+        "process definition .*!" + cmds.tabulator + "random-time 0",
+        "process definition .*!" + cmds.tabulator + "random-delay 0",
+        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
+        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
+        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
+        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
     };
 
     /**

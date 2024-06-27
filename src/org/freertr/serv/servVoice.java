@@ -56,11 +56,11 @@ public class servVoice extends servGeneric implements prtServS {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server voice .*! port " + packSip.port,
-        "server voice .*! protocol " + proto2string(protoAllDgrm),
-        "server voice .*! codec alaw",
-        "server voice .*! no voice-script",
-        "server voice .*! no message-script",};
+        "server voice .*!" + cmds.tabulator + "port " + packSip.port,
+        "server voice .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server voice .*!" + cmds.tabulator + "codec alaw",
+        "server voice .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "voice-script",
+        "server voice .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "message-script",};
 
     /**
      * defaults filter

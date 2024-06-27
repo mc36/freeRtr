@@ -71,8 +71,8 @@ public class servGtp extends servGeneric implements prtServP {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server gtp .*! port " + packGtp.portCtrl,
-        "server gtp .*! protocol " + proto2string(protoAllDgrm)
+        "server gtp .*!" + cmds.tabulator + "port " + packGtp.portCtrl,
+        "server gtp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm)
     };
 
     /**

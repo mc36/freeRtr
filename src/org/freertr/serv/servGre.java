@@ -79,9 +79,9 @@ public class servGre extends servGeneric implements ipPrt {
      * defaults text
      */
     public final static String[] defaultL = {
-        "server gre .*! port " + prtGre.protoNum,
-        "server gre .*! protocol " + proto2string(protoAllDgrm),
-        "server gre .*! timeout 60000"
+        "server gre .*!" + cmds.tabulator + "port " + prtGre.protoNum,
+        "server gre .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
+        "server gre .*!" + cmds.tabulator + "timeout 60000"
     };
 
     /**

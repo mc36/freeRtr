@@ -59,22 +59,22 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
      * defaults text
      */
     public final static String[] defaultL = {
-        "time-map .*! no description",
-        "time-map .*! no time-zone",
-        "time-map .*! random 0 0",
-        "time-map .*! sequence .* match year all",
-        "time-map .*! sequence .* match month all",
-        "time-map .*! sequence .* match day all",
-        "time-map .*! sequence .* match dow all",
-        "time-map .*! sequence .* match wom all",
-        "time-map .*! sequence .* match woy all",
-        "time-map .*! sequence .* match dom all",
-        "time-map .*! sequence .* match doy all",
-        "time-map .*! sequence .* match hour all",
-        "time-map .*! sequence .* match minute all",
-        "time-map .*! sequence .* match second all",
-        "time-map .*! sequence .* match milli all",
-        "time-map .*! sequence .* match periodic 0 0 0"};
+        "time-map .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
+        "time-map .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "time-zone",
+        "time-map .*!" + cmds.tabulator + "random 0 0",
+        "time-map .*!" + cmds.tabulator + "sequence .* match year all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match month all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match day all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match dow all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match wom all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match woy all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match dom all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match doy all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match hour all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match minute all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match second all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match milli all",
+        "time-map .*!" + cmds.tabulator + "sequence .* match periodic 0 0 0"};
 
     /**
      * defaults filter
