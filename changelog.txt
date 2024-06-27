@@ -15807,3 +15807,7 @@ no qc pass: p4lang: multilink l2tp3 mpls over ipv4
 no qc pass: p4lang: multilink l2tp3 routing over ipv4
 qc pass: p4lang: multilink l2tp3 routing over vlan
 qc pass: p4lang: multilink l2tp3 mpls over vlan
+---------------------------------- 2024-06-27 18:16:37 24.6.27
+no todo: display asdfsdfas | asciinema <--- same as | pastebin....
+no qc pass: xot pad
+failed: xot pad
