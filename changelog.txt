@@ -15795,3 +15795,5 @@ no todo: show config-backup if available
 ---------------------------------- 2024-06-27 04:30:20 24.6.27
 no todo: banyan vines protocol in sw
 todo: banyan vines appletalk and firends protocols in sw
+---------------------------------- 2024-06-27 05:10:52 24.6.27
+no todo: upgrade the 3g stack to 4g then 5g with the help of an ettus usrp

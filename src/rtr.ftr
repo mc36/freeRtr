@@ -3547,7 +3547,6 @@ todo: tester to have followtracker knob
 todo: tester to have support chatscript and have followtracker knob
 todo: tester to have support for dynamips and vm.zip stuff
 todo: tester to have support for the hw-cfg stuff
-todo: upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
 todo: dhcp relay support
 todo: tcp selective ack
 todo: ilnp (rfc6740)
