@@ -11,6 +11,8 @@
 #include <linux/if_packet.h>
 #include <sys/ioctl.h>
 
+#include "utils.h"
+
 
 
 char *ifaceName;
@@ -39,12 +41,31 @@ void err(char*buf) {
 void doRawLoop() {
     unsigned char bufD[16384];
     int bufS;
-    struct sockaddr_in addrTmp;
-    unsigned int addrLen;
+    unsigned char cbuf[sizeof(struct cmsghdr) + sizeof(struct tpacket_auxdata) + sizeof(size_t)];
+    struct iovec iov;
+    struct msghdr msg;
+    iov.iov_base = &bufD;
+    iov.iov_len = sizeof(bufD);
+    msg.msg_name = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = cbuf;
+    msg.msg_controllen = sizeof(cbuf);
+    msg.msg_flags = 0;
+    struct cmsghdr* cmsg = (struct cmsghdr*)cbuf;
+    struct tpacket_auxdata* aux = (struct tpacket_auxdata*)CMSG_DATA(cmsg);
     for (;;) {
-        bufS = sizeof (bufD);
-        bufS = recvfrom(ifaceSock, bufD, bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
+        aux->tp_status = 0;
+        bufS = recvmsg(ifaceSock, &msg, 0);
         if (bufS < 0) break;
+        if ((cmsg->cmsg_level == SOL_PACKET) && (cmsg->cmsg_type == PACKET_AUXDATA) && (aux->tp_status & TP_STATUS_VLAN_VALID)) {
+            if ((aux->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) aux->tp_vlan_tpid = ETH_P_8021Q;
+            bufS += 4;
+            memmove(&bufD[16], &bufD[12], bufS - 12);
+            put16msb(bufD, 12, aux->tp_vlan_tpid);
+            put16msb(bufD, 14, aux->tp_vlan_tci);
+        }
         packRx++;
         byteRx += bufS;
         send(commSock, bufD, bufS, 0);
@@ -207,6 +228,8 @@ help :
     pmr.mr_type = PACKET_MR_PROMISC;
     if (setsockopt(ifaceSock, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &pmr, sizeof (pmr)) < 0) err("failed to set promisc");
 
+    int val = 1;
+    if(setsockopt(ifaceSock, SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val)) < 0) err("failed to set auxdata");
     printf("serving others\n");
 
     byteRx = 0;
