@@ -74,7 +74,7 @@ for fn in p4mnl_user; do
   compileFile $fn "" "-lbpf -lmnl" ""
   done
 
-for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_xsk; do
+for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk; do
   compileLib $fn "" ""
   done
 
@@ -103,6 +103,12 @@ linkTwoLibs "p4map" "p4emu_map" "p4emu_full" "-lcrypto"
 linkTwoLibs "p4mapDbg" "p4emu_map" "p4emu_dbg" "-lcrypto"
 
 linkTwoLibs "p4mapPkt" "p4emu_map" "p4emu_none" "-lcrypto"
+
+linkTwoLibs "p4raw" "p4emu_raw" "p4emu_full" "-lcrypto"
+
+linkTwoLibs "p4rawDbg" "p4emu_raw" "p4emu_dbg" "-lcrypto"
+
+linkTwoLibs "p4rawPkt" "p4emu_raw" "p4emu_none" "-lcrypto"
 
 linkTwoLibs "p4xsk" "p4emu_xsk" "p4emu_full" "-lxdp -lcrypto"
 
