@@ -67,59 +67,63 @@ for fn in p4xdp_pass p4xdp_drop p4xdp_kern p4mnl_kern; do
   done
 
 for fn in p4xdp_user; do
-  compileFile $fn "" "-lpthread -lbpf" ""
+  compileFile $fn "" "-lbpf" ""
   done
 
 for fn in p4mnl_user; do
-  compileFile $fn "" "-lpthread -lbpf -lmnl" ""
+  compileFile $fn "" "-lbpf -lmnl" ""
   done
 
-for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_xsk; do
+for fn in p4emu_full p4emu_dbg p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_xsk; do
   compileLib $fn "" ""
+  done
+
+for fn in p4emu_none; do
+  compileLib $fn "" "-DHAVE_NOCRYPTO"
   done
 
 for fn in p4emu_dpdk; do
   compileLib $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-gnu/dpdk" $MF
   done
 
-linkTwoLibs "p4emu" "p4emu_pcap" "p4emu_full" "-lpthread -lpcap -lcrypto"
+linkTwoLibs "p4emu" "p4emu_pcap" "p4emu_full" "-lpcap -lcrypto"
 
-linkTwoLibs "p4dbg" "p4emu_pcap" "p4emu_dbg" "-lpthread -lpcap -lcrypto"
+linkTwoLibs "p4dbg" "p4emu_pcap" "p4emu_dbg" "-lpcap -lcrypto"
 
-linkTwoLibs "p4pkt" "p4emu_pcap" "p4emu_none" "-lpthread -lpcap -lcrypto"
+linkTwoLibs "p4pkt" "p4emu_pcap" "p4emu_none" "-lpcap"
 
-linkTwoLibs "p4dpdk" "p4emu_dpdk" "p4emu_full" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
+linkTwoLibs "p4dpdk" "p4emu_dpdk" "p4emu_full" "-lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
-linkTwoLibs "p4dpdkDbg" "p4emu_dpdk" "p4emu_dbg" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
+linkTwoLibs "p4dpdkDbg" "p4emu_dpdk" "p4emu_dbg" "-lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
-linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
+linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "-lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
 linkTwoLibs "p4bench" "p4emu_bench" "p4emu_full" "-lcrypto"
 
-linkTwoLibs "p4udp" "p4emu_udp" "p4emu_full" "-lpthread -lcrypto"
+linkTwoLibs "p4udp" "p4emu_udp" "p4emu_full" "-lcrypto"
 
-linkTwoLibs "p4map" "p4emu_map" "p4emu_full" "-lpthread -lcrypto"
+linkTwoLibs "p4map" "p4emu_map" "p4emu_full" "-lcrypto"
 
-linkTwoLibs "p4mapDbg" "p4emu_map" "p4emu_dbg" "-lpthread -lcrypto"
+linkTwoLibs "p4mapDbg" "p4emu_map" "p4emu_dbg" "-lcrypto"
 
-linkTwoLibs "p4mapPkt" "p4emu_map" "p4emu_none" "-lpthread -lcrypto"
+linkTwoLibs "p4mapPkt" "p4emu_map" "p4emu_none" ""
 
-linkTwoLibs "p4xsk" "p4emu_xsk" "p4emu_full" "-lpthread -lxdp -lcrypto"
+linkTwoLibs "p4xsk" "p4emu_xsk" "p4emu_full" "-lxdp -lcrypto"
 
-linkTwoLibs "p4xskDbg" "p4emu_xsk" "p4emu_dbg" "-lpthread -lxdp -lcrypto"
+linkTwoLibs "p4xskDbg" "p4emu_xsk" "p4emu_dbg" "-lxdp -lcrypto"
 
-linkTwoLibs "p4xskPkt" "p4emu_xsk" "p4emu_none" "-lpthread -lxdp -lcrypto"
+linkTwoLibs "p4xskPkt" "p4emu_xsk" "p4emu_none" "-lxdp"
 
 for fn in pcapInt pcap2pcap sender; do
-  compileFile $fn "" "-lpthread -lpcap" ""
+  compileFile $fn "" "-lpcap" ""
   done
 
 for fn in xskInt; do
-  compileFile $fn "" "-lpthread -lxdp" ""
+  compileFile $fn "" "-lxdp" ""
   done
 
 for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
-  compileFile $fn "" "-lpthread" ""
+  compileFile $fn "" "" ""
   done
 
 for fn in ptyRun; do

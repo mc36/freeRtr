@@ -476,7 +476,7 @@ http://sources.freertr.org/cfg/p4lang-rout255.tst;p4lang-rout255.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout256.tst;p4lang-rout256.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 routing over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout257.tst;p4lang-rout257.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 routing over vlan
 http://sources.freertr.org/cfg/p4lang-rout258.tst;p4lang-rout258.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 routing over bundle
-http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;ok;ok;ok;ok;ok;p4lang: multilink l2tp3 routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout260.tst;p4lang-rout260.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over vlan
 http://sources.freertr.org/cfg/p4lang-rout262.tst;p4lang-rout262.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over ipv4
@@ -484,7 +484,7 @@ http://sources.freertr.org/cfg/p4lang-rout263.tst;p4lang-rout263.tst;ok;not ok;o
 http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over vlan
 http://sources.freertr.org/cfg/p4lang-rout265.tst;p4lang-rout265.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 routing over bundle
 http://sources.freertr.org/cfg/p4lang-rout266.tst;p4lang-rout266.tst;ok;not ok;ok;not ok;not ok;p4lang: multilink l2tp3 mpls over bundle
-http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;ok;not ok;ok;not ok;not ok;p4lang: l2tp3 mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv4
 http://sources.freertr.org/cfg/p4lang-rout268.tst;p4lang-rout268.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv6
 http://sources.freertr.org/cfg/p4lang-rout269.tst;p4lang-rout269.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout270.tst;p4lang-rout270.tst;ok;ok;ok;ok;ok;p4lang: l2tp3 mpls over ipv6 loopback
