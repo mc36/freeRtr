@@ -74,12 +74,8 @@ for fn in p4mnl_user; do
   compileFile $fn "" "-lbpf -lmnl" ""
   done
 
-for fn in p4emu_full p4emu_dbg p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_xsk; do
+for fn in p4emu_full p4emu_dbg p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_xsk; do
   compileLib $fn "" ""
-  done
-
-for fn in p4emu_none; do
-  compileLib $fn "" "-DHAVE_NOCRYPTO"
   done
 
 for fn in p4emu_dpdk; do
@@ -90,13 +86,13 @@ linkTwoLibs "p4emu" "p4emu_pcap" "p4emu_full" "-lpcap -lcrypto"
 
 linkTwoLibs "p4dbg" "p4emu_pcap" "p4emu_dbg" "-lpcap -lcrypto"
 
-linkTwoLibs "p4pkt" "p4emu_pcap" "p4emu_none" "-lpcap"
+linkTwoLibs "p4pkt" "p4emu_pcap" "p4emu_none" "-lpcap -lcrypto"
 
 linkTwoLibs "p4dpdk" "p4emu_dpdk" "p4emu_full" "-lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
 linkTwoLibs "p4dpdkDbg" "p4emu_dpdk" "p4emu_dbg" "-lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
-linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "-lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
+linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "-lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
 linkTwoLibs "p4bench" "p4emu_bench" "p4emu_full" "-lcrypto"
 
@@ -106,13 +102,13 @@ linkTwoLibs "p4map" "p4emu_map" "p4emu_full" "-lcrypto"
 
 linkTwoLibs "p4mapDbg" "p4emu_map" "p4emu_dbg" "-lcrypto"
 
-linkTwoLibs "p4mapPkt" "p4emu_map" "p4emu_none" ""
+linkTwoLibs "p4mapPkt" "p4emu_map" "p4emu_none" "-lcrypto"
 
 linkTwoLibs "p4xsk" "p4emu_xsk" "p4emu_full" "-lxdp -lcrypto"
 
 linkTwoLibs "p4xskDbg" "p4emu_xsk" "p4emu_dbg" "-lxdp -lcrypto"
 
-linkTwoLibs "p4xskPkt" "p4emu_xsk" "p4emu_none" "-lxdp"
+linkTwoLibs "p4xskPkt" "p4emu_xsk" "p4emu_none" "-lxdp -lcrypto"
 
 for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpcap" ""

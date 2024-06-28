@@ -14,8 +14,8 @@ typedef char EVP_MD_CTX;
 typedef char EVP_CIPHER_CTX;
 typedef char EVP_MD;
 typedef char EVP_PKEY;
-void* EVP_CIPHER_CTX_new() {return NULL;}
-void* EVP_MD_CTX_new() {return NULL;}
+#define EVP_CIPHER_CTX_new() NULL
+#define EVP_MD_CTX_new() NULL
 
 #endif
 
