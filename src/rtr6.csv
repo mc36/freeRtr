@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.6.25-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-06-25 18:09:17, took 01:44:26, with 10 workers, on 546 cases, 0 failed, 0 traces, 4 retries
+-;-;-;freeRouter v24.6.28-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-06-28 09:26:57, took 01:42:36, with 10 workers, on 546 cases, 0 failed, 0 traces, 1 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -478,15 +478,15 @@ http://sources.freertr.org/cfg/p4lang-rout255.tst;p4lang-rout255.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout256.tst;p4lang-rout256.tst;success;p4lang: l2tp3 routing over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout257.tst;p4lang-rout257.tst;success;p4lang: l2tp3 routing over vlan
 http://sources.freertr.org/cfg/p4lang-rout258.tst;p4lang-rout258.tst;success;p4lang: l2tp3 routing over bundle
-http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;success;p4lang: l2tp3 mpls over ipv4
-http://sources.freertr.org/cfg/p4lang-rout260.tst;p4lang-rout260.tst;not applicable;p4lang: multilink l2tp3 routing over ipv4
-http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;not applicable;p4lang: multilink l2tp3 routing over ipv6
-http://sources.freertr.org/cfg/p4lang-rout262.tst;p4lang-rout262.tst;not applicable;p4lang: multilink l2tp3 routing over vlan
-http://sources.freertr.org/cfg/p4lang-rout263.tst;p4lang-rout263.tst;not applicable;p4lang: multilink l2tp3 mpls over ipv4
-http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;not applicable;p4lang: multilink l2tp3 mpls over ipv6
-http://sources.freertr.org/cfg/p4lang-rout265.tst;p4lang-rout265.tst;not applicable;p4lang: multilink l2tp3 mpls over vlan
-http://sources.freertr.org/cfg/p4lang-rout266.tst;p4lang-rout266.tst;not applicable;p4lang: multilink l2tp3 routing over bundle
-http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;not applicable;p4lang: multilink l2tp3 mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout259.tst;p4lang-rout259.tst;not applicable;p4lang: multilink l2tp3 routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout260.tst;p4lang-rout260.tst;not applicable;p4lang: multilink l2tp3 routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout261.tst;p4lang-rout261.tst;not applicable;p4lang: multilink l2tp3 routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout262.tst;p4lang-rout262.tst;not applicable;p4lang: multilink l2tp3 mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout263.tst;p4lang-rout263.tst;not applicable;p4lang: multilink l2tp3 mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout264.tst;p4lang-rout264.tst;not applicable;p4lang: multilink l2tp3 mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout265.tst;p4lang-rout265.tst;not applicable;p4lang: multilink l2tp3 routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout266.tst;p4lang-rout266.tst;not applicable;p4lang: multilink l2tp3 mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout267.tst;p4lang-rout267.tst;success;p4lang: l2tp3 mpls over ipv4
 http://sources.freertr.org/cfg/p4lang-rout268.tst;p4lang-rout268.tst;success;p4lang: l2tp3 mpls over ipv6
 http://sources.freertr.org/cfg/p4lang-rout269.tst;p4lang-rout269.tst;success;p4lang: l2tp3 mpls over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout270.tst;p4lang-rout270.tst;success;p4lang: l2tp3 mpls over ipv6 loopback

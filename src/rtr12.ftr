@@ -91,7 +91,6 @@ todo: ctrl+l/r to try to redetect the screen resolution
 todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
 todo: configure diff to have chance to change the sho config-differences
 todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
-todo: display asdfsdfas | asciinema <--- same as | pastebin....
 todo: server security to have settable tls version from client knob first
 todo: server security to log the transactions
 todo: server security to stick to the good protocols
@@ -110,20 +109,12 @@ todo: vrf def xxx to have dynamic readvertisements as static rotues that disappe
 todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 todo: a terminal junos-mode knob that defaults to set-del etc as a new class
-todo: show config-backup if available
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
-todo: scheduler asdf single-run as no respawn or something
 todo: clntportscan to have udp knob then portscan to have the knob finally
 todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
 todo: private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
 todo: dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
-todo: some more .equals("no") to cmds.negated conversions like   <!-------------------------------------
-todo: ("no") --> cmds.negated   <!-------------------------------------------------------------------
-todo: "no" --> cmds.negated   <!---------------------------------------------------------------------
-todo: "no " --> cmds.negated   <!--------------------------------------------------------------------
-todo: client hide-secrets  <!------------------------------------------------------------------------
-todo: cmds.not2vdc  <!----------------------------------------------------------------------------------
 todo: server smtp / tag messages by subject
 todo: server smtp / collect-failures
 todo: server smtp / check reverse of the sender and put the info to received field...
@@ -147,12 +138,6 @@ todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
 todo: inter xxx / macrandomize
 todo: sho run check/track
-todo: server http / host * webring-local <text>
-todo: server http / host * webring-remote <path/file*>
-todo: server http / host * custom-local <text>
-todo: server http / host * custom-remote >path/file>
-todo: server http / host * user-agent matcher with redirect
-todo: server http / host * searchbar
 todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: config committed with check for saved and backup config
@@ -184,7 +169,6 @@ todo: tester to have followtracker knob
 todo: tester to have support chatscript and have followtracker knob
 todo: tester to have support for dynamips and vm.zip stuff
 todo: tester to have support for the hw-cfg stuff
-todo: upgrade the 3g stack to 4g then 5g with the help of an ettus usrp
 todo: dhcp relay support
 todo: tcp selective ack
 todo: ilnp (rfc6740)
@@ -250,5 +234,5 @@ todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: more clean transpilers for the vm
 todo: more clean converters for the vm
 todo: flash commander to have file info and hash
-todo: banyan vines protocol in sw
+todo: banyan vines appletalk and firends protocols in sw
 todo: hackediff alias to diff with the | hacked fun filter
