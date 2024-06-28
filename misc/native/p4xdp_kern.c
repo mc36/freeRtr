@@ -547,7 +547,7 @@ struct {
 
 #define crc16calc(tmp, tab, buf, ofs, len)                                      \
     tmp = 0;                                                                    \
-    for (int i = 0; i < len; i++) {                                             \
+    for (__u32 i = 0; i < len; i++) {                                           \
         tmp = ((tmp << 8) & 0xffff) ^ tab[((tmp >> 8) ^ buf[ofs + i]) & 0xff];  \
     }
 
