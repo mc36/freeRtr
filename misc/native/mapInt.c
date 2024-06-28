@@ -46,37 +46,30 @@ void err(char*buf) {
 }
 
 void doRawLoop() {
-    int i;
     int bufS;
     unsigned char *bufD;
     int blockNum = 0;
-    struct tpacket_block_desc *pbd;
-    struct tpacket3_hdr *ppd;
+    struct tpacket2_hdr *ppd;
     for (;;) {
-        pbd = (struct tpacket_block_desc *) ifaceIov[blockNum].iov_base;
-        if ((pbd->hdr.bh1.block_status & TP_STATUS_USER) == 0) {
+        ppd = (struct tpacket2_hdr *) ifaceIov[blockNum].iov_base;
+        if ((ppd->tp_status & TP_STATUS_USER) == 0) {
             poll(&ifacePfd, 1, 1);
             continue;
         }
-        int pkts = pbd->hdr.bh1.num_pkts;
-        ppd = (struct tpacket3_hdr *) ((uint8_t *) pbd + pbd->hdr.bh1.offset_to_first_pkt);
-        for (i = 0; i < pkts; i++) {
-            bufS = ppd->tp_snaplen;
-            bufD = (unsigned char *) ppd + ppd->tp_mac;
-            if ((ppd->tp_status & TP_STATUS_VLAN_VALID) != 0) {
-                if ((ppd->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) ppd->hv1.tp_vlan_tpid = ETH_P_8021Q;
-                bufD -= 4;
-                bufS += 4;
-                memmove(bufD, bufD + 4, 12);
-                put16msb(bufD, 12, ppd->hv1.tp_vlan_tpid);
-                put16msb(bufD, 14, ppd->hv1.tp_vlan_tci);
-            }
-            packRx++;
-            byteRx += bufS;
-            send(commSock, bufD, bufS, 0);
-            ppd = (struct tpacket3_hdr *) ((uint8_t *) ppd + ppd->tp_next_offset);
+        bufS = ppd->tp_snaplen;
+        bufD = (unsigned char *) ppd + ppd->tp_mac;
+        if ((ppd->tp_status & TP_STATUS_VLAN_VALID) != 0) {
+            if ((ppd->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) ppd->tp_vlan_tpid = ETH_P_8021Q;
+            bufD -= 4;
+            bufS += 4;
+            memmove(bufD, bufD + 4, 12);
+            put16msb(bufD, 12, ppd->tp_vlan_tpid);
+            put16msb(bufD, 14, ppd->tp_vlan_tci);
         }
-        pbd->hdr.bh1.block_status = TP_STATUS_KERNEL;
+        packRx++;
+        byteRx += bufS;
+        send(commSock, bufD, bufS, 0);
+        ppd->tp_status = TP_STATUS_KERNEL;
         blockNum = (blockNum + 1) % blocksMax;
     }
     err("raw thread exited");
@@ -240,11 +233,11 @@ help :
     pmr.mr_ifindex = ifaceIndex;
     pmr.mr_type = PACKET_MR_PROMISC;
     if (setsockopt(ifaceSock, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &pmr, sizeof (pmr)) < 0) err("failed to set promisc");
-    int ver = TPACKET_V3;
+    int ver = TPACKET_V2;
     if (setsockopt(ifaceSock, SOL_PACKET, PACKET_VERSION, &ver, sizeof (ver)) < 0) err("failed to set version");
     struct tpacket_req3 rrq;
     memset(&rrq, 0, sizeof (rrq));
-    rrq.tp_block_size = 1 << 22;
+    rrq.tp_block_size = 16384;
     rrq.tp_frame_size = 16384;
     rrq.tp_block_nr = blocksMax;
     rrq.tp_frame_nr = (rrq.tp_block_size * rrq.tp_block_nr) / rrq.tp_frame_size;

@@ -67,34 +67,24 @@ int ifaceId[maxPorts];
 
 
 
-#define packBeg                                                                                     \
-    pbd = (struct tpacket_block_desc *) ifaceIov[port][blockNum].iov_base;                          \
-    if ((pbd->hdr.bh1.block_status & TP_STATUS_USER) == 0) {                                        \
+#define packGet                                                                                     \
+    ppd = (struct tpacket2_hdr *) ifaceIov[port][blockNum].iov_base;                                \
+    if ((ppd->tp_status & TP_STATUS_USER) == 0) {                                                   \
         poll(&ifacePfd[port], 1, 1);                                                                \
         continue;                                                                                   \
     }                                                                                               \
-    int pkts = pbd->hdr.bh1.num_pkts;                                                               \
-    ppd = (struct tpacket3_hdr *) ((uint8_t *) pbd + pbd->hdr.bh1.offset_to_first_pkt);             \
-
-
-#define packOne                                                                                     \
     bufS = ppd->tp_snaplen;                                                                         \
     pack = (unsigned char *) ppd + ppd->tp_mac;                                                     \
     if ((ppd->tp_status & TP_STATUS_VLAN_VALID) == 0) memcpy(&bufD[preBuff], pack, bufS); else {    \
-        if ((ppd->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) ppd->hv1.tp_vlan_tpid = ETH_P_8021Q; \
+        if ((ppd->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) ppd->tp_vlan_tpid = ETH_P_8021Q;     \
         memcpy(&bufD[preBuff], pack, 12);                                                           \
-        put16msb(bufD, preBuff + 12, ppd->hv1.tp_vlan_tpid);                                        \
-        put16msb(bufD, preBuff + 14, ppd->hv1.tp_vlan_tci);                                         \
+        put16msb(bufD, preBuff + 12, ppd->tp_vlan_tpid);                                            \
+        put16msb(bufD, preBuff + 14, ppd->tp_vlan_tci);                                             \
         memcpy(&bufD[preBuff + 16], pack + 12, bufS - 12);                                          \
         bufS += 4;                                                                                  \
     }                                                                                               \
-    ppd = (struct tpacket3_hdr *) ((uint8_t *) ppd + ppd->tp_next_offset);                          \
-
-
-#define packEnd                                                                                     \
-    pbd->hdr.bh1.block_status = TP_STATUS_KERNEL;                                                   \
-    blockNum = (blockNum + 1) % blocksMax;                                                          \
-
+    ppd->tp_status = TP_STATUS_KERNEL;                                                              \
+    blockNum = (blockNum + 1) % blocksMax;
 
 
 void doIfaceLoop(int * param) {
@@ -106,8 +96,7 @@ void doIfaceLoop(int * param) {
     const unsigned char *pack;
     int bufS;
     int blockNum = 0;
-    struct tpacket_block_desc *pbd;
-    struct tpacket3_hdr *ppd;
+    struct tpacket2_hdr *ppd;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
 #ifndef HAVE_NOCRYPTO
     if (encrCtx == NULL) err("error getting encr context");
@@ -118,21 +107,13 @@ void doIfaceLoop(int * param) {
 #endif
     if (port == cpuPort) {
         for (;;) {
-            packBeg;
-            for (int i=0; i<pkts; i++) {
-                packOne;
-                processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
-            }
-            packEnd;
+            packGet;
+            processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
         }
     } else {
         for (;;) {
-            packBeg;
-            for (int i=0; i<pkts; i++) {
-                packOne;
-                processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
-            }
-            packEnd;
+            packGet;
+            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
         }
     }
     err("port thread exited");
@@ -251,11 +232,11 @@ int main(int argc, char **argv) {
         pmr.mr_ifindex = ifaceIndex[o];
         pmr.mr_type = PACKET_MR_PROMISC;
         if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_ADD_MEMBERSHIP, &pmr, sizeof (pmr)) < 0) err("failed to set promisc");
-        int ver = TPACKET_V3;
+        int ver = TPACKET_V2;
         if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_VERSION, &ver, sizeof (ver)) < 0) err("failed to set version");
         struct tpacket_req3 rrq;
         memset(&rrq, 0, sizeof (rrq));
-        rrq.tp_block_size = 1 << 22;
+        rrq.tp_block_size = 16384;
         rrq.tp_frame_size = 16384;
         rrq.tp_block_nr = blocksMax;
         rrq.tp_frame_nr = (rrq.tp_block_size * rrq.tp_block_nr) / rrq.tp_frame_size;
