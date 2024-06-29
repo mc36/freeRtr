@@ -22,7 +22,7 @@
 char *ifaceName;
 int ifaceIndex;
 int ifaceSock;
-uint8_t *ifaceMem;
+unsigned char *ifaceMem;
 struct iovec *ifaceIov;
 struct pollfd ifacePfd;
 struct sockaddr_in addrLoc;

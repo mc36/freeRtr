@@ -22,7 +22,7 @@
 char *ifaceName[maxPorts];
 int ifaceIndex[maxPorts];
 int ifaceSock[maxPorts];
-uint8_t *ifaceMem[maxPorts];
+unsigned char *ifaceMem[maxPorts];
 struct iovec *ifaceIov[maxPorts];
 struct pollfd ifacePfd[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
