@@ -253,16 +253,6 @@ server tftp to have server http backup alike functionality
 
 
 
-
-
-
-
-
-
-scheduler asdf single-run
-
-
-
 show running-config vrf iot to display routing protocols, servers and interfaces
 
 show running-config vdc <tabbable>
