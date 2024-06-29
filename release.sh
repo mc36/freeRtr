@@ -5,9 +5,8 @@ cd src
 ./cb.sh
 cd ../misc/native/
 ./c.sh
+./p.sh
 cd ../image/
 ./cj.sh
-cd ../native/
-./p.sh
 cd ../img2ova/
 ./c.sh

@@ -94,13 +94,15 @@ public class userImage {
     private String dumpList(tabGen<userImagePkg> lst, boolean done, boolean detail) {
         String s = "";
         long o = 0;
+        int p = 0;
         for (int i = 0; i < lst.size(); i++) {
             userImagePkg pkg = lst.get(i);
-            o += pkg.size;
-            if (!detail) {
+            if (done != pkg.done) {
                 continue;
             }
-            if (done != pkg.done) {
+            o += pkg.size;
+            p++;
+            if (!detail) {
                 continue;
             }
             s += " " + pkg.name;
@@ -108,7 +110,7 @@ public class userImage {
         if (detail) {
             s += " -";
         }
-        s += " " + (o / 1024) + " kb in " + lst.size() + " packages";
+        s += " " + (o / 1024) + " kb in " + p + " packages";
         return s;
     }
 
@@ -301,7 +303,6 @@ public class userImage {
     private boolean instOneFile(userImagePkg pkg) {
         String name = getPackageName(pkg);
         if (pkg.done) {
-            pip.linePut("skipping " + name);
             return false;
         }
         pkg.done = true;
@@ -317,7 +318,6 @@ public class userImage {
     private boolean downOneFile(userImagePkg pkg) {
         String name = getPackageName(pkg);
         if (pkg.done) {
-            pip.linePut("skipping " + name);
             return false;
         }
         for (int i = 0; i < hashMode; i++) {
