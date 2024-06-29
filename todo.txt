@@ -11,11 +11,6 @@ ioam as rfc9452
 
 
 
-
-flash ext-delete also to commander
-
-commander to get away the cursor
-
 openflow to have 2 label support and stack to p4lang
 
 bridge and router have renumber knob
@@ -280,8 +275,6 @@ document the vm
 .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 more clean transpilers for the vm
 more clean converters for the vm
-
-flash commander to have file info and hash
 
 banyan vines appletalk and firends protocols in sw
 

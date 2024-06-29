@@ -219,12 +219,6 @@ public class userFlash {
             rdr.putStrArr(res);
             return null;
         }
-        if (a.equals("getperm")) {
-            a = cmd.getRemaining();
-            int i = getFilePerm(new File(a));
-            cmd.pipe.linePut(a + " right is " + perm2str(i) + " " + i);
-            return null;
-        }
         if (a.equals("setperm")) {
             a = cmd.word();
             String s = cmd.word();
@@ -269,15 +263,7 @@ public class userFlash {
         }
         if (a.equals("info")) {
             a = cmd.getRemaining();
-            File f = new File(a);
-            userFormat l = new userFormat("|", "category|value");
-            try {
-                l.add("file|" + f.getCanonicalPath());
-                l.add("size|" + f.length());
-                l.add("modify|" + bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3));
-            } catch (Exception e) {
-            }
-            rdr.putStrTab(l);
+            rdr.putStrArr(getFileInfo(a));
             return null;
         }
         if (a.equals("cleanup")) {
@@ -410,6 +396,26 @@ public class userFlash {
         r.add("sha2512=" + calcFileHash(new cryHashSha2512(), a));
         r.add("sha3256=" + calcFileHash(new cryHashSha3256(), a));
         r.add("sha3512=" + calcFileHash(new cryHashSha3512(), a));
+        return r;
+    }
+
+    /**
+     * get file information
+     *
+     * @param a file to info
+     * @return hashes of the file
+     */
+    public final static List<String> getFileInfo(String a) {
+        List<String> r = new ArrayList<String>();
+        File f = new File(a);
+        try {
+            r.add("file=" + f.getCanonicalPath());
+            r.add("size=" + f.length());
+            r.add("modify=" + bits.time2str(cfgAll.timeZoneName, f.lastModified(), 3));
+            int i = getFilePerm(f);
+            r.add("right=" + perm2str(i) + " " + i);
+        } catch (Exception e) {
+        }
         return r;
     }
 

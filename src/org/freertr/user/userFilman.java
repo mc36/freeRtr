@@ -41,6 +41,7 @@ public class userFilman {
      */
     public void doWork() {
         for (;;) {
+            console.putCur(console.sizX, console.sizY);
             for (int i = 0; i < pan.length; i++) {
                 pan[i].doRange();
                 pan[i].doDraw();
@@ -62,7 +63,6 @@ public class userFilman {
         console.fillLines(0, console.sizY, userScreen.colBlack, 32);
         console.refresh();
         console.putCls();
-        console.putCur(console.sizX, console.sizY);
         console.refresh();
     }
 
@@ -186,6 +186,9 @@ public class userFilman {
             case 0x801b: // f8
                 doKeyF8();
                 return false;
+            case 0x801c: // f9
+                doKeyF9();
+                return false;
             case 0x801d: // f10
                 return true;
         }
@@ -297,6 +300,7 @@ public class userFilman {
         l.add("f6 - rename entry");
         l.add("f7 - make dir");
         l.add("f8 - erase entry");
+        l.add("f9 - view file info");
         l.add("f10 - exit");
         l.add("tab - change panel");
         l.add("ins - change select");
@@ -329,6 +333,13 @@ public class userFilman {
     private void doKeyF2() {
         String a = pan[act].getFn();
         List<String> b = userFlash.calcFileHashes(a);
+        userEditor v = new userEditor(console, b, a, false);
+        v.doView();
+    }
+
+    private void doKeyF9() {
+        String a = pan[act].getFn();
+        List<String> b = userFlash.getFileInfo(a);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }
