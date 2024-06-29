@@ -14,8 +14,6 @@ typedef char EVP_MD_CTX;
 typedef char EVP_CIPHER_CTX;
 typedef char EVP_MD;
 typedef char EVP_PKEY;
-#define EVP_CIPHER_CTX_new() NULL
-#define EVP_MD_CTX_new() NULL
 
 #endif
 
@@ -43,6 +41,7 @@ extern void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned ch
 extern int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
 extern void doStatRound(FILE *commands, int round);
 extern int doConsoleCommand(unsigned char*buf);
+extern int initContext(EVP_CIPHER_CTX **encrCtx, EVP_MD_CTX **hashCtx);
 extern char* getCapas();
 
 #define platformBase "p4emu/"

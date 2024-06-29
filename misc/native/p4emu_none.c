@@ -34,6 +34,13 @@ int initTables() {
 }
 
 
+int initContext(EVP_CIPHER_CTX **encrCtx, EVP_MD_CTX **hashCtx) {
+    *encrCtx = NULL;
+    *hashCtx = NULL;
+    return 0;
+}
+
+
 int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     return 0;
 }

@@ -100,14 +100,9 @@ void doIfaceLoop(int * param) {
     msg.msg_flags = 0;
     struct cmsghdr* cmsg = (struct cmsghdr*)cbuf;
     struct tpacket_auxdata* aux = (struct tpacket_auxdata*)CMSG_DATA(cmsg);
-    EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
-#ifndef HAVE_NOCRYPTO
-    if (encrCtx == NULL) err("error getting encr context");
-#endif
-    EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
-#ifndef HAVE_NOCRYPTO
-    if (hashCtx == NULL) err("error getting hash context");
-#endif
+    EVP_CIPHER_CTX *encrCtx;
+    EVP_MD_CTX *hashCtx;
+    if (initContext(&encrCtx, &hashCtx) != 0) err("error initializing context");
     if (port == cpuPort) {
         for (;;) {
             getPack();
@@ -127,14 +122,9 @@ void doIfaceLoop(int * param) {
 void doSockLoop() {
     FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) err("failed to open file");
-    EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
-#ifndef HAVE_NOCRYPTO
-    if (encrCtx == NULL) err("error getting encr context");
-#endif
-    EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
-#ifndef HAVE_NOCRYPTO
-    if (hashCtx == NULL) err("error getting hash context");
-#endif
+    EVP_CIPHER_CTX *encrCtx;
+    EVP_MD_CTX *hashCtx;
+    if (initContext(&encrCtx, &hashCtx) != 0) err("error initializing context");
     unsigned char buf[16384];
     for (;;) {
         memset(&buf, 0, sizeof(buf));

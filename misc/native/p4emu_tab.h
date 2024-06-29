@@ -795,3 +795,18 @@ int initTables() {
 #endif
     return 0;
 }
+
+
+int initContext(EVP_CIPHER_CTX **encrCtx, EVP_MD_CTX **hashCtx) {
+#ifdef HAVE_NOCRYPTO
+    *encrCtx = NULL;
+    *hashCtx = NULL;
+#else
+    *encrCtx = EVP_CIPHER_CTX_new();
+    if (*encrCtx == NULL) return 1;
+    *hashCtx = EVP_MD_CTX_new();
+    if (*hashCtx == NULL) return 1;
+#endif
+    return 0;
+}
+
