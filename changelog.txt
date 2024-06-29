@@ -15814,3 +15814,8 @@ failed: xot pad
 ---------------------------------- 2024-06-27 19:23:53 24.6.27
 no failed: xot pad
 qc pass: xot pad
+---------------------------------- 2024-06-29 06:55:56 24.6.29
+no todo: flash commander to have file info and hash
+no todo: scheduler asdf single-run
+no todo: commander to get away the cursor
+no todo: flash ext-delete also to commander

@@ -548,8 +548,6 @@ todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
-todo: flash ext-delete also to commander
-todo: commander to get away the cursor
 todo: openflow to have 2 label support and stack to p4lang
 todo: bridge and router have renumber knob
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
@@ -715,6 +713,5 @@ todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
 todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: more clean transpilers for the vm
 todo: more clean converters for the vm
-todo: flash commander to have file info and hash
 todo: banyan vines appletalk and firends protocols in sw
 todo: hackediff alias to diff with the | hacked fun filter
