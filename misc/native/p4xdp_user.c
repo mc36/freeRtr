@@ -4,6 +4,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <linux/version.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <net/if.h>
@@ -167,7 +168,11 @@ int main(int argc, char **argv) {
     cpuPort = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
-    strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
+    if (LINUX_VERSION_CODE >= KERNEL_VERSION(6,5,0)) {
+        strcpy(argv[0] + strlen(argv[0]) - 8, "kern.bin");
+    } else {
+        strcpy(argv[0] + strlen(argv[0]) - 8, "krno.bin");
+    }
     printf("loading %s...\n", argv[0]);
 #if __LIBBPF_CURRENT_VERSION_GEQ(0, 7)
     struct bpf_object *bpf_obj = bpf_object__open_file(argv[0], NULL);

@@ -118,6 +118,46 @@ struct {
 } bridges SEC(".maps");
 
 
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct tunnel4_key);
+    __type(value, struct tunnel_res);
+    __uint(max_entries, 16);
+} tunnels4 SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct tunnel6_key);
+    __type(value, struct tunnel_res);
+    __uint(max_entries, 16);
+} tunnels6 SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct nsh_key);
+    __type(value, struct nsh_res);
+    __uint(max_entries, 16);
+} nshs SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, __u32);
+    __type(value, struct polpol_res);
+    __uint(max_entries, 16);
+} polpols SEC(".maps");
+
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, struct polidx_key);
+    __type(value, __u32);
+    __uint(max_entries, 16);
+} polidxs SEC(".maps");
+
+
 
 
 #define revalidatePacket(size)                                      \
@@ -283,7 +323,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
 
-#pragma unroll
+// #pragma unroll
     for (__u32 rounds = 0; rounds < 3; rounds++) {
 
         __s32 bufP = bufO;
