@@ -24,7 +24,7 @@ select-dis openjdk-19-.*                 #old jvm
 select-dis openjdk-20-.*                 #old jvm
 select-dis openjdk-21-.*                 #old jvm
 select-dis openjdk-22-.*                 #old jvm
-select-nod openjdk-23-jdk-headless       #new jdk
+select-one openjdk-23-jre-headless       #new jdk
 
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/
@@ -35,7 +35,7 @@ package-down
 package-inst
 
 find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
-exec jlink --module-path %tmp%/usr/lib/jvm/%find%/jmods --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base,java.management
+exec mv %tmp%/usr/lib/jvm/%find% %tmp%/java
 exec ln -s /java/bin/java %tmp%/bin/java
 del-alw %tmp%/usr/lib/jvm
 del-alw %tmp%/etc/java-*
