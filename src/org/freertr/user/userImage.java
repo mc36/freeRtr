@@ -58,6 +58,8 @@ public class userImage {
 
     private String uefi = "bootx64.efi";
 
+    private boolean depends = true;
+
     private tabGen<userImageCat> catalogs = new tabGen<userImageCat>();
 
     private tabGen<userImagePkg> allPkgs = new tabGen<userImagePkg>();
@@ -267,31 +269,32 @@ public class userImage {
         return false;
     }
 
-    private void selectOnePackage(int level, String nam, String by, boolean nod) {
+    private boolean selectOnePackage(int level, String nam, String by) {
         nam = nam.trim();
         if (nam.length() < 1) {
-            return;
+            return false;
         }
         userImagePkg pkt = new userImagePkg(nam);
         pkt = allPkgs.find(pkt);
         if (pkt == null) {
             missing.add(new userImagePkg(nam));
-            return;
+            return false;
         }
         pkt.added = by;
         if (matchReg(forbidden, nam) != null) {
             discarded.add(pkt);
-            return;
+            return false;
         }
         if (selected.add(pkt) != null) {
-            return;
+            return true;
         }
-        if (nod) {
-            return;
+        if (!depends) {
+            return true;
         }
         for (int i = 0; i < pkt.depend.size(); i++) {
-            selectOnePackage(level + 1, pkt.depend.get(i), nam, nod);
+            selectOnePackage(level + 1, pkt.depend.get(i), nam);
         }
+        return true;
     }
 
     /**
@@ -533,7 +536,7 @@ public class userImage {
                 continue;
             }
             if (a.equals("select-one")) {
-                selectOnePackage(0, s, s, false);
+                selectOnePackage(0, s, s);
                 continue;
             }
             if (a.equals("select-all")) {
@@ -542,12 +545,24 @@ public class userImage {
                     if (a.length() < 1) {
                         break;
                     }
-                    selectOnePackage(0, a, a, false);
+                    selectOnePackage(0, a, a);
                 }
                 continue;
             }
-            if (a.equals("select-nod")) {
-                selectOnePackage(0, s, s, true);
+            if (a.equals("select-any")) {
+                for (;;) {
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    if (selectOnePackage(0, a, a)) {
+                        break;
+                    }
+                }
+                continue;
+            }
+            if (a.equals("select-dep")) {
+                depends = cmd.word().equals("yes");
                 continue;
             }
             if (a.equals("select-dis")) {

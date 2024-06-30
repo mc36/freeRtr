@@ -4,6 +4,7 @@ include ../misc/image/image.beg
 select-one linux-image-%kern%            #regular kernel
 select-one zlib1g                        #dependency
 select-one libstdc++6                    #dependency
+select-dep no
 select-dis java-common.*                 #commons
 select-dis default-jdk-.*                #def jvm
 select-dis default-jre-.*                #def jvm
@@ -24,7 +25,8 @@ select-dis openjdk-19-.*                 #old jvm
 select-dis openjdk-20-.*                 #old jvm
 select-dis openjdk-21-.*                 #old jvm
 select-dis openjdk-22-.*                 #old jvm
-select-nod openjdk-23-jdk-headless       #new jdk
+select-any openjdk-24-jdk-headless openjdk-23-jdk-headless       #new jdk
+select-dep yes
 
 exec cp ../misc/image/init.jvm %tmp%/init
 exec cp rtr.jar %tmp%/rtr/
