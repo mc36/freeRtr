@@ -23,11 +23,13 @@ char *ifaceName;
 int ifaceIndex;
 int ifaceSock;
 unsigned char *ifaceMem;
-struct iovec *ifaceIov;
+struct iovec *ifaceRiv;
+struct iovec *ifaceTiv;
 struct pollfd ifacePfd;
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;
 struct sockaddr_ll addrIfc;
+int blockNxt = 0;
 int portLoc;
 int portRem;
 int commSock;
@@ -51,7 +53,7 @@ void doRawLoop() {
     int blockNum = 0;
     struct tpacket2_hdr *ppd;
     for (;;) {
-        ppd = (struct tpacket2_hdr *) ifaceIov[blockNum].iov_base;
+        ppd = (struct tpacket2_hdr *) ifaceRiv[blockNum].iov_base;
         if ((ppd->tp_status & TP_STATUS_USER) == 0) {
             poll(&ifacePfd, 1, 1);
             continue;
@@ -78,13 +80,20 @@ void doRawLoop() {
 void doUdpLoop() {
     unsigned char bufD[16384];
     int bufS;
+    struct tpacket2_hdr *ppd;
     for (;;) {
         bufS = sizeof (bufD);
         bufS = recv(commSock, bufD, bufS, 0);
         if (bufS < 0) break;
+        ppd = (struct tpacket2_hdr *) ifaceTiv[blockNxt].iov_base;
+        if (ppd->tp_status != TP_STATUS_AVAILABLE) continue;
+        ppd->tp_status = TP_STATUS_SEND_REQUEST;
+        ppd->tp_len = bufS;
+        memcpy(ifaceTiv[blockNxt].iov_base + TPACKET_ALIGN(sizeof(struct tpacket2_hdr)), bufD, bufS);
         packTx++;
         byteTx += bufS;
-        sendto(ifaceSock, bufD, bufS, 0, (struct sockaddr *) &addrIfc, sizeof (addrIfc));
+        blockNxt = (blockNxt + 1) % blocksMax;
+        sendto(ifaceSock, NULL, 0, 0, (struct sockaddr *) &addrIfc, sizeof (addrIfc));
     }
     err("udp thread exited");
 }
@@ -242,14 +251,19 @@ help :
     rrq.tp_block_nr = blocksMax;
     rrq.tp_frame_nr = (rrq.tp_block_size * rrq.tp_block_nr) / rrq.tp_frame_size;
     rrq.tp_retire_blk_tov = 1;
-    if (setsockopt(ifaceSock, SOL_PACKET, PACKET_RX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable ring buffer");
-    ifaceMem = mmap(NULL, (size_t)rrq.tp_block_size * rrq.tp_block_nr, PROT_READ | PROT_WRITE, MAP_SHARED, ifaceSock, 0);
+    if (setsockopt(ifaceSock, SOL_PACKET, PACKET_RX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable rx ring buffer");
+    if (setsockopt(ifaceSock, SOL_PACKET, PACKET_TX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable tx ring buffer");
+    ifaceMem = mmap(NULL, (size_t)rrq.tp_block_size * rrq.tp_block_nr * 2, PROT_READ | PROT_WRITE, MAP_SHARED, ifaceSock, 0);
     if (ifaceMem == MAP_FAILED) err("failed to mmap ring buffer");
-    ifaceIov = malloc(rrq.tp_block_nr * sizeof (*ifaceIov));
-    if (ifaceIov == NULL) err("failed to allocate iovec memory");
+    ifaceRiv = malloc(rrq.tp_block_nr * sizeof (*ifaceRiv));
+    if (ifaceRiv == NULL) err("failed to allocate rx iovec memory");
+    ifaceTiv = malloc(rrq.tp_block_nr * sizeof (*ifaceRiv));
+    if (ifaceTiv == NULL) err("failed to allocate tx iovec memory");
     for (i = 0; i < rrq.tp_block_nr; i++) {
-        ifaceIov[i].iov_base = ifaceMem + (i * rrq.tp_block_size);
-        ifaceIov[i].iov_len = rrq.tp_block_size;
+        ifaceRiv[i].iov_base = ifaceMem + (i * rrq.tp_block_size);
+        ifaceRiv[i].iov_len = rrq.tp_block_size;
+        ifaceTiv[i].iov_base = ifaceMem + ((i + blocksMax) * rrq.tp_block_size);
+        ifaceTiv[i].iov_len = rrq.tp_block_size;
     }
     memset(&ifacePfd, 0, sizeof (ifacePfd));
     ifacePfd.fd = ifaceSock;

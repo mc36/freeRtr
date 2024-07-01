@@ -19,16 +19,31 @@
 
 #define blocksMax 64
 
+pthread_mutex_t ifaceLock[maxPorts];
 char *ifaceName[maxPorts];
 int ifaceIndex[maxPorts];
 int ifaceSock[maxPorts];
 unsigned char *ifaceMem[maxPorts];
-struct iovec *ifaceIov[maxPorts];
+struct iovec *ifaceRiv[maxPorts];
+struct iovec *ifaceTiv[maxPorts];
 struct pollfd ifacePfd[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
+int blockNxt[maxPorts];
 
 void sendPack(unsigned char *bufD, int bufS, int port) {
-    sendto(ifaceSock[port], bufD, bufS, 0, (struct sockaddr *) &addrIfc[port], sizeof (addrIfc[port]));
+    pthread_mutex_lock(&ifaceLock[port]);
+    struct tpacket2_hdr *ppd;
+    ppd = (struct tpacket2_hdr *) ifaceTiv[port][blockNxt[port]].iov_base;
+    if (ppd->tp_status != TP_STATUS_AVAILABLE) {
+        pthread_mutex_unlock(&ifaceLock[port]);
+        return;
+    }
+    ppd->tp_status = TP_STATUS_SEND_REQUEST;
+    ppd->tp_len = bufS;
+    memcpy(ifaceTiv[port][blockNxt[port]].iov_base + TPACKET_ALIGN(sizeof(struct tpacket2_hdr)), bufD, bufS);
+    blockNxt[port] = (blockNxt[port] + 1) % blocksMax;
+    pthread_mutex_unlock(&ifaceLock[port]);
+    sendto(ifaceSock[port], NULL, 0, 0, (struct sockaddr *) &addrIfc[port], sizeof (addrIfc[port]));
 }
 
 void setMtu(int port, int mtu) {
@@ -68,7 +83,7 @@ int ifaceId[maxPorts];
 
 
 #define packGet                                                                                     \
-    ppd = (struct tpacket2_hdr *) ifaceIov[port][blockNum].iov_base;                                \
+    ppd = (struct tpacket2_hdr *) ifaceRiv[port][blockNum].iov_base;                                \
     if ((ppd->tp_status & TP_STATUS_USER) == 0) {                                                   \
         poll(&ifacePfd[port], 1, 1);                                                                \
         continue;                                                                                   \
@@ -231,18 +246,25 @@ int main(int argc, char **argv) {
         rrq.tp_block_nr = blocksMax;
         rrq.tp_frame_nr = (rrq.tp_block_size * rrq.tp_block_nr) / rrq.tp_frame_size;
         rrq.tp_retire_blk_tov = 1;
-        if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_RX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable ring buffer");
-        ifaceMem[o] = mmap(NULL, (size_t)rrq.tp_block_size * rrq.tp_block_nr, PROT_READ | PROT_WRITE, MAP_SHARED, ifaceSock[o], 0);
+        if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_RX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable rx ring buffer");
+        if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_TX_RING, &rrq, sizeof (rrq)) < 0) err("failed enable tx ring buffer");
+        ifaceMem[o] = mmap(NULL, (size_t)rrq.tp_block_size * rrq.tp_block_nr * 2, PROT_READ | PROT_WRITE, MAP_SHARED, ifaceSock[o], 0);
         if (ifaceMem[o] == MAP_FAILED) err("failed to mmap ring buffer");
-        ifaceIov[o] = malloc(rrq.tp_block_nr * sizeof (*ifaceIov[o]));
-        if (ifaceIov[o] == NULL) err("failed to allocate iovec memory");
+        ifaceRiv[o] = malloc(rrq.tp_block_nr * sizeof (*ifaceRiv[o]));
+        if (ifaceRiv[o] == NULL) err("failed to allocate rx iovec memory");
+        ifaceTiv[o] = malloc(rrq.tp_block_nr * sizeof (*ifaceRiv[o]));
+        if (ifaceTiv[o] == NULL) err("failed to allocate rx iovec memory");
         for (int i = 0; i < rrq.tp_block_nr; i++) {
-            ifaceIov[o][i].iov_base = ifaceMem[o] + (i * rrq.tp_block_size);
-            ifaceIov[o][i].iov_len = rrq.tp_block_size;
+            ifaceRiv[o][i].iov_base = ifaceMem[o] + (i * rrq.tp_block_size);
+            ifaceRiv[o][i].iov_len = rrq.tp_block_size;
+            ifaceTiv[o][i].iov_base = ifaceMem[o] + ((i + blocksMax) * rrq.tp_block_size);
+            ifaceTiv[o][i].iov_len = rrq.tp_block_size;
         }
+        blockNxt[o] = 0;
         memset(&ifacePfd[o], 0, sizeof (ifacePfd[o]));
         ifacePfd[o].fd = ifaceSock[o];
         ifacePfd[o].events = POLLIN | POLLERR;
+        pthread_mutex_init(&ifaceLock[o], NULL);
         ifaceId[o] = o;
     }
 
