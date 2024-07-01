@@ -38,9 +38,9 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
         pthread_mutex_unlock(&ifaceLock[port]);
         return;
     }
-    ppd->tp_status = TP_STATUS_SEND_REQUEST;
-    ppd->tp_len = bufS;
     memcpy(ifaceTiv[port][blockNxt[port]].iov_base + TPACKET_ALIGN(sizeof(struct tpacket2_hdr)), bufD, bufS);
+    ppd->tp_len = bufS;
+    ppd->tp_status = TP_STATUS_SEND_REQUEST;
     blockNxt[port] = (blockNxt[port] + 1) % blocksMax;
     pthread_mutex_unlock(&ifaceLock[port]);
     sendto(ifaceSock[port], NULL, 0, 0, (struct sockaddr *) &addrIfc[port], sizeof (addrIfc[port]));

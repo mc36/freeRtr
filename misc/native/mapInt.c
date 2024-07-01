@@ -87,9 +87,9 @@ void doUdpLoop() {
         if (bufS < 0) break;
         ppd = (struct tpacket2_hdr *) ifaceTiv[blockNxt].iov_base;
         if (ppd->tp_status != TP_STATUS_AVAILABLE) continue;
-        ppd->tp_status = TP_STATUS_SEND_REQUEST;
-        ppd->tp_len = bufS;
         memcpy(ifaceTiv[blockNxt].iov_base + TPACKET_ALIGN(sizeof(struct tpacket2_hdr)), bufD, bufS);
+        ppd->tp_len = bufS;
+        ppd->tp_status = TP_STATUS_SEND_REQUEST;
         packTx++;
         byteTx += bufS;
         blockNxt = (blockNxt + 1) % blocksMax;
