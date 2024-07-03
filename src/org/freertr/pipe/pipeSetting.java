@@ -89,6 +89,11 @@ public class pipeSetting implements Comparator<pipeSetting> {
     public final static int ansiMode = 15;
 
     /**
+     * password stars
+     */
+    public final static int passStar = 16;
+
+    /**
      * name of the setting
      */
     protected final int name;
@@ -136,6 +141,7 @@ public class pipeSetting implements Comparator<pipeSetting> {
         l.add("bells|" + pip.settingsGet(pipeSetting.termBells, false));
         l.add("ansimode|" + pip.settingsGet(pipeSetting.ansiMode, userScreen.ansiMode.normal));
         l.add("timestamps|" + pip.settingsGet(pipeSetting.times, false));
+        l.add("passwdstar|" + pip.settingsGet(pipeSetting.passStar, false));
         l.add("deactivate|" + pip.settingsGet(pipeSetting.deactive, 65536));
         l.add("escape|" + pip.settingsGet(pipeSetting.escape, 65536));
         l.add("table|" + pip.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));

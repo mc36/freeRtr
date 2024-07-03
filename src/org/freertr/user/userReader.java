@@ -193,41 +193,42 @@ public class userReader implements Comparator<String> {
      */
     public final static String[] linedefL = {
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec interface",
-        ".*! exec timeout 300000",
-        ".*! exec width 79",
-        ".*! exec height 24",
-        ".*! exec history 64",
+        ".*!" + cmds.tabulator + "exec timeout 300000",
+        ".*!" + cmds.tabulator + "exec width 79",
+        ".*!" + cmds.tabulator + "exec height 24",
+        ".*!" + cmds.tabulator + "exec history 64",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp",
-        ".*! exec colorize normal",
-        ".*! exec ansimode normal",
+        ".*!" + cmds.tabulator + "exec colorize normal",
+        ".*!" + cmds.tabulator + "exec ansimode normal",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec spacetab",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec capslock",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec bells",
-        ".*! exec tablemode normal",
-        ".*! exec welcome welcome",
-        ".*! exec before before:",
-        ".*! exec ready line ready",
-        ".*! exec bye see you later",
+        ".*!" + cmds.tabulator + "exec tablemode normal",
+        ".*!" + cmds.tabulator + "exec welcome welcome",
+        ".*!" + cmds.tabulator + "exec before before:",
+        ".*!" + cmds.tabulator + "exec ready line ready",
+        ".*!" + cmds.tabulator + "exec bye see you later",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec logging",
-        ".*! exec privilege 15",
-        ".*! exec autocommand ",
-        ".*! exec banner",
-        ".*! exec title",
+        ".*!" + cmds.tabulator + "exec privilege 15",
+        ".*!" + cmds.tabulator + "exec autocommand ",
+        ".*!" + cmds.tabulator + "exec banner",
+        ".*!" + cmds.tabulator + "exec title",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec detect",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec expirity",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec monitor",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec autohangup",
-        ".*! login timeout 60000",
-        ".*! login retry 3",
-        ".*! login delay 3000",
-        ".*! login user username:",
-        ".*! login pass password:",
-        ".*! login fail authentication failed",
-        ".*! login activate 13",
-        ".*! login deactivate 65536",
-        ".*! login escape 3",
+        ".*!" + cmds.tabulator + "login timeout 60000",
+        ".*!" + cmds.tabulator + "login retry 3",
+        ".*!" + cmds.tabulator + "login delay 3000",
+        ".*!" + cmds.tabulator + "login user username:",
+        ".*!" + cmds.tabulator + "login pass password:",
+        ".*!" + cmds.tabulator + "login fail authentication failed",
+        ".*!" + cmds.tabulator + "login activate 13",
+        ".*!" + cmds.tabulator + "login deactivate 65536",
+        ".*!" + cmds.tabulator + "login escape 3",
+        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "login stars",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "login logging",
-        ".*! login last none"
+        ".*!" + cmds.tabulator + "login last none"
     };
 
     /**
@@ -253,6 +254,7 @@ public class userReader implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.ansiMode, userScreen.ansiMode.normal);
             pipe.settingsAdd(pipeSetting.logging, false);
             pipe.settingsAdd(pipeSetting.times, false);
+            pipe.settingsAdd(pipeSetting.passStar, false);
             pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
             pipe.settingsAdd(pipeSetting.width, 79);
             pipe.settingsAdd(pipeSetting.height, 24);
@@ -268,6 +270,7 @@ public class userReader implements Comparator<String> {
         pipe.settingsAdd(pipeSetting.termBells, parent.execBells);
         pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
+        pipe.settingsAdd(pipeSetting.passStar, parent.passStars);
         pipe.settingsAdd(pipeSetting.colors, parent.execColor);
         pipe.settingsAdd(pipeSetting.width, parent.execWidth);
         pipe.settingsAdd(pipeSetting.height, parent.execHeight);

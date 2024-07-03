@@ -789,11 +789,6 @@ public class cfgAll {
     public static String sshAgent = null;
 
     /**
-     * password stars
-     */
-    public static boolean passwdStars = false;
-
-    /**
      * prefer ipv6
      */
     public static boolean preferIpv6 = false;
@@ -1376,7 +1371,6 @@ public class cfgAll {
         "!" + cmds.negated + cmds.tabulator + "client mail-username",
         "!" + cmds.negated + cmds.tabulator + "client mail-password",
         "!" + cmds.negated + cmds.tabulator + "client prefer-ipv6",
-        "!" + cmds.negated + cmds.tabulator + "client password-stars",
         "!" + cmds.negated + cmds.tabulator + "client end-format",
         "!client graceful-reload",
         "!client ftp-passive",
@@ -3745,7 +3739,6 @@ public class cfgAll {
         cmds.cfgLine(l, domainName == null, "", "client domain-name", domainName);
         cmds.cfgLine(l, !domainLookup, "", "client domain-lookup", "");
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
-        cmds.cfgLine(l, !passwdStars, "", "client password-stars", "");
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);
         if (whoisOnline != null) {
             String a = "";

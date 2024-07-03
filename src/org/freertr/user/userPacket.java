@@ -66,6 +66,7 @@ import org.freertr.serv.servGeneric;
 import org.freertr.serv.servP4lang;
 import org.freertr.enc.encUrl;
 import org.freertr.pack.packXotPad;
+import org.freertr.pipe.pipeSetting;
 import org.freertr.prt.prtArping;
 import org.freertr.rtr.rtrBgpDump;
 import org.freertr.tab.tabGen;
@@ -1960,7 +1961,7 @@ public class userPacket {
             String usr = cmd.pipe.lineGet(0x32);
             cmd.pipe.strPut("pass:");
             int i;
-            if (cfgAll.passwdStars) {
+            if (cmd.pipe.settingsGet(pipeSetting.passStar, false)) {
                 i = 0x33;
             } else {
                 i = 0x31;

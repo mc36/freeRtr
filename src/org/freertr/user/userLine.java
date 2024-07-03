@@ -114,6 +114,11 @@ public class userLine {
     public int loginLast = 0;
 
     /**
+     * password stars
+     */
+    public boolean passStars = false;
+
+    /**
      * authentication list
      */
     public authGeneric authenticList;
@@ -367,6 +372,7 @@ public class userLine {
         lst.add(beg + "login user " + promptUser);
         lst.add(beg + "login pass " + promptPass);
         lst.add(beg + "login fail " + promptFailed);
+        cmds.cfgLine(lst, !passStars, beg, "login stars", "");
         cmds.cfgLine(lst, !loginLogging, beg, "login logging", "");
         String a;
         switch (loginLast) {
@@ -554,6 +560,10 @@ public class userLine {
                 authenticList = lst.getAuther();
                 return false;
             }
+            if (s.equals("stars")) {
+                passStars = true;
+                return false;
+            }
             if (s.equals("escape")) {
                 promptEscape = bits.str2num(cmd.word());
                 return false;
@@ -670,6 +680,10 @@ public class userLine {
                 authenticList = null;
                 return false;
             }
+            if (s.equals("stars")) {
+                passStars = false;
+                return false;
+            }
             return true;
         }
         return true;
@@ -740,6 +754,7 @@ public class userLine {
         l.add(null, "3 .      local                      locally");
         l.add(null, "3 .      both                       everything");
         l.add(null, "2 .    logging                      enable logging");
+        l.add(null, "2 .    stars                        use stars in password prompt");
         l.add(null, "2 3    authentication               set authentication");
         l.add(null, "3 .      <name:aaa>                 name of authentication list");
         l.add(null, "2 3    escape                       set escape character");
@@ -925,7 +940,7 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
             }
             pipe.strPut(parent.promptPass);
             int i;
-            if (cfgAll.passwdStars) {
+            if (parent.passStars) {
                 i = 0x33;
             } else {
                 i = 0x31;

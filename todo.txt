@@ -138,7 +138,6 @@ server smtp / collect-failures
 server smtp / check reverse of the sender and put the info to received field...
 server smtp / auto-reply editor/text/etc
 
-client password-stars to get under the userLine
 client buggy-trigger <trigger>
 client log-boot to be emailed error.log
 client upgrade-force url

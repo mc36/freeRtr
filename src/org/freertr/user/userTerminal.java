@@ -3,6 +3,7 @@ package org.freertr.user;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntDns;
+import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.sec.secClient;
 import org.freertr.serv.servGeneric;
@@ -76,7 +77,7 @@ public class userTerminal {
         console.strPut(que);
         int red = 0x32;
         if (hide) {
-            if (cfgAll.passwdStars) {
+            if (console.settingsGet(pipeSetting.passStar, false)) {
                 red = 0x33;
             } else {
                 red = 0x31;

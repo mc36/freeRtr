@@ -1025,6 +1025,7 @@ server telnet tel vrf v1 interface loopback0
  exec tablemode table
  exec authorization access
  login authentication access
+ login stars
  login logging
  login last global
  exit
@@ -1174,7 +1175,6 @@ client proxy p1
 client domain-name mchome.nop.hu
 client domain-lookup
 client prefer-ipv6
-client password-stars
 client whois-server www.mchome.nop.hu
 client whois-online http://bgp.he.net/AS http://ipinfo.io/AS
 client pastebin http://paste.nop.hu/paster.class?data=

@@ -2616,10 +2616,6 @@ public class userConfig {
             cfgAll.graceReload = false;
             return;
         }
-        if (s.equals("password-stars")) {
-            cfgAll.passwdStars = false;
-            return;
-        }
         if (s.equals("tcp-ecn")) {
             cfgAll.tcpEcn = false;
             return;
@@ -2893,10 +2889,6 @@ public class userConfig {
         }
         if (a.equals("graceful-reload")) {
             cfgAll.graceReload = true;
-            return;
-        }
-        if (a.equals("password-stars")) {
-            cfgAll.passwdStars = true;
             return;
         }
         if (a.equals("prefer-ipv6")) {

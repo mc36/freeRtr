@@ -1656,6 +1656,7 @@ public class userExec {
         hl.add(null, "3 .        rainbow                    select rainbow mode");
         hl.add(null, "3 .        prompt                     select prompt mode");
         hl.add(null, "2 .      spacetab                     treat space as tabulator");
+        hl.add(null, "2 .      stars                        use stars in password prompt");
         hl.add(null, "2 .      title                        resend terminal title");
         hl.add(null, "2 .      capslock                     treat lowercase as uppercase");
         hl.add(null, "2 .      bells                        bells the terminal sometimes");
@@ -2702,7 +2703,7 @@ public class userExec {
             }
             pipe.strPut("password:");
             int i;
-            if (cfgAll.passwdStars) {
+            if (pipe.settingsGet(pipeSetting.passStar, false)) {
                 i = 0x33;
             } else {
                 i = 0x31;
@@ -4777,6 +4778,10 @@ public class userExec {
             pipe.settingsPut(pipeSetting.times, true);
             return;
         }
+        if (a.equals("stars")) {
+            pipe.settingsPut(pipeSetting.passStar, true);
+            return;
+        }
         if (a.equals("colorize")) {
             pipe.settingsPut(pipeSetting.colors, userFormat.str2colmod(cmd.word()));
             return;
@@ -4843,6 +4848,10 @@ public class userExec {
         }
         if (a.equals("timestamps")) {
             pipe.settingsPut(pipeSetting.times, false);
+            return;
+        }
+        if (a.equals("stars")) {
+            pipe.settingsPut(pipeSetting.passStar, false);
             return;
         }
         if (a.equals("colorize")) {
