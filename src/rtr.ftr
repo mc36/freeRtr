@@ -3494,7 +3494,6 @@ todo: server smtp / tag messages by subject
 todo: server smtp / collect-failures
 todo: server smtp / check reverse of the sender and put the info to received field...
 todo: server smtp / auto-reply editor/text/etc
-todo: client password-stars to get under the userLine
 todo: client buggy-trigger <trigger>
 todo: client log-boot to be emailed error.log
 todo: client upgrade-force url
