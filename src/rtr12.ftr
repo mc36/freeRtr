@@ -65,8 +65,6 @@ todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
 todo: ioam as rfc9452
-todo: flash ext-delete also to commander
-todo: commander to get away the cursor
 todo: openflow to have 2 label support and stack to p4lang
 todo: bridge and router have renumber knob
 todo: mist natives p4fwd to report the boot messages through the control channel in dataplane-says
@@ -119,7 +117,6 @@ todo: server smtp / tag messages by subject
 todo: server smtp / collect-failures
 todo: server smtp / check reverse of the sender and put the info to received field...
 todo: server smtp / auto-reply editor/text/etc
-todo: client password-stars to get under the userLine
 todo: client buggy-trigger <trigger>
 todo: client log-boot to be emailed error.log
 todo: client upgrade-force url
@@ -212,7 +209,6 @@ todo: misc motion emails to contain a small note like check recordings here unar
 todo: misc player volume to time out to the main screen
 todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
 todo: server tftp to have server http backup alike functionality
-todo: scheduler asdf single-run
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
 todo: show running-config vdc <tabbable>
 todo: interface * vrf <tabbable> and upgrade-cli
@@ -233,6 +229,5 @@ todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
 todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
 todo: more clean transpilers for the vm
 todo: more clean converters for the vm
-todo: flash commander to have file info and hash
 todo: banyan vines appletalk and firends protocols in sw
 todo: hackediff alias to diff with the | hacked fun filter

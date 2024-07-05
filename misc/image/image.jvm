@@ -25,7 +25,8 @@ select-dis openjdk-19-.*                 #old jvm
 select-dis openjdk-20-.*                 #old jvm
 select-dis openjdk-21-.*                 #old jvm
 select-dis openjdk-22-.*                 #old jvm
-select-any openjdk-24-jdk-headless openjdk-23-jdk-headless       #new jdk
+select-dis openjdk-23-.*                 #old jvm
+select-any openjdk-24-jdk-headless       #new jdk
 select-dep yes
 
 exec cp ../misc/image/init.jvm %tmp%/init
