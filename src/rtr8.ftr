@@ -162,8 +162,8 @@ qc pass: p4lang: wireguard over vlan
 qc pass: p4lang: wireguard over asymmetric ports
 qc pass: p4lang: wireguard with ingress access list
 qc pass: p4lang: wireguard with egress access list
-qc pass: p4lang: multicast routing over macsec
-qc pass: p4lang: multicast routing over vlan macsec
+failed: p4lang: multicast routing over macsec
+failed: p4lang: multicast routing over vlan macsec
 qc pass: p4lang: replay window with openvpn
 qc pass: p4lang: replay window with wireguard
 qc pass: p4lang: openvpn with aes128cfb
@@ -351,12 +351,12 @@ qc pass: p4lang: sr te over mpls mid
 qc pass: p4lang: policy routing between vrfs
 qc pass: p4lang: policy routing with nexthop
 qc pass: p4lang: policy routing with interface and nexthop
-qc pass: p4lang: multicast routing
-qc pass: p4lang: multicast vlan routing
-qc pass: p4lang: multicast bundle routing
-qc pass: p4lang: multicast bundle vlan routing
-qc pass: p4lang: hairpin multicast routing
-qc pass: p4lang: hairpin vlan multicast routing
+failed: p4lang: multicast routing
+failed: p4lang: multicast vlan routing
+failed: p4lang: multicast bundle routing
+failed: p4lang: multicast bundle vlan routing
+failed: p4lang: hairpin multicast routing
+failed: p4lang: hairpin vlan multicast routing
 qc pass: p4lang: mldp core
 qc pass: p4lang: mldp vlan core
 qc pass: p4lang: mldp core over gre
@@ -365,12 +365,12 @@ qc pass: p4lang: mldp bundle core
 qc pass: p4lang: mldp bundle vlan core
 qc pass: p4lang: hairpin mldp core
 qc pass: p4lang: hairpin vlan mldp core
-qc pass: p4lang: mldp egress edge
-qc pass: p4lang: mldp vlan egress edge
+failed: p4lang: mldp egress edge
+failed: p4lang: mldp vlan egress edge
 qc pass: p4lang: mldp ingress edge
 qc pass: p4lang: mldp vlan ingress edge
-qc pass: p4lang: mldp core and egress edge
-qc pass: p4lang: vlan mldp core and egress edge
+failed: p4lang: mldp core and egress edge
+failed: p4lang: vlan mldp core and egress edge
 qc pass: p4lang: bier core
 qc pass: p4lang: bier vlan core
 qc pass: p4lang: bier core over gre
@@ -379,12 +379,12 @@ qc pass: p4lang: bier bundle core
 qc pass: p4lang: bier bundle vlan core
 qc pass: p4lang: hairpin bier core
 qc pass: p4lang: hairpin vlan bier core
-qc pass: p4lang: bier egress edge
-qc pass: p4lang: bier vlan egress edge
+failed: p4lang: bier egress edge
+failed: p4lang: bier vlan egress edge
 qc pass: p4lang: bier ingress edge
 qc pass: p4lang: bier vlan ingress edge
-qc pass: p4lang: bier core and egress edge
-qc pass: p4lang: vlan bier core and egress edge
+failed: p4lang: bier core and egress edge
+failed: p4lang: vlan bier core and egress edge
 qc pass: p4lang: amt server over ipv4
 qc pass: p4lang: amt server over ipv6
 qc pass: p4lang: amt server over ipv4 loopback
@@ -543,7 +543,7 @@ qc pass: p4lang: etherip server over ipv6
 qc pass: p4lang: etherip server over ipv4 loopback
 qc pass: p4lang: etherip server over ipv6 loopback
 qc pass: p4lang: gre local connect
-qc pass: p4lang: gre multicast routing
+failed: p4lang: gre multicast routing
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
