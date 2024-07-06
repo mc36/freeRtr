@@ -164,8 +164,8 @@ http://sources.freertr.org/cfg/p4lang-crypt063.tst;p4lang-crypt063.tst;ok;not ok
 http://sources.freertr.org/cfg/p4lang-crypt064.tst;p4lang-crypt064.tst;ok;not ok;ok;not ok;not ok;p4lang: wireguard over asymmetric ports
 http://sources.freertr.org/cfg/p4lang-crypt065.tst;p4lang-crypt065.tst;ok;not ok;ok;not ok;not ok;p4lang: wireguard with ingress access list
 http://sources.freertr.org/cfg/p4lang-crypt066.tst;p4lang-crypt066.tst;ok;not ok;ok;not ok;not ok;p4lang: wireguard with egress access list
-http://sources.freertr.org/cfg/p4lang-crypt067.tst;p4lang-crypt067.tst;not ok;not ok;ok;not ok;not ok;p4lang: multicast routing over macsec
-http://sources.freertr.org/cfg/p4lang-crypt068.tst;p4lang-crypt068.tst;not ok;not ok;ok;not ok;not ok;p4lang: multicast routing over vlan macsec
+http://sources.freertr.org/cfg/p4lang-crypt067.tst;p4lang-crypt067.tst;ok;not ok;ok;not ok;not ok;p4lang: multicast routing over macsec
+http://sources.freertr.org/cfg/p4lang-crypt068.tst;p4lang-crypt068.tst;ok;not ok;ok;not ok;not ok;p4lang: multicast routing over vlan macsec
 http://sources.freertr.org/cfg/p4lang-crypt069.tst;p4lang-crypt069.tst;ok;not ok;ok;not ok;not ok;p4lang: replay window with openvpn
 http://sources.freertr.org/cfg/p4lang-crypt070.tst;p4lang-crypt070.tst;ok;not ok;ok;not ok;not ok;p4lang: replay window with wireguard
 http://sources.freertr.org/cfg/p4lang-crypt071.tst;p4lang-crypt071.tst;ok;not ok;ok;not ok;not ok;p4lang: openvpn with aes128cfb
@@ -353,12 +353,12 @@ http://sources.freertr.org/cfg/p4lang-rout132.tst;p4lang-rout132.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout133.tst;p4lang-rout133.tst;ok;ok;ok;ok;not ok;p4lang: policy routing between vrfs
 http://sources.freertr.org/cfg/p4lang-rout134.tst;p4lang-rout134.tst;ok;ok;ok;ok;not ok;p4lang: policy routing with nexthop
 http://sources.freertr.org/cfg/p4lang-rout135.tst;p4lang-rout135.tst;ok;ok;ok;ok;not ok;p4lang: policy routing with interface and nexthop
-http://sources.freertr.org/cfg/p4lang-rout136.tst;p4lang-rout136.tst;not ok;ok;ok;ok;not ok;p4lang: multicast routing
-http://sources.freertr.org/cfg/p4lang-rout137.tst;p4lang-rout137.tst;not ok;ok;ok;ok;not ok;p4lang: multicast vlan routing
-http://sources.freertr.org/cfg/p4lang-rout138.tst;p4lang-rout138.tst;not ok;ok;ok;ok;not ok;p4lang: multicast bundle routing
-http://sources.freertr.org/cfg/p4lang-rout139.tst;p4lang-rout139.tst;not ok;ok;ok;ok;not ok;p4lang: multicast bundle vlan routing
-http://sources.freertr.org/cfg/p4lang-rout140.tst;p4lang-rout140.tst;not ok;ok;ok;ok;not ok;p4lang: hairpin multicast routing
-http://sources.freertr.org/cfg/p4lang-rout141.tst;p4lang-rout141.tst;not ok;ok;ok;ok;not ok;p4lang: hairpin vlan multicast routing
+http://sources.freertr.org/cfg/p4lang-rout136.tst;p4lang-rout136.tst;ok;ok;ok;ok;not ok;p4lang: multicast routing
+http://sources.freertr.org/cfg/p4lang-rout137.tst;p4lang-rout137.tst;ok;ok;ok;ok;not ok;p4lang: multicast vlan routing
+http://sources.freertr.org/cfg/p4lang-rout138.tst;p4lang-rout138.tst;ok;ok;ok;ok;not ok;p4lang: multicast bundle routing
+http://sources.freertr.org/cfg/p4lang-rout139.tst;p4lang-rout139.tst;ok;ok;ok;ok;not ok;p4lang: multicast bundle vlan routing
+http://sources.freertr.org/cfg/p4lang-rout140.tst;p4lang-rout140.tst;ok;ok;ok;ok;not ok;p4lang: hairpin multicast routing
+http://sources.freertr.org/cfg/p4lang-rout141.tst;p4lang-rout141.tst;ok;ok;ok;ok;not ok;p4lang: hairpin vlan multicast routing
 http://sources.freertr.org/cfg/p4lang-rout142.tst;p4lang-rout142.tst;ok;ok;ok;ok;not ok;p4lang: mldp core
 http://sources.freertr.org/cfg/p4lang-rout143.tst;p4lang-rout143.tst;ok;ok;ok;ok;not ok;p4lang: mldp vlan core
 http://sources.freertr.org/cfg/p4lang-rout144.tst;p4lang-rout144.tst;ok;ok;ok;not ok;not ok;p4lang: mldp core over gre
@@ -367,12 +367,12 @@ http://sources.freertr.org/cfg/p4lang-rout146.tst;p4lang-rout146.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout147.tst;p4lang-rout147.tst;ok;ok;ok;ok;not ok;p4lang: mldp bundle vlan core
 http://sources.freertr.org/cfg/p4lang-rout148.tst;p4lang-rout148.tst;ok;ok;ok;ok;not ok;p4lang: hairpin mldp core
 http://sources.freertr.org/cfg/p4lang-rout149.tst;p4lang-rout149.tst;ok;ok;ok;ok;not ok;p4lang: hairpin vlan mldp core
-http://sources.freertr.org/cfg/p4lang-rout150.tst;p4lang-rout150.tst;not ok;ok;ok;ok;not ok;p4lang: mldp egress edge
-http://sources.freertr.org/cfg/p4lang-rout151.tst;p4lang-rout151.tst;not ok;ok;ok;ok;not ok;p4lang: mldp vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout150.tst;p4lang-rout150.tst;ok;ok;ok;ok;not ok;p4lang: mldp egress edge
+http://sources.freertr.org/cfg/p4lang-rout151.tst;p4lang-rout151.tst;ok;ok;ok;ok;not ok;p4lang: mldp vlan egress edge
 http://sources.freertr.org/cfg/p4lang-rout152.tst;p4lang-rout152.tst;ok;ok;ok;ok;not ok;p4lang: mldp ingress edge
 http://sources.freertr.org/cfg/p4lang-rout153.tst;p4lang-rout153.tst;ok;ok;ok;ok;not ok;p4lang: mldp vlan ingress edge
-http://sources.freertr.org/cfg/p4lang-rout154.tst;p4lang-rout154.tst;not ok;ok;ok;ok;not ok;p4lang: mldp core and egress edge
-http://sources.freertr.org/cfg/p4lang-rout155.tst;p4lang-rout155.tst;not ok;ok;ok;ok;not ok;p4lang: vlan mldp core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout154.tst;p4lang-rout154.tst;ok;ok;ok;ok;not ok;p4lang: mldp core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout155.tst;p4lang-rout155.tst;ok;ok;ok;ok;not ok;p4lang: vlan mldp core and egress edge
 http://sources.freertr.org/cfg/p4lang-rout156.tst;p4lang-rout156.tst;ok;ok;ok;ok;not ok;p4lang: bier core
 http://sources.freertr.org/cfg/p4lang-rout157.tst;p4lang-rout157.tst;ok;ok;ok;ok;not ok;p4lang: bier vlan core
 http://sources.freertr.org/cfg/p4lang-rout158.tst;p4lang-rout158.tst;ok;ok;ok;not ok;not ok;p4lang: bier core over gre
@@ -381,12 +381,12 @@ http://sources.freertr.org/cfg/p4lang-rout160.tst;p4lang-rout160.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout161.tst;p4lang-rout161.tst;ok;ok;ok;ok;not ok;p4lang: bier bundle vlan core
 http://sources.freertr.org/cfg/p4lang-rout162.tst;p4lang-rout162.tst;ok;ok;ok;ok;not ok;p4lang: hairpin bier core
 http://sources.freertr.org/cfg/p4lang-rout163.tst;p4lang-rout163.tst;ok;ok;ok;ok;not ok;p4lang: hairpin vlan bier core
-http://sources.freertr.org/cfg/p4lang-rout164.tst;p4lang-rout164.tst;not ok;ok;ok;ok;not ok;p4lang: bier egress edge
-http://sources.freertr.org/cfg/p4lang-rout165.tst;p4lang-rout165.tst;not ok;ok;ok;ok;not ok;p4lang: bier vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout164.tst;p4lang-rout164.tst;ok;ok;ok;ok;not ok;p4lang: bier egress edge
+http://sources.freertr.org/cfg/p4lang-rout165.tst;p4lang-rout165.tst;ok;ok;ok;ok;not ok;p4lang: bier vlan egress edge
 http://sources.freertr.org/cfg/p4lang-rout166.tst;p4lang-rout166.tst;ok;ok;ok;ok;not ok;p4lang: bier ingress edge
 http://sources.freertr.org/cfg/p4lang-rout167.tst;p4lang-rout167.tst;ok;ok;ok;ok;not ok;p4lang: bier vlan ingress edge
-http://sources.freertr.org/cfg/p4lang-rout168.tst;p4lang-rout168.tst;not ok;ok;ok;ok;not ok;p4lang: bier core and egress edge
-http://sources.freertr.org/cfg/p4lang-rout169.tst;p4lang-rout169.tst;not ok;ok;ok;ok;not ok;p4lang: vlan bier core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout168.tst;p4lang-rout168.tst;ok;ok;ok;ok;not ok;p4lang: bier core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout169.tst;p4lang-rout169.tst;ok;ok;ok;ok;not ok;p4lang: vlan bier core and egress edge
 http://sources.freertr.org/cfg/p4lang-rout170.tst;p4lang-rout170.tst;ok;ok;ok;not ok;not ok;p4lang: amt server over ipv4
 http://sources.freertr.org/cfg/p4lang-rout171.tst;p4lang-rout171.tst;ok;ok;ok;not ok;not ok;p4lang: amt server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout172.tst;p4lang-rout172.tst;ok;ok;ok;not ok;not ok;p4lang: amt server over ipv4 loopback
@@ -545,4 +545,4 @@ http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;ok;ok;ok;not ok;ok;p4lang: gre local connect
-http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;not ok;ok;ok;not ok;not ok;p4lang: gre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;ok;ok;ok;not ok;not ok;p4lang: gre multicast routing

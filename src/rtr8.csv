@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.7.6-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-07-06 07:40:48, took 00:10:58, with 60 workers, on 546 cases, 17 failed, 0 traces, 52 retries
+-;-;-;2024-07-06 08:33:59, took 00:09:20, with 60 workers, on 546 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -166,8 +166,8 @@ http://sources.freertr.org/cfg/p4lang-crypt063.tst;p4lang-crypt063.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt064.tst;p4lang-crypt064.tst;success;p4lang: wireguard over asymmetric ports
 http://sources.freertr.org/cfg/p4lang-crypt065.tst;p4lang-crypt065.tst;success;p4lang: wireguard with ingress access list
 http://sources.freertr.org/cfg/p4lang-crypt066.tst;p4lang-crypt066.tst;success;p4lang: wireguard with egress access list
-http://sources.freertr.org/cfg/p4lang-crypt067.tst;p4lang-crypt067.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou eth1 multi;p4lang: multicast routing over macsec
-http://sources.freertr.org/cfg/p4lang-crypt068.tst;p4lang-crypt068.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou eth1 multi;p4lang: multicast routing over vlan macsec
+http://sources.freertr.org/cfg/p4lang-crypt067.tst;p4lang-crypt067.tst;success;p4lang: multicast routing over macsec
+http://sources.freertr.org/cfg/p4lang-crypt068.tst;p4lang-crypt068.tst;success;p4lang: multicast routing over vlan macsec
 http://sources.freertr.org/cfg/p4lang-crypt069.tst;p4lang-crypt069.tst;success;p4lang: replay window with openvpn
 http://sources.freertr.org/cfg/p4lang-crypt070.tst;p4lang-crypt070.tst;success;p4lang: replay window with wireguard
 http://sources.freertr.org/cfg/p4lang-crypt071.tst;p4lang-crypt071.tst;success;p4lang: openvpn with aes128cfb
@@ -355,12 +355,12 @@ http://sources.freertr.org/cfg/p4lang-rout132.tst;p4lang-rout132.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout133.tst;p4lang-rout133.tst;success;p4lang: policy routing between vrfs
 http://sources.freertr.org/cfg/p4lang-rout134.tst;p4lang-rout134.tst;success;p4lang: policy routing with nexthop
 http://sources.freertr.org/cfg/p4lang-rout135.tst;p4lang-rout135.tst;success;p4lang: policy routing with interface and nexthop
-http://sources.freertr.org/cfg/p4lang-rout136.tst;p4lang-rout136.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: multicast routing
-http://sources.freertr.org/cfg/p4lang-rout137.tst;p4lang-rout137.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: multicast vlan routing
-http://sources.freertr.org/cfg/p4lang-rout138.tst;p4lang-rout138.tst;#6-run-r3 tping 200 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: multicast bundle routing
-http://sources.freertr.org/cfg/p4lang-rout139.tst;p4lang-rout139.tst;#6-run-r3 tping 200 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: multicast bundle vlan routing
-http://sources.freertr.org/cfg/p4lang-rout140.tst;p4lang-rout140.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: hairpin multicast routing
-http://sources.freertr.org/cfg/p4lang-rout141.tst;p4lang-rout141.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: hairpin vlan multicast routing
+http://sources.freertr.org/cfg/p4lang-rout136.tst;p4lang-rout136.tst;success;p4lang: multicast routing
+http://sources.freertr.org/cfg/p4lang-rout137.tst;p4lang-rout137.tst;success;p4lang: multicast vlan routing
+http://sources.freertr.org/cfg/p4lang-rout138.tst;p4lang-rout138.tst;success;p4lang: multicast bundle routing
+http://sources.freertr.org/cfg/p4lang-rout139.tst;p4lang-rout139.tst;success;p4lang: multicast bundle vlan routing
+http://sources.freertr.org/cfg/p4lang-rout140.tst;p4lang-rout140.tst;success;p4lang: hairpin multicast routing
+http://sources.freertr.org/cfg/p4lang-rout141.tst;p4lang-rout141.tst;success;p4lang: hairpin vlan multicast routing
 http://sources.freertr.org/cfg/p4lang-rout142.tst;p4lang-rout142.tst;success;p4lang: mldp core
 http://sources.freertr.org/cfg/p4lang-rout143.tst;p4lang-rout143.tst;success;p4lang: mldp vlan core
 http://sources.freertr.org/cfg/p4lang-rout144.tst;p4lang-rout144.tst;success;p4lang: mldp core over gre
@@ -369,12 +369,12 @@ http://sources.freertr.org/cfg/p4lang-rout146.tst;p4lang-rout146.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout147.tst;p4lang-rout147.tst;success;p4lang: mldp bundle vlan core
 http://sources.freertr.org/cfg/p4lang-rout148.tst;p4lang-rout148.tst;success;p4lang: hairpin mldp core
 http://sources.freertr.org/cfg/p4lang-rout149.tst;p4lang-rout149.tst;success;p4lang: hairpin vlan mldp core
-http://sources.freertr.org/cfg/p4lang-rout150.tst;p4lang-rout150.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: mldp egress edge
-http://sources.freertr.org/cfg/p4lang-rout151.tst;p4lang-rout151.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: mldp vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout150.tst;p4lang-rout150.tst;success;p4lang: mldp egress edge
+http://sources.freertr.org/cfg/p4lang-rout151.tst;p4lang-rout151.tst;success;p4lang: mldp vlan egress edge
 http://sources.freertr.org/cfg/p4lang-rout152.tst;p4lang-rout152.tst;success;p4lang: mldp ingress edge
 http://sources.freertr.org/cfg/p4lang-rout153.tst;p4lang-rout153.tst;success;p4lang: mldp vlan ingress edge
-http://sources.freertr.org/cfg/p4lang-rout154.tst;p4lang-rout154.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: mldp core and egress edge
-http://sources.freertr.org/cfg/p4lang-rout155.tst;p4lang-rout155.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: vlan mldp core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout154.tst;p4lang-rout154.tst;success;p4lang: mldp core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout155.tst;p4lang-rout155.tst;success;p4lang: vlan mldp core and egress edge
 http://sources.freertr.org/cfg/p4lang-rout156.tst;p4lang-rout156.tst;success;p4lang: bier core
 http://sources.freertr.org/cfg/p4lang-rout157.tst;p4lang-rout157.tst;success;p4lang: bier vlan core
 http://sources.freertr.org/cfg/p4lang-rout158.tst;p4lang-rout158.tst;success;p4lang: bier core over gre
@@ -383,12 +383,12 @@ http://sources.freertr.org/cfg/p4lang-rout160.tst;p4lang-rout160.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout161.tst;p4lang-rout161.tst;success;p4lang: bier bundle vlan core
 http://sources.freertr.org/cfg/p4lang-rout162.tst;p4lang-rout162.tst;success;p4lang: hairpin bier core
 http://sources.freertr.org/cfg/p4lang-rout163.tst;p4lang-rout163.tst;success;p4lang: hairpin vlan bier core
-http://sources.freertr.org/cfg/p4lang-rout164.tst;p4lang-rout164.tst;#6-run-r6 tping 400 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: bier egress edge
-http://sources.freertr.org/cfg/p4lang-rout165.tst;p4lang-rout165.tst;#6-run-r6 tping 400 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: bier vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout164.tst;p4lang-rout164.tst;success;p4lang: bier egress edge
+http://sources.freertr.org/cfg/p4lang-rout165.tst;p4lang-rout165.tst;success;p4lang: bier vlan egress edge
 http://sources.freertr.org/cfg/p4lang-rout166.tst;p4lang-rout166.tst;success;p4lang: bier ingress edge
 http://sources.freertr.org/cfg/p4lang-rout167.tst;p4lang-rout167.tst;success;p4lang: bier vlan ingress edge
-http://sources.freertr.org/cfg/p4lang-rout168.tst;p4lang-rout168.tst;#6-run-r6 tping 400 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: bier core and egress edge
-http://sources.freertr.org/cfg/p4lang-rout169.tst;p4lang-rout169.tst;#6-run-r6 tping 400 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: vlan bier core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout168.tst;p4lang-rout168.tst;success;p4lang: bier core and egress edge
+http://sources.freertr.org/cfg/p4lang-rout169.tst;p4lang-rout169.tst;success;p4lang: vlan bier core and egress edge
 http://sources.freertr.org/cfg/p4lang-rout170.tst;p4lang-rout170.tst;success;p4lang: amt server over ipv4
 http://sources.freertr.org/cfg/p4lang-rout171.tst;p4lang-rout171.tst;success;p4lang: amt server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout172.tst;p4lang-rout172.tst;success;p4lang: amt server over ipv4 loopback
@@ -547,4 +547,4 @@ http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;success;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;success;p4lang: etherip server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;success;p4lang: gre local connect
-http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;#6-run-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi;p4lang: gre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;success;p4lang: gre multicast routing

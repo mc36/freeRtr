@@ -123,11 +123,7 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
     public ipFwdMcast copyBytes() {
         ipFwdMcast res = new ipFwdMcast(group, source);
         for (int i = 0; i < flood.size(); i++) {
-            ipFwdIface ntry = flood.get(i);
-            if (ntry != null) {
-                continue;
-            }
-            res.flood.add(ntry);
+            res.flood.add(flood.get(i));
         }
         res.rd = rd;
         res.iface = iface;

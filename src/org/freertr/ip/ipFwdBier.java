@@ -66,18 +66,10 @@ public class ipFwdBier {
     public ipFwdBier copyBytes() {
         ipFwdBier n = new ipFwdBier(fwd, srcId);
         for (int i = 0; i < peers.size(); i++) {
-            ipFwdBierPeer ntry = peers.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            n.peers.add(new ipFwdBierPeer(ntry.addr));
+            n.peers.add(new ipFwdBierPeer(peers.get(i).addr));
         }
         for (int i = 0; i < fwds.size(); i++) {
-            tabLabelBierN ntry = fwds.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            n.fwds.add(ntry.copyBytes());
+            n.fwds.add(fwds.get(i).copyBytes());
         }
         return n;
     }
