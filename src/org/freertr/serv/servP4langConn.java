@@ -1862,37 +1862,6 @@ public class servP4langConn implements Runnable {
         lower.sendLine("myaddr6_add ff00::/8 -1 " + vrf.id);
     }
 
-    /**
-     * do one subinterface
-     *
-     * @param ifc interface to process
-     * @return exported interface
-     */
-    protected servP4langIfc doSubif(cfgIfc ifc) {
-        servP4langIfc old = lower.findIfc(ifc.ethtyp);
-        if (old != null) {
-            return old;
-        }
-        old = lower.findIfc(ifc.parent);
-        if (old == null) {
-            return null;
-        }
-        int id = lower.getNextDynIfc();
-        if (id < 0) {
-            return null;
-        }
-        servP4langIfc ntry = new servP4langIfc(lower, id);
-        ntry.ifc = ifc;
-        ntry.dynamic = true;
-        ntry.hidden = true;
-        ntry.master = old;
-        ntry.doClear();
-        ifc.ethtyp.hwHstry = new history();
-        ifc.ethtyp.hwCntr = new counter();
-        lower.expIfc.put(ntry);
-        return ntry;
-    }
-
     private void doDynAcc() {
         for (int i = 0; i < cfgAll.ifaces.size(); i++) {
             cfgIfc ifc = cfgAll.ifaces.get(i);
@@ -1900,7 +1869,27 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (ifc.vlanNum != 0) {
-                doSubif(ifc);
+                servP4langIfc old = lower.findIfc(ifc.ethtyp);
+                if (old != null) {
+                    continue;
+                }
+                old = lower.findIfc(ifc.parent);
+                if (old == null) {
+                    continue;
+                }
+                int id = lower.getNextDynIfc();
+                if (id < 0) {
+                    continue;
+                }
+                servP4langIfc ntry = new servP4langIfc(lower, id);
+                ntry.ifc = ifc;
+                ntry.dynamic = true;
+                ntry.hidden = true;
+                ntry.master = old;
+                ntry.doClear();
+                ifc.ethtyp.hwHstry = new history();
+                ifc.ethtyp.hwCntr = new counter();
+                lower.expIfc.put(ntry);
                 continue;
             }
             if (ifc.cloned == null) {

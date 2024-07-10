@@ -46,6 +46,16 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
     protected pipeSide conn;
 
     /**
+     * current stack
+     */
+    protected servStack parent;
+
+    /**
+     * current stack id
+     */
+    protected servStackFwd parid;
+
+    /**
      * tx notifier
      */
     protected notifier notif = new notifier();

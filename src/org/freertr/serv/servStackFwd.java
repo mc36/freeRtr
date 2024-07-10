@@ -92,19 +92,17 @@ public class servStackFwd {
      * @param l text to append
      */
     protected void getShowRun(String beg, String mid, List<String> l) {
+        if (p4 != null) {
+            l.add(beg + mid + "p4lang " + p4.srvName);
+        }
+        if (of != null) {
+            l.add(beg + mid + "openflow " + of.srvName);
+        }
         for (int i = 0; i < backPlanes.size(); i++) {
             servStackIfc ntry = backPlanes.get(i);
             l.add(beg + mid + "backplane " + ntry.pi.name + " " + ntry.metric);
         }
         l.add(beg + mid + "remote " + remote);
-        if (p4 != null) {
-            l.add(beg + mid + "p4lang " + p4.srvName);
-            return;
-        }
-        if (of != null) {
-            l.add(beg + mid + "openflow " + of.srvName);
-            return;
-        }
     }
 
     /**

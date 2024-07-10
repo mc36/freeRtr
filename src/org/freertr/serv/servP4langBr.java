@@ -6,7 +6,6 @@ import org.freertr.ifc.ifcBridgeAdr;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.rtr.rtrBgpEvpnPeer;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabLabelEntry;
 
 /**
  * one p4lang bridge

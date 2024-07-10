@@ -39,6 +39,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      */
     public servStack() {
         fwds = new ArrayList<servStackFwd>();
+        fwds.add(new servStackFwd(this));
         bckplnLab = new tabLabelEntry[0];
         dscvry = new servStackDisc(this);
     }
@@ -138,6 +139,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             servStackFwd ntry = fwds.get(i);
             ntry.getShowRun(beg, "forwarder " + i + cmds.tabulator, lst);
         }
+        lst.add(beg + cmds.comment);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -191,8 +193,12 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return false;
         }
         if (s.equals("p4lang")) {
-            servP4lang f = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
             cur.of = null;
+            if (neg) {
+                cur.p4 = null;
+                return false;
+            }
+            servP4lang f = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
             cur.p4 = f;
             if (f == null) {
                 return true;
@@ -202,12 +208,18 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return false;
         }
         if (s.equals("openflow")) {
-            servOpenflow f = cfgAll.srvrFind(new servOpenflow(), cfgAll.dmnOpenflow, cmd.word());
             cur.p4 = null;
+            if (neg) {
+                cur.of = null;
+                return false;
+            }
+            servOpenflow f = cfgAll.srvrFind(new servOpenflow(), cfgAll.dmnOpenflow, cmd.word());
             cur.of = f;
             if (f == null) {
                 return true;
             }
+            f.parent = this;
+            f.parid = cur;
             return false;
         }
         if (s.equals("backplane")) {
@@ -221,7 +233,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                     cmd.error("port not exported");
                     return false;
                 }
-                if (cur.findIfc(rif.parent.ethtyp)) {
+                if (!cur.findIfc(rif.parent.ethtyp)) {
                     cmd.error("parent not exported");
                     return false;
                 }
