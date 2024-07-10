@@ -564,7 +564,7 @@ class servOpenflowTx implements Runnable {
                 ntry.action = pckB.getCopy();
                 addTable(n, tabPort, ntry);
             }
-            if (ifc.ifc.addr4 != null) {
+            if ((ifc.ifc.mplsPack != null) || (ifc.ifc.addr4 != null)) {
                 ntry = new servOpenflowFlw();
                 ntry.prio = 1;
                 pckB.clear();
@@ -592,7 +592,7 @@ class servOpenflowTx implements Runnable {
                 ntry.action = pckB.getCopy();
                 addTable(n, tabPort, ntry);
             }
-            if (ifc.ifc.addr6 != null) {
+            if ((ifc.ifc.mplsPack != null) || (ifc.ifc.addr6 != null)) {
                 ntry = new servOpenflowFlw();
                 ntry.prio = 1;
                 pckB.clear();
@@ -657,6 +657,15 @@ class servOpenflowTx implements Runnable {
                 continue;
             }
             servOpenflowFlw ntry = new servOpenflowFlw();
+            if (rou.best.nextHop == null) {
+                createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                if (ipv4) {
+                    addTable(n, tabIpv4, ntry);
+                } else {
+                    addTable(n, tabIpv6, ntry);
+                }
+                continue;
+            }
             if (rou.best.iface == null) {
                 createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
                 if (ipv4) {
@@ -669,16 +678,90 @@ class servOpenflowTx implements Runnable {
             servOpenflowIfc2 ifc = new servOpenflowIfc2((ipFwdIface) rou.best.iface, null, null);
             ifc = ifcs.find(ifc);
             if (ifc == null) {
-                createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
-                if (ipv4) {
-                    addTable(n, tabIpv4, ntry);
-                } else {
-                    addTable(n, tabIpv6, ntry);
+                servStackFwd oth = lower.parent.findIfc(lower.parid, rou.best.iface);
+                if (oth == null) {
+                    createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                    if (ipv4) {
+                        addTable(n, tabIpv4, ntry);
+                    } else {
+                        addTable(n, tabIpv6, ntry);
+                    }
+                    continue;
                 }
-                continue;
-            }
-            if (rou.best.nextHop == null) {
-                createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                tabRouteEntry<addrIP> oru = servStack.forwarder2route(oth.id);
+                oru = lower.parid.bckplnRou.find(oru);
+                if (oru == null) {
+                    createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                    if (ipv4) {
+                        addTable(n, tabIpv4, ntry);
+                    } else {
+                        addTable(n, tabIpv6, ntry);
+                    }
+                    continue;
+                }
+                if (oru.best.iface == null) {
+                    createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                    if (ipv4) {
+                        addTable(n, tabIpv4, ntry);
+                    } else {
+                        addTable(n, tabIpv6, ntry);
+                    }
+                    continue;
+                }
+                servStackIfc bck = lower.parid.backPlanes.get(oru.best.iface.ifwNum);
+                if (bck == null) {
+                    createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                    if (ipv4) {
+                        addTable(n, tabIpv4, ntry);
+                    } else {
+                        addTable(n, tabIpv6, ntry);
+                    }
+                    continue;
+                }
+                if (!bck.ready) {
+                    createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                    if (ipv4) {
+                        addTable(n, tabIpv4, ntry);
+                    } else {
+                        addTable(n, tabIpv6, ntry);
+                    }
+                    continue;
+                }
+                servOpenflowIfc1 oif = lower.findIfc(bck.ifc);
+                if (oif == null) {
+                    createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
+                    if (ipv4) {
+                        addTable(n, tabIpv4, ntry);
+                    } else {
+                        addTable(n, tabIpv6, ntry);
+                    }
+                    continue;
+                }
+                addrMac macR = bck.lastPort.getMac();
+                addrMac macL = (addrMac) oif.ifc.ethtyp.getHwAddr();
+                ntry.prio = 100 + rou.prefix.maskLen;
+                pckB.clear();
+                if (ipv4) {
+                    pckO.createMatchEthTyp(pckB, ipIfc4.type);
+                    pckO.createMatchIpv4(pckB, false, rou.prefix.network, rou.prefix.mask);
+                } else {
+                    pckO.createMatchEthTyp(pckB, ipIfc6.type);
+                    pckO.createMatchIpv6(pckB, false, rou.prefix.network, rou.prefix.mask);
+                }
+                pckB.merge2beg();
+                ntry.match = pckB.getCopy();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
+                pckB.clear();
+                pckO.createMatchMac(pckB, true, macL, null);
+                tlvs.add(pckO.getActionSetField(pckB));
+                pckB.clear();
+                pckO.createMatchMac(pckB, false, macR, null);
+                tlvs.add(pckO.getActionSetField(pckB));
+                tlvs.add(pckO.getActionOutput(oif.id));
+                pckB.clear();
+                pckO.createInstrAct(pckB, tlvs);
+                pckB.merge2beg();
+                ntry.action = pckB.getCopy();
                 if (ipv4) {
                     addTable(n, tabIpv4, ntry);
                 } else {
@@ -929,7 +1012,62 @@ class servOpenflowTx implements Runnable {
                 ifc = ifcs6.find(ifc);
             }
             if (ifc == null) {
-                createMplsPunt(pckB, pckO, lab, ntry);
+                servStackFwd oth = lower.parent.findIfc(lower.parid, lab.iface);
+                if (oth == null) {
+                    createMplsPunt(pckB, pckO, lab, ntry);
+                    addTable(n, tabMpls, ntry);
+                    continue;
+                }
+                tabRouteEntry<addrIP> oru = servStack.forwarder2route(oth.id);
+                oru = lower.parid.bckplnRou.find(oru);
+                if (oru == null) {
+                    createMplsPunt(pckB, pckO, lab, ntry);
+                    addTable(n, tabMpls, ntry);
+                    continue;
+                }
+                if (oru.best.iface == null) {
+                    createMplsPunt(pckB, pckO, lab, ntry);
+                    addTable(n, tabMpls, ntry);
+                    continue;
+                }
+                servStackIfc bck = lower.parid.backPlanes.get(oru.best.iface.ifwNum);
+                if (bck == null) {
+                    createMplsPunt(pckB, pckO, lab, ntry);
+                    addTable(n, tabMpls, ntry);
+                    continue;
+                }
+                if (!bck.ready) {
+                    createMplsPunt(pckB, pckO, lab, ntry);
+                    addTable(n, tabMpls, ntry);
+                    continue;
+                }
+                servOpenflowIfc1 oif = lower.findIfc(bck.ifc);
+                if (oif == null) {
+                    createMplsPunt(pckB, pckO, lab, ntry);
+                    addTable(n, tabMpls, ntry);
+                    continue;
+                }
+                addrMac macR = bck.lastPort.getMac();
+                addrMac macL = (addrMac) oif.ifc.ethtyp.getHwAddr();
+                ntry.prio = 2;
+                pckB.clear();
+                pckO.createMatchEthTyp(pckB, ipMpls.typeU);
+                pckO.createMatchMplsLab(pckB, lab.label);
+                pckO.createMatchMplsBos(pckB, true);
+                pckB.merge2beg();
+                ntry.match = pckB.getCopy();
+                List<encTlv> tlvs = new ArrayList<encTlv>();
+                pckB.clear();
+                pckO.createMatchMac(pckB, true, macL, null);
+                tlvs.add(pckO.getActionSetField(pckB));
+                pckB.clear();
+                pckO.createMatchMac(pckB, false, macR, null);
+                tlvs.add(pckO.getActionSetField(pckB));
+                tlvs.add(pckO.getActionOutput(oif.id));
+                pckB.clear();
+                pckO.createInstrAct(pckB, tlvs);
+                pckB.merge2beg();
+                ntry.action = pckB.getCopy();
                 addTable(n, tabMpls, ntry);
                 continue;
             }
@@ -1000,6 +1138,69 @@ class servOpenflowTx implements Runnable {
             } else {
                 tlvs.add(pckO.getActionOutput(ifc.ifo.id));
             }
+            pckB.clear();
+            pckO.createInstrAct(pckB, tlvs);
+            pckB.merge2beg();
+            ntry.action = pckB.getCopy();
+            addTable(n, tabMpls, ntry);
+        }
+        for (int i = 0; i < lower.parent.bckplnLab.length; i++) {
+            tabLabelEntry lab = lower.parent.bckplnLab[i];
+            if (lab == null) {
+                continue;
+            }
+            servOpenflowFlw ntry = new servOpenflowFlw();
+            ntry.prio = 3;
+            if (i == lower.parid.id) {
+                createMplsPunt(pckB, pckO, lab, ntry);
+                addTable(n, tabMpls, ntry);
+                continue;
+            }
+            tabRouteEntry<addrIP> oru = servStack.forwarder2route(i);
+            oru = lower.parid.bckplnRou.find(oru);
+            if (oru == null) {
+                createMplsPunt(pckB, pckO, lab, ntry);
+                addTable(n, tabMpls, ntry);
+                continue;
+            }
+            if (oru.best.iface == null) {
+                createMplsPunt(pckB, pckO, lab, ntry);
+                addTable(n, tabMpls, ntry);
+                continue;
+            }
+            servStackIfc bck = lower.parid.backPlanes.get(oru.best.iface.ifwNum);
+            if (bck == null) {
+                createMplsPunt(pckB, pckO, lab, ntry);
+                addTable(n, tabMpls, ntry);
+                continue;
+            }
+            if (!bck.ready) {
+                createMplsPunt(pckB, pckO, lab, ntry);
+                addTable(n, tabMpls, ntry);
+                continue;
+            }
+            servOpenflowIfc1 oif = lower.findIfc(bck.ifc);
+            if (oif == null) {
+                createMplsPunt(pckB, pckO, lab, ntry);
+                addTable(n, tabMpls, ntry);
+                continue;
+            }
+            addrMac macR = bck.lastPort.getMac();
+            addrMac macL = (addrMac) oif.ifc.ethtyp.getHwAddr();
+            pckB.clear();
+            pckO.createMatchEthTyp(pckB, ipMpls.typeU);
+            pckO.createMatchMplsLab(pckB, lab.label);
+            pckO.createMatchMplsBos(pckB, true);
+            pckB.merge2beg();
+            ntry.match = pckB.getCopy();
+            List<encTlv> tlvs = new ArrayList<encTlv>();
+            pckB.clear();
+            pckO.createMatchMac(pckB, true, macL, null);
+            tlvs.add(pckO.getActionSetField(pckB));
+            pckB.clear();
+            pckO.createMatchMac(pckB, false, macR, null);
+            tlvs.add(pckO.getActionSetField(pckB));
+            tlvs.add(pckO.getActionOutput(oif.id));
             pckB.clear();
             pckO.createInstrAct(pckB, tlvs);
             pckB.merge2beg();

@@ -18,7 +18,13 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
+public class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
+
+    /**
+     * create instance
+     */
+    public servOpenflowIfc1() {
+    }
 
     /**
      * interface id

@@ -39,7 +39,6 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      */
     public servStack() {
         fwds = new ArrayList<servStackFwd>();
-        fwds.add(new servStackFwd(this));
         bckplnLab = new tabLabelEntry[0];
         dscvry = new servStackDisc(this);
     }
@@ -320,6 +319,9 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         }
         if (cur.p4 != null) {
             return cur.p4.srvAccept(pipe, id);
+        }
+        if (cur.of != null) {
+            return cur.of.srvAccept(pipe, id);
         }
         return true;
     }

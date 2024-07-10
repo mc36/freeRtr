@@ -115,6 +115,9 @@ public class servStackFwd {
         if (p4 != null) {
             return p4.findIfc(ifc) != null;
         }
+        if (of != null) {
+            return of.findIfc(ifc) != null;
+        }
         return false;
     }
 
@@ -128,6 +131,9 @@ public class servStackFwd {
         if (p4 != null) {
             return p4.findIfc(ifc) != null;
         }
+        if (of != null) {
+            return of.findIfc(ifc) != null;
+        }
         return false;
     }
 
@@ -140,6 +146,9 @@ public class servStackFwd {
     protected boolean findIfc(ifcEthTyp ifc) {
         if (p4 != null) {
             return p4.findIfc(ifc) != null;
+        }
+        if (of != null) {
+            return of.findIfc(ifc) != null;
         }
         return false;
     }

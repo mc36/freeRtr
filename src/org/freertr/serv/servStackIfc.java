@@ -26,7 +26,7 @@ public class servStackIfc implements Comparator<servStackIfc>, ifcUp {
     private final static int magic1 = 0x00010000 | ipIfc4.type;
 
     private final static int magic2 = 0x06040bad;
-
+    
     /**
      * interface id
      */

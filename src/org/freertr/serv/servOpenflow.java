@@ -4,6 +4,8 @@ import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.ifc.ifcBridgeIfc;
+import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ifc.ifcNull;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packOpenflow;
@@ -360,6 +362,75 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
             ifcc.sendPack(pck.copyBytes(true, true));
         }
         return false;
+    }
+
+    /**
+     * find interface
+     *
+     * @param ifc interface
+     * @return interface, null if error
+     */
+    protected servOpenflowIfc1 findIfc(ifcEthTyp ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < expIfc.size(); i++) {
+            servOpenflowIfc1 ntry = expIfc.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.ifc.ethtyp == ifc) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * find interface
+     *
+     * @param ifc interface
+     * @return interface, null if error
+     */
+    protected servOpenflowIfc1 findIfc(tabRouteIface ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < expIfc.size(); i++) {
+            servOpenflowIfc1 ntry = expIfc.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ifc == ntry.ifc.fwdIf4) {
+                return ntry;
+            }
+            if (ifc == ntry.ifc.fwdIf6) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * find interface
+     *
+     * @param ifc interface
+     * @return interface, null if error
+     */
+    protected servOpenflowIfc1 findIfc(ifcBridgeIfc ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < expIfc.size(); i++) {
+            servOpenflowIfc1 ntry = expIfc.get(i);
+            if (ntry.ifc == null) {
+                continue;
+            }
+            if (ifc == ntry.ifc.bridgeIfc) {
+                return ntry;
+            }
+        }
+        return null;
     }
 
 }
