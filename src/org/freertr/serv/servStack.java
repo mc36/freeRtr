@@ -332,10 +332,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @return offload info
      */
     public String getShGenOneLiner() {
-        String a = "stack of";
+        String a = "stack";
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd fwd = fwds.get(i);
-            a += " fwd#" + i + "=" + fwd.getShGenOneLiner();
+            a += " " + fwd.getShGenOneLiner();
         }
         return a;
     }
