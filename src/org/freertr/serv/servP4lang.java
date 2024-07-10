@@ -59,6 +59,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         pl.setClose();
         conn = new servP4langConn(pl.getSide(), this);
         parent = new servStack();
+        parid = new servStackFwd(parent);
     }
 
     public String toString() {

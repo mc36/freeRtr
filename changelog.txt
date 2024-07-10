@@ -15821,3 +15821,7 @@ no todo: commander to get away the cursor
 no todo: flash ext-delete also to commander
 ---------------------------------- 2024-07-03 09:06:21 24.7.3
 no todo: client password-stars to get under the userLine
+---------------------------------- 2024-07-10 19:06:28 24.7.10
+no todo: openflow to have 2 label support and stack to p4lang
+qc pass: openflow: ip routing over backplane
+qc pass: openflow: mpls routing over backplane

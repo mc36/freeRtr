@@ -36,6 +36,8 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
      * create instance
      */
     public servOpenflow() {
+        parent = new servStack();
+        parid = new servStackFwd(parent);
     }
 
     private servOpenflowRx thrdRx;
