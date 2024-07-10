@@ -76,10 +76,10 @@ public class servStackFwd {
      */
     protected String getShGenOneLiner() {
         if (p4 != null) {
-            return "p4:" + p4.srvName;
+            return "p4=" + p4.srvName;
         }
         if (of != null) {
-            return "of:" + of.srvName;
+            return "of=" + of.srvName;
         }
         return null;
     }

@@ -335,7 +335,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         String a = "stack";
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd fwd = fwds.get(i);
-            a += " " + fwd.getShGenOneLiner();
+            a += "," + fwd.getShGenOneLiner();
         }
         return a;
     }
