@@ -21,6 +21,8 @@ import org.freertr.pack.packPim;
 import org.freertr.pack.packPimGrp;
 import org.freertr.pack.packStp;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabLabel;
+import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabSession;
 import org.freertr.user.userFormat;
@@ -53,6 +55,11 @@ public class ifcBridge implements ifcDn {
      * description of this bridge
      */
     public String description = "";
+
+    /**
+     * label
+     */
+    public tabLabelEntry label;
 
     /**
      * route distinguisher
@@ -788,6 +795,8 @@ public class ifcBridge implements ifcDn {
         if (debugger.ifcBridgeTraf) {
             logger.debug("startup");
         }
+        label = tabLabel.allocate(tabLabelEntry.owner.bridge);
+        label.setFwdDrop(tabLabelEntry.owner.bridge);
         resetTimer(true);
     }
 
@@ -798,6 +807,7 @@ public class ifcBridge implements ifcDn {
         if (debugger.ifcBridgeTraf) {
             logger.debug("shutdown");
         }
+        tabLabel.release(label, tabLabelEntry.owner.bridge);
         resetTimer(false);
     }
 

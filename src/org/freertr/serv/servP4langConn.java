@@ -84,7 +84,7 @@ public class servP4langConn implements Runnable {
      */
     protected final pipeSide pipe;
 
-    private final servP4langCfg lower;
+    private final servP4lang lower;
 
     private int keepalive;
 
@@ -104,7 +104,7 @@ public class servP4langConn implements Runnable {
      * @param pip pipeline
      * @param upper config
      */
-    protected servP4langConn(pipeSide pip, servP4langCfg upper) {
+    protected servP4langConn(pipeSide pip, servP4lang upper) {
         pipe = pip;
         lower = upper;
     }
@@ -187,7 +187,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (debugger.servP4langRx) {
-                logger.debug("fwd" + lower.id + " rx: " + s);
+                logger.debug("rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
@@ -275,7 +275,6 @@ public class servP4langConn implements Runnable {
                     continue;
                 }
                 lower.expIfc.del(ntry);
-                servP4langBkpl bckpln = lower.backPlanes.del(new servP4langBkpl(lower, ntry));
                 ntry.id = prt;
                 ntry.speed = cmd.word();
                 ntry.errCorr = servP4langUtil.toNum(lower.fwderrcr, cmd.word(), 0);
@@ -283,10 +282,6 @@ public class servP4langConn implements Runnable {
                 ntry.flowCtrl = servP4langUtil.toNum(lower.flwctrls, cmd.word(), 0);
                 ntry.reinit = null;
                 lower.expIfc.add(ntry);
-                if (bckpln != null) {
-                    bckpln.pi = ntry;
-                    lower.backPlanes.add(bckpln);
-                }
             }
             if (!ntry.suppressState()) {
                 lower.sendLine("ports_add " + ntry.id + " " + ntry.getStateEnding());
@@ -320,7 +315,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (debugger.servP4langRx) {
-                logger.debug("fwd" + lower.id + " rx: " + s);
+                logger.debug("rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
             s = cmd.word();
@@ -1029,10 +1024,10 @@ public class servP4langConn implements Runnable {
     }
 
     private void doBckpln(int fwid) {
-        if (fwid == lower.id) {
+        if (fwid == lower.parid.id) {
             return;
         }
-        tabRouteEntry<addrIP> oru = servP4langUtil.forwarder2route(fwid);
+        tabRouteEntry<addrIP> oru = servStack.forwarder2route(fwid);
         servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, fwid);
         servP4langNei ntry = new servP4langNei(ifc, oru.prefix.network);
         ifc.cloned = ifc;
@@ -1046,22 +1041,22 @@ public class servP4langConn implements Runnable {
         }
         old.need++;
         old.iface.viaN = old;
-        oru = lower.bckplnRou.find(oru);
+        oru = lower.parid.bckplnRou.find(oru);
         if (oru == null) {
             return;
         }
         if (oru.best.iface == null) {
             return;
         }
-        ifc = lower.findIfc(oru.best.iface.ifwNum);
-        if (ifc == null) {
-            return;
-        }
-        servP4langBkpl bck = lower.backPlanes.find(new servP4langBkpl(lower, ifc));
+        servStackIfc bck = lower.parid.backPlanes.get(oru.best.iface.ifwNum);
         if (bck == null) {
             return;
         }
         if (!bck.ready) {
+            return;
+        }
+        ifc = lower.findIfc(bck.ifc);
+        if (ifc == null) {
             return;
         }
         servP4langVrf vrf = lower.findVrf(ifc);
@@ -1354,11 +1349,11 @@ public class servP4langConn implements Runnable {
         }
         servP4langNei hop = lower.findNei(ntry.iface, ntry.nextHop);
         if (hop == null) {
-            servP4langCfg oth = lower.parent.findIfc(lower, ntry.iface);
+            servStackFwd oth = lower.parent.findIfc(lower.parid, ntry.iface);
             if (oth == null) {
                 return;
             }
-            addrIP adr = servP4langUtil.forwarder2addr(oth.id);
+            addrIP adr = servStack.forwarder2addr(oth.id);
             servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, oth.id);
             hop = lower.findNei(ifc, adr);
             if (hop == null) {
@@ -1396,12 +1391,12 @@ public class servP4langConn implements Runnable {
             }
             act = "mod";
         }
-        if (fwid == lower.id) {
+        if (fwid == lower.parid.id) {
             labels.put(ntry);
             lower.sendLine("mylabel4_" + act + " " + ntry.label + " 0");
             return;
         }
-        addrIP adr = servP4langUtil.forwarder2addr(fwid);
+        addrIP adr = servStack.forwarder2addr(fwid);
         servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, fwid);
         servP4langNei hop = lower.findNei(ifc, adr);
         if (hop == null) {
@@ -1503,7 +1498,7 @@ public class servP4langConn implements Runnable {
             return;
         }
         if (!br.sentLab) {
-            doBrLab("add", br, br.lab.label);
+            doBrLab("add", br, br.br.bridgeHed.label.label);
             br.sentLab = true;
         }
         tabGen<ifcBridgeIfc> seenI = new tabGen<ifcBridgeIfc>();
@@ -1639,21 +1634,16 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("routedmac_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + nei.id + " " + p);
                 continue;
             }
-            servP4langCfg oth = lower.parent.findIfc(lower, ntry.ifc);
+            servStackFwd oth = lower.parent.findIfc(lower.parid, ntry.ifc);
             if (oth != null) {
-                servP4langBr obr = oth.expBr.find(br);
-                if (obr == null) {
-                    br.macs.del(ntry);
-                    continue;
-                }
-                addrIP adr = servP4langUtil.forwarder2addr(oth.id);
+                addrIP adr = servStack.forwarder2addr(oth.id);
                 ifc = servP4langUtil.forwarder2iface(lower, oth.id);
                 servP4langNei hop = lower.findNei(ifc, adr);
                 if (hop == null) {
                     br.macs.del(ntry);
                     continue;
                 }
-                lower.sendLine("bridgevpls_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + lower.parent.bckplnLab[oth.id] + " " + obr.lab.label);
+                lower.sendLine("bridgevpls_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + lower.parent.bckplnLab[oth.id] + " " + br.br.bridgeHed.label.label);
                 continue;
             }
             int l = -1;
@@ -4005,11 +3995,11 @@ public class servP4langConn implements Runnable {
     }
 
     private boolean doRemRou(boolean del, String afi, String act, String a, int vrf, tabLabelEntry cml, tabRouteEntry<addrIP> ntry, tabRouteEntry<addrIP> recur, tabRoute<addrIP> done) {
-        servP4langCfg oth = lower.parent.findIfc(lower, recur.best.iface);
+        servStackFwd oth = lower.parent.findIfc(lower.parid, recur.best.iface);
         if (oth == null) {
             return false;
         }
-        addrIP adr = servP4langUtil.forwarder2addr(oth.id);
+        addrIP adr = servStack.forwarder2addr(oth.id);
         servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, oth.id);
         servP4langNei hop = lower.findNei(ifc, adr);
         if (hop == null) {

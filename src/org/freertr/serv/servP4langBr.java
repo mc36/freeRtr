@@ -31,11 +31,6 @@ public class servP4langBr implements Comparator<servP4langBr> {
     protected boolean routed;
 
     /**
-     * label
-     */
-    protected tabLabelEntry lab;
-
-    /**
      * label sent
      */
     protected boolean sentLab;

@@ -77,6 +77,7 @@ import org.freertr.serv.servSip;
 import org.freertr.serv.servSmtp;
 import org.freertr.serv.servSnmp;
 import org.freertr.serv.servSocks;
+import org.freertr.serv.servStack;
 import org.freertr.serv.servStreamingMdt;
 import org.freertr.serv.servStun;
 import org.freertr.serv.servSyslog;
@@ -397,6 +398,11 @@ public class cfgAll {
      * p4lang daemons
      */
     public final static servGenList<servP4lang> dmnP4lang = new servGenList<servP4lang>();
+
+    /**
+     * stack daemons
+     */
+    public final static servGenList<servStack> dmnStack = new servGenList<servStack>();
 
     /**
      * forwarder daemons
@@ -3925,6 +3931,7 @@ public class cfgAll {
         dmnOpenflow.getShRun(l, filter);
         dmnPktmux.getShRun(l, filter);
         dmnP4lang.getShRun(l, filter);
+        dmnStack.getShRun(l, filter);
         dmnForwarder.getShRun(l, filter);
         dmnSyslog.getShRun(l, filter);
         dmnLoadBalancer.getShRun(l, filter);

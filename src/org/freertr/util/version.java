@@ -8,6 +8,7 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeShell;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servP4lang;
+import org.freertr.serv.servStack;
 import org.freertr.user.userHelping;
 
 /**
@@ -795,6 +796,10 @@ public class version {
      * @return offload info
      */
     public static String getHWfwd1liner() {
+        servStack stk = cfgAll.dmnStack.get(0);
+        if (stk != null) {
+            return stk.getShGenOneLiner();
+        }
         servP4lang p4l = cfgAll.dmnP4lang.get(0);
         if (p4l != null) {
             return p4l.getShGenOneLiner();

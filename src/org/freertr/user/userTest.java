@@ -176,7 +176,7 @@ public class userTest {
                 pck.merge2end();
             }
             cmd.error("sending cnt=" + cnt + " ifc=" + ifc + " adr=" + pck.ETHsrc + " -> " + pck.ETHtrg + " pck=" + pck.dump());
-            srv.send2apiPack(cnt, 0, ifc, pck);
+            srv.send2apiPack(cnt, ifc, pck);
             return null;
         }
         if (a.equals("p4lang")) {
@@ -186,7 +186,6 @@ public class userTest {
                 return null;
             }
             int cnt = bits.str2num(cmd.word());
-            int fwd = bits.str2num(cmd.word());
             int ifc = bits.str2num(cmd.word());
             packHolder pck = new packHolder(true, true);
             pck.ETHtrg.fromString(cmd.word());
@@ -200,8 +199,8 @@ public class userTest {
                 pck.putSkip(1);
                 pck.merge2end();
             }
-            cmd.error("sending cnt=" + cnt + " fwd=" + fwd + " ifc=" + ifc + " adr=" + pck.ETHsrc + " -> " + pck.ETHtrg + " pck=" + pck.dump());
-            srv.send2apiPack(cnt, fwd, ifc, pck);
+            cmd.error("sending cnt=" + cnt + " ifc=" + ifc + " adr=" + pck.ETHsrc + " -> " + pck.ETHtrg + " pck=" + pck.dump());
+            srv.send2apiPack(cnt, ifc, pck);
             return null;
         }
         if (a.equals("whois")) {

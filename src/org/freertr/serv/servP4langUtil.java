@@ -42,6 +42,17 @@ public class servP4langUtil {
     }
 
     /**
+     * convert forwarder id to interface
+     *
+     * @param p parent
+     * @param i id
+     * @return interface
+     */
+    protected static final servP4langIfc forwarder2iface(servP4lang p, int i) {
+        return new servP4langIfc(p, -1 - i);
+    }
+
+    /**
      * convert a packet to a packet out message
      *
      * @param nei neighbor out
@@ -150,44 +161,6 @@ public class servP4langUtil {
             res.add(new servP4langMgcI(ntry.id, ntry.nam));
         }
         return res;
-    }
-
-    /**
-     * convert forwarder id to interface
-     *
-     * @param p parent
-     * @param i id
-     * @return interface
-     */
-    protected final static servP4langIfc forwarder2iface(servP4langCfg p, int i) {
-        return new servP4langIfc(p, -1 - i);
-    }
-
-    /**
-     * convert forwarder id to address
-     *
-     * @param i id
-     * @return address
-     */
-    protected final static addrIP forwarder2addr(int i) {
-        addrIP adr = new addrIP();
-        byte[] buf = adr.getBytes();
-        bits.msbPutD(buf, 0, 0xfe800bad);
-        bits.msbPutD(buf, buf.length - 4, i + 1);
-        return adr;
-    }
-
-    /**
-     * convert forwarder id to address
-     *
-     * @param i id
-     * @return address
-     */
-    protected final static tabRouteEntry<addrIP> forwarder2route(int i) {
-        addrIP adr = forwarder2addr(i);
-        tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
-        rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-        return rou;
     }
 
     /**

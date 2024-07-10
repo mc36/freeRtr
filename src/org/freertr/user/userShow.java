@@ -110,6 +110,7 @@ import org.freertr.rtr.rtrRpkiNeigh;
 import org.freertr.serv.servNrpe;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servRpki;
+import org.freertr.serv.servStack;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabIntMatcher;
@@ -1239,99 +1240,62 @@ public class userShow {
                 rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
-            if (a.equals("dataplanes")) {
-                rdr.putStrTab(srv.getShowGen(1));
-                return null;
-            }
-            if (a.equals("oneliners")) {
-                rdr.putStrTab(srv.getShowGen(2));
-                return null;
-            }
-            if (a.equals("config")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 1));
-                return null;
-            }
             if (a.equals("status")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 1));
+                rdr.putStrTab(srv.getShowGen());
                 return null;
             }
             if (a.equals("api-tx")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 2));
+                rdr.putStrTab(srv.getShowApiTx());
                 return null;
             }
             if (a.equals("api-rx")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 3));
+                rdr.putStrTab(srv.getShowApiRx());
                 return null;
             }
             if (a.equals("port-names")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 4));
+                rdr.putStrTab(srv.getShowFront());
                 return null;
             }
             if (a.equals("port-magics")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 9));
+                rdr.putStrTab(srv.getShowMagics());
                 return null;
             }
             if (a.equals("done-vrf")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 10));
+                rdr.putStrTab(srv.getShowVrfs());
                 return null;
             }
             if (a.equals("done-interface")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 5));
+                rdr.putStrTab(srv.getShowIfaces());
                 return null;
             }
             if (a.equals("done-neighbor")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 6));
+                rdr.putStrTab(srv.getShowNeighs());
                 return null;
             }
             if (a.equals("done-mpls")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 7));
+                rdr.putStrTab(srv.getShowMpls());
                 return null;
             }
             if (a.equals("done-nsh")) {
-                rdr.putStrTab(srv.getShowGen(bits.str2num(cmd.word()), 8));
+                rdr.putStrTab(srv.getShowNsh());
                 return null;
             }
             if (a.equals("done-bridge")) {
                 int i = bits.str2num(cmd.word());
-                rdr.putStrTab(srv.getShowBri(i, bits.str2num(cmd.word())));
+                rdr.putStrTab(srv.getShowBri(i));
                 return null;
             }
             if (a.equals("done-route4")) {
                 int i = bits.str2num(cmd.word());
-                doShowRoutes(null, srv.getShowRou(4, i, bits.str2num(cmd.word())), 1);
+                doShowRoutes(null, srv.getShowRou(4, i), 1);
                 return null;
             }
             if (a.equals("done-route6")) {
                 int i = bits.str2num(cmd.word());
-                doShowRoutes(null, srv.getShowRou(6, i, bits.str2num(cmd.word())), 1);
-                return null;
-            }
-            if (a.equals("backplane-ports")) {
-                rdr.putStrTab(srv.getShowBp1(bits.str2num(cmd.word()), 1));
-                return null;
-            }
-            if (a.equals("backplane-spf")) {
-                rdr.putStrTab(srv.getShowBp1(bits.str2num(cmd.word()), 2));
-                return null;
-            }
-            if (a.equals("backplane-topology")) {
-                rdr.putStrTab(srv.getShowBp1(bits.str2num(cmd.word()), 3));
-                return null;
-            }
-            if (a.equals("backplane-tree")) {
-                rdr.putStrArr(srv.getShowBp2(bits.str2num(cmd.word()), 1));
-                return null;
-            }
-            if (a.equals("backplane-graph")) {
-                rdr.putStrArr(srv.getShowBp2(bits.str2num(cmd.word()), 2));
-                return null;
-            }
-            if (a.equals("backplane-route")) {
-                doShowRoutes(null, srv.getShowBp3(bits.str2num(cmd.word())), 1);
+                doShowRoutes(null, srv.getShowRou(6, i), 1);
                 return null;
             }
             if (!a.equals("port-counters")) {
-                rdr.putStrTab(srv.getShowGen(1));
                 return null;
             }
             a = cmd.word();
@@ -1340,7 +1304,59 @@ public class userShow {
                 cmd.error("no such interface");
                 return null;
             }
-            rdr.putStrTab(srv.getShowIface(bits.str2num(cmd.word()), ifc));
+            rdr.putStrTab(srv.getShowIface(ifc));
+            return null;
+        }
+        if (a.equals("stack")) {
+            a = cmd.word();
+            servStack gen = cfgAll.dmnStack.get(0);
+            if (gen == null) {
+                return null;
+            }
+            if (a.length() < 1) {
+                a = gen.getShGenOneLiner();
+                rdr.putStrArr(bits.str2lst(a));
+                return null;
+            }
+            servStack srv = cfgAll.srvrFind(new servStack(), cfgAll.dmnStack, a);
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            a = cmd.word();
+            if (a.length() < 1) {
+                a = srv.getShGenOneLiner();
+                rdr.putStrArr(bits.str2lst(a));
+                return null;
+            }
+            if (a.equals("dataplanes")) {
+                rdr.putStrTab(srv.getShowBcks());
+                return null;
+            }
+            if (a.equals("ports")) {
+                rdr.putStrTab(srv.getShowPorts(bits.str2num(cmd.word())));
+                return null;
+            }
+            if (a.equals("spf")) {
+                rdr.putStrTab(srv.getShowSpf(bits.str2num(cmd.word())));
+                return null;
+            }
+            if (a.equals("topology")) {
+                rdr.putStrTab(srv.getShowTopo(bits.str2num(cmd.word())));
+                return null;
+            }
+            if (a.equals("tree")) {
+                rdr.putStrArr(srv.getShowTree(bits.str2num(cmd.word())));
+                return null;
+            }
+            if (a.equals("graph")) {
+                rdr.putStrArr(srv.getShowGraph(bits.str2num(cmd.word())));
+                return null;
+            }
+            if (a.equals("route")) {
+                doShowRoutes(null, srv.getShowRoute(bits.str2num(cmd.word())), 1);
+                return null;
+            }
             return null;
         }
         if (a.equals("bmp")) {

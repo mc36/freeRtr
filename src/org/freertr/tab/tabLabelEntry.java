@@ -111,13 +111,13 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
          */
         bgpBier,
         /**
-         * p4lang backplane
+         * stack
          */
-        p4langBp,
+        stack,
         /**
-         * p4lang bridge
+         * bridge
          */
-        p4langBr,
+        bridge,
         /**
          * pvrp sr gb
          */
@@ -436,11 +436,11 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
             case bgpBier:
                 s = "bgp bier";
                 break;
-            case p4langBp:
+            case stack:
                 s = "p4lang backplane";
                 break;
-            case p4langBr:
-                s = "p4lang bridge";
+            case bridge:
+                s = "bridge";
                 break;
             case pvrpSrgb:
                 s = "pvrp segrou gb";

@@ -566,8 +566,7 @@ public class userPacket {
                 cmd.error("no such server");
                 return null;
             }
-            a = cmd.word();
-            srv.sendLine(bits.str2num(a), cmd.getRemaining());
+            srv.sendLine(cmd.getRemaining());
             return null;
         }
         if (a.equals("mrt2pcap")) {

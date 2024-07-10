@@ -6,7 +6,6 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userHelping;
-import org.freertr.util.logger;
 
 /**
  * list of generic server
@@ -223,6 +222,9 @@ public class servGenList<T extends servGeneric> {
         l.addOther(o);
         l.add(null, p + "  " + (p + 1) + "    p4lang                       p4lang server" + e);
         l.add(cfgAll.dmnP4lang.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
+        l.addOther(o);
+        l.add(null, p + "  " + (p + 1) + "    stack                        stack server" + e);
+        l.add(cfgAll.dmnStack.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
         l.addOther(o);
         l.add(null, p + "  " + (p + 1) + "    quote                        quote server" + e);
         l.add(cfgAll.dmnQuote.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
@@ -462,6 +464,9 @@ class servGenEntry {
         }
         if (typ.equals("p4lang")) {
             return new servGenEntry(new servP4lang(), cfgAll.dmnP4lang);
+        }
+        if (typ.equals("stack")) {
+            return new servGenEntry(new servStack(), cfgAll.dmnStack);
         }
         if (typ.equals("forwarder")) {
             return new servGenEntry(new servForwarder(), cfgAll.dmnForwarder);

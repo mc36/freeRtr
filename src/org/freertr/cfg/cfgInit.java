@@ -99,6 +99,7 @@ import org.freertr.serv.servUpnpHub;
 import org.freertr.serv.servVoice;
 import org.freertr.serv.servVxlan;
 import org.freertr.enc.encUrl;
+import org.freertr.serv.servStack;
 import org.freertr.serv.servWhois;
 import org.freertr.serv.servXotPad;
 import org.freertr.tab.tabGen;
@@ -953,6 +954,7 @@ public class cfgInit implements Runnable {
         servOpenflow.defaultF = createFilter(servOpenflow.defaultL, srvdefsF);
         servPktmux.defaultF = createFilter(servPktmux.defaultL, srvdefsF);
         servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);
+        servStack.defaultF = createFilter(servStack.defaultL, srvdefsF);
         servDaytime.defaultF = createFilter(servDaytime.defaultL, srvdefsF);
         servDcp.defaultF = createFilter(servDcp.defaultL, srvdefsF);
         servSdwan.defaultF = createFilter(servSdwan.defaultL, srvdefsF);

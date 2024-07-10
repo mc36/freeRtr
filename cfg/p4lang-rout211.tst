@@ -155,34 +155,43 @@ int sdn34
  no autostat
  bundle-gr 4
  exit
-server p4lang p4
+server p4lang a
+ interconnect eth2
+ export-vrf v1
+ export-port sdn11 1 10
+ export-port sdn12 2 10
+ export-port sdn13 3 10
+ export-port sdn14 4 10
+ export-port bun1 dynamic
+ exit
+server p4lang b
+ interconnect eth4
+ export-vrf v1
+ export-port sdn21 1 10
+ export-port sdn22 2 10
+ export-port sdn23 3 10
+ export-port sdn24 4 10
+ export-port bun2 dynamic
+ exit
+server p4lang c
+ interconnect eth6
+ export-vrf v1
+ export-port sdn31 1 10
+ export-port sdn32 2 10
+ export-port sdn33 3 10
+ export-port sdn34 4 10
+ export-port bun3 dynamic
+ export-port bun4 dynamic
+ exit
+server stack s
  dataplanes 4
- forwarder 1 interconnect eth2
- forwarder 1 export-vrf v1
- forwarder 1 export-port sdn11 1 10
- forwarder 1 export-port sdn12 2 10
- forwarder 1 export-port sdn13 3 10
- forwarder 1 export-port sdn14 4 10
- forwarder 1 export-port bun1 dynamic
+ forwarder 1 p4lang a
  forwarder 1 backplane bun1 1
  forwarder 1 remote 10.11.12.111
- forwarder 2 interconnect eth4
- forwarder 2 export-vrf v1
- forwarder 2 export-port sdn21 1 10
- forwarder 2 export-port sdn22 2 10
- forwarder 2 export-port sdn23 3 10
- forwarder 2 export-port sdn24 4 10
- forwarder 2 export-port bun2 dynamic
+ forwarder 2 p4lang b
  forwarder 2 backplane bun2 1
  forwarder 2 remote 10.12.13.111
- forwarder 3 interconnect eth6
- forwarder 3 export-vrf v1
- forwarder 3 export-port sdn31 1 10
- forwarder 3 export-port sdn32 2 10
- forwarder 3 export-port sdn33 3 10
- forwarder 3 export-port sdn34 4 10
- forwarder 3 export-port bun3 dynamic
- forwarder 3 export-port bun4 dynamic
+ forwarder 3 p4lang c
  forwarder 3 backplane bun3 1
  forwarder 3 backplane bun4 1
  forwarder 3 remote 10.13.14.111
@@ -464,5 +473,5 @@ r8 tping 100 10 4321::105 vrf v1 sou lo0
 r8 tping 100 10 2.2.2.106 vrf v1 sou lo0
 r8 tping 100 10 4321::106 vrf v1 sou lo0
 
-r1 dping sdn . r8 2.2.2.105 vrf v1 sou lo0
-r1 dping sdn . r8 4321::105 vrf v1 sou lo0
+r1 dping sdn . r8 2.2.2.103 vrf v1 sou lo0
+r1 dping sdn . r8 4321::103 vrf v1 sou lo0

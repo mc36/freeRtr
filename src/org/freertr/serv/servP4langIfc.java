@@ -40,7 +40,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
     /**
      * config
      */
-    protected final servP4langCfg lower;
+    protected final servP4lang lower;
 
     /**
      * id
@@ -398,7 +398,7 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @param p parent
      * @param i id
      */
-    protected servP4langIfc(servP4langCfg p, int i) {
+    protected servP4langIfc(servP4lang p, int i) {
         id = i;
         lower = p;
     }

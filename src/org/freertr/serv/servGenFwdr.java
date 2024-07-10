@@ -20,11 +20,10 @@ public interface servGenFwdr {
      * send a packet through the api
      *
      * @param cntr counter to use
-     * @param fwdr forwarder to use
      * @param ifcn interface to use
      * @param pck packet to send
      * @return true on error false on success
      */
-    public abstract boolean send2apiPack(int cntr, int fwdr, int ifcn, packHolder pck);
+    public abstract boolean send2apiPack(int cntr, int ifcn, packHolder pck);
 
 }
