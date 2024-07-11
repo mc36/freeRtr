@@ -437,6 +437,15 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             }
             cur.bckplnRou = cur.bckplnSpf.getRoutes(null, null, null, null);
         }
+        for (int o = 0; o < fwds.size(); o++) {
+            cur = fwds.get(o);
+            if (cur.p4 != null) {
+                cur.p4.notif.wakeup();
+            }
+            if (cur.of != null) {
+                cur.of.notif.wakeup();
+            }
+        }
     }
 
     /**
