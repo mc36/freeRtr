@@ -100,14 +100,17 @@ void tree_cacheNode(struct tree_node** res, struct tree_node* cur, unsigned char
 }
 
 void tree_cache(struct tree_node* bas) {
-    struct tree_node** old = bas->cache;
-    struct tree_node** res = malloc(256 * sizeof(old));
-    if (res == NULL) err("error allocating memory");
-    memset(res, 0, 256 * sizeof(old));
+    struct tree_node* res[256];
+    memset(&res, 0, sizeof(res));
     tree_cacheNode(res, bas, NULL, 0, 256);
-    bas->cache = res;
-    if (old == NULL) return;
-    free(old);
+    if (bas->cache != NULL) {
+        memcpy(bas->cache, &res, sizeof(res));
+        return;
+    }
+    struct tree_node** buf = malloc(sizeof(res));
+    if (buf == NULL) err("error allocating memory");
+    memcpy(buf, &res, sizeof(res));
+    bas->cache = buf;
 }
 
 #endif
