@@ -7,6 +7,7 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.ifc.ifcBridgeIfc;
+import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -15,6 +16,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.spf.spfCalc;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabLabel;
+import org.freertr.tab.tabLabelBierN;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
@@ -49,7 +51,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @param i id
      * @return address
      */
-    protected static final addrIP forwarder2addr(int i) {
+    protected final static addrIP forwarder2addr(int i) {
         addrIP adr = new addrIP();
         byte[] buf = adr.getBytes();
         bits.msbPutD(buf, 0, -25162835);
@@ -64,10 +66,41 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @return address
      */
     protected static final tabRouteEntry<addrIP> forwarder2route(int i) {
-        addrIP adr = servStack.forwarder2addr(i);
+        addrIP adr = forwarder2addr(i);
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         return rou;
+    }
+
+    /**
+     * merge two bytes list
+     *
+     * @param l1 first list
+     * @param l2 second list
+     * @return merged list
+     */
+    public static final List<Byte> mergeTwoList(List<Byte> l1, List<Byte> l2) {
+        List<Byte> res = new ArrayList<Byte>();
+        int s1 = l1.size();
+        int s2 = l2.size();
+        int s;
+        if (s1 < s2) {
+            s = s2;
+        } else {
+            s = s1;
+        }
+        for (int i = 0; i < s; i++) {
+            int b1 = 0;
+            int b2 = 0;
+            if (i < s1) {
+                b1 = l1.get(i);
+            }
+            if (i < s2) {
+                b2 = l2.get(i);
+            }
+            res.add((byte) (b1 | b2));
+        }
+        return res;
     }
 
     /**
@@ -239,7 +272,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             }
             servStackIfc ntry = new servStackIfc(cur, rif);
             if (neg) {
-                ntry = cur.backPlanes.del(ntry);
+                ntry = cur.ifaces.del(ntry);
                 if (ntry == null) {
                     cmd.error("no such backplane");
                     return false;
@@ -253,7 +286,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             ntry.ifc.updateET(-1, ntry);
             ntry.parent.setFilter(true);
             ntry.metric = bits.str2num(cmd.word());
-            cur.backPlanes.add(ntry);
+            cur.ifaces.add(ntry);
             cur.reindex();
             return false;
         }
@@ -355,7 +388,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         }
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd cur = fwds.get(i);
-            cur.bckplnSpf = new spfCalc<addrIP>(null);
+            cur.spf = new spfCalc<addrIP>(null);
         }
         doCalc();
         if (!need) {
@@ -374,8 +407,8 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         boolean chg = false;
         for (int o = 0; o < fwds.size(); o++) {
             servStackFwd cur = fwds.get(o);
-            for (int i = 0; i < cur.backPlanes.size(); i++) {
-                servStackIfc ntry = cur.backPlanes.get(i);
+            for (int i = 0; i < cur.ifaces.size(); i++) {
+                servStackIfc ntry = cur.ifaces.get(i);
                 boolean res = ntry.ifc.getState() == state.states.up;
                 if (res) {
                     ntry.sendHello();
@@ -396,12 +429,12 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      */
     protected void doCalc() {
         servStackFwd cur = fwds.get(0);
-        spfCalc<addrIP> spf = new spfCalc<addrIP>(cur.bckplnSpf);
+        spfCalc<addrIP> spf = new spfCalc<addrIP>(cur.spf);
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);
             addrIP adr = forwarder2addr(o);
-            for (int i = 0; i < cur.backPlanes.size(); i++) {
-                servStackIfc ntry = cur.backPlanes.get(i);
+            for (int i = 0; i < cur.ifaces.size(); i++) {
+                servStackIfc ntry = cur.ifaces.get(i);
                 if (!ntry.ready) {
                     continue;
                 }
@@ -413,29 +446,29 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             spf.addIdent(adr, "fwd" + o);
         }
         cur = fwds.get(0);
-        cur.bckplnSpf = spf;
+        cur.spf = spf;
         spf.bidir.set(1);
         for (int o = 1; o < fwds.size(); o++) {
-            fwds.get(o).bckplnSpf = spf.copyBytes();
+            fwds.get(o).spf = spf.copyBytes();
         }
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);
             addrIP adr = forwarder2addr(o);
-            cur.bckplnSpf.doWork(null, adr, null);
+            cur.spf.doWork(null, adr, null);
         }
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);
-            for (int i = 0; i < cur.backPlanes.size(); i++) {
-                servStackIfc ntry = cur.backPlanes.get(i);
+            for (int i = 0; i < cur.ifaces.size(); i++) {
+                servStackIfc ntry = cur.ifaces.get(i);
                 if (!ntry.ready) {
                     continue;
                 }
                 addrIP nei = forwarder2addr(ntry.lastFwdr.id);
                 tabRouteIface ifc = new tabRouteIface();
                 ifc.ifwNum = ntry.id;
-                cur.bckplnSpf.addNextHop(ntry.metric, nei, nei, ifc, null, null);
+                cur.spf.addNextHop(ntry.metric, nei, nei, ifc, null, null);
             }
-            cur.bckplnRou = cur.bckplnSpf.getRoutes(null, null, null, null);
+            cur.routes = cur.spf.getRoutes(null, null, null, null);
         }
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);
@@ -446,6 +479,41 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 cur.of.notif.wakeup();
             }
         }
+    }
+
+    /**
+     * merge bier forwarders
+     *
+     * @param who querier
+     * @param fwd forwarders
+     * @return merged forwarders
+     */
+    public tabGen<tabLabelBierN> mergeBier(servStackFwd who, tabGen<tabLabelBierN> fwd) {
+        tabGen<tabLabelBierN> res = new tabGen<tabLabelBierN>();
+        for (int i = 0; i < fwd.size(); i++) {
+            tabLabelBierN ntry = fwd.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            servStackFwd oth = findIfc(who, ntry.iface);
+            if (oth == null) {
+                continue;
+            }
+            tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
+            oru = oth.routes.find(oru);
+            if (oru == null) {
+                continue;
+            }
+            tabLabelBierN curr = new tabLabelBierN(new ipFwdIface(oru.best.iface.ifwNum, null), oru.best.nextHop, 0);
+            tabLabelBierN old = res.find(curr);
+            if (old != null) {
+                old.ned = mergeTwoList(old.ned, ntry.ned);
+                continue;
+            }
+            curr.ned = mergeTwoList(ntry.ned, ntry.ned);
+            res.add(curr);
+        }
+        return res;
     }
 
     /**
@@ -506,8 +574,8 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         }
         servStackFwd cur = fwds.get(fwd);
         userFormat res = new userFormat("|", "port|metric|ready|remote|peering");
-        for (int i = 0; i < cur.backPlanes.size(); i++) {
-            servStackIfc ntry = cur.backPlanes.get(i);
+        for (int i = 0; i < cur.ifaces.size(); i++) {
+            servStackIfc ntry = cur.ifaces.get(i);
             res.add(ntry.pi + "|" + ntry.metric + "|" + ntry.ready + "|" + ntry.lastFwdr + "|" + ntry.lastPort);
         }
         return res;
@@ -524,7 +592,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.bckplnSpf.listStatistics();
+        return cur.spf.listStatistics();
     }
 
     /**
@@ -538,7 +606,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.bckplnSpf.listTopology();
+        return cur.spf.listTopology();
     }
 
     /**
@@ -552,7 +620,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.bckplnSpf.listTree();
+        return cur.spf.listTree();
     }
 
     /**
@@ -566,7 +634,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.bckplnSpf.listGraphviz(0);
+        return cur.spf.listGraphviz(0);
     }
 
     /**
@@ -580,7 +648,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return new tabRoute<addrIP>("bp");
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.bckplnRou;
+        return cur.routes;
     }
 
     /**
@@ -592,7 +660,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         userFormat res = new userFormat("|", "fwd|name|addr|bckpln");
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd ntry = fwds.get(i);
-            res.add(i + "|" + ntry.getShGenOneLiner() + "|" + ntry.remote + "|" + ntry.bckplnRou.size());
+            res.add(i + "|" + ntry.getShGenOneLiner() + "|" + ntry.remote + "|" + ntry.routes.size());
         }
         return res;
     }

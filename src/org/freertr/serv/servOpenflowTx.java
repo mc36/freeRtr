@@ -689,7 +689,7 @@ class servOpenflowTx implements Runnable {
                     continue;
                 }
                 tabRouteEntry<addrIP> oru = servStack.forwarder2route(oth.id);
-                oru = lower.parid.bckplnRou.find(oru);
+                oru = lower.parid.routes.find(oru);
                 if (oru == null) {
                     createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
                     if (ipv4) {
@@ -708,7 +708,7 @@ class servOpenflowTx implements Runnable {
                     }
                     continue;
                 }
-                servStackIfc bck = lower.parid.backPlanes.get(oru.best.iface.ifwNum);
+                servStackIfc bck = lower.parid.ifaces.get(oru.best.iface.ifwNum);
                 if (bck == null) {
                     createIpvXpunt(pckB, pckO, ipv4, rou, ntry);
                     if (ipv4) {
@@ -1019,7 +1019,7 @@ class servOpenflowTx implements Runnable {
                     continue;
                 }
                 tabRouteEntry<addrIP> oru = servStack.forwarder2route(oth.id);
-                oru = lower.parid.bckplnRou.find(oru);
+                oru = lower.parid.routes.find(oru);
                 if (oru == null) {
                     createMplsPunt(pckB, pckO, lab, ntry);
                     addTable(n, tabMpls, ntry);
@@ -1030,7 +1030,7 @@ class servOpenflowTx implements Runnable {
                     addTable(n, tabMpls, ntry);
                     continue;
                 }
-                servStackIfc bck = lower.parid.backPlanes.get(oru.best.iface.ifwNum);
+                servStackIfc bck = lower.parid.ifaces.get(oru.best.iface.ifwNum);
                 if (bck == null) {
                     createMplsPunt(pckB, pckO, lab, ntry);
                     addTable(n, tabMpls, ntry);
@@ -1157,7 +1157,7 @@ class servOpenflowTx implements Runnable {
                 continue;
             }
             tabRouteEntry<addrIP> oru = servStack.forwarder2route(i);
-            oru = lower.parid.bckplnRou.find(oru);
+            oru = lower.parid.routes.find(oru);
             if (oru == null) {
                 createMplsPunt(pckB, pckO, lab, ntry);
                 addTable(n, tabMpls, ntry);
@@ -1168,7 +1168,7 @@ class servOpenflowTx implements Runnable {
                 addTable(n, tabMpls, ntry);
                 continue;
             }
-            servStackIfc bck = lower.parid.backPlanes.get(oru.best.iface.ifwNum);
+            servStackIfc bck = lower.parid.ifaces.get(oru.best.iface.ifwNum);
             if (bck == null) {
                 createMplsPunt(pckB, pckO, lab, ntry);
                 addTable(n, tabMpls, ntry);

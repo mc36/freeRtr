@@ -40,24 +40,24 @@ public class servStackFwd {
     protected int id;
 
     /**
-     * last peer
+     * needed peer
      */
     protected addrIP remote = new addrIP();
 
     /**
-     * backplane interfaces
+     * interfaces
      */
-    protected tabGen<servStackIfc> backPlanes = new tabGen<servStackIfc>();
+    protected tabGen<servStackIfc> ifaces = new tabGen<servStackIfc>();
 
     /**
-     * backplane spf
+     * last spf
      */
-    protected spfCalc<addrIP> bckplnSpf;
+    protected spfCalc<addrIP> spf;
 
     /**
-     * backplane routes
+     * computed routes
      */
-    protected tabRoute<addrIP> bckplnRou;
+    protected tabRoute<addrIP> routes;
 
     /**
      * p4lang
@@ -98,8 +98,8 @@ public class servStackFwd {
         if (of != null) {
             l.add(beg + mid + "openflow " + of.srvName);
         }
-        for (int i = 0; i < backPlanes.size(); i++) {
-            servStackIfc ntry = backPlanes.get(i);
+        for (int i = 0; i < ifaces.size(); i++) {
+            servStackIfc ntry = ifaces.get(i);
             l.add(beg + mid + "backplane " + ntry.pi.name + " " + ntry.metric);
         }
         l.add(beg + mid + "remote " + remote);
@@ -157,8 +157,8 @@ public class servStackFwd {
      * reindex
      */
     protected void reindex() {
-        for (int i = 0; i < backPlanes.size(); i++) {
-            servStackIfc ntry = backPlanes.get(i);
+        for (int i = 0; i < ifaces.size(); i++) {
+            servStackIfc ntry = ifaces.get(i);
             ntry.id = i;
         }
     }

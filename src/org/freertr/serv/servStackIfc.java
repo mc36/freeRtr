@@ -26,7 +26,7 @@ public class servStackIfc implements Comparator<servStackIfc>, ifcUp {
     private final static int magic1 = 0x00010000 | ipIfc4.type;
 
     private final static int magic2 = 0x06040bad;
-    
+
     /**
      * interface id
      */
@@ -182,11 +182,11 @@ public class servStackIfc implements Comparator<servStackIfc>, ifcUp {
         }
         lastFwdr = lower.lower.fwds.get(i);
         i = pck.msbGetD(16);
-        if ((i < 0) || (i >= lastFwdr.backPlanes.size())) {
+        if ((i < 0) || (i >= lastFwdr.ifaces.size())) {
             logger.info("got invalid interface id on " + ifc);
             return;
         }
-        lastPort = lastFwdr.backPlanes.get(i);
+        lastPort = lastFwdr.ifaces.get(i);
         int lastRand = pck.msbGetD(20);
         if (lastPort.randId != lastRand) {
             logger.info("got invalid random id on " + ifc);

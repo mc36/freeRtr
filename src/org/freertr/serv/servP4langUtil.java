@@ -48,7 +48,7 @@ public class servP4langUtil {
      * @param i id
      * @return interface
      */
-    protected static final servP4langIfc forwarder2iface(servP4lang p, int i) {
+    protected final static servP4langIfc forwarder2iface(servP4lang p, int i) {
         return new servP4langIfc(p, -1 - i);
     }
 
