@@ -73,37 +73,6 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     }
 
     /**
-     * merge two bytes list
-     *
-     * @param l1 first list
-     * @param l2 second list
-     * @return merged list
-     */
-    public final static List<Byte> mergeTwoList(List<Byte> l1, List<Byte> l2) {
-        List<Byte> res = new ArrayList<Byte>();
-        int s1 = l1.size();
-        int s2 = l2.size();
-        int s;
-        if (s1 < s2) {
-            s = s2;
-        } else {
-            s = s1;
-        }
-        for (int i = 0; i < s; i++) {
-            int b1 = 0;
-            int b2 = 0;
-            if (i < s1) {
-                b1 = l1.get(i);
-            }
-            if (i < s2) {
-                b2 = l2.get(i);
-            }
-            res.add((byte) (b1 | b2));
-        }
-        return res;
-    }
-
-    /**
      * port
      */
     public final static int port = 9080;
@@ -507,10 +476,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             tabLabelBierN curr = new tabLabelBierN(oru.best.iface, oru.best.nextHop, 0);
             tabLabelBierN old = res.find(curr);
             if (old != null) {
-                old.ned = mergeTwoList(old.ned, ntry.ned);
+                old.mergeNed(ntry.ned);
                 continue;
             }
-            curr.ned = mergeTwoList(ntry.ned, ntry.ned);
+            curr.mergeNed(ntry.ned);
             res.add(curr);
         }
         return res;

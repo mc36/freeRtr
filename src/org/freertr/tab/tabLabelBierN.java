@@ -143,6 +143,25 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
         return res;
     }
 
+    /**
+     * merge two bytes list
+     *
+     * @param src other list
+     */
+    public void mergeNed(List<Byte> src) {
+        int got = src.size();
+        int siz = ned.size();
+        for (int i = 0; i < got; i++) {
+            byte b = src.get(i);
+            if (i >= siz) {
+                ned.add(b);
+                continue;
+            }
+            b |= ned.get(i);
+            ned.set(i, b);
+        }
+    }
+
     public int compare(tabLabelBierN o1, tabLabelBierN o2) {
         if (o1.iface.ifwNum < o2.iface.ifwNum) {
             return -1;
