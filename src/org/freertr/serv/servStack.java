@@ -65,7 +65,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @param i id
      * @return address
      */
-    protected static final tabRouteEntry<addrIP> forwarder2route(int i) {
+    protected final static tabRouteEntry<addrIP> forwarder2route(int i) {
         addrIP adr = forwarder2addr(i);
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
@@ -79,7 +79,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @param l2 second list
      * @return merged list
      */
-    public static final List<Byte> mergeTwoList(List<Byte> l1, List<Byte> l2) {
+    public final static List<Byte> mergeTwoList(List<Byte> l1, List<Byte> l2) {
         List<Byte> res = new ArrayList<Byte>();
         int s1 = l1.size();
         int s2 = l2.size();
