@@ -504,7 +504,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             if (oru == null) {
                 continue;
             }
-            tabLabelBierN curr = new tabLabelBierN(new ipFwdIface(oru.best.iface.ifwNum, null), oru.best.nextHop, 0);
+            tabLabelBierN curr = new tabLabelBierN(oru.best.iface, oru.best.nextHop, 0);
             tabLabelBierN old = res.find(curr);
             if (old != null) {
                 old.ned = mergeTwoList(old.ned, ntry.ned);
@@ -512,6 +512,48 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             }
             curr.ned = mergeTwoList(ntry.ned, ntry.ned);
             res.add(curr);
+        }
+        return res;
+    }
+
+    /**
+     * merge bier forwarders
+     *
+     * @param who querier
+     * @param fwd forwarders
+     * @param src source interface
+     * @return merged forwarders
+     */
+    public tabGen<ipFwdIface> mergeMcast(servStackFwd who, tabGen<ipFwdIface> fwd, ipFwdIface src) {
+        tabGen<ipFwdIface> res = new tabGen<ipFwdIface>();
+        servStackFwd oth = findIfc(who, src);
+        if (oth == null) {
+            return res;
+        }
+        tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
+        oru = oth.routes.find(oru);
+        if (oru == null) {
+            return res;
+        }
+        int sou = oru.best.iface.ifwNum;
+        for (int i = 0; i < fwd.size(); i++) {
+            ipFwdIface ntry = fwd.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            oth = findIfc(who, ntry);
+            if (oth == null) {
+                continue;
+            }
+            oru = forwarder2route(oth.id);
+            oru = oth.routes.find(oru);
+            if (oru == null) {
+                continue;
+            }
+            if (sou == oru.best.iface.ifwNum) {
+                continue;
+            }
+            res.add((ipFwdIface) oru.best.iface);
         }
         return res;
     }
