@@ -252,6 +252,7 @@ public class pipeShell {
     public String info() {
         String a = "";
         String b = "";
+        String c = "";
         ProcessHandle hnd = null;
         try {
             hnd = process.toHandle();
@@ -264,7 +265,21 @@ public class pipeShell {
             b = dur.getSeconds() + "." + dur.getNano();
         } catch (Exception e) {
         }
-        return a + "|" + b;
+        List<String> txt = bits.txt2buf("/proc/" + hnd.pid() + "/status");
+        if (txt != null) {
+            for (int i = 0; i < txt.size(); i++) {
+                String s = txt.get(i);
+                s = s.toLowerCase();
+                if (!s.startsWith("vmrss:")) {
+                    continue;
+                }
+                if (!s.endsWith("kb")) {
+                    continue;
+                }
+                c = s.substring(6, s.length() - 2).trim();
+            }
+        }
+        return a + "|" + b + "|" + c;
     }
 
     /**

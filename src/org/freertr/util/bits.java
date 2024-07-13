@@ -1198,8 +1198,12 @@ public class bits {
         try {
             FileInputStream in = new FileInputStream(fn);
             BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-            while (rd.ready()) {
-                ln.add(rd.readLine());
+            for (;;) {
+                String a = rd.readLine();
+                if (a == null) {
+                    break;
+                }
+                ln.add(a);
             }
             rd.close();
             in.close();
