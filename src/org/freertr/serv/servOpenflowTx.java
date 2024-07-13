@@ -230,6 +230,32 @@ class servOpenflowTx implements Runnable {
                 pckO.createBucketAct(pckB, tlvs);
                 pckB.merge2end();
             }
+            tabGen<addrIP> bck = lower.parent.mergeMcast(lower.parid, grp.flood, grp.iface);
+            for (int o = 0; o < bck.size(); o++) {
+                bck.get(o);
+                tabRouteEntry<addrIP> oru = lower.parid.routes.route(bck.get(o));
+                if (oru == null) {
+                    continue;
+                }
+                servStackIfc stk = lower.parid.ifaces.get(oru.best.iface.ifwNum);
+                if (stk == null) {
+                    continue;
+                }
+                if (!stk.ready) {
+                    continue;
+                }
+                servOpenflowIfc1 oif = lower.findIfc(stk.ifc);
+                if (oif == null) {
+                    continue;
+                }
+                List<encTlv> tlvs = new ArrayList<encTlv>();
+                pckT.clear();
+                pckO.createMatchMac(pckT, true, (addrMac) oif.ifc.ethtyp.getHwAddr(), null);
+                tlvs.add(pckO.getActionSetField(pckT));
+                tlvs.add(pckO.getActionOutput(oif.id));
+                pckO.createBucketAct(pckB, tlvs);
+                pckB.merge2end();
+            }
             ntry.action = pckB.getCopy();
             addTable(n, tabGroup, ntry);
         }
@@ -376,11 +402,40 @@ class servOpenflowTx implements Runnable {
             }
             servOpenflowIfc2 ifc = new servOpenflowIfc2(grp.iface, null, null);
             ifc = ifcs.find(ifc);
-            if (ifc == null) {
-                continue;
-            }
-            if (ifc.ifo.id == servOpenflow.tabGrp) {
-                continue;
+            pckB.clear();
+            if (ifc != null) {
+                if (ifc.ifo.id == servOpenflow.tabGrp) {
+                    continue;
+                }
+                pckO.createMatchPort(pckB, ifc.ifo.id);
+            } else {
+                servStackFwd oth = lower.parent.findIfc(lower.parid, grp.iface);
+                if (oth == null) {
+                    continue;
+                }
+                tabRouteEntry<addrIP> oru = servStack.forwarder2route(oth.id);
+                oru = lower.parid.routes.find(oru);
+                if (oru == null) {
+                    continue;
+                }
+                if (oru.best.iface == null) {
+                    continue;
+                }
+                servStackIfc stk = lower.parid.ifaces.get(oru.best.iface.ifwNum);
+                if (stk == null) {
+                    continue;
+                }
+                if (!stk.ready) {
+                    continue;
+                }
+                servOpenflowIfc1 oif = lower.findIfc(stk.ifc);
+                if (oif == null) {
+                    continue;
+                }
+                if (oif.id == servOpenflow.tabGrp) {
+                    continue;
+                }
+                pckO.createMatchPort(pckB, oif.id);
             }
             servOpenflowFlw ntry = new servOpenflowFlw();
             ntry.match = new byte[33];
@@ -394,8 +449,6 @@ class servOpenflowTx implements Runnable {
             int cook = ntry.cookie;
             ntry = new servOpenflowFlw();
             ntry.prio = 3;
-            pckB.clear();
-            pckO.createMatchPort(pckB, ifc.ifo.id);
             if (ipv4) {
                 pckO.createMatchEthTyp(pckB, ipIfc4.type);
                 pckO.createMatchIpv4(pckB, true, grp.source, null);

@@ -469,7 +469,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 continue;
             }
             tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
-            oru = oth.routes.find(oru);
+            oru = who.routes.find(oru);
             if (oru == null) {
                 continue;
             }
@@ -493,18 +493,17 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @param src source interface
      * @return merged forwarders
      */
-    public tabGen<ipFwdIface> mergeMcast(servStackFwd who, tabGen<ipFwdIface> fwd, ipFwdIface src) {
-        tabGen<ipFwdIface> res = new tabGen<ipFwdIface>();
+    public tabGen<addrIP> mergeMcast(servStackFwd who, tabGen<ipFwdIface> fwd, ipFwdIface src) {
+        tabGen<addrIP> res = new tabGen<addrIP>();
+        addrIP sou = new addrIP();
         servStackFwd oth = findIfc(who, src);
-        if (oth == null) {
-            return res;
+        if (oth != null) {
+            tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
+            oru = who.routes.find(oru);
+            if (oru != null) {
+                sou = oru.best.nextHop.copyBytes();
+            }
         }
-        tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
-        oru = oth.routes.find(oru);
-        if (oru == null) {
-            return res;
-        }
-        int sou = oru.best.iface.ifwNum;
         for (int i = 0; i < fwd.size(); i++) {
             ipFwdIface ntry = fwd.get(i);
             if (ntry == null) {
@@ -514,15 +513,15 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             if (oth == null) {
                 continue;
             }
-            oru = forwarder2route(oth.id);
-            oru = oth.routes.find(oru);
+            tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
+            oru = who.routes.find(oru);
             if (oru == null) {
                 continue;
             }
-            if (sou == oru.best.iface.ifwNum) {
+            if (sou.compare(sou, oru.best.nextHop) == 0) {
                 continue;
             }
-            res.add((ipFwdIface) oru.best.iface);
+            res.add(oru.best.nextHop);
         }
         return res;
     }
