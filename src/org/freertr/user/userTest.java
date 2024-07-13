@@ -470,7 +470,7 @@ public class userTest {
         if (a.equals("vm")) {
             try {
                 a = cmd.word();
-                String s = cmd.getRemaining().strip();
+                String s = cmd.getRemaining().trim();
                 userVM v = new userVM(pip, true, verCore.vmDir);
                 v.doLoad(a, s);
                 v.doWork(pip, true, "", a, s);
