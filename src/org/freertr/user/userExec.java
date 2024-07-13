@@ -1115,7 +1115,7 @@ public class userExec {
         hl.add(null, "2 .      asn-cache               local asn cache");
         hl.add(null, "2 3      watchdog                watchdog information");
         hl.add(null, "3 .        gc                    garbage collector information");
-        hl.add(null, "3 .        sys                   system information");
+        hl.add(null, "3 .        system                system information");
         hl.add(null, "3 .        hardware              hardware watchdog information");
         hl.add(null, "3 .        software              software watchdog information");
         hl.add(null, "3 .        timer                 timer history information");

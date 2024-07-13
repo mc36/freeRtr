@@ -594,7 +594,7 @@ public class userShow {
                 rdr.putStrTab(logger.listGcs());
                 return null;
             }
-            if (a.equals("sys")) {
+            if (a.equals("system")) {
                 rdr.putStrTab(logger.listSys());
                 return null;
             }
