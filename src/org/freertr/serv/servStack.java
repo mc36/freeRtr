@@ -7,6 +7,7 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.ifc.ifcBridgeIfc;
+import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -568,6 +569,29 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @return owner, null if error
      */
     protected servStackFwd findIfc(servStackFwd who, tabRouteIface ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < fwds.size(); i++) {
+            servStackFwd ntry = fwds.get(i);
+            if (ntry.id == who.id) {
+                continue;
+            }
+            if (ntry.findIfc(ifc)) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * find interface
+     *
+     * @param who querier
+     * @param ifc interface
+     * @return owner, null if error
+     */
+    protected servStackFwd findIfc(servStackFwd who, ifcEthTyp ifc) {
         if (ifc == null) {
             return null;
         }

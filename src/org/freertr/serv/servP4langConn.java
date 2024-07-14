@@ -1411,7 +1411,17 @@ public class servP4langConn implements Runnable {
         if (ntry.iface != null) {
             servP4langIfc ifc = lower.findIfc(ntry.iface);
             if (ifc == null) {
-                return null;
+                servStackFwd oth = lower.parent.findIfc(lower.parid, ntry.iface);
+                if (oth == null) {
+                    return null;
+                }
+                addrIP adr = servStack.forwarder2addr(oth.id);
+                ifc = servP4langUtil.forwarder2iface(lower, oth.id);
+                servP4langNei hop = lower.findNei(ifc, adr);
+                if (hop == null) {
+                    return null;
+                }
+                return "nshnei_" + act + " " + ntry.sp + " " + ntry.si + " " + hop.id + " " + ntry.sp + " " + ntry.si;
             }
             if (ifc.viaN == null) {
                 return "nshifc_" + act + " " + ntry.sp + " " + ntry.si + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + ntry.target.toEmuStr() + " " + ntry.trgSp + " " + ntry.trgSi;

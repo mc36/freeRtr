@@ -2327,13 +2327,13 @@ bridgevpls_rx:
         break;
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
-        vrf2rib_ntry.vrf = port2vrf_res->vrf;
         packPolka[port]++;
         bytePolka[port] += bufS;
         ttl = bufD[bufP + 1];
         if ((ttl & 0xff) <= 1) doPunting;
         ttl--;
         bufD[bufP + 1] = ttl;
+        vrf2rib_ntry.vrf = port2vrf_res->vrf;
         if (bufD[bufP + 0] == 0) {
             index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
             if (index < 0) doDropper;
@@ -2444,8 +2444,6 @@ nsh_rx:
             put16msb(bufD, bufP + 0, ttl);
             put32msb(bufD, bufP + 4, nsh_res->trg);
             ethtyp = ETHERTYPE_NSH;
-            bufP -= 2;
-            put16msb(bufD, bufP, ethtyp);
             neigh_ntry.id = nsh_res->port;
             goto ethtyp_tx;
         }
