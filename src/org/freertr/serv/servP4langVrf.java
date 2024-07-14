@@ -161,6 +161,16 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     protected tabGen<ipFwdMcast> mroutes6 = new tabGen<ipFwdMcast>();
 
     /**
+     * sent mroutes
+     */
+    protected tabGen<servP4langStrL<ipFwdMcast, addrIP>> mrouted4 = new tabGen<servP4langStrL<ipFwdMcast, addrIP>>();
+
+    /**
+     * sent mroutes
+     */
+    protected tabGen<servP4langStrL<ipFwdMcast, addrIP>> mrouted6 = new tabGen<servP4langStrL<ipFwdMcast, addrIP>>();
+
+    /**
      * sent nat config
      */
     protected tabListing<tabAceslstN<addrIP>, addrIP> natCfg4;
@@ -283,6 +293,8 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
         routes6 = new tabRoute<addrIP>("sent");
         mroutes4 = new tabGen<ipFwdMcast>();
         mroutes6 = new tabGen<ipFwdMcast>();
+        mrouted4 = new tabGen<servP4langStrL<ipFwdMcast, addrIP>>();
+        mrouted6 = new tabGen<servP4langStrL<ipFwdMcast, addrIP>>();
         sentMcast = false;
         natCfg4 = new tabListing<tabAceslstN<addrIP>, addrIP>();
         natCfg4f = new tabListing<tabAceslstN<addrIP>, addrIP>();

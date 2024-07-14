@@ -1966,6 +1966,7 @@ qc pass: p4lang: etherip server over ipv4 loopback
 qc pass: p4lang: etherip server over ipv6 loopback
 qc pass: p4lang: gre local connect
 qc pass: p4lang: gre multicast routing
+qc pass: p4lang: multicast routing over backplane
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

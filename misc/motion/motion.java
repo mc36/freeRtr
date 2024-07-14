@@ -252,7 +252,7 @@ public class motion {
         writer.print("To: <" + address + ">\r\n");
         writer.print("Subject: check recording\r\n");
         writer.print("\r\n");
-        writer.print("motion detected in  " + nam + ", check recording\r\n");
+        writer.print("motion detected in " + nam + ", check recording\r\n");
         writer.print(".\r\n");
         writer.flush();
         a = reader.readLine();

@@ -60,6 +60,17 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     }
 
     /**
+     * convert address to forwarder id
+     *
+     * @param adr address
+     * @return id
+     */
+    protected final static int addr2forwarder(addrIP adr) {
+        byte[] buf = adr.getBytes();
+        return bits.msbGetD(buf, buf.length - 4) - 1;
+    }
+
+    /**
      * convert forwarder id to address
      *
      * @param i id

@@ -232,7 +232,6 @@ class servOpenflowTx implements Runnable {
             }
             tabGen<addrIP> bck = lower.parent.mergeMcast(lower.parid, grp.flood, grp.iface);
             for (int o = 0; o < bck.size(); o++) {
-                bck.get(o);
                 tabRouteEntry<addrIP> oru = lower.parid.routes.route(bck.get(o));
                 if (oru == null) {
                     continue;
