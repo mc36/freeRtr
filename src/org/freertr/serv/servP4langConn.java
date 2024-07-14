@@ -4014,7 +4014,16 @@ public class servP4langConn implements Runnable {
             }
             servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
             if (hop == null) {
-                continue;
+                servStackFwd oth = lower.parent.findIfc(lower.parid, rou.best.iface);
+                if (oth == null) {
+                    continue;
+                }
+                addrIP adr = servStack.forwarder2addr(oth.id);
+                servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, oth.id);
+                hop = lower.findNei(ifc, adr);
+                if (hop == null) {
+                    continue;
+                }
             }
             servP4langStrI<tabIndex<addrIP>> str = new servP4langStrI<tabIndex<addrIP>>(ntry);
             str.stor1 = hop.id;

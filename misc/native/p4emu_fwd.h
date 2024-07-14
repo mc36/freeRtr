@@ -2327,6 +2327,7 @@ bridgevpls_rx:
         break;
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
+        vrf2rib_ntry.vrf = port2vrf_res->vrf;
         packPolka[port]++;
         bytePolka[port] += bufS;
         ttl = bufD[bufP + 1];
