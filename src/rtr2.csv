@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.7.12-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-07-12 06:16:56, took 00:08:45, with 1 workers, on 8 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v24.7.14-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-07-14 12:21:57, took 00:12:08, with 1 workers, on 9 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/opnflw-rout01.tst;opnflw-rout01.tst;success;openflow: software routing
 http://sources.freertr.org/cfg/opnflw-rout02.tst;opnflw-rout02.tst;success;openflow: bridging and routing
@@ -10,3 +10,4 @@ http://sources.freertr.org/cfg/opnflw-rout05.tst;opnflw-rout05.tst;success;openf
 http://sources.freertr.org/cfg/opnflw-rout06.tst;opnflw-rout06.tst;success;openflow: mldp routing
 http://sources.freertr.org/cfg/opnflw-rout07.tst;opnflw-rout07.tst;success;openflow: ip routing over backplane
 http://sources.freertr.org/cfg/opnflw-rout08.tst;opnflw-rout08.tst;success;openflow: mpls routing over backplane
+http://sources.freertr.org/cfg/opnflw-rout09.tst;opnflw-rout09.tst;success;openflow: multicast routing over backplane
