@@ -9,7 +9,7 @@ import org.freertr.tab.tabGen;
  * @param <T> type to compare
  * @author matecsaba
  */
-public class servP4langStr<T extends Comparator<T>> implements Comparator<servP4langStr<T>> {
+public class servP4langStrI<T extends Comparator<T>> implements Comparator<servP4langStrI<T>> {
 
     /**
      * the data
@@ -31,11 +31,11 @@ public class servP4langStr<T extends Comparator<T>> implements Comparator<servP4
      *
      * @param dat data to store
      */
-    protected servP4langStr(T dat) {
+    protected servP4langStrI(T dat) {
         data = dat;
     }
 
-    public int compare(servP4langStr<T> o1, servP4langStr<T> o2) {
+    public int compare(servP4langStrI<T> o1, servP4langStrI<T> o2) {
         return o1.data.compare(o1.data, o2.data);
     }
 
@@ -45,8 +45,8 @@ public class servP4langStr<T extends Comparator<T>> implements Comparator<servP4
      * @param l list to check
      * @return true if differs, false if identical
      */
-    protected boolean differs(tabGen<servP4langStr<T>> l) {
-        servP4langStr<T> o = l.find(this);
+    protected boolean differs(tabGen<servP4langStrI<T>> l) {
+        servP4langStrI<T> o = l.find(this);
         if (o == null) {
             return true;
         }

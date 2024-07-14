@@ -113,12 +113,12 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     /**
      * sent routes
      */
-    protected tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+    protected tabGen<servP4langStrI<tabRouteEntry<addrIP>>> routed4 = new tabGen<servP4langStrI<tabRouteEntry<addrIP>>>();
 
     /**
      * sent routes
      */
-    protected tabGen<servP4langStr<tabRouteEntry<addrIP>>> routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+    protected tabGen<servP4langStrI<tabRouteEntry<addrIP>>> routed6 = new tabGen<servP4langStrI<tabRouteEntry<addrIP>>>();
 
     /**
      * sent routes
@@ -213,12 +213,12 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     /**
      * sent polka indexes
      */
-    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexUs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStrI<tabIndex<addrIP>>> indexUs4 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
 
     /**
      * sent polka indexes
      */
-    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexUs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStrI<tabIndex<addrIP>>> indexUs6 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
 
     /**
      * sent polka indexes
@@ -233,12 +233,12 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
     /**
      * sent mpolka indexes
      */
-    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexCs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStrI<tabIndex<addrIP>>> indexCs4 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
 
     /**
      * sent mpolka indexes
      */
-    protected tabGen<servP4langStr<tabIndex<addrIP>>> indexCs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+    protected tabGen<servP4langStrI<tabIndex<addrIP>>> indexCs6 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
 
     /**
      * sent mpolka indexes
@@ -277,8 +277,8 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
         copp6p = null;
         copp4f = new tabListing<tabAceslstN<addrIP>, addrIP>();
         copp6f = new tabListing<tabAceslstN<addrIP>, addrIP>();
-        routed4 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
-        routed6 = new tabGen<servP4langStr<tabRouteEntry<addrIP>>>();
+        routed4 = new tabGen<servP4langStrI<tabRouteEntry<addrIP>>>();
+        routed6 = new tabGen<servP4langStrI<tabRouteEntry<addrIP>>>();
         routes4 = new tabRoute<addrIP>("sent");
         routes6 = new tabRoute<addrIP>("sent");
         mroutes4 = new tabGen<ipFwdMcast>();
@@ -298,12 +298,12 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
         udp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp4 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
         tcp6 = new tabConnect<addrIP, prtGenServ>(new addrIP(), "sent");
-        indexUs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
-        indexUs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+        indexUs4 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
+        indexUs6 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
         indexUd4 = new tabGen<tabIndex<addrIP>>();
         indexUd6 = new tabGen<tabIndex<addrIP>>();
-        indexCs4 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
-        indexCs6 = new tabGen<servP4langStr<tabIndex<addrIP>>>();
+        indexCs4 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
+        indexCs6 = new tabGen<servP4langStrI<tabIndex<addrIP>>>();
         indexCd4 = new tabGen<tabIndex<addrIP>>();
         indexCd6 = new tabGen<tabIndex<addrIP>>();
     }

@@ -1419,6 +1419,7 @@ qc pass: openflow: multicast routing
 qc pass: openflow: mldp routing
 qc pass: openflow: ip routing over backplane
 qc pass: openflow: mpls routing over backplane
+qc pass: openflow: multicast routing over backplane
 qc pass: p4lang: copp
 qc pass: p4lang: ingress access list
 qc pass: p4lang: egress access list

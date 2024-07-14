@@ -3940,7 +3940,7 @@ public class servP4langConn implements Runnable {
         }
     }
 
-    private void doIndexes(String beg, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes, tabGen<servP4langStr<tabIndex<addrIP>>> store) {
+    private void doIndexes(String beg, int vrf, tabGen<tabIndex<addrIP>> need, tabGen<tabIndex<addrIP>> done, tabRoute<addrIP> routes, tabGen<servP4langStrI<tabIndex<addrIP>>> store) {
         for (int i = 0; i < need.size(); i++) {
             tabIndex<addrIP> ntry = need.get(i);
             if (ntry == null) {
@@ -3958,7 +3958,7 @@ public class servP4langConn implements Runnable {
             if (hop == null) {
                 continue;
             }
-            servP4langStr<tabIndex<addrIP>> str = new servP4langStr<tabIndex<addrIP>>(ntry);
+            servP4langStrI<tabIndex<addrIP>> str = new servP4langStrI<tabIndex<addrIP>>(ntry);
             str.stor1 = hop.id;
             tabIndex<addrIP> old = done.find(ntry);
             String act = "add";
@@ -3978,7 +3978,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             done.del(ntry);
-            store.del(new servP4langStr<tabIndex<addrIP>>(ntry));
+            store.del(new servP4langStrI<tabIndex<addrIP>>(ntry));
             lower.sendLine(beg + "polkaidx_del " + ntry.index + " " + vrf + " 0");
         }
     }
@@ -4004,7 +4004,7 @@ public class servP4langConn implements Runnable {
         return true;
     }
 
-    private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStr<tabRouteEntry<addrIP>>> store, boolean cmpr, tabListing<tabPrfxlstN, addrIP> prflst, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol) {
+    private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStrI<tabRouteEntry<addrIP>>> store, boolean cmpr, tabListing<tabPrfxlstN, addrIP> prflst, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol) {
         if (cmpr) {
             need = new tabRoute<addrIP>(need);
             tabRoute.compressTable(rtrBgpUtil.sfiUnicast, need, null);
@@ -4056,7 +4056,7 @@ public class servP4langConn implements Runnable {
                     }
                     continue;
                 }
-                servP4langStr<tabRouteEntry<addrIP>> str = new servP4langStr<tabRouteEntry<addrIP>>(ntry);
+                servP4langStrI<tabRouteEntry<addrIP>> str = new servP4langStrI<tabRouteEntry<addrIP>>(ntry);
                 str.stor1 = hop.id;
                 str.stor2 = servP4langUtil.getLabel(recur);
                 String act = "add";
@@ -4167,7 +4167,7 @@ public class servP4langConn implements Runnable {
                     continue;
                 }
                 done.del(ntry);
-                store.del(new servP4langStr<tabRouteEntry<addrIP>>(ntry));
+                store.del(new servP4langStrI<tabRouteEntry<addrIP>>(ntry));
                 String a;
                 if (ipv4) {
                     a = "" + addrPrefix.ip2ip4(ntry.prefix);
