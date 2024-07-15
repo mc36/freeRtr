@@ -1093,12 +1093,12 @@ public class servP4langConn implements Runnable {
         old.sentIgNhop = outIfc;
     }
 
-    private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, servP4langStrL<tabLabelEntry, tabLabelBierN> sned, servP4langStrL<tabLabelEntry, tabLabelBierN> sdon, boolean bef) {
+    private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, servP4langStrL<tabLabelEntry, tabLabelBierN> nstr, servP4langStrL<tabLabelEntry, tabLabelBierN> dstr, boolean bef) {
         if (done.bier == null) {
             done.bier = new tabLabelBier(0, 0);
         }
-        if (sdon == null) {
-            sdon = new servP4langStrL<tabLabelEntry, tabLabelBierN>(done);
+        if (dstr == null) {
+            dstr = new servP4langStrL<tabLabelEntry, tabLabelBierN>(done);
         }
         servP4langVrf vrf = lower.findVrf(fwd);
         if (vrf == null) {
@@ -1147,9 +1147,9 @@ public class servP4langConn implements Runnable {
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
         }
-        for (int i = 0; i < sdon.list.size(); i++) {
-            tabLabelBierN ntry = sdon.list.get(i);
-            if (sned.list.find(ntry) != null) {
+        for (int i = 0; i < dstr.list.size(); i++) {
+            tabLabelBierN ntry = dstr.list.get(i);
+            if (nstr.list.find(ntry) != null) {
                 continue;
             }
             servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, servStack.addr2forwarder(ntry.hop));
@@ -1161,9 +1161,9 @@ public class servP4langConn implements Runnable {
             String a = servP4langUtil.getBierLabs(ntry, ful, sis);
             lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + need.label + a);
         }
-        for (int i = 0; i < sned.list.size(); i++) {
-            tabLabelBierN ntry = sned.list.get(i);
-            if (sdon.list.find(ntry) != null) {
+        for (int i = 0; i < nstr.list.size(); i++) {
+            tabLabelBierN ntry = nstr.list.get(i);
+            if (dstr.list.find(ntry) != null) {
                 act = "mod";
             } else {
                 act = "add";
@@ -1252,9 +1252,9 @@ public class servP4langConn implements Runnable {
         if (ntry.bier != null) {
             tabLabelEntry empty = new tabLabelEntry(ntry.label);
             empty.bier = new tabLabelBier(0, 0);
-            servP4langStrL<tabLabelEntry, tabLabelBierN> sempty = new servP4langStrL<tabLabelEntry, tabLabelBierN>(empty);
-            doLab4(ntry.forwarder, empty, ntry, sempty, labeld.find(sempty), true);
-            labeld.del(sempty);
+            servP4langStrL<tabLabelEntry, tabLabelBierN> str = new servP4langStrL<tabLabelEntry, tabLabelBierN>(empty);
+            doLab4(ntry.forwarder, empty, ntry, str, labeld.find(str), true);
+            labeld.del(str);
             return;
         }
         if (ntry.duplicate != null) {
