@@ -153,9 +153,13 @@ public class servP4langConn implements Runnable {
             servP4langIfc ntry = lower.expIfc.get(i);
             if (ntry.ifc == null) {
                 lower.expIfc.del(ntry);
-            } else {
-                ntry.doClear();
+                continue;
             }
+            if (ntry.hidden && ntry.dynamic) {
+                lower.expIfc.del(ntry);
+                continue;
+            }
+            ntry.doClear();
         }
         for (int i = 0; i < lower.expVrf.size(); i++) {
             lower.expVrf.get(i).doClear();
