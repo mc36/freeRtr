@@ -13,6 +13,7 @@ scanOne "trailing space" " +$"
 scanOne "username" `whoami`
 scanOne "non-ascii" "[^\x00-\x7F]"
 scanOne "override" "\@Override"
+scanOne "here" "\"here"
 scanOne "stat-fin" "static\ final"
 scanOne ".tostring()" "\.toString\(\)"
 scanOne "///" "\/\/\/"

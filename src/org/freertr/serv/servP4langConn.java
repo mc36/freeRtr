@@ -1314,7 +1314,7 @@ public class servP4langConn implements Runnable {
         if (ntry.bier != null) {
             tabLabelEntry old = labels.find(ntry);
             servP4langStrL<tabLabelEntry, tabLabelBierN> str = new servP4langStrL<tabLabelEntry, tabLabelBierN>(ntry);
-            str.list = lower.parent.mergeBier(lower.parid, ntry.bier.peers);
+            str.list = lower.parent.mergeBier(lower.parid, ntry.bier.peers, null);
             servP4langStrL<tabLabelEntry, tabLabelBierN> ostr = labeld.find(str);
             boolean bef;
             if (old != null) {
@@ -3979,6 +3979,13 @@ public class servP4langConn implements Runnable {
             ntry = ntry.copyBytes();
             servP4langStrL<ipFwdMcast, addrIP> str = new servP4langStrL<ipFwdMcast, addrIP>(ntry);
             str.list = lower.parent.mergeMcast(lower.parid, ntry.flood, ntry.iface);
+            if (ntry.bier != null) {
+                tabGen<tabLabelBierN> res = lower.parent.mergeBier(lower.parid, ntry.bier.fwds, ntry.iface);
+                for (int o = 0; o < res.size(); o++) {
+                    tabLabelBierN cur = res.get(o);
+                    str.list.add(cur.hop);
+                }
+            }
             ipFwdMcast old = done.find(ntry);
             servP4langStrL<ipFwdMcast, addrIP> ostr = store.find(str);
             boolean bef;

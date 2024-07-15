@@ -466,22 +466,35 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      *
      * @param who querier
      * @param fwd forwarders
+     * @param src source interface
      * @return merged forwarders
      */
-    public tabGen<tabLabelBierN> mergeBier(servStackFwd who, tabGen<tabLabelBierN> fwd) {
+    public tabGen<tabLabelBierN> mergeBier(servStackFwd who, tabGen<tabLabelBierN> fwd, ipFwdIface src) {
         tabGen<tabLabelBierN> res = new tabGen<tabLabelBierN>();
+        addrIP sou = new addrIP();
+        servStackFwd oth = findIfc(who, src);
+        if (oth != null) {
+            tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
+            oru = who.routes.find(oru);
+            if (oru != null) {
+                sou = oru.best.nextHop.copyBytes();
+            }
+        }
         for (int i = 0; i < fwd.size(); i++) {
             tabLabelBierN ntry = fwd.get(i);
             if (ntry == null) {
                 continue;
             }
-            servStackFwd oth = findIfc(who, ntry.iface);
+            oth = findIfc(who, ntry.iface);
             if (oth == null) {
                 continue;
             }
             tabRouteEntry<addrIP> oru = forwarder2route(oth.id);
             oru = who.routes.find(oru);
             if (oru == null) {
+                continue;
+            }
+            if (sou.compare(sou, oru.best.nextHop) == 0) {
                 continue;
             }
             tabLabelBierN curr = new tabLabelBierN(oru.best.iface, oru.best.nextHop, 0);

@@ -15836,3 +15836,6 @@ qc pass: p4lang: nsh over backplane
 ---------------------------------- 2024-07-15 09:26:40 24.7.15
 qc pass: p4lang: bier core over backplane
 qc pass: p4lang: bier core over vlan backplane
+---------------------------------- 2024-07-15 13:32:07 24.7.15
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
