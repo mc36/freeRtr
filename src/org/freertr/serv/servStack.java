@@ -445,8 +445,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                     continue;
                 }
                 addrIP nei = forwarder2addr(ntry.lastFwdr.id);
-                tabRouteIface ifc = new tabRouteIface();
-                ifc.ifwNum = ntry.id;
+                ipFwdIface ifc = new ipFwdIface(ntry.id, null);
                 cur.spf.addNextHop(ntry.metric, nei, nei, ifc, null, null);
             }
             cur.routes = cur.spf.getRoutes(null, null, null, null);

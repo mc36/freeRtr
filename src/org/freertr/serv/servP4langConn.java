@@ -94,6 +94,11 @@ public class servP4langConn implements Runnable {
     protected tabGen<tabLabelEntry> labels = new tabGen<tabLabelEntry>();
 
     /**
+     * exported labels
+     */
+    protected tabGen<servP4langStrL<tabLabelEntry, tabLabelBierN>> labeld = new tabGen<servP4langStrL<tabLabelEntry, tabLabelBierN>>();
+
+    /**
      * exported nshs
      */
     protected tabGen<tabNshEntry> nshs = new tabGen<tabNshEntry>();
@@ -1088,9 +1093,12 @@ public class servP4langConn implements Runnable {
         old.sentIgNhop = outIfc;
     }
 
-    private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, boolean bef) {
+    private void doLab4(ipFwd fwd, tabLabelEntry need, tabLabelEntry done, servP4langStrL<tabLabelEntry, tabLabelBierN> sned, servP4langStrL<tabLabelEntry, tabLabelBierN> sdon, boolean bef) {
         if (done.bier == null) {
             done.bier = new tabLabelBier(0, 0);
+        }
+        if (sdon == null) {
+            sdon = new servP4langStrL<tabLabelEntry, tabLabelBierN>(done);
         }
         servP4langVrf vrf = lower.findVrf(fwd);
         if (vrf == null) {
@@ -1138,6 +1146,36 @@ public class servP4langConn implements Runnable {
             String a = servP4langUtil.getBierLabs(ntry, ful, sis);
             servP4langIfc ifc = hop.getVia();
             lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + (ntry.label + si) + a);
+        }
+        for (int i = 0; i < sdon.list.size(); i++) {
+            tabLabelBierN ntry = sdon.list.get(i);
+            if (sned.list.find(ntry) != null) {
+                continue;
+            }
+            servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, servStack.addr2forwarder(ntry.hop));
+            servP4langNei hop = lower.findNei(ifc, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            ifc = hop.getVia();
+            String a = servP4langUtil.getBierLabs(ntry, ful, sis);
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + need.label + a);
+        }
+        for (int i = 0; i < sned.list.size(); i++) {
+            tabLabelBierN ntry = sned.list.get(i);
+            if (sdon.list.find(ntry) != null) {
+                act = "mod";
+            } else {
+                act = "add";
+            }
+            servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, servStack.addr2forwarder(ntry.hop));
+            servP4langNei hop = lower.findNei(ifc, ntry.hop);
+            if (hop == null) {
+                continue;
+            }
+            ifc = hop.getVia();
+            String a = servP4langUtil.getBierLabs(ntry, ful, sis);
+            lower.sendLine("bierlabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + need.label + a);
         }
         if (bef) {
             act = "mod";
@@ -1214,7 +1252,9 @@ public class servP4langConn implements Runnable {
         if (ntry.bier != null) {
             tabLabelEntry empty = new tabLabelEntry(ntry.label);
             empty.bier = new tabLabelBier(0, 0);
-            doLab4(ntry.forwarder, empty, ntry, true);
+            servP4langStrL<tabLabelEntry, tabLabelBierN> sempty = new servP4langStrL<tabLabelEntry, tabLabelBierN>(empty);
+            doLab4(ntry.forwarder, empty, ntry, sempty, labeld.find(sempty), true);
+            labeld.del(sempty);
             return;
         }
         if (ntry.duplicate != null) {
@@ -1273,9 +1313,12 @@ public class servP4langConn implements Runnable {
         }
         if (ntry.bier != null) {
             tabLabelEntry old = labels.find(ntry);
+            servP4langStrL<tabLabelEntry, tabLabelBierN> str = new servP4langStrL<tabLabelEntry, tabLabelBierN>(ntry);
+            str.list = lower.parent.mergeBier(lower.parid, ntry.bier.peers);
+            servP4langStrL<tabLabelEntry, tabLabelBierN> ostr = labeld.find(str);
             boolean bef;
             if (old != null) {
-                if (!old.differs(ntry)) {
+                if ((!old.differs(ntry)) && (!str.differs(ostr))) {
                     return;
                 }
                 bef = true;
@@ -1284,7 +1327,8 @@ public class servP4langConn implements Runnable {
                 bef = false;
             }
             labels.put(ntry);
-            doLab4(ntry.forwarder, ntry, old, bef);
+            labeld.put(str);
+            doLab4(ntry.forwarder, ntry, old, str, ostr, bef);
             return;
         }
         if (ntry.duplicate != null) {

@@ -1969,6 +1969,8 @@ qc pass: p4lang: gre multicast routing
 qc pass: p4lang: multicast routing over backplane
 qc pass: p4lang: polka over backplane
 qc pass: p4lang: nsh over backplane
+qc pass: p4lang: bier core over backplane
+qc pass: p4lang: bier core over vlan backplane
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

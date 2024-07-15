@@ -15833,3 +15833,6 @@ qc pass: p4lang: multicast routing over backplane
 qc pass: p4lang: polka over backplane
 ---------------------------------- 2024-07-14 19:07:52 24.7.14
 qc pass: p4lang: nsh over backplane
+---------------------------------- 2024-07-15 09:26:40 24.7.15
+qc pass: p4lang: bier core over backplane
+qc pass: p4lang: bier core over vlan backplane
