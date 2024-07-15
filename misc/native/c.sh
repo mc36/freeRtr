@@ -124,6 +124,10 @@ for fn in xskInt; do
   compileFile $fn "" "-lpthread -lxdp" ""
   done
 
+for fn in urngInt; do
+  compileFile $fn "" "-lpthread -luring" ""
+  done
+
 for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" ""
   done
