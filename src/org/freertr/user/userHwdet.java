@@ -44,6 +44,10 @@ public class userHwdet {
          */
         map,
         /**
+         * uring
+         */
+        urng,
+        /**
          * xsk
          */
         xsk
@@ -154,6 +158,9 @@ public class userHwdet {
         if (s.equals("xsk")) {
             return ifcTyp.xsk;
         }
+        if (s.equals("urng")) {
+            return ifcTyp.urng;
+        }
         return null;
     }
 
@@ -228,6 +235,8 @@ public class userHwdet {
                 return path + "mapInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case xsk:
                 return path + "xskInt.bin " + nam + " skb " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case urng:
+                return path + "urngInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             default:
                 return null;
         }
@@ -264,6 +273,8 @@ public class userHwdet {
             case raw:
                 return "stat ";
             case map:
+                return "stat ";
+            case urng:
                 return "stat ";
             default:
                 return "";

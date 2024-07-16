@@ -23,7 +23,7 @@ public class userHwext {
     }
 
     private enum dpTyp {
-        opnflw, p4emu, p4map, p4raw, p4xsk, p4xdp, p4dpdk, p4sw
+        opnflw, p4emu, p4map, p4raw, p4xsk, p4urng, p4xdp, p4dpdk, p4sw
     }
 
     private String pref = "./rtr-";
@@ -70,6 +70,10 @@ public class userHwext {
                 }
                 if (s.equals("p4xsk")) {
                     dpt = dpTyp.p4xsk;
+                    continue;
+                }
+                if (s.equals("p4urng")) {
+                    dpt = dpTyp.p4urng;
                     continue;
                 }
                 if (s.equals("p4xdp")) {
@@ -150,7 +154,7 @@ public class userHwext {
             a = cmd.word();
             boolean sck = a.endsWith("socat");
             boolean tap = a.endsWith("tapInt.bin");
-            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !a.endsWith("xskInt.bin") && !tap && !sck) {
+            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !a.endsWith("xskInt.bin") && !a.endsWith("urngInt.bin") && !tap && !sck) {
                 continue;
             }
             String s = cmd.word();
@@ -240,6 +244,7 @@ public class userHwext {
             case p4map:
             case p4raw:
             case p4xsk:
+            case p4urng:
             case p4xdp:
             case p4sw:
                 dpv = "p4";
@@ -292,6 +297,7 @@ public class userHwext {
             case p4map:
             case p4raw:
             case p4xsk:
+            case p4urng:
             case p4xdp:
             case p4dpdk:
             case p4sw:
@@ -380,6 +386,18 @@ public class userHwext {
                         }
                         hwc.add("proc p4emu " + path + "p4xsk.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
                         hwc.add("proc cpuport " + path + "xskInt.bin " + ifn + " skb 19998 127.0.0.1 19999 127.0.0.1");
+                        break;
+                    case p4urng:
+                        ifn = "veth0a";
+                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupIface(hwd, "veth0a", 8192);
+                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        a = "";
+                        for (i = 0; i < ifp.size(); i++) {
+                            a += " " + ifp.get(i);
+                        }
+                        hwc.add("proc p4emu " + path + "p4urng.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
+                        hwc.add("proc cpuport " + path + "urngInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                         break;
                     case p4xdp:
                         ifn = "veth0a";
