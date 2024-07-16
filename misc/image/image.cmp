@@ -19,6 +19,7 @@ select-one libpcap-dev                    #dataplane
 select-one libssl-dev                     #dataplane
 select-one libbpf-dev                     #dataplane
 select-one libxdp-dev                     #dataplane
+select-one liburing-dev                   #dataplane
 select-one libmnl-dev                     #dataplane
 
 select-lst
