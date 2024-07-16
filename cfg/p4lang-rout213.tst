@@ -5,8 +5,8 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.1111 $2b$ $2a$
 int eth3 eth 0000.0000.1111 $7a$ $7b$
 int eth4 eth 0000.0000.1111 $8b$ $8a$
-int eth5 eth 0000.0000.1111 $14a$ $14b$
-int eth6 eth 0000.0000.1111 $15b$ $15a$
+int eth5 eth 0000.0000.1111 $13a$ $13b$
+int eth6 eth 0000.0000.1111 $14b$ $14a$
 !
 vrf def v1
  label-mode per-prefix
@@ -241,8 +241,8 @@ int eth6 eth 0000.0000.3333 $12a$ $12b$
 !
 
 addother r4 controller r1 v9 9080 10.13.14.111 feature bundle mpls route
-int eth1 eth 0000.0000.4444 $14b$ $14a$
-int eth2 eth 0000.0000.4444 $15a$ $15b$
+int eth1 eth 0000.0000.4444 $13b$ $13a$
+int eth2 eth 0000.0000.4444 $14a$ $14b$
 int eth3 eth 0000.0000.4444 $5b$ $5a$
 int eth4 eth 0000.0000.4444 $6b$ $6a$
 int eth5 eth 0000.0000.4444 $11b$ $11a$
