@@ -22,7 +22,7 @@ part of the subdirectories under misc/ are somewhere else too:
 
 you'll need an up to date debian sid with a jdk installed
 
-for natives, you'll need clang, dpdk, libpcap, libbpf, libmnl and libcrypto
+for natives, you'll need clang, dpdk, libpcap, libbpf, libxdp, liburing, libmnl and libcrypto
 
 ## directory structure
 
