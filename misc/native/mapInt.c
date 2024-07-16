@@ -269,7 +269,6 @@ help :
     ifacePfd.fd = ifaceSock;
     ifacePfd.events = POLLIN | POLLERR;
 
-
     printf("serving others\n");
 
     byteRx = 0;

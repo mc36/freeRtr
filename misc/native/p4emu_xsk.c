@@ -10,7 +10,6 @@
 #include <poll.h>
 #include <linux/if_link.h>
 #include <xdp/xsk.h>
-#include <sys/mman.h>
 
 
 #include "p4emu_hdr.h"

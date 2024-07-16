@@ -74,7 +74,7 @@ void doRawLoop() {
     for (;;) {
         if (io_uring_wait_cqe(&ifaceRingRx, &cqe) != 0) break;
         int bufS = cqe->res;
-        if (bufS < 1) break;
+        if (bufS < 0) break;
         unsigned char *bufD = io_uring_cqe_get_data(cqe);
         int idx = (bufD - ifaceMemRx) / 16384;
         struct cmsghdr* cmsg = (struct cmsghdr*)(ifaceAuxRx + (idx*cmsgLen));
@@ -101,17 +101,17 @@ void doUdpLoop() {
     struct io_uring_sqe *sqe;
     unsigned char bufD[16384];
     int bufS;
-    int idx;
+    int idx = 0;
     for (;;) {
         bufS = sizeof (bufD);
         bufS = recv(commSock, bufD, bufS, 0);
         if (bufS < 0) break;
         packTx++;
         byteTx += bufS;
-        idx = (idx + 1) % queueMax;
-        memcpy(ifaceMemTx + (idx * 16384), bufD, bufS);
         sqe = io_uring_get_sqe(&ifaceRingTx);
         if (sqe == NULL) break;
+        idx = (idx + 1) % queueMax;
+        memcpy(ifaceMemTx + (idx * 16384), bufD, bufS);
         ifaceIovTx[idx].iov_base = ifaceMemTx + (idx * 16384);
         ifaceIovTx[idx].iov_len = bufS;
         ifaceMsgTx[idx].msg_name = NULL;
@@ -271,7 +271,6 @@ help :
 
     int val = 1;
     if (setsockopt(ifaceSock, SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val)) < 0) err("failed to set auxdata");
-    printf("serving others\n");
 
     if (io_uring_queue_init(queueMax, &ifaceRingRx, 0) < 0) err("failed to init ring");
     ifaceMemRx = malloc(queueMax * 16384);
@@ -296,6 +295,8 @@ help :
         if (sqe == NULL) err("error getting sqe");
         prepReceive(sqe, i);
     }
+
+    printf("serving others\n");
 
     byteRx = 0;
     packRx = 0;

@@ -229,7 +229,8 @@ help :
     if (setsockopt(ifaceSock, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &pmr, sizeof (pmr)) < 0) err("failed to set promisc");
 
     int val = 1;
-    if(setsockopt(ifaceSock, SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val)) < 0) err("failed to set auxdata");
+    if (setsockopt(ifaceSock, SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val)) < 0) err("failed to set auxdata");
+
     printf("serving others\n");
 
     byteRx = 0;

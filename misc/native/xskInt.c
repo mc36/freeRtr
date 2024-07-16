@@ -9,7 +9,6 @@
 #include <poll.h>
 #include <linux/if_link.h>
 #include <xdp/xsk.h>
-#include <sys/mman.h>
 
 
 #define framesNum 1024
