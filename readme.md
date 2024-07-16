@@ -42,7 +42,7 @@ the following directories will appear here:
 
 ## directories under misc folder
 
-* native: dpdk, xdp, pcap and mnl based dataplanes
+* native: dpdk, xdp, pcap, xsk, io uring, raw socket, mnl and sai based dataplanes
 * p4bf: tofino based dataplane
 * p4lang: bmv2 based dataplane
 * bogon: web based bogon originator
