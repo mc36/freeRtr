@@ -187,7 +187,7 @@ void doSockLoop() {
 void doStatLoop() {
     FILE *commands = fdopen(commandSock, "w");
     if (commands == NULL) err("failed to open file");
-    fprintf(commands, "platform %sraw\r\n", platformBase);
+    fprintf(commands, "platform %suring\r\n", platformBase);
     fprintf(commands, "capabilities %s\r\n", getCapas());
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
