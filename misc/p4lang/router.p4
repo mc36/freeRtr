@@ -103,6 +103,7 @@
 
 /*------------------ E G R E S S - M A T C H - A C T I O N ------------------ */
 #include "include/eg_ctl_mcast.p4"
+#include "include/eg_ctl_outport.p4"
 #include "include/eg_ctl_hairpin.p4"
 #include "include/eg_ctl_vlan_out.p4"
 #include "include/eg_ctl_sgt.p4"

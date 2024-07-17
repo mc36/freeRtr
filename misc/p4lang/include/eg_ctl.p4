@@ -32,6 +32,7 @@ control eg_ctl(
 #else
 
     EgressControlMcast() eg_ctl_mcast;
+    EgressControlOutPort() eg_ctl_outport;
     EgressControlNexthop() eg_ctl_nexthop;
     EgressControlSgt() eg_ctl_sgt;
     EgressControlVlanOut() eg_ctl_vlan_out;
@@ -59,6 +60,8 @@ control eg_ctl(
                 return;
             }
         }
+
+        eg_ctl_outport.apply(hdr,eg_md,eg_intr_md);
 
         eg_ctl_sgt.apply(hdr,eg_md,eg_intr_md);
 

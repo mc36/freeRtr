@@ -101,6 +101,21 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
 
 
 def writeNhop2portRules(delete, p4info_helper, ingress_sw, nhop, subif, port):
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_outport.tbl_nexthop",
+        match_fields={
+            "eg_md.nexthop_id": nhop,
+        },
+        action_name="eg_ctl.eg_ctl_outport.act_set_port_nexthop",
+        action_params={
+            "subif": subif,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
     table_entry3 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_outport.tbl_nexthop",
         match_fields={

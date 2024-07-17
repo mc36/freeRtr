@@ -35,6 +35,7 @@ control eg_ctl(
 #ifdef NEED_REPLICA
     EgressControlMcast() eg_ctl_mcast;
 #endif
+    EgressControlOutPort() eg_ctl_outport;
 #ifdef HAVE_SGT
     EgressControlSgt() eg_ctl_sgt;
 #endif
@@ -69,6 +70,8 @@ control eg_ctl(
 #ifdef NEED_REPLICA
         eg_ctl_mcast.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
 #endif
+
+        eg_ctl_outport.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
 
 #ifdef HAVE_SGT
         eg_ctl_sgt.apply(hdr, eg_md, eg_intr_md, eg_dprsr_md);
