@@ -143,6 +143,9 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_PPPOE
         hdr.pppoeD.setInvalid();
 #endif
+#ifdef HAVE_SGT
+        hdr.sgt.setInvalid();
+#endif
         hdr.ethernet.ethertype = ig_md.ethertype;
         hdr.cpu.setInvalid();
         hdr.internal.setValid();
@@ -173,6 +176,9 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.vlan.setInvalid();
 #ifdef HAVE_PPPOE
         hdr.pppoeD.setInvalid();
+#endif
+#ifdef HAVE_SGT
+        hdr.sgt.setInvalid();
 #endif
         hdr.ethernet.ethertype = ig_md.ethertype;
         hdr.cpu.setInvalid();
