@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.7.12-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-07-12 09:42:22, took 01:35:36, with 10 workers, on 546 cases, 0 failed, 0 traces, 2 retries
+-;-;-;freeRouter v24.7.16-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-07-17 00:18:20, took 01:46:59, with 10 workers, on 551 cases, 0 failed, 0 traces, 3 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -548,3 +548,8 @@ http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;success;p4lang: etherip server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;not applicable;p4lang: gre local connect
 http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;not applicable;p4lang: gre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout329.tst;p4lang-rout329.tst;success;p4lang: multicast routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout330.tst;p4lang-rout330.tst;success;p4lang: polka over backplane
+http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;success;p4lang: nsh over backplane
+http://sources.freertr.org/cfg/p4lang-rout332.tst;p4lang-rout332.tst;success;p4lang: bier core over backplane
+http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;success;p4lang: bier core over vlan backplane
