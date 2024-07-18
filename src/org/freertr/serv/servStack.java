@@ -349,7 +349,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         String a = "stack";
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd fwd = fwds.get(i);
-            a += "," + fwd.getShGenOneLiner();
+            a += "," + fwd.getShGetName();
         }
         return a;
     }
@@ -714,10 +714,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @return show
      */
     public userFormat getShowBcks() {
-        userFormat res = new userFormat("|", "fwd|name|addr|bckpln");
+        userFormat res = new userFormat("|", "fwd|name|addr|routes|oneliner");
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd ntry = fwds.get(i);
-            res.add(i + "|" + ntry.getShGenOneLiner() + "|" + ntry.remote + "|" + ntry.routes.size());
+            res.add(i + "|" + ntry.getShGetName() + "|" + ntry.remote + "|" + ntry.routes.size() + "|" + ntry.getShGet1liner());
         }
         return res;
     }

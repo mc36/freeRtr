@@ -74,12 +74,27 @@ public class servStackFwd {
      *
      * @return offload info
      */
-    protected String getShGenOneLiner() {
+    protected String getShGetName() {
         if (p4 != null) {
             return "p4=" + p4.srvName;
         }
         if (of != null) {
             return "of=" + of.srvName;
+        }
+        return null;
+    }
+
+    /**
+     * get hardware forwarder
+     *
+     * @return offload info
+     */
+    protected String getShGet1liner() {
+        if (p4 != null) {
+            return p4.getShGenOneLiner();
+        }
+        if (of != null) {
+            return of.getShGenOneLiner();
         }
         return null;
     }
