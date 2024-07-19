@@ -10,6 +10,9 @@ case "$MODE" in
 map)
 	exec /usr/bin/mapInt.bin "$DEVICE" "$LPORT" "$RADDR" "$RPORT" "$LADDR"
 	;;
+urng)
+	exec /usr/bin/urngInt.bin "$DEVICE" "$LPORT" "$RADDR" "$RPORT" "$LADDR"
+	;;
 raw)
 	exec /usr/bin/rawInt.bin "$DEVICE" "$LPORT" "$RADDR" "$RPORT" "$LADDR"
 	;;
