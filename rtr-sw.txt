@@ -430,6 +430,11 @@ interface loopback65535
  exit
 !
 interface bundle1
+ no shutdown
+ no log-link-change
+ exit
+!
+interface bundle1.227
  description uplink
  vrf forwarding v1
  ipv4 address 169.254.1.246 255.255.255.252
