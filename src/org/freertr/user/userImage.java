@@ -535,6 +535,34 @@ public class userImage {
                 }
                 continue;
             }
+            if (a.equals("catalog-save")) {
+                a = downDir + "/" + arch + "--" + cmd.word() + ".lst";
+                List<String> don = new ArrayList<String>();
+                for (i = 0; i < selected.size(); i++) {
+                    userImagePkg pkg = selected.get(i);
+                    if (!pkg.done) {
+                        continue;
+                    }
+                    don.add(getPackageName(pkg));
+                }
+                List<String> old = bits.txt2buf(a);
+                bits.buf2txt(true, don, a);
+                if (old == null) {
+                    continue;
+                }
+                for (i = 0; i < old.size(); i++) {
+                    a = old.get(i);
+                    if (a.length() < 1) {
+                        continue;
+                    }
+                    if (don.indexOf(a) >= 0) {
+                        continue;
+                    }
+                    cmd.error("removing legacy " + a);
+                    userFlash.delete(a);
+                }
+                continue;
+            }
             if (a.equals("select-one")) {
                 selectOnePackage(0, s, s);
                 continue;

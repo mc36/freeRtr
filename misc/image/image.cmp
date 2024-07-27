@@ -27,6 +27,8 @@ select-sum
 package-down
 package-inst
 
+catalog-save cmp
+
 exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
 
 exec cp -r ../misc %tmp%/
