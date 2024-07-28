@@ -7,6 +7,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrType;
+import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgIpsec;
@@ -392,7 +393,7 @@ public class clntSdwan implements Runnable, ifcDn {
         }
         peers.clear();
         if (dataRand) {
-            dataPort = bits.random(1024, 8191);
+            dataPort = bits.random(cfgAll.udpRangeMin, cfgAll.udpRangeMax);
         }
     }
 
