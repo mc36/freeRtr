@@ -15925,3 +15925,8 @@ qc pass: p4lang: qinq local connect
 qc pass: p4lang: qinq pmtud
 qc pass: p4lang: qinq tcpmss
 qc pass: p4lang: qinq bridge tcpmss
+---------------------------------- 2024-08-07 19:53:43 24.8.7
+qc pass: interop1: qinq encapsulation
+qc pass: interop2: qinq encapsulation
+qc pass: interop2: dot1q in dot1ad encapsulation
+qc pass: interop9: qinq encapsulation

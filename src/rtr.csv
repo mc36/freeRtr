@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.8.7-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-08-07 19:42:30, took 00:12:47, with 60 workers, on 3528 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2024-08-07 20:07:12, took 00:13:29, with 60 workers, on 3532 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -944,6 +944,7 @@ http://sources.freertr.org/cfg/intop1-eth06.tst;intop1-eth06.tst;success;interop
 http://sources.freertr.org/cfg/intop1-eth07.tst;intop1-eth07.tst;success;interop1: fragmentation and reassembly
 http://sources.freertr.org/cfg/intop1-eth08.tst;intop1-eth08.tst;success;interop1: sgt encapsulation
 http://sources.freertr.org/cfg/intop1-eth09.tst;intop1-eth09.tst;success;interop1: verify source
+http://sources.freertr.org/cfg/intop1-eth10.tst;intop1-eth10.tst;success;interop1: qinq encapsulation
 http://sources.freertr.org/cfg/intop1-ike101.tst;intop1-ike101.tst;success;interop1: ike1 with ipv4
 http://sources.freertr.org/cfg/intop1-ike102.tst;intop1-ike102.tst;success;interop1: ike1 with ipv6
 http://sources.freertr.org/cfg/intop1-ike103.tst;intop1-ike103.tst;success;interop1: ike1 with 3des
@@ -1068,6 +1069,8 @@ http://sources.freertr.org/cfg/intop2-eth04.tst;intop2-eth04.tst;success;interop
 http://sources.freertr.org/cfg/intop2-eth05.tst;intop2-eth05.tst;success;interop2: lacp
 http://sources.freertr.org/cfg/intop2-eth06.tst;intop2-eth06.tst;success;interop2: fragmentation and reassembly
 http://sources.freertr.org/cfg/intop2-eth07.tst;intop2-eth07.tst;success;interop2: verify source
+http://sources.freertr.org/cfg/intop2-eth08.tst;intop2-eth08.tst;success;interop2: qinq encapsulation
+http://sources.freertr.org/cfg/intop2-eth09.tst;intop2-eth09.tst;success;interop2: dot1q in dot1ad encapsulation
 http://sources.freertr.org/cfg/intop2-isis01.tst;intop2-isis01.tst;success;interop2: point2point isis
 http://sources.freertr.org/cfg/intop2-isis02.tst;intop2-isis02.tst;success;interop2: isis dis
 http://sources.freertr.org/cfg/intop2-isis03.tst;intop2-isis03.tst;success;interop2: isis nondis
@@ -1183,6 +1186,7 @@ http://sources.freertr.org/cfg/intop9-eth01.tst;intop9-eth01.tst;success;interop
 http://sources.freertr.org/cfg/intop9-eth02.tst;intop9-eth02.tst;success;interop9: dot1q encapsulation
 http://sources.freertr.org/cfg/intop9-eth03.tst;intop9-eth03.tst;success;interop9: fragmentation and reassembly
 http://sources.freertr.org/cfg/intop9-eth04.tst;intop9-eth04.tst;success;interop9: verify source
+http://sources.freertr.org/cfg/intop9-eth05.tst;intop9-eth05.tst;success;interop9: qinq encapsulation
 http://sources.freertr.org/cfg/intop9-isis01.tst;intop9-isis01.tst;success;interop9: point2point isis
 http://sources.freertr.org/cfg/intop9-isis02.tst;intop9-isis02.tst;success;interop9: isis dis
 http://sources.freertr.org/cfg/intop9-isis03.tst;intop9-isis03.tst;success;interop9: isis nondis
