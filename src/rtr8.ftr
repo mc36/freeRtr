@@ -96,6 +96,26 @@ qc pass: p4lang: tmux interface inspection with ingress drop
 qc pass: p4lang: tmux interface inspection with egress drop
 qc pass: p4lang: tmux interface verify source
 qc pass: p4lang: tmux interface loose verify source
+qc pass: p4lang: qinq ingress access list
+qc pass: p4lang: qinq egress access list
+qc pass: p4lang: bundle qinq ingress access list
+qc pass: p4lang: bundle qinq egress access list
+qc pass: p4lang: qinq bridge ingress access list
+qc pass: p4lang: qinq bridge egress access list
+qc pass: p4lang: ingress qinq pppoe access list
+qc pass: p4lang: egress qinq pppoe access list
+qc pass: p4lang: hairpin qinq ingress access list
+qc pass: p4lang: hairpin qinq egress access list
+qc pass: p4lang: ingress qinq gre access list
+qc pass: p4lang: egress qinq gre access list
+qc pass: p4lang: ingress qinq l2tp access list
+qc pass: p4lang: egress qinq l2tp access list
+qc pass: p4lang: qinq ingress policer
+qc pass: p4lang: qinq egress policer
+qc pass: p4lang: qinq interface inspection with egress drop
+qc pass: p4lang: qinq interface inspection with ingress drop
+qc pass: p4lang: qinq interface verify source
+qc pass: p4lang: qinq interface loose verify source
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
@@ -216,6 +236,18 @@ qc pass: p4lang: ipsec with packout
 qc pass: p4lang: openvpn with packout
 qc pass: p4lang: wireguard with packout
 qc pass: p4lang: gre with packout
+qc pass: p4lang: macsec over qinq
+qc pass: p4lang: macsec over bundle qinq
+qc pass: p4lang: macsec qinq ingress access list
+qc pass: p4lang: macsec qinq egress access list
+qc pass: p4lang: ipsec over qinq
+qc pass: p4lang: wireguard over qinq
+qc pass: p4lang: sgt over qinq
+qc pass: p4lang: sgt over macsec over qinq
+qc pass: p4lang: sgt qinq ingress access list
+qc pass: p4lang: sgt qinq egress access list
+qc pass: p4lang: packout on qinq port
+qc pass: p4lang: packout on macsec qinq port
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -555,6 +587,48 @@ qc pass: p4lang: qinq mpls
 qc pass: p4lang: bundle qinq routing
 qc pass: p4lang: bundle qinq mpls
 qc pass: p4lang: bundle qinq bridging
+qc pass: p4lang: qinq bridge routing
+qc pass: p4lang: qinq bridge mpls
+qc pass: p4lang: qinq vpls/ldp with bgp
+qc pass: p4lang: qinq eompls
+qc pass: p4lang: bundle qinq vpls/ldp with bgp
+qc pass: p4lang: bundle qinq eompls
+qc pass: p4lang: qinq pppoe routing
+qc pass: p4lang: qinq pppoe mpls
+qc pass: p4lang: hairpin qinq routing
+qc pass: p4lang: hairpin qinq bridging
+qc pass: p4lang: hairpin qinq mpls
+qc pass: p4lang: hairpin qinq pppoe routing
+qc pass: p4lang: hairpin qinq vpls/ldp with bgp
+qc pass: p4lang: hairpin qinq eompls
+qc pass: p4lang: qinq evpn/cmac with bgp
+qc pass: p4lang: bundle qinq evpn/cmac with bgp
+qc pass: p4lang: hairpin qinq evpn/cmac with bgp
+qc pass: p4lang: gre routing over qinq
+qc pass: p4lang: gre routing over bundle qinq
+qc pass: p4lang: gre routing over hairpin qinq
+qc pass: p4lang: gre routing over qinq bridge
+qc pass: p4lang: gre mpls over qinq
+qc pass: p4lang: l2tp routing over qinq
+qc pass: p4lang: l2tp mpls over qinq
+qc pass: p4lang: vxlan over qinq
+qc pass: p4lang: pckoudp over qinq
+qc pass: p4lang: multicast qinq routing
+qc pass: p4lang: multicast bundle qinq routing
+qc pass: p4lang: mldp qinq core
+qc pass: p4lang: mldp bundle qinq core
+qc pass: p4lang: mldp qinq egress edge
+qc pass: p4lang: mldp qinq ingress edge
+qc pass: p4lang: bier qinq core
+qc pass: p4lang: bier bundle qinq core
+qc pass: p4lang: qinq nsh
+qc pass: p4lang: qinq polka
+qc pass: p4lang: l2vpn over bundle qinq mpls
+qc pass: p4lang: l3vpn over bundle qinq mpls
+qc pass: p4lang: qinq local connect
+qc pass: p4lang: qinq pmtud
+qc pass: p4lang: qinq tcpmss
+qc pass: p4lang: qinq bridge tcpmss
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

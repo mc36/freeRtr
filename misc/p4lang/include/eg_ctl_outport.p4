@@ -18,8 +18,8 @@
 #define _EG_CTL_OUTPORT_P4_
 
 control EgressControlOutPort(inout headers hdr,
-                              inout ingress_metadata_t eg_md,
-                              inout standard_metadata_t eg_intr_md) {
+                             inout ingress_metadata_t eg_md,
+                             inout standard_metadata_t eg_intr_md) {
 
 
     action act_set_port_nexthop(SubIntId_t subif) {

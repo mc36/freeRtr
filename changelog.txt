@@ -15849,3 +15849,36 @@ qc pass: p4lang: qinq mpls
 qc pass: p4lang: bundle qinq routing
 qc pass: p4lang: bundle qinq mpls
 qc pass: p4lang: bundle qinq bridging
+---------------------------------- 2024-08-07 17:33:11 24.8.7
+qc pass: p4lang: qinq ingress access list
+qc pass: p4lang: qinq egress access list
+qc pass: p4lang: bundle qinq ingress access list
+qc pass: p4lang: bundle qinq egress access list
+qc pass: p4lang: qinq bridge ingress access list
+qc pass: p4lang: qinq bridge egress access list
+qc pass: p4lang: ingress qinq pppoe access list
+qc pass: p4lang: egress qinq pppoe access list
+qc pass: p4lang: hairpin qinq ingress access list
+qc pass: p4lang: hairpin qinq egress access list
+qc pass: p4lang: ingress qinq gre access list
+qc pass: p4lang: egress qinq gre access list
+qc pass: p4lang: ingress qinq l2tp access list
+qc pass: p4lang: egress qinq l2tp access list
+qc pass: p4lang: qinq ingress policer
+qc pass: p4lang: qinq egress policer
+qc pass: p4lang: qinq interface inspection with egress drop
+qc pass: p4lang: qinq interface inspection with ingress drop
+qc pass: p4lang: qinq interface verify source
+qc pass: p4lang: qinq interface loose verify source
+qc pass: p4lang: macsec over qinq
+qc pass: p4lang: macsec over bundle qinq
+qc pass: p4lang: macsec qinq ingress access list
+qc pass: p4lang: macsec qinq egress access list
+qc pass: p4lang: ipsec over qinq
+qc pass: p4lang: wireguard over qinq
+qc pass: p4lang: sgt over qinq
+qc pass: p4lang: sgt over macsec over qinq
+qc pass: p4lang: sgt qinq ingress access list
+qc pass: p4lang: sgt qinq egress access list
+qc pass: p4lang: packout on qinq port
+qc pass: p4lang: packout on macsec qinq port

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.8.7-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-08-07 13:18:23, took 00:12:45, with 60 workers, on 3454 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2024-08-07 17:46:59, took 00:13:47, with 60 workers, on 3486 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1522,6 +1522,26 @@ http://sources.freertr.org/cfg/p4lang-acl095.tst;p4lang-acl095.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl096.tst;p4lang-acl096.tst;success;p4lang: tmux interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl097.tst;p4lang-acl097.tst;success;p4lang: tmux interface verify source
 http://sources.freertr.org/cfg/p4lang-acl098.tst;p4lang-acl098.tst;success;p4lang: tmux interface loose verify source
+http://sources.freertr.org/cfg/p4lang-acl099.tst;p4lang-acl099.tst;success;p4lang: qinq ingress access list
+http://sources.freertr.org/cfg/p4lang-acl100.tst;p4lang-acl100.tst;success;p4lang: qinq egress access list
+http://sources.freertr.org/cfg/p4lang-acl101.tst;p4lang-acl101.tst;success;p4lang: bundle qinq ingress access list
+http://sources.freertr.org/cfg/p4lang-acl102.tst;p4lang-acl102.tst;success;p4lang: bundle qinq egress access list
+http://sources.freertr.org/cfg/p4lang-acl103.tst;p4lang-acl103.tst;success;p4lang: qinq bridge ingress access list
+http://sources.freertr.org/cfg/p4lang-acl104.tst;p4lang-acl104.tst;success;p4lang: qinq bridge egress access list
+http://sources.freertr.org/cfg/p4lang-acl105.tst;p4lang-acl105.tst;success;p4lang: ingress qinq pppoe access list
+http://sources.freertr.org/cfg/p4lang-acl106.tst;p4lang-acl106.tst;success;p4lang: egress qinq pppoe access list
+http://sources.freertr.org/cfg/p4lang-acl107.tst;p4lang-acl107.tst;success;p4lang: hairpin qinq ingress access list
+http://sources.freertr.org/cfg/p4lang-acl108.tst;p4lang-acl108.tst;success;p4lang: hairpin qinq egress access list
+http://sources.freertr.org/cfg/p4lang-acl109.tst;p4lang-acl109.tst;success;p4lang: ingress qinq gre access list
+http://sources.freertr.org/cfg/p4lang-acl110.tst;p4lang-acl110.tst;success;p4lang: egress qinq gre access list
+http://sources.freertr.org/cfg/p4lang-acl111.tst;p4lang-acl111.tst;success;p4lang: ingress qinq l2tp access list
+http://sources.freertr.org/cfg/p4lang-acl112.tst;p4lang-acl112.tst;success;p4lang: egress qinq l2tp access list
+http://sources.freertr.org/cfg/p4lang-acl113.tst;p4lang-acl113.tst;success;p4lang: qinq ingress policer
+http://sources.freertr.org/cfg/p4lang-acl114.tst;p4lang-acl114.tst;success;p4lang: qinq egress policer
+http://sources.freertr.org/cfg/p4lang-acl115.tst;p4lang-acl115.tst;success;p4lang: qinq interface inspection with egress drop
+http://sources.freertr.org/cfg/p4lang-acl116.tst;p4lang-acl116.tst;success;p4lang: qinq interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl117.tst;p4lang-acl117.tst;success;p4lang: qinq interface verify source
+http://sources.freertr.org/cfg/p4lang-acl118.tst;p4lang-acl118.tst;success;p4lang: qinq interface loose verify source
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc
@@ -1642,6 +1662,18 @@ http://sources.freertr.org/cfg/p4lang-crypt117.tst;p4lang-crypt117.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt118.tst;p4lang-crypt118.tst;success;p4lang: openvpn with packout
 http://sources.freertr.org/cfg/p4lang-crypt119.tst;p4lang-crypt119.tst;success;p4lang: wireguard with packout
 http://sources.freertr.org/cfg/p4lang-crypt120.tst;p4lang-crypt120.tst;success;p4lang: gre with packout
+http://sources.freertr.org/cfg/p4lang-crypt121.tst;p4lang-crypt121.tst;success;p4lang: macsec over qinq
+http://sources.freertr.org/cfg/p4lang-crypt122.tst;p4lang-crypt122.tst;success;p4lang: macsec over bundle qinq
+http://sources.freertr.org/cfg/p4lang-crypt123.tst;p4lang-crypt123.tst;success;p4lang: macsec qinq ingress access list
+http://sources.freertr.org/cfg/p4lang-crypt124.tst;p4lang-crypt124.tst;success;p4lang: macsec qinq egress access list
+http://sources.freertr.org/cfg/p4lang-crypt125.tst;p4lang-crypt125.tst;success;p4lang: ipsec over qinq
+http://sources.freertr.org/cfg/p4lang-crypt126.tst;p4lang-crypt126.tst;success;p4lang: wireguard over qinq
+http://sources.freertr.org/cfg/p4lang-crypt127.tst;p4lang-crypt127.tst;success;p4lang: sgt over qinq
+http://sources.freertr.org/cfg/p4lang-crypt128.tst;p4lang-crypt128.tst;success;p4lang: sgt over macsec over qinq
+http://sources.freertr.org/cfg/p4lang-crypt129.tst;p4lang-crypt129.tst;success;p4lang: sgt qinq ingress access list
+http://sources.freertr.org/cfg/p4lang-crypt130.tst;p4lang-crypt130.tst;success;p4lang: sgt qinq egress access list
+http://sources.freertr.org/cfg/p4lang-crypt131.tst;p4lang-crypt131.tst;success;p4lang: packout on qinq port
+http://sources.freertr.org/cfg/p4lang-crypt132.tst;p4lang-crypt132.tst;success;p4lang: packout on macsec qinq port
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core
