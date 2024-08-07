@@ -1971,6 +1971,12 @@ qc pass: p4lang: polka over backplane
 qc pass: p4lang: nsh over backplane
 qc pass: p4lang: bier core over backplane
 qc pass: p4lang: bier core over vlan backplane
+qc pass: p4lang: qinq routing
+qc pass: p4lang: qinq bridging
+qc pass: p4lang: qinq mpls
+qc pass: p4lang: bundle qinq routing
+qc pass: p4lang: bundle qinq mpls
+qc pass: p4lang: bundle qinq bridging
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
