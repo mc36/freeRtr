@@ -1164,11 +1164,22 @@ subif_tx:
         }
         struct vlan_res* vlnr = bpf_map_lookup_elem(&vlan_out, &prt);
         if (vlnr != NULL) {
+            bufP -= sizeof(macaddr);
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr);
+            revalidatePacket(bufP + 2);
             hash ^= vlnr->vlan;
             bufP -= 2;
             put16msb(bufD, bufP, vlnr->vlan);
             bufP -= 2;
             put16msb(bufD, bufP, ETHERTYPE_VLAN);
+            if (vlnr->vlan2 > 0) {
+                hash ^= vlnr->vlan2;
+                bufP -= 2;
+                put16msb(bufD, bufP, vlnr->vlan2);
+                bufP -= 2;
+                put16msb(bufD, bufP, ETHERTYPE_VLAN);
+            }
             prt = vlnr->port;
             vlnr->pack++;
             vlnr->byte += bufE - bufD;

@@ -23,10 +23,16 @@ control IngressControlVlanIn(inout headers hdr,
 
     counter((MAX_PORT+1), CounterType.packets_and_bytes) stats;
 
-    action act_set_iface(SubIntId_t src) {
+    action act_set_vlan_iface(SubIntId_t src) {
         ig_md.source_id = src;
         ig_md.ethertype = hdr.vlan.ethertype;
         ig_md.vlan_size = ig_md.vlan_size + 4;
+    }
+
+    action act_set_qinq_iface(SubIntId_t src) {
+        ig_md.source_id = src;
+        ig_md.ethertype = hdr.vlanq.ethertype;
+        ig_md.vlan_size = ig_md.vlan_size + 8;
     }
 
     action act_set_def_iface() {
@@ -40,9 +46,12 @@ ig_md.ingress_id:
             exact;
 hdr.vlan.vid:
             exact;
+hdr.vlanq.vid:
+            exact;
         }
         actions = {
-            act_set_iface;
+            act_set_vlan_iface;
+            act_set_qinq_iface;
             act_set_def_iface;
         }
         size = VLAN_TABLE_SIZE;

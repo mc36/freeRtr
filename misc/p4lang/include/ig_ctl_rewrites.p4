@@ -24,6 +24,7 @@ control IngressControlRewrites(inout headers hdr,
 
     apply {
         if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+        if (hdr.vlanq.isValid()) hdr.vlanq.setInvalid();
         if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
         if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
         if (hdr.l2tpbr.isValid()) hdr.l2tpbr.setInvalid();

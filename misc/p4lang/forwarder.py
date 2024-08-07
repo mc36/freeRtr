@@ -55,9 +55,10 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
         table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
         match_fields={
             "ig_md.ingress_id": main,
-            "hdr.vlan.vid": vlan
+            "hdr.vlan.vid": vlan,
+            "hdr.vlanq.vid": 0
         },
-        action_name="ig_ctl.ig_ctl_vlan_in.act_set_iface",
+        action_name="ig_ctl.ig_ctl_vlan_in.act_set_vlan_iface",
         action_params={
             "src": port
         })
@@ -76,6 +77,58 @@ def writeVlanRules(delete, p4info_helper, ingress_sw, port, main, vlan):
         action_params={
             "port": main,
             "vlan": vlan
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+    table_entry3 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_outport.tbl_vlan_out",
+        match_fields={
+            "ig_md.target_id": port,
+        },
+        action_name="ig_ctl.ig_ctl_outport.act_set_port_vlan",
+        action_params={
+            "port": main,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry3, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry3, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry3, False)
+
+
+def writeQinqRules(delete, p4info_helper, ingress_sw, port, main, outer, inner):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
+        match_fields={
+            "ig_md.ingress_id": main,
+            "hdr.vlan.vid": outer,
+            "hdr.vlanq.vid": inner
+        },
+        action_name="ig_ctl.ig_ctl_vlan_in.act_set_qinq_iface",
+        action_params={
+            "src": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_vlan_out.tbl_vlan_out",
+        match_fields={
+            "eg_md.target_id": port,
+        },
+        action_name="eg_ctl.eg_ctl_vlan_out.act_set_qinq_port",
+        action_params={
+            "port": main,
+            "outer": outer,
+            "inner": inner
         })
     if delete == 1:
         ingress_sw.WriteTableEntry(table_entry2, False)
@@ -169,9 +222,30 @@ def writeBunVlanRules(delete, p4info_helper, ingress_sw, main, vlan, port):
         table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
         match_fields={
             "ig_md.ingress_id": main,
-            "hdr.vlan.vid": vlan
+            "hdr.vlan.vid": vlan,
+            "hdr.vlanq.vid": 0
         },
-        action_name="ig_ctl.ig_ctl_vlan_in.act_set_iface",
+        action_name="ig_ctl.ig_ctl_vlan_in.act_set_vlan_iface",
+        action_params={
+            "src": port
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+def writeBunQinqRules(delete, p4info_helper, ingress_sw, main, outer, inner, port):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_vlan_in.tbl_vlan_in",
+        match_fields={
+            "ig_md.ingress_id": main,
+            "hdr.vlan.vid": outer,
+            "hdr.vlanq.vid": inner
+        },
+        action_name="ig_ctl.ig_ctl_vlan_in.act_set_qinq_iface",
         action_params={
             "src": port
         })
@@ -3936,8 +4010,16 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeVlanRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
             continue
 
+        if cmds[0] == "portqinq":
+            writeQinqRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[4]),int(splt[5]))
+            continue
+
         if cmds[0] == "bundlevlan":
             writeBunVlanRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "bundleqinq":
+            writeBunQinqRules(mode,p4info_helper,sw1,int(splt[4]),int(splt[5]),int(splt[2]),int(splt[3]))
             continue
 
         if cmds[0] == "portbundle":

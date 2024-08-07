@@ -163,6 +163,7 @@ control IngressControlMPLS(inout headers hdr,
         hdr.mpls1.setInvalid();
         hdr.mpls0.setInvalid();
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_md.target_id = port;
         /*
          * Indicate effective VRF during

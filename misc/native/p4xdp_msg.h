@@ -774,7 +774,40 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "portqinq") == 0) {
+        struct vlan_key vlnk;
+        memset(&vlnk, 0, sizeof(vlnk));
+        struct vlan_res vlnr;
+        memset(&vlnr, 0, sizeof(vlnr));
+        i = atoi(arg[2]);
+        vlnk.vlan = vlnr.vlan = atoi(arg[6]);
+        vlnr.vlan2 = atoi(arg[5]);
+        vlnr.port = atoi(arg[3]);
+        vlnk.port = atoi(arg[4]);
+        if (del == 0) {
+            if (bpf_map_delete_elem(vlan_in_fd, &vlnk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(vlan_out_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vlan_in_fd, &vlnk, &i, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(vlan_out_fd, &i, &vlnr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "bundlevlan") == 0) {
+        struct vlan_key vlnk;
+        memset(&vlnk, 0, sizeof(vlnk));
+        i = atoi(arg[4]);
+        o = atoi(arg[2]);
+        vlnk.vlan = atoi(arg[3]);
+        vlnk.port = o;
+        if (del == 0) {
+            if (bpf_map_delete_elem(vlan_in_fd, &vlnk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vlan_in_fd, &vlnk, &i, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "bundleqinq") == 0) {
         struct vlan_key vlnk;
         memset(&vlnk, 0, sizeof(vlnk));
         i = atoi(arg[4]);

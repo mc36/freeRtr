@@ -126,6 +126,7 @@ control ig_ctl(inout headers hdr,
         ig_ctl_mpls.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.need_clone == 1) {
             if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+            if (hdr.vlanq.isValid()) hdr.vlanq.setInvalid();
             if (hdr.sgt.isValid()) hdr.sgt.setInvalid();
             if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
             if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
@@ -167,6 +168,7 @@ control ig_ctl(inout headers hdr,
             }
             if (ig_md.need_recir == 1) {
                 if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+                if (hdr.vlanq.isValid()) hdr.vlanq.setInvalid();
                 if (hdr.sgt.isValid()) hdr.sgt.setInvalid();
                 if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
                 if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
@@ -180,6 +182,7 @@ control ig_ctl(inout headers hdr,
             }
             if (ig_md.need_clone == 1) {
                 if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+                if (hdr.vlanq.isValid()) hdr.vlanq.setInvalid();
                 if (hdr.sgt.isValid()) hdr.sgt.setInvalid();
                 if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
                 if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
