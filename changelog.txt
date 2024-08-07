@@ -15882,3 +15882,46 @@ qc pass: p4lang: sgt qinq ingress access list
 qc pass: p4lang: sgt qinq egress access list
 qc pass: p4lang: packout on qinq port
 qc pass: p4lang: packout on macsec qinq port
+---------------------------------- 2024-08-07 18:02:43 24.8.7
+qc pass: p4lang: qinq bridge routing
+qc pass: p4lang: qinq bridge mpls
+qc pass: p4lang: qinq vpls/ldp with bgp
+qc pass: p4lang: qinq eompls
+qc pass: p4lang: bundle qinq vpls/ldp with bgp
+qc pass: p4lang: bundle qinq eompls
+qc pass: p4lang: qinq pppoe routing
+qc pass: p4lang: qinq pppoe mpls
+qc pass: p4lang: hairpin qinq routing
+qc pass: p4lang: hairpin qinq bridging
+qc pass: p4lang: hairpin qinq mpls
+qc pass: p4lang: hairpin qinq pppoe routing
+qc pass: p4lang: hairpin qinq vpls/ldp with bgp
+qc pass: p4lang: hairpin qinq eompls
+qc pass: p4lang: qinq evpn/cmac with bgp
+qc pass: p4lang: bundle qinq evpn/cmac with bgp
+qc pass: p4lang: hairpin qinq evpn/cmac with bgp
+qc pass: p4lang: gre routing over qinq
+qc pass: p4lang: gre routing over bundle qinq
+qc pass: p4lang: gre routing over hairpin qinq
+qc pass: p4lang: gre routing over qinq bridge
+qc pass: p4lang: gre mpls over qinq
+qc pass: p4lang: l2tp routing over qinq
+qc pass: p4lang: l2tp mpls over qinq
+qc pass: p4lang: vxlan over qinq
+qc pass: p4lang: pckoudp over qinq
+qc pass: p4lang: multicast qinq routing
+qc pass: p4lang: multicast bundle qinq routing
+qc pass: p4lang: mldp qinq core
+qc pass: p4lang: mldp bundle qinq core
+qc pass: p4lang: mldp qinq egress edge
+qc pass: p4lang: mldp qinq ingress edge
+qc pass: p4lang: bier qinq core
+qc pass: p4lang: bier bundle qinq core
+qc pass: p4lang: qinq nsh
+qc pass: p4lang: qinq polka
+qc pass: p4lang: l2vpn over bundle qinq mpls
+qc pass: p4lang: l3vpn over bundle qinq mpls
+qc pass: p4lang: qinq local connect
+qc pass: p4lang: qinq pmtud
+qc pass: p4lang: qinq tcpmss
+qc pass: p4lang: qinq bridge tcpmss
