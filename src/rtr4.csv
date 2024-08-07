@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.8.1-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-08-01 20:18:04, took 00:53:12, with 10 workers, on 551 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v24.8.7-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-08-07 14:35:52, took 00:52:46, with 10 workers, on 557 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -553,3 +553,9 @@ http://sources.freertr.org/cfg/p4lang-rout330.tst;p4lang-rout330.tst;not applica
 http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;success;p4lang: nsh over backplane
 http://sources.freertr.org/cfg/p4lang-rout332.tst;p4lang-rout332.tst;success;p4lang: bier core over backplane
 http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;success;p4lang: bier core over vlan backplane
+http://sources.freertr.org/cfg/p4lang-rout334.tst;p4lang-rout334.tst;success;p4lang: qinq routing
+http://sources.freertr.org/cfg/p4lang-rout335.tst;p4lang-rout335.tst;success;p4lang: qinq bridging
+http://sources.freertr.org/cfg/p4lang-rout336.tst;p4lang-rout336.tst;success;p4lang: qinq mpls
+http://sources.freertr.org/cfg/p4lang-rout337.tst;p4lang-rout337.tst;success;p4lang: bundle qinq routing
+http://sources.freertr.org/cfg/p4lang-rout338.tst;p4lang-rout338.tst;success;p4lang: bundle qinq mpls
+http://sources.freertr.org/cfg/p4lang-rout339.tst;p4lang-rout339.tst;success;p4lang: bundle qinq bridging

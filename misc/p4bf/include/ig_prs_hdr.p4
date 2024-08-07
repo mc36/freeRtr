@@ -63,6 +63,59 @@ state prs_vlan {
 ETHERTYPE_SGT :
         prs_sgt;
 #endif
+ETHERTYPE_VLAN:
+        prs_vlanq;
+#ifdef HAVE_PPPOE
+ETHERTYPE_PPPOE_CTRL :
+        prs_pppoeCtrl;
+ETHERTYPE_PPPOE_DATA :
+        prs_pppoeData;
+#endif
+#ifdef HAVE_POLKA
+ETHERTYPE_POLKA:
+        prs_polka;
+#endif
+#ifdef HAVE_NSH
+ETHERTYPE_NSH:
+        prs_nsh;
+#endif
+#ifdef HAVE_MPLS
+ETHERTYPE_MPLS_UCAST:
+        prs_mpls0;
+#endif
+ETHERTYPE_IPV4:
+        prs_ipv4;
+ETHERTYPE_IPV6:
+        prs_ipv6;
+#ifdef HAVE_TAP
+ETHERTYPE_ROUTEDMAC_INT:
+        prs_eth2;
+ETHERTYPE_ROUTEDMAC:
+        prs_eth6;
+#endif
+ETHERTYPE_ARP:
+        prs_arp;
+ETHERTYPE_LACP:
+        prs_control;
+ETHERTYPE_LLDP:
+        prs_control;
+    default:
+        accept;
+    }
+}
+
+
+state prs_vlanq {
+    pkt.extract(hdr.vlanq);
+    transition select(hdr.vlanq.ethertype) {
+0 &&& 0xfe00:
+        prs_llc;		/* LLC SAP frame */
+0 &&& 0xfa00:
+        prs_llc;	/* LLC SAP frame */
+#ifdef HAVE_SGT
+ETHERTYPE_SGT :
+        prs_sgt;
+#endif
 #ifdef HAVE_PPPOE
 ETHERTYPE_PPPOE_CTRL :
         prs_pppoeCtrl;

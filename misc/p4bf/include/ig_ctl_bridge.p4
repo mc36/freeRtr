@@ -125,6 +125,7 @@ ig_md.bridge_id:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         hdr.eth2.setValid();
         hdr.eth2 = hdr.ethernet;
         hdr.eth2.ethertype = ig_md.ethertype;
@@ -178,6 +179,7 @@ ig_md.bridge_id:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         hdr.eth2.setValid();
         hdr.eth2 = hdr.ethernet;
         hdr.eth2.ethertype = ig_md.ethertype;
@@ -228,6 +230,7 @@ ig_md.bridge_id:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         hdr.eth2.setValid();
         hdr.eth2 = hdr.ethernet;
         hdr.eth2.ethertype = ig_md.ethertype;
@@ -272,6 +275,7 @@ ig_md.bridge_id:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         hdr.eth2.setValid();
         hdr.eth2 = hdr.ethernet;
         hdr.eth2.ethertype = ig_md.ethertype;
@@ -313,6 +317,7 @@ ig_md.bridge_id:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         hdr.eth2.setValid();
         hdr.eth2 = hdr.ethernet;
         hdr.eth2.ethertype = ig_md.ethertype;
@@ -361,6 +366,7 @@ ig_md.bridge_id:
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         hdr.eth2.setValid();
         hdr.eth2 = hdr.ethernet;
         hdr.eth2.ethertype = ig_md.ethertype;
@@ -468,6 +474,7 @@ ig_md.bridge_id:
                         hdr.mpls1.setInvalid();
                         hdr.mpls0.setInvalid();
                         hdr.vlan.setInvalid();
+                        hdr.vlanq.setInvalid();
                         ig_md.mpls0_remove = 0;
                         ig_md.mpls1_remove = 0;
                     }

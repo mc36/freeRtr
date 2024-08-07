@@ -30,6 +30,7 @@ control IngressControlRewrites(inout headers hdr, inout ingress_metadata_t ig_md
 
 
         if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+        if (hdr.vlanq.isValid()) hdr.vlanq.setInvalid();
 #ifdef HAVE_PPPOE
         if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
 #endif

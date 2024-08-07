@@ -22,6 +22,7 @@ class RareApi(BfRtRare):
     from .bridgeetherip6 import writeEtherip6rules
     from .bundlelist import setBundleAdmStatus
     from .bundlevlan import writeBunVlanRules
+    from .bundleqinq import writeBunQinqRules
     from .copp4 import writeCopp4Rules
     from .copp6 import writeCopp6Rules
     from .cpulabel import writeCpuMplsRules
@@ -105,6 +106,7 @@ class RareApi(BfRtRare):
     from .polroute6 import writePolkaRules6
     from .portbridge import writeBrprtRules
     from .portvlan import writeVlanRules
+    from .portqinq import writeQinqRules
     from .portvrf import writeVrfRules
     from .pppoe import writePppoeRules
     from .route4 import writeForwardRules4

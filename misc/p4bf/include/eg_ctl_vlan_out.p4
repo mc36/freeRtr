@@ -34,6 +34,17 @@ control EgressControlVlanOut(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.vlan.vid = vlan;
     }
 
+    action act_set_qinq_port(SubIntId_t port, vlan_id_t outer, vlan_id_t inner) {
+        eg_md.output_id = port;
+        hdr.vlan.setValid();
+        hdr.vlanq.setValid();
+        hdr.vlanq.ethertype = eg_md.ethertype;
+        hdr.vlan.ethertype = ETHERTYPE_VLAN;
+        hdr.ethernet.ethertype = ETHERTYPE_VLAN;
+        hdr.vlan.vid = outer;
+        hdr.vlanq.vid = inner;
+    }
+
     action act_set_port() {
         eg_md.output_id = eg_md.target_id;
         hdr.ethernet.ethertype = eg_md.ethertype;
@@ -46,6 +57,7 @@ eg_md.target_id:
         }
         actions = {
             act_set_vlan_port;
+            act_set_qinq_port;
             @defaultonly act_set_port;
         }
         size = VLAN_TABLE_SIZE;

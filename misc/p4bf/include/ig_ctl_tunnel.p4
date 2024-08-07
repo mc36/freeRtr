@@ -52,6 +52,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_tm_md.ucast_egress_port = RECIR_PORT;
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -88,6 +89,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_tm_md.ucast_egress_port = RECIR_PORT;
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -107,6 +109,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_tm_md.ucast_egress_port = RECIR_PORT;
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -151,6 +154,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv6_valid = 0;
         hdr.ethernet.setInvalid();
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_tm_md.ucast_egress_port = RECIR_PORT;
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -175,6 +179,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv6_valid = 0;
         hdr.ethernet.setInvalid();
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_tm_md.ucast_egress_port = RECIR_PORT;
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -199,6 +204,7 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.ipv6_valid = 0;
         hdr.ethernet.setInvalid();
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_tm_md.ucast_egress_port = RECIR_PORT;
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -356,6 +362,7 @@ hdr.ipv6.next_hdr:
             ig_md.ipv4_valid = 0;
             ig_md.ipv6_valid = 0;
             hdr.vlan.setInvalid();
+            hdr.vlanq.setInvalid();
             ig_tm_md.ucast_egress_port = RECIR_PORT;
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -387,6 +394,7 @@ hdr.ipv6.next_hdr:
             ig_md.ipv4_valid = 0;
             ig_md.ipv6_valid = 0;
             hdr.vlan.setInvalid();
+            hdr.vlanq.setInvalid();
             ig_tm_md.ucast_egress_port = RECIR_PORT;
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -420,6 +428,7 @@ hdr.ipv6.next_hdr:
             ig_md.ipv4_valid = 0;
             ig_md.ipv6_valid = 0;
             hdr.vlan.setInvalid();
+            hdr.vlanq.setInvalid();
             ig_tm_md.ucast_egress_port = RECIR_PORT;
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
@@ -453,6 +462,7 @@ hdr.ipv6.next_hdr:
             ig_md.ipv4_valid = 0;
             ig_md.ipv6_valid = 0;
             hdr.vlan.setInvalid();
+            hdr.vlanq.setInvalid();
             ig_tm_md.ucast_egress_port = RECIR_PORT;
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);

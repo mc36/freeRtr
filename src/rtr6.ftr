@@ -549,6 +549,12 @@ qc pass: p4lang: polka over backplane
 qc pass: p4lang: nsh over backplane
 qc pass: p4lang: bier core over backplane
 qc pass: p4lang: bier core over vlan backplane
+qc pass: p4lang: qinq routing
+qc pass: p4lang: qinq bridging
+qc pass: p4lang: qinq mpls
+qc pass: p4lang: bundle qinq routing
+qc pass: p4lang: bundle qinq mpls
+qc pass: p4lang: bundle qinq bridging
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

@@ -105,6 +105,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.mpls1.setInvalid();
         hdr.mpls0.setInvalid();
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
         ig_md.target_id = port;
         ig_md.mpls0_remove = 0;
         ig_md.mpls1_remove = 0;
@@ -140,6 +141,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
 #ifdef HAVE_PPPOE
         hdr.pppoeD.setInvalid();
 #endif
@@ -174,6 +176,7 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.ucast_egress_port = CPU_PORT;
         ig_tm_md.bypass_egress = 0;
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
 #ifdef HAVE_PPPOE
         hdr.pppoeD.setInvalid();
 #endif

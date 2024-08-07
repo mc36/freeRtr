@@ -1393,6 +1393,17 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 ntry.setup2apiPack(ned);
                 continue;
             }
+            if (ntry.ifc.parent == null) {
+                continue;
+            }
+            if (ntry.ifc.parent.parent == prnt.ifc) {
+                ntry.setup2apiPack(ned);
+                continue;
+            }
+            if (ntry.ifc.parent.cloned == prnt.ifc) {
+                ntry.setup2apiPack(ned);
+                continue;
+            }
         }
     }
 

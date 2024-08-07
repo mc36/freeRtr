@@ -50,6 +50,7 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
 #endif
         hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
 #ifdef HAVE_PPPOE
         hdr.pppoeD.setInvalid();
 #endif

@@ -245,10 +245,30 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "portqinq":
+            self.writeQinqRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[4]),
+                int(splt[5]),
+            )
+            continue
+
         if cmds[0] == "bundlevlan":
             self.writeBunVlanRules(
                 mode,
                 int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+            )
+            continue
+
+        if cmds[0] == "bundleqinq":
+            self.writeBunQinqRules(
+                mode,
+                int(splt[4]),
+                int(splt[5]),
                 int(splt[2]),
                 int(splt[3]),
             )

@@ -22,6 +22,7 @@ struct headers {
     cpu_header_t cpu;
     ethernet_t ethernet;
     vlan_t vlan;
+    vlan_t vlanq;
 #ifdef HAVE_PPPOE
     pppoe_t pppoeC;
     pppoe_t pppoeD;
