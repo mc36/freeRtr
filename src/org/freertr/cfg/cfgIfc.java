@@ -2637,7 +2637,8 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
      * normalize one interface name
      *
      * @param s string to normalize
-     * @return normalized {name+(/slot)+num,("."+subif)}, {"",""} if failed
+     * @return normalized {name+(/slot)+num,("."+subif),("."+subif)}, or
+     * {"","",""} if failed
      */
     public static String[] dissectName(String s) {
         s = s.toLowerCase();
@@ -2654,23 +2655,23 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
             break;
         }
         if (p >= s.length()) {
-            return new String[]{"", ""};
+            return new String[]{"", "", ""};
         }
         String b = s.substring(0, p).trim();
         s = s.substring(p, s.length()).trim();
         b = ifaceNames.repairLine(b).trim();
         if (b.length() < 1) {
-            return new String[]{"", ""};
+            return new String[]{"", "", ""};
         }
         p = s.indexOf("/");
         if (p >= 0) {
             String q = s.substring(0, p);
             int i = bits.str2num(q);
             if (i < 0) {
-                return new String[]{"", ""};
+                return new String[]{"", "", ""};
             }
             if (!q.equals("" + i)) {
-                return new String[]{"", ""};
+                return new String[]{"", "", ""};
             }
             s = s.substring(p + 1, s.length());
             b += i + "/";
@@ -2679,33 +2680,55 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (p < 0) {
             p = bits.str2num(s);
             if (p < 0) {
-                return new String[]{"", ""};
+                return new String[]{"", "", ""};
             }
             if (!s.equals("" + p)) {
-                return new String[]{"", ""};
+                return new String[]{"", "", ""};
             }
             b += p;
-            return new String[]{b, ""};
+            return new String[]{b, "", ""};
         }
         String q = s.substring(0, p);
         s = s.substring(p + 1, s.length());
         p = bits.str2num(q);
         if (p < 0) {
-            return new String[]{"", ""};
+            return new String[]{"", "", ""};
         }
         if (!q.equals("" + p)) {
-            return new String[]{"", ""};
+            return new String[]{"", "", ""};
         }
         b += p;
+        p = s.indexOf(".");
+        if (p < 0) {
+            p = bits.str2num(s);
+            if (p < 1) {
+                return new String[]{"", "", ""};
+            }
+            if (!s.equals("" + p)) {
+                return new String[]{"", "", ""};
+            }
+            s = "." + p;
+            return new String[]{b, s, ""};
+        }
+        q = s.substring(0, p);
+        s = s.substring(p + 1, s.length());
+        int i = bits.str2num(q);
+        if (i < 1) {
+            return new String[]{"", "", ""};
+        }
+        if (!q.equals("" + i)) {
+            return new String[]{"", "", ""};
+        }
         p = bits.str2num(s);
         if (p < 1) {
-            return new String[]{"", ""};
+            return new String[]{"", "", ""};
         }
         if (!s.equals("" + p)) {
-            return new String[]{"", ""};
+            return new String[]{"", "", ""};
         }
+        q = "." + i;
         s = "." + p;
-        return new String[]{b, s};
+        return new String[]{b, q, s};
     }
 
     public String toString() {

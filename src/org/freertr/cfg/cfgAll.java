@@ -2139,7 +2139,7 @@ public class cfgAll {
      */
     public static boolean ifcDel(String nam, boolean checks) {
         String pnm[] = cfgIfc.dissectName(nam);
-        nam = pnm[0] + pnm[1];
+        nam = pnm[0] + pnm[1] + pnm[2];
         if (nam.length() < 1) {
             return true;
         }
@@ -2214,7 +2214,7 @@ public class cfgAll {
         if (pnm[0].length() < 1) {
             return null;
         }
-        nam = pnm[0] + pnm[1];
+        nam = pnm[0] + pnm[1] + pnm[2];
         cfgIfc ntry = new cfgIfc(nam);
         if (create < 1) {
             return ifaces.find(ntry);
@@ -2226,6 +2226,16 @@ public class cfgAll {
             } else {
                 return null;
             }
+        }
+        if (pnm[2].length() > 0) {
+            old = ifaces.find(new cfgIfc(pnm[0] + pnm[1]));
+            if (old == null) {
+                ifaces.del(ntry);
+                return null;
+            }
+            ntry.vlanNum = bits.str2num(pnm[2].substring(1, pnm[2].length()));
+            ntry.initSubiface(old);
+            return ntry;
         }
         if (pnm[1].length() > 0) {
             old = ifaces.find(new cfgIfc(pnm[0]));
