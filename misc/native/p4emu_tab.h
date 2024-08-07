@@ -331,6 +331,7 @@ struct table_head vlanin_table;
 struct vlanout_entry {
     int id;
     int vlan;
+    int vlan2;
     int port;
     long pack;
     long byte;

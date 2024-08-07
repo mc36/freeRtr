@@ -442,7 +442,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
             lower.sendLine("portvrf_del " + id + " " + sentVrf);
         }
         if ((master != null) && (sentVlan != 0)) {
-            lower.sendLine("portvlan_del " + id + " " + master.id + " " + ifc.vlanNum);
+            if (master.master == null) {
+                lower.sendLine("portvlan_del " + id + " " + master.id + " " + ifc.vlanNum);
+            } else {
+                lower.sendLine("portqinq_del " + id + " " + master.master.id + " " + master.id + " " + master.ifc.vlanNum + " " + ifc.vlanNum);
+            }
         }
         if (!suppressState()) {
             lower.sendLine("state " + id + " 0 " + getStateEnding());
@@ -467,7 +471,10 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         if (master == null) {
             return this;
         }
-        return master;
+        if (master.master == null) {
+            return master;
+        }
+        return master.master;
     }
 
     /**
@@ -478,22 +485,26 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
      * @return interface
      */
     protected servP4langIfc getMcast(int gid, servP4langNei hop) {
-        servP4langIfc ifc;
+        servP4langIfc i;
         if (master == null) {
-            ifc = this;
+            i = this;
         } else {
-            ifc = master;
+            if (master.master == null) {
+                i = master;
+            } else {
+                i = master.master;
+            }
         }
-        if (ifc.members == null) {
-            return ifc;
+        if (i.members == null) {
+            return i;
         }
-        if (ifc.members.size() < 1) {
-            return ifc;
+        if (i.members.size() < 1) {
+            return i;
         }
         if (hop != null) {
             gid ^= hop.id;
         }
-        return ifc.members.get(gid % ifc.members.size());
+        return i.members.get(gid % i.members.size());
     }
 
     /**

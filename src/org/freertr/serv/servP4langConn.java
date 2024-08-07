@@ -2148,7 +2148,11 @@ public class servP4langConn implements Runnable {
             ifc.sentMtu = i;
         }
         if ((ifc.master != null) && (ifc.sentVlan == 0)) {
-            lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
+            if (ifc.master.master == null) {
+                lower.sendLine("portvlan_add " + ifc.id + " " + ifc.master.id + " " + ifc.ifc.vlanNum);
+            } else {
+                lower.sendLine("portqinq_add " + ifc.id + " " + ifc.master.master.id + " " + ifc.master.id + " " + ifc.master.ifc.vlanNum + " " + ifc.ifc.vlanNum);
+            }
             ifc.sentVlan = ifc.ifc.vlanNum;
         }
         if (ifc.ifc.hairpinHed != null) {
@@ -2225,15 +2229,21 @@ public class servP4langConn implements Runnable {
             }
             ifc.members = ap;
             List<servP4langIfc> vln = new ArrayList<servP4langIfc>();
+            List<servP4langIfc> qvl = new ArrayList<servP4langIfc>();
             for (i = 0; i < lower.expIfc.size(); i++) {
                 servP4langIfc ntry = lower.expIfc.get(i);
                 if (ntry == ifc) {
                     continue;
                 }
-                if (ntry.master != ifc) {
+                if (ntry.master == null) {
                     continue;
                 }
-                vln.add(ntry);
+                if (ntry.master.master == ifc) {
+                    qvl.add(ntry);
+                }
+                if (ntry.master == ifc) {
+                    vln.add(ntry);
+                }
             }
             int o = ap.size();
             for (i = 0; i < ap.size(); i++) {
@@ -2259,15 +2269,19 @@ public class servP4langConn implements Runnable {
                 }
                 lower.sendLine("bundlelist_" + a + " " + ifc.id + s);
             }
-            if (ifc.sentVlan != vln.size()) {
+            if (ifc.sentVlan != (vln.size() + qvl.size())) {
                 for (o = 0; o < tp.size(); o++) {
                     servP4langIfc ntry = tp.get(o);
                     for (i = 0; i < vln.size(); i++) {
                         servP4langIfc sub = vln.get(i);
                         lower.sendLine("bundlevlan_add " + ntry.id + " " + sub.ifc.vlanNum + " " + sub.id);
                     }
+                    for (i = 0; i < qvl.size(); i++) {
+                        servP4langIfc sub = qvl.get(i);
+                        lower.sendLine("bundleqinq_add " + sub.master.id + " " + sub.ifc.vlanNum + " " + sub.id + " " + ntry.id + " " + sub.master.ifc.vlanNum);
+                    }
                 }
-                ifc.sentVlan = vln.size();
+                ifc.sentVlan = vln.size() + qvl.size();
             }
         }
         if (ifc.sentVrf == 0) {

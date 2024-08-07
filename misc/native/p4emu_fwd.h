@@ -669,6 +669,13 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         put16msb(bufD, bufP, vlanout_res->vlan);
         bufP -= 2;
         put16msb(bufD, bufP, ETHERTYPE_VLAN);
+        if (vlanout_res->vlan2 > 0) {
+            hash ^= vlanout_res->vlan2;
+            bufP -= 2;
+            put16msb(bufD, bufP, vlanout_res->vlan2);
+            bufP -= 2;
+            put16msb(bufD, bufP, ETHERTYPE_VLAN);
+        }
         prt = vlanout_res->port;
         vlanout_res->pack++;
         vlanout_res->byte += bufS;

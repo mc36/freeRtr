@@ -815,6 +815,18 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         else table_add(&vlanout_table, &vlanout_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "portqinq") == 0) {
+        vlanout_ntry.id = vlanin_ntry.id = atoi(arg[2]);
+        vlanout_ntry.port = atoi(arg[3]);
+        vlanin_ntry.port = atoi(arg[4]);
+        vlanout_ntry.vlan2 = atoi(arg[5]);
+        vlanout_ntry.vlan = vlanin_ntry.vlan = atoi(arg[6]);
+        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
+        else table_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) table_del(&vlanout_table, &vlanout_ntry);
+        else table_add(&vlanout_table, &vlanout_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "myaddr4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[5]);
@@ -1531,6 +1543,14 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         return 0;
     }
     if (strcmp(arg[0], "bundlevlan") == 0) {
+        vlanin_ntry.id = atoi(arg[4]);
+        vlanin_ntry.port = atoi(arg[2]);
+        vlanin_ntry.vlan = atoi(arg[3]);
+        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
+        else table_add(&vlanin_table, &vlanin_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bundleqinq") == 0) {
         vlanin_ntry.id = atoi(arg[4]);
         vlanin_ntry.port = atoi(arg[2]);
         vlanin_ntry.vlan = atoi(arg[3]);
