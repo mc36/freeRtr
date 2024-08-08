@@ -225,6 +225,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
     memset(&route6_ntry, 0, sizeof(route6_ntry));
     struct neigh_entry neigh_ntry;
     memset(&neigh_ntry, 0, sizeof(neigh_ntry));
+    struct neigh_entry *neigh_res;
     struct vlanin_entry vlanin_ntry;
     memset(&vlanin_ntry, 0, sizeof(vlanin_ntry));
     struct vlanout_entry vlanout_ntry;
@@ -2604,8 +2605,6 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
             printf("\n");
         }
         bufS -= 12;
-        struct neigh_entry neigh_ntry;
-        struct neigh_entry *neigh_res;
         neigh_ntry.id = nei;
         index = table_find(&neigh_table, &neigh_ntry);
         if (index < 0) return 0;

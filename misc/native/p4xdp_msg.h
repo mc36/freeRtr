@@ -126,6 +126,29 @@ int doOneCommand(unsigned char* buf) {
     memset(&brdk, 0, sizeof(brdk));
     struct bridge_res brdr;
     memset(&brdr, 0, sizeof(brdr));
+    struct tunnel_res tunr;
+    memset(&tunr, 0, sizeof(tunr));
+    struct tunnel4_key tun4;
+    memset(&tun4, 0, sizeof(tun4));
+    struct tunnel6_key tun6;
+    memset(&tun6, 0, sizeof(tun6));
+    struct bundle_res bunn;
+    memset(&bunn, 0, sizeof(bunn));
+    struct bundle_res* bunr = &bunn;
+    struct vlan_key vlnk;
+    memset(&vlnk, 0, sizeof(vlnk));
+    struct vlan_res vlnr;
+    memset(&vlnr, 0, sizeof(vlnr));
+    struct nsh_key nshk;
+    memset(&nshk, 0, sizeof(nshk));
+    struct nsh_res nshr;
+    memset(&nshr, 0, sizeof(nshr));
+    struct polidx_key polk;
+    memset(&polk, 0, sizeof(polk));
+    struct pppoe_key pppoe;
+    memset(&pppoe, 0, sizeof(pppoe));
+    struct polpol_res polp;
+    memset(&polp, 0, sizeof(polp));
 #ifdef HAVE_NOHW
     return 0;
 #else
@@ -292,123 +315,107 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "bridgepckoudp4") == 0) {
-        struct tunnel4_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);
         inet_pton(AF_INET, arg[4], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&brdr.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun4.trgAddr, &buf2, sizeof(tun4.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tun4.trgAddr));
         inet_pton(AF_INET, arg[5], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&brdr.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.trgPort = brdr.srcPort = atoi(arg[6]);
-        tunk.srcPort = brdr.trgPort = atoi(arg[7]);
+        memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tun4.srcAddr));
+        tun4.trgPort = brdr.srcPort = atoi(arg[6]);
+        tun4.srcPort = brdr.trgPort = atoi(arg[7]);
         brdr.hop = atoi(arg[8]);
         brdr.cmd = 4;
-        tunk.vrf = atoi(arg[9]);
+        tun4.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun4.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 5;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel4_fd, &tun4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel4_fd, &tun4, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "bridgepckoudp6") == 0) {
-        struct tunnel6_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);
         inet_pton(AF_INET6, arg[4], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&brdr.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun6.trgAddr, &buf2, sizeof(tun6.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tun6.trgAddr));
         inet_pton(AF_INET6, arg[5], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&brdr.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.trgPort = brdr.srcPort = atoi(arg[6]);
-        tunk.srcPort = brdr.trgPort = atoi(arg[7]);
+        memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tun6.srcAddr));
+        tun6.trgPort = brdr.srcPort = atoi(arg[6]);
+        tun6.srcPort = brdr.trgPort = atoi(arg[7]);
         brdr.hop = atoi(arg[8]);
         brdr.cmd = 5;
-        tunk.vrf = atoi(arg[9]);
+        tun6.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun6.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 5;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel6_fd, &tun6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel6_fd, &tun6, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "bridgevxlan4") == 0) {
-        struct tunnel4_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);
         inet_pton(AF_INET, arg[4], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&brdr.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun4.trgAddr, &buf2, sizeof(tun4.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tun4.trgAddr));
         inet_pton(AF_INET, arg[5], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&brdr.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tun4.srcAddr));
         brdr.hop = atoi(arg[6]);
         brdr.label1 = atoi(arg[7]);
-        tunk.vrf = atoi(arg[8]);
+        tun4.vrf = atoi(arg[8]);
         tunr.aclport = atoi(arg[9]);
-        tunk.trgPort = brdr.srcPort = atoi(arg[10]);
-        tunk.srcPort = brdr.trgPort = atoi(arg[11]);
+        tun4.trgPort = brdr.srcPort = atoi(arg[10]);
+        tun4.srcPort = brdr.trgPort = atoi(arg[11]);
         brdr.cmd = 6;
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun4.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 6;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel4_fd, &tun4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel4_fd, &tun4, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "bridgevxlan6") == 0) {
-        struct tunnel6_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);
         inet_pton(AF_INET6, arg[4], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&brdr.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun6.trgAddr, &buf2, sizeof(tun6.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tun6.trgAddr));
         inet_pton(AF_INET6, arg[5], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&brdr.trgAddr, &buf2, sizeof(tunk.srcAddr));
+        memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tun6.srcAddr));
         brdr.hop = atoi(arg[6]);
         brdr.label1 = atoi(arg[7]);
-        tunk.vrf = atoi(arg[8]);
+        tun6.vrf = atoi(arg[8]);
         tunr.aclport = atoi(arg[9]);
-        tunk.trgPort = brdr.srcPort = atoi(arg[10]);
-        tunk.srcPort = brdr.trgPort = atoi(arg[11]);
+        tun6.trgPort = brdr.srcPort = atoi(arg[10]);
+        tun6.srcPort = brdr.trgPort = atoi(arg[11]);
         brdr.cmd = 7;
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun6.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 6;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel6_fd, &tun6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel6_fd, &tun6, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
@@ -725,8 +732,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "hairpin") == 0) {
-        struct bundle_res bunn;
-        memset(&bunn, 0, sizeof(bunn));
         o = atoi(arg[2]);
         bunn.cmd = 2;
         __u32 p = atoi(arg[3]);
@@ -744,9 +749,6 @@ int doOneCommand(unsigned char* buf) {
             if (bpf_map_delete_elem(bundles_fd, &o) != 0) warn("error removing entry");
             return 0;
         }
-        struct bundle_res bunn;
-        memset(&bunn, 0, sizeof(bunn));
-        struct bundle_res* bunr = &bunn;
         bpf_map_update_elem(bundles_fd, &o, &bunn, BPF_NOEXIST);
         if (bpf_map_lookup_elem(bundles_fd, &o, bunr) != 0) err("error getting entry");
         i = atoi(arg[3]);
@@ -756,10 +758,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "portvlan") == 0) {
-        struct vlan_key vlnk;
-        memset(&vlnk, 0, sizeof(vlnk));
-        struct vlan_res vlnr;
-        memset(&vlnr, 0, sizeof(vlnr));
         i = atoi(arg[2]);
         o = atoi(arg[3]);
         vlnk.vlan = vlnr.vlan = atoi(arg[4]);
@@ -775,10 +773,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "portqinq") == 0) {
-        struct vlan_key vlnk;
-        memset(&vlnk, 0, sizeof(vlnk));
-        struct vlan_res vlnr;
-        memset(&vlnr, 0, sizeof(vlnr));
         i = atoi(arg[2]);
         vlnk.vlan = vlnr.vlan = atoi(arg[6]);
         vlnr.vlan2 = atoi(arg[5]);
@@ -794,8 +788,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "bundlevlan") == 0) {
-        struct vlan_key vlnk;
-        memset(&vlnk, 0, sizeof(vlnk));
         i = atoi(arg[4]);
         o = atoi(arg[2]);
         vlnk.vlan = atoi(arg[3]);
@@ -808,8 +800,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "bundleqinq") == 0) {
-        struct vlan_key vlnk;
-        memset(&vlnk, 0, sizeof(vlnk));
         i = atoi(arg[4]);
         o = atoi(arg[2]);
         vlnk.vlan = atoi(arg[3]);
@@ -822,10 +812,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "nshifc") == 0) {
-        struct nsh_key nshk;
-        memset(&nshk, 0, sizeof(nshk));
-        struct nsh_res nshr;
-        memset(&nshr, 0, sizeof(nshr));
         nshk.sp = atoi(arg[2]);
         nshk.si = atoi(arg[3]);
         nshr.cmd = 1;
@@ -841,10 +827,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "nshnei") == 0) {
-        struct nsh_key nshk;
-        memset(&nshk, 0, sizeof(nshk));
-        struct nsh_res nshr;
-        memset(&nshr, 0, sizeof(nshr));
         nshk.sp = atoi(arg[2]);
         nshk.si = atoi(arg[3]);
         nshr.cmd = 3;
@@ -858,10 +840,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "nshloc") == 0) {
-        struct nsh_key nshk;
-        memset(&nshk, 0, sizeof(nshk));
-        struct nsh_res nshr;
-        memset(&nshr, 0, sizeof(nshr));
         nshk.sp = atoi(arg[2]);
         nshk.si = atoi(arg[3]);
         nshr.cmd = 2;
@@ -874,8 +852,6 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "polkaidx") == 0) {
-        struct polidx_key polk;
-        memset(&polk, 0, sizeof(polk));
         polk.idx = atoi(arg[2]);
         polk.vrf = atoi(arg[3]);
         o = atoi(arg[4]);
@@ -887,21 +863,17 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "polkapoly") == 0) {
-        struct polpol_res res;
-        memset(&res, 0, sizeof(res));
         i = atoi(arg[2]);
         o = atoi(arg[3]);
-        crc16mktab(res.tab, o);
+        crc16mktab(polp.tab, o);
         if (del == 0) {
             if (bpf_map_delete_elem(polpol_fd, &i) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(polpol_fd, &i, &res, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(polpol_fd, &i, &polp, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "pppoe") == 0) {
-        struct pppoe_key pppoe;
-        memset(&pppoe, 0, sizeof(pppoe));
         neir.aclport = i = atoi(arg[2]);
         pppoe.port = atoi(arg[3]);
         pppoe.sess = atoi(arg[6]);
@@ -921,255 +893,223 @@ int doOneCommand(unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "gre4") == 0) {
-        struct tunnel4_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun4.trgAddr, &buf2, sizeof(tun4.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun4.trgAddr));
         inet_pton(AF_INET, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun4.srcAddr));
+        tun4.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 3;
-        tunk.srcPort = 0;
-        tunk.trgPort = 0;
-        tunk.prot = IP_PROTOCOL_GRE;
+        tun4.srcPort = 0;
+        tun4.trgPort = 0;
+        tun4.prot = IP_PROTOCOL_GRE;
         tunr.cmd = 1;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel4_fd, &tun4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel4_fd, &tun4, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "gre6") == 0) {
-        struct tunnel6_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun6.trgAddr, &buf2, sizeof(tun6.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun6.trgAddr));
         inet_pton(AF_INET6, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun6.srcAddr));
+        tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 4;
-        tunk.srcPort = 0;
-        tunk.trgPort = 0;
-        tunk.prot = IP_PROTOCOL_GRE;
+        tun6.srcPort = 0;
+        tun6.trgPort = 0;
+        tun6.prot = IP_PROTOCOL_GRE;
         tunr.cmd = 1;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel6_fd, &tun6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel6_fd, &tun6, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "l2tp4") == 0) {
-        struct tunnel4_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun4.trgAddr, &buf2, sizeof(tun4.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun4.trgAddr));
         inet_pton(AF_INET, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun4.srcAddr));
+        tun4.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 5;
-        neir.srcPort = tunk.trgPort = atoi(arg[10]);
-        neir.trgPort = tunk.srcPort = atoi(arg[11]);
+        neir.srcPort = tun4.trgPort = atoi(arg[10]);
+        neir.trgPort = tun4.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun4.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 2;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel4_fd, &tun4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel4_fd, &tun4, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "l2tp6") == 0) {
-        struct tunnel6_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun6.trgAddr, &buf2, sizeof(tun6.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun6.trgAddr));
         inet_pton(AF_INET6, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun6.srcAddr));
+        tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 6;
-        neir.srcPort = tunk.trgPort = atoi(arg[10]);
-        neir.trgPort = tunk.srcPort = atoi(arg[11]);
+        neir.srcPort = tun6.trgPort = atoi(arg[10]);
+        neir.trgPort = tun6.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun6.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 2;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel6_fd, &tun6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel6_fd, &tun6, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "l3tp4") == 0) {
-        struct tunnel4_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun4.trgAddr, &buf2, sizeof(tun4.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun4.trgAddr));
         inet_pton(AF_INET, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun4.srcAddr));
+        tun4.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 7;
-        tunk.trgPort = 0;
-        tunk.srcPort = 0;
+        tun4.trgPort = 0;
+        tun4.srcPort = 0;
         neir.sess = atoi(arg[10]);
-        tunk.prot = IP_PROTOCOL_L2TP;
+        tun4.prot = IP_PROTOCOL_L2TP;
         tunr.cmd = 3;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel4_fd, &tun4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel4_fd, &tun4, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "l3tp6") == 0) {
-        struct tunnel6_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun6.trgAddr, &buf2, sizeof(tun6.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun6.trgAddr));
         inet_pton(AF_INET6, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun6.srcAddr));
+        tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 8;
-        tunk.trgPort = 0;
-        tunk.srcPort = 0;
+        tun6.trgPort = 0;
+        tun6.srcPort = 0;
         neir.sess = atoi(arg[10]);
-        tunk.prot = IP_PROTOCOL_L2TP;
+        tun6.prot = IP_PROTOCOL_L2TP;
         tunr.cmd = 3;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel6_fd, &tun6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel6_fd, &tun6, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "gtp4") == 0) {
-        struct tunnel4_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun4.trgAddr, &buf2, sizeof(tun4.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun4.trgAddr));
         inet_pton(AF_INET, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun4.srcAddr));
+        tun4.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 9;
-        neir.srcPort = tunk.trgPort = atoi(arg[10]);
-        neir.trgPort = tunk.srcPort = atoi(arg[11]);
+        neir.srcPort = tun4.trgPort = atoi(arg[10]);
+        neir.trgPort = tun4.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun4.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 4;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel4_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel4_fd, &tun4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel4_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel4_fd, &tun4, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
     }
     if (strcmp(arg[0], "gtp6") == 0) {
-        struct tunnel6_key tunk;
-        memset(&tunk, 0, sizeof(tunk));
-        struct tunnel_res tunr;
-        memset(&tunr, 0, sizeof(tunr));
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
         neir.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
-        memcpy(&tunk.trgAddr, &buf2, sizeof(tunk.trgAddr));
-        memcpy(&neir.srcAddr, &buf2, sizeof(tunk.trgAddr));
+        memcpy(&tun6.trgAddr, &buf2, sizeof(tun6.trgAddr));
+        memcpy(&neir.srcAddr, &buf2, sizeof(tun6.trgAddr));
         inet_pton(AF_INET6, arg[6], buf2);
-        memcpy(&tunk.srcAddr, &buf2, sizeof(tunk.srcAddr));
-        memcpy(&neir.trgAddr, &buf2, sizeof(tunk.srcAddr));
-        tunk.vrf = atoi(arg[8]);
+        memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
+        memcpy(&neir.trgAddr, &buf2, sizeof(tun6.srcAddr));
+        tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 10;
-        neir.srcPort = tunk.trgPort = atoi(arg[10]);
-        neir.trgPort = tunk.srcPort = atoi(arg[11]);
+        neir.srcPort = tun6.trgPort = atoi(arg[10]);
+        neir.trgPort = tun6.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
-        tunk.prot = IP_PROTOCOL_UDP;
+        tun6.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 4;
         if (del == 0) {
-            if (bpf_map_delete_elem(tunnel6_fd, &tunk) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(tunnel6_fd, &tun6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(tunnel6_fd, &tunk, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(tunnel6_fd, &tun6, &tunr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
