@@ -41,8 +41,8 @@ control calc_ipv4_hash(
             hdr.ipv4.src_addr,
             hdr.ipv4.dst_addr,
             hdr.ipv4.protocol,
-            ig_md.l4_lookup.word_1,
-            ig_md.l4_lookup.word_2
+            ig_md.layer4_srcprt,
+            ig_md.layer4_dstprt
         });
     }
 
@@ -94,8 +94,8 @@ control calc_ipv6_hash(
             hdr.ipv6.src_addr,
             hdr.ipv6.dst_addr,
             hdr.ipv6.next_hdr,
-            ig_md.l4_lookup.word_1,
-            ig_md.l4_lookup.word_2
+            ig_md.layer4_srcprt,
+            ig_md.layer4_dstprt
         });
     }
 

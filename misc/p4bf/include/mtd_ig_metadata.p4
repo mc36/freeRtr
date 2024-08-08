@@ -123,7 +123,6 @@ struct ingress_metadata_t {
     checksum_t checksum_tcp_tmp;
     checksum_t checksum_udp_tmp;
 #endif
-    l4_lookup_t   l4_lookup;
     ethertype_t always_zero; // hack
 }
 #endif	// _INGRESS_METADATA_P4_

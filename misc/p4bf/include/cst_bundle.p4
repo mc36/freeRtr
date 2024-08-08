@@ -75,10 +75,6 @@ const SelectorMode_t SELECTION_MODE = SelectorMode_t.RESILIENT;
 
 const bit<32> BUNDLE_SIZE = 16384;
 
-struct l4_lookup_t {
-    bit<16>  word_1;
-    bit<16>  word_2;
-}
 
 /*
  * Since we will be calculating hash in 32-bit pieces, we will have this

@@ -98,6 +98,5 @@ ig_md.mpls_encap_rawip_valid = 0;
 ig_md.mpls_encap_l3vpn_valid = 0;
 ig_md.mpls_encap_l2vpn_valid = 0;
 ig_md.mpls_encap_decap_sap_type = 0;
-ig_md.l4_lookup = { 0, 0 };
 
 

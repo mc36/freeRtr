@@ -391,7 +391,6 @@ state prs_ipv4 {
     pkt.extract(hdr.ipv4);
     ipv4_checksum.add(hdr.ipv4);
     ig_md.ipv4_valid = 1;
-    ig_md.l4_lookup = pkt.lookahead<l4_lookup_t>();
 #ifdef HAVE_NAT
     tcp_checksum.subtract({hdr.ipv4.src_addr});
     tcp_checksum.subtract({hdr.ipv4.dst_addr});
@@ -437,7 +436,6 @@ IP_PROTOCOL_IPV6:
 state prs_ipv6 {
     pkt.extract(hdr.ipv6);
     ig_md.ipv6_valid = 1;
-    ig_md.l4_lookup = pkt.lookahead<l4_lookup_t>();
 #ifdef HAVE_NAT
     tcp_checksum.subtract({hdr.ipv6.src_addr});
     tcp_checksum.subtract({hdr.ipv6.dst_addr});
