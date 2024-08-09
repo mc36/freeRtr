@@ -35,6 +35,7 @@ qc pass: interop1: lacp
 qc pass: interop1: fragmentation and reassembly
 qc pass: interop1: sgt encapsulation
 qc pass: interop1: verify source
+qc pass: interop1: qinq encapsulation
 qc pass: interop1: ike1 with ipv4
 qc pass: interop1: ike1 with ipv6
 qc pass: interop1: ike1 with 3des

@@ -1,4 +1,3 @@
 all:
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4emu.bin $^ $(LDLIBS) -DHAVE_NOCRYPTO -DHAVE_NOCACHE p4emu_pcap.c p4emu_full.c -lpthread -lpcap
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4pkt.bin $^ $(LDLIBS) -DHAVE_NOCRYPTO -DHAVE_NOCACHE p4emu_pcap.c p4emu_none.c -lpthread -lpcap
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4dbg.bin $^ $(LDLIBS) -DHAVE_NOCRYPTO -DHAVE_NOCACHE p4emu_pcap.c p4emu_dbg.c -lpthread -lpcap
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4emu.bin $^ $(LDLIBS) -DHAVE_NOCACHE p4emu_pcap.c p4emu_nocr.c -lpthread -lpcap
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4pkt.bin $^ $(LDLIBS) -DHAVE_NOCACHE p4emu_pcap.c p4emu_none.c -lpthread -lpcap

@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 
 #undef HAVE_DEBUG
-//#undef HAVE_NOCRYPTO
+#undef HAVE_NOCRYPTO
 
 #include "p4emu_hdr.h"
 

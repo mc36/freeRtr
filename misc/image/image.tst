@@ -1,5 +1,6 @@
 include ../misc/image/image.bas
 
+catalog-read exp xz %mirr% experimental main
 catalog-read sid xz %mirr% sid main
 catalog-sum
 

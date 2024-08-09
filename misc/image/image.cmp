@@ -2,6 +2,7 @@ include ../misc/image/image.bas
 
 exec mkdir -m 0755 %tmp%/binImg
 
+catalog-read exp xz %mirr% experimental main
 catalog-read sid xz %mirr% sid main
 catalog-sum
 

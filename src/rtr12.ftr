@@ -23,6 +23,7 @@ qc pass: interop9: ethernet encapsulation
 qc pass: interop9: dot1q encapsulation
 qc pass: interop9: fragmentation and reassembly
 qc pass: interop9: verify source
+qc pass: interop9: qinq encapsulation
 qc pass: interop9: point2point isis
 qc pass: interop9: isis dis
 qc pass: interop9: isis nondis

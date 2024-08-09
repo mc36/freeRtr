@@ -1373,7 +1373,9 @@ void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *
     int ethtyp = 0;
     int tmp = 0;
     int tmp2 = 0;
+#ifndef HAVE_NOCRYPTO
     size_t sizt = 0;
+#endif
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:

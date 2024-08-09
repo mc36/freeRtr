@@ -18,7 +18,7 @@ int eth1.123.1234
 addpersist r2
 int eth1 eth 0000.0000.2222 $per1$
 !
-set interfaces ge-0/0/0 vlan-tagging
+set interfaces ge-0/0/0 flexible-vlan-tagging
 set interfaces ge-0/0/0.123 vlan-tags outer 123
 set interfaces ge-0/0/0.123 vlan-tags inner 1234
 set interfaces ge-0/0/0.123 family inet address 1.1.1.2/24

@@ -49,7 +49,6 @@ define Package/p4emu/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/p4emu.bin $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/p4pkt.bin $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/p4dbg.bin $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/p4emu.sh $(1)/usr/sbin/
 	$(CP) $(PKG_BUILD_DIR)/etc $(1)/
 endef
