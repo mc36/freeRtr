@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
     if (bufC[0] == 1) printf("lsb");
     else printf("msb");
     printf("\n");
+    fflush(stdout);
     int origS = 0;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
