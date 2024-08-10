@@ -15930,3 +15930,6 @@ qc pass: interop1: qinq encapsulation
 qc pass: interop2: qinq encapsulation
 qc pass: interop2: dot1q in dot1ad encapsulation
 qc pass: interop9: qinq encapsulation
+---------------------------------- 2024-08-10 05:11:59 24.8.10
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
