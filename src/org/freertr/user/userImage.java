@@ -558,8 +558,8 @@ public class userImage {
                     if (don.indexOf(a) >= 0) {
                         continue;
                     }
-                    cmd.error("removing legacy " + a);
-                    userFlash.delete(a);
+                    cmd.error("renaming legacy " + a);
+                    userFlash.rename(a, a + ".bak", true, true);
                 }
                 continue;
             }
