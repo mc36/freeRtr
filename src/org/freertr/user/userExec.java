@@ -784,6 +784,7 @@ public class userExec {
         hl.add(null, "6 .              asorigin           originating ases");
         hl.add(null, "6 .              astransit          transiting ases");
         hl.add(null, "6 .              asconn             connectivity of ases");
+        hl.add(null, "6 .              pathstat           path length statistics");
         hl.add(null, "6 7,.            asinconsistent     inconsistent advertisements of ases");
         hl.add(null, "7 .                [str]            int matcher");
         hl.add(null, "6 7,.            nhinconsistent     inconsistent advertisements of next hops");

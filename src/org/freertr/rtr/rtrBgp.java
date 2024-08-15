@@ -4378,6 +4378,38 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * as path statistics
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getPathStat(int safi) {
+        tabRoute<addrIP> rou = getDatabase(safi);
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        long sum = 0;
+        for (int i = 0; i < rou.size(); i++) {
+            tabRouteEntry<addrIP> ntry = rou.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            int o = ntry.best.asPathLen();
+            if (o < min) {
+                min = o;
+            }
+            if (o > max) {
+                max = o;
+            }
+            sum += o;
+        }
+        userFormat res = new userFormat("|", "category|value");
+        res.add("minimum|" + min);
+        res.add("maximum|" + max);
+        res.add("average|" + (float) sum / (rou.size() + 1));
+        return res;
+    }
+
+    /**
      * as connections
      *
      * @param safi safi to query

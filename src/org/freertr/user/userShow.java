@@ -4326,6 +4326,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.getAsConns(sfi));
             return;
         }
+        if (a.equals("pathstat")) {
+            rdr.putStrTab(r.bgp.getPathStat(sfi));
+            return;
+        }
         if (a.equals("prefix-lengths")) {
             rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfi), rtrBgpUtil.safi2ipVers(sfi)));
             return;
