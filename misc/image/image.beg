@@ -27,7 +27,7 @@ select-dis x11.*
 select-dis lsb-base.*
 select-dis linux-base.*
 select-dis linux-initramfs.*
-select-dis openssl.*
+select-dis openssl
 select-dis systemd.*
 select-dis libsystemd.*
 select-dis libasound.*
