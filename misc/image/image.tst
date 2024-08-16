@@ -6,6 +6,7 @@ catalog-sum
 
 select-one libc-bin                       #library
 select-one libssl3t64                     #dataplane
+select-one openssl-provider-legacy        #dataplane
 
 select-lst
 select-sum
