@@ -139,6 +139,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        logger.info("honeypot hit from " + id.peerAddr);
         if (blackhole) {
             srvBlackholePeer(id.peerAddr.isIPv4(), id.peerAddr);
         }
@@ -186,7 +187,6 @@ class servHoneyPotConn implements Runnable {
         fwdr = lower.srvVrf.getFwd(rem);
         cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
         ipi = new secInfoWrk(lower.ipInfo, cls);
-        logger.info("honeypot hit from " + remote);
     }
 
     /**
