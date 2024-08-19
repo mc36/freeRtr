@@ -344,6 +344,51 @@ public class userGame {
     }
 
     /**
+     * moving plasma
+     */
+    public void doPlasma() {
+        int[] plasma1 = new int[console.sizY * console.sizX * 4];
+        int[] plasma2 = new int[console.sizY * console.sizX * 4];
+        int i = 0;
+        for (int y = 0; y < console.sizY * 2; y++) {
+            for (int x = 0; x < console.sizX * 2; x++) {
+                plasma1[i] = (int) (64 + 63 * (Math.sin(Math.sqrt((console.sizY - y) * (console.sizY - y) + (console.sizX - x) * (console.sizX - x)) / (console.sizX / 20))));
+                plasma2[i] = (int) (64 + 63 * Math.sin(x / (74 + 15 * Math.cos(y / 140))) * Math.cos(y / (61 + 11 * Math.sin(x / 114))));
+                i++;
+            }
+        }
+        int fc = bits.randomD();
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            int src1 = console.sizX / 2;
+            int src2 = console.sizY / 2;
+            int x1 = (int) Math.floor(src1 + ((src1 - 1) * Math.cos(fc / 97)));
+            int x2 = (int) Math.floor(src1 + ((src1 - 1) * Math.sin(fc / -114)));
+            int x3 = (int) Math.floor(src1 + ((src1 - 1) * Math.sin(fc / -137)));
+            int y1 = (int) Math.floor(src2 + ((src2 - 1) * Math.sin(fc / 123)));
+            int y2 = (int) Math.floor(src2 + ((src2 - 1) * Math.cos(fc / -75)));
+            int y3 = (int) Math.floor(src2 + ((src2 - 1) * Math.cos(fc / -108)));
+            src1 = y1 * console.sizX * 2 + x1;
+            src2 = y2 * console.sizX * 2 + x2;
+            int src3 = y3 * console.sizX * 2 + x3;
+            for (int y = 0; y < console.sizY; y++) {
+                for (int x = 0; x < console.sizX; x++) {
+                    i = (plasma1[src1++] + plasma2[src2++] + plasma2[src3++]) & 0xFF;
+                    console.putInt(x, y, userScreen.colBlack, i >>> 4, false, 88);
+                }
+                src1 += console.sizX;
+                src2 += console.sizX;
+                src3 += console.sizX;
+            }
+            fc += 2;
+            console.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
      * burning fire
      */
     public void doFire() {
@@ -630,6 +675,10 @@ public class userGame {
         }
         if (a.equals("fire")) {
             doFire();
+            return;
+        }
+        if (a.equals("plasma")) {
+            doPlasma();
             return;
         }
         if (a.equals("life")) {
