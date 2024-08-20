@@ -345,6 +345,7 @@ class BfPorts(Thread):
         self.file.write("flwctrname 1 on \n")
         self.file.write("dynrange 512 16383 \n")
         self.file.write("vrfrange 1 1023\r\n")
+        self.file.write("neirange 4096 65535\r\n");
         self.file.write("nomore\r\n")
         self.file.flush()
 

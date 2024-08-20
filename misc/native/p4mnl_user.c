@@ -70,6 +70,7 @@ void doStatLoop() {
     fprintf(commands, "cpuport %i\r\n", cpuPort);
     fprintf(commands, "dynrange 32768 65535\r\n");
     fprintf(commands, "vrfrange 1 255\r\n");
+    fprintf(commands, "neirange 4096 65535\r\n");
     fprintf(commands, "nomore\r\n");
     fflush(commands);
     int rnd = 0;

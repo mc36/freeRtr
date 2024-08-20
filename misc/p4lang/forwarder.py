@@ -3775,6 +3775,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
         fil.write(data)
     fil.write("dynrange 512 1023\r\n")
     fil.write("vrfrange 1 1023\r\n")
+    fil.write("neirange 4096 65535\r\n");
     fil.write("nomore\r\n")
     for x in range(0, 15):
         data = "state %i 1\r\n" % (x)

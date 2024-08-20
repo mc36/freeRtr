@@ -119,6 +119,7 @@ int main(int argc, char **argv) {
     fprintf(cmdTx, "capabilities punting route\r\n");
     fprintf(cmdTx, "dynrange 32768 65535\r\n");
     fprintf(cmdTx, "vrfrange 1 65535\r\n");
+    fprintf(cmdTx, "neirange 4096 65535\r\n");
     fprintf(cmdTx, "nomore\r\n");
     fflush(cmdTx);
 

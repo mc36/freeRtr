@@ -187,6 +187,16 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     protected int vrfRngEnd = 0x20000;
 
     /**
+     * first dynamic range
+     */
+    protected int neiRngBeg = 0x10000;
+
+    /**
+     * last dynamic range
+     */
+    protected int neiRngEnd = 0x20000;
+
+    /**
      * last front panel
      */
     protected tabGen<servP4langMgcN> frontnam = new tabGen<servP4langMgcN>();
@@ -1142,6 +1152,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         res.add("cpuport|" + cpuPort);
         res.add("dynamic ifc|" + ifcRngBeg + " " + ifcRngEnd);
         res.add("dynamic vrf|" + vrfRngBeg + " " + vrfRngEnd);
+        res.add("dynamic nei|" + neiRngBeg + " " + neiRngEnd);
         res.add("messages sent|" + msgsSent);
         res.add("messages got|" + msgsGot);
         res.add("rounds done|" + rndDoneNum);
@@ -1811,7 +1822,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     protected servP4langNei genNeighId(servP4langNei ntry) {
         ntry.need = 1;
         for (int rnd = 0; rnd < 16; rnd++) {
-            ntry.id = bits.random(0x1000, 0xfff0);
+            ntry.id = bits.random(neiRngBeg, neiRngEnd);
             if (ntry.id < 1) {
                 continue;
             }

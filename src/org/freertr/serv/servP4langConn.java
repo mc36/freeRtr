@@ -178,6 +178,8 @@ public class servP4langConn implements Runnable {
         lower.ifcRngEnd = -2;
         lower.vrfRngBeg = -1;
         lower.vrfRngEnd = -2;
+        lower.neiRngBeg = -1;
+        lower.neiRngEnd = -2;
         lower.cpuPort = -3;
         lower.statsPrt = -4;
         lower.statsTxt = null;
@@ -253,6 +255,11 @@ public class servP4langConn implements Runnable {
                 lower.vrfRngEnd = bits.str2num(cmd.word());
                 continue;
             }
+            if (s.equals("neirange")) {
+                lower.neiRngBeg = bits.str2num(cmd.word());
+                lower.neiRngEnd = bits.str2num(cmd.word());
+                continue;
+            }
             if (s.equals("capabilities")) {
                 lower.capability = cmd.getRemaining();
                 continue;
@@ -271,6 +278,10 @@ public class servP4langConn implements Runnable {
         }
         if (lower.vrfRngBeg >= lower.vrfRngEnd) {
             logger.info("error negotiating vrf range");
+            return true;
+        }
+        if (lower.neiRngBeg >= lower.neiRngEnd) {
+            logger.info("error negotiating neighbor range");
             return true;
         }
         int nxt = lower.ifcRngBeg;
