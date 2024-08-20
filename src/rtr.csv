@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.8.20-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-08-20 16:26:31, took 00:14:57, with 60 workers, on 3532 cases, 2 failed, 0 traces, 16 retries
+-;-;-;2024-08-20 17:00:52, took 00:13:38, with 60 workers, on 3532 cases, 2 failed, 0 traces, 18 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
