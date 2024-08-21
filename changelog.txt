@@ -15941,3 +15941,8 @@ no qc pass: p4lang downlink
 no qc pass: p4lang demultiplexer
 failed: p4lang demultiplexer
 failed: p4lang downlink
+---------------------------------- 2024-08-21 05:46:34 24.8.21
+no failed: p4lang downlink
+no failed: p4lang demultiplexer
+qc pass: p4lang demultiplexer
+qc pass: p4lang downlink
