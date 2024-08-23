@@ -1452,8 +1452,13 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         if (intercon == null) {
             return;
         }
-        pckB.msbPutW(0, id);
-        pckB.putSkip(2);
+        if (ifcRngEnd > 0x10000) {
+            pckB.msbPutD(0, id);
+            pckB.putSkip(4);
+        } else {
+            pckB.msbPutW(0, id);
+            pckB.putSkip(2);
+        }
         pckB.merge2beg();
         ifcEther.parseETHheader(pckB, false);
         intercon.sendPack(pckB);
@@ -1467,14 +1472,20 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
-        int i = pck.msbGetW(0);
-        pck.getSkip(2);
+        int i;
+        if (ifcRngEnd > 0x10000) {
+            i = pck.msbGetD(0);
+            pck.getSkip(4);
+        } else {
+            i = pck.msbGetW(0);
+            pck.getSkip(2);
+        }
         ifcEther.parseETHheader(pck, false);
         servP4langDlnk dlnk = new servP4langDlnk(this, i);
         dlnk = downLinks.find(dlnk);
         if (dlnk != null) {
             ifcEther.createETHheader(pck, false);
-            pck.getSkip(-2);
+            pck.getSkip(-4);
             ifcEther.parseETHheader(pck, false);
             dlnk.parent.sendPack(pck);
             return;
