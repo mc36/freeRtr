@@ -326,7 +326,7 @@ qc pass: ethernet tunneling with nvgre
 qc pass: vlan tunneling with nvgre
 qc pass: tunnel interface with nvgre
 qc pass: p4lang demultiplexer
-failed: p4lang downlink
+qc pass: p4lang downlink
 qc pass: pckoip over ipv4
 qc pass: pckoip over ipv6
 qc pass: pckoip over pckoip
