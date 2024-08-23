@@ -33,7 +33,8 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             hdr.cpu.setInvalid();
         } else {
             hdr.cpu.setValid();
-            hdr.cpu._padding = 0;
+            hdr.cpu._padding1 = 0;
+            hdr.cpu._padding2 = 0;
             hdr.cpu.port = (SubIntId_t) ig_intr_md.ingress_port;
             ig_tm_md.ucast_egress_port = CPU_PORT;
             ig_tm_md.bypass_egress = 1;

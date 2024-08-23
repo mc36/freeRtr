@@ -576,12 +576,12 @@ __u32 xdp_router(struct xdp_md *ctx) {
     rxport->pack++;
     rxport->byte += bufE - bufD;
     if (prt == *cpuPort) {
-        prt = get16msb(bufD, 0);
+        prt = get32msb(bufD, 0);
         struct port_res* txport = bpf_map_lookup_elem(&tx_ports, &prt);
         if (txport == NULL) goto drop;
         txport->pack++;
         txport->byte += bufE - bufD;
-        if (bpf_xdp_adjust_head(ctx, 2) != 0) goto drop;
+        if (bpf_xdp_adjust_head(ctx, 4) != 0) goto drop;
         return bpf_redirect(txport->idx, 0);
     }
     prt = rxport->idx;
@@ -1274,10 +1274,10 @@ punt:
 #endif
 
 cpu:
-    if (bpf_xdp_adjust_head(ctx, -2) != 0) goto drop;
-    revalidatePacket(sizeof(macaddr) + 2);
-    put16msb(bufD, 0, prt);
-    __builtin_memcpy(&bufD[2], &macaddr, sizeof(macaddr));
+    if (bpf_xdp_adjust_head(ctx, -4) != 0) goto drop;
+    revalidatePacket(sizeof(macaddr) + 4);
+    put32msb(bufD, 0, prt);
+    __builtin_memcpy(&bufD[4], &macaddr, sizeof(macaddr));
     return bpf_redirect(*cpuPort, 0);
 drop:
     return XDP_DROP;

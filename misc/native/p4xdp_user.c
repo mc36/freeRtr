@@ -80,9 +80,9 @@ void doStatLoop() {
     fprintf(commands, "capabilities punting route mpls bundle vlan pppoe eompls bridge vpls evpn hairpin sgt loconn pmtud vrfysrc gre l2tp l3tp gtp nsh polka gretap pppoetap l2tptap l3tptap pckoudp vxlan\r\n");
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
-    fprintf(commands, "dynrange 32768 65535\r\n");
-    fprintf(commands, "vrfrange 1 65535\r\n");
-    fprintf(commands, "neirange 4096 65535\r\n");
+    fprintf(commands, "dynrange 32768 1073741823\r\n");
+    fprintf(commands, "vrfrange 1 1073741823\r\n");
+    fprintf(commands, "neirange 4096 1073741823\r\n");
     fprintf(commands, "nomore\r\n");
     fflush(commands);
     int rnd = 0;

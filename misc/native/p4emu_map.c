@@ -155,9 +155,9 @@ void doStatLoop() {
     fprintf(commands, "capabilities %s\r\n", getCapas());
     for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
     fprintf(commands, "cpuport %i\r\n", cpuPort);
-    fprintf(commands, "dynrange %i 65535\r\n", maxPorts);
-    fprintf(commands, "vrfrange 1 65535\r\n");
-    fprintf(commands, "neirange 4096 65535\r\n");
+    fprintf(commands, "dynrange %i 1073741823\r\n", maxPorts);
+    fprintf(commands, "vrfrange 1 1073741823\r\n");
+    fprintf(commands, "neirange 4096 1073741823\r\n");
     fprintf(commands, "nomore\r\n");
     fflush(commands);
     int rnd = 0;

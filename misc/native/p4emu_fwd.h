@@ -28,8 +28,8 @@ void send2port(unsigned char *bufD, int bufS, int port) {
 void send2cpu(unsigned char *bufD, int bufP, int bufS, int port) {
     bufP -= 12;
     memmove(&bufD[bufP], &bufD[preBuff], 12);
-    bufP -= 2;
-    put16msb(bufD, bufP, port);
+    bufP -= 4;
+    put32msb(bufD, bufP, port);
     send2port(&bufD[bufP], bufS - bufP + preBuff, cpuPort);
 }
 
@@ -2487,10 +2487,10 @@ cpu:
 void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[cpuPort]++;
     byteRx[cpuPort] += bufS;
-    int prt = get16msb(bufD, preBuff + 0);
-    int hash = get32msb(bufD, preBuff + 2) ^ get32msb(bufD, preBuff + 6) ^ get32msb(bufD, preBuff + 10);
-    int ethtyp = get16msb(bufD, preBuff + 14);
-    int bufP = preBuff + 14;
-    memcpy(&bufC[0], &bufD[preBuff + 2], 12);
+    int prt = get32msb(bufD, preBuff + 0);
+    int hash = get32msb(bufD, preBuff + 4) ^ get32msb(bufD, preBuff + 8) ^ get32msb(bufD, preBuff + 12);
+    int ethtyp = get16msb(bufD, preBuff + 16);
+    int bufP = preBuff + 16;
+    memcpy(&bufC[0], &bufD[preBuff + 4], 12);
     send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufC, ethtyp, -1, cpuPort);
 }

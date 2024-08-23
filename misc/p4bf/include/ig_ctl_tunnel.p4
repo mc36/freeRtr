@@ -57,7 +57,8 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
-        hdr.cpu._padding = 0;
+        hdr.cpu._padding1 = 0;
+        hdr.cpu._padding2 = 0;
         hdr.cpu.port = port;
         hdr.gre.setInvalid();
         hdr.ipv4.setInvalid();
@@ -94,7 +95,8 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
-        hdr.cpu._padding = 0;
+        hdr.cpu._padding1 = 0;
+        hdr.cpu._padding2 = 0;
         hdr.cpu.port = port;
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
@@ -114,7 +116,8 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
-        hdr.cpu._padding = 0;
+        hdr.cpu._padding1 = 0;
+        hdr.cpu._padding2 = 0;
         hdr.cpu.port = port;
         hdr.ipv4.setInvalid();
         hdr.ipv6.setInvalid();
@@ -159,7 +162,8 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
-        hdr.cpu._padding = 0;
+        hdr.cpu._padding1 = 0;
+        hdr.cpu._padding2 = 0;
         hdr.cpu.port = port;
         hdr.vxlan.setInvalid();
         hdr.udp.setInvalid();
@@ -184,7 +188,8 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
-        hdr.cpu._padding = 0;
+        hdr.cpu._padding1 = 0;
+        hdr.cpu._padding2 = 0;
         hdr.cpu.port = port;
         hdr.etherip.setInvalid();
         hdr.ipv4.setInvalid();
@@ -209,7 +214,8 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
         hdr.cpu.setValid();
-        hdr.cpu._padding = 0;
+        hdr.cpu._padding1 = 0;
+        hdr.cpu._padding2 = 0;
         hdr.cpu.port = port;
         hdr.udp.setInvalid();
         hdr.ipv4.setInvalid();
@@ -367,7 +373,8 @@ hdr.ipv6.next_hdr:
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
             hdr.cpu.setValid();
-            hdr.cpu._padding = 0;
+            hdr.cpu._padding1 = 0;
+            hdr.cpu._padding2 = 0;
             hdr.cpu.port = gtp_hit;
             hdr.gtp.setInvalid();
             hdr.udp.setInvalid();
@@ -399,7 +406,8 @@ hdr.ipv6.next_hdr:
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
             hdr.cpu.setValid();
-            hdr.cpu._padding = 0;
+            hdr.cpu._padding1 = 0;
+            hdr.cpu._padding2 = 0;
             hdr.cpu.port = l2tp_hit;
             hdr.l2tp.setInvalid();
             hdr.udp.setInvalid();
@@ -433,7 +441,8 @@ hdr.ipv6.next_hdr:
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
             hdr.cpu.setValid();
-            hdr.cpu._padding = 0;
+            hdr.cpu._padding1 = 0;
+            hdr.cpu._padding2 = 0;
             hdr.cpu.port = l3tp_hit;
             hdr.l3tp.setInvalid();
             hdr.ipv4.setInvalid();
@@ -467,7 +476,8 @@ hdr.ipv6.next_hdr:
             ig_tm_md.bypass_egress = 1;
 //        recirculate(RECIR_PORT);
             hdr.cpu.setValid();
-            hdr.cpu._padding = 0;
+            hdr.cpu._padding1 = 0;
+            hdr.cpu._padding2 = 0;
             hdr.cpu.port = tmux_hit;
             hdr.tmux.setInvalid();
             hdr.ipv4.setInvalid();

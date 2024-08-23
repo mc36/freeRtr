@@ -57,10 +57,10 @@ __u32 mnl_pckio(struct xdp_md *ctx) {
     if (cpu == NULL) goto drop;
 
     if (ctx->ingress_ifindex == *cpu) {
-        prt = get16msb(bufD, 0);
+        prt = get32msb(bufD, 0);
         __u32* res = bpf_map_lookup_elem(&tx_ports, &prt);
         if (res == NULL) goto drop;
-        if (bpf_xdp_adjust_head(ctx, 2) != 0) goto drop;
+        if (bpf_xdp_adjust_head(ctx, 4) != 0) goto drop;
         return bpf_redirect(*res, 0);
     }
 
@@ -97,9 +97,9 @@ punt:
     prt = ctx->ingress_ifindex;
     __u32* res = bpf_map_lookup_elem(&rx_ports, &prt);
     if (res == NULL) goto drop;
-    if (bpf_xdp_adjust_head(ctx, -2) != 0) goto drop;
-    revalidatePacket(2);
-    put16msb(bufD, 0, *res);
+    if (bpf_xdp_adjust_head(ctx, -4) != 0) goto drop;
+    revalidatePacket(4);
+    put32msb(bufD, 0, *res);
     return bpf_redirect(*cpu, 0);
 
 drop:

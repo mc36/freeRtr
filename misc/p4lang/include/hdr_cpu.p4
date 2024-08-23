@@ -18,7 +18,8 @@
 #define _CPU_P4_
 
 header cpu_header_t {
-    bit<6> _padding;
+    bit<16> _padding2;
+    bit<6> _padding1;
     SubIntId_t port;
 }
 
