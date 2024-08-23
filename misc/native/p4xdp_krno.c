@@ -719,7 +719,7 @@ punt:
 
 cpu:
     bufO -= sizeof(macaddr);
-    bufO -= 4;
+    bufO -= 6;
     if (bpf_xdp_adjust_head(ctx, bufO) != 0) goto drop;
     revalidatePacket(sizeof(macaddr) + 4);
     put32msb(bufD, 0, prt);
