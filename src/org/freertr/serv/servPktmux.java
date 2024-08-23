@@ -225,8 +225,8 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
         if (cpuprt == null) {
             return;
         }
-        pck.msbPutW(0, id);
-        pck.putSkip(2);
+        pck.msbPutD(0, id);
+        pck.putSkip(4);
         pck.merge2beg();
         ifcEther.parseETHheader(pck, false);
         cpuprt.sendPack(pck);
@@ -235,8 +235,8 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
-        int id = pck.msbGetW(0);
-        pck.getSkip(2);
+        int id = pck.msbGetD(0);
+        pck.getSkip(4);
         ifcEther.parseETHheader(pck, false);
         servPktmuxPort ntry = new servPktmuxPort(this, id);
         ntry = ports.find(ntry);
@@ -319,9 +319,9 @@ class servPktmuxConn implements Runnable, Comparator<servPktmuxConn> {
             servPktmuxPort ntry = lower.ports.get(i);
             pipe.linePut("portname " + ntry.id + " pktmux-port" + ntry.id);
         }
-        pipe.linePut("dynrange 512 1023");
-        pipe.linePut("vrfrange 1 1023");
-        pipe.linePut("neirange 4096 65535");
+        pipe.linePut("dynrange 1024 1073741823");
+        pipe.linePut("vrfrange 1 1073741823");
+        pipe.linePut("neirange 4096 1073741823");
         pipe.linePut("nomore");
         for (int i = 0; i < lower.ports.size(); i++) {
             servPktmuxPort ntry = lower.ports.get(i);

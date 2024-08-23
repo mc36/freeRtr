@@ -60,8 +60,8 @@ public class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
-        int i = pck.msbGetW(0);
-        pck.getSkip(2);
+        int i = pck.msbGetD(0);
+        pck.getSkip(4);
         ifcEther.parseETHheader(pck, false);
         lower.sendPack(i, pck);
     }
