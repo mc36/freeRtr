@@ -333,6 +333,7 @@ struct vlanout_entry {
     int vlan;
     int vlan2;
     int port;
+    int port2;
     long pack;
     long byte;
 };

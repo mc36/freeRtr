@@ -15,7 +15,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v24.8.24-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2024-08-24 07:06:11, took 00:12:36, with 60 workers, on 3532 cases, 0 failed, 0 traces, 1 retries<br/>
+tested: 2024-08-24 07:57:33, took 00:15:48, with 60 workers, on 3532 cases, 1 failed, 0 traces, 8 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -86,7 +86,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dhcp01.tst">conn-dhcp01.tst</a></td><td>success</td><td>dhcp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dhcp02.tst">conn-dhcp02.tst</a></td><td>success</td><td>dhcp with arp/nd security</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dhcp03.tst">conn-dhcp03.tst</a></td><td>success</td><td>dhcp with static allocation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-dhcp04.tst">conn-dhcp04.tst</a></td><td>success</td><td>dhcp with excluded address</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-dhcp04.tst">conn-dhcp04.tst</a></td><td>#6-run-r3 tping 100 20 1234::1 vrf v1</td><td>dhcp with excluded address</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dhcp05.tst">conn-dhcp05.tst</a></td><td>success</td><td>dhcp with upgraded server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dhcp06.tst">conn-dhcp06.tst</a></td><td>success</td><td>dhcp with interface server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dlsw01.tst">conn-dlsw01.tst</a></td><td>success</td><td>dlsw over ipv4</td></tr>

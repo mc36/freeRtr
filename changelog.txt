@@ -15952,3 +15952,6 @@ failed: p4lang downlink
 ---------------------------------- 2024-08-23 09:17:04 24.8.23
 no failed: p4lang downlink
 qc pass: p4lang downlink
+---------------------------------- 2024-08-24 07:41:45 24.8.24
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address

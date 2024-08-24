@@ -819,7 +819,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
     if (strcmp(arg[0], "portqinq") == 0) {
         vlanout_ntry.id = vlanin_ntry.id = atoi(arg[2]);
         vlanout_ntry.port = atoi(arg[3]);
-        vlanin_ntry.port = atoi(arg[4]);
+        vlanout_ntry.port2 = vlanin_ntry.port = atoi(arg[4]);
         vlanout_ntry.vlan2 = atoi(arg[5]);
         vlanout_ntry.vlan = vlanin_ntry.vlan = atoi(arg[6]);
         if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
@@ -2893,7 +2893,8 @@ void doStatRound(FILE *commands, int round) {
     for (int i=0; i<vlanout_table.size; i++) {
         struct vlanout_entry *ontry = table_get(&vlanout_table, i);
         struct vlanin_entry ival;
-        ival.port = ontry->port;
+        if (ontry->port2 != 0) ival.port = ontry->port2;
+        else ival.port = ontry->port;
         ival.vlan = ontry->vlan;
         int o = table_find(&vlanin_table, &ival);
         if (o < 0) continue;
