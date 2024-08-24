@@ -43,7 +43,7 @@ void tree_deinit(struct tree_head *tab) {
     tab->root = NULL;
 }
 
-#define tree_bit(p) (val->addr[p / 32] & bitVals[p % 32])
+#define tree_bit(p) (val->addr[p >> 5] & bitVals[p & 0x1f])
 
 #ifdef HAVE_NOCACHE
 
