@@ -89,9 +89,9 @@ void* tree_lpm(struct tree_head *tab, void *ntry) {
 void tree_cacheNode(struct tree_node** res, struct tree_node* cur, unsigned char* lst, int beg, int end) {
     if (cur == NULL) return;
     if (cur->value != NULL) lst = cur->value;
-    cur->result = lst;
-    for (int i = beg; i < end; i++) res[i] = cur;
     int mid = end - beg;
+    if (mid < 256) cur->result = lst;
+    for (int i = beg; i < end; i++) res[i] = cur;
     if (mid <= 1) return;
     mid >>= 1;
     mid += beg;
@@ -139,26 +139,22 @@ void tree_add(struct tree_head *tab, void *ntry) {
             tree_cache(bas);
             bas = cur;
         }
-        if (tree_bit(p) != 0) {
-            if (cur->one != NULL) {
-                cur = cur->one;
-                continue;
-            }
-            struct tree_node* nxt = malloc(sizeof(struct tree_node));
-            if (nxt == NULL) err("error allocating memory");
-            memset(nxt, 0, sizeof(struct tree_node));
-            cur->one = nxt;
-            cur = nxt;
-        } else {
-            if (cur->zero != NULL) {
-                cur = cur->zero;
-                continue;
-            }
+        if (cur->zero == NULL) {
             struct tree_node* nxt = malloc(sizeof(struct tree_node));
             if (nxt == NULL) err("error allocating memory");
             memset(nxt, 0, sizeof(struct tree_node));
             cur->zero = nxt;
-            cur = nxt;
+        }
+        if (cur->one == NULL) {
+            struct tree_node* nxt = malloc(sizeof(struct tree_node));
+            if (nxt == NULL) err("error allocating memory");
+            memset(nxt, 0, sizeof(struct tree_node));
+            cur->one = nxt;
+        }
+        if (tree_bit(p) != 0) {
+            cur = cur->one;
+        } else {
+            cur = cur->zero;
         }
     }
 }

@@ -38,15 +38,15 @@ public class tabGepV2<T extends addrType> {
                 cache(bas);
                 bas = cur;
             }
+            if (cur.zero == null) {
+                cur.zero = new tabGepV2nod<T>();
+            }
+            if (cur.one == null) {
+                cur.one = new tabGepV2nod<T>();
+            }
             if (val.prefix.network.bitValue(p)) {
-                if (cur.one == null) {
-                    cur.one = new tabGepV2nod<T>();
-                }
                 cur = cur.one;
             } else {
-                if (cur.zero == null) {
-                    cur.zero = new tabGepV2nod<T>();
-                }
                 cur = cur.zero;
             }
         }
@@ -94,11 +94,13 @@ public class tabGepV2<T extends addrType> {
         if (cur.value != null) {
             lst = cur.value;
         }
-        cur.result = lst;
+        int mid = end - beg;
+        if (mid < 256) {
+            cur.result = lst;
+        }
         for (int i = beg; i < end; i++) {
             res[i] = cur;
         }
-        int mid = end - beg;
         if (mid <= 1) {
             return;
         }
