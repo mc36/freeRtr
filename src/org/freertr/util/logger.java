@@ -19,7 +19,6 @@ import org.freertr.clnt.clntIrc;
 import org.freertr.clnt.clntProxy;
 import org.freertr.clnt.clntSyslog;
 import org.freertr.pipe.pipeLine;
-import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;

@@ -757,7 +757,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.forwarder = version.getHWfwd1liner().replaceAll(" ", "_");
         dat.middleware = version.getVMname().replaceAll(" ", "_");
         dat.kernel = version.getKernelName().replaceAll(" ", "_");
-        dat.kernup = pipeShell.getKernelUptime().replaceAll(" ", "_");
+        dat.kernup = bits.time2str(cfgAll.timeZoneName, pipeShell.getKernelUptime() + cfgAll.timeServerOffset, 3).replaceAll(" ", "_");
         if (segrouLab != null) {
             dat.segrouMax = segrouMax;
             dat.segrouBeg = segrouLab[0].label;

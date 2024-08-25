@@ -40,14 +40,21 @@ public class pipeShell {
      *
      * @return uptime
      */
-    public static String getKernelUptime() {
-        long tim;
+    public static long getKernelUptime() {
         try {
-            tim = ProcessHandle.of(1).get().info().startInstant().get().getEpochSecond();
+            return 1000 * ProcessHandle.of(1).get().info().startInstant().get().getEpochSecond();
         } catch (Exception e) {
-            return "n/a";
+            return 0;
         }
-        return bits.time2str(cfgAll.timeZoneName, tim * 1000, 3);
+    }
+
+    /**
+     * get my process id
+     *
+     * @return pid
+     */
+    public static long myProcessNum() {
+        return ProcessHandle.current().pid();
     }
 
     /**

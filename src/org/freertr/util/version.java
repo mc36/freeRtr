@@ -773,6 +773,7 @@ public class version {
         sa.add("hwid: " + cfgInit.hwIdNum);
         sa.add("hwsn: " + cfgInit.hwSnNum);
         sa.add("hwfw: " + getHWfwd1liner());
+        sa.add("pid: " + pipeShell.myProcessNum());
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.started + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.started));
         sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
         sa.add("rwpath: " + getRWpath());
@@ -780,8 +781,9 @@ public class version {
         sa.add("swcfg: " + cfgInit.cfgFileSw);
         sa.add("cpu: " + getCPUname());
         sa.add("mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
-        sa.add("host: " + getKernelName());
-        sa.add("hostboot: " + pipeShell.getKernelUptime());
+        sa.add("hostos: " + getKernelName());
+        long l = pipeShell.getKernelUptime();
+        sa.add("hostup: since " + bits.time2str(cfgAll.timeZoneName, l + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(l));
         sa.add("java: " + getJavaVer("java") + " @ " + getProp("java.home"));
         sa.add("jspec: " + getJavaVer("java.specification"));
         sa.add("vm: " + getVMname());
