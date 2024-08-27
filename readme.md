@@ -10,7 +10,7 @@ you can find the same source tree at various locations, normally all should be t
 * http://src.freertr.org/src/
 * http://sources.freertr.org/
 * http://codeberg.org/mc36/freeRtr
-* http://bitbucket.org/mc361/freertr
+* http://bitbucket.org/mc361/freeRtr
 * http://gitlab.com/mc36mc/freeRtr
 * http://github.com/mc36/freeRtr
 
@@ -23,6 +23,10 @@ part of the subdirectories under misc/ are somewhere else too:
 you'll need an up to date debian sid with a jdk installed
 
 for natives, you'll need clang, dpdk, libpcap, libbpf, libxdp, liburing, libmnl and libcrypto
+
+for p4lang, you'll need p4c and bmv2
+
+for p4bf, you'll need the tofino sdk and a switch with the asic
 
 ## directory structure
 
