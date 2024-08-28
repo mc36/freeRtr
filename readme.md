@@ -24,6 +24,8 @@ you'll need an up to date debian sid with a jdk installed
 
 for natives, you'll need clang, dpdk, libpcap, libbpf, libxdp, liburing, libmnl and libcrypto
 
+for p4sai, you'll need libsai
+
 for p4lang, you'll need p4c and bmv2
 
 for p4bf, you'll need the tofino sdk and a switch with the asic
@@ -89,6 +91,18 @@ as a first start to get your routers up, do the following:
 * telnet 127.0.0.1 20002
 * telnet 127.0.0.1 20003
 * telnet 127.0.0.1 20004
+
+to have a topology with a dataplane, do the following:
+* cd src
+* ./c.sh
+* ./cn.sh
+* ./twd.sh p4lang-rout001
+* telnet 127.0.0.1 20001
+* telnet 127.0.0.1 20003
+* telnet 127.0.0.1 20004
+* telnet 127.0.0.1 20005
+* telnet 127.0.0.1 20006
+
 
 ## contributing
 
