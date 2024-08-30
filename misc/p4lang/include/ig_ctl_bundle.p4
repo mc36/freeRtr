@@ -35,7 +35,7 @@ control IngressControlBundle(inout headers hdr,
 
     action act_set_recir(SubIntId_t port) {
         ig_intr_md.egress_spec = (PortId_t)port;
-        ig_md.vlan_size = 2;
+        ig_md.vlan_size = 4;
         ig_md.need_recir = 2;
         hdr.cpu.setValid();
         hdr.cpu.port = port;

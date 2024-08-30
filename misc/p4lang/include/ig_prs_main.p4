@@ -45,7 +45,7 @@ CPU_PORT:
     }
 
     state prs_cpu {
-        ig_md.vlan_size = 2;
+        ig_md.vlan_size = 4;
         pkt.extract(hdr.cpu);
         ig_md.ingress_id = hdr.cpu.port;
         transition prs_ethernet;
