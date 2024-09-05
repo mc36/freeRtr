@@ -132,6 +132,8 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
         l.add(null, "3 .         pcap                    use pcapint");
         l.add(null, "3 .         raw                     use rawint");
         l.add(null, "3 .         map                     use mapint");
+        l.add(null, "3 .         xsk                     use xskint");
+        l.add(null, "3 .         urng                    use urngint");
         l.add(null, "2 3       local                     name of local interface");
         l.add(null, "3 .         <str>                   name");
         l.add(null, "2 3       connect                   name of connected interface");
