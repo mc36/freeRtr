@@ -215,10 +215,15 @@ public class userHwext {
             orig.error("ifc " + i + ": " + ifr.get(i) + " " + ifl.get(i) + " " + ifp.get(i) + " " + mac.get(i));
         }
         List<String> vrf = new ArrayList<String>();
+        List<String> brd = new ArrayList<String>();
         for (o = 0; o < swc.size(); o++) {
             String a = swc.get(o);
             if (a.startsWith("vrf definition ")) {
                 vrf.add(a.substring(15, a.length()));
+                continue;
+            }
+            if (a.startsWith("bridge ")) {
+                brd.add(a.substring(7, a.length()));
                 continue;
             }
             for (i = ifl.size() - 1; i >= 0; i--) {
@@ -226,13 +231,16 @@ public class userHwext {
             }
             swc.set(o, a);
         }
-        orig.error("found " + vrf.size() + " vrfs");
-        if (vrf.size() < 1) {
-            orig.error("no vrfs found");
+        orig.error("found " + vrf.size() + " vrfs and " + brd.size() + " bridges");
+        if ((vrf.size() + brd.size()) < 1) {
+            orig.error("nothing found");
             return;
         }
         for (i = 0; i < vrf.size(); i++) {
             orig.error("vrf " + i + ": " + vrf.get(i));
+        }
+        for (i = 0; i < brd.size(); i++) {
+            orig.error("bridge " + i + ": " + brd.get(i));
         }
         String dpv = null;
         switch (dpt) {
@@ -286,7 +294,9 @@ public class userHwext {
                 }
                 hwc.add("tcp2vrf " + packOpenflow.port + " " + dpv + " " + packOpenflow.port + " 127.0.0.1");
                 swc.add("server openflow " + dpv);
-                swc.add(cmds.tabulator + "export-vrf " + vrf.get(0));
+                if (vrf.size() > 0) {
+                    swc.add(cmds.tabulator + "export-vrf " + vrf.get(0));
+                }
                 for (i = 0; i < ifr.size(); i++) {
                     swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + (i + 1));
                 }
@@ -311,6 +321,9 @@ public class userHwext {
                 swc.add("server p4lang " + dpv);
                 for (i = 0; i < vrf.size(); i++) {
                     swc.add(cmds.tabulator + "export-vrf " + vrf.get(i));
+                }
+                for (i = 0; i < brd.size(); i++) {
+                    swc.add(cmds.tabulator + "export-bridge " + brd.get(i));
                 }
                 for (i = 0; i < ifr.size(); i++) {
                     swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + i);
