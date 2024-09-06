@@ -69,6 +69,11 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public String hostname;
 
     /**
+     * domain name
+     */
+    public String domain;
+
+    /**
      * software
      */
     public String software;
@@ -238,6 +243,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
         }
         if ((typ & 0x2) != 0) {
             s += " hostname=" + hostname;
+            s += " domain=" + domain;
         }
         if ((typ & 0x40) != 0) {
             s += " segroubeg=" + segrouBeg;
@@ -403,6 +409,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
     public boolean fromString(cmds cmd) {
         rtrId = new addrIPv4();
         hostname = "";
+        domain = "";
         software = "";
         hardware = "";
         forwarder = "";
@@ -492,6 +499,10 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
             }
             if (a.equals("hostname")) {
                 hostname = s;
+                continue;
+            }
+            if (a.equals("domain")) {
+                domain = s;
                 continue;
             }
             if (a.equals("software")) {

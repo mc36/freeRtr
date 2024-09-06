@@ -752,6 +752,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         dat.topoSum = lastSpf.listTopoHsh();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
+        dat.domain = (cfgAll.domainName + "").replaceAll(" ", "_");
         dat.software = version.usrAgnt.replaceAll(" ", "_");
         dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo()).replaceAll(" ", "_");
         dat.forwarder = version.getHWfwd1liner().replaceAll(" ", "_");
