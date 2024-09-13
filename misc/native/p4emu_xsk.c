@@ -239,6 +239,8 @@ int main(int argc, char **argv) {
         ifaceId[o] = o;
     }
 
+    setgid(1);
+    setuid(1);
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
     pthread_t threadStat;

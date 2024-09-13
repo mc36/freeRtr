@@ -180,6 +180,8 @@ help :
     if (tuntap_up(ifaceHnd) < 0) err("unable to bring up");
     printf("interface %s created.\n", tuntap_get_ifname(ifaceHnd));
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     byteRx = 0;

@@ -228,6 +228,8 @@ help :
     ifacePfd.fd = xsk_socket__fd(ifaceXsk);
     ifacePfd.events = POLLIN | POLLERR;
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     byteRx = 0;

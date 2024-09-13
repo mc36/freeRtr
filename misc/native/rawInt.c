@@ -231,6 +231,8 @@ help :
     int val = 1;
     if (setsockopt(ifaceSock, SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val)) < 0) err("failed to set auxdata");
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     byteRx = 0;

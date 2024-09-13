@@ -548,6 +548,8 @@ int main(int argc, char **argv) {
         if (ret != 0) printf("error setting promiscuous mode\n");
     }
 
+    setgid(1);
+    setuid(1);
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
     pthread_t threadStat;

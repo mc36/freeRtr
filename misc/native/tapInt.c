@@ -212,6 +212,8 @@ help :
         doCmd(buf);
     }
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     byteRx = 0;

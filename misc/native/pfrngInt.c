@@ -181,6 +181,8 @@ help :
     if (pfring_set_poll_watermark(ifacePfring, 1) != 0) err("unable to set watermark");
     if (pfring_enable_ring(ifacePfring) != 0) err("unable to enable interface");
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     byteRx = 0;

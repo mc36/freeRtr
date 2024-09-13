@@ -176,6 +176,8 @@ help :
     if (pcap_activate(iface2pcap) < 0) err("activation failed");
     if (pcap_setdirection(iface2pcap, PCAP_D_IN) < 0) err("unable to set direction");
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     byteRx = 0;

@@ -314,6 +314,8 @@ help :
     printf("opening tty %s.\n", ttyName);
     if ((addrTty = open(ttyName, O_RDWR)) < 0) err("unable to open file");
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     makeFcsTab();

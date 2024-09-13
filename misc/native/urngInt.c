@@ -296,6 +296,8 @@ help :
         prepReceive(sqe, i);
     }
 
+    setgid(1);
+    setuid(1);
     printf("serving others\n");
 
     byteRx = 0;

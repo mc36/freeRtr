@@ -64,6 +64,8 @@ public class userImage {
 
     private tabGen<userImagePkg> allPkgs = new tabGen<userImagePkg>();
 
+    private tabGen<userImagePrv> allPrvs = new tabGen<userImagePrv>();
+
     private tabGen<userImagePkg> missing = new tabGen<userImagePkg>();
 
     private tabGen<userImagePkg> selected = new tabGen<userImagePkg>();
@@ -202,6 +204,17 @@ public class userImage {
                 pkg = new userImagePkg(b);
                 continue;
             }
+            if (a.equals("provides")) {
+                List<String> r = new ArrayList<String>();
+                userImagePkg.listPackages(b, r);
+                for (i = 0; i < r.size(); i++) {
+                    a = r.get(i);
+                    userImagePrv p = new userImagePrv(a);
+                    p.who = pkg;
+                    allPrvs.put(p);
+                }
+                continue;
+            }
             if (a.equals("depends")) {
                 pkg.addDepends(b);
                 continue;
@@ -277,8 +290,13 @@ public class userImage {
         userImagePkg pkt = new userImagePkg(nam);
         pkt = allPkgs.find(pkt);
         if (pkt == null) {
-            missing.add(new userImagePkg(nam));
-            return false;
+            userImagePrv prv = new userImagePrv(nam);
+            prv = allPrvs.find(prv);
+            if (prv == null) {
+                missing.add(new userImagePkg(nam));
+                return false;
+            }
+            pkt = prv.who;
         }
         pkt.added = by;
         if (matchReg(forbidden, nam) != null) {
@@ -697,6 +715,22 @@ class userImageCat implements Comparator<userImageCat> {
 
 }
 
+class userImagePrv implements Comparator<userImagePrv> {
+
+    public final String name;
+
+    public userImagePkg who;
+
+    public userImagePrv(String n) {
+        name = n.trim();
+    }
+
+    public int compare(userImagePrv o1, userImagePrv o2) {
+        return o1.name.compareTo(o2.name);
+    }
+
+}
+
 class userImagePkg implements Comparator<userImagePkg> {
 
     public final String name;
@@ -735,7 +769,7 @@ class userImagePkg implements Comparator<userImagePkg> {
         return s;
     }
 
-    public void addDepends(String s) {
+    public static void listPackages(String s, List<String> res) {
         s += ",";
         for (;;) {
             int i = s.indexOf(",");
@@ -752,8 +786,12 @@ class userImagePkg implements Comparator<userImagePkg> {
             if (i >= 0) {
                 a = a.substring(0, i);
             }
-            depend.add(a.trim());
+            res.add(a.trim());
         }
+    }
+
+    public void addDepends(String s) {
+        listPackages(s, depend);
     }
 
 }
