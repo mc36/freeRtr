@@ -1,0 +1,8 @@
+arch armel
+unam armv7l
+qemu armel
+kern rpi
+grub efi-arm-bin
+boot arm-efi
+uefi boota32.efi
+image ../binImg/rtr-arm32
