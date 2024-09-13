@@ -1,0 +1,9 @@
+arch alpha
+unam alpha
+qemu alpha
+kern alpha
+grub alpha-bin
+boot alpha-ieee1275
+uefi bootieee.efi
+mirr http://deb.debian.org/debian-ports/
+image ../binImg/rtr-alpha

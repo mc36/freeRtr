@@ -1,0 +1,9 @@
+arch powerpc
+unam ppc
+qemu ppc
+kern powerpc
+grub ieee1275-bin
+boot powerpc-ieee1275
+uefi bootieee.efi
+mirr http://deb.debian.org/debian-ports/
+image ../binImg/rtr-ppc32
