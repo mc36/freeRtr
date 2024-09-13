@@ -26,6 +26,7 @@ void err(char*buf) {
 
 void setupOneTerm(int fd) {
     struct termios tmp_tc;
+    memset(&tmp_tc, 0, sizeof (tmp_tc));
     tcgetattr(fd, &tmp_tc);
     tmp_tc.c_lflag &= ~ECHO;
     tmp_tc.c_oflag &= ~ONLCR;
@@ -46,7 +47,6 @@ void setupOneTerm(int fd) {
     tmp_tc.c_cflag &= ~(CSIZE | PARENB);
     tmp_tc.c_cflag |= CS8;
     tmp_tc.c_oflag &= ~OPOST;
-    memset(&tmp_tc, 0, sizeof (tmp_tc));
     tcsetattr(fd, TCSANOW, &tmp_tc);
     tcflush(fd, TCIFLUSH);
 }
