@@ -9,6 +9,7 @@ catalog-sum
 select-dis debconf.*
 select-dis adduser.*
 select-dis passwd.*
+select-dis opensysuser.*
 select-dis util-linux.*
 select-dis dpkg.*
 select-dis perl.*
