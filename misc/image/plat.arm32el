@@ -1,5 +1,5 @@
 arch armel
-unam armv7l
+unam armv5tel
 qemu armel
 kern rpi
 grub efi-arm-bin
