@@ -316,21 +316,6 @@ public class userImage {
     }
 
     /**
-     * install one file
-     *
-     * @param pkg package to download
-     * @return true on error, false on success
-     */
-    private boolean instOneFile(userImagePkg pkg) {
-        String name = getPackageName(pkg);
-        if (pkg.done) {
-            return false;
-        }
-        pkg.done = true;
-        return execCmd("dpkg-deb --fsys-tarfile " + name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
-    }
-
-    /**
      * download one image
      *
      * @param pkg package to download
@@ -365,13 +350,20 @@ public class userImage {
     }
 
     private boolean instAllFiles() {
+        String a = "";
         for (int i = 0; i < selected.size(); i++) {
             userImagePkg pkg = selected.get(i);
-            if (instOneFile(pkg)) {
-                return true;
+            if (pkg.done) {
+                continue;
             }
+            pkg.done = true;
+            a += " " + pkg.name;
+            getPackageName(pkg);
         }
-        return false;
+        if (a.length() < 1) {
+            return false;
+        }
+        return execCmd("for a in" + a + " ; do dpkg-deb --fsys-tarfile " + downDir + "/" + arch + "-$a.deb | tar -x --keep-directory-symlink -C " + tempDir + "/ ; done") != 0;
     }
 
     private boolean doIncludeAll(cmds c) {
