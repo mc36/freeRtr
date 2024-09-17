@@ -85,7 +85,7 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
 
 
 void err(char*buf) {
-    rte_panic("%s\n", buf);
+    printf("%s\n", buf);
     _exit(1);
 }
 
