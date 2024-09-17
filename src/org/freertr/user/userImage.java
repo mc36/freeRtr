@@ -363,7 +363,7 @@ public class userImage {
         if (a.length() < 1) {
             return false;
         }
-        return execCmd("for a in" + a + " ; do dpkg-deb --fsys-tarfile " + downDir + "/" + arch + "-$a.deb | tar -x --keep-directory-symlink -C " + tempDir + "/ ; done") != 0;
+        return execCmd("for a in" + a + " ; do echo $a ; dpkg-deb --fsys-tarfile " + downDir + "/" + arch + "-$a.deb | tar -x --keep-directory-symlink -C " + tempDir + "/ ; done") != 0;
     }
 
     private boolean doIncludeAll(cmds c) {

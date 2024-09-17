@@ -1,4 +1,4 @@
-exec mkdir -m 0755 %tmp%/rtr
+exec mkdir %tmp%/rtr
 exec cp rtr.ver %tmp%/rtr/
 exec cd %tmp%/rtr/;tar xfz ../../binImg/rtr-%unam%.tgz
 
