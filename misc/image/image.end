@@ -12,19 +12,7 @@ del-alw %tmp%/usr/lib/%find%/gconv
 find-clear
 find-file %tmp%/usr/lib/modules/ .*-%kern%.*
 find-result
-del-alw %tmp%/usr/lib/modules/%find%/kernel/sound
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/accessibility/speakup
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/bluetooth
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/firewire
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/gpu
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/hid
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/iio
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/infiniband
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/media
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/md
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/nfc
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/net/wireless
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/soundwire
+del-alw %tmp%/usr/lib/modules/%find%/kernel/sound %tmp%/usr/lib/modules/%find%/kernel/drivers/accessibility %tmp%/usr/lib/modules/%find%/kernel/drivers/bluetooth %tmp%/usr/lib/modules/%find%/kernel/drivers/firewire %tmp%/usr/lib/modules/%find%/kernel/drivers/gpu %tmp%/usr/lib/modules/%find%/kernel/drivers/hid %tmp%/usr/lib/modules/%find%/kernel/drivers/iio %tmp%/usr/lib/modules/%find%/kernel/drivers/infiniband %tmp%/usr/lib/modules/%find%/kernel/drivers/media %tmp%/usr/lib/modules/%find%/kernel/drivers/md %tmp%/usr/lib/modules/%find%/kernel/drivers/nfc %tmp%/usr/lib/modules/%find%/kernel/drivers/net/wireless %tmp%/usr/lib/modules/%find%/kernel/drivers/soundwire
 
 exec mv %tmp%/usr/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
 exec mv %tmp%/usr/lib/modules/%find%/kernel/net/core %tmp%/tmp/

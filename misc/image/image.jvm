@@ -40,12 +40,7 @@ package-inst
 find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
 exec /usr/lib/jvm/`echo %find% | sed 's\-%arch%\-\g'`*/bin/jlink --module-path %tmp%/usr/lib/jvm/%find%/jmods --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base,java.management
 exec ln -s /java/bin/java %tmp%/bin/java
-del-alw %tmp%/usr/lib/jvm
-del-alw %tmp%/etc/java-*
-del-alw %tmp%/java/docs
-del-alw %tmp%/java/demo
-del-alw %tmp%/java/man
-del-alw %tmp%/java/legal
+del-alw %tmp%/usr/lib/jvm %tmp%/etc/java-* %tmp%/java/docs %tmp%/java/demo %tmp%/java/man %tmp%/java/legal
 
 include ../misc/image/image.end
 
