@@ -133,6 +133,7 @@ public class renamer {
         s = s.replaceAll("\\.", " ");
         s = s.replaceAll("'", "");
         s = s.replaceAll("`", "");
+        s = s.replaceAll("\"", "");
         s = s.replaceAll("  ", " ").trim();
         s = s.replaceAll("- \\.", "- ").trim();
         String a = "";
