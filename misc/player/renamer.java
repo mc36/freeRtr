@@ -85,7 +85,6 @@ public class renamer {
                 failed++;
             }
         }
-        playerUtil.put(l1.length + " files, " + tried + " need renaming, " + failed + " failed.");
     }
 
     /**
@@ -129,6 +128,11 @@ public class renamer {
         s = s.replaceAll("Ü", "u");
         s = s.replaceAll("_", " ");
         s = s.replaceAll("–", "-");
+        s = s.replaceAll("&", " ");
+        s = s.replaceAll(",", " ");
+        s = s.replaceAll("\\.", " ");
+        s = s.replaceAll("'", "");
+        s = s.replaceAll("`", "");
         s = s.replaceAll("  ", " ").trim();
         s = s.replaceAll("- \\.", "- ").trim();
         String a = "";
