@@ -197,7 +197,7 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
             return;
         }
         pipe.setTime(flushTimer);
-        if (pipe.wait4ready(queryTimer)) {
+        if (pipe.wait4ready(flushTimer)) {
             return;
         }
         rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), pipe, cntr);
