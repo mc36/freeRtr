@@ -1,8 +1,18 @@
 # freeRouter source tree
 
-freeRouter is a router stack which can export the computed tables to external dataplanes
+freeRouter is a free, open source router os process.
+it speaks routing protocols, and (re)encapsulates packets on interfaces.
+it can export the computed forwarding tables to external dataplanes.
 
-yet another routing/forwarding network stack made by highly skilled network/electrical/engineers
+summary of features:
+* forwarding: ipv4, ipv6, ipx, mpls, nsh, layer2, irb, atom, eompls, vpls, evpn
+* routing protocols: ospf, isis, bgp, rip, eigrp, rift, babel, olsr, pim, msdp
+* lsp support: p2p, p2mp, mp2mp built by bgp, ldp, rsvp-te, sr, sr-te, bier, polka
+* crypto: macsec, ipsec, ikev1, ikev2, tls, dtls, ssh, openvpn, wireguard, sgt
+* tunnel: gre, ipip, l2tp, pptp, lisp, geneve, nvgre, vxlan, etherip, amt
+* encapsulation: ethernet, vlan, ppp, framerelay, pwether, virtppp, hairpin
+* misc: acl, qos, nat, pbr, srv6, vrrp, hsrp, inspect, 6to4, rpl, tunnel, vpdn, pcep
+
 
 more about the project at [www.freertr.org](http://www.freertr.org/)
 
