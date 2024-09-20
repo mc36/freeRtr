@@ -127,15 +127,34 @@ public class renamer {
         s = s.replaceAll("ü", "u");
         s = s.replaceAll("Ü", "u");
         s = s.replaceAll("_", " ");
+        s = s.replaceAll("~", " ");
         s = s.replaceAll("–", "-");
         s = s.replaceAll("&", " ");
+        s = s.replaceAll("@", " ");
+        s = s.replaceAll("#", " ");
+        s = s.replaceAll("\\$", " ");
+        s = s.replaceAll("%", " ");
+        s = s.replaceAll("\\^", " ");
+        s = s.replaceAll("\\*", " ");
+        s = s.replaceAll("\\(", " ");
+        s = s.replaceAll("\\)", " ");
+        s = s.replaceAll("\\[", " ");
+        s = s.replaceAll("\\]", " ");
+        s = s.replaceAll("\\\\", " ");
+        s = s.replaceAll("<", " ");
+        s = s.replaceAll(">", " ");
+        s = s.replaceAll("/", " ");
+        s = s.replaceAll("!", " ");
+        s = s.replaceAll("\\?", " ");
         s = s.replaceAll(",", " ");
+        s = s.replaceAll(":", " ");
+        s = s.replaceAll(";", " ");
         s = s.replaceAll("\\.", " ");
         s = s.replaceAll("'", "");
         s = s.replaceAll("`", "");
         s = s.replaceAll("\"", "");
-        s = s.replaceAll("  ", " ").trim();
-        s = s.replaceAll("- \\.", "- ").trim();
+        s = s.replaceAll("  ", " ");
+        s = s.trim();
         String a = "";
         for (;;) {
             if (s.length() < 1) {
