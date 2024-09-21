@@ -1,8 +1,6 @@
 package org.freertr.clnt;
 
 import org.freertr.addr.addrIP;
-import org.freertr.cfg.cfgAll;
-import org.freertr.cfg.cfgProxy;
 import org.freertr.enc.encJson;
 import org.freertr.enc.encUrl;
 import org.freertr.pack.packHolder;
@@ -114,9 +112,9 @@ public class clntRis {
         for (int i = 0; i < b.length; i++) {
             a += bits.toHexB(b[i]);
         }
-        pipe.linePut("");
-        pipe.linePut("event: ris_message");
-        pipe.linePut("data: {\"timestamp\":" + (pck.INTtime / 1000) + ",\"peer\":\"" + pck.IPsrc + "\",\"peer_asn\":\"" + pck.INTiface + "\",\"host\":\"" + peer + "\",\"type\":\"UPDATE\",raw\":\"" + a + "\"}");
+        a = "\r\n" + "event: ris_message\r\n" + "data: {\"timestamp\":" + (pck.INTtime / 1000) + ",\"peer\":\"" + pck.IPsrc + "\",\"peer_asn\":\"" + pck.INTiface + "\",\"host\":\"" + peer + "\",\"type\":\"UPDATE\",raw\":\"" + a + "\"}\r\n";
+        b = a.getBytes();
+        pipe.nonBlockPut(b, 0, b.length);
     }
 
 }
