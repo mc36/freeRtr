@@ -44,7 +44,7 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * html 401 transitive
      */
-    public final static String htmlHead = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n";
+    public final static String htmlHead = "<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />";
 
     /**
      * list of hosts
