@@ -196,92 +196,44 @@ class servHoneyPotConn implements Runnable {
         new Thread(this).start();
     }
 
-    /**
-     * do minimal http exchange
-     */
-    public void doHttpRead() {
-        if (!lower.tinyHttp) {
-            return;
-        }
-        if (pipe == null) {
-            return;
-        }
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        String s = pipe.lineGet(1);
-        cmds cmd = new cmds("api", s);
-        cmd.word();
-        encUrl gotUrl = new encUrl();
-        gotUrl.fromString("tcp://" + cmd.word());
-        ipi.doHttpUrl(gotUrl.toPathName());
-        for (;;) {
-            s = pipe.lineGet(1);
-            if (s.length() < 1) {
-                break;
-            }
-        }
-    }
-
-    /**
-     * do minimal http exchange
-     */
-    public void doHttpWrite() {
-        if (!lower.tinyHttp) {
-            return;
-        }
-        if (pipe == null) {
-            return;
-        }
-        pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.lineRx = pipeSide.modTyp.modeCRorLF;
-        pipe.linePut("HTTP/1.1 200 ok");
-        pipe.linePut("Server: " + version.usrAgnt);
-        pipe.linePut("Content-Type: " + ipi.getContentType());
-        pipe.linePut("Connection: Close");
-        pipe.linePut("");
-        String a = ipi.getHtmlLines(true);
-        if (a == null) {
-            return;
-        }
-        pipe.linePut(a);
-    }
-
-    /**
-     * do minimal http exchange
-     */
-    public void doHttpFinish() {
-        if (!lower.tinyHttp) {
-            return;
-        }
-        if (pipe == null) {
-            return;
-        }
-        String a = ipi.getHtmlLines(false);
-        if (a == null) {
-            return;
-        }
-        pipe.linePut(a);
-    }
-
-    /**
-     * print out results
-     */
-    public void putResult() {
-        if (pipe == null) {
-            return;
-        }
-        ipi.putResult(pipe);
-    }
-
     public void run() {
         try {
+            pipe.lineTx = pipeSide.modTyp.modeCRLF;
+            pipe.lineRx = pipeSide.modTyp.modeCRorLF;
             pipe.setReady();
-            doHttpRead();
+            if (!lower.tinyHttp) {
+                ipi.doWork(false);
+                ipi.need2drop();
+                ipi.putResult(pipe);
+                pipe.setClose();
+                return;
+            }
+            String a = pipe.lineGet(1);
+            cmds cmd = new cmds("api", a);
+            cmd.word();
+            encUrl gotUrl = new encUrl();
+            gotUrl.fromString("tcp://" + cmd.word());
+            ipi.doHttpUrl(gotUrl.toPathName());
+            for (;;) {
+                a = pipe.lineGet(1);
+                if (a.length() < 1) {
+                    break;
+                }
+            }
             ipi.doWork(false);
             ipi.need2drop();
-            doHttpWrite();
-            putResult();
-            doHttpFinish();
+            a = ipi.getContentType();
+            List<String> r = ipi.getRouteHtml();
+            byte[] b = secInfoUtl.getRouteAscii(r);
+            pipe.lineTx = pipeSide.modTyp.modeCRLF;
+            pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+            pipe.linePut("HTTP/1.1 200 ok");
+            pipe.linePut("Server: " + version.usrAgnt);
+            pipe.linePut("Content-Length: " + b.length);
+            pipe.linePut("Content-Type: " + a);
+            pipe.linePut("Connection: Close");
+            pipe.linePut("");
+            pipe.morePut(b, 0, b.length);
             pipe.setClose();
         } catch (Exception e) {
             logger.traceback(e, "" + remote);

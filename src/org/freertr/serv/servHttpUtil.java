@@ -1325,16 +1325,8 @@ public class servHttpUtil {
             wrk.doHttpUrl(cmd.getRemaining());
             wrk.doWork(false);
             wrk.need2drop();
-            List<String> r = wrk.getRouteInfos();
-            String a = wrk.getHtmlLines(true);
-            if (a != null) {
-                r.add(0, a);
-            }
-            a = wrk.getHtmlLines(false);
-            if (a != null) {
-                r.add(a);
-            }
-            a = wrk.getContentType();
+            List<String> r = wrk.getRouteHtml();
+            String a = wrk.getContentType();
             byte[] b = secInfoUtl.getRouteAscii(r);
             cn.sendTextHeader("200 ok", a, b);
             return false;

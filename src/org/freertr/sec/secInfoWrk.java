@@ -9,7 +9,6 @@ import org.freertr.cfg.cfgRtr;
 import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntPmtud;
 import org.freertr.enc.enc7bit;
-import org.freertr.enc.encUrl;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipRtr;
 import org.freertr.pack.packDnsRec;
@@ -24,7 +23,6 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * generic information worker
@@ -504,6 +502,24 @@ public class secInfoWrk implements Runnable {
         }
         res.addAll(secInfoUtl.getRouteDetails(fwd, ntry, format, hack));
         return res;
+    }
+
+    /**
+     * get route details
+     *
+     * @return route details or empty list
+     */
+    public List<String> getRouteHtml() {
+        List<String> r = getRouteInfos();
+        String a = getHtmlLines(true);
+        if (a != null) {
+            r.add(0, a);
+        }
+        a = getHtmlLines(false);
+        if (a != null) {
+            r.add(a);
+        }
+        return r;
     }
 
 }
