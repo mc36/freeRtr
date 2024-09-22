@@ -232,6 +232,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 num = rte_ring_count(tx_ring[port]);
                 if (num > burst_size) num = burst_size;
                 num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
+                if (num < 1) continue;
                 pkts += num;
                 done = rte_eth_tx_burst(port, 0, mbufs, num);
                 for (; done < num; done++) rte_pktmbuf_free(mbufs[done]);
@@ -278,6 +279,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 num = rte_ring_count(tx_ring[port]);
                 if (num > burst_size) num = burst_size;
                 num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
+                if (num < 1) continue;
                 pkts += num;
                 done = rte_eth_tx_burst(port, 0, mbufs, num);
                 for (; done < num; done++) rte_pktmbuf_free(mbufs[done]);
