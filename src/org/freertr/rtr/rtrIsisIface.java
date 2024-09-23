@@ -1216,6 +1216,9 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
         pck.getSkip(2);
         i = pck.getByte(0); // protocol discriminator
+        if (i == 0x82) { // esis hello
+            return;
+        }
         if (i != rtrIsis.protDist) {
             logger.info("got bad protocol from " + pck.ETHsrc);
             iface.cntr.drop(pck, counter.reasons.badID);
