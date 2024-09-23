@@ -777,7 +777,7 @@ int doOneCommand(unsigned char* buf) {
         vlnk.vlan = vlnr.vlan = atoi(arg[6]);
         vlnr.vlan2 = atoi(arg[5]);
         vlnr.port = atoi(arg[3]);
-        vlnk.port = atoi(arg[4]);
+        vlnr.port2 = vlnk.port = atoi(arg[4]);
         if (del == 0) {
             if (bpf_map_delete_elem(vlan_in_fd, &vlnk) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(vlan_out_fd, &i) != 0) warn("error removing entry");

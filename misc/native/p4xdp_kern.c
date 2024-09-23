@@ -1164,16 +1164,24 @@ subif_tx:
         }
         struct vlan_res* vlnr = bpf_map_lookup_elem(&vlan_out, &prt);
         if (vlnr != NULL) {
-            bufP -= sizeof(macaddr);
-            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr);
-            revalidatePacket(bufP + 2);
             hash ^= vlnr->vlan;
             bufP -= 2;
             put16msb(bufD, bufP, vlnr->vlan);
             bufP -= 2;
             put16msb(bufD, bufP, ETHERTYPE_VLAN);
             if (vlnr->vlan2 > 0) {
+                ethtyp = ETHERTYPE_VLAN;
+                prt = vlnr->port2;
+                vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
+                if (vrfp != NULL) {
+                    vrfp->packTx++;
+                    vrfp->byteTx += bufE - bufD;
+                    putSgt();
+                }
+                bufP -= sizeof(macaddr);
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = sizeof(macaddr);
+                revalidatePacket(bufP + 2);
                 hash ^= vlnr->vlan2;
                 bufP -= 2;
                 put16msb(bufD, bufP, vlnr->vlan2);
@@ -1184,6 +1192,12 @@ subif_tx:
             vlnr->pack++;
             vlnr->byte += bufE - bufD;
             ethtyp = ETHERTYPE_VLAN;
+            vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
+            if (vrfp != NULL) {
+                vrfp->packTx++;
+                vrfp->byteTx += bufE - bufD;
+                putSgt();
+            }
         }
         bufP -= sizeof(macaddr);
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;

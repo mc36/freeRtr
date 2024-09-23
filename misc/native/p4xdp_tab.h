@@ -93,6 +93,7 @@ struct vlan_key {
 
 struct vlan_res {
     __u32 port;
+    __u32 port2;
     __u32 vlan;
     __u32 vlan2;
     __u64 pack;

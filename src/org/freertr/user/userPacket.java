@@ -69,6 +69,7 @@ import org.freertr.pack.packXotPad;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.prt.prtArping;
 import org.freertr.rtr.rtrBgpDump;
+import org.freertr.serv.servOpenflow;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabHop;
 import org.freertr.tab.tabIntMatcher;
@@ -560,13 +561,52 @@ public class userPacket {
             cmd.error("result=" + bits.percent(recv, sent) + "%, recv/sent/lost=" + recv + "/" + sent + "/" + (sent - recv) + ", took " + (bits.getTime() - timBeg));
             return null;
         }
+        if (a.equals("openflow")) {
+            servOpenflow srv = cfgAll.srvrFind(new servOpenflow(), cfgAll.dmnOpenflow, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            int cnt = bits.str2num(cmd.word());
+            int ifc = bits.str2num(cmd.word());
+            packHolder pck = new packHolder(true, true);
+            pck.ETHtrg.fromString(cmd.word());
+            pck.ETHsrc.fromString(cmd.word());
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                pck.putByte(0, bits.fromHex(a));
+                pck.putSkip(1);
+                pck.merge2end();
+            }
+            cmd.error("sending cnt=" + cnt + " ifc=" + ifc + " adr=" + pck.ETHsrc + " -> " + pck.ETHtrg + " pck=" + pck.dump());
+            srv.send2apiPack(cnt, ifc, pck);
+            return null;
+        }
         if (a.equals("p4lang")) {
             servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;
             }
-            srv.sendLine(cmd.getRemaining());
+            int cnt = bits.str2num(cmd.word());
+            int ifc = bits.str2num(cmd.word());
+            packHolder pck = new packHolder(true, true);
+            pck.ETHtrg.fromString(cmd.word());
+            pck.ETHsrc.fromString(cmd.word());
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                pck.putByte(0, bits.fromHex(a));
+                pck.putSkip(1);
+                pck.merge2end();
+            }
+            cmd.error("sending cnt=" + cnt + " ifc=" + ifc + " adr=" + pck.ETHsrc + " -> " + pck.ETHtrg + " pck=" + pck.dump());
+            srv.send2apiPack(cnt, ifc, pck);
             return null;
         }
         if (a.equals("mrt2pcap")) {

@@ -670,6 +670,9 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         bufP -= 2;
         put16msb(bufD, bufP, ETHERTYPE_VLAN);
         if (vlanout_res->vlan2 > 0) {
+            prt = vlanout_res->port2;
+            ethtyp = ETHERTYPE_VLAN;
+            if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
             hash ^= vlanout_res->vlan2;
             bufP -= 2;
             put16msb(bufD, bufP, vlanout_res->vlan2);
