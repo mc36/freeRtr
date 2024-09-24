@@ -134,11 +134,17 @@ struct port2vrf_entry {
     int sgtSet;
     int sgtTag;
     int mcscEthtyp;
+#ifndef HAVE_NOCRYPTO
     unsigned char mcscEncrKeyDat[256];
     unsigned char mcscHashKeyDat[256];
+    unsigned char mcscIvTxKeyDat[256];
+    unsigned char mcscIvRxKeyDat[256];
     int mcscEncrKeyLen;
     int mcscHashKeyLen;
+    int mcscIvTxKeyLen;
+    int mcscIvRxKeyLen;
     int mcscEncrBlkLen;
+    int mcscEncrTagLen;
     int mcscHashBlkLen;
     int mcscNeedMacs;
     int mcscNeedAead;
@@ -147,6 +153,7 @@ struct port2vrf_entry {
     const EVP_CIPHER *mcscEncrAlg;
     const EVP_MD *mcscHashAlg;
     EVP_PKEY *mcscHashPkey;
+#endif
     long mcscPackRx;
     long mcscByteRx;
     long mcscPackOk;
@@ -271,12 +278,14 @@ struct neigh_entry {
     int tid;
     int spi;
     int frag;
+#ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
     int hashBlkLen;
+#endif
     int seq;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
@@ -630,12 +639,14 @@ struct tun4_entry {
     int spi;
     int reasmS;
     unsigned char *reasmB;
+#ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
     int hashBlkLen;
+#endif
     int seq;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
@@ -662,12 +673,14 @@ struct tun6_entry {
     int spi;
     int reasmS;
     unsigned char *reasmB;
+#ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
     int hashBlkLen;
+#endif
     int seq;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;

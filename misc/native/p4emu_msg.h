@@ -2005,21 +2005,24 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         port2vrf_res->mcscByteTx = 0;
         port2vrf_res->mcscEncrBlkLen = atoi(arg[4]);
         port2vrf_res->mcscHashBlkLen = atoi(arg[5]);
-        port2vrf_res->mcscNeedMacs = port2vrf_res->mcscNeedAead = atoi(arg[6]);
+        port2vrf_res->mcscEncrTagLen = atoi(arg[6]);
+        port2vrf_res->mcscNeedMacs = port2vrf_res->mcscNeedAead = atoi(arg[7]);
         port2vrf_res->mcscNeedMacs &= 1;
         port2vrf_res->mcscNeedAead &= 2;
-        port2vrf_res->mcscEncrAlg = getEncrAlg(arg[7]);
+        port2vrf_res->mcscEncrAlg = getEncrAlg(arg[8]);
         if (port2vrf_res->mcscEncrAlg == NULL) {
             port2vrf_res->mcscEthtyp = 0;
             return 0;
         }
-        port2vrf_res->mcscHashAlg = getHashAlg(arg[8]);
+        port2vrf_res->mcscHashAlg = getHashAlg(arg[9]);
         if (port2vrf_res->mcscHashAlg == NULL) {
             port2vrf_res->mcscEthtyp = 0;
             return 0;
         }
-        port2vrf_res->mcscEncrKeyLen = str2key(arg[9], port2vrf_res->mcscEncrKeyDat);
-        port2vrf_res->mcscHashKeyLen = str2key(arg[10], port2vrf_res->mcscHashKeyDat);
+        port2vrf_res->mcscEncrKeyLen = str2key(arg[10], port2vrf_res->mcscEncrKeyDat);
+        port2vrf_res->mcscHashKeyLen = str2key(arg[11], port2vrf_res->mcscHashKeyDat);
+        port2vrf_res->mcscIvRxKeyLen = str2key(arg[12], port2vrf_res->mcscIvRxKeyDat);
+        port2vrf_res->mcscIvTxKeyLen = str2key(arg[13], port2vrf_res->mcscIvTxKeyDat);
         port2vrf_res->mcscHashPkey = getHashKey(port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen);
         if (port2vrf_res->mcscHashPkey == NULL) {
             port2vrf_res->mcscEthtyp = 0;

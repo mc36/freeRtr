@@ -2076,7 +2076,7 @@ public class servP4langConn implements Runnable {
         } else {
             a = null;
             if (ifc.ifc.ethtyp.macSec.keyHash != null) {
-                a = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + ifc.ifc.ethtyp.macSec.getModeFlags() + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyIvRx) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyIvTx);
+                a = ifc.ifc.ethtyp.macSec.myTyp + " " + ifc.ifc.ethtyp.macSec.cphrSiz + " " + ifc.ifc.ethtyp.macSec.hashSiz + " " + ifc.ifc.ethtyp.macSec.tagSiz + " " + ifc.ifc.ethtyp.macSec.getModeFlags() + " " + ifc.ifc.ethtyp.macSec.profil.trans.encr2str() + " " + ifc.ifc.ethtyp.macSec.profil.trans.hash2str() + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyEncr) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyHash) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyIvRx) + " " + bits.toHex(ifc.ifc.ethtyp.macSec.keyIvTx);
             }
             if (a != null) {
                 if (ifc.sentMacsec != null) {
