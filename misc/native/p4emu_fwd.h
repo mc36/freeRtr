@@ -1419,7 +1419,6 @@ ethtyp_rx:
             sizt = preBuff;
             if (EVP_DigestSignFinal(hashCtx, &bufH[0], &sizt) != 1) doDropper;
             if (memcmp(&bufH[0], &bufD[bufP + tmp], port2vrf_res->mcscHashBlkLen) !=0) doDropper;
-            bufS -= port2vrf_res->mcscHashBlkLen;
         }
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;
         memcpy(&bufC[0], port2vrf_res->mcscIvRxKeyDat, port2vrf_res->mcscIvRxKeyLen);
