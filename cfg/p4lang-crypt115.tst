@@ -36,6 +36,7 @@ int lo0
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5
@@ -119,6 +120,7 @@ int eth1
  bridge-gr 1
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5

@@ -45,6 +45,7 @@ int sdn1
  ipv6 multi static ff06::1 1234:4::2
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5
@@ -161,6 +162,7 @@ int lo0
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5

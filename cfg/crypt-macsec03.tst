@@ -9,6 +9,7 @@ vrf def v1
 bridge 1
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher aes256cbc
  hash sha1
@@ -32,6 +33,7 @@ vrf def v1
  rd 1:1
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher aes256cbc
  hash sha1

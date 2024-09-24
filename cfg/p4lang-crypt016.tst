@@ -75,6 +75,7 @@ int sdn4
  ipv6 ena
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5

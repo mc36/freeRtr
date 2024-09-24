@@ -65,6 +65,7 @@ int sdn3
  ipv6 ena
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5
@@ -218,6 +219,7 @@ int lo0
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5

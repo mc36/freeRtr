@@ -50,6 +50,7 @@ int sdn2
  ipv6 ena
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash sha512
@@ -195,6 +196,7 @@ int eth2
  bundle-gr 1
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash sha512

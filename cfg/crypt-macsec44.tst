@@ -7,6 +7,7 @@ vrf def v1
  rd 1:1
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash sha3384
@@ -27,6 +28,7 @@ vrf def v1
  rd 1:1
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash sha3384

@@ -44,6 +44,7 @@ int sdn1
  ipv4 addr 9.9.9.1 255.255.255.0
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5
@@ -137,6 +138,7 @@ int bvi1
  ipv4 addr 9.9.9.2 255.255.255.0
  exit
 crypto ipsec ips
+ role init
  group 02
  cipher des
  hash md5
