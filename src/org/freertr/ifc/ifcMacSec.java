@@ -60,6 +60,16 @@ public class ifcMacSec implements Runnable {
     public byte[] keyEncr = null;
 
     /**
+     * encryption iv
+     */
+    public byte[] keyIvTx = null;
+
+    /**
+     * decryption iv
+     */
+    public byte[] keyIvRx = null;
+
+    /**
      * authentication keys
      */
     public byte[] keyHash = null;
@@ -78,6 +88,11 @@ public class ifcMacSec implements Runnable {
      * hash size
      */
     public int hashSiz;
+
+    /**
+     * tag size
+     */
+    public int tagSiz;
 
     /**
      * hardware counter
@@ -182,6 +197,17 @@ public class ifcMacSec implements Runnable {
         if (debugger.ifcMacSecTraf) {
             logger.debug("initialized");
         }
+        if (profil.role != cfgIpsec.roleMode.staticKeys) {
+            return;
+        }
+        byte[] buf1 = new byte[profil.preshared.length() / 2];
+        for (int i = 0; i < buf1.length; i++) {
+            try {
+                buf1[i] = (byte) Integer.parseInt(profil.preshared.substring(i * 2, i * 2 + 2), 16);
+            } catch (Exception e) {
+            }
+        }
+        setupKeys(buf1, false);
     }
 
     /**
@@ -200,53 +226,48 @@ public class ifcMacSec implements Runnable {
         if (pad > 0) {
             pad = cphrSiz - pad;
             buf = new byte[pad];
-            for (int i = 0; i < buf.length; i++) {
-                buf[i] = (byte) bits.randomB();
-            }
-            pck.putCopy(buf, 0, 0, pad);
-            pck.putSkip(pad);
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
             pck.merge2end();
         }
-        buf = new byte[cphrSiz];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = (byte) bits.randomB();
-        }
-        pck.putCopy(buf, 0, 0, buf.length);
-        pck.putSkip(buf.length);
-        pck.merge2beg();
         int siz = pck.dataSize();
-        if (aeadMode) {
-            byte[] mac = new byte[cphrTx.getIVsize()];
-            bits.msbPutD(mac, 0, seqTx);
-            cphrTx.init(keyEncr, mac, true);
+        pad = 0;
+        if (siz < 48) {
+            pad = siz;
         }
+        byte[] mac = new byte[keyIvTx.length + 4];
+        bits.byteCopy(keyIvTx, 0, mac, 0, keyIvTx.length);
+        bits.msbPutD(mac, keyIvTx.length, seqTx);
+        cphrTx.init(keyEncr, mac, true);
         hashTx.init();
         if (needLayer2) {
-            byte[] mac = pck.ETHsrc.getBytes();
-            hashTx.update(mac);
-            cphrTx.authAdd(mac);
             mac = pck.ETHtrg.getBytes();
             hashTx.update(mac);
             cphrTx.authAdd(mac);
+            mac = pck.ETHsrc.getBytes();
+            hashTx.update(mac);
+            cphrTx.authAdd(mac);
         }
-        siz = pck.encrData(cphrTx, 0, siz);
+        pck.msbPutW(0, myTyp); // ethertype
+        pck.putByte(2, 0x0c); // tci=c,e
+        pck.putByte(3, pad); // sl
+        pck.msbPutD(4, seqTx); // seq
+        pck.hashHead(hashTx, 0, size);
+        pck.authHead(cphrTx, 0, size);
+        pck.putSkip(size);
+        pck.merge2beg();
+        siz = pck.encrData(cphrTx, size, siz);
         if (siz < 0) {
             cntr.drop(pck, counter.reasons.badSum);
             logger.info("bad aead on " + etht);
             return true;
         }
-        pck.setDataSize(siz);
-        pck.hashData(hashTx, 0, siz);
+        pck.setDataSize(size + siz);
+        pck.hashData(hashTx, size, siz);
         buf = hashTx.finish();
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2end();
-        pck.msbPutW(0, myTyp); // ethertype
-        pck.putByte(2, 0x08); // tci=v,e
-        pck.putByte(3, pad); // sl
-        pck.msbPutD(4, seqTx); // seq
-        pck.putSkip(size);
-        pck.merge2beg();
         seqTx++;
         return false;
     }
@@ -275,10 +296,13 @@ public class ifcMacSec implements Runnable {
         }
         typ = pck.getByte(2); // tci
         switch (typ) {
-            case 0x08: // data
+            case 0x0c: // data
                 break;
             case 0x01: // request
             case 0x02: // reply
+                if (profil.role == cfgIpsec.roleMode.staticKeys) {
+                    return true;
+                }
                 if (calcing.set(1) != 0) {
                     return true;
                 }
@@ -299,7 +323,6 @@ public class ifcMacSec implements Runnable {
         }
         int pad = pck.getByte(3); // sl
         int seqRx = pck.msbGetD(4); // seq
-        pck.getSkip(size);
         if (sequence != null) {
             if (sequence.gotDat(seqRx)) {
                 cntr.drop(pck, counter.reasons.badRxSeq);
@@ -307,32 +330,43 @@ public class ifcMacSec implements Runnable {
                 return true;
             }
         }
+        byte[] mac = new byte[keyIvRx.length + 4];
+        bits.byteCopy(keyIvRx, 0, mac, 0, keyIvRx.length);
+        bits.msbPutD(mac, keyIvRx.length, seqRx);
+        cphrRx.init(keyEncr, mac, false);
+        hashRx.init();
+        if (needLayer2) {
+            mac = pck.ETHtrg.getBytes();
+            hashRx.update(mac);
+            cphrRx.authAdd(mac);
+            mac = pck.ETHsrc.getBytes();
+            hashRx.update(mac);
+            cphrRx.authAdd(mac);
+        }
+        pck.hashData(hashRx, 0, size);
+        pck.authData(cphrRx, 0, size);
+        pck.getSkip(size);
         int siz = pck.dataSize();
+        if (pad > 0) {
+            pad += tagSiz + hashSiz;
+            if (pad > siz) {
+                cntr.drop(pck, counter.reasons.badLen);
+                logger.info("invalid padding on " + etht);
+                return true;
+            }
+            siz = pad;
+        }
         if (siz < (hashSiz + cphrSiz)) {
             cntr.drop(pck, counter.reasons.tooSmall);
             logger.info("too small on " + etht);
             return true;
         }
-        if (((siz - hashSiz) % cphrSiz) != 0) {
+        siz -= hashSiz;
+        if (!aeadMode && ((siz % cphrSiz) != 0)) {
             cntr.drop(pck, counter.reasons.badSiz);
             logger.info("bad padding on " + etht);
             return true;
         }
-        if (aeadMode) {
-            byte[] mac = new byte[cphrTx.getIVsize()];
-            bits.msbPutD(mac, 0, seqRx);
-            cphrRx.init(keyEncr, mac, false);
-        }
-        hashRx.init();
-        if (needLayer2) {
-            byte[] mac = pck.ETHsrc.getBytes();
-            hashRx.update(mac);
-            cphrRx.authAdd(mac);
-            mac = pck.ETHtrg.getBytes();
-            hashRx.update(mac);
-            cphrRx.authAdd(mac);
-        }
-        siz -= hashSiz;
         pck.hashData(hashRx, 0, siz);
         byte[] sum = new byte[hashSiz];
         pck.getCopy(sum, 0, siz, hashSiz);
@@ -347,8 +381,6 @@ public class ifcMacSec implements Runnable {
             logger.info("bad aead on " + etht);
             return true;
         }
-        pck.setDataSize(siz - pad);
-        pck.getSkip(cphrSiz);
         cntr.rx(pck);
         return false;
     }
@@ -359,6 +391,9 @@ public class ifcMacSec implements Runnable {
      * @return packet to send, null if nothing
      */
     public synchronized packHolder doSync() {
+        if (profil.role == cfgIpsec.roleMode.staticKeys) {
+            return null;
+        }
         if ((hashRx != null) && (!reply)) {
             boolean ned = false;
             if (profil.trans.lifeSec > 0) {
@@ -432,26 +467,39 @@ public class ifcMacSec implements Runnable {
             }
             buf1 = bits.byteConcat(buf1, buf2);
         }
+        setupKeys(buf1, keygen.clntPub.compareTo(keygen.servPub) > 0);
+        calcing.set(0);
+        etht.triggerSync();
+    }
+
+    private void setupKeys(byte[] res, boolean swp) {
         if (debugger.ifcMacSecTraf) {
-            logger.debug("master=" + bits.byteDump(buf1, 0, buf1.length));
+            logger.debug("master=" + bits.byteDump(res, 0, res.length));
         }
         cryEncrGeneric cphTx = profil.trans.getEncr();
         cryEncrGeneric cphRx = profil.trans.getEncr();
-        byte[] res = buf1;
-        buf1 = new byte[profil.trans.getKeyS()];
-        byte[] buf2 = new byte[cphTx.getBlockSize()];
-        int pos = buf1.length + buf2.length;
-        bits.byteCopy(res, 0, buf1, 0, buf1.length);
-        bits.byteCopy(res, buf1.length, buf2, 0, buf2.length);
-        keyEncr = buf1;
-        cphTx.init(buf1, buf2, true);
-        cphRx.init(buf1, buf2, false);
-        cphrSiz = buf2.length;
+        keyEncr = new byte[profil.trans.getKeyS()];
+        bits.byteCopy(res, 0, keyEncr, 0, keyEncr.length);
+        int pos = cphTx.getIVsize() - 4;
+        if (pos < 0) {
+            pos = 0;
+        }
+        keyIvTx = new byte[pos];
+        pos = keyEncr.length;
+        bits.byteCopy(res, pos, keyIvTx, 0, keyIvTx.length);
+        pos += keyIvTx.length;
+        keyIvRx = new byte[keyIvTx.length];
+        bits.byteCopy(res, pos, keyIvRx, 0, keyIvRx.length);
+        pos += keyIvRx.length;
+        cphrSiz = cphTx.getBlockSize();
         hashSiz = profil.trans.getHash().getHashSize();
-        buf1 = new byte[hashSiz];
-        buf2 = new byte[hashSiz];
-        bits.byteCopy(res, pos, buf1, 0, buf1.length);
-        bits.byteCopy(res, pos, buf2, 0, buf2.length);
+        if (swp) {
+            byte[] buf = keyIvTx;
+            keyIvTx = keyIvRx;
+            keyIvRx = buf;
+        }
+        byte[] buf = new byte[hashSiz];
+        bits.byteCopy(res, pos, buf, 0, buf.length);
         cntr = new counter();
         hwCntr = null;
         kexNum++;
@@ -462,14 +510,13 @@ public class ifcMacSec implements Runnable {
             lastRnd = bits.random(1, profil.trans.lifeRnd);
         }
         seqTx = 0;
-        aeadMode = cphTx.getTagSize() > 0;
+        tagSiz = cphTx.getTagSize();
+        aeadMode = tagSiz > 0;
         cphrTx = cphTx;
         cphrRx = cphRx;
-        hashTx = profil.trans.getHmac(buf1);
-        hashRx = profil.trans.getHmac(buf2);
-        keyHash = buf1;
-        calcing.set(0);
-        etht.triggerSync();
+        hashTx = profil.trans.getHmac(buf);
+        hashRx = profil.trans.getHmac(buf);
+        keyHash = buf;
     }
 
     public void run() {

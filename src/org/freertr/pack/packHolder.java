@@ -1331,7 +1331,7 @@ public class packHolder {
     }
 
     /**
-     * update encription in data
+     * update encryption in data
      *
      * @param enc encrypter to update
      * @param ofs offset from where
@@ -1343,7 +1343,7 @@ public class packHolder {
     }
 
     /**
-     * update encription in header
+     * update encryption in header
      *
      * @param enc encrypter to update
      * @param ofs offset from where
@@ -1352,6 +1352,28 @@ public class packHolder {
      */
     public int encrHead(cryEncrGeneric enc, int ofs, int siz) {
         return enc.update(headD, ofs, siz);
+    }
+
+    /**
+     * update authentication in data
+     *
+     * @param enc encrypter to update
+     * @param ofs offset from where
+     * @param siz bytes to calculate
+     */
+    public void authData(cryEncrGeneric enc, int ofs, int siz) {
+        enc.authAdd(dataD, dataO + ofs, siz);
+    }
+
+    /**
+     * update authentication in header
+     *
+     * @param enc encrypter to update
+     * @param ofs offset from where
+     * @param siz bytes to calculate
+     */
+    public void authHead(cryEncrGeneric enc, int ofs, int siz) {
+        enc.authAdd(headD, ofs, siz);
     }
 
 }
