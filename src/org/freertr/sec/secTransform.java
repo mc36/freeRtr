@@ -163,6 +163,15 @@ public class secTransform {
     }
 
     /**
+     * check if aead mode
+     *
+     * @return true if yes, false if no
+     */
+    public boolean isAead() {
+        return encrAlg == 8;
+    }
+
+    /**
      * decode hash algorithm
      *
      * @return string
@@ -212,6 +221,8 @@ public class secTransform {
                 return 3;
             case 7:
                 return 4;
+            case 20:
+                return 8;
             default:
                 return 0;
         }
@@ -233,6 +244,8 @@ public class secTransform {
                 return 5;
             case 4:
                 return 7;
+            case 8:
+                return 20;
             default:
                 return 0;
         }
@@ -254,6 +267,8 @@ public class secTransform {
                 return 3;
             case 12:
                 return 4;
+            case 20:
+                return 8;
             default:
                 return 0;
         }
@@ -275,6 +290,8 @@ public class secTransform {
                 return 3;
             case 4:
                 return 12;
+            case 8:
+                return 20;
             default:
                 return 0;
         }
