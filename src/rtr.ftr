@@ -737,6 +737,7 @@ qc pass: macsec with aes192gcm and aead
 qc pass: macsec with aes256gcm and aead
 qc pass: macsec over tmux
 qc pass: macsec over l2tp3
+qc pass: macsec with static key
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source list translation to pool
@@ -1674,6 +1675,7 @@ qc pass: p4lang: sgt qinq ingress access list
 qc pass: p4lang: sgt qinq egress access list
 qc pass: p4lang: packout on qinq port
 qc pass: p4lang: packout on macsec qinq port
+qc pass: p4lang: macsec with static key
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
