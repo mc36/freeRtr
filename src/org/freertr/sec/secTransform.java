@@ -1010,7 +1010,7 @@ public class secTransform {
      * @return hash, null on error
      */
     public cryHashGeneric getPrf() {
-        return getHash(hashAlg);
+        return getHash(prfAlg);
     }
 
     /**

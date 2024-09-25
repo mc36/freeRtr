@@ -663,7 +663,7 @@ public class packIke {
                 return true;
             }
             t = new secTransform();
-            t.prfAlg = transform.hashAlg;
+            t.prfAlg = transform.prfAlg;
             if (secTransform.findMatching(trans, t) < 0) {
                 return true;
             }
@@ -674,10 +674,12 @@ public class packIke {
         if (secTransform.findMatching(trans, t) < 0) {
             return true;
         }
-        t = new secTransform();
-        t.hashAlg = transform.hashAlg;
-        if (secTransform.findMatching(trans, t) < 0) {
-            return true;
+        if (transform.hashAlg != 0) {
+            t = new secTransform();
+            t.hashAlg = transform.hashAlg;
+            if (secTransform.findMatching(trans, t) < 0) {
+                return true;
+            }
         }
         secAssDump("rx");
         return false;
