@@ -15,6 +15,7 @@ crypto ipsec ips
  group 15
  cipher des
  hash md5
+ prf md5
  seconds 3600
  bytes 67108864
  key tester

@@ -14,6 +14,7 @@ crypto ipsec ips
  group 02
  cipher des
  hash md5
+ prf md5
  seconds 3600
  bytes 1024000
  key tester
@@ -51,6 +52,7 @@ crypto ipsec ips
  group 02
  cipher des
  hash md5
+ prf md5
  seconds 3600
  bytes 1024000
  key tester

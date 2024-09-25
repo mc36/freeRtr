@@ -618,7 +618,6 @@ public class packIke {
         transform = transform.copyBytes();
         proposNum = 1;
         if (ike) {
-            transform.prfAlg = transform.hashAlg;
             protoId = 1;
         } else {
             transform.prfAlg = 0;
@@ -825,7 +824,7 @@ public class packIke {
             if (res.length > len) {
                 break;
             }
-            cryHashGeneric h = transform.getHmac(k);
+            cryHashGeneric h = transform.getHprf(k);
             h.update(prev);
             h.update(s);
             prev = new byte[1];
@@ -843,7 +842,7 @@ public class packIke {
     public void computeKeys() {
         diffie.clntKey();
         dhcomm = cryUtils.bigUint2buf(diffie.common);
-        cryHashGeneric h = transform.getHmac(bits.byteConcat(nonceI, nonceR));
+        cryHashGeneric h = transform.getHprf(bits.byteConcat(nonceI, nonceR));
         h.update(dhcomm);
         skeyidG = h.finish();
         byte[] buf = new byte[16];
@@ -1210,12 +1209,12 @@ public class packIke {
             idn = idnR;
             skp = getPart(skeyidP, true, true);
         }
-        cryHashGeneric h = transform.getHmac(skp);
+        cryHashGeneric h = transform.getHprf(skp);
         h.update(idn);
         skp = h.finish();
-        h = transform.getHmac(preshared.getBytes());
+        h = transform.getHprf(preshared.getBytes());
         h.update("Key Pad for IKEv2".getBytes());
-        h = transform.getHmac(h.finish());
+        h = transform.getHprf(h.finish());
         h.update(msg);
         h.update(non);
         h.update(skp);

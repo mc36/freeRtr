@@ -15,6 +15,7 @@ crypto ipsec ips
  group 01
  cipher des
  hash sha256
+ prf sha256
  seconds 3600
  bytes 67108864
  key tester

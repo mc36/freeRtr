@@ -171,13 +171,45 @@ public class secTransform {
         return encrAlg == 8;
     }
 
-    /**
-     * decode hash algorithm
-     *
-     * @return string
-     */
-    public String hash2str() {
-        switch (hashAlg) {
+    private static int str2hash(String s) {
+        if (s.equals("md5")) {
+            return 1;
+        }
+        if (s.equals("sha1")) {
+            return 2;
+        }
+        if (s.equals("sha256")) {
+            return 3;
+        }
+        if (s.equals("sha512")) {
+            return 4;
+        }
+        if (s.equals("sha224")) {
+            return 5;
+        }
+        if (s.equals("sha384")) {
+            return 6;
+        }
+        if (s.equals("sha3224")) {
+            return 7;
+        }
+        if (s.equals("sha3256")) {
+            return 8;
+        }
+        if (s.equals("sha3384")) {
+            return 9;
+        }
+        if (s.equals("sha3512")) {
+            return 10;
+        }
+        if (s.equals("none")) {
+            return 11;
+        }
+        return 0;
+    }
+
+    private static String hash2str(int i) {
+        switch (i) {
             case 1:
                 return "md5";
             case 2:
@@ -203,6 +235,24 @@ public class secTransform {
             default:
                 return "unknown";
         }
+    }
+
+    /**
+     * decode hash algorithm
+     *
+     * @return string
+     */
+    public String hash2str() {
+        return hash2str(hashAlg);
+    }
+
+    /**
+     * decode hash algorithm
+     *
+     * @return string
+     */
+    public String prf2str() {
+        return hash2str(prfAlg);
     }
 
     /**
@@ -902,14 +952,9 @@ public class secTransform {
         }
     }
 
-    /**
-     * get hash algorithm
-     *
-     * @return hash, null on error
-     */
-    public cryHashGeneric getHash() {
+    private static cryHashGeneric getHash(int i) {
         cryHashGeneric h = null;
-        switch (hashAlg) {
+        switch (i) {
             case 1:
                 h = new cryHashMd5();
                 break;
@@ -951,6 +996,24 @@ public class secTransform {
     }
 
     /**
+     * get hash algorithm
+     *
+     * @return hash, null on error
+     */
+    public cryHashGeneric getHash() {
+        return getHash(hashAlg);
+    }
+
+    /**
+     * get prf algorithm
+     *
+     * @return hash, null on error
+     */
+    public cryHashGeneric getPrf() {
+        return getHash(hashAlg);
+    }
+
+    /**
      * get hash algorithm in hmac mode
      *
      * @param key key to use
@@ -958,6 +1021,25 @@ public class secTransform {
      */
     public cryHashGeneric getHmac(byte[] key) {
         cryHashGeneric h = getHash();
+        if (h == null) {
+            return null;
+        }
+        if (hashAlg == 11) {
+            return h;
+        }
+        h = new cryHashHmac(h, key);
+        h.init();
+        return h;
+    }
+
+    /**
+     * get prf algorithm in hmac mode
+     *
+     * @param key key to use
+     * @return hash, null on error
+     */
+    public cryHashGeneric getHprf(byte[] key) {
+        cryHashGeneric h = getPrf();
         if (h == null) {
             return null;
         }
@@ -988,6 +1070,7 @@ public class secTransform {
         cmds.cfgLine(lst, groupNum == 0, beg, "group", bits.padBeg("" + groupNum, 2, "0"));
         cmds.cfgLine(lst, encrAlg == 0, beg, "cipher", encr2str());
         cmds.cfgLine(lst, hashAlg == 0, beg, "hash", hash2str());
+        cmds.cfgLine(lst, prfAlg == 0, beg, "prf", prf2str());
         cmds.cfgLine(lst, lifeSec == 0, beg, "seconds", "" + lifeSec);
         cmds.cfgLine(lst, lifeByt == 0, beg, "bytes", "" + lifeByt);
         cmds.cfgLine(lst, lifeRnd == 0, beg, "random", "" + lifeRnd);
@@ -1018,6 +1101,18 @@ public class secTransform {
         l.add(null, "1 2  bytes               sa lifetime in traffic amount");
         l.add(null, "2 .    <num>             number of bytes");
         l.add(null, "1 2  hash                select hash algorithm");
+        l.add(null, "2 .    md5               message digest 5 algorithm");
+        l.add(null, "2 .    sha1              secure hash algorithm 1");
+        l.add(null, "2 .    sha224            secure hash algorithm 2 224");
+        l.add(null, "2 .    sha256            secure hash algorithm 2 256");
+        l.add(null, "2 .    sha384            secure hash algorithm 2 384");
+        l.add(null, "2 .    sha512            secure hash algorithm 2 512");
+        l.add(null, "2 .    sha3224           secure hash algorithm 3 224");
+        l.add(null, "2 .    sha3256           secure hash algorithm 3 256");
+        l.add(null, "2 .    sha3384           secure hash algorithm 3 384");
+        l.add(null, "2 .    sha3512           secure hash algorithm 3 512");
+        l.add(null, "2 .    none              null hash");
+        l.add(null, "1 2  prf                 select prf algorithm");
         l.add(null, "2 .    md5               message digest 5 algorithm");
         l.add(null, "2 .    sha1              secure hash algorithm 1");
         l.add(null, "2 .    sha224            secure hash algorithm 2 224");
@@ -1127,41 +1222,11 @@ public class secTransform {
             return false;
         }
         if (s.equals("hash")) {
-            s = cmd.word();
-            hashAlg = 0;
-            if (s.equals("md5")) {
-                hashAlg = 1;
-            }
-            if (s.equals("sha1")) {
-                hashAlg = 2;
-            }
-            if (s.equals("sha256")) {
-                hashAlg = 3;
-            }
-            if (s.equals("sha512")) {
-                hashAlg = 4;
-            }
-            if (s.equals("sha224")) {
-                hashAlg = 5;
-            }
-            if (s.equals("sha384")) {
-                hashAlg = 6;
-            }
-            if (s.equals("sha3224")) {
-                hashAlg = 7;
-            }
-            if (s.equals("sha3256")) {
-                hashAlg = 8;
-            }
-            if (s.equals("sha3384")) {
-                hashAlg = 9;
-            }
-            if (s.equals("sha3512")) {
-                hashAlg = 10;
-            }
-            if (s.equals("none")) {
-                hashAlg = 11;
-            }
+            hashAlg = str2hash(cmd.word());
+            return false;
+        }
+        if (s.equals("prf")) {
+            prfAlg = str2hash(cmd.word());
             return false;
         }
         if (s.equals("seconds")) {
