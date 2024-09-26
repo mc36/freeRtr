@@ -153,6 +153,11 @@ public class packIke {
     public byte[] skeyidA;
 
     /**
+     * skeyid-s
+     */
+    public byte[] skeyidS;
+
+    /**
      * skeyid-e
      */
     public byte[] skeyidE;
@@ -345,6 +350,7 @@ public class packIke {
         n.diffie = diffie;
         n.nonceI = nonceI;
         n.nonceR = nonceR;
+        n.skeyidS = skeyidS;
         n.skeyidA = skeyidA;
         n.skeyidD = skeyidD;
         n.skeyidE = skeyidE;
@@ -864,9 +870,15 @@ public class packIke {
         skeyidD = new byte[skeyidG.length];
         bits.byteCopy(buf, p, skeyidD, 0, skeyidD.length);
         p += skeyidD.length;
-        skeyidA = new byte[skeyidG.length * 2];
-        bits.byteCopy(buf, p, skeyidA, 0, skeyidA.length);
-        p += skeyidA.length;
+        if (transform.isAead()) {
+            skeyidS = new byte[8];
+            bits.byteCopy(buf, p, skeyidS, 0, skeyidS.length);
+            p += skeyidS.length;
+        } else {
+            skeyidA = new byte[skeyidG.length * 2];
+            bits.byteCopy(buf, p, skeyidA, 0, skeyidA.length);
+            p += skeyidA.length;
+        }
         skeyidE = new byte[transform.getKeyS() * 2];
         bits.byteCopy(buf, p, skeyidE, 0, skeyidE.length);
         p += skeyidE.length;
@@ -874,7 +886,7 @@ public class packIke {
         bits.byteCopy(buf, p, skeyidP, 0, skeyidP.length);
         p += skeyidP.length;
         if (debugger.secIkeTraf) {
-            logger.debug("dh=" + bits.byteDump(dhcomm, 0, -1) + " skeyG=" + bits.byteDump(skeyidG, 0, -1) + " skeyD=" + bits.byteDump(skeyidD, 0, -1) + " skeyA=" + bits.byteDump(skeyidA, 0, -1) + " skeyE=" + bits.byteDump(skeyidE, 0, -1) + " skeyP=" + bits.byteDump(skeyidP, 0, -1));
+            logger.debug("dh=" + bits.byteDump(dhcomm, 0, -1) + " skeyG=" + bits.byteDump(skeyidG, 0, -1) + " skeyD=" + bits.byteDump(skeyidD, 0, -1) + " skeyA=" + bits.byteDump(skeyidA, 0, -1) + " skeyS=" + bits.byteDump(skeyidS, 0, -1) + " skeyE=" + bits.byteDump(skeyidE, 0, -1) + " skeyP=" + bits.byteDump(skeyidP, 0, -1));
         }
     }
 
@@ -904,6 +916,33 @@ public class packIke {
             return true;
         }
         pckNxt = pckDat.getByte(-4);
+        if (transform.isAead()) {
+            logger.debug("here" + bits.byteDump(b1, 0, -1));////////////////////////////
+            int o = pckDat.dataSize();
+            byte[] buf = new byte[8];
+            pckDat.getCopy(buf, 0, 0, buf.length);
+            pckDat.getSkip(buf.length);
+            b1 = pckDat.getCopy();
+            buf = bits.byteConcat(getPart(skeyidS, false, false), buf);
+            pckDat.setBytesLeft(pckSiz + headSize);
+            byte[] b2 = new byte[pckDat.dataSize() - o];
+            pckDat.getCopy(b2, 0, 0, b2.length);
+
+            logger.debug("here" + bits.byteDump(buf, 0, -1));////////////////////////////
+            logger.debug("here" + bits.byteDump(skeyidE, 0, -1));////////////////////////////
+            logger.debug("here" + bits.byteDump(skeyidS, 0, -1));////////////////////////////
+            logger.debug("here" + bits.byteDump(b1, 0, -1));////////////////////////////
+            logger.debug("here" + bits.byteDump(b2, 0, -1));////////////////////////////
+            buf = bits.byteConcat(getPart(skeyidS, false, false), buf);
+
+            cryEncrGeneric e = transform.getEncr();
+            e.init(getPart(skeyidE, false, false), buf, false);
+            e.authAdd(b2);
+            logger.debug("here" + e.update(b1, 0, b1.length));
+            logger.debug("here" + bits.byteDump(b1, 0, -1));////////////////////////////
+
+            return true;//////////////////
+        }
         int o = transform.getHashS();
         if (b1.length < o) {
             return true;
