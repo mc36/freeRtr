@@ -15961,3 +15961,54 @@ qc pass: dhcp with excluded address
 ---------------------------------- 2024-09-25 07:44:56 24.9.25
 qc pass: macsec with static key
 qc pass: p4lang: macsec with static key
+---------------------------------- 2024-09-25 22:41:38 24.9.25
+no qc pass: ike2 over ipsec
+no qc pass: ike2 with group24
+no qc pass: ike2 with group23
+no qc pass: ike2 with group22
+no qc pass: ike2 with group17
+no qc pass: ike2 with group16
+no qc pass: ike2 with group15
+no qc pass: ike2 with group14
+no qc pass: ike2 with group5
+no qc pass: ike2 with group2
+no qc pass: ike2 with group1
+no qc pass: ike2 with sha512
+no qc pass: ike2 with sha256
+no qc pass: ike2 with sha1
+no qc pass: ike2 with md5
+no qc pass: ike2 with aes256cbc
+no qc pass: ike2 with aes192cbc
+no qc pass: ike2 with aes128cbc
+no qc pass: ike2 with 3des
+no qc pass: ike2 with blowfish
+no qc pass: ike2 with des
+no qc pass: ipv6 in ike2 over ipv6
+no qc pass: ipv6 in ike2 over ipv4
+no qc pass: ipv4 in ike2 over ipv6
+no qc pass: ipv4 in ike2 over ipv4
+failed: ipv4 in ike2 over ipv4
+failed: ipv4 in ike2 over ipv6
+failed: ipv6 in ike2 over ipv4
+failed: ipv6 in ike2 over ipv6
+failed: ike2 with des
+failed: ike2 with blowfish
+failed: ike2 with 3des
+failed: ike2 with aes128cbc
+failed: ike2 with aes192cbc
+failed: ike2 with aes256cbc
+failed: ike2 with md5
+failed: ike2 with sha1
+failed: ike2 with sha256
+failed: ike2 with sha512
+failed: ike2 with group1
+failed: ike2 with group2
+failed: ike2 with group5
+failed: ike2 with group14
+failed: ike2 with group15
+failed: ike2 with group16
+failed: ike2 with group17
+failed: ike2 with group22
+failed: ike2 with group23
+failed: ike2 with group24
+failed: ike2 over ipsec

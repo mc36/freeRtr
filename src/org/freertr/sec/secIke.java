@@ -285,6 +285,7 @@ public class secIke implements ifcDn, ifcUp {
     private packIke newIkePck() {
         packIke n = new packIke();
         n.transform = transform.copyBytes();
+        n.transorig = transform.copyBytes();
         n.preshared = "" + preshared;
         n.initiator = role == cfgIpsec.roleMode.initiator;
         return n;

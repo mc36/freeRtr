@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.9.25-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-09-25 22:39:36, took 00:12:24, with 60 workers, on 632 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2024-09-25 23:29:47, took 00:10:05, with 60 workers, on 632 cases, 1 failed, 4 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -161,7 +161,7 @@ http://sources.freertr.org/cfg/p4lang-crypt038.tst;p4lang-crypt038.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt039.tst;p4lang-crypt039.tst;success;p4lang: ipv6 over ipsec with ingress access list
 http://sources.freertr.org/cfg/p4lang-crypt040.tst;p4lang-crypt040.tst;success;p4lang: ipv6 over ipsec with egress access list
 http://sources.freertr.org/cfg/p4lang-crypt041.tst;p4lang-crypt041.tst;success;p4lang: ipsec with ike1
-http://sources.freertr.org/cfg/p4lang-crypt042.tst;p4lang-crypt042.tst;success;p4lang: ipsec with ike2
+http://sources.freertr.org/cfg/p4lang-crypt042.tst;p4lang-crypt042.tst;#6-run-r1 tping 100 10 1.1.1.2 vrf v1;p4lang: ipsec with ike2
 http://sources.freertr.org/cfg/p4lang-crypt043.tst;p4lang-crypt043.tst;success;p4lang: openvpn with des
 http://sources.freertr.org/cfg/p4lang-crypt044.tst;p4lang-crypt044.tst;success;p4lang: openvpn with 3des
 http://sources.freertr.org/cfg/p4lang-crypt045.tst;p4lang-crypt045.tst;success;p4lang: openvpn with aes128cbc

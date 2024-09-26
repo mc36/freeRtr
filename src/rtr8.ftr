@@ -157,7 +157,7 @@ qc pass: p4lang: ipv4 over ipsec with egress access list
 qc pass: p4lang: ipv6 over ipsec with ingress access list
 qc pass: p4lang: ipv6 over ipsec with egress access list
 qc pass: p4lang: ipsec with ike1
-qc pass: p4lang: ipsec with ike2
+failed: p4lang: ipsec with ike2
 qc pass: p4lang: openvpn with des
 qc pass: p4lang: openvpn with 3des
 qc pass: p4lang: openvpn with aes128cbc

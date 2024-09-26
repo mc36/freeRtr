@@ -98,6 +98,11 @@ public class packIke {
     public int spiOldR;
 
     /**
+     * original transform
+     */
+    public secTransform transorig;
+
+    /**
      * selected transform
      */
     public secTransform transform;
@@ -333,6 +338,7 @@ public class packIke {
         packIke n = new packIke();
         n.cookieI = cookieI;
         n.cookieR = cookieR;
+        n.transorig = transorig;
         n.transform = transform;
         n.initiator = initiator;
         n.preshared = preshared;
@@ -615,7 +621,7 @@ public class packIke {
      * @param ike true for ike sa, false of ipsec sa
      */
     public void secAssFill(boolean ike) {
-        transform = transform.copyBytes();
+        transform = transorig.copyBytes();
         proposNum = 1;
         if (ike) {
             protoId = 1;
@@ -662,10 +668,12 @@ public class packIke {
             if (secTransform.findMatching(trans, t) < 0) {
                 return true;
             }
-            t = new secTransform();
-            t.prfAlg = transform.prfAlg;
-            if (secTransform.findMatching(trans, t) < 0) {
-                return true;
+            if (transform.prfAlg != 0) {
+                t = new secTransform();
+                t.prfAlg = transform.prfAlg;
+                if (secTransform.findMatching(trans, t) < 0) {
+                    return true;
+                }
             }
         }
         t = new secTransform();
@@ -826,7 +834,7 @@ public class packIke {
             if (res.length > len) {
                 break;
             }
-            cryHashGeneric h = transform.getHprf(k);
+            cryHashGeneric h = transorig.getHprf(k);
             h.update(prev);
             h.update(s);
             prev = new byte[1];
@@ -844,7 +852,7 @@ public class packIke {
     public void computeKeys() {
         diffie.clntKey();
         dhcomm = cryUtils.bigUint2buf(diffie.common);
-        cryHashGeneric h = transform.getHprf(bits.byteConcat(nonceI, nonceR));
+        cryHashGeneric h = transorig.getHprf(bits.byteConcat(nonceI, nonceR));
         h.update(dhcomm);
         skeyidG = h.finish();
         byte[] buf = new byte[16];
@@ -1211,12 +1219,12 @@ public class packIke {
             idn = idnR;
             skp = getPart(skeyidP, true, true);
         }
-        cryHashGeneric h = transform.getHprf(skp);
+        cryHashGeneric h = transorig.getHprf(skp);
         h.update(idn);
         skp = h.finish();
-        h = transform.getHprf(preshared.getBytes());
+        h = transorig.getHprf(preshared.getBytes());
         h.update("Key Pad for IKEv2".getBytes());
-        h = transform.getHprf(h.finish());
+        h = transorig.getHprf(h.finish());
         h.update(msg);
         h.update(non);
         h.update(skp);
