@@ -898,9 +898,6 @@ public class secTransform {
      */
     public int getKeyS() {
         int i = encrKey / 8;
-        if (isAead()) {
-            return 4 + i;
-        }
         if (i > 0) {
             return i;
         }

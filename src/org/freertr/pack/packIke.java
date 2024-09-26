@@ -869,7 +869,11 @@ public class packIke {
             bits.byteCopy(buf, p, skeyidA, 0, skeyidA.length);
             p += skeyidA.length;
         }
-        skeyidE = new byte[transform.getKeyS() * 2];
+        int i = transform.getKeyS();
+        if (transform.isAead()) {
+            i += 4;
+        }
+        skeyidE = new byte[i * 2];
         bits.byteCopy(buf, p, skeyidE, 0, skeyidE.length);
         p += skeyidE.length;
         skeyidP = new byte[skeyidG.length * 2];
