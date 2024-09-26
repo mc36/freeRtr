@@ -16012,3 +16012,54 @@ failed: ike2 with group22
 failed: ike2 with group23
 failed: ike2 with group24
 failed: ike2 over ipsec
+---------------------------------- 2024-09-26 05:21:48 24.9.26
+no failed: ike2 over ipsec
+no failed: ike2 with group24
+no failed: ike2 with group23
+no failed: ike2 with group22
+no failed: ike2 with group17
+no failed: ike2 with group16
+no failed: ike2 with group15
+no failed: ike2 with group14
+no failed: ike2 with group5
+no failed: ike2 with group2
+no failed: ike2 with group1
+no failed: ike2 with sha512
+no failed: ike2 with sha256
+no failed: ike2 with sha1
+no failed: ike2 with md5
+no failed: ike2 with aes256cbc
+no failed: ike2 with aes192cbc
+no failed: ike2 with aes128cbc
+no failed: ike2 with 3des
+no failed: ike2 with blowfish
+no failed: ike2 with des
+no failed: ipv6 in ike2 over ipv6
+no failed: ipv6 in ike2 over ipv4
+no failed: ipv4 in ike2 over ipv6
+no failed: ipv4 in ike2 over ipv4
+qc pass: ipv4 in ike2 over ipv4
+qc pass: ipv4 in ike2 over ipv6
+qc pass: ipv6 in ike2 over ipv4
+qc pass: ipv6 in ike2 over ipv6
+qc pass: ike2 with des
+qc pass: ike2 with blowfish
+qc pass: ike2 with 3des
+qc pass: ike2 with aes128cbc
+qc pass: ike2 with aes192cbc
+qc pass: ike2 with aes256cbc
+qc pass: ike2 with md5
+qc pass: ike2 with sha1
+qc pass: ike2 with sha256
+qc pass: ike2 with sha512
+qc pass: ike2 with group1
+qc pass: ike2 with group2
+qc pass: ike2 with group5
+qc pass: ike2 with group14
+qc pass: ike2 with group15
+qc pass: ike2 with group16
+qc pass: ike2 with group17
+qc pass: ike2 with group22
+qc pass: ike2 with group23
+qc pass: ike2 with group24
+qc pass: ike2 over ipsec

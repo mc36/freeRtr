@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v24.9.25-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2024-09-25 23:19:14, took 00:37:36, with 60 workers, on 3534 cases, 25 failed, 200 traces, 178 retries<br/>
+release: freeRouter v24.9.26-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2024-09-26 05:35:14, took 00:13:25, with 60 workers, on 3534 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -629,32 +629,32 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike124.tst">crypt-ike124.tst</a></td><td>success</td><td>ike1 with group23</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike125.tst">crypt-ike125.tst</a></td><td>success</td><td>ike1 with group24</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike126.tst">crypt-ike126.tst</a></td><td>success</td><td>ike1 over ipsec</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike201.tst">crypt-ike201.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ipv4 in ike2 over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike202.tst">crypt-ike202.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ipv4 in ike2 over ipv6</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike203.tst">crypt-ike203.tst</a></td><td>#6-run-r1 tping 100 10 4321::2 vrf v1</td><td>ipv6 in ike2 over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike204.tst">crypt-ike204.tst</a></td><td>#6-run-r1 tping 100 10 4321::2 vrf v1</td><td>ipv6 in ike2 over ipv6</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike205.tst">crypt-ike205.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with des</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike206.tst">crypt-ike206.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with blowfish</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike207.tst">crypt-ike207.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with 3des</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike208.tst">crypt-ike208.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with aes128cbc</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike209.tst">crypt-ike209.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with aes192cbc</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike210.tst">crypt-ike210.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with aes256cbc</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike211.tst">crypt-ike211.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with md5</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike212.tst">crypt-ike212.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with sha1</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike213.tst">crypt-ike213.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with sha256</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike214.tst">crypt-ike214.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with sha512</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike215.tst">crypt-ike215.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with group1</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike216.tst">crypt-ike216.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with group2</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike217.tst">crypt-ike217.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 with group5</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike218.tst">crypt-ike218.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.2 vrf v1</td><td>ike2 with group14</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike219.tst">crypt-ike219.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.2 vrf v1</td><td>ike2 with group15</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike220.tst">crypt-ike220.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.2 vrf v1</td><td>ike2 with group16</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike221.tst">crypt-ike221.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.2 vrf v1</td><td>ike2 with group17</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike201.tst">crypt-ike201.tst</a></td><td>success</td><td>ipv4 in ike2 over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike202.tst">crypt-ike202.tst</a></td><td>success</td><td>ipv4 in ike2 over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike203.tst">crypt-ike203.tst</a></td><td>success</td><td>ipv6 in ike2 over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike204.tst">crypt-ike204.tst</a></td><td>success</td><td>ipv6 in ike2 over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike205.tst">crypt-ike205.tst</a></td><td>success</td><td>ike2 with des</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike206.tst">crypt-ike206.tst</a></td><td>success</td><td>ike2 with blowfish</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike207.tst">crypt-ike207.tst</a></td><td>success</td><td>ike2 with 3des</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike208.tst">crypt-ike208.tst</a></td><td>success</td><td>ike2 with aes128cbc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike209.tst">crypt-ike209.tst</a></td><td>success</td><td>ike2 with aes192cbc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike210.tst">crypt-ike210.tst</a></td><td>success</td><td>ike2 with aes256cbc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike211.tst">crypt-ike211.tst</a></td><td>success</td><td>ike2 with md5</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike212.tst">crypt-ike212.tst</a></td><td>success</td><td>ike2 with sha1</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike213.tst">crypt-ike213.tst</a></td><td>success</td><td>ike2 with sha256</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike214.tst">crypt-ike214.tst</a></td><td>success</td><td>ike2 with sha512</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike215.tst">crypt-ike215.tst</a></td><td>success</td><td>ike2 with group1</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike216.tst">crypt-ike216.tst</a></td><td>success</td><td>ike2 with group2</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike217.tst">crypt-ike217.tst</a></td><td>success</td><td>ike2 with group5</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike218.tst">crypt-ike218.tst</a></td><td>success</td><td>ike2 with group14</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike219.tst">crypt-ike219.tst</a></td><td>success</td><td>ike2 with group15</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike220.tst">crypt-ike220.tst</a></td><td>success</td><td>ike2 with group16</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike221.tst">crypt-ike221.tst</a></td><td>success</td><td>ike2 with group17</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike222.tst">crypt-ike222.tst</a></td><td>success</td><td>ike2 with group18</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike223.tst">crypt-ike223.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.2 vrf v1</td><td>ike2 with group22</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike224.tst">crypt-ike224.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.2 vrf v1</td><td>ike2 with group23</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike225.tst">crypt-ike225.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.2 vrf v1</td><td>ike2 with group24</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike226.tst">crypt-ike226.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>ike2 over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike223.tst">crypt-ike223.tst</a></td><td>success</td><td>ike2 with group22</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike224.tst">crypt-ike224.tst</a></td><td>success</td><td>ike2 with group23</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike225.tst">crypt-ike225.tst</a></td><td>success</td><td>ike2 with group24</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike226.tst">crypt-ike226.tst</a></td><td>success</td><td>ike2 over ipsec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp01.tst">crypt-inlsp01.tst</a></td><td>success</td><td>inlsp over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp02.tst">crypt-inlsp02.tst</a></td><td>success</td><td>inlsp over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp03.tst">crypt-inlsp03.tst</a></td><td>success</td><td>inlsp over inlsp</td></tr>

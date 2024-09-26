@@ -613,32 +613,32 @@ qc pass: ike1 with group22
 qc pass: ike1 with group23
 qc pass: ike1 with group24
 qc pass: ike1 over ipsec
-failed: ipv4 in ike2 over ipv4
-failed: ipv4 in ike2 over ipv6
-failed: ipv6 in ike2 over ipv4
-failed: ipv6 in ike2 over ipv6
-failed: ike2 with des
-failed: ike2 with blowfish
-failed: ike2 with 3des
-failed: ike2 with aes128cbc
-failed: ike2 with aes192cbc
-failed: ike2 with aes256cbc
-failed: ike2 with md5
-failed: ike2 with sha1
-failed: ike2 with sha256
-failed: ike2 with sha512
-failed: ike2 with group1
-failed: ike2 with group2
-failed: ike2 with group5
-failed: ike2 with group14
-failed: ike2 with group15
-failed: ike2 with group16
-failed: ike2 with group17
+qc pass: ipv4 in ike2 over ipv4
+qc pass: ipv4 in ike2 over ipv6
+qc pass: ipv6 in ike2 over ipv4
+qc pass: ipv6 in ike2 over ipv6
+qc pass: ike2 with des
+qc pass: ike2 with blowfish
+qc pass: ike2 with 3des
+qc pass: ike2 with aes128cbc
+qc pass: ike2 with aes192cbc
+qc pass: ike2 with aes256cbc
+qc pass: ike2 with md5
+qc pass: ike2 with sha1
+qc pass: ike2 with sha256
+qc pass: ike2 with sha512
+qc pass: ike2 with group1
+qc pass: ike2 with group2
+qc pass: ike2 with group5
+qc pass: ike2 with group14
+qc pass: ike2 with group15
+qc pass: ike2 with group16
+qc pass: ike2 with group17
 qc pass: ike2 with group18
-failed: ike2 with group22
-failed: ike2 with group23
-failed: ike2 with group24
-failed: ike2 over ipsec
+qc pass: ike2 with group22
+qc pass: ike2 with group23
+qc pass: ike2 with group24
+qc pass: ike2 over ipsec
 qc pass: inlsp over ipv4
 qc pass: inlsp over ipv6
 qc pass: inlsp over inlsp
