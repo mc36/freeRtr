@@ -455,7 +455,11 @@ public class servP4langUtil {
         if (tx.keyHash == null) {
             return "";
         }
-        return " " + rx.encrSize + " " + rx.hashSize + " " + ts.encr2str() + " " + ts.hash2str() + servP4langUtil.getIpsecParam(rx) + servP4langUtil.getIpsecParam(tx);
+        String a = ts.hash2str();
+        if (ts.isAead()) {
+            a = "none";
+        }
+        return " " + rx.encrSize + " " + rx.tagSize + " " + rx.hashSize + " " + ts.encr2str() + " " + a + servP4langUtil.getIpsecParam(rx) + servP4langUtil.getIpsecParam(tx);
     }
 
     /**

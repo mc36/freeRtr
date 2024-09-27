@@ -16063,3 +16063,9 @@ qc pass: ike2 with group22
 qc pass: ike2 with group23
 qc pass: ike2 with group24
 qc pass: ike2 over ipsec
+---------------------------------- 2024-09-27 11:19:55 24.9.27
+qc pass: ike2 with aes128gcm
+qc pass: ike2 with aes192gcm
+qc pass: ike2 with aes256gcm
+qc pass: interop1: ike2 with aes128gcm
+qc pass: interop1: ike2 with aes256gcm

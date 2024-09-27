@@ -535,7 +535,12 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
     int seq = neigh_res->seq;
     neigh_res->seq++;
     int tmp = *bufS - *bufP + preBuff;
-    int tmp2 = neigh_res->encrBlkLen - ((tmp + 2) % neigh_res->encrBlkLen);
+    int tmp2;
+    if (neigh_res->encrTagLen > 0) {
+        tmp2 = 4 - ((tmp + 2) & 3);
+    } else {
+        tmp2 = neigh_res->encrBlkLen - ((tmp + 2) % neigh_res->encrBlkLen);
+    }
     for (int i=0; i<tmp2; i++) {
         bufD[*bufP + tmp + i] = i+1;
     }
@@ -545,6 +550,24 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
     bufD[*bufP + tmp + 1] = ethtyp;
     tmp += 2;
     *bufS += 2;
+    if (neigh_res->encrTagLen > 0) {
+        unsigned char bufC[16];
+        memcpy(&bufC[0], neigh_res->hashKeyDat, 4);
+        RAND_bytes(&bufC[4], 8);
+        put32msb(bufD, *bufP - 16, neigh_res->spi);
+        put32msb(bufD, *bufP - 12, seq);
+        memcpy(&bufD[*bufP - 8], &bufC[4], 8);
+        if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
+        if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, bufC) != 1) return 1;
+        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
+        if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) return 1;
+        if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+        if (EVP_EncryptFinal_ex(encrCtx, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
+        if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, neigh_res->encrTagLen, &bufD[*bufP + tmp]) != 1) return 1;
+        *bufS += neigh_res->encrTagLen;
+        *bufP -= 16;
+        return 0;
+    }
     *bufP -= neigh_res->encrBlkLen;
     RAND_bytes(&bufD[*bufP], neigh_res->encrBlkLen);
     tmp += neigh_res->encrBlkLen;
@@ -1108,11 +1131,24 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         bufP += 8;                                                  \
         tmp -= 8;                                                   \
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
-        if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
-        if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper; \
-        if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-        bufP += tun_res->encrBlkLen;                                \
-        tmp -= tun_res->encrBlkLen;                                 \
+        if (tun_res->encrTagLen > 0) {                              \
+            memcpy(&bufC[0], tun_res->hashKeyDat, 4);               \
+            memcpy(&bufC[4], &bufD[bufP], 8);                       \
+            bufP += 8;                                              \
+            tmp -= 8;                                               \
+            if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufC) != 1) doDropper;     \
+            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;     \
+            if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[bufP - 16], 8) != 1) doDropper;       \
+            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+            bufS -= tun_res->encrTagLen;                            \
+            tmp -= tun_res->encrTagLen;                             \
+        } else {                                                    \
+            if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;       \
+            if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;     \
+            if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
+            bufP += tun_res->encrBlkLen;                            \
+            tmp -= tun_res->encrBlkLen;                             \
+        }                                                           \
         ethtyp = bufD[bufP + tmp - 1];                              \
         bufS -= bufD[bufP + tmp - 2] + 2;                           \
         switch (ethtyp) {                                           \

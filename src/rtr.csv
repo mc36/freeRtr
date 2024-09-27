@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.9.27-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-09-27 07:52:03, took 00:12:41, with 60 workers, on 3534 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2024-09-27 11:33:07, took 00:13:11, with 60 workers, on 3539 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -643,6 +643,9 @@ http://sources.freertr.org/cfg/crypt-ike223.tst;crypt-ike223.tst;success;ike2 wi
 http://sources.freertr.org/cfg/crypt-ike224.tst;crypt-ike224.tst;success;ike2 with group23
 http://sources.freertr.org/cfg/crypt-ike225.tst;crypt-ike225.tst;success;ike2 with group24
 http://sources.freertr.org/cfg/crypt-ike226.tst;crypt-ike226.tst;success;ike2 over ipsec
+http://sources.freertr.org/cfg/crypt-ike227.tst;crypt-ike227.tst;success;ike2 with aes128gcm
+http://sources.freertr.org/cfg/crypt-ike228.tst;crypt-ike228.tst;success;ike2 with aes192gcm
+http://sources.freertr.org/cfg/crypt-ike229.tst;crypt-ike229.tst;success;ike2 with aes256gcm
 http://sources.freertr.org/cfg/crypt-inlsp01.tst;crypt-inlsp01.tst;success;inlsp over ipv4
 http://sources.freertr.org/cfg/crypt-inlsp02.tst;crypt-inlsp02.tst;success;inlsp over ipv6
 http://sources.freertr.org/cfg/crypt-inlsp03.tst;crypt-inlsp03.tst;success;inlsp over inlsp
@@ -976,6 +979,8 @@ http://sources.freertr.org/cfg/intop1-ike212.tst;intop1-ike212.tst;success;inter
 http://sources.freertr.org/cfg/intop1-ike213.tst;intop1-ike213.tst;success;interop1: ike2 with group15
 http://sources.freertr.org/cfg/intop1-ike214.tst;intop1-ike214.tst;success;interop1: ike2 with group16
 http://sources.freertr.org/cfg/intop1-ike215.tst;intop1-ike215.tst;success;interop1: ike2 with group24
+http://sources.freertr.org/cfg/intop1-ike216.tst;intop1-ike216.tst;success;interop1: ike2 with aes128gcm
+http://sources.freertr.org/cfg/intop1-ike217.tst;intop1-ike217.tst;success;interop1: ike2 with aes256gcm
 http://sources.freertr.org/cfg/intop1-isis01.tst;intop1-isis01.tst;success;interop1: point2point isis
 http://sources.freertr.org/cfg/intop1-isis02.tst;intop1-isis02.tst;success;interop1: isis dis
 http://sources.freertr.org/cfg/intop1-isis03.tst;intop1-isis03.tst;success;interop1: isis nondis

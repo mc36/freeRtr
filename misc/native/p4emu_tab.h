@@ -284,6 +284,7 @@ struct neigh_entry {
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
+    int encrTagLen;
     int hashBlkLen;
 #endif
     int seq;
@@ -645,6 +646,7 @@ struct tun4_entry {
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
+    int encrTagLen;
     int hashBlkLen;
 #endif
     int seq;
@@ -679,6 +681,7 @@ struct tun6_entry {
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
+    int encrTagLen;
     int hashBlkLen;
 #endif
     int seq;
