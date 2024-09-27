@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v24.9.25-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v24.9.27-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -250,6 +250,7 @@ http://sources.freertr.org/cfg/p4lang-crypt129.tst;p4lang-crypt129.tst;ok;ok;ok;
 http://sources.freertr.org/cfg/p4lang-crypt130.tst;p4lang-crypt130.tst;ok;ok;ok;ok;not ok;p4lang: sgt qinq egress access list
 http://sources.freertr.org/cfg/p4lang-crypt131.tst;p4lang-crypt131.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on qinq port
 http://sources.freertr.org/cfg/p4lang-crypt132.tst;p4lang-crypt132.tst;ok;not ok;ok;not ok;not ok;p4lang: packout on macsec qinq port
+http://sources.freertr.org/cfg/p4lang-crypt133.tst;p4lang-crypt133.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec with static key
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;ok;ok;ok;ok;ok;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;ok;ok;ok;ok;ok;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;ok;ok;ok;ok;ok;p4lang: mpls core

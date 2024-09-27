@@ -1369,8 +1369,14 @@ public class packIke {
         esp.hashSize = transform.getHashS();
         int i = transform.getKeyS();
         int p;
+        int o;
+        if (transform.isAead()) {
+            o = 4;
+        } else {
+            o = esp.hasher.getHashSize();
+        }
         if (init) {
-            p = i + esp.hasher.getHashSize();
+            p = i + o;
         } else {
             p = 0;
         }
@@ -1378,9 +1384,11 @@ public class packIke {
         bits.byteCopy(buf, p, last, 0, last.length);
         ciph.init(last, new byte[ciph.getBlockSize()], encr);
         esp.keyEncr = last;
-        last = new byte[esp.hasher.getHashSize()];
+        last = new byte[o];
         bits.byteCopy(buf, p + i, last, 0, last.length);
-        esp.hasher = transform.getHmac(last);
+        if (!transform.isAead()) {
+            esp.hasher = transform.getHmac(last);
+        }
         esp.cipher = ciph;
         esp.keyHash = last;
         esp.doInit();
