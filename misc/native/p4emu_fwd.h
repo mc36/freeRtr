@@ -677,7 +677,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 
 
-void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
+void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
     struct vlanout_entry vlanout_ntry;
     struct bundle_entry bundle_ntry;
@@ -726,7 +726,9 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         putMacAddr;
         bufS = bufS - bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[bufP], bufS);
-        if (bufB == NULL) return;
+        unsigned char bufA[16384];
+        unsigned char bufB[16384];
+        unsigned char bufC[16384];
         processDataPacket(bufA, bufB, bufC, bufD, bufS, port, prt, encrCtx, hashCtx);
         return;
     }
@@ -760,7 +762,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
 
 
 #define doMlpppEnd                                              \
-    send2subif(neigh_res->port, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufD, bufP, bufS, bufH, ethtyp, sgt, port);   \
+    send2subif(neigh_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);   \
     if (rem < 1) break;                                         \
     }
 
@@ -920,7 +922,7 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
     default:
         doDropper;
     }
-    send2subif(neigh_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+    send2subif(neigh_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
 drop:
     return;
 }
@@ -972,7 +974,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
             memcpy(&bufH[0], &flood_res->macs, 12);
-            send2subif(flood_res->trg, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2subif(flood_res->trg, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
         case 2: // mpls
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1500,7 +1502,7 @@ ethtyp_rx:
             memcpy(&bufH[0], &bufD[preBuff], 12);
             int tmpP = preBuff;
             int tmpE = ethtyp;
-            send2subif(port2vrf_res->monTarget, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2subif(port2vrf_res->monTarget, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
         }
     }
     switch (port2vrf_res->command) {
@@ -1553,7 +1555,7 @@ ethtyp_rx:
     case 4: // loconnifc
         bufP -= 2;
         memcpy(&bufH[0], &bufD[preBuff], 12);
-        send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+        send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
         return;
     case 5: // loconnnei
         bufP -= 2;
@@ -1654,7 +1656,7 @@ neigh_tx:
         case 4: // xconn
             memcpy(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
-            send2subif(mpls_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(mpls_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
             return;
         case 5: // vpls
             memcpy(&bufH[0], &bufD[bufP], 12);
@@ -2304,7 +2306,7 @@ bridgevpls_rx:
         bufP -= 2;
         switch (bridge_res->command) {
         case 1: // port
-            send2subif(bridge_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(bridge_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
             return;
         case 2: // vpls
             bufP -= 12;
@@ -2466,7 +2468,7 @@ nsh_rx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             memcpy(&bufH[0], &nsh_res->macs, 12);
-            send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
             return;
         case 2: // vrf
             bufP += ((ttl & 0x3f) * 4);
@@ -2530,5 +2532,5 @@ void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *buf
     int ethtyp = get16msb(bufD, preBuff + 16);
     int bufP = preBuff + 16;
     memcpy(&bufC[0], &bufD[preBuff + 4], 12);
-    send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufC, ethtyp, -1, cpuPort);
+    send2subif(prt, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufC, ethtyp, -1, cpuPort);
 }
