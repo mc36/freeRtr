@@ -1374,7 +1374,7 @@ public class packIke {
             o = 4;
         } else {
             o = esp.hasher.getHashSize();
-            esp.hashSize = o;
+            esp.hashSize = transform.getHashS();
         }
         if (init) {
             p = i + o;

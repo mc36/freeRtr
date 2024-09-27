@@ -66,6 +66,8 @@ qc pass: interop1: ike2 with group14
 qc pass: interop1: ike2 with group15
 qc pass: interop1: ike2 with group16
 qc pass: interop1: ike2 with group24
+qc pass: interop1: ike2 with aes128gcm
+qc pass: interop1: ike2 with aes256gcm
 qc pass: interop1: point2point isis
 qc pass: interop1: isis dis
 qc pass: interop1: isis nondis
