@@ -5,6 +5,7 @@ cd openwrt*
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 mkdir package/p4xdp
+ln -s ../../package/p4xdp feeds/base/p4xdp
 cp -r ../misc/native package/p4xdp/
 cp ../misc/openwrt-p4xdp/* package/p4xdp/
 cd package/p4xdp/native
