@@ -95,7 +95,10 @@ int ifaceId[maxPorts];
 
 void doIfaceLoop(int * param) {
     int port = *param;
-    unsigned char bufD[totBuff];
+    unsigned char bufA[16384];
+    unsigned char bufB[16384];
+    unsigned char bufC[16384];
+    unsigned char bufD[16384];
     int bufS;
     EVP_CIPHER_CTX *encrCtx;
     EVP_MD_CTX *hashCtx;
@@ -103,12 +106,12 @@ void doIfaceLoop(int * param) {
     if (port == cpuPort) {
         for (;;) {
             packGet;
-            processCpuPack(&bufD[0], bufS, encrCtx, hashCtx);
+            processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
         }
     } else {
         for (;;) {
             packGet;
-            processDataPacket(&bufD[0], bufS, port, port, encrCtx, hashCtx);
+            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
         }
     }
     err("port thread exited");

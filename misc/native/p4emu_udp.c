@@ -48,7 +48,10 @@ void err(char*buf) {
 void doIfaceLoop(int * param) {
     int port = *param;
     int commSock = sockets[port];
-    unsigned char bufD[totBuff];
+    unsigned char bufA[16384];
+    unsigned char bufB[16384];
+    unsigned char bufC[16384];
+    unsigned char bufD[16384];
     struct sockaddr_in addrTmp;
     unsigned int addrLen;
     int bufS;
@@ -61,7 +64,7 @@ void doIfaceLoop(int * param) {
             bufS = sizeof(bufD) - preBuff;
             bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
             if (bufS < 0) break;
-            processCpuPack(&bufD[0], bufS, encrCtx, hashCtx);
+            processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
         }
     } else {
         for (;;) {
@@ -69,7 +72,7 @@ void doIfaceLoop(int * param) {
             bufS = sizeof(bufD) - preBuff;
             bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
             if (bufS < 0) break;
-            processDataPacket(&bufD[0], bufS, port, port, encrCtx, hashCtx);
+            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
         }
     }
     err("port thread exited");

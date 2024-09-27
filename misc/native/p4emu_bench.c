@@ -43,18 +43,21 @@ void err(char*buf) {
 
 
 int main(int argc, char **argv) {
-    unsigned char bufD[totBuff];
-    unsigned char origD[totBuff];
-    *((int*)(&bufD[0])) = 1;
+    unsigned char bufA[16384];
+    unsigned char bufB[16384];
+    unsigned char bufC[16384];
+    unsigned char bufD[16384];
+    unsigned char origD[16384];
+    *((int*)(&bufC[0])) = 1;
     printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
-    if (bufD[0] == 1) printf("lsb");
+    if (bufC[0] == 1) printf("lsb");
     else printf("msb");
     printf("\n");
     fflush(stdout);
     int origS = 0;
     EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
     EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
-    processCpuPack(&bufD[0], origS, encrCtx, hashCtx);
+    processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], origS, encrCtx, hashCtx);
     if (argc < 3) err("usage: <commands> <count> <byte0> [byteN]");
     int count = atoi(argv[2]);
     for (int i = 3; i < argc; i++) {
@@ -80,7 +83,7 @@ int main(int argc, char **argv) {
     clock_t begin = clock();
     for (int i = 0; i < count; i++) {
         memcpy(&bufD[preBuff], &origD[0], origS);
-        processDataPacket(&bufD[0], origS, 0, 0, encrCtx, hashCtx);
+        processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], origS, 0, 0, encrCtx, hashCtx);
     }
     clock_t end = clock();
     double spent = (double)(end - begin) / (double)CLOCKS_PER_SEC;

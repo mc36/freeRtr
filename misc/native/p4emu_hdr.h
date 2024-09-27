@@ -21,7 +21,6 @@ typedef char EVP_PKEY;
 #define preBuff 512
 #define minBuff 128
 #define maxBuff 1024
-#define totBuff 16384
 
 extern int dataPorts;
 extern int cpuPort;
@@ -37,8 +36,8 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len);
 extern void initIface(int port, char *name);
 extern int initTables();
 extern int hashDataPacket(unsigned char *bufP);
-extern void processDataPacket(unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
-extern void processCpuPack(unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
+extern void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
+extern void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
 extern int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
 extern void doStatRound(FILE *commands, int round);
 extern int doConsoleCommand(unsigned char*buf);

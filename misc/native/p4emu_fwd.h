@@ -551,14 +551,13 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
     tmp += 2;
     *bufS += 2;
     if (neigh_res->encrTagLen > 0) {
-        unsigned char bufC[preBuff];
-        memcpy(&bufC[0], neigh_res->hashKeyDat, 4);
-        RAND_bytes(&bufC[4], 8);
+        memcpy(&bufD[0], neigh_res->hashKeyDat, 4);
+        RAND_bytes(&bufD[4], 8);
         put32msb(bufD, *bufP - 16, neigh_res->spi);
         put32msb(bufD, *bufP - 12, seq);
-        memcpy(&bufD[*bufP - 8], &bufC[4], 8);
+        memcpy(&bufD[*bufP - 8], &bufD[4], 8);
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
-        if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, bufC) != 1) return 1;
+        if (EVP_EncryptInit_ex(encrCtx, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, bufD) != 1) return 1;
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
         if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) return 1;
         if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
@@ -613,7 +612,6 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 #ifndef HAVE_NOCRYPTO
     port2vrf_res->mcscPackTx++;
     port2vrf_res->mcscByteTx += *bufS;
-    unsigned char bufC[preBuff];
     int seq = port2vrf_res->mcscSeqTx++;
     int tmp = *bufS - *bufP + preBuff;
     int tmp2 = tmp % port2vrf_res->mcscEncrBlkLen;
@@ -628,19 +626,19 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
         tmp2 = tmp;
     }
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
-    memcpy(&bufC[0], port2vrf_res->mcscIvTxKeyDat, port2vrf_res->mcscIvRxKeyLen);
-    put32msb(bufC, port2vrf_res->mcscIvRxKeyLen, seq);
-    if (EVP_EncryptInit_ex(encrCtx, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufC) != 1) return 1;
+    memcpy(&bufD[0], port2vrf_res->mcscIvTxKeyDat, port2vrf_res->mcscIvRxKeyLen);
+    put32msb(bufD, port2vrf_res->mcscIvRxKeyLen, seq);
+    if (EVP_EncryptInit_ex(encrCtx, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufD) != 1) return 1;
     if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
-    put16msb(bufC, 0, port2vrf_res->mcscEthtyp);
-    bufC[2] = 0x0c; // tci
-    bufC[3] = tmp2; // sl
-    put32msb(bufC, 4, seq);
+    put16msb(bufD, 0, port2vrf_res->mcscEthtyp);
+    bufD[2] = 0x0c; // tci
+    bufD[3] = tmp2; // sl
+    put32msb(bufD, 4, seq);
     if (port2vrf_res->mcscNeedAead != 0) {
         if (port2vrf_res->mcscNeedMacs != 0) {
             if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufH[0], 12) != 1) return 1;
         }
-        if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufC[0], 8) != 1) return 1;
+        if (EVP_EncryptUpdate(encrCtx, NULL, &tmp2, &bufD[0], 8) != 1) return 1;
         if (EVP_EncryptUpdate(encrCtx, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
         if (EVP_EncryptFinal_ex(encrCtx, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
         if (EVP_CIPHER_CTX_ctrl(encrCtx, EVP_CTRL_GCM_GET_TAG, port2vrf_res->mcscEncrTagLen, &bufD[*bufP + tmp]) != 1) return 1;
@@ -655,7 +653,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
         if (port2vrf_res->mcscNeedMacs != 0) {
             if (EVP_DigestSignUpdate(hashCtx, &bufH[0], 12) != 1) return 1;
         }
-        if (EVP_DigestSignUpdate(hashCtx, &bufC[0], 8) != 1) return 1;
+        if (EVP_DigestSignUpdate(hashCtx, &bufD[0], 8) != 1) return 1;
         if (EVP_DigestSignUpdate(hashCtx, &bufD[*bufP], tmp) != 1) return 1;
         size_t sizt = preBuff;
         if (EVP_DigestSignFinal(hashCtx, &bufD[*bufP + tmp], &sizt) != 1) return 1;
@@ -663,7 +661,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     }
     *bufP -= 8;
     *ethtyp = port2vrf_res->mcscEthtyp;
-    memcpy(&bufD[*bufP], &bufC[0], 8);
+    memcpy(&bufD[*bufP], &bufD[0], 8);
     return 0;
 #else
     return 1;
@@ -677,7 +675,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 
 
-void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
+void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
     struct vlanout_entry vlanout_ntry;
     struct bundle_entry bundle_ntry;
@@ -726,7 +724,8 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         putMacAddr;
         bufS = bufS - bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[bufP], bufS);
-        processDataPacket(bufD, bufS, port, prt, encrCtx, hashCtx);
+        if (bufB == NULL) return;
+        processDataPacket(bufA, bufB, bufC, bufD, bufS, port, prt, encrCtx, hashCtx);
         return;
     }
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
@@ -759,17 +758,16 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
 
 
 #define doMlpppEnd                                              \
-    send2subif(neigh_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);   \
+    send2subif(neigh_res->port, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufD, bufP, bufS, bufH, ethtyp, sgt, port);   \
     if (rem < 1) break;                                         \
     }
 
 
 
-void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
+void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
     int tmp;
     int pos;
     int rem;
-    unsigned char bufC[totBuff];
     neigh_res->pack++;
     neigh_res->byte += bufS;
     memcpy(&bufH[0], &neigh_res->macs, 12);
@@ -920,7 +918,7 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
     default:
         doDropper;
     }
-    send2subif(neigh_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+    send2subif(neigh_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
 drop:
     return;
 }
@@ -955,11 +953,10 @@ drop:
 
 
 
-void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int label, int port) {
+void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int label, int port) {
     struct neigh_entry neigh_ntry;
     struct neigh_entry *neigh_res;
     struct flood_entry *flood_res;
-    unsigned char bufC[totBuff];
     for (int i = 0; i < flood.size; i++) {
         flood_res = table_get(&flood, i);
         int tmpP = preBuff;
@@ -973,7 +970,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
             memcpy(&bufH[0], &flood_res->macs, 12);
-            send2subif(flood_res->trg, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2subif(flood_res->trg, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
         case 2: // mpls
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -986,7 +983,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
         case 3: // bier mask
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1003,7 +1000,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
         case 4: // bier set
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1040,7 +1037,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
         case 5: // neighbor
             tmpE = ethtyp;
@@ -1051,7 +1048,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
             break;
         }
     }
@@ -1347,11 +1344,10 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
 
 
 
-void processDataPacket(unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
     unsigned char bufH[preBuff];
-    unsigned char bufC[totBuff];
     struct nsh_entry nsh_ntry;
     struct polkaPoly_entry polkaPoly_ntry;
     struct polkaIdx_entry polkaIdx_ntry;
@@ -1502,7 +1498,7 @@ ethtyp_rx:
             memcpy(&bufH[0], &bufD[preBuff], 12);
             int tmpP = preBuff;
             int tmpE = ethtyp;
-            send2subif(port2vrf_res->monTarget, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2subif(port2vrf_res->monTarget, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
         }
     }
     switch (port2vrf_res->command) {
@@ -1555,7 +1551,7 @@ ethtyp_rx:
     case 4: // loconnifc
         bufP -= 2;
         memcpy(&bufH[0], &bufD[preBuff], 12);
-        send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+        send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
         return;
     case 5: // loconnnei
         bufP -= 2;
@@ -1651,12 +1647,12 @@ nethtyp_tx:
             if (index < 0) doDropper;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
             return;
         case 4: // xconn
             memcpy(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
-            send2subif(mpls_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(mpls_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
             return;
         case 5: // vpls
             memcpy(&bufH[0], &bufD[bufP], 12);
@@ -1667,13 +1663,13 @@ neigh_tx:
         case 6: // punt
             doCpuing;
         case 7: // dup
-            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, (label & 0xf00) | ttl, port);
+            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, (label & 0xf00) | ttl, port);
             if (mpls_res->swap != 0) goto mpls_rou;
             return;
         case 8: // bier
             if ((label & 0x100) == 0) doDropper;
             if (bufD[bufP] != 0x50) doDropper;
-            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, (label & 0xf00) | ttl, port);
+            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, (label & 0xf00) | ttl, port);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, tmp2);
             if (tmp2 == 0) return;
             bufP += 8;
@@ -1929,7 +1925,7 @@ ipv4_tx:
                 if (mroute4_res->ingr != prt) doDropper;
                 mroute4_res->pack++;
                 mroute4_res->byte += bufS;
-                doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, 0x100 | ttl, port);
+                doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, 0x100 | ttl, port);
                 if (mroute4_res->local != 0) doCpuing;
                 return;
             }
@@ -2233,7 +2229,7 @@ ipv6_tx:
                 if (mroute6_res->ingr != prt) doDropper;
                 mroute6_res->pack++;
                 mroute6_res->byte += bufS;
-                doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, 0x100 | ttl, port);
+                doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, 0x100 | ttl, port);
                 if (mroute6_res->local != 0) doCpuing;
                 return;
             }
@@ -2306,7 +2302,7 @@ bridgevpls_rx:
         bufP -= 2;
         switch (bridge_res->command) {
         case 1: // port
-            send2subif(bridge_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(bridge_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
             return;
         case 2: // vpls
             bufP -= 12;
@@ -2434,7 +2430,7 @@ bridgevpls_rx:
             int tmpE = ethtyp;
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
         }
         if ((tmp & 1) == 0) return;
         ethtyp = get16msb(bufD, bufP + 2);
@@ -2468,7 +2464,7 @@ nsh_rx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             memcpy(&bufH[0], &nsh_res->macs, 12);
-            send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
             return;
         case 2: // vrf
             bufP += ((ttl & 0x3f) * 4);
@@ -2524,14 +2520,13 @@ cpu:
 }
 
 
-void processCpuPack(unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[cpuPort]++;
     byteRx[cpuPort] += bufS;
     int prt = get32msb(bufD, preBuff + 0);
     int hash = get32msb(bufD, preBuff + 4) ^ get32msb(bufD, preBuff + 8) ^ get32msb(bufD, preBuff + 12);
     int ethtyp = get16msb(bufD, preBuff + 16);
     int bufP = preBuff + 16;
-    unsigned char bufH[preBuff];
-    memcpy(&bufH[0], &bufD[preBuff + 4], 12);
-    send2subif(prt, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, -1, cpuPort);
+    memcpy(&bufC[0], &bufD[preBuff + 4], 12);
+    send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufC, ethtyp, -1, cpuPort);
 }
