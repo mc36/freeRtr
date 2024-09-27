@@ -270,13 +270,11 @@ public class packEsp implements ipPrt {
         if (hasher == null) {
             byte[] buf = new byte[12];
             bits.byteCopy(keyHash, 0, buf, 0, 4);
-            pck.getCopy(buf, 4, size, 8);
+            pck.getCopy(buf, 4, size, buf.length - 4);
             cipher.init(keyEncr, buf, false);
             pck.authData(cipher, 0, size);
-            pck.getSkip(8);
-            siz -= 8;
-            logger.debug("key " + bits.byteDump(keyEncr, 0, -1));///////////
-            logger.debug("iv " + bits.byteDump(buf, 0, -1));//////////////
+            pck.getSkip(buf.length - 4);
+            siz -= buf.length - 4;
         } else {
             hasher.init();
             pck.hashData(hasher, 0, siz);
@@ -363,7 +361,11 @@ public class packEsp implements ipPrt {
         pck.getSkip(2);
         seqTx++;
         int o = pck.dataSize() + 2;
-        o = encrSize - (o % encrSize);
+        if (hasher == null) {
+            o = 4 - (o & 3);
+        } else {
+            o = encrSize - (o % encrSize);
+        }
         for (int i = 0; i < o; i++) {
             pck.putByte(i, i + 1);
         }
@@ -372,22 +374,40 @@ public class packEsp implements ipPrt {
         pck.putByte(1, getProto());
         pck.putSkip(2);
         pck.merge2end();
-        for (int i = 0; i < encrSize; i++) {
-            pck.putByte(i, bits.randomB());
+        if (hasher == null) {
+            byte[] buf = new byte[12];
+            bits.byteCopy(keyHash, 0, buf, 0, 4);
+            for (int i = 4; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
+            }
+            cipher.init(keyEncr, buf, true);
+            pck.msbPutD(0, spi);
+            pck.msbPutD(4, seqTx);
+            pck.putSkip(size);
+            pck.authHead(cipher, 0, size);
+            pck.putCopy(buf, 4, 0, buf.length - 4);
+            pck.putSkip(buf.length - 4);
+            o = pck.encrData(cipher, 0, pck.dataSize());
+            pck.setDataSize(o);
+            pck.merge2beg();
+        } else {
+            for (int i = 0; i < encrSize; i++) {
+                pck.putByte(i, bits.randomB());
+            }
+            pck.putSkip(encrSize);
+            pck.merge2beg();
+            pck.encrData(cipher, 0, pck.dataSize());
+            pck.msbPutD(0, spi);
+            pck.msbPutD(4, seqTx);
+            pck.putSkip(size);
+            pck.merge2beg();
+            hasher.init();
+            pck.hashData(hasher, 0, pck.dataSize());
+            byte[] buf = hasher.finish();
+            pck.putCopy(buf, 0, 0, hashSize);
+            pck.putSkip(hashSize);
+            pck.merge2end();
         }
-        pck.putSkip(encrSize);
-        pck.merge2beg();
-        pck.encrData(cipher, 0, pck.dataSize());
-        pck.msbPutD(0, spi);
-        pck.msbPutD(4, seqTx);
-        pck.putSkip(size);
-        pck.merge2beg();
-        hasher.init();
-        pck.hashData(hasher, 0, pck.dataSize());
-        byte[] buf = hasher.finish();
-        pck.putCopy(buf, 0, 0, hashSize);
-        pck.putSkip(hashSize);
-        pck.merge2end();
         pck.IPsrc.setAddr(fwdIface.addr);
         pck.IPtrg.setAddr(peerAddr);
         pck.putDefaults();
