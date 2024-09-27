@@ -200,9 +200,6 @@ void doMainLoop() {
 
 
 static int doPacketLoop(__rte_unused void *arg) {
-    unsigned char bufA[totBuff];
-    unsigned char bufB[totBuff];
-    unsigned char bufC[totBuff];
     unsigned char bufD[totBuff];
     unsigned char * bufP;
     int bufS;
@@ -244,13 +241,13 @@ static int doPacketLoop(__rte_unused void *arg) {
                 if (port == cpuPort) {
                     for (i = 0; i < num; i++) {
                         mbuf2mybuf(mbufs[i]);
-                        processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+                        processCpuPack(&bufD[0], bufS, encrCtx, hashCtx);
                     }
                     continue;
                 }
                 for (i = 0; i < num; i++) {
                     mbuf2mybuf(mbufs[i]);
-                    processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+                    processDataPacket(&bufD[0], bufS, port, port, encrCtx, hashCtx);
                 }
             }
             if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
@@ -268,7 +265,7 @@ static int doPacketLoop(__rte_unused void *arg) {
             for (i = 0; i < num; i++) {
                 port = mbufs[i]->port;
                 mbuf2mybuf(mbufs[i]);
-                processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+                processDataPacket(&bufD[0], bufS, port, port, encrCtx, hashCtx);
             }
         }
     } else {
@@ -291,7 +288,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 if (port == cpuPort) {
                     for (i = 0; i < num; i++) {
                         mbuf2mybuf(mbufs[i]);
-                        processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+                        processCpuPack(&bufD[0], bufS, encrCtx, hashCtx);
                     }
                     continue;
                 }

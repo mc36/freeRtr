@@ -66,13 +66,13 @@ int hashDataPacket(unsigned char *bufP) {
 }
 
 
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     put16msb(bufD, preBuff - 2, port);
     sendPack(&bufD[preBuff - 2], bufS + 2, cpuPort);
 }
 
 
-void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processCpuPack(unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     int prt = get16msb(bufD, preBuff);
     if (prt < 0) return;
     if (prt >= dataPorts) return;

@@ -55,9 +55,6 @@ int ifaceId[maxPorts];
 
 void doIfaceLoop(int * param) {
     int port = *param;
-    unsigned char bufA[totBuff];
-    unsigned char bufB[totBuff];
-    unsigned char bufC[totBuff];
     unsigned char bufD[totBuff];
     const unsigned char *pack;
     int bufS;
@@ -74,7 +71,7 @@ void doIfaceLoop(int * param) {
             bufS = head.caplen;
             if (bufS < 1) continue;
             memcpy(&bufD[preBuff], pack, bufS);
-            processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+            processCpuPack(&bufD[0], bufS, encrCtx, hashCtx);
             fail = 0;
         }
     } else {
@@ -85,7 +82,7 @@ void doIfaceLoop(int * param) {
             bufS = head.caplen;
             if (bufS < 1) continue;
             memcpy(&bufD[preBuff], pack, bufS);
-            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+            processDataPacket(&bufD[0], bufS, port, port, encrCtx, hashCtx);
             fail = 0;
         }
     }

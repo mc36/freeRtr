@@ -726,10 +726,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         putMacAddr;
         bufS = bufS - bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[bufP], bufS);
-        unsigned char bufA[totBuff];
-        unsigned char bufB[totBuff];
-        unsigned char bufC[totBuff];
-        processDataPacket(bufA, bufB, bufC, bufD, bufS, port, prt, encrCtx, hashCtx);
+        processDataPacket(bufD, bufS, port, prt, encrCtx, hashCtx);
         return;
     }
     if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
@@ -1350,10 +1347,11 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
 
 
 
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[port]++;
     byteRx[port] += bufS;
     unsigned char bufH[preBuff];
+    unsigned char bufC[totBuff];
     struct nsh_entry nsh_ntry;
     struct polkaPoly_entry polkaPoly_ntry;
     struct polkaIdx_entry polkaIdx_ntry;
@@ -2526,13 +2524,14 @@ cpu:
 }
 
 
-void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processCpuPack(unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[cpuPort]++;
     byteRx[cpuPort] += bufS;
     int prt = get32msb(bufD, preBuff + 0);
     int hash = get32msb(bufD, preBuff + 4) ^ get32msb(bufD, preBuff + 8) ^ get32msb(bufD, preBuff + 12);
     int ethtyp = get16msb(bufD, preBuff + 16);
     int bufP = preBuff + 16;
-    memcpy(&bufC[0], &bufD[preBuff + 4], 12);
-    send2subif(prt, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufC, ethtyp, -1, cpuPort);
+    unsigned char bufH[preBuff];
+    memcpy(&bufH[0], &bufD[preBuff + 4], 12);
+    send2subif(prt, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, -1, cpuPort);
 }
