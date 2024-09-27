@@ -932,6 +932,8 @@ public class packIke {
             if (pckSiz < 0) {
                 return true;
             }
+            pckSiz--;
+            pckSiz -= b1[pckSiz];
             pckDat.setDataSize(0);
             pckDat.putCopy(b1, 0, 0, pckSiz);
             pckDat.putSkip(pckSiz);
@@ -975,6 +977,43 @@ public class packIke {
     public void encryptCreate() {
         encryptDump("tx");
         cryEncrGeneric e = transform.getEncr();
+        if (transform.isAead()) {
+            pckDat.putByte(0, 0);
+            pckDat.putSkip(1);
+            pckDat.merge2end();
+            byte[] b1 = pckDat.getCopy();
+            pckDat.getSkip(b1.length);
+            byte[] b2 = new byte[8];
+            for (int i = 0; i < b2.length; i++) {
+                b2[i] = (byte) bits.randomB();
+            }
+            byte[] b4 = getPart(skeyidE, true, false);
+            byte[] b3 = new byte[4];
+            bits.byteCopy(b4, b4.length - b3.length, b3, 0, b3.length);
+            b2 = bits.byteConcat(b3, b2);
+            b3 = new byte[b4.length - 4];
+            bits.byteCopy(b4, 0, b3, 0, b3.length);
+            int o = e.getTagSize();
+            pckDat.putSkip(b2.length - 4);
+            pckDat.putSkip(b1.length);
+            pckDat.putSkip(o);
+            int i = pckDat.dataSize() + pckDat.headSize();
+            headerWrite(payEncrypt);
+            headerCreate();
+            pckDat.setDataSize(pckDat.dataSize() - i);
+            b4 = pckDat.getCopy();
+            pckDat.getSkip(headSize);
+            e.init(b3, b2, true);
+            e.authAdd(b4);
+            b1 = bits.byteConcat(b1, new byte[o]);
+            e.update(b1, 0, b1.length - o);
+            pckDat.putCopy(b2, 4, 0, b2.length - 4);
+            pckDat.putSkip(b2.length - 4);
+            pckDat.putCopy(b1, 0, 0, b1.length);
+            pckDat.putSkip(b1.length);
+            pckDat.merge2end();
+            return;
+        }
         int o = e.getBlockSize();
         e.init(getPart(skeyidE, true, false), new byte[e.getBlockSize()], true);
         for (int i = 0; i < o; i++) {

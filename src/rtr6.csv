@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.9.19-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-09-19 20:47:15, took 02:00:07, with 10 workers, on 631 cases, 0 failed, 0 traces, 3 retries
+-;-;-;freeRouter v24.9.26-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-09-27 02:06:41, took 02:01:54, with 10 workers, on 632 cases, 0 failed, 0 traces, 4 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -252,6 +252,7 @@ http://sources.freertr.org/cfg/p4lang-crypt129.tst;p4lang-crypt129.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt130.tst;p4lang-crypt130.tst;success;p4lang: sgt qinq egress access list
 http://sources.freertr.org/cfg/p4lang-crypt131.tst;p4lang-crypt131.tst;not applicable;p4lang: packout on qinq port
 http://sources.freertr.org/cfg/p4lang-crypt132.tst;p4lang-crypt132.tst;not applicable;p4lang: packout on macsec qinq port
+http://sources.freertr.org/cfg/p4lang-crypt133.tst;p4lang-crypt133.tst;not applicable;p4lang: macsec with static key
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core

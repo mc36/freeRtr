@@ -248,6 +248,7 @@ qc pass: p4lang: sgt qinq ingress access list
 qc pass: p4lang: sgt qinq egress access list
 qc pass: p4lang: packout on qinq port
 qc pass: p4lang: packout on macsec qinq port
+qc pass: p4lang: macsec with static key
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
