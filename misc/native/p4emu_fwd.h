@@ -551,7 +551,7 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
     tmp += 2;
     *bufS += 2;
     if (neigh_res->encrTagLen > 0) {
-        unsigned char bufC[16];
+        unsigned char bufC[preBuff];
         memcpy(&bufC[0], neigh_res->hashKeyDat, 4);
         RAND_bytes(&bufC[4], 8);
         put32msb(bufD, *bufP - 16, neigh_res->spi);
@@ -593,7 +593,7 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
 }
 
 
-int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufC, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
+int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
     if (sgt < 0) return 0;
     struct port2vrf_entry port2vrf_ntry;
     struct port2vrf_entry *port2vrf_res;
@@ -613,6 +613,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 #ifndef HAVE_NOCRYPTO
     port2vrf_res->mcscPackTx++;
     port2vrf_res->mcscByteTx += *bufS;
+    unsigned char bufC[preBuff];
     int seq = port2vrf_res->mcscSeqTx++;
     int tmp = *bufS - *bufP + preBuff;
     int tmp2 = tmp % port2vrf_res->mcscEncrBlkLen;
@@ -677,7 +678,7 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 
 void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
-    if (macsec_apply(prt, encrCtx, hashCtx, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+    if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
     struct vlanout_entry vlanout_ntry;
     struct bundle_entry bundle_ntry;
     struct vlanout_entry *vlanout_res;
@@ -694,7 +695,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         if (vlanout_res->vlan2 > 0) {
             prt = vlanout_res->port2;
             ethtyp = ETHERTYPE_VLAN;
-            if (macsec_apply(prt, encrCtx, hashCtx, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+            if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
             hash ^= vlanout_res->vlan2;
             bufP -= 2;
             put16msb(bufD, bufP, vlanout_res->vlan2);
@@ -705,7 +706,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         vlanout_res->pack++;
         vlanout_res->byte += bufS;
         ethtyp = ETHERTYPE_VLAN;
-        if (macsec_apply(prt, encrCtx, hashCtx, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+        if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
     }
     bundle_ntry.id = prt;
     index = table_find(&bundle_table, &bundle_ntry);
@@ -729,7 +730,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         processDataPacket(bufA, bufB, bufC, bufD, bufS, port, prt, encrCtx, hashCtx);
         return;
     }
-    if (macsec_apply(prt, encrCtx, hashCtx, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+    if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
     putMacAddr;
     send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
 }
@@ -773,7 +774,7 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
     neigh_res->byte += bufS;
     memcpy(&bufH[0], &neigh_res->macs, 12);
     if (neigh_res->aclport != neigh_res->port) {
-        if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufC, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) doDropper;
+        if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) doDropper;
     }
     switch (neigh_res->command) {
     case 1: // raw ip
