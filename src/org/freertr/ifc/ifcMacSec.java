@@ -381,6 +381,7 @@ public class ifcMacSec implements Runnable {
             logger.info("bad aead on " + etht);
             return true;
         }
+        pck.setDataSize(siz);
         cntr.rx(pck);
         return false;
     }

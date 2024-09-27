@@ -1366,7 +1366,7 @@ public class packIke {
         cryEncrGeneric ciph = transform.getEncr();
         esp.hasher = transform.getHash();
         esp.encrSize = ciph.getBlockSize();
-        esp.hashSize = transform.getHashS();
+        esp.tagSize = ciph.getTagSize();
         int i = transform.getKeyS();
         int p;
         int o;
@@ -1374,6 +1374,7 @@ public class packIke {
             o = 4;
         } else {
             o = esp.hasher.getHashSize();
+            esp.hashSize = o;
         }
         if (init) {
             p = i + o;

@@ -31,6 +31,11 @@ public class packEsp implements ipPrt {
     public final static int protoNum = 50;
 
     /**
+     * header size
+     */
+    public final static int size = 8;
+
+    /**
      * ipv6 sa
      */
     public boolean ipv6 = false;
@@ -69,6 +74,11 @@ public class packEsp implements ipPrt {
      * size of cipher
      */
     public int encrSize;
+
+    /**
+     * tag size
+     */
+    public int tagSize;
 
     /**
      * encryption keys
@@ -252,30 +262,50 @@ public class packEsp implements ipPrt {
             }
         }
         int siz = pck.dataSize() - hashSize;
-        if (siz < 8) {
+        if (siz < size) {
             logger.info("too small from " + peerAddr);
             cntr.drop(pck, counter.reasons.tooSmall);
             return;
         }
-        hasher.init();
-        pck.hashData(hasher, 0, siz);
-        byte[] got = new byte[hashSize];
-        pck.getCopy(got, 0, siz, hashSize);
-        if (bits.byteComp(got, 0, hasher.finish(), 0, hashSize) != 0) {
-            logger.info("bad hash from " + peerAddr);
+        if (hasher == null) {
+            byte[] buf = new byte[12];
+            bits.byteCopy(keyHash, 0, buf, 0, 4);
+            pck.getCopy(buf, 4, size, 8);
+            cipher.init(keyEncr, buf, false);
+            pck.authData(cipher, 0, size);
+            pck.getSkip(8);
+            siz -= 8;
+            logger.debug("key " + bits.byteDump(keyEncr, 0, -1));///////////
+            logger.debug("iv " + bits.byteDump(buf, 0, -1));//////////////
+        } else {
+            hasher.init();
+            pck.hashData(hasher, 0, siz);
+            byte[] got = new byte[hashSize];
+            pck.getCopy(got, 0, siz, hashSize);
+            if (bits.byteComp(got, 0, hasher.finish(), 0, hashSize) != 0) {
+                logger.info("bad hash from " + peerAddr);
+                cntr.drop(pck, counter.reasons.badSum);
+                return;
+            }
+        }
+        pck.getSkip(size);
+        siz -= size;
+        siz = pck.encrData(cipher, 0, siz);
+        if (siz < 0) {
             cntr.drop(pck, counter.reasons.badSum);
+            logger.info("bad aead from " + peerAddr);
             return;
         }
-        pck.getSkip(8);
-        siz -= 8;
-        pck.encrData(cipher, 0, siz);
         if (pck.getByte(siz - 1) != getProto()) {
             logger.info("bad protocol from " + peerAddr);
-            cntr.drop(pck, counter.reasons.badSum);
+            cntr.drop(pck, counter.reasons.badProto);
             return;
         }
-        siz -= pck.getByte(siz - 2) + encrSize + 2;
-        pck.getSkip(encrSize);
+        siz -= pck.getByte(siz - 2) + 2;
+        if (hasher != null) {
+            siz -= encrSize;
+            pck.getSkip(encrSize);
+        }
         pck.setDataSize(siz);
         pck.msbPutW(0, getType());
         pck.putSkip(2);
@@ -350,7 +380,7 @@ public class packEsp implements ipPrt {
         pck.encrData(cipher, 0, pck.dataSize());
         pck.msbPutD(0, spi);
         pck.msbPutD(4, seqTx);
-        pck.putSkip(8);
+        pck.putSkip(size);
         pck.merge2beg();
         hasher.init();
         pck.hashData(hasher, 0, pck.dataSize());
