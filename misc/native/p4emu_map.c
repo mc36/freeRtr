@@ -104,10 +104,10 @@ int ifaceId[maxPorts];
 
 void doIfaceLoop(int * param) {
     int port = *param;
-    unsigned char bufA[16384];
-    unsigned char bufB[16384];
-    unsigned char bufC[16384];
-    unsigned char bufD[16384];
+    unsigned char bufA[totBuff];
+    unsigned char bufB[totBuff];
+    unsigned char bufC[totBuff];
+    unsigned char bufD[totBuff];
     const unsigned char *pack;
     int bufS;
     int blockNum = 0;

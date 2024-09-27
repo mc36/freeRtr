@@ -43,11 +43,11 @@ void err(char*buf) {
 
 
 int main(int argc, char **argv) {
-    unsigned char bufA[16384];
-    unsigned char bufB[16384];
-    unsigned char bufC[16384];
-    unsigned char bufD[16384];
-    unsigned char origD[16384];
+    unsigned char bufA[totBuff];
+    unsigned char bufB[totBuff];
+    unsigned char bufC[totBuff];
+    unsigned char bufD[totBuff];
+    unsigned char origD[totBuff];
     *((int*)(&bufC[0])) = 1;
     printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
     if (bufC[0] == 1) printf("lsb");

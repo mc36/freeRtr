@@ -21,6 +21,7 @@ typedef char EVP_PKEY;
 #define preBuff 512
 #define minBuff 128
 #define maxBuff 1024
+#define totBuff 16384
 
 extern int dataPorts;
 extern int cpuPort;

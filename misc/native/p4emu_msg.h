@@ -2566,8 +2566,8 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         int port = atoi(arg[5]);
         int sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
-        unsigned char orig[16384];
-        unsigned char bufD[16384];
+        unsigned char orig[totBuff];
+        unsigned char bufD[totBuff];
         unsigned char bufH[preBuff];
         memset(&orig, 0, 16384);
         str2key(arg[8], orig);
@@ -2593,11 +2593,8 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         int port = atoi(arg[5]);
         int sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
-        unsigned char orig[16384];
-        unsigned char bufA[16384];
-        unsigned char bufB[16384];
-        unsigned char bufC[16384];
-        unsigned char bufD[16384];
+        unsigned char orig[totBuff];
+        unsigned char bufD[totBuff];
         unsigned char bufH[preBuff];
         memset(&orig, 0, 16384);
         str2key(arg[8], orig);
@@ -2616,7 +2613,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
             memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
         }
         return 0;
     }
