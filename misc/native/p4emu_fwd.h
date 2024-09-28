@@ -626,8 +626,8 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
         tmp2 = tmp;
     }
     if (EVP_CIPHER_CTX_reset(encrCtx) != 1) return 1;
-    memcpy(&bufD[0], port2vrf_res->mcscIvTxKeyDat, port2vrf_res->mcscIvRxKeyLen);
-    put32msb(bufD, port2vrf_res->mcscIvRxKeyLen, seq);
+    memcpy(&bufD[0], port2vrf_res->mcscIvTxKeyDat, port2vrf_res->mcscIvTxKeyLen);
+    put32msb(bufD, port2vrf_res->mcscIvTxKeyLen, seq);
     if (EVP_EncryptInit_ex(encrCtx, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufD) != 1) return 1;
     if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) return 1;
     put16msb(bufD, 0, port2vrf_res->mcscEthtyp);
@@ -1131,11 +1131,11 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
         tmp -= 8;                                                   \
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;          \
         if (tun_res->encrTagLen > 0) {                              \
-            memcpy(&bufC[0], tun_res->hashKeyDat, 4);               \
-            memcpy(&bufC[4], &bufD[bufP], 8);                       \
+            memcpy(&bufD[0], tun_res->hashKeyDat, 4);               \
+            memcpy(&bufD[4], &bufD[bufP], 8);                       \
             bufP += 8;                                              \
             tmp -= 8;                                               \
-            if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufC) != 1) doDropper;     \
+            if (EVP_DecryptInit_ex(encrCtx, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufD) != 1) doDropper;     \
             if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;     \
             if (EVP_DecryptUpdate(encrCtx, NULL, &tmp2, &bufD[bufP - 16], 8) != 1) doDropper;       \
             if (EVP_DecryptUpdate(encrCtx, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
@@ -1456,9 +1456,9 @@ ethtyp_rx:
             if (memcmp(&bufH[0], &bufD[bufP + tmp], port2vrf_res->mcscHashBlkLen) !=0) doDropper;
         }
         if (EVP_CIPHER_CTX_reset(encrCtx) != 1) doDropper;
-        memcpy(&bufC[0], port2vrf_res->mcscIvRxKeyDat, port2vrf_res->mcscIvRxKeyLen);
-        put32msb(bufC, port2vrf_res->mcscIvRxKeyLen, seq);
-        if (EVP_DecryptInit_ex(encrCtx, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufC) != 1) doDropper;
+        memcpy(&bufD[0], port2vrf_res->mcscIvRxKeyDat, port2vrf_res->mcscIvRxKeyLen);
+        put32msb(bufD, port2vrf_res->mcscIvRxKeyLen, seq);
+        if (EVP_DecryptInit_ex(encrCtx, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufD) != 1) doDropper;
         if (EVP_CIPHER_CTX_set_padding(encrCtx, 0) != 1) doDropper;
         if (port2vrf_res->mcscNeedAead != 0) {
             if (port2vrf_res->mcscNeedMacs != 0) {
