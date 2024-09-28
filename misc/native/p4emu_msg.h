@@ -2566,10 +2566,10 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int port = atoi(arg[5]);
         int sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
-        unsigned char orig[16384];
+        unsigned char orig[totBuff];
         unsigned char *bufD = ctx->bufD;
         unsigned char *bufH = ctx->bufH;
-        memset(&orig, 0, 16384);
+        memset(&orig, 0, totBuff);
         str2key(arg[8], orig);
         if (cntr != 1) {
             printf("warning cntr=%i bufS=%i prt=%i port=%i orig=", cntr, bufS, prt, port);
@@ -2593,10 +2593,10 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int port = atoi(arg[5]);
         int sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
-        unsigned char orig[16384];
+        unsigned char orig[totBuff];
         unsigned char *bufD = ctx->bufD;
         unsigned char *bufH = ctx->bufH;
-        memset(&orig, 0, 16384);
+        memset(&orig, 0, totBuff);
         str2key(arg[8], orig);
         if (cntr != 1) {
             printf("warning cntr=%i bufS=%i nei=%i port=%i orig=", cntr, bufS, nei, port);

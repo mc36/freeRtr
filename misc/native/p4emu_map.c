@@ -237,8 +237,8 @@ int main(int argc, char **argv) {
         if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_VERSION, &ver, sizeof (ver)) < 0) err("failed to set version");
         struct tpacket_req3 rrq;
         memset(&rrq, 0, sizeof (rrq));
-        rrq.tp_block_size = 16384;
-        rrq.tp_frame_size = 16384;
+        rrq.tp_block_size = totBuff;
+        rrq.tp_frame_size = totBuff;
         rrq.tp_block_nr = blocksMax;
         rrq.tp_frame_nr = (rrq.tp_block_size * rrq.tp_block_nr) / rrq.tp_frame_size;
         rrq.tp_retire_blk_tov = 1;

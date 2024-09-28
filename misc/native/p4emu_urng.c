@@ -48,8 +48,8 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     }
     int idx = ifaceIdx[port] = (ifaceIdx[port] + 1) % queueMax;
     pthread_mutex_unlock(&ifaceLock[port]);
-    memcpy(ifaceMemTx[port] + (idx * 16384), bufD, bufS);
-    ifaceIovTx[port][idx].iov_base = ifaceMemTx[port] + (idx * 16384);
+    memcpy(ifaceMemTx[port] + (idx * totBuff), bufD, bufS);
+    ifaceIovTx[port][idx].iov_base = ifaceMemTx[port] + (idx * totBuff);
     ifaceIovTx[port][idx].iov_len = bufS;
     ifaceMsgTx[port][idx].msg_name = NULL;
     ifaceMsgTx[port][idx].msg_namelen = 0;
@@ -59,7 +59,7 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     ifaceMsgTx[port][idx].msg_controllen = 0;
     ifaceMsgTx[port][idx].msg_flags = 0;
     io_uring_prep_sendmsg(sqe, ifaceSock[port], &ifaceMsgTx[port][idx], 0);
-    io_uring_sqe_set_data(sqe, ifaceMemTx[port] + (idx * 16384));
+    io_uring_sqe_set_data(sqe, ifaceMemTx[port] + (idx * totBuff));
     io_uring_submit(&ifaceRingTx[port]);
 }
 
@@ -100,8 +100,8 @@ int ifaceId[maxPorts];
 
 
 void prepReceive(struct io_uring_sqe *sqe, int prt, int idx) {
-    ifaceIovRx[prt][idx].iov_base = ifaceMemRx[prt] + (idx * 16384);
-    ifaceIovRx[prt][idx].iov_len = 16384;
+    ifaceIovRx[prt][idx].iov_base = ifaceMemRx[prt] + (idx * totBuff);
+    ifaceIovRx[prt][idx].iov_len = totBuff;
     ifaceMsgRx[prt][idx].msg_name = NULL;
     ifaceMsgRx[prt][idx].msg_namelen = 0;
     ifaceMsgRx[prt][idx].msg_iov = &ifaceIovRx[prt][idx];
@@ -110,7 +110,7 @@ void prepReceive(struct io_uring_sqe *sqe, int prt, int idx) {
     ifaceMsgRx[prt][idx].msg_controllen = cmsgLen;
     ifaceMsgRx[prt][idx].msg_flags = 0;
     io_uring_prep_recvmsg(sqe, ifaceSock[prt], &ifaceMsgRx[prt][idx], 0);
-    io_uring_sqe_set_data(sqe, ifaceMemRx[prt] + (idx * 16384));
+    io_uring_sqe_set_data(sqe, ifaceMemRx[prt] + (idx * totBuff));
     io_uring_submit(&ifaceRingRx[prt]);
 }
 
@@ -120,7 +120,7 @@ void prepReceive(struct io_uring_sqe *sqe, int prt, int idx) {
     bufS = cqe->res;                                                    \
     if (bufS < 0) break;                                                \
     unsigned char *pack = io_uring_cqe_get_data(cqe);                   \
-    int idx = (pack - ifaceMemRx[port]) / 16384;                        \
+    int idx = (pack - ifaceMemRx[port]) / totBuff;                      \
     struct cmsghdr* cmsg = (struct cmsghdr*)(ifaceAuxRx[port] + (idx*cmsgLen)); \
     struct tpacket_auxdata* aux = (struct tpacket_auxdata*)CMSG_DATA(cmsg);     \
     if ((cmsg->cmsg_level == SOL_PACKET) && (cmsg->cmsg_type == PACKET_AUXDATA) && (aux->tp_status & TP_STATUS_VLAN_VALID)) {   \
@@ -273,7 +273,7 @@ int main(int argc, char **argv) {
         if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val)) < 0) err("failed to set auxdata");
 
         if (io_uring_queue_init(queueMax, &ifaceRingRx[o], 0) < 0) err("failed to init ring");
-        ifaceMemRx[o] = malloc(queueMax * 16384);
+        ifaceMemRx[o] = malloc(queueMax * totBuff);
         if (ifaceMemRx[o] == NULL) err("error allocating memory");
         ifaceMsgRx[o] = malloc(queueMax * sizeof(struct msghdr));
         if (ifaceMsgRx[o] == NULL) err("error allocating memory");
@@ -283,7 +283,7 @@ int main(int argc, char **argv) {
         if (ifaceAuxRx[o] == NULL) err("error allocating memory");
 
         if (io_uring_queue_init(queueMax, &ifaceRingTx[o], 0) < 0) err("failed to init ring");
-        ifaceMemTx[o] = malloc(queueMax * 16384);
+        ifaceMemTx[o] = malloc(queueMax * totBuff);
         if (ifaceMemTx[o] == NULL) err("error allocating memory");
         ifaceMsgTx[o] = malloc(queueMax * sizeof(struct msghdr));
         if (ifaceMsgTx[o] == NULL) err("error allocating memory");
