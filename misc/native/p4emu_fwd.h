@@ -2523,10 +2523,11 @@ cpu:
 void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
     packRx[cpuPort]++;
     byteRx[cpuPort] += bufS;
+    unsigned char bufH[preBuff];
     int prt = get32msb(bufD, preBuff + 0);
     int hash = get32msb(bufD, preBuff + 4) ^ get32msb(bufD, preBuff + 8) ^ get32msb(bufD, preBuff + 12);
     int ethtyp = get16msb(bufD, preBuff + 16);
     int bufP = preBuff + 16;
-    memcpy(&bufC[0], &bufD[preBuff + 4], 12);
-    send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufC, ethtyp, -1, cpuPort);
+    memcpy(&bufH[0], &bufD[preBuff + 4], 12);
+    send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, -1, cpuPort);
 }
