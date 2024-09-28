@@ -86,6 +86,7 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
         "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "group",
         "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "cipher",
         "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hash",
+        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "prf",
         "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "seconds",
         "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "random",
         "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bytes",
