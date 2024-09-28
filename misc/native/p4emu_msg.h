@@ -170,7 +170,7 @@ char* getCapas() {
 
 
 
-int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     unsigned char buf2[1024];
     char* arg[128];
     int cnt;
@@ -2567,11 +2567,8 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         int sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
         unsigned char orig[16384];
-        unsigned char bufA[16384];
-        unsigned char bufB[16384];
-        unsigned char bufC[16384];
-        unsigned char bufD[16384];
-        unsigned char bufH[preBuff];
+        unsigned char *bufD = ctx->bufD;
+        unsigned char *bufH = ctx->bufH;
         memset(&orig, 0, 16384);
         str2key(arg[8], orig);
         if (cntr != 1) {
@@ -2585,7 +2582,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
             memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(ctx, prt, hash, bufP, bufS, ethtyp, sgt, port);
         }
         return 0;
     }
@@ -2597,11 +2594,8 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
         int sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
         unsigned char orig[16384];
-        unsigned char bufA[16384];
-        unsigned char bufB[16384];
-        unsigned char bufC[16384];
-        unsigned char bufD[16384];
-        unsigned char bufH[preBuff];
+        unsigned char *bufD = ctx->bufD;
+        unsigned char *bufH = ctx->bufH;
         memset(&orig, 0, 16384);
         str2key(arg[8], orig);
         if (cntr != 1) {
@@ -2619,7 +2613,7 @@ int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCt
             memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2neigh(ctx, neigh_res, hash, bufP, bufS, ethtyp, sgt, port);
         }
         return 0;
     }

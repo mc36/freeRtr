@@ -1,5 +1,4 @@
 int punts = 0;
-
 int dataPorts;
 int cpuPort;
 char *ifaceName[maxPorts];
@@ -286,11 +285,11 @@ struct neigh_entry {
     int encrBlkLen;
     int encrTagLen;
     int hashBlkLen;
-#endif
-    int seq;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
+#endif
+    int seq;
     long pack;
     long byte;
 };
@@ -648,11 +647,11 @@ struct tun4_entry {
     int encrBlkLen;
     int encrTagLen;
     int hashBlkLen;
-#endif
-    int seq;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
+#endif
+    int seq;
     long pack;
     long byte;
 };
@@ -683,11 +682,11 @@ struct tun6_entry {
     int encrBlkLen;
     int encrTagLen;
     int hashBlkLen;
-#endif
-    int seq;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
+#endif
+    int seq;
     long pack;
     long byte;
 };
@@ -815,16 +814,34 @@ int initTables() {
 }
 
 
-int initContext(EVP_CIPHER_CTX **encrCtx, EVP_MD_CTX **hashCtx) {
-#ifdef HAVE_NOCRYPTO
-    *encrCtx = NULL;
-    *hashCtx = NULL;
-#else
-    *encrCtx = EVP_CIPHER_CTX_new();
-    if (*encrCtx == NULL) return 1;
-    *hashCtx = EVP_MD_CTX_new();
-    if (*hashCtx == NULL) return 1;
+int initContext(struct packetContext *ctx) {
+#ifndef HAVE_NOCRYPTO
+    ctx->encrCtx = EVP_CIPHER_CTX_new();
+    if (ctx->encrCtx == NULL) return 1;
+    ctx->hashCtx = EVP_MD_CTX_new();
+    if (ctx->hashCtx == NULL) return 1;
 #endif
+    ctx->bufA = malloc(totBuff);
+    if (ctx->bufA == NULL) return 1;
+    ctx->bufB = malloc(totBuff);
+    if (ctx->bufB == NULL) return 1;
+    ctx->bufC = malloc(totBuff);
+    if (ctx->bufC == NULL) return 1;
+    ctx->bufD = malloc(totBuff);
+    if (ctx->bufD == NULL) return 1;
+    ctx->bufH = malloc(preBuff);
+    if (ctx->bufH == NULL) return 1;
     return 0;
 }
 
+void shiftContext(struct packetContext *trg, struct packetContext *src, unsigned char *bufD) {
+    trg->bufD = bufD;
+    trg->bufC = src->bufB;
+    trg->bufB = src->bufA;
+    trg->bufA = NULL;
+    trg->bufH = src->bufH;
+#ifndef HAVE_NOCRYPTO
+    trg->encrCtx = src->encrCtx;
+    trg->hashCtx = src->hashCtx;
+#endif
+}

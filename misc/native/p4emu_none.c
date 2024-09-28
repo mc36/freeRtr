@@ -34,14 +34,12 @@ int initTables() {
 }
 
 
-int initContext(EVP_CIPHER_CTX **encrCtx, EVP_MD_CTX **hashCtx) {
-    *encrCtx = NULL;
-    *hashCtx = NULL;
+int initContext(struct packetContext *ctx) {
     return 0;
 }
 
 
-int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     return 0;
 }
 
@@ -66,13 +64,15 @@ int hashDataPacket(unsigned char *bufP) {
 }
 
 
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(struct packetContext *ctx, int bufS, int port, int prt) {
+    unsigned char *bufD = ctx->bufD;
     put16msb(bufD, preBuff - 2, port);
     sendPack(&bufD[preBuff - 2], bufS + 2, cpuPort);
 }
 
 
-void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processCpuPack(struct packetContext *ctx, int bufS) {
+    unsigned char *bufD = ctx->bufD;
     int prt = get16msb(bufD, preBuff);
     if (prt < 0) return;
     if (prt >= dataPorts) return;

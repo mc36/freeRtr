@@ -79,16 +79,15 @@ int ifaceId[maxPorts];
 
 void doIfaceLoop(int * param) {
     int port = *param;
-    unsigned char bufA[16384];
-    unsigned char bufB[16384];
-    unsigned char bufC[16384];
-    unsigned char bufD[16384];
     int bufS;
     unsigned char cbuf[sizeof(struct cmsghdr) + sizeof(struct tpacket_auxdata) + sizeof(size_t)];
     struct iovec iov;
     struct msghdr msg;
+    struct packetContext ctx;
+    if (initContext(&ctx) != 0) err("error initializing context");
+    unsigned char *bufD = ctx.bufD;
     iov.iov_base = &bufD[preBuff];
-    iov.iov_len = sizeof(bufD) - preBuff;
+    iov.iov_len = totBuff - preBuff;
     msg.msg_name = NULL;
     msg.msg_namelen = 0;
     msg.msg_iov = &iov;
@@ -98,18 +97,15 @@ void doIfaceLoop(int * param) {
     msg.msg_flags = 0;
     struct cmsghdr* cmsg = (struct cmsghdr*)cbuf;
     struct tpacket_auxdata* aux = (struct tpacket_auxdata*)CMSG_DATA(cmsg);
-    EVP_CIPHER_CTX *encrCtx;
-    EVP_MD_CTX *hashCtx;
-    if (initContext(&encrCtx, &hashCtx) != 0) err("error initializing context");
     if (port == cpuPort) {
         for (;;) {
             getPack();
-            processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, encrCtx, hashCtx);
+            processCpuPack(&ctx, bufS);
         }
     } else {
         for (;;) {
             getPack();
-            processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], bufS, port, port, encrCtx, hashCtx);
+            processDataPacket(&ctx, bufS, port, port);
         }
     }
     err("port thread exited");
@@ -118,16 +114,15 @@ void doIfaceLoop(int * param) {
 
 
 void doSockLoop() {
+    struct packetContext ctx;
+    if (initContext(&ctx) != 0) err("error initializing context");
     FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) err("failed to open file");
-    EVP_CIPHER_CTX *encrCtx;
-    EVP_MD_CTX *hashCtx;
-    if (initContext(&encrCtx, &hashCtx) != 0) err("error initializing context");
     unsigned char buf[16384];
     for (;;) {
         memset(&buf, 0, sizeof(buf));
         if (fgets((char*)&buf[0], sizeof(buf), commands) == NULL) break;
-        if (doOneCommand(&buf[0], encrCtx, hashCtx) != 0) break;
+        if (doOneCommand(&ctx, &buf[0]) != 0) break;
     }
     err("command thread exited");
 }

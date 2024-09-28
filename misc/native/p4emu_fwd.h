@@ -459,8 +459,10 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-int putWireguardHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, unsigned char *bufD, int *bufP, int *bufS) {
+int putWireguardHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS) {
 #ifndef HAVE_NOCRYPTO
+    unsigned char *bufD = ctx->bufD;
+    EVP_CIPHER_CTX *encrCtx = ctx->encrCtx;
     int seq = neigh_res->seq;
     neigh_res->seq++;
     *bufP += 2;
@@ -494,8 +496,11 @@ int putWireguardHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, u
 }
 
 
-int putOpenvpnHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS) {
+int putOpenvpnHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS) {
 #ifndef HAVE_NOCRYPTO
+    unsigned char *bufD = ctx->bufD;
+    EVP_CIPHER_CTX *encrCtx = ctx->encrCtx;
+    EVP_MD_CTX *hashCtx = ctx->hashCtx;
     int seq = neigh_res->seq;
     neigh_res->seq++;
     *bufP += 2;
@@ -530,8 +535,11 @@ int putOpenvpnHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP
 }
 
 
-int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, int ethtyp) {
+int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS, int ethtyp) {
 #ifndef HAVE_NOCRYPTO
+    unsigned char *bufD = ctx->bufD;
+    EVP_CIPHER_CTX *encrCtx = ctx->encrCtx;
+    EVP_MD_CTX *hashCtx = ctx->hashCtx;
     int seq = neigh_res->seq;
     neigh_res->seq++;
     int tmp = *bufS - *bufP + preBuff;
@@ -592,8 +600,9 @@ int putEspHeader(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_
 }
 
 
-int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned char *bufD, int *bufP, int *bufS, unsigned char *bufH, int *ethtyp, int sgt) {
+int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *ethtyp, int sgt) {
     if (sgt < 0) return 0;
+    unsigned char *bufD = ctx->bufD;
     struct port2vrf_entry port2vrf_ntry;
     struct port2vrf_entry *port2vrf_res;
     port2vrf_ntry.port = prt;
@@ -610,6 +619,9 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
     }
     if (port2vrf_res->mcscEthtyp == 0) return 0;
 #ifndef HAVE_NOCRYPTO
+    EVP_CIPHER_CTX *encrCtx = ctx->encrCtx;
+    EVP_MD_CTX *hashCtx = ctx->hashCtx;
+    unsigned char *bufH = ctx->bufH;
     port2vrf_res->mcscPackTx++;
     port2vrf_res->mcscByteTx += *bufS;
     int seq = port2vrf_res->mcscSeqTx++;
@@ -675,8 +687,10 @@ int macsec_apply(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, unsigned
 
 
 
-void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
-    if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS, int ethtyp, int sgt, int port) {
+    if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
+    unsigned char *bufD = ctx->bufD;
+    unsigned char *bufH = ctx->bufH;
     struct vlanout_entry vlanout_ntry;
     struct bundle_entry bundle_ntry;
     struct vlanout_entry *vlanout_res;
@@ -693,7 +707,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         if (vlanout_res->vlan2 > 0) {
             prt = vlanout_res->port2;
             ethtyp = ETHERTYPE_VLAN;
-            if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+            if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
             hash ^= vlanout_res->vlan2;
             bufP -= 2;
             put16msb(bufD, bufP, vlanout_res->vlan2);
@@ -704,7 +718,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         vlanout_res->pack++;
         vlanout_res->byte += bufS;
         ethtyp = ETHERTYPE_VLAN;
-        if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+        if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
     }
     bundle_ntry.id = prt;
     index = table_find(&bundle_table, &bundle_ntry);
@@ -724,11 +738,11 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
         putMacAddr;
         bufS = bufS - bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[bufP], bufS);
-        if (bufB == NULL) return;
-        processDataPacket(bufA, bufB, bufC, bufD, bufS, port, prt, encrCtx, hashCtx);
+        if (ctx->bufB == NULL) return;
+        processDataPacket(ctx, bufS, port, prt);
         return;
     }
-    if (macsec_apply(prt, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) return;
+    if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
     putMacAddr;
     send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
 }
@@ -740,6 +754,7 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
     rem = bufS - bufP + preBuff;                                \
     pos = 0;                                                    \
     memcpy(&bufC[pos], &bufD[bufP], rem);                       \
+    shiftContext(&ctx2, ctx, bufD);                             \
     for (;;) {                                                  \
         bufS = rem;                                             \
         if (bufS > neigh_res->frag) bufS = neigh_res->frag;     \
@@ -758,13 +773,17 @@ void send2subif(int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash,
 
 
 #define doMlpppEnd                                              \
-    send2subif(neigh_res->port, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufD, bufP, bufS, bufH, ethtyp, sgt, port);   \
+    send2subif(&ctx2, neigh_res->port, hash, bufP, bufS, ethtyp, sgt, port);    \
     if (rem < 1) break;                                         \
     }
 
 
 
-void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int port) {
+void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int hash, int bufP, int bufS, int ethtyp, int sgt, int port) {
+    unsigned char *bufD = ctx->bufD;
+    unsigned char *bufH = ctx->bufH;
+    unsigned char *bufC = ctx->bufC;
+    struct packetContext ctx2;
     int tmp;
     int pos;
     int rem;
@@ -772,7 +791,7 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
     neigh_res->byte += bufS;
     memcpy(&bufH[0], &neigh_res->macs, 12);
     if (neigh_res->aclport != neigh_res->port) {
-        if (macsec_apply(neigh_res->aclport, encrCtx, hashCtx, bufD, &bufP, &bufS, bufH, &ethtyp, sgt) != 0) doDropper;
+        if (macsec_apply(ctx, neigh_res->aclport, &bufP, &bufS, &ethtyp, sgt) != 0) doDropper;
     }
     switch (neigh_res->command) {
     case 1: // raw ip
@@ -834,31 +853,31 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
 #ifndef HAVE_NOCRYPTO
     case 9: // esp4
         putIpipHeader(bufP, ethtyp, ethtyp);
-        if (putEspHeader(neigh_res, encrCtx, hashCtx, bufD, &bufP, &bufS, ethtyp) != 0) doDropper;
+        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, ethtyp) != 0) doDropper;
         putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 10: // esp6
         putIpipHeader(bufP, ethtyp, ethtyp);
-        if (putEspHeader(neigh_res, encrCtx, hashCtx, bufD, &bufP, &bufS, ethtyp) != 0) doDropper;
+        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, ethtyp) != 0) doDropper;
         putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 11: // openvpn4
-        if (putOpenvpnHeader(neigh_res, encrCtx, hashCtx, bufD, &bufP, &bufS) != 0) doDropper;
+        if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 12: // openvpn6
-        if (putOpenvpnHeader(neigh_res, encrCtx, hashCtx, bufD, &bufP, &bufS) != 0) doDropper;
+        if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 13: // wireguard4
-        if (putWireguardHeader(neigh_res, encrCtx, bufD, &bufP, &bufS) != 0) doDropper;
+        if (putWireguardHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 14: // wireguard6
-        if (putWireguardHeader(neigh_res, encrCtx, bufD, &bufP, &bufS) != 0) doDropper;
+        if (putWireguardHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
@@ -918,7 +937,7 @@ void send2neigh(struct neigh_entry *neigh_res, EVP_CIPHER_CTX *encrCtx, EVP_MD_C
     default:
         doDropper;
     }
-    send2subif(neigh_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+    send2subif(ctx, neigh_res->port, hash, bufP, bufS, ethtyp, sgt, port);
 drop:
     return;
 }
@@ -953,11 +972,16 @@ drop:
 
 
 
-void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx, int hash, unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufP, int bufS, unsigned char *bufH, int ethtyp, int sgt, int label, int port) {
+void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int bufP, int bufS, int ethtyp, int sgt, int label, int port) {
     struct neigh_entry neigh_ntry;
     struct neigh_entry *neigh_res;
     struct flood_entry *flood_res;
+    struct packetContext ctx2;
+    unsigned char *bufD = ctx->bufD;
+    unsigned char *bufH = ctx->bufH;
+    unsigned char *bufC = ctx->bufC;
     for (int i = 0; i < flood.size; i++) {
+        shiftContext(&ctx2, ctx, bufC);
         flood_res = table_get(&flood, i);
         int tmpP = preBuff;
         int tmpE;
@@ -970,7 +994,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
             memcpy(&bufH[0], &flood_res->macs, 12);
-            send2subif(flood_res->trg, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2subif(&ctx2, flood_res->trg, hash, tmpP, tmpS, tmpE, sgt, port);
             break;
         case 2: // mpls
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -983,7 +1007,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
             break;
         case 3: // bier mask
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1000,7 +1024,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
             break;
         case 4: // bier set
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1037,7 +1061,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
             break;
         case 5: // neighbor
             tmpE = ethtyp;
@@ -1048,7 +1072,7 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
             break;
         }
     }
@@ -1344,10 +1368,11 @@ void doFlood(struct table_head flood, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashC
 
 
 
-void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+void processDataPacket(struct packetContext *ctx, int bufS, int port, int prt) {
     packRx[port]++;
     byteRx[port] += bufS;
-    unsigned char bufH[preBuff];
+    unsigned char *bufD = ctx->bufD;
+    unsigned char *bufH = ctx->bufH;
     struct nsh_entry nsh_ntry;
     struct polkaPoly_entry polkaPoly_ntry;
     struct polkaIdx_entry polkaIdx_ntry;
@@ -1428,6 +1453,8 @@ ethtyp_rx:
     port2vrf_res = table_get(&port2vrf_table, index);
 #ifndef HAVE_NOCRYPTO
     if (port2vrf_res->mcscEthtyp != 0) {
+        EVP_CIPHER_CTX *encrCtx = ctx->encrCtx;
+        EVP_MD_CTX *hashCtx = ctx->hashCtx;
         port2vrf_res->mcscPackRx++;
         port2vrf_res->mcscByteRx += bufS;
         if (ethtyp != port2vrf_res->mcscEthtyp) doDropper;
@@ -1492,13 +1519,16 @@ ethtyp_rx:
     }
     if (port2vrf_res->monTarget >= 0) {
         if ((port2vrf_res->monPackets++%port2vrf_res->monSample) == 0) {
+            struct packetContext ctx2;
+            unsigned char *bufC = ctx->bufC;
+            shiftContext(&ctx2, ctx, bufC);
             int tmpS = bufS - bufP + preBuff + 2;
             if (tmpS > port2vrf_res->monTruncate) tmpS = port2vrf_res->monTruncate;
             memcpy(&bufC[preBuff], &bufD[bufP - 2], tmpS);
             memcpy(&bufH[0], &bufD[preBuff], 12);
             int tmpP = preBuff;
             int tmpE = ethtyp;
-            send2subif(port2vrf_res->monTarget, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2subif(&ctx2, port2vrf_res->monTarget, hash, tmpP, tmpS, tmpE, sgt, port);
         }
     }
     switch (port2vrf_res->command) {
@@ -1551,7 +1581,7 @@ ethtyp_rx:
     case 4: // loconnifc
         bufP -= 2;
         memcpy(&bufH[0], &bufD[preBuff], 12);
-        send2subif(port2vrf_res->label1, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+        send2subif(ctx, port2vrf_res->label1, hash, bufP, bufS, ethtyp, sgt, port);
         return;
     case 5: // loconnnei
         bufP -= 2;
@@ -1647,12 +1677,12 @@ nethtyp_tx:
             if (index < 0) doDropper;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2neigh(ctx, neigh_res, hash, bufP, bufS, ethtyp, sgt, port);
             return;
         case 4: // xconn
             memcpy(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
-            send2subif(mpls_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(ctx, mpls_res->port, hash, bufP, bufS, ethtyp, sgt, port);
             return;
         case 5: // vpls
             memcpy(&bufH[0], &bufD[bufP], 12);
@@ -1663,13 +1693,13 @@ neigh_tx:
         case 6: // punt
             doCpuing;
         case 7: // dup
-            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, (label & 0xf00) | ttl, port);
+            doFlood(ctx, mpls_res->flood, hash, bufP, bufS, ethtyp, sgt, (label & 0xf00) | ttl, port);
             if (mpls_res->swap != 0) goto mpls_rou;
             return;
         case 8: // bier
             if ((label & 0x100) == 0) doDropper;
             if (bufD[bufP] != 0x50) doDropper;
-            doFlood(mpls_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, (label & 0xf00) | ttl, port);
+            doFlood(ctx, mpls_res->flood, hash, bufP, bufS, ethtyp, sgt, (label & 0xf00) | ttl, port);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, tmp2);
             if (tmp2 == 0) return;
             bufP += 8;
@@ -1925,7 +1955,7 @@ ipv4_tx:
                 if (mroute4_res->ingr != prt) doDropper;
                 mroute4_res->pack++;
                 mroute4_res->byte += bufS;
-                doFlood(mroute4_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, 0x100 | ttl, port);
+                doFlood(ctx, mroute4_res->flood, hash, bufP, bufS, ethtyp, sgt, 0x100 | ttl, port);
                 if (mroute4_res->local != 0) doCpuing;
                 return;
             }
@@ -1936,6 +1966,10 @@ ipv4_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 tun4_res = table_get(&vrf2rib_res->tun, index);
+#ifndef HAVE_NOCRYPTO
+                EVP_CIPHER_CTX *encrCtx = ctx->encrCtx;
+                EVP_MD_CTX *hashCtx = ctx->hashCtx;
+#endif
                 doTunnelBeg(tun4_res);
                 doTunnelMid(tun4_res);
                 doTunnelEnd(tun4_res);
@@ -2229,7 +2263,7 @@ ipv6_tx:
                 if (mroute6_res->ingr != prt) doDropper;
                 mroute6_res->pack++;
                 mroute6_res->byte += bufS;
-                doFlood(mroute6_res->flood, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, 0x100 | ttl, port);
+                doFlood(ctx, mroute6_res->flood, hash, bufP, bufS, ethtyp, sgt, 0x100 | ttl, port);
                 if (mroute6_res->local != 0) doCpuing;
                 return;
             }
@@ -2240,6 +2274,10 @@ ipv6_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 tun6_res = table_get(&vrf2rib_res->tun, index);
+#ifndef HAVE_NOCRYPTO
+                EVP_CIPHER_CTX *encrCtx = ctx->encrCtx;
+                EVP_MD_CTX *hashCtx = ctx->hashCtx;
+#endif
                 doTunnelBeg(tun6_res);
                 doTunnelMid(tun6_res);
                 doTunnelEnd(tun6_res);
@@ -2302,7 +2340,7 @@ bridgevpls_rx:
         bufP -= 2;
         switch (bridge_res->command) {
         case 1: // port
-            send2subif(bridge_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(ctx, bridge_res->port, hash, bufP, bufS, ethtyp, sgt, port);
             return;
         case 2: // vpls
             bufP -= 12;
@@ -2416,6 +2454,9 @@ bridgevpls_rx:
         polkaPoly_res->byte += bufS;
         crc16calc(tmp, polkaPoly_res->tab, bufD, bufP + 4, 14);
         tmp ^= get16msb(bufD, bufP + 18);
+        struct packetContext ctx2;
+        unsigned char *bufC = ctx->bufC;
+        shiftContext(&ctx2, ctx, bufC);
         for (int i = 0; i < vrf2rib_res->plk.size; i++) {
             if ((tmp & bitVals[30 - i]) == 0) continue;
             polkaIdx_res = table_get(&vrf2rib_res->plk, i);
@@ -2430,7 +2471,7 @@ bridgevpls_rx:
             int tmpE = ethtyp;
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
-            send2neigh(neigh_res, encrCtx, hashCtx, hash, NULL, bufA, bufB, bufC, tmpP, tmpS, bufH, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
         }
         if ((tmp & 1) == 0) return;
         ethtyp = get16msb(bufD, bufP + 2);
@@ -2464,7 +2505,7 @@ nsh_rx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             memcpy(&bufH[0], &nsh_res->macs, 12);
-            send2subif(nsh_res->port, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, sgt, port);
+            send2subif(ctx, nsh_res->port, hash, bufP, bufS, ethtyp, sgt, port);
             return;
         case 2: // vrf
             bufP += ((ttl & 0x3f) * 4);
@@ -2520,14 +2561,15 @@ cpu:
 }
 
 
-void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx) {
+extern void processCpuPack(struct packetContext *ctx, int bufS) {
     packRx[cpuPort]++;
     byteRx[cpuPort] += bufS;
-    unsigned char bufH[preBuff];
+    unsigned char *bufD = ctx->bufD;
+    unsigned char *bufH = ctx->bufH;
     int prt = get32msb(bufD, preBuff + 0);
     int hash = get32msb(bufD, preBuff + 4) ^ get32msb(bufD, preBuff + 8) ^ get32msb(bufD, preBuff + 12);
     int ethtyp = get16msb(bufD, preBuff + 16);
     int bufP = preBuff + 16;
     memcpy(&bufH[0], &bufD[preBuff + 4], 12);
-    send2subif(prt, encrCtx, hashCtx, hash, bufA, bufB, bufC, bufD, bufP, bufS, bufH, ethtyp, -1, cpuPort);
+    send2subif(ctx, prt, hash, bufP, bufS, ethtyp, -1, cpuPort);
 }

@@ -43,21 +43,17 @@ void err(char*buf) {
 
 
 int main(int argc, char **argv) {
-    unsigned char bufA[16384];
-    unsigned char bufB[16384];
-    unsigned char bufC[16384];
-    unsigned char bufD[16384];
     unsigned char origD[16384];
-    *((int*)(&bufC[0])) = 1;
+    *((int*)(&origD[0])) = 1;
     printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
-    if (bufC[0] == 1) printf("lsb");
+    if (origD[0] == 1) printf("lsb");
     else printf("msb");
     printf("\n");
     fflush(stdout);
     int origS = 0;
-    EVP_CIPHER_CTX *encrCtx = EVP_CIPHER_CTX_new();
-    EVP_MD_CTX *hashCtx = EVP_MD_CTX_new();
-    processCpuPack(&bufA[0], &bufB[0], &bufC[0], &bufD[0], origS, encrCtx, hashCtx);
+    struct packetContext ctx;
+    if (initContext(&ctx) != 0) err("error initializing context");
+    processCpuPack(&ctx, origS);
     if (argc < 3) err("usage: <commands> <count> <byte0> [byteN]");
     int count = atoi(argv[2]);
     for (int i = 3; i < argc; i++) {
@@ -75,15 +71,15 @@ int main(int argc, char **argv) {
         char* lin = NULL;
         size_t len = 0;
         if (getline(&lin, &len, fil) < 0) break;
-        doOneCommand((unsigned char*) lin, encrCtx, hashCtx);
+        doOneCommand(&ctx, (unsigned char*) lin);
         free(lin);
     }
     fclose(fil);
     sleep(1);
     clock_t begin = clock();
     for (int i = 0; i < count; i++) {
-        memcpy(&bufD[preBuff], &origD[0], origS);
-        processDataPacket(&bufA[0], &bufB[0], &bufC[0], &bufD[0], origS, 0, 0, encrCtx, hashCtx);
+        memcpy(&ctx.bufD[preBuff], &origD[0], origS);
+        processDataPacket(&ctx, origS, 0, 0);
     }
     clock_t end = clock();
     double spent = (double)(end - begin) / (double)CLOCKS_PER_SEC;

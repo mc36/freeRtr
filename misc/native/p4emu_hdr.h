@@ -7,20 +7,25 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
-#else
-
-typedef char EVP_CIPHER;
-typedef char EVP_MD_CTX;
-typedef char EVP_CIPHER_CTX;
-typedef char EVP_MD;
-typedef char EVP_PKEY;
-
 #endif
+
+struct packetContext {
+    unsigned char *bufA;
+    unsigned char *bufB;
+    unsigned char *bufC;
+    unsigned char *bufD;
+    unsigned char *bufH;
+#ifndef HAVE_NOCRYPTO
+    EVP_CIPHER_CTX *encrCtx;
+    EVP_MD_CTX *hashCtx;
+#endif
+};
 
 #define maxPorts 128
 #define preBuff 512
 #define minBuff 128
 #define maxBuff 1024
+#define totBuff 16384
 
 extern int dataPorts;
 extern int cpuPort;
@@ -36,12 +41,12 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len);
 extern void initIface(int port, char *name);
 extern int initTables();
 extern int hashDataPacket(unsigned char *bufP);
-extern void processDataPacket(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char *bufD, int bufS, int port, int prt, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
-extern void processCpuPack(unsigned char *bufA, unsigned char *bufB, unsigned char *bufC, unsigned char* bufD, int bufS, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
-extern int doOneCommand(unsigned char* buf, EVP_CIPHER_CTX *encrCtx, EVP_MD_CTX *hashCtx);
+extern void processDataPacket(struct packetContext *ctx, int bufS, int port, int prt);
+extern void processCpuPack(struct packetContext *ctx, int bufS);
+extern int doOneCommand(struct packetContext *ctx, unsigned char* buf);
 extern void doStatRound(FILE *commands, int round);
 extern int doConsoleCommand(unsigned char*buf);
-extern int initContext(EVP_CIPHER_CTX **encrCtx, EVP_MD_CTX **hashCtx);
+extern int initContext(struct packetContext *ctx);
 extern char* getCapas();
 
 #define platformBase "p4emu/"
