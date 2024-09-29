@@ -836,6 +836,7 @@ int initContext(struct packetContext *ctx) {
 
 void shiftContext(struct packetContext *trg, struct packetContext *src, unsigned char *bufD) {
     trg->sgt = src->sgt;
+    trg->hash = src->hash;
     trg->port = src->port;
     trg->bufH = src->bufH;
     trg->bufD = bufD;

@@ -2565,7 +2565,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int prt = atoi(arg[4]);
         ctx->port = atoi(arg[5]);
         ctx->sgt = atoi(arg[6]);
-        int hash = atoi(arg[7]);
+        ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];
         unsigned char *bufD = ctx->bufD;
         unsigned char *bufH = ctx->bufH;
@@ -2577,7 +2577,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
             memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2subif(ctx, prt, hash, bufP, bufS, ethtyp);
+            send2subif(ctx, prt, bufP, bufS, ethtyp);
         }
         return 0;
     }
@@ -2587,7 +2587,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int nei = atoi(arg[4]);
         ctx->port = atoi(arg[5]);
         ctx->sgt = atoi(arg[6]);
-        int hash = atoi(arg[7]);
+        ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];
         unsigned char *bufD = ctx->bufD;
         unsigned char *bufH = ctx->bufH;
@@ -2603,7 +2603,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
             memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2neigh(ctx, neigh_res, hash, bufP, bufS, ethtyp);
+            send2neigh(ctx, neigh_res, bufP, bufS, ethtyp);
         }
         return 0;
     }

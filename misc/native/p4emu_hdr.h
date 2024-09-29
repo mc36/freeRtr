@@ -11,6 +11,7 @@
 
 struct packetContext {
     int port;
+    int hash;
     int sgt;
     unsigned char *bufA;
     unsigned char *bufB;
