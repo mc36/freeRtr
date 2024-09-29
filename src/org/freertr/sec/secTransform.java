@@ -1258,6 +1258,10 @@ public class secTransform {
             hashAlg = 0;
             return false;
         }
+        if (s.equals("prf")) {
+            prfAlg = 0;
+            return false;
+        }
         if (s.equals("seconds")) {
             lifeSec = 0;
             return false;
