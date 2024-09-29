@@ -25,16 +25,6 @@ void send2port(unsigned char *bufD, int bufS, int port) {
 
 
 
-void send2cpu(unsigned char *bufD, int bufP, int bufS, int port) {
-    bufP -= 12;
-    memmove(&bufD[bufP], &bufD[preBuff], 12);
-    bufP -= 4;
-    put32msb(bufD, bufP, port);
-    send2port(&bufD[bufP], bufS - bufP + preBuff, cpuPort);
-}
-
-
-
 
 
 int hashDataPacket(unsigned char *bufP) {
@@ -2539,7 +2529,11 @@ drop:
         }
         punts--;
 cpu:
-        send2cpu(bufD, bufE, bufS, prt);
+        bufP = bufE - 12;
+        memmove(&bufD[bufP], &bufD[preBuff], 12);
+        bufP -= 4;
+        put32msb(bufD, bufP, prt);
+        send2port(&bufD[bufP], bufS - bufP + preBuff, cpuPort);
         return;
     }
 }
