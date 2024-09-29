@@ -2563,7 +2563,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int cntr = atoi(arg[2]);
         int bufS = atoi(arg[3]);
         int prt = atoi(arg[4]);
-        int port = atoi(arg[5]);
+        ctx->port = atoi(arg[5]);
         ctx->sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
         unsigned char orig[totBuff];
@@ -2571,18 +2571,13 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         unsigned char *bufH = ctx->bufH;
         memset(&orig, 0, totBuff);
         str2key(arg[8], orig);
-        if (cntr != 1) {
-            printf("warning cntr=%i bufS=%i prt=%i port=%i orig=", cntr, bufS, prt, port);
-            for (i=0; i<32; i++) printf("%02x", orig[i]);
-            printf("\n");
-        }
         bufS -= 12;
         for (i=0; i<cntr; i++) {
             memmove(&bufD[preBuff], &orig[12], bufS);
             memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2subif(ctx, prt, hash, bufP, bufS, ethtyp, port);
+            send2subif(ctx, prt, hash, bufP, bufS, ethtyp);
         }
         return 0;
     }
@@ -2590,7 +2585,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int cntr = atoi(arg[2]);
         int bufS = atoi(arg[3]);
         int nei = atoi(arg[4]);
-        int port = atoi(arg[5]);
+        ctx->port = atoi(arg[5]);
         ctx->sgt = atoi(arg[6]);
         int hash = atoi(arg[7]);
         unsigned char orig[totBuff];
@@ -2598,11 +2593,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         unsigned char *bufH = ctx->bufH;
         memset(&orig, 0, totBuff);
         str2key(arg[8], orig);
-        if (cntr != 1) {
-            printf("warning cntr=%i bufS=%i nei=%i port=%i orig=", cntr, bufS, nei, port);
-            for (i=0; i<32; i++) printf("%02x", orig[i]);
-            printf("\n");
-        }
         bufS -= 12;
         neigh_ntry.id = nei;
         index = table_find(&neigh_table, &neigh_ntry);
@@ -2613,7 +2603,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
             memmove(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2neigh(ctx, neigh_res, hash, bufP, bufS, ethtyp, port);
+            send2neigh(ctx, neigh_res, hash, bufP, bufS, ethtyp);
         }
         return 0;
     }

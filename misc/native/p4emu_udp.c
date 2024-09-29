@@ -54,6 +54,7 @@ void doIfaceLoop(int * param) {
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
+    ctx.port = port;
     if (port == cpuPort) {
         for (;;) {
             addrLen = sizeof(addrTmp);
@@ -68,7 +69,7 @@ void doIfaceLoop(int * param) {
             bufS = totBuff - preBuff;
             bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
             if (bufS < 0) break;
-            processDataPacket(&ctx, bufS, port, port);
+            processDataPacket(&ctx, bufS, port);
         }
     }
     err("port thread exited");

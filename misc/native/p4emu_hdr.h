@@ -10,6 +10,7 @@
 #endif
 
 struct packetContext {
+    int port;
     int sgt;
     unsigned char *bufA;
     unsigned char *bufB;
@@ -42,7 +43,7 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len);
 extern void initIface(int port, char *name);
 extern int initTables();
 extern int hashDataPacket(unsigned char *bufP);
-extern void processDataPacket(struct packetContext *ctx, int bufS, int port, int prt);
+extern void processDataPacket(struct packetContext *ctx, int bufS, int prt);
 extern void processCpuPack(struct packetContext *ctx, int bufS);
 extern int doOneCommand(struct packetContext *ctx, unsigned char* buf);
 extern void doStatRound(FILE *commands, int round);

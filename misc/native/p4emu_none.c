@@ -64,7 +64,7 @@ int hashDataPacket(unsigned char *bufP) {
 }
 
 
-void processDataPacket(struct packetContext *ctx, int bufS, int port, int prt) {
+void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     unsigned char *bufD = ctx->bufD;
     put16msb(bufD, preBuff - 2, port);
     sendPack(&bufD[preBuff - 2], bufS + 2, cpuPort);

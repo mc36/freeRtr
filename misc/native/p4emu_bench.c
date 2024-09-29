@@ -77,9 +77,10 @@ int main(int argc, char **argv) {
     fclose(fil);
     sleep(1);
     clock_t begin = clock();
+    ctx.port = 0;
     for (int i = 0; i < count; i++) {
         memcpy(&ctx.bufD[preBuff], &origD[0], origS);
-        processDataPacket(&ctx, origS, 0, 0);
+        processDataPacket(&ctx, origS, 0);
     }
     clock_t end = clock();
     double spent = (double)(end - begin) / (double)CLOCKS_PER_SEC;
