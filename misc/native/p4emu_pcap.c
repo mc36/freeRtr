@@ -52,6 +52,16 @@ int ifaceId[maxPorts];
 
 
 
+#define packGet                                     \
+    if (fail++ > 1024) break;                       \
+    pack = pcap_next(ifacePcap[port], &head);       \
+    if (pack == NULL) continue;                     \
+    bufS = head.caplen;                             \
+    if (bufS < 1) continue;                         \
+    memcpy(&bufD[preBuff], pack, bufS);             \
+    fail = 0;
+
+
 
 void doIfaceLoop(int * param) {
     int port = *param;
@@ -62,27 +72,16 @@ void doIfaceLoop(int * param) {
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
+    ctx.port = port;
     if (port == cpuPort) {
         for (;;) {
-            if (fail++ > 1024) break;
-            pack = pcap_next(ifacePcap[port], &head);
-            if (pack == NULL) continue;
-            bufS = head.caplen;
-            if (bufS < 1) continue;
-            memcpy(&bufD[preBuff], pack, bufS);
+            packGet;
             processCpuPack(&ctx, bufS);
-            fail = 0;
         }
     } else {
         for (;;) {
-            if (fail++ > 1024) break;
-            pack = pcap_next(ifacePcap[port], &head);
-            if (pack == NULL) continue;
-            bufS = head.caplen;
-            if (bufS < 1) continue;
-            memcpy(&bufD[preBuff], pack, bufS);
-            processDataPacket(&ctx, bufS, port, port);
-            fail = 0;
+            packGet;
+            processDataPacket(&ctx, bufS, port);
         }
     }
     err("port thread exited");

@@ -233,7 +233,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 for (; done < num; done++) rte_pktmbuf_free(mbufs[done]);
             }
             for (seq = 0; seq < myconf->rx_num; seq++) {
-                port = myconf->rx_list[seq];
+                ctx.port = port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
                 if (port == cpuPort) {
@@ -245,7 +245,7 @@ static int doPacketLoop(__rte_unused void *arg) {
                 }
                 for (i = 0; i < num; i++) {
                     mbuf2mybuf(mbufs[i]);
-                    processDataPacket(&ctx, bufS, port, port);
+                    processDataPacket(&ctx, bufS, port);
                 }
             }
             if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
@@ -261,9 +261,9 @@ static int doPacketLoop(__rte_unused void *arg) {
                 continue;
             }
             for (i = 0; i < num; i++) {
-                port = mbufs[i]->port;
+                ctx.port = mbufs[i]->port;
                 mbuf2mybuf(mbufs[i]);
-                processDataPacket(&ctx, bufS, port, port);
+                processDataPacket(&ctx, bufS, ctx.port);
             }
         }
     } else {

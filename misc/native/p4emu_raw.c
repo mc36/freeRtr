@@ -86,6 +86,7 @@ void doIfaceLoop(int * param) {
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
+    ctx.port = port;
     iov.iov_base = &bufD[preBuff];
     iov.iov_len = totBuff - preBuff;
     msg.msg_name = NULL;
@@ -105,7 +106,7 @@ void doIfaceLoop(int * param) {
     } else {
         for (;;) {
             getPack();
-            processDataPacket(&ctx, bufS, port, port);
+            processDataPacket(&ctx, bufS, port);
         }
     }
     err("port thread exited");
