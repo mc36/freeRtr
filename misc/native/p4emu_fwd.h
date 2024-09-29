@@ -739,7 +739,9 @@ void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS
         bufS = bufS - bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[bufP], bufS);
         if (ctx->bufB == NULL) return;
-        processDataPacket(ctx, bufS, port, prt);
+        struct packetContext ctx2;
+        shiftContext(&ctx2, ctx, bufD);
+        processDataPacket(&ctx2, bufS, port, prt);
         return;
     }
     if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
