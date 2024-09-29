@@ -722,9 +722,8 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
         putMacAddr;
         bufS = bufS - bufP + preBuff;
         memmove(&bufD[preBuff], &bufD[bufP], bufS);
-        if (ctx->bufB == NULL) return;
         struct packetContext ctx2;
-        shiftContext(&ctx2, ctx, bufD);
+        if (shiftContext(&ctx2, ctx, bufD) != 0) return;
         processDataPacket(&ctx2, bufS, prt);
         return;
     }
@@ -741,7 +740,7 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     pos = 0;                                                    \
     memcpy(&bufC[pos], &bufD[bufP], rem);                       \
     for (;rem > 0;) {                                           \
-        shiftContext(&ctx2, ctx, bufD);                         \
+        if (shiftContext(&ctx2, ctx, bufD) != 0) break;         \
         bufS = rem;                                             \
         if (bufS > neigh_res->frag) bufS = neigh_res->frag;     \
         memcpy(&bufD[preBuff], &bufC[pos], bufS);               \
@@ -966,7 +965,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
     unsigned char *bufH = ctx->bufH;
     unsigned char *bufC = ctx->bufC;
     for (int i = 0; i < flood.size; i++) {
-        shiftContext(&ctx2, ctx, bufC);
+        if (shiftContext(&ctx2, ctx, bufC) != 0) break;
         flood_res = table_get(&flood, i);
         int tmpP = preBuff;
         int tmpE;
@@ -1504,14 +1503,13 @@ ethtyp_rx:
         if ((port2vrf_res->monPackets++%port2vrf_res->monSample) == 0) {
             struct packetContext ctx2;
             unsigned char *bufC = ctx->bufC;
-            shiftContext(&ctx2, ctx, bufC);
             int tmpS = bufS - bufP + preBuff + 2;
             if (tmpS > port2vrf_res->monTruncate) tmpS = port2vrf_res->monTruncate;
             memcpy(&bufC[preBuff], &bufD[bufP - 2], tmpS);
             memcpy(&bufH[0], &bufD[preBuff], 12);
             int tmpP = preBuff;
             int tmpE = ethtyp;
-            send2subif(&ctx2, port2vrf_res->monTarget, tmpP, tmpS, tmpE);
+            if (shiftContext(&ctx2, ctx, bufC) == 0) send2subif(&ctx2, port2vrf_res->monTarget, tmpP, tmpS, tmpE);
         }
     }
     switch (port2vrf_res->command) {
@@ -2439,7 +2437,7 @@ bridgevpls_rx:
         unsigned char *bufC = ctx->bufC;
         for (int i = 0; i < vrf2rib_res->plk.size; i++) {
             if ((tmp & bitVals[30 - i]) == 0) continue;
-            shiftContext(&ctx2, ctx, bufC);
+            if (shiftContext(&ctx2, ctx, bufC) != 0) break;
             polkaIdx_res = table_get(&vrf2rib_res->plk, i);
             polkaIdx_res->pack++;
             polkaIdx_res->byte += bufS;

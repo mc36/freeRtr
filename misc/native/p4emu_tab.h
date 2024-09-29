@@ -821,10 +821,12 @@ int initContext(struct packetContext *ctx) {
     ctx->dgst = EVP_MD_CTX_new();
     if (ctx->dgst == NULL) return 1;
 #endif
-    ctx->bufA = malloc(totBuff);
-    if (ctx->bufA == NULL) return 1;
-    ctx->bufB = malloc(totBuff);
-    if (ctx->bufB == NULL) return 1;
+    ctx->bufB3 = malloc(totBuff);
+    if (ctx->bufB3 == NULL) return 1;
+    ctx->bufB2 = malloc(totBuff);
+    if (ctx->bufB2 == NULL) return 1;
+    ctx->bufB1 = malloc(totBuff);
+    if (ctx->bufB1 == NULL) return 1;
     ctx->bufC = malloc(totBuff);
     if (ctx->bufC == NULL) return 1;
     ctx->bufD = malloc(totBuff);
@@ -834,17 +836,19 @@ int initContext(struct packetContext *ctx) {
     return 0;
 }
 
-void shiftContext(struct packetContext *trg, struct packetContext *src, unsigned char *bufD) {
+int shiftContext(struct packetContext *trg, struct packetContext *src, unsigned char *bufD) {
     trg->sgt = src->sgt;
     trg->hash = src->hash;
     trg->port = src->port;
     trg->bufH = src->bufH;
     trg->bufD = bufD;
-    trg->bufC = src->bufB;
-    trg->bufB = src->bufA;
-    trg->bufA = NULL;
+    trg->bufC = src->bufB1;
+    trg->bufB1 = src->bufB2;
+    trg->bufB2 = src->bufB3;
+    trg->bufB3 = NULL;
 #ifndef HAVE_NOCRYPTO
     trg->encr = src->encr;
     trg->dgst = src->dgst;
 #endif
+    return trg->bufC == NULL;
 }
