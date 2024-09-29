@@ -277,6 +277,7 @@ struct neigh_entry {
     int tid;
     int spi;
     int frag;
+    int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
@@ -289,7 +290,6 @@ struct neigh_entry {
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
 #endif
-    int seq;
     long pack;
     long byte;
 };
@@ -639,6 +639,7 @@ struct tun4_entry {
     int spi;
     int reasmS;
     unsigned char *reasmB;
+    int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
@@ -651,7 +652,6 @@ struct tun4_entry {
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
 #endif
-    int seq;
     long pack;
     long byte;
 };
@@ -674,6 +674,7 @@ struct tun6_entry {
     int spi;
     int reasmS;
     unsigned char *reasmB;
+    int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
@@ -686,7 +687,6 @@ struct tun6_entry {
     const EVP_MD *hashAlg;
     EVP_PKEY *hashPkey;
 #endif
-    int seq;
     long pack;
     long byte;
 };

@@ -740,8 +740,8 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     rem = bufS - bufP + preBuff;                                \
     pos = 0;                                                    \
     memcpy(&bufC[pos], &bufD[bufP], rem);                       \
-    shiftContext(&ctx2, ctx, bufD);                             \
     for (;rem > 0;) {                                           \
+        shiftContext(&ctx2, ctx, bufD);                         \
         bufS = rem;                                             \
         if (bufS > neigh_res->frag) bufS = neigh_res->frag;     \
         memcpy(&bufD[preBuff], &bufC[pos], bufS);               \
@@ -2437,9 +2437,9 @@ bridgevpls_rx:
         tmp ^= get16msb(bufD, bufP + 18);
         struct packetContext ctx2;
         unsigned char *bufC = ctx->bufC;
-        shiftContext(&ctx2, ctx, bufC);
         for (int i = 0; i < vrf2rib_res->plk.size; i++) {
             if ((tmp & bitVals[30 - i]) == 0) continue;
+            shiftContext(&ctx2, ctx, bufC);
             polkaIdx_res = table_get(&vrf2rib_res->plk, i);
             polkaIdx_res->pack++;
             polkaIdx_res->byte += bufS;
