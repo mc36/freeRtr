@@ -16,8 +16,8 @@ struct packetContext {
     unsigned char *bufD;
     unsigned char *bufH;
 #ifndef HAVE_NOCRYPTO
-    EVP_CIPHER_CTX *encrCtx;
-    EVP_MD_CTX *hashCtx;
+    EVP_CIPHER_CTX *encr;
+    EVP_MD_CTX *dgst;
 #endif
 };
 

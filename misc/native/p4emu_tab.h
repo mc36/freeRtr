@@ -816,10 +816,10 @@ int initTables() {
 
 int initContext(struct packetContext *ctx) {
 #ifndef HAVE_NOCRYPTO
-    ctx->encrCtx = EVP_CIPHER_CTX_new();
-    if (ctx->encrCtx == NULL) return 1;
-    ctx->hashCtx = EVP_MD_CTX_new();
-    if (ctx->hashCtx == NULL) return 1;
+    ctx->encr = EVP_CIPHER_CTX_new();
+    if (ctx->encr == NULL) return 1;
+    ctx->dgst = EVP_MD_CTX_new();
+    if (ctx->dgst == NULL) return 1;
 #endif
     ctx->bufA = malloc(totBuff);
     if (ctx->bufA == NULL) return 1;
@@ -841,7 +841,7 @@ void shiftContext(struct packetContext *trg, struct packetContext *src, unsigned
     trg->bufA = NULL;
     trg->bufH = src->bufH;
 #ifndef HAVE_NOCRYPTO
-    trg->encrCtx = src->encrCtx;
-    trg->hashCtx = src->hashCtx;
+    trg->encr = src->encr;
+    trg->dgst = src->dgst;
 #endif
 }
