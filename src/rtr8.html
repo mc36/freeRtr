@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v24.9.29-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2024-09-29 07:05:54, took 00:10:37, with 60 workers, on 635 cases, 0 failed, 0 traces, 4 retries<br/>
+tested: 2024-09-29 07:27:51, took 00:12:00, with 60 workers, on 635 cases, 3 failed, 0 traces, 40 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -150,7 +150,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt016.tst">p4lang-crypt016.tst</a></td><td>success</td><td>p4lang: macsec over hairpin</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt017.tst">p4lang-crypt017.tst</a></td><td>success</td><td>p4lang: macsec ingress access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt018.tst">p4lang-crypt018.tst</a></td><td>success</td><td>p4lang: macsec egress access list</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt019.tst">p4lang-crypt019.tst</a></td><td>success</td><td>p4lang: macsec vlan ingress access list</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt019.tst">p4lang-crypt019.tst</a></td><td>#6-run-r3 tping 100 10 1.1.2.2 vrf v1</td><td>p4lang: macsec vlan ingress access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt020.tst">p4lang-crypt020.tst</a></td><td>success</td><td>p4lang: macsec vlan egress access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt021.tst">p4lang-crypt021.tst</a></td><td>success</td><td>p4lang: ipsec with des</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt022.tst">p4lang-crypt022.tst</a></td><td>success</td><td>p4lang: ipsec with 3des</td></tr>
@@ -252,7 +252,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt118.tst">p4lang-crypt118.tst</a></td><td>success</td><td>p4lang: openvpn with packout</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt119.tst">p4lang-crypt119.tst</a></td><td>success</td><td>p4lang: wireguard with packout</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt120.tst">p4lang-crypt120.tst</a></td><td>success</td><td>p4lang: gre with packout</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt121.tst">p4lang-crypt121.tst</a></td><td>success</td><td>p4lang: macsec over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt121.tst">p4lang-crypt121.tst</a></td><td>#6-run-r3 tping 100 10 1.1.2.2 vrf v1</td><td>p4lang: macsec over qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt122.tst">p4lang-crypt122.tst</a></td><td>success</td><td>p4lang: macsec over bundle qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt123.tst">p4lang-crypt123.tst</a></td><td>success</td><td>p4lang: macsec qinq ingress access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt124.tst">p4lang-crypt124.tst</a></td><td>success</td><td>p4lang: macsec qinq egress access list</td></tr>
@@ -264,7 +264,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt130.tst">p4lang-crypt130.tst</a></td><td>success</td><td>p4lang: sgt qinq egress access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt131.tst">p4lang-crypt131.tst</a></td><td>success</td><td>p4lang: packout on qinq port</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt132.tst">p4lang-crypt132.tst</a></td><td>success</td><td>p4lang: packout on macsec qinq port</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt133.tst">p4lang-crypt133.tst</a></td><td>success</td><td>p4lang: macsec with static key</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt133.tst">p4lang-crypt133.tst</a></td><td>#6-run-r3 tping 100 10 1.1.2.2 vrf v1</td><td>p4lang: macsec with static key</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt134.tst">p4lang-crypt134.tst</a></td><td>success</td><td>p4lang: ipsec with aes128gcm</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt135.tst">p4lang-crypt135.tst</a></td><td>success</td><td>p4lang: ipsec with aes192gcm</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt136.tst">p4lang-crypt136.tst</a></td><td>success</td><td>p4lang: ipsec with aes256gcm</td></tr>

@@ -595,8 +595,8 @@ int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *
 }
 
 
-int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *ethtyp, int sgt) {
-    if (sgt < 0) return 0;
+int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *ethtyp) {
+    if (ctx->sgt < 0) return 0;
     unsigned char *bufD = ctx->bufD;
     struct port2vrf_entry port2vrf_ntry;
     struct port2vrf_entry *port2vrf_res;
@@ -608,7 +608,7 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
         *bufP -= 8;
         put16msb(bufD, *bufP + 2, 0x0101);
         put16msb(bufD, *bufP + 4, 0x0001);
-        put16msb(bufD, *bufP + 6, sgt);
+        put16msb(bufD, *bufP + 6, ctx->sgt);
         *ethtyp = ETHERTYPE_SGT;
         put16msb(bufD, *bufP + 0, *ethtyp);
     }
@@ -680,8 +680,8 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
 
 
 
-void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS, int ethtyp, int sgt, int port) {
-    if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
+void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS, int ethtyp, int port) {
+    if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
     unsigned char *bufD = ctx->bufD;
     unsigned char *bufH = ctx->bufH;
     struct vlanout_entry vlanout_ntry;
@@ -700,7 +700,7 @@ void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS
         if (vlanout_res->vlan2 > 0) {
             prt = vlanout_res->port2;
             ethtyp = ETHERTYPE_VLAN;
-            if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
+            if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
             hash ^= vlanout_res->vlan2;
             bufP -= 2;
             put16msb(bufD, bufP, vlanout_res->vlan2);
@@ -711,7 +711,7 @@ void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS
         vlanout_res->pack++;
         vlanout_res->byte += bufS;
         ethtyp = ETHERTYPE_VLAN;
-        if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
+        if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
     }
     bundle_ntry.id = prt;
     index = table_find(&bundle_table, &bundle_ntry);
@@ -737,7 +737,7 @@ void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS
         processDataPacket(&ctx2, bufS, port, prt);
         return;
     }
-    if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp, sgt) != 0) return;
+    if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
     putMacAddr;
     send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
 }
@@ -750,7 +750,7 @@ void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS
     pos = 0;                                                    \
     memcpy(&bufC[pos], &bufD[bufP], rem);                       \
     shiftContext(&ctx2, ctx, bufD);                             \
-    for (;;) {                                                  \
+    for (;rem > 0;) {                                           \
         bufS = rem;                                             \
         if (bufS > neigh_res->frag) bufS = neigh_res->frag;     \
         memcpy(&bufD[preBuff], &bufC[pos], bufS);               \
@@ -768,13 +768,12 @@ void send2subif(struct packetContext *ctx, int prt, int hash, int bufP, int bufS
 
 
 #define doMlpppEnd                                              \
-    send2subif(&ctx2, neigh_res->port, hash, bufP, bufS, ethtyp, sgt, port);    \
-    if (rem < 1) break;                                         \
+    send2subif(&ctx2, neigh_res->port, hash, bufP, bufS, ethtyp, port);    \
     }
 
 
 
-void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int hash, int bufP, int bufS, int ethtyp, int sgt, int port) {
+void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int hash, int bufP, int bufS, int ethtyp, int port) {
     unsigned char *bufD = ctx->bufD;
     unsigned char *bufH = ctx->bufH;
     unsigned char *bufC = ctx->bufC;
@@ -786,7 +785,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int ha
     neigh_res->byte += bufS;
     memcpy(&bufH[0], &neigh_res->macs, 12);
     if (neigh_res->aclport != neigh_res->port) {
-        if (macsec_apply(ctx, neigh_res->aclport, &bufP, &bufS, &ethtyp, sgt) != 0) doDropper;
+        if (macsec_apply(ctx, neigh_res->aclport, &bufP, &bufS, &ethtyp) != 0) doDropper;
     }
     switch (neigh_res->command) {
     case 1: // raw ip
@@ -932,7 +931,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int ha
     default:
         doDropper;
     }
-    send2subif(ctx, neigh_res->port, hash, bufP, bufS, ethtyp, sgt, port);
+    send2subif(ctx, neigh_res->port, hash, bufP, bufS, ethtyp, port);
 drop:
     return;
 }
@@ -967,7 +966,7 @@ drop:
 
 
 
-void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int bufP, int bufS, int ethtyp, int sgt, int label, int port) {
+void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int bufP, int bufS, int ethtyp, int label, int port) {
     struct neigh_entry neigh_ntry;
     struct neigh_entry *neigh_res;
     struct flood_entry *flood_res;
@@ -989,7 +988,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int b
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
             memcpy(&bufH[0], &flood_res->macs, 12);
-            send2subif(&ctx2, flood_res->trg, hash, tmpP, tmpS, tmpE, sgt, port);
+            send2subif(&ctx2, flood_res->trg, hash, tmpP, tmpS, tmpE, port);
             break;
         case 2: // mpls
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1002,7 +1001,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int b
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, port);
             break;
         case 3: // bier mask
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1019,7 +1018,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int b
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, port);
             break;
         case 4: // bier set
             tmpE = ETHERTYPE_MPLS_UCAST;
@@ -1056,7 +1055,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int b
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, port);
             break;
         case 5: // neighbor
             tmpE = ethtyp;
@@ -1067,7 +1066,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int hash, int b
             index = table_find(&neigh_table, &neigh_ntry);
             if (index < 0) continue;
             neigh_res = table_get(&neigh_table, index);
-            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, port);
             break;
         }
     }
@@ -1417,7 +1416,7 @@ void processDataPacket(struct packetContext *ctx, int bufS, int port, int prt) {
     struct policer_entry *policer_res = NULL;
     struct mroute4_entry *mroute4_res = NULL;
     struct mroute6_entry *mroute6_res = NULL;
-    int sgt = 0;
+    ctx->sgt = 0;
     int index = 0;
     int label = 0;
     int sum = 0;
@@ -1503,12 +1502,12 @@ ethtyp_rx:
     if (port2vrf_res->sgtTag != 0) {
         if (ethtyp != ETHERTYPE_SGT) doDropper;
         if (get32msb(bufD, bufP + 0) != 0x01010001) doDropper;
-        sgt = get16msb(bufD, bufP + 4);
+        ctx->sgt = get16msb(bufD, bufP + 4);
         ethtyp = get16msb(bufD, bufP + 6);
         bufP += 8;
     }
     if (port2vrf_res->sgtSet >= 0) {
-        sgt = port2vrf_res->sgtSet;
+        ctx->sgt = port2vrf_res->sgtSet;
     }
     if (port2vrf_res->monTarget >= 0) {
         if ((port2vrf_res->monPackets++%port2vrf_res->monSample) == 0) {
@@ -1521,7 +1520,7 @@ ethtyp_rx:
             memcpy(&bufH[0], &bufD[preBuff], 12);
             int tmpP = preBuff;
             int tmpE = ethtyp;
-            send2subif(&ctx2, port2vrf_res->monTarget, hash, tmpP, tmpS, tmpE, sgt, port);
+            send2subif(&ctx2, port2vrf_res->monTarget, hash, tmpP, tmpS, tmpE, port);
         }
     }
     switch (port2vrf_res->command) {
@@ -1574,7 +1573,7 @@ ethtyp_rx:
     case 4: // loconnifc
         bufP -= 2;
         memcpy(&bufH[0], &bufD[preBuff], 12);
-        send2subif(ctx, port2vrf_res->label1, hash, bufP, bufS, ethtyp, sgt, port);
+        send2subif(ctx, port2vrf_res->label1, hash, bufP, bufS, ethtyp, port);
         return;
     case 5: // loconnnei
         bufP -= 2;
@@ -1670,12 +1669,12 @@ nethtyp_tx:
             if (index < 0) doDropper;
             neigh_res = table_get(&neigh_table, index);
 neigh_tx:
-            send2neigh(ctx, neigh_res, hash, bufP, bufS, ethtyp, sgt, port);
+            send2neigh(ctx, neigh_res, hash, bufP, bufS, ethtyp, port);
             return;
         case 4: // xconn
             memcpy(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
-            send2subif(ctx, mpls_res->port, hash, bufP, bufS, ethtyp, sgt, port);
+            send2subif(ctx, mpls_res->port, hash, bufP, bufS, ethtyp, port);
             return;
         case 5: // vpls
             memcpy(&bufH[0], &bufD[bufP], 12);
@@ -1686,13 +1685,13 @@ neigh_tx:
         case 6: // punt
             doCpuing;
         case 7: // dup
-            doFlood(ctx, mpls_res->flood, hash, bufP, bufS, ethtyp, sgt, (label & 0xf00) | ttl, port);
+            doFlood(ctx, mpls_res->flood, hash, bufP, bufS, ethtyp, (label & 0xf00) | ttl, port);
             if (mpls_res->swap != 0) goto mpls_rou;
             return;
         case 8: // bier
             if ((label & 0x100) == 0) doDropper;
             if (bufD[bufP] != 0x50) doDropper;
-            doFlood(ctx, mpls_res->flood, hash, bufP, bufS, ethtyp, sgt, (label & 0xf00) | ttl, port);
+            doFlood(ctx, mpls_res->flood, hash, bufP, bufS, ethtyp, (label & 0xf00) | ttl, port);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, tmp2);
             if (tmp2 == 0) return;
             bufP += 8;
@@ -1736,7 +1735,7 @@ ipv4_rx:
         }
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff; // frags
-        acl4_ntry.sgtV = sgt;
+        acl4_ntry.sgtV = ctx->sgt;
         nat4_ntry.prot = acl4_ntry.protV = bufD[bufP + 9];
         acl4_ntry.tosV = bufD[bufP + 1];
         acl4_ntry.flowV = get16msb(bufD, bufP + 4);
@@ -1948,7 +1947,7 @@ ipv4_tx:
                 if (mroute4_res->ingr != prt) doDropper;
                 mroute4_res->pack++;
                 mroute4_res->byte += bufS;
-                doFlood(ctx, mroute4_res->flood, hash, bufP, bufS, ethtyp, sgt, 0x100 | ttl, port);
+                doFlood(ctx, mroute4_res->flood, hash, bufP, bufS, ethtyp, 0x100 | ttl, port);
                 if (mroute4_res->local != 0) doCpuing;
                 return;
             }
@@ -1993,7 +1992,7 @@ ipv6_rx:
             if ((bufS - bufP + preBuff) > port2vrf_res->pmtud6) doPunting;
         }
         bufT = bufP + 40;
-        acl6_ntry.sgtV = sgt;
+        acl6_ntry.sgtV = ctx->sgt;
         nat6_ntry.prot = acl6_ntry.protV = bufD[bufP + 6];
         acl6_ntry.tosV = (get16msb(bufD, bufP + 0) >> 4) & 0xff;
         acl6_ntry.flowV = get32msb(bufD, bufP + 0) & 0xfffff;
@@ -2252,7 +2251,7 @@ ipv6_tx:
                 if (mroute6_res->ingr != prt) doDropper;
                 mroute6_res->pack++;
                 mroute6_res->byte += bufS;
-                doFlood(ctx, mroute6_res->flood, hash, bufP, bufS, ethtyp, sgt, 0x100 | ttl, port);
+                doFlood(ctx, mroute6_res->flood, hash, bufP, bufS, ethtyp, 0x100 | ttl, port);
                 if (mroute6_res->local != 0) doCpuing;
                 return;
             }
@@ -2325,7 +2324,7 @@ bridgevpls_rx:
         bufP -= 2;
         switch (bridge_res->command) {
         case 1: // port
-            send2subif(ctx, bridge_res->port, hash, bufP, bufS, ethtyp, sgt, port);
+            send2subif(ctx, bridge_res->port, hash, bufP, bufS, ethtyp, port);
             return;
         case 2: // vpls
             bufP -= 12;
@@ -2456,7 +2455,7 @@ bridgevpls_rx:
             int tmpE = ethtyp;
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
-            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, sgt, port);
+            send2neigh(&ctx2, neigh_res, hash, tmpP, tmpS, tmpE, port);
         }
         if ((tmp & 1) == 0) return;
         ethtyp = get16msb(bufD, bufP + 2);
@@ -2490,7 +2489,7 @@ nsh_rx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             memcpy(&bufH[0], &nsh_res->macs, 12);
-            send2subif(ctx, nsh_res->port, hash, bufP, bufS, ethtyp, sgt, port);
+            send2subif(ctx, nsh_res->port, hash, bufP, bufS, ethtyp, port);
             return;
         case 2: // vrf
             bufP += ((ttl & 0x3f) * 4);
@@ -2556,5 +2555,6 @@ extern void processCpuPack(struct packetContext *ctx, int bufS) {
     int ethtyp = get16msb(bufD, preBuff + 16);
     int bufP = preBuff + 16;
     memcpy(&bufH[0], &bufD[preBuff + 4], 12);
-    send2subif(ctx, prt, hash, bufP, bufS, ethtyp, -1, cpuPort);
+    ctx->sgt = -1;
+    send2subif(ctx, prt, hash, bufP, bufS, ethtyp, cpuPort);
 }

@@ -835,11 +835,12 @@ int initContext(struct packetContext *ctx) {
 }
 
 void shiftContext(struct packetContext *trg, struct packetContext *src, unsigned char *bufD) {
+    trg->sgt = src->sgt;
+    trg->bufH = src->bufH;
     trg->bufD = bufD;
     trg->bufC = src->bufB;
     trg->bufB = src->bufA;
     trg->bufA = NULL;
-    trg->bufH = src->bufH;
 #ifndef HAVE_NOCRYPTO
     trg->encr = src->encr;
     trg->dgst = src->dgst;

@@ -10,6 +10,7 @@
 #endif
 
 struct packetContext {
+    int sgt;
     unsigned char *bufA;
     unsigned char *bufB;
     unsigned char *bufC;
