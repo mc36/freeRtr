@@ -1,4 +1,4 @@
-description p4lang: l2tp3 mpls pop
+description p4lang: l2tp3 mpls over ipv4 loopback
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -39,6 +39,10 @@ int lo0
  ipv4 addr 2.2.2.101 255.255.255.255
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v2
+ ipv4 addr 8.8.8.1 255.255.255.255
+ exit
 int sdn1
  no autostat
  vrf for v2
@@ -46,7 +50,7 @@ int sdn1
  exit
 int virt1
  enc ppp
- pseudo v2 sdn1 l2tp3 9.9.9.2 1234
+ pseudo v2 lo1 l2tp3 8.8.8.2 1234
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -96,6 +100,7 @@ server p4lang p4
  export-port virt1 dynamic
  vrf v9
  exit
+ipv4 route v2 8.8.8.2 255.255.255.255 9.9.9.2
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
 ipv4 route v1 2.2.2.105 255.255.255.255 1.1.3.2
@@ -126,10 +131,22 @@ vrf def v1
 vrf def v2
  rd 1:1
  exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
+ exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int lo1
+ vrf for v2
+ ipv4 addr 8.8.8.2 255.255.255.255
  exit
 bridge 1
  mac-learn
@@ -144,11 +161,19 @@ int bvi1
  exit
 int virt1
  enc ppp
- pseudo v2 bvi1 l2tp3 9.9.9.1 1234
+ pseudo v2 lo1 l2tp3 8.8.8.1 1234
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
+ipv4 route v2 8.8.8.1 255.255.255.255 9.9.9.1
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.4.0 255.255.255.0 1.1.1.1
@@ -312,6 +337,8 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 
 r1 tping 100 30 9.9.9.2 vrf v2
 r3 tping 100 30 9.9.9.1 vrf v2
+r1 tping 100 30 8.8.8.2 vrf v2
+r3 tping 100 30 8.8.8.1 vrf v2
 
 r1 tping 100 30 2.2.2.101 vrf v1 sou lo0
 r1 tping 100 30 4321::101 vrf v1 sou lo0

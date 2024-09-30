@@ -256,7 +256,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putIpv4header(bufP, bufS, ethtyp, proto, sip, dip)      \
+#define putIpv4header(proto, sip, dip)                          \
     bufP -= 20;                                                 \
     put16msb(bufD, bufP + 0, 0x4500);                           \
     ethtyp = bufS - bufP + preBuff;                             \
@@ -280,7 +280,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putIpv6header(bufP, bufS, ethtyp, proto, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4)    \
+#define putIpv6header(proto, sip1, sip2, sip3, sip4, dip1, dip2, dip3, dip4)    \
     bufP -= 40;                                                 \
     put16msb(bufD, bufP + 0, 0x6000);                           \
     put16msb(bufD, bufP + 2, 0);                                \
@@ -342,13 +342,13 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putIpipHeader(ethtyp, res)                              \
+#define putIpipHeader                                           \
     switch (ethtyp) {                                           \
     case ETHERTYPE_IPV4:                                        \
-        res = IP_PROTOCOL_IPV4;                                 \
+        tmp = IP_PROTOCOL_IPV4;                                 \
         break;                                                  \
     case ETHERTYPE_IPV6:                                        \
-        res = IP_PROTOCOL_IPV6;                                 \
+        tmp = IP_PROTOCOL_IPV6;                                 \
         break;                                                  \
     default:                                                    \
         doDropper;                                              \
@@ -420,6 +420,8 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
+#define putAmtHeader                                            \
+    put16msb(bufD, bufP, 0x600);
 
 
 
@@ -737,101 +739,101 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         break;
     case 3: // gre4
         putGreHeader;
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_GRE, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_GRE, neigh_res->sip1, neigh_res->dip1);
         break;
     case 4: // gre6
         putGreHeader;
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_GRE, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_GRE, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 5: // l2tp4
         ethtyp2ppptyp;
         putL2tpHeader;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 6: // l2tp6
         ethtyp2ppptyp;
         putL2tpHeader;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 7: // ipip4
-        putIpipHeader(ethtyp, tmp);
-        putIpv4header(bufP, bufS, ethtyp, tmp, neigh_res->sip1, neigh_res->dip1);
+        putIpipHeader;
+        putIpv4header(tmp, neigh_res->sip1, neigh_res->dip1);
         break;
     case 8: // ipip6
-        putIpipHeader(ethtyp, tmp);
-        putIpv6header(bufP, bufS, ethtyp, tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpipHeader;
+        putIpv6header(tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
 #ifndef HAVE_NOCRYPTO
     case 9: // esp4
-        putIpipHeader(ethtyp, ethtyp);
-        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, ethtyp) != 0) doDropper;
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->dip1);
+        putIpipHeader;
+        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
+        putIpv4header(IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 10: // esp6
-        putIpipHeader(ethtyp, ethtyp);
-        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, ethtyp) != 0) doDropper;
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpipHeader;
+        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
+        putIpv6header(IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 11: // openvpn4
         if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 12: // openvpn6
         if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 13: // wireguard4
         if (putWireguardHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 14: // wireguard6
         if (putWireguardHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
 #endif
     case 15: // amt4
-        put16msb(bufD, bufP, 0x600);
+        putAmtHeader;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 16: // amt6
-        put16msb(bufD, bufP, 0x600);
+        putAmtHeader;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 17: // gtp4
         putGtpHeader;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 18: // gtp6
         putGtpHeader;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 19: // l3tp4
         ethtyp2ppptyp;
         putL3tpHeader;
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 20: // l3tp6
         ethtyp2ppptyp;
         putL3tpHeader;
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 21: // tmux4
         putTmuxHeader;
-        putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->dip1);
+        putIpv4header(IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->dip1);
         break;
     case 22: // tmux6
         putTmuxHeader;
-        putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        putIpv6header(IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     default:
         doDropper;
@@ -1223,7 +1225,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
         neigh_ntry.id = route_res->nexthop;                         \
         goto ethtyp_tx;                                             \
     case 5:                                                         \
-        putIpv6header(bufP, bufS, ethtyp, proto, route_res->srv1, route_res->srv2, route_res->srv3, route_res->srv4, route_res->srv1, route_res->srv2, route_res->srv3, route_res->srv4);   \
+        putIpv6header(proto, route_res->srv1, route_res->srv2, route_res->srv3, route_res->srv4, route_res->srv1, route_res->srv2, route_res->srv3, route_res->srv4);   \
         neigh_ntry.id = route_res->nexthop;                         \
         goto nethtyp_tx;                                            \
     case 6:                                                         \
@@ -2256,45 +2258,45 @@ bridgevpls_rx:
         case 4: // vxlan4
             putVxlanHeader;
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            putIpv4header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         case 5: // vxlan6
             putVxlanHeader;
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            putIpv6header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         case 6: // pckoudp4
             putPckoudpHeader;
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            putIpv4header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         case 7: // pckoudp6
             putPckoudpHeader;
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            putIpv6header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         case 8: // srv4
             putPckoudpHeader;
-            putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_SRL2, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            putIpv4header(IP_PROTOCOL_SRL2, bridge_res->srcAddr1, bridge_res->trgAddr1);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         case 9: // srv6
             putPckoudpHeader;
-            putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_SRL2, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            putIpv6header(IP_PROTOCOL_SRL2, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         case 10: // etherip4
             putEtheripHeader;
-            putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            putIpv4header(IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->trgAddr1);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         case 11: // etherip6
             putEtheripHeader;
-            putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            putIpv6header(IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         default:

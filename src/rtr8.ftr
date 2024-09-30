@@ -478,16 +478,6 @@ qc pass: p4lang: bridge pmtud
 qc pass: p4lang: vlan bridge pmtud
 qc pass: p4lang: ip ttl exceed
 qc pass: p4lang: mpls ttl exceed
-qc pass: p4lang: multilink pppoe routing
-qc pass: p4lang: multilink pppoe mpls
-qc pass: p4lang: multilink l2tp routing over ipv4
-qc pass: p4lang: multilink l2tp routing over ipv6
-qc pass: p4lang: multilink l2tp routing over vlan
-qc pass: p4lang: multilink l2tp mpls over ipv4
-qc pass: p4lang: multilink l2tp mpls over ipv6
-qc pass: p4lang: multilink l2tp mpls over vlan
-qc pass: p4lang: multilink l2tp routing over bundle
-qc pass: p4lang: multilink l2tp mpls over bundle
 qc pass: p4lang: null routing
 qc pass: p4lang: fib filtering with prefixlist
 qc pass: p4lang: fib filtering with routemap
@@ -510,14 +500,6 @@ qc pass: p4lang: l2tp3 routing over ipv4 loopback
 qc pass: p4lang: l2tp3 routing over ipv6 loopback
 qc pass: p4lang: l2tp3 routing over vlan
 qc pass: p4lang: l2tp3 routing over bundle
-qc pass: p4lang: multilink l2tp3 routing over ipv4
-qc pass: p4lang: multilink l2tp3 routing over ipv6
-qc pass: p4lang: multilink l2tp3 routing over vlan
-qc pass: p4lang: multilink l2tp3 mpls over ipv4
-qc pass: p4lang: multilink l2tp3 mpls over ipv6
-qc pass: p4lang: multilink l2tp3 mpls over vlan
-qc pass: p4lang: multilink l2tp3 routing over bundle
-qc pass: p4lang: multilink l2tp3 mpls over bundle
 qc pass: p4lang: l2tp3 mpls over ipv4
 qc pass: p4lang: l2tp3 mpls over ipv6
 qc pass: p4lang: l2tp3 mpls over ipv4 loopback
