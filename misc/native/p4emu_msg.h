@@ -159,7 +159,7 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 char* getCapas() {
-    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mlppp mpolka polka"
+    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka"
 
 #ifndef HAVE_NOCRYPTO
            " macsec ipsec openvpn wireguard"
@@ -1571,9 +1571,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.command = 2;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[8]);
-        neigh_ntry.frag = atoi(arg[9]);
-        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
-        else if (del != 0) pppoe_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&pppoe_table, &pppoe_ntry);
         else table_add(&pppoe_table, &pppoe_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -1758,9 +1755,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[10]);
         tun4_ntry.prot = IP_PROTOCOL_L2TP;
         tun4_ntry.command = 12;
-        neigh_ntry.frag = atoi(arg[11]);
-        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
-        else if (del != 0) tun4_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
@@ -1789,9 +1783,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[10]);
         tun6_ntry.prot = IP_PROTOCOL_L2TP;
         tun6_ntry.command = 12;
-        neigh_ntry.frag = atoi(arg[11]);
-        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
-        else if (del != 0) tun6_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
@@ -1818,9 +1809,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.trgPort = neigh_ntry.sprt;
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 2;
-        neigh_ntry.frag = atoi(arg[13]);
-        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
-        else if (del != 0) tun4_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
@@ -1853,9 +1841,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.trgPort = neigh_ntry.sprt;
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 2;
-        neigh_ntry.frag = atoi(arg[13]);
-        if (neigh_ntry.frag < 1) neigh_ntry.frag = 65536;
-        else if (del != 0) tun6_ntry.reasmB = malloc(9216);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);

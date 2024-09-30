@@ -276,7 +276,6 @@ struct neigh_entry {
     int dprt;
     int tid;
     int spi;
-    int frag;
     int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
@@ -619,8 +618,6 @@ struct pppoe_entry {
     int port;
     int session;
     int aclport;
-    int reasmS;
-    unsigned char *reasmB;
     long pack;
     long byte;
 };
@@ -637,8 +634,6 @@ struct tun4_entry {
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=etherip
     int aclport;
     int spi;
-    int reasmS;
-    unsigned char *reasmB;
     int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
@@ -672,8 +667,6 @@ struct tun6_entry {
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=etherip
     int aclport;
     int spi;
-    int reasmS;
-    unsigned char *reasmB;
     int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];

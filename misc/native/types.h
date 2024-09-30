@@ -22,7 +22,6 @@
 #define PPPTYPE_SGT                 0x004a
 #define PPPTYPE_NSH                 0x004b
 #define PPPTYPE_POLKA               0x004d
-#define PPPTYPE_MULTILINK           0x003d
 
 #define IP_PROTOCOL_IGMP            2
 #define IP_PROTOCOL_IPV4            4

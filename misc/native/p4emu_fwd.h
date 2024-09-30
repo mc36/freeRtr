@@ -208,23 +208,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 #define ppptyp2ethtyp(ress)                                     \
-    if (ethtyp == PPPTYPE_MULTILINK) {                          \
-        if (ress->reasmB == NULL) doDropper;                    \
-        ethtyp = bufD[bufP + 2];                                \
-        if ((ethtyp & 0x80) != 0) ress->reasmS = 0;             \
-        bufP += 6;                                              \
-        tmp = bufS - bufP + preBuff;                            \
-        if (tmp < 1) doDropper;                                 \
-        if ((ress->reasmS + tmp) > 8192) doDropper;             \
-        memcpy(&ress->reasmB[ress->reasmS], &bufD[bufP], tmp);  \
-        ress->reasmS += tmp;                                    \
-        if ((ethtyp & 0x40) == 0) return;                       \
-        bufP = preBuff;                                         \
-        bufS = ress->reasmS;                                    \
-        memcpy(&bufD[bufP], &ress->reasmB[0], bufS);            \
-        ress->reasmS = 0;                                       \
-        ethtyp = get16msb(bufD, bufP);                          \
-    }                                                           \
     if ((ethtyp & 0x8000) != 0) doCpuing;                       \
     switch (ethtyp) {                                           \
     case PPPTYPE_MPLS_UCAST:                                    \
@@ -735,43 +718,10 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
 
 
 
-#define doMlpppBeg                                              \
-    put16msb(bufD, bufP, ethtyp);                               \
-    rem = bufS - bufP + preBuff;                                \
-    pos = 0;                                                    \
-    memcpy(&bufC[pos], &bufD[bufP], rem);                       \
-    for (;rem > 0;) {                                           \
-        if (shiftContext(&ctx2, ctx, bufD) != 0) break;         \
-        bufS = rem;                                             \
-        if (bufS > neigh_res->frag) bufS = neigh_res->frag;     \
-        memcpy(&bufD[preBuff], &bufC[pos], bufS);               \
-        bufP = preBuff;                                         \
-        bufP -= 4;                                              \
-        neigh_res->seq++;                                       \
-        put32msb(bufD, bufP, neigh_res->seq);                   \
-        rem -= bufS;                                            \
-        bufD[bufP] = 0;                                         \
-        if (pos < 1) bufD[bufP] |= 0x80;                        \
-        if (rem < 1) bufD[bufP] |= 0x40;                        \
-        pos += bufS;                                            \
-        bufP -= 2;                                              \
-        ethtyp = PPPTYPE_MULTILINK;
-
-
-#define doMlpppEnd                                              \
-    send2subif(&ctx2, neigh_res->port, bufP, bufS, ethtyp);     \
-    }
-
-
-
 void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bufP, int bufS, int ethtyp) {
     unsigned char *bufD = ctx->bufD;
     unsigned char *bufH = ctx->bufH;
-    unsigned char *bufC = ctx->bufC;
-    struct packetContext ctx2;
     int tmp;
-    int pos;
-    int rem;
     neigh_res->pack++;
     neigh_res->byte += bufS;
     memcpy(&bufH[0], &neigh_res->macs, 12);
@@ -783,14 +733,8 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         break;
     case 2: // pppoe
         ethtyp2ppptyp(bufP, ethtyp);
-        if ((bufS - bufP + preBuff) < neigh_res->frag) {
-            putPppoeHeader;
-            break;
-        }
-        doMlpppBeg;
         putPppoeHeader;
-        doMlpppEnd;
-        return;
+        break;
     case 3: // gre4
         putGreHeader(bufP);
         putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_GRE, neigh_res->sip1, neigh_res->dip1);
@@ -801,32 +745,16 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         break;
     case 5: // l2tp4
         ethtyp2ppptyp(bufP, ethtyp);
-        if ((bufS - bufP + preBuff) < neigh_res->frag) {
-            putL2tpHeader(bufP, ethtyp);
-            putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
-            putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
-            break;
-        }
-        doMlpppBeg;
         putL2tpHeader(bufP, ethtyp);
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
-        doMlpppEnd;
-        return;
+        break;
     case 6: // l2tp6
         ethtyp2ppptyp(bufP, ethtyp);
-        if ((bufS - bufP + preBuff) < neigh_res->frag) {
-            putL2tpHeader(bufP, ethtyp);
-            putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
-            putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-            break;
-        }
-        doMlpppBeg;
         putL2tpHeader(bufP, ethtyp);
         putUdpHeader(bufP, bufS, neigh_res->sprt, neigh_res->dprt);
         putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        doMlpppEnd;
-        return;
+        break;
     case 7: // ipip4
         putIpipHeader(bufP, ethtyp, tmp);
         putIpv4header(bufP, bufS, ethtyp, tmp, neigh_res->sip1, neigh_res->dip1);
@@ -889,28 +817,14 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         break;
     case 19: // l3tp4
         ethtyp2ppptyp(bufP, ethtyp);
-        if ((bufS - bufP + preBuff) < neigh_res->frag) {
-            putL3tpHeader(bufP, ethtyp);
-            putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->dip1);
-            break;
-        }
-        doMlpppBeg;
         putL3tpHeader(bufP, ethtyp);
         putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->dip1);
-        doMlpppEnd;
-        return;
+        break;
     case 20: // l3tp6
         ethtyp2ppptyp(bufP, ethtyp);
-        if ((bufS - bufP + preBuff) < neigh_res->frag) {
-            putL3tpHeader(bufP, ethtyp);
-            putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-            break;
-        }
-        doMlpppBeg;
         putL3tpHeader(bufP, ethtyp);
         putIpv6header(bufP, bufS, ethtyp, IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        doMlpppEnd;
-        return;
+        break;
     case 21: // tmux4
         putTmuxHeader(bufP);
         putIpv4header(bufP, bufS, ethtyp, IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->dip1);
@@ -1128,17 +1042,17 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
         tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
         if (tmp < 1) doDropper;                                     \
         if (tun_res->hashBlkLen > 0) {                              \
-            if (EVP_MD_CTX_reset(ctx->dgst) != 1) doDropper;          \
+            if (EVP_MD_CTX_reset(ctx->dgst) != 1) doDropper;        \
             if (EVP_DigestSignInit(ctx->dgst, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
             if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
             sizt = preBuff;                                         \
-            if (EVP_DigestSignFinal(ctx->dgst, &bufH[0], &sizt) != 1) doDropper;      \
-            if (memcmp(&bufH[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
+            if (EVP_DigestSignFinal(ctx->dgst, &bufD[0], &sizt) != 1) doDropper;      \
+            if (memcmp(&bufD[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
             bufS -= tun_res->hashBlkLen;                            \
         }                                                           \
         bufP += 8;                                                  \
         tmp -= 8;                                                   \
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;          \
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;        \
         if (tun_res->encrTagLen > 0) {                              \
             memcpy(&bufD[0], tun_res->hashKeyDat, 4);               \
             memcpy(&bufD[4], &bufD[bufP], 8);                       \
@@ -1178,14 +1092,14 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
         tmp = bufS - bufP + preBuff;                                \
         if (tmp < 1) doDropper;                                     \
         if (tun_res->hashBlkLen > 0) {                              \
-            if (EVP_MD_CTX_reset(ctx->dgst) != 1) doDropper;          \
+            if (EVP_MD_CTX_reset(ctx->dgst) != 1) doDropper;        \
             if (EVP_DigestSignInit(ctx->dgst, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
             if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
             sizt = preBuff;                                         \
-            if (EVP_DigestSignFinal(ctx->dgst, &bufH[0], &sizt) != 1) doDropper;      \
-            if (memcmp(&bufH[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
+            if (EVP_DigestSignFinal(ctx->dgst, &bufD[0], &sizt) != 1) doDropper;      \
+            if (memcmp(&bufD[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
         }                                                           \
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;          \
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;        \
         if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
         if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper; \
         if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
@@ -1205,7 +1119,7 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
         bufP += 16;                                                 \
         bufS -= 16;                                                 \
         tmp -= 32;                                                  \
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;          \
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;        \
         if (EVP_DecryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) doDropper;  \
         if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper; \
         if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper; \
@@ -1462,8 +1376,8 @@ ethtyp_rx:
             if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP - 8], 8) != 1) doDropper;
             if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
             sizt = preBuff;
-            if (EVP_DigestSignFinal(ctx->dgst, &bufH[0], &sizt) != 1) doDropper;
-            if (memcmp(&bufH[0], &bufD[bufP + tmp], port2vrf_res->mcscHashBlkLen) !=0) doDropper;
+            if (EVP_DigestSignFinal(ctx->dgst, &bufD[0], &sizt) != 1) doDropper;
+            if (memcmp(&bufD[0], &bufD[bufP + tmp], port2vrf_res->mcscHashBlkLen) !=0) doDropper;
         }
         if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
         memcpy(&bufD[0], port2vrf_res->mcscIvRxKeyDat, port2vrf_res->mcscIvRxKeyLen);
