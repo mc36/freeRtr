@@ -1,4 +1,4 @@
-description p4lang: bundle qinq eompls
+description p4lang: l2tp mpls over qinq
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,10 +8,11 @@ vrf def v1
  rd 1:1
  label-mode per-prefix
  exit
-vrf def v9
+vrf def v2
  rd 1:1
  exit
-bundle 1
+vrf def v9
+ rd 1:1
  exit
 int lo9
  vrf for v9
@@ -40,6 +41,16 @@ int lo0
  exit
 int sdn1
  no autostat
+ exit
+int sdn1.222
+ exit
+int sdn1.222.333
+ vrf for v2
+ ipv4 addr 9.9.9.1 255.255.255.0
+ exit
+int virt1
+ enc ppp
+ pseudo v2 sdn1.222.333 l2tp2 9.9.9.2 1234
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -60,34 +71,46 @@ int sdn2
  exit
 int sdn3
  no autostat
- bundle-gr 1
+ vrf for v1
+ ipv4 addr 1.1.3.1 255.255.255.0
+ ipv6 addr 1234:3::1 ffff:ffff::
+ ipv6 ena
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 int sdn4
  no autostat
- bundle-gr 1
- exit
-int bun1.111
- exit
-int bun1.111.222
- xconnect v1 lo0 pweompls 2.2.2.103 1234
+ vrf for v1
+ ipv4 addr 1.1.4.1 255.255.255.0
+ ipv6 addr 1234:4::1 ffff:ffff::
+ ipv6 ena
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 server p4lang p4
  interconnect eth2
  export-vrf v1
+ export-vrf v2
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10
  export-port sdn4 4 10
- export-port bun1 dynamic
+ export-port virt1 dynamic
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.3.2
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.4.2
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 controller r1 v9 9080 - feature bundle vlan eompls mpls
+addother r2 controller r1 v9 9080 - feature l2tp mpls vlan
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -104,38 +127,66 @@ vrf def v1
  rd 1:1
  label-mode per-prefix
  exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
+ exit
+vrf def v2
+ rd 1:1
+ exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo1
- vrf for v1
- ipv4 addr 3.3.3.103 255.255.255.255
- ipv6 addr 3333::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+bridge 1
+ mac-learn
+ block-unicast
  exit
 int eth1
+ bridge-gr 1
+ exit
+int bvi1.222
+ exit
+int bvi1.222.333
+ vrf for v2
+ ipv4 addr 9.9.9.2 255.255.255.0
+ exit
+int di1
+ enc ppp
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
  exit
-int pweth1
- pseudowire v1 lo0 pweompls 2.2.2.101 1234
- vrf for v1
- ipv4 addr 1.1.3.3 255.255.255.0
- ipv6 addr 1234:3::3 ffff:ffff::
+server l2tp2 l
+ clone dialer1
+ vrf v2
  exit
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
+ipv4 route v1 1.1.3.0 255.255.255.0 1.1.1.1
+ipv4 route v1 1.1.4.0 255.255.255.0 1.1.1.1
 ipv6 route v1 1234:2:: ffff:ffff:: 1234:1::1
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:1::1
+ipv6 route v1 1234:4:: ffff:ffff:: 1234:1::1
 ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.1.1
 ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
-ipv4 route v1 3.3.3.105 255.255.255.255 1.1.3.5
-ipv6 route v1 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::5
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 !
 
 addrouter r4
@@ -145,76 +196,157 @@ vrf def v1
  rd 1:1
  label-mode per-prefix
  exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
+ exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.104 255.255.255.255
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo1
- vrf for v1
- ipv4 addr 3.3.3.104 255.255.255.255
- ipv6 addr 3333::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
  exit
-int pweth1
- pseudowire v1 lo0 pweompls 2.2.2.101 1234
- vrf for v1
- ipv4 addr 1.1.3.4 255.255.255.0
- ipv6 addr 1234:3::4 ffff:ffff::
- exit
 ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
+ipv4 route v1 1.1.3.0 255.255.255.0 1.1.2.1
+ipv4 route v1 1.1.4.0 255.255.255.0 1.1.2.1
 ipv6 route v1 1234:1:: ffff:ffff:: 1234:2::1
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:2::1
+ipv6 route v1 1234:4:: ffff:ffff:: 1234:2::1
 ipv4 route v1 2.2.2.101 255.255.255.255 1.1.2.1
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.2.1
 ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 !
 
 addrouter r5
 int eth1 eth 0000.0000.5555 $5b$ $5a$
-int eth2 eth 0000.0000.6666 $6b$ $6a$
 !
 vrf def v1
  rd 1:1
+ label-mode per-prefix
  exit
-bundle 1
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
  exit
 int lo0
  vrf for v1
- ipv4 addr 3.3.3.105 255.255.255.255
- ipv6 addr 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ ipv4 addr 2.2.2.105 255.255.255.255
+ ipv6 addr 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int eth1
- bundle-gr 1
- exit
-int eth2
- bundle-gr 1
- exit
-int bun1.111
- exit
-int bun1.111.222
  vrf for v1
- ipv4 addr 1.1.3.5 255.255.255.0
- ipv6 addr 1234:3::5 ffff:ffff::
+ ipv4 addr 1.1.3.2 255.255.255.0
+ ipv6 addr 1234:3::2 ffff:ffff::
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
+ mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
-ipv4 route v1 3.3.3.103 255.255.255.255 1.1.3.3
-ipv6 route v1 3333::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::3
+ipv4 route v1 1.1.1.0 255.255.255.0 1.1.3.1
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.3.1
+ipv4 route v1 1.1.4.0 255.255.255.0 1.1.3.1
+ipv6 route v1 1234:1:: ffff:ffff:: 1234:3::1
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:3::1
+ipv6 route v1 1234:4:: ffff:ffff:: 1234:3::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.3.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+!
+
+addrouter r6
+int eth1 eth 0000.0000.6666 $6b$ $6a$
+!
+vrf def v1
+ rd 1:1
+ label-mode per-prefix
+ exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
+ exit
+int lo0
+ vrf for v1
+ ipv4 addr 2.2.2.106 255.255.255.255
+ ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 1.1.4.2 255.255.255.0
+ ipv6 addr 1234:4::2 ffff:ffff::
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
+ mpls enable
+ mpls ldp4
+ mpls ldp6
+ exit
+ipv4 route v1 1.1.1.0 255.255.255.0 1.1.4.1
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.4.1
+ipv4 route v1 1.1.3.0 255.255.255.0 1.1.4.1
+ipv6 route v1 1234:1:: ffff:ffff:: 1234:4::1
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:4::1
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:4::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.4.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
 
-r1 tping 100 10 2.2.2.101 vrf v1 sou lo0
-r1 tping 100 10 4321::101 vrf v1 sou lo0
-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0
-r1 tping 100 10 4321::103 vrf v1 sou lo0
-r1 tping 100 10 2.2.2.104 vrf v1 sou lo0
-r1 tping 100 10 4321::104 vrf v1 sou lo0
+r1 tping 100 30 9.9.9.2 vrf v2
+r3 tping 100 30 9.9.9.1 vrf v2
+
+r1 tping 100 30 2.2.2.101 vrf v1 sou lo0
+r1 tping 100 30 4321::101 vrf v1 sou lo0
+r1 tping 100 30 2.2.2.103 vrf v1 sou lo0
+r1 tping 100 30 4321::103 vrf v1 sou lo0
+r1 tping 100 30 2.2.2.104 vrf v1 sou lo0
+r1 tping 100 30 4321::104 vrf v1 sou lo0
+r1 tping 100 30 2.2.2.105 vrf v1 sou lo0
+r1 tping 100 30 4321::105 vrf v1 sou lo0
+r1 tping 100 30 2.2.2.106 vrf v1 sou lo0
+r1 tping 100 30 4321::106 vrf v1 sou lo0
 
 r3 tping 100 10 2.2.2.101 vrf v1 sou lo0
 r3 tping 100 10 4321::101 vrf v1 sou lo0
@@ -222,6 +354,10 @@ r3 tping 100 10 2.2.2.103 vrf v1 sou lo0
 r3 tping 100 10 4321::103 vrf v1 sou lo0
 r3 tping 100 10 2.2.2.104 vrf v1 sou lo0
 r3 tping 100 10 4321::104 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r3 tping 100 10 4321::105 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.106 vrf v1 sou lo0
+r3 tping 100 10 4321::106 vrf v1 sou lo0
 
 r4 tping 100 10 2.2.2.101 vrf v1 sou lo0
 r4 tping 100 10 4321::101 vrf v1 sou lo0
@@ -229,12 +365,32 @@ r4 tping 100 10 2.2.2.103 vrf v1 sou lo0
 r4 tping 100 10 4321::103 vrf v1 sou lo0
 r4 tping 100 10 2.2.2.104 vrf v1 sou lo0
 r4 tping 100 10 4321::104 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r4 tping 100 10 4321::105 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.106 vrf v1 sou lo0
+r4 tping 100 10 4321::106 vrf v1 sou lo0
 
-r5 tping 100 10 3.3.3.103 vrf v1 sou lo0
-r5 tping 100 10 3333::103 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r5 tping 100 10 4321::101 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r5 tping 100 10 4321::103 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r5 tping 100 10 4321::104 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r5 tping 100 10 4321::105 vrf v1 sou lo0
+r5 tping 100 10 2.2.2.106 vrf v1 sou lo0
+r5 tping 100 10 4321::106 vrf v1 sou lo0
 
-r3 tping 100 10 3.3.3.105 vrf v1 sou lo1
-r3 tping 100 10 3333::105 vrf v1 sou lo1
+r6 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r6 tping 100 10 4321::101 vrf v1 sou lo0
+r6 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r6 tping 100 10 4321::103 vrf v1 sou lo0
+r6 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r6 tping 100 10 4321::104 vrf v1 sou lo0
+r6 tping 100 10 2.2.2.105 vrf v1 sou lo0
+r6 tping 100 10 4321::105 vrf v1 sou lo0
+r6 tping 100 10 2.2.2.106 vrf v1 sou lo0
+r6 tping 100 10 4321::106 vrf v1 sou lo0
 
-r1 dping sdn . r5 3.3.3.103 vrf v1 sou lo0
-r1 dping sdn . r5 3333::103 vrf v1 sou lo0
+r1 dping sdn . r3 2.2.2.105 vrf v1 sou lo0
+r1 dping sdn . r3 4321::105 vrf v1 sou lo0

@@ -1,4 +1,4 @@
-description p4lang: bridging over tmux vlan
+description p4lang: etherip server over ipv6 loopback
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,9 +8,6 @@ vrf def v1
  rd 1:1
  exit
 vrf def v2
- rd 1:1
- exit
-vrf def v8
  rd 1:1
  exit
 vrf def v9
@@ -41,6 +38,11 @@ int lo0
  ipv4 addr 2.2.2.101 255.255.255.255
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v2
+ ipv6 addr 8888::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ ipv6 ena
+ exit
 bridge 1
  mac-learn
  exit
@@ -57,19 +59,13 @@ int sdn2
  exit
 int sdn3
  no autostat
- exit
-int sdn3.222
  vrf for v2
- ipv4 addr 9.9.9.1 255.255.255.0
+ ipv6 addr 9999::1 ffff:ffff::
+ ipv6 ena
  exit
-int tun1
- tun vrf v2
- tun source sdn3.222
- tun destination 9.9.9.2
- tun mode tmux
- bridge-gr 1
- vrf for v8
- ipv4 addr 3.3.3.3 255.255.255.255
+server etherip pou
+ bridge 1
+ vrf v2
  exit
 int sdn4
  no autostat
@@ -79,20 +75,19 @@ server p4lang p4
  interconnect eth2
  export-vrf v1
  export-vrf v2
- export-vrf v8
  export-br 1
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10
  export-port sdn4 4 10
- export-port tun1 dynamic
  vrf v9
  exit
+ipv6 route v2 8888::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 9999::2
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 !
 
-addother r2 controller r1 v9 9080 - feature bridge tmux tmuxtap vlan
+addother r2 controller r1 v9 9080 - feature bridge etherip
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -153,30 +148,26 @@ vrf def v1
 vrf def v2
  rd 1:1
  exit
-bridge 1
- mac-learn
- exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.105 255.255.255.255
  ipv6 addr 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.222
+int lo1
  vrf for v2
- ipv4 addr 9.9.9.2 255.255.255.0
+ ipv6 addr 8888::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int tun1
- tun vrf v2
- tun source eth1.222
- tun destination 9.9.9.1
- tun mode tmux
- bridge-gr 1
+int eth1
+ vrf for v2
+ ipv6 addr 9999::2 ffff:ffff::
  exit
-int bvi1
+int pweth1
  vrf for v1
  ipv4 addr 1.1.2.5 255.255.255.0
  ipv6 addr 1234:2::5 ffff:ffff::
+ pseudo v2 lo1 etherip 8888::1 2554
  exit
+ipv6 route v2 8888::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 9999::1
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.4
 ipv4 route v1 2.2.2.106 255.255.255.255 1.1.2.6
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::4
@@ -207,8 +198,10 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::5
 
 
 
-r1 tping 100 10 9.9.9.2 vrf v2
-r5 tping 100 10 9.9.9.1 vrf v2
+r1 tping 100 10 9999::2 vrf v2
+r5 tping 100 10 9999::1 vrf v2
+r1 tping 100 10 8888::2 vrf v2
+r5 tping 100 10 8888::1 vrf v2
 
 r1 tping 100 10 1.1.1.2 vrf v1
 r1 tping 100 10 1234:1::2 vrf v1
@@ -216,15 +209,15 @@ r1 tping 100 10 1234:1::2 vrf v1
 r3 tping 100 10 1.1.1.1 vrf v1
 r3 tping 100 10 1234:1::1 vrf v1
 
-r4 tping 100 10 1.1.2.5 vrf v1
-r4 tping 100 10 1234:2::5 vrf v1
-r4 tping 100 10 1.1.2.6 vrf v1
-r4 tping 100 10 1234:2::6 vrf v1
-
 r5 tping 100 10 1.1.2.4 vrf v1
 r5 tping 100 10 1234:2::4 vrf v1
 r5 tping 100 10 1.1.2.6 vrf v1
 r5 tping 100 10 1234:2::6 vrf v1
+
+r4 tping 100 10 1.1.2.5 vrf v1
+r4 tping 100 10 1234:2::5 vrf v1
+r4 tping 100 10 1.1.2.6 vrf v1
+r4 tping 100 10 1234:2::6 vrf v1
 
 r6 tping 100 10 1.1.2.4 vrf v1
 r6 tping 100 10 1234:2::4 vrf v1

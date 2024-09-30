@@ -1,4 +1,4 @@
-description p4lang: tmux mpls over ipv4
+description p4lang: l3vpn over tmux mpls
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -182,6 +182,63 @@ ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+vrf def v2
+ rd 1:2
+ rt-both 1:2
+ exit
+vrf def v3
+ rd 1:3
+ rt-both 1:3
+ exit
+vrf def v4
+ rd 1:4
+ rt-both 1:4
+ exit
+int lo2
+ vrf for v2
+ ipv4 addr 9.9.2.1 255.255.255.255
+ ipv6 addr 9992::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int lo3
+ vrf for v3
+ ipv4 addr 9.9.3.1 255.255.255.255
+ ipv6 addr 9993::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int lo4
+ vrf for v4
+ ipv4 addr 9.9.4.1 255.255.255.255
+ ipv6 addr 9994::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+router bgp4 1
+ vrf v1
+ address vpnuni
+ local-as 1
+ router-id 4.4.4.1
+ neigh 2.2.2.105 remote-as 1
+ neigh 2.2.2.105 update lo0
+ neigh 2.2.2.105 send-comm both
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
+ exit
+router bgp6 1
+ vrf v1
+ address vpnuni
+ local-as 1
+ router-id 6.6.6.1
+ neigh 4321::105 remote-as 1
+ neigh 4321::105 update lo0
+ neigh 4321::105 send-comm both
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
+ exit
 !
 
 addrouter r4
@@ -278,6 +335,63 @@ ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+vrf def v2
+ rd 1:2
+ rt-both 1:2
+ exit
+vrf def v3
+ rd 1:3
+ rt-both 1:3
+ exit
+vrf def v4
+ rd 1:4
+ rt-both 1:4
+ exit
+int lo2
+ vrf for v2
+ ipv4 addr 9.9.2.2 255.255.255.255
+ ipv6 addr 9992::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int lo3
+ vrf for v3
+ ipv4 addr 9.9.3.2 255.255.255.255
+ ipv6 addr 9993::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int lo4
+ vrf for v4
+ ipv4 addr 9.9.4.2 255.255.255.255
+ ipv6 addr 9994::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+router bgp4 1
+ vrf v1
+ address vpnuni
+ local-as 1
+ router-id 4.4.4.2
+ neigh 2.2.2.103 remote-as 1
+ neigh 2.2.2.103 update lo0
+ neigh 2.2.2.103 send-comm both
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
+ exit
+router bgp6 1
+ vrf v1
+ address vpnuni
+ local-as 1
+ router-id 6.6.6.2
+ neigh 4321::103 remote-as 1
+ neigh 4321::103 update lo0
+ neigh 4321::103 send-comm both
+ afi-vrf v2 ena
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 red conn
+ afi-vrf v4 ena
+ afi-vrf v4 red conn
+ exit
 !
 
 addrouter r6
@@ -387,5 +501,20 @@ r6 tping 100 10 4321::105 vrf v1 sou lo0
 r6 tping 100 10 2.2.2.106 vrf v1 sou lo0
 r6 tping 100 10 4321::106 vrf v1 sou lo0
 
-r1 dping sdn . r3 2.2.2.105 vrf v1 sou lo0
-r1 dping sdn . r3 4321::105 vrf v1 sou lo0
+r3 tping 100 60 9.9.2.2 vrf v2
+r5 tping 100 60 9.9.2.1 vrf v2
+r3 tping 100 60 9992::2 vrf v2
+r5 tping 100 60 9992::1 vrf v2
+
+r3 tping 100 60 9.9.3.2 vrf v3
+r5 tping 100 60 9.9.3.1 vrf v3
+r3 tping 100 60 9993::2 vrf v3
+r5 tping 100 60 9993::1 vrf v3
+
+r3 tping 100 60 9.9.4.2 vrf v4
+r5 tping 100 60 9.9.4.1 vrf v4
+r3 tping 100 60 9994::2 vrf v4
+r5 tping 100 60 9994::1 vrf v4
+
+r1 dping sdn . r3 9.9.3.2 vrf v3
+r1 dping sdn . r3 9993::2 vrf v3
