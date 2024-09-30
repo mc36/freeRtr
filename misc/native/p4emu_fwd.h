@@ -721,9 +721,10 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     if (bundle_res->command == 2) {
         putMacAddr;
         bufS = bufS - bufP + preBuff;
-        memmove(&bufD[preBuff], &bufD[bufP], bufS);
         struct packetContext ctx2;
-        if (shiftContext(&ctx2, ctx, bufD) != 0) return;
+        unsigned char *bufC = ctx->bufC;
+        memcpy(&bufC[preBuff], &bufD[bufP], bufS);
+        if (shiftContext(&ctx2, ctx, bufC) != 0) return;
         processDataPacket(&ctx2, bufS, prt);
         return;
     }
@@ -2537,7 +2538,8 @@ drop:
         punts--;
 cpu:
         bufP = bufE - 12;
-        memmove(&bufD[bufP], &bufD[preBuff], 12);
+        memcpy(&bufH[0], &bufD[preBuff], 12);
+        memcpy(&bufD[bufP], &bufH[0], 12);
         bufP -= 4;
         put32msb(bufD, bufP, prt);
         send2port(&bufD[bufP], bufS - bufP + preBuff, cpuPort);

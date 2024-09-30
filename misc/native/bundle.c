@@ -21,7 +21,6 @@ struct sockaddr_in bunRem[bundleMax];
 int bunSck[bundleMax];
 pthread_t bunThr[bundleMax];
 int bunNum;
-int bunNxt;
 long int byteRx;
 long int packRx;
 long int byteTx;
@@ -33,6 +32,7 @@ void err(char*buf) {
 }
 
 void doLowerLoop() {
+    int bunNxt;
     unsigned char bufD[16384];
     int bufS;
     struct sockaddr_in addrTmp;

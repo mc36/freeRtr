@@ -6,7 +6,7 @@ int str2key(char *str, unsigned char *key) {
     unsigned char buf[4];
     int s = 0;
     for (int i=0;;) {
-        memmove(&buf, &str[i], 2);
+        memcpy(&buf, &str[i], 2);
         buf[2] = 0;
         if (str[i] == 0) break;
         sscanf((char*)buf, "%hhx", &key[s]);

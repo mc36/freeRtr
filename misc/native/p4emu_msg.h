@@ -15,7 +15,7 @@ int str2key(char *str, unsigned char *key) {
     unsigned char buf[4];
     int s = 0;
     for (int i=0;;) {
-        memmove(&buf, &str[i], 2);
+        memcpy(&buf, &str[i], 2);
         buf[2] = 0;
         if (str[i] == 0) break;
         sscanf((char*)buf, "%hhx", &key[s]);
@@ -2573,8 +2573,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2key(arg[8], orig);
         bufS -= 12;
         for (i=0; i<cntr; i++) {
-            memmove(&bufD[preBuff], &orig[12], bufS);
-            memmove(&bufH[0], &orig[0], 16);
+            memcpy(&bufD[preBuff], &orig[12], bufS);
+            memcpy(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
             send2subif(ctx, prt, bufP, bufS, ethtyp);
@@ -2599,8 +2599,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         if (index < 0) return 0;
         neigh_res = table_get(&neigh_table, index);
         for (i=0; i<cntr; i++) {
-            memmove(&bufD[preBuff], &orig[12], bufS);
-            memmove(&bufH[0], &orig[0], 16);
+            memcpy(&bufD[preBuff], &orig[12], bufS);
+            memcpy(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
             send2neigh(ctx, neigh_res, bufP, bufS, ethtyp);
