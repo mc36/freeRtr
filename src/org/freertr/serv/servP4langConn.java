@@ -2713,11 +2713,6 @@ public class servP4langConn implements Runnable {
         if (ses == 0) {
             return;
         }
-        int frg = -1;
-        try {
-            frg = ifc.ifc.ppp.fragLen;
-        } catch (Exception e) {
-        }
         String act;
         if (nei.mac == null) {
             act = "add";
@@ -2737,7 +2732,7 @@ public class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        lower.sendLine("l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses + " " + frg);
+        lower.sendLine("l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses);
     }
 
     private void doL2tpClnt(clntL2tp2 ntry, servP4langNei nei, servP4langIfc ifc) {
@@ -2781,11 +2776,6 @@ public class servP4langConn implements Runnable {
         if (rp < 1) {
             return;
         }
-        int frg = -1;
-        try {
-            frg = ifc.ifc.ppp.fragLen;
-        } catch (Exception e) {
-        }
         String act;
         if (nei.mac == null) {
             act = "add";
@@ -2805,7 +2795,7 @@ public class servP4langConn implements Runnable {
         } else {
             afi = "6";
         }
-        lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun + " " + frg);
+        lower.sendLine("l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + adr + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun);
     }
 
     private void doNeighs(boolean ipv4, servP4langIfc ifc, ipIfc ipi) {
@@ -2835,11 +2825,6 @@ public class servP4langConn implements Runnable {
                     return;
                 }
                 addrMac macR = new addrMac();
-                int frg = -1;
-                try {
-                    frg = ifc.ifc.ppp.fragLen;
-                } catch (Exception e) {
-                }
                 int ses = ntry.getSession(macR);
                 if (ses == ifc.sentPppoe) {
                     return;
@@ -2858,7 +2843,7 @@ public class servP4langConn implements Runnable {
                     sess = ses;
                 }
                 nei.viaI = prnt;
-                lower.sendLine("pppoe_" + act + " " + ifc.id + " " + prnt.id + " " + nei.id + " " + vrf.id + " " + sess + " " + macR.toEmuStr() + " " + macL.toEmuStr() + " " + frg);
+                lower.sendLine("pppoe_" + act + " " + ifc.id + " " + prnt.id + " " + nei.id + " " + vrf.id + " " + sess + " " + macR.toEmuStr() + " " + macL.toEmuStr());
                 ifc.sentPppoe = ses;
                 return;
             } catch (Exception e) {
@@ -3130,18 +3115,13 @@ public class servP4langConn implements Runnable {
                 nei.mac = hop.mac.copyBytes();
                 nei.sentIfc = hop.sentIfc;
                 nei.sentTun = rp;
-                int frg = -1;
-                try {
-                    frg = ifc.ifc.ppp.fragLen;
-                } catch (Exception e) {
-                }
                 String afi;
                 if (trg.isIPv4()) {
                     afi = "4";
                 } else {
                     afi = "6";
                 }
-                String a = "l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun + " " + frg;
+                String a = "l2tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + lp + " " + rp + " " + tun;
                 nei.sentEnc = a;
                 lower.sendLine(a);
                 return;
@@ -3186,18 +3166,13 @@ public class servP4langConn implements Runnable {
                 nei.mac = hop.mac.copyBytes();
                 nei.sentIfc = hop.sentIfc;
                 nei.sentTun = ses;
-                int frg = -1;
-                try {
-                    frg = ifc.ifc.ppp.fragLen;
-                } catch (Exception e) {
-                }
                 String afi;
                 if (trg.isIPv4()) {
                     afi = "4";
                 } else {
                     afi = "6";
                 }
-                String a = "l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses + " " + frg;
+                String a = "l3tp" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + trg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + ses;
                 nei.sentEnc = a;
                 lower.sendLine(a);
                 return;
@@ -3491,11 +3466,6 @@ public class servP4langConn implements Runnable {
             nei.need++;
             nei.iface.viaN = nei;
             nei.vrf = vrf;
-            int frg = -1;
-            try {
-                frg = ifc.ifc.ppp.fragLen;
-            } catch (Exception e) {
-            }
             int ses = -1;
             addrMac mac = new addrMac();
             if (ifc.pppoe.ifc.pppoeC != null) {
@@ -3521,7 +3491,7 @@ public class servP4langConn implements Runnable {
                 sess = ses;
             }
             nei.viaI = ifc.pppoe;
-            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ifc.pppoe.getMac().toEmuStr() + " " + frg);
+            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ifc.pppoe.getMac().toEmuStr());
             ifc.sentPppoe = ses;
             return;
         }
