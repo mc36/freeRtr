@@ -595,21 +595,21 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
     int seq = port2vrf_res->mcscSeqTx++;
     int tmp = *bufS - *bufP + preBuff;
     int tmp2 = tmp % port2vrf_res->mcscEncrBlkLen;
-    if (tmp2 != 0) {
+    if (tmp2 > 0) {
         tmp2 = port2vrf_res->mcscEncrBlkLen - tmp2;
         memset(&bufD[*bufP + tmp], 0, tmp2);
         *bufS += tmp2;
         tmp += tmp2;
-    }
-    tmp2 = 0;
-    if (tmp < 48) {
-        tmp2 = tmp;
     }
     if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
     memcpy(&bufD[0], port2vrf_res->mcscIvTxKeyDat, port2vrf_res->mcscIvTxKeyLen);
     put32msb(bufD, port2vrf_res->mcscIvTxKeyLen, seq);
     if (EVP_EncryptInit_ex(ctx->encr, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufD) != 1) return 1;
     if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
+    tmp2 = 0;
+    if (tmp < 48) {
+        tmp2 = tmp;
+    }
     put16msb(bufD, 0, port2vrf_res->mcscEthtyp);
     bufD[2] = 0x0c; // tci
     bufD[3] = tmp2; // sl
