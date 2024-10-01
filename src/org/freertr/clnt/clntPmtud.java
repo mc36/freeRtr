@@ -170,7 +170,7 @@ public class clntPmtud {
                 bits.sleep(delay);
             }
         }
-        pip.linePut("finished with min=" + min + " max=" + max + " last=" + last + " guess=" + (last + ovrh));
+        pip.linePut("finished with min=" + min + " max=" + max + " last=" + last);
         int[] res = new int[2];
         res[0] = ovrh;
         res[1] = last;
