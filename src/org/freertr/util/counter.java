@@ -401,6 +401,34 @@ public class counter implements Comparator<counter> {
     }
 
     /**
+     * compare two
+     *
+     * @param oth other to compare
+     * @return bigger one
+     */
+    public counter bigger(counter oth) {
+        if (packRx < oth.packRx) {
+            return oth;
+        }
+        if (packTx < oth.packTx) {
+            return oth;
+        }
+        if (packDr < oth.packDr) {
+            return oth;
+        }
+        if (byteRx < oth.byteRx) {
+            return oth;
+        }
+        if (byteTx < oth.byteTx) {
+            return oth;
+        }
+        if (byteDr < oth.byteDr) {
+            return oth;
+        }
+        return this;
+    }
+
+    /**
      * substract values
      *
      * @param old substract this

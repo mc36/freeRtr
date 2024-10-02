@@ -62,7 +62,9 @@ public class history {
         if (pst > limit) {
             pst = limit;
         }
-        counter res = cur.minus(ocnt).div(pst);
+        counter res = cur.minus(ocnt);
+        res=res.bigger(new counter());
+        res = res.div(pst);
         ocnt = cur.copyBytes();
         otim = tim;
         update(secs, res, pst);
