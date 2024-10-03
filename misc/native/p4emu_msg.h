@@ -188,6 +188,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         if (o > 0) break;
         i++;
     }
+    o = i;
+    for (int i=cnt; i < 128; i++) arg[i]=(char*)&buf[o];
     printf("rx: ");
     for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
     printf("\n");
