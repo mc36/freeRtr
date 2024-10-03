@@ -494,12 +494,10 @@ int putOpenvpnHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, i
     if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
     if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
     if (neigh_res->hashBlkLen < 1) return 0;
-    if (EVP_MD_CTX_reset(ctx->dgst) != 1) return 1;
-    if (EVP_DigestSignInit(ctx->dgst, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) return 1;
-    if (EVP_DigestSignUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
+    if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) return 1;
+    if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
     *bufP -= neigh_res->hashBlkLen;
-    size_t sizt = preBuff;
-    if (EVP_DigestSignFinal(ctx->dgst, &bufD[*bufP], &sizt) != 1) return 1;
+    if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[*bufP]) != 1) return 1;
     return 0;
 #else
     return 1;
@@ -557,11 +555,9 @@ int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *
     put32msb(bufD, *bufP + 4, seq);
     if (neigh_res->hashBlkLen < 1) return 0;
     tmp += 8;
-    if (EVP_MD_CTX_reset(ctx->dgst) != 1) return 1;
-    if (EVP_DigestSignInit(ctx->dgst, NULL, neigh_res->hashAlg, NULL, neigh_res->hashPkey) != 1) return 1;
-    if (EVP_DigestSignUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
-    size_t sizt = preBuff;
-    if (EVP_DigestSignFinal(ctx->dgst, &bufD[*bufP + tmp], &sizt) != 1) return 1;
+    if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) return 1;
+    if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
+    if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[*bufP + tmp]) != 1) return 1;
     *bufS += neigh_res->hashBlkLen;
     return 0;
 #else
@@ -628,15 +624,13 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
         if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
     }
     if (port2vrf_res->mcscHashBlkLen > 0) {
-        if (EVP_MD_CTX_reset(ctx->dgst) != 1) return 1;
-        if (EVP_DigestSignInit(ctx->dgst, NULL, port2vrf_res->mcscHashAlg, NULL, port2vrf_res->mcscHashPkey) != 1) return 1;
+        if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen) != 1) return 1;
         if (port2vrf_res->mcscNeedMacs != 0) {
-            if (EVP_DigestSignUpdate(ctx->dgst, &bufH[0], 12) != 1) return 1;
+            if (EVP_DigestUpdate(ctx->dgst, &bufH[0], 12) != 1) return 1;
         }
-        if (EVP_DigestSignUpdate(ctx->dgst, &bufD[0], 8) != 1) return 1;
-        if (EVP_DigestSignUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
-        size_t sizt = preBuff;
-        if (EVP_DigestSignFinal(ctx->dgst, &bufD[*bufP + tmp], &sizt) != 1) return 1;
+        if (EVP_DigestUpdate(ctx->dgst, &bufD[0], 8) != 1) return 1;
+        if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
+        if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen, &bufD[*bufP + tmp]) != 1) return 1;
         *bufS += port2vrf_res->mcscHashBlkLen;
     }
     *bufP -= 8;
@@ -1044,11 +1038,9 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
         tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
         if (tmp < 1) doDropper;                                     \
         if (tun_res->hashBlkLen > 0) {                              \
-            if (EVP_MD_CTX_reset(ctx->dgst) != 1) doDropper;        \
-            if (EVP_DigestSignInit(ctx->dgst, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
-            if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
-            sizt = preBuff;                                         \
-            if (EVP_DigestSignFinal(ctx->dgst, &bufD[0], &sizt) != 1) doDropper;      \
+            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;  \
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
+            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper; \
             if (memcmp(&bufD[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
             bufS -= tun_res->hashBlkLen;                            \
         }                                                           \
@@ -1094,11 +1086,9 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
         tmp = bufS - bufP + preBuff;                                \
         if (tmp < 1) doDropper;                                     \
         if (tun_res->hashBlkLen > 0) {                              \
-            if (EVP_MD_CTX_reset(ctx->dgst) != 1) doDropper;        \
-            if (EVP_DigestSignInit(ctx->dgst, NULL, tun_res->hashAlg, NULL, tun_res->hashPkey) != 1) doDropper; \
-            if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
-            sizt = preBuff;                                         \
-            if (EVP_DigestSignFinal(ctx->dgst, &bufD[0], &sizt) != 1) doDropper;      \
+            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;  \
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
+            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper; \
             if (memcmp(&bufD[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
         }                                                           \
         if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;        \
@@ -1336,9 +1326,6 @@ void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     int ttl = ctx->port;
     packRx[ttl]++;
     byteRx[ttl] += bufS;
-#ifndef HAVE_NOCRYPTO
-    size_t sizt = 0;
-#endif
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
@@ -1370,15 +1357,13 @@ ethtyp_rx:
         if (tmp < 1) doDropper;
         if (port2vrf_res->mcscNeedAead == 0) if ((tmp % port2vrf_res->mcscEncrBlkLen) != 0) doDropper;
         if (port2vrf_res->mcscHashBlkLen > 0) {
-            if (EVP_MD_CTX_reset(ctx->dgst) != 1) doDropper;
-            if (EVP_DigestSignInit(ctx->dgst, NULL, port2vrf_res->mcscHashAlg, NULL, port2vrf_res->mcscHashPkey) != 1) doDropper;
+            if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen) != 1) doDropper;
             if (port2vrf_res->mcscNeedMacs != 0) {
-                if (EVP_DigestSignUpdate(ctx->dgst, &bufD[preBuff + 0], 12) != 1) doDropper;
+                if (EVP_DigestUpdate(ctx->dgst, &bufD[preBuff + 0], 12) != 1) doDropper;
             }
-            if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP - 8], 8) != 1) doDropper;
-            if (EVP_DigestSignUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
-            sizt = preBuff;
-            if (EVP_DigestSignFinal(ctx->dgst, &bufD[0], &sizt) != 1) doDropper;
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP - 8], 8) != 1) doDropper;
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
+            if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen, &bufD[0]) != 1) doDropper;
             if (memcmp(&bufD[0], &bufD[bufP + tmp], port2vrf_res->mcscHashBlkLen) !=0) doDropper;
         }
         if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;

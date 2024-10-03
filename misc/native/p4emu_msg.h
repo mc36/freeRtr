@@ -57,15 +57,6 @@ const EVP_MD* getHashAlg(char *buf) {
     if (strcmp(buf, "sha512") == 0) return EVP_sha512();
     return NULL;
 }
-
-
-EVP_PKEY* getHashKey(unsigned char* key, int len) {
-    if (len < 1) {
-        return EVP_PKEY_new();
-    } else {
-        return EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, key, len);
-    }
-}
 #endif
 
 
@@ -2008,11 +1999,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         port2vrf_res->mcscIvRxKeyLen = str2key(arg[11], port2vrf_res->mcscIvRxKeyDat);
         port2vrf_res->mcscIvTxKeyLen = str2key(arg[12], port2vrf_res->mcscIvTxKeyDat);
         port2vrf_res->mcscHashKeyLen = str2key(arg[13], port2vrf_res->mcscHashKeyDat);
-        port2vrf_res->mcscHashPkey = getHashKey(port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen);
-        if (port2vrf_res->mcscHashPkey == NULL) {
-            port2vrf_res->mcscEthtyp = 0;
-            return 0;
-        }
+        myHmacSetup(port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, &port2vrf_res->mcscHashKeyLen);
         if (del == 0) port2vrf_res->mcscEthtyp = 0;
         return 0;
     }
@@ -2041,13 +2028,11 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.spi = atoi(arg[15]);
         tun4_ntry.encrKeyLen = str2key(arg[16], tun4_ntry.encrKeyDat);
         tun4_ntry.hashKeyLen = str2key(arg[17], tun4_ntry.hashKeyDat);
-        tun4_ntry.hashPkey = getHashKey(tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
-        if (tun4_ntry.hashPkey == NULL) return 0;
+        myHmacSetup(tun4_ntry.hashAlg, tun4_ntry.hashKeyDat, &tun4_ntry.hashKeyLen);
         neigh_ntry.spi = atoi(arg[18]);
         neigh_ntry.encrKeyLen = str2key(arg[19], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[20], neigh_ntry.hashKeyDat);
-        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
-        if (neigh_ntry.hashPkey == NULL) return 0;
+        myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun4_ntry.prot = IP_PROTOCOL_ESP;
         tun4_ntry.command = 7;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -2087,13 +2072,11 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.spi = atoi(arg[15]);
         tun6_ntry.encrKeyLen = str2key(arg[16], tun6_ntry.encrKeyDat);
         tun6_ntry.hashKeyLen = str2key(arg[17], tun6_ntry.hashKeyDat);
-        tun6_ntry.hashPkey = getHashKey(tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
-        if (tun6_ntry.hashPkey == NULL) return 0;
+        myHmacSetup(tun6_ntry.hashAlg, tun6_ntry.hashKeyDat, &tun6_ntry.hashKeyLen);
         neigh_ntry.spi = atoi(arg[18]);
         neigh_ntry.encrKeyLen = str2key(arg[19], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[20], neigh_ntry.hashKeyDat);
-        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
-        if (neigh_ntry.hashPkey == NULL) return 0;
+        myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun6_ntry.prot = IP_PROTOCOL_ESP;
         tun6_ntry.command = 7;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -2130,10 +2113,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.hashKeyLen = str2key(arg[18], tun4_ntry.hashKeyDat);
         neigh_ntry.encrKeyLen = str2key(arg[17], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[18], neigh_ntry.hashKeyDat);
-        tun4_ntry.hashPkey = getHashKey(tun4_ntry.hashKeyDat, tun4_ntry.hashKeyLen);
-        if (tun4_ntry.hashPkey == NULL) return 0;
-        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
-        if (neigh_ntry.hashPkey == NULL) return 0;
+        myHmacSetup(tun4_ntry.hashAlg, tun4_ntry.hashKeyDat, &tun4_ntry.hashKeyLen);
+        myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 8;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
@@ -2176,10 +2157,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.hashKeyLen = str2key(arg[18], tun6_ntry.hashKeyDat);
         neigh_ntry.encrKeyLen = str2key(arg[17], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[18], neigh_ntry.hashKeyDat);
-        tun6_ntry.hashPkey = getHashKey(tun6_ntry.hashKeyDat, tun6_ntry.hashKeyLen);
-        if (tun6_ntry.hashPkey == NULL) return 0;
-        neigh_ntry.hashPkey = getHashKey(neigh_ntry.hashKeyDat, neigh_ntry.hashKeyLen);
-        if (neigh_ntry.hashPkey == NULL) return 0;
+        myHmacSetup(tun6_ntry.hashAlg, tun6_ntry.hashKeyDat, &tun6_ntry.hashKeyLen);
+        myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 8;
         if (del == 0) table_del(&neigh_table, &neigh_ntry);

@@ -151,7 +151,6 @@ struct port2vrf_entry {
     int mcscSeqRx;
     const EVP_CIPHER *mcscEncrAlg;
     const EVP_MD *mcscHashAlg;
-    EVP_PKEY *mcscHashPkey;
 #endif
     long mcscPackRx;
     long mcscByteRx;
@@ -287,7 +286,6 @@ struct neigh_entry {
     int hashBlkLen;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
-    EVP_PKEY *hashPkey;
 #endif
     long pack;
     long byte;
@@ -645,7 +643,6 @@ struct tun4_entry {
     int hashBlkLen;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
-    EVP_PKEY *hashPkey;
 #endif
     long pack;
     long byte;
@@ -678,7 +675,6 @@ struct tun6_entry {
     int hashBlkLen;
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
-    EVP_PKEY *hashPkey;
 #endif
     long pack;
     long byte;
@@ -845,3 +841,38 @@ int shiftContext(struct packetContext *trg, struct packetContext *src, unsigned 
 #endif
     return trg->bufC == NULL;
 }
+
+
+#ifndef HAVE_NOCRYPTO
+void myHmacSetup(const EVP_MD *alg, unsigned char *key, int *len) {
+    int blk = EVP_MD_get_block_size(alg);
+    for (int i=*len; i<blk; i++) key[i]=0;
+    memcpy(&key[blk], &key[0], blk);
+    for (int i=0; i<blk; i++) {
+        key[i] ^= 0x36;
+        key[blk+i] ^= 0x5c;
+    }
+    *len = blk;
+}
+
+
+int myHmacInit(EVP_MD_CTX *ctx, const EVP_MD *alg, unsigned char *key, int len) {
+    if (EVP_MD_CTX_reset(ctx) != 1) return 0;
+    if (EVP_DigestInit_ex(ctx, alg, NULL) != 1) return 0;
+    if (EVP_DigestUpdate(ctx, key, len) != 1) return 0;
+    return 1;
+}
+
+
+int myHmacEnd(EVP_MD_CTX *ctx, const EVP_MD *alg, unsigned char *key, int len, unsigned char *dst) {
+    unsigned int siz = preBuff;
+    if (EVP_DigestFinal(ctx, dst, &siz) != 1) return 0;
+    if (EVP_MD_CTX_reset(ctx) != 1) return 0;
+    if (EVP_DigestInit_ex(ctx, alg, NULL) != 1) return 0;
+    if (EVP_DigestUpdate(ctx, &key[len], len) != 1) return 0;
+    if (EVP_DigestUpdate(ctx, dst, siz) != 1) return 0;
+    siz = preBuff;
+    if (EVP_DigestFinal(ctx, dst, &siz) != 1) return 0;
+    return 1;
+}
+#endif
