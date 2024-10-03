@@ -57,7 +57,12 @@ public class ifcMacSec implements Runnable {
     /**
      * encryption keys
      */
-    public byte[] keyEncr = null;
+    public byte[] keyEncrTx = null;
+
+    /**
+     * decryption keys
+     */
+    public byte[] keyEncrRx = null;
 
     /**
      * encryption iv
@@ -72,7 +77,12 @@ public class ifcMacSec implements Runnable {
     /**
      * authentication keys
      */
-    public byte[] keyHash = null;
+    public byte[] keyHashTx = null;
+
+    /**
+     * authentication keys
+     */
+    public byte[] keyHashRx = null;
 
     /**
      * ethertype in effect
@@ -238,7 +248,7 @@ public class ifcMacSec implements Runnable {
         byte[] mac = new byte[keyIvTx.length + 4];
         bits.byteCopy(keyIvTx, 0, mac, 0, keyIvTx.length);
         bits.msbPutD(mac, keyIvTx.length, seqTx);
-        cphrTx.init(keyEncr, mac, true);
+        cphrTx.init(keyEncrTx, mac, true);
         hashTx.init();
         if (needLayer2) {
             mac = pck.ETHtrg.getBytes();
@@ -333,7 +343,7 @@ public class ifcMacSec implements Runnable {
         byte[] mac = new byte[keyIvRx.length + 4];
         bits.byteCopy(keyIvRx, 0, mac, 0, keyIvRx.length);
         bits.msbPutD(mac, keyIvRx.length, seqRx);
-        cphrRx.init(keyEncr, mac, false);
+        cphrRx.init(keyEncrRx, mac, false);
         hashRx.init();
         if (needLayer2) {
             mac = pck.ETHtrg.getBytes();
@@ -479,14 +489,17 @@ public class ifcMacSec implements Runnable {
         }
         cryEncrGeneric cphTx = profil.trans.getEncr();
         cryEncrGeneric cphRx = profil.trans.getEncr();
-        keyEncr = new byte[profil.trans.getKeyS()];
-        bits.byteCopy(res, 0, keyEncr, 0, keyEncr.length);
+        keyEncrTx = new byte[profil.trans.getKeyS()];
         int pos = cphTx.getIVsize() - 4;
         if (pos < 0) {
             pos = 0;
         }
         keyIvTx = new byte[pos];
-        pos = keyEncr.length;
+        bits.byteCopy(res, 0, keyEncrTx, 0, keyEncrTx.length);
+        pos = keyEncrTx.length;
+        keyEncrRx = new byte[keyEncrTx.length];
+        bits.byteCopy(res, pos, keyEncrRx, 0, keyEncrRx.length);
+        pos += keyEncrTx.length;
         bits.byteCopy(res, pos, keyIvTx, 0, keyIvTx.length);
         pos += keyIvTx.length;
         keyIvRx = new byte[keyIvTx.length];
@@ -494,15 +507,24 @@ public class ifcMacSec implements Runnable {
         pos += keyIvRx.length;
         cphrSiz = cphTx.getBlockSize();
         hashSiz = profil.trans.getHash().getHashSize();
+        keyHashTx = new byte[hashSiz];
+        bits.byteCopy(res, pos, keyHashTx, 0, keyHashTx.length);
+        pos += keyHashTx.length;
+        keyHashRx = new byte[keyHashTx.length];
+        bits.byteCopy(res, pos, keyHashRx, 0, keyHashRx.length);
+        cntr = new counter();
+        hwCntr = null;
         if (swp) {
             byte[] buf = keyIvTx;
             keyIvTx = keyIvRx;
             keyIvRx = buf;
+            buf = keyHashTx;
+            keyHashTx = keyHashRx;
+            keyHashRx = buf;
+            buf = keyEncrTx;
+            keyEncrTx = keyEncrRx;
+            keyEncrRx = buf;
         }
-        byte[] buf = new byte[hashSiz];
-        bits.byteCopy(res, pos, buf, 0, buf.length);
-        cntr = new counter();
-        hwCntr = null;
         kexNum++;
         if (profil.replay > 0) {
             sequence = new tabWindow<packHolder>(profil.replay);
@@ -515,9 +537,8 @@ public class ifcMacSec implements Runnable {
         aeadMode = tagSiz > 0;
         cphrTx = cphTx;
         cphrRx = cphRx;
-        hashTx = profil.trans.getHmac(buf);
-        hashRx = profil.trans.getHmac(buf);
-        keyHash = buf;
+        hashTx = profil.trans.getHmac(keyHashTx);
+        hashRx = profil.trans.getHmac(keyHashRx);
     }
 
     public void run() {

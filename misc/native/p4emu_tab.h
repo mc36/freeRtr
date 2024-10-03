@@ -134,12 +134,16 @@ struct port2vrf_entry {
     int sgtTag;
     int mcscEthtyp;
 #ifndef HAVE_NOCRYPTO
-    unsigned char mcscEncrKeyDat[256];
-    unsigned char mcscHashKeyDat[256];
+    unsigned char mcscCrTxKeyDat[256];
+    unsigned char mcscCrRxKeyDat[256];
+    unsigned char mcscDgTxKeyDat[256];
+    unsigned char mcscDgRxKeyDat[256];
     unsigned char mcscIvTxKeyDat[256];
     unsigned char mcscIvRxKeyDat[256];
-    int mcscEncrKeyLen;
-    int mcscHashKeyLen;
+    int mcscCrTxKeyLen;
+    int mcscCrRxKeyLen;
+    int mcscDgTxKeyLen;
+    int mcscDgRxKeyLen;
     int mcscIvTxKeyLen;
     int mcscIvRxKeyLen;
     int mcscEncrBlkLen;

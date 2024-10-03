@@ -1995,11 +1995,14 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
             port2vrf_res->mcscEthtyp = 0;
             return 0;
         }
-        port2vrf_res->mcscEncrKeyLen = str2key(arg[10], port2vrf_res->mcscEncrKeyDat);
-        port2vrf_res->mcscIvRxKeyLen = str2key(arg[11], port2vrf_res->mcscIvRxKeyDat);
-        port2vrf_res->mcscIvTxKeyLen = str2key(arg[12], port2vrf_res->mcscIvTxKeyDat);
-        port2vrf_res->mcscHashKeyLen = str2key(arg[13], port2vrf_res->mcscHashKeyDat);
-        myHmacSetup(port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, &port2vrf_res->mcscHashKeyLen);
+        port2vrf_res->mcscCrRxKeyLen = str2key(arg[10], port2vrf_res->mcscCrRxKeyDat);
+        port2vrf_res->mcscCrTxKeyLen = str2key(arg[11], port2vrf_res->mcscCrTxKeyDat);
+        port2vrf_res->mcscIvRxKeyLen = str2key(arg[12], port2vrf_res->mcscIvRxKeyDat);
+        port2vrf_res->mcscIvTxKeyLen = str2key(arg[13], port2vrf_res->mcscIvTxKeyDat);
+        port2vrf_res->mcscDgRxKeyLen = str2key(arg[14], port2vrf_res->mcscDgRxKeyDat);
+        port2vrf_res->mcscDgTxKeyLen = str2key(arg[15], port2vrf_res->mcscDgTxKeyDat);
+        myHmacSetup(port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgRxKeyDat, &port2vrf_res->mcscDgRxKeyLen);
+        myHmacSetup(port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgTxKeyDat, &port2vrf_res->mcscDgTxKeyLen);
         if (del == 0) port2vrf_res->mcscEthtyp = 0;
         return 0;
     }

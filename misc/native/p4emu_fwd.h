@@ -600,7 +600,7 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
     if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
     memcpy(&bufD[0], port2vrf_res->mcscIvTxKeyDat, port2vrf_res->mcscIvTxKeyLen);
     put32msb(bufD, port2vrf_res->mcscIvTxKeyLen, seq);
-    if (EVP_EncryptInit_ex(ctx->encr, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufD) != 1) return 1;
+    if (EVP_EncryptInit_ex(ctx->encr, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscCrTxKeyDat, bufD) != 1) return 1;
     if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
     tmp2 = 0;
     if (tmp < 48) {
@@ -624,13 +624,13 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
         if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
     }
     if (port2vrf_res->mcscHashBlkLen > 0) {
-        if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen) != 1) return 1;
+        if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgTxKeyDat, port2vrf_res->mcscDgTxKeyLen) != 1) return 1;
         if (port2vrf_res->mcscNeedMacs != 0) {
             if (EVP_DigestUpdate(ctx->dgst, &bufH[0], 12) != 1) return 1;
         }
         if (EVP_DigestUpdate(ctx->dgst, &bufD[0], 8) != 1) return 1;
         if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
-        if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen, &bufD[*bufP + tmp]) != 1) return 1;
+        if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgTxKeyDat, port2vrf_res->mcscDgTxKeyLen, &bufD[*bufP + tmp]) != 1) return 1;
         *bufS += port2vrf_res->mcscHashBlkLen;
     }
     *bufP -= 8;
@@ -1357,19 +1357,19 @@ ethtyp_rx:
         if (tmp < 1) doDropper;
         if (port2vrf_res->mcscNeedAead == 0) if ((tmp % port2vrf_res->mcscEncrBlkLen) != 0) doDropper;
         if (port2vrf_res->mcscHashBlkLen > 0) {
-            if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen) != 1) doDropper;
+            if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgRxKeyDat, port2vrf_res->mcscDgRxKeyLen) != 1) doDropper;
             if (port2vrf_res->mcscNeedMacs != 0) {
                 if (EVP_DigestUpdate(ctx->dgst, &bufD[preBuff + 0], 12) != 1) doDropper;
             }
             if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP - 8], 8) != 1) doDropper;
             if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
-            if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscHashKeyDat, port2vrf_res->mcscHashKeyLen, &bufD[0]) != 1) doDropper;
+            if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgRxKeyDat, port2vrf_res->mcscDgRxKeyLen, &bufD[0]) != 1) doDropper;
             if (memcmp(&bufD[0], &bufD[bufP + tmp], port2vrf_res->mcscHashBlkLen) !=0) doDropper;
         }
         if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
         memcpy(&bufD[0], port2vrf_res->mcscIvRxKeyDat, port2vrf_res->mcscIvRxKeyLen);
         put32msb(bufD, port2vrf_res->mcscIvRxKeyLen, seq);
-        if (EVP_DecryptInit_ex(ctx->encr, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscEncrKeyDat, bufD) != 1) doDropper;
+        if (EVP_DecryptInit_ex(ctx->encr, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscCrRxKeyDat, bufD) != 1) doDropper;
         if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
         if (port2vrf_res->mcscNeedAead != 0) {
             if (port2vrf_res->mcscNeedMacs != 0) {
