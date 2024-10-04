@@ -66,7 +66,7 @@ http://sources.freertr.org/cfg/p4lang-acl063.tst;p4lang-acl063.tst;ok;ok;ok;not 
 http://sources.freertr.org/cfg/p4lang-acl064.tst;p4lang-acl064.tst;ok;ok;ok;not ok;not ok;p4lang: pppoe interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl065.tst;p4lang-acl065.tst;ok;ok;ok;not ok;not ok;p4lang: gre interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl066.tst;p4lang-acl066.tst;ok;ok;ok;not ok;not ok;p4lang: gre interface inspection with egress drop
-http://sources.freertr.org/cfg/p4lang-acl067.tst;p4lang-acl067.tst;not ok;ok;ok;not ok;not ok;p4lang: l2tp interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl067.tst;p4lang-acl067.tst;ok;ok;ok;not ok;not ok;p4lang: l2tp interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl068.tst;p4lang-acl068.tst;ok;ok;ok;not ok;not ok;p4lang: l2tp interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl069.tst;p4lang-acl069.tst;ok;not ok;ok;not ok;ok;p4lang: interface verify source
 http://sources.freertr.org/cfg/p4lang-acl070.tst;p4lang-acl070.tst;ok;not ok;ok;not ok;ok;p4lang: vlan interface verify source

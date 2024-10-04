@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.10.4-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-10-04 11:33:44, took 00:18:09, with 60 workers, on 617 cases, 1 failed, 0 traces, 7 retries
+-;-;-;2024-10-04 12:06:24, took 00:10:42, with 50 workers, on 617 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -68,7 +68,7 @@ http://sources.freertr.org/cfg/p4lang-acl063.tst;p4lang-acl063.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl064.tst;p4lang-acl064.tst;success;p4lang: pppoe interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl065.tst;p4lang-acl065.tst;success;p4lang: gre interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl066.tst;p4lang-acl066.tst;success;p4lang: gre interface inspection with egress drop
-http://sources.freertr.org/cfg/p4lang-acl067.tst;p4lang-acl067.tst;#6-run-r1 tping 100 30 9.9.9.2 vrf v2;p4lang: l2tp interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl067.tst;p4lang-acl067.tst;success;p4lang: l2tp interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl068.tst;p4lang-acl068.tst;success;p4lang: l2tp interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl069.tst;p4lang-acl069.tst;success;p4lang: interface verify source
 http://sources.freertr.org/cfg/p4lang-acl070.tst;p4lang-acl070.tst;success;p4lang: vlan interface verify source
