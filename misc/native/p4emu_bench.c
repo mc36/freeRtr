@@ -45,7 +45,7 @@ void err(char*buf) {
 int main(int argc, char **argv) {
     unsigned char origD[16384];
     *((int*)(&origD[0])) = 1;
-    printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&processDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
+    printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&hashDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
     if (origD[0] == 1) printf("lsb");
     else printf("msb");
     printf("\n");
@@ -53,7 +53,6 @@ int main(int argc, char **argv) {
     int origS = 0;
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
-    processCpuPack(&ctx, origS);
     if (argc < 3) err("usage: <commands> <count> <byte0> [byteN]");
     int count = atoi(argv[2]);
     for (int i = 3; i < argc; i++) {

@@ -15,16 +15,6 @@ int dropStat[4096];
 #endif
 
 
-void send2port(unsigned char *bufD, int bufS, int port) {
-    if (port < 0) return;
-    if (port >= dataPorts) return;
-    sendPack(bufD, bufS, port);
-    packTx[port]++;
-    byteTx[port] += bufS;
-}
-
-
-
 
 
 int hashDataPacket(unsigned char *bufP) {
@@ -68,6 +58,18 @@ int hashDataPacket(unsigned char *bufP) {
     hash = ((hash >> 8) ^ hash) & 0xff;
     return hash;
 }
+
+
+
+
+#define send2port(prt)                                          \
+    if (prt < 0) return;                                        \
+    if (prt >= dataPorts) return;                               \
+    bufS = bufS - bufP + preBuff;                               \
+    packTx[prt]++;                                              \
+    byteTx[prt] += bufS;                                        \
+    sendPack(&bufD[bufP], bufS, prt);
+
 
 
 
@@ -686,7 +688,7 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     index = table_find(&bundle_table, &bundle_ntry);
     if (index < 0) {
         putMacAddr;
-        send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
+        send2port(prt);
         return;
     }
     bundle_res = table_get(&bundle_table, index);
@@ -709,7 +711,7 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     }
     if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
     putMacAddr;
-    send2port(&bufD[bufP], bufS - bufP + preBuff, prt);
+    send2port(prt);
 }
 
 
@@ -2443,7 +2445,7 @@ cpu:
         memcpy(&bufD[bufP], &bufH[0], 12);
         bufP -= 4;
         put32msb(bufD, bufP, prt);
-        send2port(&bufD[bufP], bufS - bufP + preBuff, cpuPort);
+        send2port(cpuPort);
         return;
     }
 }
