@@ -189,6 +189,8 @@ int main(int argc, char **argv) {
             i++;
         }
         o = i;
+        cnt++;
+        buf[o] = 0;
         for (int i=cnt; i < 128; i++) arg[i]=(char*)&buf[o];
         printf("rx: ");
         for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
