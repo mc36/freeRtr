@@ -51,8 +51,6 @@ int main(int argc, char **argv) {
     printf("\n");
     fflush(stdout);
     int origS = 0;
-    struct packetContext ctx;
-    if (initContext(&ctx) != 0) err("error initializing context");
     if (argc < 3) err("usage: <commands> <count> <byte0> [byteN]");
     int count = atoi(argv[2]);
     for (int i = 3; i < argc; i++) {
@@ -64,6 +62,8 @@ int main(int argc, char **argv) {
     dataPorts = 1;
     cpuPort = 1;
     initTables();
+    struct packetContext ctx;
+    if (initContext(&ctx) != 0) err("error initializing context");
     FILE * fil =fopen(argv[1], "r");
     if (fil == NULL) err("error opening commands");
     for (;;) {
