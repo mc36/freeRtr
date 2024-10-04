@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.10.4-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-10-04 06:46:34, took 00:09:56, with 60 workers, on 617 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2024-10-04 07:20:13, took 00:17:45, with 60 workers, on 617 cases, 1 failed, 0 traces, 9 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -331,7 +331,7 @@ http://sources.freertr.org/cfg/p4lang-rout072.tst;p4lang-rout072.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout073.tst;p4lang-rout073.tst;success;p4lang: l2tp routing over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout074.tst;p4lang-rout074.tst;success;p4lang: l2tp routing over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout075.tst;p4lang-rout075.tst;success;p4lang: l2tp routing over vlan
-http://sources.freertr.org/cfg/p4lang-rout076.tst;p4lang-rout076.tst;success;p4lang: l2tp routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout076.tst;p4lang-rout076.tst;#6-run-r1 tping 100 30 9.9.9.2 vrf v2;p4lang: l2tp routing over bundle
 http://sources.freertr.org/cfg/p4lang-rout077.tst;p4lang-rout077.tst;success;p4lang: l2tp mpls over ipv4
 http://sources.freertr.org/cfg/p4lang-rout078.tst;p4lang-rout078.tst;success;p4lang: l2tp mpls over ipv6
 http://sources.freertr.org/cfg/p4lang-rout079.tst;p4lang-rout079.tst;success;p4lang: l2tp mpls over ipv4 loopback

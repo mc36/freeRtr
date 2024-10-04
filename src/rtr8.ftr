@@ -327,7 +327,7 @@ qc pass: p4lang: l2tp routing over ipv6
 qc pass: p4lang: l2tp routing over ipv4 loopback
 qc pass: p4lang: l2tp routing over ipv6 loopback
 qc pass: p4lang: l2tp routing over vlan
-qc pass: p4lang: l2tp routing over bundle
+failed: p4lang: l2tp routing over bundle
 qc pass: p4lang: l2tp mpls over ipv4
 qc pass: p4lang: l2tp mpls over ipv6
 qc pass: p4lang: l2tp mpls over ipv4 loopback
