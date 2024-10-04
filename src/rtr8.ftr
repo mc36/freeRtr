@@ -64,7 +64,7 @@ qc pass: p4lang: pppoe interface inspection with ingress drop
 qc pass: p4lang: pppoe interface inspection with egress drop
 qc pass: p4lang: gre interface inspection with ingress drop
 qc pass: p4lang: gre interface inspection with egress drop
-qc pass: p4lang: l2tp interface inspection with ingress drop
+failed: p4lang: l2tp interface inspection with ingress drop
 qc pass: p4lang: l2tp interface inspection with egress drop
 qc pass: p4lang: interface verify source
 qc pass: p4lang: vlan interface verify source
@@ -241,7 +241,7 @@ qc pass: p4lang: macsec over bundle qinq
 qc pass: p4lang: macsec qinq ingress access list
 qc pass: p4lang: macsec qinq egress access list
 qc pass: p4lang: ipsec over qinq
-failed: p4lang: wireguard over qinq
+qc pass: p4lang: wireguard over qinq
 qc pass: p4lang: sgt over qinq
 qc pass: p4lang: sgt over macsec over qinq
 qc pass: p4lang: sgt qinq ingress access list
