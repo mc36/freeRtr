@@ -329,7 +329,7 @@ http://sources.freertr.org/cfg/p4lang-rout072.tst;p4lang-rout072.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout073.tst;p4lang-rout073.tst;ok;ok;ok;ok;ok;p4lang: l2tp routing over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout074.tst;p4lang-rout074.tst;ok;ok;ok;ok;ok;p4lang: l2tp routing over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout075.tst;p4lang-rout075.tst;ok;ok;ok;ok;ok;p4lang: l2tp routing over vlan
-http://sources.freertr.org/cfg/p4lang-rout076.tst;p4lang-rout076.tst;not ok;ok;ok;ok;ok;p4lang: l2tp routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout076.tst;p4lang-rout076.tst;ok;ok;ok;ok;ok;p4lang: l2tp routing over bundle
 http://sources.freertr.org/cfg/p4lang-rout077.tst;p4lang-rout077.tst;ok;ok;ok;ok;ok;p4lang: l2tp mpls over ipv4
 http://sources.freertr.org/cfg/p4lang-rout078.tst;p4lang-rout078.tst;ok;ok;ok;ok;ok;p4lang: l2tp mpls over ipv6
 http://sources.freertr.org/cfg/p4lang-rout079.tst;p4lang-rout079.tst;ok;ok;ok;ok;ok;p4lang: l2tp mpls over ipv4 loopback
