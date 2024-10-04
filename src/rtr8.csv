@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.10.4-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-10-04 10:12:26, took 00:10:20, with 60 workers, on 617 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2024-10-04 10:48:20, took 00:10:37, with 60 workers, on 617 cases, 1 failed, 0 traces, 8 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -245,7 +245,7 @@ http://sources.freertr.org/cfg/p4lang-crypt122.tst;p4lang-crypt122.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt123.tst;p4lang-crypt123.tst;success;p4lang: macsec qinq ingress access list
 http://sources.freertr.org/cfg/p4lang-crypt124.tst;p4lang-crypt124.tst;success;p4lang: macsec qinq egress access list
 http://sources.freertr.org/cfg/p4lang-crypt125.tst;p4lang-crypt125.tst;success;p4lang: ipsec over qinq
-http://sources.freertr.org/cfg/p4lang-crypt126.tst;p4lang-crypt126.tst;success;p4lang: wireguard over qinq
+http://sources.freertr.org/cfg/p4lang-crypt126.tst;p4lang-crypt126.tst;#6-run-r1 tping 100 10 9.9.9.2 vrf v2;p4lang: wireguard over qinq
 http://sources.freertr.org/cfg/p4lang-crypt127.tst;p4lang-crypt127.tst;success;p4lang: sgt over qinq
 http://sources.freertr.org/cfg/p4lang-crypt128.tst;p4lang-crypt128.tst;success;p4lang: sgt over macsec over qinq
 http://sources.freertr.org/cfg/p4lang-crypt129.tst;p4lang-crypt129.tst;success;p4lang: sgt qinq ingress access list

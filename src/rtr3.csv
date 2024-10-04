@@ -243,7 +243,7 @@ http://sources.freertr.org/cfg/p4lang-crypt122.tst;p4lang-crypt122.tst;ok;not ok
 http://sources.freertr.org/cfg/p4lang-crypt123.tst;p4lang-crypt123.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec qinq ingress access list
 http://sources.freertr.org/cfg/p4lang-crypt124.tst;p4lang-crypt124.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec qinq egress access list
 http://sources.freertr.org/cfg/p4lang-crypt125.tst;p4lang-crypt125.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec over qinq
-http://sources.freertr.org/cfg/p4lang-crypt126.tst;p4lang-crypt126.tst;ok;not ok;ok;not ok;not ok;p4lang: wireguard over qinq
+http://sources.freertr.org/cfg/p4lang-crypt126.tst;p4lang-crypt126.tst;not ok;not ok;ok;not ok;not ok;p4lang: wireguard over qinq
 http://sources.freertr.org/cfg/p4lang-crypt127.tst;p4lang-crypt127.tst;ok;ok;ok;ok;ok;p4lang: sgt over qinq
 http://sources.freertr.org/cfg/p4lang-crypt128.tst;p4lang-crypt128.tst;ok;not ok;ok;not ok;not ok;p4lang: sgt over macsec over qinq
 http://sources.freertr.org/cfg/p4lang-crypt129.tst;p4lang-crypt129.tst;ok;ok;ok;ok;not ok;p4lang: sgt qinq ingress access list

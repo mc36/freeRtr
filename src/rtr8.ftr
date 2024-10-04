@@ -241,7 +241,7 @@ qc pass: p4lang: macsec over bundle qinq
 qc pass: p4lang: macsec qinq ingress access list
 qc pass: p4lang: macsec qinq egress access list
 qc pass: p4lang: ipsec over qinq
-qc pass: p4lang: wireguard over qinq
+failed: p4lang: wireguard over qinq
 qc pass: p4lang: sgt over qinq
 qc pass: p4lang: sgt over macsec over qinq
 qc pass: p4lang: sgt qinq ingress access list
