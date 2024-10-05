@@ -58,6 +58,11 @@ public class prtRedun implements Runnable {
      */
     protected static int uptime = 0;
 
+    /**
+     * current startup
+     */
+    protected static long started = 0;
+
     private final static List<prtRedunIfc> ifaces = new ArrayList<prtRedunIfc>();
 
     public void run() {
@@ -74,7 +79,7 @@ public class prtRedun implements Runnable {
     private static void sendHellos() {
         packHolder pck = new packHolder(true, true);
         long tim = bits.getTime();
-        uptime = (int) ((tim - cfgInit.started) / 1000);
+        uptime = (int) ((tim - started) / 1000);
         for (int i = 0; i < ifaces.size(); i++) {
             pck.clear();
             prtRedunIfc ifc = ifaces.get(i);
@@ -297,6 +302,7 @@ public class prtRedun implements Runnable {
             return;
         }
         logger.info("initializing redundancy");
+        started = bits.getTime();
         state = packRedundancy.statSpeak;
         new Thread(new prtRedun()).start();
         bits.sleep(cfgAll.redundancyInit);
