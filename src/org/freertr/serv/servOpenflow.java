@@ -324,7 +324,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         if (expVrf != null) {
             a = expVrf.name;
         }
-        a = "opnflw vrf=" + a + ",prt=" + expIfc.size();
+        a = "opnflw,vrf=" + a + ",prt=" + expIfc.size();
         if (ntry.conn == null) {
             return a + ",disc";
         }
