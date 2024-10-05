@@ -431,7 +431,7 @@ public class userTest {
             try {
                 a = cmd.word();
                 String s = cmd.getRemaining().trim();
-                userVM v = new userVM(pip, true, verCore.vmDir);
+                userVM v = new userVM(pip, true, "../vm/");
                 v.doLoad(a, s);
                 v.doWork(pip, true, "", a, s);
             } catch (Exception e) {

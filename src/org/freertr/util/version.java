@@ -6,6 +6,7 @@ import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeShell;
+import org.freertr.prt.prtRedun;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servP4lang;
 import org.freertr.serv.servStack;
@@ -800,17 +801,17 @@ public class version {
     public static String getHWfwd1liner() {
         servStack stk = cfgAll.dmnStack.get(0);
         if (stk != null) {
-            return stk.getShGenOneLiner();
+            return prtRedun.getShGenOneLiner() + stk.getShGenOneLiner();
         }
         servP4lang p4l = cfgAll.dmnP4lang.get(0);
         if (p4l != null) {
-            return p4l.getShGenOneLiner();
+            return prtRedun.getShGenOneLiner() + p4l.getShGenOneLiner();
         }
         servOpenflow ovs = cfgAll.dmnOpenflow.get(0);
         if (ovs != null) {
-            return ovs.getShGenOneLiner();
+            return prtRedun.getShGenOneLiner() + ovs.getShGenOneLiner();
         }
-        return "swonly";
+        return prtRedun.getShGenOneLiner() + "swonly";
     }
 
     /**

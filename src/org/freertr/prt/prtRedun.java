@@ -292,6 +292,18 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * get hardware forwarder
+     *
+     * @return offload info
+     */
+    public static String getShGenOneLiner() {
+        if (ifaces.size() < 1) {
+            return "";
+        }
+        return "redun,";
+    }
+
+    /**
      * initialize the redundancy
      *
      * @param con console

@@ -11,11 +11,6 @@ public class verCore {
     }
 
     /**
-     * path of vm files
-     */
-    public final static String vmDir = "../vm2/";
-
-    /**
      * os name
      */
     public final static String name = "freeRouter";
