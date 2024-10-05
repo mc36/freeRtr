@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
@@ -29,7 +28,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrRip6iface implements Comparator<rtrRip6iface> {
+public class rtrRip6iface implements Comparable<rtrRip6iface> {
 
     /**
      * advertisement interval
@@ -193,11 +192,11 @@ public class rtrRip6iface implements Comparator<rtrRip6iface> {
         return "rip on " + iface;
     }
 
-    public int compare(rtrRip6iface o1, rtrRip6iface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrRip6iface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;

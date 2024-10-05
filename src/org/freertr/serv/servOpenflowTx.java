@@ -584,7 +584,7 @@ class servOpenflowTx implements Runnable {
                 addTable(n, tabPort, ntry);
                 continue;
             }
-            if (lower.expVrf.compare(lower.expVrf, ifc.ifc.vrfFor) != 0) {
+            if (lower.expVrf.compareTo(ifc.ifc.vrfFor) != 0) {
                 createPortPunt(pckB, pckO, ifc, ntry);
                 addTable(n, tabPort, ntry);
                 continue;
@@ -1301,7 +1301,7 @@ class servOpenflowTx implements Runnable {
                     if (ifc.ifc.vrfFor == null) {
                         continue;
                     }
-                    if (lower.expVrf.compare(lower.expVrf, ifc.ifc.vrfFor) != 0) {
+                    if (lower.expVrf.compareTo(ifc.ifc.vrfFor) != 0) {
                         continue;
                     }
                     if (ifc.ifc.addr4 != null) {

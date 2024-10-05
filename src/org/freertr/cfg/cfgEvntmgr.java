@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.pipe.pipeLine;
@@ -20,7 +19,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
+public class cfgEvntmgr implements Comparable<cfgEvntmgr>, cfgGeneric {
 
     /**
      * name of event manager
@@ -189,8 +188,8 @@ public class cfgEvntmgr implements Comparator<cfgEvntmgr>, cfgGeneric {
         }
     }
 
-    public int compare(cfgEvntmgr o1, cfgEvntmgr o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgEvntmgr o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {

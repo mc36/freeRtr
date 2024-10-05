@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -289,7 +288,7 @@ public class servLoadBalancer extends servGeneric implements prtServS {
 
 }
 
-class servLoadBalancerEntry implements Comparator<servLoadBalancerEntry> {
+class servLoadBalancerEntry implements Comparable<servLoadBalancerEntry> {
 
     public int num;
 
@@ -303,11 +302,11 @@ class servLoadBalancerEntry implements Comparator<servLoadBalancerEntry> {
         return num + " " + addr + " " + port;
     }
 
-    public int compare(servLoadBalancerEntry o1, servLoadBalancerEntry o2) {
-        if (o1.num < o2.num) {
+    public int compareTo(servLoadBalancerEntry o) {
+        if (num < o.num) {
             return -1;
         }
-        if (o1.num > o2.num) {
+        if (num > o.num) {
             return +1;
         }
         return 0;

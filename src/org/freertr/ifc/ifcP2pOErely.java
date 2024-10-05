@@ -140,7 +140,7 @@ public class ifcP2pOErely implements ifcUp {
                 cntr.drop(pck, counter.reasons.badVal);
                 return;
             }
-            if (hwaddr.compare(clntAdr, pck.ETHsrc) != 0) {
+            if (clntAdr.compareTo(pck.ETHsrc) != 0) {
                 cntr.drop(pck, counter.reasons.badAddr);
                 return;
             }
@@ -215,7 +215,7 @@ public class ifcP2pOErely implements ifcUp {
                     cntr.drop(pck, counter.reasons.badVal);
                     return;
                 }
-                if (hwaddr.compare(clntAdr, src) != 0) {
+                if (clntAdr.compareTo(src) != 0) {
                     cntr.drop(pck, counter.reasons.badAddr);
                     return;
                 }

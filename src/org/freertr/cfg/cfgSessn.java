@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabSession;
@@ -14,7 +13,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
+public class cfgSessn implements Comparable<cfgSessn>, cfgGeneric {
 
     /**
      * name of session
@@ -61,8 +60,8 @@ public class cfgSessn implements Comparator<cfgSessn>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgSessn o1, cfgSessn o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgSessn o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     /**

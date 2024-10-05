@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
@@ -45,7 +44,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric> {
+public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric> {
 
     /**
      * create instance
@@ -533,7 +532,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             if (srvIface.vrfFor == null) {
                 return true;
             }
-            if (srvVrf.compare(srvIface.vrfFor, srvVrf) != 0) {
+            if (srvIface.vrfFor.compareTo(srvVrf) != 0) {
                 return true;
             }
             ifc4 = srvIface.fwdIf4;
@@ -622,7 +621,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             if (srvIface.vrfFor == null) {
                 return true;
             }
-            if (srvVrf.compare(srvIface.vrfFor, srvVrf) != 0) {
+            if (srvIface.vrfFor.compareTo(srvVrf) != 0) {
                 return true;
             }
             ifc4 = srvIface.fwdIf4;
@@ -711,7 +710,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             if (srvIface.vrfFor == null) {
                 return true;
             }
-            if (srvVrf.compare(srvIface.vrfFor, srvVrf) != 0) {
+            if (srvIface.vrfFor.compareTo(srvVrf) != 0) {
                 return true;
             }
             ifc4 = srvIface.fwdIf4;
@@ -750,7 +749,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             if (srvIface.vrfFor == null) {
                 return true;
             }
-            if (srvVrf.compare(srvIface.vrfFor, srvVrf) != 0) {
+            if (srvIface.vrfFor.compareTo(srvVrf) != 0) {
                 return true;
             }
             ifc4 = srvIface.fwdIf4;
@@ -784,7 +783,7 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
             if (srvIface.vrfFor == null) {
                 return true;
             }
-            if (srvVrf.compare(srvIface.vrfFor, srvVrf) != 0) {
+            if (srvIface.vrfFor.compareTo(srvVrf) != 0) {
                 return true;
             }
             ifc4 = srvIface.fwdIf4;
@@ -1590,8 +1589,8 @@ public abstract class servGeneric implements cfgGeneric, Comparator<servGeneric>
         return;
     }
 
-    public int compare(servGeneric o1, servGeneric o2) {
-        return o1.srvName.toLowerCase().compareTo(o2.srvName.toLowerCase());
+    public int compareTo(servGeneric o) {
+        return srvName.toLowerCase().compareTo(o.srvName.toLowerCase());
     }
 
     /**

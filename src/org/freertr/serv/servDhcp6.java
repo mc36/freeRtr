@@ -441,7 +441,7 @@ public class servDhcp6 extends servGeneric implements prtServS {
             addrIPv6 a2 = new addrIPv6();
             a1.setAnd(gateway, netmask);
             a2.setAnd(hint, netmask);
-            if (a1.compare(a1, a2) == 0) {
+            if (a1.compareTo(a2) == 0) {
                 hint = hint.copyBytes();
             } else {
                 hint = null;
@@ -454,10 +454,10 @@ public class servDhcp6 extends servGeneric implements prtServS {
         }
         synchronized (bindings) {
             ntry = new servDhcp6bind();
-            Collections.sort(bindings, new servDhcp6bind());
+            Collections.sort(bindings);
             ntry.mac = mac.copyBytes();
             ntry.ip = hint;
-            int i = Collections.binarySearch(bindings, ntry, new servDhcp6bind());
+            int i = Collections.binarySearch(bindings, ntry);
             if (i < 0) {
                 if (create != 1) {
                     return null;
@@ -644,12 +644,12 @@ public class servDhcp6 extends servGeneric implements prtServS {
 class servDhcp6bindIp implements Comparator<servDhcp6bind> {
 
     public int compare(servDhcp6bind o1, servDhcp6bind o2) {
-        return o1.ip.compare(o1.ip, o2.ip);
+        return o1.ip.compareTo(o2.ip);
     }
 
 }
 
-class servDhcp6bind implements Comparator<servDhcp6bind> {
+class servDhcp6bind implements Comparable<servDhcp6bind> {
 
     public boolean confed = false;
 
@@ -679,8 +679,8 @@ class servDhcp6bind implements Comparator<servDhcp6bind> {
         return false;
     }
 
-    public int compare(servDhcp6bind o1, servDhcp6bind o2) {
-        return o1.mac.compare(o1.mac, o2.mac);
+    public int compareTo(servDhcp6bind o) {
+        return mac.compareTo(o.mac);
     }
 
 }

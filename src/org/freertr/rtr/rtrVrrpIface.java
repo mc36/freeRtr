@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.freertr.addr.addrIP;
@@ -399,7 +398,7 @@ public class rtrVrrpIface implements ipPrt {
 
 }
 
-class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh>, rtrBfdClnt {
+class rtrVrrpNeigh implements Comparable<rtrVrrpNeigh>, rtrBfdClnt {
 
     /**
      * parent
@@ -440,8 +439,8 @@ class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh>, rtrBfdClnt {
         return "vrrp with " + peer;
     }
 
-    public int compare(rtrVrrpNeigh o1, rtrVrrpNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrVrrpNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -457,7 +456,7 @@ class rtrVrrpNeigh implements Comparator<rtrVrrpNeigh>, rtrBfdClnt {
         if (priority < cmp.priority) {
             return -1;
         }
-        return peer.compare(peer, cmp.peer);
+        return peer.compareTo(cmp.peer);
     }
 
     /**

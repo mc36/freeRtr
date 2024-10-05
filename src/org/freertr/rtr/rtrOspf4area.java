@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -31,7 +30,7 @@ import org.freertr.tab.tabLabelEntry;
  *
  * @author matecsaba
  */
-public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
+public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
 
     /**
      * area number
@@ -172,11 +171,11 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
         return "ospf area " + area;
     }
 
-    public int compare(rtrOspf4area o1, rtrOspf4area o2) {
-        if (o1.area < o2.area) {
+    public int compareTo(rtrOspf4area o) {
+        if (area < o.area) {
             return -1;
         }
-        if (o1.area > o2.area) {
+        if (area > o.area) {
             return +1;
         }
         return 0;
@@ -249,7 +248,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (lower.routerID.compare(ntry.rtrID, lower.routerID) != 0) {
+            if (ntry.rtrID.compareTo(lower.routerID) != 0) {
                 continue;
             }
             if (need2adv.find(ntry) != null) {
@@ -318,7 +317,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                 lsas.del(ntry);
                 continue;
             }
-            if (lower.routerID.compare(ntry.rtrID, lower.routerID) != 0) {
+            if (ntry.rtrID.compareTo(lower.routerID) != 0) {
                 continue;
             }
             if (ntry.created > tim2) {
@@ -1002,7 +1001,7 @@ public class rtrOspf4area implements Comparator<rtrOspf4area>, Runnable {
                     }
                     break;
                 case rtrOspf4lsa.lsaOpArea:
-                    if (ntry.lsaID.compare(ntry.lsaID, rtrOspfRi.getOpaque()) == 0) {
+                    if (ntry.lsaID.compareTo(rtrOspfRi.getOpaque()) == 0) {
                         encTlv tlv = rtrOspfTe.getTlvHandler();
                         for (;;) {
                             if (tlv.getBytes(pck)) {

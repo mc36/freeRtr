@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.ifc.ifcPpp;
 import org.freertr.pack.packGtp;
@@ -17,7 +16,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servGtpConn implements Comparator<servGtpConn> {
+public class servGtpConn implements Comparable<servGtpConn> {
 
     /**
      * peer address
@@ -64,8 +63,8 @@ public class servGtpConn implements Comparator<servGtpConn> {
      */
     public long created;
 
-    public int compare(servGtpConn o1, servGtpConn o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(servGtpConn o) {
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -183,7 +182,7 @@ public class servGtpConn implements Comparator<servGtpConn> {
                 return;
             }
         }
-        if (id.compare(id, connC) != 0) {
+        if (id.compareTo(connC) != 0) {
             return;
         }
         keep++;

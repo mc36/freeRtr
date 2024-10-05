@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.freertr.addr.addrIP;
@@ -348,7 +347,7 @@ public class ipProxy implements ifcUp {
 
 }
 
-class ipProxyConn implements Comparator<ipProxyConn> {
+class ipProxyConn implements Comparable<ipProxyConn> {
 
     public addrIP srcA;
 
@@ -390,24 +389,24 @@ class ipProxyConn implements Comparator<ipProxyConn> {
         return srcA + " " + srcP + "|" + trgA + " " + trgP + "|" + bits.timePast(tim);
     }
 
-    public int compare(ipProxyConn o1, ipProxyConn o2) {
-        if (o1.srcP < o2.srcP) {
+    public int compareTo(ipProxyConn o) {
+        if (srcP < o.srcP) {
             return -1;
         }
-        if (o1.srcP > o2.srcP) {
+        if (srcP > o.srcP) {
             return +1;
         }
-        if (o1.trgP < o2.trgP) {
+        if (trgP < o.trgP) {
             return -1;
         }
-        if (o1.trgP > o2.trgP) {
+        if (trgP > o.trgP) {
             return +1;
         }
-        int i = o1.srcA.compare(o1.srcA, o2.srcA);
+        int i = srcA.compareTo(o.srcA);
         if (i != 0) {
             return i;
         }
-        return o1.srcA.compare(o1.trgA, o2.trgA);
+        return trgA.compareTo(o.trgA);
     }
 
 }

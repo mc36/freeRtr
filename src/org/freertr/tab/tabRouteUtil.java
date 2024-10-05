@@ -895,7 +895,7 @@ public class tabRouteUtil {
      */
     public static <T extends addrType> int findAddrList(List<T> lst, T adr) {
         for (int i = 0; i < lst.size(); i++) {
-            if (adr.compare(lst.get(i), adr) == 0) {
+            if (lst.get(i).compareTo(adr) == 0) {
                 return i;
             }
         }
@@ -934,7 +934,7 @@ public class tabRouteUtil {
             return -1;
         }
         for (int i = 0; i < lst.size(); i++) {
-            if (val.compare(val, lst.get(i)) == 0) {
+            if (val.compareTo(lst.get(i)) == 0) {
                 return i;
             }
         }

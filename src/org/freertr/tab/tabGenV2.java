@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import org.freertr.util.bits;
 
 /**
@@ -9,7 +8,7 @@ import org.freertr.util.bits;
  * @param <T> type of elements in the list
  * @author matecsaba
  */
-public class tabGenV2<T extends Comparator<? super T>> {
+public class tabGenV2<T extends Comparable<? super T>> {
 
     private final static int thrsElm = 1000;
 
@@ -18,7 +17,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
     private final static int thrsBlkD = 200;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private T[][] valD = (T[][]) new Comparator[1][thrsElm]; // values
+    private T[][] valD = (T[][]) new Comparable[1][thrsElm]; // values
 
     private int[] begD = new int[1]; // beginnings of blocks
 
@@ -57,7 +56,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
             doArrays(valD.length);
             for (int o = 0; o < blkN; o++) {
                 T[] rowO = valD[o];
-                T[] rowN = (T[]) new Comparator[rowO.length];
+                T[] rowN = (T[]) new Comparable[rowO.length];
                 bits.objCopy(rowO, 0, rowN, 0, sizD[o]);
                 valD[o] = rowN;
             }
@@ -83,7 +82,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
         synchronized (lck) {
             valN = 0;
             blkN = 1;
-            valD[0] = (T[]) new Comparator[thrsElm];
+            valD[0] = (T[]) new Comparable[thrsElm];
             begD[0] = 0;
             sizD[0] = 0;
             lstB = 0;
@@ -214,7 +213,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
         boolean hit = false;
         if (upper > 0) {
             if (lstB >= upper) {
-                int cmp = val.compare(valD[lstB][0], val);
+                int cmp = valD[lstB][0].compareTo(val);
                 if (cmp <= 0) {
                     lower = lstB + 1;
                     hit = true;
@@ -222,7 +221,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
             }
             while (lower <= upper) {
                 lstB = (lower + upper) >>> 1;
-                int cmp = val.compare(valD[lstB][0], val);
+                int cmp = valD[lstB][0].compareTo(val);
                 if (cmp < 0) {
                     lower = lstB + 1;
                     continue;
@@ -246,7 +245,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
         int rowB = begD[lstB];
         T[] rowD = valD[lstB];
         if (hit && (upper >= 0)) {
-            int cmp = val.compare(rowD[upper], val);
+            int cmp = rowD[upper].compareTo(val);
             if (cmp < 0) {
                 lstI = upper;
                 return -rowB - (upper + 1) - 1;
@@ -254,7 +253,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
         }
         while (lower <= upper) {
             lstI = (lower + upper) >>> 1;
-            int cmp = val.compare(rowD[lstI], val);
+            int cmp = rowD[lstI].compareTo(val);
             if (cmp < 0) {
                 lower = lstI + 1;
                 continue;
@@ -366,11 +365,11 @@ public class tabGenV2<T extends Comparator<? super T>> {
         blkN++;
         T[] rowO = valD[lstB];
         int mid = siz / 2;
-        T[] rowN = (T[]) new Comparator[rowO.length];
+        T[] rowN = (T[]) new Comparable[rowO.length];
         bits.objCopy(rowO, 0, rowN, 0, mid);
         valD[lstB] = rowN;
         sizD[lstB] = mid;
-        rowN = (T[]) new Comparator[rowO.length];
+        rowN = (T[]) new Comparable[rowO.length];
         siz -= mid;
         bits.objCopy(rowO, mid, rowN, 0, siz);
         lstB++;
@@ -389,7 +388,7 @@ public class tabGenV2<T extends Comparator<? super T>> {
     private void doArrays(int siz) {
         int[] begF = new int[siz];
         int[] sizF = new int[siz];
-        T[][] valF = (T[][]) new Comparator[siz][];
+        T[][] valF = (T[][]) new Comparable[siz][];
         for (int i = 0; i < blkN; i++) {
             sizF[i] = sizD[i];
             valF[i] = valD[i];

@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.ifc.ifcHairpin;
 import org.freertr.tab.tabGen;
@@ -15,7 +14,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
+public class cfgHrpn implements Comparable<cfgHrpn>, cfgGeneric {
 
     /**
      * name of this hairpin
@@ -27,11 +26,11 @@ public class cfgHrpn implements Comparator<cfgHrpn>, cfgGeneric {
      */
     public ifcHairpin hairpinHed;
 
-    public int compare(cfgHrpn o1, cfgHrpn o2) {
-        if (o1.number < o2.number) {
+    public int compareTo(cfgHrpn o) {
+        if (number < o.number) {
             return -1;
         }
-        if (o1.number > o2.number) {
+        if (number > o.number) {
             return +1;
         }
         return 0;

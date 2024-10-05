@@ -183,7 +183,7 @@ public class prtPim implements ipPrt, ifcDn {
             cntr.drop(pck, counter.reasons.badProto);
             return;
         }
-        if (pck.IPsrc.compare(pck.IPsrc, remote) != 0) {
+        if (pck.IPsrc.compareTo(remote) != 0) {
             cntr.drop(pck, counter.reasons.badSrcAddr);
             return;
         }

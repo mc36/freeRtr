@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.tab.tabIntUpdater;
 import org.freertr.tab.tabListing;
@@ -16,7 +15,7 @@ import org.freertr.tab.tabRtrplcN;
  *
  * @author matecsaba
  */
-public class ipRtrRed implements Comparator<ipRtrRed> {
+public class ipRtrRed implements Comparable<ipRtrRed> {
 
     /**
      * type of protocol
@@ -74,15 +73,15 @@ public class ipRtrRed implements Comparator<ipRtrRed> {
         num = proc;
     }
 
-    public int compare(ipRtrRed o1, ipRtrRed o2) {
-        int i = o1.typ.compareTo(o2.typ);
+    public int compareTo(ipRtrRed o) {
+        int i = typ.compareTo(o.typ);
         if (i != 0) {
             return i;
         }
-        if (o1.num < o2.num) {
+        if (num < o.num) {
             return -1;
         }
-        if (o1.num > o2.num) {
+        if (num > o.num) {
             return +1;
         }
         return 0;

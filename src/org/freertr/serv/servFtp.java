@@ -2,7 +2,6 @@ package org.freertr.serv;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -206,7 +205,7 @@ public class servFtp extends servGeneric implements prtServS {
 
 }
 
-class servFtpConn implements Comparator<servFtpConn> {
+class servFtpConn implements Comparable<servFtpConn> {
 
     public addrIP addr;
 
@@ -220,8 +219,8 @@ class servFtpConn implements Comparator<servFtpConn> {
 
     public servFtpDoer doer;
 
-    public int compare(servFtpConn o1, servFtpConn o2) {
-        return o1.addr.compare(o1.addr, o2.addr);
+    public int compareTo(servFtpConn o) {
+        return addr.compareTo(o.addr);
     }
 
     public servFtpConn(prtGenConn id) {

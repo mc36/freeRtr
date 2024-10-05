@@ -3,7 +3,6 @@ package org.freertr.cry;
 import org.freertr.enc.encBase64;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
@@ -13,7 +12,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
+public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
 
     /**
      * create instance
@@ -26,8 +25,8 @@ public abstract class cryKeyGeneric implements Comparator<cryKeyGeneric> {
      */
     public String keyName;
 
-    public int compare(cryKeyGeneric o1, cryKeyGeneric o2) {
-        return o1.keyName.toLowerCase().compareTo(o2.keyName.toLowerCase());
+    public int compareTo(cryKeyGeneric o) {
+        return keyName.toLowerCase().compareTo(o.keyName.toLowerCase());
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
@@ -34,7 +33,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
+public class rtrLdpNeigh implements Runnable, Comparable<rtrLdpNeigh> {
 
     /**
      * peer address
@@ -176,8 +175,8 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
         peer = adr.copyBytes();
     }
 
-    public int compare(rtrLdpNeigh o1, rtrLdpNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrLdpNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     public String toString() {
@@ -732,7 +731,7 @@ public class rtrLdpNeigh implements Runnable, Comparator<rtrLdpNeigh> {
     public void run() {
         try {
             bits.sleep(bits.random(1000, 5000));
-            if (trans.compare(trans, ifc.addr) > 0) {
+            if (trans.compareTo(ifc.addr) > 0) {
                 if (debugger.rtrLdpEvnt) {
                     logger.debug("accepting " + trans);
                 }

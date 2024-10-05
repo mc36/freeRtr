@@ -1,6 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Comparator;
 import org.freertr.addr.addrType;
 import org.freertr.pack.packHolder;
 import org.freertr.util.counter;
@@ -11,7 +10,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class ifcSub implements ifcDn, Comparator<ifcSub> {
+public class ifcSub implements ifcDn, Comparable<ifcSub> {
 
     /**
      * vlan id
@@ -82,11 +81,11 @@ public class ifcSub implements ifcDn, Comparator<ifcSub> {
         lower.setFilter(promisc);
     }
 
-    public int compare(ifcSub v1, ifcSub v2) {
-        if (v1.vLan < v2.vLan) {
+    public int compareTo(ifcSub o) {
+        if (vLan < o.vLan) {
             return -1;
         }
-        if (v1.vLan > v2.vLan) {
+        if (vLan > o.vLan) {
             return +1;
         }
         return 0;

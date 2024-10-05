@@ -1,13 +1,11 @@
 package org.freertr.user;
 
-import java.util.Comparator;
-
 /**
  * one tester connection
  *
  * @author matecsaba
  */
-public class userTesterCon implements Comparator<userTesterCon> {
+public class userTesterCon implements Comparable<userTesterCon> {
 
     /**
      * local port
@@ -40,11 +38,11 @@ public class userTesterCon implements Comparator<userTesterCon> {
     protected userTesterCon() {
     }
 
-    public int compare(userTesterCon o1, userTesterCon o2) {
-        if (o1.locP < o2.locP) {
+    public int compareTo(userTesterCon o) {
+        if (locP < o.locP) {
             return -1;
         }
-        if (o1.locP > o2.locP) {
+        if (locP > o.locP) {
             return +1;
         }
         return 0;

@@ -1232,7 +1232,7 @@ public class ifcBridge implements ifcDn {
             return false;
         }
         int cst = stp.rootCost + addrBridge.bandwidth2cost(ifc.lowerIf.getBandwidth());
-        int i = stpRoot.compare(stpRoot, stp.rootId);
+        int i = stpRoot.compareTo(stp.rootId);
         if (i < 0) { // worst root
             ifc.blocked = true;
             return false;
@@ -1267,7 +1267,7 @@ public class ifcBridge implements ifcDn {
             ifc.blocked = false;
             return false;
         }
-        i = stpRoot.compare(getStpId(), stp.brdgId);
+        i = getStpId().compareTo(stp.brdgId);
         if (i == 0) {
             ifc.blocked = ifc.ifcNum <= stp.portId;
         } else {

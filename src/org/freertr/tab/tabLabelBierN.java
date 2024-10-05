@@ -1,7 +1,6 @@
 package org.freertr.tab;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwdIface;
@@ -12,7 +11,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class tabLabelBierN implements Comparator<tabLabelBierN> {
+public class tabLabelBierN implements Comparable<tabLabelBierN> {
 
     /**
      * interface
@@ -85,7 +84,7 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
         if (bsl != o.bsl) {
             return true;
         }
-        if (hop.compare(hop, o.hop) != 0) {
+        if (hop.compareTo(o.hop) != 0) {
             return true;
         }
         if (ned.size() != o.ned.size()) {
@@ -162,14 +161,14 @@ public class tabLabelBierN implements Comparator<tabLabelBierN> {
         }
     }
 
-    public int compare(tabLabelBierN o1, tabLabelBierN o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(tabLabelBierN o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
-        return o1.hop.compare(o1.hop, o2.hop);
+        return hop.compareTo(o.hop);
     }
 
     /**

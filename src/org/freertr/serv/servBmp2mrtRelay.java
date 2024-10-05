@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
@@ -21,7 +20,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable {
+public class servBmp2mrtRelay implements Comparable<servBmp2mrtRelay>, Runnable {
 
     /**
      * proxy to use
@@ -86,14 +85,14 @@ public class servBmp2mrtRelay implements Comparator<servBmp2mrtRelay>, Runnable 
         return proxy.name + " " + server + " " + port + a;
     }
 
-    public int compare(servBmp2mrtRelay o1, servBmp2mrtRelay o2) {
-        if (o1.port < o2.port) {
+    public int compareTo(servBmp2mrtRelay o) {
+        if (port < o.port) {
             return -1;
         }
-        if (o1.port > o2.port) {
+        if (port > o.port) {
             return +1;
         }
-        return o1.server.compareTo(o2.server);
+        return server.compareTo(o.server);
     }
 
     /**

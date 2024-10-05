@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.tab.tabLabelEntry;
 
@@ -9,7 +8,7 @@ import org.freertr.tab.tabLabelEntry;
  *
  * @author matecsaba
  */
-public class ipFwdMpNe implements Comparator<ipFwdMpNe> {
+public class ipFwdMpNe implements Comparable<ipFwdMpNe> {
 
     /**
      * peer address
@@ -80,14 +79,14 @@ public class ipFwdMpNe implements Comparator<ipFwdMpNe> {
                 return true;
             }
         }
-        if (addr.compare(addr, o.addr) != 0) {
+        if (addr.compareTo(o.addr) != 0) {
             return true;
         }
         return false;
     }
 
-    public int compare(ipFwdMpNe o1, ipFwdMpNe o2) {
-        return o1.addr.compare(o1.addr, o2.addr);
+    public int compareTo(ipFwdMpNe o) {
+        return addr.compareTo(o.addr);
     }
 
 }

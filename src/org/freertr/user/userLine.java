@@ -1,7 +1,6 @@
 package org.freertr.user;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -790,7 +789,7 @@ public class userLine {
 
 }
 
-class userLineHandler implements Runnable, Comparator<userLineHandler> {
+class userLineHandler implements Runnable, Comparable<userLineHandler> {
 
     public final int hsh;
 
@@ -1135,11 +1134,11 @@ class userLineHandler implements Runnable, Comparator<userLineHandler> {
         userLine.loggedUsers.del(this);
     }
 
-    public int compare(userLineHandler o1, userLineHandler o2) {
-        if (o1.hsh < o2.hsh) {
+    public int compareTo(userLineHandler o) {
+        if (hsh < o.hsh) {
             return -1;
         }
-        if (o1.hsh > o2.hsh) {
+        if (hsh > o.hsh) {
             return +1;
         }
         return 0;

@@ -237,7 +237,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 cmd.error("bad address");
                 return false;
             }
-            if (poolHi.compare(poolLo, poolHi) >= 0) {
+            if (poolLo.compareTo(poolHi) >= 0) {
                 poolLo = null;
                 poolHi = null;
                 cmd.error("bad order");
@@ -510,9 +510,9 @@ public class servDhcp4 extends servGeneric implements prtServS {
         }
         synchronized (bindings) {
             ntry = new servDhcp4bind();
-            Collections.sort(bindings, new servDhcp4bind());
+            Collections.sort(bindings);
             ntry.mac = mac.copyBytes();
-            int i = Collections.binarySearch(bindings, ntry, new servDhcp4bind());
+            int i = Collections.binarySearch(bindings, ntry);
             if (i >= 0) {
                 ntry = bindings.get(i);
                 if ((create == 3) && (!ntry.confed)) {
@@ -543,7 +543,7 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 addrIPv4 a2 = new addrIPv4();
                 a1.setAnd(gateway, netmask);
                 a2.setAnd(hint, netmask);
-                if (a1.compare(a1, a2) == 0) {
+                if (a1.compareTo(a2) == 0) {
                     hint = hint.copyBytes();
                     ntry.ip = hint;
                     i = Collections.binarySearch(bindings, ntry, new servDhcp4bindIp());
@@ -558,10 +558,10 @@ public class servDhcp4 extends servGeneric implements prtServS {
                 ip.fillRandom();
                 ip.setAnd(ip, poolMsk);
                 ip.setAdd(ip, poolLo);
-                if (ip.compare(ip, poolLo) < 0) {
+                if (ip.compareTo(poolLo) < 0) {
                     continue;
                 }
-                if (ip.compare(ip, poolHi) > 0) {
+                if (ip.compareTo(poolHi) > 0) {
                     continue;
                 }
                 ntry.ip = ip;
@@ -733,12 +733,12 @@ public class servDhcp4 extends servGeneric implements prtServS {
 class servDhcp4bindIp implements Comparator<servDhcp4bind> {
 
     public int compare(servDhcp4bind o1, servDhcp4bind o2) {
-        return o1.ip.compare(o1.ip, o2.ip);
+        return o1.ip.compareTo(o2.ip);
     }
 
 }
 
-class servDhcp4bind implements Comparator<servDhcp4bind> {
+class servDhcp4bind implements Comparable<servDhcp4bind> {
 
     public boolean confed = false;
 
@@ -768,8 +768,8 @@ class servDhcp4bind implements Comparator<servDhcp4bind> {
         return false;
     }
 
-    public int compare(servDhcp4bind o1, servDhcp4bind o2) {
-        return o1.mac.compare(o1.mac, o2.mac);
+    public int compareTo(servDhcp4bind o) {
+        return mac.compareTo(o.mac);
     }
 
 }

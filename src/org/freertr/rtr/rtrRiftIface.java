@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -36,7 +35,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdClnt, prtServP {
+public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdClnt, prtServP {
 
     /**
      * ipinfo result
@@ -468,11 +467,11 @@ public class rtrRiftIface implements Comparator<rtrRiftIface>, Runnable, rtrBfdC
         return "rift on " + iface;
     }
 
-    public int compare(rtrRiftIface o1, rtrRiftIface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrRiftIface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;

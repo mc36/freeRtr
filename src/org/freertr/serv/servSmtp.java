@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.auth.authGeneric;
@@ -454,7 +453,7 @@ public class servSmtp extends servGeneric implements prtServS {
 
 }
 
-abstract class servSmtpTrg implements Comparator<servSmtpTrg> {
+abstract class servSmtpTrg implements Comparable<servSmtpTrg> {
 
     public String email;
 
@@ -462,8 +461,8 @@ abstract class servSmtpTrg implements Comparator<servSmtpTrg> {
 
     public long askTim;
 
-    public int compare(servSmtpTrg o1, servSmtpTrg o2) {
-        return o1.email.toLowerCase().compareTo(o2.email.toLowerCase());
+    public int compareTo(servSmtpTrg o) {
+        return email.toLowerCase().compareTo(o.email.toLowerCase());
     }
 
     abstract public boolean fromString(cmds cmd);
@@ -572,7 +571,7 @@ class servSmtpLoc extends servSmtpTrg {
 
 }
 
-class servSmtpRbl implements Comparator<servSmtpRbl> {
+class servSmtpRbl implements Comparable<servSmtpRbl> {
 
     public String server;
 
@@ -588,8 +587,8 @@ class servSmtpRbl implements Comparator<servSmtpRbl> {
         return false;
     }
 
-    public int compare(servSmtpRbl o1, servSmtpRbl o2) {
-        return o1.server.toLowerCase().compareTo(o2.server.toLowerCase());
+    public int compareTo(servSmtpRbl o) {
+        return server.toLowerCase().compareTo(o.server.toLowerCase());
     }
 
 }

@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packUpnpFwd;
@@ -101,7 +100,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
         }
         for (int i = conns.size() - 1; i >= 0; i--) {
             servUpnpHubConn ntry = conns.get(i);
-            if (conn.compare(conn, ntry) == 0) {
+            if (conn.compareTo(ntry) == 0) {
                 continue;
             }
             ntry.doPack(pck);
@@ -110,7 +109,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
 
 }
 
-class servUpnpHubConn implements Runnable, Comparator<servUpnpHubConn> {
+class servUpnpHubConn implements Runnable, Comparable<servUpnpHubConn> {
 
     private servUpnpHub parent;
 
@@ -126,8 +125,8 @@ class servUpnpHubConn implements Runnable, Comparator<servUpnpHubConn> {
         new Thread(this).start();
     }
 
-    public int compare(servUpnpHubConn o1, servUpnpHubConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servUpnpHubConn o) {
+        return conn.compareTo(o.conn);
     }
 
     public void run() {

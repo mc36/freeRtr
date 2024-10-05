@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -20,7 +19,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class rtrBgpVplsPeer implements ifcDn, Comparator<rtrBgpVplsPeer> {
+public class rtrBgpVplsPeer implements ifcDn, Comparable<rtrBgpVplsPeer> {
 
     /**
      * peer address
@@ -74,8 +73,8 @@ public class rtrBgpVplsPeer implements ifcDn, Comparator<rtrBgpVplsPeer> {
         parentB = pb;
     }
 
-    public int compare(rtrBgpVplsPeer o1, rtrBgpVplsPeer o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrBgpVplsPeer o) {
+        return peer.compareTo(o.peer);
     }
 
     public String toString() {

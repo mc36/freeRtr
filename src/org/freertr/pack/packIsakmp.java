@@ -1174,11 +1174,11 @@ public class packIsakmp {
             case 4:
                 addrIPv4 adr4 = new addrIPv4();
                 pckDat.getAddr(adr4, 4);
-                if (adr4.compare(adr4, new addrIPv4()) != 0) {
+                if (adr4.compareTo(new addrIPv4()) != 0) {
                     return true;
                 }
                 pckDat.getAddr(adr4, 4 + addrIPv4.size);
-                if (adr4.compare(adr4, new addrIPv4()) != 0) {
+                if (adr4.compareTo(new addrIPv4()) != 0) {
                     return true;
                 }
                 ident.fromIPv4addr(adr4);
@@ -1186,11 +1186,11 @@ public class packIsakmp {
             case 6:
                 addrIPv6 adr6 = new addrIPv6();
                 pckDat.getAddr(adr6, 4);
-                if (adr6.compare(adr6, new addrIPv6()) != 0) {
+                if (adr6.compareTo(new addrIPv6()) != 0) {
                     return true;
                 }
                 pckDat.getAddr(adr6, 4 + addrIPv6.size);
-                if (adr6.compare(adr6, new addrIPv6()) != 0) {
+                if (adr6.compareTo(new addrIPv6()) != 0) {
                     return true;
                 }
                 ident.fromIPv6addr(adr6);

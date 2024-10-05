@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.pipe.pipeConnect;
@@ -25,7 +24,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class cfgSched implements Comparator<cfgSched>, cfgGeneric {
+public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
 
     /**
      * create instance
@@ -151,8 +150,8 @@ public class cfgSched implements Comparator<cfgSched>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgSched o1, cfgSched o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgSched o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

@@ -999,7 +999,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.segrouPrf == null) {
                 return 33;
             }
-            if (segrouPrf.compare(segrouPrf, other.segrouPrf) != 0) {
+            if (segrouPrf.compareTo(other.segrouPrf) != 0) {
                 return 34;
             }
         } else if (other.segrouPrf != null) {
@@ -1009,7 +1009,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.labelLoc == null) {
                 return 36;
             }
-            if (labelLoc.compare(labelLoc, other.labelLoc) != 0) {
+            if (labelLoc.compareTo(other.labelLoc) != 0) {
                 return 37;
             }
         } else if (other.labelLoc != null) {
@@ -1022,7 +1022,7 @@ public class tabRouteAttr<T extends addrType> {
             if (srcRtr.getSize() != other.srcRtr.getSize()) {
                 return 40;
             }
-            if (srcRtr.compare(srcRtr, other.srcRtr) != 0) {
+            if (srcRtr.compareTo(other.srcRtr) != 0) {
                 return 41;
             }
         } else if (other.srcRtr != null) {
@@ -1032,7 +1032,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.aggrRtr == null) {
                 return 43;
             }
-            if (aggrRtr.compare(aggrRtr, other.aggrRtr) != 0) {
+            if (aggrRtr.compareTo(other.aggrRtr) != 0) {
                 return 44;
             }
         } else if (other.aggrRtr != null) {
@@ -1042,7 +1042,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.connRtr == null) {
                 return 107;
             }
-            if (connRtr.compare(connRtr, other.connRtr) != 0) {
+            if (connRtr.compareTo(other.connRtr) != 0) {
                 return 108;
             }
         } else if (other.connRtr != null) {
@@ -1052,7 +1052,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.pediRtr == null) {
                 return 111;
             }
-            if (pediRtr.compare(pediRtr, other.pediRtr) != 0) {
+            if (pediRtr.compareTo(other.pediRtr) != 0) {
                 return 112;
             }
         } else if (other.pediRtr != null) {
@@ -1062,7 +1062,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.nextHop == null) {
                 return 46;
             }
-            if (nextHop.compare(nextHop, other.nextHop) != 0) {
+            if (nextHop.compareTo(other.nextHop) != 0) {
                 return 47;
             }
         } else if (other.nextHop != null) {
@@ -1072,7 +1072,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.oldHop == null) {
                 return 49;
             }
-            if (oldHop.compare(oldHop, other.oldHop) != 0) {
+            if (oldHop.compareTo(other.oldHop) != 0) {
                 return 50;
             }
         } else if (other.oldHop != null) {
@@ -1082,7 +1082,7 @@ public class tabRouteAttr<T extends addrType> {
             if (other.originator == null) {
                 return 52;
             }
-            if (originator.compare(originator, other.originator) != 0) {
+            if (originator.compareTo(other.originator) != 0) {
                 return 53;
             }
         } else if (other.originator != null) {
@@ -1193,7 +1193,7 @@ public class tabRouteAttr<T extends addrType> {
             }
             for (int i = 0; i < clustList.size(); i++) {
                 T cmp = clustList.get(i);
-                if (cmp.compare(cmp, other.clustList.get(i)) != 0) {
+                if (cmp.compareTo(other.clustList.get(i)) != 0) {
                     return 79;
                 }
             }
@@ -1224,7 +1224,7 @@ public class tabRouteAttr<T extends addrType> {
             }
             for (int i = 0; i < lrgComm.size(); i++) {
                 tabLargeComm cmp = lrgComm.get(i);
-                if (cmp.compare(cmp, other.lrgComm.get(i)) != 0) {
+                if (cmp.compareTo(other.lrgComm.get(i)) != 0) {
                     return 96;
                 }
             }
@@ -1240,7 +1240,7 @@ public class tabRouteAttr<T extends addrType> {
             }
             for (int i = 0; i < unknown.size(); i++) {
                 tabRouteBlob cmp = unknown.get(i);
-                if (cmp.compare(cmp, other.unknown.get(i)) != 0) {
+                if (cmp.compareTo(other.unknown.get(i)) != 0) {
                     return 100;
                 }
             }
@@ -1857,7 +1857,7 @@ public class tabRouteAttr<T extends addrType> {
                 Collections.sort(ntry.extComm);
             }
             if (ntry.lrgComm != null) {
-                Collections.sort(ntry.lrgComm, new tabLargeComm());
+                Collections.sort(ntry.lrgComm);
             }
         }
         if ((ign & 0x1000000) != 0) {

@@ -462,7 +462,7 @@ public class clntDhcp4 implements prtServP {
                 break;
             case 7: // allocated
                 if (cfger.addr4 != null) {
-                    if (locAddr.compare(locAddr, cfger.addr4) != 0) {
+                    if (locAddr.compareTo(cfger.addr4) != 0) {
                         clearState();
                         break;
                     }

@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.cfg.cfgVrf;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.cfg.cfgVrf;
  *
  * @author matecsaba
  */
-public class rtrBgpVrf implements Comparator<rtrBgpVrf> {
+public class rtrBgpVrf implements Comparable<rtrBgpVrf> {
 
     /**
      * vrf to use
@@ -32,8 +31,8 @@ public class rtrBgpVrf implements Comparator<rtrBgpVrf> {
         doer = new rtrBgpVrfRtr(p, v, o);
     }
 
-    public int compare(rtrBgpVrf o1, rtrBgpVrf o2) {
-        return o1.vrf.compareTo(o2.vrf);
+    public int compareTo(rtrBgpVrf o) {
+        return vrf.compareTo(o.vrf);
     }
 
 }

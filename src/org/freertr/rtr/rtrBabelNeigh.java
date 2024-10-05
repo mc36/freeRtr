@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEui;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -20,7 +19,7 @@ import org.freertr.enc.encTlv;
  *
  * @author matecsaba
  */
-public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
+public class rtrBabelNeigh implements rtrBfdClnt, Comparable<rtrBabelNeigh> {
 
     /**
      * prefixes learned from this neighbor
@@ -66,14 +65,14 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
         conn.setClosing();
     }
 
-    public int compare(rtrBabelNeigh o1, rtrBabelNeigh o2) {
-        if (o1.conn.iface.ifwNum < o2.conn.iface.ifwNum) {
+    public int compareTo(rtrBabelNeigh o) {
+        if (conn.iface.ifwNum < o.conn.iface.ifwNum) {
             return -1;
         }
-        if (o1.conn.iface.ifwNum > o2.conn.iface.ifwNum) {
+        if (conn.iface.ifwNum > o.conn.iface.ifwNum) {
             return +1;
         }
-        return o1.conn.peerAddr.compare(o1.conn.peerAddr, o2.conn.peerAddr);
+        return conn.peerAddr.compareTo(o.conn.peerAddr);
     }
 
     private addrPrefix<addrIP> getPrefix(encTlv tlv, int ofs, int ae, int len) {
@@ -172,7 +171,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparator<rtrBabelNeigh> {
                 case rtrBabel.tlvSeqReq:
                     ae = new addrEui();
                     ae.fromBuf(tlv.valDat, 6);
-                    if (ae.compare(ae, iface.lower.routerID) != 0) {
+                    if (ae.compareTo(iface.lower.routerID) != 0) {
                         break;
                     }
                     iface.lower.incSeq();

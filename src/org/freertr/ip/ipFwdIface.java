@@ -2433,7 +2433,7 @@ public class ipFwdIface extends tabRouteIface {
      * @return mac if mine, null if not
      */
     public addrMac adrChk(addrIP ip) {
-        if (ip.compare(ip, addr) == 0) {
+        if (ip.compareTo(addr) == 0) {
             return null;
         }
         ipFwdIfaceAddr ntry = new ipFwdIfaceAddr();
@@ -2566,7 +2566,7 @@ public class ipFwdIface extends tabRouteIface {
 
 }
 
-class ipFwdIfaceAddr implements Comparator<ipFwdIfaceAddr> {
+class ipFwdIfaceAddr implements Comparable<ipFwdIfaceAddr> {
 
     public addrIP ip;
 
@@ -2574,13 +2574,13 @@ class ipFwdIfaceAddr implements Comparator<ipFwdIfaceAddr> {
 
     public boolean cfg;
 
-    public int compare(ipFwdIfaceAddr o1, ipFwdIfaceAddr o2) {
-        return o1.ip.compare(o1.ip, o2.ip);
+    public int compareTo(ipFwdIfaceAddr o) {
+        return ip.compareTo(o.ip);
     }
 
 }
 
-class ipFwdIfacePref implements Comparator<ipFwdIfacePref> {
+class ipFwdIfacePref implements Comparable<ipFwdIfacePref> {
 
     public addrIP adr;
 
@@ -2612,25 +2612,25 @@ class ipFwdIfacePref implements Comparator<ipFwdIfacePref> {
         return false;
     }
 
-    public int compare(ipFwdIfacePref o1, ipFwdIfacePref o2) {
-        return o1.pfx.compare(o1.pfx, o2.pfx);
+    public int compareTo(ipFwdIfacePref o) {
+        return pfx.compareTo(o.pfx);
     }
 
 }
 
-class ipFwdIfaceLdpas implements Comparator<ipFwdIfaceLdpas> {
+class ipFwdIfaceLdpas implements Comparable<ipFwdIfaceLdpas> {
 
     public addrIP ip;
 
     public String pwd;
 
-    public int compare(ipFwdIfaceLdpas o1, ipFwdIfaceLdpas o2) {
-        return o1.ip.compare(o1.ip, o2.ip);
+    public int compareTo(ipFwdIfaceLdpas o) {
+        return ip.compareTo(o.ip);
     }
 
 }
 
-class ipFwdIfaceBind implements Comparator<ipFwdIfaceBind> {
+class ipFwdIfaceBind implements Comparable<ipFwdIfaceBind> {
 
     public addrPrefix<addrIP> pfx;
 
@@ -2638,12 +2638,12 @@ class ipFwdIfaceBind implements Comparator<ipFwdIfaceBind> {
 
     public int lab;
 
-    public int compare(ipFwdIfaceBind o1, ipFwdIfaceBind o2) {
-        int i = o1.hop.compare(o1.hop, o2.hop);
+    public int compareTo(ipFwdIfaceBind o) {
+        int i = hop.compareTo(o.hop);
         if (i != 0) {
             return i;
         }
-        return pfx.compare(o1.pfx, o2.pfx);
+        return pfx.compareTo(o.pfx);
     }
 
 }

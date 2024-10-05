@@ -471,7 +471,7 @@ public class clntDhcp6 implements prtServP {
                 break;
             case 7: // allocated
                 if (cfger.addr6 != null) {
-                    if (locAddr.compare(locAddr, cfger.addr6) != 0) {
+                    if (locAddr.compareTo(cfger.addr6) != 0) {
                         clearState();
                         break;
                     }

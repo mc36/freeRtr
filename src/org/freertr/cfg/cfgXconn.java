@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.ifc.ifcConnect;
 import org.freertr.pack.packLdpPwe;
@@ -16,7 +15,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
+public class cfgXconn implements Comparable<cfgXconn>, cfgGeneric {
 
     /**
      * create instance
@@ -73,8 +72,8 @@ public class cfgXconn implements Comparator<cfgXconn>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgXconn o1, cfgXconn o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgXconn o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.ifc.ifcBundle;
 import org.freertr.tab.tabGen;
@@ -15,7 +14,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgBndl implements Comparator<cfgBndl>, cfgGeneric {
+public class cfgBndl implements Comparable<cfgBndl>, cfgGeneric {
 
     /**
      * name of this bundle
@@ -49,8 +48,8 @@ public class cfgBndl implements Comparator<cfgBndl>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgBndl o1, cfgBndl o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgBndl o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

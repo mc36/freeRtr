@@ -1,7 +1,6 @@
 package org.freertr.pack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -265,7 +264,7 @@ public class packNetflow {
 
 }
 
-class packNetflowTemp implements Comparator<packNetflowTemp> {
+class packNetflowTemp implements Comparable<packNetflowTemp> {
 
     public int id;
 
@@ -291,11 +290,11 @@ class packNetflowTemp implements Comparator<packNetflowTemp> {
 
     public boolean oTtrg;
 
-    public int compare(packNetflowTemp o1, packNetflowTemp o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(packNetflowTemp o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;

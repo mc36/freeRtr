@@ -1,14 +1,13 @@
 package org.freertr.user;
 
 import java.io.File;
-import java.util.Comparator;
 
 /**
  * represents one file
  *
  * @author matecsaba
  */
-public class userFlashNtry implements Comparator<userFlashNtry> {
+public class userFlashNtry implements Comparable<userFlashNtry> {
 
     /**
      * file entry
@@ -24,8 +23,8 @@ public class userFlashNtry implements Comparator<userFlashNtry> {
         f = fl;
     }
 
-    public int compare(userFlashNtry o1, userFlashNtry o2) {
-        return o1.f.getName().compareTo(o2.f.getName());
+    public int compareTo(userFlashNtry o) {
+        return f.getName().compareTo(o.f.getName());
     }
 
 }

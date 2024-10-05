@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.pack.packBfd;
 import org.freertr.pack.packHolder;
@@ -15,7 +14,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
+public class rtrBfdNeigh implements Runnable, Comparable<rtrBfdNeigh> {
 
     /**
      * address of peer
@@ -64,8 +63,8 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
         return "bfd with " + peer;
     }
 
-    public int compare(rtrBfdNeigh o1, rtrBfdNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrBfdNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -277,7 +276,7 @@ public class rtrBfdNeigh implements Runnable, Comparator<rtrBfdNeigh> {
 
 }
 
-class rtrBfdNeighClnt implements Comparator<rtrBfdNeighClnt> {
+class rtrBfdNeighClnt implements Comparable<rtrBfdNeighClnt> {
 
     public final rtrBfdClnt clnt;
 
@@ -291,11 +290,11 @@ class rtrBfdNeighClnt implements Comparator<rtrBfdNeighClnt> {
         hsh = clnt.hashCode();
     }
 
-    public int compare(rtrBfdNeighClnt o1, rtrBfdNeighClnt o2) {
-        if (o1.hsh < o2.hsh) {
+    public int compareTo(rtrBfdNeighClnt o) {
+        if (hsh < o.hsh) {
             return -1;
         }
-        if (o1.hsh > o2.hsh) {
+        if (hsh > o.hsh) {
             return +1;
         }
         return 0;

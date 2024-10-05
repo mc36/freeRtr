@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIsis;
 import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
@@ -10,7 +9,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
+public class rtrIsisLsp implements Comparable<rtrIsisLsp> {
 
     /**
      * header size
@@ -358,21 +357,21 @@ public class rtrIsisLsp implements Comparator<rtrIsisLsp> {
         return n;
     }
 
-    public int compare(rtrIsisLsp o1, rtrIsisLsp o2) {
-        int i = o1.srcID.compare(o1.srcID, o2.srcID);
+    public int compareTo(rtrIsisLsp o) {
+        int i = srcID.compareTo(o.srcID);
         if (i != 0) {
             return i;
         }
-        if (o1.nodID < o2.nodID) {
+        if (nodID < o.nodID) {
             return -1;
         }
-        if (o1.nodID > o2.nodID) {
+        if (nodID > o.nodID) {
             return +1;
         }
-        if (o1.lspNum < o2.lspNum) {
+        if (lspNum < o.lspNum) {
             return -1;
         }
-        if (o1.lspNum > o2.lspNum) {
+        if (lspNum > o.lspNum) {
             return +1;
         }
         return 0;

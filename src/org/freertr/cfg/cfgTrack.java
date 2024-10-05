@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntTrack;
@@ -18,7 +17,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
+public class cfgTrack implements Comparable<cfgTrack>, cfgGeneric {
 
     /**
      * create instance
@@ -83,8 +82,8 @@ public class cfgTrack implements Comparator<cfgTrack>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgTrack o1, cfgTrack o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgTrack o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     /**

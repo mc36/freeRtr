@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -20,7 +19,7 @@ import org.freertr.util.version;
  *
  * @author matecsaba
  */
-public class cfgMenuT implements Comparator<cfgMenuT>, cfgGeneric {
+public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
 
     /**
      * defaults text
@@ -57,8 +56,8 @@ public class cfgMenuT implements Comparator<cfgMenuT>, cfgGeneric {
         name = s;
     }
 
-    public int compare(cfgMenuT o1, cfgMenuT o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(cfgMenuT o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public void getHelp(userHelping l) {

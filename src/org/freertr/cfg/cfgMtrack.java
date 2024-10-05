@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.clnt.clntMtrack;
@@ -17,7 +16,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
+public class cfgMtrack implements Comparable<cfgMtrack>, cfgGeneric {
 
     /**
      * create instance
@@ -66,8 +65,8 @@ public class cfgMtrack implements Comparator<cfgMtrack>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgMtrack o1, cfgMtrack o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgMtrack o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public void getHelp(userHelping l) {

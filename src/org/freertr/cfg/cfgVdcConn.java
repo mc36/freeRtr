@@ -1,13 +1,11 @@
 package org.freertr.cfg;
 
-import java.util.Comparator;
-
 /**
  * vdc connection
  *
  * @author matecsaba
  */
-public class cfgVdcConn implements Comparator<cfgVdcConn> {
+public class cfgVdcConn implements Comparable<cfgVdcConn> {
 
     /**
      * name of interface
@@ -44,8 +42,8 @@ public class cfgVdcConn implements Comparator<cfgVdcConn> {
         return name + " " + peer.name;
     }
 
-    public int compare(cfgVdcConn o1, cfgVdcConn o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(cfgVdcConn o) {
+        return name.compareTo(o.name);
     }
 
 }

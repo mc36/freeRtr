@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgScrpt;
@@ -101,7 +100,7 @@ public class ipHostWatch implements Runnable {
                 nodeOn.doRound(bits.str2lst("set remote " + cur.ip));
                 continue;
             }
-            if (cur.mac.compare(cur.mac, old.mac) != 0) {
+            if (cur.mac.compareTo(old.mac) != 0) {
                 logger.info("host changed from " + old + " to " + cur + " on " + ifc);
                 if (nodeChg == null) {
                     continue;
@@ -126,14 +125,14 @@ public class ipHostWatch implements Runnable {
 
 }
 
-class ipHostWatchEntry implements Comparator<ipHostWatchEntry> {
+class ipHostWatchEntry implements Comparable<ipHostWatchEntry> {
 
     public addrIP ip = new addrIP();
 
     public addrMac mac = new addrMac();
 
-    public int compare(ipHostWatchEntry o1, ipHostWatchEntry o2) {
-        return ip.compare(o1.ip, o2.ip);
+    public int compareTo(ipHostWatchEntry o) {
+        return ip.compareTo(o.ip);
     }
 
     public String toString() {

@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
@@ -19,7 +18,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
+public class rtrRip4neigh implements rtrBfdClnt, Comparable<rtrRip4neigh> {
 
     /**
      * ipinfo result
@@ -70,14 +69,14 @@ public class rtrRip4neigh implements rtrBfdClnt, Comparator<rtrRip4neigh> {
         conn.setClosing();
     }
 
-    public int compare(rtrRip4neigh o1, rtrRip4neigh o2) {
-        if (o1.conn.iface.ifwNum < o2.conn.iface.ifwNum) {
+    public int compareTo(rtrRip4neigh o) {
+        if (conn.iface.ifwNum < o.conn.iface.ifwNum) {
             return -1;
         }
-        if (o1.conn.iface.ifwNum > o2.conn.iface.ifwNum) {
+        if (conn.iface.ifwNum > o.conn.iface.ifwNum) {
             return +1;
         }
-        return o1.conn.peerAddr.compare(o1.conn.peerAddr, o2.conn.peerAddr);
+        return conn.peerAddr.compareTo(o.conn.peerAddr);
     }
 
     /**

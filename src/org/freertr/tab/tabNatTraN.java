@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
@@ -11,7 +10,7 @@ import org.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class tabNatTraN implements Comparator<tabNatTraN> {
+public class tabNatTraN implements Comparable<tabNatTraN> {
 
     /**
      * create instance
@@ -133,30 +132,30 @@ public class tabNatTraN implements Comparator<tabNatTraN> {
         return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(created) + "|" + bits.timePast(lastUsed) + "|" + bits.timeDump(timeout / 1000) + "|" + cntr.packRx + a + "|" + cntr.byteRx + s;
     }
 
-    public int compare(tabNatTraN o1, tabNatTraN o2) {
-        if (o1.protocol < o2.protocol) {
+    public int compareTo(tabNatTraN o) {
+        if (protocol < o.protocol) {
             return -1;
         }
-        if (o1.protocol > o2.protocol) {
+        if (protocol > o.protocol) {
             return +1;
         }
-        if (o1.origSrcPort < o2.origSrcPort) {
+        if (origSrcPort < o.origSrcPort) {
             return -1;
         }
-        if (o1.origSrcPort > o2.origSrcPort) {
+        if (origSrcPort > o.origSrcPort) {
             return +1;
         }
-        if (o1.origTrgPort < o2.origTrgPort) {
+        if (origTrgPort < o.origTrgPort) {
             return -1;
         }
-        if (o1.origTrgPort > o2.origTrgPort) {
+        if (origTrgPort > o.origTrgPort) {
             return +1;
         }
-        int i = o1.origSrcAddr.compare(o1.origSrcAddr, o2.origSrcAddr);
+        int i = origSrcAddr.compareTo(o.origSrcAddr);
         if (i != 0) {
             return i;
         }
-        return o1.origTrgAddr.compare(o1.origTrgAddr, o2.origTrgAddr);
+        return origTrgAddr.compareTo(o.origTrgAddr);
     }
 
     /**

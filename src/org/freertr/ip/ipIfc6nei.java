@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -203,12 +202,12 @@ public class ipIfc6nei implements ifcUp {
             default:
                 return true;
         }
-        if (ipaddr.compare(adrI, ipaddr) == 0) {
+        if (adrI.compareTo(ipaddr) == 0) {
             cntr.drop(pck, counter.reasons.badSrcAddr);
             logger.info("ipv6 address conflict at " + lower);
             return true;
         }
-        if (lladdr.compare(adrI, lladdr) == 0) {
+        if (adrI.compareTo(lladdr) == 0) {
             cntr.drop(pck, counter.reasons.badSrcAddr);
             logger.info("linklocal address conflict at " + lower);
             return true;
@@ -316,11 +315,11 @@ public class ipIfc6nei implements ifcUp {
             return false;
         }
         if (!adr.isLinkLocal()) {
-            if (adr.compare(adr, network.network) < 0) {
+            if (adr.compareTo(network.network) < 0) {
                 putHeader(pck, addrMac.getBroadcast());
                 return false;
             }
-            if (adr.compare(adr, network.broadcast) > 0) {
+            if (adr.compareTo(network.broadcast) > 0) {
                 putHeader(pck, addrMac.getBroadcast());
                 return false;
             }
@@ -507,7 +506,7 @@ class ipIfc6neiTimer extends TimerTask {
 
 }
 
-class ipIfc6neiEntry implements Comparator<ipIfc6neiEntry> {
+class ipIfc6neiEntry implements Comparable<ipIfc6neiEntry> {
 
     public addrMac mac;
 
@@ -523,8 +522,8 @@ class ipIfc6neiEntry implements Comparator<ipIfc6neiEntry> {
         return mac + " " + ip + " " + bits.timePast(time);
     }
 
-    public int compare(ipIfc6neiEntry o1, ipIfc6neiEntry o2) {
-        return o1.ip.compare(o1.ip, o2.ip);
+    public int compareTo(ipIfc6neiEntry o) {
+        return ip.compareTo(o.ip);
     }
 
 }

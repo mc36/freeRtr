@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
@@ -41,7 +40,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>, Runnable {
+public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>, Runnable {
 
     /**
      * address of peer
@@ -583,8 +582,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
         conn = new rtrBgpSpeak(lower, this, null);
     }
 
-    public int compare(rtrBgpNeigh o1, rtrBgpNeigh o2) {
-        return o1.peerAddr.compare(o1.peerAddr, o2.peerAddr);
+    public int compareTo(rtrBgpNeigh o) {
+        return peerAddr.compareTo(o.peerAddr);
     }
 
     public String toString() {
@@ -1687,10 +1686,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparator<rtrBgpNeigh>,
                 continue;
             }
             if (nxtHopSelf || (!nxtHopUnchgd)) {
-                if (localAddr.compare(localAddr, ntry.localAddr) != 0) {
+                if (localAddr.compareTo(ntry.localAddr) != 0) {
                     continue;
                 }
-                if (localAddr.compare(localOddr, ntry.localOddr) != 0) {
+                if (localOddr.compareTo(ntry.localOddr) != 0) {
                     continue;
                 }
             }

@@ -625,7 +625,7 @@ public class rtrBabel extends ipRtr implements prtServP {
             if (ntry == null) {
                 continue;
             }
-            if (addr.compare(addr, ntry.conn.peerAddr) != 0) {
+            if (addr.compareTo(ntry.conn.peerAddr) != 0) {
                 continue;
             }
             return ntry;

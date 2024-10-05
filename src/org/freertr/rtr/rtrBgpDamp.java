@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
@@ -12,7 +11,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrBgpDamp implements Comparator<rtrBgpDamp> {
+public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
 
     /**
      * address family
@@ -57,20 +56,20 @@ public class rtrBgpDamp implements Comparator<rtrBgpDamp> {
         prefix = p.copyBytes();
     }
 
-    public int compare(rtrBgpDamp o1, rtrBgpDamp o2) {
-        if (o1.afi < o2.afi) {
+    public int compareTo(rtrBgpDamp o) {
+        if (afi < o.afi) {
             return -1;
         }
-        if (o1.afi > o2.afi) {
+        if (afi > o.afi) {
             return +1;
         }
-        if (o1.rd < o2.rd) {
+        if (rd < o.rd) {
             return -1;
         }
-        if (o1.rd > o2.rd) {
+        if (rd > o.rd) {
             return +1;
         }
-        return o1.prefix.compare(o1.prefix, o2.prefix);
+        return prefix.compareTo(o.prefix);
     }
 
     public String toString() {

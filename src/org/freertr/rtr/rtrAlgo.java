@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.ip.ipFwd;
 import org.freertr.tab.tabRouteAttr;
 
@@ -9,7 +8,7 @@ import org.freertr.tab.tabRouteAttr;
  *
  * @author matecsaba
  */
-public class rtrAlgo implements Comparator<rtrAlgo> {
+public class rtrAlgo implements Comparable<rtrAlgo> {
 
     /**
      * algorithm id
@@ -56,11 +55,11 @@ public class rtrAlgo implements Comparator<rtrAlgo> {
         return num + " " + fwd.cfgName;
     }
 
-    public int compare(rtrAlgo o1, rtrAlgo o2) {
-        if (o1.num < o2.num) {
+    public int compareTo(rtrAlgo o) {
+        if (num < o.num) {
             return -1;
         }
-        if (o1.num > o2.num) {
+        if (num > o.num) {
             return +1;
         }
         return 0;

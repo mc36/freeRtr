@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
@@ -279,7 +278,7 @@ public class rtrHsrpIface implements prtServP {
         if (conn == null) {
             return;
         }
-        if (id.compare(id, conn) != 0) {
+        if (id.compareTo(conn) != 0) {
             return;
         }
         sendHello();
@@ -438,7 +437,7 @@ public class rtrHsrpIface implements prtServP {
 
 }
 
-class rtrHsrpNeigh implements Comparator<rtrHsrpNeigh>, rtrBfdClnt {
+class rtrHsrpNeigh implements Comparable<rtrHsrpNeigh>, rtrBfdClnt {
 
     /**
      * parent
@@ -489,8 +488,8 @@ class rtrHsrpNeigh implements Comparator<rtrHsrpNeigh>, rtrBfdClnt {
         return "hsrp with " + peer;
     }
 
-    public int compare(rtrHsrpNeigh o1, rtrHsrpNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrHsrpNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -506,7 +505,7 @@ class rtrHsrpNeigh implements Comparator<rtrHsrpNeigh>, rtrBfdClnt {
         if (priority < cmp.priority) {
             return -1;
         }
-        return peer.compare(peer, cmp.peer);
+        return peer.compareTo(cmp.peer);
     }
 
     /**

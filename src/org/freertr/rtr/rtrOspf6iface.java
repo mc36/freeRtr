@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,7 +26,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
+public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
 
     /**
      * ipinfo config
@@ -265,11 +264,11 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         }
     }
 
-    public int compare(rtrOspf6iface o1, rtrOspf6iface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrOspf6iface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;
@@ -873,10 +872,10 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         if (amIdr()) {
             return true;
         }
-        if (drAddr.compare(drAddr, peer) == 0) {
+        if (drAddr.compareTo(peer) == 0) {
             return true;
         }
-        if (bdrAddr.compare(bdrAddr, peer) == 0) {
+        if (bdrAddr.compareTo(peer) == 0) {
             return true;
         }
         return false;
@@ -892,14 +891,14 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
                 continue;
             }
             if (drNeeded) {
-                if (ntry.rtrID.compare(ntry.peerDR, ntry.rtrID) != 0) {
+                if (ntry.peerDR.compareTo(ntry.rtrID) != 0) {
                     continue;
                 }
             } else {
-                if (ntry.rtrID.compare(ntry.rtrID, drAddr) == 0) {
+                if (ntry.rtrID.compareTo(drAddr) == 0) {
                     continue;
                 }
-                if (ntry.rtrID.compare(ntry.peerBDR, ntry.rtrID) != 0) {
+                if (ntry.peerBDR.compareTo(ntry.rtrID) != 0) {
                     continue;
                 }
             }
@@ -938,7 +937,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         addrIPv4 old = drAddr.copyBytes();
         drAddr = findDR(true);
         bdrAddr = findDR(false);
-        if (old.compare(old, drAddr) == 0) {
+        if (old.compareTo(drAddr) == 0) {
             return;
         }
         if (debugger.rtrOspf6evnt) {
@@ -953,7 +952,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
      * @return interface id
      */
     protected int DRintId() {
-        if (drAddr.compare(drAddr, lower.routerID) == 0) {
+        if (drAddr.compareTo(lower.routerID) == 0) {
             return iface.ifwNum;
         }
         for (int i = 0; i < neighs.size(); i++) {
@@ -961,7 +960,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             if (ntry == null) {
                 continue;
             }
-            if (drAddr.compare(drAddr, ntry.rtrID) != 0) {
+            if (drAddr.compareTo(ntry.rtrID) != 0) {
                 continue;
             }
             return ntry.rtrInt;
@@ -975,7 +974,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
      * @return interface id
      */
     protected addrIP DRintAdr() {
-        if (drAddr.compare(drAddr, lower.routerID) == 0) {
+        if (drAddr.compareTo(lower.routerID) == 0) {
             return iface.addr.copyBytes();
         }
         for (int i = 0; i < neighs.size(); i++) {
@@ -983,7 +982,7 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
             if (ntry == null) {
                 continue;
             }
-            if (drAddr.compare(drAddr, ntry.rtrID) != 0) {
+            if (drAddr.compareTo(ntry.rtrID) != 0) {
                 continue;
             }
             addrIP adr = new addrIP();
@@ -1002,10 +1001,10 @@ public class rtrOspf6iface implements Comparator<rtrOspf6iface>, ipPrt {
         if (!needDR()) {
             return false;
         }
-        if (drAddr.compare(drAddr, lower.routerID) == 0) {
+        if (drAddr.compareTo(lower.routerID) == 0) {
             return true;
         }
-        if (bdrAddr.compare(bdrAddr, lower.routerID) == 0) {
+        if (bdrAddr.compareTo(lower.routerID) == 0) {
             return true;
         }
         return false;

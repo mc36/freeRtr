@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPrefix;
@@ -18,7 +17,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
+public class rtrRip6neigh implements rtrBfdClnt, Comparable<rtrRip6neigh> {
 
     /**
      * prefixes learned from this neighbor
@@ -64,14 +63,14 @@ public class rtrRip6neigh implements rtrBfdClnt, Comparator<rtrRip6neigh> {
         conn.setClosing();
     }
 
-    public int compare(rtrRip6neigh o1, rtrRip6neigh o2) {
-        if (o1.conn.iface.ifwNum < o2.conn.iface.ifwNum) {
+    public int compareTo(rtrRip6neigh o) {
+        if (conn.iface.ifwNum < o.conn.iface.ifwNum) {
             return -1;
         }
-        if (o1.conn.iface.ifwNum > o2.conn.iface.ifwNum) {
+        if (conn.iface.ifwNum > o.conn.iface.ifwNum) {
             return +1;
         }
-        return o1.conn.peerAddr.compare(o1.conn.peerAddr, o2.conn.peerAddr);
+        return conn.peerAddr.compareTo(o.conn.peerAddr);
     }
 
     /**

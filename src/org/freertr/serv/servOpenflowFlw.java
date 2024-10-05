@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.util.bits;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-class servOpenflowFlw implements Comparator<servOpenflowFlw> {
+class servOpenflowFlw implements Comparable<servOpenflowFlw> {
 
     /**
      * match bytes
@@ -34,17 +33,17 @@ class servOpenflowFlw implements Comparator<servOpenflowFlw> {
      * compare two flows
      *
      * @param o1 first
-     * @param o2 second
+     * @param o second
      * @return -1 if less, +1 if greated 0 if equals
      */
-    public int compare(servOpenflowFlw o1, servOpenflowFlw o2) {
-        if (o1.match.length < o2.match.length) {
+    public int compareTo(servOpenflowFlw o) {
+        if (match.length < o.match.length) {
             return -1;
         }
-        if (o1.match.length > o2.match.length) {
+        if (match.length > o.match.length) {
             return +1;
         }
-        return bits.byteComp(o1.match, 0, o2.match, 0, o1.match.length);
+        return bits.byteComp(match, 0, o.match, 0, match.length);
     }
 
     /**

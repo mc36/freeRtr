@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -129,7 +128,7 @@ public class servQuote extends servGeneric implements prtServS {
 
 }
 
-class servQuoteLine implements Comparator<servQuoteLine> {
+class servQuoteLine implements Comparable<servQuoteLine> {
 
     public String line;
 
@@ -137,8 +136,8 @@ class servQuoteLine implements Comparator<servQuoteLine> {
         line = ln;
     }
 
-    public int compare(servQuoteLine o1, servQuoteLine o2) {
-        return o1.line.compareTo(o2.line);
+    public int compareTo(servQuoteLine o) {
+        return line.compareTo(o.line);
     }
 
 }

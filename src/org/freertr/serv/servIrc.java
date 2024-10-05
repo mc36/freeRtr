@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -296,7 +295,7 @@ public class servIrc extends servGeneric implements prtServS {
 
 }
 
-class servIrcChan implements Comparator<servIrcChan> {
+class servIrcChan implements Comparable<servIrcChan> {
 
     public final String name;
 
@@ -306,8 +305,8 @@ class servIrcChan implements Comparator<servIrcChan> {
         name = nam;
     }
 
-    public int compare(servIrcChan o1, servIrcChan o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(servIrcChan o) {
+        return name.compareTo(o.name);
     }
 
     public void rawTx(String s, servIrcConn f) {
@@ -342,7 +341,7 @@ class servIrcChan implements Comparator<servIrcChan> {
 
 }
 
-class servIrcConn implements Comparator<servIrcConn>, Runnable {
+class servIrcConn implements Comparable<servIrcConn>, Runnable {
 
     public final pipeSide conn;
 
@@ -367,14 +366,14 @@ class servIrcConn implements Comparator<servIrcConn>, Runnable {
         new servIrcKeep(this);
     }
 
-    public int compare(servIrcConn o1, servIrcConn o2) {
-        if (o1.port < o2.port) {
+    public int compareTo(servIrcConn o) {
+        if (port < o.port) {
             return -1;
         }
-        if (o1.port > o2.port) {
+        if (port > o.port) {
             return +1;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     public void run() {

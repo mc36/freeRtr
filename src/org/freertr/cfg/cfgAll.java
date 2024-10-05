@@ -3049,7 +3049,7 @@ public class cfgAll {
             if (ifc.bridgeHed == null) {
                 continue;
             }
-            if (ntry.compare(ntry, ifc.bridgeHed) != 0) {
+            if (ntry.compareTo(ifc.bridgeHed) != 0) {
                 continue;
             }
             ifc.clear2bridge();
@@ -3109,7 +3109,7 @@ public class cfgAll {
             if (ifc.bundleHed == null) {
                 continue;
             }
-            if (ntry.compare(ntry, ifc.bundleHed) != 0) {
+            if (ntry.compareTo(ifc.bundleHed) != 0) {
                 continue;
             }
             ifc.clear2bundle();
@@ -3286,7 +3286,7 @@ public class cfgAll {
                 continue;
             }
             if (skip != null) {
-                if (skip.compare(skip, ntry) == 0) {
+                if (skip.compareTo(ntry) == 0) {
                     continue;
                 }
             }

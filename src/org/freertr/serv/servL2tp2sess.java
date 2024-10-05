@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -19,7 +18,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servL2tp2sess implements ifcDn, Comparator<servL2tp2sess> {
+public class servL2tp2sess implements ifcDn, Comparable<servL2tp2sess> {
 
     /**
      * local session id
@@ -52,11 +51,11 @@ public class servL2tp2sess implements ifcDn, Comparator<servL2tp2sess> {
         return lower + "/" + sesLoc;
     }
 
-    public int compare(servL2tp2sess o1, servL2tp2sess o2) {
-        if (o1.sesLoc < o2.sesLoc) {
+    public int compareTo(servL2tp2sess o) {
+        if (sesLoc < o.sesLoc) {
             return -1;
         }
-        if (o1.sesLoc > o2.sesLoc) {
+        if (sesLoc > o.sesLoc) {
             return +1;
         }
         return 0;

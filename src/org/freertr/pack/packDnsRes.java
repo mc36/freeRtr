@@ -1,6 +1,6 @@
 package org.freertr.pack;
 
-import java.util.Comparator;
+
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -14,7 +14,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class packDnsRes implements Comparator<packDnsRes> {
+public class packDnsRes implements Comparable<packDnsRes> {
 
     /**
      * create instance
@@ -377,60 +377,59 @@ public class packDnsRes implements Comparator<packDnsRes> {
         pck.msbPutW(-siz - 2, siz);
     }
 
-    public int compare(packDnsRes o1, packDnsRes o2) {
-
-        if (o1.sequence < o2.sequence) {
+    public int compareTo(packDnsRes o) {
+        if (sequence < o.sequence) {
             return -1;
         }
-        if (o1.sequence > o2.sequence) {
+        if (sequence > o.sequence) {
             return +1;
         }
-        if (o1.fresh < o2.fresh) {
+        if (fresh < o.fresh) {
             return -1;
         }
-        if (o1.fresh > o2.fresh) {
+        if (fresh > o.fresh) {
             return +1;
         }
-        if (o1.retry < o2.retry) {
+        if (retry < o.retry) {
             return -1;
         }
-        if (o1.retry > o2.retry) {
+        if (retry > o.retry) {
             return +1;
         }
-        if (o1.expire < o2.expire) {
+        if (expire < o.expire) {
             return -1;
         }
-        if (o1.expire > o2.expire) {
+        if (expire > o.expire) {
             return +1;
         }
-        if (o1.minttl < o2.minttl) {
+        if (minttl < o.minttl) {
             return -1;
         }
-        if (o1.minttl > o2.minttl) {
+        if (minttl > o.minttl) {
             return +1;
         }
-        int i = addr.compare(o1.addr, o2.addr);
+        int i = addr.compareTo(o.addr);
         if (i != 0) {
             return i;
         }
-        i = o1.target.compareTo(o2.target);
+        i = target.compareTo(o.target);
         if (i != 0) {
             return i;
         }
-        i = o1.email.compareTo(o2.email);
+        i = email.compareTo(o.email);
         if (i != 0) {
             return i;
         }
-        if (o1.iface == null) {
-            if (o2.iface == null) {
+        if (iface == null) {
+            if (o.iface == null) {
                 return 0;
             }
             return +1;
         } else {
-            if (o2.iface == null) {
+            if (o.iface == null) {
                 return -1;
             }
-            return o1.iface.compare(o1.iface, o2.iface);
+            return iface.compareTo(o.iface);
         }
     }
 

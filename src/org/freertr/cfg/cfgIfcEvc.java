@@ -1,6 +1,5 @@
 package org.freertr.cfg;
 
-import java.util.Comparator;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcEther;
 import org.freertr.ifc.ifcUp;
@@ -12,7 +11,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgIfcEvc implements Comparator<cfgIfcEvc> {
+public class cfgIfcEvc implements Comparable<cfgIfcEvc> {
 
     /**
      * number of this evc
@@ -47,11 +46,11 @@ public class cfgIfcEvc implements Comparator<cfgIfcEvc> {
         return parent.name + ".evc" + num;
     }
 
-    public int compare(cfgIfcEvc o1, cfgIfcEvc o2) {
-        if (o1.num < o2.num) {
+    public int compareTo(cfgIfcEvc o) {
+        if (num < o.num) {
             return -1;
         }
-        if (o1.num > o2.num) {
+        if (num > o.num) {
             return +1;
         }
         return 0;

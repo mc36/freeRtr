@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
@@ -14,7 +13,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrBgpFlapStat implements Comparator<rtrBgpFlapStat> {
+public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
 
     /**
      * create instance
@@ -64,20 +63,20 @@ public class rtrBgpFlapStat implements Comparator<rtrBgpFlapStat> {
      */
     public tabGen<rtrBgpFlapStr> infos = new tabGen<rtrBgpFlapStr>();
 
-    public int compare(rtrBgpFlapStat o1, rtrBgpFlapStat o2) {
-        if (o1.afi < o2.afi) {
+    public int compareTo(rtrBgpFlapStat o) {
+        if (afi < o.afi) {
             return -1;
         }
-        if (o1.afi > o2.afi) {
+        if (afi > o.afi) {
             return +1;
         }
-        if (o1.rd < o2.rd) {
+        if (rd < o.rd) {
             return -1;
         }
-        if (o1.rd > o2.rd) {
+        if (rd > o.rd) {
             return +1;
         }
-        return o1.prefix.compare(o1.prefix, o2.prefix);
+        return prefix.compareTo(o.prefix);
     }
 
     /**

@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.line.lineRunner;
 import org.freertr.line.lineThread;
@@ -16,7 +15,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
+public class cfgLin implements Comparable<cfgLin>, cfgGeneric {
 
     /**
      * name of this line
@@ -55,8 +54,8 @@ public class cfgLin implements Comparator<cfgLin>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgLin o1, cfgLin o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgLin o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

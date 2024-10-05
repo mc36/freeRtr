@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -20,7 +19,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
+public class servPckOudpConn implements ifcDn, Comparable<servPckOudpConn> {
 
     private servPckOudp lower;
 
@@ -114,8 +113,8 @@ public class servPckOudpConn implements ifcDn, Comparator<servPckOudpConn> {
         lower = parent;
     }
 
-    public int compare(servPckOudpConn o1, servPckOudpConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servPckOudpConn o) {
+        return conn.compareTo(o.conn);
     }
 
     public addrType getHwAddr() {

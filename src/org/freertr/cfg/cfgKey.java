@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.cry.cryKeyGeneric;
@@ -16,7 +15,7 @@ import org.freertr.util.cmds;
  * @param <T> type of key
  * @author matecsaba
  */
-public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, cfgGeneric {
+public class cfgKey<T extends cryKeyGeneric> implements Comparable<cfgKey<T>>, cfgGeneric {
 
     /**
      * create instance
@@ -56,8 +55,8 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparator<cfgKey<T>>, c
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgKey<T> o1, cfgKey<T> o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgKey<T> o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public void getHelp(userHelping l) {

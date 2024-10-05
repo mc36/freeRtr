@@ -1,6 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Comparator;
 import org.freertr.addr.addrMac;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -10,7 +9,7 @@ import org.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
+public class ifcBridgeAdr implements Comparable<ifcBridgeAdr> {
 
     /**
      * address
@@ -65,15 +64,8 @@ public class ifcBridgeAdr implements Comparator<ifcBridgeAdr> {
         return n;
     }
 
-    /**
-     * compare
-     *
-     * @param o1 one
-     * @param o2 other
-     * @return result
-     */
-    public int compare(ifcBridgeAdr o1, ifcBridgeAdr o2) {
-        return o1.adr.compare(o1.adr, o2.adr);
+    public int compareTo(ifcBridgeAdr o) {
+        return adr.compareTo(o.adr);
     }
 
     public String toString() {

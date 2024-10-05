@@ -1,7 +1,6 @@
 package org.freertr.ip;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -28,7 +27,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class ipFwdRoute implements Comparator<ipFwdRoute> {
+public class ipFwdRoute implements Comparable<ipFwdRoute> {
 
     /**
      * create instance
@@ -111,20 +110,20 @@ public class ipFwdRoute implements Comparator<ipFwdRoute> {
      */
     protected ipFwd fwdCor;
 
-    public int compare(ipFwdRoute o1, ipFwdRoute o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(ipFwdRoute o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
-        if (o1.dist < o2.dist) {
+        if (dist < o.dist) {
             return -1;
         }
-        if (o1.dist > o2.dist) {
+        if (dist > o.dist) {
             return +1;
         }
-        return o1.pref.compare(o1.pref, o2.pref);
+        return pref.compareTo(o.pref);
     }
 
     private addrIP getAddr(int ver, String s) {

@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.util.cmds;
 
@@ -9,7 +8,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class rtrBgpTemp extends rtrBgpParam implements Comparator<rtrBgpTemp> {
+public class rtrBgpTemp extends rtrBgpParam implements Comparable<rtrBgpTemp> {
 
     /**
      * name of template
@@ -31,8 +30,8 @@ public class rtrBgpTemp extends rtrBgpParam implements Comparator<rtrBgpTemp> {
         return "" + tempName;
     }
 
-    public int compare(rtrBgpTemp o1, rtrBgpTemp o2) {
-        return o1.tempName.compareTo(o2.tempName);
+    public int compareTo(rtrBgpTemp o) {
+        return tempName.compareTo(o.tempName);
     }
 
     /**

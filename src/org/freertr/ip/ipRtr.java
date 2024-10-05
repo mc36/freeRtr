@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -20,7 +19,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public abstract class ipRtr implements Comparator<ipRtr> {
+public abstract class ipRtr implements Comparable<ipRtr> {
 
     /**
      * create instance
@@ -163,11 +162,11 @@ public abstract class ipRtr implements Comparator<ipRtr> {
      */
     public tabListing<tabPrfxlstN, addrIP> routerAutoSumPfx;
 
-    public int compare(ipRtr o1, ipRtr o2) {
-        if (o1.routerProtoNum < o2.routerProtoNum) {
+    public int compareTo(ipRtr o) {
+        if (routerProtoNum < o.routerProtoNum) {
             return -1;
         }
-        if (o1.routerProtoNum > o2.routerProtoNum) {
+        if (routerProtoNum > o.routerProtoNum) {
             return +1;
         }
         return 0;

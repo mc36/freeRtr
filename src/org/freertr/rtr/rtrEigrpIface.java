@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,7 +36,7 @@ import org.freertr.sec.secInfoUtl;
  *
  * @author matecsaba
  */
-public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
+public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
 
     /**
      * ipinfo config
@@ -209,7 +208,7 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
     protected rtrEigrpNeigh findNeigh(addrIP adr) {
         for (int i = 0; i < neighs.size(); i++) {
             rtrEigrpNeigh nei = neighs.get(i);
-            if (adr.compare(adr, nei.peer) == 0) {
+            if (adr.compareTo(nei.peer) == 0) {
                 return nei;
             }
         }
@@ -525,11 +524,11 @@ public class rtrEigrpIface implements Comparator<rtrEigrpIface>, ipPrt {
         return "eigrp on " + iface;
     }
 
-    public int compare(rtrEigrpIface o1, rtrEigrpIface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrEigrpIface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;

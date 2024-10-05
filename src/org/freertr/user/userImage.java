@@ -2,7 +2,6 @@ package org.freertr.user;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashSha2256;
@@ -685,7 +684,7 @@ public class userImage {
 
 }
 
-class userImageCat implements Comparator<userImageCat> {
+class userImageCat implements Comparable<userImageCat> {
 
     public final String name;
 
@@ -697,8 +696,8 @@ class userImageCat implements Comparator<userImageCat> {
         name = n.trim();
     }
 
-    public int compare(userImageCat o1, userImageCat o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(userImageCat o) {
+        return name.compareTo(o.name);
     }
 
     public String toString() {
@@ -707,7 +706,7 @@ class userImageCat implements Comparator<userImageCat> {
 
 }
 
-class userImagePrv implements Comparator<userImagePrv> {
+class userImagePrv implements Comparable<userImagePrv> {
 
     public final String name;
 
@@ -717,13 +716,13 @@ class userImagePrv implements Comparator<userImagePrv> {
         name = n.trim();
     }
 
-    public int compare(userImagePrv o1, userImagePrv o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(userImagePrv o) {
+        return name.compareTo(o.name);
     }
 
 }
 
-class userImagePkg implements Comparator<userImagePkg> {
+class userImagePkg implements Comparable<userImagePkg> {
 
     public final String name;
 
@@ -749,8 +748,8 @@ class userImagePkg implements Comparator<userImagePkg> {
         name = n.trim();
     }
 
-    public int compare(userImagePkg o1, userImagePkg o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(userImagePkg o) {
+        return name.compareTo(o.name);
     }
 
     public String toString() {

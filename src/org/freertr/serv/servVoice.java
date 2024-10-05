@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.pack.packRtp;
@@ -343,7 +342,7 @@ class servVoiceScr implements Runnable {
 
 }
 
-class servVoiceConn implements Runnable, Comparator<servVoiceConn> {
+class servVoiceConn implements Runnable, Comparable<servVoiceConn> {
 
     public final String callId;
 
@@ -374,8 +373,8 @@ class servVoiceConn implements Runnable, Comparator<servVoiceConn> {
         new Thread(this).start();
     }
 
-    public int compare(servVoiceConn o1, servVoiceConn o2) {
-        return o1.callId.compareTo(o2.callId);
+    public int compareTo(servVoiceConn o) {
+        return callId.compareTo(o.callId);
     }
 
     public void run() {

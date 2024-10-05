@@ -1,14 +1,12 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
-
 /**
  * one sorted, synchronized list
  *
  * @param <T> type of elements in the list
  * @author matecsaba
  */
-public final class tabGen<T extends Comparator<? super T>> extends tabGenV2<T> {
+public final class tabGen<T extends Comparable<? super T>> extends tabGenV2<T> {
 
     /**
      * create one generic table

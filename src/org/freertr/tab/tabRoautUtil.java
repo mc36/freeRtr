@@ -69,7 +69,7 @@ public class tabRoautUtil {
             if (d2 == null) {
                 return false;
             }
-            int o = d1.compare(d1, d2);
+            int o = d1.compareTo(d2);
             if (o != 0) {
                 return false;
             }

@@ -2,7 +2,6 @@ package org.freertr.tab;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import org.freertr.util.bits;
@@ -12,7 +11,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class tabTime implements Comparator<tabTime> {
+public class tabTime implements Comparable<tabTime> {
 
     /**
      * sequence number
@@ -184,11 +183,11 @@ public class tabTime implements Comparator<tabTime> {
         return (tim > perB) && (tim < perE);
     }
 
-    public int compare(tabTime o1, tabTime o2) {
-        if (o1.seq < o2.seq) {
+    public int compareTo(tabTime o) {
+        if (seq < o.seq) {
             return -1;
         }
-        if (o1.seq > o2.seq) {
+        if (seq > o.seq) {
             return +1;
         }
         return 0;

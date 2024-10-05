@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgIfc;
@@ -18,7 +17,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
+public class servOpenflowIfc1 implements ifcDn, Comparable<servOpenflowIfc1> {
 
     /**
      * create instance
@@ -66,20 +65,20 @@ public class servOpenflowIfc1 implements ifcDn, Comparator<servOpenflowIfc1> {
      */
     protected state.states lastState = state.states.up;
 
-    public int compare(servOpenflowIfc1 o1, servOpenflowIfc1 o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(servOpenflowIfc1 o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
-        if (o1.id != servOpenflow.tabGrp) {
+        if (id != servOpenflow.tabGrp) {
             return 0;
         }
-        if (o1.grp < o2.grp) {
+        if (grp < o.grp) {
             return -1;
         }
-        if (o1.grp > o2.grp) {
+        if (grp > o.grp) {
             return +1;
         }
         return 0;

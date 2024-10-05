@@ -40,7 +40,7 @@ public class prtAccept implements prtServS {
      */
     public synchronized boolean streamAccept(pipeSide pipe, prtGenConn id) {
         if (ra != null) {
-            if (ra.compare(ra, id.peerAddr) != 0) {
+            if (ra.compareTo(id.peerAddr) != 0) {
                 return true;
             }
         }

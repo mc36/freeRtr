@@ -103,10 +103,10 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     public boolean checkMyAddress(addrIP adr) {
-        if (lladdr.compare(lladdr, adr) == 0) {
+        if (lladdr.compareTo(adr) == 0) {
             return true;
         }
-        return (ipaddr.compare(ipaddr, adr) == 0);
+        return ipaddr.compareTo(adr) == 0;
     }
 
     public addrType checkMyAlias(addrIP adr) {

@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -21,7 +20,7 @@ import org.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
+public class ipFwdMpmp implements Comparable<ipFwdMpmp> {
 
     /**
      * multipoint to multipoint
@@ -130,7 +129,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         if (selfRoot != o.selfRoot) {
             return true;
         }
-        if (root.compare(root, o.root) != 0) {
+        if (root.compareTo(o.root) != 0) {
             return true;
         }
         if (opaque.length != o.opaque.length) {
@@ -147,7 +146,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             if (o.uplnk == null) {
                 return true;
             }
-            if (uplnk.compare(uplnk, o.uplnk) != 0) {
+            if (uplnk.compareTo(o.uplnk) != 0) {
                 return true;
             }
         }
@@ -387,25 +386,25 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
         return (mp2mp ? "mp2mp" : "p2mp") + "|" + selfRoot + " " + local + "|" + root + b + "|" + bits.byteDump(opaque, 0, -1) + "|" + uplnk + a;
     }
 
-    public int compare(ipFwdMpmp o1, ipFwdMpmp o2) {
-        if (o1.mp2mp != o2.mp2mp) {
-            if (o1.mp2mp) {
+    public int compareTo(ipFwdMpmp o) {
+        if (mp2mp != o.mp2mp) {
+            if (mp2mp) {
                 return -1;
             } else {
                 return +1;
             }
         }
-        int i = o1.root.compare(o1.root, o2.root);
+        int i = root.compareTo(o.root);
         if (i != 0) {
             return i;
         }
-        if (o1.opaque.length < o2.opaque.length) {
+        if (opaque.length < o.opaque.length) {
             return -1;
         }
-        if (o1.opaque.length > o2.opaque.length) {
+        if (opaque.length > o.opaque.length) {
             return +1;
         }
-        return bits.byteComp(o1.opaque, 0, o2.opaque, 0, o1.opaque.length);
+        return bits.byteComp(opaque, 0, o.opaque, 0, opaque.length);
     }
 
     /**
@@ -459,7 +458,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             return true;
         }
         if (uplnk != null) {
-            if (adr.compare(adr, uplnk) == 0) {
+            if (adr.compareTo(uplnk) == 0) {
                 uplnk = null;
             }
         }
@@ -575,7 +574,7 @@ public class ipFwdMpmp implements Comparator<ipFwdMpmp> {
             return;
         }
         if (uplnk != null) {
-            if (uplnk.compare(uplnk, adr) == 0) {
+            if (uplnk.compareTo(adr) == 0) {
                 return;
             }
             doDel(fwd, uplnk);

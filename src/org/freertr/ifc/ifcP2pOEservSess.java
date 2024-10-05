@@ -1,6 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Comparator;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgIfc;
@@ -14,7 +13,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class ifcP2pOEservSess implements ifcDn, Comparator<ifcP2pOEservSess> {
+public class ifcP2pOEservSess implements ifcDn, Comparable<ifcP2pOEservSess> {
 
     private ifcP2pOEserv lower;
 
@@ -37,8 +36,8 @@ public class ifcP2pOEservSess implements ifcDn, Comparator<ifcP2pOEservSess> {
      */
     protected int sessid;
 
-    public int compare(ifcP2pOEservSess o1, ifcP2pOEservSess o2) {
-        return mac.compare(o1.mac, o2.mac);
+    public int compareTo(ifcP2pOEservSess o) {
+        return mac.compareTo(o.mac);
     }
 
     /**

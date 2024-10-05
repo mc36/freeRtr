@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgRtr;
@@ -17,7 +16,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
+public class servBmp2mrtStat implements Comparable<servBmp2mrtStat> {
 
     /**
      * connecting peer
@@ -180,12 +179,12 @@ public class servBmp2mrtStat implements Comparator<servBmp2mrtStat> {
     public servBmp2mrtStat() {
     }
 
-    public int compare(servBmp2mrtStat o1, servBmp2mrtStat o2) {
-        int i = o1.from.compare(o1.from, o2.from);
+    public int compareTo(servBmp2mrtStat o) {
+        int i = from.compareTo(o.from);
         if (i != 0) {
             return i;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     public String toString() {

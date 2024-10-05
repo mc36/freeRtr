@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipCor4;
@@ -40,7 +39,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
+public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
 
     /**
      * name of this vrf
@@ -357,8 +356,8 @@ public class cfgVrf implements Comparator<cfgVrf>, cfgGeneric {
         return ifc;
     }
 
-    public int compare(cfgVrf o1, cfgVrf o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgVrf o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

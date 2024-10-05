@@ -1,6 +1,5 @@
 package org.freertr.clnt;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
@@ -17,7 +16,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class clntMplsTrg implements Runnable, Comparator<clntMplsTrg> {
+public class clntMplsTrg implements Runnable, Comparable<clntMplsTrg> {
 
     /**
      * create instance
@@ -61,8 +60,8 @@ public class clntMplsTrg implements Runnable, Comparator<clntMplsTrg> {
         working = false;
     }
 
-    public int compare(clntMplsTrg o1, clntMplsTrg o2) {
-        return o1.target.compare(o1.target, o2.target);
+    public int compareTo(clntMplsTrg o) {
+        return target.compareTo(o.target);
     }
 
     public void run() {

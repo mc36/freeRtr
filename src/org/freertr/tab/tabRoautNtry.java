@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
@@ -14,7 +13,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class tabRoautNtry implements Comparator<tabRoautNtry> {
+public class tabRoautNtry implements Comparable<tabRoautNtry> {
 
     /**
      * create instance
@@ -67,8 +66,8 @@ public class tabRoautNtry implements Comparator<tabRoautNtry> {
      */
     public int hits;
 
-    public int compare(tabRoautNtry o1, tabRoautNtry o2) {
-        return o1.prefix.compare(o1.prefix, o2.prefix);
+    public int compareTo(tabRoautNtry o) {
+        return prefix.compareTo(o.prefix);
     }
 
     public String toString() {
@@ -129,7 +128,7 @@ public class tabRoautNtry implements Comparator<tabRoautNtry> {
         if (asn != o.asn) {
             return 1;
         }
-        if (o.compare(o, this) != 0) {
+        if (o.compareTo(this) != 0) {
             return 2;
         }
         return 0;

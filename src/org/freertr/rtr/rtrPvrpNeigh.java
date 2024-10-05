@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -41,7 +40,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNeigh> {
+public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNeigh> {
 
     /**
      * ipinfo result
@@ -207,8 +206,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         gotMeasure = true;
     }
 
-    public int compare(rtrPvrpNeigh o1, rtrPvrpNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrPvrpNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     public String toString() {
@@ -397,7 +396,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
         adverted.clear();
         learned.clear();
         bits.sleep(bits.random(1000, 5000));
-        if (peer.compare(peer, iface.iface.addr) > 0) {
+        if (peer.compareTo(iface.iface.addr) > 0) {
             if (debugger.rtrPvrpEvnt) {
                 logger.debug("accepting " + peer);
             }
@@ -443,7 +442,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrPvrpNei
                 sendErr("startEncryptRequired");
                 return;
             }
-            if (peer.compare(peer, iface.iface.addr) > 0) {
+            if (peer.compareTo(iface.iface.addr) > 0) {
                 if (debugger.rtrPvrpEvnt) {
                     logger.debug("secure client " + peer);
                 }

@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.pack.packHolder;
@@ -12,7 +11,7 @@ import org.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class tabSessionEntry implements Comparator<tabSessionEntry> {
+public class tabSessionEntry implements Comparable<tabSessionEntry> {
 
     /**
      * source address
@@ -108,30 +107,30 @@ public class tabSessionEntry implements Comparator<tabSessionEntry> {
         logMacs = macs;
     }
 
-    public int compare(tabSessionEntry o1, tabSessionEntry o2) {
-        if (o1.ipPrt < o2.ipPrt) {
+    public int compareTo(tabSessionEntry o) {
+        if (ipPrt < o.ipPrt) {
             return -1;
         }
-        if (o1.ipPrt > o2.ipPrt) {
+        if (ipPrt > o.ipPrt) {
             return +1;
         }
-        if (o1.srcPrt < o2.srcPrt) {
+        if (srcPrt < o.srcPrt) {
             return -1;
         }
-        if (o1.srcPrt > o2.srcPrt) {
+        if (srcPrt > o.srcPrt) {
             return +1;
         }
-        if (o1.trgPrt < o2.trgPrt) {
+        if (trgPrt < o.trgPrt) {
             return -1;
         }
-        if (o1.trgPrt > o2.trgPrt) {
+        if (trgPrt > o.trgPrt) {
             return +1;
         }
-        int i = o1.srcAdr.compare(o1.srcAdr, o2.srcAdr);
+        int i = srcAdr.compareTo(o.srcAdr);
         if (i != 0) {
             return i;
         }
-        return o1.trgAdr.compare(o1.trgAdr, o2.trgAdr);
+        return trgAdr.compareTo(o.trgAdr);
     }
 
     /**

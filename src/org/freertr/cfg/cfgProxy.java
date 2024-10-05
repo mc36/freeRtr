@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntProxy;
@@ -18,7 +17,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
+public class cfgProxy implements Comparable<cfgProxy>, cfgGeneric {
 
     /**
      * name of connection map
@@ -60,8 +59,8 @@ public class cfgProxy implements Comparator<cfgProxy>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgProxy o1, cfgProxy o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(cfgProxy o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

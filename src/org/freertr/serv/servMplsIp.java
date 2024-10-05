@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -263,7 +262,7 @@ public class servMplsIp extends servGeneric implements ipPrt {
 
 }
 
-class servMplsIpConn implements Runnable, Comparator<servMplsIpConn> {
+class servMplsIpConn implements Runnable, Comparable<servMplsIpConn> {
 
     public servMplsIp lower;
 
@@ -293,12 +292,12 @@ class servMplsIpConn implements Runnable, Comparator<servMplsIpConn> {
         return "mplsip with " + peer;
     }
 
-    public int compare(servMplsIpConn o1, servMplsIpConn o2) {
-        int i = o1.iface.compare(o1.iface, o2.iface);
+    public int compareTo(servMplsIpConn o) {
+        int i = iface.compareTo(o.iface);
         if (i != 0) {
             return i;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     public void doStartup() {

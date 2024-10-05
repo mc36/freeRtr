@@ -1,7 +1,6 @@
 package org.freertr.ip;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -21,7 +20,7 @@ import org.freertr.tab.tabRtrplcN;
  *
  * @author matecsaba
  */
-public class ipRtrAgr implements Comparator<ipRtrAgr> {
+public class ipRtrAgr implements Comparable<ipRtrAgr> {
 
     /**
      * prefix to import
@@ -72,8 +71,8 @@ public class ipRtrAgr implements Comparator<ipRtrAgr> {
         prefix = prf.copyBytes();
     }
 
-    public int compare(ipRtrAgr o1, ipRtrAgr o2) {
-        return o1.prefix.compare(o1.prefix, o2.prefix);
+    public int compareTo(ipRtrAgr o) {
+        return prefix.compareTo(o.prefix);
     }
 
     private void addAll(List<Integer> trg, List<Integer> src) {

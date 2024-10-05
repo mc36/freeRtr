@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.clnt.clntEcho;
@@ -25,7 +24,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4neigh> {
+public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf4neigh> {
 
     /**
      * ipinfo result
@@ -257,14 +256,14 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         return "ospf with " + peer;
     }
 
-    public int compare(rtrOspf4neigh o1, rtrOspf4neigh o2) {
-        if (o1.area.area < o2.area.area) {
+    public int compareTo(rtrOspf4neigh o) {
+        if (area.area < o.area.area) {
             return -1;
         }
-        if (o1.area.area > o2.area.area) {
+        if (area.area > o.area.area) {
             return +1;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -289,7 +288,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         if (other.rtrPri < rtrPri) {
             return false;
         }
-        return rtrID.compare(other.rtrID, rtrID) > 0;
+        return other.rtrID.compareTo(rtrID) > 0;
     }
 
     /**
@@ -344,7 +343,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         pck.setDataSize(i);
         addrIPv4 adr = new addrIPv4();
         pck.getAddr(adr, 4); // neighbor router id
-        if (adr.compare(adr, rtrID) != 0) {
+        if (adr.compareTo(rtrID) != 0) {
             rtrID = adr.copyBytes();
             state = stDown;
         }
@@ -422,7 +421,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             }
             pck.getAddr(adr, 0); // neighbor
             pck.getSkip(addrIPv4.size);
-            if (adr.compare(adr, lower.routerID) == 0) {
+            if (adr.compareTo(lower.routerID) == 0) {
                 seenMyself = true;
                 break;
             }
@@ -589,7 +588,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             rtrOspf4lsa old = area.lsas.add(lsa);
             if (old == null) {
                 advert.put(lsa.copyBytes(false));
-                seenOwn |= lower.routerID.compare(lower.routerID, lsa.rtrID) == 0;
+                seenOwn |= lower.routerID.compareTo(lsa.rtrID) == 0;
                 done++;
                 continue;
             }
@@ -603,7 +602,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
             }
             area.lsas.put(lsa);
             advert.put(lsa.copyBytes(false));
-            seenOwn |= lower.routerID.compare(lower.routerID, lsa.rtrID) == 0;
+            seenOwn |= lower.routerID.compareTo(lsa.rtrID) == 0;
             done++;
         }
         if (lst.size() < 1) {
@@ -756,7 +755,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparator<rtrOspf4n
         }
         state = stInit;
         ddSeq = bits.randomW();
-        ddMst = rtrID.compare(lower.routerID, rtrID) > 0;
+        ddMst = lower.routerID.compareTo(rtrID) > 0;
         if (debugger.rtrOspf4evnt) {
             logger.debug("starting exchange with " + peer + ", seq=" + ddSeq + " master=" + ddMst);
         }

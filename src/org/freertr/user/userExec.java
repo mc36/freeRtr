@@ -3691,7 +3691,7 @@ public class userExec {
             if (resolv) {
                 reportN[ttl] = trc.domainNam;
             }
-            if (trg.compare(trg, trc.errRtr) == 0) {
+            if (trg.compareTo(trc.errRtr) == 0) {
                 ttl = 0;
             }
         }
@@ -3835,7 +3835,7 @@ public class userExec {
                 continue;
             }
             none = 0;
-            if (trg.compare(trg, trc.errRtr) == 0) {
+            if (trg.compareTo(trc.errRtr) == 0) {
                 break;
             }
         }

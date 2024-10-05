@@ -1,7 +1,6 @@
 package org.freertr.clnt;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -295,7 +294,7 @@ public class clntMtrack implements Runnable, prtServS {
         timeout = bits.msbGetD(cfg.getBytes(), 8);
         boolean b = grp == null;
         if (!b) {
-            b = cgrp.compare(cgrp, grp) != 0;
+            b = cgrp.compareTo(grp) != 0;
         }
         b |= clnt.size() != pers.size();
         if (!b) {
@@ -588,7 +587,7 @@ class clntMtrackConn implements Runnable {
 
 }
 
-class clntMtrackRprt implements Comparator<clntMtrackRprt> {
+class clntMtrackRprt implements Comparable<clntMtrackRprt> {
 
     public final addrIP adr;
 
@@ -600,13 +599,13 @@ class clntMtrackRprt implements Comparator<clntMtrackRprt> {
         adr = peer.copyBytes();
     }
 
-    public int compare(clntMtrackRprt o1, clntMtrackRprt o2) {
-        return adr.compare(o1.adr, o2.adr);
+    public int compareTo(clntMtrackRprt o) {
+        return adr.compareTo(o.adr);
     }
 
 }
 
-class clntMtrackPeer implements Comparator<clntMtrackPeer> {
+class clntMtrackPeer implements Comparable<clntMtrackPeer> {
 
     public final addrIP adr;
 
@@ -640,8 +639,8 @@ class clntMtrackPeer implements Comparator<clntMtrackPeer> {
         }
     }
 
-    public int compare(clntMtrackPeer o1, clntMtrackPeer o2) {
-        return adr.compare(o1.adr, o2.adr);
+    public int compareTo(clntMtrackPeer o) {
+        return adr.compareTo(o.adr);
     }
 
     public static String getMatrixLine(tabGen<clntMtrackPeer> pers, int ln) {

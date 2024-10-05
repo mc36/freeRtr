@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -31,7 +30,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
+public class rtrOlsrIface implements Comparable<rtrOlsrIface> {
 
     /**
      * hello interval
@@ -228,11 +227,11 @@ public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
         return "olsr on " + iface;
     }
 
-    public int compare(rtrOlsrIface o1, rtrOlsrIface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrOlsrIface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;
@@ -569,7 +568,7 @@ public class rtrOlsrIface implements Comparator<rtrOlsrIface> {
             if (ntry == null) {
                 continue;
             }
-            if (compare(this, ntry.iface) != 0) {
+            if (compareTo(ntry.iface) != 0) {
                 continue;
             }
             if (ipv4) {

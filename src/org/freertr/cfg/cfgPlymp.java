@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.tab.tabGen;
@@ -18,7 +17,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
+public class cfgPlymp implements Comparable<cfgPlymp>, cfgGeneric {
 
     /**
      * name of policymap
@@ -110,8 +109,8 @@ public class cfgPlymp implements Comparator<cfgPlymp>, cfgGeneric {
         return ntry;
     }
 
-    public int compare(cfgPlymp o1, cfgPlymp o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgPlymp o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {

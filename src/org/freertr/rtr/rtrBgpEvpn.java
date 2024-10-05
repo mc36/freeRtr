@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -33,7 +32,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
+public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
 
     /**
      * encapsulation type
@@ -132,11 +131,11 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
         parent = p;
     }
 
-    public int compare(rtrBgpEvpn o1, rtrBgpEvpn o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(rtrBgpEvpn o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;
@@ -145,7 +144,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparator<rtrBgpEvpn> {
     private rtrBgpEvpnPeer findPeer(addrIP adr) {
         for (int i = 0; i < peers.size(); i++) {
             rtrBgpEvpnPeer ntry = peers.get(i);
-            if (adr.compare(adr, ntry.peer) != 0) {
+            if (adr.compareTo(ntry.peer) != 0) {
                 continue;
             }
             return ntry;

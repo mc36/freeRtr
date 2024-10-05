@@ -1,13 +1,11 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
-
 /**
  * one p4lang magic by name
  *
  * @author matecsaba
  */
-public class servP4langMgcN implements Comparator<servP4langMgcN> {
+public class servP4langMgcN implements Comparable<servP4langMgcN> {
 
     /**
      * interface id
@@ -30,8 +28,8 @@ public class servP4langMgcN implements Comparator<servP4langMgcN> {
         nam = n;
     }
 
-    public int compare(servP4langMgcN o1, servP4langMgcN o2) {
-        return o1.nam.compareTo(o2.nam);
+    public int compareTo(servP4langMgcN o) {
+        return nam.compareTo(o.nam);
     }
 
 }

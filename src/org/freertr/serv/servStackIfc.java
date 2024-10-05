@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgIfc;
@@ -21,7 +20,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servStackIfc implements Comparator<servStackIfc>, ifcUp {
+public class servStackIfc implements Comparable<servStackIfc>, ifcUp {
 
     private final static int magic1 = 0x00010000 | ipIfc4.type;
 
@@ -109,8 +108,8 @@ public class servStackIfc implements Comparator<servStackIfc>, ifcUp {
         return "" + pi;
     }
 
-    public int compare(servStackIfc o1, servStackIfc o2) {
-        return o1.pi.compare(o1.pi, o2.pi);
+    public int compareTo(servStackIfc o) {
+        return pi.compareTo(o.pi);
     }
 
     /**

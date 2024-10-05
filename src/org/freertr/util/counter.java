@@ -1,7 +1,6 @@
 package org.freertr.util;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.pack.packHolder;
@@ -11,7 +10,7 @@ import org.freertr.pack.packHolder;
  *
  * @author matecsaba
  */
-public class counter implements Comparator<counter> {
+public class counter implements Comparable<counter> {
 
     /**
      * drop reason
@@ -328,15 +327,15 @@ public class counter implements Comparator<counter> {
         clear();
     }
 
-    public int compare(counter o1, counter o2) {
-        long v1 = o1.byteDr + o1.byteRx + o1.byteTx;
-        long v2 = o2.byteDr + o2.byteRx + o2.byteTx;
+    public int compareTo(counter o) {
+        long v1 = byteDr + byteRx + byteTx;
+        long v2 = o.byteDr + o.byteRx + o.byteTx;
         int i = Long.compare(v1, v2);
         if (i != 0) {
             return i;
         }
-        v1 = o1.packDr + o1.packRx + o1.packTx;
-        v2 = o2.packDr + o2.packRx + o2.packTx;
+        v1 = packDr + packRx + packTx;
+        v2 = o.packDr + o.packRx + o.packTx;
         return Long.compare(v1, v2);
     }
 
@@ -398,34 +397,6 @@ public class counter implements Comparator<counter> {
         lastState = stat;
         stateChg++;
         lastChgd = bits.getTime();
-    }
-
-    /**
-     * compare two
-     *
-     * @param oth other to compare
-     * @return bigger one
-     */
-    public counter bigger(counter oth) {
-        if (packRx < oth.packRx) {
-            return oth;
-        }
-        if (packTx < oth.packTx) {
-            return oth;
-        }
-        if (packDr < oth.packDr) {
-            return oth;
-        }
-        if (byteRx < oth.byteRx) {
-            return oth;
-        }
-        if (byteTx < oth.byteTx) {
-            return oth;
-        }
-        if (byteDr < oth.byteDr) {
-            return oth;
-        }
-        return this;
     }
 
     /**
@@ -848,7 +819,7 @@ public class counter implements Comparator<counter> {
         counter cur = lst.get(i).copyBytes();
         for (; i >= 0; i--) {
             counter ntry = lst.get(i);
-            if (ntry.compare(ntry, cur) < 0) {
+            if (ntry.compareTo(cur) < 0) {
                 cur = ntry.copyBytes();
             }
         }
@@ -869,7 +840,7 @@ public class counter implements Comparator<counter> {
         counter cur = lst.get(i).copyBytes();
         for (; i >= 0; i--) {
             counter ntry = lst.get(i);
-            if (ntry.compare(ntry, cur) > 0) {
+            if (ntry.compareTo(cur) > 0) {
                 cur = ntry.copyBytes();
             }
         }

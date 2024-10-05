@@ -580,7 +580,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
         cntr.rx(pck);
         if (connD != null) {
-            if (id.compare(id, connD) == 0) {
+            if (id.compareTo(connD) == 0) {
                 packGtp gtp = new packGtp();
                 if (gtp.parseHeader(pck)) {
                     return false;
@@ -609,7 +609,7 @@ public class clntGtp implements Runnable, prtServP, ifcDn {
             }
         }
         if (connC != null) {
-            if (id.compare(id, connC) == 0) {
+            if (id.compareTo(connC) == 0) {
                 packGtp gtp = new packGtp();
                 if (gtp.parseHeader(pck)) {
                     return false;

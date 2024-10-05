@@ -1,6 +1,5 @@
 package org.freertr.pack;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -13,7 +12,7 @@ import org.freertr.enc.encTlv;
  *
  * @author matecsaba
  */
-public class packLdpPwe implements Comparator<packLdpPwe> {
+public class packLdpPwe implements Comparable<packLdpPwe> {
 
     /**
      * create instance
@@ -216,11 +215,11 @@ public class packLdpPwe implements Comparator<packLdpPwe> {
         return -1;
     }
 
-    public int compare(packLdpPwe o1, packLdpPwe o2) {
-        if (o1.vcid < o2.vcid) {
+    public int compareTo(packLdpPwe o) {
+        if (vcid < o.vcid) {
             return -1;
         }
-        if (o1.vcid > o2.vcid) {
+        if (vcid > o.vcid) {
             return +1;
         }
         return 0;

@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
@@ -13,7 +12,7 @@ import org.freertr.util.counter;
  * @param <T> class of address
  * @author matecsaba
  */
-public abstract class tabListingEntry<T extends addrType> implements Comparator<tabListingEntry<T>> {
+public abstract class tabListingEntry<T extends addrType> implements Comparable<tabListingEntry<T>> {
 
     /**
      * create instance
@@ -152,11 +151,11 @@ public abstract class tabListingEntry<T extends addrType> implements Comparator<
         return null;
     }
 
-    public int compare(tabListingEntry<T> o1, tabListingEntry<T> o2) {
-        if (o1.sequence < o2.sequence) {
+    public int compareTo(tabListingEntry<T> o) {
+        if (sequence < o.sequence) {
             return -1;
         }
-        if (o1.sequence > o2.sequence) {
+        if (sequence > o.sequence) {
             return +1;
         }
         return 0;

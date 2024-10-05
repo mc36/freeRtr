@@ -1,7 +1,6 @@
 package org.freertr.pack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -11,7 +10,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class packRadiusOption implements Comparator<packRadiusOption> {
+public class packRadiusOption implements Comparable<packRadiusOption> {
 
     /**
      * create instance
@@ -34,17 +33,17 @@ public class packRadiusOption implements Comparator<packRadiusOption> {
      */
     public byte[] buffer;
 
-    public int compare(packRadiusOption o1, packRadiusOption o2) {
-        if (o1.vendId < o2.vendId) {
+    public int compareTo(packRadiusOption o) {
+        if (vendId < o.vendId) {
             return -1;
         }
-        if (o1.vendId > o2.vendId) {
+        if (vendId > o.vendId) {
             return +1;
         }
-        if (o1.vendTyp < o2.vendTyp) {
+        if (vendTyp < o.vendTyp) {
             return -1;
         }
-        if (o1.vendTyp > o2.vendTyp) {
+        if (vendTyp > o.vendTyp) {
             return +1;
         }
         return 0;

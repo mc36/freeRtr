@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -284,7 +283,7 @@ public class ipIfc4arp implements ifcUp {
             logger.debug("rx op=" + opcode2string(gotOP) + " sh=" + gotSH
                     + " sp=" + gotSP + " th=" + gotTH + " tp=" + gotTP);
         }
-        if (ipaddr.compare(gotSP, ipaddr) == 0) {
+        if (gotSP.compareTo(ipaddr) == 0) {
             cntr.drop(pck, counter.reasons.badSrcAddr);
             logger.info("ipv4 address conflict with " + gotSH + " at " + lower);
             return;
@@ -307,7 +306,7 @@ public class ipIfc4arp implements ifcUp {
             sendArpPack(pck, opcodeARPrep, gotSH, gotSP, (addrMac) mac, gotTP);
             return;
         }
-        boolean rep = (gotTP.compare(gotTP, ipaddr) == 0);
+        boolean rep = gotTP.compareTo(ipaddr) == 0;
         if (network.matches(gotTP)) {
             rep |= upper.ifcHdr.answerNetReqs;
         } else {
@@ -381,11 +380,11 @@ public class ipIfc4arp implements ifcUp {
             putHeader(pck, addrMac.getBroadcast(), hwaddr);
             return false;
         }
-        if (adr.compare(adr, network.network) < 0) {
+        if (adr.compareTo(network.network) < 0) {
             putHeader(pck, addrMac.getBroadcast(), hwaddr);
             return false;
         }
-        if (adr.compare(adr, network.broadcast) > 0) {
+        if (adr.compareTo(network.broadcast) > 0) {
             putHeader(pck, addrMac.getBroadcast(), hwaddr);
             return false;
         }
@@ -592,7 +591,7 @@ class ipIfc4arpTimer extends TimerTask {
 
 }
 
-class ipIfc4arpEntry implements Comparator<ipIfc4arpEntry> {
+class ipIfc4arpEntry implements Comparable<ipIfc4arpEntry> {
 
     public addrMac mac;
 
@@ -606,8 +605,8 @@ class ipIfc4arpEntry implements Comparator<ipIfc4arpEntry> {
         return mac + " " + ip + " " + bits.timePast(time);
     }
 
-    public int compare(ipIfc4arpEntry o1, ipIfc4arpEntry o2) {
-        return o1.ip.compare(o1.ip, o2.ip);
+    public int compareTo(ipIfc4arpEntry o) {
+        return ip.compareTo(o.ip);
     }
 
 }

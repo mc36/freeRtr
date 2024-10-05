@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.ifc.ifcUdpInt;
 import org.freertr.pipe.pipeConnect;
@@ -26,7 +25,7 @@ import org.freertr.util.version;
  *
  * @author matecsaba
  */
-public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
+public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
 
     /**
      * number of this bridge
@@ -89,11 +88,11 @@ public class cfgVnet implements Comparator<cfgVnet>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgVnet o1, cfgVnet o2) {
-        if (o1.number < o2.number) {
+    public int compareTo(cfgVnet o) {
+        if (number < o.number) {
             return -1;
         }
-        if (o1.number > o2.number) {
+        if (number > o.number) {
             return +1;
         }
         return 0;

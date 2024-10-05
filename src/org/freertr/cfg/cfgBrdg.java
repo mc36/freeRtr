@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.ifc.ifcBridge;
 import org.freertr.tab.tabGen;
@@ -15,7 +14,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
+public class cfgBrdg implements Comparable<cfgBrdg>, cfgGeneric {
 
     /**
      * number of this bridge
@@ -55,11 +54,11 @@ public class cfgBrdg implements Comparator<cfgBrdg>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgBrdg o1, cfgBrdg o2) {
-        if (o1.number < o2.number) {
+    public int compareTo(cfgBrdg o) {
+        if (number < o.number) {
             return -1;
         }
-        if (o1.number > o2.number) {
+        if (number > o.number) {
             return +1;
         }
         return 0;

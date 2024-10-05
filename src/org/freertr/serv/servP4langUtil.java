@@ -194,7 +194,7 @@ public class servP4langUtil {
         if (old == null) {
             old = new counter();
         }
-        if (old.compare(old, ntry.hwCntr) >= 0) {
+        if (old.compareTo(ntry.hwCntr) >= 0) {
             ntry.hwCntr = old;
             return;
         }
@@ -244,7 +244,7 @@ public class servP4langUtil {
         if (old == null) {
             old = new counter();
         }
-        if (old.compare(old, ntry.hwCntr) >= 0) {
+        if (old.compareTo(ntry.hwCntr) >= 0) {
             ntry.hwCntr = old;
             return;
         }
@@ -336,7 +336,7 @@ public class servP4langUtil {
         if (old == null) {
             old = new counter();
         }
-        if (old.compare(old, ntry.hwCntr) >= 0) {
+        if (old.compareTo(ntry.hwCntr) >= 0) {
             ntry.hwCntr = old;
             return;
         }
@@ -367,7 +367,7 @@ public class servP4langUtil {
         if (old == null) {
             old = new counter();
         }
-        if (old.compare(old, ntry.hwCntr) >= 0) {
+        if (old.compareTo(ntry.hwCntr) >= 0) {
             ntry.hwCntr = old;
             return;
         }

@@ -2,7 +2,6 @@ package org.freertr.ifc;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
@@ -886,7 +885,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             }
         }
         if (macCheck != null) {
-            boolean ok = promiscous || pck.ETHtrg.isBroadcast() || pck.ETHtrg.isMulticast() || (macCheck.compare(macCheck, pck.ETHtrg) == 0);
+            boolean ok = promiscous || pck.ETHtrg.isBroadcast() || pck.ETHtrg.isMulticast() || (macCheck.compareTo(pck.ETHtrg) == 0);
             if (!ok) {
                 cntr.drop(pck, counter.reasons.badAddr);
                 return;
@@ -1512,7 +1511,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
 
 }
 
-class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
+class ifcEthTypET implements ifcDn, Comparable<ifcEthTypET> {
 
     public int ethTyp;
 
@@ -1539,11 +1538,11 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
         upper = nul;
     }
 
-    public int compare(ifcEthTypET v1, ifcEthTypET v2) {
-        if (v1.ethTyp < v2.ethTyp) {
+    public int compareTo(ifcEthTypET o) {
+        if (ethTyp < o.ethTyp) {
             return -1;
         }
-        if (v1.ethTyp > v2.ethTyp) {
+        if (ethTyp > o.ethTyp) {
             return +1;
         }
         return 0;
@@ -1610,7 +1609,7 @@ class ifcEthTypET implements ifcDn, Comparator<ifcEthTypET> {
 
 }
 
-class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
+class ifcEthTypLLC implements ifcDn, Comparable<ifcEthTypLLC> {
 
     public int llcTyp;
 
@@ -1629,11 +1628,11 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
         upper = server;
     }
 
-    public int compare(ifcEthTypLLC v1, ifcEthTypLLC v2) {
-        if (v1.llcTyp < v2.llcTyp) {
+    public int compareTo(ifcEthTypLLC o) {
+        if (llcTyp < o.llcTyp) {
             return -1;
         }
-        if (v1.llcTyp > v2.llcTyp) {
+        if (llcTyp > o.llcTyp) {
             return +1;
         }
         return 0;
@@ -1718,7 +1717,7 @@ class ifcEthTypLLC implements ifcDn, Comparator<ifcEthTypLLC> {
 
 }
 
-class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
+class ifcEthTypSNAP implements ifcDn, Comparable<ifcEthTypSNAP> {
 
     public int snapTyp;
 
@@ -1737,11 +1736,11 @@ class ifcEthTypSNAP implements ifcDn, Comparator<ifcEthTypSNAP> {
         upper = server;
     }
 
-    public int compare(ifcEthTypSNAP v1, ifcEthTypSNAP v2) {
-        if (v1.snapTyp < v2.snapTyp) {
+    public int compareTo(ifcEthTypSNAP o) {
+        if (snapTyp < o.snapTyp) {
             return -1;
         }
-        if (v1.snapTyp > v2.snapTyp) {
+        if (snapTyp > o.snapTyp) {
             return +1;
         }
         return 0;

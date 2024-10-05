@@ -336,7 +336,7 @@ public class rtrLdpIface implements prtServP {
         if (conn == null) {
             return;
         }
-        if (id.compare(id, conn) != 0) {
+        if (id.compareTo(conn) != 0) {
             return;
         }
         if (debugger.rtrLdpEvnt) {

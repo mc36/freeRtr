@@ -321,7 +321,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         servStackFwd cur = null;
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd ntry = fwds.get(i);
-            if (ntry.remote.compare(ntry.remote, id.peerAddr) != 0) {
+            if (ntry.remote.compareTo(id.peerAddr) != 0) {
                 continue;
             }
             cur = ntry;
@@ -494,7 +494,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             if (oru == null) {
                 continue;
             }
-            if (sou.compare(sou, oru.best.nextHop) == 0) {
+            if (sou.compareTo(oru.best.nextHop) == 0) {
                 continue;
             }
             tabLabelBierN curr = new tabLabelBierN(oru.best.iface, oru.best.nextHop, 0);
@@ -542,7 +542,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             if (oru == null) {
                 continue;
             }
-            if (sou.compare(sou, oru.best.nextHop) == 0) {
+            if (sou.compareTo(oru.best.nextHop) == 0) {
                 continue;
             }
             res.add(oru.best.nextHop);

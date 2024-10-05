@@ -496,7 +496,7 @@ public class servP4langConn implements Runnable {
                 if (old == null) {
                     continue;
                 }
-                if (old.compare(old, ntry.hwCntr) >= 0) {
+                if (old.compareTo(ntry.hwCntr) >= 0) {
                     ntry.hwCntr = old;
                     continue;
                 }
@@ -1092,7 +1092,7 @@ public class servP4langConn implements Runnable {
             act = "add";
         } else {
             act = "mod";
-            if ((ntry.mac.compare(ntry.mac, old.mac) == 0) && (old.sentIfc == outIfc)) {
+            if ((ntry.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
                 return;
             }
         }
@@ -2718,7 +2718,7 @@ public class servP4langConn implements Runnable {
             act = "add";
         } else {
             act = "mod";
-            if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == ses)) {
+            if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == ses)) {
                 return;
             }
         }
@@ -2781,7 +2781,7 @@ public class servP4langConn implements Runnable {
             act = "add";
         } else {
             act = "mod";
-            if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == tun)) {
+            if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == tun)) {
                 return;
             }
         }
@@ -2899,7 +2899,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == tun)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == tun)) {
                         return;
                     }
                 }
@@ -2952,7 +2952,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc)) {
                         return;
                     }
                 }
@@ -2999,7 +2999,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop)) {
                         return;
                     }
                 }
@@ -3046,7 +3046,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop)) {
                         return;
                     }
                 }
@@ -3107,7 +3107,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
                         return;
                     }
                 }
@@ -3158,7 +3158,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == ses)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == ses)) {
                         return;
                     }
                 }
@@ -3213,7 +3213,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
                         return;
                     }
                 }
@@ -3268,7 +3268,7 @@ public class servP4langConn implements Runnable {
                     act = "add";
                 } else {
                     act = "mod";
-                    if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
+                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.viaH == hop) && (nei.sentIfc == hop.sentIfc) && (nei.sentTun == rp)) {
                         return;
                     }
                 }
@@ -3435,7 +3435,7 @@ public class servP4langConn implements Runnable {
                 act = "add";
             } else {
                 act = "mod";
-                if ((hop.mac.compare(hop.mac, nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop) && (par.equals(nei.sentIpsec))) {
+                if ((hop.mac.compareTo(nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop) && (par.equals(nei.sentIpsec))) {
                     return;
                 }
             }
@@ -3538,7 +3538,7 @@ public class servP4langConn implements Runnable {
                 act = "add";
             } else {
                 act = "mod";
-                if ((ntry.mac.compare(ntry.mac, old.mac) == 0) && (old.sentIfc == outIfc)) {
+                if ((ntry.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
                     continue;
                 }
             }

@@ -397,7 +397,7 @@ public class rtrIsisLevel implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (lower.routerID.compare(ntry.srcID, lower.routerID) != 0) {
+            if (ntry.srcID.compareTo(lower.routerID) != 0) {
                 continue;
             }
             if (need2adv.find(ntry) != null) {
@@ -465,7 +465,7 @@ public class rtrIsisLevel implements Runnable {
                 lsps.del(ntry);
                 continue;
             }
-            if (lower.routerID.compare(ntry.srcID, lower.routerID) != 0) {
+            if (ntry.srcID.compareTo(lower.routerID) != 0) {
                 continue;
             }
             if (o > (lspRefresh / 1000)) {

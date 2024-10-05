@@ -2,7 +2,6 @@ package org.freertr.serv;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -14,7 +13,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servScsi implements Comparator<servScsi> {
+public class servScsi implements Comparable<servScsi> {
 
     /**
      * name of this file
@@ -39,8 +38,8 @@ public class servScsi implements Comparator<servScsi> {
         blkSiz = 512;
     }
 
-    public int compare(servScsi o1, servScsi o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(servScsi o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

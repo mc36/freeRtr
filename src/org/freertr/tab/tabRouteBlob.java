@@ -1,7 +1,6 @@
 package org.freertr.tab;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.util.bits;
@@ -12,7 +11,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class tabRouteBlob implements Comparator<tabRouteBlob> {
+public class tabRouteBlob implements Comparable<tabRouteBlob> {
 
     /**
      * create instance
@@ -85,26 +84,26 @@ public class tabRouteBlob implements Comparator<tabRouteBlob> {
         return d;
     }
 
-    public int compare(tabRouteBlob o1, tabRouteBlob o2) {
-        if (o1.type < o2.type) {
+    public int compareTo(tabRouteBlob o) {
+        if (type < o.type) {
             return -1;
         }
-        if (o1.type > o2.type) {
+        if (type > o.type) {
             return +1;
         }
-        if (o1.flag < o2.flag) {
+        if (flag < o.flag) {
             return -1;
         }
-        if (o1.flag > o2.flag) {
+        if (flag > o.flag) {
             return +1;
         }
-        if (o1.data.length < o2.data.length) {
+        if (data.length < o.data.length) {
             return -1;
         }
-        if (o1.data.length > o2.data.length) {
+        if (data.length > o.data.length) {
             return +1;
         }
-        return bits.byteComp(o1.data, 0, o2.data, 0, o1.data.length);
+        return bits.byteComp(data, 0, o.data, 0, data.length);
     }
 
 }

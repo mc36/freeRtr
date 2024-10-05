@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.ip.ipFwdMcast;
@@ -23,7 +22,7 @@ import org.freertr.tab.tabRtrplcN;
  *
  * @author matecsaba
  */
-public class servP4langVrf implements Comparator<servP4langVrf> {
+public class servP4langVrf implements Comparable<servP4langVrf> {
 
     /**
      * vrf id
@@ -269,11 +268,11 @@ public class servP4langVrf implements Comparator<servP4langVrf> {
         id = i;
     }
 
-    public int compare(servP4langVrf o1, servP4langVrf o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(servP4langVrf o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;

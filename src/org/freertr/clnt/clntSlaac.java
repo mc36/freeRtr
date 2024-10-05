@@ -138,7 +138,7 @@ public class clntSlaac implements Runnable, ipPrt {
             if (cfger.addr6 == null) {
                 return false;
             }
-            if (locAddr.compare(locAddr, cfger.addr6) == 0) {
+            if (locAddr.compareTo(cfger.addr6) == 0) {
                 return false;
             }
             clearState();

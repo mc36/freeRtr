@@ -1,6 +1,5 @@
 package org.freertr.pipe;
 
-import java.util.Comparator;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.user.userFormat;
@@ -11,7 +10,7 @@ import org.freertr.user.userScreen;
  *
  * @author matecsaba
  */
-public class pipeSetting implements Comparator<pipeSetting> {
+public class pipeSetting implements Comparable<pipeSetting> {
 
     /**
      * origin address
@@ -112,11 +111,11 @@ public class pipeSetting implements Comparator<pipeSetting> {
         name = nam;
     }
 
-    public int compare(pipeSetting o1, pipeSetting o2) {
-        if (o1.name < o2.name) {
+    public int compareTo(pipeSetting o) {
+        if (name < o.name) {
             return -1;
         }
-        if (o1.name > o2.name) {
+        if (name > o.name) {
             return +1;
         }
         return 0;

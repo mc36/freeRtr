@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.tab.tabGen;
@@ -14,7 +13,7 @@ import org.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class ipFwdMcast implements Comparator<ipFwdMcast> {
+public class ipFwdMcast implements Comparable<ipFwdMcast> {
 
     /**
      * group address
@@ -91,12 +90,12 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
      */
     public counter hwCntr;
 
-    public int compare(ipFwdMcast o1, ipFwdMcast o2) {
-        int i = o1.group.compare(o1.group, o2.group);
+    public int compareTo(ipFwdMcast o) {
+        int i = group.compareTo(o.group);
         if (i != 0) {
             return i;
         }
-        return o1.source.compare(o1.source, o2.source);
+        return source.compareTo(o.source);
     }
 
     public String toString() {
@@ -165,10 +164,10 @@ public class ipFwdMcast implements Comparator<ipFwdMcast> {
         if (iface != o.iface) {
             return true;
         }
-        if (group.compare(group, o.group) != 0) {
+        if (group.compareTo(o.group) != 0) {
             return true;
         }
-        if (source.compare(source, o.source) != 0) {
+        if (source.compareTo(o.source) != 0) {
             return true;
         }
         if (label == null) {

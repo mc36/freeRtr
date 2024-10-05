@@ -1,7 +1,6 @@
 package org.freertr.ip;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -16,7 +15,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
+public class ipFwdTrfng implements Comparable<ipFwdTrfng> {
 
     /**
      * time when created
@@ -168,24 +167,24 @@ public class ipFwdTrfng implements Comparator<ipFwdTrfng> {
      */
     public addrIP asocAdr;
 
-    public int compare(ipFwdTrfng o1, ipFwdTrfng o2) {
-        if (o1.srcId > o2.srcId) {
+    public int compareTo(ipFwdTrfng o) {
+        if (srcId > o.srcId) {
             return +1;
         }
-        if (o1.srcId < o2.srcId) {
+        if (srcId < o.srcId) {
             return -1;
         }
-        if (o1.subId > o2.subId) {
+        if (subId > o.subId) {
             return +1;
         }
-        if (o1.subId < o2.subId) {
+        if (subId < o.subId) {
             return -1;
         }
-        int i = o1.srcAdr.compare(o1.srcAdr, o2.srcAdr);
+        int i = srcAdr.compareTo(o.srcAdr);
         if (i != 0) {
             return i;
         }
-        return o1.subAdr.compare(o1.subAdr, o2.subAdr);
+        return subAdr.compareTo(o.subAdr);
     }
 
     /**

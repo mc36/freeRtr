@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.line.lineScript;
 import org.freertr.tab.tabGen;
@@ -14,7 +13,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
+public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
 
     /**
      * name of script
@@ -26,8 +25,8 @@ public class cfgChat implements Comparator<cfgChat>, cfgGeneric {
      */
     public lineScript script;
 
-    public int compare(cfgChat o1, cfgChat o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgChat o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

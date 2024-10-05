@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwdIface;
@@ -12,7 +11,7 @@ import org.freertr.tab.tabListing;
  *
  * @author matecsaba
  */
-public class rtrBgpLstn implements Comparator<rtrBgpLstn> {
+public class rtrBgpLstn implements Comparable<rtrBgpLstn> {
 
     /**
      * create instance
@@ -35,8 +34,8 @@ public class rtrBgpLstn implements Comparator<rtrBgpLstn> {
      */
     public ipFwdIface iface;
 
-    public int compare(rtrBgpLstn o1, rtrBgpLstn o2) {
-        return o1.acl.listName.compareTo(o2.acl.listName);
+    public int compareTo(rtrBgpLstn o) {
+        return acl.listName.compareTo(o.acl.listName);
     }
 
     /**

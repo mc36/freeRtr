@@ -1,6 +1,5 @@
 package org.freertr.addr;
 
-import java.util.Comparator;
 import org.freertr.pack.packHolder;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.pack.packHolder;
  *
  * @author matecsaba
  */
-public class addrBridge implements Comparator<addrBridge> {
+public class addrBridge implements Comparable<addrBridge> {
 
     /**
      * create instance
@@ -31,21 +30,14 @@ public class addrBridge implements Comparator<addrBridge> {
      */
     public addrMac adr = new addrMac();
 
-    /**
-     * compare two instances
-     *
-     * @param o1 first
-     * @param o2 second
-     * @return as usual
-     */
-    public int compare(addrBridge o1, addrBridge o2) {
-        if (o1.pri < o2.pri) {
+    public int compareTo(addrBridge o) {
+        if (pri < o.pri) {
             return -1;
         }
-        if (o1.pri > o2.pri) {
+        if (pri > o.pri) {
             return +1;
         }
-        return o1.adr.compare(o1.adr, o2.adr);
+        return adr.compareTo(o.adr);
     }
 
     /**

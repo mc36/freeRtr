@@ -1,7 +1,6 @@
 package org.freertr.tab;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
  * one sorted, synchronized list
@@ -9,7 +8,7 @@ import java.util.Comparator;
  * @param <T> type of elements in the list
  * @author matecsaba
  */
-public class tabGenV1<T extends Comparator<? super T>> {
+public class tabGenV1<T extends Comparable<? super T>> {
 
     private final ArrayList<T> lst;
 
@@ -168,7 +167,7 @@ public class tabGenV1<T extends Comparator<? super T>> {
         int upper = lst.size() - 1;
         while (lower <= upper) {
             int mid = (lower + upper) >>> 1;
-            int cmp = val.compare(lst.get(mid), val);
+            int cmp = lst.get(mid).compareTo(val);
             if (cmp < 0) {
                 lower = mid + 1;
                 continue;

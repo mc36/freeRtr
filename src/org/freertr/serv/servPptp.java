@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
@@ -242,7 +241,7 @@ public class servPptp extends servGeneric implements ipPrt, prtServS {
 
 }
 
-class servPptpConn implements Runnable, Comparator<servPptpConn> {
+class servPptpConn implements Runnable, Comparable<servPptpConn> {
 
     public servPptp lower;
 
@@ -271,14 +270,14 @@ class servPptpConn implements Runnable, Comparator<servPptpConn> {
         return lower + " with " + peer;
     }
 
-    public int compare(servPptpConn o1, servPptpConn o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(servPptpConn o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     public void setClosed() {
@@ -549,7 +548,7 @@ class servPptpKeep implements Runnable {
 
 }
 
-class servPptpSess implements ifcDn, Comparator<servPptpSess> {
+class servPptpSess implements ifcDn, Comparable<servPptpSess> {
 
     public int callLoc;
 
@@ -575,11 +574,11 @@ class servPptpSess implements ifcDn, Comparator<servPptpSess> {
         lower = parent;
     }
 
-    public int compare(servPptpSess o1, servPptpSess o2) {
-        if (o1.callLoc < o2.callLoc) {
+    public int compareTo(servPptpSess o) {
+        if (callLoc < o.callLoc) {
             return -1;
         }
-        if (o1.callLoc > o2.callLoc) {
+        if (callLoc > o.callLoc) {
             return +1;
         }
         return 0;

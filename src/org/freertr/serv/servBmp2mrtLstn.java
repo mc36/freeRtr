@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
@@ -13,7 +12,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public abstract class servBmp2mrtLstn implements Runnable, Comparator<servBmp2mrtLstn> {
+public abstract class servBmp2mrtLstn implements Runnable, Comparable<servBmp2mrtLstn> {
 
     /**
      * connection to use
@@ -44,8 +43,8 @@ public abstract class servBmp2mrtLstn implements Runnable, Comparator<servBmp2mr
         new Thread(this).start();
     }
 
-    public int compare(servBmp2mrtLstn o1, servBmp2mrtLstn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servBmp2mrtLstn o) {
+        return conn.compareTo(o.conn);
     }
 
     /**

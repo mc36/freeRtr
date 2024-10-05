@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrClns;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIsis;
@@ -29,7 +28,7 @@ import org.freertr.sec.secInfoWrk;
  *
  * @author matecsaba
  */
-public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNeigh> {
+public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNeigh> {
 
     /**
      * ipinfo result
@@ -335,14 +334,14 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         pending = new tabGen<rtrIsisLsp>();
     }
 
-    public int compare(rtrIsisNeigh o1, rtrIsisNeigh o2) {
-        if (o1.level.level < o2.level.level) {
+    public int compareTo(rtrIsisNeigh o) {
+        if (level.level < o.level.level) {
             return -1;
         }
-        if (o1.level.level > o2.level.level) {
+        if (level.level > o.level.level) {
             return +1;
         }
-        return ethAddr.compare(o1.ethAddr, o2.ethAddr);
+        return ethAddr.compareTo(o.ethAddr);
     }
 
     public String toString() {
@@ -541,7 +540,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                         cl.fromBuf(tlv.valDat, i);
                         i += cl.getAddrLen();
                         cl.fillUnunsed();
-                        int o = cl.compare(cl, lower.areaID);
+                        int o = cl.compareTo(lower.areaID);
                         areaAddr |= o == 0;
                         foreignArea |= o != 0;
                     }
@@ -556,7 +555,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
                         addrMac mc = new addrMac();
                         mc.fromBuf(tlv.valDat, i);
                         i += addrMac.size;
-                        seenOwn |= mc.compare(mc, iface.hwaddr) == 0;
+                        seenOwn |= mc.compareTo(iface.hwaddr) == 0;
                     }
                     break;
             }
@@ -765,7 +764,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         rtrIsisLsp old = level.lsps.add(lsp);
         if (old == null) {
             advert.put(lsp.copyBytes(false));
-            if (lower.routerID.compare(lower.routerID, lsp.srcID) == 0) {
+            if (lower.routerID.compareTo(lsp.srcID) == 0) {
                 level.schedWork(1);
             }
             level.schedWork(6);
@@ -783,7 +782,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
         }
         level.lsps.put(lsp);
         advert.put(lsp.copyBytes(false));
-        if (lower.routerID.compare(lower.routerID, lsp.srcID) == 0) {
+        if (lower.routerID.compareTo(lsp.srcID) == 0) {
             level.schedWork(1);
         }
         level.schedWork(6);
@@ -848,10 +847,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparator<rtrIsisNei
             if (ntry == null) {
                 continue;
             }
-            if (ntry.compare(ntry, frst) < 0) {
+            if (ntry.compareTo(frst) < 0) {
                 continue;
             }
-            if (ntry.compare(ntry, last) > 0) {
+            if (ntry.compareTo(last) > 0) {
                 continue;
             }
             l2.add(ntry);

@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrPool;
 import org.freertr.addr.addrType;
@@ -14,7 +13,7 @@ import org.freertr.util.cmds;
  * @param <T> address type of pool
  * @author matecsaba
  */
-public class cfgPool<T extends addrType> implements Comparator<cfgPool<T>>, cfgGeneric {
+public class cfgPool<T extends addrType> implements Comparable<cfgPool<T>>, cfgGeneric {
 
     /**
      * create instance
@@ -55,8 +54,8 @@ public class cfgPool<T extends addrType> implements Comparator<cfgPool<T>>, cfgG
      */
     public int version;
 
-    public int compare(cfgPool<T> o1, cfgPool<T> o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgPool<T> o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

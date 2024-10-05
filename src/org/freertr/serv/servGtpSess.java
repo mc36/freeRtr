@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -18,7 +17,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servGtpSess implements ifcDn, Comparator<servGtpSess> {
+public class servGtpSess implements ifcDn, Comparable<servGtpSess> {
 
     /**
      * local tunnel id
@@ -118,11 +117,11 @@ public class servGtpSess implements ifcDn, Comparator<servGtpSess> {
         return lower.connD.portRem;
     }
 
-    public int compare(servGtpSess o1, servGtpSess o2) {
-        if (o1.teidLoc < o2.teidLoc) {
+    public int compareTo(servGtpSess o) {
+        if (teidLoc < o.teidLoc) {
             return -1;
         }
-        if (o1.teidLoc > o2.teidLoc) {
+        if (teidLoc > o.teidLoc) {
             return +1;
         }
         return 0;

@@ -352,7 +352,7 @@ public class rtrRift extends ipRtr implements Runnable {
             if (ifc == null) {
                 continue;
             }
-            if (adr.compare(adr, ifc.peer) == 0) {
+            if (adr.compareTo(ifc.peer) == 0) {
                 return ifc;
             }
         }

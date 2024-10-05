@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgProxy;
@@ -137,7 +136,7 @@ public class servWhois extends servGeneric implements prtServS {
 
 }
 
-class servWhoisRem implements Comparator<servWhoisRem> {
+class servWhoisRem implements Comparable<servWhoisRem> {
 
     public final tabIntMatcher rng = new tabIntMatcher();
 
@@ -149,17 +148,17 @@ class servWhoisRem implements Comparator<servWhoisRem> {
         return rng + " " + prx.name + " " + srv;
     }
 
-    public int compare(servWhoisRem o1, servWhoisRem o2) {
-        if (o1.rng.rangeMin < o2.rng.rangeMin) {
+    public int compareTo(servWhoisRem o) {
+        if (rng.rangeMin < o.rng.rangeMin) {
             return -1;
         }
-        if (o1.rng.rangeMin > o2.rng.rangeMin) {
+        if (rng.rangeMin > o.rng.rangeMin) {
             return +1;
         }
-        if (o1.rng.rangeMax < o2.rng.rangeMax) {
+        if (rng.rangeMax < o.rng.rangeMax) {
             return -1;
         }
-        if (o1.rng.rangeMax > o2.rng.rangeMax) {
+        if (rng.rangeMax > o.rng.rangeMax) {
             return +1;
         }
         return 0;

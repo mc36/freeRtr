@@ -1,6 +1,6 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
+
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.util.bits;
@@ -10,7 +10,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrBgpFlapLst implements Comparator<rtrBgpFlapLst> {
+public class rtrBgpFlapLst implements Comparable<rtrBgpFlapLst> {
 
     /**
      * list of numbers
@@ -36,9 +36,9 @@ public class rtrBgpFlapLst implements Comparator<rtrBgpFlapLst> {
         lst = l;
     }
 
-    public int compare(rtrBgpFlapLst o1, rtrBgpFlapLst o2) {
-        int s1 = o1.lst.size();
-        int s2 = o2.lst.size();
+    public int compareTo(rtrBgpFlapLst o) {
+        int s1 = lst.size();
+        int s2 = o.lst.size();
         if (s1 < s2) {
             return -1;
         }
@@ -46,8 +46,8 @@ public class rtrBgpFlapLst implements Comparator<rtrBgpFlapLst> {
             return +1;
         }
         for (int i = 0; i < s1; i++) {
-            int v1 = o1.lst.get(i);
-            int v2 = o2.lst.get(i);
+            int v1 = lst.get(i);
+            int v2 = o.lst.get(i);
             if (v1 < v2) {
                 return -1;
             }

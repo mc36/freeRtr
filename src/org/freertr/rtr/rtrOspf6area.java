@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -32,7 +31,7 @@ import org.freertr.tab.tabLabelEntry;
  *
  * @author matecsaba
  */
-public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
+public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
 
     /**
      * area number
@@ -178,11 +177,11 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
         return "ospf area " + area;
     }
 
-    public int compare(rtrOspf6area o1, rtrOspf6area o2) {
-        if (o1.area < o2.area) {
+    public int compareTo(rtrOspf6area o) {
+        if (area < o.area) {
             return -1;
         }
-        if (o1.area > o2.area) {
+        if (area > o.area) {
             return +1;
         }
         return 0;
@@ -274,7 +273,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (lower.routerID.compare(ntry.rtrID, lower.routerID) != 0) {
+            if (ntry.rtrID.compareTo(lower.routerID) != 0) {
                 continue;
             }
             if (need2adv.find(ntry) != null) {
@@ -343,7 +342,7 @@ public class rtrOspf6area implements Comparator<rtrOspf6area>, Runnable {
                 lsas.del(ntry);
                 continue;
             }
-            if (lower.routerID.compare(ntry.rtrID, lower.routerID) != 0) {
+            if (ntry.rtrID.compareTo(lower.routerID) != 0) {
                 continue;
             }
             if (ntry.created > tim2) {

@@ -1,7 +1,6 @@
 package org.freertr.clnt;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -945,7 +944,7 @@ class clntSipOpt extends TimerTask {
 
 }
 
-class clntSipOut implements Comparator<clntSipOut> {
+class clntSipOut implements Comparable<clntSipOut> {
 
     public final clntSip lower;
 
@@ -982,8 +981,8 @@ class clntSipOut implements Comparator<clntSipOut> {
         started = bits.getTime();
     }
 
-    public int compare(clntSipOut o1, clntSipOut o2) {
-        return o1.callId.compareTo(o2.callId);
+    public int compareTo(clntSipOut o) {
+        return callId.compareTo(o.callId);
     }
 
     public boolean makeCall() {
@@ -1112,7 +1111,7 @@ class clntSipOut implements Comparator<clntSipOut> {
 
 }
 
-class clntSipIn implements Runnable, Comparator<clntSipIn> {
+class clntSipIn implements Runnable, Comparable<clntSipIn> {
 
     public final clntSip lower;
 
@@ -1156,8 +1155,8 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
         started = bits.getTime();
     }
 
-    public int compare(clntSipIn o1, clntSipIn o2) {
-        return o1.cid.compareTo(o2.cid);
+    public int compareTo(clntSipIn o) {
+        return cid.compareTo(o.cid);
     }
 
     public void run() {
@@ -1316,7 +1315,7 @@ class clntSipIn implements Runnable, Comparator<clntSipIn> {
 
 }
 
-class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
+class clntSipMsg implements Runnable, Comparable<clntSipMsg> {
 
     public final clntSip lower;
 
@@ -1347,8 +1346,8 @@ class clntSipMsg implements Runnable, Comparator<clntSipMsg> {
         started = bits.getTime();
     }
 
-    public int compare(clntSipMsg o1, clntSipMsg o2) {
-        return o1.callId.compareTo(o2.callId);
+    public int compareTo(clntSipMsg o) {
+        return callId.compareTo(o.callId);
     }
 
     public void startWork() {

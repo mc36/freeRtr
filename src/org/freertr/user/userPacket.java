@@ -841,10 +841,10 @@ public class userPacket {
                 int typ = pck.getByte(rtrBgpUtil.sizeU - 1);
                 pck.getSkip(rtrBgpUtil.sizeU);
                 tot++;
-                if (sip.compare(sip, pck.IPsrc) != 0) {
+                if (sip.compareTo(pck.IPsrc) != 0) {
                     continue;
                 }
-                if (tip.compare(tip, pck.IPtrg) != 0) {
+                if (tip.compareTo(pck.IPtrg) != 0) {
                     continue;
                 }
                 if (need2stop()) {
@@ -940,10 +940,10 @@ public class userPacket {
                 int typ = pck.getByte(rtrBgpUtil.sizeU - 1);
                 pck.getSkip(rtrBgpUtil.sizeU);
                 tot++;
-                if (sip.compare(sip, pck.IPsrc) != 0) {
+                if (sip.compareTo(pck.IPsrc) != 0) {
                     continue;
                 }
-                if (tip.compare(tip, pck.IPtrg) != 0) {
+                if (tip.compareTo(pck.IPtrg) != 0) {
                     continue;
                 }
                 if (need2stop()) {
@@ -1020,10 +1020,10 @@ public class userPacket {
                     continue;
                 }
                 tot++;
-                if (sip.compare(sip, pck.IPsrc) != 0) {
+                if (sip.compareTo(pck.IPsrc) != 0) {
                     continue;
                 }
-                if (tip.compare(tip, pck.IPtrg) != 0) {
+                if (tip.compareTo(pck.IPtrg) != 0) {
                     continue;
                 }
                 rtrBgpMon.createHeader(pck, pck.INTtime, false, rtrBgpMon.typMon, sip, 1, tip.toIPv4());
@@ -1139,10 +1139,10 @@ public class userPacket {
                 }
                 pck.getSkip(rtrBgpUtil.sizeU);
                 tot++;
-                if (sip.compare(sip, pck.IPsrc) != 0) {
+                if (sip.compareTo(pck.IPsrc) != 0) {
                     continue;
                 }
-                if (tip.compare(tip, pck.IPtrg) != 0) {
+                if (tip.compareTo(pck.IPtrg) != 0) {
                     continue;
                 }
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);

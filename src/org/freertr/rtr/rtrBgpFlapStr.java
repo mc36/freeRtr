@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.util.bits;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrBgpFlapStr implements Comparator<rtrBgpFlapStr> {
+public class rtrBgpFlapStr implements Comparable<rtrBgpFlapStr> {
 
     /**
      * path
@@ -34,8 +33,8 @@ public class rtrBgpFlapStr implements Comparator<rtrBgpFlapStr> {
         info = a;
     }
 
-    public int compare(rtrBgpFlapStr o1, rtrBgpFlapStr o2) {
-        return o1.info.compareTo(o2.info);
+    public int compareTo(rtrBgpFlapStr o) {
+        return info.compareTo(o.info);
     }
 
     public String toString() {

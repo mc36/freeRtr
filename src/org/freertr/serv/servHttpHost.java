@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authGeneric;
 import org.freertr.cfg.cfgAll;
@@ -34,7 +33,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servHttpHost implements Comparator<servHttpHost> {
+public class servHttpHost implements Comparable<servHttpHost> {
 
     /**
      * parent of server
@@ -261,8 +260,8 @@ public class servHttpHost implements Comparator<servHttpHost> {
         return "" + host;
     }
 
-    public int compare(servHttpHost o1, servHttpHost o2) {
-        return o1.host.toLowerCase().compareTo(o2.host.toLowerCase());
+    public int compareTo(servHttpHost o) {
+        return host.toLowerCase().compareTo(o.host.toLowerCase());
     }
 
     /**

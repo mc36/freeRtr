@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.autherChap;
 import org.freertr.cfg.cfgAll;
@@ -20,7 +19,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servL2tp2conn implements Comparator<servL2tp2conn> {
+public class servL2tp2conn implements Comparable<servL2tp2conn> {
 
     /**
      * lower layer
@@ -66,8 +65,8 @@ public class servL2tp2conn implements Comparator<servL2tp2conn> {
 
     private int seqTx = 0;
 
-    public int compare(servL2tp2conn o1, servL2tp2conn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servL2tp2conn o) {
+        return conn.compareTo(o.conn);
     }
 
     /**

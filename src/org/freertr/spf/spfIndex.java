@@ -1,13 +1,11 @@
 package org.freertr.spf;
 
-import java.util.Comparator;
-
 /**
  * spf index
  *
  * @author matecsaba
  */
-public class spfIndex implements Comparator<spfIndex> {
+public class spfIndex implements Comparable<spfIndex> {
 
     /**
      * value
@@ -36,11 +34,11 @@ public class spfIndex implements Comparator<spfIndex> {
         return val;
     }
 
-    public int compare(spfIndex o1, spfIndex o2) {
-        if (o1.val < o2.val) {
+    public int compareTo(spfIndex o) {
+        if (val < o.val) {
             return -1;
         }
-        if (o1.val > o2.val) {
+        if (val > o.val) {
             return +1;
         }
         return 0;

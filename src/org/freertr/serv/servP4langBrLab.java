@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.ifc.ifcBridgeIfc;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.ifc.ifcBridgeIfc;
  *
  * @author matecsaba
  */
-public class servP4langBrLab implements Comparator<servP4langBrLab> {
+public class servP4langBrLab implements Comparable<servP4langBrLab> {
 
     /**
      * interface
@@ -31,8 +30,8 @@ public class servP4langBrLab implements Comparator<servP4langBrLab> {
         lab = l;
     }
 
-    public int compare(servP4langBrLab o1, servP4langBrLab o2) {
-        return o1.ifc.compare(o1.ifc, o2.ifc);
+    public int compareTo(servP4langBrLab o) {
+        return ifc.compareTo(o.ifc);
     }
 
 }

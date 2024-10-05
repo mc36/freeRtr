@@ -895,7 +895,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 if (net.best.nextHop == null) {
                     return false;
                 }
-                return addrSet.compare(addrSet, net.best.nextHop) == 0;
+                return addrSet.compareTo(net.best.nextHop) == 0;
             case iface:
                 if (net.best.iface == null) {
                     return false;
@@ -905,7 +905,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 if (net.best.oldHop == null) {
                     return false;
                 }
-                return addrSet.compare(addrSet, net.best.oldHop) == 0;
+                return addrSet.compareTo(net.best.oldHop) == 0;
             case protocol:
                 if (net.best.rouTyp != protoMatch) {
                     return false;

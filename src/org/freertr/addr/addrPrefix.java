@@ -1,14 +1,12 @@
 package org.freertr.addr;
 
-import java.util.Comparator;
-
 /**
  * represents one prefix (address/netmask)
  *
  * @param <T> class of address
  * @author matecsaba
  */
-public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>> {
+public class addrPrefix<T extends addrType> implements Comparable<addrPrefix<T>> {
 
     /**
      * network address
@@ -70,19 +68,12 @@ public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>>
         return n;
     }
 
-    /**
-     * compare two instances
-     *
-     * @param o1 first
-     * @param o2 second
-     * @return as usual
-     */
-    public int compare(addrPrefix<T> o1, addrPrefix<T> o2) {
-        int i = network.compare(o1.network, o2.network);
+    public int compareTo(addrPrefix<T> o) {
+        int i = network.compareTo(o.network);
         if (i != 0) {
             return i;
         }
-        return -broadcast.compare(o1.broadcast, o2.broadcast);
+        return broadcast.compareTo(o.broadcast);
     }
 
     /**
@@ -153,10 +144,10 @@ public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>>
      * @return true if matches, false if not matches
      */
     public boolean matches(T adr) {
-        if (adr.compare(adr, network) < 0) {
+        if (adr.compareTo(network) < 0) {
             return false;
         }
-        if (adr.compare(adr, broadcast) > 0) {
+        if (adr.compareTo(broadcast) > 0) {
             return false;
         }
         return true;
@@ -169,7 +160,7 @@ public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>>
      * @return true if this is the network address
      */
     public boolean isNetwork(T adr) {
-        return (adr.compare(adr, network) == 0);
+        return adr.compareTo(network) == 0;
     }
 
     /**
@@ -179,7 +170,7 @@ public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>>
      * @return true if this is the broadcast address
      */
     public boolean isBroadcast(T adr) {
-        return (adr.compare(adr, broadcast) == 0);
+        return adr.compareTo(broadcast) == 0;
     }
 
     /**
@@ -212,10 +203,10 @@ public class addrPrefix<T extends addrType> implements Comparator<addrPrefix<T>>
         if (equals) {
             return true;
         }
-        if (network.compare(network, other.network) != 0) {
+        if (network.compareTo(other.network) != 0) {
             return true;
         }
-        if (broadcast.compare(broadcast, other.broadcast) != 0) {
+        if (broadcast.compareTo(other.broadcast) != 0) {
             return true;
         }
         return false;

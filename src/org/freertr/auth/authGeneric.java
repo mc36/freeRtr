@@ -1,6 +1,5 @@
 package org.freertr.auth;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -19,7 +18,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public abstract class authGeneric implements Comparator<authGeneric> {
+public abstract class authGeneric implements Comparable<authGeneric> {
 
     /**
      * create instance
@@ -198,15 +197,8 @@ public abstract class authGeneric implements Comparator<authGeneric> {
         return autName;
     }
 
-    /**
-     * compare two instances
-     *
-     * @param o1 first
-     * @param o2 second
-     * @return as usual
-     */
-    public int compare(authGeneric o1, authGeneric o2) {
-        return o1.autName.toLowerCase().compareTo(o2.autName.toLowerCase());
+    public int compareTo(authGeneric o) {
+        return autName.toLowerCase().compareTo(o.autName.toLowerCase());
     }
 
     /**

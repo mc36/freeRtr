@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.io.File;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authGeneric;
 import org.freertr.auth.authResult;
@@ -160,14 +159,14 @@ public class servPop3 extends servGeneric implements prtServS {
 
 }
 
-class servPop3msg implements Comparator<servPop3msg> {
+class servPop3msg implements Comparable<servPop3msg> {
 
     public String name;
 
     public long size;
 
-    public int compare(servPop3msg o1, servPop3msg o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(servPop3msg o) {
+        return name.compareTo(o.name);
     }
 
 }

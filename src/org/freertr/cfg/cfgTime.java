@@ -2,7 +2,6 @@ package org.freertr.cfg;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntMatcher;
@@ -18,7 +17,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
+public class cfgTime implements Comparable<cfgTime>, cfgGeneric {
 
     /**
      * name of routemap
@@ -410,8 +409,8 @@ public class cfgTime implements Comparator<cfgTime>, cfgGeneric {
         cmd.badCmd();
     }
 
-    public int compare(cfgTime o1, cfgTime o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgTime o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {

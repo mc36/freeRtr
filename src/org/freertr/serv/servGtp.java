@@ -280,12 +280,12 @@ public class servGtp extends servGeneric implements prtServP {
         }
         int ctrl = -1;
         if (ntry.connC != null) {
-            if (id.compare(id, ntry.connC) == 0) {
+            if (id.compareTo(ntry.connC) == 0) {
                 ctrl = 1;
             }
         }
         if (ntry.connD != null) {
-            if (id.compare(id, ntry.connD) == 0) {
+            if (id.compareTo(ntry.connD) == 0) {
                 ctrl = 2;
             }
         }

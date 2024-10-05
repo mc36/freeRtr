@@ -1,7 +1,6 @@
 package org.freertr.ip;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.pack.packHolder;
@@ -12,7 +11,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class ipFwdEcho implements Comparator<ipFwdEcho> {
+public class ipFwdEcho implements Comparable<ipFwdEcho> {
 
     /**
      * create instance
@@ -55,11 +54,11 @@ public class ipFwdEcho implements Comparator<ipFwdEcho> {
      */
     public final List<ipFwdEchod> res = new ArrayList<ipFwdEchod>();
 
-    public int compare(ipFwdEcho o1, ipFwdEcho o2) {
-        if (o1.echoNum < o2.echoNum) {
+    public int compareTo(ipFwdEcho o) {
+        if (echoNum < o.echoNum) {
             return -1;
         }
-        if (o1.echoNum > o2.echoNum) {
+        if (echoNum > o.echoNum) {
             return +1;
         }
         return 0;

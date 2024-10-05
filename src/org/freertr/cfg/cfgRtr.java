@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
@@ -50,7 +49,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
+public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
 
     /**
      * description of this dialpeer
@@ -1522,15 +1521,15 @@ public class cfgRtr implements Comparator<cfgRtr>, cfgGeneric {
         return adv;
     }
 
-    public int compare(cfgRtr o1, cfgRtr o2) {
-        int i = o1.type.compareTo(o2.type);
+    public int compareTo(cfgRtr o) {
+        int i = type.compareTo(o.type);
         if (i != 0) {
             return i;
         }
-        if (o1.number < o2.number) {
+        if (number < o.number) {
             return -1;
         }
-        if (o1.number > o2.number) {
+        if (number > o.number) {
             return +1;
         }
         return 0;

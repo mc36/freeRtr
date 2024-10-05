@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.util.bits;
@@ -13,7 +12,7 @@ import org.freertr.util.counter;
  * @param <T> type of address
  * @author matecsaba
  */
-public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
+public class tabIndex<T extends addrType> implements Comparable<tabIndex<T>> {
 
     /**
      * index
@@ -101,7 +100,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
             if (o.prefix == null) {
                 return true;
             }
-            if (prefix.compare(prefix, o.prefix) != 0) {
+            if (prefix.compareTo(o.prefix) != 0) {
                 return true;
             }
         }
@@ -125,11 +124,11 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
         return false;
     }
 
-    public int compare(tabIndex<T> o1, tabIndex<T> o2) {
-        if (o1.index < o2.index) {
+    public int compareTo(tabIndex<T> o) {
+        if (index < o.index) {
             return -1;
         }
-        if (o1.index > o2.index) {
+        if (index > o.index) {
             return +1;
         }
         return 0;
@@ -148,7 +147,7 @@ public class tabIndex<T extends addrType> implements Comparator<tabIndex<T>> {
         if (prefix.maskLen > o.prefix.maskLen) {
             return true;
         }
-        return prefix.compare(prefix, o.prefix) < 0;
+        return prefix.compareTo(o.prefix) < 0;
     }
 
     /**

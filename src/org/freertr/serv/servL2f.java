@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
@@ -334,7 +333,7 @@ public class servL2f extends servGeneric implements prtServP {
 
 }
 
-class servL2fConn implements Comparator<servL2fConn> {
+class servL2fConn implements Comparable<servL2fConn> {
 
     public prtGenConn conn;
 
@@ -362,8 +361,8 @@ class servL2fConn implements Comparator<servL2fConn> {
 
     public long created;
 
-    public int compare(servL2fConn o1, servL2fConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servL2fConn o) {
+        return conn.compareTo(o.conn);
     }
 
     public servL2fConn(prtGenConn id, servL2f parent) {
@@ -568,7 +567,7 @@ class servL2fConn implements Comparator<servL2fConn> {
 
 }
 
-class servL2fSess implements ifcDn, Comparator<servL2fSess> {
+class servL2fSess implements ifcDn, Comparable<servL2fSess> {
 
     public int multi;
 
@@ -584,11 +583,11 @@ class servL2fSess implements ifcDn, Comparator<servL2fSess> {
         lower = parent;
     }
 
-    public int compare(servL2fSess o1, servL2fSess o2) {
-        if (o1.multi < o2.multi) {
+    public int compareTo(servL2fSess o) {
+        if (multi < o.multi) {
             return -1;
         }
-        if (o1.multi > o2.multi) {
+        if (multi > o.multi) {
             return +1;
         }
         return 0;

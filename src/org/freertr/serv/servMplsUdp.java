@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
@@ -301,7 +300,7 @@ public class servMplsUdp extends servGeneric implements prtServP {
 
 }
 
-class servMplsUdpConn implements ifcDn, Comparator<servMplsUdpConn> {
+class servMplsUdpConn implements ifcDn, Comparable<servMplsUdpConn> {
 
     public prtGenConn conn;
 
@@ -315,8 +314,8 @@ class servMplsUdpConn implements ifcDn, Comparator<servMplsUdpConn> {
 
     public long created;
 
-    public int compare(servMplsUdpConn o1, servMplsUdpConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servMplsUdpConn o) {
+        return conn.compareTo(o.conn);
     }
 
     public servMplsUdpConn(prtGenConn id, servMplsUdp parent) {

@@ -1,6 +1,5 @@
 package org.freertr.addr;
 
-import java.util.Comparator;
 import org.freertr.util.bits;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public abstract class addrType implements Comparator<addrType> {
+public abstract class addrType implements Comparable<addrType> {
 
     /**
      * bytes representing this address
@@ -369,15 +368,8 @@ public abstract class addrType implements Comparator<addrType> {
         }
     }
 
-    /**
-     * compare two instances
-     *
-     * @param o1 first
-     * @param o2 second
-     * @return as usual
-     */
-    public int compare(addrType o1, addrType o2) {
-        return bits.byteComp(o1.addr, 0, o2.addr, 0, addr.length);
+    public int compareTo(addrType o) {
+        return bits.byteComp(addr, 0, o.addr, 0, addr.length);
     }
 
     /**

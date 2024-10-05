@@ -1,7 +1,6 @@
 package org.freertr.user;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeLine;
@@ -18,7 +17,7 @@ import org.freertr.util.cmds;
  *
  * @author matecaba
  */
-public class userTesterPrc implements Comparator<userTesterPrc> {
+public class userTesterPrc implements Comparable<userTesterPrc> {
 
     /**
      * reader to use
@@ -95,8 +94,8 @@ public class userTesterPrc implements Comparator<userTesterPrc> {
         rdr.debugStat(slot + "/" + name + ": starting process");
     }
 
-    public int compare(userTesterPrc o1, userTesterPrc o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(userTesterPrc o) {
+        return name.compareTo(o.name);
     }
 
     /**

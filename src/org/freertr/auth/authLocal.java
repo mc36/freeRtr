@@ -1,7 +1,6 @@
 package org.freertr.auth;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrEui;
 import org.freertr.addr.addrIPv4;
@@ -23,7 +22,6 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
-import org.freertr.util.logger;
 
 /**
  * local user database
@@ -566,8 +564,7 @@ public class authLocal extends authGeneric {
         if (ntry.password == null) {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
-        if (servPop3.calcApop(cookie, ntry.password).compareTo(
-                resp.toLowerCase()) != 0) {
+        if (servPop3.calcApop(cookie, ntry.password).compareTo(resp.toLowerCase()) != 0) {
             return new authResult(this, authResult.authBadUserPass, user, "");
         }
         return createPassed(ntry, user, "");
@@ -649,7 +646,7 @@ public class authLocal extends authGeneric {
  *
  * @author matecsaba
  */
-class authLocalEntry implements Comparator<authLocalEntry> {
+class authLocalEntry implements Comparable<authLocalEntry> {
 
     /**
      * times matched
@@ -946,8 +943,8 @@ class authLocalEntry implements Comparator<authLocalEntry> {
         return true;
     }
 
-    public int compare(authLocalEntry o1, authLocalEntry o2) {
-        return o1.username.toLowerCase().compareTo(o2.username.toLowerCase());
+    public int compareTo(authLocalEntry o) {
+        return username.toLowerCase().compareTo(o.username.toLowerCase());
     }
 
     public List<String> getOtpPass() {

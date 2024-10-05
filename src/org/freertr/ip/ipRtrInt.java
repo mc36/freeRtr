@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -17,7 +16,7 @@ import org.freertr.tab.tabRtrplcN;
  *
  * @author matecsaba
  */
-public class ipRtrInt implements Comparator<ipRtrInt> {
+public class ipRtrInt implements Comparable<ipRtrInt> {
 
     /**
      * interface to import
@@ -53,8 +52,8 @@ public class ipRtrInt implements Comparator<ipRtrInt> {
         iface = ifc;
     }
 
-    public int compare(ipRtrInt o1, ipRtrInt o2) {
-        return o1.iface.compare(o1.iface, o2.iface);
+    public int compareTo(ipRtrInt o) {
+        return iface.compareTo(o.iface);
     }
 
     /**

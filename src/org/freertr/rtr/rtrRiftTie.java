@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEui;
 import org.freertr.enc.encThriftEntry;
 import org.freertr.util.bits;
@@ -10,7 +9,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrRiftTie implements Comparator<rtrRiftTie> {
+public class rtrRiftTie implements Comparable<rtrRiftTie> {
 
     /**
      * expiration time
@@ -54,23 +53,23 @@ public class rtrRiftTie implements Comparator<rtrRiftTie> {
     public rtrRiftTie() {
     }
 
-    public int compare(rtrRiftTie o1, rtrRiftTie o2) {
-        if (o1.direct < o2.direct) {
+    public int compareTo(rtrRiftTie o) {
+        if (direct < o.direct) {
             return -1;
         }
-        if (o1.direct > o2.direct) {
+        if (direct > o.direct) {
             return +1;
         }
-        if (o1.origin < o2.origin) {
+        if (origin < o.origin) {
             return -1;
         }
-        if (o1.origin > o2.origin) {
+        if (origin > o.origin) {
             return +1;
         }
-        if (o1.number < o2.number) {
+        if (number < o.number) {
             return -1;
         }
-        if (o1.number > o2.number) {
+        if (number > o.number) {
             return +1;
         }
         return 0;

@@ -362,7 +362,7 @@ public class cfgXconnSide {
             case prPptp:
                 return true;
             case prL2tp3:
-                return adr.compare(adr, ifc.getLocAddr(adr)) < 0;
+                return adr.compareTo(ifc.getLocAddr(adr)) < 0;
             default:
                 return true;
         }

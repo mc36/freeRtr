@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.zip.Deflater;
 import org.freertr.pack.packHolder;
@@ -32,7 +31,7 @@ import org.freertr.util.verCore;
  *
  * @author matecsaba
  */
-public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
+public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
 
     /**
      * name of sensor
@@ -203,8 +202,8 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
         return name;
     }
 
-    public int compare(cfgSensor o1, cfgSensor o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgSensor o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {
@@ -1261,62 +1260,63 @@ public class cfgSensor implements Runnable, Comparator<cfgSensor>, cfgGeneric {
 
     }
 
-    class cfgSensorRep implements Comparator<cfgSensorRep> {
-
-        public final String src;
-
-        public String trg;
-
-        public cfgSensorRep(String n) {
-            src = n;
-        }
-
-        public int compare(cfgSensorRep o1, cfgSensorRep o2) {
-            return o1.src.compareTo(o2.src);
-        }
-
-    }
-
-    class cfgSensorCol implements Comparator<cfgSensorCol> {
-
-        public final int num;
-
-        public String nam;
-
-        public String hlp;
-
-        public String lab;
-
-        public String splS;
-
-        public String splL;
-
-        public String splR;
-
-        public int typ = servStreamingMdt.fnUint64;
-
-        public String sty = "gauge";
-
-        public tabGen<cfgSensorRep> reps = new tabGen<cfgSensorRep>();
-
-        public cfgSensorCol(int n) {
-            num = n;
-        }
-
-        public int compare(cfgSensorCol o1, cfgSensorCol o2) {
-            if (o1.num < o2.num) {
-                return -1;
-            }
-            if (o1.num > o2.num) {
-                return +1;
-            }
-            return 0;
-        }
-
-    }
 }
 
-class cfgSensorMem implements Comparator<cfgSensorMem> {
+class cfgSensorRep implements Comparable<cfgSensorRep> {
+
+    public final String src;
+
+    public String trg;
+
+    public cfgSensorRep(String n) {
+        src = n;
+    }
+
+    public int compareTo(cfgSensorRep o) {
+        return src.compareTo(o.src);
+    }
+
+}
+
+class cfgSensorCol implements Comparable<cfgSensorCol> {
+
+    public final int num;
+
+    public String nam;
+
+    public String hlp;
+
+    public String lab;
+
+    public String splS;
+
+    public String splL;
+
+    public String splR;
+
+    public int typ = servStreamingMdt.fnUint64;
+
+    public String sty = "gauge";
+
+    public tabGen<cfgSensorRep> reps = new tabGen<cfgSensorRep>();
+
+    public cfgSensorCol(int n) {
+        num = n;
+    }
+
+    public int compareTo(cfgSensorCol o) {
+        if (num < o.num) {
+            return -1;
+        }
+        if (num > o.num) {
+            return +1;
+        }
+        return 0;
+    }
+
+}
+
+class cfgSensorMem implements Comparable<cfgSensorMem> {
 
     public final String key;
 
@@ -1331,14 +1331,14 @@ class cfgSensorMem implements Comparator<cfgSensorMem> {
         col = c;
     }
 
-    public int compare(cfgSensorMem o1, cfgSensorMem o2) {
-        if (o1.col < o2.col) {
+    public int compareTo(cfgSensorMem o) {
+        if (col < o.col) {
             return -1;
         }
-        if (o1.col > o2.col) {
+        if (col > o.col) {
             return +1;
         }
-        return o1.key.compareTo(o2.key);
+        return key.compareTo(o.key);
     }
 
     public void dump(List<String> lst) {

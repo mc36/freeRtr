@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +16,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
+public class cfgTrnsltn implements Comparable<cfgTrnsltn>, cfgGeneric {
 
     /**
      * name of this translation
@@ -89,8 +88,8 @@ public class cfgTrnsltn implements Comparator<cfgTrnsltn>, cfgGeneric {
      */
     public List<String> action = new ArrayList<String>();
 
-    public int compare(cfgTrnsltn o1, cfgTrnsltn o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgTrnsltn o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

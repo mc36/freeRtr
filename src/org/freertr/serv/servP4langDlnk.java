@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ifc.ifcEther;
@@ -15,7 +14,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
+public class servP4langDlnk implements Comparable<servP4langDlnk>, ifcUp {
 
     /**
      * interface id
@@ -47,11 +46,11 @@ public class servP4langDlnk implements Comparator<servP4langDlnk>, ifcUp {
         lower = prnt;
     }
 
-    public int compare(servP4langDlnk o1, servP4langDlnk o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(servP4langDlnk o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;

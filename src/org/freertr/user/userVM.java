@@ -3,7 +3,6 @@ package org.freertr.user;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryHashCrc32;
@@ -1271,7 +1270,7 @@ public class userVM {
 
 }
 
-class userVMfile implements Comparator<userVMfile> {
+class userVMfile implements Comparable<userVMfile> {
 
     public int num;
 
@@ -1281,11 +1280,11 @@ class userVMfile implements Comparator<userVMfile> {
         num = i;
     }
 
-    public int compare(userVMfile o1, userVMfile o2) {
-        if (o1.num < o2.num) {
+    public int compareTo(userVMfile o) {
+        if (num < o.num) {
             return -1;
         }
-        if (o1.num > o2.num) {
+        if (num > o.num) {
             return +1;
         }
         return 0;
@@ -1293,7 +1292,7 @@ class userVMfile implements Comparator<userVMfile> {
 
 }
 
-class userVMdir implements Comparator<userVMdir> {
+class userVMdir implements Comparable<userVMdir> {
 
     public int num;
 
@@ -1305,11 +1304,11 @@ class userVMdir implements Comparator<userVMdir> {
         num = i;
     }
 
-    public int compare(userVMdir o1, userVMdir o2) {
-        if (o1.num < o2.num) {
+    public int compareTo(userVMdir o) {
+        if (num < o.num) {
             return -1;
         }
-        if (o1.num > o2.num) {
+        if (num > o.num) {
             return +1;
         }
         return 0;

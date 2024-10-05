@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.clnt.clntTelemetry;
 import org.freertr.serv.servStreamingMdt;
@@ -16,7 +15,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
+public class cfgTlmtry implements Comparable<cfgTlmtry>, cfgGeneric {
 
     /**
      * name of telemetry export
@@ -60,8 +59,8 @@ public class cfgTlmtry implements Comparator<cfgTlmtry>, cfgGeneric {
         name = s;
     }
 
-    public int compare(cfgTlmtry o1, cfgTlmtry o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgTlmtry o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {

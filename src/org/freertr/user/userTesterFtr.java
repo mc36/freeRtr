@@ -1,6 +1,5 @@
 package org.freertr.user;
 
-import java.util.Comparator;
 import org.freertr.util.syncInt;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.util.syncInt;
  *
  * @author matecsaba
  */
-public class userTesterFtr implements Comparator<userTesterFtr> {
+public class userTesterFtr implements Comparable<userTesterFtr> {
 
     /**
      * name of file
@@ -59,8 +58,8 @@ public class userTesterFtr implements Comparator<userTesterFtr> {
         fil = fn;
     }
 
-    public int compare(userTesterFtr o1, userTesterFtr o2) {
-        return o1.fil.compareTo(o2.fil);
+    public int compareTo(userTesterFtr o) {
+        return fil.compareTo(o.fil);
     }
 
     /**

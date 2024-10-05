@@ -134,7 +134,7 @@ public class ifcPppIp6 extends ifcPppNcp {
         }
         if (dat.ifid != null) {
             if (parent.remIfIdCfg != null) {
-                if (dat.ifid.compare(dat.ifid, parent.remIfIdCfg) != 0) {
+                if (dat.ifid.compareTo(parent.remIfIdCfg) != 0) {
                     res.ifid = parent.remIfIdCfg.copyBytes();
                     val = true;
                 }

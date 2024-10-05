@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -538,7 +537,7 @@ public class rtrLogger extends ipRtr {
 
 }
 
-class rtrLoggerFlap implements Comparator<rtrLoggerFlap> {
+class rtrLoggerFlap implements Comparable<rtrLoggerFlap> {
 
     public final int afi;
 
@@ -553,14 +552,14 @@ class rtrLoggerFlap implements Comparator<rtrLoggerFlap> {
         prefix = p.copyBytes();
     }
 
-    public int compare(rtrLoggerFlap o1, rtrLoggerFlap o2) {
-        if (o1.afi < o2.afi) {
+    public int compareTo(rtrLoggerFlap o) {
+        if (afi < o.afi) {
             return -1;
         }
-        if (o1.afi > o2.afi) {
+        if (afi > o.afi) {
             return +1;
         }
-        return o1.prefix.compare(o1.prefix, o2.prefix);
+        return prefix.compareTo(o.prefix);
     }
 
     public String toString() {
@@ -569,7 +568,7 @@ class rtrLoggerFlap implements Comparator<rtrLoggerFlap> {
 
 }
 
-class rtrLoggerIfc implements Comparator<rtrLoggerIfc> {
+class rtrLoggerIfc implements Comparable<rtrLoggerIfc> {
 
     public final ipFwdIface iface;
 
@@ -579,20 +578,20 @@ class rtrLoggerIfc implements Comparator<rtrLoggerIfc> {
         iface = ifc;
     }
 
-    public int compare(rtrLoggerIfc o1, rtrLoggerIfc o2) {
-        if (o1.iface == null) {
-            if (o2.iface != null) {
+    public int compareTo(rtrLoggerIfc o) {
+        if (iface == null) {
+            if (o.iface != null) {
                 return -1;
             }
             return 0;
         }
-        if (o2.iface == null) {
-            if (o1.iface != null) {
+        if (o.iface == null) {
+            if (iface != null) {
                 return +1;
             }
             return 0;
         }
-        return o1.iface.compare(o1.iface, o2.iface);
+        return iface.compareTo(o.iface);
     }
 
     public String toString() {
@@ -601,7 +600,7 @@ class rtrLoggerIfc implements Comparator<rtrLoggerIfc> {
 
 }
 
-class rtrLoggerAdr implements Comparator<rtrLoggerAdr> {
+class rtrLoggerAdr implements Comparable<rtrLoggerAdr> {
 
     public final addrIP addr;
 
@@ -611,8 +610,8 @@ class rtrLoggerAdr implements Comparator<rtrLoggerAdr> {
         addr = ifc;
     }
 
-    public int compare(rtrLoggerAdr o1, rtrLoggerAdr o2) {
-        return o1.addr.compare(o1.addr, o2.addr);
+    public int compareTo(rtrLoggerAdr o) {
+        return addr.compareTo(o.addr);
     }
 
     public String toString() {

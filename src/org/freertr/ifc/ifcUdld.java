@@ -1,7 +1,6 @@
 package org.freertr.ifc;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -410,7 +409,7 @@ class ifcUdldTxAdv extends TimerTask {
 
 }
 
-class ifcUdldNeigh implements Comparator<ifcUdldNeigh> {
+class ifcUdldNeigh implements Comparable<ifcUdldNeigh> {
 
     public addrMac peer;
 
@@ -443,12 +442,8 @@ class ifcUdldNeigh implements Comparator<ifcUdldNeigh> {
         l.add("bidir|" + bidir);
     }
 
-    public int compare(ifcUdldNeigh o1, ifcUdldNeigh o2) {
-        int i = o1.serNum.compareTo(o2.serNum);
-        if (i != 0) {
-            return i;
-        }
-        return o1.portId.compareTo(o2.portId);
+    public int compareTo(ifcUdldNeigh o) {
+        return hostName.compareTo(o.hostName);
     }
 
 }

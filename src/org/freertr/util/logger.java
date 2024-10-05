@@ -6,7 +6,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -717,7 +716,7 @@ public class logger {
 
 }
 
-class loggerTerm implements Comparator<loggerTerm> {
+class loggerTerm implements Comparable<loggerTerm> {
 
     public final pipeSide pip;
 
@@ -728,11 +727,11 @@ class loggerTerm implements Comparator<loggerTerm> {
         hsh = pipe.hashCode();
     }
 
-    public int compare(loggerTerm o1, loggerTerm o2) {
-        if (o1.hsh < o2.hsh) {
+    public int compareTo(loggerTerm o) {
+        if (hsh < o.hsh) {
             return -1;
         }
-        if (o1.hsh > o2.hsh) {
+        if (hsh > o.hsh) {
             return +1;
         }
         return 0;

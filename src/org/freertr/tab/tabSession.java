@@ -1,7 +1,6 @@
 package org.freertr.tab;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAceslst;
@@ -824,7 +823,7 @@ public class tabSession implements Runnable {
 
 }
 
-class tabSessionEndpoint implements Comparator<tabSessionEndpoint> {
+class tabSessionEndpoint implements Comparable<tabSessionEndpoint> {
 
     public addrIP adr;
 
@@ -848,8 +847,8 @@ class tabSessionEndpoint implements Comparator<tabSessionEndpoint> {
         return adr + "|" + cntr.packRx + hpr + "|" + cntr.packTx + hpt + "|" + cntr.byteRx + hbr + "|" + cntr.byteTx + hbt + "|" + bits.timePast(tim);
     }
 
-    public int compare(tabSessionEndpoint o1, tabSessionEndpoint o2) {
-        return o1.adr.compare(o1.adr, o2.adr);
+    public int compareTo(tabSessionEndpoint o) {
+        return adr.compareTo(o.adr);
     }
 
 }

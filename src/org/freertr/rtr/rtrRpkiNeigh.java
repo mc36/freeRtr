@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgIfc;
@@ -22,7 +21,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
+public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
 
     /**
      * parent to bind to
@@ -107,8 +106,8 @@ public class rtrRpkiNeigh implements Comparator<rtrRpkiNeigh>, Runnable {
         return "" + peer;
     }
 
-    public int compare(rtrRpkiNeigh o1, rtrRpkiNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrRpkiNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     /**

@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.tab.tabAceslstN;
@@ -18,7 +17,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
+public class cfgAceslst implements Comparable<cfgAceslst>, cfgGeneric {
 
     /**
      * name of access list
@@ -250,8 +249,8 @@ public class cfgAceslst implements Comparator<cfgAceslst>, cfgGeneric {
         aceslst.add(ntry);
     }
 
-    public int compare(cfgAceslst o1, cfgAceslst o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgAceslst o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {

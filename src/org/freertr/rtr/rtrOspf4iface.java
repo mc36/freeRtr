@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,7 +27,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
+public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
 
     /**
      * ipinfo config
@@ -287,11 +286,11 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         }
     }
 
-    public int compare(rtrOspf4iface o1, rtrOspf4iface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrOspf4iface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;
@@ -958,10 +957,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         if (amIdr()) {
             return true;
         }
-        if (drAddr.compare(drAddr, peer) == 0) {
+        if (drAddr.compareTo(peer) == 0) {
             return true;
         }
-        if (bdrAddr.compare(bdrAddr, peer) == 0) {
+        if (bdrAddr.compareTo(peer) == 0) {
             return true;
         }
         return false;
@@ -977,14 +976,14 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
                 continue;
             }
             if (drNeeded) {
-                if (ntry.peer.compare(ntry.peerDR, ntry.peer) != 0) {
+                if (ntry.peerDR.compareTo(ntry.peer) != 0) {
                     continue;
                 }
             } else {
-                if (ntry.peer.compare(ntry.peer, drAddr) == 0) {
+                if (ntry.peer.compareTo(drAddr) == 0) {
                     continue;
                 }
-                if (ntry.peer.compare(ntry.peerBDR, ntry.peer) != 0) {
+                if (ntry.peerBDR.compareTo(ntry.peer) != 0) {
                     continue;
                 }
             }
@@ -1023,7 +1022,7 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         addrIPv4 old = drAddr.copyBytes();
         drAddr = findDR(true);
         bdrAddr = findDR(false);
-        if (old.compare(old, drAddr) == 0) {
+        if (old.compareTo(drAddr) == 0) {
             return;
         }
         if (debugger.rtrOspf4evnt) {
@@ -1041,10 +1040,10 @@ public class rtrOspf4iface implements Comparator<rtrOspf4iface>, ipPrt {
         if (!needDR()) {
             return false;
         }
-        if (drAddr.compare(drAddr, iface.addr.toIPv4()) == 0) {
+        if (drAddr.compareTo(iface.addr.toIPv4()) == 0) {
             return true;
         }
-        if (bdrAddr.compare(bdrAddr, iface.addr.toIPv4()) == 0) {
+        if (bdrAddr.compareTo(iface.addr.toIPv4()) == 0) {
             return true;
         }
         return false;

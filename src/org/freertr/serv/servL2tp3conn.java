@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.auth.autherChap;
@@ -24,7 +23,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
+public class servL2tp3conn implements Runnable, Comparable<servL2tp3conn> {
 
     /**
      * lower layer
@@ -98,12 +97,12 @@ public class servL2tp3conn implements Runnable, Comparator<servL2tp3conn> {
         return lower + " with " + peer;
     }
 
-    public int compare(servL2tp3conn o1, servL2tp3conn o2) {
-        int i = o1.iface.compare(o1.iface, o2.iface);
+    public int compareTo(servL2tp3conn o) {
+        int i = iface.compareTo(o.iface);
         if (i != 0) {
             return i;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     /**

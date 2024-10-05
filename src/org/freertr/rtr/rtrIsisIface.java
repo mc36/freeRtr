@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,7 +32,7 @@ import org.freertr.sec.secInfoUtl;
  *
  * @author matecsaba
  */
-public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
+public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
 
     /**
      * ipinfo config
@@ -318,11 +317,11 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         }
     }
 
-    public int compare(rtrIsisIface o1, rtrIsisIface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrIsisIface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;
@@ -978,7 +977,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
         if (amIdis(lev)) {
             return true;
         }
-        return peer.compare(peer, getDisAddr(lev)) == 0;
+        return peer.compareTo(getDisAddr(lev)) == 0;
     }
 
     private rtrIsisNeigh findDIS(int lev) {
@@ -996,14 +995,14 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             if (ntry.level.level != lev) {
                 continue;
             }
-            if (ntry.rtrID.compare(ntry.peerDisA, ntry.rtrID) != 0) {
+            if (ntry.peerDisA.compareTo(ntry.rtrID) != 0) {
                 continue;
             }
             if (ntry.rtrPri < pri) {
                 continue;
             }
             if (ntry.rtrPri == pri) {
-                if (adr.compare(adr, ntry.ethAddr) > 0) {
+                if (adr.compareTo(ntry.ethAddr) > 0) {
                     continue;
                 }
             }
@@ -1033,7 +1032,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             adr.fromBuf(nei.peerDisA.getBytes(), 0);
             circ = nei.peerDisI;
         }
-        if ((adr.compare(adr, old) == 0) && (cir == circ)) {
+        if ((adr.compareTo(old) == 0) && (cir == circ)) {
             return circ;
         }
         if (debugger.rtrIsisEvnt) {
@@ -1100,7 +1099,7 @@ public class rtrIsisIface implements Comparator<rtrIsisIface>, ifcUp {
             return false;
         }
         addrIsis adr = getDisAddr(lev);
-        return adr.compare(lower.routerID, adr) == 0;
+        return lower.routerID.compareTo(adr) == 0;
     }
 
     /**

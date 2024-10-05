@@ -1,6 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Comparator;
 import org.freertr.pack.packHolder;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -12,7 +11,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class ifcBundleIfc implements ifcUp, Comparator<ifcBundleIfc> {
+public class ifcBundleIfc implements ifcUp, Comparable<ifcBundleIfc> {
 
     /**
      * bundling interface number
@@ -171,11 +170,11 @@ public class ifcBundleIfc implements ifcUp, Comparator<ifcBundleIfc> {
         return "" + lowerIf;
     }
 
-    public int compare(ifcBundleIfc v1, ifcBundleIfc v2) {
-        if (v1.ifcNum < v2.ifcNum) {
+    public int compareTo(ifcBundleIfc o) {
+        if (ifcNum < o.ifcNum) {
             return -1;
         }
-        if (v1.ifcNum > v2.ifcNum) {
+        if (ifcNum > o.ifcNum) {
             return +1;
         }
         return 0;

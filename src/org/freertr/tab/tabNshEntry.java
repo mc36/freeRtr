@@ -1,7 +1,6 @@
 package org.freertr.tab;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
@@ -23,7 +22,7 @@ import org.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
+public class tabNshEntry implements Comparable<tabNshEntry>, cfgGeneric {
 
     /**
      * service table
@@ -120,17 +119,17 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
         return sp + " " + si;
     }
 
-    public int compare(tabNshEntry o1, tabNshEntry o2) {
-        if (o1.sp < o2.sp) {
+    public int compareTo(tabNshEntry o) {
+        if (sp < o.sp) {
             return -1;
         }
-        if (o1.sp > o2.sp) {
+        if (sp > o.sp) {
             return +1;
         }
-        if (o1.si < o2.si) {
+        if (si < o.si) {
             return -1;
         }
-        if (o1.si > o2.si) {
+        if (si > o.si) {
             return +1;
         }
         return 0;
@@ -186,7 +185,7 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
             if (o.target == null) {
                 return true;
             }
-            if (target.compare(target, o.target) != 0) {
+            if (target.compareTo(o.target) != 0) {
                 return true;
             }
         }
@@ -198,7 +197,7 @@ public class tabNshEntry implements Comparator<tabNshEntry>, cfgGeneric {
             if (o.tunnelA == null) {
                 return true;
             }
-            if (tunnelA.compare(tunnelA, o.tunnelA) != 0) {
+            if (tunnelA.compareTo(o.tunnelA) != 0) {
                 return true;
             }
         }

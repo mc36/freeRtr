@@ -165,7 +165,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
                 if (ntry.peer == null) {
                     continue;
                 }
-                if (remAdr.compare(remAdr, ntry.peer) != 0) {
+                if (remAdr.compareTo(ntry.peer) != 0) {
                     continue;
                 }
             }
@@ -240,7 +240,7 @@ public class tabConnect<Ta extends addrType, Td extends tabConnectLower> {
                 res++;
                 continue;
             }
-            if (adr.compare(adr, ntry.peer) != 0) {
+            if (adr.compareTo(ntry.peer) != 0) {
                 continue;
             }
             res++;

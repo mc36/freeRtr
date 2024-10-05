@@ -63,7 +63,7 @@ public class ipIfc4 implements ipIfc, ifcUp {
     }
 
     public boolean checkMyAddress(addrIP adr) {
-        return (ipaddr.compare(ipaddr, adr) == 0);
+        return ipaddr.compareTo(adr) == 0;
     }
 
     public addrType checkMyAlias(addrIP adr) {

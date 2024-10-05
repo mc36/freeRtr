@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.tab.tabGen;
 
 /**
@@ -10,7 +9,7 @@ import org.freertr.tab.tabGen;
  * @param <U> type to list
  * @author matecsaba
  */
-public class servP4langStrL<T extends Comparator<T>, U extends Comparator<? super U>> implements Comparator<servP4langStrL<T, U>> {
+public class servP4langStrL<T extends Comparable<T>, U extends Comparable<? super U>> implements Comparable<servP4langStrL<T, U>> {
 
     /**
      * the data
@@ -32,8 +31,8 @@ public class servP4langStrL<T extends Comparator<T>, U extends Comparator<? supe
         list = new tabGen<U>();
     }
 
-    public int compare(servP4langStrL<T, U> o1, servP4langStrL<T, U> o2) {
-        return o1.data.compare(o1.data, o2.data);
+    public int compareTo(servP4langStrL<T, U> o) {
+        return data.compareTo(o.data);
     }
 
     /**
@@ -52,7 +51,7 @@ public class servP4langStrL<T extends Comparator<T>, U extends Comparator<? supe
         for (int i = 0; i < list.size(); i++) {
             U d1 = list.get(i);
             U d2 = o.list.get(i);
-            if (d1.compare(d1, d2) != 0) {
+            if (d1.compareTo(d2) != 0) {
                 return true;
             }
         }

@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
@@ -3997,7 +3996,7 @@ public class rtrBgpUtil {
      * @param tab table to check
      * @return string
      */
-    public static <T extends Comparator<? super T>> String tabSiz2str(tabGen<T> tab) {
+    public static <T extends Comparable<? super T>> String tabSiz2str(tabGen<T> tab) {
         if (tab == null) {
             return "n/a";
         } else {

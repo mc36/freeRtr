@@ -1001,7 +1001,7 @@ public class rtrOspf6 extends ipRtr {
             if (ned2 != ntry.lsaID) {
                 continue;
             }
-            if (ned1.compare(ned1, ntry.rtrID) != 0) {
+            if (ned1.compareTo(ntry.rtrID) != 0) {
                 continue;
             }
             l.add("" + ntry);

@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -25,7 +24,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servAmtConn implements ifcDn, Comparator<servAmtConn> {
+public class servAmtConn implements ifcDn, Comparable<servAmtConn> {
 
     /**
      * connection
@@ -67,8 +66,8 @@ public class servAmtConn implements ifcDn, Comparator<servAmtConn> {
      */
     public addrMac respmc = addrMac.getRandom();
 
-    public int compare(servAmtConn o1, servAmtConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servAmtConn o) {
+        return conn.compareTo(o.conn);
     }
 
     /**

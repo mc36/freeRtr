@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.tab.tabGen;
@@ -20,7 +19,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
+public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
 
     /**
      * name of routemap
@@ -541,8 +540,8 @@ public class cfgRoump implements Comparator<cfgRoump>, cfgGeneric {
         cmd.badCmd();
     }
 
-    public int compare(cfgRoump o1, cfgRoump o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgRoump o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {

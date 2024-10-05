@@ -1,6 +1,5 @@
 package org.freertr.spf;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
 import org.freertr.tab.tabRouteIface;
@@ -11,7 +10,7 @@ import org.freertr.tab.tabRouteIface;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class spfResult<Ta extends addrType> implements Comparator<spfResult<Ta>> {
+public class spfResult<Ta extends addrType> implements Comparable<spfResult<Ta>> {
 
     /**
      * node handle
@@ -70,14 +69,14 @@ public class spfResult<Ta extends addrType> implements Comparator<spfResult<Ta>>
         hops = hp;
     }
 
-    public int compare(spfResult<Ta> o1, spfResult<Ta> o2) {
-        if (o1.hops < o2.hops) {
+    public int compareTo(spfResult<Ta> o) {
+        if (hops < o.hops) {
             return -1;
         }
-        if (o1.hops > o2.hops) {
+        if (hops > o.hops) {
             return +1;
         }
-        return o1.nodeH.compare(o1.nodeH, o2.nodeH);
+        return nodeH.compareTo(o.nodeH);
     }
 
     public String toString() {

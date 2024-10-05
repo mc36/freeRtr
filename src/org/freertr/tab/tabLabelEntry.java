@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -16,7 +15,7 @@ import org.freertr.util.counter;
  *
  * @author matecsaba
  */
-public class tabLabelEntry implements Comparator<tabLabelEntry> {
+public class tabLabelEntry implements Comparable<tabLabelEntry> {
 
     /**
      * label owner
@@ -303,7 +302,7 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
             if (o.nextHop == null) {
                 return true;
             }
-            if (nextHop.compare(nextHop, o.nextHop) != 0) {
+            if (nextHop.compareTo(o.nextHop) != 0) {
                 return true;
             }
         }
@@ -523,11 +522,11 @@ public class tabLabelEntry implements Comparator<tabLabelEntry> {
         return label + "|" + forwarder + "|" + iface + "|" + nextHop + "|" + s + "|" + cntr.byteRx + a;
     }
 
-    public int compare(tabLabelEntry o1, tabLabelEntry o2) {
-        if (o1.label < o2.label) {
+    public int compareTo(tabLabelEntry o) {
+        if (label < o.label) {
             return -1;
         }
-        if (o1.label > o2.label) {
+        if (label > o.label) {
             return +1;
         }
         return 0;

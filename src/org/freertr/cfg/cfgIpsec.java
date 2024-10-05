@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.sec.secTransform;
@@ -16,7 +15,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
+public class cfgIpsec implements Comparable<cfgIpsec>, cfgGeneric {
 
     /**
      * role mode
@@ -102,8 +101,8 @@ public class cfgIpsec implements Comparator<cfgIpsec>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgIpsec o1, cfgIpsec o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgIpsec o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

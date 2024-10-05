@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwdIface;
@@ -10,7 +9,7 @@ import org.freertr.ip.ipFwdIface;
  *
  * @author matecsaba
  */
-public class tabLabelDup implements Comparator<tabLabelDup> {
+public class tabLabelDup implements Comparable<tabLabelDup> {
 
     /**
      * interface
@@ -53,14 +52,14 @@ public class tabLabelDup implements Comparator<tabLabelDup> {
         if (iface != o.iface) {
             return true;
         }
-        if (hop.compare(hop, o.hop) != 0) {
+        if (hop.compareTo(o.hop) != 0) {
             return true;
         }
         return tabRouteUtil.diffIntList(label, o.label);
     }
 
-    public int compare(tabLabelDup o1, tabLabelDup o2) {
-        return o1.hop.compare(o1.hop, o2.hop);
+    public int compareTo(tabLabelDup o) {
+        return hop.compareTo(o.hop);
     }
 
     public String toString() {

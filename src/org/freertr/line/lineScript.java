@@ -1,7 +1,6 @@
 package org.freertr.line;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.pipe.pipeSide;
@@ -183,7 +182,7 @@ public class lineScript {
 
     private int indexOf(lineScriptNtry ntry) {
         for (int i = 0; i < actions.size(); i++) {
-            if (ntry.compare(ntry, actions.get(i)) == 0) {
+            if (ntry.compareTo(actions.get(i)) == 0) {
                 return i;
             }
         }
@@ -192,7 +191,7 @@ public class lineScript {
 
 }
 
-class lineScriptNtry implements Comparator<lineScriptNtry> {
+class lineScriptNtry implements Comparable<lineScriptNtry> {
 
     public int seq;
 
@@ -210,11 +209,11 @@ class lineScriptNtry implements Comparator<lineScriptNtry> {
         success, failure, onerror, gotoo, disconn
     }
 
-    public int compare(lineScriptNtry o1, lineScriptNtry o2) {
-        if (o1.seq < o2.seq) {
+    public int compareTo(lineScriptNtry o) {
+        if (seq < o.seq) {
             return -1;
         }
-        if (o1.seq > o2.seq) {
+        if (seq > o.seq) {
             return +1;
         }
         return 0;

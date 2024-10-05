@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -209,7 +208,7 @@ public class servSip extends servGeneric implements prtServS {
 
 }
 
-class servSipDoer implements Runnable, Comparator<servSipDoer> {
+class servSipDoer implements Runnable, Comparable<servSipDoer> {
 
     protected String user = "";
 
@@ -229,8 +228,8 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
         new Thread(this).start();
     }
 
-    public int compare(servSipDoer o1, servSipDoer o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servSipDoer o) {
+        return conn.compareTo(o.conn);
     }
 
     protected void sendPack(packSip src) {
@@ -360,7 +359,7 @@ class servSipDoer implements Runnable, Comparator<servSipDoer> {
             url.fromString(encUrl.fromEmail(trg));
             servSipDoer clnt = lower.findClient(url.username);
             if (clnt != null) {
-                if (compare(clnt, this) == 0) {
+                if (compareTo(clnt) == 0) {
                     packSip tx = new packSip(pipe);
                     tx.makeErr(rx, null, "packet to yourself");
                     if (debugger.servSipTraf) {

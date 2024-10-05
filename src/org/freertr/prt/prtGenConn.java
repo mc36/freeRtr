@@ -1,6 +1,5 @@
 package org.freertr.prt;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
@@ -19,7 +18,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectLower {
+public class prtGenConn implements Runnable, Comparable<prtGenConn>, tabConnectLower {
 
     /**
      * notifier of runner
@@ -147,20 +146,20 @@ public class prtGenConn implements Runnable, Comparator<prtGenConn>, tabConnectL
 
     private boolean registered = false;
 
-    public int compare(prtGenConn o1, prtGenConn o2) {
-        if (o1.portLoc < o2.portLoc) {
+    public int compareTo(prtGenConn o) {
+        if (portLoc < o.portLoc) {
             return -1;
         }
-        if (o1.portLoc > o2.portLoc) {
+        if (portLoc > o.portLoc) {
             return +1;
         }
-        if (o1.portRem < o2.portRem) {
+        if (portRem < o.portRem) {
             return -1;
         }
-        if (o1.portRem > o2.portRem) {
+        if (portRem > o.portRem) {
             return +1;
         }
-        return o1.peerAddr.compare(o1.peerAddr, o2.peerAddr);
+        return peerAddr.compareTo(o.peerAddr);
     }
 
     /**

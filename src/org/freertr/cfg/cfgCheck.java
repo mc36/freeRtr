@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +25,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
+public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
 
     /**
      * name of check
@@ -196,8 +195,8 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
         return name;
     }
 
-    public int compare(cfgCheck o1, cfgCheck o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgCheck o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {
@@ -792,7 +791,7 @@ public class cfgCheck implements Comparator<cfgCheck>, cfgGeneric {
 
 }
 
-class cfgCheckRep implements Comparator<cfgCheckRep> {
+class cfgCheckRep implements Comparable<cfgCheckRep> {
 
     public final String src;
 
@@ -807,13 +806,13 @@ class cfgCheckRep implements Comparator<cfgCheckRep> {
         return src + " " + trg;
     }
 
-    public int compare(cfgCheckRep o1, cfgCheckRep o2) {
-        return o1.src.toLowerCase().compareTo(o2.src.toLowerCase());
+    public int compareTo(cfgCheckRep o) {
+        return src.toLowerCase().compareTo(o.src.toLowerCase());
     }
 
 }
 
-class cfgCheckRes implements Comparator<cfgCheckRes> {
+class cfgCheckRes implements Comparable<cfgCheckRes> {
 
     public final String nam;
 
@@ -825,8 +824,8 @@ class cfgCheckRes implements Comparator<cfgCheckRes> {
         return nam;
     }
 
-    public int compare(cfgCheckRes o1, cfgCheckRes o2) {
-        return o1.nam.toLowerCase().compareTo(o2.nam.toLowerCase());
+    public int compareTo(cfgCheckRes o) {
+        return nam.toLowerCase().compareTo(o.nam.toLowerCase());
     }
 
     public String doWork(String l) {

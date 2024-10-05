@@ -1,7 +1,6 @@
 package org.freertr.spf;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -14,7 +13,7 @@ import org.freertr.tab.tabRoute;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class spfNode<Ta extends addrType> implements Comparator<spfNode<Ta>> {
+public class spfNode<Ta extends addrType> implements Comparable<spfNode<Ta>> {
 
     /**
      * node id
@@ -125,8 +124,8 @@ public class spfNode<Ta extends addrType> implements Comparator<spfNode<Ta>> {
         name = nam;
     }
 
-    public int compare(spfNode<Ta> o1, spfNode<Ta> o2) {
-        return o1.name.compare(o1.name, o2.name);
+    public int compareTo(spfNode<Ta> o) {
+        return name.compareTo(o.name);
     }
 
     /**
@@ -141,7 +140,7 @@ public class spfNode<Ta extends addrType> implements Comparator<spfNode<Ta>> {
         int diff = Integer.MAX_VALUE;
         for (int i = 0; i < conn.size(); i++) {
             spfConn<Ta> ntry = conn.get(i);
-            if (peer.compare(peer, ntry.target) != 0) {
+            if (peer.compareTo(ntry.target) != 0) {
                 continue;
             }
             if (met < 0) {

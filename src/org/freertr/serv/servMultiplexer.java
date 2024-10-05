@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -346,7 +345,7 @@ class servMultiplexerConn implements Runnable {
 
 }
 
-class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
+class servMultiplexerTrgt implements Comparable<servMultiplexerTrgt>, Runnable {
 
     public servMultiplexer lower;
 
@@ -407,11 +406,11 @@ class servMultiplexerTrgt implements Comparator<servMultiplexerTrgt>, Runnable {
         return num + " " + addr + " " + port + a;
     }
 
-    public int compare(servMultiplexerTrgt o1, servMultiplexerTrgt o2) {
-        if (o1.num < o2.num) {
+    public int compareTo(servMultiplexerTrgt o) {
+        if (num < o.num) {
             return -1;
         }
-        if (o1.num > o2.num) {
+        if (num > o.num) {
             return +1;
         }
         return 0;

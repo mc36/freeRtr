@@ -291,7 +291,7 @@ public class ifcPppIp4 extends ifcPppNcp {
         }
         if (dat.addr != null) {
             if (parent.remAddrCfg != null) {
-                if (dat.addr.compare(dat.addr, parent.remAddrCfg) != 0) {
+                if (dat.addr.compareTo(parent.remAddrCfg) != 0) {
                     res.addr = remAddrCur.copyBytes();
                     val = true;
                 }
@@ -299,7 +299,7 @@ public class ifcPppIp4 extends ifcPppNcp {
             if (remAddrCur == null) {
                 remAddrCur = dat.addr;
             } else {
-                if (dat.addr.compare(dat.addr, remAddrCur) != 0) {
+                if (dat.addr.compareTo(remAddrCur) != 0) {
                     res.addr = remAddrCur.copyBytes();
                     val = true;
                 }

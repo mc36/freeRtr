@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -30,7 +29,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNeigh> {
+public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrMsdpNeigh> {
 
     /**
      * peer address
@@ -190,8 +189,8 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
         peer = addr;
     }
 
-    public int compare(rtrMsdpNeigh o1, rtrMsdpNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrMsdpNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -231,7 +230,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrMsdpNei
             return true;
         }
         bits.sleep(bits.random(1000, 5000));
-        if (peer.compare(peer, usedIfc.addr) > 0) {
+        if (peer.compareTo(usedIfc.addr) > 0) {
             pipe = parent.tcpCore.streamConnect(new pipeLine(65536, false), usedIfc, 0, peer, rtrMsdp.port, "msdp", -1, passwd, -1, -1);
         } else {
             prtAccept ac = new prtAccept(parent.tcpCore, new pipeLine(65536, false), usedIfc, rtrMsdp.port, peer, 0, "msdp", -1, passwd, -1, -1);

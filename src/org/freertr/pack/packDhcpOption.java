@@ -1,7 +1,6 @@
 package org.freertr.pack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -11,7 +10,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class packDhcpOption implements Comparator<packDhcpOption> {
+public class packDhcpOption implements Comparable<packDhcpOption> {
 
     /**
      * create instance
@@ -29,11 +28,11 @@ public class packDhcpOption implements Comparator<packDhcpOption> {
      */
     public byte[] buffer;
 
-    public int compare(packDhcpOption o1, packDhcpOption o2) {
-        if (o1.number < o2.number) {
+    public int compareTo(packDhcpOption o) {
+        if (number < o.number) {
             return -1;
         }
-        if (o1.number > o2.number) {
+        if (number > o.number) {
             return +1;
         }
         return 0;

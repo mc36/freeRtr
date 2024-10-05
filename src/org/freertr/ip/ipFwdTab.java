@@ -636,7 +636,7 @@ public class ipFwdTab {
                 continue;
             }
             if (ifc.autRouExcld) {
-                if (prf.prefix.compare(prf.prefix, ntry.prefix) == 0) {
+                if (prf.prefix.compareTo(ntry.prefix) == 0) {
                     continue;
                 }
             }
@@ -644,7 +644,7 @@ public class ipFwdTab {
                 if (prf.best.oldHop == null) {
                     continue;
                 }
-                if (prf.best.oldHop.compare(prf.best.oldHop, ntry.best.oldHop) != 0) {
+                if (prf.best.oldHop.compareTo(ntry.best.oldHop) != 0) {
                     continue;
                 }
             } else {
@@ -654,7 +654,7 @@ public class ipFwdTab {
                 if (prf.best.srcRtr.getSize() != ntry.best.srcRtr.getSize()) {
                     continue;
                 }
-                if (prf.best.srcRtr.compare(prf.best.srcRtr, ntry.best.srcRtr) != 0) {
+                if (prf.best.srcRtr.compareTo(ntry.best.srcRtr) != 0) {
                     continue;
                 }
             }
@@ -698,7 +698,7 @@ public class ipFwdTab {
             if (cur == null) {
                 continue;
             }
-            if (ntry.prefix.compare(ntry.prefix, cur.pref) != 0) {
+            if (ntry.prefix.compareTo(cur.pref) != 0) {
                 continue;
             }
             tabRouteEntry<addrIP> imp = cur.getPrefix();
@@ -1226,7 +1226,7 @@ public class ipFwdTab {
                 if (trf.trgIfc != rou.best.iface) {
                     continue;
                 }
-                if (trf.trgHop.compare(trf.trgHop, rou.best.nextHop) != 0) {
+                if (trf.trgHop.compareTo(rou.best.nextHop) != 0) {
                     continue;
                 }
                 rou.best.labelRem = tabLabel.prependLabels(rou.best.labelRem, tabLabel.int2labels(trf.trgLab));
@@ -1509,7 +1509,7 @@ public class ipFwdTab {
                 joinOneGroup(lower, grp, 1);
                 continue;
             }
-            if (oldup.compare(oldup, grp.upstream) == 0) {
+            if (oldup.compareTo(grp.upstream) == 0) {
                 continue;
             }
             joinOneGroup(lower, grp, 1);
@@ -1616,7 +1616,7 @@ public class ipFwdTab {
             ntry.trgHop.setAddr(trg);
         }
         if (oldHop != null) {
-            if (oldHop.compare(oldHop, ntry.trgHop) != 0) {
+            if (oldHop.compareTo(ntry.trgHop) != 0) {
                 ntry.srcLoc = 4;
                 return null;
             }

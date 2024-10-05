@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -207,7 +206,7 @@ public class servTwamp extends servGeneric implements prtServP {
 
 }
 
-class servTwampConn implements Comparator<servTwampConn> {
+class servTwampConn implements Comparable<servTwampConn> {
 
     public prtGenConn conn;
 
@@ -215,8 +214,8 @@ class servTwampConn implements Comparator<servTwampConn> {
 
     public int seq;
 
-    public int compare(servTwampConn o1, servTwampConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servTwampConn o) {
+        return conn.compareTo(o.conn);
     }
 
     public servTwampConn(prtGenConn id, servTwamp parent) {

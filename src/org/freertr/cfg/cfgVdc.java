@@ -2,7 +2,6 @@ package org.freertr.cfg;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
@@ -29,7 +28,7 @@ import org.freertr.util.version;
  *
  * @author matecsaba
  */
-public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
+public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
 
     /**
      * name of this vdc
@@ -290,8 +289,8 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgVdc o1, cfgVdc o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgVdc o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {
@@ -1229,7 +1228,7 @@ public class cfgVdc implements Comparator<cfgVdc>, Runnable, cfgGeneric {
 
 }
 
-class cfgVdcTcp implements Comparator<cfgVdcTcp> {
+class cfgVdcTcp implements Comparable<cfgVdcTcp> {
 
     public int portH;
 
@@ -1239,11 +1238,11 @@ class cfgVdcTcp implements Comparator<cfgVdcTcp> {
 
     public addrIP adr;
 
-    public int compare(cfgVdcTcp o1, cfgVdcTcp o2) {
-        if (o1.portH < o2.portH) {
+    public int compareTo(cfgVdcTcp o) {
+        if (portH < o.portH) {
             return -1;
         }
-        if (o1.portH > o2.portH) {
+        if (portH > o.portH) {
             return +1;
         }
         return 0;
@@ -1272,7 +1271,7 @@ class cfgVdcTcp implements Comparator<cfgVdcTcp> {
 
 }
 
-class cfgVdcPci implements Comparator<cfgVdcPci> {
+class cfgVdcPci implements Comparable<cfgVdcPci> {
 
     public int bus;
 
@@ -1280,23 +1279,23 @@ class cfgVdcPci implements Comparator<cfgVdcPci> {
 
     public int fnc;
 
-    public int compare(cfgVdcPci o1, cfgVdcPci o2) {
-        if (o1.bus < o2.bus) {
+    public int compareTo(cfgVdcPci o) {
+        if (bus < o.bus) {
             return -1;
         }
-        if (o1.bus > o2.bus) {
+        if (bus > o.bus) {
             return +1;
         }
-        if (o1.dev < o2.dev) {
+        if (dev < o.dev) {
             return -1;
         }
-        if (o1.dev > o2.dev) {
+        if (dev > o.dev) {
             return +1;
         }
-        if (o1.fnc < o2.fnc) {
+        if (fnc < o.fnc) {
             return -1;
         }
-        if (o1.fnc > o2.fnc) {
+        if (fnc > o.fnc) {
             return +1;
         }
         return 0;
@@ -1318,7 +1317,7 @@ class cfgVdcPci implements Comparator<cfgVdcPci> {
 
 }
 
-class cfgVdcUsb implements Comparator<cfgVdcUsb> {
+class cfgVdcUsb implements Comparable<cfgVdcUsb> {
 
     public int bus;
 
@@ -1326,23 +1325,23 @@ class cfgVdcUsb implements Comparator<cfgVdcUsb> {
 
     public int sub;
 
-    public int compare(cfgVdcUsb o1, cfgVdcUsb o2) {
-        if (o1.bus < o2.bus) {
+    public int compareTo(cfgVdcUsb o) {
+        if (bus < o.bus) {
             return -1;
         }
-        if (o1.bus > o2.bus) {
+        if (bus > o.bus) {
             return +1;
         }
-        if (o1.prt < o2.prt) {
+        if (prt < o.prt) {
             return -1;
         }
-        if (o1.prt > o2.prt) {
+        if (prt > o.prt) {
             return +1;
         }
-        if (o1.sub < o2.sub) {
+        if (sub < o.sub) {
             return -1;
         }
-        if (o1.sub > o2.sub) {
+        if (sub > o.sub) {
             return +1;
         }
         return 0;

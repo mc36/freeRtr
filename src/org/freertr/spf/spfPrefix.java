@@ -1,7 +1,6 @@
 package org.freertr.spf;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
@@ -13,7 +12,7 @@ import org.freertr.addr.addrType;
  * @param <Ta> type of nodes
  * @author matecsaba
  */
-public class spfPrefix<Ta extends addrType> implements Comparator<spfPrefix<Ta>> {
+public class spfPrefix<Ta extends addrType> implements Comparable<spfPrefix<Ta>> {
 
     /**
      * prefix
@@ -42,8 +41,8 @@ public class spfPrefix<Ta extends addrType> implements Comparator<spfPrefix<Ta>>
         return addrPrefix.ip2str(prefix) + "|" + a;
     }
 
-    public int compare(spfPrefix<Ta> o1, spfPrefix<Ta> o2) {
-        return o1.prefix.compare(o1.prefix, o2.prefix);
+    public int compareTo(spfPrefix<Ta> o) {
+        return prefix.compareTo(o.prefix);
     }
 
 }

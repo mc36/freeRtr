@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipIfc;
 
@@ -9,7 +8,7 @@ import org.freertr.ip.ipIfc;
  *
  * @author matecsaba
  */
-class servOpenflowIfc2 implements Comparator<servOpenflowIfc2> {
+class servOpenflowIfc2 implements Comparable<servOpenflowIfc2> {
 
     /**
      * forwarder interface
@@ -26,8 +25,8 @@ class servOpenflowIfc2 implements Comparator<servOpenflowIfc2> {
      */
     protected servOpenflowIfc1 ifo;
 
-    public int compare(servOpenflowIfc2 o1, servOpenflowIfc2 o2) {
-        return o1.ifc.compare(o1.ifc, o2.ifc);
+    public int compareTo(servOpenflowIfc2 o) {
+        return ifc.compareTo(o.ifc);
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.cfg.cfgAll;
 import org.freertr.util.bits;
 
@@ -9,7 +8,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class servHttpDirs implements Comparator<servHttpDirs> {
+public class servHttpDirs implements Comparable<servHttpDirs> {
 
     /**
      * name of entry
@@ -59,8 +58,8 @@ public class servHttpDirs implements Comparator<servHttpDirs> {
         timMax = Long.MIN_VALUE;
     }
 
-    public int compare(servHttpDirs o1, servHttpDirs o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(servHttpDirs o) {
+        return name.compareTo(o.name);
     }
 
     public String toString() {

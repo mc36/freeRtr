@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.enc.encTlv;
@@ -19,7 +18,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class ipDlepNeigh implements Runnable, Comparator<ipDlepNeigh> {
+public class ipDlepNeigh implements Runnable, Comparable<ipDlepNeigh> {
 
     /**
      * session initialization request
@@ -230,8 +229,8 @@ public class ipDlepNeigh implements Runnable, Comparator<ipDlepNeigh> {
         peer = per.copyBytes();
     }
 
-    public int compare(ipDlepNeigh o1, ipDlepNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(ipDlepNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -526,12 +525,12 @@ public class ipDlepNeigh implements Runnable, Comparator<ipDlepNeigh> {
 
 }
 
-class ipDlepNeighEntry implements Comparator<ipDlepNeighEntry> {
+class ipDlepNeighEntry implements Comparable<ipDlepNeighEntry> {
 
     public addrMac mac = new addrMac();
 
-    public int compare(ipDlepNeighEntry o1, ipDlepNeighEntry o2) {
-        return mac.compare(o1.mac, o2.mac);
+    public int compareTo(ipDlepNeighEntry o) {
+        return mac.compareTo(o.mac);
     }
 
     public String toString() {

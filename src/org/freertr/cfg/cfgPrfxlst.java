@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.tab.tabGen;
@@ -18,7 +17,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
+public class cfgPrfxlst implements Comparable<cfgPrfxlst>, cfgGeneric {
 
     /**
      * name of prefixlist
@@ -161,8 +160,8 @@ public class cfgPrfxlst implements Comparator<cfgPrfxlst>, cfgGeneric {
         prflst.add(ntry);
     }
 
-    public int compare(cfgPrfxlst o1, cfgPrfxlst o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgPrfxlst o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String getPrompt() {

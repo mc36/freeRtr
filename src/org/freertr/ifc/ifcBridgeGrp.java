@@ -1,6 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.addr.addrIP;
  *
  * @author matecsaba
  */
-public class ifcBridgeGrp implements Comparator<ifcBridgeGrp> {
+public class ifcBridgeGrp implements Comparable<ifcBridgeGrp> {
 
     /**
      * address
@@ -29,8 +28,8 @@ public class ifcBridgeGrp implements Comparator<ifcBridgeGrp> {
         adr = addr;
     }
 
-    public int compare(ifcBridgeGrp o1, ifcBridgeGrp o2) {
-        return o1.adr.compare(o1.adr, o2.adr);
+    public int compareTo(ifcBridgeGrp o) {
+        return adr.compareTo(o.adr);
     }
 
     public String toString() {

@@ -1,7 +1,6 @@
 package org.freertr.tab;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
@@ -17,7 +16,7 @@ import org.freertr.util.counter;
  * @param <T> class of address
  * @author matecsaba
  */
-public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEntry<T>> {
+public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEntry<T>> {
 
     /**
      * route distinguisher
@@ -137,7 +136,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
             if (other.nextHop.getSize() != ntry.nextHop.getSize()) {
                 continue;
             }
-            if (other.nextHop.compare(other.nextHop, ntry.nextHop) == 0) {
+            if (other.nextHop.compareTo(ntry.nextHop) == 0) {
                 return ntry;
             }
         }
@@ -274,7 +273,7 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         if (other == null) {
             return 1001;
         }
-        if (compare(this, other) != 0) {
+        if (compareTo(other) != 0) {
             return 1002;
         }
         switch (mod) {
@@ -578,14 +577,14 @@ public class tabRouteEntry<T extends addrType> implements Comparator<tabRouteEnt
         return lst;
     }
 
-    public int compare(tabRouteEntry<T> o1, tabRouteEntry<T> o2) {
-        if (o1.rouDst < o2.rouDst) {
+    public int compareTo(tabRouteEntry<T> o) {
+        if (rouDst < o.rouDst) {
             return -1;
         }
-        if (o1.rouDst > o2.rouDst) {
+        if (rouDst > o.rouDst) {
             return +1;
         }
-        return prefix.compare(o1.prefix, o2.prefix);
+        return prefix.compareTo(o.prefix);
     }
 
 }

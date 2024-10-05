@@ -1,6 +1,5 @@
 package org.freertr.clnt;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -376,7 +375,7 @@ public class clntMpolka implements Runnable, ifcDn {
             int neis = 0;
             for (int i = 0; i < targets[o].peers.size(); i++) {
                 adr = targets[o].peers.get(i);
-                if (adr.compare(adr, targets[o].node) == 0) {
+                if (adr.compareTo(targets[o].node) == 0) {
                     neis |= 1;
                     continue;
                 }
@@ -544,7 +543,7 @@ public class clntMpolka implements Runnable, ifcDn {
 
 }
 
-class clntMpolkaTrg implements Comparator<clntMpolkaTrg> {
+class clntMpolkaTrg implements Comparable<clntMpolkaTrg> {
 
     public addrIP node;
 
@@ -563,26 +562,26 @@ class clntMpolkaTrg implements Comparator<clntMpolkaTrg> {
         return a + " ,";
     }
 
-    public int compare(clntMpolkaTrg o1, clntMpolkaTrg o2) {
-        int i = o1.node.compare(o1.node, o2.node);
+    public int compareTo(clntMpolkaTrg o) {
+        int i = node.compareTo(o.node);
         if (i != 0) {
             return i;
         }
-        if ((o1.through == null) && (o2.through == null)) {
+        if ((through == null) && (o.through == null)) {
             return 0;
         }
-        if (o1.through == null) {
+        if (through == null) {
             return -1;
         }
-        if (o2.through == null) {
+        if (o.through == null) {
             return +1;
         }
-        return o1.through.compare(o1.through, o2.through);
+        return through.compareTo(o.through);
     }
 
 }
 
-class clntMpolkaOut implements Comparator<clntMpolkaOut> {
+class clntMpolkaOut implements Comparable<clntMpolkaOut> {
 
     public final addrIP hop;
 
@@ -601,8 +600,8 @@ class clntMpolkaOut implements Comparator<clntMpolkaOut> {
         nei = new tabGen<tabIndex<addrIP>>();
     }
 
-    public int compare(clntMpolkaOut o1, clntMpolkaOut o2) {
-        return o1.hop.compare(o1.hop, o2.hop);
+    public int compareTo(clntMpolkaOut o) {
+        return hop.compareTo(o.hop);
     }
 
 }

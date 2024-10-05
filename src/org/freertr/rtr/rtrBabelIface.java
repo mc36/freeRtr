@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrEui;
 import org.freertr.addr.addrIP;
@@ -33,7 +32,7 @@ import org.freertr.enc.encTlv;
  *
  * @author matecsaba
  */
-public class rtrBabelIface implements Comparator<rtrBabelIface> {
+public class rtrBabelIface implements Comparable<rtrBabelIface> {
 
     /**
      * advertisement interval
@@ -188,11 +187,11 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         return "babel on " + iface;
     }
 
-    public int compare(rtrBabelIface o1, rtrBabelIface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrBabelIface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;
@@ -481,7 +480,7 @@ public class rtrBabelIface implements Comparator<rtrBabelIface> {
         }
         addrEui ae = new addrEui();
         ae.fromIPv6(ntry.best.aggrRtr.toIPv6());
-        if (ae.compare(ae, last) != 0) {
+        if (ae.compareTo(last) != 0) {
             bits.msbPutW(tlv.valDat, 0, 0); // reserved
             ae.toBuffer(tlv.valDat, 2); // address
             tlv.putBytes(pck, rtrBabel.tlvRtrId, 10, tlv.valDat);

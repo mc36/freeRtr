@@ -461,13 +461,13 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             addrIP adr = new addrIP();
             if (origSrcAddr != null) {
                 adr.setAnd(pck.IPsrc, mask);
-                if (origSrcAddr.compare(origSrcAddr, adr) != 0) {
+                if (origSrcAddr.compareTo(adr) != 0) {
                     return false;
                 }
             }
             if (origTrgAddr != null) {
                 adr.setAnd(pck.IPtrg, mask);
-                if (origTrgAddr.compare(origTrgAddr, adr) != 0) {
+                if (origTrgAddr.compareTo(adr) != 0) {
                     return false;
                 }
             }
@@ -477,7 +477,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             if (!usableAddr(origSrcAddr)) {
                 return false;
             }
-            if (origSrcAddr.compare(origSrcAddr, pck.IPsrc) != 0) {
+            if (origSrcAddr.compareTo(pck.IPsrc) != 0) {
                 return false;
             }
         }
@@ -485,7 +485,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             if (!usableAddr(origTrgAddr)) {
                 return false;
             }
-            if (origTrgAddr.compare(origTrgAddr, pck.IPtrg) != 0) {
+            if (origTrgAddr.compareTo(pck.IPtrg) != 0) {
                 return false;
             }
         }

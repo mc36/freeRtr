@@ -1,7 +1,6 @@
 package org.freertr.pack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
@@ -13,7 +12,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class packDnsZone implements Comparator<packDnsZone> {
+public class packDnsZone implements Comparable<packDnsZone> {
 
     /**
      * name of zone
@@ -387,8 +386,8 @@ public class packDnsZone implements Comparator<packDnsZone> {
         return rev;
     }
 
-    public int compare(packDnsZone o1, packDnsZone o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(packDnsZone o) {
+        return name.compareTo(o.name);
     }
 
 }

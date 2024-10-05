@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -19,7 +18,7 @@ import org.freertr.enc.encTlv;
  *
  * @author matecsaba
  */
-public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
+public class rtrBgpMon implements Comparable<rtrBgpMon>, Runnable {
 
     private final rtrBgp parent;
 
@@ -97,8 +96,8 @@ public class rtrBgpMon implements Comparator<rtrBgpMon>, Runnable {
         return monName;
     }
 
-    public int compare(rtrBgpMon o1, rtrBgpMon o2) {
-        return o1.monName.compareTo(o2.monName);
+    public int compareTo(rtrBgpMon o) {
+        return monName.compareTo(o.monName);
     }
 
     /**

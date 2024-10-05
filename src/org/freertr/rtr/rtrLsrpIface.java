@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -35,7 +34,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServP {
+public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServP {
 
     /**
      * ipinfo config
@@ -327,7 +326,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             if (nei == null) {
                 continue;
             }
-            if (adr.compare(adr, nei.peer) == 0) {
+            if (adr.compareTo(nei.peer) == 0) {
                 return nei;
             }
         }
@@ -819,11 +818,11 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
         return "lsrp on " + iface;
     }
 
-    public int compare(rtrLsrpIface o1, rtrLsrpIface o2) {
-        if (o1.iface.ifwNum < o2.iface.ifwNum) {
+    public int compareTo(rtrLsrpIface o) {
+        if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
-        if (o1.iface.ifwNum > o2.iface.ifwNum) {
+        if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
         }
         return 0;
@@ -953,7 +952,7 @@ public class rtrLsrpIface implements Comparator<rtrLsrpIface>, Runnable, prtServ
             addrIPv4 adr = new addrIPv4();
             pck.getAddr(adr, 0);
             pck.getSkip(4);
-            if (adr.compare(adr, lower.routerID) == 0) {
+            if (adr.compareTo(lower.routerID) == 0) {
                 seen++;
             }
         }

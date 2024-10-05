@@ -73,7 +73,7 @@ class tabGepV1nod<T extends addrType> implements Comparable<tabGepV1nod<T>> {
     }
 
     public int compareTo(tabGepV1nod<T> o) {
-        return pfx.compare(pfx, o.pfx);
+        return pfx.compareTo(o.pfx);
     }
 
 }

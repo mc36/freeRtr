@@ -1,6 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.tab.tabIntUpdater;
@@ -15,7 +14,7 @@ import org.freertr.tab.tabRtrplcN;
  *
  * @author matecsaba
  */
-public class ipRtrAdv implements Comparator<ipRtrAdv> {
+public class ipRtrAdv implements Comparable<ipRtrAdv> {
 
     /**
      * prefix to import
@@ -56,8 +55,8 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
         prefix = prf.copyBytes();
     }
 
-    public int compare(ipRtrAdv o1, ipRtrAdv o2) {
-        return o1.prefix.compare(o1.prefix, o2.prefix);
+    public int compareTo(ipRtrAdv o) {
+        return prefix.compareTo(o.prefix);
     }
 
     /**
@@ -84,7 +83,7 @@ public class ipRtrAdv implements Comparator<ipRtrAdv> {
                     return;
             }
         }
-        if (prefix.compare(prefix, ntry.prefix) != 0) {
+        if (prefix.compareTo(ntry.prefix) != 0) {
             return;
         }
         if (metric != null) {

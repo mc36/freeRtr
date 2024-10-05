@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -37,7 +36,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNeigh> {
+public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNeigh> {
 
     /**
      * ipinfo result
@@ -177,8 +176,8 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         gotMeasure = true;
     }
 
-    public int compare(rtrLsrpNeigh o1, rtrLsrpNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrLsrpNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     /**
@@ -363,7 +362,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
         }
         advert.clear();
         bits.sleep(bits.random(1000, 5000));
-        if (peer.compare(peer, iface.iface.addr) > 0) {
+        if (peer.compareTo(iface.iface.addr) > 0) {
             if (debugger.rtrLsrpEvnt) {
                 logger.debug("accepting " + peer);
             }
@@ -400,7 +399,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 sendErr("startEncryptRequired");
                 return;
             }
-            if (peer.compare(peer, iface.iface.addr) > 0) {
+            if (peer.compareTo(iface.iface.addr) > 0) {
                 if (debugger.rtrLsrpEvnt) {
                     logger.debug("secure client " + peer);
                 }
@@ -641,7 +640,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrLsrpNei
                 continue;
             }
             if (iface.databaseFilter) {
-                if (ntry.rtrId.compare(ntry.rtrId, lower.routerID) != 0) {
+                if (ntry.rtrId.compareTo(lower.routerID) != 0) {
                     continue;
                 }
             }
@@ -787,7 +786,7 @@ class rtrLsrpNeighRcvr implements Runnable {
                 lower.lower.database.put(ntry);
                 lower.lower.todo.set(0);
                 lower.lower.notif.wakeup();
-                if ((ntry.rtrId.compare(ntry.rtrId, lower.lower.routerID) == 0) && (!ntry.hostname.equals(cfgAll.hostName))) {
+                if ((ntry.rtrId.compareTo(lower.lower.routerID) == 0) && (!ntry.hostname.equals(cfgAll.hostName))) {
                     logger.error("duplicate routerid with " + ntry.hostname);
                 }
             }

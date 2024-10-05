@@ -2663,7 +2663,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (best.best.locPref < old.best.locPref) {
             best.best.locPref = old.best.locPref;
         }
-        if (old.best.nextHop.compare(old.best.nextHop, best.best.nextHop) != 0) {
+        if (old.best.nextHop.compareTo(best.best.nextHop) != 0) {
             best.best.locPref++;
         }
         return best;

@@ -1,7 +1,6 @@
 package org.freertr.clnt;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgIfc;
@@ -28,7 +27,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanConn> {
+public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanConn> {
 
     /**
      * parent
@@ -125,14 +124,14 @@ public class clntSdwanConn implements Runnable, prtServP, Comparator<clntSdwanCo
         return "sdwan to " + addr;
     }
 
-    public int compare(clntSdwanConn o1, clntSdwanConn o2) {
-        if (o1.port < o2.port) {
+    public int compareTo(clntSdwanConn o) {
+        if (port < o.port) {
             return -1;
         }
-        if (o1.port > o2.port) {
+        if (port > o.port) {
             return +1;
         }
-        return o1.addr.compare(o1.addr, o2.addr);
+        return addr.compareTo(o.addr);
     }
 
     /**

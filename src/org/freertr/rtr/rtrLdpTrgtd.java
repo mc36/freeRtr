@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
@@ -20,7 +19,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
+public class rtrLdpTrgtd implements Runnable, Comparable<rtrLdpTrgtd> {
 
     /**
      * peer address
@@ -68,8 +67,8 @@ public class rtrLdpTrgtd implements Runnable, Comparator<rtrLdpTrgtd> {
         peer = adr.copyBytes();
     }
 
-    public int compare(rtrLdpTrgtd o1, rtrLdpTrgtd o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrLdpTrgtd o) {
+        return peer.compareTo(o.peer);
     }
 
     public String toString() {

@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
@@ -25,7 +24,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
+public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
 
     /**
      * dynamically created
@@ -403,11 +402,11 @@ public class servP4langIfc implements ifcDn, Comparator<servP4langIfc> {
         lower = p;
     }
 
-    public int compare(servP4langIfc o1, servP4langIfc o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(servP4langIfc o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;

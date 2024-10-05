@@ -332,7 +332,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                 cntr.drop(pck, counter.reasons.notInTab);
                 return;
             }
-            if (acAddr.compare(acAddr, pck.ETHsrc) != 0) {
+            if (acAddr.compareTo(pck.ETHsrc) != 0) {
                 cntr.drop(pck, counter.reasons.badAddr);
                 return;
             }
@@ -389,7 +389,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                 if ((currState & 2) != 0) {
                     return;
                 }
-                if (acAddr.compare(acAddr, pck.ETHsrc) != 0) {
+                if (acAddr.compareTo(pck.ETHsrc) != 0) {
                     cntr.drop(pck, counter.reasons.badAddr);
                     return;
                 }
@@ -401,7 +401,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
                     cntr.drop(pck, counter.reasons.badVal);
                     return;
                 }
-                if (acAddr.compare(acAddr, pck.ETHsrc) != 0) {
+                if (acAddr.compareTo(pck.ETHsrc) != 0) {
                     cntr.drop(pck, counter.reasons.badAddr);
                     return;
                 }

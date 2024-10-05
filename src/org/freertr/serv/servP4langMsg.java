@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.cfg.cfgAll;
 import org.freertr.util.bits;
 
@@ -9,7 +8,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class servP4langMsg implements Comparator<servP4langMsg> {
+public class servP4langMsg implements Comparable<servP4langMsg> {
 
     private final String msg;
 
@@ -36,8 +35,8 @@ public class servP4langMsg implements Comparator<servP4langMsg> {
         return msg + "|" + cnt + "|" + bits.time2str(cfgAll.timeZoneName, lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(lst);
     }
 
-    public int compare(servP4langMsg o1, servP4langMsg o2) {
-        return o1.msg.compareTo(o2.msg);
+    public int compareTo(servP4langMsg o) {
+        return msg.compareTo(o.msg);
     }
 
 }

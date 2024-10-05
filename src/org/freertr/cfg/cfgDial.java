@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntSip;
@@ -24,7 +23,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
+public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
 
     /**
      * name of this dialpeer
@@ -277,8 +276,8 @@ public class cfgDial implements Comparator<cfgDial>, cfgGeneric {
 
     private clntSip sip;
 
-    public int compare(cfgDial o1, cfgDial o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgDial o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

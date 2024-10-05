@@ -1,6 +1,6 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
+
 import org.freertr.addr.addrType;
 
 /**
@@ -10,7 +10,7 @@ import org.freertr.addr.addrType;
  * @param <Td> data type
  * @author matecsaba
  */
-public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> implements Comparator<tabConnectEntry<Ta, Td>> {
+public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> implements Comparable<tabConnectEntry<Ta, Td>> {
 
     /**
      * create instance
@@ -58,42 +58,42 @@ public class tabConnectEntry<Ta extends addrType, Td extends tabConnectLower> im
      */
     public String passwd;
 
-    public int compare(tabConnectEntry<Ta, Td> o1, tabConnectEntry<Ta, Td> o2) {
-        if (o1.local < o2.local) {
+    public int compareTo(tabConnectEntry<Ta, Td> o) {
+        if (local < o.local) {
             return -1;
         }
-        if (o1.local > o2.local) {
+        if (local > o.local) {
             return +1;
         }
-        if (o1.iface == null) {
-            if (o2.iface != null) {
+        if (iface == null) {
+            if (o.iface != null) {
                 return -1;
             }
         } else {
-            if (o2.iface == null) {
+            if (o.iface == null) {
                 return +1;
             }
-            int i = o1.iface.compare(o1.iface, o2.iface);
+            int i = iface.compareTo(o.iface);
             if (i != 0) {
                 return i;
             }
         }
-        if (o1.remote < o2.remote) {
+        if (remote < o.remote) {
             return -1;
         }
-        if (o1.remote > o2.remote) {
+        if (remote > o.remote) {
             return +1;
         }
-        if (o1.peer == null) {
-            if (o2.peer != null) {
+        if (peer == null) {
+            if (o.peer != null) {
                 return +1;
             }
             return 0;
         }
-        if (o2.peer == null) {
+        if (o.peer == null) {
             return -1;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     public String toString() {

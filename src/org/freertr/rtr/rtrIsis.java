@@ -2068,7 +2068,7 @@ public class rtrIsis extends ipRtr {
                 if (nei.level.level != lev) {
                     continue;
                 }
-                if (adr.compare(adr, nei.ifcAddr) == 0) {
+                if (adr.compareTo(nei.ifcAddr) == 0) {
                     return nei;
                 }
             }
@@ -2121,7 +2121,7 @@ public class rtrIsis extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            if (ned.compare(ned, ntry.srcID) != 0) {
+            if (ned.compareTo(ntry.srcID) != 0) {
                 continue;
             }
             l.add("" + ntry);

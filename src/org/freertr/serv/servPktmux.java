@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -262,7 +261,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
 
 }
 
-class servPktmuxConn implements Runnable, Comparator<servPktmuxConn> {
+class servPktmuxConn implements Runnable, Comparable<servPktmuxConn> {
 
     public final servPktmux lower;
 
@@ -294,14 +293,14 @@ class servPktmuxConn implements Runnable, Comparator<servPktmuxConn> {
         return proxy + " " + addr + " " + port;
     }
 
-    public int compare(servPktmuxConn o1, servPktmuxConn o2) {
-        if (o1.port < o2.port) {
+    public int compareTo(servPktmuxConn o) {
+        if (port < o.port) {
             return -1;
         }
-        if (o1.port > o2.port) {
+        if (port > o.port) {
             return +1;
         }
-        return o1.addr.compare(o1.addr, o2.addr);
+        return addr.compareTo(o.addr);
     }
 
     public void doRound() {
@@ -351,7 +350,7 @@ class servPktmuxConn implements Runnable, Comparator<servPktmuxConn> {
 
 }
 
-class servPktmuxPort implements Comparator<servPktmuxPort>, ifcUp {
+class servPktmuxPort implements Comparable<servPktmuxPort>, ifcUp {
 
     public final int id;
 
@@ -372,11 +371,11 @@ class servPktmuxPort implements Comparator<servPktmuxPort>, ifcUp {
         return ifc + " " + id;
     }
 
-    public int compare(servPktmuxPort o1, servPktmuxPort o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(servPktmuxPort o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;

@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.pipe.pipeLine;
@@ -146,7 +145,7 @@ public class servDcp extends servGeneric implements prtServS {
 
 }
 
-class servDcpDoer implements Runnable, Comparator<servDcpDoer> {
+class servDcpDoer implements Runnable, Comparable<servDcpDoer> {
 
     public String name;
 
@@ -166,8 +165,8 @@ class servDcpDoer implements Runnable, Comparator<servDcpDoer> {
         new Thread(this).start();
     }
 
-    public int compare(servDcpDoer o1, servDcpDoer o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(servDcpDoer o) {
+        return name.compareTo(o.name);
     }
 
     public void sendLn(String s) {

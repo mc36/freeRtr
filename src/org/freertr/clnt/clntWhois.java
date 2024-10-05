@@ -1,7 +1,6 @@
 package org.freertr.clnt;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -358,7 +357,7 @@ public class clntWhois {
 
 }
 
-class clntWhoisAsn implements Comparator<clntWhoisAsn> {
+class clntWhoisAsn implements Comparable<clntWhoisAsn> {
 
     /**
      * as number
@@ -390,11 +389,11 @@ class clntWhoisAsn implements Comparator<clntWhoisAsn> {
         created = bits.getTime();
     }
 
-    public int compare(clntWhoisAsn o1, clntWhoisAsn o2) {
-        if (o1.asn < o2.asn) {
+    public int compareTo(clntWhoisAsn o) {
+        if (asn < o.asn) {
             return -1;
         }
-        if (o1.asn > o2.asn) {
+        if (asn > o.asn) {
             return +1;
         }
         return 0;

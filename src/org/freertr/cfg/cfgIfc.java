@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -176,7 +175,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
+public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
 
     /**
      * name of this interface
@@ -2259,9 +2258,9 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         return res;
     }
 
-    public int compare(cfgIfc o1, cfgIfc o2) {
-        String s1 = o1.name.toLowerCase();
-        String s2 = o2.name.toLowerCase();
+    public int compareTo(cfgIfc o) {
+        String s1 = name.toLowerCase();
+        String s2 = o.name.toLowerCase();
         boolean l1 = s1.startsWith("template");
         boolean l2 = s2.startsWith("template");
         if (l1 != l2) {
@@ -4526,7 +4525,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
                 tunL2tp3.srcIfc = tunSrc;
                 tunL2tp3.target = "" + tunTrg;
                 tunL2tp3.vcid = "" + tunKey;
-                tunL2tp3.direction = tunTrg.compare(tunTrg, ifc.addr) < 0;
+                tunL2tp3.direction = tunTrg.compareTo(ifc.addr) < 0;
                 tunL2tp3.sendingTOS = tunTOS;
                 tunL2tp3.sendingDFN = tunDFN;
                 tunL2tp3.sendingFLW = tunFLW;
@@ -5616,7 +5615,7 @@ public class cfgIfc implements Comparator<cfgIfc>, cfgGeneric {
         if (adr == null) {
             return;
         }
-        if (adr.compare(adr, tunTrg) == 0) {
+        if (adr.compareTo(tunTrg) == 0) {
             return;
         }
         tunTrg = adr;

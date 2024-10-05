@@ -1,7 +1,6 @@
 package org.freertr.clnt;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
@@ -30,7 +29,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn {
+public class clntMplsTeP2p implements Comparable<clntMplsTeP2p>, Runnable, ifcDn {
 
     /**
      * create instance
@@ -153,8 +152,8 @@ public class clntMplsTeP2p implements Comparator<clntMplsTeP2p>, Runnable, ifcDn
         return "p2pte to " + target;
     }
 
-    public int compare(clntMplsTeP2p o1, clntMplsTeP2p o2) {
-        return o1.target.compare(o1.target, o2.target);
+    public int compareTo(clntMplsTeP2p o) {
+        return target.compareTo(o.target);
     }
 
     /**

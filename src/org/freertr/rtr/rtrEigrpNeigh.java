@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -21,7 +20,7 @@ import org.freertr.sec.secInfoWrk;
  *
  * @author matecsaba
  */
-public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpNeigh> {
+public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpNeigh> {
 
     /**
      * ipinfo result
@@ -188,8 +187,8 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparator<rtrEigrpN
         lastHeard = bits.getTime();
     }
 
-    public int compare(rtrEigrpNeigh o1, rtrEigrpNeigh o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(rtrEigrpNeigh o) {
+        return peer.compareTo(o.peer);
     }
 
     public String toString() {

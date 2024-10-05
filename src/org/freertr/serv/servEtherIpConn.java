@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.ifc.ifcBridgeIfc;
@@ -14,7 +13,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
+public class servEtherIpConn implements Runnable, Comparable<servEtherIpConn> {
 
     /**
      * lower layer
@@ -98,12 +97,12 @@ public class servEtherIpConn implements Runnable, Comparator<servEtherIpConn> {
         return lower.srvVrf.getFwd(peer);
     }
 
-    public int compare(servEtherIpConn o1, servEtherIpConn o2) {
-        int i = o1.iface.compare(o1.iface, o2.iface);
+    public int compareTo(servEtherIpConn o) {
+        int i = iface.compareTo(o.iface);
         if (i != 0) {
             return i;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     /**

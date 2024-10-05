@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.io.RandomAccessFile;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -15,7 +14,7 @@ import org.freertr.util.logFil;
  *
  * @author matecsaba
  */
-public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
+public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
 
     /**
      * bgp type
@@ -65,8 +64,8 @@ public class rtrBgpMrt implements Comparator<rtrBgpMrt> {
         return dumpName;
     }
 
-    public int compare(rtrBgpMrt o1, rtrBgpMrt o2) {
-        return o1.dumpName.compareTo(o2.dumpName);
+    public int compareTo(rtrBgpMrt o) {
+        return dumpName.compareTo(o.dumpName);
     }
 
     /**

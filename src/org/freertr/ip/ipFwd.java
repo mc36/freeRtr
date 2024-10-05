@@ -1,7 +1,6 @@
 package org.freertr.ip;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
@@ -62,7 +61,7 @@ import org.freertr.util.syncInt;
  *
  * @author matecsaba
  */
-public class ipFwd implements Runnable, Comparator<ipFwd> {
+public class ipFwd implements Runnable, Comparable<ipFwd> {
 
     /**
      * the ip version
@@ -552,17 +551,17 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         return vrfName;
     }
 
-    public int compare(ipFwd o1, ipFwd o2) {
-        if (o1.vrfNum < o2.vrfNum) {
+    public int compareTo(ipFwd o) {
+        if (vrfNum < o.vrfNum) {
             return -1;
         }
-        if (o1.vrfNum > o2.vrfNum) {
+        if (vrfNum > o.vrfNum) {
             return +1;
         }
-        if (o1.ipVersion < o2.ipVersion) {
+        if (ipVersion < o.ipVersion) {
             return -1;
         }
-        if (o1.ipVersion > o2.ipVersion) {
+        if (ipVersion > o.ipVersion) {
             return +1;
         }
         return 0;
@@ -1490,10 +1489,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
                 if (asm.IPid != pck.IPid) {
                     continue;
                 }
-                if (asm.IPsrc.compare(asm.IPsrc, pck.IPsrc) != 0) {
+                if (asm.IPsrc.compareTo(pck.IPsrc) != 0) {
                     continue;
                 }
-                if (asm.IPsrc.compare(asm.IPtrg, pck.IPtrg) != 0) {
+                if (asm.IPtrg.compareTo(pck.IPtrg) != 0) {
                     continue;
                 }
                 o = i;
@@ -2523,7 +2522,7 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ntry == null) {
             return;
         }
-        if (ntry.src.compare(ntry.src, pck.IPtrg) != 0) {
+        if (ntry.src.compareTo(pck.IPtrg) != 0) {
             return;
         }
         if (!ntry.multi) {
@@ -2557,10 +2556,10 @@ public class ipFwd implements Runnable, Comparator<ipFwd> {
         if (ntry == null) {
             return;
         }
-        if (ntry.trg.compare(ntry.trg, pck.IPtrg) != 0) {
+        if (ntry.trg.compareTo(pck.IPtrg) != 0) {
             return;
         }
-        if (ntry.src.compare(ntry.src, pck.IPsrc) != 0) {
+        if (ntry.src.compareTo(pck.IPsrc) != 0) {
             return;
         }
         if (!ntry.multi) {

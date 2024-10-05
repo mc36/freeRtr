@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.pipe.pipeConnect;
 import org.freertr.pipe.pipeDiscard;
@@ -21,7 +20,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
+public class cfgPrcss implements Comparable<cfgPrcss>, Runnable, cfgGeneric {
 
     /**
      * name of this process
@@ -155,8 +154,8 @@ public class cfgPrcss implements Comparator<cfgPrcss>, Runnable, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgPrcss o1, cfgPrcss o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgPrcss o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

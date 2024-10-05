@@ -548,7 +548,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             if (stat == null) {
                 continue;
             }
-            if (spk.compare(spk, stat.from) != 0) {
+            if (spk.compareTo(stat.from) != 0) {
                 continue;
             }
             stat.state = st;
@@ -705,7 +705,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         res.from = frm.copyBytes();
         for (int i = 0; i < stats.size(); i++) {
             servBmp2mrtStat cur = stats.get(i);
-            if (frm.compare(frm, cur.from) != 0) {
+            if (frm.compareTo(cur.from) != 0) {
                 continue;
             }
             res.addCnts(cur);

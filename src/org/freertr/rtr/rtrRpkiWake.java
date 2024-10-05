@@ -1,17 +1,13 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
-import org.freertr.cfg.cfgRtr;
 import org.freertr.tab.tabRouteAttr;
-import org.freertr.util.bits;
-import org.freertr.util.cmds;
 
 /**
  * wake up remote
  *
  * @author matecsaba
  */
-public class rtrRpkiWake implements Comparator<rtrRpkiWake> {
+public class rtrRpkiWake implements Comparable<rtrRpkiWake> {
 
     /**
      * remote type
@@ -34,15 +30,15 @@ public class rtrRpkiWake implements Comparator<rtrRpkiWake> {
         remN = n;
     }
 
-    public int compare(rtrRpkiWake o1, rtrRpkiWake o2) {
-        int i = o1.remT.compareTo(o2.remT);
+    public int compareTo(rtrRpkiWake o) {
+        int i = remT.compareTo(o.remT);
         if (i != 0) {
             return i;
         }
-        if (o1.remN < o2.remN) {
+        if (remN < o.remN) {
             return -1;
         }
-        if (o1.remN > o2.remN) {
+        if (remN > o.remN) {
             return +1;
         }
         return 0;

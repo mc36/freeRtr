@@ -1,6 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.ip.ipCor;
@@ -23,7 +22,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc> {
+public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparable<ifcBridgeIfc> {
 
     /**
      * bridging interface number
@@ -449,11 +448,11 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparator<ifcBridgeIfc
         return p;
     }
 
-    public int compare(ifcBridgeIfc v1, ifcBridgeIfc v2) {
-        if (v1.ifcNum < v2.ifcNum) {
+    public int compareTo(ifcBridgeIfc o) {
+        if (ifcNum < o.ifcNum) {
             return -1;
         }
-        if (v1.ifcNum > v2.ifcNum) {
+        if (ifcNum > o.ifcNum) {
             return +1;
         }
         return 0;

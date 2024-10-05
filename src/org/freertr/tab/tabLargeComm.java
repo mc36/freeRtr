@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import org.freertr.util.bits;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class tabLargeComm implements Comparator<tabLargeComm> {
+public class tabLargeComm implements Comparable<tabLargeComm> {
 
     /**
      * create instance
@@ -70,23 +69,23 @@ public class tabLargeComm implements Comparator<tabLargeComm> {
         return d;
     }
 
-    public int compare(tabLargeComm o1, tabLargeComm o2) {
-        if (o1.as < o2.as) {
+    public int compareTo(tabLargeComm o) {
+        if (as < o.as) {
             return -1;
         }
-        if (o1.as > o2.as) {
+        if (as > o.as) {
             return +1;
         }
-        if (o1.d1 < o2.d1) {
+        if (d1 < o.d1) {
             return -1;
         }
-        if (o1.d1 > o2.d1) {
+        if (d1 > o.d1) {
             return +1;
         }
-        if (o1.d2 < o2.d2) {
+        if (d2 < o.d2) {
             return -1;
         }
-        if (o1.d2 > o2.d2) {
+        if (d2 > o.d2) {
             return +1;
         }
         return 0;

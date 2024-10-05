@@ -1,7 +1,6 @@
 package org.freertr.ip;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.ifc.ifcBridge;
@@ -315,7 +314,7 @@ public class ipFwdBier {
 
 }
 
-class ipFwdBierPeer implements Comparator<ipFwdBierPeer> {
+class ipFwdBierPeer implements Comparable<ipFwdBierPeer> {
 
     public addrIP addr;
 
@@ -325,8 +324,8 @@ class ipFwdBierPeer implements Comparator<ipFwdBierPeer> {
 
     public tabLabelBierN via;
 
-    public int compare(ipFwdBierPeer o1, ipFwdBierPeer o2) {
-        return o1.addr.compare(o1.addr, o2.addr);
+    public int compareTo(ipFwdBierPeer o) {
+        return addr.compareTo(o.addr);
     }
 
     public ipFwdBierPeer(addrIP adr) {

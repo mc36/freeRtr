@@ -2769,7 +2769,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh != null) {
             if (neigh.hopChanges) {
                 if ((old.best.nextHop != null) && (ntry.best.nextHop != null)) {
-                    if (old.best.nextHop.compare(old.best.nextHop, ntry.best.nextHop) != 0) {
+                    if (old.best.nextHop.compareTo(ntry.best.nextHop) != 0) {
                         logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from nexthop " + old.best.nextHop + " to " + ntry.best.nextHop);
                     }
                 }
@@ -3086,7 +3086,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 addrIP a = new addrIP();
                 a.fromIPv4addr(parent.routerID);
                 if (ntry.best.originator != null) {
-                    if (a.compare(ntry.best.originator, a) == 0) {
+                    if (ntry.best.originator.compareTo(a) == 0) {
                         repOrgnId++;
                         return true;
                     }
@@ -3106,7 +3106,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 a = new addrIP();
                 a.fromIPv4addr(parent.routerID);
-                if (a.compare(ntry.best.originator, a) == 0) {
+                if (ntry.best.originator.compareTo(a) == 0) {
                     repOrgnId++;
                     return true;
                 }

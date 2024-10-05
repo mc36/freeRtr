@@ -1,7 +1,6 @@
 package org.freertr.ifc;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -419,7 +418,7 @@ class ifcLldpTxAdv extends TimerTask {
 
 }
 
-class ifcLldpNeigh implements Comparator<ifcLldpNeigh> {
+class ifcLldpNeigh implements Comparable<ifcLldpNeigh> {
 
     public addrMac peer;
 
@@ -466,8 +465,8 @@ class ifcLldpNeigh implements Comparator<ifcLldpNeigh> {
         l.add("cfg capa|" + ifcLldp.capability2string(capaCfg));
     }
 
-    public int compare(ifcLldpNeigh o1, ifcLldpNeigh o2) {
-        return o1.sysName.compareTo(o2.sysName);
+    public int compareTo(ifcLldpNeigh o) {
+        return sysName.compareTo(o.sysName);
     }
 
 }

@@ -1,7 +1,7 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.pack.packHolder;
@@ -372,7 +372,7 @@ class servTelemetryMeas {
 
 }
 
-class servTelemetrySens implements Comparator<servTelemetrySens> {
+class servTelemetrySens implements Comparable<servTelemetrySens> {
 
     public String path;
 
@@ -384,17 +384,17 @@ class servTelemetrySens implements Comparator<servTelemetrySens> {
 
     public List<servTelemetryMeas> meas = new ArrayList<servTelemetryMeas>();
 
-    public int compare(servTelemetrySens o1, servTelemetrySens o2) {
-        int i = o1.path.compareTo(o2.path);
+    public int compareTo(servTelemetrySens o) {
+        int i = path.compareTo(o.path);
         if (i != 0) {
             return i;
         }
-        return o1.key.compareTo(o2.key);
+        return key.compareTo(o.key);
     }
 
 }
 
-class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
+class servTelemetryConn implements Comparable<servTelemetryConn>, Runnable {
 
     public addrIP peer;
 
@@ -416,8 +416,8 @@ class servTelemetryConn implements Comparator<servTelemetryConn>, Runnable {
         peer = addr;
     }
 
-    public int compare(servTelemetryConn o1, servTelemetryConn o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(servTelemetryConn o) {
+        return peer.compareTo(o.peer);
     }
 
     private encPrtbufEntry getSubfld(encPrtbuf pb, int seq) {

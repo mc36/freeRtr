@@ -83,7 +83,7 @@ public class rtrBgpEvpnPbb implements ifcUp {
             cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
-        if (src.compare(src, evpn.bbmac) == 0) {
+        if (src.compareTo(evpn.bbmac) == 0) {
             cntr.drop(pck, counter.reasons.badAddr);
             return;
         }

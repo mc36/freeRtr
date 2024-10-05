@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.tab.tabRouteIface;
@@ -10,7 +9,7 @@ import org.freertr.tab.tabRouteIface;
  *
  * @author matecsaba
  */
-public class servP4langNei implements Comparator<servP4langNei> {
+public class servP4langNei implements Comparable<servP4langNei> {
 
     /**
      * peer ip
@@ -88,18 +87,18 @@ public class servP4langNei implements Comparator<servP4langNei> {
         iface = ifc;
     }
 
-    public int compare(servP4langNei o1, servP4langNei o2) {
-        int i = o1.iface.compare(o1.iface, o2.iface);
+    public int compareTo(servP4langNei o) {
+        int i = iface.compareTo(o.iface);
         if (i != 0) {
             return i;
         }
-        if (o1.iface.cloned != null) {
+        if (iface.cloned != null) {
             return 0;
         }
-        if ((o1.iface.ifc.type == tabRouteIface.ifaceType.dialer) || (o1.iface.ifc.type == tabRouteIface.ifaceType.tunnel) || (o1.iface.ifc.type == tabRouteIface.ifaceType.virtppp) || (o1.iface.ifc.type == tabRouteIface.ifaceType.template)) {
+        if ((iface.ifc.type == tabRouteIface.ifaceType.dialer) || (iface.ifc.type == tabRouteIface.ifaceType.tunnel) || (iface.ifc.type == tabRouteIface.ifaceType.virtppp) || (iface.ifc.type == tabRouteIface.ifaceType.template)) {
             return 0;
         }
-        return o1.adr.compare(o1.adr, o2.adr);
+        return adr.compareTo(o.adr);
     }
 
     /**

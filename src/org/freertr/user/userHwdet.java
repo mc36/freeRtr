@@ -2,7 +2,6 @@ package org.freertr.user;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgInit;
 import org.freertr.tab.tabGen;
@@ -690,14 +689,14 @@ public class userHwdet {
 
 }
 
-class userHwdetIface implements Comparator<userHwdetIface> {
+class userHwdetIface implements Comparable<userHwdetIface> {
 
     public String name = "";
 
     public String mac = "";
 
-    public int compare(userHwdetIface t, userHwdetIface t1) {
-        return t.name.compareTo(t1.name);
+    public int compareTo(userHwdetIface o) {
+        return name.compareTo(o.name);
     }
 
     public String toString() {

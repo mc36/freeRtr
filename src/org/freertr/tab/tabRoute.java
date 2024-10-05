@@ -162,7 +162,7 @@ public class tabRoute<T extends addrType> {
         tabRouteEntry<T> lst = get(0);
         for (int i = 1; i < size(); i++) {
             tabRouteEntry<T> cur = get(i);
-            if (lst.compare(lst, cur) >= 0) {
+            if (lst.compareTo(cur) >= 0) {
                 return i;
             }
             lst = cur;
@@ -949,7 +949,7 @@ public class tabRoute<T extends addrType> {
         one.fromString("::1");
         for (int i = 0; i < src.prefixes.size(); i++) {
             tabRouteEntry<addrIP> ntry = src.prefixes.get(i);
-            if (nxt.compare(nxt, ntry.prefix.broadcast) >= 0) {
+            if (nxt.compareTo(ntry.prefix.broadcast) >= 0) {
                 continue;
             }
             addrIP adr = new addrIP();
@@ -962,7 +962,7 @@ public class tabRoute<T extends addrType> {
     }
 
     private static void unusedPrefixes1(List<String> lst, addrIP beg, addrIP end) {
-        if (beg.compare(beg, end) >= 0) {
+        if (beg.compareTo(end) >= 0) {
             return;
         }
         lst.add(beg + " - " + end);

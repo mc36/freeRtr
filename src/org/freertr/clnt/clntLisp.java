@@ -1,6 +1,5 @@
 package org.freertr.clnt;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -23,7 +22,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class clntLisp implements Comparator<clntLisp>, Runnable, prtServP, ifcDn {
+public class clntLisp implements Comparable<clntLisp>, Runnable, prtServP, ifcDn {
 
     /**
      * create instance
@@ -99,8 +98,8 @@ public class clntLisp implements Comparator<clntLisp>, Runnable, prtServP, ifcDn
         return "lisp to " + target;
     }
 
-    public int compare(clntLisp o1, clntLisp o2) {
-        return o1.target.compare(o1.target, o2.target);
+    public int compareTo(clntLisp o) {
+        return target.compareTo(o.target);
     }
 
     /**

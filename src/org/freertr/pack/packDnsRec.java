@@ -1,7 +1,6 @@
 package org.freertr.pack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -15,7 +14,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class packDnsRec implements Comparator<packDnsRec> {
+public class packDnsRec implements Comparable<packDnsRec> {
 
     /**
      * create instance
@@ -971,15 +970,15 @@ public class packDnsRec implements Comparator<packDnsRec> {
         }
     }
 
-    public int compare(packDnsRec o1, packDnsRec o2) {
+    public int compareTo(packDnsRec o) {
         final int cmp = 0xffff;
-        if ((o1.typ & cmp) < (o2.typ & cmp)) {
+        if ((typ & cmp) < (o.typ & cmp)) {
             return -1;
         }
-        if ((o1.typ & cmp) > (o2.typ & cmp)) {
+        if ((typ & cmp) > (o.typ & cmp)) {
             return +1;
         }
-        return o1.name.compareTo(o2.name);
+        return name.compareTo(o.name);
     }
 
 }

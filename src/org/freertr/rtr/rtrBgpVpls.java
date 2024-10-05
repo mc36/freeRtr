@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -27,7 +26,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
+public class rtrBgpVpls implements Comparable<rtrBgpVpls> {
 
     /**
      * id number
@@ -79,11 +78,11 @@ public class rtrBgpVpls implements Comparator<rtrBgpVpls> {
         parent = p;
     }
 
-    public int compare(rtrBgpVpls o1, rtrBgpVpls o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(rtrBgpVpls o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;

@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.auth.authLocal;
@@ -26,7 +25,7 @@ import org.freertr.util.notifier;
  *
  * @author matecsaba
  */
-public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
+public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
 
     /**
      * create instance
@@ -151,8 +150,8 @@ public class cfgScrpt implements Comparator<cfgScrpt>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgScrpt o1, cfgScrpt o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgScrpt o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

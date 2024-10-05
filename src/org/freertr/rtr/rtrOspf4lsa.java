@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.addr.addrIPv4;
 import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
@@ -10,7 +9,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrOspf4lsa implements Comparator<rtrOspf4lsa> {
+public class rtrOspf4lsa implements Comparable<rtrOspf4lsa> {
 
     /**
      * header size
@@ -237,18 +236,18 @@ public class rtrOspf4lsa implements Comparator<rtrOspf4lsa> {
         return n;
     }
 
-    public int compare(rtrOspf4lsa o1, rtrOspf4lsa o2) {
-        if (o1.lsaType < o2.lsaType) {
+    public int compareTo(rtrOspf4lsa o) {
+        if (lsaType < o.lsaType) {
             return -1;
         }
-        if (o1.lsaType > o2.lsaType) {
+        if (lsaType > o.lsaType) {
             return +1;
         }
-        int i = o1.lsaID.compare(o1.lsaID, o2.lsaID);
+        int i = lsaID.compareTo(o.lsaID);
         if (i != 0) {
             return i;
         }
-        return o1.rtrID.compare(o1.rtrID, o2.rtrID);
+        return rtrID.compareTo(o.rtrID);
     }
 
     /**

@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.io.File;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authGeneric;
 import org.freertr.auth.authResult;
@@ -141,7 +140,7 @@ public class servImap4 extends servGeneric implements prtServS {
     }
 }
 
-class servImap4msg implements Comparator<servImap4msg> {
+class servImap4msg implements Comparable<servImap4msg> {
 
     public String name;
 
@@ -151,8 +150,8 @@ class servImap4msg implements Comparator<servImap4msg> {
 
     public long date;
 
-    public int compare(servImap4msg o1, servImap4msg o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(servImap4msg o) {
+        return name.compareTo(o.name);
     }
 
 }

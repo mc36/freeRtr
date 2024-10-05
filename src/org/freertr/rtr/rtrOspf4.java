@@ -955,10 +955,10 @@ public class rtrOspf4 extends ipRtr {
             if (ntry == null) {
                 continue;
             }
-            if (ned1.compare(ned1, ntry.rtrID) != 0) {
+            if (ned1.compareTo(ntry.rtrID) != 0) {
                 continue;
             }
-            if (ned2.compare(ned2, ntry.lsaID) != 0) {
+            if (ned2.compareTo(ntry.lsaID) != 0) {
                 continue;
             }
             l.add("" + ntry);

@@ -702,7 +702,7 @@ public class spfCalc<Ta extends addrType> {
                 }
             }
             if (to != null) {
-                if (to.compare(to, ntry.name) == 0) {
+                if (to.compareTo(ntry.name) == 0) {
                     res = false;
                     break;
                 }
@@ -753,7 +753,7 @@ public class spfCalc<Ta extends addrType> {
                 if (ecm) {
                     c.target.uplinks.add(upl);
                 }
-                if (upl.compare(c.target.uplink, upl) < 0) {
+                if (c.target.uplink.compareTo(upl) < 0) {
                     continue;
                 }
                 if (!ecm) {
@@ -1423,7 +1423,7 @@ public class spfCalc<Ta extends addrType> {
             if (cur.target.uplink == null) {
                 continue;
             }
-            if (ntry.compare(ntry, cur.target.uplink.nodeH) != 0) {
+            if (ntry.compareTo(cur.target.uplink.nodeH) != 0) {
                 continue;
             }
             down.add(cur);

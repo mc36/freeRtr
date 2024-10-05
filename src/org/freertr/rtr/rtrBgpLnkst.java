@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.ip.ipRtr;
 
 /**
@@ -8,7 +7,7 @@ import org.freertr.ip.ipRtr;
  *
  * @author matecsaba
  */
-public class rtrBgpLnkst implements Comparator<rtrBgpLnkst> {
+public class rtrBgpLnkst implements Comparable<rtrBgpLnkst> {
 
     /**
      * create instance
@@ -26,14 +25,14 @@ public class rtrBgpLnkst implements Comparator<rtrBgpLnkst> {
      */
     public int par;
 
-    public int compare(rtrBgpLnkst o1, rtrBgpLnkst o2) {
-        if (o1.par < o2.par) {
+    public int compareTo(rtrBgpLnkst o) {
+        if (par < o.par) {
             return -1;
         }
-        if (o1.par > o2.par) {
+        if (par > o.par) {
             return +1;
         }
-        return o1.rtr.compare(o1.rtr, o2.rtr);
+        return rtr.compareTo(o.rtr);
     }
 
 }

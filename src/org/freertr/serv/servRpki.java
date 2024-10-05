@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -209,7 +208,7 @@ public class servRpki extends servGeneric implements prtServS {
 
 }
 
-class servRpkiConn implements Runnable, Comparator<servRpkiConn> {
+class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
 
     public final servRpki lower;
 
@@ -230,8 +229,8 @@ class servRpkiConn implements Runnable, Comparator<servRpkiConn> {
         new Thread(this).start();
     }
 
-    public int compare(servRpkiConn o1, servRpkiConn o2) {
-        return o1.peer.compare(o1.peer, o2.peer);
+    public int compareTo(servRpkiConn o) {
+        return peer.compareTo(o.peer);
     }
 
     public void run() {

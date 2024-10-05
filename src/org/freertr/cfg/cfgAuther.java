@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authConstant;
 import org.freertr.auth.authGeneric;
@@ -19,7 +18,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
+public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
 
     /**
      * name of this user list
@@ -97,8 +96,8 @@ public class cfgAuther implements Comparator<cfgAuther>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgAuther o1, cfgAuther o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgAuther o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

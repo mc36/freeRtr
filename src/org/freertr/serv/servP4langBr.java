@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.cfg.cfgBrdg;
 import org.freertr.ifc.ifcBridgeAdr;
 import org.freertr.ifc.ifcBridgeIfc;
@@ -12,7 +11,7 @@ import org.freertr.tab.tabGen;
  *
  * @author matecsaba
  */
-public class servP4langBr implements Comparator<servP4langBr> {
+public class servP4langBr implements Comparable<servP4langBr> {
 
     /**
      * bridge id
@@ -58,11 +57,11 @@ public class servP4langBr implements Comparator<servP4langBr> {
         id = i;
     }
 
-    public int compare(servP4langBr o1, servP4langBr o2) {
-        if (o1.id < o2.id) {
+    public int compareTo(servP4langBr o) {
+        if (id < o.id) {
             return -1;
         }
-        if (o1.id > o2.id) {
+        if (id > o.id) {
             return +1;
         }
         return 0;

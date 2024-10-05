@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.tab.tabGen;
@@ -17,7 +16,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
+public class cfgObjnet implements Comparable<cfgObjnet>, cfgGeneric {
 
     /**
      * name of access list
@@ -55,8 +54,8 @@ public class cfgObjnet implements Comparator<cfgObjnet>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgObjnet o1, cfgObjnet o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgObjnet o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public void getHelp(userHelping l) {

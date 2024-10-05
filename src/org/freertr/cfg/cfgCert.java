@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.cry.cryCertificate;
@@ -16,7 +15,7 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
+public class cfgCert implements Comparable<cfgCert>, cfgGeneric {
 
     /**
      * name of key
@@ -48,8 +47,8 @@ public class cfgCert implements Comparator<cfgCert>, cfgGeneric {
      */
     public static tabGen<userFilter> defaultF;
 
-    public int compare(cfgCert o1, cfgCert o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgCert o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     /**

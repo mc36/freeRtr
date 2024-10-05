@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntDns;
@@ -1486,7 +1485,7 @@ public class cfgInit implements Runnable {
 
 }
 
-class cfgInitMime implements Comparator<cfgInitMime> {
+class cfgInitMime implements Comparable<cfgInitMime> {
 
     protected final String ext;
 
@@ -1502,8 +1501,8 @@ class cfgInitMime implements Comparator<cfgInitMime> {
         mime = m;
     }
 
-    public int compare(cfgInitMime o1, cfgInitMime o2) {
-        return o1.ext.toLowerCase().compareTo(o2.ext.toLowerCase());
+    public int compareTo(cfgInitMime o) {
+        return ext.toLowerCase().compareTo(o.ext.toLowerCase());
     }
 
 }

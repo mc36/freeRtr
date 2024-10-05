@@ -1,6 +1,5 @@
 package org.freertr.clnt;
 
-import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.freertr.cfg.cfgAll;
@@ -342,7 +341,7 @@ class clntVconfWork extends TimerTask {
 
 }
 
-class clntVconfPeer implements Runnable, Comparator<clntVconfPeer> {
+class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
 
     public final clntVconf lower;
 
@@ -378,8 +377,8 @@ class clntVconfPeer implements Runnable, Comparator<clntVconfPeer> {
         pipeOwn = pip.getSide();
     }
 
-    public int compare(clntVconfPeer o1, clntVconfPeer o2) {
-        return o1.target.compareTo(o2.target);
+    public int compareTo(clntVconfPeer o) {
+        return target.compareTo(o.target);
     }
 
     public void startWork() {

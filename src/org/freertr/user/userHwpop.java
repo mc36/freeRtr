@@ -1,7 +1,6 @@
 package org.freertr.user;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
@@ -318,7 +317,7 @@ public class userHwpop {
 
 }
 
-class userHwpopPrt implements Comparator<userHwpopPrt> {
+class userHwpopPrt implements Comparable<userHwpopPrt> {
 
     public int port;
 
@@ -332,11 +331,11 @@ class userHwpopPrt implements Comparator<userHwpopPrt> {
 
     public String desc;
 
-    public int compare(userHwpopPrt o1, userHwpopPrt o2) {
-        if (o1.port < o2.port) {
+    public int compareTo(userHwpopPrt o) {
+        if (port < o.port) {
             return -1;
         }
-        if (o1.port > o2.port) {
+        if (port > o.port) {
             return +1;
         }
         return 0;

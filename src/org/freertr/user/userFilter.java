@@ -1,7 +1,6 @@
 package org.freertr.user;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +14,7 @@ import org.freertr.enc.encXmlEntry;
  *
  * @author matecsaba
  */
-public class userFilter implements Comparator<userFilter> {
+public class userFilter implements Comparable<userFilter> {
 
     /**
      * name of section
@@ -83,12 +82,12 @@ public class userFilter implements Comparator<userFilter> {
         return "sec=" + section + " cmd=" + command + " lst=" + s;
     }
 
-    public int compare(userFilter o1, userFilter o2) {
-        int i = o1.section.compareTo(o2.section);
+    public int compareTo(userFilter o) {
+        int i = section.compareTo(o.section);
         if (i != 0) {
             return i;
         }
-        return o1.command.compareTo(o2.command);
+        return command.compareTo(o.command);
     }
 
     /**
@@ -374,7 +373,7 @@ public class userFilter implements Comparator<userFilter> {
             if (ntry.used) {
                 continue;
             }
-            if (txt.compare(ntry, txt) == 0) {
+            if (ntry.compareTo(txt) == 0) {
                 return ntry;
             }
         }

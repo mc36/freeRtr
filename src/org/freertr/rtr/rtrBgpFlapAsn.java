@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Comparator;
 import org.freertr.clnt.clntWhois;
 import org.freertr.util.bits;
 
@@ -9,7 +8,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class rtrBgpFlapAsn implements Comparator<rtrBgpFlapAsn> {
+public class rtrBgpFlapAsn implements Comparable<rtrBgpFlapAsn> {
 
     /**
      * as number
@@ -37,17 +36,17 @@ public class rtrBgpFlapAsn implements Comparator<rtrBgpFlapAsn> {
         prev = pr;
     }
 
-    public int compare(rtrBgpFlapAsn o1, rtrBgpFlapAsn o2) {
-        if (o1.prev < o2.prev) {
+    public int compareTo(rtrBgpFlapAsn o) {
+        if (prev < o.prev) {
             return -1;
         }
-        if (o1.prev > o2.prev) {
+        if (prev > o.prev) {
             return +1;
         }
-        if (o1.asn < o2.asn) {
+        if (asn < o.asn) {
             return -1;
         }
-        if (o1.asn > o2.asn) {
+        if (asn > o.asn) {
             return +1;
         }
         return 0;

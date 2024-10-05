@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
@@ -20,7 +19,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
+public class servVxlanConn implements ifcDn, Comparable<servVxlanConn> {
 
     private servVxlan lower;
 
@@ -49,8 +48,8 @@ public class servVxlanConn implements ifcDn, Comparator<servVxlanConn> {
      */
     protected long created;
 
-    public int compare(servVxlanConn o1, servVxlanConn o2) {
-        return o1.conn.compare(o1.conn, o2.conn);
+    public int compareTo(servVxlanConn o) {
+        return conn.compareTo(o.conn);
     }
 
     public String toString() {

@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.Comparator;
 import org.freertr.util.bits;
 
 /**
@@ -203,7 +202,7 @@ public class tabIntMatcher {
 
 }
 
-class tabIntMatcherVal implements Comparator<tabIntMatcherVal> {
+class tabIntMatcherVal implements Comparable<tabIntMatcherVal> {
 
     public final int val;
 
@@ -211,11 +210,11 @@ class tabIntMatcherVal implements Comparator<tabIntMatcherVal> {
         val = i;
     }
 
-    public int compare(tabIntMatcherVal o1, tabIntMatcherVal o2) {
-        if (o1.val < o2.val) {
+    public int compareTo(tabIntMatcherVal o) {
+        if (val < o.val) {
             return -1;
         }
-        if (o1.val > o2.val) {
+        if (val > o.val) {
             return +1;
         }
         return 0;

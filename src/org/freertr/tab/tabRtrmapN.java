@@ -1716,7 +1716,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             if (net.best.nextHop == null) {
                 return false;
             }
-            if (nexthopMatch.compare(nexthopMatch, net.best.nextHop) != 0) {
+            if (nexthopMatch.compareTo(net.best.nextHop) != 0) {
                 return false;
             }
         }
@@ -1724,7 +1724,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             if (net.best.oldHop == null) {
                 return false;
             }
-            if (oldhopMatch.compare(oldhopMatch, net.best.oldHop) != 0) {
+            if (oldhopMatch.compareTo(net.best.oldHop) != 0) {
                 return false;
             }
         }

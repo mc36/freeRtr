@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -223,7 +222,7 @@ public class servSdwan extends servGeneric implements prtServS {
 
 }
 
-class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
+class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
 
     public final servSdwan lower;
 
@@ -283,14 +282,14 @@ class servSdwanConn implements Runnable, Comparator<servSdwanConn> {
         new Thread(this).start();
     }
 
-    public int compare(servSdwanConn o1, servSdwanConn o2) {
-        if (o1.connP < o2.connP) {
+    public int compareTo(servSdwanConn o) {
+        if (connP < o.connP) {
             return -1;
         }
-        if (o1.connP > o2.connP) {
+        if (connP > o.connP) {
             return +1;
         }
-        return o1.connA.compare(o1.connA, o2.connA);
+        return connA.compareTo(o.connA);
     }
 
     public synchronized void sendLn(String s) {

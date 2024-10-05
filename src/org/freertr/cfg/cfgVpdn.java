@@ -1,7 +1,6 @@
 package org.freertr.cfg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntAnyconn;
@@ -60,7 +59,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
+public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
 
     /**
      * create instance
@@ -659,8 +658,8 @@ public class cfgVpdn implements Comparator<cfgVpdn>, cfgGeneric {
         return null;
     }
 
-    public int compare(cfgVpdn o1, cfgVpdn o2) {
-        return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+    public int compareTo(cfgVpdn o) {
+        return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
     public String toString() {

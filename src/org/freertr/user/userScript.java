@@ -1,6 +1,5 @@
 package org.freertr.user;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
@@ -1067,7 +1066,7 @@ class userScriptList {
 
 }
 
-class userScriptEntry implements Comparator<userScriptEntry> {
+class userScriptEntry implements Comparable<userScriptEntry> {
 
     public final String name;
 
@@ -1077,8 +1076,8 @@ class userScriptEntry implements Comparator<userScriptEntry> {
         name = n;
     }
 
-    public int compare(userScriptEntry o1, userScriptEntry o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(userScriptEntry o) {
+        return name.compareTo(o.name);
     }
 
 }

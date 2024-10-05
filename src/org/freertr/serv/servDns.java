@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -390,7 +389,7 @@ public class servDns extends servGeneric implements prtServS {
 
 }
 
-class servDnsResolv implements Comparator<servDnsResolv> {
+class servDnsResolv implements Comparable<servDnsResolv> {
 
     public final String name;
 
@@ -405,8 +404,8 @@ class servDnsResolv implements Comparator<servDnsResolv> {
         name = nam.toLowerCase();
     }
 
-    public int compare(servDnsResolv o1, servDnsResolv o2) {
-        return o1.name.compareTo(o2.name);
+    public int compareTo(servDnsResolv o) {
+        return name.compareTo(o.name);
     }
 
     public String toString() {
@@ -723,7 +722,7 @@ class servDnsDoer implements Runnable {
                         break;
                     }
                     packDnsRec ntry = zon.get(i);
-                    if (ntry.compare(ntry, soa) == 0) {
+                    if (ntry.compareTo(soa) == 0) {
                         continue;
                     }
                     pckD.answers.clear();

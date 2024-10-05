@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
@@ -263,7 +262,7 @@ public class servGre extends servGeneric implements ipPrt {
 
 }
 
-class servGreConn implements Runnable, Comparator<servGreConn> {
+class servGreConn implements Runnable, Comparable<servGreConn> {
 
     public final servGre lower;
 
@@ -293,12 +292,12 @@ class servGreConn implements Runnable, Comparator<servGreConn> {
         return "gre with " + peer;
     }
 
-    public int compare(servGreConn o1, servGreConn o2) {
-        int i = o1.iface.compare(o1.iface, o2.iface);
+    public int compareTo(servGreConn o) {
+        int i = iface.compareTo(o.iface);
         if (i != 0) {
             return i;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
     public void doStartup() {

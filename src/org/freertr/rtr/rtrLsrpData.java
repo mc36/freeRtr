@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -20,7 +19,7 @@ import org.freertr.spf.spfCalc;
  *
  * @author matecsaba
  */
-public class rtrLsrpData implements Comparator<rtrLsrpData> {
+public class rtrLsrpData implements Comparable<rtrLsrpData> {
 
     /**
      * create instance
@@ -178,8 +177,8 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
      */
     public List<Integer> flexalgo;
 
-    public int compare(rtrLsrpData o1, rtrLsrpData o2) {
-        return o1.rtrId.compare(o1.rtrId, o2.rtrId);
+    public int compareTo(rtrLsrpData o) {
+        return rtrId.compareTo(o.rtrId);
     }
 
     /**
@@ -774,7 +773,7 @@ public class rtrLsrpData implements Comparator<rtrLsrpData> {
 
 }
 
-class rtrLsrpDataAddr implements Comparator<rtrLsrpDataAddr> {
+class rtrLsrpDataAddr implements Comparable<rtrLsrpDataAddr> {
 
     /**
      * address
@@ -786,13 +785,13 @@ class rtrLsrpDataAddr implements Comparator<rtrLsrpDataAddr> {
      */
     public String iface;
 
-    public int compare(rtrLsrpDataAddr o1, rtrLsrpDataAddr o2) {
-        return o1.addr.compare(o1.addr, o2.addr);
+    public int compareTo(rtrLsrpDataAddr o) {
+        return addr.compareTo(o.addr);
     }
 
 }
 
-class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
+class rtrLsrpDataNeigh implements Comparable<rtrLsrpDataNeigh> {
 
     /**
      * router id
@@ -849,12 +848,12 @@ class rtrLsrpDataNeigh implements Comparator<rtrLsrpDataNeigh> {
      */
     public String perif;
 
-    public int compare(rtrLsrpDataNeigh o1, rtrLsrpDataNeigh o2) {
-        int i = o1.rtrid.compare(o1.rtrid, o2.rtrid);
+    public int compareTo(rtrLsrpDataNeigh o) {
+        int i = rtrid.compareTo(o.rtrid);
         if (i != 0) {
             return i;
         }
-        return o1.peer.compare(o1.peer, o2.peer);
+        return peer.compareTo(o.peer);
     }
 
 }
