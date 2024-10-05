@@ -480,11 +480,11 @@ class prtRedunIfc implements ifcUp {
                 if (a != null) {
                     cfgInit.stopRouter(true, 9, "dual active, reloading because lost on " + a);
                 }
-                logger.warn("dual active, reloading peer");
                 dualAct++;
                 if (dualAct < 5) {
                     break;
                 }
+                logger.warn("dual active, reloading peer");
                 doPack(packRedundancy.typReload, new packHolder(true, true));
                 break;
             case packRedundancy.typReload:
