@@ -64,11 +64,11 @@ public class userHwifc implements Comparable<userHwifc> {
         if (!a.startsWith("link/ether")) {
             return null;
         }
-        ntry.mac = a.substring(11, 28);
+        ntry.mac = a.substring(11, 28).trim();
         a = ntry.name;
         i = a.indexOf("@");
         if (i >= 0) {
-            a = a.substring(0, i);
+            a = a.substring(0, i).trim();
         }
         ntry.name = a;
         return ntry;
