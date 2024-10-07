@@ -26,7 +26,7 @@ you can find the same source tree at various locations, normally all should be t
 
 part of the subdirectories under misc/ are somewhere else too:
 * p4bf at http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
-* p4lang at http://github.com/rare-freertr/RARE-bmv2
+* p4bmv2 at http://github.com/rare-freertr/RARE-bmv2
 
 ## dependencies
 
@@ -36,7 +36,7 @@ for natives, you'll need clang, dpdk, libpcap, libbpf, libxdp, liburing, libmnl 
 
 for p4sai, you'll need libsai
 
-for p4lang, you'll need p4c and bmv2
+for p4bmv2, you'll need p4c and bmv2
 
 for p4bf, you'll need the tofino sdk and a switch with the asic
 
@@ -60,7 +60,7 @@ the following directories will appear here:
 
 * native: dpdk, xdp, pcap, xsk, io uring, raw socket, mnl and sai based dataplanes
 * p4bf: tofino based dataplane
-* p4lang: bmv2 based dataplane
+* p4bmv2: bmv2 based dataplane
 * bogon: web based bogon originator
 * lookingglass: web based looking glass
 * captures: script to stream captures
