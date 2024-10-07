@@ -328,6 +328,9 @@ public class rtrPimIface implements ipPrt {
         } else {
             ups = grp.upstream;
         }
+        if (ups == null) {
+            return;
+        }
         packHolder pckBin = new packHolder(true, true);
         packPim pckPim = new packPim();
         pckPim.fillJoin(ups, grp.group, grp.source, helloInterval * need);
