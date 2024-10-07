@@ -823,6 +823,11 @@ public class userTest {
             h.doer(cmd);
             return null;
         }
+        if (a.equals("hwred")) {
+            userHwred h = new userHwred();
+            h.doer(cmd);
+            return null;
+        }
         if (a.equals("image")) {
             userImage i = new userImage();
             i.doer(cmd);

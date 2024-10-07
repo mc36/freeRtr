@@ -1146,7 +1146,7 @@ public class cfgInit implements Runnable {
      * stop router
      *
      * @param clean clean exit
-     * @param code exit code, negative just updates reload file, 21 already used
+     * @param code exit code, negative just updates reload file, 22 already used
      * @param reason reason string
      */
     public final static void stopRouter(boolean clean, int code, String reason) {

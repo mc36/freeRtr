@@ -30,8 +30,6 @@ test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate
 
 
 
-test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
-
 important protocols to be able to continue from the start at least on local, later within the vdc
 
 menu remote asdf

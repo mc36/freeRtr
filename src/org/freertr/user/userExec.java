@@ -2441,6 +2441,8 @@ public class userExec {
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    hwdet                        perform hw detection");
         hl.add(null, "3 3,.      <str>                      parameter");
+        hl.add(null, "2 3,.    hwred                        perform hw redetection");
+        hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, ".2 3,.   hwcfg                        perform hw configuration");
         hl.add(null, ".3 3,.     <str>                      parameter");
         hl.add(null, "2 3,.    image                        perform image creation");

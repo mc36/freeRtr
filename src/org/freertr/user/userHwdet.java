@@ -89,7 +89,7 @@ public class userHwdet {
 
     private String lstMac = "hwdet.mac";
 
-    private tabGen<userHwdetIface> macLst = new tabGen<userHwdetIface>();
+    private tabGen<userHwifc> macLst = new tabGen<userHwifc>();
 
     private String exclIfc = "";
 
@@ -301,7 +301,7 @@ public class userHwdet {
     }
 
     private void createIface(String nam) {
-        userHwdetIface ntry = new userHwdetIface();
+        userHwifc ntry = new userHwifc();
         ntry.name = nam.trim();
         ntry = macLst.find(ntry);
         String adr;
@@ -319,7 +319,7 @@ public class userHwdet {
         List<String> ifc = new ArrayList<String>();
         setupIface(ifc, nam, 1500);
         makeLoop("ifc" + ifcNum + ".sh", ifc, cmd);
-        config.add("int " + "eth" + ifcNum + " " + stat + "eth " + adr + " 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
+        config.add("int " + "ether" + ifcNum + " " + stat + "eth " + adr + " 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }
 
     private void createLine(String nam) {
@@ -387,37 +387,11 @@ public class userHwdet {
         if (res == null) {
             return;
         }
-        for (int ln = 0; ln < res.size(); ln++) {
-            String a = res.get(ln).trim();
-            int i = a.indexOf(" mtu ");
-            if (i < 0) {
+        for (int i = 0; i < res.size(); i++) {
+            userHwifc ntry = userHwifc.fromRaw(res, i);
+            if (ntry == null) {
                 continue;
             }
-            i = a.indexOf(": ");
-            if (i < 0) {
-                continue;
-            }
-            if (i > 4) {
-                continue;
-            }
-            a = a.substring(i + 2, a.length());
-            i = a.indexOf(": ");
-            if (i < 0) {
-                continue;
-            }
-            userHwdetIface ntry = new userHwdetIface();
-            ntry.name = a.substring(0, i).trim();
-            a = res.get(ln + 1).trim();
-            if (!a.startsWith("link/ether")) {
-                continue;
-            }
-            ntry.mac = a.substring(11, 28);
-            a = ntry.name;
-            i = a.indexOf("@");
-            if (i >= 0) {
-                a = a.substring(0, i);
-            }
-            ntry.name = a;
             macLst.add(ntry);
         }
         for (int i = 0; i < macLst.size(); i++) {
@@ -641,12 +615,24 @@ public class userHwdet {
         nextPort = 20000;
         ifcNum = 0;
         linNum = 0;
+        String rtr;
+        if (binMain) {
+            rtr = path + "rtr.bin";
+        } else {
+            rtr = "java -Xmx" + mem + " -jar " + version.getFileName();
+        }
         starter = new ArrayList<String>();
         config = new ArrayList<String>();
         config.add("hwid " + hwId);
         starter.add(scrBeg);
         starter.add("");
         starter.add("cd " + path);
+        starter.add("ip link show > " + lstMac);
+        starter.add(rtr + " test hwred path " + path);
+        starter.add("if [ $? -eq 22 ] ; then");
+        starter.add("  sync");
+        starter.add("  reboot -f");
+        starter.add("fi");
         starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
         starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
         starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
@@ -665,16 +651,10 @@ public class userHwdet {
         inlineLoop = false;
         detectLines(path + lstSer);
         addComment("main");
-        String s;
-        if (binMain) {
-            s = path + "rtr.bin";
-        } else {
-            s = "java -Xmx" + mem + " -jar " + version.getFileName();
-        }
         List<String> lop = new ArrayList<String>();
         lop.add("cd " + path);
         lop.add("stty raw < /dev/tty");
-        lop.add(s + " router " + path + "rtr-");
+        lop.add(rtr + " router " + path + "rtr-");
         lop.add("if [ $? -eq 4 ] ; then");
         lop.add("  sync");
         lop.add("  reboot -f");
@@ -685,22 +665,6 @@ public class userHwdet {
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");
         cmd.error("iface=" + ifcNum + " macs=" + macLst.size() + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100 + " mem=" + mem);
-    }
-
-}
-
-class userHwdetIface implements Comparable<userHwdetIface> {
-
-    public String name = "";
-
-    public String mac = "";
-
-    public int compareTo(userHwdetIface o) {
-        return name.compareTo(o.name);
-    }
-
-    public String toString() {
-        return name + " " + mac;
     }
 
 }

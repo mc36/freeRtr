@@ -436,7 +436,7 @@ public class userHwext {
                     default:
                         return;
                 }
-                hwc.add("int eth0 eth - 127.0.0.1 19999 127.0.0.1 19998");
+                hwc.add("int ether0 eth - 127.0.0.1 19999 127.0.0.1 19998");
                 break;
             default:
                 return;
