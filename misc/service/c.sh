@@ -13,8 +13,9 @@ echo net.ipv6.conf.all.disable_ipv6=1 > /etc/sysctl.d/disableipv6.conf
 echo net.ipv6.conf.default.disable_ipv6=1 >> /etc/sysctl.d/disableipv6.conf
 echo kernel.panic=10 > /etc/sysctl.d/panic.conf
 
-sed -i "s\quiet\panic=10\g" /etc/default/grub
+sed -i "s\quiet\panic=10 nomodeset nofb\g" /etc/default/grub
 sed -i "s\GRUB_TIMEOUT=5\GRUB_TIMEOUT=1\g" /etc/default/grub
+sed -i "s\#GRUB_TERMINAL=console\GRUB_TERMINAL=console\g" /etc/default/grub
 
 cat > /etc/network/interfaces << EOF
 iface lo inet loopback
