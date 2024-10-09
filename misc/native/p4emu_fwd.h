@@ -151,8 +151,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 #define update_tcpMss(ntry, mss)                                \
-    if ((ntry.protV == 6) && (mss > 0))                         \
-        if ((bufD[bufT + 13] & 2) != 0) adjustMss(bufD, bufT, mss);
+    if (ntry.protV == 6) if (mss > 0) if ((bufD[bufT + 13] & 2) != 0) adjustMss(bufD, bufT, mss);
 
 
 
@@ -1486,7 +1485,8 @@ ethtyp_rx:
         goto nsh_rx;
     }
 etyped_rx:
-    if ((bufP < minBuff) || (bufP > maxBuff)) doDropper;
+    if (bufP < minBuff) doDropper;
+    if (bufP > maxBuff) doDropper;
     switch (ethtyp) {
     case ETHERTYPE_MPLS_UCAST: // mpls
         if (port2vrf_res == NULL) doDropper;
