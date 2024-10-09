@@ -20,7 +20,6 @@
 #define blocksMax 64
 
 pthread_mutex_t ifaceLock[maxPorts];
-char *ifaceName[maxPorts];
 int ifaceIndex[maxPorts];
 int ifaceSock[maxPorts];
 unsigned char *ifaceMem[maxPorts];

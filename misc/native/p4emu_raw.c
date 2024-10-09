@@ -17,7 +17,6 @@
 #include "utils.h"
 
 
-char *ifaceName[maxPorts];
 int ifaceIndex[maxPorts];
 int ifaceSock[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];

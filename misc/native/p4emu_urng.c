@@ -23,7 +23,6 @@
 #define cmsgLen (sizeof(struct cmsghdr) + sizeof(struct tpacket_auxdata) + sizeof(size_t))
 
 
-char *ifaceName[maxPorts];
 int ifaceIndex[maxPorts];
 int ifaceSock[maxPorts];
 int ifaceIdx[maxPorts];
