@@ -849,7 +849,7 @@ int shiftContext(struct packetContext *trg, struct packetContext *src, unsigned 
 
 #ifndef HAVE_NOCRYPTO
 void myHmacSetup(const EVP_MD *alg, unsigned char *key, int *len) {
-    int blk = EVP_MD_get_block_size(alg);
+    int blk = EVP_MD_block_size(alg);
     for (int i=*len; i<blk; i++) key[i]=0;
     memcpy(&key[blk], &key[0], blk);
     for (int i=0; i<blk; i++) {
