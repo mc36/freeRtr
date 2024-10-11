@@ -88,11 +88,15 @@ linkTwoLibs "p4dbg" "p4emu_pcap" "p4emu_dbg" "-lpthread -lpcap -lcrypto"
 
 linkTwoLibs "p4pkt" "p4emu_pcap" "p4emu_none" "-lpthread -lpcap"
 
+linkTwoLibs "p4pln" "p4emu_pcap" "p4emu_nocr" "-lpthread -lpcap"
+
 linkTwoLibs "p4dpdk" "p4emu_dpdk" "p4emu_full" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
 linkTwoLibs "p4dpdkDbg" "p4emu_dpdk" "p4emu_dbg" "-lpthread -lcrypto -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
 linkTwoLibs "p4dpdkPkt" "p4emu_dpdk" "p4emu_none" "-lpthread -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
+
+linkTwoLibs "p4dpdkPln" "p4emu_dpdk" "p4emu_nocr" "-lpthread -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
 linkTwoLibs "p4bench" "p4emu_bench" "p4emu_full" "-lcrypto"
 
@@ -104,11 +108,15 @@ linkTwoLibs "p4mapDbg" "p4emu_map" "p4emu_dbg" "-lpthread -lcrypto"
 
 linkTwoLibs "p4mapPkt" "p4emu_map" "p4emu_none" "-lpthread"
 
+linkTwoLibs "p4mapPln" "p4emu_map" "p4emu_nocr" "-lpthread"
+
 linkTwoLibs "p4raw" "p4emu_raw" "p4emu_full" "-lpthread -lcrypto"
 
 linkTwoLibs "p4rawDbg" "p4emu_raw" "p4emu_dbg" "-lpthread -lcrypto"
 
 linkTwoLibs "p4rawPkt" "p4emu_raw" "p4emu_none" "-lpthread"
+
+linkTwoLibs "p4rawPln" "p4emu_raw" "p4emu_nocr" "-lpthread"
 
 linkTwoLibs "p4xsk" "p4emu_xsk" "p4emu_full" "-lpthread -lxdp -lcrypto"
 
@@ -116,11 +124,15 @@ linkTwoLibs "p4xskDbg" "p4emu_xsk" "p4emu_dbg" "-lpthread -lxdp -lcrypto"
 
 linkTwoLibs "p4xskPkt" "p4emu_xsk" "p4emu_none" "-lpthread -lxdp"
 
+linkTwoLibs "p4xskPln" "p4emu_xsk" "p4emu_nocr" "-lpthread -lxdp"
+
 linkTwoLibs "p4urng" "p4emu_urng" "p4emu_full" "-lpthread -luring -lcrypto"
 
 linkTwoLibs "p4urngDbg" "p4emu_urng" "p4emu_dbg" "-lpthread -luring -lcrypto"
 
 linkTwoLibs "p4urngPkt" "p4emu_urng" "p4emu_none" "-lpthread -luring"
+
+linkTwoLibs "p4urngPln" "p4emu_urng" "p4emu_nocr" "-lpthread -luring"
 
 for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpthread -lpcap" ""

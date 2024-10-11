@@ -138,7 +138,6 @@ todo: mist natives p4fwd to report all the error messages in the control channel
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
-todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
 todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
 todo: onehit to all the menus
