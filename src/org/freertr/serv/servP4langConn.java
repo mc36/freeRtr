@@ -3566,6 +3566,7 @@ public class servP4langConn implements Runnable {
             switch (ntry.protocol) {
                 case prtUdp.protoNum:
                 case prtTcp.protoNum:
+                case prtGre.protoNum:
                     break;
                 default:
                     continue;
@@ -3581,6 +3582,7 @@ public class servP4langConn implements Runnable {
             switch (ntry.protocol) {
                 case prtUdp.protoNum:
                 case prtTcp.protoNum:
+                case prtGre.protoNum:
                     break;
                 default:
                     continue;

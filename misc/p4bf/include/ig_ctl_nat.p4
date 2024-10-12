@@ -45,6 +45,17 @@ control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 
 
+    action act_rewrite_ipv4prt47(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+        stats4.count();
+        hdr.ipv4.src_addr = srcadr;
+        hdr.ipv4.dst_addr = trgadr;
+        ig_md.layer4_srcprt = srcprt;
+        ig_md.layer4_dstprt = trgprt;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
+    }
+
     action act_rewrite_ipv4prt17(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
         stats4.count();
         hdr.ipv4.src_addr = srcadr;
@@ -70,6 +81,17 @@ control IngressControlNAT(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
         ig_md.natted_ipv4tcp = 1;
+#ifdef HAVE_FRAG
+        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
+#endif
+    }
+
+    action act_rewrite_ipv6prt47(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+        stats6.count();
+        hdr.ipv6.src_addr = srcadr;
+        hdr.ipv6.dst_addr = trgadr;
+        ig_md.layer4_srcprt = srcprt;
+        ig_md.layer4_dstprt = trgprt;
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
@@ -121,6 +143,7 @@ hdr.ipv4.protocol:
             exact;
         }
         actions = {
+            act_rewrite_ipv4prt47;
             act_rewrite_ipv4prt17;
             act_rewrite_ipv4prt6;
             @defaultonly NoAction;
@@ -146,6 +169,7 @@ hdr.ipv6.next_hdr:
             exact;
         }
         actions = {
+            act_rewrite_ipv6prt47;
             act_rewrite_ipv6prt17;
             act_rewrite_ipv6prt6;
             @defaultonly NoAction;
