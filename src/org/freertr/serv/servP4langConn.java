@@ -29,6 +29,8 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdMcast;
 import org.freertr.ip.ipFwdMpNe;
 import org.freertr.ip.ipFwdMpmp;
+import org.freertr.ip.ipIcmp4;
+import org.freertr.ip.ipIcmp6;
 import org.freertr.ip.ipIfc;
 import org.freertr.ip.ipMpls;
 import org.freertr.pipe.pipeSide;
@@ -3564,11 +3566,8 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             switch (ntry.protocol) {
-                case prtUdp.protoNum:
-                case prtTcp.protoNum:
-                case prtGre.protoNum:
-                    break;
-                default:
+                case ipIcmp4.protoNum:
+                case ipIcmp6.protoNum:
                     continue;
             }
             lower.sendLine("nattrns" + afi + "_add " + vrf + " " + servP4langUtil.natTrns2str(ntry));
@@ -3580,11 +3579,8 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             switch (ntry.protocol) {
-                case prtUdp.protoNum:
-                case prtTcp.protoNum:
-                case prtGre.protoNum:
-                    break;
-                default:
+                case ipIcmp4.protoNum:
+                case ipIcmp6.protoNum:
                     continue;
             }
             lower.sendLine("nattrns" + afi + "_del " + vrf + " " + servP4langUtil.natTrns2str(ntry));
@@ -4413,10 +4409,8 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             switch (ntry.ipPrt) {
-                case prtUdp.protoNum:
-                case prtTcp.protoNum:
-                    break;
-                default:
+                case ipIcmp4.protoNum:
+                case ipIcmp6.protoNum:
                     continue;
             }
             lower.sendLine("inspect" + afi + "_del " + ifc + " " + servP4langUtil.sess2str(ntry));
@@ -4434,10 +4428,8 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             switch (ntry.ipPrt) {
-                case prtUdp.protoNum:
-                case prtTcp.protoNum:
-                    break;
-                default:
+                case ipIcmp4.protoNum:
+                case ipIcmp6.protoNum:
                     continue;
             }
             lower.sendLine("inspect" + afi + "_add " + ifc + " " + servP4langUtil.sess2str(ntry));

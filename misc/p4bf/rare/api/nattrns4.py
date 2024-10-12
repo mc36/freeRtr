@@ -6,9 +6,15 @@ def writeNatTrnsRules4(
 ):
     if self.nat == False:
         return
+    if proto == 6:
+        name = "tcp"
+    elif proto == 17:
+        name = "udp"
+    else:
+        name = "oth"
     tbl_global_path = "ig_ctl.ig_ctl_nat"
     tbl_name = "%s.tbl_ipv4_nat_trns" % (tbl_global_path)
-    tbl_action_name = "%s.act_rewrite_ipv4prt%s" % (tbl_global_path, str(proto))
+    tbl_action_name = "%s.act_rewrite_ipv4%s" % (tbl_global_path, name)
     key_field_list = [
         gc.KeyTuple("ig_md.layer4_srcprt", osp),
         gc.KeyTuple("ig_md.layer4_dstprt", otp),

@@ -2425,6 +2425,12 @@ def writeNatCfgRules6(delete, p4info_helper, ingress_sw, vrf, pri, act, pr, prm,
 
 
 def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, ota, otp, nsa, nsp, nta, ntp):
+    if proto == 6:
+        name = "tcp"
+    elif proto == 17:
+        name = "udp"
+    else:
+        name = "oth"
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv4_nat_trns",
         match_fields={
@@ -2435,7 +2441,7 @@ def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
             "ig_md.layer4_srcprt": osp,
             "ig_md.layer4_dstprt": otp
         },
-        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv4prt"+str(proto),
+        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv4"+name,
         action_params={
             "srcadr": nsa,
             "trgadr": nta,
@@ -2451,6 +2457,12 @@ def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
 
 
 def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, ota, otp, nsa, nsp, nta, ntp):
+    if proto == 6:
+        name = "tcp"
+    elif proto == 17:
+        name = "udp"
+    else:
+        name = "oth"
     table_entry = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_nat.tbl_ipv6_nat_trns",
         match_fields={
@@ -2461,7 +2473,7 @@ def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
             "ig_md.layer4_srcprt": osp,
             "ig_md.layer4_dstprt": otp
         },
-        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv6prt"+str(proto),
+        action_name="ig_ctl.ig_ctl_nat.act_rewrite_ipv6"+name,
         action_params={
             "srcadr": nsa,
             "trgadr": nta,
