@@ -299,6 +299,8 @@ public class userExec {
         hl.add(null, "4 .          <name:vrf>             vrf name");
         hl.add(null, "3 4        out-interfaces           egress interface distribution");
         hl.add(null, "4 .          <name:vrf>             vrf name");
+        hl.add(null, "3 4        hostwatch                peer host table");
+        hl.add(null, "4 .          <name:ifc>             name of interface");
         hl.add(null, "3 4        nexthops                 egress router distribution");
         hl.add(null, "4 .          <name:vrf>             vrf name");
         hl.add(null, "3 4        route                    unicast routing table entries");

@@ -2,8 +2,10 @@ package org.freertr.ip;
 
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
+import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgScrpt;
 import org.freertr.tab.tabGen;
+import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
@@ -93,6 +95,7 @@ public class ipHostWatch implements Runnable {
             ipHostWatchEntry cur = fresh.get(i);
             ipHostWatchEntry old = hosts.find(cur);
             if (old == null) {
+                cur.time = bits.getTime();
                 logger.info("new host appeared " + cur + " on " + ifc);
                 if (nodeOn == null) {
                     continue;
@@ -100,6 +103,7 @@ public class ipHostWatch implements Runnable {
                 nodeOn.doRound(bits.str2lst("set remote " + cur.ip));
                 continue;
             }
+            cur.time = old.time;
             if (cur.mac.compareTo(old.mac) != 0) {
                 logger.info("host changed from " + old + " to " + cur + " on " + ifc);
                 if (nodeChg == null) {
@@ -123,6 +127,20 @@ public class ipHostWatch implements Runnable {
         hosts = fresh;
     }
 
+    /**
+     * get show
+     *
+     * @return output
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "ip|mac|since|for");
+        for (int i = 0; i < hosts.size(); i++) {
+            ipHostWatchEntry ntry = hosts.get(i);
+            res.add(ntry.ip + "|" + ntry.mac + "|" + bits.time2str(cfgAll.timeZoneName, ntry.time + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(ntry.time));
+        }
+        return res;
+    }
+
 }
 
 class ipHostWatchEntry implements Comparable<ipHostWatchEntry> {
@@ -130,6 +148,8 @@ class ipHostWatchEntry implements Comparable<ipHostWatchEntry> {
     public addrIP ip = new addrIP();
 
     public addrMac mac = new addrMac();
+
+    public long time;
 
     public int compareTo(ipHostWatchEntry o) {
         return ip.compareTo(o.ip);

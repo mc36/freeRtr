@@ -2445,6 +2445,10 @@ public class userShow {
                 doShowRouteUni(4);
                 return null;
             }
+            if (a.equals("hostwatch")) {
+                doShowHostWatch(4);
+                return null;
+            }
             if (a.equals("ecmp")) {
                 doShowRouteEcmp(4);
                 return null;
@@ -2803,6 +2807,10 @@ public class userShow {
             }
             if (a.equals("route")) {
                 doShowRouteUni(6);
+                return null;
+            }
+            if (a.equals("hostwatch")) {
+                doShowHostWatch(6);
                 return null;
             }
             if (a.equals("ecmp")) {
@@ -4908,6 +4916,29 @@ public class userShow {
             return;
         }
         doShowRoutes(fwd, fwd.actualU, 6);
+    }
+
+    private void doShowHostWatch(int ver) {
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+        if (ifc == null) {
+            cmd.error("no such interface");
+            return;
+        }
+        ipFwdIface fwd;
+        if (ver == 4) {
+            fwd = ifc.fwdIf4;
+        } else {
+            fwd = ifc.fwdIf6;
+        }
+        if (fwd == null) {
+            cmd.error("protocol not enabled");
+            return;
+        }
+        if (fwd.hostWatch == null) {
+            cmd.error("feature not enabled");
+            return;
+        }
+        rdr.putStrTab(fwd.hostWatch.getShow());
     }
 
     private void doShowRouteUni(int ver) {
