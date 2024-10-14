@@ -804,6 +804,11 @@ public class userTest {
             u.doVerCore();
             return null;
         }
+        if (a.equals("vermkey")) {
+            userUpgrade u = new userUpgrade(cmd);
+            u.doMakeKey();
+            return null;
+        }
         if (a.equals("hwcfg")) {
             cfgInit.executeHWcommands(bits.str2lst(cmd.getRemaining()), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());
             return null;

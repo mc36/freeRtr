@@ -155,6 +155,19 @@ public class userUpgrade {
     }
 
     /**
+     * create release key
+     */
+    public void doMakeKey() {
+        int i = bits.str2num(cmd.word());
+        cmd.error("generating " + i + " bits key");
+        cryKeyRSA kc = new cryKeyRSA();
+        kc.keyMake(i);
+        cmd.error("resulted in " + kc.keySize() + " bits, error=" + kc.keyVerify());
+        cmd.pipe.linePut(" sequence 10 puts \"" + kc.pemWriteStr(true) + "\"");
+        cmd.pipe.linePut(" sequence 20 puts \"" + kc.pemWriteStr(false) + "\"");
+    }
+
+    /**
      * update version core file
      */
     public void doVerCore() {

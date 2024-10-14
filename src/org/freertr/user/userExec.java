@@ -2434,6 +2434,8 @@ public class userExec {
         hl.add(null, "2 3      vercore                      test vercore updater");
         hl.add(null, "3 4        <key>                      key file to use");
         hl.add(null, "4 .          <key>                    key file to include");
+        hl.add(null, "2 3      vermkey                      test version maker");
+        hl.add(null, "3 .        <key>                      key size in bits");
         hl.add(null, "2 3      verfile                      test version updater");
         hl.add(null, "3 4,.      <key>                      key file to use");
         hl.add(null, "4 4,.        [str]                    file to include in release");
