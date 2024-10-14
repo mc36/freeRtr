@@ -490,28 +490,28 @@ public class ifcMacSec implements Runnable {
         cryEncrGeneric cphTx = profil.trans.getEncr();
         cryEncrGeneric cphRx = profil.trans.getEncr();
         keyEncrTx = new byte[profil.trans.getKeyS()];
-        int pos = cphTx.getIVsize() - 4;
-        if (pos < 0) {
-            pos = 0;
+        int i = cphTx.getIVsize() - 4;
+        if (i < 0) {
+            i = 0;
         }
-        keyIvTx = new byte[pos];
+        keyIvTx = new byte[i];
         bits.byteCopy(res, 0, keyEncrTx, 0, keyEncrTx.length);
-        pos = keyEncrTx.length;
+        i = keyEncrTx.length;
         keyEncrRx = new byte[keyEncrTx.length];
-        bits.byteCopy(res, pos, keyEncrRx, 0, keyEncrRx.length);
-        pos += keyEncrTx.length;
-        bits.byteCopy(res, pos, keyIvTx, 0, keyIvTx.length);
-        pos += keyIvTx.length;
+        bits.byteCopy(res, i, keyEncrRx, 0, keyEncrRx.length);
+        i += keyEncrTx.length;
+        bits.byteCopy(res, i, keyIvTx, 0, keyIvTx.length);
+        i += keyIvTx.length;
         keyIvRx = new byte[keyIvTx.length];
-        bits.byteCopy(res, pos, keyIvRx, 0, keyIvRx.length);
-        pos += keyIvRx.length;
+        bits.byteCopy(res, i, keyIvRx, 0, keyIvRx.length);
+        i += keyIvRx.length;
         cphrSiz = cphTx.getBlockSize();
         hashSiz = profil.trans.getHash().getHashSize();
         keyHashTx = new byte[hashSiz];
-        bits.byteCopy(res, pos, keyHashTx, 0, keyHashTx.length);
-        pos += keyHashTx.length;
+        bits.byteCopy(res, i, keyHashTx, 0, keyHashTx.length);
+        i += keyHashTx.length;
         keyHashRx = new byte[keyHashTx.length];
-        bits.byteCopy(res, pos, keyHashRx, 0, keyHashRx.length);
+        bits.byteCopy(res, i, keyHashRx, 0, keyHashRx.length);
         cntr = new counter();
         hwCntr = null;
         if (swp) {
@@ -535,9 +535,9 @@ public class ifcMacSec implements Runnable {
         seqTx = 0;
         tagSiz = cphTx.getTagSize();
         aeadMode = tagSiz > 0;
-        pos = cphTx.getIVsize();
-        cphTx.init(keyEncrTx, new byte[pos], true);
-        cphRx.init(keyEncrRx, new byte[pos], false);
+        i = cphTx.getIVsize();
+        cphTx.init(keyEncrTx, new byte[i], true);
+        cphRx.init(keyEncrRx, new byte[i], false);
         cphrTx = cphTx;
         cphrRx = cphRx;
         hashTx = profil.trans.getHmac(keyHashTx);

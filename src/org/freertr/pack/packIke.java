@@ -1383,7 +1383,7 @@ public class packIke {
         }
         byte[] last = new byte[i];
         bits.byteCopy(buf, p, last, 0, last.length);
-        ciph.init(last, new byte[ciph.getBlockSize()], encr);
+        ciph.init(last, new byte[ciph.getIVsize()], encr);
         esp.keyEncr = last;
         last = new byte[o];
         bits.byteCopy(buf, p + i, last, 0, last.length);
