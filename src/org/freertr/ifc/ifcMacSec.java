@@ -535,6 +535,9 @@ public class ifcMacSec implements Runnable {
         seqTx = 0;
         tagSiz = cphTx.getTagSize();
         aeadMode = tagSiz > 0;
+        pos = cphTx.getIVsize();
+        cphTx.init(keyEncrTx, new byte[pos], true);
+        cphRx.init(keyEncrRx, new byte[pos], false);
         cphrTx = cphTx;
         cphrRx = cphRx;
         hashTx = profil.trans.getHmac(keyHashTx);
