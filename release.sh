@@ -8,5 +8,4 @@ cd ../misc/native/
 ./p.sh
 cd ../image/
 ./cj.sh
-cd ../img2ova/
-./c.sh
+./ci.sh
