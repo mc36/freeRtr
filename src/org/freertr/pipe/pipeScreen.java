@@ -194,6 +194,12 @@ public class pipeScreen {
                         case 37:
                             scr.col = (scr.col & 0xfffffff8) | (i % 10);
                             break;
+                        case 38:
+                            cmd.word(";");
+                            s = cmd.word(";");
+                            i = bits.str2num(s);
+                            scr.col = (scr.col & 0xffffff00) | (i % 255);
+                            break;
                         case 40:
                         case 41:
                         case 42:
@@ -203,6 +209,12 @@ public class pipeScreen {
                         case 46:
                         case 47:
                             scr.col = (scr.col & 0xfff8ffff) | ((i % 10) << 16);
+                            break;
+                        case 48:
+                            cmd.word(";");
+                            s = cmd.word(";");
+                            i = bits.str2num(s);
+                            scr.col = (scr.col & 0xff00ffff) | ((i % 255) << 16);
                             break;
                         case 90:
                         case 91:
