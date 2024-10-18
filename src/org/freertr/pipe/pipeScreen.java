@@ -212,7 +212,7 @@ public class pipeScreen {
                         case 95:
                         case 96:
                         case 97:
-                            scr.col = (scr.col & 0xfffffff0) | ((i % 10)) << 1;
+                            scr.col = (scr.col & 0xfffffff8) | (i % 10) | userScreen.colBright;
                             break;
                         case 100:
                         case 101:
@@ -222,7 +222,7 @@ public class pipeScreen {
                         case 105:
                         case 106:
                         case 107:
-                            scr.col = (scr.col & 0xfff0ffff) | ((i % 10) << 17);
+                            scr.col = (scr.col & 0xfff8ffff) | ((i % 10) << 16) | (userScreen.colBright << 16);
                             break;
                     }
                 }

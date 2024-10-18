@@ -209,16 +209,6 @@ public class pipeWindow extends JPanel {
     }
 
     /**
-     * get keyboard listener
-     *
-     * @param pipe pipe to use
-     * @return keyboard listener
-     */
-    public static KeyListener getKeyLstnr(pipeSide pipe) {
-        return new pipeWindowKey(pipe);
-    }
-
-    /**
      * create window
      *
      * @param x x size
@@ -243,15 +233,6 @@ public class pipeWindow extends JPanel {
         ps.setTime(0);
         ps.setReady();
         return ps;
-    }
-
-    /**
-     * get background color
-     *
-     * @return color
-     */
-    public static Color getBckgrd() {
-        return Color.BLACK;
     }
 
     /**
@@ -280,8 +261,8 @@ public class pipeWindow extends JPanel {
         img = new pipeImage(pip, x, y, fnt, plt);
         img3 = createImage(img);
         win = new JFrame("console");
-        win.setBackground(getBckgrd());
-        win.addKeyListener(getKeyLstnr(pip));
+        win.setBackground(Color.BLACK);
+        win.addKeyListener(new pipeWindowKey(pip));
         win.setFocusTraversalKeysEnabled(false);
         win.add(this);
         win.setSize(img.img2[0].length + 30, img.img2.length + 60);
