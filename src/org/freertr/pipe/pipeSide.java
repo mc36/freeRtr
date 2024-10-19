@@ -1004,6 +1004,24 @@ public class pipeSide {
     }
 
     /**
+     * copy all the settings
+     *
+     * @param o other pipe to copy
+     */
+    public void settingsCopy(pipeSide o) {
+        synchronized (settings) {
+            settings.clear();
+            for (int i = 0; i < o.settings.size(); i++) {
+                pipeSetting ntry = o.settings.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                settings.put(ntry);
+            }
+        }
+    }
+
+    /**
      * get one setting
      *
      * @param <T> type of object

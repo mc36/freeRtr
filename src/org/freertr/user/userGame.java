@@ -30,7 +30,7 @@ public class userGame {
     public userGame(userScreen conn, userReader rdr) {
         console = conn;
         if (rdr == null) {
-            rdr = new userReader(conn.pipe, null);
+            rdr = new userReader(conn.pipe);
         }
         reader = rdr;
     }
@@ -39,6 +39,7 @@ public class userGame {
      * start screen
      */
     public void doStart() {
+        reader.keyFlush();
         console.putCls();
     }
 
@@ -48,6 +49,7 @@ public class userGame {
     public void doFinish() {
         console.putCls();
         console.refresh();
+        reader.keyFlush();
     }
 
     /**

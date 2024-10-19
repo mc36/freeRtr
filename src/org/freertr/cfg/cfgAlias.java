@@ -501,7 +501,7 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
                 stickyPar = "";
                 return;
             }
-            userReader rdr = new userReader(cmd.pipe, null);
+            userReader rdr = new userReader(cmd.pipe);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;
             doCommands(exe, cmd);

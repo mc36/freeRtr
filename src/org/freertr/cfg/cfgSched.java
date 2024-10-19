@@ -397,7 +397,7 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
         loc = pipe.getSide();
         new Thread(new cfgSchedRead(this)).start();
         pipeSide pip = pipe.getSide();
-        userReader rdr = new userReader(pip, null);
+        userReader rdr = new userReader(pip);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

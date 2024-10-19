@@ -449,7 +449,7 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
+        userReader rdr = new userReader(pip);
         pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
