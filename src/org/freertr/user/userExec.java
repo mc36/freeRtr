@@ -75,6 +75,11 @@ public class userExec {
     protected final pipeSide pipe;
 
     /**
+     * time of last command
+     */
+    public long last;
+
+    /**
      * reader of user
      */
     protected final userReader reader;
@@ -2511,26 +2516,22 @@ public class userExec {
     }
 
     /**
-     * execute some commands
+     * execute one command
      *
      * @return status of operation, see at one command
      */
-    public cmdRes doCommands() {
+    public cmdRes doCommand() {
         rollback = false;
-        for (;;) {
-            reader.setContext(getHelping(), cfgAll.hostName + (privileged ? "#" : ">"));
-            String s = reader.readLine(null);
-            if (s == null) {
-                return cmdRes.logout;
-            }
-            if (pipe.settingsGet(pipeSetting.times, false)) {
-                pipe.linePut(logger.getTimestamp());
-            }
-            cmdRes i = executeCommand(s);
-            if (i != cmdRes.command) {
-                return i;
-            }
+        reader.setContext(getHelping(), cfgAll.hostName + (privileged ? "#" : ">"));
+        String s = reader.readLine(null);
+        if (s == null) {
+            return cmdRes.logout;
         }
+        if (pipe.settingsGet(pipeSetting.times, false)) {
+            pipe.linePut(logger.getTimestamp());
+        }
+        last = bits.getTime();
+        return executeCommand(s);
     }
 
     /**

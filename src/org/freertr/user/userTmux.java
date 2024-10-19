@@ -127,7 +127,7 @@ public class userTmux {
             if (!running) {
                 break;
             }
-            userExec.cmdRes i = exe[n].doCommands();
+            userExec.cmdRes i = exe[n].doCommand();
             if (i == userExec.cmdRes.command) {
                 continue;
             }

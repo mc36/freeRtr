@@ -803,13 +803,15 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
 
     public final long since;
 
-    public long last;
-
     public authResult user;
 
     public boolean preauthed;
 
     public Timer expTim;
+
+    public userExec exe;
+
+    public userConfig cfg;
 
     public userLineHandler(userLine prnt, pipeSide pip, String rem, int phys) {
         parent = prnt;
@@ -906,7 +908,6 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             return;
         }
         pipe.setTime(parent.promptTimeout);
-        last = bits.getTime();
         if (parent.title) {
             userScreen.sendTit(pipe, cfgAll.hostName);
         }
@@ -1000,16 +1001,16 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         userReader rdr = new userReader(pipe, parent);
         pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
-        userExec exe = new userExec(pipe, rdr);
-        userConfig cfg = new userConfig(pipe, rdr);
+        exe = new userExec(pipe, rdr);
         exe.privileged = user.privilege >= 15;
         exe.framedIface = parent.execIface;
         exe.physicalLin = physical != 0;
         exe.authorization = parent.authorizeList;
-        cfg.authorization = parent.authorizeList;
         exe.username = user.user;
-        cfg.username = user.user;
         exe.needExpand = true;
+        cfg = new userConfig(pipe, rdr);
+        cfg.authorization = parent.authorizeList;
+        cfg.username = user.user;
         cfg.needExpand = true;
         s = parent.autoCommand;
         if (s.length() > 0) {
@@ -1037,13 +1038,13 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             logger.pipeStart(pipe);
         }
         if (parent.expirity && (physical == 0)) {
+            exe.last = bits.getTime();
             expTim = new Timer();
             userLineExpirity task = new userLineExpirity(this);
             expTim.schedule(task, 30 * 1000, 60 * 1000);
         }
         for (;;) {
-            last = bits.getTime();
-            userExec.cmdRes i = exe.doCommands();
+            userExec.cmdRes i = exe.doCommand();
             if (i == userExec.cmdRes.command) {
                 continue;
             }
@@ -1071,7 +1072,6 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
                 sesStart = cfgAll.getShRun(1);
             }
             for (;;) {
-                last = bits.getTime();
                 if (cfg.doCommand()) {
                     break;
                 }
@@ -1100,7 +1100,13 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
     }
 
     public void doExpire() {
-        long tim = bits.getTime() - last;
+        long tim;
+        if (cfg.last > exe.last) {
+            tim = cfg.last;
+        } else {
+            tim = exe.last;
+        }
+        tim = bits.getTime() - tim;
         if (tim > parent.execTimeOut) {
             if (parent.banner) {
                 pipe.linePut(parent.promptGoodbye);
