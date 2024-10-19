@@ -572,6 +572,7 @@ public class userFlash {
         }
         try {
             ft = new RandomAccessFile(new File(trg), "rw");
+            ft.setLength(0);
         } catch (Exception e) {
             return true;
         }
@@ -663,6 +664,7 @@ public class userFlash {
         siz -= 8;
         try {
             ft = new RandomAccessFile(new File(trg), "rw");
+            ft.setLength(0);
         } catch (Exception e) {
             return true;
         }

@@ -110,6 +110,7 @@ public class clntTftp implements prtServS {
         }
         try {
             fr = new RandomAccessFile(trg, "rw");
+            fr.setLength(0);
         } catch (Exception e) {
             closeConn();
             cntrError.add(1);

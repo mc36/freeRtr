@@ -2835,7 +2835,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("screenrec")) {
-            a=cmd.word();
+            a = cmd.word();
             reader.keyFlush();
             userRecord t = new userRecord(a, this);
             t.doWork();
@@ -4563,6 +4563,7 @@ public class userExec {
         if (recn != null) {
             try {
                 recf = new RandomAccessFile(new File(recn), "rw");
+                recf.setLength(0);
             } catch (Exception e) {
                 pipe.linePut("file open error");
             }

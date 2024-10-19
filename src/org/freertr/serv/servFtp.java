@@ -443,6 +443,7 @@ class servFtpDoer implements Runnable {
         }
         boolean res = false;
         try {
+            fr.setLength(pos);
             fr.seek(pos);
         } catch (Exception e) {
             res = true;

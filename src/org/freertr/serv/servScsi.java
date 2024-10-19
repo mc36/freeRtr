@@ -100,6 +100,7 @@ public class servScsi implements Comparable<servScsi> {
             }
             hndl = new RandomAccessFile(fh, "rw");
             filSiz = hndl.length() / blkSiz;
+            hndl.setLength(filSiz * blkSiz);
         } catch (Exception e) {
             hndl = null;
             return;

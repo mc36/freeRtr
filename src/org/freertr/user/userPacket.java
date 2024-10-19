@@ -812,6 +812,7 @@ public class userPacket {
                 a = cmd.word();
                 cmd.error("opening target " + a);
                 ft = new RandomAccessFile(new File(a), "rw");
+                ft.setLength(0);
             } catch (Exception e) {
             }
             addrIP sip = new addrIP();

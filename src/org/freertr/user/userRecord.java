@@ -41,6 +41,7 @@ public class userRecord implements Runnable {
         RandomAccessFile recf;
         try {
             recf = new RandomAccessFile(new File(recn), "rw");
+            recf.setLength(0);
         } catch (Exception e) {
             orig.pipe.linePut("file open error");
             return;
