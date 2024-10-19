@@ -41,7 +41,7 @@ public class pipeScreen {
      */
     public pipeScreen(pipeSide pip, int x, int y) {
         pipe = pip;
-        pipeSide ps = pipeDiscard.needAny(null);
+        pipeSide ps = pipeDiscard.needAny(pip);
         userReader.setTermWdt(ps, x);
         userReader.setTermLen(ps, y);
         scr = new userScreen(ps);

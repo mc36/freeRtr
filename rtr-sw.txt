@@ -53,6 +53,7 @@ aaa userlist access
  allowed exit.*
  allowed logout.*
  allowed flash .*
+ allowed tmux .*
  exit
 !
 aaa radius rad

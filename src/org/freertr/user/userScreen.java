@@ -952,14 +952,14 @@ public class userScreen {
      */
     public void putScr(int x, int y, userScreen s, boolean c) {
         if (c) {
-            curX = s.curX + x;
-            curY = s.curY + y;
+            curX = x + s.curX;
+            curY = y + s.curY;
             return;
         }
         for (int o = 0; o < s.sizY; o++) {
             for (int i = 0; i < s.sizX; i++) {
-                atrs[o][i] = s.atrs[o][i];
-                chrs[o][i] = s.chrs[o][i];
+                chrs[y + o][x + i] = s.chrs[o][i];
+                atrs[y + o][x + i] = s.atrs[o][i];
             }
         }
     }

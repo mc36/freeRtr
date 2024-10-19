@@ -2740,7 +2740,7 @@ public class userExec {
             reader.keyFlush();
             userTmux t = new userTmux(new userScreen(pipe), this);
             if (t.doInit(i)) {
-                cmd.error("screen too small");
+                cmd.error("error initializing");
                 return cmdRes.command;
             }
             t.doWork();
