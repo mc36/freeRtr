@@ -130,11 +130,6 @@ public class userScreen {
     public int col = colWhite;
 
     /**
-     * cursor wraps
-     */
-    public boolean wrap = true;
-
-    /**
      * character codes
      */
     public final int[][] chrs;
@@ -1107,7 +1102,7 @@ public class userScreen {
             curY = 0;
         }
         if (curX >= sizX) {
-            if (wrap) {
+            if (cl >= 0) {
                 curY++;
                 curX = 0;
             } else {
@@ -1116,7 +1111,9 @@ public class userScreen {
         }
         if (curY >= sizY) {
             curY = sizY - 1;
-            scrollUp(cl);
+            if (cl >= 0) {
+                scrollUp(cl);
+            }
         }
     }
 

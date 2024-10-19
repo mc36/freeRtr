@@ -74,38 +74,38 @@ public class pipeScreen {
         switch (ch) {
             case 65: // A
                 scr.curY -= getParam(cmd);
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 66: // B
                 scr.curY += getParam(cmd);
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 67: // C
                 scr.curX += getParam(cmd);
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 68: // D
                 scr.curX -= getParam(cmd);
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 69: // E
                 scr.curY += getParam(cmd);
                 scr.curX = 0;
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 70: // F
                 scr.curY -= getParam(cmd);
                 scr.curX = 0;
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 71: // G
                 scr.curX = getParam(cmd) - 1;
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 72: // H
                 scr.curY = getParam(cmd) - 1;
                 scr.curX = getParam(cmd) - 1;
-                scr.curRange(scr.col);
+                scr.curRange(-1);
                 return;
             case 74: // J
                 switch (bits.str2num(cmd.word(";"))) {
@@ -240,7 +240,7 @@ public class pipeScreen {
                 }
                 return;
             case 110: // n
-                pipe.strPut("\033[" + (scr.curX + 1) + ";" + (scr.curY + 1) + "R");
+                pipe.strPut("\033[" + (scr.curY + 1) + ";" + (scr.curX + 1) + "R");
                 return;
             case 115: // s
                 savX = scr.curX;
