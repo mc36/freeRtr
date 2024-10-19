@@ -103,11 +103,6 @@ public class userConfig {
      */
     public boolean needExpand;
 
-    /**
-     * time of last command
-     */
-    public long last;
-
     private pipeSide pipe; // pipe to use
 
     private userReader reader; // reader of the user
@@ -353,7 +348,6 @@ public class userConfig {
         if (s == null) {
             return true;
         }
-        last = bits.getTime();
         return executeCommand(s);
     }
 

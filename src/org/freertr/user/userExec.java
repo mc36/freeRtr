@@ -155,6 +155,41 @@ public class userExec {
         reader = rdr;
     }
 
+    /**
+     * copy credentinals to exec
+     *
+     * @param o other
+     */
+    public void copy2exec(userExec o) {
+        o.needExpand = needExpand;
+        o.username = username;
+        o.privileged = privileged;
+        o.authorization = authorization;
+    }
+
+    /**
+     * copy credentinals to config
+     *
+     * @param o other
+     */
+    public void copy2cfg(userConfig o) {
+        o.needExpand = needExpand;
+        o.username = username;
+        o.authorization = authorization;
+    }
+
+    /**
+     * update last command time
+     *
+     * @param o other
+     */
+    public void updateLast(userExec o) {
+        if (o.last < last) {
+            return;
+        }
+        last = o.last;
+    }
+
     private void getHelpClearIpX(userHelping hl) {
         hl.add(null, "3 4        route                 routing table");
         hl.add(null, "4 .          <name:vrf>          vrf name");
@@ -2530,7 +2565,6 @@ public class userExec {
         if (pipe.settingsGet(pipeSetting.times, false)) {
             pipe.linePut(logger.getTimestamp());
         }
-        last = bits.getTime();
         return executeCommand(s);
     }
 

@@ -109,14 +109,9 @@ public class userTmux {
             userReader.setTermLen(pip, sizY);
             pip.setTime(0);
             exe[i] = new userExec(pip, rdr);
-            exe[i].needExpand = true;
-            exe[i].username = orig.username;
-            exe[i].privileged = orig.privileged;
-            exe[i].authorization = orig.authorization;
             cfg[i] = new userConfig(pip, rdr);
-            cfg[i].needExpand = true;
-            cfg[i].username = orig.username;
-            cfg[i].authorization = orig.authorization;
+            orig.copy2exec(exe[i]);
+            orig.copy2cfg(cfg[i]);
             new userTmuxWin(this, i);
         }
         cur = 0;
@@ -232,12 +227,7 @@ public class userTmux {
             }
         }
         for (int i = 0; i < scr.length; i++) {
-            if (exe[i].last > orig.last) {
-                orig.last = exe[i].last;
-            }
-            if (cfg[i].last > orig.last) {
-                orig.last = cfg[i].last;
-            }
+            orig.updateLast(exe[i]);
             scr[i].doRound(false);
             cons.putScr(begX[i], begY[i], scr[i].scr, false);
         }

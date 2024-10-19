@@ -268,7 +268,7 @@ public class userLine {
      * @return list
      */
     public static userFormat listLoggedIns() {
-        userFormat res = new userFormat("|", "user|from|state|since");
+        userFormat res = new userFormat("|", "user|state|idle|from|since");
         for (int i = 0; i < loggedUsers.size(); i++) {
             userLineHandler cur = loggedUsers.get(i);
             if (cur == null) {
@@ -324,6 +324,7 @@ public class userLine {
      */
     public static void doCommands(userExec exe, userConfig cfg) {
         for (;;) {
+            exe.last = bits.getTime();
             userExec.cmdRes i = exe.doCommand();
             if (i == userExec.cmdRes.command) {
                 continue;
@@ -346,6 +347,7 @@ public class userLine {
                 sesStart = cfgAll.getShRun(1);
             }
             for (;;) {
+                exe.last = bits.getTime();
                 if (cfg.doCommand()) {
                     break;
                 }
@@ -899,6 +901,13 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         return true;
     }
 
+    public long getIdle() {
+        if (exe == null) {
+            return 0;
+        }
+        return exe.last;
+    }
+
     public int getState() {
         if (pipe == null) {
             return 1;
@@ -931,8 +940,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
     }
 
     public String toString() {
-        int i = getState();
-        return user.user + "|" + remote + "|" + state2str(getState()) + "|" + bits.timePast(since);
+        return user.user + "|" + state2str(getState()) + "|" + bits.timePast(getIdle()) + "|" + remote + "|" + bits.timePast(since);
     }
 
     /**
@@ -1111,13 +1119,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
     }
 
     public void doExpire() {
-        long tim;
-        if (cfg.last > exe.last) {
-            tim = cfg.last;
-        } else {
-            tim = exe.last;
-        }
-        tim = bits.getTime() - tim;
+        long tim = bits.getTime() - exe.last;
         if (tim > parent.execTimeOut) {
             if (parent.banner) {
                 pipe.linePut(parent.promptGoodbye);
