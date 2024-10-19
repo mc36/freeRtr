@@ -317,6 +317,61 @@ public class userLine {
     }
 
     /**
+     * do commands
+     *
+     * @param exe exec handler
+     * @param cfg config handler
+     */
+    public static void doCommands(userExec exe, userConfig cfg) {
+        for (;;) {
+            userExec.cmdRes i = exe.doCommand();
+            if (i == userExec.cmdRes.command) {
+                continue;
+            }
+            if (i == userExec.cmdRes.logout) {
+                return;
+            }
+            if (i != userExec.cmdRes.config) {
+                continue;
+            }
+            if (cfgAll.configExclusive > 0) {
+                cfgAll.configExclusive++;
+            }
+            String remote = exe.pipe.settingsGet(pipeSetting.origin, "?");
+            logger.warn(exe.username + " configuring from " + remote);
+            cfg.resetMode();
+            List<String> sesStart = null;
+            if (exe.rollback) {
+                logger.info("configuration checkpoint frozen!");
+                sesStart = cfgAll.getShRun(1);
+            }
+            for (;;) {
+                if (cfg.doCommand()) {
+                    break;
+                }
+            }
+            if (exe.pipe.isClosed() == 0) {
+                if (sesStart != null) {
+                    logger.info("configuration checkpoint released!");
+                }
+                sesStart = null;
+            }
+            if (sesStart != null) {
+                sesStart = userFilter.getDiffs(cfgAll.getShRun(1), sesStart);
+                int res = cfgInit.executeSWcommands(sesStart, false);
+                logger.info("configuration reverted to frozen checkpoint with " + res + " errors.");
+            }
+            if (cfgAll.configExclusive > 1) {
+                cfgAll.configExclusive--;
+            }
+            if (cfgAll.configAsave) {
+                exe.executeCommand("write memory");
+            }
+            logger.warn(exe.username + " configured from " + remote);
+        }
+    }
+
+    /**
      * get running configuration
      *
      * @param beg beginning string
@@ -1043,59 +1098,15 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             userLineExpirity task = new userLineExpirity(this);
             expTim.schedule(task, 30 * 1000, 60 * 1000);
         }
-        for (;;) {
-            userExec.cmdRes i = exe.doCommand();
-            if (i == userExec.cmdRes.command) {
-                continue;
-            }
-            if (i == userExec.cmdRes.logout) {
-                if (physical == 2) {
-                    pipe.linePut("% not possible on this line");
-                    continue;
-                }
-                if (parent.loginLogging) {
-                    logger.info(user.user + " logged out from " + remote);
-                }
-                return;
-            }
-            if (i != userExec.cmdRes.config) {
-                continue;
-            }
-            if (cfgAll.configExclusive > 0) {
-                cfgAll.configExclusive++;
-            }
-            logger.warn(user.user + " configuring from " + remote);
-            cfg.resetMode();
-            List<String> sesStart = null;
-            if (exe.rollback) {
-                logger.info("configuration checkpoint frozen!");
-                sesStart = cfgAll.getShRun(1);
-            }
+        if (physical == 2) {
             for (;;) {
-                if (cfg.doCommand()) {
-                    break;
-                }
+                userLine.doCommands(exe, cfg);
+                pipe.linePut("% not possible on this line");
             }
-            if (pipe.isClosed() == 0) {
-                if (sesStart != null) {
-                    logger.info("configuration checkpoint released!");
-                }
-                sesStart = null;
-            }
-            if (sesStart != null) {
-                sesStart = userFilter.getDiffs(cfgAll.getShRun(1), sesStart);
-                rdr.putStrArr(bits.lst2lin(sesStart, false));
-                int res = cfgInit.executeSWcommands(sesStart, false);
-                rdr.putStrArr(bits.str2lst("errors=" + res));
-                logger.info("configuration reverted to frozen checkpoint with " + res + " errors.");
-            }
-            if (cfgAll.configExclusive > 1) {
-                cfgAll.configExclusive--;
-            }
-            if (cfgAll.configAsave) {
-                exe.executeCommand("write memory");
-            }
-            logger.warn(user.user + " configured from " + remote);
+        }
+        userLine.doCommands(exe, cfg);
+        if (parent.loginLogging) {
+            logger.info(user.user + " logged out from " + remote);
         }
     }
 

@@ -29,6 +29,8 @@ public class userTmux {
 
     private userExec exe[];
 
+    private userConfig cfg[];
+
     private boolean running = true;
 
     /**
@@ -91,6 +93,7 @@ public class userTmux {
         }
         scr = new pipeScreen[begX.length];
         exe = new userExec[begX.length];
+        cfg = new userConfig[begX.length];
         for (int i = 0; i < begX.length; i++) {
             pipeLine pl = new pipeLine(32768, false);
             pipeSide pip = pl.getSide();
@@ -110,6 +113,10 @@ public class userTmux {
             exe[i].username = orig.username;
             exe[i].privileged = orig.privileged;
             exe[i].authorization = orig.authorization;
+            cfg[i] = new userConfig(pip, rdr);
+            cfg[i].needExpand = true;
+            cfg[i].username = orig.username;
+            cfg[i].authorization = orig.authorization;
             new userTmuxWin(this, i);
         }
         cur = 0;
@@ -127,10 +134,7 @@ public class userTmux {
             if (!running) {
                 break;
             }
-            userExec.cmdRes i = exe[n].doCommand();
-            if (i == userExec.cmdRes.command) {
-                continue;
-            }
+            userLine.doCommands(exe[n], cfg[n]);
             exe[n].pipe.linePut("% not on this line");
         }
     }
@@ -228,6 +232,12 @@ public class userTmux {
             }
         }
         for (int i = 0; i < scr.length; i++) {
+            if (exe[i].last > orig.last) {
+                orig.last = exe[i].last;
+            }
+            if (cfg[i].last > orig.last) {
+                orig.last = cfg[i].last;
+            }
             scr[i].doRound(false);
             cons.putScr(begX[i], begY[i], scr[i].scr, false);
         }
