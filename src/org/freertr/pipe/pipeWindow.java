@@ -280,7 +280,7 @@ public class pipeWindow extends JPanel {
      * stop new window
      */
     public void stopWindow() {
-        img.setClose();
+        img.pipe.setClose();
     }
 
 }
@@ -296,7 +296,7 @@ class pipeWindowDoer implements Runnable {
 
     private void doer() {
         for (;;) {
-            boolean b = lower.img.doRound(true);
+            boolean b = lower.img.scr.doRound(true);
             lower.img.doImage();
             lower.repaint();
             if (b) {

@@ -1220,7 +1220,7 @@ public class cfgInit implements Runnable {
         }
         doInit(null, httpGet(url), null);
         cfgAll.con0.line.createHandler(ps, "applet", 2);
-        img.doRound(true);
+        img.scr.doRound(true);
         img.doImage();
         return img;
     }

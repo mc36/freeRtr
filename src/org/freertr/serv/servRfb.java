@@ -281,7 +281,7 @@ class servRfbConn implements Runnable {
     }
 
     protected void doShutdown() {
-        img.setClose();
+        img.pipe.setClose();
         pipe.setClose();
     }
 
@@ -289,12 +289,12 @@ class servRfbConn implements Runnable {
         if (pipe.isClosed() != 0) {
             return true;
         }
-        if (img.isClosed() != 0) {
+        if (img.pipe.isClosed() != 0) {
             return true;
         }
         notif.misleep(1000);
         for (;;) {
-            if (img.doRound(false)) {
+            if (img.scr.doRound(false)) {
                 break;
             }
         }
@@ -543,87 +543,87 @@ class servRfbConn implements Runnable {
             if ((keyShft & 0xc) != 0) {
                 buf[0] &= 0x1f;
             }
-            img.doKey(p + new String(buf));
+            img.pipe.strPut(p + new String(buf));
             return;
         }
         switch (key) {
             case 0xff08: // backspace
-                img.doKey(p + "\010");
+                img.pipe.strPut(p + "\010");
                 return;
             case 0xff09: // tabulator
-                img.doKey(p + "\011");
+                img.pipe.strPut(p + "\011");
                 return;
             case 0xff0d: // enter
-                img.doKey(p + "\015");
+                img.pipe.strPut(p + "\015");
                 return;
             case 0xff1b: // escape
-                img.doKey(p + "\033");
+                img.pipe.strPut(p + "\033");
                 return;
             case 0xff63: // insert
-                img.doKey(p + "\033[2~");
+                img.pipe.strPut(p + "\033[2~");
                 return;
             case 0xffff: // delete
-                img.doKey(p + "\033[3~");
+                img.pipe.strPut(p + "\033[3~");
                 return;
             case 0xff50: // home
-                img.doKey(p + "\033[1~");
+                img.pipe.strPut(p + "\033[1~");
                 return;
             case 0xff57: // end
-                img.doKey(p + "\033[4~");
+                img.pipe.strPut(p + "\033[4~");
                 return;
             case 0xff55: // pgup
-                img.doKey(p + "\033[5~");
+                img.pipe.strPut(p + "\033[5~");
                 return;
             case 0xff56: // pgdn
-                img.doKey(p + "\033[6~");
+                img.pipe.strPut(p + "\033[6~");
                 return;
             case 0xff52: // up
-                img.doKey(p + "\033[A");
+                img.pipe.strPut(p + "\033[A");
                 return;
             case 0xff54: // down
-                img.doKey(p + "\033[B");
+                img.pipe.strPut(p + "\033[B");
                 return;
             case 0xff51: // left
-                img.doKey(p + "\033[D");
+                img.pipe.strPut(p + "\033[D");
                 return;
             case 0xff53: // right
-                img.doKey(p + "\033[C");
+                img.pipe.strPut(p + "\033[C");
                 return;
             case 0xffbe: // f1
-                img.doKey(p + "\033[11~");
+                img.pipe.strPut(p + "\033[11~");
                 return;
             case 0xffbf: // f2
-                img.doKey(p + "\033[12~");
+                img.pipe.strPut(p + "\033[12~");
                 return;
             case 0xffc0: // f3
-                img.doKey(p + "\033[13~");
+                img.pipe.strPut(p + "\033[13~");
                 return;
             case 0xffc1: // f4
-                img.doKey(p + "\033[14~");
+                img.pipe.strPut(p + "\033[14~");
                 return;
             case 0xffc2: // f5
-                img.doKey(p + "\033[15~");
+                img.pipe.strPut(p + "\033[15~");
                 return;
             case 0xffc3: // f6
-                img.doKey(p + "\033[17~");
+                img.pipe.strPut(p + "\033[17~");
                 return;
             case 0xffc4: // f7
-                img.doKey(p + "\033[18~");
+                img.pipe.strPut(p + "\033[18~");
                 return;
             case 0xffc5: // f8
-                img.doKey(p + "\033[19~");
+                img.pipe.strPut(p + "\033[19~");
                 return;
             case 0xffc6: // f9
-                img.doKey(p + "\033[20~");
+                img.pipe.strPut(p + "\033[20~");
                 return;
             case 0xffc7: // f10
-                img.doKey(p + "\033[21~");
+                img.pipe.strPut(p + "\033[21~");
                 return;
             case 0xffc8: // f11
-                img.doKey(p + "\033[23~");
+                img.pipe.strPut(p + "\033[23~");
                 return;
             case 0xffc9: // f12
-                img.doKey(p + "\033[24~");
+                img.pipe.strPut(p + "\033[24~");
                 return;
             case 0xffe1: // left shift
                 keyShft |= 0x1;

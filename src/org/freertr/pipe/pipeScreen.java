@@ -39,7 +39,7 @@ public class pipeScreen {
      * @param x x size
      * @param y y size
      */
-    protected pipeScreen(pipeSide pip, int x, int y) {
+    public pipeScreen(pipeSide pip, int x, int y) {
         pipe = pip;
         pipeSide ps = pipeDiscard.needAny(null);
         userReader.setTermWdt(ps, x);
@@ -332,6 +332,29 @@ public class pipeScreen {
      */
     public void doChar(String str) {
         doChar(str.getBytes());
+    }
+
+    /**
+     * do one round
+     *
+     * @param wait set true to wait for input, false to fail otherwise
+     * @return true on error, false on success
+     */
+    public boolean doRound(boolean wait) {
+        int i = pipe.ready2rx();
+        if (i < 1) {
+            if (wait) {
+                i = 1;
+            } else {
+                return true;
+            }
+        }
+        byte[] buf = new byte[i];
+        if (pipe.moreGet(buf, 0, i) != i) {
+            return true;
+        }
+        doChar(buf);
+        return false;
     }
 
 }

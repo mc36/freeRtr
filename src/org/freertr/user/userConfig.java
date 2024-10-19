@@ -306,8 +306,8 @@ public class userConfig {
             }
             userExec exe = new userExec(pipe, reader);
             exe.privileged = true;
-            exe.authorization = authorization;
             exe.username = username;
+            exe.authorization = authorization;
             a = exe.repairCommand(cmd.getRemaining());
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, a);
