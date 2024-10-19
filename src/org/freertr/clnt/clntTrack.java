@@ -918,7 +918,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         pipeLine pipe = new pipeLine(32768, false);
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
-        userReader rdr = new userReader(pip);
+        userReader rdr = new userReader(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

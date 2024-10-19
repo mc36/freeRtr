@@ -345,7 +345,7 @@ public class clntHttp {
         if (pipe == null) {
             return true;
         }
-        pipe.settingsPut(pipeSetting.origin, url.server);
+        pipe.settingsAdd(pipeSetting.origin, url.server);
         doDebug("securing " + url.toURL(true, false, false, true));
         pipe = secClient.openSec(pipe, url.getSecurity(), pubkey, url.username, url.password);
         if (pipe == null) {

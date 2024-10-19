@@ -1813,11 +1813,6 @@ public class userExec {
         hl.add(null, "1 2    whois                          perform whois query");
         hl.add(null, "2 3      <host>                       name of host to query");
         hl.add(null, "3 3,.      <text>                     query string");
-        hl.add(null, "1 2    tmux                           multiplex the terminal");
-        hl.add(null, "2 .      vertical                     divide vertically");
-        hl.add(null, "2 .      horizontal                   divide horizontally");
-        hl.add(null, "2 .      both                         divide to four");
-        hl.add(null, "2 .      none                         do not divide");
         hl.add(null, "1 2    game                           play games or watch screen savers");
         version.genSecHelp(hl, 2);
         hl.add(null, "2 3      ansi                         show some art");
@@ -2725,28 +2720,13 @@ public class userExec {
             privileged = false;
             return cmdRes.command;
         }
-        if (a.equals("tmux")) {
-            a = cmd.word();
-            int i = 0;
-            if (a.equals("horizontal")) {
-                i = 1;
-            }
-            if (a.equals("vertical")) {
-                i = 2;
-            }
-            if (a.equals("both")) {
-                i = 3;
-            }
-            userTmux t = new userTmux(new userScreen(pipe), this);
-            t.doInit(i);
-            t.doWork();
-            return cmdRes.command;
-        }
         if (a.equals("game")) {
+            reader.keyFlush();
             userGame t = new userGame(new userScreen(pipe), reader);
             t.doStart();
             t.doCommand(cmd);
             t.doFinish();
+            reader.keyFlush();
             return cmdRes.command;
         }
         if (a.equals("bwmon")) {
@@ -4971,7 +4951,7 @@ public class userExec {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip);
+        userReader rdr = new userReader(pip, null);
         userReader.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
         userReader.setTermLen(pip, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));

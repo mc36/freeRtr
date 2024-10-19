@@ -1276,7 +1276,7 @@ public class servHttpUtil {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
             pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
@@ -1353,7 +1353,7 @@ public class servHttpUtil {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
             pip.settingsPut(pipeSetting.height, 0);
             userConfig cfg = new userConfig(pip, rdr);

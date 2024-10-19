@@ -240,25 +240,43 @@ public class userReader implements Comparator<String> {
      * constructs new reader for a pipeline
      *
      * @param pip pipeline to use as input
+     * @param parent line to use
      */
-    public userReader(pipeSide pip) {
+    public userReader(pipeSide pip, userLine parent) {
         pipe = pip;
         clip = "";
         filterS = "";
-        setHistory(64);
-        pipe.settingsAdd(pipeSetting.spacTab, false);
-        pipe.settingsAdd(pipeSetting.capsLock, false);
-        pipe.settingsAdd(pipeSetting.termBells, false);
-        pipe.settingsAdd(pipeSetting.ansiMode, userScreen.ansiMode.normal);
-        pipe.settingsAdd(pipeSetting.logging, false);
-        pipe.settingsAdd(pipeSetting.times, false);
-        pipe.settingsAdd(pipeSetting.passStar, false);
-        pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
-        pipe.settingsAdd(pipeSetting.width, 79);
-        pipe.settingsAdd(pipeSetting.height, 24);
-        pipe.settingsAdd(pipeSetting.tabMod, userFormat.tableMode.normal);
-        pipe.settingsAdd(pipeSetting.deactive, 65536);
-        pipe.settingsAdd(pipeSetting.escape, 65536);
+        if (parent == null) {
+            setHistory(64);
+            pipe.settingsAdd(pipeSetting.spacTab, false);
+            pipe.settingsAdd(pipeSetting.capsLock, false);
+            pipe.settingsAdd(pipeSetting.termBells, false);
+            pipe.settingsAdd(pipeSetting.ansiMode, userScreen.ansiMode.normal);
+            pipe.settingsAdd(pipeSetting.logging, false);
+            pipe.settingsAdd(pipeSetting.times, false);
+            pipe.settingsAdd(pipeSetting.passStar, false);
+            pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
+            pipe.settingsAdd(pipeSetting.width, 79);
+            pipe.settingsAdd(pipeSetting.height, 24);
+            pipe.settingsAdd(pipeSetting.tabMod, userFormat.tableMode.normal);
+            pipe.settingsAdd(pipeSetting.deactive, 65536);
+            pipe.settingsAdd(pipeSetting.escape, 65536);
+            return;
+        }
+        setHistory(parent.execHistory);
+        pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
+        pipe.settingsAdd(pipeSetting.capsLock, parent.execCaps);
+        pipe.settingsAdd(pipeSetting.ansiMode, parent.ansiMode);
+        pipe.settingsAdd(pipeSetting.termBells, parent.execBells);
+        pipe.settingsAdd(pipeSetting.logging, parent.execLogging);
+        pipe.settingsAdd(pipeSetting.times, parent.execTimes);
+        pipe.settingsAdd(pipeSetting.passStar, parent.passStars);
+        pipe.settingsAdd(pipeSetting.colors, parent.execColor);
+        pipe.settingsAdd(pipeSetting.width, parent.execWidth);
+        pipe.settingsAdd(pipeSetting.height, parent.execHeight);
+        pipe.settingsAdd(pipeSetting.tabMod, parent.execTables);
+        pipe.settingsAdd(pipeSetting.deactive, parent.promptDeActive);
+        pipe.settingsAdd(pipeSetting.escape, parent.promptEscape);
     }
 
     /**

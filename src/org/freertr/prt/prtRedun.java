@@ -594,7 +594,7 @@ class prtRedunIfc implements ifcUp {
                 pipeSide pip = pl.getSide();
                 pip.lineTx = pipeSide.modTyp.modeCRLF;
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                userReader rdr = new userReader(pip);
+                userReader rdr = new userReader(pip, null);
                 pip.settingsPut(pipeSetting.height, 0);
                 userExec exe = new userExec(pip, rdr);
                 exe.privileged = true;

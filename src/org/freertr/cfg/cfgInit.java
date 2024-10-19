@@ -789,7 +789,7 @@ public class cfgInit implements Runnable {
         pipeLine pl = new pipeLine(65536, false);
         pipeSide psS = pl.getSide();
         pipeSide psC = pl.getSide();
-        userReader rd = new userReader(psC);
+        userReader rd = new userReader(psC, null);
         psC.settingsPut(pipeSetting.height, 0);
         userConfig uc = new userConfig(psC, rd);
         psS.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1336,7 +1336,7 @@ public class cfgInit implements Runnable {
             List<String> swT = httpGet(cfgFileSw);
             doInit(null, swT, pip);
             logger.pipeStart(pip);
-            userReader rdr = new userReader(pip);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
                 userScreen.updtSiz(pip);
@@ -1361,7 +1361,7 @@ public class cfgInit implements Runnable {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
@@ -1399,7 +1399,7 @@ public class cfgInit implements Runnable {
             }
             pipeSide pip = pipeConsole.create();
             logger.pipeStart(pip);
-            userReader rdr = new userReader(pip);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
                 userScreen.updtSiz(pip);
