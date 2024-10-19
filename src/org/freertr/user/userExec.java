@@ -2153,6 +2153,8 @@ public class userExec {
         hl.add(null, "2 .      terminal                     to this terminal");
         hl.add(null, "2 .      memory                       to persistent storage");
         hl.add(null, "2 .      erase                        clear persistent storage");
+        hl.add(null, "1 2    screenrec                      record terminal session");
+        hl.add(null, "2 .      <file>                       name of file");
         hl.add(null, "1 2    attach                         connect to system resources");
         hl.add(null, "2 .      chat                         discuss with other admins");
         hl.add(null, "2 3      vdc                          manage virtual device context");
@@ -2830,6 +2832,14 @@ public class userExec {
         }
         if (!privileged) {
             cmd.error("not enough privilege");
+            return cmdRes.command;
+        }
+        if (a.equals("screenrec")) {
+            a=cmd.word();
+            reader.keyFlush();
+            userRecord t = new userRecord(a, this);
+            t.doWork();
+            reader.keyFlush();
             return cmdRes.command;
         }
         if (a.equals("attach")) {
