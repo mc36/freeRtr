@@ -16250,3 +16250,6 @@ no todo: test hwredetect that uses some external file and a p4lang process to ov
 ---------------------------------- 2024-10-20 07:04:34 24.10.20
 no qc pass: dhcp with excluded address
 failed: dhcp with excluded address
+---------------------------------- 2024-10-20 07:34:16 24.10.20
+no failed: dhcp with excluded address
+qc pass: dhcp with excluded address
