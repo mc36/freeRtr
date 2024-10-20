@@ -10,7 +10,7 @@ summary of features:
 * lsp support: p2p, p2mp, mp2mp built by bgp, ldp, rsvp-te, sr, sr-te, bier, polka
 * crypto: macsec, ipsec, ikev1, ikev2, tls, dtls, ssh, openvpn, wireguard, sgt
 * tunnel: gre, ipip, l2tp, pptp, lisp, geneve, nvgre, vxlan, etherip, amt
-* encapsulation: ethernet, vlan, ppp, framerelay, pwether, virtppp, hairpin
+* encapsulation: ethernet, vlan, qinq, ppp(oe), framerelay, pwether, virtppp, hairpin
 * misc: acl, qos, nat, pbr, srv6, vrrp, hsrp, inspect, 6to4, rpl, tunnel, vpdn, pcep
 
 
