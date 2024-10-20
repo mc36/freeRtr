@@ -5,6 +5,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.tab.tabAceslstN;
 import org.freertr.tab.tabListing;
+import org.freertr.util.cmds;
 
 /**
  * bgp4 listen configuration
@@ -46,6 +47,7 @@ public class rtrBgpLstn implements Comparable<rtrBgpLstn> {
      */
     public void getConfig(List<String> l, String beg) {
         l.add(beg + "listen " + acl.listName + " " + temp.tempName);
+        l.add(beg + cmds.comment);
     }
 
 }
