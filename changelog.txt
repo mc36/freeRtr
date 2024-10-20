@@ -16247,3 +16247,6 @@ qc pass: p4lang: l3vpn over bundle qinq mpls
 qc pass: p4lang: qinq bridge tcpmss
 ---------------------------------- 2024-10-07 07:43:35 24.10.7
 no todo: test hwredetect that uses some external file and a p4lang process to overcome the eth0-->eno1-->eth0 random changes, by mac and friends
+---------------------------------- 2024-10-20 07:04:34 24.10.20
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
