@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.freertr.addr.addrIP;
 import org.freertr.clnt.clntDns;
+import org.freertr.cry.cryHashCrc32;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packNrpe;
 import org.freertr.pipe.pipeLine;
@@ -696,7 +697,10 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
                 return;
             }
         }
-        int i = pck.str.hashCode();
+        cryHashCrc32 hsh = new cryHashCrc32(cryHashCrc32.polyCrc32i);
+        hsh.init();
+        hsh.update(pck.str.getBytes());
+        int i = hsh.getCrc();
         if (i == lastHash) {
             pck.cod = lastStat;
         } else {

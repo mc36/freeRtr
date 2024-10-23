@@ -301,6 +301,9 @@ public class servGenList<T extends servGeneric> {
         l.add(null, p + "  " + (p + 1) + "    gopher                       gopher server" + e);
         l.add(cfgAll.dmnGopher.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
         l.addOther(o);
+        l.add(null, p + "  " + (p + 1) + "    plan9                        plan9 server" + e);
+        l.add(cfgAll.dmnPlan9.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
+        l.addOther(o);
         l.add(null, p + "  " + (p + 1) + "    iscsi                        iscsi server" + e);
         l.add(cfgAll.dmnIscsi.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
         l.addOther(o);
@@ -542,6 +545,9 @@ class servGenEntry {
         }
         if (typ.equals("gopher")) {
             return new servGenEntry(new servGopher(), cfgAll.dmnGopher);
+        }
+        if (typ.equals("plan9")) {
+            return new servGenEntry(new servPlan9(), cfgAll.dmnPlan9);
         }
         if (typ.equals("iscsi")) {
             return new servGenEntry(new servIscsi(), cfgAll.dmnIscsi);

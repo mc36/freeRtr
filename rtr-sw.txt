@@ -1060,15 +1060,15 @@ server http web vrf v1 interface loopback0
  access-peer 16
  access-startup 10000
  second-port 443
- host * path /nfs2/own/web/
+ host * path /nfs/own/web/
  host * redir http://sid.mchome.nop.hu/
- host *.dn42.sid.mchome.nop.hu path /nfs2/own/web/
+ host *.dn42.sid.mchome.nop.hu path /nfs/own/web/
  host *.dn42.sid.mchome.nop.hu reconn dn42 http://www.nop.dn42/
  host *.dn42.sid.mchome.nop.hu translate 3
- host *.inet.sid.mchome.nop.hu path /nfs2/own/web/
+ host *.inet.sid.mchome.nop.hu path /nfs/own/web/
  host *.inet.sid.mchome.nop.hu reconn p1 http://www.nop.hu/
  host *.inet.sid.mchome.nop.hu translate 4
- host sid.mchome.nop.hu path /nfs2/own/web/
+ host sid.mchome.nop.hu path /nfs/own/web/
  host sid.mchome.nop.hu style table, th, td { border: 1px solid }
  host sid.mchome.nop.hu logging
  host sid.mchome.nop.hu dirlist readme stats
@@ -1096,6 +1096,10 @@ server ftp f vrf v1 interface loopback0
  exit
 !
 server tftp t vrf v1 interface loopback0
+ path /nfs/own/web/
+ exit
+!
+server plan9 p vrf v1 interface loopback0
  path /nfs/own/web/
  exit
 !

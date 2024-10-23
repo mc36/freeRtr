@@ -98,6 +98,7 @@ import org.freertr.serv.servUpnpHub;
 import org.freertr.serv.servVoice;
 import org.freertr.serv.servVxlan;
 import org.freertr.enc.encUrl;
+import org.freertr.serv.servPlan9;
 import org.freertr.serv.servStack;
 import org.freertr.serv.servWhois;
 import org.freertr.serv.servXotPad;
@@ -972,6 +973,7 @@ public class cfgInit implements Runnable {
         servForwarder.defaultF = createFilter(servForwarder.defaultL, srvdefsF);
         servFtp.defaultF = createFilter(servFtp.defaultL, srvdefsF);
         servGopher.defaultF = createFilter(servGopher.defaultL, srvdefsF);
+        servPlan9.defaultF = createFilter(servPlan9.defaultL, srvdefsF);
         servGtp.defaultF = createFilter(servGtp.defaultL, srvdefsF);
         servHoneyPot.defaultF = createFilter(servHoneyPot.defaultL, srvdefsF);
         servWhois.defaultF = createFilter(servWhois.defaultL, srvdefsF);

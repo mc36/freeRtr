@@ -65,6 +65,7 @@ import org.freertr.serv.servPckOdtls;
 import org.freertr.serv.servPckOtcp;
 import org.freertr.serv.servPckOtxt;
 import org.freertr.serv.servPckOudp;
+import org.freertr.serv.servPlan9;
 import org.freertr.serv.servPop3;
 import org.freertr.serv.servPptp;
 import org.freertr.serv.servPrometheus;
@@ -523,6 +524,11 @@ public class cfgAll {
      * gopher daemons
      */
     public final static servGenList<servGopher> dmnGopher = new servGenList<servGopher>();
+
+    /**
+     * plan9 daemons
+     */
+    public final static servGenList<servPlan9> dmnPlan9 = new servGenList<servPlan9>();
 
     /**
      * ntp daemons
@@ -3951,6 +3957,7 @@ public class cfgAll {
         dmnFtp.getShRun(l, filter);
         dmnTftp.getShRun(l, filter);
         dmnGopher.getShRun(l, filter);
+        dmnPlan9.getShRun(l, filter);
         dmnNtp.getShRun(l, filter);
         dmnDaytime.getShRun(l, filter);
         dmnTime.getShRun(l, filter);

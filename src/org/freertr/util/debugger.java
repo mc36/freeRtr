@@ -109,6 +109,11 @@ public class debugger {
     public static boolean servGopherTraf = false;
 
     /**
+     * servPlan9 traffic
+     */
+    public static boolean servPlan9traf = false;
+
+    /**
      * servIscsi traffic
      */
     public static boolean servIscsiTraf = false;
@@ -1091,6 +1096,7 @@ public class debugger {
         l.add(null, "3 .        ftp               file transfer protocol");
         l.add(null, "3 .        tftp              trivival file transfer protocol");
         l.add(null, "3 .        gopher            gopher protocol");
+        l.add(null, "3 .        plan9             plan9 protocol");
         l.add(null, "3 .        ntp               network time protocol");
         l.add(null, "3 .        irc               internet relay protocol");
         l.add(null, "3 .        rpki              resource public key infrastructure");
@@ -1422,6 +1428,10 @@ public class debugger {
             }
             if (s.equals("gopher")) {
                 servGopherTraf = v;
+                return false;
+            }
+            if (s.equals("plan9")) {
+                servPlan9traf = v;
                 return false;
             }
             if (s.equals("ntp")) {
