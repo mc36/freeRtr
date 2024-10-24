@@ -60,11 +60,45 @@ public class cryHashCrc16 extends cryHashGeneric {
      * @param b value
      * @return reversed
      */
-    public static int reverse(int b) {
+    public static int reverse32(int b) {
+        int r = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((b & 1) != 0) {
+                r |= 1 << (31 - i);
+            }
+            b >>>= 1;
+        }
+        return r;
+    }
+
+    /**
+     * reverse bits
+     *
+     * @param b value
+     * @return reversed
+     */
+    public static int reverse16(int b) {
         int r = 0;
         for (int i = 0; i < 16; i++) {
             if ((b & 1) != 0) {
                 r |= 1 << (15 - i);
+            }
+            b >>>= 1;
+        }
+        return r;
+    }
+
+    /**
+     * reverse bits
+     *
+     * @param b value
+     * @return reversed
+     */
+    public static int reverse8(int b) {
+        int r = 0;
+        for (int bit = 0; bit < 8; bit++) {
+            if ((b & 1) != 0) {
+                r |= (1 << (7 - bit));
             }
             b >>>= 1;
         }
