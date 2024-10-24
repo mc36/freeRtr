@@ -50,6 +50,16 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
     protected pipeSide conn;
 
     /**
+     * connection start
+     */
+    protected long started = 0;
+
+    /**
+     * connections accepted
+     */
+    protected int reconns = 0;
+
+    /**
      * current stack
      */
     protected servStack parent;
@@ -133,6 +143,8 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
+        started = bits.getTime();
+        reconns++;
         if (conn != null) {
             thrdRx.working = false;
             thrdTx.working = false;
@@ -185,7 +197,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
                 return false;
             }
             if ((ifc.type != tabRouteIface.ifaceType.sdn) && (ifc.type != tabRouteIface.ifaceType.bridge)) {
-                cmd.error("not openflow interface");
+                cmd.error("not sdn interface");
                 return false;
             }
             servOpenflowIfc1 ntry = new servOpenflowIfc1();
@@ -316,19 +328,15 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
      * @return offload info
      */
     public String getShGenOneLiner() {
-        servOpenflow ntry = cfgAll.dmnOpenflow.get(0);
-        if (ntry == null) {
-            return null;
-        }
         String a = "n/a";
         if (expVrf != null) {
             a = expVrf.name;
         }
-        a = "opnflw,vrf=" + a + ",prt=" + expIfc.size();
-        if (ntry.conn == null) {
+        a = "opnflw,vrf=" + a + ",prt=" + expIfc.size() + ",rec=" + reconns;
+        if (conn == null) {
             return a + ",disc";
         }
-        return a + ",clsd=" + ntry.conn.isClosed() + ",rdy=" + ntry.conn.isReady();
+        return a + ",clsd=" + conn.isClosed() + ",rdy=" + conn.isReady();
     }
 
     /**

@@ -117,15 +117,6 @@ public class servP4langConn implements Runnable {
     }
 
     /**
-     * get hardware forwarder info
-     *
-     * @return offload info
-     */
-    public String getShGenOneLiner() {
-        return ",clsd=" + pipe.isClosed() + ",rdy=" + pipe.isReady();
-    }
-
-    /**
      * start working
      */
     protected void startWork() {

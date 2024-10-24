@@ -72,8 +72,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
      * @return offload info
      */
     public String getShGenOneLiner() {
-        String a = platform + ",brd=" + expBr.size() + ",vrf=" + expVrf.size() + ",prt=" + expIfc.size();
-        return a + conn.getShGenOneLiner();
+        return platform + ",brd=" + expBr.size() + ",vrf=" + expVrf.size() + ",prt=" + expIfc.size() + ",rec=" + reconns + ",clsd=" + conn.pipe.isClosed() + ",rdy=" + conn.pipe.isReady();
     }
 
     /**
