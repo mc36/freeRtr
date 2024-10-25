@@ -348,21 +348,24 @@ public class userImage {
         return false;
     }
 
-    private boolean instAllFiles() {
-        String a = "";
-        for (int i = 0; i < selected.size(); i++) {
-            userImagePkg pkg = selected.get(i);
-            if (pkg.done) {
-                continue;
-            }
-            pkg.done = true;
-            a += " " + pkg.name;
-            getPackageName(pkg);
-        }
-        if (a.length() < 1) {
+    private boolean instOneFile(userImagePkg pkg) {
+        String name = getPackageName(pkg);
+        if (pkg.done) {
+            pip.linePut("skipping " + name);
             return false;
         }
-        return execCmd("for a in" + a + " ; do echo unpacking $a ; dpkg-deb --fsys-tarfile " + downDir + "/" + arch + "-$a.deb | tar -x --keep-directory-symlink -C " + tempDir + "/ ; done") != 0;
+        pkg.done = true;
+        return execCmd("dpkg-deb --fsys-tarfile " + name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
+    }
+
+    private boolean instAllFiles() {
+        for (int i = 0; i < selected.size(); i++) {
+            userImagePkg pkg = selected.get(i);
+            if (instOneFile(pkg)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean doIncludeAll(cmds c) {
