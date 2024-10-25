@@ -1135,8 +1135,12 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         need2run = true;
         cfgBase = version.getRWpath() + "vdc-" + name + "-";
         List<String> l = new ArrayList<String>();
-        l.add("hwid " + cfgInit.hwIdNum + "-" + name);
-        l.add("hwsn " + uuidValue);
+        l.add("hwid " + cfgInit.hwIdNum);
+        if (uuidValue == null) {
+            l.add("hwsn " + cfgInit.hwSnNum);
+        } else {
+            l.add("hwsn " + uuidValue);
+        }
         l.add("prnt " + cfgAll.hostName);
         l.add("rwpath " + version.getRWpath());
         if (!priviledged) {

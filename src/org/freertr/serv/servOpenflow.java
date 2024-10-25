@@ -336,7 +336,7 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
         if (conn == null) {
             return a + ",disc";
         }
-        return a + ",clsd=" + conn.isClosed() + ",rdy=" + conn.isReady();
+        return a + ",cls=" + conn.isClosed() + ",rdy=" + conn.isReady();
     }
 
     /**
