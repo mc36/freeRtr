@@ -226,6 +226,11 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
     public pipeSide con;
 
     /**
+     * last exit code
+     */
+    public int restartE;
+
+    /**
      * restart count
      */
     public int restartC;
@@ -1082,6 +1087,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             }
             bits.sleep(100);
         }
+        restartE = proc.resultNum();
     }
 
     /**
@@ -1227,7 +1233,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
      * @return info
      */
     public String getShow() {
-        return name + "|" + restartC + "|" + pipeShell.info(proc) + "|" + bits.timePast(restartT) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3);
+        return name + "|" + restartC + "|" + restartE + "|" + pipeShell.info(proc) + "|" + bits.timePast(restartT) + "|" + bits.time2str(cfgAll.timeZoneName, restartT + cfgAll.timeServerOffset, 3);
     }
 
 }

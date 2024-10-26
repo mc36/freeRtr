@@ -466,7 +466,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("device")) {
-                userFormat l = new userFormat("|", "name|rerun|pid|chld|cpu|mem|ago|last");
+                userFormat l = new userFormat("|", "name|rerun|code|pid|chld|cpu|mem|ago|last");
                 for (int i = 0; i < cfgInit.vdcLst.size(); i++) {
                     cfgVdc ntry = cfgInit.vdcLst.get(i);
                     l.add(ntry.getShow());
@@ -489,7 +489,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("external")) {
-                userFormat l = new userFormat("|", "name|rerun|pid|chld|cpu|mem|ago|last");
+                userFormat l = new userFormat("|", "name|rerun|code|pid|chld|cpu|mem|ago|last");
                 for (int i = 0; i < cfgAll.prcs.size(); i++) {
                     cfgPrcss ntry = cfgAll.prcs.get(i);
                     l.add(ntry.getShow());

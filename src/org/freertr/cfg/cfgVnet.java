@@ -232,7 +232,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         userHwdet.setupVeth(lst, side1.getOSname(), side2.getOSname());
         userHwdet.setupIface(lst, side1.getOSname(), 8192);
         userHwdet.setupIface(lst, side2.getOSname(), 8192);
-        String a = version.getRWpath() + "veth" + bits.randomD() + ".tmp";
+        String a = version.getRWpath() + "vnet" + bits.randomD() + ".tmp";
         if (bits.buf2txt(true, lst, a)) {
             return;
         }
@@ -284,6 +284,8 @@ class cfgVnetSide implements Runnable {
     private pipeShell proc;
 
     private pipeSide pipe;
+
+    public int restartE;
 
     public int restartC;
 
@@ -482,7 +484,7 @@ class cfgVnetSide implements Runnable {
     }
 
     public String getOSname() {
-        return "exthrpin" + parent.number + (sideId == 1 ? "a" : "b");
+        return "exthairpin" + parent.number + (sideId == 1 ? "a" : "b");
     }
 
     private synchronized boolean doRound() {
@@ -529,6 +531,7 @@ class cfgVnetSide implements Runnable {
             }
             bits.sleep(100);
         }
+        restartE = proc.resultNum();
         return false;
     }
 
