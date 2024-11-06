@@ -1961,7 +1961,9 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         }
         String a = "";
         if (embedVrf) {
-            a = " vrf " + vrf.name;
+            if (vrf != null) {
+                a = " vrf " + vrf.name;
+            }
         }
         l.add("router " + num2name(type) + " " + number + a);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
