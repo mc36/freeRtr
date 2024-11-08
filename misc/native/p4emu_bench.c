@@ -4,6 +4,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/utsname.h>
 #include <netinet/in.h>
 #include <time.h>
 
@@ -43,12 +44,14 @@ void err(char*buf) {
 
 
 int main(int argc, char **argv) {
+    struct utsname unamei;
     unsigned char origD[16384];
+    uname(&unamei);
     *((int*)(&origD[0])) = 1;
-    printf("code=%i, int=%i, long=%i, ptr=%i, ", (int)((char*)&processCpuPack - (char*)&hashDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
+    printf("code=%i, int=%i, long=%i, ptr=%i, order=", (int)((char*)&processCpuPack - (char*)&hashDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
     if (origD[0] == 1) printf("lsb");
     else printf("msb");
-    printf("\n");
+    printf(", arch=%s\n", unamei.machine);
     fflush(stdout);
     int origS = 0;
     if (argc < 3) err("usage: <commands> <count> <byte0> [byteN]");
