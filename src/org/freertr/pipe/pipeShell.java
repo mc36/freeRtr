@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.freertr.cfg.cfgAll;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -257,9 +256,9 @@ public class pipeShell {
      * @return return info
      */
     public String info() {
-        String a = "";
-        String b = "";
-        String c = "";
+        String a = "0|0";
+        String b = "0";
+        String c = "0";
         ProcessHandle hnd = null;
         try {
             hnd = process.toHandle();
