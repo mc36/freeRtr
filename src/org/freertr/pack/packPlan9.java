@@ -28,142 +28,142 @@ public class packPlan9 {
     /**
      * version
      */
-    public static final int opcTversion = 100;
+    public final static int opcTversion = 100;
 
     /**
      * version
      */
-    public static final int opcRversion = 101;
+    public final static int opcRversion = 101;
 
     /**
      * authentication
      */
-    public static final int opcTauth = 102;
+    public final static int opcTauth = 102;
 
     /**
      * authentication
      */
-    public static final int opcRauth = 103;
+    public final static int opcRauth = 103;
 
     /**
      * attach
      */
-    public static final int opcTattach = 104;
+    public final static int opcTattach = 104;
 
     /**
      * attach
      */
-    public static final int opcRattach = 105;
+    public final static int opcRattach = 105;
 
     /**
      * error
      */
-    public static final int opcTerror = 106;
+    public final static int opcTerror = 106;
 
     /**
      * error
      */
-    public static final int opcRerror = 107;
+    public final static int opcRerror = 107;
 
     /**
      * flush
      */
-    public static final int opcTflush = 108;
+    public final static int opcTflush = 108;
 
     /**
      * flush
      */
-    public static final int opcRflush = 109;
+    public final static int opcRflush = 109;
 
     /**
      * walk
      */
-    public static final int opcTwalk = 110;
+    public final static int opcTwalk = 110;
 
     /**
      * walk
      */
-    public static final int opcRwalk = 111;
+    public final static int opcRwalk = 111;
 
     /**
      * open
      */
-    public static final int opcTopen = 112;
+    public final static int opcTopen = 112;
 
     /**
      * open
      */
-    public static final int opcRopen = 113;
+    public final static int opcRopen = 113;
 
     /**
      * create
      */
-    public static final int opcTcreate = 114;
+    public final static int opcTcreate = 114;
 
     /**
      * create
      */
-    public static final int opcRcreate = 115;
+    public final static int opcRcreate = 115;
 
     /**
      * read
      */
-    public static final int opcTread = 116;
+    public final static int opcTread = 116;
 
     /**
      * read
      */
-    public static final int opcRread = 117;
+    public final static int opcRread = 117;
 
     /**
      * write
      */
-    public static final int opcTwrite = 118;
+    public final static int opcTwrite = 118;
 
     /**
      * write
      */
-    public static final int opcRwrite = 119;
+    public final static int opcRwrite = 119;
 
     /**
      * close
      */
-    public static final int opcTclunk = 120;
+    public final static int opcTclunk = 120;
 
     /**
      * close
      */
-    public static final int opcRclunk = 121;
+    public final static int opcRclunk = 121;
 
     /**
      * remove
      */
-    public static final int opcTremove = 122;
+    public final static int opcTremove = 122;
 
     /**
      * remove
      */
-    public static final int opcRremove = 123;
+    public final static int opcRremove = 123;
 
     /**
      * stat
      */
-    public static final int opcTstat = 124;
+    public final static int opcTstat = 124;
 
     /**
      * stat
      */
-    public static final int opcRstat = 125;
+    public final static int opcRstat = 125;
 
     /**
      * stat
      */
-    public static final int opcTwstat = 126;
+    public final static int opcTwstat = 126;
 
     /**
      * stat
      */
-    public static final int opcRwstat = 127;
+    public final static int opcRwstat = 127;
 
     /**
      * packet data
