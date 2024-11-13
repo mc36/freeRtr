@@ -1430,8 +1430,23 @@ ethtyp_rx:
                 if ((bufS - bufP + preBuff) > port2vrf_res->pmtud4) doPunting;
             }
             bufT = bufP + (bufT << 2);
+            frag = get16msb(bufD, bufP + 6) & 0x3fff; // frags
+            acl4_ntry.sgtV = ctx->sgt;
             acl4_ntry.protV = bufD[bufP + 9];
+            acl4_ntry.tosV = bufD[bufP + 1];
+            acl4_ntry.flowV = get16msb(bufD, bufP + 4);
+            acl4_ntry.srcAddr = get32msb(bufD, bufP + 12);
+            acl4_ntry.trgAddr = get32msb(bufD, bufP + 16);
+            ctx->hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
+            extract_layer4(acl4_ntry, nat4_ntry);
             update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
+            acls_ntry.dir = 1;
+            acls_ntry.port = prt;
+            index = table_find(&acls4_table, &acls_ntry);
+            if (index < 0) break;
+            if (frag != 0) doPunting;
+            acls_res = table_get(&acls4_table, index);
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doPunting;
             break;
         case ETHERTYPE_IPV6: // ipv6
             ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
@@ -1441,8 +1456,35 @@ ethtyp_rx:
                 if ((bufS - bufP + preBuff) > port2vrf_res->pmtud6) doPunting;
             }
             bufT = bufP + 40;
+            acl6_ntry.sgtV = ctx->sgt;
             acl6_ntry.protV = bufD[bufP + 6];
+            acl6_ntry.tosV = (get16msb(bufD, bufP + 0) >> 4) & 0xff;
+            acl6_ntry.flowV = get32msb(bufD, bufP + 0) & 0xfffff;
+            if (acl6_ntry.protV == 44) { // frags
+                acl6_ntry.protV = bufD[bufT + 0];
+                bufT += 8;
+                frag = 1;
+            } else {
+                frag = 0;
+            }
+            acl6_ntry.srcAddr1 = get32msb(bufD, bufP + 8);
+            acl6_ntry.srcAddr2 = get32msb(bufD, bufP + 12);
+            acl6_ntry.srcAddr3 = get32msb(bufD, bufP + 16);
+            acl6_ntry.srcAddr4 = get32msb(bufD, bufP + 20);
+            acl6_ntry.trgAddr1 = get32msb(bufD, bufP + 24);
+            acl6_ntry.trgAddr2 = get32msb(bufD, bufP + 28);
+            acl6_ntry.trgAddr3 = get32msb(bufD, bufP + 32);
+            acl6_ntry.trgAddr4 = get32msb(bufD, bufP + 36);
+            ctx->hash ^= acl6_ntry.srcAddr1 ^ acl6_ntry.trgAddr1 ^ acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2 ^ acl6_ntry.srcAddr3 ^ acl6_ntry.trgAddr3 ^ acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
+            extract_layer4(acl6_ntry, nat6_ntry);
             update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
+            acls_ntry.dir = 1;
+            acls_ntry.port = prt;
+            index = table_find(&acls6_table, &acls_ntry);
+            if (index < 0) break;
+            if (frag != 0) doPunting;
+            acls_res = table_get(&acls6_table, index);
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doPunting;
             break;
         case ETHERTYPE_ROUTEDMAC:
             goto etyped_rx;
