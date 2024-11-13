@@ -1548,6 +1548,8 @@ qc pass: p4lang: qinq interface inspection with egress drop
 qc pass: p4lang: qinq interface inspection with ingress drop
 qc pass: p4lang: qinq interface verify source
 qc pass: p4lang: qinq interface loose verify source
+qc pass: p4lang: bridge filter access list
+qc pass: p4lang: vlan bridge filter access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
