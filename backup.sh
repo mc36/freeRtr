@@ -9,6 +9,7 @@ chmod -x `find . -executable -name "*.pyc"` 2> /dev/null
 chmod -x `find . -executable -name "*.lua"` 2> /dev/null
 chmod -x `find . -executable -name "*.zip"` 2> /dev/null
 chmod -x `find . -executable -name "*.tst"` 2> /dev/null
+chmod -x `find . -executable -name "*.ini"` 2> /dev/null
 chmod -x `find . -executable -name "*.txt"` 2> /dev/null
 chmod -x `find . -executable -name "*.p4"` 2> /dev/null
 chmod -x `find . -executable -name "*.py"` 2> /dev/null
