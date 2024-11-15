@@ -47,24 +47,20 @@ access-list test6
  permit all any all any all
  exit
 int sdn1
- no autostat
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  exit
 int sdn2
- no autostat
  bridge-gr 1
  exit
 int sdn3
- no autostat
  exit
 int sdn3.111
  bridge-gr 1
  exit
 int sdn4
- no autostat
  exit
 int sdn4.222
  bridge-gr 1

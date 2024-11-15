@@ -36,7 +36,6 @@ int lo0
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int sdn1
- no autostat
  exit
 int sdn1.111
  exit
@@ -49,7 +48,6 @@ int sdn1.111.222
  ipv6 multi static ff06::1 4321::106
  exit
 int sdn2
- no autostat
  exit
 int sdn2.222
  exit
@@ -62,7 +60,6 @@ int sdn2.222.333
  ipv6 multi static ff06::1 4321::106
  exit
 int sdn3
- no autostat
  exit
 int sdn3.333
  exit
@@ -75,7 +72,6 @@ int sdn3.333.444
  ipv6 multi static ff06::1 4321::106
  exit
 int sdn4
- no autostat
  exit
 int sdn4.444
  exit

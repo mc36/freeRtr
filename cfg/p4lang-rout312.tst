@@ -92,7 +92,6 @@ bundle 3
 bundle 4
  exit
 int sdn11
- no autostat
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -103,7 +102,6 @@ int sdn11
  router lsrp6 1 ena
  exit
 int sdn12
- no autostat
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
@@ -119,15 +117,12 @@ int bun1
  polka enable 1 65536 10
  exit
 int sdn13
- no autostat
  bundle-gr 1
  exit
 int sdn14
- no autostat
  bundle-gr 1
  exit
 int sdn21
- no autostat
  vrf for v1
  ipv4 addr 1.1.3.1 255.255.255.0
  ipv6 addr 1234:3::1 ffff:ffff::
@@ -138,7 +133,6 @@ int sdn21
  router lsrp6 1 ena
  exit
 int sdn22
- no autostat
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
@@ -154,11 +148,9 @@ int bun2
  polka enable 1 65536 10
  exit
 int sdn23
- no autostat
  bundle-gr 2
  exit
 int sdn24
- no autostat
  bundle-gr 2
  exit
 int bun3
@@ -167,11 +159,9 @@ int bun3
  polka enable 1 65536 10
  exit
 int sdn31
- no autostat
  bundle-gr 3
  exit
 int sdn32
- no autostat
  bundle-gr 3
  exit
 int bun4
@@ -180,11 +170,9 @@ int bun4
  polka enable 1 65536 10
  exit
 int sdn33
- no autostat
  bundle-gr 4
  exit
 int sdn34
- no autostat
  bundle-gr 4
  exit
 server p4lang a

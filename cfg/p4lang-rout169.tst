@@ -56,7 +56,6 @@ int lo0
  ipv6 pim bier 1
  exit
 int sdn1
- no autostat
  exit
 int sdn1.111
  vrf for v1
@@ -74,7 +73,6 @@ int sdn1.111
  ipv6 pim bier 1
  exit
 int sdn2
- no autostat
  exit
 int sdn2.222
  vrf for v1
@@ -85,7 +83,6 @@ int sdn2.222
  ipv6 multi static ff06::1 4321::106
  exit
 int sdn3
- no autostat
  exit
 int sdn3.333
  vrf for v1
@@ -103,7 +100,6 @@ int sdn3.333
  ipv6 pim bier 1
  exit
 int sdn4
- no autostat
  exit
 int sdn4.444
  vrf for v1

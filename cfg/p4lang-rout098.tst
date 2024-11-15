@@ -54,25 +54,21 @@ bridge 3
  mac-learn
  exit
 int sdn1
- no autostat
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  exit
 int sdn2
- no autostat
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
  exit
 int sdn3
- no autostat
  bridge-gr 2
  exit
 int sdn4
- no autostat
  bridge-gr 3
  exit
 int hair11

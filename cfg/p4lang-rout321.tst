@@ -41,19 +41,15 @@ bridge 1
  mac-learn
  exit
 int sdn1
- no autostat
  bridge-gr 1
  exit
 int sdn2
- no autostat
  bridge-gr 1
  exit
 int sdn3
- no autostat
  bundle-gr 1
  exit
 int sdn4
- no autostat
  bundle-gr 1
  exit
 int bun1.11

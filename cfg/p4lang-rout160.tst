@@ -50,7 +50,6 @@ int lo0
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int sdn1
- no autostat
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -60,7 +59,6 @@ int sdn1
  router lsrp6 1 ena
  exit
 int sdn2
- no autostat
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
@@ -70,11 +68,9 @@ int sdn2
  router lsrp6 1 ena
  exit
 int sdn3
- no autostat
  bundle-gr 1
  exit
 int sdn4
- no autostat
  bundle-gr 1
  exit
 int bun1

@@ -39,7 +39,6 @@ bridge 1
  mac-learn
  exit
 int sdn1
- no autostat
  exit
 int sdn1.111
  exit
@@ -50,7 +49,6 @@ int sdn1.111.222
  ipv6 ena
  exit
 int sdn2
- no autostat
  exit
 int sdn2.111
  exit
@@ -60,7 +58,6 @@ int sdn2.111.222
  bridge-tcp-mss ipv6in 1280
  exit
 int sdn3
- no autostat
  exit
 int sdn3.111
  exit
@@ -68,7 +65,6 @@ int sdn3.111.222
  bridge-gr 1
  exit
 int sdn4
- no autostat
  exit
 int sdn4.111
  exit
