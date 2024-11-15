@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v24.11.13-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v24.11.15-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -118,6 +118,8 @@ http://sources.freertr.org/cfg/p4lang-acl115.tst;p4lang-acl115.tst;ok;ok;ok;ok;n
 http://sources.freertr.org/cfg/p4lang-acl116.tst;p4lang-acl116.tst;ok;ok;ok;ok;not ok;p4lang: qinq interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl117.tst;p4lang-acl117.tst;ok;not ok;ok;not ok;ok;p4lang: qinq interface verify source
 http://sources.freertr.org/cfg/p4lang-acl118.tst;p4lang-acl118.tst;ok;not ok;ok;not ok;ok;p4lang: qinq interface loose verify source
+http://sources.freertr.org/cfg/p4lang-acl119.tst;p4lang-acl119.tst;ok;ok;ok;ok;not ok;p4lang: bridge filter access list
+http://sources.freertr.org/cfg/p4lang-acl120.tst;p4lang-acl120.tst;ok;ok;ok;ok;not ok;p4lang: vlan bridge filter access list
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec with aes128cbc
