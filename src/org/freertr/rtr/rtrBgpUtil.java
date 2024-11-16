@@ -215,6 +215,11 @@ public class rtrBgpUtil {
     public final static int sfiVpnLnkSt = 0x48;
 
     /**
+     * shortest path first address family
+     */
+    public final static int sfiSpf = 0x50;
+
+    /**
      * segment routing traffic engineering address family
      */
     public final static int sfiSrTe = 0x49;
@@ -428,6 +433,11 @@ public class rtrBgpUtil {
      * ipv4/ipv6 vpn link state address family
      */
     public final static int safiIp46vpnL = afiLnks | sfiVpnLnkSt;
+
+    /**
+     * ipv4/ipv6 shortest path first address family
+     */
+    public final static int safiIp46Spf = afiLnks | sfiSpf;
 
     /**
      * ipv4 srte address family
@@ -1505,6 +1515,8 @@ public class rtrBgpUtil {
                     ntry.best.labelRem.add(p >>> 4);
                 }
                 return ntry;
+            case sfiSpf:
+            case sfiVpnLnkSt:
             case sfiLnkSt:
                 p = pck.msbGetW(0);
                 i = pck.msbGetW(2);
@@ -1805,6 +1817,8 @@ public class rtrBgpUtil {
                 pck.putCopy(buf1, 0, 0, p);
                 pck.putSkip(p);
                 return;
+            case sfiSpf:
+            case sfiVpnLnkSt:
             case sfiLnkSt:
                 o = ntry.nlri.length - 2;
                 pck.putCopy(ntry.nlri, 0, 0, 2);
