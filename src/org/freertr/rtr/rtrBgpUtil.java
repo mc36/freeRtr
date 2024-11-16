@@ -437,7 +437,7 @@ public class rtrBgpUtil {
     /**
      * ipv4/ipv6 shortest path first address family
      */
-    public final static int safiIp46Spf = afiLnks | sfiSpf;
+    public final static int safiIp46spf = afiLnks | sfiSpf;
 
     /**
      * ipv4 srte address family

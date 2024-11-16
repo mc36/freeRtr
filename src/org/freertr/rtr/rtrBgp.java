@@ -334,6 +334,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final int afiRpd;
 
     /**
+     * spf afi
+     */
+    protected final int afiSpf;
+
+    /**
      * rtfilter afi
      */
     protected final int afiRtf;
@@ -519,6 +524,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public tabRoute<addrIP> computedRpd = new tabRoute<addrIP>("rx");
 
     /**
+     * the computed spf routes
+     */
+    public tabRoute<addrIP> computedSpf = new tabRoute<addrIP>("rx");
+
+    /**
      * the computed rtfilter routes
      */
     public tabRoute<addrIP> computedRtf = new tabRoute<addrIP>("rx");
@@ -649,6 +659,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public final tabRoute<addrIP> changedRpd = new tabRoute<addrIP>("rx");
 
     /**
+     * the changed spf routes
+     */
+    public final tabRoute<addrIP> changedSpf = new tabRoute<addrIP>("rx");
+
+    /**
      * the changed rtfilter routes
      */
     public final tabRoute<addrIP> changedRtf = new tabRoute<addrIP>("rx");
@@ -767,6 +782,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * the originated rpd routes
      */
     public tabRoute<addrIP> origntedRpd = new tabRoute<addrIP>("tx");
+
+    /**
+     * the originated spf routes
+     */
+    public tabRoute<addrIP> origntedSpf = new tabRoute<addrIP>("tx");
 
     /**
      * the originated rtfilter routes
@@ -1061,6 +1081,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMdt = rtrBgpUtil.safiIp4mdt;
                 afiNsh = rtrBgpUtil.safiNsh46;
                 afiRpd = rtrBgpUtil.safiRpd46;
+                afiSpf = rtrBgpUtil.safiIp46spf;
                 afiRtf = rtrBgpUtil.safiRtf46;
                 afiLnks = rtrBgpUtil.safiIp46lnks;
                 afiSrte = rtrBgpUtil.safiIp4srte;
@@ -1097,6 +1118,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMdt = rtrBgpUtil.safiIp6mdt;
                 afiNsh = rtrBgpUtil.safiNsh46;
                 afiRpd = rtrBgpUtil.safiRpd46;
+                afiSpf = rtrBgpUtil.safiIp46spf;
                 afiRtf = rtrBgpUtil.safiRtf46;
                 afiLnks = rtrBgpUtil.safiIp46lnks;
                 afiSrte = rtrBgpUtil.safiIp6srte;
@@ -1133,6 +1155,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMdt = 0;
                 afiNsh = 0;
                 afiRpd = 0;
+                afiSpf = 0;
                 afiRtf = 0;
                 afiLnks = 0;
                 afiSrte = 0;
@@ -1262,6 +1285,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiRpd) {
             return rtrBgpParam.mskRpd;
         }
+        if (safi == afiSpf) {
+            return rtrBgpParam.mskSpf;
+        }
         if (safi == afiRtf) {
             return rtrBgpParam.mskRtf;
         }
@@ -1368,6 +1394,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (mask == rtrBgpParam.mskRpd) {
             return afiRpd;
+        }
+        if (mask == rtrBgpParam.mskSpf) {
+            return afiSpf;
         }
         if (mask == rtrBgpParam.mskRtf) {
             return afiRtf;
@@ -1476,6 +1505,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if ((mask & rtrBgpParam.mskRpd) != 0) {
             safis.add(afiRpd);
+        }
+        if ((mask & rtrBgpParam.mskSpf) != 0) {
+            safis.add(afiSpf);
         }
         if ((mask & rtrBgpParam.mskRtf) != 0) {
             safis.add(afiRtf);
@@ -1628,6 +1660,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (safi == afiRpd) {
             return computedRpd;
         }
+        if (safi == afiSpf) {
+            return computedSpf;
+        }
         if (safi == afiRtf) {
             return computedRtf;
         }
@@ -1734,6 +1769,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (safi == afiRpd) {
             return changedRpd;
+        }
+        if (safi == afiSpf) {
+            return changedSpf;
         }
         if (safi == afiRtf) {
             return changedRtf;
@@ -1962,6 +2000,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changedMdt.clear();
         changedNsh.clear();
         changedRpd.clear();
+        changedSpf.clear();
         changedRtf.clear();
         changedSrte.clear();
         changedLnks.clear();
@@ -1988,6 +2027,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabRoute<addrIP> nMdt = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nNsh = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nRpd = new tabRoute<addrIP>("bst");
+        tabRoute<addrIP> nSpf = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nRtf = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nSrte = new tabRoute<addrIP>("bst");
         tabRoute<addrIP> nLnks = new tabRoute<addrIP>("bst");
@@ -2049,6 +2089,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         origntedMdt = new tabRoute<addrIP>(nMdt);
         origntedNsh = new tabRoute<addrIP>(nNsh);
         origntedRpd = new tabRoute<addrIP>(nRpd);
+        origntedSpf = new tabRoute<addrIP>(nSpf);
         origntedRtf = new tabRoute<addrIP>(nRtf);
         origntedSrte = new tabRoute<addrIP>(nSrte);
         origntedLnks = new tabRoute<addrIP>(nLnks);
@@ -2085,7 +2126,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
+            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSpf, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -2094,7 +2135,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
+            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSpf, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
         }
         if (have2reflect) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -2126,6 +2167,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             computeConquerTable(computedMdt, nMdt);
             computeConquerTable(computedNsh, nNsh);
             computeConquerTable(computedRpd, nRpd);
+            computeConquerTable(computedSpf, nSpf);
             computeConquerTable(computedRtf, nRtf);
             computeConquerTable(computedSrte, nSrte);
             computeConquerTable(computedLnks, nLnks);
@@ -2138,7 +2180,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " groups");
         }
         for (int i = 0; i < groups.size(); i++) {
-            groups.get(i).createNeeded(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
+            groups.get(i).createNeeded(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSpf, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neigroups");
@@ -2163,6 +2205,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computedMdt = nMdt;
         computedNsh = nNsh;
         computedRpd = nRpd;
+        computedSpf = nSpf;
         computedRtf = nRtf;
         computedSrte = nSrte;
         computedLnks = nLnks;
@@ -2559,6 +2602,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             computeIncrPurge(grp.minversion, grp.chgMdt);
             computeIncrPurge(grp.minversion, grp.chgNsh);
             computeIncrPurge(grp.minversion, grp.chgRpd);
+            computeIncrPurge(grp.minversion, grp.chgSpf);
             computeIncrPurge(grp.minversion, grp.chgRtf);
             computeIncrPurge(grp.minversion, grp.chgSrte);
             computeIncrPurge(grp.minversion, grp.chgLnks);
@@ -2602,6 +2646,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiMdt, null, changedMdt, computedMdt, origntedMdt);
         computeIncrUpdate(afiNsh, null, changedNsh, computedNsh, origntedNsh);
         computeIncrUpdate(afiRpd, null, changedRpd, computedRpd, origntedRpd);
+        computeIncrUpdate(afiSpf, null, changedSpf, computedSpf, origntedSpf);
         computeIncrUpdate(afiRtf, null, changedRtf, computedRtf, origntedRtf);
         computeIncrUpdate(afiSrte, null, changedSrte, computedSrte, origntedSrte);
         computeIncrUpdate(afiLnks, null, changedLnks, computedLnks, origntedLnks);
@@ -2719,13 +2764,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " start");
         }
         changedCur = changedUni.size() + changedMlt.size() + changedOuni.size()
-                + changedOmlt.size() + changedOflw.size() + changedOsrt.size() + changedFlw.size()
-                + changedVpnU.size() + changedVpnM.size() + changedVpnF.size()
-                + changedVpoU.size() + changedVpoM.size() + changedVpoF.size()
-                + changedVpls.size() + changedMspw.size() + changedEvpn.size()
-                + changedMdt.size() + changedNsh.size() + changedRpd.size() + changedSrte.size()
-                + changedLnks.size() + changedRtf.size() + changedMvpn.size() + changedMvpo.size()
-                + changedMtre.size() + changedMtro.size();
+                + changedOmlt.size() + changedOflw.size() + changedOsrt.size()
+                + changedFlw.size() + changedVpnU.size() + changedVpnM.size()
+                + changedVpnF.size() + changedVpoU.size() + changedVpoM.size()
+                + changedVpoF.size() + changedVpls.size() + changedMspw.size()
+                + changedEvpn.size() + changedMdt.size() + changedNsh.size()
+                + changedRpd.size() + changedSpf.size() + changedSrte.size()
+                + changedLnks.size() + changedRtf.size() + changedMvpn.size()
+                + changedMvpo.size() + changedMtre.size() + changedMtro.size();
         changedTot += changedCur;
         if (changedCur > changedMax) {
             changedMax = changedCur;
@@ -4584,6 +4630,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("mdt table|" + computedMdt.size() + "|" + changedMdt.size());
         l.add("nsh table|" + computedNsh.size() + "|" + changedNsh.size());
         l.add("rpd table|" + computedRpd.size() + "|" + changedRpd.size());
+        l.add("spf table|" + computedSpf.size() + "|" + changedSpf.size());
         l.add("rtfilter table|" + computedRtf.size() + "|" + changedRtf.size());
         l.add("srte table|" + computedSrte.size() + "|" + changedSrte.size());
         l.add("linkstate table|" + computedLnks.size() + "|" + changedLnks.size());

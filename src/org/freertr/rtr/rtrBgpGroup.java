@@ -134,6 +134,11 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> wilRpd = new tabRoute<addrIP>("tx");
 
     /**
+     * willing spf prefixes
+     */
+    public tabRoute<addrIP> wilSpf = new tabRoute<addrIP>("tx");
+
+    /**
      * willing rtfilter prefixes
      */
     public tabRoute<addrIP> wilRtf = new tabRoute<addrIP>("tx");
@@ -264,6 +269,11 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP> chgRpd = new tabRoute<addrIP>("chg");
 
     /**
+     * changed spf prefixes
+     */
+    public tabRoute<addrIP> chgSpf = new tabRoute<addrIP>("chg");
+
+    /**
      * changed rtfilter prefixes
      */
     public tabRoute<addrIP> chgRtf = new tabRoute<addrIP>("chg");
@@ -382,6 +392,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("mdt advertise|" + wilMdt.size() + ", list=" + chgMdt.size());
         l.add("nsh advertise|" + wilNsh.size() + ", list=" + chgNsh.size());
         l.add("rpd advertise|" + wilRpd.size() + ", list=" + chgRpd.size());
+        l.add("spf advertise|" + wilSpf.size() + ", list=" + chgSpf.size());
         l.add("rtfilter advertise|" + wilRtf.size() + ", list=" + chgRtf.size());
         l.add("srte advertise|" + wilSrte.size() + ", list=" + chgSrte.size());
         l.add("linkstate advertise|" + wilLnks.size() + ", list=" + chgLnks.size());
@@ -474,6 +485,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (safi == lower.afiRpd) {
             return wilRpd;
+        }
+        if (safi == lower.afiSpf) {
+            return wilSpf;
         }
         if (safi == lower.afiRtf) {
             return wilRtf;
@@ -581,6 +595,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (safi == lower.afiRpd) {
             return chgRpd;
+        }
+        if (safi == lower.afiSpf) {
+            return chgSpf;
         }
         if (safi == lower.afiRtf) {
             return chgRtf;
@@ -1124,6 +1141,7 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param cMdt mdt
      * @param cNsh nsh
      * @param cRpd rpd
+     * @param cSpf spf
      * @param cSrte srte
      * @param cLnks lnks
      * @param cRtf rtfilter
@@ -1133,13 +1151,14 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param cMtro omtree
      */
     public void createNeeded(tabRoute<addrIP> cUni, tabRoute<addrIP> cMlt, tabRoute<addrIP> cOuni,
-            tabRoute<addrIP> cOmlt, tabRoute<addrIP> cOflw, tabRoute<addrIP> cOsrt, tabRoute<addrIP> cFlw,
-            tabRoute<addrIP> cVpnU, tabRoute<addrIP> cVpnM, tabRoute<addrIP> cVpnF,
-            tabRoute<addrIP> cVpoU, tabRoute<addrIP> cVpoM, tabRoute<addrIP> cVpoF,
-            tabRoute<addrIP> cVpls, tabRoute<addrIP> cMspw, tabRoute<addrIP> cEvpn,
-            tabRoute<addrIP> cMdt, tabRoute<addrIP> cNsh, tabRoute<addrIP> cRpd,
-            tabRoute<addrIP> cSrte, tabRoute<addrIP> cLnks, tabRoute<addrIP> cRtf,
-            tabRoute<addrIP> cMvpn, tabRoute<addrIP> cMvpo, tabRoute<addrIP> cMtre, tabRoute<addrIP> cMtro) {
+            tabRoute<addrIP> cOmlt, tabRoute<addrIP> cOflw, tabRoute<addrIP> cOsrt,
+            tabRoute<addrIP> cFlw, tabRoute<addrIP> cVpnU, tabRoute<addrIP> cVpnM,
+            tabRoute<addrIP> cVpnF, tabRoute<addrIP> cVpoU, tabRoute<addrIP> cVpoM,
+            tabRoute<addrIP> cVpoF, tabRoute<addrIP> cVpls, tabRoute<addrIP> cMspw,
+            tabRoute<addrIP> cEvpn, tabRoute<addrIP> cMdt, tabRoute<addrIP> cNsh,
+            tabRoute<addrIP> cRpd, tabRoute<addrIP> cSpf, tabRoute<addrIP> cSrte,
+            tabRoute<addrIP> cLnks, tabRoute<addrIP> cRtf, tabRoute<addrIP> cMvpn,
+            tabRoute<addrIP> cMvpo, tabRoute<addrIP> cMtre, tabRoute<addrIP> cMtro) {
         tabRoute<addrIP> nUni = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nOuni = new tabRoute<addrIP>("bgp");
@@ -1159,6 +1178,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         tabRoute<addrIP> nMdt = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nNsh = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nRpd = new tabRoute<addrIP>("bgp");
+        tabRoute<addrIP> nSpf = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nRtf = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nSrte = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nLnks = new tabRoute<addrIP>("bgp");
@@ -1265,6 +1285,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         importTable(lower.afiMdt, nMdt, cMdt, vroumapOut, vroupolOut, null);
         importTable(lower.afiNsh, nNsh, cNsh, vroumapOut, vroupolOut, null);
         importTable(lower.afiRpd, nRpd, cRpd, vroumapOut, vroupolOut, null);
+        importTable(lower.afiSpf, nSpf, cSpf, vroumapOut, vroupolOut, null);
         importTable(lower.afiRtf, nRtf, cRtf, vroumapOut, vroupolOut, null);
         importTable(lower.afiSrte, nSrte, cSrte, vroumapOut, vroupolOut, null);
         importTable(lower.afiLnks, nLnks, cLnks, vroumapOut, vroupolOut, null);
@@ -1296,6 +1317,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         wilMdt = nMdt;
         wilNsh = nNsh;
         wilRpd = nRpd;
+        wilSpf = nSpf;
         wilRtf = nRtf;
         wilSrte = nSrte;
         wilLnks = nLnks;

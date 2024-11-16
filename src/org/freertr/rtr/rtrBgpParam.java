@@ -909,9 +909,14 @@ public abstract class rtrBgpParam {
     public final static long mskMtro = 0x80000000L;
 
     /**
+     * spf
+     */
+    public final static long mskSpf = 0x100000000L;
+
+    /**
      * all
      */
-    public final static long mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskRtf | mskMtre | mskMtro;
+    public final static long mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskSpf | mskRtf | mskMtre | mskMtro;
 
     /**
      * string to afi mask
@@ -987,6 +992,9 @@ public abstract class rtrBgpParam {
             }
             if (a.equals("rpd")) {
                 i |= mskRpd;
+            }
+            if (a.equals("spf")) {
+                i |= mskSpf;
             }
             if (a.equals("rtfilter")) {
                 i |= mskRtf;
@@ -1145,6 +1153,9 @@ public abstract class rtrBgpParam {
         if ((i & mskRpd) != 0) {
             a += " rpd";
         }
+        if ((i & mskSpf) != 0) {
+            a += " spf";
+        }
         if ((i & mskRtf) != 0) {
             a += " rtfilter";
         }
@@ -1210,6 +1221,7 @@ public abstract class rtrBgpParam {
         hl.add(null, beg + "  mdt           address family to " + end);
         hl.add(null, beg + "  nsh           address family to " + end);
         hl.add(null, beg + "  rpd           address family to " + end);
+        hl.add(null, beg + "  spf           address family to " + end);
         hl.add(null, beg + "  rtfilter      address family to " + end);
         hl.add(null, beg + "  srte          address family to " + end);
         hl.add(null, beg + "  linkstate     address family to " + end);
