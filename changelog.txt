@@ -16264,3 +16264,7 @@ qc pass: p4lang: bridge filter access list
 qc pass: p4lang: vlan bridge filter access list
 ---------------------------------- 2024-11-16 08:32:01 24.11.16
 todo: traffic through bgp spf
+---------------------------------- 2024-11-16 09:32:49 24.11.16
+qc pass: unicast+spf over bgp
+qc pass: unicast+spf over bgp with soft-reconfig
+qc pass: unicast+spf over bgp with additional path
