@@ -2805,7 +2805,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < ovrfs.size(); i++) {
             ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF, chgEvpn);
         }
-        chgEvpn = new tabRoute<addrIP>("chg");
         for (int i = 0; i < clrs.size(); i++) {
             clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF, chgEvpn);
         }
