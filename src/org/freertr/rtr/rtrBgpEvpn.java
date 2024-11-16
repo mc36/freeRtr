@@ -217,11 +217,8 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
 
     /**
      * advertise this evpn
-     *
-     * @param tab table to use
-     * @param nRtf rtfilter table to update
      */
-    protected void doAdvertise(tabRoute<addrIP> tab, tabRoute<addrIP> nRtf) {
+    protected void doAdvertise() {
         adverted = false;
         if (id == 0) {
             return;
@@ -271,7 +268,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 } else {
                     ntry.best.evpnLab = convLab(parent.evpnUni);
                 }
-                tab.add(tabRoute.addType.better, ntry, true, true);
+                parent.newlyEvpn.add(tabRoute.addType.better, ntry, true, true);
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 bits.msbPutD(buf, 2, id);
@@ -282,7 +279,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 } else {
                     putPmsi(ntry, convLab(parent.evpnMul));
                 }
-                tab.add(tabRoute.addType.better, ntry, true, true);
+                parent.newlyEvpn.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case vxlan:
@@ -293,14 +290,14 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 for (int i = 0; i < cmac.size(); i++) {
                     cmac.get(i).toBuffer(buf, 10);
                     ntry.prefix.network.fromBuf(buf, 0);
-                    tab.add(tabRoute.addType.better, ntry, true, true);
+                    parent.newlyEvpn.add(tabRoute.addType.better, ntry, true, true);
                 }
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.best.nextHop.copyBytes();
                 putPmsi(ntry, id);
-                tab.add(tabRoute.addType.better, ntry, true, true);
+                parent.newlyEvpn.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case cmac:
@@ -323,7 +320,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 for (int i = 0; i < cmac.size(); i++) {
                     cmac.get(i).toBuffer(buf, 10);
                     ntry.prefix.network.fromBuf(buf, 0);
-                    tab.add(tabRoute.addType.better, ntry, true, true);
+                    parent.newlyEvpn.add(tabRoute.addType.better, ntry, true, true);
                 }
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
@@ -335,7 +332,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 } else {
                     putPmsi(ntry, convLab(label));
                 }
-                tab.add(tabRoute.addType.better, ntry, true, true);
+                parent.newlyEvpn.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case vpws:
@@ -355,29 +352,27 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 }
                 bits.msbPutD(buf, 12, id);
                 ntry.prefix.network.fromBuf(buf, 0);
-                tab.add(tabRoute.addType.better, ntry, true, true);
+                parent.newlyEvpn.add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
         }
         ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-        nRtf.add(tabRoute.addType.always, ntry, false, true);
+        parent.newlyRtf.add(tabRoute.addType.always, ntry, false, true);
     }
 
     /**
      * read peers in this evpn
-     *
-     * @param cmp computed routes
      */
-    protected void doPeers(tabRoute<addrIP> cmp) {
+    protected void doPeers() {
         for (int i = 0; i < peers.size(); i++) {
             peers.get(i).needed = 0;
         }
         long rt = tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp);
         byte[] buf = new byte[addrIP.size];
-        for (int i = 0; i < cmp.size(); i++) {
-            tabRouteEntry<addrIP> ntry = cmp.get(i);
+        for (int i = 0; i < parent.computedEvpn.size(); i++) {
+            tabRouteEntry<addrIP> ntry = parent.computedEvpn.get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 continue;
             }

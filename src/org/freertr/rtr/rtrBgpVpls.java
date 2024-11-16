@@ -109,11 +109,8 @@ public class rtrBgpVpls implements Comparable<rtrBgpVpls> {
 
     /**
      * advertise this vpls
-     *
-     * @param tab table to use
-     * @param nRtf rtfilter table to update
      */
-    protected void doAdvertise(tabRoute<addrIP> tab, tabRoute<addrIP> nRtf) {
+    protected void doAdvertise() {
         adverted = false;
         if (id == 0) {
             return;
@@ -170,27 +167,25 @@ public class rtrBgpVpls implements Comparable<rtrBgpVpls> {
         ntry.best.extComm.add(tabRouteUtil.rt2comm(bridge.bridgeHed.rtExp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         ntry.rouDst = bridge.bridgeHed.rd;
-        tab.add(tabRoute.addType.better, ntry, true, true);
+        parent.newlyVpls.add(tabRoute.addType.better, ntry, true, true);
         ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-        nRtf.add(tabRoute.addType.always, ntry, false, true);
+        parent.newlyRtf.add(tabRoute.addType.always, ntry, false, true);
         adverted = true;
     }
 
     /**
      * read peers in this vpls
-     *
-     * @param cmp computed routes
      */
-    protected void doPeers(tabRoute<addrIP> cmp) {
+    protected void doPeers() {
         for (int i = 0; i < peers.size(); i++) {
             peers.get(i).needed = false;
         }
         long rt = tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp);
         byte[] buf = new byte[addrIP.size];
-        for (int i = 0; i < cmp.size(); i++) {
-            tabRouteEntry<addrIP> ntry = cmp.get(i);
+        for (int i = 0; i < parent.computedVpls.size(); i++) {
+            tabRouteEntry<addrIP> ntry = parent.computedVpls.get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 continue;
             }

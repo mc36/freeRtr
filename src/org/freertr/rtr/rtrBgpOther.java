@@ -7,7 +7,6 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.ip.ipFwd;
-import org.freertr.ip.ipMpls;
 import org.freertr.ip.ipRtr;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -147,26 +146,22 @@ public class rtrBgpOther extends ipRtr {
 
     /**
      * merge routes to table
-     *
-     * @param nUni unicast table to update
-     * @param nMlt multicast table to update
-     * @param nFlw flowspec table to update
      */
-    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw) {
+    public void doAdvertise() {
         if (!enabled) {
             return;
         }
         for (int i = 0; i < routerRedistedU.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiUnicast, routerRedistedU.get(i), nUni);
+            doExportRoute(rtrBgpUtil.sfiUnicast, routerRedistedU.get(i), parent.newlyOuni);
         }
         for (int i = 0; i < routerRedistedM.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiMulticast, routerRedistedM.get(i), nMlt);
+            doExportRoute(rtrBgpUtil.sfiMulticast, routerRedistedM.get(i), parent.newlyOmlt);
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), nFlw);
+            doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), parent.newlyOflw);
         }
         if (flowSpec != null) {
-            rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
+            rtrBgpFlow.doAdvertise(parent.newlyOflw, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
         }
     }
 
@@ -198,12 +193,9 @@ public class rtrBgpOther extends ipRtr {
     /**
      * full import routes from table
      *
-     * @param cmpU unicast table to read
-     * @param cmpM multicast table to read
-     * @param cmpF flowspec table to read
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersFull(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+    public boolean doPeersFull() {
         if (!enabled) {
             routerChangedU = null;
             routerChangedM = null;
@@ -214,14 +206,14 @@ public class rtrBgpOther extends ipRtr {
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
         peers = new tabGen<addrIP>();
-        for (int i = 0; i < cmpU.size(); i++) {
-            doImportRoute(rtrBgpUtil.sfiUnicast, cmpU.get(i), tabU);
+        for (int i = 0; i < parent.newlyOuni.size(); i++) {
+            doImportRoute(rtrBgpUtil.sfiUnicast, parent.newlyOuni.get(i), tabU);
         }
-        for (int i = 0; i < cmpM.size(); i++) {
-            doImportRoute(rtrBgpUtil.sfiMulticast, cmpM.get(i), tabM);
+        for (int i = 0; i < parent.newlyOmlt.size(); i++) {
+            doImportRoute(rtrBgpUtil.sfiMulticast, parent.newlyOmlt.get(i), tabM);
         }
-        for (int i = 0; i < cmpF.size(); i++) {
-            doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpF.get(i), tabF);
+        for (int i = 0; i < parent.newlyOflw.size(); i++) {
+            doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.newlyOflw.get(i), tabF);
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
@@ -254,12 +246,9 @@ public class rtrBgpOther extends ipRtr {
     /**
      * incremental import routes from table
      *
-     * @param cmpU unicast table to read
-     * @param cmpM multicast table to read
-     * @param cmpF flowspec table to read
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersIncr(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+    public boolean doPeersIncr() {
         if (!enabled) {
             routerChangedU = null;
             routerChangedM = null;
@@ -279,13 +268,13 @@ public class rtrBgpOther extends ipRtr {
             chgF = new tabRoute<addrIP>("empty");
         }
         for (int i = 0; i < chgU.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiUnicast, chgU.get(i), routerComputedU, cmpU);
+            doUpdateRoute(rtrBgpUtil.sfiUnicast, chgU.get(i), routerComputedU, parent.computedOuni);
         }
         for (int i = 0; i < chgM.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiMulticast, chgM.get(i), routerComputedM, cmpM);
+            doUpdateRoute(rtrBgpUtil.sfiMulticast, chgM.get(i), routerComputedM, parent.computedOmlt);
         }
         for (int i = 0; i < chgF.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerComputedF, cmpF);
+            doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerComputedF, parent.computedOflw);
         }
         fwd.routerChg(this, fwd.prefixMode != ipFwd.labelMode.common);
         if (flowInst && (chgF.size() > 0)) {

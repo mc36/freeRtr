@@ -699,6 +699,141 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public final tabRoute<addrIP> changedMtro = new tabRoute<addrIP>("rx");
 
     /**
+     * the newly computed unicast routes
+     */
+    public tabRoute<addrIP> newlyUni = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed multicast routes
+     */
+    public tabRoute<addrIP> newlyMlt = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other unicast routes
+     */
+    public tabRoute<addrIP> newlyOuni = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other multicast routes
+     */
+    public tabRoute<addrIP> newlyOmlt = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other flowspec routes
+     */
+    public tabRoute<addrIP> newlyOflw = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other srte routes
+     */
+    public tabRoute<addrIP> newlyOsrt = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed flowspec routes
+     */
+    public tabRoute<addrIP> newlyFlw = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed vpnuni routes
+     */
+    public tabRoute<addrIP> newlyVpnU = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed vpnmlt routes
+     */
+    public tabRoute<addrIP> newlyVpnM = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed vpnflw routes
+     */
+    public tabRoute<addrIP> newlyVpnF = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other vpnuni routes
+     */
+    public tabRoute<addrIP> newlyVpoU = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other vpnmlt routes
+     */
+    public tabRoute<addrIP> newlyVpoM = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other vpnflw routes
+     */
+    public tabRoute<addrIP> newlyVpoF = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed vpls routes
+     */
+    public tabRoute<addrIP> newlyVpls = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed mspw routes
+     */
+    public tabRoute<addrIP> newlyMspw = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed evpn routes
+     */
+    public tabRoute<addrIP> newlyEvpn = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed mdt routes
+     */
+    public tabRoute<addrIP> newlyMdt = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed nsh routes
+     */
+    public tabRoute<addrIP> newlyNsh = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed rpd routes
+     */
+    public tabRoute<addrIP> newlyRpd = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed spf routes
+     */
+    public tabRoute<addrIP> newlySpf = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed rtfilter routes
+     */
+    public tabRoute<addrIP> newlyRtf = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed srte routes
+     */
+    public tabRoute<addrIP> newlySrte = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed lnkst routes
+     */
+    public tabRoute<addrIP> newlyLnks = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed mvpn routes
+     */
+    public tabRoute<addrIP> newlyMvpn = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other mvpn routes
+     */
+    public tabRoute<addrIP> newlyMvpo = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed mtree routes
+     */
+    public tabRoute<addrIP> newlyMtre = new tabRoute<addrIP>("bst");
+
+    /**
+     * the newly computed other mtree routes
+     */
+    public tabRoute<addrIP> newlyMtro = new tabRoute<addrIP>("bst");
+
+    /**
      * the originated other unicast routes
      */
     public tabRoute<addrIP> origntedOuni = new tabRoute<addrIP>("tx");
@@ -2008,39 +2143,39 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changedMvpo.clear();
         changedMtre.clear();
         changedMtro.clear();
-        tabRoute<addrIP> nUni = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nMlt = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nOuni = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nOmlt = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nOflw = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nOsrt = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nFlw = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nVpnU = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nVpnM = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nVpnF = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nVpoU = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nVpoM = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nVpoF = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nVpls = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nMspw = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nEvpn = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nMdt = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nNsh = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nRpd = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nSpf = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nRtf = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nSrte = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nLnks = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nMvpn = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nMvpo = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nMtre = new tabRoute<addrIP>("bst");
-        tabRoute<addrIP> nMtro = new tabRoute<addrIP>("bst");
+        newlyUni = new tabRoute<addrIP>("bst");
+        newlyMlt = new tabRoute<addrIP>("bst");
+        newlyOuni = new tabRoute<addrIP>("bst");
+        newlyOmlt = new tabRoute<addrIP>("bst");
+        newlyOflw = new tabRoute<addrIP>("bst");
+        newlyOsrt = new tabRoute<addrIP>("bst");
+        newlyFlw = new tabRoute<addrIP>("bst");
+        newlyVpnU = new tabRoute<addrIP>("bst");
+        newlyVpnM = new tabRoute<addrIP>("bst");
+        newlyVpnF = new tabRoute<addrIP>("bst");
+        newlyVpoU = new tabRoute<addrIP>("bst");
+        newlyVpoM = new tabRoute<addrIP>("bst");
+        newlyVpoF = new tabRoute<addrIP>("bst");
+        newlyVpls = new tabRoute<addrIP>("bst");
+        newlyMspw = new tabRoute<addrIP>("bst");
+        newlyEvpn = new tabRoute<addrIP>("bst");
+        newlyMdt = new tabRoute<addrIP>("bst");
+        newlyNsh = new tabRoute<addrIP>("bst");
+        newlyRpd = new tabRoute<addrIP>("bst");
+        newlySpf = new tabRoute<addrIP>("bst");
+        newlyRtf = new tabRoute<addrIP>("bst");
+        newlySrte = new tabRoute<addrIP>("bst");
+        newlyLnks = new tabRoute<addrIP>("bst");
+        newlyMvpn = new tabRoute<addrIP>("bst");
+        newlyMvpo = new tabRoute<addrIP>("bst");
+        newlyMtre = new tabRoute<addrIP>("bst");
+        newlyMtro = new tabRoute<addrIP>("bst");
         if (flowSpec != null) {
-            rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), afiUni == rtrBgpUtil.safiIp6uni, localAs);
+            rtrBgpFlow.doAdvertise(newlyFlw, flowSpec, new tabRouteEntry<addrIP>(), afiUni == rtrBgpUtil.safiIp6uni, localAs);
         }
         for (int i = 0; i < linkStates.size(); i++) {
             rtrBgpLnkst ls = linkStates.get(i);
-            ls.rtr.routerLinkStates(nLnks, ls.par, localAs, routerID);
+            ls.rtr.routerLinkStates(newlyLnks, ls.par, localAs, routerID);
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
             tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
@@ -2051,52 +2186,52 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.best.rouTyp = rouTyp;
             ntry.best.protoNum = rtrNum;
             ntry.best.distance = distantLoc;
-            nFlw.add(tabRoute.addType.better, ntry, false, false);
+            newlyFlw.add(tabRoute.addType.better, ntry, false, false);
         }
-        other.doAdvertise(nOuni, nOmlt, nOflw);
+        other.doAdvertise();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doAdvertise(nVpnU, nVpnM, nVpnF, nEvpn, nMvpn, nRtf);
+            vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doAdvertise(nVpoU, nVpoM, nVpoF, nEvpn, nMvpo, nRtf);
+            ovrfs.get(i).doer.doAdvertise(newlyVpoU, newlyVpoM, newlyVpoF, newlyMvpo);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doAdvertise(nUni, nMlt, nFlw, nEvpn, nMvpn, nRtf);
+            clrs.get(i).doer.doAdvertise(newlyUni, newlyMlt, newlyFlw, newlyMvpn);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doAdvertise(nOuni, nOmlt, nOflw, nEvpn, nMvpo, nRtf);
+            oclrs.get(i).doer.doAdvertise(newlyOuni, newlyOmlt, newlyOflw, newlyMvpo);
         }
         for (int i = 0; i < vpls.size(); i++) {
-            vpls.get(i).doAdvertise(nVpls, nRtf);
+            vpls.get(i).doAdvertise();
         }
         for (int i = 0; i < evpn.size(); i++) {
-            evpn.get(i).doAdvertise(nEvpn, nRtf);
+            evpn.get(i).doAdvertise();
         }
-        origntedOuni = new tabRoute<addrIP>(nOuni);
-        origntedOmlt = new tabRoute<addrIP>(nOmlt);
-        origntedOflw = new tabRoute<addrIP>(nOflw);
-        origntedOsrt = new tabRoute<addrIP>(nOsrt);
-        origntedFlw = new tabRoute<addrIP>(nFlw);
-        origntedVpnU = new tabRoute<addrIP>(nVpnU);
-        origntedVpnM = new tabRoute<addrIP>(nVpnM);
-        origntedVpnF = new tabRoute<addrIP>(nVpnF);
-        origntedVpoU = new tabRoute<addrIP>(nVpoU);
-        origntedVpoM = new tabRoute<addrIP>(nVpoM);
-        origntedVpoF = new tabRoute<addrIP>(nVpoF);
-        origntedVpls = new tabRoute<addrIP>(nVpls);
-        origntedMspw = new tabRoute<addrIP>(nMspw);
-        origntedEvpn = new tabRoute<addrIP>(nEvpn);
-        origntedMdt = new tabRoute<addrIP>(nMdt);
-        origntedNsh = new tabRoute<addrIP>(nNsh);
-        origntedRpd = new tabRoute<addrIP>(nRpd);
-        origntedSpf = new tabRoute<addrIP>(nSpf);
-        origntedRtf = new tabRoute<addrIP>(nRtf);
-        origntedSrte = new tabRoute<addrIP>(nSrte);
-        origntedLnks = new tabRoute<addrIP>(nLnks);
-        origntedMvpn = new tabRoute<addrIP>(nMvpn);
-        origntedMvpo = new tabRoute<addrIP>(nMvpo);
-        origntedMtre = new tabRoute<addrIP>(nMtre);
-        origntedMtro = new tabRoute<addrIP>(nMtro);
+        origntedOuni = new tabRoute<addrIP>(newlyOuni);
+        origntedOmlt = new tabRoute<addrIP>(newlyOmlt);
+        origntedOflw = new tabRoute<addrIP>(newlyOflw);
+        origntedOsrt = new tabRoute<addrIP>(newlyOsrt);
+        origntedFlw = new tabRoute<addrIP>(newlyFlw);
+        origntedVpnU = new tabRoute<addrIP>(newlyVpnU);
+        origntedVpnM = new tabRoute<addrIP>(newlyVpnM);
+        origntedVpnF = new tabRoute<addrIP>(newlyVpnF);
+        origntedVpoU = new tabRoute<addrIP>(newlyVpoU);
+        origntedVpoM = new tabRoute<addrIP>(newlyVpoM);
+        origntedVpoF = new tabRoute<addrIP>(newlyVpoF);
+        origntedVpls = new tabRoute<addrIP>(newlyVpls);
+        origntedMspw = new tabRoute<addrIP>(newlyMspw);
+        origntedEvpn = new tabRoute<addrIP>(newlyEvpn);
+        origntedMdt = new tabRoute<addrIP>(newlyMdt);
+        origntedNsh = new tabRoute<addrIP>(newlyNsh);
+        origntedRpd = new tabRoute<addrIP>(newlyRpd);
+        origntedSpf = new tabRoute<addrIP>(newlySpf);
+        origntedRtf = new tabRoute<addrIP>(newlyRtf);
+        origntedSrte = new tabRoute<addrIP>(newlySrte);
+        origntedLnks = new tabRoute<addrIP>(newlyLnks);
+        origntedMvpn = new tabRoute<addrIP>(newlyMvpn);
+        origntedMvpo = new tabRoute<addrIP>(newlyMvpo);
+        origntedMtre = new tabRoute<addrIP>(newlyMtre);
+        origntedMtro = new tabRoute<addrIP>(newlyMtro);
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " rpki");
         }
@@ -2126,7 +2261,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSpf, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
+            nei.setMerge();
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -2135,84 +2270,84 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSpf, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
+            nei.setMerge();
         }
         if (have2reflect) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), 0);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            nRtf.add(tabRoute.addType.always, ntry, true, true);
+            newlyRtf.add(tabRoute.addType.always, ntry, true, true);
             origntedRtf.add(tabRoute.addType.always, ntry, true, true);
         }
         if (conquer) {
             if (debugger.rtrBgpComp) {
                 logger.debug("round " + compRound + " counquer");
             }
-            computeConquerTable(routerComputedU, nUni);
-            computeConquerTable(routerComputedM, nMlt);
-            computeConquerTable(computedOuni, nOuni);
-            computeConquerTable(computedOmlt, nOmlt);
-            computeConquerTable(computedOflw, nOflw);
-            computeConquerTable(computedOsrt, nOsrt);
-            computeConquerTable(routerComputedF, nFlw);
-            computeConquerTable(computedVpnU, nVpnU);
-            computeConquerTable(computedVpnM, nVpnM);
-            computeConquerTable(computedVpnF, nVpnF);
-            computeConquerTable(computedVpoU, nVpoU);
-            computeConquerTable(computedVpoM, nVpoM);
-            computeConquerTable(computedVpoF, nVpoF);
-            computeConquerTable(computedVpls, nVpls);
-            computeConquerTable(computedMspw, nMspw);
-            computeConquerTable(computedEvpn, nEvpn);
-            computeConquerTable(computedMdt, nMdt);
-            computeConquerTable(computedNsh, nNsh);
-            computeConquerTable(computedRpd, nRpd);
-            computeConquerTable(computedSpf, nSpf);
-            computeConquerTable(computedRtf, nRtf);
-            computeConquerTable(computedSrte, nSrte);
-            computeConquerTable(computedLnks, nLnks);
-            computeConquerTable(computedMvpn, nMvpn);
-            computeConquerTable(computedMvpo, nMvpo);
-            computeConquerTable(computedMtre, nMtre);
-            computeConquerTable(computedMtro, nMtro);
+            computeConquerTable(routerComputedU, newlyUni);
+            computeConquerTable(routerComputedM, newlyMlt);
+            computeConquerTable(computedOuni, newlyOuni);
+            computeConquerTable(computedOmlt, newlyOmlt);
+            computeConquerTable(computedOflw, newlyOflw);
+            computeConquerTable(computedOsrt, newlyOsrt);
+            computeConquerTable(routerComputedF, newlyFlw);
+            computeConquerTable(computedVpnU, newlyVpnU);
+            computeConquerTable(computedVpnM, newlyVpnM);
+            computeConquerTable(computedVpnF, newlyVpnF);
+            computeConquerTable(computedVpoU, newlyVpoU);
+            computeConquerTable(computedVpoM, newlyVpoM);
+            computeConquerTable(computedVpoF, newlyVpoF);
+            computeConquerTable(computedVpls, newlyVpls);
+            computeConquerTable(computedMspw, newlyMspw);
+            computeConquerTable(computedEvpn, newlyEvpn);
+            computeConquerTable(computedMdt, newlyMdt);
+            computeConquerTable(computedNsh, newlyNsh);
+            computeConquerTable(computedRpd, newlyRpd);
+            computeConquerTable(computedSpf, newlySpf);
+            computeConquerTable(computedRtf, newlyRtf);
+            computeConquerTable(computedSrte, newlySrte);
+            computeConquerTable(computedLnks, newlyLnks);
+            computeConquerTable(computedMvpn, newlyMvpn);
+            computeConquerTable(computedMvpo, newlyMvpo);
+            computeConquerTable(computedMtre, newlyMtre);
+            computeConquerTable(computedMtro, newlyMtro);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " groups");
         }
         for (int i = 0; i < groups.size(); i++) {
-            groups.get(i).createNeeded(nUni, nMlt, nOuni, nOmlt, nOflw, nOsrt, nFlw, nVpnU, nVpnM, nVpnF, nVpoU, nVpoM, nVpoF, nVpls, nMspw, nEvpn, nMdt, nNsh, nRpd, nSpf, nSrte, nLnks, nRtf, nMvpn, nMvpo, nMtre, nMtro);
+            groups.get(i).createNeeded();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neigroups");
         }
-        boolean diffs = nUni.differs(tabRoute.addType.alters, routerComputedU) || nMlt.differs(tabRoute.addType.alters, routerComputedM) || nFlw.differs(tabRoute.addType.alters, routerComputedF);
-        routerComputedU = nUni;
-        routerComputedM = nMlt;
-        computedOuni = nOuni;
-        computedOmlt = nOmlt;
-        computedOflw = nOflw;
-        computedOsrt = nOsrt;
-        routerComputedF = nFlw;
-        computedVpnU = nVpnU;
-        computedVpnM = nVpnM;
-        computedVpnF = nVpnF;
-        computedVpoU = nVpoU;
-        computedVpoM = nVpoM;
-        computedVpoF = nVpoF;
-        computedVpls = nVpls;
-        computedMspw = nMspw;
-        computedEvpn = nEvpn;
-        computedMdt = nMdt;
-        computedNsh = nNsh;
-        computedRpd = nRpd;
-        computedSpf = nSpf;
-        computedRtf = nRtf;
-        computedSrte = nSrte;
-        computedLnks = nLnks;
-        computedMvpn = nMvpn;
-        computedMvpo = nMvpo;
-        computedMtre = nMtre;
-        computedMtro = nMtro;
+        boolean diffs = newlyUni.differs(tabRoute.addType.alters, routerComputedU) || newlyMlt.differs(tabRoute.addType.alters, routerComputedM) || newlyFlw.differs(tabRoute.addType.alters, routerComputedF);
+        routerComputedU = newlyUni;
+        routerComputedM = newlyMlt;
+        computedOuni = newlyOuni;
+        computedOmlt = newlyOmlt;
+        computedOflw = newlyOflw;
+        computedOsrt = newlyOsrt;
+        routerComputedF = newlyFlw;
+        computedVpnU = newlyVpnU;
+        computedVpnM = newlyVpnM;
+        computedVpnF = newlyVpnF;
+        computedVpoU = newlyVpoU;
+        computedVpoM = newlyVpoM;
+        computedVpoF = newlyVpoF;
+        computedVpls = newlyVpls;
+        computedMspw = newlyMspw;
+        computedEvpn = newlyEvpn;
+        computedMdt = newlyMdt;
+        computedNsh = newlyNsh;
+        computedRpd = newlyRpd;
+        computedSpf = newlySpf;
+        computedRtf = newlyRtf;
+        computedSrte = newlySrte;
+        computedLnks = newlyLnks;
+        computedMvpn = newlyMvpn;
+        computedMvpo = newlyMvpo;
+        computedMtre = newlyMtre;
+        computedMtro = newlyMtro;
         if (diffs) {
             fwdCore.routerChg(this, true);
         }
@@ -2235,8 +2370,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 logger.debug("round " + compRound + " segrou");
             }
             tabGen<tabIndex<addrIP>> segrouUsd = new tabGen<tabIndex<addrIP>>();
-            for (int i = 0; i < nUni.size(); i++) {
-                tabRouteEntry<addrIP> ntry = nUni.get(i);
+            for (int i = 0; i < newlyUni.size(); i++) {
+                tabRouteEntry<addrIP> ntry = newlyUni.get(i);
                 if (ntry == null) {
                     continue;
                 }
@@ -2270,8 +2405,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabLabelBier res = new tabLabelBier(bierLab[0].label, tabLabelBier.num2bsl(bierLen));
             res.idx = bierIdx;
-            for (int i = 0; i < nUni.size(); i++) {
-                tabRouteEntry<addrIP> ntry = nUni.get(i);
+            for (int i = 0; i < newlyUni.size(); i++) {
+                tabRouteEntry<addrIP> ntry = newlyUni.get(i);
                 if (ntry == null) {
                     continue;
                 }
@@ -2306,24 +2441,24 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
-        other.doPeersFull(nOuni, nOmlt, nOflw);
+        other.doPeersFull();
         for (int i = 0; i < vrfs.size(); i++) {
-            otherTrigger |= vrfs.get(i).doer.doPeersFull(nVpnU, nVpnM, nVpnF, nEvpn);
+            otherTrigger |= vrfs.get(i).doer.doPeersFull(newlyVpnU, newlyVpnM, newlyVpnF);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            otherTrigger |= ovrfs.get(i).doer.doPeersFull(nVpoU, nVpoM, nVpoF, nEvpn);
+            otherTrigger |= ovrfs.get(i).doer.doPeersFull(newlyVpoU, newlyVpoM, newlyVpoF);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            otherTrigger |= clrs.get(i).doer.doPeersFull(nUni, nMlt, nFlw, nEvpn);
+            otherTrigger |= clrs.get(i).doer.doPeersFull(newlyUni, newlyMlt, newlyFlw);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            otherTrigger |= oclrs.get(i).doer.doPeersFull(nOuni, nOmlt, nOflw, nEvpn);
+            otherTrigger |= oclrs.get(i).doer.doPeersFull(newlyOuni, newlyOmlt, newlyOflw);
         }
         for (int i = 0; i < vpls.size(); i++) {
-            vpls.get(i).doPeers(nVpls);
+            vpls.get(i).doPeers();
         }
         for (int i = 0; i < evpn.size(); i++) {
-            evpn.get(i).doPeers(nEvpn);
+            evpn.get(i).doPeers();
         }
         fullLast = bits.getTime();
         fullTime = (int) (fullLast - tim);
@@ -2663,28 +2798,28 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowInst && (cntFlw > 0)) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
-        other.doPeersIncr(computedOuni, computedOmlt, computedOflw);
+        other.doPeersIncr();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeersIncr(computedVpnU, computedVpnM, computedVpnF, computedEvpn, chgVpnU, chgVpnM, chgVpnF, chgEvpn);
+            vrfs.get(i).doer.doPeersIncr(computedVpnU, computedVpnM, computedVpnF, chgVpnU, chgVpnM, chgVpnF, chgEvpn);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, computedEvpn, chgVpoU, chgVpoM, chgVpoF, chgEvpn);
+            ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF, chgEvpn);
         }
         chgEvpn = new tabRoute<addrIP>("chg");
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, computedEvpn, routerChangedU, routerChangedM, routerChangedF, chgEvpn);
+            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF, chgEvpn);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, computedEvpn, other.routerChangedU, other.routerChangedM, other.routerChangedF, chgEvpn);
+            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, other.routerChangedU, other.routerChangedM, other.routerChangedF, chgEvpn);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {
-                vpls.get(i).doPeers(computedVpls);
+                vpls.get(i).doPeers();
             }
         }
         if (cntEvpn > 0) {
             for (int i = 0; i < evpn.size(); i++) {
-                evpn.get(i).doPeers(computedEvpn);
+                evpn.get(i).doPeers();
             }
         }
         incrLast = bits.getTime();

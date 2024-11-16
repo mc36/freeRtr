@@ -242,11 +242,9 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param nUni unicast table to update
      * @param nMlt multicast table to update
      * @param nFlw flowspec table to update
-     * @param nEvpn evpn table to update
      * @param nMvpn mvpn table to update
-     * @param nRtf rtfilter table to update
      */
-    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nEvpn, tabRoute<addrIP> nMvpn, tabRoute<addrIP> nRtf) {
+    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < fwd.rtExp.size(); i++) {
             rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
@@ -258,7 +256,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(fwd.rtImp.get(i)));
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            nRtf.add(tabRoute.addType.always, ntry, false, true);
+            parent.newlyRtf.add(tabRoute.addType.always, ntry, false, true);
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -270,7 +268,7 @@ public class rtrBgpVrfRtr extends ipRtr {
                 doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
             }
             if ((exprtMode & 2) != 0) {
-                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, nEvpn, rt);
+                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, parent.newlyEvpn, rt);
             }
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOuni : parent.afiUni);
@@ -285,7 +283,7 @@ public class rtrBgpVrfRtr extends ipRtr {
                 doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
             }
             if ((exprtMode & 2) != 0) {
-                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, nEvpn, rt);
+                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, parent.newlyEvpn, rt);
             }
         }
         for (int i = 0; i < routerRedistedM.size(); i++) {
@@ -302,7 +300,7 @@ public class rtrBgpVrfRtr extends ipRtr {
                 doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
             }
             if ((exprtMode & 2) != 0) {
-                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, nEvpn, rt);
+                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, parent.newlyEvpn, rt);
             }
         }
         tab = new tabRoute<addrIP>("agg");
@@ -430,10 +428,9 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
-     * @param cmpE evpn table to read
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersFull(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> cmpE) {
+    public boolean doPeersFull(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
         routerChangedU = null;
         routerChangedM = null;
         routerChangedF = null;
@@ -451,8 +448,8 @@ public class rtrBgpVrfRtr extends ipRtr {
             }
         }
         if ((imprtMode & 2) != 0) {
-            for (int i = 0; i < cmpE.size(); i++) {
-                doImportRoute(rtrBgpUtil.sfiEthVpn, cmpE.get(i), tabU, rt);
+            for (int i = 0; i < parent.newlyEvpn.size(); i++) {
+                doImportRoute(rtrBgpUtil.sfiEthVpn, parent.newlyEvpn.get(i), tabU, rt);
             }
         }
         for (int i = 0; i < cmpF.size(); i++) {
@@ -522,14 +519,13 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
-     * @param cmpE evpn table to read
      * @param chgU unicast table to process
      * @param chgM multicast table to process
      * @param chgF flowspec table to process
      * @param chgE evpn table to process
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersIncr(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> cmpE, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF, tabRoute<addrIP> chgE) {
+    public boolean doPeersIncr(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF, tabRoute<addrIP> chgE) {
         if ((chgU == null) || (chgM == null) || (chgF == null) || (chgE == null)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("changes disappeared");
@@ -552,7 +548,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if ((imprtMode & 2) != 0) {
             for (int i = 0; i < chgE.size(); i++) {
-                doUpdateRoute(rtrBgpUtil.sfiEthVpn, chgE.get(i), routerChangedU, routerComputedU, cmpE, rt);
+                doUpdateRoute(rtrBgpUtil.sfiEthVpn, chgE.get(i), routerChangedU, routerComputedU, parent.computedEvpn, rt);
             }
         }
         for (int i = 0; i < chgF.size(); i++) {

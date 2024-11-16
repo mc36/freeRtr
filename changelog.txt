@@ -16262,3 +16262,5 @@ qc pass: dhcp with excluded address
 ---------------------------------- 2024-11-13 07:50:44 24.11.13
 qc pass: p4lang: bridge filter access list
 qc pass: p4lang: vlan bridge filter access list
+---------------------------------- 2024-11-16 08:32:01 24.11.16
+todo: traffic through bgp spf
