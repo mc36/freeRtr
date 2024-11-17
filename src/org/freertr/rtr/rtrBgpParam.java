@@ -289,6 +289,11 @@ public abstract class rtrBgpParam {
     public int dmzLinkBw;
 
     /**
+     * spf metric
+     */
+    public int spfMetric;
+
+    /**
      * randomize session startup times
      */
     public int randomStartF;
@@ -1248,6 +1253,7 @@ public abstract class rtrBgpParam {
         routeRefresh = true;
         allowAsOut = true;
         dmzLinkBw = -1;
+        spfMetric = 10;
         randomStartF = 2;
         randomStartL = 15;
         socketMode = 3;
@@ -1284,6 +1290,7 @@ public abstract class rtrBgpParam {
         remoteConfed = src.remoteConfed;
         reflectClnt = src.reflectClnt;
         dmzLinkBw = src.dmzLinkBw;
+        spfMetric = src.spfMetric;
         randomStartF = src.randomStartF;
         randomStartL = src.randomStartL;
         distance = src.distance;
@@ -1939,6 +1946,8 @@ public abstract class rtrBgpParam {
         l.add(null, "4  .         <num>                     interval in ms");
         l.add(null, "3  4       dmz-link-bw                 set dmz link bandwidth");
         l.add(null, "4  .         <num>                     link bandwidth in kb");
+        l.add(null, "3  4       spf-metric                  set spf metric");
+        l.add(null, "4  .         <num>                     link metric");
         l.add(null, "3  4       randomize-startup           set session startup timers");
         l.add(null, "4  5         <num>                     minimum in ms");
         l.add(null, "5  .           <num>                   maximum in ms");
@@ -2032,6 +2041,7 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "distance " + distance);
         l.add(beg + nei + "timer " + keepAlive + " " + holdTimer);
         l.add(beg + nei + "dmz-link-bw " + dmzLinkBw);
+        l.add(beg + nei + "spf-metric " + spfMetric);
         l.add(beg + nei + "randomize-startup " + randomStartF + " " + randomStartL);
         switch (socketMode) {
             case 1:
@@ -2459,6 +2469,13 @@ public abstract class rtrBgpParam {
             dmzLinkBw = bits.str2num(cmd.word());
             if (negated) {
                 dmzLinkBw = -1;
+            }
+            return false;
+        }
+        if (s.equals("spf-metric")) {
+            spfMetric = bits.str2num(cmd.word());
+            if (negated) {
+                spfMetric = 10;
             }
             return false;
         }

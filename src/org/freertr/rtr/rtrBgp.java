@@ -999,6 +999,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected rtrBgpOther other;
 
     /**
+     * spf afi router
+     */
+    protected rtrBgpSpf spf;
+
+    /**
      * list of vrfs
      */
     protected tabGen<rtrBgpVrf> vrfs;
@@ -1225,6 +1230,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMtre = rtrBgpUtil.safiIp4mtree;
                 afiMtro = rtrBgpUtil.safiIp6mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd6);
+                spf = new rtrBgpSpf(this);
                 break;
             case ipCor6.protocolVersion:
                 rouTyp = tabRouteAttr.routeType.bgp6;
@@ -1262,6 +1268,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMtre = rtrBgpUtil.safiIp6mtree;
                 afiMtro = rtrBgpUtil.safiIp4mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd4);
+                spf = new rtrBgpSpf(this);
                 break;
             default:
                 rouTyp = null;
@@ -1299,6 +1306,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMtre = 0;
                 afiMtro = 0;
                 other = new rtrBgpOther(this, null);
+                spf = new rtrBgpSpf(this);
                 break;
         }
         incrLimit = 1000;
@@ -2189,6 +2197,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             newlyFlw.add(tabRoute.addType.better, ntry, false, false);
         }
         other.doAdvertise();
+        spf.doAdvertise();
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn);
         }
@@ -2442,6 +2451,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
         other.doPeersFull();
+        spf.doPeers();
         for (int i = 0; i < vrfs.size(); i++) {
             otherTrigger |= vrfs.get(i).doer.doPeersFull(newlyVpnU, newlyVpnM, newlyVpnF);
         }
@@ -2799,6 +2809,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
         other.doPeersIncr();
+        spf.doPeers();
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doPeersIncr(computedVpnU, computedVpnM, computedVpnF, chgVpnU, chgVpnM, chgVpnF, chgEvpn);
         }
@@ -3090,6 +3101,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   rpki                        setup resource public key infrastructure");
         cfgRtr.getRouterList(l, 0, "");
         l.add(null, "3 .         <num>                 process number");
+        l.add(null, "1 2   afi-spf                     select spf to advertise");
+        l.add(null, "2 .     enable                    enable processing");
+        l.add(null, "2 3     distance                  set import distance");
+        l.add(null, "3 .       <num>                   distance");
         l.add(null, "1 2   afi-other                   select other to advertise");
         l.add(null, "2 .     enable                    enable processing");
         l.add(null, "2 .     vpn-mode                  enable vpn mode");
@@ -3258,6 +3273,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             nei.getConfig(l, beg, filter);
         }
         other.getConfig(l, beg + "afi-other ");
+        spf.getConfig(l, beg + "afi-spf ");
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getConfig(l, beg, "afi-vrf ");
         }
@@ -3526,6 +3542,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             flowSpec = ntry.plcmap;
             needFull.add(1);
             compute.wakeup();
+            return false;
+        }
+        if (s.equals("afi-spf")) {
+            s = cmd.word();
+            if (s.equals("enable")) {
+                spf.enabled = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("distance")) {
+                spf.distance = bits.str2num(cmd.word());
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
             return false;
         }
         if (s.equals("afi-other")) {

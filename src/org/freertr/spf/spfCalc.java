@@ -9,12 +9,10 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryHashCrc32;
-import org.freertr.cry.cryHashMd5;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipMpls;
 import org.freertr.pack.packHolder;
-import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabIntMatcher;
@@ -1724,87 +1722,6 @@ public class spfCalc<Ta extends addrType> {
         tabIndex.add2table(segrouUsd, sri);
     }
 
-    private void listLinStateHdr(encTlv tlv, packHolder pck, int prt, int typ) {
-        pck.clear();
-        pck.msbPutW(0, typ); // type
-        pck.putByte(2, prt); // protocol
-        pck.msbPutQ(3, 0); // identifier
-        pck.putSkip(11);
-    }
-
-    private void listLinStateNod(encTlv tlv, packHolder pck, packHolder hlp, int siz, int asn, addrIPv4 adv, int par, spfNode<Ta> nod, int typ) {
-        hlp.clear();
-        tlv.valSiz = 4;
-        tlv.valTyp = 512; // asn
-        bits.msbPutD(tlv.valDat, 0, asn);
-        tlv.putThis(hlp);
-        tlv.putAddr(hlp, 513, adv); // ls id
-        hlp.merge2end();
-        if (par != -1) {
-            byte[] buf = new byte[4];
-            bits.msbPutD(buf, 0, par);
-            tlv.putBytes(hlp, 514, buf); // area id
-        }
-        nod.name.toBuffer(tlv.valDat, 0);
-        tlv.putBytes(hlp, 515, siz, tlv.valDat); // router id
-        hlp.merge2end();
-        byte[] buf = hlp.getCopy();
-        bits.byteCopy(buf, 0, tlv.valDat, 0, buf.length);
-        tlv.valSiz = buf.length;
-        tlv.putBytes(pck, typ); // node type
-        pck.merge2end();
-    }
-
-    private void listLinStatePrf(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        hlp.clear();
-        if (ntry.prefix.network.isIPv4()) {
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, true, hlp, ntry);
-        } else {
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, true, hlp, ntry);
-        }
-        hlp.merge2end();
-        tlv.putBytes(pck, 265, hlp.getCopy());
-        pck.merge2end();
-        tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
-        rou.best.rouSrc = rtrBgpUtil.peerOriginate;
-        addrIP adr = new addrIP();
-        rou.nlri = pck.getCopy();
-        adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
-        rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-        pck.clear();
-        if (ntry.best.metric > 0) {
-            bits.msbPutD(tlv.valDat, 0, ntry.best.metric);
-            tlv.putBytes(pck, 1155, 4, tlv.valDat); // metric
-            pck.merge2end();
-        }
-        if (ntry.best.tag > 0) {
-            bits.msbPutD(tlv.valDat, 0, ntry.best.tag);
-            tlv.putBytes(pck, 1153, 4, tlv.valDat); // metric
-            pck.merge2end();
-        }
-        if (pck.dataSize() > 0) {
-            rou.best.linkStat = pck.getCopy();
-        }
-        tab.add(tabRoute.addType.better, rou, true, true);
-    }
-
-    private void listLinStateAdd(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, int met) {
-        tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
-        rou.best.rouSrc = rtrBgpUtil.peerOriginate;
-        addrIP adr = new addrIP();
-        rou.nlri = pck.getCopy();
-        adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
-        rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-        if (met >= 0) {
-            pck.clear();
-            bits.msbPutD(tlv.valDat, 0, met << 8);
-            tlv.putBytes(pck, 1095, 3, tlv.valDat); // metric
-            pck.merge2end();
-            rou.best.linkStat = pck.getCopy();
-        }
-        tab.add(tabRoute.addType.better, rou, true, true);
-    }
-
     /**
      * list link states
      *
@@ -1816,44 +1733,44 @@ public class spfCalc<Ta extends addrType> {
      * @param siz size of node
      */
     public void listLinkStates(tabRoute<addrIP> tab, int prt, int par, int asn, addrIPv4 adv, int siz) {
-        encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+        encTlv tlv = spfLnkst.listLinkStateTlv();
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> nod = nodes.get(o);
-            listLinStateHdr(tlv, pck, prt, 1);
-            listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-            listLinStateAdd(tab, tlv, pck, -1);
+            spfLnkst.listLinkStateHdr(tlv, pck, prt, 1);
+            spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+            spfLnkst.listLinkStateAdd(tab, tlv, pck, -1, -1);
             for (int i = 0; i < nod.conn.size(); i++) {
                 spfConn<Ta> con = nod.conn.get(i);
-                listLinStateHdr(tlv, pck, prt, 2);
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, con.target, 257); // remote node
-                listLinStateAdd(tab, tlv, pck, con.metric);
+                spfLnkst.listLinkStateHdr(tlv, pck, prt, 2);
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, con.target, 257); // remote node
+                spfLnkst.listLinkStateAdd(tab, tlv, pck, con.metric, -1);
             }
             for (int i = 0; i < nod.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.prfFix.get(i);
-                listLinStateHdr(tlv, pck, prt, 3);
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-                listLinStatePrf(tab, tlv, pck, hlp, rou);
+                spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
             for (int i = 0; i < nod.prfAdd.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.prfAdd.get(i);
-                listLinStateHdr(tlv, pck, prt, 3);
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-                listLinStatePrf(tab, tlv, pck, hlp, rou);
+                spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
             for (int i = 0; i < nod.othFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.othFix.get(i);
-                listLinStateHdr(tlv, pck, prt, 3);
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-                listLinStatePrf(tab, tlv, pck, hlp, rou);
+                spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
             for (int i = 0; i < nod.othAdd.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.othAdd.get(i);
-                listLinStateHdr(tlv, pck, prt, 3);
-                listLinStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-                listLinStatePrf(tab, tlv, pck, hlp, rou);
+                spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
         }
     }
