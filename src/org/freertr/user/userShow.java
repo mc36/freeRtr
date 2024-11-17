@@ -4106,6 +4106,56 @@ public class userShow {
             rdr.putStrTab(r.bgp.getAttrStats());
             return;
         }
+        if (a.equals("lspf")) {
+            a = cmd.word();
+            if (a.equals("spf")) {
+                rdr.putStrTab(r.bgp.getSpfStat());
+                rdr.putStrTab(r.bgp.getSpfLog());
+                return;
+            }
+            if (a.equals("topology")) {
+                rdr.putStrTab(r.bgp.getSpfTopo(cmd));
+                return;
+            }
+            if (a.equals("tree")) {
+                rdr.putStrArr(r.bgp.getSpfTree());
+                return;
+            }
+            if (a.equals("othertree")) {
+                rdr.putStrArr(r.bgp.getSpfOtherTree(cmd));
+                return;
+            }
+            if (a.equals("othertopology")) {
+                rdr.putStrTab(r.bgp.getSpfOtherTopo(cmd));
+                return;
+            }
+            if (a.equals("graph")) {
+                int i = getGraphMask();
+                rdr.putStrArr(r.bgp.getSpfGraph(i));
+                return;
+            }
+            if (a.equals("nhinconsistent")) {
+                tabIntMatcher mtch = new tabIntMatcher();
+                mtch.fromString(cmd.word());
+                rdr.putStrTab(r.bgp.getNhIncons(mtch));
+                return;
+            }
+            if (a.equals("lnkinconsistent")) {
+                tabIntMatcher mtch = new tabIntMatcher();
+                mtch.fromString(cmd.word());
+                rdr.putStrTab(r.bgp.getMetIncons(mtch));
+                return;
+            }
+            if (a.equals("route")) {
+                doShowRoutes(r.bgp.fwdCore, r.bgp.getSpfRoute(), 1);
+                return;
+            }
+            if (a.equals("originate")) {
+                doShowRoutes(r.bgp.fwdCore, r.bgp.routerRedistedU, 1);
+                return;
+            }
+            return;
+        }
         if (a.equals("template")) {
             rtrBgpTemp tmp = r.bgp.findTemp(cmd.word());
             if (tmp == null) {

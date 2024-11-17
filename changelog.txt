@@ -16270,3 +16270,6 @@ qc pass: unicast+spf over bgp with soft-reconfig
 qc pass: unicast+spf over bgp with additional path
 ---------------------------------- 2024-11-17 18:01:02 24.11.17
 qc pass: spf bgp in chain
+---------------------------------- 2024-11-17 18:38:57 24.11.17
+qc pass: spf bgp prefix withdraw
+qc pass: spf bgp change in metric

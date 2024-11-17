@@ -4868,6 +4868,120 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * show spf
+     *
+     * @return log of spf
+     */
+    public userFormat getSpfStat() {
+        return lspf.lastSpf.listStatistics();
+    }
+
+    /**
+     * show topology
+     *
+     * @param cmd entry to find
+     * @return log of spf
+     */
+    public userFormat getSpfTopo(cmds cmd) {
+        if (cmd.size() < 1) {
+            return lspf.lastSpf.listTopology();
+        }
+        addrIPv4 ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        return lspf.lastSpf.listTopology(ned);
+    }
+
+    /**
+     * show log
+     *
+     * @return log of spf
+     */
+    public userFormat getSpfLog() {
+        return lspf.lastSpf.listUsages();
+    }
+
+    /**
+     * show tree
+     *
+     * @return tree of spf
+     */
+    public List<String> getSpfTree() {
+        return lspf.lastSpf.listTree();
+    }
+
+    /**
+     * show tree
+     *
+     * @param cmd entry to find
+     * @return tree of spf
+     */
+    public List<String> getSpfOtherTree(cmds cmd) {
+        spfCalc<addrIPv4> spf = lspf.lastSpf.copyBytes();
+        addrIPv4 ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        spf.doWork(null, ned, null);
+        return spf.listTree();
+    }
+
+    /**
+     * show topology
+     *
+     * @param cmd entry to find
+     * @return log of spf
+     */
+    public userFormat getSpfOtherTopo(cmds cmd) {
+        spfCalc<addrIPv4> spf = lspf.lastSpf.copyBytes();
+        addrIPv4 ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        spf.doWork(null, ned, null);
+        if (cmd.size() < 1) {
+            return spf.listTopology();
+        }
+        ned = new addrIPv4();
+        ned.fromString(cmd.word());
+        return spf.listTopology(ned);
+    }
+
+    /**
+     * show graph
+     *
+     * @param msk masks
+     * @return graph of spf
+     */
+    public List<String> getSpfGraph(int msk) {
+        return lspf.lastSpf.listGraphviz(msk);
+    }
+
+    /**
+     * show nh inconsistency
+     *
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat getNhIncons(tabIntMatcher mtch) {
+        return lspf.lastSpf.listNhIncons(mtch);
+    }
+
+    /**
+     * show met inconsistency
+     *
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat getMetIncons(tabIntMatcher mtch) {
+        return lspf.lastSpf.listMetIncons(mtch);
+    }
+
+    /**
+     * show route
+     *
+     * @return routes of spf
+     */
+    public tabRoute<addrIP> getSpfRoute() {
+        return lspf.routes;
+    }
+
+    /**
      * get bestpath stats
      *
      * @return list of statistics
