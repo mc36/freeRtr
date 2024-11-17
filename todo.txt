@@ -94,8 +94,6 @@ show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
 
 traffic through bgp sr-policy
 
-traffic through bgp spf
-
 traffic through bgp nsh
 
 policy from bgp rpd

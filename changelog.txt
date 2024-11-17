@@ -16273,3 +16273,5 @@ qc pass: spf bgp in chain
 ---------------------------------- 2024-11-17 18:38:57 24.11.17
 qc pass: spf bgp prefix withdraw
 qc pass: spf bgp change in metric
+---------------------------------- 2024-11-17 19:15:02 24.11.17
+no todo: traffic through bgp spf
