@@ -37,6 +37,11 @@ public class rtrBgpSpf {
     public int distance;
 
     /**
+     * default information originate
+     */
+    public boolean defRou;
+
+    /**
      * ingress prefix list
      */
     public tabListing<tabPrfxlstN, addrIP> prflstIn;
@@ -91,15 +96,21 @@ public class rtrBgpSpf {
      * get config
      *
      * @param l list to append
-     * @param beg beginning
+     * @param beg1 beginning
+     * @param beg2 beginning
      */
-    public void getConfig(List<String> l, String beg) {
-        if (enabled) {
-            l.add(beg + "enable");
-        } else {
-            l.add(cmds.tabulator + cmds.negated + beg + "enable");
-        }
-        l.add(beg + "distance " + distance);
+    public void getConfig(List<String> l, String beg1, String beg2) {
+        cmds.cfgLine(l, !enabled, beg1, beg2 + "enable", "");
+        l.add(beg1 + beg2 + "distance " + distance);
+        l.add(beg1 + beg2 + "spf-log " + lastSpf.logSize);
+        cmds.cfgLine(l, lastSpf.topoLog.get() == 0, beg1, beg2 + "spf-topolog", lastSpf.getTopoLogMode());
+        cmds.cfgLine(l, lastSpf.bidir.get() == 0, beg1, beg2 + "spf-bidir", "");
+        cmds.cfgLine(l, lastSpf.hops.get() == 0, beg1, beg2 + "spf-hops", "");
+        cmds.cfgLine(l, lastSpf.ecmp.get() == 0, beg1, beg2 + "spf-ecmp", "");
+        cmds.cfgLine(l, !defRou, beg1, beg2 + "default-originate", "");
+        cmds.cfgLine(l, prflstIn == null, beg1, beg2 + "prefix-list", "" + prflstIn);
+        cmds.cfgLine(l, roumapIn == null, beg1, beg2 + "route-map", "" + roumapIn);
+        cmds.cfgLine(l, roupolIn == null, beg1, beg2 + "route-policy", "" + roupolIn);
     }
 
     private void doSpfNei(spfCalc<addrIPv4> spf, rtrBgpNeigh nei) {
@@ -160,6 +171,11 @@ public class rtrBgpSpf {
         for (int i = 0; i < parent.lstnNei.size(); i++) {
             doAdvertNei(tlv, pck, hlp, parent.lstnNei.get(i));
         }
+        if (defRou) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
+            doAdvertPfx(tlv, pck, hlp, ntry);
+        }
         for (int i = 0; i < parent.routerRedistedU.size(); i++) {
             doAdvertPfx(tlv, pck, hlp, parent.routerRedistedU.get(i));
         }
@@ -219,16 +235,18 @@ public class rtrBgpSpf {
         for (int i = 0; i < parent.lstnNei.size(); i++) {
             doSpfNei(spf, parent.lstnNei.get(i));
         }
-        tabRoute<addrIP> rs = spf.getRoutes(parent.fwdCore, tabLabelEntry.owner.bgpSrgb, null, null);
-        routes = new tabRoute<addrIP>("routes");
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapIn, roupolIn, prflstIn);
-        parent.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, parent.fwdCore.commonLabel, null, 0);
+        tabRoute<addrIP> tab1 = spf.getRoutes(parent.fwdCore, tabLabelEntry.owner.bgpSrgb, null, null);
+        tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
+        parent.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, parent.fwdCore.commonLabel, null, 0);
         if (debugger.rtrBgpComp) {
             logger.debug("unreachable:" + spf.listReachablility(false));
             logger.debug("reachable:" + spf.listReachablility(true));
         }
-        routes.setProto(parent.rouTyp, parent.rtrNum);
         lastSpf = spf;
+        tab2.setProto(parent.rouTyp, parent.rtrNum);
+        tab2.preserveTime(routes);
+        routes = tab2;
         parent.newlyUni.mergeFrom(tabRoute.addType.better, routes, tabRouteAttr.distanLim);
         parent.newlyMlt.mergeFrom(tabRoute.addType.better, routes, tabRouteAttr.distanLim);
         return false;

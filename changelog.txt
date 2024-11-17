@@ -16268,3 +16268,5 @@ todo: traffic through bgp spf
 qc pass: unicast+spf over bgp
 qc pass: unicast+spf over bgp with soft-reconfig
 qc pass: unicast+spf over bgp with additional path
+---------------------------------- 2024-11-17 18:01:02 24.11.17
+qc pass: spf bgp in chain

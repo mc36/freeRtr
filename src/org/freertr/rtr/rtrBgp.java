@@ -3111,6 +3111,25 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "2 .     enable                    enable processing");
         l.add(null, "2 3     distance                  set import distance");
         l.add(null, "3 .       <num>                   distance");
+        l.add(null, "2 .     default-originate         advertise default route");
+        l.add(null, "2 3     route-map                 process prefixes");
+        l.add(null, "3 .       <name:rm>               name of route map");
+        l.add(null, "2 3     route-policy              process prefixes");
+        l.add(null, "3 .       <name:rpl>              name of route policy");
+        l.add(null, "2 3     prefix-list               filter prefixes");
+        l.add(null, "3 .       <name:pl>               name of prefix list");
+        l.add(null, "2 .     spf-bidir                   spf bidir check");
+        l.add(null, "2 3,.   spf-topolog                 spf topology logging");
+        l.add(null, "3 3,.     noappear                  exclude node (dis)appearance");
+        l.add(null, "3 3,.     noconnect                 exclude link (dis)connection");
+        l.add(null, "3 3,.     noforward                 exclude forward (un)willingness");
+        l.add(null, "3 3,.     noreachable               exclude node (un)reachable");
+        l.add(null, "3 3,.     nometric                  exclude link metric change");
+        l.add(null, "3 3,.     noprefix                  exclude prefix change");
+        l.add(null, "2 .     spf-hops                    spf hops disallow");
+        l.add(null, "2 .     spf-ecmp                    spf ecmp allow");
+        l.add(null, "2 3     spf-log                     spf log size");
+        l.add(null, "3 .       <num>                     number of entries");
         l.add(null, "1 2   afi-other                   select other to advertise");
         l.add(null, "2 .     enable                    enable processing");
         l.add(null, "2 .     default-originate         generate default route");
@@ -3280,7 +3299,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             nei.getConfig(l, beg, filter);
         }
         other.getConfig(l, beg + "afi-other ");
-        lspf.getConfig(l, beg + "afi-spf ");
+        lspf.getConfig(l, beg, "afi-spf ");
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getConfig(l, beg, "afi-vrf ");
         }
@@ -3562,6 +3581,108 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             if (s.equals("distance")) {
                 lspf.distance = bits.str2num(cmd.word());
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("default-originate")) {
+                lspf.defRou = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("prefix-list")) {
+                if (negated) {
+                    lspf.prflstIn = null;
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such prefix list");
+                    return false;
+                }
+                lspf.prflstIn = ntry.prflst;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("route-map")) {
+                if (negated) {
+                    lspf.roumapIn = null;
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such route map");
+                    return false;
+                }
+                lspf.roumapIn = ntry.roumap;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("route-policy")) {
+                if (negated) {
+                    lspf.roupolIn = null;
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such route policy");
+                    return false;
+                }
+                lspf.roupolIn = ntry.rouplc;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("spf-log")) {
+                lspf.lastSpf.logSize.set(bits.str2num(cmd.word()));
+                if (negated) {
+                    lspf.lastSpf.logSize.set(0);
+                }
+                return false;
+            }
+            if (s.equals("spf-topolog")) {
+                if (negated) {
+                    lspf.lastSpf.topoLog.set(0);
+                    return false;
+                }
+                lspf.lastSpf.setTopoLogMode(cmd);
+                return false;
+            }
+            if (s.equals("spf-bidir")) {
+                if (negated) {
+                    lspf.lastSpf.bidir.set(0);
+                } else {
+                    lspf.lastSpf.bidir.set(1);
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("spf-hops")) {
+                if (negated) {
+                    lspf.lastSpf.hops.set(0);
+                } else {
+                    lspf.lastSpf.hops.set(1);
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("spf-ecmp")) {
+                if (negated) {
+                    lspf.lastSpf.ecmp.set(0);
+                } else {
+                    lspf.lastSpf.ecmp.set(1);
+                }
                 needFull.add(1);
                 compute.wakeup();
                 return false;
