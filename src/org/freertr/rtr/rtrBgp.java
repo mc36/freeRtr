@@ -1001,7 +1001,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * spf afi router
      */
-    protected rtrBgpSpf spf;
+    protected rtrBgpSpf lspf;
 
     /**
      * list of vrfs
@@ -1230,7 +1230,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMtre = rtrBgpUtil.safiIp4mtree;
                 afiMtro = rtrBgpUtil.safiIp6mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd6);
-                spf = new rtrBgpSpf(this);
+                lspf = new rtrBgpSpf(this);
                 break;
             case ipCor6.protocolVersion:
                 rouTyp = tabRouteAttr.routeType.bgp6;
@@ -1268,7 +1268,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMtre = rtrBgpUtil.safiIp6mtree;
                 afiMtro = rtrBgpUtil.safiIp4mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd4);
-                spf = new rtrBgpSpf(this);
+                lspf = new rtrBgpSpf(this);
                 break;
             default:
                 rouTyp = null;
@@ -1306,7 +1306,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 afiMtre = 0;
                 afiMtro = 0;
                 other = new rtrBgpOther(this, null);
-                spf = new rtrBgpSpf(this);
+                lspf = new rtrBgpSpf(this);
                 break;
         }
         incrLimit = 1000;
@@ -2197,7 +2197,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             newlyFlw.add(tabRoute.addType.better, ntry, false, false);
         }
         other.doAdvertise();
-        spf.doAdvertise();
+        lspf.doAdvertise();
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn);
         }
@@ -2329,6 +2329,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neigroups");
         }
+        lspf.doPeersFull();
         boolean diffs = newlyUni.differs(tabRoute.addType.alters, routerComputedU) || newlyMlt.differs(tabRoute.addType.alters, routerComputedM) || newlyFlw.differs(tabRoute.addType.alters, routerComputedF);
         routerComputedU = newlyUni;
         routerComputedM = newlyMlt;
@@ -2451,7 +2452,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
         other.doPeersFull();
-        spf.doPeers();
         for (int i = 0; i < vrfs.size(); i++) {
             otherTrigger |= vrfs.get(i).doer.doPeersFull(newlyVpnU, newlyVpnM, newlyVpnF);
         }
@@ -2646,6 +2646,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return true;
         }
+        if (lspf.enabled && (changedSpf.size() > 0)) {
+            if (debugger.rtrBgpFull) {
+                logger.debug("spf");
+            }
+            return true;
+        }
         if (routerAutoSummary || (routerAggregating.size() > 0)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("aggregation");
@@ -2799,6 +2805,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         computeIncrUpdate(afiMvpo, null, changedMvpo, computedMvpo, origntedMvpo);
         computeIncrUpdate(afiMtre, null, changedMtre, computedMtre, origntedMtre);
         computeIncrUpdate(afiMtro, null, changedMtro, computedMtro, origntedMtro);
+        lspf.doPeersIncr();
         if (labPer || ((cntGlb + cntFlw) > 0)) {
             fwdCore.routerChg(this, labPer);
         }
@@ -2809,7 +2816,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
         }
         other.doPeersIncr();
-        spf.doPeers();
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doPeersIncr(computedVpnU, computedVpnM, computedVpnF, chgVpnU, chgVpnM, chgVpnF, chgEvpn);
         }
@@ -3107,6 +3113,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "3 .       <num>                   distance");
         l.add(null, "1 2   afi-other                   select other to advertise");
         l.add(null, "2 .     enable                    enable processing");
+        l.add(null, "2 .     default-originate         generate default route");
         l.add(null, "2 .     vpn-mode                  enable vpn mode");
         l.add(null, "2 3     srv6                      srv6 advertisement");
         l.add(null, "3 .       <name:ifc>              select source to advertise");
@@ -3273,7 +3280,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             nei.getConfig(l, beg, filter);
         }
         other.getConfig(l, beg + "afi-other ");
-        spf.getConfig(l, beg + "afi-spf ");
+        lspf.getConfig(l, beg + "afi-spf ");
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getConfig(l, beg, "afi-vrf ");
         }
@@ -3547,13 +3554,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (s.equals("afi-spf")) {
             s = cmd.word();
             if (s.equals("enable")) {
-                spf.enabled = !negated;
+                lspf.enabled = !negated;
+                routerIgp = lspf.enabled;
                 needFull.add(1);
                 compute.wakeup();
                 return false;
             }
             if (s.equals("distance")) {
-                spf.distance = bits.str2num(cmd.word());
+                lspf.distance = bits.str2num(cmd.word());
                 needFull.add(1);
                 compute.wakeup();
                 return false;
@@ -3574,6 +3582,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             if (s.equals("vpn-mode")) {
                 other.routerVpn = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("default-originate")) {
+                other.defRou = !negated;
                 needFull.add(1);
                 compute.wakeup();
                 return false;

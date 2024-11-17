@@ -53,6 +53,11 @@ public abstract class ipRtr implements Comparable<ipRtr> {
     public boolean routerVpn;
 
     /**
+     * igp instance
+     */
+    public boolean routerIgp;
+
+    /**
      * number of times redist changed
      */
     public int routerRedistChg;
@@ -230,6 +235,9 @@ public abstract class ipRtr implements Comparable<ipRtr> {
                 return 1;
             case bgp4:
             case bgp6:
+                if (routerIgp) {
+                    return 0;
+                }
                 if (routerVpn) {
                     return 2;
                 }

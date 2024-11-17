@@ -53,6 +53,11 @@ public class rtrBgpOther extends ipRtr {
     public cfgIfc srv6;
 
     /**
+     * default information originate
+     */
+    public boolean defRou;
+
+    /**
      * forwarder to use
      */
     protected final ipFwd fwd;
@@ -150,6 +155,20 @@ public class rtrBgpOther extends ipRtr {
     public void doAdvertise() {
         if (!enabled) {
             return;
+        }
+        if (defRou) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiOuni);
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
+            ntry.best.aggrAs = parent.localAs;
+            doExportRoute(rtrBgpUtil.sfiUnicast, ntry, parent.newlyOuni);
+            ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiOuni);
+            ntry.best.aggrRtr = new addrIP();
+            ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
+            ntry.best.aggrAs = parent.localAs;
+            doExportRoute(rtrBgpUtil.sfiMulticast, ntry, parent.newlyOmlt);
         }
         for (int i = 0; i < routerRedistedU.size(); i++) {
             doExportRoute(rtrBgpUtil.sfiUnicast, routerRedistedU.get(i), parent.newlyOuni);
@@ -330,6 +349,11 @@ public class rtrBgpOther extends ipRtr {
             l.add(beg + "enable");
         } else {
             l.add(cmds.tabulator + cmds.negated + beg + "enable");
+        }
+        if (defRou) {
+            l.add(beg + "default-originate");
+        } else {
+            l.add(cmds.tabulator + cmds.negated + beg + "default-originate");
         }
         if (routerVpn) {
             l.add(beg + "vpn-mode");

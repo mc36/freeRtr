@@ -221,4 +221,112 @@ public class spfLnkst {
         tab.add(tabRoute.addType.better, rou, true, true);
     }
 
+    private static boolean findTlv(encTlv tlv, packHolder pck, int num) {
+        for (;;) {
+            if (tlv.getBytes(pck)) {
+                return true;
+            }
+            if (tlv.valTyp == num) {
+                return false;
+            }
+        }
+    }
+
+    private static addrIPv4 findNode(encTlv tlv, packHolder pck, packHolder hlp, int num) {
+        if (findTlv(tlv, pck, num)) {
+            return null;
+        }
+        hlp.clear();
+        hlp.putCopy(tlv.valDat, 0, 0, tlv.valSiz);
+        hlp.putSkip(tlv.valSiz);
+        hlp.merge2beg();
+        if (findTlv(tlv, hlp, 516)) {
+            return null;
+        }
+        addrIPv4 adr = new addrIPv4();
+        adr.fromBuf(tlv.valDat, 0);
+        return adr;
+    }
+
+    private static int findMet(encTlv tlv, packHolder pck, int num) {
+        if (findTlv(tlv, pck, num)) {
+            return 0;
+        }
+        return bits.msbGetD(tlv.valDat, 0);
+    }
+
+    /**
+     * read spf node
+     *
+     * @param spf spf to use
+     * @param tlv tlv to use
+     * @param pck packet to use
+     * @param hlp helper to use
+     */
+    public static void readSpfNode(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp) {
+        addrIPv4 loc = findNode(tlv, pck, hlp, 256);
+        if (loc == null) {
+            return;
+        }
+        spf.addIdent(loc, null);
+    }
+
+    /**
+     * read spf link
+     *
+     * @param spf spf to use
+     * @param tlv tlv to use
+     * @param pck packet to use
+     * @param hlp helper to use
+     */
+    public static void readSpfLink(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp) {
+        addrIPv4 loc = findNode(tlv, pck, hlp, 256);
+        if (loc == null) {
+            return;
+        }
+        addrIPv4 rem = findNode(tlv, pck, hlp, 257);
+        if (rem == null) {
+            return;
+        }
+        int met = findMet(tlv, pck, 1095);
+        if (met < 1) {
+            return;
+        }
+        spf.addConn(loc, rem, met, true, false, null);
+    }
+
+    /**
+     * read spf prefix
+     *
+     * @param spf spf to use
+     * @param tlv tlv to use
+     * @param pck packet to use
+     * @param hlp helper to use
+     * @param safi safi to use
+     * @param dist distance to use
+     */
+    public static void readSpfPref(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp, int safi, int dist) {
+        addrIPv4 loc = findNode(tlv, pck, hlp, 256);
+        if (loc == null) {
+            return;
+        }
+        if (findTlv(tlv, pck, 265)) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(tlv.valDat, 0, 0, tlv.valSiz);
+        hlp.putSkip(tlv.valSiz);
+        hlp.merge2beg();
+        tabRouteEntry<addrIP> ntry = rtrBgpUtil.readPrefix(safi, true, hlp);
+        if (ntry == null) {
+            return;
+        }
+        int i = pck.dataSize();
+        ntry.best.metric = findMet(tlv, pck, 1155);
+        pck.setBytesLeft(i);
+        ntry.best.tag = findMet(tlv, pck, 1153);
+        ntry.best.distance = dist;
+        spf.addPref(loc, ntry, false);
+    }
+
 }
