@@ -1150,7 +1150,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         tabRoute<addrIP> nMvpo = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMtre = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> nMtro = new tabRoute<addrIP>("bgp");
-        if (sendDefRou) {
+        if (sendDefRou || lower.defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiUni);
             ntry.best.aggrRtr = new addrIP();
@@ -1166,7 +1166,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry = originatePrefix(lower.afiMlt, ntry);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMlt, lower.afiMlt, remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
         }
-        if (sendOtrDefRou) {
+        if (sendOtrDefRou || lower.other.defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(lower.afiOuni);
             ntry.best.aggrRtr = new addrIP();

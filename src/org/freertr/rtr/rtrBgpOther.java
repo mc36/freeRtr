@@ -156,20 +156,6 @@ public class rtrBgpOther extends ipRtr {
         if (!enabled) {
             return;
         }
-        if (defRou) {
-            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiOuni);
-            ntry.best.aggrRtr = new addrIP();
-            ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
-            ntry.best.aggrAs = parent.localAs;
-            doExportRoute(rtrBgpUtil.sfiUnicast, ntry, parent.newlyOuni);
-            ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiOuni);
-            ntry.best.aggrRtr = new addrIP();
-            ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
-            ntry.best.aggrAs = parent.localAs;
-            doExportRoute(rtrBgpUtil.sfiMulticast, ntry, parent.newlyOmlt);
-        }
         for (int i = 0; i < routerRedistedU.size(); i++) {
             doExportRoute(rtrBgpUtil.sfiUnicast, routerRedistedU.get(i), parent.newlyOuni);
         }

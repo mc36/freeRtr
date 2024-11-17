@@ -350,6 +350,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bier",
         "router bgp[46] .*!" + cmds.tabulator + "graceful-restart 60000",
         "router bgp[46] .*!" + cmds.tabulator + "longlived-graceful 0",
+        "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "default-originate",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "nexthop route-map",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "nexthop route-policy",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "nexthop prefix-list",

@@ -154,6 +154,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public int recursion;
 
     /**
+     * default information originate
+     */
+    public boolean defRou;
+
+    /**
      * restart time
      */
     public int restartTime;
@@ -3036,6 +3041,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         rtrBgpParam.getAfiList(l, "2 2,.", "to use", true);
         l.add(null, "1 2   local-as                    specify local as number");
         l.add(null, "2 .     <num>                     autonomous system number");
+        l.add(null, "1 .   default-originate           advertise default route");
         l.add(null, "1 .   conquer                     conquer bestpath advertisements");
         l.add(null, "1 .   flapstat                    count flap statistics");
         l.add(null, "1 .   safe-ebgp                   safe ebgp policy");
@@ -3259,6 +3265,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "incremental " + incrLimit);
         l.add(beg + "graceful-restart " + restartTime);
         l.add(beg + "longlived-graceful " + llRestartTime);
+        cmds.cfgLine(l, !defRou, beg, "default-originate", "");
         cmds.cfgLine(l, !conquer, beg, "conquer", "");
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, nhtRoumap == null, beg, "nexthop route-map", "" + nhtRoumap);
@@ -3444,6 +3451,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bierIdx = bits.str2num(cmd.word());
             bierSub = bits.str2num(cmd.word());
             bierLab = tabLabel.allocate(tabLabelEntry.owner.bgpBier, (bierMax + bierLen - 1) / bierLen);
+            needFull.add(1);
+            compute.wakeup();
+            return false;
+        }
+        if (s.equals("default-originate")) {
+            defRou = !negated;
             needFull.add(1);
             compute.wakeup();
             return false;
