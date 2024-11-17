@@ -1,10 +1,11 @@
 package org.freertr.rtr;
 
 import java.util.List;
-import org.freertr.addr.addrIPv4;
+import org.freertr.addr.addrIP;
 import org.freertr.enc.encTlv;
 import org.freertr.pack.packHolder;
 import org.freertr.spf.spfLnkst;
+import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.cmds;
 
 /**
@@ -60,6 +61,29 @@ public class rtrBgpSpf {
         l.add(beg + "distance " + distance);
     }
 
+    private void doAdvertNei(encTlv tlv, packHolder pck, packHolder hlp, rtrBgpNeigh nei) {
+        if (nei == null) {
+            return;
+        }
+        if (!nei.conn.ready2adv) {
+            return;
+        }
+        spfLnkst.listLinkStateHdr(tlv, pck, 4, 2);
+        spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
+        spfLnkst.listSpfNod(tlv, pck, hlp, nei.remoteAs, nei.conn.peerRouterID, 257); // remote node
+        spfLnkst.listSpfLnk(tlv, pck, nei.localAddr, nei.peerAddr);
+        spfLnkst.listLinkStateAdd(parent.newlySpf, tlv, pck, 4, nei.spfMetric, 0);
+    }
+
+    private void doAdvertPfx(encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> rou) {
+        if (rou == null) {
+            return;
+        }
+        spfLnkst.listLinkStateHdr(tlv, pck, 4, 3);
+        spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
+        spfLnkst.listLinkStatePrf(parent.newlySpf, tlv, pck, hlp, rou);
+    }
+
     /**
      * merge routes to table
      */
@@ -72,7 +96,16 @@ public class rtrBgpSpf {
         packHolder hlp = new packHolder(true, true);
         spfLnkst.listLinkStateHdr(tlv, pck, 4, 1);
         spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
-        spfLnkst.listLinkStateAdd(parent.newlySpf, tlv, pck, -1, 0);
+        spfLnkst.listLinkStateAdd(parent.newlySpf, tlv, pck, 0, 0, 0);
+        for (int i = 0; i < parent.neighs.size(); i++) {
+            doAdvertNei(tlv, pck, hlp, parent.neighs.get(i));
+        }
+        for (int i = 0; i < parent.lstnNei.size(); i++) {
+            doAdvertNei(tlv, pck, hlp, parent.lstnNei.get(i));
+        }
+        for (int i = 0; i < parent.routerRedistedU.size(); i++) {
+            doAdvertPfx(tlv, pck, hlp, parent.routerRedistedU.get(i));
+        }
     }
 
     /**

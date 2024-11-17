@@ -2376,7 +2376,7 @@ public class rtrIsis extends ipRtr {
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int level, int asn, addrIPv4 adv) {
         rtrIsisLevel lev = getLevel(level);
-        lev.lastSpf.listLinkStates(tab, lev.level, -1, asn, adv, addrIsis.size);
+        lev.lastSpf.listLinkStates(tab, lev.level, -1, asn, adv, addrIsis.size, 3);
     }
 
 }

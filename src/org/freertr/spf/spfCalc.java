@@ -1730,46 +1730,47 @@ public class spfCalc<Ta extends addrType> {
      * @param par parameter
      * @param asn asn
      * @param adv advertiser
-     * @param siz size of node
+     * @param sizN size of node
+     * @param sizM size of metric
      */
-    public void listLinkStates(tabRoute<addrIP> tab, int prt, int par, int asn, addrIPv4 adv, int siz) {
+    public void listLinkStates(tabRoute<addrIP> tab, int prt, int par, int asn, addrIPv4 adv, int sizN, int sizM) {
         encTlv tlv = spfLnkst.listLinkStateTlv();
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> nod = nodes.get(o);
             spfLnkst.listLinkStateHdr(tlv, pck, prt, 1);
-            spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-            spfLnkst.listLinkStateAdd(tab, tlv, pck, -1, -1);
+            spfLnkst.listLinkStateNod(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
+            spfLnkst.listLinkStateAdd(tab, tlv, pck, 0, 0, -1);
             for (int i = 0; i < nod.conn.size(); i++) {
                 spfConn<Ta> con = nod.conn.get(i);
                 spfLnkst.listLinkStateHdr(tlv, pck, prt, 2);
-                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
-                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, con.target, 257); // remote node
-                spfLnkst.listLinkStateAdd(tab, tlv, pck, con.metric, -1);
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, sizN, asn, adv, par, con.target, 257); // remote node
+                spfLnkst.listLinkStateAdd(tab, tlv, pck, sizM, con.metric, -1);
             }
             for (int i = 0; i < nod.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.prfFix.get(i);
                 spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
-                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
                 spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
             for (int i = 0; i < nod.prfAdd.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.prfAdd.get(i);
                 spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
-                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
                 spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
             for (int i = 0; i < nod.othFix.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.othFix.get(i);
                 spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
-                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
                 spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
             for (int i = 0; i < nod.othAdd.size(); i++) {
                 tabRouteEntry<addrIP> rou = nod.othAdd.get(i);
                 spfLnkst.listLinkStateHdr(tlv, pck, prt, 3);
-                spfLnkst.listLinkStateNod(tlv, pck, hlp, siz, asn, adv, par, nod, 256); // local node
+                spfLnkst.listLinkStateNod(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
                 spfLnkst.listLinkStatePrf(tab, tlv, pck, hlp, rou);
             }
         }

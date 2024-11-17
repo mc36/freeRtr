@@ -110,6 +110,30 @@ public class spfLnkst {
     }
 
     /**
+     * add a link
+     *
+     * @param tlv tlv to use
+     * @param pck packet to use
+     * @param loc local ip
+     * @param rem remote ip
+     */
+    public static void listSpfLnk(encTlv tlv, packHolder pck, addrIP loc, addrIP rem) {
+        if (loc == null) {
+            return;
+        }
+        if (rem == null) {
+            return;
+        }
+        if (loc.isIPv4()) {
+            tlv.putAddr(pck, 259, loc.toIPv4());
+            tlv.putAddr(pck, 260, rem.toIPv4());
+        } else {
+            tlv.putAddr(pck, 261, loc.toIPv6());
+            tlv.putAddr(pck, 262, rem.toIPv6());
+        }
+    }
+
+    /**
      * add prefix
      *
      * @param tab table to use
@@ -135,7 +159,7 @@ public class spfLnkst {
         adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
         rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         pck.clear();
-        if (ntry.best.metric > 0) {
+        if (ntry.best.metric >= 0) {
             bits.msbPutD(tlv.valDat, 0, ntry.best.metric);
             tlv.putBytes(pck, 1155, 4, tlv.valDat); // metric
             pck.merge2end();
@@ -157,10 +181,11 @@ public class spfLnkst {
      * @param tab table to update
      * @param tlv tlv to use
      * @param pck packet to use
+     * @param siz size of metric
      * @param met metric
      * @param seq sequence
      */
-    public static void listLinkStateAdd(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, int met, long seq) {
+    public static void listLinkStateAdd(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, int siz, int met, long seq) {
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.best.rouSrc = rtrBgpUtil.peerOriginate;
         addrIP adr = new addrIP();
@@ -168,10 +193,22 @@ public class spfLnkst {
         adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
         rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         pck.clear();
-        if (met >= 0) {
-            bits.msbPutD(tlv.valDat, 0, met << 8);
-            tlv.putBytes(pck, 1095, 3, tlv.valDat); // metric
-            pck.merge2end();
+        switch (siz) {
+            case 1:
+                tlv.valDat[0] = (byte) met;
+                break;
+            case 2:
+                bits.msbPutW(tlv.valDat, 0, met);
+                break;
+            case 3:
+                bits.msbPutD(tlv.valDat, 0, met << 8);
+                break;
+            case 4:
+                bits.msbPutD(tlv.valDat, 0, met);
+                break;
+        }
+        if (siz > 0) {
+            tlv.putBytes(pck, 1095, siz, tlv.valDat); // metric
         }
         if (seq >= 0) {
             bits.msbPutQ(tlv.valDat, 0, seq);

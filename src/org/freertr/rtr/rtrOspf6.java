@@ -1323,7 +1323,7 @@ public class rtrOspf6 extends ipRtr {
         if (ara == null) {
             return;
         }
-        ara.lastSpf.listLinkStates(tab, 6, ara.area, asn, adv, addrIPv4.size);
+        ara.lastSpf.listLinkStates(tab, 6, ara.area, asn, adv, addrIPv4.size, 2);
     }
 
 }

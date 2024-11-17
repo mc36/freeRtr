@@ -1185,7 +1185,7 @@ public class rtrRift extends ipRtr implements Runnable {
      * @param adv advertiser
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
-        lastSpfN.listLinkStates(tab, 100, -1, asn, adv, addrIPv4.size);
+        lastSpfN.listLinkStates(tab, 100, -1, asn, adv, addrIPv4.size, 4);
     }
 
 }
