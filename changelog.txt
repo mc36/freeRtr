@@ -16278,3 +16278,5 @@ no todo: traffic through bgp spf
 ---------------------------------- 2024-11-18 07:42:36 24.11.18
 qc pass: spf bgp change in tag
 qc pass: spf bgp triangle connection
+---------------------------------- 2024-11-18 18:55:38 24.11.18
+todo: bgp spf to have sr and bier
