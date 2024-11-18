@@ -147,7 +147,7 @@ public class rtrBgpSpf {
         if (rou == null) {
             return;
         }
-        spfLnkst.listLinkStateHdr(tlv, pck, 4, 3);
+        spfLnkst.listLinkStateHdr(tlv, pck, 4, spfLnkst.getPrefixType(rou));
         spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
         spfLnkst.listLinkStatePrf(parent.newlySpf, tlv, pck, hlp, rou, 0);
     }
@@ -223,7 +223,10 @@ public class rtrBgpSpf {
                 case 2: // link
                     spfLnkst.readSpfLink(spf, tlv, pck, hlp);
                     break;
-                case 3: // prefix
+                case 3: // ipv4 prefix
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, parent.afiUni, distance);
+                    break;
+                case 4: // ipv6 prefix
                     spfLnkst.readSpfPref(spf, tlv, pck, hlp, parent.afiUni, distance);
                     break;
             }

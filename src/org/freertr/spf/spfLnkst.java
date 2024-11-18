@@ -134,6 +134,20 @@ public class spfLnkst {
     }
 
     /**
+     * get prefix type
+     *
+     * @param ntry route entry
+     * @return type to use
+     */
+    public static int getPrefixType(tabRouteEntry<addrIP> ntry) {
+        if (ntry.prefix.network.isIPv4()) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+    /**
      * add prefix
      *
      * @param tab table to use
