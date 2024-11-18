@@ -141,8 +141,9 @@ public class spfLnkst {
      * @param pck packet to use
      * @param hlp helper to use
      * @param ntry route entry
+     * @param seq sequence
      */
-    public static void listLinkStatePrf(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void listLinkStatePrf(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry, long seq) {
         hlp.clear();
         if (ntry.prefix.network.isIPv4()) {
             rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, true, hlp, ntry);
@@ -159,6 +160,11 @@ public class spfLnkst {
         adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
         rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         pck.clear();
+        if (seq >= 0) {
+            bits.msbPutQ(tlv.valDat, 0, seq);
+            tlv.putBytes(pck, 1181, 8, tlv.valDat); // sequence
+            pck.merge2end();
+        }
         if (ntry.best.metric >= 0) {
             bits.msbPutD(tlv.valDat, 0, ntry.best.metric);
             tlv.putBytes(pck, 1155, 4, tlv.valDat); // metric

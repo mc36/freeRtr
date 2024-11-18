@@ -149,7 +149,7 @@ public class rtrBgpSpf {
         }
         spfLnkst.listLinkStateHdr(tlv, pck, 4, 3);
         spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
-        spfLnkst.listLinkStatePrf(parent.newlySpf, tlv, pck, hlp, rou);
+        spfLnkst.listLinkStatePrf(parent.newlySpf, tlv, pck, hlp, rou, 0);
     }
 
     /**
