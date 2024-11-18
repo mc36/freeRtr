@@ -77,7 +77,7 @@ public class rtrBgpSpf {
      */
     public rtrBgpSpf(rtrBgp p) {
         parent = p;
-        distance = 10;
+        distance = 60;
         lastSpf = new spfCalc<addrIPv4>(null);
         routes = new tabRoute<addrIP>("bst");
         ipv4 = p.rouTyp == tabRouteAttr.routeType.bgp4;
