@@ -4529,6 +4529,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param adv advertiser
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
+        lspf.lastSpf.listLinkStates(tab, 7, -1, asn, adv, addrIPv4.size, 4);
     }
 
     /**
