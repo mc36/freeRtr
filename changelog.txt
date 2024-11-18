@@ -16275,3 +16275,6 @@ qc pass: spf bgp prefix withdraw
 qc pass: spf bgp change in metric
 ---------------------------------- 2024-11-17 19:15:02 24.11.17
 no todo: traffic through bgp spf
+---------------------------------- 2024-11-18 07:42:36 24.11.18
+qc pass: spf bgp change in tag
+qc pass: spf bgp triangle connection
