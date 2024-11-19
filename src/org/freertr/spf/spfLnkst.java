@@ -335,7 +335,227 @@ public class spfLnkst {
     /**
      * igp metric
      */
-    public static final int typIgpMet = 1095;
+    public static final int typIgpMetric = 1095;
+
+    /**
+     * shared risk link group
+     */
+    public static final int typSrlg = 1096;
+
+    /**
+     * opaque link attribute
+     */
+    public static final int typLinkOpaque = 1097;
+
+    /**
+     * link name
+     */
+    public static final int typLinkName = 1098;
+
+    /**
+     * adjacency sid
+     */
+    public static final int typAdjSid = 1099;
+
+    /**
+     * lan adjacency sid
+     */
+    public static final int typLanAdjSid = 1100;
+
+    /**
+     * peer node sid
+     */
+    public static final int typPeerNodeSid = 1101;
+
+    /**
+     * peer adj sid
+     */
+    public static final int typPeerAdjSid = 1102;
+
+    /**
+     * peer set sid
+     */
+    public static final int typPeerSetSid = 1103;
+
+    /**
+     * rtm capability
+     */
+    public static final int typRtmCapa = 1105;
+
+    /**
+     * srv6 end.x sid
+     */
+    public static final int typSrv6EndX = 1106;
+
+    /**
+     * isis srv6 end.x sid
+     */
+    public static final int typIsisEndX = 1107;
+
+    /**
+     * ospf srv6 end.x sid
+     */
+    public static final int typOspfEndX = 1108;
+
+    /**
+     * unidirectional link delay
+     */
+    public static final int typUniLnkDel = 1114;
+
+    /**
+     * min/max unidirectional link delay
+     */
+    public static final int typUniMinMax = 1115;
+
+    /**
+     * unidirectional delay variation
+     */
+    public static final int typUniDelVar = 1116;
+
+    /**
+     * unidirectional link loss
+     */
+    public static final int typUniLnkLos = 1117;
+
+    /**
+     * unidirectional residual bandwidth
+     */
+    public static final int typUniResBnd = 1118;
+
+    /**
+     * unidirectional available bandwidth
+     */
+    public static final int typUniAvaBnd = 1119;
+
+    /**
+     * unidirectional utilized bandwidth
+     */
+    public static final int typUniUsdBnd = 1120;
+
+    /**
+     * graceful link shutdown
+     */
+    public static final int typGrcLnkSht = 1121;
+
+    /**
+     * application specific link attributes
+     */
+    public static final int typAppLnkAtr = 1122;
+
+    /**
+     * igp flags
+     */
+    public static final int typIgpFlags = 1152;
+
+    /**
+     * igp route tag
+     */
+    public static final int typIgpTag = 1153;
+
+    /**
+     * igp extended route tag
+     */
+    public static final int typIgpExtTag = 1154;
+
+    /**
+     * prefix metric
+     */
+    public static final int typPrfxMetric = 1155;
+
+    /**
+     * ospf forwarding address
+     */
+    public static final int typOspfFwdAdr = 1156;
+
+    /**
+     * opaque prefix attribute
+     */
+    public static final int typPrfxOpaque = 1157;
+
+    /**
+     * prefix sid
+     */
+    public static final int typPrfxSid = 1158;
+
+    /**
+     * range
+     */
+    public static final int typRange = 1159;
+
+    /**
+     * sid label
+     */
+    public static final int typSidLabel = 1161;
+
+    /**
+     * srv6 locator
+     */
+    public static final int typSv6Locator = 1162;
+
+    /**
+     * prefix attribute flags
+     */
+    public static final int typPrfxFlags = 1170;
+
+    /**
+     * source router identifier
+     */
+    public static final int typSrcRtrId = 1171;
+
+    /**
+     * l2 bundle member attributes
+     */
+    public static final int typL2bunMem = 1172;
+
+    /**
+     * extended administrative group
+     */
+    public static final int typExtAdmGrp = 1173;
+
+    /**
+     * source ospf router id
+     */
+    public static final int typSrcOspfId = 1174;
+
+    /**
+     * spf capability
+     */
+    public static final int typSpfCapa = 1180;
+
+    /**
+     * sequence number
+     */
+    public static final int typSeqNum = 1181;
+
+    /**
+     * ipv4 link prefix length
+     */
+    public static final int typIpv4pfxLen = 1182;
+
+    /**
+     * ipv6 link prefix length
+     */
+    public static final int typIpv6pfxLen = 1183;
+
+    /**
+     * spf status
+     */
+    public static final int typSpfStat = 1184;
+
+    /**
+     * srv6 endpoint behavior
+     */
+    public static final int typSrv6EndBhv = 1250;
+
+    /**
+     * srv6 bgp peer node sid
+     */
+    public static final int typSrv6bgpPeer = 1251;
+
+    /**
+     * srv6 sid structure
+     */
+    public static final int typSrv6sidStr = 1252;
 
     /**
      * get tlv encoder
@@ -492,17 +712,17 @@ public class spfLnkst {
         pck.clear();
         if (seq >= 0) {
             bits.msbPutQ(tlv.valDat, 0, seq);
-            tlv.putBytes(pck, 1181, 8, tlv.valDat); // sequence
+            tlv.putBytes(pck, typSeqNum, 8, tlv.valDat);
             pck.merge2end();
         }
         if (ntry.best.metric >= 0) {
             bits.msbPutD(tlv.valDat, 0, ntry.best.metric);
-            tlv.putBytes(pck, 1155, 4, tlv.valDat); // metric
+            tlv.putBytes(pck, typPrfxMetric, 4, tlv.valDat);
             pck.merge2end();
         }
         if (ntry.best.tag > 0) {
             bits.msbPutD(tlv.valDat, 0, ntry.best.tag);
-            tlv.putBytes(pck, 1153, 4, tlv.valDat); // tag
+            tlv.putBytes(pck, typIgpTag, 4, tlv.valDat);
             pck.merge2end();
         }
         if (pck.dataSize() > 0) {
@@ -544,11 +764,11 @@ public class spfLnkst {
                 break;
         }
         if (siz > 0) {
-            tlv.putBytes(hlp, typIgpMet, siz, tlv.valDat);
+            tlv.putBytes(hlp, typIgpMetric, siz, tlv.valDat);
         }
         if (seq >= 0) {
             bits.msbPutQ(tlv.valDat, 0, seq);
-            tlv.putBytes(hlp, 1181, 8, tlv.valDat); // sequence
+            tlv.putBytes(hlp, typSeqNum, 8, tlv.valDat);
         }
         hlp.merge2end();
         if (hlp.dataSize() > 0) {
@@ -631,7 +851,7 @@ public class spfLnkst {
         if (rem == null) {
             return;
         }
-        int met = findInt(tlv, pck, typIgpMet);
+        int met = findInt(tlv, pck, typIgpMetric);
         if (met < 1) {
             return;
         }
@@ -664,8 +884,8 @@ public class spfLnkst {
         if (ntry == null) {
             return;
         }
-        ntry.best.metric = findInt(tlv, pck, 1155);
-        ntry.best.tag = findInt(tlv, pck, 1153);
+        ntry.best.metric = findInt(tlv, pck, typPrfxMetric);
+        ntry.best.tag = findInt(tlv, pck, typIgpTag);
         ntry.best.distance = dist;
         spf.addPref(loc, ntry, false);
     }
