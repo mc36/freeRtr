@@ -3,6 +3,7 @@ package org.freertr.rtr;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
+import org.freertr.cfg.cfgAll;
 import org.freertr.enc.encTlv;
 import org.freertr.pack.packHolder;
 import org.freertr.spf.spfCalc;
@@ -30,6 +31,11 @@ public class rtrBgpSpf {
      * enabled
      */
     public boolean enabled;
+
+    /**
+     * hostname
+     */
+    public boolean hostname;
 
     /**
      * import distance
@@ -77,6 +83,7 @@ public class rtrBgpSpf {
      */
     public rtrBgpSpf(rtrBgp p) {
         parent = p;
+        hostname = true;
         distance = 60;
         lastSpf = new spfCalc<addrIPv4>(null);
         routes = new tabRoute<addrIP>("bst");
@@ -101,6 +108,7 @@ public class rtrBgpSpf {
      */
     public void getConfig(List<String> l, String beg1, String beg2) {
         cmds.cfgLine(l, !enabled, beg1, beg2 + "enable", "");
+        cmds.cfgLine(l, !hostname, beg1, beg2 + "hostname", "");
         l.add(beg1 + beg2 + "distance " + distance);
         l.add(beg1 + beg2 + "spf-log " + lastSpf.logSize);
         cmds.cfgLine(l, lastSpf.topoLog.get() == 0, beg1, beg2 + "spf-topolog", lastSpf.getTopoLogMode());
@@ -136,20 +144,21 @@ public class rtrBgpSpf {
         if ((nei.conn.peerAfis & rtrBgpParam.mskSpf) == 0) {
             return;
         }
-        spfLnkst.listLinkStateHdr(tlv, pck, 4, 2);
-        spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
-        spfLnkst.listSpfNod(tlv, pck, hlp, nei.remoteAs, nei.conn.peerRouterID, 257); // remote node
-        spfLnkst.listSpfLnk(tlv, pck, nei.localAddr, nei.peerAddr);
-        spfLnkst.listLinkStateAdd(parent.newlySpf, tlv, pck, 4, nei.spfMetric, 0);
+        spfLnkst.createHeader(tlv, pck, 4, 2);
+        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
+        spfLnkst.createSpfNode(tlv, pck, hlp, nei.remoteAs, nei.conn.peerRouterID, 257); // remote node
+        spfLnkst.createSpfLink(tlv, pck, nei.localAddr, nei.peerAddr);
+        hlp.clear();
+        spfLnkst.createEntry(parent.newlySpf, tlv, pck, hlp, 4, nei.spfMetric, 0);
     }
 
     private void doAdvertPfx(encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> rou) {
         if (rou == null) {
             return;
         }
-        spfLnkst.listLinkStateHdr(tlv, pck, 4, spfLnkst.getPrefixType(rou));
-        spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
-        spfLnkst.listLinkStatePrf(parent.newlySpf, tlv, pck, hlp, rou, 0);
+        spfLnkst.createHeader(tlv, pck, 4, spfLnkst.getPrefixType(rou));
+        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
+        spfLnkst.createPrefix(parent.newlySpf, tlv, pck, hlp, rou, 0);
     }
 
     /**
@@ -159,12 +168,16 @@ public class rtrBgpSpf {
         if (!enabled) {
             return;
         }
-        encTlv tlv = spfLnkst.listLinkStateTlv();
+        encTlv tlv = spfLnkst.getTlv();
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
-        spfLnkst.listLinkStateHdr(tlv, pck, 4, 1);
-        spfLnkst.listSpfNod(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
-        spfLnkst.listLinkStateAdd(parent.newlySpf, tlv, pck, 0, 0, 0);
+        spfLnkst.createHeader(tlv, pck, 4, 1);
+        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
+        hlp.clear();
+        if (hostname) {
+            tlv.putStr(hlp, 1026, cfgAll.hostName);
+        }
+        spfLnkst.createEntry(parent.newlySpf, tlv, pck, hlp, 0, 0, 0);
         for (int i = 0; i < parent.neighs.size(); i++) {
             doAdvertNei(tlv, pck, hlp, parent.neighs.get(i));
         }
@@ -191,7 +204,7 @@ public class rtrBgpSpf {
             return false;
         }
         spfCalc<addrIPv4> spf = new spfCalc<addrIPv4>(lastSpf);
-        encTlv tlv = spfLnkst.listLinkStateTlv();
+        encTlv tlv = spfLnkst.getTlv();
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         for (int i = 0; i < parent.newlySpf.size(); i++) {
@@ -268,4 +281,5 @@ public class rtrBgpSpf {
         parent.routerComputedM.mergeFrom(tabRoute.addType.better, routes, tabRouteAttr.distanLim);
         return false;
     }
+
 }

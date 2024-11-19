@@ -27,7 +27,7 @@ public class spfLnkst {
      *
      * @return tlv
      */
-    public static encTlv listLinkStateTlv() {
+    public static encTlv getTlv() {
         return new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
     }
 
@@ -39,7 +39,7 @@ public class spfLnkst {
      * @param prt protocol to use
      * @param typ identifier
      */
-    public static void listLinkStateHdr(encTlv tlv, packHolder pck, int prt, int typ) {
+    public static void createHeader(encTlv tlv, packHolder pck, int prt, int typ) {
         pck.clear();
         pck.msbPutW(0, typ); // type
         pck.putByte(2, prt); // protocol
@@ -61,7 +61,7 @@ public class spfLnkst {
      * @param nod advertising router
      * @param typ node type
      */
-    public static <Ta extends addrType> void listLinkStateNod(encTlv tlv, packHolder pck, packHolder hlp, int siz, int asn, addrIPv4 adv, int par, spfNode<Ta> nod, int typ) {
+    public static <Ta extends addrType> void createNode(encTlv tlv, packHolder pck, packHolder hlp, int siz, int asn, addrIPv4 adv, int par, spfNode<Ta> nod, int typ) {
         hlp.clear();
         tlv.valSiz = 4;
         tlv.valTyp = 512; // asn
@@ -94,7 +94,7 @@ public class spfLnkst {
      * @param adv router id
      * @param typ node type
      */
-    public static void listSpfNod(encTlv tlv, packHolder pck, packHolder hlp, int asn, addrIPv4 adv, int typ) {
+    public static void createSpfNode(encTlv tlv, packHolder pck, packHolder hlp, int asn, addrIPv4 adv, int typ) {
         hlp.clear();
         tlv.valSiz = 4;
         tlv.valTyp = 512; // asn
@@ -117,7 +117,7 @@ public class spfLnkst {
      * @param loc local ip
      * @param rem remote ip
      */
-    public static void listSpfLnk(encTlv tlv, packHolder pck, addrIP loc, addrIP rem) {
+    public static void createSpfLink(encTlv tlv, packHolder pck, addrIP loc, addrIP rem) {
         if (loc == null) {
             return;
         }
@@ -157,7 +157,7 @@ public class spfLnkst {
      * @param ntry route entry
      * @param seq sequence
      */
-    public static void listLinkStatePrf(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry, long seq) {
+    public static void createPrefix(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry, long seq) {
         hlp.clear();
         if (ntry.prefix.network.isIPv4()) {
             rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, true, hlp, ntry);
@@ -201,18 +201,18 @@ public class spfLnkst {
      * @param tab table to update
      * @param tlv tlv to use
      * @param pck packet to use
+     * @param pck helper to use
      * @param siz size of metric
      * @param met metric
      * @param seq sequence
      */
-    public static void listLinkStateAdd(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, int siz, int met, long seq) {
+    public static void createEntry(tabRoute<addrIP> tab, encTlv tlv, packHolder pck, packHolder hlp, int siz, int met, long seq) {
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.best.rouSrc = rtrBgpUtil.peerOriginate;
         addrIP adr = new addrIP();
         rou.nlri = pck.getCopy();
         adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), rou.nlri), 0);
         rou.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-        pck.clear();
         switch (siz) {
             case 1:
                 tlv.valDat[0] = (byte) met;
@@ -228,25 +228,28 @@ public class spfLnkst {
                 break;
         }
         if (siz > 0) {
-            tlv.putBytes(pck, 1095, siz, tlv.valDat); // metric
+            tlv.putBytes(hlp, 1095, siz, tlv.valDat); // metric
         }
         if (seq >= 0) {
             bits.msbPutQ(tlv.valDat, 0, seq);
-            tlv.putBytes(pck, 1181, 8, tlv.valDat); // sequence
-            pck.merge2end();
+            tlv.putBytes(hlp, 1181, 8, tlv.valDat); // sequence
         }
-        if (pck.dataSize() > 0) {
-            rou.best.linkStat = pck.getCopy();
+        hlp.merge2end();
+        if (hlp.dataSize() > 0) {
+            rou.best.linkStat = hlp.getCopy();
         }
         tab.add(tabRoute.addType.better, rou, true, true);
     }
 
     private static boolean findTlv(encTlv tlv, packHolder pck, int num) {
+        int i = pck.dataSize();
         for (;;) {
             if (tlv.getBytes(pck)) {
+                pck.setBytesLeft(i);
                 return true;
             }
             if (tlv.valTyp == num) {
+                pck.setBytesLeft(i);
                 return false;
             }
         }
@@ -268,7 +271,7 @@ public class spfLnkst {
         return adr;
     }
 
-    private static int findMet(encTlv tlv, packHolder pck, int num) {
+    private static int findInt(encTlv tlv, packHolder pck, int num) {
         if (findTlv(tlv, pck, num)) {
             return 0;
         }
@@ -288,7 +291,11 @@ public class spfLnkst {
         if (loc == null) {
             return;
         }
-        spf.addIdent(loc, null);
+        String nam = null;
+        if (!findTlv(tlv, pck, 1026)) {
+            nam = tlv.getStr();
+        }
+        spf.addIdent(loc, nam);
     }
 
     /**
@@ -308,7 +315,7 @@ public class spfLnkst {
         if (rem == null) {
             return;
         }
-        int met = findMet(tlv, pck, 1095);
+        int met = findInt(tlv, pck, 1095);
         if (met < 1) {
             return;
         }
@@ -341,10 +348,8 @@ public class spfLnkst {
         if (ntry == null) {
             return;
         }
-        int i = pck.dataSize();
-        ntry.best.metric = findMet(tlv, pck, 1155);
-        pck.setBytesLeft(i);
-        ntry.best.tag = findMet(tlv, pck, 1153);
+        ntry.best.metric = findInt(tlv, pck, 1155);
+        ntry.best.tag = findInt(tlv, pck, 1153);
         ntry.best.distance = dist;
         spf.addPref(loc, ntry, false);
     }

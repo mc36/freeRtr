@@ -3115,6 +3115,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "3 .         <num>                 process number");
         l.add(null, "1 2   afi-spf                     select spf to advertise");
         l.add(null, "2 .     enable                    enable processing");
+        l.add(null, "2 .     hostname                  advertise hostname");
         l.add(null, "2 3     distance                  set import distance");
         l.add(null, "3 .       <num>                   distance");
         l.add(null, "2 .     default-originate         advertise default route");
@@ -3600,6 +3601,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             if (s.equals("default-originate")) {
                 lspf.defRou = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("hostname")) {
+                lspf.hostname = !negated;
                 needFull.add(1);
                 compute.wakeup();
                 return false;
