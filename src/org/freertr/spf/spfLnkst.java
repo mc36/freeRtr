@@ -88,6 +88,101 @@ public class spfLnkst {
     public static final int protoLsrp = 227;
 
     /**
+     * local node descriptor
+     */
+    public static final int typNodeLocal = 256;
+
+    /**
+     * remote node descriptor
+     */
+    public static final int typNodeRemote = 257;
+
+    /**
+     * link local/remote identifier
+     */
+    public static final int typLinkIdentifier = 258;
+
+    /**
+     * ipv4 interface address
+     */
+    public static final int typIpv4interface = 259;
+
+    /**
+     * ipv4 neighbor address
+     */
+    public static final int typIpv4neighbor = 260;
+
+    /**
+     * ipv6 interface address
+     */
+    public static final int typIpv6interface = 261;
+
+    /**
+     * ipv6 neighbor address
+     */
+    public static final int typIpv6neighbor = 262;
+
+    /**
+     * multi topology identifier
+     */
+    public static final int typMultiTopoId = 263;
+
+    /**
+     * ospf route type
+     */
+    public static final int typOspfRouteType = 264;
+
+    /**
+     * ip reachability information
+     */
+    public static final int typIpReachInfo = 265;
+
+    /**
+     * node msd
+     */
+    public static final int typNodeMsd = 266;
+
+    /**
+     * link msd
+     */
+    public static final int typLinkMsd = 267;
+
+    /**
+     * autonomous system
+     */
+    public static final int typAutonSys = 512;
+
+    /**
+     * bgp ls identifier
+     */
+    public static final int typBgpLsId = 513;
+
+    /**
+     * ospf area id
+     */
+    public static final int typOspfAreaId = 514;
+
+    /**
+     * igp router id
+     */
+    public static final int typIgpRouterId = 515;
+
+    /**
+     * bgp router id
+     */
+    public static final int typBgpRouterId = 516;
+
+    /**
+     * bgp confederation member
+     */
+    public static final int typBgpConfedMem = 517;
+
+    /**
+     * srv6 sid information
+     */
+    public static final int typSrv6sidInfo = 518;
+
+    /**
      * get tlv encoder
      *
      * @return tlv
@@ -129,18 +224,18 @@ public class spfLnkst {
     public static <Ta extends addrType> void createNode(encTlv tlv, packHolder pck, packHolder hlp, int siz, int asn, addrIPv4 adv, int par, spfNode<Ta> nod, int typ) {
         hlp.clear();
         tlv.valSiz = 4;
-        tlv.valTyp = 512; // asn
+        tlv.valTyp = typAutonSys;
         bits.msbPutD(tlv.valDat, 0, asn);
         tlv.putThis(hlp);
-        tlv.putAddr(hlp, 513, adv); // ls id
+        tlv.putAddr(hlp, typBgpLsId, adv);
         hlp.merge2end();
         if (par != -1) {
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, par);
-            tlv.putBytes(hlp, 514, buf); // area id
+            tlv.putBytes(hlp, typOspfAreaId, buf);
         }
         nod.name.toBuffer(tlv.valDat, 0);
-        tlv.putBytes(hlp, 515, siz, tlv.valDat); // router id
+        tlv.putBytes(hlp, typIgpRouterId, siz, tlv.valDat);
         hlp.merge2end();
         byte[] buf = hlp.getCopy();
         bits.byteCopy(buf, 0, tlv.valDat, 0, buf.length);
@@ -162,7 +257,7 @@ public class spfLnkst {
     public static void createSpfNode(encTlv tlv, packHolder pck, packHolder hlp, int asn, addrIPv4 adv, int typ) {
         hlp.clear();
         tlv.valSiz = 4;
-        tlv.valTyp = 512; // asn
+        tlv.valTyp = typAutonSys;
         bits.msbPutD(tlv.valDat, 0, asn);
         tlv.putThis(hlp);
         tlv.putAddr(hlp, 516, adv); // router id
@@ -190,11 +285,11 @@ public class spfLnkst {
             return;
         }
         if (loc.isIPv4()) {
-            tlv.putAddr(pck, 259, loc.toIPv4());
-            tlv.putAddr(pck, 260, rem.toIPv4());
+            tlv.putAddr(pck, typIpv4interface, loc.toIPv4());
+            tlv.putAddr(pck, typIpv4neighbor, rem.toIPv4());
         } else {
-            tlv.putAddr(pck, 261, loc.toIPv6());
-            tlv.putAddr(pck, 262, rem.toIPv6());
+            tlv.putAddr(pck, typIpv6interface, loc.toIPv6());
+            tlv.putAddr(pck, typIpv6neighbor, rem.toIPv6());
         }
         pck.merge2end();
     }
@@ -353,7 +448,7 @@ public class spfLnkst {
      * @param hlp helper to use
      */
     public static void readSpfNode(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp) {
-        addrIPv4 loc = findNode(tlv, pck, hlp, 256);
+        addrIPv4 loc = findNode(tlv, pck, hlp, typNodeLocal);
         if (loc == null) {
             return;
         }
@@ -373,11 +468,11 @@ public class spfLnkst {
      * @param hlp helper to use
      */
     public static void readSpfLink(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp) {
-        addrIPv4 loc = findNode(tlv, pck, hlp, 256);
+        addrIPv4 loc = findNode(tlv, pck, hlp, typNodeLocal);
         if (loc == null) {
             return;
         }
-        addrIPv4 rem = findNode(tlv, pck, hlp, 257);
+        addrIPv4 rem = findNode(tlv, pck, hlp, typNodeRemote);
         if (rem == null) {
             return;
         }
@@ -399,7 +494,7 @@ public class spfLnkst {
      * @param dist distance to use
      */
     public static void readSpfPref(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp, int safi, int dist) {
-        addrIPv4 loc = findNode(tlv, pck, hlp, 256);
+        addrIPv4 loc = findNode(tlv, pck, hlp, typNodeLocal);
         if (loc == null) {
             return;
         }

@@ -145,8 +145,8 @@ public class rtrBgpSpf {
             return;
         }
         spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.nlriTypLink);
-        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
-        spfLnkst.createSpfNode(tlv, pck, hlp, nei.remoteAs, nei.conn.peerRouterID, 257); // remote node
+        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, spfLnkst.typNodeLocal);
+        spfLnkst.createSpfNode(tlv, pck, hlp, nei.remoteAs, nei.conn.peerRouterID, spfLnkst.typNodeRemote);
         spfLnkst.createSpfLink(tlv, pck, nei.localAddr, nei.peerAddr);
         hlp.clear();
         spfLnkst.createEntry(parent.newlySpf, tlv, pck, hlp, 4, nei.spfMetric, 0);
@@ -157,7 +157,7 @@ public class rtrBgpSpf {
             return;
         }
         spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.getPrefixType(rou));
-        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
+        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, spfLnkst.typNodeLocal);
         spfLnkst.createPrefix(parent.newlySpf, tlv, pck, hlp, rou, 0);
     }
 
@@ -172,7 +172,7 @@ public class rtrBgpSpf {
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.nlriTypNode);
-        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
+        spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, spfLnkst.typNodeLocal);
         hlp.clear();
         if (hostname) {
             tlv.putStr(hlp, 1026, cfgAll.hostName);
