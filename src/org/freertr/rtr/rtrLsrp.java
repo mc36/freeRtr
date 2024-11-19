@@ -43,6 +43,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.spf.spfCalc;
+import org.freertr.spf.spfLnkst;
 import org.freertr.util.state;
 import org.freertr.util.syncInt;
 import org.freertr.util.version;
@@ -1410,7 +1411,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @param adv advertiser
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
-        lastSpf.listLinkStates(tab, 227, -1, asn, adv, addrIPv4.size, 4);
+        lastSpf.listLinkStates(tab, spfLnkst.protoLsrp, -1, asn, adv, addrIPv4.size, 4);
     }
 
 }

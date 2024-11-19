@@ -57,6 +57,7 @@ import org.freertr.util.logFil;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.spf.spfCalc;
+import org.freertr.spf.spfLnkst;
 import org.freertr.tab.tabRoautNtry;
 import org.freertr.util.counter;
 import org.freertr.util.syncInt;
@@ -4536,7 +4537,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param adv advertiser
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
-        lspf.lastSpf.listLinkStates(tab, 7, -1, asn, adv, addrIPv4.size, 4);
+        lspf.lastSpf.listLinkStates(tab, spfLnkst.protoBgp, -1, asn, adv, addrIPv4.size, 4);
     }
 
     /**

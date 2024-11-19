@@ -35,6 +35,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.spf.spfCalc;
+import org.freertr.spf.spfLnkst;
 import org.freertr.util.state;
 
 /**
@@ -1323,7 +1324,7 @@ public class rtrOspf6 extends ipRtr {
         if (ara == null) {
             return;
         }
-        ara.lastSpf.listLinkStates(tab, 6, ara.area, asn, adv, addrIPv4.size, 2);
+        ara.lastSpf.listLinkStates(tab, spfLnkst.protoOspfV3, ara.area, asn, adv, addrIPv4.size, 2);
     }
 
 }

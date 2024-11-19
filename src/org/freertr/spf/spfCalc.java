@@ -1739,7 +1739,7 @@ public class spfCalc<Ta extends addrType> {
         packHolder hlp = new packHolder(true, true);
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> nod = nodes.get(o);
-            spfLnkst.createHeader(tlv, pck, prt, 1);
+            spfLnkst.createHeader(tlv, pck, prt, spfLnkst.nlriTypNode);
             spfLnkst.createNode(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
             hlp.clear();
             if (nod.ident != null) {
@@ -1748,7 +1748,7 @@ public class spfCalc<Ta extends addrType> {
             spfLnkst.createEntry(tab, tlv, pck, hlp, 0, 0, -1);
             for (int i = 0; i < nod.conn.size(); i++) {
                 spfConn<Ta> con = nod.conn.get(i);
-                spfLnkst.createHeader(tlv, pck, prt, 2);
+                spfLnkst.createHeader(tlv, pck, prt, spfLnkst.nlriTypLink);
                 spfLnkst.createNode(tlv, pck, hlp, sizN, asn, adv, par, nod, 256); // local node
                 spfLnkst.createNode(tlv, pck, hlp, sizN, asn, adv, par, con.target, 257); // remote node
                 hlp.clear();

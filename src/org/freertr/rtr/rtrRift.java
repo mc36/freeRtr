@@ -20,6 +20,7 @@ import org.freertr.ip.ipRtr;
 import org.freertr.pack.packHolder;
 import org.freertr.prt.prtUdp;
 import org.freertr.spf.spfCalc;
+import org.freertr.spf.spfLnkst;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabIntMatcher;
@@ -1185,7 +1186,7 @@ public class rtrRift extends ipRtr implements Runnable {
      * @param adv advertiser
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
-        lastSpfN.listLinkStates(tab, 100, -1, asn, adv, addrIPv4.size, 4);
+        lastSpfN.listLinkStates(tab, spfLnkst.protoRift, -1, asn, adv, addrIPv4.size, 4);
     }
 
 }

@@ -144,7 +144,7 @@ public class rtrBgpSpf {
         if ((nei.conn.peerAfis & rtrBgpParam.mskSpf) == 0) {
             return;
         }
-        spfLnkst.createHeader(tlv, pck, 4, 2);
+        spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.nlriTypLink);
         spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
         spfLnkst.createSpfNode(tlv, pck, hlp, nei.remoteAs, nei.conn.peerRouterID, 257); // remote node
         spfLnkst.createSpfLink(tlv, pck, nei.localAddr, nei.peerAddr);
@@ -156,7 +156,7 @@ public class rtrBgpSpf {
         if (rou == null) {
             return;
         }
-        spfLnkst.createHeader(tlv, pck, 4, spfLnkst.getPrefixType(rou));
+        spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.getPrefixType(rou));
         spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
         spfLnkst.createPrefix(parent.newlySpf, tlv, pck, hlp, rou, 0);
     }
@@ -171,7 +171,7 @@ public class rtrBgpSpf {
         encTlv tlv = spfLnkst.getTlv();
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
-        spfLnkst.createHeader(tlv, pck, 4, 1);
+        spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.nlriTypNode);
         spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, 256); // local node
         hlp.clear();
         if (hostname) {
@@ -220,7 +220,7 @@ public class rtrBgpSpf {
             pck.putSkip(rou.nlri.length);
             pck.merge2beg();
             int o = pck.msbGetW(0); // type
-            if (pck.getByte(2) != 4) { // protocol
+            if (pck.getByte(2) != spfLnkst.protoDirect) { // protocol
                 continue;
             }
             pck.getSkip(11); // header
@@ -230,16 +230,16 @@ public class rtrBgpSpf {
                 pck.merge2end();
             }
             switch (o) {
-                case 1: // node
+                case spfLnkst.nlriTypNode:
                     spfLnkst.readSpfNode(spf, tlv, pck, hlp);
                     break;
-                case 2: // link
+                case spfLnkst.nlriTypLink:
                     spfLnkst.readSpfLink(spf, tlv, pck, hlp);
                     break;
-                case 3: // ipv4 prefix
+                case spfLnkst.nlriTypIpv4:
                     spfLnkst.readSpfPref(spf, tlv, pck, hlp, parent.afiUni, distance);
                     break;
-                case 4: // ipv6 prefix
+                case spfLnkst.nlriTypIpv6:
                     spfLnkst.readSpfPref(spf, tlv, pck, hlp, parent.afiUni, distance);
                     break;
             }
@@ -263,8 +263,8 @@ public class rtrBgpSpf {
         tab2.setProto(parent.rouTyp, parent.rtrNum);
         tab2.preserveTime(routes);
         routes = tab2;
-        parent.newlyUni.mergeFrom(tabRoute.addType.better, routes, tabRouteAttr.distanLim);
-        parent.newlyMlt.mergeFrom(tabRoute.addType.better, routes, tabRouteAttr.distanLim);
+        parent.newlyUni.mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
+        parent.newlyMlt.mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
         return false;
     }
 
@@ -277,8 +277,8 @@ public class rtrBgpSpf {
         if (!enabled) {
             return false;
         }
-        parent.routerComputedU.mergeFrom(tabRoute.addType.better, routes, tabRouteAttr.distanLim);
-        parent.routerComputedM.mergeFrom(tabRoute.addType.better, routes, tabRouteAttr.distanLim);
+        parent.routerComputedU.mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
+        parent.routerComputedM.mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
         return false;
     }
 

@@ -16286,3 +16286,6 @@ todo: bgp spf to have hostname, sr and bier
 ---------------------------------- 2024-11-19 06:41:50 24.11.19
 no todo: bgp spf to have hostname, sr and bier
 todo: bgp spf to have sr and bier
+---------------------------------- 2024-11-19 11:21:52 24.11.19
+qc pass: spf bgp default route
+qc pass: spf bgp ecmp connection

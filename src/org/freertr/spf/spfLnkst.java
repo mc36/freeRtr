@@ -23,6 +23,71 @@ public class spfLnkst {
     }
 
     /**
+     * node nlri type
+     */
+    public static final int nlriTypNode = 1;
+
+    /**
+     * link nlri type
+     */
+    public static final int nlriTypLink = 2;
+
+    /**
+     * ipv4 nlri type
+     */
+    public static final int nlriTypIpv4 = 3;
+
+    /**
+     * ipv6 nlri type
+     */
+    public static final int nlriTypIpv6 = 4;
+
+    /**
+     * isis level1
+     */
+    public static final int protoIsisL1 = 1;
+
+    /**
+     * isis level2
+     */
+    public static final int protoIsisL2 = 2;
+
+    /**
+     * ospf v2
+     */
+    public static final int protoOspfV2 = 3;
+
+    /**
+     * direct
+     */
+    public static final int protoDirect = 4;
+
+    /**
+     * static
+     */
+    public static final int protoStatic = 5;
+
+    /**
+     * ospf v3
+     */
+    public static final int protoOspfV3 = 6;
+
+    /**
+     * bgp
+     */
+    public static final int protoBgp = 7;
+
+    /**
+     * rift
+     */
+    public static final int protoRift = 100;
+
+    /**
+     * lsrp
+     */
+    public static final int protoLsrp = 227;
+
+    /**
      * get tlv encoder
      *
      * @return tlv
@@ -131,6 +196,7 @@ public class spfLnkst {
             tlv.putAddr(pck, 261, loc.toIPv6());
             tlv.putAddr(pck, 262, rem.toIPv6());
         }
+        pck.merge2end();
     }
 
     /**
@@ -141,9 +207,9 @@ public class spfLnkst {
      */
     public static int getPrefixType(tabRouteEntry<addrIP> ntry) {
         if (ntry.prefix.network.isIPv4()) {
-            return 3;
+            return nlriTypIpv4;
         } else {
-            return 4;
+            return nlriTypIpv6;
         }
     }
 
@@ -201,7 +267,7 @@ public class spfLnkst {
      * @param tab table to update
      * @param tlv tlv to use
      * @param pck packet to use
-     * @param pck helper to use
+     * @param hlp helper to use
      * @param siz size of metric
      * @param met metric
      * @param seq sequence
