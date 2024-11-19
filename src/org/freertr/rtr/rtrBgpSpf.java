@@ -175,7 +175,7 @@ public class rtrBgpSpf {
         spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, spfLnkst.typNodeLocal);
         hlp.clear();
         if (hostname) {
-            tlv.putStr(hlp, 1026, cfgAll.hostName);
+            tlv.putStr(hlp, spfLnkst.typNodeName, cfgAll.hostName);
         }
         spfLnkst.createEntry(parent.newlySpf, tlv, pck, hlp, 0, 0, 0);
         for (int i = 0; i < parent.neighs.size(); i++) {
@@ -220,10 +220,10 @@ public class rtrBgpSpf {
             pck.putSkip(rou.nlri.length);
             pck.merge2beg();
             int o = pck.msbGetW(0); // type
-            if (pck.getByte(2) != spfLnkst.protoDirect) { // protocol
+            if (pck.getByte(2) != spfLnkst.protoDirect) {
                 continue;
             }
-            pck.getSkip(11); // header
+            pck.getSkip(spfLnkst.nlriHdrSize);
             if (rou.best.linkStat != null) {
                 pck.putCopy(rou.best.linkStat, 0, 0, rou.best.linkStat.length);
                 pck.putSkip(rou.best.linkStat.length);

@@ -1743,7 +1743,7 @@ public class spfCalc<Ta extends addrType> {
             spfLnkst.createNode(tlv, pck, hlp, sizN, asn, adv, par, nod, spfLnkst.typNodeLocal);
             hlp.clear();
             if (nod.ident != null) {
-                tlv.putStr(hlp, 1026, nod.ident);
+                tlv.putStr(hlp, spfLnkst.typNodeName, nod.ident);
             }
             spfLnkst.createEntry(tab, tlv, pck, hlp, 0, 0, -1);
             for (int i = 0; i < nod.conn.size(); i++) {

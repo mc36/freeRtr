@@ -23,6 +23,11 @@ public class spfLnkst {
     }
 
     /**
+     * nlri header size
+     */
+    public static final int nlriHdrSize = 11;
+
+    /**
      * node nlri type
      */
     public static final int nlriTypNode = 1;
@@ -183,6 +188,156 @@ public class spfLnkst {
     public static final int typSrv6sidInfo = 518;
 
     /**
+     * node flag bits
+     */
+    public static final int typNodeFlags = 1024;
+
+    /**
+     * node attribute
+     */
+    public static final int typNodeAttrs = 1025;
+
+    /**
+     * node name
+     */
+    public static final int typNodeName = 1026;
+
+    /**
+     * isis area identifier
+     */
+    public static final int typIsisAreaId = 1027;
+
+    /**
+     * local node ipv4 router id
+     */
+    public static final int typIpv4locRid = 1028;
+
+    /**
+     * local node ipv6 router id
+     */
+    public static final int typIpv6locRid = 1029;
+
+    /**
+     * remote node ipv4 router id
+     */
+    public static final int typIpv4remRid = 1030;
+
+    /**
+     * remote node ipv6 router id
+     */
+    public static final int typIpv6remRid = 1031;
+
+    /**
+     * s-bfd discriminator
+     */
+    public static final int typSbfdDisc = 1032;
+
+    /**
+     * sr capabilities
+     */
+    public static final int typSrCapa = 1034;
+
+    /**
+     * sr algorithm
+     */
+    public static final int typSrAlgo = 1035;
+
+    /**
+     * sr local block
+     */
+    public static final int typSrlb = 1036;
+
+    /**
+     * sr ms preferences
+     */
+    public static final int typSrmsPref = 1037;
+
+    /**
+     * srv6 capabilities
+     */
+    public static final int typSrv6capa = 1038;
+
+    /**
+     * flexible algorithm definition
+     */
+    public static final int typFlexAlgoDef = 1039;
+
+    /**
+     * flexible algorithm exclude any affinity
+     */
+    public static final int typFlexAlgoExcAny = 1040;
+
+    /**
+     * flexible algorithm include any affinity
+     */
+    public static final int typFlexAlgoIncAny = 1041;
+
+    /**
+     * flexible algorithm include all affinity
+     */
+    public static final int typFlexAlgoIncAll = 1042;
+
+    /**
+     * flexible algorithm definition flags
+     */
+    public static final int typFlexAlgoFlg = 1043;
+
+    /**
+     * flexible algorithm prefix metric
+     */
+    public static final int typFlexAlgoMet = 1044;
+
+    /**
+     * flexible algorithm exclude srlg affinity
+     */
+    public static final int typFlexAlgoExcSrlg = 1045;
+
+    /**
+     * flexible algorithm unsupported
+     */
+    public static final int typFlexAlgoUnsupp = 1046;
+
+    /**
+     * administrative group
+     */
+    public static final int typAdmGrp = 1088;
+
+    /**
+     * maximum link bandwidth
+     */
+    public static final int typMaxBwdt = 1089;
+
+    /**
+     * maximum reservable bandwidth
+     */
+    public static final int typMaxRsvbl = 1090;
+
+    /**
+     * unreserved bandwidth
+     */
+    public static final int typUnrsvBwdt = 1091;
+
+    /**
+     * te default metric
+     */
+    public static final int typTeDefMet = 1092;
+
+    /**
+     * link protection type
+     */
+    public static final int typLnkProt = 1093;
+
+    /**
+     * mpls protocol mask
+     */
+    public static final int typMplsMask = 1094;
+
+    /**
+     * igp metric
+     */
+    public static final int typIgpMet = 1095;
+
+    /**
      * get tlv encoder
      *
      * @return tlv
@@ -204,7 +359,7 @@ public class spfLnkst {
         pck.msbPutW(0, typ); // type
         pck.putByte(2, prt); // protocol
         pck.msbPutQ(3, 0); // identifier
-        pck.putSkip(11);
+        pck.putSkip(nlriHdrSize);
     }
 
     /**
@@ -260,12 +415,12 @@ public class spfLnkst {
         tlv.valTyp = typAutonSys;
         bits.msbPutD(tlv.valDat, 0, asn);
         tlv.putThis(hlp);
-        tlv.putAddr(hlp, 516, adv); // router id
+        tlv.putAddr(hlp, typBgpRouterId, adv);
         hlp.merge2end();
         byte[] buf = hlp.getCopy();
         bits.byteCopy(buf, 0, tlv.valDat, 0, buf.length);
         tlv.valSiz = buf.length;
-        tlv.putBytes(pck, typ); // node type
+        tlv.putBytes(pck, typ);
         pck.merge2end();
     }
 
@@ -326,7 +481,7 @@ public class spfLnkst {
             rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, true, hlp, ntry);
         }
         hlp.merge2end();
-        tlv.putBytes(pck, 265, hlp.getCopy());
+        tlv.putBytes(pck, typIpReachInfo, hlp.getCopy());
         pck.merge2end();
         tabRouteEntry<addrIP> rou = new tabRouteEntry<addrIP>();
         rou.best.rouSrc = rtrBgpUtil.peerOriginate;
@@ -389,7 +544,7 @@ public class spfLnkst {
                 break;
         }
         if (siz > 0) {
-            tlv.putBytes(hlp, 1095, siz, tlv.valDat); // metric
+            tlv.putBytes(hlp, typIgpMet, siz, tlv.valDat);
         }
         if (seq >= 0) {
             bits.msbPutQ(tlv.valDat, 0, seq);
@@ -424,7 +579,7 @@ public class spfLnkst {
         hlp.putCopy(tlv.valDat, 0, 0, tlv.valSiz);
         hlp.putSkip(tlv.valSiz);
         hlp.merge2beg();
-        if (findTlv(tlv, hlp, 516)) {
+        if (findTlv(tlv, hlp, typBgpRouterId)) {
             return null;
         }
         addrIPv4 adr = new addrIPv4();
@@ -453,7 +608,7 @@ public class spfLnkst {
             return;
         }
         String nam = null;
-        if (!findTlv(tlv, pck, 1026)) {
+        if (!findTlv(tlv, pck, typNodeName)) {
             nam = tlv.getStr();
         }
         spf.addIdent(loc, nam);
@@ -476,7 +631,7 @@ public class spfLnkst {
         if (rem == null) {
             return;
         }
-        int met = findInt(tlv, pck, 1095);
+        int met = findInt(tlv, pck, typIgpMet);
         if (met < 1) {
             return;
         }
@@ -498,7 +653,7 @@ public class spfLnkst {
         if (loc == null) {
             return;
         }
-        if (findTlv(tlv, pck, 265)) {
+        if (findTlv(tlv, pck, typIpReachInfo)) {
             return;
         }
         hlp.clear();
