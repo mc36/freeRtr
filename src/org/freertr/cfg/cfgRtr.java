@@ -372,6 +372,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* additional-path-rx",
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* additional-path-tx",
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* authen-type md5",
+        "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* spf-stub",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* ungroup-remoteas",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* password",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* shutdown",

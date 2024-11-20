@@ -155,6 +155,11 @@ public class rtrBgpSpf {
         spfLnkst.createSpfNode(tlv, pck, hlp, nei.remoteAs, nei.conn.peerRouterID, spfLnkst.typNodeRemote);
         spfLnkst.createSpfLink(tlv, pck, nei.localAddr, nei.peerAddr);
         hlp.clear();
+        if (nei.spfStub) {
+            tlv.valDat[0] = 1; // no transit
+            tlv.valSiz = 1;
+            tlv.putBytes(hlp, spfLnkst.typSpfStat);
+        }
         spfLnkst.createEntry(parent.newlySpf, parent.computedSpf, tlv, pck, hlp, 4, nei.spfMetric);
     }
 

@@ -865,7 +865,7 @@ public class spfLnkst {
         if (met < 1) {
             return;
         }
-        spf.addConn(loc, rem, met, true, false, null);
+        spf.addConn(loc, rem, met, true, !findTlv(tlv, pck, typSpfStat), null);
     }
 
     /**

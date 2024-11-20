@@ -16289,3 +16289,6 @@ todo: bgp spf to have sr and bier
 ---------------------------------- 2024-11-19 11:21:52 24.11.19
 qc pass: spf bgp default route
 qc pass: spf bgp ecmp connection
+---------------------------------- 2024-11-20 17:46:55 24.11.20
+qc pass: spf bgp stub node
+qc pass: spf bgp stub peer
