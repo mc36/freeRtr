@@ -838,11 +838,10 @@ public class spfLnkst {
         if (loc == null) {
             return;
         }
-        String nam = null;
         if (!findTlv(tlv, pck, typNodeName)) {
-            nam = tlv.getStr();
+            spf.addIdent(loc, tlv.getStr());
         }
-        spf.addIdent(loc, nam);
+        spf.addStub(loc, !findTlv(tlv, pck, typSpfStat));
     }
 
     /**

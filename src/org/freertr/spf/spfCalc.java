@@ -243,6 +243,7 @@ public class spfCalc<Ta extends addrType> {
             for (int i = 0; i < nod.othFix.size(); i++) {
                 res.addOpref(nod.name, nod.othFix.get(i), true);
             }
+            res.addStub(nod.name, nod.stub);
             res.addAlgo(nod.name, nod.algo);
             res.addIdent(nod.name, nod.ident);
             res.addSegRouB(nod.name, nod.srBeg);
@@ -394,6 +395,21 @@ public class spfCalc<Ta extends addrType> {
             ntry = old;
         }
         ntry.algo.addAll(algo);
+    }
+
+    /**
+     * add stub status
+     *
+     * @param nod node to add
+     * @param st stub status
+     */
+    public void addStub(Ta nod, boolean st) {
+        spfNode<Ta> ntry = new spfNode<Ta>(nod);
+        spfNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.stub = st;
     }
 
     /**
@@ -710,6 +726,9 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             ntry.visited = true;
+            if ((!frst) && ntry.stub) {
+                continue;
+            }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> c = ntry.conn.get(i);
                 if (c == null) {

@@ -21,6 +21,11 @@ public class spfNode<Ta extends addrType> implements Comparable<spfNode<Ta>> {
     protected Ta name;
 
     /**
+     * stub node
+     */
+    protected boolean stub;
+
+    /**
      * identifier data
      */
     protected String ident;

@@ -488,6 +488,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf spf-hops",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf spf-ecmp",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf default-originate",
+        "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf stub",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf prefix-list",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf route-map",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf route-policy",

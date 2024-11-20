@@ -33,6 +33,11 @@ public class rtrBgpSpf {
     public boolean enabled;
 
     /**
+     * stub flag
+     */
+    public boolean stub;
+
+    /**
      * hostname
      */
     public boolean hostname;
@@ -108,6 +113,7 @@ public class rtrBgpSpf {
      */
     public void getConfig(List<String> l, String beg1, String beg2) {
         cmds.cfgLine(l, !enabled, beg1, beg2 + "enable", "");
+        cmds.cfgLine(l, !stub, beg1, beg2 + "stub", "");
         cmds.cfgLine(l, !hostname, beg1, beg2 + "hostname", "");
         l.add(beg1 + beg2 + "distance " + distance);
         l.add(beg1 + beg2 + "spf-log " + lastSpf.logSize);
@@ -174,6 +180,11 @@ public class rtrBgpSpf {
         spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.nlriTypNode);
         spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, spfLnkst.typNodeLocal);
         hlp.clear();
+        if (stub) {
+            tlv.valDat[0] = 2; // no transit
+            tlv.valSiz = 1;
+            tlv.putBytes(hlp, spfLnkst.typSpfStat);
+        }
         if (hostname) {
             tlv.putStr(hlp, spfLnkst.typNodeName, cfgAll.hostName);
         }
