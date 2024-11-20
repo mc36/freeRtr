@@ -3,11 +3,14 @@ package org.freertr.rtr;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
+import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.enc.encTlv;
 import org.freertr.pack.packHolder;
 import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLnkst;
+import org.freertr.tab.tabGen;
+import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPrfxlstN;
@@ -16,6 +19,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
+import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -193,6 +197,13 @@ public class rtrBgpSpf {
         if (hostname) {
             tlv.putStr(hlp, spfLnkst.typNodeName, cfgAll.hostName);
         }
+        if (parent.segrouLab != null) {
+            bits.msbPutW(tlv.valDat, 0, 0); // flags
+            bits.msbPutD(tlv.valDat, 2, parent.segrouLab.length << 8); // length
+            bits.msbPutD(tlv.valDat, 5, parent.segrouLab[0].label << 8); // label
+            tlv.valSiz = 8;
+            tlv.putBytes(hlp, spfLnkst.typSrCapa);
+        }
         spfLnkst.createEntry(parent.newlySpf, parent.computedSpf, tlv, pck, hlp, 0, 0);
         for (int i = 0; i < parent.neighs.size(); i++) {
             doAdvertNei(tlv, pck, hlp, parent.neighs.get(i));
@@ -206,7 +217,12 @@ public class rtrBgpSpf {
             doAdvertPfx(tlv, pck, hlp, ntry);
         }
         for (int i = 0; i < parent.routerRedistedU.size(); i++) {
-            doAdvertPfx(tlv, pck, hlp, parent.routerRedistedU.get(i));
+            tabRouteEntry<addrIP> ntry = parent.routerRedistedU.get(i);
+            if (parent.segrouLab != null) {
+                ntry = ntry.copyBytes(tabRoute.addType.ecmp);
+                ntry.best.segrouIdx = parent.segrouIdx;
+            }
+            doAdvertPfx(tlv, pck, hlp, ntry);
         }
     }
 
@@ -267,7 +283,21 @@ public class rtrBgpSpf {
         for (int i = 0; i < parent.lstnNei.size(); i++) {
             doSpfNei(spf, parent.lstnNei.get(i));
         }
-        tabRoute<addrIP> tab1 = spf.getRoutes(parent.fwdCore, tabLabelEntry.owner.bgpSrgb, null, null);
+        tabGen<tabIndex<addrIP>> segrouUsd = null;
+        if (parent.segrouLab != null) {
+            segrouUsd = new tabGen<tabIndex<addrIP>>();
+        }
+        tabRoute<addrIP> tab1 = spf.getRoutes(parent.fwdCore, tabLabelEntry.owner.bgpSrgb, parent.segrouLab, segrouUsd);
+        if (segrouUsd != null) {
+            tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(parent.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            parent.segrouLab[parent.segrouIdx].setFwdCommon(tabLabelEntry.owner.bgpSrgb, parent.fwdCore);
+            for (int i = 0; i < parent.segrouLab.length; i++) {
+                if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
+                    continue;
+                }
+                parent.segrouLab[i].setFwdDrop(tabLabelEntry.owner.bgpSrgb);
+            }
+        }
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
         parent.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, parent.fwdCore.commonLabel, null, 0);

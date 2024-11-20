@@ -2381,7 +2381,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setNeeded();
         }
-        if (segrouLab != null) {
+        if (!lspf.enabled && (segrouLab != null)) {
             if (debugger.rtrBgpComp) {
                 logger.debug("round " + compRound + " segrou");
             }
@@ -2415,7 +2415,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             routerComputedI = segrouUsd;
         }
-        if (bierLab != null) {
+        if (!lspf.enabled && (bierLab != null)) {
             if (debugger.rtrBgpComp) {
                 logger.debug("round " + compRound + " bier");
             }

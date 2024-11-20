@@ -714,6 +714,12 @@ public class spfLnkst {
             bits.msbPutD(tlv.valDat, 0, ntry.best.tag);
             tlv.putBytes(pck, typIgpTag, 4, tlv.valDat);
         }
+        if (ntry.best.segrouIdx > 0) {
+            bits.msbPutW(tlv.valDat, 0, 0); // flags
+            bits.msbPutW(tlv.valDat, 2, 0); // reserved
+            bits.msbPutD(tlv.valDat, 4, ntry.best.segrouIdx);
+            tlv.putBytes(pck, typPrfxSid, 8, tlv.valDat);
+        }
         doCreation(tab, old, tlv, pck, rou);
     }
 
@@ -842,6 +848,9 @@ public class spfLnkst {
             spf.addIdent(loc, tlv.getStr());
         }
         spf.addStub(loc, !findTlv(tlv, pck, typSpfStat));
+        if (!findTlv(tlv, pck, typSrCapa)) {
+            spf.addSegRouB(loc, bits.msbGetD(tlv.valDat, 5) >>> 8);
+        }
     }
 
     /**
@@ -898,6 +907,10 @@ public class spfLnkst {
         ntry.best.tag = findInt(tlv, pck, typIgpTag);
         ntry.best.distance = dist;
         spf.addPref(loc, ntry, false);
+        if (findTlv(tlv, pck, typPrfxSid)) {
+            return;
+        }
+        spf.addSegRouI(loc, ntry.prefix, bits.msbGetD(tlv.valDat, 4), 0);
     }
 
 }
