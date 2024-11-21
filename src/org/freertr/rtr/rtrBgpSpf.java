@@ -311,6 +311,7 @@ public class rtrBgpSpf {
         routes = tab2;
         parent.newlyUni.mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
         parent.newlyMlt.mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
+        parent.routerComputedI = segrouUsd;
         return false;
     }
 

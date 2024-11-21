@@ -907,10 +907,9 @@ public class spfLnkst {
         ntry.best.tag = findInt(tlv, pck, typIgpTag);
         ntry.best.distance = dist;
         spf.addPref(loc, ntry, false);
-        if (findTlv(tlv, pck, typPrfxSid)) {
-            return;
+        if (!findTlv(tlv, pck, typPrfxSid)) {
+            spf.addSegRouI(loc, ntry.prefix, bits.msbGetD(tlv.valDat, 4), 0);
         }
-        spf.addSegRouI(loc, ntry.prefix, bits.msbGetD(tlv.valDat, 4), 0);
     }
 
 }
