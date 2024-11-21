@@ -16292,3 +16292,6 @@ qc pass: spf bgp ecmp connection
 ---------------------------------- 2024-11-20 17:46:55 24.11.20
 qc pass: spf bgp stub node
 qc pass: spf bgp stub peer
+---------------------------------- 2024-11-21 10:26:22 24.11.21
+qc pass: spf bgp with sr
+qc pass: spf bgp with srgb sr
