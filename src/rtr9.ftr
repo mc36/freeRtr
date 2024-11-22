@@ -160,6 +160,7 @@ todo: server security to stick to the good protocols
 todo: server security to support bgp bmp mrt
 todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
+todo: bgp spf to have sr and bier
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: policy from bgp rpd
