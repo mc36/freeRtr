@@ -923,7 +923,20 @@ public class spfLnkst {
         ntry.best.distance = dist;
         spf.addPref(loc, ntry, false);
         if (!findTlv(tlv, pck, typPrfxSid)) {
-            spf.addSegRouI(loc, ntry.prefix, bits.msbGetD(tlv.valDat, 4), 0);
+            ntry.best.segrouIdx = bits.msbGetD(tlv.valDat, 4);
+            spf.addSegRouI(loc, ntry.prefix, ntry.best.segrouIdx, 0);
+        }
+        if (!findTlv(tlv, pck, typBier)) {
+            ntry.best.bierIdx = bits.msbGetW(tlv.valDat, 1);
+            ntry.best.bierSub = tlv.valDat[0] & 0xff;
+            spf.addBierI(loc, ntry.best.bierIdx);
+            spf.addBierS(loc, ntry.best.bierSub);
+            if (bits.msbGetW(tlv.valDat, 4) == 2) {
+                ntry.best.bierBeg = bits.msbGetD(tlv.valDat, 8) & 0xfffff;
+                ntry.best.bierSiz = tlv.valDat[8] & 0xff;
+                ntry.best.bierHdr = (tlv.valDat[9] & 0xff) >>> 4;
+                spf.addBierB(loc, ntry.best.bierBeg);
+            }
         }
     }
 

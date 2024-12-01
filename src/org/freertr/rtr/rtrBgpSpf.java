@@ -310,6 +310,13 @@ public class rtrBgpSpf {
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
         parent.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, parent.fwdCore.commonLabel, null, 0);
+        if (parent.bierLab != null) {
+            tabLabelBier res = spf.getBierI(parent.bierLab[0].label, tabLabelBier.num2bsl(parent.bierLen));
+            res.idx = parent.bierIdx;
+            for (int i = 0; i < parent.bierLab.length; i++) {
+                parent.bierLab[i].setBierMpls(tabLabelEntry.owner.bgpBier, parent.fwdCore, res);
+            }
+        }
         if (debugger.rtrBgpComp) {
             logger.debug("unreachable:" + spf.listReachablility(false));
             logger.debug("reachable:" + spf.listReachablility(true));
