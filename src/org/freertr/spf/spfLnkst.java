@@ -558,6 +558,11 @@ public class spfLnkst {
     public final static int typSrv6sidStr = 1252;
 
     /**
+     * bier tlv structure
+     */
+    public final static int typBier = 12345;
+
+    /**
      * get tlv encoder
      *
      * @return tlv
@@ -719,6 +724,16 @@ public class spfLnkst {
             bits.msbPutW(tlv.valDat, 2, 0); // reserved
             bits.msbPutD(tlv.valDat, 4, ntry.best.segrouIdx);
             tlv.putBytes(pck, typPrfxSid, 8, tlv.valDat);
+        }
+        if (ntry.best.bierIdx > 0) {
+            tlv.valDat[0] = (byte) ntry.best.bierSub;
+            bits.msbPutW(tlv.valDat, 1, ntry.best.bierIdx);
+            tlv.valDat[3] = 0; // reserved
+            bits.msbPutW(tlv.valDat, 4, 2); // type
+            bits.msbPutW(tlv.valDat, 6, 4); //length
+            bits.msbPutD(tlv.valDat, 8, ntry.best.bierBeg | (ntry.best.bierHdr << 20));
+            tlv.valDat[8] = (byte) ntry.best.bierSiz;
+            tlv.putBytes(pck, typBier, 12, tlv.valDat);
         }
         doCreation(tab, old, tlv, pck, rou);
     }

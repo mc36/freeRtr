@@ -11,6 +11,7 @@ import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLnkst;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
+import org.freertr.tab.tabLabelBier;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPrfxlstN;
@@ -221,6 +222,14 @@ public class rtrBgpSpf {
             if (parent.segrouLab != null) {
                 ntry = ntry.copyBytes(tabRoute.addType.ecmp);
                 ntry.best.segrouIdx = parent.segrouIdx;
+            }
+            if (parent.bierLab != null) {
+                ntry = ntry.copyBytes(tabRoute.addType.ecmp);
+                ntry.best.bierBeg = parent.bierLab[0].label;
+                ntry.best.bierIdx = parent.bierIdx;
+                ntry.best.bierSub = parent.bierSub;
+                ntry.best.bierHdr = tabLabelBier.num2bsl(parent.bierLen);
+                ntry.best.bierSiz = parent.bierLab.length;
             }
             doAdvertPfx(tlv, pck, hlp, ntry);
         }
