@@ -3030,6 +3030,7 @@ qc pass: spf bgp stub node
 qc pass: spf bgp stub peer
 qc pass: spf bgp with sr
 qc pass: spf bgp with srgb sr
+qc pass: spf bgp with bier
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

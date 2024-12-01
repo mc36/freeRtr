@@ -16295,3 +16295,5 @@ qc pass: spf bgp stub peer
 ---------------------------------- 2024-11-21 10:26:22 24.11.21
 qc pass: spf bgp with sr
 qc pass: spf bgp with srgb sr
+---------------------------------- 2024-12-01 08:32:21 24.12.1
+qc pass: spf bgp with bier
