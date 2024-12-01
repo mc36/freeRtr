@@ -10,9 +10,9 @@
 #sudo rm -rf $SDE/p4studio/dependencies
 #sudo rm -f `find $SDE -name *.a`
 #
-#git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare.git
-#git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare-bf2556x-1t.git
-#git clone ssh://git@bitbucket.software.geant.org:7999/rare/rare-nix.git
+#git clone https://bitbucket.software.geant.org/scm/rare/rare.git
+#git clone https://bitbucket.software.geant.org/scm/rare/rare-bf2556x-1t.git
+#git clone https://bitbucket.software.geant.org/scm/rare/rare-nix.git
 #wget http://src.freertr.org/misc/p4bf/ports1.json
 #gcc -O3 -o dummyCon.bin ../native/dummyCon.c
 #cp initd /etc/init.d/rtr
