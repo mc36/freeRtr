@@ -1757,29 +1757,28 @@ ipv4_qosed:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv4_flwed:
-        index = table_find(&vrf2rib_res->nat, &nat4_ntry);
-        if (index >= 0) {
-            if (frag != 0) goto ipv4_nated;
-            nat4_res = table_get(&vrf2rib_res->nat, index);
-            nat4_res->pack++;
-            nat4_res->byte += bufS;
-            acl4_ntry.srcAddr = nat4_res->nSrcAddr;
-            acl4_ntry.trgAddr = route4_ntry.addr[0] = nat4_res->nTrgAddr;
-            acl4_ntry.srcPortV = nat4_res->nSrcPort;
-            acl4_ntry.trgPortV = nat4_res->nTrgPort;
-            put32msb(bufD, bufP + 12, acl4_ntry.srcAddr);
-            put32msb(bufD, bufP + 16, acl4_ntry.trgAddr);
-            update_chksum(bufP + 10, nat4_res->sum3);
-            update_layer4(nat4_res);
-            goto ipv4_nated;
-        }
         acls_ntry.dir = 3;
         acls_ntry.port = vrf2rib_ntry.vrf;
         index = table_find(&acls4_table, &acls_ntry);
         if (index < 0) goto ipv4_nated;
         if (frag != 0) goto ipv4_nated;
         acls_res = table_get(&acls4_table, index);
-        if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+        index = table_find(&vrf2rib_res->nat, &nat4_ntry);
+        if (index < 0) {
+            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+            goto ipv4_nated;
+        }
+        nat4_res = table_get(&vrf2rib_res->nat, index);
+        nat4_res->pack++;
+        nat4_res->byte += bufS;
+        acl4_ntry.srcAddr = nat4_res->nSrcAddr;
+        acl4_ntry.trgAddr = route4_ntry.addr[0] = nat4_res->nTrgAddr;
+        acl4_ntry.srcPortV = nat4_res->nSrcPort;
+        acl4_ntry.trgPortV = nat4_res->nTrgPort;
+        put32msb(bufD, bufP + 12, acl4_ntry.srcAddr);
+        put32msb(bufD, bufP + 16, acl4_ntry.trgAddr);
+        update_chksum(bufP + 10, nat4_res->sum3);
+        update_layer4(nat4_res);
 ipv4_nated:
         ttl = bufD[bufP + 8] - 1;
         if (ttl <= 1) doPunting;
@@ -2037,40 +2036,39 @@ ipv6_qosed:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv6_flwed:
-        index = table_find(&vrf2rib_res->nat, &nat6_ntry);
-        if (index >= 0) {
-            if (frag != 0) goto ipv6_nated;
-            nat6_res = table_get(&vrf2rib_res->nat, index);
-            nat6_res->pack++;
-            nat6_res->byte += bufS;
-            acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
-            acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
-            acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
-            acl6_ntry.srcAddr4 = nat6_res->nSrcAddr4;
-            acl6_ntry.trgAddr1 = route6_ntry.addr[0] = nat6_res->nTrgAddr1;
-            acl6_ntry.trgAddr2 = route6_ntry.addr[1] = nat6_res->nTrgAddr2;
-            acl6_ntry.trgAddr3 = route6_ntry.addr[2] = nat6_res->nTrgAddr3;
-            acl6_ntry.trgAddr4 = route6_ntry.addr[3] = nat6_res->nTrgAddr4;
-            acl6_ntry.srcPortV = nat6_res->nSrcPort;
-            acl6_ntry.trgPortV = nat6_res->nTrgPort;
-            put32msb(bufD, bufP + 8, acl6_ntry.srcAddr1);
-            put32msb(bufD, bufP + 12, acl6_ntry.srcAddr2);
-            put32msb(bufD, bufP + 16, acl6_ntry.srcAddr3);
-            put32msb(bufD, bufP + 20, acl6_ntry.srcAddr4);
-            put32msb(bufD, bufP + 24, acl6_ntry.trgAddr1);
-            put32msb(bufD, bufP + 28, acl6_ntry.trgAddr2);
-            put32msb(bufD, bufP + 32, acl6_ntry.trgAddr3);
-            put32msb(bufD, bufP + 36, acl6_ntry.trgAddr4);
-            update_layer4(nat6_res);
-            goto ipv6_nated;
-        }
         acls_ntry.dir = 3;
         acls_ntry.port = vrf2rib_ntry.vrf;
         index = table_find(&acls6_table, &acls_ntry);
         if (index < 0) goto ipv6_nated;
         if (frag != 0) goto ipv6_nated;
         acls_res = table_get(&acls6_table, index);
-        if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+        index = table_find(&vrf2rib_res->nat, &nat6_ntry);
+        if (index < 0) {
+            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+            goto ipv6_nated;
+        }
+        nat6_res = table_get(&vrf2rib_res->nat, index);
+        nat6_res->pack++;
+        nat6_res->byte += bufS;
+        acl6_ntry.srcAddr1 = nat6_res->nSrcAddr1;
+        acl6_ntry.srcAddr2 = nat6_res->nSrcAddr2;
+        acl6_ntry.srcAddr3 = nat6_res->nSrcAddr3;
+        acl6_ntry.srcAddr4 = nat6_res->nSrcAddr4;
+        acl6_ntry.trgAddr1 = route6_ntry.addr[0] = nat6_res->nTrgAddr1;
+        acl6_ntry.trgAddr2 = route6_ntry.addr[1] = nat6_res->nTrgAddr2;
+        acl6_ntry.trgAddr3 = route6_ntry.addr[2] = nat6_res->nTrgAddr3;
+        acl6_ntry.trgAddr4 = route6_ntry.addr[3] = nat6_res->nTrgAddr4;
+        acl6_ntry.srcPortV = nat6_res->nSrcPort;
+        acl6_ntry.trgPortV = nat6_res->nTrgPort;
+        put32msb(bufD, bufP + 8, acl6_ntry.srcAddr1);
+        put32msb(bufD, bufP + 12, acl6_ntry.srcAddr2);
+        put32msb(bufD, bufP + 16, acl6_ntry.srcAddr3);
+        put32msb(bufD, bufP + 20, acl6_ntry.srcAddr4);
+        put32msb(bufD, bufP + 24, acl6_ntry.trgAddr1);
+        put32msb(bufD, bufP + 28, acl6_ntry.trgAddr2);
+        put32msb(bufD, bufP + 32, acl6_ntry.trgAddr3);
+        put32msb(bufD, bufP + 36, acl6_ntry.trgAddr4);
+        update_layer4(nat6_res);
 ipv6_nated:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;
