@@ -61,7 +61,7 @@ public class verCore {
     public final static String[] license = {
         "place on the web: " + homeUrl,
         "license: http://creativecommons.org/licenses/by-sa/4.0/",
-        "the beer-ware,abandon-ware license for selected group of people:",
+        "the beer-ware license for selected group of people:",
         author + " wrote these files. as long as you retain this notice you",
         "can do whatever you want with this stuff. if we meet some day, and",
         "you think this stuff is worth it, you can buy me a beer in return"
