@@ -1312,7 +1312,6 @@ void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     int frag = 0;
     int ethtyp = 0;
     int tmp = 0;
-    int tmp2 = 0;
     int ttl = ctx->port;
     packRx[ttl]++;
     byteRx[ttl] += bufS;
@@ -1335,7 +1334,7 @@ ethtyp_rx:
         port2vrf_res->mcscByteRx += bufS;
         if (ethtyp != port2vrf_res->mcscEthtyp) doDropper;
         if (bufD[bufP] != 0x0c) doCpuing;
-        tmp2 = bufD[bufP + 1];
+        int tmp2 = bufD[bufP + 1];
         int seq = port2vrf_res->mcscSeqRx = get32msb(bufD, bufP + 2);
         bufP += 6;
         tmp = bufS - bufP + preBuff - port2vrf_res->mcscHashBlkLen;
@@ -1617,8 +1616,8 @@ neigh_tx:
             if ((label & 0x100) == 0) doDropper;
             if (bufD[bufP] != 0x50) doDropper;
             doFlood(ctx, mpls_res->flood, bufP, bufS, ethtyp, (label & 0xf00) | ttl);
-            bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, tmp2);
-            if (tmp2 == 0) return;
+            bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, ttl);
+            if (ttl == 0) return;
             bufP += 8;
             bufP += 32;
             routeMpls();
