@@ -208,7 +208,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define ppptyp2ethtyp                                           \
+#define ppptyp2ethtyp(bufP)                                     \
     if ((ethtyp & 0x8000) != 0) doCpuing;                       \
     switch (ethtyp) {                                           \
     case PPPTYPE_MPLS_UCAST:                                    \
@@ -408,7 +408,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 #define guessEthtyp                                             \
-    switch (bufD[bufP] & 0xf0) {                                \
+    switch (bufD[*bufP] & 0xf0) {                               \
         case 0x40:                                              \
             ethtyp = ETHERTYPE_IPV4;                            \
             break;                                              \
@@ -991,210 +991,201 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
     doDropper;
 
 
-#define doTunnelBeg(tun_res)                                        \
-    switch (tun_res->command) {                                     \
-    case 1:                                                         \
-        bufP = bufT + 2;                                            \
-        break;                                                      \
-    case 2:                                                         \
-        bufP = bufT + 8;                                            \
-        if ((get16msb(bufD, bufP) & 0x8000) != 0) doCpuing;         \
-        bufP += 8;                                                  \
-        bufP += 2;                                                  \
-        ethtyp = get16msb(bufD, bufP);                              \
-        ppptyp2ethtyp;                                              \
-        put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-    case 3:                                                         \
-        bufP = bufT + 8;                                            \
-        bufP += 8;                                                  \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
-        break;                                                      \
-    case 4:                                                         \
-        bufP = bufT - 2;                                            \
-        put16msb(bufD, bufP, ETHERTYPE_IPV4);                       \
-        break;                                                      \
-    case 5:                                                         \
-        bufP = bufT - 2;                                            \
-        put16msb(bufD, bufP, ETHERTYPE_IPV6);                       \
-        break;                                                      \
-    case 6:                                                         \
-        bufP = bufT + 8;                                            \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
-        break;                                                      \
-
-#ifdef HAVE_NOCRYPTO
-
-#define doTunnelMid(tun_res)                                        \
-
-#else
-
-#define doTunnelMid(tun_res)                                        \
-    case 7:                                                         \
-        bufP = bufT;                                                \
-        if (get32msb(bufD, bufP + 0) != tun_res->spi) doDropper;    \
-        tun_res->seq = get32msb(bufD, bufP + 4);                    \
-        tmp = bufS - bufP + preBuff - tun_res->hashBlkLen;          \
-        if (tmp < 1) doDropper;                                     \
-        if (tun_res->hashBlkLen > 0) {                              \
-            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;  \
-            if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
-            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper; \
-            if (memcmp(&bufD[0], &bufD[bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;   \
-            bufS -= tun_res->hashBlkLen;                            \
-        }                                                           \
-        bufP += 8;                                                  \
-        tmp -= 8;                                                   \
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;        \
-        if (tun_res->encrTagLen > 0) {                              \
-            memcpy(&bufD[0], tun_res->hashKeyDat, 4);               \
-            memcpy(&bufD[4], &bufD[bufP], 8);                       \
-            bufP += 8;                                              \
-            tmp -= 8;                                               \
-            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufD) != 1) doDropper;     \
-            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;     \
-            if (EVP_DecryptUpdate(ctx->encr, NULL, &tmp2, &bufD[bufP - 16], 8) != 1) doDropper;       \
-            if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-            bufS -= tun_res->encrTagLen;                            \
-            tmp -= tun_res->encrTagLen;                             \
-        } else {                                                    \
-            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;       \
-            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;     \
-            if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-            bufP += tun_res->encrBlkLen;                            \
-            tmp -= tun_res->encrBlkLen;                             \
-        }                                                           \
-        ethtyp = bufD[bufP + tmp - 1];                              \
-        bufS -= bufD[bufP + tmp - 2] + 2;                           \
-        switch (ethtyp) {                                           \
-            case IP_PROTOCOL_IPV4:                                  \
-                ethtyp = ETHERTYPE_IPV4;                            \
-                break;                                              \
-            case IP_PROTOCOL_IPV6:                                  \
-                ethtyp = ETHERTYPE_IPV6;                            \
-                break;                                              \
-            default:                                                \
-                doDropper;                                          \
-        }                                                           \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-    case 8:                                                         \
-        bufP = bufT + 8;                                            \
-        bufP += tun_res->hashBlkLen;                                \
-        tmp = bufS - bufP + preBuff;                                \
-        if (tmp < 1) doDropper;                                     \
-        if (tun_res->hashBlkLen > 0) {                              \
-            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;  \
-            if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;    \
-            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper; \
-            if (memcmp(&bufD[0], &bufD[bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;    \
-        }                                                           \
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;        \
-        if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;   \
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper; \
-        if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-        bufP += tun_res->encrBlkLen;                                \
-        tmp -= tun_res->encrBlkLen;                                 \
-        bufP += 8;                                                  \
-        guessEthtyp;                                                \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-    case 9:                                                         \
-        bufP = bufT + 8;                                            \
-        if (get32lsb(bufD, bufP) != 4) doCpuing;                    \
-        tmp = bufS - bufP + preBuff;                                \
-        if (tmp < 32) doDropper;                                    \
-        put32msb(bufD, bufP + 4, 0);                                \
-        bufP += 16;                                                 \
-        bufS -= 16;                                                 \
-        tmp -= 32;                                                  \
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;        \
-        if (EVP_DecryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[bufP - 12]) != 1) doDropper;  \
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper; \
-        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper; \
-        if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;   \
-        if (EVP_DecryptFinal_ex(ctx->encr, &bufD[bufP + tmp], &tmp2) != 1) doDropper; \
-        guessEthtyp;                                                \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-
+int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, int *bufS, int bufT) {
+    unsigned char *bufD = ctx->bufD;
+    tun_res->pack++;
+    tun_res->byte += *bufS;
+    switch (tun_res->command) {
+    case 1: // gre
+        *bufP = bufT + 2;
+        return 0;
+    case 2: // l2tp
+        *bufP = bufT + 8;
+        if ((get16msb(bufD, *bufP) & 0x8000) != 0) return 1;
+        *bufP += 8;
+        *bufP += 2;
+        int ethtyp = get16msb(bufD, *bufP);
+        ppptyp2ethtyp(*bufP);
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 3: // vxlan
+        *bufP = bufT + 8;
+        *bufP += 8;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
+        return 0;
+    case 4: // ip4ip
+        *bufP = bufT - 2;
+        put16msb(bufD, *bufP, ETHERTYPE_IPV4);
+        return 0;
+    case 5: // ip6ip
+        *bufP = bufT - 2;
+        put16msb(bufD, *bufP, ETHERTYPE_IPV6);
+        return 0;
+    case 6: // pckoudp
+        *bufP = bufT + 8;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
+        return 0;
+#ifndef HAVE_NOCRYPTO
+    case 7: // esp
+        *bufP = bufT;
+        if (get32msb(bufD, *bufP + 0) != tun_res->spi) return 2;
+        tun_res->seq = get32msb(bufD, *bufP + 4);
+        int tmp = *bufS - *bufP + preBuff - tun_res->hashBlkLen;
+        if (tmp < 1) return 2;
+        int tmp2;
+        if (tun_res->hashBlkLen > 0) {
+            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) return 2;
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 2;
+            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) return 2;
+            if (memcmp(&bufD[0], &bufD[*bufP + tmp], tun_res->hashBlkLen) !=0) return 2;
+            *bufS -= tun_res->hashBlkLen;
+        }
+        *bufP += 8;
+        tmp -= 8;
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 2;
+        if (tun_res->encrTagLen > 0) {
+            memcpy(&bufD[0], tun_res->hashKeyDat, 4);
+            memcpy(&bufD[4], &bufD[*bufP], 8);
+            *bufP += 8;
+            tmp -= 8;
+            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufD) != 1) return 2;
+            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
+            if (EVP_DecryptUpdate(ctx->encr, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) return 2;
+            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
+            *bufS -= tun_res->encrTagLen;
+            tmp -= tun_res->encrTagLen;
+        } else {
+            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) return 2;
+            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
+            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
+            *bufP += tun_res->encrBlkLen;
+            tmp -= tun_res->encrBlkLen;
+        }
+        ethtyp = bufD[*bufP + tmp - 1];
+        *bufS -= bufD[*bufP + tmp - 2] + 2;
+        switch (ethtyp) {
+        case IP_PROTOCOL_IPV4:
+            ethtyp = ETHERTYPE_IPV4;
+            break;
+        case IP_PROTOCOL_IPV6:
+            ethtyp = ETHERTYPE_IPV6;
+            break;
+        default:
+            return 2;
+        }
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 8: // openvpn
+        *bufP = bufT + 8;
+        *bufP += tun_res->hashBlkLen;
+        tmp = *bufS - *bufP + preBuff;
+        if (tmp < 1) return 2;
+        if (tun_res->hashBlkLen > 0) {
+            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) return 2;
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 2;
+            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) return 2;
+            if (memcmp(&bufD[0], &bufD[*bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) return 2;
+        }
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 2;
+        if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) return 2;
+        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
+        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
+        *bufP += tun_res->encrBlkLen;
+        tmp -= tun_res->encrBlkLen;
+        *bufP += 8;
+        guessEthtyp;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 9: // wireguard
+        *bufP = bufT + 8;
+        if (get32lsb(bufD, *bufP) != 4) return 1;
+        tmp = *bufS - *bufP + preBuff;
+        if (tmp < 32) return 2;
+        put32msb(bufD, *bufP + 4, 0);
+        *bufP += 16;
+        *bufS -= 16;
+        tmp -= 32;
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 2;
+        if (EVP_DecryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[*bufP - 12]) != 1) return 2;
+        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
+        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[*bufP + tmp]) != 1) return 2;
+        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
+        if (EVP_DecryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) return 2;
+        guessEthtyp;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
 #endif
-
-#define doTunnelEnd(tun_res)                                        \
-    case 10:                                                        \
-        bufP = bufT + 8;                                            \
-        if (bufD[bufP] != 6) doCpuing;                              \
-        bufP += 2;                                                  \
-        guessEthtyp;                                                \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-    case 11:                                                        \
-        bufP = bufT + 8;                                            \
-        bufP += 8;                                                  \
-        guessEthtyp;                                                \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-    case 12:                                                        \
-        bufP = bufT + 4;                                            \
-        if ((get16msb(bufD, bufP) & 0x8000) != 0) doCpuing;         \
-        ethtyp = get16msb(bufD, bufP);                              \
-        ppptyp2ethtyp;                                              \
-        put16msb(bufD, bufP, ethtyp);                               \
-        break;                                                      \
-    case 13:                                                        \
-        bufP = bufT + 2;                                            \
-        tmp = get16msb(bufD, bufT);                                 \
-        ethtyp = bufD[bufP];                                        \
-        if (tmp < 4) doDropper;                                     \
-        if (tmp > (bufS - bufT + preBuff)) doDropper;               \
-        if (bufD[bufP + 1] != ((tmp & 0xff) ^ (tmp >> 8) ^ ethtyp)) doDropper;  \
-        switch (ethtyp) {                                           \
-            case IP_PROTOCOL_MPLS:                                  \
-                ethtyp = ETHERTYPE_MPLS_UCAST;                      \
-                break;                                              \
-            case IP_PROTOCOL_IPV4:                                  \
-                ethtyp = ETHERTYPE_IPV4;                            \
-                break;                                              \
-            case IP_PROTOCOL_IPV6:                                  \
-                ethtyp = ETHERTYPE_IPV6;                            \
-                break;                                              \
-            case IP_PROTOCOL_SWIPE:                                 \
-                ethtyp = ETHERTYPE_MACSEC;                          \
-                break;                                              \
-            case IP_PROTOCOL_SKIP:                                  \
-                ethtyp = ETHERTYPE_SGT;                             \
-                break;                                              \
-            case IP_PROTOCOL_NSH:                                   \
-                ethtyp = ETHERTYPE_NSH;                             \
-                break;                                              \
-            case IP_PROTOCOL_SRL2:                                  \
-                ethtyp = ETHERTYPE_ROUTEDMAC;                       \
-                break;                                              \
-            default:                                                \
-                doDropper;                                          \
-        }                                                           \
-        put16msb(bufD, bufP, ethtyp);                               \
-        bufS = tmp + bufT - preBuff;                                \
-        break;                                                      \
-    case 14:                                                        \
-        bufP = bufT + 2;                                            \
-        bufP -= 2;                                                  \
-        put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);                  \
-        break;                                                      \
-    default:                                                        \
-        doDropper;                                                  \
-    }                                                               \
-    tun_res->pack++;                                                \
-    tun_res->byte += bufS;                                          \
-    prt = tun_res->aclport;                                         \
-    goto ethtyp_rx;                                                 \
+    case 10: // amt
+        *bufP = bufT + 8;
+        if (bufD[*bufP] != 6) return 1;
+        *bufP += 2;
+        guessEthtyp;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 11: // gtp
+        *bufP = bufT + 8;
+        *bufP += 8;
+        guessEthtyp;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 12: // l3tp
+        *bufP = bufT + 4;
+        ethtyp = get16msb(bufD, *bufP);
+        ppptyp2ethtyp(*bufP);
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 13: // tmux
+        *bufP = bufT + 2;
+        ethtyp = get16msb(bufD, bufT);
+        if (ethtyp < 4) return 2;
+        if (ethtyp > (*bufS - bufT + preBuff)) return 2;
+        *bufS = ethtyp + bufT - preBuff;
+        ethtyp = bufD[*bufP];
+        switch (ethtyp) {
+        case IP_PROTOCOL_MPLS:
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            break;
+        case IP_PROTOCOL_IPV4:
+            ethtyp = ETHERTYPE_IPV4;
+            break;
+        case IP_PROTOCOL_IPV6:
+            ethtyp = ETHERTYPE_IPV6;
+            break;
+        case IP_PROTOCOL_SWIPE:
+            ethtyp = ETHERTYPE_MACSEC;
+            break;
+        case IP_PROTOCOL_SKIP:
+            ethtyp = ETHERTYPE_SGT;
+            break;
+        case IP_PROTOCOL_NSH:
+            ethtyp = ETHERTYPE_NSH;
+            break;
+        case IP_PROTOCOL_SRL2:
+            ethtyp = ETHERTYPE_ROUTEDMAC;
+            break;
+        default:
+            return 2;
+        }
+        put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 14: // etherip
+        *bufP = bufT + 2;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
+        return 0;
+    }
+drop:
+    return 2;
+cpu:
+    return 1;
+}
 
 
 #define doRouted(route_res, proto)                                  \
@@ -1903,9 +1894,15 @@ ipv4_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 tun4_res = table_get(&vrf2rib_res->tun, index);
-                doTunnelBeg(tun4_res);
-                doTunnelMid(tun4_res);
-                doTunnelEnd(tun4_res);
+                switch (doTunnel(ctx, tun4_res, &bufP, &bufS, bufT)) {
+                case 0:
+                    prt = tun4_res->aclport;
+                    goto ethtyp_rx;
+                case 1:
+                    doCpuing;
+                default:
+                    doDropper;
+                }
             }
             acls_ntry.dir = 4;
             acls_ntry.port = vrf2rib_ntry.vrf;
@@ -2227,9 +2224,15 @@ ipv6_tx:
             if (index >= 0) {
                 if (frag != 0) doPunting;
                 tun6_res = table_get(&vrf2rib_res->tun, index);
-                doTunnelBeg(tun6_res);
-                doTunnelMid(tun6_res);
-                doTunnelEnd(tun6_res);
+                switch (doTunnel(ctx, (struct tun4_entry *)((char*)tun6_res+sizeof(tun6_ntry)-sizeof(tun4_ntry)), &bufP, &bufS, bufT)) {
+                case 0:
+                    prt = tun6_res->aclport;
+                    goto ethtyp_rx;
+                case 1:
+                    doCpuing;
+                default:
+                    doDropper;
+                }
             }
             acls_ntry.dir = 4;
             acls_ntry.port = vrf2rib_ntry.vrf;
@@ -2257,7 +2260,7 @@ ipv6_tx:
         pppoe_res->byte += bufS;
         bufP += 6;
         ethtyp = get16msb(bufD, bufP);
-        ppptyp2ethtyp;
+        ppptyp2ethtyp(bufP);
         put16msb(bufD, bufP, ethtyp);
         prt = pppoe_res->aclport;
         goto ethtyp_rx;
