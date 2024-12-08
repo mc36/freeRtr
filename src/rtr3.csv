@@ -568,7 +568,7 @@ http://sources.freertr.org/cfg/p4lang-rout309.tst;p4lang-rout309.tst;ok;ok;ok;no
 http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;ok;not ok;ok;not ok;not ok;p4lang: gre multicast routing
 http://sources.freertr.org/cfg/p4lang-rout311.tst;p4lang-rout311.tst;ok;ok;ok;ok;not ok;p4lang: multicast routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout312.tst;p4lang-rout312.tst;ok;not ok;ok;ok;ok;p4lang: polka over backplane
-http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;not ok;ok;ok;ok;ok;p4lang: nsh over backplane
+http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;ok;ok;ok;ok;ok;p4lang: nsh over backplane
 http://sources.freertr.org/cfg/p4lang-rout314.tst;p4lang-rout314.tst;ok;ok;ok;ok;not ok;p4lang: bier core over backplane
 http://sources.freertr.org/cfg/p4lang-rout315.tst;p4lang-rout315.tst;ok;ok;ok;ok;not ok;p4lang: bier core over vlan backplane
 http://sources.freertr.org/cfg/p4lang-rout316.tst;p4lang-rout316.tst;ok;ok;ok;ok;ok;p4lang: qinq routing
