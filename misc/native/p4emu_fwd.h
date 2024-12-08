@@ -868,7 +868,7 @@ drop:
 
 
 
-void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int bufS, int ethtyp, int label) {
+void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int bufS, int ethtyp, int label) {
     struct neigh_entry neigh_ntry;
     struct neigh_entry *neigh_res;
     struct flood_entry *flood_res;
@@ -876,9 +876,9 @@ void doFlood(struct packetContext *ctx, struct table_head flood, int bufP, int b
     unsigned char *bufD = ctx->bufD;
     unsigned char *bufH = ctx->bufH;
     unsigned char *bufC = ctx->bufC;
-    for (int i = 0; i < flood.size; i++) {
+    for (int i = 0; i < flood->size; i++) {
         if (shiftContext(&ctx2, ctx, bufC) != 0) break;
-        flood_res = table_get(&flood, i);
+        flood_res = table_get(flood, i);
         int tmpP = preBuff;
         int tmpE;
         int tmpS;
@@ -1609,13 +1609,13 @@ neigh_tx:
         case 6: // punt
             doCpuing;
         case 7: // dup
-            doFlood(ctx, mpls_res->flood, bufP, bufS, ethtyp, (label & 0xf00) | ttl);
+            doFlood(ctx, &mpls_res->flood, bufP, bufS, ethtyp, (label & 0xf00) | ttl);
             if (mpls_res->swap != 0) goto mpls_rou;
             return;
         case 8: // bier
             if ((label & 0x100) == 0) doDropper;
             if (bufD[bufP] != 0x50) doDropper;
-            doFlood(ctx, mpls_res->flood, bufP, bufS, ethtyp, (label & 0xf00) | ttl);
+            doFlood(ctx, &mpls_res->flood, bufP, bufS, ethtyp, (label & 0xf00) | ttl);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, ttl);
             if (ttl == 0) return;
             bufP += 8;
@@ -1880,7 +1880,7 @@ ipv4_tx:
                 if (mroute4_res->ingr != prt) doDropper;
                 mroute4_res->pack++;
                 mroute4_res->byte += bufS;
-                doFlood(ctx, mroute4_res->flood, bufP, bufS, ethtyp, 0x100 | ttl);
+                doFlood(ctx, &mroute4_res->flood, bufP, bufS, ethtyp, 0x100 | ttl);
                 if (mroute4_res->local != 0) doCpuing;
                 return;
             }
@@ -2204,7 +2204,7 @@ ipv6_tx:
                 if (mroute6_res->ingr != prt) doDropper;
                 mroute6_res->pack++;
                 mroute6_res->byte += bufS;
-                doFlood(ctx, mroute6_res->flood, bufP, bufS, ethtyp, 0x100 | ttl);
+                doFlood(ctx, &mroute6_res->flood, bufP, bufS, ethtyp, 0x100 | ttl);
                 if (mroute6_res->local != 0) doCpuing;
                 return;
             }
