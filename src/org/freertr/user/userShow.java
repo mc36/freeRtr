@@ -2437,6 +2437,10 @@ public class userShow {
                 doShowRouteCompr(4);
                 return null;
             }
+            if (a.equals("unused")) {
+                doShowRouteUnusd(4);
+                return null;
+            }
             if (a.equals("changes")) {
                 doShowRouteChngs(4);
                 return null;
@@ -2799,6 +2803,10 @@ public class userShow {
             }
             if (a.equals("compress")) {
                 doShowRouteCompr(6);
+                return null;
+            }
+            if (a.equals("unused")) {
+                doShowRouteUnusd(6);
                 return null;
             }
             if (a.equals("changes")) {
@@ -5007,6 +5015,16 @@ public class userShow {
         tabRoute<addrIP> tab = new tabRoute<addrIP>(fwd.actualU);
         tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
         doShowRoutes(fwd, tab, 1);
+    }
+
+    private void doShowRouteUnusd(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        List<String> res = new ArrayList<String>();
+        tabRoute.unusedPrefixes(fwd.actualU, res);
+        rdr.putStrArr(res);
     }
 
     private void doShowRouteChngs(int ver) {

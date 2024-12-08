@@ -312,6 +312,8 @@ public class userExec {
         hl.add(null, "4 .          <name:vrf>             name of routing table");
         hl.add(null, "3 4        compress                 compressed unicast routing table");
         hl.add(null, "4 .          <name:vrf>             name of routing table");
+        hl.add(null, "3 4        unused                   unused unicast routing table");
+        hl.add(null, "4 .          <name:vrf>             name of routing table");
         hl.add(null, "3 4        changes                  changed unicast routing table");
         hl.add(null, "4 .          <name:vrf>             name of routing table");
         hl.add(null, "3 4        just-network             unicast routing table by network");

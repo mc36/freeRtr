@@ -954,18 +954,21 @@ public class tabRoute<T extends addrType> {
             }
             addrIP adr = new addrIP();
             adr.setSub(ntry.prefix.network, one);
-            unusedPrefixes1(trg, nxt, adr);
-            nxt.setAdd(one, ntry.prefix.broadcast);
+            unusedPrefixes(trg, nxt, adr, one);
+            nxt.setAddr(ntry.prefix.broadcast);
         }
-        one.fillBytes(255);
-        unusedPrefixes1(trg, nxt, one);
+        addrIP adr = new addrIP();
+        adr.fillBytes(255);
+        unusedPrefixes(trg, nxt, adr, one);
     }
 
-    private static void unusedPrefixes1(List<String> lst, addrIP beg, addrIP end) {
+    private static void unusedPrefixes(List<String> lst, addrIP beg, addrIP end, addrIP one) {
         if (beg.compareTo(end) >= 0) {
             return;
         }
-        lst.add(beg + " - " + end);
+        addrIP adr = new addrIP();
+        adr.setAdd(one, beg);
+        lst.add(adr + " - " + end);
     }
 
     /**
