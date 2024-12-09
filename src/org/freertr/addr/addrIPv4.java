@@ -149,8 +149,7 @@ public class addrIPv4 extends addrType {
      * @return true if yes
      */
     public boolean isLinkLocal() {
-        return false;
-        //return bits.msbGetW(addr, 0) == 0xa9fe; // 169.254.x.x
+        return bits.msbGetW(addr, 0) == 0xa9fe; // 169.254.x.x
     }
 
     /**

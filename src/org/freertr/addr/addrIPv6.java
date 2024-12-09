@@ -264,7 +264,7 @@ public class addrIPv6 extends addrType {
      * @return true if yes
      */
     public boolean isBroadcast() {
-        return false;
+        return isFilled(255);
     }
 
     /**
