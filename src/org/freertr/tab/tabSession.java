@@ -440,10 +440,10 @@ public class tabSession implements Runnable {
         if (allowSending && (pck.INTupper != 0)) {
             return sessPass(ses);
         }
-        if (allowMcast && pck.IPmlt) {
+        if (allowMcast && pck.IPmlt && pck.IPmlr) {
             return sessPass(ses);
         }
-        if (allowRoutng && pck.IPmlr) {
+        if (allowRoutng && pck.IPmlt && !pck.IPmlr) {
             return sessPass(ses);
         }
         if (allowLnklc && pck.IPlnk) {

@@ -150,7 +150,7 @@ public class addrIPv4 extends addrType {
      */
     public boolean isLinkLocal() {
         return false;
-        // return (((addr[0] & 0xff) == 169) && ((addr[1] & 0xff) == 254));
+        //return bits.msbGetW(addr, 0) == 0xa9fe; // 169.254.x.x
     }
 
     /**
@@ -204,7 +204,7 @@ public class addrIPv4 extends addrType {
      */
     public boolean isRoutedMcast() {
         int i = bits.msbGetW(addr, 0);
-        if (i == 0xefff) { // 239.255.x.x
+        if (i >= 0xefff) { // 239.255.x.x
             return false;
         }
         return i > 0xe000; // 224.0.x.x
