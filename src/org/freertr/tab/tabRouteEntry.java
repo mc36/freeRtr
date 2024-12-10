@@ -130,6 +130,9 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
             if (ntry.iface != other.iface) {
                 continue;
             }
+            if (ntry.rouTab != other.rouTab) {
+                continue;
+            }
             if (ntry.nextHop == null) {
                 continue;
             }
