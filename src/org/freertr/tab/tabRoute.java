@@ -833,11 +833,11 @@ public class tabRoute<T extends addrType> {
     }
 
     private static boolean compressTable1(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // consecutives
-        if (ntry.prefix.maskLen < 1) {
+        final int bit = ntry.prefix.maskLen - 1;
+        if (bit < 0) {
             return false;
         }
         tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
-        final int bit = ntry.prefix.maskLen - 1;
         if (ntry.prefix.network.bitValue(bit)) {
             pfx.prefix.network.bitClear(bit);
         } else {
@@ -881,10 +881,10 @@ public class tabRoute<T extends addrType> {
     }
 
     private static boolean compressTable3(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // subnets
-        if (ntry.prefix.maskLen >= (addrIP.size * 8)) {
+        final int bit = ntry.prefix.maskLen + 1;
+        if (bit >= (addrIP.size * 8)) {
             return false;
         }
-        final int bit = ntry.prefix.maskLen + 1;
         tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
         pfx.prefix.setMask(bit);
         tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);

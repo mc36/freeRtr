@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.12.10-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-12-10 06:37:03, took 00:09:27, with 50 workers, on 625 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2024-12-10 07:09:32, took 00:13:38, with 50 workers, on 625 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
