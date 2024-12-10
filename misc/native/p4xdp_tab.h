@@ -68,11 +68,12 @@ struct neigh_res {
 };
 
 struct label_res {
-    __u32 cmd; // 1=route, 2=pop, 3=swap, 4=xconn, 5=vpls
+    __u32 cmd; // 1=route, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=push
     __u32 ver;
     __u32 hop;
     __u32 vrf;
     __u32 swap;
+    __u32 push;
     __u32 brdg;
     __u32 port;
     __u64 pack;

@@ -287,6 +287,16 @@ struct {
         bufP += 2;                                                  \
         tmp = resm->brdg;                                           \
         goto bridge_rx;                                             \
+    case 6:                                                         \
+        bufP -= 4;                                                  \
+        label = (tmp & 0xf00) | ttl | (resm->push << 12);           \
+        put32msb(bufD, bufP, label);                                \
+        neik = resm->hop;                                           \
+        bufP -= 4;                                                  \
+        label = (tmp & 0xe00) | ttl | (resm->swap << 12);           \
+        put32msb(bufD, bufP, label);                                \
+        neik = resm->hop;                                           \
+        goto ethtyp_tx;                                             \
     default:                                                        \
         goto drop;
 

@@ -735,6 +735,34 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "vpnlabel4") == 0) {
+        i = atoi(arg[2]);
+        labr.hop = atoi(arg[3]);
+        labr.swap = atoi(arg[5]);
+        labr.push = atoi(arg[6]);
+        labr.ver = 4;
+        labr.cmd = 6;
+        if (del == 0) {
+            if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(labels_fd, &i, &labr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "vpnlabel6") == 0) {
+        i = atoi(arg[2]);
+        labr.hop = atoi(arg[3]);
+        labr.swap = atoi(arg[5]);
+        labr.push = atoi(arg[6]);
+        labr.ver = 4;
+        labr.cmd = 6;
+        if (del == 0) {
+            if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(labels_fd, &i, &labr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "hairpin") == 0) {
         o = atoi(arg[2]);
         bunn.cmd = 2;
