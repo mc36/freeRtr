@@ -347,6 +347,28 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else table_add(&mpls_table, &mpls_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "vpnlabel4") == 0) {
+        mpls_ntry.label = atoi(arg[2]);
+        mpls_ntry.nexthop = atoi(arg[3]);
+        mpls_ntry.swap = atoi(arg[5]);
+        mpls_ntry.push = atoi(arg[6]);
+        mpls_ntry.ver = 4;
+        mpls_ntry.command = 9;
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "vpnlabel6") == 0) {
+        mpls_ntry.label = atoi(arg[2]);
+        mpls_ntry.nexthop = atoi(arg[3]);
+        mpls_ntry.swap = atoi(arg[5]);
+        mpls_ntry.push = atoi(arg[6]);
+        mpls_ntry.ver = 4;
+        mpls_ntry.command = 9;
+        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        else table_add(&mpls_table, &mpls_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "cpulabel") == 0) {
         mpls_ntry.label = atoi(arg[2]);
         mpls_ntry.command = 6;

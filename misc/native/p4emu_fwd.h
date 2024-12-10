@@ -975,20 +975,6 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
 }
 
 
-#define routeMpls()                                                 \
-    vrf2rib_ntry.vrf = mpls_res->vrf;                               \
-    switch (mpls_res->ver) {                                        \
-    case 4:                                                         \
-        ethtyp = ETHERTYPE_IPV4;                                    \
-        goto ipv4_rx;                                               \
-    case 6:                                                         \
-        ethtyp = ETHERTYPE_IPV6;                                    \
-        goto ipv6_rx;                                               \
-    default:                                                        \
-        ethtyp = 0;                                                 \
-        break;                                                      \
-    }                                                               \
-    doDropper;
 
 
 int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, int *bufS, int bufT) {
@@ -1561,7 +1547,17 @@ mpls_rou:
                 bufD[bufP + 3] = ttl + 1;
                 goto mpls_rx;
             }
-            routeMpls();
+mpls_rout:
+            vrf2rib_ntry.vrf = mpls_res->vrf;
+            switch (mpls_res->ver) {
+            case 4:
+                ethtyp = ETHERTYPE_IPV4;
+                goto ipv4_rx;
+            case 6:
+                ethtyp = ETHERTYPE_IPV6;
+                goto ipv6_rx;
+            }
+            doDropper;
         case 2: // pop
             neigh_ntry.id = mpls_res->nexthop;
             if ((label & 0x100) == 0) {
@@ -1575,9 +1571,6 @@ mpls_rou:
             case 6:
                 ethtyp = ETHERTYPE_IPV6;
                 goto ethtyp_tx;
-            default:
-                ethtyp = 0;
-                break;
             }
             doDropper;
         case 3: // swap
@@ -1620,11 +1613,18 @@ neigh_tx:
             if (ttl == 0) return;
             bufP += 8;
             bufP += 32;
-            routeMpls();
-        default:
-            return;
+            goto mpls_rout;
+        case 9: // push
+            bufP -= 4;
+            label = (label & 0xf00) | ttl | (mpls_res->push << 12);
+            put32msb(bufD, bufP, label);
+            bufP -= 4;
+            label = (label & 0xe00) | ttl | (mpls_res->swap << 12);
+            put32msb(bufD, bufP, label);
+            neigh_ntry.id = mpls_res->nexthop;
+            goto ethtyp_tx;
         }
-        return;
+        doDropper;
     case ETHERTYPE_VLAN: // dot1q
         ttl = ctx->port;
         packVlan[ttl]++;
@@ -1899,9 +1899,8 @@ ipv4_tx:
                     goto ethtyp_rx;
                 case 1:
                     doCpuing;
-                default:
-                    doDropper;
                 }
+                doDropper;
             }
             acls_ntry.dir = 4;
             acls_ntry.port = vrf2rib_ntry.vrf;
@@ -2229,9 +2228,8 @@ ipv6_tx:
                     goto ethtyp_rx;
                 case 1:
                     doCpuing;
-                default:
-                    doDropper;
                 }
+                doDropper;
             }
             acls_ntry.dir = 4;
             acls_ntry.port = vrf2rib_ntry.vrf;
@@ -2357,10 +2355,8 @@ bridgevpls_rx:
             putIpv6header(IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
-        default:
-            return;
         }
-        break;
+        doDropper;
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
         ttl = ctx->port;

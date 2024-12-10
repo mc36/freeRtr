@@ -278,7 +278,6 @@ struct {
         bufP -= 4;                                                  \
         label = (tmp & 0xf00) | ttl | (resm->push << 12);           \
         put32msb(bufD, bufP, label);                                \
-        neik = resm->hop;                                           \
         bufP -= 4;                                                  \
         label = (tmp & 0xe00) | ttl | (resm->swap << 12);           \
         put32msb(bufD, bufP, label);                                \

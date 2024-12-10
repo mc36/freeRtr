@@ -602,12 +602,12 @@ public class servP4langUtil {
     }
 
     /**
-     * get label
+     * get first label
      *
      * @param labs labels
      * @return label
      */
-    protected final static int getLabel(List<Integer> labs) {
+    protected final static int get1stLabel(List<Integer> labs) {
         if (labs == null) {
             return -1;
         }
@@ -626,6 +626,41 @@ public class servP4langUtil {
             return i;
         }
         return ipMpls.labelExp4;
+    }
+
+    /**
+     * get second label
+     *
+     * @param labs labels
+     * @return label
+     */
+    protected final static int get2ndLabel(List<Integer> labs) {
+        if (labs == null) {
+            return -1;
+        }
+        if (labs.size() < 2) {
+            return -1;
+        }
+        int i = labs.get(0);
+        if (i != ipMpls.labelImp) {
+            i = labs.get(1);
+            if (i == ipMpls.labelImp) {
+                return -1;
+            }
+            return i;
+        }
+        if (labs.size() < 3) {
+            return -1;
+        }
+        i = labs.get(1);
+        if (i == ipMpls.labelImp) {
+            return -1;
+        }
+        i = labs.get(2);
+        if (i == ipMpls.labelImp) {
+            return -1;
+        }
+        return i;
     }
 
     /**

@@ -87,13 +87,14 @@ struct table_head nsh_table;
 
 struct mpls_entry {
     int label;
-    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt, 7=dup, 8=bier
+    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt, 7=dup, 8=bier, 9=push
     int nexthop;
     int port;
     int bridge;
     int vrf;
     int ver;
     int swap;
+    int push;
     int bier[8];
     struct table_head flood;
     long pack;

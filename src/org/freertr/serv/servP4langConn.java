@@ -1216,7 +1216,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + servP4langUtil.getLabel(ntry.label));
+            lower.sendLine("duplabel" + fwd.ipVersion + "_del " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + servP4langUtil.get1stLabel(ntry.label));
         }
         String act;
         for (int i = 0; i < need.duplicate.size(); i++) {
@@ -1234,7 +1234,7 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + servP4langUtil.getLabel(ntry.label));
+            lower.sendLine("duplabel" + fwd.ipVersion + "_" + act + " " + vrf.id + " " + gid + " " + need.label + " " + ifc.getMcast(gid, hop).id + " " + ifc.id + " " + hop.id + " " + servP4langUtil.get1stLabel(ntry.label));
             now++;
         }
         if (bef) {
@@ -1299,7 +1299,7 @@ public class servP4langConn implements Runnable {
             lower.sendLine("cpulabel_del " + ntry.label);
             return;
         }
-        int lab = servP4langUtil.getLabel(ntry.remoteLab);
+        int lab = servP4langUtil.get1stLabel(ntry.remoteLab);
         if (lab < 0) {
             lower.sendLine("unlabel" + afi + "_del " + ntry.label + " " + hop.id + " " + ntry.nextHop);
         } else {
@@ -1423,12 +1423,17 @@ public class servP4langConn implements Runnable {
             afi = "6";
         }
         labels.put(ntry);
-        int lab = servP4langUtil.getLabel(ntry.remoteLab);
+        int lab = servP4langUtil.get1stLabel(ntry.remoteLab);
         if (lab < 0) {
             lower.sendLine("unlabel" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop);
-        } else {
-            lower.sendLine("label" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + lab);
+            return;
         }
+        int lab2 = servP4langUtil.get2ndLabel(ntry.remoteLab);
+        if (lab2 < 0) {
+            lower.sendLine("label" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + lab);
+            return;
+        }
+        lower.sendLine("vpnlabel" + afi + "_" + act + " " + ntry.label + " " + hop.id + " " + ntry.nextHop + " " + lab + " " + lab2);
     }
 
     private void doLab0(tabLabelEntry ntry, int fwid) {
@@ -3730,7 +3735,7 @@ public class servP4langConn implements Runnable {
                 par = tvrf.id + " " + hop.id + " ";
                 int i = -1;
                 if (rou != null) {
-                    i = servP4langUtil.getLabel(rou.best.labelRem);
+                    i = servP4langUtil.get1stLabel(rou.best.labelRem);
                 }
                 if (i > 0) {
                     cmd = "lab";
