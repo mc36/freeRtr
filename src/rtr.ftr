@@ -2050,6 +2050,7 @@ qc pass: p4lang: qinq pmtud
 qc pass: p4lang: qinq tcpmss
 qc pass: p4lang: qinq bridge tcpmss
 qc pass: p4lang: othervpn with bgp
+qc pass: p4lang: csc vpn with bgp
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

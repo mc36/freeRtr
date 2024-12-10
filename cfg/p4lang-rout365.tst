@@ -144,8 +144,10 @@ server p4lang p4
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
+ipv4 route v1 2.2.2.108 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
+ipv6 route v1 4321::108 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
 !
 
 addother r2 controller r1 v9 9080 - feature route mpls
@@ -159,7 +161,7 @@ int eth6 eth 0000.0000.2222 $6a$ $6b$
 !
 
 addrouter r3
-int eth1 eth 0000.0000.3333 $3b$ $3a$
+int eth1 eth 0000.0000.3333 $8a$ $8b$
 !
 vrf def v1
  rd 1:1
@@ -182,8 +184,8 @@ int lo1
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.2 255.255.255.0
- ipv6 addr 1234:1::2 ffff:ffff::
+ ipv4 addr 1.1.6.1 255.255.255.0
+ ipv6 addr 1234:6::1 ffff:ffff::
  mpls enable
  mpls ldp4
  mpls ldp6
@@ -214,16 +216,19 @@ router bgp6 1
  afi-vrf v2 red stat
  afi-vrf v2 red bgp6 2
  exit
-ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
-ipv6 route v1 1234:2:: ffff:ffff:: 1234:1::1
-ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
-ipv4 route v1 2.2.2.104 255.255.255.255 1.1.1.1
-ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
-ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.6.2
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:6::2
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.6.2
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.6.2
+ipv4 route v1 2.2.2.108 255.255.255.255 1.1.6.2
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:6::2
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:6::2
+ipv6 route v1 4321::108 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:6::2
 !
 
 addrouter r4
 int eth1 eth 0000.0000.4444 $4b$ $4a$
+int eth2 eth 0000.0000.4444 $7a$ $7b$
 !
 vrf def v1
  rd 1:1
@@ -252,6 +257,12 @@ int eth1
  mpls ldp4
  mpls ldp6
  exit
+int eth2
+ vrf for v2
+ ipv4 addr 1.1.5.1 255.255.255.0
+ ipv6 addr 1234:5::1 ffff:ffff::
+ mpls enable
+ exit
 router bgp4 1
  vrf v1
  address vpnuni
@@ -278,12 +289,34 @@ router bgp6 1
  afi-vrf v2 red stat
  afi-vrf v2 red bgp6 2
  exit
+router bgp4 2
+ vrf v2
+ address lab
+ local-as 1
+ router-id 4.4.4.4
+ neigh 1.1.5.2 remote-as 4
+ red conn
+ red stat
+ red bgp4 1
+ exit
+router bgp6 2
+ vrf v2
+ address lab
+ local-as 1
+ router-id 6.6.6.4
+ neigh 1234:5::2 remote-as 4
+ red conn
+ red stat
+ red bgp6 1
+ exit
 ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
 ipv6 route v1 1234:1:: ffff:ffff:: 1234:2::1
 ipv4 route v1 2.2.2.101 255.255.255.255 1.1.2.1
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.108 255.255.255.255 1.1.2.1
 ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::108 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 !
 
 addrouter r5
@@ -360,6 +393,82 @@ router bgp6 1
  exit
 !
 
+addrouter r7
+int eth1 eth 0000.0000.7777 $7b$ $7a$
+!
+vrf def v1
+ rd 1:1
+ exit
+int lo0
+ vrf for v1
+ ipv4 addr 3.3.3.107 255.255.255.255
+ ipv6 addr 3333::107 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 1.1.5.2 255.255.255.0
+ ipv6 addr 1234:5::2 ffff:ffff::
+ mpls enable
+ exit
+router bgp4 1
+ vrf v1
+ address lab
+ local-as 4
+ router-id 4.4.4.7
+ neigh 1.1.5.1 remote-as 1
+ red conn
+ red stat
+ exit
+router bgp6 1
+ vrf v1
+ address lab
+ local-as 4
+ router-id 6.6.6.7
+ neigh 1234:5::1 remote-as 1
+ red conn
+ red stat
+ exit
+!
+
+addrouter r8
+int eth1 eth 0000.0000.8888 $3b$ $3a$
+int eth2 eth 0000.0000.8888 $8b$ $8a$
+!
+vrf def v1
+ rd 1:1
+ label-mode per-prefix
+ exit
+int lo0
+ vrf for v1
+ ipv4 addr 2.2.2.108 255.255.255.255
+ ipv6 addr 4321::108 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 1.1.1.2 255.255.255.0
+ ipv6 addr 1234:1::2 ffff:ffff::
+ mpls enable
+ mpls ldp4
+ mpls ldp6
+ exit
+int eth2
+ vrf for v1
+ ipv4 addr 1.1.6.2 255.255.255.0
+ ipv6 addr 1234:6::2 ffff:ffff::
+ mpls enable
+ mpls ldp4
+ mpls ldp6
+ exit
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:1::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.6.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.1.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:6::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+!
+
 
 r1 tping 100 10 2.2.2.101 vrf v1 sou lo0
 r1 tping 100 10 4321::101 vrf v1 sou lo0
@@ -367,6 +476,8 @@ r1 tping 100 10 2.2.2.103 vrf v1 sou lo0
 r1 tping 100 10 4321::103 vrf v1 sou lo0
 r1 tping 100 10 2.2.2.104 vrf v1 sou lo0
 r1 tping 100 10 4321::104 vrf v1 sou lo0
+r1 tping 100 10 2.2.2.108 vrf v1 sou lo0
+r1 tping 100 10 4321::108 vrf v1 sou lo0
 
 r3 tping 100 10 2.2.2.101 vrf v1 sou lo0
 r3 tping 100 10 4321::101 vrf v1 sou lo0
@@ -374,6 +485,8 @@ r3 tping 100 10 2.2.2.103 vrf v1 sou lo0
 r3 tping 100 10 4321::103 vrf v1 sou lo0
 r3 tping 100 10 2.2.2.104 vrf v1 sou lo0
 r3 tping 100 10 4321::104 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.108 vrf v1 sou lo0
+r3 tping 100 10 4321::108 vrf v1 sou lo0
 
 r4 tping 100 10 2.2.2.101 vrf v1 sou lo0
 r4 tping 100 10 4321::101 vrf v1 sou lo0
@@ -381,6 +494,17 @@ r4 tping 100 10 2.2.2.103 vrf v1 sou lo0
 r4 tping 100 10 4321::103 vrf v1 sou lo0
 r4 tping 100 10 2.2.2.104 vrf v1 sou lo0
 r4 tping 100 10 4321::104 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.108 vrf v1 sou lo0
+r4 tping 100 10 4321::108 vrf v1 sou lo0
+
+r8 tping 100 10 2.2.2.101 vrf v1 sou lo0
+r8 tping 100 10 4321::101 vrf v1 sou lo0
+r8 tping 100 10 2.2.2.103 vrf v1 sou lo0
+r8 tping 100 10 4321::103 vrf v1 sou lo0
+r8 tping 100 10 2.2.2.104 vrf v1 sou lo0
+r8 tping 100 10 4321::104 vrf v1 sou lo0
+r8 tping 100 10 2.2.2.108 vrf v1 sou lo0
+r8 tping 100 10 4321::108 vrf v1 sou lo0
 
 r1 tping 100 10 3.3.3.101 vrf v2 sou lo1
 r1 tping 100 10 3333::101 vrf v2 sou lo1
@@ -392,6 +516,8 @@ r1 tping 100 10 3.3.3.105 vrf v2 sou lo1
 r1 tping 100 10 3333::105 vrf v2 sou lo1
 r1 tping 100 10 3.3.3.106 vrf v2 sou lo1
 r1 tping 100 10 3333::106 vrf v2 sou lo1
+r1 tping 100 10 3.3.3.107 vrf v2 sou lo1
+r1 tping 100 10 3333::107 vrf v2 sou lo1
 
 r3 tping 100 10 3.3.3.101 vrf v2 sou lo1
 r3 tping 100 10 3333::101 vrf v2 sou lo1
@@ -403,6 +529,8 @@ r3 tping 100 10 3.3.3.105 vrf v2 sou lo1
 r3 tping 100 10 3333::105 vrf v2 sou lo1
 r3 tping 100 10 3.3.3.106 vrf v2 sou lo1
 r3 tping 100 10 3333::106 vrf v2 sou lo1
+r3 tping 100 10 3.3.3.107 vrf v2 sou lo1
+r3 tping 100 10 3333::107 vrf v2 sou lo1
 
 r4 tping 100 10 3.3.3.101 vrf v2 sou lo1
 r4 tping 100 10 3333::101 vrf v2 sou lo1
@@ -414,6 +542,8 @@ r4 tping 100 10 3.3.3.105 vrf v2 sou lo1
 r4 tping 100 10 3333::105 vrf v2 sou lo1
 r4 tping 100 10 3.3.3.106 vrf v2 sou lo1
 r4 tping 100 10 3333::106 vrf v2 sou lo1
+r4 tping 100 10 3.3.3.107 vrf v2 sou lo1
+r4 tping 100 10 3333::107 vrf v2 sou lo1
 
 r5 tping 100 10 3.3.3.101 vrf v1 sou lo0
 r5 tping 100 10 3333::101 vrf v1 sou lo0
@@ -425,6 +555,8 @@ r5 tping 100 10 3.3.3.105 vrf v1 sou lo0
 r5 tping 100 10 3333::105 vrf v1 sou lo0
 r5 tping 100 10 3.3.3.106 vrf v1 sou lo0
 r5 tping 100 10 3333::106 vrf v1 sou lo0
+r5 tping 100 10 3.3.3.107 vrf v1 sou lo0
+r5 tping 100 10 3333::107 vrf v1 sou lo0
 
 r6 tping 100 10 3.3.3.101 vrf v1 sou lo0
 r6 tping 100 10 3333::101 vrf v1 sou lo0
@@ -436,6 +568,21 @@ r6 tping 100 10 3.3.3.105 vrf v1 sou lo0
 r6 tping 100 10 3333::105 vrf v1 sou lo0
 r6 tping 100 10 3.3.3.106 vrf v1 sou lo0
 r6 tping 100 10 3333::106 vrf v1 sou lo0
+r6 tping 100 10 3.3.3.107 vrf v1 sou lo0
+r6 tping 100 10 3333::107 vrf v1 sou lo0
 
-r1 dping sdn . r4 3.3.3.105 vrf v2 sou lo1
-r1 dping sdn . r4 3333::105 vrf v2 sou lo1
+r7 tping 100 10 3.3.3.101 vrf v1 sou lo0
+r7 tping 100 10 3333::101 vrf v1 sou lo0
+r7 tping 100 10 3.3.3.103 vrf v1 sou lo0
+r7 tping 100 10 3333::103 vrf v1 sou lo0
+r7 tping 100 10 3.3.3.104 vrf v1 sou lo0
+r7 tping 100 10 3333::104 vrf v1 sou lo0
+r7 tping 100 10 3.3.3.105 vrf v1 sou lo0
+r7 tping 100 10 3333::105 vrf v1 sou lo0
+r7 tping 100 10 3.3.3.106 vrf v1 sou lo0
+r7 tping 100 10 3333::106 vrf v1 sou lo0
+r7 tping 100 10 3.3.3.107 vrf v1 sou lo0
+r7 tping 100 10 3333::107 vrf v1 sou lo0
+
+r1 dping sdn . r7 3.3.3.105 vrf v1 sou lo0
+r1 dping sdn . r7 3333::105 vrf v1 sou lo0
