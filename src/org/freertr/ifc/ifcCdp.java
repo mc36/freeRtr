@@ -461,7 +461,6 @@ class ifcCdpNeigh implements Comparable<ifcCdpNeigh> {
         l.add("platform|" + enc7bit.doOneString(platform));
         l.add("ipv4 addr|" + addr4);
         l.add("ipv6 addr|" + addr6);
-        l.addAll(enc7bit.doOneArray(swVer.getBytes(), "versions"));
         l.add("sw version|" + enc7bit.doOneString(swVer));
         l.add("vlan|" + vlan);
         l.add("vtp|" + enc7bit.doOneString(vtp));

@@ -307,6 +307,8 @@ public class servSocks extends servGeneric implements prtServS {
                     case 4:
                         buf = new byte[addrIPv6.size + 2];
                         break;
+                    default:
+                        return true;
                 }
                 if (con1.moreGet(buf, 0, buf.length) != buf.length) {
                     return true;

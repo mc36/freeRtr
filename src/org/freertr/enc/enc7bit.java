@@ -156,9 +156,13 @@ public class enc7bit {
             if (s.length() < 1) {
                 continue;
             }
-            res.add(beg + res.size() + ":" + s.trim());
+            res.add(beg + s.trim());
             s = "";
         }
+        if (s.length() < 1) {
+            return res;
+        }
+        res.add(beg + s.trim());
         return res;
     }
 
