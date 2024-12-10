@@ -54,6 +54,8 @@ class RareApi(BfRtRare):
     from .gtp6 import writeGtp6rules
     from .label4 import writeMplsRules
     #from .label6 import
+    from .vpnlabel4 import writeVpnMplsRules
+    #from .vpnlabel6 import
     from .labroute4 import writeGlobRules4
     from .labroute6 import writeGlobRules6
     from .mbierroute4 import writeMbierRouteRules

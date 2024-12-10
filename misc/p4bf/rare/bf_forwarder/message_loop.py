@@ -137,6 +137,16 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "vpnlabel4":
+            self.writeVpnMplsRules(
+                mode,
+                int(splt[1]),
+                int(splt[4]),
+                int(splt[5]),
+                int(splt[2]),
+            )
+            continue
+
         if cmds[0] == "unlabel4":
             self.writeUnMplsRules(
                 mode,
@@ -441,6 +451,16 @@ def run(self):
                 mode,
                 int(splt[1]),
                 int(splt[4]),
+                int(splt[2]),
+            )
+            continue
+
+        if cmds[0] == "vpnlabel6":
+            self.writeVpnMplsRules(
+                mode,
+                int(splt[1]),
+                int(splt[4]),
+                int(splt[5]),
                 int(splt[2]),
             )
             continue
