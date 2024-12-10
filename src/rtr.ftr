@@ -2055,6 +2055,8 @@ qc pass: p4lang: othervpn with bgp over vlan
 qc pass: p4lang: csc vpn with bgp over vlan
 qc pass: p4lang: othervpn with bgp over qinq
 qc pass: p4lang: csc vpn with bgp over qinq
+qc pass: p4lang: othervpn with bgp over backplane
+qc pass: p4lang: csc vpn with bgp over backplane
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
