@@ -95,6 +95,26 @@ control IngressControlMPLS(inout headers hdr,
         ig_md.ipv6_valid = 0;
     }
 
+    action act_mpls_swap2_set_nexthop(label_t egress_label1, label_t egress_label2, NextHopId_t nexthop_id) {
+        /*
+         * Encapsulate MPLS header
+         */
+        hdr.mpls1.setValid();
+        hdr.mpls1 = hdr.mpls0;
+        hdr.mpls0.bos = 0;
+        hdr.mpls0.label = egress_label1;
+        hdr.mpls1.label = egress_label2;
+        /*
+         * Indicate nexthop_id
+         */
+        ig_md.nexthop_id = nexthop_id;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.mpls_op_type = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+    }
+
     action act_mpls_decap_set_nexthop(NextHopId_t nexthop_id) {
         /*
          * Indicate nexthop_id
@@ -216,6 +236,11 @@ hdr.mpls0.label:
             act_mpls_swap0_set_nexthop;
 
             /*
+             * mpls core push
+             */
+            act_mpls_swap2_set_nexthop;
+
+            /*
              * mpls decapsulation if PHP
              */
             act_mpls_decap_set_nexthop;
@@ -273,6 +298,11 @@ hdr.mpls1.label:
              * mpls core swap
              */
             act_mpls_swap1_set_nexthop;
+
+            /*
+             * mpls core push
+             */
+            act_mpls_swap2_set_nexthop;
 
             /*
              * mpls decapsulation if PHP

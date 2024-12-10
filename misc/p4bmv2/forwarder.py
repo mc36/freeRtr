@@ -3198,6 +3198,42 @@ def writeMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label, port
         ingress_sw.DeleteTableEntry(table_entry2, False)
 
 
+def writeVpnMplsRules(delete, p4info_helper, ingress_sw, dst_label, new_label1, new_label2, port):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
+        match_fields={
+            "hdr.mpls0.label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_swap2_set_nexthop",
+        action_params={
+            "egress_label1": new_label1,
+            "egress_label2": new_label2,
+            "nexthop_id": port
+        }
+    )
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
+        match_fields={
+            "hdr.mpls1.label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_swap2_set_nexthop",
+        action_params={
+            "egress_label1": new_label1,
+            "egress_label2": new_label2,
+            "nexthop_id": port
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
 def writeUnMplsRules(delete, p4info_helper, ingress_sw, dst_label, port):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
@@ -3986,6 +4022,10 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
 
+        if cmds[0] == "vpnlabel4":
+            writeVpnMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[5]),int(splt[2]))
+            continue
+
         if cmds[0] == "unlabel4":
             writeUnMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
@@ -4204,6 +4244,10 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "label6":
             writeMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
+            continue
+
+        if cmds[0] == "vpnlabel6":
+            writeVpnMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[5]),int(splt[2]))
             continue
 
         if cmds[0] == "unlabel6":
