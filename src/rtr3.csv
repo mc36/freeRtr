@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v24.12.10-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v24.12.12-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -565,7 +565,7 @@ http://sources.freertr.org/cfg/p4lang-rout306.tst;p4lang-rout306.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout307.tst;p4lang-rout307.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout308.tst;p4lang-rout308.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout309.tst;p4lang-rout309.tst;ok;ok;ok;not ok;ok;p4lang: gre local connect
-http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;ok;not ok;ok;not ok;not ok;p4lang: gre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;ok;ok;not ok;not ok;not ok;p4lang: gre multicast routing
 http://sources.freertr.org/cfg/p4lang-rout311.tst;p4lang-rout311.tst;ok;ok;ok;ok;not ok;p4lang: multicast routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout312.tst;p4lang-rout312.tst;ok;not ok;ok;ok;ok;p4lang: polka over backplane
 http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;ok;ok;ok;ok;ok;p4lang: nsh over backplane
@@ -619,3 +619,11 @@ http://sources.freertr.org/cfg/p4lang-rout360.tst;p4lang-rout360.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout361.tst;p4lang-rout361.tst;ok;not ok;ok;not ok;ok;p4lang: qinq pmtud
 http://sources.freertr.org/cfg/p4lang-rout362.tst;p4lang-rout362.tst;ok;not ok;ok;not ok;not ok;p4lang: qinq tcpmss
 http://sources.freertr.org/cfg/p4lang-rout363.tst;p4lang-rout363.tst;ok;not ok;ok;not ok;not ok;p4lang: qinq bridge tcpmss
+http://sources.freertr.org/cfg/p4lang-rout364.tst;p4lang-rout364.tst;ok;ok;ok;ok;ok;p4lang: othervpn with bgp
+http://sources.freertr.org/cfg/p4lang-rout365.tst;p4lang-rout365.tst;ok;ok;ok;ok;ok;p4lang: csc vpn with bgp
+http://sources.freertr.org/cfg/p4lang-rout366.tst;p4lang-rout366.tst;ok;ok;ok;ok;ok;p4lang: othervpn with bgp over vlan
+http://sources.freertr.org/cfg/p4lang-rout367.tst;p4lang-rout367.tst;ok;ok;ok;ok;ok;p4lang: csc vpn with bgp over vlan
+http://sources.freertr.org/cfg/p4lang-rout368.tst;p4lang-rout368.tst;ok;ok;ok;ok;ok;p4lang: othervpn with bgp over qinq
+http://sources.freertr.org/cfg/p4lang-rout369.tst;p4lang-rout369.tst;ok;ok;ok;ok;ok;p4lang: csc vpn with bgp over qinq
+http://sources.freertr.org/cfg/p4lang-rout370.tst;p4lang-rout370.tst;ok;ok;ok;ok;ok;p4lang: othervpn with bgp over backplane
+http://sources.freertr.org/cfg/p4lang-rout371.tst;p4lang-rout371.tst;ok;ok;ok;ok;ok;p4lang: csc vpn with bgp over backplane
