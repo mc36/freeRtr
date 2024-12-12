@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.12.5-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-12-05 21:12:29, took 00:27:31, with 10 workers, on 619 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v24.12.11-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-12-11 23:55:36, took 00:31:05, with 10 workers, on 627 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
@@ -621,3 +621,11 @@ http://sources.freertr.org/cfg/p4lang-rout360.tst;p4lang-rout360.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout361.tst;p4lang-rout361.tst;success;p4lang: qinq pmtud
 http://sources.freertr.org/cfg/p4lang-rout362.tst;p4lang-rout362.tst;not applicable;p4lang: qinq tcpmss
 http://sources.freertr.org/cfg/p4lang-rout363.tst;p4lang-rout363.tst;not applicable;p4lang: qinq bridge tcpmss
+http://sources.freertr.org/cfg/p4lang-rout364.tst;p4lang-rout364.tst;success;p4lang: othervpn with bgp
+http://sources.freertr.org/cfg/p4lang-rout365.tst;p4lang-rout365.tst;success;p4lang: csc vpn with bgp
+http://sources.freertr.org/cfg/p4lang-rout366.tst;p4lang-rout366.tst;success;p4lang: othervpn with bgp over vlan
+http://sources.freertr.org/cfg/p4lang-rout367.tst;p4lang-rout367.tst;success;p4lang: csc vpn with bgp over vlan
+http://sources.freertr.org/cfg/p4lang-rout368.tst;p4lang-rout368.tst;success;p4lang: othervpn with bgp over qinq
+http://sources.freertr.org/cfg/p4lang-rout369.tst;p4lang-rout369.tst;success;p4lang: csc vpn with bgp over qinq
+http://sources.freertr.org/cfg/p4lang-rout370.tst;p4lang-rout370.tst;success;p4lang: othervpn with bgp over backplane
+http://sources.freertr.org/cfg/p4lang-rout371.tst;p4lang-rout371.tst;success;p4lang: csc vpn with bgp over backplane
