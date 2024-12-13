@@ -629,6 +629,9 @@ public class ipFwdMpmp implements Comparable<ipFwdMpmp> {
                 i++;
             }
             if (i < 1) {
+                if (uplnk == null) {
+                    return;
+                }
                 doDel(fwd, uplnk);
                 uplnk = null;
                 return;
