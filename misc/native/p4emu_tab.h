@@ -268,7 +268,7 @@ struct neigh_entry {
     long byte;
     int port;
     int aclport;
-    int session;
+    int tid;
     unsigned char macs[12];
     int sip1;
     int sip2;
@@ -280,9 +280,8 @@ struct neigh_entry {
     int dip4;
     int sprt;
     int dprt;
-    int tid;
-    int seq;
 #ifndef HAVE_NOCRYPTO
+    int seq;
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
     int encrKeyLen;

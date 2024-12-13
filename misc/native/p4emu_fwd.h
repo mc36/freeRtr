@@ -246,7 +246,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     tmp = bufS - bufP + preBuff;                                \
     bufP -= 6;                                                  \
     put16msb(bufD, bufP + 0, 0x1100);                           \
-    put16msb(bufD, bufP + 2, neigh_res->session);               \
+    put16msb(bufD, bufP + 2, neigh_res->tid);                   \
     put16msb(bufD, bufP + 4, tmp);                              \
     ethtyp = ETHERTYPE_PPPOE_DATA;                              \
     bufP -= 2;                                                  \

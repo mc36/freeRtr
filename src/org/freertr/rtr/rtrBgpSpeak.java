@@ -2775,6 +2775,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         boolean addpath = addPthRx(safi);
         for (int o = 0; o < currAdd.size(); o++) {
             tabRouteEntry<addrIP> pref = currAdd.get(o);
+            if (pref == null) {
+                continue;
+            }
             attr.best.ident = pref.best.ident;
             attr.best.nextHop = pref.best.nextHop;
             attr.best.labelRem = pref.best.labelRem;

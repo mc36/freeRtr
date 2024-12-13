@@ -1577,14 +1577,11 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "pppoe") == 0) {
-        pppoe_ntry.aclport = atoi(arg[2]);
-        pppoe_ntry.port = atoi(arg[3]);
-        pppoe_ntry.session = atoi(arg[6]);
+        neigh_ntry.aclport = pppoe_ntry.aclport = atoi(arg[2]);
+        neigh_ntry.port = pppoe_ntry.port = atoi(arg[3]);
+        neigh_ntry.tid = pppoe_ntry.session = atoi(arg[6]);
         neigh_ntry.id = atoi(arg[4]);
         neigh_ntry.vrf = atoi(arg[5]);
-        neigh_ntry.port = pppoe_ntry.port;
-        neigh_ntry.aclport = pppoe_ntry.aclport;
-        neigh_ntry.session = pppoe_ntry.session;
         neigh_ntry.command = 2;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[8]);
