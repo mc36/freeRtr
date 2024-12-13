@@ -530,7 +530,7 @@ int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *
     if (neigh_res->encrTagLen > 0) {
         memcpy(&bufD[0], neigh_res->hashKeyDat, 4);
         RAND_bytes(&bufD[4], 8);
-        put32msb(bufD, *bufP - 16, neigh_res->spi);
+        put32msb(bufD, *bufP - 16, neigh_res->tid);
         put32msb(bufD, *bufP - 12, seq);
         memcpy(&bufD[*bufP - 8], &bufD[4], 8);
         if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
@@ -552,7 +552,7 @@ int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *
     if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
     if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
     *bufP -= 8;
-    put32msb(bufD, *bufP + 0, neigh_res->spi);
+    put32msb(bufD, *bufP + 0, neigh_res->tid);
     put32msb(bufD, *bufP + 4, seq);
     if (neigh_res->hashBlkLen < 1) return 0;
     tmp += 8;
@@ -1016,8 +1016,6 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
 #ifndef HAVE_NOCRYPTO
     case 7: // esp
         *bufP = bufT;
-        if (get32msb(bufD, *bufP + 0) != tun_res->spi) return 2;
-        tun_res->seq = get32msb(bufD, *bufP + 4);
         int tmp = *bufS - *bufP + preBuff - tun_res->hashBlkLen;
         if (tmp < 1) return 2;
         int tmp2;

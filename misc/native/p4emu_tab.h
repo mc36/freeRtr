@@ -38,9 +38,9 @@ struct polkaIdx_entry {
 
 struct polkaPoly_entry {
     int port;
-    int tab[256];
     long pack;
     long byte;
+    int tab[256];
 };
 
 struct table_head polkaPoly_table;
@@ -88,6 +88,8 @@ struct table_head nsh_table;
 struct mpls_entry {
     int label;
     int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt, 7=dup, 8=bier, 9=push
+    long pack;
+    long byte;
     int nexthop;
     int port;
     int bridge;
@@ -97,8 +99,6 @@ struct mpls_entry {
     int push;
     int bier[8];
     struct table_head flood;
-    long pack;
-    long byte;
 };
 
 struct table_head mpls_table;
@@ -134,12 +134,6 @@ struct port2vrf_entry {
     int sgtSet;
     int sgtTag;
 #ifndef HAVE_NOCRYPTO
-    unsigned char mcscCrTxKeyDat[256];
-    unsigned char mcscCrRxKeyDat[256];
-    unsigned char mcscDgTxKeyDat[256];
-    unsigned char mcscDgRxKeyDat[256];
-    unsigned char mcscIvTxKeyDat[256];
-    unsigned char mcscIvRxKeyDat[256];
     int mcscEthtyp;
     int mcscCrTxKeyLen;
     int mcscCrRxKeyLen;
@@ -162,6 +156,12 @@ struct port2vrf_entry {
     long mcscByteTx;
     const EVP_CIPHER *mcscEncrAlg;
     const EVP_MD *mcscHashAlg;
+    unsigned char mcscCrTxKeyDat[256];
+    unsigned char mcscCrRxKeyDat[256];
+    unsigned char mcscDgTxKeyDat[256];
+    unsigned char mcscDgRxKeyDat[256];
+    unsigned char mcscIvTxKeyDat[256];
+    unsigned char mcscIvRxKeyDat[256];
 #endif
 };
 
@@ -182,13 +182,13 @@ struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
 
 struct vrf2rib_entry {
     int vrf;
+    long pack;
+    long byte;
     struct tree_head rou;
     struct table_head nat;
     struct table_head tun;
     struct table_head mcst;
     struct table_head plk;
-    long pack;
-    long byte;
 };
 
 
@@ -226,6 +226,10 @@ struct route4_entry {
     int mask;
     int addr[1];
     int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6, 6=mysrv4, 7=mysrv6, 8=brsrv, 9=polka, 10=mpolka, 11=drop
+    long packTx;
+    long byteTx;
+    long packRx;
+    long byteRx;
     int nexthop;
     int label1;
     int label2;
@@ -234,10 +238,6 @@ struct route4_entry {
     int srv3;
     int srv4;
     unsigned char polka[16];
-    long packTx;
-    long byteTx;
-    long packRx;
-    long byteRx;
 };
 
 
@@ -245,6 +245,10 @@ struct route6_entry {
     int mask;
     int addr[4];
     int command;    // 1=route, 2=punt, 3=mpls1, 4=mpls2, 5=srv6, 6=mysrv4, 7=mysrv6, 8=brsrv, 9=polka, 10=mpolka, 11=drop
+    long packTx;
+    long byteTx;
+    long packRx;
+    long byteRx;
     int nexthop;
     int label1;
     int label2;
@@ -253,10 +257,6 @@ struct route6_entry {
     int srv3;
     int srv4;
     unsigned char polka[16];
-    long packTx;
-    long byteTx;
-    long packRx;
-    long byteRx;
 };
 
 
@@ -264,6 +264,8 @@ struct neigh_entry {
     int id;
     int vrf;
     int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=ipip4, 8=ipip6, 9=esp4, 10=esp6, 11=ovpn4, 12=ovpn6, 13=wg4. 14=wg6, 15=amt4, 16=amt6, 17=gtp4, 18=gtp6, 19=l3tp4, 20=l3tp6, 21=tmux4, 22=tmux6
+    long pack;
+    long byte;
     int port;
     int aclport;
     int session;
@@ -279,7 +281,6 @@ struct neigh_entry {
     int sprt;
     int dprt;
     int tid;
-    int spi;
     int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
@@ -292,8 +293,6 @@ struct neigh_entry {
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
 #endif
-    long pack;
-    long byte;
 };
 
 struct table_head neigh_table;
@@ -304,6 +303,10 @@ struct bridge_entry {
     int mac2;
     int mac1;
     int command;    // 1=port, 2=vpls, 3=route, 4=vxlan4, 5=vxlan6, 6=pckoudp4, 7=pckoudp6, 8=srv4, 9=srv6, 10=etherip4, 11=etherip6
+    long packRx;
+    long byteRx;
+    long packTx;
+    long byteTx;
     int port;
     int nexthop;
     int label1;
@@ -319,10 +322,6 @@ struct bridge_entry {
     int srcPort;
     int trgPort;
     int instance;
-    long packRx;
-    long byteRx;
-    long packTx;
-    long byteTx;
 };
 
 struct table_head bridge_table;
@@ -609,9 +608,9 @@ struct nat6_entry {
 struct bundle_entry {
     int id;
     int command;    // 1=port, 2=hairpin
-    int out[16];
     long pack;
     long byte;
+    int out[16];
 };
 
 struct table_head bundle_table;
@@ -635,9 +634,9 @@ struct tun4_entry {
     int trgAddr;
     int prot;
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=etherip
+    long pack;
+    long byte;
     int aclport;
-    int spi;
-    int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
@@ -649,8 +648,6 @@ struct tun4_entry {
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
 #endif
-    long pack;
-    long byte;
 };
 
 
@@ -667,9 +664,9 @@ struct tun6_entry {
     int trgAddr1;
     int prot;
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=etherip
+    long pack;
+    long byte;
     int aclport;
-    int spi;
-    int seq;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
@@ -681,8 +678,6 @@ struct tun6_entry {
     const EVP_CIPHER *encrAlg;
     const EVP_MD *hashAlg;
 #endif
-    long pack;
-    long byte;
 };
 
 
@@ -713,9 +708,9 @@ struct mroute4_entry {
     int src;
     int ingr;
     int local;
-    struct table_head flood;
     long pack;
     long byte;
+    struct table_head flood;
 };
 
 
@@ -731,9 +726,9 @@ struct mroute6_entry {
     int src4;
     int ingr;
     int local;
-    struct table_head flood;
     long pack;
     long byte;
+    struct table_head flood;
 };
 
 

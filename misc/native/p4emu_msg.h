@@ -2054,11 +2054,10 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         if (neigh_ntry.encrAlg == NULL) return 0;
         tun4_ntry.hashAlg = neigh_ntry.hashAlg = getHashAlg(arg[14]);
         if (neigh_ntry.hashAlg == NULL) return 0;
-        tun4_ntry.spi = atoi(arg[15]);
         tun4_ntry.encrKeyLen = str2key(arg[16], tun4_ntry.encrKeyDat);
         tun4_ntry.hashKeyLen = str2key(arg[17], tun4_ntry.hashKeyDat);
         myHmacSetup(tun4_ntry.hashAlg, tun4_ntry.hashKeyDat, &tun4_ntry.hashKeyLen);
-        neigh_ntry.spi = atoi(arg[18]);
+        neigh_ntry.tid = atoi(arg[18]);
         neigh_ntry.encrKeyLen = str2key(arg[19], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[20], neigh_ntry.hashKeyDat);
         myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
@@ -2098,11 +2097,10 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         if (neigh_ntry.encrAlg == NULL) return 0;
         tun6_ntry.hashAlg = neigh_ntry.hashAlg = getHashAlg(arg[14]);
         if (neigh_ntry.hashAlg == NULL) return 0;
-        tun6_ntry.spi = atoi(arg[15]);
         tun6_ntry.encrKeyLen = str2key(arg[16], tun6_ntry.encrKeyDat);
         tun6_ntry.hashKeyLen = str2key(arg[17], tun6_ntry.hashKeyDat);
         myHmacSetup(tun6_ntry.hashAlg, tun6_ntry.hashKeyDat, &tun6_ntry.hashKeyLen);
-        neigh_ntry.spi = atoi(arg[18]);
+        neigh_ntry.tid = atoi(arg[18]);
         neigh_ntry.encrKeyLen = str2key(arg[19], neigh_ntry.encrKeyDat);
         neigh_ntry.hashKeyLen = str2key(arg[20], neigh_ntry.hashKeyDat);
         myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
