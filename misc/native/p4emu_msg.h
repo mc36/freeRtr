@@ -2920,11 +2920,13 @@ void doStatRound(FILE *commands, int round) {
     }
     doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4, commands);
     doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6, commands);
+#ifndef HAVE_NOCRYPTO
     for (int i=0; i<port2vrf_table.size; i++) {
         struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
         if (ntry->mcscEthtyp == 0) continue;
         fprintf(commands, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
     }
+#endif
     for (int i=0; i<acls4_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls4_table, i);
         doStatRound_acl(ntry1, 4, commands);

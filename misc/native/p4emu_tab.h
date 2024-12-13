@@ -133,7 +133,6 @@ struct port2vrf_entry {
     int monPackets;
     int sgtSet;
     int sgtTag;
-    int mcscEthtyp;
 #ifndef HAVE_NOCRYPTO
     unsigned char mcscCrTxKeyDat[256];
     unsigned char mcscCrRxKeyDat[256];
@@ -141,6 +140,7 @@ struct port2vrf_entry {
     unsigned char mcscDgRxKeyDat[256];
     unsigned char mcscIvTxKeyDat[256];
     unsigned char mcscIvRxKeyDat[256];
+    int mcscEthtyp;
     int mcscCrTxKeyLen;
     int mcscCrRxKeyLen;
     int mcscDgTxKeyLen;
@@ -154,15 +154,15 @@ struct port2vrf_entry {
     int mcscNeedAead;
     int mcscSeqTx;
     int mcscSeqRx;
-    const EVP_CIPHER *mcscEncrAlg;
-    const EVP_MD *mcscHashAlg;
-#endif
     long mcscPackRx;
     long mcscByteRx;
     long mcscPackOk;
     long mcscByteOk;
     long mcscPackTx;
     long mcscByteTx;
+    const EVP_CIPHER *mcscEncrAlg;
+    const EVP_MD *mcscHashAlg;
+#endif
 };
 
 struct table_head port2vrf_table;

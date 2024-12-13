@@ -584,8 +584,8 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
         *ethtyp = ETHERTYPE_SGT;
         put16msb(bufD, *bufP + 0, *ethtyp);
     }
-    if (port2vrf_res->mcscEthtyp == 0) return 0;
 #ifndef HAVE_NOCRYPTO
+    if (port2vrf_res->mcscEthtyp == 0) return 0;
     unsigned char *bufH = ctx->bufH;
     port2vrf_res->mcscPackTx++;
     port2vrf_res->mcscByteTx += *bufS;
@@ -639,7 +639,7 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
     memcpy(&bufD[*bufP], &bufD[0], 8);
     return 0;
 #else
-    return 1;
+    return 0;
 #endif
 }
 
