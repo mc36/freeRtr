@@ -4849,6 +4849,50 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * usage of next hops
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getNhTrnsit(int safi) {
+        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpDump.updateNhTrnsit(lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpDump.updateNhTrnsit(lst, lstnNei.get(i), safi);
+        }
+        userFormat res = new userFormat("|", "nexthop|count|transits");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapStat ntry = lst.get(i);
+            res.add(ntry.toNhTrnsit());
+        }
+        return res;
+    }
+
+    /**
+     * usage of next hops
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getNhOrigin(int safi) {
+        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpDump.updateNhOrigin(lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpDump.updateNhOrigin(lst, lstnNei.get(i), safi);
+        }
+        userFormat res = new userFormat("|", "nexthop|count|origins");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapStat ntry = lst.get(i);
+            res.add(ntry.toNhTrnsit());
+        }
+        return res;
+    }
+
+    /**
      * inconsistent next hops
      *
      * @param safi safi to query

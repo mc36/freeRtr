@@ -857,6 +857,8 @@ public class userExec {
         hl.add(null, "6 7,.            nhinconsistent     inconsistent advertisements of next hops");
         hl.add(null, "7 .                [str]            int matcher");
         hl.add(null, "6 .              nhprefixes         prefix count of next hops");
+        hl.add(null, "6 .              nhtransit          transiting ases of next hops");
+        hl.add(null, "6 .              nhorigin           originating ases of next hops");
         hl.add(null, "6 .              prefix-lengths     prefix length distribution");
         hl.add(null, "6 7              allroute           list of specific routes");
         hl.add(null, "7 8,.              <addr>           prefix to view");

@@ -140,4 +140,21 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
         return prefix.network + "|" + count;
     }
 
+    /**
+     * get usage of next hops
+     *
+     * @return paths
+     */
+    public String toNhTrnsit() {
+        String s = "";
+        for (int i = 0; i < paths.size(); i++) {
+            rtrBgpFlapLst ntry = paths.get(i);
+            for (int o = 0; o < ntry.lst.size(); o++) {
+                int p = ntry.lst.get(o);
+                s += " " + clntWhois.asn2mixed(p, true);
+            }
+        }
+        return prefix.network + "|" + paths.size() + "|" + s.trim();
+    }
+
 }
