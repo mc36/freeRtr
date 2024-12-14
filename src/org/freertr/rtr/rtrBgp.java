@@ -4827,6 +4827,28 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * usage of next hops
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getNhPrfxes(int safi) {
+        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpDump.updateNhPrfxes(lst, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpDump.updateNhPrfxes(lst, lstnNei.get(i), safi);
+        }
+        userFormat res = new userFormat("|", "nexthop|prefixes");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapStat ntry = lst.get(i);
+            res.add(ntry.toNhPrfxes());
+        }
+        return res;
+    }
+
+    /**
      * inconsistent next hops
      *
      * @param safi safi to query
@@ -4847,7 +4869,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (!mtch.matches(ntry.infos.size())) {
                 continue;
             }
-            res.add("" + ntry.toInconsStr());
+            res.add(ntry.toInconsStr());
         }
         return res;
     }
@@ -4873,7 +4895,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
-            res.add("" + ntry.toInconsPth());
+            res.add(ntry.toInconsPth());
         }
         return res;
     }

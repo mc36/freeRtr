@@ -158,6 +158,35 @@ public class rtrBgpDump {
     }
 
     /**
+     * usage of next hops
+     *
+     * @param lst asn list
+     * @param nei neighbor to read
+     * @param safi safi to use
+     */
+    public static void updateNhPrfxes(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.best.nextHop);
+            rtrBgpFlapStat old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            ntry.count++;
+        }
+    }
+
+    /**
      * update as graph
      *
      * @param lst asn list

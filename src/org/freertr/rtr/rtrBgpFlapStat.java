@@ -29,6 +29,19 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     }
 
     /**
+     * create instance
+     *
+     * @param a afi
+     * @param r rd
+     * @param p prefix
+     */
+    public rtrBgpFlapStat(int a, long r, addrIP p) {
+        afi = a;
+        rd = r;
+        prefix = new addrPrefix<addrIP>(p.copyBytes(), addrIP.size * 8);
+    }
+
+    /**
      * address family
      */
     public final int afi;
@@ -116,6 +129,15 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
             }
         }
         return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + s.trim();
+    }
+
+    /**
+     * get usage of next hops
+     *
+     * @return paths
+     */
+    public String toNhPrfxes() {
+        return prefix.network + "|" + count;
     }
 
 }

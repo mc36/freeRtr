@@ -4420,6 +4420,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.getNhIncons(sfi, m));
             return;
         }
+        if (a.equals("nhprefixes")) {
+            rdr.putStrTab(r.bgp.getNhPrfxes(sfi));
+            return;
+        }
         if (a.equals("flapstat")) {
             rdr.putStrTab(r.bgp.getFlapstat(sfi, bits.str2num(cmd.word())));
             return;
