@@ -3445,7 +3445,7 @@ qc pass: redistribution route limit
 qc pass: redistribution with rift
 qc pass: redistribution with bgp car
 qc pass: redistribution with ocar bgp
-qc pass: redistribution with bgp spf
+qc pass: redistribution with spf bgp
 qc pass: rift point2point connection
 qc pass: rift point2point chain
 qc pass: rift metric
