@@ -60,6 +60,7 @@ import org.freertr.tab.tabPbrN;
 import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabQosN;
 import org.freertr.tab.tabRoute;
+import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.tab.tabRtrmapN;
@@ -4154,6 +4155,9 @@ public class servP4langConn implements Runnable {
                 if (recur == null) {
                     continue;
                 }
+                if (recur.best.rouTyp == tabRouteAttr.routeType.conn) {
+                    recur.best.nextHop = ntry.best.nextHop.copyBytes();
+                }
                 if (recur.best.nextHop == null) {
                     continue;
                 }
@@ -4282,6 +4286,9 @@ public class servP4langConn implements Runnable {
                 old = lower.convRou(old, true);
                 if (old == null) {
                     continue;
+                }
+                if (old.best.rouTyp == tabRouteAttr.routeType.conn) {
+                    old.best.nextHop = ntry.best.nextHop.copyBytes();
                 }
                 servP4langNei hop = lower.findNei(old.best.iface, old.best.nextHop);
                 if (hop == null) {
