@@ -16318,3 +16318,5 @@ qc pass: p4lang: csc vpn with bgp over backplane
 qc pass: redistribution with bgp car
 qc pass: redistribution with ocar bgp
 qc pass: redistribution with bgp spf
+---------------------------------- 2024-12-15 15:22:44 24.12.15
+qc pass: p4lang: olab with bgp

@@ -36,12 +36,19 @@ int lo0
  ipv4 addr 2.2.2.101 255.255.255.255
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 3.3.3.101 255.255.255.255
+ ipv6 addr 3333::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
 int sdn1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 int sdn2
  vrf for v1
@@ -49,6 +56,8 @@ int sdn2
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 int sdn3
  vrf for v1
@@ -56,6 +65,8 @@ int sdn3
  ipv6 addr 1234:3::1 ffff:ffff::
  ipv6 ena
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 int sdn4
  vrf for v1
@@ -63,16 +74,21 @@ int sdn4
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
  address olab
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 2
- neigh 1.1.2.2 remote-as 3
- neigh 1.1.3.2 remote-as 4
- neigh 1.1.4.2 remote-as 5
+ temp a remote-as 1
+ temp a update lo0
+ temp a route-reflect
+ neigh 2.2.2.103 temp a
+ neigh 2.2.2.104 temp a
+ neigh 2.2.2.105 temp a
+ neigh 2.2.2.106 temp a
  afi-other ena
  afi-other red conn
  afi-other red stat
@@ -82,10 +98,13 @@ router bgp6 1
  address olab
  local-as 1
  router-id 6.6.6.1
- neigh 1234:1::2 remote-as 2
- neigh 1234:2::2 remote-as 3
- neigh 1234:3::2 remote-as 4
- neigh 1234:4::2 remote-as 5
+ temp a remote-as 1
+ temp a update lo0
+ temp a route-reflect
+ neigh 4321::103 temp a
+ neigh 4321::104 temp a
+ neigh 4321::105 temp a
+ neigh 4321::106 temp a
  afi-other ena
  afi-other red conn
  afi-other red stat
@@ -99,6 +118,14 @@ server p4lang p4
  export-port sdn4 4 10
  vrf v9
  exit
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.3.2
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.4.2
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
 addother r2 controller r1 v9 9080 - feature route mpls
@@ -123,18 +150,26 @@ int lo0
  ipv4 addr 2.2.2.103 255.255.255.255
  ipv6 addr 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 3.3.3.103 255.255.255.255
+ ipv6 addr 3333::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
  address olab
- local-as 2
+ local-as 1
  router-id 4.4.4.3
- neigh 1.1.1.1 remote-as 1
+ neigh 2.2.2.101 remote-as 1
+ neigh 2.2.2.101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
@@ -142,13 +177,24 @@ router bgp4 1
 router bgp6 1
  vrf v1
  address olab
- local-as 2
+ local-as 1
  router-id 6.6.6.3
- neigh 1234:1::1 remote-as 1
+ neigh 4321::101 remote-as 1
+ neigh 4321::101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
  exit
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:1::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.1.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 !
 
 addrouter r4
@@ -163,18 +209,26 @@ int lo0
  ipv4 addr 2.2.2.104 255.255.255.255
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 3.3.3.104 255.255.255.255
+ ipv6 addr 3333::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
  address olab
- local-as 3
+ local-as 1
  router-id 4.4.4.4
- neigh 1.1.2.1 remote-as 1
+ neigh 2.2.2.101 remote-as 1
+ neigh 2.2.2.101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
@@ -182,13 +236,24 @@ router bgp4 1
 router bgp6 1
  vrf v1
  address olab
- local-as 3
+ local-as 1
  router-id 6.6.6.4
- neigh 1234:2::1 remote-as 1
+ neigh 4321::101 remote-as 1
+ neigh 4321::101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
  exit
+ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
+ipv6 route v1 1234:1:: ffff:ffff:: 1234:2::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.2.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 !
 
 addrouter r5
@@ -196,24 +261,33 @@ int eth1 eth 0000.0000.5555 $5b$ $5a$
 !
 vrf def v1
  rd 1:1
+ label-mode per-prefix
  exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.105 255.255.255.255
  ipv6 addr 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 3.3.3.105 255.255.255.255
+ ipv6 addr 3333::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.3.2 255.255.255.0
  ipv6 addr 1234:3::2 ffff:ffff::
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
  address olab
- local-as 4
+ local-as 1
  router-id 4.4.4.5
- neigh 1.1.3.1 remote-as 1
+ neigh 2.2.2.101 remote-as 1
+ neigh 2.2.2.101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
@@ -221,13 +295,24 @@ router bgp4 1
 router bgp6 1
  vrf v1
  address olab
- local-as 4
+ local-as 1
  router-id 6.6.6.5
- neigh 1234:3::1 remote-as 1
+ neigh 4321::101 remote-as 1
+ neigh 4321::101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
  exit
+ipv4 route v1 1.1.4.0 255.255.255.0 1.1.3.1
+ipv6 route v1 1234:4:: ffff:ffff:: 1234:3::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.3.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 !
 
 addrouter r6
@@ -235,24 +320,33 @@ int eth1 eth 0000.0000.6666 $6b$ $6a$
 !
 vrf def v1
  rd 1:1
+ label-mode per-prefix
  exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.106 255.255.255.255
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 3.3.3.106 255.255.255.255
+ ipv6 addr 3333::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::
  mpls enable
+ mpls ldp4
+ mpls ldp6
  exit
 router bgp4 1
  vrf v1
  address olab
- local-as 5
+ local-as 1
  router-id 4.4.4.6
- neigh 1.1.4.1 remote-as 1
+ neigh 2.2.2.101 remote-as 1
+ neigh 2.2.2.101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
@@ -260,13 +354,24 @@ router bgp4 1
 router bgp6 1
  vrf v1
  address olab
- local-as 5
+ local-as 1
  router-id 6.6.6.6
- neigh 1234:4::1 remote-as 1
+ neigh 4321::101 remote-as 1
+ neigh 4321::101 update lo0
  afi-other ena
  afi-other red conn
  afi-other red stat
  exit
+ipv4 route v1 1.1.3.0 255.255.255.0 1.1.4.1
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:4::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.4.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
 
@@ -325,6 +430,61 @@ r6 tping 100 10 4321::105 vrf v1 sou lo0
 r6 tping 100 10 2.2.2.106 vrf v1 sou lo0
 r6 tping 100 10 4321::106 vrf v1 sou lo0
 
+r1 tping 100 10 3.3.3.101 vrf v1 sou lo1
+r1 tping 100 10 3333::101 vrf v1 sou lo1
+r1 tping 100 10 3.3.3.103 vrf v1 sou lo1
+r1 tping 100 10 3333::103 vrf v1 sou lo1
+r1 tping 100 10 3.3.3.104 vrf v1 sou lo1
+r1 tping 100 10 3333::104 vrf v1 sou lo1
+r1 tping 100 10 3.3.3.105 vrf v1 sou lo1
+r1 tping 100 10 3333::105 vrf v1 sou lo1
+r1 tping 100 10 3.3.3.106 vrf v1 sou lo1
+r1 tping 100 10 3333::106 vrf v1 sou lo1
 
-r1 dping sdn . r4 2.2.2.105 vrf v2 sou lo1
-r1 dping sdn . r4 4321::105 vrf v2 sou lo1
+r3 tping 100 10 3.3.3.101 vrf v1 sou lo1
+r3 tping 100 10 3333::101 vrf v1 sou lo1
+r3 tping 100 10 3.3.3.103 vrf v1 sou lo1
+r3 tping 100 10 3333::103 vrf v1 sou lo1
+r3 tping 100 10 3.3.3.104 vrf v1 sou lo1
+r3 tping 100 10 3333::104 vrf v1 sou lo1
+r3 tping 100 10 3.3.3.105 vrf v1 sou lo1
+r3 tping 100 10 3333::105 vrf v1 sou lo1
+r3 tping 100 10 3.3.3.106 vrf v1 sou lo1
+r3 tping 100 10 3333::106 vrf v1 sou lo1
+
+r4 tping 100 10 3.3.3.101 vrf v1 sou lo1
+r4 tping 100 10 3333::101 vrf v1 sou lo1
+r4 tping 100 10 3.3.3.103 vrf v1 sou lo1
+r4 tping 100 10 3333::103 vrf v1 sou lo1
+r4 tping 100 10 3.3.3.104 vrf v1 sou lo1
+r4 tping 100 10 3333::104 vrf v1 sou lo1
+r4 tping 100 10 3.3.3.105 vrf v1 sou lo1
+r4 tping 100 10 3333::105 vrf v1 sou lo1
+r4 tping 100 10 3.3.3.106 vrf v1 sou lo1
+r4 tping 100 10 3333::106 vrf v1 sou lo1
+
+r5 tping 100 10 3.3.3.101 vrf v1 sou lo1
+r5 tping 100 10 3333::101 vrf v1 sou lo1
+r5 tping 100 10 3.3.3.103 vrf v1 sou lo1
+r5 tping 100 10 3333::103 vrf v1 sou lo1
+r5 tping 100 10 3.3.3.104 vrf v1 sou lo1
+r5 tping 100 10 3333::104 vrf v1 sou lo1
+r5 tping 100 10 3.3.3.105 vrf v1 sou lo1
+r5 tping 100 10 3333::105 vrf v1 sou lo1
+r5 tping 100 10 3.3.3.106 vrf v1 sou lo1
+r5 tping 100 10 3333::106 vrf v1 sou lo1
+
+r6 tping 100 10 3.3.3.101 vrf v1 sou lo1
+r6 tping 100 10 3333::101 vrf v1 sou lo1
+r6 tping 100 10 3.3.3.103 vrf v1 sou lo1
+r6 tping 100 10 3333::103 vrf v1 sou lo1
+r6 tping 100 10 3.3.3.104 vrf v1 sou lo1
+r6 tping 100 10 3333::104 vrf v1 sou lo1
+r6 tping 100 10 3.3.3.105 vrf v1 sou lo1
+r6 tping 100 10 3333::105 vrf v1 sou lo1
+r6 tping 100 10 3.3.3.106 vrf v1 sou lo1
+r6 tping 100 10 3333::106 vrf v1 sou lo1
+
+
+r1 dping sdn . r4 3.3.3.105 vrf v1 sou lo1
+r1 dping sdn . r4 3333::105 vrf v1 sou lo1
