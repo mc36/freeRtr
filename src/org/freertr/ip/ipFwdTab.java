@@ -1324,18 +1324,12 @@ public class ipFwdTab {
                 vrf = ntry.rouTab;
                 tabRouteEntry<addrIP> nh = vrf.actualU.route(hop);
                 if (nh != null) {
-                    lrs = tabLabel.prependLabels(new ArrayList<Integer>(), ntry.labelRem);
                     ifc = (ipFwdIface) nh.best.iface;
-                    switch (nh.best.rouTyp) {
-                        case conn:
-                        case remote:
-                        case defpref:
-                            break;
-                        default:
-                            lrs = tabLabel.prependLabels(lrs, nh.best.labelRem);
-                            hop = nh.best.nextHop;
-                            break;
+                    if (nh.best.rouTyp != tabRouteAttr.routeType.conn) {
+                        hop = nh.best.nextHop;
                     }
+                    lrs = tabLabel.prependLabels(new ArrayList<Integer>(), ntry.labelRem);
+                    lrs = tabLabel.prependLabels(lrs, nh.best.labelRem);
                 }
             }
             if (hop != null) {
