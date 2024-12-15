@@ -16322,3 +16322,5 @@ qc pass: redistribution with bgp spf
 qc pass: p4lang: olab with bgp
 ---------------------------------- 2024-12-15 16:18:25 24.12.15
 qc pass: p4lang: olab with bgp over vlan
+---------------------------------- 2024-12-15 16:52:46 24.12.15
+qc pass: p4lang: olab with bgp over qinq
