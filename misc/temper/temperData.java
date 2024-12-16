@@ -204,6 +204,7 @@ public class temperData {
         if (myPri < 0) {
             return;
         }
+        results prevCalc = lastCalc;
         //lastCalc = results.idle;
         if (lower.lastNeeded > (lastMeasure + lower.heatTol)) {
             lastCalc = results.heat;
@@ -224,15 +225,8 @@ public class temperData {
             timeWindow = 0;
             return;
         }
-        switch (lastCalc) {
-            case heat:
-                isWindow = lastMeasure < (lastWindow - lower.windowTol);
-                break;
-            case cool:
-                isWindow = lastMeasure > (lastWindow + lower.windowTol);
-                break;
-            default:
-                break;
+        if ((prevCalc == results.heat) && (lastCalc == results.heat)) {
+            isWindow = lastMeasure < (lastWindow - lower.windowTol);
         }
         if (!isWindow) {
             return;
