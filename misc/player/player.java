@@ -67,6 +67,8 @@ public class player implements Runnable {
 
     private boolean headEnd = false;
 
+    private boolean locked = false;
+
     private int volMin = 0;
 
     private int volMax = 100;
@@ -393,6 +395,10 @@ public class player implements Runnable {
                 a = a.substring(o, a.length()).trim();
                 if (a.equals("mixer")) {
                     mixer = b;
+                    continue;
+                }
+                if (a.equals("locked")) {
+                    locked = true;
                     continue;
                 }
                 if (a.equals("headend")) {
@@ -804,6 +810,9 @@ public class player implements Runnable {
             putMenu(buf);
             int i = playerUtil.str2int(song);
             if (i >= 0) {
+                if (headEnd) {
+                    return -1;
+                }
                 setVolume(i);
                 String a = "volume set to " + currVlme + " percent.<br/>";
                 buf.write(a.getBytes());
@@ -958,7 +967,7 @@ public class player implements Runnable {
                 String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "<br/>headend=" + headEnd + ", mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
+            String a = "<br/>locked=" + locked + ", headend=" + headEnd + ", mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=fullstop\">!full stop!</a><br/>";
             buf.write(a.getBytes());
@@ -1004,6 +1013,9 @@ public class player implements Runnable {
         if (cmd.equals("airplay")) {
             putStart(buf, 5);
             putMenu(buf);
+            if (locked) {
+                return -1;
+            }
             String a = "<br/>starting airplay server.<br/>";
             buf.write(a.getBytes());
             startPlayAirplay();
@@ -1012,6 +1024,9 @@ public class player implements Runnable {
         if (cmd.equals("dlna")) {
             putStart(buf, 5);
             putMenu(buf);
+            if (locked) {
+                return -1;
+            }
             String a = "<br/>starting dlna server.<br/>";
             buf.write(a.getBytes());
             startPlayDlna();
@@ -1020,15 +1035,21 @@ public class player implements Runnable {
         if (cmd.equals("roc")) {
             putStart(buf, 5);
             putMenu(buf);
+            if (locked) {
+                return -1;
+            }
             String a = "<br/>starting roc server.<br/>";
             buf.write(a.getBytes());
             startPlayRoc();
             return -1;
         }
         if (cmd.equals("headend")) {
-            headEnd = !headEnd;
             putStart(buf, 5);
             putMenu(buf);
+            if (locked) {
+                return -1;
+            }
+            headEnd = !headEnd;
             String a = "<br/>toggled multicast streamer.<br/>";
             buf.write(a.getBytes());
             return -1;
@@ -1036,6 +1057,9 @@ public class player implements Runnable {
         if (cmd.equals("receive")) {
             putStart(buf, 5);
             putMenu(buf);
+            if (locked) {
+                return -1;
+            }
             String a = "<br/>starting multicast receiver.<br/>";
             buf.write(a.getBytes());
             startPlayRcvr();
