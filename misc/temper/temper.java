@@ -206,7 +206,7 @@ public class temper implements Runnable {
     /**
      * window tolerance
      */
-    protected float windowTol = -0.9F;
+    protected float windowTol = 0.9F;
 
     /**
      * heat pin
