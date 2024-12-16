@@ -69,7 +69,7 @@ public class cfgObjnet implements Comparable<cfgObjnet>, cfgGeneric {
         l.add(null, "3  .     <mask>              mask of network");
         l.add(null, "1  2,. reindex               reindex access list");
         l.add(null, "2  3,.   [num]               initial number to start with");
-        l.add(null, "3  4,.     [num]             increment number");
+        l.add(null, "3  .       [num]             increment number");
     }
 
     public List<String> getShRun(int filter) {

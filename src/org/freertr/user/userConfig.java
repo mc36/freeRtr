@@ -1860,8 +1860,15 @@ public class userConfig {
         } else {
             fwd = vrf.fwd6;
         }
+        String s = cmd.getRemaining();
+        String a = cmd.word();
+        if (a.equals("reindex")) {
+            int i = bits.str2num(cmd.word());
+            fwd.pbrCfg.reindex(i, bits.str2num(cmd.word()));
+            return null;
+        }
         ntry.sequence = fwd.pbrCfg.nextseq();
-        if (ntry.fromString(p, cmd.getRemaining())) {
+        if (ntry.fromString(p, s)) {
             return null;
         }
         ntry.matcher.copyCores(fwd.pbrCfg);
@@ -1881,6 +1888,15 @@ public class userConfig {
             fwd = vrf.fwd6;
         }
         String s = cmd.getRemaining();
+        String a = cmd.word();
+        if (a.equals("reindex")) {
+            if (neg) {
+                return null;
+            }
+            int i = bits.str2num(cmd.word());
+            fwd.natCfg.reindex(i, bits.str2num(cmd.word()));
+            return null;
+        }
         ntry.sequence = fwd.natCfg.nextseq();
         int res = ntry.fromString(p, s, neg);
         switch (res) {
@@ -2023,6 +2039,9 @@ public class userConfig {
         l.add(null, "7  .              <num>                    port number");
         l.add(null, "2  3    pbr                                configure policy based routing");
         l.add(null, "3  4,6    <name:vrf>                       name of routing table");
+        l.add(null, "4  5,.      reindex                        reindex pbrs");
+        l.add(null, "5  7,.        [num]                        initial number to start with");
+        l.add(null, "7  .            [num]                      increment number");
         l.add(null, "4  5        sequence                       sequence number");
         l.add(null, "5  6          <num>                        number");
         l.add(null, "6  7            <name:acl>                 access list name");
@@ -2036,6 +2055,9 @@ public class userConfig {
         l.add(null, "10 8,.                  <num>              service index");
         l.add(null, "2  3    nat                                configure network address translation");
         l.add(null, "3  4,6    <name:vrf>                       name of routing table");
+        l.add(null, "4  5,.      reindex                        reindex nats");
+        l.add(null, "5  7,.        [num]                        initial number to start with");
+        l.add(null, "7  .            [num]                      increment number");
         l.add(null, "4  5        sequence                       sequence number");
         l.add(null, "5  6          <num>                        number");
         l.add(null, "6  .            log-translations           turn on logging");

@@ -127,7 +127,7 @@ public class cfgEvntmgr implements Comparable<cfgEvntmgr>, cfgGeneric {
         l.add(null, "1  .   suppress              suppress the log");
         l.add(null, "1  2,. reindex               reindex event manager");
         l.add(null, "2  3,.   [num]               initial number to start with");
-        l.add(null, "3  4,.     [num]             increment number");
+        l.add(null, "3  .       [num]             increment number");
     }
 
     public void doCfgStr(cmds cmd) {

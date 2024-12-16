@@ -35,7 +35,7 @@ public class authList extends authGeneric {
         l.add(null, "3 .      <name:aaa>      name of authenticator");
         l.add(null, "1 2,. reindex            reindex prefix list");
         l.add(null, "2 3,.   [num]            initial number to start with");
-        l.add(null, "3 4,.     [num]          increment number");
+        l.add(null, "3 .       [num]          increment number");
     }
 
     public List<String> getShRun(String beg, int filter) {

@@ -126,7 +126,7 @@ public class cfgPlymp implements Comparable<cfgPlymp>, cfgGeneric {
         l.add(null, "2 1,.   <num>               sequence number");
         l.add(null, "1 2,. reindex               reindex route map");
         l.add(null, "2 3,.   [num]               initial number to start with");
-        l.add(null, "3 4,.     [num]             increment number");
+        l.add(null, "3 .       [num]             increment number");
         l.add(null, "1 2   action                set action to do");
         l.add(null, "2 .     drop                drop every packet");
         l.add(null, "2 .     transit             forward every packet");

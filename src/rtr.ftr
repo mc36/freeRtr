@@ -3644,7 +3644,6 @@ todo: rfc9000 quic v1, v2 and mls, when these have at least adjustmss...
 todo: rfc8548 tcpcrypt
 todo: rfc9298 rfc9484 ip/udp-proxy-in-http
 todo: update gtp stack to the latest standards
-todo: nat and pbr config to have reindex
 todo: bgp shadow route reflection
 todo: bgp optimal route reflection
 todo: bgp peer autoconfig

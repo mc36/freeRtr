@@ -6,6 +6,7 @@ import org.freertr.line.lineScript;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelping;
+import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
 /**
@@ -75,6 +76,22 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
         boolean neg = s.equals(cmds.negated);
         if (!neg) {
             cmd = cmd.copyBytes(true);
+        }
+        if (s.equals("rename")) {
+            s = cmd.word();
+            cfgChat v = cfgAll.chatFind(s, false);
+            if (v != null) {
+                cmd.error("already exists");
+                return;
+            }
+            script.scrName = s;
+            name = s;
+            return;
+        }
+        if (s.equals("reindex")) {
+            int i = bits.str2num(cmd.word());
+            script.reindex(i, bits.str2num(cmd.word()));
+            return;
         }
         if (script.doCfg(cmd, neg)) {
             cmd.badCmd();

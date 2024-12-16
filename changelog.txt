@@ -16327,3 +16327,5 @@ qc pass: p4lang: olab with bgp over qinq
 ---------------------------------- 2024-12-15 19:37:23 24.12.15
 no qc pass: redistribution with bgp spf
 qc pass: redistribution with spf bgp
+---------------------------------- 2024-12-16 08:35:55 24.12.16
+no todo: nat and pbr config to have reindex

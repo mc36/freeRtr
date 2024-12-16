@@ -91,7 +91,7 @@ public class cfgPrfxlst implements Comparable<cfgPrfxlst>, cfgGeneric {
         l.add(null, "4 4,.     log               set logging on match");
         l.add(null, "1 2,. reindex               reindex prefix list");
         l.add(null, "2 3,.   [num]               initial number to start with");
-        l.add(null, "3 4,.     [num]             increment number");
+        l.add(null, "3 .       [num]             increment number");
     }
 
     public synchronized void doCfgStr(cmds cmd) {

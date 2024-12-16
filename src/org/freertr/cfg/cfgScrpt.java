@@ -183,7 +183,7 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
         l.add(null, "3  3,.        <str>                  tcl commands");
         l.add(null, "1  2,.    reindex                    reindex route map");
         l.add(null, "2  3,.      [num]                    initial number to start with");
-        l.add(null, "3  4,.        [num]                  increment number");
+        l.add(null, "3  .          [num]                  increment number");
         l.add(null, "1  .      stop                       stop working");
         l.add(null, "1  .      start                      start working");
         l.add(null, "1  .      hidden                     hide command");

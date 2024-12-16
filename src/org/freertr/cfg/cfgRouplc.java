@@ -104,7 +104,7 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, "2 1,.   <num>               sequence number");
         l.add(null, "1 2,. reindex               reindex route map");
         l.add(null, "2 3,.   [num]               initial number to start with");
-        l.add(null, "3 4,.     [num]             increment number");
+        l.add(null, "3 .       [num]             increment number");
         l.add(null, "1 .   next                  no operation");
         l.add(null, "1 2,. description           description of this route policy");
         l.add(null, "2 2,.   [text]              text describing this route policy");

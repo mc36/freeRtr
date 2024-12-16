@@ -1,7 +1,6 @@
 package org.freertr.ip;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -775,6 +774,9 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "4 5         <name:trk>              name of tracker");
         l.add(null, "5 .           <num>                 decrement value");
         l.add(null, "2 3,5  pbr                          configure policy based routing");
+        l.add(null, "3 4,.    reindex                    reindex pbrs");
+        l.add(null, "4 6,.      [num]                    initial number to start with");
+        l.add(null, "6 .          [num]                  increment number");
         l.add(null, "3 4      sequence                   sequence number");
         l.add(null, "4 5        <num>                    number");
         l.add(null, "5 6          <name:acl>             access list name");
@@ -1408,11 +1410,18 @@ public class ipFwdIface extends tabRouteIface {
             pbrCfg.myCor = cor;
             pbrCfg.myIcmp = fwd.icmpCore;
             tabPbrN ntry = new tabPbrN();
+            String s = cmd.getRemaining();
+            a = cmd.word();
+            if (a.equals("reindex")) {
+                int i = bits.str2num(cmd.word());
+                pbrCfg.reindex(i, bits.str2num(cmd.word()));
+                return false;
+            }
             ntry.sequence = pbrCfg.nextseq();
-            if (ntry.fromString(fwd.ipVersion, cmd.getRemaining())) {
+            if (ntry.fromString(fwd.ipVersion, s)) {
                 return true;
             }
-            ntry.matcher.copyCores(fwd.pbrCfg);
+            ntry.matcher.copyCores(pbrCfg);
             pbrCfg.add(ntry);
             return false;
         }
