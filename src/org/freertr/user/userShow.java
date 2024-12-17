@@ -129,6 +129,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabRtrmapN;
+import org.freertr.tab.tabRtrplc;
 import org.freertr.tab.tabSession;
 import org.freertr.tab.tabSessionEntry;
 import org.freertr.util.bits;
@@ -1708,6 +1709,26 @@ public class userShow {
                 tim = bits.str2time(cfgAll.timeZoneName, a);
             }
             rdr.putStrArr(bits.str2lst(bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 3) + " returns " + rtmp.matches(tim)));
+            return null;
+        }
+        if (a.equals("rm2rpl")) {
+            cfgRoump rtmp = cfgAll.rtmpFind(cmd.word(), false);
+            if (rtmp == null) {
+                cmd.error("no such route map");
+                return null;
+            }
+            List<String> lst = rtmp.getShRun(1);
+            rdr.putStrArr(tabRtrplc.convertRm2rpl(lst));
+            return null;
+        }
+        if (a.equals("rpl2rm")) {
+            cfgRouplc rtpl = cfgAll.rtplFind(cmd.word(), false);
+            if (rtpl == null) {
+                cmd.error("no such route policy");
+                return null;
+            }
+            List<String> lst = rtpl.getShRun(1);
+            rdr.putStrArr(tabRtrplc.convertRpl2rm(lst));
             return null;
         }
         if (a.equals("route-map")) {

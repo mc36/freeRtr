@@ -1315,6 +1315,10 @@ public class userExec {
         hl.add(null, "6 7              <num>           source port");
         hl.add(null, "7 8                <addr>        target address");
         hl.add(null, "8 .                  <num>       target port");
+        hl.add(null, "2 3      rm2rpl                  route map converter");
+        hl.add(null, "3 .        <name:rm>             name of list");
+        hl.add(null, "2 3      rpl2rm                  route policy converter");
+        hl.add(null, "3 .        <name:rpl>            name of list");
         hl.add(null, "2 3      route-map               route map statistics");
         hl.add(null, "3 .        <name:rm>             name of list");
         hl.add(null, "2 3      route-policy            route policy statistics");
