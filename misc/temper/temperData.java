@@ -225,8 +225,17 @@ public class temperData {
             timeWindow = 0;
             return;
         }
-        if ((prevCalc == results.heat) && (lastCalc == results.heat)) {
-            isWindow = lastMeasure < (lastWindow - lower.windowTol);
+        switch (lastCalc) {
+            case heat:
+                isWindow = lastMeasure < (lastWindow - lower.windowTol);
+                isWindow &= (lower.currValue & lower.heatPin) != 0;
+                break;
+            case cool:
+                isWindow = lastMeasure > (lastWindow + lower.windowTol);
+                isWindow &= (lower.currValue & lower.coolPin) != 0;
+                break;
+            default:
+                break;
         }
         if (!isWindow) {
             return;
