@@ -111,6 +111,7 @@ import org.freertr.serv.servNrpe;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servRpki;
 import org.freertr.serv.servStack;
+import org.freertr.tab.tabAceslstN;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabIntMatcher;
@@ -1650,6 +1651,23 @@ public class userShow {
                 return null;
             }
             cmd.badCmd();
+            return null;
+        }
+        if (a.equals("acl-merge")) {
+            cfgAceslst cfg1 = cfgAll.aclsFind(cmd.word(), false);
+            cfgAceslst cfg2 = cfgAll.aclsFind(cmd.word(), false);
+            tabListing<tabAceslstN<addrIP>, addrIP> acl1 = null;
+            tabListing<tabAceslstN<addrIP>, addrIP> acl2 = null;
+            if (cfg1 != null) {
+                acl1 = tabAceslstN.unrollAcl(cfg1.aceslst);
+            }
+            if (cfg2 != null) {
+                acl2 = tabAceslstN.unrollAcl(cfg2.aceslst);
+            }
+            tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
+            res.mergeTwo(acl1, acl2);
+            List<String> lst = res.dump("", 0);
+            rdr.putStrArr(lst);
             return null;
         }
         if (a.equals("acl-packet")) {

@@ -14,7 +14,6 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.auth.authConstant;
 import org.freertr.auth.authLocal;
-import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAlias;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
@@ -96,8 +95,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.pipe.pipeWindow;
 import org.freertr.sec.secSsh;
 import org.freertr.sec.secTls;
-import org.freertr.tab.tabAceslstN;
-import org.freertr.tab.tabListing;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
@@ -105,7 +102,6 @@ import org.freertr.util.cmds;
 import org.freertr.enc.encXml;
 import org.freertr.enc.encJson;
 import org.freertr.util.logger;
-import org.freertr.util.verCore;
 import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encThrift;
 import org.freertr.enc.encUrl;
@@ -228,25 +224,6 @@ public class userTest {
                 }
             }
             cmd.error("done");
-            return null;
-        }
-        if (a.equals("acl-merge")) {
-            cfgAceslst cfg1 = cfgAll.aclsFind(cmd.word(), false);
-            cfgAceslst cfg2 = cfgAll.aclsFind(cmd.word(), false);
-            tabListing<tabAceslstN<addrIP>, addrIP> acl1 = null;
-            tabListing<tabAceslstN<addrIP>, addrIP> acl2 = null;
-            if (cfg1 != null) {
-                acl1 = tabAceslstN.unrollAcl(cfg1.aceslst);
-            }
-            if (cfg2 != null) {
-                acl2 = tabAceslstN.unrollAcl(cfg2.aceslst);
-            }
-            tabListing<tabAceslstN<addrIP>, addrIP> res = new tabListing<tabAceslstN<addrIP>, addrIP>();
-            res.mergeTwo(acl1, acl2);
-            List<String> lst = res.dump("", 0);
-            for (int i = 0; i < lst.size(); i++) {
-                cmd.pipe.linePut(lst.get(i));
-            }
             return null;
         }
         if (a.equals("dns")) {
