@@ -648,7 +648,6 @@ todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy w
 todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
-todo: disable playlist loading in multicast receiver mode
 todo: ctrl+l/r to try to redetect the screen resolution
 todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
 todo: configure diff to have chance to change the sho config-differences
@@ -659,7 +658,6 @@ todo: server security to stick to the good protocols
 todo: server security to support bgp bmp mrt
 todo: server asdf instead of server daytime asdf, and only if a single hit exists otherwise buggy
 todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
-todo: bgp spf to have sr and bier
 todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: policy from bgp rpd

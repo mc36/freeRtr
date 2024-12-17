@@ -204,7 +204,6 @@ public class temperData {
         if (myPri < 0) {
             return;
         }
-        results prevCalc = lastCalc;
         //lastCalc = results.idle;
         if (lower.lastNeeded > (lastMeasure + lower.heatTol)) {
             lastCalc = results.heat;

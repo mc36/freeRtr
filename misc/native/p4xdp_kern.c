@@ -187,15 +187,18 @@ struct {
         break;                                                      \
     case 3:                                                         \
         bufP -= 4;                                                  \
-        put32msb(bufD, bufP, ((res->label1 << 12) | 0x100 | ttl));  \
+        tmp = (res->label1 << 12) | 0x100 | ttl;                    \
+        put32msb(bufD, bufP, tmp);                                  \
         ethtyp = ETHERTYPE_MPLS_UCAST;                              \
         neik = res->hop;                                            \
         goto ethtyp_tx;                                             \
     case 4:                                                         \
         bufP -= 4;                                                  \
-        put32msb(bufD, bufP, ((res->label2 << 12) | 0x100 | ttl));  \
+        tmp = (res->label2 << 12) | 0x100 | ttl;                    \
+        put32msb(bufD, bufP, tmp);                                  \
         bufP -= 4;                                                  \
-        put32msb(bufD, bufP, ((res->label1 << 12) | ttl));          \
+        tmp = (res->label1 << 12) | ttl;                            \
+        put32msb(bufD, bufP, tmp);                                  \
         ethtyp = ETHERTYPE_MPLS_UCAST;                              \
         neik = res->hop;                                            \
         goto ethtyp_tx;                                             \

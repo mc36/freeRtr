@@ -16332,3 +16332,6 @@ no todo: nat and pbr config to have reindex
 ---------------------------------- 2024-12-16 11:42:40 24.12.16
 no todo: misc player volume to time out to the main screen
 no todo: player: disable volume in multicast streamer mode
+---------------------------------- 2024-12-17 12:34:25 24.12.17
+no todo: bgp spf to have sr and bier
+no todo: disable playlist loading in multicast receiver mode
