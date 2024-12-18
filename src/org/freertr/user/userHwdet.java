@@ -167,16 +167,17 @@ public class userHwdet {
      * set up veth
      *
      * @param lst list
+     * @param pth path
      * @param typ type
      * @param n1 first name
      * @param n2 second name
      */
-    public static void setupVeth(List<String> lst, ifcTyp typ, String n1, String n2) {
+    public static void setupVeth(List<String> lst, String pth, ifcTyp typ, String n1, String n2) {
         if (typ == ifcTyp.socat) {
             lst.add("ip link add " + n1 + " type veth peer name veth0");
             lst.add("ip link set veth0 name " + n2);
         } else {
-            lst.add("./veth.bin " + n1 + " " + n2);
+            lst.add(pth + "veth.bin " + n1 + " " + n2);
         }
     }
 

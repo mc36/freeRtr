@@ -160,10 +160,10 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
 
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
-        l.add("vnet " + number);
         if (hidden) {
             return l;
         }
+        l.add("vnet " + number);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         side1.getShRun(l, cmds.tabulator);
         side2.getShRun(l, cmds.tabulator);
@@ -229,7 +229,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
     public void startNow(int prt) {
         port = prt;
         List<String> lst = bits.str2lst(userHwdet.scrBeg);
-        userHwdet.setupVeth(lst, userHwdet.ifcTyp.raw, side1.getOSname(), side2.getOSname());
+        userHwdet.setupVeth(lst, "./", userHwdet.ifcTyp.raw, side1.getOSname(), side2.getOSname());
         userHwdet.setupIface(lst, side1.getOSname(), 8192);
         userHwdet.setupIface(lst, side2.getOSname(), 8192);
         String a = version.getRWpath() + "vnet" + bits.randomD() + ".tmp";

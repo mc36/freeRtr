@@ -589,13 +589,7 @@ public class cfgInit implements Runnable {
                 if (s.length() > 0) {
                     prc.side2.conNam = s;
                 }
-                cfgVnet old = cfgAll.vnets.put(prc);
-                prc.startNow(vdcPortBeg);
-                vdcPortBeg += 4;
-                if (old == null) {
-                    continue;
-                }
-                old.stopNow();
+                cfgAll.vnets.put(prc);
                 continue;
             }
             if (s.equals("int")) {
@@ -1060,6 +1054,12 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
+        for (i = 0; i < cfgAll.vnets.size(); i++) {
+            cfgVnet ntry = cfgAll.vnets.get(i).copyBytes();
+            ntry.startNow(vdcPortBeg + (i * 4));
+            vnetLst.add(ntry);
+        }
+        vdcPortBeg += (vnetLst.size() * 4);
         try {
             executeSWcommands(ints, true);
         } catch (Exception e) {
@@ -1080,12 +1080,6 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
-        for (i = 0; i < cfgAll.vnets.size(); i++) {
-            cfgVnet ntry = cfgAll.vnets.get(i).copyBytes();
-            ntry.startNow(vdcPortBeg + (i * 4));
-            vnetLst.add(ntry);
-        }
-        vdcPortBeg += (vnetLst.size() * 4);
         int p = cfgAll.vdcs.size();
         if (p > 0) {
             p = (vdcPortEnd - vdcPortBeg) / p;
