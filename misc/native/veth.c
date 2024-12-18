@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     int ret;
     unsigned int seq, portid;
 
-    if (argc < 7) err("using: veth <iface1> <iface2> <mtu1> <mtu2> <addr1> <addr2>");
+    if (argc < 3) err("using: veth <iface1> <iface2> [mtu1] [mtu2] [addr1] [addr2]");
 
     printf("creating veth pair %s - %s\n", argv[1], argv[2]);
 
@@ -62,7 +62,6 @@ int main(int argc, char *argv[]) {
     if (ret == -1) err("error receiving");
     if (mnl_cb_run(buf1, ret, seq, portid, NULL, NULL) == -1) err("error running");
 
-    str2mac(&buf2[0], argv[5]);
     nlh1 = mnl_nlmsg_put_header(buf1);
     nlh1->nlmsg_type = RTM_NEWLINK;
     nlh1->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
@@ -71,15 +70,17 @@ int main(int argc, char *argv[]) {
     ifm->ifi_change = IFF_UP;
     ifm->ifi_flags = IFF_UP;
     mnl_attr_put_str(nlh1, IFLA_IFNAME, argv[1]);
-    mnl_attr_put_u32(nlh1, IFLA_MTU, atoi(argv[3]));
-    mnl_attr_put(nlh1, IFLA_ADDRESS, 6, &buf2);
+    if (argc > 3) mnl_attr_put_u32(nlh1, IFLA_MTU, atoi(argv[3]));
+    if (argc > 5) {
+        str2mac(&buf2[0], argv[5]);
+        mnl_attr_put(nlh1, IFLA_ADDRESS, 6, &buf2);
+    }
 
     if (mnl_socket_sendto(nl, nlh1, nlh1->nlmsg_len) < 0) err("error sending");
     ret = mnl_socket_recvfrom(nl, buf1, sizeof(buf1));
     if (ret == -1) err("error receiving");
     if (mnl_cb_run(buf1, ret, seq, portid, NULL, NULL) == -1) err("error running");
 
-    str2mac(&buf2[0], argv[6]);
     nlh1 = mnl_nlmsg_put_header(buf1);
     nlh1->nlmsg_type = RTM_NEWLINK;
     nlh1->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
@@ -88,8 +89,11 @@ int main(int argc, char *argv[]) {
     ifm->ifi_change = IFF_UP;
     ifm->ifi_flags = IFF_UP;
     mnl_attr_put_str(nlh1, IFLA_IFNAME, argv[2]);
-    mnl_attr_put_u32(nlh1, IFLA_MTU, atoi(argv[4]));
-    mnl_attr_put(nlh1, IFLA_ADDRESS, 6, &buf2);
+    if (argc > 4) mnl_attr_put_u32(nlh1, IFLA_MTU, atoi(argv[4]));
+    if (argc > 6) {
+        str2mac(&buf2[0], argv[6]);
+        mnl_attr_put(nlh1, IFLA_ADDRESS, 6, &buf2);
+    }
 
     if (mnl_socket_sendto(nl, nlh1, nlh1->nlmsg_len) < 0) err("error sending");
     ret = mnl_socket_recvfrom(nl, buf1, sizeof(buf1));

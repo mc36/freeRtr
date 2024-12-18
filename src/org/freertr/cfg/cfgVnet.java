@@ -229,7 +229,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
     public void startNow(int prt) {
         port = prt;
         List<String> lst = bits.str2lst(userHwdet.scrBeg);
-        userHwdet.setupVeth(lst, side1.getOSname(), side2.getOSname());
+        userHwdet.setupVeth(lst, userHwdet.ifcTyp.raw, side1.getOSname(), side2.getOSname());
         userHwdet.setupIface(lst, side1.getOSname(), 8192);
         userHwdet.setupIface(lst, side2.getOSname(), 8192);
         String a = version.getRWpath() + "vnet" + bits.randomD() + ".tmp";

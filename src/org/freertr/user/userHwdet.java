@@ -167,12 +167,17 @@ public class userHwdet {
      * set up veth
      *
      * @param lst list
+     * @param typ type
      * @param n1 first name
      * @param n2 second name
      */
-    public static void setupVeth(List<String> lst, String n1, String n2) {
-        lst.add("ip link add " + n1 + " type veth peer name veth0");
-        lst.add("ip link set veth0 name " + n2);
+    public static void setupVeth(List<String> lst, ifcTyp typ, String n1, String n2) {
+        if (typ == ifcTyp.socat) {
+            lst.add("ip link add " + n1 + " type veth peer name veth0");
+            lst.add("ip link set veth0 name " + n2);
+        } else {
+            lst.add("./veth.bin " + n1 + " " + n2);
+        }
     }
 
     /**
@@ -280,26 +285,6 @@ public class userHwdet {
         }
     }
 
-    /**
-     * line to command
-     *
-     * @param path path of tools
-     * @param typ interface type
-     * @param nam name of interface
-     * @param p1 port to bind
-     * @return command to execute
-     */
-    public static String line2command(String path, ifcTyp typ, String nam, int p1) {
-        switch (typ) {
-            case socat:
-                return "socat TCP4-LISTEN:" + p1 + ",reuseaddr FILE:" + nam + ",sane,b9600,cs8,raw,echo=0,crtscts=0";
-            case raw:
-                return path + "ttyLin.bin " + nam + " " + p1;
-            default:
-                return null;
-        }
-    }
-
     private void createIface(String nam) {
         userHwifc ntry = new userHwifc();
         ntry.name = nam.trim();
@@ -328,7 +313,7 @@ public class userHwdet {
         int p2 = nextPort + 2;
         nextPort += 10;
         nam = "/dev/ttyS" + nam;
-        String cmd = line2command(path, lineType, nam, p1);
+        String cmd;
         switch (lineType) {
             case socat:
                 cmd = "socat TCP4-LISTEN:" + p1 + ",reuseaddr FILE:" + nam + ",sane,b9600,cs8,raw,echo=0,crtscts=0";
@@ -337,7 +322,7 @@ public class userHwdet {
                 cmd = path + "ttyLin.bin " + nam + " " + p1;
                 break;
             default:
-                break;
+                return;
         }
         makeLoop("lin" + linNum + ".sh", bits.str2lst(path + "modem.bin " + nam + " \"speedset 9600\" \"ctrlset 3\""), cmd);
         config.add("line tty" + linNum + " 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);

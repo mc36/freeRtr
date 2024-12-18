@@ -278,7 +278,7 @@ public class userHwext {
         swc.add(cmds.tabulator + "vrf " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        userHwdet.setupVeth(hwd, "veth1a", "veth1b");
+        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth1a", "veth1b");
         userHwdet.setupIface(hwd, "veth1a", 1500);
         userHwdet.setupIface(hwd, "veth1b", 8192);
         userHwdet.routeIface(hwd, "veth1a");
@@ -341,7 +341,7 @@ public class userHwext {
                             hwd.add("dpdk-devbind.py -b vfio-pci " + ifp.get(i));
                         }
                         ifn = "veth0a";
-                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         String a = "";
@@ -354,7 +354,7 @@ public class userHwext {
                         break;
                     case p4emu:
                         ifn = "veth0a";
-                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         a = "";
@@ -366,7 +366,7 @@ public class userHwext {
                         break;
                     case p4map:
                         ifn = "veth0a";
-                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         a = "";
@@ -378,7 +378,7 @@ public class userHwext {
                         break;
                     case p4raw:
                         ifn = "veth0a";
-                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         a = "";
@@ -390,7 +390,7 @@ public class userHwext {
                         break;
                     case p4xsk:
                         ifn = "veth0a";
-                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         a = " skb";
@@ -402,7 +402,7 @@ public class userHwext {
                         break;
                     case p4urng:
                         ifn = "veth0a";
-                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 8192);
                         userHwdet.setupIface(hwd, "veth0b", 8192);
                         a = "";
@@ -414,7 +414,7 @@ public class userHwext {
                         break;
                     case p4xdp:
                         ifn = "veth0a";
-                        userHwdet.setupVeth(hwd, "veth0a", "veth0b");
+                        userHwdet.setupVeth(hwd, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
                         userHwdet.setupIface(hwd, "veth0a", 2048);
                         userHwdet.setupIface(hwd, "veth0b", 2048);
                         hwd.add("ip link set " + ifn + " xdpgeneric off");
