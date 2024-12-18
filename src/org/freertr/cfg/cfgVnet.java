@@ -425,6 +425,9 @@ class cfgVnetSide implements Runnable {
         if (!cfgInit.booting) {
             return;
         }
+        if (need2run) {
+            return;
+        }
         if (locNam != null) {
             ifcUdpInt hdr = new ifcUdpInt("127.0.0.1", pl, "127.0.0.1", pr, "-", locTyp != tabRouteIface.ifaceType.ether, false);
             cfgIfc ifc = cfgAll.ifcAdd(locNam, locTyp, hdr, 1);
