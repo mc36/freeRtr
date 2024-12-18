@@ -227,6 +227,9 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
      * @param prt port to use
      */
     public void startNow(int prt) {
+        if (side1.need2run || side2.need2run) {
+            return;
+        }
         port = prt;
         List<String> lst = bits.str2lst(userHwdet.scrBeg);
         userHwdet.setupVeth(lst, "./", userHwdet.ifcTyp.raw, side1.getOSname(), side2.getOSname());
@@ -423,9 +426,6 @@ class cfgVnetSide implements Runnable {
         prtLoc = pl;
         prtRem = pr;
         if (!cfgInit.booting) {
-            return;
-        }
-        if (need2run) {
             return;
         }
         if (locNam != null) {

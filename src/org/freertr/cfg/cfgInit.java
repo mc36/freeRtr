@@ -261,7 +261,9 @@ public class cfgInit implements Runnable {
         "route-map .*",
         "route-policy .*",
         "proxy-profile .*",
-        "vdc definition .*",
+        "vdc definition .*",};
+
+    private final static String[] needFull = {
         "vnet .*",};
 
     private final static String[] needIface = {
@@ -1028,6 +1030,9 @@ public class cfgInit implements Runnable {
         for (i = 0; i < needInit.length; i++) {
             inis.addAll(userFilter.getSecList(secs, needInit[i], cmds.tabulator + cmds.finish));
         }
+        for (i = 0; i < needFull.length; i++) {
+            inis.addAll(userFilter.section2text(userFilter.getSection(secs, needFull[i], true, false, false), true));
+        }
         List<String> ints = userFilter.section2text(userFilter.filter2text(secs, createFilter(needIface)), true);
         List<String> hcfgs = new ArrayList<String>();
         List<String> hdefs = new ArrayList<String>();
@@ -1054,17 +1059,17 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
+        try {
+            executeSWcommands(ints, true);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
         for (i = 0; i < cfgAll.vnets.size(); i++) {
             cfgVnet ntry = cfgAll.vnets.get(i).copyBytes();
             ntry.startNow(vdcPortBeg + (i * 4));
             vnetLst.add(ntry);
         }
         vdcPortBeg += (vnetLst.size() * 4);
-        try {
-            executeSWcommands(ints, true);
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
         logger.info("applying configuration");
         int res = 0;
         try {
