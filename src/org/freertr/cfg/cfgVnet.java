@@ -365,8 +365,8 @@ class cfgVnetSide implements Runnable {
                 cmd.error("bad name");
                 return;
             }
-            if (cfgAll.ifcFind(a, 0) != null) {
-                cmd.error("interface already exists");
+            if (cfgInit.ifaceLst.find(new cfgVdcIfc(a, "")) != null) {
+                cmd.error("physical interface exists");
                 return;
             }
             locNam = a;
