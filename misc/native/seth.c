@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
     if (argc < 2) err("using: seth <iface> [mtu] [mac]");
 
-    printf("initializing %s\n", argv[1]);
+    printf("setting up %s\n", argv[1]);
 
     fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
     if (fd < 0) err("cannot get socket");
@@ -76,13 +76,14 @@ int main(int argc, char *argv[]) {
     strcpy(ifr.ifr_name, argv[1]);
     ifr.ifr_data = &eval;
 
+    printf("features:");
     for (int i = 0; i < sizeof(all_features) / sizeof(struct one_feature); i++) {
         eval.cmd = all_features[i].set;
         eval.data = 0;
         ioctl(fd, SIOCETHTOOL, &ifr);
         eval.cmd = all_features[i].get;
         if (ioctl(fd, SIOCETHTOOL, &ifr) < 0) continue;
-        printf("%s=%i\n", all_features[i].nam, eval.data);
+        printf(" %s=%i", all_features[i].nam, eval.data);
     }
 
     ioctl(fd, SIOCGIFFLAGS, &ifr);
@@ -91,10 +92,11 @@ int main(int argc, char *argv[]) {
     }
     ioctl(fd, SIOCSIFFLAGS, &ifr);
     ioctl(fd, SIOCGIFFLAGS, &ifr);
+    printf("\nflags:");
     for (int i = 0; i < sizeof(all_flags) / sizeof(struct one_flag); i++) {
         int o = ifr.ifr_flags & all_flags[i].val;
         if (o != 0) o = 1;
-        printf("%s=%i\n", all_flags[i].nam, o);
+        printf(" %s=%i", all_flags[i].nam, o);
     }
 
     if (argc > 2) {
@@ -102,7 +104,7 @@ int main(int argc, char *argv[]) {
         ioctl(fd, SIOCSIFMTU, &ifr);
     }
     ioctl(fd, SIOCGIFMTU, &ifr);
-    printf("mtu=%i\n", ifr.ifr_mtu);
+    printf("\nmtu=%i", ifr.ifr_mtu);
 
     if (argc > 3) {
         str2mac(buf, argv[3]);
@@ -113,6 +115,6 @@ int main(int argc, char *argv[]) {
 
     ioctl(fd, SIOCGIFHWADDR, &ifr);
     mac2str((unsigned char*)&ifr.ifr_hwaddr.sa_data, buf);
-    printf("mac=%s\n", (char*)&buf);
+    printf(" mac=%s\n", (char*)&buf);
 
 }

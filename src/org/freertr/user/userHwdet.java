@@ -173,12 +173,12 @@ public class userHwdet {
      * @param n2 second name
      */
     public static void setupVeth(List<String> lst, String pth, ifcTyp typ, String n1, String n2) {
-        if (typ == ifcTyp.socat) {
-            lst.add("ip link add " + n1 + " type veth peer name veth0");
-            lst.add("ip link set veth0 name " + n2);
-        } else {
+        if (typ != ifcTyp.socat) {
             lst.add(pth + "veth.bin " + n1 + " " + n2);
+            return;
         }
+        lst.add("ip link add " + n1 + " type veth peer name veth0");
+        lst.add("ip link set veth0 name " + n2);
     }
 
     /**
@@ -188,7 +188,6 @@ public class userHwdet {
      * @param nam name
      */
     public static void routeIface(List<String> lst, String nam) {
-        lst.add("ip link set " + nam + " up address 00:00:11:11:22:22 mtu 1500");
         lst.add("ip addr add 10.255.255.1/24 dev " + nam + "");
         lst.add("ip route add 0.0.0.0/0 via 10.255.255.254 dev " + nam + "");
         lst.add("echo 0 > /proc/sys/net/ipv6/conf/" + nam + "/disable_ipv6");
@@ -198,11 +197,28 @@ public class userHwdet {
      * set up interface
      *
      * @param lst list
+     * @param pth path
+     * @param typ type
      * @param nam name
      * @param mtu mtu value
+     * @param mac mac value
      */
-    public static void setupIface(List<String> lst, String nam, int mtu) {
-        lst.add("ip link set " + nam + " up multicast on promisc on mtu " + mtu);
+    public static void setupIface(List<String> lst, String pth, ifcTyp typ, String nam, int mtu, String mac) {
+        if (typ != ifcTyp.socat) {
+            if (mac == null) {
+                mac = "";
+            } else {
+                mac = " " + mac;
+            }
+            lst.add(pth + "seth.bin " + nam + " " + mtu + mac);
+            return;
+        }
+        if (mac == null) {
+            mac = "";
+        } else {
+            mac = " address " + mac;
+        }
+        lst.add("ip link set " + nam + " up multicast on promisc on mtu " + mtu + mac);
         lst.add("ethtool -K " + nam + " rx off");
         lst.add("ethtool -K " + nam + " tx off");
         lst.add("ethtool -K " + nam + " sg off");
@@ -303,7 +319,7 @@ public class userHwdet {
         String stat = interface2stats(ifaceType);
         String cmd = interface2command(path, ifaceType, nam, p1, p2);
         List<String> ifc = new ArrayList<String>();
-        setupIface(ifc, nam, 1500);
+        setupIface(ifc, path, ifaceType, nam, 1500, null);
         makeLoop("ifc" + ifcNum + ".sh", ifc, cmd);
         config.add("int " + "ether" + ifcNum + " " + stat + "eth " + adr + " 127.0.0.1 " + p1 + " 127.0.0.1 " + p2);
     }

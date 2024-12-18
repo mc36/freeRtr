@@ -279,8 +279,8 @@ public class userHwext {
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth1a", "veth1b");
-        userHwdet.setupIface(hwd, "veth1a", 1500);
-        userHwdet.setupIface(hwd, "veth1b", 8192);
+        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1a", 1500, "00:00:11:11:22:22");
+        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1b", 8192, null);
         userHwdet.routeIface(hwd, "veth1a");
         String res = "";
         switch (dpt) {
@@ -342,8 +342,8 @@ public class userHwext {
                         }
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 8192);
-                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0a", 8192, null);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 8192, null);
                         String a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " --vdev=net_af_packet" + i + ",iface=" + ifp.get(i);
@@ -355,8 +355,8 @@ public class userHwext {
                     case p4emu:
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 8192);
-                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0a", 8192, null);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 8192, null);
                         a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
@@ -367,8 +367,8 @@ public class userHwext {
                     case p4map:
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 8192);
-                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0a", 8192, null);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 8192, null);
                         a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
@@ -379,8 +379,8 @@ public class userHwext {
                     case p4raw:
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 8192);
-                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0a", 8192, null);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 8192, null);
                         a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
@@ -391,8 +391,8 @@ public class userHwext {
                     case p4xsk:
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 8192);
-                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0a", 8192, null);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 8192, null);
                         a = " skb";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
@@ -403,8 +403,8 @@ public class userHwext {
                     case p4urng:
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 8192);
-                        userHwdet.setupIface(hwd, "veth0b", 8192);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0a", 8192, null);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 8192, null);
                         a = "";
                         for (i = 0; i < ifp.size(); i++) {
                             a += " " + ifp.get(i);
@@ -415,8 +415,8 @@ public class userHwext {
                     case p4xdp:
                         ifn = "veth0a";
                         userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth0a", "veth0b");
-                        userHwdet.setupIface(hwd, "veth0a", 2048);
-                        userHwdet.setupIface(hwd, "veth0b", 2048);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0a", 2048, null);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 2048, null);
                         hwd.add("ip link set " + ifn + " xdpgeneric off");
                         hwd.add("ip link set " + ifn + " xdpgeneric obj p4xdp_pass.bin sec p4xdp_pass");
                         a = " skb";
@@ -428,7 +428,7 @@ public class userHwext {
                         break;
                     case p4sw:
                         ifn = "ens1";
-                        userHwdet.setupIface(hwd, ifn, 8192);
+                        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, ifn, 8192, null);
                         hwc.add("proc bfswd " + path + "start_bfswd.sh");
                         hwc.add("proc bffwd " + path + "bf_forwarder.py");
                         hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
