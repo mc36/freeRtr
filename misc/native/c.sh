@@ -158,6 +158,6 @@ for fn in ptyRun; do
   compileFile $fn "" "-lutil" ""
   done
 
-for fn in dummyCon daemonRun vm; do
+for fn in seth dummyCon daemonRun vm; do
   compileFile $fn "" "" ""
   done
