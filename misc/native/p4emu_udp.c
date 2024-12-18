@@ -44,6 +44,13 @@ void err(char*buf) {
 
 
 
+#define packGet                                     \
+    addrLen = sizeof(addrTmp);                      \
+    bufS = totBuff - preBuff;                       \
+    bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen); \
+    if (bufS < 0) break;
+
+
 
 void doIfaceLoop(int * param) {
     int port = *param;
@@ -57,18 +64,12 @@ void doIfaceLoop(int * param) {
     ctx.port = port;
     if (port == cpuPort) {
         for (;;) {
-            addrLen = sizeof(addrTmp);
-            bufS = totBuff - preBuff;
-            bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
-            if (bufS < 0) break;
+            packGet;
             processCpuPack(&ctx, bufS);
         }
     } else {
         for (;;) {
-            addrLen = sizeof(addrTmp);
-            bufS = totBuff - preBuff;
-            bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
-            if (bufS < 0) break;
+            packGet;
             processDataPacket(&ctx, bufS, port);
         }
     }
