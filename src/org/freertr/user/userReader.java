@@ -197,8 +197,13 @@ public class userReader implements Comparator<String> {
         ".*!" + cmds.tabulator + "exec width 79",
         ".*!" + cmds.tabulator + "exec height 24",
         ".*!" + cmds.tabulator + "exec history 64",
+        ".*!" + cmds.tabulator + "exec riblines 8192",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp",
         ".*!" + cmds.tabulator + "exec colorize normal",
+        ".*!" + cmds.tabulator + "exec background black",
+        ".*!" + cmds.tabulator + "exec foreground white",
+        ".*!" + cmds.tabulator + "exec prompt bright-green",
+        ".*!" + cmds.tabulator + "exec header bright-yellow",        
         ".*!" + cmds.tabulator + "exec ansimode normal",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec spacetab",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec capslock",
@@ -256,6 +261,10 @@ public class userReader implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.times, false);
             pipe.settingsAdd(pipeSetting.passStar, false);
             pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
+            pipe.settingsAdd(pipeSetting.colNormal, userScreen.colWhite);
+            pipe.settingsAdd(pipeSetting.colPrompt, userScreen.colBrGreen);
+            pipe.settingsAdd(pipeSetting.colHeader, userScreen.colBrYellow);
+            pipe.settingsAdd(pipeSetting.riblines, 8192);
             pipe.settingsAdd(pipeSetting.width, 79);
             pipe.settingsAdd(pipeSetting.height, 24);
             pipe.settingsAdd(pipeSetting.tabMod, userFormat.tableMode.normal);
@@ -272,6 +281,10 @@ public class userReader implements Comparator<String> {
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
         pipe.settingsAdd(pipeSetting.passStar, parent.passStars);
         pipe.settingsAdd(pipeSetting.colors, parent.execColor);
+        pipe.settingsAdd(pipeSetting.colNormal, parent.execColNrm);
+        pipe.settingsAdd(pipeSetting.colPrompt, parent.execColPrm);
+        pipe.settingsAdd(pipeSetting.colHeader, parent.execColHdr);
+        pipe.settingsAdd(pipeSetting.riblines, parent.execRibLines);
         pipe.settingsAdd(pipeSetting.width, parent.execWidth);
         pipe.settingsAdd(pipeSetting.height, parent.execHeight);
         pipe.settingsAdd(pipeSetting.tabMod, parent.execTables);
@@ -880,12 +893,13 @@ public class userReader implements Comparator<String> {
                     pipe.linePut(a);
                     break;
                 case header:
-                    userScreen.sendAnsCol(pipe, userScreen.colBrYellow);
+                    userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colHeader, userScreen.colBrYellow));
                     pipe.linePut(a);
-                    userScreen.sendAnsCol(pipe, userScreen.colWhite);
+                    userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
                     color = userFormat.colorMode.normal;
                     break;
                 case rainbow:
+                    int d = pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite);
                     int r = a.length();
                     for (int q = 0;; q++) {
                         int s = q * rains;
@@ -896,10 +910,10 @@ public class userReader implements Comparator<String> {
                         if (t > r) {
                             t = r;
                         }
-                        userScreen.sendAnsCol(pipe, rainc[(i + q) % rainc.length]);
+                        userScreen.sendAnsCol(pipe, userScreen.setForeground(d, rainc[(i + q) % rainc.length]));
                         pipe.strPut(a.substring(s, t));
                     }
-                    userScreen.sendAnsCol(pipe, userScreen.colWhite);
+                    userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
                     pipe.linePut("");
                     break;
                 default:
@@ -994,14 +1008,14 @@ public class userReader implements Comparator<String> {
         }
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         if (color) {
-            userScreen.sendAnsCol(pipe, userScreen.colBrGreen);
+            userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, userScreen.colBrGreen));
         }
         if (crsr > s.length()) {
             crsr = s.length();
         }
         pipe.strPut(s.substring(0, crsr));
         if (color) {
-            userScreen.sendAnsCol(pipe, userScreen.colWhite);
+            userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
         }
     }
 

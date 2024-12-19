@@ -93,6 +93,21 @@ public class pipeSetting implements Comparable<pipeSetting> {
     public final static int passStar = 16;
 
     /**
+     * normal color
+     */
+    public final static int colNormal = 17;
+
+    /**
+     * prompt color
+     */
+    public final static int colPrompt = 18;
+
+    /**
+     * header color
+     */
+    public final static int colHeader = 19;
+
+    /**
      * name of the setting
      */
     protected final int name;
@@ -135,6 +150,10 @@ public class pipeSetting implements Comparable<pipeSetting> {
         l.add("authenticate|" + pip.settingsGet(pipeSetting.authed, new authResult()));
         l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));
         l.add("colorize|" + pip.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        l.add("background|" + userScreen.color2string(pip.settingsGet(pipeSetting.colNormal, userScreen.colWhite) >>> 16));
+        l.add("foreground|" + userScreen.color2string(pip.settingsGet(pipeSetting.colNormal, userScreen.colWhite)));
+        l.add("prompt|" + userScreen.color2string(pip.settingsGet(pipeSetting.colPrompt, userScreen.colBrGreen)));
+        l.add("header|" + userScreen.color2string(pip.settingsGet(pipeSetting.colHeader, userScreen.colBrYellow)));
         l.add("spacetab|" + pip.settingsGet(pipeSetting.spacTab, false));
         l.add("capslock|" + pip.settingsGet(pipeSetting.capsLock, false));
         l.add("bells|" + pip.settingsGet(pipeSetting.termBells, false));

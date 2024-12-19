@@ -63,6 +63,11 @@ public class userLine {
     public int execHistory = 64;
 
     /**
+     * rib lines
+     */
+    public int execRibLines = 8192;
+
+    /**
      * show timestamps
      */
     public boolean execTimes;
@@ -71,6 +76,21 @@ public class userLine {
      * colorize
      */
     public userFormat.colorMode execColor = userFormat.colorMode.normal;
+
+    /**
+     * normal color
+     */
+    public int execColNrm = userScreen.colWhite;
+
+    /**
+     * prompt color
+     */
+    public int execColPrm = userScreen.colBrGreen;
+
+    /**
+     * header color
+     */
+    public int execColHdr = userScreen.colBrYellow;
 
     /**
      * colorize
@@ -389,10 +409,15 @@ public class userLine {
         lst.add(beg + "exec width " + execWidth);
         lst.add(beg + "exec height " + execHeight);
         lst.add(beg + "exec history " + execHistory);
+        lst.add(beg + "exec riblines " + execRibLines);
         cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
         cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
         cmds.cfgLine(lst, !execCaps, beg, "exec capslock", "");
         cmds.cfgLine(lst, !execBells, beg, "exec bells", "");
+        lst.add(beg + "exec background " + userScreen.color2string(execColNrm >>> 16));
+        lst.add(beg + "exec foreground " + userScreen.color2string(execColNrm));
+        lst.add(beg + "exec prompt " + userScreen.color2string(execColPrm));
+        lst.add(beg + "exec header " + userScreen.color2string(execColHdr));
         lst.add(beg + "exec colorize " + userFormat.colmod2str(execColor));
         lst.add(beg + "exec ansimode " + userScreen.ansimod2str(ansiMode));
         lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
@@ -492,8 +517,46 @@ public class userLine {
                 execHistory = bits.str2num(cmd.word());
                 return false;
             }
+            if (s.equals("riblines")) {
+                execRibLines = bits.str2num(cmd.word());
+                return false;
+            }
             if (s.equals("timestamp")) {
                 execTimes = true;
+                return false;
+            }
+            if (s.equals("background")) {
+                int i = userScreen.string2color(cmd.word());
+                if (i < 0) {
+                    return false;
+                }
+                execColNrm = userScreen.setBackground(execColNrm, i);
+                execColHdr = userScreen.setBackground(execColHdr, i);
+                execColPrm = userScreen.setBackground(execColPrm, i);
+                return false;
+            }
+            if (s.equals("foreground")) {
+                int i = userScreen.string2color(cmd.word());
+                if (i < 0) {
+                    return false;
+                }
+                execColNrm = userScreen.setForeground(execColNrm, i);
+                return false;
+            }
+            if (s.equals("header")) {
+                int i = userScreen.string2color(cmd.word());
+                if (i < 0) {
+                    return false;
+                }
+                execColHdr = userScreen.setForeground(execColHdr, i);
+                return false;
+            }
+            if (s.equals("prompt")) {
+                int i = userScreen.string2color(cmd.word());
+                if (i < 0) {
+                    return false;
+                }
+                execColPrm = userScreen.setForeground(execColPrm, i);
                 return false;
             }
             if (s.equals("colorize")) {
@@ -777,11 +840,35 @@ public class userLine {
         l.add(null, "3 .      normal                     select 16 colors mode");
         l.add(null, "3 .      indexed                    select 256 colors mode");
         l.add(null, "3 .      palette                    select 16m colors mode");
+        l.add(null, "2 3    background                   select background color");
+        l.add(null, "2 3    foreground                   select foreground color");
+        l.add(null, "2 3    prompt                       select prompt color");
+        l.add(null, "2 3    header                       select header color");
+        l.add(null, "3 .      black                      select color");
+        l.add(null, "3 .      red                        select color");
+        l.add(null, "3 .      green                      select color");
+        l.add(null, "3 .      yellow                     select color");
+        l.add(null, "3 .      blue                       select color");
+        l.add(null, "3 .      magenta                    select color");
+        l.add(null, "3 .      cyan                       select color");
+        l.add(null, "3 .      white                      select color");
+        l.add(null, "3 .      bright-black               select color");
+        l.add(null, "3 .      bright-red                 select color");
+        l.add(null, "3 .      bright-green               select color");
+        l.add(null, "3 .      bright-yellow              select color");
+        l.add(null, "3 .      bright-blue                select color");
+        l.add(null, "3 .      bright-magenta             select color");
+        l.add(null, "3 .      bright-cyan                select color");
+        l.add(null, "3 .      bright-white               select color");
         l.add(null, "2 3    timeout                      set timeout value");
         l.add(null, "3 .      <num>                      timeout in milliseconds");
         l.add(null, "2 3    width                        number of columns");
         l.add(null, "3 .      <num>                      width of terminal");
         l.add(null, "2 3    height                       set height of terminal");
+        l.add(null, "3 .      <num>                      number of lines");
+        l.add(null, "2 3    history                      set history size");
+        l.add(null, "3 .      <num>                      number of lines");
+        l.add(null, "2 3    riblines                     set rib buffer size");
         l.add(null, "3 .      <num>                      number of lines");
         l.add(null, "2 3    ready                        set ready message");
         l.add(null, "3 3,.    <text>                     text to display");

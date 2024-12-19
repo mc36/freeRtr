@@ -1726,6 +1726,26 @@ public class userExec {
         hl.add(null, "2 .      monitor                      log to this terminal");
         hl.add(null, "2 .      detect                       detect size of terminal");
         hl.add(null, "2 .      timestamps                   put time before each executed command");
+        hl.add(null, "2 3      background                   select background color");
+        hl.add(null, "2 3      foreground                   select foreground color");
+        hl.add(null, "2 3      prompt                       select prompt color");
+        hl.add(null, "2 3      header                       select header color");
+        hl.add(null, "3 .        black                      select color");
+        hl.add(null, "3 .        red                        select color");
+        hl.add(null, "3 .        green                      select color");
+        hl.add(null, "3 .        yellow                     select color");
+        hl.add(null, "3 .        blue                       select color");
+        hl.add(null, "3 .        magenta                    select color");
+        hl.add(null, "3 .        cyan                       select color");
+        hl.add(null, "3 .        white                      select color");
+        hl.add(null, "3 .        bright-black               select color");
+        hl.add(null, "3 .        bright-red                 select color");
+        hl.add(null, "3 .        bright-green               select color");
+        hl.add(null, "3 .        bright-yellow              select color");
+        hl.add(null, "3 .        bright-blue                select color");
+        hl.add(null, "3 .        bright-magenta             select color");
+        hl.add(null, "3 .        bright-cyan                select color");
+        hl.add(null, "3 .        bright-white               select color");
         hl.add(null, "2 3,.    colorize                     sending to ansi terminal");
         hl.add(null, "3 .        normal                     select normal mode");
         hl.add(null, "3 .        header                     select header mode");
@@ -4857,6 +4877,29 @@ public class userExec {
         }
     }
 
+    private void setBackground(int col) {
+        int[] idx = {pipeSetting.colNormal, pipeSetting.colHeader, pipeSetting.colPrompt};
+        int[] def = {userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrGreen};
+        for (int i = 0; i < idx.length; i++) {
+            int p = idx[i];
+            int o = pipe.settingsGet(p, def[i]);
+            o = userScreen.setBackground(o, col);
+            pipe.settingsPut(p, o);
+        }
+    }
+
+    private void setForeground(int idx, int def, int col) {
+        int i = pipe.settingsGet(idx, def);
+        i = userScreen.setForeground(i, col);
+        pipe.settingsPut(idx, i);
+    }
+
+    private void setForeground(int idx, int def) {
+        int i = pipe.settingsGet(idx, def);
+        i = userScreen.setForeground(i, def);
+        pipe.settingsPut(idx, i);
+    }
+
     private void doTerminal() {
         String a = cmd.word();
         if (a.equals("detect")) {
@@ -4885,6 +4928,38 @@ public class userExec {
         }
         if (a.equals("stars")) {
             pipe.settingsPut(pipeSetting.passStar, true);
+            return;
+        }
+        if (a.equals("foreground")) {
+            int i = userScreen.string2color(cmd.word());
+            if (i < 0) {
+                return;
+            }
+            setForeground(pipeSetting.colNormal, userScreen.colWhite, i);
+            return;
+        }
+        if (a.equals("header")) {
+            int i = userScreen.string2color(cmd.word());
+            if (i < 0) {
+                return;
+            }
+            setForeground(pipeSetting.colHeader, userScreen.colBrYellow, i);
+            return;
+        }
+        if (a.equals("prompt")) {
+            int i = userScreen.string2color(cmd.word());
+            if (i < 0) {
+                return;
+            }
+            setForeground(pipeSetting.colPrompt, userScreen.colBrGreen, i);
+            return;
+        }
+        if (a.equals("background")) {
+            int i = userScreen.string2color(cmd.word());
+            if (i < 0) {
+                return;
+            }
+            setBackground(i);
             return;
         }
         if (a.equals("colorize")) {
@@ -4951,12 +5026,32 @@ public class userExec {
             logger.pipeStop(pipe);
             return;
         }
+        if (a.equals("width")) {
+            userReader.setTermWdt(pipe, 80);
+            return;
+        }
         if (a.equals("timestamps")) {
             pipe.settingsPut(pipeSetting.times, false);
             return;
         }
         if (a.equals("stars")) {
             pipe.settingsPut(pipeSetting.passStar, false);
+            return;
+        }
+        if (a.equals("foreground")) {
+            setForeground(pipeSetting.colNormal, userScreen.colWhite);
+            return;
+        }
+        if (a.equals("header")) {
+            setForeground(pipeSetting.colHeader, userScreen.colBrYellow);
+            return;
+        }
+        if (a.equals("prompt")) {
+            setForeground(pipeSetting.colPrompt, userScreen.colBrGreen);
+            return;
+        }
+        if (a.equals("background")) {
+            setBackground(userScreen.colBlack);
             return;
         }
         if (a.equals("colorize")) {
@@ -4973,6 +5068,14 @@ public class userExec {
         }
         if (a.equals("bells")) {
             pipe.settingsPut(pipeSetting.termBells, false);
+            return;
+        }
+        if (a.equals("length")) {
+            userReader.setTermLen(pipe, 25);
+            return;
+        }
+        if (a.equals("riblines")) {
+            userReader.setRibLin(pipe, 8192);
             return;
         }
         if (a.equals("ansimode")) {
@@ -5098,11 +5201,11 @@ public class userExec {
             userScreen.sendCur(pipe, 0, 0);
             userScreen.sendCls(pipe);
             if (color) {
-                userScreen.sendAnsCol(pipe, userScreen.colBrGreen);
+                userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, userScreen.colBrGreen));
             }
             pipe.linePut(cfgAll.hostName + "#show " + cmd.getRemaining());
             if (color) {
-                userScreen.sendAnsCol(pipe, userScreen.colWhite);
+                userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
             }
             if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(logger.getTimestamp());

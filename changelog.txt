@@ -16338,3 +16338,5 @@ no todo: disable playlist loading in multicast receiver mode
 ---------------------------------- 2024-12-17 16:16:52 24.12.17
 no todo: route-map <-- route-policy converter
 no todo: route-map --> route-policy converter
+---------------------------------- 2024-12-19 10:58:34 24.12.19
+no todo: terminal background and foreground

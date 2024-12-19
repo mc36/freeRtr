@@ -152,92 +152,92 @@ public class userScreen {
     /**
      * black
      */
-    public final static byte colBlack = 0;
+    public final static int colBlack = 0;
 
     /**
      * red
      */
-    public final static byte colRed = 1;
+    public final static int colRed = 1;
 
     /**
      * green
      */
-    public final static byte colGreen = 2;
+    public final static int colGreen = 2;
 
     /**
      * yellow
      */
-    public final static byte colYellow = 3;
+    public final static int colYellow = 3;
 
     /**
      * blue
      */
-    public final static byte colBlue = 4;
+    public final static int colBlue = 4;
 
     /**
      * magenta
      */
-    public final static byte colMagenta = 5;
+    public final static int colMagenta = 5;
 
     /**
      * cyan
      */
-    public final static byte colCyan = 6;
+    public final static int colCyan = 6;
 
     /**
      * white
      */
-    public final static byte colWhite = 7;
+    public final static int colWhite = 7;
 
     /**
      * bright/blink text
      */
-    public final static byte colBright = 8;
+    public final static int colBright = 8;
 
     /**
      * mask
      */
-    public final static byte colMask = 7;
+    public final static int colMask = 7;
 
     /**
      * bright black
      */
-    public final static byte colBrBlack = colBright | colBlack;
+    public final static int colBrBlack = colBright | colBlack;
 
     /**
      * bright red
      */
-    public final static byte colBrRed = colBright | colRed;
+    public final static int colBrRed = colBright | colRed;
 
     /**
      * bright green
      */
-    public final static byte colBrGreen = colBright | colGreen;
+    public final static int colBrGreen = colBright | colGreen;
 
     /**
      * bright yellow
      */
-    public final static byte colBrYellow = colBright | colYellow;
+    public final static int colBrYellow = colBright | colYellow;
 
     /**
      * bright blue
      */
-    public final static byte colBrBlue = colBright | colBlue;
+    public final static int colBrBlue = colBright | colBlue;
 
     /**
      * bright magenta
      */
-    public final static byte colBrMagenta = colBright | colMagenta;
+    public final static int colBrMagenta = colBright | colMagenta;
 
     /**
      * bright cyan
      */
-    public final static byte colBrCyan = colBright | colCyan;
+    public final static int colBrCyan = colBright | colCyan;
 
     /**
      * bright white
      */
-    public final static byte colBrWhite = colBright | colWhite;
+    public final static int colBrWhite = colBright | colWhite;
 
     /**
      * convert string to color code
@@ -291,23 +291,45 @@ public class userScreen {
         }
         switch (i & colMask) {
             case colBlack:
-                return a = "black";
+                return a + "black";
             case colRed:
-                return a = "red";
+                return a + "red";
             case colGreen:
-                return a = "green";
+                return a + "green";
             case colYellow:
-                return a = "yellow";
+                return a + "yellow";
             case colBlue:
-                return a = "blue";
+                return a + "blue";
             case colMagenta:
-                return a = "magenta";
+                return a + "magenta";
             case colCyan:
-                return a = "cyan";
+                return a + "cyan";
             case colWhite:
-                return a = "white";
+                return a + "white";
         }
         return null;
+    }
+
+    /**
+     * set background
+     *
+     * @param col original
+     * @param bg new
+     * @return updated
+     */
+    public static int setBackground(int col, int bg) {
+        return (col & 0xffff) | (bg << 16);
+    }
+
+    /**
+     * set foreground
+     *
+     * @param col original
+     * @param fg new
+     * @return updated
+     */
+    public static int setForeground(int col, int fg) {
+        return (col & 0xffff0000) | (fg & 0xffff);
     }
 
     /**

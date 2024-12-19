@@ -147,10 +147,6 @@ server security maximum pendings as access-security
 servers to have access-aaa
 config committed with check for saved and backup config
 
-
-
-terminal background and foreground
-
 interface lo0 as lo-core, persistently
 
 bgp to have xr-alike neighbor/template statements with upgrade-cli

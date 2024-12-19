@@ -247,12 +247,12 @@ class userGameTetrisThing {
         }
     }
 
-    public static userGameTetrisThing fromString(String[] lst, byte col) {
+    public static userGameTetrisThing fromString(String[] lst, int col) {
         userGameTetrisThing t = new userGameTetrisThing(lst[0].length(), lst.length);
         for (int o = 0; o < t.sizeY; o++) {
             String a = lst[o];
             for (int i = 0; i < t.sizeX; i++) {
-                t.tab[o][i] = a.substring(i, i + 1).equals("X") ? col : userScreen.colBlack;
+                t.tab[o][i] = a.substring(i, i + 1).equals("X") ? (byte) col : userScreen.colBlack;
             }
         }
         return t;
