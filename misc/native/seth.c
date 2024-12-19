@@ -56,14 +56,12 @@ struct one_flag all_flags[] = {
 
 
 
-int fd;
-struct ifreq ifr;
-struct ethtool_value eval;
-unsigned char buf[1024];
-
-
 
 int main(int argc, char *argv[]) {
+    int fd;
+    struct ifreq ifr;
+    struct ethtool_value eval;
+    unsigned char buf[1024];
 
     if (argc < 2) err("using: seth <iface> [mtu] [mac]");
 
