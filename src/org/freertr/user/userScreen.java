@@ -195,6 +195,11 @@ public class userScreen {
     public final static byte colBright = 8;
 
     /**
+     * mask
+     */
+    public final static byte colMask = 7;
+
+    /**
      * bright black
      */
     public final static byte colBrBlack = colBright | colBlack;
@@ -233,6 +238,77 @@ public class userScreen {
      * bright white
      */
     public final static byte colBrWhite = colBright | colWhite;
+
+    /**
+     * convert string to color code
+     *
+     * @param a color
+     * @return code
+     */
+    public static int string2color(String a) {
+        int i = 0;
+        if (a.startsWith("bright-")) {
+            a = a.substring(7, a.length());
+            i = colBright;
+        }
+        if (a.equals("black")) {
+            return i | colBlack;
+        }
+        if (a.equals("red")) {
+            return i | colRed;
+        }
+        if (a.equals("green")) {
+            return i | colGreen;
+        }
+        if (a.equals("yellow")) {
+            return i | colYellow;
+        }
+        if (a.equals("blue")) {
+            return i | colBlue;
+        }
+        if (a.equals("magenta")) {
+            return i | colMagenta;
+        }
+        if (a.equals("cyan")) {
+            return i | colCyan;
+        }
+        if (a.equals("white")) {
+            return i | colWhite;
+        }
+        return -1;
+    }
+
+    /**
+     * convert color code to string
+     *
+     * @param i code
+     * @return color
+     */
+    public static String color2string(int i) {
+        String a = "";
+        if ((i & colBright) != 0) {
+            a = "bright-";
+        }
+        switch (i & colMask) {
+            case colBlack:
+                return a = "black";
+            case colRed:
+                return a = "red";
+            case colGreen:
+                return a = "green";
+            case colYellow:
+                return a = "yellow";
+            case colBlue:
+                return a = "blue";
+            case colMagenta:
+                return a = "magenta";
+            case colCyan:
+                return a = "cyan";
+            case colWhite:
+                return a = "white";
+        }
+        return null;
+    }
 
     /**
      * create one screen
@@ -665,18 +741,6 @@ public class userScreen {
     }
 
     /**
-     * send indexed colors
-     *
-     * @param pip pipeline to use
-     * @param fg color index
-     * @param bg color index
-     */
-    public static void sendIdxCol(pipeSide pip, int fg, int bg) {
-        pip.strPut("\033[38;5;" + (fg & 0xff) + "m");
-        pip.strPut("\033[48;5;" + (bg & 0xff) + "m");
-    }
-
-    /**
      * send true colors
      *
      * @param pip pipeline to use
@@ -689,6 +753,19 @@ public class userScreen {
     }
 
     /**
+     * send indexed colors
+     *
+     * @param pip pipeline to use
+     * @param col color to use
+     */
+    public static void sendIdxCol(pipeSide pip, int col) {
+        int bg = (col >>> 16) & 0xf;
+        int fg = col & 0xf;
+        pip.strPut("\033[38;5;" + (fg & 0xff) + "m");
+        pip.strPut("\033[48;5;" + (bg & 0xff) + "m");
+    }
+
+    /**
      * send color change
      *
      * @param pip pipeline to use
@@ -698,14 +775,14 @@ public class userScreen {
         int bg = (col >>> 16) & 0xf;
         int fg = col & 0xf;
         String s = "\033[0";
-        if ((bg & 8) != 0) {
+        if ((bg & colBright) != 0) {
             s += ";5";
         }
-        s += ";4" + (bg & 7);
-        if ((fg & 8) != 0) {
+        s += ";4" + (bg & colMask);
+        if ((fg & colBright) != 0) {
             s += ";1";
         }
-        s += ";3" + (fg & 7);
+        s += ";3" + (fg & colMask);
         pip.strPut(s + "m");
     }
 
@@ -719,11 +796,11 @@ public class userScreen {
         int bg = (col >>> 16) & 0xf;
         int fg = col & 0xf;
         String s = "\033[0";
-        if ((bg & 8) != 0) {
-            bg = (bg & 7) + 60;
+        if ((bg & colBright) != 0) {
+            bg = (bg & colMask) + 60;
         }
-        if ((fg & 8) != 0) {
-            fg = (fg & 7) + 60;
+        if ((fg & colBright) != 0) {
+            fg = (fg & colMask) + 60;
         }
         s += ";" + (bg + 40);
         s += ";" + (fg + 30);
@@ -766,7 +843,7 @@ public class userScreen {
                 sendAnsCol(pipe, col);
                 break;
             case indexed:
-                sendIdxCol(pipe, col & 0xf, (col >>> 16) & 0xf);
+                sendIdxCol(pipe, col);
                 break;
             case palette:
                 sendTruCol(pipe, userFonts.colorIdxd[col & 0xf], userFonts.colorIdxd[(col >>> 16) & 0xf]);
