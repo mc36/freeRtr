@@ -126,7 +126,7 @@ public class userHwext {
             orig.error("already exists");
             return;
         }
-        int o = hwd.indexOf("### main ###");
+        int o = hwd.indexOf("### lines ###");
         if (o < 0) {
             orig.error("error splitting " + hwdn);
             return;
