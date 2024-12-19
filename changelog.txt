@@ -16340,3 +16340,5 @@ no todo: route-map <-- route-policy converter
 no todo: route-map --> route-policy converter
 ---------------------------------- 2024-12-19 10:58:34 24.12.19
 no todo: terminal background and foreground
+---------------------------------- 2024-12-19 11:46:33 24.12.19
+no todo: hackediff alias to diff with the | hacked fun filter

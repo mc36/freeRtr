@@ -317,6 +317,10 @@ public class userShow {
             rdr.putStrTab(userFlash.diskInfo(a));
             return null;
         }
+        if (a.equals("file")) {
+            rdr.putStrArr(bits.txt2buf(cmd.getRemaining()));
+            return null;
+        }
         if (a.equals("aaa")) {
             cfgAuther aa = cfgAll.autherFind(cmd.word(), null);
             if (aa == null) {

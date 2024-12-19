@@ -1089,6 +1089,7 @@ public class userExec {
         hl.add(null, (beg + 1) + " .      setdel                level hierarchy in set/delete");
         hl.add(null, (beg + 1) + " .      summary               just the summary of columns");
         hl.add(null, (beg + 1) + " .      linenumbers           prepend lines with numbers");
+        hl.add(null, (beg + 1) + " .      hacked                hacker writing");
         hl.add(null, (beg + 1) + " .      raw                   unfiltered");
         hl.add(null, (beg + 1) + " .      count                 count entities");
         hl.add(null, (beg + 1) + " .      viewer                display in viewer");
@@ -1131,6 +1132,8 @@ public class userExec {
             hl.add(null, "3 3,.      [text]                directory to print");
             hl.add(null, "2 3,.    disk                    flash information");
             hl.add(null, "3 3,.      [text]                directory to print");
+            hl.add(null, "2 3      file                    contents of file");
+            hl.add(null, "3 3,.      <str>                 file to print");
             hl.add(null, "2 3      url                     download remote content");
             hl.add(null, "3 3,.      <str>                 remote url to download");
         }

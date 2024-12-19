@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntHttp;
+import org.freertr.enc.enc7bit;
 import org.freertr.enc.encUrl;
 import org.freertr.enc.encXml;
 import org.freertr.pipe.pipeConnect;
@@ -174,6 +175,10 @@ public class userReader implements Comparator<String> {
          */
         linenum,
         /**
+         * hacker writing
+         */
+        hacked,
+        /**
          * specified section
          */
         section,
@@ -203,7 +208,7 @@ public class userReader implements Comparator<String> {
         ".*!" + cmds.tabulator + "exec background black",
         ".*!" + cmds.tabulator + "exec foreground white",
         ".*!" + cmds.tabulator + "exec prompt bright-green",
-        ".*!" + cmds.tabulator + "exec header bright-yellow",        
+        ".*!" + cmds.tabulator + "exec header bright-yellow",
         ".*!" + cmds.tabulator + "exec ansimode normal",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec spacetab",
         ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec capslock",
@@ -859,6 +864,9 @@ public class userReader implements Comparator<String> {
                 return doSecond(lst);
             case linenum:
                 lst = bits.lst2lin(lst, true);
+                return doSecond(lst);
+            case hacked:
+                lst = enc7bit.toHackedLst(lst);
                 return doSecond(lst);
             case section:
                 lst = userFilter.getSection(lst, filterS);
@@ -1824,6 +1832,10 @@ public class userReader implements Comparator<String> {
             }
             if (a.equals("linenumbers")) {
                 filterM = mode.linenum;
+                return cmd;
+            }
+            if (a.equals("hacked")) {
+                filterM = mode.hacked;
                 return cmd;
             }
             return cmd;

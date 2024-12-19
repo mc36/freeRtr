@@ -256,5 +256,3 @@ more clean transpilers for the vm
 more clean converters for the vm
 
 banyan vines appletalk and firends protocols in sw
-
-hackediff alias to diff with the | hacked fun filter

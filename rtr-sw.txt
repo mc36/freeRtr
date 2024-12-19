@@ -38,9 +38,6 @@ aaa userlist access
  forbidden ^show.*config$
  forbidden ^show config.*$
  allowed show .*
- allowed configure terminal
- allowed interface .*
- allowed description .*
  allowed display .*
  allowed watch .*
  allowed differs .*
@@ -49,11 +46,15 @@ aaa userlist access
  allowed game .*
  allowed send .*
  allowed terminal .*
- allowed exit .*
- allowed exit.*
- allowed logout.*
  allowed flash .*
  allowed tmux .*
+ allowed enable
+ allowed disable
+ allowed exit
+ allowed logout
+ allowed configure terminal
+ allowed interface .*
+ allowed description .*
  exit
 !
 aaa radius rad
