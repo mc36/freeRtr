@@ -4801,6 +4801,9 @@ public class userShow {
         }
         if (a.equals("validtest")) {
             tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            if (rp == null) {
+                return;
+            }
             tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
             for (int i = 0; i < tab.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tab.get(i);
@@ -4818,6 +4821,9 @@ public class userShow {
         }
         if (a.equals("validmismark")) {
             tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            if (rp == null) {
+                return;
+            }
             tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
             for (int i = 0; i < tab.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tab.get(i);
