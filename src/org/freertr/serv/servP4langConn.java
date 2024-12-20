@@ -1740,6 +1740,7 @@ public class servP4langConn implements Runnable {
                 }
                 servP4langNei hop = lower.findHop(ofwd, adr);
                 if (hop == null) {
+                    br.macs.del(ntry);
                     continue;
                 }
                 a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.inst + " " + ovrf.id + " " + brif.id + " " + iface.getLocPort() + " " + iface.getRemPort();
@@ -1769,6 +1770,7 @@ public class servP4langConn implements Runnable {
                 }
                 servP4langNei hop = lower.findHop(ofwd, adr);
                 if (hop == null) {
+                    br.macs.del(ntry);
                     continue;
                 }
                 a = "bridgevxlan" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.getInst() + " " + ovrf.id + " " + brif.id + " " + iface.getLocPort() + " " + iface.getRemPort();
@@ -1798,6 +1800,7 @@ public class servP4langConn implements Runnable {
                 }
                 servP4langNei hop = lower.findHop(ofwd, adr);
                 if (hop == null) {
+                    br.macs.del(ntry);
                     continue;
                 }
                 a = "bridgeetherip" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + ovrf.id + " " + brif.id;
@@ -1827,6 +1830,7 @@ public class servP4langConn implements Runnable {
                 }
                 servP4langNei hop = lower.findHop(ofwd, adr);
                 if (hop == null) {
+                    br.macs.del(ntry);
                     continue;
                 }
                 a = "bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + brif.id;
@@ -1856,6 +1860,7 @@ public class servP4langConn implements Runnable {
                 }
                 servP4langNei hop = lower.findHop(ofwd, adr);
                 if (hop == null) {
+                    br.macs.del(ntry);
                     continue;
                 }
                 a = "bridgepckoudp" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + iface.getLocPort() + " " + iface.getRemPort() + " " + hop.id + " " + ovrf.id + " " + brif.id;
@@ -1895,6 +1900,7 @@ public class servP4langConn implements Runnable {
             }
             servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
             if (hop == null) {
+                br.macs.del(ntry);
                 continue;
             }
             if (srv == null) {

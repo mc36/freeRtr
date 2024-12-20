@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <pthread.h>
+#include <poll.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -43,95 +43,6 @@ void err(char*buf) {
 
 
 
-#define packGet                                     \
-    addrLen = sizeof(addrTmp);                      \
-    bufS = totBuff - preBuff;                       \
-    bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen); \
-    if (bufS < 0) break;
-
-
-
-void doIfaceLoop(int * param) {
-    int port = *param;
-    int commSock = sockets[port];
-    struct sockaddr_in addrTmp;
-    unsigned int addrLen;
-    int bufS;
-    struct packetContext ctx;
-    if (initContext(&ctx) != 0) err("error initializing context");
-    unsigned char *bufD = ctx.bufD;
-    ctx.port = port;
-    if (port == cpuPort) {
-        for (;;) {
-            packGet;
-            processCpuPack(&ctx, bufS);
-        }
-    } else {
-        for (;;) {
-            packGet;
-            processDataPacket(&ctx, bufS, port);
-        }
-    }
-    err("port thread exited");
-}
-
-
-void doSockLoop() {
-    struct packetContext ctx;
-    if (initContext(&ctx) != 0) err("error initializing context");
-    FILE *commands = fdopen(commandSock, "r");
-    if (commands == NULL) err("failed to open file");
-    unsigned char buf[16384];
-    for (;;) {
-        memset(&buf, 0, sizeof(buf));
-        if (fgets((char*)&buf[0], sizeof(buf), commands) == NULL) break;
-        if (doOneCommand(&ctx, &buf[0]) != 0) break;
-    }
-    err("command thread exited");
-}
-
-
-
-void doStatLoop() {
-    FILE *commands = fdopen(commandSock, "w");
-    if (commands == NULL) err("failed to open file");
-    fprintf(commands, "platform %sudp\r\n", platformBase);
-    fprintf(commands, "capabilities %s\r\n", getCapas());
-    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
-    fprintf(commands, "cpuport %i\r\n", cpuPort);
-    fprintf(commands, "dynrange %i 1073741823\r\n", maxPorts);
-    fprintf(commands, "vrfrange 1 1073741823\r\n");
-    fprintf(commands, "neirange 4096 1073741823\r\n");
-    fprintf(commands, "nomore\r\n");
-    fflush(commands);
-    int rnd = 0;
-    for (;;) {
-        doStatRound(commands, rnd);
-        rnd++;
-        usleep(100000);
-    }
-    err("stat thread exited");
-}
-
-
-void doMainLoop() {
-    unsigned char buf[1024];
-    for (;;) {
-        printf("> ");
-        buf[0] = 0;
-        int i = scanf("%1023s", buf);
-        if (i < 1) {
-            sleep(1);
-            continue;
-        }
-        if (doConsoleCommand(&buf[0]) != 0) break;
-        printf("\n");
-    }
-    err("main thread exited");
-}
-
-
-
 int main(int argc, char **argv) {
     dataPorts = (argc - 6) / 2;
     if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> [lportN] [rportN]");
@@ -166,13 +77,74 @@ int main(int argc, char **argv) {
     cpuPort = atoi(argv[3]);
     printf("cpu port is #%i of %i...\n", cpuPort, dataPorts);
 
-    pthread_t threadSock;
-    if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
-    pthread_t threadStat;
-    if (pthread_create(&threadStat, NULL, (void*) & doStatLoop, NULL)) err("error creating status thread");
-    pthread_t threadRaw[maxPorts];
-    for (int i=0; i < dataPorts; i++) {
-        if (pthread_create(&threadRaw[i], NULL, (void*) & doIfaceLoop, &ifaceId[i])) err("error creating port thread");
+    struct packetContext ctx;
+    if (initContext(&ctx) != 0) err("error initializing context");
+    struct sockaddr_in addrTmp;
+    unsigned int addrLen;
+    int bufS;
+    struct pollfd fds[maxPorts+2];
+    FILE *commandr = fdopen(commandSock, "r");
+    if (commandr == NULL) err("failed to open file");
+    FILE *commands = fdopen(commandSock, "w");
+    if (commands == NULL) err("failed to open file");
+    fprintf(commands, "platform %sudp\r\n", platformBase);
+    fprintf(commands, "capabilities %s\r\n", getCapas());
+    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
+    fprintf(commands, "cpuport %i\r\n", cpuPort);
+    fprintf(commands, "dynrange %i 1073741823\r\n", maxPorts);
+    fprintf(commands, "vrfrange 1 1073741823\r\n");
+    fprintf(commands, "neirange 4096 1073741823\r\n");
+    fprintf(commands, "nomore\r\n");
+    fflush(commands);
+
+    int rnd = 0;
+    for (;;) {
+        for (int i = 0; i < dataPorts; i++) {
+            fds[i].fd = sockets[i];
+            fds[i].events = POLLIN;
+            fds[i].revents = 0;
+        }
+        fds[dataPorts].fd = commandSock;
+        fds[dataPorts].events = POLLIN;
+        fds[dataPorts].revents = 0;
+        fds[dataPorts+1].fd = STDIN_FILENO;
+        fds[dataPorts+1].events = POLLIN;
+        fds[dataPorts+1].revents = 0;
+        if (poll(fds, dataPorts+2, 100) < 0) err("error in poll");
+        int don = 0;
+        for (int i = 0; i < dataPorts; i++) {
+            if ((fds[i].revents&POLLERR) != 0) err("error on socket");
+            if ((fds[i].revents&POLLHUP) != 0) err("hangup on socket");
+            if ((fds[i].revents&POLLIN) == 0) continue;
+            don++;
+            addrLen = sizeof(addrTmp);
+            bufS = totBuff - preBuff;
+            bufS = recvfrom(sockets[i], &ctx.bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
+            if (bufS < 0) err("error reading socket");
+            ctx.port = i;
+            if (i == cpuPort) {
+                processCpuPack(&ctx, bufS);
+            } else {
+                processDataPacket(&ctx, bufS, i);
+            }
+        }
+        if (don == 0) {
+            doStatRound(commands, rnd);
+            rnd++;
+        }
+        if ((fds[dataPorts].revents&POLLERR) != 0) err("error on socket");
+        if ((fds[dataPorts].revents&POLLHUP) != 0) err("hangup on socket");
+        if ((fds[dataPorts].revents&POLLIN) != 0) {
+            memset(ctx.bufD, 0, totBuff);
+            if (fgets((char*)&ctx.bufD[0], totBuff, commandr) == NULL) err("error reading socket");
+            if (doOneCommand(&ctx, &ctx.bufD[0]) != 0) err("command exited");
+        }
+        if ((fds[dataPorts+1].revents&POLLERR) != 0) err("error on socket");
+        if ((fds[dataPorts+1].revents&POLLHUP) != 0) err("hangup on socket");
+        if ((fds[dataPorts+1].revents&POLLIN) != 0) {
+            memset(ctx.bufD, 0, totBuff);
+            scanf("%1023s", &ctx.bufD[0]);
+            if (doConsoleCommand(&ctx.bufD[0]) != 0) err("console exited");
+        }
     }
-    doMainLoop();
 }
