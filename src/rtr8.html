@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v24.12.20-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2024-12-20 14:41:00, took 00:12:07, with 50 workers, on 630 cases, 6 failed, 0 traces, 44 retries<br/>
+tested: 2024-12-20 15:36:47, took 00:11:15, with 50 workers, on 630 cases, 0 failed, 0 traces, 10 retries<br/>
 jvm: ./rtr.bin<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -68,8 +68,8 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl052.tst">p4lang-acl052.tst</a></td><td>success</td><td>p4lang: priority flowspec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl053.tst">p4lang-acl053.tst</a></td><td>success</td><td>p4lang: ingress amt access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl054.tst">p4lang-acl054.tst</a></td><td>success</td><td>p4lang: egress amt access list</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl055.tst">p4lang-acl055.tst</a></td><td>#6-run-r6 tping 100 10 1234:3::2 vrf v1</td><td>p4lang: ingress reflexive access list</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl056.tst">p4lang-acl056.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0</td><td>p4lang: egress reflexive access list</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl055.tst">p4lang-acl055.tst</a></td><td>success</td><td>p4lang: ingress reflexive access list</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl056.tst">p4lang-acl056.tst</a></td><td>success</td><td>p4lang: egress reflexive access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl057.tst">p4lang-acl057.tst</a></td><td>success</td><td>p4lang: interface inspection with egress drop</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl058.tst">p4lang-acl058.tst</a></td><td>success</td><td>p4lang: interface inspection with ingress drop</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl059.tst">p4lang-acl059.tst</a></td><td>success</td><td>p4lang: vlan interface inspection with egress drop</td></tr>
@@ -301,10 +301,10 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout029.tst">p4lang-rout029.tst</a></td><td>success</td><td>p4lang: pppoe mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout030.tst">p4lang-rout030.tst</a></td><td>success</td><td>p4lang: vlan pppoe mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout031.tst">p4lang-rout031.tst</a></td><td>success</td><td>p4lang: hairpin routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout032.tst">p4lang-rout032.tst</a></td><td>#9-run-r1 dping sdn . r6 2.2.2.105 vrf v1 sou lo0</td><td>p4lang: hairpin bridging</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout032.tst">p4lang-rout032.tst</a></td><td>success</td><td>p4lang: hairpin bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout033.tst">p4lang-rout033.tst</a></td><td>success</td><td>p4lang: hairpin mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout034.tst">p4lang-rout034.tst</a></td><td>success</td><td>p4lang: hairpin vlan routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout035.tst">p4lang-rout035.tst</a></td><td>#9-run-r1 dping sdn . r6 2.2.2.105 vrf v1 sou lo0</td><td>p4lang: hairpin vlan bridging</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout035.tst">p4lang-rout035.tst</a></td><td>success</td><td>p4lang: hairpin vlan bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout036.tst">p4lang-rout036.tst</a></td><td>success</td><td>p4lang: hairpin vlan mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout037.tst">p4lang-rout037.tst</a></td><td>success</td><td>p4lang: hairpin pppoe routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout038.tst">p4lang-rout038.tst</a></td><td>success</td><td>p4lang: hairpin vlan pppoe routing</td></tr>
@@ -590,7 +590,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout318.tst">p4lang-rout318.tst</a></td><td>success</td><td>p4lang: qinq mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout319.tst">p4lang-rout319.tst</a></td><td>success</td><td>p4lang: bundle qinq routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout320.tst">p4lang-rout320.tst</a></td><td>success</td><td>p4lang: bundle qinq mpls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout321.tst">p4lang-rout321.tst</a></td><td>#9-run-r1 dping sdn . r4 2.2.2.105 vrf v1 sou lo0</td><td>p4lang: bundle qinq bridging</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout321.tst">p4lang-rout321.tst</a></td><td>success</td><td>p4lang: bundle qinq bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout322.tst">p4lang-rout322.tst</a></td><td>success</td><td>p4lang: qinq bridge routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout323.tst">p4lang-rout323.tst</a></td><td>success</td><td>p4lang: qinq bridge mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout324.tst">p4lang-rout324.tst</a></td><td>success</td><td>p4lang: qinq vpls/ldp with bgp</td></tr>
@@ -600,7 +600,7 @@ jvm: ./rtr.bin<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout328.tst">p4lang-rout328.tst</a></td><td>success</td><td>p4lang: qinq pppoe routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout329.tst">p4lang-rout329.tst</a></td><td>success</td><td>p4lang: qinq pppoe mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout330.tst">p4lang-rout330.tst</a></td><td>success</td><td>p4lang: hairpin qinq routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout331.tst">p4lang-rout331.tst</a></td><td>#9-run-r1 dping sdn . r6 2.2.2.105 vrf v1 sou lo0</td><td>p4lang: hairpin qinq bridging</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout331.tst">p4lang-rout331.tst</a></td><td>success</td><td>p4lang: hairpin qinq bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout332.tst">p4lang-rout332.tst</a></td><td>success</td><td>p4lang: hairpin qinq mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout333.tst">p4lang-rout333.tst</a></td><td>success</td><td>p4lang: hairpin qinq pppoe routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout334.tst">p4lang-rout334.tst</a></td><td>success</td><td>p4lang: hairpin qinq vpls/ldp with bgp</td></tr>

@@ -52,8 +52,8 @@ qc pass: p4lang: policer flowspec
 qc pass: p4lang: priority flowspec
 qc pass: p4lang: ingress amt access list
 qc pass: p4lang: egress amt access list
-failed: p4lang: ingress reflexive access list
-failed: p4lang: egress reflexive access list
+qc pass: p4lang: ingress reflexive access list
+qc pass: p4lang: egress reflexive access list
 qc pass: p4lang: interface inspection with egress drop
 qc pass: p4lang: interface inspection with ingress drop
 qc pass: p4lang: vlan interface inspection with egress drop
@@ -285,10 +285,10 @@ qc pass: p4lang: vlan pppoe routing
 qc pass: p4lang: pppoe mpls
 qc pass: p4lang: vlan pppoe mpls
 qc pass: p4lang: hairpin routing
-failed: p4lang: hairpin bridging
+qc pass: p4lang: hairpin bridging
 qc pass: p4lang: hairpin mpls
 qc pass: p4lang: hairpin vlan routing
-failed: p4lang: hairpin vlan bridging
+qc pass: p4lang: hairpin vlan bridging
 qc pass: p4lang: hairpin vlan mpls
 qc pass: p4lang: hairpin pppoe routing
 qc pass: p4lang: hairpin vlan pppoe routing
@@ -574,7 +574,7 @@ qc pass: p4lang: qinq bridging
 qc pass: p4lang: qinq mpls
 qc pass: p4lang: bundle qinq routing
 qc pass: p4lang: bundle qinq mpls
-failed: p4lang: bundle qinq bridging
+qc pass: p4lang: bundle qinq bridging
 qc pass: p4lang: qinq bridge routing
 qc pass: p4lang: qinq bridge mpls
 qc pass: p4lang: qinq vpls/ldp with bgp
@@ -584,7 +584,7 @@ qc pass: p4lang: bundle qinq eompls
 qc pass: p4lang: qinq pppoe routing
 qc pass: p4lang: qinq pppoe mpls
 qc pass: p4lang: hairpin qinq routing
-failed: p4lang: hairpin qinq bridging
+qc pass: p4lang: hairpin qinq bridging
 qc pass: p4lang: hairpin qinq mpls
 qc pass: p4lang: hairpin qinq pppoe routing
 qc pass: p4lang: hairpin qinq vpls/ldp with bgp
