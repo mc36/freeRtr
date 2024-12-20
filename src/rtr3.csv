@@ -54,8 +54,8 @@ http://sources.freertr.org/cfg/p4lang-acl051.tst;p4lang-acl051.tst;ok;ok;ok;ok;n
 http://sources.freertr.org/cfg/p4lang-acl052.tst;p4lang-acl052.tst;ok;ok;ok;ok;not ok;p4lang: priority flowspec
 http://sources.freertr.org/cfg/p4lang-acl053.tst;p4lang-acl053.tst;ok;ok;ok;not ok;not ok;p4lang: ingress amt access list
 http://sources.freertr.org/cfg/p4lang-acl054.tst;p4lang-acl054.tst;ok;ok;ok;not ok;not ok;p4lang: egress amt access list
-http://sources.freertr.org/cfg/p4lang-acl055.tst;p4lang-acl055.tst;ok;ok;ok;ok;not ok;p4lang: ingress reflexive access list
-http://sources.freertr.org/cfg/p4lang-acl056.tst;p4lang-acl056.tst;ok;ok;ok;ok;not ok;p4lang: egress reflexive access list
+http://sources.freertr.org/cfg/p4lang-acl055.tst;p4lang-acl055.tst;not ok;ok;ok;ok;not ok;p4lang: ingress reflexive access list
+http://sources.freertr.org/cfg/p4lang-acl056.tst;p4lang-acl056.tst;not ok;ok;ok;ok;not ok;p4lang: egress reflexive access list
 http://sources.freertr.org/cfg/p4lang-acl057.tst;p4lang-acl057.tst;ok;ok;ok;ok;not ok;p4lang: interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl058.tst;p4lang-acl058.tst;ok;ok;ok;ok;not ok;p4lang: interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl059.tst;p4lang-acl059.tst;ok;ok;ok;ok;not ok;p4lang: vlan interface inspection with egress drop
@@ -287,10 +287,10 @@ http://sources.freertr.org/cfg/p4lang-rout028.tst;p4lang-rout028.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout029.tst;p4lang-rout029.tst;ok;ok;ok;ok;ok;p4lang: pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout030.tst;p4lang-rout030.tst;ok;ok;ok;ok;ok;p4lang: vlan pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout031.tst;p4lang-rout031.tst;ok;ok;ok;ok;ok;p4lang: hairpin routing
-http://sources.freertr.org/cfg/p4lang-rout032.tst;p4lang-rout032.tst;ok;ok;ok;ok;ok;p4lang: hairpin bridging
+http://sources.freertr.org/cfg/p4lang-rout032.tst;p4lang-rout032.tst;not ok;ok;ok;ok;ok;p4lang: hairpin bridging
 http://sources.freertr.org/cfg/p4lang-rout033.tst;p4lang-rout033.tst;ok;ok;ok;ok;ok;p4lang: hairpin mpls
 http://sources.freertr.org/cfg/p4lang-rout034.tst;p4lang-rout034.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan routing
-http://sources.freertr.org/cfg/p4lang-rout035.tst;p4lang-rout035.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan bridging
+http://sources.freertr.org/cfg/p4lang-rout035.tst;p4lang-rout035.tst;not ok;ok;ok;ok;ok;p4lang: hairpin vlan bridging
 http://sources.freertr.org/cfg/p4lang-rout036.tst;p4lang-rout036.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan mpls
 http://sources.freertr.org/cfg/p4lang-rout037.tst;p4lang-rout037.tst;ok;ok;ok;ok;ok;p4lang: hairpin pppoe routing
 http://sources.freertr.org/cfg/p4lang-rout038.tst;p4lang-rout038.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan pppoe routing
@@ -576,7 +576,7 @@ http://sources.freertr.org/cfg/p4lang-rout317.tst;p4lang-rout317.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout318.tst;p4lang-rout318.tst;ok;ok;ok;ok;ok;p4lang: qinq mpls
 http://sources.freertr.org/cfg/p4lang-rout319.tst;p4lang-rout319.tst;ok;ok;ok;ok;ok;p4lang: bundle qinq routing
 http://sources.freertr.org/cfg/p4lang-rout320.tst;p4lang-rout320.tst;ok;ok;ok;ok;ok;p4lang: bundle qinq mpls
-http://sources.freertr.org/cfg/p4lang-rout321.tst;p4lang-rout321.tst;ok;ok;ok;ok;ok;p4lang: bundle qinq bridging
+http://sources.freertr.org/cfg/p4lang-rout321.tst;p4lang-rout321.tst;not ok;ok;ok;ok;ok;p4lang: bundle qinq bridging
 http://sources.freertr.org/cfg/p4lang-rout322.tst;p4lang-rout322.tst;ok;ok;ok;ok;ok;p4lang: qinq bridge routing
 http://sources.freertr.org/cfg/p4lang-rout323.tst;p4lang-rout323.tst;ok;ok;ok;ok;ok;p4lang: qinq bridge mpls
 http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;ok;ok;ok;ok;ok;p4lang: qinq vpls/ldp with bgp
@@ -586,7 +586,7 @@ http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;ok;ok;ok;ok;ok;p4lang: qinq pppoe routing
 http://sources.freertr.org/cfg/p4lang-rout329.tst;p4lang-rout329.tst;ok;ok;ok;ok;ok;p4lang: qinq pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout330.tst;p4lang-rout330.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq routing
-http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq bridging
+http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;not ok;ok;ok;ok;ok;p4lang: hairpin qinq bridging
 http://sources.freertr.org/cfg/p4lang-rout332.tst;p4lang-rout332.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq mpls
 http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq pppoe routing
 http://sources.freertr.org/cfg/p4lang-rout334.tst;p4lang-rout334.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq vpls/ldp with bgp
