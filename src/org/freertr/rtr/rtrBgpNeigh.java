@@ -681,7 +681,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("hold time|" + bits.timeDump(conn.peerHold / 1000));
         l.add("keepalive time|" + bits.timeDump(conn.peerKeep / 1000));
         l.add("32bit as|" + conn.peer32bitAS);
-        l.add("refresh|" + conn.peerRefresh + ", rx=" + conn.refreshRx + ", tx=" + conn.refreshTx);
+        l.add("refresh|" + conn.peerRefreshOld + " " + conn.peerRefreshNew + ", rx=" + conn.refreshRx + ", tx=" + conn.refreshTx);
         l.add("extended open|rx=" + conn.peerExtOpen + ", tx=" + extOpen);
         l.add("extended message|rx=" + conn.peerExtUpd + ", tx=" + extUpdate);
         l.add("description|" + description);
@@ -936,9 +936,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             return false;
         }
         boolean needEor = false;
+        boolean needEof = false;
         if (conn.needFull.get() < 2) {
             will = new tabRoute<addrIP>(will);
             needEor = (conn.needEorAfis & mask) != 0;
+            needEof = (conn.needEofAfis & mask) != 0;
         }
         if (conn.addPthTx(safi)) {
             for (int i = 0; i < will.size(); i++) {
@@ -973,6 +975,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (needEor) {
                 conn.sendEndOfRib(safi);
                 conn.needEorAfis &= ~mask;
+            }
+            if (needEof) {
+                conn.sendFreshMark(safi, 2);
+                conn.needEofAfis &= ~mask;
             }
             return false;
         }
@@ -1040,6 +1046,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (needEor) {
             conn.sendEndOfRib(safi);
             conn.needEorAfis &= ~mask;
+        }
+        if (needEof) {
+            conn.sendFreshMark(safi, 2);
+            conn.needEofAfis &= ~mask;
         }
         return false;
     }
@@ -2223,7 +2233,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             case 5:
                 return showSummry1() + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(addpathRmode - conn.addpathRx) + "|" + rtrBgpParam.mask2string(addpathTmode - conn.addpathTx) + "|" + rtrBgpParam.mask2string(conn.originalAddRlist - conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx);
             case 6:
-                return showSummry1() + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefresh + "|" + conn.peerDynCap + "|" + conn.peerExtOpen + "|" + conn.peerExtUpd + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr);
+                return showSummry1() + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefreshOld + " " + conn.peerRefreshNew + "|" + conn.peerDynCap + "|" + conn.peerExtOpen + "|" + conn.peerExtUpd + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr);
             case 7:
                 return showSummry1() + "|" + pipeSide.getStatus(conn.pipe) + "|" + conn.buffFull + "|" + conn.adversion + "|" + incrCount + "|" + fullCount + "|" + conn.needFull;
             case 8:

@@ -128,6 +128,9 @@ public class tabRoute<T extends addrType> {
         defProto = orig.defProto;
         defRouTyp = orig.defRouTyp;
         prefixes = new tabGen<tabRouteEntry<T>>(orig.prefixes);
+        if (orig.lookupTrie != null) {
+            optimize4lookup();
+        }
     }
 
     /**
@@ -179,7 +182,9 @@ public class tabRoute<T extends addrType> {
         }
         prefixes.clear();
         version++;
-        lookupTrie = null;
+        if (lookupTrie != null) {
+            optimize4lookup();
+        }
     }
 
     /**
