@@ -16,7 +16,6 @@ pcap_t *iface1pcap;
 pcap_t *iface2pcap;
 pthread_t threadIfc1;
 pthread_t threadIfc2;
-pthread_t threadPrint;
 long int byteRx;
 long int packRx;
 long int byteTx;

@@ -29,7 +29,6 @@ int portRem;
 int commSock;
 pthread_t threadUdp;
 pthread_t threadRaw;
-pthread_t threadPrint;
 long int byteRx;
 long int packRx;
 long int byteTx;
