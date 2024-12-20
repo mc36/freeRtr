@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v24.12.15-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v24.12.20-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -627,3 +627,6 @@ http://sources.freertr.org/cfg/p4lang-rout368.tst;p4lang-rout368.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout369.tst;p4lang-rout369.tst;ok;ok;ok;ok;ok;p4lang: csc vpn with bgp over qinq
 http://sources.freertr.org/cfg/p4lang-rout370.tst;p4lang-rout370.tst;ok;ok;ok;ok;ok;p4lang: othervpn with bgp over backplane
 http://sources.freertr.org/cfg/p4lang-rout371.tst;p4lang-rout371.tst;ok;ok;ok;ok;ok;p4lang: csc vpn with bgp over backplane
+http://sources.freertr.org/cfg/p4lang-rout372.tst;p4lang-rout372.tst;ok;ok;ok;ok;ok;p4lang: olab with bgp
+http://sources.freertr.org/cfg/p4lang-rout373.tst;p4lang-rout373.tst;ok;ok;ok;ok;ok;p4lang: olab with bgp over vlan
+http://sources.freertr.org/cfg/p4lang-rout374.tst;p4lang-rout374.tst;ok;ok;ok;ok;ok;p4lang: olab with bgp over qinq
