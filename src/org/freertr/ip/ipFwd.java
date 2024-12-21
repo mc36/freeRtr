@@ -4,28 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
-import org.freertr.clnt.clntAx25;
-import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntMplsTeP2p;
 import org.freertr.clnt.clntNetflow;
-import org.freertr.clnt.clntSrEth;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ifc.ifcNshFwd;
-import org.freertr.pack.packEsp;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packL2tp3;
-import org.freertr.pack.packRsvp;
-import org.freertr.prt.prtDccp;
-import org.freertr.prt.prtGre;
-import org.freertr.prt.prtIpcomp;
-import org.freertr.prt.prtMplsIp;
-import org.freertr.prt.prtSctp;
 import org.freertr.prt.prtTcp;
-import org.freertr.prt.prtUdp;
 import org.freertr.rtr.rtrLdpIface;
 import org.freertr.rtr.rtrLdpNeigh;
 import org.freertr.rtr.rtrLdpTrgtd;
-import org.freertr.rtr.rtrNshIface;
 import org.freertr.tab.tabAceslstN;
 import org.freertr.tab.tabConnect;
 import org.freertr.tab.tabGen;
@@ -627,55 +614,6 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
         mhst.setForwarder(this, icc);
-    }
-
-    /**
-     * check if its safe between two asn
-     *
-     * @param i protocol to check
-     * @return true if drop, false if process the packet further
-     */
-    public final static boolean safeProtocol(int i) {
-        switch (i) {
-            case packEsp.protoNum:
-                return false;
-            case packL2tp3.prot:
-                return false;
-            case prtGre.protoNum:
-                return false;
-            case prtTcp.protoNum:
-                return false;
-            case prtUdp.protoNum:
-                return false;
-            case prtDccp.protoNum:
-                return false;
-            case prtSctp.protoNum:
-                return false;
-            case ipCor4.protocolNumber:
-                return false;
-            case ipCor6.protocolNumber:
-                return false;
-            case ipIcmp4.protoNum:
-                return false;
-            case ipIcmp6.protoNum:
-                return false;
-            case prtMplsIp.prot:
-                return false;
-            case clntSrEth.prot:
-                return false;
-            case clntEtherIp.prot:
-                return false;
-            case clntAx25.prot:
-                return false;
-            case prtIpcomp.proto:
-                return false;
-            case rtrNshIface.protoNum:
-                return false;
-            case packRsvp.proto:
-                return false;
-            default:
-                return true;
-        }
     }
 
     /**
@@ -1373,7 +1311,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             return;
         }
         if (lower.protocolSecurity) {
-            if (safeProtocol(pck.IPprt)) {
+            if (ipFwdTab.safeProtocol(pck.IPprt)) {
                 doDrop(pck, lower, counter.reasons.denied, 0);
                 return;
             }
@@ -2233,15 +2171,22 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             }
         }
         if (pck.IPlnk) {
-            if ((from & 1) != 0) {
-                if (pck.IPmlt || pck.IPbrd) {
-                    protoSend(rxIfc, pck);
+            if ((from & 1) == 0) {
+                ifaceProto(rxIfc, pck, null);
+                return;
+            }
+            if (pck.IPmlt || pck.IPbrd) {
+                protoSend(rxIfc, pck);
+                return;
+            }
+            if ((from & 2) != 0) {
+                ipFwdIface ifc = ipFwdTab.findMyaddrIface(this, pck.IPtrg);
+                if (ifc != null) {
+                    protoSend(ifc, pck);
                     return;
                 }
-                doDrop(pck, rxIfc, counter.reasons.noRoute, 0);
-            } else {
-                ifaceProto(rxIfc, pck, null);
             }
+            doDrop(pck, rxIfc, counter.reasons.noRoute, 0);
             return;
         }
         if (pck.IPmlt || pck.IPbrd) {

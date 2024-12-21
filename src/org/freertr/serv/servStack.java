@@ -364,8 +364,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         need &= fwds.size() > 1;
         tabLabel.release(bckplnLab, tabLabelEntry.owner.stack);
         bckplnLab = tabLabel.allocate(tabLabelEntry.owner.stack, fwds.size());
-        for (int i = 0; i < bckplnLab.length; i++) {
-            bckplnLab[i].setFwdDrop(tabLabelEntry.owner.stack);
+        if (srvVrf != null) {
+            for (int i = 0; i < bckplnLab.length; i++) {
+                bckplnLab[i].setFwdCommon(tabLabelEntry.owner.stack, srvVrf.fwd6);
+            }
         }
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd cur = fwds.get(i);

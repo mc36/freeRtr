@@ -11,13 +11,26 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.clnt.clntAx25;
+import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntMplsTeP2p;
+import org.freertr.clnt.clntSrEth;
 import org.freertr.ifc.ifcNull;
+import org.freertr.pack.packEsp;
 import org.freertr.pack.packHolder;
+import org.freertr.pack.packL2tp3;
 import org.freertr.pack.packRsvp;
+import org.freertr.prt.prtDccp;
+import org.freertr.prt.prtGre;
+import org.freertr.prt.prtIpcomp;
+import org.freertr.prt.prtMplsIp;
+import org.freertr.prt.prtSctp;
+import org.freertr.prt.prtTcp;
+import org.freertr.prt.prtUdp;
 import org.freertr.rtr.rtrBfdNeigh;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.rtr.rtrLdpNeigh;
+import org.freertr.rtr.rtrNshIface;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabHop;
 import org.freertr.tab.tabIndex;
@@ -44,6 +57,55 @@ import org.freertr.util.logger;
 public class ipFwdTab {
 
     private ipFwdTab() {
+    }
+
+    /**
+     * check if its safe between two asn
+     *
+     * @param i protocol to check
+     * @return true if drop, false if process the packet further
+     */
+    public final static boolean safeProtocol(int i) {
+        switch (i) {
+            case packEsp.protoNum:
+                return false;
+            case packL2tp3.prot:
+                return false;
+            case prtGre.protoNum:
+                return false;
+            case prtTcp.protoNum:
+                return false;
+            case prtUdp.protoNum:
+                return false;
+            case prtDccp.protoNum:
+                return false;
+            case prtSctp.protoNum:
+                return false;
+            case ipCor4.protocolNumber:
+                return false;
+            case ipCor6.protocolNumber:
+                return false;
+            case ipIcmp4.protoNum:
+                return false;
+            case ipIcmp6.protoNum:
+                return false;
+            case prtMplsIp.prot:
+                return false;
+            case clntSrEth.prot:
+                return false;
+            case clntEtherIp.prot:
+                return false;
+            case clntAx25.prot:
+                return false;
+            case prtIpcomp.proto:
+                return false;
+            case rtrNshIface.protoNum:
+                return false;
+            case packRsvp.proto:
+                return false;
+            default:
+                return true;
+        }
     }
 
     /**
@@ -86,6 +148,35 @@ public class ipFwdTab {
                 return null;
         }
         return (ipFwdIface) prf.best.iface;
+    }
+
+    /**
+     * find myaddr interface
+     *
+     * @param lower forwarder
+     * @param addr address
+     * @return interface id, null if none
+     */
+    public static ipFwdIface findMyaddrIface(ipFwd lower, addrIP addr) {
+        for (int i = lower.ifaces.size() - 1; i >= 0; i--) {
+            ipFwdIface ifc = lower.ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
+            if (!ifc.ready) {
+                continue;
+            }
+            if (!ifc.gateLoc) {
+                continue;
+            }
+            if (ifc.lower.checkMyAddress(addr)) {
+                return ifc;
+            }
+            if (ifc.lower.checkMyAlias(addr) != null) {
+                return ifc;
+            }
+        }
+        return null;
     }
 
     /**

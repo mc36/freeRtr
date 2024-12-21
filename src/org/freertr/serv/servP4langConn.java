@@ -4241,6 +4241,10 @@ public class servP4langConn implements Runnable {
                 String sif = "-1";
                 if (fif != null) {
                     sif = "" + fif.id;
+                } else {
+                    if (doRemRou(afi, act, a, vrf, cml, ntry, ntry)) {
+                        continue;
+                    }
                 }
                 lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + sif + " " + vrf);
                 continue;
