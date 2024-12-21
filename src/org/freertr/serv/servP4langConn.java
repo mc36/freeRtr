@@ -4111,7 +4111,7 @@ public class servP4langConn implements Runnable {
         }
     }
 
-    private boolean doRemRou(boolean del, String afi, String act, String a, int vrf, tabLabelEntry cml, tabRouteEntry<addrIP> ntry, tabRouteEntry<addrIP> recur, tabRoute<addrIP> done) {
+    private boolean doRemRou(String afi, String act, String a, int vrf, tabLabelEntry cml, tabRouteEntry<addrIP> ntry, tabRouteEntry<addrIP> recur) {
         servStackFwd oth = lower.parent.findIfc(lower.parid, recur.best.iface);
         if (oth == null) {
             return false;
@@ -4120,13 +4120,7 @@ public class servP4langConn implements Runnable {
         servP4langIfc ifc = servP4langUtil.forwarder2iface(lower, oth.id);
         servP4langNei hop = lower.findNei(ifc, adr);
         if (hop == null) {
-            if (del) {
-                done.del(ntry);
-            }
-            return true;
-        }
-        if (!del) {
-            done.add(tabRoute.addType.always, ntry, true, true);
+            return false;
         }
         lower.sendLine("vpnroute" + afi + "_" + act + " " + a + " " + hop.id + " " + ntry.best.nextHop + " " + vrf + " " + lower.parent.bckplnLab[oth.id] + " " + cml.label);
         return true;
@@ -4182,8 +4176,8 @@ public class servP4langConn implements Runnable {
                         }
                         act = "mod";
                     }
-                    if (doRemRou(false, afi, act, a, vrf, cml, ntry, recur, done)) {
-                        continue;
+                    if (doRemRou(afi, act, a, vrf, cml, ntry, recur)) {
+                        done.add(tabRoute.addType.always, ntry, true, true);
                     }
                     continue;
                 }
@@ -4247,17 +4241,13 @@ public class servP4langConn implements Runnable {
                 String sif = "-1";
                 if (fif != null) {
                     sif = "" + fif.id;
-                } else {
-                    if (doRemRou(true, afi, act, a, vrf, cml, ntry, ntry, done)) {
-                        continue;
-                    }
                 }
                 lower.sendLine("myaddr" + afi + "_" + act + " " + a + " " + sif + " " + vrf);
                 continue;
             }
             servP4langNei hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
-                if (doRemRou(true, afi, act, a, vrf, cml, ntry, ntry, done)) {
+                if (doRemRou(afi, act, a, vrf, cml, ntry, ntry)) {
                     continue;
                 }
                 done.del(ntry);
