@@ -216,6 +216,33 @@ control IngressControlMPLS(inout headers hdr,
     }
 
 
+    action act_mpls_decap_pwhe(SubIntId_t port) {
+        /*
+         * Egress packet is back now an IPv4 packet
+         * (LABEL PHP )
+         */
+        ig_md.ethertype = hdr.eth2.ethertype;
+        hdr.ethernet = hdr.eth2;
+        hdr.eth2.setInvalid();
+        hdr.mpls1.setInvalid();
+        hdr.mpls0.setInvalid();
+        ig_md.target_id = port;
+        /*
+         * Indicate effective VRF during
+         * MPLS tunnel decap
+         */
+        ig_md.mpls_op_type = 2;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+        ig_md.target_id = port;
+        hdr.cpu.setValid();
+        hdr.cpu.port = port;
+    }
+
+
 
 
     table tbl_mpls_fib {
@@ -255,11 +282,15 @@ hdr.mpls0.label:
              */
             act_mpls_decap_l2vpn;
 
-
             /*
              * mpls decapsulation if PHP
              */
             act_mpls_decap_vpls;
+
+            /*
+             * mpls decapsulation if PHP
+             */
+            act_mpls_decap_pwhe;
 
             /*
              * mpls broadcast label
@@ -323,6 +354,11 @@ hdr.mpls1.label:
              * mpls decapsulation if PHP
              */
             act_mpls_decap_vpls;
+
+            /*
+             * mpls decapsulation if PHP
+             */
+            act_mpls_decap_pwhe;
 
             /*
              * mpls broadcast label

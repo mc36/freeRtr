@@ -3074,6 +3074,31 @@ def writeNexthopRules(delete, p4info_helper, ingress_sw, nexthop, dst_mac_addr, 
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
+def writePwheNhRules(delete, p4info_helper, ingress_sw, nexthop, dst_mac_addr, src_mac_addr, port, aclport, core_dst_mac, core_src_mac, label, vpnlab):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
+        match_fields={
+            "eg_md.nexthop_id": nexthop,
+        },
+        action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_pwhe",
+        action_params={
+            "dst_mac_addr": dst_mac_addr,
+            "src_mac_addr": src_mac_addr,
+            "egress_port": port,
+            "acl_port": aclport,
+            "core_dst_mac": core_dst_mac,
+            "core_src_mac": core_src_mac,
+            "egress_label": label,
+            "vpn_label": vpnlab
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_host",
@@ -3315,6 +3340,38 @@ def writeCpuMplsRules(delete, p4info_helper, ingress_sw, dst_label):
         },
         action_name="ig_ctl.ig_ctl_mpls.act_mpls_cpulabel",
         action_params={
+        }
+    )
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry1, False)
+        ingress_sw.WriteTableEntry(table_entry2, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry1, False)
+        ingress_sw.ModifyTableEntry(table_entry2, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry1, False)
+        ingress_sw.DeleteTableEntry(table_entry2, False)
+
+
+def writePwheMplsRules(delete, p4info_helper, ingress_sw, dst_label, port):
+    table_entry1 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
+        match_fields={
+            "hdr.mpls0.label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_pwhe",
+        action_params={
+            "port": port
+        }
+    )
+    table_entry2 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib_decap",
+        match_fields={
+            "hdr.mpls1.label": (dst_label)
+        },
+        action_name="ig_ctl.ig_ctl_mpls.act_mpls_decap_pwhe",
+        action_params={
+            "port": port
         }
     )
     if delete == 1:
@@ -3817,7 +3874,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sck.connect((freerouter_address, int(freerouter_port)))
     fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
-    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp l3tp route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap vxlan etherip ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc loconn\r\n");
+    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp l3tp route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap vxlan etherip ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc loconn pwhe\r\n");
     for x in range(0, 10):
         data = "portname %i bmv2-port%i\r\n" % (x,x)
         fil.write(data)
@@ -4018,6 +4075,10 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeCpuMplsRules(mode,p4info_helper,sw1,int(splt[1]))
             continue
 
+        if cmds[0] == "pwhelab":
+            writePwheMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
         if cmds[0] == "label4":
             writeMplsRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[4]),int(splt[2]))
             continue
@@ -4048,6 +4109,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "neigh4":
             writeNexthopRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
+            writeNeighborRules4(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+            continue
+
+        if cmds[0] == "pwhenei4":
+            writePwheNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]),int(splt[7]),splt[8],splt[9],int(splt[10]),int(splt[11]))
             writeNeighborRules4(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
@@ -4268,6 +4334,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "neigh6":
             writeNexthopRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]))
+            writeNeighborRules6(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+            continue
+
+        if cmds[0] == "pwhenei6":
+            writePwheNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]),int(splt[7]),splt[8],splt[9],int(splt[10]),int(splt[11]))
             writeNeighborRules6(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 

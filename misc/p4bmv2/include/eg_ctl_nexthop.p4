@@ -43,6 +43,28 @@ control EgressControlNexthop(inout headers hdr,
     }
 
 
+    action act_ipv4_pwhe(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, mac_addr_t core_dst_mac, mac_addr_t core_src_mac, label_t egress_label, label_t vpn_label) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = core_src_mac;
+        hdr.ethernet.dst_mac_addr = core_dst_mac;
+        hdr.eth2.setValid();
+        hdr.eth2.src_mac_addr = src_mac_addr;
+        hdr.eth2.dst_mac_addr = dst_mac_addr;
+        hdr.eth2.ethertype = eg_md.ethertype;
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = egress_label;
+        hdr.mpls0.ttl = 255;
+        hdr.mpls0.bos = 0;
+        hdr.mpls1.setValid();
+        hdr.mpls1.label = vpn_label;
+        hdr.mpls1.ttl = 255;
+        hdr.mpls1.bos = 1;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+
     action act_ipv4_pppoe(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, bit<16> session) {
         /*
          * the packet header src_mac is now set to the previous header dst_mac
@@ -702,6 +724,7 @@ eg_md.nexthop_id:
         }
         actions = {
             act_ipv4_fib_hit;
+            act_ipv4_pwhe;
             act_ipv4_pppoe;
             act_ipv4_gre4;
             act_ipv4_gre6;

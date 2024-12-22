@@ -133,6 +133,15 @@ control ig_ctl(inout headers hdr,
             if (hdr.l2tpbr.isValid()) hdr.l2tpbr.setInvalid();
             return;
         }
+        if (ig_md.need_recir == 1) {
+            if (hdr.vlan.isValid()) hdr.vlan.setInvalid();
+            if (hdr.vlanq.isValid()) hdr.vlanq.setInvalid();
+            if (hdr.sgt.isValid()) hdr.sgt.setInvalid();
+            if (hdr.pppoeD.isValid()) hdr.pppoeD.setInvalid();
+            if (hdr.pppoeB.isValid()) hdr.pppoeB.setInvalid();
+            if (hdr.l2tpbr.isValid()) hdr.l2tpbr.setInvalid();
+            return;
+        }
         ig_ctl_flowspec.apply(hdr,ig_md,ig_intr_md);
         if (ig_md.dropping == 1) {
             mark_to_drop(ig_intr_md);
