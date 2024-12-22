@@ -16342,3 +16342,6 @@ no todo: route-map --> route-policy converter
 no todo: terminal background and foreground
 ---------------------------------- 2024-12-19 11:46:33 24.12.19
 no todo: hackediff alias to diff with the | hacked fun filter
+---------------------------------- 2024-12-22 18:07:47 24.12.22
+qc pass: p4lang: pwhe routing over ipv4
+qc pass: p4lang: pwhe routing over ipv6

@@ -628,6 +628,8 @@ qc pass: p4lang: csc vpn with bgp over backplane
 qc pass: p4lang: olab with bgp
 qc pass: p4lang: olab with bgp over vlan
 qc pass: p4lang: olab with bgp over qinq
+qc pass: p4lang: pwhe routing over ipv4
+qc pass: p4lang: pwhe routing over ipv6
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

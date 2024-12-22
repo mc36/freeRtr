@@ -2060,6 +2060,8 @@ qc pass: p4lang: csc vpn with bgp over backplane
 qc pass: p4lang: olab with bgp
 qc pass: p4lang: olab with bgp over vlan
 qc pass: p4lang: olab with bgp over qinq
+qc pass: p4lang: pwhe routing over ipv4
+qc pass: p4lang: pwhe routing over ipv6
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
