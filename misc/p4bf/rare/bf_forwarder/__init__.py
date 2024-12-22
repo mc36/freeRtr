@@ -218,6 +218,10 @@ class BfForwarder(Thread, RareApi):
                 "parent": {"id": "mpls", "path": "ig_ctl_mpls.tbl_mpls_fib"},
                 "action": "ig_ctl.ig_ctl_mpls.act_mpls_bcast_label",
             },
+            "pwhe": {
+                "parent": {"id": "mpls", "path": "ig_ctl_mpls.tbl_mpls_fib"},
+                "action": "ig_ctl.ig_ctl_mpls.act_mpls_decap_pwhe",
+            },
             "gre": {
                 "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
                 "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_gre",
@@ -237,6 +241,10 @@ class BfForwarder(Thread, RareApi):
             "etherip": {
                 "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
                 "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_etherip",
+            },
+            "tmux": {
+                "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
+                "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_tmux",
             },
             "l2tp": {
                 "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},

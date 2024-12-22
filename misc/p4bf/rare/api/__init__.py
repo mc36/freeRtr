@@ -26,6 +26,7 @@ class RareApi(BfRtRare):
     from .copp4 import writeCopp4Rules
     from .copp6 import writeCopp6Rules
     from .cpulabel import writeCpuMplsRules
+    from .pwhelab import writePwheMplsRules
     from .duplabel4 import writeDupLabelRules
     #from .duplabel6 import
     from .duplabloc4 import writeDupLabLocRules
@@ -83,6 +84,7 @@ class RareApi(BfRtRare):
     from .inspect6 import writeInspectRules6
     from .neigh4 import writeNexthopRules
     from .neigh4 import writeNeighborRules4
+    from .neigh6 import writePwheNhRules
     from .neigh6 import writeNeighborRules6
     from .nhop2port import writeNhop2portRules
     from .nshifc import writeNshIfcRules

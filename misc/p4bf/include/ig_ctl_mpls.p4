@@ -122,6 +122,12 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         hdr.mpls0.setInvalid();
         hdr.vlan.setInvalid();
         hdr.vlanq.setInvalid();
+#ifdef HAVE_PPPOE
+        hdr.pppoeD.setInvalid();
+#endif
+#ifdef HAVE_SGT
+        hdr.sgt.setInvalid();
+#endif
         ig_md.target_id = port;
         ig_md.mpls0_remove = 0;
         ig_md.mpls1_remove = 0;
@@ -140,6 +146,36 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
         ig_md.mpls_op_type = 2;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
+    }
+
+
+    action act_mpls_decap_pwhe(SubIntId_t port) {
+        ig_md.ethertype = hdr.eth2.ethertype;
+        hdr.ethernet = hdr.eth2;
+        hdr.eth2.setInvalid();
+        hdr.mpls1.setInvalid();
+        hdr.mpls0.setInvalid();
+        hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
+#ifdef HAVE_PPPOE
+        hdr.pppoeD.setInvalid();
+#endif
+#ifdef HAVE_SGT
+        hdr.sgt.setInvalid();
+#endif
+        ig_md.target_id = RECIR_PORT;
+        ig_md.mpls0_remove = 0;
+        ig_md.mpls1_remove = 0;
+        ig_md.mpls_op_type = 2;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        ig_tm_md.ucast_egress_port = RECIR_PORT;
+        ig_tm_md.bypass_egress = 1;
+//        recirculate(RECIR_PORT);
+        hdr.cpu.setValid();
+        hdr.cpu._padding1 = 0;
+        hdr.cpu._padding2 = 0;
+        hdr.cpu.port = port;
     }
 #endif
 
@@ -226,6 +262,7 @@ hdr.mpls0.label:
             act_mpls_decap_set_nexthop;
             act_mpls_decap_ipv4;
 #ifdef HAVE_BRIDGE
+            act_mpls_decap_pwhe;
             act_mpls_decap_l2vpn;
             act_mpls_decap_vpls;
 #endif
@@ -253,6 +290,7 @@ hdr.mpls1.label:
             act_mpls_decap_set_nexthop;
             act_mpls_decap_l3vpn;
 #ifdef HAVE_BRIDGE
+            act_mpls_decap_pwhe;
             act_mpls_decap_l2vpn;
             act_mpls_decap_vpls;
 #endif
