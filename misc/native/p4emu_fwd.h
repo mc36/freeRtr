@@ -830,6 +830,20 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         putTmuxHeader;
         putIpv6header(IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
+    case 23: // pwhe
+        bufP -= 12;
+        memcpy(&bufD[bufP], &bufH[0], 12);
+        bufP -= 4;
+        tmp = 0x1ff | (neigh_res->dprt << 12);
+        put32msb(bufD, bufP, tmp);
+        bufP -= 4;
+        tmp = 0xff | (neigh_res->sprt << 12);
+        put32msb(bufD, bufP, tmp);
+        ethtyp = ETHERTYPE_MPLS_UCAST;
+        bufP -= 2;
+        put16msb(bufD, bufP, ethtyp);
+        memcpy(&bufH[0], &neigh_res->mac2, 12);
+        break;
     default:
         doDropper;
     }
@@ -1621,6 +1635,12 @@ neigh_tx:
             put32msb(bufD, bufP, label);
             neigh_ntry.id = mpls_res->nexthop;
             goto ethtyp_tx;
+        case 10: // pwhe
+            memcpy(&bufH[0], &bufD[bufP], 12);
+            memcpy(&bufD[preBuff], &bufH[0], 12);
+            bufP += 12;
+            prt = mpls_res->port;
+            goto ethtyp_rx;
         }
         doDropper;
     case ETHERTYPE_VLAN: // dot1q

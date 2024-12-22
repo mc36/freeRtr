@@ -421,7 +421,7 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
         if (ifc == null) {
             return true;
         }
-        return (master != null) || (ifc.type == tabRouteIface.ifaceType.bundle) || (ifc.type == tabRouteIface.ifaceType.bridge) || (ifc.type == tabRouteIface.ifaceType.dialer) || (ifc.type == tabRouteIface.ifaceType.hairpin) || (ifc.type == tabRouteIface.ifaceType.tunnel) || (ifc.type == tabRouteIface.ifaceType.virtppp);
+        return (master != null) || (ifc.type == tabRouteIface.ifaceType.bundle) || (ifc.type == tabRouteIface.ifaceType.bridge) || (ifc.type == tabRouteIface.ifaceType.dialer) || (ifc.type == tabRouteIface.ifaceType.hairpin) || (ifc.type == tabRouteIface.ifaceType.tunnel) || (ifc.type == tabRouteIface.ifaceType.virtppp) || (ifc.type == tabRouteIface.ifaceType.pweth);
     }
 
     /**

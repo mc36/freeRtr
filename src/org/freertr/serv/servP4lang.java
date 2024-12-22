@@ -686,7 +686,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 cmd.error("no need to export subinterface");
                 return false;
             }
-            if ((ifc.type != tabRouteIface.ifaceType.sdn) && (ifc.type != tabRouteIface.ifaceType.bundle) && (ifc.type != tabRouteIface.ifaceType.bridge) && (ifc.type != tabRouteIface.ifaceType.dialer) && (ifc.type != tabRouteIface.ifaceType.hairpin) && (ifc.type != tabRouteIface.ifaceType.tunnel) && (ifc.type != tabRouteIface.ifaceType.virtppp) && (ifc.type != tabRouteIface.ifaceType.template)) {
+            if ((ifc.type != tabRouteIface.ifaceType.sdn) && (ifc.type != tabRouteIface.ifaceType.bundle) && (ifc.type != tabRouteIface.ifaceType.bridge) && (ifc.type != tabRouteIface.ifaceType.dialer) && (ifc.type != tabRouteIface.ifaceType.hairpin) && (ifc.type != tabRouteIface.ifaceType.tunnel) && (ifc.type != tabRouteIface.ifaceType.virtppp) && (ifc.type != tabRouteIface.ifaceType.pweth) && (ifc.type != tabRouteIface.ifaceType.template)) {
                 cmd.error("not p4lang interface");
                 return false;
             }

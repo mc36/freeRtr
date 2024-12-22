@@ -3502,6 +3502,62 @@ public class servP4langConn implements Runnable {
             ifc.sentPppoe = ses;
             return;
         }
+        int ll = 0;
+        int lr = 0;
+        servP4langNei hop = null;
+        if (ifc.ifc.type == tabRouteIface.ifaceType.pweth) {
+            if (ifc.ifc.pwhe == null) {
+                return;
+            }
+            if (ifc.ifc.pwhe.pwom == null) {
+                return;
+            }
+            ll = ifc.ifc.pwhe.pwom.getLabelLoc();
+            if (ll < 0) {
+                if (ifc.sentLabel < 0) {
+                    return;
+                }
+                lower.sendLine("pwhelab_del " + ifc.sentLabel + " " + ifc.id);
+                ifc.sentLabel = -1;
+                return;
+            }
+            if (ll != ifc.sentLabel) {
+                String a;
+                if (ifc.sentLabel < 0) {
+                    a = "add";
+                } else {
+                    a = "mod";
+                }
+                lower.sendLine("pwhelab_" + a + " " + ll + " " + ifc.id);
+                ifc.sentLabel = ll;
+            }
+            lr = ifc.ifc.pwhe.pwom.getLabelRem();
+            if (lr < 0) {
+                return;
+            }
+            addrIP adr = ifc.ifc.pwhe.pwom.getRemote();
+            if (adr == null) {
+                return;
+            }
+            ipFwd ofwd = ifc.ifc.pwhe.pwom.vrf.getFwd(adr);
+            servP4langVrf ovrf = lower.findVrf(ofwd);
+            if (ovrf == null) {
+                return;
+            }
+            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(adr);
+            ntry = lower.convRou(ntry, false);
+            if (ntry == null) {
+                return;
+            }
+            if (ntry.best.iface == null) {
+                return;
+            }
+            hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
+            if (hop == null) {
+                return;
+            }
+            ll = servP4langUtil.getLabel(ntry);
+        }
         String afi;
         if (ipv4) {
             afi = "4";
@@ -3540,6 +3596,10 @@ public class servP4langConn implements Runnable {
                 outIfc = oif.id;
                 old.viaI = oif;
             }
+            if (hop != null) {
+                old.viaI = hop.getVia();
+                outIfc = old.viaI.id;
+            }
             String act;
             if (added || (old.mac == null)) {
                 act = "add";
@@ -3551,7 +3611,11 @@ public class servP4langConn implements Runnable {
             }
             old.mac = ntry.mac;
             old.sentIfc = outIfc;
-            lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
+            if (hop != null) {
+                lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + ll + " " + lr);
+            } else {
+                lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
+            }
         }
     }
 

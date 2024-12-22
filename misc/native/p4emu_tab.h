@@ -87,7 +87,7 @@ struct table_head nsh_table;
 
 struct mpls_entry {
     int label;
-    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt, 7=dup, 8=bier, 9=push
+    int command;    // 1=vrf, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=punt, 7=dup, 8=bier, 9=push, 10=pwhe
     long pack;
     long byte;
     int nexthop;
@@ -263,13 +263,14 @@ struct route6_entry {
 struct neigh_entry {
     int id;
     int vrf;
-    int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=ipip4, 8=ipip6, 9=esp4, 10=esp6, 11=ovpn4, 12=ovpn6, 13=wg4. 14=wg6, 15=amt4, 16=amt6, 17=gtp4, 18=gtp6, 19=l3tp4, 20=l3tp6, 21=tmux4, 22=tmux6
+    int command;    // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=ipip4, 8=ipip6, 9=esp4, 10=esp6, 11=ovpn4, 12=ovpn6, 13=wg4. 14=wg6, 15=amt4, 16=amt6, 17=gtp4, 18=gtp6, 19=l3tp4, 20=l3tp6, 21=tmux4, 22=tmux6, 23=pwhe
     long pack;
     long byte;
     int port;
     int aclport;
     int tid;
     unsigned char macs[12];
+    unsigned char mac2[12];
     int sip1;
     int sip2;
     int sip3;
