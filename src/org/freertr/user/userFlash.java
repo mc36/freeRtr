@@ -219,7 +219,7 @@ public class userFlash {
             rdr.putStrArr(res);
             return null;
         }
-        if (a.equals("setperm")) {
+        if (a.equals("permission")) {
             a = cmd.word();
             String s = cmd.word();
             setFilePerm(a, s);
@@ -357,8 +357,7 @@ public class userFlash {
             return null;
         }
         if (a.equals("count")) {
-            a = cmd.getRemaining();
-            cmd.error(a + " uses " + countUsage(a) + " bytes");
+            rdr.putStrTab(dirUsage(cmd.getRemaining()));
             return null;
         }
         cmd.badCmd();
@@ -1105,13 +1104,52 @@ public class userFlash {
     }
 
     /**
+     * direcory usage
+     *
+     * @param fn name of file to count
+     * @return total usage
+     */
+    public static userFormat dirUsage(String fn) {
+        File[] fl = dirList(fn);
+        if (fl == null) {
+            return null;
+        }
+        userFormat res = new userFormat("|", "directory|usage");
+        long tot = 0;
+        long loc = 0;
+        for (int i = 0; i < fl.length; i++) {
+            File f = fl[i];
+            if (f == null) {
+                continue;
+            }
+            String a = f.getName();
+            if (!f.isDirectory()) {
+                try {
+                    loc += f.length();
+                } catch (Exception e) {
+                }
+                continue;
+            }
+            long cur = countUsage(f.getAbsolutePath());
+            tot += cur;
+            res.add(a + "|" + cur);
+        }
+        res.add("directories|" + tot);
+        res.add("files|" + loc);
+        return res;
+    }
+
+    /**
      * count disk usage
      *
      * @param fn name of file to count
      * @return total usage
      */
-    public long countUsage(String fn) {
+    public static long countUsage(String fn) {
         File[] fl = dirList(fn);
+        if (fl == null) {
+            return 0;
+        }
         return recursiveUsage(fl);
     }
 
@@ -1121,7 +1159,7 @@ public class userFlash {
      * @param fl list of files to count
      * @return total usage
      */
-    protected long recursiveUsage(File[] fl) {
+    protected static long recursiveUsage(File[] fl) {
         long res = 0;
         for (int i = 0; i < fl.length; i++) {
             File f = fl[i];
