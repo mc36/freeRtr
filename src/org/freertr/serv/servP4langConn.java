@@ -3556,6 +3556,9 @@ public class servP4langConn implements Runnable {
             if (hop == null) {
                 return;
             }
+            if (hop.mac == null) {
+                return;
+            }
             ll = servP4langUtil.getLabel(ntry);
         }
         String afi;

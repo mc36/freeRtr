@@ -489,6 +489,56 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "pwhenei4") == 0) {
+        inet_pton(AF_INET, arg[3], buf2);
+        rou4.vrf = atoi(arg[5]);
+        memcpy(rou4.addr, buf2, sizeof(rou4.addr));
+        rou4.bits = routes_bits + (sizeof(rou4.addr) * 8);
+        rour.cmd = 1;
+        i = rour.hop = atoi(arg[2]);
+        str2mac(&neir.macs[0], arg[4]);
+        str2mac(&neir.macs[6], arg[6]);
+        neir.port = atoi(arg[7]);
+        neir.aclport = atoi(arg[8]);
+        str2mac(&neir.mac2[0], arg[9]);
+        str2mac(&neir.mac2[6], arg[10]);
+        neir.srcPort = atoi(arg[11]);
+        neir.trgPort = atoi(arg[12]);
+        neir.cmd = 11;
+        if (del == 0) {
+            if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(route4_fd, &rou4, &rour, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &i, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "pwhenei6") == 0) {
+        inet_pton(AF_INET6, arg[3], buf2);
+        rou6.vrf = atoi(arg[5]);
+        memcpy(rou6.addr, buf2, sizeof(rou6.addr));
+        rou6.bits = routes_bits + (sizeof(rou6.addr) * 8);
+        rour.cmd = 1;
+        i = rour.hop = atoi(arg[2]);
+        str2mac(&neir.macs[0], arg[4]);
+        str2mac(&neir.macs[6], arg[6]);
+        neir.port = atoi(arg[7]);
+        neir.aclport = atoi(arg[8]);
+        str2mac(&neir.mac2[0], arg[9]);
+        str2mac(&neir.mac2[6], arg[10]);
+        neir.srcPort = atoi(arg[11]);
+        neir.trgPort = atoi(arg[12]);
+        neir.cmd = 11;
+        if (del == 0) {
+            if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(route6_fd, &rou6, &rour, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &i, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "myaddr4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         rou4.vrf = atoi(arg[5]);
@@ -756,6 +806,27 @@ int doOneCommand(unsigned char* buf) {
         labr.push = atoi(arg[6]);
         labr.ver = 4;
         labr.cmd = 6;
+        if (del == 0) {
+            if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(labels_fd, &i, &labr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "pwhelab") == 0) {
+        i = atoi(arg[2]);
+        labr.port = atoi(arg[3]);
+        labr.cmd = 7;
+        if (del == 0) {
+            if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(labels_fd, &i, &labr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "cpulabel") == 0) {
+        i = atoi(arg[2]);
+        labr.cmd = 8;
         if (del == 0) {
             if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
         } else {

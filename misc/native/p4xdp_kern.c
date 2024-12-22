@@ -299,6 +299,12 @@ struct {
         put32msb(bufD, bufP, label);                                \
         neik = resm->hop;                                           \
         goto ethtyp_tx;                                             \
+    case 7:                                                         \
+        if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;         \
+        prt = resm->port;                                           \
+        continue;                                                   \
+    case 8:                                                         \
+        goto cpu;                                                   \
     default:                                                        \
         goto drop;
 
@@ -1162,6 +1168,24 @@ ethtyp_tx:
             putGtpHeader();
             putUdpHeader(neir);
             putIpv6header(neir, IP_PROTOCOL_UDP);
+            break;
+        case 11: // pwhe
+            bufP -= sizeof(macaddr) + 16;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 16;
+            revalidatePacket(bufP + 2);
+            bufP -= sizeof(macaddr);
+            __builtin_memcpy(&bufD[bufP], &macaddr, sizeof(macaddr));
+            bufP -= 4;
+            tmp = 0x1ff | (neir->trgPort << 12);
+            put32msb(bufD, bufP, tmp);
+            bufP -= 4;
+            tmp = 0xff | (neir->srcPort << 12);
+            put32msb(bufD, bufP, tmp);
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            __builtin_memcpy(&macaddr[0], neir->mac2, sizeof(neir->mac2));
             break;
         default:
             goto drop;
