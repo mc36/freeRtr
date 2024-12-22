@@ -1715,10 +1715,7 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("bridgevpls_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + lower.parent.bckplnLab[oth.id] + " " + br.br.bridgeHed.label.label);
                 continue;
             }
-            int l = -1;
             addrIP adr = null;
-            addrIP srv = null;
-            tabRouteEntry<addrIP> rou = null;
             try {
                 clntVxlan iface = (clntVxlan) ntry.ifc.lowerIf;
                 servP4langIfc brif = lower.findDynBr(ntry.ifc);
@@ -1869,6 +1866,9 @@ public class servP4langConn implements Runnable {
                 continue;
             } catch (Exception e) {
             }
+            int l = -1;
+            addrIP srv = null;
+            tabRouteEntry<addrIP> rou = null;
             try {
                 clntMplsPwe iface = (clntMplsPwe) ntry.ifc.lowerIf;
                 l = iface.getLabelRem();
@@ -1891,11 +1891,13 @@ public class servP4langConn implements Runnable {
                 }
             } catch (Exception e) {
             }
-            rou = lower.convRou(rou, false);
             if (l < 1) {
+                br.macs.del(ntry);
                 continue;
             }
+            rou = lower.convRou(rou, false);
             if (rou == null) {
+                br.macs.del(ntry);
                 continue;
             }
             servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
