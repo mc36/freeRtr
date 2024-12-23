@@ -1562,8 +1562,13 @@ public class servP4langConn implements Runnable {
     }
 
     private void doBrdg(servP4langBr br) {
-        br.routed = lower.findIfc(br.br) != null;
-        if (br.routed) {
+        br.routed = lower.findIfc(br.br);
+        if (br.routed != null) {
+            if (br.sentLab) {
+                return;
+            }
+            lower.sendLine("pwhelab_add " + br.br.bridgeHed.label.label + " " + br.routed.id);
+            br.sentLab = true;
             return;
         }
         if (!br.sentLab) {
@@ -2313,7 +2318,7 @@ public class servP4langConn implements Runnable {
             if (br == null) {
                 br = new servP4langBr(0);
             }
-            if (!br.routed) {
+            if (br.routed == null) {
                 i = ifc.ifc.bridgeIfc.tcp4mssIn;
                 int o = ifc.ifc.bridgeIfc.tcp4mssOut;
                 int p = ifc.ifc.bridgeIfc.pmtud4valIn;

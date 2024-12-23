@@ -26,7 +26,7 @@ public class servP4langBr implements Comparable<servP4langBr> {
     /**
      * routing bridge
      */
-    protected boolean routed;
+    protected servP4langIfc routed;
 
     /**
      * label sent
