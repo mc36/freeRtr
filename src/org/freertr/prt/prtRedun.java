@@ -222,7 +222,7 @@ public class prtRedun implements Runnable {
         if (fnd.doPrio(pri)) {
             return true;
         }
-        if (pri < cfgInit.redunPrio) {
+        if (pri <= cfgInit.redunPrio) {
             return false;
         }
         if (state != packRedundancy.statActive) {
