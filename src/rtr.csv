@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.12.23-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-12-23 16:14:49, took 00:15:22, with 50 workers, on 3582 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2024-12-23 17:17:59, took 00:14:55, with 50 workers, on 3586 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2088,6 +2088,10 @@ http://sources.freertr.org/cfg/p4lang-rout383.tst;p4lang-rout383.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout384.tst;p4lang-rout384.tst;success;p4lang: pwhe mpls over bridge
 http://sources.freertr.org/cfg/p4lang-rout385.tst;p4lang-rout385.tst;success;p4lang: pwhe mpls over bundle
 http://sources.freertr.org/cfg/p4lang-rout386.tst;p4lang-rout386.tst;success;p4lang: pwhe mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-rout387.tst;p4lang-rout387.tst;success;p4lang: mldp core over pwhe
+http://sources.freertr.org/cfg/p4lang-rout388.tst;p4lang-rout388.tst;success;p4lang: bier core over pwhe
+http://sources.freertr.org/cfg/p4lang-rout389.tst;p4lang-rout389.tst;success;p4lang: pwhe mpls pop
+http://sources.freertr.org/cfg/p4lang-rout390.tst;p4lang-rout390.tst;success;p4lang: pwhe mpls push
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

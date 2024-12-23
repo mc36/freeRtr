@@ -16369,3 +16369,8 @@ qc pass: p4lang: ingress qinq pwhe access list
 qc pass: p4lang: egress qinq pwhe access list
 qc pass: p4lang: macsec over pwhe
 qc pass: p4lang: sgt over pwhe
+---------------------------------- 2024-12-23 17:03:04 24.12.23
+qc pass: p4lang: mldp core over pwhe
+qc pass: p4lang: bier core over pwhe
+qc pass: p4lang: pwhe mpls pop
+qc pass: p4lang: pwhe mpls push

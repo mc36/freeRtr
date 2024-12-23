@@ -652,6 +652,10 @@ qc pass: p4lang: pwhe mpls over vlan
 qc pass: p4lang: pwhe mpls over bridge
 qc pass: p4lang: pwhe mpls over bundle
 qc pass: p4lang: pwhe mpls over hairpin
+qc pass: p4lang: mldp core over pwhe
+qc pass: p4lang: bier core over pwhe
+qc pass: p4lang: pwhe mpls pop
+qc pass: p4lang: pwhe mpls push
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

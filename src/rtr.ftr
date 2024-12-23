@@ -2084,6 +2084,10 @@ qc pass: p4lang: pwhe mpls over vlan
 qc pass: p4lang: pwhe mpls over bridge
 qc pass: p4lang: pwhe mpls over bundle
 qc pass: p4lang: pwhe mpls over hairpin
+qc pass: p4lang: mldp core over pwhe
+qc pass: p4lang: bier core over pwhe
+qc pass: p4lang: pwhe mpls pop
+qc pass: p4lang: pwhe mpls push
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

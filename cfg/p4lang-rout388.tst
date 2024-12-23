@@ -170,13 +170,13 @@ vrf def v1
 router lsrp4 1
  vrf v1
  router 4.4.4.4
- bier 256 10 3
+ bier 256 10 4
  red conn
  exit
 router lsrp6 1
  vrf v1
  router 6.6.6.4
- bier 256 10 3
+ bier 256 10 4
  red conn
  exit
 int lo0
@@ -201,8 +201,8 @@ int eth1
  ipv6 pim ena
  ipv4 pim join lo0
  ipv6 pim join lo0
- ipv4 pim bier 3
- ipv6 pim bier 3
+ ipv4 pim bier 4
+ ipv6 pim bier 4
  exit
 ipv4 mroute v1 0.0.0.0 0.0.0.0 1.1.1.1
 ipv6 mroute v1 :: :: 1234:1::1
