@@ -1,4 +1,4 @@
-description p4lang: pwhe routing over ipv6
+description p4lang: pwhe routing over bridge
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -41,18 +41,22 @@ int lo0
  exit
 int lo1
  vrf for v2
- ipv6 addr 8888::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- ipv6 ena
+ ipv4 addr 8.8.8.1 255.255.255.255
+ exit
+bridge 1
+ mac-learn
  exit
 int sdn1
+ bridge-gr 1
+ exit
+int bvi1
  vrf for v2
- ipv6 addr 9999::1 ffff:ffff::
- ipv6 ena
+ ipv4 addr 9.9.9.1 255.255.255.0
  mpls enable
- mpls ldp6
+ mpls ldp4
  exit
 int pweth1
- pseudowire v2 lo1 pweompls 8888::2 1234
+ pseudowire v2 lo1 pweompls 8.8.8.2 1234
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -80,14 +84,16 @@ server p4lang p4
  interconnect eth2
  export-vrf v1
  export-vrf v2
+ export-br 1
  export-port sdn1 1 10
  export-port sdn2 2 10
  export-port sdn3 3 10
  export-port sdn4 4 10
+ export-port bvi1 dynamic
  export-port pweth1 dynamic
  vrf v9
  exit
-ipv6 route v2 8888::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 9999::2
+ipv4 route v2 8.8.8.2 255.255.255.255 9.9.9.2
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
 ipv4 route v1 2.2.2.105 255.255.255.255 1.1.3.2
@@ -125,7 +131,7 @@ int lo0
  exit
 int lo1
  vrf for v2
- ipv6 addr 8888::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ ipv4 addr 8.8.8.2 255.255.255.255
  exit
 bridge 1
  mac-learn
@@ -140,12 +146,12 @@ int eth1
  exit
 int bvi1
  vrf for v2
- ipv6 addr 9999::2 ffff:ffff::
+ ipv4 addr 9.9.9.2 255.255.255.0
  mpls enable
- mpls ldp6
+ mpls ldp4
  exit
 int pweth1
- pseudowire v2 lo1 pweompls 8888::1 1234
+ pseudowire v2 lo1 pweompls 8.8.8.1 1234
  bridge-gr 2
  exit
 int bvi2
@@ -153,7 +159,7 @@ int bvi2
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
-ipv6 route v2 8888::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 9999::1
+ipv4 route v2 8.8.8.1 255.255.255.255 9.9.9.1
 ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.3.0 255.255.255.0 1.1.1.1
 ipv4 route v1 1.1.4.0 255.255.255.0 1.1.1.1
@@ -267,10 +273,10 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 !
 
 
-r1 tping 100 10 9999::2 vrf v2
-r3 tping 100 10 9999::1 vrf v2
-r1 tping 100 10 8888::2 vrf v2
-r3 tping 100 10 8888::1 vrf v2
+r1 tping 100 10 9.9.9.2 vrf v2
+r3 tping 100 10 9.9.9.1 vrf v2
+r1 tping 100 10 8.8.8.2 vrf v2
+r3 tping 100 10 8.8.8.1 vrf v2
 
 r1 tping 100 10 1.1.1.2 vrf v1
 r1 tping 100 10 1234:1::2 vrf v1

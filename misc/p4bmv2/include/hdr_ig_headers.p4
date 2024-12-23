@@ -34,6 +34,9 @@ struct headers {
     etherip_t		etherip2;
     udp_t		udp2;
     vxlan_t		vxlan2;
+    mpls_t		mpls90;
+    mpls_t		mpls91;
+    ethernet_t		eth9;
     l2tp_t		l2tp2;
     amt_t		amt2;
     gtp_t		gtp2;

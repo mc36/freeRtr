@@ -48,18 +48,18 @@ control EgressControlNexthop(inout headers hdr,
         eg_md.aclport_id = acl_port;
         hdr.ethernet.src_mac_addr = core_src_mac;
         hdr.ethernet.dst_mac_addr = core_dst_mac;
-        hdr.eth2.setValid();
-        hdr.eth2.src_mac_addr = src_mac_addr;
-        hdr.eth2.dst_mac_addr = dst_mac_addr;
-        hdr.eth2.ethertype = eg_md.ethertype;
-        hdr.mpls0.setValid();
-        hdr.mpls0.label = egress_label;
-        hdr.mpls0.ttl = 255;
-        hdr.mpls0.bos = 0;
-        hdr.mpls1.setValid();
-        hdr.mpls1.label = vpn_label;
-        hdr.mpls1.ttl = 255;
-        hdr.mpls1.bos = 1;
+        hdr.eth9.setValid();
+        hdr.eth9.src_mac_addr = src_mac_addr;
+        hdr.eth9.dst_mac_addr = dst_mac_addr;
+        hdr.eth9.ethertype = eg_md.ethertype;
+        hdr.mpls90.setValid();
+        hdr.mpls90.label = egress_label;
+        hdr.mpls90.ttl = 255;
+        hdr.mpls90.bos = 0;
+        hdr.mpls91.setValid();
+        hdr.mpls91.label = vpn_label;
+        hdr.mpls91.ttl = 255;
+        hdr.mpls91.bos = 1;
         eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
     }
 

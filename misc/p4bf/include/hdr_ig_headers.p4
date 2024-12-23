@@ -58,6 +58,13 @@ struct headers {
 #ifdef HAVE_VXLAN
     vxlan_t vxlan2;
 #endif
+#ifdef HAVE_MPLS
+#ifdef HAVE_BRIDGE
+    mpls_t mpls90;
+    mpls_t mpls91;
+    ethernet_t eth9;
+#endif
+#endif
 #ifdef HAVE_POLKA
     polka_t polka;
 #endif

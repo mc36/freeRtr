@@ -16345,3 +16345,14 @@ no todo: hackediff alias to diff with the | hacked fun filter
 ---------------------------------- 2024-12-22 18:07:47 24.12.22
 qc pass: p4lang: pwhe routing over ipv4
 qc pass: p4lang: pwhe routing over ipv6
+---------------------------------- 2024-12-23 01:30:01 24.12.23
+qc pass: p4lang: pwhe routing over vlan
+qc pass: p4lang: pwhe routing over bridge
+qc pass: p4lang: pwhe routing over bundle
+qc pass: p4lang: pwhe routing over hairpin
+qc pass: p4lang: pwhe mpls over ipv4
+qc pass: p4lang: pwhe mpls over ipv6
+qc pass: p4lang: pwhe mpls over vlan
+qc pass: p4lang: pwhe mpls over bridge
+qc pass: p4lang: pwhe mpls over bundle
+qc pass: p4lang: pwhe mpls over hairpin

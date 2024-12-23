@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v24.12.22-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-12-22 23:25:37, took 00:09:27, with 50 workers, on 632 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v24.12.23-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2024-12-23 01:56:54, took 00:11:51, with 50 workers, on 642 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -634,3 +634,13 @@ http://sources.freertr.org/cfg/p4lang-rout373.tst;p4lang-rout373.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout374.tst;p4lang-rout374.tst;success;p4lang: olab with bgp over qinq
 http://sources.freertr.org/cfg/p4lang-rout375.tst;p4lang-rout375.tst;success;p4lang: pwhe routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout376.tst;p4lang-rout376.tst;success;p4lang: pwhe routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout377.tst;p4lang-rout377.tst;success;p4lang: pwhe routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout378.tst;p4lang-rout378.tst;success;p4lang: pwhe routing over bridge
+http://sources.freertr.org/cfg/p4lang-rout379.tst;p4lang-rout379.tst;success;p4lang: pwhe routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout380.tst;p4lang-rout380.tst;success;p4lang: pwhe routing over hairpin
+http://sources.freertr.org/cfg/p4lang-rout381.tst;p4lang-rout381.tst;success;p4lang: pwhe mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout382.tst;p4lang-rout382.tst;success;p4lang: pwhe mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout383.tst;p4lang-rout383.tst;success;p4lang: pwhe mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout384.tst;p4lang-rout384.tst;success;p4lang: pwhe mpls over bridge
+http://sources.freertr.org/cfg/p4lang-rout385.tst;p4lang-rout385.tst;success;p4lang: pwhe mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout386.tst;p4lang-rout386.tst;success;p4lang: pwhe mpls over hairpin
