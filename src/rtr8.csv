@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.12.23-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-12-23 18:55:57, took 00:10:11, with 50 workers, on 658 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2024-12-23 21:08:23, took 00:10:13, with 50 workers, on 662 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -660,3 +660,7 @@ http://sources.freertr.org/cfg/p4lang-rout387.tst;p4lang-rout387.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout388.tst;p4lang-rout388.tst;success;p4lang: bier core over pwhe
 http://sources.freertr.org/cfg/p4lang-rout389.tst;p4lang-rout389.tst;success;p4lang: pwhe mpls pop
 http://sources.freertr.org/cfg/p4lang-rout390.tst;p4lang-rout390.tst;success;p4lang: pwhe mpls push
+http://sources.freertr.org/cfg/p4lang-rout391.tst;p4lang-rout391.tst;success;p4lang: l2vpn over pwhe mpls
+http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;success;p4lang: l3vpn over pwhe mpls
+http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;success;p4lang: pwhe routing over qinq
+http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;success;p4lang: pwhe mpls over qinq

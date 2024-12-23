@@ -16374,3 +16374,8 @@ qc pass: p4lang: mldp core over pwhe
 qc pass: p4lang: bier core over pwhe
 qc pass: p4lang: pwhe mpls pop
 qc pass: p4lang: pwhe mpls push
+---------------------------------- 2024-12-23 20:42:29 24.12.23
+qc pass: p4lang: l2vpn over pwhe mpls
+qc pass: p4lang: l3vpn over pwhe mpls
+qc pass: p4lang: pwhe routing over qinq
+qc pass: p4lang: pwhe mpls over qinq
