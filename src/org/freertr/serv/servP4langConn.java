@@ -3707,6 +3707,9 @@ public class servP4langConn implements Runnable {
             if (hop == null) {
                 continue;
             }
+            if (hop.mac == null) {
+                continue;
+            }
             old.viaI = hop.getVia();
             int outIfc = old.viaI.id;
             String act;
