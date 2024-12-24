@@ -3507,9 +3507,12 @@ public class servP4langConn implements Runnable {
             ifc.sentPppoe = ses;
             return;
         }
-        int ll = 0;
-        int lr = 0;
-        servP4langNei hop = null;
+        String afi;
+        if (ipv4) {
+            afi = "4";
+        } else {
+            afi = "6";
+        }
         if (ifc.ifc.type == tabRouteIface.ifaceType.pweth) {
             if (ifc.ifc.pwhe == null) {
                 return;
@@ -3517,7 +3520,7 @@ public class servP4langConn implements Runnable {
             if (ifc.ifc.pwhe.pwom == null) {
                 return;
             }
-            ll = ifc.ifc.pwhe.pwom.getLabelLoc();
+            int ll = ifc.ifc.pwhe.pwom.getLabelLoc();
             if (ll < 0) {
                 if (ifc.sentLabel < 0) {
                     return;
@@ -3536,7 +3539,7 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("pwhelab_" + a + " " + ll + " " + ifc.id);
                 ifc.sentLabel = ll;
             }
-            lr = ifc.ifc.pwhe.pwom.getLabelRem();
+            int lr = ifc.ifc.pwhe.pwom.getLabelRem();
             if (lr < 0) {
                 return;
             }
@@ -3557,7 +3560,7 @@ public class servP4langConn implements Runnable {
             if (ntry.best.iface == null) {
                 return;
             }
-            hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
+            servP4langNei hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
             if (hop == null) {
                 return;
             }
@@ -3565,65 +3568,143 @@ public class servP4langConn implements Runnable {
                 return;
             }
             ll = servP4langUtil.getLabel(ntry);
+            for (int i = 0;; i++) {
+                servP4langNei nei = new servP4langNei(ifc, new addrIP());
+                nei.mac = new addrMac();
+                if (ipi.getL2info(i, nei.adr, nei.mac)) {
+                    break;
+                }
+                if (!ipi.checkConnected(nei.adr)) {
+                    continue;
+                }
+                servP4langNei old = lower.neighs.find(nei);
+                boolean added = old == null;
+                if (added) {
+                    old = lower.genNeighId(nei);
+                    if (old == null) {
+                        continue;
+                    }
+                }
+                old.need++;
+                old.vrf = vrf;
+                old.viaI = hop.getVia();
+                int outIfc = old.viaI.id;
+                String act;
+                if (added || (old.mac == null)) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((nei.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
+                        continue;
+                    }
+                }
+                old.mac = nei.mac;
+                old.sentIfc = outIfc;
+                lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + ll + " " + lr);
+            }
+            return;
         }
-        String afi;
-        if (ipv4) {
-            afi = "4";
-        } else {
-            afi = "6";
+        if (ifc.ifc.bridgeHed == null) {
+            for (int i = 0;; i++) {
+                servP4langNei nei = new servP4langNei(ifc, new addrIP());
+                nei.mac = new addrMac();
+                if (ipi.getL2info(i, nei.adr, nei.mac)) {
+                    break;
+                }
+                if (!ipi.checkConnected(nei.adr)) {
+                    continue;
+                }
+                servP4langNei old = lower.neighs.find(nei);
+                boolean added = old == null;
+                if (added) {
+                    old = lower.genNeighId(nei);
+                    if (old == null) {
+                        continue;
+                    }
+                }
+                old.need++;
+                old.vrf = vrf;
+                int outIfc = ifc.id;
+                String act;
+                if (added || (old.mac == null)) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((nei.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
+                        continue;
+                    }
+                }
+                old.mac = nei.mac;
+                old.sentIfc = outIfc;
+                lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
+            }
+            return;
         }
         for (int i = 0;; i++) {
-            servP4langNei ntry = new servP4langNei(ifc, new addrIP());
-            ntry.mac = new addrMac();
-            if (ipi.getL2info(i, ntry.adr, ntry.mac)) {
+            servP4langNei nei = new servP4langNei(ifc, new addrIP());
+            nei.mac = new addrMac();
+            if (ipi.getL2info(i, nei.adr, nei.mac)) {
                 break;
             }
-            if (!ipi.checkConnected(ntry.adr)) {
+            if (!ipi.checkConnected(nei.adr)) {
                 continue;
             }
-            servP4langNei old = lower.neighs.find(ntry);
+            servP4langNei old = lower.neighs.find(nei);
             boolean added = old == null;
             if (added) {
-                old = lower.genNeighId(ntry);
+                old = lower.genNeighId(nei);
                 if (old == null) {
                     continue;
                 }
             }
             old.need++;
             old.vrf = vrf;
-            int outIfc = ifc.id;
-            if (ifc.ifc.bridgeHed != null) {
-                ifcBridgeAdr bra = ifc.ifc.bridgeHed.bridgeHed.findMacAddr(ntry.mac);
-                if (bra == null) {
-                    continue;
-                }
-                servP4langIfc oif = lower.findIfc(bra.ifc);
-                if (oif == null) {
-                    continue;
-                }
-                outIfc = oif.id;
+            ifcBridgeAdr bra = ifc.ifc.bridgeHed.bridgeHed.findMacAddr(nei.mac);
+            if (bra == null) {
+                continue;
+            }
+            servP4langIfc oif = lower.findIfc(bra.ifc);
+            if (oif != null) {
+                int outIfc = oif.id;
                 old.viaI = oif;
+                String act;
+                if (added || (old.mac == null)) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((nei.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
+                        continue;
+                    }
+                }
+                old.mac = nei.mac;
+                old.sentIfc = outIfc;
+                lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
+                continue;
             }
-            if (hop != null) {
-                old.viaI = hop.getVia();
-                outIfc = old.viaI.id;
+            servStackFwd oth = lower.parent.findIfc(lower.parid, bra.ifc);
+            if (oth == null) {
+                continue;
             }
+            addrIP adr = servStack.forwarder2addr(oth.id);
+            servP4langIfc oifc = servP4langUtil.forwarder2iface(lower, oth.id);
+            servP4langNei hop = lower.findNei(oifc, adr);
+            if (hop == null) {
+                continue;
+            }
+            old.viaI = hop.getVia();
+            int outIfc = old.viaI.id;
             String act;
             if (added || (old.mac == null)) {
                 act = "add";
             } else {
                 act = "mod";
-                if ((ntry.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
+                if ((nei.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
                     continue;
                 }
             }
-            old.mac = ntry.mac;
+            old.mac = nei.mac;
             old.sentIfc = outIfc;
-            if (hop != null) {
-                lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + ll + " " + lr);
-            } else {
-                lower.sendLine("neigh" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc);
-            }
+            lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + lower.parent.bckplnLab[oth.id] + " " + ifc.ifc.bridgeHed.bridgeHed.label.label);
         }
     }
 
