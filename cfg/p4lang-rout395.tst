@@ -195,7 +195,7 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::5
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::6
 !
 
-addother r2 controller r1 v9 9080 10.11.12.111 feature bundle mpls vpls bridge
+addother r2 controller r1 v9 9080 10.11.12.111 feature bundle mpls vpls bridge pwhe
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -205,7 +205,7 @@ int eth6 eth 0000.0000.2222 $6a$ $6b$
 !
 !
 
-addother r3 controller r1 v9 9080 10.12.13.111 feature bundle mpls vpls bridge
+addother r3 controller r1 v9 9080 10.12.13.111 feature bundle mpls vpls bridge pwhe
 int eth1 eth 0000.0000.3333 $7b$ $7a$
 int eth2 eth 0000.0000.3333 $8a$ $8b$
 int eth3 eth 0000.0000.3333 $9a$ $9b$

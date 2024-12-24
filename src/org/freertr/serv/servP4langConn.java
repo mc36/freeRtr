@@ -1564,11 +1564,69 @@ public class servP4langConn implements Runnable {
     private void doBrdg(servP4langBr br) {
         br.routed = lower.findIfc(br.br);
         if (br.routed != null) {
-            if (br.sentLab) {
+            servP4langVrf vrf = lower.findVrf(br.routed);
+            if (vrf == null) {
                 return;
             }
-            lower.sendLine("pwhelab_add " + br.br.bridgeHed.label.label + " " + br.routed.id);
-            br.sentLab = true;
+            if (!br.sentLab) {
+                lower.sendLine("pwhelab_add " + br.br.bridgeHed.label.label + " " + br.routed.id);
+                br.sentLab = true;
+            }
+            tabGen<ifcBridgeIfc> seenI = new tabGen<ifcBridgeIfc>();
+            for (int i = 0;; i++) {
+                ifcBridgeIfc ntry = br.br.bridgeHed.getIface(i);
+                if (ntry == null) {
+                    break;
+                }
+                seenI.put(ntry);
+                if (br.ifcs.find(ntry) != null) {
+                    continue;
+                }
+                int l = -1;
+                try {
+                    clntMplsPwe ifc = (clntMplsPwe) ntry.lowerIf;
+                    if (ifc.getLabelRem() < 0) {
+                        continue;
+                    }
+                    l = ifc.getLabelLoc();
+                } catch (Exception e) {
+                }
+                if (l < 1) {
+                    continue;
+                }
+                int id = lower.getNextDynIfc();
+                if (id < 0) {
+                    continue;
+                }
+                servP4langIfc res = new servP4langIfc(lower, id);
+                res.brif = ntry;
+                res.dynamic = true;
+                res.hidden = true;
+                res.doClear();
+                lower.expIfc.put(res);
+                br.ifcs.put(ntry);
+                br.labs.put(new servP4langBrLab(ntry, l));
+                lower.sendLine("pwhelab_add " + l + " " + id);
+                lower.sendLine("portvrf_add " + id + " " + vrf.id);
+            }
+            for (int i = br.ifcs.size() - 1; i >= 0; i--) {
+                ifcBridgeIfc ntry = br.ifcs.get(i);
+                if (seenI.find(ntry) != null) {
+                    continue;
+                }
+                br.ifcs.del(ntry);
+                servP4langBrLab lab = br.labs.del(new servP4langBrLab(ntry, 0));
+                if (lab == null) {
+                    continue;
+                }
+                servP4langIfc brif = lower.findDynBr(ntry);
+                if (brif == null) {
+                    continue;
+                }
+                lower.sendLine("pwhelab_del " + lab.lab + " " + brif.id);
+                lower.sendLine("portvrf_del " + brif.id + " " + vrf.id);
+                lower.expIfc.del(brif);
+            }
             return;
         }
         if (!br.sentLab) {
@@ -3698,12 +3756,53 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             servStackFwd oth = lower.parent.findIfc(lower.parid, bra.ifc);
-            if (oth == null) {
+            if (oth != null) {
+                addrIP adr = servStack.forwarder2addr(oth.id);
+                servP4langIfc oifc = servP4langUtil.forwarder2iface(lower, oth.id);
+                servP4langNei hop = lower.findNei(oifc, adr);
+                if (hop == null) {
+                    continue;
+                }
+                if (hop.mac == null) {
+                    continue;
+                }
+                old.viaI = hop.getVia();
+                int outIfc = old.viaI.id;
+                String act;
+                if (added || (old.mac == null)) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((nei.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
+                        continue;
+                    }
+                }
+                old.mac = nei.mac;
+                old.sentIfc = outIfc;
+                lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + lower.parent.bckplnLab[oth.id] + " " + ifc.ifc.bridgeHed.bridgeHed.label.label);
                 continue;
             }
-            addrIP adr = servStack.forwarder2addr(oth.id);
-            servP4langIfc oifc = servP4langUtil.forwarder2iface(lower, oth.id);
-            servP4langNei hop = lower.findNei(oifc, adr);
+            int l = -1;
+            addrIP adr = null;
+            tabRouteEntry<addrIP> rou = null;
+            try {
+                clntMplsPwe iface = (clntMplsPwe) bra.ifc.lowerIf;
+                l = iface.getLabelRem();
+                adr = iface.getRemote();
+                if (adr == null) {
+                    continue;
+                }
+                rou = iface.vrf.getFwd(adr).actualU.route(adr);
+            } catch (Exception e) {
+            }
+            if (l < 1) {
+                continue;
+            }
+            rou = lower.convRou(rou, false);
+            if (rou == null) {
+                continue;
+            }
+            servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
             if (hop == null) {
                 continue;
             }
@@ -3723,7 +3822,7 @@ public class servP4langConn implements Runnable {
             }
             old.mac = nei.mac;
             old.sentIfc = outIfc;
-            lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + lower.parent.bckplnLab[oth.id] + " " + ifc.ifc.bridgeHed.bridgeHed.label.label);
+            lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + servP4langUtil.getLabel(rou) + " " + l);
         }
     }
 
