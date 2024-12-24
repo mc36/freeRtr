@@ -660,6 +660,8 @@ qc pass: p4lang: l2vpn over pwhe mpls
 qc pass: p4lang: l3vpn over pwhe mpls
 qc pass: p4lang: pwhe routing over qinq
 qc pass: p4lang: pwhe mpls over qinq
+qc pass: p4lang: bridge routing over backplane
+qc pass: p4lang: mixed bridge routing over backplane
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

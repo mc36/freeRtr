@@ -81,7 +81,7 @@ bundle 4
  exit
 bridge 1
  mac-learn
- private-bridge
+ private
  exit
 int bvi1
  vrf for v1

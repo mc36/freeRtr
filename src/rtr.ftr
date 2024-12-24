@@ -2092,6 +2092,8 @@ qc pass: p4lang: l2vpn over pwhe mpls
 qc pass: p4lang: l3vpn over pwhe mpls
 qc pass: p4lang: pwhe routing over qinq
 qc pass: p4lang: pwhe mpls over qinq
+qc pass: p4lang: bridge routing over backplane
+qc pass: p4lang: mixed bridge routing over backplane
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

@@ -16379,3 +16379,6 @@ qc pass: p4lang: l2vpn over pwhe mpls
 qc pass: p4lang: l3vpn over pwhe mpls
 qc pass: p4lang: pwhe routing over qinq
 qc pass: p4lang: pwhe mpls over qinq
+---------------------------------- 2024-12-24 09:27:29 24.12.24
+qc pass: p4lang: bridge routing over backplane
+qc pass: p4lang: mixed bridge routing over backplane
