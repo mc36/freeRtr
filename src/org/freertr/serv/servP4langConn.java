@@ -1708,6 +1708,22 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("routedmac_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + nei.id + " " + p);
                 continue;
             }
+            if (ntry.ifc.lowerIf == null) {
+                servStackFwd oth = lower.parent.findIfc(lower.parid, br.br);
+                if (oth == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                addrIP adr = servStack.forwarder2addr(oth.id);
+                ifc = servP4langUtil.forwarder2iface(lower, oth.id);
+                servP4langNei hop = lower.findNei(ifc, adr);
+                if (hop == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                lower.sendLine("bridgevpls_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + lower.parent.bckplnLab[oth.id] + " " + br.br.bridgeHed.label.label);
+                continue;
+            }
             servStackFwd oth = lower.parent.findIfc(lower.parid, ntry.ifc);
             if (oth != null) {
                 addrIP adr = servStack.forwarder2addr(oth.id);

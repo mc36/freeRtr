@@ -5,6 +5,7 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgBrdg;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcEthTyp;
@@ -550,6 +551,29 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             res.add(oru.best.nextHop);
         }
         return res;
+    }
+
+    /**
+     * find interface
+     *
+     * @param who querier
+     * @param ifc interface
+     * @return owner, null if error
+     */
+    protected servStackFwd findIfc(servStackFwd who, cfgBrdg ifc) {
+        if (ifc == null) {
+            return null;
+        }
+        for (int i = 0; i < fwds.size(); i++) {
+            servStackFwd ntry = fwds.get(i);
+            if (ntry.id == who.id) {
+                continue;
+            }
+            if (ntry.findIfc(ifc)) {
+                return ntry;
+            }
+        }
+        return null;
     }
 
     /**

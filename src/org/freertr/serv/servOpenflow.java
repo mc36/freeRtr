@@ -2,6 +2,7 @@ package org.freertr.serv;
 
 import java.util.List;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgBrdg;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.ifc.ifcBridgeIfc;
@@ -416,6 +417,28 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
             }
             if (ifc == ntry.ifc.fwdIf6) {
                 return ntry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * find interface
+     *
+     * @param ifc interface
+     * @return interface, null if error
+     */
+    protected servOpenflowIfc1 findIfc(cfgBrdg ifc) {
+        for (int i = 0; i < expIfc.size(); i++) {
+            servOpenflowIfc1 old = expIfc.get(i);
+            if (old.ifc == null) {
+                continue;
+            }
+            if (old.ifc.bridgeIfc != null) {
+                continue;
+            }
+            if (old.ifc.bridgeHed == ifc) {
+                return old;
             }
         }
         return null;

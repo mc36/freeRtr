@@ -2,6 +2,7 @@ package org.freertr.serv;
 
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgBrdg;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.spf.spfCalc;
@@ -118,6 +119,22 @@ public class servStackFwd {
             l.add(beg + mid + "backplane " + ntry.pi.name + " " + ntry.metric);
         }
         l.add(beg + mid + "remote " + remote);
+    }
+
+    /**
+     * find interface
+     *
+     * @param ifc interface
+     * @return true if found
+     */
+    protected boolean findIfc(cfgBrdg ifc) {
+        if (p4 != null) {
+            return p4.findIfc(ifc) != null;
+        }
+        if (of != null) {
+            return of.findIfc(ifc) != null;
+        }
+        return false;
     }
 
     /**
