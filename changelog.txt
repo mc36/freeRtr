@@ -16382,3 +16382,6 @@ qc pass: p4lang: pwhe mpls over qinq
 ---------------------------------- 2024-12-24 09:27:29 24.12.24
 qc pass: p4lang: bridge routing over backplane
 qc pass: p4lang: mixed bridge routing over backplane
+---------------------------------- 2024-12-24 20:20:34 24.12.24
+qc pass: p4lang: routed vpls/ldp with bgp
+qc pass: p4lang: routed vlan vpls/ldp with bgp
