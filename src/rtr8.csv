@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.12.25-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-12-25 10:26:55, took 00:11:17, with 50 workers, on 670 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2024-12-25 12:22:11, took 00:11:49, with 50 workers, on 674 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -672,3 +672,7 @@ http://sources.freertr.org/cfg/p4lang-rout399.tst;p4lang-rout399.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout400.tst;p4lang-rout400.tst;success;p4lang: routed evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout401.tst;p4lang-rout401.tst;success;p4lang: routed vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;success;p4lang: routed qinq evpn/cmac with bgp
+http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;success;p4lang: vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;success;p4lang: evpn/cmac over backplane
+http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;success;p4lang: routed vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;success;p4lang: routed evpn/cmac over backplane
