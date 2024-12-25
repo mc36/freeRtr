@@ -657,6 +657,26 @@ public class ifcBridge implements ifcDn {
     }
 
     /**
+     * add mac on interface
+     *
+     * @param ifc interface
+     * @param adr address
+     */
+    public void addMac(ifcBridgeIfc ifc, addrMac adr) {
+        if (adr == null) {
+            return;
+        }
+        if (learned == null) {
+            return;
+        }
+        ifcBridgeAdr ntry = new ifcBridgeAdr(adr.copyBytes());
+        ntry.stat = true;
+        ntry.ifc = ifc;
+        ntry.cntr = new counter();
+        learned.put(ntry);
+    }
+
+    /**
      * add macs on interface
      *
      * @param ifc interface
@@ -666,15 +686,8 @@ public class ifcBridge implements ifcDn {
         if (lst == null) {
             return;
         }
-        if (learned == null) {
-            return;
-        }
         for (int i = 0; i < lst.size(); i++) {
-            ifcBridgeAdr ntry = new ifcBridgeAdr(lst.get(i).copyBytes());
-            ntry.stat = true;
-            ntry.ifc = ifc;
-            ntry.cntr = new counter();
-            learned.put(ntry);
+            addMac(ifc, lst.get(i));
         }
     }
 

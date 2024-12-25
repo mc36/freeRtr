@@ -556,6 +556,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 case cmac:
                     ntry.brdg = bridge.bridgeHed.newIface(false, false, false);
                     ntry.setUpper(ntry.brdg);
+                    bridge.bridgeHed.addMac(ntry.brdg, ntry.bbmac);
                     break;
                 case vpws:
                     ntry.brdg = bridge.bridgeHed.newIface(false, false, false);
