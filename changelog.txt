@@ -16387,3 +16387,7 @@ qc pass: p4lang: routed vpls/ldp with bgp
 qc pass: p4lang: routed vlan vpls/ldp with bgp
 ---------------------------------- 2024-12-25 09:26:23 24.12.25
 qc pass: p4lang: routed qinq vpls/ldp with bgp
+---------------------------------- 2024-12-25 10:00:17 24.12.25
+qc pass: p4lang: routed evpn/cmac with bgp
+qc pass: p4lang: routed vlan evpn/cmac with bgp
+qc pass: p4lang: routed qinq evpn/cmac with bgp

@@ -1996,7 +1996,19 @@ public class servP4langConn implements Runnable {
             }
             servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
             if (hop == null) {
-                br.macs.del(ntry);
+                oth = lower.parent.findIfc(lower.parid, rou.best.iface);
+                if (oth == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                adr = servStack.forwarder2addr(oth.id);
+                ifc = servP4langUtil.forwarder2iface(lower, oth.id);
+                hop = lower.findNei(ifc, adr);
+                if (hop == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                lower.sendLine("bridgevpls_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + adr + " " + hop.id + " " + lower.parent.bckplnLab[oth.id] + " " + br.br.bridgeHed.label.label);
                 continue;
             }
             if (srv == null) {
@@ -3826,6 +3838,33 @@ public class servP4langConn implements Runnable {
             }
             servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
             if (hop == null) {
+                oth = lower.parent.findIfc(lower.parid, rou.best.iface);
+                if (oth == null) {
+                    continue;
+                }
+                adr = servStack.forwarder2addr(oth.id);
+                servP4langIfc oifc = servP4langUtil.forwarder2iface(lower, oth.id);
+                hop = lower.findNei(oifc, adr);
+                if (hop == null) {
+                    continue;
+                }
+                if (hop.mac == null) {
+                    continue;
+                }
+                old.viaI = hop.getVia();
+                int outIfc = old.viaI.id;
+                String act;
+                if (added || (old.mac == null)) {
+                    act = "add";
+                } else {
+                    act = "mod";
+                    if ((nei.mac.compareTo(old.mac) == 0) && (old.sentIfc == outIfc)) {
+                        continue;
+                    }
+                }
+                old.mac = nei.mac;
+                old.sentIfc = outIfc;
+                lower.sendLine("pwhenei" + afi + "_" + act + " " + old.id + " " + old.adr + " " + old.mac.toEmuStr() + " " + vrf.id + " " + ifc.getMac().toEmuStr() + " " + old.sentIfc + " " + ifc.id + " " + hop.mac.toEmuStr() + " " + old.viaI.getMac().toEmuStr() + " " + lower.parent.bckplnLab[oth.id] + " " + ifc.ifc.bridgeHed.bridgeHed.label.label);
                 continue;
             }
             if (hop.mac == null) {

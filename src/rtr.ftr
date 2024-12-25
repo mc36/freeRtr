@@ -2097,6 +2097,9 @@ qc pass: p4lang: mixed bridge routing over backplane
 qc pass: p4lang: routed vpls/ldp with bgp
 qc pass: p4lang: routed vlan vpls/ldp with bgp
 qc pass: p4lang: routed qinq vpls/ldp with bgp
+qc pass: p4lang: routed evpn/cmac with bgp
+qc pass: p4lang: routed vlan evpn/cmac with bgp
+qc pass: p4lang: routed qinq evpn/cmac with bgp
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
