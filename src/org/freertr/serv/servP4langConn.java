@@ -1591,6 +1591,21 @@ public class servP4langConn implements Runnable {
                     l = ifc.getLabelLoc();
                 } catch (Exception e) {
                 }
+                try {
+                    rtrBgpEvpnPeer ifc = (rtrBgpEvpnPeer) ntry.lowerIf;
+                    if (ifc.getLabelRem() < 0) {
+                        continue;
+                    }
+                    l = ifc.getLabelLoc();
+                    if (br.findIfc(l)) {
+                        continue;
+                    }
+                    br.ifcs.put(ntry);
+                    br.labs.put(new servP4langBrLab(ntry, l));
+                    lower.sendLine("pwhelab_add " + l + " " + br.routed.id);
+                    continue;
+                } catch (Exception e) {
+                }
                 if (l < 1) {
                     continue;
                 }
@@ -3793,6 +3808,13 @@ public class servP4langConn implements Runnable {
                     continue;
                 }
                 rou = iface.vrf.getFwd(adr).actualU.route(adr);
+            } catch (Exception e) {
+            }
+            try {
+                rtrBgpEvpnPeer iface = (rtrBgpEvpnPeer) bra.ifc.lowerIf;
+                l = iface.getLabelRem();
+                adr = iface.getRemote();
+                rou = iface.getForwarder().actualU.route(adr);
             } catch (Exception e) {
             }
             if (l < 1) {
