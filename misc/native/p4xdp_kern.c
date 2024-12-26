@@ -303,6 +303,8 @@ struct {
         goto cpu;                                                   \
     case 8:                                                         \
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;         \
+        revalidatePacket(14);                                       \
+        __builtin_memcpy(&macaddr[0], &bufD[0], 12);                \
         prt = resm->port;                                           \
         continue;                                                   \
     default:                                                        \
