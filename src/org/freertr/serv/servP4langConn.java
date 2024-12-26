@@ -3688,6 +3688,7 @@ public class servP4langConn implements Runnable {
                 }
                 old.need++;
                 old.vrf = vrf;
+                old.iface.viaN = old;
                 old.viaI = hop.getVia();
                 int outIfc = old.viaI.id;
                 String act;
