@@ -4274,13 +4274,26 @@ public class servP4langConn implements Runnable {
             } else {
                 act = "add";
             }
-            if (ifc.viaN == null) {
-                lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
-                now++;
+            now++;
+            if (ifc.viaN != null) {
+                lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.viaN.getVia().id + " " + ifc.viaN.id + " " + ifc.id);
                 continue;
             }
-            lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.viaN.getVia().id + " " + ifc.viaN.id + " " + ifc.id);
-            now++;
+            if (ntry.mcastAsBcast) {
+                lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + addrMac.getBroadcast().toEmuStr());
+                continue;
+            }
+            if (!ntry.mcastAsUcast) {
+                lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
+                continue;
+            }
+            addrIP adrI = new addrIP();
+            addrMac adrM = new addrMac();
+            if (ntry.lower.getL2info(0, adrI, adrM)) {
+                lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
+                continue;
+            }
+            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + adrM.toEmuStr());
         }
         if (bef) {
             act = "mod";

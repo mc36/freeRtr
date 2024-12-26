@@ -74,6 +74,11 @@ public class ipFwdIface extends tabRouteIface {
     public boolean mcastAsBcast = false;
 
     /**
+     * set true to send multicast as unicast
+     */
+    public boolean mcastAsUcast = false;
+
+    /**
      * set true to disable flowspec
      */
     public boolean disableFlowspec = false;
@@ -585,7 +590,6 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "2 3     redirection                 send packets out on different interface");
         l.add(null, "3 .       <name:ifc>                name of interface");
         l.add(null, "2 .     resend-packet               enable sending packet out on same interface");
-        l.add(null, "2 .     broadcast-multicast         broadcast the multicast packets");
         l.add(null, "2 .     flowspec-disable            disable flowspec processing");
         l.add(null, "2 .     dapp-disable                disable dapp processing");
         l.add(null, "2 3     verify-source               enable per packet validation");
@@ -686,6 +690,8 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, "3 4       disappear                 script on disappearance");
         l.add(null, "4 3,.       <name:scr>              name of script");
         l.add(null, "2 3     multicast                   multicast configuration options");
+        l.add(null, "3 .       broadcast                 broadcast the packets");
+        l.add(null, "3 .       unicast                   unicast the packets");
         l.add(null, "3 .       mldp-enable               enable mdlp processing");
         l.add(null, "3 .       host-enable               enable igmp/mld processing");
         l.add(null, "3 .       host-proxy                send joins for groups");
@@ -807,7 +813,6 @@ public class ipFwdIface extends tabRouteIface {
         cmds.cfgLine(l, !mplsPropTtlAllow, cmds.tabulator, beg + "propagate-ttl-allow", "");
         cmds.cfgLine(l, unreachSrc == null, cmds.tabulator, beg + "unreach-source", "" + unreachSrc);
         cmds.cfgLine(l, blockHost2host, cmds.tabulator, beg + "resend-packet", "");
-        cmds.cfgLine(l, !mcastAsBcast, cmds.tabulator, beg + "broadcast-multicast", "");
         cmds.cfgLine(l, !disableFlowspec, cmds.tabulator, beg + "flowspec-disable", "");
         cmds.cfgLine(l, !disableDapp, cmds.tabulator, beg + "dapp-disable", "");
         String a = "";
@@ -937,6 +942,8 @@ public class ipFwdIface extends tabRouteIface {
         }
         cmds.cfgLine(l, tcpMssIn < 1, cmds.tabulator, beg + "tcp-mss-in", "" + tcpMssIn);
         cmds.cfgLine(l, tcpMssOut < 1, cmds.tabulator, beg + "tcp-mss-out", "" + tcpMssOut);
+        cmds.cfgLine(l, !mcastAsBcast, cmds.tabulator, beg + "multicast broadcast", "");
+        cmds.cfgLine(l, !mcastAsUcast, cmds.tabulator, beg + "multicast unicast", "");
         for (int o = 0; o < f.groups.size(); o++) {
             ipFwdMcast grp = f.groups.get(o);
             if (grp == null) {
@@ -1258,10 +1265,6 @@ public class ipFwdIface extends tabRouteIface {
             disableDapp = true;
             return false;
         }
-        if (a.equals("broadcast-multicast")) {
-            mcastAsBcast = true;
-            return false;
-        }
         if (a.equals("verify-source")) {
             a = cmd.word();
             if (a.equals("rx")) {
@@ -1427,6 +1430,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("multicast")) {
             a = cmd.word();
+            if (a.equals("broadcast")) {
+                mcastAsBcast = true;
+                return false;
+            }
+            if (a.equals("unicast")) {
+                mcastAsUcast = true;
+                return false;
+            }
             if (a.equals("source-override-in")) {
                 mcastSrcIn = new addrIP();
                 mcastSrcIn.fromString(cmd.word());
@@ -1889,10 +1900,6 @@ public class ipFwdIface extends tabRouteIface {
             disableDapp = false;
             return false;
         }
-        if (a.equals("broadcast-multicast")) {
-            mcastAsBcast = false;
-            return false;
-        }
         if (a.equals("verify-source")) {
             verifySource = false;
             verifyStricht = false;
@@ -1980,6 +1987,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("multicast")) {
             a = cmd.word();
+            if (a.equals("broadcast")) {
+                mcastAsBcast = false;
+                return false;
+            }
+            if (a.equals("unicast")) {
+                mcastAsUcast = false;
+                return false;
+            }
             if (a.equals("source-override-in")) {
                 mcastSrcIn = null;
                 return false;

@@ -309,9 +309,18 @@ public class ipIfc6nei implements ifcUp {
         if (adr.isMulticast()) {
             if (upper.ifcHdr.mcastAsBcast) {
                 putHeader(pck, addrMac.getBroadcast());
-            } else {
-                putHeader(pck, adr.conv2multiMac());
+                return false;
             }
+            if (!upper.ifcHdr.mcastAsUcast) {
+                putHeader(pck, adr.conv2multiMac());
+                return false;
+            }
+            ntry = cache.get(0);
+            if (ntry == null) {
+                putHeader(pck, adr.conv2multiMac());
+                return false;
+            }
+            putHeader(pck, ntry.mac);
             return false;
         }
         if (!adr.isLinkLocal()) {

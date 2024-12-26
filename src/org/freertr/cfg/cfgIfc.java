@@ -1528,7 +1528,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] resend-packet",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dapp-disable",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] flowspec-disable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] broadcast-multicast",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] verify-source",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] srh enable",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] nsh enable",
@@ -1601,6 +1600,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + "ipv6 prefix-interval 120000",
         "interface .*!" + cmds.tabulator + "ipv6 prefix-validity 604800000",
         // multicast
+        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast broadcast",
+        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast unicast",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-in",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-out",
         "interface .*!" + cmds.tabulator + "ipv[46] multicast ttl-threshold 0",

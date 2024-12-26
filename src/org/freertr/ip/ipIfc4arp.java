@@ -371,9 +371,18 @@ public class ipIfc4arp implements ifcUp {
         if (adr.isMulticast()) {
             if (upper.ifcHdr.mcastAsBcast) {
                 putHeader(pck, addrMac.getBroadcast(), hwaddr);
-            } else {
-                putHeader(pck, adr.conv2multiMac(), hwaddr);
+                return false;
             }
+            if (!upper.ifcHdr.mcastAsUcast) {
+                putHeader(pck, adr.conv2multiMac(), hwaddr);
+                return false;
+            }
+            ntry = cache.get(0);
+            if (ntry == null) {
+                putHeader(pck, adr.conv2multiMac(), hwaddr);
+                return false;
+            }
+            putHeader(pck, ntry.mac, hwaddr);
             return false;
         }
         if (adr.isBroadcast()) {
