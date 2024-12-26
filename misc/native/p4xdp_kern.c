@@ -181,7 +181,7 @@ struct {
     res->byte += bufE - bufD;                                       \
     switch (res->cmd) {                                             \
     case 1:                                                         \
-        neik = res->hop;                                            \
+        neik = res->nexthop;                                        \
         goto ethtyp_tx;                                             \
     case 2:                                                         \
         break;                                                      \
@@ -190,7 +190,7 @@ struct {
         tmp = (res->label1 << 12) | 0x100 | ttl;                    \
         put32msb(bufD, bufP, tmp);                                  \
         ethtyp = ETHERTYPE_MPLS_UCAST;                              \
-        neik = res->hop;                                            \
+        neik = res->nexthop;                                        \
         goto ethtyp_tx;                                             \
     case 4:                                                         \
         bufP -= 4;                                                  \
@@ -200,7 +200,7 @@ struct {
         tmp = (res->label1 << 12) | ttl;                            \
         put32msb(bufD, bufP, tmp);                                  \
         ethtyp = ETHERTYPE_MPLS_UCAST;                              \
-        neik = res->hop;                                            \
+        neik = res->nexthop;                                        \
         goto ethtyp_tx;                                             \
     case 5:                                                         \
         goto drop;                                                  \
@@ -214,7 +214,7 @@ struct {
         bufD[bufP + 1] = ttl;                                       \
         put16msb(bufD, bufP + 2, ethtyp);                           \
         __builtin_memcpy(&bufD[bufP + 4], res->polka, 16);          \
-        neik = res->hop;                                            \
+        neik = res->nexthop;                                        \
         ethtyp = ETHERTYPE_POLKA;                                   \
         goto ethtyp_tx;                                             \
     default:                                                        \
@@ -255,7 +255,7 @@ struct {
 
 #define switchMpls()                                                \
     case 2:                                                         \
-        neik = resm->hop;                                           \
+        neik = resm->nexthop;                                       \
         if ((tmp & 0x100) == 0) {                                   \
             bufD[bufP + 3] = ttl;                                   \
             goto ethtyp_tx;                                         \
@@ -274,7 +274,7 @@ struct {
         bufP -= 4;                                                  \
         label = (tmp & 0xf00) | ttl | (resm->swap << 12);           \
         put32msb(bufD, bufP, label);                                \
-        neik = resm->hop;                                           \
+        neik = resm->nexthop;                                       \
         goto ethtyp_tx;                                             \
     case 4:                                                         \
         revalidatePacket(bufP + 14);                                \
@@ -288,7 +288,7 @@ struct {
         bufP += 12;                                                 \
         ethtyp = get16msb(bufD, bufP);                              \
         bufP += 2;                                                  \
-        tmp = resm->brdg;                                           \
+        tmp = resm->port;                                           \
         goto bridge_rx;                                             \
     case 6:                                                         \
         bufP -= 4;                                                  \
@@ -297,14 +297,14 @@ struct {
         bufP -= 4;                                                  \
         label = (tmp & 0xe00) | ttl | (resm->swap << 12);           \
         put32msb(bufD, bufP, label);                                \
-        neik = resm->hop;                                           \
+        neik = resm->nexthop;                                       \
         goto ethtyp_tx;                                             \
     case 7:                                                         \
+        goto cpu;                                                   \
+    case 8:                                                         \
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;         \
         prt = resm->port;                                           \
         continue;                                                   \
-    case 8:                                                         \
-        goto cpu;                                                   \
     default:                                                        \
         goto drop;
 
@@ -641,7 +641,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
         case 1: // route
             break;
         case 2: // bridge
-            tmp = vrfp->brdg;
+            tmp = vrfp->bridge;
             switch (ethtyp) {
             case ETHERTYPE_IPV4: // ipv4
                 if (vrfp->pmtud4 > 0) {
@@ -673,7 +673,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
             bufP -= 4;
             ttl = 0xff | (vrfp->label1 << 12);
             put32msb(bufD, bufP, ttl);
-            neik = vrfp->hop;
+            neik = vrfp->nexthop;
             goto ethtyp_tx;
         case 4: // loconnifc
             prt = vrfp->label1;
@@ -751,7 +751,7 @@ ipv4_rx:
                 struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
                 if (res4 == NULL) goto punt;
                 if (vrfp->verify4 > 1) {
-                    neik = res4->hop;
+                    neik = res4->nexthop;
                     struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);
                     if (neir == NULL) goto punt;
                     if (neir->aclport != prt) goto punt;
@@ -793,7 +793,7 @@ ipv6_rx:
                 struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
                 if (res6 == NULL) goto punt;
                 if (vrfp->verify6 > 1) {
-                    neik = res6->hop;
+                    neik = res6->nexthop;
                     struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);
                     if (neir == NULL) goto punt;
                     if (neir->aclport != prt) goto punt;
@@ -947,7 +947,7 @@ nsh_rx:
             bufP += 12;
             ethtyp = get16msb(bufD, bufP);
             bufP += 2;
-            tmp = vrfp->brdg;
+            tmp = vrfp->bridge;
 bridge_rx:
             {}
             struct bridge_key brdk;
@@ -984,7 +984,7 @@ bridge_rx:
                 bufP -= 4;
                 tmp = 0xff | (brdr->label1 << 12);
                 put32msb(bufD, bufP, tmp);
-                neik = brdr->hop;
+                neik = brdr->nexthop;
                 goto ethtyp_tx;
             case 3: // routed
                 bufP -= 12;
@@ -994,7 +994,7 @@ bridge_rx:
                 revalidatePacket(3 * sizeof(macaddr));
                 __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
                 ethtyp = ETHERTYPE_ROUTEDMAC;
-                neik = brdr->hop;
+                neik = brdr->nexthop;
                 goto ethtyp_tx;
             case 4: // pckoudp4
                 bufP -= 12;
@@ -1006,7 +1006,7 @@ bridge_rx:
                 putUdpHeader(brdr);
                 putIpv4header(brdr, IP_PROTOCOL_UDP);
                 bufP += 2;
-                neik = brdr->hop;
+                neik = brdr->nexthop;
                 goto ethtyp_tx;
             case 5: // pckoudp6
                 bufP -= 12;
@@ -1018,7 +1018,7 @@ bridge_rx:
                 putUdpHeader(brdr);
                 putIpv6header(brdr, IP_PROTOCOL_UDP);
                 bufP += 2;
-                neik = brdr->hop;
+                neik = brdr->nexthop;
                 goto ethtyp_tx;
             case 6: // vxlan4
                 bufP -= 12;
@@ -1031,7 +1031,7 @@ bridge_rx:
                 putUdpHeader(brdr);
                 putIpv4header(brdr, IP_PROTOCOL_UDP);
                 bufP += 2;
-                neik = brdr->hop;
+                neik = brdr->nexthop;
                 goto ethtyp_tx;
             case 7: // vxlan6
                 bufP -= 12;
@@ -1044,7 +1044,7 @@ bridge_rx:
                 putUdpHeader(brdr);
                 putIpv6header(brdr, IP_PROTOCOL_UDP);
                 bufP += 2;
-                neik = brdr->hop;
+                neik = brdr->nexthop;
                 goto ethtyp_tx;
             default:
                 goto drop;

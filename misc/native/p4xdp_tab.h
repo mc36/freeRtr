@@ -9,8 +9,8 @@ struct port_res {
 struct vrfp_res {
     __u32 cmd; // 1=route, 2=bridge, 3=xconn, 4=loconnifc, 5=loconnnei, 6=nshconn
     __u32 vrf;
-    __u32 brdg;
-    __u32 hop;
+    __u32 bridge;
+    __u32 nexthop;
     __u32 label1;
     __u32 label2;
     __u32 pttl4;
@@ -45,7 +45,7 @@ struct route6_key {
 
 struct routes_res {
     __u32 cmd; // 1=route, 2=cpu, 3=mpls1, 4=mpls2, 5=drop, 6=polka
-    __u32 hop;
+    __u32 nexthop;
     __u32 label1;
     __u32 label2;
     __u8 polka[16];
@@ -69,13 +69,12 @@ struct neigh_res {
 };
 
 struct label_res {
-    __u32 cmd; // 1=route, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=push, 7=pwhe, 8=punt
+    __u32 cmd; // 1=route, 2=pop, 3=swap, 4=xconn, 5=vpls, 6=push, 7=punt, 8=pwhe
     __u32 ver;
-    __u32 hop;
+    __u32 nexthop;
     __u32 vrf;
     __u32 swap;
     __u32 push;
-    __u32 brdg;
     __u32 port;
     __u64 pack;
     __u64 byte;
@@ -115,7 +114,7 @@ struct bridge_key {
 struct bridge_res {
     __u32 cmd; // 1=port, 2=vpls, 3=route, 4=pckoudp4, 5=pckoudp6, 6=vxlan4, 7=vxlan6
     __u32 port;
-    __u32 hop;
+    __u32 nexthop;
     __u32 label1;
     __u32 label2;
     __u8 srcAddr[16];

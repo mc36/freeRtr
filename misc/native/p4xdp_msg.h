@@ -270,7 +270,7 @@ int doOneCommand(unsigned char* buf) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
         vrfr->cmd = 3;
-        vrfr->hop = atoi(arg[4]);
+        vrfr->nexthop = atoi(arg[4]);
         vrfr->label1 = atoi(arg[5]);
         vrfr->label2 = atoi(arg[7]);
         o = atoi(arg[6]);
@@ -289,7 +289,7 @@ int doOneCommand(unsigned char* buf) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
         vrfr->cmd = 2;
-        vrfr->brdg = atoi(arg[3]);
+        vrfr->bridge = atoi(arg[3]);
         if (del == 0) vrfr->cmd = 0;
         if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         return 0;
@@ -309,7 +309,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "routedmac") == 0) {
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);
-        brdr.hop = atoi(arg[4]);
+        brdr.nexthop = atoi(arg[4]);
         brdr.cmd = 3;
         if (del == 0) {
             if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
@@ -329,7 +329,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(&brdr.trgAddr, &buf2, sizeof(tun4.srcAddr));
         tun4.trgPort = brdr.srcPort = atoi(arg[6]);
         tun4.srcPort = brdr.trgPort = atoi(arg[7]);
-        brdr.hop = atoi(arg[8]);
+        brdr.nexthop = atoi(arg[8]);
         brdr.cmd = 4;
         tun4.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
@@ -355,7 +355,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(&brdr.trgAddr, &buf2, sizeof(tun6.srcAddr));
         tun6.trgPort = brdr.srcPort = atoi(arg[6]);
         tun6.srcPort = brdr.trgPort = atoi(arg[7]);
-        brdr.hop = atoi(arg[8]);
+        brdr.nexthop = atoi(arg[8]);
         brdr.cmd = 5;
         tun6.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
@@ -379,7 +379,7 @@ int doOneCommand(unsigned char* buf) {
         inet_pton(AF_INET, arg[5], buf2);
         memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
         memcpy(&brdr.trgAddr, &buf2, sizeof(tun4.srcAddr));
-        brdr.hop = atoi(arg[6]);
+        brdr.nexthop = atoi(arg[6]);
         brdr.label1 = atoi(arg[7]);
         tun4.vrf = atoi(arg[8]);
         tunr.aclport = atoi(arg[9]);
@@ -406,7 +406,7 @@ int doOneCommand(unsigned char* buf) {
         inet_pton(AF_INET6, arg[5], buf2);
         memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
         memcpy(&brdr.trgAddr, &buf2, sizeof(tun6.srcAddr));
-        brdr.hop = atoi(arg[6]);
+        brdr.nexthop = atoi(arg[6]);
         brdr.label1 = atoi(arg[7]);
         tun6.vrf = atoi(arg[8]);
         tunr.aclport = atoi(arg[9]);
@@ -427,7 +427,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "bridgevpls") == 0) {
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);
-        brdr.hop = atoi(arg[5]);
+        brdr.nexthop = atoi(arg[5]);
         brdr.label1 = atoi(arg[6]);
         brdr.label2 = atoi(arg[7]);
         brdr.cmd = 2;
@@ -440,7 +440,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "bridgelabel") == 0) {
         i = atoi(arg[3]);
-        labr.brdg = atoi(arg[2]);
+        labr.port = atoi(arg[2]);
         labr.cmd = 5;
         if (del == 0) {
             if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
@@ -455,7 +455,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou4.addr, buf2, sizeof(rou4.addr));
         rou4.bits = routes_bits + (sizeof(rou4.addr) * 8);
         rour.cmd = 1;
-        i = rour.hop = atoi(arg[2]);
+        i = rour.nexthop = atoi(arg[2]);
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
         neir.aclport = neir.port = atoi(arg[7]);
@@ -475,7 +475,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou6.addr, buf2, sizeof(rou6.addr));
         rou6.bits = routes_bits + (sizeof(rou6.addr) * 8);
         rour.cmd = 1;
-        i = rour.hop = atoi(arg[2]);
+        i = rour.nexthop = atoi(arg[2]);
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
         neir.aclport = neir.port = atoi(arg[7]);
@@ -495,7 +495,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou4.addr, buf2, sizeof(rou4.addr));
         rou4.bits = routes_bits + (sizeof(rou4.addr) * 8);
         rour.cmd = 1;
-        i = rour.hop = atoi(arg[2]);
+        i = rour.nexthop = atoi(arg[2]);
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
         neir.port = atoi(arg[7]);
@@ -520,7 +520,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou6.addr, buf2, sizeof(rou6.addr));
         rou6.bits = routes_bits + (sizeof(rou6.addr) * 8);
         rour.cmd = 1;
-        i = rour.hop = atoi(arg[2]);
+        i = rour.nexthop = atoi(arg[2]);
         str2mac(&neir.macs[0], arg[4]);
         str2mac(&neir.macs[6], arg[6]);
         neir.port = atoi(arg[7]);
@@ -571,7 +571,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou4.addr, buf2, sizeof(rou4.addr));
         rou4.bits = routes_bits + atoi(arg[3]);
         rour.cmd = 1;
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
         } else {
@@ -585,7 +585,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou6.addr, buf2, sizeof(rou6.addr));
         rou6.bits = routes_bits + atoi(arg[3]);
         rour.cmd = 1;
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
         } else {
@@ -599,7 +599,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou4.addr, buf2, sizeof(rou4.addr));
         rou4.bits = routes_bits + atoi(arg[3]);
         rour.cmd = 3;
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         rour.label1 = atoi(arg[7]);
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
@@ -614,7 +614,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou6.addr, buf2, sizeof(rou6.addr));
         rou6.bits = routes_bits + atoi(arg[3]);
         rour.cmd = 3;
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         rour.label1 = atoi(arg[7]);
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
@@ -629,7 +629,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou4.addr, buf2, sizeof(rou4.addr));
         rou4.bits = routes_bits + atoi(arg[3]);
         rour.cmd = 4;
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         rour.label1 = atoi(arg[7]);
         rour.label2 = atoi(arg[8]);
         if (del == 0) {
@@ -645,7 +645,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou6.addr, buf2, sizeof(rou6.addr));
         rou6.bits = routes_bits + atoi(arg[3]);
         rour.cmd = 4;
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         rour.label1 = atoi(arg[7]);
         rour.label2 = atoi(arg[8]);
         if (del == 0) {
@@ -686,7 +686,7 @@ int doOneCommand(unsigned char* buf) {
         rou4.vrf = atoi(arg[6]);
         memcpy(rou4.addr, buf2, sizeof(rou4.addr));
         rou4.bits = routes_bits + atoi(arg[3]);
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         str2key(arg[7], rour.polka);
         rour.cmd = 6;
         if (del == 0) {
@@ -701,7 +701,7 @@ int doOneCommand(unsigned char* buf) {
         rou6.vrf = atoi(arg[6]);
         memcpy(rou6.addr, buf2, sizeof(rou6.addr));
         rou6.bits = routes_bits + atoi(arg[3]);
-        rour.hop = atoi(arg[4]);
+        rour.nexthop = atoi(arg[4]);
         str2key(arg[7], rour.polka);
         rour.cmd = 6;
         if (del == 0) {
@@ -737,7 +737,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "unlabel4") == 0) {
         i = atoi(arg[2]);
-        labr.hop = atoi(arg[3]);
+        labr.nexthop = atoi(arg[3]);
         labr.ver = 4;
         labr.cmd = 2;
         if (del == 0) {
@@ -749,7 +749,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "unlabel6") == 0) {
         i = atoi(arg[2]);
-        labr.hop = atoi(arg[3]);
+        labr.nexthop = atoi(arg[3]);
         labr.ver = 6;
         labr.cmd = 2;
         if (del == 0) {
@@ -761,7 +761,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "label4") == 0) {
         i = atoi(arg[2]);
-        labr.hop = atoi(arg[3]);
+        labr.nexthop = atoi(arg[3]);
         labr.swap = atoi(arg[5]);
         labr.ver = 4;
         labr.cmd = 3;
@@ -774,7 +774,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "label6") == 0) {
         i = atoi(arg[2]);
-        labr.hop = atoi(arg[3]);
+        labr.nexthop = atoi(arg[3]);
         labr.swap = atoi(arg[5]);
         labr.ver = 6;
         labr.cmd = 3;
@@ -787,7 +787,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "vpnlabel4") == 0) {
         i = atoi(arg[2]);
-        labr.hop = atoi(arg[3]);
+        labr.nexthop = atoi(arg[3]);
         labr.swap = atoi(arg[5]);
         labr.push = atoi(arg[6]);
         labr.ver = 4;
@@ -801,10 +801,10 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "vpnlabel6") == 0) {
         i = atoi(arg[2]);
-        labr.hop = atoi(arg[3]);
+        labr.nexthop = atoi(arg[3]);
         labr.swap = atoi(arg[5]);
         labr.push = atoi(arg[6]);
-        labr.ver = 4;
+        labr.ver = 6;
         labr.cmd = 6;
         if (del == 0) {
             if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
@@ -816,7 +816,7 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "pwhelab") == 0) {
         i = atoi(arg[2]);
         labr.port = atoi(arg[3]);
-        labr.cmd = 7;
+        labr.cmd = 8;
         if (del == 0) {
             if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
         } else {
@@ -826,7 +826,7 @@ int doOneCommand(unsigned char* buf) {
     }
     if (strcmp(arg[0], "cpulabel") == 0) {
         i = atoi(arg[2]);
-        labr.cmd = 8;
+        labr.cmd = 7;
         if (del == 0) {
             if (bpf_map_delete_elem(labels_fd, &i) != 0) warn("error removing entry");
         } else {

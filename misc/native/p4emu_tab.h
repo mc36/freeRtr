@@ -92,7 +92,6 @@ struct mpls_entry {
     long byte;
     int nexthop;
     int port;
-    int bridge;
     int vrf;
     int ver;
     int swap;

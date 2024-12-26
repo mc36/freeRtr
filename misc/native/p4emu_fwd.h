@@ -1609,7 +1609,7 @@ neigh_tx:
             memcpy(&bufH[0], &bufD[bufP], 12);
             bufP += 12;
             bufP += 2;
-            bridge_ntry.id = mpls_res->bridge;
+            bridge_ntry.id = mpls_res->port;
             goto bridgevpls_rx;
         case 6: // punt
             doCpuing;
