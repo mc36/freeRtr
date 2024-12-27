@@ -48,15 +48,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 }
 
 
-void doStatRound(FILE *commands, int round) {
-    if ((round % 10) != 0) return;
-    for (int i = 0; i < dataPorts; i++) {
-        int o = getState(i);
-        fprintf(commandTx, "state %i %i\r\n", i, o);
-    }
-    fflush(commandTx);
-}
-
 
 void doNegotiate(char*name) {
     setgid(1);
@@ -93,7 +84,7 @@ void doSockLoop() {
 
 void doStatLoop() {
     for (;;) {
-        sleep(10);
+        sleep(1);
         for (int i = 0; i < dataPorts; i++) {
             int o = getState(i);
             fprintf(commandTx, "state %i %i\r\n", i, o);
