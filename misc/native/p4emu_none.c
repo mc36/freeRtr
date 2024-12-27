@@ -66,15 +66,15 @@ int hashDataPacket(unsigned char *bufP) {
 
 void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     unsigned char *bufD = ctx->bufD;
-    put16msb(bufD, preBuff - 2, prt);
-    sendPack(&bufD[preBuff - 2], bufS + 2, cpuPort);
+    put32msb(bufD, preBuff - 4, prt);
+    sendPack(&bufD[preBuff - 4], bufS + 4, cpuPort);
 }
 
 
 void processCpuPack(struct packetContext *ctx, int bufS) {
     unsigned char *bufD = ctx->bufD;
-    int prt = get16msb(bufD, preBuff);
+    int prt = get32msb(bufD, preBuff);
     if (prt < 0) return;
     if (prt >= dataPorts) return;
-    sendPack(&bufD[preBuff + 2], bufS - 2, prt);
+    sendPack(&bufD[preBuff + 4], bufS - 4, prt);
 }
