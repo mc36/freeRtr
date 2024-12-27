@@ -2888,105 +2888,6 @@ void doStatRound_insp6(struct table_head *ntry1, int port) {
     }
 }
 
-void doStatRound(int round) {
-    punts = 10;
-    for (int i = 0; i < policer_table.size; i++) {
-        struct policer_entry *ntry = table_get(&policer_table, i);
-        ntry->avail = ntry->allow;
-    }
-    if (portStatsLen > 0) {
-        fprintf(commandTx, "%s", (char*)&portStatsBuf[0]);
-        portStatsLen = 0;
-        fflush(commandTx);
-    }
-    if ((round % 10) != 0) return;
-    for (int i = 0; i < dataPorts; i++) {
-        fprintf(commandTx, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
-        int o = getState(i);
-        fprintf(commandTx, "state %i %i\r\n", i, o);
-    }
-    for (int i=0; i<bundle_table.size; i++) {
-        struct bundle_entry *ntry = table_get(&bundle_table, i);
-        fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<pppoe_table.size; i++) {
-        struct pppoe_entry *ntry = table_get(&pppoe_table, i);
-        fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<vlanout_table.size; i++) {
-        struct vlanout_entry *ontry = table_get(&vlanout_table, i);
-        struct vlanin_entry ival;
-        if (ontry->port2 != 0) ival.port = ontry->port2;
-        else ival.port = ontry->port;
-        ival.vlan = ontry->vlan;
-        int o = table_find(&vlanin_table, &ival);
-        if (o < 0) continue;
-        struct vlanin_entry *intry = table_get(&vlanin_table, o);
-        fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
-    }
-    if ((round % 150) != 0) {
-        fflush(commandTx);
-        return;
-    }
-    unsigned char buf[1024];
-    unsigned char buf2[1024];
-    for (int i = 0; i < dataPorts; i++) {
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, packIpv4[i], byteIpv4[i]);
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, packIpv6[i], byteIpv6[i]);
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
-        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
-    }
-    for (int i=0; i<nsh_table.size; i++) {
-        struct nsh_entry *ntry = table_get(&nsh_table, i);
-        fprintf(commandTx, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<mpls_table.size; i++) {
-        struct mpls_entry *ntry = table_get(&mpls_table, i);
-        fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<neigh_table.size; i++) {
-        struct neigh_entry *ntry = table_get(&neigh_table, i);
-        fprintf(commandTx, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<bridge_table.size; i++) {
-        struct bridge_entry *ntry = table_get(&bridge_table, i);
-        put16msb(buf2, 0, ntry->mac1);
-        put32msb(buf2, 2, ntry->mac2);
-        mac2str(buf2, buf);
-        fprintf(commandTx, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
-    }
-    doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
-    doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
-#ifndef HAVE_NOCRYPTO
-    for (int i=0; i<port2vrf_table.size; i++) {
-        struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
-        if (ntry->mcscEthtyp == 0) continue;
-        fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
-    }
-#endif
-    for (int i=0; i<acls4_table.size; i++) {
-        struct acls_entry *ntry1 = table_get(&acls4_table, i);
-        doStatRound_acl(ntry1, 4);
-        if (ntry1->dir < 3) doStatRound_insp4(ntry1->insp, ntry1->port);
-    }
-    for (int i=0; i<acls6_table.size; i++) {
-        struct acls_entry *ntry1 = table_get(&acls6_table, i);
-        doStatRound_acl(ntry1, 6);
-        if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port);
-    }
-#ifdef HAVE_DEBUG
-    for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
-        if (dropStat[i] == 0) continue;
-        fprintf(commandTx, "dataplane-say debugging hit line %i with %i packets\r\n", i, dropStat[i]);
-        dropStat[i] = 0;
-    }
-#endif
-    fflush(commandTx);
-}
 
 
 
@@ -3020,119 +2921,6 @@ void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int)) {
     }
 }
 
-int doConsoleCommand(unsigned char*buf) {
-    unsigned char buf2[1024];
-    unsigned char buf3[1024];
-    switch (buf[0]) {
-    case 0:
-        break;
-    case 'H':
-    case 'h':
-    case '?':
-        printf("commands:\n");
-        printf("h - this help\n");
-        printf("x - exit process\n");
-        printf("i - interface counters\n");
-        printf("p - display portvrf table\n");
-        printf("b - display bridge table\n");
-        printf("m - display mpls table\n");
-        printf("4 - display ipv4 table\n");
-        printf("6 - display ipv6 table\n");
-        printf("n - display nexthop table\n");
-        printf("a - display acl table\n");
-        printf("q - display qos table\n");
-        printf("v - display vlan table\n");
-        break;
-    case 'x':
-    case 'X':
-        return 1;
-        break;
-    case 'i':
-    case 'I':
-        printf("                           iface         rx         tx       drop         rx         tx       drop\n");
-        for (int i=0; i<dataPorts; i++) {
-            printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
-        }
-        break;
-    case 'm':
-    case 'M':
-        printf("     label ip        vrf cmd       swap    nexthop\n");
-        for (int i=0; i<mpls_table.size; i++) {
-            struct mpls_entry *ntry = table_get(&mpls_table, i);
-            printf("%10i %2i %10i %3i %10i %10i\n", ntry->label, ntry->ver, ntry->vrf, ntry->command, ntry->swap, ntry->nexthop);
-        }
-        break;
-    case 'a':
-    case 'A':
-        printf("  vrf/port dir ver       aces\n");
-        for (int i=0; i<acls4_table.size; i++) {
-            struct acls_entry *ntry = table_get(&acls4_table, i);
-            printf("%10i %3i 4   %10i\n", ntry->port, ntry->dir, ntry->aces.size);
-        }
-        for (int i=0; i<acls6_table.size; i++) {
-            struct acls_entry *ntry = table_get(&acls6_table, i);
-            printf("%10i %3i 6   %10i\n", ntry->port, ntry->dir, ntry->aces.size);
-        }
-        break;
-    case 'p':
-    case 'P':
-        printf("      port cmd        vrf     bridge\n");
-        for (int i=0; i<port2vrf_table.size; i++) {
-            struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
-            printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
-        }
-        break;
-    case 'n':
-    case 'N':
-        printf("        id        vrf       port    aclport              smac              dmac\n");
-        for (int i=0; i<neigh_table.size; i++) {
-            struct neigh_entry *ntry = table_get(&neigh_table, i);
-            mac2str(&ntry->macs[6], buf2);
-            mac2str(&ntry->macs[0], buf3);
-            printf("%10i %10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, ntry->aclport, (char*)&buf2[0], (char*)&buf3[0]);
-        }
-        break;
-    case 'b':
-    case 'B':
-        printf("    bridge               mac       port    nexthop\n");
-        for (int i=0; i<bridge_table.size; i++) {
-            struct bridge_entry *ntry = table_get(&bridge_table, i);
-            put16msb(buf2, 0, ntry->mac1);
-            put32msb(buf2, 2, ntry->mac2);
-            mac2str(buf2, buf);
-            printf("%10i %s %10i %10i\n", ntry->id, (char*)&buf[0], ntry->port, ntry->nexthop);
-        }
-        break;
-    case 'q':
-    case 'Q':
-        printf("       vrf      meter dir       rate\n");
-        for (int i=0; i<policer_table.size; i++) {
-            struct policer_entry *ntry = table_get(&policer_table, i);
-            printf("%10i %10i %3i %10li\n", ntry->vrf, ntry->meter, ntry->dir, ntry->allow);
-        }
-        break;
-    case 'v':
-    case 'V':
-        printf("        id       vlan       port\n");
-        for (int i=0; i<vlanin_table.size; i++) {
-            struct vlanin_entry *ntry = table_get(&vlanin_table, i);
-            printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
-        }
-        break;
-    case '4':
-        printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
-        doConsoleCommand_ipvX(&vrf2rib4_table, &doConsoleCommand_ipv4);
-        break;
-    case '6':
-        printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
-        doConsoleCommand_ipvX(&vrf2rib6_table, &doConsoleCommand_ipv6);
-        break;
-    default:
-        printf("unknown command '%s', try ?\n", buf);
-        break;
-    }
-    return 0;
-}
 
 
 
@@ -3180,11 +2968,107 @@ void doSockLoop() {
 
 
 void doStatLoop() {
-    int rnd = 0;
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    int round = 0;
     for (;;) {
-        doStatRound(rnd);
-        rnd++;
+        round++;
         usleep(100000);
+        punts = 10;
+        for (int i = 0; i < policer_table.size; i++) {
+            struct policer_entry *ntry = table_get(&policer_table, i);
+            ntry->avail = ntry->allow;
+        }
+        if (portStatsLen > 0) {
+            fprintf(commandTx, "%s", (char*)&portStatsBuf[0]);
+            portStatsLen = 0;
+            fflush(commandTx);
+        }
+        if ((round % 10) != 0) continue;
+        for (int i = 0; i < dataPorts; i++) {
+            fprintf(commandTx, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
+            int o = getState(i);
+            fprintf(commandTx, "state %i %i\r\n", i, o);
+        }
+        for (int i=0; i<bundle_table.size; i++) {
+            struct bundle_entry *ntry = table_get(&bundle_table, i);
+            fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
+        }
+        for (int i=0; i<pppoe_table.size; i++) {
+            struct pppoe_entry *ntry = table_get(&pppoe_table, i);
+            fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+        }
+        for (int i=0; i<vlanout_table.size; i++) {
+            struct vlanout_entry *ontry = table_get(&vlanout_table, i);
+            struct vlanin_entry ival;
+            if (ontry->port2 != 0) ival.port = ontry->port2;
+            else ival.port = ontry->port;
+            ival.vlan = ontry->vlan;
+            int o = table_find(&vlanin_table, &ival);
+            if (o < 0) continue;
+            struct vlanin_entry *intry = table_get(&vlanin_table, o);
+            fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
+        }
+        if ((round % 150) != 0) {
+            fflush(commandTx);
+            continue;
+        }
+        for (int i = 0; i < dataPorts; i++) {
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, packIpv4[i], byteIpv4[i]);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, packIpv6[i], byteIpv6[i]);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
+        }
+        for (int i=0; i<nsh_table.size; i++) {
+            struct nsh_entry *ntry = table_get(&nsh_table, i);
+            fprintf(commandTx, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
+        }
+        for (int i=0; i<mpls_table.size; i++) {
+            struct mpls_entry *ntry = table_get(&mpls_table, i);
+            fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
+        }
+        for (int i=0; i<neigh_table.size; i++) {
+            struct neigh_entry *ntry = table_get(&neigh_table, i);
+            fprintf(commandTx, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
+        }
+        for (int i=0; i<bridge_table.size; i++) {
+            struct bridge_entry *ntry = table_get(&bridge_table, i);
+            put16msb(buf2, 0, ntry->mac1);
+            put32msb(buf2, 2, ntry->mac2);
+            mac2str(buf2, buf);
+            fprintf(commandTx, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
+        }
+        doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
+        doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
+#ifndef HAVE_NOCRYPTO
+        for (int i=0; i<port2vrf_table.size; i++) {
+            struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
+            if (ntry->mcscEthtyp == 0) continue;
+            fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
+        }
+#endif
+        for (int i=0; i<acls4_table.size; i++) {
+            struct acls_entry *ntry1 = table_get(&acls4_table, i);
+            doStatRound_acl(ntry1, 4);
+            if (ntry1->dir < 3) doStatRound_insp4(ntry1->insp, ntry1->port);
+        }
+        for (int i=0; i<acls6_table.size; i++) {
+            struct acls_entry *ntry1 = table_get(&acls6_table, i);
+            doStatRound_acl(ntry1, 6);
+            if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port);
+        }
+#ifdef HAVE_DEBUG
+        for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
+            if (dropStat[i] == 0) continue;
+            fprintf(commandTx, "dataplane-say debugging hit line %i with %i packets\r\n", i, dropStat[i]);
+            dropStat[i] = 0;
+        }
+#endif
+        fflush(commandTx);
     }
     err("stat thread exited");
 }
@@ -3194,17 +3078,128 @@ void doStatLoop() {
 
 void doMainLoop() {
     unsigned char buf[1024];
-
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    int nbytes;
     for (;;) {
         printf("> ");
+        ioctl(STDIN_FILENO, FIONREAD, &nbytes);
+        if (nbytes < 1) {
+            sleep(1);
+            continue;
+        }
         buf[0] = 0;
         int i = scanf("%1023s", buf);
         if (i < 1) {
             sleep(1);
             continue;
         }
-        if (doConsoleCommand(&buf[0]) != 0) break;
-        printf("\n");
+        switch (buf[0]) {
+        case 'H':
+        case 'h':
+        case '?':
+            printf("commands:\n");
+            printf("h - this help\n");
+            printf("x - exit process\n");
+            printf("i - interface counters\n");
+            printf("p - display portvrf table\n");
+            printf("b - display bridge table\n");
+            printf("m - display mpls table\n");
+            printf("4 - display ipv4 table\n");
+            printf("6 - display ipv6 table\n");
+            printf("n - display nexthop table\n");
+            printf("a - display acl table\n");
+            printf("q - display qos table\n");
+            printf("v - display vlan table\n");
+            break;
+        case 'x':
+        case 'X':
+            err("exit requested");
+            break;
+        case 'i':
+        case 'I':
+            printf("                           iface         rx         tx       drop         rx         tx       drop\n");
+            for (int i=0; i<dataPorts; i++) {
+                printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
+            }
+            break;
+        case 'm':
+        case 'M':
+            printf("     label ip        vrf cmd       swap    nexthop\n");
+            for (int i=0; i<mpls_table.size; i++) {
+                struct mpls_entry *ntry = table_get(&mpls_table, i);
+                printf("%10i %2i %10i %3i %10i %10i\n", ntry->label, ntry->ver, ntry->vrf, ntry->command, ntry->swap, ntry->nexthop);
+            }
+            break;
+        case 'a':
+        case 'A':
+            printf("  vrf/port dir ver       aces\n");
+            for (int i=0; i<acls4_table.size; i++) {
+                struct acls_entry *ntry = table_get(&acls4_table, i);
+                printf("%10i %3i 4   %10i\n", ntry->port, ntry->dir, ntry->aces.size);
+            }
+            for (int i=0; i<acls6_table.size; i++) {
+                struct acls_entry *ntry = table_get(&acls6_table, i);
+                printf("%10i %3i 6   %10i\n", ntry->port, ntry->dir, ntry->aces.size);
+            }
+            break;
+        case 'p':
+        case 'P':
+            printf("      port cmd        vrf     bridge\n");
+            for (int i=0; i<port2vrf_table.size; i++) {
+                struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
+                printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
+            }
+            break;
+        case 'n':
+        case 'N':
+            printf("        id        vrf       port    aclport              smac              dmac\n");
+            for (int i=0; i<neigh_table.size; i++) {
+                struct neigh_entry *ntry = table_get(&neigh_table, i);
+                mac2str(&ntry->macs[6], buf2);
+                mac2str(&ntry->macs[0], buf3);
+                printf("%10i %10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, ntry->aclport, (char*)&buf2[0], (char*)&buf3[0]);
+            }
+            break;
+        case 'b':
+        case 'B':
+            printf("    bridge               mac       port    nexthop\n");
+            for (int i=0; i<bridge_table.size; i++) {
+                struct bridge_entry *ntry = table_get(&bridge_table, i);
+                put16msb(buf2, 0, ntry->mac1);
+                put32msb(buf2, 2, ntry->mac2);
+                mac2str(buf2, buf);
+                printf("%10i %s %10i %10i\n", ntry->id, (char*)&buf[0], ntry->port, ntry->nexthop);
+            }
+            break;
+        case 'q':
+        case 'Q':
+            printf("       vrf      meter dir       rate\n");
+            for (int i=0; i<policer_table.size; i++) {
+                struct policer_entry *ntry = table_get(&policer_table, i);
+                printf("%10i %10i %3i %10li\n", ntry->vrf, ntry->meter, ntry->dir, ntry->allow);
+            }
+            break;
+        case 'v':
+        case 'V':
+            printf("        id       vlan       port\n");
+            for (int i=0; i<vlanin_table.size; i++) {
+                struct vlanin_entry *ntry = table_get(&vlanin_table, i);
+                printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
+            }
+            break;
+        case '4':
+            printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
+            doConsoleCommand_ipvX(&vrf2rib4_table, &doConsoleCommand_ipv4);
+            break;
+        case '6':
+            printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
+            doConsoleCommand_ipvX(&vrf2rib6_table, &doConsoleCommand_ipv6);
+            break;
+        default:
+            printf("unknown command '%s', try ?\n", buf);
+            break;
+        }
     }
     err("main thread exited");
 }
