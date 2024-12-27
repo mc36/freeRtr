@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v24.12.22-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v24.12.27-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -120,6 +120,16 @@ http://sources.freertr.org/cfg/p4lang-acl117.tst;p4lang-acl117.tst;ok;not ok;ok;
 http://sources.freertr.org/cfg/p4lang-acl118.tst;p4lang-acl118.tst;ok;not ok;ok;not ok;ok;p4lang: qinq interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl119.tst;p4lang-acl119.tst;ok;ok;ok;ok;not ok;p4lang: bridge filter access list
 http://sources.freertr.org/cfg/p4lang-acl120.tst;p4lang-acl120.tst;ok;ok;ok;ok;not ok;p4lang: vlan bridge filter access list
+http://sources.freertr.org/cfg/p4lang-acl121.tst;p4lang-acl121.tst;ok;ok;ok;ok;not ok;p4lang: ingress pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl122.tst;p4lang-acl122.tst;ok;ok;ok;ok;not ok;p4lang: egress pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl123.tst;p4lang-acl123.tst;ok;ok;ok;ok;not ok;p4lang: ingress vlan pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl124.tst;p4lang-acl124.tst;ok;ok;ok;ok;not ok;p4lang: egress vlan pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl125.tst;p4lang-acl125.tst;ok;ok;ok;not ok;not ok;p4lang: pwhe interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl126.tst;p4lang-acl126.tst;ok;ok;ok;not ok;not ok;p4lang: pwhe interface inspection with egress drop
+http://sources.freertr.org/cfg/p4lang-acl127.tst;p4lang-acl127.tst;ok;not ok;ok;not ok;ok;p4lang: pwhe interface verify source
+http://sources.freertr.org/cfg/p4lang-acl128.tst;p4lang-acl128.tst;ok;not ok;ok;not ok;ok;p4lang: pwhe interface loose verify source
+http://sources.freertr.org/cfg/p4lang-acl129.tst;p4lang-acl129.tst;ok;ok;ok;ok;not ok;p4lang: ingress qinq pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl130.tst;p4lang-acl130.tst;ok;ok;ok;ok;not ok;p4lang: egress qinq pwhe access list
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec with aes128cbc
@@ -256,6 +266,8 @@ http://sources.freertr.org/cfg/p4lang-crypt133.tst;p4lang-crypt133.tst;ok;not ok
 http://sources.freertr.org/cfg/p4lang-crypt134.tst;p4lang-crypt134.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec with aes128gcm
 http://sources.freertr.org/cfg/p4lang-crypt135.tst;p4lang-crypt135.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec with aes192gcm
 http://sources.freertr.org/cfg/p4lang-crypt136.tst;p4lang-crypt136.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec with aes256gcm
+http://sources.freertr.org/cfg/p4lang-crypt137.tst;p4lang-crypt137.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec over pwhe
+http://sources.freertr.org/cfg/p4lang-crypt138.tst;p4lang-crypt138.tst;ok;ok;ok;not ok;ok;p4lang: sgt over pwhe
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;ok;ok;ok;ok;ok;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;ok;ok;ok;ok;ok;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;ok;ok;ok;ok;ok;p4lang: mpls core
@@ -532,7 +544,7 @@ http://sources.freertr.org/cfg/p4lang-rout273.tst;p4lang-rout273.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout274.tst;p4lang-rout274.tst;ok;ok;ok;ok;not ok;p4lang: tmux routing over hairpin
 http://sources.freertr.org/cfg/p4lang-rout275.tst;p4lang-rout275.tst;ok;ok;ok;ok;not ok;p4lang: tmux routing over hairpin vlan
 http://sources.freertr.org/cfg/p4lang-rout276.tst;p4lang-rout276.tst;ok;ok;ok;ok;not ok;p4lang: tmux routing over bridge
-http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;ok;ok;ok;not ok;not ok;p4lang: tmux routing over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout277.tst;p4lang-rout277.tst;ok;ok;ok;ok;not ok;p4lang: tmux routing over vlan bridge
 http://sources.freertr.org/cfg/p4lang-rout278.tst;p4lang-rout278.tst;ok;ok;ok;ok;not ok;p4lang: tmux mpls over ipv4
 http://sources.freertr.org/cfg/p4lang-rout279.tst;p4lang-rout279.tst;ok;ok;ok;ok;not ok;p4lang: tmux mpls over ipv6
 http://sources.freertr.org/cfg/p4lang-rout280.tst;p4lang-rout280.tst;ok;ok;ok;ok;not ok;p4lang: tmux mpls over ipv4 loopback
@@ -565,7 +577,7 @@ http://sources.freertr.org/cfg/p4lang-rout306.tst;p4lang-rout306.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout307.tst;p4lang-rout307.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout308.tst;p4lang-rout308.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout309.tst;p4lang-rout309.tst;ok;ok;ok;not ok;ok;p4lang: gre local connect
-http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;ok;ok;not ok;not ok;not ok;p4lang: gre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;ok;not ok;ok;not ok;not ok;p4lang: gre multicast routing
 http://sources.freertr.org/cfg/p4lang-rout311.tst;p4lang-rout311.tst;ok;ok;ok;ok;not ok;p4lang: multicast routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout312.tst;p4lang-rout312.tst;ok;not ok;ok;ok;ok;p4lang: polka over backplane
 http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;ok;ok;ok;ok;ok;p4lang: nsh over backplane
@@ -630,3 +642,35 @@ http://sources.freertr.org/cfg/p4lang-rout371.tst;p4lang-rout371.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout372.tst;p4lang-rout372.tst;ok;ok;ok;ok;ok;p4lang: olab with bgp
 http://sources.freertr.org/cfg/p4lang-rout373.tst;p4lang-rout373.tst;ok;ok;ok;ok;ok;p4lang: olab with bgp over vlan
 http://sources.freertr.org/cfg/p4lang-rout374.tst;p4lang-rout374.tst;ok;ok;ok;ok;ok;p4lang: olab with bgp over qinq
+http://sources.freertr.org/cfg/p4lang-rout375.tst;p4lang-rout375.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout376.tst;p4lang-rout376.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout377.tst;p4lang-rout377.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout378.tst;p4lang-rout378.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over bridge
+http://sources.freertr.org/cfg/p4lang-rout379.tst;p4lang-rout379.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout380.tst;p4lang-rout380.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over hairpin
+http://sources.freertr.org/cfg/p4lang-rout381.tst;p4lang-rout381.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout382.tst;p4lang-rout382.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout383.tst;p4lang-rout383.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout384.tst;p4lang-rout384.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over bridge
+http://sources.freertr.org/cfg/p4lang-rout385.tst;p4lang-rout385.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout386.tst;p4lang-rout386.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-rout387.tst;p4lang-rout387.tst;ok;ok;ok;not ok;not ok;p4lang: mldp core over pwhe
+http://sources.freertr.org/cfg/p4lang-rout388.tst;p4lang-rout388.tst;ok;ok;ok;not ok;not ok;p4lang: bier core over pwhe
+http://sources.freertr.org/cfg/p4lang-rout389.tst;p4lang-rout389.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls pop
+http://sources.freertr.org/cfg/p4lang-rout390.tst;p4lang-rout390.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls push
+http://sources.freertr.org/cfg/p4lang-rout391.tst;p4lang-rout391.tst;ok;ok;ok;ok;ok;p4lang: l2vpn over pwhe mpls
+http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;ok;ok;ok;ok;ok;p4lang: l3vpn over pwhe mpls
+http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over qinq
+http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over qinq
+http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;ok;ok;ok;ok;ok;p4lang: bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;ok;ok;ok;ok;ok;p4lang: mixed bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout397.tst;p4lang-rout397.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp with bgp
+http://sources.freertr.org/cfg/p4lang-rout398.tst;p4lang-rout398.tst;ok;ok;ok;ok;ok;p4lang: routed vlan vpls/ldp with bgp
+http://sources.freertr.org/cfg/p4lang-rout399.tst;p4lang-rout399.tst;ok;ok;ok;ok;ok;p4lang: routed qinq vpls/ldp with bgp
+http://sources.freertr.org/cfg/p4lang-rout400.tst;p4lang-rout400.tst;ok;ok;ok;ok;ok;p4lang: routed evpn/cmac with bgp
+http://sources.freertr.org/cfg/p4lang-rout401.tst;p4lang-rout401.tst;ok;ok;ok;ok;ok;p4lang: routed vlan evpn/cmac with bgp
+http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;ok;ok;ok;ok;ok;p4lang: routed qinq evpn/cmac with bgp
+http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;ok;ok;ok;ok;ok;p4lang: vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;ok;ok;ok;ok;ok;p4lang: evpn/cmac over backplane
+http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;ok;ok;ok;ok;ok;p4lang: routed evpn/cmac over backplane
