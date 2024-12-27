@@ -12,7 +12,7 @@ int lo1
  ipv6 addr 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int eth1
- enforce-mac
+ enforce-mac both
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::

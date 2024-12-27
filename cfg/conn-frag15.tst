@@ -14,7 +14,7 @@ int lo1
 bridge 1
  exit
 int eth1
- enforce-mac
+ enforce-mac both
  bridge-gr 1
  exit
 int bvi1

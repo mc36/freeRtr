@@ -38,9 +38,14 @@ public class ifcEthTyp implements Runnable, ifcUp {
     public ifcDn sendClear;
 
     /**
-     * strict mac check
+     * strict mac check ingress
      */
-    public addrMac macCheck = null;
+    public addrMac macCheckRx = null;
+
+    /**
+     * strict mac check egress
+     */
+    public addrMac macCheckTx = null;
 
     /**
      * strict mtu check ingress
@@ -780,6 +785,13 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
+        if (macCheckTx != null) {
+            boolean ok = promiscous || pck.ETHtrg.isBroadcast() || pck.ETHtrg.isMulticast() || (macCheckTx.compareTo(pck.ETHsrc) == 0);
+            if (!ok) {
+                cntr.drop(pck, counter.reasons.badAddr);
+                return;
+            }
+        }
         if (!forcedUP) {
             if (lastState != state.states.up) {
                 cntr.drop(pck, counter.reasons.notUp);
@@ -884,8 +896,8 @@ public class ifcEthTyp implements Runnable, ifcUp {
                 return;
             }
         }
-        if (macCheck != null) {
-            boolean ok = promiscous || pck.ETHtrg.isBroadcast() || pck.ETHtrg.isMulticast() || (macCheck.compareTo(pck.ETHtrg) == 0);
+        if (macCheckRx != null) {
+            boolean ok = promiscous || pck.ETHtrg.isBroadcast() || pck.ETHtrg.isMulticast() || (macCheckRx.compareTo(pck.ETHtrg) == 0);
             if (!ok) {
                 cntr.drop(pck, counter.reasons.badAddr);
                 return;

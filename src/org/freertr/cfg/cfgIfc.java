@@ -1421,7 +1421,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "udld enable",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "random",
         "interface .*!" + cmds.tabulator + "enforce-mtu none",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "enforce-mac",
+        "interface .*!" + cmds.tabulator + "enforce-mac none",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "macsec",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "disable-macsec",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "disable-sgt",
@@ -6194,7 +6194,17 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             s = "both";
         }
         l.add(cmds.tabulator + "enforce-mtu " + s);
-        cmds.cfgLine(l, ethtyp.macCheck == null, cmds.tabulator, "enforce-mac", "");
+        s = "none";
+        if (ethtyp.macCheckRx != null) {
+            s = "in";
+        }
+        if (ethtyp.macCheckTx != null) {
+            s = "out";
+        }
+        if ((ethtyp.macCheckRx != null) && (ethtyp.macCheckTx != null)) {
+            s = "both";
+        }
+        l.add(cmds.tabulator + "enforce-mac " + s);
         if (pppoeC == null) {
             l.add(cmds.tabulator + "no p2poe client");
         } else {
@@ -7024,7 +7034,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, "4 5         <num>                   maximum packet size");
         l.add(null, "5 6           <num>                 minimum interval");
         l.add(null, "6 .             <num>               maximum interval");
-        l.add(null, "1 .   enforce-mac                   enfore mac on packets");
+        l.add(null, "1 2   enforce-mac                   enfore mac on packets");
+        l.add(null, "2 .     in                          only in ingress");
+        l.add(null, "2 .     out                         only in egress");
+        l.add(null, "2 .     both                        check in both directions");
+        l.add(null, "2 .     none                        not check at all");
         l.add(null, "1 2   enforce-mtu                   enfore mtu on packets");
         l.add(null, "2 .     in                          only in ingress");
         l.add(null, "2 .     out                         only in egress");
@@ -7625,9 +7639,26 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("enforce-mac")) {
+            a = cmd.word();
+            addrMac hwa = null;
             try {
-                ethtyp.macCheck = (addrMac) ethtyp.getHwAddr().copyBytes();
+                hwa = (addrMac) ethtyp.getHwAddr().copyBytes();
             } catch (Exception e) {
+            }
+            ethtyp.macCheckRx = null;
+            ethtyp.macCheckTx = null;
+            if (a.equals("in")) {
+                ethtyp.macCheckRx = hwa;
+                return;
+            }
+            if (a.equals("out")) {
+                ethtyp.macCheckTx = hwa;
+                return;
+            }
+            if (a.equals("both")) {
+                ethtyp.macCheckRx = hwa;
+                ethtyp.macCheckTx = hwa;
+                return;
             }
             return;
         }
@@ -8362,7 +8393,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("enforce-mac")) {
-            ethtyp.macCheck = null;
+            ethtyp.macCheckRx = null;
+            ethtyp.macCheckTx = null;
             return;
         }
         if (a.equals("enforce-mtu")) {

@@ -626,10 +626,6 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
             iface.cntr.drop(pck, counter.reasons.badAddr);
             return;
         }
-        iface.iface.lower.createETHheader(new packHolder(true, true), ifcAddr, 0);
-        if (iface.otherEna) {
-            iface.oface.lower.createETHheader(new packHolder(true, true), ofcAddr, 0);
-        }
         if (oldAdjSt == peerAdjState) {
             return;
         }
@@ -647,6 +643,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
             peerAdjState = statDown;
             level.schedWork(7);
             return;
+        }
+        iface.iface.lower.createETHheader(new packHolder(true, true), ifcAddr, 0);
+        if (iface.otherEna) {
+            iface.oface.lower.createETHheader(new packHolder(true, true), ofcAddr, 0);
         }
         if (iface.ipInfoCfg != null) {
             secInfoCls cls = new secInfoCls(null, null, null, lower.fwdCore, ifcAddr, prtIsoip.proto, iface.iface.addr);
