@@ -187,17 +187,9 @@ public class servP4langUtil {
             }
             return;
         }
-        counter old = ntry.hwCntr;
         ntry.hwCntr = new counter();
         ntry.hwCntr.packRx = bits.str2long(cmd.word());
         ntry.hwCntr.byteRx = bits.str2long(cmd.word());
-        if (old == null) {
-            old = new counter();
-        }
-        if (old.compareTo(ntry.hwCntr) >= 0) {
-            ntry.hwCntr = old;
-            return;
-        }
         ntry.lastUsed = bits.getTime();
         ntry.reverse.lastUsed = ntry.lastUsed;
     }
@@ -235,19 +227,11 @@ public class servP4langUtil {
             }
         }
         ntry = res;
-        counter old = ntry.hwCntr;
         ntry.hwCntr = new counter();
         ntry.hwCntr.packRx = bits.str2long(cmd.word());
         ntry.hwCntr.byteRx = bits.str2long(cmd.word());
         ntry.hwCntr.packTx = bits.str2long(cmd.word());
         ntry.hwCntr.byteTx = bits.str2long(cmd.word());
-        if (old == null) {
-            old = new counter();
-        }
-        if (old.compareTo(ntry.hwCntr) >= 0) {
-            ntry.hwCntr = old;
-            return;
-        }
         ntry.lastTime = bits.getTime();
     }
 
@@ -329,17 +313,9 @@ public class servP4langUtil {
         if (ntry.rolledFrom != null) {
             ntry = ntry.rolledFrom;
         }
-        counter old = ntry.hwCntr;
         ntry.hwCntr = new counter();
         ntry.hwCntr.packRx = bits.str2long(cmd.word());
         ntry.hwCntr.byteRx = bits.str2long(cmd.word());
-        if (old == null) {
-            old = new counter();
-        }
-        if (old.compareTo(ntry.hwCntr) >= 0) {
-            ntry.hwCntr = old;
-            return;
-        }
         ntry.lastMatch = bits.getTime();
     }
 
@@ -360,17 +336,9 @@ public class servP4langUtil {
         if (ntry.rolledFrom != null) {
             ntry = ntry.rolledFrom;
         }
-        counter old = ntry.hwCntr;
         ntry.hwCntr = new counter();
         ntry.hwCntr.packRx = bits.str2long(cmd.word());
         ntry.hwCntr.byteRx = bits.str2long(cmd.word());
-        if (old == null) {
-            old = new counter();
-        }
-        if (old.compareTo(ntry.hwCntr) >= 0) {
-            ntry.hwCntr = old;
-            return;
-        }
         ntry.lastMatch = bits.getTime();
     }
 

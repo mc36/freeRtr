@@ -581,14 +581,7 @@ public abstract class prtGen implements ipPrt {
         if (ntry == null) {
             return;
         }
-        counter old = ntry.hwCntr;
         ntry.hwCntr = cntr;
-        if (old == null) {
-            old = new counter();
-        }
-        if (old.compareTo(ntry.hwCntr) == 0) {
-            return;
-        }
         ntry.lastActivity = bits.getTime();
     }
 
