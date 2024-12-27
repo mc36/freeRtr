@@ -31,6 +31,7 @@ struct packetContext {
 #define maxBuff 1024
 #define totBuff 16384
 
+extern int commandSock;
 extern int dataPorts;
 extern int cpuPort;
 extern char *ifaceName[maxPorts];
@@ -48,9 +49,8 @@ extern int hashDataPacket(unsigned char *bufP);
 extern void processDataPacket(struct packetContext *ctx, int bufS, int prt);
 extern void processCpuPack(struct packetContext *ctx, int bufS);
 extern int doOneCommand(struct packetContext *ctx, unsigned char* buf);
-extern void doStatRound(FILE *commands, int round);
-extern int doConsoleCommand(unsigned char*buf);
 extern int initContext(struct packetContext *ctx);
-extern char* getCapas();
-
-#define platformBase "p4emu/"
+extern void doNegotiate(char*name);
+extern void doSockLoop();
+extern void doStatLoop();
+extern void doMainLoop();

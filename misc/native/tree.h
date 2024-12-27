@@ -185,15 +185,15 @@ void tree_del(struct tree_head *tab, void *ntry) {
     }
 }
 
-void tree_walkNode(struct tree_node *cur, void doer(void *, int, void *), int fixed, void* param) {
+void tree_walkNode(struct tree_node *cur, void doer(void *, int), int fixed) {
     if (cur == NULL) return;
-    tree_walkNode(cur->zero, doer, fixed, param);
-    tree_walkNode(cur->one, doer, fixed, param);
+    tree_walkNode(cur->zero, doer, fixed);
+    tree_walkNode(cur->one, doer, fixed);
     if (cur->value == NULL) return;
-    doer(cur->value, fixed, param);
+    doer(cur->value, fixed);
 }
 
-void tree_walk(struct tree_head *tab, void doer(void *, int, void *), int fixed, void* param) {
+void tree_walk(struct tree_head *tab, void doer(void *, int), int fixed) {
     struct tree_node* cur = tab->root;
-    tree_walkNode(cur, doer, fixed, param);
+    tree_walkNode(cur, doer, fixed);
 }

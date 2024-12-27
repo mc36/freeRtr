@@ -1,5 +1,8 @@
 unsigned char portStatsBuf[16384];
 int portStatsLen = 0;
+int commandSock;
+FILE *commandRx;
+FILE *commandTx;
 
 void str2mac(unsigned char *dst, char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
@@ -149,14 +152,6 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
 
 
 
-char* getCapas() {
-    return "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe"
-
-#ifndef HAVE_NOCRYPTO
-           " macsec ipsec openvpn wireguard"
-#endif
-           ;
-}
 
 
 
@@ -2664,19 +2659,17 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 
 
 
-void doStatRound_rou4(void* buffer, int fixed, void* param) {
+void doStatRound_rou4(void* buffer, int fixed) {
     struct route4_entry *ntry = buffer;
-    FILE *commands = param;
     unsigned char buf[128];
     unsigned char buf2[32];
     put32msb(buf2, 0, ntry->addr[0]);
     inet_ntop(AF_INET, &buf2[0], (char*)&buf[0], sizeof(buf));
-    fprintf(commands, "route4_cnt %i %s %i %li %li %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->packTx, ntry->byteTx, ntry->packRx, ntry->byteRx);
+    fprintf(commandTx, "route4_cnt %i %s %i %li %li %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->packTx, ntry->byteTx, ntry->packRx, ntry->byteRx);
 }
 
-void doStatRound_rou6(void* buffer, int fixed, void* param) {
+void doStatRound_rou6(void* buffer, int fixed) {
     struct route6_entry *ntry = buffer;
-    FILE *commands = param;
     unsigned char buf[128];
     unsigned char buf2[32];
     put32msb(buf2, 0, ntry->addr[0]);
@@ -2684,11 +2677,10 @@ void doStatRound_rou6(void* buffer, int fixed, void* param) {
     put32msb(buf2, 8, ntry->addr[2]);
     put32msb(buf2, 12, ntry->addr[3]);
     inet_ntop(AF_INET6, &buf2[0], (char*)&buf[0], sizeof(buf));
-    fprintf(commands, "route6_cnt %i %s %i %li %li %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->packTx, ntry->byteTx, ntry->packRx, ntry->byteRx);
+    fprintf(commandTx, "route6_cnt %i %s %i %li %li %li %li\r\n", fixed, (char*)&buf[0], ntry->mask, ntry->packTx, ntry->byteTx, ntry->packRx, ntry->byteRx);
 }
 
-void doStatRound_nat4(void* buffer, int fixed, void* param) {
-    FILE *commands = param;
+void doStatRound_nat4(void* buffer, int fixed) {
     struct table_head *nat_table = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
@@ -2699,12 +2691,11 @@ void doStatRound_nat4(void* buffer, int fixed, void* param) {
         inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->oTrgAddr);
         inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+        fprintf(commandTx, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
 }
 
-void doStatRound_nat6(void* buffer, int fixed, void* param) {
-    FILE *commands = param;
+void doStatRound_nat6(void* buffer, int fixed) {
     struct table_head *nat_table = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
@@ -2721,19 +2712,18 @@ void doStatRound_nat6(void* buffer, int fixed, void* param) {
         put32msb(buf, 8, ntry->oTrgAddr3);
         put32msb(buf, 12, ntry->oTrgAddr4);
         inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
+        fprintf(commandTx, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
     }
 }
 
-void doStatRound_tun4(void* buffer, int fixed, void* param) {
-    FILE *commands = param;
+void doStatRound_tun4(void* buffer, int fixed) {
     struct table_head *tun_table = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
     for (int i=0; i<tun_table->size; i++) {
         struct tun4_entry *ntry = table_get(tun_table, i);
-        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+        fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
     }
     for (int i=0; i<tun_table->size; i++) {
         struct tun4_entry *ntry = table_get(tun_table, i);
@@ -2741,19 +2731,18 @@ void doStatRound_tun4(void* buffer, int fixed, void* param) {
         inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->trgAddr);
         inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "tunnel4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+        fprintf(commandTx, "tunnel4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
     }
 }
 
-void doStatRound_tun6(void* buffer, int fixed, void* param) {
-    FILE *commands = param;
+void doStatRound_tun6(void* buffer, int fixed) {
     struct table_head *tun_table = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
     for (int i=0; i<tun_table->size; i++) {
         struct tun6_entry *ntry = table_get(tun_table, i);
-        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+        fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
     }
     for (int i=0; i<tun_table->size; i++) {
         struct tun6_entry *ntry = table_get(tun_table, i);
@@ -2767,12 +2756,11 @@ void doStatRound_tun6(void* buffer, int fixed, void* param) {
         put32msb(buf, 8, ntry->trgAddr3);
         put32msb(buf, 12, ntry->trgAddr4);
         inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "tunnel6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+        fprintf(commandTx, "tunnel6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
     }
 }
 
-void doStatRound_mcst4(void* buffer, int fixed, void* param) {
-    FILE *commands = param;
+void doStatRound_mcst4(void* buffer, int fixed) {
     struct table_head *mroute_table = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
@@ -2783,12 +2771,11 @@ void doStatRound_mcst4(void* buffer, int fixed, void* param) {
         inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry->grp);
         inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "mroute4_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
+        fprintf(commandTx, "mroute4_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
     }
 }
 
-void doStatRound_mcst6(void* buffer, int fixed, void* param) {
-    FILE *commands = param;
+void doStatRound_mcst6(void* buffer, int fixed) {
     struct table_head *mroute_table = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
@@ -2805,35 +2792,33 @@ void doStatRound_mcst6(void* buffer, int fixed, void* param) {
         put32msb(buf, 8, ntry->grp3);
         put32msb(buf, 12, ntry->grp4);
         inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "mroute6_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
+        fprintf(commandTx, "mroute6_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
     }
 }
 
-void doStatRound_polka(void* buffer, char* begin, int fixed, void* param) {
-    FILE *commands = param;
+void doStatRound_polka(void* buffer, char* begin, int fixed) {
     struct table_head *polkaIdx_table = buffer;
     for (int i=0; i<polkaIdx_table->size; i++) {
         struct polkaIdx_entry *ntry = table_get(polkaIdx_table, i);
-        fprintf(commands, "%spolka_cnt %i %i %li %li\r\n", begin, fixed, ntry->index, ntry->pack, ntry->byte);
+        fprintf(commandTx, "%spolka_cnt %i %i %li %li\r\n", begin, fixed, ntry->index, ntry->pack, ntry->byte);
     }
 }
 
-void doStatRound_ipvX(struct table_head *tab, void doer(void *, int, void *), void natter(void *, int, void *), void tunner(void *, int, void *), void mcaster(void *, int, void *), int ver, void*param) {
-    FILE *commands = param;
+void doStatRound_ipvX(struct table_head *tab, void doer(void *, int), void natter(void *, int), void tunner(void *, int), void mcaster(void *, int), int ver) {
     for (int i = 0; i < tab->size; i++) {
         struct vrf2rib_entry *res = table_get(tab, i);
-        fprintf(commands, "vrf%i_cnt %i %li %li\r\n", ver, res->vrf, res->pack, res->byte);
-        tree_walk(&res->rou, doer, res->vrf, param);
-        natter(&res->nat, res->vrf, param);
-        tunner(&res->tun, res->vrf, param);
-        mcaster(&res->mcst, res->vrf, param);
-        if (ver == 4) doStatRound_polka(&res->plk, "", res->vrf, param);
-        else doStatRound_polka(&res->plk, "m", res->vrf, param);
+        fprintf(commandTx, "vrf%i_cnt %i %li %li\r\n", ver, res->vrf, res->pack, res->byte);
+        tree_walk(&res->rou, doer, res->vrf);
+        natter(&res->nat, res->vrf);
+        tunner(&res->tun, res->vrf);
+        mcaster(&res->mcst, res->vrf);
+        if (ver == 4) doStatRound_polka(&res->plk, "", res->vrf);
+        else doStatRound_polka(&res->plk, "m", res->vrf);
     }
 }
 
 
-void doStatRound_acl(struct acls_entry *ntry1, int ver, FILE *commands) {
+void doStatRound_acl(struct acls_entry *ntry1, int ver) {
     unsigned char buf2[1024];
     switch (ntry1->dir) {
     case 1:
@@ -2865,11 +2850,11 @@ void doStatRound_acl(struct acls_entry *ntry1, int ver, FILE *commands) {
     }
     for (int i=0; i<ntry1->aces.size; i++) {
         struct aclH_entry *ntry2 = table_get(&ntry1->aces, i);
-        fprintf(commands, "%s %i %li %li\r\n", (char*)&buf2[0], ntry2->pri, ntry2->pack, ntry2->byte);
+        fprintf(commandTx, "%s %i %li %li\r\n", (char*)&buf2[0], ntry2->pri, ntry2->pack, ntry2->byte);
     }
 }
 
-void doStatRound_insp4(struct table_head *ntry1, int port, FILE *commands) {
+void doStatRound_insp4(struct table_head *ntry1, int port) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
@@ -2879,11 +2864,11 @@ void doStatRound_insp4(struct table_head *ntry1, int port, FILE *commands) {
         inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
         put32msb(buf, 0, ntry2->trgAddr);
         inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "inspect4_cnt %i %i %s %s %i %i %li %li %li %li\r\n", port, ntry2->prot, (char*)&buf2[0], (char*)&buf3[0], ntry2->srcPort, ntry2->trgPort, ntry2->packRx, ntry2->byteRx, ntry2->packTx, ntry2->byteTx);
+        fprintf(commandTx, "inspect4_cnt %i %i %s %s %i %i %li %li %li %li\r\n", port, ntry2->prot, (char*)&buf2[0], (char*)&buf3[0], ntry2->srcPort, ntry2->trgPort, ntry2->packRx, ntry2->byteRx, ntry2->packTx, ntry2->byteTx);
     }
 }
 
-void doStatRound_insp6(struct table_head *ntry1, int port, FILE *commands) {
+void doStatRound_insp6(struct table_head *ntry1, int port) {
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
@@ -2899,34 +2884,34 @@ void doStatRound_insp6(struct table_head *ntry1, int port, FILE *commands) {
         put32msb(buf, 8, ntry2->trgAddr3);
         put32msb(buf, 12, ntry2->trgAddr4);
         inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commands, "inspect6_cnt %i %i %s %s %i %i %li %li %li %li\r\n", port, ntry2->prot, (char*)&buf2[0], (char*)&buf3[0], ntry2->srcPort, ntry2->trgPort, ntry2->packRx, ntry2->byteRx, ntry2->packTx, ntry2->byteTx);
+        fprintf(commandTx, "inspect6_cnt %i %i %s %s %i %i %li %li %li %li\r\n", port, ntry2->prot, (char*)&buf2[0], (char*)&buf3[0], ntry2->srcPort, ntry2->trgPort, ntry2->packRx, ntry2->byteRx, ntry2->packTx, ntry2->byteTx);
     }
 }
 
-void doStatRound(FILE *commands, int round) {
+void doStatRound(int round) {
     punts = 10;
     for (int i = 0; i < policer_table.size; i++) {
         struct policer_entry *ntry = table_get(&policer_table, i);
         ntry->avail = ntry->allow;
     }
     if (portStatsLen > 0) {
-        fprintf(commands, "%s", (char*)&portStatsBuf[0]);
+        fprintf(commandTx, "%s", (char*)&portStatsBuf[0]);
         portStatsLen = 0;
-        fflush(commands);
+        fflush(commandTx);
     }
     if ((round % 10) != 0) return;
     for (int i = 0; i < dataPorts; i++) {
-        fprintf(commands, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
+        fprintf(commandTx, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
         int o = getState(i);
-        fprintf(commands, "state %i %i\r\n", i, o);
+        fprintf(commandTx, "state %i %i\r\n", i, o);
     }
     for (int i=0; i<bundle_table.size; i++) {
         struct bundle_entry *ntry = table_get(&bundle_table, i);
-        fprintf(commands, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
+        fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
     }
     for (int i=0; i<pppoe_table.size; i++) {
         struct pppoe_entry *ntry = table_get(&pppoe_table, i);
-        fprintf(commands, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+        fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
     }
     for (int i=0; i<vlanout_table.size; i++) {
         struct vlanout_entry *ontry = table_get(&vlanout_table, i);
@@ -2937,77 +2922,77 @@ void doStatRound(FILE *commands, int round) {
         int o = table_find(&vlanin_table, &ival);
         if (o < 0) continue;
         struct vlanin_entry *intry = table_get(&vlanin_table, o);
-        fprintf(commands, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
+        fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
     }
     if ((round % 150) != 0) {
-        fflush(commands);
+        fflush(commandTx);
         return;
     }
     unsigned char buf[1024];
     unsigned char buf2[1024];
     for (int i = 0; i < dataPorts; i++) {
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, packIpv4[i], byteIpv4[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, packIpv6[i], byteIpv6[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
-        fprintf(commands, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, packIpv4[i], byteIpv4[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, packIpv6[i], byteIpv6[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
+        fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
     }
     for (int i=0; i<nsh_table.size; i++) {
         struct nsh_entry *ntry = table_get(&nsh_table, i);
-        fprintf(commands, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
+        fprintf(commandTx, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
     }
     for (int i=0; i<mpls_table.size; i++) {
         struct mpls_entry *ntry = table_get(&mpls_table, i);
-        fprintf(commands, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
+        fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
     }
     for (int i=0; i<neigh_table.size; i++) {
         struct neigh_entry *ntry = table_get(&neigh_table, i);
-        fprintf(commands, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
+        fprintf(commandTx, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
     }
     for (int i=0; i<bridge_table.size; i++) {
         struct bridge_entry *ntry = table_get(&bridge_table, i);
         put16msb(buf2, 0, ntry->mac1);
         put32msb(buf2, 2, ntry->mac2);
         mac2str(buf2, buf);
-        fprintf(commands, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
+        fprintf(commandTx, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
     }
-    doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4, commands);
-    doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6, commands);
+    doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
+    doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
 #ifndef HAVE_NOCRYPTO
     for (int i=0; i<port2vrf_table.size; i++) {
         struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
         if (ntry->mcscEthtyp == 0) continue;
-        fprintf(commands, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
+        fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
     }
 #endif
     for (int i=0; i<acls4_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls4_table, i);
-        doStatRound_acl(ntry1, 4, commands);
-        if (ntry1->dir < 3) doStatRound_insp4(ntry1->insp, ntry1->port, commands);
+        doStatRound_acl(ntry1, 4);
+        if (ntry1->dir < 3) doStatRound_insp4(ntry1->insp, ntry1->port);
     }
     for (int i=0; i<acls6_table.size; i++) {
         struct acls_entry *ntry1 = table_get(&acls6_table, i);
-        doStatRound_acl(ntry1, 6, commands);
-        if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port, commands);
+        doStatRound_acl(ntry1, 6);
+        if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port);
     }
 #ifdef HAVE_DEBUG
     for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
         if (dropStat[i] == 0) continue;
-        fprintf(commands, "dataplane-say debugging hit line %i with %i packets\r\n", i, dropStat[i]);
+        fprintf(commandTx, "dataplane-say debugging hit line %i with %i packets\r\n", i, dropStat[i]);
         dropStat[i] = 0;
     }
 #endif
-    fflush(commands);
+    fflush(commandTx);
 }
 
 
 
 
 
-void doConsoleCommand_ipv4(void* buffer, int fixed, void* param) {
+void doConsoleCommand_ipv4(void* buffer, int fixed) {
     struct route4_entry *ntry = buffer;
     unsigned char buf[32];
     unsigned char buf2[128];
@@ -3016,7 +3001,7 @@ void doConsoleCommand_ipv4(void* buffer, int fixed, void* param) {
     printf("%16s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, fixed, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
 }
 
-void doConsoleCommand_ipv6(void* buffer, int fixed, void* param) {
+void doConsoleCommand_ipv6(void* buffer, int fixed) {
     struct route6_entry *ntry = buffer;
     unsigned char buf[32];
     unsigned char buf2[128];
@@ -3028,10 +3013,10 @@ void doConsoleCommand_ipv6(void* buffer, int fixed, void* param) {
     printf("%40s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, fixed, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
 }
 
-void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int, void *)) {
+void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int)) {
     for (int i = 0; i < tab->size; i++) {
         struct vrf2rib_entry *res = table_get(tab, i);
-        tree_walk(&res->rou, doer, res->vrf, NULL);
+        tree_walk(&res->rou, doer, res->vrf);
     }
 }
 
@@ -3149,3 +3134,77 @@ int doConsoleCommand(unsigned char*buf) {
     return 0;
 }
 
+
+
+
+
+void doNegotiate(char*name) {
+    setgid(1);
+    setuid(1);
+    commandRx = fdopen(commandSock, "r");
+    if (commandRx == NULL) err("failed to open file");
+    commandTx = fdopen(commandSock, "w");
+    if (commandTx == NULL) err("failed to open file");
+    fprintf(commandTx, "platform p4emu/%s\r\n", name);
+    fprintf(commandTx, "capabilities %s%s\r\n",
+            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe",
+#ifdef HAVE_NOCRYPTO
+            ""
+#else
+            " macsec ipsec openvpn wireguard"
+#endif
+           );
+    for (int i = 0; i < dataPorts; i++) fprintf(commandTx, "portname %i %s\r\n", i, ifaceName[i]);
+    fprintf(commandTx, "cpuport %i\r\n", cpuPort);
+    fprintf(commandTx, "dynrange %i 1073741823\r\n", maxPorts);
+    fprintf(commandTx, "vrfrange 1 1073741823\r\n");
+    fprintf(commandTx, "neirange 4096 1073741823\r\n");
+    fprintf(commandTx, "nomore\r\n");
+    fflush(commandTx);
+}
+
+
+
+void doSockLoop() {
+    struct packetContext ctx;
+    if (initContext(&ctx) != 0) err("error initializing context");
+    unsigned char buf[16384];
+    for (;;) {
+        memset(&buf, 0, sizeof(buf));
+        if (fgets((char*)&buf[0], sizeof(buf), commandRx) == NULL) break;
+        if (doOneCommand(&ctx, &buf[0]) != 0) break;
+    }
+    err("command thread exited");
+}
+
+
+
+void doStatLoop() {
+    int rnd = 0;
+    for (;;) {
+        doStatRound(rnd);
+        rnd++;
+        usleep(100000);
+    }
+    err("stat thread exited");
+}
+
+
+
+
+void doMainLoop() {
+    unsigned char buf[1024];
+
+    for (;;) {
+        printf("> ");
+        buf[0] = 0;
+        int i = scanf("%1023s", buf);
+        if (i < 1) {
+            sleep(1);
+            continue;
+        }
+        if (doConsoleCommand(&buf[0]) != 0) break;
+        printf("\n");
+    }
+    err("main thread exited");
+}

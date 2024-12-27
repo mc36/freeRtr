@@ -55,7 +55,6 @@ void err(char*buf) {
 
 
 
-int commandSock;
 int ifaceId[maxPorts];
 
 
@@ -112,65 +111,6 @@ void doIfaceLoop(int * param) {
 
 
 
-void doSockLoop() {
-    struct packetContext ctx;
-    if (initContext(&ctx) != 0) err("error initializing context");
-    FILE *commands = fdopen(commandSock, "r");
-    if (commands == NULL) err("failed to open file");
-    unsigned char buf[16384];
-    for (;;) {
-        memset(&buf, 0, sizeof(buf));
-        if (fgets((char*)&buf[0], sizeof(buf), commands) == NULL) break;
-        if (doOneCommand(&ctx, &buf[0]) != 0) break;
-    }
-    err("command thread exited");
-}
-
-
-
-void doStatLoop() {
-    FILE *commands = fdopen(commandSock, "w");
-    if (commands == NULL) err("failed to open file");
-    fprintf(commands, "platform %sraw\r\n", platformBase);
-    fprintf(commands, "capabilities %s\r\n", getCapas());
-    for (int i = 0; i < dataPorts; i++) fprintf(commands, "portname %i %s\r\n", i, ifaceName[i]);
-    fprintf(commands, "cpuport %i\r\n", cpuPort);
-    fprintf(commands, "dynrange %i 1073741823\r\n", maxPorts);
-    fprintf(commands, "vrfrange 1 1073741823\r\n");
-    fprintf(commands, "neirange 4096 1073741823\r\n");
-    fprintf(commands, "nomore\r\n");
-    fflush(commands);
-    int rnd = 0;
-    for (;;) {
-        doStatRound(commands, rnd);
-        rnd++;
-        usleep(100000);
-    }
-    err("stat thread exited");
-}
-
-
-
-
-void doMainLoop() {
-    unsigned char buf[1024];
-
-    for (;;) {
-        printf("> ");
-        buf[0] = 0;
-        int i = scanf("%1023s", buf);
-        if (i < 1) {
-            sleep(1);
-            continue;
-        }
-        if (doConsoleCommand(&buf[0]) != 0) break;
-        printf("\n");
-    }
-    err("main thread exited");
-}
-
-
-
 
 int main(int argc, char **argv) {
 
@@ -223,8 +163,7 @@ int main(int argc, char **argv) {
         ifaceId[o] = o;
     }
 
-    setgid(1);
-    setuid(1);
+    doNegotiate("raw");
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
     pthread_t threadStat;
