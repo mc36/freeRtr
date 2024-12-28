@@ -1,8 +1,11 @@
 unsigned char portStatsBuf[16384];
 int portStatsLen = 0;
 int commandSock;
+int printCmds;
 FILE *commandRx;
 FILE *commandTx;
+
+
 
 void str2mac(unsigned char *dst, char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
@@ -187,9 +190,11 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     cnt++;
     buf[o] = 0;
     for (int i=cnt; i < 128; i++) arg[i]=(char*)&buf[o];
-    printf("rx: ");
-    for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
-    printf("\n");
+    if (printCmds != 0) {
+        printf("rx: ");
+        for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
+        printf("\n");
+    }
     int del = strcmp(arg[1], "del");
     if (del != 0) del = 1;
     struct polkaIdx_entry polkaIdx_ntry;
@@ -2954,6 +2959,7 @@ void doNegotiate(char*name) {
 
 
 void doSockLoop() {
+    printCmds = getenv("p4emuNOCMDS") == NULL;
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char buf[16384];
@@ -3077,17 +3083,12 @@ void doStatLoop() {
 
 
 void doMainLoop() {
+    if (getenv("p4emuNOCONS") != NULL) for (;;) sleep(1);
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    int nbytes;
     for (;;) {
         printf("> ");
-        ioctl(STDIN_FILENO, FIONREAD, &nbytes);
-        if (nbytes < 1) {
-            sleep(1);
-            continue;
-        }
         buf[0] = 0;
         int i = scanf("%1023s", buf);
         if (i < 1) {
