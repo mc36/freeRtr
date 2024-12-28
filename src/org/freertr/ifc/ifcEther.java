@@ -186,6 +186,10 @@ public class ifcEther implements ifcUp, ifcDn {
         upper.setParent(this);
     }
 
+    public String toString() {
+        return upper + " " + lower;
+    }
+
     /**
      * received packet
      *
