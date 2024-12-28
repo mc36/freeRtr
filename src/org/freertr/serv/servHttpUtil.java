@@ -825,25 +825,15 @@ public class servHttpUtil {
                 return true;
             }
             Class<?> cls = cn.gotHost.allowClass.loadClass(cn.gotUrl.filPath + cn.gotUrl.filName);
+            Class<?>[] mpl = {String.class, String.class, String.class, String.class, String.class, String[].class, ByteArrayOutputStream.class};
+            Method mth = cls.getDeclaredMethod("httpRequest", mpl);
             Object obj = cls.getDeclaredConstructor().newInstance();
-            Method[] mth = cls.getDeclaredMethods();
-            int o = -1;
-            for (int i = 0; i < mth.length; i++) {
-                if (!mth[i].getName().equals("httpRequest")) {
-                    continue;
-                }
-                o = i;
-                break;
-            }
-            if (o < 0) {
-                return true;
-            }
             String[] par = new String[cn.gotUrl.param.size()];
             for (int i = 0; i < par.length; i++) {
                 par[i] = "" + cn.gotUrl.param.get(i);
             }
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            obj = mth[o].invoke(obj, cn.gotUrl.toURL(true, false, false, true), cn.gotHost.path + s, "" + cn.peer, cn.gotAgent, cn.gotAuth, par, buf);
+            obj = mth.invoke(obj, cn.gotUrl.toURL(true, false, false, true), cn.gotHost.path + s, "" + cn.peer, cn.gotAgent, cn.gotAuth, par, buf);
             s = (String) obj;
             res = buf.toByteArray();
         } catch (Exception e) {
