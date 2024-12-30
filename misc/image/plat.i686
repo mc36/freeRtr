@@ -5,4 +5,5 @@ kern 686-pae
 grub efi-ia32-bin
 boot i386-efi
 uefi bootia32.efi
+xtra linux-image-686-pae.udeb
 image ../binImg/rtr-i686

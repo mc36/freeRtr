@@ -57,6 +57,8 @@ public class userImage {
 
     private String uefi = "bootx64.efi";
 
+    private String xtra = "";
+
     private boolean depends = true;
 
     private tabGen<userImageCat> catalogs = new tabGen<userImageCat>();
@@ -348,6 +350,10 @@ public class userImage {
         return false;
     }
 
+    private boolean instOneFile(String name) {
+        return execCmd("dpkg-deb --fsys-tarfile " + name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
+    }
+
     private boolean instOneFile(userImagePkg pkg) {
         String name = getPackageName(pkg);
         if (pkg.done) {
@@ -355,7 +361,21 @@ public class userImage {
             return false;
         }
         pkg.done = true;
-        return execCmd("dpkg-deb --fsys-tarfile " + name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
+        return instOneFile(name);
+    }
+
+    private boolean instXtraFiles() {
+        cmds cmd = new cmds("pkg", xtra);
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (instOneFile(downDir + "/" + arch + "-" + a)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean instAllFiles() {
@@ -485,6 +505,10 @@ public class userImage {
             }
             if (a.equals("uefi")) {
                 uefi = s;
+                continue;
+            }
+            if (a.equals("xtra")) {
+                xtra = s;
                 continue;
             }
             if (a.equals("temp")) {
@@ -654,6 +678,12 @@ public class userImage {
             }
             if (a.equals("package-inst")) {
                 if (instAllFiles()) {
+                    return true;
+                }
+                continue;
+            }
+            if (a.equals("package-xtra")) {
+                if (instXtraFiles()) {
                     return true;
                 }
                 continue;

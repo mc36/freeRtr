@@ -35,6 +35,7 @@ exec cp rtr.jar %tmp%/rtr/
 select-lst
 select-sum
 package-down
+package-xtra
 package-inst
 
 find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%

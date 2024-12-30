@@ -10,6 +10,7 @@ exec cp rtr.bin %tmp%/rtr/
 select-lst
 select-sum
 package-down
+package-xtra
 package-inst
 
 include ../misc/image/image.end
