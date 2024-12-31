@@ -2613,6 +2613,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int bufS = atoi(arg[3]);
         int prt = atoi(arg[4]);
         ctx->port = atoi(arg[5]);
+        ctx->stat = &ifaceStat[ctx->port];
         ctx->sgt = atoi(arg[6]);
         ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];
@@ -2635,6 +2636,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int bufS = atoi(arg[3]);
         int nei = atoi(arg[4]);
         ctx->port = atoi(arg[5]);
+        ctx->stat = &ifaceStat[ctx->port];
         ctx->sgt = atoi(arg[6]);
         ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];

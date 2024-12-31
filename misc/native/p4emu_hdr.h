@@ -9,8 +9,34 @@
 
 #endif
 
+struct ifaceStat_entry {
+    long int byteRx;
+    long int packRx;
+    long int byteTx;
+    long int packTx;
+    long int byteDr;
+    long int packDr;
+    long int byteMpls;
+    long int packMpls;
+    long int byteVlan;
+    long int packVlan;
+    long int byteIpv4;
+    long int packIpv4;
+    long int byteIpv6;
+    long int packIpv6;
+    long int bytePppoe;
+    long int packPppoe;
+    long int byteBridge;
+    long int packBridge;
+    long int bytePolka;
+    long int packPolka;
+    long int byteNsh;
+    long int packNsh;
+};
+
 struct packetContext {
     int port;
+    struct ifaceStat_entry *stat;
     int hash;
     int sgt;
     unsigned char *bufB3;
@@ -35,6 +61,7 @@ extern int commandSock;
 extern int dataPorts;
 extern int cpuPort;
 extern char *ifaceName[maxPorts];
+extern struct ifaceStat_entry ifaceStat[maxPorts];
 
 void err(char*buf);
 void sendPack(unsigned char *bufD, int bufS, int port);

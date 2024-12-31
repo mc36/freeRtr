@@ -2548,5 +2548,6 @@ extern void processCpuPack(struct packetContext *ctx, int bufS) {
     memcpy(&bufH[0], &bufD[preBuff + 4], 12);
     ctx->sgt = -1;
     ctx->port = cpuPort;
+    ctx->stat = &ifaceStat[cpuPort];
     send2subif(ctx, prt, bufP, bufS, ethtyp);
 }

@@ -84,6 +84,7 @@ void doIfaceLoop(int * param) {
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
     ctx.port = port;
+    ctx.stat = &ifaceStat[port];
     iov.iov_base = &bufD[preBuff];
     iov.iov_len = totBuff - preBuff;
     msg.msg_name = NULL;

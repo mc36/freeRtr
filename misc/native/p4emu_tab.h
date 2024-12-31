@@ -2,6 +2,7 @@ int punts = 0;
 int dataPorts;
 int cpuPort;
 char *ifaceName[maxPorts];
+struct ifaceStat_entry ifaceStat[maxPorts];
 long int byteRx[maxPorts];
 long int packRx[maxPorts];
 long int byteTx[maxPorts];
@@ -745,6 +746,7 @@ void initIface(int port, char *name) {
     ifaceName[port] = malloc(strlen(name)+1);
     if (ifaceName[port] == NULL) err("error allocating memory");
     strcpy(ifaceName[port], name);
+    memset(&ifaceStat[port], 0, sizeof(struct ifaceStat_entry));
     byteRx[port] = 0;
     packRx[port] = 0;
     byteTx[port] = 0;

@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
     sleep(1);
     clock_t begin = clock();
     ctx.port = 0;
+    ctx.stat = &ifaceStat[0];
     for (int i = 0; i < count; i++) {
         memcpy(&ctx.bufD[preBuff], &origD[0], origS);
         processDataPacket(&ctx, origS, 0);
