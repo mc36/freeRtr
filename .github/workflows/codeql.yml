@@ -24,7 +24,7 @@ jobs:
         - language: cpp
           build-mode: manual
         - language: java
-          build-mode: none
+          build-mode: manual
         - language: python
           build-mode: none
 
@@ -48,15 +48,15 @@ jobs:
         cd misc/native
         ./c.sh
 
-#    - if: matrix.language == 'java'
-#      name: build java
-#      run: |
-#        sudo apt-get update
-#        sudo apt-get -y install default-jdk-headless
-#        cd src
-#        ./d.sh
-#        ./cj.sh
-#        ./cp.sh
+    - if: matrix.language == 'java'
+      name: build java
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install default-jdk-headless
+        cd src
+        ./d.sh
+        ./cj.sh
+        ./cp.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
