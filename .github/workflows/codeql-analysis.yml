@@ -24,10 +24,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
 
@@ -35,14 +35,14 @@ jobs:
       name: build cpp
       run: |
         sudo apt-get -y update || true
-        for a in gcc clang libpcap-dev libssl-dev dpdk-dev libbpf-dev libmnl-dev ; do
+        for a in gcc clang libpcap-dev libssl-dev dpdk-dev libbpf-dev libxdp-dev liburing-dev libmnl-dev ; do
           sudo apt-get -y install $a || true
           done
         cd misc/native
         ./c.sh
 
     - if: matrix.language == 'java'
-      name: build cpp
+      name: build java
       run: |
         sudo apt-get update
         sudo apt-get -y install default-jdk-headless
@@ -50,4 +50,4 @@ jobs:
         ./c.sh
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
