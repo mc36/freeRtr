@@ -20,7 +20,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp', 'java', 'python' ]
+        include:
+        - language: c-cpp
+          build-mode: manual
+        - language: java-kotlin
+          build-mode: manual
+        - language: python
+          build-mode: none
 
     steps:
     - name: Checkout repository
@@ -30,9 +36,10 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
 
-    - if: matrix.language == 'cpp'
-      name: build cpp
+    - if: matrix.language == 'c-cpp'
+      name: build c-cpp
       run: |
         sudo apt-get -y update || true
         for a in gcc clang libpcap-dev libssl-dev dpdk-dev libbpf-dev libxdp-dev liburing-dev libmnl-dev ; do
@@ -41,13 +48,17 @@ jobs:
         cd misc/native
         ./c.sh
 
-    - if: matrix.language == 'java'
-      name: build java
+    - if: matrix.language == 'java-kotlin'
+      name: build java-kotlin
       run: |
         sudo apt-get update
         sudo apt-get -y install default-jdk-headless
         cd src
-        ./c.sh
+        ./d.sh
+        ./cj.sh
+        ./cp.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
