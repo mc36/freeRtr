@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v24.12.31-cur, done by sprscc13@mrn0b0dy.
--;-;-;2024-12-31 09:28:36, took 00:11:46, with 50 workers, on 674 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2024-12-31 10:25:10, took 00:14:31, with 50 workers, on 674 cases, 4 failed, 0 traces, 50 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -245,9 +245,9 @@ http://sources.freertr.org/cfg/p4lang-crypt110.tst;p4lang-crypt110.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt111.tst;p4lang-crypt111.tst;success;p4lang: macsec over tmux
 http://sources.freertr.org/cfg/p4lang-crypt112.tst;p4lang-crypt112.tst;success;p4lang: sgt over tmux
 http://sources.freertr.org/cfg/p4lang-crypt113.tst;p4lang-crypt113.tst;success;p4lang: packout on port
-http://sources.freertr.org/cfg/p4lang-crypt114.tst;p4lang-crypt114.tst;success;p4lang: packout on vlan port
+http://sources.freertr.org/cfg/p4lang-crypt114.tst;p4lang-crypt114.tst;#6-run-r1 tping 100 10 1.1.1.2 vrf v1;p4lang: packout on vlan port
 http://sources.freertr.org/cfg/p4lang-crypt115.tst;p4lang-crypt115.tst;success;p4lang: packout on macsec port
-http://sources.freertr.org/cfg/p4lang-crypt116.tst;p4lang-crypt116.tst;success;p4lang: packout on macsec vlan port
+http://sources.freertr.org/cfg/p4lang-crypt116.tst;p4lang-crypt116.tst;#6-run-r1 tping 100 10 1.1.1.2 vrf v1;p4lang: packout on macsec vlan port
 http://sources.freertr.org/cfg/p4lang-crypt117.tst;p4lang-crypt117.tst;success;p4lang: ipsec with packout
 http://sources.freertr.org/cfg/p4lang-crypt118.tst;p4lang-crypt118.tst;success;p4lang: openvpn with packout
 http://sources.freertr.org/cfg/p4lang-crypt119.tst;p4lang-crypt119.tst;success;p4lang: wireguard with packout
@@ -262,8 +262,8 @@ http://sources.freertr.org/cfg/p4lang-crypt127.tst;p4lang-crypt127.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt128.tst;p4lang-crypt128.tst;success;p4lang: sgt over macsec over qinq
 http://sources.freertr.org/cfg/p4lang-crypt129.tst;p4lang-crypt129.tst;success;p4lang: sgt qinq ingress access list
 http://sources.freertr.org/cfg/p4lang-crypt130.tst;p4lang-crypt130.tst;success;p4lang: sgt qinq egress access list
-http://sources.freertr.org/cfg/p4lang-crypt131.tst;p4lang-crypt131.tst;success;p4lang: packout on qinq port
-http://sources.freertr.org/cfg/p4lang-crypt132.tst;p4lang-crypt132.tst;success;p4lang: packout on macsec qinq port
+http://sources.freertr.org/cfg/p4lang-crypt131.tst;p4lang-crypt131.tst;#6-run-r1 tping 100 10 1.1.1.2 vrf v1;p4lang: packout on qinq port
+http://sources.freertr.org/cfg/p4lang-crypt132.tst;p4lang-crypt132.tst;#6-run-r1 tping 100 10 1.1.1.2 vrf v1;p4lang: packout on macsec qinq port
 http://sources.freertr.org/cfg/p4lang-crypt133.tst;p4lang-crypt133.tst;success;p4lang: macsec with static key
 http://sources.freertr.org/cfg/p4lang-crypt134.tst;p4lang-crypt134.tst;success;p4lang: ipsec with aes128gcm
 http://sources.freertr.org/cfg/p4lang-crypt135.tst;p4lang-crypt135.tst;success;p4lang: ipsec with aes192gcm

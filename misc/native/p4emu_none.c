@@ -17,7 +17,7 @@ FILE *commandTx;
 int dataPorts;
 int cpuPort;
 char *ifaceName[maxPorts];
-struct ifaceStat_entry ifaceStat[maxPorts];
+struct ifaceStat_entry *ifaceStat[maxPorts];
 
 
 
@@ -25,7 +25,7 @@ void initIface(int port, char *name) {
     ifaceName[port] = malloc(strlen(name)+1);
     if (ifaceName[port] == NULL) err("error allocating memory");
     strcpy(ifaceName[port], name);
-    memset(&ifaceStat[port], 0, sizeof(struct ifaceStat_entry));
+    ifaceStat[port] = NULL;
 }
 
 

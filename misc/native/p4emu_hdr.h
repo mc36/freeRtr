@@ -61,7 +61,7 @@ extern int commandSock;
 extern int dataPorts;
 extern int cpuPort;
 extern char *ifaceName[maxPorts];
-extern struct ifaceStat_entry ifaceStat[maxPorts];
+extern struct ifaceStat_entry *ifaceStat[maxPorts];
 
 void err(char*buf);
 void sendPack(unsigned char *bufD, int bufS, int port);

@@ -1310,9 +1310,9 @@ void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     int frag = 0;
     int ethtyp = 0;
     int tmp = 0;
-    int ttl = ctx->port;
-    packRx[ttl]++;
-    byteRx[ttl] += bufS;
+    int ttl = 0;
+    ctx->stat->packRx++;
+    ctx->stat->byteRx += bufS;
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
@@ -2518,9 +2518,8 @@ nsh_rx:
 punt:
         if (punts < 0) {
 drop:
-            ttl = ctx->port;
-            packDr[ttl]++;
-            byteDr[ttl] += bufS - bufP + preBuff;
+            ctx->stat->packDr++;
+            ctx->stat->byteDr += bufS - bufP + preBuff;
             return;
         }
         punts--;
@@ -2537,8 +2536,6 @@ cpu:
 
 
 extern void processCpuPack(struct packetContext *ctx, int bufS) {
-    packRx[cpuPort]++;
-    byteRx[cpuPort] += bufS;
     unsigned char *bufD = ctx->bufD;
     unsigned char *bufH = ctx->bufH;
     int prt = get32msb(bufD, preBuff + 0);
@@ -2548,6 +2545,8 @@ extern void processCpuPack(struct packetContext *ctx, int bufS) {
     memcpy(&bufH[0], &bufD[preBuff + 4], 12);
     ctx->sgt = -1;
     ctx->port = cpuPort;
-    ctx->stat = &ifaceStat[cpuPort];
+    ctx->stat = ifaceStat[cpuPort];
+    ctx->stat->packRx++;
+    ctx->stat->byteRx += bufS;
     send2subif(ctx, prt, bufP, bufS, ethtyp);
 }

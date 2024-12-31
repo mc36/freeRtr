@@ -2613,7 +2613,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int bufS = atoi(arg[3]);
         int prt = atoi(arg[4]);
         ctx->port = atoi(arg[5]);
-        ctx->stat = &ifaceStat[ctx->port];
+        ctx->stat = ifaceStat[cpuPort];
         ctx->sgt = atoi(arg[6]);
         ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];
@@ -2636,7 +2636,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         int bufS = atoi(arg[3]);
         int nei = atoi(arg[4]);
         ctx->port = atoi(arg[5]);
-        ctx->stat = &ifaceStat[ctx->port];
+        ctx->stat = ifaceStat[cpuPort];
         ctx->sgt = atoi(arg[6]);
         ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];
@@ -2994,7 +2994,8 @@ void doStatLoop() {
         }
         if ((round % 10) != 0) continue;
         for (int i = 0; i < dataPorts; i++) {
-            fprintf(commandTx, "counter %i %li %li %li %li %li %li\r\n", i, packRx[i], byteRx[i], packTx[i], byteTx[i], packDr[i], byteDr[i]);
+            struct ifaceStat_entry *stat = ifaceStat[i];
+            fprintf(commandTx, "counter %i %li %li %li %li %li %li\r\n", i, stat->packRx, stat->byteRx, packTx[i], byteTx[i], stat->packDr, stat->byteDr);
             int o = getState(i);
             fprintf(commandTx, "state %i %i\r\n", i, o);
         }
@@ -3123,7 +3124,8 @@ void doMainLoop() {
         case 'I':
             printf("                           iface         rx         tx       drop         rx         tx       drop\n");
             for (int i=0; i<dataPorts; i++) {
-                printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], packRx[i], packTx[i], packDr[i], byteRx[i], byteTx[i], byteDr[i]);
+                struct ifaceStat_entry *stat = ifaceStat[i];
+                printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], stat->packRx, packTx[i], stat->packDr, stat->byteRx, byteTx[i], stat->byteDr);
             }
             break;
         case 'm':

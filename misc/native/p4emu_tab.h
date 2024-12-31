@@ -2,13 +2,9 @@ int punts = 0;
 int dataPorts;
 int cpuPort;
 char *ifaceName[maxPorts];
-struct ifaceStat_entry ifaceStat[maxPorts];
-long int byteRx[maxPorts];
-long int packRx[maxPorts];
+struct ifaceStat_entry *ifaceStat[maxPorts];
 long int byteTx[maxPorts];
 long int packTx[maxPorts];
-long int byteDr[maxPorts];
-long int packDr[maxPorts];
 long int byteMpls[maxPorts];
 long int packMpls[maxPorts];
 long int byteVlan[maxPorts];
@@ -746,29 +742,9 @@ void initIface(int port, char *name) {
     ifaceName[port] = malloc(strlen(name)+1);
     if (ifaceName[port] == NULL) err("error allocating memory");
     strcpy(ifaceName[port], name);
-    memset(&ifaceStat[port], 0, sizeof(struct ifaceStat_entry));
-    byteRx[port] = 0;
-    packRx[port] = 0;
-    byteTx[port] = 0;
-    packTx[port] = 0;
-    byteDr[port] = 0;
-    packDr[port] = 0;
-    byteMpls[port] = 0;
-    packMpls[port] = 0;
-    byteVlan[port] = 0;
-    packVlan[port] = 0;
-    byteIpv4[port] = 0;
-    packIpv4[port] = 0;
-    byteIpv6[port] = 0;
-    packIpv6[port] = 0;
-    bytePppoe[port] = 0;
-    packPppoe[port] = 0;
-    byteBridge[port] = 0;
-    packBridge[port] = 0;
-    bytePolka[port] = 0;
-    packPolka[port] = 0;
-    byteNsh[port] = 0;
-    packNsh[port] = 0;
+    ifaceStat[port] = malloc(sizeof(struct ifaceStat_entry));
+    if (ifaceStat[port] == NULL) err("error allocating memory");
+    memset(ifaceStat[port], 0, sizeof(struct ifaceStat_entry));
 }
 
 
@@ -830,6 +806,7 @@ int shiftContext(struct packetContext *trg, struct packetContext *src, unsigned 
     trg->sgt = src->sgt;
     trg->hash = src->hash;
     trg->port = src->port;
+    trg->stat = src->stat;
     trg->bufH = src->bufH;
     trg->bufD = bufD;
     trg->bufC = src->bufB1;

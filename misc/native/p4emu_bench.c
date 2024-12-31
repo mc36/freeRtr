@@ -64,6 +64,7 @@ int main(int argc, char **argv) {
     hexdump(origD, 0, origS);
     dataPorts = 1;
     cpuPort = 1;
+    initIface(0, "bench");
     initTables();
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
@@ -80,7 +81,7 @@ int main(int argc, char **argv) {
     sleep(1);
     clock_t begin = clock();
     ctx.port = 0;
-    ctx.stat = &ifaceStat[0];
+    ctx.stat = ifaceStat[0];
     for (int i = 0; i < count; i++) {
         memcpy(&ctx.bufD[preBuff], &origD[0], origS);
         processDataPacket(&ctx, origS, 0);
