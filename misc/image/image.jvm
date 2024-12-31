@@ -1,7 +1,6 @@
 include ../misc/image/image.bas
 include ../misc/image/image.beg
 
-select-one linux-image-%kern%            #regular kernel
 select-one zlib1g                        #dependency
 select-one libstdc++6                    #dependency
 select-dep no

@@ -47,8 +47,10 @@ select-dis libxi.*
 select-dis libxrender.*
 select-dis libxtst.*
 
+select-one linux-image-%kern%             #regular kernel
 select-one busybox                        #small utils
 select-one udev                           #bring up hw
+select-one kmod                           #bring up hw
 select-one libmnl0                        #dataplane requirement
 select-one libssl3t64                     #dataplane requirement
 select-one openssl-provider-legacy        #dataplane requirement
