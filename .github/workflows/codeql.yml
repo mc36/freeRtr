@@ -21,10 +21,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: c-cpp
+        - language: cpp
           build-mode: manual
-        - language: java-kotlin
-          build-mode: manual
+        - language: java
+          build-mode: none
         - language: python
           build-mode: none
 
@@ -38,8 +38,8 @@ jobs:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
 
-    - if: matrix.language == 'c-cpp'
-      name: build c-cpp
+    - if: matrix.language == 'cpp'
+      name: build cpp
       run: |
         sudo apt-get -y update || true
         for a in gcc clang libpcap-dev libssl-dev dpdk-dev libbpf-dev libxdp-dev liburing-dev libmnl-dev ; do
@@ -48,15 +48,15 @@ jobs:
         cd misc/native
         ./c.sh
 
-    - if: matrix.language == 'java-kotlin'
-      name: build java-kotlin
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install default-jdk-headless
-        cd src
-        ./d.sh
-        ./cj.sh
-        ./cp.sh
+#    - if: matrix.language == 'java'
+#      name: build java
+#      run: |
+#        sudo apt-get update
+#        sudo apt-get -y install default-jdk-headless
+#        cd src
+#        ./d.sh
+#        ./cj.sh
+#        ./cp.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
