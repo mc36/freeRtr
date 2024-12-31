@@ -66,8 +66,8 @@ int hashDataPacket(unsigned char *bufP) {
     if (prt < 0) return;                                        \
     if (prt >= dataPorts) return;                               \
     bufS = bufS - bufP + preBuff;                               \
-    packTx[prt]++;                                              \
-    byteTx[prt] += bufS;                                        \
+    ifaceStat[prt]->packTx++;                                   \
+    ifaceStat[prt]->byteTx += bufS;                             \
     sendPack(&bufD[bufP], bufS, prt);
 
 
@@ -1519,9 +1519,8 @@ etyped_rx:
     case ETHERTYPE_MPLS_UCAST: // mpls
         if (port2vrf_res == NULL) doDropper;
         if (port2vrf_res->mpls == 0) doDropper;
-        ttl = ctx->port;
-        packMpls[ttl]++;
-        byteMpls[ttl] += bufS;
+        ctx->stat->packMpls++;
+        ctx->stat->byteMpls += bufS;
 mpls_rx:
         label = get32msb(bufD, bufP);
         ttl = (label & 0xff) - 1;
@@ -1644,9 +1643,8 @@ neigh_tx:
         }
         doDropper;
     case ETHERTYPE_VLAN: // dot1q
-        ttl = ctx->port;
-        packVlan[ttl]++;
-        byteVlan[ttl] += bufS;
+        ctx->stat->packVlan++;
+        ctx->stat->byteVlan += bufS;
         ttl = get16msb(bufD, bufP) & 0xfff;
         ctx->hash ^= ttl;
         vlanin_ntry.port = prt;
@@ -1662,9 +1660,8 @@ neigh_tx:
     case ETHERTYPE_IPV4: // ipv4
         if (port2vrf_res == NULL) doDropper;
         if (port2vrf_res->command != 1) doDropper;
-        ttl = ctx->port;
-        packIpv4[ttl]++;
-        byteIpv4[ttl] += bufS;
+        ctx->stat->packIpv4++;
+        ctx->stat->byteIpv4 += bufS;
         vrf2rib_ntry.vrf = port2vrf_res->vrf;
 ipv4_rx:
         index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
@@ -1935,9 +1932,8 @@ ipv4_tx:
     case ETHERTYPE_IPV6: // ipv6
         if (port2vrf_res == NULL) doDropper;
         if (port2vrf_res->command != 1) doDropper;
-        ttl = ctx->port;
-        packIpv6[ttl]++;
-        byteIpv6[ttl] += bufS;
+        ctx->stat->packIpv6++;
+        ctx->stat->byteIpv6 += bufS;
         vrf2rib_ntry.vrf = port2vrf_res->vrf;
 ipv6_rx:
         index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
@@ -2262,9 +2258,8 @@ ipv6_tx:
         }
         doDropper;
     case ETHERTYPE_PPPOE_DATA: // pppoe
-        ttl = ctx->port;
-        packPppoe[ttl]++;
-        bytePppoe[ttl] += bufS;
+        ctx->stat->packPppoe++;
+        ctx->stat->bytePppoe += bufS;
         pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         ctx->hash ^= pppoe_ntry.session;
@@ -2281,9 +2276,8 @@ ipv6_tx:
         goto ethtyp_rx;
     case ETHERTYPE_ROUTEDMAC: // routed bridge
         if (port2vrf_res == NULL) doDropper;
-        ttl = ctx->port;
-        packBridge[ttl]++;
-        byteBridge[ttl] += bufS;
+        ctx->stat->packBridge++;
+        ctx->stat->byteBridge += bufS;
         if (port2vrf_res->command != 2) doDropper;
         bridge_ntry.id = port2vrf_res->bridge;
         memcpy(&bufH[0], &bufD[bufP], 12);
@@ -2377,9 +2371,8 @@ bridgevpls_rx:
         doDropper;
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
-        ttl = ctx->port;
-        packPolka[ttl]++;
-        bytePolka[ttl] += bufS;
+        ctx->stat->packPolka++;
+        ctx->stat->bytePolka += bufS;
         ttl = bufD[bufP + 1];
         if ((ttl & 0xff) <= 1) doPunting;
         ttl--;
@@ -2448,9 +2441,8 @@ bridgevpls_rx:
     case ETHERTYPE_NSH: // nsh
         if (port2vrf_res == NULL) doDropper;
         if (port2vrf_res->nsh == 0) doDropper;
-        ttl = ctx->port;
-        packNsh[ttl]++;
-        byteNsh[ttl] += bufS;
+        ctx->stat->packNsh++;
+        ctx->stat->byteNsh += bufS;
 nsh_rx:
         ttl = get16msb(bufD, bufP + 0);
         if ((ttl & 0xe000) != 0) doDropper;

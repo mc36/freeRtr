@@ -2995,7 +2995,7 @@ void doStatLoop() {
         if ((round % 10) != 0) continue;
         for (int i = 0; i < dataPorts; i++) {
             struct ifaceStat_entry *stat = ifaceStat[i];
-            fprintf(commandTx, "counter %i %li %li %li %li %li %li\r\n", i, stat->packRx, stat->byteRx, packTx[i], byteTx[i], stat->packDr, stat->byteDr);
+            fprintf(commandTx, "counter %i %li %li %li %li %li %li\r\n", i, stat->packRx, stat->byteRx, stat->packTx, stat->byteTx, stat->packDr, stat->byteDr);
             int o = getState(i);
             fprintf(commandTx, "state %i %i\r\n", i, o);
         }
@@ -3023,14 +3023,15 @@ void doStatLoop() {
             continue;
         }
         for (int i = 0; i < dataPorts; i++) {
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, packMpls[i], byteMpls[i]);
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, packVlan[i], byteVlan[i]);
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, packIpv4[i], byteIpv4[i]);
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, packIpv6[i], byteIpv6[i]);
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, packPppoe[i], bytePppoe[i]);
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, packBridge[i], byteBridge[i]);
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, packPolka[i], bytePolka[i]);
-            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, packNsh[i], byteNsh[i]);
+            struct ifaceStat_entry *stat = ifaceStat[i];
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, stat->packMpls, stat->byteMpls);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_VLAN, stat->packVlan, stat->byteVlan);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV4, stat->packIpv4, stat->byteIpv4);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_IPV6, stat->packIpv6, stat->byteIpv6);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_PPPOE_DATA, stat->packPppoe, stat->bytePppoe);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_ROUTEDMAC, stat->packBridge, stat->byteBridge);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, stat->packPolka, stat->bytePolka);
+            fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, stat->packNsh, stat->byteNsh);
         }
         for (int i=0; i<nsh_table.size; i++) {
             struct nsh_entry *ntry = table_get(&nsh_table, i);
@@ -3125,7 +3126,7 @@ void doMainLoop() {
             printf("                           iface         rx         tx       drop         rx         tx       drop\n");
             for (int i=0; i<dataPorts; i++) {
                 struct ifaceStat_entry *stat = ifaceStat[i];
-                printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], stat->packRx, packTx[i], stat->packDr, stat->byteRx, byteTx[i], stat->byteDr);
+                printf("%32s %10li %10li %10li %10li %10li %10li\n", ifaceName[i], stat->packRx, stat->packTx, stat->packDr, stat->byteRx, stat->byteTx, stat->byteDr);
             }
             break;
         case 'm':
