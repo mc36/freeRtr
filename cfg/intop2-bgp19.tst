@@ -49,13 +49,12 @@ int lo3
  exit
 router bgp4 1
  vrf v1
- address vpnuni
+ address ovpnuni
  local-as 1
  router-id 4.4.4.1
- neigh 2.2.2.2 remote-as 2
- neigh 2.2.2.2 update lo0
- neigh 2.2.2.2 send-comm both
- neigh 2.2.2.2 segrou
+ neigh 1.1.1.2 remote-as 2
+ neigh 1.1.1.2 send-comm both
+ neigh 1.1.1.2 segrou
  afi-vrf v2 ena
  afi-vrf v2 srv6 tun1
  afi-vrf v2 red conn
@@ -68,11 +67,10 @@ router bgp6 1
  address ovpnuni
  local-as 1
  router-id 6.6.6.1
- neigh 4321::2 remote-as 2
- neigh 4321::2 update lo0
- neigh 4321::2 send-comm both
- neigh 4321::2 segrou
- neigh 4321::2 extended-nexthop-current ovpnuni
+ neigh 1234::2 remote-as 2
+ neigh 1234::2 send-comm both
+ neigh 1234::2 segrou
+ neigh 1234::2 extended-nexthop-current ovpnuni
  afi-ovrf v2 ena
  afi-ovrf v2 srv6 tun1
  afi-ovrf v2 red conn
@@ -123,15 +121,16 @@ interface loopback3
  ipv4 address 9.9.3.2 255.255.255.255
  ipv6 address 9993::2/128
  exit
-segment-routing srv6 locators locator a prefix 1111:1111:1111:1111::/64
+segment-routing srv6 locators locator a
+ micro-segment behavior unode psp-usd
+ prefix 1111:1111:1111::/48
 segment-routing srv6 encapsulation source-address 4321::2
 router bgp 2
  segment-routing srv6 locator a
  address-family vpnv4 unicast segment-routing srv6 locator a
  address-family vpnv6 unicast segment-routing srv6 locator a
- neighbor 4321::1
+ neighbor 1234::1
   remote-as 1
-  update-source loopback0
   address-family vpnv4 unicast
  vrf v2
   rd 1:2
