@@ -2838,7 +2838,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 int i = attr.best.labelRem.get(0) >>> 4;
                 i &= (1 << attr.best.segrouSiz) - 1;
                 bits.msbPutD(adr6.getBytes(), addrIPv6.size - 4, i);
-                adr6.setShl(adr6, attr.best.segrouOfs + attr.best.segrouSiz);
+                adr6.setShl(adr6, 128 - attr.best.segrouOfs - attr.best.segrouSiz);
                 adr6.setOr(attr.best.segrouPrf, adr6);
                 attr.best.segrouPrf.fromIPv6addr(adr6);
             }

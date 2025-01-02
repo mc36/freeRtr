@@ -16396,3 +16396,6 @@ qc pass: p4lang: vpls/ldp over backplane
 qc pass: p4lang: evpn/cmac over backplane
 qc pass: p4lang: routed vpls/ldp over backplane
 qc pass: p4lang: routed evpn/cmac over backplane
+---------------------------------- 2025-01-02 12:11:48 25.1.2
+qc pass: interop1: bgp vpnv4 over srv6
+qc pass: interop1: bgp vpnv6 over srv6
