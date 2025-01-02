@@ -3850,8 +3850,8 @@ public class rtrBgpUtil {
             tlv.valDat[24] = 0; // reserved
             tlv.valDat[25] = 1; // sid structure
             bits.msbPutW(tlv.valDat, 26, 6); // subsubtlv length
-            tlv.valDat[28] = 40; // locator block length
-            tlv.valDat[29] = 24; // locator node length
+            tlv.valDat[28] = 32; // locator block length
+            tlv.valDat[29] = 16; // locator node length
             tlv.valDat[30] = 16; // locator function length
             tlv.valDat[31] = 0; // locator argument length
             tlv.valDat[32] = (byte) ntry.best.segrouSiz; // transposition length
