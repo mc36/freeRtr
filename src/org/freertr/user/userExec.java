@@ -880,6 +880,8 @@ public class userExec {
         hl.add(null, "9 10                   update       update prefixes before compare");
         hl.add(null, "10 9,.                   <name:rm>  name of route map");
         hl.add(null, "6 .              labels             remote and local labels");
+        hl.add(null, "6 .              segrout            segment routing information");
+        hl.add(null, "6 .              bier               bier information");
         hl.add(null, "6 .              ecmp               ecmp info");
         getRouMapMtch(hl, 6);
         hl.add(null, "3 4        logger                   route logger");

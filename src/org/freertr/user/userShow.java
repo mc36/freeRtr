@@ -4795,6 +4795,14 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
             return;
         }
+        if (a.equals("segrout")) {
+            doShowRoutes(r.bgp.fwdCore, tab, 7);
+            return;
+        }
+        if (a.equals("bier")) {
+            doShowRoutes(r.bgp.fwdCore, tab, 8);
+            return;
+        }
         if (a.equals("ecmp")) {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 2000);
             return;

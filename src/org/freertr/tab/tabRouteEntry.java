@@ -318,7 +318,7 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
         String a = addrPrefix.ip2str(prf.prefix);
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
-            if (attr.segrouIdx < 1) {
+            if ((attr.segrouIdx < 1) && (attr.segrouPrf == null)) {
                 continue;
             }
             l.add(a + "|" + attr.toShSrRoute());

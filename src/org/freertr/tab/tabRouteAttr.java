@@ -1989,7 +1989,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShSrRoute() {
-        return segrouIdx + "|" + segrouBeg + "|" + segrouOld;
+        return segrouIdx + "|" + segrouBeg + "|" + segrouOld + "|" + segrouPrf;
     }
 
     /**
