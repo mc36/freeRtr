@@ -2313,6 +2313,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 return;
             }
             learned.clear();
+            if (debugger.rtrBgpFull) {
+                logger.debug("refresh begin");
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
             return;
         }
         if (mode == 2) {
