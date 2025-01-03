@@ -733,8 +733,15 @@ class rtrLsrpNeighRcvr implements Runnable {
                 lower.advert.del(ntry);
                 continue;
             }
+            if (a.equals("resending")) {
+                continue;
+            }
             if (a.equals("resend")) {
+                lower.sendLn("resending");
+                lower.sentMet = -1;
+                lower.sentMed = false;
                 lower.advert.clear();
+                lower.notif.wakeup();
                 continue;
             }
             if (a.equals("keepalive")) {

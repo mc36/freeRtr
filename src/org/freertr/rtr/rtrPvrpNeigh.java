@@ -889,8 +889,19 @@ class rtrPvrpNeighRcvr implements Runnable {
                 lower.adverted.del(ntry);
                 continue;
             }
+            if (a.equals("resending")) {
+                lower.learned.clear();
+                lower.lower.notif.wakeup();
+                continue;
+            }
             if (a.equals("resend")) {
+                lower.sendLn("resending");
+                lower.sentMet = -1;
+                lower.sentMed = false;
+                lower.sentSegrou = -1;
+                lower.sentBier = -1;
                 lower.adverted.clear();
+                lower.notif.wakeup();
                 continue;
             }
             if (a.equals("nomore")) {
