@@ -78,16 +78,16 @@ int main(int argc, char **argv) {
         free(lin);
     }
     fclose(fil);
-    sleep(1);
-    clock_t begin = clock();
     ctx.port = 0;
     ctx.stat = ifaceStat[0];
+    sleep(1);
+    clock_t beg = clock();
     for (int i = 0; i < count; i++) {
         memcpy(&ctx.bufD[preBuff], &origD[0], origS);
         processDataPacket(&ctx, origS, 0);
     }
     clock_t end = clock();
-    double spent = (double)(end - begin) / (double)CLOCKS_PER_SEC;
+    double spent = (double)(end - beg) / (double)CLOCKS_PER_SEC;
     if (spent <= 0) spent = 1;
     hexdump(lastB, 0, lastS);
     printf("packets=%li, bytes=%li, time=%f\n", packs, bytes, spent);
