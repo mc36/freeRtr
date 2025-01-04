@@ -1,16 +1,6 @@
 #!/bin/sh
 TR=../../binTmp
-UM=`uname -m`
-
-if which clang > /dev/null ; then
-  CC="clang"
-  BC="clang -target bpf"
-  BS="llvm-strip"
-  else
-  CC="gcc"
-  BC="bpf-gcc"
-  BS="bpf-strip"
-  fi
+mkdir -p $TR
 
 MD="-O0 -g"                             #devel
 MD="-O3 -g"                             #debug
@@ -18,14 +8,26 @@ MD="-O3"                                #release
 #gdb xxx.bin core
 #bt full
 #p *((struct <type> *)(<addr>))
-mkdir -p $TR
 
+UM=`uname -m`
 MF=""
 if [ "$UM" = "x86_64" ]; then
   MF="-march=corei7"
 fi
 
-echo arch=$UM, cc=$CC, bc=$BC, bs=$BS, mode=$MD, flag=$MF, out=$TR
+if which clang > /dev/null ; then
+  CC="clang"
+  CS="llvm-strip"
+  BC="clang -target bpf"
+  BS="llvm-strip"
+  else
+  CC="gcc"
+  CS="strip"
+  BC="bpf-gcc"
+  BS="bpf-strip"
+  fi
+
+echo arch=$UM, cc=$CC, cs=$CS, bc=$BC, bs=$BS, mode=$MD, flag=$MF, out=$TR
 
 compileBpf()
 {
@@ -40,7 +42,7 @@ compileLib()
 echo compiling $1.
 $CC -fpic -shared -Wall -Wl,--build-id=none $MD $3 -o$TR/lib$1.so $2 $1.c
 chmod -x $TR/lib$1.so || true
-strip $TR/lib$1.so || true
+$CS $TR/lib$1.so || true
 touch -c -d "2010-01-01 00:00:00" $TR/lib$1.so || true
 }
 
@@ -48,7 +50,7 @@ linkTwoLibs()
 {
 echo linking $1.
 $CC -Wall -Wl,-rpath='$ORIGIN/' -Wl,--build-id=none $MD -o$TR/$1.bin -L$TR -l$2 -l$3 $4
-strip $TR/$1.bin || true
+$CS $TR/$1.bin || true
 touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
@@ -56,7 +58,7 @@ compileFile()
 {
 echo compiling $1.
 $CC -Wall -Wl,--build-id=none $MD $4 -o$TR/$1.bin $2 $1.c $3
-strip $TR/$1.bin || true
+$CS $TR/$1.bin || true
 touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
