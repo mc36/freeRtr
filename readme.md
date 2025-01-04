@@ -24,6 +24,7 @@ you can find the same source tree at various locations, normally all should be t
 * http://gitlab.com/mc36mc/freeRtr
 * http://github.com/mc36/freeRtr
 * http://gitea.com/mc36/freeRtr
+* http://git.sr.ht/~mc36/freeRtr
 
 part of the subdirectories under misc/ are somewhere else too:
 * p4bf at http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
