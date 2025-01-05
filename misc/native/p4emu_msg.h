@@ -1,7 +1,7 @@
 unsigned char portStatsBuf[16384];
 int portStatsLen = 0;
+int printCmds = 0;
 int commandSock;
-int printCmds;
 FILE *commandRx;
 FILE *commandTx;
 

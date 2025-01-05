@@ -56,7 +56,6 @@ int main(int argc, char **argv) {
     int origS = 0;
     if (argc < 3) err("usage: <commands> <count> <bytes>");
     int count = atoi(argv[2]);
-    printf("packet=%i, rounds=%i\n", origS, count);
     dataPorts = 1;
     cpuPort = 1;
     initIface(0, "bench");
@@ -79,19 +78,18 @@ int main(int argc, char **argv) {
         char* lin = NULL;
         size_t len = 0;
         if (getline(&lin, &len, fil) < 0) break;
-        for (int i=0;; i++) {
-            if (lin[i]==0)break;
-            if (lin[i]==32) continue;
-            int o = sscanf(&lin[i], "%hhx", &origD[origS]);
-            if (o!=1) continue;
+        for (int i = 0;; i++) {
+            if (lin[i] == 0) break;
+            if (lin[i] == 32) continue;
+            if (sscanf(&lin[i], "%hhx", &origD[origS]) != 1) continue;
             origS++;
             i++;
-            continue;
         }
         free(lin);
     }
     fclose(fil);
     hexdump(origD, 0, origS);
+    printf("input=%i, rounds=%i", origS, count);
     ctx.port = 0;
     ctx.stat = ifaceStat[0];
     sleep(1);
@@ -103,6 +101,7 @@ int main(int argc, char **argv) {
     clock_t end = clock();
     double spent = (double)(end - beg) / (double)CLOCKS_PER_SEC;
     if (spent <= 0) spent = 1;
+    printf(", output=%i\n", lastS);
     hexdump(lastB, 0, lastS);
     printf("packets=%li, bytes=%li, time=%f\n", packs, bytes, spent);
     double prn = (double)packs / spent;
