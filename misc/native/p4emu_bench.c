@@ -54,21 +54,16 @@ int main(int argc, char **argv) {
     printf(", arch=%s\n", unamei.machine);
     fflush(stdout);
     int origS = 0;
-    if (argc < 3) err("usage: <commands> <count> <byte0> [byteN]");
+    if (argc < 3) err("usage: <commands> <count> <bytes>");
     int count = atoi(argv[2]);
-    for (int i = 3; i < argc; i++) {
-        sscanf(argv[i], "%hhx", &origD[origS]);
-        origS++;
-    }
     printf("packet=%i, rounds=%i\n", origS, count);
-    hexdump(origD, 0, origS);
     dataPorts = 1;
     cpuPort = 1;
     initIface(0, "bench");
     initTables();
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
-    FILE * fil =fopen(argv[1], "r");
+    FILE* fil = fopen(argv[1], "r");
     if (fil == NULL) err("error opening commands");
     for (;;) {
         char* lin = NULL;
@@ -78,6 +73,25 @@ int main(int argc, char **argv) {
         free(lin);
     }
     fclose(fil);
+    fil = fopen(argv[3], "r");
+    if (fil == NULL) err("error opening bytes");
+    for (;;) {
+        char* lin = NULL;
+        size_t len = 0;
+        if (getline(&lin, &len, fil) < 0) break;
+        for (int i=0;; i++) {
+            if (lin[i]==0)break;
+            if (lin[i]==32) continue;
+            int o = sscanf(&lin[i], "%hhx", &origD[origS]);
+            if (o!=1) continue;
+            origS++;
+            i++;
+            continue;
+        }
+        free(lin);
+    }
+    fclose(fil);
+    hexdump(origD, 0, origS);
     ctx.port = 0;
     ctx.stat = ifaceStat[0];
     sleep(1);
