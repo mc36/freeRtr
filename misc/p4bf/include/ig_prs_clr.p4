@@ -1,7 +1,6 @@
 
 
 
-ig_md.always_zero = 0; // hack
 ig_md._padding1 = 0;
 ig_md._padding2 = 0;
 #ifdef HAVE_INQOS

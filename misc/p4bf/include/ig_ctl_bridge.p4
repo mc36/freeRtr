@@ -85,7 +85,7 @@ ig_md.bridge_id:
         hdr.eth2.setValid();
         hdr.eth2.dst_mac_addr = hdr.ethernet.dst_mac_addr;
         hdr.eth2.src_mac_addr = hdr.ethernet.src_mac_addr;
-        hdr.eth2.ethertype = ig_md.ethertype + ig_md.always_zero; // hack
+        hdr.eth2.ethertype = ig_md.ethertype;
         ig_md.nexthop_id = nexthop;
         ig_md.ethertype = ETHERTYPE_ROUTEDMAC_INT;
     }
