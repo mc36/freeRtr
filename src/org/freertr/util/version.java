@@ -769,27 +769,19 @@ public class version {
         sa.add(headLine);
         sa.add("");
         Runtime rt = Runtime.getRuntime();
-        sa.add("name: " + cfgAll.hostName);
-        sa.add("prnt: " + cfgInit.prntNam);
-        sa.add("hwid: " + cfgInit.hwIdNum);
-        sa.add("hwsn: " + cfgInit.hwSnNum);
+        sa.add("name: " + cfgAll.hostName + ", prnt: " + cfgInit.prntNam + ", hwid: " + cfgInit.hwIdNum + " hwsn: " + cfgInit.hwSnNum);
         sa.add("hwfw: " + getHWfwd1liner());
-        sa.add("pid: " + pipeShell.myProcessNum());
         sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, cfgInit.started + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(cfgInit.started));
-        sa.add("reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
-        sa.add("rwpath: " + getRWpath());
-        sa.add("hwcfg: " + cfgInit.cfgFileHw);
-        sa.add("swcfg: " + cfgInit.cfgFileSw);
-        sa.add("cpu: " + getCPUname());
-        sa.add("mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
-        sa.add("hostos: " + getKernelName());
+        sa.add("pid: " + pipeShell.myProcessNum() + ", reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
+        sa.add("hwc: " + cfgInit.cfgFileHw + ", swc: " + cfgInit.cfgFileSw);
+        sa.add("class: v" + getProp("java.class.version") + " @ " + getFileName() + ", rwp: " + getRWpath());
+        sa.add("cpu: " + getCPUname() + ", mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
         long l = pipeShell.getKernelUptime();
-        sa.add("hostup: since " + bits.time2str(cfgAll.timeZoneName, l + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(l));
+        sa.add("host: " + getKernelName() + ", since " + bits.time2str(cfgAll.timeZoneName, l + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(l));
         sa.add("java: " + getJavaVer("java") + " @ " + getProp("java.home"));
         sa.add("jspec: " + getJavaVer("java.specification"));
         sa.add("vm: " + getVMname());
         sa.add("vmspec: " + getJavaVer("java.vm.specification"));
-        sa.add("class: v" + getProp("java.class.version") + " @ " + getFileName());
         return sa;
     }
 
