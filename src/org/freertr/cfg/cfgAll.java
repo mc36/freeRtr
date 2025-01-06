@@ -976,6 +976,11 @@ public class cfgAll {
     public static boolean tracebackStops = false;
 
     /**
+     * always on debugs
+     */
+    public static List<String> alwaysDebugs = new ArrayList<String>();
+
+    /**
      * redundancy keepalive time
      */
     public static int redundancyKeep = 500;
@@ -3700,6 +3705,9 @@ public class cfgAll {
         l.add("banner encoded " + encBase64.encodeBytes(banner));
         l.add(cmds.comment);
         l.add("client label-range " + labelRangeBeg + " " + labelRangeEnd);
+        for (int i = 0; i < alwaysDebugs.size(); i++) {
+            l.add("logging debug " + alwaysDebugs.get(i));
+        }
         cmds.cfgLine(l, !tracebackStops, "", "logging tracestop", "");
         cmds.cfgLine(l, !logger.logMillis, "", "logging milliseconds", "");
         l.add("logging buffered " + logger.level2string(logger.logBufLev) + " " + logger.getBufSize());

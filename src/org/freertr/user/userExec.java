@@ -2077,10 +2077,10 @@ public class userExec {
         hl.add(null, "8 .                  <addr>           remote address");
         cfgAll.aliasHelps(cfgAlias.aliasType.clear, 2, hl);
         hl.add(null, "1 2    debug                          start debugging one protocol");
-        debugger.getHelping(hl);
+        debugger.getHelping(hl, 2);
         hl.add(null, "1 2,.  undebug                        stop debugging one protocol");
         hl.add(null, "2 .      all                          disable all debugging");
-        debugger.getHelping(hl);
+        debugger.getHelping(hl, 2);
         hl.add(null, "1 2    set                            insert configuration command");
         hl.add(null, "2 2,.    [str]                        config line to set");
         hl.add(null, "1 2    delete                         remove configuration command");

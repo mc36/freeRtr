@@ -369,6 +369,8 @@ public class userConfig {
         l.add(null, "2  3    encoded                      set banner");
         l.add(null, "3  3,.    <cmd>                      encoded banner");
         l.add(null, "1  2  logging                        set logging parameters");
+        l.add(null, "2  3    debug                        always on debugging");
+        debugger.getHelping(l, 3);
         l.add(null, "2  .    tracestop                    stop on traceback");
         l.add(null, "2  .    milliseconds                 millisecond logging");
         l.add(null, "2  3    proxy                        set proxy to use");
@@ -2481,6 +2483,15 @@ public class userConfig {
 
     private void doCmdNoLogging() {
         String s = cmd.word();
+        if (s.equals("debug")) {
+            s = cmd.getRemaining().trim();
+            if (cfgAll.alwaysDebugs.indexOf(s) < 0) {
+                return;
+            }
+            cfgAll.alwaysDebugs.remove(s);
+            debugger.setByName(cmd, false);
+            return;
+        }
         if (s.equals("tracestop")) {
             cfgAll.tracebackStops = false;
             return;
@@ -2531,6 +2542,15 @@ public class userConfig {
 
     private void doCmdLogging() {
         String s = cmd.word();
+        if (s.equals("debug")) {
+            s = cmd.getRemaining().trim();
+            if (cfgAll.alwaysDebugs.indexOf(s) >= 0) {
+                return;
+            }
+            cfgAll.alwaysDebugs.add(s);
+            debugger.setByName(cmd, true);
+            return;
+        }
         if (s.equals("tracestop")) {
             cfgAll.tracebackStops = true;
             return;
