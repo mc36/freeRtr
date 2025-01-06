@@ -96,6 +96,19 @@ public class clntHttp {
     public List<encXmlEntry> headers;
 
     /**
+     * get user agent string
+     *
+     * @param user agent
+     */
+    public static String getAgentLine() {
+        if (cfgAll.httpAgent != null) {
+            return cfgAll.httpAgent;
+        } else {
+            return version.usrAgnt + " (" + version.getKernelName() + ", " + version.getVMname() + ", " + version.getHWfwd1liner() + ")";
+        }
+    }
+
+    /**
      * get basic authorization line
      *
      * @param usr username
@@ -515,18 +528,6 @@ public class clntHttp {
         return buf;
     }
 
-    private void sendAgntAcc() {
-        if (cfgAll.httpAgent != null) {
-            sendLine("User-Agent: " + cfgAll.httpAgent);
-        } else {
-            sendLine("User-Agent: " + version.usrAgnt + " (" + version.getKernelName() + ", " + version.getVMname() + ", " + version.getHWfwd1liner() + ")");
-        }
-        sendLine("Accept: */*");
-        sendLine("Accept-Language: en,*");
-        sendLine("Accept-Charset: iso-8859-1, *");
-        sendLine("Accept-Encoding: identity");
-    }
-
     private boolean doDown(encUrl src, long pos) {
         try {
             fr.seek(pos);
@@ -537,8 +538,12 @@ public class clntHttp {
             return true;
         }
         sendLine("GET " + src.toURL(false, false, true, true) + " HTTP/1.1");
+        sendLine("User-Agent: " + getAgentLine());
         sendLine("Host: " + src.server);
-        sendAgntAcc();
+        sendLine("Accept: */*");
+        sendLine("Accept-Language: en,*");
+        sendLine("Accept-Charset: iso-8859-1, *");
+        sendLine("Accept-Encoding: identity");
         if (pos > 0) {
             sendLine("Range: bytes=" + pos + "-");
         }
@@ -657,8 +662,12 @@ public class clntHttp {
             return true;
         }
         sendLine("PUT " + trg.toURL(false, false, true, true) + " HTTP/1.1");
+        sendLine("User-Agent: " + getAgentLine());
         sendLine("Host: " + trg.server);
-        sendAgntAcc();
+        sendLine("Accept: */*");
+        sendLine("Accept-Language: en,*");
+        sendLine("Accept-Charset: iso-8859-1, *");
+        sendLine("Accept-Encoding: identity");
         sendLine("Connection: Close");
         sendLine("Content-Length: " + siz);
         sendLine("Content-Type: application/octet-stream");

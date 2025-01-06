@@ -197,7 +197,7 @@ public class clntSmtp implements Runnable {
         body.add("Date: " + bits.time2str(cfgAll.timeZoneName, tim, 4));
         body.add("MIME-Version: 1.0");
         body.add("Content-Type: multipart/mixed; boundary=" + boundary);
-        body.add("X-Mailer: " + version.usrAgnt);
+        body.add("X-Mailer: " + clntHttp.getAgentLine());
         body.add("Message-ID: <" + tim + "@" + cfgAll.getFqdn() + ">");
         body.add("");
         body.add("this is a message in mime format!");
