@@ -16399,3 +16399,5 @@ qc pass: p4lang: routed evpn/cmac over backplane
 ---------------------------------- 2025-01-02 12:11:48 25.1.2
 qc pass: interop1: bgp vpnv4 over srv6
 qc pass: interop1: bgp vpnv6 over srv6
+---------------------------------- 2025-01-06 14:43:19 25.1.6
+todo: persistent debug config
