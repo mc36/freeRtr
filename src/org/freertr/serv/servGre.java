@@ -4,7 +4,6 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
-import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipPrt;
 import org.freertr.pack.packHolder;
@@ -260,78 +259,22 @@ public class servGre extends servGeneric implements ipPrt {
         return res;
     }
 
-}
-
-class servGreConn implements Runnable, Comparable<servGreConn> {
-
-    public final servGre lower;
-
-    public final ipFwd fwdCor;
-
-    public final ipFwdIface iface;
-
-    public final addrIP peer;
-
-    public cfgIfc acesIfc;
-
-    public prtGre worker;
-
-    public boolean seenPack;
-
-    public long created;
-
-    public servGreConn(ipFwdIface ifc, addrIP adr, servGre parent) {
-        iface = ifc;
-        peer = adr.copyBytes();
-        lower = parent;
-        fwdCor = lower.srvVrf.getFwd(peer);
-        worker = new prtGre(fwdCor);
-    }
-
-    public String toString() {
-        return "gre with " + peer;
-    }
-
-    public int compareTo(servGreConn o) {
-        int i = iface.compareTo(o.iface);
-        if (i != 0) {
-            return i;
-        }
-        return peer.compareTo(o.peer);
-    }
-
-    public void doStartup() {
-        worker.setEndpoints(iface, peer, false);
-        worker.sendingFLW = lower.sendingFLW;
-        worker.sendingTOS = lower.sendingTOS;
-        worker.sendingTTL = lower.sendingTTL;
-        worker.sendingDFN = lower.sendingDFN;
-        acesIfc = lower.tempIfc.cloneStart(worker);
-        worker.setUpper(acesIfc.ethtyp);
-        acesIfc.ethtyp.setState(state.states.up);
-        created = bits.getTime();
-        new Thread(this).start();
-    }
-
-    public void doRecv(packHolder pck) {
-        seenPack = true;
-        worker.recvPack(iface, pck);
-    }
-
-    public void run() {
-        if (lower.srvCheckAcceptIp(iface, peer, worker)) {
-            return;
-        }
-        for (;;) {
-            bits.sleep(lower.timeout);
-            if (!seenPack) {
-                break;
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrIP peer) {
+        for (int i = 0; i < conns.size(); i++) {
+            servGreConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
             }
-            seenPack = false;
+            if (peer.compareTo(ntry.peer) != 0) {
+                continue;
+            }
+            ntry.doStop();
         }
-        acesIfc.cloneStop();
-        worker.closeDn();
-        lower.conns.del(this);
     }
 
 }

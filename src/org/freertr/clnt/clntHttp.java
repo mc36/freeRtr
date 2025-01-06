@@ -98,7 +98,7 @@ public class clntHttp {
     /**
      * get user agent string
      *
-     * @param user agent
+     * @return user agent
      */
     public static String getAgentLine() {
         if (cfgAll.httpAgent != null) {
