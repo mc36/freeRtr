@@ -5,6 +5,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgAll;
 import org.freertr.enc.encBase64;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashMd5;
@@ -514,6 +515,18 @@ public class clntHttp {
         return buf;
     }
 
+    private void sendAgntAcc() {
+        if (cfgAll.httpAgent != null) {
+            sendLine("User-Agent: " + cfgAll.httpAgent);
+        } else {
+            sendLine("User-Agent: " + version.usrAgnt + " (" + version.getKernelName() + ", " + version.getVMname() + ", " + version.getHWfwd1liner() + ")");
+        }
+        sendLine("Accept: */*");
+        sendLine("Accept-Language: en,*");
+        sendLine("Accept-Charset: iso-8859-1, *");
+        sendLine("Accept-Encoding: identity");
+    }
+
     private boolean doDown(encUrl src, long pos) {
         try {
             fr.seek(pos);
@@ -524,12 +537,8 @@ public class clntHttp {
             return true;
         }
         sendLine("GET " + src.toURL(false, false, true, true) + " HTTP/1.1");
-        sendLine("User-Agent: " + version.usrAgnt);
         sendLine("Host: " + src.server);
-        sendLine("Accept: */*");
-        sendLine("Accept-Language: en,*");
-        sendLine("Accept-Charset: iso-8859-1, *");
-        sendLine("Accept-Encoding: identity");
+        sendAgntAcc();
         if (pos > 0) {
             sendLine("Range: bytes=" + pos + "-");
         }
@@ -648,12 +657,8 @@ public class clntHttp {
             return true;
         }
         sendLine("PUT " + trg.toURL(false, false, true, true) + " HTTP/1.1");
-        sendLine("User-Agent: " + version.usrAgnt);
         sendLine("Host: " + trg.server);
-        sendLine("Accept: */*");
-        sendLine("Accept-Language: en,*");
-        sendLine("Accept-Charset: iso-8859-1, *");
-        sendLine("Accept-Encoding: identity");
+        sendAgntAcc();
         sendLine("Connection: Close");
         sendLine("Content-Length: " + siz);
         sendLine("Content-Type: application/octet-stream");

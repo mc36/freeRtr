@@ -659,6 +659,8 @@ public class userConfig {
         l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    tftp-proxy                   specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
+        l.add(null, "2  3    http-agent                   specify http agent to fake");
+        l.add(null, "3  3,.    <str>                      name of faker");
         l.add(null, "2  3    http-proxy                   specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    mail-proxy                   specify proxy profile");
@@ -2793,6 +2795,10 @@ public class userConfig {
             cfgAll.tftpProxy = null;
             return;
         }
+        if (s.equals("http-agent")) {
+            cfgAll.httpAgent = null;
+            return;
+        }
         if (s.equals("http-proxy")) {
             cfgAll.httpProxy = null;
             return;
@@ -3277,6 +3283,10 @@ public class userConfig {
                 return;
             }
             cfgAll.tftpProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("http-agent")) {
+            cfgAll.httpAgent = cmd.getRemaining();
             return;
         }
         if (a.equals("http-proxy")) {

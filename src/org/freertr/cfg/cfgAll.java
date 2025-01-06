@@ -876,6 +876,11 @@ public class cfgAll {
     public static clntProxy httpProxy;
 
     /**
+     * user agent to fake
+     */
+    public static String httpAgent = null;
+
+    /**
      * access subnet prefix length
      */
     public static int accessSubnet4 = 120;
@@ -1359,6 +1364,7 @@ public class cfgAll {
         "!" + cmds.negated + cmds.tabulator + "client time-proxy",
         "!" + cmds.negated + cmds.tabulator + "client tftp-proxy",
         "!" + cmds.negated + cmds.tabulator + "client http-proxy",
+        "!" + cmds.negated + cmds.tabulator + "client http-agent",
         "!client access-subnet-ipv4 120",
         "!client access-subnet-ipv6 64",
         "!client access-supernet-ipv4 104",
@@ -3852,6 +3858,7 @@ public class cfgAll {
         l.add("client time-zone " + timeZoneName);
         cmds.cfgLine(l, timeProxy == null, "", "client time-proxy", "" + timeProxy);
         cmds.cfgLine(l, tftpProxy == null, "", "client tftp-proxy", "" + tftpProxy);
+        cmds.cfgLine(l, httpAgent == null, "", "client http-agent", httpAgent);
         cmds.cfgLine(l, httpProxy == null, "", "client http-proxy", "" + httpProxy);
         cmds.cfgLine(l, mailProxy == null, "", "client mail-proxy", "" + mailProxy);
         cmds.cfgLine(l, mailServerName == null, "", "client mail-server", "" + mailServerName);

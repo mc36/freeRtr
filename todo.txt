@@ -129,7 +129,6 @@ client log-boot to be emailed error.log
 client upgrade-force url
 client upgrade-simulate url
 client cidr-colorize in the generated show *configs
-client http-user-agent <anything>
 client tls randomize version if a range configured
 alias with regexps to ios regexps, steal cache from *ec* and idea from **
 alias to have config aliases
