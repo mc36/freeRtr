@@ -62,6 +62,7 @@ import org.freertr.prt.prtRedun;
 import org.freertr.rtr.rtrRiftIface;
 import org.freertr.rtr.rtrRpkiNeigh;
 import org.freertr.serv.servAmt;
+import org.freertr.serv.servEtherIp;
 import org.freertr.util.logger;
 import org.freertr.util.version;
 
@@ -200,6 +201,20 @@ public class userClear {
         }
         if (a.equals("amt")) {
             servAmt srv = cfgAll.srvrFind(new servAmt(), cfgAll.dmnAmt, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            srv.doClear(adr);
+            return null;
+        }
+        if (a.equals("etherip")) {
+            servEtherIp srv = cfgAll.srvrFind(new servEtherIp(), cfgAll.dmnEtherIp, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

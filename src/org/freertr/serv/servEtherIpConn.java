@@ -121,6 +121,16 @@ public class servEtherIpConn implements Runnable, Comparable<servEtherIpConn> {
     }
 
     /**
+     * stop the process
+     */
+    public void doStop() {
+        brdgIfc.closeUp();
+        worker.closeDn();
+        lower.conns.del(this);
+        seenPack = false;
+    }
+
+    /**
      * received a packet
      *
      * @param pck packet to process
@@ -141,9 +151,7 @@ public class servEtherIpConn implements Runnable, Comparable<servEtherIpConn> {
             }
             seenPack = false;
         }
-        brdgIfc.closeUp();
-        worker.closeDn();
-        lower.conns.del(this);
+        doStop();
     }
 
 }

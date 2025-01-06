@@ -2022,13 +2022,10 @@ public class userExec {
         hl.add(null, "2 3      amt                          amt protocol client");
         hl.add(cfgAll.dmnAmt.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");
-
-
-
-/////////////////////
         hl.add(null, "2 3      etherip                      etherip protocol client");
         hl.add(cfgAll.dmnEtherIp.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");
+/////////////////////
         hl.add(null, "2 3      gre                          gre protocol client");
         hl.add(cfgAll.dmnGre.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");

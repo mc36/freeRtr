@@ -269,4 +269,22 @@ public class servEtherIp extends servGeneric implements ipPrt {
         return res;
     }
 
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrIP peer) {
+        for (int i = 0; i < conns.size(); i++) {
+            servEtherIpConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (peer.compareTo(ntry.peer) != 0) {
+                continue;
+            }
+            ntry.doStop();
+        }
+    }
+
 }
