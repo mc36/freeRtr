@@ -2050,13 +2050,7 @@ public class userExec {
         hl.add(null, "2 3      sdwan                        sdwan protocol client");
         hl.add(cfgAll.dmnSdwan.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");
-
-
-
-
-
-
-
+/////////////////////
         hl.add(null, "2 3      vdc                          restart vdc process");
         hl.add(null, "3 4,.      <name:vdc>                 name of vdc");
         hl.add(null, "4 .          stop                     stop");
