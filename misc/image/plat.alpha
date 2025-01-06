@@ -1,7 +1,7 @@
 arch alpha
 unam alpha
 qemu alpha
-kern alpha
+kern alpha-generic
 grub alpha-bin
 boot alpha-ieee1275
 uefi bootieee.efi

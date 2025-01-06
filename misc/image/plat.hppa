@@ -1,7 +1,7 @@
 arch hppa
 unam parisc
 qemu hppa
-kern parisc
+kern parisc64
 grub ieee1275-bin
 boot hppa-ieee1275
 uefi boothppa.efi
