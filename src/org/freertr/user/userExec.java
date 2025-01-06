@@ -2019,6 +2019,47 @@ public class userExec {
         hl.add(null, "2 3      vpdn                         reconnect vpdn peer");
         hl.add(null, "3 4,.      <name:vpd>                 name of vpdn");
         hl.add(null, "4 .          [num]                    downtime in milliseconds");
+        hl.add(null, "2 3      amt                          amt protocol client");
+        hl.add(cfgAll.dmnAmt.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+
+
+
+/////////////////////
+        hl.add(null, "2 3      etherip                      etherip protocol client");
+        hl.add(cfgAll.dmnEtherIp.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      gre                          gre protocol client");
+        hl.add(cfgAll.dmnGre.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      gtp                          gtp protocol client");
+        hl.add(cfgAll.dmnGtp.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      l2f                          l2f protocol client");
+        hl.add(cfgAll.dmnL2f.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      l2tp2                        l2tp2 protocol client");
+        hl.add(cfgAll.dmnL2tp2.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      l2tp3                        l2tp3 protocol client");
+        hl.add(cfgAll.dmnL2tp3.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      pckoudp                      pckoudp protocol client");
+        hl.add(cfgAll.dmnPckOudp.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      vxlan                        vxlan protocol client");
+        hl.add(cfgAll.dmnVxlan.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+        hl.add(null, "2 3      sdwan                        sdwan protocol client");
+        hl.add(cfgAll.dmnSdwan.listServers(), "3 4        <name:loc>                 server name");
+        hl.add(null, "4 .          <addr>                   peer address");
+
+
+
+
+
+
+
         hl.add(null, "2 3      vdc                          restart vdc process");
         hl.add(null, "3 4,.      <name:vdc>                 name of vdc");
         hl.add(null, "4 .          stop                     stop");
