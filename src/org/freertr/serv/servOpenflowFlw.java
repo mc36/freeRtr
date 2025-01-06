@@ -32,7 +32,6 @@ class servOpenflowFlw implements Comparable<servOpenflowFlw> {
     /**
      * compare two flows
      *
-     * @param o1 first
      * @param o second
      * @return -1 if less, +1 if greated 0 if equals
      */

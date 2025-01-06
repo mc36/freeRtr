@@ -177,7 +177,7 @@ class servHoneyPotConn implements Runnable {
      * @param parent lower
      * @param conn pipe
      * @param rem address
-     * @param prt port
+     * @param loc address
      */
     public servHoneyPotConn(servHoneyPot parent, pipeSide conn, addrIP rem, addrIP loc) {
         lower = parent;
