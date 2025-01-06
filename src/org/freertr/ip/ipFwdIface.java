@@ -2632,7 +2632,7 @@ class ipFwdIfacePref implements Comparable<ipFwdIfacePref> {
             m.fromIPv6addr(msk.toIPv6());
             a.fromIPv6addr(adr.toIPv6());
         }
-        pfx = new addrPrefix<>(a, m.toNetmask());
+        pfx = new addrPrefix<addrIP>(a, m.toNetmask());
         return false;
     }
 

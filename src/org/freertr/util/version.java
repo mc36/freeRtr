@@ -812,11 +812,7 @@ public class version {
      * @return path of jvms
      */
     public static String getJvmExec() {
-        try {
-            return ProcessHandle.current().info().command().get();
-        } catch (Exception e) {
-            return getProp("java.home") + "/bin/java";
-        }
+        return getProp("java.home") + "/bin/java";
     }
 
     private static String getJavaVer(String s) {

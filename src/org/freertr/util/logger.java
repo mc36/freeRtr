@@ -626,7 +626,7 @@ public class logger {
     public static int getProcCpuLoad() {
         try {
             MBeanServer mb = ManagementFactory.getPlatformMBeanServer();
-            double val = (double) mb.getAttribute(ObjectName.getInstance("java.lang:type=OperatingSystem"), "ProcessCpuLoad");
+            double val = (Double) mb.getAttribute(ObjectName.getInstance("java.lang:type=OperatingSystem"), "ProcessCpuLoad");
             val = val * Runtime.getRuntime().availableProcessors();
             val = val * 100;
             return (int) val;
