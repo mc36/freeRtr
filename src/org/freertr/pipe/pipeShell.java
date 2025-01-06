@@ -34,33 +34,27 @@ public class pipeShell {
      */
     protected int running;
 
-    private static long osBootTim = 0;
-
-    private static long myProcNum = 0;
-
     /**
      * get kernel uptime
      *
      * @return uptime
      */
     public static long getKernelUptime() {
-        if (osBootTim != 0) {
-            return osBootTim;
-        }
         List<String> txt = bits.txt2buf("/proc/stat");
-        osBootTim = -1;
-        if (txt != null) {
-            for (int i = 0; i < txt.size(); i++) {
-                String s = txt.get(i);
-                s = s.toLowerCase();
-                if (!s.startsWith("btime ")) {
-                    continue;
-                }
-                s = s.substring(6, s.length()).trim();
-                osBootTim = bits.str2long(s) * 1000;
-            }
+        if (txt == null) {
+            return 0;
         }
-        return osBootTim;
+        long o = 0;
+        for (int i = 0; i < txt.size(); i++) {
+            String s = txt.get(i);
+            s = s.toLowerCase();
+            if (!s.startsWith("btime ")) {
+                continue;
+            }
+            s = s.substring(6, s.length()).trim();
+            o = bits.str2long(s) * 1000;
+        }
+        return o;
     }
 
     /**
@@ -69,21 +63,19 @@ public class pipeShell {
      * @return pid
      */
     public static long myProcessNum() {
-        if (myProcNum != 0) {
-            return myProcNum;
-        }
         List<String> txt = bits.txt2buf("/proc/self/stat");
-        myProcNum = -1;
-        if (txt != null) {
-            if (txt.size() > 0) {
-                String s = txt.get(0);
-                int i = s.indexOf(" ");
-                if (i > 0) {
-                    myProcNum = bits.str2long(s.substring(0, i));
-                }
-            }
+        if (txt == null) {
+            return 0;
         }
-        return myProcNum;
+        if (txt.size() < 1) {
+            return 0;
+        }
+        String s = txt.get(0);
+        int i = s.indexOf(" ");
+        if (i < 1) {
+            return 0;
+        }
+        return bits.str2long(s.substring(0, i));
     }
 
     /**
