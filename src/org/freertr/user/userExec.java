@@ -2136,7 +2136,7 @@ public class userExec {
         hl.add(null, "2 3      receive                      receive file from network");
         hl.add(null, "3 4        <file>                     target file");
         hl.add(null, "4 4,.        <url>                    source url");
-        hl.add(null, "2 3      urlshow                      display one file from network");
+        hl.add(null, "2 3      curl                         display one file from network");
         hl.add(null, "3 3,.      <url>                      source url");
         hl.add(null, "2 3      transmit                     send file to network");
         hl.add(null, "3 4        <file>                     source file");
