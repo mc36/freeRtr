@@ -331,4 +331,22 @@ public class servPckOudp extends servGeneric implements prtServP {
         return res;
     }
 
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrIP peer) {
+        for (int i = 0; i < conns.size(); i++) {
+            servPckOudpConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (peer.compareTo(ntry.conn.peerAddr) != 0) {
+                continue;
+            }
+            ntry.closeDn();
+        }
+    }
+
 }

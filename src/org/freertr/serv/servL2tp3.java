@@ -322,4 +322,22 @@ public class servL2tp3 extends servGeneric implements ipPrt {
         return res;
     }
 
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrIP peer) {
+        for (int i = 0; i < conns.size(); i++) {
+            servL2tp3conn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (peer.compareTo(ntry.peer) != 0) {
+                continue;
+            }
+            ntry.setClosed();
+        }
+    }
+
 }
