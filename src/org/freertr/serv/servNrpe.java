@@ -94,7 +94,7 @@ public class servNrpe extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "email|hit|last");
+        userFormat res = new userFormat("|", "reply|times");
         res.add("ok|" + cntrOk);
         res.add("critical|" + cntrCri);
         res.add("unknown|" + cntrUnk);
