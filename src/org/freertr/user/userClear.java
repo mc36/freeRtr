@@ -69,6 +69,8 @@ import org.freertr.serv.servL2f;
 import org.freertr.serv.servL2tp2;
 import org.freertr.serv.servL2tp3;
 import org.freertr.serv.servPckOudp;
+import org.freertr.serv.servSdwan;
+import org.freertr.serv.servVxlan;
 import org.freertr.util.logger;
 import org.freertr.util.version;
 
@@ -305,6 +307,34 @@ public class userClear {
         }
         if (a.equals("pckoudp")) {
             servPckOudp srv = cfgAll.srvrFind(new servPckOudp(), cfgAll.dmnPckOudp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            srv.doClear(adr);
+            return null;
+        }
+        if (a.equals("vxlan")) {
+            servVxlan srv = cfgAll.srvrFind(new servVxlan(), cfgAll.dmnVxlan, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            srv.doClear(adr);
+            return null;
+        }
+        if (a.equals("sdwan")) {
+            servSdwan srv = cfgAll.srvrFind(new servSdwan(), cfgAll.dmnSdwan, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

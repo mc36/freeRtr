@@ -220,6 +220,24 @@ public class servSdwan extends servGeneric implements prtServS {
         return res;
     }
 
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrIP peer) {
+        for (int i = 0; i < conns.size(); i++) {
+            servSdwanConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (peer.compareTo(ntry.connA) != 0) {
+                continue;
+            }
+            ntry.doClose();
+        }
+    }
+
 }
 
 class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
