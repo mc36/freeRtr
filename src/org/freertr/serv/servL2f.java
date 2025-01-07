@@ -1,16 +1,10 @@
 package org.freertr.serv;
 
 import java.util.List;
-import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
-import org.freertr.addr.addrType;
 import org.freertr.auth.authLocal;
-import org.freertr.auth.autherChap;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
-import org.freertr.ifc.ifcDn;
-import org.freertr.ifc.ifcNull;
-import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packL2f;
 import org.freertr.pipe.pipeSide;
@@ -24,8 +18,6 @@ import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
-import org.freertr.util.debugger;
-import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
@@ -331,317 +323,22 @@ public class servL2f extends servGeneric implements prtServP {
         return res;
     }
 
-}
-
-class servL2fConn implements Comparable<servL2fConn> {
-
-    public prtGenConn conn;
-
-    public servL2f lower;
-
-    public counter cntr = new counter();
-
-    public tabGen<servL2fSess> session = new tabGen<servL2fSess>();
-
-    public int txed = 0;
-
-    public int keep = 0;
-
-    public int tunLoc = 0;
-
-    public int tunRem = 0;
-
-    public int keyLoc = 0;
-
-    public int keyRem = 0;
-
-    public byte[] chlLoc = null;
-
-    public byte[] chlRem = null;
-
-    public long created;
-
-    public int compareTo(servL2fConn o) {
-        return conn.compareTo(o.conn);
-    }
-
-    public servL2fConn(prtGenConn id, servL2f parent) {
-        conn = id;
-        lower = parent;
-    }
-
-    public void setClosed() {
-        if (debugger.servL2fTraf) {
-            logger.debug("disconnected");
-        }
-        for (int i = session.size(); i >= 0; i--) {
-            servL2fSess ses = session.get(i);
-            if (ses == null) {
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrIP peer) {
+        for (int i = 0; i < conns.size(); i++) {
+            servL2fConn ntry = conns.get(i);
+            if (ntry == null) {
                 continue;
             }
-            ses.closeDn();
-        }
-        lower.connDel(conn);
-        conn.setClosing();
-    }
-
-    public servL2fSess sesFind(int loc) {
-        servL2fSess ses = new servL2fSess(this);
-        ses.multi = loc;
-        return session.find(ses);
-    }
-
-    public servL2fSess sesDel(int loc, boolean snd) {
-        if (snd) {
-            packL2f pckTx = new packL2f();
-            packHolder pckBin = new packHolder(true, true);
-            pckTx.createClose(pckBin, 4);
-            pckTx.seq = bits.randomB();
-            pckTx.client = tunRem;
-            pckTx.multi = loc;
-            pckTx.key = keyRem;
-            pckTx.createHeader(pckBin);
-            cntr.tx(pckBin);
-            txed++;
-            conn.send2net(pckBin);
-            if (debugger.servL2fTraf) {
-                logger.debug("tx " + pckTx.dump());
+            if (peer.compareTo(ntry.conn.peerAddr) != 0) {
+                continue;
             }
+            ntry.setClosed();
         }
-        servL2fSess ses = new servL2fSess(this);
-        ses.multi = loc;
-        return session.del(ses);
-    }
-
-    public void sesAdd(int loc) {
-        servL2fSess ses = new servL2fSess(this);
-        ses.multi = loc;
-        if (session.add(ses) != null) {
-            return;
-        }
-        ses.doStartup();
-    }
-
-    public void sesData(servL2fSess ses, packHolder pckBin) {
-        pckBin.merge2beg();
-        packL2f pckTx = new packL2f();
-        pckTx.proto = packL2f.prtPpp;
-        pckTx.client = tunRem;
-        pckTx.key = keyRem;
-        pckTx.multi = ses.multi;
-        pckTx.createHeader(pckBin);
-        cntr.tx(pckBin);
-        conn.send2net(pckBin);
-    }
-
-    public void doWork() {
-        packL2f pckTx = new packL2f();
-        packHolder pckBin = new packHolder(true, true);
-        keep++;
-        if (keep < lower.helloTicks) {
-            return;
-        }
-        pckTx.valResp = new byte[1];
-        pckTx.valResp[0] = (byte) bits.randomB();
-        pckTx.createEchoReq(pckBin, pckTx.valResp);
-        pckTx.seq = bits.randomB();
-        pckTx.client = tunRem;
-        pckTx.key = keyRem;
-        pckTx.createHeader(pckBin);
-        cntr.tx(pckBin);
-        txed++;
-        conn.send2net(pckBin);
-        if (debugger.servL2fTraf) {
-            logger.debug("tx " + pckTx.dump());
-        }
-        if (txed < lower.retryTicks) {
-            return;
-        }
-        setClosed();
-    }
-
-    public void doRecv(packHolder pckBin) {
-        packL2f pckRx = new packL2f();
-        if (pckRx.parseHeader(pckBin)) {
-            cntr.drop(pckBin, counter.reasons.badHdr);
-            return;
-        }
-        keep = 0;
-        if (pckRx.proto != packL2f.prtMgmt) {
-            servL2fSess ses = sesFind(pckRx.multi);
-            if (ses == null) {
-                return;
-            }
-            ses.cntr.rx(pckBin);
-            ses.upper.recvPack(pckBin);
-            return;
-        }
-        packL2f pckTx = new packL2f();
-        txed = 0;
-        switch (pckRx.type) {
-            case packL2f.typConf:
-                if (pckRx.parseConf(pckBin)) {
-                    return;
-                }
-                if (debugger.servL2fTraf) {
-                    logger.debug("rx " + pckRx.dump());
-                }
-                tunRem = pckRx.valClid;
-                chlRem = pckRx.valChal;
-                pckBin.clear();
-                pckTx.createConf(pckBin, cfgAll.hostName, chlLoc, tunLoc);
-                break;
-            case packL2f.typOpen:
-                if (pckRx.parseOpen(pckBin)) {
-                    return;
-                }
-                if (debugger.servL2fTraf) {
-                    logger.debug("rx " + pckRx.dump());
-                }
-                if (pckRx.multi != 0) {
-                    sesAdd(pckRx.multi);
-                    pckTx.multi = pckRx.multi;
-                    pckBin.clear();
-                    pckTx.createOpen(pckBin, null);
-                    break;
-                }
-                byte[] res = null;
-                if (chlLoc != null) {
-                    if (pckRx.valResp == null) {
-                        return;
-                    }
-                    res = autherChap.calcAuthHash(tunLoc, lower.password, chlLoc);
-                    if (res.length != pckRx.valResp.length) {
-                        return;
-                    }
-                    if (bits.byteComp(res, 0, pckRx.valResp, 0, res.length) != 0) {
-                        return;
-                    }
-                    keyLoc = packL2f.calcKey(res);
-                    res = autherChap.calcAuthHash(tunRem, lower.password, chlRem);
-                    keyRem = packL2f.calcKey(res);
-                }
-                pckBin.clear();
-                pckTx.createOpen(pckBin, res);
-                break;
-            case packL2f.typClose:
-                if (pckRx.parseClose(pckBin)) {
-                    return;
-                }
-                if (debugger.servL2fTraf) {
-                    logger.debug("rx " + pckRx.dump());
-                }
-                servL2fSess ses = sesDel(pckRx.multi, false);
-                if (ses == null) {
-                    return;
-                }
-                ses.closeDn();
-                return;
-            case packL2f.typEchoReq:
-                pckRx.parseEcho(pckBin);
-                if (debugger.servL2fTraf) {
-                    logger.debug("rx " + pckRx.dump());
-                }
-                pckBin.clear();
-                pckTx.createEchoRes(pckBin, pckRx.valResp);
-                break;
-            case packL2f.typEchoRes:
-                pckRx.parseEcho(pckBin);
-                if (debugger.servL2fTraf) {
-                    logger.debug("rx " + pckRx.dump());
-                }
-                return;
-            default:
-                return;
-        }
-        pckTx.seq = pckRx.seq;
-        pckTx.client = tunRem;
-        pckTx.chksum = pckRx.chksum;
-        pckTx.key = keyRem;
-        pckTx.createHeader(pckBin);
-        conn.send2net(pckBin);
-        if (debugger.servL2fTraf) {
-            logger.debug("tx " + pckTx.dump());
-        }
-    }
-
-}
-
-class servL2fSess implements ifcDn, Comparable<servL2fSess> {
-
-    public int multi;
-
-    public servL2fConn lower;
-
-    public ifcUp upper = new ifcNull();
-
-    public cfgIfc ifc;
-
-    public counter cntr = new counter();
-
-    public servL2fSess(servL2fConn parent) {
-        lower = parent;
-    }
-
-    public int compareTo(servL2fSess o) {
-        if (multi < o.multi) {
-            return -1;
-        }
-        if (multi > o.multi) {
-            return +1;
-        }
-        return 0;
-    }
-
-    public void doStartup() {
-        upper = new ifcNull();
-        ifc = lower.lower.clnIfc.cloneStart(this);
-    }
-
-    public addrType getHwAddr() {
-        return new addrEmpty();
-    }
-
-    public void setFilter(boolean promisc) {
-    }
-
-    public state.states getState() {
-        return state.states.up;
-    }
-
-    public void closeDn() {
-        lower.sesDel(multi, true);
-        upper.closeUp();
-        if (ifc != null) {
-            ifc.cloneStop();
-        }
-    }
-
-    public void flapped() {
-        closeDn();
-    }
-
-    public void setUpper(ifcUp server) {
-        upper = server;
-        upper.setParent(this);
-    }
-
-    public counter getCounter() {
-        return cntr;
-    }
-
-    public int getMTUsize() {
-        return 1400;
-    }
-
-    public long getBandwidth() {
-        return 8000000;
-    }
-
-    public void sendPack(packHolder pck) {
-        cntr.tx(pck);
-        pck.putDefaults();
-        lower.sesData(this, pck);
     }
 
 }
