@@ -2034,10 +2034,10 @@ public class userExec {
         hl.add(null, "2 3      l2f                          l2f protocol client");
         hl.add(cfgAll.dmnL2f.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");
-/////////////////////
         hl.add(null, "2 3      l2tp2                        l2tp2 protocol client");
         hl.add(cfgAll.dmnL2tp2.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");
+/////////////////////
         hl.add(null, "2 3      l2tp3                        l2tp3 protocol client");
         hl.add(cfgAll.dmnL2tp3.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");

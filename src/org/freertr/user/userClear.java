@@ -66,6 +66,7 @@ import org.freertr.serv.servEtherIp;
 import org.freertr.serv.servGre;
 import org.freertr.serv.servGtp;
 import org.freertr.serv.servL2f;
+import org.freertr.serv.servL2tp2;
 import org.freertr.util.logger;
 import org.freertr.util.version;
 
@@ -260,6 +261,20 @@ public class userClear {
         }
         if (a.equals("l2f")) {
             servL2f srv = cfgAll.srvrFind(new servL2f(), cfgAll.dmnL2f, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            srv.doClear(adr);
+            return null;
+        }
+        if (a.equals("l2tp2")) {
+            servL2tp2 srv = cfgAll.srvrFind(new servL2tp2(), cfgAll.dmnL2tp2, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

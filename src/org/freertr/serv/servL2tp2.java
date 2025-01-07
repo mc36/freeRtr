@@ -316,4 +316,22 @@ public class servL2tp2 extends servGeneric implements prtServP {
         return res;
     }
 
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrIP peer) {
+        for (int i = 0; i < conns.size(); i++) {
+            servL2tp2conn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (peer.compareTo(ntry.conn.peerAddr) != 0) {
+                continue;
+            }
+            ntry.setClosed();
+        }
+    }
+
 }
