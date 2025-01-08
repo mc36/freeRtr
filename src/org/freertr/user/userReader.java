@@ -187,6 +187,10 @@ public class userReader implements Comparator<String> {
          */
         setdel,
         /**
+         * c code mode
+         */
+        ccode,
+        /**
          * summary
          */
         summary
@@ -904,6 +908,29 @@ public class userReader implements Comparator<String> {
                         a = a.substring(3, a.length());
                     }
                     lst.add(s + " " + (ntry.section + " " + a).trim());
+                }
+                return doSecond(lst);
+            case ccode:
+                sec = userFilter.text2section(lst);
+                lst = new ArrayList<String>();
+                boolean prv = false;
+                for (int i = 0; i < sec.size(); i++) {
+                    userFilter ntry = sec.get(i);
+                    boolean mpty = ntry.section.length() < 1;
+                    if (prv && !mpty) {
+                        lst.set(i - 1, lst.get(i - 1) + " {");
+                    }
+                    prv = mpty;
+                    a = ntry.command.trim();
+                    if (a.equals(cmds.finish)) {
+                        lst.add("}");
+                        continue;
+                    }
+                    if (a.equals(cmds.comment)) {
+                        lst.add("");
+                        continue;
+                    }
+                    lst.add(ntry.command);
                 }
                 return doSecond(lst);
             default:
@@ -1856,6 +1883,10 @@ public class userReader implements Comparator<String> {
             }
             if (a.equals("setdel")) {
                 filterM = mode.setdel;
+                return cmd;
+            }
+            if (a.equals("ccode")) {
+                filterM = mode.ccode;
                 return cmd;
             }
             if (a.equals("level")) {

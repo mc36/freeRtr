@@ -1089,6 +1089,7 @@ public class userExec {
         hl.add(null, (beg + 1) + " .      html                  level hierarchy in html");
         hl.add(null, (beg + 1) + " .      xml                   level hierarchy in xml");
         hl.add(null, (beg + 1) + " .      setdel                level hierarchy in set/delete");
+        hl.add(null, (beg + 1) + " .      ccode                 level hierarchy in brackets");
         hl.add(null, (beg + 1) + " .      summary               just the summary of columns");
         hl.add(null, (beg + 1) + " .      linenumbers           prepend lines with numbers");
         hl.add(null, (beg + 1) + " .      hacked                hacker writing");

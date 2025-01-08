@@ -16405,3 +16405,5 @@ todo: persistent debug config
 no todo: persistent debug config
 ---------------------------------- 2025-01-06 19:34:11 25.1.6
 no todo: client http-user-agent <anything>
+---------------------------------- 2025-01-08 08:51:48 25.1.8
+no todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
