@@ -41,10 +41,6 @@ public class userFormat {
          * html mode
          */
         html,
-        /**
-         * set/delete mode
-         */
-        setdel
 
     }
 
@@ -68,8 +64,6 @@ public class userFormat {
                 return "csv";
             case html:
                 return "html";
-            case setdel:
-                return "setdel";
             default:
                 return "unknown";
         }
@@ -99,9 +93,6 @@ public class userFormat {
         }
         if (a.equals("html")) {
             return tableMode.html;
-        }
-        if (a.equals("setdel")) {
-            return tableMode.setdel;
         }
         return null;
     }

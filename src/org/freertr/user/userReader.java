@@ -512,7 +512,6 @@ public class userReader implements Comparator<String> {
                 break;
             case html:
             case normal:
-            case setdel:
                 break;
         }
         return new cmds("row", a);
@@ -848,15 +847,6 @@ public class userReader implements Comparator<String> {
                 userEditor edtr = new userEditor(new userScreen(pipe), lst, "result", false);
                 edtr.doView();
                 return new ArrayList<String>();
-            case level:
-                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.normal);
-                return doSecond(lst);
-            case csv:
-                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.csv);
-                return doSecond(lst);
-            case html:
-                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.html);
-                return doSecond(lst);
             case xml:
                 encXml xml = new encXml();
                 userFilter.section2xml(xml, "/config", userFilter.text2section(lst));
@@ -871,8 +861,50 @@ public class userReader implements Comparator<String> {
             case section:
                 lst = userFilter.getSection(lst, filterS);
                 return doSecond(lst);
+            case level:
+                List<userFilter> sec = userFilter.text2section(lst);
+                lst = new ArrayList<String>();
+                for (int i = 0; i < sec.size(); i++) {
+                    userFilter ntry = sec.get(i);
+                    lst.add(ntry.section + "|" + ntry.command + "|");
+                }
+                return doSecond(lst);
+            case csv:
+                sec = userFilter.text2section(lst);
+                lst = new ArrayList<String>();
+                for (int i = 0; i < sec.size(); i++) {
+                    userFilter ntry = sec.get(i);
+                    lst.add(ntry.section + ";" + ntry.command);
+                }
+                return doSecond(lst);
+            case html:
+                sec = userFilter.text2section(lst);
+                lst = new ArrayList<String>();
+                for (int i = 0; i < sec.size(); i++) {
+                    userFilter ntry = sec.get(i);
+                    lst.add("<tr><td>" + ntry.section + "</td><td>" + ntry.command + "</td></tr>");
+                }
+                return doSecond(lst);
             case setdel:
-                lst = userFilter.sectionDump(userFilter.text2section(lst), userFormat.tableMode.setdel);
+                sec = userFilter.text2section(lst);
+                lst = new ArrayList<String>();
+                for (int i = 0; i < sec.size(); i++) {
+                    userFilter ntry = sec.get(i);
+                    a = ntry.command.trim();
+                    if (a.equals(cmds.finish)) {
+                        continue;
+                    }
+                    if (a.equals(cmds.comment)) {
+                        lst.add(cmds.comment);
+                        continue;
+                    }
+                    String s = "set";
+                    if (a.startsWith(cmds.negated + cmds.tabulator)) {
+                        s = "delete";
+                        a = a.substring(3, a.length());
+                    }
+                    lst.add(s + " " + (ntry.section + " " + a).trim());
+                }
                 return doSecond(lst);
             default:
                 return doSecond(lst);

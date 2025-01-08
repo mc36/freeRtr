@@ -285,43 +285,6 @@ public class userFilter implements Comparable<userFilter> {
     }
 
     /**
-     * convert sections to text
-     *
-     * @param sec section to convert
-     * @param sep format to use
-     * @return sectioned text
-     */
-    public static List<String> sectionDump(List<userFilter> sec, userFormat.tableMode sep) {
-        List<String> txt = new ArrayList<String>();
-        for (int i = 0; i < sec.size(); i++) {
-            userFilter ntry = sec.get(i);
-            switch (sep) {
-                case normal:
-                    txt.add(ntry.section + "|" + ntry.command + "|");
-                    break;
-                case csv:
-                    txt.add(ntry.section + ";" + ntry.command);
-                    break;
-                case html:
-                    txt.add("<tr><td>" + ntry.section + "</td><td>" + ntry.command + "</td></tr>");
-                    break;
-                case setdel:
-                    String a = ntry.command.trim();
-                    String s = "set";
-                    if (a.startsWith(cmds.negated + cmds.tabulator)) {
-                        s = "delete";
-                        a = a.substring(3, a.length());
-                    }
-                    txt.add(s + " " + (ntry.section + " " + a).trim());
-                    break;
-                default:
-                    break;
-            }
-        }
-        return txt;
-    }
-
-    /**
      * negate section
      *
      * @param src section to negate
