@@ -1,3 +1,5 @@
+int printCmds = 0;
+
 void str2mac(__u8 *dst, char *src) {
     sscanf(src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &dst[0], &dst[1], &dst[2], &dst[3], &dst[4], &dst[5]);
 }
@@ -107,9 +109,11 @@ int doOneCommand(unsigned char* buf) {
     cnt++;
     buf[o] = 0;
     for (int i=cnt; i < 128; i++) arg[i]=(char*)&buf[o];
-    printf("rx: ");
-    for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
-    printf("\n");
+    if (printCmds != 0) {
+        printf("rx: ");
+        for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
+        printf("\n");
+    }
     int del = strcmp(arg[1], "del");
     if (del != 0) del = 1;
     struct vrfp_res vrfp;

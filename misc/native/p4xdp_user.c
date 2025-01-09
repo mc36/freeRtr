@@ -60,6 +60,7 @@ int cpuPort;
 
 
 void doSockLoop() {
+    printCmds = getenv("p4emuNOCMDS") == NULL;
     FILE *commands = fdopen(commandSock, "r");
     if (commands == NULL) err("failed to open file");
     unsigned char buf[1024];
@@ -97,6 +98,7 @@ void doStatLoop() {
 
 
 void doMainLoop() {
+    if (getenv("p4emuNOCONS") != NULL) for (;;) sleep(1);
     unsigned char buf[1024];
     for (;;) {
         printf("> ");

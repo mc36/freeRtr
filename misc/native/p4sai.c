@@ -153,6 +153,7 @@ int main(int argc, char **argv) {
     routerId = attr[0].value.u64;
     printf("router id=%lx\n", routerId);
 
+    int printCmds = getenv("p4emuNOCMDS") == NULL;
     struct port2sai_entry port2sai_ntry;
     struct port2sai_entry *port2sai_res;
     struct neigh4sai_entry neigh4sai_ntry;
@@ -192,9 +193,11 @@ int main(int argc, char **argv) {
         cnt++;
         buf[o] = 0;
         for (int i=cnt; i < 128; i++) arg[i]=(char*)&buf[o];
-        printf("rx: ");
-        for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
-        printf("\n");
+        if (printCmds != 0) {
+            printf("rx: ");
+            for (int i=0; i < cnt; i++) printf("'%s' ",arg[i]);
+            printf("\n");
+        }
         int del = strcmp(arg[1], "del");
         if (del != 0) del = 1;
         if (strcmp(arg[0], "ports") == 0) {
