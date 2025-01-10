@@ -1166,7 +1166,7 @@ public class userExec {
         hl.add(null, "5 6            <str>             meme domain.tld");
         hl.add(null, "6 7              <str>           target domain to meme");
         hl.add(null, "7 .                <str>         your redirector www");
-        version.genSecHelp(hl, 3);
+        version.secretHelp(hl, 3);
         hl.add(null, "3 4        7bit                  show some 7bit");
         hl.add(null, "4 4,.        [str]               string to 7bit");
         hl.add(null, "3 4        rev7                  show some 7bit");
@@ -1906,7 +1906,7 @@ public class userExec {
         hl.add(null, "2 .      both                         divide to four");
         hl.add(null, "2 .      none                         do not divide");
         hl.add(null, "1 2    game                           play games or watch screen savers");
-        version.genSecHelp(hl, 2);
+        version.secretHelp(hl, 2);
         hl.add(null, "2 3      ansi                         show some art");
         hl.add(null, "3 .        <str>                      filename");
         hl.add(null, "2 .      chat                         chat with others");

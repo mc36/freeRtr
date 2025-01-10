@@ -584,9 +584,9 @@ public class userGame {
             userScreen.sendTit(console.pipe, cfgAll.hostName);
             return;
         }
-        int i = version.findSecret(a);
+        int i = version.secretFind(a);
         if (i >= 0) {
-            List<String> sec = version.shSecret(i);
+            List<String> sec = version.secretGet(i);
             int[] god = new int[6];
             god[0] = userScreen.colBrCyan;
             god[1] = userScreen.colBrWhite;

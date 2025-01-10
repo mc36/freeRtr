@@ -272,8 +272,12 @@ public class userShow {
                 rdr.putStrArr(l);
                 return null;
             }
-            int i = version.findSecret(a);
-            rdr.putStrArr(version.shSecret(i));
+            int i = version.secretFind(a);
+            if (i < 0) {
+                cmd.badCmd();
+                return null;
+            }
+            rdr.putStrArr(version.secretGet(i));
             return null;
         }
         if (a.equals("users")) {
