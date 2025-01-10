@@ -1157,10 +1157,10 @@ public class userExec {
         hl.add(null, "2 .      platform                platform information");
         hl.add(null, "2 3      me-the                  show something");
         hl.add(null, "3 .        time                  show some time");
-        hl.add(null, "3 4        ascii                 show some art");
-        hl.add(null, "4 .          <str>               filename");
-        hl.add(null, "3 4        image                 show some image");
-        hl.add(null, "4 .          <str>               filename");
+        if (privi) {
+            hl.add(null, "3 4        ascii                 show some art");
+            hl.add(null, "4 .          <str>               filename");
+        }
         hl.add(null, "3 4        meme                  show some meme");
         hl.add(null, "4 5          <str>               string to meme");
         hl.add(null, "5 6            <str>             meme domain.tld");
@@ -1907,8 +1907,10 @@ public class userExec {
         hl.add(null, "2 .      none                         do not divide");
         hl.add(null, "1 2    game                           play games or watch screen savers");
         version.secretHelp(hl, 2);
-        hl.add(null, "2 3      ansi                         show some art");
-        hl.add(null, "3 .        <str>                      filename");
+        if (privileged) {
+            hl.add(null, "2 3      ansi                         show some art");
+            hl.add(null, "3 .        <str>                      filename");
+        }
         hl.add(null, "2 .      chat                         chat with others");
         hl.add(null, "2 3,.    send                         chat with others");
         hl.add(null, "3 3,.      [str]                      string to send");
@@ -1935,10 +1937,6 @@ public class userExec {
         hl.add(null, "3 3,.      [str]                      text");
         hl.add(null, "2 3,.    logo                         view demo");
         hl.add(null, "3 3,.      [str]                      text");
-        if (privileged) {
-            hl.add(null, "2 3      image                        view image");
-            hl.add(null, "3 .        <file>                     filename");
-        }
         hl.add(null, "1 2    listen                         start listen session");
         hl.add(null, "2 3,.    <port>                       port number");
         hl.add(null, "3 3,.      tcp                        transmission control protocol");

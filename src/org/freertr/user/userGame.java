@@ -617,11 +617,6 @@ public class userGame {
             }
             return;
         }
-        if (a.equals("image")) {
-            a = cmd.getRemaining();
-            doText(userFlash.asciiArt(a, console.sizX, console.sizY));
-            return;
-        }
         if (a.equals("color")) {
             doPalette();
             return;
