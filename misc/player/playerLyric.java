@@ -327,6 +327,9 @@ public class playerLyric {
             if (b.indexOf("bots have beat this api") >= 0) {
                 continue;
             }
+            if (b.indexOf("invalid url") >= 0) {
+                continue;
+            }
             if (b.indexOf("<title>") >= 0) {
                 return new playerLyric();
             }
