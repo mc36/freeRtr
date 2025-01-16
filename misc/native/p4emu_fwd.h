@@ -1528,24 +1528,6 @@ mpls_rx:
         bufP += 4;
         mpls_ntry.label = (label >> 12) & 0xfffff;
         ctx->hash ^= mpls_ntry.label;
-        switch (mpls_ntry.label) {
-        case 0: // explicit ipv4
-            if ((label & 0x100) == 0) {
-                bufD[bufP + 3] = ttl + 1;
-                goto mpls_rx;
-            }
-            ethtyp = ETHERTYPE_IPV4;
-            vrf2rib_ntry.vrf = port2vrf_res->vrf;
-            goto ipv4_rx;
-        case 2: // explicit ipv6
-            if ((label & 0x100) == 0) {
-                bufD[bufP + 3] = ttl + 1;
-                goto mpls_rx;
-            }
-            ethtyp = ETHERTYPE_IPV6;
-            vrf2rib_ntry.vrf = port2vrf_res->vrf;
-            goto ipv6_rx;
-        }
         index = table_find(&mpls_table, &mpls_ntry);
         if (index < 0) doDropper;
         mpls_res = table_get(&mpls_table, index);
