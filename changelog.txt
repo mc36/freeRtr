@@ -16412,3 +16412,6 @@ qc pass: multicast vpn routing with bier
 qc pass: multicast vpn between pim and bier
 qc pass: multicast othervpn routing with bier
 qc pass: multicast othervpn between pim and bier
+---------------------------------- 2025-01-17 21:04:31 25.1.17
+qc pass: p4lang: vpn mldp egress edge
+qc pass: p4lang: vpn mldp ingress edge

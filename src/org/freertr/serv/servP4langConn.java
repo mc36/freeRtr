@@ -4100,9 +4100,17 @@ public class servP4langConn implements Runnable {
 
     private boolean doMroutes(String afi, int vrf, tabLabelEntry lab, ipFwdMcast need, ipFwdMcast done, servP4langStrL<ipFwdMcast, addrIP> nstr, servP4langStrL<ipFwdMcast, addrIP> dstr, boolean bef) {
         int gid = need.group.getHashW() ^ need.source.getHashW() ^ vrf;
-        servP4langIfc ingr = lower.findIfc(need.iface);
+        ipFwdIface source = need.iface;
+        if (need.upsVrf != null) {
+            tabRouteEntry<addrIP> rou = need.upsVrf.actualU.route(need.upstream);
+            if (rou == null) {
+                return true;
+            }
+            source = (ipFwdIface) rou.best.iface;
+        }
+        servP4langIfc ingr = lower.findIfc(source);
         if (ingr == null) {
-            servStackFwd oth = lower.parent.findIfc(lower.parid, need.iface);
+            servStackFwd oth = lower.parent.findIfc(lower.parid, source);
             if (oth == null) {
                 return true;
             }
