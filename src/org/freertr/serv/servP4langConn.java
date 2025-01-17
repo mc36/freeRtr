@@ -4169,7 +4169,11 @@ public class servP4langConn implements Runnable {
             }
             String a = servP4langUtil.getBierLabs(ntry, tabLabelBier.bsl2msk(ntry.bsl), 0);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + dbier.srcId + " 0" + a);
+            if (ntry.vpnlab == 0) {
+                lower.sendLine("mbierroute" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + dbier.srcId + " 0" + a);
+            } else {
+                lower.sendLine("mbiervpnrou" + afi + "_del " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ntry.vpnlab + " " + ifc.id + " " + dbier.srcId + " 0" + a);
+            }
         }
         for (int i = 0; i < nbier.fwds.size(); i++) {
             tabLabelBierN ntry = nbier.fwds.get(i);
@@ -4187,7 +4191,11 @@ public class servP4langConn implements Runnable {
             }
             String a = servP4langUtil.getBierLabs(ntry, tabLabelBier.bsl2msk(ntry.bsl), 0);
             servP4langIfc ifc = hop.getVia();
-            lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + nbier.srcId + " 0" + a);
+            if (ntry.vpnlab == 0) {
+                lower.sendLine("mbierroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ifc.id + " " + nbier.srcId + " 0" + a);
+            } else {
+                lower.sendLine("mbiervpnrou" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, hop).id + " " + hop.id + " " + ntry.label + " " + ntry.vpnlab + " " + ifc.id + " " + nbier.srcId + " 0" + a);
+            }
             now++;
         }
         for (int i = 0; i < dlabel.neighs.size(); i++) {

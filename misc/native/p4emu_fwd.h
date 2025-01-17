@@ -984,6 +984,36 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             neigh_res = table_get(&neigh_table, index);
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
             break;
+        case 6: // bier vpn
+            tmpE = ETHERTYPE_MPLS_UCAST;
+            tmpS = bufS - bufP + preBuff + 50;
+            tmpL = label | (flood_res->lab << 12);
+            put16msb(bufC, preBuff, tmpE);
+            put32msb(bufC, preBuff + 2, tmpL);
+            bufC[preBuff + 6] = 0x50; // ver
+            bufC[preBuff + 7] = 0x30; // bsl
+            bufC[preBuff + 8] = 0; // entropy
+            bufC[preBuff + 9] = 0; // entropy
+            bufC[preBuff + 10] = 0; // oam
+            bufC[preBuff + 11] = 2; // proto
+            put16msb(bufC, preBuff + 12, flood_res->src); // bfir
+            put32msb(bufC, preBuff + 14, flood_res->bier[0]);
+            put32msb(bufC, preBuff + 18, flood_res->bier[1]);
+            put32msb(bufC, preBuff + 22, flood_res->bier[2]);
+            put32msb(bufC, preBuff + 26, flood_res->bier[3]);
+            put32msb(bufC, preBuff + 30, flood_res->bier[4]);
+            put32msb(bufC, preBuff + 34, flood_res->bier[5]);
+            put32msb(bufC, preBuff + 38, flood_res->bier[6]);
+            put32msb(bufC, preBuff + 42, flood_res->bier[7]);
+            tmpL = label | (flood_res->lab2 << 12);
+            put32msb(bufC, preBuff + 46, tmpL);
+            memcpy(&bufC[preBuff + 50], &bufD[bufP], tmpS);
+            neigh_ntry.id = flood_res->trg;
+            index = table_find(&neigh_table, &neigh_ntry);
+            if (index < 0) continue;
+            neigh_res = table_get(&neigh_table, index);
+            send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
+            break;
         }
     }
 }
@@ -1604,9 +1634,18 @@ neigh_tx:
             doFlood(ctx, &mpls_res->flood, bufP, bufS, ethtyp, (label & 0xf00) | ttl);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, ttl);
             if (ttl == 0) return;
+            ttl = bufD[bufP + 5];
             bufP += 8;
             bufP += 32;
-            goto mpls_rout;
+            switch (ttl) {
+            case 1: // downstream
+            case 2: // upstream
+                goto mpls_rx;
+            case 4: // ipv4
+            case 6: // ipv6
+                goto mpls_rout;
+            }
+            doDropper;
         case 9: // push
             bufP -= 4;
             label = (label & 0xf00) | ttl | (mpls_res->push << 12);

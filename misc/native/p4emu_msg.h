@@ -2572,6 +2572,52 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else table_add(&mroute6_res->flood, &flood_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "mbiervpnrou4") == 0) {
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
+        inet_pton(AF_INET, arg[4], buf2);
+        mroute4_ntry.grp = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[5], buf2);
+        mroute4_ntry.src = get32msb(buf2, 0);
+        mroute4_res = mcast_init4;
+        mroute4_res->ingr = atoi(arg[6]);
+        flood_ntry.trg = atoi(arg[8]);
+        flood_ntry.lab = atoi(arg[9]);
+        flood_ntry.lab2 = atoi(arg[10]);
+        flood_ntry.command = 6;
+        flood_ntry.src = atoi(arg[12]);
+        flood_ntry.id =  atoi(arg[13]);
+        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[14+i]);
+        if (del == 0) table_del(&mroute4_res->flood, &flood_ntry);
+        else table_add(&mroute4_res->flood, &flood_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "mbiervpnrou6") == 0) {
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
+        inet_pton(AF_INET6, arg[4], buf2);
+        mroute6_ntry.grp1 = get32msb(buf2, 0);
+        mroute6_ntry.grp2 = get32msb(buf2, 4);
+        mroute6_ntry.grp3 = get32msb(buf2, 8);
+        mroute6_ntry.grp4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[5], buf2);
+        mroute6_ntry.src1 = get32msb(buf2, 0);
+        mroute6_ntry.src2 = get32msb(buf2, 4);
+        mroute6_ntry.src3 = get32msb(buf2, 8);
+        mroute6_ntry.src4 = get32msb(buf2, 12);
+        mroute6_res = mcast_init6;
+        mroute6_res->ingr = atoi(arg[6]);
+        flood_ntry.trg = atoi(arg[8]);
+        flood_ntry.lab = atoi(arg[9]);
+        flood_ntry.lab2 = atoi(arg[10]);
+        flood_ntry.command = 6;
+        flood_ntry.src = atoi(arg[12]);
+        flood_ntry.id =  atoi(arg[13]);
+        for (int i=0; i<8; i++) flood_ntry.bier[i] = atoi(arg[14+i]);
+        if (del == 0) table_del(&mroute6_res->flood, &flood_ntry);
+        else table_add(&mroute6_res->flood, &flood_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "mneiroute4") == 0) {
         vrf2rib_ntry.vrf = atoi(arg[2]);
         vrf2rib_res = vrf2rib_init4;

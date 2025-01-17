@@ -671,10 +671,11 @@ struct table_head policer_table;
 
 
 struct flood_entry {
-    int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset, 5=neigh
+    int command; // 1=iface, 2=mpls, 3=biermsk, 4=bierset, 5=neigh, 6=biervpn
     int trg;
     int id;
     int lab;
+    int lab2;
     int src;
     unsigned char macs[12];
     int bier[8];

@@ -80,7 +80,7 @@ public class ipFwdMcast implements Comparable<ipFwdMcast> {
      * mdt vrf
      */
     public ipFwd upsVrf;
-    
+
     /**
      * receive label
      */
