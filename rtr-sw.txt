@@ -155,8 +155,8 @@ vrf definition dn42
  rt4export 65535:42
  rt6import 65535:42
  rt6export 65535:42
- mdt4
- mdt6
+ mdt4 mldp
+ mdt6 mldp
  exit
 !
 vrf definition dptest
@@ -280,8 +280,8 @@ vrf definition vpn
  rt4export 65535:1
  rt6import 65535:1
  rt6export 65535:1
- mdt4
- mdt6
+ mdt4 mldp
+ mdt6 mldp
  exit
 !
 router blackhole4 1 vrf rtbh

@@ -151,11 +151,6 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public List<Integer> clrExp = new ArrayList<Integer>();
 
     /**
-     * multicast distribution tree
-     */
-    public boolean mdt;
-
-    /**
      * unicast route limit
      */
     public int routeLimitU;
@@ -356,6 +351,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public labelMode prefixMode = labelMode.common;
 
     /**
+     * multicast distribution tree
+     */
+    public mdtMode mdtMod = mdtMode.none;
+
+    /**
      * mpls propagate ip ttl
      */
     public boolean mplsPropTtl = true;
@@ -531,6 +531,22 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
          * label for all prefix
          */
         all
+
+    }
+
+    /**
+     * mdt modes
+     */
+    public enum mdtMode {
+
+        /**
+         * mldp mode
+         */
+        mldp,
+        /**
+         * no mdt mode
+         */
+        none
 
     }
 

@@ -28,8 +28,8 @@ vrf def v1
 vrf def v2
  rd 1:2
  rt-both 1:2
- mdt4
- mdt6
+ mdt4 mldp
+ mdt6 mldp
  exit
 int lo0
  vrf for v1
@@ -128,8 +128,8 @@ vrf def v1
 vrf def v2
  rd 1:2
  rt-both 1:2
- mdt4
- mdt6
+ mdt4 mldp
+ mdt6 mldp
  exit
 int lo0
  vrf for v1

@@ -191,14 +191,14 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         "vrf definition .*!" + cmds.tabulator + "clr6export",
         "vrf definition .*!" + cmds.tabulator + "label4mode per-vrf",
         "vrf definition .*!" + cmds.tabulator + "label6mode per-vrf",
+        "vrf definition .*!" + cmds.tabulator + "mdt4 none",
+        "vrf definition .*!" + cmds.tabulator + "mdt6 none",
         "vrf definition .*!" + cmds.tabulator + "propagate4ttl",
         "vrf definition .*!" + cmds.tabulator + "propagate6ttl",
         "vrf definition .*!" + cmds.tabulator + "report4labels",
         "vrf definition .*!" + cmds.tabulator + "report6labels",
         "vrf definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "unreach4rate",
         "vrf definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "unreach6rate",
-        "vrf definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mdt4",
-        "vrf definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mdt6",
         "vrf definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "label4filter",
         "vrf definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "label6filter",
         "vrf definition .*!" + cmds.tabulator + "label4common 0",
@@ -481,6 +481,27 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add("ipv" + p + " flow " + name + " parameters " + f.netflow.session);
     }
 
+    private static ipFwd.mdtMode string2mdtmod(String a) {
+        if (a.equals("none")) {
+            return ipFwd.mdtMode.none;
+        }
+        if (a.equals("mldp")) {
+            return ipFwd.mdtMode.mldp;
+        }
+        return ipFwd.mdtMode.none;
+    }
+
+    private static String mdtmod2string(ipFwd.mdtMode mm) {
+        switch (mm) {
+            case none:
+                return "none";
+            case mldp:
+                return "mldp";
+            default:
+                return "unknown";
+        }
+    }
+
     private static ipFwd.labelMode string2labmod(String a) {
         if (a.equals("per-prefix")) {
             return ipFwd.labelMode.all;
@@ -573,6 +594,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(cmds.tabulator + "iface6start " + iface6start);
         l.add(cmds.tabulator + "label4mode " + labmod2string(fwd4.prefixMode));
         l.add(cmds.tabulator + "label6mode " + labmod2string(fwd6.prefixMode));
+        l.add(cmds.tabulator + "mdt4 " + mdtmod2string(fwd4.mdtMod));
+        l.add(cmds.tabulator + "mdt6 " + mdtmod2string(fwd6.mdtMod));
         l.add(cmds.tabulator + "label4common " + label4comm);
         l.add(cmds.tabulator + "label6common " + label6comm);
         l.add(cmds.tabulator + "route4limit " + fwd4.routeLimitU + " " + fwd4.routeLimitL + " " + fwd4.routeLimitM + " " + fwd4.routeLimitF);
@@ -605,8 +628,6 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, fwd6.coppOut == null, cmds.tabulator, "copp6out", "" + fwd6.coppOut);
         cmds.cfgLine(l, fwd4.packetFilter == null, cmds.tabulator, "packet4filter", "" + fwd4.packetFilter);
         cmds.cfgLine(l, fwd6.packetFilter == null, cmds.tabulator, "packet6filter", "" + fwd6.packetFilter);
-        cmds.cfgLine(l, !fwd4.mdt, cmds.tabulator, "mdt4", "");
-        cmds.cfgLine(l, !fwd6.mdt, cmds.tabulator, "mdt6", "");
         l.add(cmds.tabulator + "incremental4 " + fwd4.incrLimit);
         l.add(cmds.tabulator + "incremental6 " + fwd6.incrLimit);
         l.add(cmds.tabulator + cmds.finish);
@@ -789,8 +810,10 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, "1 .  report-labels       append icmp extension with labels");
         l.add(null, "1 .  report4labels       append icmp extension with labels");
         l.add(null, "1 .  report6labels       append icmp extension with labels");
-        l.add(null, "1 .  mdt4                enable multicast distribution tree for ipv4");
-        l.add(null, "1 .  mdt6                enable multicast distribution tree for ipv6");
+        l.add(null, "1 2  mdt4                enable multicast distribution tree for ipv4");
+        l.add(null, "1 2  mdt6                enable multicast distribution tree for ipv6");
+        l.add(null, "2 .    none              no vpn mode");
+        l.add(null, "2 .    mldp              use mldp");
         l.add(null, "1 2  label-mode          specify label allocation mode");
         l.add(null, "1 2  label4mode          specify label allocation mode");
         l.add(null, "1 2  label6mode          specify label allocation mode");
@@ -1018,12 +1041,12 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("mdt4")) {
-            fwd4.mdt = true;
+            fwd4.mdtMod = string2mdtmod(cmd.word());
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
-            fwd6.mdt = true;
+            fwd6.mdtMod = string2mdtmod(cmd.word());
             fwd6.routerStaticChg();
             return;
         }
@@ -1548,12 +1571,12 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             return;
         }
         if (a.equals("mdt4")) {
-            fwd4.mdt = false;
+            fwd4.mdtMod = ipFwd.mdtMode.none;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
-            fwd6.mdt = false;
+            fwd6.mdtMod = ipFwd.mdtMode.none;
             fwd6.routerStaticChg();
             return;
         }

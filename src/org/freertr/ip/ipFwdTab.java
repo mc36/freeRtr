@@ -1523,6 +1523,7 @@ public class ipFwdTab {
         if (prf == null) {
             grp.iface = null;
             grp.upstream = null;
+            grp.upsVrf = null;
             return;
         }
         grp.iface = (ipFwdIface) prf.best.iface;
@@ -1531,7 +1532,7 @@ public class ipFwdTab {
         } else {
             grp.upstream = prf.best.nextHop.copyBytes();
         }
-        if (!lower.mdt) {
+        if (lower.mdtMod == ipFwd.mdtMode.none) {
             grp.upsVrf = null;
             return;
         }
@@ -1828,7 +1829,7 @@ public class ipFwdTab {
                     cfgVrf v = cfgAll.findRd(grp.group.isIPv4(), grp.rd);
                     if (v != null) {
                         vrf = v.getFwd(grp.group);
-                        if (!vrf.mdt) {
+                        if (vrf.mdtMod == ipFwd.mdtMode.none) {
                             vrf = null;
                         }
                     }
