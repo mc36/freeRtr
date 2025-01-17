@@ -47,6 +47,7 @@ control IngressControlMcast(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_MPLS
 #ifdef HAVE_BIER
         hdr.bier.setInvalid();
+        hdr.mpls8.setInvalid();
 #endif
 #endif
         hdr.vlan.setInvalid();

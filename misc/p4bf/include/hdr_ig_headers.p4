@@ -81,6 +81,7 @@ struct headers {
 #ifdef HAVE_MPLS
 #ifdef HAVE_BIER
     bier_t bier;
+    mpls_t mpls8;
 #endif
 #endif
     ethernet_t eth2;

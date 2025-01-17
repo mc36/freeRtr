@@ -180,6 +180,64 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         eg_md.target_id = 0;
     }
 
+    action act_encap_vpn4_bier(NextHopId_t hop, label_t label, label_t vpnlab, bit<16> bfir,
+                               bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+                               bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv4.ttl;
+        hdr.mpls0.bos = 1;
+        hdr.bier.setValid();
+        hdr.bier.idver = 0x50;
+        hdr.bier.bsl = 3;
+        hdr.bier.proto = 2;
+        hdr.bier.bfir = bfir;
+        hdr.bier.bs0 = bs0;
+        hdr.bier.bs1 = bs1;
+        hdr.bier.bs2 = bs2;
+        hdr.bier.bs3 = bs3;
+        hdr.bier.bs4 = bs4;
+        hdr.bier.bs5 = bs5;
+        hdr.bier.bs6 = bs6;
+        hdr.bier.bs7 = bs7;
+        hdr.mpls8.setValid();
+        hdr.mpls8.label = vpnlab;
+        hdr.mpls8.ttl = hdr.ipv4.ttl;
+        hdr.mpls8.bos = 1;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
+    }
+
+    action act_encap_vpn6_bier(NextHopId_t hop, label_t label, label_t vpnlab, bit<16> bfir,
+                               bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
+                               bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv6.hop_limit;
+        hdr.mpls0.bos = 1;
+        hdr.bier.setValid();
+        hdr.bier.idver = 0x50;
+        hdr.bier.bsl = 3;
+        hdr.bier.proto = 2;
+        hdr.bier.bfir = bfir;
+        hdr.bier.bs0 = bs0;
+        hdr.bier.bs1 = bs1;
+        hdr.bier.bs2 = bs2;
+        hdr.bier.bs3 = bs3;
+        hdr.bier.bs4 = bs4;
+        hdr.bier.bs5 = bs5;
+        hdr.bier.bs6 = bs6;
+        hdr.bier.bs7 = bs7;
+        hdr.mpls8.setValid();
+        hdr.mpls8.label = vpnlab;
+        hdr.mpls8.ttl = hdr.ipv6.hop_limit;
+        hdr.mpls8.bos = 1;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+        eg_md.nexthop_id = hop;
+        eg_md.target_id = 0;
+    }
+
     action act_decap_bier_ipv4(bit<32>bs0, bit<32>bs1, bit<32>bs2, bit<32>bs3,
                                bit<32>bs4, bit<32>bs5, bit<32>bs6, bit<32>bs7) {
         //eg_md.need_recir = 1;
@@ -248,6 +306,8 @@ eg_intr_md.egress_rid:
             act_decap_bier_ipv6;
             act_encap_ipv4_bier;
             act_encap_ipv6_bier;
+            act_encap_vpn4_bier;
+            act_encap_vpn6_bier;
 #endif
 #endif
 #endif
@@ -282,6 +342,9 @@ eg_intr_md.egress_rid:
                                                 eg_dprsr_md.drop_ctl = 1;
                                             }
                 if (eg_md.bier_remove == 1) {
+                    if (hdr.mpls8.isValid()) {
+                        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+                    }
                     hdr.bier.setInvalid();
                 }
             }

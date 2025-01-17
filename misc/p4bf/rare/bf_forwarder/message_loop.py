@@ -1784,6 +1784,60 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "mbiervpnrou4":
+            self.writeMbierVpnRouRules(
+                mode,
+                "4",
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                splt[4],
+                int(splt[5]),
+                int(splt[6]),
+                int(splt[7]),
+                int(splt[8]),
+                int(splt[9]),
+                int(splt[10]),
+                int(splt[11]),
+                int(splt[12]),
+                int(splt[13]),
+                int(splt[14]),
+                int(splt[15]),
+                int(splt[16]),
+                int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
+                int(splt[20]),
+            )
+            continue
+
+        if cmds[0] == "mbiervpnrou6":
+            self.writeMbierVpnRouRules(
+                mode,
+                "6",
+                int(splt[1]),
+                int(splt[2]),
+                splt[3],
+                splt[4],
+                int(splt[5]),
+                int(splt[6]),
+                int(splt[7]),
+                int(splt[8]),
+                int(splt[9]),
+                int(splt[10]),
+                int(splt[11]),
+                int(splt[12]),
+                int(splt[13]),
+                int(splt[14]),
+                int(splt[15]),
+                int(splt[16]),
+                int(splt[17]),
+                int(splt[18]),
+                int(splt[19]),
+                int(splt[20]),
+            )
+            continue
+
         if cmds[0] == "polkapoly":
             self.writePolkaPolyRules(
                 mode,
