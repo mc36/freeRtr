@@ -488,6 +488,9 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         if (a.equals("mldp")) {
             return ipFwd.mdtMode.mldp;
         }
+        if (a.equals("bier")) {
+            return ipFwd.mdtMode.bier;
+        }
         return ipFwd.mdtMode.none;
     }
 
@@ -497,6 +500,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
                 return "none";
             case mldp:
                 return "mldp";
+            case bier:
+                return "bier";
             default:
                 return "unknown";
         }
@@ -814,6 +819,7 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, "1 2  mdt6                enable multicast distribution tree for ipv6");
         l.add(null, "2 .    none              no vpn mode");
         l.add(null, "2 .    mldp              use mldp");
+        l.add(null, "2 .    bier              use bier");
         l.add(null, "1 2  label-mode          specify label allocation mode");
         l.add(null, "1 2  label4mode          specify label allocation mode");
         l.add(null, "1 2  label6mode          specify label allocation mode");

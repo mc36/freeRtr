@@ -91,6 +91,12 @@ public class ipFwdMcast implements Comparable<ipFwdMcast> {
     public counter hwCntr;
 
     public int compareTo(ipFwdMcast o) {
+        if (rd < o.rd) {
+            return -1;
+        }
+        if (rd > o.rd) {
+            return +1;
+        }
         int i = group.compareTo(o.group);
         if (i != 0) {
             return i;

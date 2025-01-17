@@ -1503,6 +1503,23 @@ public class ipFwdTab {
                         grp.upsVrf.mldpDel(ntry);
                     }
                     return;
+                case bier:
+                    ipFwdIface ifc = findStableIface(grp.upsVrf);
+                    if (ifc == null) {
+                        return;
+                    }
+                    if (ifc.pimCfg == null) {
+                        return;
+                    }
+                    grp = grp.copyBytes();
+                    grp.rd = lower.rd;
+                    if (need != 0) {
+                        ifc.pimCfg.extra.add(grp);
+                    } else {
+                        ifc.pimCfg.extra.del(grp);
+                    }
+                    ifc.pimCfg.sendJoin(grp, grp.upstream, need);
+                    return;
                 default:
                     return;
             }
@@ -1515,7 +1532,7 @@ public class ipFwdTab {
             ifc.mldpCfg.sendJoin(grp, need == 1);
         }
         if (ifc.pimCfg != null) {
-            ifc.pimCfg.sendJoin(grp, need);
+            ifc.pimCfg.sendJoin(grp, null, need);
         }
         if (ifc.mhostCfg != null) {
             ifc.mhostCfg.sendJoin(grp, need == 1);
@@ -1844,6 +1861,7 @@ public class ipFwdTab {
                         }
                     }
                 }
+                grp.rd = 0;
             }
             if (vrf != null) {
                 if (vrf.groups.find(grp) == null) {

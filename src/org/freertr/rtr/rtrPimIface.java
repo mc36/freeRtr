@@ -68,6 +68,11 @@ public class rtrPimIface implements ipPrt {
      */
     public boolean bfdTrigger;
 
+    /**
+     * extra groups
+     */
+    public tabGen<ipFwdMcast> extra = new tabGen<ipFwdMcast>();
+
     private int generationId;
 
     private ipFwd fwdCore;
@@ -309,15 +314,17 @@ public class rtrPimIface implements ipPrt {
      * send one join
      *
      * @param grp group to join
+     * @param ups upstream address
      * @param need 1=join, 0=prune
      */
-    public void sendJoin(ipFwdMcast grp, int need) {
+    public void sendJoin(ipFwdMcast grp, addrIP ups, int need) {
         if (!allowTx) {
             return;
         }
-        addrIP ups;
         if (bierTunnel > 0) {
-            ups = grp.source;
+            if (ups == null) {
+                ups = grp.source;
+            }
             tabRouteEntry<addrIP> rou = fwdCore.actualM.route(ups);
             if (rou == null) {
                 return;
@@ -326,7 +333,9 @@ public class rtrPimIface implements ipPrt {
                 ups = rou.best.oldHop;
             }
         } else {
-            ups = grp.upstream;
+            if (ups == null) {
+                ups = grp.upstream;
+            }
         }
         if (ups == null) {
             return;
@@ -374,7 +383,12 @@ public class rtrPimIface implements ipPrt {
                 continue;
             }
             bits.sleep(interPackTime);
-            sendJoin(grp, 1);
+            sendJoin(grp, null, 1);
+        }
+        for (int i = 0; i < extra.size(); i++) {
+            ipFwdMcast grp = extra.get(i);
+            bits.sleep(interPackTime);
+            sendJoin(grp, grp.upstream, 1);
         }
     }
 

@@ -544,6 +544,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
          */
         mldp,
         /**
+         * bier mode
+         */
+        bier,
+        /**
          * no mdt mode
          */
         none
