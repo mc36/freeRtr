@@ -227,7 +227,7 @@ public class rtrPimIface implements ipPrt {
                             continue;
                         }
                         if (bierTunnel > 0) {
-                            fwd.mcastAddFloodBier(grp.group.network, src.network, lab, pckBin.IPsrc, bierTunnel, tim);
+                            fwd.mcastAddFloodBier(grp.group.network, src.network, lab, fwd, pckBin.IPsrc, bierTunnel, tim);
                         } else {
                             fwd.mcastAddFloodIfc(grp.group.network, src.network, iface, tim);
                         }
@@ -238,7 +238,7 @@ public class rtrPimIface implements ipPrt {
                             continue;
                         }
                         if (bierTunnel > 0) {
-                            fwd.mcastDelFloodBier(grp.group.network, src.network, lab, pckBin.IPsrc);
+                            fwd.mcastDelFloodBier(grp.group.network, src.network, lab, fwd, pckBin.IPsrc);
                         } else {
                             fwd.mcastDelFloodIfc(grp.group.network, src.network, iface);
                         }
@@ -380,7 +380,7 @@ public class rtrPimIface implements ipPrt {
         fwdCore.createIPheader(pckBin);
         pckBin.ETHtype = iface.lower.getEthtyp();
         ipFwdBier clnt = new ipFwdBier(fwdCore, bierTunnel);
-        clnt.addPeer(ups, 0, -1);
+        clnt.addPeer(fwdCore, ups, 0, -1);
         clnt.updatePeers();
         clnt.sendPack(pckBin);
     }

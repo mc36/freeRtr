@@ -218,7 +218,7 @@ public class clntMplsBier implements Runnable, ifcDn {
         working = true;
         bier = new ipFwdBier(fwdCor, srcId);
         for (int i = 0; i < targets.size(); i++) {
-            bier.addPeer(targets.get(i), -1);
+            bier.addPeer(fwdCor, targets.get(i), 0, -1);
         }
         new Thread(this).start();
     }

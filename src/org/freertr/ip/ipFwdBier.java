@@ -69,7 +69,7 @@ public class ipFwdBier {
             if (ntry == null) {
                 continue;
             }
-            n.peers.add(new ipFwdBierPeer(ntry.addr, ntry.label));
+            n.peers.add(new ipFwdBierPeer(ntry.fwd, ntry.addr, ntry.label));
         }
         for (int i = 0; i < fwds.size(); i++) {
             tabLabelBierN ntry = fwds.get(i);
@@ -218,14 +218,16 @@ public class ipFwdBier {
     /**
      * add one peer
      *
+     * @param fwd forwarder
      * @param adr address
+     * @param lab vpn label
      * @param exp expiration time, negative if not expires
      */
-    public void addPeer(addrIP adr, int lab, long exp) {
+    public void addPeer(ipFwd fwd, addrIP adr, int lab, long exp) {
         if (exp > 0) {
             exp += bits.getTime();
         }
-        ipFwdBierPeer ntry = new ipFwdBierPeer(adr, lab);
+        ipFwdBierPeer ntry = new ipFwdBierPeer(fwd, adr, lab);
         ipFwdBierPeer old = peers.add(ntry);
         if (old != null) {
             ntry = old;
@@ -236,10 +238,12 @@ public class ipFwdBier {
     /**
      * delete one peer
      *
+     * @param fwd forwarder
      * @param adr address
+     * @param lab vpn label
      */
-    public void delPeer(addrIP adr, int lab) {
-        ipFwdBierPeer ntry = new ipFwdBierPeer(adr, lab);
+    public void delPeer(ipFwd fwd, addrIP adr, int lab) {
+        ipFwdBierPeer ntry = new ipFwdBierPeer(fwd, adr, lab);
         ntry = peers.del(ntry);
         if (ntry == null) {
             return;
@@ -316,6 +320,8 @@ public class ipFwdBier {
 
 class ipFwdBierPeer implements Comparable<ipFwdBierPeer> {
 
+    public ipFwd fwd;
+
     public addrIP addr;
 
     public int label;
@@ -333,10 +339,15 @@ class ipFwdBierPeer implements Comparable<ipFwdBierPeer> {
         if (label > o.label) {
             return +1;
         }
+        int i = fwd.compareTo(o.fwd);
+        if (i != 0) {
+            return i;
+        }
         return addr.compareTo(o.addr);
     }
 
-    public ipFwdBierPeer(addrIP adr, int lab) {
+    public ipFwdBierPeer(ipFwd fwdr, addrIP adr, int lab) {
+        fwd = fwdr;
         addr = adr.copyBytes();
         label = lab;
     }
