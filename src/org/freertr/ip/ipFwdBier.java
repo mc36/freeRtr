@@ -69,7 +69,7 @@ public class ipFwdBier {
             if (ntry == null) {
                 continue;
             }
-            n.peers.add(new ipFwdBierPeer(ntry.addr));
+            n.peers.add(new ipFwdBierPeer(ntry.addr, ntry.label));
         }
         for (int i = 0; i < fwds.size(); i++) {
             tabLabelBierN ntry = fwds.get(i);
@@ -221,11 +221,11 @@ public class ipFwdBier {
      * @param adr address
      * @param exp expiration time, negative if not expires
      */
-    public void addPeer(addrIP adr, long exp) {
+    public void addPeer(addrIP adr, int lab, long exp) {
         if (exp > 0) {
             exp += bits.getTime();
         }
-        ipFwdBierPeer ntry = new ipFwdBierPeer(adr);
+        ipFwdBierPeer ntry = new ipFwdBierPeer(adr, lab);
         ipFwdBierPeer old = peers.add(ntry);
         if (old != null) {
             ntry = old;
@@ -238,8 +238,8 @@ public class ipFwdBier {
      *
      * @param adr address
      */
-    public void delPeer(addrIP adr) {
-        ipFwdBierPeer ntry = new ipFwdBierPeer(adr);
+    public void delPeer(addrIP adr, int lab) {
+        ipFwdBierPeer ntry = new ipFwdBierPeer(adr, lab);
         ntry = peers.del(ntry);
         if (ntry == null) {
             return;
@@ -318,6 +318,8 @@ class ipFwdBierPeer implements Comparable<ipFwdBierPeer> {
 
     public addrIP addr;
 
+    public int label;
+
     public long expires;
 
     public int bit;
@@ -325,15 +327,22 @@ class ipFwdBierPeer implements Comparable<ipFwdBierPeer> {
     public tabLabelBierN via;
 
     public int compareTo(ipFwdBierPeer o) {
+        if (label < o.label) {
+            return -1;
+        }
+        if (label > o.label) {
+            return +1;
+        }
         return addr.compareTo(o.addr);
     }
 
-    public ipFwdBierPeer(addrIP adr) {
+    public ipFwdBierPeer(addrIP adr, int lab) {
         addr = adr.copyBytes();
+        label = lab;
     }
 
     public String toString() {
-        return addr + "," + bit + "," + via;
+        return addr + "," + label + "," + bit + "," + via;
     }
 
 }

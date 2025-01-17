@@ -4,6 +4,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
+import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgVrf;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdBier;
 import org.freertr.ip.ipFwdIface;
@@ -206,15 +208,28 @@ public class rtrPimIface implements ipPrt {
                     if (!grp.group.wildcard.isFilled(0)) {
                         continue;
                     }
+                    int lab = 0;
+                    ipFwd fwd = fwdCore;
+                    if (grp.rd != 0) {
+                        cfgVrf vrf = cfgAll.findRd(grp.group.network.isIPv4(), grp.rd);
+                        if (vrf == null) {
+                            continue;
+                        }
+                        if (bierTunnel < 1) {
+                            continue;
+                        }
+                        fwd = vrf.getFwd(grp.group.network);
+                        lab = fwd.commonLabel.label;
+                    }
                     for (int i = 0; i < grp.joins.size(); i++) {
                         addrPrefix<addrIP> src = grp.joins.get(i);
                         if (!src.wildcard.isFilled(0)) {
                             continue;
                         }
                         if (bierTunnel > 0) {
-                            fwdCore.mcastAddFloodBier(grp.group.network, src.network, pckBin.IPsrc, bierTunnel, tim);
+                            fwd.mcastAddFloodBier(grp.group.network, src.network, lab, pckBin.IPsrc, bierTunnel, tim);
                         } else {
-                            fwdCore.mcastAddFloodIfc(grp.group.network, src.network, iface, tim);
+                            fwd.mcastAddFloodIfc(grp.group.network, src.network, iface, tim);
                         }
                     }
                     for (int i = 0; i < grp.prunes.size(); i++) {
@@ -223,9 +238,9 @@ public class rtrPimIface implements ipPrt {
                             continue;
                         }
                         if (bierTunnel > 0) {
-                            fwdCore.mcastDelFloodBier(grp.group.network, src.network, pckBin.IPsrc);
+                            fwd.mcastDelFloodBier(grp.group.network, src.network, lab, pckBin.IPsrc);
                         } else {
-                            fwdCore.mcastDelFloodIfc(grp.group.network, src.network, iface);
+                            fwd.mcastDelFloodIfc(grp.group.network, src.network, iface);
                         }
                     }
                 }
@@ -342,7 +357,7 @@ public class rtrPimIface implements ipPrt {
         }
         packHolder pckBin = new packHolder(true, true);
         packPim pckPim = new packPim();
-        pckPim.fillJoin(ups, grp.group, grp.source, helloInterval * need);
+        pckPim.fillJoin(ups, grp.rd, grp.group, grp.source, helloInterval * need);
         pckPim.createJoin(pckBin);
         if (debugger.rtrPimTraf) {
             logger.debug("tx " + pckPim + " on " + iface);
@@ -365,7 +380,7 @@ public class rtrPimIface implements ipPrt {
         fwdCore.createIPheader(pckBin);
         pckBin.ETHtype = iface.lower.getEthtyp();
         ipFwdBier clnt = new ipFwdBier(fwdCore, bierTunnel);
-        clnt.addPeer(ups, -1);
+        clnt.addPeer(ups, 0, -1);
         clnt.updatePeers();
         clnt.sendPack(pckBin);
     }

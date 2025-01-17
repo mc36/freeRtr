@@ -253,10 +253,14 @@ public class packPim {
         }
     }
 
-    private void writeGrpAddr(packHolder pck, addrPrefix<addrIP> prf, int flg) {
+    private void writeGrpAddr(packHolder pck, long rd, addrPrefix<addrIP> prf, int flg) {
         tabRouteEntry<addrIP> pref = new tabRouteEntry<addrIP>();
         pref.prefix = prf;
-        pck.putByte(1, 0); // encoding
+        if (rd == 0) {
+            pck.putByte(1, 0); // encoding
+        } else {
+            pck.putByte(1, 1); // encoding
+        }
         pck.putByte(2, flg); // flags
         if (prf.network.isIPv4()) {
             pck.putByte(0, rtrBgpUtil.afiIpv4 >>> 16);
@@ -267,17 +271,56 @@ public class packPim {
             pck.putSkip(3);
             rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, true, pck, pref);
         }
+        if (rd == 0) {
+            return;
+        }
+        pck.putByte(0, 0x41); // end, local, type=rd
+        int i;
+        if (prf.network.isIPv4()) {
+            addrIPv4 a4 = prf.network.toIPv4();
+            pck.putAddr(2, a4);
+            i = addrIPv4.size;
+        } else {
+            addrIPv6 a6 = prf.network.toIPv6();
+            pck.putAddr(2, a6);
+            i = addrIPv6.size;
+        }
+        pck.putByte(1, i + 8);
+        pck.msbPutQ(i + 2, rd);
+        pck.putSkip(i + 10);
     }
 
-    private addrPrefix<addrIP> readGrpAddr(packHolder pck) {
+    private addrPrefix<addrIP> readGrpAddr(packPimGrp grp, packHolder pck) {
         int afi = pck.getByte(0) << 16; // afi
         int enc = pck.getByte(1); // encoding
         // int flg = pck.getByte(2); // flags
         pck.getSkip(3);
-        if (enc != 0) {
+        if (enc == 0) {
+            tabRouteEntry<addrIP> prf = rtrBgpUtil.readPrefix(afi, true, pck);
+            return prf.prefix;
+        }
+        if (enc != 1) {
             return null;
         }
         tabRouteEntry<addrIP> prf = rtrBgpUtil.readPrefix(afi, true, pck);
+        for (;;) {
+            afi = pck.getByte(0);
+            enc = pck.getByte(1);
+            pck.getSkip(2);
+            switch (afi & 0x3f) {
+                case 1:
+                    if (prf.prefix.network.isIPv4()) {
+                        grp.rd = pck.msbGetQ(addrIPv4.size);
+                    } else {
+                        grp.rd = pck.msbGetQ(addrIPv6.size);
+                    }
+                    break;
+            }
+            pck.getSkip(enc);
+            if ((afi & 040) != 0) {
+                break;
+            }
+        }
         return prf.prefix;
     }
 
@@ -445,7 +488,7 @@ public class packPim {
         groups = new ArrayList<packPimGrp>();
         for (int o = 0; o < grups; o++) {
             packPimGrp grp = new packPimGrp();
-            grp.group = readGrpAddr(pck);
+            grp.group = readGrpAddr(grp, pck);
             if (grp.group == null) {
                 return true;
             }
@@ -453,14 +496,14 @@ public class packPim {
             int prunes = pck.msbGetW(2); // pruned sources
             pck.getSkip(4);
             for (int i = 0; i < joins; i++) {
-                addrPrefix<addrIP> src = readGrpAddr(pck);
+                addrPrefix<addrIP> src = readGrpAddr(grp, pck);
                 if (src == null) {
                     return true;
                 }
                 grp.joins.add(src);
             }
             for (int i = 0; i < prunes; i++) {
-                addrPrefix<addrIP> src = readGrpAddr(pck);
+                addrPrefix<addrIP> src = readGrpAddr(grp, pck);
                 if (src == null) {
                     return true;
                 }
@@ -475,11 +518,12 @@ public class packPim {
      * fill join values
      *
      * @param ups upstream
+     * @param rd route distinguisher
      * @param grp group
      * @param src source
      * @param helo hello interval, negative to prune
      */
-    public void fillJoin(addrIP ups, addrIP grp, addrIP src, int helo) {
+    public void fillJoin(addrIP ups, long rd, addrIP grp, addrIP src, int helo) {
         upstream = ups.copyBytes();
         if (helo < 1) {
             valHoldTime = 5;
@@ -488,6 +532,7 @@ public class packPim {
         }
         groups = new ArrayList<packPimGrp>();
         packPimGrp g = new packPimGrp();
+        g.rd = rd;
         g.group = new addrPrefix<addrIP>(grp, grp.maxBits());
         if (helo < 1) {
             g.prunes.add(new addrPrefix<addrIP>(src, src.maxBits()));
@@ -511,15 +556,15 @@ public class packPim {
         pck.putSkip(4);
         for (int o = 0; o < groups.size(); o++) {
             packPimGrp grp = groups.get(o);
-            writeGrpAddr(pck, grp.group, 0);
+            writeGrpAddr(pck, 0, grp.group, 0);
             pck.msbPutW(0, grp.joins.size());
             pck.msbPutW(2, grp.prunes.size());
             pck.putSkip(4);
             for (int i = 0; i < grp.joins.size(); i++) {
-                writeGrpAddr(pck, grp.joins.get(i), 4);
+                writeGrpAddr(pck, grp.rd, grp.joins.get(i), 4);
             }
             for (int i = 0; i < grp.prunes.size(); i++) {
-                writeGrpAddr(pck, grp.prunes.get(i), 4);
+                writeGrpAddr(pck, grp.rd, grp.prunes.get(i), 4);
             }
         }
     }

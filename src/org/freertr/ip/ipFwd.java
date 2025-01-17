@@ -871,11 +871,12 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      *
      * @param grp group to flood
      * @param src source of group
+     * @param lab vpn label
      * @param trg peer address
      * @param id local node id
      * @param exp expiration time, negative if not expires
      */
-    public void mcastAddFloodBier(addrIP grp, addrIP src, addrIP trg, int id, long exp) {
+    public void mcastAddFloodBier(addrIP grp, addrIP src, int lab, addrIP trg, int id, long exp) {
         ipFwdMcast g = new ipFwdMcast(grp, src);
         ipFwdMcast og = groups.add(g);
         if (og != null) {
@@ -889,7 +890,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             ntry = new ipFwdBier(this, id);
             g.bier = ntry;
         }
-        ntry.addPeer(trg, exp);
+        ntry.addPeer(trg, lab, exp);
         ntry.updatePeers();
         tableChanger();
     }
@@ -899,9 +900,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      *
      * @param grp group to flood
      * @param src source of group
+     * @param lab vpn label
      * @param trg peer address
      */
-    public void mcastDelFloodBier(addrIP grp, addrIP src, addrIP trg) {
+    public void mcastDelFloodBier(addrIP grp, addrIP src, int lab, addrIP trg) {
         ipFwdMcast g = new ipFwdMcast(grp, src);
         g = groups.find(g);
         if (g == null) {
@@ -910,7 +912,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (g.bier == null) {
             return;
         }
-        g.bier.delPeer(trg);
+        g.bier.delPeer(trg, lab);
         g.bier.updatePeers();
         tableChanger();
     }
