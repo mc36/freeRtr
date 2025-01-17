@@ -391,6 +391,8 @@ state prs_arp2 {
     transition accept;
 }
 
+#ifdef HAVE_MPLS
+#ifdef HAVE_BIER
 state prs_mpls8 {
     pkt.extract(hdr.mpls8);
     transition select((pkt.lookahead<bit<4>>())[3:0]) {
@@ -400,6 +402,8 @@ state prs_mpls8 {
         prs_ipv6; /* IPv6 is in next lab */
     }
 }
+#endif
+#endif
 
 
 state prs_ipv4 {
