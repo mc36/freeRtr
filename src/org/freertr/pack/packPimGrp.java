@@ -48,7 +48,7 @@ public class packPimGrp {
         for (int i = 0; i < prunes.size(); i++) {
             a += prunes.get(i) + " ";
         }
-        return "rd=" + tabRouteUtil.rd2string(rd) + " " + group + a;
+        return group + " rd=" + tabRouteUtil.rd2string(rd) + a;
     }
 
 }

@@ -516,7 +516,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if ((ntry.best.bierIdx <= 0) || (ntry.best.bierIdx >= bierMax)) {
                     continue;
                 }
-                tabLabelBierN per = new tabLabelBierN(ntry.best.iface, ntry.best.nextHop, ntry.best.bierBeg);
+                tabLabelBierN per = new tabLabelBierN(fwdCore, ntry.best.iface, ntry.best.nextHop, ntry.best.bierBeg, 0);
                 tabLabelBierN old = res.peers.add(per);
                 if (old != null) {
                     per = old;

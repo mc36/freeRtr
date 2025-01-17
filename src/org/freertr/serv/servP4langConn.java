@@ -4136,22 +4136,22 @@ public class servP4langConn implements Runnable {
             dlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
         }
         if (nbier == null) {
-            nbier = new ipFwdBier(null, 0);
+            nbier = new ipFwdBier(0);
         }
         if (dbier == null) {
-            dbier = new ipFwdBier(null, 0);
+            dbier = new ipFwdBier(0);
         }
         int now = 0;
         if (need.local) {
             nflood = new tabGen<ipFwdIface>();
             nlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
-            nbier = new ipFwdBier(null, 0);
+            nbier = new ipFwdBier(0);
             now++;
         }
         if (done.local) {
             dflood = new tabGen<ipFwdIface>();
             dlabel = new ipFwdMpmp(false, new addrIP(), new byte[0]);
-            dbier = new ipFwdBier(null, 0);
+            dbier = new ipFwdBier(0);
         }
         addrMac mac = need.group.conv2multiMac();
         String act;

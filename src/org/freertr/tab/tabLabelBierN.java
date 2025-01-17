@@ -3,6 +3,7 @@ package org.freertr.tab;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.util.bits;
 
@@ -12,6 +13,11 @@ import org.freertr.util.bits;
  * @author matecsaba
  */
 public class tabLabelBierN implements Comparable<tabLabelBierN> {
+
+    /**
+     * forwarder
+     */
+    public final ipFwd fwd;
 
     /**
      * interface
@@ -29,6 +35,11 @@ public class tabLabelBierN implements Comparable<tabLabelBierN> {
     public final int label;
 
     /**
+     * service label
+     */
+    public final int vpnlab;
+
+    /**
      * bsl value
      */
     public int bsl;
@@ -41,14 +52,18 @@ public class tabLabelBierN implements Comparable<tabLabelBierN> {
     /**
      * create new bier peer
      *
+     * @param fwdr forwarder
      * @param ifa interface
      * @param nxtHop next hop
      * @param lab labels
+     * @param vpn labels
      */
-    public tabLabelBierN(tabRouteIface ifa, addrIP nxtHop, int lab) {
+    public tabLabelBierN(ipFwd fwdr, tabRouteIface ifa, addrIP nxtHop, int lab, int vpn) {
+        fwd = fwdr;
         iface = (ipFwdIface) ifa;
         hop = nxtHop.copyBytes();
         label = lab;
+        vpnlab = vpn;
     }
 
     /**
@@ -57,7 +72,7 @@ public class tabLabelBierN implements Comparable<tabLabelBierN> {
      * @return copy
      */
     public tabLabelBierN copyBytes() {
-        tabLabelBierN n = new tabLabelBierN(iface, hop, label);
+        tabLabelBierN n = new tabLabelBierN(fwd, iface, hop, label, vpnlab);
         n.bsl = bsl;
         for (int i = 0; i < ned.size(); i++) {
             n.ned.add(ned.get(i));
@@ -75,10 +90,16 @@ public class tabLabelBierN implements Comparable<tabLabelBierN> {
         if (o == null) {
             return true;
         }
+        if (fwd != o.fwd) {
+            return true;
+        }
         if (iface != o.iface) {
             return true;
         }
         if (label != o.label) {
+            return true;
+        }
+        if (vpnlab != o.vpnlab) {
             return true;
         }
         if (bsl != o.bsl) {
@@ -162,11 +183,21 @@ public class tabLabelBierN implements Comparable<tabLabelBierN> {
     }
 
     public int compareTo(tabLabelBierN o) {
+        if (vpnlab < o.vpnlab) {
+            return -1;
+        }
+        if (vpnlab > o.vpnlab) {
+            return +1;
+        }
         if (iface.ifwNum < o.iface.ifwNum) {
             return -1;
         }
         if (iface.ifwNum > o.iface.ifwNum) {
             return +1;
+        }
+        int i = fwd.compareTo(o.fwd);
+        if (i != 0) {
+            return i;
         }
         return hop.compareTo(o.hop);
     }
@@ -183,7 +214,7 @@ public class tabLabelBierN implements Comparable<tabLabelBierN> {
     }
 
     public String toString() {
-        return hop + "," + iface + "," + label;
+        return hop + "," + iface + "," + label + "," + vpnlab;
     }
 
 }

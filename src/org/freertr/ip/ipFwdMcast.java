@@ -3,6 +3,7 @@ package org.freertr.ip;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
@@ -79,6 +80,11 @@ public class ipFwdMcast implements Comparable<ipFwdMcast> {
      * mdt vrf
      */
     public ipFwd upsVrf;
+    
+    /**
+     * receive label
+     */
+    public tabLabelEntry rxLab;
 
     /**
      * counter

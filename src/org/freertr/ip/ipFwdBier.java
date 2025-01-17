@@ -27,11 +27,6 @@ public class ipFwdBier {
     public final int srcId;
 
     /**
-     * forwarder
-     */
-    public final ipFwd fwd;
-
-    /**
      * list of peer
      */
     public tabGen<ipFwdBierPeer> peers = new tabGen<ipFwdBierPeer>();
@@ -49,11 +44,9 @@ public class ipFwdBier {
     /**
      * create new instance
      *
-     * @param f forwarder
      * @param id source id
      */
-    public ipFwdBier(ipFwd f, int id) {
-        fwd = f;
+    public ipFwdBier(int id) {
         srcId = id;
     }
 
@@ -63,7 +56,7 @@ public class ipFwdBier {
      * @return copy of record
      */
     public ipFwdBier copyBytes() {
-        ipFwdBier n = new ipFwdBier(fwd, srcId);
+        ipFwdBier n = new ipFwdBier(srcId);
         for (int i = 0; i < peers.size(); i++) {
             ipFwdBierPeer ntry = peers.get(i);
             if (ntry == null) {
@@ -154,13 +147,18 @@ public class ipFwdBier {
                     continue;
                 }
                 packHolder pck = orig.copyBytes(true, true);
+                if (trg.vpnlab != 0) {
+                    pck.MPLSlabel = trg.vpnlab;
+                    ipMpls.createMPLSheader(pck);
+                    pck.IPprt = ipMpls.bierLabU;
+                }
                 pck.BIERsi = o;
                 pck.BIERbsl = trg.bsl;
                 pck.BIERbs = ned;
                 ipMpls.createBIERheader(pck);
                 pck.MPLSlabel = trg.label + o;
                 ipMpls.createMPLSheader(pck);
-                fwd.mplsTxPack(trg.hop, pck, false);
+                trg.fwd.mplsTxPack(trg.hop, pck, false);
             }
         }
     }
@@ -262,13 +260,13 @@ public class ipFwdBier {
             }
             trg.bit = 0;
             trg.via = null;
-            tabRouteEntry<addrIP> rou = fwd.actualU.route(trg.addr);
+            tabRouteEntry<addrIP> rou = trg.fwd.actualU.route(trg.addr);
             if (rou == null) {
                 continue;
             }
             rou = rou.copyBytes(tabRoute.addType.lnkAlters);
             if (rou.best.oldHop != null) {
-                rou = fwd.actualU.route(rou.best.oldHop);
+                rou = trg.fwd.actualU.route(rou.best.oldHop);
                 if (rou == null) {
                     continue;
                 }
@@ -280,7 +278,7 @@ public class ipFwdBier {
             if (rou.best.bierBeg < 1) {
                 continue;
             }
-            tabLabelBierN ntry = new tabLabelBierN(rou.best.iface, rou.best.nextHop, rou.best.bierBeg);
+            tabLabelBierN ntry = new tabLabelBierN(trg.fwd, rou.best.iface, rou.best.nextHop, rou.best.bierBeg, trg.label);
             tabLabelBierN old = trgs.add(ntry);
             if (old != null) {
                 ntry = old;

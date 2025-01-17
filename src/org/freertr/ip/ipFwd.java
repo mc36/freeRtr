@@ -888,7 +888,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         }
         ipFwdBier ntry = g.bier;
         if (ntry == null) {
-            ntry = new ipFwdBier(this, id);
+            ntry = new ipFwdBier(id);
             g.bier = ntry;
         }
         ntry.addPeer(fwd, trg, lab, exp);

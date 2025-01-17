@@ -125,6 +125,10 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
          * pvrv bier
          */
         pvrpBier,
+        /**
+         * mcast rx
+         */
+        mcastRx,
     }
 
     /**
@@ -446,6 +450,9 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
                 break;
             case pvrpBier:
                 s = "pvrp bier";
+                break;
+            case mcastRx:
+                s="mcast rx";
                 break;
             default:
                 s = "unknown";

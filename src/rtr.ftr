@@ -3295,6 +3295,10 @@ qc pass: multicast routing with pim over bier
 qc pass: multicast between pim and pim over bier
 qc pass: multicast routing with pim snooping
 qc pass: multicast routing with igmp/mld snooping
+qc pass: multicast vpn routing with bier
+qc pass: multicast vpn between pim and bier
+qc pass: multicast othervpn routing with bier
+qc pass: multicast othervpn between pim and bier
 qc pass: olsr on one subnet
 qc pass: olsr in chain
 qc pass: olsr ingress route filtering with prefixlist

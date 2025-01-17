@@ -1511,6 +1511,29 @@ public class ipFwdTab {
                     if (ifc.pimCfg == null) {
                         return;
                     }
+                    tabRouteEntry<addrIP> rou = lower.actualU.route(grp.source);
+                    int lab = 0;
+                    if (rou != null) {
+                        if (rou.best.labelRem != null) {
+                            lab = rou.best.labelRem.get(0);
+                        }
+                    }
+                    if (need == 0) {
+                        lab = 0;
+                    }
+                    if (grp.rxLab != null) {
+                        if (grp.rxLab.label != lab) {
+                            tabLabel.release(grp.rxLab, tabLabelEntry.owner.mcastRx);
+                            grp.rxLab = null;
+                        }
+                    }
+                    if ((grp.rxLab == null) && (lab != 0)) {
+                        grp.rxLab = tabLabel.allocateExact(tabLabelEntry.owner.mcastRx, lab);
+                        if (grp.rxLab == null) {
+                            return;
+                        }
+                        grp.rxLab.setFwdCommon(tabLabelEntry.owner.mcastRx, lower);
+                    }
                     grp = grp.copyBytes();
                     grp.rd = lower.rd;
                     if (need != 0) {

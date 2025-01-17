@@ -999,11 +999,12 @@ public class spfCalc<Ta extends addrType> {
     /**
      * get bier info
      *
+     * @param fwd forwarder
      * @param base base
      * @param bsl bsl
      * @return calculated bier info
      */
-    public tabLabelBier getBierI(int base, int bsl) {
+    public tabLabelBier getBierI(ipFwd fwd, int base, int bsl) {
         tabLabelBier res = new tabLabelBier(base, bsl);
         for (int i = 0; i < nodes.size(); i++) {
             spfNode<Ta> ntry = nodes.get(i);
@@ -1026,7 +1027,7 @@ public class spfCalc<Ta extends addrType> {
             if (ntry.brBeg <= 0) {
                 continue;
             }
-            tabLabelBierN per = new tabLabelBierN(ntry.uplink.iface, ntry.uplink.nxtHop, ntry.brBeg);
+            tabLabelBierN per = new tabLabelBierN(fwd, ntry.uplink.iface, ntry.uplink.nxtHop, ntry.brBeg, 0);
             for (int o = 0; o < ntry.brLst.size(); o++) {
                 per.setBit(ntry.brLst.get(o).get() - 1);
             }

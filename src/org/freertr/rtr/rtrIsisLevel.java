@@ -1012,7 +1012,7 @@ public class rtrIsisLevel implements Runnable {
             oroutes.clear();
         }
         if (bierEna) {
-            bierRes = spf.getBierI(0, 0);
+            bierRes = spf.getBierI(lower.fwdCore, 0, 0);
         } else {
             bierRes = null;
         }

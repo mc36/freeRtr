@@ -199,7 +199,7 @@ public class tabLabelBier {
      * @return mask
      */
     public tabLabelBierN getIdxMask() {
-        tabLabelBierN n = new tabLabelBierN(null, new addrIP(), 0);
+        tabLabelBierN n = new tabLabelBierN(null, null, new addrIP(), 0, 0);
         if (idx > 0) {
             n.setBit(idx - 1);
         }

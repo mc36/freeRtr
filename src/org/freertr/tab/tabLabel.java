@@ -74,6 +74,27 @@ public class tabLabel {
     }
 
     /**
+     * allocate exact label
+     *
+     * @param key key to use for deallocation
+     * @param val value to allocate
+     * @return label entry, null if nothing
+     */
+    public static tabLabelEntry allocateExact(tabLabelEntry.owner key, int val) {
+        if (debugger.tabLabelEvnt) {
+            logger.debug("allocate " + val);
+        }
+        tabLabelEntry ntry = new tabLabelEntry(val);
+        if (labels.add(ntry) != null) {
+            logger.warn("failed to allocate exact label");
+            return null;
+        }
+        ntry.key = key;
+        ntry.working = true;
+        return ntry;
+    }
+
+    /**
      * allocate one label
      *
      * @param key key to use for deallocation

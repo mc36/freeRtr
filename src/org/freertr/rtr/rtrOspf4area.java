@@ -1085,7 +1085,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, routes, rs, true, roumapFrom, roupolFrom, prflstFrom);
         lower.routerDoAggregates(rtrBgpUtil.sfiUnicast, routes, routes, lower.fwdCore.commonLabel, null, 0);
         if (bierEna) {
-            bierRes = spf.getBierI(0, 0);
+            bierRes = spf.getBierI(lower.fwdCore, 0, 0);
         } else {
             bierRes = null;
         }

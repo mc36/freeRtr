@@ -317,7 +317,7 @@ public class packPim {
                     break;
             }
             pck.getSkip(enc);
-            if ((afi & 040) != 0) {
+            if ((afi & 0x40) != 0) {
                 break;
             }
         }

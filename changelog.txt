@@ -16407,3 +16407,8 @@ no todo: persistent debug config
 no todo: client http-user-agent <anything>
 ---------------------------------- 2025-01-08 08:51:48 25.1.8
 no todo: show p4/c/java autoformatter/colorizer/etc with enc7bit and more funs
+---------------------------------- 2025-01-17 17:01:53 25.1.17
+qc pass: multicast vpn routing with bier
+qc pass: multicast vpn between pim and bier
+qc pass: multicast othervpn routing with bier
+qc pass: multicast othervpn between pim and bier

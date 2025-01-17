@@ -2436,7 +2436,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 if (nei == null) {
                     continue;
                 }
-                tabLabelBierN per = new tabLabelBierN(nei.localIfc, nei.peerAddr, ntry.best.bierBeg);
+                tabLabelBierN per = new tabLabelBierN(fwdCore, nei.localIfc, nei.peerAddr, ntry.best.bierBeg, 0);
                 tabLabelBierN old = res.peers.add(per);
                 if (old != null) {
                     per = old;

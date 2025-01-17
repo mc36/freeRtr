@@ -500,7 +500,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             if (sou.compareTo(oru.best.nextHop) == 0) {
                 continue;
             }
-            tabLabelBierN curr = new tabLabelBierN(oru.best.iface, oru.best.nextHop, 0);
+            tabLabelBierN curr = new tabLabelBierN(ntry.fwd, oru.best.iface, oru.best.nextHop, 0, ntry.vpnlab);
             tabLabelBierN old = res.find(curr);
             if (old != null) {
                 old.mergeNed(ntry.ned);
