@@ -103,6 +103,7 @@ hdr.ipv6.dst_addr:
         hdr.bier.setInvalid();
         if (hdr.ipv4.isValid()) ig_md.ethertype = ETHERTYPE_IPV4;
         if (hdr.ipv6.isValid()) ig_md.ethertype = ETHERTYPE_IPV6;
+        if (hdr.mpls8.isValid()) ig_md.ethertype = ETHERTYPE_MPLS_UCAST;
 
         ig_intr_md.mcast_grp = ig_md.clone_session;
 

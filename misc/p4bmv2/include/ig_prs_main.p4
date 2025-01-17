@@ -345,6 +345,10 @@ ETHERTYPE_IPV6:
     state prs_bier {
         pkt.extract(hdr.bier);
         transition select(hdr.bier.proto) {
+6w0x1:
+            prs_mpls8;
+6w0x2:
+            prs_mpls8;
 6w0x4:
             prs_ipv4;
 6w0x6:
@@ -354,6 +358,15 @@ ETHERTYPE_IPV6:
         }
     }
 
+    state prs_mpls8 {
+        pkt.extract(hdr.mpls8);
+        transition select((pkt.lookahead<bit<4>>())[3:0]) {
+4w0x4:
+            prs_ipv4; /* IPv4 only for now */
+4w0x6:
+            prs_ipv6; /* IPv6 is in next lab */
+        }
+    }
 
     state prs_ipv4 {
         pkt.extract(hdr.ipv4);
