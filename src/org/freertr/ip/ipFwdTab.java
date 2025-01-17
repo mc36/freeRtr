@@ -1492,10 +1492,20 @@ public class ipFwdTab {
      * @param need 1=join, 0=prune
      */
     protected static void joinOneGroup(ipFwd lower, ipFwdMcast grp, int need) {
-        if ((need == 1) && (grp.upsVrf != null)) {
-            ipFwdMpmp ntry = ipFwdMpmp.create4vpnMcast(false, grp.upstream, lower.rd, grp);
-            ntry.vrfRx = lower;
-            grp.upsVrf.mldpAdd(ntry);
+        if (grp.upsVrf != null) {
+            switch (lower.mdtMod) {
+                case mldp:
+                    ipFwdMpmp ntry = ipFwdMpmp.create4vpnMcast(false, grp.upstream, lower.rd, grp);
+                    ntry.vrfRx = lower;
+                    if (need != 0) {
+                        grp.upsVrf.mldpAdd(ntry);
+                    } else {
+                        grp.upsVrf.mldpDel(ntry);
+                    }
+                    return;
+                default:
+                    return;
+            }
         }
         ipFwdIface ifc = grp.iface;
         if (ifc == null) {
