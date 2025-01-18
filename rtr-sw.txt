@@ -159,14 +159,6 @@ vrf definition dn42
  mdt6 mldp
  exit
 !
-vrf definition dptest
- rd 1955:30
- rt4import 1955:30 1955:911
- rt4export 1955:30
- rt6import 1955:30 1955:911
- rt6export 1955:30
- exit
-!
 vrf definition freenet
  exit
 !
@@ -406,9 +398,6 @@ interface loopback0
  exit
 !
 interface loopback195530
- vrf forwarding dptest
- ipv4 address 172.18.66.166 255.255.255.255
- ipv6 address fd00:2001:738::bad:c0de ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  no shutdown
  no log-link-change
  exit
@@ -595,10 +584,6 @@ router bgp4 65535 vrf v1
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
  !
- afi-vrf dptest enable
- afi-vrf dptest redistribute connected
- afi-vrf dptest redistribute static
- !
  afi-vrf niif enable
  !
  afi-vrf rtbh enable
@@ -685,10 +670,6 @@ router bgp6 65535 vrf v1
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
  !
- afi-vrf dptest enable
- afi-vrf dptest redistribute connected
- afi-vrf dptest redistribute static
- !
  afi-vrf niif enable
  !
  afi-vrf rtbh enable
@@ -744,19 +725,6 @@ proxy-profile p4
 proxy-profile p5
  vrf v5
  exit
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
 !
 !
 !
