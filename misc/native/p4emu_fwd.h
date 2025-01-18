@@ -1634,7 +1634,7 @@ neigh_tx:
             doFlood(ctx, &mpls_res->flood, bufP, bufS, ethtyp, (label & 0xf00) | ttl);
             bierAnd(bufD, bufP + 8, mpls_res->bier, tmp, ttl);
             if (ttl == 0) return;
-            ttl = bufD[bufP + 5];
+            ttl = bufD[bufP + 5] & 0x3f;
             bufP += 8;
             bufP += 32;
             switch (ttl) {

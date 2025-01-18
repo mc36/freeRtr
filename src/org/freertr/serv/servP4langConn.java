@@ -4102,6 +4102,9 @@ public class servP4langConn implements Runnable {
         int gid = need.group.getHashW() ^ need.source.getHashW() ^ vrf;
         ipFwdIface source = need.iface;
         if (need.upsVrf != null) {
+            if (need.upstream == null) {
+                return true;
+            }
             tabRouteEntry<addrIP> rou = need.upsVrf.actualU.route(need.upstream);
             if (rou == null) {
                 return true;

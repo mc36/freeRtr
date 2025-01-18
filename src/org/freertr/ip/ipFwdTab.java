@@ -1492,73 +1492,77 @@ public class ipFwdTab {
      * @param need 1=join, 0=prune
      */
     protected static void joinOneGroup(ipFwd lower, ipFwdMcast grp, int need) {
-        if (grp.upsVrf != null) {
-            switch (lower.mdtMod) {
-                case mldp:
-                    ipFwdMpmp ntry = ipFwdMpmp.create4vpnMcast(false, grp.upstream, lower.rd, grp);
-                    ntry.vrfRx = lower;
-                    if (need != 0) {
-                        grp.upsVrf.mldpAdd(ntry);
-                    } else {
-                        grp.upsVrf.mldpDel(ntry);
-                    }
-                    return;
-                case bier:
-                    ipFwdIface ifc = findStableIface(grp.upsVrf);
-                    if (ifc == null) {
-                        return;
-                    }
-                    if (ifc.pimCfg == null) {
-                        return;
-                    }
-                    tabRouteEntry<addrIP> rou = lower.actualU.route(grp.source);
-                    int lab = 0;
-                    if (rou != null) {
-                        if (rou.best.labelRem != null) {
-                            lab = rou.best.labelRem.get(0);
-                        }
-                    }
-                    if (need == 0) {
-                        lab = 0;
-                    }
-                    if (grp.rxLab != null) {
-                        if (grp.rxLab.label != lab) {
-                            tabLabel.release(grp.rxLab, tabLabelEntry.owner.mcastRx);
-                            grp.rxLab = null;
-                        }
-                    }
-                    if ((grp.rxLab == null) && (lab != 0)) {
-                        grp.rxLab = tabLabel.allocateExact(tabLabelEntry.owner.mcastRx, lab);
-                        if (grp.rxLab == null) {
-                            return;
-                        }
-                        grp.rxLab.setFwdCommon(tabLabelEntry.owner.mcastRx, lower);
-                    }
-                    grp = grp.copyBytes();
-                    grp.rd = lower.rd;
-                    if (need != 0) {
-                        ifc.pimCfg.extra.add(grp);
-                    } else {
-                        ifc.pimCfg.extra.del(grp);
-                    }
-                    ifc.pimCfg.sendJoin(grp, grp.upstream, need);
-                    return;
-                default:
-                    return;
+        if (grp.upsVrf == null) {
+            ipFwdIface ifc = grp.iface;
+            if (ifc == null) {
+                return;
             }
-        }
-        ipFwdIface ifc = grp.iface;
-        if (ifc == null) {
+            if (ifc.mldpCfg != null) {
+                ifc.mldpCfg.sendJoin(grp, need == 1);
+            }
+            if (ifc.pimCfg != null) {
+                ifc.pimCfg.sendJoin(grp, null, need);
+            }
+            if (ifc.mhostCfg != null) {
+                ifc.mhostCfg.sendJoin(grp, need == 1);
+            }
             return;
         }
-        if (ifc.mldpCfg != null) {
-            ifc.mldpCfg.sendJoin(grp, need == 1);
+        if (grp.upstream == null) {
+            return;
         }
-        if (ifc.pimCfg != null) {
-            ifc.pimCfg.sendJoin(grp, null, need);
-        }
-        if (ifc.mhostCfg != null) {
-            ifc.mhostCfg.sendJoin(grp, need == 1);
+        switch (lower.mdtMod) {
+            case mldp:
+                ipFwdMpmp ntry = ipFwdMpmp.create4vpnMcast(false, grp.upstream, lower.rd, grp);
+                ntry.vrfRx = lower;
+                if (need != 0) {
+                    grp.upsVrf.mldpAdd(ntry);
+                } else {
+                    grp.upsVrf.mldpDel(ntry);
+                }
+                return;
+            case bier:
+                ipFwdIface ifc = findStableIface(grp.upsVrf);
+                if (ifc == null) {
+                    return;
+                }
+                if (ifc.pimCfg == null) {
+                    return;
+                }
+                tabRouteEntry<addrIP> rou = lower.actualU.route(grp.source);
+                int lab = 0;
+                if (rou != null) {
+                    if (rou.best.labelRem != null) {
+                        lab = rou.best.labelRem.get(0);
+                    }
+                }
+                if (need == 0) {
+                    lab = 0;
+                }
+                if (grp.rxLab != null) {
+                    if (grp.rxLab.label != lab) {
+                        tabLabel.release(grp.rxLab, tabLabelEntry.owner.mcastRx);
+                        grp.rxLab = null;
+                    }
+                }
+                if ((grp.rxLab == null) && (lab != 0)) {
+                    grp.rxLab = tabLabel.allocateExact(tabLabelEntry.owner.mcastRx, lab);
+                    if (grp.rxLab == null) {
+                        return;
+                    }
+                    grp.rxLab.setFwdCommon(tabLabelEntry.owner.mcastRx, lower);
+                }
+                grp = grp.copyBytes();
+                grp.rd = lower.rd;
+                if (need != 0) {
+                    ifc.pimCfg.extra.add(grp);
+                } else {
+                    ifc.pimCfg.extra.del(grp);
+                }
+                ifc.pimCfg.sendJoin(grp, grp.upstream, need);
+                return;
+            default:
+                return;
         }
     }
 
