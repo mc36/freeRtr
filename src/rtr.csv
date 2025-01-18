@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.1.18-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-01-18 07:34:22, took 00:15:55, with 50 workers, on 3616 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2025-01-18 08:05:42, took 00:15:43, with 50 workers, on 3632 cases, 0 failed, 0 traces, 11 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2118,6 +2118,22 @@ http://sources.freertr.org/cfg/p4lang-rout411.tst;p4lang-rout411.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout412.tst;p4lang-rout412.tst;success;p4lang: othervpn mldp ingress edge
 http://sources.freertr.org/cfg/p4lang-rout413.tst;p4lang-rout413.tst;success;p4lang: othervpn bier egress edge
 http://sources.freertr.org/cfg/p4lang-rout414.tst;p4lang-rout414.tst;success;p4lang: othervpn bier ingress edge
+http://sources.freertr.org/cfg/p4lang-rout415.tst;p4lang-rout415.tst;success;p4lang: vpn mldp vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout416.tst;p4lang-rout416.tst;success;p4lang: vpn mldp vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout417.tst;p4lang-rout417.tst;success;p4lang: vpn bier vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout418.tst;p4lang-rout418.tst;success;p4lang: vpn bier vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout419.tst;p4lang-rout419.tst;success;p4lang: othervpn mldp vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout420.tst;p4lang-rout420.tst;success;p4lang: othervpn mldp vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout421.tst;p4lang-rout421.tst;success;p4lang: othervpn bier vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout422.tst;p4lang-rout422.tst;success;p4lang: othervpn bier vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout423.tst;p4lang-rout423.tst;success;p4lang: vpn mldp qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout424.tst;p4lang-rout424.tst;success;p4lang: vpn mldp qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout425.tst;p4lang-rout425.tst;success;p4lang: vpn bier qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout426.tst;p4lang-rout426.tst;success;p4lang: vpn bier qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout427.tst;p4lang-rout427.tst;success;p4lang: othervpn mldp qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout428.tst;p4lang-rout428.tst;success;p4lang: othervpn mldp qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout429.tst;p4lang-rout429.tst;success;p4lang: othervpn bier qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout430.tst;p4lang-rout430.tst;success;p4lang: othervpn bier qinq ingress edge
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action

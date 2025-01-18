@@ -2114,6 +2114,22 @@ qc pass: p4lang: othervpn mldp egress edge
 qc pass: p4lang: othervpn mldp ingress edge
 qc pass: p4lang: othervpn bier egress edge
 qc pass: p4lang: othervpn bier ingress edge
+qc pass: p4lang: vpn mldp vlan egress edge
+qc pass: p4lang: vpn mldp vlan ingress edge
+qc pass: p4lang: vpn bier vlan egress edge
+qc pass: p4lang: vpn bier vlan ingress edge
+qc pass: p4lang: othervpn mldp vlan egress edge
+qc pass: p4lang: othervpn mldp vlan ingress edge
+qc pass: p4lang: othervpn bier vlan egress edge
+qc pass: p4lang: othervpn bier vlan ingress edge
+qc pass: p4lang: vpn mldp qinq egress edge
+qc pass: p4lang: vpn mldp qinq ingress edge
+qc pass: p4lang: vpn bier qinq egress edge
+qc pass: p4lang: vpn bier qinq ingress edge
+qc pass: p4lang: othervpn mldp qinq egress edge
+qc pass: p4lang: othervpn mldp qinq ingress edge
+qc pass: p4lang: othervpn bier qinq egress edge
+qc pass: p4lang: othervpn bier qinq ingress edge
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
