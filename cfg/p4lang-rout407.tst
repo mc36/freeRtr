@@ -351,12 +351,12 @@ r6 tping 100 10 1234:4::2 vrf v1
 
 r1 tping 100 10 2.2.2.101 vrf v1 sou lo0
 r1 tping 100 10 4321::101 vrf v1 sou lo0
-r1 tping 100 10 2.2.2.103 vrf v2
-r1 tping 100 10 4321::103 vrf v2
-r1 tping 100 10 2.2.2.104 vrf v2
-r1 tping 100 10 4321::104 vrf v2
-r1 tping 100 10 2.2.2.105 vrf v2
-r1 tping 100 10 4321::105 vrf v2
+r1 tping 100 10 2.2.2.103 vrf v2 sou lo1
+r1 tping 100 10 4321::103 vrf v2 sou lo1
+r1 tping 100 10 2.2.2.104 vrf v2 sou lo1
+r1 tping 100 10 4321::104 vrf v2 sou lo1
+r1 tping 100 10 2.2.2.105 vrf v2 sou lo1
+r1 tping 100 10 4321::105 vrf v2 sou lo1
 r1 tping 100 10 2.2.2.206 vrf v1 sou lo0
 r1 tping 100 10 4321::206 vrf v1 sou lo0
 
