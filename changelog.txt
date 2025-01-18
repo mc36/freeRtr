@@ -16418,3 +16418,8 @@ qc pass: p4lang: vpn mldp ingress edge
 ---------------------------------- 2025-01-17 21:35:48 25.1.17
 qc pass: p4lang: vpn bier egress edge
 qc pass: p4lang: vpn bier ingress edge
+---------------------------------- 2025-01-18 07:18:27 25.1.18
+qc pass: p4lang: othervpn mldp egress edge
+qc pass: p4lang: othervpn mldp ingress edge
+qc pass: p4lang: othervpn bier egress edge
+qc pass: p4lang: othervpn bier ingress edge
