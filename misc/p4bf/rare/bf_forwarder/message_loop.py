@@ -1614,6 +1614,7 @@ def run(self):
                 int(splt[2]),
                 int(splt[3]),
                 splt[4],
+                int(splt[5]),
             )
             continue
 
@@ -1625,6 +1626,7 @@ def run(self):
                 int(splt[2]),
                 int(splt[3]),
                 splt[4],
+                int(splt[5]),
             )
             continue
 

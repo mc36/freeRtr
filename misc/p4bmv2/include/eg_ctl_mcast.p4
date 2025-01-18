@@ -60,22 +60,28 @@ control EgressControlMcast(inout headers hdr,
         eg_md.nexthop_id = hop;
     }
 
-    action act_decap_mpls_ipv4() {
+    action act_decap_mpls_ipv4(label_t label) {
         eg_md.need_recir = 1;
-        hdr.mpls0.setInvalid();
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv4.ttl;
+        hdr.mpls0.bos = 1;
         hdr.mpls1.setInvalid();
         hdr.cpu.setValid();
         hdr.cpu.port = eg_md.source_id;
-        hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+        hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
     }
 
-    action act_decap_mpls_ipv6() {
+    action act_decap_mpls_ipv6(label_t label) {
         eg_md.need_recir = 1;
-        hdr.mpls0.setInvalid();
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv6.hop_limit;
+        hdr.mpls0.bos = 1;
         hdr.mpls1.setInvalid();
         hdr.cpu.setValid();
         hdr.cpu.port = eg_md.source_id;
-        hdr.ethernet.ethertype = ETHERTYPE_IPV6;
+        hdr.ethernet.ethertype = ETHERTYPE_MPLS_UCAST;
     }
 
 

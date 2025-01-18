@@ -3706,14 +3706,16 @@ def writeMlabRouteRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, dip
     else:
         ingress_sw.DeleteTableEntry(table_entry, False)
 
-def writeDupLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, inlab, delete2):
+def writeDupLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, inlab, delete2, common):
     global mcast
     sess = sess & 0xfff
     if delete == 1:
         act = "act_decap_mpls_ipv"+ipver
+        par = {"label": common}
         mcast.append({"egress_port":0, "instance":0})
     else:
         act = "act_drop"
+        par = {}
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_mpls.tbl_mpls_fib",
         match_fields={
@@ -3730,7 +3732,7 @@ def writeDupLabLocRules(delete, p4info_helper, ingress_sw, ipver, vrf, sess, inl
             "eg_intr_md.egress_rid": 0
         },
         action_name="eg_ctl.eg_ctl_mcast."+act,
-        action_params={}
+        action_params=par
     )
     table_entry3 = p4info_helper.buildMulticastGroupEntry(sess, mcast)
     if delete2 == "add":
@@ -4417,11 +4419,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             continue
 
         if cmds[0] == "duplabloc4":
-            writeDupLabLocRules(mode,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            writeDupLabLocRules(mode,p4info_helper,sw1,"4",int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]))
             continue
 
         if cmds[0] == "duplabloc6":
-            writeDupLabLocRules(mode,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4])
+            writeDupLabLocRules(mode,p4info_helper,sw1,"6",int(splt[1]),int(splt[2]),int(splt[3]),splt[4],int(splt[5]))
             continue
 
         if cmds[0] == "bierlabel4":

@@ -2,14 +2,16 @@ from ..bf_gbl_env.var_env import *
 
 
 def writeDupLabLocRules(
-    self, op_type, ipver, vrf, sess, inlab, delete2
+    self, op_type, ipver, vrf, sess, inlab, delete2, common
 ):
     if self.mcast == False:
         return
     if op_type == 1:
         act = "act_decap_mpls_ipv"+ipver
+        par = [gc.DataTuple("label", common)]
     else:
         act = "act_drop"
+        par = []
     if op_type != 3:
         self.mcast_nid.append(sess << 16)
         self.mcast_xid.append(0)
@@ -47,7 +49,7 @@ def writeDupLabLocRules(
         gc.KeyTuple("hdr.internal.clone_session", sess),
         gc.KeyTuple("eg_intr_md.egress_rid", 0),
     ]
-    data_field_list2 = []
+    data_field_list2 = par
     key_annotation_fields2 = {}
     data_annotation_fields2 = {}
     self._processEntryFromControlPlane(

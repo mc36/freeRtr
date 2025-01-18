@@ -1245,7 +1245,7 @@ public class servP4langConn implements Runnable {
         } else {
             act = "add";
         }
-        lower.sendLine("duplabloc" + fwd.ipVersion + "_" + (need.needLocal ? "add " : "del ") + vrf.id + " " + gid + " " + need.label + " " + act);
+        lower.sendLine("duplabloc" + fwd.ipVersion + "_" + (need.needLocal ? "add " : "del ") + vrf.id + " " + gid + " " + need.label + " " + act + " " + fwd.commonLabel.label);
     }
 
     private void doLab2(tabLabelEntry ntry) {

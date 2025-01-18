@@ -74,26 +74,32 @@ control EgressControlMcast(inout headers hdr, inout ingress_metadata_t eg_md,
         eg_md.target_id = 0;
     }
 
-    action act_decap_mpls_ipv4() {
+    action act_decap_mpls_ipv4(label_t label) {
         //eg_md.need_recir = 1;
-        hdr.mpls0.setInvalid();
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv4.ttl;
+        hdr.mpls0.bos = 1;
         hdr.mpls1.setInvalid();
         hdr.cpu.setValid();
         hdr.cpu._padding1 = 0;
         hdr.cpu._padding2 = 0;
         hdr.cpu.port = hdr.internal.source_id;
-        eg_md.ethertype = ETHERTYPE_IPV4;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
     }
 
-    action act_decap_mpls_ipv6() {
+    action act_decap_mpls_ipv6(label_t label) {
         //eg_md.need_recir = 1;
-        hdr.mpls0.setInvalid();
+        hdr.mpls0.setValid();
+        hdr.mpls0.label = label;
+        hdr.mpls0.ttl = hdr.ipv6.hop_limit;
+        hdr.mpls0.bos = 1;
         hdr.mpls1.setInvalid();
         hdr.cpu.setValid();
         hdr.cpu._padding1 = 0;
         hdr.cpu._padding2 = 0;
         hdr.cpu.port = hdr.internal.source_id;
-        eg_md.ethertype = ETHERTYPE_IPV6;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
     }
 #endif
 #endif
