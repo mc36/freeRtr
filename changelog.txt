@@ -16440,3 +16440,6 @@ qc pass: p4lang: othervpn mldp qinq egress edge
 qc pass: p4lang: othervpn mldp qinq ingress edge
 qc pass: p4lang: othervpn bier qinq egress edge
 qc pass: p4lang: othervpn bier qinq ingress edge
+---------------------------------- 2025-01-18 10:46:53 25.1.18
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
