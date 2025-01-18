@@ -687,7 +687,7 @@ qc pass: p4lang: vpn bier vlan ingress edge
 qc pass: p4lang: othervpn mldp vlan egress edge
 qc pass: p4lang: othervpn mldp vlan ingress edge
 qc pass: p4lang: othervpn bier vlan egress edge
-qc pass: p4lang: othervpn bier vlan ingress edge
+failed: p4lang: othervpn bier vlan ingress edge
 qc pass: p4lang: vpn mldp qinq egress edge
 qc pass: p4lang: vpn mldp qinq ingress edge
 qc pass: p4lang: vpn bier qinq egress edge
