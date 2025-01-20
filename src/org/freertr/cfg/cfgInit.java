@@ -1174,6 +1174,12 @@ public class cfgInit implements Runnable {
                 } catch (Exception e) {
                 }
             }
+            for (int i = 0; i < cfgAll.ifaces.size(); i++) {
+                try {
+                    cfgAll.ifaces.get(i).lower.closeDn();
+                } catch (Exception e) {
+                }
+            }
             prtRedun.doShut();
             prtWatch.doShut();
             bits.sleep(100);

@@ -115,16 +115,19 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
      * close interface
      */
     public void closeUp() {
+        sendPADt();
         setState(state.states.close);
         upper.closeUp();
     }
 
     public void closeDn() {
+        sendPADt();
         setState(state.states.close);
         lower.closeDn();
     }
 
     public void flapped() {
+        sendPADt();
         clearState();
         currState = 4;
         roundsWait = 5;
@@ -287,6 +290,25 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
             tlv.putBytes(pck, packPppOE.typeRlySes, relayId);
         }
         packPppOE.updateHeader(pck, packPppOE.codePadR, 0);
+        lower.sendPack(pck);
+    }
+
+    /**
+     * send one padt packet
+     */
+    public void sendPADt() {
+        if (sessionId < 0) {
+            return;
+        }
+        if (debugger.ifcP2pOEclnt) {
+            logger.debug("tx padt");
+        }
+        packHolder pck = new packHolder(true, true);
+        pck.clear();
+        pck.putStart();
+        pck.ETHtrg.setAddr(acAddr);
+        pck.ETHsrc.setAddr(hwAddr);
+        packPppOE.updateHeader(pck, packPppOE.codePadT, sessionId);
         lower.sendPack(pck);
     }
 

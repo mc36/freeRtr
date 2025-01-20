@@ -6,6 +6,8 @@ import org.freertr.cfg.cfgIfc;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packPppOE;
 import org.freertr.util.counter;
+import org.freertr.util.debugger;
+import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
@@ -85,6 +87,16 @@ public class ifcP2pOEservSess implements ifcDn, Comparable<ifcP2pOEservSess> {
         if (ifc != null) {
             ifc.cloneStop();
         }
+        if (debugger.ifcP2pOEserv) {
+            logger.debug("tx padt");
+        }
+        packHolder pck = new packHolder(true, true);
+        pck.clear();
+        pck.putStart();
+        pck.ETHtrg.setAddr(mac);
+        pck.ETHsrc.setAddr(lower.hwaddr);
+        packPppOE.updateHeader(pck, packPppOE.codePadT, sessid);
+        lower.lower.sendPack(pck);
     }
 
     public void flapped() {

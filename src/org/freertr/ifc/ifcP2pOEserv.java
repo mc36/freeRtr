@@ -201,6 +201,9 @@ public class ifcP2pOEserv implements ifcUp {
                 if (ntry == null) {
                     return;
                 }
+                if (ntry.sessid != poe.ses) {
+                    return;
+                }
                 ntry.closeDn();
                 break;
             case packPppOE.codePadO:
