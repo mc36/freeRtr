@@ -3745,7 +3745,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         switch (type) {
             case virtppp:
                 upp = getEncapProto();
-                upp.setState(state.states.close);
                 break;
             case pweth:
                 upp = ethtyp;
@@ -5100,7 +5099,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      */
     public synchronized boolean setup2pppoeClnt(cfgIfc dialer) {
         if (pppoeC != null) {
-            pppoeC.clnIfc.getEncapProto().setState(state.states.close);
+            pppoeC.sendPADt();
             pppoeC.clnIfc.lower = new ifcNull();
             pppoeC.restartTimer(true);
             pppoeC = null;
@@ -5186,7 +5185,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             if (pppoeR.ser != null) {
                 pppoeR.clnIfc.ethtyp.delET(-1);
             } else {
-                pppoeR.clnIfc.getEncapProto().setState(state.states.close);
                 pppoeR.clnIfc.lower = new ifcNull();
             }
             pppoeR.closeUp();

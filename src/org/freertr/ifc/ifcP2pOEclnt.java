@@ -117,7 +117,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     public void closeUp() {
         sendPADt();
         setState(state.states.close);
-        upper.closeUp();
+        upper.setState(state.states.down);
     }
 
     public void closeDn() {
