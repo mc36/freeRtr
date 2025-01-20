@@ -1883,9 +1883,6 @@ public class ipFwdTab {
                     cfgVrf v = cfgAll.findRd(grp.group.isIPv4(), grp.rd);
                     if (v != null) {
                         vrf = v.getFwd(grp.group);
-                        if (vrf.mdtMod == ipFwd.mdtMode.none) {
-                            vrf = null;
-                        }
                     }
                 }
                 grp.rd = 0;
