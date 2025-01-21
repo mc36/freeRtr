@@ -4312,7 +4312,12 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + mac.toEmuStr());
                 continue;
             }
-            lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + adrM.toEmuStr());
+            servP4langNei nei = lower.findNei(ntry, adrI);
+            if (nei == null) {
+                lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + adrM.toEmuStr());
+                continue;
+            }
+            lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + nei.getVia().id + " " + nei.id + " " + ifc.id);
         }
         if (bef) {
             act = "mod";
