@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.1.21-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-01-21 10:12:45, took 00:12:57, with 50 workers, on 698 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2025-01-21 10:46:02, took 00:14:10, with 50 workers, on 700 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -700,3 +700,5 @@ http://sources.freertr.org/cfg/p4lang-rout427.tst;p4lang-rout427.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout428.tst;p4lang-rout428.tst;success;p4lang: othervpn mldp qinq ingress edge
 http://sources.freertr.org/cfg/p4lang-rout429.tst;p4lang-rout429.tst;success;p4lang: othervpn bier qinq egress edge
 http://sources.freertr.org/cfg/p4lang-rout430.tst;p4lang-rout430.tst;success;p4lang: othervpn bier qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout431.tst;p4lang-rout431.tst;success;p4lang: multicast bridge routing
+http://sources.freertr.org/cfg/p4lang-rout432.tst;p4lang-rout432.tst;success;p4lang: multicast vlan bridge routing

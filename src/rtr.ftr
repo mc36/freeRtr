@@ -2130,6 +2130,8 @@ qc pass: p4lang: othervpn mldp qinq egress edge
 qc pass: p4lang: othervpn mldp qinq ingress edge
 qc pass: p4lang: othervpn bier qinq egress edge
 qc pass: p4lang: othervpn bier qinq ingress edge
+qc pass: p4lang: multicast bridge routing
+qc pass: p4lang: multicast vlan bridge routing
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
