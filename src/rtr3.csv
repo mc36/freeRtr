@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v25.1.17-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.1.24-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -674,3 +674,29 @@ http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;ok;ok;ok;ok;ok;p4lang: evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;ok;ok;ok;ok;ok;p4lang: routed evpn/cmac over backplane
+http://sources.freertr.org/cfg/p4lang-rout407.tst;p4lang-rout407.tst;ok;ok;ok;ok;not ok;p4lang: vpn mldp egress edge
+http://sources.freertr.org/cfg/p4lang-rout408.tst;p4lang-rout408.tst;ok;ok;ok;ok;not ok;p4lang: vpn mldp ingress edge
+http://sources.freertr.org/cfg/p4lang-rout409.tst;p4lang-rout409.tst;ok;ok;ok;ok;not ok;p4lang: vpn bier egress edge
+http://sources.freertr.org/cfg/p4lang-rout410.tst;p4lang-rout410.tst;ok;ok;ok;ok;not ok;p4lang: vpn bier ingress edge
+http://sources.freertr.org/cfg/p4lang-rout411.tst;p4lang-rout411.tst;ok;ok;ok;ok;not ok;p4lang: othervpn mldp egress edge
+http://sources.freertr.org/cfg/p4lang-rout412.tst;p4lang-rout412.tst;ok;ok;ok;ok;not ok;p4lang: othervpn mldp ingress edge
+http://sources.freertr.org/cfg/p4lang-rout413.tst;p4lang-rout413.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier egress edge
+http://sources.freertr.org/cfg/p4lang-rout414.tst;p4lang-rout414.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier ingress edge
+http://sources.freertr.org/cfg/p4lang-rout415.tst;p4lang-rout415.tst;ok;ok;ok;ok;not ok;p4lang: vpn mldp vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout416.tst;p4lang-rout416.tst;ok;ok;ok;ok;not ok;p4lang: vpn mldp vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout417.tst;p4lang-rout417.tst;ok;ok;ok;ok;not ok;p4lang: vpn bier vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout418.tst;p4lang-rout418.tst;ok;ok;ok;ok;not ok;p4lang: vpn bier vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout419.tst;p4lang-rout419.tst;ok;ok;ok;ok;not ok;p4lang: othervpn mldp vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout420.tst;p4lang-rout420.tst;ok;ok;ok;ok;not ok;p4lang: othervpn mldp vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout421.tst;p4lang-rout421.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier vlan egress edge
+http://sources.freertr.org/cfg/p4lang-rout422.tst;p4lang-rout422.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier vlan ingress edge
+http://sources.freertr.org/cfg/p4lang-rout423.tst;p4lang-rout423.tst;ok;ok;ok;ok;not ok;p4lang: vpn mldp qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout424.tst;p4lang-rout424.tst;ok;ok;ok;ok;not ok;p4lang: vpn mldp qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout425.tst;p4lang-rout425.tst;ok;ok;ok;ok;not ok;p4lang: vpn bier qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout426.tst;p4lang-rout426.tst;ok;ok;ok;ok;not ok;p4lang: vpn bier qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout427.tst;p4lang-rout427.tst;ok;ok;ok;ok;not ok;p4lang: othervpn mldp qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout428.tst;p4lang-rout428.tst;ok;ok;ok;ok;not ok;p4lang: othervpn mldp qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout429.tst;p4lang-rout429.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier qinq egress edge
+http://sources.freertr.org/cfg/p4lang-rout430.tst;p4lang-rout430.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier qinq ingress edge
+http://sources.freertr.org/cfg/p4lang-rout431.tst;p4lang-rout431.tst;ok;not ok;ok;not ok;not ok;p4lang: multicast bridge routing
+http://sources.freertr.org/cfg/p4lang-rout432.tst;p4lang-rout432.tst;ok;not ok;ok;not ok;not ok;p4lang: multicast vlan bridge routing
