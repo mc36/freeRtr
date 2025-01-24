@@ -672,6 +672,32 @@ qc pass: p4lang: vpls/ldp over backplane
 qc pass: p4lang: evpn/cmac over backplane
 qc pass: p4lang: routed vpls/ldp over backplane
 qc pass: p4lang: routed evpn/cmac over backplane
+qc pass: p4lang: vpn mldp egress edge
+qc pass: p4lang: vpn mldp ingress edge
+qc pass: p4lang: vpn bier egress edge
+qc pass: p4lang: vpn bier ingress edge
+qc pass: p4lang: othervpn mldp egress edge
+qc pass: p4lang: othervpn mldp ingress edge
+qc pass: p4lang: othervpn bier egress edge
+qc pass: p4lang: othervpn bier ingress edge
+qc pass: p4lang: vpn mldp vlan egress edge
+qc pass: p4lang: vpn mldp vlan ingress edge
+qc pass: p4lang: vpn bier vlan egress edge
+qc pass: p4lang: vpn bier vlan ingress edge
+qc pass: p4lang: othervpn mldp vlan egress edge
+qc pass: p4lang: othervpn mldp vlan ingress edge
+qc pass: p4lang: othervpn bier vlan egress edge
+qc pass: p4lang: othervpn bier vlan ingress edge
+qc pass: p4lang: vpn mldp qinq egress edge
+qc pass: p4lang: vpn mldp qinq ingress edge
+qc pass: p4lang: vpn bier qinq egress edge
+qc pass: p4lang: vpn bier qinq ingress edge
+qc pass: p4lang: othervpn mldp qinq egress edge
+qc pass: p4lang: othervpn mldp qinq ingress edge
+qc pass: p4lang: othervpn bier qinq egress edge
+qc pass: p4lang: othervpn bier qinq ingress edge
+failed: p4lang: multicast bridge routing
+failed: p4lang: multicast vlan bridge routing
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

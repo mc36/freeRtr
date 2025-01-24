@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v25.1.16-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-01-16 23:50:51, took 01:05:14, with 10 workers, on 674 cases, 0 failed, 0 traces, 3 retries<br/>
+release: freeRouter v25.1.23-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-01-23 23:07:40, took 01:20:02, with 10 workers, on 700 cases, 2 failed, 0 traces, 15 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -688,4 +688,30 @@ jvm: java -Xmx256m -jar rtr.jar<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout404.tst">p4lang-rout404.tst</a></td><td>success</td><td>p4lang: evpn/cmac over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout405.tst">p4lang-rout405.tst</a></td><td>success</td><td>p4lang: routed vpls/ldp over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout406.tst">p4lang-rout406.tst</a></td><td>success</td><td>p4lang: routed evpn/cmac over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout407.tst">p4lang-rout407.tst</a></td><td>success</td><td>p4lang: vpn mldp egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout408.tst">p4lang-rout408.tst</a></td><td>success</td><td>p4lang: vpn mldp ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout409.tst">p4lang-rout409.tst</a></td><td>success</td><td>p4lang: vpn bier egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout410.tst">p4lang-rout410.tst</a></td><td>success</td><td>p4lang: vpn bier ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout411.tst">p4lang-rout411.tst</a></td><td>success</td><td>p4lang: othervpn mldp egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout412.tst">p4lang-rout412.tst</a></td><td>success</td><td>p4lang: othervpn mldp ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout413.tst">p4lang-rout413.tst</a></td><td>success</td><td>p4lang: othervpn bier egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout414.tst">p4lang-rout414.tst</a></td><td>success</td><td>p4lang: othervpn bier ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout415.tst">p4lang-rout415.tst</a></td><td>success</td><td>p4lang: vpn mldp vlan egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout416.tst">p4lang-rout416.tst</a></td><td>success</td><td>p4lang: vpn mldp vlan ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout417.tst">p4lang-rout417.tst</a></td><td>success</td><td>p4lang: vpn bier vlan egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout418.tst">p4lang-rout418.tst</a></td><td>success</td><td>p4lang: vpn bier vlan ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout419.tst">p4lang-rout419.tst</a></td><td>success</td><td>p4lang: othervpn mldp vlan egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout420.tst">p4lang-rout420.tst</a></td><td>success</td><td>p4lang: othervpn mldp vlan ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout421.tst">p4lang-rout421.tst</a></td><td>success</td><td>p4lang: othervpn bier vlan egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout422.tst">p4lang-rout422.tst</a></td><td>success</td><td>p4lang: othervpn bier vlan ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout423.tst">p4lang-rout423.tst</a></td><td>success</td><td>p4lang: vpn mldp qinq egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout424.tst">p4lang-rout424.tst</a></td><td>success</td><td>p4lang: vpn mldp qinq ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout425.tst">p4lang-rout425.tst</a></td><td>success</td><td>p4lang: vpn bier qinq egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout426.tst">p4lang-rout426.tst</a></td><td>success</td><td>p4lang: vpn bier qinq ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout427.tst">p4lang-rout427.tst</a></td><td>success</td><td>p4lang: othervpn mldp qinq egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout428.tst">p4lang-rout428.tst</a></td><td>success</td><td>p4lang: othervpn mldp qinq ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout429.tst">p4lang-rout429.tst</a></td><td>success</td><td>p4lang: othervpn bier qinq egress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout430.tst">p4lang-rout430.tst</a></td><td>success</td><td>p4lang: othervpn bier qinq ingress edge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout431.tst">p4lang-rout431.tst</a></td><td>#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0</td><td>p4lang: multicast bridge routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout432.tst">p4lang-rout432.tst</a></td><td>#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0</td><td>p4lang: multicast vlan bridge routing</td></tr>
 </tbody></table></body></html>
