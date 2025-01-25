@@ -2,6 +2,8 @@
 TR=../../binTmp
 mkdir -p $TR
 
+MD="-O0 -g --analyze"                   #pretesting
+MD="-O0 -g -fsanitize=address"          #testing
 MD="-O0 -g"                             #devel
 MD="-O3 -g"                             #debug
 MD="-O3"                                #release

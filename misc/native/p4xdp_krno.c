@@ -641,7 +641,6 @@ vlan_tx:
             prt = vlnr->port;
             vlnr->pack++;
             vlnr->byte += bufE - bufD;
-            ethtyp = ETHERTYPE_VLAN;
         }
         struct bundle_res* bunr = bpf_map_lookup_elem(&bundles, &prt);
         if (bunr != NULL) {
@@ -707,7 +706,6 @@ vlan_tx:
         } else tmp = 1;
         bufP -= sizeof(macaddr);
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-        bufP = 0;
         revalidatePacket(sizeof(macaddr));
         __builtin_memcpy(bufD, &macaddr, sizeof(macaddr));
         bufO = sizeof(macaddr) + 2;

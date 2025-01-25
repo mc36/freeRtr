@@ -457,7 +457,6 @@ int putWireguardHeader(struct packetContext *ctx, struct neigh_entry *neigh_res,
     if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
     if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
     if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[*bufP + tmp]) != 1) return 1;
-    tmp += 16;
     *bufS += 16;
     *bufP -= 16;
     put32lsb(bufD, *bufP + 0, 4);
@@ -1122,7 +1121,6 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
         if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
         *bufP += tun_res->encrBlkLen;
-        tmp -= tun_res->encrBlkLen;
         *bufP += 8;
         guessEthtyp;
         *bufP -= 2;
@@ -1534,7 +1532,6 @@ ethtyp_rx:
         bufP -= 2;
         bufP -= 12;
         memcpy(&bufD[bufP], &bufH[0], 12);
-        ethtyp = ETHERTYPE_NSH;
         bufP -= 8;
         put16msb(bufD, bufP + 0, 0xfc2);
         put16msb(bufD, bufP + 2, 0x203);

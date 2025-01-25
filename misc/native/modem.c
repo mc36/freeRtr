@@ -208,7 +208,6 @@ int doOneCmd(char *cmdFul) {
         return 0;
     }
     if (strcmp(cmdFul, "flush") == 0) {
-        o = atoi(cmdPar[0]);
         for (;;) {
             i = wait4line();
             if (i == 0) return 0;

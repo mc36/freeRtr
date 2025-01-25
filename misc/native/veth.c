@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     nlh1->nlmsg_type = RTM_NEWLINK;
     nlh1->nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL | NLM_F_ACK;
     nlh1->nlmsg_seq = seq = time(NULL);
-    ifm = mnl_nlmsg_put_extra_header(nlh1, sizeof(*ifm));
+    mnl_nlmsg_put_extra_header(nlh1, sizeof(*ifm));
     mnl_attr_put_str(nlh1, IFLA_IFNAME, argv[1]);
 
     nla = mnl_attr_nest_start(nlh1, IFLA_LINKINFO);

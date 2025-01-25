@@ -144,17 +144,15 @@ static int doPacketLoop(__rte_unused void *arg) {
     int seq;
     int num;
     int i;
+    int lcore = rte_lcore_id();
+    struct lcore_conf *myconf = &lcore_conf[lcore];
+    printf("lcore %i started with %i rx and %i tx ports and %i processing!\n", lcore, myconf->rx_num, myconf->tx_num, myconf->justProcessor);
+    if ((myconf->rx_num + myconf->tx_num + myconf->justProcessor) < 1) return 0;
     struct rte_mbuf **mbufs = malloc(burst_size * sizeof(struct rte_mbuf*));
     if (mbufs == NULL) err("error allocating mbufptrs");
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
-
-    int lcore = rte_lcore_id();
-    struct lcore_conf *myconf = &lcore_conf[lcore];
-
-    printf("lcore %i started with %i rx and %i tx ports and %i processing!\n", lcore, myconf->rx_num, myconf->tx_num, myconf->justProcessor);
-    if ((myconf->rx_num + myconf->tx_num + myconf->justProcessor) < 1) return 0;
 
     if (lcore_procs < 1) {
         for (;;) {

@@ -694,7 +694,6 @@ __u32 xdp_router(struct xdp_md *ctx) {
             bufP = 2 * sizeof(macaddr);
             revalidatePacket(3 * sizeof(macaddr));
             __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
-            ethtyp = ETHERTYPE_NSH;
             bufP -= 8;
             put16msb(bufD, bufP + 0, 0xfc2);
             put16msb(bufD, bufP + 2, 0x203);
@@ -827,9 +826,7 @@ ipv6_rx:
             struct vlan_key vlnk;
             vlnk.port = prt;
             vlnk.vlan = get16msb(bufD, bufP) & 0xfff;
-            bufP += 2;
-            ethtyp = get16msb(bufD, bufP);
-            bufP += 2;
+            bufP += 4;
             __u32* res = bpf_map_lookup_elem(&vlan_in, &vlnk);
             if (res == NULL) goto drop;
             prt = *res;
@@ -1208,7 +1205,6 @@ subif_tx:
             bufP -= 2;
             put16msb(bufD, bufP, ETHERTYPE_VLAN);
             if (vlnr->vlan2 > 0) {
-                ethtyp = ETHERTYPE_VLAN;
                 prt = vlnr->port2;
                 vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
                 if (vrfp != NULL) {
@@ -1229,7 +1225,6 @@ subif_tx:
             prt = vlnr->port;
             vlnr->pack++;
             vlnr->byte += bufE - bufD;
-            ethtyp = ETHERTYPE_VLAN;
             vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
             if (vrfp != NULL) {
                 vrfp->packTx++;
@@ -1239,7 +1234,6 @@ subif_tx:
         }
         bufP -= sizeof(macaddr);
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-        bufP = 0;
         revalidatePacket(sizeof(macaddr));
         __builtin_memcpy(bufD, &macaddr, sizeof(macaddr));
         struct bundle_res* bunr = bpf_map_lookup_elem(&bundles, &prt);
