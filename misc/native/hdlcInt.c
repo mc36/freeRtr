@@ -27,12 +27,12 @@ unsigned char accmTty[256];
 pthread_t threadUdp;
 pthread_t threadRaw;
 pthread_t threadStat;
-long int byteRx;
-long int packRx;
-long int byteTx;
-long int packTx;
-long int byteBd;
-long int packBd;
+long byteRx;
+long packRx;
+long byteTx;
+long packTx;
+long byteBd;
+long packBd;
 
 void err(char*buf) {
     printf("%s\n", buf);

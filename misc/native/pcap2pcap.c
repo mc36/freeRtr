@@ -16,10 +16,10 @@ pcap_t *iface1pcap;
 pcap_t *iface2pcap;
 pthread_t threadIfc1;
 pthread_t threadIfc2;
-long int byteRx;
-long int packRx;
-long int byteTx;
-long int packTx;
+long byteRx;
+long packRx;
+long byteTx;
+long packTx;
 
 void err(char*buf) {
     printf("%s\n", buf);

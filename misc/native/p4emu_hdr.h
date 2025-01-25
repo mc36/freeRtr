@@ -10,28 +10,28 @@
 #endif
 
 struct ifaceStat_entry {
-    long int byteRx;
-    long int packRx;
-    long int byteTx;
-    long int packTx;
-    long int byteDr;
-    long int packDr;
-    long int byteMpls;
-    long int packMpls;
-    long int byteVlan;
-    long int packVlan;
-    long int byteIpv4;
-    long int packIpv4;
-    long int byteIpv6;
-    long int packIpv6;
-    long int bytePppoe;
-    long int packPppoe;
-    long int byteBridge;
-    long int packBridge;
-    long int bytePolka;
-    long int packPolka;
-    long int byteNsh;
-    long int packNsh;
+    long byteRx;
+    long packRx;
+    long byteTx;
+    long packTx;
+    long byteDr;
+    long packDr;
+    long byteMpls;
+    long packMpls;
+    long byteVlan;
+    long packVlan;
+    long byteIpv4;
+    long packIpv4;
+    long byteIpv6;
+    long packIpv6;
+    long bytePppoe;
+    long packPppoe;
+    long byteBridge;
+    long packBridge;
+    long bytePolka;
+    long packPolka;
+    long byteNsh;
+    long packNsh;
 };
 
 struct packetContext {

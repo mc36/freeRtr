@@ -17,8 +17,7 @@ int main(int argc, char **argv) {
 
     if (argc < 2) err("using: pty <bin> [args]");
 
-    struct pollfd* fds = malloc(sizeof(struct pollfd)*2);
-    if (fds == NULL) err("error allocating memory");
+    struct pollfd fds[2];
     int commSock = 0;
     int childPid = forkpty(&commSock, NULL, NULL, NULL);
     if (childPid == -1) err("error creating pty");

@@ -22,10 +22,10 @@ int bunSck[bundleMax];
 pthread_t bunThr[bundleMax];
 int bunNum;
 int bunNxt;
-long int byteRx;
-long int packRx;
-long int byteTx;
-long int packTx;
+long byteRx;
+long packRx;
+long byteTx;
+long packTx;
 
 void err(char*buf) {
     printf("%s\n", buf);

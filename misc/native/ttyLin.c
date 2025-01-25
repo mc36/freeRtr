@@ -20,10 +20,10 @@ pthread_t threadRx;
 pthread_t threadTx;
 pthread_t threadAcc;
 struct sockaddr_in addrLoc;
-long int byteRx;
-long int packRx;
-long int byteTx;
-long int packTx;
+long byteRx;
+long packRx;
+long byteTx;
+long packTx;
 
 void err(char*buf) {
     printf("%s\n", buf);

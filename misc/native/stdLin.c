@@ -15,8 +15,8 @@ int commSock;
 pthread_t threadRx;
 pthread_t threadTx;
 struct sockaddr_in addrLoc;
-long int byteRx;
-long int byteTx;
+long byteRx;
+long byteTx;
 
 void err(char*buf) {
     printf("%s\n", buf);

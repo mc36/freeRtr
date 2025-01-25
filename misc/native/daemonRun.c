@@ -32,9 +32,15 @@ int main(int argc, char **argv) {
     if (i == -1) err("failed to fork");
     if (i != 0) err("normal termination");
 
-    if (dup2(open("/dev/null", O_RDONLY), STDIN_FILENO) == -1) err("error redirecting stdin");
-    if (dup2(open("/dev/null", O_RDWR), STDOUT_FILENO) == -1) err("error redirecting stdout");
-    if (dup2(open("/dev/null", O_RDWR), STDERR_FILENO) == -1) err("error redirecting stderr");
+    i = open("/dev/null", O_RDONLY);
+    if (i < 0) err("error opening stdin");
+    if (dup2(i, STDIN_FILENO) == -1) err("error redirecting stdin");
+    i = open("/dev/null", O_RDWR);
+    if (i < 0) err("error opening stdout");
+    if (dup2(i, STDOUT_FILENO) == -1) err("error redirecting stdout");
+    i = open("/dev/null", O_RDWR);
+    if (i < 0) err("error opening stderr");
+    if (dup2(i, STDERR_FILENO) == -1) err("error redirecting stderr");
 
     if (chdir("/") == -1) err("error changing directory");
 
