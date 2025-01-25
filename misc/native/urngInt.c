@@ -290,7 +290,7 @@ help :
     if (ifaceIovTx == NULL) err("error allocating memory");
 
     for (int i=0; i < queueMax; i++) {
-        struct io_uring_sqe *sqe = sqe = io_uring_get_sqe(&ifaceRingRx);
+        struct io_uring_sqe *sqe = io_uring_get_sqe(&ifaceRingRx);
         if (sqe == NULL) err("error getting sqe");
         prepReceive(sqe, i);
     }
