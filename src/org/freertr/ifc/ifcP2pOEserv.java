@@ -93,6 +93,20 @@ public class ifcP2pOEserv implements ifcUp {
         }
     }
 
+    /**
+     * do clear
+     *
+     * @param peer peer ip
+     */
+    public void doClear(addrMac peer) {
+        ifcP2pOEservSess ntry = new ifcP2pOEservSess(this, peer);
+        ntry = clnts.find(ntry);
+        if (ntry == null) {
+            return;
+        }
+        ntry.closeDn();
+    }
+
     public counter getCounter() {
         return cntr;
     }
@@ -106,6 +120,19 @@ public class ifcP2pOEserv implements ifcUp {
     public void setParent(ifcDn parent) {
         lower = parent;
         hwaddr = (addrMac) lower.getHwAddr();
+    }
+
+    private ifcP2pOEservSess findSessId(int id) {
+        for (int i = 0; i < clnts.size(); i++) {
+            ifcP2pOEservSess ntry = clnts.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.sessid == id) {
+                return ntry;
+            }
+        }
+        return null;
     }
 
     /**
@@ -186,8 +213,19 @@ public class ifcP2pOEserv implements ifcUp {
                 if (debugger.ifcP2pOEserv) {
                     logger.debug("tx pads");
                 }
-                ntry.sessid = bits.random(1, 0xfffe);
-                ifcP2pOEservSess old = clnts.add(ntry);
+                ifcP2pOEservSess old = null;
+                for (int i = 0; i < 16; i++) {
+                    ntry.sessid = bits.random(1, 0xfffe);
+                    old = findSessId(ntry.sessid);
+                    if (old == null) {
+                        break;
+                    }
+                }
+                if (old != null) {
+                    logger.error("failed to allocate session id");
+                    break;
+                }
+                old = clnts.add(ntry);
                 if (old != null) {
                     ntry = old;
                 } else {

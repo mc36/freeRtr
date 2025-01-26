@@ -207,6 +207,25 @@ public class userClear {
             srv.doClear();
             return null;
         }
+        if (a.equals("p2poe")) {
+            a = cmd.word();
+            cfgIfc ifc = cfgAll.ifcFind(a, 0);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            if (ifc.pppoeS==null) {
+                cmd.error("protocol not enabled");
+                return null;
+            }
+            addrMac adr = new addrMac();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            ifc.pppoeS.doClear(adr);
+            return null;
+        }
         if (a.equals("amt")) {
             servAmt srv = cfgAll.srvrFind(new servAmt(), cfgAll.dmnAmt, cmd.word());
             if (srv == null) {

@@ -2018,6 +2018,9 @@ public class userExec {
         hl.add(null, "2 3      vpdn                         reconnect vpdn peer");
         hl.add(null, "3 4,.      <name:vpd>                 name of vpdn");
         hl.add(null, "4 .          [num]                    downtime in milliseconds");
+        hl.add(null, "2 3      p2poe                        pppoe client");
+        hl.add(null, "3 4        <name:ifc>                 name of interface");
+        hl.add(null, "4 .          <addr>                   peer address");
         hl.add(null, "2 3      amt                          amt protocol client");
         hl.add(cfgAll.dmnAmt.listServers(), "3 4        <name:loc>                 server name");
         hl.add(null, "4 .          <addr>                   peer address");
