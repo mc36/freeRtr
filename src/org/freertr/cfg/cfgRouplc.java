@@ -196,6 +196,8 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     bier                match bier index");
         l.add(null, "3 .       <num>             index");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     srv6                match srv6 prefix");
+        l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     afi                 match afi");
         l.add(null, "3 .       <num>             afi");
         l.add(null, "3 .       all               any value");
@@ -325,6 +327,8 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, "3 4       <num>             index");
         l.add(null, "4 .         leave           leave subdomain unchanged");
         l.add(null, "4 .         <num>           subdomain");
+        l.add(null, "2 3     srv6                set srv6 prefix");
+        l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     route-map           set route map");
         l.add(null, "3 .       <name:rm>         name of route map");
         l.add(null, "2 3     route-policy        set route policy");
@@ -607,6 +611,15 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         if (a.equals("bier")) {
             ntry.ifMode = tabRtrplcN.ifType.bier;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("srv6")) {
+            ntry.ifMode = tabRtrplcN.ifType.srv6;
+            ntry.addrSet = new addrIP();
+            if (ntry.addrSet.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
             }
@@ -1010,6 +1023,15 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
                     return;
                 }
                 if (ntry.int2set.fromString(cmd.word())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("srv6")) {
+                ntry.doMode = tabRtrplcN.doType.setSrv6;
+                ntry.addrSet = new addrIP();
+                if (ntry.addrSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;
                 }

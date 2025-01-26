@@ -83,6 +83,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         "route-map .*!" + cmds.tabulator + "sequence .* match bier all",
         "route-map .*!" + cmds.tabulator + "sequence .* match afi all",
         "route-map .*!" + cmds.tabulator + "sequence .* match safi all",
+        "route-map .*!" + cmds.tabulator + "sequence .* no match srv6",
         "route-map .*!" + cmds.tabulator + "sequence .* no match nostdcomm",
         "route-map .*!" + cmds.tabulator + "sequence .* no match noextcomm",
         "route-map .*!" + cmds.tabulator + "sequence .* no match nolrgcomm",
@@ -122,6 +123,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         "route-map .*!" + cmds.tabulator + "sequence .* set label-remote leave",
         "route-map .*!" + cmds.tabulator + "sequence .* set segrout leave",
         "route-map .*!" + cmds.tabulator + "sequence .* set bier leave leave",
+        "route-map .*!" + cmds.tabulator + "sequence .* no set srv6",
         "route-map .*!" + cmds.tabulator + "sequence .* no log"
     };
 
@@ -274,6 +276,8 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     bier                match bier index");
         l.add(null, "3 .       <num>             index");
         l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     srv6                match srv6 prefix");
+        l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     afi                 match afi");
         l.add(null, "3 .       <num>             afi");
         l.add(null, "3 .       all               any value");
@@ -396,6 +400,8 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, "3 4       <num>             index");
         l.add(null, "4 .         leave           leave subdomain unchanged");
         l.add(null, "4 .         <num>           subdomain");
+        l.add(null, "2 3     srv6                set srv6 prefix");
+        l.add(null, "3 .       <addr>            address");
         l.add(null, "2 3     route-map           set route map");
         l.add(null, "3 .       <name:rm>         name of route map");
         l.add(null, "2 3     route-policy        set route policy");

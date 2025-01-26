@@ -203,6 +203,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setBier,
         /**
+         * set srv6
+         */
+        setSrv6,
+        /**
          * set route distinguisher
          */
         setRoudst,
@@ -380,6 +384,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * bier
          */
         bier,
+        /**
+         * srv6
+         */
+        srv6,
         /**
          * afi
          */
@@ -604,6 +612,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set segrout " + intSet;
             case setBier:
                 return "set bier " + intSet + " " + int2set;
+            case setSrv6:
+                return "set srv6 " + addrSet;
             case setRoudst:
                 return "set rd " + tabRouteUtil.rd2string(longVal);
             case setRoumap:
@@ -718,6 +728,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "segrout " + intMatch;
             case bier:
                 return "bier " + intMatch;
+            case srv6:
+                return "srv6 " + addrSet;
             case afi:
                 return "afi " + intMatch;
             case safi:
@@ -887,6 +899,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.segrouIdx);
             case bier:
                 return intMatch.matches(net.best.bierIdx);
+            case srv6:
+                if (net.best.segrouPrf == null) {
+                    return false;
+                }
+                return addrSet.compareTo(net.best.segrouPrf) == 0;
             case afi:
                 return intMatch.matches(afi & rtrBgpUtil.afiMask);
             case safi:
@@ -1042,6 +1059,9 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case setBier:
                 attr.bierIdx = intSet.update(attr.bierIdx);
                 attr.bierSub = int2set.update(attr.bierSub);
+                return;
+            case setSrv6:
+                attr.segrouPrf = addrSet.copyBytes();
                 return;
             default:
                 break;

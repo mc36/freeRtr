@@ -263,6 +263,16 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntUpdater bierSubSet = new tabIntUpdater();
 
     /**
+     * srv6 matcher
+     */
+    public addrIP srv6match = null;
+
+    /**
+     * srv6 updater
+     */
+    public addrIP srv6set = null;
+
+    /**
      * as path matcher
      */
     public String aspathMatch = null;
@@ -516,6 +526,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         } else {
             l.add(beg + "match recursive " + oldhopMatch);
         }
+        if (srv6match == null) {
+            l.add(beg + "no match srv6");
+        } else {
+            l.add(beg + "match srv6 " + srv6match);
+        }
         if (protoTypMatch == null) {
             l.add(beg + "no match protocol");
         } else {
@@ -625,6 +640,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             l.add(beg + "no set nexthop");
         } else {
             l.add(beg + "set nexthop " + nexthopSet);
+        }
+        if (srv6set == null) {
+            l.add(beg + "no set srv6");
+        } else {
+            l.add(beg + "set srv6 " + srv6set);
         }
         l.add(beg + "set distance " + distanceSet);
         l.add(beg + "set locpref " + locPrefSet);
@@ -941,6 +961,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("srv6")) {
+            srv6set = new addrIP();
+            if (srv6set.fromString(cmd.word())) {
+                cmd.error("invalid address");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("route-map")) {
             cfgRoump roumap = cfgAll.rtmpFind(cmd.word(), false);
             if (roumap == null) {
@@ -1069,6 +1097,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (a.equals("bier")) {
             bierIdxSet.set2unchange();
             bierSubSet.set2unchange();
+            return false;
+        }
+        if (a.equals("srv6")) {
+            srv6set = null;
             return false;
         }
         if (a.equals("route-map")) {
@@ -1364,6 +1396,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("srv6")) {
+            srv6match = new addrIP();
+            if (srv6match.fromString(cmd.word())) {
+                cmd.error("invalid address");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("afi")) {
             if (afiMatch.fromString(cmd.word())) {
                 cmd.error("invalid action");
@@ -1559,6 +1599,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             bierMatch.set2always();
             return false;
         }
+        if (a.equals("srv6")) {
+            srv6match = null;
+            return false;
+        }
         if (a.equals("afi")) {
             afiMatch.set2always();
             return false;
@@ -1728,6 +1772,14 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
                 return false;
             }
         }
+        if (srv6match != null) {
+            if (net.best.segrouPrf == null) {
+                return false;
+            }
+            if (srv6match.compareTo(net.best.segrouPrf) != 0) {
+                return false;
+            }
+        }
         if (protoTypMatch != null) {
             if (net.best.rouTyp != protoTypMatch) {
                 return false;
@@ -1887,6 +1939,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (nexthopSet != null) {
             attr.nextHop = nexthopSet.copyBytes();
+        }
+        if (srv6set != null) {
+            attr.segrouPrf = srv6set.copyBytes();
         }
         if (extCommSet != null) {
             if (attr.extComm == null) {
