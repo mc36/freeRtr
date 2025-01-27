@@ -111,8 +111,6 @@ struct port2vrf_entry {
     int monPackets;
     int sgtSet;
     int sgtTag;
-    struct table_head pppoe;
-    struct table_head vlanin;
 #ifndef HAVE_NOCRYPTO
     int mcscEthtyp;
     int mcscCrTxKeyLen;
@@ -148,22 +146,6 @@ struct port2vrf_entry {
 struct table_head port2vrf_table;
 
 
-struct pppoe_entry {
-    int session;
-    int aclport;
-    long pack;
-    long byte;
-};
-
-
-struct vlanin_entry {
-    int vlan;
-    int id;
-    long pack;
-    long byte;
-};
-
-
 struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
     int index = table_find(&port2vrf_table, ntry);
     if (index >= 0) return table_get(&port2vrf_table, index);
@@ -172,8 +154,6 @@ struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
     ntry = table_get(&port2vrf_table, index);
     ntry->monTarget = -1;
     ntry->sgtSet = -1;
-    table_init(&ntry->pppoe, sizeof(struct pppoe_entry), 1);
-    table_init(&ntry->vlanin, sizeof(struct vlanin_entry), 1);
     return ntry;
 }
 
@@ -182,8 +162,6 @@ void port2vrf_deinit(struct port2vrf_entry *ntry) {
     int index = table_find(&port2vrf_table, ntry);
     if (index < 0) return;
     ntry = table_get(&port2vrf_table, index);
-    table_deinit(&ntry->pppoe);
-    table_deinit(&ntry->vlanin);
     table_del(&port2vrf_table, ntry);
 }
 
@@ -333,6 +311,17 @@ struct bridge_entry {
 };
 
 struct table_head bridge_table;
+
+
+struct vlanin_entry {
+    int vlan;
+    int port;
+    int id;
+    long pack;
+    long byte;
+};
+
+struct table_head vlanin_table;
 
 
 struct vlanout_entry {
@@ -613,6 +602,17 @@ struct bundle_entry {
 struct table_head bundle_table;
 
 
+struct pppoe_entry {
+    int port;
+    int session;
+    int aclport;
+    long pack;
+    long byte;
+};
+
+struct table_head pppoe_table;
+
+
 struct tun4_entry {
     int srcPort;
     int trgPort;
@@ -748,11 +748,13 @@ int initTables() {
     table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), 1);
     table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), 1);
     table_init(&neigh_table, sizeof(struct neigh_entry), 1);
+    table_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
     table_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
     table_init(&bridge_table, sizeof(struct bridge_entry), 3);
     table_init(&acls4_table, sizeof(struct acls_entry), 2);
     table_init(&acls6_table, sizeof(struct acls_entry), 2);
     table_init(&bundle_table, sizeof(struct bundle_entry), 1);
+    table_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
     table_init(&policer_table, sizeof(struct policer_entry), 3);
 #ifndef HAVE_NOCRYPTO
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
