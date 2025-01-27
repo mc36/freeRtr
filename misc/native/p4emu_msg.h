@@ -451,15 +451,14 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     }
     if (strcmp(arg[0], "portvrf") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
-        port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->bridge = 0;
         if (del == 0) {
-            port2vrf_res->command = 0;
-            port2vrf_res->vrf = 0;
+            port2vrf_deinit(&port2vrf_ntry);
             return 0;
         }
-        port2vrf_res->command = 1;
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->bridge = 0;
         port2vrf_res->vrf = atoi(arg[3]);
+        port2vrf_res->command = 1;
         return 0;
     }
     if (strcmp(arg[0], "tcpmss4in") == 0) {
@@ -540,48 +539,57 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     }
     if (strcmp(arg[0], "loconnifc") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
+        if (del == 0) {
+            port2vrf_deinit(&port2vrf_ntry);
+            return 0;
+        }
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->command = 4;
         port2vrf_res->bridge = 0;
         port2vrf_res->vrf = 0;
         port2vrf_res->label1 = atoi(arg[3]);
-        if (del == 0) port2vrf_res->command = 0;
+        port2vrf_res->command = 4;
         return 0;
     }
     if (strcmp(arg[0], "loconnnei") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
+        if (del == 0) {
+            port2vrf_deinit(&port2vrf_ntry);
+            return 0;
+        }
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->command = 5;
         port2vrf_res->bridge = 0;
         port2vrf_res->vrf = 0;
         port2vrf_res->label1 = atoi(arg[3]);
-        if (del == 0) port2vrf_res->command = 0;
+        port2vrf_res->command = 5;
         return 0;
     }
     if (strcmp(arg[0], "nshconn") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
+        if (del == 0) {
+            port2vrf_deinit(&port2vrf_ntry);
+            return 0;
+        }
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->command = 6;
         port2vrf_res->bridge = 0;
         port2vrf_res->vrf = 0;
         port2vrf_res->label1 = atoi(arg[3]);
         port2vrf_res->label2 = atoi(arg[4]);
-        if (del == 0) port2vrf_res->command = 0;
+        port2vrf_res->command = 6;
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->command = 3;
         port2vrf_res->bridge = 0;
         port2vrf_res->vrf = 0;
         port2vrf_res->nexthop = atoi(arg[4]);
         port2vrf_res->label1 = atoi(arg[5]);
         port2vrf_res->label2 = atoi(arg[7]);
+        port2vrf_res->command = 3;
         mpls_ntry.label = atoi(arg[6]);
         mpls_ntry.port = port2vrf_res->port;
         mpls_ntry.command = 4;
-        if (del == 0) port2vrf_res->command = 0;
+        if (del == 0) port2vrf_deinit(&port2vrf_ntry);
         if (del == 0) table_del(&mpls_table, &mpls_ntry);
         else table_add(&mpls_table, &mpls_ntry);
         return 0;
@@ -609,15 +617,14 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     }
     if (strcmp(arg[0], "portbridge") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
-        port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->vrf = 0;
         if (del == 0) {
-            port2vrf_res->command = 0;
-            port2vrf_res->bridge = 0;
+            port2vrf_deinit(&port2vrf_ntry);
             return 0;
         }
-        port2vrf_res->command = 2;
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->vrf = 0;
         port2vrf_res->bridge = atoi(arg[3]);
+        port2vrf_res->command = 2;
         return 0;
     }
     if (strcmp(arg[0], "bridgemac") == 0) {

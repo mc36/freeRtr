@@ -158,6 +158,14 @@ struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
 }
 
 
+void port2vrf_deinit(struct port2vrf_entry *ntry) {
+    int index = table_find(&port2vrf_table, ntry);
+    if (index < 0) return;
+    ntry = table_get(&port2vrf_table, index);
+    table_del(&port2vrf_table, ntry);
+}
+
+
 struct vrf2rib_entry {
     int vrf;
     long pack;
@@ -539,14 +547,14 @@ struct nat4_entry {
 struct insp6_entry {
     int srcPort;
     int trgPort;
-    int srcAddr4;
-    int trgAddr4;
-    int srcAddr3;
-    int trgAddr3;
-    int srcAddr2;
     int srcAddr1;
-    int trgAddr2;
+    int srcAddr2;
+    int srcAddr3;
+    int srcAddr4;
     int trgAddr1;
+    int trgAddr2;
+    int trgAddr3;
+    int trgAddr4;
     int prot;
     long packRx;
     long byteRx;
@@ -557,14 +565,14 @@ struct insp6_entry {
 struct nat6_entry {
     int oSrcPort;
     int oTrgPort;
-    int oSrcAddr4;
-    int oTrgAddr4;
-    int oSrcAddr3;
-    int oTrgAddr3;
-    int oSrcAddr2;
-    int oTrgAddr2;
     int oSrcAddr1;
+    int oSrcAddr2;
+    int oSrcAddr3;
+    int oSrcAddr4;
     int oTrgAddr1;
+    int oTrgAddr2;
+    int oTrgAddr3;
+    int oTrgAddr4;
     int prot;
     int nSrcAddr1;
     int nSrcAddr2;
@@ -632,14 +640,14 @@ struct tun4_entry {
 struct tun6_entry {
     int srcPort;
     int trgPort;
-    int srcAddr4;
-    int trgAddr4;
-    int srcAddr3;
-    int trgAddr3;
-    int srcAddr2;
-    int trgAddr2;
     int srcAddr1;
+    int srcAddr2;
+    int srcAddr3;
+    int srcAddr4;
     int trgAddr1;
+    int trgAddr2;
+    int trgAddr3;
+    int trgAddr4;
     int prot;
     int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=etherip
     long pack;
