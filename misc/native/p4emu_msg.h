@@ -839,23 +839,25 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "portvlan") == 0) {
+        vlanout_ntry.port = port2vrf_ntry.port = atoi(arg[3]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
         vlanout_ntry.id = vlanin_ntry.id = atoi(arg[2]);
-        vlanout_ntry.port = vlanin_ntry.port = atoi(arg[3]);
         vlanout_ntry.vlan = vlanin_ntry.vlan = atoi(arg[4]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) table_del(&port2vrf_res->vlanin, &vlanin_ntry);
+        else table_add(&port2vrf_res->vlanin, &vlanin_ntry);
         if (del == 0) table_del(&vlanout_table, &vlanout_ntry);
         else table_add(&vlanout_table, &vlanout_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portqinq") == 0) {
+        vlanout_ntry.port2 = port2vrf_ntry.port = atoi(arg[4]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
         vlanout_ntry.id = vlanin_ntry.id = atoi(arg[2]);
         vlanout_ntry.port = atoi(arg[3]);
-        vlanout_ntry.port2 = vlanin_ntry.port = atoi(arg[4]);
         vlanout_ntry.vlan2 = atoi(arg[5]);
         vlanout_ntry.vlan = vlanin_ntry.vlan = atoi(arg[6]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) table_del(&port2vrf_res->vlanin, &vlanin_ntry);
+        else table_add(&port2vrf_res->vlanin, &vlanin_ntry);
         if (del == 0) table_del(&vlanout_table, &vlanout_ntry);
         else table_add(&vlanout_table, &vlanout_ntry);
         return 0;
@@ -1629,19 +1631,21 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "bundlevlan") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
         vlanin_ntry.id = atoi(arg[4]);
-        vlanin_ntry.port = atoi(arg[2]);
         vlanin_ntry.vlan = atoi(arg[3]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) table_del(&port2vrf_res->vlanin, &vlanin_ntry);
+        else table_add(&port2vrf_res->vlanin, &vlanin_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bundleqinq") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
         vlanin_ntry.id = atoi(arg[4]);
-        vlanin_ntry.port = atoi(arg[2]);
         vlanin_ntry.vlan = atoi(arg[3]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) table_del(&port2vrf_res->vlanin, &vlanin_ntry);
+        else table_add(&port2vrf_res->vlanin, &vlanin_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pppoe") == 0) {
@@ -3058,15 +3062,8 @@ void doStatLoop() {
             fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
         }
         for (int i=0; i<vlanout_table.size; i++) {
-            struct vlanout_entry *ontry = table_get(&vlanout_table, i);
-            struct vlanin_entry ival;
-            if (ontry->port2 != 0) ival.port = ontry->port2;
-            else ival.port = ontry->port;
-            ival.vlan = ontry->vlan;
-            int o = table_find(&vlanin_table, &ival);
-            if (o < 0) continue;
-            struct vlanin_entry *intry = table_get(&vlanin_table, o);
-            fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
+            struct vlanout_entry *ntry = table_get(&vlanout_table, i);
+            fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
         }
         if ((round % 150) != 0) {
             fflush(commandTx);
@@ -3243,8 +3240,8 @@ void doMainLoop() {
         case 'v':
         case 'V':
             printf("        id       vlan       port\n");
-            for (int i=0; i<vlanin_table.size; i++) {
-                struct vlanin_entry *ntry = table_get(&vlanin_table, i);
+            for (int i=0; i<vlanout_table.size; i++) {
+                struct vlanout_entry *ntry = table_get(&vlanout_table, i);
                 printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
             }
             break;

@@ -1661,16 +1661,16 @@ neigh_tx:
         }
         doDropper;
     case ETHERTYPE_VLAN: // dot1q
+        if (port2vrf_res == NULL) doDropper;
         ctx->stat->packVlan++;
         ctx->stat->byteVlan += bufS;
         ttl = get16msb(bufD, bufP) & 0xfff;
         ctx->hash ^= ttl;
-        vlanin_ntry.port = prt;
         vlanin_ntry.vlan = ttl;
         bufP += 2;
-        index = table_find(&vlanin_table, &vlanin_ntry);
+        index = table_find(&port2vrf_res->vlanin, &vlanin_ntry);
         if (index < 0) doDropper;
-        vlanin_res = table_get(&vlanin_table, index);
+        vlanin_res = table_get(&port2vrf_res->vlanin, index);
         prt = vlanin_res->id;
         vlanin_res->pack++;
         vlanin_res->byte += bufS;
