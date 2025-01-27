@@ -1645,16 +1645,17 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "pppoe") == 0) {
+        neigh_ntry.port = port2vrf_ntry.port = atoi(arg[3]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
         neigh_ntry.aclport = pppoe_ntry.aclport = atoi(arg[2]);
-        neigh_ntry.port = pppoe_ntry.port = atoi(arg[3]);
         neigh_ntry.tid = pppoe_ntry.session = atoi(arg[6]);
         neigh_ntry.id = atoi(arg[4]);
         neigh_ntry.vrf = atoi(arg[5]);
         neigh_ntry.command = 2;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[8]);
-        if (del == 0) table_del(&pppoe_table, &pppoe_ntry);
-        else table_add(&pppoe_table, &pppoe_ntry);
+        if (del == 0) table_del(&port2vrf_res->pppoe, &pppoe_ntry);
+        else table_add(&port2vrf_res->pppoe, &pppoe_ntry);
         if (del == 0) table_del(&neigh_table, &neigh_ntry);
         else table_add(&neigh_table, &neigh_ntry);
         return 0;
@@ -3056,10 +3057,6 @@ void doStatLoop() {
             struct bundle_entry *ntry = table_get(&bundle_table, i);
             fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
         }
-        for (int i=0; i<pppoe_table.size; i++) {
-            struct pppoe_entry *ntry = table_get(&pppoe_table, i);
-            fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-        }
         for (int i=0; i<vlanout_table.size; i++) {
             struct vlanout_entry *ontry = table_get(&vlanout_table, i);
             struct vlanin_entry ival;
@@ -3107,13 +3104,17 @@ void doStatLoop() {
         }
         doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
         doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
-#ifndef HAVE_NOCRYPTO
         for (int i=0; i<port2vrf_table.size; i++) {
             struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
+            for (int o=0; o<ntry->pppoe.size; o++) {
+                struct pppoe_entry *ntry2 = table_get(&ntry->pppoe, o);
+                fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry2->aclport, ntry2->pack, ntry2->byte);
+            }
+#ifndef HAVE_NOCRYPTO
             if (ntry->mcscEthtyp == 0) continue;
             fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
-        }
 #endif
+        }
         for (int i=0; i<acls4_table.size; i++) {
             struct acls_entry *ntry1 = table_get(&acls4_table, i);
             doStatRound_acl(ntry1, 4);

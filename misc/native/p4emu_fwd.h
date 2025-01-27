@@ -2276,14 +2276,14 @@ ipv6_tx:
         }
         doDropper;
     case ETHERTYPE_PPPOE_DATA: // pppoe
+        if (port2vrf_res == NULL) doDropper;
         ctx->stat->packPppoe++;
         ctx->stat->bytePppoe += bufS;
-        pppoe_ntry.port = prt;
         pppoe_ntry.session = get16msb(bufD, bufP + 2);
         ctx->hash ^= pppoe_ntry.session;
-        index = table_find(&pppoe_table, &pppoe_ntry);
+        index = table_find(&port2vrf_res->pppoe, &pppoe_ntry);
         if (index < 0) doDropper;
-        pppoe_res = table_get(&pppoe_table, index);
+        pppoe_res = table_get(&port2vrf_res->pppoe, index);
         pppoe_res->pack++;
         pppoe_res->byte += bufS;
         bufP += 6;

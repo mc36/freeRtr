@@ -24,8 +24,8 @@ void table_init(struct table_head *tab, int reclen, int cmplen) {
 
 void table_resize(struct table_head *tab, int ned) {
     int siz = -1;
-    if ((ned + 512) < tab->alloc) siz = ned + 128;
-    if (ned > tab->alloc) siz = ned + 512;
+    if ((ned + 512) < tab->alloc) siz = ned + 256;
+    if (ned > tab->alloc) siz = ned + 256;
     if (siz < 0) return;
     unsigned char *old = tab->buffer;
     unsigned char *new = malloc((size_t)tab->reclen * siz);

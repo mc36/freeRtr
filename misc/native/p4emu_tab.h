@@ -111,6 +111,7 @@ struct port2vrf_entry {
     int monPackets;
     int sgtSet;
     int sgtTag;
+    struct table_head pppoe;
 #ifndef HAVE_NOCRYPTO
     int mcscEthtyp;
     int mcscCrTxKeyLen;
@@ -146,6 +147,14 @@ struct port2vrf_entry {
 struct table_head port2vrf_table;
 
 
+struct pppoe_entry {
+    int session;
+    int aclport;
+    long pack;
+    long byte;
+};
+
+
 struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
     int index = table_find(&port2vrf_table, ntry);
     if (index >= 0) return table_get(&port2vrf_table, index);
@@ -154,6 +163,7 @@ struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
     ntry = table_get(&port2vrf_table, index);
     ntry->monTarget = -1;
     ntry->sgtSet = -1;
+    table_init(&ntry->pppoe, sizeof(struct pppoe_entry), 1);
     return ntry;
 }
 
@@ -162,6 +172,7 @@ void port2vrf_deinit(struct port2vrf_entry *ntry) {
     int index = table_find(&port2vrf_table, ntry);
     if (index < 0) return;
     ntry = table_get(&port2vrf_table, index);
+    table_deinit(&ntry->pppoe);
     table_del(&port2vrf_table, ntry);
 }
 
@@ -602,17 +613,6 @@ struct bundle_entry {
 struct table_head bundle_table;
 
 
-struct pppoe_entry {
-    int port;
-    int session;
-    int aclport;
-    long pack;
-    long byte;
-};
-
-struct table_head pppoe_table;
-
-
 struct tun4_entry {
     int srcPort;
     int trgPort;
@@ -754,7 +754,6 @@ int initTables() {
     table_init(&acls4_table, sizeof(struct acls_entry), 2);
     table_init(&acls6_table, sizeof(struct acls_entry), 2);
     table_init(&bundle_table, sizeof(struct bundle_entry), 1);
-    table_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
     table_init(&policer_table, sizeof(struct policer_entry), 3);
 #ifndef HAVE_NOCRYPTO
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
