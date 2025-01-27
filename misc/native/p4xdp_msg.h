@@ -163,10 +163,13 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "portvrf") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
-        vrfr->cmd = 1;
         vrfr->vrf = atoi(arg[3]);
-        if (del == 0) vrfr->cmd = 0;
-        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        vrfr->cmd = 1;
+        if (del == 0) {
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        }
         return 0;
     }
     if (strcmp(arg[0], "sgtset") == 0) {
@@ -248,43 +251,55 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "loconnifc") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
-        vrfr->cmd = 4;
         vrfr->label1 = atoi(arg[3]);
-        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        vrfr->cmd = 4;
+        if (del == 0) {
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        }
         return 0;
     }
     if (strcmp(arg[0], "loconnnei") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
-        vrfr->cmd = 5;
         vrfr->label1 = atoi(arg[3]);
-        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        vrfr->cmd = 5;
+        if (del == 0) {
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        }
         return 0;
     }
     if (strcmp(arg[0], "nshconn") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
-        vrfr->cmd = 6;
         vrfr->label1 = atoi(arg[3]);
         vrfr->label2 = atoi(arg[4]);
-        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        vrfr->cmd = 6;
+        if (del == 0) {
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        }
         return 0;
     }
     if (strcmp(arg[0], "xconnect") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
-        vrfr->cmd = 3;
         vrfr->nexthop = atoi(arg[4]);
         vrfr->label1 = atoi(arg[5]);
         vrfr->label2 = atoi(arg[7]);
+        vrfr->cmd = 3;
         o = atoi(arg[6]);
         labr.port = i;
         labr.cmd= 4;
-        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
         if (del == 0) {
-            vrfr->cmd = 0;
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(labels_fd, &o) != 0) warn("error removing entry");
         } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(labels_fd, &o, &labr, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
@@ -292,10 +307,13 @@ int doOneCommand(unsigned char* buf) {
     if (strcmp(arg[0], "portbridge") == 0) {
         i = atoi(arg[2]);
         bpf_map_lookup_elem(vrf_port_fd, &i, vrfr);
-        vrfr->cmd = 2;
         vrfr->bridge = atoi(arg[3]);
-        if (del == 0) vrfr->cmd = 0;
-        if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        vrfr->cmd = 2;
+        if (del == 0) {
+            if (bpf_map_delete_elem(vrf_port_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(vrf_port_fd, &i, vrfr, BPF_ANY) != 0) warn("error setting entry");
+        }
         return 0;
     }
     if (strcmp(arg[0], "bridgemac") == 0) {
