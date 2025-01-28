@@ -657,9 +657,8 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     struct vlanout_entry *vlanout_res;
     struct bundle_entry *bundle_res;
     vlanout_ntry.id = prt;
-    int index = table_find(&vlanout_table, &vlanout_ntry);
-    if (index >= 0) {
-        vlanout_res = table_get(&vlanout_table, index);
+    vlanout_res = hasht_find(&vlanout_table, &vlanout_ntry);
+    if (vlanout_res != NULL) {
         ctx->hash ^= vlanout_res->vlan;
         bufP -= 2;
         put16msb(bufD, bufP, vlanout_res->vlan);
@@ -682,7 +681,7 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
         if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
     }
     bundle_ntry.id = prt;
-    index = table_find(&bundle_table, &bundle_ntry);
+    int index = table_find(&bundle_table, &bundle_ntry);
     if (index < 0) {
         putMacAddr;
         send2port(prt);
@@ -1656,9 +1655,8 @@ neigh_tx:
         vlanin_ntry.port = prt;
         vlanin_ntry.vlan = ttl;
         bufP += 2;
-        index = table_find(&vlanin_table, &vlanin_ntry);
-        if (index < 0) doDropper;
-        vlanin_res = table_get(&vlanin_table, index);
+        vlanin_res = hasht_find(&vlanin_table, &vlanin_ntry);
+        if (vlanin_res == NULL) doDropper;
         prt = vlanin_res->id;
         vlanin_res->pack++;
         vlanin_res->byte += bufS;

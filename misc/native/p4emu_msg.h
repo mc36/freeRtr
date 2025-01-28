@@ -842,10 +842,10 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vlanout_ntry.id = vlanin_ntry.id = atoi(arg[2]);
         vlanout_ntry.port = vlanin_ntry.port = atoi(arg[3]);
         vlanout_ntry.vlan = vlanin_ntry.vlan = atoi(arg[4]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
-        if (del == 0) table_del(&vlanout_table, &vlanout_ntry);
-        else table_add(&vlanout_table, &vlanout_ntry);
+        if (del == 0) hasht_del(&vlanin_table, &vlanin_ntry);
+        else hasht_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) hasht_del(&vlanout_table, &vlanout_ntry);
+        else hasht_add(&vlanout_table, &vlanout_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portqinq") == 0) {
@@ -854,10 +854,10 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vlanout_ntry.port2 = vlanin_ntry.port = atoi(arg[4]);
         vlanout_ntry.vlan2 = atoi(arg[5]);
         vlanout_ntry.vlan = vlanin_ntry.vlan = atoi(arg[6]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
-        if (del == 0) table_del(&vlanout_table, &vlanout_ntry);
-        else table_add(&vlanout_table, &vlanout_ntry);
+        if (del == 0) hasht_del(&vlanin_table, &vlanin_ntry);
+        else hasht_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) hasht_del(&vlanout_table, &vlanout_ntry);
+        else hasht_add(&vlanout_table, &vlanout_ntry);
         return 0;
     }
     if (strcmp(arg[0], "myaddr4") == 0) {
@@ -1632,16 +1632,16 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vlanin_ntry.id = atoi(arg[4]);
         vlanin_ntry.port = atoi(arg[2]);
         vlanin_ntry.vlan = atoi(arg[3]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) hasht_del(&vlanin_table, &vlanin_ntry);
+        else hasht_add(&vlanin_table, &vlanin_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bundleqinq") == 0) {
         vlanin_ntry.id = atoi(arg[4]);
         vlanin_ntry.port = atoi(arg[2]);
         vlanin_ntry.vlan = atoi(arg[3]);
-        if (del == 0) table_del(&vlanin_table, &vlanin_ntry);
-        else table_add(&vlanin_table, &vlanin_ntry);
+        if (del == 0) hasht_del(&vlanin_table, &vlanin_ntry);
+        else hasht_add(&vlanin_table, &vlanin_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pppoe") == 0) {
@@ -2947,11 +2947,31 @@ void doStatRound_insp6(struct table_head *ntry1, int port) {
     }
 }
 
-
 void doStatRound_neigh(void* buffer, int fixed) {
     struct neigh_entry *ntry = buffer;
     fprintf(commandTx, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
 }
+
+void doStatRound_vlan(void* buffer, int fixed) {
+    struct vlanout_entry *ontry = buffer;;
+    struct vlanin_entry ival;
+    if (ontry->port2 != 0) ival.port = ontry->port2;
+    else ival.port = ontry->port;
+    ival.vlan = ontry->vlan;
+    struct vlanin_entry *intry = hasht_find(&vlanin_table, &ival);
+    if (intry == NULL) return;
+    fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
+}
+
+
+
+#ifndef HAVE_NOCRYPTO
+void doStatRound_macsec(void* buffer, int fixed) {
+    struct port2vrf_entry *ntry = buffer;
+    if (ntry->mcscEthtyp == 0) return;
+    fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
+}
+#endif
 
 
 
@@ -2997,6 +3017,11 @@ void doConsoleCommand_neigh(void* buffer, int fixed) {
 void doConsoleCommand_port(void* buffer, int fixed) {
     struct port2vrf_entry *ntry = buffer;
     printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
+}
+
+void doConsoleCommand_vlan(void* buffer, int fixed) {
+    struct vlanin_entry *ntry = buffer;
+    printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
 }
 
 
@@ -3078,17 +3103,7 @@ void doStatLoop() {
             struct pppoe_entry *ntry = table_get(&pppoe_table, i);
             fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
         }
-        for (int i=0; i<vlanout_table.size; i++) {
-            struct vlanout_entry *ontry = table_get(&vlanout_table, i);
-            struct vlanin_entry ival;
-            if (ontry->port2 != 0) ival.port = ontry->port2;
-            else ival.port = ontry->port;
-            ival.vlan = ontry->vlan;
-            int o = table_find(&vlanin_table, &ival);
-            if (o < 0) continue;
-            struct vlanin_entry *intry = table_get(&vlanin_table, o);
-            fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
-        }
+        hasht_walk(&vlanout_table, &doStatRound_vlan, 0);
         if ((round % 150) != 0) {
             fflush(commandTx);
             continue;
@@ -3123,13 +3138,7 @@ void doStatLoop() {
         doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
         doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
 #ifndef HAVE_NOCRYPTO
-        /*
-                for (int i=0; i<port2vrf_table.size; i++) {
-                    struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
-                    if (ntry->mcscEthtyp == 0) continue;
-                    fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
-                }
-        */
+        hasht_walk(&port2vrf_table, &doStatRound_macsec, 0);
 #endif
         for (int i=0; i<acls4_table.size; i++) {
             struct acls_entry *ntry1 = table_get(&acls4_table, i);
@@ -3250,10 +3259,7 @@ void doMainLoop() {
         case 'v':
         case 'V':
             printf("        id       vlan       port\n");
-            for (int i=0; i<vlanin_table.size; i++) {
-                struct vlanin_entry *ntry = table_get(&vlanin_table, i);
-                printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
-            }
+            hasht_walk(&vlanin_table, &doConsoleCommand_vlan, 0);
             break;
         case '4':
             printf("            addr msk        vrf cmd    nexthop     label1     label2\n");

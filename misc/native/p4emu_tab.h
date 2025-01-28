@@ -318,7 +318,7 @@ struct vlanin_entry {
     long byte;
 };
 
-struct table_head vlanin_table;
+struct hasht_head vlanin_table;
 
 
 struct vlanout_entry {
@@ -331,7 +331,7 @@ struct vlanout_entry {
     long byte;
 };
 
-struct table_head vlanout_table;
+struct hasht_head vlanout_table;
 
 
 
@@ -745,8 +745,8 @@ int initTables() {
     table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), 1);
     table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), 1);
     hasht_init(&neigh_table, sizeof(struct neigh_entry), 1);
-    table_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
-    table_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
+    hasht_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
+    hasht_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
     table_init(&bridge_table, sizeof(struct bridge_entry), 3);
     table_init(&acls4_table, sizeof(struct acls_entry), 2);
     table_init(&acls6_table, sizeof(struct acls_entry), 2);

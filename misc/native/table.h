@@ -8,7 +8,11 @@ struct table_head {
 
 
 struct hasht_head {
+#ifdef HAVE_NOCACHE
+    struct table_head dat;
+#else
     struct table_head dat[256];
+#endif
 };
 
 
@@ -129,6 +133,35 @@ void table_walk(struct table_head *tab, void doer(void *, int), int fixed) {
 }
 
 
+#ifdef HAVE_NOCACHE
+void hasht_init(struct hasht_head *tab, int reclen, int cmplen) {
+    table_init(&tab->dat, reclen, cmplen);
+}
+
+
+void* hasht_add(struct hasht_head *tab, void *ntry) {
+    return table_add(&tab->dat, ntry);
+}
+
+
+void hasht_del(struct hasht_head *tab, void *ntry) {
+    table_del(&tab->dat, ntry);
+}
+
+
+void* hasht_find(struct hasht_head *tab, void *ntry) {
+    int idx = table_find(&tab->dat, ntry);
+    if (idx < 0) return NULL;
+    return table_get(&tab->dat, idx);
+}
+
+
+void hasht_walk(struct hasht_head *tab, void doer(void *, int), int fixed) {
+    table_walk(&tab->dat, doer, fixed);
+}
+
+#else
+
 void hasht_init(struct hasht_head *tab, int reclen, int cmplen) {
     for (int i=0; i<256; i++) table_init(&tab->dat[i], reclen, cmplen);
 }
@@ -167,3 +200,4 @@ void* hasht_find(struct hasht_head *tab, void *ntry) {
 void hasht_walk(struct hasht_head *tab, void doer(void *, int), int fixed) {
     for (int i=0; i<256; i++) table_walk(&tab->dat[i], doer, fixed);
 }
+#endif
