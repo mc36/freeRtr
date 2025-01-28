@@ -22,9 +22,9 @@ struct polkaPoly_entry {
     int tab[256];
 };
 
-struct table_head polkaPoly_table;
+struct hasht_head polkaPoly_table;
 
-struct table_head mpolkaPoly_table;
+struct hasht_head mpolkaPoly_table;
 
 
 
@@ -307,7 +307,7 @@ struct bridge_entry {
     int instance;
 };
 
-struct table_head bridge_table;
+struct hasht_head bridge_table;
 
 
 struct vlanin_entry {
@@ -342,9 +342,9 @@ struct acls_entry {
     struct table_head *insp;
 };
 
-struct table_head acls4_table;
+struct hasht_head acls4_table;
 
-struct table_head acls6_table;
+struct hasht_head acls6_table;
 
 
 struct acl4_entry {
@@ -479,19 +479,17 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),in
     return res->act;
 }
 
-struct acls_entry* acls_init(struct table_head *tab, struct acls_entry *ntry, int reclen1, int reclen2, int acer, int insper) {
-    int index = table_find(tab, ntry);
-    int oidx = index;
-    if (index < 0) {
-        table_add(tab, ntry);
-        index = table_find(tab, ntry);
+struct acls_entry* acls_init(struct hasht_head *tab, struct acls_entry *ntry, int reclen1, int reclen2, int acer, int insper) {
+    struct acls_entry *res = hasht_find(tab, ntry);
+    int oidx = 0;
+    if (res == NULL) {
+        res = hasht_add(tab, ntry);
+        oidx = 1;
     }
-    struct acls_entry *res = table_get(tab, index);
-    if ((ntry->dir < 3) && (oidx < 0)) {
+    if ((ntry->dir < 3) && (oidx != 0)) {
         ntry->dir = 3 - ntry->dir;
-        index = table_find(tab, ntry);
-        if (index >= 0) {
-            struct acls_entry *oth = table_get(tab, index);
+        struct acls_entry *oth = hasht_find(tab, ntry);
+        if (oth != NULL) {
             res->insp = oth->insp;
         }
         ntry->dir = 3 - ntry->dir;
@@ -607,7 +605,7 @@ struct pppoe_entry {
     long byte;
 };
 
-struct table_head pppoe_table;
+struct hasht_head pppoe_table;
 
 
 struct tun4_entry {
@@ -737,8 +735,8 @@ void initIface(int port, char *name) {
 
 
 int initTables() {
-    table_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), 1);
-    table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), 1);
+    hasht_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), 1);
+    hasht_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), 1);
     hasht_init(&nsh_table, sizeof(struct nsh_entry), 2);
     table_init(&mpls_table, sizeof(struct mpls_entry), 1);
     hasht_init(&port2vrf_table, sizeof(struct port2vrf_entry), 1);
@@ -747,11 +745,11 @@ int initTables() {
     hasht_init(&neigh_table, sizeof(struct neigh_entry), 1);
     hasht_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
     hasht_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
-    table_init(&bridge_table, sizeof(struct bridge_entry), 3);
-    table_init(&acls4_table, sizeof(struct acls_entry), 2);
-    table_init(&acls6_table, sizeof(struct acls_entry), 2);
+    hasht_init(&bridge_table, sizeof(struct bridge_entry), 3);
+    hasht_init(&acls4_table, sizeof(struct acls_entry), 2);
+    hasht_init(&acls6_table, sizeof(struct acls_entry), 2);
     hasht_init(&bundle_table, sizeof(struct bundle_entry), 1);
-    table_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
+    hasht_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
     table_init(&policer_table, sizeof(struct policer_entry), 3);
 #ifndef HAVE_NOCRYPTO
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));

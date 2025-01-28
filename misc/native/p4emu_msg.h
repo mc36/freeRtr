@@ -396,8 +396,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         polkaPoly_ntry.port = atoi(arg[2]);
         int p = atoi(arg[3]);
         crc16mktab(polkaPoly_ntry.tab, p);
-        if (del == 0) table_del(&polkaPoly_table, &polkaPoly_ntry);
-        else table_add(&polkaPoly_table, &polkaPoly_ntry);
+        if (del == 0) hasht_del(&polkaPoly_table, &polkaPoly_ntry);
+        else hasht_add(&polkaPoly_table, &polkaPoly_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mpolkaidx") == 0) {
@@ -413,8 +413,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         polkaPoly_ntry.port = atoi(arg[2]);
         int p = atoi(arg[3]);
         crc16mktab(polkaPoly_ntry.tab, p);
-        if (del == 0) table_del(&mpolkaPoly_table, &polkaPoly_ntry);
-        else table_add(&mpolkaPoly_table, &polkaPoly_ntry);
+        if (del == 0) hasht_del(&mpolkaPoly_table, &polkaPoly_ntry);
+        else hasht_add(&mpolkaPoly_table, &polkaPoly_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nshifc") == 0) {
@@ -602,8 +602,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.label1 = atoi(arg[6]);
         bridge_ntry.label2 = atoi(arg[7]);
         bridge_ntry.command = 2;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgelabel") == 0) {
@@ -633,8 +633,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.mac2 = get32msb(buf2, 2);
         bridge_ntry.port = atoi(arg[4]);
         bridge_ntry.command = 1;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         return 0;
     }
     if (strcmp(arg[0], "routedmac") == 0) {
@@ -644,8 +644,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.mac2 = get32msb(buf2, 2);
         bridge_ntry.nexthop = atoi(arg[4]);
         bridge_ntry.command = 3;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgevxlan4") == 0) {
@@ -667,8 +667,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[11]);
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 3;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -698,8 +698,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[11]);
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 3;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -720,8 +720,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.aclport = atoi(arg[8]);
         tun4_ntry.prot = IP_PROTOCOL_ETHERIP;
         tun4_ntry.command = 14;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -748,8 +748,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.aclport = atoi(arg[8]);
         tun6_ntry.prot = IP_PROTOCOL_ETHERIP;
         tun6_ntry.command = 14;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -772,8 +772,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.aclport = atoi(arg[10]);
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 6;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -802,8 +802,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.aclport = atoi(arg[10]);
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 6;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -817,8 +817,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.srcAddr1 = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
         bridge_ntry.nexthop = atoi(arg[5]);
         bridge_ntry.command = 8;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgesrv6") == 0) {
@@ -833,8 +833,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.srcAddr4 = bridge_ntry.trgAddr4 = get32msb(buf2, 12);
         bridge_ntry.nexthop = atoi(arg[5]);
         bridge_ntry.command = 9;
-        if (del == 0) table_del(&bridge_table, &bridge_ntry);
-        else table_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portvlan") == 0) {
@@ -1649,8 +1649,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.command = 2;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[8]);
-        if (del == 0) table_del(&pppoe_table, &pppoe_ntry);
-        else table_add(&pppoe_table, &pppoe_ntry);
+        if (del == 0) hasht_del(&pppoe_table, &pppoe_ntry);
+        else hasht_add(&pppoe_table, &pppoe_ntry);
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
@@ -2977,6 +2977,32 @@ void doStatRound_nsh(void* buffer, int fixed) {
     fprintf(commandTx, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
 }
 
+void doStatRound_pppoe(void* buffer, int fixed) {
+    struct pppoe_entry *ntry = buffer;
+    fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+}
+
+void doStatRound_bridge(void* buffer, int fixed) {
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    struct bridge_entry *ntry = buffer;
+    put16msb(buf2, 0, ntry->mac1);
+    put32msb(buf2, 2, ntry->mac2);
+    mac2str(buf2, buf);
+    fprintf(commandTx, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
+}
+
+void doStatRound_acl4(void* buffer, int fixed) {
+    struct acls_entry *ntry1 = buffer;;
+    doStatRound_acl(ntry1, 4);
+    if (ntry1->dir < 3) doStatRound_insp4(ntry1->insp, ntry1->port);
+}
+
+void doStatRound_acl6(void* buffer, int fixed) {
+    struct acls_entry *ntry1 = buffer;
+    doStatRound_acl(ntry1, 6);
+    if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port);
+}
 
 
 
@@ -3028,6 +3054,20 @@ void doConsoleCommand_vlan(void* buffer, int fixed) {
     printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
 }
 
+void doConsoleCommand_bridge(void* buffer, int fixed) {
+    struct bridge_entry *ntry = buffer;
+    unsigned char buf[1024];
+    unsigned char buf2[1024];
+    put16msb(buf2, 0, ntry->mac1);
+    put32msb(buf2, 2, ntry->mac2);
+    mac2str(buf2, buf);
+    printf("%10i %s %10i %10i\n", ntry->id, (char*)&buf[0], ntry->port, ntry->nexthop);
+}
+
+void doConsoleCommand_acl(void* buffer, int fixed) {
+    struct acls_entry *ntry = buffer;
+    printf("%10i %3i %i   %10i\n", ntry->port, ntry->dir, fixed, ntry->aces.size);
+}
 
 
 
@@ -3076,8 +3116,6 @@ void doSockLoop() {
 
 
 void doStatLoop() {
-    unsigned char buf[1024];
-    unsigned char buf2[1024];
     int round = 0;
     for (;;) {
         round++;
@@ -3100,10 +3138,7 @@ void doStatLoop() {
             fprintf(commandTx, "state %i %i\r\n", i, o);
         }
         hasht_walk(&bundle_table, &doStatRound_bundle, 0);
-        for (int i=0; i<pppoe_table.size; i++) {
-            struct pppoe_entry *ntry = table_get(&pppoe_table, i);
-            fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-        }
+        hasht_walk(&pppoe_table, &doStatRound_pppoe, 0);
         hasht_walk(&vlanout_table, &doStatRound_vlan, 0);
         if ((round % 150) != 0) {
             fflush(commandTx);
@@ -3126,28 +3161,14 @@ void doStatLoop() {
             fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
         }
         hasht_walk(&neigh_table, &doStatRound_neigh, 0);
-        for (int i=0; i<bridge_table.size; i++) {
-            struct bridge_entry *ntry = table_get(&bridge_table, i);
-            put16msb(buf2, 0, ntry->mac1);
-            put32msb(buf2, 2, ntry->mac2);
-            mac2str(buf2, buf);
-            fprintf(commandTx, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
-        }
+        hasht_walk(&bridge_table, &doStatRound_bridge, 0);
         doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
         doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
 #ifndef HAVE_NOCRYPTO
         hasht_walk(&port2vrf_table, &doStatRound_macsec, 0);
 #endif
-        for (int i=0; i<acls4_table.size; i++) {
-            struct acls_entry *ntry1 = table_get(&acls4_table, i);
-            doStatRound_acl(ntry1, 4);
-            if (ntry1->dir < 3) doStatRound_insp4(ntry1->insp, ntry1->port);
-        }
-        for (int i=0; i<acls6_table.size; i++) {
-            struct acls_entry *ntry1 = table_get(&acls6_table, i);
-            doStatRound_acl(ntry1, 6);
-            if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port);
-        }
+        hasht_walk(&acls4_table, &doStatRound_acl4, 0);
+        hasht_walk(&acls6_table, &doStatRound_acl6, 0);
 #ifdef HAVE_DEBUG
         for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
             if (dropStat[i] == 0) continue;
@@ -3166,7 +3187,6 @@ void doStatLoop() {
 void doMainLoop() {
     if (getenv("p4emuNOCONS") != NULL) for (;;) sleep(1);
     unsigned char buf[1024];
-    unsigned char buf2[1024];
     for (;;) {
         printf("> ");
         buf[0] = 0;
@@ -3216,14 +3236,8 @@ void doMainLoop() {
         case 'a':
         case 'A':
             printf("  vrf/port dir ver       aces\n");
-            for (int i=0; i<acls4_table.size; i++) {
-                struct acls_entry *ntry = table_get(&acls4_table, i);
-                printf("%10i %3i 4   %10i\n", ntry->port, ntry->dir, ntry->aces.size);
-            }
-            for (int i=0; i<acls6_table.size; i++) {
-                struct acls_entry *ntry = table_get(&acls6_table, i);
-                printf("%10i %3i 6   %10i\n", ntry->port, ntry->dir, ntry->aces.size);
-            }
+            hasht_walk(&acls4_table, &doConsoleCommand_acl, 4);
+            hasht_walk(&acls6_table, &doConsoleCommand_acl, 6);
             break;
         case 'p':
         case 'P':
@@ -3238,13 +3252,7 @@ void doMainLoop() {
         case 'b':
         case 'B':
             printf("    bridge               mac       port    nexthop\n");
-            for (int i=0; i<bridge_table.size; i++) {
-                struct bridge_entry *ntry = table_get(&bridge_table, i);
-                put16msb(buf2, 0, ntry->mac1);
-                put32msb(buf2, 2, ntry->mac2);
-                mac2str(buf2, buf);
-                printf("%10i %s %10i %10i\n", ntry->id, (char*)&buf[0], ntry->port, ntry->nexthop);
-            }
+            hasht_walk(&bridge_table, &doConsoleCommand_bridge, 0);
             break;
         case 'q':
         case 'Q':
