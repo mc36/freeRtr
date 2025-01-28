@@ -1,3 +1,15 @@
+#ifndef HAVE_NOCRYPTO
+
+#include <openssl/conf.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#include <openssl/provider.h>
+#endif
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+
+#endif
+
+
 int punts = 0;
 int dataPorts;
 int cpuPort;

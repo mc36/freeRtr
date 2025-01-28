@@ -1,14 +1,3 @@
-#ifndef HAVE_NOCRYPTO
-
-#include <openssl/conf.h>
-#if OPENSSL_VERSION_NUMBER >= 0x30000000L
-#include <openssl/provider.h>
-#endif
-#include <openssl/evp.h>
-#include <openssl/rand.h>
-
-#endif
-
 struct ifaceStat_entry {
     long byteRx;
     long packRx;
@@ -45,10 +34,8 @@ struct packetContext {
     unsigned char *bufC;
     unsigned char *bufD;
     unsigned char *bufH;
-#ifndef HAVE_NOCRYPTO
-    EVP_CIPHER_CTX *encr;
-    EVP_MD_CTX *dgst;
-#endif
+    void *encr;
+    void *dgst;
 };
 
 #define maxPorts 128
