@@ -2948,8 +2948,8 @@ void doStatRound_insp6(struct table_head *ntry1, int port) {
 }
 
 
-void doStatRound_neigh(void*param, int fixed) {
-    struct neigh_entry *ntry = param;
+void doStatRound_neigh(void* buffer, int fixed) {
+    struct neigh_entry *ntry = buffer;
     fprintf(commandTx, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
 }
 
@@ -2985,13 +2985,18 @@ void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int)) {
     }
 }
 
-void doConsoleCommand_neigh(void*param, int fixed) {
-    struct neigh_entry *ntry = param;
+void doConsoleCommand_neigh(void* buffer, int fixed) {
+    struct neigh_entry *ntry = buffer;
     unsigned char buf2[1024];
     unsigned char buf3[1024];
     mac2str(&ntry->macs[6], buf2);
     mac2str(&ntry->macs[0], buf3);
     printf("%10i %10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, ntry->aclport, (char*)&buf2[0], (char*)&buf3[0]);
+}
+
+void doConsoleCommand_port(void* buffer, int fixed) {
+    struct port2vrf_entry *ntry = buffer;
+    printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
 }
 
 
@@ -3216,17 +3221,12 @@ void doMainLoop() {
         case 'p':
         case 'P':
             printf("      port cmd        vrf     bridge\n");
-            /*
-                        for (int i=0; i<port2vrf_table.size; i++) {
-                            struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
-                            printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
-                        }
-            */
+            hasht_walk(&port2vrf_table, &doConsoleCommand_port, 0);
             break;
         case 'n':
         case 'N':
             printf("        id        vrf       port    aclport              smac              dmac\n");
-            hasht_walk(&port2vrf_table, &doConsoleCommand_neigh, 0);
+            hasht_walk(&neigh_table, &doConsoleCommand_neigh, 0);
             break;
         case 'b':
         case 'B':
