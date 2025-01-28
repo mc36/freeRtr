@@ -1709,13 +1709,12 @@ ipv4_rx:
             insp4_ntry.trgAddr = acl4_ntry.trgAddr;
             insp4_ntry.srcPort = acl4_ntry.srcPortV;
             insp4_ntry.trgPort = acl4_ntry.trgPortV;
-            int index = table_find(acls_res->insp, &insp4_ntry);
-            if (index < 0) {
+            insp4_res = hasht_find(acls_res->insp, &insp4_ntry);
+            if (insp4_res == NULL) {
                 tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
                 if (tmp == 2) doCpuing;
                 if (tmp != 0) doPunting;
             } else {
-                insp4_res = table_get(acls_res->insp, index);
                 insp4_res->packRx++;
                 insp4_res->byteRx += bufS;
             }
@@ -1841,13 +1840,12 @@ ipv4_tx:
                 insp4_ntry.srcAddr = acl4_ntry.trgAddr;
                 insp4_ntry.trgPort = acl4_ntry.srcPortV;
                 insp4_ntry.srcPort = acl4_ntry.trgPortV;
-                int index = table_find(acls_res->insp, &insp4_ntry);
-                if (index < 0) {
+                insp4_res = hasht_find(acls_res->insp, &insp4_ntry);
+                if (insp4_res == NULL) {
                     tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
                     if (tmp == 2) doCpuing;
                     if (tmp != 0) doPunting;
                 } else {
-                    insp4_res = table_get(acls_res->insp, index);
                     insp4_res->packTx++;
                     insp4_res->byteTx += bufS;
                 }
@@ -1981,13 +1979,12 @@ ipv6_rx:
             insp6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
             insp6_ntry.srcPort = acl6_ntry.srcPortV;
             insp6_ntry.trgPort = acl6_ntry.trgPortV;
-            int index = table_find(acls_res->insp, &insp6_ntry);
-            if (index < 0) {
+            insp6_res = hasht_find(acls_res->insp, &insp6_ntry);
+            if (insp6_res == NULL) {
                 tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
                 if (tmp == 2) doCpuing;
                 if (tmp != 0) doPunting;
             } else {
-                insp6_res = table_get(acls_res->insp, index);
                 insp6_res->packRx++;
                 insp6_res->byteRx += bufS;
             }
@@ -2138,13 +2135,12 @@ ipv6_tx:
                 insp6_ntry.srcAddr4 = acl6_ntry.trgAddr4;
                 insp6_ntry.trgPort = acl6_ntry.srcPortV;
                 insp6_ntry.srcPort = acl6_ntry.trgPortV;
-                int index = table_find(acls_res->insp, &insp6_ntry);
-                if (index < 0) {
+                insp6_res = hasht_find(acls_res->insp, &insp6_ntry);
+                if (insp6_res == NULL) {
                     tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
                     if (tmp == 2) doCpuing;
                     if (tmp != 0) doPunting;
                 } else {
-                    insp6_res = table_get(acls_res->insp, index);
                     insp6_res->packTx++;
                     insp6_res->byteTx += bufS;
                 }

@@ -330,7 +330,7 @@ struct acls_entry {
     int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos, 8=flwspc
     int port;
     struct table_head aces;
-    struct table_head *insp;
+    struct hasht_head *insp;
 };
 
 struct hasht_head acls4_table;
@@ -490,7 +490,7 @@ struct acls_entry* acls_init(struct hasht_head *tab, struct acls_entry *ntry, in
     if (res->insp == NULL) {
         res->insp = malloc(sizeof(struct table_head));
         if (res->insp == NULL) err("error allocating memory");
-        table_init(res->insp, reclen2, insper);
+        hasht_init(res->insp, reclen2, insper);
     }
     return res;
 }
