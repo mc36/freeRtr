@@ -60,7 +60,7 @@ struct nsh_entry {
     long byte;
 };
 
-struct table_head nsh_table;
+struct hasht_head nsh_table;
 
 
 
@@ -596,7 +596,7 @@ struct bundle_entry {
     int out[16];
 };
 
-struct table_head bundle_table;
+struct hasht_head bundle_table;
 
 
 struct pppoe_entry {
@@ -739,7 +739,7 @@ void initIface(int port, char *name) {
 int initTables() {
     table_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), 1);
     table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), 1);
-    table_init(&nsh_table, sizeof(struct nsh_entry), 2);
+    hasht_init(&nsh_table, sizeof(struct nsh_entry), 2);
     table_init(&mpls_table, sizeof(struct mpls_entry), 1);
     hasht_init(&port2vrf_table, sizeof(struct port2vrf_entry), 1);
     table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), 1);
@@ -750,7 +750,7 @@ int initTables() {
     table_init(&bridge_table, sizeof(struct bridge_entry), 3);
     table_init(&acls4_table, sizeof(struct acls_entry), 2);
     table_init(&acls6_table, sizeof(struct acls_entry), 2);
-    table_init(&bundle_table, sizeof(struct bundle_entry), 1);
+    hasht_init(&bundle_table, sizeof(struct bundle_entry), 1);
     table_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
     table_init(&policer_table, sizeof(struct policer_entry), 3);
 #ifndef HAVE_NOCRYPTO

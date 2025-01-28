@@ -8,7 +8,7 @@ struct table_head {
 
 
 struct hasht_head {
-#ifdef HAVE_NOCACHE
+#ifdef HAVE_NOHASH
     struct table_head dat;
 #else
     struct table_head dat[256];
@@ -133,7 +133,7 @@ void table_walk(struct table_head *tab, void doer(void *, int), int fixed) {
 }
 
 
-#ifdef HAVE_NOCACHE
+#ifdef HAVE_NOHASH
 void hasht_init(struct hasht_head *tab, int reclen, int cmplen) {
     table_init(&tab->dat, reclen, cmplen);
 }

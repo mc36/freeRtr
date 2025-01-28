@@ -261,7 +261,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     struct mroute6_entry *mroute6_res;
     struct mroute6_entry mroute6_ntry;
     memset(&mroute6_ntry, 0, sizeof(mroute6_ntry));
-    int index = 0;
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
     }
@@ -426,8 +425,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&nsh_ntry.macs[6], arg[5]);
         str2mac(&nsh_ntry.macs[0], arg[6]);
         nsh_ntry.trg = (atoi(arg[7]) << 8) | atoi(arg[8]);
-        if (del == 0) table_del(&nsh_table, &nsh_ntry);
-        else table_add(&nsh_table, &nsh_ntry);
+        if (del == 0) hasht_del(&nsh_table, &nsh_ntry);
+        else hasht_add(&nsh_table, &nsh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nshnei") == 0) {
@@ -436,8 +435,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         nsh_ntry.command = 3;
         nsh_ntry.port = atoi(arg[4]);
         nsh_ntry.trg = (atoi(arg[5]) << 8) | atoi(arg[6]);
-        if (del == 0) table_del(&nsh_table, &nsh_ntry);
-        else table_add(&nsh_table, &nsh_ntry);
+        if (del == 0) hasht_del(&nsh_table, &nsh_ntry);
+        else hasht_add(&nsh_table, &nsh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nshloc") == 0) {
@@ -445,8 +444,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         nsh_ntry.si = atoi(arg[3]);
         nsh_ntry.command = 2;
         nsh_ntry.vrf = atoi(arg[4]);
-        if (del == 0) table_del(&nsh_table, &nsh_ntry);
-        else table_add(&nsh_table, &nsh_ntry);
+        if (del == 0) hasht_del(&nsh_table, &nsh_ntry);
+        else hasht_add(&nsh_table, &nsh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portvrf") == 0) {
@@ -1606,26 +1605,23 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bundle_ntry.command = 2;
         o = atoi(arg[3]);
         for (int i = 0; i < 16; i++) bundle_ntry.out[i] = o;
-        if (del == 0) table_del(&bundle_table, &bundle_ntry);
-        else table_add(&bundle_table, &bundle_ntry);
+        if (del == 0) hasht_del(&bundle_table, &bundle_ntry);
+        else hasht_add(&bundle_table, &bundle_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portbundle") == 0) {
         bundle_ntry.id = atoi(arg[2]);
         if (del == 0) {
-            table_del(&bundle_table, &bundle_ntry);
+            hasht_del(&bundle_table, &bundle_ntry);
             return 0;
         }
-        index = table_find(&bundle_table, &bundle_ntry);
-        if (index < 0) {
-            table_add(&bundle_table, &bundle_ntry);
-            bundle_res = table_get(&bundle_table, table_find(&bundle_table, &bundle_ntry));
-        } else {
-            bundle_res = table_get(&bundle_table, index);
+        bundle_res = hasht_find(&bundle_table, &bundle_ntry);
+        if (bundle_res == NULL) {
+            bundle_res = hasht_add(&bundle_table, &bundle_ntry);
         }
         i = atoi(arg[3]);
         bundle_res->command = 1;
-        bundle_res->out[i] = atoi(arg[4]);
+        bundle_res->out[i & 15] = atoi(arg[4]);
         return 0;
     }
     if (strcmp(arg[0], "bundlevlan") == 0) {
@@ -2963,8 +2959,6 @@ void doStatRound_vlan(void* buffer, int fixed) {
     fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
 }
 
-
-
 #ifndef HAVE_NOCRYPTO
 void doStatRound_macsec(void* buffer, int fixed) {
     struct port2vrf_entry *ntry = buffer;
@@ -2972,6 +2966,16 @@ void doStatRound_macsec(void* buffer, int fixed) {
     fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
 }
 #endif
+
+void doStatRound_bundle(void* buffer, int fixed) {
+    struct bundle_entry *ntry = buffer;
+    fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
+}
+
+void doStatRound_nsh(void* buffer, int fixed) {
+    struct nsh_entry *ntry = buffer;
+    fprintf(commandTx, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
+}
 
 
 
@@ -3095,10 +3099,7 @@ void doStatLoop() {
             int o = getState(i);
             fprintf(commandTx, "state %i %i\r\n", i, o);
         }
-        for (int i=0; i<bundle_table.size; i++) {
-            struct bundle_entry *ntry = table_get(&bundle_table, i);
-            fprintf(commandTx, "counter %i 0 0 %li %li 0 0\r\n", ntry->id, ntry->pack, ntry->byte);
-        }
+        hasht_walk(&bundle_table, &doStatRound_bundle, 0);
         for (int i=0; i<pppoe_table.size; i++) {
             struct pppoe_entry *ntry = table_get(&pppoe_table, i);
             fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
@@ -3119,10 +3120,7 @@ void doStatLoop() {
             fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_POLKA, stat->packPolka, stat->bytePolka);
             fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, stat->packNsh, stat->byteNsh);
         }
-        for (int i=0; i<nsh_table.size; i++) {
-            struct nsh_entry *ntry = table_get(&nsh_table, i);
-            fprintf(commandTx, "nsh_cnt %i %i %li %li\r\n", ntry->sp, ntry->si, ntry->pack, ntry->byte);
-        }
+        hasht_walk(&nsh_table, &doStatRound_nsh, 0);
         for (int i=0; i<mpls_table.size; i++) {
             struct mpls_entry *ntry = table_get(&mpls_table, i);
             fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);

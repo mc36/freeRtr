@@ -681,13 +681,12 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
         if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
     }
     bundle_ntry.id = prt;
-    int index = table_find(&bundle_table, &bundle_ntry);
-    if (index < 0) {
+    bundle_res = hasht_find(&bundle_table, &bundle_ntry);
+    if (bundle_res == NULL) {
         putMacAddr;
         send2port(prt);
         return;
     }
-    bundle_res = table_get(&bundle_table, index);
     int hash = ctx->hash;
     hash = ((hash >> 16) ^ hash) & 0xffff;
     hash = ((hash >> 8) ^ hash) & 0xff;
@@ -2449,9 +2448,8 @@ nsh_rx:
         nsh_ntry.sp = tmp >> 8;
         nsh_ntry.si = tmp & 0xff;
         ctx->hash ^= tmp;
-        index = table_find(&nsh_table, &nsh_ntry);
-        if (index < 0) doDropper;
-        nsh_res = table_get(&nsh_table, index);
+        nsh_res = hasht_find(&nsh_table, &nsh_ntry);
+        if (nsh_res == NULL) doDropper;
         nsh_res->pack++;
         nsh_res->byte += bufS;
         switch (nsh_res->command) {
