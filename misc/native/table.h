@@ -18,8 +18,6 @@ struct hasht_head {
 
 #define table_get(tab, idx)   (void*) ((tab)->buffer + ((idx) * (tab)->reclen))
 
-#define table_empty(tab)      ((tab)->size == 0)
-
 
 void table_init(struct table_head *tab, int reclen, int cmplen) {
     tab->reclen = reclen;
@@ -114,20 +112,6 @@ void table_del(struct table_head *tab, void *ntry) {
 }
 
 
-void* table_addinited(struct table_head *tab, void *ntry, struct table_head *tab2, int reclen, int cmplen) {
-    int index = table_find(tab, ntry);
-    if (index < 0) {
-        table_add(tab, ntry);
-        index = table_find(tab, ntry);
-    }
-    void *res = table_get(tab, index);
-    struct table_head *tab3 = res + ((char*)tab2 - (char*)ntry);
-    if (tab3->reclen == reclen) return res;
-    table_init(tab3, reclen, cmplen);
-    return res;
-}
-
-
 void table_walk(struct table_head *tab, void doer(void *, int), int fixed) {
     for (int i=0; i<tab->size; i++) doer(table_get(tab, i), fixed);
 }
@@ -204,11 +188,8 @@ void hasht_walk(struct hasht_head *tab, void doer(void *, int), int fixed) {
 
 void* hasht_addinited(struct hasht_head *tab, void *ntry, struct table_head *tab2, int reclen, int cmplen) {
     void *res = hasht_find(tab, ntry);
-    if (res == NULL) {
-        res = hasht_add(tab, ntry);
-    }
-    struct table_head *tab3 = res + ((char*)tab2 - (char*)ntry);
-    if (tab3->reclen == reclen) return res;
-    table_init(tab3, reclen, cmplen);
+    if (res != NULL) return res;
+    table_init(tab2, reclen, cmplen);
+    res = hasht_add(tab, ntry);
     return res;
 }

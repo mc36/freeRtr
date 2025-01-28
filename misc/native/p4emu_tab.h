@@ -168,9 +168,9 @@ struct vrf2rib_entry {
     long pack;
     long byte;
     struct tree_head rou;
-    struct table_head nat;
-    struct table_head tun;
-    struct table_head mcst;
+    struct hasht_head nat;
+    struct hasht_head tun;
+    struct hasht_head mcst;
     struct table_head plk;
 };
 
@@ -182,20 +182,13 @@ struct hasht_head vrf2rib6_table;
 
 struct vrf2rib_entry* vrf2rib_init(struct hasht_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int natter, int tunner, int mcaster) {
     struct vrf2rib_entry* res = hasht_find(tab, ntry);
-    if (res == NULL) {
-        res = hasht_add(tab, ntry);
-    }
-    struct tree_head *tab2 = &res->rou;
-    if (tab2->reclen != reclen1) tree_init(tab2, reclen1);
-    struct table_head *tab3 = &res->nat;
-    if (tab3->reclen != reclen2) table_init(tab3, reclen2, natter);
-    tab3 = &res->tun;
-    if (tab3->reclen != reclen3) table_init(tab3, reclen3, tunner);
-    tab3 = &res->mcst;
-    if (tab3->reclen != reclen4) table_init(tab3, reclen4, mcaster);
-    tab3 = &res->plk;
-    reclen4 = sizeof(struct polkaIdx_entry);
-    if (tab3->reclen != reclen4) table_init(tab3, reclen4, 1);
+    if (res != NULL) return res;
+    tree_init(&ntry->rou, reclen1);
+    hasht_init(&ntry->nat, reclen2, natter);
+    hasht_init(&ntry->tun, reclen3, tunner);
+    hasht_init(&ntry->mcst, reclen4, mcaster);
+    table_init(&ntry->plk, sizeof(struct polkaIdx_entry), 1);
+    res = hasht_add(tab, ntry);
     return res;
 }
 
@@ -713,8 +706,8 @@ struct mroute6_entry {
 
 
 
-#define mcast_init4 table_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), 3);
-#define mcast_init6 table_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), 3);
+#define mcast_init4 hasht_addinited(&vrf2rib_res->mcst, &mroute4_ntry, &mroute4_ntry.flood, sizeof(struct flood_entry), 3);
+#define mcast_init6 hasht_addinited(&vrf2rib_res->mcst, &mroute6_ntry, &mroute6_ntry.flood, sizeof(struct flood_entry), 3);
 
 
 

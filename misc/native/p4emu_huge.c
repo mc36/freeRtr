@@ -9,7 +9,7 @@
 #define HAVE_DEBUG
 #undef HAVE_NOCRYPTO
 #undef HAVE_NOCACHE
-#define HAVE_NOHASH
+#undef HAVE_NOHASH
 
 #include "p4emu_hdr.h"
 

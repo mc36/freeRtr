@@ -6,9 +6,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define HAVE_DEBUG
-#undef HAVE_NOCRYPTO
-#undef HAVE_NOCACHE
+#undef HAVE_DEBUG
+#define HAVE_NOCRYPTO
+#define HAVE_NOCACHE
 #define HAVE_NOHASH
 
 #include "p4emu_hdr.h"

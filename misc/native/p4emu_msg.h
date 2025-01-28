@@ -669,8 +669,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 3;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgevxlan6") == 0) {
@@ -700,8 +700,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 3;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgeetherip4") == 0) {
@@ -722,8 +722,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 14;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgeetherip6") == 0) {
@@ -750,8 +750,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 14;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgepckoudp4") == 0) {
@@ -774,8 +774,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 6;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgepckoudp6") == 0) {
@@ -804,8 +804,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 6;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgesrv4") == 0) {
@@ -1370,8 +1370,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oTrgPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, +1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&vrf2rib_res->nat, &nat4_ntry);
-        else table_add(&vrf2rib_res->nat, &nat4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->nat, &nat4_ntry);
+        else hasht_add(&vrf2rib_res->nat, &nat4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns6") == 0) {
@@ -1424,8 +1424,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.oTrgPort, -1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nSrcPort, +1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
-        if (del == 0) table_del(&vrf2rib_res->nat, &nat6_ntry);
-        else table_add(&vrf2rib_res->nat, &nat6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->nat, &nat6_ntry);
+        else hasht_add(&vrf2rib_res->nat, &nat6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inspect4") == 0) {
@@ -1674,8 +1674,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 1;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "gre6") == 0) {
@@ -1703,8 +1703,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 1;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "ipip4") == 0) {
@@ -1726,12 +1726,12 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.trgPort = 0;
         tun4_ntry.prot = IP_PROTOCOL_IPV4;
         tun4_ntry.command = 4;
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         tun4_ntry.prot = IP_PROTOCOL_IPV6;
         tun4_ntry.command = 5;
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "ipip6") == 0) {
@@ -1759,12 +1759,12 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.trgPort = 0;
         tun6_ntry.prot = IP_PROTOCOL_IPV4;
         tun6_ntry.command = 4;
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         tun6_ntry.prot = IP_PROTOCOL_IPV6;
         tun6_ntry.command = 5;
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "tmux4") == 0) {
@@ -1785,8 +1785,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 13;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "tmux6") == 0) {
@@ -1813,8 +1813,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 13;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "l3tp4") == 0) {
@@ -1835,8 +1835,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 12;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "l3tp6") == 0) {
@@ -1863,8 +1863,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 12;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "l2tp4") == 0) {
@@ -1889,8 +1889,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 2;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "l2tp6") == 0) {
@@ -1921,8 +1921,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 2;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "amt4") == 0) {
@@ -1946,8 +1946,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 10;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "amt6") == 0) {
@@ -1977,8 +1977,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 10;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "gtp4") == 0) {
@@ -2003,8 +2003,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 11;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "gtp6") == 0) {
@@ -2035,8 +2035,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 11;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "sgttag") == 0) {
@@ -2126,8 +2126,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 7;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
 #endif
@@ -2169,8 +2169,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 7;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
 #endif
@@ -2207,8 +2207,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 8;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
 #endif
@@ -2251,8 +2251,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 8;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
 #endif
@@ -2279,8 +2279,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.command = 9;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
-        else table_add(&vrf2rib_res->tun, &tun4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
     }
 #endif
@@ -2313,8 +2313,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.command = 9;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
-        if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
-        else table_add(&vrf2rib_res->tun, &tun6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
 #endif
@@ -2842,15 +2842,15 @@ void doStatRound_vrf(void* buffer, int fixed) {
     fprintf(commandTx, "vrf%i_cnt %i %li %li\r\n", fixed, res->vrf, res->pack, res->byte);
     if (fixed == 4) {
         tree_walk(&res->rou, &doStatRound_rou4, res->vrf);
-        table_walk(&res->nat, &doStatRound_nat4, res->vrf);
-        table_walk(&res->tun, &doStatRound_tun4, res->vrf);
-        table_walk(&res->mcst, &doStatRound_mcst4, res->vrf);
+        hasht_walk(&res->nat, &doStatRound_nat4, res->vrf);
+        hasht_walk(&res->tun, &doStatRound_tun4, res->vrf);
+        hasht_walk(&res->mcst, &doStatRound_mcst4, res->vrf);
         table_walk(&res->plk, &doStatRound_polka4, res->vrf);
     } else {
         tree_walk(&res->rou, &doStatRound_rou6, res->vrf);
-        table_walk(&res->nat, &doStatRound_nat6, res->vrf);
-        table_walk(&res->tun, &doStatRound_tun6, res->vrf);
-        table_walk(&res->mcst, &doStatRound_mcst6, res->vrf);
+        hasht_walk(&res->nat, &doStatRound_nat6, res->vrf);
+        hasht_walk(&res->tun, &doStatRound_tun6, res->vrf);
+        hasht_walk(&res->mcst, &doStatRound_mcst6, res->vrf);
         table_walk(&res->plk, &doStatRound_polka6, res->vrf);
     }
 }
