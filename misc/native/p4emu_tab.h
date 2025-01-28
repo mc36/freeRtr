@@ -143,26 +143,23 @@ struct port2vrf_entry {
 #endif
 };
 
-struct table_head port2vrf_table;
+struct hasht_head port2vrf_table;
 
 
 struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
-    int index = table_find(&port2vrf_table, ntry);
-    if (index >= 0) return table_get(&port2vrf_table, index);
-    table_add(&port2vrf_table, ntry);
-    index = table_find(&port2vrf_table, ntry);
-    ntry = table_get(&port2vrf_table, index);
-    ntry->monTarget = -1;
-    ntry->sgtSet = -1;
-    return ntry;
+    struct port2vrf_entry *res = hasht_find(&port2vrf_table, ntry);
+    if (res != NULL) return res;
+    res = hasht_add(&port2vrf_table, ntry);
+    res->monTarget = -1;
+    res->sgtSet = -1;
+    return res;
 }
 
 
 void port2vrf_deinit(struct port2vrf_entry *ntry) {
-    int index = table_find(&port2vrf_table, ntry);
-    if (index < 0) return;
-    ntry = table_get(&port2vrf_table, index);
-    table_del(&port2vrf_table, ntry);
+    struct port2vrf_entry *res = hasht_find(&port2vrf_table, ntry);
+    if (res == NULL) return;
+    hasht_del(&port2vrf_table, ntry);
 }
 
 
@@ -281,7 +278,7 @@ struct neigh_entry {
 #endif
 };
 
-struct table_head neigh_table;
+struct hasht_head neigh_table;
 
 
 struct bridge_entry {
@@ -744,10 +741,10 @@ int initTables() {
     table_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), 1);
     table_init(&nsh_table, sizeof(struct nsh_entry), 2);
     table_init(&mpls_table, sizeof(struct mpls_entry), 1);
-    table_init(&port2vrf_table, sizeof(struct port2vrf_entry), 1);
+    hasht_init(&port2vrf_table, sizeof(struct port2vrf_entry), 1);
     table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), 1);
     table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), 1);
-    table_init(&neigh_table, sizeof(struct neigh_entry), 1);
+    hasht_init(&neigh_table, sizeof(struct neigh_entry), 1);
     table_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
     table_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
     table_init(&bridge_table, sizeof(struct bridge_entry), 3);

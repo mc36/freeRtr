@@ -7,6 +7,11 @@ struct table_head {
 };
 
 
+struct hasht_head {
+    struct table_head dat[256];
+};
+
+
 #define table_get(tab, idx)   (void*) ((tab)->buffer + ((idx) * (tab)->reclen))
 
 #define table_empty(tab)      ((tab)->size == 0)
@@ -78,24 +83,28 @@ int table_find(struct table_head *tab, void *ntry) {
 }
 
 
-void table_add(struct table_head *tab, void *ntry) {
+void* table_add(struct table_head *tab, void *ntry) {
     int idx = table_find(tab, ntry);
     if (idx >= 0) {
-        memmove(table_get(tab, idx), ntry, tab->reclen);
-        return;
+        void* res=table_get(tab, idx);
+        memmove(res, ntry, tab->reclen);
+        return res;
     }
     table_resize(tab, tab->size + 1);
     idx = -idx - 1;
-    memmove(table_get(tab, idx + 1), table_get(tab, idx), (size_t)tab->reclen * (tab->size - idx));
+    void* res=table_get(tab, idx);
+    memmove(res + tab->reclen, res, (size_t)tab->reclen * (tab->size - idx));
     tab->size++;
     memmove(table_get(tab, idx), ntry, tab->reclen);
+    return res;
 }
 
 
 void table_del(struct table_head *tab, void *ntry) {
     int idx = table_find(tab, ntry);
     if (idx < 0) return;
-    if (idx < (tab->size - 1)) memmove(table_get(tab, idx), table_get(tab, idx + 1), (size_t)tab->reclen * (tab->size - idx - 1));
+    void* res=table_get(tab, idx);
+    memmove(res, res + tab->reclen, (size_t)tab->reclen * (tab->size - idx - 1));
     tab->size--;
     table_resize(tab, tab->size);
 }
@@ -112,4 +121,49 @@ void* table_addinited(struct table_head *tab, void *ntry, struct table_head *tab
     if (tab3->reclen == reclen) return res;
     table_init(tab3, reclen, cmplen);
     return res;
+}
+
+
+void table_walk(struct table_head *tab, void doer(void *, int), int fixed) {
+    for (int i=0; i<tab->size; i++) doer(table_get(tab, i), fixed);
+}
+
+
+void hasht_init(struct hasht_head *tab, int reclen, int cmplen) {
+    for (int i=0; i<256; i++) table_init(&tab->dat[i], reclen, cmplen);
+}
+
+struct table_head* hash_bucket(struct hasht_head *tab, void *ntry) {
+    unsigned int*entry = (unsigned int*)ntry;
+    int len = tab->dat[0].cmplen;
+    int hash = 0;
+    for (int i=0; i<len; i++) hash ^= entry[i];
+    hash = ((hash >> 16) ^ hash) & 0xffff;
+    hash = ((hash >> 8) ^ hash) & 0xff;
+    return &tab->dat[hash];
+}
+
+
+void* hasht_add(struct hasht_head *tab, void *ntry) {
+    struct table_head* hash = hash_bucket(tab, ntry);
+    return table_add(hash, ntry);
+}
+
+
+void hasht_del(struct hasht_head *tab, void *ntry) {
+    struct table_head* hash = hash_bucket(tab, ntry);
+    table_del(hash, ntry);
+}
+
+
+void* hasht_find(struct hasht_head *tab, void *ntry) {
+    struct table_head* hash = hash_bucket(tab, ntry);
+    int idx = table_find(hash, ntry);
+    if (idx < 0) return NULL;
+    return table_get(hash, idx);
+}
+
+
+void hasht_walk(struct hasht_head *tab, void doer(void *, int), int fixed) {
+    for (int i=0; i<256; i++) table_walk(&tab->dat[i], doer, fixed);
 }

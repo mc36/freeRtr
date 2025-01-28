@@ -572,9 +572,8 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
     struct port2vrf_entry port2vrf_ntry;
     struct port2vrf_entry *port2vrf_res;
     port2vrf_ntry.port = prt;
-    int index = table_find(&port2vrf_table, &port2vrf_ntry);
-    if (index < 0) return 0;
-    port2vrf_res = table_get(&port2vrf_table, index);
+    port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
+    if (port2vrf_res == NULL) return 0;
     if (port2vrf_res->sgtTag != 0) {
         *bufP -= 8;
         put16msb(bufD, *bufP + 2, 0x0101);
@@ -895,7 +894,6 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
         int tmpP = preBuff;
         int tmpE;
         int tmpS;
-        int index;
         switch (flood_res->command) {
         case 1: // raw ip
             tmpE = ethtyp;
@@ -913,9 +911,8 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             put32msb(bufC, preBuff + 2, tmpL);
             memcpy(&bufC[preBuff + 6], &bufD[bufP], tmpS);
             neigh_ntry.id = flood_res->trg;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) continue;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) continue;
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
             break;
         case 3: // bier mask
@@ -930,9 +927,8 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             bierAnd(bufC, preBuff + 14, flood_res->bier, o, p);
             if (p == 0) continue;
             neigh_ntry.id = flood_res->trg;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) continue;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) continue;
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
             break;
         case 4: // bier set
@@ -967,9 +963,8 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             put32msb(bufC, preBuff + 42, flood_res->bier[7]);
             memcpy(&bufC[preBuff + 46], &bufD[bufP], tmpS);
             neigh_ntry.id = flood_res->trg;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) continue;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) continue;
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
             break;
         case 5: // neighbor
@@ -978,9 +973,8 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
             neigh_ntry.id = flood_res->trg;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) continue;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) continue;
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
             break;
         case 6: // bier vpn
@@ -1008,9 +1002,8 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             put32msb(bufC, preBuff + 46, tmpL);
             memcpy(&bufC[preBuff + 50], &bufD[bufP], tmpS);
             neigh_ntry.id = flood_res->trg;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) continue;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) continue;
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
             break;
         }
@@ -1348,12 +1341,8 @@ ethtyp_rx:
     ethtyp = get16msb(bufD, bufP);
     bufP += 2;
     port2vrf_ntry.port = prt;
-    index = table_find(&port2vrf_table, &port2vrf_ntry);
-    if (index < 0) {
-        port2vrf_res = NULL;
-        goto etyped_rx;
-    }
-    port2vrf_res = table_get(&port2vrf_table, index);
+    port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
+    if (port2vrf_res == NULL) goto etyped_rx;
 #ifndef HAVE_NOCRYPTO
     if (port2vrf_res->mcscEthtyp != 0) {
         port2vrf_res->mcscPackRx++;
@@ -1602,9 +1591,8 @@ ethtyp_tx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
 nethtyp_tx:
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) doDropper;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) doDropper;
 neigh_tx:
             send2neigh(ctx, neigh_res, bufP, bufS, ethtyp);
             return;
@@ -1714,9 +1702,8 @@ ipv4_rx:
             route4_res->byteRx += bufS;
             if (port2vrf_res->verify4 > 1) {
                 neigh_ntry.id = route4_res->nexthop;
-                index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doPunting;
-                neigh_res = table_get(&neigh_table, index);
+                neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+                if (neigh_res == NULL) doPunting;
                 if (neigh_res->aclport != prt) doPunting;
             }
         }
@@ -1831,9 +1818,8 @@ ipv4_nated:
         case 3: // sethop
             vrf2rib_ntry.vrf = aceh_res->vrf;
             neigh_ntry.id = aceh_res->nexthop;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) doDropper;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) doDropper;
             goto ipv4_tx;
         case 4: // setlab
             ethtyp = ETHERTYPE_MPLS_UCAST;
@@ -1859,9 +1845,8 @@ ipv4_pbred:
         switch (route4_res->command) {
         case 1: // route
             neigh_ntry.id = route4_res->nexthop;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) doDropper;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) doDropper;
 ipv4_tx:
             acls_ntry.dir = 2;
             acls_ntry.port = neigh_res->aclport;
@@ -1999,9 +1984,8 @@ ipv6_rx:
             route6_res->byteRx += bufS;
             if (port2vrf_res->verify6 > 1) {
                 neigh_ntry.id = route6_res->nexthop;
-                index = table_find(&neigh_table, &neigh_ntry);
-                if (index < 0) doPunting;
-                neigh_res = table_get(&neigh_table, index);
+                neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+                if (neigh_res == NULL) doPunting;
                 if (neigh_res->aclport != prt) doPunting;
             }
         }
@@ -2138,9 +2122,8 @@ ipv6_nated:
         case 3: // sethop
             vrf2rib_ntry.vrf = aceh_res->vrf;
             neigh_ntry.id = aceh_res->nexthop;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) doDropper;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) doDropper;
             goto ipv6_tx;
         case 4: // setlab
             ethtyp = ETHERTYPE_MPLS_UCAST;
@@ -2169,9 +2152,8 @@ ipv6_pbred:
         switch (route6_res->command) {
         case 1: // route
             neigh_ntry.id = route6_res->nexthop;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) doDropper;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) doDropper;
 ipv6_tx:
             acls_ntry.dir = 2;
             acls_ntry.port = neigh_res->aclport;
@@ -2442,9 +2424,8 @@ bridgevpls_rx:
             polkaIdx_res->pack++;
             polkaIdx_res->byte += bufS;
             neigh_ntry.id = polkaIdx_res->nexthop;
-            index = table_find(&neigh_table, &neigh_ntry);
-            if (index < 0) continue;
-            neigh_res = table_get(&neigh_table, index);
+            neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+            if (neigh_res == NULL) continue;
             int tmpP = preBuff;
             int tmpS = bufS - bufP + preBuff + 2;
             int tmpE = ethtyp;

@@ -980,8 +980,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[6], arg[6]);
         if (del == 0) tree_del(&vrf2rib_res->rou, &route4_ntry);
         else tree_add(&vrf2rib_res->rou, &route4_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pwhenei4") == 0) {
@@ -1005,8 +1005,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.dprt = atoi(arg[12]);
         if (del == 0) tree_del(&vrf2rib_res->rou, &route4_ntry);
         else tree_add(&vrf2rib_res->rou, &route4_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "myaddr6") == 0) {
@@ -1156,8 +1156,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[6], arg[6]);
         if (del == 0) tree_del(&vrf2rib_res->rou, &route6_ntry);
         else tree_add(&vrf2rib_res->rou, &route6_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pwhenei6") == 0) {
@@ -1184,8 +1184,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.dprt = atoi(arg[12]);
         if (del == 0) tree_del(&vrf2rib_res->rou, &route6_ntry);
         else tree_add(&vrf2rib_res->rou, &route6_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mysrv4") == 0) {
@@ -1655,8 +1655,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[6], arg[8]);
         if (del == 0) table_del(&pppoe_table, &pppoe_ntry);
         else table_add(&pppoe_table, &pppoe_ntry);
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
     if (strcmp(arg[0], "gre4") == 0) {
@@ -1676,8 +1676,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.trgPort = 0;
         tun4_ntry.prot = IP_PROTOCOL_GRE;
         tun4_ntry.command = 1;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -1705,8 +1705,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.trgPort = 0;
         tun6_ntry.prot = IP_PROTOCOL_GRE;
         tun6_ntry.command = 1;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -1724,8 +1724,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 7;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         tun4_ntry.srcPort = 0;
         tun4_ntry.trgPort = 0;
         tun4_ntry.prot = IP_PROTOCOL_IPV4;
@@ -1757,8 +1757,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 8;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         tun6_ntry.srcPort = 0;
         tun6_ntry.trgPort = 0;
         tun6_ntry.prot = IP_PROTOCOL_IPV4;
@@ -1787,8 +1787,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[10]);
         tun4_ntry.prot = IP_PROTOCOL_TMUX;
         tun4_ntry.command = 13;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -1815,8 +1815,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[10]);
         tun6_ntry.prot = IP_PROTOCOL_TMUX;
         tun6_ntry.command = 13;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -1837,8 +1837,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[10]);
         tun4_ntry.prot = IP_PROTOCOL_L2TP;
         tun4_ntry.command = 12;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -1865,8 +1865,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.tid = atoi(arg[10]);
         tun6_ntry.prot = IP_PROTOCOL_L2TP;
         tun6_ntry.command = 12;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -1891,8 +1891,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.trgPort = neigh_ntry.sprt;
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 2;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -1923,8 +1923,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.trgPort = neigh_ntry.sprt;
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 2;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -1948,8 +1948,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.trgPort = neigh_ntry.sprt;
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 10;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -1979,8 +1979,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.trgPort = neigh_ntry.sprt;
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 10;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -2005,8 +2005,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.trgPort = neigh_ntry.sprt;
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 11;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -2037,8 +2037,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.trgPort = neigh_ntry.sprt;
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 11;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -2128,8 +2128,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun4_ntry.prot = IP_PROTOCOL_ESP;
         tun4_ntry.command = 7;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -2171,8 +2171,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun6_ntry.prot = IP_PROTOCOL_ESP;
         tun6_ntry.command = 7;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -2209,8 +2209,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 8;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -2253,8 +2253,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         myHmacSetup(neigh_ntry.hashAlg, neigh_ntry.hashKeyDat, &neigh_ntry.hashKeyLen);
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 8;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -2281,8 +2281,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.encrKeyLen = str2key(arg[14], tun4_ntry.encrKeyDat);
         tun4_ntry.prot = IP_PROTOCOL_UDP;
         tun4_ntry.command = 9;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun4_ntry);
         else table_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -2315,8 +2315,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.encrKeyLen = str2key(arg[14], tun6_ntry.encrKeyDat);
         tun6_ntry.prot = IP_PROTOCOL_UDP;
         tun6_ntry.command = 9;
-        if (del == 0) table_del(&neigh_table, &neigh_ntry);
-        else table_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
         if (del == 0) table_del(&vrf2rib_res->tun, &tun6_ntry);
         else table_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
@@ -2699,9 +2699,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2key(arg[8], orig);
         bufS -= 12;
         neigh_ntry.id = nei;
-        index = table_find(&neigh_table, &neigh_ntry);
-        if (index < 0) return 0;
-        neigh_res = table_get(&neigh_table, index);
+        neigh_res = hasht_find(&neigh_table, &neigh_ntry);
+        if (neigh_res == NULL) return 0;
         for (i=0; i<cntr; i++) {
             memcpy(&bufD[preBuff], &orig[12], bufS);
             memcpy(&bufH[0], &orig[0], 16);
@@ -2949,6 +2948,11 @@ void doStatRound_insp6(struct table_head *ntry1, int port) {
 }
 
 
+void doStatRound_neigh(void*param, int fixed) {
+    struct neigh_entry *ntry = param;
+    fprintf(commandTx, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
+}
+
 
 
 
@@ -2979,6 +2983,15 @@ void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int)) {
         struct vrf2rib_entry *res = table_get(tab, i);
         tree_walk(&res->rou, doer, res->vrf);
     }
+}
+
+void doConsoleCommand_neigh(void*param, int fixed) {
+    struct neigh_entry *ntry = param;
+    unsigned char buf2[1024];
+    unsigned char buf3[1024];
+    mac2str(&ntry->macs[6], buf2);
+    mac2str(&ntry->macs[0], buf3);
+    printf("%10i %10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, ntry->aclport, (char*)&buf2[0], (char*)&buf3[0]);
 }
 
 
@@ -3094,10 +3107,7 @@ void doStatLoop() {
             struct mpls_entry *ntry = table_get(&mpls_table, i);
             fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
         }
-        for (int i=0; i<neigh_table.size; i++) {
-            struct neigh_entry *ntry = table_get(&neigh_table, i);
-            fprintf(commandTx, "neigh_cnt %i %li %li\r\n", ntry->id, ntry->pack, ntry->byte);
-        }
+        hasht_walk(&neigh_table, &doStatRound_neigh, 0);
         for (int i=0; i<bridge_table.size; i++) {
             struct bridge_entry *ntry = table_get(&bridge_table, i);
             put16msb(buf2, 0, ntry->mac1);
@@ -3108,11 +3118,13 @@ void doStatLoop() {
         doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
         doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
 #ifndef HAVE_NOCRYPTO
-        for (int i=0; i<port2vrf_table.size; i++) {
-            struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
-            if (ntry->mcscEthtyp == 0) continue;
-            fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
-        }
+        /*
+                for (int i=0; i<port2vrf_table.size; i++) {
+                    struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
+                    if (ntry->mcscEthtyp == 0) continue;
+                    fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
+                }
+        */
 #endif
         for (int i=0; i<acls4_table.size; i++) {
             struct acls_entry *ntry1 = table_get(&acls4_table, i);
@@ -3143,7 +3155,6 @@ void doMainLoop() {
     if (getenv("p4emuNOCONS") != NULL) for (;;) sleep(1);
     unsigned char buf[1024];
     unsigned char buf2[1024];
-    unsigned char buf3[1024];
     for (;;) {
         printf("> ");
         buf[0] = 0;
@@ -3205,20 +3216,17 @@ void doMainLoop() {
         case 'p':
         case 'P':
             printf("      port cmd        vrf     bridge\n");
-            for (int i=0; i<port2vrf_table.size; i++) {
-                struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
-                printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
-            }
+            /*
+                        for (int i=0; i<port2vrf_table.size; i++) {
+                            struct port2vrf_entry *ntry = table_get(&port2vrf_table, i);
+                            printf("%10i %3i %10i %10i\n", ntry->port, ntry->command, ntry->vrf, ntry->bridge);
+                        }
+            */
             break;
         case 'n':
         case 'N':
             printf("        id        vrf       port    aclport              smac              dmac\n");
-            for (int i=0; i<neigh_table.size; i++) {
-                struct neigh_entry *ntry = table_get(&neigh_table, i);
-                mac2str(&ntry->macs[6], buf2);
-                mac2str(&ntry->macs[0], buf3);
-                printf("%10i %10i %10i %10i %s %s\n", ntry->id, ntry->vrf, ntry->port, ntry->aclport, (char*)&buf2[0], (char*)&buf3[0]);
-            }
+            hasht_walk(&port2vrf_table, &doConsoleCommand_neigh, 0);
             break;
         case 'b':
         case 'B':
