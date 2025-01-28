@@ -201,3 +201,14 @@ void hasht_walk(struct hasht_head *tab, void doer(void *, int), int fixed) {
     for (int i=0; i<256; i++) table_walk(&tab->dat[i], doer, fixed);
 }
 #endif
+
+void* hasht_addinited(struct hasht_head *tab, void *ntry, struct table_head *tab2, int reclen, int cmplen) {
+    void *res = hasht_find(tab, ntry);
+    if (res == NULL) {
+        res = hasht_add(tab, ntry);
+    }
+    struct table_head *tab3 = res + ((char*)tab2 - (char*)ntry);
+    if (tab3->reclen == reclen) return res;
+    table_init(tab3, reclen, cmplen);
+    return res;
+}

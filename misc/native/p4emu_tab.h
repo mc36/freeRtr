@@ -79,11 +79,11 @@ struct mpls_entry {
     struct table_head flood;
 };
 
-struct table_head mpls_table;
+struct hasht_head mpls_table;
 
 
 
-#define mpls_init table_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), 3);
+#define mpls_init hasht_addinited(&mpls_table, &mpls_ntry, &mpls_ntry.flood, sizeof(struct flood_entry), 3);
 
 struct port2vrf_entry {
     int port;
@@ -175,18 +175,16 @@ struct vrf2rib_entry {
 };
 
 
-struct table_head vrf2rib4_table;
+struct hasht_head vrf2rib4_table;
 
-struct table_head vrf2rib6_table;
+struct hasht_head vrf2rib6_table;
 
 
-struct vrf2rib_entry* vrf2rib_init(struct table_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int natter, int tunner, int mcaster) {
-    int index = table_find(tab, ntry);
-    if (index < 0) {
-        table_add(tab, ntry);
-        index = table_find(tab, ntry);
+struct vrf2rib_entry* vrf2rib_init(struct hasht_head *tab, struct vrf2rib_entry *ntry, int reclen1, int reclen2, int reclen3, int reclen4, int natter, int tunner, int mcaster) {
+    struct vrf2rib_entry* res = hasht_find(tab, ntry);
+    if (res == NULL) {
+        res = hasht_add(tab, ntry);
     }
-    struct vrf2rib_entry* res = table_get(tab, index);
     struct tree_head *tab2 = &res->rou;
     if (tab2->reclen != reclen1) tree_init(tab2, reclen1);
     struct table_head *tab3 = &res->nat;
@@ -670,7 +668,7 @@ struct policer_entry {
     long avail;
 };
 
-struct table_head policer_table;
+struct hasht_head policer_table;
 
 
 struct flood_entry {
@@ -738,10 +736,10 @@ int initTables() {
     hasht_init(&polkaPoly_table, sizeof(struct polkaPoly_entry), 1);
     hasht_init(&mpolkaPoly_table, sizeof(struct polkaPoly_entry), 1);
     hasht_init(&nsh_table, sizeof(struct nsh_entry), 2);
-    table_init(&mpls_table, sizeof(struct mpls_entry), 1);
+    hasht_init(&mpls_table, sizeof(struct mpls_entry), 1);
     hasht_init(&port2vrf_table, sizeof(struct port2vrf_entry), 1);
-    table_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), 1);
-    table_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), 1);
+    hasht_init(&vrf2rib4_table, sizeof(struct vrf2rib_entry), 1);
+    hasht_init(&vrf2rib6_table, sizeof(struct vrf2rib_entry), 1);
     hasht_init(&neigh_table, sizeof(struct neigh_entry), 1);
     hasht_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
     hasht_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
@@ -750,7 +748,7 @@ int initTables() {
     hasht_init(&acls6_table, sizeof(struct acls_entry), 2);
     hasht_init(&bundle_table, sizeof(struct bundle_entry), 1);
     hasht_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
-    table_init(&policer_table, sizeof(struct policer_entry), 3);
+    hasht_init(&policer_table, sizeof(struct policer_entry), 3);
 #ifndef HAVE_NOCRYPTO
     printf("openssl version: %s\n", OpenSSL_version(OPENSSL_VERSION));
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L

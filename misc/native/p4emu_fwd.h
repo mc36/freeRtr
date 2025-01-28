@@ -1540,9 +1540,8 @@ mpls_rx:
         bufP += 4;
         mpls_ntry.label = (label >> 12) & 0xfffff;
         ctx->hash ^= mpls_ntry.label;
-        index = table_find(&mpls_table, &mpls_ntry);
-        if (index < 0) doDropper;
-        mpls_res = table_get(&mpls_table, index);
+        mpls_res = hasht_find(&mpls_table, &mpls_ntry);
+        if (mpls_res == NULL) doDropper;
         mpls_res->pack++;
         mpls_res->byte += bufS;
         switch (mpls_res->command) {
@@ -1665,9 +1664,8 @@ neigh_tx:
         ctx->stat->byteIpv4 += bufS;
         vrf2rib_ntry.vrf = port2vrf_res->vrf;
 ipv4_rx:
-        index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
-        if (index < 0) doDropper;
-        vrf2rib_res = table_get(&vrf2rib4_table, index);
+        vrf2rib_res = hasht_find(&vrf2rib4_table, &vrf2rib_ntry);
+        if (vrf2rib_res == NULL) doDropper;
         if ((bufD[bufP + 0] & 0xf0) != 0x40) doDropper;
         bufT = bufD[bufP + 0] & 0xf; // ihl
         if (bufT < 5) doDropper;
@@ -1733,9 +1731,8 @@ ipv4_rx:
         policer_ntry.vrf = 0;
         policer_ntry.meter = aceh_res->nexthop;
         policer_ntry.dir = 1;
-        index = table_find(&policer_table, &policer_ntry);
-        if (index < 0) doDropper;
-        policer_res = table_get(&policer_table, index);
+        policer_res = hasht_find(&policer_table, &policer_ntry);
+        if (policer_res == NULL) doDropper;
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv4_qosed:
@@ -1750,9 +1747,8 @@ ipv4_qosed:
         policer_ntry.vrf = vrf2rib_ntry.vrf;
         policer_ntry.meter = aceh_res->pri;
         policer_ntry.dir = 3;
-        index = table_find(&policer_table, &policer_ntry);
-        if (index < 0) doDropper;
-        policer_res = table_get(&policer_table, index);
+        policer_res = hasht_find(&policer_table, &policer_ntry);
+        if (policer_res == NULL) doDropper;
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv4_flwed:
@@ -1801,9 +1797,8 @@ ipv4_nated:
             break;
         case 2: // setvrf
             vrf2rib_ntry.vrf = aceh_res->vrf;
-            index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
-            if (index < 0) doDropper;
-            vrf2rib_res = table_get(&vrf2rib4_table, index);
+            vrf2rib_res = hasht_find(&vrf2rib4_table, &vrf2rib_ntry);
+            if (vrf2rib_res == NULL) doDropper;
             break;
         case 3: // sethop
             vrf2rib_ntry.vrf = aceh_res->vrf;
@@ -1871,9 +1866,8 @@ ipv4_tx:
             policer_ntry.vrf = 0;
             policer_ntry.meter = aceh_res->nexthop;
             policer_ntry.dir = 2;
-            index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) doDropper;
-            policer_res = table_get(&policer_table, index);
+            policer_res = hasht_find(&policer_table, &policer_ntry);
+            if (policer_res == NULL) doDropper;
             if (policer_res->avail < 1) doDropper;
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
@@ -1926,9 +1920,8 @@ ipv4_tx:
         ctx->stat->byteIpv6 += bufS;
         vrf2rib_ntry.vrf = port2vrf_res->vrf;
 ipv6_rx:
-        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
-        if (index < 0) doDropper;
-        vrf2rib_res = table_get(&vrf2rib6_table, index);
+        vrf2rib_res = hasht_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (vrf2rib_res == NULL) doDropper;
         if ((bufD[bufP + 0] & 0xf0) != 0x60) doDropper;
         ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
         if (ttl > bufS) doDropper;
@@ -2013,9 +2006,8 @@ ipv6_rx:
         policer_ntry.vrf = 0;
         policer_ntry.meter = aceh_res->nexthop;
         policer_ntry.dir = 1;
-        index = table_find(&policer_table, &policer_ntry);
-        if (index < 0) doDropper;
-        policer_res = table_get(&policer_table, index);
+        policer_res = hasht_find(&policer_table, &policer_ntry);
+        if (policer_res == NULL) doDropper;
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv6_qosed:
@@ -2030,9 +2022,8 @@ ipv6_qosed:
         policer_ntry.vrf = vrf2rib_ntry.vrf;
         policer_ntry.meter = aceh_res->pri;
         policer_ntry.dir = 4;
-        index = table_find(&policer_table, &policer_ntry);
-        if (index < 0) doDropper;
-        policer_res = table_get(&policer_table, index);
+        policer_res = hasht_find(&policer_table, &policer_ntry);
+        if (policer_res == NULL) doDropper;
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv6_flwed:
@@ -2097,9 +2088,8 @@ ipv6_nated:
             break;
         case 2: // setvrf
             vrf2rib_ntry.vrf = aceh_res->vrf;
-            index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
-            if (index < 0) doDropper;
-            vrf2rib_res = table_get(&vrf2rib6_table, index);
+            vrf2rib_res = hasht_find(&vrf2rib6_table, &vrf2rib_ntry);
+            if (vrf2rib_res == NULL) doDropper;
             break;
         case 3: // sethop
             vrf2rib_ntry.vrf = aceh_res->vrf;
@@ -2176,9 +2166,8 @@ ipv6_tx:
             policer_ntry.vrf = 0;
             policer_ntry.meter = aceh_res->nexthop;
             policer_ntry.dir = 2;
-            index = table_find(&policer_table, &policer_ntry);
-            if (index < 0) doDropper;
-            policer_res = table_get(&policer_table, index);
+            policer_res = hasht_find(&policer_table, &policer_ntry);
+            if (policer_res == NULL) doDropper;
             if (policer_res->avail < 1) doDropper;
             policer_res->avail -= bufS - bufP + preBuff;
             goto neigh_tx;
@@ -2355,9 +2344,8 @@ bridgevpls_rx:
         bufD[bufP + 1] = ttl;
         vrf2rib_ntry.vrf = port2vrf_res->vrf;
         if (bufD[bufP + 0] == 0) {
-            index = table_find(&vrf2rib4_table, &vrf2rib_ntry);
-            if (index < 0) doDropper;
-            vrf2rib_res = table_get(&vrf2rib4_table, index);
+            vrf2rib_res = hasht_find(&vrf2rib4_table, &vrf2rib_ntry);
+            if (vrf2rib_res == NULL) doDropper;
             polkaPoly_ntry.port = prt;
             polkaPoly_res = hasht_find(&polkaPoly_table, &polkaPoly_ntry);
             if (polkaPoly_res == NULL) doDropper;
@@ -2379,9 +2367,8 @@ bridgevpls_rx:
             neigh_ntry.id = polkaIdx_res->nexthop;
             goto ethtyp_tx;
         }
-        index = table_find(&vrf2rib6_table, &vrf2rib_ntry);
-        if (index < 0) doDropper;
-        vrf2rib_res = table_get(&vrf2rib6_table, index);
+        vrf2rib_res = hasht_find(&vrf2rib6_table, &vrf2rib_ntry);
+        if (vrf2rib_res == NULL) doDropper;
         polkaPoly_ntry.port = prt;
         polkaPoly_res = hasht_find(&mpolkaPoly_table, &polkaPoly_ntry);
         if (polkaPoly_res == NULL) doDropper;

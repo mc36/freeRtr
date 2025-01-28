@@ -295,8 +295,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.vrf = atoi(arg[3]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 1;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mylabel6") == 0) {
@@ -304,8 +304,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.vrf = atoi(arg[3]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 1;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "unlabel4") == 0) {
@@ -313,8 +313,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.nexthop = atoi(arg[3]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 2;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "unlabel6") == 0) {
@@ -322,8 +322,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.nexthop = atoi(arg[3]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 2;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "label4") == 0) {
@@ -332,8 +332,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.swap = atoi(arg[5]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 3;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "label6") == 0) {
@@ -342,8 +342,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.swap = atoi(arg[5]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 3;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnlabel4") == 0) {
@@ -353,8 +353,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.push = atoi(arg[6]);
         mpls_ntry.ver = 4;
         mpls_ntry.command = 9;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "vpnlabel6") == 0) {
@@ -364,23 +364,23 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.push = atoi(arg[6]);
         mpls_ntry.ver = 6;
         mpls_ntry.command = 9;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pwhelab") == 0) {
         mpls_ntry.label = atoi(arg[2]);
         mpls_ntry.port = atoi(arg[3]);
         mpls_ntry.command = 10;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "cpulabel") == 0) {
         mpls_ntry.label = atoi(arg[2]);
         mpls_ntry.command = 6;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "polkaidx") == 0) {
@@ -589,8 +589,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.port = port2vrf_res->port;
         mpls_ntry.command = 4;
         if (del == 0) port2vrf_deinit(&port2vrf_ntry);
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bridgevpls") == 0) {
@@ -610,8 +610,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_ntry.label = atoi(arg[3]);
         mpls_ntry.port = atoi(arg[2]);
         mpls_ntry.command = 5;
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
-        else table_add(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
+        else hasht_add(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "portbridge") == 0) {
@@ -1468,16 +1468,16 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         policer_ntry.meter = atoi(arg[2]);
         policer_ntry.dir = 1;
         policer_ntry.allow = readRate(&arg[0]);
-        if (del == 0) table_del(&policer_table, &policer_ntry);
-        else table_add(&policer_table, &policer_ntry);
+        if (del == 0) hasht_del(&policer_table, &policer_ntry);
+        else hasht_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outqos") == 0) {
         policer_ntry.meter = atoi(arg[2]);
         policer_ntry.dir = 2;
         policer_ntry.allow = readRate(&arg[0]);
-        if (del == 0) table_del(&policer_table, &policer_ntry);
-        else table_add(&policer_table, &policer_ntry);
+        if (del == 0) hasht_del(&policer_table, &policer_ntry);
+        else hasht_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "flowspec4") == 0) {
@@ -1490,8 +1490,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         policer_ntry.meter = acl4_ntry.pri;
         if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
         else table_add(&acls_res->aces, &acl4_ntry);
-        if (del == 0) table_del(&policer_table, &policer_ntry);
-        else table_add(&policer_table, &policer_ntry);
+        if (del == 0) hasht_del(&policer_table, &policer_ntry);
+        else hasht_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "flowspec6") == 0) {
@@ -1504,8 +1504,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         policer_ntry.meter = acl6_ntry.pri;
         if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
         else table_add(&acls_res->aces, &acl6_ntry);
-        if (del == 0) table_del(&policer_table, &policer_ntry);
-        else table_add(&policer_table, &policer_ntry);
+        if (del == 0) hasht_del(&policer_table, &policer_ntry);
+        else hasht_add(&policer_table, &policer_ntry);
         return 0;
     }
     if (strcmp(arg[0], "pbr4norm") == 0) {
@@ -2517,7 +2517,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_res = mpls_init;
         mpls_res->command = 8;
         for (int i=0; i<8; i++) mpls_res->bier[i] = atoi(arg[5+i]);
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "bierlabloc6") == 0) {
@@ -2528,7 +2528,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         mpls_res = mpls_init;
         mpls_res->command = 8;
         for (int i=0; i<8; i++) mpls_res->bier[i] = atoi(arg[5+i]);
-        if (del == 0) table_del(&mpls_table, &mpls_ntry);
+        if (del == 0) hasht_del(&mpls_table, &mpls_ntry);
         return 0;
     }
     if (strcmp(arg[0], "mbierroute4") == 0) {
@@ -2736,142 +2736,124 @@ void doStatRound_rou6(void* buffer, int fixed) {
 }
 
 void doStatRound_nat4(void* buffer, int fixed) {
-    struct table_head *nat_table = buffer;
+    struct nat4_entry *ntry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    for (int i=0; i<nat_table->size; i++) {
-        struct nat4_entry *ntry = table_get(nat_table, i);
-        put32msb(buf, 0, ntry->oSrcAddr);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->oTrgAddr);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commandTx, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
-    }
+    put32msb(buf, 0, ntry->oSrcAddr);
+    inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    put32msb(buf, 0, ntry->oTrgAddr);
+    inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+    fprintf(commandTx, "nattrns4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
 }
 
 void doStatRound_nat6(void* buffer, int fixed) {
-    struct table_head *nat_table = buffer;
+    struct nat6_entry *ntry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    for (int i=0; i<nat_table->size; i++) {
-        struct nat6_entry *ntry = table_get(nat_table, i);
-        put32msb(buf, 0, ntry->oSrcAddr1);
-        put32msb(buf, 4, ntry->oSrcAddr2);
-        put32msb(buf, 8, ntry->oSrcAddr3);
-        put32msb(buf, 12, ntry->oSrcAddr4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->oTrgAddr1);
-        put32msb(buf, 4, ntry->oTrgAddr2);
-        put32msb(buf, 8, ntry->oTrgAddr3);
-        put32msb(buf, 12, ntry->oTrgAddr4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commandTx, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
-    }
+    put32msb(buf, 0, ntry->oSrcAddr1);
+    put32msb(buf, 4, ntry->oSrcAddr2);
+    put32msb(buf, 8, ntry->oSrcAddr3);
+    put32msb(buf, 12, ntry->oSrcAddr4);
+    inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    put32msb(buf, 0, ntry->oTrgAddr1);
+    put32msb(buf, 4, ntry->oTrgAddr2);
+    put32msb(buf, 8, ntry->oTrgAddr3);
+    put32msb(buf, 12, ntry->oTrgAddr4);
+    inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+    fprintf(commandTx, "nattrns6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->oSrcPort, ntry->oTrgPort, ntry->pack, ntry->byte);
 }
 
 void doStatRound_tun4(void* buffer, int fixed) {
-    struct table_head *tun_table = buffer;
+    struct tun4_entry *ntry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    for (int i=0; i<tun_table->size; i++) {
-        struct tun4_entry *ntry = table_get(tun_table, i);
-        fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<tun_table->size; i++) {
-        struct tun4_entry *ntry = table_get(tun_table, i);
-        put32msb(buf, 0, ntry->srcAddr);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->trgAddr);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commandTx, "tunnel4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
-    }
+    fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    put32msb(buf, 0, ntry->srcAddr);
+    inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    put32msb(buf, 0, ntry->trgAddr);
+    inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+    fprintf(commandTx, "tunnel4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
 }
 
 void doStatRound_tun6(void* buffer, int fixed) {
-    struct table_head *tun_table = buffer;
+    struct tun6_entry *ntry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    for (int i=0; i<tun_table->size; i++) {
-        struct tun6_entry *ntry = table_get(tun_table, i);
-        fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    }
-    for (int i=0; i<tun_table->size; i++) {
-        struct tun6_entry *ntry = table_get(tun_table, i);
-        put32msb(buf, 0, ntry->srcAddr1);
-        put32msb(buf, 4, ntry->srcAddr2);
-        put32msb(buf, 8, ntry->srcAddr3);
-        put32msb(buf, 12, ntry->srcAddr4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->trgAddr1);
-        put32msb(buf, 4, ntry->trgAddr2);
-        put32msb(buf, 8, ntry->trgAddr3);
-        put32msb(buf, 12, ntry->trgAddr4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commandTx, "tunnel6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
-    }
+    fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    put32msb(buf, 0, ntry->srcAddr1);
+    put32msb(buf, 4, ntry->srcAddr2);
+    put32msb(buf, 8, ntry->srcAddr3);
+    put32msb(buf, 12, ntry->srcAddr4);
+    inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    put32msb(buf, 0, ntry->trgAddr1);
+    put32msb(buf, 4, ntry->trgAddr2);
+    put32msb(buf, 8, ntry->trgAddr3);
+    put32msb(buf, 12, ntry->trgAddr4);
+    inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+    fprintf(commandTx, "tunnel6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
 }
 
 void doStatRound_mcst4(void* buffer, int fixed) {
-    struct table_head *mroute_table = buffer;
+    struct mroute4_entry *ntry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    for (int i=0; i<mroute_table->size; i++) {
-        struct mroute4_entry *ntry = table_get(mroute_table, i);
-        put32msb(buf, 0, ntry->src);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->grp);
-        inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commandTx, "mroute4_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
-    }
+    put32msb(buf, 0, ntry->src);
+    inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    put32msb(buf, 0, ntry->grp);
+    inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
+    fprintf(commandTx, "mroute4_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
 }
 
 void doStatRound_mcst6(void* buffer, int fixed) {
-    struct table_head *mroute_table = buffer;
+    struct mroute6_entry *ntry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    for (int i=0; i<mroute_table->size; i++) {
-        struct mroute6_entry *ntry = table_get(mroute_table, i);
-        put32msb(buf, 0, ntry->src1);
-        put32msb(buf, 4, ntry->src2);
-        put32msb(buf, 8, ntry->src3);
-        put32msb(buf, 12, ntry->src4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-        put32msb(buf, 0, ntry->grp1);
-        put32msb(buf, 4, ntry->grp2);
-        put32msb(buf, 8, ntry->grp3);
-        put32msb(buf, 12, ntry->grp4);
-        inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-        fprintf(commandTx, "mroute6_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
-    }
+    put32msb(buf, 0, ntry->src1);
+    put32msb(buf, 4, ntry->src2);
+    put32msb(buf, 8, ntry->src3);
+    put32msb(buf, 12, ntry->src4);
+    inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
+    put32msb(buf, 0, ntry->grp1);
+    put32msb(buf, 4, ntry->grp2);
+    put32msb(buf, 8, ntry->grp3);
+    put32msb(buf, 12, ntry->grp4);
+    inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
+    fprintf(commandTx, "mroute6_cnt %i %s %s %li %li\r\n", fixed, (char*)&buf2[0], (char*)&buf3[0], ntry->pack, ntry->byte);
 }
 
-void doStatRound_polka(void* buffer, char* begin, int fixed) {
-    struct table_head *polkaIdx_table = buffer;
-    for (int i=0; i<polkaIdx_table->size; i++) {
-        struct polkaIdx_entry *ntry = table_get(polkaIdx_table, i);
-        fprintf(commandTx, "%spolka_cnt %i %i %li %li\r\n", begin, fixed, ntry->index, ntry->pack, ntry->byte);
-    }
+void doStatRound_polka4(void* buffer, int fixed) {
+    struct polkaIdx_entry *ntry = buffer;
+    fprintf(commandTx, "polka_cnt %i %i %li %li\r\n", fixed, ntry->index, ntry->pack, ntry->byte);
 }
 
-void doStatRound_ipvX(struct table_head *tab, void doer(void *, int), void natter(void *, int), void tunner(void *, int), void mcaster(void *, int), int ver) {
-    for (int i = 0; i < tab->size; i++) {
-        struct vrf2rib_entry *res = table_get(tab, i);
-        fprintf(commandTx, "vrf%i_cnt %i %li %li\r\n", ver, res->vrf, res->pack, res->byte);
-        tree_walk(&res->rou, doer, res->vrf);
-        natter(&res->nat, res->vrf);
-        tunner(&res->tun, res->vrf);
-        mcaster(&res->mcst, res->vrf);
-        if (ver == 4) doStatRound_polka(&res->plk, "", res->vrf);
-        else doStatRound_polka(&res->plk, "m", res->vrf);
-    }
+void doStatRound_polka6(void* buffer, int fixed) {
+    struct polkaIdx_entry *ntry = buffer;
+    fprintf(commandTx, "mpolka_cnt %i %i %li %li\r\n", fixed, ntry->index, ntry->pack, ntry->byte);
 }
 
+void doStatRound_vrf(void* buffer, int fixed) {
+    struct vrf2rib_entry *res = buffer;
+    fprintf(commandTx, "vrf%i_cnt %i %li %li\r\n", fixed, res->vrf, res->pack, res->byte);
+    if (fixed == 4) {
+        tree_walk(&res->rou, &doStatRound_rou4, res->vrf);
+        table_walk(&res->nat, &doStatRound_nat4, res->vrf);
+        table_walk(&res->tun, &doStatRound_tun4, res->vrf);
+        table_walk(&res->mcst, &doStatRound_mcst4, res->vrf);
+        table_walk(&res->plk, &doStatRound_polka4, res->vrf);
+    } else {
+        tree_walk(&res->rou, &doStatRound_rou6, res->vrf);
+        table_walk(&res->nat, &doStatRound_nat6, res->vrf);
+        table_walk(&res->tun, &doStatRound_tun6, res->vrf);
+        table_walk(&res->mcst, &doStatRound_mcst6, res->vrf);
+        table_walk(&res->plk, &doStatRound_polka6, res->vrf);
+    }
+}
 
 void doStatRound_acl(struct acls_entry *ntry1, int ver) {
     unsigned char buf2[1024];
@@ -3004,6 +2986,16 @@ void doStatRound_acl6(void* buffer, int fixed) {
     if (ntry1->dir < 3) doStatRound_insp6(ntry1->insp, ntry1->port);
 }
 
+void doStatRound_mpls(void* buffer, int fixed) {
+    struct mpls_entry *ntry = buffer;
+    fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
+}
+
+void doStatRound_policer(void* buffer, int fixed) {
+    struct policer_entry *ntry = buffer;
+    ntry->avail = ntry->allow;
+}
+
 
 
 
@@ -3026,13 +3018,6 @@ void doConsoleCommand_ipv6(void* buffer, int fixed) {
     put32msb(buf, 12, ntry->addr[3]);
     inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
     printf("%40s %3i %10i %3i %10i %10i %10i\n", (char*)&buf2[0], ntry->mask, fixed, ntry->command, ntry->nexthop, ntry->label1, ntry->label2);
-}
-
-void doConsoleCommand_ipvX(struct table_head *tab, void doer(void *, int)) {
-    for (int i = 0; i < tab->size; i++) {
-        struct vrf2rib_entry *res = table_get(tab, i);
-        tree_walk(&res->rou, doer, res->vrf);
-    }
 }
 
 void doConsoleCommand_neigh(void* buffer, int fixed) {
@@ -3067,6 +3052,16 @@ void doConsoleCommand_bridge(void* buffer, int fixed) {
 void doConsoleCommand_acl(void* buffer, int fixed) {
     struct acls_entry *ntry = buffer;
     printf("%10i %3i %i   %10i\n", ntry->port, ntry->dir, fixed, ntry->aces.size);
+}
+
+void doConsoleCommand_mpls(void* buffer, int fixed) {
+    struct mpls_entry *ntry = buffer;
+    printf("%10i %2i %10i %3i %10i %10i\n", ntry->label, ntry->ver, ntry->vrf, ntry->command, ntry->swap, ntry->nexthop);
+}
+
+void doConsoleCommand_policer(void* buffer, int fixed) {
+    struct policer_entry *ntry = buffer;
+    printf("%10i %10i %3i %10li\n", ntry->vrf, ntry->meter, ntry->dir, ntry->allow);
 }
 
 
@@ -3121,10 +3116,7 @@ void doStatLoop() {
         round++;
         usleep(100000);
         punts = 10;
-        for (int i = 0; i < policer_table.size; i++) {
-            struct policer_entry *ntry = table_get(&policer_table, i);
-            ntry->avail = ntry->allow;
-        }
+        hasht_walk(&policer_table, &doStatRound_policer, 0);
         if (portStatsLen > 0) {
             fprintf(commandTx, "%s", (char*)&portStatsBuf[0]);
             portStatsLen = 0;
@@ -3156,14 +3148,11 @@ void doStatLoop() {
             fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_NSH, stat->packNsh, stat->byteNsh);
         }
         hasht_walk(&nsh_table, &doStatRound_nsh, 0);
-        for (int i=0; i<mpls_table.size; i++) {
-            struct mpls_entry *ntry = table_get(&mpls_table, i);
-            fprintf(commandTx, "mpls_cnt %i %li %li\r\n", ntry->label, ntry->pack, ntry->byte);
-        }
+        hasht_walk(&mpls_table, &doStatRound_mpls, 0);
         hasht_walk(&neigh_table, &doStatRound_neigh, 0);
         hasht_walk(&bridge_table, &doStatRound_bridge, 0);
-        doStatRound_ipvX(&vrf2rib4_table, &doStatRound_rou4, &doStatRound_nat4, &doStatRound_tun4, &doStatRound_mcst4, 4);
-        doStatRound_ipvX(&vrf2rib6_table, &doStatRound_rou6, &doStatRound_nat6, &doStatRound_tun6, &doStatRound_mcst6, 6);
+        hasht_walk(&vrf2rib4_table, &doStatRound_vrf, 4);
+        hasht_walk(&vrf2rib6_table, &doStatRound_vrf, 6);
 #ifndef HAVE_NOCRYPTO
         hasht_walk(&port2vrf_table, &doStatRound_macsec, 0);
 #endif
@@ -3228,10 +3217,7 @@ void doMainLoop() {
         case 'm':
         case 'M':
             printf("     label ip        vrf cmd       swap    nexthop\n");
-            for (int i=0; i<mpls_table.size; i++) {
-                struct mpls_entry *ntry = table_get(&mpls_table, i);
-                printf("%10i %2i %10i %3i %10i %10i\n", ntry->label, ntry->ver, ntry->vrf, ntry->command, ntry->swap, ntry->nexthop);
-            }
+            hasht_walk(&mpls_table, &doConsoleCommand_mpls, 0);
             break;
         case 'a':
         case 'A':
@@ -3257,10 +3243,7 @@ void doMainLoop() {
         case 'q':
         case 'Q':
             printf("       vrf      meter dir       rate\n");
-            for (int i=0; i<policer_table.size; i++) {
-                struct policer_entry *ntry = table_get(&policer_table, i);
-                printf("%10i %10i %3i %10li\n", ntry->vrf, ntry->meter, ntry->dir, ntry->allow);
-            }
+            hasht_walk(&policer_table, &doConsoleCommand_policer, 0);
             break;
         case 'v':
         case 'V':
@@ -3269,11 +3252,11 @@ void doMainLoop() {
             break;
         case '4':
             printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
-            doConsoleCommand_ipvX(&vrf2rib4_table, &doConsoleCommand_ipv4);
+            hasht_walk(&vrf2rib4_table, &doConsoleCommand_ipv4, 0);
             break;
         case '6':
             printf("                                    addr msk        vrf cmd    nexthop     label1     label2\n");
-            doConsoleCommand_ipvX(&vrf2rib6_table, &doConsoleCommand_ipv6);
+            hasht_walk(&vrf2rib6_table, &doConsoleCommand_ipv6, 0);
             break;
         default:
             printf("unknown command '%s', try ?\n", buf);
