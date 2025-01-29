@@ -34,8 +34,8 @@ struct packetContext {
     unsigned char *bufC;
     unsigned char *bufD;
     unsigned char *bufH;
-    void *encr;
-    void *dgst;
+    void *encr; // EVP_CIPHER_CTX
+    void *dgst; // EVP_MD_CTX
 };
 
 #define maxPorts 128
