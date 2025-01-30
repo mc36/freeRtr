@@ -123,6 +123,11 @@ void hasht_init(struct hasht_head *tab, int reclen, int cmplen) {
 }
 
 
+void hasht_deinit(struct hasht_head *tab) {
+    table_deinit(&tab->dat);
+}
+
+
 void* hasht_add(struct hasht_head *tab, void *ntry) {
     return table_add(&tab->dat, ntry);
 }
@@ -149,6 +154,12 @@ void hasht_walk(struct hasht_head *tab, void doer(void *, int), int fixed) {
 void hasht_init(struct hasht_head *tab, int reclen, int cmplen) {
     for (int i=0; i<256; i++) table_init(&tab->dat[i], reclen, cmplen);
 }
+
+
+void hasht_deinit(struct hasht_head *tab) {
+    for (int i=0; i<256; i++) table_deinit(&tab->dat[i]);
+}
+
 
 struct table_head* hash_bucket(struct hasht_head *tab, void *ntry) {
     unsigned int*entry = (unsigned int*)ntry;
@@ -184,6 +195,7 @@ void* hasht_find(struct hasht_head *tab, void *ntry) {
 void hasht_walk(struct hasht_head *tab, void doer(void *, int), int fixed) {
     for (int i=0; i<256; i++) table_walk(&tab->dat[i], doer, fixed);
 }
+
 #endif
 
 void* hasht_addinited(struct hasht_head *tab, void *ntry, struct table_head *tab2, int reclen, int cmplen) {

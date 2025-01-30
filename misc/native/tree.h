@@ -15,7 +15,7 @@ struct tree_value {
 
 struct tree_head {
     int reclen;
-    struct tree_node* root;
+    struct tree_node root;
 };
 
 int bitVals[] = {
@@ -32,15 +32,11 @@ int bitVals[] = {
 
 void tree_init(struct tree_head *tab, int reclen) {
     tab->reclen = reclen;
-    tab->root = malloc(sizeof(struct tree_node));
-    if (tab->root == NULL) err("error allocating memory");
-    memset(tab->root, 0, sizeof(struct tree_node));
+    memset(&tab->root, 0, sizeof(tab->root));
 }
 
 void tree_deinit(struct tree_head *tab) {
     tab->reclen = 0;
-    free(tab->root);
-    tab->root = NULL;
 }
 
 #define tree_bit(p) (val->addr[p >> 5] & bitVals[p & 0x1f])
@@ -48,7 +44,7 @@ void tree_deinit(struct tree_head *tab) {
 #ifdef HAVE_NOCACHE
 
 void* tree_lpm(struct tree_head *tab, void *ntry) {
-    struct tree_node* cur = tab->root;
+    struct tree_node* cur = &tab->root;
     struct tree_value* val = ntry;
     int vlmsk = val->mask;
     void* lst = NULL;
@@ -70,7 +66,7 @@ void tree_cache(struct tree_node* bas) {
 #else
 
 void* tree_lpm(struct tree_head *tab, void *ntry) {
-    struct tree_node* cur = tab->root;
+    struct tree_node* cur = &tab->root;
     struct tree_value* val = ntry;
     int vlmsk = val->mask;
     void* lst = NULL;
@@ -117,8 +113,8 @@ void tree_cache(struct tree_node* bas) {
 
 
 void tree_add(struct tree_head *tab, void *ntry) {
-    struct tree_node* cur = tab->root;
-    struct tree_node* bas = tab->root;
+    struct tree_node* cur = &tab->root;
+    struct tree_node* bas = &tab->root;
     struct tree_value* val = ntry;
     int vlmsk = val->mask;
     for (int p = 0;; p++) {
@@ -160,8 +156,8 @@ void tree_add(struct tree_head *tab, void *ntry) {
 }
 
 void tree_del(struct tree_head *tab, void *ntry) {
-    struct tree_node* cur = tab->root;
-    struct tree_node* bas = tab->root;
+    struct tree_node* cur = &tab->root;
+    struct tree_node* bas = &tab->root;
     struct tree_value* val = ntry;
     int vlmsk = val->mask;
     for (int p = 0;; p++) {
@@ -194,6 +190,6 @@ void tree_walkNode(struct tree_node *cur, void doer(void *, int), int fixed) {
 }
 
 void tree_walk(struct tree_head *tab, void doer(void *, int), int fixed) {
-    struct tree_node* cur = tab->root;
+    struct tree_node* cur = &tab->root;
     tree_walkNode(cur, doer, fixed);
 }
