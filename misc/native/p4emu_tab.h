@@ -483,27 +483,24 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),in
 }
 
 struct acls_entry* acls_init(struct hasht_head *tab, struct acls_entry *ntry, int reclen1, int reclen2, int acer, int insper) {
-    struct acls_entry *res = hasht_find(tab, ntry);
-    int oidx = 0;
-    if (res == NULL) {
-        res = hasht_add(tab, ntry);
-        oidx = 1;
-    }
-    if ((ntry->dir < 3) && (oidx != 0)) {
+    if (ntry->dir < 3) {
         ntry->dir = 3 - ntry->dir;
         struct acls_entry *oth = hasht_find(tab, ntry);
-        if (oth != NULL) {
-            res->insp = oth->insp;
-        }
         ntry->dir = 3 - ntry->dir;
+        if (oth != NULL) {
+            ntry->insp = oth->insp;
+        } else {
+            ntry->insp = malloc(sizeof(struct hasht_head));
+            if (ntry->insp == NULL) err("error allocating memory");
+            hasht_init(ntry->insp, reclen2, insper);
+        }
+    }
+    struct acls_entry *res = hasht_find(tab, ntry);
+    if (res == NULL) {
+        res = hasht_add(tab, ntry);
     }
     struct table_head *tab3 = &res->aces;
     if (tab3->reclen != reclen1) table_init(tab3, reclen1, acer);
-    if (res->insp == NULL) {
-        res->insp = malloc(sizeof(struct table_head));
-        if (res->insp == NULL) err("error allocating memory");
-        hasht_init(res->insp, reclen2, insper);
-    }
     return res;
 }
 
