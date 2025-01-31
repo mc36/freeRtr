@@ -6,15 +6,10 @@ catalog-read exp xz %mirr% experimental main
 catalog-read sid xz %mirr% sid main
 catalog-sum
 
-select-one libc-bin                       #library
-select-one libc-dev-bin                   #library
-select-one gcc-multilib                   #compiler
-select-one gcc-bpf                        #compiler
-select-one clang                          #compiler
-select-one llvm                           #compiler
+select-one libc6-dev                      #library
 select-one gcc                            #compiler
-select-one busybox                        #busybox
-select-one tar                            #archiver
+select-one gcc-multilib                   #compiler
+select-dis librte-.*                      #dataplane
 select-one dpdk-dev                       #dataplane
 select-one libpcap-dev                    #dataplane
 select-one libssl-dev                     #dataplane
@@ -30,11 +25,12 @@ package-inst
 
 catalog-save cmp
 
-exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
-
 exec cp -r ../misc %tmp%/
-exec cp /usr/bin/qemu-%qemu%-static %tmp%/qemu-static
 
-exec unshare -r -R %tmp% /qemu-static /bin/sh /misc/image/image.crs
+include ../misc/image/native.%comp%
+
+exec cd %tmp%/misc/native/ ; ./p.sh
 
 exec mv %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz
+
+exec /usr/bin/qemu-%qemu%-static -L %tmp%/ %tmp%/binTmp/p4bench.bin

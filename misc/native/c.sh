@@ -27,8 +27,11 @@ else
   BS="bpf-strip"
 fi
 
-while [[ $# -gt 0 ]]; do
+while [ $# -gt 0 ]; do
   case $1 in
+    md)
+      MD=$2
+      ;;
     um)
       UM=$2
       ;;
@@ -63,7 +66,7 @@ echo arch=$UM, abi=$AB, sys=$SR, cc=$CC, cs=$CS, bc=$BC, bs=$BS, mode=$MD, flag=
 compileBpf()
 {
 echo compiling $1.
-$BC --sysroot $SR -Wall $MD -c -g -I /usr/include/ -I /usr/include/$UM-linux-$AB/ -o$TR/$1.bin $1.c
+$BC --sysroot $SR -Wall $MD -c -g -I =/usr/include/ -I =/usr/include/$UM-linux-$AB/ -o$TR/$1.bin $1.c
 $BS -d $TR/$1.bin || true
 touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
@@ -112,7 +115,7 @@ for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none p4emu
 done
 
 for fn in p4emu_dpdk; do
-  compileLib $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-$AB/dpdk" $MF
+  compileLib $fn "-I =/usr/include/dpdk/ -I =/usr/include/$UM-linux-$AB/dpdk" $MF
 done
 
 linkTwoLibs "p4emu" "p4emu_pcap" "p4emu_full" "-lpthread -lpcap -lcrypto"

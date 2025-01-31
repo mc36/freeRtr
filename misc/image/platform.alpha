@@ -1,6 +1,8 @@
 arch alpha
 unam alpha
 qemu alpha
+ctrg alpha
+comp gcc
 kern alpha-generic
 grub alpha-bin
 boot alpha-ieee1275

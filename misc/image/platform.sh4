@@ -1,6 +1,8 @@
 arch sh4
 unam sh4
 qemu sh4
+ctrg sh4
+comp gcc
 kern sh7785lcr
 grub ieee1275-bin
 boot sh4-ieee1275

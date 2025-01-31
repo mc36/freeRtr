@@ -1,7 +1,9 @@
-arch armel
-unam armv5tel
-qemu armel
-kern rpi
+arch armhf
+unam armv7l
+qemu armhf
+ctrg arm
+cabi gnueabihf
+kern armmp
 grub efi-arm-bin
 boot arm-efi
 uefi boota32.efi
