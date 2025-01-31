@@ -9,7 +9,6 @@ catalog-sum
 select-one libc6-dev                      #library
 select-one gcc                            #compiler
 select-one gcc-multilib                   #compiler
-select-dis librte-.*                      #dataplane
 select-one dpdk-dev                       #dataplane
 select-one libpcap-dev                    #dataplane
 select-one libssl-dev                     #dataplane
