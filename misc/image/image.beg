@@ -46,6 +46,7 @@ select-dis libxi.*
 select-dis libxrender.*
 select-dis libxtst.*
 
+select-one libc6                          #library
 select-one linux-image-%kern%             #regular kernel
 select-one busybox                        #small utils
 select-one udev                           #bring up hw
