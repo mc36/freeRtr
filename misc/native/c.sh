@@ -20,12 +20,12 @@ if which clang > /dev/null ; then
   CS="llvm-strip"
   BC="clang -target bpf"
   BS="llvm-strip"
-  else
+else
   CC="gcc"
   CS="strip"
   BC="bpf-gcc"
   BS="bpf-strip"
-  fi
+fi
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -51,7 +51,7 @@ while [[ $# -gt 0 ]]; do
       BS=$2
       ;;
   esac
-shift 2
+  shift 2
 done
 
 if [ "$UM" = "x86_64" ]; then
@@ -63,7 +63,7 @@ echo arch=$UM, abi=$AB, sys=$SR, cc=$CC, cs=$CS, bc=$BC, bs=$BS, mode=$MD, flag=
 compileBpf()
 {
 echo compiling $1.
-$BC -Wall $MD -c -g -I /usr/include/ -I /usr/include/$UM-linux-$AB/ -o$TR/$1.bin $1.c
+$BC --sysroot $SR -Wall $MD -c -g -I /usr/include/ -I /usr/include/$UM-linux-$AB/ -o$TR/$1.bin $1.c
 $BS -d $TR/$1.bin || true
 touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
@@ -97,23 +97,23 @@ touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 
 for fn in p4xdp_pass p4xdp_drop p4xdp_kern p4xdp_krno p4mnl_kern; do
   compileBpf $fn
-  done
+done
 
 for fn in p4xdp_user; do
   compileFile $fn "" "-lpthread -lbpf" ""
-  done
+done
 
 for fn in p4mnl_user; do
   compileFile $fn "" "-lpthread -lbpf -lmnl" ""
-  done
+done
 
 for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng; do
   compileLib $fn "" ""
-  done
+done
 
 for fn in p4emu_dpdk; do
   compileLib $fn "-I /usr/include/dpdk/ -I /usr/include/$UM-linux-$AB/dpdk" $MF
-  done
+done
 
 linkTwoLibs "p4emu" "p4emu_pcap" "p4emu_full" "-lpthread -lpcap -lcrypto"
 
@@ -193,28 +193,28 @@ linkTwoLibs "p4urngTin" "p4emu_urng" "p4emu_tiny" "-lpthread -luring"
 
 for fn in pcapInt pcap2pcap sender; do
   compileFile $fn "" "-lpthread -lpcap" ""
-  done
+done
 
 for fn in xskInt; do
   compileFile $fn "" "-lpthread -lxdp" ""
-  done
+done
 
 for fn in urngInt; do
   compileFile $fn "" "-lpthread -luring" ""
-  done
+done
 
 for fn in veth; do
   compileFile $fn "" "-lmnl" ""
-  done
+done
 
 for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" ""
-  done
+done
 
 for fn in ptyRun; do
   compileFile $fn "" "-lutil" ""
-  done
+done
 
 for fn in seth dummyCon daemonRun vm; do
   compileFile $fn "" "" ""
-  done
+done

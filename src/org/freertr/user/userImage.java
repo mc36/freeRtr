@@ -53,6 +53,14 @@ public class userImage {
 
     private String unam = "x86_64";
 
+    private String comp = "clang";
+
+    private String cabi = "gnu";
+
+    private String ctrg = "x86_64";
+
+    private String carc = "little-endian";
+
     private String grub = "efi-amd64-bin";
 
     private String uefi = "bootx64.efi";
@@ -430,6 +438,10 @@ public class userImage {
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
             s = s.replaceAll("%unam%", unam);
+            s = s.replaceAll("%comp%", comp);
+            s = s.replaceAll("%cabi%", cabi);
+            s = s.replaceAll("%ctrg%", ctrg);
+            s = s.replaceAll("%carc%", carc);
             s = s.replaceAll("%grub%", grub);
             s = s.replaceAll("%uefi%", uefi);
             s = s.replaceAll("%find%", found);
@@ -497,6 +509,22 @@ public class userImage {
             }
             if (a.equals("unam")) {
                 unam = s;
+                continue;
+            }
+            if (a.equals("comp")) {
+                comp = s;
+                continue;
+            }
+            if (a.equals("cabi")) {
+                cabi = s;
+                continue;
+            }
+            if (a.equals("ctrg")) {
+                ctrg = s;
+                continue;
+            }
+            if (a.equals("carc")) {
+                carc = s;
                 continue;
             }
             if (a.equals("grub")) {
