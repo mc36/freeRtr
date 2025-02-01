@@ -6,6 +6,7 @@ catalog-read exp xz %mirr% experimental main
 catalog-read sid xz %mirr% sid main
 catalog-sum
 
+select-dis librte-.*-.*
 select-one libc6-dev                      #library
 select-one gcc                            #compiler
 select-one gcc-multilib                   #compiler
