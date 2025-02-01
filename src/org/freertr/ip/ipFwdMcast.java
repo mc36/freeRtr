@@ -143,6 +143,8 @@ public class ipFwdMcast implements Comparable<ipFwdMcast> {
         res.rd = rd;
         res.iface = iface;
         res.local = local;
+        res.configG = configG;
+        res.configI = configI;
         res.created = created;
         if (label != null) {
             res.label = label.copyBytes();
@@ -151,6 +153,7 @@ public class ipFwdMcast implements Comparable<ipFwdMcast> {
             res.bier = bier.copyBytes();
         }
         res.upsVrf = upsVrf;
+        res.rxLab = rxLab;
         if (upstream != null) {
             res.upstream = upstream.copyBytes();
         }
