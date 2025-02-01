@@ -48,6 +48,7 @@ int sdn1
  exit
 int sdn2
  bridge-gr 1
+ bridge-static 0000.0000.4444
  exit
 int bvi1
  vrf for v1

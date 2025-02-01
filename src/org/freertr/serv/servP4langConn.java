@@ -4295,7 +4295,7 @@ public class servP4langConn implements Runnable {
             }
             now++;
             if (ifc.viaN != null) {
-                lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.viaN.getVia().id + " " + ifc.viaN.id + " " + ifc.id);
+                lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.viaN.getVia().getMcast(gid, null).id + " " + ifc.viaN.id + " " + ifc.id);
                 continue;
             }
             if (ntry.mcastAsBcast) {
@@ -4317,7 +4317,7 @@ public class servP4langConn implements Runnable {
                 lower.sendLine("mroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + ifc.getMcast(gid, null).id + " " + ifc.id + " " + ifc.getMac().toEmuStr() + " " + adrM.toEmuStr());
                 continue;
             }
-            lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + nei.getVia().id + " " + nei.id + " " + ifc.id);
+            lower.sendLine("mneiroute" + afi + "_" + act + " " + vrf + " " + gid + " " + need.group + " " + need.source + " " + ingr.id + " " + nei.getVia().getMcast(gid, null).id + " " + nei.id + " " + ifc.id);
         }
         if (bef) {
             act = "mod";
