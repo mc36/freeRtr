@@ -22,24 +22,89 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
     public final static int typBgp = 16;
 
     /**
-     * remote message
+     * rib type
      */
-    public final static int typRem32 = 4;
+    public final static int typRib = 13;
 
     /**
-     * local message
+     * remote as4 message
      */
-    public final static int typLoc32 = 7;
+    public final static int bgpRem32 = 4;
 
     /**
-     * remote message
+     * local as4 message
      */
-    public final static int typRem16 = 1;
+    public final static int bgpLoc32 = 7;
 
     /**
-     * local message
+     * remote as2 message
      */
-    public final static int typLoc16 = 6;
+    public final static int bgpRem16 = 1;
+
+    /**
+     * local as2 message
+     */
+    public final static int bgpLoc16 = 6;
+
+    /**
+     * remote addpath as4 message
+     */
+    public final static int bgpRem32ap = 9;
+
+    /**
+     * local addpath as4 message
+     */
+    public final static int bgpLoc32ap = 11;
+
+    /**
+     * remote addpath as2 message
+     */
+    public final static int bgpRem16ap = 8;
+
+    /**
+     * local addpath as2 message
+     */
+    public final static int bgpLoc16ap = 10;
+
+    /**
+     * ipv4 unicast rib
+     */
+    public final static int ribIp4uni = 2;
+
+    /**
+     * ipv4 multicast rib
+     */
+    public final static int ribIp4mul = 3;
+
+    /**
+     * ipv6 unicast rib
+     */
+    public final static int ribIp6uni = 4;
+
+    /**
+     * ipv6 multicast rib
+     */
+    public final static int ribIp6mul = 5;
+
+    /**
+     * ipv4 addpath unicast rib
+     */
+    public final static int ribIp4uniAp = 2;
+
+    /**
+     * ipv4 addpath multicast rib
+     */
+    public final static int ribIp4mulAp = 3;
+
+    /**
+     * ipv6 addpath unicast rib
+     */
+    public final static int ribIp6uniAp = 4;
+
+    /**
+     * ipv6 addpath multicast rib
+     */
+    public final static int ribIp6mulAp = 5;
 
     /**
      * name of dump
@@ -101,9 +166,9 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
         bits.msbPutD(hdr, 0, (int) (tim / 1000));
         bits.msbPutW(hdr, 4, typBgp); // type
         if (dir) {
-            bits.msbPutW(hdr, 6, typLoc32); // tx
+            bits.msbPutW(hdr, 6, bgpLoc32); // tx
         } else {
-            bits.msbPutW(hdr, 6, typRem32); // rx
+            bits.msbPutW(hdr, 6, bgpRem32); // rx
         }
         bits.msbPutD(hdr, 12, asR);
         bits.msbPutD(hdr, 16, asL);
@@ -170,18 +235,18 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
         }
         boolean xchg = false;
         switch (cls) {
-            case typLoc16:
+            case bgpLoc16:
                 pck.getSkip(4);
                 xchg = true;
                 break;
-            case typRem16:
+            case bgpRem16:
                 pck.getSkip(4);
                 break;
-            case typLoc32:
+            case bgpLoc32:
                 xchg = true;
                 pck.getSkip(8);
                 break;
-            case typRem32:
+            case bgpRem32:
                 pck.getSkip(8);
                 break;
             default:
