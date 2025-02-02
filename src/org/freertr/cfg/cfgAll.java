@@ -53,6 +53,7 @@ import org.freertr.serv.servModem;
 import org.freertr.serv.servMplsIp;
 import org.freertr.serv.servMplsOam;
 import org.freertr.serv.servMplsUdp;
+import org.freertr.serv.servMrt2bgp;
 import org.freertr.serv.servMultiplexer;
 import org.freertr.serv.servNetflow;
 import org.freertr.serv.servNrpe;
@@ -604,6 +605,11 @@ public class cfgAll {
      * streaming telemetry daemons
      */
     public final static servGenList<servStreamingMdt> dmnStreamingMdt = new servGenList<servStreamingMdt>();
+
+    /**
+     * mrt2bgp daemons
+     */
+    public final static servGenList<servMrt2bgp> dmnMrt2bgp = new servGenList<servMrt2bgp>();
 
     /**
      * bstun daemons
@@ -3999,6 +4005,7 @@ public class cfgAll {
         dmnNrpe.getShRun(l, filter);
         dmnPrometheus.getShRun(l, filter);
         dmnStreamingMdt.getShRun(l, filter);
+        dmnMrt2bgp.getShRun(l, filter);
         dmnBStun.getShRun(l, filter);
         dmnStun.getShRun(l, filter);
         dmnPckOudp.getShRun(l, filter);

@@ -352,6 +352,9 @@ public class servGenList<T extends servGeneric> {
         l.add(null, p + "  " + (p + 1) + "    bstun                        bstun server" + e);
         l.add(cfgAll.dmnBStun.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
         l.addOther(o);
+        l.add(null, p + "  " + (p + 1) + "    mrt2bgp                      mrt to bgp server" + e);
+        l.add(cfgAll.dmnMrt2bgp.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
+        l.addOther(o);
         l.add(null, p + "  " + (p + 1) + "    stun                         stun server" + e);
         l.add(cfgAll.dmnStun.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
         l.addOther(o);
@@ -590,6 +593,9 @@ class servGenEntry {
         }
         if (typ.equals("streamingmdt")) {
             return new servGenEntry(new servStreamingMdt(), cfgAll.dmnStreamingMdt);
+        }
+        if (typ.equals("mrt2bgp")) {
+            return new servGenEntry(new servMrt2bgp(), cfgAll.dmnMrt2bgp);
         }
         if (typ.equals("bstun")) {
             return new servGenEntry(new servBstun(), cfgAll.dmnBStun);

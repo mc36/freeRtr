@@ -1228,7 +1228,7 @@ public class userPacket {
             for (;;) {
                 cmd.error("connecting " + trg);
                 clntProxy prx = clntProxy.makeTemp(vrf, ifc);
-                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port, "bgpgen");
+                strm = prx.doConnect(servGeneric.protoTcp, trg, rtrBgp.port, "bgpattr");
                 if (strm != null) {
                     break;
                 }

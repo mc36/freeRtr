@@ -1806,7 +1806,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param pck packet to store to
      * @return type of message, negative on error
      */
-    private int packRecv(packHolder pck) {
+    public int packRecv(packHolder pck) {
         pck.clear();
         if (pipe == null) {
             return -1;

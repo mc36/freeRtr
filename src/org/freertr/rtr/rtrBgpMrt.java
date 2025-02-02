@@ -10,7 +10,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logFil;
-import org.freertr.util.logger;
 
 /**
  * multi-threaded routing toolkit
@@ -253,7 +252,6 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     default:
                         return 2;
                 }
-                pck.ETHtype = typ;
                 pck.getSkip(4);
                 tabRouteEntry<addrIP> pfx = rtrBgpUtil.readPrefix(typ, true, pck);
                 if (pfx == null) {
@@ -301,6 +299,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     rtrBgpUtil.writePrefix(typ, true, pck, pfx);
                     pck.merge2end();
                 }
+                pck.ETHtype = typ;
                 rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
                 return 0;
             case typBgp:

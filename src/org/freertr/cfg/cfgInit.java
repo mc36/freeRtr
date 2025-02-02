@@ -98,6 +98,7 @@ import org.freertr.serv.servUpnpHub;
 import org.freertr.serv.servVoice;
 import org.freertr.serv.servVxlan;
 import org.freertr.enc.encUrl;
+import org.freertr.serv.servMrt2bgp;
 import org.freertr.serv.servPlan9;
 import org.freertr.serv.servStack;
 import org.freertr.serv.servWhois;
@@ -942,6 +943,7 @@ public class cfgInit implements Runnable {
         cfgXconn.defaultF = createFilter(cfgXconn.defaultL);
         tabGen<userFilter> srvdefsF = createFilter(servGeneric.srvdefsL);
         servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, userReader.linedefF);
+        servMrt2bgp.defaultF = createFilter(servMrt2bgp.defaultL, srvdefsF, userReader.linedefF);
         servRpki.defaultF = createFilter(servRpki.defaultL, srvdefsF);
         servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
         servPrometheus.defaultF = createFilter(servPrometheus.defaultL, srvdefsF);
