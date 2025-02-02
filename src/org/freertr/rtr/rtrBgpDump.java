@@ -572,6 +572,9 @@ public class rtrBgpDump {
         }
         pck.getSkip(rtrBgpUtil.sizeU);
         res.add("len=" + pck.IPsiz + " typ=" + pck.IPprt + " " + rtrBgpUtil.msgType2string(pck.IPprt));
+        if (pck.IPprt != rtrBgpUtil.msgUpdate) {
+            return res;
+        }
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
         res.add("withdraw len=" + prt);
@@ -728,4 +731,5 @@ public class rtrBgpDump {
         }
         return res;
     }
+
 }

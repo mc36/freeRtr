@@ -626,13 +626,15 @@ public class userPacket {
                 return null;
             }
             packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
             cmd.error("converting");
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             int pk = 0;
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -665,6 +667,7 @@ public class userPacket {
             }
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
             List<String> txt;
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
@@ -675,7 +678,7 @@ public class userPacket {
                 } catch (Exception e) {
                     break;
                 }
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -709,6 +712,7 @@ public class userPacket {
             }
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
             List<String> txt;
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
@@ -719,7 +723,7 @@ public class userPacket {
                 } catch (Exception e) {
                     break;
                 }
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -749,6 +753,7 @@ public class userPacket {
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
             List<String> txt;
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
@@ -759,7 +764,7 @@ public class userPacket {
                 } catch (Exception e) {
                     break;
                 }
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -824,6 +829,7 @@ public class userPacket {
             int snt = 0;
             int tot = 0;
             packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             for (;;) {
                 long fp;
@@ -832,7 +838,7 @@ public class userPacket {
                 } catch (Exception e) {
                     break;
                 }
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -854,7 +860,7 @@ public class userPacket {
                 nei.conn.currChg = 0;
                 switch (typ) {
                     case rtrBgpUtil.msgUpdate:
-                        nei.conn.parseUpdate(pck, hlp);
+                        nei.conn.parseUpdate(pck, tmp);
                         break;
                     case rtrBgpUtil.msgOpen:
                         nei.conn.parseOpen(pck);
@@ -929,9 +935,10 @@ public class userPacket {
             int snt = 0;
             int tot = 0;
             packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -952,7 +959,7 @@ public class userPacket {
                 }
                 switch (typ) {
                     case rtrBgpUtil.msgUpdate:
-                        nei.conn.parseUpdate(pck, hlp);
+                        nei.conn.parseUpdate(pck, tmp);
                         break;
                     case rtrBgpUtil.msgOpen:
                         nei.conn.parseOpen(pck);
@@ -1010,10 +1017,12 @@ public class userPacket {
             }
             cmd.error("sending updates as it was from " + sip + " to " + tip);
             packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
             int snt = 0;
             int tot = 0;
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -1107,6 +1116,8 @@ public class userPacket {
             nei.addrFams = safi;
             rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm);
             packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
@@ -1128,7 +1139,7 @@ public class userPacket {
             int snt = 0;
             int tot = 0;
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(pck, fs);
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }

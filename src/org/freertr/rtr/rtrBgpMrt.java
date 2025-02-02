@@ -1,13 +1,16 @@
 package org.freertr.rtr;
 
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.pack.packHolder;
+import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logFil;
+import org.freertr.util.logger;
 
 /**
  * multi-threaded routing toolkit
@@ -194,11 +197,13 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
     /**
      * read up next mrt entry
      *
+     * @param hlp temporary packet
+     * @param tmp temporary packet
      * @param pck packet to populate
      * @param fa file to read
      * @return result, 0=ok, 1=stop, 2=continue
      */
-    public static int readNextMrt(packHolder pck, RandomAccessFile fa) {
+    public static int readNextMrt(packHolder hlp, packHolder tmp, packHolder pck, RandomAccessFile fa) {
         pck.clear();
         byte[] buf = new byte[12];
         try {
@@ -230,67 +235,132 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2end();
-        if (typ != typBgp) {
-            return 2;
-        }
-        boolean xchg = false;
-        switch (cls) {
-            case bgpLoc16:
-                pck.getSkip(4);
-                xchg = true;
-                break;
-            case bgpRem16:
-                pck.getSkip(4);
-                break;
-            case bgpLoc32:
-                xchg = true;
-                pck.getSkip(8);
-                break;
-            case bgpRem32:
-                pck.getSkip(8);
-                break;
-            default:
-                return 2;
-        }
-        typ = pck.msbGetW(2);
-        pck.getSkip(4);
         switch (typ) {
-            case 1:
-                addrIPv4 a4 = new addrIPv4();
-                pck.getAddr(a4, 0);
-                pck.getSkip(addrIPv4.size);
-                pck.IPtrg.fromIPv4addr(a4);
-                pck.getAddr(a4, 0);
-                pck.getSkip(addrIPv4.size);
-                pck.IPsrc.fromIPv4addr(a4);
-                break;
-            case 2:
-                addrIPv6 a6 = new addrIPv6();
-                pck.getAddr(a6, 0);
-                pck.getSkip(addrIPv6.size);
-                pck.IPtrg.fromIPv6addr(a6);
-                pck.getAddr(a6, 0);
-                pck.getSkip(addrIPv6.size);
-                pck.IPsrc.fromIPv6addr(a6);
-                break;
+            case typRib:
+                switch (cls) {
+                    case ribIp4uni:
+                        typ = rtrBgpUtil.safiIp4uni;
+                        break;
+                    case ribIp4mul:
+                        typ = rtrBgpUtil.safiIp4multi;
+                        break;
+                    case ribIp6uni:
+                        typ = rtrBgpUtil.safiIp6uni;
+                        break;
+                    case ribIp6mul:
+                        typ = rtrBgpUtil.safiIp6multi;
+                        break;
+                    default:
+                        return 2;
+                }
+                pck.ETHtype = typ;
+                pck.getSkip(4);
+                tabRouteEntry<addrIP> pfx = rtrBgpUtil.readPrefix(typ, true, pck);
+                if (pfx == null) {
+                    return 2;
+                }
+                i = pck.msbGetW(0);
+                if (i < 1) {
+                    return 2;
+                }
+                i = pck.msbGetW(8);
+                pck.getSkip(10);
+                if (pck.dataSize() < i) {
+                    return 2;
+                }
+                pck.setDataSize(i);
+                tmp.clear();
+                for (;;) {
+                    if (pck.dataSize() < 1) {
+                        break;
+                    }
+                    rtrBgpUtil.parseAttrib(pck, hlp);
+                    if (hlp.ETHtype == rtrBgpUtil.attrReachable) {
+                        continue;
+                    }
+                    rtrBgpUtil.placeAttrib(null, 0, hlp.ETHtype, tmp, hlp);
+                    tmp.merge2end();
+                }
+                pck.clear();
+                buf = tmp.getCopy();
+                pck.putCopy(buf, 0, 0, buf.length);
+                pck.putSkip(buf.length);
+                pck.merge2end();
+                if (typ != rtrBgpUtil.safiIp4uni) {
+                    pfx.best.nextHop = new addrIP();
+                    List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+                    lst.add(pfx);
+                    rtrBgpUtil.placeReachable(null, typ, false, true, pck, hlp, lst);
+                    pck.merge2end();
+                }
+                pck.msbPutW(0, 0);
+                pck.msbPutW(2, pck.dataSize());
+                pck.putSkip(4);
+                pck.merge2beg();
+                if (typ == rtrBgpUtil.safiIp4uni) {
+                    rtrBgpUtil.writePrefix(typ, true, pck, pfx);
+                    pck.merge2end();
+                }
+                rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
+                return 0;
+            case typBgp:
+                boolean xchg = false;
+                switch (cls) {
+                    case bgpLoc16:
+                        pck.getSkip(4);
+                        xchg = true;
+                        break;
+                    case bgpRem16:
+                        pck.getSkip(4);
+                        break;
+                    case bgpLoc32:
+                        xchg = true;
+                        pck.getSkip(8);
+                        break;
+                    case bgpRem32:
+                        pck.getSkip(8);
+                        break;
+                    default:
+                        return 2;
+                }
+                typ = pck.msbGetW(2);
+                pck.getSkip(4);
+                switch (typ) {
+                    case 1:
+                        typ = rtrBgpUtil.safiIp4uni;
+                        addrIPv4 a4 = new addrIPv4();
+                        pck.getAddr(a4, 0);
+                        pck.getSkip(addrIPv4.size);
+                        pck.IPtrg.fromIPv4addr(a4);
+                        pck.getAddr(a4, 0);
+                        pck.getSkip(addrIPv4.size);
+                        pck.IPsrc.fromIPv4addr(a4);
+                        break;
+                    case 2:
+                        typ = rtrBgpUtil.safiIp6uni;
+                        addrIPv6 a6 = new addrIPv6();
+                        pck.getAddr(a6, 0);
+                        pck.getSkip(addrIPv6.size);
+                        pck.IPtrg.fromIPv6addr(a6);
+                        pck.getAddr(a6, 0);
+                        pck.getSkip(addrIPv6.size);
+                        pck.IPsrc.fromIPv6addr(a6);
+                        break;
+                    default:
+                        return 2;
+                }
+                pck.ETHtype = typ;
+                if (xchg) {
+                    return 0;
+                }
+                addrIP adr = new addrIP();
+                adr.setAddr(pck.IPsrc);
+                pck.IPsrc.setAddr(pck.IPtrg);
+                pck.IPtrg.setAddr(adr);
+                return 0;
             default:
                 return 2;
         }
-        if (pck.msbGetD(0) != -1) {
-            try {
-                fa.seek(fa.getFilePointer() - buf.length);
-            } catch (Exception e) {
-            }
-            return 2;
-        }
-        if (xchg) {
-            return 0;
-        }
-        addrIP adr = new addrIP();
-        adr.setAddr(pck.IPsrc);
-        pck.IPsrc.setAddr(pck.IPtrg);
-        pck.IPtrg.setAddr(adr);
-        return 0;
     }
 
     /**
