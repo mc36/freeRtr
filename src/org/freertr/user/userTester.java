@@ -1140,7 +1140,7 @@ public class userTester {
         txt.add("<title>tester</title></head><body>");
         txt.add("release: " + releaseN + "<br/>");
         txt.add("tested: " + a + "<br/>");
-        txt.add("jvm: " + jvn + jvp + "<br/>");
+        txt.add("jvm: " + jvn + jvp + ", other: " + other0 + "<br/>");
         txt.add("<br/>");
         txt.add("<table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>");
         txt.addAll(features2list(finished, 3));
@@ -1150,7 +1150,7 @@ public class userTester {
         txt.add("url;file;result;test");
         txt.add("-;-;-;" + releaseN);
         txt.add("-;-;-;" + a);
-        txt.add("-;-;-;" + jvn + jvp);
+        txt.add("-;-;-;" + jvn + jvp + ", " + other0);
         txt.addAll(features2list(finished, 4));
         bits.buf2txt(true, txt, "rtr" + beg + ".csv");
         a = "rtr" + beg + ".ftr";
