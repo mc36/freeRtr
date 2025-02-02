@@ -664,6 +664,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         rtrBgpDump.getUnReachStats(l, reachabStat, unreachStat, "|rx=", " tx=");
         rtrBgpDump.getUnknwSum(l, false, msgStats, "|rx=", " tx=");
         rtrBgpDump.getUnknwSum(l, true, attrStats, "|rx=", " tx=");
+        l.add("local asn|" + clntWhois.asn2mixed(localAs, true));
+        l.add("remote asn|" + clntWhois.asn2mixed(remoteAs, true));
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
         l.add("leak role|rx=" + rtrBgpUtil.leakRole2string(conn.peerLeakRole, false) + ", tx=" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
         l.add("dynamic capability|" + conn.peerDynCap + ", rx=" + conn.dynCapaRx + ", tx=" + conn.dynCapaTx);

@@ -5085,7 +5085,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         userFormat l = new userFormat("|", "category|value|addition");
         l.add("self|" + this);
         l.add("other|" + other);
-        l.add("asn|" + localAs);
+        l.add("asn|" + clntWhois.asn2mixed(localAs, true));
         l.add("routerid|" + routerID);
         l.add("version|" + compRound);
         l.add("full run|" + fullCount + "|times");
