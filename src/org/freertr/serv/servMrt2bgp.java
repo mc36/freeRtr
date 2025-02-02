@@ -78,7 +78,7 @@ public class servMrt2bgp extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         l.add(beg + "router-id " + routerID);
-        l.add(beg + "local-as " + localAs);
+        l.add(beg + "local-as " + bits.num2str(localAs));
         cmds.cfgLine(l, mrtFile == null, beg, "mrt-file", mrtFile);
     }
 
