@@ -1938,7 +1938,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "accumulated igp|" + accIgp);
         lst.add(beg + "bandwidth|" + bandwidth);
         lst.add(beg + "to customer asnum|" + bits.num2str(onlyCust));
-        lst.add(beg + "to customar asnam|" + clntWhois.asn2name(onlyCust, true));
+        lst.add(beg + "to customer asnam|" + clntWhois.asn2name(onlyCust, true));
         lst.add(beg + "attribute asnum|" + bits.num2str(attribAs));
         lst.add(beg + "attribute asnam|" + clntWhois.asn2name(attribAs, true));
         lst.add(beg + "attribute value|" + bits.byteDump(attribVal, 0, -1));
