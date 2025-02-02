@@ -431,7 +431,7 @@ public class secInfoWrk implements Runnable {
      *
      * @param a address to use
      */
-    protected void setAddr(String a) {
+    public void setAddr(String a) {
         if (!othrs) {
             return;
         }

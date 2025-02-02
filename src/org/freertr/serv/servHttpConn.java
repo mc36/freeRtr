@@ -437,7 +437,7 @@ public class servHttpConn implements Runnable {
                 gotRange = s;
                 continue;
             }
-            if (a.equals("x-forwarded-for") || a.equals("x-client-ip") || a.equals("true-client-ip")) {
+            if (a.equals("x-forwarded-for")) {
                 i = s.indexOf(",");
                 if (i >= 0) {
                     s = s.substring(0, i);
@@ -586,9 +586,7 @@ public class servHttpConn implements Runnable {
                 break;
             }
             if (debugger.servHttpTraf) {
-                logger.debug("cmd=" + gotCmd + " ver=" + gotVer + " url="
-                        + gotUrl.dump() + " keep=" + gotKeep + " "
-                        + bits.lst2str(gotCook, " "));
+                logger.debug("peer=" + peer + " cmd=" + gotCmd + " ver=" + gotVer + " url=" + gotUrl.dump() + " keep=" + gotKeep + " " + bits.lst2str(gotCook, " "));
             }
             try {
                 if (lower.findBot(gotAgent)) {

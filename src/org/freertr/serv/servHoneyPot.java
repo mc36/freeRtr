@@ -216,9 +216,27 @@ class servHoneyPotConn implements Runnable {
             ipi.doHttpUrl(gotUrl.toPathName());
             for (;;) {
                 a = pipe.lineGet(1);
+                int i = a.indexOf(":");
+                String s;
+                if (i < 0) {
+                    s = "";
+                } else {
+                    s = a.substring(i + 1, a.length());
+                    a = a.substring(0, i);
+                }
+                a = a.trim().toLowerCase();
+                s = s.trim();
                 if (a.length() < 1) {
                     break;
                 }
+                if (!a.equals("x-forwarded-for")) {
+                    continue;
+                }
+                i = s.indexOf(",");
+                if (i >= 0) {
+                    s = s.substring(0, i);
+                }
+                ipi.setAddr(s);
             }
             ipi.doWork(false);
             ipi.need2drop();
