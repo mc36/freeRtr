@@ -199,7 +199,7 @@ class servHoneyPotConn implements Runnable {
     public void run() {
         try {
             pipe.lineTx = pipeSide.modTyp.modeCRLF;
-            pipe.lineRx = pipeSide.modTyp.modeCRorLF;
+            pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
             pipe.setReady();
             if (!lower.tinyHttp) {
                 ipi.doWork(false);
