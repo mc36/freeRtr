@@ -657,6 +657,9 @@ public class rtrBgpDump {
             return res;
         }
         pck.getSkip(rtrBgpUtil.sizeU);
+        if (pck.IPprt != rtrBgpUtil.msgUpdate) {
+            return res;
+        }
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
         prt = pck.dataSize() - prt;

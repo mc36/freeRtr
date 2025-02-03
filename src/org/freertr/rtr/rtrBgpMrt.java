@@ -274,9 +274,26 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     }
                     rtrBgpUtil.parseAttrib(pck, hlp);
                     if (hlp.ETHtype == rtrBgpUtil.attrReachable) {
+                        hlp.getSkip(1);
+                        switch (hlp.dataSize()) {
+                            case addrIPv4.size:
+                                addrIPv4 a4 = new addrIPv4();
+                                hlp.getAddr(a4, 0);
+                                pfx.best.nextHop = new addrIP();
+                                pfx.best.nextHop.fromIPv4addr(a4);
+                                break;
+                            case addrIPv6.size:
+                            case addrIPv6.size * 2:
+                                addrIPv6 a6 = new addrIPv6();
+                                hlp.getAddr(a6, 0);
+                                pfx.best.nextHop = new addrIP();
+                                pfx.best.nextHop.fromIPv6addr(a6);
+                                break;
+                            default:
+                        }
                         continue;
                     }
-                    rtrBgpUtil.placeAttrib(null, 0, hlp.ETHtype, tmp, hlp);
+                    rtrBgpUtil.placeAttrib(null, hlp.ETHcos, hlp.ETHtype, tmp, hlp);
                     tmp.merge2end();
                 }
                 pck.clear();
@@ -285,7 +302,9 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                 pck.putSkip(buf.length);
                 pck.merge2end();
                 if (typ != rtrBgpUtil.safiIp4uni) {
-                    pfx.best.nextHop = new addrIP();
+                    if (pfx.best.nextHop == null) {
+                        pfx.best.nextHop = new addrIP();
+                    }
                     List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
                     lst.add(pfx);
                     rtrBgpUtil.placeReachable(null, typ, false, true, pck, hlp, lst);

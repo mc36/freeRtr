@@ -162,11 +162,6 @@ class servMrt2bgpConn implements Runnable {
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
-            if (spk.packRecv(pck) != rtrBgpUtil.msgOpen) {
-                spk.sendNotify(1, 3);
-                pipe.setClose();
-                return;
-            }
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
@@ -183,6 +178,11 @@ class servMrt2bgpConn implements Runnable {
             pck.putSkip(10);
             pck.merge2beg();
             spk.packSend(pck, rtrBgpUtil.msgOpen);
+            if (spk.packRecv(pck) != rtrBgpUtil.msgOpen) {
+                spk.sendNotify(1, 3);
+                pipe.setClose();
+                return;
+            }
             spk.sendKeepAlive();
             fs = new RandomAccessFile(new File(lower.mrtFile), "r");
             for (;;) {
