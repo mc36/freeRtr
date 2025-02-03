@@ -848,6 +848,86 @@ public class userShow {
                 rdr.putStrArr(v.getShRun(filt));
                 return null;
             }
+            if (a.equals("tracker")) {
+                cfgTrack v = cfgAll.trackFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such tracker");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("check")) {
+                cfgCheck v = cfgAll.checkFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such check");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("sensor")) {
+                cfgSensor v = cfgAll.sensorFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such sensor");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("vdc")) {
+                cfgVdc v = cfgAll.vdcFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such vdc");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("process")) {
+                cfgPrcss v = cfgAll.prcFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such process");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("scheduler")) {
+                cfgSched v = cfgAll.schedFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such scheduler");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("script")) {
+                cfgScrpt v = cfgAll.scrptFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such script");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("vpdn")) {
+                cfgVpdn v = cfgAll.vpdnFind(cmd.word(), false);
+                if (v == null) {
+                    cmd.error("no such vpdn");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
             if (a.equals("interface")) {
                 cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {
