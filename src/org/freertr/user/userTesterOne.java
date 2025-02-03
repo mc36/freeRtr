@@ -1097,7 +1097,7 @@ public class userTesterOne {
                 if (!rn.equals(cap.rtr)) {
                     continue;
                 }
-                p.putLine("packet capture " + cap.ifc + " " + prefix + slot + "log-" + rn + "-" + cap.ifc + ".pcap");
+                p.putLine("packet capture " + cap.ifc + " " + prefix + slot + rn + "-" + cap.ifc + ".pcap");
             }
             if (fancy) {
                 p.putLine("terminal table fancy");
