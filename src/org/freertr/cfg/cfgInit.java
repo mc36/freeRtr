@@ -943,7 +943,7 @@ public class cfgInit implements Runnable {
         cfgXconn.defaultF = createFilter(cfgXconn.defaultL);
         tabGen<userFilter> srvdefsF = createFilter(servGeneric.srvdefsL);
         servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, userReader.linedefF);
-        servMrt2bgp.defaultF = createFilter(servMrt2bgp.defaultL, srvdefsF, userReader.linedefF);
+        servMrt2bgp.defaultF = createFilter(servMrt2bgp.defaultL, srvdefsF);
         servRpki.defaultF = createFilter(servRpki.defaultL, srvdefsF);
         servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
         servPrometheus.defaultF = createFilter(servPrometheus.defaultL, srvdefsF);
@@ -1006,7 +1006,7 @@ public class cfgInit implements Runnable {
         servRadius.defaultF = createFilter(servRadius.defaultL, srvdefsF);
         servRfb.defaultF = createFilter(servRfb.defaultL, srvdefsF, userReader.linedefF);
         servModem.defaultF = createFilter(servModem.defaultL, srvdefsF, userReader.linedefF);
-        servVoice.defaultF = createFilter(servVoice.defaultL, srvdefsF, userReader.linedefF);
+        servVoice.defaultF = createFilter(servVoice.defaultL, srvdefsF);
         servSip.defaultF = createFilter(servSip.defaultL, srvdefsF);
         servSmtp.defaultF = createFilter(servSmtp.defaultL, srvdefsF);
         servSnmp.defaultF = createFilter(servSnmp.defaultL, srvdefsF);

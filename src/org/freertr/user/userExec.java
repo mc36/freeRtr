@@ -1391,6 +1391,10 @@ public class userExec {
         hl.add(null, "3 4,.      console0              current console configuration");
         hl.add(null, "4 4,.        all                 do not hide defaults");
         hl.add(null, "4 4,.        hide                hide passwords");
+        hl.add(null, "3 4        line                  specified line");
+        hl.add(null, "4 5,.        <name:lin>          name of line");
+        hl.add(null, "5 5,.          all               do not hide defaults");
+        hl.add(null, "5 5,.          hide              hide passwords");
         hl.add(null, "3 4        interface             specified interface");
         hl.add(null, "4 5,.        <name:ifc>          name of interface");
         hl.add(null, "5 5,.          all               do not hide defaults");

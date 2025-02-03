@@ -18,6 +18,7 @@ import org.freertr.cfg.cfgDial;
 import org.freertr.cfg.cfgGeneric;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgInit;
+import org.freertr.cfg.cfgLin;
 import org.freertr.cfg.cfgMtrack;
 import org.freertr.cfg.cfgObjnet;
 import org.freertr.cfg.cfgObjprt;
@@ -922,6 +923,16 @@ public class userShow {
                 cfgVpdn v = cfgAll.vpdnFind(cmd.word(), false);
                 if (v == null) {
                     cmd.error("no such vpdn");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
+            if (a.equals("line")) {
+                cfgLin v = cfgAll.linFind(cmd.word());
+                if (v == null) {
+                    cmd.error("no such line");
                     return null;
                 }
                 int filt = getConfigFilter(null, cmd);
