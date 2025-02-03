@@ -275,21 +275,16 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     rtrBgpUtil.parseAttrib(pck, hlp);
                     if (hlp.ETHtype == rtrBgpUtil.attrReachable) {
                         hlp.getSkip(1);
-                        switch (hlp.dataSize()) {
-                            case addrIPv4.size:
-                                addrIPv4 a4 = new addrIPv4();
-                                hlp.getAddr(a4, 0);
-                                pfx.best.nextHop = new addrIP();
-                                pfx.best.nextHop.fromIPv4addr(a4);
-                                break;
-                            case addrIPv6.size:
-                            case addrIPv6.size * 2:
-                                addrIPv6 a6 = new addrIPv6();
-                                hlp.getAddr(a6, 0);
-                                pfx.best.nextHop = new addrIP();
-                                pfx.best.nextHop.fromIPv6addr(a6);
-                                break;
-                            default:
+                        if (hlp.dataSize() == addrIPv4.size) {
+                            addrIPv4 a4 = new addrIPv4();
+                            hlp.getAddr(a4, 0);
+                            pfx.best.nextHop = new addrIP();
+                            pfx.best.nextHop.fromIPv4addr(a4);
+                        } else {
+                            addrIPv6 a6 = new addrIPv6();
+                            hlp.getAddr(a6, 0);
+                            pfx.best.nextHop = new addrIP();
+                            pfx.best.nextHop.fromIPv6addr(a6);
                         }
                         continue;
                     }
