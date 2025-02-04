@@ -99,7 +99,11 @@ public class servWhois extends servGeneric implements prtServS {
                 return false;
             }
             ntry.prx = prx.proxy;
-            ntry.srv = cmd.getRemaining();
+            ntry.srv = cmd.word();
+            ntry.opt = cmd.getRemaining();
+            if (ntry.opt.length() < 1) {
+                ntry.opt = null;
+            }
             remotes.put(ntry);
             return false;
         }
@@ -123,7 +127,8 @@ public class servWhois extends servGeneric implements prtServS {
         l.add(null, "1 2  remote                       select remote resolver");
         l.add(null, "2 3    <num>                      as number range");
         l.add(null, "3 4      <name:prx>               proxy profile to use");
-        l.add(null, "4 .        <str>                  remote server name");
+        l.add(null, "4 5,.      <str>                  remote server name");
+        l.add(null, "5 .          [str]                server option");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -144,8 +149,14 @@ class servWhoisRem implements Comparable<servWhoisRem> {
 
     public String srv;
 
+    public String opt;
+
     public String toString() {
-        return rng + " " + prx.name + " " + srv;
+        String a = rng + " " + prx.name + " " + srv;
+        if (opt == null) {
+            return a;
+        }
+        return a + " " + opt;
     }
 
     public int compareTo(servWhoisRem o) {
@@ -198,19 +209,21 @@ class servWhoisConn implements Runnable {
             pipe.linePut("% " + version.headLine);
             pipe.linePut("");
             String a = pipe.lineGet(1);
-            a = a.trim();
-            int i = a.length();
-            if (i > 2) {
-                a = a.substring(2, i);
+            a = a.trim().toLowerCase();
+            if (!a.startsWith("as")) {
+                pipe.linePut("% bad request");
+                pipe.setClose();
+                return;
             }
+            a = a.substring(2, a.length());
             int n = bits.str2num(a);
             String m = null;
-            for (i = 0; i < prnt.remotes.size(); i++) {
+            for (int i = 0; i < prnt.remotes.size(); i++) {
                 servWhoisRem ntry = prnt.remotes.get(i);
                 if (!ntry.rng.matches(n)) {
                     continue;
                 }
-                clntWhois w = new clntWhois(pipe, ntry.prx, ntry.srv);
+                clntWhois w = new clntWhois(pipe, ntry.prx, ntry.srv, ntry.opt);
                 m = w.doQuery(n);
                 break;
             }
@@ -225,7 +238,7 @@ class servWhoisConn implements Runnable {
             pipe.linePut("as-name:        " + m);
             pipe.linePut("% list of other information");
             List<String> lst = clntWhois.asn2infos(n);
-            for (i = 0; i < lst.size(); i++) {
+            for (int i = 0; i < lst.size(); i++) {
                 pipe.linePut("remark:         info " + lst.get(i));
             }
             pipe.linePut("% end of listing");

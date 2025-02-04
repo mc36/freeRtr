@@ -78,6 +78,8 @@ public class clntWhois {
 
     private final String server;
 
+    private final String option;
+
     private final pipeSide console;
 
     /**
@@ -85,11 +87,18 @@ public class clntWhois {
      *
      * @param con console to log
      * @param srv server to use
+     * @param opt option to use
      * @param prx proxy to use
      */
-    public clntWhois(pipeSide con, clntProxy prx, String srv) {
+    public clntWhois(pipeSide con, clntProxy prx, String srv, String opt) {
+        if (opt == null) {
+            opt = "";
+        } else {
+            opt = opt + " ";
+        }
         console = pipeDiscard.needAny(con);
         server = srv;
+        option = opt;
         proxy = prx;
     }
 
@@ -141,10 +150,10 @@ public class clntWhois {
      */
     public List<String> doQuery(String quest) {
         if (debugger.clntIpInfo) {
-            logger.debug("working on " + quest + " at " + server);
+            logger.debug("working on " + option + quest + " at " + server);
         }
         cntrStart.add(1);
-        console.linePut("querying " + quest + " at " + server);
+        console.linePut("querying " + option + quest + " at " + server);
         if (proxy == null) {
             cntrError.add(1);
             return null;
@@ -165,7 +174,7 @@ public class clntWhois {
         }
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
-        pipe.linePut(quest);
+        pipe.linePut(option + quest);
         pipeReader rd = new pipeReader();
         rd.setLineMode(pipeSide.modTyp.modeCRorLF);
         pipeConnect.connect(pipe, rd.getPipe(), true);
@@ -280,7 +289,7 @@ public class clntWhois {
         if (!b) {
             return asn2str(i);
         }
-        clntWhois w = new clntWhois(null, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer);
+        clntWhois w = new clntWhois(null, cfgAll.getClntPrx(cfgAll.whoisProxy), cfgAll.whoisServer, cfgAll.whoisOption);
         return w.doQuery(i);
     }
 

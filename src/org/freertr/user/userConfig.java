@@ -562,6 +562,8 @@ public class userConfig {
         l.add(null, "3  3,.    <str>                      server name");
         l.add(null, "2  3    whois-server                 set whois server");
         l.add(null, "3  .      <str>                      server name");
+        l.add(null, "2  3    whois-option                 set whois option");
+        l.add(null, "3  .      <str>                      server name");
         l.add(null, "2  3    whois-proxy                  specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  .    password-stars               type stars in passwords");
@@ -2648,6 +2650,10 @@ public class userConfig {
             cfgAll.whoisServer = null;
             return;
         }
+        if (s.equals("whois-option")) {
+            cfgAll.whoisOption = null;
+            return;
+        }
         if (s.equals("whois-proxy")) {
             cfgAll.whoisProxy = null;
             return;
@@ -2894,6 +2900,10 @@ public class userConfig {
         }
         if (a.equals("whois-server")) {
             cfgAll.whoisServer = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("whois-option")) {
+            cfgAll.whoisOption = cmd.getRemaining();
             return;
         }
         if (a.equals("whois-proxy")) {

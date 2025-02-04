@@ -2785,7 +2785,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("whois")) {
-            clntWhois w = new clntWhois(pipe, cfgAll.getClntPrx(cfgAll.whoisProxy), cmd.word());
+            clntWhois w = new clntWhois(pipe, cfgAll.getClntPrx(cfgAll.whoisProxy), cmd.word(), null);
             a = cmd.getRemaining();
             reader.putStrArr(w.doQuery(a));
             return cmdRes.command;
