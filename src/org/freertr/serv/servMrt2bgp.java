@@ -183,8 +183,14 @@ class servMrt2bgpConn implements Runnable {
                 pipe.setClose();
                 return;
             }
+            try {
+                fs = new RandomAccessFile(new File(lower.mrtFile), "r");
+            } catch (Exception e) {
+                spk.sendNotify(1, 3);
+                pipe.setClose();
+                return;
+            }
             spk.sendKeepAlive();
-            fs = new RandomAccessFile(new File(lower.mrtFile), "r");
             for (;;) {
                 int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
