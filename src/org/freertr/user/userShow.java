@@ -549,7 +549,7 @@ public class userShow {
             a = cmd.word();
             int i = bits.str2num(a);
             a = clntWhois.asn2name(i, true);
-            rdr.putStrArr(bits.str2lst("just queried asn " + i + " is " + a + " in " + bits.timePast(tim)));
+            rdr.putStrArr(bits.str2lst("queried asn " + bits.num2str(i) + " is " + a + " in " + bits.timePast(tim)));
             return null;
         }
         if (a.equals("asn-cache")) {

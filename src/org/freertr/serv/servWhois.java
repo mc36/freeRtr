@@ -50,7 +50,7 @@ public class servWhois extends servGeneric implements prtServS {
     public static tabGen<userFilter> defaultF;
 
     /**
-     * defaults filter
+     * remote servers
      */
     public tabGen<servWhoisRem> remotes = new tabGen<servWhoisRem>();
 
@@ -81,12 +81,22 @@ public class servWhois extends servGeneric implements prtServS {
     public void srvShRun(String beg, List<String> lst, int filter) {
         for (int i = 0; i < remotes.size(); i++) {
             servWhoisRem ntry = remotes.get(i);
-            lst.add(beg + "remote " + ntry);
+            lst.add(beg + ntry);
         }
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("local")) {
+            servWhoisRem ntry = new servWhoisRem();
+            if (ntry.rng.fromString(cmd.word())) {
+                cmd.error("bad range");
+                return false;
+            }
+            ntry.opt = cmd.getRemaining();
+            remotes.put(ntry);
+            return false;
+        }
         if (s.equals("remote")) {
             servWhoisRem ntry = new servWhoisRem();
             if (ntry.rng.fromString(cmd.word())) {
@@ -111,6 +121,15 @@ public class servWhois extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("local")) {
+            servWhoisRem ntry = new servWhoisRem();
+            if (ntry.rng.fromString(cmd.word())) {
+                cmd.error("bad range");
+                return false;
+            }
+            remotes.del(ntry);
+            return false;
+        }
         if (s.equals("remote")) {
             servWhoisRem ntry = new servWhoisRem();
             if (ntry.rng.fromString(cmd.word())) {
@@ -124,6 +143,9 @@ public class servWhois extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 2  local                        select local definition");
+        l.add(null, "2 3    <num>                      as number range");
+        l.add(null, "3 .      <str>                    name of asn");
         l.add(null, "1 2  remote                       select remote resolver");
         l.add(null, "2 3    <num>                      as number range");
         l.add(null, "3 4      <name:prx>               proxy profile to use");
@@ -152,7 +174,10 @@ class servWhoisRem implements Comparable<servWhoisRem> {
     public String opt;
 
     public String toString() {
-        String a = rng + " " + prx.name + " " + srv;
+        if (srv == null) {
+            return "local " + rng + " " + opt;
+        }
+        String a = "remote " + rng + " " + prx.name + " " + srv;
         if (opt == null) {
             return a;
         }
@@ -223,6 +248,10 @@ class servWhoisConn implements Runnable {
                 if (!ntry.rng.matches(n)) {
                     continue;
                 }
+                if (ntry.srv == null) {
+                    m = "" + ntry.opt;
+                    break;
+                }
                 clntWhois w = new clntWhois(pipe, ntry.prx, ntry.srv, ntry.opt);
                 m = w.doQuery(n);
                 break;
@@ -247,4 +276,5 @@ class servWhoisConn implements Runnable {
             logger.traceback(e);
         }
     }
+
 }
