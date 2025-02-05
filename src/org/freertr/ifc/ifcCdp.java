@@ -23,7 +23,6 @@ import org.freertr.util.state;
 import org.freertr.enc.encTlv;
 import org.freertr.util.verCore;
 import org.freertr.util.version;
-import static org.freertr.util.version.getHWfwd1liner;
 
 /**
  * cisco discovery protocol
