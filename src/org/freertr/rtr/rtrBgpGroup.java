@@ -334,9 +334,6 @@ public class rtrBgpGroup extends rtrBgpParam {
         groupNum = num;
     }
 
-    public void flapBgpConn() {
-    }
-
     public void doTempCfg(String cmd, boolean negated) {
     }
 

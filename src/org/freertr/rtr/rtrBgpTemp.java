@@ -35,12 +35,6 @@ public class rtrBgpTemp extends rtrBgpParam implements Comparable<rtrBgpTemp> {
     }
 
     /**
-     * flap connection
-     */
-    public void flapBgpConn() {
-    }
-
-    /**
      * configure
      *
      * @param cmd command

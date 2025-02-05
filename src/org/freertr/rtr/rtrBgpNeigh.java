@@ -1,5 +1,6 @@
 package org.freertr.rtr;
 
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -10,6 +11,7 @@ import org.freertr.clnt.clntWhois;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
 import org.freertr.pack.packDnsRec;
+import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtAccept;
@@ -605,8 +607,47 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         return "" + peerAddr;
     }
 
+    /**
+     * flap connection
+     */
     public void flapBgpConn() {
         conn.closeNow();
+    }
+
+    /**
+     * save table
+     *
+     * @param fil file to use
+     * @param safi safi to refresh
+     */
+    public void saveTable(RandomAccessFile fil, int safi) {
+        saveTable(fil, safi, conn.getLearned(safi), false);
+        saveTable(fil, safi, conn.getAdverted(safi), true);
+    }
+
+    private void saveTable(RandomAccessFile fil, int safi, tabRoute<addrIP> table, boolean dir) {
+        if (table == null) {
+            return;
+        }
+        packHolder pck = new packHolder(true, true);
+        packHolder tmp = new packHolder(true, true);
+        byte[] hdr = new byte[128];
+        for (int i = 0; i < table.size(); i++) {
+            tabRouteEntry<addrIP> ntry = table.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            rtrBgpDump.witeFormat(safi, ntry, lower.fwdCore.ipVersion, pck, tmp, true);
+            int len = rtrBgpMrt.putMrtHeader(hdr, ntry.best.time, dir, remoteAs, localAs, peerAddr, localAddr, pck.dataSize());
+            pck.putCopy(hdr, 0, 0, len);
+            pck.putSkip(len);
+            pck.merge2beg();
+            byte[] buf = pck.getCopy();
+            try {
+                fil.write(buf);
+            } catch (Exception e) {
+            }
+        }
     }
 
     public void doTempCfg(String cmd, boolean negated) {

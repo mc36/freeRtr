@@ -4802,11 +4802,11 @@ public class userShow {
                 return;
             }
             packHolder pck = new packHolder(true, true);
-            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, true);
+            packHolder tmp = new packHolder(true, true);
+            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, tmp, true);
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
-            packHolder tmp = new packHolder(true, true);
             List<String> l = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;
@@ -4835,11 +4835,11 @@ public class userShow {
                 return;
             }
             packHolder pck = new packHolder(true, true);
-            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, false);
+            packHolder tmp = new packHolder(true, true);
+            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, tmp, false);
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
-            packHolder tmp = new packHolder(true, true);
             List<String> l = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;

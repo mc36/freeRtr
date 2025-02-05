@@ -1,6 +1,7 @@
 package org.freertr.user;
 
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -214,7 +215,7 @@ public class userClear {
                 cmd.error("no such interface");
                 return null;
             }
-            if (ifc.pppoeS==null) {
+            if (ifc.pppoeS == null) {
                 cmd.error("protocol not enabled");
                 return null;
             }
@@ -1032,6 +1033,35 @@ public class userClear {
         if (a.equals("hard")) {
             for (int i = 0; i < neis.size(); i++) {
                 neis.get(i).flapBgpConn();
+            }
+            return;
+        }
+        if (a.equals("save")) {
+            long safi = rtrBgpParam.string2mask(cmd.word());
+            if (safi < 1) {
+                return;
+            }
+            int sfi = r.bgp.mask2safi(safi);
+            if (sfi < 1) {
+                return;
+            }
+            a = cmd.word();
+            cmd.error("opening " + a);
+            RandomAccessFile fs = null;
+            try {
+                fs = new RandomAccessFile(new File(a), "rw");
+                fs.setLength(0);
+            } catch (Exception e) {
+                return;
+            }
+            for (int i = 0; i < neis.size(); i++) {
+                rtrBgpNeigh nei = neis.get(i);
+                cmd.error("saving " + nei.peerAddr);
+                nei.saveTable(fs, sfi);
+            }
+            try {
+                fs.close();
+            } catch (Exception e) {
             }
             return;
         }

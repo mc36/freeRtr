@@ -206,6 +206,9 @@ public class userExec {
         hl.add(null, "5 6            peer              select address");
         hl.add(null, "6 7              <addr>          neighbor address regexp");
         hl.add(null, "7 .                hard          flap session");
+        hl.add(null, "7 8                save          export an afi");
+        rtrBgpParam.getAfiList(hl, "8 9", "clear", false);
+        hl.add(null, "9 .                  <name>      name of file");
         hl.add(null, "7 8                in            send route refresh");
         hl.add(null, "7 8                out           resend prefixes");
         hl.add(null, "7 8                add           add an afi");
@@ -214,6 +217,9 @@ public class userExec {
         hl.add(null, "5 6            asn               select asn");
         hl.add(null, "6 7              <num>           neighbor asn regexp");
         hl.add(null, "7 .                hard          flap session");
+        hl.add(null, "7 8                save          export an afi");
+        rtrBgpParam.getAfiList(hl, "8 9", "clear", false);
+        hl.add(null, "9 .                  <name>      name of file");
         hl.add(null, "7 8                in            send route refresh");
         hl.add(null, "7 8                out           resend prefixes");
         hl.add(null, "7 8                add           add an afi");
@@ -221,6 +227,9 @@ public class userExec {
         rtrBgpParam.getAfiList(hl, "8 .", "clear", false);
         hl.add(null, "5 7            ibgp              select ibgp peers");
         hl.add(null, "7 .                hard          flap session");
+        hl.add(null, "7 8                save          export an afi");
+        rtrBgpParam.getAfiList(hl, "8 9", "clear", false);
+        hl.add(null, "9 .                  <name>      name of file");
         hl.add(null, "7 8                in            send route refresh");
         hl.add(null, "7 8                out           resend prefixes");
         hl.add(null, "7 8                add           add an afi");
@@ -228,6 +237,9 @@ public class userExec {
         rtrBgpParam.getAfiList(hl, "8 .", "clear", false);
         hl.add(null, "5 7            ebgp              select ebgp peers");
         hl.add(null, "7 .                hard          flap session");
+        hl.add(null, "7 8                save          export an afi");
+        rtrBgpParam.getAfiList(hl, "8 9", "clear", false);
+        hl.add(null, "9 .                  <name>      name of file");
         hl.add(null, "7 8                in            send route refresh");
         hl.add(null, "7 8                out           resend prefixes");
         hl.add(null, "7 8                add           add an afi");
@@ -235,6 +247,9 @@ public class userExec {
         rtrBgpParam.getAfiList(hl, "8 .", "clear", false);
         hl.add(null, "5 7            all               select every peer");
         hl.add(null, "7 .                hard          flap session");
+        hl.add(null, "7 8                save          export an afi");
+        rtrBgpParam.getAfiList(hl, "8 9", "clear", false);
+        hl.add(null, "9 .                  <name>      name of file");
         hl.add(null, "7 8                in            send route refresh");
         hl.add(null, "7 8                out           resend prefixes");
         hl.add(null, "7 8                add           add an afi");

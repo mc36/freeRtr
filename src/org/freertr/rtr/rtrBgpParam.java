@@ -2271,11 +2271,6 @@ public abstract class rtrBgpParam {
     }
 
     /**
-     * flap connection
-     */
-    public abstract void flapBgpConn();
-
-    /**
      * template configuration
      *
      * @param cmd command to do
