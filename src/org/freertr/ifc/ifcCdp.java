@@ -23,6 +23,7 @@ import org.freertr.util.state;
 import org.freertr.enc.encTlv;
 import org.freertr.util.verCore;
 import org.freertr.util.version;
+import static org.freertr.util.version.getHWfwd1liner;
 
 /**
  * cisco discovery protocol
@@ -355,7 +356,7 @@ public class ifcCdp implements ifcUp {
         pck.msbPutW(2, 0); // checksum
         pck.putSkip(4);
         tlv.putStr(pck, ttypDevId, cfgAll.hostName);
-        tlv.putStr(pck, ttypVer, version.headLine);
+        tlv.putStr(pck, ttypVer, version.headLine + "\n" + version.getHWfwd1liner() + "\n" + version.getVMname() + "\n" + version.getKernelName());
         tlv.putStr(pck, ttypPlat, verCore.name);
         tlv.putStr(pck, ttypPrtId, cfg.name);
         bits.msbPutD(tlv.valDat, 0, capaRouter | capaBridge);

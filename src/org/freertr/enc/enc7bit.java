@@ -126,10 +126,12 @@ public class enc7bit {
         for (int i = 0; i < s.length(); i++) {
             int o = buf[i];
             if (!checkByte(o)) {
-                pok = false;
                 if (!pok) {
                     continue;
                 }
+                pok = false;
+                r += " ";
+                continue;
             }
             r += "" + (char) doOneByte(o);
             pok = true;
