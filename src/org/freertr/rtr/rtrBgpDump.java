@@ -736,4 +736,46 @@ public class rtrBgpDump {
         return res;
     }
 
+    /**
+     * dump one packet
+     *
+     * @param hlp temporary packet
+     * @param pck packet to statistic
+     * @param afi afi counts
+     * @param atr attribute counts
+     */
+    public static void dumpPacketStat(packHolder pck, packHolder hlp, int[] afi, int[] atr) {
+        switch (pck.ETHtype) {
+            case rtrBgpUtil.safiIp4uni:
+                afi[1]++;
+                break;
+            case rtrBgpUtil.safiIp6uni:
+                afi[2]++;
+                break;
+            default:
+                afi[0]++;
+                break;
+        }
+        if (rtrBgpUtil.checkHeader(pck)) {
+            return;
+        }
+        pck.getSkip(rtrBgpUtil.sizeU);
+        if (pck.IPprt != rtrBgpUtil.msgUpdate) {
+            return;
+        }
+        int prt = pck.msbGetW(0);
+        pck.getSkip(2);
+        pck.getSkip(prt);
+        prt = pck.msbGetW(0);
+        pck.getSkip(2);
+        prt = pck.dataSize() - prt;
+        for (;;) {
+            if (pck.dataSize() <= prt) {
+                break;
+            }
+            rtrBgpUtil.parseAttrib(pck, hlp);
+            atr[hlp.ETHtype]++;
+        }
+    }
+
 }

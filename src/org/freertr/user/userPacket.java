@@ -657,6 +657,42 @@ public class userPacket {
             cmd.error(pk + " packets (" + ses.size() + " streams) converted");
             return null;
         }
+        if (a.equals("mrt2stat")) {
+            RandomAccessFile fs = null;
+            try {
+                a = cmd.word();
+                cmd.error("opening source " + a);
+                fs = new RandomAccessFile(new File(a), "r");
+            } catch (Exception e) {
+            }
+            packHolder pck = new packHolder(true, true);
+            packHolder tmp = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
+            int[] afi = new int[3];
+            int[] atr = new int[256];
+            for (;;) {
+                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                if (i == 1) {
+                    break;
+                }
+                if (i == 2) {
+                    continue;
+                }
+                rtrBgpDump.dumpPacketStat(pck, hlp, afi, atr);
+            }
+            try {
+                fs.close();
+            } catch (Exception e) {
+            }
+            cmd.error(afi[0] + " other, " + afi[1] + " ipv4 and " + afi[2] + " ipv6");
+            for (int i = 0; i < atr.length; i++) {
+                if (atr[i] < 1) {
+                    continue;
+                }
+                cmd.error(atr[i] + " " + rtrBgpUtil.attrType2string(i));
+            }
+            return null;
+        }
         if (a.equals("mrt2sum")) {
             RandomAccessFile fs = null;
             try {
@@ -672,12 +708,6 @@ public class userPacket {
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             for (;;) {
-                long fp;
-                try {
-                    fp = fs.getFilePointer();
-                } catch (Exception e) {
-                    break;
-                }
                 int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
@@ -717,12 +747,6 @@ public class userPacket {
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             for (;;) {
-                long fp;
-                try {
-                    fp = fs.getFilePointer();
-                } catch (Exception e) {
-                    break;
-                }
                 int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
@@ -758,12 +782,6 @@ public class userPacket {
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             for (;;) {
-                long fp;
-                try {
-                    fp = fs.getFilePointer();
-                } catch (Exception e) {
-                    break;
-                }
                 int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;

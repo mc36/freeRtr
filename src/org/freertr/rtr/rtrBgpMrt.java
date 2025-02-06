@@ -261,8 +261,8 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                 pck.getSkip(2);
                 tmp.clear();
                 for (i = 0; i < o; i++) {
+                    int t = pck.msbGetD(2);
                     int p = pck.msbGetW(6);
-                    hlp.INTtime = pck.msbGetD(2);
                     pck.getSkip(8);
                     if (pck.dataSize() < p) {
                         break;
@@ -278,9 +278,10 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     tmp.putCopy(buf, 0, 0, buf.length);
                     tmp.putSkip(buf.length);
                     tmp.merge2end();
+                    tmp.INTtime = t;
                 }
                 pck.clear();
-                pck.INTtime = hlp.INTtime * 1000;
+                pck.INTtime = tmp.INTtime * 1000;
                 for (;;) {
                     if (tmp.dataSize() < 1) {
                         break;
