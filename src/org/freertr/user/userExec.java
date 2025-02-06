@@ -2418,7 +2418,7 @@ public class userExec {
         hl.add(null, "2 3      mrt2stat                     mrt statistics");
         hl.add(null, "3 .        <file>                     name of file");
         hl.add(null, "2 3      mrt2flt                      mrt to filter");
-        hl.add(null, "3 4        <url>                      url of ris live server");
+        hl.add(null, "3 4        <file>                     name of file");
         hl.add(null, "4 .          <addr>                   address to look up");
         hl.add(null, ".2 3     mrtfilter                    filter mrt file using filters of a peer");
         cfgRtr.getRouterList(hl, 1, " to filter with");
