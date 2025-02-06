@@ -257,22 +257,35 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                 if (pfx == null) {
                     return 2;
                 }
-                i = pck.msbGetW(0);
-                if (i < 1) {
-                    return 2;
-                }
-                i = pck.msbGetW(8);
-                pck.getSkip(10);
-                if (pck.dataSize() < i) {
-                    return 2;
-                }
-                pck.setDataSize(i);
+                int o = pck.msbGetW(0);
+                pck.getSkip(2);
                 tmp.clear();
-                for (;;) {
-                    if (pck.dataSize() < 1) {
+                for (i = 0; i < o; i++) {
+                    int p = pck.msbGetW(6);
+                    hlp.INTtime = pck.msbGetD(2);
+                    pck.getSkip(8);
+                    if (pck.dataSize() < p) {
                         break;
                     }
-                    rtrBgpUtil.parseAttrib(pck, hlp);
+                    if (tmp.dataSize() > p) {
+                        pck.getSkip(p);
+                        continue;
+                    }
+                    buf = new byte[p];
+                    pck.getCopy(buf, 0, 0, buf.length);
+                    pck.getSkip(buf.length);
+                    tmp.clear();
+                    tmp.putCopy(buf, 0, 0, buf.length);
+                    tmp.putSkip(buf.length);
+                    tmp.merge2end();
+                }
+                pck.clear();
+                pck.INTtime = hlp.INTtime * 1000;
+                for (;;) {
+                    if (tmp.dataSize() < 1) {
+                        break;
+                    }
+                    rtrBgpUtil.parseAttrib(tmp, hlp);
                     if (hlp.ETHtype == rtrBgpUtil.attrReachable) {
                         hlp.getSkip(1);
                         if (hlp.dataSize() == addrIPv4.size) {
@@ -288,14 +301,9 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                         }
                         continue;
                     }
-                    rtrBgpUtil.placeAttrib(null, hlp.ETHcos, hlp.ETHtype, tmp, hlp);
-                    tmp.merge2end();
+                    rtrBgpUtil.placeAttrib(null, hlp.ETHcos, hlp.ETHtype, pck, hlp);
+                    pck.merge2end();
                 }
-                pck.clear();
-                buf = tmp.getCopy();
-                pck.putCopy(buf, 0, 0, buf.length);
-                pck.putSkip(buf.length);
-                pck.merge2end();
                 if (typ != rtrBgpUtil.safiIp4uni) {
                     if (pfx.best.nextHop == null) {
                         pfx.best.nextHop = new addrIP();
