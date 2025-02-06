@@ -4635,6 +4635,35 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * uplinking as
+     *
+     * @param safi safi to query
+     * @return text
+     */
+    public userFormat getAsUplink(int safi) {
+        tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
+        tabRoute<addrIP> rou = getDatabase(safi);
+        for (int i = 0; i < rou.size(); i++) {
+            tabRouteEntry<addrIP> ntry = rou.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            int o = ntry.best.asPathBeg();
+            if (o == -1) {
+                rtrBgpDump.updateAsOrigin(lst, localAs);
+            } else {
+                rtrBgpDump.updateAsOrigin(lst, o);
+            }
+        }
+        userFormat res = new userFormat("|", "asnum|asnam|nets|asinfo");
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpFlapAsn ntry = lst.get(i);
+            res.add("" + ntry);
+        }
+        return res;
+    }
+
+    /**
      * originating as
      *
      * @param safi safi to query

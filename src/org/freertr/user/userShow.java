@@ -4522,6 +4522,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.getAsOrigin(sfi));
             return;
         }
+        if (a.equals("asuplink")) {
+            rdr.putStrTab(r.bgp.getAsUplink(sfi));
+            return;
+        }
         if (a.equals("astransit")) {
             rdr.putStrTab(r.bgp.getAsTransit(sfi));
             return;

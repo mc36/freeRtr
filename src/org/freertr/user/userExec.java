@@ -864,6 +864,7 @@ public class userExec {
         hl.add(null, "6 7,.            astree             connectivity tree of ases");
         hl.add(null, "7 .                <num>            asn to start with");
         hl.add(null, "6 .              asorigin           originating ases");
+        hl.add(null, "6 .              asuplink           uplink ases");
         hl.add(null, "6 .              astransit          transiting ases");
         hl.add(null, "6 .              asconn             connectivity of ases");
         hl.add(null, "6 .              pathstat           path length statistics");
