@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v25.2.6-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.2.7-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -698,5 +698,5 @@ http://sources.freertr.org/cfg/p4lang-rout427.tst;p4lang-rout427.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout428.tst;p4lang-rout428.tst;ok;ok;ok;ok;not ok;p4lang: othervpn mldp qinq ingress edge
 http://sources.freertr.org/cfg/p4lang-rout429.tst;p4lang-rout429.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier qinq egress edge
 http://sources.freertr.org/cfg/p4lang-rout430.tst;p4lang-rout430.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier qinq ingress edge
-http://sources.freertr.org/cfg/p4lang-rout431.tst;p4lang-rout431.tst;ok;not ok;ok;not ok;not ok;p4lang: multicast bridge routing
-http://sources.freertr.org/cfg/p4lang-rout432.tst;p4lang-rout432.tst;ok;not ok;ok;not ok;not ok;p4lang: multicast vlan bridge routing
+http://sources.freertr.org/cfg/p4lang-rout431.tst;p4lang-rout431.tst;ok;ok;ok;ok;not ok;p4lang: multicast bridge routing
+http://sources.freertr.org/cfg/p4lang-rout432.tst;p4lang-rout432.tst;ok;ok;ok;ok;not ok;p4lang: multicast vlan bridge routing
