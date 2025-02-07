@@ -696,8 +696,8 @@ qc pass: p4lang: othervpn mldp qinq egress edge
 qc pass: p4lang: othervpn mldp qinq ingress edge
 qc pass: p4lang: othervpn bier qinq egress edge
 qc pass: p4lang: othervpn bier qinq ingress edge
-failed: p4lang: multicast bridge routing
-failed: p4lang: multicast vlan bridge routing
+qc pass: p4lang: multicast bridge routing
+qc pass: p4lang: multicast vlan bridge routing
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
@@ -763,7 +763,6 @@ todo: flash overlap-clear should happen once one finds a nice and easy use-case 
 todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
 todo: inter xxx / macrandomize
-todo: sho run check/track
 todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: config committed with check for saved and backup config
@@ -836,7 +835,6 @@ todo: misc motion emails to contain a small note like check recordings here unar
 todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
 todo: server tftp to have server http backup alike functionality
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
-todo: show running-config vdc <tabbable>
 todo: interface * vrf <tabbable> and upgrade-cli
 todo: terminal clear same as game clear
 todo: clear aaa <tabbable>
