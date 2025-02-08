@@ -896,7 +896,7 @@ public class tabRoute<T extends addrType> {
         if (oth == null) {
             return false;
         }
-        pfx.prefix.network.bitSet(bit);
+        pfx.prefix.network.bitSet(bit - 1);
         pfx.prefix.setMask(bit);
         oth = lst.prefixes.find(pfx);
         if (oth == null) {
