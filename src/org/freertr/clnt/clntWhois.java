@@ -93,7 +93,7 @@ public class clntWhois {
                 a = a.substring(0, i);
             }
             clntWhoisAsn ntry = new clntWhoisAsn(p);
-            ntry.name = a;
+            ntry.name = enc7bit.decodeExtStr(a);
             asnameCache.put(ntry);
         }
     }
