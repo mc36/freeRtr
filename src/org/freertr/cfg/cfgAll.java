@@ -827,6 +827,11 @@ public class cfgAll {
     public static String whoisOption = null;
 
     /**
+     * whois file
+     */
+    public static String whoisFile = null;
+
+    /**
      * list of asn tools
      */
     public static List<String> whoisOnline = null;
@@ -1394,6 +1399,7 @@ public class cfgAll {
         "!" + cmds.negated + cmds.tabulator + "client whois-proxy",
         "!" + cmds.negated + cmds.tabulator + "client whois-server",
         "!" + cmds.negated + cmds.tabulator + "client whois-option",
+        "!" + cmds.negated + cmds.tabulator + "client whois-file",
         "!" + cmds.negated + cmds.tabulator + "client config-server",
         "!" + cmds.negated + cmds.tabulator + "client config-username",
         "!" + cmds.negated + cmds.tabulator + "client config-password",
@@ -3789,6 +3795,7 @@ public class cfgAll {
         cmds.cfgLine(l, !preferIpv6, "", "client prefer-ipv6", "");
         cmds.cfgLine(l, whoisServer == null, "", "client whois-server", whoisServer);
         cmds.cfgLine(l, whoisOption == null, "", "client whois-option", whoisOption);
+        cmds.cfgLine(l, whoisFile == null, "", "client whois-file", whoisFile);
         if (whoisOnline != null) {
             String a = "";
             for (int i = 0; i < whoisOnline.size(); i++) {

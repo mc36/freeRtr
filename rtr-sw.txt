@@ -38,8 +38,9 @@ aaa userlist access
  forbidden ^show.*config$
  forbidden ^show config.*$
  allowed show .*
- allowed display .*
+ allowed view .*
  allowed watch .*
+ allowed display .*
  allowed differs .*
  allowed terminal .*
  allowed test .*

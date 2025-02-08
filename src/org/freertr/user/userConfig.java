@@ -54,6 +54,7 @@ import org.freertr.clnt.clntIrc;
 import org.freertr.clnt.clntNetflow;
 import org.freertr.clnt.clntNtp;
 import org.freertr.clnt.clntSyslog;
+import org.freertr.clnt.clntWhois;
 import org.freertr.enc.encBase64;
 import org.freertr.cry.cryCertificate;
 import org.freertr.cry.cryKeyDSA;
@@ -563,6 +564,8 @@ public class userConfig {
         l.add(null, "2  3    whois-server                 set whois server");
         l.add(null, "3  .      <str>                      server name");
         l.add(null, "2  3    whois-option                 set whois option");
+        l.add(null, "3  .      <str>                      server name");
+        l.add(null, "2  3    whois-file                   set whois file");
         l.add(null, "3  .      <str>                      server name");
         l.add(null, "2  3    whois-proxy                  specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
@@ -2654,6 +2657,11 @@ public class userConfig {
             cfgAll.whoisOption = null;
             return;
         }
+        if (s.equals("whois-file")) {
+            cfgAll.whoisFile = null;
+            clntWhois.purgeLocalCache();
+            return;
+        }
         if (s.equals("whois-proxy")) {
             cfgAll.whoisProxy = null;
             return;
@@ -2904,6 +2912,11 @@ public class userConfig {
         }
         if (a.equals("whois-option")) {
             cfgAll.whoisOption = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("whois-file")) {
+            cfgAll.whoisFile = cmd.getRemaining();
+            clntWhois.purgeLocalCache();
             return;
         }
         if (a.equals("whois-proxy")) {

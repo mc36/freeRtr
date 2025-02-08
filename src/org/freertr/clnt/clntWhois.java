@@ -72,6 +72,30 @@ public class clntWhois {
      */
     public static void purgeLocalCache() {
         asnameCache.clear();
+        if (cfgAll.whoisFile == null) {
+            return;
+        }
+        List<String> txt = bits.txt2buf(cfgAll.whoisFile);
+        if (txt == null) {
+            return;
+        }
+        for (int o = 0; o < txt.size(); o++) {
+            String a = txt.get(o);
+            int i = a.lastIndexOf(",");
+            if (i > 0) {
+                a = a.substring(0, i);
+            }
+            i = a.indexOf(" ");
+            int p = bits.str2num(a.substring(0, i));
+            a = a.substring(i + 1, a.length());
+            i = a.indexOf(" ");
+            if (i > 0) {
+                a = a.substring(0, i);
+            }
+            clntWhoisAsn ntry = new clntWhoisAsn(p);
+            ntry.name = a;
+            asnameCache.put(ntry);
+        }
     }
 
     private final clntProxy proxy;
