@@ -1357,6 +1357,13 @@ public class tabRouteUtil {
         lst.add(adr + " - " + end);
     }
 
+    /**
+     * compare diffs
+     *
+     * @param equ result
+     * @param dif1 first diff
+     * @param dif2 second diff
+     */
     public static void compareDiffs(tabRoute<addrIP> equ, tabRoute<addrIP> dif1, tabRoute<addrIP> dif2) {
         for (int i = 0; i < dif1.size(); i++) {
             tabRouteEntry<addrIP> prf1 = dif1.get(i);
@@ -1368,6 +1375,20 @@ public class tabRouteUtil {
         }
     }
 
+    /**
+     * compare tables
+     *
+     * @param uniq unique prefixes
+     * @param diff differring prefixes
+     * @param nei1 first feed
+     * @param nei2 second feed
+     * @param ign ignore flags
+     * @param flt filter
+     * @param safi safi
+     * @param asn1 first asn
+     * @param asn2 second asn
+     * @param upd updater
+     */
     public static void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, long ign, tabListing<tabRtrmapN, addrIP> flt, int safi, int asn1, int asn2, tabListing<tabRtrmapN, addrIP> upd) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRouteEntry<addrIP> prf1 = nei1.get(o);
