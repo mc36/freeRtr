@@ -1627,7 +1627,7 @@ public class tabRouteUtil {
                 continue;
             }
             if (oth.sameFwder(ntry.best) == null) {
-                continue;
+                return false;
             }
             lst.prefixes.del(ntry);
             return true;
