@@ -43,6 +43,7 @@ import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabRtrplc;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
@@ -835,7 +836,7 @@ public class ipFwdTab {
             }
             imp = imp.copyBytes(rtr.getAddMode());
             if ((mode < 3) && (rtr.isBGP() == 1)) {
-                if (tabRoute.doNexthopFix(imp, res, lower.directR, rtr.routerRecursions())) {
+                if (tabRouteUtil.doNexthopFix(imp, res, lower.directR, rtr.routerRecursions())) {
                     continue;
                 }
             }
@@ -1204,7 +1205,7 @@ public class ipFwdTab {
                 tabL = new tabRoute<addrIP>("labeled");
                 break;
         }
-        tabRoute.filterTable(rtrBgpUtil.sfiUnicast, 0, tabL, lower.labelFilter);
+        tabRouteUtil.filterTable(rtrBgpUtil.sfiUnicast, 0, tabL, lower.labelFilter);
         for (int i = 0; i < lower.labeldR.size(); i++) {
             tabRouteEntry<addrIP> old = lower.labeldR.get(i);
             if (old == null) {

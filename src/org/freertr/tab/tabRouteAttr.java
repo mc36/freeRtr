@@ -1343,6 +1343,28 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * number of as path prepends
+     *
+     * @return size of prepend
+     */
+    public int asPathPrep() {
+        int i = tabRouteUtil.countPrepends(pathSeq);
+        i += tabRouteUtil.countPrepends(pathSet);
+        return i;
+    }
+
+    /**
+     * number of as path loops
+     *
+     * @return size of loops
+     */
+    public int asPathLoop() {
+        int i = tabRouteUtil.countLoops(pathSeq);
+        i += tabRouteUtil.countLoops(pathSet);
+        return i;
+    }
+
+    /**
      * number of unknown attributes
      *
      * @return count

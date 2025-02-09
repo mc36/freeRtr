@@ -940,6 +940,10 @@ public class userExec {
         h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              pathlen            list of routes with path length");
         h.add(null, (b + 1) + " .                <str>            int matcher");
+        h.add(null, b + " " + (b + 1) + "              pathprep           list of routes with path prepends");
+        h.add(null, (b + 1) + " .                <str>            int matcher");
+        h.add(null, b + " " + (b + 1) + "              pathloop           list of routes with path loops");
+        h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              unknowns           list of routes with unknown attributes");
         h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              asend              list of routes with path ending");

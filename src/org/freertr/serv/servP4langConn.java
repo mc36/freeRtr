@@ -63,6 +63,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteIface;
+import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.tab.tabSession;
@@ -4500,7 +4501,7 @@ public class servP4langConn implements Runnable {
     private void doRoutes(boolean ipv4, int vrf, tabLabelEntry cml, tabRoute<addrIP> need, tabRoute<addrIP> done, tabGen<servP4langStrI<tabRouteEntry<addrIP>>> store, boolean cmpr, tabListing<tabPrfxlstN, addrIP> prflst, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol) {
         if (cmpr) {
             need = new tabRoute<addrIP>(need);
-            tabRoute.compressTable(rtrBgpUtil.sfiUnicast, need, null);
+            tabRouteUtil.compressTable(rtrBgpUtil.sfiUnicast, need, null);
         }
         String afi;
         if (ipv4) {

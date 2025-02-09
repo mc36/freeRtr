@@ -4045,7 +4045,7 @@ public class userShow {
         }
         a = cmd.word();
         if (a.equals("nulled")) {
-            doShowRoutes(fwd, tabRoute.nullLabeled(nei.prefLearn), 3);
+            doShowRoutes(fwd, tabRouteUtil.nullLabeled(nei.prefLearn), 3);
             return;
         }
         if (a.equals("learned")) {
@@ -4175,58 +4175,6 @@ public class userShow {
             return;
         }
         cmd.badCmd();
-    }
-
-    private void compareDiffs(tabRoute<addrIP> equ, tabRoute<addrIP> dif1, tabRoute<addrIP> dif2) {
-        for (int i = 0; i < dif1.size(); i++) {
-            tabRouteEntry<addrIP> prf1 = dif1.get(i);
-            tabRouteEntry<addrIP> prf2 = dif2.find(prf1);
-            if (prf2 == null) {
-                continue;
-            }
-            equ.add(tabRoute.addType.always, prf1, false, false);
-        }
-    }
-
-    private void compareTables(tabRoute<addrIP> uniq, tabRoute<addrIP> diff, tabRoute<addrIP> nei1, tabRoute<addrIP> nei2, long ign, tabListing<tabRtrmapN, addrIP> flt, int safi, int asn1, int asn2, tabListing<tabRtrmapN, addrIP> upd) {
-        for (int o = 0; o < nei1.size(); o++) {
-            tabRouteEntry<addrIP> prf1 = nei1.get(o);
-            if (prf1 == null) {
-                continue;
-            }
-            if (flt != null) {
-                if (flt.matches(safi, 0, prf1)) {
-                    continue;
-                }
-            }
-            prf1 = prf1.copyBytes(tabRoute.addType.alters);
-            tabRouteEntry<addrIP> prf2 = nei2.find(prf1);
-            if (prf2 == null) {
-                uniq.add(tabRoute.addType.always, prf1, false, false);
-                continue;
-            }
-            if (flt != null) {
-                if (flt.matches(safi, 0, prf2)) {
-                    continue;
-                }
-            }
-            prf2 = prf2.copyBytes(tabRoute.addType.alters);
-            for (int i = 0; i < prf1.alts.size(); i++) {
-                tabRouteAttr.ignoreAttribs(prf1.alts.get(i), ign);
-            }
-            for (int i = 0; i < prf2.alts.size(); i++) {
-                tabRouteAttr.ignoreAttribs(prf2.alts.get(i), ign);
-            }
-            if (upd != null) {
-                upd.update(safi, asn1, prf1, false);
-                upd.update(safi, asn2, prf2, false);
-            }
-            if (prf1.differs(tabRoute.addType.alters, prf2) == 0) {
-                continue;
-            }
-            diff.add(tabRoute.addType.alters, prf1, false, false);
-            diff.add(tabRoute.addType.alters, prf2, false, false);
-        }
     }
 
     private void doShowIpXbgp(tabRouteAttr.routeType afi) {
@@ -4703,8 +4651,8 @@ public class userShow {
             tabRoute<addrIP> uni1 = new tabRoute<addrIP>("tab");
             tabRoute<addrIP> uni2 = new tabRoute<addrIP>("tab");
             tabRoute<addrIP> diff = new tabRoute<addrIP>("tab");
-            compareTables(uni1, diff, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
-            compareTables(uni2, diff, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
+            tabRouteUtil.compareTables(uni1, diff, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
+            tabRouteUtil.compareTables(uni2, diff, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
             cmd.error("unique to " + nei1);
             doShowRoutes(r.bgp.fwdCore, uni1, dsp);
             cmd.error("unique to " + nei2);
@@ -4765,17 +4713,17 @@ public class userShow {
                 return;
             }
             tabRoute<addrIP> dif1 = new tabRoute<addrIP>("tab");
-            compareTables(dif1, dif1, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
-            compareTables(dif1, dif1, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
+            tabRouteUtil.compareTables(dif1, dif1, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
+            tabRouteUtil.compareTables(dif1, dif1, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
             tabRoute<addrIP> dif2 = new tabRoute<addrIP>("tab");
             if (dif1.size() > 0) {
                 bits.sleep(tim);
-                compareTables(dif2, dif2, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
-                compareTables(dif2, dif2, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
+                tabRouteUtil.compareTables(dif2, dif2, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
+                tabRouteUtil.compareTables(dif2, dif2, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);
             }
             tabRoute<addrIP> dif3 = new tabRoute<addrIP>("tab");
             cmd.error("constant differences");
-            compareDiffs(dif3, dif1, dif2);
+            tabRouteUtil.compareDiffs(dif3, dif1, dif2);
             doShowRoutes(r.bgp.fwdCore, dif3, dsp);
             return;
         }
@@ -4860,13 +4808,35 @@ public class userShow {
         }
         if (a.equals("compress")) {
             tab = new tabRoute<addrIP>(tab);
-            tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
+            tabRouteUtil.compressTable(sfi, tab, null);
+            doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            return;
+        }
+        if (a.equals("pathprep")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                a = "1-" + Integer.MAX_VALUE;
+            }
+            tabIntMatcher m = new tabIntMatcher();
+            m.fromString(a);
+            tab = tabRouteUtil.prependsUsed(tab, m);
+            doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            return;
+        }
+        if (a.equals("pathloop")) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                a = "1-" + Integer.MAX_VALUE;
+            }
+            tabIntMatcher m = new tabIntMatcher();
+            m.fromString(a);
+            tab = tabRouteUtil.loopsFound(tab, m);
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
         if (a.equals("unused")) {
             List<String> res = new ArrayList<String>();
-            tabRoute.unusedPrefixes(tab, res);
+            tabRouteUtil.unusedPrefixes(tab, res);
             rdr.putStrArr(res);
             return;
         }
@@ -5181,7 +5151,7 @@ public class userShow {
             return;
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>(fwd.actualU);
-        tabRoute.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
+        tabRouteUtil.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
         doShowRoutes(fwd, tab, 1);
     }
 
@@ -5191,7 +5161,7 @@ public class userShow {
             return;
         }
         List<String> res = new ArrayList<String>();
-        tabRoute.unusedPrefixes(fwd.actualU, res);
+        tabRouteUtil.unusedPrefixes(fwd.actualU, res);
         rdr.putStrArr(res);
     }
 

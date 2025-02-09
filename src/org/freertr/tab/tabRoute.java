@@ -5,7 +5,6 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
-import org.freertr.ip.ipMpls;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -681,7 +680,7 @@ public class tabRoute<T extends addrType> {
                 continue;
             }
             imp = imp.copyBytes(mod);
-            if (doNexthopFix(imp, other, nexthops, recur)) {
+            if (tabRouteUtil.doNexthopFix(imp, other, nexthops, recur)) {
                 continue;
             }
             add(mod, imp, false, false);
@@ -689,63 +688,6 @@ public class tabRoute<T extends addrType> {
         if (debugger.tabRouteEvnt) {
             logger.debug("merged prefixes from " + other.defRouTyp);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends addrType> boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> recurs, int recurn, tabRoute<T> nexthops) {
-        T hop = attr.nextHop;
-        T orig = hop;
-        if (hop == null) {
-            return true;
-        }
-        for (int i = 0; i < recurn; i++) {
-            tabRouteEntry<T> nhr = nexthops.route(hop);
-            if (nhr == null) {
-                nhr = recurs.route(hop);
-                if (nhr == null) {
-                    return true;
-                }
-                hop = nhr.best.nextHop;
-                if (hop == null) {
-                    return true;
-                }
-                attr.oldHop = orig;
-                attr.nextHop = (T) hop.copyBytes();
-                continue;
-            }
-            if (nhr.best.nextHop != null) {
-                attr.oldHop = orig;
-                attr.nextHop = (T) nhr.best.nextHop.copyBytes();
-            }
-            attr.iface = nhr.best.iface;
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * fix nexthops on a route entry
-     *
-     * @param <T> class of address
-     * @param imp route entry to update
-     * @param recurs where to look up nexthops recursively
-     * @param nexthops table where look up resolved nexthops
-     * @param recurn maximum recursion depth
-     * @return true if failed, false if ready
-     */
-    public static <T extends addrType> boolean doNexthopFix(tabRouteEntry<T> imp, tabRoute<T> recurs, tabRoute<T> nexthops, int recurn) {
-        for (int o = imp.alts.size() - 1; o >= 0; o--) {
-            tabRouteAttr<T> attr = imp.alts.get(o);
-            if (!doNexthopFix(attr, recurs, recurn, nexthops)) {
-                continue;
-            }
-            imp.delAlt(o);
-        }
-        if (imp.alts.size() < 1) {
-            return true;
-        }
-        imp.hashBest();
-        return false;
     }
 
     /**
@@ -807,173 +749,6 @@ public class tabRoute<T extends addrType> {
             l.add("" + prefixes.get(i));
         }
         return l;
-    }
-
-    /**
-     * null labeled routes
-     *
-     * @param lst source
-     * @return result
-     */
-    public static tabRoute<addrIP> nullLabeled(tabRoute<addrIP> lst) {
-        tabRoute<addrIP> res = new tabRoute<addrIP>("rx");
-        for (int i = 0; i < lst.size(); i++) {
-            tabRouteEntry<addrIP> ntry = lst.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry.best.labelRem == null) {
-                continue;
-            }
-            if (ntry.best.labelRem.size() != 1) {
-                continue;
-            }
-            int o = ntry.best.labelRem.get(0);
-            if ((o != ipMpls.labelImp) && (o != ipMpls.labelExp4) && (o != ipMpls.labelExp6)) {
-                continue;
-            }
-            res.add(tabRoute.addType.always, ntry, false, false);
-        }
-        return res;
-    }
-
-    private static boolean compressTable1(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // consecutives
-        final int bit = ntry.prefix.maskLen - 1;
-        if (bit < 0) {
-            return false;
-        }
-        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
-        if (ntry.prefix.network.bitValue(bit)) {
-            pfx.prefix.network.bitClear(bit);
-        } else {
-            pfx.prefix.network.bitSet(bit);
-        }
-        pfx.prefix.setMask(bit + 1);
-        tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
-        if (oth == null) {
-            return false;
-        }
-        if (oth.sameFwder(ntry.best) == null) {
-            return false;
-        }
-        tabRouteEntry<addrIP> res = ntry.copyBytes(addType.ecmp);
-        res.prefix.setMask(bit);
-        oth = lst.prefixes.find(res);
-        if (oth != null) {
-            return false;
-        }
-        lst.prefixes.del(ntry);
-        lst.prefixes.del(pfx);
-        lst.prefixes.add(res);
-        return true;
-    }
-
-    private static boolean compressTable2(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // supernet
-        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
-        for (int o = ntry.prefix.maskLen - 1; o >= 0; o--) {
-            pfx.prefix.setMask(o);
-            tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
-            if (oth == null) {
-                continue;
-            }
-            if (oth.sameFwder(ntry.best) == null) {
-                continue;
-            }
-            lst.prefixes.del(ntry);
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean compressTable3(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // subnets
-        final int bit = ntry.prefix.maskLen + 1;
-        if (bit >= (addrIP.size * 8)) {
-            return false;
-        }
-        tabRouteEntry<addrIP> pfx = ntry.copyBytes(addType.better);
-        pfx.prefix.setMask(bit);
-        tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
-        if (oth == null) {
-            return false;
-        }
-        pfx.prefix.network.bitSet(bit - 1);
-        pfx.prefix.setMask(bit);
-        oth = lst.prefixes.find(pfx);
-        if (oth == null) {
-            return false;
-        }
-        lst.prefixes.del(ntry);
-        return true;
-    }
-
-    /**
-     * compress consecutive or subnetted entries
-     *
-     * @param afi address family
-     * @param lst table to update
-     * @param pfx prefix list
-     * @return number of entries removed
-     */
-    public static int compressTable(int afi, tabRoute<addrIP> lst, tabListing<tabPrfxlstN, addrIP> pfx) {
-        int done = 0;
-        for (int i = lst.prefixes.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = lst.prefixes.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (pfx != null) {
-                if (!pfx.matches(afi, 0, ntry)) {
-                    continue;
-                }
-            }
-            if (compressTable1(lst, ntry)) {
-                done++;
-                continue;
-            }
-            if (compressTable2(lst, ntry)) {
-                done++;
-                continue;
-            }
-            if (compressTable3(lst, ntry)) {
-                done++;
-                continue;
-            }
-        }
-        return done;
-    }
-
-    /**
-     * list unused prefixes
-     *
-     * @param src source table
-     * @param trg target table
-     */
-    public static void unusedPrefixes(tabRoute<addrIP> src, List<String> trg) {
-        addrIP nxt = new addrIP();
-        addrIP one = new addrIP();
-        one.fromString("::1");
-        for (int i = 0; i < src.prefixes.size(); i++) {
-            tabRouteEntry<addrIP> ntry = src.prefixes.get(i);
-            if (nxt.compareTo(ntry.prefix.broadcast) >= 0) {
-                continue;
-            }
-            addrIP adr = new addrIP();
-            adr.setSub(ntry.prefix.network, one);
-            unusedPrefixes(trg, nxt, adr, one);
-            nxt.setAddr(ntry.prefix.broadcast);
-        }
-        addrIP adr = new addrIP();
-        adr.fillBytes(255);
-        unusedPrefixes(trg, nxt, adr, one);
-    }
-
-    private static void unusedPrefixes(List<String> lst, addrIP beg, addrIP end, addrIP one) {
-        if (beg.compareTo(end) >= 0) {
-            return;
-        }
-        addrIP adr = new addrIP();
-        adr.setAdd(one, beg);
-        lst.add(adr + " - " + end);
     }
 
     /**
@@ -1104,34 +879,6 @@ public class tabRoute<T extends addrType> {
                 continue;
             }
             deled += delUpdatedEntry(trg, afi, asn, ntry, rouMap, rouPlc, prfLst);
-        }
-        return deled;
-    }
-
-    /**
-     * filter one table
-     *
-     * @param afi address family
-     * @param asn as number
-     * @param tab table to filter
-     * @param flt filter to use
-     * @return number of entries deleted
-     */
-    public static int filterTable(int afi, int asn, tabRoute<addrIP> tab, tabListing<tabPrfxlstN, addrIP> flt) {
-        if (flt == null) {
-            return 0;
-        }
-        int deled = 0;
-        for (int i = tab.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = tab.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (flt.matches(afi, asn, ntry.prefix)) {
-                continue;
-            }
-            tab.del(ntry.prefix);
-            deled++;
         }
         return deled;
     }

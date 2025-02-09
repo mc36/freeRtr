@@ -11,6 +11,7 @@ import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
+import org.freertr.tab.tabRouteUtil;
 import org.freertr.user.userHelping;
 import org.freertr.util.cmds;
 
@@ -275,7 +276,7 @@ public abstract class ipRtr implements Comparable<ipRtr> {
             ntry.filter(afi, src, trg, lab, agrR, agrA, routerProtoTyp, routerProcNum);
         }
         if (routerAutoSummary) {
-            tabRoute.compressTable(afi, src, routerAutoSumPfx);
+            tabRouteUtil.compressTable(afi, src, routerAutoSumPfx);
         }
     }
 

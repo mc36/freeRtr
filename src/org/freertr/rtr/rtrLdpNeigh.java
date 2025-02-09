@@ -22,6 +22,7 @@ import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.tab.tabRouteUtil;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -198,7 +199,7 @@ public class rtrLdpNeigh implements Runnable, Comparable<rtrLdpNeigh> {
      * @return show line
      */
     public String getShNulled() {
-        return prefLearn.size() + "|" + prefAdvert.size() + "|" + tabRoute.nullLabeled(prefLearn).size() + "|" + peer + "|" + bits.timePast(upTime);
+        return prefLearn.size() + "|" + prefAdvert.size() + "|" + tabRouteUtil.nullLabeled(prefLearn).size() + "|" + peer + "|" + bits.timePast(upTime);
     }
 
     /**
