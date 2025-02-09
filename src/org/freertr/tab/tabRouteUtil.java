@@ -1568,7 +1568,7 @@ public class tabRouteUtil {
     /**
      * list prepended path entries
      *
-     * @param lst table to update
+     * @param lst table to find
      * @param pre prepend matched
      * @return matching routes
      */
@@ -1587,10 +1587,55 @@ public class tabRouteUtil {
         return res;
     }
 
-    private static boolean compressTable1(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // consecutives
+    /**
+     * list deaggregated path entries
+     *
+     * @param lst table to find
+     * @return matching routes
+     */
+    public static tabRoute<addrIP> deaggregatedPaths(tabRoute<addrIP> lst) {
+        tabRoute<addrIP> res = new tabRoute<addrIP>("prep");
+        for (int i = 0; i < lst.prefixes.size(); i++) {
+            tabRouteEntry<addrIP> ntry = lst.prefixes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            int o = ntry.best.asPathEnd();
+            tabRouteEntry<addrIP> oth = findConsecutiveRoute(lst, ntry);
+            if (oth != null) {
+                if (o == oth.best.asPathEnd()) {
+                    res.add(tabRoute.addType.ecmp, ntry, false, false);
+                    continue;
+                }
+            }
+            oth = findSupernetRoute(lst, ntry);
+            if (oth != null) {
+                if (o == oth.best.asPathEnd()) {
+                    res.add(tabRoute.addType.ecmp, ntry, false, false);
+                    continue;
+                }
+            }
+        }
+        return res;
+    }
+
+    private static tabRouteEntry<addrIP> findSupernetRoute(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) {
+        tabRouteEntry<addrIP> pfx = ntry.copyBytes(tabRoute.addType.better);
+        for (int o = ntry.prefix.maskLen - 1; o >= 0; o--) {
+            pfx.prefix.setMask(o);
+            tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
+            if (oth == null) {
+                continue;
+            }
+            return oth;
+        }
+        return null;
+    }
+
+    private static tabRouteEntry<addrIP> findConsecutiveRoute(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) {
         final int bit = ntry.prefix.maskLen - 1;
         if (bit < 0) {
-            return false;
+            return null;
         }
         tabRouteEntry<addrIP> pfx = ntry.copyBytes(tabRoute.addType.better);
         if (ntry.prefix.network.bitValue(bit)) {
@@ -1599,16 +1644,20 @@ public class tabRouteUtil {
             pfx.prefix.network.bitSet(bit);
         }
         pfx.prefix.setMask(bit + 1);
-        tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
-        if (oth == null) {
+        return lst.prefixes.find(pfx);
+    }
+
+    private static boolean compressTable1(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // consecutives
+        tabRouteEntry<addrIP> pfx = findConsecutiveRoute(lst, ntry);
+        if (pfx == null) {
             return false;
         }
-        if (oth.sameFwder(ntry.best) == null) {
+        if (pfx.sameFwder(ntry.best) == null) {
             return false;
         }
         tabRouteEntry<addrIP> res = ntry.copyBytes(tabRoute.addType.ecmp);
-        res.prefix.setMask(bit);
-        oth = lst.prefixes.find(res);
+        res.prefix.setMask(ntry.prefix.maskLen - 1);
+        tabRouteEntry<addrIP> oth = lst.prefixes.find(res);
         if (oth != null) {
             return false;
         }
@@ -1619,20 +1668,15 @@ public class tabRouteUtil {
     }
 
     private static boolean compressTable2(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // supernet
-        tabRouteEntry<addrIP> pfx = ntry.copyBytes(tabRoute.addType.better);
-        for (int o = ntry.prefix.maskLen - 1; o >= 0; o--) {
-            pfx.prefix.setMask(o);
-            tabRouteEntry<addrIP> oth = lst.prefixes.find(pfx);
-            if (oth == null) {
-                continue;
-            }
-            if (oth.sameFwder(ntry.best) == null) {
-                return false;
-            }
-            lst.prefixes.del(ntry);
-            return true;
+        tabRouteEntry<addrIP> oth = findSupernetRoute(lst, ntry);
+        if (oth == null) {
+            return false;
         }
-        return false;
+        if (oth.sameFwder(ntry.best) == null) {
+            return false;
+        }
+        lst.prefixes.del(ntry);
+        return true;
     }
 
     private static boolean compressTable3(tabRoute<addrIP> lst, tabRouteEntry<addrIP> ntry) { // subnets

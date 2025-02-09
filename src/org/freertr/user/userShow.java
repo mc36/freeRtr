@@ -4812,6 +4812,11 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
+        if (a.equals("deaggregated")) {
+            tab = tabRouteUtil.deaggregatedPaths(tab);
+            doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            return;
+        }
         if (a.equals("pathprep")) {
             a = cmd.word();
             if (a.length() < 1) {
@@ -4834,7 +4839,7 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
-        if (a.equals("unused")) {
+        if (a.equals("prefix-unused")) {
             List<String> res = new ArrayList<String>();
             tabRouteUtil.unusedPrefixes(tab, res);
             rdr.putStrArr(res);
