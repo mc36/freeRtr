@@ -4806,6 +4806,19 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
+        if (a.equals("unusual")) {
+            long ign = 0;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                ign |= tabRouteAttr.string2ignore(a);
+            }
+            tab = tabRouteUtil.unusualAttribs(tab, ign);
+            doShowRoutes(r.bgp.fwdCore, tab, dsp);
+            return;
+        }
         if (a.equals("compress")) {
             tab = new tabRoute<addrIP>(tab);
             tabRouteUtil.compressTable(sfi, tab, null);

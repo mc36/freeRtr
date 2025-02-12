@@ -1588,6 +1588,33 @@ public class tabRouteUtil {
     }
 
     /**
+     * list unusual path attributes
+     *
+     * @param lst table to find
+     * @param ign attributes to filter
+     * @return matching routes
+     */
+    public static tabRoute<addrIP> unusualAttribs(tabRoute<addrIP> lst, long ign) {
+        tabRoute<addrIP> res = new tabRoute<addrIP>("prep");
+        for (int i = 0; i < lst.prefixes.size(); i++) {
+            tabRouteEntry<addrIP> ntry = lst.prefixes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            tabRouteEntry<addrIP> oth = ntry.copyBytes(tabRoute.addType.alters);
+            for (int o = 0; o < oth.alts.size(); o++) {
+                tabRouteAttr.ignoreAttribs(ntry.alts.get(o), 0);
+                tabRouteAttr.ignoreAttribs(oth.alts.get(o), ign);
+            }
+            if (ntry.differs(tabRoute.addType.alters, oth) == 0) {
+                continue;
+            }
+            res.add(tabRoute.addType.ecmp, ntry, false, false);
+        }
+        return res;
+    }
+
+    /**
      * list deaggregated path entries
      *
      * @param lst table to find

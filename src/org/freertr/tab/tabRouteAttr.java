@@ -1544,7 +1544,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
         hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
         hl.add(null, lv + " " + lv + ",.    tunnel       ignore tunnel");
-        hl.add(null, lv + " " + lv + ",.    entropy      ignore empty lists");
+        hl.add(null, lv + " " + lv + ",.    entropy      ignore entropy");
         hl.add(null, lv + " " + lv + ",.    empty        ignore empty lists");
     }
 
