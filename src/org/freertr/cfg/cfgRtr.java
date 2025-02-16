@@ -407,6 +407,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* pe-distinguisher",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* aspath-limit",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* nsh-chain",
+        "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* domain-path",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* bfd-discriminator",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* tunenc",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* linkstate",

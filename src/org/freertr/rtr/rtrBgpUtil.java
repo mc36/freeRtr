@@ -989,6 +989,7 @@ public class rtrBgpUtil {
             case attrPeDistLab:
             case attrPathLimit:
             case attrNshChain:
+            case attrDomPath:
             case attrBfdDisc:
             case attrStdComm:
             case attrOriginator:
@@ -2552,6 +2553,16 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse domain path attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseDomainPath(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.domainPath = pck.getCopy();
+    }
+
+    /**
      * parse bfd discriminator attribute
      *
      * @param ntry table entry
@@ -3039,6 +3050,9 @@ public class rtrBgpUtil {
             case attrNshChain:
                 parseNshChain(ntry, pck);
                 return null;
+            case attrDomPath:
+                parseDomainPath(ntry, pck);
+                return null;
             case attrBfdDisc:
                 parseBfdDiscr(ntry, pck);
                 return null;
@@ -3208,6 +3222,7 @@ public class rtrBgpUtil {
         placePrefSid(spkr, safi, pck, hlp, ntry);
         placeBier(spkr, pck, hlp, ntry);
         placeNshChain(spkr, pck, hlp, ntry);
+        placeDomainPath(spkr, pck, hlp, ntry);
         placeBfdDiscr(spkr, pck, hlp, ntry);
         placeAttribSet(spkr, pck, hlp, ntry);
         if (safi == safiAttrib) {
@@ -3759,7 +3774,7 @@ public class rtrBgpUtil {
     }
 
     /**
-     * place attribute set attribute
+     * place nsh chain attribute
      *
      * @param spkr where to signal
      * @param trg target packet
@@ -3774,6 +3789,24 @@ public class rtrBgpUtil {
         hlp.putCopy(ntry.best.nshChain, 0, 0, ntry.best.nshChain.length);
         hlp.putSkip(ntry.best.nshChain.length);
         placeAttrib(spkr, flagOptional | flagTransitive, attrNshChain, trg, hlp);
+    }
+
+    /**
+     * place domain path attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeDomainPath(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.domainPath == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.domainPath, 0, 0, ntry.best.domainPath.length);
+        hlp.putSkip(ntry.best.domainPath.length);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrDomPath, trg, hlp);
     }
 
     /**

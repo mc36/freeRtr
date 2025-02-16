@@ -414,6 +414,11 @@ public class tabRouteAttr<T extends addrType> {
     public byte[] nshChain;
 
     /**
+     * domain path
+     */
+    public byte[] domainPath;
+
+    /**
      * bfd discriminator
      */
     public byte[] bfdDiscr;
@@ -767,6 +772,12 @@ public class tabRouteAttr<T extends addrType> {
             bits.byteCopy(nshChain, 0, atr.nshChain, 0, nshChain.length);
         } else {
             atr.nshChain = null;
+        }
+        if (domainPath != null) {
+            atr.domainPath = new byte[domainPath.length];
+            bits.byteCopy(domainPath, 0, atr.domainPath, 0, domainPath.length);
+        } else {
+            atr.domainPath = null;
         }
         if (bfdDiscr != null) {
             atr.bfdDiscr = new byte[bfdDiscr.length];
@@ -1131,6 +1142,19 @@ public class tabRouteAttr<T extends addrType> {
             }
         } else if (other.nshChain != null) {
             return 119;
+        }
+        if (domainPath != null) {
+            if (other.domainPath == null) {
+                return 124;
+            }
+            if (domainPath.length != other.domainPath.length) {
+                return 125;
+            }
+            if (bits.byteComp(domainPath, 0, other.domainPath, 0, domainPath.length) != 0) {
+                return 126;
+            }
+        } else if (other.domainPath != null) {
+            return 127;
         }
         if (bfdDiscr != null) {
             if (other.bfdDiscr == null) {
@@ -1539,6 +1563,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, lv + " " + lv + ",.    pedisting    ignore pe distinguisher");
         hl.add(null, lv + " " + lv + ",.    pathlimit    ignore aspath limit");
         hl.add(null, lv + " " + lv + ",.    nshchain     ignore nsh service chain");
+        hl.add(null, lv + " " + lv + ",.    domainpath   ignore domain path");
         hl.add(null, lv + " " + lv + ",.    bfddiscr     ignore bfd discriminator");
         hl.add(null, lv + " " + lv + ",.    orignted     ignore originator");
         hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
@@ -1654,6 +1679,9 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("bfddiscr")) {
             return 0x100000000L;
         }
+        if (a.equals("domainpath")) {
+            return 0x200000000L;
+        }
         return 0;
     }
 
@@ -1766,6 +1794,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((i & 0x100000000L) != 0) {
             a += " bfddiscr";
+        }
+        if ((i & 0x200000000L) != 0) {
+            a += " domainpath";
         }
         return a.substring(1, a.length());
     }
@@ -1920,6 +1951,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x100000000L) != 0) {
             ntry.bfdDiscr = null;
         }
+        if ((ign & 0x200000000L) != 0) {
+            ntry.domainPath = null;
+        }
     }
 
     /**
@@ -1965,7 +1999,8 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "attribute asnam|" + clntWhois.asn2name(attribAs, true));
         lst.add(beg + "attribute value|" + bits.byteDump(attribVal, 0, -1));
         lst.add(beg + "nsh chain value|" + bits.byteDump(nshChain, 0, -1));
-        lst.add(beg + "bfd discr value|" + bits.byteDump(nshChain, 0, -1));
+        lst.add(beg + "domain path value|" + bits.byteDump(domainPath, 0, -1));
+        lst.add(beg + "bfd discr value|" + bits.byteDump(bfdDiscr, 0, -1));
         lst.add(beg + "tunnel type|" + tunelTyp);
         lst.add(beg + "tunnel value|" + bits.byteDump(tunelVal, 0, -1));
         lst.add(beg + "link state|" + bits.byteDump(linkStat, 0, -1));

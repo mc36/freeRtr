@@ -144,6 +144,11 @@ public abstract class rtrBgpParam {
     public boolean nshChain;
 
     /**
+     * send domain path
+     */
+    public boolean domainPath;
+
+    /**
      * send bfd discriminator
      */
     public boolean bfdDiscr;
@@ -1323,6 +1328,7 @@ public abstract class rtrBgpParam {
         peDist = src.peDist;
         pathLim = src.pathLim;
         nshChain = src.nshChain;
+        domainPath = src.domainPath;
         bfdDiscr = src.bfdDiscr;
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
@@ -1527,6 +1533,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (nshChain != src.nshChain) {
+            return true;
+        }
+        if (domainPath != src.domainPath) {
             return true;
         }
         if (bfdDiscr != src.bfdDiscr) {
@@ -1861,6 +1870,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       pe-distinguisher            send pe distinguisher attribute");
         l.add(null, "3  .       aspath-limit                send as path limit attribute");
         l.add(null, "3  .       nsh-chain                   send nsh service chain attribute");
+        l.add(null, "3  .       domain-path                 send domain path attribute");
         l.add(null, "3  .       bfd-discriminator           send bfd discriminator attribute");
         l.add(null, "3  .       tunenc                      send tunnel encapsulation attribute");
         l.add(null, "3  .       linkstate                   send link state attribute");
@@ -2160,6 +2170,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !peDist, beg, nei + "pe-distinguisher", "");
         cmds.cfgLine(l, !pathLim, beg, nei + "aspath-limit", "");
         cmds.cfgLine(l, !nshChain, beg, nei + "nsh-chain", "");
+        cmds.cfgLine(l, !domainPath, beg, nei + "domain-path", "");
         cmds.cfgLine(l, !bfdDiscr, beg, nei + "bfd-discriminator", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
@@ -2803,6 +2814,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("nsh-chain")) {
             nshChain = !negated;
+            return false;
+        }
+        if (s.equals("domain-path")) {
+            domainPath = !negated;
             return false;
         }
         if (s.equals("bfd-discriminator")) {

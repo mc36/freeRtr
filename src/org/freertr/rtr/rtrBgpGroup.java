@@ -763,6 +763,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (!nshChain) {
             ntry.nshChain = null;
         }
+        if (!domainPath) {
+            ntry.domainPath = null;
+        }
         if (!bfdDiscr) {
             ntry.bfdDiscr = null;
         }
