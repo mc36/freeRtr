@@ -344,6 +344,85 @@ public class userGame {
     }
 
     /**
+     * moving fractal
+     */
+    public void doFractal() {
+        double xmin = -2;
+        double xmax = +2;
+        double ymin = -2;
+        double ymax = +2;
+        int iter = 255;
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            double dx = (xmax - xmin) / console.sizX;
+            double dy = (ymax - ymin) / console.sizY;
+            for (int j = 0; j < console.sizY; j++) {
+                double y = ymax - j * dy;
+                for (int i = 0; i < console.sizX; i++) {
+                    double u = 0.0;
+                    double v = 0.0;
+                    double u2 = u * u;
+                    double v2 = v * v;
+                    double x = xmin + i * dx;
+                    int k;
+                    for (k = 1; k < iter; k++) {
+                        if ((u2 + v2) > 4.0) {
+                            break;
+                        }
+                        v = 2 * u * v + y;
+                        u = u2 - v2 + x;
+                        u2 = u * u;
+                        v2 = v * v;
+                    }
+                    if (k < iter) {
+                        console.putInt(i, j, false, userScreen.colWhite, ' ');
+                    } else {
+                        console.putInt(i, j, false, userScreen.colWhite, '*');
+                    }
+                }
+            }
+            switch (bits.random(0, 6)) {
+                case 0:
+                    xmin *= 1.2;
+                    xmax *= 1.2;
+                    ymin *= 1.2;
+                    ymax *= 1.2;
+                    break;
+                case 1:
+                    xmin *= 0.8;
+                    xmax *= 0.8;
+                    ymin *= 0.8;
+                    ymax *= 0.8;
+                    break;
+                case 2:
+                    double mov = (xmax - xmin) * 0.1;
+                    xmin += mov;
+                    xmax += mov;
+                    break;
+                case 3:
+                    mov = (xmax - xmin) * 0.1;
+                    xmin -= mov;
+                    xmax -= mov;
+                    break;
+                case 4:
+                    mov = (ymax - ymin) * 0.1;
+                    ymin += mov;
+                    ymax += mov;
+                    break;
+                case 5:
+                    mov = (ymax - ymin) * 0.1;
+                    ymin -= mov;
+                    ymax -= mov;
+                    break;
+            }
+            console.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
      * moving plasma
      */
     public void doPlasma() {
@@ -674,6 +753,10 @@ public class userGame {
         }
         if (a.equals("plasma")) {
             doPlasma();
+            return;
+        }
+        if (a.equals("fractal")) {
+            doFractal();
             return;
         }
         if (a.equals("life")) {

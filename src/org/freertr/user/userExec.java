@@ -1986,6 +1986,7 @@ public class userExec {
         hl.add(null, "2 .      matrix                       view demo");
         hl.add(null, "2 .      fire                         view demo");
         hl.add(null, "2 .      plasma                       view demo");
+        hl.add(null, "2 .      fractal                      view demo");
         hl.add(null, "2 .      life                         view demo");
         hl.add(null, "2 .      antball                      view demo");
         hl.add(null, "2 3      zenmaster                    play demo");
