@@ -16,12 +16,12 @@ del-alw %tmp%/usr/lib/modules/%find%/kernel/sound %tmp%/usr/lib/modules/%find%/k
 
 exec mv %tmp%/usr/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
 exec mv %tmp%/usr/lib/modules/%find%/kernel/net/core %tmp%/tmp/
-exec mv %tmp%/usr/lib/modules/%find%/kernel/net/*.xz %tmp%/tmp/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/net/*.ko.* %tmp%/tmp/
 del-alw %tmp%/usr/lib/modules/%find%/kernel/net
 exec mkdir %tmp%/usr/lib/modules/%find%/kernel/net
 exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/net
 
-exec mv %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/*.xz %tmp%/tmp/
+exec mv %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/*.ko.* %tmp%/tmp/
 del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
 exec mkdir %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
 exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/

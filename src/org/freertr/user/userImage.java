@@ -358,8 +358,13 @@ public class userImage {
         return false;
     }
 
-    private boolean instOneFile(String name) {
-        return execCmd("dpkg-deb --fsys-tarfile " + name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
+    private boolean instOneFile(boolean deb, String name) {
+        if (deb) {
+            name = "dpkg-deb --fsys-tarfile " + name;
+        } else {
+            name = "gunzip -c -k " + name;
+        }
+        return execCmd(name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
     }
 
     private boolean instOneFile(userImagePkg pkg) {
@@ -369,7 +374,7 @@ public class userImage {
             return false;
         }
         pkg.done = true;
-        return instOneFile(name);
+        return instOneFile(true, name);
     }
 
     private boolean instXtraFiles() {
@@ -379,7 +384,7 @@ public class userImage {
             if (a.length() < 1) {
                 break;
             }
-            if (instOneFile(downDir + "/" + arch + "-" + a)) {
+            if (instOneFile(false, downDir + "/" + arch + "-" + a)) {
                 return true;
             }
         }
