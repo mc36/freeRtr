@@ -138,6 +138,8 @@ class servMrt2bgpConn implements Runnable {
 
     private addrIP peer;
 
+    private int safi;
+
     public servMrt2bgpConn(servMrt2bgp parent, pipeSide stream, addrIP remote) {
         lower = parent;
         pipe = stream;
@@ -145,11 +147,43 @@ class servMrt2bgpConn implements Runnable {
         new Thread(this).start();
     }
 
-    public void run() {
-        logger.warn("neighbor " + peer + " up");
+    private void sendTable(rtrBgpSpeak spk, packHolder pck) {
         RandomAccessFile fs = null;
         try {
-            int safi;
+            fs = new RandomAccessFile(new File(lower.mrtFile), "r");
+        } catch (Exception e) {
+            spk.sendNotify(1, 3);
+            pipe.setClose();
+            return;
+        }
+        packHolder tmp = new packHolder(true, true);
+        packHolder hlp = new packHolder(true, true);
+        for (;;) {
+            int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+            if (i == 1) {
+                break;
+            }
+            if (i == 2) {
+                continue;
+            }
+            if (pck.getByte(rtrBgpUtil.sizeU - 1) != rtrBgpUtil.msgUpdate) {
+                continue;
+            }
+            pck.getSkip(rtrBgpUtil.sizeU);
+            if (pck.ETHtype != safi) {
+                continue;
+            }
+            spk.packSend(pck, rtrBgpUtil.msgUpdate);
+        }
+        try {
+            fs.close();
+        } catch (Exception e) {
+        }
+    }
+
+    public void run() {
+        logger.warn("neighbor " + peer + " up");
+        try {
             if (peer.isIPv4()) {
                 safi = rtrBgpUtil.safiIp4uni;
             } else {
@@ -160,11 +194,11 @@ class servMrt2bgpConn implements Runnable {
             nei.addrFams = safi;
             rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, pipe);
             packHolder pck = new packHolder(true, true);
-            packHolder tmp = new packHolder(true, true);
-            packHolder hlp = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
+            buf = new byte[0];
+            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaRouteRefresh, buf);
             buf = new byte[4];
             bits.msbPutD(buf, 0, safi);
             rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
@@ -183,56 +217,31 @@ class servMrt2bgpConn implements Runnable {
                 pipe.setClose();
                 return;
             }
-            try {
-                fs = new RandomAccessFile(new File(lower.mrtFile), "r");
-            } catch (Exception e) {
-                spk.sendNotify(1, 3);
-                pipe.setClose();
-                return;
-            }
             spk.sendKeepAlive();
-            for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
-                if (i == 1) {
-                    break;
-                }
-                if (i == 2) {
-                    continue;
-                }
-                if (pck.getByte(rtrBgpUtil.sizeU - 1) != rtrBgpUtil.msgUpdate) {
-                    continue;
-                }
-                pck.getSkip(rtrBgpUtil.sizeU);
-                if (pck.ETHtype != safi) {
-                    continue;
-                }
-                spk.packSend(pck, rtrBgpUtil.msgUpdate);
-            }
-            fs.close();
-            fs = null;
+            sendTable(spk, pck);
             for (int o = 1000;; o++) {
-                if (o > 30) {
-                    spk.sendKeepAlive();
-                    o = 0;
-                }
-                int i = pipe.ready2rx();
-                if (i > 0) {
-                    pipe.moreSkip(i);
-                }
-                i = pipe.ready2tx();
+                int i = pipe.ready2tx();
                 if (i < 0) {
                     break;
                 }
-                bits.sleep(1000);
+                i = pipe.ready2rx();
+                if (i > 0) {
+                    if (spk.packRecv(pck) != rtrBgpUtil.msgRefrsh) {
+                        continue;
+                    }
+                    sendTable(spk, pck);
+                }
+                if (o < 30) {
+                    bits.sleep(1000);
+                    continue;
+                }
+                spk.sendKeepAlive();
+                o = 0;
             }
         } catch (Exception e) {
             logger.traceback(e);
         }
         pipe.setClose();
-        try {
-            fs.close();
-        } catch (Exception e) {
-        }
         logger.error("neighbor " + peer + " down");
     }
 
