@@ -179,6 +179,7 @@ class servMrt2bgpConn implements Runnable {
             fs.close();
         } catch (Exception e) {
         }
+        spk.sendEndOfRib(safi);
     }
 
     public void run() {
