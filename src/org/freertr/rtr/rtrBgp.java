@@ -4789,6 +4789,28 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param asn asn to query
      * @return text
      */
+    public userFormat getPathAround(int safi, int asn) {
+        tabGen<rtrBgpFlapAsn> res = new tabGen<rtrBgpFlapAsn>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpDump.updatePathAround(localAs, asn, res, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpDump.updatePathAround(localAs, asn, res, lstnNei.get(i), safi);
+        }
+        userFormat lst = new userFormat("|", "asnum|asnam|nets|asinfo");
+        for (int i = 0; i < res.size(); i++) {
+            lst.add("" + res.get(i));
+        }
+        return lst;
+    }
+
+    /**
+     * as path statistics
+     *
+     * @param safi safi to query
+     * @param asn asn to query
+     * @return text
+     */
     public userFormat getPathContain(int safi, int asn) {
         tabGen<rtrBgpFlapLst> res = new tabGen<rtrBgpFlapLst>();
         for (int i = 0; i < neighs.size(); i++) {

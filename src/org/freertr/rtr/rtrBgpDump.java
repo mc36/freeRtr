@@ -42,10 +42,10 @@ public class rtrBgpDump {
      * update as origin list
      *
      * @param lst list to update
-     * @param as asn
+     * @param asn asn
      */
-    public static void updateAsOrigin(tabGen<rtrBgpFlapAsn> lst, int as) {
-        rtrBgpFlapAsn res = new rtrBgpFlapAsn(0, as);
+    public static void updateAsOrigin(tabGen<rtrBgpFlapAsn> lst, int asn) {
+        rtrBgpFlapAsn res = new rtrBgpFlapAsn(0, asn);
         res.count = 1;
         rtrBgpFlapAsn old = lst.add(res);
         if (old == null) {
@@ -55,7 +55,7 @@ public class rtrBgpDump {
     }
 
     /**
-     * update as graph
+     * update as statistics
      *
      * @param asn asn to look
      * @param lst path list
@@ -81,6 +81,57 @@ public class rtrBgpDump {
             }
             rtrBgpFlapLst ntry = new rtrBgpFlapLst(asl);
             rtrBgpFlapLst old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            ntry.count++;
+        }
+    }
+
+    /**
+     * update as statistics
+     *
+     * @param loc local asn
+     * @param asn asn to look
+     * @param lst path list
+     * @param nei neighbor to read
+     * @param safi safi to use
+     */
+    public static void updatePathAround(int loc, int asn, tabGen<rtrBgpFlapAsn> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            List<Integer> asl = prf.best.asPathInts(loc);
+            int o = asl.indexOf(asn);
+            o--;
+            if (o < 0) {
+                continue;
+            }
+            rtrBgpFlapAsn ntry = new rtrBgpFlapAsn(0, asl.get(o));
+            rtrBgpFlapAsn old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            ntry.count++;
+            o = asl.lastIndexOf(asn);
+            if (o < 0) {
+                continue;
+            }
+            o++;
+            if (o >= asl.size()) {
+                continue;
+            }
+            ntry = new rtrBgpFlapAsn(0, asl.get(o));
+            old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
             }

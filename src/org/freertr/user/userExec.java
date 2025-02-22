@@ -870,6 +870,8 @@ public class userExec {
         hl.add(null, "6 .              asconn             connectivity of ases");
         hl.add(null, "6 7              pathsof            paths contain asn");
         hl.add(null, "7 .                <num>            asn to look for");
+        hl.add(null, "6 7              pathsat            paths around asn");
+        hl.add(null, "7 .                <num>            asn to look for");
         hl.add(null, "6 .              pathstat           path length statistics");
         hl.add(null, "6 7,.            asinconsistent     inconsistent advertisements of ases");
         hl.add(null, "7 .                [str]            int matcher");
