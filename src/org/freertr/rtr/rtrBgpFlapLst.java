@@ -1,8 +1,8 @@
 package org.freertr.rtr;
 
-
 import java.util.List;
 import org.freertr.cfg.cfgAll;
+import org.freertr.clnt.clntWhois;
 import org.freertr.util.bits;
 
 /**
@@ -58,26 +58,45 @@ public class rtrBgpFlapLst implements Comparable<rtrBgpFlapLst> {
         return 0;
     }
 
+    private String dumpPathRev() {
+        String p = "";
+        for (int i = 0; i < lst.size(); i++) {
+            p = clntWhois.asn2mixed(lst.get(i), true) + " " + p;
+        }
+        return p;
+    }
+
+    private String dumpPathFwd() {
+        String p = "";
+        for (int i = 0; i < lst.size(); i++) {
+            p += " " + clntWhois.asn2mixed(lst.get(i), true);
+        }
+        return p;
+    }
+
     /**
      * dump entry
      *
      * @param rev reverse path
      * @return dumped
      */
-    public String dump(boolean rev) {
+    public String dumpFlap(boolean rev) {
         String p;
         if (rev) {
-            p = "";
-            for (int i = 0; i < lst.size(); i++) {
-                p = lst.get(i) + " " + p;
-            }
+            p = dumpPathRev();
         } else {
-            p = "";
-            for (int i = 0; i < lst.size(); i++) {
-                p += " " + lst.get(i);
-            }
+            p = dumpPathFwd();
         }
         return count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3) + "|" + p.trim();
+    }
+
+    /**
+     * dump entry
+     *
+     * @return dumped
+     */
+    public String dumpContain() {
+        return count + "|" + dumpPathFwd();
     }
 
 }

@@ -4482,6 +4482,11 @@ public class userShow {
             rdr.putStrTab(r.bgp.getAsConns(sfi));
             return;
         }
+        if (a.equals("pathsof")) {
+            a = cmd.word();
+            rdr.putStrTab(r.bgp.getPathContain(sfi, bits.str2num(a)));
+            return;
+        }
         if (a.equals("pathstat")) {
             rdr.putStrTab(r.bgp.getPathStat(sfi));
             return;

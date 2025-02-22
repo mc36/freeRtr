@@ -57,6 +57,40 @@ public class rtrBgpDump {
     /**
      * update as graph
      *
+     * @param asn asn to look
+     * @param lst path list
+     * @param nei neighbor to read
+     * @param safi safi to use
+     */
+    public static void updatePathContain(int asn, tabGen<rtrBgpFlapLst> lst, rtrBgpNeigh nei, int safi) {
+        if (nei == null) {
+            return;
+        }
+        tabRoute<addrIP> tab = nei.conn.getLearned(safi);
+        if (tab == null) {
+            return;
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            List<Integer> asl = prf.best.asPathInts(-1);
+            if (asl.indexOf(asn) < 0) {
+                continue;
+            }
+            rtrBgpFlapLst ntry = new rtrBgpFlapLst(asl);
+            rtrBgpFlapLst old = lst.add(ntry);
+            if (old != null) {
+                ntry = old;
+            }
+            ntry.count++;
+        }
+    }
+
+    /**
+     * update as graph
+     *
      * @param loc local asn
      * @param lst asn list
      * @param nei neighbor to read

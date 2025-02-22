@@ -4629,7 +4629,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat l = new userFormat("|", "count|ago|last|path");
         for (int i = 0; i < ntry.paths.size(); i++) {
-            l.add("" + ntry.paths.get(i).dump(rev));
+            l.add("" + ntry.paths.get(i).dumpFlap(rev));
         }
         return l;
     }
@@ -4780,6 +4780,28 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         List<String> res = new ArrayList<String>();
         rtrBgpDump.drawAsTree(res, lst, asn, "");
         return res;
+    }
+
+    /**
+     * as path statistics
+     *
+     * @param safi safi to query
+     * @param asn asn to query
+     * @return text
+     */
+    public userFormat getPathContain(int safi, int asn) {
+        tabGen<rtrBgpFlapLst> res = new tabGen<rtrBgpFlapLst>();
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpDump.updatePathContain(asn, res, neighs.get(i), safi);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpDump.updatePathContain(asn, res, lstnNei.get(i), safi);
+        }
+        userFormat lst = new userFormat("|", "count|path");
+        for (int i = 0; i < res.size(); i++) {
+            lst.add(res.get(i).dumpContain());
+        }
+        return lst;
     }
 
     /**
