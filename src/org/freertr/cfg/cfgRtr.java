@@ -362,6 +362,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* timer 60000 180000",
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* connection-mode both",
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* buffer-size 65536",
+        "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* preference 100",
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* ttl-security -1",
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* tos-value -1",
         "router bgp[46] .*!" + cmds.tabulator + "(template|neighbor) .* leak-role disabled",

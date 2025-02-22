@@ -2667,7 +2667,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ntry.best.distance = neigh.distance;
         ntry.best.rouSrc = neigh.peerType;
         ntry.best.srcRtr = neigh.peerAddr.copyBytes();
-        ntry.best.locPref = 100;
+        ntry.best.locPref = neigh.preference;
         boolean addpath = addPthRx(rtrBgpUtil.safiIp4uni);
         int ident = 0;
         for (;;) {

@@ -879,7 +879,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
                     if (attr.locPref == 0) {
-                        attr.locPref = 100;
+                        attr.locPref = preference;
                     }
                 }
                 break;
@@ -889,7 +889,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
                     if (attr.locPref == 0) {
-                        attr.locPref = 100;
+                        attr.locPref = preference;
                     }
                     if (attr.clustList == null) {
                         attr.clustList = new ArrayList<addrIP>();
@@ -902,7 +902,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
                     attr.confSeq = tabLabel.prependLabel(attr.confSeq, localAs);
                     if (attr.locPref == 0) {
-                        attr.locPref = 100;
+                        attr.locPref = preference;
                     }
                 }
                 break;

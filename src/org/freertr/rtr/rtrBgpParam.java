@@ -324,6 +324,11 @@ public abstract class rtrBgpParam {
     public int distance;
 
     /**
+     * preference
+     */
+    public int preference;
+
+    /**
      * keep alive
      */
     public int keepAlive;
@@ -1269,6 +1274,7 @@ public abstract class rtrBgpParam {
         routeRefreshNew = true;
         allowAsOut = true;
         dmzLinkBw = -1;
+        preference = 100;
         spfMetric = 10;
         randomStartF = 2;
         randomStartL = 15;
@@ -1311,6 +1317,7 @@ public abstract class rtrBgpParam {
         randomStartF = src.randomStartF;
         randomStartL = src.randomStartL;
         distance = src.distance;
+        preference = src.preference;
         keepAlive = src.keepAlive;
         holdTimer = src.holdTimer;
         srcIface = src.srcIface;
@@ -1488,6 +1495,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (addrFams != src.addrFams) {
+            return true;
+        }
+        if (preference != src.preference) {
             return true;
         }
         if (leakAttr != src.leakAttr) {
@@ -1981,6 +1991,8 @@ public abstract class rtrBgpParam {
         l.add(null, "5  .           <num>                   hold time in ms");
         l.add(null, "3  4       distance                    administrative distance of routes");
         l.add(null, "4  .         <num>                     set administrative distance");
+        l.add(null, "3  4       preference                  local preference of routes");
+        l.add(null, "4  .         <num>                     set local preference");
         l.add(null, "3  4       route-map-in                process prefixes in ingress updates");
         l.add(null, "4  .         <name:rm>                 name of route map");
         l.add(null, "3  4       route-map-out               process prefixes in egress updates");
@@ -2064,6 +2076,7 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
         l.add(beg + nei + "address-family" + mask2string(addrFams));
         l.add(beg + nei + "distance " + distance);
+        l.add(beg + nei + "preference " + preference);
         l.add(beg + nei + "timer " + keepAlive + " " + holdTimer);
         l.add(beg + nei + "dmz-link-bw " + dmzLinkBw);
         l.add(beg + nei + "spf-metric " + spfMetric);
@@ -2486,6 +2499,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("distance")) {
             distance = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("preference")) {
+            preference = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("dmz-link-bw")) {
