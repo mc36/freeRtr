@@ -477,7 +477,7 @@ public class secInfoUtl {
             s += " rpki=" + tabRoautUtil.validity2string(wrk.roav);
         }
         List<String> res = new ArrayList<String>();
-        res.add(s);
+        res.add(s.trim());
         res.add("pth=" + wrk.ntry.best.asPathStr());
         res.add("inf=" + wrk.ntry.best.asInfoStr());
         res.add("nam=" + wrk.ntry.best.asNameStr());

@@ -3873,6 +3873,46 @@ public class userShow {
             doShowRoas(r.rpki.getFinalTab(6), 1);
             return;
         }
+        if (a.equals("prefixes4")) {
+            tabGen<tabRoautNtry> tab = r.rpki.getFinalTab(4);
+            tab = tabRoautUtil.allowedAsn(tab, bits.str2num(cmd.word()));
+            doShowRoas(tab, 1);
+            return;
+        }
+        if (a.equals("prefixes6")) {
+            tabGen<tabRoautNtry> tab = r.rpki.getFinalTab(6);
+            tab = tabRoautUtil.allowedAsn(tab, bits.str2num(cmd.word()));
+            doShowRoas(tab, 1);
+            return;
+        }
+        if (a.equals("learned4")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return;
+            }
+            rtrRpkiNeigh nei = r.rpki.findPeer(adr);
+            if (nei == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            doShowRoas(nei.getFinalTab(4), 1);
+            return;
+        }
+        if (a.equals("learned6")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return;
+            }
+            rtrRpkiNeigh nei = r.rpki.findPeer(adr);
+            if (nei == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            doShowRoas(nei.getFinalTab(6), 1);
+            return;
+        }
         if (a.equals("compare4")) {
             doShowIpXrpkiComp(r.rpki, 4);
             return;

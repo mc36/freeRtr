@@ -423,6 +423,14 @@ public class userExec {
         hl.add(null, "4 5          <num:rtr>              process id");
         hl.add(null, "5 .            status               status of the process");
         hl.add(null, "5 .            summary              list of neighbors");
+        hl.add(null, "5 6            prefixes4            list ipv4 prefixes of asn");
+        hl.add(null, "6 .              <num>              as number");
+        hl.add(null, "5 6            prefixes6            list ipv6 prefixes of asn");
+        hl.add(null, "6 .              <num>              as number");
+        hl.add(null, "5 6            learned4             list ipv4 feeds from neighbor");
+        hl.add(null, "6 .              <addr>             peer address");
+        hl.add(null, "5 6            learned6             list ipv4 feeds from neighbor");
+        hl.add(null, "6 .              <addr>             peer address");
         hl.add(null, "5 6            compare4             compare ipv4 feeds from neighbors");
         hl.add(null, "6 7              <addr>             peer1 address");
         hl.add(null, "7 .                <addr>           peer2 address");

@@ -48,6 +48,25 @@ public class tabRoautUtil {
     }
 
     /**
+     * filter to an asn
+     *
+     * @param src table to filter
+     * @param asn asn to find
+     * @return matching prefixes
+     */
+    public final static tabGen<tabRoautNtry> allowedAsn(tabGen<tabRoautNtry> src, int asn) {
+        tabGen<tabRoautNtry> res = new tabGen<tabRoautNtry>();
+        for (int i = 0; i < src.size(); i++) {
+            tabRoautNtry ntry = src.get(i);
+            if (ntry.asns.indexOf(asn) < 0) {
+                continue;
+            }
+            res.add(ntry);
+        }
+        return res;
+    }
+
+    /**
      * check if two tables are identical
      *
      * @param t1 first table
