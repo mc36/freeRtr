@@ -4,6 +4,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
+import org.freertr.enc.encJson;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -171,6 +172,49 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
         if (distan < 1) {
             distan = 100;
         }
+        srcIP = new addrIP();
+        srcRtr = tabRouteAttr.routeType.staticRoute;
+        return false;
+    }
+
+    /**
+     * convert from json
+     *
+     * @param jsn json to read
+     * @return true on error, false on success
+     */
+    public boolean fromJson(encJson jsn) {
+        max = jsn.findValue("maxLength");
+        if (max < 0) {
+            return true;
+        }
+        String a = jsn.getValue(max + 1);
+        if (a == null) {
+            return true;
+        }
+        max = bits.str2num(a);
+        asn = jsn.findValue("prefix");
+        if (asn < 0) {
+            return true;
+        }
+        a = jsn.getValue(asn + 1);
+        if (a == null) {
+            return true;
+        }
+        prefix = addrPrefix.str2ip(a);
+        if (prefix == null) {
+            return true;
+        }
+        asn = jsn.findValue("asn");
+        if (asn < 0) {
+            return true;
+        }
+        a = jsn.getValue(asn + 1);
+        if (a == null) {
+            return true;
+        }
+        asn = bits.str2num(a);
+        distan = 100;
         srcIP = new addrIP();
         srcRtr = tabRouteAttr.routeType.staticRoute;
         return false;

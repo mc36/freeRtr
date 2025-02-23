@@ -1,14 +1,17 @@
 package org.freertr.rtr;
 
+import java.util.List;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPrefix;
+import org.freertr.enc.encJson;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRoautNtry;
+import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -359,6 +362,41 @@ public class rtrRpkiSpeak {
     }
 
     /**
+     * send one json table
+     *
+     * @param fn file to send
+     */
+    public void sendOneJson(String fn) {
+        if (fn == null) {
+            return;
+        }
+        List<String> txt = bits.txt2buf(fn);
+        if (txt == null) {
+            return;
+        }
+        tabGen<tabRoautNtry> tab4 = new tabGen<tabRoautNtry>();
+        tabGen<tabRoautNtry> tab6 = new tabGen<tabRoautNtry>();
+        encJson j = new encJson();
+        for (int i = 0; i < txt.size(); i++) {
+            fn = txt.get(i);
+            txt.set(i, null);
+            j.clear();
+            j.fromString(fn);
+            tabRoautNtry ntry = new tabRoautNtry();
+            if (ntry.fromJson(j)) {
+                continue;
+            }
+            if (ntry.prefix.network.isIPv4()) {
+                tab4.put(ntry);
+            } else {
+                tab6.put(ntry);
+            }
+        }
+        sendOneTable(rtrRpkiSpeak.msgIpv4addr, tab4);
+        sendOneTable(rtrRpkiSpeak.msgIpv6addr, tab6);
+    }
+
+    /**
      * get rpki process sequence number
      *
      * @param rtr process to read
@@ -379,9 +417,10 @@ public class rtrRpkiSpeak {
      * @param tab4 ipv4 table
      * @param tab6 ipv6 table
      * @param rtr rpki to send
+     * @param jsn json to send
      * @return true on error, false on success
      */
-    public boolean doOneServRnd(int seq, int ses, tabGen<tabRoautNtry> tab4, tabGen<tabRoautNtry> tab6, rtrRpki rtr) {
+    public boolean doOneServRnd(int seq, int ses, tabGen<tabRoautNtry> tab4, tabGen<tabRoautNtry> tab6, rtrRpki rtr, String jsn) {
         if (recvPack()) {
             return true;
         }
@@ -403,6 +442,7 @@ public class rtrRpkiSpeak {
                 typ = rtrRpkiSpeak.msgCacheReply;
                 sess = ses;
                 sendPack();
+                sendOneJson(jsn);
                 sendOneRpki(rtr);
                 sendOneTable(rtrRpkiSpeak.msgIpv4addr, tab4);
                 sendOneTable(rtrRpkiSpeak.msgIpv6addr, tab6);

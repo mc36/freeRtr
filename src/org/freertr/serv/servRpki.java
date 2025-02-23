@@ -42,7 +42,9 @@ public class servRpki extends servGeneric implements prtServS {
      */
     public final static String[] defaultL = {
         "server rpki .*!" + cmds.tabulator + "port " + rtrRpkiSpeak.portNum,
-        "server rpki .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+        "server rpki .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
+        "server rpki .*!" + cmds.tabulator + "json",
+        "server rpki .*!" + cmds.tabulator + "rpki"
     };
 
     /**
@@ -63,7 +65,7 @@ public class servRpki extends servGeneric implements prtServS {
     /**
      * sequence
      */
-    public int sequence;
+    protected int sequence;
 
     /**
      * rpki type configured
@@ -74,6 +76,11 @@ public class servRpki extends servGeneric implements prtServS {
      * rpki number configured
      */
     protected int rpkiN;
+
+    /**
+     * json file
+     */
+    protected String jsonN;
 
     /**
      * connected neighbors
@@ -110,6 +117,7 @@ public class servRpki extends servGeneric implements prtServS {
         } else {
             lst.add(beg + "rpki " + cfgRtr.num2name(rpkiT) + " " + rpkiN);
         }
+        cmds.cfgLine(lst, jsonN == null, beg, "json", jsonN);
         for (int i = 0; i < cfged4.size(); i++) {
             lst.add(beg + "prefix " + cfged4.get(i).toConfig());
         }
@@ -135,6 +143,11 @@ public class servRpki extends servGeneric implements prtServS {
             sequence++;
             return false;
         }
+        if (s.equals("json")) {
+            jsonN = cmd.getRemaining();
+            sequence++;
+            return false;
+        }
         if (s.equals("rpki")) {
             rpkiT = cfgRtr.name2num(cmd.word());
             rpkiN = bits.str2num(cmd.word());
@@ -144,6 +157,7 @@ public class servRpki extends servGeneric implements prtServS {
             cmd.error("not an rpki process");
             rpkiT = null;
             rpkiN = 0;
+            sequence++;
             return false;
         }
         if (!s.equals(cmds.negated)) {
@@ -164,9 +178,15 @@ public class servRpki extends servGeneric implements prtServS {
             sequence++;
             return false;
         }
+        if (s.equals("json")) {
+            jsonN = null;
+            sequence++;
+            return false;
+        }
         if (s.equals("rpki")) {
             rpkiT = null;
             rpkiN = 0;
+            sequence++;
             return false;
         }
         return true;
@@ -178,6 +198,8 @@ public class servRpki extends servGeneric implements prtServS {
         l.add(null, "3 4      <num>                    maximum prefix length");
         l.add(null, "4 5,.      <num>                  as number");
         l.add(null, "5 .          [num]                preference");
+        l.add(null, "1 2   json                        setup a json file");
+        l.add(null, "2 .     <str>                     name of file to use");
         l.add(null, "1 2   rpki                        setup resource public key infrastructure");
         cfgRtr.getRouterList(l, 0, "");
         l.add(null, "3 .         <num>                 process number");
@@ -248,7 +270,7 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
                         rpkiR = (rtrRpki) rtrCfg.getRouter();
                     }
                 }
-                if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, rpkiR)) {
+                if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, rpkiR, lower.jsonN)) {
                     break;
                 }
             }

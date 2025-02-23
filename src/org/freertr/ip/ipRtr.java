@@ -194,6 +194,9 @@ public abstract class ipRtr implements Comparable<ipRtr> {
      * @return -1 if not, ip version if yes
      */
     public static int isRPKI(tabRouteAttr.routeType t) {
+        if (t == null) {
+            return -1;
+        }
         switch (t) {
             case rpki4:
                 return ipCor4.protocolVersion;

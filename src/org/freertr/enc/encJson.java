@@ -37,9 +37,9 @@ public class encJson {
     }
 
     /**
-     * copy from other xml
+     * copy from other json
      *
-     * @param src original xml to copy
+     * @param src original json to copy
      */
     public void copyBytes(encJson src) {
         clear();
@@ -50,7 +50,7 @@ public class encJson {
     }
 
     /**
-     * convert strings to xml
+     * convert strings to json
      *
      * @param l list to parse
      * @return false on success, true on error
@@ -64,7 +64,7 @@ public class encJson {
     }
 
     /**
-     * convert string to xml
+     * convert string to json
      *
      * @param s string to parse
      * @return false on success, true on error
@@ -79,6 +79,22 @@ public class encJson {
             }
             String a = s.substring(0, 1);
             s = s.substring(1, s.length());
+            if (a.equals(" ")) {
+                continue;
+            }
+            if (a.equals(":")) {
+                continue;
+            }
+            if (a.equals(",")) {
+                encJsonEntry ntry = new encJsonEntry();
+                ntry.level = lev;
+                ntry.value = "" + cur;
+                if (cur.length() > 0) {
+                    data.add(ntry);
+                }
+                cur = "";
+                continue;
+            }
             if (a.equals("\"")) {
                 int i = s.indexOf("\"");
                 if (i < 0) {
@@ -105,6 +121,28 @@ public class encJson {
                 continue;
             }
             if (a.equals("}")) {
+                encJsonEntry ntry = new encJsonEntry();
+                ntry.level = lev;
+                ntry.value = "" + cur;
+                if (cur.length() > 0) {
+                    data.add(ntry);
+                }
+                cur = "";
+                lev--;
+                continue;
+            }
+            if (a.equals("[")) {
+                encJsonEntry ntry = new encJsonEntry();
+                ntry.level = lev;
+                ntry.value = "" + cur;
+                if (cur.length() > 0) {
+                    data.add(ntry);
+                }
+                cur = "";
+                lev++;
+                continue;
+            }
+            if (a.equals("]")) {
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
                 ntry.value = "" + cur;
@@ -183,6 +221,39 @@ public class encJson {
             l.add("" + data.get(i));
         }
         return l;
+    }
+
+    /**
+     * find value
+     *
+     * @param s string
+     * @return index, -1 if not found
+     */
+    public int findValue(String s) {
+        for (int i = 0; i < data.size(); i++) {
+            encJsonEntry ntry = data.get(i);
+            if (!s.equals(ntry.value)) {
+                continue;
+            }
+            return i;
+        }
+        return -1;
+    }
+
+    /**
+     * get value
+     *
+     * @param i index to read
+     * @return value, null if not found
+     */
+    public String getValue(int i) {
+        if (i < 0) {
+            return null;
+        }
+        if (i >= data.size()) {
+            return null;
+        }
+        return data.get(i).value;
     }
 
     /**
