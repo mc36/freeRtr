@@ -4944,6 +4944,30 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 2000);
             return;
         }
+        if (a.equals("validof")) {
+            int asn = bits.str2num(cmd.word());
+            tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            if (rp == null) {
+                return;
+            }
+            tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
+            for (int i = 0; i < tab.size(); i++) {
+                tabRouteEntry<addrIP> ntry = tab.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.asPathEnd() != asn) {
+                    continue;
+                }
+                ntry = ntry.copyBytes(tabRoute.addType.better);
+                tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
+                int o = tabRoautUtil.calcValidityValue(ntry.best, ra);
+                tabRoautUtil.setValidityFixed(ntry, o);
+                res.add(tabRoute.addType.better, ntry, false, false);
+            }
+            doShowRoutes(r.bgp.fwdCore, res, 4);
+            return;
+        }
         if (a.equals("validtest")) {
             tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
             if (rp == null) {
