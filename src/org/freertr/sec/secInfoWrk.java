@@ -17,6 +17,7 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.serv.servHttp;
 import org.freertr.tab.tabRoautNtry;
+import org.freertr.tab.tabRoautUtil;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrplc;
 import org.freertr.user.userFormat;
@@ -156,6 +157,11 @@ public class secInfoWrk implements Runnable {
      * roa entry found
      */
     protected tabRoautNtry roan = null;
+
+    /**
+     * roa result got
+     */
+    protected int roav = 0;
 
     /**
      * pmtud result
@@ -380,6 +386,7 @@ public class secInfoWrk implements Runnable {
             }
             vldIp = vldCfg.getRouter();
             roan = secInfoUtl.findOneValid(ntry, vldIp, fwd);
+            roav = tabRoautUtil.calcValidityValue(ntry.best, roan);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }

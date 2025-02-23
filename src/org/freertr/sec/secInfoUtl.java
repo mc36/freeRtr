@@ -71,6 +71,14 @@ public class secInfoUtl {
         return ntry;
     }
 
+    /**
+     * find one route
+     *
+     * @param pfx prefix to look up
+     * @param rtr router to use
+     * @param fwd forwarder to use
+     * @return route entry, null if nothing
+     */
     public final static tabRoautNtry findOneValid(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
         if (pfx == null) {
             return null;
@@ -464,8 +472,12 @@ public class secInfoUtl {
         if (wrk.ntry == null) {
             return bits.str2lst(s + " " + noRoute);
         }
+        s += " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix);
+        if (wrk.vldIp != null) {
+            s += " rpki=" + tabRoautUtil.validity2string(wrk.roav);
+        }
         List<String> res = new ArrayList<String>();
-        res.add(s + " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix));
+        res.add(s);
         res.add("pth=" + wrk.ntry.best.asPathStr());
         res.add("inf=" + wrk.ntry.best.asInfoStr());
         res.add("nam=" + wrk.ntry.best.asNameStr());
@@ -640,6 +652,12 @@ public class secInfoUtl {
         cfgRtr.getRouterList(lst, tab, "");
         lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "router6                      lookup addresses");
+        cfgRtr.getRouterList(lst, tab, "");
+        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "valid4                       validate prefixes");
+        cfgRtr.getRouterList(lst, tab, "");
+        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
+        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "valid6                       validate prefixes");
         cfgRtr.getRouterList(lst, tab, "");
         lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "vrf                          vrf to use");
