@@ -216,10 +216,8 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             }
             table4.clear();
             table6.clear();
-            logger.error("neighbor " + peer + " down");
             pipe.setClose();
-            pipe = null;
-            return;
+            break;
         }
         lower.compute.wakeup();
         long last = bits.getTime();
@@ -239,19 +237,19 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 pck.sendPack();
                 last = tim;
             }
+            if (pipe.ready2rx() < 1) {
+                continue;
+            }
             int cntr = 0;
             for (;;) {
-                if (pipe.ready2rx() < 1) {
-                    break;
-                }
                 int i = doOneClntRnd(pck);
                 if (i == 0) {
                     continue;
                 }
-                cntr++;
                 if (i != 1) {
                     break;
                 }
+                cntr++;
             }
             if (cntr < 1) {
                 continue;

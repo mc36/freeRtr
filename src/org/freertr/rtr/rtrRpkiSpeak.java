@@ -1,5 +1,6 @@
 package org.freertr.rtr;
 
+import java.io.File;
 import java.util.List;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -410,6 +411,25 @@ public class rtrRpkiSpeak {
     }
 
     /**
+     * get json file sequence number
+     *
+     * @param fn file to send
+     * @return sequence number or 0 if nothing
+     */
+    public final static int getJsonSeq(String fn) {
+        if (fn == null) {
+            return 0;
+        }
+        try {
+            long res = new File(fn).lastModified();
+            res = (res >>> 32) ^ res;
+            return (int) res;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    /**
      * do one server round
      *
      * @param seq sequence to use
@@ -424,7 +444,7 @@ public class rtrRpkiSpeak {
         if (recvPack()) {
             return true;
         }
-        int csq = getRpkiSeq(rtr) + seq;
+        int csq = getJsonSeq(jsn) + getRpkiSeq(rtr) + seq;
         switch (typ) {
             case rtrRpkiSpeak.msgSerialQuery:
                 if (serial != csq) {
