@@ -23,7 +23,7 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define MPLS_TABLE_SIZE                66560
+#define MPLS_TABLE_SIZE                65000
 
 #define POLKA_TABLE_SIZE               4160
 

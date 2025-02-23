@@ -283,6 +283,13 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             return 1;
         }
         if (ntry != null) {
+            if (pck.roa.max > ntry.max) {
+                ntry.max = pck.roa.max;
+            }
+            int i = ntry.asns.indexOf(pck.roa.distan);
+            if (i >= 0) {
+                return 0;
+            }
             ntry.asns.add(pck.roa.distan);
             return 1;
         }
