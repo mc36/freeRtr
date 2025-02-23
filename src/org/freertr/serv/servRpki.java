@@ -43,8 +43,8 @@ public class servRpki extends servGeneric implements prtServS {
     public final static String[] defaultL = {
         "server rpki .*!" + cmds.tabulator + "port " + rtrRpkiSpeak.portNum,
         "server rpki .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server rpki .*!" + cmds.tabulator + "json",
-        "server rpki .*!" + cmds.tabulator + "rpki"
+        "server rpki .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "json",
+        "server rpki .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rpki"
     };
 
     /**
