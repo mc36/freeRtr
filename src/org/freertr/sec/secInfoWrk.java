@@ -16,6 +16,7 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.serv.servHttp;
+import org.freertr.tab.tabRoautNtry;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrplc;
 import org.freertr.user.userFormat;
@@ -107,6 +108,11 @@ public class secInfoWrk implements Runnable {
     protected boolean single;
 
     /**
+     * add address summary
+     */
+    protected boolean client;
+
+    /**
      * separate summary sections
      */
     protected boolean separate;
@@ -127,6 +133,16 @@ public class secInfoWrk implements Runnable {
     protected ipRtr rtrIp = null;
 
     /**
+     * valid selected
+     */
+    protected cfgRtr vldCfg = null;
+
+    /**
+     * valid selected
+     */
+    protected ipRtr vldIp = null;
+
+    /**
      * forwarder selected
      */
     protected ipFwd fwd = null;
@@ -135,6 +151,11 @@ public class secInfoWrk implements Runnable {
      * route entry found
      */
     protected tabRouteEntry<addrIP> ntry = null;
+
+    /**
+     * roa entry found
+     */
+    protected tabRoautNtry roan = null;
 
     /**
      * pmtud result
@@ -163,6 +184,7 @@ public class secInfoWrk implements Runnable {
         format = ned.format;
         detail = ned.details;
         single = ned.single;
+        client = ned.client;
         separate = ned.separate;
         othrs = ned.others;
         changeWorkAddr(cls.remote);
@@ -349,6 +371,15 @@ public class secInfoWrk implements Runnable {
                 fwd = rtrCfg.fwd;
             }
             ntry = secInfoUtl.findOneRoute(addr, rtrIp, fwd);
+            if (ntry == null) {
+                return;
+            }
+            vldCfg = secInfoUtl.findOneRtr(addr, config.valid4typ, config.valid6typ, config.valid4num, config.valid6num);
+            if (vldCfg == null) {
+                return;
+            }
+            vldIp = vldCfg.getRouter();
+            roan = secInfoUtl.findOneValid(ntry, vldIp, fwd);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }

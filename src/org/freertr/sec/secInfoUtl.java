@@ -18,11 +18,14 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipRtr;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
+import org.freertr.rtr.rtrRpki;
+import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRateLimit;
+import org.freertr.tab.tabRoautNtry;
+import org.freertr.tab.tabRoautUtil;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
-import org.freertr.tab.tabRouteUtil;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
@@ -65,6 +68,27 @@ public class secInfoUtl {
             return null;
         }
         ntry = ntry.copyBytes(tabRoute.addType.alters);
+        return ntry;
+    }
+
+    public final static tabRoautNtry findOneValid(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
+        if (pfx == null) {
+            return null;
+        }
+        if (fwd == null) {
+            return null;
+        }
+        if (rtr == null) {
+            return null;
+        }
+        rtrRpki rpki = (rtrRpki) rtr;
+        tabGen<tabRoautNtry> tab = rpki.getFinalTab(fwd.ipVersion);
+        tabRoautNtry ntry = tabRoautUtil.lookup(tab, pfx.prefix);
+        if (ntry == null) {
+            logger.warn("no validity " + rtr + " " + pfx.prefix);
+            return null;
+        }
+        ntry = ntry.copyBytes();
         return ntry;
     }
 
@@ -221,6 +245,11 @@ public class secInfoUtl {
             doSanityChecks(cfg);
             return cfg;
         }
+        if (s.equals("client")) {
+            cfg.client = !negated;
+            doSanityChecks(cfg);
+            return cfg;
+        }
         if (s.equals("separate")) {
             cfg.separate = !negated;
             doSanityChecks(cfg);
@@ -288,20 +317,40 @@ public class secInfoUtl {
             doSanityChecks(cfg);
             return cfg;
         }
-        if (s.equals("rd")) {
+        if (s.equals("valid4")) {
             if (negated) {
-                cfg.rd = 0;
+                cfg.valid4typ = null;
+                cfg.valid4num = 0;
                 doSanityChecks(cfg);
                 return cfg;
             }
-            s = cmd.word();
-            cfg.rd = tabRouteUtil.string2rd(s);
+            cfg.valid4typ = cfgRtr.name2num(cmd.word());
+            cfg.valid4num = bits.str2num(cmd.word());
+            if (ipRtr.isRPKI(cfg.valid4typ) < 0) {
+                cfg.valid4typ = null;
+                cfg.valid4num = 0;
+            }
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("valid6")) {
+            if (negated) {
+                cfg.valid6typ = null;
+                cfg.valid6num = 0;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfg.valid6typ = cfgRtr.name2num(cmd.word());
+            cfg.valid6num = bits.str2num(cmd.word());
+            if (ipRtr.isRPKI(cfg.valid6typ) < 0) {
+                cfg.valid6typ = null;
+                cfg.valid6num = 0;
+            }
             doSanityChecks(cfg);
             return cfg;
         }
         if (s.equals("vrf")) {
             if (negated) {
-                cfg.rd = 0;
                 doSanityChecks(cfg);
                 return cfg;
             }
@@ -313,8 +362,6 @@ public class secInfoUtl {
             }
             cfg.fwder4 = ntry.fwd4;
             cfg.fwder6 = ntry.fwd6;
-            cfg.rd = cfg.fwder4.rd;
-            cfg.rd = cfg.fwder6.rd;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -398,7 +445,10 @@ public class secInfoUtl {
      * @return one liner of the route
      */
     public final static List<String> getRoute1liner(secInfoWrk wrk) {
-        String s = wrk.addr + " prt=" + wrk.proto;
+        String s = "";
+        if (wrk.client) {
+            s += wrk.addr;
+        }
         if (wrk.pmtuD != null) {
             s += " pmtu=" + wrk.pmtuD;
         }
@@ -415,7 +465,7 @@ public class secInfoUtl {
             return bits.str2lst(s + " " + noRoute);
         }
         List<String> res = new ArrayList<String>();
-        res.add(s + " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix) + " rd=" + tabRouteUtil.rd2string(wrk.ntry.rouDst));
+        res.add(s + " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix));
         res.add("pth=" + wrk.ntry.best.asPathStr());
         res.add("inf=" + wrk.ntry.best.asInfoStr());
         res.add("nam=" + wrk.ntry.best.asNameStr());
@@ -509,11 +559,20 @@ public class secInfoUtl {
         if (cfg.router6typ != null) {
             lst.add(beg + "router6 " + cfgRtr.num2name(cfg.router6typ) + " " + cfg.router6num);
         }
+        if (cfg.valid4typ != null) {
+            lst.add(beg + "valid4 " + cfgRtr.num2name(cfg.valid4typ) + " " + cfg.valid4num);
+        }
+        if (cfg.valid6typ != null) {
+            lst.add(beg + "valid6 " + cfgRtr.num2name(cfg.valid6typ) + " " + cfg.valid6num);
+        }
         if (cfg.details) {
             lst.add(beg + "details");
         }
         if (cfg.single) {
             lst.add(beg + "single");
+        }
+        if (cfg.client) {
+            lst.add(beg + "client");
         }
         if (cfg.separate) {
             lst.add(beg + "separate");
@@ -554,9 +613,6 @@ public class secInfoUtl {
         if (cfg.format != userFormat.tableMode.normal) {
             lst.add(beg + "format " + userFormat.tabmod2str(cfg.format));
         }
-        if (cfg.rd != 0) {
-            lst.add(beg + "rd " + tabRouteUtil.rd2string(cfg.rd));
-        }
         if (cfg.script != null) {
             lst.add(beg + "script " + cfg.script.name);
         }
@@ -586,8 +642,6 @@ public class secInfoUtl {
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "router6                      lookup addresses");
         cfgRtr.getRouterList(lst, tab, "");
         lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "rd                           rd to use");
-        lst.add(null, (tab + 2) + " .    <rd>                       rd in ASnum:IDnum format");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "vrf                          vrf to use");
         lst.add(null, (tab + 2) + " .    <name:vrf>                 name of table");
         lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "script                       script to execute");
@@ -622,6 +676,7 @@ public class secInfoUtl {
         lst.add(null, (tab + 4) + " .    <num>                    timeout per round");
         lst.add(null, (tab + 1) + " .  " + beg + "details                      print prefix details");
         lst.add(null, (tab + 1) + " .  " + beg + "single                       print prefix summary");
+        lst.add(null, (tab + 1) + " .  " + beg + "client                       print client summary");
         lst.add(null, (tab + 1) + " .  " + beg + "separate                     separate summary sections");
         lst.add(null, (tab + 1) + " .  " + beg + "hacked                       hackerize prefix details");
         lst.add(null, (tab + 1) + " .  " + beg + "plain                        plain prefix details");
@@ -676,8 +731,12 @@ public class secInfoUtl {
             cfg.fwder6 = null;
             chg++;
         }
-        if ((cfg.router4typ != null) || (cfg.router6typ != null)) {
-            cfg.rd = 0;
+        if (cfg.valid4typ == null) {
+            cfg.valid4num = 0;
+            chg++;
+        }
+        if (cfg.valid6typ == null) {
+            cfg.valid6num = 0;
             chg++;
         }
         if (cfg.style != null) {
@@ -765,6 +824,14 @@ public class secInfoUtl {
         }
         if (a.equals("unsingle")) {
             wrk.single = false;
+            return false;
+        }
+        if (a.equals("client")) {
+            wrk.client = true;
+            return false;
+        }
+        if (a.equals("unclient")) {
+            wrk.client = false;
             return false;
         }
         if (a.equals("separate")) {

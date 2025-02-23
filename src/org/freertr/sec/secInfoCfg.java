@@ -90,6 +90,26 @@ public class secInfoCfg {
     /**
      * resolve ipv4 prefixes
      */
+    public tabRouteAttr.routeType valid4typ;
+
+    /**
+     * resolve ipv6 prefixes
+     */
+    public tabRouteAttr.routeType valid6typ;
+
+    /**
+     * resolve ipv4 prefixes
+     */
+    public int valid4num;
+
+    /**
+     * resolve ipv6 prefixes
+     */
+    public int valid6num;
+    
+    /**
+     * resolve ipv4 prefixes
+     */
     public int router4num;
 
     /**
@@ -108,11 +128,6 @@ public class secInfoCfg {
     public ipFwd fwder6;
 
     /**
-     * use route rd
-     */
-    public long rd;
-
-    /**
      * add route details
      */
     public boolean details;
@@ -121,6 +136,11 @@ public class secInfoCfg {
      * add route summary
      */
     public boolean single;
+
+    /**
+     * add address summary
+     */
+    public boolean client;
 
     /**
      * add crlf to summary
