@@ -196,8 +196,7 @@ public class servRpki extends servGeneric implements prtServS {
         l.add(null, "1 2  prefix                       setup a prefix");
         l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
         l.add(null, "3 4      <num>                    maximum prefix length");
-        l.add(null, "4 5,.      <num>                  as number");
-        l.add(null, "5 .          [num]                preference");
+        l.add(null, "4 4,.      <num>                  as number");
         l.add(null, "1 2   json                        setup a json file");
         l.add(null, "2 .     <str>                     name of file to use");
         l.add(null, "1 2   rpki                        setup resource public key infrastructure");

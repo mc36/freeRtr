@@ -4918,7 +4918,7 @@ public class userShow {
                 ntry = ntry.copyBytes(tabRoute.addType.better);
                 tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
                 int o = tabRoautUtil.calcValidityValue(ntry.best, ra);
-                tabRoautUtil.setValidityRoute(ntry, rp, o);
+                tabRoautUtil.setValidityFixed(ntry, o);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);

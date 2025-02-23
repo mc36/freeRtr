@@ -1,5 +1,7 @@
 package org.freertr.tab;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
@@ -35,7 +37,7 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
     /**
      * allowed asn
      */
-    public int asn;
+    public List<Integer> asns;
 
     /**
      * preference
@@ -84,7 +86,7 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
         tabRoautNtry n = new tabRoautNtry();
         n.prefix = prefix.copyBytes();
         n.max = max;
-        n.asn = asn;
+        n.asns = tabLabel.copyLabels(asns);
         n.distan = distan;
         n.srcIP = srcIP.copyBytes();
         n.srcRtr = srcRtr;
@@ -103,8 +105,9 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
         userFormat res = new userFormat("|", "category|value");
         res.add("prefix|" + addrPrefix.ip2str(prefix));
         res.add("maximum length|" + max);
-        res.add("as number|" + asn);
-        res.add("as name|" + clntWhois.asn2name(asn, true));
+        for (int i = 0; i < asns.size(); i++) {
+            res.add("as number|" + clntWhois.asn2mixed(asns.get(i), true));
+        }
         res.add("preference|" + distan);
         res.add("source|" + srcIP);
         res.add("type|" + srcRtr + " " + srcNum);
@@ -121,16 +124,21 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      */
     public int differs(tabRoautNtry o) {
         if (o == null) {
-            return 1001;
+            return 1;
         }
         if (max != o.max) {
-            return 1;
+            return 2;
         }
-        if (asn != o.asn) {
-            return 1;
+        if (asns.size() != o.asns.size()) {
+            return 3;
         }
         if (o.compareTo(this) != 0) {
-            return 2;
+            return 4;
+        }
+        for (int i = 0; i < asns.get(i); i++) {
+            if (asns.get(i) != o.asns.get(i)) {
+                return 5;
+            }
         }
         return 0;
     }
@@ -167,11 +175,15 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
             return true;
         }
         max = bits.str2num(cmd.word());
-        asn = bits.str2num(cmd.word());
-        distan = bits.str2num(cmd.word());
-        if (distan < 1) {
-            distan = 100;
+        asns = new ArrayList<Integer>();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            asns.add(bits.str2num(a));
         }
+        distan = 100;
         srcIP = new addrIP();
         srcRtr = tabRouteAttr.routeType.staticRoute;
         return false;
@@ -184,20 +196,20 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      * @return true on error, false on success
      */
     public boolean fromJson(encJson jsn) {
-        max = jsn.findValue("maxLength");
-        if (max < 0) {
+        int i = jsn.findValue("maxLength");
+        if (i < 0) {
             return true;
         }
-        String a = jsn.getValue(max + 1);
+        String a = jsn.getValue(i + 1);
         if (a == null) {
             return true;
         }
         max = bits.str2num(a);
-        asn = jsn.findValue("prefix");
-        if (asn < 0) {
+        i = jsn.findValue("prefix");
+        if (i < 0) {
             return true;
         }
-        a = jsn.getValue(asn + 1);
+        a = jsn.getValue(i + 1);
         if (a == null) {
             return true;
         }
@@ -205,16 +217,15 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
         if (prefix == null) {
             return true;
         }
-        asn = jsn.findValue("asn");
-        if (asn < 0) {
+        i = jsn.findValue("asn");
+        if (i < 0) {
             return true;
         }
-        a = jsn.getValue(asn + 1);
+        a = jsn.getValue(i + 1);
         if (a == null) {
             return true;
         }
-        asn = bits.str2num(a);
-        distan = 100;
+        distan = bits.str2num(a);
         srcIP = new addrIP();
         srcRtr = tabRouteAttr.routeType.staticRoute;
         return false;
@@ -227,10 +238,10 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      */
     public String toConfig() {
         String a = "";
-        if (distan != 100) {
-            a = " " + distan;
+        for (int i = 0; i < asns.size(); i++) {
+            a += " " + asns.get(i);
         }
-        return addrPrefix.ip2str(prefix) + " " + max + " " + asn + a;
+        return addrPrefix.ip2str(prefix) + " " + max + a;
     }
 
     /**
@@ -239,7 +250,12 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      * @return converted
      */
     public String toShRoute() {
-        return addrPrefix.ip2str(prefix) + "|" + max + "|" + bits.num2str(asn) + "|" + clntWhois.asn2name(asn, true) + "|" + bits.timePast(time);
+        String a = "";
+        for (int i = 0; i < asns.size(); i++) {
+            a += " " + clntWhois.asn2mixed(asns.get(i), true);
+        }
+        a = a.trim();
+        return addrPrefix.ip2str(prefix) + "|" + max + "|" + a + "|" + bits.timePast(time);
     }
 
 }

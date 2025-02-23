@@ -1,5 +1,6 @@
 package org.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgIfc;
@@ -265,20 +266,35 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
     }
 
     private int processOneRoa(rtrRpkiSpeak pck, tabGen<tabRoautNtry> table) {
-        tabRoautNtry ntry = pck.roa;
+        tabRoautNtry ntry = table.find(pck.roa);
+        if (pck.withdraw) {
+            if (ntry == null) {
+                return 0;
+            }
+            int i = ntry.asns.indexOf(pck.roa.distan);
+            if (i < 0) {
+                return 0;
+            }
+            ntry.asns.remove(i);
+            if (ntry.asns.size() > 0) {
+                return 1;
+            }
+            table.del(ntry);
+            return 1;
+        }
+        if (ntry != null) {
+            ntry.asns.add(pck.roa.distan);
+            return 1;
+        }
+        ntry = pck.roa;
+        ntry.asns = new ArrayList<Integer>();
+        ntry.asns.add(pck.roa.distan);
+        ntry.time = bits.getTime();
         ntry.distan = preference;
         ntry.srcRtr = lower.rouTyp;
         ntry.srcNum = lower.rtrNum;
         ntry.srcIP = peer.copyBytes();
-        if (!pck.withdraw) {
-            ntry.time = bits.getTime();
-            table.put(ntry);
-            return 1;
-        }
-        tabRoautNtry old = table.del(ntry);
-        if (old == null) {
-            return 0;
-        }
+        table.put(ntry);
         return 1;
     }
 
@@ -286,6 +302,9 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         if (pck.recvPack()) {
             pipe.setClose();
             return -1;
+        }
+        if (debugger.rtrRpkiTraf) {
+            logger.debug("rx " + pck.dump());
         }
         switch (pck.typ) {
             case rtrRpkiSpeak.msgIpv4addr:
@@ -304,7 +323,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 session = pck.sess;
                 serial = pck.serial;
                 if (debugger.rtrRpkiEvnt) {
-                    logger.info("neighbor " + peer + " done " + table4.size() + " " + table6.size());
+                    logger.debug("neighbor " + peer + " done " + table4.size() + " " + table6.size());
                 }
                 return 3;
             default:

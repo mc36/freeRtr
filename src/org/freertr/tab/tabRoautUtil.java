@@ -176,7 +176,7 @@ public class tabRoautUtil {
     public final static userFormat convertTableHead(int typ) {
         switch (typ) {
             case 1:
-                return new userFormat("|", "prefix|max|asnum|asnam|ago");
+                return new userFormat("|", "prefix|max|ases|ago");
             default:
                 return null;
         }
@@ -229,9 +229,9 @@ public class tabRoautUtil {
     public final static String validity2string(int i) {
         switch (i) {
             case 0:
-                return "unset";
+                return "nothing";
             case 1:
-                return "valid";
+                return "correct";
             case 2:
                 return "unknown";
             case 3:
@@ -247,7 +247,7 @@ public class tabRoautUtil {
      * @param ntry entry to update
      * @param val result code
      */
-    protected static void setValidityFixed(tabRouteEntry<addrIP> ntry, int val) {
+    public static void setValidityFixed(tabRouteEntry<addrIP> ntry, int val) {
         for (int i = 0; i < ntry.alts.size(); i++) {
             setValidityFixed(ntry.alts.get(i), val);
         }
@@ -278,7 +278,7 @@ public class tabRoautUtil {
             return 2;
         }
         int asn = attr.asPathEnd();
-        if (asn != res.asn) {
+        if (res.asns.indexOf(asn) < 0) {
             return 3;
         }
         return 1;

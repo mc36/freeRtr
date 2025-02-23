@@ -219,7 +219,7 @@ public class rtrRpkiSpeak {
                 pck.getAddr(adr4, 4); // address
                 addrPrefix<addrIPv4> pref4 = new addrPrefix<addrIPv4>(adr4, pck.getByte(1));
                 roa.prefix = addrPrefix.ip4toIP(pref4);
-                roa.asn = pck.msbGetD(8); // as
+                roa.distan = pck.msbGetD(8); // as
                 break;
             case msgIpv6addr:
                 roa = new tabRoautNtry();
@@ -229,7 +229,7 @@ public class rtrRpkiSpeak {
                 pck.getAddr(adr6, 4); // address
                 addrPrefix<addrIPv6> pref6 = new addrPrefix<addrIPv6>(adr6, pck.getByte(1));
                 roa.prefix = addrPrefix.ip6toIP(pref6);
-                roa.asn = pck.msbGetD(20); // as
+                roa.distan = pck.msbGetD(20); // as
                 break;
             case msgEndData:
                 serial = pck.msbGetD(0); // serial
@@ -278,7 +278,7 @@ public class rtrRpkiSpeak {
                 pck.putByte(2, roa.max); // max
                 pck.putByte(3, 0); // reserved
                 pck.putAddr(4, pref4.network); // address
-                pck.msbPutD(8, roa.asn); // as
+                pck.msbPutD(8, roa.distan); // as
                 pck.putSkip(12);
                 break;
             case msgIpv6addr:
@@ -292,7 +292,7 @@ public class rtrRpkiSpeak {
                 pck.putByte(2, roa.max); // max
                 pck.putByte(3, 0); // reserved
                 pck.putAddr(4, pref6.network); // address
-                pck.msbPutD(20, roa.asn); // as
+                pck.msbPutD(20, roa.distan); // as
                 pck.putSkip(24);
                 break;
             case msgEndData:
@@ -333,18 +333,21 @@ public class rtrRpkiSpeak {
             return;
         }
         if (debugger.rtrRpkiEvnt) {
-            logger.info("sending " + tab.size());
+            logger.debug("sending " + tab.size());
         }
         for (int i = 0; i < tab.size(); i++) {
             tabRoautNtry ntry = tab.get(i);
             if (ntry == null) {
                 continue;
             }
-            typ = tp;
-            roa = ntry;
-            sendPack();
             if (debugger.servRpkiTraf) {
                 logger.debug("tx " + dump());
+            }
+            roa = ntry.copyBytes();
+            typ = tp;
+            for (int o = 0; o < roa.asns.size(); o++) {
+                roa.distan = roa.asns.get(o);
+                sendPack();
             }
         }
     }
@@ -375,26 +378,27 @@ public class rtrRpkiSpeak {
         if (txt == null) {
             return;
         }
-        tabGen<tabRoautNtry> tab4 = new tabGen<tabRoautNtry>();
-        tabGen<tabRoautNtry> tab6 = new tabGen<tabRoautNtry>();
+        if (debugger.rtrRpkiEvnt) {
+            logger.debug("sending " + txt.size());
+        }
         encJson j = new encJson();
+        roa = new tabRoautNtry();
         for (int i = 0; i < txt.size(); i++) {
-            fn = txt.get(i);
-            txt.set(i, null);
             j.clear();
-            j.fromString(fn);
-            tabRoautNtry ntry = new tabRoautNtry();
-            if (ntry.fromJson(j)) {
+            j.fromString(txt.get(i));
+            if (roa.fromJson(j)) {
                 continue;
             }
-            if (ntry.prefix.network.isIPv4()) {
-                tab4.put(ntry);
-            } else {
-                tab6.put(ntry);
+            if (debugger.servRpkiTraf) {
+                logger.debug("tx " + dump());
             }
+            if (roa.prefix.network.isIPv4()) {
+                typ = rtrRpkiSpeak.msgIpv4addr;
+            } else {
+                typ = rtrRpkiSpeak.msgIpv6addr;
+            }
+            sendPack();
         }
-        sendOneTable(rtrRpkiSpeak.msgIpv4addr, tab4);
-        sendOneTable(rtrRpkiSpeak.msgIpv6addr, tab6);
     }
 
     /**
@@ -443,6 +447,9 @@ public class rtrRpkiSpeak {
     public boolean doOneServRnd(int seq, int ses, tabGen<tabRoautNtry> tab4, tabGen<tabRoautNtry> tab6, rtrRpki rtr, String jsn) {
         if (recvPack()) {
             return true;
+        }
+        if (debugger.rtrRpkiTraf) {
+            logger.debug("rx " + dump());
         }
         int csq = getJsonSeq(jsn) + getRpkiSeq(rtr) + seq;
         switch (typ) {
