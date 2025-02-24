@@ -1,6 +1,7 @@
 package org.freertr.tab;
 
 import org.freertr.addr.addrIP;
+import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.user.userFormat;
@@ -150,9 +151,6 @@ public class tabRoautUtil {
             if (old == null) {
                 continue;
             }
-            if (pfx.maskLen - end > old.max) {
-                return null;
-            }
             old.hits++;
             return old;
         }
@@ -266,7 +264,7 @@ public class tabRoautUtil {
      * @param ntry entry to update
      * @param val result code
      */
-    public static void setValidityFixed(tabRouteEntry<addrIP> ntry, int val) {
+    protected static void setValidityFixed(tabRouteEntry<addrIP> ntry, int val) {
         for (int i = 0; i < ntry.alts.size(); i++) {
             setValidityFixed(ntry.alts.get(i), val);
         }
@@ -288,13 +286,34 @@ public class tabRoautUtil {
     /**
      * set validity
      *
+     * @param ntry entry to update
+     * @param val result code
+     */
+    public static void updateJustValidity(tabRouteEntry<addrIP> ntry, int val) {
+        for (int i = 0; i < ntry.alts.size(); i++) {
+            ntry.alts.get(i).validity = val;
+        }
+        ntry.selectBest();
+    }
+
+    /**
+     * set validity
+     *
+     * @param prfx prefix to check
      * @param attr attribute to set
      * @param res route authorization
      * @return calculated value
      */
-    public final static int calcValidityValue(tabRouteAttr<addrIP> attr, tabRoautNtry res) {
+    public final static int calcValidityValue(addrPrefix<addrIP> prfx, tabRouteAttr<addrIP> attr, tabRoautNtry res) {
         if (res == null) {
             return 2;
+        }
+        int i = prfx.maskLen;
+        if (prfx.network.isIPv4()) {
+            i -= (addrIP.size - addrIPv4.size) * 8;
+        }
+        if (i > res.max) {
+            return 3;
         }
         int asn = attr.asPathEnd();
         if (res.asns.indexOf(asn) < 0) {
@@ -359,7 +378,7 @@ public class tabRoautUtil {
                         res = lookup(roas, ntry.prefix);
                         lok = true;
                     }
-                    o = calcValidityValue(attr, res);
+                    o = calcValidityValue(ntry.prefix, attr, res);
                     setValidityFixed(attr, o);
                     break;
                 case 3:
@@ -372,7 +391,7 @@ public class tabRoautUtil {
                         res = lookup(roas, ntry.prefix);
                         lok = true;
                     }
-                    o = calcValidityValue(attr, res);
+                    o = calcValidityValue(ntry.prefix, attr, res);
                     setValidityFixed(attr, o);
                     break;
                 default:

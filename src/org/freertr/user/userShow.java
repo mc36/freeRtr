@@ -4961,8 +4961,8 @@ public class userShow {
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
                 tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
-                int o = tabRoautUtil.calcValidityValue(ntry.best, ra);
-                tabRoautUtil.setValidityFixed(ntry, o);
+                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                tabRoautUtil.updateJustValidity(ntry, o);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
@@ -4981,8 +4981,8 @@ public class userShow {
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
                 tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
-                int o = tabRoautUtil.calcValidityValue(ntry.best, ra);
-                tabRoautUtil.setValidityFixed(ntry, o);
+                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                tabRoautUtil.updateJustValidity(ntry, o);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
@@ -5000,7 +5000,7 @@ public class userShow {
                     continue;
                 }
                 tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
-                int o = tabRoautUtil.calcValidityValue(ntry.best, ra);
+                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 int p = tabRouteUtil.getValidityExtComm(ntry.best.extComm);
                 if (o == p) {
                     continue;

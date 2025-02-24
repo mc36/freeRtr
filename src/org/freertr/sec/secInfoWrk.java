@@ -386,7 +386,7 @@ public class secInfoWrk implements Runnable {
             }
             vldIp = vldCfg.getRouter();
             roan = secInfoUtl.findOneValid(ntry, vldIp, fwd);
-            roav = tabRoautUtil.calcValidityValue(ntry.best, roan);
+            roav = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, roan);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }
