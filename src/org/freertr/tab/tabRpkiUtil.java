@@ -84,11 +84,30 @@ public class tabRpkiUtil {
      * @param asn asn to find
      * @return matching prefixes
      */
-    public final static tabGen<tabRpkiRoa> allowedAsn(tabGen<tabRpkiRoa> src, int asn) {
+    public final static tabGen<tabRpkiRoa> allowedRoa(tabGen<tabRpkiRoa> src, int asn) {
         tabGen<tabRpkiRoa> res = new tabGen<tabRpkiRoa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiRoa ntry = src.get(i);
             if (ntry.asns.indexOf(asn) < 0) {
+                continue;
+            }
+            res.add(ntry);
+        }
+        return res;
+    }
+
+    /**
+     * filter to an asn
+     *
+     * @param src table to filter
+     * @param asn asn to find
+     * @return matching prefixes
+     */
+    public final static tabGen<tabRpkiAspa> allowedAspa(tabGen<tabRpkiAspa> src, int asn) {
+        tabGen<tabRpkiAspa> res = new tabGen<tabRpkiAspa>();
+        for (int i = 0; i < src.size(); i++) {
+            tabRpkiAspa ntry = src.get(i);
+            if (ntry.provs.indexOf(asn) < 0) {
                 continue;
             }
             res.add(ntry);
@@ -164,7 +183,7 @@ public class tabRpkiUtil {
      * @param nei1 first neighbor
      * @param nei2 second neighbor
      */
-    public final static void diffTwo(tabGen<tabRpkiRoa> uniq, tabGen<tabRpkiRoa> diff, tabGen<tabRpkiRoa> nei1, tabGen<tabRpkiRoa> nei2) {
+    public final static void diffTwoRoa(tabGen<tabRpkiRoa> uniq, tabGen<tabRpkiRoa> diff, tabGen<tabRpkiRoa> nei1, tabGen<tabRpkiRoa> nei2) {
         for (int o = 0; o < nei1.size(); o++) {
             tabRpkiRoa prf1 = nei1.get(o);
             if (prf1 == null) {
@@ -172,6 +191,34 @@ public class tabRpkiUtil {
             }
             prf1 = prf1.copyBytes();
             tabRpkiRoa prf2 = nei2.find(prf1);
+            if (prf2 == null) {
+                uniq.add(prf1);
+                continue;
+            }
+            prf2 = prf2.copyBytes();
+            if (prf1.differs(prf2) == 0) {
+                continue;
+            }
+            diff.add(prf1);
+        }
+    }
+
+    /**
+     * check if two tables are identical
+     *
+     * @param uniq unique to first neighbor
+     * @param diff attributes differ
+     * @param nei1 first neighbor
+     * @param nei2 second neighbor
+     */
+    public final static void diffTwoAspa(tabGen<tabRpkiAspa> uniq, tabGen<tabRpkiAspa> diff, tabGen<tabRpkiAspa> nei1, tabGen<tabRpkiAspa> nei2) {
+        for (int o = 0; o < nei1.size(); o++) {
+            tabRpkiAspa prf1 = nei1.get(o);
+            if (prf1 == null) {
+                continue;
+            }
+            prf1 = prf1.copyBytes();
+            tabRpkiAspa prf2 = nei2.find(prf1);
             if (prf2 == null) {
                 uniq.add(prf1);
                 continue;

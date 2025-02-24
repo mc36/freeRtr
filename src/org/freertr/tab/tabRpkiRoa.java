@@ -135,7 +135,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
         if (o.compareTo(this) != 0) {
             return 4;
         }
-        for (int i = 0; i < asns.get(i); i++) {
+        for (int i = 0; i < asns.size(); i++) {
             if (asns.get(i) != o.asns.get(i)) {
                 return 5;
             }

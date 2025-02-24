@@ -3822,14 +3822,32 @@ public class userShow {
             cmd.error("no such neighbor");
             return;
         }
+        if (ver < 0) {
+            tabGen<tabRpkiAspa> tab1 = nei1.getFinalTabAspa();
+            tabGen<tabRpkiAspa> tab2 = nei2.getFinalTabAspa();
+            tabGen<tabRpkiAspa> uni1 = new tabGen<tabRpkiAspa>();
+            tabGen<tabRpkiAspa> uni2 = new tabGen<tabRpkiAspa>();
+            tabGen<tabRpkiAspa> dif1 = new tabGen<tabRpkiAspa>();
+            tabGen<tabRpkiAspa> dif2 = new tabGen<tabRpkiAspa>();
+            tabRpkiUtil.diffTwoAspa(uni1, dif1, tab1, tab2);
+            tabRpkiUtil.diffTwoAspa(uni2, dif2, tab2, tab1);
+            cmd.error("unique to " + nei1);
+            doShowAspas(uni1, 1);
+            cmd.error("unique to " + nei2);
+            doShowAspas(uni2, 1);
+            cmd.error("attribute differs");
+            doShowAspas(dif1, 1);
+            doShowAspas(dif2, 1);
+            return;
+        }
         tabGen<tabRpkiRoa> tab1 = nei1.getFinalTabRoa(ver);
         tabGen<tabRpkiRoa> tab2 = nei2.getFinalTabRoa(ver);
         tabGen<tabRpkiRoa> uni1 = new tabGen<tabRpkiRoa>();
         tabGen<tabRpkiRoa> uni2 = new tabGen<tabRpkiRoa>();
         tabGen<tabRpkiRoa> dif1 = new tabGen<tabRpkiRoa>();
         tabGen<tabRpkiRoa> dif2 = new tabGen<tabRpkiRoa>();
-        tabRpkiUtil.diffTwo(uni1, dif1, tab1, tab2);
-        tabRpkiUtil.diffTwo(uni2, dif2, tab2, tab1);
+        tabRpkiUtil.diffTwoRoa(uni1, dif1, tab1, tab2);
+        tabRpkiUtil.diffTwoRoa(uni2, dif2, tab2, tab1);
         cmd.error("unique to " + nei1);
         doShowRoas(uni1, 1);
         cmd.error("unique to " + nei2);
@@ -3874,20 +3892,26 @@ public class userShow {
             doShowRoas(r.rpki.getFinalTabRoa(6), 1);
             return;
         }
-        if (a.equals("databasea")) {
+        if (a.equals("databasep")) {
             doShowAspas(r.rpki.getFinalTabAspa(), 1);
             return;
         }
         if (a.equals("prefixes4")) {
             tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(4);
-            tab = tabRpkiUtil.allowedAsn(tab, bits.str2num(cmd.word()));
+            tab = tabRpkiUtil.allowedRoa(tab, bits.str2num(cmd.word()));
             doShowRoas(tab, 1);
             return;
         }
         if (a.equals("prefixes6")) {
             tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(6);
-            tab = tabRpkiUtil.allowedAsn(tab, bits.str2num(cmd.word()));
+            tab = tabRpkiUtil.allowedRoa(tab, bits.str2num(cmd.word()));
             doShowRoas(tab, 1);
+            return;
+        }
+        if (a.equals("provider")) {
+            tabGen<tabRpkiAspa> tab = r.rpki.getFinalTabAspa();
+            tab = tabRpkiUtil.allowedAspa(tab, bits.str2num(cmd.word()));
+            doShowAspas(tab, 1);
             return;
         }
         if (a.equals("learned4")) {
@@ -3918,12 +3942,30 @@ public class userShow {
             doShowRoas(nei.getFinalTabRoa(6), 1);
             return;
         }
+        if (a.equals("learnedp")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return;
+            }
+            rtrRpkiNeigh nei = r.rpki.findPeer(adr);
+            if (nei == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            doShowAspas(nei.getFinalTabAspa(), 1);
+            return;
+        }
         if (a.equals("compare4")) {
             doShowIpXrpkiComp(r.rpki, 4);
             return;
         }
         if (a.equals("compare6")) {
             doShowIpXrpkiComp(r.rpki, 6);
+            return;
+        }
+        if (a.equals("comparep")) {
+            doShowIpXrpkiComp(r.rpki, -1);
             return;
         }
         if (a.equals("lookup4")) {
@@ -3951,6 +3993,17 @@ public class userShow {
             tabRpkiRoa ntry = tabRpkiUtil.lookup(tab, pfx);
             if (ntry == null) {
                 cmd.error("no matching roa");
+                return;
+            }
+            rdr.putStrTab(ntry.fullDump());
+            return;
+        }
+        if (a.equals("lookupp")) {
+            tabRpkiAspa ntry = new tabRpkiAspa();
+            ntry.cust = bits.str2num(cmd.word());
+            ntry = r.rpki.getFinalTabAspa().find(ntry);
+            if (ntry == null) {
+                cmd.error("no matching aspa");
                 return;
             }
             rdr.putStrTab(ntry.fullDump());

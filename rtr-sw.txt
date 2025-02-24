@@ -1158,7 +1158,7 @@ client domain-name mchome.nop.hu
 client domain-lookup
 client prefer-ipv6
 client whois-server www.mchome.nop.hu
-client whois-online http://bgp.he.net/AS http://ipinfo.io/AS
+client whois-online http://bgp.he.net/AS http://ipinfo.io/AS http://bgpview.io/asn/
 client pastebin http://paste.nop.hu/paster.class?data=
 client name-server 100.100.3.10
 client time-server www.mchome.nop.hu

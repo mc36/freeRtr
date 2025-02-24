@@ -134,7 +134,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
         if (o.compareTo(this) != 0) {
             return 4;
         }
-        for (int i = 0; i < provs.get(i); i++) {
+        for (int i = 0; i < provs.size(); i++) {
             if (provs.get(i) != o.provs.get(i)) {
                 return 5;
             }
