@@ -83,6 +83,13 @@ public class encJson {
                 continue;
             }
             if (a.equals(":")) {
+                encJsonEntry ntry = new encJsonEntry();
+                ntry.level = lev;
+                ntry.value = "" + cur;
+                if (cur.length() > 0) {
+                    data.add(ntry);
+                }
+                cur = "";
                 continue;
             }
             if (a.equals(",")) {
