@@ -13,7 +13,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.rtr.rtrRpki;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabRoautNtry;
+import org.freertr.tab.tabRpkiRoa;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
@@ -55,12 +55,12 @@ public class servRpki extends servGeneric implements prtServS {
     /**
      * configured ipv4 prefixes
      */
-    public final tabGen<tabRoautNtry> cfged4 = new tabGen<tabRoautNtry>();
+    public final tabGen<tabRpkiRoa> cfged4 = new tabGen<tabRpkiRoa>();
 
     /**
      * configured ipv6 prefixes
      */
-    public final tabGen<tabRoautNtry> cfged6 = new tabGen<tabRoautNtry>();
+    public final tabGen<tabRpkiRoa> cfged6 = new tabGen<tabRpkiRoa>();
 
     /**
      * sequence
@@ -129,7 +129,7 @@ public class servRpki extends servGeneric implements prtServS {
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
         if (s.equals("prefix")) {
-            tabRoautNtry prf = new tabRoautNtry();
+            tabRpkiRoa prf = new tabRpkiRoa();
             if (prf.fromString(cmd)) {
                 cmd.error("bad prefix");
                 return false;
@@ -165,7 +165,7 @@ public class servRpki extends servGeneric implements prtServS {
         }
         s = cmd.word();
         if (s.equals("prefix")) {
-            tabRoautNtry prf = new tabRoautNtry();
+            tabRpkiRoa prf = new tabRpkiRoa();
             if (prf.fromString(cmd)) {
                 cmd.error("bad prefix");
                 return false;

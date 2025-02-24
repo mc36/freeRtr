@@ -17,11 +17,12 @@ import org.freertr.ip.ipRtr;
 import org.freertr.prt.prtTcp;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
-import org.freertr.tab.tabRoautNtry;
-import org.freertr.tab.tabRoautUtil;
+import org.freertr.tab.tabRpkiRoa;
+import org.freertr.tab.tabRpkiUtil;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.tab.tabRpkiAspa;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
@@ -73,14 +74,19 @@ public class rtrRpki extends ipRtr implements Runnable {
     protected tabGen<rtrRpkiWake> wakes = new tabGen<rtrRpkiWake>();
 
     /**
-     * accepted native roas
+     * accepted ipv4 roas
      */
-    private tabGen<tabRoautNtry> computedV4 = new tabGen<tabRoautNtry>();
+    private tabGen<tabRpkiRoa> computed4 = new tabGen<tabRpkiRoa>();
 
     /**
-     * accepted other roas
+     * accepted ipv6 roas
      */
-    private tabGen<tabRoautNtry> computedV6 = new tabGen<tabRoautNtry>();
+    private tabGen<tabRpkiRoa> computed6 = new tabGen<tabRpkiRoa>();
+
+    /**
+     * accepted aspas
+     */
+    private tabGen<tabRpkiAspa> computedA = new tabGen<tabRpkiAspa>();
 
     /**
      * sequence number
@@ -219,22 +225,25 @@ public class rtrRpki extends ipRtr implements Runnable {
     public synchronized void routerCreateComputed() {
         seqNum++;
         seqTim = bits.getTime();
-        tabGen<tabRoautNtry> tab4 = new tabGen<tabRoautNtry>();
-        tabGen<tabRoautNtry> tab6 = new tabGen<tabRoautNtry>();
+        tabGen<tabRpkiRoa> tab4 = new tabGen<tabRpkiRoa>();
+        tabGen<tabRpkiRoa> tab6 = new tabGen<tabRpkiRoa>();
+        tabGen<tabRpkiAspa> tabA = new tabGen<tabRpkiAspa>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
-            tabRoautUtil.mergeTwo(tab4, ntry.table4);
-            tabRoautUtil.mergeTwo(tab6, ntry.table6);
+            tabRpkiUtil.mergeTwo(tab4, ntry.table4);
+            tabRpkiUtil.mergeTwo(tab6, ntry.table6);
         }
-        boolean chg = tabRoautUtil.compareTwo(tab4, computedV4);
-        chg &= tabRoautUtil.compareTwo(tab6, computedV6);
+        boolean chg = tabRpkiUtil.compareTwoRoa(tab4, computed4);
+        chg &= tabRpkiUtil.compareTwoRoa(tab6, computed6);
+        chg &= tabRpkiUtil.compareTwoAspa(tabA, computedA);
         if (chg) {
             return;
         }
         seqNot++;
         seqChg = seqTim;
-        computedV4 = tab4;
-        computedV6 = tab6;
+        computed4 = tab4;
+        computed6 = tab6;
+        computedA = tabA;
         if (debugger.rtrRpkiEvnt) {
             logger.debug("rpki changed");
         }
@@ -452,13 +461,13 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @return list of neighbors
      */
     public userFormat getNeighShow() {
-        userFormat l = new userFormat("|", "address|ipv4|ipv6|uptime");
+        userFormat l = new userFormat("|", "address|ipv4|ipv6|aspa|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + bits.timePast(ntry.upTime));
+            l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + ntry.tableA.size() + "|" + bits.timePast(ntry.upTime));
         }
         return l;
     }
@@ -471,8 +480,9 @@ public class rtrRpki extends ipRtr implements Runnable {
     public userFormat getGenShow() {
         userFormat l = new userFormat("|", "category|value|additional");
         l.add("peers|" + neighs.size());
-        l.add("ipv4 roas|" + computedV4.size());
-        l.add("ipv6 roas|" + computedV6.size());
+        l.add("ipv4 roas|" + computed4.size());
+        l.add("ipv6 roas|" + computed6.size());
+        l.add("aspas|" + computedA.size());
         l.add("sequence event|" + seqNum + "|times");
         l.add("sequence time|" + bits.timePast(seqTim) + "|" + bits.time2str(cfgAll.timeZoneName, seqTim + cfgAll.timeServerOffset, 3));
         l.add("wakeup event|" + seqNot + "|times");
@@ -530,12 +540,21 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @param ipVer ip version
      * @return current table
      */
-    public tabGen<tabRoautNtry> getFinalTab(int ipVer) {
+    public tabGen<tabRpkiRoa> getFinalTabRoa(int ipVer) {
         if (ipVer == ipCor4.protocolVersion) {
-            return computedV4;
+            return computed4;
         } else {
-            return computedV6;
+            return computed6;
         }
+    }
+
+    /**
+     * get final table
+     *
+     * @return current table
+     */
+    public tabGen<tabRpkiAspa> getFinalTabAspa() {
+        return computedA;
     }
 
     /**

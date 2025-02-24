@@ -263,6 +263,23 @@ public class encJson {
         return data.get(i).value;
     }
 
+
+    /**
+     * get value
+     *
+     * @param i index to read
+     * @return value, null if not found
+     */
+    public encJsonEntry getData(int i) {
+        if (i < 0) {
+            return null;
+        }
+        if (i >= data.size()) {
+            return null;
+        }
+        return data.get(i);
+    }
+
     /**
      * get one value
      *

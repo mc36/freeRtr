@@ -58,7 +58,7 @@ import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLnkst;
-import org.freertr.tab.tabRoautNtry;
+import org.freertr.tab.tabRpkiRoa;
 import org.freertr.util.counter;
 import org.freertr.util.syncInt;
 
@@ -442,12 +442,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * rpki table
      */
-    protected tabGen<tabRoautNtry> rpkiA = new tabGen<tabRoautNtry>();
+    protected tabGen<tabRpkiRoa> rpkiA = new tabGen<tabRpkiRoa>();
 
     /**
      * other rpki table
      */
-    protected tabGen<tabRoautNtry> rpkiO = new tabGen<tabRoautNtry>();
+    protected tabGen<tabRpkiRoa> rpkiO = new tabGen<tabRpkiRoa>();
 
     /**
      * the computed other unicast routes
@@ -2258,11 +2258,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
         }
         if (rpkiR != null) {
-            rpkiA = rpkiR.getFinalTab(fwdCore.ipVersion);
-            rpkiO = rpkiR.getFinalTab(other.fwd.ipVersion);
+            rpkiA = rpkiR.getFinalTabRoa(fwdCore.ipVersion);
+            rpkiO = rpkiR.getFinalTabRoa(other.fwd.ipVersion);
         } else {
-            rpkiA = new tabGen<tabRoautNtry>();
-            rpkiO = new tabGen<tabRoautNtry>();
+            rpkiA = new tabGen<tabRpkiRoa>();
+            rpkiO = new tabGen<tabRpkiRoa>();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");

@@ -16,12 +16,12 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class tabRoautNtry implements Comparable<tabRoautNtry> {
+public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
 
     /**
      * create instance
      */
-    public tabRoautNtry() {
+    public tabRpkiRoa() {
     }
 
     /**
@@ -69,7 +69,7 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      */
     public int hits;
 
-    public int compareTo(tabRoautNtry o) {
+    public int compareTo(tabRpkiRoa o) {
         return prefix.compareTo(o.prefix);
     }
 
@@ -82,8 +82,8 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      *
      * @return copy
      */
-    public tabRoautNtry copyBytes() {
-        tabRoautNtry n = new tabRoautNtry();
+    public tabRpkiRoa copyBytes() {
+        tabRpkiRoa n = new tabRpkiRoa();
         n.prefix = prefix.copyBytes();
         n.max = max;
         n.asns = tabLabel.copyLabels(asns);
@@ -122,7 +122,7 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      * @param o other to compare to
      * @return numerical value if differred
      */
-    public int differs(tabRoautNtry o) {
+    public int differs(tabRpkiRoa o) {
         if (o == null) {
             return 1;
         }
@@ -149,7 +149,7 @@ public class tabRoautNtry implements Comparable<tabRoautNtry> {
      * @param o other
      * @return true if yes, false if not
      */
-    public boolean isOtherBetter(tabRoautNtry o) {
+    public boolean isOtherBetter(tabRpkiRoa o) {
         if (distan < o.distan) {
             return true;
         }

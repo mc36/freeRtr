@@ -11,12 +11,12 @@ import org.freertr.user.userFormat;
  *
  * @author matecsaba
  */
-public class tabRoautUtil {
+public class tabRpkiUtil {
 
     /**
      * create instance
      */
-    private tabRoautUtil() {
+    private tabRpkiUtil() {
     }
 
     /**
@@ -26,14 +26,14 @@ public class tabRoautUtil {
      * @param src source
      * @return entries changed
      */
-    public final static int mergeTwo(tabGen<tabRoautNtry> trg, tabGen<tabRoautNtry> src) {
+    public final static int mergeTwo(tabGen<tabRpkiRoa> trg, tabGen<tabRpkiRoa> src) {
         int c = 0;
         for (int i = 0; i < src.size(); i++) {
-            tabRoautNtry n = src.get(i);
+            tabRpkiRoa n = src.get(i);
             if (n == null) {
                 continue;
             }
-            tabRoautNtry o = trg.find(n);
+            tabRpkiRoa o = trg.find(n);
             if (o == null) {
                 trg.put(n);
                 c++;
@@ -55,10 +55,10 @@ public class tabRoautUtil {
      * @param asn asn to find
      * @return matching prefixes
      */
-    public final static tabGen<tabRoautNtry> allowedAsn(tabGen<tabRoautNtry> src, int asn) {
-        tabGen<tabRoautNtry> res = new tabGen<tabRoautNtry>();
+    public final static tabGen<tabRpkiRoa> allowedAsn(tabGen<tabRpkiRoa> src, int asn) {
+        tabGen<tabRpkiRoa> res = new tabGen<tabRpkiRoa>();
         for (int i = 0; i < src.size(); i++) {
-            tabRoautNtry ntry = src.get(i);
+            tabRpkiRoa ntry = src.get(i);
             if (ntry.asns.indexOf(asn) < 0) {
                 continue;
             }
@@ -74,15 +74,45 @@ public class tabRoautUtil {
      * @param t2 second table
      * @return false if differs, true if identical
      */
-    public final static boolean compareTwo(tabGen<tabRoautNtry> t1, tabGen<tabRoautNtry> t2) {
+    public final static boolean compareTwoRoa(tabGen<tabRpkiRoa> t1, tabGen<tabRpkiRoa> t2) {
         int s1 = t1.size();
         int s2 = t2.size();
         if (s1 != s2) {
             return false;
         }
         for (int i = 0; i < s1; i++) {
-            tabRoautNtry d1 = t1.get(i);
-            tabRoautNtry d2 = t2.get(i);
+            tabRpkiRoa d1 = t1.get(i);
+            tabRpkiRoa d2 = t2.get(i);
+            if (d1 == null) {
+                return false;
+            }
+            if (d2 == null) {
+                return false;
+            }
+            int o = d1.compareTo(d2);
+            if (o != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * check if two tables are identical
+     *
+     * @param t1 first table
+     * @param t2 second table
+     * @return false if differs, true if identical
+     */
+    public final static boolean compareTwoAspa(tabGen<tabRpkiAspa> t1, tabGen<tabRpkiAspa> t2) {
+        int s1 = t1.size();
+        int s2 = t2.size();
+        if (s1 != s2) {
+            return false;
+        }
+        for (int i = 0; i < s1; i++) {
+            tabRpkiAspa d1 = t1.get(i);
+            tabRpkiAspa d2 = t2.get(i);
             if (d1 == null) {
                 return false;
             }
@@ -105,14 +135,14 @@ public class tabRoautUtil {
      * @param nei1 first neighbor
      * @param nei2 second neighbor
      */
-    public final static void diffTwo(tabGen<tabRoautNtry> uniq, tabGen<tabRoautNtry> diff, tabGen<tabRoautNtry> nei1, tabGen<tabRoautNtry> nei2) {
+    public final static void diffTwo(tabGen<tabRpkiRoa> uniq, tabGen<tabRpkiRoa> diff, tabGen<tabRpkiRoa> nei1, tabGen<tabRpkiRoa> nei2) {
         for (int o = 0; o < nei1.size(); o++) {
-            tabRoautNtry prf1 = nei1.get(o);
+            tabRpkiRoa prf1 = nei1.get(o);
             if (prf1 == null) {
                 continue;
             }
             prf1 = prf1.copyBytes();
-            tabRoautNtry prf2 = nei2.find(prf1);
+            tabRpkiRoa prf2 = nei2.find(prf1);
             if (prf2 == null) {
                 uniq.add(prf1);
                 continue;
@@ -132,7 +162,7 @@ public class tabRoautUtil {
      * @param pfx prefix to lookup
      * @return roa if found, null if not
      */
-    public final static tabRoautNtry lookup(tabGen<tabRoautNtry> tab, addrPrefix<addrIP> pfx) {
+    public final static tabRpkiRoa lookup(tabGen<tabRpkiRoa> tab, addrPrefix<addrIP> pfx) {
         if (tab.size() < 1) {
             return null;
         }
@@ -143,11 +173,11 @@ public class tabRoautUtil {
         } else {
             end = cfgAll.accessSupnet6;
         }
-        tabRoautNtry ntry = new tabRoautNtry();
+        tabRpkiRoa ntry = new tabRpkiRoa();
         ntry.prefix = pfx.copyBytes();
         for (int i = pfx.maskLen; i > end; i--) {
             ntry.prefix.setMask(i);
-            tabRoautNtry old = tab.find(ntry);
+            tabRpkiRoa old = tab.find(ntry);
             if (old == null) {
                 continue;
             }
@@ -165,8 +195,8 @@ public class tabRoautUtil {
      * @param end last index
      * @return subtable
      */
-    public final static tabGen<tabRoautNtry> getSubset(tabGen<tabRoautNtry> tab, int beg, int end) {
-        tabGen<tabRoautNtry> res = new tabGen<tabRoautNtry>();
+    public final static tabGen<tabRpkiRoa> getSubset(tabGen<tabRpkiRoa> tab, int beg, int end) {
+        tabGen<tabRpkiRoa> res = new tabGen<tabRpkiRoa>();
         int siz = tab.size();
         if (end > siz) {
             end = siz;
@@ -175,7 +205,7 @@ public class tabRoautUtil {
             beg = 0;
         }
         for (int i = beg; i < end; i++) {
-            tabRoautNtry ntry = tab.get(i);
+            tabRpkiRoa ntry = tab.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -206,10 +236,10 @@ public class tabRoautUtil {
      * @param tab table to convert
      * @param typ type to format
      */
-    public final static void convertTableBody(userFormat lst, tabGen<tabRoautNtry> tab, int typ) {
+    public final static void convertTableBody(userFormat lst, tabGen<tabRpkiRoa> tab, int typ) {
         lst.clear();
         for (int i = 0; i < tab.size(); i++) {
-            tabRoautNtry prf = tab.get(i);
+            tabRpkiRoa prf = tab.get(i);
             if (prf == null) {
                 continue;
             }
@@ -228,7 +258,7 @@ public class tabRoautUtil {
      * @param typ type to format
      * @return converted table
      */
-    public final static userFormat convertTableFull(tabGen<tabRoautNtry> tab, int typ) {
+    public final static userFormat convertTableFull(tabGen<tabRpkiRoa> tab, int typ) {
         userFormat res = convertTableHead(typ);
         if (res == null) {
             return null;
@@ -304,7 +334,7 @@ public class tabRoautUtil {
      * @param res route authorization
      * @return calculated value
      */
-    public final static int calcValidityValue(addrPrefix<addrIP> prfx, tabRouteAttr<addrIP> attr, tabRoautNtry res) {
+    public final static int calcValidityValue(addrPrefix<addrIP> prfx, tabRouteAttr<addrIP> attr, tabRpkiRoa res) {
         if (res == null) {
             return 2;
         }
@@ -340,7 +370,7 @@ public class tabRoautUtil {
      * @param roas route authorizations
      * @param mod mode to use
      */
-    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRoautNtry> roas, int mod) {
+    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRpkiRoa> roas, int mod) {
         switch (mod) {
             case 0:
                 return;
@@ -364,7 +394,7 @@ public class tabRoautUtil {
                 return;
         }
         boolean lok = false;
-        tabRoautNtry res = null;
+        tabRpkiRoa res = null;
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
             int o;
@@ -408,7 +438,7 @@ public class tabRoautUtil {
      * @param roas route authorizations
      * @param mod rpki mode to use
      */
-    public static void setValidityTable(tabRoute<addrIP> tab, tabGen<tabRoautNtry> roas, int mod) {
+    public static void setValidityTable(tabRoute<addrIP> tab, tabGen<tabRpkiRoa> roas, int mod) {
         switch (mod) {
             case 0:
                 return;

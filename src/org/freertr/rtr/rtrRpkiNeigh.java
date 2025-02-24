@@ -10,7 +10,8 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabRoautNtry;
+import org.freertr.tab.tabRpkiAspa;
+import org.freertr.tab.tabRpkiRoa;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -32,12 +33,17 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
     /**
      * accepted ipv4 prefixes
      */
-    public tabGen<tabRoautNtry> table4 = new tabGen<tabRoautNtry>();
+    public tabGen<tabRpkiRoa> table4 = new tabGen<tabRpkiRoa>();
 
     /**
      * accepted ipv6 prefixes
      */
-    public tabGen<tabRoautNtry> table6 = new tabGen<tabRoautNtry>();
+    public tabGen<tabRpkiRoa> table6 = new tabGen<tabRpkiRoa>();
+
+    /**
+     * accepted aspa entries
+     */
+    public tabGen<tabRpkiAspa> tableA = new tabGen<tabRpkiAspa>();
 
     /**
      * counter to use
@@ -205,6 +211,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         pck.sendPack();
         table4.clear();
         table6.clear();
+        tableA.clear();
         logger.warn("neighbor " + peer + " up");
         upTime = bits.getTime();
         for (;;) {
@@ -217,6 +224,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             }
             table4.clear();
             table6.clear();
+            tableA.clear();
             pipe.setClose();
             break;
         }
@@ -259,14 +267,58 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         }
         table4.clear();
         table6.clear();
+        tableA.clear();
         lower.compute.wakeup();
         logger.error("neighbor " + peer + " down");
         pipe.setClose();
         pipe = null;
     }
 
-    private int processOneRoa(rtrRpkiSpeak pck, tabGen<tabRoautNtry> table) {
-        tabRoautNtry ntry = table.find(pck.roa);
+    private int processOneAspa(rtrRpkiSpeak pck, tabGen<tabRpkiAspa> table) {
+        tabRpkiAspa ntry = table.find(pck.aspa);
+        if (pck.aspa.provs.size() < 1) {
+            return 0;
+        }
+        if (pck.withdraw) {
+            if (ntry == null) {
+                return 0;
+            }
+            for (int i = 0; i < pck.aspa.provs.size(); i++) {
+                int o = ntry.provs.indexOf(pck.aspa.provs.get(i));
+                if (o < 0) {
+                    continue;
+                }
+                ntry.provs.remove(o);
+            }
+            if (ntry.provs.size() > 0) {
+                return 1;
+            }
+            table.del(ntry);
+            return 1;
+        }
+        if (ntry != null) {
+            for (int i = 0; i < pck.aspa.provs.size(); i++) {
+                int p = pck.aspa.provs.get(i);
+                int o = ntry.provs.indexOf(p);
+                if (o >= 0) {
+                    continue;
+                }
+                ntry.provs.add(p);
+            }
+            return 1;
+        }
+        ntry = pck.aspa;
+        ntry.time = bits.getTime();
+        ntry.distan = preference;
+        ntry.srcRtr = lower.rouTyp;
+        ntry.srcNum = lower.rtrNum;
+        ntry.srcIP = peer.copyBytes();
+        table.put(ntry);
+        return 1;
+    }
+
+    private int processOneRoa(rtrRpkiSpeak pck, tabGen<tabRpkiRoa> table) {
+        tabRpkiRoa ntry = table.find(pck.roa);
         if (pck.withdraw) {
             if (ntry == null) {
                 return 0;
@@ -318,11 +370,14 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 return processOneRoa(pck, table4);
             case rtrRpkiSpeak.msgIpv6addr:
                 return processOneRoa(pck, table6);
+            case rtrRpkiSpeak.msgAspaPdu:
+                return processOneAspa(pck, tableA);
             case rtrRpkiSpeak.msgCacheReply:
                 return 0;
             case rtrRpkiSpeak.msgCacheReset:
                 table4.clear();
                 table6.clear();
+                tableA.clear();
                 pck.typ = rtrRpkiSpeak.msgResetQuery;
                 pck.sendPack();
                 return 2;
@@ -330,7 +385,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 session = pck.sess;
                 serial = pck.serial;
                 if (debugger.rtrRpkiEvnt) {
-                    logger.debug("neighbor " + peer + " done " + table4.size() + " " + table6.size());
+                    logger.debug("neighbor " + peer + " done " + table4.size() + " " + table6.size() + " " + tableA.size());
                 }
                 return 3;
             default:
@@ -344,12 +399,21 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
      * @param ipVer ip version
      * @return current table
      */
-    public tabGen<tabRoautNtry> getFinalTab(int ipVer) {
+    public tabGen<tabRpkiRoa> getFinalTabRoa(int ipVer) {
         if (ipVer == ipCor4.protocolVersion) {
             return table4;
         } else {
             return table6;
         }
+    }
+
+    /**
+     * get final table
+     *
+     * @return current table
+     */
+    public tabGen<tabRpkiAspa> getFinalTabAspa() {
+        return tableA;
     }
 
 }

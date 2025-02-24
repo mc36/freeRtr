@@ -1,6 +1,7 @@
 package org.freertr.rtr;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -11,7 +12,8 @@ import org.freertr.ip.ipCor6;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabRoautNtry;
+import org.freertr.tab.tabRpkiAspa;
+import org.freertr.tab.tabRpkiRoa;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -85,9 +87,19 @@ public class rtrRpkiSpeak {
     public final static int msgErrorReport = 10;
 
     /**
+     * aspa pdu
+     */
+    public final static int msgAspaPdu = 11;
+
+    /**
      * type
      */
     public int typ;
+
+    /**
+     * version
+     */
+    public int ver;
 
     /**
      * session id
@@ -107,7 +119,12 @@ public class rtrRpkiSpeak {
     /**
      * route origin authorization
      */
-    public tabRoautNtry roa;
+    public tabRpkiRoa roa;
+
+    /**
+     * as path authorization
+     */
+    public tabRpkiAspa aspa;
 
     private final packHolder pck;
 
@@ -137,7 +154,7 @@ public class rtrRpkiSpeak {
      * @return string
      */
     public String dump() {
-        return "typ=" + type2string(typ) + " sess=" + sess + " serial=" + serial + " wd=" + withdraw + " roa=" + roa;
+        return "typ=" + type2string(typ) + " sess=" + sess + " serial=" + serial + " wd=" + withdraw + " roa=" + roa + " aspa=" + aspa;
     }
 
     /**
@@ -168,6 +185,8 @@ public class rtrRpkiSpeak {
                 return "routerKey";
             case msgErrorReport:
                 return "error";
+            case msgAspaPdu:
+                return "aspa";
             default:
                 return "unknown=" + i;
         }
@@ -183,9 +202,7 @@ public class rtrRpkiSpeak {
         if (pck.pipeRecv(conn, 0, size, 144) != size) {
             return true;
         }
-        if (pck.getByte(0) != 0) { // version
-            return true;
-        }
+        ver = pck.getByte(0); // version
         typ = pck.getByte(1); // type
         sess = pck.msbGetW(2); // session id
         int len = pck.msbGetD(4); // length
@@ -212,7 +229,7 @@ public class rtrRpkiSpeak {
             case msgCacheReply:
                 break;
             case msgIpv4addr:
-                roa = new tabRoautNtry();
+                roa = new tabRpkiRoa();
                 withdraw = (pck.getByte(0) & 1) == 0; // flags
                 roa.max = pck.getByte(2); // max
                 addrIPv4 adr4 = new addrIPv4();
@@ -222,7 +239,7 @@ public class rtrRpkiSpeak {
                 roa.distan = pck.msbGetD(8); // as
                 break;
             case msgIpv6addr:
-                roa = new tabRoautNtry();
+                roa = new tabRpkiRoa();
                 withdraw = (pck.getByte(0) & 1) == 0; // flags
                 roa.max = pck.getByte(2); // max
                 addrIPv6 adr6 = new addrIPv6();
@@ -240,11 +257,24 @@ public class rtrRpkiSpeak {
                 break;
             case msgErrorReport:
                 break;
+            case msgAspaPdu:
+                aspa = new tabRpkiAspa();
+                aspa.provs = new ArrayList<Integer>();
+                withdraw = (sess & 0x100) == 0; // flags
+                aspa.cust = pck.msbGetD(0);
+                for (;;) {
+                    pck.getSkip(4);
+                    if (pck.dataSize() < 4) {
+                        break;
+                    }
+                    aspa.provs.add(pck.msbGetD(0));
+                }
+                break;
             default:
                 return true;
         }
         if (debugger.rtrRpkiTraf) {
-            logger.debug("rx " + pck.dump());
+            logger.debug("rx " + dump());
         }
         return false;
     }
@@ -254,6 +284,7 @@ public class rtrRpkiSpeak {
      */
     public void sendPack() {
         pck.clear();
+        int oldSess = sess;
         switch (typ) {
             case msgSerialNotify:
                 pck.msbPutD(0, serial); // serial
@@ -305,11 +336,24 @@ public class rtrRpkiSpeak {
                 break;
             case msgErrorReport:
                 break;
+            case msgAspaPdu:
+                if (withdraw) {
+                    sess = 0;
+                } else {
+                    sess = 0x100;
+                }
+                pck.msbPutD(0, aspa.cust);
+                pck.putSkip(4);
+                for (int i = 0; i < aspa.provs.size(); i++) {
+                    pck.msbPutD(0, aspa.provs.get(i));
+                    pck.putSkip(4);
+                }
+                break;
             default:
                 return;
         }
         pck.merge2beg();
-        pck.putByte(0, 0); // version
+        pck.putByte(0, ver); // version
         pck.putByte(1, typ); // type
         pck.msbPutW(2, sess); // session id
         pck.msbPutD(4, pck.dataSize() + size); // length
@@ -317,6 +361,7 @@ public class rtrRpkiSpeak {
         pck.merge2beg();
         pck.pipeSend(conn, 0, pck.dataSize(), 2);
         cntr.tx(pck);
+        sess = oldSess;
         if (debugger.rtrRpkiTraf) {
             logger.debug("tx " + dump());
         }
@@ -328,7 +373,7 @@ public class rtrRpkiSpeak {
      * @param tp type to use
      * @param tab table to send
      */
-    public void sendOneTable(int tp, tabGen<tabRoautNtry> tab) {
+    public void sendOneTable(int tp, tabGen<tabRpkiRoa> tab) {
         if (tab == null) {
             return;
         }
@@ -336,12 +381,9 @@ public class rtrRpkiSpeak {
             logger.debug("sending " + tab.size());
         }
         for (int i = 0; i < tab.size(); i++) {
-            tabRoautNtry ntry = tab.get(i);
+            tabRpkiRoa ntry = tab.get(i);
             if (ntry == null) {
                 continue;
-            }
-            if (debugger.servRpkiTraf) {
-                logger.debug("tx " + dump());
             }
             roa = ntry.copyBytes();
             typ = tp;
@@ -361,8 +403,8 @@ public class rtrRpkiSpeak {
         if (rtr == null) {
             return;
         }
-        sendOneTable(rtrRpkiSpeak.msgIpv4addr, rtr.getFinalTab(ipCor4.protocolVersion));
-        sendOneTable(rtrRpkiSpeak.msgIpv6addr, rtr.getFinalTab(ipCor6.protocolVersion));
+        sendOneTable(rtrRpkiSpeak.msgIpv4addr, rtr.getFinalTabRoa(ipCor4.protocolVersion));
+        sendOneTable(rtrRpkiSpeak.msgIpv6addr, rtr.getFinalTabRoa(ipCor6.protocolVersion));
     }
 
     /**
@@ -382,15 +424,18 @@ public class rtrRpkiSpeak {
             logger.debug("sending " + txt.size());
         }
         encJson j = new encJson();
-        roa = new tabRoautNtry();
+        roa = new tabRpkiRoa();
+        aspa = new tabRpkiAspa();
         for (int i = 0; i < txt.size(); i++) {
             j.clear();
             j.fromString(txt.get(i));
             if (roa.fromJson(j)) {
+                if (aspa.fromJson(j)) {
+                    continue;
+                }
+                typ = rtrRpkiSpeak.msgAspaPdu;
+                sendPack();
                 continue;
-            }
-            if (debugger.servRpkiTraf) {
-                logger.debug("tx " + dump());
             }
             if (roa.prefix.network.isIPv4()) {
                 typ = rtrRpkiSpeak.msgIpv4addr;
@@ -444,7 +489,7 @@ public class rtrRpkiSpeak {
      * @param jsn json to send
      * @return true on error, false on success
      */
-    public boolean doOneServRnd(int seq, int ses, tabGen<tabRoautNtry> tab4, tabGen<tabRoautNtry> tab6, rtrRpki rtr, String jsn) {
+    public boolean doOneServRnd(int seq, int ses, tabGen<tabRpkiRoa> tab4, tabGen<tabRpkiRoa> tab6, rtrRpki rtr, String jsn) {
         if (recvPack()) {
             return true;
         }

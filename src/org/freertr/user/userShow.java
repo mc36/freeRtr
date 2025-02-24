@@ -123,8 +123,8 @@ import org.freertr.tab.tabListingEntry;
 import org.freertr.tab.tabNshEntry;
 import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabQos;
-import org.freertr.tab.tabRoautNtry;
-import org.freertr.tab.tabRoautUtil;
+import org.freertr.tab.tabRpkiRoa;
+import org.freertr.tab.tabRpkiUtil;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
@@ -3821,14 +3821,14 @@ public class userShow {
             cmd.error("no such neighbor");
             return;
         }
-        tabGen<tabRoautNtry> tab1 = nei1.getFinalTab(ver);
-        tabGen<tabRoautNtry> tab2 = nei2.getFinalTab(ver);
-        tabGen<tabRoautNtry> uni1 = new tabGen<tabRoautNtry>();
-        tabGen<tabRoautNtry> uni2 = new tabGen<tabRoautNtry>();
-        tabGen<tabRoautNtry> dif1 = new tabGen<tabRoautNtry>();
-        tabGen<tabRoautNtry> dif2 = new tabGen<tabRoautNtry>();
-        tabRoautUtil.diffTwo(uni1, dif1, tab1, tab2);
-        tabRoautUtil.diffTwo(uni2, dif2, tab2, tab1);
+        tabGen<tabRpkiRoa> tab1 = nei1.getFinalTabRoa(ver);
+        tabGen<tabRpkiRoa> tab2 = nei2.getFinalTabRoa(ver);
+        tabGen<tabRpkiRoa> uni1 = new tabGen<tabRpkiRoa>();
+        tabGen<tabRpkiRoa> uni2 = new tabGen<tabRpkiRoa>();
+        tabGen<tabRpkiRoa> dif1 = new tabGen<tabRpkiRoa>();
+        tabGen<tabRpkiRoa> dif2 = new tabGen<tabRpkiRoa>();
+        tabRpkiUtil.diffTwo(uni1, dif1, tab1, tab2);
+        tabRpkiUtil.diffTwo(uni2, dif2, tab2, tab1);
         cmd.error("unique to " + nei1);
         doShowRoas(uni1, 1);
         cmd.error("unique to " + nei2);
@@ -3866,22 +3866,22 @@ public class userShow {
             return;
         }
         if (a.equals("database4")) {
-            doShowRoas(r.rpki.getFinalTab(4), 1);
+            doShowRoas(r.rpki.getFinalTabRoa(4), 1);
             return;
         }
         if (a.equals("database6")) {
-            doShowRoas(r.rpki.getFinalTab(6), 1);
+            doShowRoas(r.rpki.getFinalTabRoa(6), 1);
             return;
         }
         if (a.equals("prefixes4")) {
-            tabGen<tabRoautNtry> tab = r.rpki.getFinalTab(4);
-            tab = tabRoautUtil.allowedAsn(tab, bits.str2num(cmd.word()));
+            tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(4);
+            tab = tabRpkiUtil.allowedAsn(tab, bits.str2num(cmd.word()));
             doShowRoas(tab, 1);
             return;
         }
         if (a.equals("prefixes6")) {
-            tabGen<tabRoautNtry> tab = r.rpki.getFinalTab(6);
-            tab = tabRoautUtil.allowedAsn(tab, bits.str2num(cmd.word()));
+            tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(6);
+            tab = tabRpkiUtil.allowedAsn(tab, bits.str2num(cmd.word()));
             doShowRoas(tab, 1);
             return;
         }
@@ -3896,7 +3896,7 @@ public class userShow {
                 cmd.error("no such neighbor");
                 return;
             }
-            doShowRoas(nei.getFinalTab(4), 1);
+            doShowRoas(nei.getFinalTabRoa(4), 1);
             return;
         }
         if (a.equals("learned6")) {
@@ -3910,7 +3910,7 @@ public class userShow {
                 cmd.error("no such neighbor");
                 return;
             }
-            doShowRoas(nei.getFinalTab(6), 1);
+            doShowRoas(nei.getFinalTabRoa(6), 1);
             return;
         }
         if (a.equals("compare4")) {
@@ -3927,8 +3927,8 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            tabGen<tabRoautNtry> tab = r.rpki.getFinalTab(4);
-            tabRoautNtry ntry = tabRoautUtil.lookup(tab, pfx);
+            tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(4);
+            tabRpkiRoa ntry = tabRpkiUtil.lookup(tab, pfx);
             if (ntry == null) {
                 cmd.error("no matching roa");
                 return;
@@ -3942,8 +3942,8 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            tabGen<tabRoautNtry> tab = r.rpki.getFinalTab(6);
-            tabRoautNtry ntry = tabRoautUtil.lookup(tab, pfx);
+            tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(6);
+            tabRpkiRoa ntry = tabRpkiUtil.lookup(tab, pfx);
             if (ntry == null) {
                 cmd.error("no matching roa");
                 return;
@@ -3953,7 +3953,7 @@ public class userShow {
         }
     }
 
-    private tabGen<tabRoautNtry> getRpkiTable(int sfi) {
+    private tabGen<tabRpkiRoa> getRpkiTable(int sfi) {
         tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
         if (ipRtr.isRPKI(rt) < 0) {
             cmd.error("not an rpki process");
@@ -3970,10 +3970,10 @@ public class userShow {
             cmd.error("process not initialized");
             return null;
         }
-        tabGen<tabRoautNtry> rp;
+        tabGen<tabRpkiRoa> rp;
         try {
             rtrRpki rr = (rtrRpki) ri;
-            rp = rr.getFinalTab(rtrBgpUtil.safi2ipVers(sfi));
+            rp = rr.getFinalTabRoa(rtrBgpUtil.safi2ipVers(sfi));
         } catch (Exception e) {
             logger.traceback(e);
             return null;
@@ -4946,7 +4946,7 @@ public class userShow {
         }
         if (a.equals("validof")) {
             int asn = bits.str2num(cmd.word());
-            tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
             if (rp == null) {
                 return;
             }
@@ -4960,16 +4960,16 @@ public class userShow {
                     continue;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
-                tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
-                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
-                tabRoautUtil.updateJustValidity(ntry, o);
+                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                tabRpkiUtil.updateJustValidity(ntry, o);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
             return;
         }
         if (a.equals("validsum")) {
-            tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
             if (rp == null) {
                 return;
             }
@@ -4981,8 +4981,8 @@ public class userShow {
                 if (ntry == null) {
                     continue;
                 }
-                tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
-                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 calc[o]++;
                 o = tabRouteUtil.getValidityExtComm(ntry.best.extComm);
                 encod[o]++;
@@ -4991,13 +4991,13 @@ public class userShow {
             }
             userFormat sum = new userFormat("|", "result|calc|valid|encod");
             for (int i = 0; i < calc.length; i++) {
-                sum.add(tabRoautUtil.validity2string(i) + "|" + calc[i] + "|" + valid[i] + "|" + encod[i]);
+                sum.add(tabRpkiUtil.validity2string(i) + "|" + calc[i] + "|" + valid[i] + "|" + encod[i]);
             }
             rdr.putStrTab(sum);
             return;
         }
         if (a.equals("validtest")) {
-            tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
             if (rp == null) {
                 return;
             }
@@ -5008,16 +5008,16 @@ public class userShow {
                     continue;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
-                tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
-                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
-                tabRoautUtil.updateJustValidity(ntry, o);
+                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                tabRpkiUtil.updateJustValidity(ntry, o);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
             return;
         }
         if (a.equals("validmismark")) {
-            tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
             if (rp == null) {
                 return;
             }
@@ -5027,8 +5027,8 @@ public class userShow {
                 if (ntry == null) {
                     continue;
                 }
-                tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
-                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 int p = tabRouteUtil.getValidityExtComm(ntry.best.extComm);
                 if (o == p) {
                     continue;
@@ -5556,8 +5556,8 @@ public class userShow {
         return lst.formatAll(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
     }
 
-    private void doShowRoas(tabGen<tabRoautNtry> tab, int typ) {
-        userFormat lst = tabRoautUtil.convertTableHead(typ);
+    private void doShowRoas(tabGen<tabRpkiRoa> tab, int typ) {
+        userFormat lst = tabRpkiUtil.convertTableHead(typ);
         if (lst == null) {
             return;
         }
@@ -5567,8 +5567,8 @@ public class userShow {
         }
         final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
         for (int pos = 0; pos < tab.size(); pos += lines) {
-            tabGen<tabRoautNtry> sub = tabRoautUtil.getSubset(tab, pos, pos + lines);
-            lst = tabRoautUtil.convertTableFull(sub, typ);
+            tabGen<tabRpkiRoa> sub = tabRpkiUtil.getSubset(tab, pos, pos + lines);
+            lst = tabRpkiUtil.convertTableFull(sub, typ);
             if (rdr.putStrTab(lst)) {
                 break;
             }

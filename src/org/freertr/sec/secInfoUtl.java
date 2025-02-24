@@ -21,8 +21,8 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.rtr.rtrRpki;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRateLimit;
-import org.freertr.tab.tabRoautNtry;
-import org.freertr.tab.tabRoautUtil;
+import org.freertr.tab.tabRpkiRoa;
+import org.freertr.tab.tabRpkiUtil;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
@@ -79,7 +79,7 @@ public class secInfoUtl {
      * @param fwd forwarder to use
      * @return route entry, null if nothing
      */
-    public final static tabRoautNtry findOneValid(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
+    public final static tabRpkiRoa findOneValid(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
         if (pfx == null) {
             return null;
         }
@@ -90,8 +90,8 @@ public class secInfoUtl {
             return null;
         }
         rtrRpki rpki = (rtrRpki) rtr;
-        tabGen<tabRoautNtry> tab = rpki.getFinalTab(fwd.ipVersion);
-        tabRoautNtry ntry = tabRoautUtil.lookup(tab, pfx.prefix);
+        tabGen<tabRpkiRoa> tab = rpki.getFinalTabRoa(fwd.ipVersion);
+        tabRpkiRoa ntry = tabRpkiUtil.lookup(tab, pfx.prefix);
         if (ntry == null) {
             logger.warn("no validity " + rtr + " " + pfx.prefix);
             return null;
@@ -474,7 +474,7 @@ public class secInfoUtl {
         }
         s += " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix);
         if (wrk.vldIp != null) {
-            s += " rpki=" + tabRoautUtil.validity2string(wrk.roav);
+            s += " rpki=" + tabRpkiUtil.validity2string(wrk.roav);
         }
         List<String> res = new ArrayList<String>();
         res.add(s.trim());
