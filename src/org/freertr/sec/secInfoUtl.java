@@ -91,7 +91,7 @@ public class secInfoUtl {
         }
         rtrRpki rpki = (rtrRpki) rtr;
         tabGen<tabRpkiRoa> tab = rpki.getFinalTabRoa(fwd.ipVersion);
-        tabRpkiRoa ntry = tabRpkiUtil.lookup(tab, pfx.prefix);
+        tabRpkiRoa ntry = tabRpkiUtil.lookupRoa(tab, pfx.prefix);
         if (ntry == null) {
             logger.warn("no validity " + rtr + " " + pfx.prefix);
             return null;

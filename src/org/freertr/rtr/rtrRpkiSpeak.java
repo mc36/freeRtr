@@ -373,7 +373,7 @@ public class rtrRpkiSpeak {
      * @param tp type to use
      * @param tab table to send
      */
-    public void sendOneTable(int tp, tabGen<tabRpkiRoa> tab) {
+    public void sendOneTableRoa(int tp, tabGen<tabRpkiRoa> tab) {
         if (tab == null) {
             return;
         }
@@ -395,6 +395,29 @@ public class rtrRpkiSpeak {
     }
 
     /**
+     * send one table
+     *
+     * @param tab table to send
+     */
+    public void sendOneTableAspa(tabGen<tabRpkiAspa> tab) {
+        if (tab == null) {
+            return;
+        }
+        if (debugger.rtrRpkiEvnt) {
+            logger.debug("sending " + tab.size());
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRpkiAspa ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            aspa = ntry.copyBytes();
+            typ = rtrRpkiSpeak.msgAspaPdu;
+            sendPack();
+        }
+    }
+
+    /**
      * send one rpki computed table
      *
      * @param rtr rpki router
@@ -403,8 +426,9 @@ public class rtrRpkiSpeak {
         if (rtr == null) {
             return;
         }
-        sendOneTable(rtrRpkiSpeak.msgIpv4addr, rtr.getFinalTabRoa(ipCor4.protocolVersion));
-        sendOneTable(rtrRpkiSpeak.msgIpv6addr, rtr.getFinalTabRoa(ipCor6.protocolVersion));
+        sendOneTableRoa(rtrRpkiSpeak.msgIpv4addr, rtr.getFinalTabRoa(ipCor4.protocolVersion));
+        sendOneTableRoa(rtrRpkiSpeak.msgIpv6addr, rtr.getFinalTabRoa(ipCor6.protocolVersion));
+        sendOneTableAspa(rtr.getFinalTabAspa());
     }
 
     /**
@@ -485,11 +509,12 @@ public class rtrRpkiSpeak {
      * @param ses session to use
      * @param tab4 ipv4 table
      * @param tab6 ipv6 table
+     * @param tabA aspa table
      * @param rtr rpki to send
      * @param jsn json to send
      * @return true on error, false on success
      */
-    public boolean doOneServRnd(int seq, int ses, tabGen<tabRpkiRoa> tab4, tabGen<tabRpkiRoa> tab6, rtrRpki rtr, String jsn) {
+    public boolean doOneServRnd(int seq, int ses, tabGen<tabRpkiRoa> tab4, tabGen<tabRpkiRoa> tab6, tabGen<tabRpkiAspa> tabA, rtrRpki rtr, String jsn) {
         if (recvPack()) {
             return true;
         }
@@ -516,8 +541,9 @@ public class rtrRpkiSpeak {
                 sendPack();
                 sendOneJson(jsn);
                 sendOneRpki(rtr);
-                sendOneTable(rtrRpkiSpeak.msgIpv4addr, tab4);
-                sendOneTable(rtrRpkiSpeak.msgIpv6addr, tab6);
+                sendOneTableRoa(rtrRpkiSpeak.msgIpv4addr, tab4);
+                sendOneTableRoa(rtrRpkiSpeak.msgIpv6addr, tab6);
+                sendOneTableAspa(tabA);
                 typ = rtrRpkiSpeak.msgEndData;
                 serial = csq;
                 sendPack();

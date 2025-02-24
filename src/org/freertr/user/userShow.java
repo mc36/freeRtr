@@ -3975,7 +3975,7 @@ public class userShow {
                 return;
             }
             tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(4);
-            tabRpkiRoa ntry = tabRpkiUtil.lookup(tab, pfx);
+            tabRpkiRoa ntry = tabRpkiUtil.lookupRoa(tab, pfx);
             if (ntry == null) {
                 cmd.error("no matching roa");
                 return;
@@ -3990,7 +3990,7 @@ public class userShow {
                 return;
             }
             tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(6);
-            tabRpkiRoa ntry = tabRpkiUtil.lookup(tab, pfx);
+            tabRpkiRoa ntry = tabRpkiUtil.lookupRoa(tab, pfx);
             if (ntry == null) {
                 cmd.error("no matching roa");
                 return;
@@ -3999,9 +3999,8 @@ public class userShow {
             return;
         }
         if (a.equals("lookupp")) {
-            tabRpkiAspa ntry = new tabRpkiAspa();
-            ntry.cust = bits.str2num(cmd.word());
-            ntry = r.rpki.getFinalTabAspa().find(ntry);
+            tabGen<tabRpkiAspa> tab = r.rpki.getFinalTabAspa();
+            tabRpkiAspa ntry = tabRpkiUtil.lookupAspa(tab, bits.str2num(cmd.word()));
             if (ntry == null) {
                 cmd.error("no matching aspa");
                 return;
@@ -5018,7 +5017,7 @@ public class userShow {
                     continue;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
-                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 tabRpkiUtil.updateJustValidity(ntry, o);
                 res.add(tabRoute.addType.better, ntry, false, false);
@@ -5039,7 +5038,7 @@ public class userShow {
                 if (ntry == null) {
                     continue;
                 }
-                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 calc[o]++;
                 o = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
@@ -5066,7 +5065,7 @@ public class userShow {
                     continue;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
-                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 tabRpkiUtil.updateJustValidity(ntry, o);
                 res.add(tabRoute.addType.better, ntry, false, false);
@@ -5085,7 +5084,7 @@ public class userShow {
                 if (ntry == null) {
                     continue;
                 }
-                tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
+                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 int p = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
                 if (o == p) {

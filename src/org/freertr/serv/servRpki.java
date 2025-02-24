@@ -15,6 +15,7 @@ import org.freertr.rtr.rtrRpki;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.tab.tabRouteAttr;
+import org.freertr.tab.tabRpkiAspa;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
@@ -61,6 +62,11 @@ public class servRpki extends servGeneric implements prtServS {
      * configured ipv6 prefixes
      */
     public final tabGen<tabRpkiRoa> cfged6 = new tabGen<tabRpkiRoa>();
+
+    /**
+     * configured aspa entries
+     */
+    public final tabGen<tabRpkiAspa> cfgedA = new tabGen<tabRpkiAspa>();
 
     /**
      * sequence
@@ -124,6 +130,9 @@ public class servRpki extends servGeneric implements prtServS {
         for (int i = 0; i < cfged6.size(); i++) {
             lst.add(beg + "prefix " + cfged6.get(i).toConfig());
         }
+        for (int i = 0; i < cfgedA.size(); i++) {
+            lst.add(beg + "provider " + cfgedA.get(i).toConfig());
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -140,6 +149,17 @@ public class servRpki extends servGeneric implements prtServS {
             } else {
                 cfged6.put(prf);
             }
+            sequence++;
+            return false;
+        }
+        if (s.equals("provider")) {
+            tabRpkiAspa prf = new tabRpkiAspa();
+            if (prf.fromString(cmd)) {
+                cmd.error("bad provider");
+                return false;
+            }
+            prf.srcIP = new addrIP();
+            cfgedA.put(prf);
             sequence++;
             return false;
         }
@@ -178,6 +198,17 @@ public class servRpki extends servGeneric implements prtServS {
             sequence++;
             return false;
         }
+        if (s.equals("provider")) {
+            tabRpkiAspa prf = new tabRpkiAspa();
+            if (prf.fromString(cmd)) {
+                cmd.error("bad provider");
+                return false;
+            }
+            prf.srcIP = new addrIP();
+            cfgedA.del(prf);
+            sequence++;
+            return false;
+        }
         if (s.equals("json")) {
             jsonN = null;
             sequence++;
@@ -197,6 +228,9 @@ public class servRpki extends servGeneric implements prtServS {
         l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
         l.add(null, "3 4      <num>                    maximum prefix length");
         l.add(null, "4 4,.      <num>                  as number");
+        l.add(null, "1 2  provider                     setup providers");
+        l.add(null, "2 3    <num>                      customer asn");
+        l.add(null, "3 3,.    <num>                    as number");
         l.add(null, "1 2   json                        setup a json file");
         l.add(null, "2 .     <str>                     name of file to use");
         l.add(null, "1 2   rpki                        setup resource public key infrastructure");
@@ -269,7 +303,7 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
                         rpkiR = (rtrRpki) rtrCfg.getRouter();
                     }
                 }
-                if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, rpkiR, lower.jsonN)) {
+                if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, lower.cfgedA, rpkiR, lower.jsonN)) {
                     break;
                 }
             }

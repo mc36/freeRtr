@@ -232,13 +232,27 @@ public class tabRpkiUtil {
     }
 
     /**
+     * lookup a customer
+     *
+     * @param tab table to use
+     * @param pfx prefix to lookup
+     * @return roa if found, null if not
+     */
+    public final static tabRpkiAspa lookupAspa(tabGen<tabRpkiAspa> tab, int asn) {
+        tabRpkiAspa ntry = new tabRpkiAspa();
+        ntry.cust = asn;
+        ntry = tab.find(ntry);
+        return ntry;
+    }
+
+    /**
      * lookup a prefix
      *
      * @param tab table to use
      * @param pfx prefix to lookup
      * @return roa if found, null if not
      */
-    public final static tabRpkiRoa lookup(tabGen<tabRpkiRoa> tab, addrPrefix<addrIP> pfx) {
+    public final static tabRpkiRoa lookupRoa(tabGen<tabRpkiRoa> tab, addrPrefix<addrIP> pfx) {
         if (tab.size() < 1) {
             return null;
         }
@@ -529,7 +543,7 @@ public class tabRpkiUtil {
                     break;
                 case 2:
                     if (!lok) {
-                        res = lookup(roas, ntry.prefix);
+                        res = lookupRoa(roas, ntry.prefix);
                         lok = true;
                     }
                     o = calcValidityValue(ntry.prefix, attr, res);
@@ -542,7 +556,7 @@ public class tabRpkiUtil {
                         continue;
                     }
                     if (!lok) {
-                        res = lookup(roas, ntry.prefix);
+                        res = lookupRoa(roas, ntry.prefix);
                         lok = true;
                     }
                     o = calcValidityValue(ntry.prefix, attr, res);
