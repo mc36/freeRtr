@@ -235,7 +235,7 @@ public class tabRpkiUtil {
      * lookup a customer
      *
      * @param tab table to use
-     * @param pfx prefix to lookup
+     * @param asn asn to lookup
      * @return roa if found, null if not
      */
     public final static tabRpkiAspa lookupAspa(tabGen<tabRpkiAspa> tab, int asn) {
