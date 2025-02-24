@@ -129,6 +129,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
+import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplc;
 import org.freertr.tab.tabSession;
@@ -3873,6 +3874,10 @@ public class userShow {
             doShowRoas(r.rpki.getFinalTabRoa(6), 1);
             return;
         }
+        if (a.equals("databasea")) {
+            doShowAspas(r.rpki.getFinalTabAspa(), 1);
+            return;
+        }
         if (a.equals("prefixes4")) {
             tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(4);
             tab = tabRpkiUtil.allowedAsn(tab, bits.str2num(cmd.word()));
@@ -4984,7 +4989,7 @@ public class userShow {
                 tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
                 calc[o]++;
-                o = tabRouteUtil.getValidityExtComm(ntry.best.extComm);
+                o = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
                 encod[o]++;
                 o = ntry.best.validity;
                 valid[o]++;
@@ -5029,7 +5034,7 @@ public class userShow {
                 }
                 tabRpkiRoa ra = tabRpkiUtil.lookup(rp, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
-                int p = tabRouteUtil.getValidityExtComm(ntry.best.extComm);
+                int p = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
                 if (o == p) {
                     continue;
                 }
@@ -5557,7 +5562,7 @@ public class userShow {
     }
 
     private void doShowRoas(tabGen<tabRpkiRoa> tab, int typ) {
-        userFormat lst = tabRpkiUtil.convertTableHead(typ);
+        userFormat lst = tabRpkiUtil.convertRoaHead(typ);
         if (lst == null) {
             return;
         }
@@ -5567,8 +5572,27 @@ public class userShow {
         }
         final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
         for (int pos = 0; pos < tab.size(); pos += lines) {
-            tabGen<tabRpkiRoa> sub = tabRpkiUtil.getSubset(tab, pos, pos + lines);
-            lst = tabRpkiUtil.convertTableFull(sub, typ);
+            tabGen<tabRpkiRoa> sub = tabRpkiUtil.getSubsetRoa(tab, pos, pos + lines);
+            tabRpkiUtil.convertRoaBody(lst, sub, typ);
+            if (rdr.putStrTab(lst)) {
+                break;
+            }
+        }
+    }
+
+    private void doShowAspas(tabGen<tabRpkiAspa> tab, int typ) {
+        userFormat lst = tabRpkiUtil.convertAspaHead(typ);
+        if (lst == null) {
+            return;
+        }
+        if (tab.size() < 1) {
+            rdr.putStrTab(lst);
+            return;
+        }
+        final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
+        for (int pos = 0; pos < tab.size(); pos += lines) {
+            tabGen<tabRpkiAspa> sub = tabRpkiUtil.getSubsetAspa(tab, pos, pos + lines);
+            tabRpkiUtil.convertAspaBody(lst, sub, typ);
             if (rdr.putStrTab(lst)) {
                 break;
             }

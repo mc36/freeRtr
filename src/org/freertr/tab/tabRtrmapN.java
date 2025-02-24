@@ -1877,7 +1877,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.accIgp = accIgpSet.update(attr.accIgp);
         if (validitySet.action != tabIntUpdater.actionType.nothing) {
             attr.validity = validitySet.update(attr.validity);
-            tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
+            attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validity);
         }
         if (aggregatorSet.action != tabIntUpdater.actionType.nothing) {
             attr.aggrAs = aggregatorSet.update(attr.aggrAs);

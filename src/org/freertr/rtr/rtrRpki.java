@@ -230,8 +230,9 @@ public class rtrRpki extends ipRtr implements Runnable {
         tabGen<tabRpkiAspa> tabA = new tabGen<tabRpkiAspa>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
-            tabRpkiUtil.mergeTwo(tab4, ntry.table4);
-            tabRpkiUtil.mergeTwo(tab6, ntry.table6);
+            tabRpkiUtil.mergeTwoRoa(tab4, ntry.table4);
+            tabRpkiUtil.mergeTwoRoa(tab6, ntry.table6);
+            tabRpkiUtil.mergeTwoAspa(tabA, ntry.tableA);
         }
         boolean chg = tabRpkiUtil.compareTwoRoa(tab4, computed4);
         chg &= tabRpkiUtil.compareTwoRoa(tab6, computed6);

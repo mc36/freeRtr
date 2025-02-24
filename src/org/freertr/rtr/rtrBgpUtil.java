@@ -950,9 +950,14 @@ public class rtrBgpUtil {
     public final static int commBlackhole = 0xffff029a;
 
     /**
-     * validity extended community
+     * roa validity extended community
      */
-    public final static int commValidity = 0x43000000;
+    public final static int commValidRoa = 0x43000000;
+
+    /**
+     * aspa validity extended community
+     */
+    public final static int commValidAspa = 0x43030000;
 
     /**
      * check if an unknown message type

@@ -1022,7 +1022,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                     return;
                 }
                 attr.validity = intSet.update(attr.validity);
-                tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
+                attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validity);
                 return;
             case setAggregator:
                 if (intSet.action == tabIntUpdater.actionType.nothing) {

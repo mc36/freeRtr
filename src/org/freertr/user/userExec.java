@@ -440,6 +440,7 @@ public class userExec {
         hl.add(null, "5 .            connection           list of neighbor connections");
         hl.add(null, "5 .            database4            list of ipv4 roas");
         hl.add(null, "5 .            database6            list of ipv6 roas");
+        hl.add(null, "5 .            databasea            list of aspas");
         hl.add(null, "5 6            lookup4              lookup ipv4 roa for prefix");
         hl.add(null, "6 .              <addr>             prefix to lookup");
         hl.add(null, "5 6            lookup6              lookup ipv6 roa for prefix");

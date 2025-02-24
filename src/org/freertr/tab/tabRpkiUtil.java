@@ -26,7 +26,7 @@ public class tabRpkiUtil {
      * @param src source
      * @return entries changed
      */
-    public final static int mergeTwo(tabGen<tabRpkiRoa> trg, tabGen<tabRpkiRoa> src) {
+    public final static int mergeTwoRoa(tabGen<tabRpkiRoa> trg, tabGen<tabRpkiRoa> src) {
         int c = 0;
         for (int i = 0; i < src.size(); i++) {
             tabRpkiRoa n = src.get(i);
@@ -34,6 +34,35 @@ public class tabRpkiUtil {
                 continue;
             }
             tabRpkiRoa o = trg.find(n);
+            if (o == null) {
+                trg.put(n);
+                c++;
+                continue;
+            }
+            if (n.isOtherBetter(o)) {
+                continue;
+            }
+            trg.put(n);
+            c++;
+        }
+        return c;
+    }
+
+    /**
+     * merge two tables
+     *
+     * @param trg target
+     * @param src source
+     * @return entries changed
+     */
+    public final static int mergeTwoAspa(tabGen<tabRpkiAspa> trg, tabGen<tabRpkiAspa> src) {
+        int c = 0;
+        for (int i = 0; i < src.size(); i++) {
+            tabRpkiAspa n = src.get(i);
+            if (n == null) {
+                continue;
+            }
+            tabRpkiAspa o = trg.find(n);
             if (o == null) {
                 trg.put(n);
                 c++;
@@ -195,7 +224,7 @@ public class tabRpkiUtil {
      * @param end last index
      * @return subtable
      */
-    public final static tabGen<tabRpkiRoa> getSubset(tabGen<tabRpkiRoa> tab, int beg, int end) {
+    public final static tabGen<tabRpkiRoa> getSubsetRoa(tabGen<tabRpkiRoa> tab, int beg, int end) {
         tabGen<tabRpkiRoa> res = new tabGen<tabRpkiRoa>();
         int siz = tab.size();
         if (end > siz) {
@@ -215,15 +244,57 @@ public class tabRpkiUtil {
     }
 
     /**
+     * get part of the table
+     *
+     * @param tab table to read
+     * @param beg first index
+     * @param end last index
+     * @return subtable
+     */
+    public final static tabGen<tabRpkiAspa> getSubsetAspa(tabGen<tabRpkiAspa> tab, int beg, int end) {
+        tabGen<tabRpkiAspa> res = new tabGen<tabRpkiAspa>();
+        int siz = tab.size();
+        if (end > siz) {
+            end = siz;
+        }
+        if (beg < 0) {
+            beg = 0;
+        }
+        for (int i = beg; i < end; i++) {
+            tabRpkiAspa ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.put(ntry);
+        }
+        return res;
+    }
+
+    /**
      * convert table header
      *
      * @param typ type to format
      * @return header
      */
-    public final static userFormat convertTableHead(int typ) {
+    public final static userFormat convertRoaHead(int typ) {
         switch (typ) {
             case 1:
                 return new userFormat("|", "prefix|max|ases|ago");
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * convert table header
+     *
+     * @param typ type to format
+     * @return header
+     */
+    public final static userFormat convertAspaHead(int typ) {
+        switch (typ) {
+            case 1:
+                return new userFormat("|", "prefix|ases|ago");
             default:
                 return null;
         }
@@ -236,7 +307,7 @@ public class tabRpkiUtil {
      * @param tab table to convert
      * @param typ type to format
      */
-    public final static void convertTableBody(userFormat lst, tabGen<tabRpkiRoa> tab, int typ) {
+    public final static void convertRoaBody(userFormat lst, tabGen<tabRpkiRoa> tab, int typ) {
         lst.clear();
         for (int i = 0; i < tab.size(); i++) {
             tabRpkiRoa prf = tab.get(i);
@@ -252,19 +323,25 @@ public class tabRpkiUtil {
     }
 
     /**
-     * convert the full table
+     * convert table body
      *
+     * @param lst string to update
      * @param tab table to convert
      * @param typ type to format
-     * @return converted table
      */
-    public final static userFormat convertTableFull(tabGen<tabRpkiRoa> tab, int typ) {
-        userFormat res = convertTableHead(typ);
-        if (res == null) {
-            return null;
+    public final static void convertAspaBody(userFormat lst, tabGen<tabRpkiAspa> tab, int typ) {
+        lst.clear();
+        for (int i = 0; i < tab.size(); i++) {
+            tabRpkiAspa prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            switch (typ) {
+                case 1:
+                    lst.add(prf.toShRoute());
+                    break;
+            }
         }
-        convertTableBody(res, tab, typ);
-        return res;
     }
 
     /**
@@ -360,7 +437,7 @@ public class tabRpkiUtil {
      */
     protected static void setValidityFixed(tabRouteAttr<addrIP> attr, int val) {
         attr.validity = val;
-        attr.extComm = tabRouteUtil.setValidityExtComm(attr.extComm, val);
+        attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, val);
     }
 
     /**
@@ -400,7 +477,7 @@ public class tabRpkiUtil {
             int o;
             switch (mod) {
                 case 1:
-                    o = tabRouteUtil.getValidityExtComm(attr.extComm);
+                    o = tabRouteUtil.getValidExtCommRoa(attr.extComm);
                     setValidityFixed(attr, o);
                     break;
                 case 2:
@@ -412,7 +489,7 @@ public class tabRpkiUtil {
                     setValidityFixed(attr, o);
                     break;
                 case 3:
-                    o = tabRouteUtil.getValidityExtComm(attr.extComm);
+                    o = tabRouteUtil.getValidExtCommRoa(attr.extComm);
                     if (o > 0) {
                         setValidityFixed(attr, o);
                         continue;

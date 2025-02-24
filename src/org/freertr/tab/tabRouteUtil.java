@@ -118,7 +118,7 @@ public class tabRouteUtil {
             }
             if (a.equals("validity")) {
                 attr.validity = bits.str2num(cmd.word());
-                tabRouteUtil.setValidityExtComm(attr.extComm, attr.validity);
+                attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validity);
                 continue;
             }
             if (a.equals("aggras")) {
@@ -1221,7 +1221,7 @@ public class tabRouteUtil {
      * @param lst list to read
      * @return found value plus one
      */
-    public static int getValidityExtComm(List<Long> lst) {
+    public static int getValidExtCommRoa(List<Long> lst) {
         if (lst == null) {
             return 0;
         }
@@ -1229,7 +1229,32 @@ public class tabRouteUtil {
             long o = lst.get(i);
             int p = (((int) o) & 0xff);
             o >>>= 32;
-            if (o != rtrBgpUtil.commValidity) {
+            if (o != rtrBgpUtil.commValidRoa) {
+                continue;
+            }
+            if (p > 2) {
+                p = 2;
+            }
+            return p + 1;
+        }
+        return 0;
+    }
+
+    /**
+     * get validity extended community
+     *
+     * @param lst list to read
+     * @return found value plus one
+     */
+    public static int getValidExtCommAspa(List<Long> lst) {
+        if (lst == null) {
+            return 0;
+        }
+        for (int i = 0; i < lst.size(); i++) {
+            long o = lst.get(i);
+            int p = (((int) o) & 0xff);
+            o >>>= 32;
+            if (o != rtrBgpUtil.commValidAspa) {
                 continue;
             }
             if (p > 2) {
@@ -1247,7 +1272,7 @@ public class tabRouteUtil {
      * @param val value to set plus one
      * @return updated list
      */
-    public static List<Long> setValidityExtComm(List<Long> lst, int val) {
+    public static List<Long> setValidExtCommRoa(List<Long> lst, int val) {
         if (lst == null) {
             if (val == 0) {
                 return null;
@@ -1256,7 +1281,7 @@ public class tabRouteUtil {
         }
         for (int i = lst.size() - 1; i >= 0; i--) {
             long o = lst.get(i);
-            if ((o >>> 32) != rtrBgpUtil.commValidity) {
+            if ((o >>> 32) != rtrBgpUtil.commValidRoa) {
                 continue;
             }
             lst.remove(i);
@@ -1264,7 +1289,38 @@ public class tabRouteUtil {
         if (val == 0) {
             return lst;
         }
-        long l = rtrBgpUtil.commValidity;
+        long l = rtrBgpUtil.commValidRoa;
+        l <<= 32;
+        l |= val - 1;
+        lst.add(0, l);
+        return lst;
+    }
+
+    /**
+     * set validity extended community
+     *
+     * @param lst list to read
+     * @param val value to set plus one
+     * @return updated list
+     */
+    public static List<Long> setValidExtCommAspa(List<Long> lst, int val) {
+        if (lst == null) {
+            if (val == 0) {
+                return null;
+            }
+            lst = new ArrayList<Long>();
+        }
+        for (int i = lst.size() - 1; i >= 0; i--) {
+            long o = lst.get(i);
+            if ((o >>> 32) != rtrBgpUtil.commValidAspa) {
+                continue;
+            }
+            lst.remove(i);
+        }
+        if (val == 0) {
+            return lst;
+        }
+        long l = rtrBgpUtil.commValidAspa;
         l <<= 32;
         l |= val - 1;
         lst.add(0, l);

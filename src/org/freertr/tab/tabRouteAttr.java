@@ -2141,7 +2141,7 @@ public class tabRouteAttr<T extends addrType> {
      */
     public String toShRpki() {
         int i = asPathEnd();
-        int o = tabRouteUtil.getValidityExtComm(extComm);
+        int o = tabRouteUtil.getValidExtCommRoa(extComm);
         return bits.num2str(i) + "|" + clntWhois.asn2name(i, true) + "|" + tabRpkiUtil.validity2string(validity) + "|" + tabRpkiUtil.validity2string(o) + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
     }
 

@@ -12,7 +12,7 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
 /**
- * path authorization entry
+ * provider authorization entry
  *
  * @author matecsaba
  */
