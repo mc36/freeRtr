@@ -423,6 +423,7 @@ public class userExec {
         hl.add(null, "4 5          <num:rtr>              process id");
         hl.add(null, "5 .            status               status of the process");
         hl.add(null, "5 .            summary              list of neighbors");
+        hl.add(null, "5 .            aspagraph            graph of neighbors");
         hl.add(null, "5 6            prefixes4            list ipv4 prefixes of asn");
         hl.add(null, "6 .              <num>              as number");
         hl.add(null, "5 6            prefixes6            list ipv6 prefixes of asn");

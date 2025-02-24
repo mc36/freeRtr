@@ -3896,6 +3896,11 @@ public class userShow {
             doShowAspas(r.rpki.getFinalTabAspa(), 1);
             return;
         }
+        if (a.equals("aspagraph")) {
+            tabGen<tabRpkiAspa> tab = r.rpki.getFinalTabAspa();
+            rdr.putStrArr(tabRpkiUtil.getAspaGraph(tab));
+            return;
+        }
         if (a.equals("prefixes4")) {
             tabGen<tabRpkiRoa> tab = r.rpki.getFinalTabRoa(4);
             tab = tabRpkiUtil.allowedRoa(tab, bits.str2num(cmd.word()));
