@@ -4968,6 +4968,34 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, res, 4);
             return;
         }
+        if (a.equals("validsum")) {
+            tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
+            if (rp == null) {
+                return;
+            }
+            int calc[] = new int[4];
+            int encod[] = new int[4];
+            int valid[] = new int[4];
+            for (int i = 0; i < tab.size(); i++) {
+                tabRouteEntry<addrIP> ntry = tab.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                tabRoautNtry ra = tabRoautUtil.lookup(rp, ntry.prefix);
+                int o = tabRoautUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                calc[o]++;
+                o = tabRouteUtil.getValidityExtComm(ntry.best.extComm);
+                encod[o]++;
+                o = ntry.best.validity;
+                valid[o]++;
+            }
+            userFormat sum = new userFormat("|", "result|calc|valid|encod");
+            for (int i = 0; i < calc.length; i++) {
+                sum.add(tabRoautUtil.validity2string(i) + "|" + calc[i] + "|" + valid[i] + "|" + encod[i]);
+            }
+            rdr.putStrTab(sum);
+            return;
+        }
         if (a.equals("validtest")) {
             tabGen<tabRoautNtry> rp = getRpkiTable(sfi);
             if (rp == null) {

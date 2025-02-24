@@ -479,8 +479,8 @@ public class secInfoUtl {
         List<String> res = new ArrayList<String>();
         res.add(s.trim());
         res.add("pth=" + wrk.ntry.best.asPathStr());
-        res.add("inf=" + wrk.ntry.best.asInfoStr());
         res.add("nam=" + wrk.ntry.best.asNameStr());
+        res.add("inf=" + wrk.ntry.best.asInfoStr());
         if (wrk.separate) {
             return res;
         }

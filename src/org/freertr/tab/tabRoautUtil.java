@@ -144,8 +144,8 @@ public class tabRoautUtil {
             end = cfgAll.accessSupnet6;
         }
         tabRoautNtry ntry = new tabRoautNtry();
+        ntry.prefix = pfx.copyBytes();
         for (int i = pfx.maskLen; i > end; i--) {
-            ntry.prefix = pfx.copyBytes();
             ntry.prefix.setMask(i);
             tabRoautNtry old = tab.find(ntry);
             if (old == null) {

@@ -855,6 +855,9 @@ public class userExec {
         hl.add(null, "7 8                <num>            as number");
         cfgRtr.getRouterList(hl, 6, "");
         hl.add(null, "9 .                <num:rtr>        process number");
+        hl.add(null, "6 7              validsum           count rpki lookups for a table");
+        cfgRtr.getRouterList(hl, 5, "");
+        hl.add(null, "8 .                <num:rtr>        process number");
         hl.add(null, "6 7              validtest          perform rpki lookups for a table");
         cfgRtr.getRouterList(hl, 5, "");
         hl.add(null, "8 .                <num:rtr>        process number");
