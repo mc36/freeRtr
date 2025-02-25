@@ -504,11 +504,11 @@ public class tabRpkiUtil {
      * @return calculated value
      */
     public final static int calcValidityAspa(tabRouteAttr<addrIP> attr, tabGen<tabRpkiAspa> tab) {
-        return 0;
 
 
 
     //////
+        return 0;
     }
 
     /**
