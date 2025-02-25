@@ -990,7 +990,9 @@ public class userExec {
         h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              locpref            list of routes with locpref");
         h.add(null, (b + 1) + " .                <str>            int matcher");
-        h.add(null, b + " " + (b + 1) + "              validity           list of routes with validity");
+        h.add(null, b + " " + (b + 1) + "              validroa           list of routes with validity");
+        h.add(null, (b + 1) + " .                <str>            int matcher");
+        h.add(null, b + " " + (b + 1) + "              validaspa          list of routes with validity");
         h.add(null, (b + 1) + " .                <str>            int matcher");
         h.add(null, b + " " + (b + 1) + "              aigp               list of routes with aigp");
         h.add(null, (b + 1) + " .                <str>            int matcher");

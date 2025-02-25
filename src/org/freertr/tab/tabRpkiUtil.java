@@ -512,7 +512,7 @@ public class tabRpkiUtil {
         }
         int numP = attr.pathSeq.get(0);
         tabRpkiAspa resP = lookupAspa(tab, numP);
-        boolean unkn = resP == null;
+        boolean unk = resP == null;
         boolean dir = true;
         boolean chg = false;
         for (int i = 1; i < attr.pathSeq.size(); i++) {
@@ -521,7 +521,7 @@ public class tabRpkiUtil {
                 continue;
             }
             tabRpkiAspa resC = lookupAspa(tab, numC);
-            unkn |= resC == null;
+            unk |= resC == null;
             if ((resC == null) || (resP == null)) {
                 numP = numC;
                 resP = resC;
@@ -546,7 +546,7 @@ public class tabRpkiUtil {
             dir = dnr;
             chg = true;
         }
-        if (unkn) {
+        if (unk) {
             return 2;
         }
         return 1;
