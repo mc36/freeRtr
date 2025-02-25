@@ -766,7 +766,7 @@ public class userClear {
             ifc.flapNow(i);
             return null;
         }
-        if (a.equals("mrtdump")) {
+        if (a.equals("savemrt")) {
             cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
             if (vrf == null) {
                 cmd.error("no such vrf");
@@ -827,7 +827,7 @@ public class userClear {
                 vrf.fwd4.natTrns.clear();
                 return null;
             }
-            if (a.equals("mrtdump")) {
+            if (a.equals("savemrt")) {
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
                 if (vrf == null) {
                     cmd.error("no such vrf");
@@ -954,7 +954,7 @@ public class userClear {
                 vrf.fwd6.natTrns.clear();
                 return null;
             }
-            if (a.equals("mrtdump")) {
+            if (a.equals("savemrt")) {
                 cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
                 if (vrf == null) {
                     cmd.error("no such vrf");

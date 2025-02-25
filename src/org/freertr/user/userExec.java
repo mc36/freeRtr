@@ -191,7 +191,7 @@ public class userExec {
     }
 
     private void getHelpClearIpX(userHelping hl) {
-        hl.add(null, "3 4        mrtdump               dump routing table");
+        hl.add(null, "3 4        savemrt               dump routing table");
         hl.add(null, "4 5          <name:vrf>          vrf name");
         hl.add(null, "5 .            <name>            name of file");
         hl.add(null, "3 4        route                 routing table");
@@ -2173,7 +2173,7 @@ public class userExec {
         hl.add(null, "2 3      interface                    disconnect interface");
         hl.add(null, "3 4,.      <name:ifc>                 name of interface");
         hl.add(null, "4 .          [num]                    downtime in milliseconds");
-        hl.add(null, "2 3      mrtdump                      dump routing table");
+        hl.add(null, "2 3      savemrt                      dump routing table");
         hl.add(null, "3 4        <name:vrf>                 vrf name");
         hl.add(null, "4 .          <name>                   name of file");
         hl.add(null, "2 3      ipv4                         ipv4 parameters");
