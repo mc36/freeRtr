@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
