@@ -501,21 +501,18 @@ public class tabRpkiUtil {
      *
      * @param attr attribute to set
      * @param tab provider authorization
+     * @param numP local asn
      * @return calculated value
      */
-    public final static int calcValidityAspa(tabRouteAttr<addrIP> attr, tabGen<tabRpkiAspa> tab) {
+    public final static int calcValidityAspa(tabRouteAttr<addrIP> attr, tabGen<tabRpkiAspa> tab, int numP) {
         if (attr.pathSeq == null) {
             return 2;
         }
-        if (attr.pathSeq.size() <= 2) {
-            return 2;
-        }
-        int numP = attr.pathSeq.get(0);
         tabRpkiAspa resP = lookupAspa(tab, numP);
         boolean unk = resP == null;
         boolean dir = true;
         boolean chg = false;
-        for (int i = 1; i < attr.pathSeq.size(); i++) {
+        for (int i = 0; i < attr.pathSeq.size(); i++) {
             int numC = attr.pathSeq.get(i);
             if (numC == numP) {
                 continue;
@@ -595,12 +592,13 @@ public class tabRpkiUtil {
     /**
      * set validity
      *
+     * @param asn local asn
      * @param ntry entry to update
      * @param roas route authorizations
      * @param aspas provider authorizations
      * @param mod mode to use
      */
-    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRpkiRoa> roas, tabGen<tabRpkiAspa> aspas, int mod) {
+    public static void setValidityRoute(int asn, tabRouteEntry<addrIP> ntry, tabGen<tabRpkiRoa> roas, tabGen<tabRpkiAspa> aspas, int mod) {
         switch (mod) {
             case 0:
                 return;
@@ -637,7 +635,7 @@ public class tabRpkiUtil {
             switch (mod) {
                 case 2:
                     int o = calcValidityRoa(ntry.prefix, attr, res);
-                    int p = calcValidityAspa(attr, aspas);
+                    int p = calcValidityAspa(attr, aspas, asn);
                     setValidityFixed(attr, o, p);
                     break;
                 case 3:
@@ -647,7 +645,7 @@ public class tabRpkiUtil {
                         o = calcValidityRoa(ntry.prefix, attr, res);
                     }
                     if (p < 1) {
-                        p = calcValidityAspa(attr, aspas);
+                        p = calcValidityAspa(attr, aspas, asn);
                     }
                     setValidityFixed(attr, o, p);
                     break;
@@ -661,12 +659,13 @@ public class tabRpkiUtil {
     /**
      * set validity
      *
+     * @param asn local asn
      * @param tab table to update
      * @param roas route authorizations
      * @param aspas provider authorizations
      * @param mod rpki mode to use
      */
-    public static void setValidityTable(tabRoute<addrIP> tab, tabGen<tabRpkiRoa> roas, tabGen<tabRpkiAspa> aspas, int mod) {
+    public static void setValidityTable(int asn, tabRoute<addrIP> tab, tabGen<tabRpkiRoa> roas, tabGen<tabRpkiAspa> aspas, int mod) {
         switch (mod) {
             case 0:
                 return;
@@ -694,7 +693,7 @@ public class tabRpkiUtil {
             if (ntry == null) {
                 continue;
             }
-            setValidityRoute(ntry, roas, aspas, mod);
+            setValidityRoute(asn, ntry, roas, aspas, mod);
         }
     }
 

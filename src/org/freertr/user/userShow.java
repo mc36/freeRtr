@@ -5026,7 +5026,7 @@ public class userShow {
                 ntry = ntry.copyBytes(tabRoute.addType.better);
                 tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
-                int p = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
+                int p = tabRpkiUtil.calcValidityAspa(ntry.best, ra, r.bgp.localAs);
                 tabRpkiUtil.updateJustValidity(ntry, o, p);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
@@ -5057,7 +5057,7 @@ public class userShow {
                 o = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
                 roaE[o]++;
                 roaV[ntry.best.validRoa]++;
-                o = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
+                o = tabRpkiUtil.calcValidityAspa(ntry.best, ra, r.bgp.localAs);
                 aspaC[o]++;
                 o = tabRouteUtil.getValidExtCommAspa(ntry.best.extComm);
                 aspaE[o]++;
@@ -5086,7 +5086,7 @@ public class userShow {
                 ntry = ntry.copyBytes(tabRoute.addType.better);
                 tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
-                int p = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
+                int p = tabRpkiUtil.calcValidityAspa(ntry.best, ra, r.bgp.localAs);
                 tabRpkiUtil.updateJustValidity(ntry, o, p);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
@@ -5113,7 +5113,7 @@ public class userShow {
                     res.add(tabRoute.addType.better, ntry, false, false);
                     continue;
                 }
-                o = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
+                o = tabRpkiUtil.calcValidityAspa(ntry.best, ra, r.bgp.localAs);
                 p = tabRouteUtil.getValidExtCommAspa(ntry.best.extComm);
                 if (o != p) {
                     res.add(tabRoute.addType.better, ntry, false, false);

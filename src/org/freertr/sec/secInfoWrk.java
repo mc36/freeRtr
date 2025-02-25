@@ -387,7 +387,7 @@ public class secInfoWrk implements Runnable {
             vldIp = vldCfg.getRouter();
             tabRpkiRoa rpkiV = secInfoUtl.findOneValidRoa(ntry, vldIp, fwd);
             rpkiR = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rpkiV);
-            rpkiA = tabRpkiUtil.calcValidityAspa(ntry.best, secInfoUtl.findOneValidAspa(vldIp, fwd));
+            rpkiA = tabRpkiUtil.calcValidityAspa(ntry.best, secInfoUtl.findOneValidAspa(vldIp, fwd), 0);
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }

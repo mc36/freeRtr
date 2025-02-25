@@ -102,6 +102,7 @@ server rpki r
  provider 12 13
  provider 11 12
  provider 2 11
+ provider 1 3
  exit
 router rpki4 1
  vrf v1

@@ -1857,16 +1857,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             return;
         }
         if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiA, lower.rpkiP, rpkiIn);
+            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiA, lower.rpkiP, rpkiIn);
         }
         if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiO, lower.rpkiP, rpkiIn);
+            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiO, lower.rpkiP, rpkiIn);
         }
         if ((afi == lower.afiVpnU) || (afi == lower.afiVpnM)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiA, lower.rpkiP, vpkiIn);
+            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiA, lower.rpkiP, vpkiIn);
         }
         if ((afi == lower.afiVpoU) || (afi == lower.afiVpoM)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiO, lower.rpkiP, vpkiIn);
+            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiO, lower.rpkiP, vpkiIn);
         }
     }
 
@@ -1881,7 +1881,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (lower.rpkiR == null) {
             return;
         }
-        tabRpkiUtil.setValidityTable(tab, roa, lower.rpkiP, mod);
+        tabRpkiUtil.setValidityTable(localAs, tab, roa, lower.rpkiP, mod);
     }
 
     /**
