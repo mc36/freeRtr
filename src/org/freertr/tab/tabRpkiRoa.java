@@ -1,5 +1,7 @@
 package org.freertr.tab;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
@@ -35,7 +37,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
     /**
      * allowed asn
      */
-    public tabGen<Integer> asns;
+    public List<Integer> asns;
 
     /**
      * preference
@@ -85,7 +87,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
         n.prefix = prefix.copyBytes();
         n.max = max;
         if (asns != null) {
-            n.asns = new tabGen<Integer>(asns);
+            n.asns = new ArrayList<Integer>(asns);
         }
         n.distan = distan;
         n.srcIP = srcIP.copyBytes();
@@ -175,7 +177,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
             return true;
         }
         max = bits.str2num(cmd.word());
-        asns = new tabGen<Integer>();
+        asns = new ArrayList<Integer>();
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {

@@ -1,5 +1,6 @@
 package org.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgIfc;
@@ -315,7 +316,11 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             if (ntry == null) {
                 return 0;
             }
-            ntry.asns.del(pck.roa.distan);
+            int i = ntry.asns.indexOf(pck.roa.distan);
+            if (i < 0) {
+                return 1;
+            }
+            ntry.asns.remove(i);
             if (ntry.asns.size() > 0) {
                 return 1;
             }
@@ -326,11 +331,14 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             if (pck.roa.max > ntry.max) {
                 ntry.max = pck.roa.max;
             }
+            if (ntry.asns.indexOf(pck.roa.distan) < 0) {
+                return 1;
+            }
             ntry.asns.add(pck.roa.distan);
             return 1;
         }
         ntry = pck.roa;
-        ntry.asns = new tabGen<Integer>();
+        ntry.asns = new ArrayList<Integer>();
         ntry.asns.add(pck.roa.distan);
         ntry.time = bits.getTime();
         ntry.distan = preference;
