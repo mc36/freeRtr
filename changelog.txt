@@ -16476,3 +16476,6 @@ qc pass: bgp routepolicy filtering with aspa validity with soft-reconfig
 ---------------------------------- 2025-02-25 09:57:40 25.2.25
 no qc pass: bgp rpki roa
 qc pass: bgp roa rpki
+---------------------------------- 2025-02-25 14:45:48 25.2.25
+qc pass: bgp aspa rpki valid
+qc pass: bgp aspa rpki invalid

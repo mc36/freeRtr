@@ -3123,6 +3123,8 @@ qc pass: bgp change in aspa validity
 qc pass: bgp change in aspa validity with soft-reconfig
 qc pass: bgp routepolicy filtering with aspa validity
 qc pass: bgp routepolicy filtering with aspa validity with soft-reconfig
+qc pass: bgp aspa rpki valid
+qc pass: bgp aspa rpki invalid
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
