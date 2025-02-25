@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgIfc;
@@ -284,11 +283,8 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 return 0;
             }
             for (int i = 0; i < pck.aspa.provs.size(); i++) {
-                int o = ntry.provs.indexOf(pck.aspa.provs.get(i));
-                if (o < 0) {
-                    continue;
-                }
-                ntry.provs.remove(o);
+                int o = pck.aspa.provs.get(i);
+                ntry.provs.del(o);
             }
             if (ntry.provs.size() > 0) {
                 return 1;
@@ -298,12 +294,8 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         }
         if (ntry != null) {
             for (int i = 0; i < pck.aspa.provs.size(); i++) {
-                int p = pck.aspa.provs.get(i);
-                int o = ntry.provs.indexOf(p);
-                if (o >= 0) {
-                    continue;
-                }
-                ntry.provs.add(p);
+                int o = pck.aspa.provs.get(i);
+                ntry.provs.add(o);
             }
             return 1;
         }
@@ -323,11 +315,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             if (ntry == null) {
                 return 0;
             }
-            int i = ntry.asns.indexOf(pck.roa.distan);
-            if (i < 0) {
-                return 0;
-            }
-            ntry.asns.remove(i);
+            ntry.asns.del(pck.roa.distan);
             if (ntry.asns.size() > 0) {
                 return 1;
             }
@@ -338,15 +326,11 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             if (pck.roa.max > ntry.max) {
                 ntry.max = pck.roa.max;
             }
-            int i = ntry.asns.indexOf(pck.roa.distan);
-            if (i >= 0) {
-                return 0;
-            }
             ntry.asns.add(pck.roa.distan);
             return 1;
         }
         ntry = pck.roa;
-        ntry.asns = new ArrayList<Integer>();
+        ntry.asns = new tabGen<Integer>();
         ntry.asns.add(pck.roa.distan);
         ntry.time = bits.getTime();
         ntry.distan = preference;

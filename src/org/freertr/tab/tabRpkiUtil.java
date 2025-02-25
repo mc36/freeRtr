@@ -92,7 +92,7 @@ public class tabRpkiUtil {
         tabGen<tabRpkiRoa> res = new tabGen<tabRpkiRoa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiRoa ntry = src.get(i);
-            if (ntry.asns.indexOf(asn) < 0) {
+            if (ntry.asns.find(asn) == null) {
                 continue;
             }
             res.add(ntry);
@@ -111,7 +111,7 @@ public class tabRpkiUtil {
         tabGen<tabRpkiAspa> res = new tabGen<tabRpkiAspa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiAspa ntry = src.get(i);
-            if (ntry.provs.indexOf(asn) < 0) {
+            if (ntry.provs.find(asn) == null) {
                 continue;
             }
             res.add(ntry);
@@ -527,8 +527,8 @@ public class tabRpkiUtil {
                 resP = resC;
                 continue;
             }
-            boolean upr = resC.provs.indexOf(numP) >= 0;
-            boolean dnr = resP.provs.indexOf(numC) >= 0;
+            boolean upr = resC.provs.find(numP) != null;
+            boolean dnr = resP.provs.find(numC) != null;
             numP = numC;
             resP = resC;
             if ((upr == false) && (dnr == false)) {
@@ -572,7 +572,7 @@ public class tabRpkiUtil {
             return 3;
         }
         int asn = attr.asPathEnd();
-        if (res.asns.indexOf(asn) < 0) {
+        if (res.asns.find(asn) == null) {
             return 3;
         }
         return 1;

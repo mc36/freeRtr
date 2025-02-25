@@ -259,7 +259,7 @@ public class rtrRpkiSpeak {
                 break;
             case msgAspaPdu:
                 aspa = new tabRpkiAspa();
-                aspa.provs = new ArrayList<Integer>();
+                aspa.provs = new tabGen<Integer>();
                 withdraw = (sess & 0x100) == 0; // flags
                 aspa.cust = pck.msbGetD(0);
                 for (;;) {
