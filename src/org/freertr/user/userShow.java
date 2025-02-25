@@ -3973,6 +3973,38 @@ public class userShow {
             doShowIpXrpkiComp(r.rpki, -1);
             return;
         }
+        if (a.equals("evaluate")) {
+            int loc = bits.str2num(cmd.word());
+            addrPrefix<addrIP> pfx = addrPrefix.str2ip(cmd.word());
+            if (pfx == null) {
+                cmd.error("bad prefix");
+                return;
+            }
+            tabRouteAttr<addrIP> ntry = new tabRouteAttr<addrIP>();
+            ntry.pathSeq = new ArrayList<Integer>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                ntry.pathSeq.add(bits.str2num(a));
+            }
+            int ver;
+            if (pfx.network.isIPv4()) {
+                ver = 4;
+            } else {
+                ver = 6;
+            }
+            tabGen<tabRpkiRoa> roas = r.rpki.getFinalTabRoa(ver);
+            tabGen<tabRpkiAspa> aspas = r.rpki.getFinalTabAspa();
+            tabRpkiRoa rv = tabRpkiUtil.lookupRoa(roas, pfx);
+            int o = tabRpkiUtil.calcValidityRoa(pfx, ntry, rv);
+            int p = tabRpkiUtil.calcValidityAspa(ntry, aspas, loc);
+            cmd.error("asn=" + clntWhois.asn2mixed(loc, true) + " pfx=" + addrPrefix.ip2str(pfx));
+            cmd.error("path=" + ntry.asMixedStr());
+            cmd.error("roa=" + tabRpkiUtil.validity2string(o) + " aspa=" + tabRpkiUtil.validity2string(p));
+            return;
+        }
         if (a.equals("lookup4")) {
             addrPrefix<addrIP> pfx = addrPrefix.str2ip(cmd.word());
             if (pfx == null) {

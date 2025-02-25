@@ -452,6 +452,10 @@ public class userExec {
         hl.add(null, "5 .            database4            list of ipv4 roas");
         hl.add(null, "5 .            database6            list of ipv6 roas");
         hl.add(null, "5 .            databasep            list of aspas");
+        hl.add(null, "5 6            evaluate             evaluate prefix");
+        hl.add(null, "6 7              <num>              local as");
+        hl.add(null, "7 8                <addr>           prefix");
+        hl.add(null, "8 8,.                <num>          as path");
         hl.add(null, "5 6            lookup4              lookup ipv4 roa for prefix");
         hl.add(null, "6 .              <addr>             prefix to lookup");
         hl.add(null, "5 6            lookup6              lookup ipv6 roa for prefix");
