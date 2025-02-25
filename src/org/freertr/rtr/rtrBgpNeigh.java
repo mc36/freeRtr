@@ -621,33 +621,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @param safi safi to refresh
      */
     public void saveTable(RandomAccessFile fil, int safi) {
-        saveTable(fil, safi, conn.getLearned(safi), false);
-        saveTable(fil, safi, conn.getAdverted(safi), true);
-    }
-
-    private void saveTable(RandomAccessFile fil, int safi, tabRoute<addrIP> table, boolean dir) {
-        if (table == null) {
-            return;
-        }
-        packHolder pck = new packHolder(true, true);
-        packHolder tmp = new packHolder(true, true);
-        byte[] hdr = new byte[128];
-        for (int i = 0; i < table.size(); i++) {
-            tabRouteEntry<addrIP> ntry = table.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            rtrBgpDump.witeFormat(safi, ntry, lower.fwdCore.ipVersion, pck, tmp, true);
-            int len = rtrBgpMrt.putMrtHeader(hdr, ntry.best.time, dir, remoteAs, localAs, peerAddr, localAddr, pck.dataSize());
-            pck.putCopy(hdr, 0, 0, len);
-            pck.putSkip(len);
-            pck.merge2beg();
-            byte[] buf = pck.getCopy();
-            try {
-                fil.write(buf);
-            } catch (Exception e) {
-            }
-        }
+        rtrBgpMrt.dumpTable(fil, safi, conn.getLearned(safi), false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
+        rtrBgpMrt.dumpTable(fil, safi, conn.getAdverted(safi), true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
     }
 
     public void doTempCfg(String cmd, boolean negated) {

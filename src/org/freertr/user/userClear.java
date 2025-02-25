@@ -60,6 +60,8 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.enc.encXml;
 import org.freertr.prt.prtRedun;
+import org.freertr.rtr.rtrBgpMrt;
+import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.rtr.rtrRiftIface;
 import org.freertr.rtr.rtrRpkiNeigh;
 import org.freertr.serv.servAmt;
@@ -764,6 +766,29 @@ public class userClear {
             ifc.flapNow(i);
             return null;
         }
+        if (a.equals("mrtdump")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return null;
+            }
+            a = cmd.word();
+            cmd.error("opening " + a);
+            RandomAccessFile fs = null;
+            try {
+                fs = new RandomAccessFile(new File(a), "rw");
+                fs.setLength(0);
+            } catch (Exception e) {
+                return null;
+            }
+            rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
+            rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
+            try {
+                fs.close();
+            } catch (Exception e) {
+            }
+            return null;
+        }
         if (a.equals("ipv4")) {
             a = cmd.word();
             if (a.equals("arp")) {
@@ -800,6 +825,28 @@ public class userClear {
                     return null;
                 }
                 vrf.fwd4.natTrns.clear();
+                return null;
+            }
+            if (a.equals("mrtdump")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return null;
+                }
+                a = cmd.word();
+                cmd.error("opening " + a);
+                RandomAccessFile fs = null;
+                try {
+                    fs = new RandomAccessFile(new File(a), "rw");
+                    fs.setLength(0);
+                } catch (Exception e) {
+                    return null;
+                }
+                rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
+                try {
+                    fs.close();
+                } catch (Exception e) {
+                }
                 return null;
             }
             if (a.equals("bgp")) {
@@ -905,6 +952,28 @@ public class userClear {
                     return null;
                 }
                 vrf.fwd6.natTrns.clear();
+                return null;
+            }
+            if (a.equals("mrtdump")) {
+                cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+                if (vrf == null) {
+                    cmd.error("no such vrf");
+                    return null;
+                }
+                a = cmd.word();
+                cmd.error("opening " + a);
+                RandomAccessFile fs = null;
+                try {
+                    fs = new RandomAccessFile(new File(a), "rw");
+                    fs.setLength(0);
+                } catch (Exception e) {
+                    return null;
+                }
+                rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
+                try {
+                    fs.close();
+                } catch (Exception e) {
+                }
                 return null;
             }
             if (a.equals("bgp")) {

@@ -7,6 +7,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.pack.packHolder;
+import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logFil;
@@ -126,11 +127,11 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
     public rtrBgpMrt(String nam) {
         dumpName = nam;
     }
-
+    
     public String toString() {
         return dumpName;
     }
-
+    
     public int compareTo(rtrBgpMrt o) {
         return dumpName.compareTo(o.dumpName);
     }
@@ -386,6 +387,44 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
     }
 
     /**
+     * dump route table
+     *
+     * @param fil file to use
+     * @param safi safi to use
+     * @param tab table to dump
+     * @param dir direction
+     * @param ipv ip version
+     * @param asR remote as
+     * @param asL local as
+     * @param adrR peer address
+     * @param adrL local address
+     */
+    public static void dumpTable(RandomAccessFile fil, int safi, tabRoute<addrIP> tab, boolean dir, int ipv, int asR, int asL, addrIP adrR, addrIP adrL) {
+        if (tab == null) {
+            return;
+        }
+        packHolder pck = new packHolder(true, true);
+        packHolder tmp = new packHolder(true, true);
+        byte[] hdr = new byte[128];
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            rtrBgpDump.witeFormat(safi, ntry, ipv, pck, tmp, true);
+            int len = rtrBgpMrt.putMrtHeader(hdr, ntry.best.time, dir, asR, asL, adrR, adrL, pck.dataSize());
+            pck.putCopy(hdr, 0, 0, len);
+            pck.putSkip(len);
+            pck.merge2beg();
+            byte[] buf = pck.getCopy();
+            try {
+                fil.write(buf);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    /**
      * got update
      *
      * @param dir direction: false=rx, true=tx
@@ -405,5 +444,5 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
         len += 3;
         fileHandle.add(hdr, 0, len, dat, 0, dat.length);
     }
-
+    
 }
