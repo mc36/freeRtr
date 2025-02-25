@@ -26,6 +26,7 @@ import org.freertr.tab.tabRpkiUtil;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.tab.tabRpkiAspa;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
@@ -79,7 +80,7 @@ public class secInfoUtl {
      * @param fwd forwarder to use
      * @return route entry, null if nothing
      */
-    public final static tabRpkiRoa findOneValid(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
+    public final static tabRpkiRoa findOneValidRoa(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
         if (pfx == null) {
             return null;
         }
@@ -98,6 +99,24 @@ public class secInfoUtl {
         }
         ntry = ntry.copyBytes();
         return ntry;
+    }
+
+    /**
+     * find one route
+     *
+     * @param rtr router to use
+     * @param fwd forwarder to use
+     * @return route entry, null if nothing
+     */
+    public final static tabGen<tabRpkiAspa> findOneValidAspa(ipRtr rtr, ipFwd fwd) {
+        if (fwd == null) {
+            return null;
+        }
+        if (rtr == null) {
+            return null;
+        }
+        rtrRpki rpki = (rtrRpki) rtr;
+        return rpki.getFinalTabAspa();
     }
 
     /**
@@ -474,7 +493,7 @@ public class secInfoUtl {
         }
         s += " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix);
         if (wrk.vldIp != null) {
-            s += " rpki=" + tabRpkiUtil.validity2string(wrk.roav);
+            s += " roa=" + tabRpkiUtil.validity2string(wrk.rpkiR) + " aspa=" + tabRpkiUtil.validity2string(wrk.rpkiA);
         }
         List<String> res = new ArrayList<String>();
         res.add(s.trim());

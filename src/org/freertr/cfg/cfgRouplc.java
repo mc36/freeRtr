@@ -148,7 +148,10 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     aigp                match accumulated igp");
         l.add(null, "3 .       <num>             aigp");
         l.add(null, "3 .       all               any value");
-        l.add(null, "2 3     validity            match validity status");
+        l.add(null, "2 3     validroa            match roa validity status");
+        l.add(null, "3 .       <num>             validity");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     validaspa           match aspa validity status");
         l.add(null, "3 .       <num>             validity");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     aggregator          match aggregator");
@@ -279,7 +282,10 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, "2 3     aigp                set accumulated igp");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
-        l.add(null, "2 3     validity            set validity status");
+        l.add(null, "2 3     validroa            set roa validity status");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "2 3     validaspa           set aspa validity status");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
         l.add(null, "2 3     aggregator          set aggregator");
@@ -504,8 +510,16 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
             }
             return;
         }
-        if (a.equals("validity")) {
-            ntry.ifMode = tabRtrplcN.ifType.validity;
+        if (a.equals("validroa")) {
+            ntry.ifMode = tabRtrplcN.ifType.validroa;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("validaspa")) {
+            ntry.ifMode = tabRtrplcN.ifType.validaspa;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
@@ -923,8 +937,16 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
                 }
                 return;
             }
-            if (a.equals("validity")) {
-                ntry.doMode = tabRtrplcN.doType.setValidity;
+            if (a.equals("validroa")) {
+                ntry.doMode = tabRtrplcN.doType.setValidRoa;
+                if (ntry.intSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("validaspa")) {
+                ntry.doMode = tabRtrplcN.doType.setValidAspa;
                 if (ntry.intSet.fromString(cmd.getRemaining())) {
                     cmd.error("invalid action");
                     return;

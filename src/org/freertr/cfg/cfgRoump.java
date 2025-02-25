@@ -65,7 +65,8 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         "route-map .*!" + cmds.tabulator + "sequence .* match distance all",
         "route-map .*!" + cmds.tabulator + "sequence .* match locpref all",
         "route-map .*!" + cmds.tabulator + "sequence .* match aigp all",
-        "route-map .*!" + cmds.tabulator + "sequence .* match validity all",
+        "route-map .*!" + cmds.tabulator + "sequence .* match validroa all",
+        "route-map .*!" + cmds.tabulator + "sequence .* match validaspa all",
         "route-map .*!" + cmds.tabulator + "sequence .* match aggregator all",
         "route-map .*!" + cmds.tabulator + "sequence .* match customer all",
         "route-map .*!" + cmds.tabulator + "sequence .* match pathlen all",
@@ -110,7 +111,8 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         "route-map .*!" + cmds.tabulator + "sequence .* set distance leave",
         "route-map .*!" + cmds.tabulator + "sequence .* set locpref leave",
         "route-map .*!" + cmds.tabulator + "sequence .* set aigp leave",
-        "route-map .*!" + cmds.tabulator + "sequence .* set validity leave",
+        "route-map .*!" + cmds.tabulator + "sequence .* set validroa leave",
+        "route-map .*!" + cmds.tabulator + "sequence .* set validaspa leave",
         "route-map .*!" + cmds.tabulator + "sequence .* set aggregator leave null",
         "route-map .*!" + cmds.tabulator + "sequence .* set connector null",
         "route-map .*!" + cmds.tabulator + "sequence .* set aslimit leave leave",
@@ -228,7 +230,10 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     aigp                match accumulated igp");
         l.add(null, "3 .       <num>             aigp");
         l.add(null, "3 .       all               any value");
-        l.add(null, "2 3     validity            match validity status");
+        l.add(null, "2 3     validroa            match roa validity status");
+        l.add(null, "3 .       <num>             validity");
+        l.add(null, "3 .       all               any value");
+        l.add(null, "2 3     validaspa           match aspa validity status");
         l.add(null, "3 .       <num>             validity");
         l.add(null, "3 .       all               any value");
         l.add(null, "2 3     aggregator          match aggregator");
@@ -352,7 +357,10 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, "2 3     aigp                set accumulated igp");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
-        l.add(null, "2 3     validity            set validity status");
+        l.add(null, "2 3     validroa            set roa validity status");
+        l.add(null, "3 .       leave             leave value unchanged");
+        l.add(null, "3 .       <num>             value");
+        l.add(null, "2 3     validaspa           set aspa validity status");
         l.add(null, "3 .       leave             leave value unchanged");
         l.add(null, "3 .       <num>             value");
         l.add(null, "2 3     aggregator          set aggregator");

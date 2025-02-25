@@ -457,11 +457,12 @@ public class tabRpkiUtil {
      * set validity
      *
      * @param ntry entry to update
-     * @param val result code
+     * @param roa result code
+     * @param aspa result code
      */
-    protected static void setValidityFixed(tabRouteEntry<addrIP> ntry, int val) {
+    protected static void setValidityFixed(tabRouteEntry<addrIP> ntry, int roa, int aspa) {
         for (int i = 0; i < ntry.alts.size(); i++) {
-            setValidityFixed(ntry.alts.get(i), val);
+            setValidityFixed(ntry.alts.get(i), roa, aspa);
         }
         ntry.selectBest();
     }
@@ -470,11 +471,12 @@ public class tabRpkiUtil {
      * set validity
      *
      * @param tab table to update
-     * @param val result code
+     * @param roa result code
+     * @param aspa result code
      */
-    protected static void setValidityFixed(tabRoute<addrIP> tab, int val) {
+    protected static void setValidityFixed(tabRoute<addrIP> tab, int roa, int aspa) {
         for (int i = 0; i < tab.size(); i++) {
-            setValidityFixed(tab.get(i), val);
+            setValidityFixed(tab.get(i), roa, aspa);
         }
     }
 
@@ -482,24 +484,42 @@ public class tabRpkiUtil {
      * set validity
      *
      * @param ntry entry to update
-     * @param val result code
+     * @param roa result code
+     * @param aspa result code
      */
-    public static void updateJustValidity(tabRouteEntry<addrIP> ntry, int val) {
+    public static void updateJustValidity(tabRouteEntry<addrIP> ntry, int roa, int aspa) {
         for (int i = 0; i < ntry.alts.size(); i++) {
-            ntry.alts.get(i).validity = val;
+            tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            attr.validRoa = roa;
+            attr.validAspa = aspa;
         }
         ntry.selectBest();
     }
 
     /**
-     * set validity
+     * compute aspa validity
+     *
+     * @param attr attribute to set
+     * @param tab provider authorization
+     * @return calculated value
+     */
+    public final static int calcValidityAspa(tabRouteAttr<addrIP> attr, tabGen<tabRpkiAspa> tab) {
+        return 0;
+
+
+
+    //////
+    }
+
+    /**
+     * compute roa validity
      *
      * @param prfx prefix to check
      * @param attr attribute to set
      * @param res route authorization
      * @return calculated value
      */
-    public final static int calcValidityValue(addrPrefix<addrIP> prfx, tabRouteAttr<addrIP> attr, tabRpkiRoa res) {
+    public final static int calcValidityRoa(addrPrefix<addrIP> prfx, tabRouteAttr<addrIP> attr, tabRpkiRoa res) {
         if (res == null) {
             return 2;
         }
@@ -521,11 +541,14 @@ public class tabRpkiUtil {
      * set validity
      *
      * @param attr entry to update
-     * @param val result code
+     * @param roa result code
+     * @param aspa result code
      */
-    protected static void setValidityFixed(tabRouteAttr<addrIP> attr, int val) {
-        attr.validity = val;
-        attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, val);
+    protected static void setValidityFixed(tabRouteAttr<addrIP> attr, int roa, int aspa) {
+        attr.validRoa = roa;
+        attr.validAspa = aspa;
+        attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, roa);
+        attr.extComm = tabRouteUtil.setValidExtCommAspa(attr.extComm, aspa);
     }
 
     /**
@@ -533,61 +556,59 @@ public class tabRpkiUtil {
      *
      * @param ntry entry to update
      * @param roas route authorizations
+     * @param aspas provider authorizations
      * @param mod mode to use
      */
-    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRpkiRoa> roas, int mod) {
+    public static void setValidityRoute(tabRouteEntry<addrIP> ntry, tabGen<tabRpkiRoa> roas, tabGen<tabRpkiAspa> aspas, int mod) {
         switch (mod) {
             case 0:
                 return;
             case 1:
+                for (int i = 0; i < ntry.alts.size(); i++) {
+                    tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+                    int o = tabRouteUtil.getValidExtCommRoa(attr.extComm);
+                    int p = tabRouteUtil.getValidExtCommAspa(attr.extComm);
+                    setValidityFixed(attr, o, p);
+                }
+                ntry.selectBest();
+                return;
             case 2:
             case 3:
                 break;
             case 4:
-                setValidityFixed(ntry, 0);
+                setValidityFixed(ntry, 0, 0);
                 return;
             case 5:
-                setValidityFixed(ntry, 1);
+                setValidityFixed(ntry, 1, 1);
                 return;
             case 6:
-                setValidityFixed(ntry, 3);
+                setValidityFixed(ntry, 3, 3);
                 return;
             case 7:
-                setValidityFixed(ntry, 2);
+                setValidityFixed(ntry, 2, 2);
                 return;
             default:
                 return;
         }
-        boolean lok = false;
-        tabRpkiRoa res = null;
+        tabRpkiRoa res = lookupRoa(roas, ntry.prefix);
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-            int o;
             switch (mod) {
-                case 1:
-                    o = tabRouteUtil.getValidExtCommRoa(attr.extComm);
-                    setValidityFixed(attr, o);
-                    break;
                 case 2:
-                    if (!lok) {
-                        res = lookupRoa(roas, ntry.prefix);
-                        lok = true;
-                    }
-                    o = calcValidityValue(ntry.prefix, attr, res);
-                    setValidityFixed(attr, o);
+                    int o = calcValidityRoa(ntry.prefix, attr, res);
+                    int p = calcValidityAspa(attr, aspas);
+                    setValidityFixed(attr, o, p);
                     break;
                 case 3:
                     o = tabRouteUtil.getValidExtCommRoa(attr.extComm);
-                    if (o > 0) {
-                        setValidityFixed(attr, o);
-                        continue;
+                    p = tabRouteUtil.getValidExtCommAspa(attr.extComm);
+                    if (o < 1) {
+                        o = calcValidityRoa(ntry.prefix, attr, res);
                     }
-                    if (!lok) {
-                        res = lookupRoa(roas, ntry.prefix);
-                        lok = true;
+                    if (p < 1) {
+                        p = calcValidityAspa(attr, aspas);
                     }
-                    o = calcValidityValue(ntry.prefix, attr, res);
-                    setValidityFixed(attr, o);
+                    setValidityFixed(attr, o, p);
                     break;
                 default:
                     continue;
@@ -601,9 +622,10 @@ public class tabRpkiUtil {
      *
      * @param tab table to update
      * @param roas route authorizations
+     * @param aspas provider authorizations
      * @param mod rpki mode to use
      */
-    public static void setValidityTable(tabRoute<addrIP> tab, tabGen<tabRpkiRoa> roas, int mod) {
+    public static void setValidityTable(tabRoute<addrIP> tab, tabGen<tabRpkiRoa> roas, tabGen<tabRpkiAspa> aspas, int mod) {
         switch (mod) {
             case 0:
                 return;
@@ -612,16 +634,16 @@ public class tabRpkiUtil {
             case 3:
                 break;
             case 4:
-                setValidityFixed(tab, 0);
+                setValidityFixed(tab, 0, 0);
                 return;
             case 5:
-                setValidityFixed(tab, 1);
+                setValidityFixed(tab, 1, 1);
                 return;
             case 6:
-                setValidityFixed(tab, 3);
+                setValidityFixed(tab, 3, 3);
                 return;
             case 7:
-                setValidityFixed(tab, 2);
+                setValidityFixed(tab, 2, 2);
                 return;
             default:
                 return;
@@ -631,7 +653,7 @@ public class tabRpkiUtil {
             if (ntry == null) {
                 continue;
             }
-            setValidityRoute(ntry, roas, mod);
+            setValidityRoute(ntry, roas, aspas, mod);
         }
     }
 

@@ -58,7 +58,8 @@ public class tabRouteUtil {
         t.addLine("set nexthop " + attr.nextHop);
         t.addLine("set oldhop " + attr.oldHop);
         t.addLine("set distance " + attr.distance);
-        t.addLine("set validity " + attr.validity);
+        t.addLine("set validroa " + attr.validRoa);
+        t.addLine("set validaspa " + attr.validAspa);
         t.addLine("set aggras " + attr.aggrAs);
         t.addLine("set aggrtr " + attr.aggrRtr);
         t.addLine("set customer " + attr.onlyCust);
@@ -116,9 +117,14 @@ public class tabRouteUtil {
                 attr.bandwidth = bits.str2num(cmd.word());
                 continue;
             }
-            if (a.equals("validity")) {
-                attr.validity = bits.str2num(cmd.word());
-                attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validity);
+            if (a.equals("validroa")) {
+                attr.validRoa = bits.str2num(cmd.word());
+                attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validRoa);
+                continue;
+            }
+            if (a.equals("validaspa")) {
+                attr.validAspa = bits.str2num(cmd.word());
+                attr.extComm = tabRouteUtil.setValidExtCommAspa(attr.extComm, attr.validAspa);
                 continue;
             }
             if (a.equals("aggras")) {

@@ -161,7 +161,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         /**
          * set validity
          */
-        setValidity,
+        setValidRoa,
+        /**
+         * set validity
+         */
+        setValidAspa,
         /**
          * set aggregator
          */
@@ -331,7 +335,11 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
         /**
          * validity
          */
-        validity,
+        validroa,
+        /**
+         * validity
+         */
+        validaspa,
         /**
          * aggregator
          */
@@ -590,8 +598,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set locpref " + intSet;
             case setAccIgp:
                 return "set aigp " + intSet;
-            case setValidity:
-                return "set validity " + intSet;
+            case setValidRoa:
+                return "set validroa " + intSet;
+            case setValidAspa:
+                return "set validaspa " + intSet;
             case setAggregator:
                 return "set aggregator " + intSet + " " + addrSet;
             case setConnect:
@@ -700,8 +710,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "locpref " + intMatch;
             case accigp:
                 return "aigp " + intMatch;
-            case validity:
-                return "validity " + intMatch;
+            case validroa:
+                return "validroa " + intMatch;
+            case validaspa:
+                return "validaspa " + intMatch;
             case aggregator:
                 return "aggregator " + intMatch;
             case customer:
@@ -862,8 +874,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.locPref);
             case accigp:
                 return intMatch.matches(net.best.accIgp);
-            case validity:
-                return intMatch.matches(net.best.validity);
+            case validroa:
+                return intMatch.matches(net.best.validRoa);
+            case validaspa:
+                return intMatch.matches(net.best.validAspa);
             case aggregator:
                 return intMatch.matches(net.best.aggrAs);
             case customer:
@@ -1017,12 +1031,19 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case setAccIgp:
                 attr.accIgp = intSet.update(attr.accIgp);
                 return;
-            case setValidity:
+            case setValidRoa:
                 if (intSet.action == tabIntUpdater.actionType.nothing) {
                     return;
                 }
-                attr.validity = intSet.update(attr.validity);
-                attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validity);
+                attr.validRoa = intSet.update(attr.validRoa);
+                attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validRoa);
+                return;
+            case setValidAspa:
+                if (intSet.action == tabIntUpdater.actionType.nothing) {
+                    return;
+                }
+                attr.validAspa = intSet.update(attr.validAspa);
+                attr.extComm = tabRouteUtil.setValidExtCommAspa(attr.extComm, attr.validAspa);
                 return;
             case setAggregator:
                 if (intSet.action == tabIntUpdater.actionType.nothing) {

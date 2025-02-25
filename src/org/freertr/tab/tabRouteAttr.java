@@ -274,9 +274,14 @@ public class tabRouteAttr<T extends addrType> {
     public int tag;
 
     /**
-     * validity type
+     * roa validity type
      */
-    public int validity;
+    public int validRoa;
+
+    /**
+     * aspa validity type
+     */
+    public int validAspa;
 
     /**
      * only to customer
@@ -724,7 +729,8 @@ public class tabRouteAttr<T extends addrType> {
         atr.hops = hops;
         atr.tag = tag;
         atr.origin = origin;
-        atr.validity = validity;
+        atr.validRoa = validRoa;
+        atr.validAspa = validAspa;
         atr.onlyCust = onlyCust;
         atr.segrouIdx = segrouIdx;
         atr.segrouSiz = segrouSiz;
@@ -958,8 +964,11 @@ public class tabRouteAttr<T extends addrType> {
         if (bierHdr != other.bierHdr) {
             return 20;
         }
-        if (validity != other.validity) {
+        if (validRoa != other.validRoa) {
             return 21;
+        }
+        if (validAspa != other.validAspa) {
+            return 128;
         }
         if (onlyCust != other.onlyCust) {
             return 21;
@@ -1301,10 +1310,16 @@ public class tabRouteAttr<T extends addrType> {
         if (imp.distance > distance) {
             return false;
         }
-        if (imp.validity < validity) {
+        if (imp.validRoa < validRoa) {
             return true;
         }
-        if (imp.validity > validity) {
+        if (imp.validRoa > validRoa) {
+            return false;
+        }
+        if (imp.validAspa < validAspa) {
+            return true;
+        }
+        if (imp.validAspa > validAspa) {
             return false;
         }
         if (imp.locPref > locPref) {
@@ -1838,7 +1853,8 @@ public class tabRouteAttr<T extends addrType> {
             ntry.tag = 0;
         }
         if ((ign & 0x80) != 0) {
-            ntry.validity = 0;
+            ntry.validRoa = 0;
+            ntry.validAspa = 0;
         }
         if ((ign & 0x100) != 0) {
             ntry.pathSeq = null;
@@ -1965,7 +1981,8 @@ public class tabRouteAttr<T extends addrType> {
     public void fullDump(userFormat lst, String beg) {
         lst.add(beg + "type|" + rouTyp + " " + protoNum);
         lst.add(beg + "source|" + srcRtr);
-        lst.add(beg + "validity|" + tabRpkiUtil.validity2string(validity));
+        lst.add(beg + "validity roa|" + tabRpkiUtil.validity2string(validRoa));
+        lst.add(beg + "validity aspa|" + tabRpkiUtil.validity2string(validAspa));
         lst.add(beg + "segrout index|" + segrouIdx);
         lst.add(beg + "segrout old base|" + segrouOld);
         lst.add(beg + "segrout base|" + segrouBeg);
@@ -2142,7 +2159,8 @@ public class tabRouteAttr<T extends addrType> {
     public String toShRpki() {
         int i = asPathEnd();
         int o = tabRouteUtil.getValidExtCommRoa(extComm);
-        return bits.num2str(i) + "|" + clntWhois.asn2name(i, true) + "|" + tabRpkiUtil.validity2string(validity) + "|" + tabRpkiUtil.validity2string(o) + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
+        int p = tabRouteUtil.getValidExtCommAspa(extComm);
+        return bits.num2str(i) + "|" + clntWhois.asn2name(i, true) + "|" + tabRpkiUtil.validity2string(validRoa) + "|" + tabRpkiUtil.validity2string(o) + "|" + tabRpkiUtil.validity2string(validAspa) + "|" + tabRpkiUtil.validity2string(p) + "|" + bits.timePast(time) + "|" + bits.time2str(cfgAll.timeZoneName, time + cfgAll.timeServerOffset, 3);
     }
 
     /**

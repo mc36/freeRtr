@@ -1,4 +1,4 @@
-description bgp change in validity
+description bgp change in roa validity
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -78,7 +78,7 @@ int bvi1
  exit
 route-map rm1
  sequence 10 act deny
- sequence 10 match validity 3
+ sequence 10 match validroa 3
  sequence 20 act perm
  exit
 router rpki4 1 vrf v1
@@ -136,7 +136,7 @@ int bvi1
  ipv6 addr 1234:1::3 ffff:ffff::
  exit
 route-map rm1
- set validity 1
+ set validroa 1
  exit
 router rpki4 1 vrf v1
  exit
@@ -184,7 +184,7 @@ int eth1
  exit
 route-map rm1
  sequence 10 act deny
- sequence 10 match validity 2
+ sequence 10 match validroa 2
  sequence 20 act perm
  exit
 router rpki4 1 vrf v1
@@ -245,7 +245,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set validity 2
+r3 send set validroa 2
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -280,7 +280,7 @@ r4 tping 0 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set validity 3
+r3 send set validroa 3
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1
@@ -315,7 +315,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r3 send conf t
 r3 send route-map rm1
-r3 send set validity 1
+r3 send set validroa 1
 r3 send end
 r3 send clear ipv4 route v1
 r3 send clear ipv6 route v1

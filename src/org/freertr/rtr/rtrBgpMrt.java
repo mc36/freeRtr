@@ -127,11 +127,11 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
     public rtrBgpMrt(String nam) {
         dumpName = nam;
     }
-    
+
     public String toString() {
         return dumpName;
     }
-    
+
     public int compareTo(rtrBgpMrt o) {
         return dumpName.compareTo(o.dumpName);
     }
@@ -444,5 +444,5 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
         len += 3;
         fileHandle.add(hdr, 0, len, dat, 0, dat.length);
     }
-    
+
 }

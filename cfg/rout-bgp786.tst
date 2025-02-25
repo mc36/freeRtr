@@ -1,4 +1,4 @@
-description bgp routepolicy filtering with validity
+description bgp routepolicy filtering with roa validity
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -71,7 +71,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-policy rm1
- set validity 1
+ set validroa 1
  pass
  exit
 router rpki4 1 vrf v1
@@ -119,7 +119,7 @@ int eth1
  ipv6 addr 1234:1::3 ffff:ffff::
  exit
 route-policy rm1
- if validity 1
+ if validroa 1
   drop
  else
   pass

@@ -58,6 +58,7 @@ import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLnkst;
+import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.util.counter;
 import org.freertr.util.syncInt;
@@ -448,6 +449,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * other rpki table
      */
     protected tabGen<tabRpkiRoa> rpkiO = new tabGen<tabRpkiRoa>();
+
+    /**
+     * provider rpki table
+     */
+    protected tabGen<tabRpkiAspa> rpkiP = new tabGen<tabRpkiAspa>();
 
     /**
      * the computed other unicast routes
@@ -2260,9 +2266,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (rpkiR != null) {
             rpkiA = rpkiR.getFinalTabRoa(fwdCore.ipVersion);
             rpkiO = rpkiR.getFinalTabRoa(other.fwd.ipVersion);
+            rpkiP = rpkiR.getFinalTabAspa();
         } else {
             rpkiA = new tabGen<tabRpkiRoa>();
             rpkiO = new tabGen<tabRpkiRoa>();
+            rpkiP = new tabGen<tabRpkiAspa>();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neighbors");
@@ -5190,7 +5198,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("vplses|" + rtrBgpUtil.tabSiz2str(vpls));
         l.add("evpns|" + rtrBgpUtil.tabSiz2str(evpn));
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
-        l.add("rpki table|" + rpkiA.size() + "|" + rpkiO.size());
+        l.add("roa table|" + rpkiA.size() + "|" + rpkiO.size());
+        l.add("aspa table|" + rpkiP.size());
         l.add("unicast table|" + routerComputedU.size() + "|" + changedUni.size());
         l.add("multicast table|" + routerComputedM.size() + "|" + changedMlt.size());
         l.add("ouni table|" + computedOuni.size() + "|" + changedOuni.size());

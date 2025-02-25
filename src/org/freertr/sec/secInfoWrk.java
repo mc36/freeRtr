@@ -154,14 +154,14 @@ public class secInfoWrk implements Runnable {
     protected tabRouteEntry<addrIP> ntry = null;
 
     /**
-     * roa entry found
-     */
-    protected tabRpkiRoa roan = null;
-
-    /**
      * roa result got
      */
-    protected int roav = 0;
+    protected int rpkiR = 0;
+
+    /**
+     * aspa result got
+     */
+    protected int rpkiA = 0;
 
     /**
      * pmtud result
@@ -385,8 +385,9 @@ public class secInfoWrk implements Runnable {
                 return;
             }
             vldIp = vldCfg.getRouter();
-            roan = secInfoUtl.findOneValid(ntry, vldIp, fwd);
-            roav = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, roan);
+            tabRpkiRoa rpkiV = secInfoUtl.findOneValidRoa(ntry, vldIp, fwd);
+            rpkiR = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rpkiV);
+            rpkiA = tabRpkiUtil.calcValidityAspa(ntry.best, secInfoUtl.findOneValidAspa(vldIp, fwd));
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }

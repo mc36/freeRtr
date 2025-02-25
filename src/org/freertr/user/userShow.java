@@ -4015,7 +4015,7 @@ public class userShow {
         }
     }
 
-    private tabGen<tabRpkiRoa> getRpkiTable(int sfi) {
+    private tabGen<tabRpkiRoa> getRpkiTableRoa(int sfi) {
         tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
         if (ipRtr.isRPKI(rt) < 0) {
             cmd.error("not an rpki process");
@@ -4036,6 +4036,34 @@ public class userShow {
         try {
             rtrRpki rr = (rtrRpki) ri;
             rp = rr.getFinalTabRoa(rtrBgpUtil.safi2ipVers(sfi));
+        } catch (Exception e) {
+            logger.traceback(e);
+            return null;
+        }
+        return rp;
+    }
+
+    private tabGen<tabRpkiAspa> getRpkiTableAspa() {
+        tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
+        if (ipRtr.isRPKI(rt) < 0) {
+            cmd.error("not an rpki process");
+            return null;
+        }
+        int rn = bits.str2num(cmd.word());
+        cfgRtr rc = cfgAll.rtrFind(rt, rn, false);
+        if (rc == null) {
+            cmd.error("no such process");
+            return null;
+        }
+        ipRtr ri = rc.getRouter();
+        if (ri == null) {
+            cmd.error("process not initialized");
+            return null;
+        }
+        tabGen<tabRpkiAspa> rp;
+        try {
+            rtrRpki rr = (rtrRpki) ri;
+            rp = rr.getFinalTabAspa();
         } catch (Exception e) {
             logger.traceback(e);
             return null;
@@ -5008,7 +5036,11 @@ public class userShow {
         }
         if (a.equals("validof")) {
             int asn = bits.str2num(cmd.word());
-            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
+            if (ro == null) {
+                return;
+            }
+            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
             if (rp == null) {
                 return;
             }
@@ -5022,44 +5054,60 @@ public class userShow {
                     continue;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
-                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
-                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
-                tabRpkiUtil.updateJustValidity(ntry, o);
+                tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
+                int p = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                tabRpkiUtil.updateJustValidity(ntry, o, p);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
             return;
         }
         if (a.equals("validsum")) {
-            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
+            if (ro == null) {
+                return;
+            }
+            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
             if (rp == null) {
                 return;
             }
-            int calc[] = new int[4];
-            int encod[] = new int[4];
-            int valid[] = new int[4];
+            int roaC[] = new int[4];
+            int roaE[] = new int[4];
+            int roaV[] = new int[4];
+            int aspaC[] = new int[4];
+            int aspaE[] = new int[4];
+            int aspaV[] = new int[4];
             for (int i = 0; i < tab.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tab.get(i);
                 if (ntry == null) {
                     continue;
                 }
-                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
-                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
-                calc[o]++;
+                tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
+                roaC[o]++;
                 o = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
-                encod[o]++;
-                o = ntry.best.validity;
-                valid[o]++;
+                roaE[o]++;
+                roaV[ntry.best.validRoa]++;
+                o = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                aspaC[o]++;
+                o = tabRouteUtil.getValidExtCommAspa(ntry.best.extComm);
+                aspaE[o]++;
+                aspaV[ntry.best.validAspa]++;
             }
-            userFormat sum = new userFormat("|", "result|calc|valid|encod");
-            for (int i = 0; i < calc.length; i++) {
-                sum.add(tabRpkiUtil.validity2string(i) + "|" + calc[i] + "|" + valid[i] + "|" + encod[i]);
+            userFormat sum = new userFormat("|", "result|calc|valid|encod|calc|valid|encod", "1|3roa|3aspa");
+            for (int i = 0; i < roaC.length; i++) {
+                sum.add(tabRpkiUtil.validity2string(i) + "|" + roaC[i] + "|" + roaV[i] + "|" + roaE[i] + "|" + aspaC[i] + "|" + aspaV[i] + "|" + aspaE[i]);
             }
             rdr.putStrTab(sum);
             return;
         }
         if (a.equals("validtest")) {
-            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
+            if (ro == null) {
+                return;
+            }
+            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
             if (rp == null) {
                 return;
             }
@@ -5070,16 +5118,21 @@ public class userShow {
                     continue;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.better);
-                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
-                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
-                tabRpkiUtil.updateJustValidity(ntry, o);
+                tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
+                int p = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                tabRpkiUtil.updateJustValidity(ntry, o, p);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
             return;
         }
         if (a.equals("validmismark")) {
-            tabGen<tabRpkiRoa> rp = getRpkiTable(sfi);
+            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
+            if (ro == null) {
+                return;
+            }
+            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
             if (rp == null) {
                 return;
             }
@@ -5089,13 +5142,19 @@ public class userShow {
                 if (ntry == null) {
                     continue;
                 }
-                tabRpkiRoa ra = tabRpkiUtil.lookupRoa(rp, ntry.prefix);
-                int o = tabRpkiUtil.calcValidityValue(ntry.prefix, ntry.best, ra);
+                tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
+                int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
                 int p = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
-                if (o == p) {
+                if (o != p) {
+                    res.add(tabRoute.addType.better, ntry, false, false);
                     continue;
                 }
-                res.add(tabRoute.addType.better, ntry, false, false);
+                o = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                p = tabRouteUtil.getValidExtCommAspa(ntry.best.extComm);
+                if (o != p) {
+                    res.add(tabRoute.addType.better, ntry, false, false);
+                    continue;
+                }
             }
             doShowRoutes(r.bgp.fwdCore, res, 4);
             return;

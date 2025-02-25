@@ -1,4 +1,4 @@
-description bgp routemap filtering with validity with soft-reconfig
+description bgp routemap filtering with roa validity with soft-reconfig
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -75,7 +75,7 @@ int eth1
  ipv6 addr 1234:1::2 ffff:ffff::
  exit
 route-map rm1
- set validity 1
+ set validroa 1
  exit
 router rpki4 1 vrf v1
  exit
@@ -125,7 +125,7 @@ int eth1
  exit
 route-map rm1
  sequence 10 act deny
-  match validity 1
+  match validroa 1
  sequence 20 act permit
  exit
 router rpki4 1 vrf v1

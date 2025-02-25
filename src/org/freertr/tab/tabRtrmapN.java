@@ -105,7 +105,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * validity matcher
      */
-    public tabIntMatcher validityMatch = new tabIntMatcher();
+    public tabIntMatcher validRoaMatch = new tabIntMatcher();
+
+    /**
+     * validity matcher
+     */
+    public tabIntMatcher validAspaMatch = new tabIntMatcher();
 
     /**
      * aggregator matcher
@@ -150,7 +155,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * validity updater
      */
-    public tabIntUpdater validitySet = new tabIntUpdater();
+    public tabIntUpdater validRoaSet = new tabIntUpdater();
+
+    /**
+     * validity updater
+     */
+    public tabIntUpdater validAspaSet = new tabIntUpdater();
 
     /**
      * aggregator updater
@@ -565,7 +575,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match peerasn " + peerasnMatch);
         l.add(beg + "match distance " + distanceMatch);
         l.add(beg + "match locpref " + locPrefMatch);
-        l.add(beg + "match validity " + validityMatch);
+        l.add(beg + "match validroa " + validRoaMatch);
+        l.add(beg + "match validaspa " + validAspaMatch);
         l.add(beg + "match aggregator " + aggregatorMatch);
         l.add(beg + "match customer " + customerMatch);
         l.add(beg + "match pathlen " + pathlenMatch);
@@ -649,7 +660,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set distance " + distanceSet);
         l.add(beg + "set locpref " + locPrefSet);
         l.add(beg + "set aigp " + accIgpSet);
-        l.add(beg + "set validity " + validitySet);
+        l.add(beg + "set validroa " + validRoaSet);
+        l.add(beg + "set validaspa " + validAspaSet);
         l.add(beg + "set aggregator " + aggregatorSet + " " + aggregatorRtr);
         l.add(beg + "set connector " + connectorSet);
         l.add(beg + "set aslimit " + pathLimSet + " " + pathAsnSet);
@@ -867,8 +879,15 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
-        if (a.equals("validity")) {
-            if (validitySet.fromString(cmd.word())) {
+        if (a.equals("validroa")) {
+            if (validRoaSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("validaspa")) {
+            if (validAspaSet.fromString(cmd.word())) {
                 cmd.error("invalid action");
                 return true;
             }
@@ -1052,8 +1071,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             accIgpSet.set2unchange();
             return false;
         }
-        if (a.equals("validity")) {
-            validitySet.set2unchange();
+        if (a.equals("validroa")) {
+            validRoaSet.set2unchange();
+            return false;
+        }
+        if (a.equals("validaspa")) {
+            validAspaSet.set2unchange();
             return false;
         }
         if (a.equals("aggregator")) {
@@ -1298,8 +1321,15 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
-        if (a.equals("validity")) {
-            if (validityMatch.fromString(cmd.word())) {
+        if (a.equals("validroa")) {
+            if (validRoaMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("validaspa")) {
+            if (validAspaMatch.fromString(cmd.word())) {
                 cmd.error("invalid action");
                 return true;
             }
@@ -1543,8 +1573,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             accIgpMatch.set2always();
             return false;
         }
-        if (a.equals("validity")) {
-            validityMatch.set2always();
+        if (a.equals("validroa")) {
+            validRoaMatch.set2always();
+            return false;
+        }
+        if (a.equals("validaspa")) {
+            validAspaMatch.set2always();
             return false;
         }
         if (a.equals("aggregator")) {
@@ -1682,7 +1716,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (!bierMatch.matches(net.best.bierIdx)) {
             return false;
         }
-        if (!validityMatch.matches(net.best.validity)) {
+        if (!validRoaMatch.matches(net.best.validRoa)) {
+            return false;
+        }
+        if (!validAspaMatch.matches(net.best.validAspa)) {
             return false;
         }
         if (!aggregatorMatch.matches(net.best.aggrAs)) {
@@ -1875,9 +1912,13 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.distance = distanceSet.update(attr.distance);
         attr.locPref = locPrefSet.update(attr.locPref);
         attr.accIgp = accIgpSet.update(attr.accIgp);
-        if (validitySet.action != tabIntUpdater.actionType.nothing) {
-            attr.validity = validitySet.update(attr.validity);
-            attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validity);
+        if (validRoaSet.action != tabIntUpdater.actionType.nothing) {
+            attr.validRoa = validRoaSet.update(attr.validRoa);
+            attr.extComm = tabRouteUtil.setValidExtCommRoa(attr.extComm, attr.validRoa);
+        }
+        if (validAspaSet.action != tabIntUpdater.actionType.nothing) {
+            attr.validAspa = validAspaSet.update(attr.validAspa);
+            attr.extComm = tabRouteUtil.setValidExtCommAspa(attr.extComm, attr.validAspa);
         }
         if (aggregatorSet.action != tabIntUpdater.actionType.nothing) {
             attr.aggrAs = aggregatorSet.update(attr.aggrAs);

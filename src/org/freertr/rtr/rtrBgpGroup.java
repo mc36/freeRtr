@@ -712,16 +712,16 @@ public class rtrBgpGroup extends rtrBgpParam {
             return;
         }
         if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiA, rpkiOut);
+            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiA, lower.rpkiP, rpkiOut);
         }
         if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiO, rpkiOut);
+            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiO, lower.rpkiP, rpkiOut);
         }
         if ((afi == lower.afiVpnU) || (afi == lower.afiVpnM)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiA, vpkiOut);
+            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiA, lower.rpkiP, vpkiOut);
         }
         if ((afi == lower.afiVpoU) || (afi == lower.afiVpoM)) {
-            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiO, vpkiOut);
+            tabRpkiUtil.setValidityRoute(ntry, lower.rpkiO, lower.rpkiP, vpkiOut);
         }
     }
 

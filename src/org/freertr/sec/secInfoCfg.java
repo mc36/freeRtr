@@ -106,7 +106,7 @@ public class secInfoCfg {
      * resolve ipv6 prefixes
      */
     public int valid6num;
-    
+
     /**
      * resolve ipv4 prefixes
      */
