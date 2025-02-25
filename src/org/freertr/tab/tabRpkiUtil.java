@@ -504,11 +504,52 @@ public class tabRpkiUtil {
      * @return calculated value
      */
     public final static int calcValidityAspa(tabRouteAttr<addrIP> attr, tabGen<tabRpkiAspa> tab) {
-
-
-
-    //////
-        return 0;
+        if (attr.pathSeq == null) {
+            return 2;
+        }
+        if (attr.pathSeq.size() <= 2) {
+            return 2;
+        }
+        int numP = attr.pathSeq.get(0);
+        tabRpkiAspa resP = lookupAspa(tab, numP);
+        boolean unkn = resP == null;
+        boolean dir = true;
+        boolean chg = false;
+        for (int i = 1; i < attr.pathSeq.size(); i++) {
+            int numC = attr.pathSeq.get(i);
+            if (numC == numP) {
+                continue;
+            }
+            tabRpkiAspa resC = lookupAspa(tab, numC);
+            unkn |= resC == null;
+            if ((resC == null) || (resP == null)) {
+                numP = numC;
+                resP = resC;
+                continue;
+            }
+            boolean upr = resC.provs.indexOf(numP) >= 0;
+            boolean dnr = resP.provs.indexOf(numC) >= 0;
+            numP = numC;
+            resP = resC;
+            if ((upr == false) && (dnr == false)) {
+                return 3;
+            }
+            if ((upr == true) && (dnr == true)) {
+                continue;
+            }
+            if (dir == dnr) {
+                continue;
+            }
+            if (chg) {
+                return 3;
+            }
+            dir = dnr;
+            chg = true;
+        }
+        if (unkn) {
+            return 2;
+        }
+        return 1;
     }
 
     /**

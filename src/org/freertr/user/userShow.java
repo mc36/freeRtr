@@ -4015,7 +4015,7 @@ public class userShow {
         }
     }
 
-    private tabGen<tabRpkiRoa> getRpkiTableRoa(int sfi) {
+    private rtrRpki getRpkiTable() {
         tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
         if (ipRtr.isRPKI(rt) < 0) {
             cmd.error("not an rpki process");
@@ -4033,42 +4033,14 @@ public class userShow {
             return null;
         }
         tabGen<tabRpkiRoa> rp;
+        tabGen<tabRpkiAspa> ra;
         try {
             rtrRpki rr = (rtrRpki) ri;
-            rp = rr.getFinalTabRoa(rtrBgpUtil.safi2ipVers(sfi));
+            return rr;
         } catch (Exception e) {
             logger.traceback(e);
-            return null;
         }
-        return rp;
-    }
-
-    private tabGen<tabRpkiAspa> getRpkiTableAspa() {
-        tabRouteAttr.routeType rt = cfgRtr.name2num(cmd.word());
-        if (ipRtr.isRPKI(rt) < 0) {
-            cmd.error("not an rpki process");
-            return null;
-        }
-        int rn = bits.str2num(cmd.word());
-        cfgRtr rc = cfgAll.rtrFind(rt, rn, false);
-        if (rc == null) {
-            cmd.error("no such process");
-            return null;
-        }
-        ipRtr ri = rc.getRouter();
-        if (ri == null) {
-            cmd.error("process not initialized");
-            return null;
-        }
-        tabGen<tabRpkiAspa> rp;
-        try {
-            rtrRpki rr = (rtrRpki) ri;
-            rp = rr.getFinalTabAspa();
-        } catch (Exception e) {
-            logger.traceback(e);
-            return null;
-        }
-        return rp;
+        return null;
     }
 
     private void doShowIpXmsdp(tabRouteAttr.routeType afi) {
@@ -5036,14 +5008,12 @@ public class userShow {
         }
         if (a.equals("validof")) {
             int asn = bits.str2num(cmd.word());
-            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
-            if (ro == null) {
-                return;
-            }
-            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
+            rtrRpki rp = getRpkiTable();
             if (rp == null) {
                 return;
             }
+            tabGen<tabRpkiRoa> ro = rp.getFinalTabRoa(rtrBgpUtil.safi2ipVers(sfi));
+            tabGen<tabRpkiAspa> ra = rp.getFinalTabAspa();
             tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
             for (int i = 0; i < tab.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tab.get(i);
@@ -5056,7 +5026,7 @@ public class userShow {
                 ntry = ntry.copyBytes(tabRoute.addType.better);
                 tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
-                int p = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                int p = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
                 tabRpkiUtil.updateJustValidity(ntry, o, p);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
@@ -5064,14 +5034,12 @@ public class userShow {
             return;
         }
         if (a.equals("validsum")) {
-            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
-            if (ro == null) {
-                return;
-            }
-            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
+            rtrRpki rp = getRpkiTable();
             if (rp == null) {
                 return;
             }
+            tabGen<tabRpkiRoa> ro = rp.getFinalTabRoa(rtrBgpUtil.safi2ipVers(sfi));
+            tabGen<tabRpkiAspa> ra = rp.getFinalTabAspa();
             int roaC[] = new int[4];
             int roaE[] = new int[4];
             int roaV[] = new int[4];
@@ -5089,7 +5057,7 @@ public class userShow {
                 o = tabRouteUtil.getValidExtCommRoa(ntry.best.extComm);
                 roaE[o]++;
                 roaV[ntry.best.validRoa]++;
-                o = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                o = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
                 aspaC[o]++;
                 o = tabRouteUtil.getValidExtCommAspa(ntry.best.extComm);
                 aspaE[o]++;
@@ -5103,14 +5071,12 @@ public class userShow {
             return;
         }
         if (a.equals("validtest")) {
-            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
-            if (ro == null) {
-                return;
-            }
-            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
+            rtrRpki rp = getRpkiTable();
             if (rp == null) {
                 return;
             }
+            tabGen<tabRpkiRoa> ro = rp.getFinalTabRoa(rtrBgpUtil.safi2ipVers(sfi));
+            tabGen<tabRpkiAspa> ra = rp.getFinalTabAspa();
             tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
             for (int i = 0; i < tab.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tab.get(i);
@@ -5120,7 +5086,7 @@ public class userShow {
                 ntry = ntry.copyBytes(tabRoute.addType.better);
                 tabRpkiRoa rv = tabRpkiUtil.lookupRoa(ro, ntry.prefix);
                 int o = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rv);
-                int p = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                int p = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
                 tabRpkiUtil.updateJustValidity(ntry, o, p);
                 res.add(tabRoute.addType.better, ntry, false, false);
             }
@@ -5128,14 +5094,12 @@ public class userShow {
             return;
         }
         if (a.equals("validmismark")) {
-            tabGen<tabRpkiRoa> ro = getRpkiTableRoa(sfi);
-            if (ro == null) {
-                return;
-            }
-            tabGen<tabRpkiAspa> rp = getRpkiTableAspa();
+            rtrRpki rp = getRpkiTable();
             if (rp == null) {
                 return;
             }
+            tabGen<tabRpkiRoa> ro = rp.getFinalTabRoa(rtrBgpUtil.safi2ipVers(sfi));
+            tabGen<tabRpkiAspa> ra = rp.getFinalTabAspa();
             tabRoute<addrIP> res = new tabRoute<addrIP>("rpki");
             for (int i = 0; i < tab.size(); i++) {
                 tabRouteEntry<addrIP> ntry = tab.get(i);
@@ -5149,7 +5113,7 @@ public class userShow {
                     res.add(tabRoute.addType.better, ntry, false, false);
                     continue;
                 }
-                o = tabRpkiUtil.calcValidityAspa(ntry.best, rp);
+                o = tabRpkiUtil.calcValidityAspa(ntry.best, ra);
                 p = tabRouteUtil.getValidExtCommAspa(ntry.best.extComm);
                 if (o != p) {
                     res.add(tabRoute.addType.better, ntry, false, false);
