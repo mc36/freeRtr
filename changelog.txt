@@ -16452,3 +16452,24 @@ qc pass: p4lang: multicast vlan bridge routing
 ---------------------------------- 2025-02-03 10:14:00 25.2.3
 no todo: show running-config vdc <tabbable>
 no todo: sho run check/track
+---------------------------------- 2025-02-25 08:50:11 25.2.25
+no qc pass: bgp routepolicy filtering with validity with soft-reconfig
+no qc pass: bgp routepolicy filtering with validity
+no qc pass: bgp change in validity with soft-reconfig
+no qc pass: bgp change in validity
+no qc pass: bgp routemap filtering with validity with soft-reconfig
+no qc pass: bgp routemap filtering with validity
+no qc pass: bgp rpki
+qc pass: bgp rpki roa
+qc pass: bgp routemap filtering with roa validity
+qc pass: bgp routemap filtering with roa validity with soft-reconfig
+qc pass: bgp change in roa validity
+qc pass: bgp change in roa validity with soft-reconfig
+qc pass: bgp routepolicy filtering with roa validity
+qc pass: bgp routepolicy filtering with roa validity with soft-reconfig
+qc pass: bgp routemap filtering with aspa validity
+qc pass: bgp routemap filtering with aspa validity with soft-reconfig
+qc pass: bgp change in aspa validity
+qc pass: bgp change in aspa validity with soft-reconfig
+qc pass: bgp routepolicy filtering with aspa validity
+qc pass: bgp routepolicy filtering with aspa validity with soft-reconfig

@@ -1,4 +1,4 @@
-description bgp rpki
+description bgp roa rpki
 
 addrouter r1
 int eth1 eth 0000.0000.2222 $1a$ $1b$
