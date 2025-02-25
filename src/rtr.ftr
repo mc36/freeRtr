@@ -2291,7 +2291,7 @@ qc pass: bgp listen
 qc pass: ebgp password
 qc pass: bgp routemap filtering with aigp
 qc pass: bgp routemap filtering with bandwidth
-qc pass: bgp rpki roa
+qc pass: bgp roa rpki
 qc pass: bgp additional path
 qc pass: bgp additional path with labels
 qc pass: vpns over bgp additional path
