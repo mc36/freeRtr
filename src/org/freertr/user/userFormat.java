@@ -229,6 +229,17 @@ public class userFormat {
     }
 
     /**
+     * get index of header
+     * @return header index
+     */
+    public int headerIdx() {
+        if (summary != null) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
      * add body line
      *
      * @param s string to add

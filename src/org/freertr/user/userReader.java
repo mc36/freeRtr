@@ -57,6 +57,8 @@ public class userReader implements Comparator<String> {
 
     private String filterO; // original command
 
+    private int columnL; // column line
+    
     private int columnN; // column number
 
     private String columnS; // column separator
@@ -424,7 +426,7 @@ public class userReader implements Comparator<String> {
     }
 
     private void findColumn(List<String> lst) {
-        String s = lst.get(0);
+        String s = lst.get(columnL);
         columnN = 0;
         columnS = " ";
         columnB = s.indexOf(filterS);
@@ -556,7 +558,7 @@ public class userReader implements Comparator<String> {
         if (div < 1) {
             div = 1;
         }
-        cmds cmd = doSummary(tabMod, lst.get(0));
+        cmds cmd = doSummary(tabMod, lst.get(columnL));
         for (int i = 0; i < sum.size(); i++) {
             long val = sum.get(i);
             res.add(i + "|" + cmd.word() + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
@@ -705,13 +707,7 @@ public class userReader implements Comparator<String> {
         return res;
     }
 
-    /**
-     * filter the list
-     *
-     * @param lst list to filter
-     * @return filtered list
-     */
-    public List<String> doFilterList(List<String> lst) {
+    private List<String> doFilterList(List<String> lst) {
         if (lst == null) {
             return null;
         }
@@ -720,7 +716,7 @@ public class userReader implements Comparator<String> {
                 lst = doInclude(lst);
                 return doSecond(lst);
             case hinclude:
-                String a = lst.remove(0);
+                String a = lst.remove(columnL);
                 lst = doInclude(lst);
                 lst.add(0, a);
                 return doSecond(lst);
@@ -732,7 +728,7 @@ public class userReader implements Comparator<String> {
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                a = lst.remove(0);
+                a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 lst.add(0, a);
                 return doSecond(lst);
@@ -741,7 +737,7 @@ public class userReader implements Comparator<String> {
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                a = lst.remove(0);
+                a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 Collections.reverse(lst);
                 lst.add(0, a);
@@ -752,7 +748,7 @@ public class userReader implements Comparator<String> {
                     return bits.str2lst("no such column");
                 }
                 doPadCol(lst);
-                a = lst.remove(0);
+                a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 Collections.reverse(lst);
                 lst.add(0, a);
@@ -763,7 +759,7 @@ public class userReader implements Comparator<String> {
                     return bits.str2lst("no such column");
                 }
                 doPadCol(lst);
-                a = lst.remove(0);
+                a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 lst.add(0, a);
                 return doSecond(lst);
@@ -820,7 +816,7 @@ public class userReader implements Comparator<String> {
                 return doSecond(lst);
             case hlast:
                 num = bits.str2num(filterS);
-                a = lst.remove(0);
+                a = lst.remove(columnL);
                 doLast(lst, num);
                 lst.add(0, a);
                 return doSecond(lst);
@@ -830,7 +826,7 @@ public class userReader implements Comparator<String> {
                 return doSecond(lst);
             case hbegin:
                 num = bits.lstFnd(lst, filterS);
-                a = lst.remove(0);
+                a = lst.remove(columnL);
                 doBegin(lst, num);
                 lst.add(0, a);
                 return doSecond(lst);
@@ -1023,6 +1019,7 @@ public class userReader implements Comparator<String> {
         if (color == userFormat.colorMode.header) {
             color = userFormat.colorMode.normal;
         }
+        columnL = 0;
         return doPutArr(lst, color);
     }
 
@@ -1037,6 +1034,7 @@ public class userReader implements Comparator<String> {
             pipe.linePut("");
             return true;
         }
+        columnL = lst.headerIdx();
         return doPutArr(lst.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
     }
 
