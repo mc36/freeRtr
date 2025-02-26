@@ -443,7 +443,7 @@ public class tabRpkiUtil {
             case 0:
                 return "nothing";
             case 1:
-                return "correct";
+                return "valid";
             case 2:
                 return "unknown";
             case 3:
