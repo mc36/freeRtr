@@ -902,7 +902,7 @@ public class tabRoute<T extends addrType> {
             case 3:
                 return new userFormat("|", "prefix|local|remote|hop");
             case 4:
-                return new userFormat("|", "prefix|asnum|asnam|valid|encod|valid|encod|ago|since", "3|2roa|2aspa|2");
+                return new userFormat("|", "prefix|asnum|asnam|calc|encod|calc|encod|ago|since", "3|2roa|2aspa|2");
             case 6:
                 return new userFormat("|", "prefix|pack|byte|pack|byte|time", "1|2transmit|2receive|1");
             case 7:
