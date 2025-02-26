@@ -53,7 +53,6 @@ the following directories will appear here:
 * img vm images used for interop and dataplane testing
 * binDwn packages used for demo vm creation
 * binDsk rootfs used for demo vm creation
-* binMnt rootfs mounted for demo vm creation
 * binImg outcome of demo vm creation
 * binOut output of compilation
 * binTmp output of testing
