@@ -65,7 +65,6 @@ public class secInfoUtl {
         tabRouteEntry<addrIP> ntry;
         ntry = rtr.routerComputedU.route(adr);
         if (ntry == null) {
-            logger.warn("no route " + rtr + " " + adr);
             return null;
         }
         ntry = ntry.copyBytes(tabRoute.addType.alters);
@@ -94,7 +93,6 @@ public class secInfoUtl {
         tabGen<tabRpkiRoa> tab = rpki.getFinalTabRoa(fwd.ipVersion);
         tabRpkiRoa ntry = tabRpkiUtil.lookupRoa(tab, pfx.prefix);
         if (ntry == null) {
-            logger.warn("no validity " + rtr + " " + pfx.prefix);
             return null;
         }
         ntry = ntry.copyBytes();
