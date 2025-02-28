@@ -423,6 +423,64 @@ public class userGame {
     }
 
     /**
+     * rotating donut
+     */
+    public void doDonut() {
+        final int[] chars = {'.', ',', '-', '~', ':', ';', '=', '!', '*', '#', '$', '@'};
+        double A = 0;
+        double B = 0;
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            double z[][] = new double[console.sizY][console.sizX];
+            console.putCls();
+            for (double j = 0; j < 6.28; j += 0.07) {
+                for (double i = 0; i < 6.28; i += 0.02) {
+                    double c = Math.sin(i);
+                    double d = Math.cos(j);
+                    double e = Math.sin(A);
+                    double f = Math.sin(j);
+                    double g = Math.cos(A);
+                    double h = d + 2;
+                    double D = 1 / (c * h * e + f * g + 5);
+                    double l = Math.cos(i);
+                    double m = Math.cos(B);
+                    double n = Math.sin(B);
+                    double t = c * h * g - f * e;
+                    int x = (int) ((console.sizX / 2) + (console.sizX * D / 2) * (l * h * m - t * n));
+                    int y = (int) ((console.sizY / 2) + (console.sizY * D / 2) * (l * h * n + t * m));
+                    int N = (int) (8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
+                    if (y < 0) {
+                        continue;
+                    }
+                    if (x < 0) {
+                        continue;
+                    }
+                    if (x >= console.sizX) {
+                        continue;
+                    }
+                    if (y >= console.sizY) {
+                        continue;
+                    }
+                    if (D < z[y][x]) {
+                        continue;
+                    }
+                    z[y][x] = D;
+                    if (N < 0) {
+                        continue;
+                    }
+                    console.putInt(x, y, userScreen.colBlack, userScreen.colWhite, false, chars[N]);
+                }
+            }
+            A += bits.randomB() / 500.0;
+            B += bits.randomB() / 1000.0;
+            console.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
      * moving plasma
      */
     public void doPlasma() {
@@ -753,6 +811,10 @@ public class userGame {
         }
         if (a.equals("plasma")) {
             doPlasma();
+            return;
+        }
+        if (a.equals("donut")) {
+            doDonut();
             return;
         }
         if (a.equals("fractal")) {
