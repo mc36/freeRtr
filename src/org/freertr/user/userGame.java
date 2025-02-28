@@ -186,7 +186,25 @@ public class userGame {
      *
      * @param s text to use
      */
-    public void doText(List<String> s) {
+    public void doText(String s) {
+        int maxX = console.sizX - s.length();
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            console.putCls();
+            console.putStr(bits.random(0, maxX), bits.random(0, console.sizY), userScreen.colBlack, bits.random(1, 15), false, s);
+            console.refresh();
+            bits.sleep(5000);
+        }
+    }
+
+    /**
+     * flying logo
+     *
+     * @param s text to use
+     */
+    public void doLogo(List<String> s) {
         int maxY = console.sizY - s.size();
         if (maxY < 1) {
             return;
@@ -779,7 +797,7 @@ public class userGame {
             if (a.length() < 1) {
                 a = version.namVer;
             }
-            doText(bits.str2lst(a));
+            doText(a);
             return;
         }
         if (a.equals("logo")) {
@@ -790,7 +808,7 @@ public class userGame {
             } else {
                 txt = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
             }
-            doText(txt);
+            doLogo(txt);
             return;
         }
         if (a.equals("clock")) {
