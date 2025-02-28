@@ -509,41 +509,46 @@ public class tabRpkiUtil {
             return 2;
         }
         tabRpkiAspa resP = lookupAspa(tab, numP);
-        boolean unk = resP == null;
-        boolean dir = true;
-        boolean chg = false;
-        for (int i = 0; i < attr.pathSeq.size(); i++) {
+        int len = attr.pathSeq.size();
+        int maxUp = len;
+        int minUp = len;
+        int maxDn = len;
+        int minDn = len;
+        for (int i = 0; i < len; i++) {
             int numC = attr.pathSeq.get(i);
             if (numC == numP) {
                 continue;
             }
             tabRpkiAspa resC = lookupAspa(tab, numC);
-            unk |= resC == null;
-            if ((resC == null) || (resP == null)) {
-                numP = numC;
-                resP = resC;
-                continue;
+            if (resC == null) {
+                minUp = len - i;
+            } else {
+                if (resC.provs.find(numP) == null) {
+                    minUp = len - i;
+                    maxUp = len - i;
+                }
             }
-            boolean upr = resC.provs.find(numP) != null;
-            boolean dnr = resP.provs.find(numC) != null;
+            if (resP == null) {
+                if (minDn == len) {
+                    minDn = i;
+                }
+            } else {
+                if (resP.provs.find(numC) == null) {
+                    if (minDn == len) {
+                        minDn = i;
+                    }
+                    if (maxDn == len) {
+                        maxDn = i;
+                    }
+                }
+            }
             numP = numC;
             resP = resC;
-            if ((upr == false) && (dnr == false)) {
-                return 3;
-            }
-            if ((upr == true) && (dnr == true)) {
-                continue;
-            }
-            if (dir == dnr) {
-                continue;
-            }
-            if (chg) {
-                return 3;
-            }
-            dir = dnr;
-            chg = true;
         }
-        if (unk) {
+        if ((maxUp + maxDn) < len) {
+            return 3;
+        }
+        if ((minUp + minDn) < len) {
             return 2;
         }
         return 1;

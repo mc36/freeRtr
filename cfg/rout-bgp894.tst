@@ -176,6 +176,9 @@ int eth1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
+route-map rm1
+ set aspath 21 22 23
+ exit
 router rpki4 1
  vrf v1
  exit
@@ -191,7 +194,7 @@ router bgp4 1
  rpki rpki4 1
  neigh 1.1.1.5 remote-as 1
  neigh 1.1.1.5 rpki-in acc
- red conn
+ red conn route-map rm1
  exit
 router bgp6 1
  vrf v1
@@ -202,7 +205,7 @@ router bgp6 1
  rpki rpki6 1
  neigh 1234:2::1 remote-as 1
  neigh 1234:2::1 rpki-in acc
- red conn
+ red conn route-map rm1
  exit
 !
 
