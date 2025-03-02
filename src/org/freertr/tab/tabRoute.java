@@ -217,7 +217,7 @@ public class tabRoute<T extends addrType> {
                     version++;
                     return;
                 }
-                if (own.best.isOtherBetter(prefix.best, false)) {
+                if (own.best.isOtherBetter(prefix.best)) {
                     prefixes.put(prefix);
                     if (lookupTrie != null) {
                         lookupTrie.add(prefix);
@@ -225,7 +225,7 @@ public class tabRoute<T extends addrType> {
                     version++;
                     return;
                 }
-                if (prefix.best.isOtherBetter(own.best, false)) {
+                if (prefix.best.isOtherBetter(own.best)) {
                     return;
                 }
                 for (int i = 0; i < prefix.alts.size(); i++) {
@@ -246,7 +246,7 @@ public class tabRoute<T extends addrType> {
                     version++;
                     return;
                 }
-                if (own.best.isOtherBetter(prefix.best, false)) {
+                if (own.best.isOtherBetter(prefix.best)) {
                     prefixes.put(prefix);
                     if (lookupTrie != null) {
                         lookupTrie.add(prefix);
@@ -254,12 +254,12 @@ public class tabRoute<T extends addrType> {
                     version++;
                     return;
                 }
-                if (prefix.best.isOtherBetter(own.best, false)) {
+                if (prefix.best.isOtherBetter(own.best)) {
                     return;
                 }
                 for (int i = 0; i < prefix.alts.size(); i++) {
                     tabRouteAttr<T> ntry = prefix.alts.get(i);
-                    if (ntry.isOtherBetter(own.best, false)) {
+                    if (ntry.isOtherBetter(own.best)) {
                         continue;
                     }
                     own.alts.add(ntry);
@@ -283,7 +283,7 @@ public class tabRoute<T extends addrType> {
                     version++;
                     return;
                 }
-                if (!own.best.isOtherBetter(prefix.best, true)) {
+                if (!own.best.isOtherBetter(prefix.best)) {
                     return;
                 }
                 prefixes.put(prefix);

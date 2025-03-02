@@ -805,7 +805,7 @@ public class ipFwdTab {
                 best = imp;
                 continue;
             }
-            if (!best.best.isOtherBetter(imp.best, false)) {
+            if (!best.best.isOtherBetter(imp.best)) {
                 continue;
             }
             best = imp;
@@ -844,7 +844,7 @@ public class ipFwdTab {
                 best = imp;
                 continue;
             }
-            if (!best.best.isOtherBetter(imp.best, false)) {
+            if (!best.best.isOtherBetter(imp.best)) {
                 continue;
             }
             best = imp;

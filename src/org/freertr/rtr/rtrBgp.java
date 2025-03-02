@@ -2511,10 +2511,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (best == null) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }
-        if (best.best.isOtherBetter(ntry.best, false)) {
+        if (best.best.isOtherBetter(ntry.best)) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }
-        if (ntry.best.isOtherBetter(best.best, false)) {
+        if (ntry.best.isOtherBetter(best.best)) {
             return best;
         }
         ntry = ntry.copyBytes(tabRoute.addType.lnkEcmp);

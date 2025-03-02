@@ -79,7 +79,7 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
         best = alts.get(0);
         for (int i = 1; i < alts.size(); i++) {
             tabRouteAttr<T> ntry = alts.get(i);
-            if (best.isOtherBetter(ntry, true)) {
+            if (best.isOtherBetter(ntry)) {
                 best = ntry;
             }
         }
@@ -180,7 +180,7 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
                 prf.alts.clear();
                 for (int i = 0; i < alts.size(); i++) {
                     tabRouteAttr<T> ntry = alts.get(i);
-                    if (ntry.isOtherBetter(best, false)) {
+                    if (ntry.isOtherBetter(best)) {
                         continue;
                     }
                     tabRouteAttr<T> attr = new tabRouteAttr<T>();
@@ -204,7 +204,7 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
                 prf.alts.clear();
                 for (int i = 0; i < alts.size(); i++) {
                     tabRouteAttr<T> ntry = alts.get(i);
-                    if (ntry.isOtherBetter(best, false)) {
+                    if (ntry.isOtherBetter(best)) {
                         continue;
                     }
                     prf.alts.add(ntry);
@@ -522,7 +522,7 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
         }
         for (int i = 0; i < prf.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = prf.alts.get(i);
-            l.add(a + "|" + prf.alts.size() + "|" + (!attr.isOtherBetter(prf.best, false)) + "|" + (attr == prf.best) + "|" + attr.toShEcmp());
+            l.add(a + "|" + prf.alts.size() + "|" + (!attr.isOtherBetter(prf.best)) + "|" + (attr == prf.best) + "|" + attr.toShEcmp());
         }
     }
 
@@ -555,7 +555,7 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
         lst.add(beg + "|alternates|" + alts.size());
         for (int i = 0; i < alts.size(); i++) {
             tabRouteAttr<T> ntry = alts.get(i);
-            lst.add(beg + "|alternate #" + i + "|candidate=" + (!ntry.isOtherBetter(best, false)) + " best=" + (ntry == best));
+            lst.add(beg + "|alternate #" + i + "|candidate=" + (!ntry.isOtherBetter(best)) + " best=" + (ntry == best));
             ntry.fullDump(lst, beg + " alt" + i + "|");
         }
         lst.add(beg + "|counter|" + cntr.getShStat());

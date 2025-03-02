@@ -1300,10 +1300,9 @@ public class tabRouteAttr<T extends addrType> {
      * need to update with this prefix
      *
      * @param imp new prefix
-     * @param tim consider time
      * @return true if yes, false if not
      */
-    public boolean isOtherBetter(tabRouteAttr<T> imp, boolean tim) {
+    public boolean isOtherBetter(tabRouteAttr<T> imp) {
         if (imp.distance < distance) {
             return true;
         }
@@ -1350,10 +1349,7 @@ public class tabRouteAttr<T extends addrType> {
         if (il > ol) {
             return false;
         }
-        if (!tim) {
-            return false;
-        }
-        return imp.time < time;
+        return false;
     }
 
     /**
