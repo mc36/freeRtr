@@ -93,6 +93,10 @@ prefix-list p6
 route-map rm1
  set locpref 1234
  exit
+route-map rm2
+ match validroa 1
+ set locpref 4321
+ exit
 server rpki r
  vrf v1
  prefix 2.2.2.111/24 32 3
@@ -119,6 +123,7 @@ router bgp4 1
  neigh 1.1.1.1 rpki-in rew
  neigh 1.1.1.1 send-comm both
  neigh 1.1.1.1 prefix-list-in p4
+ neigh 1.1.1.1 route-map-in rm2
  neigh 1.1.1.6 remote-as 2
  neigh 1.1.1.6 rpki-in rew
  neigh 1.1.1.6 send-comm both
@@ -137,6 +142,7 @@ router bgp6 1
  neigh 1234:1::1 rpki-in rew
  neigh 1234:1::1 send-comm both
  neigh 1234:1::1 prefix-list-in p6
+ neigh 1234:1::1 route-map-in rm2
  neigh 1234:2::2 remote-as 2
  neigh 1234:2::2 rpki-in rew
  neigh 1234:2::2 send-comm both

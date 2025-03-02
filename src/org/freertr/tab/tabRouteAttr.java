@@ -1310,18 +1310,6 @@ public class tabRouteAttr<T extends addrType> {
         if (imp.distance > distance) {
             return false;
         }
-        if (imp.validRoa < validRoa) {
-            return true;
-        }
-        if (imp.validRoa > validRoa) {
-            return false;
-        }
-        if (imp.validAspa < validAspa) {
-            return true;
-        }
-        if (imp.validAspa > validAspa) {
-            return false;
-        }
         if (imp.locPref > locPref) {
             return true;
         }
