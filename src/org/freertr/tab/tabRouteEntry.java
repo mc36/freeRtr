@@ -299,16 +299,6 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
     }
 
     /**
-     * need to update with this prefix
-     *
-     * @param imp new prefix
-     * @return true if yes, false if not
-     */
-    public boolean isOtherBetter(tabRouteEntry<T> imp) {
-        return best.isOtherBetter(imp.best, true);
-    }
-
-    /**
      * convert to route format
      *
      * @param l list to append

@@ -283,7 +283,7 @@ public class tabRoute<T extends addrType> {
                     version++;
                     return;
                 }
-                if (!own.isOtherBetter(prefix)) {
+                if (!own.best.isOtherBetter(prefix.best, true)) {
                     return;
                 }
                 prefixes.put(prefix);
