@@ -12,6 +12,7 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 
 /**
  * authenticate one user
@@ -98,6 +99,15 @@ public abstract class authGeneric implements Comparable<authGeneric> {
      * @return authentication value
      */
     public abstract authResult authUserCommand(String user, String cmd);
+
+    /**
+     * account user session
+     *
+     * @param user username
+     * @param cntr counter
+     * @return accounting value
+     */
+    public abstract authResult acntUserSession(String user, counter cntr);
 
     /**
      * authenticate user by username/chap

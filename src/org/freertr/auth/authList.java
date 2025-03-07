@@ -13,6 +13,7 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 
 /**
  * list of methods
@@ -140,6 +141,26 @@ public class authList extends authGeneric {
             return res;
         }
         return new authResult(this, authResult.authServerError, user, cmd);
+    }
+
+    public authResult acntUserSession(String user, counter cntr) {
+        for (int i = 0; i < methods.size(); i++) {
+            tabAuthlstN ntry = methods.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.timeout++;
+            ntry.lastMatch = bits.getTime();
+            authResult res = ntry.auth.acntUserSession(user, cntr);
+            if (res == null) {
+                continue;
+            }
+            if (res.result == authResult.authServerError) {
+                continue;
+            }
+            return res;
+        }
+        return new authResult(this, authResult.authServerError, user, "");
     }
 
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {

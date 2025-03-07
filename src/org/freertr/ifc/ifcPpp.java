@@ -68,6 +68,21 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public authGeneric authenRem = null;
 
     /**
+     * accounting list to use for remote
+     */
+    public authGeneric accontRem = null;
+
+    /**
+     * accounting interval to use
+     */
+    public int accontInterval;
+
+    /**
+     * accounting last sent
+     */
+    public long accontLast;
+
+    /**
      * my configured address
      */
     public addrEui locIfIdCfg;
@@ -467,6 +482,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(null, "3 .       eap                       extensible authentication protocol");
         l.add(null, "2 3     authentication              set peer authentication list");
         l.add(null, "3 .       <name:aaa>                name of list");
+        l.add(null, "2 3     accounting                  set peer accounting list");
+        l.add(null, "3 4       <name:aaa>                name of list");
+        l.add(null, "4 .         <num>                   time in millis");
         l.add(null, "2 3     multilink                   multilink operation");
         l.add(null, "3 4       <num>                     mrru");
         l.add(null, "4 .         none                    disable operation");
@@ -547,6 +565,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         l.add(beg + "keepalive " + keepaliveInterval);
         l.add(beg + "retry " + keepaliveRetry);
         cmds.cfgLine(l, authenRem == null, cmds.tabulator, "ppp authentication", "" + authenRem);
+        cmds.cfgLine(l, accontRem == null, cmds.tabulator, "ppp accounting", accontRem + " " + accontInterval);
         cmds.cfgLine(l, sentUser == null, cmds.tabulator, "ppp username", sentUser);
         cmds.cfgLine(l, sentPass == null, cmds.tabulator, "ppp password", authLocal.passwdEncode(sentPass, (filter & 2) != 0));
         String a;
@@ -790,6 +809,16 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             authenRem = auth.getAuther();
             return;
         }
+        if (a.equals("accounting")) {
+            cfgAuther auth = cfgAll.autherFind(cmd.word(), null);
+            if (auth == null) {
+                cmd.error("no such accounting list");
+                return;
+            }
+            accontRem = auth.getAuther();
+            accontInterval = bits.str2num(cmd.word());
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -931,6 +960,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
         if (a.equals("authentication")) {
             authenRem = null;
+            return;
+        }
+        if (a.equals("accounting")) {
+            accontRem = null;
+            accontInterval = 0;
             return;
         }
         cmd.badCmd();
@@ -1285,6 +1319,18 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                     break;
                 }
                 ctrlLcp.sendEchoReq();
+                if (accontRem == null) {
+                    break;
+                }
+                if (ctrlAuth == null) {
+                    break;
+                }
+                long tim = bits.getTime();
+                if ((tim - accontLast) < accontInterval) {
+                    break;
+                }
+                accontRem.acntUserSession(ctrlAuth.result.user, cntr);
+                accontLast = tim;
                 break;
             default:
                 clearState();

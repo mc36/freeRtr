@@ -12,6 +12,7 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 
 /**
  * radius authentication
@@ -144,6 +145,14 @@ public class authRadius extends authGeneric {
 
     public authResult authUserCommand(String user, String cmd) {
         return new authResult(this, authResult.authServerError, user, cmd);
+    }
+
+    public authResult acntUserSession(String user, counter cntr) {
+        clntRadius rad = new clntRadius(proxy);
+        rad.secret = secret;
+        rad.server = server;
+        rad.doAcnt(user, cntr);
+        return new authResult(this, authResult.authSuccessful, user, "");
     }
 
     public authResult authUserPass(String user, String pass) {

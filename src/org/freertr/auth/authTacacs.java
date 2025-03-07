@@ -12,6 +12,7 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 
 /**
  * tacacs authentication
@@ -147,6 +148,10 @@ public class authTacacs extends authGeneric {
         tac.secret = secret;
         tac.server = server;
         return tac.doCmd(this, user, cmd);
+    }
+
+    public authResult acntUserSession(String user, counter cntr) {
+        return new authResult(this, authResult.authSuccessful, user, "");
     }
 
     public authResult authUserPass(String user, String pass) {

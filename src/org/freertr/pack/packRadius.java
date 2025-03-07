@@ -279,6 +279,66 @@ public class packRadius {
     public final static int tlvFrmZon = 39;
 
     /**
+     * account status
+     */
+    public final static int tlvActSta = 40;
+
+    /**
+     * account delay
+     */
+    public final static int tlvActDel = 41;
+
+    /**
+     * account input octets
+     */
+    public final static int tlvActInB = 42;
+
+    /**
+     * account output octets
+     */
+    public final static int tlvActOtB = 43;
+
+    /**
+     * account session id
+     */
+    public final static int tlvActSes = 44;
+
+    /**
+     * account authentic
+     */
+    public final static int tlvActAut = 45;
+
+    /**
+     * account session time
+     */
+    public final static int tlvActTim = 46;
+
+    /**
+     * account input packets
+     */
+    public final static int tlvActInP = 47;
+
+    /**
+     * account output packets
+     */
+    public final static int tlvActOtP = 48;
+
+    /**
+     * account terminate cause
+     */
+    public final static int tlvActTer = 49;
+
+    /**
+     * account multi session id
+     */
+    public final static int tlvActMul = 50;
+
+    /**
+     * account link count
+     */
+    public final static int tlvActLnk = 51;
+
+    /**
      * chap challenge
      */
     public final static int tlvChpChl = 60;
@@ -1112,6 +1172,66 @@ public class packRadius {
      * framed appletalk zone
      */
     public String valFrmZon = null;
+
+    /**
+     * account status
+     */
+    public int valActSta = -1;
+
+    /**
+     * account delay
+     */
+    public int valActDel = -1;
+
+    /**
+     * account input octets
+     */
+    public int valActInB = -1;
+
+    /**
+     * account output octets
+     */
+    public int valActOtB = -1;
+
+    /**
+     * account session id
+     */
+    public int valActSes = -1;
+
+    /**
+     * account authentic
+     */
+    public int valActAut = -1;
+
+    /**
+     * account session time
+     */
+    public int valActTim = -1;
+
+    /**
+     * account input packets
+     */
+    public int valActInP = -1;
+
+    /**
+     * account output packets
+     */
+    public int valActOtP = -1;
+
+    /**
+     * account terminate cause
+     */
+    public int valActTer = -1;
+
+    /**
+     * account multi session id
+     */
+    public String valActMul = null;
+
+    /**
+     * account link count
+     */
+    public int valActLnk = -1;
 
     /**
      * chap challenge
@@ -1949,6 +2069,42 @@ public class packRadius {
                 case tlvFrmZon:
                     valFrmZon = getStr();
                     break;
+                case tlvActSta:
+                    valActSta = getInt();
+                    break;
+                case tlvActDel:
+                    valActDel = getInt();
+                    break;
+                case tlvActInB:
+                    valActInB = getInt();
+                    break;
+                case tlvActOtB:
+                    valActOtB = getInt();
+                    break;
+                case tlvActSes:
+                    valActSes = getInt();
+                    break;
+                case tlvActAut:
+                    valActAut = getInt();
+                    break;
+                case tlvActTim:
+                    valActTim = getInt();
+                    break;
+                case tlvActInP:
+                    valActInP = getInt();
+                    break;
+                case tlvActOtP:
+                    valActOtP = getInt();
+                    break;
+                case tlvActTer:
+                    valActTer = getInt();
+                    break;
+                case tlvActMul:
+                    valActMul = getStr();
+                    break;
+                case tlvActLnk:
+                    valActLnk = getInt();
+                    break;
                 case tlvChpChl:
                     valChpChl = tlv.copyBytes();
                     break;
@@ -2437,6 +2593,18 @@ public class packRadius {
         putInt(pck, tlvFrmLnk, valFrmLnk);
         putInt(pck, tlvFrmNet, valFrmNet);
         putStr(pck, tlvFrmZon, valFrmZon);
+        putInt(pck, tlvActAut, valActAut);
+        putInt(pck, tlvActDel, valActDel);
+        putInt(pck, tlvActInB, valActInB);
+        putInt(pck, tlvActOtB, valActOtB);
+        putInt(pck, tlvActInP, valActInP);
+        putInt(pck, tlvActOtP, valActOtP);
+        putInt(pck, tlvActInt, valActInt);
+        putInt(pck, tlvActLnk, valActLnk);
+        putInt(pck, tlvActSes, valActSes);
+        putInt(pck, tlvActTer, valActTer);
+        putInt(pck, tlvActTim, valActTim);
+        putStr(pck, tlvActMul, valActMul);
         putInt(pck, tlvPrtTyp, valPrtTyp);
         putInt(pck, tlvPrtLim, valPrtLim);
         putStr(pck, tlvLatPrt, valLatPrt);
@@ -2689,36 +2857,38 @@ public class packRadius {
                 + valFrmIpx + " state=" + valState + " class=" + valClass + " sestim=" + valSesTim + " idltim=" + valIdlTim
                 + " term=" + valTrmAct + " called=" + valCalled + " calling=" + valCalling + " nasid=" + valNasId + " latserv="
                 + valLatSrv + " latmod=" + valLatMod + " latgrp=" + valLatGrp + " link=" + valFrmLnk + " net=" + valFrmNet
-                + " zone=" + valFrmZon + " portyp=" + valPrtTyp + " prtlim=" + valPrtLim + " latprt=" + valLatPrt + " tunTyp="
-                + valTunTyp + " tunMed=" + valTunMed + " tunCln=" + valTunCln + " tunSrv=" + valTunSrv + " tunAct=" + valTunAct
-                + " tunPwd=" + valTunPwd + " arpPwd=" + valArpPwd + " arpFtr=" + valArpFtr + " arpZon=" + valArpZon + " arpSec="
-                + valArpSec + " arpDat=" + valArpDat + "pwdTry=" + valPwdTry + " prmpt=" + valPrmpt + " conInf=" + valConInf
-                + " cfgTkn=" + valCfgTkn + " eapMsg=" + valEapMsg + " msgAut=" + valMsgAut + " tunPrv=" + valTunPrv + " tunAsg="
-                + valTunAsg + " tunPrf=" + valTunPrf + " arpChl=" + valArpChl + " actInt=" + valActInt + " tunLst=" + valTunLst
-                + " nasPoi=" + valNasPoi + " frmPol4=" + valFrmPol4 + " cui=" + valCui + " frmCln=" + valFrmCln + " frmSrv="
-                + valFrmSrv + " nasFlt=" + valNasFlt + " OrgLin=" + valOrgLin + " frmIfi=" + valFrmIfi + " frmPrf=" + valFrmPrf
-                + " lgnHst6=" + valLgnHst6 + " frmRou6=" + valFrmRou6 + " frmPol6=" + valFrmPol6 + " errCau=" + valErrCau
-                + " eapKey=" + valEapKey + " dgsRsp=" + valDgsRsp + " dgsRlm=" + valDgsRlm + " dgsNon=" + valDgsNon + " dgsAut="
-                + valDgsAut + " dgsNno=" + valDgsNno + " dgsMet=" + valDgsMet + " dgsUri=" + valDgsUri + "dgsQop=" + valDgsQop
-                + " dgsAlg=" + valDgsAlg + " dgsEnt=" + valDgsEnt + " dgsCno=" + valDgsCno + " dgsNoc=" + valDgsNoc + " dgsUsr="
-                + valDgsUsr + " dgsOpq=" + valDgsOpq + " dgsPrm=" + valDgsPrm + " dgsAka=" + valDgsAka + " dgsDom=" + valDgsDom
-                + " dgsStl=" + valDgsStl + " dgsHa1=" + valDgsHa1 + " sipAor=" + valSipAor + " delPfx=" + valDelPfx + " mipFtr="
-                + valMipFtr + " mipHom=" + valMipHom + " oprNam=" + valOprNam + " locInf=" + valLocInf + " locDat=" + valLocDat
-                + " locBas=" + valLocBas + " locExt=" + valLocExt + " locCap=" + valLocCap + " locReq=" + valLocReq + " frmMgt="
-                + valFrmMgt + " mgtPrt=" + valMgtPrt + " mgtPol=" + valMgtPol + " mgtPrv=" + valMgtPrv + " pkmSsc=" + valPkmSsc
-                + " pkmCac=" + valPkmCac + " pkmCfg=" + valPkmCfg + " pkmCrp=" + valPkmCrp + " pkmSai=" + valPkmSai + " pkmSad="
-                + valPkmSad + " pkmKey=" + valPkmKey + " dslTun=" + valDslTun + " mobNod=" + valMobNod + " srvSel=" + valSrvSel
-                + " pmiHom6=" + valPmiHom6 + " pmiVis6=" + valPmiVis6 + " pmiHom4=" + valPmiHom4 + " pmiVis4=" + valPmiVis4
-                + " pmiHomH=" + valPmiHomH + " pmiVisH=" + valPmiVisH + " pmiHomI=" + valPmiHomI + " pmiVisI=" + valPmiVisI
-                + " pmiHomO=" + valPmiHomO + " pmiVisO=" + valPmiVisO + " pmiHomD4=" + valPmiHomD4 + " pmiVisD4=" + valPmiVisD4
-                + " pmiHomD6=" + valPmiHomD6 + " pmiVisD6=" + valPmiVisD6 + " pmiHomG=" + valPmiHomG + " pmiVisG=" + valPmiVisG
-                + " eapLay=" + valEapLay + " gssNam=" + valGssNam + " gssHst=" + valGssHst + " gssSpc=" + valGssSpc + " gssRlm="
-                + valGssRlm + " frmAdr6=" + valFrmAdr6 + " dnsSrv6=" + valDnsSrv6 + " rouInf6=" + valRouInf6 + " delPol6="
-                + valDelPol6 + " staPol6=" + valStaPol6 + " 6rdCfg=" + val6rdCfg + " alwSta=" + valAlwSta + " eapPer=" + valEapPer
-                + " eapSrv=" + valEapSrv + " mobDom=" + valMobDom + " preTim=" + valPreTim + " netName=" + valNetName + " eapAno="
-                + valEapAno + " wlaHes=" + valWlaHes + " wlaVen=" + valWlaVen + " wlaLng=" + valWlaLng + " wlaNam=" + valWlaNam
-                + " wlaRea=" + valWlaRea + " wlaPai=" + valWlaPai + " wlaGrp=" + valWlaGrp + " wlaAkm=" + valWlaAkm + " wlaMgt="
-                + valWlaMgt + " wlaBnd=" + valWlaBnd;
+                + " zone=" + valFrmZon + " accmul=" + valActMul + " accaut=" + valActAut + " accdel=" + valActDel + " accinb="
+                + valActInB + " accinp=" + valActInP + " accotb=" + valActOtB + " accotp=" + valActOtP + " accint=" + valActInt
+                + " accses=" + valActSes + " accsta=" + valActSta + " accter=" + valActTer + " acctim=" + valActTim + " portyp="
+                + valPrtTyp + " prtlim=" + valPrtLim + " latprt=" + valLatPrt + " tunTyp=" + valTunTyp + " tunMed=" + valTunMed
+                + " tunCln=" + valTunCln + " tunSrv=" + valTunSrv + " tunAct=" + valTunAct + " tunPwd=" + valTunPwd + " arpPwd="
+                + valArpPwd + " arpFtr=" + valArpFtr + " arpZon=" + valArpZon + " arpSec=" + valArpSec + " arpDat=" + valArpDat
+                + "pwdTry=" + valPwdTry + " prmpt=" + valPrmpt + " conInf=" + valConInf + " cfgTkn=" + valCfgTkn + " eapMsg="
+                + valEapMsg + " msgAut=" + valMsgAut + " tunPrv=" + valTunPrv + " tunAsg=" + valTunAsg + " tunPrf=" + valTunPrf
+                + " arpChl=" + valArpChl + " actInt=" + valActInt + " tunLst=" + valTunLst + " nasPoi=" + valNasPoi + " frmPol4="
+                + valFrmPol4 + " cui=" + valCui + " frmCln=" + valFrmCln + " frmSrv=" + valFrmSrv + " nasFlt=" + valNasFlt + " orgLin="
+                + valOrgLin + " frmIfi=" + valFrmIfi + " frmPrf=" + valFrmPrf + " lgnHst6=" + valLgnHst6 + " frmRou6=" + valFrmRou6
+                + " frmPol6=" + valFrmPol6 + " errCau=" + valErrCau + " eapKey=" + valEapKey + " dgsRsp=" + valDgsRsp + " dgsRlm="
+                + valDgsRlm + " dgsNon=" + valDgsNon + " dgsAut=" + valDgsAut + " dgsNno=" + valDgsNno + " dgsMet=" + valDgsMet
+                + " dgsUri=" + valDgsUri + "dgsQop=" + valDgsQop + " dgsAlg=" + valDgsAlg + " dgsEnt=" + valDgsEnt + " dgsCno="
+                + valDgsCno + " dgsNoc=" + valDgsNoc + " dgsUsr=" + valDgsUsr + " dgsOpq=" + valDgsOpq + " dgsPrm=" + valDgsPrm
+                + " dgsAka=" + valDgsAka + " dgsDom=" + valDgsDom + " dgsStl=" + valDgsStl + " dgsHa1=" + valDgsHa1 + " sipAor="
+                + valSipAor + " delPfx=" + valDelPfx + " mipFtr=" + valMipFtr + " mipHom=" + valMipHom + " oprNam=" + valOprNam
+                + " locInf=" + valLocInf + " locDat=" + valLocDat + " locBas=" + valLocBas + " locExt=" + valLocExt + " locCap="
+                + valLocCap + " locReq=" + valLocReq + " frmMgt=" + valFrmMgt + " mgtPrt=" + valMgtPrt + " mgtPol=" + valMgtPol
+                + " mgtPrv=" + valMgtPrv + " pkmSsc=" + valPkmSsc + " pkmCac=" + valPkmCac + " pkmCfg=" + valPkmCfg + " pkmCrp="
+                + valPkmCrp + " pkmSai=" + valPkmSai + " pkmSad=" + valPkmSad + " pkmKey=" + valPkmKey + " dslTun=" + valDslTun
+                + " mobNod=" + valMobNod + " srvSel=" + valSrvSel + " pmiHom6=" + valPmiHom6 + " pmiVis6=" + valPmiVis6 + " pmiHom4="
+                + valPmiHom4 + " pmiVis4=" + valPmiVis4 + " pmiHomH=" + valPmiHomH + " pmiVisH=" + valPmiVisH + " pmiHomI="
+                + valPmiHomI + " pmiVisI=" + valPmiVisI + " pmiHomO=" + valPmiHomO + " pmiVisO=" + valPmiVisO + " pmiHomD4="
+                + valPmiHomD4 + " pmiVisD4=" + valPmiVisD4 + " pmiHomD6=" + valPmiHomD6 + " pmiVisD6=" + valPmiVisD6 + " pmiHomG="
+                + valPmiHomG + " pmiVisG=" + valPmiVisG + " eapLay=" + valEapLay + " gssNam=" + valGssNam + " gssHst=" + valGssHst
+                + " gssSpc=" + valGssSpc + " gssRlm=" + valGssRlm + " frmAdr6=" + valFrmAdr6 + " dnsSrv6=" + valDnsSrv6 + " rouInf6="
+                + valRouInf6 + " delPol6=" + valDelPol6 + " staPol6=" + valStaPol6 + " 6rdCfg=" + val6rdCfg + " alwSta=" + valAlwSta
+                + " eapPer=" + valEapPer + " eapSrv=" + valEapSrv + " mobDom=" + valMobDom + " preTim=" + valPreTim + " netName="
+                + valNetName + " eapAno=" + valEapAno + " wlaHes=" + valWlaHes + " wlaVen=" + valWlaVen + " wlaLng=" + valWlaLng
+                + " wlaNam=" + valWlaNam + " wlaRea=" + valWlaRea + " wlaPai=" + valWlaPai + " wlaGrp=" + valWlaGrp + " wlaAkm="
+                + valWlaAkm + " wlaMgt=" + valWlaMgt + " wlaBnd=" + valWlaBnd;
     }
 
 }

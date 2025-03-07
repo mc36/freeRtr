@@ -22,6 +22,7 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 
 /**
  * local user database
@@ -516,6 +517,17 @@ public class authLocal extends authGeneric {
             }
         }
         return new authResult(this, authResult.authBadUserPass, user, cmd);
+    }
+
+    /**
+     * account user session
+     *
+     * @param user username
+     * @param cntr counter
+     * @return accounting value
+     */
+    public authResult acntUserSession(String user, counter cntr) {
+        return new authResult(this, authResult.authSuccessful, user, "");
     }
 
     /**

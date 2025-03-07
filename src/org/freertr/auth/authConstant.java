@@ -7,6 +7,7 @@ import org.freertr.cry.cryKeyGeneric;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 
 /**
  * authentication that always succeeds
@@ -36,6 +37,10 @@ public class authConstant extends authGeneric {
 
     public authResult authUserCommand(String user, String cmd) {
         return authUserPass(user, "");
+    }
+
+    public authResult acntUserSession(String user, counter cntr) {
+            return new authResult(this, authResult.authSuccessful, user, "");
     }
 
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {

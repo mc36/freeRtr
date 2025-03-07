@@ -58,7 +58,7 @@ public class userReader implements Comparator<String> {
     private String filterO; // original command
 
     private int columnL; // column line
-    
+
     private int columnN; // column number
 
     private String columnS; // column separator

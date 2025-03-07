@@ -11,6 +11,7 @@ import org.freertr.serv.servGeneric;
 import org.freertr.serv.servRadius;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
+import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 
@@ -85,6 +86,63 @@ public class clntRadius {
         radTx.valChpChl = chal;
         radTx.valChpPwd = resp;
         return doXchg();
+    }
+
+    /**
+     * do accounting transaction
+     *
+     * @param user username
+     * @param cntr counter
+     */
+    public void doAcnt(String user, counter cntr) {
+        radUsr = user;
+        radPwd = "";
+        radTx = new packRadius();
+        radTx.valActInB = (int) cntr.byteRx;
+        radTx.valActInP = (int) cntr.packRx;
+        radTx.valActOtB = (int) cntr.byteTx;
+        radTx.valActOtP = (int) cntr.packTx;
+        doXfer();
+    }
+
+    private void doXfer() {
+        if (secret == null) {
+            return;
+        }
+        if (server == null) {
+            return;
+        }
+        addrIP trg = userTerminal.justResolv(server, 0);
+        if (trg == null) {
+            return;
+        }
+        clntProxy prx = cfgAll.getClntPrx(proxy);
+        if (prx == null) {
+            return;
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoUdp, trg, new servRadius().srvPort(), "radius");
+        if (conn == null) {
+            return;
+        }
+        conn.setTime(5000);
+        radTx.secret = secret;
+        radTx.valUsrNam = radUsr;
+        radTx.valNasPrt = 2;
+        radTx.valNasId = "vty";
+        radTx.valPrtTyp = 5;
+        radTx.auther = new byte[16];
+        for (int i = 0; i < radTx.auther.length; i++) {
+            radTx.auther[i] = (byte) bits.randomB();
+        }
+        radTx.code = packRadius.typeAcoReq;
+        radTx.idnt = bits.randomB();
+        if (debugger.clntRadiusTraf) {
+            logger.debug("tx " + radTx.dump());
+        }
+        packHolder pckBin = new packHolder(true, true);
+        radTx.createPacket(pckBin, false, null);
+        pckBin.pipeSend(conn, 0, pckBin.dataSize(), 2);
+        conn.setClose();
     }
 
     private boolean doXchg() {

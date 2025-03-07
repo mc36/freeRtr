@@ -1950,6 +1950,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp open",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp optional",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp authentication",
+        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp accounting",
         // hdlc
         "interface .*!" + cmds.tabulator + "hdlc keepalive 5000",
         // isdn
