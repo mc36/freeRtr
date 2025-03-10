@@ -29,6 +29,11 @@ public class packRadius {
     public final static int port = 1812;
 
     /**
+     * accounting port number
+     */
+    public final static int port2 = 1813;
+
+    /**
      * size of header
      */
     public final static int size = 20;

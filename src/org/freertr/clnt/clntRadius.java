@@ -42,6 +42,11 @@ public class clntRadius {
     public String secret = null;
 
     /**
+     * target port
+     */
+    public int port;
+
+    /**
      * proxy to use
      */
     public clntProxy proxy;
@@ -98,6 +103,7 @@ public class clntRadius {
         radUsr = user;
         radPwd = "";
         radTx = new packRadius();
+        radTx.valActSta = 3; // update
         radTx.valActInB = (int) cntr.byteRx;
         radTx.valActInP = (int) cntr.packRx;
         radTx.valActOtB = (int) cntr.byteTx;
@@ -120,7 +126,10 @@ public class clntRadius {
         if (prx == null) {
             return;
         }
-        pipeSide conn = prx.doConnect(servGeneric.protoUdp, trg, new servRadius().srvPort(), "radius");
+        if (port < 1) {
+            port = packRadius.port2;
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoUdp, trg, port, "radius");
         if (conn == null) {
             return;
         }
@@ -160,7 +169,10 @@ public class clntRadius {
         if (prx == null) {
             return true;
         }
-        pipeSide conn = prx.doConnect(servGeneric.protoUdp, trg, new servRadius().srvPort(), "radius");
+        if (port < 1) {
+            port = new servRadius().srvPort();
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoUdp, trg, port, "radius");
         if (conn == null) {
             return true;
         }

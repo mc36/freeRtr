@@ -38,6 +38,11 @@ public class authRadius extends authGeneric {
     public String secret;
 
     /**
+     * target port
+     */
+    public int port;
+
+    /**
      * default privilege
      */
     public int privilege = 15;
@@ -53,6 +58,7 @@ public class authRadius extends authGeneric {
 
     public List<String> getShRun(String beg, int filter) {
         List<String> l = new ArrayList<String>();
+        cmds.cfgLine(l, port < 1, beg, "port", "" + port);
         cmds.cfgLine(l, secret == null, beg, "secret", authLocal.passwdEncode(secret, (filter & 2) != 0));
         cmds.cfgLine(l, server == null, beg, "server", server);
         cmds.cfgLine(l, proxy == null, beg, "proxy", "" + proxy);
@@ -65,6 +71,8 @@ public class authRadius extends authGeneric {
         l.add(null, "2 .    <str>             name of server");
         l.add(null, "1 2  secret              specify secret");
         l.add(null, "2 .    <text>            shared secret");
+        l.add(null, "1 2  port                set port number");
+        l.add(null, "2 .    <num>             port number");
         l.add(null, "1 2  privilege           set default privilege");
         l.add(null, "2 .    <num>             privilege of terminal");
         l.add(null, "1 2  proxy               set proxy to use");
@@ -83,6 +91,10 @@ public class authRadius extends authGeneric {
         }
         if (s.equals("privilege")) {
             privilege = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("port")) {
+            port = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("proxy")) {
@@ -110,6 +122,10 @@ public class authRadius extends authGeneric {
             proxy = null;
             return false;
         }
+        if (s.equals("port")) {
+            port = 0;
+            return false;
+        }
         return true;
     }
 
@@ -119,6 +135,7 @@ public class authRadius extends authGeneric {
 
     public authResult authUserChap(String user, int id, byte[] chal, byte[] resp) {
         clntRadius rad = new clntRadius(proxy);
+        rad.port = port;
         rad.secret = secret;
         rad.server = server;
         if (rad.doChap(user, id, chal, resp)) {
@@ -149,6 +166,7 @@ public class authRadius extends authGeneric {
 
     public authResult acntUserSession(String user, counter cntr) {
         clntRadius rad = new clntRadius(proxy);
+        rad.port = port;
         rad.secret = secret;
         rad.server = server;
         rad.doAcnt(user, cntr);
@@ -157,6 +175,7 @@ public class authRadius extends authGeneric {
 
     public authResult authUserPass(String user, String pass) {
         clntRadius rad = new clntRadius(proxy);
+        rad.port = port;
         rad.secret = secret;
         rad.server = server;
         if (rad.doPap(user, pass)) {

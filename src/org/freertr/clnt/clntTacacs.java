@@ -43,6 +43,11 @@ public class clntTacacs {
     public String secret = null;
 
     /**
+     * target port
+     */
+    public int port;
+
+    /**
      * proxy to use
      */
     public clntProxy proxy;
@@ -107,7 +112,10 @@ public class clntTacacs {
         if (prx == null) {
             return true;
         }
-        pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
+        if (port < 1) {
+            port = new servTacacs().srvPort();
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, port, "tacacs");
         if (conn == null) {
             return true;
         }
@@ -226,7 +234,10 @@ public class clntTacacs {
         if (prx == null) {
             return new authResult(par, authResult.authServerError, usr, cmd);
         }
-        pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, new servTacacs().srvPort(), "tacacs");
+        if (port < 1) {
+            port = new servTacacs().srvPort();
+        }
+        pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, port, "tacacs");
         if (conn == null) {
             return new authResult(par, authResult.authServerError, usr, cmd);
         }
