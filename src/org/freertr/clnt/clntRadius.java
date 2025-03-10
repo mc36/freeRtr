@@ -140,16 +140,13 @@ public class clntRadius {
         radTx.valNasId = "vty";
         radTx.valPrtTyp = 5;
         radTx.auther = new byte[16];
-        for (int i = 0; i < radTx.auther.length; i++) {
-            radTx.auther[i] = (byte) bits.randomB();
-        }
         radTx.code = packRadius.typeAcoReq;
         radTx.idnt = bits.randomB();
         if (debugger.clntRadiusTraf) {
             logger.debug("tx " + radTx.dump());
         }
         packHolder pckBin = new packHolder(true, true);
-        radTx.createPacket(pckBin, false, null);
+        radTx.createPacket(pckBin, true, null);
         pckBin.pipeSend(conn, 0, pckBin.dataSize(), 2);
         conn.setClose();
     }
