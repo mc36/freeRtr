@@ -39,7 +39,7 @@ public class authConstant extends authGeneric {
         return authUserPass(user, "");
     }
 
-    public authResult acntUserSession(String user, counter cntr) {
+    public authResult acntUserSession(String user, int sess, counter cntr, int stat) {
             return new authResult(this, authResult.authSuccessful, user, "");
     }
 

@@ -1201,7 +1201,7 @@ public class packRadius {
     /**
      * account session id
      */
-    public int valActSes = -1;
+    public String valActSes = null;
 
     /**
      * account authentic
@@ -2087,7 +2087,7 @@ public class packRadius {
                     valActOtB = getInt();
                     break;
                 case tlvActSes:
-                    valActSes = getInt();
+                    valActSes = getStr();
                     break;
                 case tlvActAut:
                     valActAut = getInt();
@@ -2606,7 +2606,8 @@ public class packRadius {
         putInt(pck, tlvActOtP, valActOtP);
         putInt(pck, tlvActInt, valActInt);
         putInt(pck, tlvActLnk, valActLnk);
-        putInt(pck, tlvActSes, valActSes);
+        putInt(pck, tlvActSta, valActSta);
+        putStr(pck, tlvActSes, valActSes);
         putInt(pck, tlvActTer, valActTer);
         putInt(pck, tlvActTim, valActTim);
         putStr(pck, tlvActMul, valActMul);

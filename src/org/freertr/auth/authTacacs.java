@@ -168,7 +168,7 @@ public class authTacacs extends authGeneric {
         return tac.doCmd(this, user, cmd);
     }
 
-    public authResult acntUserSession(String user, counter cntr) {
+    public authResult acntUserSession(String user, int sess, counter cntr, int stat) {
         return new authResult(this, authResult.authSuccessful, user, "");
     }
 

@@ -143,7 +143,7 @@ public class authList extends authGeneric {
         return new authResult(this, authResult.authServerError, user, cmd);
     }
 
-    public authResult acntUserSession(String user, counter cntr) {
+    public authResult acntUserSession(String user, int sess, counter cntr, int stat) {
         for (int i = 0; i < methods.size(); i++) {
             tabAuthlstN ntry = methods.get(i);
             if (ntry == null) {
@@ -151,7 +151,7 @@ public class authList extends authGeneric {
             }
             ntry.timeout++;
             ntry.lastMatch = bits.getTime();
-            authResult res = ntry.auth.acntUserSession(user, cntr);
+            authResult res = ntry.auth.acntUserSession(user, sess, cntr, stat);
             if (res == null) {
                 continue;
             }

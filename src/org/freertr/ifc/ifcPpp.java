@@ -78,6 +78,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
     public int accontInterval;
 
     /**
+     * accounting session to use
+     */
+    public int accontSession;
+
+    /**
      * accounting last sent
      */
     public long accontLast;
@@ -1231,6 +1236,15 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
             cfger.fwdIf6.gatePrfx = authGeneric.route2prefixes(auth.result.ipv6route);
         }
         sendKeepReq();
+        if (accontRem == null) {
+            return;
+        }
+        if (ctrlAuth == null) {
+            return;
+        }
+        accontSession = bits.randomD();
+        accontRem.acntUserSession(ctrlAuth.result.user, accontSession, cntr, 1);
+        accontLast = bits.getTime();
     }
 
     /**
@@ -1329,7 +1343,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                 if ((tim - accontLast) < accontInterval) {
                     break;
                 }
-                accontRem.acntUserSession(ctrlAuth.result.user, cntr);
+                accontRem.acntUserSession(ctrlAuth.result.user, accontSession, cntr, 3);
                 accontLast = tim;
                 break;
             default:

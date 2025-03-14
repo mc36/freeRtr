@@ -104,10 +104,12 @@ public abstract class authGeneric implements Comparable<authGeneric> {
      * account user session
      *
      * @param user username
+     * @param sess session
      * @param cntr counter
+     * @param stat status, 1=start, 2=stop, 3=update
      * @return accounting value
      */
-    public abstract authResult acntUserSession(String user, counter cntr);
+    public abstract authResult acntUserSession(String user, int sess, counter cntr, int stat);
 
     /**
      * authenticate user by username/chap
