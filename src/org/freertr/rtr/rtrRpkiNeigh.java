@@ -285,7 +285,11 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             }
             for (int i = 0; i < pck.aspa.provs.size(); i++) {
                 int o = pck.aspa.provs.get(i);
-                ntry.provs.del(o);
+                int p = ntry.provs.indexOf(o);
+                if (p < 0) {
+                    continue;
+                }
+                ntry.provs.remove(p);
             }
             if (ntry.provs.size() > 0) {
                 return 1;
@@ -296,6 +300,10 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         if (ntry != null) {
             for (int i = 0; i < pck.aspa.provs.size(); i++) {
                 int o = pck.aspa.provs.get(i);
+                int p = ntry.provs.indexOf(o);
+                if (p >= 0) {
+                    continue;
+                }
                 ntry.provs.add(o);
             }
             return 1;

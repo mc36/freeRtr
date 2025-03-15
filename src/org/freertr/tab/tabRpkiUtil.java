@@ -111,7 +111,7 @@ public class tabRpkiUtil {
         tabGen<tabRpkiAspa> res = new tabGen<tabRpkiAspa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiAspa ntry = src.get(i);
-            if (ntry.provs.find(asn) == null) {
+            if (ntry.provs.indexOf(asn) < 0) {
                 continue;
             }
             res.add(ntry);
@@ -523,7 +523,7 @@ public class tabRpkiUtil {
             if (resC == null) {
                 minUp = len - i;
             } else {
-                if (resC.provs.find(numP) == null) {
+                if (resC.provs.indexOf(numP) < 0) {
                     minUp = len - i;
                     maxUp = len - i;
                 }
@@ -533,7 +533,7 @@ public class tabRpkiUtil {
                     minDn = i;
                 }
             } else {
-                if (resP.provs.find(numC) == null) {
+                if (resP.provs.indexOf(numC) < 0) {
                     if (minDn == len) {
                         minDn = i;
                     }

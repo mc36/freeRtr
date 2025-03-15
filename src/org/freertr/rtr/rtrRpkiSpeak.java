@@ -1,6 +1,7 @@
 package org.freertr.rtr;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -258,7 +259,7 @@ public class rtrRpkiSpeak {
                 break;
             case msgAspaPdu:
                 aspa = new tabRpkiAspa();
-                aspa.provs = new tabGen<Integer>();
+                aspa.provs = new ArrayList<Integer>();
                 withdraw = (sess & 0x100) == 0; // flags
                 aspa.cust = pck.msbGetD(0);
                 for (;;) {

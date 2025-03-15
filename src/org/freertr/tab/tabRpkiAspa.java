@@ -1,5 +1,7 @@
 package org.freertr.tab;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
@@ -30,7 +32,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
     /**
      * allowed providers
      */
-    public tabGen<Integer> provs;
+    public List<Integer> provs;
 
     /**
      * preference
@@ -85,7 +87,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
         tabRpkiAspa n = new tabRpkiAspa();
         n.cust = cust;
         if (provs != null) {
-            n.provs = new tabGen<Integer>(provs);
+            n.provs = new ArrayList<Integer>(provs);
         }
         n.distan = distan;
         n.srcIP = srcIP.copyBytes();
@@ -170,7 +172,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
      */
     public boolean fromString(cmds cmd) {
         cust = bits.str2num(cmd.word());
-        provs = new tabGen<Integer>();
+        provs = new ArrayList<Integer>();
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -208,7 +210,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
         if (jnt == null) {
             return true;
         }
-        provs = new tabGen<Integer>();
+        provs = new ArrayList<Integer>();
         int o = jnt.level + 1;
         for (;;) {
             i++;
