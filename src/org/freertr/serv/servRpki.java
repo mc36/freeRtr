@@ -16,6 +16,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRpkiAspa;
+import org.freertr.tab.tabRpkiKey;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
@@ -67,6 +68,11 @@ public class servRpki extends servGeneric implements prtServS {
      * configured aspa entries
      */
     public final tabGen<tabRpkiAspa> cfgedA = new tabGen<tabRpkiAspa>();
+
+    /**
+     * configured key entries
+     */
+    public final tabGen<tabRpkiKey> cfgedK = new tabGen<tabRpkiKey>();
 
     /**
      * sequence
@@ -133,6 +139,9 @@ public class servRpki extends servGeneric implements prtServS {
         for (int i = 0; i < cfgedA.size(); i++) {
             lst.add(beg + "provider " + cfgedA.get(i).toConfig());
         }
+        for (int i = 0; i < cfgedK.size(); i++) {
+            lst.add(beg + "pubkey " + cfgedK.get(i).toConfig());
+        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -160,6 +169,17 @@ public class servRpki extends servGeneric implements prtServS {
             }
             prf.srcIP = new addrIP();
             cfgedA.put(prf);
+            sequence++;
+            return false;
+        }
+        if (s.equals("pubkey")) {
+            tabRpkiKey prf = new tabRpkiKey();
+            if (prf.fromString(cmd)) {
+                cmd.error("bad public key");
+                return false;
+            }
+            prf.srcIP = new addrIP();
+            cfgedK.put(prf);
             sequence++;
             return false;
         }
@@ -209,6 +229,17 @@ public class servRpki extends servGeneric implements prtServS {
             sequence++;
             return false;
         }
+        if (s.equals("pubkey")) {
+            tabRpkiKey prf = new tabRpkiKey();
+            if (prf.fromString(cmd)) {
+                cmd.error("bad public key");
+                return false;
+            }
+            prf.srcIP = new addrIP();
+            cfgedK.del(prf);
+            sequence++;
+            return false;
+        }
         if (s.equals("json")) {
             jsonN = null;
             sequence++;
@@ -231,7 +262,11 @@ public class servRpki extends servGeneric implements prtServS {
         l.add(null, "1 2  provider                     setup providers");
         l.add(null, "2 3    <num>                      customer asn");
         l.add(null, "3 3,.    <num>                    as number");
-        l.add(null, "1 2   json                        setup a json file");
+        l.add(null, "1 2  pubkey                       setup pubkey");
+        l.add(null, "2 3    <num>                      customer asn");
+        l.add(null, "3 4      <str>                    subject key identifier");
+        l.add(null, "4 .        <str>                  public key");
+        l.add(null, "1 2  json                         setup a json file");
         l.add(null, "2 .     <str>                     name of file to use");
         l.add(null, "1 2   rpki                        setup resource public key infrastructure");
         cfgRtr.getRouterList(l, 0, "");
@@ -303,7 +338,7 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
                         rpkiR = (rtrRpki) rtrCfg.getRouter();
                     }
                 }
-                if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, lower.cfgedA, rpkiR, lower.jsonN)) {
+                if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, lower.cfgedA, lower.cfgedK, rpkiR, lower.jsonN)) {
                     break;
                 }
             }

@@ -130,6 +130,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabRpkiAspa;
+import org.freertr.tab.tabRpkiKey;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplc;
 import org.freertr.tab.tabSession;
@@ -3822,23 +3823,43 @@ public class userShow {
             cmd.error("no such neighbor");
             return;
         }
-        if (ver < 0) {
-            tabGen<tabRpkiAspa> tab1 = nei1.getFinalTabAspa();
-            tabGen<tabRpkiAspa> tab2 = nei2.getFinalTabAspa();
-            tabGen<tabRpkiAspa> uni1 = new tabGen<tabRpkiAspa>();
-            tabGen<tabRpkiAspa> uni2 = new tabGen<tabRpkiAspa>();
-            tabGen<tabRpkiAspa> dif1 = new tabGen<tabRpkiAspa>();
-            tabGen<tabRpkiAspa> dif2 = new tabGen<tabRpkiAspa>();
-            tabRpkiUtil.diffTwoAspa(uni1, dif1, tab1, tab2);
-            tabRpkiUtil.diffTwoAspa(uni2, dif2, tab2, tab1);
-            cmd.error("unique to " + nei1);
-            doShowAspas(uni1, 1);
-            cmd.error("unique to " + nei2);
-            doShowAspas(uni2, 1);
-            cmd.error("attribute differs");
-            doShowAspas(dif1, 1);
-            doShowAspas(dif2, 1);
-            return;
+        switch (ver) {
+            case -1: {
+                tabGen<tabRpkiAspa> tab1 = nei1.getFinalTabAspa();
+                tabGen<tabRpkiAspa> tab2 = nei2.getFinalTabAspa();
+                tabGen<tabRpkiAspa> uni1 = new tabGen<tabRpkiAspa>();
+                tabGen<tabRpkiAspa> uni2 = new tabGen<tabRpkiAspa>();
+                tabGen<tabRpkiAspa> dif1 = new tabGen<tabRpkiAspa>();
+                tabGen<tabRpkiAspa> dif2 = new tabGen<tabRpkiAspa>();
+                tabRpkiUtil.diffTwoAspa(uni1, dif1, tab1, tab2);
+                tabRpkiUtil.diffTwoAspa(uni2, dif2, tab2, tab1);
+                cmd.error("unique to " + nei1);
+                doShowAspas(uni1, 1);
+                cmd.error("unique to " + nei2);
+                doShowAspas(uni2, 1);
+                cmd.error("attribute differs");
+                doShowAspas(dif1, 1);
+                doShowAspas(dif2, 1);
+                return;
+            }
+            case -2: {
+                tabGen<tabRpkiKey> tab1 = nei1.getFinalTabKey();
+                tabGen<tabRpkiKey> tab2 = nei2.getFinalTabKey();
+                tabGen<tabRpkiKey> uni1 = new tabGen<tabRpkiKey>();
+                tabGen<tabRpkiKey> uni2 = new tabGen<tabRpkiKey>();
+                tabGen<tabRpkiKey> dif1 = new tabGen<tabRpkiKey>();
+                tabGen<tabRpkiKey> dif2 = new tabGen<tabRpkiKey>();
+                tabRpkiUtil.diffTwoKey(uni1, dif1, tab1, tab2);
+                tabRpkiUtil.diffTwoKey(uni2, dif2, tab2, tab1);
+                cmd.error("unique to " + nei1);
+                doShowKeys(uni1, 1);
+                cmd.error("unique to " + nei2);
+                doShowKeys(uni2, 1);
+                cmd.error("attribute differs");
+                doShowKeys(dif1, 1);
+                doShowKeys(dif2, 1);
+                return;
+            }
         }
         tabGen<tabRpkiRoa> tab1 = nei1.getFinalTabRoa(ver);
         tabGen<tabRpkiRoa> tab2 = nei2.getFinalTabRoa(ver);
@@ -3896,6 +3917,10 @@ public class userShow {
             doShowAspas(r.rpki.getFinalTabAspa(), 1);
             return;
         }
+        if (a.equals("databasek")) {
+            doShowKeys(r.rpki.getFinalTabKey(), 1);
+            return;
+        }
         if (a.equals("aspagraph")) {
             tabGen<tabRpkiAspa> tab = r.rpki.getFinalTabAspa();
             rdr.putStrArr(tabRpkiUtil.getAspaGraph(tab));
@@ -3917,6 +3942,12 @@ public class userShow {
             tabGen<tabRpkiAspa> tab = r.rpki.getFinalTabAspa();
             tab = tabRpkiUtil.allowedAspa(tab, bits.str2num(cmd.word()));
             doShowAspas(tab, 1);
+            return;
+        }
+        if (a.equals("pubkey")) {
+            tabGen<tabRpkiKey> tab = r.rpki.getFinalTabKey();
+            tab = tabRpkiUtil.allowedKey(tab, bits.str2num(cmd.word()));
+            doShowKeys(tab, 1);
             return;
         }
         if (a.equals("learned4")) {
@@ -3961,6 +3992,20 @@ public class userShow {
             doShowAspas(nei.getFinalTabAspa(), 1);
             return;
         }
+        if (a.equals("learnedk")) {
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return;
+            }
+            rtrRpkiNeigh nei = r.rpki.findPeer(adr);
+            if (nei == null) {
+                cmd.error("no such neighbor");
+                return;
+            }
+            doShowKeys(nei.getFinalTabKey(), 1);
+            return;
+        }
         if (a.equals("compare4")) {
             doShowIpXrpkiComp(r.rpki, 4);
             return;
@@ -3971,6 +4016,10 @@ public class userShow {
         }
         if (a.equals("comparep")) {
             doShowIpXrpkiComp(r.rpki, -1);
+            return;
+        }
+        if (a.equals("comparek")) {
+            doShowIpXrpkiComp(r.rpki, -2);
             return;
         }
         if (a.equals("evaluate")) {
@@ -4040,6 +4089,18 @@ public class userShow {
             tabRpkiAspa ntry = tabRpkiUtil.lookupAspa(tab, bits.str2num(cmd.word()));
             if (ntry == null) {
                 cmd.error("no matching aspa");
+                return;
+            }
+            rdr.putStrTab(ntry.fullDump());
+            return;
+        }
+        if (a.equals("lookupk")) {
+            tabGen<tabRpkiKey> tab = r.rpki.getFinalTabKey();
+            tabRpkiKey ntry = new tabRpkiKey();
+            ntry.fromString(cmd);
+            ntry = tabRpkiUtil.lookupKey(tab, ntry.asn, ntry.ski);
+            if (ntry == null) {
+                cmd.error("no matching key");
                 return;
             }
             rdr.putStrTab(ntry.fullDump());
@@ -5705,6 +5766,25 @@ public class userShow {
         for (int pos = 0; pos < tab.size(); pos += lines) {
             tabGen<tabRpkiAspa> sub = tabRpkiUtil.getSubsetAspa(tab, pos, pos + lines);
             tabRpkiUtil.convertAspaBody(lst, sub, typ);
+            if (rdr.putStrTab(lst)) {
+                break;
+            }
+        }
+    }
+
+    private void doShowKeys(tabGen<tabRpkiKey> tab, int typ) {
+        userFormat lst = tabRpkiUtil.convertKeyHead(typ);
+        if (lst == null) {
+            return;
+        }
+        if (tab.size() < 1) {
+            rdr.putStrTab(lst);
+            return;
+        }
+        final int lines = cmd.pipe.settingsGet(pipeSetting.riblines, 8192);
+        for (int pos = 0; pos < tab.size(); pos += lines) {
+            tabGen<tabRpkiKey> sub = tabRpkiUtil.getSubsetKey(tab, pos, pos + lines);
+            tabRpkiUtil.convertKeyBody(lst, sub, typ);
             if (rdr.putStrTab(lst)) {
                 break;
             }

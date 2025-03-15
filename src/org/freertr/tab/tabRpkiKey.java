@@ -1,7 +1,5 @@
 package org.freertr.tab;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
@@ -174,19 +172,14 @@ public class tabRpkiKey implements Comparable<tabRpkiKey> {
     }
 
     private static byte[] hex2ski(String s) {
-        List<Integer> arr = new ArrayList<Integer>();
-        for (; s.length() > 1;) {
+        byte[] res = new byte[20];
+        for (int i = 0; i < res.length; i++) {
+            if (s.length() < 2) {
+                break;
+            }
             String a = s.substring(0, 2);
             s = s.substring(2, s.length());
-            arr.add(bits.fromHex(a));
-        }
-        byte[] res = new byte[20];
-        for (; arr.size() < res.length;) {
-            arr.add(0);
-        }
-        for (int i = 0; i < res.length; i++) {
-            int o = arr.get(i);
-            res[i] = (byte) o;
+            res[i] = (byte) bits.fromHex(a);
         }
         return res;
     }
@@ -201,6 +194,9 @@ public class tabRpkiKey implements Comparable<tabRpkiKey> {
         asn = bits.str2num(cmd.word());
         ski = hex2ski(cmd.word());
         key = encBase64.decodeBytes(cmd.word());
+        if (key == null) {
+            return true;
+        }
         distan = 100;
         srcIP = new addrIP();
         srcRtr = tabRouteAttr.routeType.staticRoute;
@@ -223,6 +219,9 @@ public class tabRpkiKey implements Comparable<tabRpkiKey> {
             return true;
         }
         key = encBase64.decodeBytes(a);
+        if (key == null) {
+            return true;
+        }
         i = jsn.findValue("ski");
         if (i < 0) {
             return true;

@@ -472,13 +472,13 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @return list of neighbors
      */
     public userFormat getNeighShow() {
-        userFormat l = new userFormat("|", "address|ipv4|ipv6|aspa|uptime");
+        userFormat l = new userFormat("|", "address|ipv4|ipv6|key|aspa|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + ntry.tableA.size() + "|" + bits.timePast(ntry.upTime));
+            l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + ntry.tableK.size() + "|" + ntry.tableA.size() + "|" + bits.timePast(ntry.upTime));
         }
         return l;
     }
@@ -493,8 +493,8 @@ public class rtrRpki extends ipRtr implements Runnable {
         l.add("peers|" + neighs.size());
         l.add("ipv4 roas|" + computed4.size());
         l.add("ipv6 roas|" + computed6.size());
-        l.add("aspas|" + computedA.size());
         l.add("keys|" + computedK.size());
+        l.add("aspas|" + computedA.size());
         l.add("sequence event|" + seqNum + "|times");
         l.add("sequence time|" + bits.timePast(seqTim) + "|" + bits.time2str(cfgAll.timeZoneName, seqTim + cfgAll.timeServerOffset, 3));
         l.add("wakeup event|" + seqNot + "|times");

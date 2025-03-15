@@ -477,6 +477,7 @@ public class rtrRpkiSpeak {
         sendOneTableRoa(rtrRpkiSpeak.msgIpv4addr, rtr.getFinalTabRoa(ipCor4.protocolVersion));
         sendOneTableRoa(rtrRpkiSpeak.msgIpv6addr, rtr.getFinalTabRoa(ipCor6.protocolVersion));
         sendOneTableAspa(rtr.getFinalTabAspa());
+        sendOneTableKey(rtr.getFinalTabKey());
     }
 
     /**
@@ -564,11 +565,12 @@ public class rtrRpkiSpeak {
      * @param tab4 ipv4 table
      * @param tab6 ipv6 table
      * @param tabA aspa table
+     * @param tabK key table
      * @param rtr rpki to send
      * @param jsn json to send
      * @return true on error, false on success
      */
-    public boolean doOneServRnd(int seq, int ses, tabGen<tabRpkiRoa> tab4, tabGen<tabRpkiRoa> tab6, tabGen<tabRpkiAspa> tabA, rtrRpki rtr, String jsn) {
+    public boolean doOneServRnd(int seq, int ses, tabGen<tabRpkiRoa> tab4, tabGen<tabRpkiRoa> tab6, tabGen<tabRpkiAspa> tabA, tabGen<tabRpkiKey> tabK, rtrRpki rtr, String jsn) {
         if (recvPack()) {
             return true;
         }
@@ -598,6 +600,7 @@ public class rtrRpkiSpeak {
                 sendOneTableRoa(rtrRpkiSpeak.msgIpv4addr, tab4);
                 sendOneTableRoa(rtrRpkiSpeak.msgIpv6addr, tab6);
                 sendOneTableAspa(tabA);
+                sendOneTableKey(tabK);
                 typ = rtrRpkiSpeak.msgEndData;
                 serial = csq;
                 sendPack();

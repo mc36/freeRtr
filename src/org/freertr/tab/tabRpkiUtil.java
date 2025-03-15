@@ -149,6 +149,25 @@ public class tabRpkiUtil {
     }
 
     /**
+     * filter to an asn
+     *
+     * @param src table to filter
+     * @param asn asn to find
+     * @return matching prefixes
+     */
+    public final static tabGen<tabRpkiKey> allowedKey(tabGen<tabRpkiKey> src, int asn) {
+        tabGen<tabRpkiKey> res = new tabGen<tabRpkiKey>();
+        for (int i = 0; i < src.size(); i++) {
+            tabRpkiKey ntry = src.get(i);
+            if (ntry.asn != asn) {
+                continue;
+            }
+            res.add(ntry);
+        }
+        return res;
+    }
+
+    /**
      * check if two tables are identical
      *
      * @param t1 first table
@@ -337,6 +356,22 @@ public class tabRpkiUtil {
     }
 
     /**
+     * lookup a customer
+     *
+     * @param tab table to use
+     * @param asn asn to lookup
+     * @param ski ski to lookup
+     * @return roa if found, null if not
+     */
+    public final static tabRpkiKey lookupKey(tabGen<tabRpkiKey> tab, int asn, byte[]ski) {
+        tabRpkiKey ntry = new tabRpkiKey();
+        ntry.asn = asn;
+        ntry.ski = ski;
+        ntry = tab.find(ntry);
+        return ntry;
+    }
+
+    /**
      * lookup a prefix
      *
      * @param tab table to use
@@ -474,6 +509,21 @@ public class tabRpkiUtil {
         switch (typ) {
             case 1:
                 return new userFormat("|", "prefix|ases|ago");
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * convert table header
+     *
+     * @param typ type to format
+     * @return header
+     */
+    public final static userFormat convertKeyHead(int typ) {
+        switch (typ) {
+            case 1:
+                return new userFormat("|", "asn|ski|ago");
             default:
                 return null;
         }
