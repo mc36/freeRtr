@@ -16,12 +16,12 @@ import org.freertr.util.cmds;
  *
  * @author matecsaba
  */
-public class tabRpkiSki implements Comparable<tabRpkiSki> {
+public class tabRpkiKey implements Comparable<tabRpkiKey> {
 
     /**
      * create instance
      */
-    public tabRpkiSki() {
+    public tabRpkiKey() {
     }
 
     /**
@@ -69,7 +69,7 @@ public class tabRpkiSki implements Comparable<tabRpkiSki> {
      */
     public int hits;
 
-    public int compareTo(tabRpkiSki o) {
+    public int compareTo(tabRpkiKey o) {
         if (asn < o.asn) {
             return -1;
         }
@@ -94,8 +94,8 @@ public class tabRpkiSki implements Comparable<tabRpkiSki> {
      *
      * @return copy
      */
-    public tabRpkiSki copyBytes() {
-        tabRpkiSki n = new tabRpkiSki();
+    public tabRpkiKey copyBytes() {
+        tabRpkiKey n = new tabRpkiKey();
         n.asn = asn;
         n.ski = bits.byteConcat(new byte[0], ski);
         n.key = bits.byteConcat(new byte[0], key);
@@ -131,7 +131,7 @@ public class tabRpkiSki implements Comparable<tabRpkiSki> {
      * @param o other to compare to
      * @return numerical value if differred
      */
-    public int differs(tabRpkiSki o) {
+    public int differs(tabRpkiKey o) {
         if (o == null) {
             return 1;
         }
@@ -159,7 +159,7 @@ public class tabRpkiSki implements Comparable<tabRpkiSki> {
      * @param o other
      * @return true if yes, false if not
      */
-    public boolean isOtherBetter(tabRpkiAspa o) {
+    public boolean isOtherBetter(tabRpkiKey o) {
         if (distan < o.distan) {
             return true;
         }

@@ -82,6 +82,35 @@ public class tabRpkiUtil {
     }
 
     /**
+     * merge two tables
+     *
+     * @param trg target
+     * @param src source
+     * @return entries changed
+     */
+    public final static int mergeTwoKey(tabGen<tabRpkiKey> trg, tabGen<tabRpkiKey> src) {
+        int c = 0;
+        for (int i = 0; i < src.size(); i++) {
+            tabRpkiKey n = src.get(i);
+            if (n == null) {
+                continue;
+            }
+            tabRpkiKey o = trg.find(n);
+            if (o == null) {
+                trg.put(n);
+                c++;
+                continue;
+            }
+            if (n.isOtherBetter(o)) {
+                continue;
+            }
+            trg.put(n);
+            c++;
+        }
+        return c;
+    }
+
+    /**
      * filter to an asn
      *
      * @param src table to filter
@@ -182,6 +211,36 @@ public class tabRpkiUtil {
     /**
      * check if two tables are identical
      *
+     * @param t1 first table
+     * @param t2 second table
+     * @return false if differs, true if identical
+     */
+    public final static boolean compareTwoKey(tabGen<tabRpkiKey> t1, tabGen<tabRpkiKey> t2) {
+        int s1 = t1.size();
+        int s2 = t2.size();
+        if (s1 != s2) {
+            return false;
+        }
+        for (int i = 0; i < s1; i++) {
+            tabRpkiKey d1 = t1.get(i);
+            tabRpkiKey d2 = t2.get(i);
+            if (d1 == null) {
+                return false;
+            }
+            if (d2 == null) {
+                return false;
+            }
+            int o = d1.compareTo(d2);
+            if (o != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * check if two tables are identical
+     *
      * @param uniq unique to first neighbor
      * @param diff attributes differ
      * @param nei1 first neighbor
@@ -223,6 +282,34 @@ public class tabRpkiUtil {
             }
             prf1 = prf1.copyBytes();
             tabRpkiAspa prf2 = nei2.find(prf1);
+            if (prf2 == null) {
+                uniq.add(prf1);
+                continue;
+            }
+            prf2 = prf2.copyBytes();
+            if (prf1.differs(prf2) == 0) {
+                continue;
+            }
+            diff.add(prf1);
+        }
+    }
+
+    /**
+     * check if two tables are identical
+     *
+     * @param uniq unique to first neighbor
+     * @param diff attributes differ
+     * @param nei1 first neighbor
+     * @param nei2 second neighbor
+     */
+    public final static void diffTwoKey(tabGen<tabRpkiKey> uniq, tabGen<tabRpkiKey> diff, tabGen<tabRpkiKey> nei1, tabGen<tabRpkiKey> nei2) {
+        for (int o = 0; o < nei1.size(); o++) {
+            tabRpkiKey prf1 = nei1.get(o);
+            if (prf1 == null) {
+                continue;
+            }
+            prf1 = prf1.copyBytes();
+            tabRpkiKey prf2 = nei2.find(prf1);
             if (prf2 == null) {
                 uniq.add(prf1);
                 continue;
@@ -336,6 +423,33 @@ public class tabRpkiUtil {
     }
 
     /**
+     * get part of the table
+     *
+     * @param tab table to read
+     * @param beg first index
+     * @param end last index
+     * @return subtable
+     */
+    public final static tabGen<tabRpkiKey> getSubsetKey(tabGen<tabRpkiKey> tab, int beg, int end) {
+        tabGen<tabRpkiKey> res = new tabGen<tabRpkiKey>();
+        int siz = tab.size();
+        if (end > siz) {
+            end = siz;
+        }
+        if (beg < 0) {
+            beg = 0;
+        }
+        for (int i = beg; i < end; i++) {
+            tabRpkiKey ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            res.put(ntry);
+        }
+        return res;
+    }
+
+    /**
      * convert table header
      *
      * @param typ type to format
@@ -376,6 +490,28 @@ public class tabRpkiUtil {
         lst.clear();
         for (int i = 0; i < tab.size(); i++) {
             tabRpkiRoa prf = tab.get(i);
+            if (prf == null) {
+                continue;
+            }
+            switch (typ) {
+                case 1:
+                    lst.add(prf.toShRoute());
+                    break;
+            }
+        }
+    }
+
+    /**
+     * convert table body
+     *
+     * @param lst string to update
+     * @param tab table to convert
+     * @param typ type to format
+     */
+    public final static void convertKeyBody(userFormat lst, tabGen<tabRpkiKey> tab, int typ) {
+        lst.clear();
+        for (int i = 0; i < tab.size(); i++) {
+            tabRpkiKey prf = tab.get(i);
             if (prf == null) {
                 continue;
             }

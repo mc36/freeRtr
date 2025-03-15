@@ -23,6 +23,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRpkiAspa;
+import org.freertr.tab.tabRpkiKey;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
@@ -87,6 +88,11 @@ public class rtrRpki extends ipRtr implements Runnable {
      * accepted aspas
      */
     private tabGen<tabRpkiAspa> computedA = new tabGen<tabRpkiAspa>();
+
+    /**
+     * accepted keys
+     */
+    private tabGen<tabRpkiKey> computedK = new tabGen<tabRpkiKey>();
 
     /**
      * sequence number
@@ -228,15 +234,18 @@ public class rtrRpki extends ipRtr implements Runnable {
         tabGen<tabRpkiRoa> tab4 = new tabGen<tabRpkiRoa>();
         tabGen<tabRpkiRoa> tab6 = new tabGen<tabRpkiRoa>();
         tabGen<tabRpkiAspa> tabA = new tabGen<tabRpkiAspa>();
+        tabGen<tabRpkiKey> tabK = new tabGen<tabRpkiKey>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
             tabRpkiUtil.mergeTwoRoa(tab4, ntry.table4);
             tabRpkiUtil.mergeTwoRoa(tab6, ntry.table6);
             tabRpkiUtil.mergeTwoAspa(tabA, ntry.tableA);
+            tabRpkiUtil.mergeTwoKey(tabK, ntry.tableK);
         }
         boolean chg = tabRpkiUtil.compareTwoRoa(tab4, computed4);
         chg &= tabRpkiUtil.compareTwoRoa(tab6, computed6);
         chg &= tabRpkiUtil.compareTwoAspa(tabA, computedA);
+        chg &= tabRpkiUtil.compareTwoKey(tabK, computedK);
         if (chg) {
             return;
         }
@@ -245,6 +254,7 @@ public class rtrRpki extends ipRtr implements Runnable {
         computed4 = tab4;
         computed6 = tab6;
         computedA = tabA;
+        computedK = tabK;
         if (debugger.rtrRpkiEvnt) {
             logger.debug("rpki changed");
         }
@@ -484,6 +494,7 @@ public class rtrRpki extends ipRtr implements Runnable {
         l.add("ipv4 roas|" + computed4.size());
         l.add("ipv6 roas|" + computed6.size());
         l.add("aspas|" + computedA.size());
+        l.add("keys|" + computedK.size());
         l.add("sequence event|" + seqNum + "|times");
         l.add("sequence time|" + bits.timePast(seqTim) + "|" + bits.time2str(cfgAll.timeZoneName, seqTim + cfgAll.timeServerOffset, 3));
         l.add("wakeup event|" + seqNot + "|times");
@@ -547,6 +558,15 @@ public class rtrRpki extends ipRtr implements Runnable {
         } else {
             return computed6;
         }
+    }
+
+    /**
+     * get final table
+     *
+     * @return current table
+     */
+    public tabGen<tabRpkiKey> getFinalTabKey() {
+        return computedK;
     }
 
     /**

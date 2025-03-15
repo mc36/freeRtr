@@ -13,6 +13,7 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRpkiAspa;
+import org.freertr.tab.tabRpkiKey;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -120,6 +121,11 @@ public class rtrRpkiSpeak {
      * route origin authorization
      */
     public tabRpkiRoa roa;
+
+    /**
+     * subject key identifier
+     */
+    public tabRpkiKey key;
 
     /**
      * as path authorization
@@ -254,6 +260,14 @@ public class rtrRpkiSpeak {
             case msgCacheReset:
                 break;
             case msgRouterKey:
+                key = new tabRpkiKey();
+                withdraw = (sess & 0x100) == 0; // flags
+                key.ski = new byte[20];
+                pck.getCopy(key.ski, 0, 0, key.ski.length);
+                pck.getSkip(key.ski.length);
+                key.asn = pck.msbGetD(0);
+                pck.getSkip(4);
+                key.key = pck.getCopy();
                 break;
             case msgErrorReport:
                 break;
@@ -333,6 +347,17 @@ public class rtrRpkiSpeak {
             case msgCacheReset:
                 break;
             case msgRouterKey:
+                if (withdraw) {
+                    sess = 0;
+                } else {
+                    sess = 0x100;
+                }
+                pck.putCopy(key.ski, 0, 0, key.ski.length);
+                pck.putSkip(key.ski.length);
+                pck.msbPutD(0, key.asn);
+                pck.putSkip(4);
+                pck.putCopy(key.key, 0, 0, key.key.length);
+                pck.putSkip(key.key.length);
                 break;
             case msgErrorReport:
                 break;
@@ -418,6 +443,29 @@ public class rtrRpkiSpeak {
     }
 
     /**
+     * send one table
+     *
+     * @param tab table to send
+     */
+    public void sendOneTableKey(tabGen<tabRpkiKey> tab) {
+        if (tab == null) {
+            return;
+        }
+        if (debugger.rtrRpkiEvnt) {
+            logger.debug("sending " + tab.size());
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRpkiKey ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            key = ntry.copyBytes();
+            typ = rtrRpkiSpeak.msgRouterKey;
+            sendPack();
+        }
+    }
+
+    /**
      * send one rpki computed table
      *
      * @param rtr rpki router
@@ -449,12 +497,18 @@ public class rtrRpkiSpeak {
         }
         encJson j = new encJson();
         roa = new tabRpkiRoa();
+        key = new tabRpkiKey();
         aspa = new tabRpkiAspa();
         for (int i = 0; i < txt.size(); i++) {
             j.clear();
             j.fromString(txt.get(i));
             if (roa.fromJson(j)) {
                 if (aspa.fromJson(j)) {
+                    if (key.fromJson(j)) {
+                        continue;
+                    }
+                    typ = rtrRpkiSpeak.msgRouterKey;
+                    sendPack();
                     continue;
                 }
                 typ = rtrRpkiSpeak.msgAspaPdu;
