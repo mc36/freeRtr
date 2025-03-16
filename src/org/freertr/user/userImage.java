@@ -592,7 +592,7 @@ public class userImage {
                     userImageCat cat = catalogs.get(i);
                     filterCat(lst, cat, allPkgs);
                     cmd.error("");
-                    cmd.error("catalog " + cat + ":" + dumpList(lst, false, true));
+                    cmd.error("catalog " + cat + ":" + dumpList(lst, false, false));
                 }
                 cmd.error("");
                 continue;

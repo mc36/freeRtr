@@ -1,6 +1,7 @@
 package org.freertr.tab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -140,7 +141,7 @@ public class tabRpkiUtil {
         tabGen<tabRpkiAspa> res = new tabGen<tabRpkiAspa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiAspa ntry = src.get(i);
-            if (ntry.provs.indexOf(asn) < 0) {
+            if (Collections.binarySearch(ntry.provs, asn) < 0) {
                 continue;
             }
             res.add(ntry);
@@ -363,7 +364,7 @@ public class tabRpkiUtil {
      * @param ski ski to lookup
      * @return roa if found, null if not
      */
-    public final static tabRpkiKey lookupKey(tabGen<tabRpkiKey> tab, int asn, byte[]ski) {
+    public final static tabRpkiKey lookupKey(tabGen<tabRpkiKey> tab, int asn, byte[] ski) {
         tabRpkiKey ntry = new tabRpkiKey();
         ntry.asn = asn;
         ntry.ski = ski;
@@ -709,7 +710,7 @@ public class tabRpkiUtil {
             if (resC == null) {
                 minUp = len - i;
             } else {
-                if (resC.provs.indexOf(numP) < 0) {
+                if (Collections.binarySearch(resC.provs, numP) < 0) {
                     minUp = len - i;
                     maxUp = len - i;
                 }
@@ -719,7 +720,7 @@ public class tabRpkiUtil {
                     minDn = i;
                 }
             } else {
-                if (resP.provs.indexOf(numC) < 0) {
+                if (Collections.binarySearch(resP.provs, numC) < 0) {
                     if (minDn == len) {
                         minDn = i;
                     }

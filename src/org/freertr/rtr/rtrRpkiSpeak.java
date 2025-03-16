@@ -2,6 +2,7 @@ package org.freertr.rtr;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -283,6 +284,7 @@ public class rtrRpkiSpeak {
                     }
                     aspa.provs.add(pck.msbGetD(0));
                 }
+                Collections.sort(aspa.provs);
                 break;
             default:
                 return true;

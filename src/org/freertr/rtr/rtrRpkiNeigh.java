@@ -1,6 +1,7 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgIfc;
@@ -319,6 +320,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 }
                 ntry.provs.remove(p);
             }
+            Collections.sort(ntry.provs);
             if (ntry.provs.size() > 0) {
                 return 1;
             }
@@ -334,6 +336,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 }
                 ntry.provs.add(o);
             }
+            Collections.sort(ntry.provs);
             return 1;
         }
         ntry = pck.aspa;
@@ -342,6 +345,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         ntry.srcRtr = lower.rouTyp;
         ntry.srcNum = lower.rtrNum;
         ntry.srcIP = peer.copyBytes();
+        Collections.sort(ntry.provs);
         table.put(ntry);
         return 1;
     }
