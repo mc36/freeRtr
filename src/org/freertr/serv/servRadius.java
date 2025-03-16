@@ -228,6 +228,9 @@ class servRadiusConn implements Runnable {
         if (debugger.servRadiusTraf) {
             logger.debug("rx " + radRx.dump());
         }
+        if (radRx.code == packRadius.typeAcoReq) {
+            return false;
+        }
         boolean b = lower.authentic != null;
         authResult res = null;
         if (radRx.valUsrNam == null) {
