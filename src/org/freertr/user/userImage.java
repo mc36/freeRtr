@@ -590,7 +590,7 @@ public class userImage {
                 tabGen<userImagePkg> lst = new tabGen<userImagePkg>();
                 for (i = 0; i < catalogs.size(); i++) {
                     userImageCat cat = catalogs.get(i);
-                    filterCat(lst, cat, selected);
+                    filterCat(lst, cat, allPkgs);
                     cmd.error("");
                     cmd.error("catalog " + cat + ":" + dumpList(lst, false, true));
                 }
