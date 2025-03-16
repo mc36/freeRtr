@@ -42,6 +42,7 @@ int ser1
  ppp ip4cp close
  ppp ip6cp close
  ppp auth usr
+ ppp acco usr 11111
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
