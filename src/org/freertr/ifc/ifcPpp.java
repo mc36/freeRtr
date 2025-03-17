@@ -1244,7 +1244,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
         accontSession = bits.randomD();
         accontLast = bits.getTime();
-        accontRem.acntUserSession(ctrlAuth.result.user, accontSession, cntr, 1);
+        accontRem.acntUserSession(ctrlAuth.result.user, "" + lower, accontSession, cntr, 1);
     }
 
     /**
@@ -1347,7 +1347,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                     break;
                 }
                 accontLast = tim;
-                accontRem.acntUserSession(ctrlAuth.result.user, accontSession, cntr, 3);
+                accontRem.acntUserSession(ctrlAuth.result.user, "" + lower, accontSession, cntr, 3);
                 break;
             default:
                 clearState();

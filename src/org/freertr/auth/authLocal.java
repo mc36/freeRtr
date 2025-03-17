@@ -523,12 +523,13 @@ public class authLocal extends authGeneric {
      * account user session
      *
      * @param user username
+     * @param addr address
      * @param sess session
      * @param cntr counter
      * @param stat status, 1=start, 2=stop, 3=update
      * @return accounting value
      */
-    public authResult acntUserSession(String user, int sess, counter cntr, int stat) {
+    public authResult acntUserSession(String user, String addr, int sess, counter cntr, int stat) {
         return new authResult(this, authResult.authSuccessful, user, "");
     }
 

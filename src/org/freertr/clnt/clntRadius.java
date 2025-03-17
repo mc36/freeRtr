@@ -97,16 +97,18 @@ public class clntRadius {
      * do accounting transaction
      *
      * @param user username
+     * @param addr address
      * @param sess session
      * @param cntr counter
      * @param stat status
      */
-    public void doAcnt(String user, int sess, counter cntr, int stat) {
+    public void doAcnt(String user, String addr, int sess, counter cntr, int stat) {
         radUsr = user;
         radPwd = "";
         radTx = new packRadius();
         radTx.valActSta = stat;
         radTx.valActSes = "" + sess;
+        radTx.valCalling = addr;
         radTx.valActInB = (int) cntr.byteRx;
         radTx.valActInP = (int) cntr.packRx;
         radTx.valActOtB = (int) cntr.byteTx;

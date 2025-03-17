@@ -164,12 +164,12 @@ public class authRadius extends authGeneric {
         return new authResult(this, authResult.authServerError, user, cmd);
     }
 
-    public authResult acntUserSession(String user, int sess, counter cntr, int stat) {
+    public authResult acntUserSession(String user, String addr, int sess, counter cntr, int stat) {
         clntRadius rad = new clntRadius(proxy);
         rad.port = port;
         rad.secret = secret;
         rad.server = server;
-        rad.doAcnt(user, sess, cntr, stat);
+        rad.doAcnt(user, addr, sess, cntr, stat);
         return new authResult(this, authResult.authSuccessful, user, "");
     }
 
