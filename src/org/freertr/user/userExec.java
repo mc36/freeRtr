@@ -1230,6 +1230,9 @@ public class userExec {
         hl.add(null, "2 .      platform                platform information");
         hl.add(null, "2 3      me-the                  show something");
         hl.add(null, "3 .        time                  show some time");
+        hl.add(null, "3 4        calendar              show some time");
+        hl.add(null, "4 5          <num>               year to show");
+        hl.add(null, "5 .            <num>             month to show");
         if (privi) {
             hl.add(null, "3 4        ascii                 show some art");
             hl.add(null, "4 .          <str>               filename");

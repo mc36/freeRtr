@@ -219,4 +219,37 @@ public class tabTime implements Comparable<tabTime> {
         return l;
     }
 
+    /**
+     * generate calendar
+     *
+     * @param year year
+     * @param month month
+     * @return text
+     */
+    public static List<String> getCalendar(int year, int month) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month - 1, 1);
+        List<String> res = new ArrayList<String>();
+        int dow = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        int max = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        res.add("       " + year + " " + bits.padBeg("" + month, 2, " "));
+        res.add(" su mo tu we th fr sa");
+        String a = bits.padBeg("", dow * 3, " ");
+        for (int i = 1; i <= max; i++) {
+            a += bits.padBeg("" + i, 3, " ");
+            dow++;
+            if (dow < 7) {
+                continue;
+            }
+            res.add(a);
+            a = "";
+            dow = 0;
+        }
+        if (a.length() < 1) {
+            return res;
+        }
+        res.add(a);
+        return res;
+    }
+
 }

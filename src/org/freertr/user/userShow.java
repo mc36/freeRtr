@@ -135,6 +135,7 @@ import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplc;
 import org.freertr.tab.tabSession;
 import org.freertr.tab.tabSessionEntry;
+import org.freertr.tab.tabTime;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -272,6 +273,13 @@ public class userShow {
             if (a.equals("time")) {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 List<String> l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
+                rdr.putStrArr(l);
+                return null;
+            }
+            if (a.equals("calendar")) {
+                int i = bits.str2num(cmd.word());
+                int o = bits.str2num(cmd.word());
+                List<String> l = tabTime.getCalendar(i, o);
                 rdr.putStrArr(l);
                 return null;
             }
