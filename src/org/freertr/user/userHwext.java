@@ -311,7 +311,7 @@ public class userHwext {
             case p4xdp:
             case p4dpdk:
             case p4sw:
-                hwd.add("ulimit -l unlimited");
+                hwd.add("ulimit -S -H -l unlimited");
                 hwc.add("tcp2vrf " + servP4lang.port + " " + dpv + " " + servP4lang.port + " 127.0.0.1");
                 swc.add("interface ethernet0");
                 swc.add(cmds.tabulator + "description p4 cpu port");
