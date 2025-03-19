@@ -2766,35 +2766,43 @@ void doStatRound_nat6(void* buffer, int fixed) {
 }
 
 void doStatRound_tun4(void* buffer, int fixed) {
-    struct tun4_entry *ntry = buffer;
+    struct tun4_entry *intry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    put32msb(buf, 0, ntry->srcAddr);
+    put32msb(buf, 0, intry->srcAddr);
     inet_ntop(AF_INET, &buf[0], (char*)&buf2[0], sizeof(buf2));
-    put32msb(buf, 0, ntry->trgAddr);
+    put32msb(buf, 0, intry->trgAddr);
     inet_ntop(AF_INET, &buf[0], (char*)&buf3[0], sizeof(buf3));
-    fprintf(commandTx, "tunnel4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+    fprintf(commandTx, "tunnel4_cnt %i %i %s %s %i %i %li %li\r\n", fixed, intry->prot, (char*)&buf2[0], (char*)&buf3[0], intry->srcPort, intry->trgPort, intry->pack, intry->byte);
+    struct neigh_entry oval;
+    oval.id = intry->neigh;
+    struct neigh_entry *ontry = hasht_find(&neigh_table, &oval);
+    if (ontry == NULL) return;
+    fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->aclport, intry->pack, intry->byte, ontry->pack, ontry->byte);
 }
 
 void doStatRound_tun6(void* buffer, int fixed) {
-    struct tun6_entry *ntry = buffer;
+    struct tun6_entry *intry = buffer;
     unsigned char buf[1024];
     unsigned char buf2[1024];
     unsigned char buf3[1024];
-    fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
-    put32msb(buf, 0, ntry->srcAddr1);
-    put32msb(buf, 4, ntry->srcAddr2);
-    put32msb(buf, 8, ntry->srcAddr3);
-    put32msb(buf, 12, ntry->srcAddr4);
+    put32msb(buf, 0, intry->srcAddr1);
+    put32msb(buf, 4, intry->srcAddr2);
+    put32msb(buf, 8, intry->srcAddr3);
+    put32msb(buf, 12, intry->srcAddr4);
     inet_ntop(AF_INET6, &buf[0], (char*)&buf2[0], sizeof(buf2));
-    put32msb(buf, 0, ntry->trgAddr1);
-    put32msb(buf, 4, ntry->trgAddr2);
-    put32msb(buf, 8, ntry->trgAddr3);
-    put32msb(buf, 12, ntry->trgAddr4);
+    put32msb(buf, 0, intry->trgAddr1);
+    put32msb(buf, 4, intry->trgAddr2);
+    put32msb(buf, 8, intry->trgAddr3);
+    put32msb(buf, 12, intry->trgAddr4);
     inet_ntop(AF_INET6, &buf[0], (char*)&buf3[0], sizeof(buf3));
-    fprintf(commandTx, "tunnel6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, ntry->prot, (char*)&buf2[0], (char*)&buf3[0], ntry->srcPort, ntry->trgPort, ntry->pack, ntry->byte);
+    fprintf(commandTx, "tunnel6_cnt %i %i %s %s %i %i %li %li\r\n", fixed, intry->prot, (char*)&buf2[0], (char*)&buf3[0], intry->srcPort, intry->trgPort, intry->pack, intry->byte);
+    struct neigh_entry oval;
+    oval.id = intry->neigh;
+    struct neigh_entry *ontry = hasht_find(&neigh_table, &oval);
+    if (ontry == NULL) return;
+    fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->aclport, intry->pack, intry->byte, ontry->pack, ontry->byte);
 }
 
 void doStatRound_mcst4(void* buffer, int fixed) {
@@ -3130,12 +3138,12 @@ void doStatLoop() {
             fprintf(commandTx, "state %i %i\r\n", i, o);
         }
         hasht_walk(&bundle_table, &doStatRound_bundle, 0);
-        hasht_walk(&pppoe_table, &doStatRound_pppoe, 0);
         hasht_walk(&vlanout_table, &doStatRound_vlan, 0);
         if ((round % 150) != 0) {
             fflush(commandTx);
             continue;
         }
+        hasht_walk(&pppoe_table, &doStatRound_pppoe, 0);
         for (int i = 0; i < dataPorts; i++) {
             struct ifaceStat_entry *stat = ifaceStat[i];
             fprintf(commandTx, "ethertype %i %i %li %li\r\n", i, ETHERTYPE_MPLS_UCAST, stat->packMpls, stat->byteMpls);
