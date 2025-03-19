@@ -1644,7 +1644,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.aclport = pppoe_ntry.aclport = atoi(arg[2]);
         neigh_ntry.port = pppoe_ntry.port = atoi(arg[3]);
         neigh_ntry.tid = pppoe_ntry.session = atoi(arg[6]);
-        neigh_ntry.id = atoi(arg[4]);
+        neigh_ntry.id = pppoe_ntry.neigh = atoi(arg[4]);
         neigh_ntry.vrf = atoi(arg[5]);
         neigh_ntry.command = 2;
         str2mac(&neigh_ntry.macs[0], arg[7]);
@@ -1656,7 +1656,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "gre4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -1679,7 +1679,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "gre6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -1708,7 +1708,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "ipip4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -1735,7 +1735,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "ipip6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -1768,7 +1768,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "tmux4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -1790,7 +1790,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "tmux6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -1818,7 +1818,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "l3tp4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -1840,7 +1840,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "l3tp6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -1868,7 +1868,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "l2tp4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -1894,7 +1894,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "l2tp6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -1926,7 +1926,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "amt4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -1951,7 +1951,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "amt6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -1982,7 +1982,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "gtp4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -2008,7 +2008,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "gtp6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -2096,7 +2096,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 #endif
 #ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "ipsec4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -2133,7 +2133,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 #endif
 #ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "ipsec6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -2176,7 +2176,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 #endif
 #ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "openvpn4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -2214,7 +2214,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 #endif
 #ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "openvpn6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -2258,7 +2258,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 #endif
 #ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "wireguard4") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET, arg[5], buf2);
@@ -2286,7 +2286,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
 #endif
 #ifndef HAVE_NOCRYPTO
     if (strcmp(arg[0], "wireguard6") == 0) {
-        neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
         neigh_ntry.port = atoi(arg[4]);
         inet_pton(AF_INET6, arg[5], buf2);
@@ -2956,8 +2956,12 @@ void doStatRound_nsh(void* buffer, int fixed) {
 }
 
 void doStatRound_pppoe(void* buffer, int fixed) {
-    struct pppoe_entry *ntry = buffer;
-    fprintf(commandTx, "counter %i %li %li 0 0 0 0\r\n", ntry->aclport, ntry->pack, ntry->byte);
+    struct pppoe_entry *intry = buffer;
+    struct neigh_entry oval;
+    oval.id = intry->neigh;
+    struct neigh_entry *ontry = hasht_find(&neigh_table, &oval);
+    if (ontry == NULL) return;
+    fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->aclport, intry->pack, intry->byte, ontry->pack, ontry->byte);
 }
 
 void doStatRound_bridge(void* buffer, int fixed) {

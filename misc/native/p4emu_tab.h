@@ -601,6 +601,7 @@ struct pppoe_entry {
     int port;
     int session;
     int aclport;
+    int neigh;
     long pack;
     long byte;
 };
@@ -618,6 +619,7 @@ struct tun4_entry {
     long pack;
     long byte;
     int aclport;
+    int neigh;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
@@ -648,6 +650,7 @@ struct tun6_entry {
     long pack;
     long byte;
     int aclport;
+    int neigh;
 #ifndef HAVE_NOCRYPTO
     unsigned char encrKeyDat[256];
     unsigned char hashKeyDat[256];
