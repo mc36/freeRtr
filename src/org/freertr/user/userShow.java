@@ -1561,6 +1561,21 @@ public class userShow {
             cmd.badCmd();
             return null;
         }
+        if (a.equals("radiotap")) {
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return null;
+            }
+            if (ifc.radioTap == null) {
+                cmd.error("not running on that interface");
+                return null;
+            }
+            userFormat res = new userFormat("|", "mac|rate|chan|sign|for|since");
+            res.add(ifc.radioTap.getShNeigh());
+            rdr.putStrTab(res);
+            return null;
+        }
         if (a.equals("udld")) {
             a = cmd.word();
             if (a.equals("interface")) {

@@ -1351,6 +1351,8 @@ public class userExec {
         hl.add(null, "3 .        neighbor              summary list of neighbors");
         hl.add(null, "3 4        detail                detailed list of neighbors");
         hl.add(null, "4 .          <name:ifc>          name of interface");
+        hl.add(null, "2 3      radiotap                radiotap neighbors");
+        hl.add(null, "3 .        <name:ifc>            name of interface");
         hl.add(null, "2 3      udld                    unidirectional link detection");
         hl.add(null, "3 .        interface             summary list of interfaces");
         hl.add(null, "3 .        neighbor              summary list of neighbors");
