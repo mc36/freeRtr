@@ -68,9 +68,9 @@ public class ifcRadioTap implements ifcUp {
             }
         }
         flg = pck.lsbGetD(4) & 0xff;
-        int rate = -1;
-        int chan = -1;
-        int sign = -1;
+        int rate = 0;
+        int chan = 0;
+        int sign = 0;
         if ((flg & 0x1) != 0) {
             len += len & 4;
             len += 8; // tsft
@@ -91,7 +91,7 @@ public class ifcRadioTap implements ifcUp {
             len += 1; // fhss
         }
         if ((flg & 0x20) != 0) {
-            sign = 256 - pck.getByte(len);
+            sign = pck.getByte(len) - 256;
             len += 1; // signal
         }
         len = pck.lsbGetW(2);
