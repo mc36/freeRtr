@@ -20,6 +20,16 @@ import org.freertr.util.state;
  */
 public class ifcRadioTap implements ifcUp {
 
+    /**
+     * timeout value
+     */
+    public int timeOut = 60000;
+
+    /**
+     * log the events
+     */
+    public boolean logging = false;
+
     private ifcDn lower = new ifcNull();
 
     private counter cntr = new counter();
@@ -85,14 +95,20 @@ public class ifcRadioTap implements ifcUp {
             len += 1; // signal
         }
         len = pck.lsbGetW(2);
+        if ((len + 22) > pck.dataSize()) {
+            return;
+        }
         pck.getAddr(pck.ETHsrc, len + 10);
         pck.getAddr(pck.ETHtrg, len + 4);
         ifcRadioTapNeigh nei = new ifcRadioTapNeigh(pck.ETHsrc);
         ifcRadioTapNeigh old = neighs.add(nei);
-        long tim = bits.getTime();;
+        long tim = bits.getTime();
         if (old == null) {
-            old = nei;
+            if (logging) {
+                logger.info("new device appeared " + nei.adr + " on " + lower);
+            }
             nei.first = tim;
+            old = nei;
         }
         old.last = tim;
         old.chan = chan;
@@ -140,8 +156,11 @@ public class ifcRadioTap implements ifcUp {
         long tim = bits.getTime();
         for (int i = neighs.size() - 1; i >= 0; i--) {
             ifcRadioTapNeigh ntry = neighs.get(i);
-            if ((tim - ntry.last) < 60000) {
+            if ((tim - ntry.last) < timeOut) {
                 continue;
+            }
+            if (logging) {
+                logger.info("device disappeared " + ntry.adr + " on " + lower);
             }
             neighs.del(ntry);
         }

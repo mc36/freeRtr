@@ -1426,6 +1426,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "carrier-delay",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "udld enable",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap enable",
+        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap logging",
+        "interface .*!" + cmds.tabulator + "radiotap timeout 60000",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "random",
         "interface .*!" + cmds.tabulator + "enforce-mtu none",
         "interface .*!" + cmds.tabulator + "enforce-mac none",
@@ -6038,6 +6040,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, lacp == null, cmds.tabulator, "lacp", ifcLacp.getCfg(lacp));
         cmds.cfgLine(l, udld == null, cmds.tabulator, "udld enable", "");
         cmds.cfgLine(l, radioTap == null, cmds.tabulator, "radiotap enable", "");
+        if (radioTap != null) {
+            l.add(cmds.tabulator + "radiotap timeout " + radioTap.timeOut);
+            cmds.cfgLine(l, !radioTap.logging, cmds.tabulator, "radiotap logging", "");
+        }
         if (nhrp != null) {
             cmds.cfgLine(l, nhrp.ip4 == null, cmds.tabulator, "nhrp ipv4", "" + nhrp.ip4);
             cmds.cfgLine(l, nhrp.ip6 == null, cmds.tabulator, "nhrp ipv6", "" + nhrp.ip6);
@@ -7032,6 +7038,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, "2 .     enable                      enable/disable processing");
         l.add(null, "1 2   radiotap                      radiotap commands");
         l.add(null, "2 .     enable                      enable/disable processing");
+        l.add(null, "2 .     logging                     configure logging");
+        l.add(null, "2 3     timeout                     configure timeout");
+        l.add(null, "3 .       <num>                     time in millis");
         l.add(null, "1 2   nhrp                          next hop resolution protocol commands");
         l.add(null, "2 3     ipv4                        enable for ipv4");
         l.add(null, "3 .       <addr>                    target to register");
@@ -8001,6 +8010,18 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 ethtyp.updateET(-1, radioTap);
                 return;
             }
+            if (radioTap == null) {
+                cmd.error("protocol not enabled");
+                return;
+            }
+            if (a.equals("logging")) {
+                radioTap.logging = true;
+                return;
+            }
+            if (a.equals("timeout")) {
+                radioTap.timeOut = bits.str2num(cmd.word());
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -8674,6 +8695,14 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 radioTap.restartTimer(true);
                 radioTap = null;
                 ethtyp.delET(-1);
+                return;
+            }
+            if (radioTap == null) {
+                cmd.error("protocol not enabled");
+                return;
+            }
+            if (a.equals("logging")) {
+                radioTap.logging = false;
                 return;
             }
             cmd.badCmd();
