@@ -47,4 +47,26 @@ public class positionUtil {
         return Math.round(Math.pow(10.0, (27.55 - (20.0 * Math.log10(mhz)) - dbm) / 20.0));
     }
 
+    /**
+     * trilaterate points
+     *
+     * @param xa x coordinate
+     * @param ya y coordinate
+     * @param xb x coordinate
+     * @param yb y coordinate
+     * @param xc x coordinate
+     * @param yc y coordinate
+     * @param ra distance
+     * @param rb distance
+     * @param rc distance
+     * @return x,y coordinates
+     */
+    public static double[] trilateration(float xa, float ya, float xb, float yb, float xc, float yc, float ra, float rb, float rc) {
+        double s = (Math.pow(xc, 2.0) - Math.pow(xb, 2.0) + Math.pow(yc, 2.0) - Math.pow(yb, 2.0) + Math.pow(rb, 2.0) - Math.pow(rc, 2.0)) / 2.0;
+        double t = (Math.pow(xa, 2.0) - Math.pow(xb, 2.0) + Math.pow(ya, 2.0) - Math.pow(yb, 2.0) + Math.pow(rb, 2.0) - Math.pow(ra, 2.0)) / 2.0;
+        double y = ((t * (xb - xc)) - (s * (xb - xa))) / (((ya - yb) * (xb - xc)) - ((yc - yb) * (xb - xa)));
+        double x = ((y * (ya - yb)) - t) / (xb - xa);
+        return new double[]{x, y};
+    }
+
 }
