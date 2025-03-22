@@ -73,6 +73,7 @@ the following directories will appear here:
 * player: web based music player/streamer/receiver
 * temper: web based thermostat/controller
 * trackmap: web based monitoring
+* position: web based location service
 * voice: an answering machine
 * snmp: some snmp definitions
 * rfcs: rfc series renamer
