@@ -1347,7 +1347,11 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
                     break;
                 }
                 accontLast = tim;
-                accontRem.acntUserSession(ctrlAuth.result.user, "" + lower, accontSession, cntr, 3);
+                if (cfger.ethtyp.hwCntr == null) {
+                    accontRem.acntUserSession(ctrlAuth.result.user, "" + lower, accontSession, cntr, 3);
+                    break;
+                }
+                accontRem.acntUserSession(ctrlAuth.result.user, "" + lower, accontSession, cfger.ethtyp.hwCntr, 3);
                 break;
             default:
                 clearState();
