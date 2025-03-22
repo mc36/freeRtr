@@ -130,8 +130,14 @@ public class position {
         for (int o = 0; o < meas.length; o++) {
             for (int p = 0; p < meas[o].data.size(); p++) {
                 positionAddr ntry = meas[o].data.get(p);
+                /**
                 int i = Collections.binarySearch(res, ntry);
-                System.out.println(ntry + " " + ntry.sign);
+                if (i > 0) {
+                    continue;
+                }
+                res.add(-i - 1, ntry);
+                **/
+                System.out.println(ntry + " " +ntry.chan+" "+ntry.sign+" "+ positionUtil.signal2distance(ntry.chan,ntry.sign));
             }
         }
         buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>paster</title></head><body>".getBytes());

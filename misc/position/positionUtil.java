@@ -24,6 +24,7 @@ public class positionUtil {
 
     /**
      * convert to hex
+     *
      * @param i number
      * @return converted
      */
@@ -33,6 +34,17 @@ public class positionUtil {
             a = "0" + a;
         }
         return a;
+    }
+
+    /**
+     * signal to meters
+     *
+     * @param mhz frequency
+     * @param dbm signal
+     * @return meters
+     */
+    public static double signal2distance(float mhz, float dbm) {
+        return Math.round(Math.pow(10.0, (27.55 - (20.0 * Math.log10(mhz)) - dbm) / 20.0));
     }
 
 }

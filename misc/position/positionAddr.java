@@ -1,4 +1,6 @@
 
+import java.util.List;
+
 /**
  * neighbor entry
  *
@@ -35,12 +37,12 @@ public class positionAddr implements Comparable<positionAddr> {
      * signal
      */
     public final float sign;
-    
+
     /**
      * x coordinate
      */
     public float curX;
-    
+
     /**
      * y coordinate
      */
