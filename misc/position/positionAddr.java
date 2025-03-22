@@ -45,6 +45,11 @@ public class positionAddr implements Comparable<positionAddr> {
      * y coordinate
      */
     public double curY;
+    
+    /**
+     * coordinates valid
+     */
+    public boolean good;
 
     /**
      * create instance

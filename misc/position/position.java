@@ -161,6 +161,7 @@ public class position {
                 val = positionUtil.trilateration(msr1.posX, msr1.posY, msr2.posX, msr2.posY, msr3.posX, msr3.posY, val[0], val[1], val[2]);
                 ntry.curX = val[0];
                 ntry.curY = val[1];
+                ntry.good = true;
             }
         }
     }
@@ -180,19 +181,33 @@ public class position {
         for (int i = 0; i < neis.size(); i++) {
             positionAddr ntry = neis.get(i);
             Graphics2D g2d = img.createGraphics();
+            FontMetrics fm = g2d.getFontMetrics();
             g2d.setBackground(Color.gray);
             g2d.setFont(new Font("Serif", Font.BOLD, 20));
-            if ((ntry.curX < 0) || (ntry.curY < 0) || (ntry.curX > mx) || (ntry.curY > my)) {
+            String s = ntry.getMac();
+            if (!ntry.good) {
                 g2d.setPaint(Color.red);
-                FontMetrics fm = g2d.getFontMetrics();
-                String s = ntry.getMac();
                 py -= fm.getHeight();
                 g2d.drawString(s, mx - fm.stringWidth(s), py);
                 g2d.dispose();
                 continue;
             }
+            if (ntry.curX < 0) {
+                ntry.curX = 0;
+            }
+            if (ntry.curY < 0) {
+                ntry.curY = 0;
+            }
+            int o = mx - fm.stringWidth(s);
+            if (ntry.curX > o) {
+                ntry.curX = o;
+            }
+            o = my - fm.getHeight();
+            if (ntry.curY > o) {
+                ntry.curY = o;
+            }
             g2d.setPaint(Color.green);
-            g2d.drawString(ntry.getMac(), (int) ntry.curX, (int) ntry.curY);
+            g2d.drawString(s, (int) ntry.curX, (int) ntry.curY);
             g2d.dispose();
         }
     }
