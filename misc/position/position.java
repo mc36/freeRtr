@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -69,8 +70,7 @@ public class position {
         readConfig(path);
         readNeighs();
         drawImage();
-        ///ImageIO.write(img, "png", buf);
-        ImageIO.write(img, "png", new File("zzz.png"));
+        ImageIO.write(img, "png", buf);
         return "png";
     }
 
@@ -158,11 +158,9 @@ public class position {
                 val[0] = positionUtil.signal2distance(adr1.chan, adr1.sign) * scale;
                 val[1] = positionUtil.signal2distance(adr2.chan, adr2.sign) * scale;
                 val[2] = positionUtil.signal2distance(adr3.chan, adr3.sign) * scale;
-            System.out.println(ntry.getMac() + " " + val[0]+" "+val[1]+" "+val[2]);//
                 val = positionUtil.trilateration(msr1.posX, msr1.posY, msr2.posX, msr2.posY, msr3.posX, msr3.posY, val[0], val[1], val[2]);
                 ntry.curX = val[0];
                 ntry.curY = val[1];
-            System.out.println(ntry.getMac() + " " + val[0]/scale+" "+val[1]/scale);//
             }
         }
     }
@@ -172,33 +170,28 @@ public class position {
         int my = img.getHeight();
         for (int i = 0; i < meas.length; i++) {
             Graphics2D g2d = img.createGraphics();
-            g2d.setBackground(Color.gray);
+            g2d.setBackground(Color.blue);
             g2d.setFont(new Font("Serif", Font.BOLD, 20));
-            g2d.setPaint(Color.green);
+            g2d.setPaint(Color.blue);
             g2d.drawString(meas[i].nam, (int) meas[i].posX, (int) meas[i].posY);
             g2d.dispose();
         }
+        int py = my;
         for (int i = 0; i < neis.size(); i++) {
             positionAddr ntry = neis.get(i);
-            if (ntry.curX < 0) {
-                continue;
-            }
-            if (ntry.curY < 0) {
-                ntry.curX = -1;
-                continue;
-            }
-            if (ntry.curX >= mx) {
-                ntry.curX = -1;
-                continue;
-            }
-            if (ntry.curY >= my) {
-                ntry.curX = -1;
-                continue;
-            }
             Graphics2D g2d = img.createGraphics();
             g2d.setBackground(Color.gray);
             g2d.setFont(new Font("Serif", Font.BOLD, 20));
-            g2d.setPaint(Color.red);
+            if ((ntry.curX < 0) || (ntry.curY < 0) || (ntry.curX > mx) || (ntry.curY > my)) {
+                g2d.setPaint(Color.red);
+                FontMetrics fm = g2d.getFontMetrics();
+                String s = ntry.getMac();
+                py -= fm.getHeight();
+                g2d.drawString(s, mx - fm.stringWidth(s), py);
+                g2d.dispose();
+                continue;
+            }
+            g2d.setPaint(Color.green);
             g2d.drawString(ntry.getMac(), (int) ntry.curX, (int) ntry.curY);
             g2d.dispose();
         }

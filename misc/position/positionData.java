@@ -29,7 +29,7 @@ public class positionData {
      * url
      */
     public final String url;
-    
+
     /**
      * url
      */

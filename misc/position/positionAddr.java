@@ -1,6 +1,4 @@
 
-import java.util.List;
-
 /**
  * neighbor entry
  *
@@ -100,6 +98,7 @@ public class positionAddr implements Comparable<positionAddr> {
 
     /**
      * get mac address
+     *
      * @return string
      */
     public String getMac() {
