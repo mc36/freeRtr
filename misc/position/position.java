@@ -1,14 +1,14 @@
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import javax.imageio.ImageIO;
 
 /**
  * web position
@@ -64,7 +64,7 @@ public class position {
             staticposition.doInit();
         }
         staticposition.doRequest(par, buf, user);
-        return "html";
+        return "png";
     }
 
     /**
@@ -83,6 +83,11 @@ public class position {
     protected positionData meas[];
 
     /**
+     * image
+     */
+    protected String bgImg;
+
+    /**
      * initialize
      */
     public void doInit() {
@@ -97,6 +102,10 @@ public class position {
                 String a = f.readLine();
                 if (a == null) {
                     break;
+                }
+                if (a.startsWith("image=")) {
+                    bgImg = a.substring(6, a.length());
+                    continue;
                 }
                 if (!a.startsWith("measure=")) {
                     continue;
@@ -135,6 +144,8 @@ public class position {
                     continue;
                 }
                 res.add(-i - 1, ntry);
+                ntry.curX = - 1;
+                ntry.curY = - 1;
                 positionAddr adr1 = ntry;
                 positionAddr adr2 = null;
                 positionAddr adr3 = null;
@@ -169,7 +180,6 @@ public class position {
                         continue;
                     }
                 }
-                System.out.println(ntry+" "+adr1 + " " + adr2 + " " + adr3);
                 if (adr3 == null) {
                     continue;
                 }
@@ -183,11 +193,7 @@ public class position {
                 System.out.println(ntry + " " + ntry.curX + " " + ntry.curY);
             }
         }
-        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>paster</title></head><body>".getBytes());
-        String a = "<form action=\"" + url + "\" method=\"post\" enctype=\"application/x-www-form-urlencoded\">";
-        buf.write(a.getBytes());
-        buf.write("<textarea name=\"data\" rows=\"25\" cols=\"80\"></textarea><br/><input type=\"submit\" value=\"paste\"/></form>".getBytes());
-        buf.write("</body></html>".getBytes());
+        BufferedImage img = ImageIO.read(new File(path + ".png"));
     }
 
 }
