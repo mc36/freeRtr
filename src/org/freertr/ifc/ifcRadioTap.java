@@ -219,12 +219,6 @@ class ifcRadioTapNeigh implements Comparable<ifcRadioTapNeigh> {
     }
 
     public int compareTo(ifcRadioTapNeigh o) {
-        if (chan < o.chan) {
-            return -1;
-        }
-        if (chan > o.chan) {
-            return +1;
-        }
         return adr.compareTo(o.adr);
     }
 

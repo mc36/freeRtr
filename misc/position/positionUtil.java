@@ -44,7 +44,7 @@ public class positionUtil {
      * @return meters
      */
     public static double signal2distance(float mhz, float dbm) {
-        return Math.round(Math.pow(10.0, (27.55 - (20.0 * Math.log10(mhz)) - dbm) / 20.0));
+        return Math.pow(10.0, (27.55 - (20.0 * Math.log10(mhz)) - dbm) / 20.0);
     }
 
     /**
@@ -61,7 +61,7 @@ public class positionUtil {
      * @param rc distance
      * @return x,y coordinates
      */
-    public static double[] trilateration(float xa, float ya, float xb, float yb, float xc, float yc, float ra, float rb, float rc) {
+    public static double[] trilateration(float xa, float ya, float xb, float yb, float xc, float yc, double ra, double rb, double rc) {
         double s = (Math.pow(xc, 2.0) - Math.pow(xb, 2.0) + Math.pow(yc, 2.0) - Math.pow(yb, 2.0) + Math.pow(rb, 2.0) - Math.pow(rc, 2.0)) / 2.0;
         double t = (Math.pow(xa, 2.0) - Math.pow(xb, 2.0) + Math.pow(ya, 2.0) - Math.pow(yb, 2.0) + Math.pow(rb, 2.0) - Math.pow(ra, 2.0)) / 2.0;
         double y = ((t * (xb - xc)) - (s * (xb - xa))) / (((ya - yb) * (xb - xc)) - ((yc - yb) * (xb - xa)));

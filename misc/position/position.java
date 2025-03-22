@@ -131,7 +131,7 @@ public class position {
             for (int p = 0; p < meas[o].data.size(); p++) {
                 positionAddr ntry = meas[o].data.get(p);
                 int i = Collections.binarySearch(res, ntry);
-                if (i > 0) {
+                if (i >= 0) {
                     continue;
                 }
                 res.add(-i - 1, ntry);
@@ -147,8 +147,40 @@ public class position {
                         continue;
                     }
                     positionAddr curr = meas[q].data.get(i);
+                    if (curr.sign > adr1.sign) {
+                        adr3 = adr2;
+                        adr2 = adr1;
+                        adr1 = curr;
+                        msr3 = msr2;
+                        msr2 = msr1;
+                        msr1 = meas[q];
+                        continue;
+                    }
+                    if ((adr2 == null) || (curr.sign > adr2.sign)) {
+                        adr3 = adr2;
+                        adr2 = curr;
+                        msr3 = msr2;
+                        msr2 = meas[q];
+                        continue;
+                    }
+                    if (adr3 == null || (curr.sign > adr3.sign)) {
+                        adr3 = curr;
+                        msr3 = meas[q];
+                        continue;
+                    }
                 }
-                System.out.println(ntry + " " + ntry.chan + " " + ntry.sign + " " + positionUtil.signal2distance(ntry.chan, ntry.sign));
+                System.out.println(ntry+" "+adr1 + " " + adr2 + " " + adr3);
+                if (adr3 == null) {
+                    continue;
+                }
+                double[] val = new double[3];
+                val[0] = positionUtil.signal2distance(adr1.chan, adr1.sign);
+                val[1] = positionUtil.signal2distance(adr2.chan, adr2.sign);
+                val[2] = positionUtil.signal2distance(adr3.chan, adr3.sign);
+                val = positionUtil.trilateration(msr1.myX, msr1.myY, msr2.myX, msr2.myY, msr3.myX, msr3.myY, val[0], val[1], val[2]);
+                ntry.curX = val[0];
+                ntry.curY = val[1];
+                System.out.println(ntry + " " + ntry.curX + " " + ntry.curY);
             }
         }
         buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><title>paster</title></head><body>".getBytes());
