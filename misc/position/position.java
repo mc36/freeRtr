@@ -39,6 +39,14 @@ public class position {
         System.out.println(a);
     }
 
+    private positionData[] meas;
+
+    private List<positionAddr> neis;
+
+    private BufferedImage img;
+
+    private float scale;
+
     /**
      * do one request
      *
@@ -57,43 +65,27 @@ public class position {
             throws Exception {
         path = path.substring(0, path.lastIndexOf("."));
         url = new URI(url).toURL().getPath();
-        positionData[] meas = readConfig(path);
-        List<positionAddr> neis = readNeighs(meas);
-        BufferedImage img = ImageIO.read(new File(path + ".png"));
-        int mx = img.getWidth();
-        int my = img.getHeight();
-        ImageIO.write(img, "png", buf);
-        for (int i = 0; i < neis.size(); i++) {
-            positionAddr ntry = neis.get(i);
-            if (ntry.curX < 0) {
-                continue;
-            }
-            if (ntry.curY < 0) {
-                continue;
-            }
-            if (ntry.curX >= mx) {
-                continue;
-            }
-            if (ntry.curY >= my) {
-                continue;
-            }
-            Graphics2D g2d = img.createGraphics();
-            g2d.setBackground(Color.gray);
-            g2d.setFont(new Font("Serif", Font.BOLD, 20));
-            g2d.setPaint(Color.green);
-            g2d.drawString(ntry.getMac(), (int) ntry.curX, (int) ntry.curY);
-            g2d.dispose();
-        }
+        img = ImageIO.read(new File(path + ".png"));
+        readConfig(path);
+        readNeighs();
+        drawImage();
+        ///ImageIO.write(img, "png", buf);
+        ImageIO.write(img, "png", new File("zzz.png"));
         return "png";
     }
 
-    private positionData[] readConfig(String a) throws Exception {
+    private void readConfig(String a) throws Exception {
         List<positionData> m = new ArrayList<positionData>();
         BufferedReader f = new BufferedReader(new FileReader(a + ".cfg"));
         for (;;) {
             a = f.readLine();
             if (a == null) {
                 break;
+            }
+            if (a.startsWith("scale=")) {
+                a = a.substring(6, a.length());
+                scale = positionUtil.str2num(a);
+                continue;
             }
             if (!a.startsWith("measure=")) {
                 continue;
@@ -107,22 +99,22 @@ public class position {
         for (int i = 0; i < r.length; i++) {
             r[i] = m.get(i);
         }
-        return r;
+        meas = r;
     }
 
-    private List<positionAddr> readNeighs(positionData[] meas) throws Exception {
+    private void readNeighs() throws Exception {
         for (int i = 0; i < meas.length; i++) {
             meas[i].getNeighs();
         }
-        List<positionAddr> res = new ArrayList<positionAddr>();
+        neis = new ArrayList<positionAddr>();
         for (int o = 0; o < meas.length; o++) {
             for (int p = 0; p < meas[o].data.size(); p++) {
                 positionAddr ntry = meas[o].data.get(p);
-                int i = Collections.binarySearch(res, ntry);
+                int i = Collections.binarySearch(neis, ntry);
                 if (i >= 0) {
                     continue;
                 }
-                res.add(-i - 1, ntry);
+                neis.add(-i - 1, ntry);
                 ntry.curX = - 1;
                 ntry.curY = - 1;
                 positionAddr adr1 = ntry;
@@ -163,15 +155,53 @@ public class position {
                     continue;
                 }
                 double[] val = new double[3];
-                val[0] = positionUtil.signal2distance(adr1.chan, adr1.sign);
-                val[1] = positionUtil.signal2distance(adr2.chan, adr2.sign);
-                val[2] = positionUtil.signal2distance(adr3.chan, adr3.sign);
+                val[0] = positionUtil.signal2distance(adr1.chan, adr1.sign) * scale;
+                val[1] = positionUtil.signal2distance(adr2.chan, adr2.sign) * scale;
+                val[2] = positionUtil.signal2distance(adr3.chan, adr3.sign) * scale;
+            System.out.println(ntry.getMac() + " " + val[0]+" "+val[1]+" "+val[2]);//
                 val = positionUtil.trilateration(msr1.posX, msr1.posY, msr2.posX, msr2.posY, msr3.posX, msr3.posY, val[0], val[1], val[2]);
                 ntry.curX = val[0];
                 ntry.curY = val[1];
+            System.out.println(ntry.getMac() + " " + val[0]/scale+" "+val[1]/scale);//
             }
         }
-        return res;
+    }
+
+    private void drawImage() {
+        int mx = img.getWidth();
+        int my = img.getHeight();
+        for (int i = 0; i < meas.length; i++) {
+            Graphics2D g2d = img.createGraphics();
+            g2d.setBackground(Color.gray);
+            g2d.setFont(new Font("Serif", Font.BOLD, 20));
+            g2d.setPaint(Color.green);
+            g2d.drawString(meas[i].nam, (int) meas[i].posX, (int) meas[i].posY);
+            g2d.dispose();
+        }
+        for (int i = 0; i < neis.size(); i++) {
+            positionAddr ntry = neis.get(i);
+            if (ntry.curX < 0) {
+                continue;
+            }
+            if (ntry.curY < 0) {
+                ntry.curX = -1;
+                continue;
+            }
+            if (ntry.curX >= mx) {
+                ntry.curX = -1;
+                continue;
+            }
+            if (ntry.curY >= my) {
+                ntry.curX = -1;
+                continue;
+            }
+            Graphics2D g2d = img.createGraphics();
+            g2d.setBackground(Color.gray);
+            g2d.setFont(new Font("Serif", Font.BOLD, 20));
+            g2d.setPaint(Color.red);
+            g2d.drawString(ntry.getMac(), (int) ntry.curX, (int) ntry.curY);
+            g2d.dispose();
+        }
     }
 
 }

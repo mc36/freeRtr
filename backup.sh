@@ -1,13 +1,7 @@
 #!/bin/sh
-chmod -x `find . -executable -name "*.class"` 2> /dev/null
 chmod -x `find . -executable -name "*.java"` 2> /dev/null
 chmod -x `find . -executable -name "*.tmpl"` 2> /dev/null
-chmod -x `find . -executable -name "*.asm"` 2> /dev/null
-chmod -x `find . -executable -name "*.pas"` 2> /dev/null
 chmod -x `find . -executable -name "*.tcl"` 2> /dev/null
-chmod -x `find . -executable -name "*.pyc"` 2> /dev/null
-chmod -x `find . -executable -name "*.lua"` 2> /dev/null
-chmod -x `find . -executable -name "*.zip"` 2> /dev/null
 chmod -x `find . -executable -name "*.tst"` 2> /dev/null
 chmod -x `find . -executable -name "*.ini"` 2> /dev/null
 chmod -x `find . -executable -name "*.txt"` 2> /dev/null
