@@ -18,17 +18,22 @@ public class positionData {
     /**
      * x coordinate
      */
-    public final float myX;
+    public final float posX;
 
     /**
      * y coordinate
      */
-    public final float myY;
+    public final float posY;
 
     /**
-     * url coordinate
+     * url
      */
-    public final String myUrl;
+    public final String url;
+    
+    /**
+     * url
+     */
+    public final String nam;
 
     /**
      * last reading
@@ -42,11 +47,14 @@ public class positionData {
      */
     public positionData(String a) {
         int i = a.indexOf(";");
-        myX = positionUtil.str2num(a.substring(0, i));
+        nam = a.substring(0, i);
         a = a.substring(i + 1, a.length());
         i = a.indexOf(";");
-        myY = positionUtil.str2num(a.substring(0, i));
-        myUrl = a.substring(i + 1, a.length());
+        posX = positionUtil.str2num(a.substring(0, i));
+        a = a.substring(i + 1, a.length());
+        i = a.indexOf(";");
+        posY = positionUtil.str2num(a.substring(0, i));
+        url = a.substring(i + 1, a.length());
     }
 
     /**
@@ -55,7 +63,7 @@ public class positionData {
     protected synchronized void getNeighs() {
         try {
             data = new ArrayList<positionAddr>();
-            URL testUrl = new URI(myUrl).toURL();
+            URL testUrl = new URI(url).toURL();
             URLConnection testConn = testUrl.openConnection();
             testConn.setConnectTimeout(5000);
             testConn.setReadTimeout(5000);

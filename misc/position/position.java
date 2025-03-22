@@ -1,4 +1,7 @@
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -28,18 +31,13 @@ public class position {
         try {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             a = "" + app.getClass().getName() + ".";
-            a = position.httpRequest("http://localhost/" + a, "./" + a, "cli", "clibrowser", "user", args, buf);
+            a = app.httpRequest("http://localhost/" + a, "./" + a, "cli", "clibrowser", "user", args, buf);
             a = "type=" + a + "\r\ndata:\r\n" + buf.toString();
         } catch (Exception e) {
             a = "exception " + e.getMessage();
         }
         System.out.println(a);
     }
-
-    /**
-     * where i'm located in ram
-     */
-    protected static position staticposition = null;
 
     /**
      * do one request
@@ -54,84 +52,65 @@ public class position {
      * @return [pathname"][file name.]extension
      * @throws Exception if something went wrong
      */
-    public static String httpRequest(String url, String path, String peer,
+    public String httpRequest(String url, String path, String peer,
             String agent, String user, String[] par, ByteArrayOutputStream buf)
             throws Exception {
-        if (staticposition == null) {
-            staticposition = new position();
-            staticposition.path = path.substring(0, path.lastIndexOf("."));
-            staticposition.url = new URI(url).toURL().getPath();
-            staticposition.doInit();
+        path = path.substring(0, path.lastIndexOf("."));
+        url = new URI(url).toURL().getPath();
+        positionData[] meas = readConfig(path);
+        List<positionAddr> neis = readNeighs(meas);
+        BufferedImage img = ImageIO.read(new File(path + ".png"));
+        int mx = img.getWidth();
+        int my = img.getHeight();
+        ImageIO.write(img, "png", buf);
+        for (int i = 0; i < neis.size(); i++) {
+            positionAddr ntry = neis.get(i);
+            if (ntry.curX < 0) {
+                continue;
+            }
+            if (ntry.curY < 0) {
+                continue;
+            }
+            if (ntry.curX >= mx) {
+                continue;
+            }
+            if (ntry.curY >= my) {
+                continue;
+            }
+            Graphics2D g2d = img.createGraphics();
+            g2d.setBackground(Color.gray);
+            g2d.setFont(new Font("Serif", Font.BOLD, 20));
+            g2d.setPaint(Color.green);
+            g2d.drawString(ntry.getMac(), (int) ntry.curX, (int) ntry.curY);
+            g2d.dispose();
         }
-        staticposition.doRequest(par, buf, user);
         return "png";
     }
 
-    /**
-     * where i'm located on host
-     */
-    protected String path;
-
-    /**
-     * where i'm located on net
-     */
-    protected String url;
-
-    /**
-     * measures
-     */
-    protected positionData meas[];
-
-    /**
-     * image
-     */
-    protected String bgImg;
-
-    /**
-     * initialize
-     */
-    public void doInit() {
-        readConfig();
-    }
-
-    private void readConfig() {
-        try {
-            List<positionData> m = new ArrayList<positionData>();
-            BufferedReader f = new BufferedReader(new FileReader(path + ".cfg"));
-            for (;;) {
-                String a = f.readLine();
-                if (a == null) {
-                    break;
-                }
-                if (a.startsWith("image=")) {
-                    bgImg = a.substring(6, a.length());
-                    continue;
-                }
-                if (!a.startsWith("measure=")) {
-                    continue;
-                }
-                a = a.substring(8, a.length());
-                positionData v = new positionData(a);
-                m.add(v);
+    private positionData[] readConfig(String a) throws Exception {
+        List<positionData> m = new ArrayList<positionData>();
+        BufferedReader f = new BufferedReader(new FileReader(a + ".cfg"));
+        for (;;) {
+            a = f.readLine();
+            if (a == null) {
+                break;
             }
-            f.close();
-            meas = new positionData[m.size()];
-            for (int i = 0; i < meas.length; i++) {
-                meas[i] = m.get(i);
+            if (!a.startsWith("measure=")) {
+                continue;
             }
-        } catch (Exception e) {
+            a = a.substring(8, a.length());
+            positionData v = new positionData(a);
+            m.add(v);
         }
+        f.close();
+        positionData[] r = new positionData[m.size()];
+        for (int i = 0; i < r.length; i++) {
+            r[i] = m.get(i);
+        }
+        return r;
     }
 
-    /**
-     * do one request
-     *
-     * @param par parameters
-     * @param buf buffer to use
-     * @param user username
-     * @throws Exception if something went wrong
-     */
-    public void doRequest(String[] par, ByteArrayOutputStream buf, String user) throws Exception {
+    private List<positionAddr> readNeighs(positionData[] meas) throws Exception {
         for (int i = 0; i < meas.length; i++) {
             meas[i].getNeighs();
         }
@@ -187,13 +166,12 @@ public class position {
                 val[0] = positionUtil.signal2distance(adr1.chan, adr1.sign);
                 val[1] = positionUtil.signal2distance(adr2.chan, adr2.sign);
                 val[2] = positionUtil.signal2distance(adr3.chan, adr3.sign);
-                val = positionUtil.trilateration(msr1.myX, msr1.myY, msr2.myX, msr2.myY, msr3.myX, msr3.myY, val[0], val[1], val[2]);
+                val = positionUtil.trilateration(msr1.posX, msr1.posY, msr2.posX, msr2.posY, msr3.posX, msr3.posY, val[0], val[1], val[2]);
                 ntry.curX = val[0];
                 ntry.curY = val[1];
-                System.out.println(ntry + " " + ntry.curX + " " + ntry.curY);
             }
         }
-        BufferedImage img = ImageIO.read(new File(path + ".png"));
+        return res;
     }
 
 }

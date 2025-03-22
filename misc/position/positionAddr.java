@@ -98,7 +98,11 @@ public class positionAddr implements Comparable<positionAddr> {
         return 0;
     }
 
-    public String toString() {
+    /**
+     * get mac address
+     * @return string
+     */
+    public String getMac() {
         return positionUtil.toHex(addr1) + "." + positionUtil.toHex(addr2) + "." + positionUtil.toHex(addr3);
     }
 
