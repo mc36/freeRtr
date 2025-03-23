@@ -361,6 +361,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 return 1;
             }
             ntry.asns.remove(i);
+            Collections.sort(ntry.asns);
             if (ntry.asns.size() > 0) {
                 return 1;
             }
@@ -375,11 +376,13 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 return 1;
             }
             ntry.asns.add(pck.roa.distan);
+            Collections.sort(ntry.asns);
             return 1;
         }
         ntry = pck.roa;
         ntry.asns = new ArrayList<Integer>();
         ntry.asns.add(pck.roa.distan);
+        Collections.sort(ntry.asns);
         ntry.time = bits.getTime();
         ntry.distan = preference;
         ntry.srcRtr = lower.rouTyp;

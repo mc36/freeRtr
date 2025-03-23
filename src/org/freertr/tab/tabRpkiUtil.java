@@ -122,7 +122,7 @@ public class tabRpkiUtil {
         tabGen<tabRpkiRoa> res = new tabGen<tabRpkiRoa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiRoa ntry = src.get(i);
-            if (ntry.asns.indexOf(asn) < 0) {
+            if (Collections.binarySearch(ntry.asns, asn) < 0) {
                 continue;
             }
             res.add(ntry);
@@ -761,7 +761,7 @@ public class tabRpkiUtil {
             return 3;
         }
         int asn = attr.asPathEnd();
-        if (res.asns.indexOf(asn) < 0) {
+        if (Collections.binarySearch(res.asns, asn) < 0) {
             return 3;
         }
         return 1;
