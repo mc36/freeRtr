@@ -16482,3 +16482,6 @@ qc pass: bgp aspa rpki invalid
 ---------------------------------- 2025-03-24 15:03:41 25.3.24
 no qc pass: dhcp with excluded address
 failed: dhcp with excluded address
+---------------------------------- 2025-03-24 16:04:11 25.3.24
+no failed: dhcp with excluded address
+qc pass: dhcp with excluded address
