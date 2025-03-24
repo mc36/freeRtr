@@ -5179,6 +5179,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 pppoeS.serviceDly = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("sessions")) {
+                pppoeS.serviceMax = bits.str2num(cmd.word());
+                continue;
+            }
         }
         return false;
     }
@@ -6642,6 +6646,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, "5 4,.         <str>                 text");
         l.add(null, "4 5         delay                   set pado delay");
         l.add(null, "5 4,.         <num>                 time");
+        l.add(null, "4 5         sessions                set session limit");
+        l.add(null, "5 4,.         <num>                 number of clients");
         l.add(null, "2 3     relay                       start pppoe relay");
         l.add(null, "3 4,.     <name:ifc>                name of dialer interface");
         l.add(null, "4 5         name                    set service name");

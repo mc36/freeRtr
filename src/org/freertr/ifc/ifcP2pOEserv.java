@@ -48,6 +48,11 @@ public class ifcP2pOEserv implements ifcUp {
     public int serviceDly = 0;
 
     /**
+     * client limit on this entry
+     */
+    public int serviceMax = 0;
+
+    /**
      * interface to clone
      */
     public cfgIfc clnIfc;
@@ -74,6 +79,9 @@ public class ifcP2pOEserv implements ifcUp {
         }
         if (serviceDly > 0) {
             a += " delay " + serviceDly;
+        }
+        if (serviceDly > 0) {
+            a += " sessions " + serviceMax;
         }
         return clnIfc.name + a;
     }
@@ -203,6 +211,12 @@ public class ifcP2pOEserv implements ifcUp {
         tlv.putStr(pck, packPppOE.typeSrvNam, serviceNam);
         switch (poe.cod) {
             case packPppOE.codePadI:
+                if (serviceMax > 0) {
+                    if (clnts.size() > serviceMax) {
+                        cntr.drop(pck, counter.reasons.noBuffer);
+                        break;
+                    }
+                }
                 if (debugger.ifcP2pOEserv) {
                     logger.debug("tx pado");
                 }
@@ -210,9 +224,6 @@ public class ifcP2pOEserv implements ifcUp {
                 ifcDelay.sendPack(serviceDly, lower, pck);
                 break;
             case packPppOE.codePadR:
-                if (debugger.ifcP2pOEserv) {
-                    logger.debug("tx pads");
-                }
                 ifcP2pOEservSess old = null;
                 for (int i = 0; i < 16; i++) {
                     ntry.sessid = bits.random(1, 0xfffe);
@@ -230,6 +241,9 @@ public class ifcP2pOEserv implements ifcUp {
                     ntry = old;
                 } else {
                     ntry.startUpper();
+                }
+                if (debugger.ifcP2pOEserv) {
+                    logger.debug("tx pads");
                 }
                 packPppOE.updateHeader(pck, packPppOE.codePadS, ntry.sessid);
                 lower.sendPack(pck);
