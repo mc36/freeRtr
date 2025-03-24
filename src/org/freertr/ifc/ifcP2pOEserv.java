@@ -80,7 +80,7 @@ public class ifcP2pOEserv implements ifcUp {
         if (serviceDly > 0) {
             a += " delay " + serviceDly;
         }
-        if (serviceDly > 0) {
+        if (serviceMax > 0) {
             a += " sessions " + serviceMax;
         }
         return clnIfc.name + a;
