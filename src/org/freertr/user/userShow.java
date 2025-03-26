@@ -5179,7 +5179,7 @@ public class userShow {
                 aspaE[o]++;
                 aspaV[ntry.best.validAspa]++;
             }
-            userFormat sum = new userFormat("|", "result|calc|valid|encod|calc|valid|encod", "1|3roa|3aspa");
+            userFormat sum = new userFormat("|", "result|calc|using|encod|calc|using|encod", "1|3roa|3aspa");
             for (int i = 0; i < roaC.length; i++) {
                 sum.add(tabRpkiUtil.validity2string(i) + "|" + roaC[i] + "|" + roaV[i] + "|" + roaE[i] + "|" + aspaC[i] + "|" + aspaV[i] + "|" + aspaE[i]);
             }
