@@ -353,6 +353,10 @@ public class tabRpkiUtil {
         tabRpkiAspa ntry = new tabRpkiAspa();
         ntry.cust = asn;
         ntry = tab.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.hits++;
         return ntry;
     }
 
@@ -369,6 +373,10 @@ public class tabRpkiUtil {
         ntry.asn = asn;
         ntry.ski = ski;
         ntry = tab.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        ntry.hits++;
         return ntry;
     }
 
