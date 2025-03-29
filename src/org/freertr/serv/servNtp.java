@@ -41,12 +41,18 @@ public class servNtp extends servGeneric implements prtServS {
     public addrIPv4 refId = new addrIPv4();
 
     /**
+     * adjustment
+     */
+    public long adjust = 0;
+
+    /**
      * defaults text
      */
     public final static String[] defaultL = {
         "server ntp .*!" + cmds.tabulator + "port " + packNtp.port,
         "server ntp .*!" + cmds.tabulator + "protocol " + proto2string(protoAll),
-        "server ntp .*!" + cmds.tabulator + "stratum 2"
+        "server ntp .*!" + cmds.tabulator + "stratum 2",
+        "server ntp .*!" + cmds.tabulator + "adjust 0"
     };
 
     /**
@@ -65,12 +71,17 @@ public class servNtp extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        lst.add(beg + "adjust " + adjust);
         lst.add(beg + "stratum " + stratum);
         lst.add(beg + "reference " + refId);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("adjust")) {
+            adjust = bits.str2long(cmd.word());
+            return false;
+        }
         if (s.equals("stratum")) {
             stratum = bits.str2num(cmd.word());
             return false;
@@ -84,6 +95,8 @@ public class servNtp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
+        l.add(null, "1 2  adjust                       set adjustment time");
+        l.add(null, "2 .    <num>                      adjustment in millis");
         l.add(null, "1 2  stratum                      set stratum number");
         l.add(null, "2 .    <num>                      stratum value");
         l.add(null, "1 2  reference                    set reference value");
@@ -153,7 +166,7 @@ class servNtpConn implements Runnable {
         pckNtp.rotDel = 64;
         pckNtp.rotDis = 128;
         pckNtp.refId = lower.refId.copyBytes();
-        long tim = bits.getTime() + cfgAll.timeServerOffset;
+        long tim = bits.getTime() + cfgAll.timeServerOffset + lower.adjust;
         pckNtp.refTime = packNtp.encode(tim);
         pckNtp.origTime = pckNtp.sendTime;
         pckNtp.recvTime = packNtp.encode(tim);
@@ -164,6 +177,7 @@ class servNtpConn implements Runnable {
         if (debugger.servNtpTraf) {
             logger.debug("tx " + pckNtp);
         }
+        pipe.setClose();
     }
 
 }
