@@ -1860,6 +1860,8 @@ public class userExec {
         hl.add(null, "2 .      spacetab                     treat space as tabulator");
         hl.add(null, "2 .      stars                        use stars in password prompt");
         hl.add(null, "2 .      title                        resend terminal title");
+        hl.add(null, "2 3      clipboard                    send clipboard data");
+        hl.add(null, "3 3,.      [str]                      data");
         hl.add(null, "2 .      capslock                     treat lowercase as uppercase");
         hl.add(null, "2 .      bells                        bells the terminal sometimes");
         hl.add(null, "2 3      play                         play ansi music");
@@ -5056,6 +5058,10 @@ public class userExec {
         }
         if (a.equals("title")) {
             userScreen.sendTit(pipe, cfgAll.hostName);
+            return;
+        }
+        if (a.equals("clipboard")) {
+            userScreen.sendClp(pipe, cmd.getRemaining());
             return;
         }
         if (a.equals("monitor")) {

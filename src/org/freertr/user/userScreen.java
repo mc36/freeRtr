@@ -2,6 +2,7 @@ package org.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.enc.encBase64;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
@@ -696,6 +697,16 @@ public class userScreen {
      */
     public static void sendTit(pipeSide pip, String nam) {
         pip.strPut("\033]0;" + nam + "\007");
+    }
+
+    /**
+     * send clipboard data
+     *
+     * @param pip pipe to use
+     * @param clp string to send
+     */
+    public static void sendClp(pipeSide pip, String clp) {
+        pip.strPut("\033]52;pc;" + encBase64.encodeString(clp) + "\007");
     }
 
     /**
