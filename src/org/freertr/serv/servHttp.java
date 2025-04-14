@@ -239,11 +239,14 @@ public class servHttp extends servGeneric implements prtServS {
             return false;
         }
         if (a.equals("second-port")) {
+            srvDeinit();
             if (negated) {
                 secondPort = -1;
+                srvInit();
                 return false;
             }
             secondPort = bits.str2num(cmd.word());
+            srvInit();
             return false;
         }
         if (a.equals("buffer")) {

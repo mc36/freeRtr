@@ -77,13 +77,17 @@ public class servTelnet extends servGeneric implements prtServS {
         cmds old = cmd.copyBytes(false);
         String a = cmd.word();
         if (a.equals("second-port")) {
+            srvDeinit();
             secondPort = bits.str2num(cmd.word());
+            srvInit();
             return false;
         }
         if (a.equals(cmds.negated)) {
             a = cmd.word();
             if (a.equals("second-port")) {
+                srvDeinit();
                 secondPort = -1;
+                srvInit();
                 return false;
             }
         }

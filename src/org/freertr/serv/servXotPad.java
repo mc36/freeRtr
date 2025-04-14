@@ -36,7 +36,6 @@ public class servXotPad extends servGeneric implements prtServS {
      */
     public final static String[] defaultL = {
         "server xotpad .*!" + cmds.tabulator + "port " + packXotPad.port,
-        "server xotpad .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "second-port",
         "server xotpad .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
     };
 
