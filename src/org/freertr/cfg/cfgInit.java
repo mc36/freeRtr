@@ -101,6 +101,7 @@ import org.freertr.enc.encUrl;
 import org.freertr.serv.servMrt2bgp;
 import org.freertr.serv.servPlan9;
 import org.freertr.serv.servStack;
+import org.freertr.serv.servUni2uni;
 import org.freertr.serv.servWhois;
 import org.freertr.serv.servXotPad;
 import org.freertr.tab.tabGen;
@@ -991,6 +992,7 @@ public class cfgInit implements Runnable {
         servTwamp.defaultF = createFilter(servTwamp.defaultL, srvdefsF);
         servAmt.defaultF = createFilter(servAmt.defaultL, srvdefsF);
         servUni2multi.defaultF = createFilter(servUni2multi.defaultL, srvdefsF);
+        servUni2uni.defaultF = createFilter(servUni2uni.defaultL, srvdefsF);
         servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);
         servMultiplexer.defaultF = createFilter(servMultiplexer.defaultL, srvdefsF);
         servLpd.defaultF = createFilter(servLpd.defaultL, srvdefsF);

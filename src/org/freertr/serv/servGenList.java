@@ -397,6 +397,9 @@ public class servGenList<T extends servGeneric> {
         l.add(null, p + "  " + (p + 1) + "    uni2multi                    uni2multi server" + e);
         l.add(cfgAll.dmnUni2mul.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
         l.addOther(o);
+        l.add(null, p + "  " + (p + 1) + "    uni2uni                      uni2uni server" + e);
+        l.add(cfgAll.dmnUni2uni.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
+        l.addOther(o);
         l.add(null, p + "  " + (p + 1) + "    pckoudp                      pckoudp server" + e);
         l.add(cfgAll.dmnPckOudp.listServers(), (p + 1) + "  " + n + "        <name:loc>                 name of server");
         l.addOther(o);
@@ -653,6 +656,9 @@ class servGenEntry {
         }
         if (typ.equals("uni2multi")) {
             return new servGenEntry(new servUni2multi(), cfgAll.dmnUni2mul);
+        }
+        if (typ.equals("uni2uni")) {
+            return new servGenEntry(new servUni2uni(), cfgAll.dmnUni2uni);
         }
         if (typ.equals("gtp")) {
             return new servGenEntry(new servGtp(), cfgAll.dmnGtp);

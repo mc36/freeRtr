@@ -91,6 +91,7 @@ import org.freertr.serv.servTwamp;
 import org.freertr.serv.servUdpFwd;
 import org.freertr.serv.servUdptn;
 import org.freertr.serv.servUni2multi;
+import org.freertr.serv.servUni2uni;
 import org.freertr.serv.servUpnpFwd;
 import org.freertr.serv.servUpnpHub;
 import org.freertr.serv.servVoice;
@@ -705,6 +706,11 @@ public class cfgAll {
      * uni2multi daemons
      */
     public final static servGenList<servUni2multi> dmnUni2mul = new servGenList<servUni2multi>();
+
+    /**
+     * uni2uni daemons
+     */
+    public final static servGenList<servUni2uni> dmnUni2uni = new servGenList<servUni2uni>();
 
     /**
      * gtp daemons
@@ -4039,6 +4045,7 @@ public class cfgAll {
         dmnTwamp.getShRun(l, filter);
         dmnAmt.getShRun(l, filter);
         dmnUni2mul.getShRun(l, filter);
+        dmnUni2uni.getShRun(l, filter);
         dmnGtp.getShRun(l, filter);
         dmnPptp.getShRun(l, filter);
         dmnRadius.getShRun(l, filter);
