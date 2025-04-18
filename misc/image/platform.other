@@ -1,5 +1,6 @@
 #catalog-read dev xz http://at.archive.ubuntu.com/ubuntu/ devel main universe
 #catalog-read prop xz http://at.archive.ubuntu.com/ubuntu/ devel-proposed main universe
+#catalog-read freesh http://ftp.linuxliber.md/freesh/ freesh main
 #select-dis linux-image-generic            #ubuntu generic kernel
 #select-dis linux-image-virtual            #ubuntu virtual kernel
 #select-dis linux-image-kvm                #ubuntu kvm kernel
