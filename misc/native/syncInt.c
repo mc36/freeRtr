@@ -13,7 +13,7 @@
 #include "fcs16.h"
 
 #define BANG_CK (TIOCM_CD | TIOCM_DSR)
-#define BANG_RX (TIOCM_CTS)
+#define BANG_RX (TIOCM_RI | TIOCM_CTS)
 #define BANG_TX (TIOCM_DTR | TIOCM_RTS)
 
 char *ttyName;
