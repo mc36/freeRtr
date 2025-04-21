@@ -210,7 +210,7 @@ for fn in veth; do
   compileFile $fn "" "-lmnl" ""
 done
 
-for fn in mapInt rawInt tapInt bundle vlan hdlcInt stdLin ttyLin modem; do
+for fn in mapInt rawInt tapInt bundle vlan hdlcInt syncInt stdLin ttyLin modem; do
   compileFile $fn "" "-lpthread" ""
 done
 
