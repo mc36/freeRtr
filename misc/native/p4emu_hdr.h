@@ -42,7 +42,7 @@ struct packetContext {
 #define preBuff 512
 #define minBuff 128
 #define maxBuff 1024
-#define totBuff 16384
+#define totBuff 69632
 
 extern int commandSock;
 extern int dataPorts;
