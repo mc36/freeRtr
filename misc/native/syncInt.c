@@ -24,7 +24,7 @@ int portLoc;
 int portRem;
 int commSock;
 unsigned char txD[16384];
-volatile int txS = 0;
+int txS = 0;
 pthread_t threadUdp;
 pthread_t threadRaw;
 long byteRx;
