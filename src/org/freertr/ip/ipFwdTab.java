@@ -476,12 +476,6 @@ public class ipFwdTab {
             if ((tim - ntry.lastUsed) < ntry.timeout) {
                 continue;
             }
-            // Release allocated resources (like port pool allocations)
-            ntry.releaseResources();
-            if (ntry.reverse != null) {
-                ntry.reverse.releaseResources();
-            }
-            
             lower.natTrns.del(ntry);
             lower.natTrns.del(ntry.reverse);
             if (ntry.logEnd) {

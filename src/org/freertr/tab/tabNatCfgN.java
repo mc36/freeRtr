@@ -2,7 +2,6 @@ package org.freertr.tab;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -17,7 +16,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.debugger;
 
 /**
  * represents one nat config (source/target, orig/new)
@@ -131,33 +129,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      */
     public boolean logTrans = false;
 
-   /**
-     * randomization method
-     */
-    public enum randomizeMethod {
-        /**
-         * random port pool based with collision avoidance
-         */
-        RandomPortAllocation,
-        /**
-         * port pool based using the first free available port
-         */
-        SequentialPortAllocation,
-        /**
-         * preserve original port if possible, otherwise use sequential allocation
-         */
-        PreserveOriginalThenSequential,
-        /**
-         * preserve original port if possible, otherwise use random allocation
-         */
-        PreserveOriginalThenRandom
-    } 
-
-    /**
-     * randomization method
-     */
-    public randomizeMethod randMethod = randomizeMethod.PreserveOriginalThenRandom;
-
     /**
      * create instance
      */
@@ -209,31 +180,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             if (neg) {
                 rangeMin = -1;
                 rangeMax = -1;
-                randMethod = randomizeMethod.PreserveOriginalThenRandom;
             } else {
-                String nextWord = cmd.word();
-                if (nextWord.equals("sequential-port-allocation")) {
                 rangeMin = bits.str2num(cmd.word());
                 rangeMax = bits.str2num(cmd.word());
-                    randMethod = randomizeMethod.SequentialPortAllocation;
-                } else if (nextWord.equals("preserve-original-then-sequential")) {
-                    rangeMin = bits.str2num(cmd.word());
-                    rangeMax = bits.str2num(cmd.word());
-                    randMethod = randomizeMethod.PreserveOriginalThenSequential;
-                } else if (nextWord.equals("preserve-original-then-random")) {
-                    rangeMin = bits.str2num(cmd.word());
-                    rangeMax = bits.str2num(cmd.word());
-                    randMethod = randomizeMethod.PreserveOriginalThenRandom;
-                } else if (nextWord.equals("random-port-allocation")) {
-                    rangeMin = bits.str2num(cmd.word());
-                    rangeMax = bits.str2num(cmd.word());
-                    randMethod = randomizeMethod.RandomPortAllocation;
-                } else {
-                    // Case when only "randomize <min> <max>" was entered
-                    rangeMin = bits.str2num(nextWord);
-                    rangeMax = bits.str2num(cmd.word());
-                    randMethod = randomizeMethod.RandomPortAllocation;
-                }
             }
             return 3;
         }
@@ -455,20 +404,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             l.add(s + " rate " + maxRate);
         }
         if (rangeMin > 0) {
-            switch (randMethod) {
-                case RandomPortAllocation:
             l.add(s + " randomize " + rangeMin + " " + rangeMax);
-                    break;
-                case SequentialPortAllocation:
-                    l.add(s + " randomize sequential-port-allocation " + rangeMin + " " + rangeMax);
-                    break;
-                case PreserveOriginalThenSequential:
-                    l.add(s + " randomize preserve-original-then-sequential " + rangeMin + " " + rangeMax);
-                    break;
-                case PreserveOriginalThenRandom:
-                    l.add(s + " randomize preserve-original-then-random " + rangeMin + " " + rangeMax);
-                    break;
-            }
         }
         if (logTrans) {
             l.add(s + " log-translations");
@@ -535,48 +471,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                     return false;
                 }
             }
-            // Logging only for successful match
-            if (debugger.tabNatDebug) {
-                StringBuilder logMessage = new StringBuilder();
-                logMessage.append("NAT-MATCH-DEBUG - Sequence: ").append(sequence).append(" | ");
-                
-                // NAT rule type (srcport or trgport) determination
-                String natType = "unknown";
-                if (origSrcPort >= 0 && protocol >= 0) {
-                    natType = "srcport " + protocol;
-                } else if (origTrgPort >= 0 && protocol >= 0) {
-                    natType = "trgport " + protocol;
-                } else if (origSrcAddr != null && origTrgAddr == null) {
-                    natType = "source";
-                } else if (origSrcAddr == null && origTrgAddr != null) {
-                    natType = "target";
-                } else if (origSrcList != null) {
-                    natType = "srclist";
-                }
-                
-                logMessage.append("NAT-Type: ").append(natType).append(" | ");
-                logMessage.append("Packet: ");
-                logMessage.append("Protocol=").append(pck.IPprt).append(", ");
-                logMessage.append("SrcIP=").append(pck.IPsrc).append(", ");
-                logMessage.append("DstIP=").append(pck.IPtrg).append(", ");
-                logMessage.append("SrcPort=").append(pck.UDPsrc).append(", ");
-                logMessage.append("DstPort=").append(pck.UDPtrg).append(" | ");
-                
-                logMessage.append("NAT-Rule: ");
-                logMessage.append("Protocol=").append(protocol).append(", ");
-                if (origSrcAddr != null) logMessage.append("OrigSrcIP=").append(origSrcAddr).append(", ");
-                if (origTrgAddr != null) logMessage.append("OrigDstIP=").append(origTrgAddr).append(", ");
-                if (origSrcPort >= 0) logMessage.append("OrigSrcPort=").append(origSrcPort).append(", ");
-                if (origTrgPort >= 0) logMessage.append("OrigDstPort=").append(origTrgPort).append(", ");
-                if (newSrcAddr != null) logMessage.append("NewSrcIP=").append(newSrcAddr).append(", ");
-                if (newTrgAddr != null) logMessage.append("NewDstIP=").append(newTrgAddr).append(", ");
-                if (newSrcPort >= 0) logMessage.append("NewSrcPort=").append(newSrcPort).append(", ");
-                if (newTrgPort >= 0) logMessage.append("NewDstPort=").append(newTrgPort).append(", ");
-                if (origTrgIface != null) logMessage.append("OrigInterface=").append(origTrgIface.name).append(", ");
-                if (newSrcIface != null) logMessage.append("NewInterface=").append(newSrcIface.name);
-                
-                logger.info(logMessage.toString());
-            }
             return true;
         }
         if (origSrcAddr != null) {
@@ -599,49 +493,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             if (!usableAddr(newSrcAddr)) {
                 return false;
             }
-        }
-        
-        // Logging only for successful match
-        if (debugger.tabNatDebug){
-            StringBuilder logMessage = new StringBuilder();
-            logMessage.append("NAT-MATCH-DEBUG - Sequence: ").append(sequence).append(" | ");
-        
-            // NAT rule type (srcport or trgport) determination
-            String natType = "unknown";
-            if (origSrcPort >= 0 && protocol >= 0) {
-                natType = "srcport " + protocol;
-            } else if (origTrgPort >= 0 && protocol >= 0) {
-                natType = "trgport " + protocol;
-            } else if (origSrcAddr != null && origTrgAddr == null) {
-                natType = "source";
-            } else if (origSrcAddr == null && origTrgAddr != null) {
-                natType = "target";
-            } else if (origSrcList != null) {
-                natType = "srclist";
-            }
-        
-            logMessage.append("NAT-Type: ").append(natType).append(" | ");
-            logMessage.append("Packet: ");
-            logMessage.append("Protocol=").append(pck.IPprt).append(", ");
-            logMessage.append("SrcIP=").append(pck.IPsrc).append(", ");
-            logMessage.append("DstIP=").append(pck.IPtrg).append(", ");
-            logMessage.append("SrcPort=").append(pck.UDPsrc).append(", ");
-            logMessage.append("DstPort=").append(pck.UDPtrg).append(" | ");
-        
-            logMessage.append("NAT-Rule: ");
-            logMessage.append("Protocol=").append(protocol).append(", ");
-            if (origSrcAddr != null) logMessage.append("OrigSrcIP=").append(origSrcAddr).append(", ");
-            if (origTrgAddr != null) logMessage.append("OrigDstIP=").append(origTrgAddr).append(", ");
-            if (origSrcPort >= 0) logMessage.append("OrigSrcPort=").append(origSrcPort).append(", ");
-            if (origTrgPort >= 0) logMessage.append("OrigDstPort=").append(origTrgPort).append(", ");
-            if (newSrcAddr != null) logMessage.append("NewSrcIP=").append(newSrcAddr).append(", ");
-            if (newTrgAddr != null) logMessage.append("NewDstIP=").append(newTrgAddr).append(", ");
-            if (newSrcPort >= 0) logMessage.append("NewSrcPort=").append(newSrcPort).append(", ");
-            if (newTrgPort >= 0) logMessage.append("NewDstPort=").append(newTrgPort).append(", ");
-            if (origTrgIface != null) logMessage.append("OrigInterface=").append(origTrgIface.name).append(", ");
-            if (newSrcIface != null) logMessage.append("NewInterface=").append(newSrcIface.name);
-        
-            logger.info(logMessage.toString());
         }
         return true;
     }
@@ -671,122 +522,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     }
 
     /**
-     * Adds a new port range for a specific source address
-     *
-     * @param srcAddr The source address
-     * @param minPort The minimum port number (inclusive)
-     * @param maxPort The maximum port number (inclusive)
-     */
-    public void addPortRange(addrIP srcAddr, int minPort, int maxPort) {
-        tabNatPortPoolManager.getInstance().createSubPool(srcAddr, minPort, maxPort, sequence);
-        
-        if (debugger.tabNatDebug) {
-            logger.debug("Created port pool for " + srcAddr + " with range " + minPort + "-" + maxPort);
-        }
-    }
-
-    /**
-     * Allocates a port from the pool for a specific source address
-     *
-     * @param srcAddr The source address
-     * @return The allocated port number, or -1 if no ports are available
-     */
-    public int allocatePort(addrIP srcAddr) {
-        boolean useRandomAllocation = (randMethod == randomizeMethod.RandomPortAllocation);
-        
-        // Use the sequence-specific method so that ports are correctly displayed in the pools
-        int port = tabNatPortPoolManager.getInstance().allocatePortFromSequence(srcAddr, protocol, sequence, useRandomAllocation);
-        
-        if (port < 0) {
-            if (debugger.tabNatDebug) {
-                logger.error("Port allocation failed for " + srcAddr + 
-                           " (protocol: " + protocol + ", sequence: " + sequence + ")");
-            }
-        } else if (debugger.tabNatDebug) {
-            logger.debug("Allocated port " + port + " for " + srcAddr + 
-                       " (protocol: " + protocol + ", sequence: " + sequence + ")");
-        }
-        
-        return port;
-    }
-    
-    /**
-     * Releases a previously allocated port back to the pool for a specific source address
-     * 
-     * @param srcAddr The source address
-     * @param port The port number to release
-     * @param protocolNum The protocol number (TCP=6, UDP=17, -1=both)
-     */
-    public void releasePort(addrIP srcAddr, int port, int protocolNum) {
-        tabNatPortPoolManager.getInstance().releasePort(srcAddr, port, protocolNum);
-        
-        if (debugger.tabNatDebug) {
-            logger.debug("Released port " + port + " for " + srcAddr + 
-                      " (protocol: " + protocolNum + ")");
-        }
-    }
-    
-    /**
-     * Releases a previously allocated port back to the pool for a specific source address
-     * using the class protocol variable
-     * 
-     * @param srcAddr The source address
-     * @param port The port number to release
-     */
-    public void releasePort(addrIP srcAddr, int port) {
-        releasePort(srcAddr, port, protocol);
-    }
-
-    /**
-     * Removes the port range for a specific source address
-     * 
-     * @param srcAddr The source address
-     */
-    public void removePortRange(addrIP srcAddr) {
-        tabNatPortPoolManager.getInstance().removeSubPool(srcAddr);
-    }
-    
-    /**
-     * Check if there are available ports for a given address
-     * @param addr The address to check
-     * @param protocolNum The protocol number
-     * @return true if ports are available, false otherwise
-     */
-    public boolean hasAvailablePorts(addrIP addr, int protocolNum) {
-        return tabNatPortPoolManager.getInstance().hasSubPool(addr);
-    }
-    
-    /**
-     * Check if there are available ports for a given address (using class protocol variable)
-     * @param addr The address to check
-     * @return true if ports are available, false otherwise
-     */
-    public boolean hasAvailablePorts(addrIP addr) {
-        return hasAvailablePorts(addr, protocol);
-    }
-
-    /**
-     * Check if a port is already in use in the port pool
-     * @param addr The address to check
-     * @param port The port to check
-     * @param protocolNum The protocol number
-     * @return true if port is in use, false otherwise
-     */
-    private boolean isPortInUse(addrIP addr, int port, int protocolNum) {
-        return tabNatPortPoolManager.getInstance().isPortInUse(addr, port, protocolNum);
-    }
-    
-    /**
-     * Check if a port pool exists for the given address
-     * @param addr The address to check
-     * @return true if pool exists, false otherwise
-     */
-    public boolean hasPortPool(addrIP addr) {
-        return tabNatPortPoolManager.getInstance().hasSubPool(addr);
-    }
-
-
-    /**
      * update entry
      *
      * @param afi address family
@@ -794,242 +529,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      * @param net network
      */
     public void update(int afi, int asn, tabRouteEntry<addrIP> net) {
-    }
-
-    /**
-     * Allocate a port from a specific pool with the provided sequence number
-     *
-     * @param srcAddr The source address
-     * @param sequenceNum The sequence number of the pool to use
-     * @param protocol The protocol number
-     * @param useRandomAllocation Whether to use random allocation
-     * @return The allocated port number, or -1 if no ports are available
-     */
-    private int allocatePortFromSequence(addrIP srcAddr, int sequenceNum, int protocol, boolean useRandomAllocation) {
-        // First check if a sub-pool with the specified sequence number exists
-        tabNatPortPoolManager manager = tabNatPortPoolManager.getInstance();
-        if (!manager.hasSubPool(srcAddr)) {
-            if (debugger.tabNatDebug) {
-                logger.error("No sub-pools exist for " + srcAddr);
-            }
-            return -1;
-        }
-        
-        // Use the new method that allocates directly from the pool with the specified sequence number
-        int port = manager.allocatePortFromSequence(srcAddr, protocol, sequenceNum, useRandomAllocation);
-        
-        if (port < 0) {
-            if (debugger.tabNatDebug) {
-                logger.error("Port allocation failed for " + srcAddr + 
-                           " (protocol: " + protocol + ", sequence: " + sequenceNum + ")");
-            }
-        } else if (debugger.tabNatDebug) {
-            logger.debug("Allocated port " + port + " for " + srcAddr + 
-                       " (protocol: " + protocol + ", sequence: " + sequenceNum + ")");
-        }
-        
-        return port;
-    }
-
-    /**
-     * Allocates a port using the PreserveOriginalThenSequential strategy
-     * Tries to keep original port if possible, otherwise allocates next available
-     * 
-     * @param n NAT translation entry
-     * @return allocated port number or -1 if failed
-     */
-    private int allocatePreserveOriginalThenSequentialPort(tabNatTraN n) {
-        if (debugger.tabNatDebug) {
-            logger.info("DEBUG-PRESERVE-ORIGINAL: Starting port allocation with PreserveOriginalThenSequential");
-            logger.info("DEBUG-PRESERVE-ORIGINAL: Original port is " + n.origSrcPort + 
-                      ", valid range is " + (rangeMin > 0 ? rangeMin : "1") + "-" + 
-                      (rangeMax > 0 ? rangeMax : "65535"));
-        }
-        
-        // First check if the original port is in the valid range
-        int effectiveRangeMin = (rangeMin > 0) ? rangeMin : 1;
-        int effectiveRangeMax = (rangeMax > 0) ? rangeMax : 65535;
-        
-        boolean portInRange = (n.origSrcPort >= effectiveRangeMin && n.origSrcPort <= effectiveRangeMax);
-        if (debugger.tabNatDebug) {
-            if (!portInRange) {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is outside the valid range " + effectiveRangeMin + "-" + effectiveRangeMax);
-            } else {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is within the valid range " + effectiveRangeMin + "-" + effectiveRangeMax);
-            }
-        }
-        
-        // Then check if the original port is already in use
-        boolean portIsUsed = isPortInUse(n.newSrcAddr, n.origSrcPort, n.protocol);
-        if (debugger.tabNatDebug) {
-            if (portIsUsed) {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is already in use for " + n.newSrcAddr);
-            } else {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is available for " + n.newSrcAddr);
-            }
-        }
-        
-        // Keep the original port if it is in the valid range and not in use
-        if (portInRange && !portIsUsed) {
-            // Mark the original port as used
-            tabNatPortPoolManager.getInstance().markPortAsUsed(n.newSrcAddr, n.origSrcPort, n.protocol);
-            
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: SUCCESS - Keeping original port " + n.origSrcPort + 
-                          " for " + n.newSrcAddr);
-                logger.debug("Kept original port " + n.origSrcPort + " for " + n.newSrcAddr + 
-                           " (preserve original then sequential, sequence: " + sequence + ")");
-            }
-        
-            return n.origSrcPort;
-        }
-        
-        // If we get here, we cannot use the original port
-        if (debugger.tabNatDebug) {
-            logger.info("DEBUG-PRESERVE-ORIGINAL: Cannot use original port " + n.origSrcPort + 
-                      ", falling back to sequential allocation");
-        }
-        
-        // Sequential port allocation as fallback
-        int allocatedPort = allocatePortFromSequence(n.newSrcAddr, sequence, n.protocol, false);
-        
-        if (debugger.tabNatDebug) {
-            if (allocatedPort < 0) {
-                logger.error("DEBUG-PRESERVE-ORIGINAL: Sequential allocation FAILED for " + n.newSrcAddr);
-            } else {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Successfully allocated sequential port " + 
-                          allocatedPort + " for " + n.newSrcAddr);
-            }
-        }
-        
-        return allocatedPort;
-    }
-
-    /**
-     * Allocates a port using the PreserveOriginalThenRandom strategy
-     * Tries to keep original port if possible, otherwise allocates random port
-     * 
-     * @param n NAT translation entry
-     * @return allocated port number or -1 if failed
-     */
-    private int allocatePreserveOriginalThenRandomPort(tabNatTraN n) {
-        if (debugger.tabNatDebug) {
-            logger.info("DEBUG-PRESERVE-ORIGINAL: Starting port allocation with PreserveOriginalThenRandom");
-            logger.info("DEBUG-PRESERVE-ORIGINAL: Original port is " + n.origSrcPort + 
-                      ", valid range is " + (rangeMin > 0 ? rangeMin : "1") + "-" + 
-                      (rangeMax > 0 ? rangeMax : "65535"));
-        }
-        
-        // First check if the original port is in the valid range
-        int effectiveRangeMin = (rangeMin > 0) ? rangeMin : 1;
-        int effectiveRangeMax = (rangeMax > 0) ? rangeMax : 65535;
-        
-        boolean portInRange = (n.origSrcPort >= effectiveRangeMin && n.origSrcPort <= effectiveRangeMax);
-        if (debugger.tabNatDebug) {
-            if (!portInRange) {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is outside the valid range " + effectiveRangeMin + "-" + effectiveRangeMax);
-            } else {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is within the valid range " + effectiveRangeMin + "-" + effectiveRangeMax);
-            }
-        }
-        
-        // Then check if the original port is already in use
-        boolean portIsUsed = isPortInUse(n.newSrcAddr, n.origSrcPort, n.protocol);
-        if (debugger.tabNatDebug) {
-            if (portIsUsed) {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is already in use for " + n.newSrcAddr);
-            } else {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Original port " + n.origSrcPort + 
-                          " is available for " + n.newSrcAddr);
-            }
-        }
-        
-        // Keep the original port if it is in the valid range and not in use
-        if (portInRange && !portIsUsed) {
-            // Mark the original port as used
-            tabNatPortPoolManager.getInstance().markPortAsUsed(n.newSrcAddr, n.origSrcPort, n.protocol);
-            
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: SUCCESS - Keeping original port " + n.origSrcPort + 
-                          " for " + n.newSrcAddr);
-            }
-            
-            if (debugger.tabNatDebug) {
-                logger.debug("Kept original port " + n.origSrcPort + " for " + n.newSrcAddr + 
-                           " (preserve original then random, sequence: " + sequence + ")");
-            }
-            return n.origSrcPort;
-        }
-        
-        // If we get here, we cannot use the original port
-        if (debugger.tabNatDebug) {
-            logger.info("DEBUG-PRESERVE-ORIGINAL: Cannot use original port " + n.origSrcPort + 
-                      ", falling back to random allocation");
-        }
-        
-        // Random port allocation as fallback
-        int allocatedPort = allocatePortFromSequence(n.newSrcAddr, sequence, n.protocol, true);
-        
-        if (debugger.tabNatDebug) {
-            if (allocatedPort < 0) {
-                logger.error("DEBUG-PRESERVE-ORIGINAL: Random allocation FAILED for " + n.newSrcAddr);
-            } else {
-                logger.info("DEBUG-PRESERVE-ORIGINAL: Successfully allocated random port " + 
-                          allocatedPort + " for " + n.newSrcAddr);
-            }
-        }
-        
-        return allocatedPort;
-    }
-
-    /**
-     * Adds a new port range for a specific sequence number
-     * 
-     * @param srcAddr The source address
-     * @param sequenceNum The sequence number of the pool
-     */
-    private void addPortRangeForSequence(addrIP srcAddr, int sequenceNum) {
-        if (debugger.tabNatDebug) {
-            logger.info("DEBUG-NAT-POOL: Adding port range for " + srcAddr + " with sequence " + sequenceNum);
-        }
-        
-        tabNatPortPoolManager manager = tabNatPortPoolManager.getInstance();
-        
-        // If rangeMin and rangeMax are configured, we use these values
-        if (rangeMin > 0 && rangeMax > 0) {
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-NAT-POOL: Using configured range " + rangeMin + "-" + rangeMax);
-            }
-            
-            // Create pool with the specified sequence number
-            manager.createSubPool(srcAddr, rangeMin, rangeMax, sequenceNum);
-            
-        } else {
-            // If no ranges are configured, we use the default ranges
-            int defaultMinPort = 1;
-            int defaultMaxPort = 65535;
-
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-NAT-POOL: Using default range " + defaultMinPort + "-" + defaultMaxPort);
-            }
-            
-            // Create pool with the specified sequence number
-            manager.createSubPool(srcAddr, defaultMinPort, defaultMaxPort, sequenceNum);
-            
-        }
-        
-        // Debug log to verify if the pool was created
-        if (debugger.tabNatDebug) {
-            logger.info("DEBUG-NAT-POOL: Pool creation complete, checking if pool exists: " + 
-            manager.hasSubPool(srcAddr));
-        }
     }
 
     /**
@@ -1053,13 +552,6 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         n.newTrgAddr = pck.IPtrg.copyBytes();
         n.newSrcPort = pck.UDPsrc;
         n.newTrgPort = pck.UDPtrg;
-        
-        // Set reference to this NAT configuration to make sequence number available
-        n.natCfg = this;
-        
-        // Check if this is a trgport rule
-        boolean isTrgportRule = (origTrgPort >= 0 && protocol >= 0 && origSrcPort < 0);
-        
         if (mask == null) {
             if (newSrcAddr != null) {
                 n.newSrcAddr = newSrcAddr.copyBytes();
@@ -1086,161 +578,16 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (newTrgPort >= 0) {
             n.newTrgPort = newTrgPort;
         }
-        
-        // For trgport rules, create pool for the original destination IP (OrigDstIP)
-        if (isTrgportRule) {
-            // For trgport rules, we work with the origTrgAddr (public router IP)
-            if (n.protocol != icc.getProtoNum() && n.origSrcPort > 0 && origTrgAddr != null) {
-                // Create sub-pool for OrigDstIP with the specific sequence number
-                // If specific port ranges are configured, we use these
-                // Otherwise, we use the entire port range
-                int trgportMinPort = 1;  // For trgport rules, we use the full range
-                int trgportMaxPort = 65535;
-                
-                if (logTrans) {
-                    logger.debug("Creating port pool for original destination IP " + origTrgAddr + 
-                               " (trgport rule, sequence: " + sequence + ") with range " + 
-                               trgportMinPort + "-" + trgportMaxPort);
-                }
-                
-                tabNatPortPoolManager.getInstance().createSubPool(origTrgAddr, trgportMinPort, trgportMaxPort, sequence);
-                
-                // Check if the source port is already in use
-                if (!tabNatPortPoolManager.getInstance().isPortInUse(origTrgAddr, n.origSrcPort, n.protocol)) {
-                    // Mark the source port as used
-                    tabNatPortPoolManager.getInstance().markPortAsUsed(origTrgAddr, n.origSrcPort, n.protocol);
-                    
-                    if (logTrans) {
-                        logger.info("Marked source port " + n.origSrcPort + " as used for original destination IP " + 
-                                  origTrgAddr + " (trgport rule, sequence: " + sequence + ")");
-                    }
-                } else if (logTrans) {
-                    logger.info("Source port " + n.origSrcPort + " already in use for original destination IP " + 
-                              origTrgAddr + " (trgport rule, sequence: " + sequence + ")");
-                }
-            }
-            
-            n.logEnd = logTrans;
-            if (logTrans) {
-                logger.info("creating translation " + n);
-            }
+        if (rangeMin < 1) {
             return n;
         }
-        
-        // Skip ICMP protocol processing
+        if (rangeMax < 1) {
+            return n;
+        }
         if (n.protocol == icc.getProtoNum()) {
-            n.logEnd = logTrans;
-            if (logTrans) {
-                logger.info("creating icmp translation " + n);
-            }
             return n;
         }
-        
-        // Add debug logs to understand why no port allocation is taking place
-        if (debugger.tabNatDebug) {
-            logger.info("DEBUG-NAT: Checking port allocation conditions: protocol=" + n.protocol + 
-                      ", newSrcAddr=" + (n.newSrcAddr != null ? n.newSrcAddr.toString() : "null") +
-                      ", isReverseEntry=" + n.isReverseEntry + 
-                      ", newSrcPort=" + n.newSrcPort + 
-                      ", randMethod=" + randMethod);
-        }
-        
-        // Port allocation based on selected randomization method
-        if (n.protocol != icc.getProtoNum() && n.newSrcAddr != null && !n.isReverseEntry) {
-            // Log of the configured port range, important for debugging
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-NAT: Configured port range: " + 
-                          (rangeMin > 0 ? rangeMin : "default") + "-" + 
-                          (rangeMax > 0 ? rangeMax : "default"));
-            }
-            
-            // Determine the actual range to be used
-            int minPort = (rangeMin > 0) ? rangeMin : 1;
-            int maxPort = (rangeMax > 0) ? rangeMax : 65535;
-            
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-NAT: Creating pool for " + n.newSrcAddr + " with sequence " + sequence + 
-                          " and range " + minPort + "-" + maxPort);
-            }
-            
-            // Create pool with current sequence number and configured port limits
-            tabNatPortPoolManager.getInstance().createSubPool(n.newSrcAddr, minPort, maxPort, sequence);
-            
-            // Save the original port for logging purposes and possible fallbacks
-            int originalPort = n.newSrcPort;
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-NAT: Original port value: " + originalPort);
-            }
-            
-            // For all methods, always execute the correct allocation logic,
-            // regardless of whether the port is already set
-            
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-NAT: Applying port allocation strategy: " + randMethod);
-            }
-            
-            // Choose the corresponding allocation path depending on the method
-            if (randMethod == randomizeMethod.SequentialPortAllocation) {
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-NAT: Using SequentialPortAllocation strategy");
-                }
-                
-                // Allocate port sequentially
-                n.newSrcPort = tabNatPortPoolManager.getInstance().allocatePortFromSequence(
-                    n.newSrcAddr, n.protocol, sequence, false);
-            }
-            else if (randMethod == randomizeMethod.RandomPortAllocation) {
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-NAT: Using RandomPortAllocation strategy");
-                }
-                
-                // Randomly allocate port
-                n.newSrcPort = tabNatPortPoolManager.getInstance().allocatePortFromSequence(
-                    n.newSrcAddr, n.protocol, sequence, true);
-            }
-            else if (randMethod == randomizeMethod.PreserveOriginalThenSequential) {
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-NAT: Using PreserveOriginalThenSequential strategy");
-                }
-                
-                // Always use the specialized method
-                n.newSrcPort = allocatePreserveOriginalThenSequentialPort(n);
-            }
-            else if (randMethod == randomizeMethod.PreserveOriginalThenRandom) {
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-NAT: Using PreserveOriginalThenRandom strategy");
-                }
-                
-                // Always use the specialized method
-                n.newSrcPort = allocatePreserveOriginalThenRandomPort(n);
-            }
-            
-            // Check if the port allocation was successful
-            if (n.newSrcPort < 0) {
-                if (debugger.tabNatDebug) {
-                    logger.error("DEBUG-NAT: Port allocation FAILED for " + n.newSrcAddr + 
-                               " using " + randMethod + " strategy");
-                }
-                
-                // No fallback required - all methods have their own logic
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-NAT: No fallback attempted for " + randMethod + " - port allocation has failed");
-                }
-            } else {
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-NAT: Successfully allocated port " + n.newSrcPort + 
-                              " for " + n.newSrcAddr + " using " + randMethod + " strategy" + 
-                              (originalPort != n.newSrcPort ? " (original port was " + originalPort + ")" : ""));
-                }
-            }
-        } else if (debugger.tabNatDebug && n.isReverseEntry) {
-            logger.debug("Skipping port pool creation for reverse entry with IP " + n.newSrcAddr);
-        } else if (debugger.tabNatDebug) {
-            logger.info("DEBUG-NAT: Port allocation skipped: protocol match=" + (n.protocol == icc.getProtoNum()) + 
-                      ", newSrcAddr null=" + (n.newSrcAddr == null) + 
-                      ", isReverseEntry=" + n.isReverseEntry);
-        }
-
+        n.newSrcPort = bits.random(rangeMin, rangeMax);
         n.logEnd = logTrans;
         if (logTrans) {
             logger.info("creating translation " + n);

@@ -1,9 +1,7 @@
 package org.freertr.user;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIpx;
 import org.freertr.addr.addrPrefix;
@@ -122,8 +120,6 @@ import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabListingEntry;
-import org.freertr.tab.tabNatPortPoolManager;
-import org.freertr.tab.tabNatTraN;
 import org.freertr.tab.tabNshEntry;
 import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabQos;
@@ -5317,104 +5313,15 @@ public class userShow {
         }
         String a = cmd.word();
         if (a.equals("translations")) {
-            // Add column for sequence number and type (Initiator/Responder)
-            userFormat l = new userFormat("|", "seq|type|proto|source|target|source|target|age|last|timeout|pack|byte", "1|1|1|2original|2translated|5");
-            
-            // Create a list of already processed entries
-            List<tabNatTraN> processedEntries = new ArrayList<>();
-            
-            // Loop through all NAT entries
+            userFormat l = new userFormat("|", "proto|source|target|source|target|age|last|timeout|pack|byte", "1|2original|2translated|5");
             for (int i = 0; i < fwd.natTrns.size(); i++) {
-                tabNatTraN entry = fwd.natTrns.get(i);
-
-                // Skip if this entry has already been processed
-                if (processedEntries.contains(entry)) {
-                    continue;
-                }
-                
-                // Mark this entry as processed
-                processedEntries.add(entry);
-                
-                // Add this entry - we mark it as Responder "R" (originally forward entry)
-                String seqValue = "-";
-                if (entry.natCfg != null) {
-                    seqValue = String.valueOf(entry.natCfg.sequence);
-                }
-                l.add(seqValue + "|R|" + entry);
-                
-                // If this entry has a reverse entry, add it immediately after
-                if (entry.reverse != null && !processedEntries.contains(entry.reverse)) {
-                    // Mark the reverse entry as processed
-                    processedEntries.add(entry.reverse);
-                    
-                    // Add the reverse entry - we mark it as Initiator "I" (originally reverse entry)
-                    String reverseSeqValue = "-";
-                    if (entry.reverse.natCfg != null) {
-                        reverseSeqValue = String.valueOf(entry.reverse.natCfg.sequence);
-                    }
-                    l.add(reverseSeqValue + "|I|" + entry.reverse);
-                }
+                l.add("" + fwd.natTrns.get(i));
             }
-            
             rdr.putStrTab(l);
             return;
         }
         if (a.equals("statistics")) {
             rdr.putStrTab(fwd.natCfg.getStats(3));
-            return;
-        }
-        if (a.equals("hardware-counters")) {
-            userFormat l = new userFormat("|", "proto|src-addr|src-port|dst-addr|dst-port|sw-packs|sw-bytes|hw-packs|hw-bytes|total-packs|total-bytes", "1|1|1|1|1|1|1|1|1|1|1");
-            
-            for (int i = 0; i < fwd.natTrns.size(); i++) {
-                tabNatTraN entry = fwd.natTrns.get(i);
-                long[] stats = entry.getCombinedStats();
-                
-                l.add(entry.protocol + "|" + 
-                      entry.origSrcAddr + "|" + 
-                      entry.origSrcPort + "|" + 
-                      entry.origTrgAddr + "|" + 
-                      entry.origTrgPort + "|" + 
-                      stats[0] + "|" + 
-                      stats[1] + "|" + 
-                      stats[2] + "|" + 
-                      stats[3] + "|" + 
-                      stats[4] + "|" + 
-                      stats[5]);
-            }
-            
-            rdr.putStrTab(l);
-            return;
-        }
-        if (a.equals("port-pool-usage")) {
-            // Get all pool usages from tabNatPortPoolManager
-            Map<addrIP, String> poolUsages = tabNatPortPoolManager.getInstance().getAllPoolUsages();
-            if (poolUsages.isEmpty()) {
-                cmd.error("No NAT pools configured");
-                return;
-            }
-            // First display master pools summary
-            for (Map.Entry<addrIP, String> entry : poolUsages.entrySet()) {
-                if (entry.getKey() == null || entry.getKey().isEmpty()) {
-                    rdr.putStrArr(Arrays.asList(entry.getValue().split("\n")));
-                }
-            }
-            
-            // Show usage for all IP-specific sub pools
-            userFormat res = new userFormat("|", "address|sequence|range|tcp|udp|last tcp|last udp|total");
-            for (Map.Entry<addrIP, String> entry : poolUsages.entrySet()) {
-                if (entry.getKey() != null && !entry.getKey().isEmpty()) {
-                    String ipAddr = entry.getKey().toString();
-                    String[] lines = entry.getValue().split("\n");
-                    for (String line : lines) {
-                        if (!line.trim().isEmpty()) {
-                            res.add(ipAddr + "|" + line);
-                        }
-                    }
-                }
-            }
-            
-            rdr.putStrTab(res);
             return;
         }
         cmd.badCmd();

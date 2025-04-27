@@ -594,11 +594,6 @@ public class debugger {
     public static boolean tabListingEvnt = false;
 
     /**
-     * tabNat table events and debug logs
-     */
-    public static boolean tabNatDebug = false;
-
-    /**
      * clntIpInf commands
      */
     public static boolean clntIpInfo = false;
@@ -1229,7 +1224,6 @@ public class debugger {
         l.add(null, (b + 1) + " .        route             route table");
         l.add(null, (b + 1) + " .        label             label table");
         l.add(null, (b + 1) + " .        list              generic listing");
-        l.add(null, (b + 1) + " .        nat               nat table");
         l.add(null, (b + 0) + " " + (b + 1) + "      client              protocol clients");
         l.add(null, (b + 1) + " .        ntp               network time protocol");
         l.add(null, (b + 1) + " .        sip               session initiation protocol");
@@ -1943,10 +1937,6 @@ public class debugger {
             }
             if (s.equals("list")) {
                 tabListingEvnt = v;
-                return false;
-            }
-            if (s.equals("nat")) {
-                tabNatDebug = v;
                 return false;
             }
             return true;
