@@ -827,12 +827,12 @@ public class userClear {
                 }
                 for (int i = vrf.fwd4.natTrns.size() - 1; i >= 0; i--) {
                     tabNatTraN ntry = vrf.fwd4.natTrns.get(i);
-                    if (ntry != null) {
-                        ntry.releaseResources();
-
-                        if (ntry.logEnd) {
-                            logger.info("removing translation " + ntry);
-                        }
+                    if (ntry == null) {
+                        continue;
+                    }
+                    ntry.releaseResources(vrf.fwd4.natPrts);
+                    if (ntry.logEnd) {
+                        logger.info("removing translation " + ntry);
                     }
                 }
                 vrf.fwd4.natTrns.clear();
@@ -964,12 +964,12 @@ public class userClear {
                 }
                 for (int i = vrf.fwd6.natTrns.size() - 1; i >= 0; i--) {
                     tabNatTraN ntry = vrf.fwd6.natTrns.get(i);
-                    if (ntry != null) {
-                        ntry.releaseResources();
-
-                        if (ntry.logEnd) {
-                            logger.info("removing translation " + ntry);
-                        }
+                    if (ntry == null) {
+                        continue;
+                    }
+                    ntry.releaseResources(vrf.fwd6.natPrts);
+                    if (ntry.logEnd) {
+                        logger.info("removing translation " + ntry);
                     }
                 }
                 vrf.fwd6.natTrns.clear();

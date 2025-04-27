@@ -248,11 +248,12 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
     /**
      * release resources when the NAT translation is removed This is called when
      * a NAT translation expires or is manually cleared
+     * 
+     * @param prt ports manager
      */
-    public void releaseResources() {
+    public void releaseResources(tabNatPort prt) {
         // Release allocated ports back to the pool if needed
         if (protocol == prtTcp.protoNum || protocol == prtUdp.protoNum) {
-            tabNatPortPoolManager poolManager = tabNatPortPoolManager.getInstance();
 
             // Detailed debug information for troubleshooting
             if (debugger.tabNatDebug) {
@@ -267,15 +268,15 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
             }
 
             // 1. Check and release newSrcPort in the pool of newSrcAddr by default
-            if (newSrcAddr != null && newSrcPort > 0 && poolManager.hasSubPool(newSrcAddr)) {
+            if (newSrcAddr != null && newSrcPort > 0 && prt.hasSubPool(newSrcAddr)) {
                 if (debugger.tabNatDebug) {
                     logger.info("DEBUG-RELEASE: Checking if need to release newSrcPort=" + newSrcPort
                             + " for newSrcAddr=" + newSrcAddr);
                 }
 
                 // Check if the port is actually marked in the pool
-                if (poolManager.isPortInUse(newSrcAddr, newSrcPort, protocol)) {
-                    poolManager.releasePort(newSrcAddr, newSrcPort, protocol);
+                if (prt.isPortInUse(newSrcAddr, newSrcPort, protocol)) {
+                    prt.releasePort(newSrcAddr, newSrcPort, protocol);
 
                     if (debugger.tabNatDebug) {
                         logger.info("DEBUG-RELEASE: Released port " + newSrcPort
@@ -285,15 +286,15 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
             }
 
             // 2. For trgport rules, the source port (origSrcPort) in the pool of the destination address (origTrgAddr) must be released
-            if (origTrgAddr != null && origSrcPort > 0 && poolManager.hasSubPool(origTrgAddr)) {
+            if (origTrgAddr != null && origSrcPort > 0 && prt.hasSubPool(origTrgAddr)) {
                 if (debugger.tabNatDebug) {
                     logger.info("DEBUG-RELEASE: Checking if need to release origSrcPort=" + origSrcPort
                             + " for origTrgAddr=" + origTrgAddr + " (potential trgport rule)");
                 }
 
                 // Check if the port is actually marked in the pool
-                if (poolManager.isPortInUse(origTrgAddr, origSrcPort, protocol)) {
-                    poolManager.releasePort(origTrgAddr, origSrcPort, protocol);
+                if (prt.isPortInUse(origTrgAddr, origSrcPort, protocol)) {
+                    prt.releasePort(origTrgAddr, origSrcPort, protocol);
 
                     if (debugger.tabNatDebug) {
                         logger.info("DEBUG-RELEASE: Released port " + origSrcPort

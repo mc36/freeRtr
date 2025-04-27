@@ -122,7 +122,7 @@ import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabListingEntry;
-import org.freertr.tab.tabNatPortPoolManager;
+import org.freertr.tab.tabNatPort;
 import org.freertr.tab.tabNatTraN;
 import org.freertr.tab.tabNshEntry;
 import org.freertr.tab.tabPrfxlstN;
@@ -5386,7 +5386,7 @@ public class userShow {
         }
         if (a.equals("port-pool-usage")) {
             // Get all pool usages from tabNatPortPoolManager
-            Map<addrIP, String> poolUsages = tabNatPortPoolManager.getInstance().getAllPoolUsages();
+            Map<addrIP, String> poolUsages = fwd.natPrts.getAllPoolUsages();
             if (poolUsages.isEmpty()) {
                 cmd.error("No NAT pools configured");
                 return;

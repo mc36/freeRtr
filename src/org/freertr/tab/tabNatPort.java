@@ -16,10 +16,7 @@ import org.freertr.util.debugger;
  * Singleton class for central management of NAT port pools Each IP address has
  * its own independent port pool
  */
-public class tabNatPortPoolManager {
-
-    // Singleton instance
-    private final static tabNatPortPoolManager INSTANCE = new tabNatPortPoolManager();
+public class tabNatPort {
 
     // Map of IP addresses to their independent master pools
     private final Map<String, MasterPortPool> masterPools;
@@ -46,21 +43,12 @@ public class tabNatPortPoolManager {
     }
 
     /**
-     * Private constructor for singleton pattern
+     * create instance
      */
-    private tabNatPortPoolManager() {
+    public tabNatPort() {
         masterPools = new HashMap<>();
         subPools = new HashMap<>();
         ipToSubPoolsMap = new HashMap<>();
-    }
-
-    /**
-     * Get the singleton instance of the tabNatPortPoolManager
-     *
-     * @return The tabNatPortPoolManager instance
-     */
-    public static tabNatPortPoolManager getInstance() {
-        return INSTANCE;
     }
 
     /**
