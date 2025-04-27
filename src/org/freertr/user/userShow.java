@@ -5364,8 +5364,7 @@ public class userShow {
             return;
         }
         if (a.equals("hardware-counters")) {
-            userFormat l = new userFormat("|", "proto|src-addr|src-port|dst-addr|dst-port|sw-packs|sw-bytes|hw-packs|hw-bytes|total-packs|total-bytes", "1|1|1|1|1|1|1|1|1|1|1");
-
+            userFormat l = new userFormat("|", "proto|addr|port|addr|port|packs|bytes|packs|bytes|packs|bytes","1|2src|2dest|2sw|2hw|2total");
             for (int i = 0; i < fwd.natTrns.size(); i++) {
                 tabNatTraN entry = fwd.natTrns.get(i);
                 long[] stats = entry.getCombinedStats();
@@ -5382,7 +5381,6 @@ public class userShow {
                         + stats[4] + "|"
                         + stats[5]);
             }
-
             rdr.putStrTab(l);
             return;
         }
