@@ -15,6 +15,8 @@ import org.freertr.util.debugger;
 /**
  * Singleton class for central management of NAT port pools Each IP address has
  * its own independent port pool
+ *
+ * @author takalele
  */
 public class tabNatPort {
 
@@ -394,6 +396,11 @@ public class tabNatPort {
 
     /**
      * Create a sub-pool for an IP address with a specific port range
+     *
+     * @param addr The IP address
+     * @param minPort minimum port
+     * @param maxPort maximum port
+     * @param sequence sequence
      */
     public void createSubPool(addrIP addr, int minPort, int maxPort, int sequence) {
         lock.lock();
@@ -434,15 +441,6 @@ public class tabNatPort {
     }
 
     /**
-     * Create a sub-pool for an IP address with a specific port range (default
-     * sequence 1000)
-     */
-    public void createSubPool(addrIP addr, int minPort, int maxPort) {
-        // Default sequence number 1000
-        createSubPool(addr, minPort, maxPort, 1000);
-    }
-
-    /**
      * Get the highest priority (lowest sequence) sub-pool for an IP
      *
      * @param ipAddr IP address
@@ -459,6 +457,11 @@ public class tabNatPort {
 
     /**
      * Allocate a port from the highest priority sub-pool
+     *
+     * @param addr IP address
+     * @param protocol IP protocol
+     * @param useRandomAllocation port allocation method
+     * @return port number, -1 on error
      */
     public int allocatePort(addrIP addr, int protocol, boolean useRandomAllocation) {
         lock.lock();
@@ -501,6 +504,10 @@ public class tabNatPort {
 
     /**
      * Release a port in all sub-pools for an IP address
+     *
+     * @param addr IP address
+     * @param port port number
+     * @param protocol IP protocol
      */
     public void releasePort(addrIP addr, int port, int protocol) {
         lock.lock();
@@ -529,6 +536,11 @@ public class tabNatPort {
 
     /**
      * Check if a specific port is already in use
+     *
+     * @param addr IP address
+     * @param port port number
+     * @param protocol IP protocol
+     * @return true if yes, false if not
      */
     public boolean isPortInUse(addrIP addr, int port, int protocol) {
         lock.lock();
@@ -547,6 +559,9 @@ public class tabNatPort {
 
     /**
      * Get usage statistics for all sub-pools of an IP
+     *
+     * @param addr IP address
+     * @return statistics
      */
     public String getPoolUsage(addrIP addr) {
         lock.lock();
@@ -579,6 +594,9 @@ public class tabNatPort {
 
     /**
      * Check if any sub-pool exists for an address
+     *
+     * @param addr IP address
+     * @return true if yes, false if not
      */
     public boolean hasSubPool(addrIP addr) {
         lock.lock();
@@ -593,6 +611,8 @@ public class tabNatPort {
 
     /**
      * Remove all sub-pools for an IP address
+     *
+     * @param addr IP address
      */
     public void removeSubPool(addrIP addr) {
         lock.lock();
@@ -623,6 +643,8 @@ public class tabNatPort {
 
     /**
      * Get all defined sub-pools
+     *
+     * @return statistics
      */
     public Map<addrIP, String> getAllPoolUsages() {
         lock.lock();
@@ -938,4 +960,5 @@ public class tabNatPort {
             lock.unlock();
         }
     }
+
 }

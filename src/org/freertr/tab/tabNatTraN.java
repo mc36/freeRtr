@@ -248,7 +248,7 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
     /**
      * release resources when the NAT translation is removed This is called when
      * a NAT translation expires or is manually cleared
-     * 
+     *
      * @param prt ports manager
      */
     public void releaseResources(tabNatPort prt) {
