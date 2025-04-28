@@ -56,7 +56,6 @@ import org.freertr.rtr.rtrRip6neigh;
 import org.freertr.serv.servBmp2mrt;
 import org.freertr.serv.servP4lang;
 import org.freertr.tab.tabRouteAttr;
-import org.freertr.tab.tabNatTraN;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.enc.encXml;
@@ -825,16 +824,6 @@ public class userClear {
                     cmd.error("no such vrf");
                     return null;
                 }
-                for (int i = vrf.fwd4.natTrns.size() - 1; i >= 0; i--) {
-                    tabNatTraN ntry = vrf.fwd4.natTrns.get(i);
-                    if (ntry == null) {
-                        continue;
-                    }
-                    ntry.releaseResources(vrf.fwd4.natPrts);
-                    if (ntry.logEnd) {
-                        logger.info("removing translation " + ntry);
-                    }
-                }
                 vrf.fwd4.natTrns.clear();
                 return null;
             }
@@ -961,16 +950,6 @@ public class userClear {
                 if (vrf == null) {
                     cmd.error("no such vrf");
                     return null;
-                }
-                for (int i = vrf.fwd6.natTrns.size() - 1; i >= 0; i--) {
-                    tabNatTraN ntry = vrf.fwd6.natTrns.get(i);
-                    if (ntry == null) {
-                        continue;
-                    }
-                    ntry.releaseResources(vrf.fwd6.natPrts);
-                    if (ntry.logEnd) {
-                        logger.info("removing translation " + ntry);
-                    }
                 }
                 vrf.fwd6.natTrns.clear();
                 return null;

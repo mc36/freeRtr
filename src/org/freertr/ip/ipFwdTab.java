@@ -476,10 +476,6 @@ public class ipFwdTab {
             if ((tim - ntry.lastUsed) < ntry.timeout) {
                 continue;
             }
-            ntry.releaseResources(lower.natPrts);
-            if (ntry.reverse != null) {
-                ntry.reverse.releaseResources(lower.natPrts);
-            }
             lower.natTrns.del(ntry);
             lower.natTrns.del(ntry.reverse);
             if (ntry.logEnd) {

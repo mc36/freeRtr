@@ -399,8 +399,6 @@ public class userExec {
         hl.add(null, "4 5          <name:vrf>             name of routing table");
         hl.add(null, "5 .            statistics           list of configuration entries");
         hl.add(null, "5 .            translations         list of translation entries");
-        hl.add(null, "5 .            port-pool-usage      nat port pool usage");
-        hl.add(null, "5 .            hardware-counters     combined hardware and software counters");
         hl.add(null, "3 4        sockets                  socket table entries");
         hl.add(null, "4 .          <name:vrf>             name of routing table");
         hl.add(null, "3 4        bfd                      bidirectional forwarding detection protocol");

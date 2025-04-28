@@ -1,13 +1,13 @@
 package org.freertr.tab;
 
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgAll;
 import org.freertr.pack.packHolder;
+import org.freertr.prt.prtLudp;
 import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
-import org.freertr.util.logger;
-import org.freertr.util.debugger;
 
 /**
  * represents one nat entry (source/target, orig/new)
@@ -103,17 +103,6 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
     public boolean logEnd;
 
     /**
-     * Indicates if this is a reverse entry (for external connections) Used to
-     * prevent port pool creation for external IPs
-     */
-    public boolean isReverseEntry = false;
-
-    /**
-     * NAT configuration for this translation
-     */
-    public tabNatCfgN natCfg;
-
-    /**
      * reverse entry
      *
      * @return entry reversed
@@ -133,26 +122,46 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
         n.newTrgPort = origSrcPort;
         n.newSrcPort = origTrgPort;
         n.reverse = this;
-        n.isReverseEntry = true;
-        n.natCfg = this.natCfg;
         reverse = n;
         return n;
     }
 
-    public String toString() {
-        String packStr = "" + cntr.packRx;
-        String byteStr = "" + cntr.byteRx;
+    /**
+     * pick random port
+     *
+     * @param n reverse sentry
+     */
+    public void pickRandomPort(tabNatTraN n) {
+        newSrcPort = bits.random(cfgAll.tcpRangeMin, cfgAll.tcpRangeMax);
+        n.origTrgPort = newSrcPort;
+    }
 
-        if (hwCntr != null) {
-            packStr += "+" + hwCntr.packRx;
-            byteStr += "+" + hwCntr.byteRx;
+    /**
+     * check if duplicate check needed
+     *
+     * @return true if yes, false if not
+     */
+    public boolean needDuplicateCheck() {
+        if (protocol == prtTcp.protoNum) {
+            return true;
         }
+        if (protocol == prtUdp.protoNum) {
+            return true;
+        }
+        if (protocol == prtLudp.protoNum) {
+            return true;
+        }
+        return false;
+    }
 
-        // Don't display sequence number from natCfg as part of the target anymore
-        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|"
-                + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|"
-                + bits.timePast(created) + "|" + bits.timePast(lastUsed) + "|"
-                + bits.timeDump(timeout / 1000) + "|" + packStr + "|" + byteStr;
+    public String toString() {
+        String a = "";
+        String s = "";
+        if (hwCntr != null) {
+            a = "+" + hwCntr.packRx;
+            s = "+" + hwCntr.byteRx;
+        }
+        return protocol + "|" + origSrcAddr + " " + origSrcPort + "|" + origTrgAddr + " " + origTrgPort + "|" + newSrcAddr + " " + newSrcPort + "|" + newTrgAddr + " " + newTrgPort + "|" + bits.timePast(created) + "|" + bits.timePast(lastUsed) + "|" + bits.timeDump(timeout / 1000) + "|" + cntr.packRx + a + "|" + cntr.byteRx + s;
     }
 
     public int compareTo(tabNatTraN o) {
@@ -243,92 +252,6 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
         pck.UDPtrg = newSrcPort;
         pck.UDPsrc = newTrgPort;
         pck.INTupper = -1;
-    }
-
-    /**
-     * release resources when the NAT translation is removed This is called when
-     * a NAT translation expires or is manually cleared
-     *
-     * @param prt ports manager
-     */
-    public void releaseResources(tabNatPort prt) {
-        // Release allocated ports back to the pool if needed
-        if (protocol == prtTcp.protoNum || protocol == prtUdp.protoNum) {
-
-            // Detailed debug information for troubleshooting
-            if (debugger.tabNatDebug) {
-                logger.info("DEBUG-RELEASE: Starting resource cleanup for NAT entry: "
-                        + "protocol=" + protocol
-                        + ", origSrcAddr=" + origSrcAddr
-                        + ", origSrcPort=" + origSrcPort
-                        + ", origTrgAddr=" + origTrgAddr
-                        + ", origTrgPort=" + origTrgPort
-                        + ", newSrcAddr=" + newSrcAddr
-                        + ", newSrcPort=" + newSrcPort);
-            }
-
-            // 1. Check and release newSrcPort in the pool of newSrcAddr by default
-            if (newSrcAddr != null && newSrcPort > 0 && prt.hasSubPool(newSrcAddr)) {
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-RELEASE: Checking if need to release newSrcPort=" + newSrcPort
-                            + " for newSrcAddr=" + newSrcAddr);
-                }
-
-                // Check if the port is actually marked in the pool
-                if (prt.isPortInUse(newSrcAddr, newSrcPort, protocol)) {
-                    prt.releasePort(newSrcAddr, newSrcPort, protocol);
-
-                    if (debugger.tabNatDebug) {
-                        logger.info("DEBUG-RELEASE: Released port " + newSrcPort
-                                + " for " + newSrcAddr + " (protocol: " + protocol + ")");
-                    }
-                }
-            }
-
-            // 2. For trgport rules, the source port (origSrcPort) in the pool of the destination address (origTrgAddr) must be released
-            if (origTrgAddr != null && origSrcPort > 0 && prt.hasSubPool(origTrgAddr)) {
-                if (debugger.tabNatDebug) {
-                    logger.info("DEBUG-RELEASE: Checking if need to release origSrcPort=" + origSrcPort
-                            + " for origTrgAddr=" + origTrgAddr + " (potential trgport rule)");
-                }
-
-                // Check if the port is actually marked in the pool
-                if (prt.isPortInUse(origTrgAddr, origSrcPort, protocol)) {
-                    prt.releasePort(origTrgAddr, origSrcPort, protocol);
-
-                    if (debugger.tabNatDebug) {
-                        logger.info("DEBUG-RELEASE: Released port " + origSrcPort
-                                + " for " + origTrgAddr + " (trgport rule, protocol: " + protocol + ")");
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Get combined stats for both software and hardware counters
-     *
-     * @return Array with [sw_packets, sw_bytes, hw_packets, hw_bytes,
-     * total_packets, total_bytes]
-     */
-    public long[] getCombinedStats() {
-        long[] stats = new long[6];
-
-        // Software counters
-        stats[0] = cntr.packRx;
-        stats[1] = cntr.byteRx;
-
-        // Hardware counters
-        if (hwCntr != null) {
-            stats[2] = hwCntr.packRx;
-            stats[3] = hwCntr.byteRx;
-        }
-
-        // Totals
-        stats[4] = stats[0] + stats[2];
-        stats[5] = stats[1] + stats[3];
-
-        return stats;
     }
 
 }

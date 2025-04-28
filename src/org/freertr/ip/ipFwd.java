@@ -24,7 +24,6 @@ import org.freertr.tab.tabLabelDup;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabNatCfgN;
-import org.freertr.tab.tabNatPort;
 import org.freertr.tab.tabNatTraN;
 import org.freertr.tab.tabPbrN;
 import org.freertr.tab.tabPrfxlstN;
@@ -255,11 +254,6 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * current nat entries
      */
     public final tabGen<tabNatTraN> natTrns;
-
-    /**
-     * current nat ports
-     */
-    public final tabNatPort natPrts;
 
     /**
      * current echo sessions
@@ -620,7 +614,6 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         staticU = new tabGen<ipFwdRoute>();
         staticM = new tabGen<ipFwdRoute>();
         natTrns = new tabGen<tabNatTraN>();
-        natPrts = new tabNatPort();
         pbrCfg = new tabListing<tabPbrN, addrIP>();
         pbrCfg.myCor = ipCore;
         pbrCfg.myIcmp = icc;
@@ -2169,8 +2162,22 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
                             return;
                         }
                     }
-                    natT = natC.createEntry(pck, icmpCore, natPrts);
+                    natT = natC.createEntry(pck, icmpCore);
                     tabNatTraN natR = natT.reverseEntry();
+                    if (natT.needDuplicateCheck()) {
+                        boolean ok = true;
+                        for (int i = 0; i < 16; i++) {
+                            ok = (natTrns.find(natT) == null) && (natTrns.find(natR) == null);
+                            if (ok) {
+                                break;
+                            }
+                            natT.pickRandomPort(natR);
+                        }
+                        if (!ok) {
+                            cntrT.drop(pck, counter.reasons.notInTab);
+                            return;
+                        }
+                    }
                     natTrns.add(natT);
                     natTrns.add(natR);
                     natT.updatePack(pck);

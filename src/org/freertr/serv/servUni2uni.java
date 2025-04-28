@@ -280,7 +280,7 @@ public class servUni2uni extends servGeneric implements prtServP {
         }
         ipFwd fwd = srvVrf.getFwd(id.peerAddr);
         tabNatCfgN natC = new tabNatCfgN();
-        tabNatTraN natT = natC.createEntry(pck, fwd.icmpCore, fwd.natPrts);
+        tabNatTraN natT = natC.createEntry(pck, fwd.icmpCore);
         natT.newSrcAddr = src.copyBytes();
         if (sourceP == -1) {
             natT.newSrcPort = bits.random(0xe000, 0xf000);
