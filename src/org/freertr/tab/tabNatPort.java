@@ -1,7 +1,9 @@
 package org.freertr.tab;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.freertr.addr.addrIP;
@@ -11,7 +13,8 @@ import org.freertr.util.logger;
 import org.freertr.util.debugger;
 
 /**
- * central management of NAT port pools Each IP address has its own independent port pool
+ * central management of NAT port pools Each IP address has its own independent
+ * port pool
  *
  * @author takalele
  */
@@ -26,17 +29,6 @@ public class tabNatPort {
     // Map of IP addresses to a sorted map of sequence numbers to sub-pools
     // Used to quickly find all sub-pools for an IP and determine the highest priority one
     private final Map<String, TreeMap<Integer, SubPortPool>> ipToSubPoolsMap;
-
-    /**
-     * Create a composite key for the subPools map
-     *
-     * @param ipAddr IP address
-     * @param sequence Sequence number
-     * @return Composite key
-     */
-    private String createCompositeKey(String ipAddr, int sequence) {
-        return ipAddr + ":" + sequence;
-    }
 
     /**
      * create instance
@@ -398,7 +390,7 @@ public class tabNatPort {
      */
     public synchronized void createSubPool(addrIP addr, int minPort, int maxPort, int sequence) {
         String ipKey = "" + addr;
-        String compositeKey = createCompositeKey(ipKey, sequence);
+        String compositeKey = ipKey + "-" + sequence;
 
         // Ensure we have a master pool for this IP
         getMasterPool(addr);
@@ -544,42 +536,32 @@ public class tabNatPort {
     }
 
     /**
+     * Get master defined sub-pools
+     *
+     * @return statistics
+     */
+    public synchronized List<String> getMasterPoolUsages() {
+        List<String> result = new ArrayList<String>();
+        for (Map.Entry<String, MasterPortPool> entry : masterPools.entrySet()) {
+            result.add(entry.getKey() + "|" + entry.getValue().getUsageStatistics());
+        }
+        return result;
+    }
+
+    /**
      * Get all defined sub-pools
      *
      * @return statistics
      */
-    public synchronized Map<addrIP, String> getAllPoolUsages() {
-        Map<addrIP, String> result = new HashMap<>();
-
-        // Add master pools summary
-        addrIP masterKey = new addrIP(); // Empty/dummy IP for master pool summary
-        StringBuilder masterPoolSummary = new StringBuilder("MASTER POOLS:\n");
-        for (Map.Entry<String, MasterPortPool> entry : masterPools.entrySet()) {
-            masterPoolSummary.append(entry.getKey())
-                    .append(": ")
-                    .append(entry.getValue().getUsageStatistics())
-                    .append("\n");
-        }
-        result.put(masterKey, "" + masterPoolSummary);
-
-        // Add sub-pools by IP
+    public synchronized List<String> getAllPoolUsages() {
+        List<String> result = new ArrayList<String>();
         for (Map.Entry<String, TreeMap<Integer, SubPortPool>> entry : ipToSubPoolsMap.entrySet()) {
             String ipKey = entry.getKey();
             TreeMap<Integer, SubPortPool> subPoolsForIp = entry.getValue();
-
-            // Create a new addrIP to represent this pool's owner in the result map
-            addrIP poolAddr = new addrIP();
-            poolAddr.fromString(ipKey);
-
-            StringBuilder sb = new StringBuilder();
-
             for (SubPortPool pool : subPoolsForIp.values()) {
-                sb.append(pool.getUsageStatistics()).append("\n");
+                result.add(ipKey + "|" + pool.getUsageStatistics());
             }
-
-            result.put(poolAddr, "" + sb);
         }
-
         return result;
     }
 

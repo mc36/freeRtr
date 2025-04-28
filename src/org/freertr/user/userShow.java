@@ -5364,7 +5364,7 @@ public class userShow {
             return;
         }
         if (a.equals("hardware-counters")) {
-            userFormat l = new userFormat("|", "proto|addr|port|addr|port|packs|bytes|packs|bytes|packs|bytes","1|2src|2dest|2sw|2hw|2total");
+            userFormat l = new userFormat("|", "proto|addr|port|addr|port|packs|bytes|packs|bytes|packs|bytes", "1|2src|2dest|2sw|2hw|2total");
             for (int i = 0; i < fwd.natTrns.size(); i++) {
                 tabNatTraN entry = fwd.natTrns.get(i);
                 long[] stats = entry.getCombinedStats();
@@ -5385,33 +5385,11 @@ public class userShow {
             return;
         }
         if (a.equals("port-pool-usage")) {
-            // Get all pool usages from tabNatPortPoolManager
-            Map<addrIP, String> poolUsages = fwd.natPrts.getAllPoolUsages();
-            if (poolUsages.isEmpty()) {
-                cmd.error("No NAT pools configured");
-                return;
-            }
-            // First display master pools summary
-            for (Map.Entry<addrIP, String> entry : poolUsages.entrySet()) {
-                if (entry.getKey() == null || entry.getKey().isEmpty()) {
-                    rdr.putStrArr(Arrays.asList(entry.getValue().split("\n")));
-                }
-            }
-
-            // Show usage for all IP-specific sub pools
-            userFormat res = new userFormat("|", "address|sequence|range|tcp|udp|last tcp|last udp|total");
-            for (Map.Entry<addrIP, String> entry : poolUsages.entrySet()) {
-                if (entry.getKey() != null && !entry.getKey().isEmpty()) {
-                    String ipAddr = "" + entry.getKey();
-                    String[] lines = entry.getValue().split("\n");
-                    for (String line : lines) {
-                        if (!line.trim().isEmpty()) {
-                            res.add(ipAddr + "|" + line);
-                        }
-                    }
-                }
-            }
-
+            userFormat res = new userFormat("|", "address|range|tcp|udp|total");
+            res.add(fwd.natPrts.getMasterPoolUsages());
+            rdr.putStrTab(res);
+            res = new userFormat("|", "address|sequence|range|tcp|udp|last tcp|last udp|total");
+            res.add(fwd.natPrts.getAllPoolUsages());
             rdr.putStrTab(res);
             return;
         }
