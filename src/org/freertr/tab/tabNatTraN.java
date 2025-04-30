@@ -3,7 +3,9 @@ package org.freertr.tab;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.pack.packHolder;
+import org.freertr.prt.prtDccp;
 import org.freertr.prt.prtLudp;
+import org.freertr.prt.prtSctp;
 import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
 import org.freertr.util.bits;
@@ -142,16 +144,16 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
      * @return true if yes, false if not
      */
     public boolean needDuplicateCheck() {
-        if (protocol == prtTcp.protoNum) {
-            return true;
+        switch (protocol) {
+            case prtTcp.protoNum:
+            case prtUdp.protoNum:
+            case prtLudp.protoNum:
+            case prtSctp.protoNum:
+            case prtDccp.protoNum:
+                return true;
+            default:
+                return false;
         }
-        if (protocol == prtUdp.protoNum) {
-            return true;
-        }
-        if (protocol == prtLudp.protoNum) {
-            return true;
-        }
-        return false;
     }
 
     public String toString() {
