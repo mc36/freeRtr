@@ -24,6 +24,7 @@ import org.freertr.clnt.clntNrpe;
 import org.freertr.clnt.clntNtp;
 import org.freertr.clnt.clntPcep;
 import org.freertr.clnt.clntPmtud;
+import org.freertr.clnt.clntPorts;
 import org.freertr.clnt.clntProxy;
 import org.freertr.clnt.clntRis;
 import org.freertr.clnt.clntSmtp;
@@ -137,6 +138,97 @@ public class userPacket {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.pckt, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("portscan")) {
+            String rem = cmd.word();
+            int prt = bits.str2num(cmd.word());
+            cfgVrf vrf = cfgAll.getClntVrf();
+            cfgIfc ifc = cfgAll.getClntIfc();
+            int timeout = 1000;
+            int min = 1024;
+            int max = 2048;
+            int ttl = -1;
+            int tos = -1;
+            int proto = 0;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("vrf")) {
+                    vrf = cfgAll.vrfFind(cmd.word(), false);
+                    ifc = null;
+                    continue;
+                }
+                if (a.equals("source")) {
+                    ifc = cfgAll.ifcFind(cmd.word(), 0);
+                    continue;
+                }
+                if (a.equals("ipv4")) {
+                    proto = 4;
+                    continue;
+                }
+                if (a.equals("ipv6")) {
+                    proto = 6;
+                    continue;
+                }
+                if (a.equals("timeout")) {
+                    timeout = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("min")) {
+                    min = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("max")) {
+                    max = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("ttl")) {
+                    ttl = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("tos")) {
+                    tos = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            if (vrf == null) {
+                cmd.error("vrf not specified");
+                return null;
+            }
+            userTerminal trm = new userTerminal(cmd.pipe);
+            addrIP trg = trm.resolveAddr(rem, proto);
+            if (trg == null) {
+                return null;
+            }
+            if (timeout < 1) {
+                timeout = 1;
+            }
+            addrIP src = null;
+            if (ifc != null) {
+                src = ifc.getLocAddr(trg);
+            }
+            clntPorts trc = new clntPorts();
+            trc.vrf = vrf;
+            trc.ifc = ifc;
+            trc.trg = trg;
+            trc.ttl = ttl;
+            trc.tos = tos;
+            trc.tim = timeout;
+            cmd.pipe.linePut("scanning " + trg + " " + prt + ", src=" + src + ", vrf=" + vrf.name + ", ttl=" + ttl + ", tos=" + tos + ", ran=" + min + ".." + max + ", tim=" + timeout);
+            for (int i = min; i < max; i++) {
+                if (need2stop()) {
+                    break;
+                }
+                cmd.pipe.strPut("" + i);
+                cmd.pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
+                if (trc.testOne(i, prt)) {
+                    continue;
+                }
+                cmd.pipe.linePut("open from " + i);
+            }
+            return null;
         }
         if (a.equals("txt2sum")) {
             a = cmd.word();

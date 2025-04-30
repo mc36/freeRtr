@@ -1922,6 +1922,10 @@ public class userExec {
         hl.add(null, "4 3,.        <num>                    port number");
         hl.add(null, "3 4        max                        specify upper port number");
         hl.add(null, "4 3,.        <num>                    port number");
+        hl.add(null, "3 4        ttl                        specify ttl number");
+        hl.add(null, "4 3,.        <num>                    ttl number");
+        hl.add(null, "3 4        tos                        specify tos number");
+        hl.add(null, "4 3,.        <num>                    tos number");
         hl.add(null, "1 2    lookup                         domain name lookup");
         hl.add(null, "2 3      ipv4                         ipv4 address record");
         hl.add(null, "2 3      ipv6                         ipv6 address record");
@@ -2376,6 +2380,25 @@ public class userExec {
         hl.add(null, "2 3      line                         access physical line");
         hl.add(null, "3 .        <name:lin>                 name of line");
         hl.add(null, "1 2    packet                         packet related things");
+        hl.add(null, "2 3      portscan                     scan port on remote");
+        hl.add(null, "3 4        <host>                     name of host");
+        hl.add(null, "4 5,.        <port>                   port on host");
+        hl.add(null, "5 5,.          ipv4                   specify ipv4 to use");
+        hl.add(null, "5 5,.          ipv6                   specify ipv6 to use");
+        hl.add(null, "5 6            vrf                    specify vrf to use");
+        hl.add(null, "6 5,.            <name:vrf>           name of vrf");
+        hl.add(null, "5 6            source                 specify interface to use");
+        hl.add(null, "6 5,.            <name:ifc>           name of interface");
+        hl.add(null, "5 6            timeout                specify timeout");
+        hl.add(null, "6 5,.            <num>                timeout in milliseconds");
+        hl.add(null, "5 6            min                    specify lower port number");
+        hl.add(null, "6 5,.            <num>                port number");
+        hl.add(null, "5 6            max                    specify upper port number");
+        hl.add(null, "6 5,.            <num>                port number");
+        hl.add(null, "5 6            ttl                    specify ttl number");
+        hl.add(null, "6 5,.            <num>                ttl number");
+        hl.add(null, "5 6            tos                    specify tos number");
+        hl.add(null, "6 5,.            <num>                tos number");
         hl.add(null, "2 3      pmtud                        discover available mtu");
         hl.add(null, "3 4,.      <host>                     name of host");
         hl.add(null, "4 4,.        ipv4                     specify ipv4 to use");
@@ -3660,6 +3683,8 @@ public class userExec {
         int timeout = 1000;
         int min = 1;
         int max = 1024;
+        int ttl = -1;
+        int tos = -1;
         int proto = 0;
         for (;;) {
             String a = cmd.word();
@@ -3695,6 +3720,14 @@ public class userExec {
                 max = bits.str2num(cmd.word());
                 continue;
             }
+            if (a.equals("ttl")) {
+                ttl = bits.str2num(cmd.word());
+                continue;
+            }
+            if (a.equals("tos")) {
+                tos = bits.str2num(cmd.word());
+                continue;
+            }
         }
         if (vrf == null) {
             cmd.error("vrf not specified");
@@ -3716,15 +3749,17 @@ public class userExec {
         trc.vrf = vrf;
         trc.ifc = ifc;
         trc.trg = trg;
+        trc.ttl = ttl;
+        trc.tos = tos;
         trc.tim = timeout;
-        pipe.linePut("scanning " + trg + ", src=" + src + ", vrf=" + vrf.name + ", ran=" + min + ".." + max + ", tim=" + timeout);
+        pipe.linePut("scanning " + trg + ", src=" + src + ", vrf=" + vrf.name + ", ttl=" + ttl + ", tos=" + tos + ", ran=" + min + ".." + max + ", tim=" + timeout);
         for (int i = min; i < max; i++) {
             if (need2stop()) {
                 break;
             }
             pipe.strPut("" + i);
             pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
-            if (trc.testOne(i)) {
+            if (trc.testOne(0, i)) {
                 continue;
             }
             pipe.linePut("port " + i + " open");
@@ -4237,7 +4272,7 @@ public class userExec {
                 trc.ifc = ifc;
                 trc.trg = strt;
                 trc.tim = tim;
-                if (!trc.testOne(prt)) {
+                if (!trc.testOne(0, prt)) {
                     pipe.linePut(strt + a + " is open.");
                 }
                 continue;

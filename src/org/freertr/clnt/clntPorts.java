@@ -42,12 +42,23 @@ public class clntPorts {
     public int tim;
 
     /**
+     * ttl
+     */
+    public int ttl;
+
+    /**
+     * tos
+     */
+    public int tos;
+
+    /**
      * test one port
      *
-     * @param prt port number
+     * @param sprt source port number
+     * @param tprt target port number
      * @return false on one, true on close
      */
-    public boolean testOne(int prt) {
+    public boolean testOne(int sprt,int tprt) {
         if (trg == null) {
             return true;
         }
@@ -59,7 +70,7 @@ public class clntPorts {
             ifc2 = ifc.getFwdIfc(trg);
         }
         prtTcp tcp = vrf.getTcp(trg);
-        pipeSide pip = tcp.streamConnect(new pipeLine(65536, false), ifc2, 0, trg, prt, "portscan", -1, null, -1, -1);
+        pipeSide pip = tcp.streamConnect(new pipeLine(65536, false), ifc2, sprt, trg, tprt, "portscan", -1, null, ttl, tos);
         if (pip == null) {
             return true;
         }
