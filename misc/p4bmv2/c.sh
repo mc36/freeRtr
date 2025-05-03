@@ -1,4 +1,6 @@
 #!/bin/sh
+#wget -O /etc/yum.repos.d/p4lang.repo https://copr.fedorainfracloud.org/coprs/nucleo/p4lang/repo/fedora-rawhide/nucleo-p4lang-fedora-rawhide.repo
+#sudo dnf install p4lang-pi p4lang-p4c p4lang-bmv2 tshark iperf gcc git telnet
 #deb http://download.opensuse.org/repositories/home:/p4lang/Debian_11/ /
 #wget https://download.opensuse.org/repositories/home:p4lang/Debian_11/Release.key
 #sudo apt-key add ./Release.key
