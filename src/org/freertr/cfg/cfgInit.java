@@ -1244,7 +1244,6 @@ public class cfgInit implements Runnable {
             boolean det = false;
             boolean con = false;
             boolean win = false;
-            boolean add = false;
             String hwN = args[1];
             String swN = null;
             for (int i = 6; i < s.length(); i++) {
@@ -1252,7 +1251,6 @@ public class cfgInit implements Runnable {
                 if (a.equals("s")) {
                     hwN = args[1];
                     swN = args[2];
-                    add = true;
                     continue;
                 }
                 if (a.equals("a")) {
@@ -1299,12 +1297,6 @@ public class cfgInit implements Runnable {
             cfgFileHw = hwN;
             cfgFileSw = swN;
             List<String> hwT = httpGet(cfgFileHw);
-            if (add) {
-                for (int i = 3; i < args.length; i++) {
-                    List<String> lst = httpGet(args[i]);
-                    hwT.addAll(lst);
-                }
-            }
             List<String> swT = httpGet(cfgFileSw);
             doInit(hwT, swT, pipCon);
             if (pipCon != null) {
