@@ -1433,8 +1433,7 @@ public class cfgInit implements Runnable {
         hlp.add(null, "2 .   <cfg>        config url");
         hlp.add(null, "1 2 routers        start router from separate configs");
         hlp.add(null, "2 3   <hwcfg>      config url");
-        hlp.add(null, "3 4,.   <swcfg>    config url");
-        hlp.add(null, "4 4,.     [hwcfg]  config url");
+        hlp.add(null, "3 .     <swcfg>    config url");
         hlp.add(null, "1 2 routera        start router with sw config only");
         hlp.add(null, "2 .   <swcfg>      config url");
         hlp.add(null, "1 2 test           execute test command");
