@@ -129,11 +129,11 @@ public class tabNatTraN implements Comparable<tabNatTraN> {
     }
 
     /**
-     * pick random port
+     * pick random source port
      *
      * @param n reverse sentry
      */
-    public void pickRandomPort(tabNatTraN n) {
+    public void pickRandomSrcPort(tabNatTraN n) {
         newSrcPort = bits.random(cfgAll.tcpRangeMin, cfgAll.tcpRangeMax);
         n.origTrgPort = newSrcPort;
     }

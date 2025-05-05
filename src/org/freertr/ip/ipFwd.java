@@ -2167,11 +2167,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
                     if (natT.needDuplicateCheck()) {
                         boolean ok = true;
                         for (int i = 0; i < 16; i++) {
-                            ok = (natTrns.find(natT) == null) && (natTrns.find(natR) == null);
+                            ok = (natTrns.find(natR) == null);
                             if (ok) {
                                 break;
                             }
-                            natT.pickRandomPort(natR);
+                            natT.pickRandomSrcPort(natR);
                         }
                         if (!ok) {
                             cntrT.drop(pck, counter.reasons.notInTab);
