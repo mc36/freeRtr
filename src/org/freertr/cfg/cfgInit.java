@@ -163,11 +163,6 @@ public class cfgInit implements Runnable {
     public static long started = -1;
 
     /**
-     * last reload code
-     */
-    public static int lastReloadCode;
-
-    /**
      * read-write path name
      */
     public static String rwPath;
@@ -852,16 +847,6 @@ public class cfgInit implements Runnable {
         started = bits.getTime();
         logger.info("booting");
         setupJVM();
-        String s = bits.lst2str(bits.txt2buf(version.myReloadFile()), " ");
-        int i = s.indexOf("#");
-        if (i > 0) {
-            s = s.substring(i + 1, s.length());
-        }
-        i = s.indexOf("=");
-        if (i > 0) {
-            s = s.substring(0, i);
-        }
-        lastReloadCode = bits.str2num(s);
         if (hw == null) {
             logger.info("no hw config found");
             hw = new ArrayList<String>();
@@ -871,8 +856,8 @@ public class cfgInit implements Runnable {
             sw = new ArrayList<String>();
         }
         for (int o = 0; o < version.mimetypes.length; o++) {
-            s = version.mimetypes[o];
-            i = s.indexOf(" ");
+            String s = version.mimetypes[o];
+            int i = s.indexOf(" ");
             String a = s.substring(i + 1, s.length()).trim();
             s = s.substring(0, i).trim();
             types.add(new cfgInitMime(s, a));
@@ -1022,7 +1007,7 @@ public class cfgInit implements Runnable {
         servTime.defaultF = createFilter(servTime.defaultL, srvdefsF);
         servUdptn.defaultF = createFilter(servUdptn.defaultL, srvdefsF, userReader.linedefF);
         List<String> sdefs = new ArrayList<String>();
-        for (i = 0; i < cfgAll.defaultF.size(); i++) {
+        for (int i = 0; i < cfgAll.defaultF.size(); i++) {
             userFilter ntry = cfgAll.defaultF.get(i);
             if (ntry.section.length() > 0) {
                 continue;
@@ -1031,10 +1016,10 @@ public class cfgInit implements Runnable {
         }
         List<String> inis = new ArrayList<String>();
         List<userFilter> secs = userFilter.text2section(sw);
-        for (i = 0; i < needInit.length; i++) {
+        for (int i = 0; i < needInit.length; i++) {
             inis.addAll(userFilter.getSecList(secs, needInit[i], cmds.tabulator + cmds.finish));
         }
-        for (i = 0; i < needFull.length; i++) {
+        for (int i = 0; i < needFull.length; i++) {
             inis.addAll(userFilter.section2text(userFilter.getSection(secs, needFull[i], true, false, false), true));
         }
         List<String> ints = userFilter.section2text(userFilter.filter2text(secs, createFilter(needIface)), true);
@@ -1068,7 +1053,7 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
-        for (i = 0; i < cfgAll.vnets.size(); i++) {
+        for (int i = 0; i < cfgAll.vnets.size(); i++) {
             cfgVnet ntry = cfgAll.vnets.get(i).copyBytes();
             ntry.startNow(vdcPortBeg + (i * 4));
             vnetLst.add(ntry);
@@ -1095,7 +1080,7 @@ public class cfgInit implements Runnable {
         } else {
             p = 1024;
         }
-        for (i = 0; i < cfgAll.vdcs.size(); i++) {
+        for (int i = 0; i < cfgAll.vdcs.size(); i++) {
             cfgVdc ntry = cfgAll.vdcs.get(i).copyBytes();
             vdcLst.add(ntry);
             int o = (i * p) + vdcPortBeg;
@@ -1164,7 +1149,6 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
         }
         if (fake) {
-            lastReloadCode = code;
             return;
         }
         try {

@@ -786,7 +786,17 @@ public class userUpgrade {
 class userUpgradeRevert implements Runnable {
 
     public void run() {
-        if (cfgInit.lastReloadCode != 2) {
+        String s = bits.lst2str(bits.txt2buf(version.myReloadFile()), " ");
+        int i = s.indexOf("#");
+        if (i > 0) {
+            s = s.substring(i + 1, s.length());
+        }
+        i = s.indexOf("=");
+        if (i > 0) {
+            s = s.substring(0, i);
+        }
+        i = bits.str2num(s);
+        if (i != 2) {
             return;
         }
         if (cfgAll.upgradeRevert < 1) {
