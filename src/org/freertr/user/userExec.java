@@ -1994,6 +1994,8 @@ public class userExec {
         hl.add(null, "4 3,.        <name:vrf>               name of vrf");
         hl.add(null, "3 4        source                     specify interface to use");
         hl.add(null, "4 3,.        <name:ifc>               name of interface");
+        hl.add(null, "3 4        viahop                     specify nexthop to send");
+        hl.add(null, "4 3,.        <addr>                   address to send to");
         hl.add(null, "3 4        timeout                    specify timeout");
         hl.add(null, "4 3,.        <num>                    timeout in milliseconds");
         hl.add(null, "3 4        delay                      specify delay between packets");
@@ -2407,6 +2409,8 @@ public class userExec {
         hl.add(null, "5 4,.          <name:vrf>             name of vrf");
         hl.add(null, "4 5          source                   specify interface to use");
         hl.add(null, "5 4,.          <name:ifc>             name of interface");
+        hl.add(null, "4 5          viahop                   specify nexthop to send");
+        hl.add(null, "5 4,.          <addr>                 address to send to");
         hl.add(null, "4 5          min                      specify minimum size");
         hl.add(null, "5 4,.          <num>                  byte count");
         hl.add(null, "4 5          max                      specify maximum size");
@@ -4278,7 +4282,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            ipFwdEcho ping = fwd.echoSendReq(src, strt, len, dntfrg, alrt, ttl, sgt, tos, flow, data, false);
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, null, len, dntfrg, alrt, ttl, sgt, tos, flow, data, false);
             if (ping == null) {
                 continue;
             }
@@ -4302,6 +4306,7 @@ public class userExec {
         String rem = cmd.word();
         cfgVrf vrf = cfgAll.getClntVrf();
         cfgIfc ifc = cfgAll.getClntIfc();
+        addrIP via = null;
         int size = 64;
         int data = 0;
         int alrt = -1;
@@ -4358,6 +4363,11 @@ public class userExec {
             }
             if (a.equals("source")) {
                 ifc = cfgAll.ifcFind(cmd.word(), 0);
+                continue;
+            }
+            if (a.equals("viahop")) {
+                via = new addrIP();
+                via.fromString(cmd.word());
                 continue;
             }
             if (a.equals("timeout")) {
@@ -4426,7 +4436,7 @@ public class userExec {
         userExecStats ttlS = new userExecStats(0, 256);
         userExecStats tosS = new userExecStats(0, 256);
         long timBeg = bits.getTime();
-        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt + ", sweep=" + sweep + ", multi=" + multi);
+        pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", via=" + via + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt + ", sweep=" + sweep + ", multi=" + multi);
         size -= prtIcmptun.adjustSize(trg);
         for (int i = 0; i < repeat; i++) {
             if (sweep) {
@@ -4444,7 +4454,7 @@ public class userExec {
                 break;
             }
             sent++;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, dntfrg, alrt, ttl, sgt, tos, flow, data, multi);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, via, size, dntfrg, alrt, ttl, sgt, tos, flow, data, multi);
             if (ping == null) {
                 lost++;
                 if (detail) {

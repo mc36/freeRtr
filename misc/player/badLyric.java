@@ -45,6 +45,13 @@ public class badLyric {
                 continue;
             }
             if (fl[i].isDirectory()) {
+                String b = a.toLowerCase();
+                if (b.matches("cd[0-9]")) {
+                    moveFiles(s + "/" + a + "/", s + "/");
+                }
+                if (b.matches("disc[0-9]")) {
+                    moveFiles(s + "/" + a + "/", s + "/");
+                }
                 delFile(s + "/" + a, true);
                 continue;
             }
@@ -73,11 +80,10 @@ public class badLyric {
                 delFile(s + "/" + a, true);
                 continue;
             }
-            int p = res.justWords().length();
+            int p = res.countScript();
             res = res.clearScript();
-            b = res.justWords();
-            if (b.length() != p) {
-                if (b.trim().length() < 1) {
+            if (res.countScript() != p) {
+                if (res.countScript() < 1) {
                     delFile(s + "/" + a, true);
                     continue;
                 }
@@ -113,6 +119,27 @@ public class badLyric {
             return;
         }
         new File(s).delete();
+    }
+
+    private static void moveFiles(String s, String t) {
+        File[] fl = new File(s).listFiles();
+        int q = 0;
+        for (int i = 0; i < fl.length; i++) {
+            String a = fl[i].getName();
+            if (a.equals(".")) {
+                continue;
+            }
+            if (a.equals("..")) {
+                continue;
+            }
+            File f = new File(t + a);
+            if (f.exists()) {
+                playerUtil.put("wrn " + s + a);
+                continue;
+            }
+            playerUtil.put("mov " + s + a);
+            fl[i].renameTo(f);
+        }
     }
 
 }

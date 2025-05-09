@@ -115,6 +115,16 @@ public class ifcPppLcp extends ifcPppNcp {
     private int lastEchoId;
 
     /**
+     * last echoreq sent
+     */
+    private long lastEchoSent;
+
+    /**
+     * last echoreq rtt
+     */
+    public int lastEchoReply;
+
+    /**
      * get name
      *
      * @return name
@@ -359,6 +369,7 @@ public class ifcPppLcp extends ifcPppNcp {
         pck.msbPutD(4, lastEchoId);
         pck.putSkip(8);
         lastEchoId &= 0xff;
+        lastEchoSent = bits.getTime();
         cntr.tx(pck);
         parent.sendNcpCtrl(pck, pppCtrl, codeEchoReq, lastEchoId);
     }
@@ -550,6 +561,7 @@ public class ifcPppLcp extends ifcPppNcp {
                 }
                 echoesSent = 0;
                 lastEchoId = -1;
+                lastEchoReply = (int) (bits.getTime() - lastEchoSent);
                 break;
             case codeDiscReq:
                 break;

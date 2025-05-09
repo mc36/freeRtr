@@ -463,6 +463,7 @@ public class userPacket {
             String rem = cmd.word();
             cfgVrf vrf = cfgAll.getClntVrf();
             cfgIfc ifc = cfgAll.getClntIfc();
+            addrIP via = null;
             int data = 0;
             int timeout = 1000;
             int timemax = 15000;
@@ -496,6 +497,11 @@ public class userPacket {
                 }
                 if (a.equals("source")) {
                     ifc = cfgAll.ifcFind(cmd.word(), 0);
+                    continue;
+                }
+                if (a.equals("viahop")) {
+                    via = new addrIP();
+                    via.fromString(cmd.word());
                     continue;
                 }
                 if (a.equals("timeout")) {
@@ -561,6 +567,7 @@ public class userPacket {
                 timeout = 1;
             }
             clntPmtud pm = new clntPmtud(cmd.pipe, trg, fwd, src);
+            pm.hop = via;
             pm.data = data;
             pm.timeout = timeout;
             pm.timediv = timediv;

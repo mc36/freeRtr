@@ -232,19 +232,20 @@ public class playerLyric {
     }
 
     /**
-     * just words
+     * count bytes
      *
      * @return string
      */
-    public String justWords() {
-        String s = "";
+    public int countScript() {
         if (text == null) {
-            return s;
+            return -1;
         }
+        int o = 0;
         for (int i = 0; i < text.size(); i++) {
-            s += " " + text.get(i).trim() + " ";
+            o += text.get(i).length();
+            o++;
         }
-        return s;
+        return o;
     }
 
     /**

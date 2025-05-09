@@ -1676,6 +1676,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         res.add("lower|-|" + lower);
         res.add("upper|-|" + upper);
         res.add("cfger|-|" + cfger);
+        res.add("rtt|-|" + ctrlLcp.lastEchoReply);
         res.add("auth|" + ctrlAuth);
         getShow(res, ctrlLcp);
         getShow(res, ctrlIp4);

@@ -24,6 +24,11 @@ public class clntPmtud {
     private final pipeSide pip;
 
     /**
+     * nexthop
+     */
+    public addrIP hop = null;
+
+    /**
      * filler byte
      */
     public int data = 0;
@@ -122,7 +127,7 @@ public class clntPmtud {
             pip.linePut("trg not specified");
             return null;
         }
-        pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", ovr=" + ovrh + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
+        pip.linePut("pmduding " + trg + ", src=" + src + ", vrf=" + fwd.vrfName + ", via=" + hop + ", ovr=" + ovrh + ", len=" + min + ".." + max + ", tim=" + timeout + ", tdiv=" + timediv + ", tmax=" + timemax + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt);
         for (;;) {
             if (pip.isClosed() != 0) {
                 pip.linePut("stopped");
@@ -138,7 +143,7 @@ public class clntPmtud {
             int mid = min + ((max - min) / 2);
             pip.strPut("trying (" + min + ".." + max + ") " + mid + " ");
             int size = mid - ovrh;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, size, true, alrt, ttl, sgt, tos, flow, data, false);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, hop, size, true, alrt, ttl, sgt, tos, flow, data, false);
             if (ping == null) {
                 pip.linePut("noroute");
                 return null;

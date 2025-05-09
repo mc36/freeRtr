@@ -42,6 +42,11 @@ public class clntPing implements Runnable {
     public addrIP trg;
 
     /**
+     * nexthop
+     */
+    public addrIP hop;
+
+    /**
      * timeout
      */
     public int timeout = 1000;
@@ -85,7 +90,7 @@ public class clntPing implements Runnable {
 
     public void run() {
         try {
-            ipFwdEcho ping = fwd.echoSendReq(src.addr, trg, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, datPat, false);
+            ipFwdEcho ping = fwd.echoSendReq(src.addr, trg, hop, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, datPat, false);
             if (ping == null) {
                 return;
             }
