@@ -46,10 +46,13 @@ public class badLyric {
             }
             if (fl[i].isDirectory()) {
                 String b = a.toLowerCase();
-                if (b.matches("cd[0-9]")) {
+                if (b.matches("cd[0-9].*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
-                if (b.matches("disc[0-9]")) {
+                if (b.matches("dvd[0-9].*")) {
+                    moveFiles(s + "/" + a + "/", s + "/");
+                }
+                if (b.matches("disc[0-9].*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
                 delFile(s + "/" + a, true);
