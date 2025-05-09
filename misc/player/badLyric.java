@@ -46,6 +46,8 @@ public class badLyric {
             }
             if (fl[i].isDirectory()) {
                 String b = a.toLowerCase();
+                b = b.replaceAll("-", " ");
+                b = b.trim();
                 if (b.matches("cd\s*[0-9].*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
@@ -140,8 +142,16 @@ public class badLyric {
             }
             File f = new File(t + a);
             if (f.exists()) {
-                playerUtil.put("wrn " + s + a);
-                continue;
+                for (int o = 1; o < 10; o++) {
+                    f = new File(t + o + a);
+                    if (!f.exists()) {
+                        break;
+                    }
+                }
+                if (f.exists()) {
+                    playerUtil.put("wrn " + s + a);
+                    continue;
+                }
             }
             playerUtil.put("mov " + s + a);
             fl[i].renameTo(f);
