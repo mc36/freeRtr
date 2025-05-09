@@ -57,43 +57,46 @@ void doRawLoop() {
         usleep(1);
         old = cur;
         if (ioctl(addrTty, TIOCMGET, &cur) < 0) break;
-        if ((cur & BANG_CK) == 0) continue;
-        if ((old & BANG_CK) != 0) continue;
-        bit = (txV >> txL) & 1;
-        txL++;
-        if (txC >= 5) {
-            bit = 0;
-            txC = 0;
-            txL--;
-        }
-        if (bit == 0) {
-            txC = 0;
-        } else {
-            txC++;
-        }
-        if (txV < 0) {
-            bit = 1;
-            if (txL <= 1) bit = 0;
-            if (txL >= 8) bit = 0;
-            txC = 0;
-        }
-        if (txL >= 8) {
-            txV = txD[txO] & 0xff;
-            txO++;
-            txL = 0;
-        }
-        if (txO > txS) {
-            txO = 0;
-            txS = 0;
-            txC = 0;
-            txV = -1;
-        }
+        bit = cur & BANG_CK;
+        if (bit == (old & BANG_CK)) continue;
         if (bit != 0) {
-            cur &= ~BANG_TX;
-        } else {
-            cur |= BANG_TX;
+            bit = (txV >> txL) & 1;
+            txL++;
+            if (txC >= 5) {
+                bit = 0;
+                txC = 0;
+                txL--;
+            }
+            if (bit == 0) {
+                txC = 0;
+            } else {
+                txC++;
+            }
+            if (txV < 0) {
+                bit = 1;
+                if (txL <= 1) bit = 0;
+                if (txL >= 8) bit = 0;
+                txC = 0;
+            }
+            if (txL >= 8) {
+                txV = txD[txO] & 0xff;
+                txO++;
+                txL = 0;
+            }
+            if (txO > txS) {
+                txO = 0;
+                txS = 0;
+                txC = 0;
+                txV = -1;
+            }
+            if (bit != 0) {
+                cur &= ~BANG_TX;
+            } else {
+                cur |= BANG_TX;
+            }
+            if (ioctl(addrTty, TIOCMSET, &cur) < 0) break;
+            continue;
         }
-        if (ioctl(addrTty, TIOCMSET, &cur) < 0) break;
         bit = (cur & BANG_RX) == 0 ? 1 : 0;
         if (bit == 0) {
             if (rxC == 5) {
