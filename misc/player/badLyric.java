@@ -63,6 +63,9 @@ public class badLyric {
                 if (b.matches("scans.*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
+                if (b.matches("covers.*")) {
+                    moveFiles(s + "/" + a + "/", s + "/");
+                }
                 delFile(s + "/" + a, true);
                 continue;
             }
