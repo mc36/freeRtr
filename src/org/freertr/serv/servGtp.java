@@ -166,15 +166,19 @@ public class servGtp extends servGeneric implements prtServP {
         return protoAllDgrm;
     }
 
+    private int getDataPort() {
+        return srvPort + packGtp.portData - packGtp.portCtrl;
+    }
+
     public boolean srvInit() {
-        if (genDgrmStart(this, srvPort + (packGtp.portData - packGtp.portCtrl))) {
+        if (genDgrmStart(this, getDataPort())) {
             return true;
         }
         return genDgrmStart(this, 0);
     }
 
     public boolean srvDeinit() {
-        if (genericStop(srvPort + (packGtp.portData - packGtp.portCtrl))) {
+        if (genericStop(getDataPort())) {
             return true;
         }
         return genericStop(0);
@@ -191,17 +195,30 @@ public class servGtp extends servGeneric implements prtServP {
         if (ntry == null) {
             return true;
         }
-        if (ctrl) {
-            if (ntry.connC != null) {
-                ntry.connC.setClosing();
-            }
-            ntry.connC = id;
-        } else {
+        if (!ctrl) {
             if (ntry.connD != null) {
                 ntry.connD.setClosing();
             }
             ntry.connD = id;
+            return false;
         }
+        if (ntry.connC != null) {
+            ntry.connC.setClosing();
+        }
+        ntry.connC = id;
+        if (ntry.connD != null) {
+            return false;
+        }
+        id = srvVrf.getUdp(id.peerAddr).packetConnect(this, id.iface, getDataPort(), id.peerAddr, getDataPort(), srvName(), -1, null, -1, -1);
+        if (id == null) {
+            return false;
+        }
+        id.timeout = timeout;
+        id.sendTTL = sendingTTL;
+        id.sendTOS = sendingTOS;
+        id.sendDFN = sendingDFN;
+        id.sendFLW = sendingFLW;
+        ntry.connD = id;
         return false;
     }
 
