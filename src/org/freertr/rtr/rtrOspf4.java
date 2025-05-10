@@ -297,6 +297,7 @@ public class rtrOspf4 extends ipRtr {
         l.add(null, "1 2   area                        configure one area");
         l.add(null, "2 3     <num>                     area number");
         l.add(null, "3 .       enable                  create this area");
+        l.add(null, "3 .       ha-mode                 save state");
         l.add(null, "3 .       spf-bidir               spf bidir check");
         l.add(null, "3 4,.     spf-topolog             spf topology logging");
         l.add(null, "4 4,.       noappear              exclude node (dis)appearance");
@@ -359,6 +360,7 @@ public class rtrOspf4 extends ipRtr {
             rtrOspf4area ntry = areas.get(i);
             String s = "area " + ntry.area + " ";
             l.add(beg + s + "enable");
+            cmds.cfgLine(l, !ntry.haMode, beg, s + "ha-mode", "");
             l.add(beg + s + "spf-log " + ntry.lastSpf.logSize);
             cmds.cfgLine(l, ntry.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", ntry.lastSpf.getTopoLogMode());
             cmds.cfgLine(l, ntry.lastSpf.bidir.get() == 0, beg, s + "spf-bidir", "");
@@ -472,6 +474,10 @@ public class rtrOspf4 extends ipRtr {
             dat = areas.find(dat);
             if (dat == null) {
                 cmd.error("area not exists");
+                return false;
+            }
+            if (s.equals("ha-mode")) {
+                dat.haMode = true;
                 return false;
             }
             if (s.equals("spf-log")) {
@@ -654,6 +660,10 @@ public class rtrOspf4 extends ipRtr {
                 dat.stopNow();
                 areas.del(dat);
                 genLsas(3);
+                return false;
+            }
+            if (s.equals("ha-mode")) {
+                dat.haMode = false;
                 return false;
             }
             if (s.equals("spf-log")) {
@@ -1290,6 +1300,17 @@ public class rtrOspf4 extends ipRtr {
      * @param lst list to append
      */
     public void routerStateGet(List<String> lst) {
+        String a = routerGetName() + " ";
+        for (int i = 0; i < areas.size(); i++) {
+            rtrOspf4area dat = areas.get(i);
+            if (dat == null) {
+                continue;
+            }
+            if (!dat.haMode) {
+                continue;
+            }
+            dat.stateGet(lst, a);
+        }
     }
 
     /**

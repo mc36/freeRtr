@@ -6,6 +6,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPrefix;
+import org.freertr.enc.encBase64;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -37,6 +38,11 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
      * area number
      */
     public final int area;
+
+    /**
+     * ha mode
+     */
+    public boolean haMode;
 
     /**
      * lsas in this area
@@ -1349,6 +1355,27 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
      */
     public void stopNow() {
         todo.and(2);
+    }
+
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     * @param beg beginning to use
+     */
+    public void stateGet(List<String> lst, String beg) {
+        beg += " " + area + " ";
+        packHolder pck = new packHolder(true, true);
+        for (int i = 0; i < lsas.size(); i++) {
+            rtrOspf6lsa ntry = lsas.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            pck.clear();
+            ntry.writeData(pck, 0, true);
+            pck.merge2beg();
+            lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
+        }
     }
 
 }

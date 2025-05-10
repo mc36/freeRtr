@@ -1177,6 +1177,7 @@ public class rtrIsis extends ipRtr {
         l.add(null, "1 2   level1                      change level1 parameters");
         l.add(null, "1 2   level2                      change level2 parameters");
         l.add(null, "1 2   both                        change l1 and l2 parameters");
+        l.add(null, "2 .     ha-mode                   save state");
         l.add(null, "2 .     spf-bidir                 spf bidir check");
         l.add(null, "2 3,.   spf-topolog               spf topology logging");
         l.add(null, "3 3,.     noappear                exclude node (dis)appearance");
@@ -1511,6 +1512,7 @@ public class rtrIsis extends ipRtr {
      */
     public void getConfig(rtrIsisLevel lev, List<String> l, String beg, int filter) {
         String s = "level" + lev.level + " ";
+        cmds.cfgLine(l, !lev.haMode, beg, s + "ha-mode", "");
         l.add(beg + s + "spf-log " + lev.lastSpf.logSize);
         cmds.cfgLine(l, lev.lastSpf.topoLog.get() == 0, beg, s + "spf-topolog", lev.lastSpf.getTopoLogMode());
         cmds.cfgLine(l, lev.lastSpf.bidir.get() == 0, beg, s + "spf-bidir", "");
@@ -1574,6 +1576,10 @@ public class rtrIsis extends ipRtr {
      */
     public boolean doConfig(rtrIsisLevel lev, cmds cmd, boolean negated) {
         String s = cmd.word();
+        if (s.equals("ha-mode")) {
+            lev.haMode = !negated;
+            return false;
+        }
         if (s.equals("spf-log")) {
             lev.lastSpf.logSize.set(bits.str2num(cmd.word()));
             if (negated) {
@@ -2385,6 +2391,9 @@ public class rtrIsis extends ipRtr {
      * @param lst list to append
      */
     public void routerStateGet(List<String> lst) {
+        String a = routerGetName() + " ";
+        level1.stateGet(lst, a);
+        level2.stateGet(lst, a);
     }
 
     /**

@@ -1054,8 +1054,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "distance " + distance);
         l.add(beg + "refresh " + refresh);
         l.add(beg + "lifetime " + lifetime);
-        l.add(beg + "spf-log " + lastSpf.logSize);
         cmds.cfgLine(l, !haMode, beg, "ha-mode", "");
+        l.add(beg + "spf-log " + lastSpf.logSize);
         cmds.cfgLine(l, lastSpf.topoLog.get() == 0, beg, "spf-topolog", lastSpf.getTopoLogMode());
         cmds.cfgLine(l, lastSpf.bidir.get() == 0, beg, "spf-bidir", "");
         cmds.cfgLine(l, lastSpf.hops.get() == 0, beg, "spf-hops", "");

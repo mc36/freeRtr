@@ -8,6 +8,7 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryHashMd5;
+import org.freertr.enc.encBase64;
 import org.freertr.ip.ipCor4;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabGen;
@@ -41,6 +42,11 @@ public class rtrIsisLevel implements Runnable {
      * level
      */
     public final int level;
+
+    /**
+     * ha mode
+     */
+    public boolean haMode;
 
     /**
      * list of lsps
@@ -1136,6 +1142,30 @@ public class rtrIsisLevel implements Runnable {
      */
     public void stopNow() {
         todo.and(2);
+    }
+
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     * @param beg beginning to use
+     */
+    public void stateGet(List<String> lst, String beg) {
+        if (!haMode) {
+            return;
+        }
+        beg += " " + level + " ";
+        packHolder pck = new packHolder(true, true);
+        for (int i = 0; i < lsps.size(); i++) {
+            rtrIsisLsp ntry = lsps.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            pck.clear();
+            ntry.writeData(pck, 0);
+            pck.merge2beg();
+            lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
+        }
     }
 
 }

@@ -1154,6 +1154,7 @@ public class cfgInit implements Runnable {
         if (e) {
             return;
         }
+        stateLast = res;
         bits.buf2txt(true, res, version.myStateFile());
         prtRedun.doState();
     }
