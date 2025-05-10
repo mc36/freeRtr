@@ -2304,4 +2304,25 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         return rtrBgpDump.getAttrStats(attrStats);
     }
 
+    /**
+     * get state information
+     * 
+     * @return state
+     */
+    public String stateGet() {
+        if (!haMode) {
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void stateSet(cmds cmd) {
+
+    }
+
 }

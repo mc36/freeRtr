@@ -94,6 +94,11 @@ public abstract class rtrBgpParam {
     public boolean fallOver;
 
     /**
+     * ha mode
+     */
+    public boolean haMode;
+
+    /**
      * consider remote asn in group membership
      */
     public boolean ungrpRemAs;
@@ -1307,6 +1312,7 @@ public abstract class rtrBgpParam {
         addrFams = src.addrFams;
         template = src.template;
         description = src.description;
+        haMode = src.haMode;
         fallOver = src.fallOver;
         attribFilter = src.attribFilter;
         remoteConfed = src.remoteConfed;
@@ -1947,6 +1953,7 @@ public abstract class rtrBgpParam {
         l.add(null, "3  .       extended-update             advertise extended update capability");
         l.add(null, "3  .       unidirection                not advertise when receiving");
         l.add(null, "3  .       fall-over                   track outgoing interface");
+        l.add(null, "3  .       ha-mode                     save state");
         l.add(null, "3  4       attribute-filter            filter received attributes");
         l.add(null, "4  .         <num>                     filtered attributes");
         l.add(null, "3  .       soft-reconfiguration        enable soft reconfiguration");
@@ -2157,6 +2164,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !extUpdate, beg, nei + "extended-update", "");
         cmds.cfgLine(l, !unidirection, beg, nei + "unidirection", "");
         cmds.cfgLine(l, !fallOver, beg, nei + "fall-over", "");
+        cmds.cfgLine(l, !haMode, beg, nei + "ha-mode", "");
         cmds.cfgLine(l, attribFilter == null, beg, nei + "attribute-filter", "" + attribFilter);
         cmds.cfgLine(l, !sendDefRou, beg, nei + "default-originate", "");
         cmds.cfgLine(l, !sendOtrDefRou, beg, nei + "other-default-originate", "");
@@ -3043,6 +3051,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("fall-over")) {
             fallOver = !negated;
+            return false;
+        }
+        if (s.equals("ha-mode")) {
+            haMode = !negated;
             return false;
         }
         if (s.equals("attribute-filter")) {

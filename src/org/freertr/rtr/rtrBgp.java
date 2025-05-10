@@ -4561,6 +4561,29 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param lst list to append
      */
     public void routerStateGet(List<String> lst) {
+        String a = routerGetName() + " ";
+        for (int i = 0; i < neighs.size(); i++) {
+            rtrBgpNeigh nei = neighs.get(i);
+            if (nei == null) {
+                continue;
+            }
+            String b = nei.stateGet();
+            if (b == null) {
+                continue;
+            }
+            lst.add(a + b);
+        }
+        for (int i = 0; i < lstnNei.size(); i++) {
+            rtrBgpNeigh nei = lstnNei.get(i);
+            if (nei == null) {
+                continue;
+            }
+            String b = nei.stateGet();
+            if (b == null) {
+                continue;
+            }
+            lst.add(a + b);
+        }
     }
 
     /**

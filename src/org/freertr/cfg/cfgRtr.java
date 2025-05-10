@@ -386,6 +386,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* bfd-trigger",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* backup-peer",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* proxy-profile",
+        "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* ha-mode",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* fall-over",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* hostname",
         "router bgp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* software",

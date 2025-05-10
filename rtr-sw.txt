@@ -287,8 +287,8 @@ router lsrp4 1 vrf v1
  router-id 100.100.3.227
  refresh 600000
  lifetime 2147483000
- spf-log 500
  ha-mode
+ spf-log 500
  spf-bidir
  spf-ecmp
  suppress-prefix
@@ -302,8 +302,8 @@ router lsrp6 1 vrf v1
  router-id 100.100.3.227
  refresh 600000
  lifetime 2147483000
- spf-log 500
  ha-mode
+ spf-log 500
  spf-bidir
  spf-ecmp
  suppress-prefix
@@ -555,6 +555,7 @@ router bgp4 65535 vrf v1
  template r software
  template r extended-open
  template r extended-update
+ template r ha-mode
  template r aigp
  template r entropy
  template r traffeng
@@ -642,6 +643,7 @@ router bgp6 65535 vrf v1
  template r software
  template r extended-open
  template r extended-update
+ template r ha-mode
  template r aigp
  template r entropy
  template r traffeng
