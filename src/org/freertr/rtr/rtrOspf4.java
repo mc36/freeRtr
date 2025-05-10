@@ -1319,6 +1319,12 @@ public class rtrOspf4 extends ipRtr {
      * @param cmd string to append
      */
     public void routerStateSet(cmds cmd) {
+        rtrOspf4area ara = new rtrOspf4area(this, bits.str2num(cmd.word()));
+        ara = areas.find(ara);
+        if (ara == null) {
+            return;
+        }
+        ara.stateSet(cmd);
     }
 
 }

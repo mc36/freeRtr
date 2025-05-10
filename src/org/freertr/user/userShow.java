@@ -539,6 +539,10 @@ public class userShow {
                 rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnStart));
                 return null;
             }
+            if (a.equals("state")) {
+                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnState));
+                return null;
+            }
             if (a.equals("remote")) {
                 rdr.putStrArr(prtRedun.doShowCmd(cmd.getRemaining()));
                 return null;

@@ -30,6 +30,7 @@ import org.freertr.util.state;
 import org.freertr.util.syncInt;
 import org.freertr.enc.encTlv;
 import org.freertr.tab.tabLabelEntry;
+import org.freertr.util.cmds;
 
 /**
  * isis level
@@ -1154,7 +1155,7 @@ public class rtrIsisLevel implements Runnable {
         if (!haMode) {
             return;
         }
-        beg += " " + level + " ";
+        beg += level + " ";
         packHolder pck = new packHolder(true, true);
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp ntry = lsps.get(i);
@@ -1162,10 +1163,31 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             pck.clear();
-            ntry.writeData(pck, 0);
+            pck.putSkip(ntry.writeData(pck, 0));
             pck.merge2beg();
             lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
         }
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void stateSet(cmds cmd) {
+        byte[] buf = encBase64.decodeBytes(cmd.getRemaining());
+        if (buf == null) {
+            return;
+        }
+        packHolder pck = new packHolder(true, true);
+        pck.putCopy(buf, 0, 0, buf.length);
+        pck.putSkip(buf.length);
+        pck.merge2beg();
+        rtrIsisLsp ntry = new rtrIsisLsp();
+        if (ntry.readData(pck, 0) < 0) {
+            return;
+        }
+        lsps.put(ntry);
     }
 
 }

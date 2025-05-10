@@ -1257,6 +1257,7 @@ public class userExec {
         hl.add(null, "3 .        status                current status");
         hl.add(null, "3 .        description           interface description");
         hl.add(null, "3 .        core                  core hash");
+        hl.add(null, "3 .        state                 state hash");
         hl.add(null, "3 .        config                config hash");
         hl.add(null, "3 4        remote                remote command");
         hl.add(null, "4 4,.        [str]               string to execute");

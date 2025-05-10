@@ -25,6 +25,7 @@ import org.freertr.util.state;
 import org.freertr.util.syncInt;
 import org.freertr.enc.encTlv;
 import org.freertr.tab.tabLabelEntry;
+import org.freertr.util.cmds;
 
 /**
  * ospfv2 area
@@ -1228,7 +1229,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
      * @param beg beginning to use
      */
     public void stateGet(List<String> lst, String beg) {
-        beg += " " + area + " ";
+        beg += area + " ";
         packHolder pck = new packHolder(true, true);
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf4lsa ntry = lsas.get(i);
@@ -1236,10 +1237,31 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
                 continue;
             }
             pck.clear();
-            ntry.writeData(pck, 0, true);
+            pck.putSkip(ntry.writeData(pck, 0, true));
             pck.merge2beg();
             lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
         }
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void stateSet(cmds cmd) {
+        byte[] buf = encBase64.decodeBytes(cmd.getRemaining());
+        if (buf == null) {
+            return;
+        }
+        packHolder pck = new packHolder(true, true);
+        pck.putCopy(buf, 0, 0, buf.length);
+        pck.putSkip(buf.length);
+        pck.merge2beg();
+        rtrOspf4lsa ntry = new rtrOspf4lsa();
+        if (ntry.readData(pck, 0, true) < 0) {
+            return;
+        }
+        lsas.put(ntry);
     }
 
 }
