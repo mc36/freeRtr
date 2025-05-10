@@ -382,6 +382,15 @@ public class version {
     }
 
     /**
+     * get state file name
+     *
+     * @return filename without path
+     */
+    public static String myStateFile() {
+        return getRWpath() + "state-" + cfgAll.hostName + ".log";
+    }
+
+    /**
      * get reload file name
      *
      * @return filename without path

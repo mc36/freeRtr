@@ -1284,4 +1284,20 @@ public class rtrOspf4 extends ipRtr {
         ara.lastSpf.listLinkStates(tab, spfLnkst.protoOspfV2, ara.area, asn, adv, addrIPv4.size, 2);
     }
 
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void routerStateSet(cmds cmd) {
+    }
+
 }

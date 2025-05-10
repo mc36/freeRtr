@@ -89,6 +89,11 @@ public class packRedundancy {
     public final static String fnShow = "show";
 
     /**
+     * state file
+     */
+    public final static String fnState = "state";
+
+    /**
      * init
      */
     public final static int statInit = 0;

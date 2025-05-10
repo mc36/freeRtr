@@ -2379,4 +2379,20 @@ public class rtrIsis extends ipRtr {
         lev.lastSpf.listLinkStates(tab, lev.level, -1, asn, adv, addrIsis.size, 3);
     }
 
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void routerStateSet(cmds cmd) {
+    }
+
 }

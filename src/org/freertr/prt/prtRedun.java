@@ -365,6 +365,15 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * sync state to peers
+     */
+    public static void doState() {
+        for (int i = 0; i < ifaces.size(); i++) {
+            ifaces.get(i).doFile(version.myStateFile(), packRedundancy.fnState);
+        }
+    }
+
+    /**
      * reload peers
      */
     public static void doReload() {
@@ -382,6 +391,9 @@ public class prtRedun implements Runnable {
     public static String wireName2fileName(String s) {
         if (s.equals(packRedundancy.fnCore)) {
             return version.getFileName();
+        }
+        if (s.equals(packRedundancy.fnState)) {
+            return version.myStateFile();
         }
         if (s.equals(packRedundancy.fnStart)) {
             return cfgInit.cfgFileSw;

@@ -164,6 +164,22 @@ public class rtrRip6 extends ipRtr implements prtServP {
     }
 
     /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void routerStateSet(cmds cmd) {
+    }
+
+    /**
      * convert to string
      *
      * @return string

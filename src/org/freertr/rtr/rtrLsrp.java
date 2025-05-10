@@ -81,6 +81,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     public addrIPv4 routerID;
 
     /**
+     * ha mode
+     */
+    public boolean haMode;
+
+    /**
      * stub flag
      */
     public boolean stub;
@@ -1018,6 +1023,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(null, "1 .   spf-ecmp                    spf ecmp allow");
         l.add(null, "1 2   spf-log                     spf log size");
         l.add(null, "2 .     <num>                     number of entries");
+        l.add(null, "1 .   ha-mode                     save state");
         l.add(null, "1 .   stub                        stub router");
         l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
         l.add(null, "1 2   segrout                     segment routing parameters");
@@ -1049,6 +1055,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "refresh " + refresh);
         l.add(beg + "lifetime " + lifetime);
         l.add(beg + "spf-log " + lastSpf.logSize);
+        cmds.cfgLine(l, !haMode, beg, "ha-mode", "");
         cmds.cfgLine(l, lastSpf.topoLog.get() == 0, beg, "spf-topolog", lastSpf.getTopoLogMode());
         cmds.cfgLine(l, lastSpf.bidir.get() == 0, beg, "spf-bidir", "");
         cmds.cfgLine(l, lastSpf.hops.get() == 0, beg, "spf-hops", "");
@@ -1185,6 +1192,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
             defOrigin = !negated;
             todo.set(0);
             notif.wakeup();
+            return false;
+        }
+        if (s.equals("ha-mode")) {
+            haMode = !negated;
             return false;
         }
         if (s.equals("stub")) {
@@ -1412,6 +1423,38 @@ public class rtrLsrp extends ipRtr implements Runnable {
      */
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
         lastSpf.listLinkStates(tab, spfLnkst.protoLsrp, -1, asn, adv, addrIPv4.size, 4);
+    }
+
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+        if (!haMode) {
+            return;
+        }
+        String a = routerGetName() + " ";
+        for (int i = 0; i < database.size(); i++) {
+            rtrLsrpData ntry = database.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            lst.add(a + ntry.dump(rtrLsrpData.dmpFull));
+        }
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void routerStateSet(cmds cmd) {
+        rtrLsrpData ntry = new rtrLsrpData();
+        if (ntry.fromString(cmd)) {
+            return;
+        }
+        database.put(ntry);
     }
 
 }

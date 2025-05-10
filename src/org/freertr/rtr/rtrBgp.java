@@ -4556,6 +4556,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void routerStateSet(cmds cmd) {
+    }
+
+    /**
      * get all routes
      *
      * @param safi safi to query

@@ -288,6 +288,7 @@ router lsrp4 1 vrf v1
  refresh 600000
  lifetime 2147483000
  spf-log 500
+ ha-mode
  spf-bidir
  spf-ecmp
  suppress-prefix
@@ -302,6 +303,7 @@ router lsrp6 1 vrf v1
  refresh 600000
  lifetime 2147483000
  spf-log 500
+ ha-mode
  spf-bidir
  spf-ecmp
  suppress-prefix

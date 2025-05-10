@@ -452,6 +452,22 @@ public class rtrDownload extends ipRtr {
     public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
     }
 
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void routerStateSet(cmds cmd) {
+    }
+
 }
 
 class rtrDownloadTimer extends TimerTask {

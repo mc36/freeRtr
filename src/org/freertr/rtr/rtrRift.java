@@ -1189,4 +1189,20 @@ public class rtrRift extends ipRtr implements Runnable {
         lastSpfN.listLinkStates(tab, spfLnkst.protoRift, -1, asn, adv, addrIPv4.size, 4);
     }
 
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public void routerStateSet(cmds cmd) {
+    }
+
 }

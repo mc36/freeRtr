@@ -365,4 +365,18 @@ public abstract class ipRtr implements Comparable<ipRtr> {
      */
     public abstract void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv);
 
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public abstract void routerStateGet(List<String> lst);
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     */
+    public abstract void routerStateSet(cmds cmd);
+
 }

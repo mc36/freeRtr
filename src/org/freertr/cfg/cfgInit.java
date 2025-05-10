@@ -98,6 +98,7 @@ import org.freertr.serv.servUpnpHub;
 import org.freertr.serv.servVoice;
 import org.freertr.serv.servVxlan;
 import org.freertr.enc.encUrl;
+import org.freertr.ip.ipRtr;
 import org.freertr.serv.servMrt2bgp;
 import org.freertr.serv.servPlan9;
 import org.freertr.serv.servStack;
@@ -105,6 +106,7 @@ import org.freertr.serv.servUni2uni;
 import org.freertr.serv.servWhois;
 import org.freertr.serv.servXotPad;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userConfig;
 import org.freertr.user.userExec;
@@ -211,6 +213,11 @@ public class cfgInit implements Runnable {
      * loaded snmp mibs
      */
     public final static tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
+
+    /**
+     * last state
+     */
+    public static List<String> stateLast;
 
     /**
      * list of physical interfaces
@@ -1086,16 +1093,69 @@ public class cfgInit implements Runnable {
             int o = (i * p) + vdcPortBeg;
             ntry.startNow(hdefs, inhs, o, o + p);
         }
+        cfgAll.con0.line.execTimeOut = 0;
         try {
             prtRedun.doInit(cons);
         } catch (Exception e) {
             logger.exception(e);
         }
+        stateRestore();
         started = bits.getTime();
         booting = false;
         new Thread(new cfgInit()).start();
-        cfgAll.con0.line.execTimeOut = 0;
         logger.info("boot completed");
+    }
+
+    private final static void stateRestore() {
+        stateLast = bits.txt2buf(version.myStateFile());
+        if (stateLast == null) {
+            stateLast = new ArrayList<String>();
+        }
+        for (int i = 0; i < stateLast.size(); i++) {
+            cmds cmd = new cmds("rst", stateLast.get(i));
+            tabRouteAttr.routeType t = cfgRtr.name2num(cmd.word());
+            if (t == null) {
+                continue;
+            }
+            cfgRtr c = cfgAll.rtrFind(t, bits.str2num(cmd.word()), false);
+            if (c == null) {
+                continue;
+            }
+            ipRtr e = c.getRouter();
+            if (e == null) {
+                continue;
+            }
+            e.routerStateSet(cmd);
+        }
+    }
+
+    private final static void stateSave() {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < cfgAll.routers.size(); i++) {
+            cfgRtr c = cfgAll.routers.get(i);
+            if (c == null) {
+                continue;
+            }
+            ipRtr e = c.getRouter();
+            if (e == null) {
+                continue;
+            }
+            e.routerStateGet(res);
+        }
+        boolean e = res.size() == stateLast.size();
+        if (e) {
+            for (int i = 0; i < res.size(); i++) {
+                e = res.get(i).equals(stateLast.get(i));
+                if (!e) {
+                    break;
+                }
+            }
+        }
+        if (e) {
+            return;
+        }
+        bits.buf2txt(true, res, version.myStateFile());
+        prtRedun.doState();
     }
 
     private final static tabGen<userFilter> createFilter(String[] lst) {
@@ -1454,9 +1514,11 @@ public class cfgInit implements Runnable {
                 oldM += rt.freeMemory() / 8;
                 cntr.byteRx = oldM;
                 memoryHistory.update(cntr);
-                if ((rnd % 120) == 0) {
-                    clntDns.purgeLocalCache(false);
+                if ((rnd % 120) != 0) {
+                    continue;
                 }
+                clntDns.purgeLocalCache(false);
+                stateSave();
             } catch (Exception e) {
                 logger.exception(e);
             }

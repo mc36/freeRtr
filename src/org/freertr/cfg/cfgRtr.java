@@ -243,6 +243,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         "router lsrp[46] .*!" + cmds.tabulator + "distance 70",
         "router lsrp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "default-originate",
         "router lsrp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "stub",
+        "router lsrp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ha-mode",
         "router lsrp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "suppress-prefix",
         "router lsrp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "prefix-list",
         "router lsrp[46] .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "route-map",
