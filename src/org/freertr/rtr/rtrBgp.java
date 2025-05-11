@@ -2020,7 +2020,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         id.changeSecurity(lstn.temp.keyId, lstn.temp.passwd, lstn.temp.ttlSecurity, lstn.temp.tosValue);
         rtrBgpNeigh ntry = new rtrBgpNeigh(this, id.peerAddr);
         ntry.updateAddr(id.iface);
-        ntry.updateOddr();
         if (neighs.find(ntry) != null) {
             accptStat.drop(pckCnt, counter.reasons.notUp);
             return true;
@@ -4601,16 +4600,35 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry.template == null) {
                 return;
             }
-            old = lstnNei.add(ntry);
-            if (old != null) {
-                return;
-            }
+            ntry.socketMode = 4;
             ntry.copyFrom(ntry.template);
         }
+        cfgIfc cfg = cfgAll.ifcFind(cmd.word(), 0);
+        if (cfg == null) {
+            return;
+        }
+        ntry.updateAddr(cfg.getFwdIfc(adr));
 
-    
-
-    /////////
+/**        
+        id.changeSecurity(lstn.temp.keyId, lstn.temp.passwd, lstn.temp.ttlSecurity, lstn.temp.tosValue);
+        rtrBgpNeigh ntry = new rtrBgpNeigh(this, id.peerAddr);
+        ntry.updateAddr(id.iface);
+        if (neighs.find(ntry) != null) {
+            accptStat.drop(pckCnt, counter.reasons.notUp);
+            return true;
+        }
+        ntry.copyFrom(lstn.temp);
+        ntry.template = lstn.temp;
+        ntry.updatePeer();
+        rtrBgpNeigh res = lstnNei.add(ntry);
+        if (res != null) {
+            accptStat.drop(pckCnt, counter.reasons.noBuffer);
+            return true;
+        }
+        logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem + " as " + lstn.temp);
+        ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
+        ntry.startNow();
+**/        
     }
 
     /**
