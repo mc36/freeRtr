@@ -2033,7 +2033,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return true;
         }
         logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem + " as " + lstn.temp);
-        ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
+        ntry.conn = new rtrBgpSpeak(this, ntry, pipe, false);
         ntry.socketMode = 4;
         ntry.startNow();
         accptStat.tx(pckCnt);
@@ -4618,11 +4618,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             lstnNei.add(ntry);
         }
         logger.info("resuming " + ntry.peerAddr);
-        ntry.conn = new rtrBgpSpeak(this, ntry, pip);
+        ntry.conn = new rtrBgpSpeak(this, ntry, pip, true);
         i = bits.str2num(cmd.word());
         if (ntry.remoteAny) {
             ntry.remoteAs = i;
         }
+        i = bits.str2num(cmd.word());
+        ntry.conn.peerHold = i;
+        ntry.conn.peerKeep = i / 3;
+        pip.setTime(i);
         ntry.conn.upTime = bits.str2long(cmd.word());
         ntry.conn.peerAfis = bits.str2long(cmd.word());
         ntry.conn.addpathRx = bits.str2long(cmd.word());

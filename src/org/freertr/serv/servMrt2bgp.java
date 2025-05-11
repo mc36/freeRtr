@@ -193,7 +193,7 @@ class servMrt2bgpConn implements Runnable {
             rtrBgpNeigh nei = new rtrBgpNeigh(null, peer);
             nei.localAs = lower.localAs;
             nei.addrFams = safi;
-            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, pipe);
+            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, pipe, false);
             packHolder pck = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);

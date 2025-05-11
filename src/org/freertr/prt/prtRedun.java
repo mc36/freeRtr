@@ -609,7 +609,7 @@ class prtRedunIfc implements ifcUp {
                 userReader rdr = new userReader(pip, null);
                 pip.settingsPut(pipeSetting.height, 0);
                 userExec exe = new userExec(pip, rdr);
-                exe.privileged = true;
+                exe.privileged = false;
                 pip.setTime(120000);
                 a = exe.repairCommand(a);
                 exe.executeCommand(a);

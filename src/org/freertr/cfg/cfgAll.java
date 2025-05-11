@@ -2142,7 +2142,7 @@ public class cfgAll {
             ifc.clear2routing(true, true);
             ifc.clear2vrf();
         }
-        ntry.closeAllConns();
+        ntry.closeAllConns(false);
         ntry.stopThisVrf();
         return ntry;
     }

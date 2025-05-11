@@ -66,6 +66,11 @@ public class prtGenConn implements Runnable, Comparable<prtGenConn>, tabConnectL
     public int timeout;
 
     /**
+     * restart candidate
+     */
+    public boolean restartable;
+
+    /**
      * direction of connection: true=incoming, false=outgoing
      */
     public final boolean direction;

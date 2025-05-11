@@ -44,6 +44,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected pipeSide pipe;
 
+    private boolean resumed;
+
     /**
      * parent
      */
@@ -723,9 +725,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param protocol process
      * @param neighbor neighbor
      * @param socket tcp socket to use, null if none
+     * @param res resume
      */
-    public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket) {
+    public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, boolean res) {
         ready2adv = false;
+        resumed = res;
         addpathBeg = bits.randomD();
         parent = protocol;
         neigh = neighbor;
@@ -1308,35 +1312,50 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             closeNow();
             return;
         }
-        sendOpen();
-        sendKeepAlive();
-        if (neigh.ipInfoCfg != null) {
-            secInfoCls cls = new secInfoCls(null, null, null, parent.fwdCore, neigh.peerAddr, prtTcp.protoNum, neigh.localAddr);
-            ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, cls);
-            ipInfoRes.doWork(false);
-            if (ipInfoRes.need2drop()) {
-                logger.error("pmtud failed to " + neigh.peerAddr);
-                sendNotify(1, 2);
+        if (resumed) {
+            if (packScan()) {
+                closeNow();
+                return;
+            }
+            for (int i = 0; i < 63; i++) {
+                long p = 1L << i;
+                if ((p & peerAfis) == 0) {
+                    continue;
+                }
+                int o = parent.mask2safi(p);
+                sendRefresh(o);
+                gotRefresh(o);
+            }
+        } else {
+            sendOpen();
+            sendKeepAlive();
+            if (neigh.ipInfoCfg != null) {
+                secInfoCls cls = new secInfoCls(null, null, null, parent.fwdCore, neigh.peerAddr, prtTcp.protoNum, neigh.localAddr);
+                ipInfoRes = new secInfoWrk(neigh.ipInfoCfg, cls);
+                ipInfoRes.doWork(false);
+                if (ipInfoRes.need2drop()) {
+                    logger.error("pmtud failed to " + neigh.peerAddr);
+                    sendNotify(1, 2);
+                    closeNow();
+                    return;
+                }
+            }
+            int typ = packRecv(pckRx);
+            if (typ == rtrBgpUtil.msgNotify) {
+                logger.info("got notify " + rtrBgpUtil.notify2string(pckRx.getByte(0), pckRx.getByte(1)) + " from " + neigh.peerAddr);
+                closeNow();
+                return;
+            }
+            if (typ != rtrBgpUtil.msgOpen) {
+                logger.info("got " + rtrBgpUtil.msgType2string(typ) + " from " + neigh.peerAddr);
+                sendNotify(1, 3);
+                return;
+            }
+            if (parseOpen(pckRx)) {
                 closeNow();
                 return;
             }
         }
-        int typ = packRecv(pckRx);
-        if (typ == rtrBgpUtil.msgNotify) {
-            logger.info("got notify " + rtrBgpUtil.notify2string(pckRx.getByte(0), pckRx.getByte(1)) + " from " + neigh.peerAddr);
-            closeNow();
-            return;
-        }
-        if (typ != rtrBgpUtil.msgOpen) {
-            logger.info("got " + rtrBgpUtil.msgType2string(typ) + " from " + neigh.peerAddr);
-            sendNotify(1, 3);
-            return;
-        }
-        if (parseOpen(pckRx)) {
-            closeNow();
-            return;
-        }
-        needEorAfis = peerAfis;
         if (neigh.monitor != null) {
             neigh.monitor.gotEvent(true, this, neigh);
         }
@@ -1448,7 +1467,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (neigh.advertIntRx > 0) {
                 bits.sleep(neigh.advertIntRx);
             }
-            typ = packRecv(pckRx);
+            int typ = packRecv(pckRx);
             if (typ < 0) {
                 sendNotify(1, 1);
                 break;
@@ -1837,6 +1856,30 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.dump.gotMessage(false, typ, neigh, pck.getCopy());
         }
         return typ;
+    }
+
+    /**
+     * scan for header
+     *
+     * @return true on error, false on success
+     */
+    public boolean packScan() {
+        packHolder pck = new packHolder(true, true);
+        byte[] buf = new byte[rtrBgpUtil.sizeU];
+        for (;;) {
+            pck.clear();
+            if (pck.pipeRecv(pipe, 0, buf.length, 141) != buf.length) {
+                if (pipe.isClosed() != 0) {
+                    return true;
+                }
+                bits.sleep(100);
+                continue;
+            }
+            if (!rtrBgpUtil.checkHeader(pck)) {
+                return false;
+            }
+            pck.pipeRecv(pipe, 0, 1, 144);
+        }
     }
 
     /**
@@ -2263,6 +2306,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             sendNotify(6, 3);
             return true;
         }
+        needEorAfis = peerAfis;
         addpathRx &= neigh.addpathRmode;
         addpathTx &= neigh.addpathTmode;
         addpathRx &= neigh.addrFams;

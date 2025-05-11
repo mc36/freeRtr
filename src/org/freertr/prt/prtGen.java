@@ -165,10 +165,18 @@ public abstract class prtGen implements ipPrt {
 
     /**
      * close all connections
+     *
+     * @param honor exempt restart candidates
      */
-    public void closeConns() {
+    public void closeConns(boolean honor) {
         for (int i = clnts.size() - 1; i >= 0; i--) {
             prtGenConn ntry = clnts.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (honor && ntry.restartable) {
+                continue;
+            }
             ntry.setClosing();
             ntry.notif.wakeup();
         }

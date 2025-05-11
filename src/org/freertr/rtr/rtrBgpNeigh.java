@@ -597,7 +597,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         for (int i = 0; i < attrStats.length; i++) {
             attrStats[i] = new counter();
         }
-        conn = new rtrBgpSpeak(lower, this, null);
+        conn = new rtrBgpSpeak(lower, this, null, false);
     }
 
     public int compareTo(rtrBgpNeigh o) {
@@ -771,6 +771,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
 
     /**
      * update peer structures
+     *
+     * @param ifc interface to use
      */
     public void updateAddr(ipFwdIface ifc) {
         localIfc = ifc;
@@ -950,7 +952,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         updateAddr(ifc);
         conn.closeNow();
-        conn = new rtrBgpSpeak(lower, this, pipe);
+        conn = new rtrBgpSpeak(lower, this, pipe, false);
         return false;
     }
 
@@ -2338,7 +2340,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (sock == null) {
             return null;
         }
-        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + remoteAs + " " + conn.upTime + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap;
+        sock.restartable = true;
+        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + remoteAs + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap;
     }
 
 }

@@ -418,18 +418,20 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
 
     /**
      * close connections
+     *
+     * @param honor exempt restart candidates
      */
-    public synchronized void closeAllConns() {
-        udp4.closeConns();
-        udp6.closeConns();
-        ludp4.closeConns();
-        ludp6.closeConns();
-        dccp4.closeConns();
-        dccp6.closeConns();
-        sctp4.closeConns();
-        sctp6.closeConns();
-        tcp4.closeConns();
-        tcp6.closeConns();
+    public synchronized void closeAllConns(boolean honor) {
+        udp4.closeConns(honor);
+        udp6.closeConns(honor);
+        ludp4.closeConns(honor);
+        ludp6.closeConns(honor);
+        dccp4.closeConns(honor);
+        dccp6.closeConns(honor);
+        sctp4.closeConns(honor);
+        sctp6.closeConns(honor);
+        tcp4.closeConns(honor);
+        tcp6.closeConns(honor);
     }
 
     private void addRoutes(List<String> l, int p, ipFwd f) {

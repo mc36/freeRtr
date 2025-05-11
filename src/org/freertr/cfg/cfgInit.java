@@ -111,6 +111,7 @@ import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userConfig;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
+import org.freertr.user.userFlash;
 import org.freertr.user.userFonts;
 import org.freertr.user.userHelping;
 import org.freertr.user.userHwdet;
@@ -1108,6 +1109,7 @@ public class cfgInit implements Runnable {
 
     private final static void stateRestore() {
         stateLast = bits.txt2buf(version.myStateFile());
+        userFlash.delete(version.myStateFile());
         if (stateLast == null) {
             stateLast = new ArrayList<String>();
         }
@@ -1121,12 +1123,17 @@ public class cfgInit implements Runnable {
             if (c == null) {
                 continue;
             }
-            ipRtr e = c.getRouter();
-            if (e == null) {
+            ipRtr r = c.getRouter();
+            if (r == null) {
                 continue;
             }
-            e.routerStateSet(cmd);
+            try {
+                r.routerStateSet(cmd);
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
         }
+        stateLast = new ArrayList<String>();
     }
 
     private final static void stateSave() {
@@ -1219,7 +1226,7 @@ public class cfgInit implements Runnable {
         if (clean && cfgAll.graceReload) {
             for (int i = 0; i < cfgAll.vrfs.size(); i++) {
                 try {
-                    cfgAll.vrfs.get(i).closeAllConns();
+                    cfgAll.vrfs.get(i).closeAllConns(true);
                 } catch (Exception e) {
                 }
             }

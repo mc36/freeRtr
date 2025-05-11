@@ -1231,7 +1231,7 @@ public class userPacket {
             rtrBgpNeigh nei = new rtrBgpNeigh(null, trg);
             nei.localAs = las;
             nei.addrFams = safi;
-            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm);
+            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm, false);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
@@ -1368,7 +1368,7 @@ public class userPacket {
                 safi = rtrBgpUtil.safiIp6uni;
             }
             nei.addrFams = safi;
-            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm);
+            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm, false);
             packHolder pck = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);
@@ -1474,7 +1474,7 @@ public class userPacket {
                 safi = rtrBgpUtil.safiIp6uni;
             }
             nei.addrFams = safi;
-            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm);
+            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm, false);
             packHolder pck = new packHolder(true, true);
             byte[] buf = new byte[4];
             bits.msbPutD(buf, 0, nei.localAs);

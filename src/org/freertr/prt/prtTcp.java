@@ -805,10 +805,15 @@ public class prtTcp extends prtGen {
                 if ((pck.TCPflg & flagSynAck) == 0) {
                     return;
                 }
+                if (debugger.prtTcpTraf) {
+                    logger.debug("resumed");
+                }
                 pr.seqLoc = pck.TCPack;
                 pr.seqRem = pck.TCPseq;
                 pr.trfKrx = getTCPkdfRng(clnt.peerAddr, clnt.iface.addr, clnt.portRem, clnt.portLoc, clnt.keyId, clnt.passwd, pr.seqRem, pr.seqLoc);
                 pr.trfKtx = getTCPkdfRng(clnt.iface.addr, clnt.peerAddr, clnt.portLoc, clnt.portRem, clnt.keyId, clnt.passwd, pr.seqLoc, pr.seqRem);
+                pr.segSiz = regulateMss(pck.TCPmss);
+                pr.netMax = pr.segSiz;
                 pr.state = prtTcpConn.stOpened;
                 pr.staTim = bits.getTime();
                 pr.activWait = cfgAll.tcpTimeNow;
