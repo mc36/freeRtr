@@ -311,6 +311,48 @@ public abstract class prtGen implements ipPrt {
     }
 
     /**
+     * resume one connection after it, have to wait until pipeline gets ready
+     *
+     * @param srv server that will be used
+     * @param locI local interface, null means pick up one
+     * @param locP local port, 0 means pick up one
+     * @param remA remote address
+     * @param remP remote port
+     * @param name name of connection
+     * @param kid key id if applicable
+     * @param pwd session password
+     * @param ttl time to live
+     * @param tos type of service
+     * @return id reference of connection, null means error
+     */
+    public prtGenConn packetResume(prtServP srv, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
+        return anybodyResume(srv, null, null, locI, locP, remA, remP, name, kid, pwd, ttl, tos);
+    }
+
+    /**
+     * resume one connection after it, have to wait until pipeline gets ready
+     *
+     * @param sample pipeline to clone from
+     * @param locI local interface, null means pick up one
+     * @param locP local port, 0 means pick up one
+     * @param remA remote address
+     * @param remP remote port
+     * @param name name of connection
+     * @param kid key id if applicable
+     * @param pwd password
+     * @param ttl time to live
+     * @param tos type of service
+     * @return pipeline to access the connection, null if error happened
+     */
+    public pipeSide streamResume(pipeLine sample, ipFwdIface locI, int locP, addrIP remA, int remP, String name, int kid, String pwd, int ttl, int tos) {
+        prtGenConn cln = anybodyResume(null, null, sample, locI, locP, remA, remP, name, kid, pwd, ttl, tos);
+        if (cln == null) {
+            return null;
+        }
+        return cln.pipeClient;
+    }
+
+    /**
      * stop one connection
      *
      * @param locI interface
@@ -359,6 +401,31 @@ public abstract class prtGen implements ipPrt {
             logger.debug("add " + ntry);
         }
         return srvrs.add(locI, remA, locP, remP, ntry, ntry.name);
+    }
+
+    private prtGenConn anybodyResume(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String nam, int kid, String pwd, int ttl, int tos) {
+        if (testPortNumber(remP)) {
+            return null;
+        }
+        if (locI == null) {
+            return null;
+        }
+        if (testPortNumber(locP)) {
+            return null;
+        }
+        prtGenConn cln = new prtGenConn(this, upP, upS, pip, false, locI, locP, remA, remP, nam, kid, pwd, ttl, tos);
+        if (connectionStart(cln, null)) {
+            return null;
+        }
+        if (debugger.prtGenTraf) {
+            logger.debug("resume " + cln);
+        }
+        if (!cln.register2lower()) {
+            cln.notif.wakeup();
+            return cln;
+        }
+        cln.deleteImmediately();
+        return null;
     }
 
     private prtGenConn anybodyConnect(prtServP upP, prtServS upS, pipeLine pip, ipFwdIface locI, int locP, addrIP remA, int remP, String nam, int kid, String pwd, int ttl, int tos) {

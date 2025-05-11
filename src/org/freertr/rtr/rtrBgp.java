@@ -4600,35 +4600,39 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry.template == null) {
                 return;
             }
-            ntry.socketMode = 4;
             ntry.copyFrom(ntry.template);
         }
+        int i = bits.str2num(cmd.word());
+        int o = bits.str2num(cmd.word());
         cfgIfc cfg = cfgAll.ifcFind(cmd.word(), 0);
         if (cfg == null) {
             return;
         }
         ntry.updateAddr(cfg.getFwdIfc(adr));
-
-/**        
-        id.changeSecurity(lstn.temp.keyId, lstn.temp.passwd, lstn.temp.ttlSecurity, lstn.temp.tosValue);
-        rtrBgpNeigh ntry = new rtrBgpNeigh(this, id.peerAddr);
-        ntry.updateAddr(id.iface);
-        if (neighs.find(ntry) != null) {
-            accptStat.drop(pckCnt, counter.reasons.notUp);
-            return true;
+        pipeSide pip = tcpCore.streamResume(new pipeLine(ntry.bufferSize, false), ntry.localIfc, i, ntry.peerAddr, o, "bgp", ntry.keyId, ntry.passwd, ntry.ttlSecurity, ntry.tosValue);
+        if (pip == null) {
+            return;
         }
-        ntry.copyFrom(lstn.temp);
-        ntry.template = lstn.temp;
-        ntry.updatePeer();
-        rtrBgpNeigh res = lstnNei.add(ntry);
-        if (res != null) {
-            accptStat.drop(pckCnt, counter.reasons.noBuffer);
-            return true;
+        if (old == null) {
+            ntry.socketMode = 4;
+            lstnNei.add(ntry);
         }
-        logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem + " as " + lstn.temp);
-        ntry.conn = new rtrBgpSpeak(this, ntry, pipe);
+        logger.info("resuming " + ntry.peerAddr);
+        ntry.conn = new rtrBgpSpeak(this, ntry, pip);
+        i = bits.str2num(cmd.word());
+        if (ntry.remoteAny) {
+            ntry.remoteAs = i;
+        }
+        ntry.conn.peerAfis = bits.str2long(cmd.word());
+        ntry.conn.addpathRx = bits.str2long(cmd.word());
+        ntry.conn.addpathTx = bits.str2long(cmd.word());
+        ntry.conn.peerMltLab = bits.str2long(cmd.word());
+        ntry.conn.peerDynCap = cmd.word().equals("true");
+        ntry.conn.upTime = bits.str2long(cmd.word());
+        ntry.conn.peer32bitAS = true;
+        ntry.conn.peerRefreshOld = true;
+        ntry.conn.peerRefreshNew = true;
         ntry.startNow();
-**/        
     }
 
     /**

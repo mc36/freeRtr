@@ -6,6 +6,7 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntWhois;
 import org.freertr.ip.ipFwdIface;
@@ -886,6 +887,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 continue;
             }
             lastKeep = 0;
+            if (cfgInit.booting) {
+                continue;
+            }
             switch (socketMode) {
                 case 1: // active
                     openConn(0);
@@ -2334,7 +2338,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (sock == null) {
             return null;
         }
-        return peerAddr + " " + template + " " + sock.iface + " " + sock.portRem + " " + sock.portLoc + " " + remoteAs + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx;
+        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + remoteAs + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap + " " + conn.upTime;
     }
 
 }
