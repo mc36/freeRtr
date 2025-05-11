@@ -383,7 +383,8 @@ qc pass: pppoe over bridge encapsulation
 qc pass: ppp relay over pppoe
 qc pass: ppp over pptp
 qc pass: raw encapsulation
-qc pass: unnamed
+qc pass: process redundancy
+qc pass: ospf with process redundancy
 qc pass: sep
 qc pass: slaac
 qc pass: sreth over ipv4

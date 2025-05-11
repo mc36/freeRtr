@@ -1,4 +1,4 @@
-description lsrp with process redundancy
+description ospf with process redundancy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,14 +6,16 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
-router lsrp4 1
+router ospf4 1
  vrf v1
  router 4.4.4.1
+ area 0 ena
  red conn
  exit
-router lsrp6 1
+router ospf6 1
  vrf v1
  router 6.6.6.1
+ area 0 ena
  red conn
  exit
 int lo0
@@ -25,8 +27,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- router lsrp4 1 ena
- router lsrp6 1 ena
+ router ospf4 1 ena
+ router ospf6 1 ena
  exit
 !
 
@@ -71,15 +73,17 @@ prio 20
 vrf def v1
  rd 1:1
  exit
-router lsrp4 1
+router ospf4 1
  vrf v1
  router 4.4.4.3
+ area 0 ena
  red conn
  ha-mode
  exit
-router lsrp6 1
+router ospf6 1
  vrf v1
  router 6.6.6.3
+ area 0 ena
  red conn
  ha-mode
  exit
@@ -92,8 +96,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.3 255.255.255.0
  ipv6 addr 1234::3 ffff::
- router lsrp4 1 ena
- router lsrp6 1 ena
+ router ospf4 1 ena
+ router ospf6 1 ena
  exit
 !
 
@@ -110,15 +114,17 @@ int lo0
  ipv4 addr 2.2.2.4 255.255.255.255
  ipv6 addr 4321::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-router lsrp4 1
+router ospf4 1
  vrf v1
  router 4.4.4.4
+ area 0 ena
  red conn
  ha-mode
  exit
-router lsrp6 1
+router ospf6 1
  vrf v1
  router 6.6.6.4
+ area 0 ena
  red conn
  ha-mode
  exit
@@ -126,8 +132,8 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.3 255.255.255.0
  ipv6 addr 1234::3 ffff::
- router lsrp4 1 ena
- router lsrp6 1 ena
+ router ospf4 1 ena
+ router ospf6 1 ena
  exit
 !
 

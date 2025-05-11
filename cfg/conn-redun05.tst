@@ -1,20 +1,10 @@
-description lsrp with process redundancy
+description bgp with process redundancy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
 vrf def v1
  rd 1:1
- exit
-router lsrp4 1
- vrf v1
- router 4.4.4.1
- red conn
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.1
- red conn
  exit
 int lo0
  vrf for v1
@@ -25,8 +15,26 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
- router lsrp4 1 ena
- router lsrp6 1 ena
+ exit
+router bgp4 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 1
+ router-id 4.4.4.1
+ neigh 1.1.1.3 remote-as 2
+ neigh 1.1.1.3 connection-mode passive
+ red conn
+ exit
+router bgp6 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 1
+ router-id 6.6.6.1
+ neigh 1234::3 remote-as 2
+ neigh 1234::3 connection-mode passive
+ red conn
  exit
 !
 
@@ -71,18 +79,6 @@ prio 20
 vrf def v1
  rd 1:1
  exit
-router lsrp4 1
- vrf v1
- router 4.4.4.3
- red conn
- ha-mode
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.3
- red conn
- ha-mode
- exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.3 255.255.255.255
@@ -92,8 +88,26 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.3 255.255.255.0
  ipv6 addr 1234::3 ffff::
- router lsrp4 1 ena
- router lsrp6 1 ena
+ exit
+router bgp4 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 2
+ router-id 4.4.4.2
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 ha-mode
+ red conn
+ exit
+router bgp6 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 2
+ router-id 6.6.6.2
+ neigh 1234::1 remote-as 1
+ neigh 1234::1 ha-mode
+ red conn
  exit
 !
 
@@ -110,24 +124,32 @@ int lo0
  ipv4 addr 2.2.2.4 255.255.255.255
  ipv6 addr 4321::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-router lsrp4 1
- vrf v1
- router 4.4.4.4
- red conn
- ha-mode
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.4
- red conn
- ha-mode
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.3 255.255.255.0
  ipv6 addr 1234::3 ffff::
- router lsrp4 1 ena
- router lsrp6 1 ena
+ exit
+router bgp4 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 2
+ router-id 4.4.4.2
+ neigh 1.1.1.1 remote-as 1
+ neigh 1.1.1.1 ha-mode
+ neigh 1.1.1.1 connection-mode passive
+ red conn
+ exit
+router bgp6 1
+ vrf v1
+ no safe-ebgp
+ address uni
+ local-as 2
+ router-id 6.6.6.2
+ neigh 1234::1 remote-as 1
+ neigh 1234::1 ha-mode
+ neigh 1234::1 connection-mode passive
+ red conn
  exit
 !
 
