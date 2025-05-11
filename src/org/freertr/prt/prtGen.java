@@ -91,9 +91,10 @@ public abstract class prtGen implements ipPrt {
      *
      * @param clnt client that is going to connect
      * @param pck packet that seems a new session, null if connect invoked
+     * @param res resume session
      * @return false if successful, true if not
      */
-    protected abstract boolean connectionStart(prtGenConn clnt, packHolder pck);
+    protected abstract boolean connectionStart(prtGenConn clnt, packHolder pck, boolean res);
 
     /**
      * close requested
@@ -414,7 +415,7 @@ public abstract class prtGen implements ipPrt {
             return null;
         }
         prtGenConn cln = new prtGenConn(this, upP, upS, pip, false, locI, locP, remA, remP, nam, kid, pwd, ttl, tos);
-        if (connectionStart(cln, null)) {
+        if (connectionStart(cln, null, true)) {
             return null;
         }
         if (debugger.prtGenTraf) {
@@ -450,7 +451,7 @@ public abstract class prtGen implements ipPrt {
             return null;
         }
         prtGenConn cln = new prtGenConn(this, upP, upS, pip, false, locI, locP, remA, remP, nam, kid, pwd, ttl, tos);
-        if (connectionStart(cln, null)) {
+        if (connectionStart(cln, null, false)) {
             return null;
         }
         if (debugger.prtGenTraf) {
@@ -539,7 +540,7 @@ public abstract class prtGen implements ipPrt {
             return null;
         }
         prtGenConn cln = new prtGenConn(this, srv.serverP, srv.serverS, srv.sample, true, rxIfc, pck.UDPtrg, pck.IPsrc, pck.UDPsrc, srv.name, srv.keyId, srv.passwd, srv.ttl, srv.tos);
-        if (connectionStart(cln, pck)) {
+        if (connectionStart(cln, pck, false)) {
             cntr.drop(pck, counter.reasons.badHdr);
             cln.deleteImmediately();
             return null;

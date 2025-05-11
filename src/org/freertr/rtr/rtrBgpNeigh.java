@@ -2338,7 +2338,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (sock == null) {
             return null;
         }
-        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + remoteAs + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap + " " + conn.upTime;
+        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + remoteAs + " " + conn.upTime + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap;
     }
 
 }

@@ -192,9 +192,10 @@ public class prtUdp extends prtGen {
      *
      * @param clnt client
      * @param pck packet
+     * @param res resume
      * @return false if success, true if error
      */
-    protected boolean connectionStart(prtGenConn clnt, packHolder pck) {
+    protected boolean connectionStart(prtGenConn clnt, packHolder pck, boolean res) {
         clnt.sendPRT = protoNum;
         clnt.setReady();
         return false;

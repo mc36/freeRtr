@@ -200,9 +200,10 @@ public class prtSctp extends prtGen {
      *
      * @param clnt client
      * @param pck packet
+     * @param res resume
      * @return false if success, true if error
      */
-    protected boolean connectionStart(prtGenConn clnt, packHolder pck) {
+    protected boolean connectionStart(prtGenConn clnt, packHolder pck, boolean res) {
         if (debugger.prtSctpTraf) {
             logger.debug("start");
         }

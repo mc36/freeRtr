@@ -269,7 +269,15 @@ public class prtDccp extends prtGen {
         return bits.random(cfgAll.dccpRangeMin, cfgAll.dccpRangeMax);
     }
 
-    protected boolean connectionStart(prtGenConn clnt, packHolder pck) {
+    /**
+     * start connection
+     *
+     * @param clnt client
+     * @param pck packet
+     * @param res resume
+     * @return false if success, true if error
+     */
+    protected boolean connectionStart(prtGenConn clnt, packHolder pck, boolean res) {
         if (debugger.prtDccpTraf) {
             logger.debug("start");
         }
@@ -326,6 +334,11 @@ public class prtDccp extends prtGen {
         fwdCore.protoPack(ifc, null, pck);
     }
 
+    /**
+     * close connection
+     *
+     * @param clnt client
+     */
     protected void connectionClose(prtGenConn clnt) {
         if (debugger.prtDccpTraf) {
             logger.debug("close");
@@ -336,6 +349,11 @@ public class prtDccp extends prtGen {
         clnt.deleteImmediately();
     }
 
+    /**
+     * work connection
+     *
+     * @param clnt client
+     */
     protected void connectionWork(prtGenConn clnt) {
         prtDccpConn pr = (prtDccpConn) clnt.protoDat;
         if (pr.conned) {
@@ -346,6 +364,12 @@ public class prtDccp extends prtGen {
         sendMyPack(clnt, opt, typReq);
     }
 
+    /**
+     * bytes available
+     *
+     * @param ntry client
+     * @return bytes
+     */
     protected int connectionBytes(prtGenConn ntry) {
         return 0xffffff;
     }
@@ -429,6 +453,13 @@ public class prtDccp extends prtGen {
         clnt.error2server(pck, rtr, err, lab);
     }
 
+    /**
+     * send packet
+     *
+     * @param clnt client
+     * @param pck packet
+     * @return false if success, true if error
+     */
     protected boolean connectionSend(prtGenConn clnt, packHolder pck) {
         prtDccpConn pr = (prtDccpConn) clnt.protoDat;
         pr.updateSeq();

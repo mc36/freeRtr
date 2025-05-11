@@ -4623,12 +4623,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (ntry.remoteAny) {
             ntry.remoteAs = i;
         }
+        ntry.conn.upTime = bits.str2long(cmd.word());
         ntry.conn.peerAfis = bits.str2long(cmd.word());
         ntry.conn.addpathRx = bits.str2long(cmd.word());
         ntry.conn.addpathTx = bits.str2long(cmd.word());
         ntry.conn.peerMltLab = bits.str2long(cmd.word());
         ntry.conn.peerDynCap = cmd.word().equals("true");
-        ntry.conn.upTime = bits.str2long(cmd.word());
         ntry.conn.peer32bitAS = true;
         ntry.conn.peerRefreshOld = true;
         ntry.conn.peerRefreshNew = true;

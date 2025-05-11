@@ -686,9 +686,10 @@ public class prtTcp extends prtGen {
      *
      * @param clnt client
      * @param pck packet
+     * @param res resume
      * @return false if success, true if error
      */
-    protected boolean connectionStart(prtGenConn clnt, packHolder pck) {
+    protected boolean connectionStart(prtGenConn clnt, packHolder pck, boolean res) {
         if (debugger.prtTcpTraf) {
             logger.debug("start");
         }
@@ -706,6 +707,11 @@ public class prtTcp extends prtGen {
         }
         pr.staTim = bits.getTime();
         if (pck == null) {
+            if (res) {
+                pr.state = prtTcpConn.stResReq;
+                clnt.timeout = cfgAll.tcpTimeOpen;
+                return false;
+            }
             pr.trfKtx = getTCPkdfRng(clnt.iface.addr, clnt.peerAddr, clnt.portLoc, clnt.portRem, clnt.keyId, clnt.passwd, pr.seqLoc - 1, 0);
             pr.state = prtTcpConn.stConReq;
             return false;
@@ -795,6 +801,21 @@ public class prtTcp extends prtGen {
     protected void connectionRcvd(prtGenConn clnt, packHolder pck) {
         prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         synchronized (pr.lck) {
+            if (pr.state == prtTcpConn.stResReq) {
+                if ((pck.TCPflg & flagSynAck) == 0) {
+                    return;
+                }
+                pr.seqLoc = pck.TCPack;
+                pr.seqRem = pck.TCPseq;
+                pr.trfKrx = getTCPkdfRng(clnt.peerAddr, clnt.iface.addr, clnt.portRem, clnt.portLoc, clnt.keyId, clnt.passwd, pr.seqRem, pr.seqLoc);
+                pr.trfKtx = getTCPkdfRng(clnt.iface.addr, clnt.peerAddr, clnt.portLoc, clnt.portRem, clnt.keyId, clnt.passwd, pr.seqLoc, pr.seqRem);
+                pr.state = prtTcpConn.stOpened;
+                pr.staTim = bits.getTime();
+                pr.activWait = cfgAll.tcpTimeNow;
+                pr.activFrcd = true;
+                clnt.setReady();
+                clnt.timeout = cfgAll.tcpTimeOpen;
+            }
             if (clnt.passwd != null) {
                 if (pck.TCPaut < 0) {
                     if ((pr.state != prtTcpConn.stConReq) && ((pck.TCPflg & flagRST) == 0)) {
@@ -1141,6 +1162,8 @@ public class prtTcp extends prtGen {
                     sendMyPacket(clnt, flagSYN, 0);
                 }
                 break;
+            case prtTcpConn.stResReq:
+                break;
             case prtTcpConn.stClrReq:
                 sendMyPacket(clnt, flagFinAck, 0);
                 if ((curTim - pr.staTim) > cfgAll.tcpTimeAlive) {
@@ -1244,19 +1267,24 @@ class prtTcpConn {
     public final static int stConReq = 2;
 
     /**
+     * resume request, wait ack
+     */
+    public final static int stResReq = 3;
+
+    /**
      * close request, send fin+ack, wait fin+ack
      */
-    public final static int stClrReq = 3;
+    public final static int stClrReq = 4;
 
     /**
      * got fin, send fin+ack, wiat a bit
      */
-    public final static int stGotFin = 4;
+    public final static int stGotFin = 5;
 
     /**
      * normal data flow, send ack
      */
-    public final static int stOpened = 5;
+    public final static int stOpened = 6;
 
     /**
      * locker
@@ -1366,6 +1394,8 @@ class prtTcpConn {
                 return "accpt";
             case stConReq:
                 return "init";
+            case stResReq:
+                return "resm";
             case stClrReq:
                 return "term";
             case stGotFin:
