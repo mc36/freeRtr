@@ -771,6 +771,18 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * update peer structures
      */
+    public void updateAddr(ipFwdIface ifc) {
+        localIfc = ifc;
+        localAddr = ifc.addr.copyBytes();
+        if (!fallOver) {
+            return;
+        }
+        sendingIfc = ipFwdTab.findSendingIface(lower.fwdCore, peerAddr);
+    }
+
+    /**
+     * update peer structures
+     */
     public void updateOddr() {
         ipFwdIface ifc = lower.vrfCore.getOtherIface(lower.fwdCore, localIfc);
         if (ifc == null) {
@@ -938,12 +950,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (pipe.wait4ready(holdTimer)) {
             return true;
         }
-        localIfc = ifc;
-        localAddr = ifc.addr.copyBytes();
+        updateAddr(ifc);
         updateOddr();
-        if (fallOver) {
-            sendingIfc = ipFwdTab.findSendingIface(lower.fwdCore, peerAddr);
-        }
         conn.closeNow();
         conn = new rtrBgpSpeak(lower, this, pipe);
         return false;
@@ -2333,16 +2341,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (sock == null) {
             return null;
         }
-        return peerAddr + " " + sock.portRem + " " + sock.iface + " " + sock.portLoc + " " + remoteAs + " " + template + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx;
-    }
-
-    /**
-     * set state information
-     *
-     * @param cmd string to append
-     */
-    public void stateSet(cmds cmd) {
-
+        return peerAddr + " " + template + " " + remoteAs + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + sock.portRem + " " + sock.iface + " " + sock.portLoc;
     }
 
 }

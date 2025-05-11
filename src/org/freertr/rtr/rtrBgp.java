@@ -2019,8 +2019,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         id.changeSecurity(lstn.temp.keyId, lstn.temp.passwd, lstn.temp.ttlSecurity, lstn.temp.tosValue);
         rtrBgpNeigh ntry = new rtrBgpNeigh(this, id.peerAddr);
-        ntry.localIfc = id.iface;
-        ntry.localAddr = id.iface.addr.copyBytes();
+        ntry.updateAddr(id.iface);
         ntry.updateOddr();
         if (neighs.find(ntry) != null) {
             accptStat.drop(pckCnt, counter.reasons.notUp);
@@ -2028,9 +2027,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         ntry.copyFrom(lstn.temp);
         ntry.template = lstn.temp;
-        if (ntry.fallOver) {
-            ntry.sendingIfc = ipFwdTab.findSendingIface(fwdCore, ntry.peerAddr);
-        }
         ntry.updatePeer();
         rtrBgpNeigh res = lstnNei.add(ntry);
         if (res != null) {
@@ -4592,6 +4588,29 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param cmd string to append
      */
     public void routerStateSet(cmds cmd) {
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            return;
+        }
+        rtrBgpNeigh ntry = new rtrBgpNeigh(this, adr);
+        ntry.template = findTemp(cmd.word());
+        rtrBgpNeigh old = neighs.find(ntry);
+        if (old != null) {
+            ntry = old;
+        } else {
+            if (ntry.template == null) {
+                return;
+            }
+            old = lstnNei.add(ntry);
+            if (old != null) {
+                return;
+            }
+            ntry.copyFrom(ntry.template);
+        }
+
+    
+
+    /////////
     }
 
     /**
