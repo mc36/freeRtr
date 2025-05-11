@@ -4592,16 +4592,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return;
         }
         rtrBgpNeigh ntry = new rtrBgpNeigh(this, adr);
-        ntry.template = findTemp(cmd.word());
+        rtrBgpTemp temp  = findTemp(cmd.word());
         rtrBgpNeigh old = neighs.find(ntry);
         if (old != null) {
             ntry = old;
         } else {
-            if (ntry.template == null) {
+            if (temp == null) {
                 return;
             }
-            ntry.copyFrom(ntry.template);
+            ntry.copyFrom(temp);
+            ntry.template = temp;
         }
+        ntry.updatePeer();
         int i = bits.str2num(cmd.word());
         int o = bits.str2num(cmd.word());
         cfgIfc cfg = cfgAll.ifcFind(cmd.word(), 0);
