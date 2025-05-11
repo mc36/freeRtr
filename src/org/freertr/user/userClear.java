@@ -145,7 +145,20 @@ public class userClear {
         }
         if (a.equals("redundancy")) {
             a = cmd.word();
-            cmd.error(cmds.doneFail(prtRedun.setPrio(a, bits.str2num(cmd.word()))));
+            if (a.equals("state")) {
+                cfgInit.stateSave();
+                return null;
+            }
+            if (a.equals("local")) {
+                prtRedun.setPrio(bits.str2num(cmd.word()));
+                return null;
+            }
+            if (a.equals("peer")) {
+                a = cmd.word();
+                cmd.error(cmds.doneFail(prtRedun.setPrio(a, bits.str2num(cmd.word()))));
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("errors")) {

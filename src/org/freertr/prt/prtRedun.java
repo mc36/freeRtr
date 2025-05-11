@@ -201,6 +201,15 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * set local priority
+     *
+     * @param pri priority to use
+     */
+    public static void setPrio(int pri) {
+        cfgInit.redunPrio = pri;
+    }
+
+    /**
      * set peer priority
      *
      * @param ifc name of interface

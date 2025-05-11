@@ -2114,8 +2114,12 @@ public class userExec {
         hl.add(null, "2 3      errors                       error reporter");
         hl.add(null, "3 3,.      <str>                      email address");
         hl.add(null, "2 3      redundancy                   redundancy peer");
-        hl.add(prtRedun.getIfacesLst(), "3 4        <str>                      interface to set");
+        hl.add(null, "3 4        peer                       peer priority");
+        hl.add(prtRedun.getIfacesLst(), "4 5          <str>                    interface to set");
+        hl.add(null, "5 .            <num>                  priority to use");
+        hl.add(null, "3 4        local                      local priority");
         hl.add(null, "4 .          <num>                    priority to use");
+        hl.add(null, "3 .        state                      save state");
         hl.add(null, "2 3      bridge                       learnt mac address on a bridge");
         hl.add(null, "3 4,.      <num>                      bridge number");
         hl.add(null, "4 .          <name:ifc>               name of interface");

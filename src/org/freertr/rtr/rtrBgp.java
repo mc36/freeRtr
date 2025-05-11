@@ -4592,7 +4592,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return;
         }
         rtrBgpNeigh ntry = new rtrBgpNeigh(this, adr);
-        rtrBgpTemp temp  = findTemp(cmd.word());
+        rtrBgpTemp temp = findTemp(cmd.word());
         rtrBgpNeigh old = neighs.find(ntry);
         if (old != null) {
             ntry = old;
@@ -4602,6 +4602,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             ntry.copyFrom(temp);
             ntry.template = temp;
+            ntry.socketMode = 4;
         }
         ntry.updatePeer();
         int i = bits.str2num(cmd.word());
@@ -4615,11 +4616,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (pip == null) {
             return;
         }
-        if (old == null) {
-            ntry.socketMode = 4;
-            lstnNei.add(ntry);
-        }
-        logger.info("resuming " + ntry.peerAddr);
         ntry.conn = new rtrBgpSpeak(this, ntry, pip, true);
         i = bits.str2num(cmd.word());
         if (ntry.remoteAny) {
@@ -4635,6 +4631,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.conn.addpathTx = bits.str2long(cmd.word());
         ntry.conn.peerMltLab = bits.str2long(cmd.word());
         ntry.conn.peerDynCap = cmd.word().equals("true");
+        ntry.conn.peerRouterID = new addrIPv4();
+        if (ntry.conn.peerRouterID.fromString(cmd.word())) {
+            pip.setClose();
+            return;
+        }
+        if (old == null) {
+            lstnNei.add(ntry);
+        }
+        logger.info("resuming " + ntry.peerAddr);
         ntry.conn.peer32bitAS = true;
         ntry.conn.peerRefreshOld = true;
         ntry.conn.peerRefreshNew = true;

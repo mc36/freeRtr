@@ -216,11 +216,6 @@ public class cfgInit implements Runnable {
     public final static tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
 
     /**
-     * last state
-     */
-    public static List<String> stateLast;
-
-    /**
      * list of physical interfaces
      */
     public final static tabGen<cfgVdcIfc> ifaceLst = new tabGen<cfgVdcIfc>();
@@ -249,6 +244,8 @@ public class cfgInit implements Runnable {
      * vdc port range
      */
     public static int vdcPortEnd = 32768;
+
+    private static List<String> stateLast;
 
     private final static tabGen<cfgInitMime> types = new tabGen<cfgInitMime>();
 
@@ -1136,7 +1133,10 @@ public class cfgInit implements Runnable {
         stateLast = new ArrayList<String>();
     }
 
-    private final static void stateSave() {
+    /**
+     * save state
+     */
+    public final static void stateSave() {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.routers.size(); i++) {
             cfgRtr c = cfgAll.routers.get(i);
