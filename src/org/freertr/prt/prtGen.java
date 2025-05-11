@@ -409,6 +409,28 @@ public abstract class prtGen implements ipPrt {
     }
 
     /**
+     * find a connection by pipeline
+     *
+     * @param pip pipe to give
+     * @return connection handle
+     */
+    public prtGenConn findOneConn(pipeSide pip) {
+        if (pip == null) {
+            return null;
+        }
+        for (int i = 0; i < clnts.size(); i++) {
+            prtGenConn ntry = clnts.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (pip == ntry.pipeClient) {
+                return ntry;
+            }
+        }
+        return null;
+    }
+
+    /**
      * accept incoming connection
      *
      * @param rxIfc source interface

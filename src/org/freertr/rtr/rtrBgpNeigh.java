@@ -14,6 +14,7 @@ import org.freertr.pack.packDnsRec;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtAccept;
+import org.freertr.prt.prtGenConn;
 import org.freertr.serv.servGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntMatcher;
@@ -2306,14 +2307,33 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
 
     /**
      * get state information
-     * 
+     *
      * @return state
      */
     public String stateGet() {
         if (!haMode) {
             return null;
         }
-        return null;
+        if (!conn.ready2adv) {
+            return null;
+        }
+        if (!conn.peer32bitAS) {
+            return null;
+        }
+        if (!conn.peerRefreshOld) {
+            return null;
+        }
+        if (!conn.peerRefreshNew) {
+            return null;
+        }
+        if ((conn.compressRx != null) && (conn.compressTx != null)) {
+            return null;
+        }
+        prtGenConn sock = lower.tcpCore.findOneConn(conn.pipe);
+        if (sock == null) {
+            return null;
+        }
+        return peerAddr + " " + sock.portRem + " " + sock.iface + " " + sock.portLoc + " " + remoteAs + " " + template + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx;
     }
 
     /**
