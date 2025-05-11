@@ -78,13 +78,13 @@ router isis4 1
  vrf v1
  net 48.4444.0000.3333.00
  red conn
- ha-mode
+ level2 ha-mode
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.3333.00
  red conn
- ha-mode
+ level2 ha-mode
  exit
 int lo0
  vrf for v1
@@ -120,13 +120,13 @@ router isis4 1
  vrf v1
  net 48.4444.0000.4444.00
  red conn
- ha-mode
+ level2 ha-mode
  exit
 router isis6 1
  vrf v1
  net 48.6666.0000.4444.00
  red conn
- ha-mode
+ level2 ha-mode
  exit
 int eth1.11
  vrf for v1

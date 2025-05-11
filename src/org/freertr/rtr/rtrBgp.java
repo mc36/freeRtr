@@ -4611,7 +4611,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (cfg == null) {
             return;
         }
-        ntry.updateAddr(cfg.getFwdIfc(adr));
+        ipFwdIface ifc = cfg.getFwdIfc(adr);
+        if (ifc == null) {
+            return;
+        }
+        ntry.updateAddr(ifc);
         pipeSide pip = tcpCore.streamResume(new pipeLine(ntry.bufferSize, false), ntry.localIfc, i, ntry.peerAddr, o, "bgp", ntry.keyId, ntry.passwd, ntry.ttlSecurity, ntry.tosValue);
         if (pip == null) {
             return;
