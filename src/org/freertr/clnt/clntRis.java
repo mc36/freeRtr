@@ -1,12 +1,12 @@
 package org.freertr.clnt;
 
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.encJson;
 import org.freertr.enc.encUrl;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
-import org.freertr.util.version;
 
 /**
  * ris live client
@@ -40,7 +40,7 @@ public class clntRis {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.linePut("GET " + src.toURL(false, false, true, true) + " HTTP/1.1");
-        pipe.linePut("User-Agent: " + version.usrAgnt);
+        pipe.linePut("User-Agent: " + cfgInit.versionAgent);
         pipe.linePut("Host: " + src.server);
         pipe.linePut("");
     }
@@ -52,7 +52,7 @@ public class clntRis {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.linePut("HTTP/1.1 200 OK");
-        pipe.linePut("Server: " + version.usrAgnt);
+        pipe.linePut("Server: " + cfgInit.versionAgent);
         pipe.linePut("Content-Type: text/event-stream");
         pipe.linePut("Connection: keep-alive");
         pipe.linePut("Cache-Control: no-cache");

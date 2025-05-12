@@ -34,7 +34,6 @@ import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
-import org.freertr.util.version;
 
 /**
  * sdwan client
@@ -532,11 +531,11 @@ public class clntSdwan implements Runnable, ifcDn {
         conn.lineTx = pipeSide.modTyp.modeCRLF;
         sendLn("hello");
         sendLn("username " + username);
-        sendLn("software " + version.headLine);
-        sendLn("middleware " + version.getVMname());
-        sendLn("kernel " + version.getKernelName());
-        sendLn("hardware " + cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo());
-        sendLn("forwarder " + version.getHWfwd1liner());
+        sendLn("software " + cfgInit.versionFull);
+        sendLn("middleware " + cfgInit.getVMname());
+        sendLn("kernel " + cfgInit.getKernelName());
+        sendLn("hardware " + cfgInit.hwIdNum + " " + cfgInit.getCPUname() + " " + cfgInit.getMemoryInfo());
+        sendLn("forwarder " + cfgInit.getHWfwd1liner());
         sendLn("needaddr " + (clonIfc.addr4 != null) + " " + (clonIfc.addr6 != null));
         sendLn("myaddr " + clonIfc.addr4 + " " + clonIfc.addr6);
         String a = "";

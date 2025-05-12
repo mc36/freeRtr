@@ -113,7 +113,6 @@ import org.freertr.util.chatter;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.verCore;
-import org.freertr.util.version;
 
 /**
  * configuration settings
@@ -4056,7 +4055,7 @@ public class cfgAll {
             s += " date=" + bits.time2str(timeZoneName, bits.getTime() + timeServerOffset, 3).replaceAll(" ", "_");
         }
         if ((endForm & 0x2) != 0) {
-            s += " image=" + version.usrAgnt;
+            s += " image=" + cfgInit.versionAgent;
         }
         if ((endForm & 0x4) != 0) {
             s += " chksum=" + userUpgrade.calcTextHash(l);

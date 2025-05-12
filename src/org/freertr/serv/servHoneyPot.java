@@ -2,6 +2,7 @@ package org.freertr.serv;
 
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.encUrl;
 import org.freertr.ip.ipFwd;
 import org.freertr.pipe.pipeLine;
@@ -18,7 +19,6 @@ import org.freertr.user.userFilter;
 import org.freertr.user.userHelping;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * honeypot server
@@ -246,7 +246,7 @@ class servHoneyPotConn implements Runnable {
             pipe.lineTx = pipeSide.modTyp.modeCRLF;
             pipe.lineRx = pipeSide.modTyp.modeCRorLF;
             pipe.linePut("HTTP/1.1 200 ok");
-            pipe.linePut("Server: " + version.usrAgnt);
+            pipe.linePut("Server: " + cfgInit.versionAgent);
             pipe.linePut("Content-Length: " + b.length);
             pipe.linePut("Content-Type: " + a);
             pipe.linePut("Connection: Close");

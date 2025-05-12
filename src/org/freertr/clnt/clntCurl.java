@@ -3,12 +3,12 @@ package org.freertr.clnt;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.encUrl;
 import org.freertr.pipe.pipeSide;
 import org.freertr.user.userFlash;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
-import org.freertr.util.version;
 
 /**
  * see url client
@@ -32,7 +32,7 @@ public class clntCurl {
      */
     public final static List<String> doGetUrl(pipeSide p, String u) {
         List<String> res = new ArrayList<String>();
-        String a = version.getRWpath() + "curl" + bits.randomD() + ".tmp";
+        String a = cfgInit.getRWpath() + "curl" + bits.randomD() + ".tmp";
         userFlash.doReceive(p, encUrl.parseOne(u), new File(a));
         List<String> got = bits.txt2buf(a);
         userFlash.delete(a);

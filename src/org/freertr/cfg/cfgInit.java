@@ -1,6 +1,7 @@
 package org.freertr.cfg;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -99,6 +100,7 @@ import org.freertr.serv.servVoice;
 import org.freertr.serv.servVxlan;
 import org.freertr.enc.encUrl;
 import org.freertr.ip.ipRtr;
+import org.freertr.pipe.pipeShell;
 import org.freertr.serv.servMrt2bgp;
 import org.freertr.serv.servPlan9;
 import org.freertr.serv.servStack;
@@ -125,7 +127,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.history;
 import org.freertr.util.logBuf;
 import org.freertr.util.logger;
-import org.freertr.util.version;
+import org.freertr.util.verCore;
 
 /**
  * hardware configuration
@@ -149,6 +151,26 @@ public class cfgInit implements Runnable {
      * hw config end
      */
     public final static String hwCfgEnd = "hw.txt";
+
+    /**
+     * 9.1.1
+     */
+    public static final String versionNumber = verCore.year + "." + verCore.month + "." + verCore.day;
+
+    /**
+     * ros v9.1.1-rel
+     */
+    public static final String versionName = verCore.name + " v" + versionNumber + verCore.state;
+
+    /**
+     * ros v9.1.1-rel, done by me.
+     */
+    public static final String versionFull = versionName + ", done by " + verCore.author + ".";
+
+    /**
+     * ros/9.1.1-rel
+     */
+    public static final String versionAgent = verCore.name + "/" + versionNumber + verCore.state;
 
     /**
      * redundancy priority
@@ -290,6 +312,285 @@ public class cfgInit implements Runnable {
     };
 
     private final static int bootLogo = 0x1fd;
+
+    private static String getJavaVer(String s) {
+        String vnd = getSysProp(s + ".vendor");
+        String nam = getSysProp(s + ".name");
+        String ver = getSysProp(s + ".version");
+        if (nam != null) {
+            nam = " (" + nam + ")";
+        } else {
+            nam = "";
+        }
+        return vnd + nam + " v" + ver;
+    }
+
+    private static String getSysProp(String s) {
+        try {
+            return System.getProperty(s);
+        } catch (Exception e) {
+            return "?";
+        }
+    }
+
+    /**
+     * find in secret list
+     *
+     * @param a string to find
+     * @return found, null if nothing
+     */
+    public static List<String> secretsFind(String a) {
+        for (int i = 0; i < verCore.secrets.length; i++) {
+            if (!a.equals(verCore.secrets[i][0])) {
+                continue;
+            }
+            ArrayList<String> l = new ArrayList<String>();
+            bits.array2list(l, verCore.secrets[i]);
+            l.remove(0);
+            return l;
+        }
+        return null;
+    }
+
+    /**
+     * get java executable
+     *
+     * @return path of jvms
+     */
+    public static String getJvmExec() {
+        return getSysProp("java.home") + "/bin/java";
+    }
+
+    /**
+     * get archive date
+     *
+     * @return date of jar
+     */
+    public static long getFileDate() {
+        return new File(getFileName()).lastModified();
+    }
+
+    /**
+     * get archive name
+     *
+     * @return pathname jar filename
+     */
+    public static String getFileName() {
+        return getSysProp("java.class.path");
+    }
+
+    /**
+     * get archive path name
+     *
+     * @return filename without extension
+     */
+    public static String myPathName() {
+        String s = getFileName();
+        int i = s.lastIndexOf(".");
+        int o = s.lastIndexOf("/");
+        if (o < 0) {
+            o = 0;
+        }
+        if (i < o) {
+            return "rtr";
+        }
+        return s.substring(0, i);
+    }
+
+    /**
+     * get read-write path name
+     *
+     * @return path
+     */
+    public static String getRWpath() {
+        String a = rwPath;
+        if (a == null) {
+            a = cfgFileSw;
+        }
+        if (a == null) {
+            a = cfgFileHw;
+        }
+        if (a == null) {
+            a = "./";
+        }
+        int i = a.lastIndexOf("/");
+        if (i < 0) {
+            a = "./";
+        } else {
+            a = a.substring(0, i + 1);
+        }
+        return a;
+    }
+
+    /**
+     * get state file name
+     *
+     * @return filename without path
+     */
+    public static String myStateFile() {
+        if (stateFile != null) {
+            return stateFile;
+        }
+        return getRWpath() + "state.txt";
+    }
+
+    /**
+     * get reload file name
+     *
+     * @return filename without path
+     */
+    public static String myReloadFile() {
+        return getRWpath() + "reload.log";
+    }
+
+    /**
+     * get errors file name
+     *
+     * @return filename without path
+     */
+    public static String myErrorFile() {
+        return getRWpath() + "errors.log";
+    }
+
+    /**
+     * get memory info
+     *
+     * @return memory
+     */
+    public static String getMemoryInfo() {
+        Runtime rt = Runtime.getRuntime();
+        return bits.toUser(rt.totalMemory()) + "/" + bits.toUser(rt.maxMemory());
+    }
+
+    /**
+     * get kernel name
+     *
+     * @return name of kernel
+     */
+    public static String getKernelName() {
+        return getSysProp("os.name").trim() + " v" + getSysProp("os.version").trim();
+    }
+
+    /**
+     * get vm name
+     *
+     * @return name of vm
+     */
+    public static String getVMname() {
+        return getJavaVer("java.vm").trim();
+    }
+
+    /**
+     * get cpu name
+     *
+     * @return name of cpu
+     */
+    public static String getCPUname() {
+        return (Runtime.getRuntime().availableProcessors() + "*" + getSysProp("os.arch")).trim();
+    }
+
+    /**
+     * get hardware forwarder
+     *
+     * @return offload info
+     */
+    public static String getHWfwd1liner() {
+        servStack stk = cfgAll.dmnStack.get(0);
+        if (stk != null) {
+            return prtRedun.getShGenOneLiner() + stk.getShGenOneLiner();
+        }
+        servP4lang p4l = cfgAll.dmnP4lang.get(0);
+        if (p4l != null) {
+            return prtRedun.getShGenOneLiner() + p4l.getShGenOneLiner();
+        }
+        servOpenflow ovs = cfgAll.dmnOpenflow.get(0);
+        if (ovs != null) {
+            return prtRedun.getShGenOneLiner() + ovs.getShGenOneLiner();
+        }
+        return prtRedun.getShGenOneLiner() + "swonly";
+    }
+
+    /**
+     * get show platform text
+     *
+     * @return list
+     */
+    public static List<String> getShPlat() {
+        List<String> sa = new ArrayList<String>();
+        sa.add(versionFull);
+        sa.add("");
+        Runtime rt = Runtime.getRuntime();
+        sa.add("name: " + cfgAll.hostName + ", prnt: " + prntNam + ", hwid: " + hwIdNum + " hwsn: " + hwSnNum);
+        sa.add("hwfw: " + getHWfwd1liner());
+        sa.add("uptime: since " + bits.time2str(cfgAll.timeZoneName, started + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(started));
+        sa.add("pid: " + pipeShell.myProcessNum() + ", reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
+        sa.add("hwc: " + cfgFileHw + ", swc: " + cfgFileSw);
+        sa.add("class: v" + getSysProp("java.class.version") + " @ " + getFileName() + ", rwp: " + getRWpath());
+        sa.add("cpu: " + getCPUname() + ", mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
+        long l = pipeShell.getKernelUptime();
+        sa.add("host: " + getKernelName() + ", since " + bits.time2str(cfgAll.timeZoneName, l + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(l));
+        sa.add("java: " + getJavaVer("java") + " @ " + getSysProp("java.home"));
+        sa.add("jspec: " + getJavaVer("java.specification"));
+        sa.add("vm: " + getVMname());
+        sa.add("vmspec: " + getJavaVer("java.vm.specification"));
+        return sa;
+    }
+
+    /**
+     * get show logo text
+     *
+     * @param head needed extra lines
+     * @return list
+     */
+    public static List<String> getShLogo(int head) {
+        List<String> sa = new ArrayList<String>();
+        if ((head & 1) != 0) {
+            sa.add("");
+        }
+        if ((head & 2) != 0) {
+            sa.add(versionFull);
+        }
+        if ((head & 4) != 0) {
+            sa.add("");
+        }
+        if ((head & 8) != 0) {
+            bits.array2list(sa, verCore.logo);
+        }
+        if ((head & 16) != 0) {
+            sa.add("");
+        }
+        if ((head & 32) != 0) {
+            sa.add(versionFull);
+        }
+        if ((head & 64) != 0) {
+            sa.add("");
+        }
+        if ((head & 128) != 0) {
+            bits.array2list(sa, verCore.license);
+        }
+        if ((head & 256) != 0) {
+            sa.add("");
+        }
+        if ((head & 512) != 0) {
+            sa.add(versionNumber);
+        }
+        if ((head & 1024) != 0) {
+            sa.add(bits.time2str(cfgAll.timeZoneName, getFileDate(), 3));
+        }
+        if ((head & 2048) != 0) {
+            sa.add(bits.time2str(cfgAll.timeZoneName, getFileDate(), 4));
+        }
+        if ((head & 4096) != 0) {
+            sa.add(versionAgent);
+        }
+        if ((head & 8192) != 0) {
+            sa.add(verCore.homeUrl);
+        }
+        if ((head & 16384) != 0) {
+            bits.array2list(sa, verCore.quotes);
+        }
+        return sa;
+    }
 
     /**
      * get mime type of an extesion
@@ -691,7 +992,7 @@ public class cfgInit implements Runnable {
                 if (nomon) {
                     continue;
                 }
-                List<String> logo = version.shLogo(bootLogo);
+                List<String> logo = getShLogo(bootLogo);
                 for (int i = 0; i < logo.size(); i++) {
                     lin.sendLine(logo.get(i));
                 }
@@ -1187,11 +1488,11 @@ public class cfgInit implements Runnable {
     }
 
     private final static void stateLoad() {
-        List<String> txt = bits.txt2buf(version.myStateFile());
+        List<String> txt = bits.txt2buf(myStateFile());
         if (txt == null) {
             return;
         }
-        userFlash.delete(version.myStateFile());
+        userFlash.delete(myStateFile());
         int o = 0;
         for (int i = 0; i < txt.size(); i++) {
             cmds cmd = new cmds("rst", txt.get(i));
@@ -1250,7 +1551,7 @@ public class cfgInit implements Runnable {
             return;
         }
         stateLast = res;
-        bits.buf2txt(true, res, version.myStateFile());
+        bits.buf2txt(true, res, myStateFile());
         prtRedun.doState();
     }
 
@@ -1301,7 +1602,7 @@ public class cfgInit implements Runnable {
             code = -code;
         }
         try {
-            bits.buf2txt(true, bits.str2lst("code#" + code + "=" + reason), version.myReloadFile());
+            bits.buf2txt(true, bits.str2lst("code#" + code + "=" + reason), myReloadFile());
         } catch (Exception e) {
         }
         if (fake) {
@@ -1359,7 +1660,7 @@ public class cfgInit implements Runnable {
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
         ps.setTime(0);
         logger.pipeStart(ps);
-        List<String> logo = version.shLogo(bootLogo);
+        List<String> logo = getShLogo(bootLogo);
         for (int i = 0; i < logo.size(); i++) {
             ps.linePut(logo.get(i));
         }
@@ -1425,7 +1726,7 @@ public class cfgInit implements Runnable {
                 swN = hwN + swCfgEnd;
                 hwN += hwCfgEnd;
             }
-            List<String> logo = version.shLogo(bootLogo);
+            List<String> logo = getShLogo(bootLogo);
             for (int i = 0; i < logo.size(); i++) {
                 if (pipCon != null) {
                     pipCon.linePut(logo.get(i));
@@ -1466,7 +1767,7 @@ public class cfgInit implements Runnable {
             }
             pipeSide pip = pipeConsole.create();
             logger.pipeStart(pip);
-            List<String> logo = version.shLogo(bootLogo);
+            List<String> logo = getShLogo(bootLogo);
             for (int i = 0; i < logo.size(); i++) {
                 pip.linePut(logo.get(i));
             }
@@ -1552,7 +1853,7 @@ public class cfgInit implements Runnable {
             stopRouter(true, 18, "finished");
             return;
         }
-        putln("java -jar " + version.getFileName() + " <parameters>");
+        putln("java -jar " + getFileName() + " <parameters>");
         putln("parameters:");
         userHelping hlp = new userHelping();
         hlp.add(null, "1 2 router         start router background");

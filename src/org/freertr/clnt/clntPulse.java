@@ -7,6 +7,7 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcEther;
 import org.freertr.ifc.ifcNull;
@@ -24,7 +25,6 @@ import org.freertr.enc.encUrl;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
-import org.freertr.util.version;
 
 /**
  * pulse client
@@ -287,7 +287,7 @@ public class clntPulse implements Runnable, ifcDn {
         }
         cln.sendLine("GET /" + url.toPathName() + " HTTP/1.1");
         cln.sendLine("Connection: keep-alive");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("");
         cln.doHeaders(url);
@@ -298,7 +298,7 @@ public class clntPulse implements Runnable, ifcDn {
             return;
         }
         cln.sendLine("GET /" + url.toPathName() + " HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("");
         cln.doHeaders(url);
@@ -343,7 +343,7 @@ public class clntPulse implements Runnable, ifcDn {
         url.filExt = ".cgi";
         String s = "tz_offset=60&username=" + encUrl.percentEncode(username) + "&password=" + encUrl.percentEncode(password) + "&realm=" + encUrl.percentEncode(realm) + "&btnSubmit=Sign+In";
         cln.sendLine("POST /" + url.toPathName() + " HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Content-Length: " + s.length());
         cln.sendLine("Content-Type: application/x-www-form-urlencoded");
@@ -363,7 +363,7 @@ public class clntPulse implements Runnable, ifcDn {
         }
         url = encUrl.parseOne(target);
         cln.sendLine("GET /" + url.toPathName() + " HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Content-Length: 0");
         cln.sendLine("content-Type: EAP");
@@ -429,7 +429,7 @@ public class clntPulse implements Runnable, ifcDn {
         packPulse.getEap(pckBin);
         parseAvps(pckBin);
         pckBin.clear();
-        packPulse.putAvp(pckBin, 0xd70, version.namVer.getBytes());
+        packPulse.putAvp(pckBin, 0xd70, cfgInit.versionName.getBytes());
         packPulse.putAvp(pckBin, 0xd53, cookie.getBytes());
         packPulse.putEap(pckBin, 2, 2, 0xfe, 1);
         pckTx.type = 0x06; // auth req

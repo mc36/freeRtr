@@ -5,6 +5,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcEther;
 import org.freertr.ifc.ifcNull;
@@ -20,7 +21,6 @@ import org.freertr.enc.encXml;
 import org.freertr.enc.encUrl;
 import org.freertr.util.logger;
 import org.freertr.util.state;
-import org.freertr.util.version;
 
 /**
  * anyconnect client
@@ -242,9 +242,9 @@ public class clntAnyconn implements Runnable, ifcDn {
         if (cln.doConnect(url)) {
             return;
         }
-        String cntx = encXml.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + version.VerNam + "</version><device-id>" + version.getKernelName() + "</device-id><group-access>" + url.toURL(true, false, true, true) + "</group-access></config-auth>";
+        String cntx = encXml.header + "<config-auth client=\"vpn\" type=\"init\"><version who=\"vpn\">" + cfgInit.versionName + "</version><device-id>" + cfgInit.getKernelName() + "</device-id><group-access>" + url.toURL(true, false, true, true) + "</group-access></config-auth>";
         cln.sendLine("POST " + url.toURL(false, false, false, true) + " HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Connection: keep-alive");
         cln.sendLine("Content-Length: " + (cntx.length() + 2));
@@ -265,7 +265,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         }
         cntx = "username=" + encUrl.percentEncode(username) + "&password=" + encUrl.percentEncode(password);
         cln.sendLine("POST " + url.toURL(false, false, false, true) + " HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Cookie: " + cookie1);
         cln.sendLine("Content-Length: " + cntx.length());
@@ -287,7 +287,7 @@ public class clntAnyconn implements Runnable, ifcDn {
         }
         cookie2 = cln.cookies.get(i).getNamVal();
         cln.sendLine("CONNECT /CSCOSSLC/tunnel HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Cookie: " + cookie2);
         cln.sendLine("X-cstp-version: 1");

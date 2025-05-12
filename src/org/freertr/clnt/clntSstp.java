@@ -4,6 +4,7 @@ import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
@@ -20,7 +21,6 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.util.verCore;
-import org.freertr.util.version;
 
 /**
  * secure socket tunneling protocol client
@@ -264,7 +264,7 @@ public class clntSstp implements Runnable, ifcDn {
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         sendLine("SSTP_DUPLEX_POST " + url.toURL(false, false, true, true) + " HTTP/1.1");
-        sendLine("User-Agent: " + version.usrAgnt);
+        sendLine("User-Agent: " + cfgInit.versionAgent);
         sendLine("Content-Length: 18446744073709551615");
         sendLine("Host: " + url.server);
         sendLine("sstpCorrelationID: /os/" + verCore.name + "/{" + cfgAll.hostName + "_" + unique + "}");

@@ -7,7 +7,6 @@ import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgInit;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
-import org.freertr.util.version;
 
 /**
  * template creation
@@ -107,7 +106,7 @@ public class userTemplate {
             bits.buf2txt(true, t3, a + cfgInit.hwCfgEnd);
             t3 = getCfg(t1, rs[i - 1], rs[i], rs[i + 1]);
             bits.buf2txt(true, t3, a + cfgInit.swCfgEnd);
-            a = "java -Xmx256m -jar " + version.getFileName() + " router " + a;
+            a = "java -Xmx256m -jar " + cfgInit.getFileName() + " router " + a;
             t4.add(a + "&");
             t5.add("start /b " + a);
         }

@@ -3,6 +3,7 @@ package org.freertr.pack;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.cry.cryEncrCBCaes;
 import org.freertr.cry.cryEncrCBCblowfish;
 import org.freertr.cry.cryEncrCBCdes;
@@ -26,7 +27,6 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * secure shell kex init (rfc4253) protocol
@@ -216,7 +216,7 @@ public class packSshInit {
      */
     public static String getLocalVersion() {
         if (cfgAll.sshAgent == null) {
-            return "SSH-2.0-" + version.usrAgnt;
+            return "SSH-2.0-" + cfgInit.versionAgent;
         } else {
             return "SSH-2.0-" + cfgAll.sshAgent;
         }

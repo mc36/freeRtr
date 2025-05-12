@@ -7,7 +7,6 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
-import org.freertr.util.version;
 
 /**
  * process hw detection
@@ -621,7 +620,7 @@ public class userHwdet {
         if (binMain) {
             rtr = path + "rtr.bin";
         } else {
-            rtr = "java -Xmx" + mem + " -jar " + version.getFileName();
+            rtr = "java -Xmx" + mem + " -jar " + cfgInit.getFileName();
         }
         starter = new ArrayList<String>();
         config = new ArrayList<String>();

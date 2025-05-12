@@ -46,7 +46,6 @@ import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLnkst;
 import org.freertr.util.state;
 import org.freertr.util.syncInt;
-import org.freertr.util.version;
 
 /**
  * link state routing protocol
@@ -759,11 +758,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.topoSum = lastSpf.listTopoHsh();
         dat.hostname = cfgAll.hostName.replaceAll(" ", "_");
         dat.domain = (cfgAll.domainName + "").replaceAll(" ", "_");
-        dat.software = version.usrAgnt.replaceAll(" ", "_");
-        dat.hardware = (cfgInit.hwIdNum + " " + version.getCPUname() + " " + version.getMemoryInfo()).replaceAll(" ", "_");
-        dat.forwarder = version.getHWfwd1liner().replaceAll(" ", "_");
-        dat.middleware = version.getVMname().replaceAll(" ", "_");
-        dat.kernel = version.getKernelName().replaceAll(" ", "_");
+        dat.software = cfgInit.versionAgent.replaceAll(" ", "_");
+        dat.hardware = (cfgInit.hwIdNum + " " + cfgInit.getCPUname() + " " + cfgInit.getMemoryInfo()).replaceAll(" ", "_");
+        dat.forwarder = cfgInit.getHWfwd1liner().replaceAll(" ", "_");
+        dat.middleware = cfgInit.getVMname().replaceAll(" ", "_");
+        dat.kernel = cfgInit.getKernelName().replaceAll(" ", "_");
         dat.kernup = bits.time2str(cfgAll.timeZoneName, pipeShell.getKernelUptime() + cfgAll.timeServerOffset, 3).replaceAll(" ", "_");
         if (segrouLab != null) {
             dat.segrouMax = segrouMax;

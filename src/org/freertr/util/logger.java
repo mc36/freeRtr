@@ -417,7 +417,7 @@ public class logger {
     public static void exception(Throwable e, String m) {
         m = "exception " + dumpException(e, m);
         try {
-            bits.buf2txt(false, bits.str2lst(m), version.myErrorFile());
+            bits.buf2txt(false, bits.str2lst(m), cfgInit.myErrorFile());
         } catch (Exception ee) {
         }
         logOneLine(logLev.msgExcp, "", m);
@@ -445,7 +445,7 @@ public class logger {
     public static void traceback(Throwable e, String m) {
         m = "traceback " + dumpException(e, m);
         try {
-            bits.buf2txt(false, bits.str2lst(m), version.myErrorFile());
+            bits.buf2txt(false, bits.str2lst(m), cfgInit.myErrorFile());
         } catch (Exception ee) {
         }
         logOneLine(logLev.msgExcp, "", m);

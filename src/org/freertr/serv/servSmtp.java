@@ -7,6 +7,7 @@ import org.freertr.auth.authGeneric;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgAuther;
+import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntSmtp;
 import org.freertr.enc.encBase64;
@@ -32,7 +33,6 @@ import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
-import org.freertr.util.version;
 
 /**
  * simple mail transfer protocol (rfc821) server
@@ -972,7 +972,7 @@ class servSmtpDoer implements Runnable {
             dnsCln.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(conn.peerAddr), false, packDnsRec.typePTR);
             hdrA.add("    (reverse as " + dnsCln.getPTR() + ")");
             hdrA.add("    by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ")");
-            hdrA.add("    (envelope-from " + src + ") with smtp (" + version.namVer + ")");
+            hdrA.add("    (envelope-from " + src + ") with smtp (" + cfgInit.versionName + ")");
             hdrA.add("    for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 4));
             clntSmtp.prependHead(txt, hdrA);
             int o = 0;

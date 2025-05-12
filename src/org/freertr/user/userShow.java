@@ -144,7 +144,6 @@ import org.freertr.util.history;
 import org.freertr.util.logBuf;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
-import org.freertr.util.version;
 
 /**
  * process show commands
@@ -193,30 +192,30 @@ public class userShow {
         if (a.equals("version")) {
             a = cmd.word();
             if (a.equals("brief")) {
-                rdr.putStrArr(version.shLogo(0x2));
+                rdr.putStrArr(cfgInit.getShLogo(0x2));
                 return null;
             }
             if (a.equals("date-email")) {
-                rdr.putStrArr(version.shLogo(0x800));
+                rdr.putStrArr(cfgInit.getShLogo(0x800));
                 return null;
             }
             if (a.equals("date-machine")) {
-                rdr.putStrArr(version.shLogo(0x400));
+                rdr.putStrArr(cfgInit.getShLogo(0x400));
                 return null;
             }
             if (a.equals("user-agent")) {
-                rdr.putStrArr(version.shLogo(0x1000));
+                rdr.putStrArr(cfgInit.getShLogo(0x1000));
                 return null;
             }
             if (a.equals("url")) {
-                rdr.putStrArr(version.shLogo(0x2000));
+                rdr.putStrArr(cfgInit.getShLogo(0x2000));
                 return null;
             }
             if (a.equals("number")) {
-                rdr.putStrArr(version.shLogo(0x200));
+                rdr.putStrArr(cfgInit.getShLogo(0x200));
                 return null;
             }
-            rdr.putStrArr(version.shLogo(0x40e0));
+            rdr.putStrArr(cfgInit.getShLogo(0x40e0));
             return null;
         }
         if (a.equals("history")) {
@@ -283,12 +282,12 @@ public class userShow {
                 rdr.putStrArr(l);
                 return null;
             }
-            int i = version.secretFind(a);
-            if (i < 0) {
+            List<String> lst = cfgInit.secretsFind(a);
+            if (lst == null) {
                 cmd.badCmd();
                 return null;
             }
-            rdr.putStrArr(version.secretGet(i));
+            rdr.putStrArr(lst);
             return null;
         }
         if (a.equals("users")) {
@@ -313,13 +312,13 @@ public class userShow {
             if (a.length() > 0) {
                 l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
             } else {
-                l = version.shLogo(0x0e);
+                l = cfgInit.getShLogo(0x0e);
             }
             rdr.putStrArr(l);
             return null;
         }
         if (a.equals("platform")) {
-            rdr.putStrArr(version.shPlat());
+            rdr.putStrArr(cfgInit.getShPlat());
             return null;
         }
         if (a.equals("flash")) {
@@ -6032,13 +6031,13 @@ public class userShow {
     private String getDiskPath() {
         String a = cmd.getRemaining();
         if (a.length() < 1) {
-            return version.getRWpath();
+            return cfgInit.getRWpath();
         }
         if (cfgAll.buggy) {
             return a;
         }
         if (cfgAll.evalVdcPrivs()) {
-            return version.getRWpath() + a;
+            return cfgInit.getRWpath() + a;
         }
         return a;
     }

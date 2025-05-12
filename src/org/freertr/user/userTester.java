@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.enc7bit;
 import org.freertr.pipe.pipeProgress;
 import org.freertr.serv.servHttp;
@@ -15,7 +16,6 @@ import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
 import org.freertr.util.verCore;
-import org.freertr.util.version;
 
 /**
  * process image tester
@@ -253,7 +253,7 @@ public class userTester {
     /**
      * java parameters
      */
-    protected String jvp = " XmxZZZm -jar " + version.getFileName();
+    protected String jvp = " XmxZZZm -jar " + cfgInit.getFileName();
 
     /**
      * beginning to use
@@ -455,7 +455,7 @@ public class userTester {
                 return;
             }
         }
-        releaseN = version.headLine;
+        releaseN = cfgInit.versionFull;
         List<String> url = new ArrayList<String>();
         List<String> fil = new ArrayList<String>();
         List<List<String>> res = new ArrayList<List<String>>();

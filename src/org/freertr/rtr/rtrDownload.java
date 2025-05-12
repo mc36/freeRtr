@@ -30,7 +30,6 @@ import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * downloader
@@ -213,7 +212,7 @@ public class rtrDownload extends ipRtr {
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
         pip.setTime(120000);
-        String tmp = version.getRWpath() + "rou" + bits.randomD() + ".tmp";
+        String tmp = cfgInit.getRWpath() + "rou" + bits.randomD() + ".tmp";
         userFlash.delete(tmp);
         if (userFlash.doReceive(pip, encUrl.parseOne(url), new File(tmp))) {
             logger.warn("error downloading " + url);

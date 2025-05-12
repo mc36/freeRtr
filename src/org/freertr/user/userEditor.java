@@ -2,9 +2,9 @@ package org.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.cfg.cfgInit;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * a simple editor
@@ -610,7 +610,7 @@ public class userEditor {
 
     private void putHeader() {
         putFill(0, userScreen.colGreen, userScreen.colWhite, 32);
-        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, version.namVer);
+        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, cfgInit.versionName);
         if (!clock) {
             return;
         }

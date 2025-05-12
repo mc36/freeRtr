@@ -11,6 +11,7 @@ import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.enc7bit;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
@@ -22,7 +23,6 @@ import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
 import org.freertr.util.verCore;
-import org.freertr.util.version;
 
 /**
  * cisco discovery protocol
@@ -355,7 +355,7 @@ public class ifcCdp implements ifcUp {
         pck.msbPutW(2, 0); // checksum
         pck.putSkip(4);
         tlv.putStr(pck, ttypDevId, cfgAll.hostName);
-        tlv.putStr(pck, ttypVer, version.headLine + "\n" + version.getHWfwd1liner() + "\n" + version.getVMname() + "\n" + version.getKernelName());
+        tlv.putStr(pck, ttypVer, cfgInit.versionFull + "\n" + cfgInit.getHWfwd1liner() + "\n" + cfgInit.getVMname() + "\n" + cfgInit.getKernelName());
         tlv.putStr(pck, ttypPlat, verCore.name);
         tlv.putStr(pck, ttypPrtId, cfg.name);
         bits.msbPutD(tlv.valDat, 0, capaRouter | capaBridge);

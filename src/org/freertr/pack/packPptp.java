@@ -1,8 +1,8 @@
 package org.freertr.pack;
 
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeSide;
-import org.freertr.util.version;
 
 /**
  * point to point tunneling protocol (rfc2637) packet
@@ -397,7 +397,7 @@ public class packPptp {
         chnNum = 0;
         frmVer = 0;
         hstNam = cfgAll.hostName;
-        vndNam = version.namVer;
+        vndNam = cfgInit.versionName;
     }
 
     /**

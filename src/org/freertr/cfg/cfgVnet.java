@@ -18,7 +18,6 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logBuf;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * virtual ethernet
@@ -235,7 +234,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         userHwdet.setupVeth(lst, "./", userHwdet.ifcTyp.raw, side1.getOSname(), side2.getOSname());
         userHwdet.setupIface(lst, "./", userHwdet.ifcTyp.raw, side1.getOSname(), 8192, null);
         userHwdet.setupIface(lst, "./", userHwdet.ifcTyp.raw, side2.getOSname(), 8192, null);
-        String a = version.getRWpath() + "vnet" + bits.randomD() + ".tmp";
+        String a = cfgInit.getRWpath() + "vnet" + bits.randomD() + ".tmp";
         if (bits.buf2txt(true, lst, a)) {
             return;
         }

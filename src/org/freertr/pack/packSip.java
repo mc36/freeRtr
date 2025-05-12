@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntHttp;
 import org.freertr.pipe.pipeSide;
 import org.freertr.snd.sndCodec;
@@ -11,7 +12,6 @@ import org.freertr.enc.encUrl;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * session initiation protocol (rfc3261) packet
@@ -499,7 +499,7 @@ public class packSip {
             header.add("Contact: " + cntc);
         }
         header.add("Max-Forwards: 70");
-        header.add("Server: " + version.usrAgnt);
+        header.add("Server: " + cfgInit.versionAgent);
         header.add("Allow: INVITE, MESSAGE, NOTIFY, ACK, BYE, CANCEL");
     }
 
@@ -525,7 +525,7 @@ public class packSip {
             header.add("Expires: " + expr);
         }
         header.add("Max-Forwards: 70");
-        header.add("Server: " + version.usrAgnt);
+        header.add("Server: " + cfgInit.versionAgent);
         header.add("Allow: INVITE, MESSAGE, NOTIFY, ACK, BYE, CANCEL");
     }
 
@@ -548,7 +548,7 @@ public class packSip {
             header.add("Contact: " + cntc);
         }
         header.add("Max-Forwards: 70");
-        header.add("Server: " + version.usrAgnt);
+        header.add("Server: " + cfgInit.versionAgent);
         header.add("Allow: INVITE, MESSAGE, NOTIFY, ACK, BYE, CANCEL");
     }
 
@@ -572,7 +572,7 @@ public class packSip {
         }
         command = cmd + " " + url + " SIP/2.0";
         header.add("Max-Forwards: 70");
-        header.add("User-Agent: " + version.usrAgnt);
+        header.add("User-Agent: " + cfgInit.versionAgent);
         header.add("To: " + trg);
         header.add("From: " + src);
         if (cid != null) {

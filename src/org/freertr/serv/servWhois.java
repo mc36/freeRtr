@@ -2,6 +2,7 @@ package org.freertr.serv;
 
 import java.util.List;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgProxy;
 import org.freertr.clnt.clntProxy;
 import org.freertr.clnt.clntWhois;
@@ -16,7 +17,6 @@ import org.freertr.user.userHelping;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * whois server
@@ -231,7 +231,7 @@ class servWhoisConn implements Runnable {
             pipe.lineTx = pipeSide.modTyp.modeCRLF;
             pipe.lineRx = pipeSide.modTyp.modeCRorLF;
             pipe.linePut("% caching whois ready");
-            pipe.linePut("% " + version.headLine);
+            pipe.linePut("% " + cfgInit.versionFull);
             pipe.linePut("");
             String a = pipe.lineGet(1);
             a = a.trim().toLowerCase();

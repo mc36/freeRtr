@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.encBase64;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashMd5;
@@ -25,7 +26,6 @@ import org.freertr.enc.encXmlEntry;
 import org.freertr.enc.encUrl;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
-import org.freertr.util.version;
 
 /**
  * hypertext transfer protocol (rfc2616) client
@@ -104,7 +104,7 @@ public class clntHttp {
         if (cfgAll.httpAgent != null) {
             return cfgAll.httpAgent;
         } else {
-            return version.usrAgnt + " (" + version.getKernelName() + ", " + version.getVMname() + ", " + version.getHWfwd1liner() + ")";
+            return cfgInit.versionAgent + " (" + cfgInit.getKernelName() + ", " + cfgInit.getVMname() + ", " + cfgInit.getHWfwd1liner() + ")";
         }
     }
 

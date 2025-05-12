@@ -5,13 +5,13 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.cry.cryHashCrc32;
 import org.freertr.pipe.pipeSide;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * virtual machine v2
@@ -1247,10 +1247,10 @@ public class userVM {
                 putAsciiz(regs[reg_trg], "emulator");
                 return 0;
             case 119: // system.kernelInfo
-                putAsciiz(regs[reg_trg], bits.lst2str(version.shPlat(), "\r\n"));
+                putAsciiz(regs[reg_trg], bits.lst2str(cfgInit.getShPlat(), "\r\n"));
                 return 0;
             case 120: // system.kernelLogo
-                putAsciiz(regs[reg_trg], bits.lst2str(version.shLogo(0x08), "\r\n"));
+                putAsciiz(regs[reg_trg], bits.lst2str(cfgInit.getShLogo(0x08), "\r\n"));
                 return 0;
             case 121: // system.procLive
                 regs[reg_b] = 0;

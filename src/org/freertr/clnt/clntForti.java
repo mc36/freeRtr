@@ -3,6 +3,7 @@ package org.freertr.clnt;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcPpp;
@@ -18,7 +19,6 @@ import org.freertr.enc.encXml;
 import org.freertr.enc.encUrl;
 import org.freertr.util.logger;
 import org.freertr.util.state;
-import org.freertr.util.version;
 
 /**
  * forti client
@@ -232,7 +232,7 @@ public class clntForti implements Runnable, ifcDn {
         url.filPath = "remote/";
         url.filName = "logincheck";
         cln.sendLine("POST " + url.toURL(false, false, true, true) + " HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Connection: keep-alive");
         cln.sendLine("Content-Length: 0");
@@ -251,7 +251,7 @@ public class clntForti implements Runnable, ifcDn {
             return;
         }
         cln.sendLine("GET /remote/fortisslvpn_xml HTTP/1.1");
-        cln.sendLine("User-Agent: " + version.usrAgnt);
+        cln.sendLine("User-Agent: " + cfgInit.versionAgent);
         cln.sendLine("Host: " + url.server);
         cln.sendLine("Cookie: " + cookie);
         cln.sendLine("");

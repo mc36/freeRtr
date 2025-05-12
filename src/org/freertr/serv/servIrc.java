@@ -3,6 +3,7 @@ package org.freertr.serv;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -15,7 +16,6 @@ import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logFil;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * internet relay chat (rfc2812) server
@@ -463,7 +463,7 @@ class servIrcConn implements Comparable<servIrcConn>, Runnable {
             return false;
         }
         if (s.equals("version")) {
-            numTx("351", version.namVer + " :");
+            numTx("351", cfgInit.versionName + " :");
             return false;
         }
         if (s.equals("time")) {

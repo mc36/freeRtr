@@ -20,7 +20,6 @@ import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
-import org.freertr.util.version;
 
 /**
  * simple mail transfer protocol (rfc821) client

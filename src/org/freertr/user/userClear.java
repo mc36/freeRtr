@@ -75,7 +75,6 @@ import org.freertr.serv.servPckOudp;
 import org.freertr.serv.servSdwan;
 import org.freertr.serv.servVxlan;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * process clear commands
@@ -112,7 +111,7 @@ public class userClear {
         }
         a = fl.getAbsolutePath();
         userFlash.rename(a, a + ".bak", true, true);
-        bits.buf2txt(false, bits.str2lst("core dump detected at " + a), version.myErrorFile());
+        bits.buf2txt(false, bits.str2lst("core dump detected at " + a), cfgInit.myErrorFile());
     }
 
     /**
@@ -162,13 +161,13 @@ public class userClear {
             return null;
         }
         if (a.equals("errors")) {
-            File[] fls = userFlash.dirList(version.getRWpath());
+            File[] fls = userFlash.dirList(cfgInit.getRWpath());
             if (fls != null) {
                 for (int i = 0; i < fls.length; i++) {
                     doOneCrashFile(fls[i]);
                 }
             }
-            List<String> err = bits.txt2buf(version.myErrorFile());
+            List<String> err = bits.txt2buf(cfgInit.myErrorFile());
             if (err == null) {
                 cmd.error("nothing to report");
                 return null;
@@ -192,7 +191,7 @@ public class userClear {
                 cmd.error("error sending mail");
                 return null;
             }
-            userFlash.delete(version.myErrorFile());
+            userFlash.delete(cfgInit.myErrorFile());
             cmd.error("errors mailed");
             return null;
         }

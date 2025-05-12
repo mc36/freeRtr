@@ -12,7 +12,6 @@ import org.freertr.user.userReader;
 import org.freertr.user.userScreen;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * one tui based menu configuration
@@ -548,7 +547,7 @@ class cfgMenuTdoer {
 
     private void putHeader() {
         putFill(0, userScreen.colGreen, userScreen.colWhite, 32);
-        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, version.namVer);
+        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, cfgInit.versionName);
     }
 
     private void putFooter() {

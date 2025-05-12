@@ -2,13 +2,13 @@ package org.freertr.user;
 
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntProxy;
 import org.freertr.pipe.pipeConnect;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.serv.servTelnet;
 import org.freertr.util.bits;
-import org.freertr.util.version;
 
 /**
  * modem emulation interface
@@ -180,7 +180,7 @@ public class userModem {
                 continue;
             }
             if (cmd.equals("i")) { // information
-                pipe.linePut(version.headLine);
+                pipe.linePut(cfgInit.versionFull);
                 continue;
             }
             if (cmd.equals("m")) { // mute

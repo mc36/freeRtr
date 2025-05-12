@@ -7,6 +7,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.enc.encUrl;
 import org.freertr.ip.ipFwdIface;
@@ -23,7 +24,6 @@ import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
-import org.freertr.util.version;
 
 /**
  * proxy connection client
@@ -554,7 +554,7 @@ public class clntProxy {
         }
         pip.strPut(":" + cPort);
         pip.linePut(" HTTP/1.1");
-        pip.linePut("User-Agent: " + version.usrAgnt);
+        pip.linePut("User-Agent: " + cfgInit.versionAgent);
         String s = clntHttp.getAuthor(username, password);
         if (s != null) {
             pip.linePut(s);

@@ -1,13 +1,13 @@
 package org.freertr.serv;
 
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.encUrl;
 import org.freertr.pipe.pipeSide;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * http streamer
@@ -63,7 +63,7 @@ public class servHttpStrm implements Runnable {
         cnn.lineTx = pipeSide.modTyp.modeCRLF;
         cnn.lineRx = pipeSide.modTyp.modeCRtryLF;
         cnn.linePut("GET " + srvUrl.toURL(false, false, true, true) + " HTTP/1.1");
-        cnn.linePut("User-Agent: " + version.usrAgnt + " [streaming]");
+        cnn.linePut("User-Agent: " + cfgInit.versionAgent + " [streaming]");
         cnn.linePut("Host: " + srvUrl.server);
         cnn.linePut("Accept: */*");
         cnn.linePut("Accept-Language: *");

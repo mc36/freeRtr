@@ -22,7 +22,6 @@ import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
 import org.freertr.util.verCore;
-import org.freertr.util.version;
 
 /**
  * process sw upgrade
@@ -114,7 +113,7 @@ public class userUpgrade {
      * @return version filename
      */
     protected static String myVerFile() {
-        return version.myPathName() + verExt;
+        return cfgInit.myPathName() + verExt;
     }
 
     /**
@@ -123,7 +122,7 @@ public class userUpgrade {
      * @return filename without path
      */
     public static String myFileName() {
-        return new File(version.getFileName()).getName();
+        return new File(cfgInit.getFileName()).getName();
     }
 
     /**
@@ -242,7 +241,7 @@ public class userUpgrade {
     public int doVerify(userUpgradeBlob blb) {
         int err = 0;
         cmd.error("server: " + cfgAll.upgradeServer);
-        cmd.error("archive: " + version.getFileName());
+        cmd.error("archive: " + cfgInit.getFileName());
         cmd.error("version: " + myVerFile());
         if (blb == null) {
             List<String> txt = bits.txt2buf(myVerFile());
@@ -261,10 +260,10 @@ public class userUpgrade {
         cmd.error("time: " + blb.getTime());
         cmd.error("sign: " + blb.keyed + " key");
         cmd.error("hash: " + blb.getSum(2));
-        err += verifyFile(version.getFileName(), blb.jars);
+        err += verifyFile(cfgInit.getFileName(), blb.jars);
         for (int i = 0; i < blb.files.size(); i++) {
             userUpgradeNtry ntry = blb.files.get(i);
-            err += verifyFile(version.getRWpath() + ntry.name, ntry.chk);
+            err += verifyFile(cfgInit.getRWpath() + ntry.name, ntry.chk);
         }
         if (err > 0) {
             cmd.error("some tests failed!");
@@ -285,7 +284,7 @@ public class userUpgrade {
         int err = 0;
         for (int i = 0; i < blb.files.size(); i++) {
             userUpgradeNtry ntry = blb.files.get(i);
-            if (new File(version.getRWpath() + ntry.name).exists()) {
+            if (new File(cfgInit.getRWpath() + ntry.name).exists()) {
                 continue;
             }
             cmd.error(ntry.name + " is missing!");
@@ -324,7 +323,7 @@ public class userUpgrade {
      * @return false on success, true on error
      */
     public static boolean doRevert() {
-        String a = version.getFileName();
+        String a = cfgInit.getFileName();
         if (userFlash.rename(a + bakExt, a, true, false)) {
             logger.error("unable to revert to backup");
             return true;
@@ -336,7 +335,7 @@ public class userUpgrade {
      * do software backup
      */
     public void doBackup() {
-        String a = version.getFileName();
+        String a = cfgInit.getFileName();
         cons.debugStat(cmds.doneFail(userFlash.copy(a, a + bakExt, true)));
     }
 
@@ -362,8 +361,8 @@ public class userUpgrade {
             return l;
         }
         doCleanUpDir(l, "./");
-        doCleanUpDir(l, version.getFileName());
-        doCleanUpDir(l, version.getRWpath());
+        doCleanUpDir(l, cfgInit.getFileName());
+        doCleanUpDir(l, cfgInit.getRWpath());
         return l;
     }
 
@@ -468,7 +467,7 @@ public class userUpgrade {
      * do auto-revert
      */
     protected static void doAutoRevert() {
-        String tmp = version.getRWpath() + "rev" + bits.randomD() + ".tmp";
+        String tmp = cfgInit.getRWpath() + "rev" + bits.randomD() + ".tmp";
         encUrl url = encUrl.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
@@ -519,7 +518,7 @@ public class userUpgrade {
             server = cfgAll.upgradeServer;
         }
         cons.debugStat("downloading version info");
-        String tmp = version.getRWpath() + "upg" + bits.randomD() + ".tmp";
+        String tmp = cfgInit.getRWpath() + "upg" + bits.randomD() + ".tmp";
         encUrl url = encUrl.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
@@ -582,7 +581,7 @@ public class userUpgrade {
                 return;
             }
         }
-        int i = upgradeFile(blb.jars, version.getFileName(), server + myFileName(), tmp);
+        int i = upgradeFile(blb.jars, cfgInit.getFileName(), server + myFileName(), tmp);
         if (i == 2) {
             if (cfgAll.upgradeScript != null) {
                 cons.debugRes("running upgrade script");
@@ -614,7 +613,7 @@ public class userUpgrade {
         diff.delFiles(blb.files);
         for (i = 0; i < diff.files.size(); i++) {
             userUpgradeNtry ntry = diff.files.get(i);
-            a = version.getRWpath() + ntry.name;
+            a = cfgInit.getRWpath() + ntry.name;
             if (needStop(justSimu)) {
                 cons.debugStat("should remove " + a);
                 continue;
@@ -650,7 +649,7 @@ public class userUpgrade {
             if ((ntry.flag & flg) == 0) {
                 continue;
             }
-            int i = upgradeFile(ntry.chk, version.getRWpath() + ntry.name, server + ntry.name, tmp);
+            int i = upgradeFile(ntry.chk, cfgInit.getRWpath() + ntry.name, server + ntry.name, tmp);
             if (i == 2) {
                 some = (ntry.flag & userUpgradeNtry.flgData) == 0;
                 continue;
@@ -674,7 +673,7 @@ public class userUpgrade {
             if ((ntry.flag & userUpgradeNtry.flgScript) == 0) {
                 continue;
             }
-            List<String> res = bits.txt2buf(version.getRWpath() + ntry.name);
+            List<String> res = bits.txt2buf(cfgInit.getRWpath() + ntry.name);
             if (res == null) {
                 continue;
             }
@@ -697,7 +696,7 @@ public class userUpgrade {
         userScript s = new userScript(pip, "");
         s.allowExec = true;
         s.allowConfig = true;
-        s.addLine("set path \"" + version.getRWpath() + "\"");
+        s.addLine("set path \"" + cfgInit.getRWpath() + "\"");
         s.addLines(scr);
         s.cmdAll();
         pl.setClose();
@@ -786,7 +785,7 @@ public class userUpgrade {
 class userUpgradeRevert implements Runnable {
 
     public void run() {
-        String s = bits.lst2str(bits.txt2buf(version.myReloadFile()), " ");
+        String s = bits.lst2str(bits.txt2buf(cfgInit.myReloadFile()), " ");
         int i = s.indexOf("#");
         if (i > 0) {
             s = s.substring(i + 1, s.length());
@@ -873,8 +872,8 @@ class userUpgradeBlob {
     public final List<userUpgradeNtry> files = new ArrayList<userUpgradeNtry>();
 
     public void putSelf() {
-        head = version.headLine;
-        jars = userUpgrade.calcFileHash(version.getFileName());
+        head = cfgInit.versionFull;
+        jars = userUpgrade.calcFileHash(cfgInit.getFileName());
         time = 0;
     }
 
@@ -938,7 +937,7 @@ class userUpgradeBlob {
         }
         a += " " + getFilelist(userUpgradeNtry.flgBefore);
         if (impl) {
-            a += " " + version.getFileName();
+            a += " " + cfgInit.getFileName();
         }
         a += " " + getFilelist(userUpgradeNtry.flgAfter);
         return a.trim();

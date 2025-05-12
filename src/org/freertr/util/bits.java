@@ -1213,4 +1213,16 @@ public class bits {
         return ln;
     }
 
+    /**
+     * put array to list
+     *
+     * @param trg target
+     * @param src source
+     */
+    public static final void array2list(List<String> trg, String[] src) {
+        for (int i = 0; i < src.length; i++) {
+            trg.add(src[i]);
+        }
+    }
+
 }

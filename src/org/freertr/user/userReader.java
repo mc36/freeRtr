@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntHttp;
 import org.freertr.enc.enc7bit;
 import org.freertr.enc.encUrl;
@@ -18,7 +19,6 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * reading one line from the user
@@ -793,7 +793,7 @@ public class userReader implements Comparator<String> {
                     return doSecond(lst);
                 }
                 http.sendLine("GET " + url.toURL(true, true, true, true) + " HTTP/1.1");
-                http.sendLine("User-Agent: " + version.usrAgnt);
+                http.sendLine("User-Agent: " + cfgInit.versionAgent);
                 http.sendLine("Host: " + url.server);
                 http.sendLine("Connection: Close");
                 http.sendLine("");

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -13,7 +14,6 @@ import org.freertr.util.debugger;
 import org.freertr.enc.encUrl;
 import org.freertr.user.userFlash;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * http connection
@@ -200,7 +200,7 @@ public class servHttpConn implements Runnable {
         if (head != null) {
             sendLn("HTTP/" + (gotVer / 10) + "." + (gotVer % 10) + " " + head);
         }
-        sendLn("Server: " + version.usrAgnt);
+        sendLn("Server: " + cfgInit.versionAgent);
         if (type != null) {
             sendLn("Content-Type: " + type);
         }

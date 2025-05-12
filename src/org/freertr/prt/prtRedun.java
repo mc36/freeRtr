@@ -28,7 +28,6 @@ import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.util.state;
 import org.freertr.util.syncInt;
-import org.freertr.util.version;
 
 /**
  * redundancy protocol
@@ -378,7 +377,7 @@ public class prtRedun implements Runnable {
      */
     public static void doState() {
         for (int i = 0; i < ifaces.size(); i++) {
-            ifaces.get(i).doFile(version.myStateFile(), packRedundancy.fnState);
+            ifaces.get(i).doFile(cfgInit.myStateFile(), packRedundancy.fnState);
         }
     }
 
@@ -399,10 +398,10 @@ public class prtRedun implements Runnable {
      */
     public static String wireName2fileName(String s) {
         if (s.equals(packRedundancy.fnCore)) {
-            return version.getFileName();
+            return cfgInit.getFileName();
         }
         if (s.equals(packRedundancy.fnState)) {
-            return version.myStateFile();
+            return cfgInit.myStateFile();
         }
         if (s.equals(packRedundancy.fnStart)) {
             return cfgInit.cfgFileSw;
@@ -460,7 +459,7 @@ class prtRedunIfc implements ifcUp {
         lower.setUpper(this);
         lower.startLoop(1);
         hwaddr = (addrMac) lower.getHwAddr();
-        filNm = version.getRWpath() + "red" + bits.randomD() + ".tmp";
+        filNm = cfgInit.getRWpath() + "red" + bits.randomD() + ".tmp";
     }
 
     public void setParent(ifcDn parent) {
@@ -637,7 +636,7 @@ class prtRedunIfc implements ifcUp {
                     }
                     lst.add(a);
                 }
-                a = version.getRWpath() + "exe" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "exe" + bits.randomD() + ".tmp";
                 new prtRedunExec(this, a, lst);
                 break;
         }

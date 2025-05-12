@@ -11,6 +11,7 @@ import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.enc7bit;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabGen;
@@ -19,7 +20,6 @@ import org.freertr.util.counter;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
-import org.freertr.util.version;
 
 /**
  * link layer discovery (ieee 802.1ab) protocol
@@ -366,7 +366,7 @@ public class ifcLldp implements ifcUp {
         tlv.putBytes(pck, ttypTime, 2, tlv.valDat);
         tlv.putStr(pck, ttypPrtDesc, cfg.name);
         tlv.putStr(pck, ttypSysName, cfgAll.hostName);
-        tlv.putStr(pck, ttypSysDesc, version.headLine);
+        tlv.putStr(pck, ttypSysDesc, cfgInit.versionFull);
         bits.msbPutW(tlv.valDat, 0, capaRouter | capaBridge); // capabilities
         bits.msbPutW(tlv.valDat, 2, capaRouter | capaBridge); // capabilities
         tlv.putBytes(pck, ttypSysCapa, 4, tlv.valDat);

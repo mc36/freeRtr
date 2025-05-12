@@ -2,9 +2,9 @@ package org.freertr.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.cfg.cfgInit;
 import org.freertr.enc.encXml;
 import org.freertr.util.bits;
-import org.freertr.util.version;
 
 /**
  * file manager
@@ -28,7 +28,7 @@ public class userFilman {
         console = pip;
         pan = new userFilmanPanel[2];
         int siz = console.sizX / 2;
-        String a = version.getRWpath();
+        String a = cfgInit.getRWpath();
         for (int i = 0; i < pan.length; i++) {
             pan[i] = new userFilmanPanel(console, i * siz, 0, siz, console.sizY - 2);
             pan[i].path = a;

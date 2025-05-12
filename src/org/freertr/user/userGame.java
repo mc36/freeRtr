@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.serv.servQuote;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
-import org.freertr.util.version;
 
 /**
  * screen games
@@ -739,19 +739,6 @@ public class userGame {
             userScreen.sendTit(console.pipe, cfgAll.hostName);
             return;
         }
-        int i = version.secretFind(a);
-        if (i >= 0) {
-            List<String> sec = version.secretGet(i);
-            int[] god = new int[6];
-            god[0] = userScreen.colBrCyan;
-            god[1] = userScreen.colBrWhite;
-            god[2] = userScreen.colBrYellow;
-            god[3] = userScreen.colBrGreen;
-            god[4] = userScreen.colBrBlue;
-            god[5] = userScreen.colBrRed;
-            colorDrawer(god, sec);
-            return;
-        }
         if (a.equals("chat")) {
             userChat c = new userChat(cmd.pipe, reader);
             c.doChat();
@@ -795,7 +782,7 @@ public class userGame {
         if (a.equals("text")) {
             a = cmd.getRemaining();
             if (a.length() < 1) {
-                a = version.namVer;
+                a = cfgInit.versionName;
             }
             doText(a);
             return;
@@ -804,7 +791,7 @@ public class userGame {
             a = cmd.getRemaining();
             List<String> txt;
             if (a.length() < 1) {
-                txt = version.shLogo(0x08);
+                txt = cfgInit.getShLogo(0x08);
             } else {
                 txt = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
             }
@@ -847,7 +834,19 @@ public class userGame {
             doAntBall();
             return;
         }
-        cmd.badCmd();
+        List<String> lst = cfgInit.secretsFind(a);
+        if (lst == null) {
+            cmd.badCmd();
+            return;
+        }
+        int[] god = new int[6];
+        god[0] = userScreen.colBrCyan;
+        god[1] = userScreen.colBrWhite;
+        god[2] = userScreen.colBrYellow;
+        god[3] = userScreen.colBrGreen;
+        god[4] = userScreen.colBrBlue;
+        god[5] = userScreen.colBrRed;
+        colorDrawer(god, lst);
     }
 
 }

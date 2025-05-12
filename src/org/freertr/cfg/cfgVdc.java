@@ -21,7 +21,6 @@ import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logBuf;
 import org.freertr.util.logger;
-import org.freertr.util.version;
 
 /**
  * one vdc configuration
@@ -973,7 +972,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             if (configFile != null) {
                 s = configFile;
             }
-            cmd = version.getJvmExec() + " " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + version.getFileName() + " routercs " + a + " " + s;
+            cmd = cfgInit.getJvmExec() + " " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + cfgInit.getFileName() + " routercs " + a + " " + s;
         } else {
             cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -drive file=" + image1name + ",format=raw,cache=unsafe -m " + imageMem;
             if (vga2vnc != null) {
@@ -1139,7 +1138,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
      */
     public void startNow(List<String> defs, List<String> inhs, int beg, int end) {
         need2run = true;
-        cfgBase = version.getRWpath() + "vdc-" + name + "-";
+        cfgBase = cfgInit.getRWpath() + "vdc-" + name + "-";
         List<String> l = new ArrayList<String>();
         l.add("save " + cfgBase + "sav.txt");
         l.add("hwid " + cfgInit.hwIdNum);
@@ -1149,7 +1148,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             l.add("hwsn " + uuidValue);
         }
         l.add("prnt " + cfgAll.hostName);
-        l.add("rwpath " + version.getRWpath());
+        l.add("rwpath " + cfgInit.getRWpath());
         if (!priviledged) {
             l.add("limited");
         }

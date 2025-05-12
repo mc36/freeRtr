@@ -60,7 +60,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.differ;
 import org.freertr.util.logger;
-import org.freertr.util.version;
+import org.freertr.util.verCore;
 
 /**
  * process exec commands
@@ -188,6 +188,13 @@ public class userExec {
             return;
         }
         last = o.last;
+    }
+
+    private static void getSecretHelp(userHelping hl, int beg) {
+        for (int i = 0; i < verCore.secrets.length; i++) {
+            String a = verCore.secrets[i][0];
+            hl.add(null, beg + " .  " + a + "   sh0w m30www s0m30www " + a);
+        }
     }
 
     private void getHelpClearIpX(userHelping hl) {
@@ -1242,7 +1249,7 @@ public class userExec {
         hl.add(null, "5 6            <str>             meme domain.tld");
         hl.add(null, "6 7              <str>           target domain to meme");
         hl.add(null, "7 .                <str>         your redirector www");
-        version.secretHelp(hl, 3);
+        getSecretHelp(hl, 3);
         hl.add(null, "3 4        7bit                  show some 7bit");
         hl.add(null, "4 4,.        [str]               string to 7bit");
         hl.add(null, "3 4        rev7                  show some 7bit");
@@ -2029,7 +2036,7 @@ public class userExec {
         hl.add(null, "2 .      both                         divide to four");
         hl.add(null, "2 .      none                         do not divide");
         hl.add(null, "1 2    game                           play games or watch screen savers");
-        version.secretHelp(hl, 2);
+        getSecretHelp(hl, 2);
         if (privileged) {
             hl.add(null, "2 3      ansi                         show some art");
             hl.add(null, "3 .        <str>                      filename");
@@ -3167,7 +3174,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("reload")) {
-                a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + ".tmp";
                 boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
@@ -3187,7 +3194,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("overwrite-network")) {
-                a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + ".tmp";
                 boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> c2 = bits.txt2buf(a);
                 userFlash.delete(a);
@@ -3209,7 +3216,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("network")) {
-                a = version.getRWpath() + "cfg" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + ".tmp";
                 boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
@@ -3387,7 +3394,7 @@ public class userExec {
                     url.filName = "" + cfgAll.hostName;
                     url.filExt = ".txt";
                 }
-                a = version.getRWpath() + "wrt" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "wrt" + bits.randomD() + ".tmp";
                 if (bits.buf2txt(true, cfgAll.getShRun(1), a)) {
                     cmd.error("failed to write temporary file!");
                     return cmdRes.command;

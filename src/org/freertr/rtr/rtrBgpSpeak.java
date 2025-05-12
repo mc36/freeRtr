@@ -9,6 +9,7 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgInit;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
@@ -30,7 +31,6 @@ import org.freertr.enc.encTlv;
 import org.freertr.prt.prtTcp;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
-import org.freertr.util.version;
 
 /**
  * bgp4 speaker
@@ -2018,7 +2018,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaHostname, buf);
         }
         if (neigh.software) {
-            byte[] buf = encodeHostname(version.usrAgnt);
+            byte[] buf = encodeHostname(cfgInit.versionAgent);
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaSoftware, buf);
         }
         if (neigh.bfdTrigger == 2) {
