@@ -1163,7 +1163,9 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             pck.clear();
-            pck.putSkip(ntry.writeData(pck, 0));
+            int o = ntry.writeData(pck, 0);
+            pck.msbPutW(2, 3600); // remaining
+            pck.putSkip(o);
             pck.merge2beg();
             lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
         }

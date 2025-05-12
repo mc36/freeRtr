@@ -43,6 +43,11 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
     public final static int dmpCsum = dmpComp - 0x4000;
 
     /**
+     * state dump
+     */
+    public final static int dmpSave = dmpFull - 0x8;
+
+    /**
      * router id
      */
     public addrIPv4 rtrId;

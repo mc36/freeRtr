@@ -387,7 +387,10 @@ public class version {
      * @return filename without path
      */
     public static String myStateFile() {
-        return getRWpath() + "state-" + cfgAll.hostName + ".log";
+        if (cfgInit.saveFile != null) {
+            return cfgInit.saveFile;
+        }
+        return getRWpath() + "state" + cfgAll.hostName + ".txt";
     }
 
     /**

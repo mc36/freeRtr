@@ -181,6 +181,11 @@ public class cfgInit implements Runnable {
     public static String cfgFileSw;
 
     /**
+     * state save file in use
+     */
+    public static String saveFile;
+
+    /**
      * hardware serial number
      */
     public static String hwIdNum;
@@ -426,6 +431,10 @@ public class cfgInit implements Runnable {
             s = cmd.word().toLowerCase();
             if (s.equals("limited")) {
                 cfgAll.invdc = true;
+                continue;
+            }
+            if (s.equals("save")) {
+                saveFile = cmd.getRemaining();
                 continue;
             }
             if (s.equals("hwid")) {

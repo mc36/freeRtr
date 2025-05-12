@@ -27,7 +27,6 @@ import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
-import org.freertr.user.userFlash;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
