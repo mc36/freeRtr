@@ -2032,11 +2032,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public static tabGen<userFilter> nocloneF;
 
     /**
-     * interface names
-     */
-    public static userHelping ifaceNames;
-
-    /**
      * convert interface name to type
      *
      * @param s name of interface
@@ -2669,7 +2664,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         String b = s.substring(0, p).trim();
         s = s.substring(p, s.length()).trim();
-        b = ifaceNames.repairLine(b).trim();
+        b = cfgInit.ifaceNames.repairLine(b).trim();
         if (b.length() < 1) {
             return new String[]{"", "", ""};
         }

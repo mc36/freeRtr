@@ -250,6 +250,11 @@ public class cfgInit implements Runnable {
      */
     public static int vdcPortEnd = 32768;
 
+    /**
+     * interface names
+     */
+    public static userHelping ifaceNames = new userHelping();
+
     private static List<String> stateLast = new ArrayList<String>();
 
     private final static tabGen<cfgInitMime> types = new tabGen<cfgInitMime>();
@@ -869,33 +874,101 @@ public class cfgInit implements Runnable {
             logger.info("no sw config found");
             sw = new ArrayList<String>();
         }
-        for (int o = 0; o < version.mimetypes.length; o++) {
-            String s = version.mimetypes[o];
-            int i = s.indexOf(" ");
-            String a = s.substring(i + 1, s.length()).trim();
-            s = s.substring(0, i).trim();
-            types.add(new cfgInitMime(s, a));
-        }
-        cfgIfc.ifaceNames = new userHelping();
-        cfgIfc.ifaceNames.add(null, "1 . loopback      ifc");
-        cfgIfc.ifaceNames.add(null, "1 . null          ifc");
-        cfgIfc.ifaceNames.add(null, "1 . template      ifc");
-        cfgIfc.ifaceNames.add(null, "1 . dialer        ifc");
-        cfgIfc.ifaceNames.add(null, "1 . sdn           ifc");
-        cfgIfc.ifaceNames.add(null, "1 . pwether       ifc");
-        cfgIfc.ifaceNames.add(null, "1 . virtualppp    ifc");
-        cfgIfc.ifaceNames.add(null, "1 . access        ifc");
-        cfgIfc.ifaceNames.add(null, "1 . bvi           ifc");
-        cfgIfc.ifaceNames.add(null, "1 . bundle        ifc");
-        cfgIfc.ifaceNames.add(null, "1 . tunnel        ifc");
-        cfgIfc.ifaceNames.add(null, "1 . hairpin       ifc");
-        cfgIfc.ifaceNames.add(null, "1 . atm           ifc");
-        cfgIfc.ifaceNames.add(null, "1 . arcnet        ifc");
-        cfgIfc.ifaceNames.add(null, "1 . infiniband    ifc");
-        cfgIfc.ifaceNames.add(null, "1 . ethernet      ifc");
-        cfgIfc.ifaceNames.add(null, "1 . serial        ifc");
-        cfgIfc.ifaceNames.add(null, "1 . cellular      ifc");
-        cfgIfc.ifaceNames.add(null, "1 . wireless      ifc");
+        types.add(new cfgInitMime("html", "text/html"));
+        types.add(new cfgInitMime("htm", "text/html"));
+        types.add(new cfgInitMime("css", "text/css"));
+        types.add(new cfgInitMime("rtf", "text/richtext"));
+        types.add(new cfgInitMime("text", "text/plain"));
+        types.add(new cfgInitMime("txt", "text/plain"));
+        types.add(new cfgInitMime("csv", "text/csv"));
+        types.add(new cfgInitMime("md", "text/markdown"));
+        types.add(new cfgInitMime("*", "text/plain"));
+        types.add(new cfgInitMime("webp", "image/webp"));
+        types.add(new cfgInitMime("gif", "image/gif"));
+        types.add(new cfgInitMime("jpeg", "image/jpeg"));
+        types.add(new cfgInitMime("jpg", "image/jpeg"));
+        types.add(new cfgInitMime("tiff", "image/tiff"));
+        types.add(new cfgInitMime("tif", "image/tiff"));
+        types.add(new cfgInitMime("bmp", "image/bmp"));
+        types.add(new cfgInitMime("png", "image/png"));
+        types.add(new cfgInitMime("svg", "image/svg+xml"));
+        types.add(new cfgInitMime("ico", "image/x-icon"));
+        types.add(new cfgInitMime("pbm", "image/x-portable-bitmap"));
+        types.add(new cfgInitMime("pgm", "image/x-portable-graymap"));
+        types.add(new cfgInitMime("pnm", "image/x-portable-anymap"));
+        types.add(new cfgInitMime("ppm", "image/x-portable-pixmap"));
+        types.add(new cfgInitMime("xbm", "image/x-xbitmap"));
+        types.add(new cfgInitMime("xpm", "image/x-xpixmap"));
+        types.add(new cfgInitMime("webm", "video/webm"));
+        types.add(new cfgInitMime("mjpeg", "video/x-motion-jpeg"));
+        types.add(new cfgInitMime("avi", "video/msvideo"));
+        types.add(new cfgInitMime("mov", "video/quicktime"));
+        types.add(new cfgInitMime("qt", "video/quicktime"));
+        types.add(new cfgInitMime("mpeg", "video/mpeg"));
+        types.add(new cfgInitMime("mpg", "video/mpeg"));
+        types.add(new cfgInitMime("mp4", "video/mp4"));
+        types.add(new cfgInitMime("mkv", "video/x-matroska"));
+        types.add(new cfgInitMime("3gp", "video/3gpp"));
+        types.add(new cfgInitMime("3g2", "video/3gpp2"));
+        types.add(new cfgInitMime("ogv", "video/ogg"));
+        types.add(new cfgInitMime("weba", "audio/weba"));
+        types.add(new cfgInitMime("aif", "audio/x-aiff"));
+        types.add(new cfgInitMime("aiff", "audio/x-aiff"));
+        types.add(new cfgInitMime("wav", "audio/wav"));
+        types.add(new cfgInitMime("midi", "audio/midi"));
+        types.add(new cfgInitMime("mid", "audio/midi"));
+        types.add(new cfgInitMime("rmi", "audio/midi"));
+        types.add(new cfgInitMime("ram", "audio/x-pn-realaudio"));
+        types.add(new cfgInitMime("rpm", "audio/x-pn-realaudio-plugin"));
+        types.add(new cfgInitMime("ra", "audio/x-realaudio"));
+        types.add(new cfgInitMime("rm", "audio/x-pn-realaudio"));
+        types.add(new cfgInitMime("mp3", "audio/mpeg"));
+        types.add(new cfgInitMime("oga", "audio/ogg"));
+        types.add(new cfgInitMime("flac", "audio/flac"));
+        types.add(new cfgInitMime("aac", "audio/aac"));
+        types.add(new cfgInitMime("bin", "application/octet-stream"));
+        types.add(new cfgInitMime("jar", "application/java-archive"));
+        types.add(new cfgInitMime("doc", "application/msword"));
+        types.add(new cfgInitMime("docx", "application/msword"));
+        types.add(new cfgInitMime("dvi", "application/x-dvi"));
+        types.add(new cfgInitMime("eps", "application/postscript"));
+        types.add(new cfgInitMime("ps", "application/postscript"));
+        types.add(new cfgInitMime("gz", "application/x-gzip"));
+        types.add(new cfgInitMime("bz2", "application/x-bzip2"));
+        types.add(new cfgInitMime("js", "application/javascript"));
+        types.add(new cfgInitMime("latex", "application/x-latex"));
+        types.add(new cfgInitMime("lzh", "application/x-lzh"));
+        types.add(new cfgInitMime("pdf", "application/pdf"));
+        types.add(new cfgInitMime("epub", "application/epub+zip"));
+        types.add(new cfgInitMime("swf", "application/x-shockwave-flash"));
+        types.add(new cfgInitMime("tar", "application/tar"));
+        types.add(new cfgInitMime("tcl", "application/x-tcl"));
+        types.add(new cfgInitMime("tex", "application/x-tex"));
+        types.add(new cfgInitMime("tgz", "application/x-gzip"));
+        types.add(new cfgInitMime("zip", "application/zip"));
+        types.add(new cfgInitMime("xml", "application/xml"));
+        types.add(new cfgInitMime("ogg", "application/ogg"));
+        types.add(new cfgInitMime("wml", "text/vnd.wap.wml"));
+        types.add(new cfgInitMime("wbmp", "image/vnd.wap.wbmp"));
+        ifaceNames.add(null, "1 . loopback      ifc");
+        ifaceNames.add(null, "1 . null          ifc");
+        ifaceNames.add(null, "1 . template      ifc");
+        ifaceNames.add(null, "1 . dialer        ifc");
+        ifaceNames.add(null, "1 . sdn           ifc");
+        ifaceNames.add(null, "1 . pwether       ifc");
+        ifaceNames.add(null, "1 . virtualppp    ifc");
+        ifaceNames.add(null, "1 . access        ifc");
+        ifaceNames.add(null, "1 . bvi           ifc");
+        ifaceNames.add(null, "1 . bundle        ifc");
+        ifaceNames.add(null, "1 . tunnel        ifc");
+        ifaceNames.add(null, "1 . hairpin       ifc");
+        ifaceNames.add(null, "1 . atm           ifc");
+        ifaceNames.add(null, "1 . arcnet        ifc");
+        ifaceNames.add(null, "1 . infiniband    ifc");
+        ifaceNames.add(null, "1 . ethernet      ifc");
+        ifaceNames.add(null, "1 . serial        ifc");
+        ifaceNames.add(null, "1 . cellular      ifc");
+        ifaceNames.add(null, "1 . wireless      ifc");
         cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
         cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
         userReader.linedefF = createFilter(userReader.linedefL);
@@ -1106,14 +1179,14 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.exception(e);
         }
-        stateRestore();
+        stateLoad();
         started = bits.getTime();
         booting = false;
         new Thread(new cfgInit()).start();
         logger.info("boot completed");
     }
 
-    private final static void stateRestore() {
+    private final static void stateLoad() {
         List<String> txt = bits.txt2buf(version.myStateFile());
         if (txt == null) {
             return;
