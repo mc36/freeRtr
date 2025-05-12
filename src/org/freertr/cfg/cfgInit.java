@@ -183,7 +183,7 @@ public class cfgInit implements Runnable {
     /**
      * state save file in use
      */
-    public static String saveFile;
+    public static String stateFile;
 
     /**
      * hardware serial number
@@ -434,7 +434,7 @@ public class cfgInit implements Runnable {
                 continue;
             }
             if (s.equals("save")) {
-                saveFile = cmd.getRemaining();
+                stateFile = cmd.getRemaining();
                 continue;
             }
             if (s.equals("hwid")) {

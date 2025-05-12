@@ -221,7 +221,7 @@ public class userTesterOne {
         rdr = new pipeProgress(pip);
         pipe = pip;
         path = frm.temp;
-        prefix = frm.temp + "slot";
+        prefix = frm.temp;
         slot = frm.slot + slt;
         config = frm.config;
         unexit = frm.unexit;
@@ -993,6 +993,8 @@ public class userTesterOne {
                 cfg.add(s);
             }
             cfg.add("hwid tester-slot" + slot);
+            cfg.add("rwpath " + prefix);
+            cfg.add("save " + prefix + slot + rn + "-state");
             cfg.add("tcp2vrf " + (oobase + (slot * userTester.portSlot) + procs.size()) + " tester 23");
             int i = userTester.portBase + (slot * userTester.portSlot);
             int o = userTester.portSlot / 2;
