@@ -858,8 +858,10 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public void routerStateSet(cmds cmd) {
+    public boolean routerStateSet(cmds cmd) {
+        return true;
     }
 
     public void run() {

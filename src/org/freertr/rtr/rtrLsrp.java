@@ -1448,13 +1448,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public void routerStateSet(cmds cmd) {
+    public boolean routerStateSet(cmds cmd) {
         rtrLsrpData ntry = new rtrLsrpData();
         if (ntry.fromString(cmd)) {
-            return;
+            return true;
         }
         database.put(ntry);
+        return false;
     }
 
 }

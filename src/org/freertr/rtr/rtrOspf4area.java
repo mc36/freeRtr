@@ -1249,11 +1249,12 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public void stateSet(cmds cmd) {
+    public boolean stateSet(cmds cmd) {
         byte[] buf = encBase64.decodeBytes(cmd.getRemaining());
         if (buf == null) {
-            return;
+            return true;
         }
         packHolder pck = new packHolder(true, true);
         pck.putCopy(buf, 0, 0, buf.length);
@@ -1261,9 +1262,10 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
         pck.merge2beg();
         rtrOspf4lsa ntry = new rtrOspf4lsa();
         if (ntry.readData(pck, 0, true) < 0) {
-            return;
+            return true;
         }
         lsas.put(ntry);
+        return false;
     }
 
 }

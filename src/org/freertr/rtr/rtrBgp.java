@@ -4585,11 +4585,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public void routerStateSet(cmds cmd) {
+    public boolean routerStateSet(cmds cmd) {
         addrIP adr = new addrIP();
         if (adr.fromString(cmd.word())) {
-            return;
+            return true;
         }
         rtrBgpNeigh ntry = new rtrBgpNeigh(this, adr);
         rtrBgpTemp temp = findTemp(cmd.word());
@@ -4598,7 +4599,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry = old;
         } else {
             if (temp == null) {
-                return;
+                return true;
             }
             ntry.copyFrom(temp);
             ntry.template = temp;
@@ -4609,16 +4610,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         int o = bits.str2num(cmd.word());
         cfgIfc cfg = cfgAll.ifcFind(cmd.word(), 0);
         if (cfg == null) {
-            return;
+            return true;
         }
         ipFwdIface ifc = cfg.getFwdIfc(adr);
         if (ifc == null) {
-            return;
+            return true;
         }
         ntry.updateAddr(ifc);
         pipeSide pip = tcpCore.streamResume(new pipeLine(ntry.bufferSize, false), ntry.localIfc, i, ntry.peerAddr, o, "bgp", ntry.keyId, ntry.passwd, ntry.ttlSecurity, ntry.tosValue);
         if (pip == null) {
-            return;
+            return true;
         }
         ntry.conn = new rtrBgpSpeak(this, ntry, pip, true);
         i = bits.str2num(cmd.word());
@@ -4638,16 +4639,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.conn.peerRouterID = new addrIPv4();
         if (ntry.conn.peerRouterID.fromString(cmd.word())) {
             pip.setClose();
-            return;
+            return true;
         }
         if (old == null) {
             lstnNei.add(ntry);
         }
-        logger.info("resuming " + ntry.peerAddr);
         ntry.conn.peer32bitAS = true;
         ntry.conn.peerRefreshOld = true;
         ntry.conn.peerRefreshNew = true;
         ntry.startNow();
+        return false;
     }
 
     /**

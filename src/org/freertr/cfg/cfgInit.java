@@ -250,7 +250,7 @@ public class cfgInit implements Runnable {
      */
     public static int vdcPortEnd = 32768;
 
-    private static List<String> stateLast;
+    private static List<String> stateLast = new ArrayList<String>();
 
     private final static tabGen<cfgInitMime> types = new tabGen<cfgInitMime>();
 
@@ -1114,13 +1114,14 @@ public class cfgInit implements Runnable {
     }
 
     private final static void stateRestore() {
-        stateLast = bits.txt2buf(version.myStateFile());
-        userFlash.delete(version.myStateFile());
-        if (stateLast == null) {
-            stateLast = new ArrayList<String>();
+        List<String> txt = bits.txt2buf(version.myStateFile());
+        if (txt == null) {
+            return;
         }
-        for (int i = 0; i < stateLast.size(); i++) {
-            cmds cmd = new cmds("rst", stateLast.get(i));
+        userFlash.delete(version.myStateFile());
+        int o = 0;
+        for (int i = 0; i < txt.size(); i++) {
+            cmds cmd = new cmds("rst", txt.get(i));
             tabRouteAttr.routeType t = cfgRtr.name2num(cmd.word());
             if (t == null) {
                 continue;
@@ -1133,13 +1134,18 @@ public class cfgInit implements Runnable {
             if (r == null) {
                 continue;
             }
+            boolean b = true;
             try {
-                r.routerStateSet(cmd);
+                b = r.routerStateSet(cmd);
             } catch (Exception e) {
                 logger.traceback(e);
             }
+            if (b) {
+                continue;
+            }
+            o++;
         }
-        stateLast = new ArrayList<String>();
+        logger.info("restored " + o + " of " + txt.size());
     }
 
     /**

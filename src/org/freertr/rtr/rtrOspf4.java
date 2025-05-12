@@ -1316,14 +1316,15 @@ public class rtrOspf4 extends ipRtr {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public void routerStateSet(cmds cmd) {
+    public boolean routerStateSet(cmds cmd) {
         rtrOspf4area ara = new rtrOspf4area(this, bits.str2num(cmd.word()));
         ara = areas.find(ara);
         if (ara == null) {
-            return;
+            return true;
         }
-        ara.stateSet(cmd);
+        return ara.stateSet(cmd);
     }
 
 }

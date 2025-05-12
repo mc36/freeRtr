@@ -376,7 +376,8 @@ public abstract class ipRtr implements Comparable<ipRtr> {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public abstract void routerStateSet(cmds cmd);
+    public abstract boolean routerStateSet(cmds cmd);
 
 }

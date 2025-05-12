@@ -2399,10 +2399,11 @@ public class rtrIsis extends ipRtr {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public void routerStateSet(cmds cmd) {
+    public boolean routerStateSet(cmds cmd) {
         rtrIsisLevel lev = getLevel(bits.str2num(cmd.word()));
-        lev.stateSet(cmd);
+        return lev.stateSet(cmd);
     }
 
 }

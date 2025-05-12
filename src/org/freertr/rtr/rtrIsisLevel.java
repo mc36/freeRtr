@@ -1175,11 +1175,12 @@ public class rtrIsisLevel implements Runnable {
      * set state information
      *
      * @param cmd string to append
+     * @return true on error, false on success
      */
-    public void stateSet(cmds cmd) {
+    public boolean stateSet(cmds cmd) {
         byte[] buf = encBase64.decodeBytes(cmd.getRemaining());
         if (buf == null) {
-            return;
+            return true;
         }
         packHolder pck = new packHolder(true, true);
         pck.putCopy(buf, 0, 0, buf.length);
@@ -1187,9 +1188,10 @@ public class rtrIsisLevel implements Runnable {
         pck.merge2beg();
         rtrIsisLsp ntry = new rtrIsisLsp();
         if (ntry.readData(pck, 0) < 0) {
-            return;
+            return true;
         }
         lsps.put(ntry);
+        return false;
     }
 
 }
