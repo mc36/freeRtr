@@ -70,7 +70,20 @@ public class verCore {
     /**
      * quotes text
      */
-    public final static String[] quotes = {};
+    public final static String[] quotes = {
+        "",
+        "quotes from devvies like " + author + ":",
+        "true random comes from weather forecasts and political announcements",
+        "if a machine can learn the value of human life, maybe we can too",
+        "be liberal in what you accept, and conservative in what you send",
+        "rough consensus and running code, keep it stupid simple",
+        "care about the bits and not about the bits of the bits",
+        "dont drive faster than your guardian angel can fly",
+        "let bloom all the flowers, make the world better",
+        "every tool could be used good or bad equally",
+        "the great power comes great responsibility",
+        "do or not to do but dont try",
+    };
 
     /**
      * logo text
