@@ -16496,3 +16496,6 @@ qc pass: ospf with process redundancy
 qc pass: lsrp with process redundancy
 qc pass: isis with process redundancy
 qc pass: bgp with process redundancy
+---------------------------------- 2025-05-12 09:19:46 25.5.12
+no qc pass: ospf with process redundancy
+failed: ospf with process redundancy

@@ -1434,7 +1434,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (!haMode) {
             return;
         }
-        String a = routerGetName() + " time=3600000 ";
+        String a = routerGetName() + " time=1800000 ";
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
             if (ntry == null) {

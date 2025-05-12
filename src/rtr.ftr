@@ -385,7 +385,7 @@ qc pass: ppp over pptp
 qc pass: raw encapsulation
 qc pass: process redundancy
 qc pass: lsrp with process redundancy
-qc pass: ospf with process redundancy
+failed: ospf with process redundancy
 qc pass: isis with process redundancy
 qc pass: bgp with process redundancy
 qc pass: sep

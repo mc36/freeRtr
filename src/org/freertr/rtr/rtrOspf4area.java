@@ -1238,7 +1238,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
             }
             pck.clear();
             int o = ntry.writeData(pck, 0, true);
-            pck.msbPutW(0, 3600); // remaining
+            pck.msbPutW(0, 1800); // remaining
             pck.putSkip(o);
             pck.merge2beg();
             lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
