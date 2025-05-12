@@ -21,7 +21,7 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * process sw upgrade
@@ -180,7 +180,7 @@ public class userUpgrade {
             cmd.error("failed to get old key!");
             return;
         }
-        final String fn = "org/freertr/util/verCore.java";
+        final String fn = "org/freertr/util/version.java";
         final String sy = "    public final static int year = ";
         final String sm = "    public final static int month = ";
         final String sd = "    public final static int day = ";
@@ -1016,12 +1016,12 @@ class userUpgradeBlob {
         if (res == null) {
             return null;
         }
-        res = doVrfy(verCore.pubKeyC, buf);
+        res = doVrfy(version.pubKeyC, buf);
         if (res == null) {
             keyed = "current";
             return null;
         }
-        res = doVrfy(verCore.pubKeyO, buf);
+        res = doVrfy(version.pubKeyO, buf);
         if (res == null) {
             keyed = "previous";
             return null;

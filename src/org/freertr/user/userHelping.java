@@ -47,7 +47,7 @@ import org.freertr.cry.cryKeyRSA;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.enc.encXml;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * help system
@@ -1243,7 +1243,7 @@ public class userHelping {
     public List<String> getYang(String path, String prefix) {
         List<String> res = new ArrayList<String>();
         res.add("module " + prefix + " {");
-        res.add("  namespace \"" + verCore.homeUrl + "yang/" + prefix + "\";");
+        res.add("  namespace \"" + version.homeUrl + "yang/" + prefix + "\";");
         res.add("  prefix \"" + prefix + "\";");
         cmds cp = new cmds("ya", path);
         String id = "  ";

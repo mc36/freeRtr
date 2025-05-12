@@ -60,7 +60,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.differ;
 import org.freertr.util.logger;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * process exec commands
@@ -191,8 +191,8 @@ public class userExec {
     }
 
     private static void getSecretHelp(userHelping hl, int beg) {
-        for (int i = 0; i < verCore.secrets.length; i++) {
-            String a = verCore.secrets[i][0];
+        for (int i = 0; i < version.secrets.length; i++) {
+            String a = version.secrets[i][0];
             hl.add(null, beg + " .  " + a + "   sh0w m30www s0m30www " + a);
         }
     }

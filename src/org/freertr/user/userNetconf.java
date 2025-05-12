@@ -13,7 +13,7 @@ import org.freertr.util.debugger;
 import org.freertr.enc.encXml;
 import org.freertr.enc.encXmlEntry;
 import org.freertr.util.logger;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * netconf (rfc6241) handler
@@ -175,7 +175,7 @@ public class userNetconf {
         x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
         for (int i = 0; i < cfgAll.sensors.size(); i++) {
             cfgSensor ntry = cfgAll.sensors.get(i);
-            x.data.add(new encXmlEntry(null, "/hello/capabilities/capability", "", verCore.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
+            x.data.add(new encXmlEntry(null, "/hello/capabilities/capability", "", version.homeUrl + "yang/" + ntry.prefix + "?module=" + ntry.prefix));
             x.data.add(new encXmlEntry(null, "/hello/capabilities", "", ""));
         }
         x.data.add(new encXmlEntry(null, "/hello/session-id", "", "" + sessId));
@@ -320,7 +320,7 @@ public class userNetconf {
                 rep.data.add(new encXmlEntry(null, replyData, "", ""));
                 a = tl.path;
                 int o = a.indexOf("/");
-                rep.data.add(new encXmlEntry(null, replyData + "/" + a.substring(0, o), "xmlns=\"" + verCore.homeUrl + "yang/" + tl.prefix + "\"", ""));
+                rep.data.add(new encXmlEntry(null, replyData + "/" + a.substring(0, o), "xmlns=\"" + version.homeUrl + "yang/" + tl.prefix + "\"", ""));
                 tl.getReportNetConf(rep, replyData + "/");
                 rep.data.add(new encXmlEntry(null, "/rpc-reply", "", ""));
                 continue;

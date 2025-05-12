@@ -24,7 +24,7 @@ import org.freertr.util.logFil;
 import org.freertr.util.logger;
 import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encPrtbufEntry;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * telemetry exporter
@@ -1119,7 +1119,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     public List<String> getYang() {
         List<String> res = new ArrayList<String>();
         res.add("module " + prefix + " {");
-        res.add("  namespace \"" + verCore.homeUrl + "yang/" + prefix + "\";");
+        res.add("  namespace \"" + version.homeUrl + "yang/" + prefix + "\";");
         res.add("  prefix \"" + prefix + "\";");
         cmds cp = new cmds("ya", path);
         cmds ck = new cmds("ya", keyP);

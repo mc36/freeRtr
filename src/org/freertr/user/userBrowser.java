@@ -8,7 +8,7 @@ import org.freertr.util.bits;
 import org.freertr.enc.encXml;
 import org.freertr.enc.encXmlEntry;
 import org.freertr.enc.encUrl;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * web browser
@@ -47,7 +47,7 @@ public class userBrowser {
         console = pip;
         tempFile = cfgInit.getRWpath() + "web" + bits.randomD() + ".tmp";
         if (u.length() < 1) {
-            url = verCore.homeUrl;
+            url = version.homeUrl;
         } else {
             int i = u.indexOf("://");
             if (i < 0) {

@@ -80,7 +80,7 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * process config commands
@@ -2751,7 +2751,7 @@ public class userConfig {
             return;
         }
         if (s.equals("upgrade-server")) {
-            cfgAll.upgradeServer = verCore.homeUrl;
+            cfgAll.upgradeServer = version.homeUrl;
             return;
         }
         if (s.equals("upgrade-script")) {

@@ -127,7 +127,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.history;
 import org.freertr.util.logBuf;
 import org.freertr.util.logger;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * hardware configuration
@@ -155,22 +155,22 @@ public class cfgInit implements Runnable {
     /**
      * 9.1.1
      */
-    public static final String versionNumber = verCore.year + "." + verCore.month + "." + verCore.day;
+    public final static String versionNumber = version.year + "." + version.month + "." + version.day;
 
     /**
      * ros v9.1.1-rel
      */
-    public static final String versionName = verCore.name + " v" + versionNumber + verCore.state;
+    public final static String versionName = version.name + " v" + versionNumber + version.state;
 
     /**
      * ros v9.1.1-rel, done by me.
      */
-    public static final String versionFull = versionName + ", done by " + verCore.author + ".";
+    public final static String versionFull = versionName + ", done by " + version.author + ".";
 
     /**
      * ros/9.1.1-rel
      */
-    public static final String versionAgent = verCore.name + "/" + versionNumber + verCore.state;
+    public final static String versionAgent = version.name + "/" + versionNumber + version.state;
 
     /**
      * redundancy priority
@@ -313,26 +313,6 @@ public class cfgInit implements Runnable {
 
     private final static int bootLogo = 0x1fd;
 
-    private static String getJavaVer(String s) {
-        String vnd = getSysProp(s + ".vendor");
-        String nam = getSysProp(s + ".name");
-        String ver = getSysProp(s + ".version");
-        if (nam != null) {
-            nam = " (" + nam + ")";
-        } else {
-            nam = "";
-        }
-        return vnd + nam + " v" + ver;
-    }
-
-    private static String getSysProp(String s) {
-        try {
-            return System.getProperty(s);
-        } catch (Exception e) {
-            return "?";
-        }
-    }
-
     /**
      * find in secret list
      *
@@ -340,12 +320,12 @@ public class cfgInit implements Runnable {
      * @return found, null if nothing
      */
     public static List<String> secretsFind(String a) {
-        for (int i = 0; i < verCore.secrets.length; i++) {
-            if (!a.equals(verCore.secrets[i][0])) {
+        for (int i = 0; i < version.secrets.length; i++) {
+            if (!a.equals(version.secrets[i][0])) {
                 continue;
             }
             ArrayList<String> l = new ArrayList<String>();
-            bits.array2list(l, verCore.secrets[i]);
+            bits.array2list(l, version.secrets[i]);
             l.remove(0);
             return l;
         }
@@ -554,7 +534,7 @@ public class cfgInit implements Runnable {
             sa.add("");
         }
         if ((head & 8) != 0) {
-            bits.array2list(sa, verCore.logo);
+            bits.array2list(sa, version.logo);
         }
         if ((head & 16) != 0) {
             sa.add("");
@@ -566,7 +546,7 @@ public class cfgInit implements Runnable {
             sa.add("");
         }
         if ((head & 128) != 0) {
-            bits.array2list(sa, verCore.license);
+            bits.array2list(sa, version.license);
         }
         if ((head & 256) != 0) {
             sa.add("");
@@ -584,10 +564,10 @@ public class cfgInit implements Runnable {
             sa.add(versionAgent);
         }
         if ((head & 8192) != 0) {
-            sa.add(verCore.homeUrl);
+            sa.add(version.homeUrl);
         }
         if ((head & 16384) != 0) {
-            bits.array2list(sa, verCore.quotes);
+            bits.array2list(sa, version.quotes);
         }
         return sa;
     }
@@ -672,6 +652,26 @@ public class cfgInit implements Runnable {
             return res;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private static String getJavaVer(String s) {
+        String vnd = getSysProp(s + ".vendor");
+        String nam = getSysProp(s + ".name");
+        String ver = getSysProp(s + ".version");
+        if (nam != null) {
+            nam = " (" + nam + ")";
+        } else {
+            nam = "";
+        }
+        return vnd + nam + " v" + ver;
+    }
+
+    private static String getSysProp(String s) {
+        try {
+            return System.getProperty(s);
+        } catch (Exception e) {
+            return "?";
         }
     }
 

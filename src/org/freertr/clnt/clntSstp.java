@@ -20,7 +20,7 @@ import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * secure socket tunneling protocol client
@@ -267,7 +267,7 @@ public class clntSstp implements Runnable, ifcDn {
         sendLine("User-Agent: " + cfgInit.versionAgent);
         sendLine("Content-Length: 18446744073709551615");
         sendLine("Host: " + url.server);
-        sendLine("sstpCorrelationID: /os/" + verCore.name + "/{" + cfgAll.hostName + "_" + unique + "}");
+        sendLine("sstpCorrelationID: /os/" + version.name + "/{" + cfgAll.hostName + "_" + unique + "}");
         sendAuth(url);
         sendLine("");
         for (;;) {

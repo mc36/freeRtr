@@ -15,7 +15,7 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * process image tester
@@ -544,10 +544,10 @@ public class userTester {
         String target = "";
         String state = "";
         summary = false;
-        releaseN = verCore.name;
+        releaseN = version.name;
         jvn = "sid";
         jvp = "medium";
-        releaseV = verCore.author;
+        releaseV = version.author;
         String startS = "";
         boolean forward = true;
         int startI = 0;

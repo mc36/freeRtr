@@ -5,9 +5,9 @@ package org.freertr.util;
  *
  * @author matecsaba
  */
-public class verCore {
+public class version {
 
-    private verCore() {
+    private version() {
     }
 
     /**
@@ -80,9 +80,9 @@ public class verCore {
         "care about the bits and not about the bits of the bits",
         "dont drive faster than your guardian angel can fly",
         "let bloom all the flowers, make the world better",
-        "every tool could be used good or bad equally",
         "the great power comes great responsibility",
-        "do or not to do but dont try",
+        "every tool could be used for good or bad",
+        "do or not to do but dont try"
     };
 
     /**

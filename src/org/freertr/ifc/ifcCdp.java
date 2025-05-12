@@ -22,7 +22,7 @@ import org.freertr.util.counter;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * cisco discovery protocol
@@ -356,7 +356,7 @@ public class ifcCdp implements ifcUp {
         pck.putSkip(4);
         tlv.putStr(pck, ttypDevId, cfgAll.hostName);
         tlv.putStr(pck, ttypVer, cfgInit.versionFull + "\n" + cfgInit.getHWfwd1liner() + "\n" + cfgInit.getVMname() + "\n" + cfgInit.getKernelName());
-        tlv.putStr(pck, ttypPlat, verCore.name);
+        tlv.putStr(pck, ttypPlat, version.name);
         tlv.putStr(pck, ttypPrtId, cfg.name);
         bits.msbPutD(tlv.valDat, 0, capaRouter | capaBridge);
         tlv.putBytes(pck, ttypCapa, 4, tlv.valDat);

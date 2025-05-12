@@ -112,7 +112,7 @@ import org.freertr.util.bits;
 import org.freertr.util.chatter;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.verCore;
+import org.freertr.util.version;
 
 /**
  * configuration settings
@@ -949,7 +949,7 @@ public class cfgAll {
     /**
      * upgrade server url
      */
-    public static String upgradeServer = verCore.homeUrl;
+    public static String upgradeServer = version.homeUrl;
 
     /**
      * upgrade script
@@ -1395,7 +1395,7 @@ public class cfgAll {
         "!" + cmds.negated + cmds.tabulator + "client ssh-agent",
         "!" + cmds.negated + cmds.tabulator + "client time-server",
         "!" + cmds.negated + cmds.tabulator + "client upgrade-pubkey",
-        "!client upgrade-server " + verCore.homeUrl,
+        "!client upgrade-server " + version.homeUrl,
         "!" + cmds.negated + cmds.tabulator + "client upgrade-config",
         "!" + cmds.negated + cmds.tabulator + "client upgrade-backup",
         "!" + cmds.negated + cmds.tabulator + "client upgrade-revert",
