@@ -43,7 +43,7 @@ public class version {
     /**
      * compile day
      */
-    public final static int day = 12;
+    public final static int day = 13;
 
     /**
      * statement of release
@@ -77,8 +77,8 @@ public class version {
         "if a machine can learn the value of human life, maybe we can too",
         "be liberal in what you accept, and conservative in what you send",
         "rough consensus and running code, keep it stupid simple",
-        "care about the bits and not about the bits of the bits",
         "dont drive faster than your guardian angel can fly",
+        "care about the bits and not the bits of the bits",
         "let bloom all the flowers, make the world better",
         "the great power comes great responsibility",
         "every tool could be used for good or bad",
