@@ -74,6 +74,11 @@ public class packRedundancy {
     public final static int typExecCmd = 10;
 
     /**
+     * transfer request
+     */
+    public final static int typXferReq = 11;
+
+    /**
      * config file
      */
     public final static String fnStart = "config";

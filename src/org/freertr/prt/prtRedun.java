@@ -575,11 +575,11 @@ class prtRedunIfc implements ifcUp {
                     break;
                 }
                 String b = prtRedun.wireName2fileName(a);
-                logger.info("received file " + a + " as " + b);
                 if (b == null) {
                     logger.error("got invalid filename");
                     break;
                 }
+                logger.info("received file " + a + " as " + b);
                 userFlash.copy(filNm, b, true);
                 userFlash.delete(filNm);
                 doAck(-3);
@@ -587,6 +587,10 @@ class prtRedunIfc implements ifcUp {
             case packRedundancy.typSumReq:
                 a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
                 b = prtRedun.wireName2fileName(a);
+                if (b == null) {
+                    logger.error("got invalid filename");
+                    break;
+                }
                 logger.info("hash file " + a + " as " + b);
                 b = prtRedun.getFileHash(b);
                 if (b.startsWith(cmds.comment)) {
@@ -610,34 +614,18 @@ class prtRedunIfc implements ifcUp {
                 a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
                 logger.info("exec command " + a);
                 doAck(-6);
-                pipeLine pl = new pipeLine(1024 * 1024, false);
-                pipeSide pip = pl.getSide();
-                pip.lineTx = pipeSide.modTyp.modeCRLF;
-                pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                userReader rdr = new userReader(pip, null);
-                pip.settingsPut(pipeSetting.height, 0);
-                userExec exe = new userExec(pip, rdr);
-                exe.privileged = false;
-                pip.setTime(120000);
-                a = exe.repairCommand(a);
-                exe.executeCommand(a);
-                pip = pl.getSide();
-                pl.setClose();
-                pip.lineTx = pipeSide.modTyp.modeCRLF;
-                pip.lineRx = pipeSide.modTyp.modeCRtryLF;
-                List<String> lst = new ArrayList<String>();
-                for (;;) {
-                    if (pip.ready2rx() < 1) {
-                        break;
-                    }
-                    a = pip.lineGet(1);
-                    if (a.length() < 1) {
-                        continue;
-                    }
-                    lst.add(a);
+                new prtRedunExec(this, a);
+                break;
+            case packRedundancy.typXferReq:
+                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+                b = prtRedun.wireName2fileName(a);
+                if (b == null) {
+                    logger.error("got invalid filename");
+                    break;
                 }
-                a = cfgInit.getRWpath() + "exe" + bits.randomD() + ".tmp";
-                new prtRedunExec(this, a, lst);
+                logger.info("transfer request " + a + " as " + b);
+                doAck(-7);
+                new prtRedunFile(this, b, a);
                 break;
         }
     }
@@ -682,7 +670,7 @@ class prtRedunIfc implements ifcUp {
         pck.putSkip(packRedundancy.dataMax);
         doPack(packRedundancy.typExecCmd, pck);
         for (int i = 0; i < 10; i++) {
-            bits.sleep(cfgAll.redundancyKeep / 10);
+            bits.sleep(cfgAll.redundancyHold / 10);
             if (lastFileHash != null) {
                 break;
             }
@@ -706,7 +694,7 @@ class prtRedunIfc implements ifcUp {
         pck.putSkip(packRedundancy.dataMax);
         doPack(packRedundancy.typSumReq, pck);
         for (int i = 0; i < 10; i++) {
-            bits.sleep(cfgAll.redundancyKeep / 10);
+            bits.sleep(cfgAll.redundancyHold / 10);
             if (lastFileHash != null) {
                 break;
             }
@@ -717,6 +705,33 @@ class prtRedunIfc implements ifcUp {
         String a = lastFileHash;
         lastFileHash = null;
         return a;
+    }
+
+    private long getFileTime(String s) {
+        try {
+            return new File(s).lastModified();
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    public boolean doXfer(String fn) {
+        String b = prtRedun.wireName2fileName(fn);
+        if (b == null) {
+            return true;
+        }
+        long lst = getFileTime(b);
+        packHolder pck = new packHolder(true, true);
+        pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
+        pck.putSkip(packRedundancy.dataMax);
+        doPack(packRedundancy.typXferReq, pck);
+        for (int i = 0; i < 10; i++) {
+            bits.sleep(cfgAll.redundancyHold / 10);
+            if (lst != getFileTime(b)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean doPrio(int pri) {
@@ -812,26 +827,71 @@ class prtRedunExec implements Runnable {
 
     public final prtRedunIfc ifc;
 
-    public final String fn;
+    public final String cmd;
 
-    public final List<String> txt;
-
-    public prtRedunExec(prtRedunIfc i, String a, List<String> l) {
+    public prtRedunExec(prtRedunIfc i, String a) {
         ifc = i;
-        fn = a;
-        txt = l;
+        cmd = a;
         new Thread(this).start();
     }
 
     public void run() {
-        if (bits.buf2txt(true, txt, fn)) {
+        pipeLine pl = new pipeLine(1024 * 1024, false);
+        pipeSide pip = pl.getSide();
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        userReader rdr = new userReader(pip, null);
+        pip.settingsPut(pipeSetting.height, 0);
+        userExec exe = new userExec(pip, rdr);
+        exe.privileged = false;
+        pip.setTime(120000);
+        String a = exe.repairCommand(cmd);
+        exe.executeCommand(a);
+        pip = pl.getSide();
+        pl.setClose();
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRtryLF;
+        List<String> txt = new ArrayList<String>();
+        for (;;) {
+            if (pip.ready2rx() < 1) {
+                break;
+            }
+            a = pip.lineGet(1);
+            if (a.length() < 1) {
+                continue;
+            }
+            txt.add(a);
+        }
+        a = cfgInit.getRWpath() + "exe" + bits.randomD() + ".tmp";
+        if (bits.buf2txt(true, txt, a)) {
             logger.error("unable to save file");
-            userFlash.delete(fn);
+            userFlash.delete(a);
             return;
         }
         txt.clear();
-        ifc.doFile(fn, packRedundancy.fnShow);
-        userFlash.delete(fn);
+        ifc.doFile(a, packRedundancy.fnShow);
+        userFlash.delete(a);
+    }
+
+}
+
+class prtRedunFile implements Runnable {
+
+    public final prtRedunIfc ifc;
+
+    public final String fn;
+
+    public final String rfn;
+
+    public prtRedunFile(prtRedunIfc i, String a, String b) {
+        ifc = i;
+        fn = a;
+        rfn = b;
+        new Thread(this).start();
+    }
+
+    public void run() {
+        ifc.doFile(fn, rfn);
     }
 
 }
