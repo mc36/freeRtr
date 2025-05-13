@@ -29,6 +29,7 @@ import org.freertr.enc.enc7bit;
 import org.freertr.pipe.pipeSide;
 import org.freertr.enc.encUrl;
 import org.freertr.pipe.pipeWindow;
+import org.freertr.prt.prtRedun;
 import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -270,6 +271,10 @@ public class userFlash {
             a = cmd.getRemaining();
             List<String> lst = userUpgrade.cleanBackups(a);
             rdr.putStrArr(lst);
+            return null;
+        }
+        if (a.equals("peer")) {
+            prtRedun.doCore();
             return null;
         }
         if (a.equals("cancel")) {

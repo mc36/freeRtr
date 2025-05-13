@@ -334,6 +334,7 @@ public class prtRedun implements Runnable {
             return;
         }
         if (ifaces.get(act).last.priority < cfgInit.redunPrio) {
+            ifaces.get(act).doXfer(packRedundancy.fnState);
             state = packRedundancy.statActive;
             sendHellos();
             logger.info("preempting over " + ifaces.get(act));
@@ -369,6 +370,15 @@ public class prtRedun implements Runnable {
     public static void doConfig() {
         for (int i = 0; i < ifaces.size(); i++) {
             ifaces.get(i).doFile(cfgInit.cfgFileSw, packRedundancy.fnStart);
+        }
+    }
+
+    /**
+     * sync core to peers
+     */
+    public static void doCore() {
+        for (int i = 0; i < ifaces.size(); i++) {
+            ifaces.get(i).doFile(cfgInit.getFileName(), packRedundancy.fnCore);
         }
     }
 
@@ -625,7 +635,7 @@ class prtRedunIfc implements ifcUp {
                 }
                 logger.info("transfer request " + a + " as " + b);
                 doAck(-7);
-                new prtRedunFile(this, b, a);
+                new prtRedunXfer(this, b, a);
                 break;
         }
     }
@@ -726,7 +736,7 @@ class prtRedunIfc implements ifcUp {
         pck.putSkip(packRedundancy.dataMax);
         doPack(packRedundancy.typXferReq, pck);
         for (int i = 0; i < 10; i++) {
-            bits.sleep(cfgAll.redundancyHold / 10);
+            bits.sleep(cfgAll.redundancyInit / 10);
             if (lst != getFileTime(b)) {
                 return false;
             }
@@ -875,7 +885,7 @@ class prtRedunExec implements Runnable {
 
 }
 
-class prtRedunFile implements Runnable {
+class prtRedunXfer implements Runnable {
 
     public final prtRedunIfc ifc;
 
@@ -883,7 +893,7 @@ class prtRedunFile implements Runnable {
 
     public final String rfn;
 
-    public prtRedunFile(prtRedunIfc i, String a, String b) {
+    public prtRedunXfer(prtRedunIfc i, String a, String b) {
         ifc = i;
         fn = a;
         rfn = b;

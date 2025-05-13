@@ -2335,6 +2335,7 @@ public class userExec {
         hl.add(null, "2 3      mkdir                        make directory");
         hl.add(null, "3 .        <file>                     filename");
         hl.add(null, "2 .      verify                       verify routing software");
+        hl.add(null, "2 .      peer                         upgrade redundanct peers");
         hl.add(null, "2 .      revert                       revert routing software");
         hl.add(null, "2 .      backup                       backup routing software");
         hl.add(null, "2 3,.    cleanup                      clear routing software backup");
