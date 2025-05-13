@@ -730,6 +730,7 @@ class prtRedunIfc implements ifcUp {
         if (b == null) {
             return true;
         }
+        logger.info("receiving file " + fn + " as " + b);
         long lst = getFileTime(b);
         packHolder pck = new packHolder(true, true);
         pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
