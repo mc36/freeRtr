@@ -60,10 +60,10 @@ public class badLyric {
                 if (b.matches("bonus.*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
-                if (b.matches("scans.*")) {
+                if (b.matches("scan.*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
-                if (b.matches("covers.*")) {
+                if (b.matches("cover.*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
                 delFile(s + "/" + a, true);
