@@ -383,6 +383,7 @@ public class prtRedun implements Runnable {
     /**
      * sync config from peer
      *
+     * @param ifc name of interface
      * @return true on error, false on success
      */
     public static boolean doConfig(String ifc) {
@@ -405,6 +406,7 @@ public class prtRedun implements Runnable {
     /**
      * sync config from peer
      *
+     * @param ifc name of interface
      * @return true on error, false on success
      */
     public static boolean doCore(String ifc) {

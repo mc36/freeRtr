@@ -144,6 +144,8 @@ public class rtrOspf6 extends ipRtr {
      */
     protected tabLabelEntry[] bierLab;
 
+    private int intIds;
+
     /**
      * create one ospf process
      *
@@ -867,6 +869,7 @@ public class rtrOspf6 extends ipRtr {
             return null;
         }
         rtrOspf6iface ifc = new rtrOspf6iface(this, ara, iface);
+        ifc.locInt = ++intIds;
         rtrOspf6iface old = ifaces.add(ifc);
         if (old != null) {
             return old;

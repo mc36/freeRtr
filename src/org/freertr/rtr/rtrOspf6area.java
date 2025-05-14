@@ -486,7 +486,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                 if (ifc.drAddr.isEmpty()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf6lsa.lnkTrns, ifc.iface.ifwNum, ifc.DRintId(), ifc.drAddr, met);
+                putLink2rtrLsa(pck, rtrOspf6lsa.lnkTrns, ifc.locInt, ifc.DRintId(), ifc.drAddr, met);
                 continue;
             }
             for (int o = 0; o < ifc.neighs.size(); o++) {
@@ -500,7 +500,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                 if (!nei.isFull()) {
                     continue;
                 }
-                putLink2rtrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, nei.getMetric());
+                putLink2rtrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.locInt, nei.rtrInt, nei.rtrID, nei.getMetric());
             }
         }
         advertiseLsa(rtrOspf6lsa.lsaRouter, 0, pck);
@@ -513,7 +513,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
         pck.putAddr(4, ifc.iface.addr.toIPv6()); // local address
         pck.msbPutD(20, 0); // number of prefixes
         pck.putSkip(24);
-        advertiseLsa(rtrOspf6lsa.lsaLink, ifc.iface.ifwNum, pck);
+        advertiseLsa(rtrOspf6lsa.lsaLink, ifc.locInt, pck);
     }
 
     private void createNetLsa(rtrOspf6iface ifc) {
@@ -535,7 +535,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
             pck.putAddr(0, nei.rtrID);
             pck.putSkip(addrIPv4.size);
         }
-        advertiseLsa(rtrOspf6lsa.lsaNetwork, ifc.iface.ifwNum, pck);
+        advertiseLsa(rtrOspf6lsa.lsaNetwork, ifc.locInt, pck);
     }
 
     private void createPrefLsa(rtrOspf6iface ifc) {
@@ -550,7 +550,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
         pck.putAddr(8, lower.routerID); // referenced lsa router id
         int i = prefixWrite(pck, 12, prf);
         pck.putSkip(12 + i);
-        advertiseLsa(rtrOspf6lsa.lsaPrefix, ifc.iface.ifwNum, pck);
+        advertiseLsa(rtrOspf6lsa.lsaPrefix, ifc.locInt, pck);
     }
 
     private void createExtLsa(int seq, addrPrefix<addrIP> pref, int org, int met, int tag) {
@@ -652,7 +652,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                 if (ifc.drAddr.isEmpty()) {
                     continue;
                 }
-                putLink2ertrLsa(pck, rtrOspf6lsa.lnkTrns, ifc.iface.ifwNum, ifc.DRintId(), ifc.drAddr, ifc.metric, new byte[0]);
+                putLink2ertrLsa(pck, rtrOspf6lsa.lnkTrns, ifc.locInt, ifc.DRintId(), ifc.drAddr, ifc.metric, new byte[0]);
                 continue;
             }
             for (int o = 0; o < ifc.neighs.size(); o++) {
@@ -670,7 +670,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                 if (nei.segrouLab != null) {
                     buf = rtrOspfSr.putAdj(nei.segrouLab.label);
                 }
-                putLink2ertrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.iface.ifwNum, nei.rtrInt, nei.rtrID, nei.getMetric(), buf);
+                putLink2ertrLsa(pck, rtrOspf6lsa.lnkP2p, ifc.locInt, nei.rtrInt, nei.rtrID, nei.getMetric(), buf);
             }
         }
         advertiseLsa(rtrOspf6lsa.lsaErouter, 0, pck);

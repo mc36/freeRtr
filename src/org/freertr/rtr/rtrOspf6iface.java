@@ -44,6 +44,11 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
     protected final ipFwdIface iface;
 
     /**
+     * local interface id
+     */
+    protected int locInt;
+
+    /**
      * areas this interface belongs
      */
     protected tabGen<rtrOspf6area> areas = new tabGen<rtrOspf6area>();
@@ -953,7 +958,7 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
      */
     protected int DRintId() {
         if (drAddr.compareTo(lower.routerID) == 0) {
-            return iface.ifwNum;
+            return locInt;
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrOspf6neigh ntry = neighs.get(i);
@@ -1060,7 +1065,7 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
      */
     protected void mkHelloPack(packHolder pck, rtrOspf6area area) {
         pck.merge2beg();
-        pck.msbPutD(0, iface.ifwNum); // interface id
+        pck.msbPutD(0, locInt); // interface id
         pck.msbPutD(4, area.getCapabilities()); // optional capabilities
         pck.putByte(4, drPriority); // dr priority
         pck.msbPutW(8, helloTimer / 1000); // hello interval
