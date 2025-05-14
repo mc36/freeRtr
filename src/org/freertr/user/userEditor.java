@@ -246,10 +246,10 @@ public class userEditor {
             case 0x800f: // right
                 doKeyRgt();
                 return false;
-            case 0x820e: // left
+            case 0x820e: // ctrl+left
                 doKeyCtLft();
                 return false;
-            case 0x820f: // right
+            case 0x820f: // ctrl+right
                 doKeyCtRgt();
                 return false;
             case 0x8014: // f1
@@ -474,7 +474,7 @@ public class userEditor {
     }
 
     private void doKeyCtLft() {
-        int i = console.sizX / 4;
+        int i = console.sizX / 8;
         curX -= i;
         if (readOnly) {
             begX -= i;
@@ -482,7 +482,7 @@ public class userEditor {
     }
 
     private void doKeyCtRgt() {
-        int i = console.sizX / 4;
+        int i = console.sizX / 8;
         curX += i;
         if (readOnly) {
             begX += i;
