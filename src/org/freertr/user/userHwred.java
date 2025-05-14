@@ -117,7 +117,7 @@ public class userHwred {
             cmd.error("error saving " + hwdn);
             return;
         }
-        cfgInit.stopRouter(true, 22, "hardware changed");
+        cfgInit.stopRouter(true, 20, "hardware changed");
     }
 
     private userHwifc findMac(tabGen<userHwifc> lst, userHwifc old) {

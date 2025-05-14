@@ -3582,7 +3582,7 @@ public class userExec {
                 cmd.badCmd();
                 return cmdRes.command;
             }
-            cfgInit.stopRouter(true, 21, "user requested");
+            cfgInit.stopRouter(true, 14, "user requested");
             return cmdRes.command;
         }
         cmd.badCmd();
