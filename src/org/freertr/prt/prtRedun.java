@@ -346,23 +346,31 @@ public class prtRedun implements Runnable {
         sendHellos();
         logger.info("became standby, active on " + ifaces.get(act));
         for (;;) {
-            bits.sleep(cfgAll.redundancyKeep);
             act = findActive();
             if (act < 0) {
                 break;
             }
             handleConsole(con, act);
-            String a = ifaces.get(act).last.otherBetter(getSelf());
-            if (a == null) {
-                continue;
-            }
+            bits.sleep(cfgAll.redundancyKeep);
             if ((bits.getTime() - started) < cfgAll.redundancyTake) {
                 continue;
+            }
+            String a = ifaces.get(act).last.otherBetter(getSelf());
+            if (a == null) {
+                break;
             }
             state = packRedundancy.statActive;
             sendHellos();
             logger.info("preempting over " + ifaces.get(act) + " because won on " + a);
             return;
+        }
+        for (;;) {
+            act = findActive();
+            if (act < 0) {
+                break;
+            }
+            handleConsole(con, act);
+            bits.sleep(cfgAll.redundancyKeep);
         }
         state = packRedundancy.statActive;
         sendHellos();
