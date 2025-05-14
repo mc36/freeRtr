@@ -227,17 +227,7 @@ public class prtRedun implements Runnable {
         if (fnd == null) {
             return true;
         }
-        if (fnd.doPrio(pri)) {
-            return true;
-        }
-        if (pri <= cfgInit.redunPrio) {
-            return false;
-        }
-        if (state != packRedundancy.statActive) {
-            return false;
-        }
-        cfgInit.stopRouter(true, 14, "priority change");
-        return false;
+        return fnd.doPrio(pri);
     }
 
     /**
@@ -294,6 +284,24 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * handle console
+     *
+     * @param con console
+     * @param act active
+     */
+    public static void handleConsole(pipeSide con, int act) {
+        if (con == null) {
+            return;
+        }
+        if (con.ready2rx() < 1) {
+            return;
+        }
+        byte[] buf = new byte[256];
+        con.nonBlockGet(buf, 0, buf.length);
+        con.linePut("this node is standby, active on " + ifaces.get(act));
+    }
+
+    /**
      * terminate the redundancy
      */
     public static void doShut() {
@@ -334,7 +342,7 @@ public class prtRedun implements Runnable {
             return;
         }
         ifaces.get(act).doXfer(packRedundancy.fnState);
-        if (ifaces.get(act).last.priority < cfgInit.redunPrio) {
+        if (ifaces.get(act).last.otherBetter(getSelf()) != null) {
             state = packRedundancy.statActive;
             sendHellos();
             logger.info("preempting over " + ifaces.get(act));
@@ -349,15 +357,7 @@ public class prtRedun implements Runnable {
             if (act < 0) {
                 break;
             }
-            if (con == null) {
-                continue;
-            }
-            if (con.ready2rx() < 1) {
-                continue;
-            }
-            byte[] buf = new byte[256];
-            con.nonBlockGet(buf, 0, buf.length);
-            con.linePut("this node is standby, active on " + ifaces.get(act));
+            handleConsole(con, act);
         }
         state = packRedundancy.statActive;
         sendHellos();
@@ -730,7 +730,7 @@ class prtRedunIfc implements ifcUp {
         if (b == null) {
             return true;
         }
-        logger.info("receiving file " + fn + " as " + b);
+        logger.info("requesting file " + fn + " as " + b);
         long lst = getFileTime(b);
         packHolder pck = new packHolder(true, true);
         pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
