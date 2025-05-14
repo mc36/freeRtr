@@ -45,10 +45,11 @@ int main(int argc, char *argv[]) {
     mnl_attr_put_str(nlh2, IFLA_IFNAME, argv[2]);
     mnl_attr_nest_end(nlh2, nla);
 
+    seq = time(NULL);
     nlh1 = mnl_nlmsg_put_header(buf1);
     nlh1->nlmsg_type = RTM_NEWLINK;
     nlh1->nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL | NLM_F_ACK;
-    nlh1->nlmsg_seq = seq = time(NULL);
+    nlh1->nlmsg_seq = seq;
     mnl_nlmsg_put_extra_header(nlh1, sizeof(*ifm));
     mnl_attr_put_str(nlh1, IFLA_IFNAME, argv[1]);
 
@@ -62,10 +63,11 @@ int main(int argc, char *argv[]) {
     if (ret == -1) err("error receiving");
     if (mnl_cb_run(buf1, ret, seq, portid, NULL, NULL) == -1) err("error running");
 
+    seq++;
     nlh1 = mnl_nlmsg_put_header(buf1);
     nlh1->nlmsg_type = RTM_NEWLINK;
     nlh1->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
-    nlh1->nlmsg_seq = ++seq;
+    nlh1->nlmsg_seq = seq;
     ifm = mnl_nlmsg_put_extra_header(nlh1, sizeof(*ifm));
     ifm->ifi_change = IFF_UP;
     ifm->ifi_flags = IFF_UP;
@@ -81,10 +83,11 @@ int main(int argc, char *argv[]) {
     if (ret == -1) err("error receiving");
     if (mnl_cb_run(buf1, ret, seq, portid, NULL, NULL) == -1) err("error running");
 
+    seq++;
     nlh1 = mnl_nlmsg_put_header(buf1);
     nlh1->nlmsg_type = RTM_NEWLINK;
     nlh1->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
-    nlh1->nlmsg_seq = ++seq;
+    nlh1->nlmsg_seq = seq;
     ifm = mnl_nlmsg_put_extra_header(nlh1, sizeof(*ifm));
     ifm->ifi_change = IFF_UP;
     ifm->ifi_flags = IFF_UP;

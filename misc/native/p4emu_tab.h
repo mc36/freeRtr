@@ -43,7 +43,7 @@ struct hasht_head mpolkaPoly_table;
 void crc16mktab(int *tab, int poly) {
     for (int o=0; o < 256; o++) {
         int v = o << 8;
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; i++) {
             v <<= 1;
             if ((v & 0x10000) != 0) {
                 v ^= poly;

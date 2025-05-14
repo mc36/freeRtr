@@ -104,7 +104,7 @@ public class cryHashCrc16 extends cryHashGeneric {
 
     private int mkTabEntry(int p, int v) {
         v <<= 8;
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; i++) {
             v <<= 1;
             if ((v & 0x10000) != 0) {
                 v ^= p;

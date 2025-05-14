@@ -69,10 +69,10 @@ public class cryECcurve25519 {
 
     private void cswap(int select, int[] x, int[] y) {
         select = -select;
-        for (int index = 0; index < NUM_LIMBS_255BIT; ++index) {
-            int dummy = select & (x[index] ^ y[index]);
-            x[index] ^= dummy;
-            y[index] ^= dummy;
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
+            int dummy = select & (x[i] ^ y[i]);
+            x[i] ^= dummy;
+            y[i] ^= dummy;
         }
     }
 
@@ -122,10 +122,10 @@ public class cryECcurve25519 {
         t2 = new int[NUM_LIMBS_510BIT];
         Arrays.fill(x_1, 0);
         if (remPub != null) {
-            for (int index = 0; index < 32; ++index) {
-                int bit = (index * 8) % 26;
-                int word = (index * 8) / 26;
-                int value = remPub[index] & 0xFF;
+            for (int i = 0; i < 32; i++) {
+                int bit = (i * 8) % 26;
+                int word = (i * 8) / 26;
+                int value = remPub[i] & 0xFF;
                 if (bit <= (26 - 8)) {
                     x_1[word] |= value << bit;
                 } else {
@@ -149,30 +149,28 @@ public class cryECcurve25519 {
         recip(z_3, z_2);
         mul(x_2, x_2, z_3);
         common = new byte[32];
-        for (int index = 0; index < 32; ++index) {
-            int bit = (index * 8) % 26;
-            int word = (index * 8) / 26;
+        for (int i = 0; i < 32; i++) {
+            int bit = (i * 8) % 26;
+            int word = (i * 8) / 26;
             if (bit <= (26 - 8)) {
-                common[index] = (byte) (x_2[word] >> bit);
+                common[i] = (byte) (x_2[word] >> bit);
             } else {
-                common[index] = (byte) ((x_2[word] >> bit) | (x_2[word + 1] << (26 - bit)));
+                common[i] = (byte) ((x_2[word] >> bit) | (x_2[word + 1] << (26 - bit)));
             }
         }
     }
 
     private void sub(int[] result, int[] x, int[] y) {
-        int index;
-        int borrow;
-        borrow = 0;
-        for (index = 0; index < NUM_LIMBS_255BIT; ++index) {
-            borrow = x[index] - y[index] - ((borrow >> 26) & 0x01);
-            result[index] = borrow & 0x03FFFFFF;
+        int borrow = 0;
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
+            borrow = x[i] - y[i] - ((borrow >> 26) & 0x01);
+            result[i] = borrow & 0x03FFFFFF;
         }
         borrow = result[0] - ((-((borrow >> 26) & 0x01)) & 19);
         result[0] = borrow & 0x03FFFFFF;
-        for (index = 1; index < NUM_LIMBS_255BIT; ++index) {
-            borrow = result[index] - ((borrow >> 26) & 0x01);
-            result[index] = borrow & 0x03FFFFFF;
+        for (int i = 1; i < NUM_LIMBS_255BIT; i++) {
+            borrow = result[i] - ((borrow >> 26) & 0x01);
+            result[i] = borrow & 0x03FFFFFF;
         }
         result[NUM_LIMBS_255BIT - 1] &= 0x001FFFFF;
     }
@@ -180,9 +178,9 @@ public class cryECcurve25519 {
     private void add(int[] result, int[] x, int[] y) {
         int carry = x[0] + y[0];
         result[0] = carry & 0x03FFFFFF;
-        for (int index = 1; index < NUM_LIMBS_255BIT; ++index) {
-            carry = (carry >> 26) + x[index] + y[index];
-            result[index] = carry & 0x03FFFFFF;
+        for (int i = 1; i < NUM_LIMBS_255BIT; i++) {
+            carry = (carry >> 26) + x[i] + y[i];
+            result[i] = carry & 0x03FFFFFF;
         }
         reduceQuick(result);
     }
@@ -236,19 +234,19 @@ public class cryECcurve25519 {
 
     private void mul(int[] result, int[] x, int[] y) {
         long v = x[0];
-        for (int i = 0; i < NUM_LIMBS_255BIT; ++i) {
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
             t1[i] = v * y[i];
         }
-        for (int i = 1; i < NUM_LIMBS_255BIT; ++i) {
+        for (int i = 1; i < NUM_LIMBS_255BIT; i++) {
             v = x[i];
-            for (int j = 0; j < (NUM_LIMBS_255BIT - 1); ++j) {
+            for (int j = 0; j < (NUM_LIMBS_255BIT - 1); j++) {
                 t1[i + j] += v * y[j];
             }
             t1[i + NUM_LIMBS_255BIT - 1] = v * y[NUM_LIMBS_255BIT - 1];
         }
         v = t1[0];
         t2[0] = ((int) v) & 0x03FFFFFF;
-        for (int i = 1; i < NUM_LIMBS_510BIT; ++i) {
+        for (int i = 1; i < NUM_LIMBS_510BIT; i++) {
             v = (v >> 26) + t1[i];
             t2[i] = ((int) v) & 0x03FFFFFF;
         }
@@ -258,9 +256,9 @@ public class cryECcurve25519 {
     private void mulA24(int[] result, int[] x) {
         long a24 = 121665;
         long carry = 0;
-        for (int index = 0; index < NUM_LIMBS_255BIT; ++index) {
-            carry += a24 * x[index];
-            t2[index] = ((int) carry) & 0x03FFFFFF;
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
+            carry += a24 * x[i];
+            t2[i] = ((int) carry) & 0x03FFFFFF;
             carry >>= 26;
         }
         t2[NUM_LIMBS_255BIT] = ((int) carry) & 0x03FFFFFF;
@@ -269,19 +267,19 @@ public class cryECcurve25519 {
 
     private void pow250(int[] result, int[] x) {
         square(A, x);
-        for (int j = 0; j < 9; ++j) {
+        for (int j = 0; j < 9; j++) {
             square(A, A);
         }
         mul(result, A, x);
-        for (int i = 0; i < 23; ++i) {
-            for (int j = 0; j < 10; ++j) {
+        for (int i = 0; i < 23; i++) {
+            for (int j = 0; j < 10; j++) {
                 square(A, A);
             }
             mul(result, result, A);
         }
         square(A, result);
         mul(result, result, A);
-        for (int j = 0; j < 8; ++j) {
+        for (int j = 0; j < 8; j++) {
             square(A, A);
             mul(result, result, A);
         }
@@ -303,25 +301,25 @@ public class cryECcurve25519 {
         int carry = 0;
         int limb = x[NUM_LIMBS_255BIT - 1] >> 21;
         x[NUM_LIMBS_255BIT - 1] &= 0x001FFFFF;
-        for (int index = 0; index < size; ++index) {
-            limb += x[NUM_LIMBS_255BIT + index] << 5;
-            carry += (limb & 0x03FFFFFF) * 19 + x[index];
-            x[index] = carry & 0x03FFFFFF;
+        for (int i = 0; i < size; i++) {
+            limb += x[NUM_LIMBS_255BIT + i] << 5;
+            carry += (limb & 0x03FFFFFF) * 19 + x[i];
+            x[i] = carry & 0x03FFFFFF;
             limb >>= 26;
             carry >>= 26;
         }
         if (size < NUM_LIMBS_255BIT) {
-            for (int index = size; index < NUM_LIMBS_255BIT; ++index) {
-                carry += x[index];
-                x[index] = carry & 0x03FFFFFF;
+            for (int i = size; i < NUM_LIMBS_255BIT; i++) {
+                carry += x[i];
+                x[i] = carry & 0x03FFFFFF;
                 carry >>= 26;
             }
         }
         carry = (x[NUM_LIMBS_255BIT - 1] >> 21) * 19;
         x[NUM_LIMBS_255BIT - 1] &= 0x001FFFFF;
-        for (int index = 0; index < NUM_LIMBS_255BIT; ++index) {
-            carry += x[index];
-            result[index] = carry & 0x03FFFFFF;
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
+            carry += x[i];
+            result[i] = carry & 0x03FFFFFF;
             carry >>= 26;
         }
         reduceQuick(result);
@@ -329,16 +327,16 @@ public class cryECcurve25519 {
 
     private void reduceQuick(int[] x) {
         int carry = 19;
-        for (int index = 0; index < NUM_LIMBS_255BIT; ++index) {
-            carry += x[index];
-            t2[index] = carry & 0x03FFFFFF;
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
+            carry += x[i];
+            t2[i] = carry & 0x03FFFFFF;
             carry >>= 26;
         }
         int mask = -((t2[NUM_LIMBS_255BIT - 1] >> 21) & 0x01);
         int nmask = ~mask;
         t2[NUM_LIMBS_255BIT - 1] &= 0x001FFFFF;
-        for (int index = 0; index < NUM_LIMBS_255BIT; ++index) {
-            x[index] = (x[index] & nmask) | (t2[index] & mask);
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
+            x[i] = (x[i] & nmask) | (t2[i] & mask);
         }
     }
 
