@@ -342,12 +342,6 @@ public class prtRedun implements Runnable {
             return;
         }
         ifaces.get(act).doXfer(packRedundancy.fnState);
-        if (ifaces.get(act).last.otherBetter(getSelf()) != null) {
-            state = packRedundancy.statActive;
-            sendHellos();
-            logger.info("preempting over " + ifaces.get(act));
-            return;
-        }
         state = packRedundancy.statStandby;
         sendHellos();
         logger.info("became standby, active on " + ifaces.get(act));
@@ -358,6 +352,17 @@ public class prtRedun implements Runnable {
                 break;
             }
             handleConsole(con, act);
+            String a = ifaces.get(act).last.otherBetter(getSelf());
+            if (a == null) {
+                continue;
+            }
+            if ((bits.getTime() - started) < cfgAll.redundancyTake) {
+                continue;
+            }
+            state = packRedundancy.statActive;
+            sendHellos();
+            logger.info("preempting over " + ifaces.get(act) + " because won on " + a);
+            return;
         }
         state = packRedundancy.statActive;
         sendHellos();

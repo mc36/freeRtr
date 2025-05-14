@@ -1022,6 +1022,11 @@ public class cfgAll {
     public static int redundancyInit = 10 * 500;
 
     /**
+     * redundancy takeover time
+     */
+    public static int redundancyTake = 300 * 1000;
+
+    /**
      * passive mode ftp
      */
     public static boolean ftpPassive = true;
@@ -1374,6 +1379,7 @@ public class cfgAll {
         "!client redundancy-ping 500",
         "!client redundancy-hold 2500",
         "!client redundancy-init 5000",
+        "!client redundancy-take 300000",
         "!client l2f-timer 5000 8",
         "!client l2tp2-timer 5 8",
         "!client l2tp3-timer 5 8",
@@ -3783,6 +3789,7 @@ public class cfgAll {
         l.add("client redundancy-ping " + redundancyKeep);
         l.add("client redundancy-hold " + redundancyHold);
         l.add("client redundancy-init " + redundancyInit);
+        l.add("client redundancy-take " + redundancyTake);
         l.add("client cpuhog " + cpuhogCheck);
         if (clientShamer == null) {
             l.add("no client bullying");

@@ -521,6 +521,8 @@ public class userConfig {
         l.add(null, "3  .      <num>                      time in ms");
         l.add(null, "2  3    redundancy-init              specify redundancy init time");
         l.add(null, "3  .      <num>                      time in ms");
+        l.add(null, "2  3    redundancy-take              specify redundancy takeover time");
+        l.add(null, "3  .      <num>                      time in ms");
         l.add(null, "2  3    proxy                        specify proxy profile");
         l.add(null, "3  .      <name:prx>                 name of profile");
         l.add(null, "2  3    bullying                     specify shame quote source");
@@ -2897,6 +2899,10 @@ public class userConfig {
         }
         if (a.equals("redundancy-init")) {
             cfgAll.redundancyInit = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("redundancy-take")) {
+            cfgAll.redundancyTake = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("whois-online")) {
