@@ -515,7 +515,7 @@ public class userConfig {
         l.add(null, "2  3    l2tp3-timer                  specify l2tp3 parameters");
         l.add(null, "3  4      <num>                      hello after ticks");
         l.add(null, "4  .        <num>                    retry ticks");
-        l.add(null, "2  3    redundancy-ping              specify redundancy keepalive time");
+        l.add(null, "2  3    redundancy-keep              specify redundancy keepalive time");
         l.add(null, "3  .      <num>                      time in ms");
         l.add(null, "2  3    redundancy-hold              specify redundancy hold time");
         l.add(null, "3  .      <num>                      time in ms");
@@ -2889,7 +2889,7 @@ public class userConfig {
             cfgAll.ifaceStallCheck = bits.str2num(cmd.word());
             return;
         }
-        if (a.equals("redundancy-ping")) {
+        if (a.equals("redundancy-keep")) {
             cfgAll.redundancyKeep = bits.str2num(cmd.word());
             return;
         }

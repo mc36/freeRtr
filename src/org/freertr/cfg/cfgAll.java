@@ -1376,7 +1376,7 @@ public class cfgAll {
         "!client label-range 32 1048560",
         "!client cpuhog 0",
         "!client ifacestall 60000",
-        "!client redundancy-ping 500",
+        "!client redundancy-keep 500",
         "!client redundancy-hold 2500",
         "!client redundancy-init 5000",
         "!client redundancy-take 300000",
@@ -3786,7 +3786,7 @@ public class cfgAll {
     private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("client ifacestall " + ifaceStallCheck);
-        l.add("client redundancy-ping " + redundancyKeep);
+        l.add("client redundancy-keep " + redundancyKeep);
         l.add("client redundancy-hold " + redundancyHold);
         l.add("client redundancy-init " + redundancyInit);
         l.add("client redundancy-take " + redundancyTake);
