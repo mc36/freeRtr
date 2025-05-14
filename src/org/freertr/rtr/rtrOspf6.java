@@ -165,6 +165,7 @@ public class rtrOspf6 extends ipRtr {
         distantExt = 110;
         distantInt = 110;
         distantSum = 110;
+        intIds = 1;
         routerCreateComputed();
         fwdCore.routerAdd(this, tabRouteAttr.routeType.ospf6, id);
     }
@@ -869,7 +870,7 @@ public class rtrOspf6 extends ipRtr {
             return null;
         }
         rtrOspf6iface ifc = new rtrOspf6iface(this, ara, iface);
-        ifc.locInt = ++intIds;
+        ifc.locInt = intIds++;
         rtrOspf6iface old = ifaces.add(ifc);
         if (old != null) {
             return old;
