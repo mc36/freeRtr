@@ -333,8 +333,8 @@ public class prtRedun implements Runnable {
             logger.info("became active");
             return;
         }
+        ifaces.get(act).doXfer(packRedundancy.fnState);
         if (ifaces.get(act).last.priority < cfgInit.redunPrio) {
-            ifaces.get(act).doXfer(packRedundancy.fnState);
             state = packRedundancy.statActive;
             sendHellos();
             logger.info("preempting over " + ifaces.get(act));
