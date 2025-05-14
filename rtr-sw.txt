@@ -667,9 +667,9 @@ router bgp6 65535 vrf v1
  template r leak-role attrib
  template r send-community all
  !
- neighbor 2001:db8:36::2 template r
+ neighbor 2001:db8:1101::254 template r
  !
- neighbor 2001:db8:1026:1001::2 template r
+ neighbor 2001:db8:1101::255 template r
  !
  afi-vrf dn42 enable
  afi-vrf dn42 mvpn loopback0
