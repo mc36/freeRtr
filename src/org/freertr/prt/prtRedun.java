@@ -101,7 +101,7 @@ public class prtRedun implements Runnable {
     public static List<String> getIfacesLst() {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < ifaces.size(); i++) {
-            res.add("3 5" + ifaces.get(i).name);
+            res.add(ifaces.get(i).name);
         }
         return res;
     }
@@ -197,37 +197,6 @@ public class prtRedun implements Runnable {
             return a;
         }
         return cmds.comment + "got no hash";
-    }
-
-    /**
-     * set local priority
-     *
-     * @param pri priority to use
-     */
-    public static void setPrio(int pri) {
-        cfgInit.redunPrio = pri;
-    }
-
-    /**
-     * set peer priority
-     *
-     * @param ifc name of interface
-     * @param pri priority to use
-     * @return true on error, false on success
-     */
-    public static boolean setPrio(String ifc, int pri) {
-        prtRedunIfc fnd = null;
-        for (int i = 0; i < ifaces.size(); i++) {
-            prtRedunIfc cur = ifaces.get(i);
-            if (!cur.name.equals(ifc)) {
-                continue;
-            }
-            fnd = cur;
-        }
-        if (fnd == null) {
-            return true;
-        }
-        return fnd.doPrio(pri);
     }
 
     /**
@@ -377,6 +346,53 @@ public class prtRedun implements Runnable {
         logger.info("lost active after " + bits.timeDump(uptime));
     }
 
+    private static prtRedunIfc findIface(String ifc) {
+        for (int i = 0; i < ifaces.size(); i++) {
+            prtRedunIfc cur = ifaces.get(i);
+            if (ifc.equals(cur.name)) {
+                return cur;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * set local priority
+     *
+     * @param pri priority to use
+     */
+    public static void setPrio(int pri) {
+        cfgInit.redunPrio = pri;
+    }
+
+    /**
+     * set peer priority
+     *
+     * @param ifc name of interface
+     * @param pri priority to use
+     * @return true on error, false on success
+     */
+    public static boolean setPrio(String ifc, int pri) {
+        prtRedunIfc fnd = findIface(ifc);
+        if (fnd == null) {
+            return true;
+        }
+        return fnd.doPrio(pri);
+    }
+
+    /**
+     * sync config from peer
+     *
+     * @return true on error, false on success
+     */
+    public static boolean doConfig(String ifc) {
+        prtRedunIfc fnd = findIface(ifc);
+        if (fnd == null) {
+            return true;
+        }
+        return fnd.doXfer(packRedundancy.fnStart);
+    }
+
     /**
      * sync config to peers
      */
@@ -384,6 +400,19 @@ public class prtRedun implements Runnable {
         for (int i = 0; i < ifaces.size(); i++) {
             ifaces.get(i).doFile(cfgInit.cfgFileSw, packRedundancy.fnStart);
         }
+    }
+
+    /**
+     * sync config from peer
+     *
+     * @return true on error, false on success
+     */
+    public static boolean doCore(String ifc) {
+        prtRedunIfc fnd = findIface(ifc);
+        if (fnd == null) {
+            return true;
+        }
+        return fnd.doXfer(packRedundancy.fnCore);
     }
 
     /**

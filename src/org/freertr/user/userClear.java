@@ -144,6 +144,14 @@ public class userClear {
         }
         if (a.equals("redundancy")) {
             a = cmd.word();
+            if (a.equals("core")) {
+                cmd.error(cmds.doneFail(prtRedun.doCore(cmd.word())));
+                return null;
+            }
+            if (a.equals("config")) {
+                cmd.error(cmds.doneFail(prtRedun.doConfig(cmd.word())));
+                return null;
+            }
             if (a.equals("state")) {
                 cfgInit.stateSave();
                 return null;

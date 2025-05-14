@@ -1376,10 +1376,10 @@ public class cfgAll {
         "!client label-range 32 1048560",
         "!client cpuhog 0",
         "!client ifacestall 60000",
-        "!client redundancy-keep 500",
+        "!client redundancy-keepalive 500",
         "!client redundancy-hold 2500",
-        "!client redundancy-init 5000",
-        "!client redundancy-take 300000",
+        "!client redundancy-initial 5000",
+        "!client redundancy-takeover 300000",
         "!client l2f-timer 5000 8",
         "!client l2tp2-timer 5 8",
         "!client l2tp3-timer 5 8",
@@ -3786,10 +3786,10 @@ public class cfgAll {
     private static List<String> getGlobalRunEnd(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("client ifacestall " + ifaceStallCheck);
-        l.add("client redundancy-keep " + redundancyKeep);
+        l.add("client redundancy-keepalive " + redundancyKeep);
         l.add("client redundancy-hold " + redundancyHold);
-        l.add("client redundancy-init " + redundancyInit);
-        l.add("client redundancy-take " + redundancyTake);
+        l.add("client redundancy-initial " + redundancyInit);
+        l.add("client redundancy-takeover " + redundancyTake);
         l.add("client cpuhog " + cpuhogCheck);
         if (clientShamer == null) {
             l.add("no client bullying");
