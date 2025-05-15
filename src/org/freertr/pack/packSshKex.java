@@ -4,8 +4,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cry.cryECpoint;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyDH;
+import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -37,6 +39,11 @@ public class packSshKex {
      * diffie hellman
      */
     public cryKeyDH difHel;
+
+    /**
+     * ec diffie hellman
+     */
+    public cryKeyECDH ecDfHl;
 
     /**
      * hash to use
@@ -145,7 +152,7 @@ public class packSshKex {
     /**
      * calculate exchange hash
      */
-    public void hashCalc() {
+    public void hashCalcDHG() {
         hashBig(difHel.clntPub);
         hashBig(difHel.servPub);
         hashBig(difHel.common);
@@ -165,6 +172,35 @@ public class packSshKex {
         macSC = hashKey(0x46);
         if (debugger.secSshTraf) {
             logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " k=" + difHel.common + " ivCS="
+                    + bits.byteDump(ivCS, 0, -1) + " ivSC=" + bits.byteDump(ivSC, 0, -1) + " encCS=" + bits.byteDump(encCS, 0, -1)
+                    + " encSC=" + bits.byteDump(encSC, 0, -1) + " macCS=" + bits.byteDump(macCS, 0, -1) + " macSC="
+                    + bits.byteDump(macSC, 0, -1));
+        }
+    }
+
+    /**
+     * calculate exchange hash
+     */
+    public void hashCalcDHE() {
+        hashEcP(ecDfHl.clntPub);
+        hashEcP(ecDfHl.servPub);
+        hashBig(ecDfHl.common.x);
+        hasher.init();
+        for (int i = 0; i < hash1.size(); i++) {
+            hasher.update(hash1.get(i));
+        }
+        hashVal = hasher.finish();
+        hash1.clear();
+        hash2.clear();
+        hashBig(ecDfHl.common.x);
+        ivCS = hashKey(0x41);
+        ivSC = hashKey(0x42);
+        encCS = hashKey(0x43);
+        encSC = hashKey(0x44);
+        macCS = hashKey(0x45);
+        macSC = hashKey(0x46);
+        if (debugger.secSshTraf) {
+            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " k=" + ecDfHl.common + " ivCS="
                     + bits.byteDump(ivCS, 0, -1) + " ivSC=" + bits.byteDump(ivSC, 0, -1) + " encCS=" + bits.byteDump(encCS, 0, -1)
                     + " encSC=" + bits.byteDump(encSC, 0, -1) + " macCS=" + bits.byteDump(macCS, 0, -1) + " macSC="
                     + bits.byteDump(macSC, 0, -1));
@@ -246,6 +282,17 @@ public class packSshKex {
      */
     public void hashBig(BigInteger b) {
         byte[] buf = b.toByteArray();
+        hashInt(buf.length);
+        hashBuf(buf);
+    }
+
+    /**
+     * add ec integer
+     *
+     * @param p point to add
+     */
+    public void hashEcP(cryECpoint p) {
+        byte[] buf = p.toBytes1();
         hashInt(buf.length);
         hashBuf(buf);
     }
@@ -521,6 +568,82 @@ public class packSshKex {
         if (debugger.secSshTraf) {
             gexReplyDump("tx");
         }
+    }
+
+    /**
+     * fill init message
+     */
+    public void ecxInitFill() {
+        ecDfHl.clntXchg();
+    }
+
+    /**
+     * create init message
+     */
+    public void ecxInitCreate() {
+        if (debugger.secSshTraf) {
+            ecxInitDump("tx");
+        }
+        lower.pckTyp = packSsh.typeDHEinit;
+        lower.pckDat.clear();
+        lower.ecPntWrite(ecDfHl.clntPub);
+    }
+
+    /**
+     * parse init message
+     *
+     * @return false on success, true on error
+     */
+    public boolean ecxInitParse() {
+        if (lower.pckTyp != packSsh.typeDHEinit) {
+            return true;
+        }
+        ecDfHl.clntPub = lower.ecPntRead(ecDfHl.curve);
+        if (debugger.secSshTraf) {
+            ecxInitDump("rx");
+        }
+        return false;
+    }
+
+    private void ecxInitDump(String dir) {
+        logger.debug(dir + " e=" + ecDfHl.clntPub);
+    }
+
+    /**
+     * create init message
+     */
+    public void ecxReplyCreate() {
+        lower.pckTyp = packSsh.typeDHErply;
+        lower.pckDat.clear();
+        lower.bytesWrite(cert);
+        lower.ecPntWrite(ecDfHl.servPub);
+        lower.bytesWrite(sign);
+        if (debugger.secSshTraf) {
+            ecxReplyDump("tx");
+        }
+    }
+
+    /**
+     * parse reply message
+     *
+     * @return false on success, true on error
+     */
+    public boolean ecxReplyParse() {
+        if (lower.pckTyp != packSsh.typeDHErply) {
+            return true;
+        }
+        cert = lower.bytesRead();
+        ecDfHl.servPub = lower.ecPntRead(ecDfHl.curve);
+        sign = lower.bytesRead();
+        if (debugger.secSshTraf) {
+            ecxReplyDump("rx");
+        }
+        return false;
+    }
+
+    private void ecxReplyDump(String dir) {
+        logger.debug(dir + " f=" + ecDfHl.servPub + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
+                + bits.byteDump(cert, 0, -1));
     }
 
 }

@@ -1,6 +1,8 @@
 package org.freertr.pack;
 
 import java.math.BigInteger;
+import org.freertr.cry.cryECcurve;
+import org.freertr.cry.cryECpoint;
 import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryUtils;
@@ -474,6 +476,31 @@ public class packSsh {
     }
 
     /**
+     * read bigint from packet
+     *
+     * @param pck packet to work on
+     * @param crv curve to use
+     * @return bigint readed
+     */
+    public static cryECpoint ecPntRead(packHolder pck, cryECcurve crv) {
+        byte[] buf = bytesRead(pck);
+        if (buf == null) {
+            return crv.g;
+        }
+        return cryECpoint.fromBytes1(crv, buf, 0);
+    }
+
+    /**
+     * write bigint to packet
+     *
+     * @param pck packet to work on
+     * @param p point to write
+     */
+    public static void ecPntWrite(packHolder pck, cryECpoint p) {
+        bytesWrite(pck, p.toBytes1());
+    }
+
+    /**
      * read unsigned bigint from packet
      *
      * @param pck packet to work on
@@ -549,6 +576,25 @@ public class packSsh {
      */
     public void bigIntWrite(BigInteger b) {
         bigIntWrite(pckDat, b);
+    }
+
+    /**
+     * read bigint from packet
+     *
+     * @param crv curve to use
+     * @return point readed
+     */
+    public cryECpoint ecPntRead(cryECcurve crv) {
+        return ecPntRead(pckDat, crv);
+    }
+
+    /**
+     * write bigint to packet
+     *
+     * @param p point to write
+     */
+    public void ecPntWrite(cryECpoint p) {
+        ecPntWrite(pckDat, p);
     }
 
     /**

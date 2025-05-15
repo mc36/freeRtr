@@ -462,12 +462,24 @@ public class secSsh implements Runnable {
             return;
         }
         pg.difHel = pi.getDHgroup();
+        pg.ecDfHl = pi.getECDHgroup();
         pg.hasher = pi.getDHhash();
         cryKeyGeneric key = pi.kexKeys.getKeySigner(keydsa, keyrsa);
         pg.cert = key.sshWriter();
         pg.hashInt(pg.cert.length);
         pg.hashBuf(pg.cert);
-        if (pg.difHel == null) {
+        if (pg.ecDfHl != null) {
+            doPackRecv(p);
+            if (pg.ecxInitParse()) {
+                return;
+            }
+            pg.ecDfHl.servXchg();
+            pg.ecDfHl.servKey();
+            pg.hashCalcDHE();
+            pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
+            pg.ecxReplyCreate();
+            p.packSend();
+        } else if (pg.difHel == null) {
             doPackRecv(p);
             pg.hashPay();
             if (pg.gexReqParse()) {
@@ -487,7 +499,7 @@ public class secSsh implements Runnable {
             }
             pg.difHel.servXchg();
             pg.difHel.servKey();
-            pg.hashCalc();
+            pg.hashCalcDHG();
             pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
             pg.gexReplyCreate();
             p.packSend();
@@ -498,7 +510,7 @@ public class secSsh implements Runnable {
             }
             pg.difHel.servXchg();
             pg.difHel.servKey();
-            pg.hashCalc();
+            pg.hashCalcDHG();
             pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
             pg.kexReplyCreate();
             p.packSend();
@@ -637,8 +649,23 @@ public class secSsh implements Runnable {
             return;
         }
         pg.difHel = pi.getDHgroup();
+        pg.ecDfHl = pi.getECDHgroup();
         pg.hasher = pi.getDHhash();
-        if (pg.difHel == null) {
+        if (pg.ecDfHl != null) {
+            pg.ecxInitFill();
+            pg.ecxInitCreate();
+            p.packSend();
+            doPackRecv(p);
+            if (pg.ecxReplyParse()) {
+                return;
+            }
+            pg.ecDfHl.clntKey();
+            pg.hashSwap();
+            pg.hashInt(pg.cert.length);
+            pg.hashBuf(pg.cert);
+            pg.hashMerge();
+            pg.hashCalcDHE();
+        } else if (pg.difHel == null) {
             pg.gexReqFill();
             pg.gexReqCreate();
             pg.hashPay();
@@ -656,6 +683,12 @@ public class secSsh implements Runnable {
             if (pg.gexReplyParse()) {
                 return;
             }
+            pg.difHel.clntKey();
+            pg.hashSwap();
+            pg.hashInt(pg.cert.length);
+            pg.hashBuf(pg.cert);
+            pg.hashMerge();
+            pg.hashCalcDHG();
         } else {
             pg.gexInitFill();
             pg.kexInitCreate();
@@ -664,13 +697,13 @@ public class secSsh implements Runnable {
             if (pg.kexReplyParse()) {
                 return;
             }
+            pg.difHel.clntKey();
+            pg.hashSwap();
+            pg.hashInt(pg.cert.length);
+            pg.hashBuf(pg.cert);
+            pg.hashMerge();
+            pg.hashCalcDHG();
         }
-        pg.difHel.clntKey();
-        pg.hashSwap();
-        pg.hashInt(pg.cert.length);
-        pg.hashBuf(pg.cert);
-        pg.hashMerge();
-        pg.hashCalc();
         if (clntPubkey != null) {
             if (clntPubkey.length != pg.cert.length) {
                 return;
