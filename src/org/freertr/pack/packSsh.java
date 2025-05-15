@@ -147,6 +147,16 @@ public class packSsh {
     public final static int typeDHXreq = 34;
 
     /**
+     * diffie hellman ec group init
+     */
+    public final static int typeDHEinit = 30;
+
+    /**
+     * diffie hellman ec group reply
+     */
+    public final static int typeDHErply = 31;
+
+    /**
      * auth request
      */
     public final static int typeAuthReq = 50;
