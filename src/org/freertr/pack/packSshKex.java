@@ -385,7 +385,13 @@ public class packSshKex {
         }
         difHel = new cryKeyDH();
         difHel.modulus = lower.bigIntRead();
+        if (difHel.modulus == null) {
+            return true;
+        }
         difHel.group = lower.bigIntRead();
+        if (difHel.group == null) {
+            return true;
+        }
         if (debugger.secSshTraf) {
             gexGroupDump("rx");
         }
@@ -432,6 +438,9 @@ public class packSshKex {
             return true;
         }
         difHel.clntPub = lower.bigIntRead();
+        if (difHel.clntPub == null) {
+            return true;
+        }
         if (debugger.secSshTraf) {
             gexInitDump("rx");
         }
@@ -472,6 +481,9 @@ public class packSshKex {
         }
         cert = lower.bytesRead();
         difHel.servPub = lower.bigIntRead();
+        if (difHel.servPub == null) {
+            return true;
+        }
         sign = lower.bytesRead();
         if (debugger.secSshTraf) {
             gexReplyDump("rx");
@@ -520,6 +532,9 @@ public class packSshKex {
             return true;
         }
         difHel.clntPub = lower.bigIntRead();
+        if (difHel.clntPub == null) {
+            return true;
+        }
         if (debugger.secSshTraf) {
             gexInitDump("rx");
         }
@@ -549,6 +564,9 @@ public class packSshKex {
         }
         cert = lower.bytesRead();
         difHel.servPub = lower.bigIntRead();
+        if (difHel.servPub == null) {
+            return true;
+        }
         sign = lower.bytesRead();
         if (debugger.secSshTraf) {
             gexReplyDump("rx");
@@ -599,6 +617,9 @@ public class packSshKex {
             return true;
         }
         ecDfHl.clntPub = lower.ecPntRead(ecDfHl.curve);
+        if (ecDfHl.clntPub == null) {
+            return true;
+        }
         if (debugger.secSshTraf) {
             ecxInitDump("rx");
         }
@@ -634,6 +655,9 @@ public class packSshKex {
         }
         cert = lower.bytesRead();
         ecDfHl.servPub = lower.ecPntRead(ecDfHl.curve);
+        if (ecDfHl.servPub == null) {
+            return true;
+        }
         sign = lower.bytesRead();
         if (debugger.secSshTraf) {
             ecxReplyDump("rx");
