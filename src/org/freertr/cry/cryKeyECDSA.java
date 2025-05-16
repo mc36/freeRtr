@@ -364,6 +364,22 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return false;
     }
 
+    public byte[][] keyParamTls() {
+        return null;
+    }
+
+    public byte[][] keyParamSsh() {
+        return null;
+    }
+
+    public boolean keyParamTls(byte[][] buf) {
+        return false;
+    }
+
+    public boolean keyParamSsh(byte[][] buf) {
+        return false;
+    }
+
     /**
      * read ssh key
      *

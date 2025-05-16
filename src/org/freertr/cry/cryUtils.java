@@ -45,16 +45,28 @@ public class cryUtils {
         byte[] b1 = o.toByteArray();
         byte[] b2 = new byte[siz];
         if (b1.length >= b2.length) {
-            for (int i = 0; i < b2.length; i++) {
-                b2[i] = b1[b1.length - b2.length + i];
-            }
+            bits.byteCopy(b1, b1.length - b2.length, b2, 0, b2.length);
             return b2;
         }
-        for (int i = 0; i < b2.length; i++) {
-            b2[i] = 0;
-        }
+        bits.byteFill(b2, 0, b2.length - b1.length, 0);
         bits.byteCopy(b1, 0, b2, b2.length - b1.length, b1.length);
         return b2;
+    }
+
+    /**
+     * convert big unsigned integer to buffer
+     *
+     * @param b integer
+     * @return buffer
+     */
+    public static byte[] bigUint2buf(BigInteger b) {
+        byte[] dat = b.toByteArray();
+        if (dat[0] != 0) {
+            return dat;
+        }
+        byte[] buf = new byte[dat.length - 1];
+        bits.byteCopy(dat, 1, buf, 0, buf.length);
+        return buf;
     }
 
     /**
@@ -99,37 +111,6 @@ public class cryUtils {
      */
     public static boolean testPrime(BigInteger i) {
         return i.isProbablePrime(100);
-    }
-
-    /**
-     * convert big unsigned integer to buffer
-     *
-     * @param b integer
-     * @return buffer
-     */
-    public static byte[] bigUint2buf(BigInteger b) {
-        byte[] dat = b.toByteArray();
-        if (dat[0] != 0) {
-            return dat;
-        }
-        byte[] buf = new byte[dat.length - 1];
-        for (int i = 0; i < buf.length; i++) {
-            buf[i] = dat[i + 1];
-        }
-        return buf;
-    }
-
-    /**
-     * convert buffer to big unsigned integer
-     *
-     * @param dat buffer
-     * @return big integer
-     */
-    public static BigInteger buf2bigUint(byte[] dat) {
-        byte[] buf = new byte[dat.length + 1];
-        buf[0] = 0;
-        bits.byteCopy(dat, 0, buf, 1, dat.length);
-        return new BigInteger(buf);
     }
 
     /**

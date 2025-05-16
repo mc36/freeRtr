@@ -3,6 +3,7 @@ package org.freertr.cry;
 import org.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import org.freertr.pack.packHolder;
+import org.freertr.util.bits;
 
 /**
  * diffie-hellman key exchange
@@ -25,12 +26,12 @@ public class cryKeyDH extends cryKeyGeneric {
     /**
      * generator value
      */
-    public BigInteger group;
+    protected BigInteger group;
 
     /**
      * modulus value
      */
-    public BigInteger modulus;
+    protected BigInteger modulus;
 
     /**
      * client private value
@@ -208,14 +209,12 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public boolean keyClntTls(byte[] buf, int ofs) {
-        /////////// ofs
-        clntPub = cryUtils.buf2bigUint(buf);
+        clntPub = cryUtils.buffer2bigInt(buf, ofs, buf.length - ofs);
         return false;
     }
 
     public boolean keyServTls(byte[] buf, int ofs) {
-        /////////// ofs
-        servPub = cryUtils.buf2bigUint(buf);
+        servPub = cryUtils.buffer2bigInt(buf, ofs, buf.length - ofs);
         return false;
     }
 
@@ -228,12 +227,16 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public boolean keyClntSsh(byte[] buf, int ofs) {
-        clntPub = new BigInteger(buf, ofs, buf.length - ofs);
+        byte[] tmp = new byte[buf.length - ofs];
+        bits.byteCopy(buf, ofs, tmp, 0, tmp.length);
+        clntPub = new BigInteger(tmp);
         return false;
     }
 
     public boolean keyServSsh(byte[] buf, int ofs) {
-        servPub = new BigInteger(buf, ofs, buf.length - ofs);
+        byte[] tmp = new byte[buf.length - ofs];
+        bits.byteCopy(buf, ofs, tmp, 0, tmp.length);
+        servPub = new BigInteger(tmp);
         return false;
     }
 
@@ -252,6 +255,32 @@ public class cryKeyDH extends cryKeyGeneric {
 
     public boolean keyServIke(byte[] buf, int ofs) {
         servPub = cryUtils.buffer2bigInt(buf, ofs, buf.length - ofs);
+        return false;
+    }
+
+    public byte[][] keyParamTls() {
+        byte[][] res = new byte[2][];
+        res[0] = cryUtils.bigUint2buf(modulus);
+        res[1] = cryUtils.bigUint2buf(group);
+        return res;
+    }
+
+    public byte[][] keyParamSsh() {
+        byte[][] res = new byte[2][];
+        res[0] = modulus.toByteArray();
+        res[1] = group.toByteArray();
+        return res;
+    }
+
+    public boolean keyParamTls(byte[][] buf) {
+        modulus = cryUtils.buffer2bigInt(buf[0], 0, buf[0].length);
+        group = cryUtils.buffer2bigInt(buf[1], 0, buf[1].length);
+        return false;
+    }
+
+    public boolean keyParamSsh(byte[][] buf) {
+        modulus = new BigInteger(buf[0]);
+        group = new BigInteger(buf[0]);
         return false;
     }
 

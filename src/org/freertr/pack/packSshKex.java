@@ -1,6 +1,5 @@
 package org.freertr.pack;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
@@ -290,14 +289,14 @@ public class packSshKex {
     }
 
     /**
-     * add big integer
-     *
-     * @param b integer to add
+     * hash parameters
      */
-    public void hashBig(BigInteger b) {
-        byte[] buf = b.toByteArray();
-        hashInt(buf.length);
-        hashBuf(buf);
+    public void hashParams() {
+        byte[][] buf = difHel.keyParamSsh();
+        for (int i = 0; i < buf.length; i++) {
+            hashInt(buf[i].length);
+            hashBuf(buf[i]);
+        }
     }
 
     /**
@@ -387,12 +386,10 @@ public class packSshKex {
             return true;
         }
         difHel = new cryKeyDH();
-        difHel.modulus = lower.bigIntRead();
-        if (difHel.modulus == null) {
-            return true;
-        }
-        difHel.group = lower.bigIntRead();
-        if (difHel.group == null) {
+        byte[][] buf = new byte[2][];
+        buf[0] = lower.bytesRead();
+        buf[1] = lower.bytesRead();
+        if (difHel.keyParamSsh(buf)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -424,8 +421,9 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHXgrp;
         lower.pckDat.clear();
-        lower.bigIntWrite(difHel.modulus);
-        lower.bigIntWrite(difHel.group);
+        byte[][] buf = difHel.keyParamSsh();
+        lower.bytesWrite(buf[0]);
+        lower.bytesWrite(buf[1]);
     }
 
     private void gexGroupDump(String dir) {

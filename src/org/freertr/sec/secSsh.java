@@ -491,8 +491,7 @@ public class secSsh implements Runnable {
             }
             pg.gexGroupCreate();
             p.packSend();
-            pg.hashBig(pg.difHel.modulus);
-            pg.hashBig(pg.difHel.group);
+            pg.hashParams();
             doPackRecv(p);
             if (pg.gexInitParse()) {
                 return;
@@ -674,8 +673,7 @@ public class secSsh implements Runnable {
             if (pg.gexGroupParse()) {
                 return;
             }
-            pg.hashBig(pg.difHel.modulus);
-            pg.hashBig(pg.difHel.group);
+            pg.hashParams();
             pg.gexInitFill();
             pg.gexInitCreate();
             p.packSend();

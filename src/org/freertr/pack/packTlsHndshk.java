@@ -23,7 +23,6 @@ import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyRSA;
-import org.freertr.cry.cryUtils;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -1419,8 +1418,9 @@ public class packTlsHndshk {
         packTls h = new packTls(datagram);
         h.putBytes(clntRand, 0);
         h.putBytes(servRand, 0);
-        h.putBytes(cryUtils.bigUint2buf(diffHell.modulus), 2);
-        h.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
+        byte[][] buf = diffHell.keyParamTls();
+        h.putBytes(buf[0], 2);
+        h.putBytes(buf[1], 2);
         h.putBytes(diffHell.keyServTls(), 2);
         h.pckDat.merge2beg();
         byte[] raw = h.pckDat.getCopy();
@@ -1500,8 +1500,9 @@ public class packTlsHndshk {
     public void servKexCreate() {
         pckTyp = typeKexServ;
         lower.pckDat.clear();
-        lower.putBytes(cryUtils.bigUint2buf(diffHell.modulus), 2);
-        lower.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
+        byte[][] buf = diffHell.keyParamTls();
+        lower.putBytes(buf[0], 2);
+        lower.putBytes(buf[1], 2);
         lower.putBytes(diffHell.keyServTls(), 2);
         if (minVer >= 0x303) {
             lower.pckDat.msbPutW(0, signHsh);
@@ -1521,8 +1522,10 @@ public class packTlsHndshk {
             return true;
         }
         diffHell = new cryKeyDH();
-        diffHell.modulus = cryUtils.buf2bigUint(lower.getBytes(2));
-        diffHell.group = cryUtils.buf2bigUint(lower.getBytes(2));
+        byte[][] buf = new byte[2][];
+        buf[0] = lower.getBytes(2);
+        buf[1] = lower.getBytes(2);
+        diffHell.keyParamTls(buf);
         diffHell.keyServTls(lower.getBytes(2), 0);
         if (minVer >= 0x303) {
             signHsh = lower.pckDat.msbGetW(0);
@@ -1554,8 +1557,7 @@ public class packTlsHndshk {
         if (!debugger.secTlsTraf) {
             return;
         }
-        logger.debug(dir + " prime=" + diffHell.modulus + " group=" + diffHell.group + " sign="
-                + bits.byteDump(signDat, 0, -1));
+        logger.debug(dir + " " + diffHell.keyDump() + " sign=" + bits.byteDump(signDat, 0, -1));
     }
 
     /**

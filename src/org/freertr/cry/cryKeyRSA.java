@@ -378,6 +378,22 @@ public class cryKeyRSA extends cryKeyGeneric {
         return false;
     }
 
+    public byte[][] keyParamTls() {
+        return null;
+    }
+
+    public byte[][] keyParamSsh() {
+        return null;
+    }
+
+    public boolean keyParamTls(byte[][] buf) {
+        return false;
+    }
+
+    public boolean keyParamSsh(byte[][] buf) {
+        return false;
+    }
+
     /**
      * do encryption
      *
@@ -567,7 +583,7 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
-        BigInteger s = cryUtils.buf2bigUint(sign);
+        BigInteger s = cryUtils.buffer2bigInt(sign, 0, sign.length);
         s = s.modPow(pubExp, modulus);
         return PKCS1t2pad(pkcs.getPkcs(), hash).compareTo(s) != 0;
     }
@@ -597,7 +613,7 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
-        BigInteger s = cryUtils.buf2bigUint(sign);
+        BigInteger s = cryUtils.buffer2bigInt(sign, 0, sign.length);
         s = s.modPow(pubExp, modulus);
         BigInteger h = doPadding(ver, pkcs, hash);
         if (h != null) {

@@ -1,8 +1,6 @@
 package org.freertr.pack;
 
 import java.math.BigInteger;
-import org.freertr.cry.cryKeyECcurve;
-import org.freertr.cry.cryKeyECpoint;
 import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryUtils;
@@ -486,7 +484,7 @@ public class packSsh {
         if (dat == null) {
             return BigInteger.ZERO;
         }
-        return cryUtils.buf2bigUint(dat);
+        return cryUtils.buffer2bigInt(dat, 0, dat.length);
     }
 
     /**
