@@ -25,7 +25,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     /**
      * curve
      */
-    public cryKeyECcurve curve;
+    protected cryKeyECcurve curve;
 
     /**
      * client private value
@@ -127,6 +127,13 @@ public class cryKeyECDH extends cryKeyGeneric {
 
     public boolean keyMakeIke(int id) {
         return false;
+    }
+
+    public int keyMakeVal() {
+        if (curve == null) {
+            return -1;
+        }
+        return curve.tls;
     }
 
     public boolean keyVerify() {

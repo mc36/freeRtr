@@ -949,7 +949,7 @@ public class packIsakmp {
      */
     public void computeKeys() {
         diffie.keyClntCalc();
-        dhcomm = cryUtils.bigUint2buf(diffie.common);
+        dhcomm = diffie.keyCommonIke();
         cryHashGeneric h = transform.getHmac(preshared.getBytes());
         h.update(nonceI);
         h.update(nonceR);

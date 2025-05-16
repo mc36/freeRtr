@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cry.cryCertificate;
 import org.freertr.cry.cryKeyECcurve;
-import org.freertr.cry.cryKeyECpoint;
 import org.freertr.cry.cryEncrCBCaes;
 import org.freertr.cry.cryEncrCBCdes;
 import org.freertr.cry.cryEncrCBCdes3;
@@ -740,8 +739,8 @@ public class packTlsHndshk {
                     }
                     for (i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
-                        ecDiffHell.curve = cryKeyECcurve.getByTls(o);
-                        if (ecDiffHell.curve != null) {
+                        ecDiffHell.keyMakeTls(o);
+                        if (ecDiffHell.keyMakeVal() >= 0) {
                             break;
                         }
                     }
@@ -764,14 +763,14 @@ public class packTlsHndshk {
                         break;
                     }
                     if (client) {
-                        ecDiffHell.curve = cryKeyECcurve.getByTls(bits.msbGetW(tlv.valDat, 0));
-                        if (ecDiffHell.curve == null) {
+                        ecDiffHell.keyMakeTls(bits.msbGetW(tlv.valDat, 0));
+                        if (ecDiffHell.keyMakeVal() < 0) {
                             break;
                         }
                         ecDiffHell.keyServTls(tlv.valDat, 4);
                         break;
                     }
-                    if (ecDiffHell.curve == null) {
+                    if (ecDiffHell.keyMakeVal() < 0) {
                         break;
                     }
                     for (int p = 2;;) {
@@ -787,7 +786,7 @@ public class packTlsHndshk {
                             p += s;
                             continue;
                         }
-                        if (tmp.tls != ecDiffHell.curve.tls) {
+                        if (tmp.tls != ecDiffHell.keyMakeVal()) {
                             p += s;
                             continue;
                         }
@@ -857,11 +856,11 @@ public class packTlsHndshk {
         }
         byte[] res;
         if (client) {
-            if (ecDiffHell.curve != null) {
+            if (ecDiffHell.keyMakeVal() >= 0) {
                 res = ecDiffHell.keyClntTls();
                 buf = new byte[6];
                 bits.msbPutW(buf, 0, res.length + 4);
-                bits.msbPutW(buf, 2, ecDiffHell.curve.tls);
+                bits.msbPutW(buf, 2, ecDiffHell.keyMakeVal());
                 bits.msbPutW(buf, 4, res.length);
             } else {
                 buf = new byte[2];
@@ -876,10 +875,10 @@ public class packTlsHndshk {
                 res = new byte[0];
                 buf = new byte[2];
             }
-            if (ecDiffHell.curve == null) {
+            if (ecDiffHell.keyMakeVal() < 0) {
                 buf = null;
             } else {
-                bits.msbPutW(buf, 0, ecDiffHell.curve.tls);
+                bits.msbPutW(buf, 0, ecDiffHell.keyMakeVal());
             }
         }
         if (buf != null) {
@@ -914,7 +913,7 @@ public class packTlsHndshk {
      * @return false on success, true on error
      */
     public boolean clntHelloFillEc() {
-        if (ecDiffHell.curve == null) {
+        if (ecDiffHell.keyMakeVal() < 0) {
             return true;
         }
         ecDiffHell.keyClntInit();
@@ -1073,7 +1072,7 @@ public class packTlsHndshk {
      * @return false on successful, true on error
      */
     public boolean servHelloFillEc() {
-        if (ecDiffHell.curve == null) {
+        if (ecDiffHell.keyMakeVal() < 0) {
             return true;
         }
         ecDiffHell.keyServInit();
@@ -1086,7 +1085,7 @@ public class packTlsHndshk {
      * @return false if not, true if yes
      */
     public boolean servHelloRetrying() {
-        if (ecDiffHell.curve == null) {
+        if (ecDiffHell.keyMakeVal() < 0) {
             return true;
         }
         if (ecDiffHell.keyClntTls() == null) {
@@ -2032,7 +2031,7 @@ public class packTlsHndshk {
             case 0x1000:
                 break;
             case 0x2000:
-                preMaster = cryUtils.bigUint2buf(diffHell.common);
+                preMaster = diffHell.keyCommonTls();
                 break;
         }
         switch (minVer) {

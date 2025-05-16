@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
-import org.freertr.cry.cryKeyECcurve;
 import org.freertr.cry.cryEncrCBCaes;
 import org.freertr.cry.cryEncrCBCblowfish;
 import org.freertr.cry.cryEncrCBCdes;
@@ -547,25 +546,22 @@ public class packSshInit {
         cryKeyECDH res = new cryKeyECDH();
         switch (kexAlgo[0]) {
             case 0:
-                res.curve = cryKeyECcurve.getByTls(25);
+                res.keyMakeTls(25);
                 break;
             case 1:
-                res.curve = cryKeyECcurve.getByTls(24);
+                res.keyMakeTls(24);
                 break;
             case 2:
-                res.curve = cryKeyECcurve.getByTls(23);
+                res.keyMakeTls(23);
                 break;
             case 3:
-                res.curve = cryKeyECcurve.getByTls(21);
+                res.keyMakeTls(21);
                 break;
             case 4:
-                res.curve = cryKeyECcurve.getByTls(19);
+                res.keyMakeTls(19);
                 break;
             default:
                 return null;
-        }
-        if (res.curve == null) {
-            return null;
         }
         return res;
     }

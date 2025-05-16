@@ -227,6 +227,10 @@ public class cryKeyDSA extends cryKeyGeneric {
         return false;
     }
 
+    public int keyMakeVal() {
+        return -1;
+    }
+
     /**
      * make key
      *

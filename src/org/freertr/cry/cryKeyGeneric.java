@@ -1,11 +1,9 @@
 package org.freertr.cry;
 
 import org.freertr.enc.encBase64;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.pack.packHolder;
-import org.freertr.util.bits;
 
 /**
  * generic key storage
@@ -137,6 +135,13 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
      * @return true on error, false on success
      */
     public abstract boolean keyMakeIke(int id);
+
+    /**
+     * id value used to generate
+     *
+     * @return -1 on error, id on success
+     */
+    public abstract int keyMakeVal();
 
     /**
      * verify a key

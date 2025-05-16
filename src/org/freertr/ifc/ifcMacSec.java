@@ -435,7 +435,7 @@ public class ifcMacSec implements Runnable {
         }
         boolean rep = hashRx == null;
         if (debugger.ifcMacSecTraf) {
-            logger.debug("sending kex, reply=" + (!rep) + " common=" + keygen.common);
+            logger.debug("sending kex, reply=" + (!rep) + " " + keygen.keyDump());
         }
         packHolder pck = new packHolder(true, true);
         pck.msbPutW(0, myTyp); // ethertype
@@ -459,18 +459,18 @@ public class ifcMacSec implements Runnable {
         }
         keygen.keyServCalc();
         if (debugger.ifcMacSecTraf) {
-            logger.debug("common=" + keygen.common);
+            logger.debug("keys " + keygen.keyDump());
         }
         byte[] buf1 = new byte[0];
         for (int i = 0; buf1.length < 1024; i++) {
             cryHashGeneric hsh = profil.trans.getHash();
             hsh.init();
-            hsh.update(keygen.common.toByteArray());
+            hsh.update(keygen.keyCommonSsh());
             hsh.update(profil.preshared.getBytes());
             hsh.update(i);
             byte[] buf2 = hsh.finish();
             if (buf2.length < 1) {
-                buf2 = keygen.common.toByteArray();
+                buf2 = keygen.keyCommonSsh();
                 byte[] buf3 = profil.preshared.getBytes();
                 for (int o = 0; o < buf2.length; o++) {
                     buf2[o] ^= buf3[o % buf3.length];

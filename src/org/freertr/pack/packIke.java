@@ -851,7 +851,7 @@ public class packIke {
      */
     public void computeKeys() {
         diffie.keyClntCalc();
-        dhcomm = cryUtils.bigUint2buf(diffie.common);
+        dhcomm = diffie.keyCommonIke();
         cryHashGeneric h = transorig.getHprf(bits.byteConcat(nonceI, nonceR));
         h.update(dhcomm);
         skeyidG = h.finish();

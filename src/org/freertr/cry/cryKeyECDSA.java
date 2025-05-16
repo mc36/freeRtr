@@ -238,6 +238,10 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return false;
     }
 
+    public int keyMakeVal() {
+        return -1;
+    }
+
     private boolean keyMake() {
         priv = cryUtils.randomBigInt(curve.n.bitLength() - 2);
         pub = curve.g.mul(priv);

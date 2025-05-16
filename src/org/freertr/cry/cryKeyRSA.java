@@ -220,6 +220,10 @@ public class cryKeyRSA extends cryKeyGeneric {
         return false;
     }
 
+    public int keyMakeVal() {
+        return -1;
+    }
+
     public boolean keyMakeSize(int len) {
         pubExp = new BigInteger("65537", 10);
         prime1 = cryUtils.randomPrime(len / 2);

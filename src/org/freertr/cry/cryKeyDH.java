@@ -20,7 +20,7 @@ public class cryKeyDH extends cryKeyGeneric {
     /**
      * common value
      */
-    public BigInteger common;
+    protected BigInteger common;
 
     /**
      * generator value
@@ -144,6 +144,10 @@ public class cryKeyDH extends cryKeyGeneric {
         group = new BigInteger("2", 16);
     }
 
+    public int keyMakeVal() {
+        return -1;
+    }
+
     public boolean keyVerify() {
         if (!cryUtils.testPrime(modulus)) {
             return true;
@@ -184,15 +188,15 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public byte[] keyCommonTls() {
-        return null;
+        return cryUtils.bigUint2buf(common);
     }
 
     public byte[] keyCommonSsh() {
-        return null;
+        return common.toByteArray();
     }
 
     public byte[] keyCommonIke() {
-        return null;
+        return cryUtils.bigUint2buf(common);
     }
 
     public byte[] keyClntTls() {

@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
-import org.freertr.cry.cryKeyECpoint;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyECDH;
@@ -155,7 +154,9 @@ public class packSshKex {
     public void hashCalcDHG() {
         hashBig(difHel.clntPub);
         hashBig(difHel.servPub);
-        hashBig(difHel.common);
+        byte[] buf = difHel.keyCommonSsh();
+        hashInt(buf.length);
+        hashBuf(buf);
         hasher.init();
         for (int i = 0; i < hash1.size(); i++) {
             hasher.update(hash1.get(i));
@@ -163,7 +164,9 @@ public class packSshKex {
         hashVal = hasher.finish();
         hash1.clear();
         hash2.clear();
-        hashBig(difHel.common);
+        buf = difHel.keyCommonSsh();
+        hashInt(buf.length);
+        hashBuf(buf);
         ivCS = hashKey(0x41);
         ivSC = hashKey(0x42);
         encCS = hashKey(0x43);
@@ -171,7 +174,7 @@ public class packSshKex {
         macCS = hashKey(0x45);
         macSC = hashKey(0x46);
         if (debugger.secSshTraf) {
-            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " k=" + difHel.common + " ivCS="
+            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " " + difHel.keyDump() + " ivCS="
                     + bits.byteDump(ivCS, 0, -1) + " ivSC=" + bits.byteDump(ivSC, 0, -1) + " encCS=" + bits.byteDump(encCS, 0, -1)
                     + " encSC=" + bits.byteDump(encSC, 0, -1) + " macCS=" + bits.byteDump(macCS, 0, -1) + " macSC="
                     + bits.byteDump(macSC, 0, -1));

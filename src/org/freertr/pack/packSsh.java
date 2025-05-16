@@ -476,31 +476,6 @@ public class packSsh {
     }
 
     /**
-     * read bigint from packet
-     *
-     * @param pck packet to work on
-     * @param crv curve to use
-     * @return bigint readed
-     */
-    public static cryKeyECpoint ecPntRead(packHolder pck, cryKeyECcurve crv) {
-        byte[] buf = bytesRead(pck);
-        if (buf == null) {
-            return crv.g;
-        }
-        return cryKeyECpoint.fromBytesTls(crv, buf, 0);
-    }
-
-    /**
-     * write bigint to packet
-     *
-     * @param pck packet to work on
-     * @param p point to write
-     */
-    public static void ecPntWrite(packHolder pck, cryKeyECpoint p) {
-        bytesWrite(pck, p.toBytesTls());
-    }
-
-    /**
      * read unsigned bigint from packet
      *
      * @param pck packet to work on
@@ -576,25 +551,6 @@ public class packSsh {
      */
     public void bigIntWrite(BigInteger b) {
         bigIntWrite(pckDat, b);
-    }
-
-    /**
-     * read bigint from packet
-     *
-     * @param crv curve to use
-     * @return point readed
-     */
-    public cryKeyECpoint ecPntRead(cryKeyECcurve crv) {
-        return ecPntRead(pckDat, crv);
-    }
-
-    /**
-     * write bigint to packet
-     *
-     * @param p point to write
-     */
-    public void ecPntWrite(cryKeyECpoint p) {
-        ecPntWrite(pckDat, p);
     }
 
     /**
