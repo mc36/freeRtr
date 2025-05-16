@@ -1421,7 +1421,7 @@ public class packTlsHndshk {
         h.putBytes(servRand, 0);
         h.putBytes(cryUtils.bigUint2buf(diffHell.modulus), 2);
         h.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
-        h.putBytes(cryUtils.bigUint2buf(diffHell.servPub), 2);
+        h.putBytes(diffHell.keyServTls(), 2);
         h.pckDat.merge2beg();
         byte[] raw = h.pckDat.getCopy();
         if (signHsh < 0) {
@@ -1502,7 +1502,7 @@ public class packTlsHndshk {
         lower.pckDat.clear();
         lower.putBytes(cryUtils.bigUint2buf(diffHell.modulus), 2);
         lower.putBytes(cryUtils.bigUint2buf(diffHell.group), 2);
-        lower.putBytes(cryUtils.bigUint2buf(diffHell.servPub), 2);
+        lower.putBytes(diffHell.keyServTls(), 2);
         if (minVer >= 0x303) {
             lower.pckDat.msbPutW(0, signHsh);
             lower.pckDat.putSkip(2);
@@ -1523,7 +1523,7 @@ public class packTlsHndshk {
         diffHell = new cryKeyDH();
         diffHell.modulus = cryUtils.buf2bigUint(lower.getBytes(2));
         diffHell.group = cryUtils.buf2bigUint(lower.getBytes(2));
-        diffHell.servPub = cryUtils.buf2bigUint(lower.getBytes(2));
+        diffHell.keyServTls(lower.getBytes(2), 0);
         if (minVer >= 0x303) {
             signHsh = lower.pckDat.msbGetW(0);
             lower.pckDat.getSkip(2);
@@ -1620,7 +1620,7 @@ public class packTlsHndshk {
                 lower.putBytes(key.doEncrypt(key.PKCS1t15pad(preMaster)), 2);
                 break;
             case 0x2000:
-                lower.putBytes(cryUtils.bigUint2buf(diffHell.clntPub), 2);
+                lower.putBytes(diffHell.keyClntTls(), 2);
                 break;
         }
     }
@@ -1639,7 +1639,7 @@ public class packTlsHndshk {
                 preMaster = keyrsa.PKCS1t15unpad(keyrsa.doDecrypt(lower.getBytes(2)));
                 break;
             case 0x2000:
-                diffHell.clntPub = cryUtils.buf2bigUint(lower.getBytes(2));
+                diffHell.keyClntTls(lower.getBytes(2), 0);
                 diffHell.keyServCalc();
                 break;
         }

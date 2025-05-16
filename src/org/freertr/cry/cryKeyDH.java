@@ -200,18 +200,38 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public byte[] keyClntTls() {
-        return null;
+        return cryUtils.bigUint2buf(clntPub);
     }
 
     public byte[] keyServTls() {
-        return null;
+        return cryUtils.bigUint2buf(servPub);
     }
 
     public boolean keyClntTls(byte[] buf, int ofs) {
+        /////////// ofs
+        clntPub = cryUtils.buf2bigUint(buf);
         return false;
     }
 
     public boolean keyServTls(byte[] buf, int ofs) {
+        /////////// ofs
+        servPub = cryUtils.buf2bigUint(buf);
+        return false;
+    }
+
+    public byte[] keyClntSsh() {
+        return null;
+    }
+
+    public byte[] keyServSsh() {
+        return null;
+    }
+
+    public boolean keyClntSsh(byte[] buf, int ofs) {
+        return false;
+    }
+
+    public boolean keyServSsh(byte[] buf, int ofs) {
         return false;
     }
 

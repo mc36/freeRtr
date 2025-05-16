@@ -185,10 +185,10 @@ public class packSshKex {
      * calculate exchange hash
      */
     public void hashCalcDHE() {
-        byte[] buf = ecDfHl.keyClntTls();
+        byte[] buf = ecDfHl.keyClntSsh();
         hashInt(buf.length);
         hashBuf(buf);
-        buf = ecDfHl.keyServTls();
+        buf = ecDfHl.keyServSsh();
         hashInt(buf.length);
         hashBuf(buf);
         buf = ecDfHl.keyCommonSsh();
@@ -467,7 +467,7 @@ public class packSshKex {
     }
 
     private void gexInitDump(String dir) {
-        logger.debug(dir + " e=" + difHel.clntPub);
+        logger.debug(dir + " " + difHel.keyDump());
     }
 
     /**
@@ -518,7 +518,7 @@ public class packSshKex {
     }
 
     private void gexReplyDump(String dir) {
-        logger.debug(dir + " f=" + difHel.servPub + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
+        logger.debug(dir + " " + difHel.keyDump() + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
                 + bits.byteDump(cert, 0, -1));
     }
 
@@ -604,7 +604,7 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHEinit;
         lower.pckDat.clear();
-        lower.bytesWrite(ecDfHl.keyClntTls());
+        lower.bytesWrite(ecDfHl.keyClntSsh());
     }
 
     /**
@@ -616,7 +616,7 @@ public class packSshKex {
         if (lower.pckTyp != packSsh.typeDHEinit) {
             return true;
         }
-        if (ecDfHl.keyClntTls(lower.bytesRead(), 0)) {
+        if (ecDfHl.keyClntSsh(lower.bytesRead(), 0)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -636,7 +636,7 @@ public class packSshKex {
         lower.pckTyp = packSsh.typeDHErply;
         lower.pckDat.clear();
         lower.bytesWrite(cert);
-        lower.bytesWrite(ecDfHl.keyServTls());
+        lower.bytesWrite(ecDfHl.keyServSsh());
         lower.bytesWrite(sign);
         if (debugger.secSshTraf) {
             ecxReplyDump("tx");
@@ -653,7 +653,7 @@ public class packSshKex {
             return true;
         }
         cert = lower.bytesRead();
-        if (ecDfHl.keyServTls(lower.bytesRead(), 0)) {
+        if (ecDfHl.keyServSsh(lower.bytesRead(), 0)) {
             return true;
         }
         sign = lower.bytesRead();

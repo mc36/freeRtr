@@ -346,6 +346,22 @@ public class cryKeyRSA extends cryKeyGeneric {
         return false;
     }
 
+    public byte[] keyClntSsh() {
+        return null;
+    }
+
+    public byte[] keyServSsh() {
+        return null;
+    }
+
+    public boolean keyClntSsh(byte[] buf, int ofs) {
+        return false;
+    }
+
+    public boolean keyServSsh(byte[] buf, int ofs) {
+        return false;
+    }
+
     /**
      * do encryption
      *

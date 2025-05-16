@@ -203,4 +203,20 @@ public class cryKeyECDH extends cryKeyGeneric {
         return false;
     }
 
+    public byte[] keyClntSsh() {
+        return keyClntTls();
+    }
+
+    public byte[] keyServSsh() {
+        return keyServTls();
+    }
+
+    public boolean keyClntSsh(byte[] buf, int ofs) {
+        return keyClntTls(buf, ofs);
+    }
+
+    public boolean keyServSsh(byte[] buf, int ofs) {
+        return keyServTls(buf, ofs);
+    }
+
 }

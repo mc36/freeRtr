@@ -455,7 +455,7 @@ public class ifcMacSec implements Runnable {
 
     private void doCalc() {
         if (debugger.ifcMacSecTraf) {
-            logger.debug("got kex, reply=" + (!reply) + ", modulus=" + keygen.clntPub);
+            logger.debug("got kex, reply=" + (!reply));
         }
         keygen.keyServCalc();
         if (debugger.ifcMacSecTraf) {
