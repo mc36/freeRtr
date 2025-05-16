@@ -829,7 +829,7 @@ public class packIsakmp {
         if (diffie == null) {
             diffie = transform.getGroup();
         }
-        diffie.clntXchg();
+        diffie.keyClntInit();
         xchgTyp = xchgIdPrt;
     }
 
@@ -948,7 +948,7 @@ public class packIsakmp {
      * compute keys
      */
     public void computeKeys() {
-        diffie.clntKey();
+        diffie.keyClntCalc();
         dhcomm = cryUtils.bigUint2buf(diffie.common);
         cryHashGeneric h = transform.getHmac(preshared.getBytes());
         h.update(nonceI);

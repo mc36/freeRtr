@@ -26,22 +26,22 @@ public class cryKeyDSA extends cryKeyGeneric {
     /**
      * p prime
      */
-    public BigInteger prime;
+    protected BigInteger prime;
 
     /**
      * q subprime
      */
-    public BigInteger subprime;
+    protected BigInteger subprime;
 
     /**
      * g group
      */
-    public BigInteger group;
+    protected BigInteger group;
 
     /**
      * y public key
      */
-    public BigInteger pub;
+    protected BigInteger pub;
 
     /**
      * x private key
@@ -51,12 +51,12 @@ public class cryKeyDSA extends cryKeyGeneric {
     /**
      * signature r
      */
-    public BigInteger sgnR;
+    protected BigInteger sgnR;
 
     /**
      * signature s
      */
-    public BigInteger sgnS;
+    protected BigInteger sgnS;
 
     private final static int hashBits = 160;
 
@@ -285,6 +285,30 @@ public class cryKeyDSA extends cryKeyGeneric {
      */
     public int keySize() {
         return prime.bitLength();
+    }
+
+    /**
+     * client exchange
+     */
+    public void keyClntInit() {
+    }
+
+    /**
+     * server exchange
+     */
+    public void keyServInit() {
+    }
+
+    /**
+     * client common secret computation
+     */
+    public void keyClntCalc() {
+    }
+
+    /**
+     * server common secret computation
+     */
+    public void keyServCalc() {
     }
 
     /**

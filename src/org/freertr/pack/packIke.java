@@ -734,7 +734,7 @@ public class packIke {
         if (diffie == null) {
             diffie = transform.getGroup();
         }
-        diffie.clntXchg();
+        diffie.keyClntInit();
         xchgTyp = xchgIkeSa;
     }
 
@@ -850,7 +850,7 @@ public class packIke {
      * compute keys
      */
     public void computeKeys() {
-        diffie.clntKey();
+        diffie.keyClntCalc();
         dhcomm = cryUtils.bigUint2buf(diffie.common);
         cryHashGeneric h = transorig.getHprf(bits.byteConcat(nonceI, nonceR));
         h.update(dhcomm);

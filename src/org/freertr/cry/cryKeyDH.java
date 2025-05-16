@@ -132,7 +132,6 @@ public class cryKeyDH extends cryKeyGeneric {
      * create random group
      *
      * @param len size
-     * @return
      */
     public void keyMakeRandom(int len) {
         for (;;) {
@@ -162,33 +161,21 @@ public class cryKeyDH extends cryKeyGeneric {
         return modulus.bitLength();
     }
 
-    /**
-     * client exchange
-     */
-    public void clntXchg() {
+    public void keyClntInit() {
         clntPriv = randomBigInt(modulus.bitLength() - 2);
         clntPub = group.modPow(clntPriv, modulus);
     }
 
-    /**
-     * server exchange
-     */
-    public void servXchg() {
+    public void keyServInit() {
         servPriv = randomBigInt(modulus.bitLength() - 2);
         servPub = group.modPow(servPriv, modulus);
     }
 
-    /**
-     * client common secret computation
-     */
-    public void clntKey() {
+    public void keyClntCalc() {
         common = servPub.modPow(clntPriv, modulus);
     }
 
-    /**
-     * server common secret computation
-     */
-    public void servKey() {
+    public void keyServCalc() {
         common = clntPub.modPow(servPriv, modulus);
     }
 

@@ -473,8 +473,8 @@ public class secSsh implements Runnable {
             if (pg.ecxInitParse()) {
                 return;
             }
-            pg.ecDfHl.servXchg();
-            pg.ecDfHl.servKey();
+            pg.ecDfHl.keyServInit();
+            pg.ecDfHl.keyServCalc();
             pg.hashCalcDHE();
             pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
             pg.ecxReplyCreate();
@@ -497,8 +497,8 @@ public class secSsh implements Runnable {
             if (pg.gexInitParse()) {
                 return;
             }
-            pg.difHel.servXchg();
-            pg.difHel.servKey();
+            pg.difHel.keyServInit();
+            pg.difHel.keyServCalc();
             pg.hashCalcDHG();
             pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
             pg.gexReplyCreate();
@@ -508,8 +508,8 @@ public class secSsh implements Runnable {
             if (pg.kexInitParse()) {
                 return;
             }
-            pg.difHel.servXchg();
-            pg.difHel.servKey();
+            pg.difHel.keyServInit();
+            pg.difHel.keyServCalc();
             pg.hashCalcDHG();
             pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
             pg.kexReplyCreate();
@@ -659,7 +659,7 @@ public class secSsh implements Runnable {
             if (pg.ecxReplyParse()) {
                 return;
             }
-            pg.ecDfHl.clntKey();
+            pg.ecDfHl.keyClntCalc();
             pg.hashSwap();
             pg.hashInt(pg.cert.length);
             pg.hashBuf(pg.cert);
@@ -683,7 +683,7 @@ public class secSsh implements Runnable {
             if (pg.gexReplyParse()) {
                 return;
             }
-            pg.difHel.clntKey();
+            pg.difHel.keyClntCalc();
             pg.hashSwap();
             pg.hashInt(pg.cert.length);
             pg.hashBuf(pg.cert);
@@ -697,7 +697,7 @@ public class secSsh implements Runnable {
             if (pg.kexReplyParse()) {
                 return;
             }
-            pg.difHel.clntKey();
+            pg.difHel.keyClntCalc();
             pg.hashSwap();
             pg.hashInt(pg.cert.length);
             pg.hashBuf(pg.cert);

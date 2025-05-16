@@ -237,6 +237,26 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
     public abstract int keySize();
 
     /**
+     * client key exchange initialization
+     */
+    public abstract void keyClntInit();
+
+    /**
+     * server key exchange initialization
+     */
+    public abstract void keyServInit();
+
+    /**
+     * client common secret computation
+     */
+    public abstract void keyClntCalc();
+
+    /**
+     * server common secret computation
+     */
+    public abstract void keyServCalc();
+
+    /**
      * read public key
      *
      * @param key key data

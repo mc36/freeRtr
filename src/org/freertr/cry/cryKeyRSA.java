@@ -37,12 +37,12 @@ public class cryKeyRSA extends cryKeyGeneric {
     /**
      * n modulus
      */
-    public BigInteger modulus;
+    protected BigInteger modulus;
 
     /**
      * e public exponent
      */
-    public BigInteger pubExp;
+    protected BigInteger pubExp;
 
     /**
      * d private exponent
@@ -284,6 +284,30 @@ public class cryKeyRSA extends cryKeyGeneric {
 
     public int keySize() {
         return modulus.bitLength();
+    }
+
+    /**
+     * client exchange
+     */
+    public void keyClntInit() {
+    }
+
+    /**
+     * server exchange
+     */
+    public void keyServInit() {
+    }
+
+    /**
+     * client common secret computation
+     */
+    public void keyClntCalc() {
+    }
+
+    /**
+     * server common secret computation
+     */
+    public void keyServCalc() {
     }
 
     /**

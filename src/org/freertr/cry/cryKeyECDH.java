@@ -128,7 +128,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     public boolean keyMakeIke(int id) {
         return false;
     }
-    
+
     public boolean keyVerify() {
         return !curve.g.check();
     }
@@ -137,33 +137,21 @@ public class cryKeyECDH extends cryKeyGeneric {
         return curve.p.bitLength();
     }
 
-    /**
-     * client exchange
-     */
-    public void clntXchg() {
+    public void keyClntInit() {
         clntPriv = randomBigInt(curve.p.bitLength() - 2);
         clntPub = curve.g.mul(clntPriv);
     }
 
-    /**
-     * server exchange
-     */
-    public void servXchg() {
+    public void keyServInit() {
         servPriv = randomBigInt(curve.p.bitLength() - 2);
         servPub = curve.g.mul(servPriv);
     }
 
-    /**
-     * client common secret computation
-     */
-    public void clntKey() {
+    public void keyClntCalc() {
         common = servPub.mul(clntPriv);
     }
 
-    /**
-     * server common secret computation
-     */
-    public void servKey() {
+    public void keyServCalc() {
         common = clntPub.mul(servPriv);
     }
 

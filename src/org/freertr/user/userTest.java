@@ -608,10 +608,10 @@ public class userTest {
             kdh.keyMakeSize(pmsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
-                kdh.clntXchg();
-                kdh.servXchg();
-                kdh.clntKey();
-                kdh.servKey();
+                kdh.keyClntInit();
+                kdh.keyServInit();
+                kdh.keyClntCalc();
+                kdh.keyServCalc();
             }
             cmd.error("dh: " + kdh.keyVerify() + " " + kdh.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
@@ -620,10 +620,10 @@ public class userTest {
             kecdh.keyMakeSize(ecsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
-                kecdh.clntXchg();
-                kecdh.servXchg();
-                kecdh.clntKey();
-                kecdh.servKey();
+                kecdh.keyClntInit();
+                kecdh.keyServInit();
+                kecdh.keyClntCalc();
+                kecdh.keyServCalc();
             }
             cmd.error("ecdh: " + kecdh.keyVerify() + " " + kecdh.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {

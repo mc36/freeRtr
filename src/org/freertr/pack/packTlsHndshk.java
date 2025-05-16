@@ -917,7 +917,7 @@ public class packTlsHndshk {
         if (ecDiffHell.curve == null) {
             return true;
         }
-        ecDiffHell.clntXchg();
+        ecDiffHell.keyClntInit();
         return false;
     }
 
@@ -1076,7 +1076,7 @@ public class packTlsHndshk {
         if (ecDiffHell.curve == null) {
             return true;
         }
-        ecDiffHell.servXchg();
+        ecDiffHell.keyServInit();
         return false;
     }
 
@@ -1486,7 +1486,7 @@ public class packTlsHndshk {
         }
         diffHell = new cryKeyDH();
         diffHell.keyMakeSize(i);
-        diffHell.servXchg();
+        diffHell.keyServInit();
         if (minVer >= 0x303) {
             signHsh = 0x401; // rsa pkcs1 sha256
         }
@@ -1596,8 +1596,8 @@ public class packTlsHndshk {
                 bits.msbPutW(preMaster, 0, i);
                 break;
             case 0x2000:
-                diffHell.clntXchg();
-                diffHell.clntKey();
+                diffHell.keyClntInit();
+                diffHell.keyClntCalc();
                 break;
         }
     }
@@ -1641,7 +1641,7 @@ public class packTlsHndshk {
                 break;
             case 0x2000:
                 diffHell.clntPub = cryUtils.buf2bigUint(lower.getBytes(2));
-                diffHell.servKey();
+                diffHell.keyServCalc();
                 break;
         }
         return false;
@@ -2122,12 +2122,12 @@ public class packTlsHndshk {
             if (ecDiffHell.servPub == null) {
                 return true;
             }
-            ecDiffHell.clntKey();
+            ecDiffHell.keyClntCalc();
         } else {
             if (ecDiffHell.clntPub == null) {
                 return true;
             }
-            ecDiffHell.servKey();
+            ecDiffHell.keyServCalc();
         }
         byte[] buf = ecDiffHell.common.getBytesX();
         if (debugger.secTlsTraf) {

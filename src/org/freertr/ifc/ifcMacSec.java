@@ -195,7 +195,7 @@ public class ifcMacSec implements Runnable {
         myTyp = typ;
         profil = ips;
         keygen = ips.trans.getGroup();
-        keygen.servXchg();
+        keygen.keyServInit();
         if (profil.replay > 0) {
             sequence = new tabWindow<packHolder>(profil.replay);
         }
@@ -427,7 +427,7 @@ public class ifcMacSec implements Runnable {
                 logger.debug("restarting kex");
             }
             keygen = profil.trans.getGroup();
-            keygen.servXchg();
+            keygen.keyServInit();
             calcing.set(0);
             reply = false;
             hashRx = null;
@@ -457,7 +457,7 @@ public class ifcMacSec implements Runnable {
         if (debugger.ifcMacSecTraf) {
             logger.debug("got kex, reply=" + (!reply) + ", modulus=" + keygen.clntPub);
         }
-        keygen.servKey();
+        keygen.keyServCalc();
         if (debugger.ifcMacSecTraf) {
             logger.debug("common=" + keygen.common);
         }

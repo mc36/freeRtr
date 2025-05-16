@@ -21,12 +21,12 @@ public class cryKeyECDSA extends cryKeyGeneric {
     /**
      * curve
      */
-    public cryKeyECcurve curve;
+    protected cryKeyECcurve curve;
 
     /**
      * y public key
      */
-    public cryKeyECpoint pub;
+    protected cryKeyECpoint pub;
 
     /**
      * x private key
@@ -36,12 +36,12 @@ public class cryKeyECDSA extends cryKeyGeneric {
     /**
      * signature r
      */
-    public BigInteger sgnR;
+    protected BigInteger sgnR;
 
     /**
      * signature s
      */
-    public BigInteger sgnS;
+    protected BigInteger sgnS;
 
     /**
      * get ssh name
@@ -270,6 +270,30 @@ public class cryKeyECDSA extends cryKeyGeneric {
      */
     public int keySize() {
         return curve.p.bitLength();
+    }
+
+    /**
+     * client exchange
+     */
+    public void keyClntInit() {
+    }
+
+    /**
+     * server exchange
+     */
+    public void keyServInit() {
+    }
+
+    /**
+     * client common secret computation
+     */
+    public void keyClntCalc() {
+    }
+
+    /**
+     * server common secret computation
+     */
+    public void keyServCalc() {
     }
 
     /**

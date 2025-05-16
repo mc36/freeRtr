@@ -452,7 +452,7 @@ public class packSshKex {
      * fill init message
      */
     public void gexInitFill() {
-        difHel.clntXchg();
+        difHel.keyClntInit();
     }
 
     /**
@@ -593,7 +593,7 @@ public class packSshKex {
      * fill init message
      */
     public void ecxInitFill() {
-        ecDfHl.clntXchg();
+        ecDfHl.keyClntInit();
     }
 
     /**
