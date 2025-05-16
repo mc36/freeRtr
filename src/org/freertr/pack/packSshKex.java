@@ -184,7 +184,9 @@ public class packSshKex {
     public void hashCalcDHE() {
         hashEcP(ecDfHl.clntPub);
         hashEcP(ecDfHl.servPub);
-        hashBig(ecDfHl.common.x);
+        byte[] buf = ecDfHl.keyCommonSsh();
+        hashInt(buf.length);
+        hashBuf(buf);
         hasher.init();
         for (int i = 0; i < hash1.size(); i++) {
             hasher.update(hash1.get(i));
@@ -192,7 +194,8 @@ public class packSshKex {
         hashVal = hasher.finish();
         hash1.clear();
         hash2.clear();
-        hashBig(ecDfHl.common.x);
+        hashInt(buf.length);
+        hashBuf(buf);
         ivCS = hashKey(0x41);
         ivSC = hashKey(0x42);
         encCS = hashKey(0x43);
@@ -200,7 +203,7 @@ public class packSshKex {
         macCS = hashKey(0x45);
         macSC = hashKey(0x46);
         if (debugger.secSshTraf) {
-            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " k=" + ecDfHl.common + " ivCS="
+            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " k=" + bits.byteDump(buf, 0, -1) + " ivCS="
                     + bits.byteDump(ivCS, 0, -1) + " ivSC=" + bits.byteDump(ivSC, 0, -1) + " encCS=" + bits.byteDump(encCS, 0, -1)
                     + " encSC=" + bits.byteDump(encSC, 0, -1) + " macCS=" + bits.byteDump(macCS, 0, -1) + " macSC="
                     + bits.byteDump(macSC, 0, -1));
@@ -292,7 +295,7 @@ public class packSshKex {
      * @param p point to add
      */
     public void hashEcP(cryKeyECpoint p) {
-        byte[] buf = p.toBytes1();
+        byte[] buf = p.toBytesTls();
         hashInt(buf.length);
         hashBuf(buf);
     }

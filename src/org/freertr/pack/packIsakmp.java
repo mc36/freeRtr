@@ -846,7 +846,7 @@ public class packIsakmp {
         if (diffie == null) {
             diffie = transform.getGroup();
         }
-        diffie.servPub = cryKeyGeneric.buffer2bigInt(buf, 0, buf.length);
+        diffie.servPub = cryUtils.buffer2bigInt(buf, 0, buf.length);
         keyXchgDump("rx");
         return false;
     }

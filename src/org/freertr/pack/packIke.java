@@ -755,7 +755,7 @@ public class packIke {
         if (bits.msbGetW(buf, 0) != transform.groupNum) {
             return true;
         }
-        diffie.servPub = cryKeyGeneric.buffer2bigInt(buf, 4, buf.length - 4);
+        diffie.servPub = cryUtils.buffer2bigInt(buf, 4, buf.length - 4);
         keyXchgDump("rx");
         return false;
     }

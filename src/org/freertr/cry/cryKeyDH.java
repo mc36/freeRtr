@@ -135,9 +135,9 @@ public class cryKeyDH extends cryKeyGeneric {
      */
     public void keyMakeRandom(int len) {
         for (;;) {
-            modulus = randomPrime(len);
+            modulus = cryUtils.randomPrime(len);
             BigInteger i = modulus.shiftRight(1);
-            if (testPrime(i)) {
+            if (cryUtils.testPrime(i)) {
                 break;
             }
         }
@@ -145,13 +145,13 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public boolean keyVerify() {
-        if (!testPrime(modulus)) {
+        if (!cryUtils.testPrime(modulus)) {
             return true;
         }
-        if (!testPrime(modulus.shiftRight(1))) {
+        if (!cryUtils.testPrime(modulus.shiftRight(1))) {
             return true;
         }
-        if (!testPrime(group)) {
+        if (!cryUtils.testPrime(group)) {
             return true;
         }
         return false;
@@ -162,12 +162,12 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public void keyClntInit() {
-        clntPriv = randomBigInt(modulus.bitLength() - 2);
+        clntPriv = cryUtils.randomBigInt(modulus.bitLength() - 2);
         clntPub = group.modPow(clntPriv, modulus);
     }
 
     public void keyServInit() {
-        servPriv = randomBigInt(modulus.bitLength() - 2);
+        servPriv = cryUtils.randomBigInt(modulus.bitLength() - 2);
         servPub = group.modPow(servPriv, modulus);
     }
 
@@ -177,6 +177,18 @@ public class cryKeyDH extends cryKeyGeneric {
 
     public void keyServCalc() {
         common = clntPub.modPow(servPriv, modulus);
+    }
+
+    public byte[] keyCommonTls() {
+        return null;
+    }
+
+    public byte[] keyCommonSsh() {
+        return null;
+    }
+
+    public byte[] keyCommonIke() {
+        return null;
     }
 
     public boolean sshReader(byte[] key) {

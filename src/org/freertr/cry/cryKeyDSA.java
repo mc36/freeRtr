@@ -233,18 +233,18 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @param len length
      */
     public boolean keyMakeSize(int len) {
-        priv = randomBigInt(hashBits);
-        subprime = randomPrime(hashBits);
+        priv = cryUtils.randomBigInt(hashBits);
+        subprime = cryUtils.randomPrime(hashBits);
         for (;;) {
-            BigInteger i = randomBigInt(len - hashBits);
+            BigInteger i = cryUtils.randomBigInt(len - hashBits);
             prime = subprime.multiply(i).add(BigInteger.ONE);
-            if (testPrime(prime)) {
+            if (cryUtils.testPrime(prime)) {
                 break;
             }
         }
         BigInteger o = prime.subtract(BigInteger.ONE).divide(subprime);
         for (;;) {
-            BigInteger i = randomBigInt(prime.bitLength() - 1);
+            BigInteger i = cryUtils.randomBigInt(prime.bitLength() - 1);
             group = i.modPow(o, prime);
             if (group.compareTo(BigInteger.ONE) > 0) {
                 break;
@@ -260,10 +260,10 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean keyVerify() {
-        if (!testPrime(subprime)) {
+        if (!cryUtils.testPrime(subprime)) {
             return true;
         }
-        if (!testPrime(prime)) {
+        if (!cryUtils.testPrime(prime)) {
             return true;
         }
         if (prime.mod(subprime).compareTo(BigInteger.ONE) != 0) {
@@ -311,14 +311,26 @@ public class cryKeyDSA extends cryKeyGeneric {
     public void keyServCalc() {
     }
 
+    public byte[] keyCommonTls() {
+        return null;
+    }
+
+    public byte[] keyCommonSsh() {
+        return null;
+    }
+
+    public byte[] keyCommonIke() {
+        return null;
+    }
+
     /**
      * convert signature to ssh
      *
      * @return byte array of r|s
      */
     public byte[] sign2ssh() {
-        byte[] b1 = bigInt2buffer(sgnR, hashBytes);
-        byte[] b2 = bigInt2buffer(sgnS, hashBytes);
+        byte[] b1 = cryUtils.bigInt2buffer(sgnR, hashBytes);
+        byte[] b2 = cryUtils.bigInt2buffer(sgnS, hashBytes);
         byte[] b3 = new byte[hashBytes + hashBytes];
         for (int i = 0; i < hashBytes; i++) {
             b3[i] = b1[i];
@@ -337,8 +349,8 @@ public class cryKeyDSA extends cryKeyGeneric {
         if (sgn.length != hashBytes + hashBytes) {
             return true;
         }
-        sgnR = buffer2bigInt(sgn, 0, hashBytes);
-        sgnS = buffer2bigInt(sgn, hashBytes, hashBytes);
+        sgnR = cryUtils.buffer2bigInt(sgn, 0, hashBytes);
+        sgnS = cryUtils.buffer2bigInt(sgn, hashBytes, hashBytes);
         return false;
     }
 
@@ -348,8 +360,8 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @param msg cleartext
      */
     public void doSigning(byte[] msg) {
-        BigInteger m = buffer2bigInt(msg, 0, msg.length);
-        BigInteger k = randomBigInt(hashBits).mod(subprime);
+        BigInteger m = cryUtils.buffer2bigInt(msg, 0, msg.length);
+        BigInteger k = cryUtils.randomBigInt(hashBits).mod(subprime);
         sgnR = group.modPow(k, prime).mod(subprime);
         k = k.modInverse(subprime);
         sgnS = priv.multiply(sgnR).add(m).multiply(k).mod(subprime);
@@ -362,7 +374,7 @@ public class cryKeyDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean doVerify(byte[] msg) {
-        BigInteger m = buffer2bigInt(msg, 0, msg.length);
+        BigInteger m = cryUtils.buffer2bigInt(msg, 0, msg.length);
         BigInteger w = sgnS.modInverse(subprime);
         BigInteger u1 = m.multiply(w).mod(subprime);
         BigInteger u2 = sgnR.multiply(w).mod(subprime);

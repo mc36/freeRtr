@@ -134,21 +134,10 @@ public class cryKeyECpoint {
         return res;
     }
 
-    /**
-     * get x coordinate
-     *
-     * @return x coordinate
-     */
-    public byte[] getBytesX() {
-        int siz = (c.p.bitLength() + 7) / 8;
-        byte[] b1 = cryKeyGeneric.bigInt2buffer(x, siz);
-        return b1;
-    }
-
     private byte[] getBytes() {
         int siz = (c.p.bitLength() + 7) / 8;
-        byte[] b1 = cryKeyGeneric.bigInt2buffer(x, siz);
-        byte[] b2 = cryKeyGeneric.bigInt2buffer(y, siz);
+        byte[] b1 = cryUtils.bigInt2buffer(x, siz);
+        byte[] b2 = cryUtils.bigInt2buffer(y, siz);
         return bits.byteConcat(b1, b2);
     }
 
@@ -157,7 +146,7 @@ public class cryKeyECpoint {
      *
      * @return bytes
      */
-    public byte[] toBytes1() {
+    public byte[] toBytesTls() {
         byte[] b0 = new byte[1];
         b0[0] = 4;
         return bits.byteConcat(b0, getBytes());
@@ -168,7 +157,7 @@ public class cryKeyECpoint {
      *
      * @return bytes
      */
-    public byte[] toBytes2() {
+    public byte[] toBytesCert() {
         byte[] b0 = new byte[2];
         b0[1] = 4;
         return bits.byteConcat(b0, getBytes());
@@ -179,8 +168,8 @@ public class cryKeyECpoint {
         if ((buf.length - ofs) < (siz * 2)) {
             return null;
         }
-        BigInteger x = cryKeyGeneric.buffer2bigInt(buf, ofs, siz);
-        BigInteger y = cryKeyGeneric.buffer2bigInt(buf, ofs + siz, siz);
+        BigInteger x = cryUtils.buffer2bigInt(buf, ofs, siz);
+        BigInteger y = cryUtils.buffer2bigInt(buf, ofs + siz, siz);
         return new cryKeyECpoint(c, x, y);
     }
 
@@ -192,7 +181,7 @@ public class cryKeyECpoint {
      * @param ofs where to start
      * @return point
      */
-    public static cryKeyECpoint fromBytes1(cryKeyECcurve c, byte[] buf, int ofs) {
+    public static cryKeyECpoint fromBytesTls(cryKeyECcurve c, byte[] buf, int ofs) {
         if (buf[ofs] != 4) {
             return null;
         }
@@ -207,7 +196,7 @@ public class cryKeyECpoint {
      * @param ofs where to start
      * @return point
      */
-    public static cryKeyECpoint fromBytes2(cryKeyECcurve c, byte[] buf, int ofs) {
+    public static cryKeyECpoint fromBytesCert(cryKeyECcurve c, byte[] buf, int ofs) {
         if (buf[ofs + 1] != 4) {
             return null;
         }

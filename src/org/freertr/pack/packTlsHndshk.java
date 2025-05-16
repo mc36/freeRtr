@@ -768,7 +768,7 @@ public class packTlsHndshk {
                         if (ecDiffHell.curve == null) {
                             break;
                         }
-                        ecDiffHell.servPub = cryKeyECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, 4);
+                        ecDiffHell.servPub = cryKeyECpoint.fromBytesTls(ecDiffHell.curve, tlv.valDat, 4);
                         break;
                     }
                     if (ecDiffHell.curve == null) {
@@ -791,7 +791,7 @@ public class packTlsHndshk {
                             p += s;
                             continue;
                         }
-                        ecDiffHell.clntPub = cryKeyECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, p + 4);
+                        ecDiffHell.clntPub = cryKeyECpoint.fromBytesTls(ecDiffHell.curve, tlv.valDat, p + 4);
                         break;
                     }
                     break;
@@ -858,7 +858,7 @@ public class packTlsHndshk {
         byte[] res;
         if (client) {
             if (ecDiffHell.curve != null) {
-                res = ecDiffHell.clntPub.toBytes1();
+                res = ecDiffHell.clntPub.toBytesTls();
                 buf = new byte[6];
                 bits.msbPutW(buf, 0, res.length + 4);
                 bits.msbPutW(buf, 2, ecDiffHell.curve.tls);
@@ -869,7 +869,7 @@ public class packTlsHndshk {
             }
         } else {
             if (ecDiffHell.servPub != null) {
-                res = ecDiffHell.servPub.toBytes1();
+                res = ecDiffHell.servPub.toBytesTls();
                 buf = new byte[4];
                 bits.msbPutW(buf, 2, res.length);
             } else {
@@ -2129,14 +2129,14 @@ public class packTlsHndshk {
             }
             ecDiffHell.keyServCalc();
         }
-        byte[] buf = ecDiffHell.common.getBytesX();
+        byte[] buf = ecDiffHell.keyCommonTls();
         if (debugger.secTlsTraf) {
-            logger.debug("clnt=" + bits.byteDump(ecDiffHell.clntPub.toBytes1(), 0, -1) + " serv=" + bits.byteDump(ecDiffHell.servPub.toBytes1(), 0, -1) + " common=" + bits.byteDump(buf, 0, -1));
+            logger.debug("clnt=" + bits.byteDump(ecDiffHell.clntPub.toBytesTls(), 0, -1) + " serv=" + bits.byteDump(ecDiffHell.servPub.toBytesTls(), 0, -1) + " common=" + bits.byteDump(buf, 0, -1));
         }
         cryHashGeneric h = getAlgoHasher();
         preMaster = genHashV13t(h, new byte[h.getHashSize()], new byte[h.getHashSize()]);
         preMaster = genHashV13d(h, preMaster, "derived", "");
-        preMaster = genHashV13t(h, preMaster, ecDiffHell.common.getBytesX());
+        preMaster = genHashV13t(h, preMaster, ecDiffHell.keyCommonTls());
         masterSec = genHashV13d(h, preMaster, "derived", "");
         masterSec = genHashV13t(h, masterSec, new byte[h.getHashSize()]);
         byte[] xch = calcExchangeSumV13(h);

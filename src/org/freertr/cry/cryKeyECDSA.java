@@ -117,7 +117,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
-        pub = cryKeyECpoint.fromBytes2(curve, a.buf, 0);
+        pub = cryKeyECpoint.fromBytesCert(curve, a.buf, 0);
         if (pub == null) {
             return true;
         }
@@ -143,7 +143,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         encAsn1.writeEoc(p1, p2);
         p2.clear();
         packHolder p3 = new packHolder(true, true);
-        buf = pub.toBytes2();
+        buf = pub.toBytesCert();
         p3.putCopy(buf, 0, 0, buf.length);
         p3.putSkip(buf.length);
         p3.merge2beg();
@@ -196,7 +196,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
-        pub = cryKeyECpoint.fromBytes2(curve, a.buf, 1);
+        pub = cryKeyECpoint.fromBytesCert(curve, a.buf, 1);
         if (pub == null) {
             return true;
         }
@@ -215,7 +215,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         encAsn1.writeObjectId(p2, curve.oid);
         encAsn1.writeSequence(p1, p2);
         p2.clear();
-        byte[] buf = pub.toBytes2();
+        byte[] buf = pub.toBytesCert();
         p2.putByte(0, 0);
         p2.putCopy(buf, 0, 1, buf.length);
         p2.putSkip(buf.length + 1);
@@ -239,7 +239,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
     }
 
     private boolean keyMake() {
-        priv = randomBigInt(curve.n.bitLength() - 2);
+        priv = cryUtils.randomBigInt(curve.n.bitLength() - 2);
         pub = curve.g.mul(priv);
         return false;
     }
@@ -296,6 +296,18 @@ public class cryKeyECDSA extends cryKeyGeneric {
     public void keyServCalc() {
     }
 
+    public byte[] keyCommonTls() {
+        return null;
+    }
+
+    public byte[] keyCommonSsh() {
+        return null;
+    }
+
+    public byte[] keyCommonIke() {
+        return null;
+    }
+
     /**
      * read ssh key
      *
@@ -313,7 +325,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (!packSsh.stringRead(p).equals(curve + "")) {
             return true;
         }
-        pub = cryKeyECpoint.fromBytes2(curve, packSsh.bytesRead(p), 0);
+        pub = cryKeyECpoint.fromBytesCert(curve, packSsh.bytesRead(p), 0);
         if (pub == null) {
             return true;
         }
@@ -329,7 +341,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         packHolder p = new packHolder(true, true);
         packSsh.stringWrite(p, sshName());
         packSsh.stringWrite(p, "" + curve);
-        packSsh.bytesWrite(p, pub.toBytes2());
+        packSsh.bytesWrite(p, pub.toBytesCert());
         p.merge2beg();
         return p.getCopy();
     }
@@ -351,7 +363,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      */
     public void doSigning(byte[] msg) {
         BigInteger z = calcZ(curve.n, msg);
-        BigInteger k = randomBigInt(curve.n.bitLength() - 2);
+        BigInteger k = cryUtils.randomBigInt(curve.n.bitLength() - 2);
         cryKeyECpoint Q = curve.g.mul(k);
         sgnR = Q.x.mod(curve.n);
         sgnS = k.modInverse(curve.n).multiply(z.add(sgnR.multiply(priv)));
@@ -379,8 +391,8 @@ public class cryKeyECDSA extends cryKeyGeneric {
      */
     public byte[] sign2ssh() {
         int hashBytes = (curve.p.bitLength() + 7) / 8;
-        byte[] b1 = bigInt2buffer(sgnR, hashBytes);
-        byte[] b2 = bigInt2buffer(sgnS, hashBytes);
+        byte[] b1 = cryUtils.bigInt2buffer(sgnR, hashBytes);
+        byte[] b2 = cryUtils.bigInt2buffer(sgnS, hashBytes);
         byte[] b3 = new byte[hashBytes + hashBytes];
         for (int i = 0; i < hashBytes; i++) {
             b3[i] = b1[i];
@@ -400,8 +412,8 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (sgn.length != hashBytes + hashBytes) {
             return true;
         }
-        sgnR = buffer2bigInt(sgn, 0, hashBytes);
-        sgnS = buffer2bigInt(sgn, hashBytes, hashBytes);
+        sgnR = cryUtils.buffer2bigInt(sgn, 0, hashBytes);
+        sgnS = cryUtils.buffer2bigInt(sgn, hashBytes, hashBytes);
         return false;
     }
 

@@ -487,7 +487,7 @@ public class packSsh {
         if (buf == null) {
             return crv.g;
         }
-        return cryKeyECpoint.fromBytes1(crv, buf, 0);
+        return cryKeyECpoint.fromBytesTls(crv, buf, 0);
     }
 
     /**
@@ -497,7 +497,7 @@ public class packSsh {
      * @param p point to write
      */
     public static void ecPntWrite(packHolder pck, cryKeyECpoint p) {
-        bytesWrite(pck, p.toBytes1());
+        bytesWrite(pck, p.toBytesTls());
     }
 
     /**

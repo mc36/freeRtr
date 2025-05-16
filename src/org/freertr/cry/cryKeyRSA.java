@@ -222,8 +222,8 @@ public class cryKeyRSA extends cryKeyGeneric {
 
     public boolean keyMakeSize(int len) {
         pubExp = new BigInteger("65537", 10);
-        prime1 = randomPrime(len / 2);
-        prime2 = randomPrime(len / 2);
+        prime1 = cryUtils.randomPrime(len / 2);
+        prime2 = cryUtils.randomPrime(len / 2);
         if (prime1.compareTo(prime2) < 0) {
             BigInteger i = prime1;
             prime1 = prime2;
@@ -249,13 +249,13 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     public boolean keyVerify() {
-        if (!testPrime(pubExp)) {
+        if (!cryUtils.testPrime(pubExp)) {
             return true;
         }
-        if (!testPrime(prime1)) {
+        if (!cryUtils.testPrime(prime1)) {
             return true;
         }
-        if (!testPrime(prime2)) {
+        if (!cryUtils.testPrime(prime2)) {
             return true;
         }
         if (prime1.compareTo(prime2) < 0) {
@@ -310,6 +310,18 @@ public class cryKeyRSA extends cryKeyGeneric {
     public void keyServCalc() {
     }
 
+    public byte[] keyCommonTls() {
+        return null;
+    }
+
+    public byte[] keyCommonSsh() {
+        return null;
+    }
+
+    public byte[] keyCommonIke() {
+        return null;
+    }
+
     /**
      * do encryption
      *
@@ -317,7 +329,7 @@ public class cryKeyRSA extends cryKeyGeneric {
      * @return ciphertext
      */
     public byte[] doEncrypt(byte[] src) {
-        BigInteger i = buffer2bigInt(src, 0, src.length);
+        BigInteger i = cryUtils.buffer2bigInt(src, 0, src.length);
         i = i.modPow(pubExp, modulus);
         return i.toByteArray();
     }
@@ -329,7 +341,7 @@ public class cryKeyRSA extends cryKeyGeneric {
      * @return cleartext
      */
     public byte[] doDecrypt(byte[] src) {
-        BigInteger i = buffer2bigInt(src, 0, src.length);
+        BigInteger i = cryUtils.buffer2bigInt(src, 0, src.length);
         i = i.modPow(privExp, modulus);
         return i.toByteArray();
     }

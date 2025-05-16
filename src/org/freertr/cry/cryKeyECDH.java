@@ -20,7 +20,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     /**
      * common value
      */
-    public cryKeyECpoint common;
+    protected cryKeyECpoint common;
 
     /**
      * curve
@@ -138,12 +138,12 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public void keyClntInit() {
-        clntPriv = randomBigInt(curve.p.bitLength() - 2);
+        clntPriv = cryUtils.randomBigInt(curve.p.bitLength() - 2);
         clntPub = curve.g.mul(clntPriv);
     }
 
     public void keyServInit() {
-        servPriv = randomBigInt(curve.p.bitLength() - 2);
+        servPriv = cryUtils.randomBigInt(curve.p.bitLength() - 2);
         servPub = curve.g.mul(servPriv);
     }
 
@@ -153,6 +153,19 @@ public class cryKeyECDH extends cryKeyGeneric {
 
     public void keyServCalc() {
         common = clntPub.mul(servPriv);
+    }
+
+    public byte[] keyCommonTls() {
+        int siz = (curve.p.bitLength() + 7) / 8;
+        return cryUtils.bigInt2buffer(common.x, siz);
+    }
+
+    public byte[] keyCommonSsh() {
+        return common.x.toByteArray();
+    }
+
+    public byte[] keyCommonIke() {
+        return null;
     }
 
 }

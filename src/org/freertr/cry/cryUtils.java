@@ -18,6 +18,90 @@ public class cryUtils {
     }
 
     /**
+     * convert buffer to big integer
+     *
+     * @param src source buffer
+     * @param ofs offset in buffer
+     * @param siz size in bytes
+     * @return integer
+     */
+    public static BigInteger buffer2bigInt(byte[] src, int ofs, int siz) {
+        byte[] buf = new byte[siz + 1];
+        for (int i = 0; i < siz; i++) {
+            buf[i + 1] = src[ofs + i];
+        }
+        buf[0] = 0;
+        return new BigInteger(buf);
+    }
+
+    /**
+     * save big integer to buffer
+     *
+     * @param o big integer
+     * @param siz size of buffer
+     * @return byte buffer
+     */
+    public static byte[] bigInt2buffer(BigInteger o, int siz) {
+        byte[] b1 = o.toByteArray();
+        byte[] b2 = new byte[siz];
+        if (b1.length >= b2.length) {
+            for (int i = 0; i < b2.length; i++) {
+                b2[i] = b1[b1.length - b2.length + i];
+            }
+            return b2;
+        }
+        for (int i = 0; i < b2.length; i++) {
+            b2[i] = 0;
+        }
+        bits.byteCopy(b1, 0, b2, b2.length - b1.length, b1.length);
+        return b2;
+    }
+
+    /**
+     * generate random big integer
+     *
+     * @param siz size in bits
+     * @return random number
+     */
+    public static BigInteger randomBigInt(int siz) {
+        byte[] buf = new byte[(siz / 8) + 1];
+        bits.randomS().nextBytes(buf);
+        buf[0] = 0;
+        BigInteger i = new BigInteger(buf);
+        i = i.mod(BigInteger.ONE.shiftLeft(siz).subtract(BigInteger.ONE));
+        return i;
+    }
+
+    /**
+     * generate random prime
+     *
+     * @param siz size in bits
+     * @return random prime
+     */
+    public static BigInteger randomPrime(int siz) {
+        for (;;) {
+            BigInteger i = BigInteger.probablePrime(siz, bits.randomS());
+            if (i.bitLength() != siz) {
+                continue;
+            }
+            if (!testPrime(i)) {
+                continue;
+            }
+            return i;
+        }
+    }
+
+    /**
+     * test if a prime
+     *
+     * @param i number to test
+     * @return true if prime, false if not
+     */
+    public static boolean testPrime(BigInteger i) {
+        return i.isProbablePrime(100);
+    }
+
+    /**
      * convert big unsigned integer to buffer
      *
      * @param b integer

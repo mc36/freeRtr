@@ -85,6 +85,7 @@ import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.cry.cryOtp;
+import org.freertr.cry.cryUtils;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packDnsRes;
 import org.freertr.pack.packDnsZone;
@@ -526,7 +527,7 @@ public class userTest {
         if (a.equals("primes")) {
             int len = bits.str2num(cmd.word());
             cmd.error("e=2^127+-1");
-            cmd.error("p=" + cryKeyRSA.randomPrime(len));
+            cmd.error("p=" + cryUtils.randomPrime(len));
             cryKeyECcurve ecp = cryKeyECcurve.getBySize(len);
             if (ecp == null) {
                 return null;
