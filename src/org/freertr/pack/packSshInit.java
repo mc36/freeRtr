@@ -24,6 +24,7 @@ import org.freertr.cry.cryHashSha2384;
 import org.freertr.cry.cryHashSha2512;
 import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyECDH;
+import org.freertr.cry.cryKeyGeneric;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -490,80 +491,58 @@ public class packSshInit {
      *
      * @return dh group, null for group exchange
      */
-    public cryKeyDH getDHgroup() {
+    public cryKeyGeneric getDHgroup() {
         if (kexAlgo.length < 1) {
             return null;
         }
         switch (kexAlgo[0]) {
             case 0:
-                return null;
+                cryKeyECDH ec = new cryKeyECDH();
+                ec.keyMakeTls(25);
+                return ec;
             case 1:
-                return null;
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(24);
+                return ec;
             case 2:
-                return null;
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(23);
+                return ec;
             case 3:
-                return null;
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(21);
+                return ec;
             case 4:
-                return null;
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(19);
+                return ec;
             case 5:
-                return null;
+                return new cryKeyDH();
             case 6:
-                cryKeyDH res = new cryKeyDH();
-                res.keyMakeIke(16);
-                return res;
+                cryKeyDH mp = new cryKeyDH();
+                mp.keyMakeIke(16);
+                return mp;
             case 7:
-                res = new cryKeyDH();
-                res.keyMakeIke(18);
-                return res;
+                mp = new cryKeyDH();
+                mp.keyMakeIke(18);
+                return mp;
             case 8:
-                res = new cryKeyDH();
-                res.keyMakeIke(14);
-                return res;
+                mp = new cryKeyDH();
+                mp.keyMakeIke(14);
+                return mp;
             case 9:
-                return null;
+                return new cryKeyDH();
             case 10:
-                res = new cryKeyDH();
-                res.keyMakeIke(14);
-                return res;
+                mp = new cryKeyDH();
+                mp.keyMakeIke(14);
+                return mp;
             case 11:
-                res = new cryKeyDH();
-                res.keyMakeIke(1);
-                return res;
+                mp = new cryKeyDH();
+                mp.keyMakeIke(1);
+                return mp;
             default:
                 return null;
         }
-    }
-
-    /**
-     * get chonsen ecdh group
-     *
-     * @return ecdh group, null for regular exchange
-     */
-    public cryKeyECDH getECDHgroup() {
-        if (kexAlgo.length < 1) {
-            return null;
-        }
-        cryKeyECDH res = new cryKeyECDH();
-        switch (kexAlgo[0]) {
-            case 0:
-                res.keyMakeTls(25);
-                break;
-            case 1:
-                res.keyMakeTls(24);
-                break;
-            case 2:
-                res.keyMakeTls(23);
-                break;
-            case 3:
-                res.keyMakeTls(21);
-                break;
-            case 4:
-                res.keyMakeTls(19);
-                break;
-            default:
-                return null;
-        }
-        return res;
     }
 
     /**

@@ -5,7 +5,6 @@ import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyDH;
-import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -36,12 +35,7 @@ public class packSshKex {
     /**
      * diffie hellman
      */
-    public cryKeyDH difHel;
-
-    /**
-     * ec diffie hellman
-     */
-    public cryKeyECDH ecDfHl;
+    public cryKeyGeneric keygen;
 
     /**
      * hash to use
@@ -151,50 +145,13 @@ public class packSshKex {
      * calculate exchange hash
      */
     public void hashCalcDHG() {
-        byte[] buf = difHel.keyClntSsh();
+        byte[] buf = keygen.keyClntSsh();
         hashInt(buf.length);
         hashBuf(buf);
-        buf = difHel.keyServSsh();
+        buf = keygen.keyServSsh();
         hashInt(buf.length);
         hashBuf(buf);
-        buf = difHel.keyCommonSsh();
-        hashInt(buf.length);
-        hashBuf(buf);
-        hasher.init();
-        for (int i = 0; i < hash1.size(); i++) {
-            hasher.update(hash1.get(i));
-        }
-        hashVal = hasher.finish();
-        hash1.clear();
-        hash2.clear();
-        buf = difHel.keyCommonSsh();
-        hashInt(buf.length);
-        hashBuf(buf);
-        ivCS = hashKey(0x41);
-        ivSC = hashKey(0x42);
-        encCS = hashKey(0x43);
-        encSC = hashKey(0x44);
-        macCS = hashKey(0x45);
-        macSC = hashKey(0x46);
-        if (debugger.secSshTraf) {
-            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " " + difHel.keyDump() + " ivCS="
-                    + bits.byteDump(ivCS, 0, -1) + " ivSC=" + bits.byteDump(ivSC, 0, -1) + " encCS=" + bits.byteDump(encCS, 0, -1)
-                    + " encSC=" + bits.byteDump(encSC, 0, -1) + " macCS=" + bits.byteDump(macCS, 0, -1) + " macSC="
-                    + bits.byteDump(macSC, 0, -1));
-        }
-    }
-
-    /**
-     * calculate exchange hash
-     */
-    public void hashCalcDHE() {
-        byte[] buf = ecDfHl.keyClntSsh();
-        hashInt(buf.length);
-        hashBuf(buf);
-        buf = ecDfHl.keyServSsh();
-        hashInt(buf.length);
-        hashBuf(buf);
-        buf = ecDfHl.keyCommonSsh();
+        buf = keygen.keyCommonSsh();
         hashInt(buf.length);
         hashBuf(buf);
         hasher.init();
@@ -204,6 +161,7 @@ public class packSshKex {
         hashVal = hasher.finish();
         hash1.clear();
         hash2.clear();
+        buf = keygen.keyCommonSsh();
         hashInt(buf.length);
         hashBuf(buf);
         ivCS = hashKey(0x41);
@@ -213,7 +171,7 @@ public class packSshKex {
         macCS = hashKey(0x45);
         macSC = hashKey(0x46);
         if (debugger.secSshTraf) {
-            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " k=" + bits.byteDump(buf, 0, -1) + " ivCS="
+            logger.debug("hash=" + bits.byteDump(hashVal, 0, -1) + " " + keygen.keyDump() + " ivCS="
                     + bits.byteDump(ivCS, 0, -1) + " ivSC=" + bits.byteDump(ivSC, 0, -1) + " encCS=" + bits.byteDump(encCS, 0, -1)
                     + " encSC=" + bits.byteDump(encSC, 0, -1) + " macCS=" + bits.byteDump(macCS, 0, -1) + " macSC="
                     + bits.byteDump(macSC, 0, -1));
@@ -292,7 +250,7 @@ public class packSshKex {
      * hash parameters
      */
     public void hashParams() {
-        byte[][] buf = difHel.keyParamSsh();
+        byte[][] buf = keygen.keyParamSsh();
         for (int i = 0; i < buf.length; i++) {
             hashInt(buf[i].length);
             hashBuf(buf[i]);
@@ -385,11 +343,11 @@ public class packSshKex {
         if (lower.pckTyp != packSsh.typeDHXgrp) {
             return true;
         }
-        difHel = new cryKeyDH();
+        keygen = new cryKeyDH();
         byte[][] buf = new byte[2][];
         buf[0] = lower.bytesRead();
         buf[1] = lower.bytesRead();
-        if (difHel.keyParamSsh(buf)) {
+        if (keygen.keyParamSsh(buf)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -408,8 +366,8 @@ public class packSshKex {
         if (modBest > cfgAll.sshGrpMax) {
             modBest = cfgAll.sshGrpMax;
         }
-        difHel = new cryKeyDH();
-        difHel.keyMakeSize(modBest);
+        keygen = new cryKeyDH();
+        keygen.keyMakeSize(modBest);
     }
 
     /**
@@ -421,13 +379,13 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHXgrp;
         lower.pckDat.clear();
-        byte[][] buf = difHel.keyParamSsh();
+        byte[][] buf = keygen.keyParamSsh();
         lower.bytesWrite(buf[0]);
         lower.bytesWrite(buf[1]);
     }
 
     private void gexGroupDump(String dir) {
-        logger.debug(dir + " " + difHel);
+        logger.debug(dir + " " + keygen);
     }
 
     /**
@@ -439,7 +397,7 @@ public class packSshKex {
         if (lower.pckTyp != packSsh.typeDHXinit) {
             return true;
         }
-        if (difHel.keyClntSsh(lower.bytesRead(), 0)) {
+        if (keygen.keyClntSsh(lower.bytesRead(), 0)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -452,7 +410,7 @@ public class packSshKex {
      * fill init message
      */
     public void gexInitFill() {
-        difHel.keyClntInit();
+        keygen.keyClntInit();
     }
 
     /**
@@ -464,11 +422,11 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHXinit;
         lower.pckDat.clear();
-        lower.bytesWrite(difHel.keyClntSsh());
+        lower.bytesWrite(keygen.keyClntSsh());
     }
 
     private void gexInitDump(String dir) {
-        logger.debug(dir + " " + difHel.keyDump());
+        logger.debug(dir + " " + keygen.keyDump());
     }
 
     /**
@@ -481,7 +439,7 @@ public class packSshKex {
             return true;
         }
         cert = lower.bytesRead();
-        if (difHel.keyServSsh(lower.bytesRead(), 0)) {
+        if (keygen.keyServSsh(lower.bytesRead(), 0)) {
             return true;
         }
         sign = lower.bytesRead();
@@ -510,7 +468,7 @@ public class packSshKex {
         lower.pckTyp = packSsh.typeDHXrply;
         lower.pckDat.clear();
         lower.bytesWrite(cert);
-        lower.bytesWrite(difHel.keyServSsh());
+        lower.bytesWrite(keygen.keyServSsh());
         lower.bytesWrite(sign);
         if (debugger.secSshTraf) {
             gexReplyDump("tx");
@@ -518,7 +476,7 @@ public class packSshKex {
     }
 
     private void gexReplyDump(String dir) {
-        logger.debug(dir + " " + difHel.keyDump() + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
+        logger.debug(dir + " " + keygen.keyDump() + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
                 + bits.byteDump(cert, 0, -1));
     }
 
@@ -531,7 +489,7 @@ public class packSshKex {
         if (lower.pckTyp != packSsh.typeDHGinit) {
             return true;
         }
-        if (difHel.keyClntSsh(lower.bytesRead(), 0)) {
+        if (keygen.keyClntSsh(lower.bytesRead(), 0)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -549,7 +507,7 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHGinit;
         lower.pckDat.clear();
-        lower.bytesWrite(difHel.keyClntSsh());
+        lower.bytesWrite(keygen.keyClntSsh());
     }
 
     /**
@@ -562,7 +520,7 @@ public class packSshKex {
             return true;
         }
         cert = lower.bytesRead();
-        if (difHel.keyServSsh(lower.bytesRead(), 0)) {
+        if (keygen.keyServSsh(lower.bytesRead(), 0)) {
             return true;
         }
         sign = lower.bytesRead();
@@ -579,91 +537,11 @@ public class packSshKex {
         lower.pckTyp = packSsh.typeDHGrply;
         lower.pckDat.clear();
         lower.bytesWrite(cert);
-        lower.bytesWrite(difHel.keyServSsh());
+        lower.bytesWrite(keygen.keyServSsh());
         lower.bytesWrite(sign);
         if (debugger.secSshTraf) {
             gexReplyDump("tx");
         }
-    }
-
-    /**
-     * fill init message
-     */
-    public void ecxInitFill() {
-        ecDfHl.keyClntInit();
-    }
-
-    /**
-     * create init message
-     */
-    public void ecxInitCreate() {
-        if (debugger.secSshTraf) {
-            ecxInitDump("tx");
-        }
-        lower.pckTyp = packSsh.typeDHEinit;
-        lower.pckDat.clear();
-        lower.bytesWrite(ecDfHl.keyClntSsh());
-    }
-
-    /**
-     * parse init message
-     *
-     * @return false on success, true on error
-     */
-    public boolean ecxInitParse() {
-        if (lower.pckTyp != packSsh.typeDHEinit) {
-            return true;
-        }
-        if (ecDfHl.keyClntSsh(lower.bytesRead(), 0)) {
-            return true;
-        }
-        if (debugger.secSshTraf) {
-            ecxInitDump("rx");
-        }
-        return false;
-    }
-
-    private void ecxInitDump(String dir) {
-        logger.debug(dir + " " + ecDfHl.keyDump());
-    }
-
-    /**
-     * create init message
-     */
-    public void ecxReplyCreate() {
-        lower.pckTyp = packSsh.typeDHErply;
-        lower.pckDat.clear();
-        lower.bytesWrite(cert);
-        lower.bytesWrite(ecDfHl.keyServSsh());
-        lower.bytesWrite(sign);
-        if (debugger.secSshTraf) {
-            ecxReplyDump("tx");
-        }
-    }
-
-    /**
-     * parse reply message
-     *
-     * @return false on success, true on error
-     */
-    public boolean ecxReplyParse() {
-        if (lower.pckTyp != packSsh.typeDHErply) {
-            return true;
-        }
-        cert = lower.bytesRead();
-        if (ecDfHl.keyServSsh(lower.bytesRead(), 0)) {
-            return true;
-        }
-        sign = lower.bytesRead();
-        if (debugger.secSshTraf) {
-            ecxReplyDump("rx");
-        }
-        return false;
-    }
-
-    private void ecxReplyDump(String dir) {
-        logger.debug(dir + " " + ecDfHl.keyDump() + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
-                + bits.byteDump(cert, 0, -1));
     }
 
 }

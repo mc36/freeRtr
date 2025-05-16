@@ -1,12 +1,11 @@
 package org.freertr.ifc;
 
-import java.math.BigInteger;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIpsec;
 import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashGeneric;
-import org.freertr.cry.cryKeyDH;
+import org.freertr.cry.cryKeyGeneric;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabWindow;
 import org.freertr.user.userFormat;
@@ -123,7 +122,7 @@ public class ifcMacSec implements Runnable {
 
     private cryHashGeneric hashRx;
 
-    private cryKeyDH keygen;
+    private cryKeyGeneric keygen;
 
     private int seqTx;
 

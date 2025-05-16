@@ -34,6 +34,11 @@ public class cryKeyDH extends cryKeyGeneric {
     protected BigInteger modulus;
 
     /**
+     * id number
+     */
+    protected int idNum;
+
+    /**
      * client private value
      */
     protected BigInteger clntPriv;
@@ -102,6 +107,7 @@ public class cryKeyDH extends cryKeyGeneric {
         }
         group = g.grp;
         modulus = g.mod;
+        idNum = g.ike;
         return false;
     }
 
@@ -116,6 +122,7 @@ public class cryKeyDH extends cryKeyGeneric {
         }
         group = g.grp;
         modulus = g.mod;
+        idNum = g.ike;
         return false;
     }
 
@@ -126,6 +133,7 @@ public class cryKeyDH extends cryKeyGeneric {
         }
         group = g.grp;
         modulus = g.mod;
+        idNum = g.ike;
         return false;
     }
 
@@ -146,7 +154,10 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public int keyMakeVal() {
-        return -1;
+        if (modulus == null) {
+            return -1;
+        }
+        return idNum;
     }
 
     public boolean keyVerify() {
