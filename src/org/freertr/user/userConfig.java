@@ -3419,7 +3419,7 @@ public class userConfig {
                 i = 512;
             }
             for (;;) {
-                if (key.keyMake(i)) {
+                if (key.keyMakeSize(i)) {
                     continue;
                 }
                 if (key.keyVerify()) {

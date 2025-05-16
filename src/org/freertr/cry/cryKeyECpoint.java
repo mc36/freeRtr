@@ -8,12 +8,12 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class cryECpoint {
+public class cryKeyECpoint {
 
     /**
      * curve
      */
-    public final cryECcurve c;
+    public final cryKeyECcurve c;
 
     /**
      * x
@@ -45,7 +45,7 @@ public class cryECpoint {
      */
     public final static BigInteger int3 = new BigInteger("3");
 
-    private cryECpoint mul2res;
+    private cryKeyECpoint mul2res;
 
     /**
      * create point
@@ -54,7 +54,7 @@ public class cryECpoint {
      * @param mx x
      * @param my y
      */
-    public cryECpoint(cryECcurve mc, BigInteger mx, BigInteger my) {
+    public cryKeyECpoint(cryKeyECcurve mc, BigInteger mx, BigInteger my) {
         c = mc;
         x = mx;
         y = my;
@@ -81,8 +81,8 @@ public class cryECpoint {
      *
      * @return result
      */
-    public cryECpoint neg() {
-        return new cryECpoint(c, x, c.p.subtract(y));
+    public cryKeyECpoint neg() {
+        return new cryKeyECpoint(c, x, c.p.subtract(y));
     }
 
     /**
@@ -91,7 +91,7 @@ public class cryECpoint {
      * @param p point to add
      * @return result
      */
-    public cryECpoint add(cryECpoint p) {
+    public cryKeyECpoint add(cryKeyECpoint p) {
         if ((p == this) && (mul2res != null)) {
             return mul2res;
         }
@@ -104,7 +104,7 @@ public class cryECpoint {
         }
         BigInteger x3 = (((t.modPow(int2, c.p)).subtract(p.x)).subtract(x)).mod(c.p);
         BigInteger y3 = ((t.multiply(x.subtract(x3))).subtract(y)).mod(c.p);
-        cryECpoint res = new cryECpoint(c, x3, y3);
+        cryKeyECpoint res = new cryKeyECpoint(c, x3, y3);
         if (p == this) {
             mul2res = res;
         }
@@ -117,9 +117,9 @@ public class cryECpoint {
      * @param n number
      * @return result
      */
-    public cryECpoint mul(BigInteger n) {
-        cryECpoint res = null;
-        cryECpoint val = this;
+    public cryKeyECpoint mul(BigInteger n) {
+        cryKeyECpoint res = null;
+        cryKeyECpoint val = this;
         int len = n.bitLength();
         for (int pos = 0; pos < len; pos++) {
             if (n.testBit(pos)) {
@@ -174,14 +174,14 @@ public class cryECpoint {
         return bits.byteConcat(b0, getBytes());
     }
 
-    private static cryECpoint fromBytes(cryECcurve c, byte[] buf, int ofs) {
+    private static cryKeyECpoint fromBytes(cryKeyECcurve c, byte[] buf, int ofs) {
         int siz = (c.p.bitLength() + 7) / 8;
         if ((buf.length - ofs) < (siz * 2)) {
             return null;
         }
         BigInteger x = cryKeyGeneric.buffer2bigInt(buf, ofs, siz);
         BigInteger y = cryKeyGeneric.buffer2bigInt(buf, ofs + siz, siz);
-        return new cryECpoint(c, x, y);
+        return new cryKeyECpoint(c, x, y);
     }
 
     /**
@@ -192,7 +192,7 @@ public class cryECpoint {
      * @param ofs where to start
      * @return point
      */
-    public static cryECpoint fromBytes1(cryECcurve c, byte[] buf, int ofs) {
+    public static cryKeyECpoint fromBytes1(cryKeyECcurve c, byte[] buf, int ofs) {
         if (buf[ofs] != 4) {
             return null;
         }
@@ -207,7 +207,7 @@ public class cryECpoint {
      * @param ofs where to start
      * @return point
      */
-    public static cryECpoint fromBytes2(cryECcurve c, byte[] buf, int ofs) {
+    public static cryKeyECpoint fromBytes2(cryKeyECcurve c, byte[] buf, int ofs) {
         if (buf[ofs + 1] != 4) {
             return null;
         }

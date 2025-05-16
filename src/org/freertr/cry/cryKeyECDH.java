@@ -20,12 +20,12 @@ public class cryKeyECDH extends cryKeyGeneric {
     /**
      * common value
      */
-    public cryECpoint common;
+    public cryKeyECpoint common;
 
     /**
      * curve
      */
-    public cryECcurve curve;
+    public cryKeyECcurve curve;
 
     /**
      * client private value
@@ -35,7 +35,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     /**
      * client public value
      */
-    public cryECpoint clntPub;
+    public cryKeyECpoint clntPub;
 
     /**
      * server private value
@@ -45,7 +45,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     /**
      * server public value
      */
-    public cryECpoint servPub;
+    public cryKeyECpoint servPub;
 
     public String algName() {
         return "ecdh";
@@ -66,7 +66,7 @@ public class cryKeyECDH extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
             return true;
         }
-        curve = cryECcurve.getByOid(a.buf);
+        curve = cryKeyECcurve.getByOid(a.buf);
         if (curve == null) {
             return true;
         }
@@ -110,16 +110,25 @@ public class cryKeyECDH extends cryKeyGeneric {
         return null;
     }
 
-    public boolean keyMake(int len) {
-        curve = cryECcurve.getBySize(len);
+    public boolean keyMakeSize(int len) {
+        curve = cryKeyECcurve.getBySize(len);
         return false;
     }
 
-    public boolean keyMake(String nam) {
-        curve = cryECcurve.getByName(nam);
+    public boolean keyMakeName(String nam) {
+        curve = cryKeyECcurve.getByName(nam);
         return false;
     }
 
+    public boolean keyMakeTls(int id) {
+        curve = cryKeyECcurve.getByTls(id);
+        return false;
+    }
+
+    public boolean keyMakeIke(int id) {
+        return false;
+    }
+    
     public boolean keyVerify() {
         return !curve.g.check();
     }

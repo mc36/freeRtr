@@ -215,7 +215,15 @@ public class cryKeyDSA extends cryKeyGeneric {
         encAsn1.writeSequence(pck, p);
     }
 
-    public boolean keyMake(String nam) {
+    public boolean keyMakeName(String nam) {
+        return false;
+    }
+
+    public boolean keyMakeTls(int id) {
+        return false;
+    }
+
+    public boolean keyMakeIke(int id) {
         return false;
     }
 
@@ -224,7 +232,7 @@ public class cryKeyDSA extends cryKeyGeneric {
      *
      * @param len length
      */
-    public boolean keyMake(int len) {
+    public boolean keyMakeSize(int len) {
         priv = randomBigInt(hashBits);
         subprime = randomPrime(hashBits);
         for (;;) {

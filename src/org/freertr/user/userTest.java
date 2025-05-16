@@ -24,7 +24,7 @@ import org.freertr.clnt.clntWhois;
 import org.freertr.enc.encAsn1;
 import org.freertr.enc.encBase64;
 import org.freertr.cry.cryCertificate;
-import org.freertr.cry.cryECcurve;
+import org.freertr.cry.cryKeyECcurve;
 import org.freertr.cry.cryEncrCBCaes;
 import org.freertr.cry.cryEncrCBCblowfish;
 import org.freertr.cry.cryEncrCBCdes;
@@ -527,7 +527,7 @@ public class userTest {
             int len = bits.str2num(cmd.word());
             cmd.error("e=2^127+-1");
             cmd.error("p=" + cryKeyRSA.randomPrime(len));
-            cryECcurve ecp = cryECcurve.getBySize(len);
+            cryKeyECcurve ecp = cryKeyECcurve.getBySize(len);
             if (ecp == null) {
                 return null;
             }
@@ -569,7 +569,7 @@ public class userTest {
             cryKeyECDH kecdh = new cryKeyECDH();
             final String init = "t3st1ng";
             boolean ok = false;
-            krsa.keyMake(pmsiz);
+            krsa.keyMakeSize(pmsiz);
             long tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 byte[] buf = init.getBytes();
@@ -581,7 +581,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("rsa: " + krsa.pemWriteStr(true) + " " + krsa.pemWriteStr(false));
             }
-            kdsa.keyMake(pmsiz);
+            kdsa.keyMakeSize(pmsiz);
             ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
@@ -593,7 +593,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("dsa: " + kdsa.pemWriteStr(true) + " " + kdsa.pemWriteStr(false));
             }
-            kecdsa.keyMake(ecsiz);
+            kecdsa.keyMakeSize(ecsiz);
             ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
@@ -605,7 +605,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
             }
-            kdh = cryKeyDH.findGroup(pmsiz);
+            kdh.keyMakeSize(pmsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 kdh.clntXchg();
@@ -617,7 +617,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("dh: " + kdh.pemWriteStr(false));
             }
-            kecdh.keyMake(ecsiz);
+            kecdh.keyMakeSize(ecsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 kecdh.clntXchg();
@@ -732,9 +732,9 @@ public class userTest {
             cryKeyRSA rsa = new cryKeyRSA();
             cryKeyDSA dss = new cryKeyDSA();
             cryKeyECDSA ecdss = new cryKeyECDSA();
-            rsa.keyMake(1024);
-            dss.keyMake(512);
-            ecdss.keyMake(128);
+            rsa.keyMakeSize(1024);
+            dss.keyMakeSize(512);
+            ecdss.keyMakeSize(128);
             pipeLine conn = new pipeLine(65536, false);
             secSsh srvH = new secSsh(conn.getSide(), new pipeLine(65536, false));
             secSsh clnH = new secSsh(conn.getSide(), new pipeLine(65536, false));
@@ -1027,9 +1027,9 @@ public class userTest {
         cryKeyRSA rsa = new cryKeyRSA();
         cryKeyDSA dss = new cryKeyDSA();
         cryKeyECDSA ecdss = new cryKeyECDSA();
-        rsa.keyMake(1024);
-        dss.keyMake(512);
-        ecdss.keyMake(128);
+        rsa.keyMakeSize(1024);
+        dss.keyMakeSize(512);
+        ecdss.keyMakeSize(128);
         pipeLine conn = new pipeLine(65536, dtls);
         secTls srvH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         secTls clnH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);

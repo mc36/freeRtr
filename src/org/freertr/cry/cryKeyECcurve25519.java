@@ -8,12 +8,12 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class cryECcurve25519 {
+public class cryKeyECcurve25519 {
 
     /**
      * create instance
      */
-    public cryECcurve25519() {
+    public cryKeyECcurve25519() {
     }
 
     /**

@@ -208,11 +208,19 @@ public class cryKeyRSA extends cryKeyGeneric {
         encAsn1.writeSequence(pck, p);
     }
 
-    public boolean keyMake(String nam) {
+    public boolean keyMakeName(String nam) {
         return false;
     }
 
-    public boolean keyMake(int len) {
+    public boolean keyMakeTls(int id) {
+        return false;
+    }
+
+    public boolean keyMakeIke(int id) {
+        return false;
+    }
+
+    public boolean keyMakeSize(int len) {
         pubExp = new BigInteger("65537", 10);
         prime1 = randomPrime(len / 2);
         prime2 = randomPrime(len / 2);

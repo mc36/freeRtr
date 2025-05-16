@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
-import org.freertr.cry.cryECcurve;
+import org.freertr.cry.cryKeyECcurve;
 import org.freertr.cry.cryEncrCBCaes;
 import org.freertr.cry.cryEncrCBCblowfish;
 import org.freertr.cry.cryEncrCBCdes;
@@ -509,17 +509,27 @@ public class packSshInit {
             case 5:
                 return null;
             case 6:
-                return cryKeyDH.getGroup(16);
+                cryKeyDH res = new cryKeyDH();
+                res.keyMakeIke(16);
+                return res;
             case 7:
-                return cryKeyDH.getGroup(18);
+                res = new cryKeyDH();
+                res.keyMakeIke(18);
+                return res;
             case 8:
-                return cryKeyDH.getGroup(14);
+                res = new cryKeyDH();
+                res.keyMakeIke(14);
+                return res;
             case 9:
                 return null;
             case 10:
-                return cryKeyDH.getGroup(14);
+                res = new cryKeyDH();
+                res.keyMakeIke(14);
+                return res;
             case 11:
-                return cryKeyDH.getGroup(1);
+                res = new cryKeyDH();
+                res.keyMakeIke(1);
+                return res;
             default:
                 return null;
         }
@@ -537,19 +547,19 @@ public class packSshInit {
         cryKeyECDH res = new cryKeyECDH();
         switch (kexAlgo[0]) {
             case 0:
-                res.curve = cryECcurve.getByTls(25);
+                res.curve = cryKeyECcurve.getByTls(25);
                 break;
             case 1:
-                res.curve = cryECcurve.getByTls(24);
+                res.curve = cryKeyECcurve.getByTls(24);
                 break;
             case 2:
-                res.curve = cryECcurve.getByTls(23);
+                res.curve = cryKeyECcurve.getByTls(23);
                 break;
             case 3:
-                res.curve = cryECcurve.getByTls(21);
+                res.curve = cryKeyECcurve.getByTls(21);
                 break;
             case 4:
-                res.curve = cryECcurve.getByTls(19);
+                res.curve = cryKeyECcurve.getByTls(19);
                 break;
             default:
                 return null;

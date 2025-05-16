@@ -21,12 +21,12 @@ public class cryKeyECDSA extends cryKeyGeneric {
     /**
      * curve
      */
-    public cryECcurve curve;
+    public cryKeyECcurve curve;
 
     /**
      * y public key
      */
-    public cryECpoint pub;
+    public cryKeyECpoint pub;
 
     /**
      * x private key
@@ -100,7 +100,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
             return true;
         }
-        curve = cryECcurve.getByOid(a.buf);
+        curve = cryKeyECcurve.getByOid(a.buf);
         if (curve == null) {
             return true;
         }
@@ -117,7 +117,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
-        pub = cryECpoint.fromBytes2(curve, a.buf, 0);
+        pub = cryKeyECpoint.fromBytes2(curve, a.buf, 0);
         if (pub == null) {
             return true;
         }
@@ -186,7 +186,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagObjectID)) {
             return true;
         }
-        curve = cryECcurve.getByOid(a.buf);
+        curve = cryKeyECcurve.getByOid(a.buf);
         if (curve == null) {
             return true;
         }
@@ -196,7 +196,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
-        pub = cryECpoint.fromBytes2(curve, a.buf, 1);
+        pub = cryKeyECpoint.fromBytes2(curve, a.buf, 1);
         if (pub == null) {
             return true;
         }
@@ -224,9 +224,18 @@ public class cryKeyECDSA extends cryKeyGeneric {
         encAsn1.writeSequence(pck, p1);
     }
 
-    public boolean keyMake(String nam) {
-        curve = cryECcurve.getByName(nam);
+    public boolean keyMakeName(String nam) {
+        curve = cryKeyECcurve.getByName(nam);
         return keyMake();
+    }
+
+    public boolean keyMakeTls(int id) {
+        curve = cryKeyECcurve.getByTls(id);
+        return false;
+    }
+
+    public boolean keyMakeIke(int id) {
+        return false;
     }
 
     private boolean keyMake() {
@@ -240,8 +249,8 @@ public class cryKeyECDSA extends cryKeyGeneric {
      *
      * @param len length
      */
-    public boolean keyMake(int len) {
-        curve = cryECcurve.getBySize(len);
+    public boolean keyMakeSize(int len) {
+        curve = cryKeyECcurve.getBySize(len);
         return keyMake();
     }
 
@@ -280,7 +289,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (!packSsh.stringRead(p).equals(curve + "")) {
             return true;
         }
-        pub = cryECpoint.fromBytes2(curve, packSsh.bytesRead(p), 0);
+        pub = cryKeyECpoint.fromBytes2(curve, packSsh.bytesRead(p), 0);
         if (pub == null) {
             return true;
         }
@@ -319,7 +328,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
     public void doSigning(byte[] msg) {
         BigInteger z = calcZ(curve.n, msg);
         BigInteger k = randomBigInt(curve.n.bitLength() - 2);
-        cryECpoint Q = curve.g.mul(k);
+        cryKeyECpoint Q = curve.g.mul(k);
         sgnR = Q.x.mod(curve.n);
         sgnS = k.modInverse(curve.n).multiply(z.add(sgnR.multiply(priv)));
     }
@@ -335,7 +344,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         BigInteger w = sgnS.modInverse(curve.n);
         BigInteger u1 = z.multiply(w).mod(curve.n);
         BigInteger u2 = sgnR.multiply(w).mod(curve.n);
-        cryECpoint Q = curve.g.mul(u1).add(pub.mul(u2));
+        cryKeyECpoint Q = curve.g.mul(u1).add(pub.mul(u2));
         return sgnR.compareTo(Q.x.mod(curve.n)) != 0;
     }
 

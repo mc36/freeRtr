@@ -3,8 +3,8 @@ package org.freertr.pack;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cry.cryCertificate;
-import org.freertr.cry.cryECcurve;
-import org.freertr.cry.cryECpoint;
+import org.freertr.cry.cryKeyECcurve;
+import org.freertr.cry.cryKeyECpoint;
 import org.freertr.cry.cryEncrCBCaes;
 import org.freertr.cry.cryEncrCBCdes;
 import org.freertr.cry.cryEncrCBCdes3;
@@ -624,7 +624,7 @@ public class packTlsHndshk {
     private List<Integer> makeECcurveList() {
         List<Integer> lst = new ArrayList<Integer>();
         for (int i = 0; i < 0x100; i++) {
-            if (cryECcurve.getByTls(i) == null) {
+            if (cryKeyECcurve.getByTls(i) == null) {
                 continue;
             }
             lst.add(i);
@@ -740,7 +740,7 @@ public class packTlsHndshk {
                     }
                     for (i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
-                        ecDiffHell.curve = cryECcurve.getByTls(o);
+                        ecDiffHell.curve = cryKeyECcurve.getByTls(o);
                         if (ecDiffHell.curve != null) {
                             break;
                         }
@@ -764,11 +764,11 @@ public class packTlsHndshk {
                         break;
                     }
                     if (client) {
-                        ecDiffHell.curve = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, 0));
+                        ecDiffHell.curve = cryKeyECcurve.getByTls(bits.msbGetW(tlv.valDat, 0));
                         if (ecDiffHell.curve == null) {
                             break;
                         }
-                        ecDiffHell.servPub = cryECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, 4);
+                        ecDiffHell.servPub = cryKeyECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, 4);
                         break;
                     }
                     if (ecDiffHell.curve == null) {
@@ -782,7 +782,7 @@ public class packTlsHndshk {
                         if ((p + s) > tlv.valSiz) {
                             break;
                         }
-                        cryECcurve tmp = cryECcurve.getByTls(bits.msbGetW(tlv.valDat, p));
+                        cryKeyECcurve tmp = cryKeyECcurve.getByTls(bits.msbGetW(tlv.valDat, p));
                         if (tmp == null) {
                             p += s;
                             continue;
@@ -791,7 +791,7 @@ public class packTlsHndshk {
                             p += s;
                             continue;
                         }
-                        ecDiffHell.clntPub = cryECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, p + 4);
+                        ecDiffHell.clntPub = cryKeyECpoint.fromBytes1(ecDiffHell.curve, tlv.valDat, p + 4);
                         break;
                     }
                     break;
@@ -816,8 +816,8 @@ public class packTlsHndshk {
         encTlv tlv = getTlv();
         packHolder pck = new packHolder(true, true);
         byte[] buf = new byte[2];
-        bits.msbPutW(buf, 0, 8192);
         if (lower.verMax < 0x304) {
+            bits.msbPutW(buf, 0, 8192);
             tlv.putBytes(pck, 28, buf); // record size limit
         }
         if (client && (servNam != null)) {
@@ -1484,7 +1484,8 @@ public class packTlsHndshk {
         if (i < o) {
             i = o;
         }
-        diffHell = cryKeyDH.findGroup(i);
+        diffHell = new cryKeyDH();
+        diffHell.keyMakeSize(i);
         diffHell.servXchg();
         if (minVer >= 0x303) {
             signHsh = 0x401; // rsa pkcs1 sha256

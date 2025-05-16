@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
-import org.freertr.cry.cryECpoint;
+import org.freertr.cry.cryKeyECpoint;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyECDH;
@@ -291,7 +291,7 @@ public class packSshKex {
      *
      * @param p point to add
      */
-    public void hashEcP(cryECpoint p) {
+    public void hashEcP(cryKeyECpoint p) {
         byte[] buf = p.toBytes1();
         hashInt(buf.length);
         hashBuf(buf);
@@ -408,7 +408,8 @@ public class packSshKex {
         if (modBest > cfgAll.sshGrpMax) {
             modBest = cfgAll.sshGrpMax;
         }
-        difHel = cryKeyDH.findGroup(modBest);
+        difHel = new cryKeyDH();
+        difHel.keyMakeSize(modBest);
     }
 
     /**

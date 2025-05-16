@@ -7,7 +7,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.enc.encBase64;
-import org.freertr.cry.cryECcurve25519;
+import org.freertr.cry.cryKeyECcurve25519;
 import org.freertr.cry.cryEncrChacha20poly1305;
 import org.freertr.cry.cryHashBlake2s;
 import org.freertr.cry.cryHashHmac;
@@ -158,7 +158,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private long seqTx;
 
-    private cryECcurve25519 locPriv;
+    private cryKeyECcurve25519 locPriv;
 
     private byte[] locPub;
 
@@ -168,7 +168,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private long lasTim;
 
-    private cryECcurve25519 dh1;
+    private cryKeyECcurve25519 dh1;
 
     private byte[] dh2;
 
@@ -344,7 +344,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private void workDoer() {
         int i = preshared.indexOf("=") + 1;
-        locPriv = new cryECcurve25519();
+        locPriv = new cryKeyECcurve25519();
         locPriv.locPriv = encBase64.decodeBytes(preshared.substring(0, i));
         locPriv.calcCommon();
         locPub = locPriv.common;
@@ -852,7 +852,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     }
 
     private void initDH() {
-        dh1 = new cryECcurve25519();
+        dh1 = new cryKeyECcurve25519();
         dh1.makePirvKey();
         dh1.calcCommon();
         dh2 = dh1.common;

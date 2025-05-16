@@ -1,8 +1,8 @@
 package org.freertr.pack;
 
 import java.math.BigInteger;
-import org.freertr.cry.cryECcurve;
-import org.freertr.cry.cryECpoint;
+import org.freertr.cry.cryKeyECcurve;
+import org.freertr.cry.cryKeyECpoint;
 import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryUtils;
@@ -482,12 +482,12 @@ public class packSsh {
      * @param crv curve to use
      * @return bigint readed
      */
-    public static cryECpoint ecPntRead(packHolder pck, cryECcurve crv) {
+    public static cryKeyECpoint ecPntRead(packHolder pck, cryKeyECcurve crv) {
         byte[] buf = bytesRead(pck);
         if (buf == null) {
             return crv.g;
         }
-        return cryECpoint.fromBytes1(crv, buf, 0);
+        return cryKeyECpoint.fromBytes1(crv, buf, 0);
     }
 
     /**
@@ -496,7 +496,7 @@ public class packSsh {
      * @param pck packet to work on
      * @param p point to write
      */
-    public static void ecPntWrite(packHolder pck, cryECpoint p) {
+    public static void ecPntWrite(packHolder pck, cryKeyECpoint p) {
         bytesWrite(pck, p.toBytes1());
     }
 
@@ -584,7 +584,7 @@ public class packSsh {
      * @param crv curve to use
      * @return point readed
      */
-    public cryECpoint ecPntRead(cryECcurve crv) {
+    public cryKeyECpoint ecPntRead(cryKeyECcurve crv) {
         return ecPntRead(pckDat, crv);
     }
 
@@ -593,7 +593,7 @@ public class packSsh {
      *
      * @param p point to write
      */
-    public void ecPntWrite(cryECpoint p) {
+    public void ecPntWrite(cryKeyECpoint p) {
         ecPntWrite(pckDat, p);
     }
 

@@ -196,7 +196,7 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
      * @param len length of key
      * @return true on error, false on success
      */
-    public abstract boolean keyMake(int len);
+    public abstract boolean keyMakeSize(int len);
 
     /**
      * generate new key
@@ -204,7 +204,23 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
      * @param nam name of key
      * @return true on error, false on success
      */
-    public abstract boolean keyMake(String nam);
+    public abstract boolean keyMakeName(String nam);
+
+    /**
+     * generate new key
+     *
+     * @param id tls id
+     * @return true on error, false on success
+     */
+    public abstract boolean keyMakeTls(int id);
+
+    /**
+     * generate new key
+     *
+     * @param id ike id
+     * @return true on error, false on success
+     */
+    public abstract boolean keyMakeIke(int id);
 
     /**
      * verify a key

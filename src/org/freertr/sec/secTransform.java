@@ -1057,7 +1057,11 @@ public class secTransform {
      * @return group, null if nothing
      */
     public cryKeyDH getGroup() {
-        return cryKeyDH.getGroup(groupNum);
+        cryKeyDH res = new cryKeyDH();
+        if (res.keyMakeIke(groupNum)) {
+            return null;
+        }
+        return res;
     }
 
     /**
