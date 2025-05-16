@@ -182,9 +182,13 @@ public class packSshKex {
      * calculate exchange hash
      */
     public void hashCalcDHE() {
-        hashEcP(ecDfHl.clntPub);
-        hashEcP(ecDfHl.servPub);
-        byte[] buf = ecDfHl.keyCommonSsh();
+        byte[] buf = ecDfHl.keyClntTls();
+        hashInt(buf.length);
+        hashBuf(buf);
+        buf = ecDfHl.keyServTls();
+        hashInt(buf.length);
+        hashBuf(buf);
+        buf = ecDfHl.keyCommonSsh();
         hashInt(buf.length);
         hashBuf(buf);
         hasher.init();
@@ -285,17 +289,6 @@ public class packSshKex {
      */
     public void hashBig(BigInteger b) {
         byte[] buf = b.toByteArray();
-        hashInt(buf.length);
-        hashBuf(buf);
-    }
-
-    /**
-     * add ec integer
-     *
-     * @param p point to add
-     */
-    public void hashEcP(cryKeyECpoint p) {
-        byte[] buf = p.toBytesTls();
         hashInt(buf.length);
         hashBuf(buf);
     }
@@ -608,7 +601,7 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHEinit;
         lower.pckDat.clear();
-        lower.ecPntWrite(ecDfHl.clntPub);
+        lower.bytesWrite(ecDfHl.keyClntTls());
     }
 
     /**
@@ -620,8 +613,7 @@ public class packSshKex {
         if (lower.pckTyp != packSsh.typeDHEinit) {
             return true;
         }
-        ecDfHl.clntPub = lower.ecPntRead(ecDfHl.curve);
-        if (ecDfHl.clntPub == null) {
+        if (ecDfHl.keyClntTls(lower.bytesRead(), 0)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -631,7 +623,7 @@ public class packSshKex {
     }
 
     private void ecxInitDump(String dir) {
-        logger.debug(dir + " e=" + ecDfHl.clntPub);
+        logger.debug(dir + " " + ecDfHl.keyDump());
     }
 
     /**
@@ -641,7 +633,7 @@ public class packSshKex {
         lower.pckTyp = packSsh.typeDHErply;
         lower.pckDat.clear();
         lower.bytesWrite(cert);
-        lower.ecPntWrite(ecDfHl.servPub);
+        lower.bytesWrite(ecDfHl.keyServTls());
         lower.bytesWrite(sign);
         if (debugger.secSshTraf) {
             ecxReplyDump("tx");
@@ -658,8 +650,7 @@ public class packSshKex {
             return true;
         }
         cert = lower.bytesRead();
-        ecDfHl.servPub = lower.ecPntRead(ecDfHl.curve);
-        if (ecDfHl.servPub == null) {
+        if (ecDfHl.keyServTls(lower.bytesRead(), 0)) {
             return true;
         }
         sign = lower.bytesRead();
@@ -670,7 +661,7 @@ public class packSshKex {
     }
 
     private void ecxReplyDump(String dir) {
-        logger.debug(dir + " f=" + ecDfHl.servPub + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
+        logger.debug(dir + " " + ecDfHl.keyDump() + " sign=" + bits.byteDump(sign, 0, -1) + " cert="
                 + bits.byteDump(cert, 0, -1));
     }
 

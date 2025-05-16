@@ -161,6 +161,10 @@ public class cryKeyDH extends cryKeyGeneric {
         return modulus.bitLength();
     }
 
+    public String keyDump() {
+        return "cln=" + clntPub + " srv=" + servPub + " res=" + common;
+    }
+
     public void keyClntInit() {
         clntPriv = cryUtils.randomBigInt(modulus.bitLength() - 2);
         clntPub = group.modPow(clntPriv, modulus);
@@ -189,6 +193,22 @@ public class cryKeyDH extends cryKeyGeneric {
 
     public byte[] keyCommonIke() {
         return null;
+    }
+
+    public byte[] keyClntTls() {
+        return null;
+    }
+
+    public byte[] keyServTls() {
+        return null;
+    }
+
+    public boolean keyClntTls(byte[] buf, int ofs) {
+        return false;
+    }
+
+    public boolean keyServTls(byte[] buf, int ofs) {
+        return false;
     }
 
     public boolean sshReader(byte[] key) {

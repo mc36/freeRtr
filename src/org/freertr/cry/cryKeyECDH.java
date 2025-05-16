@@ -35,7 +35,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     /**
      * client public value
      */
-    public cryKeyECpoint clntPub;
+    protected cryKeyECpoint clntPub;
 
     /**
      * server private value
@@ -45,7 +45,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     /**
      * server public value
      */
-    public cryKeyECpoint servPub;
+    protected cryKeyECpoint servPub;
 
     public String algName() {
         return "ecdh";
@@ -137,6 +137,10 @@ public class cryKeyECDH extends cryKeyGeneric {
         return curve.p.bitLength();
     }
 
+    public String keyDump() {
+        return "cln=" + clntPub + " srv=" + servPub + " res=" + common;
+    }
+
     public void keyClntInit() {
         clntPriv = cryUtils.randomBigInt(curve.p.bitLength() - 2);
         clntPub = curve.g.mul(clntPriv);
@@ -166,6 +170,30 @@ public class cryKeyECDH extends cryKeyGeneric {
 
     public byte[] keyCommonIke() {
         return null;
+    }
+
+    public byte[] keyClntTls() {
+        if (clntPub == null) {
+            return null;
+        }
+        return clntPub.toBytesTls();
+    }
+
+    public byte[] keyServTls() {
+        if (servPub == null) {
+            return null;
+        }
+        return servPub.toBytesTls();
+    }
+
+    public boolean keyClntTls(byte[] buf, int ofs) {
+        clntPub = cryKeyECpoint.fromBytesTls(curve, buf, ofs);
+        return false;
+    }
+
+    public boolean keyServTls(byte[] buf, int ofs) {
+        servPub = cryKeyECpoint.fromBytesTls(curve, buf, ofs);
+        return false;
     }
 
 }

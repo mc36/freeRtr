@@ -287,6 +287,10 @@ public class cryKeyDSA extends cryKeyGeneric {
         return prime.bitLength();
     }
 
+    public String keyDump() {
+        return null;
+    }
+
     /**
      * client exchange
      */
@@ -321,6 +325,22 @@ public class cryKeyDSA extends cryKeyGeneric {
 
     public byte[] keyCommonIke() {
         return null;
+    }
+
+    public byte[] keyClntTls() {
+        return null;
+    }
+
+    public byte[] keyServTls() {
+        return null;
+    }
+
+    public boolean keyClntTls(byte[] buf, int ofs) {
+        return false;
+    }
+
+    public boolean keyServTls(byte[] buf, int ofs) {
+        return false;
     }
 
     /**

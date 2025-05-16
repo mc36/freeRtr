@@ -153,6 +153,13 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
     public abstract int keySize();
 
     /**
+     * dump a key
+     *
+     * @return dumped
+     */
+    public abstract String keyDump();
+
+    /**
      * client key exchange initialization
      */
     public abstract void keyClntInit();
@@ -192,6 +199,38 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
      * @return common secret
      */
     public abstract byte[] keyCommonIke();
+
+    /**
+     * get client public for tls
+     *
+     * @return common secret
+     */
+    public abstract byte[] keyClntTls();
+
+    /**
+     * get server public for tls
+     *
+     * @return common secret
+     */
+    public abstract byte[] keyServTls();
+
+    /**
+     * get client public for tls
+     *
+     * @param buf buffer to use
+     * @param ofs offset to use
+     * @return true on error, false on success
+     */
+    public abstract boolean keyClntTls(byte[] buf, int ofs);
+
+    /**
+     * get server public for tls
+     *
+     * @param buf buffer to use
+     * @param ofs offset to use
+     * @return true on error, false on success
+     */
+    public abstract boolean keyServTls(byte[] buf, int ofs);
 
     /**
      * read public key
