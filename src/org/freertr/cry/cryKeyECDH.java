@@ -219,4 +219,20 @@ public class cryKeyECDH extends cryKeyGeneric {
         return keyServTls(buf, ofs);
     }
 
+    public byte[] keyClntIke() {
+        return null;
+    }
+
+    public byte[] keyServIke() {
+        return null;
+    }
+
+    public boolean keyClntIke(byte[] buf, int ofs) {
+        return false;
+    }
+
+    public boolean keyServIke(byte[] buf, int ofs) {
+        return false;
+    }
+
 }

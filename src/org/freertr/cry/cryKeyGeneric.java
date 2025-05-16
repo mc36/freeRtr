@@ -270,6 +270,38 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
     public abstract boolean keyServSsh(byte[] buf, int ofs);
 
     /**
+     * get client public for ike
+     *
+     * @return common secret
+     */
+    public abstract byte[] keyClntIke();
+
+    /**
+     * get server public for ike
+     *
+     * @return common secret
+     */
+    public abstract byte[] keyServIke();
+
+    /**
+     * get client public for ike
+     *
+     * @param buf buffer to use
+     * @param ofs offset to use
+     * @return true on error, false on success
+     */
+    public abstract boolean keyClntIke(byte[] buf, int ofs);
+
+    /**
+     * get server public for ike
+     *
+     * @param buf buffer to use
+     * @param ofs offset to use
+     * @return true on error, false on success
+     */
+    public abstract boolean keyServIke(byte[] buf, int ofs);
+
+    /**
      * read public key
      *
      * @param key key data

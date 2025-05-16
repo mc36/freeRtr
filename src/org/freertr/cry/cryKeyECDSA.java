@@ -348,6 +348,22 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return false;
     }
 
+    public byte[] keyClntIke() {
+        return null;
+    }
+
+    public byte[] keyServIke() {
+        return null;
+    }
+
+    public boolean keyClntIke(byte[] buf, int ofs) {
+        return false;
+    }
+
+    public boolean keyServIke(byte[] buf, int ofs) {
+        return false;
+    }
+
     /**
      * read ssh key
      *

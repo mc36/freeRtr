@@ -40,7 +40,7 @@ public class cryKeyDH extends cryKeyGeneric {
     /**
      * client public value
      */
-    public BigInteger clntPub;
+    protected BigInteger clntPub;
 
     /**
      * server private value
@@ -50,7 +50,7 @@ public class cryKeyDH extends cryKeyGeneric {
     /**
      * server public value
      */
-    public BigInteger servPub;
+    protected BigInteger servPub;
 
     public String toString() {
         return "group=" + group + " prime=" + modulus;
@@ -234,6 +234,24 @@ public class cryKeyDH extends cryKeyGeneric {
 
     public boolean keyServSsh(byte[] buf, int ofs) {
         servPub = new BigInteger(buf, ofs, buf.length - ofs);
+        return false;
+    }
+
+    public byte[] keyClntIke() {
+        return cryUtils.bigUint2buf(clntPub);
+    }
+
+    public byte[] keyServIke() {
+        return cryUtils.bigUint2buf(servPub);
+    }
+
+    public boolean keyClntIke(byte[] buf, int ofs) {
+        clntPub = cryUtils.buffer2bigInt(buf, ofs, buf.length - ofs);
+        return false;
+    }
+
+    public boolean keyServIke(byte[] buf, int ofs) {
+        servPub = cryUtils.buffer2bigInt(buf, ofs, buf.length - ofs);
         return false;
     }
 

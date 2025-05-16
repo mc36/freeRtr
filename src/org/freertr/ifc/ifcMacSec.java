@@ -319,7 +319,7 @@ public class ifcMacSec implements Runnable {
                 reply = typ == 1;
                 lastKex = bits.getTime();
                 pck.getSkip(size);
-                keygen.clntPub = new BigInteger(pck.getCopy());
+                keygen.keyClntSsh(pck.getCopy(), 0);
                 new Thread(this).start();
                 return true;
             default:
@@ -443,7 +443,7 @@ public class ifcMacSec implements Runnable {
         pck.putByte(3, 0); // sl
         pck.msbPutD(4, 0); // seq
         pck.putSkip(size);
-        byte[] buf = keygen.servPub.toByteArray();
+        byte[] buf = keygen.keyServSsh();
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2beg();
@@ -478,7 +478,13 @@ public class ifcMacSec implements Runnable {
             }
             buf1 = bits.byteConcat(buf1, buf2);
         }
-        setupKeys(buf1, keygen.clntPub.compareTo(keygen.servPub) > 0);
+        byte[] buf2 = keygen.keyClntSsh();
+        byte[] buf3 = keygen.keyServSsh();
+        boolean res = buf2.length > buf3.length;
+        if (buf2.length == buf3.length) {
+            res = bits.byteComp(buf2, 0, buf3, 0, buf3.length) > 0;
+        }
+        setupKeys(buf1, res);
         calcing.set(0);
         etht.triggerSync();
     }

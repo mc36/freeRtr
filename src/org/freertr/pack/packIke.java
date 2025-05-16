@@ -755,7 +755,7 @@ public class packIke {
         if (bits.msbGetW(buf, 0) != transform.groupNum) {
             return true;
         }
-        diffie.servPub = cryUtils.buffer2bigInt(buf, 4, buf.length - 4);
+        diffie.keyServIke(buf, 4);
         keyXchgDump("rx");
         return false;
     }
@@ -767,7 +767,7 @@ public class packIke {
         pckDat.msbPutW(0, transform.groupNum);
         pckDat.msbPutW(2, 0);
         pckDat.putSkip(4);
-        byte[] buf = cryUtils.bigUint2buf(diffie.clntPub);
+        byte[] buf = diffie.keyClntIke();
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);

@@ -846,7 +846,7 @@ public class packIsakmp {
         if (diffie == null) {
             diffie = transform.getGroup();
         }
-        diffie.servPub = cryUtils.buffer2bigInt(buf, 0, buf.length);
+        diffie.keyServIke(buf, 0);
         keyXchgDump("rx");
         return false;
     }
@@ -855,7 +855,7 @@ public class packIsakmp {
      * create key exchange header
      */
     public void keyXchgCreate() {
-        byte[] buf = cryUtils.bigUint2buf(diffie.clntPub);
+        byte[] buf = diffie.keyClntIke();
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);
@@ -956,11 +956,11 @@ public class packIsakmp {
         skeyidG = h.finish();
         h = transform.getHash();
         if (initiator) {
-            h.update(cryUtils.bigUint2buf(diffie.clntPub));
-            h.update(cryUtils.bigUint2buf(diffie.servPub));
+            h.update(diffie.keyClntIke());
+            h.update(diffie.keyServIke());
         } else {
-            h.update(cryUtils.bigUint2buf(diffie.servPub));
-            h.update(cryUtils.bigUint2buf(diffie.clntPub));
+            h.update(diffie.keyServIke());
+            h.update(diffie.keyClntIke());
         }
         phase1iv1 = h.finish();
         skeyidD = makeSkeyX(new byte[0], 0);
@@ -1084,11 +1084,11 @@ public class packIsakmp {
     public byte[] hashGenMM(boolean initer) {
         cryHashGeneric h = transform.getHmac(skeyidG);
         if (initiator ^ initer) {
-            h.update(cryUtils.bigUint2buf(diffie.servPub));
-            h.update(cryUtils.bigUint2buf(diffie.clntPub));
+            h.update(diffie.keyServIke());
+            h.update(diffie.keyClntIke());
         } else {
-            h.update(cryUtils.bigUint2buf(diffie.clntPub));
-            h.update(cryUtils.bigUint2buf(diffie.servPub));
+            h.update(diffie.keyClntIke());
+            h.update(diffie.keyServIke());
         }
         if (initer) {
             byte[] buf = new byte[8];
