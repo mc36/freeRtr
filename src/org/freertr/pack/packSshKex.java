@@ -152,9 +152,13 @@ public class packSshKex {
      * calculate exchange hash
      */
     public void hashCalcDHG() {
-        hashBig(difHel.clntPub);
-        hashBig(difHel.servPub);
-        byte[] buf = difHel.keyCommonSsh();
+        byte[] buf = difHel.keyClntSsh();
+        hashInt(buf.length);
+        hashBuf(buf);
+        buf = difHel.keyServSsh();
+        hashInt(buf.length);
+        hashBuf(buf);
+        buf = difHel.keyCommonSsh();
         hashInt(buf.length);
         hashBuf(buf);
         hasher.init();
@@ -437,8 +441,7 @@ public class packSshKex {
         if (lower.pckTyp != packSsh.typeDHXinit) {
             return true;
         }
-        difHel.clntPub = lower.bigIntRead();
-        if (difHel.clntPub == null) {
+        if (difHel.keyClntSsh(lower.bytesRead(), 0)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -463,7 +466,7 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHXinit;
         lower.pckDat.clear();
-        lower.bigIntWrite(difHel.clntPub);
+        lower.bytesWrite(difHel.keyClntSsh());
     }
 
     private void gexInitDump(String dir) {
@@ -480,8 +483,7 @@ public class packSshKex {
             return true;
         }
         cert = lower.bytesRead();
-        difHel.servPub = lower.bigIntRead();
-        if (difHel.servPub == null) {
+        if (difHel.keyServSsh(lower.bytesRead(), 0)) {
             return true;
         }
         sign = lower.bytesRead();
@@ -510,7 +512,7 @@ public class packSshKex {
         lower.pckTyp = packSsh.typeDHXrply;
         lower.pckDat.clear();
         lower.bytesWrite(cert);
-        lower.bigIntWrite(difHel.servPub);
+        lower.bytesWrite(difHel.keyServSsh());
         lower.bytesWrite(sign);
         if (debugger.secSshTraf) {
             gexReplyDump("tx");
@@ -531,8 +533,7 @@ public class packSshKex {
         if (lower.pckTyp != packSsh.typeDHGinit) {
             return true;
         }
-        difHel.clntPub = lower.bigIntRead();
-        if (difHel.clntPub == null) {
+        if (difHel.keyClntSsh(lower.bytesRead(), 0)) {
             return true;
         }
         if (debugger.secSshTraf) {
@@ -550,7 +551,7 @@ public class packSshKex {
         }
         lower.pckTyp = packSsh.typeDHGinit;
         lower.pckDat.clear();
-        lower.bigIntWrite(difHel.clntPub);
+        lower.bytesWrite(difHel.keyClntSsh());
     }
 
     /**
@@ -563,8 +564,7 @@ public class packSshKex {
             return true;
         }
         cert = lower.bytesRead();
-        difHel.servPub = lower.bigIntRead();
-        if (difHel.servPub == null) {
+        if (difHel.keyServSsh(lower.bytesRead(), 0)) {
             return true;
         }
         sign = lower.bytesRead();
@@ -581,7 +581,7 @@ public class packSshKex {
         lower.pckTyp = packSsh.typeDHGrply;
         lower.pckDat.clear();
         lower.bytesWrite(cert);
-        lower.bigIntWrite(difHel.servPub);
+        lower.bytesWrite(difHel.keyServSsh());
         lower.bytesWrite(sign);
         if (debugger.secSshTraf) {
             gexReplyDump("tx");

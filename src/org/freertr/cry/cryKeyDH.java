@@ -220,18 +220,20 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public byte[] keyClntSsh() {
-        return null;
+        return clntPub.toByteArray();
     }
 
     public byte[] keyServSsh() {
-        return null;
+        return servPub.toByteArray();
     }
 
     public boolean keyClntSsh(byte[] buf, int ofs) {
+        clntPub = new BigInteger(buf, ofs, buf.length - ofs);
         return false;
     }
 
     public boolean keyServSsh(byte[] buf, int ofs) {
+        servPub = new BigInteger(buf, ofs, buf.length - ofs);
         return false;
     }
 
