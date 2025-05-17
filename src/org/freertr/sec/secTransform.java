@@ -24,6 +24,8 @@ import org.freertr.cry.cryHashSha3256;
 import org.freertr.cry.cryHashSha3384;
 import org.freertr.cry.cryHashSha3512;
 import org.freertr.cry.cryKeyDH;
+import org.freertr.cry.cryKeyECDH;
+import org.freertr.cry.cryKeyGeneric;
 import org.freertr.pack.packHolder;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
@@ -1056,12 +1058,36 @@ public class secTransform {
      *
      * @return group, null if nothing
      */
-    public cryKeyDH getGroup() {
-        cryKeyDH res = new cryKeyDH();
-        if (res.keyMakeIke(groupNum)) {
+    public cryKeyGeneric getGroup() {
+        switch (groupNum) {
+            case 25:
+                cryKeyECDH ec = new cryKeyECDH();
+                ec.keyMakeTls(19);
+                return ec;
+            case 26:
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(21);
+                return ec;
+            case 19:
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(23);
+                return ec;
+            case 20:
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(24);
+                return ec;
+            case 21:
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(25);
+                return ec;
+            default:
+                break;
+        }
+        cryKeyDH dh = new cryKeyDH();
+        if (dh.keyMakeIke(groupNum)) {
             return null;
         }
-        return res;
+        return dh;
     }
 
     /**
@@ -1087,17 +1113,22 @@ public class secTransform {
      */
     public void getHelp(userHelping l) {
         l.add(null, "1 2  group               select diffie-hellman group");
-        l.add(null, "2 .    01                768 bit group");
-        l.add(null, "2 .    02                1024 bit group");
-        l.add(null, "2 .    05                1536 bit group");
-        l.add(null, "2 .    14                2048 bit group");
-        l.add(null, "2 .    15                3072 bit group");
-        l.add(null, "2 .    16                4096 bit group");
-        l.add(null, "2 .    17                6144 bit group");
-        l.add(null, "2 .    18                8192 bit group");
-        l.add(null, "2 .    22                1024 bit group");
-        l.add(null, "2 .    23                2048 bit group");
-        l.add(null, "2 .    24                2048 bit group");
+        l.add(null, "2 .    01                768 bit modp");
+        l.add(null, "2 .    02                1024 bit modp");
+        l.add(null, "2 .    05                1536 bit modp");
+        l.add(null, "2 .    14                2048 bit modp");
+        l.add(null, "2 .    15                3072 bit modp");
+        l.add(null, "2 .    16                4096 bit modp");
+        l.add(null, "2 .    17                6144 bit modp");
+        l.add(null, "2 .    18                8192 bit modp");
+        l.add(null, "2 .    19                256 bit ecp");
+        l.add(null, "2 .    20                384 bit ecp");
+        l.add(null, "2 .    21                521 bit ecp");
+        l.add(null, "2 .    22                1024 bit modp");
+        l.add(null, "2 .    23                2048 bit modp");
+        l.add(null, "2 .    24                2048 bit modp");
+        l.add(null, "2 .    25                192 bit ecp");
+        l.add(null, "2 .    26                224 bit ecp");
         l.add(null, "1 2  seconds             sa lifetime in time");
         l.add(null, "2 .    <num>             number of seconds");
         l.add(null, "1 2  random              randomize time");

@@ -145,7 +145,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public String keyDump() {
-        return "cln=" + clntPub + " srv=" + servPub + " res=" + common;
+        return "crv=" + curve.nam + " cln=" + clntPub + " srv=" + servPub + " res=" + common;
     }
 
     public void keyClntInit() {
@@ -176,7 +176,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public byte[] keyCommonIke() {
-        return null;
+        return common.toBytesIke();
     }
 
     public byte[] keyClntTls() {
@@ -220,18 +220,26 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public byte[] keyClntIke() {
-        return null;
+        if (clntPub == null) {
+            return null;
+        }
+        return clntPub.toBytesIke();
     }
 
     public byte[] keyServIke() {
-        return null;
+        if (servPub == null) {
+            return null;
+        }
+        return servPub.toBytesIke();
     }
 
     public boolean keyClntIke(byte[] buf, int ofs) {
+        clntPub = cryKeyECpoint.fromBytesIke(curve, buf, ofs);
         return false;
     }
 
     public boolean keyServIke(byte[] buf, int ofs) {
+        servPub = cryKeyECpoint.fromBytesIke(curve, buf, ofs);
         return false;
     }
 

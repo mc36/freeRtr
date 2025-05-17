@@ -7,9 +7,7 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashGeneric;
-import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyGeneric;
-import org.freertr.cry.cryUtils;
 import org.freertr.prt.prtUdp;
 import org.freertr.sec.secTransform;
 import org.freertr.util.bits;
@@ -111,7 +109,7 @@ public class packIsakmp {
     /**
      * diffie hellman keys
      */
-    public cryKeyDH diffie;
+    public cryKeyGeneric keygen;
 
     /**
      * initiator nonce
@@ -362,7 +360,7 @@ public class packIsakmp {
         n.transform = transform;
         n.initiator = initiator;
         n.preshared = preshared;
-        n.diffie = diffie;
+        n.keygen = keygen;
         n.nonceI = nonceI;
         n.nonceR = nonceR;
         n.skeyidA = skeyidA;
@@ -826,10 +824,10 @@ public class packIsakmp {
      * fill key exchange header
      */
     public void keyXchgFill() {
-        if (diffie == null) {
-            diffie = transform.getGroup();
+        if (keygen == null) {
+            keygen = transform.getGroup();
         }
-        diffie.keyClntInit();
+        keygen.keyClntInit();
         xchgTyp = xchgIdPrt;
     }
 
@@ -843,10 +841,10 @@ public class packIsakmp {
         if (buf == null) {
             return true;
         }
-        if (diffie == null) {
-            diffie = transform.getGroup();
+        if (keygen == null) {
+            keygen = transform.getGroup();
         }
-        diffie.keyServIke(buf, 0);
+        keygen.keyServIke(buf, 0);
         keyXchgDump("rx");
         return false;
     }
@@ -855,7 +853,7 @@ public class packIsakmp {
      * create key exchange header
      */
     public void keyXchgCreate() {
-        byte[] buf = diffie.keyClntIke();
+        byte[] buf = keygen.keyClntIke();
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);
@@ -866,7 +864,7 @@ public class packIsakmp {
         if (!debugger.secIkeTraf) {
             return;
         }
-        logger.debug(dir + " kex");
+        logger.debug(dir + " kex " + keygen.keyDump());
     }
 
     /**
@@ -948,19 +946,19 @@ public class packIsakmp {
      * compute keys
      */
     public void computeKeys() {
-        diffie.keyClntCalc();
-        dhcomm = diffie.keyCommonIke();
+        keygen.keyClntCalc();
+        dhcomm = keygen.keyCommonIke();
         cryHashGeneric h = transform.getHmac(preshared.getBytes());
         h.update(nonceI);
         h.update(nonceR);
         skeyidG = h.finish();
         h = transform.getHash();
         if (initiator) {
-            h.update(diffie.keyClntIke());
-            h.update(diffie.keyServIke());
+            h.update(keygen.keyClntIke());
+            h.update(keygen.keyServIke());
         } else {
-            h.update(diffie.keyServIke());
-            h.update(diffie.keyClntIke());
+            h.update(keygen.keyServIke());
+            h.update(keygen.keyClntIke());
         }
         phase1iv1 = h.finish();
         skeyidD = makeSkeyX(new byte[0], 0);
@@ -1084,11 +1082,11 @@ public class packIsakmp {
     public byte[] hashGenMM(boolean initer) {
         cryHashGeneric h = transform.getHmac(skeyidG);
         if (initiator ^ initer) {
-            h.update(diffie.keyServIke());
-            h.update(diffie.keyClntIke());
+            h.update(keygen.keyServIke());
+            h.update(keygen.keyClntIke());
         } else {
-            h.update(diffie.keyClntIke());
-            h.update(diffie.keyServIke());
+            h.update(keygen.keyClntIke());
+            h.update(keygen.keyServIke());
         }
         if (initer) {
             byte[] buf = new byte[8];

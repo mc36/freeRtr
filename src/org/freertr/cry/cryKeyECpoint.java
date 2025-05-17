@@ -134,7 +134,12 @@ public class cryKeyECpoint {
         return res;
     }
 
-    private byte[] getBytes() {
+    /**
+     * get bytes
+     *
+     * @return bytes
+     */
+    public byte[] toBytesIke() {
         int siz = (c.p.bitLength() + 7) / 8;
         byte[] b1 = cryUtils.bigInt2buffer(x, siz);
         byte[] b2 = cryUtils.bigInt2buffer(y, siz);
@@ -149,7 +154,7 @@ public class cryKeyECpoint {
     public byte[] toBytesTls() {
         byte[] b0 = new byte[1];
         b0[0] = 4;
-        return bits.byteConcat(b0, getBytes());
+        return bits.byteConcat(b0, toBytesIke());
     }
 
     /**
@@ -160,10 +165,18 @@ public class cryKeyECpoint {
     public byte[] toBytesCert() {
         byte[] b0 = new byte[2];
         b0[1] = 4;
-        return bits.byteConcat(b0, getBytes());
+        return bits.byteConcat(b0, toBytesIke());
     }
 
-    private static cryKeyECpoint fromBytes(cryKeyECcurve c, byte[] buf, int ofs) {
+    /**
+     * convert from bytes
+     *
+     * @param c curve
+     * @param buf buffer
+     * @param ofs where to start
+     * @return point
+     */
+    public static cryKeyECpoint fromBytesIke(cryKeyECcurve c, byte[] buf, int ofs) {
         int siz = (c.p.bitLength() + 7) / 8;
         if ((buf.length - ofs) < (siz * 2)) {
             return null;
@@ -185,7 +198,7 @@ public class cryKeyECpoint {
         if (buf[ofs] != 4) {
             return null;
         }
-        return fromBytes(c, buf, ofs + 1);
+        return fromBytesIke(c, buf, ofs + 1);
     }
 
     /**
@@ -200,7 +213,7 @@ public class cryKeyECpoint {
         if (buf[ofs + 1] != 4) {
             return null;
         }
-        return fromBytes(c, buf, ofs + 2);
+        return fromBytesIke(c, buf, ofs + 2);
     }
 
 }

@@ -7,9 +7,7 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashGeneric;
-import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyGeneric;
-import org.freertr.cry.cryUtils;
 import org.freertr.sec.secTransform;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -120,7 +118,7 @@ public class packIke {
     /**
      * diffie hellman keys
      */
-    public cryKeyDH diffie;
+    public cryKeyGeneric keygen;
 
     /**
      * initiator nonce
@@ -342,7 +340,7 @@ public class packIke {
         n.transform = transform;
         n.initiator = initiator;
         n.preshared = preshared;
-        n.diffie = diffie;
+        n.keygen = keygen;
         n.nonceI = nonceI;
         n.nonceR = nonceR;
         n.skeyidA = skeyidA;
@@ -731,10 +729,10 @@ public class packIke {
      * fill key exchange header
      */
     public void keyXchgFill() {
-        if (diffie == null) {
-            diffie = transform.getGroup();
+        if (keygen == null) {
+            keygen = transform.getGroup();
         }
-        diffie.keyClntInit();
+        keygen.keyClntInit();
         xchgTyp = xchgIkeSa;
     }
 
@@ -749,13 +747,13 @@ public class packIke {
             return true;
         }
 
-        if (diffie == null) {
-            diffie = transform.getGroup();
+        if (keygen == null) {
+            keygen = transform.getGroup();
         }
         if (bits.msbGetW(buf, 0) != transform.groupNum) {
             return true;
         }
-        diffie.keyServIke(buf, 4);
+        keygen.keyServIke(buf, 4);
         keyXchgDump("rx");
         return false;
     }
@@ -767,7 +765,7 @@ public class packIke {
         pckDat.msbPutW(0, transform.groupNum);
         pckDat.msbPutW(2, 0);
         pckDat.putSkip(4);
-        byte[] buf = diffie.keyClntIke();
+        byte[] buf = keygen.keyClntIke();
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);
@@ -778,7 +776,7 @@ public class packIke {
         if (!debugger.secIkeTraf) {
             return;
         }
-        logger.debug(dir + " kex");
+        logger.debug(dir + " kex " + keygen.keyDump());
     }
 
     /**
@@ -850,8 +848,8 @@ public class packIke {
      * compute keys
      */
     public void computeKeys() {
-        diffie.keyClntCalc();
-        dhcomm = diffie.keyCommonIke();
+        keygen.keyClntCalc();
+        dhcomm = keygen.keyCommonIke();
         cryHashGeneric h = transorig.getHprf(bits.byteConcat(nonceI, nonceR));
         h.update(dhcomm);
         skeyidG = h.finish();

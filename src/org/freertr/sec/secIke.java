@@ -402,7 +402,7 @@ public class secIke implements ifcDn, ifcUp {
         pckTx.msgId = txSeq;
         pckTx.headerCreate();
         conn.msgI = pckTx.pckBin;
-        conn.diffie = pckTx.diffie;
+        conn.keygen = pckTx.keygen;
         sendIke(pckTx, false);
         txSeq++;
     }
@@ -435,7 +435,7 @@ public class secIke implements ifcDn, ifcUp {
                 }
                 conn.msgR = pckRx.pckBin;
                 conn.cookieR = pckRx.cookieR;
-                conn.diffie = pckRx.diffie;
+                conn.keygen = pckRx.keygen;
                 conn.nonceR = pckRx.nonceI;
                 conn.computeKeys();
                 conn.spiValI = bits.randomD();
@@ -589,7 +589,7 @@ public class secIke implements ifcDn, ifcUp {
                 conn.msgI = pckRx.pckBin;
                 conn.cookieI = pckRx.cookieI;
                 conn.cookieR = bits.randomQ();
-                conn.diffie = pckRx.diffie;
+                conn.keygen = pckRx.keygen;
                 conn.nonceI = pckRx.nonceI;
                 conn.nonceR = packIke.nonceFill();
                 packIke pckTx = conn.copyBytes();

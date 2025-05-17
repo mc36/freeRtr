@@ -178,7 +178,7 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public String keyDump() {
-        return "cln=" + clntPub + " srv=" + servPub + " res=" + common;
+        return "grp=" + idNum + " cln=" + clntPub + " srv=" + servPub + " res=" + common;
     }
 
     public void keyClntInit() {

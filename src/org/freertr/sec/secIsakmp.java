@@ -468,7 +468,7 @@ public class secIsakmp implements ifcDn, ifcUp {
                 continue;
             }
             if (!pckRx.keyXchgParse()) {
-                conn.diffie = pckRx.diffie;
+                conn.keygen = pckRx.keygen;
                 if (pckRx.nonceParse()) {
                     continue;
                 }
@@ -619,7 +619,7 @@ public class secIsakmp implements ifcDn, ifcUp {
                 continue;
             }
             if (!pckRx.keyXchgParse()) {
-                conn.diffie = pckRx.diffie;
+                conn.keygen = pckRx.keygen;
                 if (pckRx.nonceParse()) {
                     continue;
                 }
