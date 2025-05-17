@@ -16513,3 +16513,10 @@ qc pass: ike2 with group26
 qc pass: ike2 with group19
 qc pass: ike2 with group20
 qc pass: ike2 with group21
+---------------------------------- 2025-05-17 06:52:54 25.5.17
+qc pass: interop1: ike1 with group19
+qc pass: interop1: ike1 with group20
+qc pass: interop1: ike1 with group21
+qc pass: interop1: ike2 with group19
+qc pass: interop1: ike2 with group20
+qc pass: interop1: ike2 with group21
