@@ -62,6 +62,15 @@ public class cryKeyDH extends cryKeyGeneric {
         return "group=" + group + " prime=" + modulus;
     }
 
+    /**
+     * max byte size
+     *
+     * @return size
+     */
+    public int byteSize() {
+        return (modulus.bitLength() + 7) / 8;
+    }
+
     public String algName() {
         return "dh";
     }

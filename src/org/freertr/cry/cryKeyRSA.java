@@ -79,6 +79,15 @@ public class cryKeyRSA extends cryKeyGeneric {
                 + expon1 + " e2=" + expon2 + " coeff=" + coeff;
     }
 
+    /**
+     * max byte size
+     *
+     * @return size
+     */
+    public int byteSize() {
+        return (modulus.bitLength() + 7) / 8;
+    }
+
     public String algName() {
         return "rsa";
     }
@@ -481,7 +490,7 @@ public class cryKeyRSA extends cryKeyGeneric {
      * @return padded integer
      */
     public BigInteger PKCS1t2pad(byte[] oid, byte[] src) {
-        byte[] buf = new byte[(modulus.bitLength() + 7) / 8];
+        byte[] buf = new byte[byteSize()];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) 0xff;
         }
@@ -499,7 +508,7 @@ public class cryKeyRSA extends cryKeyGeneric {
      * @return padded integer
      */
     public BigInteger PKCS1t1pad(byte[] src) {
-        byte[] buf = new byte[(modulus.bitLength() + 7) / 8];
+        byte[] buf = new byte[byteSize()];
         for (int i = 0; i < buf.length; i++) {
             buf[i] = (byte) 0xff;
         }
@@ -517,7 +526,7 @@ public class cryKeyRSA extends cryKeyGeneric {
      * @return padded buffer
      */
     public byte[] PKCS1t15pad(byte[] src) {
-        byte[] buf = new byte[(modulus.bitLength() + 7) / 8];
+        byte[] buf = new byte[byteSize()];
         buf[1] = 2;
         for (int i = 2; i < buf.length - src.length; i++) {
             int o;

@@ -140,7 +140,7 @@ public class cryKeyECpoint {
      * @return bytes
      */
     public byte[] toBytesIke() {
-        int siz = (c.p.bitLength() + 7) / 8;
+        int siz = c.byteSize();
         byte[] b1 = cryUtils.bigInt2buffer(x, siz);
         byte[] b2 = cryUtils.bigInt2buffer(y, siz);
         return bits.byteConcat(b1, b2);
@@ -177,7 +177,7 @@ public class cryKeyECpoint {
      * @return point
      */
     public static cryKeyECpoint fromBytesIke(cryKeyECcurve c, byte[] buf, int ofs) {
-        int siz = (c.p.bitLength() + 7) / 8;
+        int siz = c.byteSize();
         if ((buf.length - ofs) < (siz * 2)) {
             return null;
         }

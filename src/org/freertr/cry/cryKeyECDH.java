@@ -167,7 +167,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public byte[] keyCommonTls() {
-        int siz = (curve.p.bitLength() + 7) / 8;
+        int siz = curve.byteSize();
         return cryUtils.bigInt2buffer(common.x, siz);
     }
 
@@ -176,7 +176,7 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public byte[] keyCommonIke() {
-        return common.toBytesIke();
+        return keyCommonTls();
     }
 
     public byte[] keyClntTls() {

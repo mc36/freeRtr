@@ -462,7 +462,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return byte array of r|s
      */
     public byte[] sign2ssh() {
-        int hashBytes = (curve.p.bitLength() + 7) / 8;
+        int hashBytes = curve.byteSize();
         byte[] b1 = cryUtils.bigInt2buffer(sgnR, hashBytes);
         byte[] b2 = cryUtils.bigInt2buffer(sgnS, hashBytes);
         byte[] b3 = new byte[hashBytes + hashBytes];
@@ -480,7 +480,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean ssh2sign(byte[] sgn) {
-        int hashBytes = (curve.p.bitLength() + 7) / 8;
+        int hashBytes = curve.byteSize();
         if (sgn.length != hashBytes + hashBytes) {
             return true;
         }

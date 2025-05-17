@@ -78,6 +78,15 @@ public class cryKeyECcurve {
     }
 
     /**
+     * max byte size
+     *
+     * @return size
+     */
+    public int byteSize() {
+        return (p.bitLength() + 7) / 8;
+    }
+
+    /**
      * curves
      */
     public final static cryKeyECcurve[] curves = {
