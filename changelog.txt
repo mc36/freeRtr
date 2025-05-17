@@ -16520,3 +16520,9 @@ qc pass: interop1: ike1 with group21
 qc pass: interop1: ike2 with group19
 qc pass: interop1: ike2 with group20
 qc pass: interop1: ike2 with group21
+---------------------------------- 2025-05-17 09:23:56 25.5.17
+qc pass: macsec with group25
+qc pass: macsec with group26
+qc pass: macsec with group19
+qc pass: macsec with group20
+qc pass: macsec with group21
