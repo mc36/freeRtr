@@ -196,7 +196,7 @@ public class prtIpIp implements ifcDn {
      * @return mtu size
      */
     public int getMTUsize() {
-        return mpls.getMTUsize();
+        return mpls.sendingIfc.mtu;
     }
 
     /**
@@ -205,7 +205,7 @@ public class prtIpIp implements ifcDn {
      * @return bandwidth
      */
     public long getBandwidth() {
-        return mpls.getBandwidth();
+        return mpls.sendingIfc.bandwidth;
     }
 
     /**
@@ -293,29 +293,60 @@ public class prtIpIp implements ifcDn {
         upper.recvPack(pck);
     }
 
+    /**
+     * get remote address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrRem() {
+        return mpls.remote;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrLoc() {
+        return mpls.sendingIfc.addr;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public ipFwd getFwd() {
+        return mpls.lower;
+    }
+
 }
 
 class prtIpIpHnd implements ipPrt {
 
-    private final int protoNum;
+    public final int protoNum;
 
-    private final int etherTyp;
+    public final int etherTyp;
 
-    private final prtIpIp upper;
+    public final prtIpIp upper;
 
-    private final ipFwd lower;
+    public final ipFwd lower;
 
-    private ipFwdIface sendingIfc;
+    public ipFwdIface sendingIfc;
 
-    private addrIP remote = new addrIP();
+    public addrIP remote = new addrIP();
 
-    private counter cntr = new counter();
+    public counter cntr = new counter();
 
     public prtIpIpHnd(ipFwd fwder, prtIpIp prnt, int proto, int ethtyp) {
         lower = fwder;
         upper = prnt;
         protoNum = proto;
         etherTyp = ethtyp;
+    }
+
+    public String toString() {
+        return "ipip to " + remote;
     }
 
     public counter getCounter() {
@@ -398,18 +429,6 @@ class prtIpIpHnd implements ipPrt {
         pck.IPtrg.setAddr(remote);
         pck.IPsrc.setAddr(sendingIfc.addr);
         lower.protoPack(sendingIfc, null, pck);
-    }
-
-    public String toString() {
-        return "ipip to " + remote;
-    }
-
-    public int getMTUsize() {
-        return sendingIfc.mtu;
-    }
-
-    public long getBandwidth() {
-        return sendingIfc.bandwidth;
     }
 
 }
