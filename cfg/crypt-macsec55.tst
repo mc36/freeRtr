@@ -1,4 +1,4 @@
-description macsec over l2tp3
+description macsec with aes256gcm and aead
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -9,21 +9,11 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher aes256cbc
- hash sha1
+ cipher aes256gcm
+ hash none
  key tester
  exit
 int eth1
- vrf for v1
- ipv4 addr 9.9.9.1 255.255.255.252
- ipv6 addr 9999::1 ffff::
- exit
-int tun1
- tunnel vrf v1
- tunnel key 1234
- tunnel mode l2tp3
- tunnel source ethernet1
- tunnel destination 9999::2
  vrf for v1
  macsec ips
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -40,21 +30,11 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher aes256cbc
- hash sha1
+ cipher aes256gcm
+ hash none
  key tester
  exit
 int eth1
- vrf for v1
- ipv4 addr 9.9.9.2 255.255.255.252
- ipv6 addr 9999::2 ffff::
- exit
-int tun1
- tunnel vrf v1
- tunnel key 1234
- tunnel mode l2tp3
- tunnel source ethernet1
- tunnel destination 9999::1
  vrf for v1
  macsec ips
  ipv4 addr 1.1.1.2 255.255.255.0

@@ -1,4 +1,4 @@
-description macsec with group23
+description macsec with group18
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,7 +8,7 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 23
+ group 18
  cipher des
  hash md5
  key tester
@@ -29,7 +29,7 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 23
+ group 18
  cipher des
  hash md5
  key tester

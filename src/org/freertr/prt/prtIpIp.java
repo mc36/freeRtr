@@ -269,7 +269,7 @@ public class prtIpIp implements ifcDn {
                 mcs.sendPack(pck);
                 break;
             case ifcSgt.type:
-                nsh.sendPack(pck);
+                sgt.sendPack(pck);
                 break;
             case ifcNshFwd.type:
                 nsh.sendPack(pck);

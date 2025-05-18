@@ -1,4 +1,4 @@
-description bidir te without global id
+description te with pcep
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -28,8 +28,8 @@ int tun1
  tun sou eth1
  tun dest 1.1.1.2
  tun vrf v1
- tun assoc 4.3.2.1 1234
- tun mod p2pte
+ tun dom 1.1.1.2 v1 eth1
+ tun mod pcete
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.252
  exit
@@ -37,8 +37,8 @@ int tun2
  tun sou eth1
  tun dest 1234::2
  tun vrf v1
- tun assoc 4444::5555 1234
- tun mod p2pte
+ tun dom 1.1.1.2 v1 eth1
+ tun mod pcete
  vrf for v1
  ipv6 addr 4321::1 ffff::
  exit
@@ -49,6 +49,10 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
  rd 1:1
+ exit
+serv pcep p
+ export-vrf v1
+ vrf v1
  exit
 access-list test4
  deny 1 any all any all
@@ -72,8 +76,8 @@ int tun1
  tun sou eth1
  tun dest 1.1.1.1
  tun vrf v1
- tun assoc 4.3.2.1 1234
- tun mod p2pte
+ tun dom 1.1.1.2 v1 eth1
+ tun mod pcete
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.252
  exit
@@ -81,8 +85,8 @@ int tun2
  tun sou eth1
  tun dest 1234::1
  tun vrf v1
- tun assoc 4444::5555 1234
- tun mod p2pte
+ tun dom 1.1.1.2 v1 eth1
+ tun mod pcete
  vrf for v1
  ipv6 addr 4321::2 ffff::
  exit

@@ -1,4 +1,4 @@
-description macsec over ethernet bundle
+description macsec with group23
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,20 +6,14 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
-bundle 1
- ether
- exit
 crypto ipsec ips
  role init
- group 02
- cipher aes256cbc
- hash sha1
+ group 23
+ cipher des
+ hash md5
  key tester
  exit
 int eth1
- bundle-gr 1
- exit
-int bun1
  vrf for v1
  macsec ips
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -35,9 +29,9 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 02
- cipher aes256cbc
- hash sha1
+ group 23
+ cipher des
+ hash md5
  key tester
  exit
 int eth1
@@ -50,6 +44,6 @@ int eth1
 
 
 r1 tping 100 30 1.1.1.2 vrf v1
-r1 tping 100 30 1234::2 vrf v1
 r2 tping 100 30 1.1.1.1 vrf v1
+r1 tping 100 30 1234::2 vrf v1
 r2 tping 100 30 1234::1 vrf v1

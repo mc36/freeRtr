@@ -1,4 +1,4 @@
-description macsec with sha3512
+description macsec with sha3256
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -10,7 +10,7 @@ crypto ipsec ips
  role init
  group 02
  cipher des
- hash sha3512
+ hash sha3256
  key tester
  exit
 int eth1
@@ -31,7 +31,7 @@ crypto ipsec ips
  role init
  group 02
  cipher des
- hash sha3512
+ hash sha3256
  key tester
  exit
 int eth1

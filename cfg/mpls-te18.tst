@@ -1,4 +1,4 @@
-description bidir te with global id
+description te over point2point ethernet
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,8 +16,8 @@ access-list test6
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.1 255.255.255.0
- ipv6 addr 1234::1 ffff::
+ ipv4 addr 1.1.1.2 255.255.255.254
+ ipv6 addr 1234::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  ipv4 access-group-in test4
  ipv6 access-group-in test6
  mpls enable
@@ -26,18 +26,16 @@ int eth1
  exit
 int tun1
  tun sou eth1
- tun dest 1.1.1.2
+ tun dest 1.1.1.3
  tun vrf v1
- tun assoc 4.3.2.1 1234 12345678
  tun mod p2pte
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.252
  exit
 int tun2
  tun sou eth1
- tun dest 1234::2
+ tun dest 1234::3
  tun vrf v1
- tun assoc 4444::5555 1234 12345678
  tun mod p2pte
  vrf for v1
  ipv6 addr 4321::1 ffff::
@@ -60,8 +58,8 @@ access-list test6
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.2 255.255.255.0
- ipv6 addr 1234::2 ffff::
+ ipv4 addr 1.1.1.3 255.255.255.254
+ ipv6 addr 1234::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  ipv4 access-group-in test4
  ipv6 access-group-in test6
  mpls enable
@@ -70,18 +68,16 @@ int eth1
  exit
 int tun1
  tun sou eth1
- tun dest 1.1.1.1
+ tun dest 1.1.1.2
  tun vrf v1
- tun assoc 4.3.2.1 1234 12345678
  tun mod p2pte
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.252
  exit
 int tun2
  tun sou eth1
- tun dest 1234::1
+ tun dest 1234::2
  tun vrf v1
- tun assoc 4444::5555 1234 12345678
  tun mod p2pte
  vrf for v1
  ipv6 addr 4321::2 ffff::
@@ -93,5 +89,5 @@ r1 tping 100 10 2.2.2.2 vrf v1
 r2 tping 100 10 2.2.2.1 vrf v1
 r1 tping 100 10 4321::2 vrf v1
 r2 tping 100 10 4321::1 vrf v1
-r1 tping 0 10 1.1.1.2 vrf v1
-r2 tping 0 10 1.1.1.1 vrf v1
+r1 tping 0 10 1.1.1.3 vrf v1
+r2 tping 0 10 1.1.1.2 vrf v1

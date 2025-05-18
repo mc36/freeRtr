@@ -1,4 +1,4 @@
-description sgt vlan map out encapsulation
+description sgt ethernet chain encapsulation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,7 +11,7 @@ policy-map p1
   match sgt 123
  seq 20 act trans
  exit
-int eth1.123
+int eth1
  sgt ena
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -29,7 +29,7 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
-int eth1.123
+int eth1
  sgt ena
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
@@ -37,8 +37,6 @@ int eth1.123
  exit
 int eth2
  sgt ena
- exit
-int eth2.123
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff::
@@ -60,8 +58,6 @@ policy-map p1
  exit
 int eth1
  sgt ena
- exit
-int eth1.123
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff::

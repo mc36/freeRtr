@@ -1,4 +1,4 @@
-description macsec with md5
+description macsec with aes192cbc
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -9,7 +9,7 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher des
+ cipher aes192cbc
  hash md5
  key tester
  exit
@@ -30,7 +30,7 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher des
+ cipher aes192cbc
  hash md5
  key tester
  exit

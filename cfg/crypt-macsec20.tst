@@ -1,4 +1,4 @@
-description macsec with group1
+description macsec with sha256
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,9 +8,9 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 01
+ group 02
  cipher des
- hash md5
+ hash sha256
  key tester
  exit
 int eth1
@@ -29,9 +29,9 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 01
+ group 02
  cipher des
- hash md5
+ hash sha256
  key tester
  exit
 int eth1

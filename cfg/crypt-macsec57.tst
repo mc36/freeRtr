@@ -1,4 +1,4 @@
-description macsec with group25
+description macsec over l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,12 +8,22 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 25
- cipher des
- hash md5
+ group 02
+ cipher aes256cbc
+ hash sha1
  key tester
  exit
 int eth1
+ vrf for v1
+ ipv4 addr 9.9.9.1 255.255.255.252
+ ipv6 addr 9999::1 ffff::
+ exit
+int tun1
+ tunnel vrf v1
+ tunnel key 1234
+ tunnel mode l2tp3
+ tunnel source ethernet1
+ tunnel destination 9999::2
  vrf for v1
  macsec ips
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -29,12 +39,22 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 25
- cipher des
- hash md5
+ group 02
+ cipher aes256cbc
+ hash sha1
  key tester
  exit
 int eth1
+ vrf for v1
+ ipv4 addr 9.9.9.2 255.255.255.252
+ ipv6 addr 9999::2 ffff::
+ exit
+int tun1
+ tunnel vrf v1
+ tunnel key 1234
+ tunnel mode l2tp3
+ tunnel source ethernet1
+ tunnel destination 9999::1
  vrf for v1
  macsec ips
  ipv4 addr 1.1.1.2 255.255.255.0

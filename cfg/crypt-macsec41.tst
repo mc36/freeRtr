@@ -1,4 +1,4 @@
-description macsec with sha384
+description macsec with aes256ecb
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -9,8 +9,8 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher des
- hash sha384
+ cipher aes256ecb
+ hash md5
  key tester
  exit
 int eth1
@@ -30,8 +30,8 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher des
- hash sha384
+ cipher aes256ecb
+ hash md5
  key tester
  exit
 int eth1
