@@ -5,13 +5,10 @@ import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
-import org.freertr.ip.ipCor4;
-import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
-import org.freertr.ip.ipIfc4;
-import org.freertr.ip.ipIfc6;
 import org.freertr.ip.ipPrt;
+import org.freertr.prt.prtTmux;
 import org.freertr.tab.tabWindow;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -34,11 +31,6 @@ public class packEsp implements ipPrt {
      * header size
      */
     public final static int size = 8;
-
-    /**
-     * ipv6 sa
-     */
-    public boolean ipv6 = false;
 
     /**
      * do replay checking
@@ -213,22 +205,6 @@ public class packEsp implements ipPrt {
         return cntr;
     }
 
-    private int getType() {
-        if (ipv6) {
-            return ipIfc6.type;
-        } else {
-            return ipIfc4.type;
-        }
-    }
-
-    private int getProto() {
-        if (ipv6) {
-            return ipCor6.protocolNumber;
-        } else {
-            return ipCor4.protocolNumber;
-        }
-    }
-
     /**
      * received packet
      *
@@ -294,7 +270,9 @@ public class packEsp implements ipPrt {
             logger.info("bad aead from " + peerAddr);
             return;
         }
-        if (pck.getByte(siz - 1) != getProto()) {
+        i = pck.getByte(siz - 1);
+        i = prtTmux.proto2ethtyp(i);
+        if (i < 0) {
             logger.info("bad protocol from " + peerAddr);
             cntr.drop(pck, counter.reasons.badProto);
             return;
@@ -305,7 +283,7 @@ public class packEsp implements ipPrt {
             pck.getSkip(encrSize);
         }
         pck.setDataSize(siz);
-        pck.msbPutW(0, getType());
+        pck.msbPutW(0, i);
         pck.putSkip(2);
         pck.merge2beg();
         lower.recvPack(pck);
@@ -354,7 +332,9 @@ public class packEsp implements ipPrt {
             return;
         }
         pck.merge2beg();
-        if (pck.msbGetW(0) != getType()) {
+        int p = pck.msbGetW(0);
+        p = prtTmux.ethtyp2proto(p);
+        if (p < 0) {
             cntr.drop(pck, counter.reasons.badProto);
             return;
         }
@@ -371,7 +351,7 @@ public class packEsp implements ipPrt {
         }
         pck.putSkip(o);
         pck.putByte(0, o);
-        pck.putByte(1, getProto());
+        pck.putByte(1, p);
         pck.putSkip(2);
         pck.merge2end();
         if (hasher == null) {

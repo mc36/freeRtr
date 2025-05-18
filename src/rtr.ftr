@@ -576,25 +576,25 @@ qc pass: gre over ipv4 filtered
 qc pass: sreth over ipv4 filtered
 qc pass: ipip over ipv4 filtered
 qc pass: icmptunnel over ipv4 filtered
-qc pass: ipv4 in esp over ipv4 filtered
+failed: ipv4 in esp over ipv4 filtered
 qc pass: ipcomp over ipv4 filtered
 qc pass: swipe over ipv4 filtered
 qc pass: gre over ipv6 filtered
 qc pass: sreth over ipv6 filtered
 qc pass: ipip over ipv6 filtered
 qc pass: icmptunnel over ipv6 filtered
-qc pass: ipv4 in esp over ipv6 filtered
+failed: ipv4 in esp over ipv6 filtered
 qc pass: ipcomp over ipv6 filtered
 qc pass: swipe over ipv6 filtered
 qc pass: dtls test
-qc pass: ipv4 in esp over ipv4
-qc pass: ipv4 in esp over ipv6
-qc pass: ipv6 in esp over ipv4
-qc pass: ipv6 in esp over ipv6
-qc pass: ipv4 in ike1 over ipv4
-qc pass: ipv4 in ike1 over ipv6
+failed: ipv4 in esp over ipv4
+failed: ipv4 in esp over ipv6
+failed: ipv6 in esp over ipv4
+failed: ipv6 in esp over ipv6
+failed: ipv4 in ike1 over ipv4
+failed: ipv4 in ike1 over ipv6
 qc pass: ipv6 in ike1 over ipv4
-qc pass: ipv6 in ike1 over ipv6
+failed: ipv6 in ike1 over ipv6
 qc pass: ike1 with des
 qc pass: ike1 with blowfish
 qc pass: ike1 with 3des
@@ -622,8 +622,8 @@ qc pass: ike1 with group26
 qc pass: ike1 with group19
 qc pass: ike1 with group20
 qc pass: ike1 with group21
-qc pass: ipv4 in ike2 over ipv4
-qc pass: ipv4 in ike2 over ipv6
+failed: ipv4 in ike2 over ipv4
+failed: ipv4 in ike2 over ipv6
 qc pass: ipv6 in ike2 over ipv4
 qc pass: ipv6 in ike2 over ipv6
 qc pass: ike2 with des

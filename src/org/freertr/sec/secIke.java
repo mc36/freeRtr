@@ -249,8 +249,6 @@ public class secIke implements ifcDn, ifcUp {
         espTx = new packEsp(this);
         espRx.lowerSetup(fwd, ifc, trg, sendingTOS, sendingTTL, sendingFLW, sendingDFN);
         espTx.lowerSetup(fwd, ifc, trg, sendingTOS, sendingTTL, sendingFLW, sendingDFN);
-        espRx.ipv6 = ipv6;
-        espTx.ipv6 = ipv6;
         espRx.replayCheck = replayCheck;
         if (espRx.lowerRegister()) {
             return true;

@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v25.5.18-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-05-18 01:56:17, took 00:15:24, with 50 workers, on 3667 cases, 0 failed, 0 traces, 4 retries<br/>
+tested: 2025-05-18 02:58:19, took 00:16:44, with 50 workers, on 3667 cases, 11 failed, 0 traces, 79 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -592,25 +592,25 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl81.tst">crypt-acl81.tst</a></td><td>success</td><td>sreth over ipv4 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl82.tst">crypt-acl82.tst</a></td><td>success</td><td>ipip over ipv4 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl83.tst">crypt-acl83.tst</a></td><td>success</td><td>icmptunnel over ipv4 filtered</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl84.tst">crypt-acl84.tst</a></td><td>success</td><td>ipv4 in esp over ipv4 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl84.tst">crypt-acl84.tst</a></td><td>#6-run-r1 tping 0 5 4321::2 vrf v1</td><td>ipv4 in esp over ipv4 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl85.tst">crypt-acl85.tst</a></td><td>success</td><td>ipcomp over ipv4 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl86.tst">crypt-acl86.tst</a></td><td>success</td><td>swipe over ipv4 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl87.tst">crypt-acl87.tst</a></td><td>success</td><td>gre over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl88.tst">crypt-acl88.tst</a></td><td>success</td><td>sreth over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl89.tst">crypt-acl89.tst</a></td><td>success</td><td>ipip over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl90.tst">crypt-acl90.tst</a></td><td>success</td><td>icmptunnel over ipv6 filtered</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl91.tst">crypt-acl91.tst</a></td><td>success</td><td>ipv4 in esp over ipv6 filtered</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-acl91.tst">crypt-acl91.tst</a></td><td>#6-run-r1 tping 0 5 4321::2 vrf v1</td><td>ipv4 in esp over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl92.tst">crypt-acl92.tst</a></td><td>success</td><td>ipcomp over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl93.tst">crypt-acl93.tst</a></td><td>success</td><td>swipe over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>success</td><td>dtls test</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp101.tst">crypt-esp101.tst</a></td><td>success</td><td>ipv4 in esp over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp102.tst">crypt-esp102.tst</a></td><td>success</td><td>ipv4 in esp over ipv6</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp103.tst">crypt-esp103.tst</a></td><td>success</td><td>ipv6 in esp over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp104.tst">crypt-esp104.tst</a></td><td>success</td><td>ipv6 in esp over ipv6</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike101.tst">crypt-ike101.tst</a></td><td>success</td><td>ipv4 in ike1 over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike102.tst">crypt-ike102.tst</a></td><td>success</td><td>ipv4 in ike1 over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp101.tst">crypt-esp101.tst</a></td><td>#6-run-r1 tping 0 5 4321::2 vrf v1</td><td>ipv4 in esp over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp102.tst">crypt-esp102.tst</a></td><td>#6-run-r1 tping 0 5 4321::2 vrf v1</td><td>ipv4 in esp over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp103.tst">crypt-esp103.tst</a></td><td>#6-run-r1 tping 0 5 2.2.2.2 vrf v1</td><td>ipv6 in esp over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp104.tst">crypt-esp104.tst</a></td><td>#6-run-r1 tping 0 5 2.2.2.2 vrf v1</td><td>ipv6 in esp over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike101.tst">crypt-ike101.tst</a></td><td>#6-run-r1 tping 0 10 4321::2 vrf v1</td><td>ipv4 in ike1 over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike102.tst">crypt-ike102.tst</a></td><td>#6-run-r1 tping 0 10 4321::2 vrf v1</td><td>ipv4 in ike1 over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike103.tst">crypt-ike103.tst</a></td><td>success</td><td>ipv6 in ike1 over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike104.tst">crypt-ike104.tst</a></td><td>success</td><td>ipv6 in ike1 over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike104.tst">crypt-ike104.tst</a></td><td>#6-run-r2 tping 0 10 2.2.2.1 vrf v1</td><td>ipv6 in ike1 over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike105.tst">crypt-ike105.tst</a></td><td>success</td><td>ike1 with des</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike106.tst">crypt-ike106.tst</a></td><td>success</td><td>ike1 with blowfish</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike107.tst">crypt-ike107.tst</a></td><td>success</td><td>ike1 with 3des</td></tr>
@@ -638,8 +638,8 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike129.tst">crypt-ike129.tst</a></td><td>success</td><td>ike1 with group19</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike130.tst">crypt-ike130.tst</a></td><td>success</td><td>ike1 with group20</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike131.tst">crypt-ike131.tst</a></td><td>success</td><td>ike1 with group21</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike201.tst">crypt-ike201.tst</a></td><td>success</td><td>ipv4 in ike2 over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike202.tst">crypt-ike202.tst</a></td><td>success</td><td>ipv4 in ike2 over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike201.tst">crypt-ike201.tst</a></td><td>#6-run-r1 tping 0 10 4321::2 vrf v1</td><td>ipv4 in ike2 over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-ike202.tst">crypt-ike202.tst</a></td><td>#6-run-r1 tping 0 10 4321::2 vrf v1</td><td>ipv4 in ike2 over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike203.tst">crypt-ike203.tst</a></td><td>success</td><td>ipv6 in ike2 over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike204.tst">crypt-ike204.tst</a></td><td>success</td><td>ipv6 in ike2 over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike205.tst">crypt-ike205.tst</a></td><td>success</td><td>ike2 with des</td></tr>
