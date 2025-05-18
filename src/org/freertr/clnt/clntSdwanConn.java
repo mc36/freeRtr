@@ -14,6 +14,7 @@ import org.freertr.prt.prtGre;
 import org.freertr.prt.prtIcmptun;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtTmux;
+import org.freertr.prt.prtIpIp;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -102,6 +103,8 @@ public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanCo
     private clntL2tp3 prtL2tp3;
 
     private prtTmux prtTmux;
+
+    private prtIpIp prtIpIp;
 
     private prtIcmptun prtIcmp;
 
@@ -210,6 +213,9 @@ public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanCo
             case tmux:
                 prtTmux.closeDn();
                 break;
+            case ipip:
+                prtIpIp.closeDn();
+                break;
             case icmp:
                 prtIcmp.closeDn();
                 break;
@@ -228,6 +234,9 @@ public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanCo
                 return;
             case tmux:
                 prtTmux.setEndpoints(lower.fwdIfc, addr);
+                return;
+            case ipip:
+                prtIpIp.setEndpoints(lower.fwdIfc, addr);
                 return;
             case icmp:
                 prtIcmp.setEndpoints(lower.fwdIfc, addr);
@@ -300,6 +309,10 @@ public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanCo
                 prtTmux = new prtTmux(lower.fwdCor);
                 wrkrIfDn = prtTmux;
                 break;
+            case ipip:
+                prtIpIp = new prtIpIp(lower.fwdCor);
+                wrkrIfDn = prtIpIp;
+                break;
             case icmp:
                 prtIcmp = new prtIcmptun(lower.fwdCor);
                 wrkrIfDn = prtIcmp;
@@ -354,6 +367,9 @@ public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanCo
                 break;
             case tmux:
                 prtTmux.setUpper(upper);
+                break;
+            case ipip:
+                prtIpIp.setUpper(upper);
                 break;
             case icmp:
                 prtIcmp.setUpper(upper);

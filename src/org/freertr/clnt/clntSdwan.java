@@ -65,6 +65,10 @@ public class clntSdwan implements Runnable, ifcDn {
          */
         tmux,
         /**
+         * ipip
+         */
+        ipip,
+        /**
          * icmp
          */
         icmp,
@@ -107,6 +111,9 @@ public class clntSdwan implements Runnable, ifcDn {
         }
         if (s.equals("tmux")) {
             return protoTyp.tmux;
+        }
+        if (s.equals("ipip")) {
+            return protoTyp.ipip;
         }
         if (s.equals("icmp")) {
             return protoTyp.icmp;
