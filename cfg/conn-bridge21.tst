@@ -1,4 +1,4 @@
-description bridge port split horizon
+description bridge port unsplit horizon
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -24,20 +24,20 @@ vrf def v1
  exit
 bridge 1
  mac-learn
+ private
  exit
 int eth1
  bridge-gr 1
- bridge-fi private
  exit
 int eth2
  bridge-gr 1
- bridge-fi private
  exit
 int eth3
  bridge-gr 1
  exit
 int eth4
  bridge-gr 1
+ bridge-fi public
  exit
 int bvi1
  vrf for v1
@@ -98,20 +98,20 @@ r2 tping 100 5 1234::5 vrf v1
 r1 tping 100 5 1.1.1.2 vrf v1
 r1 tping 0 5 1.1.1.3 vrf v1
 r1 tping 0 5 1.1.1.4 vrf v1
-r1 tping 0 5 1.1.1.5 vrf v1
+r1 tping 100 5 1.1.1.5 vrf v1
 r1 tping 100 5 1234::2 vrf v1
 r1 tping 0 5 1234::3 vrf v1
 r1 tping 0 5 1234::4 vrf v1
-r1 tping 0 5 1234::5 vrf v1
+r1 tping 100 5 1234::5 vrf v1
 
 r3 tping 100 5 1.1.1.2 vrf v1
 r3 tping 0 5 1.1.1.1 vrf v1
 r3 tping 0 5 1.1.1.4 vrf v1
-r3 tping 0 5 1.1.1.5 vrf v1
+r3 tping 100 5 1.1.1.5 vrf v1
 r3 tping 100 5 1234::2 vrf v1
 r3 tping 0 5 1234::1 vrf v1
 r3 tping 0 5 1234::4 vrf v1
-r3 tping 0 5 1234::5 vrf v1
+r3 tping 100 5 1234::5 vrf v1
 
 r4 tping 0 5 1.1.1.1 vrf v1
 r4 tping 100 5 1.1.1.2 vrf v1
@@ -122,11 +122,11 @@ r4 tping 100 5 1234::2 vrf v1
 r4 tping 0 5 1234::3 vrf v1
 r4 tping 100 5 1234::5 vrf v1
 
-r5 tping 0 5 1.1.1.1 vrf v1
+r5 tping 100 5 1.1.1.1 vrf v1
 r5 tping 100 5 1.1.1.2 vrf v1
-r5 tping 0 5 1.1.1.3 vrf v1
+r5 tping 100 5 1.1.1.3 vrf v1
 r5 tping 100 5 1.1.1.4 vrf v1
-r5 tping 0 5 1234::1 vrf v1
+r5 tping 100 5 1234::1 vrf v1
 r5 tping 100 5 1234::2 vrf v1
-r5 tping 0 5 1234::3 vrf v1
+r5 tping 100 5 1234::3 vrf v1
 r5 tping 100 5 1234::4 vrf v1

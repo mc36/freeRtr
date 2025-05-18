@@ -1,4 +1,4 @@
-description bridge mac rewrite
+description bridge split horizon
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,13 +6,7 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
-bridge 1
- exit
 int eth1
- bridge-gr 1
- bridge-ports 0000.1234.1234
- exit
-int bvi1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
@@ -28,14 +22,13 @@ vrf def v1
  exit
 bridge 1
  mac-learn
+ private
  exit
 int eth1
  bridge-gr 1
- bridge-macre 0000.1234.1234
  exit
 int eth2
  bridge-gr 1
- bridge-macre 0000.1234.1234
  exit
 int bvi1
  vrf for v1
@@ -45,65 +38,30 @@ int bvi1
 !
 
 addrouter r3
-int eth1 eth 0000.0000.3333 $2b$ $2a$
-int eth2 eth 0000.0000.3333 $3a$ $3b$
+int eth1 eth 0000.0000.4444 $2b$ $2a$
 !
 vrf def v1
  rd 1:1
  exit
-bridge 1
- mac-learn
- exit
 int eth1
- bridge-gr 1
- exit
-int eth2
- bridge-gr 1
- exit
-int bvi1
  vrf for v1
  ipv4 addr 1.1.1.3 255.255.255.0
  ipv6 addr 1234::3 ffff::
  exit
 !
 
-addrouter r4
-int eth1 eth 0000.0000.4444 $3b$ $3a$
-!
-vrf def v1
- rd 1:1
- exit
-int eth1
- vrf for v1
- ipv4 addr 1.1.1.4 255.255.255.0
- ipv6 addr 1234::4 ffff::
- exit
-!
-
-r1 tping 100 5 1.1.1.2 vrf v1
-r1 tping 100 5 1.1.1.3 vrf v1
-r1 tping 100 5 1.1.1.4 vrf v1
-r1 tping 100 5 1234::2 vrf v1
-r1 tping 100 5 1234::3 vrf v1
-r1 tping 100 5 1234::4 vrf v1
 
 r2 tping 100 5 1.1.1.1 vrf v1
 r2 tping 100 5 1.1.1.3 vrf v1
-r2 tping 100 5 1.1.1.4 vrf v1
 r2 tping 100 5 1234::1 vrf v1
 r2 tping 100 5 1234::3 vrf v1
-r2 tping 100 5 1234::4 vrf v1
 
-r3 tping 100 5 1.1.1.1 vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
+r1 tping 0 5 1.1.1.3 vrf v1
+r1 tping 100 5 1234::2 vrf v1
+r1 tping 0 5 1234::3 vrf v1
+
 r3 tping 100 5 1.1.1.2 vrf v1
-r3 tping 100 5 1.1.1.4 vrf v1
-r3 tping 100 5 1234::1 vrf v1
+r3 tping 0 5 1.1.1.1 vrf v1
 r3 tping 100 5 1234::2 vrf v1
-r3 tping 100 5 1234::4 vrf v1
-
-r4 tping 100 5 1.1.1.1 vrf v1
-r4 tping 100 5 1.1.1.2 vrf v1
-r4 tping 100 5 1.1.1.3 vrf v1
-r4 tping 100 5 1234::1 vrf v1
-r4 tping 100 5 1234::2 vrf v1
-r4 tping 100 5 1234::3 vrf v1
+r3 tping 0 5 1234::1 vrf v1

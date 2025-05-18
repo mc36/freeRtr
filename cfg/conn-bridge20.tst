@@ -1,4 +1,4 @@
-description bridged ethernet over l2tp3
+description bridged ethernet over tmux
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -33,8 +33,7 @@ int eth2
  exit
 int tun1
  tunnel vrf v1
- tunnel key 1234
- tunnel mode l2tp3
+ tunnel mode tmux
  tunnel source ethernet2
  tunnel destination 9999::2
  bridge-gr 1
@@ -61,8 +60,7 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel key 1234
- tunnel mode l2tp3
+ tunnel mode tmux
  tunnel source ethernet1
  tunnel destination 9999::1
  bridge-gr 1

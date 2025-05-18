@@ -1,4 +1,4 @@
-description bridged ethernet over ipsec
+description bridged ethernet over l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -31,22 +31,10 @@ int eth2
  ipv4 addr 9.9.9.1 255.255.255.252
  ipv6 addr 9999::1 ffff::
  exit
- exit
-crypto ipsec ips
- group 02
- cipher des
- hash md5
- seconds 3600
- bytes 1024000
- key tester
- role static
- isakmp 1
- protected ipv4
- exit
 int tun1
  tunnel vrf v1
- tunnel prot ips
- tunnel mode ipsec
+ tunnel key 1234
+ tunnel mode l2tp3
  tunnel source ethernet2
  tunnel destination 9999::2
  bridge-gr 1
@@ -71,22 +59,10 @@ int eth1
  ipv4 addr 9.9.9.2 255.255.255.252
  ipv6 addr 9999::2 ffff::
  exit
- exit
-crypto ipsec ips
- group 02
- cipher des
- hash md5
- seconds 3600
- bytes 1024000
- key tester
- role static
- isakmp 1
- protected ipv4
- exit
 int tun1
  tunnel vrf v1
- tunnel prot ips
- tunnel mode ipsec
+ tunnel key 1234
+ tunnel mode l2tp3
  tunnel source ethernet1
  tunnel destination 9999::1
  bridge-gr 1

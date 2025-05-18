@@ -1,4 +1,4 @@
-description mp2mp ldp tunnel
+description p2mp ldp tunnel
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -23,19 +23,19 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2
 ipv6 route v1 :: :: 1234:1::2
 int tun1
  tun sou lo0
- tun dest 2.2.2.2
+ tun dest 2.2.2.1
  tun vrf v1
  tun key 1234
- tun mod mp2mpldp
+ tun mod p2mpldp
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
  exit
 int tun2
  tun sou lo0
- tun dest 4321::2
+ tun dest 4321::1
  tun vrf v1
  tun key 1234
- tun mod mp2mpldp
+ tun mod p2mpldp
  vrf for v1
  ipv6 addr 3333::1 ffff:ffff::
  exit
@@ -109,19 +109,19 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.1
 ipv6 route v1 :: :: 1234:2::1
 int tun1
  tun sou lo0
- tun dest 2.2.2.2
+ tun dest 2.2.2.1
  tun vrf v1
  tun key 1234
- tun mod mp2mpldp
+ tun mod p2mpldp
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.0
  exit
 int tun2
  tun sou lo0
- tun dest 4321::2
+ tun dest 4321::1
  tun vrf v1
  tun key 1234
- tun mod mp2mpldp
+ tun mod p2mpldp
  vrf for v1
  ipv6 addr 3333::3 ffff:ffff::
  exit
@@ -150,19 +150,19 @@ ipv4 route v1 0.0.0.0 0.0.0.0 1.1.3.1
 ipv6 route v1 :: :: 1234:3::1
 int tun1
  tun sou lo0
- tun dest 2.2.2.2
+ tun dest 2.2.2.1
  tun vrf v1
  tun key 1234
- tun mod mp2mpldp
+ tun mod p2mpldp
  vrf for v1
  ipv4 addr 3.3.3.4 255.255.255.0
  exit
 int tun2
  tun sou lo0
- tun dest 4321::2
+ tun dest 4321::1
  tun vrf v1
  tun key 1234
- tun mod mp2mpldp
+ tun mod p2mpldp
  vrf for v1
  ipv6 addr 3333::4 ffff:ffff::
  exit
@@ -197,20 +197,11 @@ r4 tping 100 10 4321::1 vrf v1 sou lo0
 r4 tping 100 10 4321::2 vrf v1 sou lo0
 r4 tping 100 10 4321::3 vrf v1 sou lo0
 
-r1 tping 100 10 3.3.3.3 vrf v1 sou lo0
-r1 tping 100 10 3.3.3.4 vrf v1 sou lo0
-r1 tping 100 10 3333::3 vrf v1 sou lo0
-r1 tping 100 10 3333::4 vrf v1 sou lo0
+r3 tping 100 10 2.2.2.1 vrf v1 sou tun1
+r3 tping 100 10 4321::1 vrf v1 sou tun2
 
-r3 tping 100 10 3.3.3.1 vrf v1 sou lo0
-r3 tping 100 10 3.3.3.4 vrf v1 sou lo0
-r3 tping 100 10 3333::1 vrf v1 sou lo0
-r3 tping 100 10 3333::4 vrf v1 sou lo0
-
-r4 tping 100 10 3.3.3.1 vrf v1 sou lo0
-r4 tping 100 10 3.3.3.3 vrf v1 sou lo0
-r4 tping 100 10 3333::1 vrf v1 sou lo0
-r4 tping 100 10 3333::3 vrf v1 sou lo0
+r4 tping 100 10 2.2.2.1 vrf v1 sou tun1
+r4 tping 100 10 4321::1 vrf v1 sou tun2
 
 r3 output show mpls forw
 r3 output show ipv4 ldp v1 sum
@@ -219,7 +210,7 @@ r3 output show ipv4 ldp v1 mpdat
 r3 output show ipv6 ldp v1 mpdat
 r3 output show inter tun1 full
 r3 output show inter tun2 full
-output ../binTmp/mpls-ldp-mp2mp.html
+output ../binTmp/mpls-ldp-p2mp.html
 <html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
 here is the lib:
 <pre>

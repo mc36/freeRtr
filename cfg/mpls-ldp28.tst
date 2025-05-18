@@ -1,4 +1,4 @@
-description static labels with ldp
+description ldp over point2point ethernet
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -22,8 +22,8 @@ int lo0
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.1 255.255.255.0
- ipv6 addr 1234::1 ffff::
+ ipv4 addr 1.1.1.2 255.255.255.254
+ ipv6 addr 1234::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  ipv4 access-group-in test4
  ipv6 access-group-in test6
  no ipv4 unreachables
@@ -31,11 +31,9 @@ int eth1
  mpls enable
  mpls ldp4
  mpls ldp6
- mpls static-label 2.2.2.2/32 1.1.1.2 10
- mpls static-label 4321::2/128 1234::2 12
  exit
-ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
-ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
+ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.3
+ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::3
 !
 
 addrouter r2
@@ -60,8 +58,8 @@ int lo0
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.2 255.255.255.0
- ipv6 addr 1234::2 ffff::
+ ipv4 addr 1.1.1.3 255.255.255.254
+ ipv6 addr 1234::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  ipv4 access-group-in test4
  ipv6 access-group-in test6
  no ipv4 unreachables
@@ -69,31 +67,15 @@ int eth1
  mpls enable
  mpls ldp4
  mpls ldp6
- mpls static-label 2.2.2.1/32 1.1.1.1 0
- mpls static-label 4321::1/128 1234::1 2
  exit
-ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.1
-ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::1
+ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.2
+ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
 !
 
-
-r1 tping 0 10 2.2.2.2 vrf v1 sou lo0
-r1 tping 0 10 4321::2 vrf v1 sou lo0
-r2 tping 0 10 2.2.2.1 vrf v1 sou lo0
-r2 tping 0 10 4321::1 vrf v1 sou lo0
-
-r1 send conf t
-r1 send int eth1
-r1 send mpls static-label 2.2.2.2/32 1.1.1.2 0
-r1 send mpls static-label 4321::2/128 1234::2 2
-r1 send end
-r1 send clear ipv4 route v1
-r1 send clear ipv6 route v1
 
 r1 tping 100 10 2.2.2.2 vrf v1 sou lo0
 r1 tping 100 10 4321::2 vrf v1 sou lo0
 r2 tping 100 10 2.2.2.1 vrf v1 sou lo0
 r2 tping 100 10 4321::1 vrf v1 sou lo0
-
-r1 tping 0 10 1.1.1.2 vrf v1
-r2 tping 0 10 1.1.1.1 vrf v1
+r1 tping 0 10 1.1.1.3 vrf v1
+r2 tping 0 10 1.1.1.2 vrf v1

@@ -1,4 +1,4 @@
-description nsh over ipv4 tunnel
+description nsh ip
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,77 +6,68 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
-int eth1
+access-list test4
+ sequence 10 permit all 1.1.1.1 255.255.255.255 all any all
+ exit
+access-list test6
+ sequence 10 permit all 1111::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all any all
+ exit
+int lo1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
- ipv6 addr 1111::1 ffff::
+ ipv6 addr 1111::1 ffff:ffff::
  exit
+int eth1
+ nsh ena
+ exit
+ipv4 pbr v1 sequence 10 test4 v1 nsh 2 255
+ipv6 pbr v1 sequence 10 test6 v1 nsh 2 255
+nsh 2 255 int eth1 0000.1111.2222
+nsh 3 253 route v1
 !
 
 addrouter r2
 int eth1 eth 0000.0000.2222 $1b$ $1a$
-int ser1 ser 0000.0000.2222 $2a$ $2b$
+int eth2 eth 0000.0000.2222 $2a$ $2b$
 !
-vrf def v1
- rd 1:1
- exit
 int eth1
  nsh ena
- nsh xconn 2 255
  exit
-int ser1
- vrf for v1
- ipv4 addr 2.2.2.1 255.255.255.0
- ipv6 addr 2222::1 ffff:ffff::
- ipv4 nsh ena
- ipv6 nsh ena
+int eth2
+ nsh ena
  exit
-nsh 2 255 tunnel v1 ser1 2.2.2.2
-nsh 3 254 int eth1 0000.1111.2222 rawpack keephdr
+nsh 3 254 int eth1 0000.1111.2222
+nsh 2 254 int eth2 0000.1111.2222
 !
 
 addrouter r3
-int ser1 ser 0000.0000.3333 $2b$ $2a$
-int eth1 eth 0000.0000.3333 $3a$ $3b$
+int eth1 eth 0000.0000.3333 $2b$ $2a$
 !
 vrf def v1
  rd 1:1
  exit
-int ser1
+access-list test4
+ sequence 10 permit all 1.1.1.2 255.255.255.255 all any all
+ exit
+access-list test6
+ sequence 10 permit all 1111::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff all any all
+ exit
+int lo1
  vrf for v1
- ipv4 addr 2.2.2.2 255.255.255.0
- ipv6 addr 2222::2 ffff:ffff::
- ipv4 nsh ena
- ipv6 nsh ena
+ ipv4 addr 1.1.1.2 255.255.255.0
+ ipv6 addr 1111::2 ffff:ffff::
  exit
 int eth1
  nsh ena
- nsh xconn 3 255
  exit
-nsh 3 255 tunnel v1 ser1 2.2.2.1
-nsh 2 254 int eth1 0000.1111.2222 rawpack keephdr
+ipv4 pbr v1 sequence 10 test4 v1 nsh 3 255
+ipv6 pbr v1 sequence 10 test6 v1 nsh 3 255
+nsh 3 255 int eth1 0000.1111.2222
+nsh 2 253 route v1
 !
 
-addrouter r4
-int eth1 eth 0000.0000.4444 $3b$ $3a$
-!
-vrf def v1
- rd 1:1
- exit
-int eth1
- vrf for v1
- ipv4 addr 1.1.1.2 255.255.255.0
- ipv6 addr 1111::2 ffff::
- exit
-!
-
-
-r2 tping 100 10 2.2.2.2 vrf v1
-r2 tping 100 10 2222::2 vrf v1
-r3 tping 100 10 2.2.2.1 vrf v1
-r3 tping 100 10 2222::1 vrf v1
 
 r1 tping 100 10 1.1.1.2 vrf v1
 r1 tping 100 10 1111::2 vrf v1
-r4 tping 100 10 1.1.1.1 vrf v1
-r4 tping 100 10 1111::1 vrf v1
+r3 tping 100 10 1.1.1.1 vrf v1
+r3 tping 100 10 1111::1 vrf v1

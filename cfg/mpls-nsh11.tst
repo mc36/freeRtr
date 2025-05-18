@@ -1,4 +1,4 @@
-description nsh switch
+description nsh chain
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -25,7 +25,7 @@ int eth2
  nsh ena
  exit
 nsh 2 255 int eth2 0000.1111.2222
-nsh 5 252 int eth1 0000.1111.2222 rawpack keephdr
+nsh 3 253 int eth1 0000.1111.2222 rawpack keephdr
 !
 
 addrouter r3
@@ -38,8 +38,8 @@ int eth1
 int eth2
  nsh ena
  exit
-nsh 3 254 int eth1 0000.1111.2222 switch 5 252
-nsh 2 254 int eth2 0000.1111.2222 switch 4 252
+nsh 3 254 int eth1 0000.1111.2222
+nsh 2 254 int eth2 0000.1111.2222
 !
 
 addrouter r4
@@ -54,7 +54,7 @@ int eth2
  nsh xconn 3 255
  exit
 nsh 3 255 int eth1 0000.1111.2222
-nsh 4 252 int eth2 0000.1111.2222 rawpack keephdr
+nsh 2 253 int eth2 0000.1111.2222 rawpack keephdr
 !
 
 addrouter r5

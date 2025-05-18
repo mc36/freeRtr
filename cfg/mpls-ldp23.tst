@@ -1,152 +1,109 @@
-description mpls expbundle
+description egress label filtering with ldp
 
 addrouter r1
-int ser1 ser - $1a$ $1b$
-int ser2 ser - $2a$ $2b$
-int ser3 ser - $3a$ $3b$
-int ser4 ser - $4a$ $4b$
+int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
 vrf def v1
  rd 1:1
  label-mode per-prefix
+ exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
  exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.255
  ipv6 addr 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int ser1
- enc hdlc
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
- ipv6 addr 1234:1::1 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
- exit
-int ser2
- enc hdlc
- vrf for v1
- ipv4 addr 1.1.2.1 255.255.255.0
- ipv6 addr 1234:2::1 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
- exit
-int ser3
- enc hdlc
- vrf for v1
- ipv4 addr 1.1.3.1 255.255.255.0
- ipv6 addr 1234:3::1 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
- exit
-int ser4
- enc hdlc
- vrf for v1
- ipv4 addr 1.1.4.1 255.255.255.0
- ipv6 addr 1234:4::1 ffff:ffff::
+ ipv6 addr 1234::1 ffff::
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
  exit
 ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
-ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
+ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
+ipv4 route v1 2.2.2.3 255.255.255.255 1.1.1.2
+ipv6 route v1 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
+ipv4 route v1 2.2.2.4 255.255.255.255 1.1.1.2
+ipv6 route v1 4321::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
 !
 
 addrouter r2
-int ser1 ser - $1b$ $1a$
-int ser2 ser - $2b$ $2a$
-int ser3 ser - $3b$ $3a$
-int ser4 ser - $4b$ $4a$
+int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
  rd 1:1
  label-mode per-prefix
+ exit
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 4321:: ffff:: all 4321:: ffff:: all
+ permit all any all any all
+ exit
+prefix-list p4
+ sequence 10 deny 2.2.2.3/32
+ sequence 20 permit 0.0.0.0/0 le 32
+ exit
+prefix-list p6
+ sequence 10 deny 4321::3/128
+ sequence 20 permit ::/0 le 128
  exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int ser1
- enc hdlc
+int lo1
+ vrf for v1
+ ipv4 addr 2.2.2.3 255.255.255.255
+ ipv6 addr 4321::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int lo2
+ vrf for v1
+ ipv4 addr 2.2.2.4 255.255.255.255
+ ipv6 addr 4321::4 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
- ipv6 addr 1234:1::2 ffff:ffff::
+ ipv6 addr 1234::2 ffff::
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
  mpls enable
  mpls ldp4
  mpls ldp6
+ mpls label4out p4
+ mpls label6out p6
  exit
-int ser2
- enc hdlc
- vrf for v1
- ipv4 addr 1.1.2.2 255.255.255.0
- ipv6 addr 1234:2::2 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
- exit
-int ser3
- enc hdlc
- vrf for v1
- ipv4 addr 1.1.3.2 255.255.255.0
- ipv6 addr 1234:3::2 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
- exit
-int ser4
- enc hdlc
- vrf for v1
- ipv4 addr 1.1.4.2 255.255.255.0
- ipv6 addr 1234:4::2 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
- exit
-int tun1
- tunnel vrf v1
- tunnel source ser1
- tunnel destination 1.1.1.1
- tunnel domain-name 1:ser1 2:ser2 4:ser3 5:ser4
- tunnel mode expbun
- vrf forwarding v1
- ipv4 addr 1.1.5.2 255.255.255.0
- ipv6 addr 1234:5::2 ffff:ffff::
- mpls enable
- mpls ldp4
- mpls ldp6
- no shutdown
- no log-link-change
- exit
-ipv4 route v1 2.2.2.1 255.255.255.255 1.1.5.1
-ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:5::1
+ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.1
+ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::1
 !
 
 
-r1 tping 100 10 2.2.2.2 vrf v1 sou lo0 tos 32
-r1 tping 100 10 4321::2 vrf v1 sou lo0 tos 32
-r2 tping 100 10 2.2.2.1 vrf v1 sou lo0 tos 32
-r2 tping 100 10 4321::1 vrf v1 sou lo0 tos 32
-
-r1 tping 100 10 2.2.2.2 vrf v1 sou lo0 tos 64
-r1 tping 100 10 4321::2 vrf v1 sou lo0 tos 64
-r2 tping 100 10 2.2.2.1 vrf v1 sou lo0 tos 64
-r2 tping 100 10 4321::1 vrf v1 sou lo0 tos 64
-
-r1 tping 0 10 2.2.2.2 vrf v1 sou lo0 tos 96
-r1 tping 0 10 4321::2 vrf v1 sou lo0 tos 96
-r2 tping 0 10 2.2.2.1 vrf v1 sou lo0 tos 96
-r2 tping 0 10 4321::1 vrf v1 sou lo0 tos 96
-
-r1 tping 100 10 2.2.2.2 vrf v1 sou lo0 tos 128
-r1 tping 100 10 4321::2 vrf v1 sou lo0 tos 128
-r2 tping 100 10 2.2.2.1 vrf v1 sou lo0 tos 128
-r2 tping 100 10 4321::1 vrf v1 sou lo0 tos 128
-
-r1 tping 100 10 2.2.2.2 vrf v1 sou lo0 tos 160
-r1 tping 100 10 4321::2 vrf v1 sou lo0 tos 160
-r2 tping 100 10 2.2.2.1 vrf v1 sou lo0 tos 160
-r2 tping 100 10 4321::1 vrf v1 sou lo0 tos 160
+r2 tping 100 10 2.2.2.1 vrf v1 sou lo0
+r2 tping 100 10 4321::1 vrf v1 sou lo0
+r1 tping 0 10 1.1.1.2 vrf v1
+r2 tping 0 10 1.1.1.1 vrf v1
+r1 tping 100 10 2.2.2.2 vrf v1 sou lo0
+r1 tping 100 10 4321::2 vrf v1 sou lo0
+r1 tping 0 10 2.2.2.3 vrf v1 sou lo0
+r1 tping 0 10 4321::3 vrf v1 sou lo0
+r1 tping 100 10 2.2.2.4 vrf v1 sou lo0
+r1 tping 100 10 4321::4 vrf v1 sou lo0
