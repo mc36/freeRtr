@@ -4,9 +4,10 @@ import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
 import org.freertr.ifc.ifcDn;
-import org.freertr.ifc.ifcEther;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
+import org.freertr.ip.ipCor4;
+import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipIfc4;
@@ -45,8 +46,8 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
      * @param parent forwarder of encapsulated packets
      */
     public prtIpIpTyp(ipFwd parent) {
-        ip4 = new prtIpIp(parent, 4);
-        ip6 = new prtIpIp(parent, 6);
+        ip4 = new prtIpIp(parent, ipCor4.protocolNumber, ipIfc4.type);
+        ip6 = new prtIpIp(parent, ipCor6.protocolNumber, ipIfc6.type);
         ip4.setUpper(this);
         ip6.setUpper(this);
     }
@@ -241,15 +242,6 @@ public class prtIpIpTyp implements ifcDn, ifcUp {
      */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        int i = ifcEther.guessEtherType(pck);
-        if (i < 0) {
-            cntr.drop(pck, counter.reasons.badVer);
-            return;
-        }
-        pck.msbPutW(0, i);
-        i = pck.headSize();
-        pck.putSkip(2);
-        pck.mergeHeader(-1, i);
         upper.recvPack(pck);
     }
 

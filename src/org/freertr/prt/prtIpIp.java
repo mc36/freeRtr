@@ -6,8 +6,6 @@ import org.freertr.addr.addrType;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
-import org.freertr.ip.ipCor4;
-import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipPrt;
@@ -46,6 +44,8 @@ public class prtIpIp implements ipPrt, ifcDn {
 
     private int protoNum = -1;
 
+    private int etherTyp = -1;
+
     private ipFwdIface sendingIfc;
 
     private ifcUp upper = new ifcNull();
@@ -69,21 +69,13 @@ public class prtIpIp implements ipPrt, ifcDn {
      * initialize context
      *
      * @param parent forwarder of encapsulated packets
-     * @param ipVer ip version number
+     * @param proto ip protocol number
+     * @param ethtyp ethertype to use
      */
-    public prtIpIp(ipFwd parent, int ipVer) {
+    public prtIpIp(ipFwd parent, int proto, int ethtyp) {
         lower = parent;
-        switch (ipVer) {
-            case 4:
-                protoNum = ipCor4.protocolNumber;
-                break;
-            case 6:
-                protoNum = ipCor6.protocolNumber;
-                break;
-            default:
-                protoNum = 0;
-                break;
-        }
+        protoNum = proto;
+        etherTyp = ethtyp;
     }
 
     /**
@@ -201,6 +193,9 @@ public class prtIpIp implements ipPrt, ifcDn {
             cntr.drop(pck, counter.reasons.badSrcAddr);
             return;
         }
+        pck.msbPutW(0, etherTyp);
+        pck.putSkip(2);
+        pck.merge2beg();
         upper.recvPack(pck);
     }
 
