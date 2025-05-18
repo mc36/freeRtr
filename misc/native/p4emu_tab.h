@@ -615,7 +615,7 @@ struct tun4_entry {
     int srcAddr;
     int trgAddr;
     int prot;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=etherip
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=etherip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux
     long pack;
     long byte;
     int aclport;
@@ -646,7 +646,7 @@ struct tun6_entry {
     int trgAddr3;
     int trgAddr4;
     int prot;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=ip6ip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=etherip
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ip4ip, 5=etherip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux
     long pack;
     long byte;
     int aclport;

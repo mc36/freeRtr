@@ -241,6 +241,66 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     }
 
 
+
+#define ethtyp2iproto                                           \
+    switch (ethtyp) {                                           \
+    case ETHERTYPE_MPLS_UCAST:                                  \
+        tmp = IP_PROTOCOL_MPLS;                                 \
+        break;                                                  \
+    case ETHERTYPE_IPV4:                                        \
+        tmp = IP_PROTOCOL_IPV4;                                 \
+        break;                                                  \
+    case ETHERTYPE_IPV6:                                        \
+        tmp = IP_PROTOCOL_IPV6;                                 \
+        break;                                                  \
+    case ETHERTYPE_MACSEC:                                      \
+        tmp = IP_PROTOCOL_SWIPE;                                \
+        break;                                                  \
+    case ETHERTYPE_SGT:                                         \
+        tmp = IP_PROTOCOL_SKIP;                                 \
+        break;                                                  \
+    case ETHERTYPE_NSH:                                         \
+        tmp = IP_PROTOCOL_NSH;                                  \
+        break;                                                  \
+    case ETHERTYPE_ROUTEDMAC:                                   \
+        tmp = IP_PROTOCOL_SRL2;                                 \
+        break;                                                  \
+    default:                                                    \
+        doDropper;                                              \
+    }                                                           \
+    bufP += 2;
+
+
+
+#define iproto2ethtyp                                           \
+    switch (ethtyp) {                                           \
+    case IP_PROTOCOL_MPLS:                                      \
+        ethtyp = ETHERTYPE_MPLS_UCAST;                          \
+        break;                                                  \
+    case IP_PROTOCOL_IPV4:                                      \
+        ethtyp = ETHERTYPE_IPV4;                                \
+        break;                                                  \
+    case IP_PROTOCOL_IPV6:                                      \
+        ethtyp = ETHERTYPE_IPV6;                                \
+        break;                                                  \
+    case IP_PROTOCOL_SWIPE:                                     \
+        ethtyp = ETHERTYPE_MACSEC;                              \
+        break;                                                  \
+    case IP_PROTOCOL_SKIP:                                      \
+        ethtyp = ETHERTYPE_SGT;                                 \
+        break;                                                  \
+    case IP_PROTOCOL_NSH:                                       \
+        ethtyp = ETHERTYPE_NSH;                                 \
+        break;                                                  \
+    case IP_PROTOCOL_SRL2:                                      \
+        ethtyp = ETHERTYPE_ROUTEDMAC;                           \
+        break;                                                  \
+    default:                                                    \
+        doDropper;                                              \
+    }
+
+
+
 #define putPppoeHeader                                          \
     put16msb(bufD, bufP, ethtyp);                               \
     tmp = bufS - bufP + preBuff;                                \
@@ -310,51 +370,11 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 #define putTmuxHeader                                           \
-    switch (ethtyp) {                                           \
-    case ETHERTYPE_MPLS_UCAST:                                  \
-        ethtyp = IP_PROTOCOL_MPLS;                              \
-        break;                                                  \
-    case ETHERTYPE_IPV4:                                        \
-        ethtyp = IP_PROTOCOL_IPV4;                              \
-        break;                                                  \
-    case ETHERTYPE_IPV6:                                        \
-        ethtyp = IP_PROTOCOL_IPV6;                              \
-        break;                                                  \
-    case ETHERTYPE_MACSEC:                                      \
-        ethtyp = IP_PROTOCOL_SWIPE;                             \
-        break;                                                  \
-    case ETHERTYPE_SGT:                                         \
-        ethtyp = IP_PROTOCOL_SKIP;                              \
-        break;                                                  \
-    case ETHERTYPE_NSH:                                         \
-        ethtyp = IP_PROTOCOL_NSH;                               \
-        break;                                                  \
-    case ETHERTYPE_ROUTEDMAC:                                   \
-        ethtyp = IP_PROTOCOL_SRL2;                              \
-        break;                                                  \
-    default:                                                    \
-        doDropper;                                              \
-    }                                                           \
-    bufP -= 2;                                                  \
-    tmp = bufS - bufP + preBuff;                                \
-    put16msb(bufD, bufP, tmp);                                  \
-    bufD[bufP + 2] = ethtyp;                                    \
-    bufD[bufP + 3] = ethtyp ^ (tmp & 0xff) ^ (tmp >> 8);
-
-
-
-#define putIpipHeader                                           \
-    switch (ethtyp) {                                           \
-    case ETHERTYPE_IPV4:                                        \
-        tmp = IP_PROTOCOL_IPV4;                                 \
-        break;                                                  \
-    case ETHERTYPE_IPV6:                                        \
-        tmp = IP_PROTOCOL_IPV6;                                 \
-        break;                                                  \
-    default:                                                    \
-        doDropper;                                              \
-    }                                                           \
-    bufP += 2;
+    bufP -= 4;                                                  \
+    ethtyp = bufS - bufP + preBuff;                             \
+    put16msb(bufD, bufP, ethtyp);                               \
+    bufD[bufP + 2] = tmp;                                       \
+    bufD[bufP + 3] = tmp ^ (ethtyp & 0xff) ^ (ethtyp >> 8);
 
 
 
@@ -749,21 +769,21 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 7: // ipip4
-        putIpipHeader;
+        ethtyp2iproto;
         putIpv4header(tmp, neigh_res->sip1, neigh_res->dip1);
         break;
     case 8: // ipip6
-        putIpipHeader;
+        ethtyp2iproto;
         putIpv6header(tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
 #ifndef HAVE_NOCRYPTO
     case 9: // esp4
-        putIpipHeader;
+        ethtyp2iproto;
         if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
         putIpv4header(IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->dip1);
         break;
     case 10: // esp6
-        putIpipHeader;
+        ethtyp2iproto;
         if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
         putIpv6header(IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
@@ -819,10 +839,12 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         putIpv6header(IP_PROTOCOL_L2TP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
     case 21: // tmux4
+        ethtyp2iproto;
         putTmuxHeader;
         putIpv4header(IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->dip1);
         break;
     case 22: // tmux6
+        ethtyp2iproto;
         putTmuxHeader;
         putIpv6header(IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         break;
@@ -1034,13 +1056,16 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         *bufP -= 2;
         put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
         return 0;
-    case 4: // ip4ip
+    case 4: // ipip
         *bufP = bufT - 2;
-        put16msb(bufD, *bufP, ETHERTYPE_IPV4);
+        ethtyp = tun_res->prot;
+        iproto2ethtyp;
+        put16msb(bufD, *bufP, ethtyp);
         return 0;
-    case 5: // ip6ip
-        *bufP = bufT - 2;
-        put16msb(bufD, *bufP, ETHERTYPE_IPV6);
+    case 5: // etherip
+        *bufP = bufT + 2;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
         return 0;
     case 6: // pckoudp
         *bufP = bufT + 8;
@@ -1083,16 +1108,7 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         }
         ethtyp = bufD[*bufP + tmp - 1];
         *bufS -= bufD[*bufP + tmp - 2] + 2;
-        switch (ethtyp) {
-        case IP_PROTOCOL_IPV4:
-            ethtyp = ETHERTYPE_IPV4;
-            break;
-        case IP_PROTOCOL_IPV6:
-            ethtyp = ETHERTYPE_IPV6;
-            break;
-        default:
-            return 2;
-        }
+        iproto2ethtyp;
         *bufP -= 2;
         put16msb(bufD, *bufP, ethtyp);
         return 0;
@@ -1165,37 +1181,8 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         if (ethtyp > (*bufS - bufT + preBuff)) return 2;
         *bufS = ethtyp + bufT - preBuff;
         ethtyp = bufD[*bufP];
-        switch (ethtyp) {
-        case IP_PROTOCOL_MPLS:
-            ethtyp = ETHERTYPE_MPLS_UCAST;
-            break;
-        case IP_PROTOCOL_IPV4:
-            ethtyp = ETHERTYPE_IPV4;
-            break;
-        case IP_PROTOCOL_IPV6:
-            ethtyp = ETHERTYPE_IPV6;
-            break;
-        case IP_PROTOCOL_SWIPE:
-            ethtyp = ETHERTYPE_MACSEC;
-            break;
-        case IP_PROTOCOL_SKIP:
-            ethtyp = ETHERTYPE_SGT;
-            break;
-        case IP_PROTOCOL_NSH:
-            ethtyp = ETHERTYPE_NSH;
-            break;
-        case IP_PROTOCOL_SRL2:
-            ethtyp = ETHERTYPE_ROUTEDMAC;
-            break;
-        default:
-            return 2;
-        }
+        iproto2ethtyp;
         put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 14: // etherip
-        *bufP = bufT + 2;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
         return 0;
     }
 drop:

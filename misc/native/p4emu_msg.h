@@ -719,7 +719,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init4;
         tun4_ntry.aclport = atoi(arg[8]);
         tun4_ntry.prot = IP_PROTOCOL_ETHERIP;
-        tun4_ntry.command = 14;
+        tun4_ntry.command = 5;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
@@ -747,7 +747,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init6;
         tun6_ntry.aclport = atoi(arg[8]);
         tun6_ntry.prot = IP_PROTOCOL_ETHERIP;
-        tun6_ntry.command = 14;
+        tun6_ntry.command = 5;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
         if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
@@ -1729,7 +1729,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
         else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         tun4_ntry.prot = IP_PROTOCOL_IPV6;
-        tun4_ntry.command = 5;
         if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
         else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
         return 0;
@@ -1762,7 +1761,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
         else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         tun6_ntry.prot = IP_PROTOCOL_IPV6;
-        tun6_ntry.command = 5;
         if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
         else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
