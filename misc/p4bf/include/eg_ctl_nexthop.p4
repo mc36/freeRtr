@@ -270,7 +270,6 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.ipv4d.hdr_checksum = 0;
         hdr.ipv4d.src_addr = src_ip_addr;
         hdr.ipv4d.dst_addr = dst_ip_addr;
-        eg_md.ethertype = ETHERTYPE_IPV4;
     }
 
     action act_ipv4_ipip6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr) {
@@ -301,7 +300,6 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.ipv6d.hop_limit = 255;
         hdr.ipv6d.src_addr = src_ip_addr;
         hdr.ipv6d.dst_addr = dst_ip_addr;
-        eg_md.ethertype = ETHERTYPE_IPV6;
     }
 
 #endif
@@ -735,9 +733,35 @@ eg_md.nexthop_id:
             if (hdr.ipv4d.isValid() && (hdr.ipv4d.protocol == 0)) {
                 if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.ipv4d.protocol = IP_PROTOCOL_IPV4;
                 else if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.ipv4d.protocol = IP_PROTOCOL_IPV6;
+#ifdef HAVE_SGT
+                else if (eg_md.ethertype == ETHERTYPE_SGT) hdr.ipv4d.protocol = IP_PROTOCOL_SKIP;
+#endif
+#ifdef HAVE_NSH
+                else if (eg_md.ethertype == ETHERTYPE_NSH) hdr.ipv4d.protocol = IP_PROTOCOL_NSH;
+#endif
+#ifdef HAVE_MPLS
+                else if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.ipv4d.protocol = IP_PROTOCOL_MPLS_IN_IP;
+#endif
+#ifdef HAVE_TAP
+                else if (eg_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.ipv4d.protocol = IP_PROTOCOL_SRL2;
+#endif
+                eg_md.ethertype = ETHERTYPE_IPV4;
             } else if (hdr.ipv6d.isValid() && (hdr.ipv6d.next_hdr == 0)) {
                 if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.ipv6d.next_hdr = IP_PROTOCOL_IPV4;
                 else if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.ipv6d.next_hdr = IP_PROTOCOL_IPV6;
+#ifdef HAVE_SGT
+                else if (eg_md.ethertype == ETHERTYPE_SGT) hdr.ipv6d.next_hdr = IP_PROTOCOL_SKIP;
+#endif
+#ifdef HAVE_NSH
+                else if (eg_md.ethertype == ETHERTYPE_NSH) hdr.ipv6d.next_hdr = IP_PROTOCOL_NSH;
+#endif
+#ifdef HAVE_MPLS
+                else if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.ipv6d.next_hdr = IP_PROTOCOL_MPLS_IN_IP;
+#endif
+#ifdef HAVE_TAP
+                else if (eg_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.ipv6d.next_hdr = IP_PROTOCOL_SRL2;
+#endif
+                eg_md.ethertype = ETHERTYPE_IPV6;
             }
 #endif
 #ifdef HAVE_TMUX

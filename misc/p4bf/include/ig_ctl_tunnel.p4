@@ -84,8 +84,8 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
 
 #ifdef HAVE_IPIP
 
-    action act_tunnel_ip4ip(SubIntId_t port) {
-        hdr.ethernet.ethertype = ETHERTYPE_IPV4;
+    action act_tunnel_ipip(SubIntId_t port, ethertype_t ethtyp) {
+        hdr.ethernet.ethertype = ethtyp;
         ig_md.source_id = port;
         ig_md.ipv4_valid = 0;
         ig_md.ipv6_valid = 0;
@@ -105,26 +105,6 @@ control IngressControlTunnel(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
     }
 
-    action act_tunnel_ip6ip(SubIntId_t port) {
-        hdr.ethernet.ethertype = ETHERTYPE_IPV6;
-        ig_md.source_id = port;
-        ig_md.ipv4_valid = 0;
-        ig_md.ipv6_valid = 0;
-        hdr.vlan.setInvalid();
-        hdr.vlanq.setInvalid();
-        ig_tm_md.ucast_egress_port = RECIR_PORT;
-        ig_tm_md.bypass_egress = 1;
-//        recirculate(RECIR_PORT);
-        hdr.cpu.setValid();
-        hdr.cpu._padding1 = 0;
-        hdr.cpu._padding2 = 0;
-        hdr.cpu.port = port;
-        hdr.ipv4.setInvalid();
-        hdr.ipv6.setInvalid();
-#ifdef HAVE_FRAG
-        ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
-#endif
-    }
 #endif
 
 
@@ -262,8 +242,7 @@ hdr.ipv4.protocol:
             act_tunnel_tmux;
 #endif
 #ifdef HAVE_IPIP
-            act_tunnel_ip4ip;
-            act_tunnel_ip6ip;
+            act_tunnel_ipip;
 #endif
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
@@ -315,8 +294,7 @@ hdr.ipv6.next_hdr:
             act_tunnel_tmux;
 #endif
 #ifdef HAVE_IPIP
-            act_tunnel_ip4ip;
-            act_tunnel_ip6ip;
+            act_tunnel_ipip;
 #endif
 #ifdef HAVE_L2TP
             act_tunnel_l2tp;
