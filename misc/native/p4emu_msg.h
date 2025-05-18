@@ -3113,7 +3113,7 @@ void doNegotiate(char*name) {
     if (commandTx == NULL) err("failed to open file");
     fprintf(commandTx, "platform p4emu/%s\r\n", name);
     fprintf(commandTx, "capabilities %s%s\r\n",
-            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe",
+            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe",
 #ifdef HAVE_NOCRYPTO
             ""
 #else

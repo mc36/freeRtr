@@ -496,9 +496,10 @@ def writeIpip4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
             "ig_md.layer4_srcprt": 0,
             "ig_md.layer4_dstprt": 0
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip4ip",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
         action_params={
-            "port": port
+            "port": port,
+            "ethtyp": 0x0800
         })
     table_entry3 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
@@ -510,9 +511,70 @@ def writeIpip4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
             "ig_md.layer4_srcprt": 0,
             "ig_md.layer4_dstprt": 0
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip6ip",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
         action_params={
-            "port": port
+            "port": port,
+            "ethtyp": 0x86dd
+        })
+    table_entry4 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 145,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x894f
+        })
+    table_entry5 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 57,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x8909
+        })
+    table_entry6 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 137,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x8847
+        })
+    table_entry7 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel4",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv4.protocol": 143,
+            "hdr.ipv4.src_addr": dip,
+            "hdr.ipv4.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x6558
         })
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
@@ -546,6 +608,30 @@ def writeIpip4rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
         ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry3, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry4, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry4, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry4, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry5, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry5, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry5, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry6, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry6, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry6, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry7, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry7, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry7, False)
 
 
 def writeIpip6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, sip, dip, dmac, vrf, smac):
@@ -559,9 +645,10 @@ def writeIpip6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
             "ig_md.layer4_srcprt": 0,
             "ig_md.layer4_dstprt": 0
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip4ip",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
         action_params={
-            "port": port
+            "port": port,
+            "ethtyp": 0x0800
         })
     table_entry3 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
@@ -573,9 +660,70 @@ def writeIpip6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
             "ig_md.layer4_srcprt": 0,
             "ig_md.layer4_dstprt": 0
         },
-        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ip6ip",
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
         action_params={
-            "port": port
+            "port": port,
+            "ethtyp": 0x86dd
+        })
+    table_entry4 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 145,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x894f
+        })
+    table_entry5 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 57,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x8909
+        })
+    table_entry6 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 137,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x8847
+        })
+    table_entry7 = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_tunnel.tbl_tunnel6",
+        match_fields={
+            "ig_md.vrf": vrf,
+            "hdr.ipv6.next_hdr": 143,
+            "hdr.ipv6.src_addr": dip,
+            "hdr.ipv6.dst_addr": sip,
+            "ig_md.layer4_srcprt": 0,
+            "ig_md.layer4_dstprt": 0
+        },
+        action_name="ig_ctl.ig_ctl_tunnel.act_tunnel_ipip",
+        action_params={
+            "port": port,
+            "ethtyp": 0x6558
         })
     table_entry2 = p4info_helper.buildTableEntry(
         table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
@@ -609,6 +757,30 @@ def writeIpip6rules(delete, p4info_helper, ingress_sw, nexthop, port, phport, si
         ingress_sw.ModifyTableEntry(table_entry3, False)
     else:
         ingress_sw.DeleteTableEntry(table_entry3, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry4, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry4, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry4, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry5, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry5, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry5, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry6, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry6, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry6, False)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry7, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry7, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry7, False)
 
 
 
@@ -3910,7 +4082,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sck.connect((freerouter_address, int(freerouter_port)))
     fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
-    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp l3tp route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap vxlan etherip ipip macsec ipsec pckoudp openvpn wireguard srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc loconn pwhe\r\n");
+    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp l3tp route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap vxlan etherip ipip tmux pckoudp srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc loconn pwhe\r\n");
     for x in range(0, 10):
         data = "portname %i bmv2-port%i\r\n" % (x,x)
         fil.write(data)
