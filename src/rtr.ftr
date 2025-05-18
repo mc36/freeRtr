@@ -710,46 +710,46 @@ qc pass: macsec over framerelay
 qc pass: macsec over atmdxi
 qc pass: macsec over atmsar
 qc pass: macsec over gre
-qc pass: macsec with des
-qc pass: macsec with blowfish
+qc pass: macsec over ipip
+qc pass: macsec over ipsec
 qc pass: macsec with des
 qc pass: macsec with blowfish
 qc pass: macsec with 3des
 qc pass: macsec with aes128cbc
-qc pass: macsec with md5
+qc pass: macsec with aes192cbc
 qc pass: macsec with aes256cbc
 qc pass: macsec with md5
 qc pass: macsec with sha1
-qc pass: macsec with group1
+qc pass: macsec with sha256
 qc pass: macsec with sha512
 qc pass: macsec with group1
 qc pass: macsec with group2
 qc pass: macsec with group5
 qc pass: macsec with group14
-qc pass: macsec with group17
+qc pass: macsec with group15
 qc pass: macsec with group16
 qc pass: macsec with group17
 qc pass: macsec with group18
 qc pass: macsec with group22
 qc pass: macsec with group23
-qc pass: macsec over ethernet hairpin
+qc pass: macsec with group24
 qc pass: macsec over ethernet bundle
 qc pass: macsec over ethernet hairpin
 qc pass: no macsec over ethernet
 qc pass: macsec with aes128cfb
 qc pass: macsec with aes192cfb
-qc pass: macsec with aes192ecb
-qc pass: macsec with aes256ecb
+qc pass: macsec with aes256cfb
+qc pass: macsec with aes128ecb
 qc pass: macsec with aes192ecb
 qc pass: macsec with aes256ecb
 qc pass: macsec with sha224
 qc pass: macsec with sha384
 qc pass: macsec with sha3224
 qc pass: macsec with sha3256
+qc pass: macsec with sha3384
+qc pass: macsec with sha3512
 qc pass: macsec with none encryption
 qc pass: macsec with none hash
-qc pass: macsec with none encryption
-qc pass: macsec with aes192gcm and hash
 qc pass: macsec with aes128gcm and hash
 qc pass: macsec with aes192gcm and hash
 qc pass: macsec with aes256gcm and hash
@@ -762,6 +762,8 @@ qc pass: macsec with static key
 qc pass: macsec with group25
 qc pass: macsec with group26
 qc pass: macsec with group19
+qc pass: macsec with group20
+qc pass: macsec with group21
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source list translation to pool
@@ -849,6 +851,8 @@ qc pass: sgt atmdxi encapsulation
 qc pass: sgt isdn encapsulation
 qc pass: sgt sep encapsulation
 qc pass: sgt gre encapsulation
+qc pass: sgt ipip encapsulation
+qc pass: sgt ipip encapsulation
 qc pass: sgt ethernet chain encapsulation
 qc pass: sgt vlan chain encapsulation
 qc pass: sgt vlan map out encapsulation
@@ -862,7 +866,7 @@ qc pass: sgt encapsulation with egress allow
 qc pass: sgt encapsulation with ingress forbid
 qc pass: sgt encapsulation with egress forbid
 qc pass: sgt tmux encapsulation
-qc pass: sgt encapsulation with egress forbid
+qc pass: sgt l2tp3 encapsulation
 qc pass: skip over ipv4
 qc pass: skip over ipv6
 qc pass: skip over skip
@@ -1423,14 +1427,16 @@ qc pass: te over framerelay
 qc pass: te over atmdxi
 qc pass: te over gre
 qc pass: te over ipip
+qc pass: te over ipsec
+qc pass: te in chain
 qc pass: ldp over te
 qc pass: pwe over te
 qc pass: ldp and te
 qc pass: p2mp te
 qc pass: p2mp te tail+mid
-qc pass: p2mp te
-qc pass: te over point2point ethernet
 qc pass: te with pcep
+qc pass: te over point2point ethernet
+qc pass: bidir te without global id
 qc pass: bidir te with global id
 qc pass: te explicit path
 qc pass: bgp over te

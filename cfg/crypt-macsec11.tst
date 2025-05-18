@@ -19,7 +19,7 @@ int eth1
  ipv6 addr 9999::1 ffff::
  exit
  exit
-crypto ipsec ips
+crypto ipsec ips2
  group 02
  cipher des
  hash md5
@@ -32,7 +32,7 @@ crypto ipsec ips
  exit
 int tun1
  tunnel vrf v1
- tunnel prot ips
+ tunnel prot ips2
  tunnel mode ipsec
  tunnel source ethernet1
  tunnel destination 9999::2
@@ -62,7 +62,7 @@ int eth1
  ipv6 addr 9999::2 ffff::
  exit
  exit
-crypto ipsec ips
+crypto ipsec ips2
  group 02
  cipher des
  hash md5
@@ -75,7 +75,7 @@ crypto ipsec ips
  exit
 int tun1
  tunnel vrf v1
- tunnel prot ips
+ tunnel prot ips2
  tunnel mode ipsec
  tunnel source ethernet1
  tunnel destination 9999::1
