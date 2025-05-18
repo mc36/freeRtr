@@ -121,7 +121,7 @@ import org.freertr.prt.prtAplusP;
 import org.freertr.prt.prtGre;
 import org.freertr.prt.prtIcmptun;
 import org.freertr.prt.prtInlsp;
-import org.freertr.prt.prtIpIpTyp;
+import org.freertr.prt.prtIpIp;
 import org.freertr.prt.prtIpcomp;
 import org.freertr.prt.prtIpenc;
 import org.freertr.prt.prtMinenc;
@@ -706,7 +706,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     /**
      * ipip tunnel handler
      */
-    public prtIpIpTyp tunIPIP;
+    public prtIpIp tunIPIP;
 
     /**
      * 6to4 tunnel handler
@@ -4421,7 +4421,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 lower = tunSkip;
                 break;
             case ipip:
-                tunIPIP = new prtIpIpTyp(fwd);
+                tunIPIP = new prtIpIp(fwd);
                 tunIPIP.setEndpoints(ifc, tunTrg);
                 tunIPIP.setUpper(ethtyp);
                 tunIPIP.setTxTOS(tunTOS);

@@ -3,13 +3,22 @@ package org.freertr.prt;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
+import org.freertr.clnt.clntSrEth;
+import org.freertr.ifc.ifcBridge;
 import org.freertr.ifc.ifcDn;
+import org.freertr.ifc.ifcNshFwd;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
+import org.freertr.ip.ipCor4;
+import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
+import org.freertr.ip.ipIfc4;
+import org.freertr.ip.ipIfc6;
+import org.freertr.ip.ipMpls;
 import org.freertr.ip.ipPrt;
 import org.freertr.pack.packHolder;
+import org.freertr.rtr.rtrNshIface;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -20,7 +29,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class prtIpIp implements ipPrt, ifcDn {
+public class prtIpIp implements ifcDn {
 
     /**
      * sending ttl value, -1 means maps out
@@ -42,19 +51,32 @@ public class prtIpIp implements ipPrt, ifcDn {
      */
     public int sendingFLW = -1;
 
-    private int protoNum = -1;
-
-    private int etherTyp = -1;
-
-    private ipFwdIface sendingIfc;
+    private counter cntr = new counter();
 
     private ifcUp upper = new ifcNull();
 
-    private ipFwd lower;
+    private final prtIpIpHnd mpls;
 
-    private addrIP remote = new addrIP();
+    private final prtIpIpHnd nsh;
 
-    private counter cntr = new counter();
+    private final prtIpIpHnd eth;
+
+    private final prtIpIpHnd ip4;
+
+    private final prtIpIpHnd ip6;
+
+    /**
+     * initialize context
+     *
+     * @param parent forwarder of encapsulated packets
+     */
+    public prtIpIp(ipFwd parent) {
+        mpls = new prtIpIpHnd(parent, this, prtMplsIp.prot, ipMpls.typeU);
+        nsh = new prtIpIpHnd(parent, this, rtrNshIface.protoNum, ifcNshFwd.type);
+        eth = new prtIpIpHnd(parent, this, clntSrEth.prot, ifcBridge.serialType);
+        ip4 = new prtIpIpHnd(parent, this, ipCor4.protocolNumber, ipIfc4.type);
+        ip6 = new prtIpIpHnd(parent, this, ipCor6.protocolNumber, ipIfc6.type);
+    }
 
     /**
      * get counter
@@ -65,17 +87,8 @@ public class prtIpIp implements ipPrt, ifcDn {
         return cntr;
     }
 
-    /**
-     * initialize context
-     *
-     * @param parent forwarder of encapsulated packets
-     * @param proto ip protocol number
-     * @param ethtyp ethertype to use
-     */
-    public prtIpIp(ipFwd parent, int proto, int ethtyp) {
-        lower = parent;
-        protoNum = proto;
-        etherTyp = ethtyp;
+    public String toString() {
+        return "" + mpls;
     }
 
     /**
@@ -86,28 +99,24 @@ public class prtIpIp implements ipPrt, ifcDn {
      * @return false if successful, true if error happened
      */
     public boolean setEndpoints(ipFwdIface ifc, addrIP trg) {
-        if (sendingIfc != null) {
-            lower.protoDel(this, sendingIfc, remote);
-        }
-        remote = trg;
-        sendingIfc = ifc;
-        return lower.protoAdd(this, sendingIfc, remote);
-    }
-
-    /**
-     * get protocol number
-     *
-     * @return number
-     */
-    public int getProtoNum() {
-        return protoNum;
+        boolean b = false;
+        b |= mpls.setEndpoints(ifc, trg);
+        b |= nsh.setEndpoints(ifc, trg);
+        b |= eth.setEndpoints(ifc, trg);
+        b |= ip4.setEndpoints(ifc, trg);
+        b |= ip6.setEndpoints(ifc, trg);
+        return b;
     }
 
     /**
      * close interface
      */
     public void closeDn() {
-        lower.protoDel(this, sendingIfc, remote);
+        mpls.closeDn();
+        nsh.closeDn();
+        eth.closeDn();
+        ip4.closeDn();
+        ip6.closeDn();
     }
 
     /**
@@ -118,10 +127,8 @@ public class prtIpIp implements ipPrt, ifcDn {
 
     /**
      * close interface
-     *
-     * @param iface interface
      */
-    public void closeUp(ipFwdIface iface) {
+    public void closeUp() {
         upper.closeUp();
     }
 
@@ -136,15 +143,29 @@ public class prtIpIp implements ipPrt, ifcDn {
     }
 
     /**
+     * get state
+     *
+     * @return state
+     */
+    public state.states getState() {
+        return state.states.up;
+    }
+
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
+    public void setFilter(boolean promisc) {
+    }
+
+    /**
      * set state
      *
-     * @param iface interface
      * @param stat state
      */
-    public void setState(ipFwdIface iface, state.states stat) {
-        if (iface.ifwNum != sendingIfc.ifwNum) {
-            return;
-        }
+    public void setState(state.states stat) {
+        cntr.stateChange(stat);
         upper.setState(stat);
     }
 
@@ -158,28 +179,148 @@ public class prtIpIp implements ipPrt, ifcDn {
     }
 
     /**
-     * set filter
+     * get mtu size
      *
-     * @param promisc promiscous mode
+     * @return mtu size
      */
-    public void setFilter(boolean promisc) {
+    public int getMTUsize() {
+        return mpls.getMTUsize();
     }
 
     /**
-     * get state
+     * get bandwidth
      *
-     * @return state
+     * @return bandwidth
      */
-    public state.states getState() {
-        return state.states.up;
+    public long getBandwidth() {
+        return mpls.getBandwidth();
+    }
+
+    /**
+     * set sending tos value
+     *
+     * @param i tos value
+     */
+    public void setTxTOS(int i) {
+        sendingTOS = i;
+    }
+
+    /**
+     * set sending df value
+     *
+     * @param i tos value
+     */
+    public void setTxDFN(int i) {
+        sendingDFN = i;
+    }
+
+    /**
+     * set sending flow value
+     *
+     * @param i tos value
+     */
+    public void setTxFLW(int i) {
+        sendingFLW = i;
+    }
+
+    /**
+     * set sending ttl value
+     *
+     * @param i ttl value
+     */
+    public void setTxTTL(int i) {
+        sendingTTL = i;
+    }
+
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
+    public void sendPack(packHolder pck) {
+        cntr.tx(pck);
+        int i = pck.msbGetW(0);
+        pck.getSkip(2);
+        switch (i) {
+            case ipIfc4.type:
+                ip4.sendPack(pck);
+                break;
+            case ipIfc6.type:
+                ip6.sendPack(pck);
+                break;
+            default:
+                cntr.drop(pck, counter.reasons.badProto);
+                return;
+        }
     }
 
     /**
      * received packet
      *
-     * @param rxIfc interface
      * @param pck packet
      */
+    public void recvPack(packHolder pck) {
+        cntr.rx(pck);
+        upper.recvPack(pck);
+    }
+
+}
+
+class prtIpIpHnd implements ipPrt {
+
+    private int protoNum = -1;
+
+    private int etherTyp = -1;
+
+    private ipFwdIface sendingIfc;
+
+    private final prtIpIp upper;
+
+    private final ipFwd lower;
+
+    private addrIP remote = new addrIP();
+
+    private counter cntr = new counter();
+
+    public prtIpIpHnd(ipFwd fwder, prtIpIp prnt, int proto, int ethtyp) {
+        lower = fwder;
+        upper = prnt;
+        protoNum = proto;
+        etherTyp = ethtyp;
+    }
+
+    public counter getCounter() {
+        return cntr;
+    }
+
+    public boolean setEndpoints(ipFwdIface ifc, addrIP trg) {
+        if (sendingIfc != null) {
+            lower.protoDel(this, sendingIfc, remote);
+        }
+        remote = trg;
+        sendingIfc = ifc;
+        return lower.protoAdd(this, sendingIfc, remote);
+    }
+
+    public int getProtoNum() {
+        return protoNum;
+    }
+
+    public void closeDn() {
+        lower.protoDel(this, sendingIfc, remote);
+    }
+
+    public void closeUp(ipFwdIface iface) {
+        upper.closeUp();
+    }
+
+    public void setState(ipFwdIface iface, state.states stat) {
+        if (iface.ifwNum != sendingIfc.ifwNum) {
+            return;
+        }
+        upper.setState(stat);
+    }
+
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (debugger.prtIpIpTraf) {
@@ -199,50 +340,30 @@ public class prtIpIp implements ipPrt, ifcDn {
         upper.recvPack(pck);
     }
 
-    /**
-     * alert packet
-     *
-     * @param rxIfc interface
-     * @param pck packet
-     * @return false on success, true on error
-     */
     public boolean alertPack(ipFwdIface rxIfc, packHolder pck) {
         return true;
     }
 
-    /**
-     * error packet
-     *
-     * @param err error code
-     * @param rtr address
-     * @param rxIfc interface
-     * @param pck packet
-     */
     public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 
-    /**
-     * send packet
-     *
-     * @param pck packet
-     */
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
         if (debugger.prtIpIpTraf) {
             logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt);
         }
         pck.putDefaults();
-        if (sendingTTL >= 0) {
-            pck.IPttl = sendingTTL;
+        if (upper.sendingTTL >= 0) {
+            pck.IPttl = upper.sendingTTL;
         }
-        if (sendingTOS >= 0) {
-            pck.IPtos = sendingTOS;
+        if (upper.sendingTOS >= 0) {
+            pck.IPtos = upper.sendingTOS;
         }
-        if (sendingDFN >= 0) {
-            pck.IPdf = sendingDFN == 1;
+        if (upper.sendingDFN >= 0) {
+            pck.IPdf = upper.sendingDFN == 1;
         }
-        if (sendingFLW >= 0) {
-            pck.IPid = sendingFLW;
+        if (upper.sendingFLW >= 0) {
+            pck.IPid = upper.sendingFLW;
         }
         pck.IPprt = protoNum;
         pck.IPtrg.setAddr(remote);
@@ -254,20 +375,10 @@ public class prtIpIp implements ipPrt, ifcDn {
         return "ipip to " + remote;
     }
 
-    /**
-     * get mtu size
-     *
-     * @return mtu size
-     */
     public int getMTUsize() {
         return sendingIfc.mtu;
     }
 
-    /**
-     * get bandwidth
-     *
-     * @return bandwidth
-     */
     public long getBandwidth() {
         return sendingIfc.bandwidth;
     }
