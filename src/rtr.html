@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v25.5.18-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-05-18 11:32:08, took 00:15:39, with 50 workers, on 3703 cases, 0 failed, 0 traces, 6 retries<br/>
+tested: 2025-05-18 12:10:54, took 00:20:18, with 50 workers, on 3724 cases, 0 failed, 0 traces, 3 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -1755,6 +1755,8 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt138.tst">p4lang-crypt138.tst</a></td><td>success</td><td>p4lang: sgt over pwhe</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt139.tst">p4lang-crypt139.tst</a></td><td>success</td><td>p4lang: macsec over ipip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt140.tst">p4lang-crypt140.tst</a></td><td>success</td><td>p4lang: sgt over ipip</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt141.tst">p4lang-crypt141.tst</a></td><td>success</td><td>p4lang: macsec over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt142.tst">p4lang-crypt142.tst</a></td><td>success</td><td>p4lang: sgt over ipsec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>
@@ -2208,6 +2210,25 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout451.tst">p4lang-rout451.tst</a></td><td>success</td><td>p4lang: l3vpn over ipip mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout452.tst">p4lang-rout452.tst</a></td><td>success</td><td>p4lang: sdwan over ipv4 with ipip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout453.tst">p4lang-rout453.tst</a></td><td>success</td><td>p4lang: sdwan over ipv6 with ipip</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout454.tst">p4lang-rout454.tst</a></td><td>success</td><td>p4lang: ipsec mpls over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout455.tst">p4lang-rout455.tst</a></td><td>success</td><td>p4lang: ipsec mpls over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout456.tst">p4lang-rout456.tst</a></td><td>success</td><td>p4lang: ipsec mpls over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout457.tst">p4lang-rout457.tst</a></td><td>success</td><td>p4lang: ipsec mpls over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout458.tst">p4lang-rout458.tst</a></td><td>success</td><td>p4lang: ipsec mpls over vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout459.tst">p4lang-rout459.tst</a></td><td>success</td><td>p4lang: ipsec mpls over bundle</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout460.tst">p4lang-rout460.tst</a></td><td>success</td><td>p4lang: ipsec mpls over bundle vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout461.tst">p4lang-rout461.tst</a></td><td>success</td><td>p4lang: ipsec mpls over hairpin</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout462.tst">p4lang-rout462.tst</a></td><td>success</td><td>p4lang: ipsec mpls over hairpin vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout463.tst">p4lang-rout463.tst</a></td><td>success</td><td>p4lang: ipsec mpls over bridge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout464.tst">p4lang-rout464.tst</a></td><td>success</td><td>p4lang: ipsec mpls over vlan bridge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout465.tst">p4lang-rout465.tst</a></td><td>success</td><td>p4lang: bridging over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout466.tst">p4lang-rout466.tst</a></td><td>success</td><td>p4lang: bridging over ipsec vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout467.tst">p4lang-rout467.tst</a></td><td>success</td><td>p4lang: mldp core over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout468.tst">p4lang-rout468.tst</a></td><td>success</td><td>p4lang: bier core over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout469.tst">p4lang-rout469.tst</a></td><td>success</td><td>p4lang: ipsec mpls pop</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout470.tst">p4lang-rout470.tst</a></td><td>success</td><td>p4lang: ipsec mpls push</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout471.tst">p4lang-rout471.tst</a></td><td>success</td><td>p4lang: l2vpn over ipsec mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout472.tst">p4lang-rout472.tst</a></td><td>success</td><td>p4lang: l3vpn over ipsec mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action01.tst">qos-action01.tst</a></td><td>success</td><td>qos ingress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action02.tst">qos-action02.tst</a></td><td>success</td><td>qos egress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action03.tst">qos-action03.tst</a></td><td>success</td><td>qos ingress drop action</td></tr>
