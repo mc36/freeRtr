@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.18-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-18 13:32:02, took 00:11:23, with 50 workers, on 744 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2025-05-18 15:35:35, took 00:11:31, with 50 workers, on 744 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -717,8 +717,8 @@ http://sources.freertr.org/cfg/p4lang-rout440.tst;p4lang-rout440.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout441.tst;p4lang-rout441.tst;success;p4lang: ipip mpls over hairpin vlan
 http://sources.freertr.org/cfg/p4lang-rout442.tst;p4lang-rout442.tst;success;p4lang: ipip mpls over bridge
 http://sources.freertr.org/cfg/p4lang-rout443.tst;p4lang-rout443.tst;success;p4lang: ipip mpls over vlan bridge
-http://sources.freertr.org/cfg/p4lang-rout444.tst;p4lang-rout444.tst;not applicable;p4lang: bridging over ipip
-http://sources.freertr.org/cfg/p4lang-rout445.tst;p4lang-rout445.tst;not applicable;p4lang: bridging over ipip vlan
+http://sources.freertr.org/cfg/p4lang-rout444.tst;p4lang-rout444.tst;success;p4lang: bridging over ipip
+http://sources.freertr.org/cfg/p4lang-rout445.tst;p4lang-rout445.tst;success;p4lang: bridging over ipip vlan
 http://sources.freertr.org/cfg/p4lang-rout446.tst;p4lang-rout446.tst;success;p4lang: mldp core over ipip
 http://sources.freertr.org/cfg/p4lang-rout447.tst;p4lang-rout447.tst;success;p4lang: bier core over ipip
 http://sources.freertr.org/cfg/p4lang-rout448.tst;p4lang-rout448.tst;success;p4lang: ipip mpls pop
@@ -738,8 +738,8 @@ http://sources.freertr.org/cfg/p4lang-rout461.tst;p4lang-rout461.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout462.tst;p4lang-rout462.tst;success;p4lang: ipsec mpls over hairpin vlan
 http://sources.freertr.org/cfg/p4lang-rout463.tst;p4lang-rout463.tst;success;p4lang: ipsec mpls over bridge
 http://sources.freertr.org/cfg/p4lang-rout464.tst;p4lang-rout464.tst;success;p4lang: ipsec mpls over vlan bridge
-http://sources.freertr.org/cfg/p4lang-rout465.tst;p4lang-rout465.tst;not applicable;p4lang: bridging over ipsec
-http://sources.freertr.org/cfg/p4lang-rout466.tst;p4lang-rout466.tst;not applicable;p4lang: bridging over ipsec vlan
+http://sources.freertr.org/cfg/p4lang-rout465.tst;p4lang-rout465.tst;success;p4lang: bridging over ipsec
+http://sources.freertr.org/cfg/p4lang-rout466.tst;p4lang-rout466.tst;success;p4lang: bridging over ipsec vlan
 http://sources.freertr.org/cfg/p4lang-rout467.tst;p4lang-rout467.tst;success;p4lang: mldp core over ipsec
 http://sources.freertr.org/cfg/p4lang-rout468.tst;p4lang-rout468.tst;success;p4lang: bier core over ipsec
 http://sources.freertr.org/cfg/p4lang-rout469.tst;p4lang-rout469.tst;success;p4lang: ipsec mpls pop
