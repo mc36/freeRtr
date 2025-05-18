@@ -6,8 +6,10 @@ import org.freertr.addr.addrType;
 import org.freertr.clnt.clntSrEth;
 import org.freertr.ifc.ifcBridge;
 import org.freertr.ifc.ifcDn;
+import org.freertr.ifc.ifcMacSec;
 import org.freertr.ifc.ifcNshFwd;
 import org.freertr.ifc.ifcNull;
+import org.freertr.ifc.ifcSgt;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
@@ -57,13 +59,17 @@ public class prtIpIp implements ifcDn {
 
     private final prtIpIpHnd mpls;
 
-    private final prtIpIpHnd nsh;
-
-    private final prtIpIpHnd eth;
-
     private final prtIpIpHnd ip4;
 
     private final prtIpIpHnd ip6;
+
+    private final prtIpIpHnd mcs;
+
+    private final prtIpIpHnd sgt;
+
+    private final prtIpIpHnd nsh;
+
+    private final prtIpIpHnd eth;
 
     /**
      * initialize context
@@ -72,10 +78,12 @@ public class prtIpIp implements ifcDn {
      */
     public prtIpIp(ipFwd parent) {
         mpls = new prtIpIpHnd(parent, this, prtMplsIp.prot, ipMpls.typeU);
-        nsh = new prtIpIpHnd(parent, this, rtrNshIface.protoNum, ifcNshFwd.type);
-        eth = new prtIpIpHnd(parent, this, clntSrEth.prot, ifcBridge.serialType);
         ip4 = new prtIpIpHnd(parent, this, ipCor4.protocolNumber, ipIfc4.type);
         ip6 = new prtIpIpHnd(parent, this, ipCor6.protocolNumber, ipIfc6.type);
+        mcs = new prtIpIpHnd(parent, this, prtSwipe.prot, ifcMacSec.ethtyp);
+        sgt = new prtIpIpHnd(parent, this, prtSkip.prot, ifcSgt.type);
+        nsh = new prtIpIpHnd(parent, this, rtrNshIface.protoNum, ifcNshFwd.type);
+        eth = new prtIpIpHnd(parent, this, clntSrEth.prot, ifcBridge.serialType);
     }
 
     /**
@@ -101,10 +109,12 @@ public class prtIpIp implements ifcDn {
     public boolean setEndpoints(ipFwdIface ifc, addrIP trg) {
         boolean b = false;
         b |= mpls.setEndpoints(ifc, trg);
-        b |= nsh.setEndpoints(ifc, trg);
-        b |= eth.setEndpoints(ifc, trg);
         b |= ip4.setEndpoints(ifc, trg);
         b |= ip6.setEndpoints(ifc, trg);
+        b |= mcs.setEndpoints(ifc, trg);
+        b |= sgt.setEndpoints(ifc, trg);
+        b |= nsh.setEndpoints(ifc, trg);
+        b |= eth.setEndpoints(ifc, trg);
         return b;
     }
 
@@ -113,10 +123,12 @@ public class prtIpIp implements ifcDn {
      */
     public void closeDn() {
         mpls.closeDn();
-        nsh.closeDn();
-        eth.closeDn();
         ip4.closeDn();
         ip6.closeDn();
+        mcs.closeDn();
+        sgt.closeDn();
+        nsh.closeDn();
+        eth.closeDn();
     }
 
     /**
@@ -242,11 +254,28 @@ public class prtIpIp implements ifcDn {
         int i = pck.msbGetW(0);
         pck.getSkip(2);
         switch (i) {
+            case ipMpls.typeU:
+            case ipMpls.typeM:
+            case ipMpls.typeB:
+                mpls.sendPack(pck);
+                break;
             case ipIfc4.type:
                 ip4.sendPack(pck);
                 break;
             case ipIfc6.type:
                 ip6.sendPack(pck);
+                break;
+            case ifcMacSec.ethtyp:
+                mcs.sendPack(pck);
+                break;
+            case ifcSgt.type:
+                nsh.sendPack(pck);
+                break;
+            case ifcNshFwd.type:
+                nsh.sendPack(pck);
+                break;
+            case ifcBridge.serialType:
+                eth.sendPack(pck);
                 break;
             default:
                 cntr.drop(pck, counter.reasons.badProto);
@@ -268,15 +297,15 @@ public class prtIpIp implements ifcDn {
 
 class prtIpIpHnd implements ipPrt {
 
-    private int protoNum = -1;
+    private final int protoNum;
 
-    private int etherTyp = -1;
-
-    private ipFwdIface sendingIfc;
+    private final int etherTyp;
 
     private final prtIpIp upper;
 
     private final ipFwd lower;
+
+    private ipFwdIface sendingIfc;
 
     private addrIP remote = new addrIP();
 
