@@ -266,6 +266,10 @@ qc pass: p4lang: ipsec with aes192gcm
 qc pass: p4lang: ipsec with aes256gcm
 qc pass: p4lang: macsec over pwhe
 qc pass: p4lang: sgt over pwhe
+qc pass: p4lang: macsec over ipip
+qc pass: p4lang: sgt over ipip
+qc pass: p4lang: macsec over ipsec
+qc pass: p4lang: sgt over ipsec
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -698,6 +702,46 @@ qc pass: p4lang: othervpn bier qinq egress edge
 qc pass: p4lang: othervpn bier qinq ingress edge
 qc pass: p4lang: multicast bridge routing
 qc pass: p4lang: multicast vlan bridge routing
+qc pass: p4lang: ipip mpls over ipv4
+qc pass: p4lang: ipip mpls over ipv6
+qc pass: p4lang: ipip mpls over ipv4 loopback
+qc pass: p4lang: ipip mpls over ipv6 loopback
+qc pass: p4lang: ipip mpls over vlan
+qc pass: p4lang: ipip mpls over bundle
+qc pass: p4lang: ipip mpls over bundle vlan
+qc pass: p4lang: ipip mpls over hairpin
+qc pass: p4lang: ipip mpls over hairpin vlan
+qc pass: p4lang: ipip mpls over bridge
+qc pass: p4lang: ipip mpls over vlan bridge
+qc pass: p4lang: bridging over ipip
+qc pass: p4lang: bridging over ipip vlan
+qc pass: p4lang: mldp core over ipip
+qc pass: p4lang: bier core over ipip
+qc pass: p4lang: ipip mpls pop
+qc pass: p4lang: ipip mpls push
+qc pass: p4lang: l2vpn over ipip mpls
+qc pass: p4lang: l3vpn over ipip mpls
+qc pass: p4lang: sdwan over ipv4 with ipip
+qc pass: p4lang: sdwan over ipv6 with ipip
+qc pass: p4lang: ipsec mpls over ipv4
+qc pass: p4lang: ipsec mpls over ipv6
+qc pass: p4lang: ipsec mpls over ipv4 loopback
+qc pass: p4lang: ipsec mpls over ipv6 loopback
+qc pass: p4lang: ipsec mpls over vlan
+qc pass: p4lang: ipsec mpls over bundle
+qc pass: p4lang: ipsec mpls over bundle vlan
+qc pass: p4lang: ipsec mpls over hairpin
+qc pass: p4lang: ipsec mpls over hairpin vlan
+qc pass: p4lang: ipsec mpls over bridge
+qc pass: p4lang: ipsec mpls over vlan bridge
+qc pass: p4lang: bridging over ipsec
+qc pass: p4lang: bridging over ipsec vlan
+qc pass: p4lang: mldp core over ipsec
+qc pass: p4lang: bier core over ipsec
+qc pass: p4lang: ipsec mpls pop
+qc pass: p4lang: ipsec mpls push
+qc pass: p4lang: l2vpn over ipsec mpls
+qc pass: p4lang: l3vpn over ipsec mpls
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
