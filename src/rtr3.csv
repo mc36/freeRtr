@@ -1,5 +1,5 @@
 url;file;udp;bmv2;dpdk;tofino;xdp;test
--;-;-;-;-;-;-;freeRouter v25.5.18-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.5.19-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;ok;ok;not ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;ok;ok;not ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;ok;ok;not ok;p4lang: egress access list
@@ -268,6 +268,10 @@ http://sources.freertr.org/cfg/p4lang-crypt135.tst;p4lang-crypt135.tst;ok;not ok
 http://sources.freertr.org/cfg/p4lang-crypt136.tst;p4lang-crypt136.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec with aes256gcm
 http://sources.freertr.org/cfg/p4lang-crypt137.tst;p4lang-crypt137.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec over pwhe
 http://sources.freertr.org/cfg/p4lang-crypt138.tst;p4lang-crypt138.tst;ok;ok;ok;not ok;ok;p4lang: sgt over pwhe
+http://sources.freertr.org/cfg/p4lang-crypt139.tst;p4lang-crypt139.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec over ipip
+http://sources.freertr.org/cfg/p4lang-crypt140.tst;p4lang-crypt140.tst;ok;ok;ok;not ok;not ok;p4lang: sgt over ipip
+http://sources.freertr.org/cfg/p4lang-crypt141.tst;p4lang-crypt141.tst;ok;not ok;ok;not ok;not ok;p4lang: macsec over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt142.tst;p4lang-crypt142.tst;ok;not ok;ok;not ok;not ok;p4lang: sgt over ipsec
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;ok;ok;ok;ok;ok;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;ok;ok;ok;ok;ok;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;ok;ok;ok;ok;ok;p4lang: mpls core
@@ -577,7 +581,7 @@ http://sources.freertr.org/cfg/p4lang-rout306.tst;p4lang-rout306.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout307.tst;p4lang-rout307.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout308.tst;p4lang-rout308.tst;ok;ok;ok;ok;not ok;p4lang: etherip server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout309.tst;p4lang-rout309.tst;ok;ok;ok;not ok;ok;p4lang: gre local connect
-http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;ok;not ok;ok;not ok;not ok;p4lang: gre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout310.tst;p4lang-rout310.tst;ok;ok;ok;not ok;not ok;p4lang: gre multicast routing
 http://sources.freertr.org/cfg/p4lang-rout311.tst;p4lang-rout311.tst;ok;ok;ok;ok;not ok;p4lang: multicast routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout312.tst;p4lang-rout312.tst;ok;not ok;ok;ok;ok;p4lang: polka over backplane
 http://sources.freertr.org/cfg/p4lang-rout313.tst;p4lang-rout313.tst;ok;ok;ok;ok;ok;p4lang: nsh over backplane
@@ -700,3 +704,43 @@ http://sources.freertr.org/cfg/p4lang-rout429.tst;p4lang-rout429.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout430.tst;p4lang-rout430.tst;ok;ok;ok;ok;not ok;p4lang: othervpn bier qinq ingress edge
 http://sources.freertr.org/cfg/p4lang-rout431.tst;p4lang-rout431.tst;ok;ok;ok;ok;not ok;p4lang: multicast bridge routing
 http://sources.freertr.org/cfg/p4lang-rout432.tst;p4lang-rout432.tst;ok;ok;ok;ok;not ok;p4lang: multicast vlan bridge routing
+http://sources.freertr.org/cfg/p4lang-rout433.tst;p4lang-rout433.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout434.tst;p4lang-rout434.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout435.tst;p4lang-rout435.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout436.tst;p4lang-rout436.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout437.tst;p4lang-rout437.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout438.tst;p4lang-rout438.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout439.tst;p4lang-rout439.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout440.tst;p4lang-rout440.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-rout441.tst;p4lang-rout441.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout442.tst;p4lang-rout442.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over bridge
+http://sources.freertr.org/cfg/p4lang-rout443.tst;p4lang-rout443.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout444.tst;p4lang-rout444.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over ipip
+http://sources.freertr.org/cfg/p4lang-rout445.tst;p4lang-rout445.tst;ok;ok;ok;not ok;not ok;p4lang: bridging over ipip vlan
+http://sources.freertr.org/cfg/p4lang-rout446.tst;p4lang-rout446.tst;ok;ok;ok;not ok;not ok;p4lang: mldp core over ipip
+http://sources.freertr.org/cfg/p4lang-rout447.tst;p4lang-rout447.tst;ok;ok;ok;not ok;not ok;p4lang: bier core over ipip
+http://sources.freertr.org/cfg/p4lang-rout448.tst;p4lang-rout448.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls pop
+http://sources.freertr.org/cfg/p4lang-rout449.tst;p4lang-rout449.tst;ok;ok;ok;ok;not ok;p4lang: ipip mpls push
+http://sources.freertr.org/cfg/p4lang-rout450.tst;p4lang-rout450.tst;ok;ok;ok;ok;not ok;p4lang: l2vpn over ipip mpls
+http://sources.freertr.org/cfg/p4lang-rout451.tst;p4lang-rout451.tst;ok;ok;ok;ok;not ok;p4lang: l3vpn over ipip mpls
+http://sources.freertr.org/cfg/p4lang-rout452.tst;p4lang-rout452.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv4 with ipip
+http://sources.freertr.org/cfg/p4lang-rout453.tst;p4lang-rout453.tst;ok;ok;ok;ok;not ok;p4lang: sdwan over ipv6 with ipip
+http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout455.tst;p4lang-rout455.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout456.tst;p4lang-rout456.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout457.tst;p4lang-rout457.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout458.tst;p4lang-rout458.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout459.tst;p4lang-rout459.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout460.tst;p4lang-rout460.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout461.tst;p4lang-rout461.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-rout462.tst;p4lang-rout462.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout463.tst;p4lang-rout463.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over bridge
+http://sources.freertr.org/cfg/p4lang-rout464.tst;p4lang-rout464.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout465.tst;p4lang-rout465.tst;ok;not ok;ok;not ok;not ok;p4lang: bridging over ipsec
+http://sources.freertr.org/cfg/p4lang-rout466.tst;p4lang-rout466.tst;ok;not ok;ok;not ok;not ok;p4lang: bridging over ipsec vlan
+http://sources.freertr.org/cfg/p4lang-rout467.tst;p4lang-rout467.tst;ok;not ok;ok;not ok;not ok;p4lang: mldp core over ipsec
+http://sources.freertr.org/cfg/p4lang-rout468.tst;p4lang-rout468.tst;ok;not ok;ok;not ok;not ok;p4lang: bier core over ipsec
+http://sources.freertr.org/cfg/p4lang-rout469.tst;p4lang-rout469.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls pop
+http://sources.freertr.org/cfg/p4lang-rout470.tst;p4lang-rout470.tst;ok;not ok;ok;not ok;not ok;p4lang: ipsec mpls push
+http://sources.freertr.org/cfg/p4lang-rout471.tst;p4lang-rout471.tst;ok;not ok;ok;not ok;not ok;p4lang: l2vpn over ipsec mpls
+http://sources.freertr.org/cfg/p4lang-rout472.tst;p4lang-rout472.tst;ok;not ok;ok;not ok;not ok;p4lang: l3vpn over ipsec mpls
