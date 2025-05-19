@@ -852,7 +852,7 @@ qc pass: sgt isdn encapsulation
 qc pass: sgt sep encapsulation
 qc pass: sgt gre encapsulation
 qc pass: sgt ipip encapsulation
-qc pass: sgt ipip encapsulation
+qc pass: sgt ipsec encapsulation
 qc pass: sgt ethernet chain encapsulation
 qc pass: sgt vlan chain encapsulation
 qc pass: sgt vlan map out encapsulation

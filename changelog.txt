@@ -16704,3 +16704,6 @@ qc pass: p4lang: ipsec mpls pop
 qc pass: p4lang: ipsec mpls push
 qc pass: p4lang: l2vpn over ipsec mpls
 qc pass: p4lang: l3vpn over ipsec mpls
+---------------------------------- 2025-05-19 05:31:39 25.5.19
+no qc pass: sgt ipip encapsulation
+qc pass: sgt ipsec encapsulation
