@@ -455,8 +455,11 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-int putWireguardHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS) {
+
 #ifndef HAVE_NOCRYPTO
+
+
+int putWireguardHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS) {
     unsigned char *bufD = ctx->bufD;
     int seq = neigh_res->seq;
     neigh_res->seq++;
@@ -471,12 +474,12 @@ int putWireguardHeader(struct packetContext *ctx, struct neigh_entry *neigh_res,
     put32lsb(bufD, 0, 0);
     put32lsb(bufD, 4, seq);
     put32lsb(bufD, 8, 0);
-    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
-    if (EVP_EncryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufD[0]) != 1) return 1;
-    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
-    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
-    if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
-    if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[*bufP + tmp]) != 1) return 1;
+    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+    if (EVP_EncryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufD[0]) != 1) doDropper;
+    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
+    if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) doDropper;
+    if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[*bufP + tmp]) != 1) doDropper;
     *bufS += 16;
     *bufP -= 16;
     put32lsb(bufD, *bufP + 0, 4);
@@ -484,14 +487,12 @@ int putWireguardHeader(struct packetContext *ctx, struct neigh_entry *neigh_res,
     put32lsb(bufD, *bufP + 8, seq);
     put32lsb(bufD, *bufP + 12, 0);
     return 0;
-#else
+drop:
     return 1;
-#endif
 }
 
 
 int putOpenvpnHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS) {
-#ifndef HAVE_NOCRYPTO
     unsigned char *bufD = ctx->bufD;
     int seq = neigh_res->seq;
     neigh_res->seq++;
@@ -509,24 +510,23 @@ int putOpenvpnHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, i
     *bufP -= neigh_res->encrBlkLen;
     RAND_bytes(&bufD[*bufP], neigh_res->encrBlkLen);
     tmp += neigh_res->encrBlkLen;
-    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
-    if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) return 1;
-    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
-    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+    if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) doDropper;
+    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
     if (neigh_res->hashBlkLen < 1) return 0;
-    if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) return 1;
-    if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
+    if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) doDropper;
+    if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
     *bufP -= neigh_res->hashBlkLen;
-    if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[*bufP]) != 1) return 1;
+    if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[*bufP]) != 1) doDropper;
     return 0;
-#else
+drop:
     return 1;
-#endif
 }
 
 
+
 int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS, int ethtyp) {
-#ifndef HAVE_NOCRYPTO
     unsigned char *bufD = ctx->bufD;
     int seq = neigh_res->seq;
     neigh_res->seq++;
@@ -552,13 +552,13 @@ int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *
         put32msb(bufD, *bufP - 16, neigh_res->tid);
         put32msb(bufD, *bufP - 12, seq);
         memcpy(&bufD[*bufP - 8], &bufD[4], 8);
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
-        if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, bufD) != 1) return 1;
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
-        if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) return 1;
-        if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
-        if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
-        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_GCM_GET_TAG, neigh_res->encrTagLen, &bufD[*bufP + tmp]) != 1) return 1;
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+        if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, bufD) != 1) doDropper;
+        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+        if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) doDropper;
+        if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
+        if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) doDropper;
+        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_GCM_GET_TAG, neigh_res->encrTagLen, &bufD[*bufP + tmp]) != 1) doDropper;
         *bufS += neigh_res->encrTagLen;
         *bufP -= 16;
         return 0;
@@ -566,24 +566,27 @@ int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *
     *bufP -= neigh_res->encrBlkLen;
     RAND_bytes(&bufD[*bufP], neigh_res->encrBlkLen);
     tmp += neigh_res->encrBlkLen;
-    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
-    if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) return 1;
-    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
-    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+    if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) doDropper;
+    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
     *bufP -= 8;
     put32msb(bufD, *bufP + 0, neigh_res->tid);
     put32msb(bufD, *bufP + 4, seq);
     if (neigh_res->hashBlkLen < 1) return 0;
     tmp += 8;
-    if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) return 1;
-    if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
-    if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[*bufP + tmp]) != 1) return 1;
+    if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) doDropper;
+    if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
+    if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[*bufP + tmp]) != 1) doDropper;
     *bufS += neigh_res->hashBlkLen;
     return 0;
-#else
+drop:
     return 1;
-#endif
 }
+
+
+#endif
+
 
 
 int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *ethtyp) {
@@ -616,11 +619,11 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
         *bufS += tmp2;
         tmp += tmp2;
     }
-    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 1;
+    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
     memcpy(&bufD[0], port2vrf_res->mcscIvTxKeyDat, port2vrf_res->mcscIvTxKeyLen);
     put32msb(bufD, port2vrf_res->mcscIvTxKeyLen, seq);
-    if (EVP_EncryptInit_ex(ctx->encr, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscCrTxKeyDat, bufD) != 1) return 1;
-    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 1;
+    if (EVP_EncryptInit_ex(ctx->encr, port2vrf_res->mcscEncrAlg, NULL, port2vrf_res->mcscCrTxKeyDat, bufD) != 1) doDropper;
+    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
     tmp2 = 0;
     if (tmp < 48) {
         tmp2 = tmp;
@@ -631,31 +634,33 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
     put32msb(bufD, 4, seq);
     if (port2vrf_res->mcscNeedAead != 0) {
         if (port2vrf_res->mcscNeedMacs != 0) {
-            if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufH[0], 12) != 1) return 1;
+            if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufH[0], 12) != 1) doDropper;
         }
-        if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufD[0], 8) != 1) return 1;
-        if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
-        if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) return 1;
-        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_GCM_GET_TAG, port2vrf_res->mcscEncrTagLen, &bufD[*bufP + tmp]) != 1) return 1;
+        if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufD[0], 8) != 1) doDropper;
+        if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
+        if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) doDropper;
+        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_GCM_GET_TAG, port2vrf_res->mcscEncrTagLen, &bufD[*bufP + tmp]) != 1) doDropper;
         tmp += port2vrf_res->mcscEncrTagLen;
         *bufS += port2vrf_res->mcscEncrTagLen;
     } else {
-        if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 1;
+        if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
     }
     if (port2vrf_res->mcscHashBlkLen > 0) {
-        if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgTxKeyDat, port2vrf_res->mcscDgTxKeyLen) != 1) return 1;
+        if (myHmacInit(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgTxKeyDat, port2vrf_res->mcscDgTxKeyLen) != 1) doDropper;
         if (port2vrf_res->mcscNeedMacs != 0) {
-            if (EVP_DigestUpdate(ctx->dgst, &bufH[0], 12) != 1) return 1;
+            if (EVP_DigestUpdate(ctx->dgst, &bufH[0], 12) != 1) doDropper;
         }
-        if (EVP_DigestUpdate(ctx->dgst, &bufD[0], 8) != 1) return 1;
-        if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 1;
-        if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgTxKeyDat, port2vrf_res->mcscDgTxKeyLen, &bufD[*bufP + tmp]) != 1) return 1;
+        if (EVP_DigestUpdate(ctx->dgst, &bufD[0], 8) != 1) doDropper;
+        if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
+        if (myHmacEnd(ctx->dgst, port2vrf_res->mcscHashAlg, port2vrf_res->mcscDgTxKeyDat, port2vrf_res->mcscDgTxKeyLen, &bufD[*bufP + tmp]) != 1) doDropper;
         *bufS += port2vrf_res->mcscHashBlkLen;
     }
     *bufP -= 8;
     *ethtyp = port2vrf_res->mcscEthtyp;
     memcpy(&bufD[*bufP], &bufD[0], 8);
     return 0;
+drop:
+    return 1;
 #else
     return 0;
 #endif
@@ -1043,7 +1048,7 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         return 0;
     case 2: // l2tp
         *bufP = bufT + 8;
-        if ((get16msb(bufD, *bufP) & 0x8000) != 0) return 1;
+        if ((get16msb(bufD, *bufP) & 0x8000) != 0) doCpuing;
         *bufP += 8;
         *bufP += 2;
         int ethtyp = get16msb(bufD, *bufP);
@@ -1076,33 +1081,33 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
     case 7: // esp
         *bufP = bufT;
         int tmp = *bufS - *bufP + preBuff - tun_res->hashBlkLen;
-        if (tmp < 1) return 2;
+        if (tmp < 1) doDropper;
         int tmp2;
         if (tun_res->hashBlkLen > 0) {
-            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) return 2;
-            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 2;
-            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) return 2;
-            if (memcmp(&bufD[0], &bufD[*bufP + tmp], tun_res->hashBlkLen) !=0) return 2;
+            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
+            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper;
+            if (memcmp(&bufD[0], &bufD[*bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;
             *bufS -= tun_res->hashBlkLen;
         }
         *bufP += 8;
         tmp -= 8;
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 2;
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
         if (tun_res->encrTagLen > 0) {
             memcpy(&bufD[0], tun_res->hashKeyDat, 4);
             memcpy(&bufD[4], &bufD[*bufP], 8);
             *bufP += 8;
             tmp -= 8;
-            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufD) != 1) return 2;
-            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
-            if (EVP_DecryptUpdate(ctx->encr, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) return 2;
-            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
+            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufD) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+            if (EVP_DecryptUpdate(ctx->encr, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) doDropper;
+            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
             *bufS -= tun_res->encrTagLen;
             tmp -= tun_res->encrTagLen;
         } else {
-            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) return 2;
-            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
-            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
+            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
             *bufP += tun_res->encrBlkLen;
             tmp -= tun_res->encrBlkLen;
         }
@@ -1116,17 +1121,17 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         *bufP = bufT + 8;
         *bufP += tun_res->hashBlkLen;
         tmp = *bufS - *bufP + preBuff;
-        if (tmp < 1) return 2;
+        if (tmp < 1) doDropper;
         if (tun_res->hashBlkLen > 0) {
-            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) return 2;
-            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) return 2;
-            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) return 2;
-            if (memcmp(&bufD[0], &bufD[*bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) return 2;
+            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;
+            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
+            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper;
+            if (memcmp(&bufD[0], &bufD[*bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;
         }
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 2;
-        if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) return 2;
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
-        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+        if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;
+        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
         *bufP += tun_res->encrBlkLen;
         *bufP += 8;
         guessEthtyp;
@@ -1135,19 +1140,19 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         return 0;
     case 9: // wireguard
         *bufP = bufT + 8;
-        if (get32lsb(bufD, *bufP) != 4) return 1;
+        if (get32lsb(bufD, *bufP) != 4) doCpuing;
         tmp = *bufS - *bufP + preBuff;
-        if (tmp < 32) return 2;
+        if (tmp < 32) doDropper;
         put32msb(bufD, *bufP + 4, 0);
         *bufP += 16;
         *bufS -= 16;
         tmp -= 32;
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) return 2;
-        if (EVP_DecryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[*bufP - 12]) != 1) return 2;
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) return 2;
-        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[*bufP + tmp]) != 1) return 2;
-        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) return 2;
-        if (EVP_DecryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) return 2;
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+        if (EVP_DecryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[*bufP - 12]) != 1) doDropper;
+        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[*bufP + tmp]) != 1) doDropper;
+        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
+        if (EVP_DecryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) doDropper;
         guessEthtyp;
         *bufP -= 2;
         put16msb(bufD, *bufP, ethtyp);
@@ -1155,7 +1160,7 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
 #endif
     case 10: // amt
         *bufP = bufT + 8;
-        if (bufD[*bufP] != 6) return 1;
+        if (bufD[*bufP] != 6) doCpuing;
         *bufP += 2;
         guessEthtyp;
         *bufP -= 2;
@@ -1177,8 +1182,8 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
     case 13: // tmux
         *bufP = bufT + 2;
         ethtyp = get16msb(bufD, bufT);
-        if (ethtyp < 4) return 2;
-        if (ethtyp > (*bufS - bufT + preBuff)) return 2;
+        if (ethtyp < 4) doDropper;
+        if (ethtyp > (*bufS - bufT + preBuff)) doDropper;
         *bufS = ethtyp + bufT - preBuff;
         ethtyp = bufD[*bufP];
         iproto2ethtyp;
