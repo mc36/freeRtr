@@ -549,7 +549,7 @@ class servDnsDoer implements Runnable {
                 nam = nam.substring(i + 1, nam.length());
             } else {
                 a = nam;
-                nam = "";
+                nam = ".";
             }
             zon = parent.zones.find(new packDnsZone(nam));
             rslvr = parent.resolvs.find(new servDnsResolv(nam));
