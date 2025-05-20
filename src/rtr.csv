@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.20-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-20 16:37:08, took 00:15:43, with 50 workers, on 3724 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2025-05-20 18:02:02, took 00:20:42, with 50 workers, on 3726 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1186,6 +1186,7 @@ http://sources.freertr.org/cfg/intop8-isis07.tst;intop8-isis07.tst;success;inter
 http://sources.freertr.org/cfg/intop8-isis08.tst;intop8-isis08.tst;success;interop8: isis lsp text authentication
 http://sources.freertr.org/cfg/intop8-isis09.tst;intop8-isis09.tst;success;interop8: isis lsp md5 authentication
 http://sources.freertr.org/cfg/intop8-isis10.tst;intop8-isis10.tst;success;interop8: isis md5 authentication
+http://sources.freertr.org/cfg/intop8-isis11.tst;intop8-isis11.tst;success;interop8: isis multi-topology
 http://sources.freertr.org/cfg/intop8-ldp01.tst;intop8-ldp01.tst;success;interop8: ldp lsp
 http://sources.freertr.org/cfg/intop8-ldp02.tst;intop8-ldp02.tst;success;interop8: ldp php lsp
 http://sources.freertr.org/cfg/intop8-mcast01.tst;intop8-mcast01.tst;success;interop8: igmp3/mld2
@@ -1240,6 +1241,7 @@ http://sources.freertr.org/cfg/intop9-isis11.tst;intop9-isis11.tst;success;inter
 http://sources.freertr.org/cfg/intop9-isis12.tst;intop9-isis12.tst;success;interop9: isis lsp md5 authentication
 http://sources.freertr.org/cfg/intop9-isis13.tst;intop9-isis13.tst;success;interop9: isis text authentication
 http://sources.freertr.org/cfg/intop9-isis14.tst;intop9-isis14.tst;success;interop9: isis md5 authentication
+http://sources.freertr.org/cfg/intop9-isis15.tst;intop9-isis15.tst;success;interop9: isis multi-topology
 http://sources.freertr.org/cfg/intop9-ldp01.tst;intop9-ldp01.tst;success;interop9: ldp lsp
 http://sources.freertr.org/cfg/intop9-ldp02.tst;intop9-ldp02.tst;success;interop9: ethernet over mpls
 http://sources.freertr.org/cfg/intop9-ldp03.tst;intop9-ldp03.tst;success;interop9: ldp p2mp lsp

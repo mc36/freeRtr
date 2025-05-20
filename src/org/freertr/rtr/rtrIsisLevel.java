@@ -587,23 +587,33 @@ public class rtrIsisLevel implements Runnable {
             if (nei.level.level != level) {
                 continue;
             }
-            if (pck.RTPsrc == 0) {
-                byte[] buf = new byte[0];
-                if (subs) {
-                    buf = rtrIsisTe.putSubs(lower, ifc, nei);
+            if (pck.RTPsrc != 0) {
+                if (!lower.multiTopo && !lower.other.multiTopo) {
+                    advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, nei.rtrID, 0, 0, new byte[0]));
+                } else {
+                    advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, nei.rtrID, 0, 0, new byte[0]));
+                    advertiseTlv(pck, lower.putISneigh(true, lower.other.metricWide, lower.other.multiTopo, nei.rtrID, 0, 0, new byte[0]));
                 }
-                if (nei.segrouLab != null) {
-                    buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion == ipCor4.protocolVersion, nei.segrouLab.label));
-                }
-                if (nei.segrouOth != null) {
-                    buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion != ipCor4.protocolVersion, nei.segrouOth.label));
-                }
-                advertiseTlv(pck, lower.putISneigh(lower.metricWide, lower.multiTopo, nei.rtrID, 0, nei.getMetric(), buf));
-                if (subs) {
-                    advertiseTlv(pck, rtrIsisTe.putSrlg(lower, nei.rtrID, 0, ifc.iface.addr, nei.ifcAddr, ifc.teSrlg));
-                }
+                continue;
+            }
+            byte[] buf = new byte[0];
+            if (subs) {
+                buf = rtrIsisTe.putSubs(lower, ifc, nei);
+            }
+            if (nei.segrouLab != null) {
+                buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion == ipCor4.protocolVersion, nei.segrouLab.label));
+            }
+            if (nei.segrouOth != null) {
+                buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion != ipCor4.protocolVersion, nei.segrouOth.label));
+            }
+            if (!lower.multiTopo && !lower.other.multiTopo) {
+                advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, nei.rtrID, 0, nei.getMetric(), buf));
             } else {
-                advertiseTlv(pck, lower.putISneigh(lower.metricWide, lower.multiTopo, nei.rtrID, 0, 0, new byte[0]));
+                advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, nei.rtrID, 0, nei.getMetric(), buf));
+                advertiseTlv(pck, lower.putISneigh(true, lower.other.metricWide, lower.other.multiTopo, nei.rtrID, 0, nei.getMetric(), buf));
+            }
+            if (subs) {
+                advertiseTlv(pck, rtrIsisTe.putSrlg(lower, nei.rtrID, 0, ifc.iface.addr, nei.ifcAddr, ifc.teSrlg));
             }
         }
     }
@@ -618,7 +628,12 @@ public class rtrIsisLevel implements Runnable {
         if (subs) {
             buf = rtrIsisTe.putSubs(lower, ifc, null);
         }
-        advertiseTlv(pck, lower.putISneigh(lower.metricWide, lower.multiTopo, ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.metric, buf));
+        if (!lower.multiTopo && !lower.other.multiTopo) {
+            advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.metric, buf));
+        } else {
+            advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.metric, buf));
+            advertiseTlv(pck, lower.putISneigh(true, lower.other.metricWide, lower.other.multiTopo, ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.metric, buf));
+        }
         if (subs) {
             advertiseTlv(pck, rtrIsisTe.putSrlg(lower, ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.iface.addr, null, ifc.teSrlg));
         }
@@ -631,7 +646,12 @@ public class rtrIsisLevel implements Runnable {
         if (buf != null) {
             advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
         }
-        advertiseTlv(p, lower.putISneigh(lower.metricWide, lower.multiTopo, lower.routerID, 0, 0, new byte[0]));
+        if (!lower.multiTopo && !lower.other.multiTopo) {
+            advertiseTlv(p, lower.putISneigh(false, lower.metricWide, lower.multiTopo, lower.routerID, 0, 0, new byte[0]));
+        } else {
+            advertiseTlv(p, lower.putISneigh(false, lower.metricWide, lower.multiTopo, lower.routerID, 0, 0, new byte[0]));
+            advertiseTlv(p, lower.putISneigh(true, lower.other.metricWide, lower.other.multiTopo, lower.routerID, 0, 0, new byte[0]));
+        }
         createNeighs(p, ifc, false);
         advertiseLsp(p);
     }
@@ -924,7 +944,7 @@ public class rtrIsisLevel implements Runnable {
                     spf.addConn(trg, src, 0, false, stub, null);
                     continue;
                 }
-                tabGen<rtrIsisLsp> nel = lower.getISneigh(lower.metricWide, lower.multiTopo, tlv);
+                tabGen<rtrIsisLsp> nel = lower.getISneigh(false, lower.metricWide, lower.multiTopo, tlv);
                 if (nel != null) {
                     for (int o = 0; o < nel.size(); o++) {
                         rtrIsisLsp nei = nel.get(o);

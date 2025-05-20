@@ -1182,6 +1182,7 @@ qc pass: interop8: integrated isis
 qc pass: interop8: isis lsp text authentication
 qc pass: interop8: isis lsp md5 authentication
 qc pass: interop8: isis md5 authentication
+qc pass: interop8: isis multi-topology
 qc pass: interop8: ldp lsp
 qc pass: interop8: ldp php lsp
 qc pass: interop8: igmp3/mld2
@@ -1236,6 +1237,7 @@ qc pass: interop9: isis bier
 qc pass: interop9: isis lsp md5 authentication
 qc pass: interop9: isis text authentication
 qc pass: interop9: isis md5 authentication
+qc pass: interop9: isis multi-topology
 qc pass: interop9: ldp lsp
 qc pass: interop9: ethernet over mpls
 qc pass: interop9: ldp p2mp lsp

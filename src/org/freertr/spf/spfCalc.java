@@ -8,10 +8,12 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
+import org.freertr.clnt.clntDns;
 import org.freertr.cry.cryHashCrc32;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipMpls;
+import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -1457,32 +1459,70 @@ public class spfCalc<Ta extends addrType> {
     /**
      * list graphviz
      *
-     * @param msk masks: 1=cli, 2=svg, 4=nets, 8=ints
+     * @param cmd masks to use
      * @return list
      */
-    public List<String> listGraphviz(int msk) {
+    public List<String> listGraphviz(cmds cmd) {
+        boolean svg = false;
+        boolean cli = false;
+        boolean nets = false;
+        boolean ints = false;
+        String locs = null;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("cli")) {
+                cli = true;
+                continue;
+            }
+            if (a.equals("svg")) {
+                svg = true;
+                continue;
+            }
+            if (a.equals("nets")) {
+                nets = true;
+                continue;
+            }
+            if (a.equals("ints")) {
+                ints = true;
+                continue;
+            }
+            if (a.equals("locs")) {
+                locs = cmd.word();
+                continue;
+            }
+        }
         List<String> res = new ArrayList<String>();
-        if ((msk & 0x1) == 0) {
+        if (cli) {
             res.add(graphBeg1);
         }
         res.add(graphBeg2);
-        if ((msk & 0x2) == 0) {
+        if (svg) {
             res.add(graphBeg3);
         }
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
             res.add("//" + ntry);
+            if (locs != null) {
+                clntDns clnt = new clntDns();
+                clnt.doResolvList(cfgAll.nameServerAddr, ntry + "." + locs, false, packDnsRec.typeTXT);
+                String a = clnt.getTXT();
+                if (a != null) {
+                    a = a.replace(" ", ",");
+                    res.add("\"" + ntry + "\" [pin=true pos=\"" + a + "\"]");
+                }
+            }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cur = ntry.conn.get(i);
-                String a;
-                if ((msk & 0x8) == 0) {
-                    a = "";
-                } else {
+                String a = "";
+                if (ints) {
                     a = " [taillabel=\"" + cur.ident + "\"]";
                 }
                 res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "]" + a);
             }
-            if ((msk & 0x4) == 0) {
+            if (!nets) {
                 continue;
             }
             for (int i = 0; i < ntry.prfAdd.size(); i++) {
@@ -1503,7 +1543,7 @@ public class spfCalc<Ta extends addrType> {
             }
         }
         res.add(graphEnd1);
-        if ((msk & 0x1) == 0) {
+        if (cli) {
             res.add(graphEnd2);
         }
         return res;

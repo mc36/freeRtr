@@ -5214,11 +5214,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * show graph
      *
-     * @param msk masks
+     * @param cmd masks
      * @return graph of spf
      */
-    public List<String> getSpfGraph(int msk) {
-        return lspf.lastSpf.listGraphviz(msk);
+    public List<String> getSpfGraph(cmds cmd) {
+        return lspf.lastSpf.listGraphviz(cmd);
     }
 
     /**

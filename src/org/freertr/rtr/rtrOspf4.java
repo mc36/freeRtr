@@ -1134,16 +1134,16 @@ public class rtrOspf4 extends ipRtr {
      * show graph
      *
      * @param area area number
-     * @param msk masks
+     * @param cmd masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(int area, int msk) {
+    public List<String> showSpfGraph(int area, cmds cmd) {
         rtrOspf4area ara = new rtrOspf4area(this, area);
         ara = areas.find(ara);
         if (ara == null) {
             return new ArrayList<String>();
         }
-        return ara.lastSpf.listGraphviz(msk);
+        return ara.lastSpf.listGraphviz(cmd);
     }
 
     /**

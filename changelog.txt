@@ -16707,3 +16707,6 @@ qc pass: p4lang: l3vpn over ipsec mpls
 ---------------------------------- 2025-05-19 05:31:39 25.5.19
 no qc pass: sgt ipip encapsulation
 qc pass: sgt ipsec encapsulation
+---------------------------------- 2025-05-20 17:41:20 25.5.20
+qc pass: interop8: isis multi-topology
+qc pass: interop9: isis multi-topology

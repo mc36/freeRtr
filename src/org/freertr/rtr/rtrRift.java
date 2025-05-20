@@ -464,11 +464,11 @@ public class rtrRift extends ipRtr implements Runnable {
      * show graph
      *
      * @param dir direction
-     * @param msk masks
+     * @param cmd masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(String dir, int msk) {
-        return getSpf(dir).listGraphviz(msk);
+    public List<String> showSpfGraph(String dir, cmds cmd) {
+        return getSpf(dir).listGraphviz(cmd);
     }
 
     /**

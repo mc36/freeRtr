@@ -622,6 +622,19 @@ public class clntDns {
     }
 
     /**
+     * get text
+     *
+     * @return mail server, null if not found
+     */
+    public String getTXT() {
+        packDnsRec rr = findAnswer(packDnsRec.typeTXT);
+        if (rr == null) {
+            return null;
+        }
+        return rr.res.get(bits.random(0, rr.res.size())).target;
+    }
+
+    /**
      * get name of host
      *
      * @return name of host, null if not found

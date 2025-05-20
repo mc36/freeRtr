@@ -1464,7 +1464,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("graph")) {
-                rdr.putStrArr(srv.getShowGraph(bits.str2num(cmd.word())));
+                rdr.putStrArr(srv.getShowGraph(bits.str2num(cmd.word()), cmd));
                 return null;
             }
             if (a.equals("route")) {
@@ -2439,8 +2439,7 @@ public class userShow {
                 }
                 if (a.equals("graph")) {
                     int i = bits.str2num(cmd.word());
-                    int o = getGraphMask();
-                    rdr.putStrArr(r.ospf4.showSpfGraph(i, o));
+                    rdr.putStrArr(r.ospf4.showSpfGraph(i, cmd));
                     return null;
                 }
                 if (a.equals("nhinconsistent")) {
@@ -2807,8 +2806,7 @@ public class userShow {
                 }
                 if (a.equals("graph")) {
                     int i = bits.str2num(cmd.word());
-                    int o = getGraphMask();
-                    rdr.putStrArr(r.ospf6.showSpfGraph(i, o));
+                    rdr.putStrArr(r.ospf6.showSpfGraph(i, cmd));
                     return null;
                 }
                 if (a.equals("nhinconsistent")) {
@@ -3186,33 +3184,6 @@ public class userShow {
         return encUrl.percentEncode(s);
     }
 
-    private int getGraphMask() {
-        int i = 0;
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (a.equals("nocli")) {
-                i |= 0x1;
-                continue;
-            }
-            if (a.equals("nosvg")) {
-                i |= 0x2;
-                continue;
-            }
-            if (a.equals("nonets")) {
-                i |= 0x4;
-                continue;
-            }
-            if (a.equals("noints")) {
-                i |= 0x8;
-                continue;
-            }
-        }
-        return i;
-    }
-
     private List<String> getDashRtr(String u, List<String> r) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.routers.size(); i++) {
@@ -3391,8 +3362,7 @@ public class userShow {
             return;
         }
         if (a.equals("graph")) {
-            int i = getGraphMask();
-            rdr.putStrArr(r.lsrp.showSpfGraph(i));
+            rdr.putStrArr(r.lsrp.showSpfGraph(cmd));
             return;
         }
         if (a.equals("nhinconsistent")) {
@@ -3477,8 +3447,7 @@ public class userShow {
         }
         if (a.equals("graph")) {
             String dir = cmd.word();
-            int i = getGraphMask();
-            rdr.putStrArr(r.rift.showSpfGraph(dir, i));
+            rdr.putStrArr(r.rift.showSpfGraph(dir, cmd));
             return;
         }
         if (a.equals("nhinconsistent")) {
@@ -3625,8 +3594,7 @@ public class userShow {
         }
         if (a.equals("graph")) {
             int i = bits.str2num(cmd.word());
-            int o = getGraphMask();
-            rdr.putStrArr(r.isis.showSpfGraph(i, o));
+            rdr.putStrArr(r.isis.showSpfGraph(i, cmd));
             return;
         }
         if (a.equals("nhinconsistent")) {
@@ -4445,8 +4413,7 @@ public class userShow {
                 return;
             }
             if (a.equals("graph")) {
-                int i = getGraphMask();
-                rdr.putStrArr(r.bgp.getSpfGraph(i));
+                rdr.putStrArr(r.bgp.getSpfGraph(cmd));
                 return;
             }
             if (a.equals("nhinconsistent")) {

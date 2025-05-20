@@ -710,14 +710,15 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * get backplane show
      *
      * @param fwd forwarder
+     * @param cmd masks
      * @return show
      */
-    public List<String> getShowGraph(int fwd) {
+    public List<String> getShowGraph(int fwd, cmds cmd) {
         if ((fwd < 0) || (fwd >= fwds.size())) {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.spf.listGraphviz(0);
+        return cur.spf.listGraphviz(cmd);
     }
 
     /**

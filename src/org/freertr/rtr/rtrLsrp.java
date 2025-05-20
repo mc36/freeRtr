@@ -627,11 +627,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * show graph
      *
-     * @param msk masks
+     * @param cmds masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(int msk) {
-        return lastSpf.listGraphviz(msk);
+    public List<String> showSpfGraph(cmds cmds) {
+        return lastSpf.listGraphviz(cmds);
     }
 
     /**

@@ -848,12 +848,13 @@ public class rtrIsis extends ipRtr {
     /**
      * read is neighbors
      *
+     * @param other other afi
      * @param wide wide metric
      * @param multi multi topology
      * @param tlv tlv to read
      * @return neighbors, null if nothing
      */
-    protected tabGen<rtrIsisLsp> getISneigh(boolean wide, boolean multi, encTlv tlv) {
+    protected tabGen<rtrIsisLsp> getISneigh(boolean other, boolean wide, boolean multi, encTlv tlv) {
         tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
         if (multi) {
             switch (tlv.valTyp) {
@@ -863,7 +864,7 @@ public class rtrIsis extends ipRtr {
                 default:
                     return null;
             }
-            if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal(false)) {
+            if ((bits.msbGetW(tlv.valDat, 0) & 0xfff) != getMTopoVal(other)) {
                 return null;
             }
             for (int i = 2; i < tlv.valSiz;) {
@@ -913,6 +914,7 @@ public class rtrIsis extends ipRtr {
     /**
      * write is neighbor
      *
+     * @param other other afi
      * @param wide wide metric
      * @param multi multi topology
      * @param nei neighbor address
@@ -921,10 +923,10 @@ public class rtrIsis extends ipRtr {
      * @param subs subtlvs
      * @return generated tlv
      */
-    protected encTlv putISneigh(boolean wide, boolean multi, addrIsis nei, int nod, int met, byte[] subs) {
+    protected encTlv putISneigh(boolean other, boolean wide, boolean multi, addrIsis nei, int nod, int met, byte[] subs) {
         encTlv tlv = getTlv();
         if (multi) {
-            bits.msbPutW(tlv.valDat, 0, getMTopoVal(false));
+            bits.msbPutW(tlv.valDat, 0, getMTopoVal(other));
             putISneighE(tlv, 2, nei, nod, met, subs);
             tlv.valTyp = rtrIsisLsp.tlvMtIsNeigh;
             return tlv;
@@ -2303,12 +2305,12 @@ public class rtrIsis extends ipRtr {
      * show graph
      *
      * @param level level number
-     * @param msk masks
+     * @param cmd masks
      * @return graph of spf
      */
-    public List<String> showSpfGraph(int level, int msk) {
+    public List<String> showSpfGraph(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.lastSpf.listGraphviz(msk);
+        return lev.lastSpf.listGraphviz(cmd);
     }
 
     /**
