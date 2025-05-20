@@ -575,7 +575,9 @@ public class userExec {
         hl.add(null, "7 7,.              nets             connected networks");
         hl.add(null, "7 7,.              ints             connected interfaces");
         hl.add(null, "7 8                locs             resolve locations");
-        hl.add(null, "8 7,.                <dir>          domain part of txt");
+        hl.add(null, "8 7,.                <str>          domain part of txt");
+        hl.add(null, "7 8                dns              resolve addresses");
+        hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "5 7            lnkinconsistent      inconsistent advertisements of metrics");
         hl.add(null, "6 7,.            <dir>              north or south spf");
         hl.add(null, "7 .                [str]            int matcher");
@@ -644,7 +646,9 @@ public class userExec {
         hl.add(null, "6 6,.            nets               connected networks");
         hl.add(null, "6 6,.            ints               connected interfaces");
         hl.add(null, "6 7              locs               resolve locations");
-        hl.add(null, "7 6,.              <dir>            domain part of txt");
+        hl.add(null, "7 6,.              <str>            domain part of txt");
+        hl.add(null, "6 7              dns                resolve addresses");
+        hl.add(null, "7 6,.              <str>            domain part of ptr");
         hl.add(null, "5 6,.          lnkinconsistent      inconsistent advertisements of metrics");
         hl.add(null, "6 .              [str]              int matcher");
         hl.add(null, "5 6,.          nhinconsistent       inconsistent advertisements of next hops");
@@ -701,7 +705,9 @@ public class userExec {
         hl.add(null, "7 7,.              nets             connected networks");
         hl.add(null, "7 7,.              ints             connected interfaces");
         hl.add(null, "7 8                locs             resolve locations");
-        hl.add(null, "8 7,.                <dir>          domain part of txt");
+        hl.add(null, "8 7,.                <str>          domain part of txt");
+        hl.add(null, "7 8                dns              resolve addresses");
+        hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "5 6            lnkinconsistent      inconsistent advertisements of metrics");
         hl.add(null, "6 7,.            <num>              area number");
         hl.add(null, "7 .                [str]            int matcher");
@@ -747,7 +753,9 @@ public class userExec {
         hl.add(null, "7 7,.              nets             connected networks");
         hl.add(null, "7 7,.              ints             connected interfaces");
         hl.add(null, "7 8                locs             resolve locations");
-        hl.add(null, "8 7,.                <dir>          domain part of txt");
+        hl.add(null, "8 7,.                <str>          domain part of txt");
+        hl.add(null, "7 8                dns              resolve addresses");
+        hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "5 6            lnkinconsistent      inconsistent advertisements of metrics");
         hl.add(null, "6 7,.            <num>              level number");
         hl.add(null, "7 .                [str]            int matcher");
@@ -792,7 +800,9 @@ public class userExec {
         hl.add(null, "7 7,.              nets             connected networks");
         hl.add(null, "7 7,.              ints             connected interfaces");
         hl.add(null, "7 8                locs             resolve locations");
-        hl.add(null, "8 7,.                <dir>          domain part of txt");
+        hl.add(null, "8 7,.                <str>          domain part of txt");
+        hl.add(null, "7 8                dns              resolve addresses");
+        hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "6 7,.            lnkinconsistent    inconsistent advertisements of metrics");
         hl.add(null, "7 .                [str]            int matcher");
         hl.add(null, "6 7,.            nhinconsistent     inconsistent advertisements of next hops");

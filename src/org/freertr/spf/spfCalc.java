@@ -1456,6 +1456,28 @@ public class spfCalc<Ta extends addrType> {
         }
     }
 
+    private String node2name(spfNode<Ta> ntry, String dns) {
+        String a = "" + ntry;
+        if (dns == null) {
+            return a;
+        }
+        addrIP adr = new addrIP();
+        if (adr.fromString(a)) {
+            return a;
+        }
+        a = packDnsRec.generateReverse(adr);
+        clntDns clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, a, false, packDnsRec.typePTR);
+        String b = clnt.getPTR();
+        if (b == null) {
+            return a;
+        }
+        if (!b.endsWith(dns)) {
+            return b;
+        }
+        return b.substring(0, b.length() - dns.length());
+    }
+
     /**
      * list graphviz
      *
@@ -1465,6 +1487,7 @@ public class spfCalc<Ta extends addrType> {
     public List<String> listGraphviz(cmds cmd) {
         boolean svg = false;
         boolean cli = false;
+        String dns = null;
         boolean nets = false;
         boolean ints = false;
         String locs = null;
@@ -1479,6 +1502,10 @@ public class spfCalc<Ta extends addrType> {
             }
             if (a.equals("svg")) {
                 svg = true;
+                continue;
+            }
+            if (a.equals("dns")) {
+                dns = cmd.word();
                 continue;
             }
             if (a.equals("nets")) {
@@ -1504,10 +1531,11 @@ public class spfCalc<Ta extends addrType> {
         }
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
-            res.add("//" + ntry);
+            String nam = node2name(ntry, dns);
+            res.add("//" + nam);
             if (locs != null) {
                 clntDns clnt = new clntDns();
-                clnt.doResolvList(cfgAll.nameServerAddr, ntry + "." + locs, false, packDnsRec.typeTXT);
+                clnt.doResolvList(cfgAll.nameServerAddr, nam + "." + locs, false, packDnsRec.typeTXT);
                 String a = clnt.getTXT();
                 if (a != null) {
                     a = a.replace(" ", ",");
@@ -1520,26 +1548,26 @@ public class spfCalc<Ta extends addrType> {
                 if (ints) {
                     a = " [taillabel=\"" + cur.ident + "\"]";
                 }
-                res.add("  \"" + ntry + "\" -- \"" + cur.target + "\" [weight=" + cur.metric + "]" + a);
+                res.add("  \"" + nam + "\" -- \"" + node2name(cur.target, dns) + "\" [weight=" + cur.metric + "]" + a);
             }
             if (!nets) {
                 continue;
             }
             for (int i = 0; i < ntry.prfAdd.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.prfAdd.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
             for (int i = 0; i < ntry.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.prfFix.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
             for (int i = 0; i < ntry.othAdd.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.othAdd.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
             for (int i = 0; i < ntry.othFix.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.othFix.get(i);
-                res.add("  \"" + ntry + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
             }
         }
         res.add(graphEnd1);
