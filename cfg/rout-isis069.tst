@@ -13,6 +13,7 @@ router isis4 1
  is-type level2
  red conn
  afi-other enable
+ no afi-other metric-wide
  afi-other red conn
  exit
 int lo1
@@ -43,6 +44,7 @@ router isis6 1
  is-type level2
  red conn
  afi-other enable
+ no afi-other metric-wide
  afi-other red conn
  exit
 int lo1
@@ -109,6 +111,7 @@ r3 tping 100 20 2.2.2.3 vrf v1
 r3 send conf t
 r3 send router isis4 1
 r3 send no metric-wide
+r3 send no afi-other metric-wide
 r3 send end
 r3 tping 100 20 2.2.2.3 vrf v1
 

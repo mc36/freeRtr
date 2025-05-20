@@ -598,12 +598,12 @@ public class rtrIsisLevel implements Runnable {
                 if (nei.segrouOth != null) {
                     buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion != ipCor4.protocolVersion, nei.segrouOth.label));
                 }
-                advertiseTlv(pck, lower.putISneigh(nei.rtrID, 0, nei.getMetric(), buf));
+                advertiseTlv(pck, lower.putISneigh(lower.metricWide, lower.multiTopo, nei.rtrID, 0, nei.getMetric(), buf));
                 if (subs) {
                     advertiseTlv(pck, rtrIsisTe.putSrlg(lower, nei.rtrID, 0, ifc.iface.addr, nei.ifcAddr, ifc.teSrlg));
                 }
             } else {
-                advertiseTlv(pck, lower.putISneigh(nei.rtrID, 0, 0, new byte[0]));
+                advertiseTlv(pck, lower.putISneigh(lower.metricWide, lower.multiTopo, nei.rtrID, 0, 0, new byte[0]));
             }
         }
     }
@@ -618,7 +618,7 @@ public class rtrIsisLevel implements Runnable {
         if (subs) {
             buf = rtrIsisTe.putSubs(lower, ifc, null);
         }
-        advertiseTlv(pck, lower.putISneigh(ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.metric, buf));
+        advertiseTlv(pck, lower.putISneigh(lower.metricWide, lower.multiTopo, ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.metric, buf));
         if (subs) {
             advertiseTlv(pck, rtrIsisTe.putSrlg(lower, ifc.getDisAddr(level), ifc.getDisCirc(level), ifc.iface.addr, null, ifc.teSrlg));
         }
@@ -631,7 +631,7 @@ public class rtrIsisLevel implements Runnable {
         if (buf != null) {
             advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
         }
-        advertiseTlv(p, lower.putISneigh(lower.routerID, 0, 0, new byte[0]));
+        advertiseTlv(p, lower.putISneigh(lower.metricWide, lower.multiTopo, lower.routerID, 0, 0, new byte[0]));
         createNeighs(p, ifc, false);
         advertiseLsp(p);
     }
@@ -661,7 +661,7 @@ public class rtrIsisLevel implements Runnable {
         }
     }
 
-    private void doPrefs(boolean other, packHolder pck, tabRoute<addrIP> fl) {
+    private void doPrefs(boolean other, boolean wide, boolean multi, packHolder pck, tabRoute<addrIP> fl) {
         for (int i = 0; i < fl.size(); i++) {
             tabRouteEntry<addrIP> ntry = fl.get(i);
             if (ntry == null) {
@@ -677,7 +677,7 @@ public class rtrIsisLevel implements Runnable {
             if (bierEna && (ntry.best.bierIdx > 0)) {
                 subs = bits.byteConcat(subs, rtrIsisBr.putPref(lower, ntry.best.bierIdx, ntry.best.bierSub));
             }
-            advertiseTlv(pck, lower.putAddrReach(other, ntry.prefix, ntry.best.rouSrc, ntry.best.metric, subs));
+            advertiseTlv(pck, lower.putAddrReach(other, wide, multi, ntry.prefix, ntry.best.rouSrc, ntry.best.metric, subs));
         }
     }
 
@@ -789,13 +789,13 @@ public class rtrIsisLevel implements Runnable {
         }
         tabRoute<addrIP> fl = new tabRoute<addrIP>("fl");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, fl, rs, true, roumapInto, roupolInto, prflstInto);
-        doPrefs(false, pck, fl);
+        doPrefs(false, lower.metricWide, lower.multiTopo, pck, fl);
         if (!lower.other.enabled) {
             return;
         }
         fl = new tabRoute<addrIP>("fl");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, fl, os, true, oroumapInto, oroupolInto, oprflstInto);
-        doPrefs(true, pck, fl);
+        doPrefs(true, lower.other.metricWide, lower.other.multiTopo, pck, fl);
     }
 
     private void generateLsps() {
@@ -812,7 +812,7 @@ public class rtrIsisLevel implements Runnable {
             advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
         }
         advertiseTlv(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst(lower.other.enabled));
-        if (lower.multiTopo) {
+        if (lower.multiTopo || lower.other.multiTopo) {
             int i = getFlagsVal();
             int o = 0;
             if ((i & rtrIsisLsp.flgOver) != 0) {
@@ -924,7 +924,7 @@ public class rtrIsisLevel implements Runnable {
                     spf.addConn(trg, src, 0, false, stub, null);
                     continue;
                 }
-                tabGen<rtrIsisLsp> nel = lower.getISneigh(tlv);
+                tabGen<rtrIsisLsp> nel = lower.getISneigh(lower.metricWide, lower.multiTopo, tlv);
                 if (nel != null) {
                     for (int o = 0; o < nel.size(); o++) {
                         rtrIsisLsp nei = nel.get(o);
@@ -935,7 +935,7 @@ public class rtrIsisLevel implements Runnable {
                     }
                     continue;
                 }
-                tabGen<tabRouteEntry<addrIP>> rou = lower.getAddrReach(false, tlv);
+                tabGen<tabRouteEntry<addrIP>> rou = lower.getAddrReach(false, lower.metricWide, lower.multiTopo, tlv);
                 if (rou != null) {
                     for (int o = 0; o < rou.size(); o++) {
                         tabRouteEntry<addrIP> pref = rou.get(o);
@@ -954,7 +954,7 @@ public class rtrIsisLevel implements Runnable {
                 if (!lower.other.enabled) {
                     continue;
                 }
-                rou = lower.getAddrReach(true, tlv);
+                rou = lower.getAddrReach(true, lower.other.metricWide, lower.other.multiTopo, tlv);
                 if (rou == null) {
                     continue;
                 }

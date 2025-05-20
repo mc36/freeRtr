@@ -12,6 +12,7 @@ router isis4 1
  multi-topology
  red conn
  afi-other enable
+ afi-other multi-topology
  afi-other red conn
  exit
 int lo1
@@ -41,6 +42,7 @@ router isis4 1
  multi-topology
  red conn
  afi-other enable
+ afi-other multi-topology
  afi-other red conn
  exit
 int lo1
@@ -106,6 +108,7 @@ r3 tping 100 20 2.2.2.3 vrf v1
 r3 send conf t
 r3 send router isis4 1
 r3 send multi-topology
+r3 send afi-other multi-topology
 r3 send end
 r3 tping 100 20 2.2.2.3 vrf v1
 

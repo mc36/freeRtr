@@ -25,6 +25,16 @@ public class rtrIsisOther extends ipRtr {
     public boolean enabled;
 
     /**
+     * use wide metric
+     */
+    public boolean metricWide;
+
+    /**
+     * use multi topology
+     */
+    public boolean multiTopo;
+
+    /**
      * external distance
      */
     public int distantExt;
@@ -74,6 +84,7 @@ public class rtrIsisOther extends ipRtr {
         parent = p;
         distantExt = 115;
         distantInt = 115;
+        metricWide = true;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
@@ -147,15 +158,14 @@ public class rtrIsisOther extends ipRtr {
      *
      * @param l list to append
      * @param beg beginning
+     * @param afi afi name
      */
-    public void getConfig(List<String> l, String beg) {
-        if (enabled) {
-            l.add(beg + "enable");
-        } else {
-            l.add(cmds.tabulator + cmds.negated + beg + "enable");
-        }
-        l.add(beg + "distance " + distantInt + " " + distantExt);
-        cfgRtr.getShRedist(l, beg, this);
+    public void getConfig(List<String> l, String beg, String afi) {
+        cmds.cfgLine(l, !enabled, beg, afi + "enable", "");
+        cmds.cfgLine(l, !metricWide, beg, afi + "metric-wide", "");
+        cmds.cfgLine(l, !multiTopo, beg, afi + "multi-topology", "");
+        l.add(beg + afi + "distance " + distantInt + " " + distantExt);
+        cfgRtr.getShRedist(l, beg + afi, this);
     }
 
     /**

@@ -631,13 +631,15 @@ public class rtrIsis extends ipRtr {
      * read reachable addresses
      *
      * @param other other afi
+     * @param wide wide metric
+     * @param multi multi topology
      * @param tlv tlv to read
      * @return addresses, null if nothing
      */
-    protected tabGen<tabRouteEntry<addrIP>> getAddrReach(boolean other, encTlv tlv) {
+    protected tabGen<tabRouteEntry<addrIP>> getAddrReach(boolean other, boolean wide, boolean multi, encTlv tlv) {
         tabGen<tabRouteEntry<addrIP>> l = new tabGen<tabRouteEntry<addrIP>>();
         if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
-            if (multiTopo) {
+            if (multi) {
                 if (tlv.valTyp != rtrIsisLsp.tlvMtIpv6reach) {
                     return null;
                 }
@@ -661,7 +663,7 @@ public class rtrIsis extends ipRtr {
             }
             return l;
         }
-        if (multiTopo) {
+        if (multi) {
             if (tlv.valTyp != rtrIsisLsp.tlvMtIpv4reach) {
                 return null;
             }
@@ -675,7 +677,7 @@ public class rtrIsis extends ipRtr {
             }
             return l;
         }
-        if (metricWide) {
+        if (wide) {
             if (tlv.valTyp != rtrIsisLsp.tlvExtIpv4reach) {
                 return null;
             }
@@ -781,18 +783,20 @@ public class rtrIsis extends ipRtr {
      * write reachable address
      *
      * @param other other afi
+     * @param wide wide metric
+     * @param multi multi topology
      * @param pref address to write
      * @param flg flags, 1=ext, 2=updown
      * @param met metric
      * @param subs subtlvs
      * @return generated tlv
      */
-    protected encTlv putAddrReach(boolean other, addrPrefix<addrIP> pref, int flg, int met, byte[] subs) {
+    protected encTlv putAddrReach(boolean other, boolean wide, boolean multi, addrPrefix<addrIP> pref, int flg, int met, byte[] subs) {
         final boolean down = (flg & 2) != 0;
         final boolean ext = (flg & 1) != 0;
         encTlv tlv = getTlv();
         if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
-            if (multiTopo) {
+            if (multi) {
                 bits.msbPutW(tlv.valDat, 0, getMTopoVal(other));
                 putAddrReach6(tlv, 2, addrPrefix.ip2ip6(pref), ext, down, met, subs);
                 tlv.valTyp = rtrIsisLsp.tlvMtIpv6reach;
@@ -802,13 +806,13 @@ public class rtrIsis extends ipRtr {
             tlv.valTyp = rtrIsisLsp.tlvIpv6reach;
             return tlv;
         }
-        if (multiTopo) {
+        if (multi) {
             bits.msbPutW(tlv.valDat, 0, getMTopoVal(other));
             putAddrReach4(tlv, 2, addrPrefix.ip2ip4(pref), down, met, subs);
             tlv.valTyp = rtrIsisLsp.tlvMtIpv4reach;
             return tlv;
         }
-        if (metricWide) {
+        if (wide) {
             putAddrReach4(tlv, 0, addrPrefix.ip2ip4(pref), down, met, subs);
             tlv.valTyp = rtrIsisLsp.tlvExtIpv4reach;
             return tlv;
@@ -844,12 +848,14 @@ public class rtrIsis extends ipRtr {
     /**
      * read is neighbors
      *
+     * @param wide wide metric
+     * @param multi multi topology
      * @param tlv tlv to read
      * @return neighbors, null if nothing
      */
-    protected tabGen<rtrIsisLsp> getISneigh(encTlv tlv) {
+    protected tabGen<rtrIsisLsp> getISneigh(boolean wide, boolean multi, encTlv tlv) {
         tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
-        if (multiTopo) {
+        if (multi) {
             switch (tlv.valTyp) {
                 case rtrIsisLsp.tlvMtIsNeigh:
                 case rtrIsisLsp.tlvMtNeighAttr:
@@ -867,7 +873,7 @@ public class rtrIsis extends ipRtr {
             }
             return l;
         }
-        if (metricWide) {
+        if (wide) {
             switch (tlv.valTyp) {
                 case rtrIsisLsp.tlvExtIsNeigh:
                 case rtrIsisLsp.tlvIsNeighAttr:
@@ -907,21 +913,23 @@ public class rtrIsis extends ipRtr {
     /**
      * write is neighbor
      *
+     * @param wide wide metric
+     * @param multi multi topology
      * @param nei neighbor address
      * @param nod node address
      * @param met metric
      * @param subs subtlvs
      * @return generated tlv
      */
-    protected encTlv putISneigh(addrIsis nei, int nod, int met, byte[] subs) {
+    protected encTlv putISneigh(boolean wide, boolean multi, addrIsis nei, int nod, int met, byte[] subs) {
         encTlv tlv = getTlv();
-        if (multiTopo) {
+        if (multi) {
             bits.msbPutW(tlv.valDat, 0, getMTopoVal(false));
             putISneighE(tlv, 2, nei, nod, met, subs);
             tlv.valTyp = rtrIsisLsp.tlvMtIsNeigh;
             return tlv;
         }
-        if (metricWide) {
+        if (wide) {
             putISneighE(tlv, 0, nei, nod, met, subs);
             tlv.valTyp = rtrIsisLsp.tlvExtIsNeigh;
             return tlv;
@@ -1153,6 +1161,8 @@ public class rtrIsis extends ipRtr {
         l.add(null, "2 .     both                      area and station router");
         l.add(null, "1 2   afi-other                   select other to advertise");
         l.add(null, "2 .     enable                    enable processing");
+        l.add(null, "2 .     metric-wide               advertise wide metrics");
+        l.add(null, "2 .     multi-topology            advertise multi topology");
         l.add(null, "2 3   distance                    specify default distance");
         l.add(null, "3 4     <num>                     intra-area distance");
         l.add(null, "4 .       <num>                   external distance");
@@ -1267,7 +1277,7 @@ public class rtrIsis extends ipRtr {
         l.add(beg + "distance " + distantInt + " " + distantExt);
         getConfig(level2, l, beg, filter);
         getConfig(level1, l, beg, filter);
-        other.getConfig(l, beg + "afi-other ");
+        other.getConfig(l, beg, "afi-other ");
         for (int i = 0; i < srv6.size(); i++) {
             l.add(beg + "srv6 " + srv6.get(i).name);
         }
@@ -1402,6 +1412,17 @@ public class rtrIsis extends ipRtr {
                 genLsps(3);
                 return false;
             }
+            if (s.equals("metric-wide")) {
+                other.metricWide = true;
+                genLsps(3);
+                return false;
+            }
+            if (s.equals("multi-topology")) {
+                other.multiTopo = true;
+                other.metricWide = true;
+                genLsps(3);
+                return false;
+            }
             if (s.equals("distance")) {
                 other.distantInt = bits.str2num(cmd.word());
                 other.distantExt = bits.str2num(cmd.word());
@@ -1489,6 +1510,17 @@ public class rtrIsis extends ipRtr {
             s = cmd.word();
             if (s.equals("enable")) {
                 other.unregister2ip();
+                genLsps(3);
+                return false;
+            }
+            if (s.equals("metric-wide")) {
+                other.metricWide = false;
+                other.multiTopo = false;
+                genLsps(3);
+                return false;
+            }
+            if (s.equals("multi-topology")) {
+                other.multiTopo = false;
                 genLsps(3);
                 return false;
             }

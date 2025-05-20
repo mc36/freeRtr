@@ -1556,7 +1556,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     private void writeHelloTlvs(packHolder pck, int typ) {
         encTlv tlv = rtrIsis.getTlv();
         tlv.putBytes(pck, rtrIsisLsp.tlvProtSupp, lower.getNLPIDlst(otherEna));
-        if (lower.multiTopo) {
+        if (lower.multiTopo || lower.other.multiTopo) {
             tlv.putBytes(pck, rtrIsisLsp.tlvMultiTopo, lower.getMTopoLst(otherEna, 0));
         }
         tlv.putBytes(pck, rtrIsisLsp.tlvAreaAddr, lower.areaID.getAddrDat(true));
