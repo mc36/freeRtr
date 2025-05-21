@@ -1478,11 +1478,21 @@ public class spfCalc<Ta extends addrType> {
         return b.substring(0, b.length() - dns.length());
     }
 
+    private float convertCoord(float f) {
+        int d = (int) f;
+        int m = (int) ((f * 100.0f)) % 100;
+        float s = (f * 10000.0f) % 10000.0f;
+        return d + (m / 60.0f) + (s / 3600.0f);
+    }
+
     private String convertLoc(String a) {
         if (a == null) {
             return null;
         }
         int i = a.indexOf(" ");
+        if (i < 0) {
+            return null;
+        }
         float x, y;
         try {
             x = Float.parseFloat(a.substring(0, i));
@@ -1490,9 +1500,7 @@ public class spfCalc<Ta extends addrType> {
         } catch (Exception e) {
             return null;
         }
-        x = (x - 47.0f) * 500.0f;
-        y = (y - 17.0f) * 500.0f;
-        return x + "," + y;
+        return convertCoord(x) + "," + convertCoord(y);
     }
 
     /**
