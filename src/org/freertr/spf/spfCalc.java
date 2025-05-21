@@ -1478,6 +1478,23 @@ public class spfCalc<Ta extends addrType> {
         return b.substring(0, b.length() - dns.length());
     }
 
+    private String convertLoc(String a) {
+        if (a == null) {
+            return null;
+        }
+        int i = a.indexOf(" ");
+        float x, y;
+        try {
+            x = Float.parseFloat(a.substring(0, i));
+            y = Float.parseFloat(a.substring(i + 1, a.length()));
+        } catch (Exception e) {
+            return null;
+        }
+        x = (x - 47.0f) * 500.0f;
+        y = (y - 17.0f) * 500.0f;
+        return x + "," + y;
+    }
+
     /**
      * list graphviz
      *
@@ -1537,8 +1554,8 @@ public class spfCalc<Ta extends addrType> {
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, nam + "." + locs, false, packDnsRec.typeTXT);
                 String a = clnt.getTXT();
+                a = convertLoc(a);
                 if (a != null) {
-                    a = a.replace(" ", ",");
                     res.add("\"" + ntry + "\" [pin=true pos=\"" + a + "\"]");
                 }
             }
