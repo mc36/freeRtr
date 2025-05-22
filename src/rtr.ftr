@@ -1,4 +1,3 @@
-qc pass: unnamed
 qc pass: dummy test
 qc pass: interface with slot
 qc pass: subinterface with slot
@@ -1027,6 +1026,7 @@ qc pass: interop1: isis te with pcep
 qc pass: interop1: integrated isis
 qc pass: interop1: isis md5 authentication
 qc pass: interop1: isis lsp md5 authentication
+qc pass: interop1: integrated isis multi-topology
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -1124,6 +1124,7 @@ qc pass: interop2: integrated isis
 qc pass: interop2: isis bidir te
 qc pass: interop2: isis md5 authentication
 qc pass: interop2: isis lsp md5 authentication
+qc pass: interop2: integrated isis multi-topology
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -1184,6 +1185,7 @@ qc pass: interop8: isis lsp text authentication
 qc pass: interop8: isis lsp md5 authentication
 qc pass: interop8: isis md5 authentication
 qc pass: interop8: isis multi-topology
+qc pass: interop8: integrated isis multi-topology
 qc pass: interop8: ldp lsp
 qc pass: interop8: ldp php lsp
 qc pass: interop8: igmp3/mld2
@@ -1239,6 +1241,7 @@ qc pass: interop9: isis lsp md5 authentication
 qc pass: interop9: isis text authentication
 qc pass: interop9: isis md5 authentication
 qc pass: interop9: isis multi-topology
+qc pass: interop9: integrated isis multi-topology
 qc pass: interop9: ldp lsp
 qc pass: interop9: ethernet over mpls
 qc pass: interop9: ldp p2mp lsp

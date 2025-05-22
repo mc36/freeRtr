@@ -1,8 +1,7 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.22-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-22 06:11:23, took 00:15:39, with 50 workers, on 3727 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2025-05-22 08:18:10, took 00:16:22, with 50 workers, on 3730 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, null
-http://sources.freertr.org/cfg/.#rout-isis092.tst;.#rout-isis092.tst;success;unnamed
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
 http://sources.freertr.org/cfg/basic03.tst;basic03.tst;success;subinterface with slot
@@ -1031,6 +1030,7 @@ http://sources.freertr.org/cfg/intop1-isis13.tst;intop1-isis13.tst;success;inter
 http://sources.freertr.org/cfg/intop1-isis14.tst;intop1-isis14.tst;success;interop1: integrated isis
 http://sources.freertr.org/cfg/intop1-isis15.tst;intop1-isis15.tst;success;interop1: isis md5 authentication
 http://sources.freertr.org/cfg/intop1-isis16.tst;intop1-isis16.tst;success;interop1: isis lsp md5 authentication
+http://sources.freertr.org/cfg/intop1-isis17.tst;intop1-isis17.tst;success;interop1: integrated isis multi-topology
 http://sources.freertr.org/cfg/intop1-l2tp01.tst;intop1-l2tp01.tst;success;interop1: l2tp2 client
 http://sources.freertr.org/cfg/intop1-l2tp02.tst;intop1-l2tp02.tst;success;interop1: l2tp2 server
 http://sources.freertr.org/cfg/intop1-l2tp03.tst;intop1-l2tp03.tst;success;interop1: l2tp3 server
@@ -1128,6 +1128,7 @@ http://sources.freertr.org/cfg/intop2-isis14.tst;intop2-isis14.tst;success;inter
 http://sources.freertr.org/cfg/intop2-isis15.tst;intop2-isis15.tst;success;interop2: isis bidir te
 http://sources.freertr.org/cfg/intop2-isis16.tst;intop2-isis16.tst;success;interop2: isis md5 authentication
 http://sources.freertr.org/cfg/intop2-isis17.tst;intop2-isis17.tst;success;interop2: isis lsp md5 authentication
+http://sources.freertr.org/cfg/intop2-isis18.tst;intop2-isis18.tst;success;interop2: integrated isis multi-topology
 http://sources.freertr.org/cfg/intop2-ldp01.tst;intop2-ldp01.tst;success;interop2: ldp lsp
 http://sources.freertr.org/cfg/intop2-ldp02.tst;intop2-ldp02.tst;success;interop2: ethernet over mpls
 http://sources.freertr.org/cfg/intop2-ldp03.tst;intop2-ldp03.tst;success;interop2: ldp p2mp lsp
@@ -1188,6 +1189,7 @@ http://sources.freertr.org/cfg/intop8-isis08.tst;intop8-isis08.tst;success;inter
 http://sources.freertr.org/cfg/intop8-isis09.tst;intop8-isis09.tst;success;interop8: isis lsp md5 authentication
 http://sources.freertr.org/cfg/intop8-isis10.tst;intop8-isis10.tst;success;interop8: isis md5 authentication
 http://sources.freertr.org/cfg/intop8-isis11.tst;intop8-isis11.tst;success;interop8: isis multi-topology
+http://sources.freertr.org/cfg/intop8-isis12.tst;intop8-isis12.tst;success;interop8: integrated isis multi-topology
 http://sources.freertr.org/cfg/intop8-ldp01.tst;intop8-ldp01.tst;success;interop8: ldp lsp
 http://sources.freertr.org/cfg/intop8-ldp02.tst;intop8-ldp02.tst;success;interop8: ldp php lsp
 http://sources.freertr.org/cfg/intop8-mcast01.tst;intop8-mcast01.tst;success;interop8: igmp3/mld2
@@ -1243,6 +1245,7 @@ http://sources.freertr.org/cfg/intop9-isis12.tst;intop9-isis12.tst;success;inter
 http://sources.freertr.org/cfg/intop9-isis13.tst;intop9-isis13.tst;success;interop9: isis text authentication
 http://sources.freertr.org/cfg/intop9-isis14.tst;intop9-isis14.tst;success;interop9: isis md5 authentication
 http://sources.freertr.org/cfg/intop9-isis15.tst;intop9-isis15.tst;success;interop9: isis multi-topology
+http://sources.freertr.org/cfg/intop9-isis16.tst;intop9-isis16.tst;success;interop9: integrated isis multi-topology
 http://sources.freertr.org/cfg/intop9-ldp01.tst;intop9-ldp01.tst;success;interop9: ldp lsp
 http://sources.freertr.org/cfg/intop9-ldp02.tst;intop9-ldp02.tst;success;interop9: ethernet over mpls
 http://sources.freertr.org/cfg/intop9-ldp03.tst;intop9-ldp03.tst;success;interop9: ldp p2mp lsp
