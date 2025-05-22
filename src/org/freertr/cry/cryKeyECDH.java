@@ -195,11 +195,17 @@ public class cryKeyECDH extends cryKeyGeneric {
 
     public boolean keyClntTls(byte[] buf, int ofs) {
         clntPub = cryKeyECpoint.fromBytesTls(curve, buf, ofs);
+        if (clntPub == null) {
+            return true;
+        }
         return false;
     }
 
     public boolean keyServTls(byte[] buf, int ofs) {
         servPub = cryKeyECpoint.fromBytesTls(curve, buf, ofs);
+        if (servPub == null) {
+            return true;
+        }
         return false;
     }
 
@@ -235,11 +241,17 @@ public class cryKeyECDH extends cryKeyGeneric {
 
     public boolean keyClntIke(byte[] buf, int ofs) {
         clntPub = cryKeyECpoint.fromBytesIke(curve, buf, ofs);
+        if (clntPub == null) {
+            return true;
+        }
         return false;
     }
 
     public boolean keyServIke(byte[] buf, int ofs) {
         servPub = cryKeyECpoint.fromBytesIke(curve, buf, ofs);
+        if (servPub == null) {
+            return true;
+        }
         return false;
     }
 
