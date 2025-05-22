@@ -24,6 +24,7 @@ router isis4 1
  both segrout
  red conn
  afi-other enable
+ afi-other multi-topology
  afi-other red conn
  exit
 int lo1
@@ -73,6 +74,7 @@ router isis4 1
  both segrout
  red conn
  afi-other enable
+ afi-other multi-topology
  afi-other red conn
  exit
 int lo1
@@ -131,6 +133,7 @@ router isis4 1
  both segrout
  red conn
  afi-other enable
+ afi-other multi-topology
  afi-other red conn
  exit
 int lo1
