@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.5.18-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-19 02:50:51, took 00:03:11, with 10 workers, on 43 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v25.5.22-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-05-23 03:54:13, took 00:03:27, with 10 workers, on 45 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, frr
 http://sources.freertr.org/cfg/intop8-bgp01.tst;intop8-bgp01.tst;success;interop8: ebgp
 http://sources.freertr.org/cfg/intop8-bgp02.tst;intop8-bgp02.tst;success;interop8: ibgp
@@ -31,6 +31,8 @@ http://sources.freertr.org/cfg/intop8-isis07.tst;intop8-isis07.tst;success;inter
 http://sources.freertr.org/cfg/intop8-isis08.tst;intop8-isis08.tst;success;interop8: isis lsp text authentication
 http://sources.freertr.org/cfg/intop8-isis09.tst;intop8-isis09.tst;success;interop8: isis lsp md5 authentication
 http://sources.freertr.org/cfg/intop8-isis10.tst;intop8-isis10.tst;success;interop8: isis md5 authentication
+http://sources.freertr.org/cfg/intop8-isis11.tst;intop8-isis11.tst;success;interop8: isis multi-topology
+http://sources.freertr.org/cfg/intop8-isis12.tst;intop8-isis12.tst;success;interop8: integrated isis multi-topology
 http://sources.freertr.org/cfg/intop8-ldp01.tst;intop8-ldp01.tst;success;interop8: ldp lsp
 http://sources.freertr.org/cfg/intop8-ldp02.tst;intop8-ldp02.tst;success;interop8: ldp php lsp
 http://sources.freertr.org/cfg/intop8-mcast01.tst;intop8-mcast01.tst;success;interop8: igmp3/mld2
