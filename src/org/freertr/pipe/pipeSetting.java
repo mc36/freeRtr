@@ -146,6 +146,7 @@ public class pipeSetting implements Comparable<pipeSetting> {
         userFormat l = new userFormat("|", "category|value");
         l.add("buggy|" + cfgAll.buggy);
         l.add("invdc|" + cfgAll.invdc);
+        l.add("timeout|" + pip.getTime());
         l.add("evalvdc|" + cfgAll.evalVdcPrivs());
         l.add("authenticate|" + pip.settingsGet(pipeSetting.authed, new authResult()));
         l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));

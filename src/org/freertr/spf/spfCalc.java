@@ -1478,7 +1478,7 @@ public class spfCalc<Ta extends addrType> {
         return b.substring(0, b.length() - dns.length());
     }
 
-    private String convertLoc(String a) {
+    private String[] convertLoc(String a) {
         if (a == null) {
             return null;
         }
@@ -1486,7 +1486,18 @@ public class spfCalc<Ta extends addrType> {
         if (i < 0) {
             return null;
         }
-        return a.substring(i + 1, a.length()) + "," + a.substring(0, i);
+        String[] res = new String[2];
+        res[0] = a.substring(i + 1, a.length());
+        res[1] = a.substring(0, i);
+        return res;
+    }
+
+    private float convertFlt(String a) {
+        try {
+            return Float.parseFloat(a);
+        } catch (Exception e) {
+            return 0.0f;
+        }
     }
 
     /**
@@ -1502,6 +1513,10 @@ public class spfCalc<Ta extends addrType> {
         boolean nets = false;
         boolean ints = false;
         String locs = null;
+        float recBX = Float.MIN_VALUE;
+        float recBY = Float.MIN_VALUE;
+        float recEX = Float.MAX_VALUE;
+        float recEY = Float.MAX_VALUE;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -1531,6 +1546,13 @@ public class spfCalc<Ta extends addrType> {
                 locs = cmd.word();
                 continue;
             }
+            if (a.equals("rect")) {
+                recBX = convertFlt(cmd.word());
+                recBY = convertFlt(cmd.word());
+                recEX = convertFlt(cmd.word());
+                recEY = convertFlt(cmd.word());
+                continue;
+            }
         }
         List<String> res = new ArrayList<String>();
         if (cli) {
@@ -1548,10 +1570,25 @@ public class spfCalc<Ta extends addrType> {
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, nam + "." + locs, false, packDnsRec.typeTXT);
                 String a = clnt.getTXT();
-                a = convertLoc(a);
-                if (a != null) {
-                    res.add("\"" + ntry + "\" [pin=true pos=\"" + a + "\"]");
+                String[] p = convertLoc(a);
+                if (p == null) {
+                    continue;
                 }
+                float x = convertFlt(p[0]);
+                float y = convertFlt(p[1]);
+                if (x < recBX) {
+                    continue;
+                }
+                if (y < recBY) {
+                    continue;
+                }
+                if (x > recEX) {
+                    continue;
+                }
+                if (y > recEY) {
+                    continue;
+                }
+                res.add("\"" + ntry + "\" [pin=true pos=\"" + p[0] + "," + p[1] + "\"]");
             }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cur = ntry.conn.get(i);
