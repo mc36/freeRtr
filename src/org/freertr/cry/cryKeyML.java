@@ -1,0 +1,828 @@
+package org.freertr.cry;
+
+/**
+ * module lattice key exchange
+ *
+ * @author matecsaba
+ */
+import org.freertr.util.bits;
+
+class cryKeyML {
+
+    public final static int KyberN = 256;
+
+    public final static int KyberQ = 3329;
+
+    public final static int KyberQinv = 62209;
+
+    public final static int KyberSymBytes = 32;
+
+    public final static int KyberPolyBytes = 384;
+
+    public final static int KyberEta2 = 2;
+
+    public final int sessionKeyLength = 32;
+
+    public final int KyberK;
+
+    public final int KyberEta1;
+
+    public final int KyberPolyVecBytes;
+
+    public final int KyberPolyCompressedBytes;
+
+    public final int KyberPolyVecCompressedBytes;
+
+    public final int KyberIndCpaPublicKeyBytes;
+
+    public static final cryKeyML ml_kem_512 = new cryKeyML(2);
+
+    public static final cryKeyML ml_kem_768 = new cryKeyML(3);
+
+    public static final cryKeyML ml_kem_1024 = new cryKeyML(4);
+
+    private cryKeyML(int k) {
+        KyberK = k;
+        switch (k) {
+            case 2:
+                KyberEta1 = 3;
+                KyberPolyCompressedBytes = 128;
+                KyberPolyVecCompressedBytes = k * 320;
+                break;
+            case 3:
+                KyberEta1 = 2;
+                KyberPolyCompressedBytes = 128;
+                KyberPolyVecCompressedBytes = k * 320;
+                break;
+            case 4:
+                KyberEta1 = 2;
+                KyberPolyCompressedBytes = 160;
+                KyberPolyVecCompressedBytes = k * 352;
+                break;
+            default:
+                throw new IllegalArgumentException("K: " + k + " is not supported for Crystals Kyber");
+        }
+        KyberPolyVecBytes = k * KyberPolyBytes;
+        KyberIndCpaPublicKeyBytes = KyberPolyVecBytes + KyberSymBytes;
+    }
+
+    /**
+     * generate key pair
+     *
+     * @return bytes
+     */
+    public byte[][] generateKemKeyPair() {
+        byte[] d = new byte[KyberSymBytes];
+        byte[] z = new byte[KyberSymBytes];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = (byte) bits.randomB();
+            z[i] = (byte) bits.randomB();
+        }
+        return generateKemKeyPairInternal(d, z);
+    }
+
+    private byte[][] generateKemKeyPairInternal(byte[] d, byte[] z) {
+        byte[][] indCpaKeyPair = generateKeyPair(d);
+        byte[] s = new byte[KyberPolyVecBytes];
+        bits.byteCopy(indCpaKeyPair[1], 0, s, 0, KyberPolyVecBytes);
+        byte[] hashedPublicKey = new byte[32];
+        symmetricHashH(hashedPublicKey, indCpaKeyPair[0], 0);
+        byte[] outputPublicKey = new byte[KyberIndCpaPublicKeyBytes];
+        bits.byteCopy(indCpaKeyPair[0], 0, outputPublicKey, 0, KyberIndCpaPublicKeyBytes);
+        byte[] t = new byte[outputPublicKey.length - 32];
+        bits.byteCopy(outputPublicKey, 0, t, 0, t.length);
+        byte[] r = new byte[32];
+        bits.byteCopy(outputPublicKey, t.length, r, 0, r.length);
+        return new byte[][]{t, r, s, hashedPublicKey, z};
+    }
+
+    private byte[][] kemEncryptInternal(byte[] publicKeyInput, byte[] randBytes) {
+        byte[] buf = new byte[2 * KyberSymBytes];
+        byte[] kr = new byte[2 * KyberSymBytes];
+        bits.byteCopy(randBytes, 0, buf, 0, KyberSymBytes);
+        symmetricHashH(buf, publicKeyInput, KyberSymBytes);
+        symmetricHashG(kr, buf);
+        byte[] msg = new byte[KyberSymBytes];
+        bits.byteCopy(buf, 0, msg, 0, msg.length);
+        byte[] coins = new byte[kr.length - 32];
+        bits.byteCopy(kr, 32, coins, 0, coins.length);
+        cryMLpolyVec sp = new cryMLpolyVec(this);
+        cryMLpolyVec publicKeyPolyVec = new cryMLpolyVec(this);
+        cryMLpolyVec errorPolyVector = new cryMLpolyVec(this);
+        cryMLpolyVec bp = new cryMLpolyVec(this);
+        cryMLpolyVec[] aMatrixTranspose = new cryMLpolyVec[KyberK];
+        cryMLpolyOne errorPoly = new cryMLpolyOne(this);
+        cryMLpolyOne v = new cryMLpolyOne(this);
+        cryMLpolyOne k = new cryMLpolyOne(this);
+        byte[] seed = unpackPublicKey(publicKeyPolyVec, publicKeyInput);
+        k.fromMsg(msg);
+        for (int i = 0; i < KyberK; i++) {
+            aMatrixTranspose[i] = new cryMLpolyVec(this);
+        }
+        generateMatrix(aMatrixTranspose, seed, true);
+        byte nonce = (byte) 0;
+        for (int i = 0; i < KyberK; i++) {
+            sp.vec[i].getEta1Noise(coins, nonce);
+            nonce = (byte) (nonce + (byte) 1);
+        }
+        for (int i = 0; i < KyberK; i++) {
+            errorPolyVector.vec[i].getEta2Noise(coins, nonce);
+            nonce = (byte) (nonce + (byte) 1);
+        }
+        errorPoly.getEta2Noise(coins, nonce);
+        sp.polyVecNtt();
+        for (int i = 0; i < KyberK; i++) {
+            bp.vec[i].pointwiseAccountMontgomery(aMatrixTranspose[i], sp, this);
+        }
+        v.pointwiseAccountMontgomery(publicKeyPolyVec, sp, this);
+        bp.polyVecInverseNttToMont();
+        v.polyInverseNttToMont();
+        bp.addPoly(errorPolyVector);
+        v.addCoeffs(errorPoly);
+        v.addCoeffs(k);
+        bp.reducePoly();
+        v.reduce();
+        byte[] outputCipherText = packCipherText(bp, v);
+        byte[] outputSharedSecret = new byte[sessionKeyLength];
+        bits.byteCopy(kr, 0, outputSharedSecret, 0, outputSharedSecret.length);
+        return new byte[][]{outputSharedSecret, outputCipherText};
+    }
+
+    private byte[] kemDecryptInternal(byte[] secretKey, byte[] cipherText) {
+        byte[] buf = new byte[2 * KyberSymBytes];
+        byte[] kr = new byte[2 * KyberSymBytes];
+        cryMLpolyVec bp = new cryMLpolyVec(this);
+        cryMLpolyVec secretKeyPolyVec = new cryMLpolyVec(this);
+        cryMLpolyOne v = new cryMLpolyOne(this);
+        cryMLpolyOne mp = new cryMLpolyOne(this);
+        unpackCipherText(bp, v, cipherText);
+        unpackSecretKey(secretKeyPolyVec, secretKey);
+        bp.polyVecNtt();
+        mp.pointwiseAccountMontgomery(secretKeyPolyVec, bp, this);
+        mp.polyInverseNttToMont();
+        mp.polySubtract(v);
+        mp.reduce();
+        bits.byteCopy(mp.toMsg(), 0, buf, 0, KyberSymBytes);
+        bits.byteCopy(secretKey, KyberPolyVecBytes + KyberIndCpaPublicKeyBytes, buf, KyberSymBytes, KyberSymBytes);
+        symmetricHashG(kr, buf);
+        buf = new byte[sessionKeyLength];
+        bits.byteCopy(kr, 0, buf, 0, buf.length);
+        return buf;
+    }
+
+    public byte[] kemDecrypt(byte[] secretKey, byte[] cipherText) {
+        return kemDecryptInternal(secretKey, cipherText);
+    }
+
+    public byte[][] kemEncrypt(byte[] publicKeyInput) {
+        byte[] randBytes = new byte[32];
+        for (int i = 0; i < randBytes.length; i++) {
+            randBytes[i] = (byte) bits.randomB();
+        }
+        return kemEncrypt(publicKeyInput, randBytes);
+    }
+
+    private byte[][] kemEncrypt(byte[] publicKeyInput, byte[] randBytes) {
+        cryMLpolyVec polyVec = new cryMLpolyVec(this);
+        byte[] seed = unpackPublicKey(polyVec, publicKeyInput);
+        byte[] ek = packPublicKey(polyVec, seed);
+        return kemEncryptInternal(publicKeyInput, randBytes);
+    }
+
+    private byte[][] generateKeyPair(byte[] d) {
+        cryMLpolyVec secretKey = new cryMLpolyVec(this);
+        cryMLpolyVec publicKey = new cryMLpolyVec(this);
+        cryMLpolyVec e = new cryMLpolyVec(this);
+        byte[] buf = new byte[64];
+        symmetricHashG(buf, bits.byteConcat(d, new byte[]{(byte) KyberK}));
+        byte[] publicSeed = new byte[32];
+        byte[] noiseSeed = new byte[32];
+        bits.byteCopy(buf, 0, publicSeed, 0, 32);
+        bits.byteCopy(buf, 32, noiseSeed, 0, 32);
+        byte count = (byte) 0;
+        cryMLpolyVec[] aMatrix = new cryMLpolyVec[KyberK];
+        for (int i = 0; i < KyberK; i++) {
+            aMatrix[i] = new cryMLpolyVec(this);
+        }
+        generateMatrix(aMatrix, publicSeed, false);
+        for (int i = 0; i < KyberK; i++) {
+            secretKey.vec[i].getEta1Noise(noiseSeed, count);
+            count = (byte) (count + (byte) 1);
+        }
+        for (int i = 0; i < KyberK; i++) {
+            e.vec[i].getEta1Noise(noiseSeed, count);
+            count = (byte) (count + (byte) 1);
+        }
+        secretKey.polyVecNtt();
+        e.polyVecNtt();
+        for (int i = 0; i < KyberK; i++) {
+            publicKey.vec[i].pointwiseAccountMontgomery(aMatrix[i], secretKey, this);
+            publicKey.vec[i].convertToMont();
+        }
+        publicKey.addPoly(e);
+        publicKey.reducePoly();
+        return new byte[][]{packPublicKey(publicKey, publicSeed), packSecretKey(secretKey)};
+    }
+
+    private byte[] packCipherText(cryMLpolyVec b, cryMLpolyOne v) {
+        byte[] outBuf = new byte[KyberPolyVecCompressedBytes + KyberPolyCompressedBytes];
+        bits.byteCopy(b.compressPolyVec(), 0, outBuf, 0, KyberPolyVecCompressedBytes);
+        bits.byteCopy(v.compressPoly(), 0, outBuf, KyberPolyVecCompressedBytes, KyberPolyCompressedBytes);
+        return outBuf;
+    }
+
+    private void unpackCipherText(cryMLpolyVec b, cryMLpolyOne v, byte[] cipherText) {
+        byte[] compressedPolyVecCipherText = new byte[KyberPolyVecCompressedBytes];
+        bits.byteCopy(cipherText, 0, compressedPolyVecCipherText, 0, compressedPolyVecCipherText.length);
+        b.decompressPolyVec(compressedPolyVecCipherText);
+        byte[] compressedPolyCipherText = new byte[cipherText.length - KyberPolyVecCompressedBytes];
+        bits.byteCopy(cipherText, KyberPolyVecCompressedBytes, compressedPolyCipherText, 0, compressedPolyCipherText.length);
+        v.decompressPoly(compressedPolyCipherText);
+    }
+
+    private byte[] packPublicKey(cryMLpolyVec publicKeyPolyVec, byte[] seed) {
+        byte[] buf = new byte[KyberIndCpaPublicKeyBytes];
+        bits.byteCopy(publicKeyPolyVec.toBytes(), 0, buf, 0, KyberPolyVecBytes);
+        bits.byteCopy(seed, 0, buf, KyberPolyVecBytes, cryKeyML.KyberSymBytes);
+        return buf;
+    }
+
+    private byte[] unpackPublicKey(cryMLpolyVec publicKeyPolyVec, byte[] publicKey) {
+        byte[] outputSeed = new byte[cryKeyML.KyberSymBytes];
+        publicKeyPolyVec.fromBytes(publicKey);
+        bits.byteCopy(publicKey, KyberPolyVecBytes, outputSeed, 0, cryKeyML.KyberSymBytes);
+        return outputSeed;
+    }
+
+    private byte[] packSecretKey(cryMLpolyVec secretKeyPolyVec) {
+        return secretKeyPolyVec.toBytes();
+    }
+
+    private void unpackSecretKey(cryMLpolyVec secretKeyPolyVec, byte[] secretKey) {
+        secretKeyPolyVec.fromBytes(secretKey);
+    }
+
+    private void symmetricHashH(byte[] out, byte[] in, int outOffset) {
+        cryHashSha3256 h = new cryHashSha3256();
+        h.init();
+        h.update(in, 0, in.length);
+        byte[] buf = h.finish();
+        bits.byteCopy(buf, 0, out, outOffset, buf.length);
+    }
+
+    private void symmetricHashG(byte[] out, byte[] in) {
+        cryHashSha3512 h = new cryHashSha3512();
+        h.init();
+        h.update(in, 0, in.length);
+        byte[] buf = h.finish();
+        bits.byteCopy(buf, 0, out, 0, buf.length);
+    }
+
+    private void generateMatrix(cryMLpolyVec[] aMatrix, byte[] seed, boolean transposed) {
+        int xofBlockBytes = 168;
+        int matrixNBlocks = ((12 * cryKeyML.KyberN / 8 * (1 << 12) / cryKeyML.KyberQ + xofBlockBytes) / xofBlockBytes);
+        byte[] buf = new byte[matrixNBlocks * xofBlockBytes + 2];
+        cryHashSha3256 h = new cryHashSha3256();
+        for (int i = 0; i < KyberK; i++) {
+            for (int j = 0; j < KyberK; j++) {
+                h.init();
+                h.update(seed, 0, seed.length);
+                if (transposed) {
+                    h.update(new byte[]{(byte) i}, 0, 1);
+                    h.update(new byte[]{(byte) j}, 0, 1);
+                } else {
+                    h.update(new byte[]{(byte) j}, 0, 1);
+                    h.update(new byte[]{(byte) i}, 0, 1);
+                }
+                int outLen = matrixNBlocks * xofBlockBytes;
+                for (int outOfs = 0; outOfs < outLen;) {
+                    byte[] res = h.finish();
+                    int o = res.length;
+                    int p = outLen - outOfs;
+                    if (o > p) {
+                        o = p;
+                    }
+                    bits.byteCopy(res, 0, buf, outOfs, o);
+                    outOfs += o;
+                }
+                aMatrix[i].vec[j].rejectionSampling(0, cryKeyML.KyberN, buf, outLen);
+            }
+        }
+    }
+
+}
+
+class cryMLpolyOne {
+
+    public static final short[] nttZetas = new short[]{
+        2285, 2571, 2970, 1812, 1493, 1422, 287, 202, 3158, 622, 1577, 182, 962,
+        2127, 1855, 1468, 573, 2004, 264, 383, 2500, 1458, 1727, 3199, 2648, 1017,
+        732, 608, 1787, 411, 3124, 1758, 1223, 652, 2777, 1015, 2036, 1491, 3047,
+        1785, 516, 3321, 3009, 2663, 1711, 2167, 126, 1469, 2476, 3239, 3058, 830,
+        107, 1908, 3082, 2378, 2931, 961, 1821, 2604, 448, 2264, 677, 2054, 2226,
+        430, 555, 843, 2078, 871, 1550, 105, 422, 587, 177, 3094, 3038, 2869, 1574,
+        1653, 3083, 778, 1159, 3182, 2552, 1483, 2727, 1119, 1739, 644, 2457, 349,
+        418, 329, 3173, 3254, 817, 1097, 603, 610, 1322, 2044, 1864, 384, 2114, 3193,
+        1218, 1994, 2455, 220, 2142, 1670, 2144, 1799, 2051, 794, 1819, 2475, 2459,
+        478, 3221, 3021, 996, 991, 958, 1869, 1522, 1628
+    };
+
+    public static final short[] nttZetasInv = new short[]{
+        1701, 1807, 1460, 2371, 2338, 2333, 308, 108, 2851, 870, 854, 1510, 2535,
+        1278, 1530, 1185, 1659, 1187, 3109, 874, 1335, 2111, 136, 1215, 2945, 1465,
+        1285, 2007, 2719, 2726, 2232, 2512, 75, 156, 3000, 2911, 2980, 872, 2685,
+        1590, 2210, 602, 1846, 777, 147, 2170, 2551, 246, 1676, 1755, 460, 291, 235,
+        3152, 2742, 2907, 3224, 1779, 2458, 1251, 2486, 2774, 2899, 1103, 1275, 2652,
+        1065, 2881, 725, 1508, 2368, 398, 951, 247, 1421, 3222, 2499, 271, 90, 853,
+        1860, 3203, 1162, 1618, 666, 320, 8, 2813, 1544, 282, 1838, 1293, 2314, 552,
+        2677, 2106, 1571, 205, 2918, 1542, 2721, 2597, 2312, 681, 130, 1602, 1871,
+        829, 2946, 3065, 1325, 2756, 1861, 1474, 1202, 2367, 3147, 1752, 2707, 171,
+        3127, 3042, 1907, 1836, 1517, 359, 758, 1441
+    };
+
+    public short[] coeffs;
+
+    private cryKeyML engine;
+
+    public cryMLpolyOne(cryKeyML ng) {
+        coeffs = new short[cryKeyML.KyberN];
+        engine = ng;
+    }
+
+    public void polyNtt() {
+        short[] r = new short[cryKeyML.KyberN];
+        System.arraycopy(coeffs, 0, r, 0, r.length);
+        int j;
+        short t, zeta;
+        int k = 1;
+        for (int i = 128; i >= 2; i >>= 1) {
+            for (int l = 0; l < 256; l = j + i) {
+                zeta = nttZetas[k++];
+                for (j = l; j < l + i; ++j) {
+                    t = factorQMulMont(zeta, r[j + i]);
+                    r[j + i] = (short) (r[j] - t);
+                    r[j] = (short) (r[j] + t);
+                }
+            }
+        }
+        coeffs = r;
+        reduce();
+    }
+
+    public void polyInverseNttToMont() {
+        short[] r = new short[cryKeyML.KyberN];
+        System.arraycopy(coeffs, 0, r, 0, cryKeyML.KyberN);
+        int j;
+        short t, zeta;
+        int k = 0;
+        for (int i = 2; i <= 128; i <<= 1) {
+            for (int l = 0; l < 256; l = j + i) {
+                zeta = nttZetasInv[k++];
+                for (j = l; j < l + i; ++j) {
+                    t = r[j];
+                    r[j] = barretReduce((short) (t + r[j + i]));
+                    r[j + i] = (short) (t - r[j + i]);
+                    r[j + i] = factorQMulMont(zeta, r[j + i]);
+                }
+            }
+        }
+        for (j = 0; j < 256; ++j) {
+            r[j] = factorQMulMont(r[j], nttZetasInv[127]);
+        }
+        coeffs = r;
+    }
+
+    public void reduce() {
+        for (int i = 0; i < cryKeyML.KyberN; i++) {
+            coeffs[i] = barretReduce(coeffs[i]);
+        }
+    }
+
+    public void pointwiseAccountMontgomery(cryMLpolyVec inp1, cryMLpolyVec inp2, cryKeyML engine) {
+        cryMLpolyOne t = new cryMLpolyOne(engine);
+        baseMultMontgomery(inp1.vec[0], inp2.vec[0]);
+        for (int i = 1; i < engine.KyberK; i++) {
+            t.baseMultMontgomery(inp1.vec[i], inp2.vec[i]);
+            addCoeffs(t);
+        }
+        reduce();
+    }
+
+    public void baseMultMontgomery(cryMLpolyOne a, cryMLpolyOne b) {
+        for (int i = 0; i < cryKeyML.KyberN / 4; i++) {
+            baseMultMont(4 * i,
+                    a.coeffs[4 * i], a.coeffs[4 * i + 1],
+                    b.coeffs[4 * i], b.coeffs[4 * i + 1],
+                    nttZetas[64 + i]);
+            baseMultMont(4 * i + 2,
+                    a.coeffs[4 * i + 2], a.coeffs[4 * i + 3],
+                    b.coeffs[4 * i + 2], b.coeffs[4 * i + 3],
+                    (short) (-1 * nttZetas[64 + i]));
+        }
+    }
+
+    public void addCoeffs(cryMLpolyOne b) {
+        for (int i = 0; i < cryKeyML.KyberN; i++) {
+            coeffs[i] = (short) (coeffs[i] + b.coeffs[i]);
+        }
+    }
+
+    public void convertToMont() {
+        final short f = (short) (((long) 1 << 32) % cryKeyML.KyberQ);
+        for (int i = 0; i < cryKeyML.KyberN; i++) {
+            coeffs[i] = montgomeryReduce(coeffs[i] * f);
+        }
+    }
+
+    public byte[] compressPoly() {
+        byte[] t = new byte[8];
+        byte[] r = new byte[engine.KyberPolyCompressedBytes];
+        int count = 0;
+        conditionalSubQ();
+        if (engine.KyberPolyCompressedBytes == 128) {
+            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    int t_j = coeffs[8 * i + j];
+                    t_j <<= 4;
+                    t_j += 1665;
+                    t_j *= 80635;
+                    t_j >>= 28;
+                    t_j &= 15;
+                    t[j] = (byte) t_j;
+                }
+                r[count + 0] = (byte) (t[0] | (t[1] << 4));
+                r[count + 1] = (byte) (t[2] | (t[3] << 4));
+                r[count + 2] = (byte) (t[4] | (t[5] << 4));
+                r[count + 3] = (byte) (t[6] | (t[7] << 4));
+                count += 4;
+            }
+        } else {
+            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    int t_j = coeffs[8 * i + j];
+                    t_j <<= 5;
+                    t_j += 1664;
+                    t_j *= 40318;
+                    t_j >>= 27;
+                    t_j &= 31;
+                    t[j] = (byte) t_j;
+                }
+                r[count + 0] = (byte) ((t[0] >> 0) | (t[1] << 5));
+                r[count + 1] = (byte) ((t[1] >> 3) | (t[2] << 2) | (t[3] << 7));
+                r[count + 2] = (byte) ((t[3] >> 1) | (t[4] << 4));
+                r[count + 3] = (byte) ((t[4] >> 4) | (t[5] << 1) | (t[6] << 6));
+                r[count + 4] = (byte) ((t[6] >> 2) | (t[7] << 3));
+                count += 5;
+            }
+        }
+        return r;
+    }
+
+    public void decompressPoly(byte[] compressedPolyCipherText) {
+        int count = 0;
+        if (engine.KyberPolyCompressedBytes == 128) {
+            for (int i = 0; i < cryKeyML.KyberN / 2; i++) {
+                coeffs[2 * i + 0] = (short) ((((short) ((compressedPolyCipherText[count] & 0xFF) & 15) * cryKeyML.KyberQ) + 8) >> 4);
+                coeffs[2 * i + 1] = (short) ((((short) ((compressedPolyCipherText[count] & 0xFF) >> 4) * cryKeyML.KyberQ) + 8) >> 4);
+                count += 1;
+            }
+        } else {
+            byte[] t = new byte[8];
+            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+                t[0] = (byte) ((compressedPolyCipherText[count + 0] & 0xFF) >> 0);
+                t[1] = (byte) (((compressedPolyCipherText[count + 0] & 0xFF) >> 5) | ((compressedPolyCipherText[count + 1] & 0xFF) << 3));
+                t[2] = (byte) ((compressedPolyCipherText[count + 1] & 0xFF) >> 2);
+                t[3] = (byte) (((compressedPolyCipherText[count + 1] & 0xFF) >> 7) | ((compressedPolyCipherText[count + 2] & 0xFF) << 1));
+                t[4] = (byte) (((compressedPolyCipherText[count + 2] & 0xFF) >> 4) | ((compressedPolyCipherText[count + 3] & 0xFF) << 4));
+                t[5] = (byte) ((compressedPolyCipherText[count + 3] & 0xFF) >> 1);
+                t[6] = (byte) (((compressedPolyCipherText[count + 3] & 0xFF) >> 6) | ((compressedPolyCipherText[count + 4] & 0xFF) << 2));
+                t[7] = (byte) ((compressedPolyCipherText[count + 4] & 0xFF) >> 3);
+                count += 5;
+                for (int j = 0; j < 8; j++) {
+                    coeffs[8 * i + j] = (short) (((t[j] & 31) * cryKeyML.KyberQ + 16) >> 5);
+                }
+            }
+        }
+    }
+
+    public byte[] toBytes() {
+        byte[] r = new byte[cryKeyML.KyberPolyBytes];
+        conditionalSubQ();
+        for (int i = 0; i < cryKeyML.KyberN / 2; i++) {
+            short t0 = coeffs[2 * i];
+            short t1 = coeffs[2 * i + 1];
+            r[3 * i] = (byte) (t0 >> 0);
+            r[3 * i + 1] = (byte) ((t0 >> 8) | (t1 << 4));
+            r[3 * i + 2] = (byte) (t1 >> 4);
+        }
+        return r;
+
+    }
+
+    public void fromBytes(byte[] inpBytes) {
+        for (int i = 0; i < cryKeyML.KyberN / 2; i++) {
+            coeffs[2 * i + 0] = (short) ((((inpBytes[3 * i + 0] & 0xFF) >> 0) | ((inpBytes[3 * i + 1] & 0xFF) << 8)) & 0xFFF);
+            coeffs[2 * i + 1] = (short) ((((inpBytes[3 * i + 1] & 0xFF) >> 4) | (long) ((inpBytes[3 * i + 2] & 0xFF) << 4)) & 0xFFF);
+        }
+    }
+
+    public byte[] toMsg() {
+        int LOWER = cryKeyML.KyberQ >>> 2;
+        int UPPER = cryKeyML.KyberQ - LOWER;
+        byte[] outMsg = new byte[cryKeyML.KyberSymBytes];
+        conditionalSubQ();
+        for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+            outMsg[i] = 0;
+            for (int j = 0; j < 8; j++) {
+                int c_j = coeffs[8 * i + j];
+                int t = ((LOWER - c_j) & (c_j - UPPER)) >>> 31;
+                outMsg[i] |= (byte) (t << j);
+            }
+        }
+        return outMsg;
+    }
+
+    public void fromMsg(byte[] msg) {
+        for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                short mask = (short) ((-1) * (short) (((msg[i] & 0xFF) >> j) & 1));
+                coeffs[8 * i + j] = (short) (mask & (short) ((cryKeyML.KyberQ + 1) / 2));
+            }
+        }
+    }
+
+    public void conditionalSubQ() {
+        for (int i = 0; i < cryKeyML.KyberN; i++) {
+            coeffs[i] = conditionalSubQ(coeffs[i]);
+        }
+    }
+
+    public void symmetricPrf(byte[] out, byte[] seed, byte nonce) {
+        cryHashSha3256 h = new cryHashSha3256();
+        byte[] extSeed = new byte[seed.length + 1];
+        bits.byteCopy(seed, 0, extSeed, 0, seed.length);
+        extSeed[seed.length] = nonce;
+        h.init();
+        h.update(extSeed, 0, extSeed.length);
+        byte[] buf = h.finish();
+        bits.byteCopy(buf, 0, out, 0, buf.length);
+    }
+
+    public void getEta1Noise(byte[] seed, byte nonce) {
+        byte[] buf = new byte[cryKeyML.KyberN * engine.KyberEta1 / 4];
+        symmetricPrf(buf, seed, nonce);
+        mlCBD(buf, engine.KyberEta1);
+    }
+
+    public void getEta2Noise(byte[] seed, byte nonce) {
+        byte[] buf = new byte[cryKeyML.KyberN * cryKeyML.KyberEta2 / 4];
+        symmetricPrf(buf, seed, nonce);
+        mlCBD(buf, cryKeyML.KyberEta2);
+    }
+
+    public void polySubtract(cryMLpolyOne b) {
+        for (int i = 0; i < cryKeyML.KyberN; i++) {
+            coeffs[i] = (short) (b.coeffs[i] - coeffs[i]);
+        }
+    }
+
+    public int rejectionSampling(int coeffOff, int len, byte[] inpBuf, int inpBufLen) {
+        int ctr = 0;
+        for (int pos = 0; (ctr < len) && (pos + 3 <= inpBufLen);) {
+            short val0 = (short) (((((short) (inpBuf[pos] & 0xFF)) >> 0) | (((short) (inpBuf[pos + 1] & 0xFF)) << 8)) & 0xFFF);
+            short val1 = (short) (((((short) (inpBuf[pos + 1] & 0xFF)) >> 4) | (((short) (inpBuf[pos + 2] & 0xFF)) << 4)) & 0xFFF);
+            pos = pos + 3;
+            if (val0 < (short) cryKeyML.KyberQ) {
+                coeffs[coeffOff + ctr] = (short) val0;
+                ctr++;
+            }
+            if (ctr < len && val1 < (short) cryKeyML.KyberQ) {
+                coeffs[coeffOff + ctr] = (short) val1;
+                ctr++;
+            }
+        }
+        return ctr;
+    }
+
+    public void mlCBD(byte[] bytes, int eta) {
+        if (eta == 3) {
+            for (int i = 0; i < cryKeyML.KyberN / 4; i++) {
+                long t = bits.lsbGetD(bytes, 3 * i);
+                long d = t & 0x00249249;
+                d = d + ((t >> 1) & 0x00249249);
+                d = d + ((t >> 2) & 0x00249249);
+                for (int j = 0; j < 4; j++) {
+                    int a = (short) ((d >> (6 * j + 0)) & 0x7);
+                    int b = (short) ((d >> (6 * j + eta)) & 0x7);
+                    coeffs[4 * i + j] = (short) (a - b);
+                }
+            }
+        } else {
+            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+                long t = bits.lsbGetD(bytes, 4 * i);
+                long d = t & 0x55555555;
+                d = d + ((t >> 1) & 0x55555555);
+                for (int j = 0; j < 8; j++) {
+                    int a = (short) ((d >> (4 * j + 0)) & 0x3);
+                    int b = (short) ((d >> (4 * j + eta)) & 0x3);
+                    coeffs[8 * i + j] = (short) (a - b);
+                }
+            }
+        }
+    }
+
+    public static short factorQMulMont(short a, short b) {
+        return montgomeryReduce((int) (a * b));
+    }
+
+    public void baseMultMont(int outIndex, short a0, short a1, short b0, short b1, short zeta) {
+        short o = factorQMulMont(a1, b1);
+        o = factorQMulMont(o, zeta);
+        o += factorQMulMont(a0, b0);
+        coeffs[outIndex] = o;
+        o = factorQMulMont(a0, b1);
+        o += factorQMulMont(a1, b0);
+        coeffs[outIndex + 1] = o;
+    }
+
+    public static short montgomeryReduce(int a) {
+        int t;
+        short u;
+        u = (short) (a * cryKeyML.KyberQinv);
+        t = (int) (u * cryKeyML.KyberQ);
+        t = a - t;
+        t >>= 16;
+        return (short) t;
+    }
+
+    public static short barretReduce(short a) {
+        short t;
+        long shift = (((long) 1) << 26);
+        short v = (short) ((shift + (cryKeyML.KyberQ / 2)) / cryKeyML.KyberQ);
+        t = (short) ((v * a) >> 26);
+        t = (short) (t * cryKeyML.KyberQ);
+        return (short) (a - t);
+    }
+
+    public static short conditionalSubQ(short a) {
+        a -= cryKeyML.KyberQ;
+        a += (a >> 15) & cryKeyML.KyberQ;
+        return a;
+    }
+
+}
+
+class cryMLpolyVec {
+
+    public cryMLpolyOne[] vec;
+
+    private cryKeyML engine;
+
+    public cryMLpolyVec(cryKeyML ng) {
+        engine = ng;
+        vec = new cryMLpolyOne[engine.KyberK];
+        for (int i = 0; i < engine.KyberK; i++) {
+            vec[i] = new cryMLpolyOne(ng);
+        }
+    }
+
+    public void polyVecNtt() {
+        for (int i = 0; i < engine.KyberK; i++) {
+            vec[i].polyNtt();
+        }
+    }
+
+    public void polyVecInverseNttToMont() {
+        for (int i = 0; i < engine.KyberK; i++) {
+            vec[i].polyInverseNttToMont();
+        }
+    }
+
+    public byte[] compressPolyVec() {
+        conditionalSubQ();
+        byte[] r = new byte[engine.KyberPolyVecCompressedBytes];
+        int count = 0;
+        if (engine.KyberPolyVecCompressedBytes == engine.KyberK * 320) {
+            short[] t = new short[4];
+            for (int i = 0; i < engine.KyberK; i++) {
+                for (int j = 0; j < cryKeyML.KyberN / 4; j++) {
+                    for (int k = 0; k < 4; k++) {
+                        long t_k = vec[i].coeffs[4 * j + k];
+                        t_k <<= 10;
+                        t_k += 1665;
+                        t_k *= 1290167;
+                        t_k >>= 32;
+                        t_k &= 0x3ff;
+                        t[k] = (short) t_k;
+                    }
+                    r[count + 0] = (byte) (t[0] >> 0);
+                    r[count + 1] = (byte) ((t[0] >> 8) | (t[1] << 2));
+                    r[count + 2] = (byte) ((t[1] >> 6) | (t[2] << 4));
+                    r[count + 3] = (byte) ((t[2] >> 4) | (t[3] << 6));
+                    r[count + 4] = (byte) ((t[3] >> 2));
+                    count += 5;
+                }
+            }
+        } else {
+            short[] t = new short[8];
+            for (int i = 0; i < engine.KyberK; i++) {
+                for (int j = 0; j < cryKeyML.KyberN / 8; j++) {
+                    for (int k = 0; k < 8; k++) {
+                        long t_k = vec[i].coeffs[8 * j + k];
+                        t_k <<= 11;
+                        t_k += 1664;
+                        t_k *= 645084;
+                        t_k >>= 31;
+                        t_k &= 0x7ff;
+                        t[k] = (short) t_k;
+                    }
+                    r[count + 0] = (byte) ((t[0] >> 0));
+                    r[count + 1] = (byte) ((t[0] >> 8) | (t[1] << 3));
+                    r[count + 2] = (byte) ((t[1] >> 5) | (t[2] << 6));
+                    r[count + 3] = (byte) ((t[2] >> 2));
+                    r[count + 4] = (byte) ((t[2] >> 10) | (t[3] << 1));
+                    r[count + 5] = (byte) ((t[3] >> 7) | (t[4] << 4));
+                    r[count + 6] = (byte) ((t[4] >> 4) | (t[5] << 7));
+                    r[count + 7] = (byte) ((t[5] >> 1));
+                    r[count + 8] = (byte) ((t[5] >> 9) | (t[6] << 2));
+                    r[count + 9] = (byte) ((t[6] >> 6) | (t[7] << 5));
+                    r[count + 10] = (byte) ((t[7] >> 3));
+                    count += 11;
+                }
+            }
+        }
+        return r;
+    }
+
+    public void decompressPolyVec(byte[] compressedPolyVecCipherText) {
+        int count = 0;
+        if (engine.KyberPolyVecCompressedBytes == (engine.KyberK * 320)) {
+            short[] t = new short[4];
+            for (int i = 0; i < engine.KyberK; i++) {
+                for (int j = 0; j < cryKeyML.KyberN / 4; j++) {
+                    t[0] = (short) (((compressedPolyVecCipherText[count] & 0xFF) >> 0) | (short) ((compressedPolyVecCipherText[count + 1] & 0xFF) << 8));
+                    t[1] = (short) (((compressedPolyVecCipherText[count + 1] & 0xFF) >> 2) | (short) ((compressedPolyVecCipherText[count + 2] & 0xFF) << 6));
+                    t[2] = (short) (((compressedPolyVecCipherText[count + 2] & 0xFF) >> 4) | (short) ((compressedPolyVecCipherText[count + 3] & 0xFF) << 4));
+                    t[3] = (short) (((compressedPolyVecCipherText[count + 3] & 0xFF) >> 6) | (short) ((compressedPolyVecCipherText[count + 4] & 0xFF) << 2));
+                    count += 5;
+                    for (int k = 0; k < 4; k++) {
+                        vec[i].coeffs[4 * j + k] = (short) (((t[k] & 0x3FF) * cryKeyML.KyberQ + 512) >> 10);
+                    }
+                }
+            }
+        } else {
+            short[] t = new short[8];
+            for (int i = 0; i < engine.KyberK; i++) {
+                for (int j = 0; j < cryKeyML.KyberN / 8; j++) {
+                    t[0] = (short) (((compressedPolyVecCipherText[count] & 0xFF) >> 0) | ((short) (compressedPolyVecCipherText[count + 1] & 0xFF) << 8));
+                    t[1] = (short) (((compressedPolyVecCipherText[count + 1] & 0xFF) >> 3) | ((short) (compressedPolyVecCipherText[count + 2] & 0xFF) << 5));
+                    t[2] = (short) (((compressedPolyVecCipherText[count + 2] & 0xFF) >> 6) | ((short) (compressedPolyVecCipherText[count + 3] & 0xFF) << 2) | ((short) ((compressedPolyVecCipherText[count + 4] & 0xFF) << 10)));
+                    t[3] = (short) (((compressedPolyVecCipherText[count + 4] & 0xFF) >> 1) | ((short) (compressedPolyVecCipherText[count + 5] & 0xFF) << 7));
+                    t[4] = (short) (((compressedPolyVecCipherText[count + 5] & 0xFF) >> 4) | ((short) (compressedPolyVecCipherText[count + 6] & 0xFF) << 4));
+                    t[5] = (short) (((compressedPolyVecCipherText[count + 6] & 0xFF) >> 7) | ((short) (compressedPolyVecCipherText[count + 7] & 0xFF) << 1) | ((short) ((compressedPolyVecCipherText[count + 8] & 0xFF) << 9)));
+                    t[6] = (short) (((compressedPolyVecCipherText[count + 8] & 0xFF) >> 2) | ((short) (compressedPolyVecCipherText[count + 9] & 0xFF) << 6));
+                    t[7] = (short) (((compressedPolyVecCipherText[count + 9] & 0xFF) >> 5) | ((short) (compressedPolyVecCipherText[count + 10] & 0xFF) << 3));
+                    count += 11;
+                    for (int k = 0; k < 8; k++) {
+                        vec[i].coeffs[8 * j + k] = (short) (((t[k] & 0x7FF) * cryKeyML.KyberQ + 1024) >> 11);
+                    }
+                }
+            }
+        }
+    }
+
+    public void conditionalSubQ() {
+        for (int i = 0; i < engine.KyberK; i++) {
+            vec[i].conditionalSubQ();
+        }
+    }
+
+    public void reducePoly() {
+        for (int i = 0; i < engine.KyberK; i++) {
+            vec[i].reduce();
+        }
+    }
+
+    public void addPoly(cryMLpolyVec b) {
+        for (int i = 0; i < engine.KyberK; i++) {
+            vec[i].addCoeffs(b.vec[i]);
+        }
+    }
+
+    public byte[] toBytes() {
+        byte[] r = new byte[engine.KyberPolyVecBytes];
+        for (int i = 0; i < engine.KyberK; i++) {
+            bits.byteCopy(vec[i].toBytes(), 0, r, i * cryKeyML.KyberPolyBytes, cryKeyML.KyberPolyBytes);
+        }
+        return r;
+    }
+
+    public void fromBytes(byte[] inputBytes) {
+        for (int i = 0; i < engine.KyberK; i++) {
+            byte[] buf = new byte[cryKeyML.KyberPolyBytes];
+            bits.byteCopy(inputBytes, i * cryKeyML.KyberPolyBytes, buf, 0, buf.length);
+            vec[i].fromBytes(buf);
+        }
+    }
+
+}
