@@ -215,15 +215,15 @@ public class cryKeyECcurve25519 {
             add(z_2, z_2, AA);
             mul(z_2, z_2, E);
             if (sbit > 0) {
-                --sbit;
+                sbit--;
             } else if (sposn == 0) {
                 break;
             } else if (sposn == 1) {
-                --sposn;
+                sposn--;
                 svalue = s[sposn] & 0xF8;
                 sbit = 7;
             } else {
-                --sposn;
+                sposn--;
                 svalue = s[sposn];
                 sbit = 7;
             }

@@ -230,7 +230,7 @@ public class userHwdet {
         lst.add("ethtool -K " + nam + " txvlan off");
         lst.add("ethtool -K " + nam + " ntuple off");
         lst.add("ethtool -K " + nam + " rxhash off");
-        lst.add("ethtool --set-eee " + nam + " eee off");
+        lst.add("ethtool " + "--set-eee " + nam + " eee off");
     }
 
     /**

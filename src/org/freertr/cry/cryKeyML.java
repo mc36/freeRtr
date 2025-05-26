@@ -534,7 +534,7 @@ public class cryKeyML extends cryKeyGeneric {
 
 class cryMLpolyOne {
 
-    public static final short[] nttZetas = new short[]{
+    public final static short[] nttZetas = new short[]{
         2285, 2571, 2970, 1812, 1493, 1422, 287, 202, 3158, 622, 1577, 182, 962,
         2127, 1855, 1468, 573, 2004, 264, 383, 2500, 1458, 1727, 3199, 2648, 1017,
         732, 608, 1787, 411, 3124, 1758, 1223, 652, 2777, 1015, 2036, 1491, 3047,
@@ -547,7 +547,7 @@ class cryMLpolyOne {
         478, 3221, 3021, 996, 991, 958, 1869, 1522, 1628
     };
 
-    public static final short[] nttZetasInv = new short[]{
+    public final static short[] nttZetasInv = new short[]{
         1701, 1807, 1460, 2371, 2338, 2333, 308, 108, 2851, 870, 854, 1510, 2535,
         1278, 1530, 1185, 1659, 1187, 3109, 874, 1335, 2111, 136, 1215, 2945, 1465,
         1285, 2007, 2719, 2726, 2232, 2512, 75, 156, 3000, 2911, 2980, 872, 2685,
@@ -578,7 +578,7 @@ class cryMLpolyOne {
         for (int i = 128; i >= 2; i >>= 1) {
             for (int l = 0; l < 256; l = j + i) {
                 zeta = nttZetas[k++];
-                for (j = l; j < l + i; ++j) {
+                for (j = l; j < l + i; j++) {
                     t = factorQMulMont(zeta, r[j + i]);
                     r[j + i] = (short) (r[j] - t);
                     r[j] = (short) (r[j] + t);
@@ -598,7 +598,7 @@ class cryMLpolyOne {
         for (int i = 2; i <= 128; i <<= 1) {
             for (int l = 0; l < 256; l = j + i) {
                 zeta = nttZetasInv[k++];
-                for (j = l; j < l + i; ++j) {
+                for (j = l; j < l + i; j++) {
                     t = r[j];
                     r[j] = barretReduce((short) (t + r[j + i]));
                     r[j + i] = (short) (t - r[j + i]);
@@ -606,7 +606,7 @@ class cryMLpolyOne {
                 }
             }
         }
-        for (j = 0; j < 256; ++j) {
+        for (j = 0; j < 256; j++) {
             r[j] = factorQMulMont(r[j], nttZetasInv[127]);
         }
         coeffs = r;

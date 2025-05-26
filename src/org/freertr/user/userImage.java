@@ -360,11 +360,11 @@ public class userImage {
 
     private boolean instOneFile(boolean deb, String name) {
         if (deb) {
-            name = "dpkg-deb --fsys-tarfile " + name;
+            name = "dpkg-deb " + "--fsys-tarfile " + name;
         } else {
             name = "gunzip -c -k " + name;
         }
-        return execCmd(name + " | tar -x --keep-directory-symlink -C " + tempDir + "/") != 0;
+        return execCmd(name + " | tar -x " + "--keep-directory-symlink -C " + tempDir + "/") != 0;
     }
 
     private boolean instOneFile(userImagePkg pkg) {

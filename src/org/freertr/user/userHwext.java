@@ -346,9 +346,9 @@ public class userHwext {
                         userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth0b", 8192, null);
                         String a = "";
                         for (i = 0; i < ifp.size(); i++) {
-                            a += " --vdev=net_af_packet" + i + ",iface=" + ifp.get(i);
+                            a += " " + "--vdev=net_af_packet" + i + ",iface=" + ifp.get(i);
                         }
-                        hwc.add("proc p4emu " + path + "p4dpdk.bin" + a + " --vdev=net_af_packet" + ifl.size() + ",iface=veth0b -- 127.0.0.1 " + servP4lang.port + " " + ifl.size());
+                        hwc.add("proc p4emu " + path + "p4dpdk.bin" + a + " " + "--vdev=net_af_packet" + ifl.size() + ",iface=veth0b -- 127.0.0.1 " + servP4lang.port + " " + ifl.size());
                         hwc.add("proc cpuport " + path + "pcapInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
                         res = ", please verify nic bindings in " + hwdn;
                         break;
