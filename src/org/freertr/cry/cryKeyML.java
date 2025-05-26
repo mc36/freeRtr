@@ -289,17 +289,19 @@ public class cryKeyML extends cryKeyGeneric {
         cryHashSha3256 h = new cryHashSha3256();
         for (int i = 0; i < KyberK; i++) {
             for (int j = 0; j < KyberK; j++) {
-                h.init();
-                h.update(seed, 0, seed.length);
-                if (transposed) {
-                    h.update(new byte[]{(byte) i}, 0, 1);
-                    h.update(new byte[]{(byte) j}, 0, 1);
-                } else {
-                    h.update(new byte[]{(byte) j}, 0, 1);
-                    h.update(new byte[]{(byte) i}, 0, 1);
-                }
                 int outLen = matrixNBlocks * xofBlockBytes;
                 for (int outOfs = 0; outOfs < outLen;) {
+                    h.init();
+                    h.update(seed, 0, seed.length);
+                    if (transposed) {
+                        h.update(i);
+                        h.update(j);
+                    } else {
+                        h.update(j);
+                        h.update(i);
+                    }
+                    h.update(outOfs);
+                    h.update(outOfs >>> 8);
                     byte[] res = h.finish();
                     int o = res.length;
                     int p = outLen - outOfs;
@@ -789,13 +791,13 @@ class cryMLpolyOne {
     }
 
     public void getEta1Noise(byte[] seed, byte nonce) {
-        byte[] buf = new byte[cryKeyML.KyberN * engine.KyberEta1 / 4];
+        byte[] buf = new byte[cryKeyML.KyberN * engine.KyberEta1 / 4 + 1];
         symmetricPrf(buf, seed, nonce);
         mlCBD(buf, engine.KyberEta1);
     }
 
     public void getEta2Noise(byte[] seed, byte nonce) {
-        byte[] buf = new byte[cryKeyML.KyberN * cryKeyML.KyberEta2 / 4];
+        byte[] buf = new byte[cryKeyML.KyberN * cryKeyML.KyberEta2 / 4 + 1];
         symmetricPrf(buf, seed, nonce);
         mlCBD(buf, cryKeyML.KyberEta2);
     }
@@ -826,7 +828,6 @@ class cryMLpolyOne {
 
     public void mlCBD(byte[] bytes, int eta) {
         if (eta == 3) {
-            bytes = bits.byteConcat(bytes, new byte[]{0});
             for (int i = 0; i < cryKeyML.KyberN / 4; i++) {
                 long t = bits.lsbGetD(bytes, 3 * i);
                 long d = t & 0x00249249;
