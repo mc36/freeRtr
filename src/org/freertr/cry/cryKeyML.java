@@ -1,100 +1,95 @@
 package org.freertr.cry;
 
+import org.freertr.pack.packHolder;
+import org.freertr.util.bits;
+
 /**
  * module lattice key exchange
  *
  * @author matecsaba
  */
-import org.freertr.util.bits;
+class cryKeyML extends cryKeyGeneric {
 
-class cryKeyML {
-
-    public final static int KyberN = 256;
-
-    public final static int KyberQ = 3329;
-
-    public final static int KyberQinv = 62209;
-
-    public final static int KyberSymBytes = 32;
-
-    public final static int KyberPolyBytes = 384;
-
-    public final static int KyberEta2 = 2;
-
-    public final int sessionKeyLength = 32;
-
-    public final int KyberK;
-
-    public final int KyberEta1;
-
-    public final int KyberPolyVecBytes;
-
-    public final int KyberPolyCompressedBytes;
-
-    public final int KyberPolyVecCompressedBytes;
-
-    public final int KyberIndCpaPublicKeyBytes;
-
-    public static final cryKeyML mlkem512 = new cryKeyML(2);
-
-    public static final cryKeyML mlkem768 = new cryKeyML(3);
-
-    public static final cryKeyML mlkem1024 = new cryKeyML(4);
-
-    private cryKeyML(int k) {
-        switch (k) {
-            case 2:
-                KyberEta1 = 3;
-                KyberPolyCompressedBytes = 128;
-                KyberPolyVecCompressedBytes = k * 320;
-                break;
-            case 3:
-                KyberEta1 = 2;
-                KyberPolyCompressedBytes = 128;
-                KyberPolyVecCompressedBytes = k * 320;
-                break;
-            case 4:
-                KyberEta1 = 2;
-                KyberPolyCompressedBytes = 160;
-                KyberPolyVecCompressedBytes = k * 352;
-                break;
-            default:
-                throw new IllegalArgumentException("k" + k + " is not supported");
-        }
-        KyberK = k;
-        KyberPolyVecBytes = k * KyberPolyBytes;
-        KyberIndCpaPublicKeyBytes = KyberPolyVecBytes + KyberSymBytes;
+    /**
+     * create instance
+     */
+    public cryKeyML() {
     }
 
     /**
-     * generate key pair
-     *
-     * @return bytes
+     * magic values
      */
-    public byte[][] generateKemKeyPair() {
-        byte[] d = new byte[KyberSymBytes];
-        byte[] z = new byte[KyberSymBytes];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = (byte) bits.randomB();
-            z[i] = (byte) bits.randomB();
-        }
-        return generateKemKeyPairInternal(d, z);
-    }
+    public final static int KyberN = 256;
 
-    private byte[][] generateKemKeyPairInternal(byte[] d, byte[] z) {
-        byte[][] indCpaKeyPair = generateKeyPair(d);
-        byte[] s = new byte[KyberPolyVecBytes];
-        bits.byteCopy(indCpaKeyPair[1], 0, s, 0, KyberPolyVecBytes);
-        byte[] hashedPublicKey = new byte[32];
-        symmetricHashH(hashedPublicKey, indCpaKeyPair[0], 0);
-        byte[] outputPublicKey = new byte[KyberIndCpaPublicKeyBytes];
-        bits.byteCopy(indCpaKeyPair[0], 0, outputPublicKey, 0, KyberIndCpaPublicKeyBytes);
-        byte[] t = new byte[outputPublicKey.length - 32];
-        bits.byteCopy(outputPublicKey, 0, t, 0, t.length);
-        byte[] r = new byte[32];
-        bits.byteCopy(outputPublicKey, t.length, r, 0, r.length);
-        return new byte[][]{t, r, s, hashedPublicKey, z};
-    }
+    /**
+     * magic values
+     */
+    public final static int KyberQ = 3329;
+
+    /**
+     * magic values
+     */
+    public final static int KyberQinv = 62209;
+
+    /**
+     * magic values
+     */
+    public final static int KyberSymBytes = 32;
+
+    /**
+     * magic values
+     */
+    public final static int KyberPolyBytes = 384;
+
+    /**
+     * magic values
+     */
+    public final static int KyberEta2 = 2;
+
+    /**
+     * magic values
+     */
+    public final int sessionKeyLength = 32;
+
+    /**
+     * magic values
+     */
+    public int KyberK;
+
+    /**
+     * magic values
+     */
+    public int KyberEta1;
+
+    /**
+     * magic values
+     */
+    public int KyberPolyVecBytes;
+
+    /**
+     * magic values
+     */
+    public int KyberPolyCompressedBytes;
+
+    /**
+     * magic values
+     */
+    public int KyberPolyVecCompressedBytes;
+
+    /**
+     * magic values
+     */
+    public int KyberIndCpaPublicKeyBytes;
+
+    private byte[] common;
+
+    private byte[] clntPriv;
+
+    private byte[] clntPub;
+
+    private byte[] servPriv;
+
+    private byte[] servPub;
 
     private byte[][] kemEncryptInternal(byte[] publicKeyInput, byte[] randBytes) {
         byte[] buf = new byte[2 * KyberSymBytes];
@@ -170,26 +165,7 @@ class cryKeyML {
         return buf;
     }
 
-    public byte[] kemDecrypt(byte[] secretKey, byte[] cipherText) {
-        return kemDecryptInternal(secretKey, cipherText);
-    }
-
-    public byte[][] kemEncrypt(byte[] publicKeyInput) {
-        byte[] randBytes = new byte[32];
-        for (int i = 0; i < randBytes.length; i++) {
-            randBytes[i] = (byte) bits.randomB();
-        }
-        return kemEncrypt(publicKeyInput, randBytes);
-    }
-
-    private byte[][] kemEncrypt(byte[] publicKeyInput, byte[] randBytes) {
-        cryMLpolyVec polyVec = new cryMLpolyVec(this);
-        byte[] seed = unpackPublicKey(polyVec, publicKeyInput);
-        byte[] ek = packPublicKey(polyVec, seed);
-        return kemEncryptInternal(publicKeyInput, randBytes);
-    }
-
-    private byte[][] generateKeyPair(byte[] d) {
+    private byte[][] kemKeygenInternal(byte[] d) {
         cryMLpolyVec secretKey = new cryMLpolyVec(this);
         cryMLpolyVec publicKey = new cryMLpolyVec(this);
         cryMLpolyVec e = new cryMLpolyVec(this);
@@ -222,6 +198,28 @@ class cryKeyML {
         publicKey.addPoly(e);
         publicKey.reducePoly();
         return new byte[][]{packPublicKey(publicKey, publicSeed), packSecretKey(secretKey)};
+    }
+
+    private byte[] kemDecrypt(byte[] secretKey, byte[] cipherText) {
+        return kemDecryptInternal(secretKey, cipherText);
+    }
+
+    private byte[][] kemEncrypt(byte[] publicKeyInput) {
+        byte[] randBytes = new byte[32];
+        for (int i = 0; i < randBytes.length; i++) {
+            randBytes[i] = (byte) bits.randomB();
+        }
+        cryMLpolyVec polyVec = new cryMLpolyVec(this);
+        byte[] seed = unpackPublicKey(polyVec, publicKeyInput);
+        return kemEncryptInternal(publicKeyInput, randBytes);
+    }
+
+    private byte[][] generateKemKeyPair() {
+        byte[] d = new byte[KyberSymBytes];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = (byte) bits.randomB();
+        }
+        return kemKeygenInternal(d);
     }
 
     private byte[] packCipherText(cryMLpolyVec b, cryMLpolyOne v) {
@@ -308,6 +306,226 @@ class cryKeyML {
                 aMatrix[i].vec[j].rejectionSampling(0, cryKeyML.KyberN, buf, outLen);
             }
         }
+    }
+
+    public String toString() {
+        return "k=" + KyberK;
+    }
+
+    public String algName() {
+        return "ml";
+    }
+
+    public boolean certReader(packHolder pck) {
+        return true;
+    }
+
+    public void certWriter(packHolder pck) {
+    }
+
+    public boolean privReader(packHolder pck) {
+        return true;
+    }
+
+    public void privWriter(packHolder pck) {
+    }
+
+    public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        return true;
+    }
+
+    public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
+        return null;
+    }
+
+    public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        return true;
+    }
+
+    public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
+        return null;
+    }
+
+    public boolean keyMakeSize(int len) {
+        switch (len) {
+            case 512:
+                KyberK = 2;
+                KyberEta1 = 3;
+                KyberPolyCompressedBytes = 128;
+                KyberPolyVecCompressedBytes = KyberK * 320;
+                break;
+            case 768:
+                KyberK = 3;
+                KyberEta1 = 2;
+                KyberPolyCompressedBytes = 128;
+                KyberPolyVecCompressedBytes = KyberK * 320;
+                break;
+            case 1024:
+                KyberK = 4;
+                KyberEta1 = 2;
+                KyberPolyCompressedBytes = 160;
+                KyberPolyVecCompressedBytes = KyberK * 352;
+                break;
+            default:
+                return true;
+        }
+        KyberPolyVecBytes = KyberK * KyberPolyBytes;
+        KyberIndCpaPublicKeyBytes = KyberPolyVecBytes + KyberSymBytes;
+        return false;
+    }
+
+    public boolean keyMakeName(String nam) {
+        return true;
+    }
+
+    public boolean keyMakeTls(int id) {
+        return true;
+    }
+
+    public boolean keyMakeIke(int id) {
+        return true;
+    }
+
+    public int keyMakeVal() {
+        return KyberK;
+    }
+
+    public boolean keyVerify() {
+        return false;
+    }
+
+    public int keySize() {
+        return KyberPolyVecCompressedBytes;
+    }
+
+    public String keyDump() {
+        return bits.byteDump(clntPriv, 0, -1) + " " + bits.byteDump(clntPub, 0, -1) + " " + bits.byteDump(servPriv, 0, -1) + " " + bits.byteDump(servPub, 0, -1);
+    }
+
+    public void keyClntInit() {
+        byte[][] k = generateKemKeyPair();
+        clntPub = k[0];
+        clntPriv = k[1];
+    }
+
+    public void keyServInit() {
+        byte[][] k = generateKemKeyPair();
+        servPub = k[0];
+        servPriv = k[1];
+    }
+
+    public void keyClntCalc() {
+        byte[][] k = kemEncrypt(servPub);
+        common = k[0];
+        clntPub = k[1];
+        common = kemDecrypt(clntPriv, servPub);
+    }
+
+    public void keyServCalc() {
+        byte[][] k = kemEncrypt(clntPub);
+        common = k[0];
+        servPub = k[1];
+        common = kemDecrypt(servPriv, clntPub);
+    }
+
+    public byte[] keyCommonTls() {
+        return common;
+    }
+
+    public byte[] keyCommonSsh() {
+        return common;
+    }
+
+    public byte[] keyCommonIke() {
+        return common;
+    }
+
+    public byte[] keyClntTls() {
+        return clntPub;
+    }
+
+    public byte[] keyServTls() {
+        return servPub;
+    }
+
+    public boolean keyClntTls(byte[] buf, int ofs) {
+        clntPub = new byte[buf.length - ofs];
+        bits.byteCopy(buf, ofs, clntPub, 0, clntPub.length);
+        return false;
+    }
+
+    public boolean keyServTls(byte[] buf, int ofs) {
+        servPub = new byte[buf.length - ofs];
+        bits.byteCopy(buf, ofs, servPub, 0, servPub.length);
+        return false;
+    }
+
+    public byte[] keyClntSsh() {
+        return clntPub;
+    }
+
+    public byte[] keyServSsh() {
+        return servPub;
+    }
+
+    public boolean keyClntSsh(byte[] buf, int ofs) {
+        keyClntTls(buf,ofs);
+        return false;
+    }
+
+    public boolean keyServSsh(byte[] buf, int ofs) {
+        keyServTls(buf,ofs);
+        return false;
+    }
+
+    public byte[] keyClntIke() {
+        return clntPub;
+    }
+
+    public byte[] keyServIke() {
+        return servPub;
+    }
+
+    public boolean keyClntIke(byte[] buf, int ofs) {
+        keyClntTls(buf,ofs);
+        return false;
+    }
+
+    public boolean keyServIke(byte[] buf, int ofs) {
+        keyServTls(buf,ofs);
+        return false;
+    }
+
+    public byte[][] keyParamTls() {
+        return null;
+    }
+
+    public byte[][] keyParamSsh() {
+        return null;
+    }
+
+    public boolean keyParamTls(byte[][] buf) {
+        return false;
+    }
+
+    public boolean keyParamSsh(byte[][] buf) {
+        return false;
+    }
+
+    public boolean sshReader(byte[] key) {
+        return true;
+    }
+
+    public byte[] sshWriter() {
+        return null;
+    }
+
+    public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
+        return true;
+    }
+
+    public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
+        return null;
     }
 
 }
@@ -833,10 +1051,7 @@ class cryMLpolyVec {
 
 
 
-
-
-
-
+/*
 class MLKEMtest {
 
     public cryKeyML mlkemParams;
@@ -976,3 +1191,5 @@ class MLKEMtest {
     }
 
 }
+
+*/
