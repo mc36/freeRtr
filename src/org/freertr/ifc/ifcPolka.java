@@ -3,7 +3,7 @@ package org.freertr.ifc;
 import java.math.BigInteger;
 import org.freertr.addr.addrIP;
 import org.freertr.cry.cryHashCrc16;
-import org.freertr.cry.cryPoly;
+import org.freertr.cry.cryHashCrcPoly;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipMpls;
 import org.freertr.pack.packHolder;
@@ -66,7 +66,7 @@ public class ifcPolka implements ifcUp {
     /**
      * crc calculator
      */
-    public final cryPoly[] coeffs;
+    public final cryHashCrcPoly[] coeffs;
 
     /**
      * ipv4 forwarder
@@ -93,9 +93,9 @@ public class ifcPolka implements ifcUp {
         hasher = new cryHashCrc16(coeffs[id].intCoeff(), 0, 0, false);
     }
 
-    private static boolean checkPolynomial(cryPoly[] s, int o, cryPoly f) {
+    private static boolean checkPolynomial(cryHashCrcPoly[] s, int o, cryHashCrcPoly f) {
         for (int i = 0; i < o; i++) {
-            cryPoly[] r = s[i].modInv(f);
+            cryHashCrcPoly[] r = s[i].modInv(f);
             if (r == null) {
                 return true;
             }
@@ -116,14 +116,14 @@ public class ifcPolka implements ifcUp {
      * @param n number of entries
      * @return entries generated
      */
-    public static cryPoly[] generatePolynomial(int f, int n) {
-        cryPoly[] s = new cryPoly[n];
-        s[0] = new cryPoly(f);
+    public static cryHashCrcPoly[] generatePolynomial(int f, int n) {
+        cryHashCrcPoly[] s = new cryHashCrcPoly[n];
+        s[0] = new cryHashCrcPoly(f);
         for (int i = 1; i < s.length; i++) {
-            cryPoly p;
+            cryHashCrcPoly p;
             for (;;) {
                 f++;
-                p = new cryPoly(f);
+                p = new cryHashCrcPoly(f);
                 if (checkPolynomial(s, i, p)) {
                     continue;
                 }
@@ -155,18 +155,18 @@ public class ifcPolka implements ifcUp {
      * @param o switches to visit
      * @return routeid
      */
-    public static byte[] encodeRouteIdUni(cryPoly[] s, int[] o) {
-        cryPoly pm = new cryPoly(1);
+    public static byte[] encodeRouteIdUni(cryHashCrcPoly[] s, int[] o) {
+        cryHashCrcPoly pm = new cryHashCrcPoly(1);
         for (int i = 0; i < o.length; i++) {
             pm = pm.mul(s[o[i]]);
         }
-        cryPoly r = new cryPoly(0);
+        cryHashCrcPoly r = new cryHashCrcPoly(0);
         for (int i = 0; i < o.length; i++) {
-            cryPoly soi = s[o[i]];
-            cryPoly mi = pm.div(soi)[0];
-            cryPoly ni = mi.modInv(soi)[0];
+            cryHashCrcPoly soi = s[o[i]];
+            cryHashCrcPoly mi = pm.div(soi)[0];
+            cryHashCrcPoly ni = mi.modInv(soi)[0];
             int p = routeNextValue(o, i);
-            r = r.add(new cryPoly(p).mul(mi).mul(ni));
+            r = r.add(new cryHashCrcPoly(p).mul(mi).mul(ni));
         }
         r = r.div(pm)[1];
         byte[] b = r.getCoeff().toByteArray();
@@ -181,18 +181,18 @@ public class ifcPolka implements ifcUp {
      * @param o switches to visit
      * @return routeid
      */
-    public static byte[] encodeRouteIdMul(cryPoly[] s, tabGen<tabIndex<addrIP>> o) {
-        cryPoly pm = new cryPoly(1);
+    public static byte[] encodeRouteIdMul(cryHashCrcPoly[] s, tabGen<tabIndex<addrIP>> o) {
+        cryHashCrcPoly pm = new cryHashCrcPoly(1);
         for (int i = 0; i < o.size(); i++) {
             pm = pm.mul(s[o.get(i).index]);
         }
-        cryPoly r = new cryPoly(0);
+        cryHashCrcPoly r = new cryHashCrcPoly(0);
         for (int i = 0; i < o.size(); i++) {
             tabIndex<addrIP> c = o.get(i);
-            cryPoly soi = s[c.index];
-            cryPoly mi = pm.div(soi)[0];
-            cryPoly ni = mi.modInv(soi)[0];
-            r = r.add(new cryPoly(c.bitmap).mul(mi).mul(ni));
+            cryHashCrcPoly soi = s[c.index];
+            cryHashCrcPoly mi = pm.div(soi)[0];
+            cryHashCrcPoly ni = mi.modInv(soi)[0];
+            r = r.add(new cryHashCrcPoly(c.bitmap).mul(mi).mul(ni));
         }
         r = r.div(pm)[1];
         byte[] b = r.getCoeff().toByteArray();
@@ -207,11 +207,11 @@ public class ifcPolka implements ifcUp {
      * @param v routeid
      * @return next node id
      */
-    public static int[] decodeRouteIdPoly(cryPoly[] s, byte[] v) {
-        cryPoly r = new cryPoly(new BigInteger(v));
+    public static int[] decodeRouteIdPoly(cryHashCrcPoly[] s, byte[] v) {
+        cryHashCrcPoly r = new cryHashCrcPoly(new BigInteger(v));
         int[] o = new int[s.length];
         for (int i = 0; i < s.length; i++) {
-            cryPoly c = r.div(s[i])[1];
+            cryHashCrcPoly c = r.div(s[i])[1];
             o[i] = c.intCoeff();
         }
         return o;
@@ -237,7 +237,7 @@ public class ifcPolka implements ifcUp {
      * @param v routeid
      * @return next node id
      */
-    public static int[] decodeRouteIdCrc(cryPoly[] s, byte[] v) {
+    public static int[] decodeRouteIdCrc(cryHashCrcPoly[] s, byte[] v) {
         int[] o = new int[s.length];
         for (int i = 0; i < s.length; i++) {
             cryHashCrc16 h = new cryHashCrc16(s[i].intCoeff(), 0, 0, false);
@@ -341,7 +341,7 @@ public class ifcPolka implements ifcUp {
      * @param coeffs coefficients
      * @return show
      */
-    public static userFormat getShow(cryPoly[] coeffs) {
+    public static userFormat getShow(cryHashCrcPoly[] coeffs) {
         userFormat l = new userFormat("|", "index|deg|coeff|poly");
         for (int i = 0; i < coeffs.length; i++) {
             l.add(i + "|" + coeffs[i].getDegree() + "|" + bits.toHexD(coeffs[i].intCoeff()) + "|" + coeffs[i]);

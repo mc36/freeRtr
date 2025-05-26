@@ -7,7 +7,7 @@ import java.math.BigInteger;
  *
  * @author matecsaba
  */
-public class cryPoly {
+public class cryHashCrcPoly {
 
     private final BigInteger coeff;
 
@@ -16,7 +16,7 @@ public class cryPoly {
      *
      * @param c coefficient
      */
-    public cryPoly(BigInteger c) {
+    public cryHashCrcPoly(BigInteger c) {
         coeff = c;
     }
 
@@ -25,7 +25,7 @@ public class cryPoly {
      *
      * @param c coefficient
      */
-    public cryPoly(int c) {
+    public cryHashCrcPoly(int c) {
         coeff = BigInteger.valueOf(c);
     }
 
@@ -34,7 +34,7 @@ public class cryPoly {
      *
      * @param c coefficient
      */
-    public cryPoly(String c) {
+    public cryHashCrcPoly(String c) {
         coeff = new BigInteger(c, 2);
     }
 
@@ -136,8 +136,8 @@ public class cryPoly {
      * @param o other
      * @return result
      */
-    public cryPoly add(cryPoly o) {
-        return new cryPoly(coeff.xor(o.coeff));
+    public cryHashCrcPoly add(cryHashCrcPoly o) {
+        return new cryHashCrcPoly(coeff.xor(o.coeff));
     }
 
     /**
@@ -146,8 +146,8 @@ public class cryPoly {
      * @param o other
      * @return result
      */
-    public cryPoly sub(cryPoly o) {
-        return new cryPoly(coeff.xor(o.coeff));
+    public cryHashCrcPoly sub(cryHashCrcPoly o) {
+        return new cryHashCrcPoly(coeff.xor(o.coeff));
     }
 
     /**
@@ -156,8 +156,8 @@ public class cryPoly {
      * @param o other
      * @return result
      */
-    public cryPoly mul(cryPoly o) {
-        return new cryPoly(mul(o.coeff, coeff));
+    public cryHashCrcPoly mul(cryHashCrcPoly o) {
+        return new cryHashCrcPoly(mul(o.coeff, coeff));
     }
 
     /**
@@ -166,12 +166,12 @@ public class cryPoly {
      * @param o other
      * @return array of result,remainder
      */
-    public cryPoly[] div(cryPoly o) {
+    public cryHashCrcPoly[] div(cryHashCrcPoly o) {
         BigInteger[] r = div(coeff, o.coeff);
         if (r == null) {
             return null;
         }
-        return new cryPoly[]{new cryPoly(r[0]), new cryPoly(r[1])};
+        return new cryHashCrcPoly[]{new cryHashCrcPoly(r[0]), new cryHashCrcPoly(r[1])};
     }
 
     /**
@@ -180,15 +180,15 @@ public class cryPoly {
      * @param o other
      * @return array of result,gcd
      */
-    public cryPoly[] modInv(cryPoly o) {
+    public cryHashCrcPoly[] modInv(cryHashCrcPoly o) {
         BigInteger[] r = modInv(coeff, o.coeff);
         if (r == null) {
             return null;
         }
         if (r[0] == null) {
-            return new cryPoly[]{null, new cryPoly(r[1])};
+            return new cryHashCrcPoly[]{null, new cryHashCrcPoly(r[1])};
         }
-        return new cryPoly[]{new cryPoly(r[0]), new cryPoly(r[1])};
+        return new cryHashCrcPoly[]{new cryHashCrcPoly(r[0]), new cryHashCrcPoly(r[1])};
     }
 
 }

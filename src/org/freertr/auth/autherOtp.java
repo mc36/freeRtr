@@ -1,15 +1,17 @@
-package org.freertr.cry;
+package org.freertr.auth;
 
+import org.freertr.cry.cryHashGeneric;
+import org.freertr.cry.cryHashHmac;
 import org.freertr.util.bits;
 
 /**
- * one time password for events (rfc2289) and time {rfc6238)
+ * one time password for events (rfc2289) and time (rfc6238)
  *
  * @author matecsaba
  */
-public class cryOtp {
+public class autherOtp {
 
-    private cryOtp() {
+    private autherOtp() {
     }
 
     /**

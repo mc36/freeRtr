@@ -8,12 +8,12 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class cryKeyML extends cryKeyGeneric {
+public class cryKeyMLKEM extends cryKeyGeneric {
 
     /**
      * create instance
      */
-    public cryKeyML() {
+    public cryKeyMLKEM() {
     }
 
     /**
@@ -247,14 +247,14 @@ public class cryKeyML extends cryKeyGeneric {
     private byte[] packPublicKey(cryMLpolyVec publicKeyPolyVec, byte[] seed) {
         byte[] buf = new byte[KyberIndCpaPublicKeyBytes];
         bits.byteCopy(publicKeyPolyVec.toBytes(), 0, buf, 0, KyberPolyVecBytes);
-        bits.byteCopy(seed, 0, buf, KyberPolyVecBytes, cryKeyML.KyberSymBytes);
+        bits.byteCopy(seed, 0, buf, KyberPolyVecBytes, cryKeyMLKEM.KyberSymBytes);
         return buf;
     }
 
     private byte[] unpackPublicKey(cryMLpolyVec publicKeyPolyVec, byte[] publicKey) {
-        byte[] outputSeed = new byte[cryKeyML.KyberSymBytes];
+        byte[] outputSeed = new byte[cryKeyMLKEM.KyberSymBytes];
         publicKeyPolyVec.fromBytes(publicKey);
-        bits.byteCopy(publicKey, KyberPolyVecBytes, outputSeed, 0, cryKeyML.KyberSymBytes);
+        bits.byteCopy(publicKey, KyberPolyVecBytes, outputSeed, 0, cryKeyMLKEM.KyberSymBytes);
         return outputSeed;
     }
 
@@ -284,7 +284,7 @@ public class cryKeyML extends cryKeyGeneric {
 
     private void generateMatrix(cryMLpolyVec[] aMatrix, byte[] seed, boolean transposed) {
         int xofBlockBytes = 168;
-        int matrixNBlocks = ((12 * cryKeyML.KyberN / 8 * (1 << 12) / cryKeyML.KyberQ + xofBlockBytes) / xofBlockBytes);
+        int matrixNBlocks = ((12 * cryKeyMLKEM.KyberN / 8 * (1 << 12) / cryKeyMLKEM.KyberQ + xofBlockBytes) / xofBlockBytes);
         byte[] buf = new byte[matrixNBlocks * xofBlockBytes + 2];
         cryHashSha3256 h = new cryHashSha3256();
         for (int i = 0; i < KyberK; i++) {
@@ -311,7 +311,7 @@ public class cryKeyML extends cryKeyGeneric {
                     bits.byteCopy(res, 0, buf, outOfs, o);
                     outOfs += o;
                 }
-                aMatrix[i].vec[j].rejectionSampling(0, cryKeyML.KyberN, buf, outLen);
+                aMatrix[i].vec[j].rejectionSampling(0, cryKeyMLKEM.KyberN, buf, outLen);
             }
         }
     }
@@ -321,7 +321,7 @@ public class cryKeyML extends cryKeyGeneric {
     }
 
     public String algName() {
-        return "ml";
+        return "mlkem";
     }
 
     public boolean certReader(packHolder pck) {
@@ -564,15 +564,15 @@ class cryMLpolyOne {
 
     public short[] coeffs;
 
-    private cryKeyML engine;
+    private cryKeyMLKEM engine;
 
-    public cryMLpolyOne(cryKeyML ng) {
-        coeffs = new short[cryKeyML.KyberN];
+    public cryMLpolyOne(cryKeyMLKEM ng) {
+        coeffs = new short[cryKeyMLKEM.KyberN];
         engine = ng;
     }
 
     public void polyNtt() {
-        short[] r = new short[cryKeyML.KyberN];
+        short[] r = new short[cryKeyMLKEM.KyberN];
         System.arraycopy(coeffs, 0, r, 0, r.length);
         int j;
         short t, zeta;
@@ -592,8 +592,8 @@ class cryMLpolyOne {
     }
 
     public void polyInverseNttToMont() {
-        short[] r = new short[cryKeyML.KyberN];
-        System.arraycopy(coeffs, 0, r, 0, cryKeyML.KyberN);
+        short[] r = new short[cryKeyMLKEM.KyberN];
+        System.arraycopy(coeffs, 0, r, 0, cryKeyMLKEM.KyberN);
         int j;
         short t, zeta;
         int k = 0;
@@ -615,12 +615,12 @@ class cryMLpolyOne {
     }
 
     public void reduce() {
-        for (int i = 0; i < cryKeyML.KyberN; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN; i++) {
             coeffs[i] = barretReduce(coeffs[i]);
         }
     }
 
-    public void pointwiseAccountMontgomery(cryMLpolyVec inp1, cryMLpolyVec inp2, cryKeyML engine) {
+    public void pointwiseAccountMontgomery(cryMLpolyVec inp1, cryMLpolyVec inp2, cryKeyMLKEM engine) {
         cryMLpolyOne t = new cryMLpolyOne(engine);
         baseMultMontgomery(inp1.vec[0], inp2.vec[0]);
         for (int i = 1; i < engine.KyberK; i++) {
@@ -631,7 +631,7 @@ class cryMLpolyOne {
     }
 
     public void baseMultMontgomery(cryMLpolyOne a, cryMLpolyOne b) {
-        for (int i = 0; i < cryKeyML.KyberN / 4; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN / 4; i++) {
             baseMultMont(4 * i,
                     a.coeffs[4 * i], a.coeffs[4 * i + 1],
                     b.coeffs[4 * i], b.coeffs[4 * i + 1],
@@ -644,14 +644,14 @@ class cryMLpolyOne {
     }
 
     public void addCoeffs(cryMLpolyOne b) {
-        for (int i = 0; i < cryKeyML.KyberN; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN; i++) {
             coeffs[i] = (short) (coeffs[i] + b.coeffs[i]);
         }
     }
 
     public void convertToMont() {
-        final short f = (short) (((long) 1 << 32) % cryKeyML.KyberQ);
-        for (int i = 0; i < cryKeyML.KyberN; i++) {
+        final short f = (short) (((long) 1 << 32) % cryKeyMLKEM.KyberQ);
+        for (int i = 0; i < cryKeyMLKEM.KyberN; i++) {
             coeffs[i] = montgomeryReduce(coeffs[i] * f);
         }
     }
@@ -662,7 +662,7 @@ class cryMLpolyOne {
         int count = 0;
         conditionalSubQ();
         if (engine.KyberPolyCompressedBytes == 128) {
-            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+            for (int i = 0; i < cryKeyMLKEM.KyberN / 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     int t_j = coeffs[8 * i + j];
                     t_j <<= 4;
@@ -679,7 +679,7 @@ class cryMLpolyOne {
                 count += 4;
             }
         } else {
-            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+            for (int i = 0; i < cryKeyMLKEM.KyberN / 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     int t_j = coeffs[8 * i + j];
                     t_j <<= 5;
@@ -703,14 +703,14 @@ class cryMLpolyOne {
     public void decompressPoly(byte[] compressedPolyCipherText) {
         int count = 0;
         if (engine.KyberPolyCompressedBytes == 128) {
-            for (int i = 0; i < cryKeyML.KyberN / 2; i++) {
-                coeffs[2 * i + 0] = (short) ((((short) ((compressedPolyCipherText[count] & 0xFF) & 15) * cryKeyML.KyberQ) + 8) >> 4);
-                coeffs[2 * i + 1] = (short) ((((short) ((compressedPolyCipherText[count] & 0xFF) >> 4) * cryKeyML.KyberQ) + 8) >> 4);
+            for (int i = 0; i < cryKeyMLKEM.KyberN / 2; i++) {
+                coeffs[2 * i + 0] = (short) ((((short) ((compressedPolyCipherText[count] & 0xFF) & 15) * cryKeyMLKEM.KyberQ) + 8) >> 4);
+                coeffs[2 * i + 1] = (short) ((((short) ((compressedPolyCipherText[count] & 0xFF) >> 4) * cryKeyMLKEM.KyberQ) + 8) >> 4);
                 count += 1;
             }
         } else {
             byte[] t = new byte[8];
-            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+            for (int i = 0; i < cryKeyMLKEM.KyberN / 8; i++) {
                 t[0] = (byte) ((compressedPolyCipherText[count + 0] & 0xFF) >> 0);
                 t[1] = (byte) (((compressedPolyCipherText[count + 0] & 0xFF) >> 5) | ((compressedPolyCipherText[count + 1] & 0xFF) << 3));
                 t[2] = (byte) ((compressedPolyCipherText[count + 1] & 0xFF) >> 2);
@@ -721,16 +721,16 @@ class cryMLpolyOne {
                 t[7] = (byte) ((compressedPolyCipherText[count + 4] & 0xFF) >> 3);
                 count += 5;
                 for (int j = 0; j < 8; j++) {
-                    coeffs[8 * i + j] = (short) (((t[j] & 31) * cryKeyML.KyberQ + 16) >> 5);
+                    coeffs[8 * i + j] = (short) (((t[j] & 31) * cryKeyMLKEM.KyberQ + 16) >> 5);
                 }
             }
         }
     }
 
     public byte[] toBytes() {
-        byte[] r = new byte[cryKeyML.KyberPolyBytes];
+        byte[] r = new byte[cryKeyMLKEM.KyberPolyBytes];
         conditionalSubQ();
-        for (int i = 0; i < cryKeyML.KyberN / 2; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN / 2; i++) {
             short t0 = coeffs[2 * i];
             short t1 = coeffs[2 * i + 1];
             r[3 * i] = (byte) (t0 >> 0);
@@ -742,18 +742,18 @@ class cryMLpolyOne {
     }
 
     public void fromBytes(byte[] inpBytes) {
-        for (int i = 0; i < cryKeyML.KyberN / 2; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN / 2; i++) {
             coeffs[2 * i + 0] = (short) ((((inpBytes[3 * i + 0] & 0xFF) >> 0) | ((inpBytes[3 * i + 1] & 0xFF) << 8)) & 0xFFF);
             coeffs[2 * i + 1] = (short) ((((inpBytes[3 * i + 1] & 0xFF) >> 4) | (long) ((inpBytes[3 * i + 2] & 0xFF) << 4)) & 0xFFF);
         }
     }
 
     public byte[] toMsg() {
-        int LOWER = cryKeyML.KyberQ >>> 2;
-        int UPPER = cryKeyML.KyberQ - LOWER;
-        byte[] outMsg = new byte[cryKeyML.KyberSymBytes];
+        int LOWER = cryKeyMLKEM.KyberQ >>> 2;
+        int UPPER = cryKeyMLKEM.KyberQ - LOWER;
+        byte[] outMsg = new byte[cryKeyMLKEM.KyberSymBytes];
         conditionalSubQ();
-        for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN / 8; i++) {
             outMsg[i] = 0;
             for (int j = 0; j < 8; j++) {
                 int c_j = coeffs[8 * i + j];
@@ -765,16 +765,16 @@ class cryMLpolyOne {
     }
 
     public void fromMsg(byte[] msg) {
-        for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN / 8; i++) {
             for (int j = 0; j < 8; j++) {
                 short mask = (short) ((-1) * (short) (((msg[i] & 0xFF) >> j) & 1));
-                coeffs[8 * i + j] = (short) (mask & (short) ((cryKeyML.KyberQ + 1) / 2));
+                coeffs[8 * i + j] = (short) (mask & (short) ((cryKeyMLKEM.KyberQ + 1) / 2));
             }
         }
     }
 
     public void conditionalSubQ() {
-        for (int i = 0; i < cryKeyML.KyberN; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN; i++) {
             coeffs[i] = conditionalSubQ(coeffs[i]);
         }
     }
@@ -791,19 +791,19 @@ class cryMLpolyOne {
     }
 
     public void getEta1Noise(byte[] seed, byte nonce) {
-        byte[] buf = new byte[cryKeyML.KyberN * engine.KyberEta1 / 4 + 1];
+        byte[] buf = new byte[cryKeyMLKEM.KyberN * engine.KyberEta1 / 4 + 1];
         symmetricPrf(buf, seed, nonce);
         mlCBD(buf, engine.KyberEta1);
     }
 
     public void getEta2Noise(byte[] seed, byte nonce) {
-        byte[] buf = new byte[cryKeyML.KyberN * cryKeyML.KyberEta2 / 4 + 1];
+        byte[] buf = new byte[cryKeyMLKEM.KyberN * cryKeyMLKEM.KyberEta2 / 4 + 1];
         symmetricPrf(buf, seed, nonce);
-        mlCBD(buf, cryKeyML.KyberEta2);
+        mlCBD(buf, cryKeyMLKEM.KyberEta2);
     }
 
     public void polySubtract(cryMLpolyOne b) {
-        for (int i = 0; i < cryKeyML.KyberN; i++) {
+        for (int i = 0; i < cryKeyMLKEM.KyberN; i++) {
             coeffs[i] = (short) (b.coeffs[i] - coeffs[i]);
         }
     }
@@ -814,11 +814,11 @@ class cryMLpolyOne {
             short val0 = (short) (((((short) (inpBuf[pos] & 0xFF)) >> 0) | (((short) (inpBuf[pos + 1] & 0xFF)) << 8)) & 0xFFF);
             short val1 = (short) (((((short) (inpBuf[pos + 1] & 0xFF)) >> 4) | (((short) (inpBuf[pos + 2] & 0xFF)) << 4)) & 0xFFF);
             pos = pos + 3;
-            if (val0 < (short) cryKeyML.KyberQ) {
+            if (val0 < (short) cryKeyMLKEM.KyberQ) {
                 coeffs[coeffOff + ctr] = val0;
                 ctr++;
             }
-            if (ctr < len && val1 < (short) cryKeyML.KyberQ) {
+            if (ctr < len && val1 < (short) cryKeyMLKEM.KyberQ) {
                 coeffs[coeffOff + ctr] = val1;
                 ctr++;
             }
@@ -828,7 +828,7 @@ class cryMLpolyOne {
 
     public void mlCBD(byte[] bytes, int eta) {
         if (eta == 3) {
-            for (int i = 0; i < cryKeyML.KyberN / 4; i++) {
+            for (int i = 0; i < cryKeyMLKEM.KyberN / 4; i++) {
                 long t = bits.lsbGetD(bytes, 3 * i);
                 long d = t & 0x00249249;
                 d = d + ((t >> 1) & 0x00249249);
@@ -840,7 +840,7 @@ class cryMLpolyOne {
                 }
             }
         } else {
-            for (int i = 0; i < cryKeyML.KyberN / 8; i++) {
+            for (int i = 0; i < cryKeyMLKEM.KyberN / 8; i++) {
                 long t = bits.lsbGetD(bytes, 4 * i);
                 long d = t & 0x55555555;
                 d = d + ((t >> 1) & 0x55555555);
@@ -868,8 +868,8 @@ class cryMLpolyOne {
     }
 
     public static short montgomeryReduce(int a) {
-        short u = (short) (a * cryKeyML.KyberQinv);
-        int t = u * cryKeyML.KyberQ;
+        short u = (short) (a * cryKeyMLKEM.KyberQinv);
+        int t = u * cryKeyMLKEM.KyberQ;
         t = a - t;
         t >>= 16;
         return (short) t;
@@ -878,15 +878,15 @@ class cryMLpolyOne {
     public static short barretReduce(short a) {
         short t;
         long shift = (((long) 1) << 26);
-        short v = (short) ((shift + (cryKeyML.KyberQ / 2)) / cryKeyML.KyberQ);
+        short v = (short) ((shift + (cryKeyMLKEM.KyberQ / 2)) / cryKeyMLKEM.KyberQ);
         t = (short) ((v * a) >> 26);
-        t = (short) (t * cryKeyML.KyberQ);
+        t = (short) (t * cryKeyMLKEM.KyberQ);
         return (short) (a - t);
     }
 
     public static short conditionalSubQ(short a) {
-        a -= cryKeyML.KyberQ;
-        a += (short) ((a >> 15) & cryKeyML.KyberQ);
+        a -= cryKeyMLKEM.KyberQ;
+        a += (short) ((a >> 15) & cryKeyMLKEM.KyberQ);
         return a;
     }
 
@@ -896,9 +896,9 @@ class cryMLpolyVec {
 
     public cryMLpolyOne[] vec;
 
-    private cryKeyML engine;
+    private cryKeyMLKEM engine;
 
-    public cryMLpolyVec(cryKeyML ng) {
+    public cryMLpolyVec(cryKeyMLKEM ng) {
         engine = ng;
         vec = new cryMLpolyOne[engine.KyberK];
         for (int i = 0; i < engine.KyberK; i++) {
@@ -925,7 +925,7 @@ class cryMLpolyVec {
         if (engine.KyberPolyVecCompressedBytes == engine.KyberK * 320) {
             short[] t = new short[4];
             for (int i = 0; i < engine.KyberK; i++) {
-                for (int j = 0; j < cryKeyML.KyberN / 4; j++) {
+                for (int j = 0; j < cryKeyMLKEM.KyberN / 4; j++) {
                     for (int k = 0; k < 4; k++) {
                         long t_k = vec[i].coeffs[4 * j + k];
                         t_k <<= 10;
@@ -946,7 +946,7 @@ class cryMLpolyVec {
         } else {
             short[] t = new short[8];
             for (int i = 0; i < engine.KyberK; i++) {
-                for (int j = 0; j < cryKeyML.KyberN / 8; j++) {
+                for (int j = 0; j < cryKeyMLKEM.KyberN / 8; j++) {
                     for (int k = 0; k < 8; k++) {
                         long t_k = vec[i].coeffs[8 * j + k];
                         t_k <<= 11;
@@ -979,21 +979,21 @@ class cryMLpolyVec {
         if (engine.KyberPolyVecCompressedBytes == (engine.KyberK * 320)) {
             short[] t = new short[4];
             for (int i = 0; i < engine.KyberK; i++) {
-                for (int j = 0; j < cryKeyML.KyberN / 4; j++) {
+                for (int j = 0; j < cryKeyMLKEM.KyberN / 4; j++) {
                     t[0] = (short) (((compressedPolyVecCipherText[count] & 0xFF) >> 0) | (short) ((compressedPolyVecCipherText[count + 1] & 0xFF) << 8));
                     t[1] = (short) (((compressedPolyVecCipherText[count + 1] & 0xFF) >> 2) | (short) ((compressedPolyVecCipherText[count + 2] & 0xFF) << 6));
                     t[2] = (short) (((compressedPolyVecCipherText[count + 2] & 0xFF) >> 4) | (short) ((compressedPolyVecCipherText[count + 3] & 0xFF) << 4));
                     t[3] = (short) (((compressedPolyVecCipherText[count + 3] & 0xFF) >> 6) | (short) ((compressedPolyVecCipherText[count + 4] & 0xFF) << 2));
                     count += 5;
                     for (int k = 0; k < 4; k++) {
-                        vec[i].coeffs[4 * j + k] = (short) (((t[k] & 0x3FF) * cryKeyML.KyberQ + 512) >> 10);
+                        vec[i].coeffs[4 * j + k] = (short) (((t[k] & 0x3FF) * cryKeyMLKEM.KyberQ + 512) >> 10);
                     }
                 }
             }
         } else {
             short[] t = new short[8];
             for (int i = 0; i < engine.KyberK; i++) {
-                for (int j = 0; j < cryKeyML.KyberN / 8; j++) {
+                for (int j = 0; j < cryKeyMLKEM.KyberN / 8; j++) {
                     t[0] = (short) (((compressedPolyVecCipherText[count] & 0xFF) >> 0) | ((short) (compressedPolyVecCipherText[count + 1] & 0xFF) << 8));
                     t[1] = (short) (((compressedPolyVecCipherText[count + 1] & 0xFF) >> 3) | ((short) (compressedPolyVecCipherText[count + 2] & 0xFF) << 5));
                     t[2] = (short) (((compressedPolyVecCipherText[count + 2] & 0xFF) >> 6) | ((short) (compressedPolyVecCipherText[count + 3] & 0xFF) << 2) | ((short) ((compressedPolyVecCipherText[count + 4] & 0xFF) << 10)));
@@ -1004,7 +1004,7 @@ class cryMLpolyVec {
                     t[7] = (short) (((compressedPolyVecCipherText[count + 9] & 0xFF) >> 5) | ((short) (compressedPolyVecCipherText[count + 10] & 0xFF) << 3));
                     count += 11;
                     for (int k = 0; k < 8; k++) {
-                        vec[i].coeffs[8 * j + k] = (short) (((t[k] & 0x7FF) * cryKeyML.KyberQ + 1024) >> 11);
+                        vec[i].coeffs[8 * j + k] = (short) (((t[k] & 0x7FF) * cryKeyMLKEM.KyberQ + 1024) >> 11);
                     }
                 }
             }
@@ -1032,15 +1032,15 @@ class cryMLpolyVec {
     public byte[] toBytes() {
         byte[] r = new byte[engine.KyberPolyVecBytes];
         for (int i = 0; i < engine.KyberK; i++) {
-            bits.byteCopy(vec[i].toBytes(), 0, r, i * cryKeyML.KyberPolyBytes, cryKeyML.KyberPolyBytes);
+            bits.byteCopy(vec[i].toBytes(), 0, r, i * cryKeyMLKEM.KyberPolyBytes, cryKeyMLKEM.KyberPolyBytes);
         }
         return r;
     }
 
     public void fromBytes(byte[] inputBytes) {
         for (int i = 0; i < engine.KyberK; i++) {
-            byte[] buf = new byte[cryKeyML.KyberPolyBytes];
-            bits.byteCopy(inputBytes, i * cryKeyML.KyberPolyBytes, buf, 0, buf.length);
+            byte[] buf = new byte[cryKeyMLKEM.KyberPolyBytes];
+            bits.byteCopy(inputBytes, i * cryKeyMLKEM.KyberPolyBytes, buf, 0, buf.length);
             vec[i].fromBytes(buf);
         }
     }

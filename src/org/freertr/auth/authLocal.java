@@ -15,7 +15,6 @@ import org.freertr.cry.cryHashSha1;
 import org.freertr.cry.cryHashSha2224;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryKeyGeneric;
-import org.freertr.cry.cryOtp;
 import org.freertr.serv.servPop3;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
@@ -976,8 +975,8 @@ class authLocalEntry implements Comparable<authLocalEntry> {
         List<String> lst = new ArrayList<String>();
         long tim = (bits.getTime() + cfgAll.timeServerOffset) / 1000;
         final int range = 10;
-        for (int i = -range; i < range; i += cryOtp.timeInt) {
-            String a = cryOtp.calcTotp(seed, tim + i, cryOtp.timeInt, digs, new cryHashSha1());
+        for (int i = -range; i < range; i += autherOtp.timeInt) {
+            String a = autherOtp.calcTotp(seed, tim + i, autherOtp.timeInt, digs, new cryHashSha1());
             lst.add(pref + a);
         }
         return lst;

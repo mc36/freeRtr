@@ -80,12 +80,12 @@ import org.freertr.cry.cryHashSha3256;
 import org.freertr.cry.cryHashSha3384;
 import org.freertr.cry.cryHashSha3512;
 import org.freertr.cry.cryKeyDH;
-import org.freertr.cry.cryKeyML;
+import org.freertr.cry.cryKeyMLKEM;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyRSA;
-import org.freertr.cry.cryOtp;
+import org.freertr.auth.autherOtp;
 import org.freertr.cry.cryUtils;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packDnsRes;
@@ -289,7 +289,7 @@ public class userTest {
         if (a.equals("otppass")) {
             byte[] buf = cmd.word().getBytes();
             long t = (bits.getTime() + cfgAll.timeServerOffset) / 1000;
-            a = cryOtp.calcTotp(buf, t, cryOtp.timeInt, 8, new cryHashSha1());
+            a = autherOtp.calcTotp(buf, t, autherOtp.timeInt, 8, new cryHashSha1());
             cmd.error("seed=" + bits.byteDump(buf, 0, buf.length));
             cmd.error("time=" + t);
             cmd.error("key=" + a);
@@ -574,7 +574,7 @@ public class userTest {
             cryKeyECDSA kecdsa = new cryKeyECDSA();
             cryKeyDH kdh = new cryKeyDH();
             cryKeyECDH kecdh = new cryKeyECDH();
-            cryKeyML kml = new cryKeyML();
+            cryKeyMLKEM kml = new cryKeyMLKEM();
             final String init = "t3st1ng";
             boolean ok = false;
             krsa.keyMakeSize(pmsiz);

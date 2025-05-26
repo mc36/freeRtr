@@ -6,7 +6,7 @@ import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrType;
-import org.freertr.cry.cryPoly;
+import org.freertr.cry.cryHashCrcPoly;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcPolka;
@@ -406,7 +406,7 @@ public class clntPolka implements Runnable, ifcDn {
         }
         userFormat l = new userFormat("|", "mode|routeid");
         l.add("hex|" + bits.byteDump(routeid, 0, -1));
-        l.add("poly|" + new cryPoly(new BigInteger(routeid)));
+        l.add("poly|" + new cryHashCrcPoly(new BigInteger(routeid)));
         return l;
     }
 
