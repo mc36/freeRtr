@@ -407,7 +407,7 @@ public class cryKeyML extends cryKeyGeneric {
     }
 
     public String keyDump() {
-        return "comm=" + bits.byteDump(common, 0, -1) + " pub=" + bits.byteDump(clntPub, 0, -1) + " priv=" + bits.byteDump(clntPriv, 0, -1) + " pub=" + bits.byteDump(servPub, 0, -1) + " priv=" + bits.byteDump(servPriv, 0, -1);
+        return "cln=" + bits.byteDump(clntPub, 0, -1) + " srv=" + bits.byteDump(servPub, 0, -1) + " res=" + bits.byteDump(common, 0, -1);
     }
 
     public void keyClntInit() {
