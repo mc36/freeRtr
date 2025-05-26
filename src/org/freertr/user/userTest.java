@@ -80,6 +80,7 @@ import org.freertr.cry.cryHashSha3256;
 import org.freertr.cry.cryHashSha3384;
 import org.freertr.cry.cryHashSha3512;
 import org.freertr.cry.cryKeyDH;
+import org.freertr.cry.cryKeyML;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyECDSA;
@@ -538,6 +539,7 @@ public class userTest {
         if (a.equals("digsig")) {
             int pmsiz = 1024;
             int ecsiz = 128;
+            int mlsiz = 512;
             int times = 1;
             boolean showKeys = false;
             for (;;) {
@@ -557,6 +559,10 @@ public class userTest {
                     ecsiz = bits.str2num(cmd.word());
                     continue;
                 }
+                if (a.equals("mllen")) {
+                    mlsiz = bits.str2num(cmd.word());
+                    continue;
+                }
                 if (a.equals("times")) {
                     times = bits.str2num(cmd.word());
                     continue;
@@ -568,6 +574,7 @@ public class userTest {
             cryKeyECDSA kecdsa = new cryKeyECDSA();
             cryKeyDH kdh = new cryKeyDH();
             cryKeyECDH kecdh = new cryKeyECDH();
+            cryKeyML kml = new cryKeyML();
             final String init = "t3st1ng";
             boolean ok = false;
             krsa.keyMakeSize(pmsiz);
@@ -629,6 +636,18 @@ public class userTest {
             cmd.error("ecdh: " + kecdh.keyVerify() + " " + kecdh.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("ecdh: " + kecdh.pemWriteStr(false));
+            }
+            kml.keyMakeSize(mlsiz);
+            tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                kml.keyClntInit();
+                kml.keyServInit();
+                kml.keyClntCalc();
+                kml.keyServCalc();
+            }
+            cmd.error("mlkem: " + kml.keyVerify() + " " + kml.keySize() + " in " + (bits.getTime() - tim) + "ms");
+            if (showKeys) {
+                cmd.error("mlkem: " + kml.pemWriteStr(false));
             }
             String sdsa = cryCertificate.createSelfSigned(kdsa, "test", 3650).pemWriteStr();
             String secdsa = cryCertificate.createSelfSigned(kecdsa, "test", 3650).pemWriteStr();
