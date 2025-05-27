@@ -732,7 +732,11 @@ public class packIke {
         if (keygen == null) {
             keygen = transform.getGroup();
         }
-        keygen.keyClntInit();
+        if (initiator) {
+            keygen.keyClntInit();
+        } else {
+            keygen.keyServInit();
+        }
         xchgTyp = xchgIkeSa;
     }
 
@@ -753,7 +757,11 @@ public class packIke {
         if (bits.msbGetW(buf, 0) != transform.groupNum) {
             return true;
         }
-        keygen.keyServIke(buf, 4);
+        if (initiator) {
+            keygen.keyServIke(buf, 4);
+        } else {
+            keygen.keyClntIke(buf, 4);
+        }
         keyXchgDump("rx");
         return false;
     }
@@ -765,7 +773,12 @@ public class packIke {
         pckDat.msbPutW(0, transform.groupNum);
         pckDat.msbPutW(2, 0);
         pckDat.putSkip(4);
-        byte[] buf = keygen.keyClntIke();
+        byte[] buf;
+        if (initiator) {
+            buf = keygen.keyClntIke();
+        } else {
+            buf = keygen.keyServIke();
+        }
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);
@@ -848,7 +861,11 @@ public class packIke {
      * compute keys
      */
     public void computeKeys() {
-        keygen.keyClntCalc();
+        if (initiator) {
+            keygen.keyClntCalc();
+        } else {
+            keygen.keyServCalc();
+        }
         dhcomm = keygen.keyCommonIke();
         cryHashGeneric h = transorig.getHprf(bits.byteConcat(nonceI, nonceR));
         h.update(dhcomm);

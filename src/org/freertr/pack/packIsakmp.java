@@ -827,7 +827,11 @@ public class packIsakmp {
         if (keygen == null) {
             keygen = transform.getGroup();
         }
-        keygen.keyClntInit();
+        if (initiator) {
+            keygen.keyClntInit();
+        } else {
+            keygen.keyServInit();
+        }
         xchgTyp = xchgIdPrt;
     }
 
@@ -844,7 +848,11 @@ public class packIsakmp {
         if (keygen == null) {
             keygen = transform.getGroup();
         }
-        keygen.keyServIke(buf, 0);
+        if (initiator) {
+            keygen.keyServIke(buf, 0);
+        } else {
+            keygen.keyClntIke(buf, 0);
+        }
         keyXchgDump("rx");
         return false;
     }
@@ -853,7 +861,12 @@ public class packIsakmp {
      * create key exchange header
      */
     public void keyXchgCreate() {
-        byte[] buf = keygen.keyClntIke();
+        byte[] buf;
+        if (initiator) {
+            buf = keygen.keyClntIke();
+        } else {
+            buf = keygen.keyServIke();
+        }
         pckDat.putCopy(buf, 0, 0, buf.length);
         pckDat.putSkip(buf.length);
         headerWrite(payKeyEx);
@@ -946,20 +959,19 @@ public class packIsakmp {
      * compute keys
      */
     public void computeKeys() {
-        keygen.keyClntCalc();
+        if (initiator) {
+            keygen.keyClntCalc();
+        } else {
+            keygen.keyServCalc();
+        }
         dhcomm = keygen.keyCommonIke();
         cryHashGeneric h = transform.getHmac(preshared.getBytes());
         h.update(nonceI);
         h.update(nonceR);
         skeyidG = h.finish();
         h = transform.getHash();
-        if (initiator) {
-            h.update(keygen.keyClntIke());
-            h.update(keygen.keyServIke());
-        } else {
-            h.update(keygen.keyServIke());
-            h.update(keygen.keyClntIke());
-        }
+        h.update(keygen.keyClntIke());
+        h.update(keygen.keyServIke());
         phase1iv1 = h.finish();
         skeyidD = makeSkeyX(new byte[0], 0);
         skeyidA = makeSkeyX(skeyidD, 1);
@@ -1081,12 +1093,12 @@ public class packIsakmp {
      */
     public byte[] hashGenMM(boolean initer) {
         cryHashGeneric h = transform.getHmac(skeyidG);
-        if (initiator ^ initer) {
-            h.update(keygen.keyServIke());
+        if (initer) {
             h.update(keygen.keyClntIke());
+            h.update(keygen.keyServIke());
         } else {
-            h.update(keygen.keyClntIke());
             h.update(keygen.keyServIke());
+            h.update(keygen.keyClntIke());
         }
         if (initer) {
             byte[] buf = new byte[8];

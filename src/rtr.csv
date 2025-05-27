@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.27-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-27 06:13:42, took 00:16:40, with 50 workers, on 3730 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2025-05-27 07:41:56, took 00:39:52, with 50 workers, on 3739 cases, 8 failed, 8 traces, 61 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -628,6 +628,9 @@ http://sources.freertr.org/cfg/crypt-ike128.tst;crypt-ike128.tst;success;ike1 wi
 http://sources.freertr.org/cfg/crypt-ike129.tst;crypt-ike129.tst;success;ike1 with group19
 http://sources.freertr.org/cfg/crypt-ike130.tst;crypt-ike130.tst;success;ike1 with group20
 http://sources.freertr.org/cfg/crypt-ike131.tst;crypt-ike131.tst;success;ike1 with group21
+http://sources.freertr.org/cfg/crypt-ike132.tst;crypt-ike132.tst;#6-run-r1 tping 100 30 2.2.2.2 vrf v1;ike1 with group35
+http://sources.freertr.org/cfg/crypt-ike133.tst;crypt-ike133.tst;#6-run-r1 tping 100 30 2.2.2.2 vrf v1;ike1 with group36
+http://sources.freertr.org/cfg/crypt-ike134.tst;crypt-ike134.tst;#6-run-r1 tping 100 30 2.2.2.2 vrf v1;ike1 with group37
 http://sources.freertr.org/cfg/crypt-ike201.tst;crypt-ike201.tst;success;ipv4 in ike2 over ipv4
 http://sources.freertr.org/cfg/crypt-ike202.tst;crypt-ike202.tst;success;ipv4 in ike2 over ipv6
 http://sources.freertr.org/cfg/crypt-ike203.tst;crypt-ike203.tst;success;ipv6 in ike2 over ipv4
@@ -662,6 +665,9 @@ http://sources.freertr.org/cfg/crypt-ike231.tst;crypt-ike231.tst;success;ike2 wi
 http://sources.freertr.org/cfg/crypt-ike232.tst;crypt-ike232.tst;success;ike2 with group19
 http://sources.freertr.org/cfg/crypt-ike233.tst;crypt-ike233.tst;success;ike2 with group20
 http://sources.freertr.org/cfg/crypt-ike234.tst;crypt-ike234.tst;success;ike2 with group21
+http://sources.freertr.org/cfg/crypt-ike235.tst;crypt-ike235.tst;#6-run-r1 tping 100 30 2.2.2.2 vrf v1;ike2 with group35
+http://sources.freertr.org/cfg/crypt-ike236.tst;crypt-ike236.tst;#6-run-r1 tping 100 30 2.2.2.2 vrf v1;ike2 with group36
+http://sources.freertr.org/cfg/crypt-ike237.tst;crypt-ike237.tst;#6-run-r1 tping 100 30 2.2.2.2 vrf v1;ike2 with group37
 http://sources.freertr.org/cfg/crypt-inlsp01.tst;crypt-inlsp01.tst;success;inlsp over ipv4
 http://sources.freertr.org/cfg/crypt-inlsp02.tst;crypt-inlsp02.tst;success;inlsp over ipv6
 http://sources.freertr.org/cfg/crypt-inlsp03.tst;crypt-inlsp03.tst;success;inlsp over inlsp
@@ -768,6 +774,9 @@ http://sources.freertr.org/cfg/crypt-macsec60.tst;crypt-macsec60.tst;success;mac
 http://sources.freertr.org/cfg/crypt-macsec61.tst;crypt-macsec61.tst;success;macsec with group19
 http://sources.freertr.org/cfg/crypt-macsec62.tst;crypt-macsec62.tst;success;macsec with group20
 http://sources.freertr.org/cfg/crypt-macsec63.tst;crypt-macsec63.tst;success;macsec with group21
+http://sources.freertr.org/cfg/crypt-macsec64.tst;crypt-macsec64.tst;success;macsec with group35
+http://sources.freertr.org/cfg/crypt-macsec65.tst;crypt-macsec65.tst;#6-run-r1 tping 100 30 1.1.1.2 vrf v1;macsec with group36
+http://sources.freertr.org/cfg/crypt-macsec66.tst;crypt-macsec66.tst;#6-run-r1 tping 100 30 1.1.1.2 vrf v1;macsec with group37
 http://sources.freertr.org/cfg/crypt-nat01.tst;crypt-nat01.tst;success;source list translation to interface
 http://sources.freertr.org/cfg/crypt-nat02.tst;crypt-nat02.tst;success;source list translation to address
 http://sources.freertr.org/cfg/crypt-nat03.tst;crypt-nat03.tst;success;source list translation to pool
