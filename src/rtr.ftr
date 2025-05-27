@@ -624,6 +624,9 @@ qc pass: ike1 with group26
 qc pass: ike1 with group19
 qc pass: ike1 with group20
 qc pass: ike1 with group21
+qc pass: ike1 with group28
+qc pass: ike1 with group29
+qc pass: ike1 with group30
 qc pass: ike1 with group35
 qc pass: ike1 with group36
 qc pass: ike1 with group37
@@ -661,6 +664,9 @@ qc pass: ike2 with group26
 qc pass: ike2 with group19
 qc pass: ike2 with group20
 qc pass: ike2 with group21
+qc pass: ike2 with group28
+qc pass: ike2 with group29
+qc pass: ike2 with group30
 qc pass: ike2 with group35
 qc pass: ike2 with group36
 qc pass: ike2 with group37
@@ -770,6 +776,9 @@ qc pass: macsec with group26
 qc pass: macsec with group19
 qc pass: macsec with group20
 qc pass: macsec with group21
+qc pass: macsec with group28
+qc pass: macsec with group29
+qc pass: macsec with group30
 qc pass: macsec with group35
 qc pass: macsec with group36
 qc pass: macsec with group37

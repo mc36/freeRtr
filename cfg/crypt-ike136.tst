@@ -1,4 +1,4 @@
-description ike1 with group30
+description ike1 with group36
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,7 +11,7 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  exit
 crypto ipsec ips
- group 30
+ group 36
  cipher des
  hash md5
  seconds 3600
@@ -39,7 +39,7 @@ vrf def v1
  rd 1:1
  exit
 crypto ipsec ips
- group 30
+ group 36
  cipher des
  hash md5
  seconds 3600

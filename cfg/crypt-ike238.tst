@@ -1,4 +1,4 @@
-description ike1 with group30
+description ike2 with group35
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,14 +11,15 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  exit
 crypto ipsec ips
- group 30
+ group 35
  cipher des
  hash md5
+ prf md5
  seconds 3600
  bytes 1024000
  key tester
  role init
- isakmp 1
+ isakmp 2
  protected ipv4
  exit
 int tun1
@@ -39,14 +40,15 @@ vrf def v1
  rd 1:1
  exit
 crypto ipsec ips
- group 30
+ group 35
  cipher des
  hash md5
+ prf md5
  seconds 3600
  bytes 1024000
  key tester
  role resp
- isakmp 1
+ isakmp 2
  protected ipv4
  exit
 int eth1

@@ -16751,3 +16751,13 @@ no failed: macsec with group35
 qc pass: macsec with group35
 qc pass: macsec with group36
 qc pass: macsec with group37
+---------------------------------- 2025-05-27 18:47:12 25.5.27
+qc pass: ike1 with group28
+qc pass: ike1 with group29
+qc pass: ike1 with group30
+qc pass: ike2 with group28
+qc pass: ike2 with group29
+qc pass: ike2 with group30
+qc pass: macsec with group28
+qc pass: macsec with group29
+qc pass: macsec with group30
