@@ -16728,3 +16728,6 @@ failed: ike2 with group37
 qc pass: macsec with group35
 failed: macsec with group36
 failed: macsec with group37
+---------------------------------- 2025-05-27 08:32:17 25.5.27
+no qc pass: macsec with group35
+failed: macsec with group35

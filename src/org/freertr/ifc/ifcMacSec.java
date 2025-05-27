@@ -20,7 +20,7 @@ import org.freertr.util.syncInt;
  *
  * @author matecsaba
  */
-public class ifcMacSec implements Runnable {
+public class ifcMacSec {
 
     /**
      * create instance
@@ -323,7 +323,44 @@ public class ifcMacSec implements Runnable {
                 pck.getSkip(size);
                 keygen.keyClntSsh(pck.getCopy(), 0);
                 peeraddr = pck.ETHsrc.copyBytes();
-                new Thread(this).start();
+                if (debugger.ifcMacSecTraf) {
+                    logger.debug("got kex, reply=" + (!reply));
+                }
+                keygen.keyServCalc();
+                if (debugger.ifcMacSecTraf) {
+                    logger.debug("keys " + keygen.keyDump());
+                }
+                byte[] buf1 = new byte[0];
+                for (int i = 0; buf1.length < 1024; i++) {
+                    cryHashGeneric hsh = profil.trans.getHash();
+                    hsh.init();
+                    hsh.update(keygen.keyCommonSsh());
+                    hsh.update(profil.preshared.getBytes());
+                    hsh.update(i);
+                    byte[] buf2 = hsh.finish();
+                    if (buf2.length < 1) {
+                        buf2 = keygen.keyCommonSsh();
+                        byte[] buf3 = profil.preshared.getBytes();
+                        for (int o = 0; o < buf2.length; o++) {
+                            buf2[o] ^= buf3[o % buf3.length];
+                        }
+                    }
+                    buf1 = bits.byteConcat(buf1, buf2);
+                }
+                boolean swp;
+                if (needLayer2) {
+                    swp = peeraddr.compareTo(myaddr) > 0;
+                } else {
+                    byte[] buf2 = keygen.keyClntSsh();
+                    byte[] buf3 = keygen.keyServSsh();
+                    swp = buf2.length > buf3.length;
+                    if (buf2.length == buf3.length) {
+                        swp = bits.byteComp(buf2, 0, buf3, 0, buf3.length) > 0;
+                    }
+                }
+                setupKeys(buf1, swp);
+                calcing.set(0);
+                etht.triggerSync();
                 return true;
             default:
                 cntr.drop(pck, counter.reasons.badTyp);
@@ -456,47 +493,6 @@ public class ifcMacSec implements Runnable {
         return pck;
     }
 
-    private void doCalc() {
-        if (debugger.ifcMacSecTraf) {
-            logger.debug("got kex, reply=" + (!reply));
-        }
-        keygen.keyServCalc();
-        if (debugger.ifcMacSecTraf) {
-            logger.debug("keys " + keygen.keyDump());
-        }
-        byte[] buf1 = new byte[0];
-        for (int i = 0; buf1.length < 1024; i++) {
-            cryHashGeneric hsh = profil.trans.getHash();
-            hsh.init();
-            hsh.update(keygen.keyCommonSsh());
-            hsh.update(profil.preshared.getBytes());
-            hsh.update(i);
-            byte[] buf2 = hsh.finish();
-            if (buf2.length < 1) {
-                buf2 = keygen.keyCommonSsh();
-                byte[] buf3 = profil.preshared.getBytes();
-                for (int o = 0; o < buf2.length; o++) {
-                    buf2[o] ^= buf3[o % buf3.length];
-                }
-            }
-            buf1 = bits.byteConcat(buf1, buf2);
-        }
-        boolean swp;
-        if (needLayer2) {
-            swp = peeraddr.compareTo(myaddr) > 0;
-        } else {
-            byte[] buf2 = keygen.keyClntSsh();
-            byte[] buf3 = keygen.keyServSsh();
-            swp = buf2.length > buf3.length;
-            if (buf2.length == buf3.length) {
-                swp = bits.byteComp(buf2, 0, buf3, 0, buf3.length) > 0;
-            }
-        }
-        setupKeys(buf1, swp);
-        calcing.set(0);
-        etht.triggerSync();
-    }
-
     private void setupKeys(byte[] res, boolean swp) {
         if (debugger.ifcMacSecTraf) {
             logger.debug("master=" + bits.byteDump(res, 0, res.length));
@@ -556,14 +552,6 @@ public class ifcMacSec implements Runnable {
         cphrRx = cphRx;
         hashTx = profil.trans.getHmac(keyHashTx);
         hashRx = profil.trans.getHmac(keyHashRx);
-    }
-
-    public void run() {
-        try {
-            doCalc();
-        } catch (Exception e) {
-            logger.exception(e);
-        }
     }
 
 }
