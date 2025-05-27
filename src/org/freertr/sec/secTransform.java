@@ -1081,6 +1081,18 @@ public class secTransform {
                 ec = new cryKeyECDH();
                 ec.keyMakeTls(25);
                 return ec;
+            case 28:
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(26);
+                return ec;
+            case 29:
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(27);
+                return ec;
+            case 30:
+                ec = new cryKeyECDH();
+                ec.keyMakeTls(28);
+                return ec;
             case 35:
                 cryKeyMLKEM ml = new cryKeyMLKEM();
                 ml.keyMakeSize(512);
@@ -1142,6 +1154,9 @@ public class secTransform {
         l.add(null, "2 .    24                2048 bit modp");
         l.add(null, "2 .    25                192 bit ecp");
         l.add(null, "2 .    26                224 bit ecp");
+        l.add(null, "2 .    28                256 bit ecp");
+        l.add(null, "2 .    29                384 bit ecp");
+        l.add(null, "2 .    30                512 bit ecp");
         l.add(null, "2 .    35                512 bit mlkem");
         l.add(null, "2 .    36                768 bit mlkem");
         l.add(null, "2 .    37                1024 bit mlkem");
