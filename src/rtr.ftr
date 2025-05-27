@@ -624,9 +624,9 @@ qc pass: ike1 with group26
 qc pass: ike1 with group19
 qc pass: ike1 with group20
 qc pass: ike1 with group21
-failed: ike1 with group35
-failed: ike1 with group36
-failed: ike1 with group37
+qc pass: ike1 with group35
+qc pass: ike1 with group36
+qc pass: ike1 with group37
 qc pass: ipv4 in ike2 over ipv4
 qc pass: ipv4 in ike2 over ipv6
 qc pass: ipv6 in ike2 over ipv4
@@ -661,9 +661,9 @@ qc pass: ike2 with group26
 qc pass: ike2 with group19
 qc pass: ike2 with group20
 qc pass: ike2 with group21
-failed: ike2 with group35
-failed: ike2 with group36
-failed: ike2 with group37
+qc pass: ike2 with group35
+qc pass: ike2 with group36
+qc pass: ike2 with group37
 qc pass: inlsp over ipv4
 qc pass: inlsp over ipv6
 qc pass: inlsp over inlsp

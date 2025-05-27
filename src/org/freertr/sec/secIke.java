@@ -595,6 +595,7 @@ public class secIke implements ifcDn, ifcUp {
                 pckTx.nonceI = conn.nonceR;
                 pckTx.nonceCreate();
                 pckTx.keyXchgFill();
+                conn.computeKeys();
                 pckTx.keyXchgCreate();
                 pckTx.secAssFill(true);
                 pckTx.secAssCreate();
@@ -602,7 +603,6 @@ public class secIke implements ifcDn, ifcUp {
                 pckTx.headerCreate();
                 conn.msgR = pckTx.pckBin;
                 sendIke(pckTx, true);
-                conn.computeKeys();
                 pckTx = conn.copyBytes();
                 pckTx.identFill(localAddr);
                 pckTx.identCreate();

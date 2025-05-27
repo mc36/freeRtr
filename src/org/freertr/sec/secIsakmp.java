@@ -477,10 +477,10 @@ public class secIsakmp implements ifcDn, ifcUp {
                 pckTx.nonceI = conn.nonceR;
                 pckTx.nonceCreate();
                 pckTx.keyXchgFill();
+                conn.computeKeys();
                 pckTx.keyXchgCreate();
                 pckTx.headerCreate();
                 sendIke(pckTx, false);
-                conn.computeKeys();
                 continue;
             }
             if (pckRx.doDecrypt()) {
