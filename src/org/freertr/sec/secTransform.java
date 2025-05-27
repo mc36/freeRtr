@@ -1142,9 +1142,9 @@ public class secTransform {
         l.add(null, "2 .    24                2048 bit modp");
         l.add(null, "2 .    25                192 bit ecp");
         l.add(null, "2 .    26                224 bit ecp");
-        l.add(null, "2 .    35                mlkem-512");
-        l.add(null, "2 .    36                mlkem-768");
-        l.add(null, "2 .    37                mlkem-1024");
+        l.add(null, "2 .    35                512 bit mlkem");
+        l.add(null, "2 .    36                768 bit mlkem");
+        l.add(null, "2 .    37                1024 bit mlkem");
         l.add(null, "1 2  seconds             sa lifetime in time");
         l.add(null, "2 .    <num>             number of seconds");
         l.add(null, "1 2  random              randomize time");

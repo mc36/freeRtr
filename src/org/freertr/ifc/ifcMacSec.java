@@ -114,6 +114,8 @@ public class ifcMacSec implements Runnable {
 
     private addrMac myaddr;
 
+    private addrMac peeraddr;
+
     private cryEncrGeneric cphrTx;
 
     private cryEncrGeneric cphrRx;
@@ -203,6 +205,7 @@ public class ifcMacSec implements Runnable {
         } catch (Exception e) {
             myaddr = addrMac.getBroadcast();
         }
+        peeraddr = new addrMac();
         if (debugger.ifcMacSecTraf) {
             logger.debug("initialized");
         }
@@ -319,6 +322,7 @@ public class ifcMacSec implements Runnable {
                 lastKex = bits.getTime();
                 pck.getSkip(size);
                 keygen.keyClntSsh(pck.getCopy(), 0);
+                peeraddr = pck.ETHsrc.copyBytes();
                 new Thread(this).start();
                 return true;
             default:
@@ -477,13 +481,18 @@ public class ifcMacSec implements Runnable {
             }
             buf1 = bits.byteConcat(buf1, buf2);
         }
-        byte[] buf2 = keygen.keyClntSsh();
-        byte[] buf3 = keygen.keyServSsh();
-        boolean res = buf2.length > buf3.length;
-        if (buf2.length == buf3.length) {
-            res = bits.byteComp(buf2, 0, buf3, 0, buf3.length) > 0;
+        boolean swp;
+        if (needLayer2) {
+            swp = peeraddr.compareTo(myaddr) > 0;
+        } else {
+            byte[] buf2 = keygen.keyClntSsh();
+            byte[] buf3 = keygen.keyServSsh();
+            swp = buf2.length > buf3.length;
+            if (buf2.length == buf3.length) {
+                swp = bits.byteComp(buf2, 0, buf3, 0, buf3.length) > 0;
+            }
         }
-        setupKeys(buf1, res);
+        setupKeys(buf1, swp);
         calcing.set(0);
         etht.triggerSync();
     }
