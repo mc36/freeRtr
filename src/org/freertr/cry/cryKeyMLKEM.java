@@ -423,13 +423,23 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     }
 
     public void keyClntCalc() {
+        if (servPub.length == KyberPolyVecBytes) {
+            common = kemDecrypt(clntPriv, servPub);
+            return;
+        }
         byte[][] k = kemEncrypt(servPub);
         common = k[0];
         clntPub = k[1];
     }
 
     public void keyServCalc() {
-        common = kemDecrypt(servPriv, clntPub);
+        if (clntPub.length == KyberPolyVecBytes) {
+            common = kemDecrypt(servPriv, clntPub);
+            return;
+        }
+        byte[][] k = kemEncrypt(clntPub);
+        common = k[0];
+        servPub = k[1];
     }
 
     public byte[] keyCommonTls() {
