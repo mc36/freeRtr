@@ -149,13 +149,7 @@ public class encUrl {
                 break;
             }
             String a = s.substring(i + 1, i + 3);
-            int o;
-            try {
-                o = Integer.parseInt(a, 16);
-            } catch (Exception e) {
-                o = (byte) '%';
-            }
-            r = r + s.substring(0, i) + (char) o;
+            r = r + s.substring(0, i) + (char) bits.fromHex(a);
             s = s.substring(i + 3, s.length());
         }
         return r + s;

@@ -1158,11 +1158,7 @@ public class packHolder {
             if (a.length() < 1) {
                 break;
             }
-            try {
-                i = Integer.parseInt(a, 16);
-            } catch (Exception e) {
-                return true;
-            }
+            i = bits.fromHex(a);
             putByte(0, i);
             putSkip(1);
             merge2end();

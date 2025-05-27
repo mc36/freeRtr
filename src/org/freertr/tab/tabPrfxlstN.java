@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
-import org.freertr.ip.ipMpls;
 import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrBgpUtil;
+import org.freertr.util.bits;
 
 /**
  * represents one prefix list entry (network and a range)
@@ -161,12 +161,7 @@ public class tabPrfxlstN extends tabListingEntry<addrIP> {
                 continue;
             }
             i = s.indexOf(" ");
-            int o;
-            try {
-                o = Integer.parseInt(s.substring(0, i).trim());
-            } catch (Exception e) {
-                return true;
-            }
+            int o = bits.str2num(s.substring(0, i).trim());
             s = s.substring(i + 1, s.length());
             if (b.equals("ge")) {
                 min = o;

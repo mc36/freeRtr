@@ -370,10 +370,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
     private void workDoer() {
         byte[] buf1 = new byte[preshared.length() / 2];
         for (int i = 0; i < buf1.length; i++) {
-            try {
-                buf1[i] = (byte) Integer.parseInt(preshared.substring(i * 2, i * 2 + 2), 16);
-            } catch (Exception e) {
-            }
+            buf1[i] = (byte) bits.fromHex(preshared.substring(i * 2, i * 2 + 2));
         }
         hashSiz = transform.getHash().getHashSize();
         byte[] buf2 = new byte[hashSiz];

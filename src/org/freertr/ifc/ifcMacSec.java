@@ -215,10 +215,7 @@ public class ifcMacSec {
         }
         byte[] buf1 = new byte[profil.preshared.length() / 2];
         for (int i = 0; i < buf1.length; i++) {
-            try {
-                buf1[i] = (byte) Integer.parseInt(profil.preshared.substring(i * 2, i * 2 + 2), 16);
-            } catch (Exception e) {
-            }
+            buf1[i] = (byte) bits.fromHex(profil.preshared.substring(i * 2, i * 2 + 2));
         }
         setupKeys(buf1, false);
     }
