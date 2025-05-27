@@ -87,8 +87,6 @@ public class cryKeyMLKEM extends cryKeyGeneric {
 
     private byte[] clntPub;
 
-    private byte[] servPriv;
-
     private byte[] servPub;
 
     private byte[][] kemEncryptInternal(byte[] publicKeyInput, byte[] randBytes) {

@@ -167,11 +167,17 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public byte[] keyCommonTls() {
+        if (common == null) {
+            return null;
+        }
         int siz = curve.byteSize();
         return cryUtils.bigInt2buffer(common.x, siz);
     }
 
     public byte[] keyCommonSsh() {
+        if (common == null) {
+            return null;
+        }
         return common.x.toByteArray();
     }
 

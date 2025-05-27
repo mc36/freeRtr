@@ -770,9 +770,9 @@ qc pass: macsec with group26
 qc pass: macsec with group19
 qc pass: macsec with group20
 qc pass: macsec with group21
-failed: macsec with group35
-failed: macsec with group36
-failed: macsec with group37
+qc pass: macsec with group35
+qc pass: macsec with group36
+qc pass: macsec with group37
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source list translation to pool

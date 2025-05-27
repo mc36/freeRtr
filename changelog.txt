@@ -16744,3 +16744,10 @@ qc pass: ike1 with group37
 qc pass: ike2 with group35
 qc pass: ike2 with group36
 qc pass: ike2 with group37
+---------------------------------- 2025-05-27 13:31:24 25.5.27
+no failed: macsec with group37
+no failed: macsec with group36
+no failed: macsec with group35
+qc pass: macsec with group35
+qc pass: macsec with group36
+qc pass: macsec with group37

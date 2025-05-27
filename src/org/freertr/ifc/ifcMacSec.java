@@ -13,7 +13,6 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.syncInt;
 
 /**
  * mac security (ieee 802.1ae) protocol
@@ -114,7 +113,9 @@ public class ifcMacSec {
 
     private addrMac myaddr;
 
-    private addrMac peeraddr;
+    private int myDisc;
+
+    private int peerDisc;
 
     private cryEncrGeneric cphrTx;
 
@@ -130,13 +131,13 @@ public class ifcMacSec {
 
     private int kexNum;
 
-    private boolean reply;
+    private int replyTyp;
 
-    private long lastKex = 0;
+    private byte[] replyVal;
+
+    private long replyTim = 0;
 
     private int lastRnd = 0;
-
-    private syncInt calcing = new syncInt(0);
 
     private ifcEthTyp etht;
 
@@ -156,8 +157,8 @@ public class ifcMacSec {
     public userFormat getShow() {
         userFormat l = new userFormat("|", "category|value");
         l.add("kex|" + kexNum);
-        l.add("for|" + bits.timePast(lastKex));
-        l.add("since|" + bits.time2str(cfgAll.timeZoneName, lastKex + cfgAll.timeServerOffset, 3));
+        l.add("for|" + bits.timePast(replyTim));
+        l.add("since|" + bits.time2str(cfgAll.timeZoneName, replyTim + cfgAll.timeServerOffset, 3));
         l.add("seq|" + seqTx);
         l.add("win|" + sequence);
         l.add("pack|" + cntr.getShHwPsum(hwCntr));
@@ -195,8 +196,6 @@ public class ifcMacSec {
         etht = eth;
         myTyp = typ;
         profil = ips;
-        keygen = ips.trans.getGroup();
-        keygen.keyServInit();
         if (profil.replay > 0) {
             sequence = new tabWindow<packHolder>(profil.replay);
         }
@@ -205,7 +204,9 @@ public class ifcMacSec {
         } catch (Exception e) {
             myaddr = addrMac.getBroadcast();
         }
-        peeraddr = new addrMac();
+        keygen = profil.trans.getGroup();
+        myDisc = 1 + bits.randomD();
+        peerDisc = 0;
         if (debugger.ifcMacSecTraf) {
             logger.debug("initialized");
         }
@@ -310,56 +311,20 @@ public class ifcMacSec {
         switch (typ) {
             case 0x0c: // data
                 break;
-            case 0x01: // request
-            case 0x02: // reply
+            case 0x01: // init-req
+            case 0x02: // init-rep
+            case 0x03: // kex-req
+            case 0x04: // kex-rep
                 if (profil.role == cfgIpsec.roleMode.staticKeys) {
                     return true;
                 }
-                if (calcing.set(1) != 0) {
-                    return true;
-                }
-                reply = typ == 1;
-                lastKex = bits.getTime();
                 pck.getSkip(size);
-                keygen.keyClntSsh(pck.getCopy(), 0);
-                peeraddr = pck.ETHsrc.copyBytes();
+                replyTyp = typ;
+                replyVal = pck.getCopy();
+                replyTim = bits.getTime();
                 if (debugger.ifcMacSecTraf) {
-                    logger.debug("got kex, reply=" + (!reply));
+                    logger.debug("got kex " + replyTyp + " " + bits.byteDump(replyVal, 0, -1));
                 }
-                keygen.keyServCalc();
-                if (debugger.ifcMacSecTraf) {
-                    logger.debug("keys " + keygen.keyDump());
-                }
-                byte[] buf1 = new byte[0];
-                for (int i = 0; buf1.length < 1024; i++) {
-                    cryHashGeneric hsh = profil.trans.getHash();
-                    hsh.init();
-                    hsh.update(keygen.keyCommonSsh());
-                    hsh.update(profil.preshared.getBytes());
-                    hsh.update(i);
-                    byte[] buf2 = hsh.finish();
-                    if (buf2.length < 1) {
-                        buf2 = keygen.keyCommonSsh();
-                        byte[] buf3 = profil.preshared.getBytes();
-                        for (int o = 0; o < buf2.length; o++) {
-                            buf2[o] ^= buf3[o % buf3.length];
-                        }
-                    }
-                    buf1 = bits.byteConcat(buf1, buf2);
-                }
-                boolean swp;
-                if (needLayer2) {
-                    swp = peeraddr.compareTo(myaddr) > 0;
-                } else {
-                    byte[] buf2 = keygen.keyClntSsh();
-                    byte[] buf3 = keygen.keyServSsh();
-                    swp = buf2.length > buf3.length;
-                    if (buf2.length == buf3.length) {
-                        swp = bits.byteComp(buf2, 0, buf3, 0, buf3.length) > 0;
-                    }
-                }
-                setupKeys(buf1, swp);
-                calcing.set(0);
                 etht.triggerSync();
                 return true;
             default:
@@ -445,52 +410,152 @@ public class ifcMacSec {
         if (profil.role == cfgIpsec.roleMode.staticKeys) {
             return null;
         }
-        if ((hashRx != null) && (!reply)) {
-            boolean ned = false;
-            if (profil.trans.lifeSec > 0) {
-                ned |= (bits.getTime() - lastKex - lastRnd) > (profil.trans.lifeSec * 1000);
-            }
-            if (profil.trans.lifeByt > 0) {
-                long tx = cntr.byteTx;
-                if (hwCntr != null) {
-                    tx += hwCntr.byteTx;
-                }
-                ned |= tx > profil.trans.lifeByt;
-            }
-            if (!ned) {
-                return null;
-            }
-            if (calcing.set(1) != 0) {
-                return null;
-            }
-            if (debugger.ifcMacSecTraf) {
-                logger.debug("restarting kex");
-            }
-            keygen = profil.trans.getGroup();
-            keygen.keyServInit();
-            calcing.set(0);
-            reply = false;
-            hashRx = null;
-            hwCntr = null;
-        }
-        boolean rep = hashRx == null;
-        if (debugger.ifcMacSecTraf) {
-            logger.debug("sending kex, reply=" + (!rep) + " " + keygen.keyDump());
-        }
         packHolder pck = new packHolder(true, true);
-        pck.msbPutW(0, myTyp); // ethertype
-        pck.putByte(2, rep ? 0x01 : 0x02); // tci=v,e
-        pck.putByte(3, 0); // sl
-        pck.msbPutD(4, 0); // seq
-        pck.putSkip(size);
-        byte[] buf = keygen.keyServSsh();
-        pck.putCopy(buf, 0, 0, buf.length);
-        pck.putSkip(buf.length);
-        pck.merge2beg();
         pck.ETHsrc.setAddr(myaddr);
         pck.ETHtrg.setAddr(addrMac.getBroadcast());
-        reply = false;
-        return pck;
+        pck.msbPutW(0, myTyp); // ethertype
+        pck.putByte(3, 0); // sl
+        pck.msbPutD(4, 0); // seq
+        int replyOld = replyTyp;
+        replyTyp = 0;
+        switch (replyOld) {
+            case 1:
+                peerDisc = bits.msbGetD(replyVal, 0);
+                pck.putByte(2, 2); // init
+                pck.msbPutD(size, myDisc);
+                pck.putSkip(size + 4);
+                pck.merge2beg();
+                keygen = profil.trans.getGroup();
+                return pck;
+            case 2:
+                peerDisc = bits.msbGetD(replyVal, 0);
+                break;
+            case 3:
+            case 4:
+                if (peerDisc == 0) {
+                    break;
+                }
+                if (myDisc < peerDisc) {
+                    keygen.keyClntSsh(replyVal, 0);
+                } else {
+                    keygen.keyServSsh(replyVal, 0);
+                }
+                break;
+            default:
+                break;
+        }
+        if (peerDisc == 0) {
+            pck.putByte(2, 1); // init
+            pck.msbPutD(size, myDisc);
+            pck.putSkip(size + 4);
+            pck.merge2beg();
+            return pck;
+        }
+        if (myDisc < peerDisc) {
+            if (keygen.keyServSsh() == null) {
+                keygen.keyServInit();
+            }
+            if ((keygen.keyCommonSsh() == null) && (keygen.keyClntSsh() != null)) {
+                keygen.keyServCalc();
+                setupKeys();
+            }
+        } else {
+            if (keygen.keyClntSsh() == null) {
+                keygen.keyClntInit();
+            }
+            if ((keygen.keyCommonSsh() == null) && (keygen.keyServSsh() != null)) {
+                keygen.keyClntCalc();
+                setupKeys();
+            }
+        }
+        if (replyOld == 3) {
+            byte[] buf;
+            if (myDisc < peerDisc) {
+                buf = keygen.keyServSsh();
+            } else {
+                buf = keygen.keyClntSsh();
+            }
+            if (debugger.ifcMacSecTraf) {
+                logger.debug("send kex " + bits.byteDump(buf, 0, -1));
+            }
+            if (buf == null) {
+                return null;
+            }
+            pck.putByte(2, 4); // kex
+            pck.putCopy(buf, 0, size, buf.length);
+            pck.putSkip(size + buf.length);
+            pck.merge2beg();
+            return pck;
+        }
+        if (keygen.keyServSsh() == null) {
+            if (myDisc < peerDisc) {
+                return null;
+            }
+            byte[] buf = keygen.keyClntSsh();
+            if (debugger.ifcMacSecTraf) {
+                logger.debug("send kex " + bits.byteDump(buf, 0, -1));
+            }
+            if (buf == null) {
+                return null;
+            }
+            pck.putByte(2, 3); // kex
+            pck.putCopy(buf, 0, size, buf.length);
+            pck.putSkip(size + buf.length);
+            pck.merge2beg();
+            return pck;
+        }
+        if (hashRx == null) {
+            return null;
+        }
+        boolean ned = false;
+        if (profil.trans.lifeSec > 0) {
+            ned |= (bits.getTime() - replyTim - lastRnd) > (profil.trans.lifeSec * 1000);
+        }
+        if (profil.trans.lifeByt > 0) {
+            long tx = cntr.byteTx;
+            if (hwCntr != null) {
+                tx += hwCntr.byteTx;
+            }
+            ned |= tx > profil.trans.lifeByt;
+        }
+        if (!ned) {
+            return null;
+        }
+        if (debugger.ifcMacSecTraf) {
+            logger.debug("restarting kex");
+        }
+        hashRx = null;
+        hwCntr = null;
+        keygen = profil.trans.getGroup();
+        myDisc = 1 + bits.randomD();
+        peerDisc = 0;
+        return null;
+    }
+
+    private void setupKeys() {
+        if (debugger.ifcMacSecTraf) {
+            logger.debug("keys " + keygen.keyDump());
+        }
+        byte[] buf1 = new byte[0];
+        cryHashGeneric hsh = profil.trans.getHash();
+        for (int i = 0; buf1.length < 1024; i++) {
+            hsh.init();
+            hsh.update(keygen.keyCommonSsh());
+            hsh.update(profil.preshared.getBytes());
+            hsh.update(i);
+            byte[] buf2 = hsh.finish();
+            buf1 = bits.byteConcat(buf1, buf2);
+            if (buf2.length > 0) {
+                continue;
+            }
+            buf2 = keygen.keyCommonSsh();
+            byte[] buf3 = profil.preshared.getBytes();
+            for (int o = 0; o < buf2.length; o++) {
+                buf2[o] ^= buf3[o % buf3.length];
+            }
+            buf1 = bits.byteConcat(buf1, buf2);
+        }
+        setupKeys(buf1, myDisc < peerDisc);
     }
 
     private void setupKeys(byte[] res, boolean swp) {

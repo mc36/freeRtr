@@ -209,22 +209,34 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public byte[] keyCommonTls() {
+        if (common == null) {
+            return null;
+        }
         return cryUtils.bigUint2buf(common);
     }
 
     public byte[] keyCommonSsh() {
+        if (common == null) {
+            return null;
+        }
         return common.toByteArray();
     }
 
     public byte[] keyCommonIke() {
-        return cryUtils.bigUint2buf(common);
+        return keyCommonTls();
     }
 
     public byte[] keyClntTls() {
+        if (clntPub == null) {
+            return null;
+        }
         return cryUtils.bigUint2buf(clntPub);
     }
 
     public byte[] keyServTls() {
+        if (servPub == null) {
+            return null;
+        }
         return cryUtils.bigUint2buf(servPub);
     }
 
@@ -239,10 +251,16 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public byte[] keyClntSsh() {
+        if (clntPub == null) {
+            return null;
+        }
         return clntPub.toByteArray();
     }
 
     public byte[] keyServSsh() {
+        if (servPub == null) {
+            return null;
+        }
         return servPub.toByteArray();
     }
 
@@ -261,11 +279,11 @@ public class cryKeyDH extends cryKeyGeneric {
     }
 
     public byte[] keyClntIke() {
-        return cryUtils.bigUint2buf(clntPub);
+        return keyClntTls();
     }
 
     public byte[] keyServIke() {
-        return cryUtils.bigUint2buf(servPub);
+        return keyServTls();
     }
 
     public boolean keyClntIke(byte[] buf, int ofs) {
