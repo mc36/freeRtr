@@ -1478,13 +1478,13 @@ public class spfCalc<Ta extends addrType> {
         return b.substring(0, b.length() - dns.length());
     }
 
-    private String[] convertLoc(String a) {
+    private String[] convertLoc(String a, String[] d) {
         if (a == null) {
-            return null;
+            return d;
         }
         int i = a.indexOf(" ");
         if (i < 0) {
-            return null;
+            return d;
         }
         String[] res = new String[2];
         res[0] = a.substring(i + 1, a.length());
@@ -1513,6 +1513,7 @@ public class spfCalc<Ta extends addrType> {
         boolean nets = false;
         boolean ints = false;
         String locs = null;
+        String defl[] = null;
         float recBX = Float.MIN_VALUE;
         float recBY = Float.MIN_VALUE;
         float recEX = Float.MAX_VALUE;
@@ -1537,6 +1538,10 @@ public class spfCalc<Ta extends addrType> {
             }
             if (a.equals("dns")) {
                 dns = cmd.word();
+                continue;
+            }
+            if (a.equals("defl")) {
+                defl = convertLoc(cmd.word(), null);
                 continue;
             }
             if (a.equals("nets")) {
@@ -1583,7 +1588,7 @@ public class spfCalc<Ta extends addrType> {
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, nam + "." + locs, false, packDnsRec.typeTXT);
                 String a = clnt.getTXT();
-                String[] p = convertLoc(a);
+                String[] p = convertLoc(a, defl);
                 if (p == null) {
                     continue;
                 }
