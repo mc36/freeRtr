@@ -16788,3 +16788,10 @@ qc pass: p4lang: openvpn with sha3384
 qc pass: p4lang: macsec with sha3384
 qc pass: p4lang: openvpn with sha3512
 qc pass: p4lang: macsec with sha3512
+---------------------------------- 2025-05-28 18:52:23 25.5.28
+qc pass: p4lang: macsec with blowfish
+qc pass: p4lang: ipsec with blowfish
+qc pass: p4lang: openvpn with blowfish
+qc pass: p4lang: macsec with rc2
+qc pass: p4lang: ipsec with rc2
+qc pass: p4lang: openvpn with rc2
