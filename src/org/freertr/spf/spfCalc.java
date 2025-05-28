@@ -1517,6 +1517,11 @@ public class spfCalc<Ta extends addrType> {
         float recBY = Float.MIN_VALUE;
         float recEX = Float.MAX_VALUE;
         float recEY = Float.MAX_VALUE;
+        boolean scale = false;
+        float sclMX = 0.0f;
+        float sclMY = 0.0f;
+        float sclSX = 0.0f;
+        float sclSY = 0.0f;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -1547,10 +1552,18 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             if (a.equals("rect")) {
-                recBX = convertFlt(cmd.word());
                 recBY = convertFlt(cmd.word());
-                recEX = convertFlt(cmd.word());
+                recBX = convertFlt(cmd.word());
                 recEY = convertFlt(cmd.word());
+                recEX = convertFlt(cmd.word());
+                continue;
+            }
+            if (a.equals("scal")) {
+                sclMY = convertFlt(cmd.word());
+                sclMX = convertFlt(cmd.word());
+                sclSY = convertFlt(cmd.word());
+                sclSX = convertFlt(cmd.word());
+                scale = true;
                 continue;
             }
         }
@@ -1588,7 +1601,15 @@ public class spfCalc<Ta extends addrType> {
                 if (y > recEY) {
                     continue;
                 }
-                res.add("\"" + ntry + "\" [pin=true pos=\"" + p[0] + "," + p[1] + "\"]");
+                if (scale) {
+                    x *= sclMX;
+                    x -= sclSX;
+                    y *= sclMY;
+                    y -= sclSY;
+                    x = (int) x;
+                    y = (int) y;
+                }
+                res.add("\"" + ntry + "\" [pin=true pos=\"" + x + "," + y + "\"]");
             }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cur = ntry.conn.get(i);
