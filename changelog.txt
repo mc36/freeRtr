@@ -16795,3 +16795,5 @@ qc pass: p4lang: openvpn with blowfish
 qc pass: p4lang: macsec with rc2
 qc pass: p4lang: ipsec with rc2
 qc pass: p4lang: openvpn with rc2
+---------------------------------- 2025-05-28 19:51:54 25.5.28
+qc pass: p4lang: amt multicast routing

@@ -285,6 +285,25 @@ qc pass: p4lang: openvpn with blowfish
 qc pass: p4lang: macsec with rc2
 qc pass: p4lang: ipsec with rc2
 qc pass: p4lang: openvpn with rc2
+qc pass: p4lang: ipsec mpls over ipv4
+qc pass: p4lang: ipsec mpls over ipv6
+qc pass: p4lang: ipsec mpls over ipv4 loopback
+qc pass: p4lang: ipsec mpls over ipv6 loopback
+qc pass: p4lang: ipsec mpls over vlan
+qc pass: p4lang: ipsec mpls over bundle
+qc pass: p4lang: ipsec mpls over bundle vlan
+qc pass: p4lang: ipsec mpls over hairpin
+qc pass: p4lang: ipsec mpls over hairpin vlan
+qc pass: p4lang: ipsec mpls over bridge
+qc pass: p4lang: ipsec mpls over vlan bridge
+qc pass: p4lang: bridging over ipsec
+qc pass: p4lang: bridging over ipsec vlan
+qc pass: p4lang: mldp core over ipsec
+qc pass: p4lang: bier core over ipsec
+qc pass: p4lang: ipsec mpls pop
+qc pass: p4lang: ipsec mpls push
+qc pass: p4lang: l2vpn over ipsec mpls
+qc pass: p4lang: l3vpn over ipsec mpls
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -738,25 +757,7 @@ qc pass: p4lang: l2vpn over ipip mpls
 qc pass: p4lang: l3vpn over ipip mpls
 qc pass: p4lang: sdwan over ipv4 with ipip
 qc pass: p4lang: sdwan over ipv6 with ipip
-qc pass: p4lang: ipsec mpls over ipv4
-qc pass: p4lang: ipsec mpls over ipv6
-qc pass: p4lang: ipsec mpls over ipv4 loopback
-qc pass: p4lang: ipsec mpls over ipv6 loopback
-qc pass: p4lang: ipsec mpls over vlan
-qc pass: p4lang: ipsec mpls over bundle
-qc pass: p4lang: ipsec mpls over bundle vlan
-qc pass: p4lang: ipsec mpls over hairpin
-qc pass: p4lang: ipsec mpls over hairpin vlan
-qc pass: p4lang: ipsec mpls over bridge
-qc pass: p4lang: ipsec mpls over vlan bridge
-qc pass: p4lang: bridging over ipsec
-qc pass: p4lang: bridging over ipsec vlan
-qc pass: p4lang: mldp core over ipsec
-qc pass: p4lang: bier core over ipsec
-qc pass: p4lang: ipsec mpls pop
-qc pass: p4lang: ipsec mpls push
-qc pass: p4lang: l2vpn over ipsec mpls
-qc pass: p4lang: l3vpn over ipsec mpls
+qc pass: p4lang: amt multicast routing
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
