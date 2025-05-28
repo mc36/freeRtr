@@ -7,12 +7,12 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class cryHashShake256 extends cryHashGeneric {
+public class cryHashShake128 extends cryHashGeneric {
 
     /**
      * create instance
      */
-    public cryHashShake256() {
+    public cryHashShake128() {
     }
 
     private static long[] KeccakRoundConstants = new long[]{
@@ -37,11 +37,11 @@ public class cryHashShake256 extends cryHashGeneric {
     private boolean squeezing;
 
     public void init() {
-        init(256);
+        init(128);
     }
 
     public String getName() {
-        return "shake256";
+        return "shake128";
     }
 
     public byte[] getPkcs() {

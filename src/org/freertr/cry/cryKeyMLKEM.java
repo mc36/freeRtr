@@ -284,7 +284,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         int xofBlockBytes = 168;
         int matrixNBlocks = ((12 * cryKeyMLKEM.KyberN / 8 * (1 << 12) / cryKeyMLKEM.KyberQ + xofBlockBytes) / xofBlockBytes);
         byte[] buf = new byte[matrixNBlocks * xofBlockBytes + 2];
-        cryHashShake256 h = new cryHashShake256();
+        cryHashShake128 h = new cryHashShake128();
         for (int i = 0; i < KyberK; i++) {
             for (int j = 0; j < KyberK; j++) {
                 h.init();
