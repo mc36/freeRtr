@@ -616,10 +616,10 @@ public class userTest {
             kdh.keyMakeSize(pmsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
-                kdh.keyClntInit();
                 kdh.keyServInit();
-                kdh.keyClntCalc();
+                kdh.keyClntInit();
                 kdh.keyServCalc();
+                kdh.keyClntCalc();
             }
             cmd.error("dh: " + kdh.keyVerify() + " " + kdh.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
@@ -628,10 +628,10 @@ public class userTest {
             kecdh.keyMakeSize(ecsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
-                kecdh.keyClntInit();
                 kecdh.keyServInit();
-                kecdh.keyClntCalc();
+                kecdh.keyClntInit();
                 kecdh.keyServCalc();
+                kecdh.keyClntCalc();
             }
             cmd.error("ecdh: " + kecdh.keyVerify() + " " + kecdh.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
@@ -640,10 +640,10 @@ public class userTest {
             kml.keyMakeSize(mlsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
-                kml.keyClntInit();
                 kml.keyServInit();
-                kml.keyClntCalc();
+                kml.keyClntInit();
                 kml.keyServCalc();
+                kml.keyClntCalc();
             }
             cmd.error("mlkem: " + kml.keyVerify() + " " + kml.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
