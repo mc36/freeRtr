@@ -16775,3 +16775,7 @@ qc pass: ike1 with sha384
 failed: ike2 with sha384
 qc pass: interop1: ike1 with sha384
 qc pass: interop1: ike2 with sha384
+---------------------------------- 2025-05-28 15:40:57 25.5.28
+no failed: ike2 with sha384
+qc pass: ike2 with sha384
+qc pass: p4lang: ipsec with sha384
