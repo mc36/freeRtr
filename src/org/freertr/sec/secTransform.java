@@ -941,6 +941,8 @@ public class secTransform {
                 return 16;
             case 4:
                 return 32;
+            case 6:
+                return 24;
             default:
                 return getHash().getHashSize();
         }

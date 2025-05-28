@@ -16761,3 +16761,12 @@ qc pass: ike2 with group30
 qc pass: macsec with group28
 qc pass: macsec with group29
 qc pass: macsec with group30
+---------------------------------- 2025-05-28 14:14:19 25.5.28
+qc pass: ike1 with rc2
+qc pass: ike2 with rc2
+qc pass: inlsp with rc2
+qc pass: macsec with rc2
+qc pass: openvpn with rc2
+qc pass: satp with rc2
+qc pass: skip with rc2
+qc pass: swipe with rc2

@@ -630,6 +630,7 @@ qc pass: ike1 with group30
 qc pass: ike1 with group35
 qc pass: ike1 with group36
 qc pass: ike1 with group37
+qc pass: ike1 with rc2
 qc pass: ipv4 in ike2 over ipv4
 qc pass: ipv4 in ike2 over ipv6
 qc pass: ipv6 in ike2 over ipv4
@@ -670,6 +671,7 @@ qc pass: ike2 with group30
 qc pass: ike2 with group35
 qc pass: ike2 with group36
 qc pass: ike2 with group37
+qc pass: ike2 with rc2
 qc pass: inlsp over ipv4
 qc pass: inlsp over ipv6
 qc pass: inlsp over inlsp
@@ -698,6 +700,7 @@ qc pass: inlsp with sha3384
 qc pass: inlsp with sha3512
 qc pass: inlsp with none encryption
 qc pass: inlsp with none hash
+qc pass: inlsp with rc2
 qc pass: route inspection
 qc pass: flow inspection
 qc pass: interface inspection
@@ -782,6 +785,7 @@ qc pass: macsec with group30
 qc pass: macsec with group35
 qc pass: macsec with group36
 qc pass: macsec with group37
+qc pass: macsec with rc2
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source list translation to pool
@@ -828,6 +832,7 @@ qc pass: openvpn with sha3384
 qc pass: openvpn with sha3512
 qc pass: openvpn with none encryption
 qc pass: openvpn with none hash
+qc pass: openvpn with rc2
 qc pass: transparent proxy
 qc pass: satp over ipv4
 qc pass: satp over ipv6
@@ -858,6 +863,7 @@ qc pass: satp with sha3384
 qc pass: satp with sha3512
 qc pass: satp with none encryption
 qc pass: satp with none hash
+qc pass: satp with rc2
 qc pass: sgt ethernet encapsulation
 qc pass: sgt vlan encapsulation
 qc pass: sgt bridge encapsulation
@@ -913,6 +919,7 @@ qc pass: skip with sha3384
 qc pass: skip with sha3512
 qc pass: skip with none encryption
 qc pass: skip with none hash
+qc pass: skip with rc2
 qc pass: ssh test
 qc pass: swipe over ipv4
 qc pass: swipe over ipv6
@@ -942,6 +949,7 @@ qc pass: swipe with sha3384
 qc pass: swipe with sha3512
 qc pass: swipe with none encryption
 qc pass: swipe with none hash
+qc pass: swipe with rc2
 qc pass: tls test
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
