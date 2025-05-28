@@ -284,30 +284,23 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         int xofBlockBytes = 168;
         int matrixNBlocks = ((12 * cryKeyMLKEM.KyberN / 8 * (1 << 12) / cryKeyMLKEM.KyberQ + xofBlockBytes) / xofBlockBytes);
         byte[] buf = new byte[matrixNBlocks * xofBlockBytes + 2];
-        cryHashSha3256 h = new cryHashSha3256();
+        cryHashShake256 h = new cryHashShake256();
         for (int i = 0; i < KyberK; i++) {
             for (int j = 0; j < KyberK; j++) {
+                h.init();
+                h.update(seed, 0, seed.length);
+                if (transposed) {
+                    h.update(i);
+                    h.update(j);
+                } else {
+                    h.update(j);
+                    h.update(i);
+                }
                 int outLen = matrixNBlocks * xofBlockBytes;
                 for (int outOfs = 0; outOfs < outLen;) {
-                    h.init();
-                    h.update(seed, 0, seed.length);
-                    if (transposed) {
-                        h.update(i);
-                        h.update(j);
-                    } else {
-                        h.update(j);
-                        h.update(i);
-                    }
-                    h.update(outOfs);
-                    h.update(outOfs >>> 8);
                     byte[] res = h.finish();
-                    int o = res.length;
-                    int p = outLen - outOfs;
-                    if (o > p) {
-                        o = p;
-                    }
-                    bits.byteCopy(res, 0, buf, outOfs, o);
-                    outOfs += o;
+                    bits.byteCopy(res, 0, buf, outOfs, res.length);
+                    outOfs += res.length;
                 }
                 aMatrix[i].vec[j].rejectionSampling(0, cryKeyMLKEM.KyberN, buf, outLen);
             }
