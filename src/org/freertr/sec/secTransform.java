@@ -375,6 +375,8 @@ public class secTransform {
                 return 2;
             case 4:
                 return 3;
+            case 5:
+                return 6;
             case 6:
                 return 4;
             default:
@@ -398,6 +400,8 @@ public class secTransform {
                 return 4;
             case 4:
                 return 6;
+            case 6:
+                return 5;
             default:
                 return 0;
         }
@@ -419,6 +423,8 @@ public class secTransform {
                 return 3;
             case 7:
                 return 4;
+            case 6:
+                return 6;
             default:
                 return 0;
         }
@@ -440,6 +446,8 @@ public class secTransform {
                 return 5;
             case 4:
                 return 7;
+            case 6:
+                return 6;
             default:
                 return 0;
         }
