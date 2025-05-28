@@ -467,6 +467,8 @@ public class secTransform {
                 return 2;
             case 12:
                 return 3;
+            case 13:
+                return 6;
             case 14:
                 return 4;
             default:
@@ -490,49 +492,11 @@ public class secTransform {
                 return 12;
             case 4:
                 return 14;
+            case 6:
+                return 13;
             default:
                 return 0;
         }
-    }
-
-    /**
-     * decode ike2 prf algorithm
-     *
-     * @param i encoded value
-     * @return decoded value
-     */
-    public static int decode2prf(int i) {
-        return decodeQMhash(i);
-    }
-
-    /**
-     * encode ike2 prf algorithm
-     *
-     * @param i encoded value
-     * @return decoded value
-     */
-    public static int encode2prf(int i) {
-        return encodeQMhash(i);
-    }
-
-    /**
-     * encode ike2 encryption algorithm
-     *
-     * @param i encoded value
-     * @return decoded value
-     */
-    public static int encode2encr(int i) {
-        return encodeQMencr(i);
-    }
-
-    /**
-     * decode ike2 encryption algorithm
-     *
-     * @param i encoded value
-     * @return decoded value
-     */
-    public static int decode2encr(int i) {
-        return decodeQMencr(i);
     }
 
     /**
@@ -723,10 +687,10 @@ public class secTransform {
         len -= 4;
         switch (propTyp) {
             case 1:
-                encrAlg = decode2encr(propVal);
+                encrAlg = decodeQMencr(propVal);
                 break;
             case 2:
-                prfAlg = decode2prf(propVal);
+                prfAlg = decodeQMhash(propVal);
                 break;
             case 3:
                 hashAlg = decode2hash(propVal);
@@ -771,7 +735,7 @@ public class secTransform {
                 buf = new byte[4];
             }
             bits.msbPutW(buf, 0, 0x100);
-            bits.msbPutW(buf, 2, encode2encr(encrAlg));
+            bits.msbPutW(buf, 2, encodeQMencr(encrAlg));
             if (encrKey > 0) {
                 bits.msbPutW(buf, 4, 0x800e);
                 bits.msbPutW(buf, 6, encrKey);
@@ -782,7 +746,7 @@ public class secTransform {
         if (prfAlg > 0) {
             byte[] buf = new byte[4];
             bits.msbPutW(buf, 0, 0x200);
-            bits.msbPutW(buf, 2, encode2prf(prfAlg));
+            bits.msbPutW(buf, 2, encodeQMhash(prfAlg));
             trnP = add2transform(pck, buf);
             trnC++;
         }

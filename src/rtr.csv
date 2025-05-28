@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.28-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-28 14:35:26, took 00:21:06, with 50 workers, on 3756 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2025-05-28 15:26:48, took 00:22:03, with 50 workers, on 3760 cases, 1 failed, 0 traces, 10 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -635,6 +635,7 @@ http://sources.freertr.org/cfg/crypt-ike135.tst;crypt-ike135.tst;success;ike1 wi
 http://sources.freertr.org/cfg/crypt-ike136.tst;crypt-ike136.tst;success;ike1 with group36
 http://sources.freertr.org/cfg/crypt-ike137.tst;crypt-ike137.tst;success;ike1 with group37
 http://sources.freertr.org/cfg/crypt-ike138.tst;crypt-ike138.tst;success;ike1 with rc2
+http://sources.freertr.org/cfg/crypt-ike139.tst;crypt-ike139.tst;success;ike1 with sha384
 http://sources.freertr.org/cfg/crypt-ike201.tst;crypt-ike201.tst;success;ipv4 in ike2 over ipv4
 http://sources.freertr.org/cfg/crypt-ike202.tst;crypt-ike202.tst;success;ipv4 in ike2 over ipv6
 http://sources.freertr.org/cfg/crypt-ike203.tst;crypt-ike203.tst;success;ipv6 in ike2 over ipv4
@@ -676,6 +677,7 @@ http://sources.freertr.org/cfg/crypt-ike238.tst;crypt-ike238.tst;success;ike2 wi
 http://sources.freertr.org/cfg/crypt-ike239.tst;crypt-ike239.tst;success;ike2 with group36
 http://sources.freertr.org/cfg/crypt-ike240.tst;crypt-ike240.tst;success;ike2 with group37
 http://sources.freertr.org/cfg/crypt-ike241.tst;crypt-ike241.tst;success;ike2 with rc2
+http://sources.freertr.org/cfg/crypt-ike242.tst;crypt-ike242.tst;#6-run-r1 tping 100 10 2.2.2.2 vrf v1;ike2 with sha384
 http://sources.freertr.org/cfg/crypt-inlsp01.tst;crypt-inlsp01.tst;success;inlsp over ipv4
 http://sources.freertr.org/cfg/crypt-inlsp02.tst;crypt-inlsp02.tst;success;inlsp over ipv6
 http://sources.freertr.org/cfg/crypt-inlsp03.tst;crypt-inlsp03.tst;success;inlsp over inlsp
@@ -1020,6 +1022,7 @@ http://sources.freertr.org/cfg/intop1-ike115.tst;intop1-ike115.tst;success;inter
 http://sources.freertr.org/cfg/intop1-ike116.tst;intop1-ike116.tst;success;interop1: ike1 with group19
 http://sources.freertr.org/cfg/intop1-ike117.tst;intop1-ike117.tst;success;interop1: ike1 with group20
 http://sources.freertr.org/cfg/intop1-ike118.tst;intop1-ike118.tst;success;interop1: ike1 with group21
+http://sources.freertr.org/cfg/intop1-ike119.tst;intop1-ike119.tst;success;interop1: ike1 with sha384
 http://sources.freertr.org/cfg/intop1-ike201.tst;intop1-ike201.tst;success;interop1: ike2 with ipv4
 http://sources.freertr.org/cfg/intop1-ike202.tst;intop1-ike202.tst;success;interop1: ike2 with ipv6
 http://sources.freertr.org/cfg/intop1-ike203.tst;intop1-ike203.tst;success;interop1: ike2 with 3des
@@ -1040,6 +1043,7 @@ http://sources.freertr.org/cfg/intop1-ike217.tst;intop1-ike217.tst;success;inter
 http://sources.freertr.org/cfg/intop1-ike218.tst;intop1-ike218.tst;success;interop1: ike2 with group19
 http://sources.freertr.org/cfg/intop1-ike219.tst;intop1-ike219.tst;success;interop1: ike2 with group20
 http://sources.freertr.org/cfg/intop1-ike220.tst;intop1-ike220.tst;success;interop1: ike2 with group21
+http://sources.freertr.org/cfg/intop1-ike221.tst;intop1-ike221.tst;success;interop1: ike2 with sha384
 http://sources.freertr.org/cfg/intop1-isis01.tst;intop1-isis01.tst;success;interop1: point2point isis
 http://sources.freertr.org/cfg/intop1-isis02.tst;intop1-isis02.tst;success;interop1: isis dis
 http://sources.freertr.org/cfg/intop1-isis03.tst;intop1-isis03.tst;success;interop1: isis nondis

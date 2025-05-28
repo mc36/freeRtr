@@ -16770,3 +16770,8 @@ qc pass: openvpn with rc2
 qc pass: satp with rc2
 qc pass: skip with rc2
 qc pass: swipe with rc2
+---------------------------------- 2025-05-28 15:04:44 25.5.28
+qc pass: ike1 with sha384
+failed: ike2 with sha384
+qc pass: interop1: ike1 with sha384
+qc pass: interop1: ike2 with sha384
