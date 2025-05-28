@@ -577,7 +577,8 @@ public class userExec {
         hl.add(null, "7 8                locs             resolve locations");
         hl.add(null, "8 7,.                <str>          domain part of txt");
         hl.add(null, "7 8                defl             default location");
-        hl.add(null, "8 7,.                <str>          default coordinates");
+        hl.add(null, "8 9                  <str>          default x coordinate");
+        hl.add(null, "9 7,.                  <str>        default y coordinate");
         hl.add(null, "7 8                dns              resolve addresses");
         hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "7 8                rect             limit locations");
@@ -660,7 +661,8 @@ public class userExec {
         hl.add(null, "6 7              locs               resolve locations");
         hl.add(null, "7 6,.              <str>            domain part of txt");
         hl.add(null, "6 7              defl               default location");
-        hl.add(null, "7 6,.              <str>            default coordinates");
+        hl.add(null, "7 8                <str>            default x coordinate");
+        hl.add(null, "8 6,.                <str>          default y coordinate");
         hl.add(null, "6 7              dns                resolve addresses");
         hl.add(null, "7 6,.              <str>            domain part of ptr");
         hl.add(null, "6 7              rect               limit locations");
@@ -731,7 +733,8 @@ public class userExec {
         hl.add(null, "7 8                locs             resolve locations");
         hl.add(null, "8 7,.                <str>          domain part of txt");
         hl.add(null, "7 8                defl             default location");
-        hl.add(null, "8 7,.                <str>          default coordinates");
+        hl.add(null, "8 9                  <str>          default x coordinate");
+        hl.add(null, "9 7,.                  <str>        default y coordinate");
         hl.add(null, "7 8                dns              resolve addresses");
         hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "7 8                rect             limit locations");
@@ -791,7 +794,8 @@ public class userExec {
         hl.add(null, "7 8                locs             resolve locations");
         hl.add(null, "8 7,.                <str>          domain part of txt");
         hl.add(null, "7 8                defl             default location");
-        hl.add(null, "8 7,.                <str>          default coordinates");
+        hl.add(null, "8 9                  <str>          default x coordinate");
+        hl.add(null, "9 7,.                  <str>        default y coordinate");
         hl.add(null, "7 8                dns              resolve addresses");
         hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "7 8                rect             limit locations");
@@ -850,7 +854,8 @@ public class userExec {
         hl.add(null, "7 8                locs             resolve locations");
         hl.add(null, "8 7,.                <str>          domain part of txt");
         hl.add(null, "7 8                defl             default location");
-        hl.add(null, "8 7,.                <str>          default coordinates");
+        hl.add(null, "8 9                  <str>          default x coordinate");
+        hl.add(null, "9 7,.                  <str>        default y coordinate");
         hl.add(null, "7 8                dns              resolve addresses");
         hl.add(null, "8 7,.                <str>          domain part of ptr");
         hl.add(null, "7 8                rect             limit locations");

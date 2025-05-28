@@ -1514,15 +1514,16 @@ public class spfCalc<Ta extends addrType> {
         boolean ints = false;
         String locs = null;
         String defl[] = null;
-        float recBX = Float.MIN_VALUE;
-        float recBY = Float.MIN_VALUE;
-        float recEX = Float.MAX_VALUE;
-        float recEY = Float.MAX_VALUE;
+        float recBX = 0;
+        float recBY = 0;
+        float recEX = 0;
+        float recEY = 0;
+        boolean bound = false;
         boolean scale = false;
-        float sclMX = 0.0f;
-        float sclMY = 0.0f;
-        float sclSX = 0.0f;
-        float sclSY = 0.0f;
+        float sclMX = 0;
+        float sclMY = 0;
+        float sclSX = 0;
+        float sclSY = 0;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -1541,7 +1542,8 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             if (a.equals("defl")) {
-                defl = convertLoc(cmd.word(), null);
+                a = cmd.word();
+                defl = convertLoc(a + " " + cmd.word(), null);
                 continue;
             }
             if (a.equals("nets")) {
@@ -1561,6 +1563,7 @@ public class spfCalc<Ta extends addrType> {
                 recBX = convertFlt(cmd.word());
                 recEY = convertFlt(cmd.word());
                 recEX = convertFlt(cmd.word());
+                bound = true;
                 continue;
             }
             if (a.equals("scal")) {
@@ -1594,17 +1597,19 @@ public class spfCalc<Ta extends addrType> {
                 }
                 float x = convertFlt(p[0]);
                 float y = convertFlt(p[1]);
-                if (x < recBX) {
-                    continue;
-                }
-                if (y < recBY) {
-                    continue;
-                }
-                if (x > recEX) {
-                    continue;
-                }
-                if (y > recEY) {
-                    continue;
+                if (bound) {
+                    if (x < recBX) {
+                        continue;
+                    }
+                    if (y < recBY) {
+                        continue;
+                    }
+                    if (x > recEX) {
+                        continue;
+                    }
+                    if (y > recEY) {
+                        continue;
+                    }
                 }
                 if (scale) {
                     x *= sclMX;
