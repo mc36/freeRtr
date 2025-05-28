@@ -5,6 +5,7 @@ import org.freertr.cry.cryEncrCBCaes;
 import org.freertr.cry.cryEncrCBCblowfish;
 import org.freertr.cry.cryEncrCBCdes;
 import org.freertr.cry.cryEncrCBCdes3;
+import org.freertr.cry.cryEncrCBCrc2;
 import org.freertr.cry.cryEncrCFBaes;
 import org.freertr.cry.cryEncrECBaes;
 import org.freertr.cry.cryEncrGCMaes;
@@ -57,7 +58,7 @@ public class secTransform {
 
     /**
      * encryption algorithm 1=des, 2=blowfish, 3=3des, 4=aescbc, 5=aescfb,
-     * 6=aesecb, 7=none, 8=aesgcm
+     * 6=aesecb, 7=none, 8=aesgcm, 9=rc2
      */
     public int encrAlg;
 
@@ -160,6 +161,8 @@ public class secTransform {
                 return "none";
             case 8:
                 return "aes" + encrKey + "gcm";
+            case 9:
+                return "rc2";
             default:
                 return "unknown";
         }
@@ -270,6 +273,8 @@ public class secTransform {
                 return 1;
             case 3:
                 return 2;
+            case 4:
+                return 9;
             case 5:
                 return 3;
             case 7:
@@ -299,6 +304,8 @@ public class secTransform {
                 return 7;
             case 8:
                 return 20;
+            case 9:
+                return 4;
             default:
                 return 0;
         }
@@ -318,6 +325,8 @@ public class secTransform {
                 return 2;
             case 3:
                 return 3;
+            case 4:
+                return 9;
             case 12:
                 return 4;
             case 20:
@@ -345,6 +354,8 @@ public class secTransform {
                 return 12;
             case 8:
                 return 20;
+            case 9:
+                return 4;
             default:
                 return 0;
         }
@@ -950,6 +961,8 @@ public class secTransform {
                 return new cryEncrNone();
             case 8:
                 return new cryEncrGCMaes();
+            case 9:
+                return new cryEncrCBCrc2();
             default:
                 return null;
         }
@@ -1193,6 +1206,7 @@ public class secTransform {
         l.add(null, "1 2  cipher              select cipher algorithm");
         l.add(null, "2 .    des               des algorithm");
         l.add(null, "2 .    blowfish          blowfish algorithm");
+        l.add(null, "2 .    rc2               rc2 algorithm");
         l.add(null, "2 .    3des              triple des algorithm");
         l.add(null, "2 .    aes128cbc         128bit aes cbc algorithm");
         l.add(null, "2 .    aes192cbc         192bit aes cbc algorithm");
@@ -1284,6 +1298,9 @@ public class secTransform {
             if (s.equals("aes256gcm")) {
                 encrAlg = 8;
                 encrKey = 256;
+            }
+            if (s.equals("rc2")) {
+                encrAlg = 9;
             }
             return false;
         }
