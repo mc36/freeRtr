@@ -64,7 +64,7 @@ public class cryHashSha3224 extends cryHashGeneric {
      * @return size
      */
     public int getBlockSize() {
-        return 64;
+        return 144;
     }
 
     /**

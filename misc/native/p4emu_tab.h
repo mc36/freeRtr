@@ -146,12 +146,12 @@ struct port2vrf_entry {
     long mcscByteTx;
     const EVP_CIPHER *mcscEncrAlg;
     const EVP_MD *mcscHashAlg;
-    unsigned char mcscCrTxKeyDat[256];
-    unsigned char mcscCrRxKeyDat[256];
-    unsigned char mcscDgTxKeyDat[256];
-    unsigned char mcscDgRxKeyDat[256];
-    unsigned char mcscIvTxKeyDat[256];
-    unsigned char mcscIvRxKeyDat[256];
+    unsigned char mcscCrTxKeyDat[maxKeys];
+    unsigned char mcscCrRxKeyDat[maxKeys];
+    unsigned char mcscDgTxKeyDat[maxKeys];
+    unsigned char mcscDgRxKeyDat[maxKeys];
+    unsigned char mcscIvTxKeyDat[maxKeys];
+    unsigned char mcscIvRxKeyDat[maxKeys];
 #endif
 };
 
@@ -269,8 +269,8 @@ struct neigh_entry {
     int dprt;
 #ifndef HAVE_NOCRYPTO
     int seq;
-    unsigned char encrKeyDat[256];
-    unsigned char hashKeyDat[256];
+    unsigned char encrKeyDat[maxKeys];
+    unsigned char hashKeyDat[maxKeys];
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
@@ -621,8 +621,8 @@ struct tun4_entry {
     int aclport;
     int neigh;
 #ifndef HAVE_NOCRYPTO
-    unsigned char encrKeyDat[256];
-    unsigned char hashKeyDat[256];
+    unsigned char encrKeyDat[maxKeys];
+    unsigned char hashKeyDat[maxKeys];
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
@@ -652,8 +652,8 @@ struct tun6_entry {
     int aclport;
     int neigh;
 #ifndef HAVE_NOCRYPTO
-    unsigned char encrKeyDat[256];
-    unsigned char hashKeyDat[256];
+    unsigned char encrKeyDat[maxKeys];
+    unsigned char hashKeyDat[maxKeys];
     int encrKeyLen;
     int hashKeyLen;
     int encrBlkLen;
