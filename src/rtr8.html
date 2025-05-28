@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v25.5.28-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-05-28 16:09:43, took 00:12:10, with 50 workers, on 745 cases, 0 failed, 0 traces, 0 retries<br/>
+tested: 2025-05-28 16:54:52, took 00:14:32, with 50 workers, on 753 cases, 8 failed, 0 traces, 25 retries<br/>
 jvm: ./rtr.bin, other: udp<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -287,6 +287,14 @@ jvm: ./rtr.bin, other: udp<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt141.tst">p4lang-crypt141.tst</a></td><td>success</td><td>p4lang: macsec over ipsec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt142.tst">p4lang-crypt142.tst</a></td><td>success</td><td>p4lang: sgt over ipsec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt143.tst">p4lang-crypt143.tst</a></td><td>success</td><td>p4lang: ipsec with sha384</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt144.tst">p4lang-crypt144.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: openvpn with sha3224</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt145.tst">p4lang-crypt145.tst</a></td><td>#6-run-r1 tping 100 10 1.1.2.2 vrf v1</td><td>p4lang: macsec with sha3224</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt146.tst">p4lang-crypt146.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: openvpn with sha3256</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt147.tst">p4lang-crypt147.tst</a></td><td>#6-run-r1 tping 100 10 1.1.2.2 vrf v1</td><td>p4lang: macsec with sha3256</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt148.tst">p4lang-crypt148.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: openvpn with sha3384</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt149.tst">p4lang-crypt149.tst</a></td><td>#6-run-r1 tping 100 10 1.1.2.2 vrf v1</td><td>p4lang: macsec with sha3384</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt150.tst">p4lang-crypt150.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: openvpn with sha3512</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt151.tst">p4lang-crypt151.tst</a></td><td>#6-run-r1 tping 100 10 1.1.2.2 vrf v1</td><td>p4lang: macsec with sha3512</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>

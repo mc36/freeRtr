@@ -16779,3 +16779,12 @@ qc pass: interop1: ike2 with sha384
 no failed: ike2 with sha384
 qc pass: ike2 with sha384
 qc pass: p4lang: ipsec with sha384
+---------------------------------- 2025-05-28 16:23:18 25.5.28
+qc pass: p4lang: openvpn with sha3224
+qc pass: p4lang: macsec with sha3224
+qc pass: p4lang: openvpn with sha3256
+qc pass: p4lang: macsec with sha3256
+qc pass: p4lang: openvpn with sha3384
+qc pass: p4lang: macsec with sha3384
+qc pass: p4lang: openvpn with sha3512
+qc pass: p4lang: macsec with sha3512
