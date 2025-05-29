@@ -320,10 +320,11 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         for (i = 0; i < buf.length; i++) {
             buf[i] = (byte) bits.randomB();
         }
+        cphrTx.init(keyEncr, buf, true);
+        pck.encrData(cphrTx, 0, pck.dataSize());
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2beg();
-        pck.encrData(cphrTx, 0, pck.dataSize());
         seqTx++;
         hashTx.init();
         pck.hashData(hashTx, 0, pck.dataSize());
@@ -384,8 +385,6 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         byte[] buf3 = new byte[cphrTx.getBlockSize()];
         bits.byteCopy(buf1, 0, buf2, 0, buf2.length);
         bits.byteCopy(buf1, 0, buf3, 0, buf3.length);
-        cphrTx.init(buf2, buf3, true);
-        cphrRx.init(buf2, buf3, false);
         keyEncr = buf2;
         cphrSiz = buf3.length;
         if (replayCheck > 0) {
@@ -531,8 +530,11 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
             cntr.drop(pck, counter.reasons.badLen);
             return false;
         }
+        byte[] buf = new byte[cphrSiz];
+        pck.getCopy(buf, 0, 0, buf.length);
+        pck.getSkip(buf.length);
+        cphrRx.init(keyEncr, buf, false);
         pck.encrData(cphrRx, 0, pck.dataSize());
-        pck.getSkip(cphrSiz);
         seqRx = pck.msbGetD(0);
         timRx = pck.msbGetD(4);
         pck.getSkip(8);

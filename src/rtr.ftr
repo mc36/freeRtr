@@ -847,9 +847,9 @@ qc pass: openvpn with sha3512
 qc pass: openvpn with none encryption
 qc pass: openvpn with none hash
 qc pass: openvpn with rc2
-failed: openvpn with aes128ctr
-failed: openvpn with aes192ctr
-failed: openvpn with aes256ctr
+qc pass: openvpn with aes128ctr
+qc pass: openvpn with aes192ctr
+qc pass: openvpn with aes256ctr
 qc pass: transparent proxy
 qc pass: satp over ipv4
 qc pass: satp over ipv6
@@ -973,9 +973,9 @@ qc pass: swipe with sha3512
 qc pass: swipe with none encryption
 qc pass: swipe with none hash
 qc pass: swipe with rc2
-failed: swipe with aes128ctr
-failed: swipe with aes192ctr
-failed: swipe with aes256ctr
+qc pass: swipe with aes128ctr
+qc pass: swipe with aes192ctr
+qc pass: swipe with aes256ctr
 qc pass: tls test
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6

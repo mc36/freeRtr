@@ -261,6 +261,11 @@ public class packEsp implements ipPrt {
                 cntr.drop(pck, counter.reasons.badSum);
                 return;
             }
+            byte[] buf = new byte[encrSize];
+            pck.getCopy(buf, 0, size, buf.length);
+            pck.getSkip(buf.length);
+            cipher.init(keyEncr, buf, false);
+            siz -= encrSize;
         }
         pck.getSkip(size);
         siz -= size;
@@ -278,10 +283,6 @@ public class packEsp implements ipPrt {
             return;
         }
         siz -= pck.getByte(siz - 2) + 2;
-        if (hasher != null) {
-            siz -= encrSize;
-            pck.getSkip(encrSize);
-        }
         pck.setDataSize(siz);
         pck.msbPutW(0, i);
         pck.putSkip(2);
@@ -371,19 +372,22 @@ public class packEsp implements ipPrt {
             pck.setDataSize(o);
             pck.merge2beg();
         } else {
-            for (int i = 0; i < encrSize; i++) {
-                pck.putByte(i, bits.randomB());
+            byte[] buf = new byte[encrSize];
+            for (int i = 0; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
             }
-            pck.putSkip(encrSize);
-            pck.merge2beg();
+            cipher.init(keyEncr, buf, true);
             pck.encrData(cipher, 0, pck.dataSize());
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
+            pck.merge2beg();
             pck.msbPutD(0, spi);
             pck.msbPutD(4, seqTx);
             pck.putSkip(size);
             pck.merge2beg();
             hasher.init();
             pck.hashData(hasher, 0, pck.dataSize());
-            byte[] buf = hasher.finish();
+            buf = hasher.finish();
             pck.putCopy(buf, 0, 0, hashSize);
             pck.putSkip(hashSize);
             pck.merge2end();
