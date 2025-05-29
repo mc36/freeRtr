@@ -304,15 +304,18 @@ qc pass: p4lang: ipsec mpls pop
 qc pass: p4lang: ipsec mpls push
 qc pass: p4lang: l2vpn over ipsec mpls
 qc pass: p4lang: l3vpn over ipsec mpls
-failed: p4lang: openvpn with aes128ctr
-failed: p4lang: openvpn with aes192ctr
-failed: p4lang: openvpn with aes256ctr
+qc pass: p4lang: openvpn with aes128ctr
+qc pass: p4lang: openvpn with aes192ctr
+qc pass: p4lang: openvpn with aes256ctr
 qc pass: p4lang: macsec with aes128ctr
 qc pass: p4lang: macsec with aes192ctr
 qc pass: p4lang: macsec with aes256ctr
-failed: p4lang: ipsec with aes128ctr
-failed: p4lang: ipsec with aes192ctr
-failed: p4lang: ipsec with aes256ctr
+qc pass: p4lang: ipsec with aes128ctr
+qc pass: p4lang: ipsec with aes192ctr
+qc pass: p4lang: ipsec with aes256ctr
+qc pass: p4lang: ipsec with aes128cfb
+qc pass: p4lang: ipsec with aes192cfb
+qc pass: p4lang: ipsec with aes256cfb
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
