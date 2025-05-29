@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.29-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-29 15:15:31, took 00:16:32, with 50 workers, on 3851 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2025-05-29 15:52:08, took 00:16:23, with 50 workers, on 3872 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -606,6 +606,9 @@ http://sources.freertr.org/cfg/crypt-esp110.tst;crypt-esp110.tst;success;esp wit
 http://sources.freertr.org/cfg/crypt-esp111.tst;crypt-esp111.tst;success;esp with aes128ofb
 http://sources.freertr.org/cfg/crypt-esp112.tst;crypt-esp112.tst;success;esp with aes192ofb
 http://sources.freertr.org/cfg/crypt-esp113.tst;crypt-esp113.tst;success;esp with aes256ofb
+http://sources.freertr.org/cfg/crypt-esp114.tst;crypt-esp114.tst;success;esp with aes128pcbc
+http://sources.freertr.org/cfg/crypt-esp115.tst;crypt-esp115.tst;success;esp with aes192pcbc
+http://sources.freertr.org/cfg/crypt-esp116.tst;crypt-esp116.tst;success;esp with aes256pcbc
 http://sources.freertr.org/cfg/crypt-ike101.tst;crypt-ike101.tst;success;ipv4 in ike1 over ipv4
 http://sources.freertr.org/cfg/crypt-ike102.tst;crypt-ike102.tst;success;ipv4 in ike1 over ipv6
 http://sources.freertr.org/cfg/crypt-ike103.tst;crypt-ike103.tst;success;ipv6 in ike1 over ipv4
@@ -728,6 +731,9 @@ http://sources.freertr.org/cfg/crypt-inlsp32.tst;crypt-inlsp32.tst;success;inlsp
 http://sources.freertr.org/cfg/crypt-inlsp33.tst;crypt-inlsp33.tst;success;inlsp with aes128ofb
 http://sources.freertr.org/cfg/crypt-inlsp34.tst;crypt-inlsp34.tst;success;inlsp with aes192ofb
 http://sources.freertr.org/cfg/crypt-inlsp35.tst;crypt-inlsp35.tst;success;inlsp with aes256ofb
+http://sources.freertr.org/cfg/crypt-inlsp36.tst;crypt-inlsp36.tst;success;inlsp with aes128pcbc
+http://sources.freertr.org/cfg/crypt-inlsp37.tst;crypt-inlsp37.tst;success;inlsp with aes192pcbc
+http://sources.freertr.org/cfg/crypt-inlsp38.tst;crypt-inlsp38.tst;success;inlsp with aes256pcbc
 http://sources.freertr.org/cfg/crypt-insp01.tst;crypt-insp01.tst;success;route inspection
 http://sources.freertr.org/cfg/crypt-insp02.tst;crypt-insp02.tst;success;flow inspection
 http://sources.freertr.org/cfg/crypt-insp03.tst;crypt-insp03.tst;success;interface inspection
@@ -819,6 +825,9 @@ http://sources.freertr.org/cfg/crypt-macsec73.tst;crypt-macsec73.tst;success;mac
 http://sources.freertr.org/cfg/crypt-macsec74.tst;crypt-macsec74.tst;success;macsec with aes128ofb
 http://sources.freertr.org/cfg/crypt-macsec75.tst;crypt-macsec75.tst;success;macsec with aes192ofb
 http://sources.freertr.org/cfg/crypt-macsec76.tst;crypt-macsec76.tst;success;macsec with aes256ofb
+http://sources.freertr.org/cfg/crypt-macsec77.tst;crypt-macsec77.tst;success;macsec with aes128pcbc
+http://sources.freertr.org/cfg/crypt-macsec78.tst;crypt-macsec78.tst;success;macsec with aes192pcbc
+http://sources.freertr.org/cfg/crypt-macsec79.tst;crypt-macsec79.tst;success;macsec with aes256pcbc
 http://sources.freertr.org/cfg/crypt-nat01.tst;crypt-nat01.tst;success;source list translation to interface
 http://sources.freertr.org/cfg/crypt-nat02.tst;crypt-nat02.tst;success;source list translation to address
 http://sources.freertr.org/cfg/crypt-nat03.tst;crypt-nat03.tst;success;source list translation to pool
@@ -872,6 +881,9 @@ http://sources.freertr.org/cfg/crypt-openvpn33.tst;crypt-openvpn33.tst;success;o
 http://sources.freertr.org/cfg/crypt-openvpn34.tst;crypt-openvpn34.tst;success;openvpn with aes128ofb
 http://sources.freertr.org/cfg/crypt-openvpn35.tst;crypt-openvpn35.tst;success;openvpn with aes192ofb
 http://sources.freertr.org/cfg/crypt-openvpn36.tst;crypt-openvpn36.tst;success;openvpn with aes256ofb
+http://sources.freertr.org/cfg/crypt-openvpn37.tst;crypt-openvpn37.tst;success;openvpn with aes128pcbc
+http://sources.freertr.org/cfg/crypt-openvpn38.tst;crypt-openvpn38.tst;success;openvpn with aes192pcbc
+http://sources.freertr.org/cfg/crypt-openvpn39.tst;crypt-openvpn39.tst;success;openvpn with aes256pcbc
 http://sources.freertr.org/cfg/crypt-proxy.tst;crypt-proxy.tst;success;transparent proxy
 http://sources.freertr.org/cfg/crypt-satp01.tst;crypt-satp01.tst;success;satp over ipv4
 http://sources.freertr.org/cfg/crypt-satp02.tst;crypt-satp02.tst;success;satp over ipv6
@@ -909,6 +921,9 @@ http://sources.freertr.org/cfg/crypt-satp33.tst;crypt-satp33.tst;success;satp wi
 http://sources.freertr.org/cfg/crypt-satp34.tst;crypt-satp34.tst;success;satp with aes128ofb
 http://sources.freertr.org/cfg/crypt-satp35.tst;crypt-satp35.tst;success;satp with aes192ofb
 http://sources.freertr.org/cfg/crypt-satp36.tst;crypt-satp36.tst;success;satp with aes256ofb
+http://sources.freertr.org/cfg/crypt-satp37.tst;crypt-satp37.tst;success;satp with aes128pcbc
+http://sources.freertr.org/cfg/crypt-satp38.tst;crypt-satp38.tst;success;satp with aes192pcbc
+http://sources.freertr.org/cfg/crypt-satp39.tst;crypt-satp39.tst;success;satp with aes256pcbc
 http://sources.freertr.org/cfg/crypt-sgt01.tst;crypt-sgt01.tst;success;sgt ethernet encapsulation
 http://sources.freertr.org/cfg/crypt-sgt02.tst;crypt-sgt02.tst;success;sgt vlan encapsulation
 http://sources.freertr.org/cfg/crypt-sgt03.tst;crypt-sgt03.tst;success;sgt bridge encapsulation
@@ -971,6 +986,9 @@ http://sources.freertr.org/cfg/crypt-skip32.tst;crypt-skip32.tst;success;skip wi
 http://sources.freertr.org/cfg/crypt-skip33.tst;crypt-skip33.tst;success;skip with aes128ofb
 http://sources.freertr.org/cfg/crypt-skip34.tst;crypt-skip34.tst;success;skip with aes192ofb
 http://sources.freertr.org/cfg/crypt-skip35.tst;crypt-skip35.tst;success;skip with aes256ofb
+http://sources.freertr.org/cfg/crypt-skip36.tst;crypt-skip36.tst;success;skip with aes128pcbc
+http://sources.freertr.org/cfg/crypt-skip37.tst;crypt-skip37.tst;success;skip with aes192pcbc
+http://sources.freertr.org/cfg/crypt-skip38.tst;crypt-skip38.tst;success;skip with aes256pcbc
 http://sources.freertr.org/cfg/crypt-ssh.tst;crypt-ssh.tst;success;ssh test
 http://sources.freertr.org/cfg/crypt-swipe01.tst;crypt-swipe01.tst;success;swipe over ipv4
 http://sources.freertr.org/cfg/crypt-swipe02.tst;crypt-swipe02.tst;success;swipe over ipv6
@@ -1007,6 +1025,9 @@ http://sources.freertr.org/cfg/crypt-swipe32.tst;crypt-swipe32.tst;success;swipe
 http://sources.freertr.org/cfg/crypt-swipe33.tst;crypt-swipe33.tst;success;swipe with aes128ofb
 http://sources.freertr.org/cfg/crypt-swipe34.tst;crypt-swipe34.tst;success;swipe with aes192ofb
 http://sources.freertr.org/cfg/crypt-swipe35.tst;crypt-swipe35.tst;success;swipe with aes256ofb
+http://sources.freertr.org/cfg/crypt-swipe36.tst;crypt-swipe36.tst;success;swipe with aes128pcbc
+http://sources.freertr.org/cfg/crypt-swipe37.tst;crypt-swipe37.tst;success;swipe with aes192pcbc
+http://sources.freertr.org/cfg/crypt-swipe38.tst;crypt-swipe38.tst;success;swipe with aes256pcbc
 http://sources.freertr.org/cfg/crypt-tls.tst;crypt-tls.tst;success;tls test
 http://sources.freertr.org/cfg/crypt-wireguard01.tst;crypt-wireguard01.tst;success;wireguard over ipv4
 http://sources.freertr.org/cfg/crypt-wireguard02.tst;crypt-wireguard02.tst;success;wireguard over ipv6
@@ -2343,7 +2364,7 @@ http://sources.freertr.org/cfg/p4lang-rout450.tst;p4lang-rout450.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout451.tst;p4lang-rout451.tst;success;p4lang: l3vpn over ipip mpls
 http://sources.freertr.org/cfg/p4lang-rout452.tst;p4lang-rout452.tst;success;p4lang: sdwan over ipv4 with ipip
 http://sources.freertr.org/cfg/p4lang-rout453.tst;p4lang-rout453.tst;success;p4lang: sdwan over ipv6 with ipip
-http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;success;unnamed
+http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;success;p4lang: amt multicast routing
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action
