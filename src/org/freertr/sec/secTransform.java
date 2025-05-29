@@ -12,6 +12,8 @@ import org.freertr.cry.cryEncrECBaes;
 import org.freertr.cry.cryEncrGCMaes;
 import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryEncrNone;
+import org.freertr.cry.cryEncrOFBaes;
+import org.freertr.cry.cryEncrPCBCaes;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryHashMd5;
@@ -59,7 +61,7 @@ public class secTransform {
 
     /**
      * encryption algorithm 1=des, 2=blowfish, 3=3des, 4=aescbc, 5=aescfb,
-     * 6=aesecb, 7=none, 8=aesgcm, 9=rc2, 10=aesctr
+     * 6=aesecb, 7=none, 8=aesgcm, 9=rc2, 10=aesctr, 11=aesofb, 12=aespcbc
      */
     public int encrAlg;
 
@@ -166,6 +168,10 @@ public class secTransform {
                 return "rc2";
             case 10:
                 return "aes" + encrKey + "ctr";
+            case 11:
+                return "aes" + encrKey + "ofb";
+            case 12:
+                return "aes" + encrKey + "pcbc";
             default:
                 return "unknown";
         }
@@ -950,6 +956,10 @@ public class secTransform {
                 return new cryEncrCBCrc2();
             case 10:
                 return new cryEncrCTRaes();
+            case 11:
+                return new cryEncrOFBaes();
+            case 12:
+                return new cryEncrPCBCaes();
             default:
                 return null;
         }
@@ -1211,6 +1221,12 @@ public class secTransform {
         l.add(null, "2 .    aes128ctr         128bit aes ctr algorithm");
         l.add(null, "2 .    aes192ctr         192bit aes ctr algorithm");
         l.add(null, "2 .    aes256ctr         256bit aes ctr algorithm");
+        l.add(null, "2 .    aes128ofb         128bit aes ofb algorithm");
+        l.add(null, "2 .    aes192ofb         192bit aes ofb algorithm");
+        l.add(null, "2 .    aes256ofb         256bit aes ofb algorithm");
+        l.add(null, "2 .    aes128pcbc        128bit aes pcbc algorithm");
+        l.add(null, "2 .    aes192pcbc        192bit aes pcbc algorithm");
+        l.add(null, "2 .    aes256pcbc        256bit aes pcbc algorithm");
     }
 
     /**
@@ -1302,6 +1318,30 @@ public class secTransform {
             }
             if (s.equals("aes256ctr")) {
                 encrAlg = 10;
+                encrKey = 256;
+            }
+            if (s.equals("aes128ofb")) {
+                encrAlg = 11;
+                encrKey = 128;
+            }
+            if (s.equals("aes192ofb")) {
+                encrAlg = 11;
+                encrKey = 192;
+            }
+            if (s.equals("aes256ofb")) {
+                encrAlg = 11;
+                encrKey = 256;
+            }
+            if (s.equals("aes128pcbc")) {
+                encrAlg = 12;
+                encrKey = 128;
+            }
+            if (s.equals("aes192pcbc")) {
+                encrAlg = 12;
+                encrKey = 192;
+            }
+            if (s.equals("aes256pcbc")) {
+                encrAlg = 12;
                 encrKey = 256;
             }
             return false;

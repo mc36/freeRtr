@@ -54,6 +54,12 @@ const EVP_CIPHER* getEncrAlg(char *buf) {
     if (strcmp(buf, "aes128ctr") == 0) return EVP_aes_128_ctr();
     if (strcmp(buf, "aes192ctr") == 0) return EVP_aes_192_ctr();
     if (strcmp(buf, "aes256ctr") == 0) return EVP_aes_256_ctr();
+    if (strcmp(buf, "aes128ofb") == 0) return EVP_aes_128_ofb();
+    if (strcmp(buf, "aes192ofb") == 0) return EVP_aes_192_ofb();
+    if (strcmp(buf, "aes256ofb") == 0) return EVP_aes_256_ofb();
+//    if (strcmp(buf, "aes128pcbc") == 0) return EVP_aes_128_pcbc();
+//    if (strcmp(buf, "aes192pcbc") == 0) return EVP_aes_192_pcbc();
+//    if (strcmp(buf, "aes256pcbc") == 0) return EVP_aes_256_pcbc();
     return NULL;
 }
 
