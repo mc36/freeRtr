@@ -94,6 +94,8 @@ public class prtInlsp implements ipPrt, ifcDn {
 
     private cryHashGeneric hashRx;
 
+    private byte[] cphrKey = null;
+
     private int cphrSiz;
 
     private int hashSiz;
@@ -135,8 +137,7 @@ public class prtInlsp implements ipPrt, ifcDn {
         int pos = buf1.length + buf2.length;
         bits.byteCopy(res, 0, buf1, 0, buf1.length);
         bits.byteCopy(res, buf1.length, buf2, 0, buf2.length);
-        cphrTx.init(buf1, buf2, true);
-        cphrRx.init(buf1, buf2, false);
+        cphrKey = buf1;
         cphrSiz = buf2.length;
         hashSiz = transform.getHash().getHashSize();
         buf1 = new byte[hashSiz];
@@ -264,10 +265,11 @@ public class prtInlsp implements ipPrt, ifcDn {
         for (i = 0; i < buf.length; i++) {
             buf[i] = (byte) bits.randomB();
         }
+        cphrTx.init(cphrKey, buf, true);
+        pck.encrData(cphrTx, 0, pck.dataSize());
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2beg();
-        pck.encrData(cphrTx, 0, pck.dataSize());
         pck.putCopy(hsh, 0, 0, hsh.length);
         pck.putSkip(hsh.length);
         pck.merge2beg();
@@ -369,8 +371,11 @@ public class prtInlsp implements ipPrt, ifcDn {
         pck.getCopy(sum, 0, 0, hashSiz);
         pck.getSkip(hashSiz);
         siz -= hashSiz;
+        byte[] buf = new byte[cphrSiz];
+        pck.getCopy(buf, 0, 0, buf.length);
+        pck.getSkip(buf.length);
+        cphrRx.init(cphrKey, buf, false);
         pck.encrData(cphrRx, 0, siz);
-        pck.getSkip(cphrSiz);
         siz -= cphrSiz;
         hashRx.init();
         pck.hashData(hashRx, 0, siz);

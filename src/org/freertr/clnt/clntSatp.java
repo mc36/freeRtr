@@ -114,6 +114,8 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
 
     private boolean working = true;
 
+    private byte[] cphrKey = null;
+
     private int cphrSiz;
 
     private int hashSiz;
@@ -230,10 +232,11 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
         for (i = 0; i < buf.length; i++) {
             buf[i] = (byte) bits.randomB();
         }
+        cphrTx.init(cphrKey, buf, true);
+        pck.encrData(cphrTx, 0, pck.dataSize());
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
         pck.merge2beg();
-        pck.encrData(cphrTx, 0, pck.dataSize());
         pck.msbPutD(0, seqTx);
         pck.msbPutD(4, endptTx);
         pck.putSkip(8);
@@ -302,8 +305,7 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
         int pos = buf1.length + buf2.length;
         bits.byteCopy(res, 0, buf1, 0, buf1.length);
         bits.byteCopy(res, buf1.length, buf2, 0, buf2.length);
-        cphrTx.init(buf1, buf2, true);
-        cphrRx.init(buf1, buf2, false);
+        cphrKey = buf1;
         cphrSiz = buf2.length;
         hashSiz = transform.getHash().getHashSize();
         buf1 = new byte[hashSiz];
@@ -455,8 +457,11 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
             cntr.drop(pck, counter.reasons.badLen);
             return false;
         }
+        byte[] buf = new byte[cphrSiz];
+        pck.getCopy(buf, 0, 0, buf.length);
+        pck.getSkip(buf.length);
+        cphrRx.init(cphrKey, buf, false);
         pck.encrData(cphrRx, 0, pck.dataSize());
-        pck.getSkip(cphrSiz);
         i = pck.dataSize() - 1;
         pck.setDataSize(i - pck.getByte(i));
         cntr.rx(pck);
