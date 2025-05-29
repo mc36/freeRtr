@@ -28,10 +28,11 @@ public class renamer {
         for (int i = 1; i < args.length; i++) {
             String s = args[i].toLowerCase();
             if (s.equals("predir")) {
-                prepend = new File("./").getAbsolutePath();
-                
-        playerUtil.put("reading " + prepend + "...");/////////
-                return;
+                prepend = new File(".").getAbsolutePath();
+                int o = prepend.lastIndexOf("/");
+                prepend = prepend.substring(0, o);
+                o = prepend.lastIndexOf("/");
+                prepend = prepend.substring(o + 1, prepend.length()) + " ";
             }
             if (s.equals("prepend")) {
                 i++;

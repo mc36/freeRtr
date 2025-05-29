@@ -1,4 +1,4 @@
-description redistribution with bgp ctp
+description redistribution with ctp bgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

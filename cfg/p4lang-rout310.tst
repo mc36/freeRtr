@@ -379,8 +379,8 @@ r6 tping 100 10 4321::105 vrf v1 sou lo0
 r6 tping 100 10 2.2.2.106 vrf v1 sou lo0
 r6 tping 100 10 4321::106 vrf v1 sou lo0
 
-r6 tping 300 5 232.2.2.2 vrf v1 sou lo0 multi
-r6 tping 300 5 ff06::1 vrf v1 sou lo0 multi
+r6 tping 300 30 232.2.2.2 vrf v1 sou lo0 multi
+r6 tping 300 30 ff06::1 vrf v1 sou lo0 multi
 
 r1 dping sdn . r6 232.2.2.2 vrf v1 sou lo0
 r1 dping sdn . r6 ff06::1 vrf v1 sou lo0
