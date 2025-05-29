@@ -16932,3 +16932,8 @@ qc pass: skip with aes256pcbc
 qc pass: swipe with aes128pcbc
 qc pass: swipe with aes192pcbc
 qc pass: swipe with aes256pcbc
+---------------------------------- 2025-05-29 17:53:23 25.5.29
+no qc pass: redistribution with bgp car
+no qc pass: redistribution with bgp ctp
+qc pass: redistribution with ctp bgp
+qc pass: redistribution with car bgp
