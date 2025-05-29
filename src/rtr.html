@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v25.5.29-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-05-29 14:38:42, took 00:16:14, with 50 workers, on 3809 cases, 0 failed, 0 traces, 3 retries<br/>
+tested: 2025-05-29 15:15:31, took 00:16:32, with 50 workers, on 3851 cases, 0 failed, 0 traces, 1 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -609,6 +609,15 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp102.tst">crypt-esp102.tst</a></td><td>success</td><td>ipv4 in esp over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp103.tst">crypt-esp103.tst</a></td><td>success</td><td>ipv6 in esp over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp104.tst">crypt-esp104.tst</a></td><td>success</td><td>ipv6 in esp over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp105.tst">crypt-esp105.tst</a></td><td>success</td><td>esp with aes128cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp106.tst">crypt-esp106.tst</a></td><td>success</td><td>esp with aes192cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp107.tst">crypt-esp107.tst</a></td><td>success</td><td>esp with aes256cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp108.tst">crypt-esp108.tst</a></td><td>success</td><td>esp with aes128ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp109.tst">crypt-esp109.tst</a></td><td>success</td><td>esp with aes192ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp110.tst">crypt-esp110.tst</a></td><td>success</td><td>esp with aes256ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp111.tst">crypt-esp111.tst</a></td><td>success</td><td>esp with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp112.tst">crypt-esp112.tst</a></td><td>success</td><td>esp with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-esp113.tst">crypt-esp113.tst</a></td><td>success</td><td>esp with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike101.tst">crypt-ike101.tst</a></td><td>success</td><td>ipv4 in ike1 over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike102.tst">crypt-ike102.tst</a></td><td>success</td><td>ipv4 in ike1 over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ike103.tst">crypt-ike103.tst</a></td><td>success</td><td>ipv6 in ike1 over ipv4</td></tr>
@@ -728,6 +737,9 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp30.tst">crypt-inlsp30.tst</a></td><td>success</td><td>inlsp with aes128ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp31.tst">crypt-inlsp31.tst</a></td><td>success</td><td>inlsp with aes192ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp32.tst">crypt-inlsp32.tst</a></td><td>success</td><td>inlsp with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp33.tst">crypt-inlsp33.tst</a></td><td>success</td><td>inlsp with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp34.tst">crypt-inlsp34.tst</a></td><td>success</td><td>inlsp with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-inlsp35.tst">crypt-inlsp35.tst</a></td><td>success</td><td>inlsp with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-insp01.tst">crypt-insp01.tst</a></td><td>success</td><td>route inspection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-insp02.tst">crypt-insp02.tst</a></td><td>success</td><td>flow inspection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-insp03.tst">crypt-insp03.tst</a></td><td>success</td><td>interface inspection</td></tr>
@@ -816,6 +828,9 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec71.tst">crypt-macsec71.tst</a></td><td>success</td><td>macsec with aes128ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec72.tst">crypt-macsec72.tst</a></td><td>success</td><td>macsec with aes192ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec73.tst">crypt-macsec73.tst</a></td><td>success</td><td>macsec with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec74.tst">crypt-macsec74.tst</a></td><td>success</td><td>macsec with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec75.tst">crypt-macsec75.tst</a></td><td>success</td><td>macsec with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-macsec76.tst">crypt-macsec76.tst</a></td><td>success</td><td>macsec with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat01.tst">crypt-nat01.tst</a></td><td>success</td><td>source list translation to interface</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat02.tst">crypt-nat02.tst</a></td><td>success</td><td>source list translation to address</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-nat03.tst">crypt-nat03.tst</a></td><td>success</td><td>source list translation to pool</td></tr>
@@ -866,6 +881,9 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn31.tst">crypt-openvpn31.tst</a></td><td>success</td><td>openvpn with aes128ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn32.tst">crypt-openvpn32.tst</a></td><td>success</td><td>openvpn with aes192ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn33.tst">crypt-openvpn33.tst</a></td><td>success</td><td>openvpn with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn34.tst">crypt-openvpn34.tst</a></td><td>success</td><td>openvpn with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn35.tst">crypt-openvpn35.tst</a></td><td>success</td><td>openvpn with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-openvpn36.tst">crypt-openvpn36.tst</a></td><td>success</td><td>openvpn with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-proxy.tst">crypt-proxy.tst</a></td><td>success</td><td>transparent proxy</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-satp01.tst">crypt-satp01.tst</a></td><td>success</td><td>satp over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-satp02.tst">crypt-satp02.tst</a></td><td>success</td><td>satp over ipv6</td></tr>
@@ -900,6 +918,9 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-satp31.tst">crypt-satp31.tst</a></td><td>success</td><td>satp with aes128ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-satp32.tst">crypt-satp32.tst</a></td><td>success</td><td>satp with aes192ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-satp33.tst">crypt-satp33.tst</a></td><td>success</td><td>satp with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-satp34.tst">crypt-satp34.tst</a></td><td>success</td><td>satp with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-satp35.tst">crypt-satp35.tst</a></td><td>success</td><td>satp with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-satp36.tst">crypt-satp36.tst</a></td><td>success</td><td>satp with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt01.tst">crypt-sgt01.tst</a></td><td>success</td><td>sgt ethernet encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt02.tst">crypt-sgt02.tst</a></td><td>success</td><td>sgt vlan encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt03.tst">crypt-sgt03.tst</a></td><td>success</td><td>sgt bridge encapsulation</td></tr>
@@ -959,6 +980,9 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip30.tst">crypt-skip30.tst</a></td><td>success</td><td>skip with aes128ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip31.tst">crypt-skip31.tst</a></td><td>success</td><td>skip with aes192ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip32.tst">crypt-skip32.tst</a></td><td>success</td><td>skip with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-skip33.tst">crypt-skip33.tst</a></td><td>success</td><td>skip with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-skip34.tst">crypt-skip34.tst</a></td><td>success</td><td>skip with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-skip35.tst">crypt-skip35.tst</a></td><td>success</td><td>skip with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-ssh.tst">crypt-ssh.tst</a></td><td>success</td><td>ssh test</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe01.tst">crypt-swipe01.tst</a></td><td>success</td><td>swipe over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe02.tst">crypt-swipe02.tst</a></td><td>success</td><td>swipe over ipv6</td></tr>
@@ -992,6 +1016,9 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe30.tst">crypt-swipe30.tst</a></td><td>success</td><td>swipe with aes128ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe31.tst">crypt-swipe31.tst</a></td><td>success</td><td>swipe with aes192ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe32.tst">crypt-swipe32.tst</a></td><td>success</td><td>swipe with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe33.tst">crypt-swipe33.tst</a></td><td>success</td><td>swipe with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe34.tst">crypt-swipe34.tst</a></td><td>success</td><td>swipe with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe35.tst">crypt-swipe35.tst</a></td><td>success</td><td>swipe with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-tls.tst">crypt-tls.tst</a></td><td>success</td><td>tls test</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-wireguard01.tst">crypt-wireguard01.tst</a></td><td>success</td><td>wireguard over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-wireguard02.tst">crypt-wireguard02.tst</a></td><td>success</td><td>wireguard over ipv6</td></tr>
@@ -1860,6 +1887,21 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt183.tst">p4lang-crypt183.tst</a></td><td>success</td><td>p4lang: ipsec with aes128ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt184.tst">p4lang-crypt184.tst</a></td><td>success</td><td>p4lang: ipsec with aes192ctr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt185.tst">p4lang-crypt185.tst</a></td><td>success</td><td>p4lang: ipsec with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt186.tst">p4lang-crypt186.tst</a></td><td>success</td><td>p4lang: ipsec with aes128cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt187.tst">p4lang-crypt187.tst</a></td><td>success</td><td>p4lang: ipsec with aes192cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt188.tst">p4lang-crypt188.tst</a></td><td>success</td><td>p4lang: ipsec with aes256cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt189.tst">p4lang-crypt189.tst</a></td><td>success</td><td>p4lang: ipsec with aes128ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt190.tst">p4lang-crypt190.tst</a></td><td>success</td><td>p4lang: ipsec with aes192ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt191.tst">p4lang-crypt191.tst</a></td><td>success</td><td>p4lang: ipsec with aes256ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt192.tst">p4lang-crypt192.tst</a></td><td>success</td><td>p4lang: openvpn with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt193.tst">p4lang-crypt193.tst</a></td><td>success</td><td>p4lang: openvpn with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt194.tst">p4lang-crypt194.tst</a></td><td>success</td><td>p4lang: openvpn with aes256ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt195.tst">p4lang-crypt195.tst</a></td><td>success</td><td>p4lang: macsec with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt196.tst">p4lang-crypt196.tst</a></td><td>success</td><td>p4lang: macsec with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt197.tst">p4lang-crypt197.tst</a></td><td>success</td><td>p4lang: macsec with aes256ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt198.tst">p4lang-crypt198.tst</a></td><td>success</td><td>p4lang: ipsec with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt199.tst">p4lang-crypt199.tst</a></td><td>success</td><td>p4lang: ipsec with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt200.tst">p4lang-crypt200.tst</a></td><td>success</td><td>p4lang: ipsec with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>
@@ -2313,7 +2355,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout451.tst">p4lang-rout451.tst</a></td><td>success</td><td>p4lang: l3vpn over ipip mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout452.tst">p4lang-rout452.tst</a></td><td>success</td><td>p4lang: sdwan over ipv4 with ipip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout453.tst">p4lang-rout453.tst</a></td><td>success</td><td>p4lang: sdwan over ipv6 with ipip</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout454.tst">p4lang-rout454.tst</a></td><td>success</td><td>p4lang: amt multicast routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout454.tst">p4lang-rout454.tst</a></td><td>success</td><td>unnamed</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action01.tst">qos-action01.tst</a></td><td>success</td><td>qos ingress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action02.tst">qos-action02.tst</a></td><td>success</td><td>qos egress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action03.tst">qos-action03.tst</a></td><td>success</td><td>qos ingress drop action</td></tr>

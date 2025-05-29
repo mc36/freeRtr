@@ -316,6 +316,18 @@ qc pass: p4lang: ipsec with aes256ctr
 qc pass: p4lang: ipsec with aes128cfb
 qc pass: p4lang: ipsec with aes192cfb
 qc pass: p4lang: ipsec with aes256cfb
+qc pass: p4lang: ipsec with aes128ecb
+qc pass: p4lang: ipsec with aes192ecb
+qc pass: p4lang: ipsec with aes256ecb
+qc pass: p4lang: openvpn with aes128ofb
+qc pass: p4lang: openvpn with aes192ofb
+qc pass: p4lang: openvpn with aes256ofb
+qc pass: p4lang: macsec with aes128ofb
+qc pass: p4lang: macsec with aes192ofb
+qc pass: p4lang: macsec with aes256ofb
+qc pass: p4lang: ipsec with aes128ofb
+qc pass: p4lang: ipsec with aes192ofb
+qc pass: p4lang: ipsec with aes256ofb
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core

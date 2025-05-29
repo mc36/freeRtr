@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.29-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-29 14:55:04, took 00:15:51, with 50 workers, on 772 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2025-05-29 15:31:58, took 00:15:56, with 50 workers, on 784 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -320,6 +320,18 @@ http://sources.freertr.org/cfg/p4lang-crypt185.tst;p4lang-crypt185.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt186.tst;p4lang-crypt186.tst;success;p4lang: ipsec with aes128cfb
 http://sources.freertr.org/cfg/p4lang-crypt187.tst;p4lang-crypt187.tst;success;p4lang: ipsec with aes192cfb
 http://sources.freertr.org/cfg/p4lang-crypt188.tst;p4lang-crypt188.tst;success;p4lang: ipsec with aes256cfb
+http://sources.freertr.org/cfg/p4lang-crypt189.tst;p4lang-crypt189.tst;success;p4lang: ipsec with aes128ecb
+http://sources.freertr.org/cfg/p4lang-crypt190.tst;p4lang-crypt190.tst;success;p4lang: ipsec with aes192ecb
+http://sources.freertr.org/cfg/p4lang-crypt191.tst;p4lang-crypt191.tst;success;p4lang: ipsec with aes256ecb
+http://sources.freertr.org/cfg/p4lang-crypt192.tst;p4lang-crypt192.tst;success;p4lang: openvpn with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt193.tst;p4lang-crypt193.tst;success;p4lang: openvpn with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt194.tst;p4lang-crypt194.tst;success;p4lang: openvpn with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt195.tst;p4lang-crypt195.tst;success;p4lang: macsec with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt196.tst;p4lang-crypt196.tst;success;p4lang: macsec with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt197.tst;p4lang-crypt197.tst;success;p4lang: macsec with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt198.tst;p4lang-crypt198.tst;success;p4lang: ipsec with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt199.tst;p4lang-crypt199.tst;success;p4lang: ipsec with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;success;p4lang: ipsec with aes256ofb
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core

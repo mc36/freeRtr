@@ -593,6 +593,15 @@ qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6
 qc pass: ipv6 in esp over ipv4
 qc pass: ipv6 in esp over ipv6
+qc pass: esp with aes128cfb
+qc pass: esp with aes192cfb
+qc pass: esp with aes256cfb
+qc pass: esp with aes128ecb
+qc pass: esp with aes192ecb
+qc pass: esp with aes256ecb
+qc pass: esp with aes128ofb
+qc pass: esp with aes192ofb
+qc pass: esp with aes256ofb
 qc pass: ipv4 in ike1 over ipv4
 qc pass: ipv4 in ike1 over ipv6
 qc pass: ipv6 in ike1 over ipv4
@@ -712,6 +721,9 @@ qc pass: inlsp with rc2
 qc pass: inlsp with aes128ctr
 qc pass: inlsp with aes192ctr
 qc pass: inlsp with aes256ctr
+qc pass: inlsp with aes128ofb
+qc pass: inlsp with aes192ofb
+qc pass: inlsp with aes256ofb
 qc pass: route inspection
 qc pass: flow inspection
 qc pass: interface inspection
@@ -800,6 +812,9 @@ qc pass: macsec with rc2
 qc pass: macsec with aes128ctr
 qc pass: macsec with aes192ctr
 qc pass: macsec with aes256ctr
+qc pass: macsec with aes128ofb
+qc pass: macsec with aes192ofb
+qc pass: macsec with aes256ofb
 qc pass: source list translation to interface
 qc pass: source list translation to address
 qc pass: source list translation to pool
@@ -850,6 +865,9 @@ qc pass: openvpn with rc2
 qc pass: openvpn with aes128ctr
 qc pass: openvpn with aes192ctr
 qc pass: openvpn with aes256ctr
+qc pass: openvpn with aes128ofb
+qc pass: openvpn with aes192ofb
+qc pass: openvpn with aes256ofb
 qc pass: transparent proxy
 qc pass: satp over ipv4
 qc pass: satp over ipv6
@@ -884,6 +902,9 @@ qc pass: satp with rc2
 qc pass: satp with aes128ctr
 qc pass: satp with aes192ctr
 qc pass: satp with aes256ctr
+qc pass: satp with aes128ofb
+qc pass: satp with aes192ofb
+qc pass: satp with aes256ofb
 qc pass: sgt ethernet encapsulation
 qc pass: sgt vlan encapsulation
 qc pass: sgt bridge encapsulation
@@ -943,6 +964,9 @@ qc pass: skip with rc2
 qc pass: skip with aes128ctr
 qc pass: skip with aes192ctr
 qc pass: skip with aes256ctr
+qc pass: skip with aes128ofb
+qc pass: skip with aes192ofb
+qc pass: skip with aes256ofb
 qc pass: ssh test
 qc pass: swipe over ipv4
 qc pass: swipe over ipv6
@@ -976,6 +1000,9 @@ qc pass: swipe with rc2
 qc pass: swipe with aes128ctr
 qc pass: swipe with aes192ctr
 qc pass: swipe with aes256ctr
+qc pass: swipe with aes128ofb
+qc pass: swipe with aes192ofb
+qc pass: swipe with aes256ofb
 qc pass: tls test
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
@@ -1844,6 +1871,21 @@ qc pass: p4lang: macsec with aes256ctr
 qc pass: p4lang: ipsec with aes128ctr
 qc pass: p4lang: ipsec with aes192ctr
 qc pass: p4lang: ipsec with aes256ctr
+qc pass: p4lang: ipsec with aes128cfb
+qc pass: p4lang: ipsec with aes192cfb
+qc pass: p4lang: ipsec with aes256cfb
+qc pass: p4lang: ipsec with aes128ecb
+qc pass: p4lang: ipsec with aes192ecb
+qc pass: p4lang: ipsec with aes256ecb
+qc pass: p4lang: openvpn with aes128ofb
+qc pass: p4lang: openvpn with aes192ofb
+qc pass: p4lang: openvpn with aes256ofb
+qc pass: p4lang: macsec with aes128ofb
+qc pass: p4lang: macsec with aes192ofb
+qc pass: p4lang: macsec with aes256ofb
+qc pass: p4lang: ipsec with aes128ofb
+qc pass: p4lang: ipsec with aes192ofb
+qc pass: p4lang: ipsec with aes256ofb
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -2297,7 +2339,7 @@ qc pass: p4lang: l2vpn over ipip mpls
 qc pass: p4lang: l3vpn over ipip mpls
 qc pass: p4lang: sdwan over ipv4 with ipip
 qc pass: p4lang: sdwan over ipv6 with ipip
-qc pass: p4lang: amt multicast routing
+qc pass: unnamed
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

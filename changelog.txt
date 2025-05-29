@@ -16867,3 +16867,46 @@ qc pass: openvpn with aes256ctr
 qc pass: swipe with aes128ctr
 qc pass: swipe with aes192ctr
 qc pass: swipe with aes256ctr
+---------------------------------- 2025-05-29 14:58:58 25.5.29
+qc pass: esp with aes128cfb
+qc pass: esp with aes192cfb
+qc pass: esp with aes256cfb
+qc pass: esp with aes128ecb
+qc pass: esp with aes192ecb
+qc pass: esp with aes256ecb
+qc pass: esp with aes128ofb
+qc pass: esp with aes192ofb
+qc pass: esp with aes256ofb
+qc pass: inlsp with aes128ofb
+qc pass: inlsp with aes192ofb
+qc pass: inlsp with aes256ofb
+qc pass: macsec with aes128ofb
+qc pass: macsec with aes192ofb
+qc pass: macsec with aes256ofb
+qc pass: openvpn with aes128ofb
+qc pass: openvpn with aes192ofb
+qc pass: openvpn with aes256ofb
+qc pass: satp with aes128ofb
+qc pass: satp with aes192ofb
+qc pass: satp with aes256ofb
+qc pass: skip with aes128ofb
+qc pass: skip with aes192ofb
+qc pass: skip with aes256ofb
+qc pass: swipe with aes128ofb
+qc pass: swipe with aes192ofb
+qc pass: swipe with aes256ofb
+qc pass: p4lang: ipsec with aes128cfb
+qc pass: p4lang: ipsec with aes192cfb
+qc pass: p4lang: ipsec with aes256cfb
+qc pass: p4lang: ipsec with aes128ecb
+qc pass: p4lang: ipsec with aes192ecb
+qc pass: p4lang: ipsec with aes256ecb
+qc pass: p4lang: openvpn with aes128ofb
+qc pass: p4lang: openvpn with aes192ofb
+qc pass: p4lang: openvpn with aes256ofb
+qc pass: p4lang: macsec with aes128ofb
+qc pass: p4lang: macsec with aes192ofb
+qc pass: p4lang: macsec with aes256ofb
+qc pass: p4lang: ipsec with aes128ofb
+qc pass: p4lang: ipsec with aes192ofb
+qc pass: p4lang: ipsec with aes256ofb
