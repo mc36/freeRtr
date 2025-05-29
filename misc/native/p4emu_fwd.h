@@ -507,13 +507,13 @@ int putOpenvpnHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, i
     }
     tmp += tmp2;
     *bufS += tmp2;
-    *bufP -= neigh_res->encrBlkLen;
-    RAND_bytes(&bufD[*bufP], neigh_res->encrBlkLen);
-    tmp += neigh_res->encrBlkLen;
+    RAND_bytes(&bufD[*bufP - neigh_res->encrBlkLen], neigh_res->encrBlkLen);
     if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-    if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, neigh_res->hashKeyDat) != 1) doDropper;
+    if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, &bufD[*bufP - neigh_res->encrBlkLen]) != 1) doDropper;
     if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
     if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
+    *bufP -= neigh_res->encrBlkLen;
+    tmp += neigh_res->encrBlkLen;
     if (neigh_res->hashBlkLen < 1) return 0;
     if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) doDropper;
     if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
@@ -1129,10 +1129,11 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
             if (memcmp(&bufD[0], &bufD[*bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;
         }
         if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-        if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, tun_res->hashKeyDat) != 1) doDropper;
+        if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, &bufD[*bufP]) != 1) doDropper;
+        *bufP += tun_res->encrBlkLen;
+        tmp -= tun_res->encrBlkLen;
         if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
         if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-        *bufP += tun_res->encrBlkLen;
         *bufP += 8;
         guessEthtyp;
         *bufP -= 2;
