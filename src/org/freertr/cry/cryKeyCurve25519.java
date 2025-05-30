@@ -67,15 +67,6 @@ public class cryKeyCurve25519 {
 
     private int[] z_3;
 
-    private void cswap(int select, int[] x, int[] y) {
-        select = -select;
-        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
-            int dummy = select & (x[i] ^ y[i]);
-            x[i] ^= dummy;
-            y[i] ^= dummy;
-        }
-    }
-
     /**
      * make key
      */
@@ -87,17 +78,6 @@ public class cryKeyCurve25519 {
         locPriv[0] &= (byte) 248;
         locPriv[31] &= 127;
         locPriv[31] |= 64;
-    }
-
-    /**
-     * get remote public key
-     *
-     * @param buf buffer to read
-     * @param ofs offset to start
-     */
-    public void getRemPub(byte[] buf, int ofs) {
-        remPub = new byte[32];
-        bits.byteCopy(buf, ofs, remPub, 0, remPub.length);
     }
 
     /**
@@ -183,6 +163,15 @@ public class cryKeyCurve25519 {
             result[i] = carry & 0x03FFFFFF;
         }
         reduceQuick(result);
+    }
+
+    private void cswap(int select, int[] x, int[] y) {
+        select = -select;
+        for (int i = 0; i < NUM_LIMBS_255BIT; i++) {
+            int dummy = select & (x[i] ^ y[i]);
+            x[i] ^= dummy;
+            y[i] ^= dummy;
+        }
     }
 
     private void evalCurve(byte[] s) {
