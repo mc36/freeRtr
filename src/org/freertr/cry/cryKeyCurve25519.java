@@ -1,6 +1,7 @@
 package org.freertr.cry;
 
 import java.util.Arrays;
+import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
 
 /**
@@ -8,7 +9,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class cryKeyCurve25519 {
+public class cryKeyCurve25519 extends cryKeyGeneric {
 
     /**
      * create instance
@@ -22,6 +23,11 @@ public class cryKeyCurve25519 {
     public byte[] locPriv;
 
     /**
+     * local public key
+     */
+    public byte[] locPub;
+
+    /**
      * remote public key
      */
     public byte[] remPub;
@@ -30,6 +36,11 @@ public class cryKeyCurve25519 {
      * common secret
      */
     public byte[] common;
+
+    /**
+     * client side
+     */
+    public boolean client;
 
     private final static int NUM_LIMBS_255BIT = 10;
 
@@ -331,6 +342,203 @@ public class cryKeyCurve25519 {
 
     private void square(int[] result, int[] x) {
         mul(result, x, x);
+    }
+
+    public String algName() {
+        return "curve25519";
+    }
+
+    public boolean privReader(packHolder pck) {
+        return true;
+    }
+
+    public void privWriter(packHolder pck) {
+    }
+
+    public boolean certReader(packHolder pck) {
+        return true;
+    }
+
+    public void certWriter(packHolder pck) {
+    }
+
+    public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        return true;
+    }
+
+    public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
+        return null;
+    }
+
+    public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        return true;
+    }
+
+    public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
+        return null;
+    }
+
+    public boolean keyMakeSize(int len) {
+        return true;
+    }
+
+    public boolean keyMakeName(String nam) {
+        locPriv = nam.getBytes();
+        return false;
+    }
+
+    public boolean keyMakeTls(int id) {
+        return true;
+    }
+
+    public boolean keyMakeIke(int id) {
+        return true;
+    }
+
+    public int keyMakeVal() {
+        return 1;
+    }
+
+    public boolean keyVerify() {
+        return true;
+    }
+
+    public int keySize() {
+        return 255;
+    }
+
+    public String keyDump() {
+        return "cln=" + bits.byteDump(remPub, 0, -1) + " srv=" + bits.byteDump(locPub, 0, -1) + " res=" + bits.byteDump(common, 0, -1);
+    }
+
+    public void keyClntInit() {
+        keyServInit();
+        client = true;
+    }
+
+    public void keyServInit() {
+        client = false;
+        makePirvKey();
+        byte[] buf = remPub;
+        remPub = null;
+        calcCommon();
+        locPub = common;
+        common = null;
+        remPub = buf;
+    }
+
+    public void keyClntCalc() {
+        calcCommon();
+    }
+
+    public void keyServCalc() {
+        calcCommon();
+    }
+
+    public byte[] keyCommonTls() {
+        return common;
+    }
+
+    public byte[] keyCommonSsh() {
+        if (common == null) {
+            return null;
+        }
+        return cryUtils.buffer2bigInt(common, 0, common.length).toByteArray();
+    }
+
+    public byte[] keyCommonIke() {
+        return keyCommonTls();
+    }
+
+    public byte[] keyClntTls() {
+        return keyClntSsh();
+    }
+
+    public byte[] keyServTls() {
+        return keyServSsh();
+    }
+
+    public boolean keyClntTls(byte[] buf, int ofs) {
+        return keyClntSsh(buf, ofs);
+    }
+
+    public boolean keyServTls(byte[] buf, int ofs) {
+        return keyServSsh(buf, ofs);
+    }
+
+    public byte[] keyClntSsh() {
+        if (client) {
+            return locPub;
+        } else {
+            return remPub;
+        }
+    }
+
+    public byte[] keyServSsh() {
+        if (client) {
+            return remPub;
+        } else {
+            return locPub;
+        }
+    }
+
+    public boolean keyClntSsh(byte[] buf, int ofs) {
+        remPub = new byte[32];
+        bits.byteCopy(buf, ofs, remPub, 0, remPub.length);
+        return false;
+    }
+
+    public boolean keyServSsh(byte[] buf, int ofs) {
+        return keyClntSsh(buf, ofs);
+    }
+
+    public byte[] keyClntIke() {
+        return keyClntSsh();
+    }
+
+    public byte[] keyServIke() {
+        return keyServSsh();
+    }
+
+    public boolean keyClntIke(byte[] buf, int ofs) {
+        return keyClntSsh(buf, ofs);
+    }
+
+    public boolean keyServIke(byte[] buf, int ofs) {
+        return keyServSsh(buf, ofs);
+    }
+
+    public byte[][] keyParamTls() {
+        return null;
+    }
+
+    public byte[][] keyParamSsh() {
+        return null;
+    }
+
+    public boolean keyParamTls(byte[][] buf) {
+        return true;
+    }
+
+    public boolean keyParamSsh(byte[][] buf) {
+        return true;
+    }
+
+    public boolean sshReader(byte[] key) {
+        locPriv = key;
+        return false;
+    }
+
+    public byte[] sshWriter() {
+        return null;
+    }
+
+    public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
+        return true;
+    }
+
+    public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
+        return null;
     }
 
 }

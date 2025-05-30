@@ -84,7 +84,7 @@ public class cryHashShake128 extends cryHashGeneric {
 
     private void initSponge(int r) {
         rate = r;
-        for (int i = 0; i < state.length; ++i) {
+        for (int i = 0; i < state.length; i++) {
             state[i] = 0L;
         }
         bits.byteFill(dataQueue, 0, dataQueue.length, 0);
@@ -139,7 +139,7 @@ public class cryHashShake128 extends cryHashGeneric {
             } else {
                 int full = bitsInQueue >>> 6, partial = bitsInQueue & 63;
                 int off = 0;
-                for (int i = 0; i < full; ++i) {
+                for (int i = 0; i < full; i++) {
                     state[i] ^= bits.lsbGetQ(dataQueue, off);
                     off += 8;
                 }
@@ -159,7 +159,7 @@ public class cryHashShake128 extends cryHashGeneric {
                 KeccakPermutation();
                 int bsOff = 0;
                 int nsLen = rate >>> 6;
-                for (int o = 0; o < nsLen; ++o) {
+                for (int o = 0; o < nsLen; o++) {
                     bits.lsbPutQ(dataQueue, bsOff, state[o]);
                     bsOff += 8;
                 }
@@ -174,7 +174,7 @@ public class cryHashShake128 extends cryHashGeneric {
 
     private void KeccakAbsorb(byte[] data, int off) {
         int count = rate >>> 6;
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; i++) {
             state[i] ^= bits.lsbGetQ(data, off);
             off += 8;
         }

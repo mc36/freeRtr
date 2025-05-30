@@ -22,6 +22,7 @@ import org.freertr.cry.cryHashSha1;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryHashSha2384;
 import org.freertr.cry.cryHashSha2512;
+import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
@@ -116,7 +117,7 @@ public class packSshInit {
     /**
      * kex algorithms
      */
-    public final static String[] keyXchgAlgs = {"ecdh-sha2-nistp521", "ecdh-sha2-nistp384", "ecdh-sha2-nistp256", "ecdh-sha2-nistp224", "ecdh-sha2-nistp192", "diffie-hellman-group-exchange-sha256", "diffie-hellman-group16-sha512", "diffie-hellman-group18-sha512", "diffie-hellman-group14-sha256", "diffie-hellman-group-exchange-sha1", "diffie-hellman-group14-sha1", "diffie-hellman-group1-sha1"};
+    public final static String[] keyXchgAlgs = {"curve25519-sha256", "ecdh-sha2-nistp521", "ecdh-sha2-nistp384", "ecdh-sha2-nistp256", "ecdh-sha2-nistp224", "ecdh-sha2-nistp192", "diffie-hellman-group-exchange-sha256", "diffie-hellman-group16-sha512", "diffie-hellman-group18-sha512", "diffie-hellman-group14-sha256", "diffie-hellman-group-exchange-sha1", "diffie-hellman-group14-sha1", "diffie-hellman-group1-sha1"};
 
     private final packSsh lower;
 
@@ -497,46 +498,48 @@ public class packSshInit {
         }
         switch (kexAlgo[0]) {
             case 0:
+                return new cryKeyCurve25519();
+            case 1:
                 cryKeyECDH ec = new cryKeyECDH();
                 ec.keyMakeTls(25);
                 return ec;
-            case 1:
+            case 2:
                 ec = new cryKeyECDH();
                 ec.keyMakeTls(24);
                 return ec;
-            case 2:
+            case 3:
                 ec = new cryKeyECDH();
                 ec.keyMakeTls(23);
                 return ec;
-            case 3:
+            case 4:
                 ec = new cryKeyECDH();
                 ec.keyMakeTls(21);
                 return ec;
-            case 4:
+            case 5:
                 ec = new cryKeyECDH();
                 ec.keyMakeTls(19);
                 return ec;
-            case 5:
-                return new cryKeyDH();
             case 6:
+                return new cryKeyDH();
+            case 7:
                 cryKeyDH mp = new cryKeyDH();
                 mp.keyMakeIke(16);
                 return mp;
-            case 7:
+            case 8:
                 mp = new cryKeyDH();
                 mp.keyMakeIke(18);
                 return mp;
-            case 8:
-                mp = new cryKeyDH();
-                mp.keyMakeIke(14);
-                return mp;
             case 9:
-                return new cryKeyDH();
-            case 10:
                 mp = new cryKeyDH();
                 mp.keyMakeIke(14);
                 return mp;
+            case 10:
+                return new cryKeyDH();
             case 11:
+                mp = new cryKeyDH();
+                mp.keyMakeIke(14);
+                return mp;
+            case 12:
                 mp = new cryKeyDH();
                 mp.keyMakeIke(1);
                 return mp;
@@ -556,11 +559,11 @@ public class packSshInit {
         }
         switch (kexAlgo[0]) {
             case 0:
-                return new cryHashSha2512();
-            case 1:
-                return new cryHashSha2384();
-            case 2:
                 return new cryHashSha2256();
+            case 1:
+                return new cryHashSha2512();
+            case 2:
+                return new cryHashSha2384();
             case 3:
                 return new cryHashSha2256();
             case 4:
@@ -568,16 +571,18 @@ public class packSshInit {
             case 5:
                 return new cryHashSha2256();
             case 6:
-                return new cryHashSha2512();
+                return new cryHashSha2256();
             case 7:
                 return new cryHashSha2512();
             case 8:
-                return new cryHashSha2256();
+                return new cryHashSha2512();
             case 9:
-                return new cryHashSha1();
+                return new cryHashSha2256();
             case 10:
                 return new cryHashSha1();
             case 11:
+                return new cryHashSha1();
+            case 12:
                 return new cryHashSha1();
             default:
                 return null;
