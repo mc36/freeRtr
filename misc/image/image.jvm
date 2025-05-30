@@ -3,6 +3,7 @@ include ../misc/image/image.beg
 
 select-one zlib1g                        #dependency
 select-one libstdc++6                    #dependency
+select-one libatomic1                    #dependency
 select-dep no
 select-dis java-common.*                 #commons
 select-dis default-jdk-.*                #def jvm

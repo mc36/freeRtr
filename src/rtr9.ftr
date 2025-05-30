@@ -56,6 +56,7 @@ qc pass: interop1: ike1 with group24
 qc pass: interop1: ike1 with group19
 qc pass: interop1: ike1 with group20
 qc pass: interop1: ike1 with group21
+qc pass: interop1: ike1 with sha384
 qc pass: interop1: ike2 with ipv4
 qc pass: interop1: ike2 with ipv6
 qc pass: interop1: ike2 with 3des
@@ -76,6 +77,7 @@ qc pass: interop1: ike2 with aes256gcm
 qc pass: interop1: ike2 with group19
 qc pass: interop1: ike2 with group20
 qc pass: interop1: ike2 with group21
+qc pass: interop1: ike2 with sha384
 qc pass: interop1: point2point isis
 qc pass: interop1: isis dis
 qc pass: interop1: isis nondis

@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.5.22-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-22 22:08:20, took 01:25:12, with 10 workers, on 744 cases, 0 failed, 0 traces, 7 retries
+-;-;-;freeRouter v25.5.29-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-05-29 23:06:08, took 01:23:59, with 10 workers, on 784 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, dpdk
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -274,6 +274,64 @@ http://sources.freertr.org/cfg/p4lang-crypt139.tst;p4lang-crypt139.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt140.tst;p4lang-crypt140.tst;success;p4lang: sgt over ipip
 http://sources.freertr.org/cfg/p4lang-crypt141.tst;p4lang-crypt141.tst;success;p4lang: macsec over ipsec
 http://sources.freertr.org/cfg/p4lang-crypt142.tst;p4lang-crypt142.tst;success;p4lang: sgt over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt143.tst;p4lang-crypt143.tst;success;p4lang: ipsec with sha384
+http://sources.freertr.org/cfg/p4lang-crypt144.tst;p4lang-crypt144.tst;success;p4lang: openvpn with sha3224
+http://sources.freertr.org/cfg/p4lang-crypt145.tst;p4lang-crypt145.tst;success;p4lang: macsec with sha3224
+http://sources.freertr.org/cfg/p4lang-crypt146.tst;p4lang-crypt146.tst;success;p4lang: openvpn with sha3256
+http://sources.freertr.org/cfg/p4lang-crypt147.tst;p4lang-crypt147.tst;success;p4lang: macsec with sha3256
+http://sources.freertr.org/cfg/p4lang-crypt148.tst;p4lang-crypt148.tst;success;p4lang: openvpn with sha3384
+http://sources.freertr.org/cfg/p4lang-crypt149.tst;p4lang-crypt149.tst;success;p4lang: macsec with sha3384
+http://sources.freertr.org/cfg/p4lang-crypt150.tst;p4lang-crypt150.tst;success;p4lang: openvpn with sha3512
+http://sources.freertr.org/cfg/p4lang-crypt151.tst;p4lang-crypt151.tst;success;p4lang: macsec with sha3512
+http://sources.freertr.org/cfg/p4lang-crypt152.tst;p4lang-crypt152.tst;success;p4lang: macsec with blowfish
+http://sources.freertr.org/cfg/p4lang-crypt153.tst;p4lang-crypt153.tst;success;p4lang: ipsec with blowfish
+http://sources.freertr.org/cfg/p4lang-crypt154.tst;p4lang-crypt154.tst;success;p4lang: openvpn with blowfish
+http://sources.freertr.org/cfg/p4lang-crypt155.tst;p4lang-crypt155.tst;success;p4lang: macsec with rc2
+http://sources.freertr.org/cfg/p4lang-crypt156.tst;p4lang-crypt156.tst;success;p4lang: ipsec with rc2
+http://sources.freertr.org/cfg/p4lang-crypt157.tst;p4lang-crypt157.tst;success;p4lang: openvpn with rc2
+http://sources.freertr.org/cfg/p4lang-crypt158.tst;p4lang-crypt158.tst;success;p4lang: ipsec mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-crypt159.tst;p4lang-crypt159.tst;success;p4lang: ipsec mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-crypt160.tst;p4lang-crypt160.tst;success;p4lang: ipsec mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-crypt161.tst;p4lang-crypt161.tst;success;p4lang: ipsec mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-crypt162.tst;p4lang-crypt162.tst;success;p4lang: ipsec mpls over vlan
+http://sources.freertr.org/cfg/p4lang-crypt163.tst;p4lang-crypt163.tst;success;p4lang: ipsec mpls over bundle
+http://sources.freertr.org/cfg/p4lang-crypt164.tst;p4lang-crypt164.tst;success;p4lang: ipsec mpls over bundle vlan
+http://sources.freertr.org/cfg/p4lang-crypt165.tst;p4lang-crypt165.tst;success;p4lang: ipsec mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-crypt166.tst;p4lang-crypt166.tst;success;p4lang: ipsec mpls over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-crypt167.tst;p4lang-crypt167.tst;success;p4lang: ipsec mpls over bridge
+http://sources.freertr.org/cfg/p4lang-crypt168.tst;p4lang-crypt168.tst;success;p4lang: ipsec mpls over vlan bridge
+http://sources.freertr.org/cfg/p4lang-crypt169.tst;p4lang-crypt169.tst;success;p4lang: bridging over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt170.tst;p4lang-crypt170.tst;success;p4lang: bridging over ipsec vlan
+http://sources.freertr.org/cfg/p4lang-crypt171.tst;p4lang-crypt171.tst;success;p4lang: mldp core over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt172.tst;p4lang-crypt172.tst;success;p4lang: bier core over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt173.tst;p4lang-crypt173.tst;success;p4lang: ipsec mpls pop
+http://sources.freertr.org/cfg/p4lang-crypt174.tst;p4lang-crypt174.tst;success;p4lang: ipsec mpls push
+http://sources.freertr.org/cfg/p4lang-crypt175.tst;p4lang-crypt175.tst;success;p4lang: l2vpn over ipsec mpls
+http://sources.freertr.org/cfg/p4lang-crypt176.tst;p4lang-crypt176.tst;success;p4lang: l3vpn over ipsec mpls
+http://sources.freertr.org/cfg/p4lang-crypt177.tst;p4lang-crypt177.tst;success;p4lang: openvpn with aes128ctr
+http://sources.freertr.org/cfg/p4lang-crypt178.tst;p4lang-crypt178.tst;success;p4lang: openvpn with aes192ctr
+http://sources.freertr.org/cfg/p4lang-crypt179.tst;p4lang-crypt179.tst;success;p4lang: openvpn with aes256ctr
+http://sources.freertr.org/cfg/p4lang-crypt180.tst;p4lang-crypt180.tst;success;p4lang: macsec with aes128ctr
+http://sources.freertr.org/cfg/p4lang-crypt181.tst;p4lang-crypt181.tst;success;p4lang: macsec with aes192ctr
+http://sources.freertr.org/cfg/p4lang-crypt182.tst;p4lang-crypt182.tst;success;p4lang: macsec with aes256ctr
+http://sources.freertr.org/cfg/p4lang-crypt183.tst;p4lang-crypt183.tst;success;p4lang: ipsec with aes128ctr
+http://sources.freertr.org/cfg/p4lang-crypt184.tst;p4lang-crypt184.tst;success;p4lang: ipsec with aes192ctr
+http://sources.freertr.org/cfg/p4lang-crypt185.tst;p4lang-crypt185.tst;success;p4lang: ipsec with aes256ctr
+http://sources.freertr.org/cfg/p4lang-crypt186.tst;p4lang-crypt186.tst;success;p4lang: ipsec with aes128cfb
+http://sources.freertr.org/cfg/p4lang-crypt187.tst;p4lang-crypt187.tst;success;p4lang: ipsec with aes192cfb
+http://sources.freertr.org/cfg/p4lang-crypt188.tst;p4lang-crypt188.tst;success;p4lang: ipsec with aes256cfb
+http://sources.freertr.org/cfg/p4lang-crypt189.tst;p4lang-crypt189.tst;success;p4lang: ipsec with aes128ecb
+http://sources.freertr.org/cfg/p4lang-crypt190.tst;p4lang-crypt190.tst;success;p4lang: ipsec with aes192ecb
+http://sources.freertr.org/cfg/p4lang-crypt191.tst;p4lang-crypt191.tst;success;p4lang: ipsec with aes256ecb
+http://sources.freertr.org/cfg/p4lang-crypt192.tst;p4lang-crypt192.tst;success;p4lang: openvpn with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt193.tst;p4lang-crypt193.tst;success;p4lang: openvpn with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt194.tst;p4lang-crypt194.tst;success;p4lang: openvpn with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt195.tst;p4lang-crypt195.tst;success;p4lang: macsec with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt196.tst;p4lang-crypt196.tst;success;p4lang: macsec with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt197.tst;p4lang-crypt197.tst;success;p4lang: macsec with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt198.tst;p4lang-crypt198.tst;success;p4lang: ipsec with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt199.tst;p4lang-crypt199.tst;success;p4lang: ipsec with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;success;p4lang: ipsec with aes256ofb
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core
@@ -727,22 +785,4 @@ http://sources.freertr.org/cfg/p4lang-rout450.tst;p4lang-rout450.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout451.tst;p4lang-rout451.tst;success;p4lang: l3vpn over ipip mpls
 http://sources.freertr.org/cfg/p4lang-rout452.tst;p4lang-rout452.tst;success;p4lang: sdwan over ipv4 with ipip
 http://sources.freertr.org/cfg/p4lang-rout453.tst;p4lang-rout453.tst;success;p4lang: sdwan over ipv6 with ipip
-http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;success;p4lang: ipsec mpls over ipv4
-http://sources.freertr.org/cfg/p4lang-rout455.tst;p4lang-rout455.tst;success;p4lang: ipsec mpls over ipv6
-http://sources.freertr.org/cfg/p4lang-rout456.tst;p4lang-rout456.tst;success;p4lang: ipsec mpls over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout457.tst;p4lang-rout457.tst;success;p4lang: ipsec mpls over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout458.tst;p4lang-rout458.tst;success;p4lang: ipsec mpls over vlan
-http://sources.freertr.org/cfg/p4lang-rout459.tst;p4lang-rout459.tst;success;p4lang: ipsec mpls over bundle
-http://sources.freertr.org/cfg/p4lang-rout460.tst;p4lang-rout460.tst;success;p4lang: ipsec mpls over bundle vlan
-http://sources.freertr.org/cfg/p4lang-rout461.tst;p4lang-rout461.tst;success;p4lang: ipsec mpls over hairpin
-http://sources.freertr.org/cfg/p4lang-rout462.tst;p4lang-rout462.tst;success;p4lang: ipsec mpls over hairpin vlan
-http://sources.freertr.org/cfg/p4lang-rout463.tst;p4lang-rout463.tst;success;p4lang: ipsec mpls over bridge
-http://sources.freertr.org/cfg/p4lang-rout464.tst;p4lang-rout464.tst;success;p4lang: ipsec mpls over vlan bridge
-http://sources.freertr.org/cfg/p4lang-rout465.tst;p4lang-rout465.tst;success;p4lang: bridging over ipsec
-http://sources.freertr.org/cfg/p4lang-rout466.tst;p4lang-rout466.tst;success;p4lang: bridging over ipsec vlan
-http://sources.freertr.org/cfg/p4lang-rout467.tst;p4lang-rout467.tst;success;p4lang: mldp core over ipsec
-http://sources.freertr.org/cfg/p4lang-rout468.tst;p4lang-rout468.tst;success;p4lang: bier core over ipsec
-http://sources.freertr.org/cfg/p4lang-rout469.tst;p4lang-rout469.tst;success;p4lang: ipsec mpls pop
-http://sources.freertr.org/cfg/p4lang-rout470.tst;p4lang-rout470.tst;success;p4lang: ipsec mpls push
-http://sources.freertr.org/cfg/p4lang-rout471.tst;p4lang-rout471.tst;success;p4lang: l2vpn over ipsec mpls
-http://sources.freertr.org/cfg/p4lang-rout472.tst;p4lang-rout472.tst;success;p4lang: l3vpn over ipsec mpls
+http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;success;p4lang: amt multicast routing

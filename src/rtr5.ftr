@@ -270,6 +270,64 @@ qc pass: p4lang: macsec over ipip
 qc pass: p4lang: sgt over ipip
 qc pass: p4lang: macsec over ipsec
 qc pass: p4lang: sgt over ipsec
+qc pass: p4lang: ipsec with sha384
+qc pass: p4lang: openvpn with sha3224
+qc pass: p4lang: macsec with sha3224
+qc pass: p4lang: openvpn with sha3256
+qc pass: p4lang: macsec with sha3256
+qc pass: p4lang: openvpn with sha3384
+qc pass: p4lang: macsec with sha3384
+qc pass: p4lang: openvpn with sha3512
+qc pass: p4lang: macsec with sha3512
+qc pass: p4lang: macsec with blowfish
+qc pass: p4lang: ipsec with blowfish
+qc pass: p4lang: openvpn with blowfish
+qc pass: p4lang: macsec with rc2
+qc pass: p4lang: ipsec with rc2
+qc pass: p4lang: openvpn with rc2
+qc pass: p4lang: ipsec mpls over ipv4
+qc pass: p4lang: ipsec mpls over ipv6
+qc pass: p4lang: ipsec mpls over ipv4 loopback
+qc pass: p4lang: ipsec mpls over ipv6 loopback
+qc pass: p4lang: ipsec mpls over vlan
+qc pass: p4lang: ipsec mpls over bundle
+qc pass: p4lang: ipsec mpls over bundle vlan
+qc pass: p4lang: ipsec mpls over hairpin
+qc pass: p4lang: ipsec mpls over hairpin vlan
+qc pass: p4lang: ipsec mpls over bridge
+qc pass: p4lang: ipsec mpls over vlan bridge
+qc pass: p4lang: bridging over ipsec
+qc pass: p4lang: bridging over ipsec vlan
+qc pass: p4lang: mldp core over ipsec
+qc pass: p4lang: bier core over ipsec
+qc pass: p4lang: ipsec mpls pop
+qc pass: p4lang: ipsec mpls push
+qc pass: p4lang: l2vpn over ipsec mpls
+qc pass: p4lang: l3vpn over ipsec mpls
+qc pass: p4lang: openvpn with aes128ctr
+qc pass: p4lang: openvpn with aes192ctr
+qc pass: p4lang: openvpn with aes256ctr
+qc pass: p4lang: macsec with aes128ctr
+qc pass: p4lang: macsec with aes192ctr
+qc pass: p4lang: macsec with aes256ctr
+qc pass: p4lang: ipsec with aes128ctr
+qc pass: p4lang: ipsec with aes192ctr
+qc pass: p4lang: ipsec with aes256ctr
+qc pass: p4lang: ipsec with aes128cfb
+qc pass: p4lang: ipsec with aes192cfb
+qc pass: p4lang: ipsec with aes256cfb
+qc pass: p4lang: ipsec with aes128ecb
+qc pass: p4lang: ipsec with aes192ecb
+qc pass: p4lang: ipsec with aes256ecb
+qc pass: p4lang: openvpn with aes128ofb
+qc pass: p4lang: openvpn with aes192ofb
+qc pass: p4lang: openvpn with aes256ofb
+qc pass: p4lang: macsec with aes128ofb
+qc pass: p4lang: macsec with aes192ofb
+qc pass: p4lang: macsec with aes256ofb
+qc pass: p4lang: ipsec with aes128ofb
+qc pass: p4lang: ipsec with aes192ofb
+qc pass: p4lang: ipsec with aes256ofb
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -723,25 +781,7 @@ qc pass: p4lang: l2vpn over ipip mpls
 qc pass: p4lang: l3vpn over ipip mpls
 qc pass: p4lang: sdwan over ipv4 with ipip
 qc pass: p4lang: sdwan over ipv6 with ipip
-qc pass: p4lang: ipsec mpls over ipv4
-qc pass: p4lang: ipsec mpls over ipv6
-qc pass: p4lang: ipsec mpls over ipv4 loopback
-qc pass: p4lang: ipsec mpls over ipv6 loopback
-qc pass: p4lang: ipsec mpls over vlan
-qc pass: p4lang: ipsec mpls over bundle
-qc pass: p4lang: ipsec mpls over bundle vlan
-qc pass: p4lang: ipsec mpls over hairpin
-qc pass: p4lang: ipsec mpls over hairpin vlan
-qc pass: p4lang: ipsec mpls over bridge
-qc pass: p4lang: ipsec mpls over vlan bridge
-qc pass: p4lang: bridging over ipsec
-qc pass: p4lang: bridging over ipsec vlan
-qc pass: p4lang: mldp core over ipsec
-qc pass: p4lang: bier core over ipsec
-qc pass: p4lang: ipsec mpls pop
-qc pass: p4lang: ipsec mpls push
-qc pass: p4lang: l2vpn over ipsec mpls
-qc pass: p4lang: l3vpn over ipsec mpls
+qc pass: p4lang: amt multicast routing
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

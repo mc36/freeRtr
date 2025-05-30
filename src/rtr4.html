@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v25.5.22-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-05-22 20:43:06, took 01:11:17, with 10 workers, on 744 cases, 0 failed, 0 traces, 3 retries<br/>
+release: freeRouter v25.5.29-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-05-29 21:42:05, took 01:10:31, with 10 workers, on 784 cases, 0 failed, 0 traces, 4 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -286,6 +286,64 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt140.tst">p4lang-crypt140.tst</a></td><td>success</td><td>p4lang: sgt over ipip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt141.tst">p4lang-crypt141.tst</a></td><td>not applicable</td><td>p4lang: macsec over ipsec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt142.tst">p4lang-crypt142.tst</a></td><td>not applicable</td><td>p4lang: sgt over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt143.tst">p4lang-crypt143.tst</a></td><td>not applicable</td><td>p4lang: ipsec with sha384</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt144.tst">p4lang-crypt144.tst</a></td><td>not applicable</td><td>p4lang: openvpn with sha3224</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt145.tst">p4lang-crypt145.tst</a></td><td>not applicable</td><td>p4lang: macsec with sha3224</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt146.tst">p4lang-crypt146.tst</a></td><td>not applicable</td><td>p4lang: openvpn with sha3256</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt147.tst">p4lang-crypt147.tst</a></td><td>not applicable</td><td>p4lang: macsec with sha3256</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt148.tst">p4lang-crypt148.tst</a></td><td>not applicable</td><td>p4lang: openvpn with sha3384</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt149.tst">p4lang-crypt149.tst</a></td><td>not applicable</td><td>p4lang: macsec with sha3384</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt150.tst">p4lang-crypt150.tst</a></td><td>not applicable</td><td>p4lang: openvpn with sha3512</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt151.tst">p4lang-crypt151.tst</a></td><td>not applicable</td><td>p4lang: macsec with sha3512</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt152.tst">p4lang-crypt152.tst</a></td><td>not applicable</td><td>p4lang: macsec with blowfish</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt153.tst">p4lang-crypt153.tst</a></td><td>not applicable</td><td>p4lang: ipsec with blowfish</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt154.tst">p4lang-crypt154.tst</a></td><td>not applicable</td><td>p4lang: openvpn with blowfish</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt155.tst">p4lang-crypt155.tst</a></td><td>not applicable</td><td>p4lang: macsec with rc2</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt156.tst">p4lang-crypt156.tst</a></td><td>not applicable</td><td>p4lang: ipsec with rc2</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt157.tst">p4lang-crypt157.tst</a></td><td>not applicable</td><td>p4lang: openvpn with rc2</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt158.tst">p4lang-crypt158.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt159.tst">p4lang-crypt159.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt160.tst">p4lang-crypt160.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt161.tst">p4lang-crypt161.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt162.tst">p4lang-crypt162.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt163.tst">p4lang-crypt163.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over bundle</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt164.tst">p4lang-crypt164.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over bundle vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt165.tst">p4lang-crypt165.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over hairpin</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt166.tst">p4lang-crypt166.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over hairpin vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt167.tst">p4lang-crypt167.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over bridge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt168.tst">p4lang-crypt168.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over vlan bridge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt169.tst">p4lang-crypt169.tst</a></td><td>not applicable</td><td>p4lang: bridging over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt170.tst">p4lang-crypt170.tst</a></td><td>not applicable</td><td>p4lang: bridging over ipsec vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt171.tst">p4lang-crypt171.tst</a></td><td>not applicable</td><td>p4lang: mldp core over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt172.tst">p4lang-crypt172.tst</a></td><td>not applicable</td><td>p4lang: bier core over ipsec</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt173.tst">p4lang-crypt173.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls pop</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt174.tst">p4lang-crypt174.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls push</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt175.tst">p4lang-crypt175.tst</a></td><td>not applicable</td><td>p4lang: l2vpn over ipsec mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt176.tst">p4lang-crypt176.tst</a></td><td>not applicable</td><td>p4lang: l3vpn over ipsec mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt177.tst">p4lang-crypt177.tst</a></td><td>not applicable</td><td>p4lang: openvpn with aes128ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt178.tst">p4lang-crypt178.tst</a></td><td>not applicable</td><td>p4lang: openvpn with aes192ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt179.tst">p4lang-crypt179.tst</a></td><td>not applicable</td><td>p4lang: openvpn with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt180.tst">p4lang-crypt180.tst</a></td><td>not applicable</td><td>p4lang: macsec with aes128ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt181.tst">p4lang-crypt181.tst</a></td><td>not applicable</td><td>p4lang: macsec with aes192ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt182.tst">p4lang-crypt182.tst</a></td><td>not applicable</td><td>p4lang: macsec with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt183.tst">p4lang-crypt183.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes128ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt184.tst">p4lang-crypt184.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes192ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt185.tst">p4lang-crypt185.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes256ctr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt186.tst">p4lang-crypt186.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes128cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt187.tst">p4lang-crypt187.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes192cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt188.tst">p4lang-crypt188.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes256cfb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt189.tst">p4lang-crypt189.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes128ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt190.tst">p4lang-crypt190.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes192ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt191.tst">p4lang-crypt191.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes256ecb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt192.tst">p4lang-crypt192.tst</a></td><td>not applicable</td><td>p4lang: openvpn with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt193.tst">p4lang-crypt193.tst</a></td><td>not applicable</td><td>p4lang: openvpn with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt194.tst">p4lang-crypt194.tst</a></td><td>not applicable</td><td>p4lang: openvpn with aes256ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt195.tst">p4lang-crypt195.tst</a></td><td>not applicable</td><td>p4lang: macsec with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt196.tst">p4lang-crypt196.tst</a></td><td>not applicable</td><td>p4lang: macsec with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt197.tst">p4lang-crypt197.tst</a></td><td>not applicable</td><td>p4lang: macsec with aes256ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt198.tst">p4lang-crypt198.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes128ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt199.tst">p4lang-crypt199.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes192ofb</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt200.tst">p4lang-crypt200.tst</a></td><td>not applicable</td><td>p4lang: ipsec with aes256ofb</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td>success</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td>success</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td>success</td><td>p4lang: mpls core</td></tr>
@@ -739,23 +797,5 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout451.tst">p4lang-rout451.tst</a></td><td>success</td><td>p4lang: l3vpn over ipip mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout452.tst">p4lang-rout452.tst</a></td><td>success</td><td>p4lang: sdwan over ipv4 with ipip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout453.tst">p4lang-rout453.tst</a></td><td>success</td><td>p4lang: sdwan over ipv6 with ipip</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout454.tst">p4lang-rout454.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout455.tst">p4lang-rout455.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv6</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout456.tst">p4lang-rout456.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv4 loopback</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout457.tst">p4lang-rout457.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over ipv6 loopback</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout458.tst">p4lang-rout458.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over vlan</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout459.tst">p4lang-rout459.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over bundle</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout460.tst">p4lang-rout460.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over bundle vlan</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout461.tst">p4lang-rout461.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over hairpin</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout462.tst">p4lang-rout462.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over hairpin vlan</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout463.tst">p4lang-rout463.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over bridge</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout464.tst">p4lang-rout464.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls over vlan bridge</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout465.tst">p4lang-rout465.tst</a></td><td>not applicable</td><td>p4lang: bridging over ipsec</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout466.tst">p4lang-rout466.tst</a></td><td>not applicable</td><td>p4lang: bridging over ipsec vlan</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout467.tst">p4lang-rout467.tst</a></td><td>not applicable</td><td>p4lang: mldp core over ipsec</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout468.tst">p4lang-rout468.tst</a></td><td>not applicable</td><td>p4lang: bier core over ipsec</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout469.tst">p4lang-rout469.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls pop</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout470.tst">p4lang-rout470.tst</a></td><td>not applicable</td><td>p4lang: ipsec mpls push</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout471.tst">p4lang-rout471.tst</a></td><td>not applicable</td><td>p4lang: l2vpn over ipsec mpls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout472.tst">p4lang-rout472.tst</a></td><td>not applicable</td><td>p4lang: l3vpn over ipsec mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout454.tst">p4lang-rout454.tst</a></td><td>success</td><td>p4lang: amt multicast routing</td></tr>
 </tbody></table></body></html>
