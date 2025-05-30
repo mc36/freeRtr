@@ -33,7 +33,7 @@ public class mover {
             doDir(s, t, a);
         }
     }
-    
+
     private static void doDir(String s, String t, String n) {
         String a = n.substring(0, 1).toLowerCase();
         if (!a.matches("[a-z]")) {
@@ -45,16 +45,18 @@ public class mover {
             new File(s + n).renameTo(new File(t + n));
             return;
         }
-        if (countDir(t + n) >= countDir(s + n)) {
-            playerUtil.put("skip " + s + n);
+        long ct = countDir(t + n);
+        long cs = countDir(s + n);
+        if (ct >= cs) {
+            playerUtil.put("skip " + s + n + " because " + ct + " > " + cs + " by " + (ct - cs));
             return;
         }
-        playerUtil.put("replace " + s + n);
+        playerUtil.put("replace " + s + n + " because " + ct + " < " + cs + " by " + (cs - ct));
         new File(t + n).renameTo(new File(s + n + ".old"));
         new File(s + n).renameTo(new File(t + n));
         new File(s + n + ".old").renameTo(new File(s + n));
     }
-    
+
     private static long countDir(String s) {
         List<File> fl = findSongs.doFindDir(s);
         long res = 0;
