@@ -91,6 +91,7 @@ import org.freertr.cry.cryEncrPCBCblowfish;
 import org.freertr.cry.cryEncrPCBCdes;
 import org.freertr.cry.cryEncrPCBCdes3;
 import org.freertr.cry.cryEncrPCBCrc2;
+import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryUtils;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packDnsRes;
@@ -579,6 +580,7 @@ public class userTest {
             cryKeyECDSA kecdsa = new cryKeyECDSA();
             cryKeyDH kdh = new cryKeyDH();
             cryKeyECDH kecdh = new cryKeyECDH();
+            cryKeyCurve25519 kec255 = new cryKeyCurve25519();
             cryKeyMLKEM kml = new cryKeyMLKEM();
             final String init = "t3st1ng";
             boolean ok = false;
@@ -642,6 +644,18 @@ public class userTest {
             if (showKeys) {
                 cmd.error("ecdh: " + kecdh.pemWriteStr(false));
             }
+            kec255.keyMakeSize(ecsiz);
+            tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                kec255.keyServInit();
+                kec255.keyClntInit();
+                kec255.keyServCalc();
+                kec255.keyClntCalc();
+            }
+            cmd.error("ec25519: " + kec255.keyVerify() + " " + kec255.keySize() + " in " + (bits.getTime() - tim) + "ms");
+            if (showKeys) {
+                cmd.error("ecdh: " + kec255.pemWriteStr(false));
+            }            
             kml.keyMakeSize(mlsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {

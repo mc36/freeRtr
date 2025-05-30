@@ -394,7 +394,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     }
 
     public int keySize() {
-        return KyberPolyVecCompressedBytes;
+        return 256 * KyberK;
     }
 
     public String keyDump() {
