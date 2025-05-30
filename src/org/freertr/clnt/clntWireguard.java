@@ -345,9 +345,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     private void workDoer() {
         int i = preshared.indexOf("=") + 1;
         locPriv = new cryKeyCurve25519();
-        locPriv.locPriv = encBase64.decodeBytes(preshared.substring(0, i));
-        locPriv.calcCommon();
-        locPub = locPriv.common;
+        locPriv.sshReader(encBase64.decodeBytes(preshared.substring(0, i)));
+        locPriv.keyServCalc();
+        locPub = locPriv.keyCommonTls();
         String a = preshared.substring(i, preshared.length());
         i = a.indexOf("=") + 1;
         remPub = encBase64.decodeBytes(a.substring(0, i));
@@ -608,9 +608,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 h.update(hi);
                 h.update(dhr);
                 hi = h.finish();
-                locPriv.remPub = dhr;
-                locPriv.calcCommon();
-                ks = calcKdf(ci, locPriv.common, 2);
+                locPriv.keyClntTls(dhr, 0);
+                locPriv.keyServCalc();
+                ks = calcKdf(ci, locPriv.keyCommonTls(), 2);
                 ci = ks[0];
                 tmp1 = new byte[48];
                 pck.getCopy(tmp1, 0, 0, tmp1.length);
@@ -628,9 +628,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 h.update(hi);
                 h.update(tmp1);
                 hi = h.finish();
-                locPriv.remPub = remPub;
-                locPriv.calcCommon();
-                ks = calcKdf(ci, locPriv.common, 2);
+                locPriv.keyClntTls(remPub, 0);
+                locPriv.keyServCalc();
+                ks = calcKdf(ci, locPriv.keyCommonTls(), 2);
                 ci = ks[0];
                 tmp1 = new byte[28];
                 pck.getCopy(tmp1, 0, 0, tmp1.length);
@@ -661,13 +661,13 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 h.update(hi);
                 h.update(dh2);
                 hr = h.finish();
-                dh1.remPub = dhr;
-                dh1.calcCommon();
-                ks = calcKdf(cr, dh1.common, 1);
+                dh1.keyClntTls(dhr, 0);
+                dh1.keyServCalc();
+                ks = calcKdf(cr, dh1.keyCommonTls(), 1);
                 cr = ks[0];
-                dh1.remPub = remPub;
-                dh1.calcCommon();
-                ks = calcKdf(cr, dh1.common, 1);
+                dh1.keyClntTls(remPub, 0);
+                dh1.keyServCalc();
+                ks = calcKdf(cr, dh1.keyCommonTls(), 1);
                 cr = ks[0];
                 ks = calcKdf(cr, quantum, 3);
                 cr = ks[0];
@@ -732,13 +732,13 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                 h.update(hi);
                 h.update(dhr);
                 hr = h.finish();
-                dh1.remPub = dhr;
-                dh1.calcCommon();
-                ks = calcKdf(cr, dh1.common, 1);
+                dh1.keyClntTls(dhr, 0);
+                dh1.keyServCalc();
+                ks = calcKdf(cr, dh1.keyCommonTls(), 1);
                 cr = ks[0];
-                locPriv.remPub = dhr;
-                locPriv.calcCommon();
-                ks = calcKdf(cr, locPriv.common, 1);
+                locPriv.keyClntTls(dhr, 0);
+                locPriv.keyServCalc();
+                ks = calcKdf(cr, locPriv.keyCommonTls(), 1);
                 cr = ks[0];
                 ks = calcKdf(cr, quantum, 3);
                 cr = ks[0];
@@ -814,9 +814,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         h.update(hi);
         h.update(dh2);
         hi = h.finish();
-        dh1.remPub = remPub;
-        dh1.calcCommon();
-        ks = calcKdf(ci, dh1.common, 2);
+        dh1.keyClntTls(remPub, 0);
+        dh1.keyServCalc();
+        ks = calcKdf(ci, dh1.keyCommonTls(), 2);
         ci = ks[0];
         byte[] tmp = encAead(ks[1], locPub, hi);
         pck.putCopy(tmp, 0, 0, tmp.length);
@@ -825,9 +825,9 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         h.update(hi);
         h.update(tmp);
         hi = h.finish();
-        locPriv.remPub = remPub;
-        locPriv.calcCommon();
-        ks = calcKdf(ci, locPriv.common, 2);
+        locPriv.keyClntTls(remPub, 0);
+        locPriv.keyServCalc();
+        ks = calcKdf(ci, locPriv.keyCommonTls(), 2);
         ci = ks[0];
         tmp = new byte[12];
         long tim = bits.getTime() + cfgAll.timeServerOffset;
@@ -853,9 +853,8 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private void initDH() {
         dh1 = new cryKeyCurve25519();
-        dh1.makePirvKey();
-        dh1.calcCommon();
-        dh2 = dh1.common;
+        dh1.keyServInit();
+        dh2 = dh1.keyServTls();
         idxRx = bits.randomD();
     }
 

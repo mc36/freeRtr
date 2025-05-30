@@ -17,30 +17,15 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     public cryKeyCurve25519() {
     }
 
-    /**
-     * local private key
-     */
-    public byte[] locPriv;
+    private byte[] locPriv;
 
-    /**
-     * local public key
-     */
-    public byte[] locPub;
+    private byte[] locPub;
 
-    /**
-     * remote public key
-     */
-    public byte[] remPub;
+    private byte[] remPub;
 
-    /**
-     * common secret
-     */
-    public byte[] common;
+    private byte[] common;
 
-    /**
-     * client side
-     */
-    public boolean client;
+    private boolean client;
 
     private final static int NUM_LIMBS_255BIT = 10;
 
@@ -78,10 +63,7 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
 
     private int[] z_3;
 
-    /**
-     * make key
-     */
-    public void makePirvKey() {
+    private void makePirvKey() {
         locPriv = new byte[32];
         for (int i = 0; i < locPriv.length; i++) {
             locPriv[i] = (byte) bits.randomB();
@@ -383,7 +365,6 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public boolean keyMakeName(String nam) {
-        locPriv = nam.getBytes();
         return false;
     }
 
