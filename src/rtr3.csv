@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v25.5.28-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.5.30-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -272,6 +272,64 @@ http://sources.freertr.org/cfg/p4lang-crypt139.tst;p4lang-crypt139.tst;ok;ok;not
 http://sources.freertr.org/cfg/p4lang-crypt140.tst;p4lang-crypt140.tst;ok;ok;not ok;ok;not ok;p4lang: sgt over ipip
 http://sources.freertr.org/cfg/p4lang-crypt141.tst;p4lang-crypt141.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec over ipsec
 http://sources.freertr.org/cfg/p4lang-crypt142.tst;p4lang-crypt142.tst;ok;ok;not ok;not ok;not ok;p4lang: sgt over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt143.tst;p4lang-crypt143.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with sha384
+http://sources.freertr.org/cfg/p4lang-crypt144.tst;p4lang-crypt144.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with sha3224
+http://sources.freertr.org/cfg/p4lang-crypt145.tst;p4lang-crypt145.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with sha3224
+http://sources.freertr.org/cfg/p4lang-crypt146.tst;p4lang-crypt146.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with sha3256
+http://sources.freertr.org/cfg/p4lang-crypt147.tst;p4lang-crypt147.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with sha3256
+http://sources.freertr.org/cfg/p4lang-crypt148.tst;p4lang-crypt148.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with sha3384
+http://sources.freertr.org/cfg/p4lang-crypt149.tst;p4lang-crypt149.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with sha3384
+http://sources.freertr.org/cfg/p4lang-crypt150.tst;p4lang-crypt150.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with sha3512
+http://sources.freertr.org/cfg/p4lang-crypt151.tst;p4lang-crypt151.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with sha3512
+http://sources.freertr.org/cfg/p4lang-crypt152.tst;p4lang-crypt152.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with blowfish
+http://sources.freertr.org/cfg/p4lang-crypt153.tst;p4lang-crypt153.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with blowfish
+http://sources.freertr.org/cfg/p4lang-crypt154.tst;p4lang-crypt154.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with blowfish
+http://sources.freertr.org/cfg/p4lang-crypt155.tst;p4lang-crypt155.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with rc2
+http://sources.freertr.org/cfg/p4lang-crypt156.tst;p4lang-crypt156.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with rc2
+http://sources.freertr.org/cfg/p4lang-crypt157.tst;p4lang-crypt157.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with rc2
+http://sources.freertr.org/cfg/p4lang-crypt158.tst;p4lang-crypt158.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-crypt159.tst;p4lang-crypt159.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-crypt160.tst;p4lang-crypt160.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-crypt161.tst;p4lang-crypt161.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-crypt162.tst;p4lang-crypt162.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over vlan
+http://sources.freertr.org/cfg/p4lang-crypt163.tst;p4lang-crypt163.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over bundle
+http://sources.freertr.org/cfg/p4lang-crypt164.tst;p4lang-crypt164.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over bundle vlan
+http://sources.freertr.org/cfg/p4lang-crypt165.tst;p4lang-crypt165.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-crypt166.tst;p4lang-crypt166.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-crypt167.tst;p4lang-crypt167.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over bridge
+http://sources.freertr.org/cfg/p4lang-crypt168.tst;p4lang-crypt168.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over vlan bridge
+http://sources.freertr.org/cfg/p4lang-crypt169.tst;p4lang-crypt169.tst;ok;ok;not ok;not ok;not ok;p4lang: bridging over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt170.tst;p4lang-crypt170.tst;ok;ok;not ok;not ok;not ok;p4lang: bridging over ipsec vlan
+http://sources.freertr.org/cfg/p4lang-crypt171.tst;p4lang-crypt171.tst;ok;ok;not ok;not ok;not ok;p4lang: mldp core over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt172.tst;p4lang-crypt172.tst;ok;ok;not ok;not ok;not ok;p4lang: bier core over ipsec
+http://sources.freertr.org/cfg/p4lang-crypt173.tst;p4lang-crypt173.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls pop
+http://sources.freertr.org/cfg/p4lang-crypt174.tst;p4lang-crypt174.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls push
+http://sources.freertr.org/cfg/p4lang-crypt175.tst;p4lang-crypt175.tst;ok;ok;not ok;not ok;not ok;p4lang: l2vpn over ipsec mpls
+http://sources.freertr.org/cfg/p4lang-crypt176.tst;p4lang-crypt176.tst;ok;ok;not ok;not ok;not ok;p4lang: l3vpn over ipsec mpls
+http://sources.freertr.org/cfg/p4lang-crypt177.tst;p4lang-crypt177.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with aes128ctr
+http://sources.freertr.org/cfg/p4lang-crypt178.tst;p4lang-crypt178.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with aes192ctr
+http://sources.freertr.org/cfg/p4lang-crypt179.tst;p4lang-crypt179.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with aes256ctr
+http://sources.freertr.org/cfg/p4lang-crypt180.tst;p4lang-crypt180.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with aes128ctr
+http://sources.freertr.org/cfg/p4lang-crypt181.tst;p4lang-crypt181.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with aes192ctr
+http://sources.freertr.org/cfg/p4lang-crypt182.tst;p4lang-crypt182.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with aes256ctr
+http://sources.freertr.org/cfg/p4lang-crypt183.tst;p4lang-crypt183.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes128ctr
+http://sources.freertr.org/cfg/p4lang-crypt184.tst;p4lang-crypt184.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes192ctr
+http://sources.freertr.org/cfg/p4lang-crypt185.tst;p4lang-crypt185.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes256ctr
+http://sources.freertr.org/cfg/p4lang-crypt186.tst;p4lang-crypt186.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes128cfb
+http://sources.freertr.org/cfg/p4lang-crypt187.tst;p4lang-crypt187.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes192cfb
+http://sources.freertr.org/cfg/p4lang-crypt188.tst;p4lang-crypt188.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes256cfb
+http://sources.freertr.org/cfg/p4lang-crypt189.tst;p4lang-crypt189.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes128ecb
+http://sources.freertr.org/cfg/p4lang-crypt190.tst;p4lang-crypt190.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes192ecb
+http://sources.freertr.org/cfg/p4lang-crypt191.tst;p4lang-crypt191.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes256ecb
+http://sources.freertr.org/cfg/p4lang-crypt192.tst;p4lang-crypt192.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt193.tst;p4lang-crypt193.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt194.tst;p4lang-crypt194.tst;ok;ok;not ok;not ok;not ok;p4lang: openvpn with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt195.tst;p4lang-crypt195.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt196.tst;p4lang-crypt196.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt197.tst;p4lang-crypt197.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt198.tst;p4lang-crypt198.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes128ofb
+http://sources.freertr.org/cfg/p4lang-crypt199.tst;p4lang-crypt199.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes192ofb
+http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec with aes256ofb
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;ok;ok;ok;ok;ok;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;ok;ok;ok;ok;ok;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;ok;ok;ok;ok;ok;p4lang: mpls core
@@ -725,22 +783,4 @@ http://sources.freertr.org/cfg/p4lang-rout450.tst;p4lang-rout450.tst;ok;ok;not o
 http://sources.freertr.org/cfg/p4lang-rout451.tst;p4lang-rout451.tst;ok;ok;not ok;ok;ok;p4lang: l3vpn over ipip mpls
 http://sources.freertr.org/cfg/p4lang-rout452.tst;p4lang-rout452.tst;ok;ok;not ok;ok;ok;p4lang: sdwan over ipv4 with ipip
 http://sources.freertr.org/cfg/p4lang-rout453.tst;p4lang-rout453.tst;ok;ok;not ok;ok;ok;p4lang: sdwan over ipv6 with ipip
-http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv4
-http://sources.freertr.org/cfg/p4lang-rout455.tst;p4lang-rout455.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv6
-http://sources.freertr.org/cfg/p4lang-rout456.tst;p4lang-rout456.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv4 loopback
-http://sources.freertr.org/cfg/p4lang-rout457.tst;p4lang-rout457.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout458.tst;p4lang-rout458.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over vlan
-http://sources.freertr.org/cfg/p4lang-rout459.tst;p4lang-rout459.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over bundle
-http://sources.freertr.org/cfg/p4lang-rout460.tst;p4lang-rout460.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over bundle vlan
-http://sources.freertr.org/cfg/p4lang-rout461.tst;p4lang-rout461.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over hairpin
-http://sources.freertr.org/cfg/p4lang-rout462.tst;p4lang-rout462.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over hairpin vlan
-http://sources.freertr.org/cfg/p4lang-rout463.tst;p4lang-rout463.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over bridge
-http://sources.freertr.org/cfg/p4lang-rout464.tst;p4lang-rout464.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls over vlan bridge
-http://sources.freertr.org/cfg/p4lang-rout465.tst;p4lang-rout465.tst;ok;ok;not ok;not ok;not ok;p4lang: bridging over ipsec
-http://sources.freertr.org/cfg/p4lang-rout466.tst;p4lang-rout466.tst;ok;ok;not ok;not ok;not ok;p4lang: bridging over ipsec vlan
-http://sources.freertr.org/cfg/p4lang-rout467.tst;p4lang-rout467.tst;ok;ok;not ok;not ok;not ok;p4lang: mldp core over ipsec
-http://sources.freertr.org/cfg/p4lang-rout468.tst;p4lang-rout468.tst;ok;ok;not ok;not ok;not ok;p4lang: bier core over ipsec
-http://sources.freertr.org/cfg/p4lang-rout469.tst;p4lang-rout469.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls pop
-http://sources.freertr.org/cfg/p4lang-rout470.tst;p4lang-rout470.tst;ok;ok;not ok;not ok;not ok;p4lang: ipsec mpls push
-http://sources.freertr.org/cfg/p4lang-rout471.tst;p4lang-rout471.tst;ok;ok;not ok;not ok;not ok;p4lang: l2vpn over ipsec mpls
-http://sources.freertr.org/cfg/p4lang-rout472.tst;p4lang-rout472.tst;ok;ok;not ok;not ok;not ok;p4lang: l3vpn over ipsec mpls
+http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;ok;ok;not ok;ok;not ok;p4lang: amt multicast routing
