@@ -16937,3 +16937,7 @@ no qc pass: redistribution with bgp car
 no qc pass: redistribution with bgp ctp
 qc pass: redistribution with ctp bgp
 qc pass: redistribution with car bgp
+---------------------------------- 2025-05-31 06:41:32 25.5.31
+qc pass: ike1 with group31
+qc pass: ike2 with group31
+qc pass: macsec with group31

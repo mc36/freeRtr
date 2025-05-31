@@ -1,4 +1,4 @@
-description macsec with rc2
+description macsec with group37
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,8 +8,8 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 02
- cipher rc2
+ group 37
+ cipher des
  hash md5
  key tester
  exit
@@ -29,8 +29,8 @@ vrf def v1
  exit
 crypto ipsec ips
  role init
- group 02
- cipher rc2
+ group 37
+ cipher des
  hash md5
  key tester
  exit

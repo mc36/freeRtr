@@ -1,4 +1,4 @@
-description ike2 with aes128ctr
+description ike2 with sha384
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -12,9 +12,9 @@ int eth1
  exit
 crypto ipsec ips
  group 02
- cipher aes128ctr
- hash md5
- prf md5
+ cipher des
+ hash sha384
+ prf sha384
  seconds 3600
  bytes 1024000
  key tester
@@ -41,9 +41,9 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher aes128ctr
- hash md5
- prf md5
+ cipher des
+ hash sha384
+ prf sha384
  seconds 3600
  bytes 1024000
  key tester

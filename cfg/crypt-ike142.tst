@@ -1,4 +1,4 @@
-description ike1 with aes256ctr
+description ike1 with aes192ctr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -12,7 +12,7 @@ int eth1
  exit
 crypto ipsec ips
  group 02
- cipher aes256ctr
+ cipher aes192ctr
  hash md5
  seconds 3600
  bytes 1024000
@@ -40,7 +40,7 @@ vrf def v1
  exit
 crypto ipsec ips
  group 02
- cipher aes256ctr
+ cipher aes192ctr
  hash md5
  seconds 3600
  bytes 1024000
