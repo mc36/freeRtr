@@ -81,13 +81,25 @@ public class cryKeyMLKEM extends cryKeyGeneric {
      */
     public int KyberIndCpaPublicKeyBytes;
 
-    private byte[] common;
+    /**
+     * common value
+     */
+    protected byte[] common;
 
-    private byte[] clntPriv;
+    /**
+     * client private value
+     */
+    protected byte[] clntPriv;
 
-    private byte[] clntPub;
+    /**
+     * client public value
+     */
+    protected byte[] clntPub;
 
-    private byte[] servPub;
+    /**
+     * server public value
+     */
+    protected byte[] servPub;
 
     private byte[][] kemEncryptInternal(byte[] publicKeyInput, byte[] randBytes) {
         byte[] buf = new byte[2 * KyberSymBytes];

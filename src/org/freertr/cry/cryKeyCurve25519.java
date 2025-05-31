@@ -17,15 +17,30 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     public cryKeyCurve25519() {
     }
 
-    private byte[] locPriv;
+    /**
+     * common value
+     */
+    protected byte[] common;
 
-    private byte[] locPub;
+    /**
+     * client private value
+     */
+    protected byte[] clntPriv;
 
-    private byte[] remPub;
+    /**
+     * client public value
+     */
+    protected byte[] clntPub;
 
-    private byte[] common;
+    /**
+     * server private value
+     */
+    protected byte[] servPriv;
 
-    private boolean client;
+    /**
+     * server public value
+     */
+    protected byte[] servPub;
 
     private final static int NUM_LIMBS_255BIT = 10;
 
@@ -63,20 +78,18 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
 
     private int[] z_3;
 
-    private void makePirvKey() {
-        locPriv = new byte[32];
-        for (int i = 0; i < locPriv.length; i++) {
-            locPriv[i] = (byte) bits.randomB();
+    private byte[] makePirvKey() {
+        byte[] priv = new byte[32];
+        for (int i = 0; i < priv.length; i++) {
+            priv[i] = (byte) bits.randomB();
         }
-        locPriv[0] &= (byte) 248;
-        locPriv[31] &= 127;
-        locPriv[31] |= 64;
+        priv[0] &= (byte) 248;
+        priv[31] &= 127;
+        priv[31] |= 64;
+        return priv;
     }
 
-    /**
-     * calculate keys
-     */
-    public void calcCommon() {
+    private byte[] calcCommon(byte[] priv, byte[] pub) {
         x_1 = new int[NUM_LIMBS_255BIT];
         x_2 = new int[NUM_LIMBS_255BIT];
         x_3 = new int[NUM_LIMBS_255BIT];
@@ -94,11 +107,11 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
         t1 = new long[NUM_LIMBS_510BIT];
         t2 = new int[NUM_LIMBS_510BIT];
         Arrays.fill(x_1, 0);
-        if (remPub != null) {
+        if (pub != null) {
             for (int i = 0; i < 32; i++) {
                 int bit = (i * 8) % 26;
                 int word = (i * 8) / 26;
-                int value = remPub[i] & 0xFF;
+                int value = pub[i] & 0xFF;
                 if (bit <= (26 - 8)) {
                     x_1[word] |= value << bit;
                 } else {
@@ -118,19 +131,63 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
         System.arraycopy(x_1, 0, x_3, 0, x_1.length);
         Arrays.fill(z_3, 0);
         z_3[0] = 1;
-        evalCurve(locPriv);
+        int sposn = 31;
+        int sbit = 6;
+        int svalue = priv[sposn] | 0x40;
+        int swap = 0;
+        while (true) {
+            int select = (svalue >> sbit) & 0x01;
+            swap ^= select;
+            cswap(swap, x_2, x_3);
+            cswap(swap, z_2, z_3);
+            swap = select;
+            add(A, x_2, z_2);
+            square(AA, A);
+            sub(B, x_2, z_2);
+            square(BB, B);
+            sub(E, AA, BB);
+            add(C, x_3, z_3);
+            sub(D, x_3, z_3);
+            mul(DA, D, A);
+            mul(CB, C, B);
+            add(x_3, DA, CB);
+            square(x_3, x_3);
+            sub(z_3, DA, CB);
+            square(z_3, z_3);
+            mul(z_3, z_3, x_1);
+            mul(x_2, AA, BB);
+            mulA24(z_2, E);
+            add(z_2, z_2, AA);
+            mul(z_2, z_2, E);
+            if (sbit > 0) {
+                sbit--;
+            } else if (sposn == 0) {
+                break;
+            } else if (sposn == 1) {
+                sposn--;
+                svalue = priv[sposn] & 0xF8;
+                sbit = 7;
+            } else {
+                sposn--;
+                svalue = priv[sposn];
+                sbit = 7;
+            }
+        }
+        cswap(swap, x_2, x_3);
+        cswap(swap, z_2, z_3);
         recip(z_3, z_2);
         mul(x_2, x_2, z_3);
-        common = new byte[32];
+        byte[] res = new byte[32];
         for (int i = 0; i < 32; i++) {
             int bit = (i * 8) % 26;
             int word = (i * 8) / 26;
             if (bit <= (26 - 8)) {
-                common[i] = (byte) (x_2[word] >> bit);
+                res[i] = (byte) (x_2[word] >> bit);
             } else {
-                common[i] = (byte) ((x_2[word] >> bit) | (x_2[word + 1] << (26 - bit)));
+                res[i] = (byte) ((x_2[word] >> bit) | (x_2[word + 1] << (26 - bit)));
             }
         }
+        return res;
     }
 
     private void sub(int[] result, int[] x, int[] y) {
@@ -165,53 +222,6 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
             x[i] ^= dummy;
             y[i] ^= dummy;
         }
-    }
-
-    private void evalCurve(byte[] s) {
-        int sposn = 31;
-        int sbit = 6;
-        int svalue = s[sposn] | 0x40;
-        int swap = 0;
-        while (true) {
-            int select = (svalue >> sbit) & 0x01;
-            swap ^= select;
-            cswap(swap, x_2, x_3);
-            cswap(swap, z_2, z_3);
-            swap = select;
-            add(A, x_2, z_2);
-            square(AA, A);
-            sub(B, x_2, z_2);
-            square(BB, B);
-            sub(E, AA, BB);
-            add(C, x_3, z_3);
-            sub(D, x_3, z_3);
-            mul(DA, D, A);
-            mul(CB, C, B);
-            add(x_3, DA, CB);
-            square(x_3, x_3);
-            sub(z_3, DA, CB);
-            square(z_3, z_3);
-            mul(z_3, z_3, x_1);
-            mul(x_2, AA, BB);
-            mulA24(z_2, E);
-            add(z_2, z_2, AA);
-            mul(z_2, z_2, E);
-            if (sbit > 0) {
-                sbit--;
-            } else if (sposn == 0) {
-                break;
-            } else if (sposn == 1) {
-                sposn--;
-                svalue = s[sposn] & 0xF8;
-                sbit = 7;
-            } else {
-                sposn--;
-                svalue = s[sposn];
-                sbit = 7;
-            }
-        }
-        cswap(swap, x_2, x_3);
-        cswap(swap, z_2, z_3);
     }
 
     private void mul(int[] result, int[] x, int[] y) {
@@ -389,31 +399,25 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public String keyDump() {
-        return "cln=" + bits.byteDump(remPub, 0, -1) + " srv=" + bits.byteDump(locPub, 0, -1) + " res=" + bits.byteDump(common, 0, -1);
+        return "cln=" + bits.byteDump(clntPub, 0, -1) + " srv=" + bits.byteDump(servPub, 0, -1) + " res=" + bits.byteDump(common, 0, -1);
     }
 
     public void keyClntInit() {
-        keyServInit();
-        client = true;
+        clntPriv = makePirvKey();
+        clntPub = calcCommon(clntPriv, null);
     }
 
     public void keyServInit() {
-        client = false;
-        makePirvKey();
-        byte[] buf = remPub;
-        remPub = null;
-        calcCommon();
-        locPub = common;
-        common = null;
-        remPub = buf;
+        servPriv = makePirvKey();
+        servPub = calcCommon(servPriv, null);
     }
 
     public void keyClntCalc() {
-        calcCommon();
+        common = calcCommon(clntPriv, servPub);
     }
 
     public void keyServCalc() {
-        calcCommon();
+        common = calcCommon(servPriv, clntPub);
     }
 
     public byte[] keyCommonTls() {
@@ -448,29 +452,23 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public byte[] keyClntSsh() {
-        if (client) {
-            return locPub;
-        } else {
-            return remPub;
-        }
+        return clntPub;
     }
 
     public byte[] keyServSsh() {
-        if (client) {
-            return remPub;
-        } else {
-            return locPub;
-        }
+        return servPub;
     }
 
     public boolean keyClntSsh(byte[] buf, int ofs) {
-        remPub = new byte[32];
-        bits.byteCopy(buf, ofs, remPub, 0, remPub.length);
+        clntPub = new byte[32];
+        bits.byteCopy(buf, ofs, clntPub, 0, clntPub.length);
         return false;
     }
 
     public boolean keyServSsh(byte[] buf, int ofs) {
-        return keyClntSsh(buf, ofs);
+        servPub = new byte[32];
+        bits.byteCopy(buf, ofs, servPub, 0, servPub.length);
+        return false;
     }
 
     public byte[] keyClntIke() {
@@ -506,7 +504,7 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public boolean sshReader(byte[] key) {
-        locPriv = key;
+        servPriv = key;
         return false;
     }
 
