@@ -403,7 +403,7 @@ public class bits {
         }
         String s = "";
         if (len < 0) {
-            len = buf.length;
+            len = buf.length - ofs;
         }
         for (int i = 0; i < len; i++) {
             s = s + " " + toHexB(buf[ofs + i]);

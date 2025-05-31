@@ -381,6 +381,9 @@ public class secTls implements Runnable {
             if (!ph.chgCipherParse()) {
                 p.packRecv();
             }
+            if (ph.calcKeysEc(true)) {
+                return null;
+            }
             if (ph.calcKeysHs(true)) {
                 return null;
             }
@@ -458,7 +461,7 @@ public class secTls implements Runnable {
         ph.clntKexCreate();
         ph.headerCreate();
         p.packSend();
-        if (ph.calcKeys(true)) {
+        if (ph.calcKeysDh(true)) {
             return null;
         }
         ph.chgCipherCreate();
@@ -543,6 +546,9 @@ public class secTls implements Runnable {
             if (ph.servHelloFillEc()) {
                 return null;
             }
+            if (ph.calcKeysEc(false)) {
+                return null;
+            }
             if (ph.servHelloFill()) {
                 return null;
             }
@@ -619,7 +625,7 @@ public class secTls implements Runnable {
         if (ph.clntKexParse()) {
             return null;
         }
-        if (ph.calcKeys(false)) {
+        if (ph.calcKeysDh(false)) {
             return null;
         }
         p.packRecv();

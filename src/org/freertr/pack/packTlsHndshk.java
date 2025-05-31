@@ -24,6 +24,7 @@ import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyPQhybrid;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -650,6 +651,9 @@ public class packTlsHndshk {
             return;
         }
         switch (o) {
+            case cryKeyPQhybrid.tlsVal:
+                ecDiffHell = new cryKeyPQhybrid();
+                break;
             case cryKeyCurve25519.tlsVal:
                 ecDiffHell = new cryKeyCurve25519();
                 break;
@@ -750,7 +754,12 @@ public class packTlsHndshk {
                         if (ecDiffHell.keyMakeVal() < 0) {
                             break;
                         }
-                        ecDiffHell.keyServTls(tlv.valDat, 4);
+                        if (tlv.valSiz <= 4) {
+                            break;
+                        }
+                        buf = new byte[tlv.valSiz - 4];
+                        bits.byteCopy(tlv.valDat, 4, buf, 0, buf.length);
+                        ecDiffHell.keyServTls(buf, 0);
                         break;
                     }
                     if (ecDiffHell.keyMakeVal() < 0) {
@@ -760,16 +769,19 @@ public class packTlsHndshk {
                         if ((p + 4) > tlv.valSiz) {
                             break;
                         }
-                        int s = bits.msbGetW(tlv.valDat, p + 2) + 4;
+                        int q = bits.msbGetW(tlv.valDat, p + 0);
+                        int s = bits.msbGetW(tlv.valDat, p + 2);
                         if ((p + s) > tlv.valSiz) {
                             break;
                         }
-                        int q = bits.msbGetW(tlv.valDat, p);
+                        p += 4;
                         if (q != ecDiffHell.keyMakeVal()) {
                             p += s;
                             continue;
                         }
-                        ecDiffHell.keyClntTls(tlv.valDat, p + 4);
+                        buf = new byte[s];
+                        bits.byteCopy(tlv.valDat, p, buf, 0, buf.length);
+                        ecDiffHell.keyClntTls(buf, 0);
                         break;
                     }
                     break;
@@ -846,6 +858,7 @@ public class packTlsHndshk {
         }
         if (client) {
             List<Integer> lst = new ArrayList<Integer>();
+            lst.add(cryKeyPQhybrid.tlsVal);
             lst.add(cryKeyCurve25519.tlsVal);
             for (int i = 0; i < 0x100; i++) {
                 if (cryKeyECcurve.getByTls(i) == null) {
@@ -2031,7 +2044,7 @@ public class packTlsHndshk {
      * @param client true=client, false=server
      * @return false on success, true on error
      */
-    public boolean calcKeys(boolean client) {
+    public boolean calcKeysDh(boolean client) {
         switch (cipherDecoded & 0xf000) {
             case 0x1000:
                 break;
@@ -2116,12 +2129,12 @@ public class packTlsHndshk {
     }
 
     /**
-     * initialize handshake keys
+     * initialize keys
      *
      * @param client true=client, false=server
      * @return false on success, true on error
      */
-    public boolean calcKeysHs(boolean client) {
+    public boolean calcKeysEc(boolean client) {
         if (client) {
             if (ecDiffHell.keyServTls() == null) {
                 return true;
@@ -2136,6 +2149,16 @@ public class packTlsHndshk {
         if (debugger.secTlsTraf) {
             logger.debug("ec " + ecDiffHell.keyDump());
         }
+        return false;
+    }
+
+    /**
+     * initialize handshake keys
+     *
+     * @param client true=client, false=server
+     * @return false on success, true on error
+     */
+    public boolean calcKeysHs(boolean client) {
         cryHashGeneric h = getAlgoHasher();
         preMaster = genHashV13t(h, new byte[h.getHashSize()], new byte[h.getHashSize()]);
         preMaster = genHashV13d(h, preMaster, "derived", "");
