@@ -7,13 +7,15 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public abstract class cryHashShake extends cryHashGeneric {
+public class cryHashShake extends cryHashGeneric {
 
     /**
      * create instance
      */
     protected cryHashShake() {
     }
+
+    protected int bitLength;
 
     private static long[] KeccakRoundConstants = new long[]{
         0x0000000000000001L, 0x0000000000008082L, 0x800000000000808aL, 0x8000000080008000L,
@@ -37,7 +39,7 @@ public abstract class cryHashShake extends cryHashGeneric {
     private boolean squeezing;
 
     public String getName() {
-        return "shake";
+        return "shake" + bitLength;
     }
 
     public byte[] getPkcs() {
@@ -65,12 +67,7 @@ public abstract class cryHashShake extends cryHashGeneric {
         absorb(buf, ofs, siz);
     }
 
-    /**
-     * reset instance
-     *
-     * @param bitLength digest length
-     */
-    protected void init(int bitLength) {
+    public void init() {
         switch (bitLength) {
             case 128:
             case 224:

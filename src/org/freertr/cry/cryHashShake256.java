@@ -11,10 +11,7 @@ public class cryHashShake256 extends cryHashShake {
      * create instance
      */
     public cryHashShake256() {
-    }
-
-    public void init() {
-        init(256);
+        bitLength = 256;
     }
 
 }

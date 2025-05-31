@@ -314,7 +314,21 @@ public class cryKeyMLKEM extends cryKeyGeneric {
                     bits.byteCopy(res, 0, buf, outOfs, res.length);
                     outOfs += res.length;
                 }
-                aMatrix[i].vec[j].rejectionSampling(0, cryKeyMLKEM.KyberN, buf, outLen);
+                int ctr = aMatrix[i].vec[j].rejectionSampling(0, cryKeyMLKEM.KyberN, buf, outLen);
+                while (ctr < KyberN) {
+                    int off = outLen % 3;
+                    for (int k = 0; k < off; k++) {
+                        buf[k] = buf[outLen - off + k];
+                    }
+                    outLen = xofBlockBytes * 2;
+                    for (int outOfs = off; outOfs < outLen;) {
+                        byte[] res = h.finish();
+                        bits.byteCopy(res, 0, buf, outOfs, res.length);
+                        outOfs += res.length;
+                    }
+                    outLen = off + xofBlockBytes;
+                    ctr += aMatrix[i].vec[j].rejectionSampling(ctr, cryKeyMLKEM.KyberN - ctr, buf, outLen);
+                }
             }
         }
     }

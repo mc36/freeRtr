@@ -32,6 +32,7 @@ import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.cry.cryKeyMLKEM;
+import org.freertr.cry.cryKeyPQhybrid;
 import org.freertr.pack.packHolder;
 import org.freertr.user.userHelping;
 import org.freertr.util.bits;
@@ -1118,6 +1119,8 @@ public class secTransform {
                 ml = new cryKeyMLKEM();
                 ml.keyMakeSize(1024);
                 return ml;
+            case 99:
+                return new cryKeyPQhybrid();
             default:
                 break;
         }
@@ -1174,6 +1177,7 @@ public class secTransform {
         l.add(null, "2 .    35                512 bit mlkem");
         l.add(null, "2 .    36                768 bit mlkem");
         l.add(null, "2 .    37                1024 bit mlkem");
+        l.add(null, "2 .    99                x25519mlkem738");
         l.add(null, "1 2  seconds             sa lifetime in time");
         l.add(null, "2 .    <num>             number of seconds");
         l.add(null, "1 2  random              randomize time");

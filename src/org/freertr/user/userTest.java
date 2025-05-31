@@ -91,6 +91,8 @@ import org.freertr.cry.cryEncrPCBCblowfish;
 import org.freertr.cry.cryEncrPCBCdes;
 import org.freertr.cry.cryEncrPCBCdes3;
 import org.freertr.cry.cryEncrPCBCrc2;
+import org.freertr.cry.cryHashShake128;
+import org.freertr.cry.cryHashShake256;
 import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryUtils;
 import org.freertr.pack.packDnsRec;
@@ -754,6 +756,8 @@ public class userTest {
             doTestHash(new cryHashSha2256());
             doTestHash(new cryHashSha2384());
             doTestHash(new cryHashSha2512());
+            doTestHash(new cryHashShake128());
+            doTestHash(new cryHashShake256());
             doTestHash(new cryHashSha3224());
             doTestHash(new cryHashSha3256());
             doTestHash(new cryHashSha3384());
@@ -767,6 +771,8 @@ public class userTest {
             doTestHash(new cryHashHmac(new cryHashSha2256(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha2384(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha2512(), new byte[16]));
+            doTestHash(new cryHashHmac(new cryHashShake128(), new byte[16]));
+            doTestHash(new cryHashHmac(new cryHashShake256(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha3224(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha3256(), new byte[16]));
             doTestHash(new cryHashHmac(new cryHashSha3384(), new byte[16]));

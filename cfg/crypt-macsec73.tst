@@ -1,4 +1,4 @@
-description macsec with aes192ctr
+description macsec with aes128ctr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -9,7 +9,7 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher aes192ctr
+ cipher aes128ctr
  hash md5
  key tester
  exit
@@ -30,7 +30,7 @@ vrf def v1
 crypto ipsec ips
  role init
  group 02
- cipher aes192ctr
+ cipher aes128ctr
  hash md5
  key tester
  exit
