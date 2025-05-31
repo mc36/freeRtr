@@ -19,9 +19,11 @@ import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryHashSha2384;
 import org.freertr.cry.cryHashSha2512;
 import org.freertr.cry.cryHashSslMac;
+import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
+import org.freertr.cry.cryKeyGeneric;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -128,7 +130,7 @@ public class packTlsHndshk {
     /**
      * ec diffie hellman
      */
-    public cryKeyECDH ecDiffHell;
+    public cryKeyGeneric ecDiffHell;
 
     /**
      * signature hash
@@ -619,42 +621,6 @@ public class packTlsHndshk {
         return l;
     }
 
-    private List<Integer> makeECcurveList() {
-        List<Integer> lst = new ArrayList<Integer>();
-        for (int i = 0; i < 0x100; i++) {
-            if (cryKeyECcurve.getByTls(i) == null) {
-                continue;
-            }
-            lst.add(i);
-        }
-        return lst;
-    }
-
-    private List<Integer> makeSignatureList() {
-        List<Integer> lst = new ArrayList<Integer>();
-        for (int i = 0; i < 8; i++) {
-            int o = 0x800 | i; // pss
-            if (getSignerHash(o) == null) {
-                continue;
-            }
-            lst.add(o);
-        }
-        for (int i = 0; i < 8; i++) {
-            int o = (i << 8) | 0x1; // pkcs1
-            if (getSignerHash(o) == null) {
-                continue;
-            }
-            lst.add(o);
-        }
-        return lst;
-    }
-
-    private byte[] makeCompressList() {
-        byte[] buf = new byte[1];
-        buf[0] = 0;
-        return buf;
-    }
-
     private byte[] makeRandomCookie() {
         byte[] buf = new byte[32];
         for (int i = 0; i < buf.length; i++) {
@@ -677,6 +643,16 @@ public class packTlsHndshk {
             bits.msbPutW(trg, i * 2, src.get(i));
         }
         return trg;
+    }
+
+    private void selectECgroup(int o) {
+        ecDiffHell.keyMakeTls(o);
+        if (ecDiffHell.keyMakeVal() >= 0) {
+            return;
+        }
+        if (o == cryKeyCurve25519.tlsVal) {
+            ecDiffHell = new cryKeyCurve25519();
+        }
     }
 
     private void parseExtensionList(byte[] buf, boolean client) {
@@ -738,7 +714,7 @@ public class packTlsHndshk {
                     }
                     for (i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
-                        ecDiffHell.keyMakeTls(o);
+                        selectECgroup(o);
                         if (ecDiffHell.keyMakeVal() >= 0) {
                             break;
                         }
@@ -762,7 +738,8 @@ public class packTlsHndshk {
                         break;
                     }
                     if (client) {
-                        ecDiffHell.keyMakeTls(bits.msbGetW(tlv.valDat, 0));
+                        int o = bits.msbGetW(tlv.valDat, 0);
+                        selectECgroup(o);
                         if (ecDiffHell.keyMakeVal() < 0) {
                             break;
                         }
@@ -780,12 +757,8 @@ public class packTlsHndshk {
                         if ((p + s) > tlv.valSiz) {
                             break;
                         }
-                        cryKeyECcurve tmp = cryKeyECcurve.getByTls(bits.msbGetW(tlv.valDat, p));
-                        if (tmp == null) {
-                            p += s;
-                            continue;
-                        }
-                        if (tmp.tls != ecDiffHell.keyMakeVal()) {
+                        int q = bits.msbGetW(tlv.valDat, p);
+                        if (q != ecDiffHell.keyMakeVal()) {
                             p += s;
                             continue;
                         }
@@ -798,7 +771,7 @@ public class packTlsHndshk {
     }
 
     private encTlv getTlv() {
-        return new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 1024, true);
+        return new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 2048, true);
     }
 
     private byte[] extenList2bytes(List<Integer> lst) {
@@ -843,14 +816,37 @@ public class packTlsHndshk {
         }
         tlv.putBytes(pck, 43, buf); // supported versions
         if (client) {
-            buf = extenList2bytes(makeSignatureList());
+            List<Integer> lst = new ArrayList<Integer>();
+            for (int i = 0; i < 8; i++) {
+                int o = 0x800 | i; // pss
+                if (getSignerHash(o) == null) {
+                    continue;
+                }
+                lst.add(o);
+            }
+            for (int i = 0; i < 8; i++) {
+                int o = (i << 8) | 0x1; // pkcs1
+                if (getSignerHash(o) == null) {
+                    continue;
+                }
+                lst.add(o);
+            }
+            buf = extenList2bytes(lst);
             tlv.putBytes(pck, 13, buf); // signature algorithms
         } else {
             buf = new byte[2];
             bits.msbPutW(buf, 0, signHsh);
         }
         if (client) {
-            buf = extenList2bytes(makeECcurveList());
+            List<Integer> lst = new ArrayList<Integer>();
+            lst.add(cryKeyCurve25519.tlsVal);
+            for (int i = 0; i < 0x100; i++) {
+                if (cryKeyECcurve.getByTls(i) == null) {
+                    continue;
+                }
+                lst.add(i);
+            }
+            buf = extenList2bytes(lst);
             tlv.putBytes(pck, 10, buf); // supported groups
         }
         byte[] res;
@@ -901,7 +897,7 @@ public class packTlsHndshk {
         maxVer = lower.verMax;
         clntRand = makeRandomCookie();
         cipherList = makeCipherList();
-        cmprssList = makeCompressList();
+        cmprssList = new byte[1];
         extnsnList = makeExtensionList(true);
         sendSess = null;
     }

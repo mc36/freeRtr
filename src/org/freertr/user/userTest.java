@@ -655,7 +655,7 @@ public class userTest {
             cmd.error("ec25519: " + kec255.keyVerify() + " " + kec255.keySize() + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("ecdh: " + kec255.pemWriteStr(false));
-            }            
+            }
             kml.keyMakeSize(mlsiz);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {

@@ -18,6 +18,11 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     /**
+     * tls value
+     */
+    public static final int tlsVal = 29;
+
+    /**
      * common value
      */
     protected byte[] common;
@@ -379,7 +384,7 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public boolean keyMakeTls(int id) {
-        return id != 29;
+        return id != tlsVal;
     }
 
     public boolean keyMakeIke(int id) {
@@ -387,7 +392,7 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public int keyMakeVal() {
-        return 29;
+        return tlsVal;
     }
 
     public boolean keyVerify() {
