@@ -780,7 +780,7 @@ class cryMLpolyOne {
     }
 
     public void symmetricPrf(byte[] out, byte[] seed, byte nonce) {
-        cryHashSha3256 h = new cryHashSha3256();
+        cryHashShake256 h = new cryHashShake256();
         byte[] extSeed = new byte[seed.length + 1];
         bits.byteCopy(seed, 0, extSeed, 0, seed.length);
         extSeed[seed.length] = nonce;
