@@ -786,8 +786,11 @@ class cryMLpolyOne {
         extSeed[seed.length] = nonce;
         h.init();
         h.update(extSeed, 0, extSeed.length);
-        byte[] buf = h.finish();
-        bits.byteCopy(buf, 0, out, 0, buf.length);
+        for (int outOfs = 0; outOfs < out.length;) {
+            byte[] res = h.finish();
+            bits.byteCopy(res, 0, out, outOfs, res.length);
+            outOfs += res.length;
+        }
     }
 
     public void getEta1Noise(byte[] seed, byte nonce) {
