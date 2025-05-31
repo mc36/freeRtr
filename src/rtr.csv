@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.5.31-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-05-31 20:05:16, took 00:16:13, with 50 workers, on 3875 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2025-05-31 20:57:55, took 00:16:59, with 50 workers, on 3876 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -821,16 +821,17 @@ http://sources.freertr.org/cfg/crypt-macsec67.tst;crypt-macsec67.tst;success;mac
 http://sources.freertr.org/cfg/crypt-macsec68.tst;crypt-macsec68.tst;success;macsec with group35
 http://sources.freertr.org/cfg/crypt-macsec69.tst;crypt-macsec69.tst;success;macsec with group36
 http://sources.freertr.org/cfg/crypt-macsec70.tst;crypt-macsec70.tst;success;macsec with group37
-http://sources.freertr.org/cfg/crypt-macsec71.tst;crypt-macsec71.tst;success;macsec with rc2
-http://sources.freertr.org/cfg/crypt-macsec72.tst;crypt-macsec72.tst;success;macsec with aes128ctr
-http://sources.freertr.org/cfg/crypt-macsec73.tst;crypt-macsec73.tst;success;macsec with aes192ctr
-http://sources.freertr.org/cfg/crypt-macsec74.tst;crypt-macsec74.tst;success;macsec with aes256ctr
+http://sources.freertr.org/cfg/crypt-macsec71.tst;crypt-macsec71.tst;success;macsec with group99
+http://sources.freertr.org/cfg/crypt-macsec72.tst;crypt-macsec72.tst;success;macsec with rc2
+http://sources.freertr.org/cfg/crypt-macsec73.tst;crypt-macsec73.tst;success;macsec with aes128ctr
+http://sources.freertr.org/cfg/crypt-macsec74.tst;crypt-macsec74.tst;success;macsec with aes192ctr
 http://sources.freertr.org/cfg/crypt-macsec75.tst;crypt-macsec75.tst;success;macsec with aes256ctr
 http://sources.freertr.org/cfg/crypt-macsec76.tst;crypt-macsec76.tst;success;macsec with aes128ofb
 http://sources.freertr.org/cfg/crypt-macsec77.tst;crypt-macsec77.tst;success;macsec with aes192ofb
-http://sources.freertr.org/cfg/crypt-macsec78.tst;crypt-macsec78.tst;success;macsec with aes128pcbc
+http://sources.freertr.org/cfg/crypt-macsec78.tst;crypt-macsec78.tst;success;macsec with aes256ofb
 http://sources.freertr.org/cfg/crypt-macsec79.tst;crypt-macsec79.tst;success;macsec with aes128pcbc
-http://sources.freertr.org/cfg/crypt-macsec80.tst;crypt-macsec80.tst;success;macsec with aes256pcbc
+http://sources.freertr.org/cfg/crypt-macsec80.tst;crypt-macsec80.tst;success;macsec with aes192pcbc
+http://sources.freertr.org/cfg/crypt-macsec81.tst;crypt-macsec81.tst;success;macsec with aes256pcbc
 http://sources.freertr.org/cfg/crypt-nat01.tst;crypt-nat01.tst;success;source list translation to interface
 http://sources.freertr.org/cfg/crypt-nat02.tst;crypt-nat02.tst;success;source list translation to address
 http://sources.freertr.org/cfg/crypt-nat03.tst;crypt-nat03.tst;success;source list translation to pool

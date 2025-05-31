@@ -15,6 +15,9 @@ public class cryHashShake extends cryHashGeneric {
     protected cryHashShake() {
     }
 
+    /**
+     * bit length
+     */
     protected int bitLength;
 
     private static long[] KeccakRoundConstants = new long[]{
