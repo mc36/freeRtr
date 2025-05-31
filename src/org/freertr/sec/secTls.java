@@ -572,6 +572,13 @@ public class secTls implements Runnable {
             ph.headerCreate();
             p.apackSend();
             ph.calcKeysAp();
+            if (!ph.retriedCH) {
+                p.encryptDis();
+                p.packRecv();
+                if (ph.chgCipherParse()) {
+                    return null;
+                }
+            }
             ph.finishedFill(false);
             if (p.apackRecv()) {
                 return null;

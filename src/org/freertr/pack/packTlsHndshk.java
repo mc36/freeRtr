@@ -646,12 +646,19 @@ public class packTlsHndshk {
     }
 
     private void selectECgroup(int o) {
-        ecDiffHell.keyMakeTls(o);
-        if (ecDiffHell.keyMakeVal() >= 0) {
+        if (ecDiffHell.keyMakeVal() == o) {
             return;
         }
-        if (o == cryKeyCurve25519.tlsVal) {
-            ecDiffHell = new cryKeyCurve25519();
+        switch (o) {
+            case cryKeyCurve25519.tlsVal:
+                ecDiffHell = new cryKeyCurve25519();
+                break;
+            default:
+                ecDiffHell.keyMakeTls(o);
+                break;
+        }
+        if (debugger.secTlsTraf) {
+            logger.debug("kex chosen " + ecDiffHell.algName());
         }
     }
 

@@ -20,7 +20,7 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     /**
      * tls value
      */
-    public static final int tlsVal = 29;
+    public final static int tlsVal = 29;
 
     /**
      * common value
