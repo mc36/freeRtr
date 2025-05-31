@@ -379,15 +379,15 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public boolean keyMakeTls(int id) {
-        return true;
+        return id != 29;
     }
 
     public boolean keyMakeIke(int id) {
-        return true;
+        return id != 31;
     }
 
     public int keyMakeVal() {
-        return 1;
+        return 29;
     }
 
     public boolean keyVerify() {

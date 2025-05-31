@@ -27,6 +27,7 @@ import org.freertr.cry.cryHashSha3224;
 import org.freertr.cry.cryHashSha3256;
 import org.freertr.cry.cryHashSha3384;
 import org.freertr.cry.cryHashSha3512;
+import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
@@ -1103,6 +1104,8 @@ public class secTransform {
                 ec = new cryKeyECDH();
                 ec.keyMakeTls(28);
                 return ec;
+            case 31:
+                return new cryKeyCurve25519();
             case 35:
                 cryKeyMLKEM ml = new cryKeyMLKEM();
                 ml.keyMakeSize(512);
@@ -1167,6 +1170,7 @@ public class secTransform {
         l.add(null, "2 .    28                256 bit ecp");
         l.add(null, "2 .    29                384 bit ecp");
         l.add(null, "2 .    30                512 bit ecp");
+        l.add(null, "2 .    31                curve 25519");
         l.add(null, "2 .    35                512 bit mlkem");
         l.add(null, "2 .    36                768 bit mlkem");
         l.add(null, "2 .    37                1024 bit mlkem");
