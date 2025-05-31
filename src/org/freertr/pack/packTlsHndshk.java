@@ -24,6 +24,7 @@ import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyMLKEM;
 import org.freertr.cry.cryKeyPQhybrid;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.util.bits;
@@ -651,6 +652,12 @@ public class packTlsHndshk {
             return;
         }
         switch (o) {
+            case cryKeyMLKEM.tlsVal512:
+            case cryKeyMLKEM.tlsVal768:
+            case cryKeyMLKEM.tlsVal1024:
+                ecDiffHell = new cryKeyMLKEM();
+                ecDiffHell.keyMakeTls(o);
+                break;
             case cryKeyPQhybrid.tlsVal:
                 ecDiffHell = new cryKeyPQhybrid();
                 break;
@@ -858,6 +865,9 @@ public class packTlsHndshk {
         }
         if (client) {
             List<Integer> lst = new ArrayList<Integer>();
+            lst.add(cryKeyMLKEM.tlsVal1024);
+            lst.add(cryKeyMLKEM.tlsVal768);
+            lst.add(cryKeyMLKEM.tlsVal512);
             lst.add(cryKeyPQhybrid.tlsVal);
             lst.add(cryKeyCurve25519.tlsVal);
             for (int i = 0; i < 0x100; i++) {

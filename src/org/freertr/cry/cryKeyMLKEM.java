@@ -17,69 +17,84 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     }
 
     /**
-     * magic values
+     * tls value
      */
-    public final static int KyberN = 256;
+    public final static int tlsVal512 = 0x200;
+
+    /**
+     * tls value
+     */
+    public final static int tlsVal768 = 0x201;
+
+    /**
+     * tls value
+     */
+    public final static int tlsVal1024 = 0x202;
 
     /**
      * magic values
      */
-    public final static int KyberQ = 3329;
+    protected final static int KyberN = 256;
 
     /**
      * magic values
      */
-    public final static int KyberQinv = 62209;
+    protected final static int KyberQ = 3329;
 
     /**
      * magic values
      */
-    public final static int KyberSymBytes = 32;
+    protected final static int KyberQinv = 62209;
 
     /**
      * magic values
      */
-    public final static int KyberPolyBytes = 384;
+    protected final static int KyberSymBytes = 32;
 
     /**
      * magic values
      */
-    public final static int KyberEta2 = 2;
+    protected final static int KyberPolyBytes = 384;
 
     /**
      * magic values
      */
-    public final int sessionKeyLength = 32;
+    protected final static int KyberEta2 = 2;
 
     /**
      * magic values
      */
-    public int KyberK;
+    protected final int sessionKeyLength = 32;
 
     /**
      * magic values
      */
-    public int KyberEta1;
+    protected int KyberK;
 
     /**
      * magic values
      */
-    public int KyberPolyVecBytes;
+    protected int KyberEta1;
 
     /**
      * magic values
      */
-    public int KyberPolyCompressedBytes;
+    protected int KyberPolyVecBytes;
 
     /**
      * magic values
      */
-    public int KyberPolyVecCompressedBytes;
+    protected int KyberPolyCompressedBytes;
 
     /**
      * magic values
      */
-    public int KyberIndCpaPublicKeyBytes;
+    protected int KyberPolyVecCompressedBytes;
+
+    /**
+     * magic values
+     */
+    protected int KyberIndCpaPublicKeyBytes;
 
     /**
      * common value
@@ -333,12 +348,8 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         }
     }
 
-    public String toString() {
-        return "k=" + KyberK;
-    }
-
     public String algName() {
-        return "mlkem";
+        return "mlkem" + (256 * KyberK);
     }
 
     public boolean certReader(packHolder pck) {
@@ -404,6 +415,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     }
 
     public boolean keyMakeTls(int id) {
+        keyMakeSize(256 * (id - tlsVal512 + 2));
         return true;
     }
 
@@ -412,7 +424,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     }
 
     public int keyMakeVal() {
-        return KyberK;
+        return tlsVal512 + KyberK - 2;
     }
 
     public boolean keyVerify() {
