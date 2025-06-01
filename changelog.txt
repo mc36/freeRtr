@@ -16943,3 +16943,11 @@ qc pass: ike2 with group31
 qc pass: macsec with group31
 ---------------------------------- 2025-05-31 19:49:02 25.5.31
 qc pass: macsec with group99
+---------------------------------- 2025-06-01 06:01:25 25.6.1
+no todo: more clean converters for the vm
+no todo: more clean transpilers for the vm
+no todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
+no todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
+no todo: .vm <--> vm20
+no todo: document the vm
+no todo: tester to have support for dynamips and vm.zip stuff

@@ -2783,9 +2783,6 @@ public class userExec {
         hl.add(null, "3 3,.      <str>                      parameter");
         hl.add(null, "2 3,.    prefix                       decode prefix");
         hl.add(null, "3 3,.      <str>                      parameter");
-        hl.add(null, "2 3      vm                           run virtual machine");
-        hl.add(null, "3 4,.      <file>                     file name");
-        hl.add(null, "4 4,.        [str]                    parameter to give");
         hl.add(null, "2 3,.    routing                      test routing lookup performance");
         hl.add(null, "3 3,.      [str]                      parameters");
         hl.add(null, "2 .      pipeline                     test pipeline throughput");

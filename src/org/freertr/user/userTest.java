@@ -414,12 +414,6 @@ public class userTest {
             cmd.error("converted=" + s);
             return null;
         }
-        if (a.equals("vm")) {
-            a = cmd.word();
-            String s = cmd.getRemaining().trim();
-            userVM.doWork(pip, true, "", a, s);
-            return null;
-        }
         if (a.equals("translation")) {
             cfgTrnsltn t = cfgAll.trnsltnFind(cmd.word(), false);
             if (t == null) {
