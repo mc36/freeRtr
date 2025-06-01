@@ -2,8 +2,6 @@ package org.freertr.user;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
 import org.freertr.cry.cryHashCrc32;
@@ -11,7 +9,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
-import org.freertr.util.logger;
 
 /**
  * virtual machine v2
@@ -48,6 +45,8 @@ public class userVM {
     private int[] regs;
 
     private int flags; // 1=above, 2=below, 4=equal
+
+    private String err;
 
     private String nam;
 
@@ -87,21 +86,60 @@ public class userVM {
      */
     public static int doWork(pipeSide cons, boolean fio, String dir, String name, String param) {
         userVM vm = new userVM(cons, fio, dir);
-        int res;
+        int res = 2;
         try {
-            vm.doLoad(name, param);
-            res = vm.doProcess();
-        } catch (Exception e) {
-            cons.linePut("vm error: " + logger.dumpException(e, "fio=" + fio + " fn=" + dir + " " + name + " pars" + param));
-            List<String> txt = vm.dump();
-            for (int i = 0; i < txt.size(); i++) {
-                cons.linePut(txt.get(i));
+            vm.nam = name;
+            vm.par = param;
+            name = "/" + encUrl.normalizePath(name);
+            RandomAccessFile f = new RandomAccessFile(rootDir + name, "r");
+            int codeS = (int) f.length();
+            vm.codeD = new byte[codeS];
+            f.read(vm.codeD, 0, codeS);
+            f.close();
+            if (vm.getConst(3) != 0x30314d56) {
+                vm.err = "invalid magic number";
+                return 1;
             }
+            int i = vm.getConst(3);
+            if (i != codeS) {
+                vm.err = "invalid size field";
+                return 1;
+            }
+            int stackS = vm.getConst(3);
+            vm.dataS = vm.getConst(3) + memBound;
+            int procS = vm.getConst(3);
+            int procB = vm.getConst(3);
+            cryHashCrc32 h = new cryHashCrc32(cryHashCrc32.polyCrc32i);
+            h.init();
+            h.update(vm.codeD, 0, vm.codeD.length - 4);
+            byte[] buf = h.finish();
+            vm.regs[reg_cip] = vm.codeD.length - 4;
+            if (vm.getConst(3) != bits.msbGetD(buf, 0)) {
+                vm.err = "invalid checksum";
+                return 1;
+            }
+            vm.regs[reg_cip] = procB;
+            vm.stackD = new byte[stackS + memBound];
+            vm.dataD = new byte[vm.dataS];
+            vm.procD = new int[procS];
+            vm.files = new tabGen<userVMfile>();
+            vm.dirs = new tabGen<userVMdir>();
+            vm.doProcess();
+            res = 0;
+        } catch (Exception e) {
+            vm.err = "exception";
             res = 1;
         }
-        try {
-            vm.doFinish();
-        } catch (Exception e) {
+        if (vm.err != null) {
+            cons.linePut("nam='" + vm.nam + "' par='" + vm.par + "' dir='" + vm.currDir + "' err=" + vm.err);
+            cons.linePut("a=" + vm.regs[reg_a] + " b=" + vm.regs[reg_b] + " c=" + vm.regs[reg_c] + " d=" + vm.regs[reg_d] + " src=" + vm.regs[reg_src] + " trg=" + vm.regs[reg_trg] + " cip=" + vm.regs[reg_cip]);
+            res = 1;
+        }
+        for (int i = 0; i < vm.files.size(); i++) {
+            try {
+                vm.files.get(i).fil.close();
+            } catch (Exception e) {
+            }
         }
         return res;
     }
@@ -122,21 +160,6 @@ public class userVM {
 
     public String toString() {
         return "emulating " + nam;
-    }
-
-    /**
-     * dump this virtual machine
-     *
-     * @return dump of virtual machine
-     */
-    public List<String> dump() {
-        List<String> l = new ArrayList<String>();
-        l.add("nam='" + nam + "'  par='" + par + "' dir='" + currDir + "'");
-        l.add("a=" + regs[reg_a] + "  b=" + regs[reg_b] + "  c=" + regs[reg_c]
-                + "  d=" + regs[reg_d]);
-        l.add("src=" + regs[reg_src] + "  trg=" + regs[reg_trg] + "  cip="
-                + regs[reg_cip]);
-        return l;
     }
 
     /**
@@ -288,8 +311,7 @@ public class userVM {
         bits.msbPutD(dataD, ofs + res.length, 0);
     }
 
-    private int readOne(byte[] data, int ofs, int siz, int msb)
-            throws Exception {
+    private int readOne(byte[] data, int ofs, int siz, int msb) {
         siz &= 15;
         switch (siz) {
             case 1:
@@ -302,7 +324,8 @@ public class userVM {
                     case 2: // msb
                         return bits.msbGetW(data, ofs);
                     default:
-                        throw new Exception("invalid type");
+                        err = "invalid type";
+                        return 0;
                 }
             case 3:
                 switch (msb) {
@@ -312,15 +335,16 @@ public class userVM {
                     case 2:
                         return bits.msbGetD(data, ofs);
                     default:
-                        throw new Exception("invalid type");
+                        err = "invalid type";
+                        return 0;
                 }
             default:
-                throw new Exception("invalid type");
+                err = "invalid size";
+                return 0;
         }
     }
 
-    private void writeOne(byte[] data, int ofs, int siz, int msb, int val)
-            throws Exception {
+    private void writeOne(byte[] data, int ofs, int siz, int msb, int val) {
         siz &= 15;
         switch (siz) {
             case 1:
@@ -336,7 +360,8 @@ public class userVM {
                         bits.msbPutW(data, ofs, val);
                         return;
                     default:
-                        throw new Exception("invalid type");
+                        err = "invalid type";
+                        return;
                 }
             case 3:
                 switch (msb) {
@@ -348,30 +373,32 @@ public class userVM {
                         bits.msbPutD(data, ofs, val);
                         return;
                     default:
-                        throw new Exception("invalid type");
+                        err = "invalid type";
+                        return;
                 }
             default:
-                throw new Exception("invalid type");
+                err = "invalid size";
+                return;
         }
     }
 
-    private int getConst(int siz) throws Exception {
+    private int getConst(int siz) {
         int i = readOne(codeD, regs[reg_cip], siz, 1);
         regs[reg_cip] += getSize(siz);
         return i;
     }
 
-    private void pushOne(int val, int siz) throws Exception {
+    private void pushOne(int val, int siz) {
         writeOne(stackD, stackP, siz, 1, val);
         stackP += getSize(siz);
     }
 
-    private int popOne(int siz) throws Exception {
+    private int popOne(int siz) {
         stackP -= getSize(siz);
         return readOne(stackD, stackP, siz, 1);
     }
 
-    private int getMemory() throws Exception {
+    private int getMemory() {
         int i, o, p;
         i = getConst(1);
         p = i & 0x80;
@@ -399,73 +426,15 @@ public class userVM {
     }
 
     /**
-     * load one file
-     *
-     * @param name file to load
-     * @param param parameters to give
-     * @throws Exception on error
-     */
-    public void doLoad(String name, String param) throws Exception {
-        name = "/" + encUrl.normalizePath(name);
-        nam = name;
-        par = param;
-        RandomAccessFile f = new RandomAccessFile(rootDir + name, "r");
-        int codeS = (int) f.length();
-        codeD = new byte[codeS];
-        f.read(codeD, 0, codeS);
-        f.close();
-        if (getConst(3) != 0x30314d56) {
-            throw new Exception("invalid magic number");
-        }
-        int i = getConst(3);
-        if (i != codeS) {
-            throw new Exception("invalid size field");
-        }
-        int stackS = getConst(3);
-        dataS = getConst(3) + memBound;
-        int procS = getConst(3);
-        int procB = getConst(3);
-        cryHashCrc32 h = new cryHashCrc32(cryHashCrc32.polyCrc32i);
-        h.init();
-        h.update(codeD, 0, codeD.length - 4);
-        byte[] buf = h.finish();
-        regs[reg_cip] = codeD.length - 4;
-        if (getConst(3) != bits.msbGetD(buf, 0)) {
-            throw new Exception("invalid checksum");
-        }
-        regs[reg_cip] = procB;
-        stackD = new byte[stackS + memBound];
-        dataD = new byte[dataS];
-        procD = new int[procS];
-        files = new tabGen<userVMfile>();
-        dirs = new tabGen<userVMdir>();
-    }
-
-    /**
      * run until end
      *
      * @return result code
-     * @throws Exception on error
      */
-    public int doProcess() throws Exception {
-        int i;
+    public void doProcess() {
         for (;;) {
-            i = doOpcode();
-            if ((i & res_term) != 0) {
+            doOpcode();
+            if (err != null) {
                 break;
-            }
-        }
-        return i;
-    }
-
-    /**
-     * finish the process
-     */
-    public void doFinish() {
-        for (int i = 0; i < files.size(); i++) {
-            try {
-                files.get(i).fil.close();
-            } catch (Exception e) {
             }
         }
     }
@@ -474,9 +443,8 @@ public class userVM {
      * run one opcode
      *
      * @return result code
-     * @throws Exception on error
      */
-    public int doOpcode() throws Exception {
+    public void doOpcode() {
         int form;
         int siz1, siz2;
         int reg1, reg2;
@@ -492,7 +460,7 @@ public class userVM {
                     val1 = regs[getConst(1)];
                 }
                 regs[reg1] += val1;
-                return 0;
+                return;
             case 2: // sub
                 siz1 = getConst(1);
                 reg1 = getConst(1);
@@ -502,7 +470,7 @@ public class userVM {
                     val1 = regs[getConst(1)];
                 }
                 regs[reg1] -= val1;
-                return 0;
+                return;
             case 3: // mul
                 siz1 = getConst(1);
                 siz2 = siz1 >>> 6;
@@ -515,7 +483,7 @@ public class userVM {
                 val1 = convType(val1, siz2, siz1, 0);
                 val2 = convType(regs[reg1], siz2, siz1, 0);
                 regs[reg1] = val2 * val1;
-                return 0;
+                return;
             case 4: // div
                 siz1 = getConst(1);
                 siz2 = siz1 >>> 6;
@@ -528,10 +496,11 @@ public class userVM {
                 val1 = convType(val1, siz2, siz1, 0);
                 val2 = convType(regs[reg1], siz2, siz1, 0);
                 if (val1 == 0) {
-                    throw new Exception("division by zero");
+                    err = "division by zero";
+                    return;
                 }
                 regs[reg1] = val2 / val1;
-                return 0;
+                return;
             case 5: // mod
                 siz1 = getConst(1);
                 siz2 = siz1 >>> 6;
@@ -544,10 +513,11 @@ public class userVM {
                 val1 = convType(val1, siz2, siz1, 0);
                 val2 = convType(regs[reg1], siz2, siz1, 0);
                 if (val1 == 0) {
-                    throw new Exception("division by zero");
+                    err = "division by zero";
+                    return;
                 }
                 regs[reg1] = val2 % val1;
-                return 0;
+                return;
             case 6: // or
                 siz1 = getConst(1);
                 reg1 = getConst(1);
@@ -557,7 +527,7 @@ public class userVM {
                     val1 = regs[getConst(1)];
                 }
                 regs[reg1] |= val1;
-                return 0;
+                return;
             case 7: // xor
                 siz1 = getConst(1);
                 reg1 = getConst(1);
@@ -567,7 +537,7 @@ public class userVM {
                     val1 = regs[getConst(1)];
                 }
                 regs[reg1] ^= val1;
-                return 0;
+                return;
             case 8: // and
                 siz1 = getConst(1);
                 reg1 = getConst(1);
@@ -577,17 +547,17 @@ public class userVM {
                     val1 = regs[getConst(1)];
                 }
                 regs[reg1] &= val1;
-                return 0;
+                return;
             case 9: // not
                 siz1 = getConst(1);
                 reg1 = getConst(1);
                 regs[reg1] = -1 - regs[reg1];
-                return 0;
+                return;
             case 10: // neg
                 siz1 = getConst(1);
                 reg1 = getConst(1);
                 regs[reg1] = -regs[reg1];
-                return 0;
+                return;
             case 11: // shl
                 siz1 = getConst(1);
                 reg1 = getConst(1);
@@ -597,7 +567,7 @@ public class userVM {
                     val1 = regs[getConst(1)];
                 }
                 regs[reg1] <<= val1;
-                return 0;
+                return;
             case 12: // shr
                 siz1 = getConst(1);
                 reg1 = getConst(1);
@@ -607,18 +577,18 @@ public class userVM {
                     val1 = regs[getConst(1)];
                 }
                 regs[reg1] >>>= val1;
-                return 0;
+                return;
             case 13: // push
                 siz1 = getConst(1);
                 reg1 = getConst(1);
                 val1 = regs[reg1];
                 pushOne(val1, siz1);
-                return 0;
+                return;
             case 14: // pop
                 siz1 = getConst(1);
                 reg1 = getConst(1);
                 regs[reg1] = popOne(siz1);
-                return 0;
+                return;
             case 15: // comp
                 siz1 = getConst(1);
                 siz2 = siz1 >>> 6;
@@ -642,7 +612,7 @@ public class userVM {
                 }
                 flags &= 0xffffff8;
                 flags |= reg1;
-                return 0;
+                return;
             case 16: // move
                 siz1 = getConst(1);
                 siz2 = getConst(1);
@@ -655,7 +625,7 @@ public class userVM {
                 val1 = convType(val1, siz2 >>> 6, siz2, 0);
                 val1 = convType(val1, siz1 >>> 6, siz1, 1);
                 regs[reg1] = val1;
-                return 0;
+                return;
             case 17: // movr
                 form = getConst(1);
                 siz1 = getConst(1);
@@ -666,7 +636,7 @@ public class userVM {
                 val1 = convType(val1, siz2 >>> 6, siz2, 0);
                 val1 = convType(val1, siz1 >>> 6, siz1, 1);
                 regs[reg1] = val1;
-                return 0;
+                return;
             case 18: // movw
                 form = getConst(1);
                 siz1 = getConst(1);
@@ -677,35 +647,35 @@ public class userVM {
                 val1 = convType(val1, siz2 >>> 6, siz2, 0);
                 val1 = convType(val1, siz1 >>> 6, siz1, 1);
                 writeOne(dataD, val2, siz1, form, val1);
-                return 0;
+                return;
             case 19: // call
                 val1 = getConst(3);
                 pushOne(regs[reg_cip], 3);
                 regs[reg_cip] = val1;
-                return 0;
+                return;
             case 20: // ret
                 regs[reg_cip] = popOne(3);
-                return 0;
+                return;
             case 21: // jump
                 regs[reg_cip] = getConst(3);
-                return 0;
+                return;
             case 22: // jmpc
                 reg1 = getConst(1);
                 val1 = getConst(3);
                 if ((flags & reg1) != 0) {
                     regs[reg_cip] = val1;
                 }
-                return 0;
+                return;
             case 23: // addrLod
                 val2 = getMemory();
                 reg1 = getConst(1);
                 regs[reg1] = readOne(dataD, val2, 3, 1);
-                return 0;
+                return;
             case 24: // addrSav
                 val2 = getMemory();
                 reg1 = getConst(1);
                 writeOne(dataD, val2, 3, 1, regs[reg1]);
-                return 0;
+                return;
             case 25: // procAddr
                 reg1 = getConst(1);
                 val1 = getConst(3);
@@ -716,7 +686,7 @@ public class userVM {
                     val2 = procD[val1];
                 }
                 regs[reg1] = val2;
-                return 0;
+                return;
             case 26: // procAllocBeg
                 val1 = getConst(3);
                 val2 = procD[val1];
@@ -725,18 +695,18 @@ public class userVM {
                 val1 = getConst(3);
                 dataP += val1;
                 pushOne(val2, 3);
-                return 0;
+                return;
             case 27: // procFree
                 val1 = getConst(3);
                 val2 = popOne(3);
                 procD[val1] = val2;
                 val2 = getConst(3);
                 dataP -= val2;
-                return 0;
+                return;
             case 28: // codeOfs
                 reg1 = getConst(1);
                 regs[reg1] = getConst(3);
-                return 0;
+                return;
             case 29: // xchg
                 siz1 = getConst(1);
                 val2 = getMemory();
@@ -744,7 +714,7 @@ public class userVM {
                 val1 = regs[reg1];
                 regs[reg1] = readOne(dataD, val2, siz1, 1);
                 writeOne(dataD, val2, siz1, 1, val1);
-                return 0;
+                return;
             case 30: // setc
                 reg2 = getConst(1);
                 siz1 = getConst(1);
@@ -755,92 +725,86 @@ public class userVM {
                     val1 = 0;
                 }
                 regs[reg1] = val1;
-                return 0;
+                return;
             case 31: // procAllocEnd
                 val2 = popOne(3);
                 val1 = getConst(3);
                 procD[val1] = val2;
                 getConst(3);
-                return 0;
+                return;
             case 32: // syscall
-                return doSyscall();
+                break;
             case 33: // cllr
                 reg1 = getConst(1);
                 pushOne(regs[reg_cip], 3);
                 regs[reg_cip] = regs[reg1];
-                return 0;
+                return;
             case 34: // jmpr
                 reg1 = getConst(1);
                 regs[reg_cip] = regs[reg1];
-                return 0;
+                return;
+            default:
+                regs[reg_cip] -= 1;
+                err = "unknown (" + opc + ") opcode";
+                return;
         }
-        regs[reg_cip] -= 1;
-        throw new Exception("unknown (" + opc + ") opcode");
-    }
-
-    /**
-     * do a system call
-     *
-     * @return return code
-     * @throws Exception may throw an exception
-     */
-    public int doSyscall() throws Exception {
-        int opc = getConst(1);
-        int val1;
+        opc = getConst(1);
         switch (opc) {
             case 1: // sleep
                 bits.sleep(10);
-                return 0;
+                return;
             case 2: // memCopy
                 bits.byteCopy(dataD, regs[reg_src], dataD, regs[reg_trg],
                         regs[reg_c]);
-                return 0;
+                return;
             case 3: // codeCopy
                 bits.byteCopy(codeD, regs[reg_src], dataD, regs[reg_trg],
                         regs[reg_c]);
-                return 0;
+                return;
             case 4: // terminate
-                return (regs[reg_a] & 0xffff) | res_term;
+                err = "normal exit, code=" + (regs[reg_a] & 0xffff);
+                return;
             case 5: // console.write
                 console.strPut(new String(dataD, regs[reg_src], regs[reg_c]));
-                return 0;
+                return;
             case 6: // console.read
                 if (console.ready2rx() < 1) {
                     if (console.isClosed() != 0) {
-                        throw new Exception("console closed");
+                        err = "console closed";
+                        return;
                     }
                     regs[reg_c] = 0;
-                    return 0;
+                    return;
                 }
                 bits.lsbPutW(dataD, regs[reg_trg], getKey());
                 regs[reg_c] = 2;
-                return 0;
+                return;
             case 7: // file.maxName
                 regs[reg_a] = 128;
-                return 0;
+                return;
             case 8: // file.myName
                 String a = fromUnix(nam);
                 regs[reg_c] = a.length();
                 putAsciiz(regs[reg_trg], a);
-                return 0;
+                return;
             case 9: // file.myParam
                 regs[reg_c] = par.length();
                 putAsciiz(regs[reg_trg], par);
-                return 0;
+                return;
             case 10: // file.open
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (!new File(a).exists()) {
-                    return 0;
+                    return;
                 }
                 userVMfile fil = new userVMfile(0);
                 try {
                     fil.fil = new RandomAccessFile(a, "rw");
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 for (;;) {
                     fil.num = bits.randomD();
@@ -850,175 +814,175 @@ public class userVM {
                 }
                 regs[reg_a] = fil.num;
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 11: // file.read
                 regs[reg_b] = 1;
                 fil = files.find(new userVMfile(regs[reg_a]));
                 if (fil == null) {
-                    return 0;
+                    return;
                 }
                 try {
                     fil.fil.read(dataD, regs[reg_trg], regs[reg_c]);
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 12: // file.write
                 regs[reg_b] = 1;
                 fil = files.find(new userVMfile(regs[reg_a]));
                 if (fil == null) {
-                    return 0;
+                    return;
                 }
                 try {
                     fil.fil.write(dataD, regs[reg_src], regs[reg_c]);
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 13: // file.seek
                 regs[reg_b] = 1;
                 fil = files.find(new userVMfile(regs[reg_a]));
                 if (fil == null) {
-                    return 0;
+                    return;
                 }
                 try {
                     fil.fil.seek(regs[reg_c]);
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 14: // file.getSize
                 regs[reg_b] = 1;
                 fil = files.find(new userVMfile(regs[reg_a]));
                 if (fil == null) {
-                    return 0;
+                    return;
                 }
                 try {
                     regs[reg_c] = (int) fil.fil.length();
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 15: // file.getPos
                 regs[reg_b] = 1;
                 fil = files.find(new userVMfile(regs[reg_a]));
                 if (fil == null) {
-                    return 0;
+                    return;
                 }
                 try {
                     regs[reg_c] = (int) fil.fil.getFilePointer();
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 16: // file.truncate
                 regs[reg_b] = 1;
                 fil = files.find(new userVMfile(regs[reg_a]));
                 if (fil == null) {
-                    return 0;
+                    return;
                 }
                 try {
                     fil.fil.setLength(fil.fil.getFilePointer());
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 17: // file.close
                 regs[reg_b] = 1;
                 fil = files.del(new userVMfile(regs[reg_a]));
                 if (fil == null) {
-                    return 0;
+                    return;
                 }
                 try {
                     fil.fil.close();
                 } catch (Exception e) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 18: // file.create
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (userFlash.mkfile(a)) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 19: // file.erase
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (userFlash.delete(a)) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 20: // dir.current
                 putPascii(regs[reg_trg], fromUnix(currDir));
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 21: // dir.change
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = fromDos(getPascii(regs[reg_src]));
                 a = "/" + encUrl.normalizePath(a + "/");
                 if (!new File(rootDir + a).isDirectory()) {
-                    return 0;
+                    return;
                 }
                 currDir = a;
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 22: // dir.setRights
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (!new File(a).exists()) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 23: // dir.rename
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (userFlash.rename(a, rootDir + fromDos(getPascii(regs[reg_trg])), false, false)) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 24: // dir.makeLink
                 regs[reg_b] = 1;
-                return 0;
+                return;
             case 25: // dir.open
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (!new File(a).exists()) {
-                    return 0;
+                    return;
                 }
                 userVMdir dir = new userVMdir(0);
                 dir.lst = userFlash.dirList(a);
                 if (dir.lst == null) {
-                    return 0;
+                    return;
                 }
                 for (;;) {
                     dir.num = bits.randomD();
@@ -1028,12 +992,12 @@ public class userVM {
                 }
                 regs[reg_a] = dir.num;
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 26: // dir.read
                 regs[reg_b] = 1;
                 dir = dirs.find(new userVMdir(regs[reg_a]));
                 if (dir == null) {
-                    return 0;
+                    return;
                 }
                 bits.byteFill(dataD, regs[reg_trg], 64, 0);
                 if (dir.pos < dir.lst.length) {
@@ -1073,54 +1037,54 @@ public class userVM {
                     putPascii(ofs + 26, ntry.getName());
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 27: // dir.close
                 regs[reg_b] = 1;
                 dir = dirs.del(new userVMdir(regs[reg_a]));
                 if (dir == null) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 28: // dir.create
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (userFlash.mkdir(a)) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 29: // dir.erase
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (userFlash.delete(a)) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 30: // dir.stats
                 regs[reg_a] = 0x20000000;
                 regs[reg_b] = 0x10000000;
                 regs[reg_c] = 0;
                 regs[reg_d] = 512;
-                return 0;
+                return;
             case 31: // dir.setDate
                 regs[reg_b] = 1;
                 if (!allowFileIO) {
-                    return 0;
+                    return;
                 }
                 a = rootDir + fromDos(getPascii(regs[reg_src]));
                 if (!new File(a).exists()) {
-                    return 0;
+                    return;
                 }
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 32: // memReSize
                 byte[] buf = dataD;
                 dataD = new byte[dataS + regs[reg_c] + memBound];
@@ -1132,57 +1096,55 @@ public class userVM {
                 bits.byteCopy(buf, 0, dataD, 0, val1);
                 regs[reg_c] = dataD.length - dataS - memBound;
                 regs[reg_trg] = dataS;
-                return 0;
+                return;
             case 33: // memInfo
                 regs[reg_c] = dataD.length - dataS - memBound;
                 regs[reg_trg] = dataS;
-                return 0;
+                return;
             case 34: // console.isKey
                 regs[reg_a] = 0;
                 if (console.ready2rx() > 0) {
                     regs[reg_a] = 1;
                 }
-                return 0;
+                return;
             case 35: // console.size
                 regs[reg_a] = 78;
                 regs[reg_b] = 24;
-                return 0;
+                return;
             case 36: // console.gotoXY
                 userScreen.sendCur(console, regs[reg_a] - 1, regs[reg_b] - 1);
-                return 0;
+                return;
             case 37: // console.setColor
                 userScreen.sendAnsCol(console, convCol(regs[reg_a]));
-                return 0;
+                return;
             case 38: // console.clear
                 userScreen.sendCls(console);
-                return 0;
+                return;
             case 39: // console.execWait
                 a = fromDos(getPascii(regs[reg_src]));
-                userVM v = new userVM(console, allowFileIO, currDir);
-                v.doLoad(a, currDir);
                 val1 = userVM.doWork(console, allowFileIO, "", a, currDir);
                 regs[reg_b] = result2error(val1);
                 regs[reg_a] = result2extcod(val1);
-                return 0;
+                return;
             case 40: // console.execBckgnd
                 regs[reg_b] = 1;
-                return 0;
+                return;
             case 41: // console.execInMe
                 regs[reg_b] = 1;
-                return 0;
+                return;
             case 42: // console.getDate
                 regs[reg_a] = bits.time2num(cfgAll.timeZoneName, bits.getTime(), 1);
                 regs[reg_b] = bits.time2num(cfgAll.timeZoneName, bits.getTime(), 2);
                 regs[reg_c] = bits.time2num(cfgAll.timeZoneName, bits.getTime(), 3);
-                return 0;
+                return;
             case 43: // console.getTime
                 regs[reg_a] = bits.time2num(cfgAll.timeZoneName, bits.getTime(), 4);
                 regs[reg_b] = bits.time2num(cfgAll.timeZoneName, bits.getTime(), 5);
                 regs[reg_c] = bits.time2num(cfgAll.timeZoneName, bits.getTime(), 6);
-                return 0;
+                return;
             case 44: // memFillByte
                 bits.byteFill(dataD, regs[reg_trg], regs[reg_c], regs[reg_a]);
-                return 0;
+                return;
             case 100: // pipeline.startListen
             case 101: // pipeline.stopListen
             case 102: // pipeline.getIncoming
@@ -1192,80 +1154,81 @@ public class userVM {
             case 106: // pipeline.receive
             case 107: // pipeline.send
                 regs[reg_b] = 1;
-                return 0;
+                return;
             case 108: // system.getPID
                 regs[reg_a] = 1234;
                 regs[reg_b] = 4321;
                 regs[reg_c] = 3;
-                return 0;
+                return;
             case 109: // system.getUID
                 regs[reg_a] = 0;
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 110: // system.sysInfoNum
                 regs[reg_a] = 1;
                 regs[reg_c] = 0;
                 regs[reg_d] = dirs.size() + files.size();
-                return 0;
+                return;
             case 111: // system.sysInfoMem
                 regs[reg_a] = 0x20000000;
                 regs[reg_c] = 0x10000;
                 regs[reg_d] = 0x10000000;
-                return 0;
+                return;
             case 112: // system.sysInfoProc
                 regs[reg_a] = 64;
                 regs[reg_b] = 1;
                 regs[reg_c] = 1;
                 regs[reg_d] = 1;
-                return 0;
+                return;
             case 113: // system.procInfoNam
                 putPascii(regs[reg_trg] + 0, "");
                 putPascii(regs[reg_trg] + 256, "");
                 regs[reg_a] = 0;
                 regs[reg_c] = 0;
                 regs[reg_d] = 0;
-                return 0;
+                return;
             case 114: // system.procInfoNum
                 regs[reg_a] = 0;
                 regs[reg_c] = 0;
                 regs[reg_d] = 0;
-                return 0;
+                return;
             case 115: // system.procInfoRun
                 regs[reg_a] = 0;
                 regs[reg_b] = 0;
                 regs[reg_c] = 0;
-                return 0;
+                return;
             case 116: // system.findProcNum
                 regs[reg_a] = 0;
-                return 0;
+                return;
             case 117: // system.findProcNam
                 regs[reg_a] = 0;
-                return 0;
+                return;
             case 118: // system.cpuInfo
                 regs[reg_a] = 1;
                 regs[reg_c] = 8086;
                 putAsciiz(regs[reg_trg], "emulator");
-                return 0;
+                return;
             case 119: // system.kernelInfo
                 putAsciiz(regs[reg_trg], bits.lst2str(cfgInit.getShPlat(), "\r\n"));
-                return 0;
+                return;
             case 120: // system.kernelLogo
                 putAsciiz(regs[reg_trg], bits.lst2str(cfgInit.getShLogo(0x08), "\r\n"));
-                return 0;
+                return;
             case 121: // system.procLive
                 regs[reg_b] = 0;
-                return 0;
+                return;
             case 122: // system.uptimeInfo
                 regs[reg_a] = 0;
                 regs[reg_c] = (int) ((bits.getTime() / 10) % 1000000);
                 regs[reg_d] = 100;
-                return 0;
+                return;
             case 123: // system.killProc
                 regs[reg_b] = 1;
-                return 0;
+                return;
         }
         regs[reg_cip] -= 2;
-        throw new Exception("unknown (" + opc + ") syscall");
+        err = "unknown (" + opc + ") syscall";
+        return;
     }
 
 }
