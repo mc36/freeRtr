@@ -415,15 +415,9 @@ public class userTest {
             return null;
         }
         if (a.equals("vm")) {
-            try {
-                a = cmd.word();
-                String s = cmd.getRemaining().trim();
-                userVM v = new userVM(pip, true, "../vm/");
-                v.doLoad(a, s);
-                v.doWork(pip, true, "", a, s);
-            } catch (Exception e) {
-                logger.traceback(e);
-            }
+            a = cmd.word();
+            String s = cmd.getRemaining().trim();
+            userVM.doWork(pip, true, "", a, s);
             return null;
         }
         if (a.equals("translation")) {

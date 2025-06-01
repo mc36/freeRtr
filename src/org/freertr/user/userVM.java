@@ -85,7 +85,7 @@ public class userVM {
      * @param param parameters to give
      * @return result code
      */
-    public int doWork(pipeSide cons, boolean fio, String dir, String name, String param) {
+    public static int doWork(pipeSide cons, boolean fio, String dir, String name, String param) {
         userVM vm = new userVM(cons, fio, dir);
         int res;
         try {
@@ -1158,9 +1158,9 @@ public class userVM {
                 return 0;
             case 39: // console.execWait
                 a = fromDos(getPascii(regs[reg_src]));
-                userVM v = new userVM(console, true, currDir);
+                userVM v = new userVM(console, allowFileIO, currDir);
                 v.doLoad(a, currDir);
-                val1 = v.doWork(console, true, "", a, currDir);
+                val1 = userVM.doWork(console, allowFileIO, "", a, currDir);
                 regs[reg_b] = result2error(val1);
                 regs[reg_a] = result2extcod(val1);
                 return 0;

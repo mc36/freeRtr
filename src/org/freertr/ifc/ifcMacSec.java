@@ -433,9 +433,9 @@ public class ifcMacSec {
                     break;
                 }
                 if (myDisc < peerDisc) {
-                    keygen.keyClntSsh(replyVal, 0);
+                    keygen.keyClntIke(replyVal, 0);
                 } else {
-                    keygen.keyServSsh(replyVal, 0);
+                    keygen.keyServIke(replyVal, 0);
                 }
                 break;
             default:
@@ -449,18 +449,18 @@ public class ifcMacSec {
             return pck;
         }
         if (myDisc < peerDisc) {
-            if (keygen.keyServSsh() == null) {
+            if (keygen.keyServIke() == null) {
                 keygen.keyServInit();
             }
-            if ((keygen.keyCommonSsh() == null) && (keygen.keyClntSsh() != null)) {
+            if ((keygen.keyCommonIke() == null) && (keygen.keyClntIke() != null)) {
                 keygen.keyServCalc();
                 setupKeys();
             }
         } else {
-            if (keygen.keyClntSsh() == null) {
+            if (keygen.keyClntIke() == null) {
                 keygen.keyClntInit();
             }
-            if ((keygen.keyCommonSsh() == null) && (keygen.keyServSsh() != null)) {
+            if ((keygen.keyCommonIke() == null) && (keygen.keyServIke() != null)) {
                 keygen.keyClntCalc();
                 setupKeys();
             }
@@ -468,9 +468,9 @@ public class ifcMacSec {
         if (replyOld == 3) {
             byte[] buf;
             if (myDisc < peerDisc) {
-                buf = keygen.keyServSsh();
+                buf = keygen.keyServIke();
             } else {
-                buf = keygen.keyClntSsh();
+                buf = keygen.keyClntIke();
             }
             if (debugger.ifcMacSecTraf) {
                 logger.debug("send kex " + bits.byteDump(buf, 0, -1));
@@ -484,11 +484,11 @@ public class ifcMacSec {
             pck.merge2beg();
             return pck;
         }
-        if (keygen.keyServSsh() == null) {
+        if (keygen.keyServIke() == null) {
             if (myDisc < peerDisc) {
                 return null;
             }
-            byte[] buf = keygen.keyClntSsh();
+            byte[] buf = keygen.keyClntIke();
             if (debugger.ifcMacSecTraf) {
                 logger.debug("send kex " + bits.byteDump(buf, 0, -1));
             }
@@ -537,7 +537,7 @@ public class ifcMacSec {
         cryHashGeneric hsh = profil.trans.getHash();
         for (int i = 0; buf1.length < 1024; i++) {
             hsh.init();
-            hsh.update(keygen.keyCommonSsh());
+            hsh.update(keygen.keyCommonIke());
             hsh.update(profil.preshared.getBytes());
             hsh.update(i);
             byte[] buf2 = hsh.finish();
@@ -545,7 +545,7 @@ public class ifcMacSec {
             if (buf2.length > 0) {
                 continue;
             }
-            buf2 = keygen.keyCommonSsh();
+            buf2 = keygen.keyCommonIke();
             byte[] buf3 = profil.preshared.getBytes();
             for (int o = 0; o < buf2.length; o++) {
                 buf2[o] ^= buf3[o % buf3.length];
