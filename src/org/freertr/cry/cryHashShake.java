@@ -78,27 +78,30 @@ public class cryHashShake extends cryHashGeneric {
             case 288:
             case 384:
             case 512:
-                initSponge(1600 - (bitLength << 1));
+                rate = 1600 - (bitLength << 1);
+                for (int i = 0; i < state.length; i++) {
+                    state[i] = 0L;
+                }
+                bits.byteFill(dataQueue, 0, dataQueue.length, 0);
+                bitsInQueue = 0;
+                squeezing = false;
+                fixedOutputLength = (1600 - rate) / 2;
                 break;
         }
     }
 
-    private void initSponge(int r) {
-        rate = r;
-        for (int i = 0; i < state.length; i++) {
-            state[i] = 0L;
-        }
-        bits.byteFill(dataQueue, 0, dataQueue.length, 0);
-        bitsInQueue = 0;
-        squeezing = false;
-        fixedOutputLength = (1600 - rate) / 2;
-    }
-
-    private void absorb(byte data) {
-        dataQueue[bitsInQueue >>> 3] = data;
-        if ((bitsInQueue += 8) == rate) {
-            KeccakAbsorb(dataQueue, 0);
-            bitsInQueue = 0;
+    /**
+     * fill up buffer with results
+     *
+     * @param buf buffer
+     * @param ofs offset
+     * @param max length
+     */
+    public void fillupBuffer(byte[] buf, int ofs, int max) {
+        for (; ofs < max;) {
+            byte[] res = finish();
+            bits.byteCopy(res, 0, buf, ofs, res.length);
+            ofs += res.length;
         }
     }
 

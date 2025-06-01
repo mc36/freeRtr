@@ -126,18 +126,18 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         bits.byteCopy(buf, 0, msg, 0, msg.length);
         byte[] coins = new byte[kr.length - 32];
         bits.byteCopy(kr, 32, coins, 0, coins.length);
-        cryMLpolyVec sp = new cryMLpolyVec(this);
-        cryMLpolyVec publicKeyPolyVec = new cryMLpolyVec(this);
-        cryMLpolyVec errorPolyVector = new cryMLpolyVec(this);
-        cryMLpolyVec bp = new cryMLpolyVec(this);
-        cryMLpolyVec[] aMatrixTranspose = new cryMLpolyVec[KyberK];
-        cryMLpolyOne errorPoly = new cryMLpolyOne(this);
-        cryMLpolyOne v = new cryMLpolyOne(this);
-        cryMLpolyOne k = new cryMLpolyOne(this);
+        cryKeyMLKEMvec sp = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMvec publicKeyPolyVec = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMvec errorPolyVector = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMvec bp = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMvec[] aMatrixTranspose = new cryKeyMLKEMvec[KyberK];
+        cryKeyMLKEMpoly errorPoly = new cryKeyMLKEMpoly(this);
+        cryKeyMLKEMpoly v = new cryKeyMLKEMpoly(this);
+        cryKeyMLKEMpoly k = new cryKeyMLKEMpoly(this);
         byte[] seed = unpackPublicKey(publicKeyPolyVec, publicKeyInput);
         k.fromMsg(msg);
         for (int i = 0; i < KyberK; i++) {
-            aMatrixTranspose[i] = new cryMLpolyVec(this);
+            aMatrixTranspose[i] = new cryKeyMLKEMvec(this);
         }
         generateMatrix(aMatrixTranspose, seed, true);
         byte nonce = (byte) 0;
@@ -171,10 +171,10 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     private byte[] kemDecryptInternal(byte[] secretKey, byte[] cipherText) {
         byte[] buf = new byte[2 * KyberSymBytes];
         byte[] kr = new byte[2 * KyberSymBytes];
-        cryMLpolyVec bp = new cryMLpolyVec(this);
-        cryMLpolyVec secretKeyPolyVec = new cryMLpolyVec(this);
-        cryMLpolyOne v = new cryMLpolyOne(this);
-        cryMLpolyOne mp = new cryMLpolyOne(this);
+        cryKeyMLKEMvec bp = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMvec secretKeyPolyVec = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMpoly v = new cryKeyMLKEMpoly(this);
+        cryKeyMLKEMpoly mp = new cryKeyMLKEMpoly(this);
         unpackCipherText(bp, v, cipherText);
         unpackSecretKey(secretKeyPolyVec, secretKey);
         bp.polyVecNtt();
@@ -191,9 +191,9 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     }
 
     private byte[][] kemKeygenInternal(byte[] d) {
-        cryMLpolyVec secretKey = new cryMLpolyVec(this);
-        cryMLpolyVec publicKey = new cryMLpolyVec(this);
-        cryMLpolyVec e = new cryMLpolyVec(this);
+        cryKeyMLKEMvec secretKey = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMvec publicKey = new cryKeyMLKEMvec(this);
+        cryKeyMLKEMvec e = new cryKeyMLKEMvec(this);
         byte[] buf = new byte[64];
         symmetricHashG(buf, bits.byteConcat(d, new byte[]{(byte) KyberK}));
         byte[] publicSeed = new byte[32];
@@ -201,9 +201,9 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         bits.byteCopy(buf, 0, publicSeed, 0, 32);
         bits.byteCopy(buf, 32, noiseSeed, 0, 32);
         byte count = (byte) 0;
-        cryMLpolyVec[] aMatrix = new cryMLpolyVec[KyberK];
+        cryKeyMLKEMvec[] aMatrix = new cryKeyMLKEMvec[KyberK];
         for (int i = 0; i < KyberK; i++) {
-            aMatrix[i] = new cryMLpolyVec(this);
+            aMatrix[i] = new cryKeyMLKEMvec(this);
         }
         generateMatrix(aMatrix, publicSeed, false);
         for (int i = 0; i < KyberK; i++) {
@@ -253,14 +253,14 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         return kemKeygenInternal(d);
     }
 
-    private byte[] packCipherText(cryMLpolyVec b, cryMLpolyOne v) {
+    private byte[] packCipherText(cryKeyMLKEMvec b, cryKeyMLKEMpoly v) {
         byte[] outBuf = new byte[KyberPolyVecCompressedBytes + KyberPolyCompressedBytes];
         bits.byteCopy(b.compressPolyVec(), 0, outBuf, 0, KyberPolyVecCompressedBytes);
         bits.byteCopy(v.compressPoly(), 0, outBuf, KyberPolyVecCompressedBytes, KyberPolyCompressedBytes);
         return outBuf;
     }
 
-    private void unpackCipherText(cryMLpolyVec b, cryMLpolyOne v, byte[] cipherText) {
+    private void unpackCipherText(cryKeyMLKEMvec b, cryKeyMLKEMpoly v, byte[] cipherText) {
         byte[] compressedPolyVecCipherText = new byte[KyberPolyVecCompressedBytes];
         bits.byteCopy(cipherText, 0, compressedPolyVecCipherText, 0, compressedPolyVecCipherText.length);
         b.decompressPolyVec(compressedPolyVecCipherText);
@@ -269,25 +269,25 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         v.decompressPoly(compressedPolyCipherText);
     }
 
-    private byte[] packPublicKey(cryMLpolyVec publicKeyPolyVec, byte[] seed) {
+    private byte[] packPublicKey(cryKeyMLKEMvec publicKeyPolyVec, byte[] seed) {
         byte[] buf = new byte[KyberIndCpaPublicKeyBytes];
         bits.byteCopy(publicKeyPolyVec.toBytes(), 0, buf, 0, KyberPolyVecBytes);
         bits.byteCopy(seed, 0, buf, KyberPolyVecBytes, cryKeyMLKEM.KyberSymBytes);
         return buf;
     }
 
-    private byte[] unpackPublicKey(cryMLpolyVec publicKeyPolyVec, byte[] publicKey) {
+    private byte[] unpackPublicKey(cryKeyMLKEMvec publicKeyPolyVec, byte[] publicKey) {
         byte[] outputSeed = new byte[cryKeyMLKEM.KyberSymBytes];
         publicKeyPolyVec.fromBytes(publicKey);
         bits.byteCopy(publicKey, KyberPolyVecBytes, outputSeed, 0, cryKeyMLKEM.KyberSymBytes);
         return outputSeed;
     }
 
-    private byte[] packSecretKey(cryMLpolyVec secretKeyPolyVec) {
+    private byte[] packSecretKey(cryKeyMLKEMvec secretKeyPolyVec) {
         return secretKeyPolyVec.toBytes();
     }
 
-    private void unpackSecretKey(cryMLpolyVec secretKeyPolyVec, byte[] secretKey) {
+    private void unpackSecretKey(cryKeyMLKEMvec secretKeyPolyVec, byte[] secretKey) {
         secretKeyPolyVec.fromBytes(secretKey);
     }
 
@@ -307,7 +307,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         bits.byteCopy(buf, 0, out, 0, buf.length);
     }
 
-    private void generateMatrix(cryMLpolyVec[] aMatrix, byte[] seed, boolean transposed) {
+    private void generateMatrix(cryKeyMLKEMvec[] aMatrix, byte[] seed, boolean transposed) {
         int xofBlockBytes = 168;
         int matrixNBlocks = ((12 * cryKeyMLKEM.KyberN / 8 * (1 << 12) / cryKeyMLKEM.KyberQ + xofBlockBytes) / xofBlockBytes);
         byte[] buf = new byte[matrixNBlocks * xofBlockBytes + 2];
@@ -324,11 +324,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
                     h.update(i);
                 }
                 int outLen = matrixNBlocks * xofBlockBytes;
-                for (int outOfs = 0; outOfs < outLen;) {
-                    byte[] res = h.finish();
-                    bits.byteCopy(res, 0, buf, outOfs, res.length);
-                    outOfs += res.length;
-                }
+                h.fillupBuffer(buf, 0, outLen);
                 int ctr = aMatrix[i].vec[j].rejectionSampling(0, cryKeyMLKEM.KyberN, buf, outLen);
                 while (ctr < KyberN) {
                     int off = outLen % 3;
@@ -336,11 +332,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
                         buf[k] = buf[outLen - off + k];
                     }
                     outLen = xofBlockBytes * 2;
-                    for (int outOfs = off; outOfs < outLen;) {
-                        byte[] res = h.finish();
-                        bits.byteCopy(res, 0, buf, outOfs, res.length);
-                        outOfs += res.length;
-                    }
+                    h.fillupBuffer(buf, off, outLen);
                     outLen = off + xofBlockBytes;
                     ctr += aMatrix[i].vec[j].rejectionSampling(ctr, cryKeyMLKEM.KyberN - ctr, buf, outLen);
                 }
@@ -560,7 +552,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
 
 }
 
-class cryMLpolyOne {
+class cryKeyMLKEMpoly {
 
     public final static short[] nttZetas = new short[]{
         2285, 2571, 2970, 1812, 1493, 1422, 287, 202, 3158, 622, 1577, 182, 962,
@@ -592,7 +584,7 @@ class cryMLpolyOne {
 
     private cryKeyMLKEM engine;
 
-    public cryMLpolyOne(cryKeyMLKEM ng) {
+    public cryKeyMLKEMpoly(cryKeyMLKEM ng) {
         coeffs = new short[cryKeyMLKEM.KyberN];
         engine = ng;
     }
@@ -646,8 +638,8 @@ class cryMLpolyOne {
         }
     }
 
-    public void pointwiseAccountMontgomery(cryMLpolyVec inp1, cryMLpolyVec inp2, cryKeyMLKEM engine) {
-        cryMLpolyOne t = new cryMLpolyOne(engine);
+    public void pointwiseAccountMontgomery(cryKeyMLKEMvec inp1, cryKeyMLKEMvec inp2, cryKeyMLKEM engine) {
+        cryKeyMLKEMpoly t = new cryKeyMLKEMpoly(engine);
         baseMultMontgomery(inp1.vec[0], inp2.vec[0]);
         for (int i = 1; i < engine.KyberK; i++) {
             t.baseMultMontgomery(inp1.vec[i], inp2.vec[i]);
@@ -656,7 +648,7 @@ class cryMLpolyOne {
         reduce();
     }
 
-    public void baseMultMontgomery(cryMLpolyOne a, cryMLpolyOne b) {
+    public void baseMultMontgomery(cryKeyMLKEMpoly a, cryKeyMLKEMpoly b) {
         for (int i = 0; i < cryKeyMLKEM.KyberN / 4; i++) {
             baseMultMont(4 * i,
                     a.coeffs[4 * i], a.coeffs[4 * i + 1],
@@ -669,7 +661,7 @@ class cryMLpolyOne {
         }
     }
 
-    public void addCoeffs(cryMLpolyOne b) {
+    public void addCoeffs(cryKeyMLKEMpoly b) {
         for (int i = 0; i < cryKeyMLKEM.KyberN; i++) {
             coeffs[i] = (short) (coeffs[i] + b.coeffs[i]);
         }
@@ -812,11 +804,7 @@ class cryMLpolyOne {
         extSeed[seed.length] = nonce;
         h.init();
         h.update(extSeed, 0, extSeed.length);
-        for (int outOfs = 0; outOfs < out.length;) {
-            byte[] res = h.finish();
-            bits.byteCopy(res, 0, out, outOfs, res.length);
-            outOfs += res.length;
-        }
+        h.fillupBuffer(out, 0, out.length);
     }
 
     public void getEta1Noise(byte[] seed, byte nonce) {
@@ -831,7 +819,7 @@ class cryMLpolyOne {
         mlCBD(buf, cryKeyMLKEM.KyberEta2);
     }
 
-    public void polySubtract(cryMLpolyOne b) {
+    public void polySubtract(cryKeyMLKEMpoly b) {
         for (int i = 0; i < cryKeyMLKEM.KyberN; i++) {
             coeffs[i] = (short) (b.coeffs[i] - coeffs[i]);
         }
@@ -921,17 +909,17 @@ class cryMLpolyOne {
 
 }
 
-class cryMLpolyVec {
+class cryKeyMLKEMvec {
 
-    public cryMLpolyOne[] vec;
+    public cryKeyMLKEMpoly[] vec;
 
     private cryKeyMLKEM engine;
 
-    public cryMLpolyVec(cryKeyMLKEM ng) {
+    public cryKeyMLKEMvec(cryKeyMLKEM ng) {
         engine = ng;
-        vec = new cryMLpolyOne[engine.KyberK];
+        vec = new cryKeyMLKEMpoly[engine.KyberK];
         for (int i = 0; i < engine.KyberK; i++) {
-            vec[i] = new cryMLpolyOne(ng);
+            vec[i] = new cryKeyMLKEMpoly(ng);
         }
     }
 
@@ -1052,7 +1040,7 @@ class cryMLpolyVec {
         }
     }
 
-    public void addPoly(cryMLpolyVec b) {
+    public void addPoly(cryKeyMLKEMvec b) {
         for (int i = 0; i < engine.KyberK; i++) {
             vec[i].addCoeffs(b.vec[i]);
         }
