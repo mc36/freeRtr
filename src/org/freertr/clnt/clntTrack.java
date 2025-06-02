@@ -322,6 +322,16 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      */
     protected long lastTime;
 
+    /**
+     * start time
+     */
+    protected long startTime;
+
+    /**
+     * stop time
+     */
+    protected long stopTime;
+
     private boolean working = false;
 
     private final notifier notif = new notifier();
@@ -512,6 +522,8 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         l.add("for|" + bits.timePast(finalTime));
         l.add("changes|" + totalChng);
         l.add("measures|" + (totalUp + totalDn));
+        l.add("took|" + (stopTime - startTime));
+        l.add("last|" + bits.time2str(cfgAll.timeZoneName, stopTime + cfgAll.timeServerOffset, 3));
         l.add("ups|" + totalUp);
         l.add("downs|" + totalDn);
         l.add("current|" + lastState);
@@ -580,8 +592,9 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      * do one timer round
      */
     public synchronized void doRound() {
+        startTime = bits.getTime();
         if (time != null) {
-            if (time.matches(bits.getTime() + cfgAll.timeServerOffset)) {
+            if (time.matches(startTime + cfgAll.timeServerOffset)) {
                 haveResult(false);
                 return;
             }
@@ -849,6 +862,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      * @param succ successful
      */
     protected synchronized void haveResult(boolean succ) {
+        stopTime = bits.getTime();
         if (logging) {
             logger.info("result=" + succ);
         }
@@ -860,7 +874,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         if (succ != lastState) {
             lastState = succ;
             lastCount = 0;
-            lastTime = bits.getTime();
+            lastTime = stopTime;
         } else {
             lastCount++;
         }
@@ -888,7 +902,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
             return;
         }
         finalState = succ;
-        finalTime = bits.getTime();
+        finalTime = stopTime;
         totalChng++;
         for (int i = 0; i < clients.size(); i++) {
             ipFwd ntry = clients.get(i);

@@ -16951,3 +16951,6 @@ no todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
 no todo: .vm <--> vm20
 no todo: document the vm
 no todo: tester to have support for dynamips and vm.zip stuff
+---------------------------------- 2025-06-02 06:43:45 25.6.2
+no qc pass: udp forwarder server
+failed: udp forwarder server
