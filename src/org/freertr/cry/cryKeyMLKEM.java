@@ -582,7 +582,7 @@ class cryKeyMLKEMpoly {
 
     public short[] coeffs;
 
-    private cryKeyMLKEM engine;
+    private final cryKeyMLKEM engine;
 
     public cryKeyMLKEMpoly(cryKeyMLKEM ng) {
         coeffs = new short[cryKeyMLKEM.KyberN];
@@ -870,7 +870,7 @@ class cryKeyMLKEMpoly {
         }
     }
 
-    public static short factorQMulMont(short a, short b) {
+    public short factorQMulMont(short a, short b) {
         return montgomeryReduce(a * b);
     }
 
@@ -884,7 +884,7 @@ class cryKeyMLKEMpoly {
         coeffs[outIndex + 1] = o;
     }
 
-    public static short montgomeryReduce(int a) {
+    public short montgomeryReduce(int a) {
         short u = (short) (a * cryKeyMLKEM.KyberQinv);
         int t = u * cryKeyMLKEM.KyberQ;
         t = a - t;
@@ -892,7 +892,7 @@ class cryKeyMLKEMpoly {
         return (short) t;
     }
 
-    public static short barretReduce(short a) {
+    public short barretReduce(short a) {
         short t;
         long shift = (((long) 1) << 26);
         short v = (short) ((shift + (cryKeyMLKEM.KyberQ / 2)) / cryKeyMLKEM.KyberQ);
@@ -901,7 +901,7 @@ class cryKeyMLKEMpoly {
         return (short) (a - t);
     }
 
-    public static short conditionalSubQ(short a) {
+    public short conditionalSubQ(short a) {
         a -= cryKeyMLKEM.KyberQ;
         a += (short) ((a >> 15) & cryKeyMLKEM.KyberQ);
         return a;
@@ -913,7 +913,7 @@ class cryKeyMLKEMvec {
 
     public cryKeyMLKEMpoly[] vec;
 
-    private cryKeyMLKEM engine;
+    private final cryKeyMLKEM engine;
 
     public cryKeyMLKEMvec(cryKeyMLKEM ng) {
         engine = ng;

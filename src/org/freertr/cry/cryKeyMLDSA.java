@@ -1,13 +1,14 @@
 package org.freertr.cry;
 
+import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
 
 /**
- * module lattice digital signature
+ * module lattice digital signature algorithm
  *
  * @author matecsaba
  */
-public class cryKeyMLDSA {
+public class cryKeyMLDSA extends cryKeyGeneric {
 
     private byte[] rho;
 
@@ -25,57 +26,135 @@ public class cryKeyMLDSA {
 
     private cryHashShake256 shakeDigest = new cryHashShake256();
 
-    public final static int stream128BlockBytes = 168;
+    /**
+     * magic values
+     */
+    protected final static int stream128BlockBytes = 168;
 
-    public final static int stream256BlockBytes = 136;
+    /**
+     * magic values
+     */
+    protected final static int stream256BlockBytes = 136;
 
-    public final static int DilithiumN = 256;
+    /**
+     * magic values
+     */
+    protected final static int DilithiumN = 256;
 
-    public final static int DilithiumQ = 8380417;
+    /**
+     * magic values
+     */
+    protected final static int DilithiumQ = 8380417;
 
-    public final static int DilithiumQinv = 58728449;
+    /**
+     * magic values
+     */
+    protected final static int DilithiumQinv = 58728449;
 
-    public final static int DilithiumD = 13;
+    /**
+     * magic values
+     */
+    protected final static int DilithiumD = 13;
 
-    public final static int SeedBytes = 32;
+    /**
+     * magic values
+     */
+    protected final static int SeedBytes = 32;
 
-    public final static int CrhBytes = 64;
+    /**
+     * magic values
+     */
+    protected final static int CrhBytes = 64;
 
-    public final static int RndBytes = 32;
+    /**
+     * magic values
+     */
+    protected final static int RndBytes = 32;
 
-    public final static int TrBytes = 64;
+    /**
+     * magic values
+     */
+    protected final static int TrBytes = 64;
 
-    public final static int DilithiumPolyT1PackedBytes = 320;
+    /**
+     * magic values
+     */
+    protected final static int DilithiumPolyT1PackedBytes = 320;
 
-    public final static int DilithiumPolyT0PackedBytes = 416;
+    /**
+     * magic values
+     */
+    protected final static int DilithiumPolyT0PackedBytes = 416;
 
-    private int DilithiumPolyVecHPackedBytes;
+    /**
+     * magic values
+     */
+    protected int DilithiumPolyVecHPackedBytes;
 
-    private int DilithiumPolyZPackedBytes;
+    /**
+     * magic values
+     */
+    protected int DilithiumPolyZPackedBytes;
 
-    public int DilithiumPolyW1PackedBytes;
+    /**
+     * magic values
+     */
+    protected int DilithiumPolyW1PackedBytes;
 
-    private int DilithiumPolyEtaPackedBytes;
+    /**
+     * magic values
+     */
+    protected int DilithiumPolyEtaPackedBytes;
 
-    public int DilithiumK;
+    /**
+     * magic values
+     */
+    protected int DilithiumK;
 
-    public int DilithiumL;
+    /**
+     * magic values
+     */
+    protected int DilithiumL;
 
-    public int DilithiumEta;
+    /**
+     * magic values
+     */
+    protected int DilithiumEta;
 
-    public int DilithiumTau;
+    /**
+     * magic values
+     */
+    protected int DilithiumTau;
 
-    public int DilithiumBeta;
+    /**
+     * magic values
+     */
+    protected int DilithiumBeta;
 
-    public int DilithiumGamma1;
+    /**
+     * magic values
+     */
+    protected int DilithiumGamma1;
 
-    public int DilithiumGamma2;
+    /**
+     * magic values
+     */
+    protected int DilithiumGamma2;
 
-    public int DilithiumOmega;
+    /**
+     * magic values
+     */
+    protected int DilithiumOmega;
 
-    public int DilithiumCTilde;
+    /**
+     * magic values
+     */
+    protected int DilithiumCTilde;
 
-    public int PolyUniformGamma1NBlocks;
+    /**
+     * magic values
+     */
+    protected int PolyUniformGamma1NBlocks;
 
     public boolean keyMakeSize(int len) {
         switch (len) {
@@ -470,9 +549,216 @@ public class cryKeyMLDSA {
         bits.byteCopy(encoding, rho.length, encT1, 0, encT1.length);
     }
 
+    public String algName() {
+        return "mldsa" + DilithiumK + "" + DilithiumL;
+    }
+
+    public boolean privReader(packHolder pck) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void privWriter(packHolder pck) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean certReader(packHolder pck) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void certWriter(packHolder pck) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyMakeName(String nam) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyMakeTls(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyMakeIke(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public int keyMakeVal() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyVerify() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public int keySize() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public String keyDump() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void keyClntInit() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void keyServInit() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void keyClntCalc() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void keyServCalc() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyCommonTls() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyCommonSsh() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyCommonIke() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyClntTls() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyServTls() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyClntTls(byte[] buf, int ofs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyServTls(byte[] buf, int ofs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyClntSsh() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyServSsh() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyClntSsh(byte[] buf, int ofs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyServSsh(byte[] buf, int ofs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyClntIke() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] keyServIke() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyClntIke(byte[] buf, int ofs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyServIke(byte[] buf, int ofs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[][] keyParamTls() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[][] keyParamSsh() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyParamTls(byte[][] buf) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean keyParamSsh(byte[][] buf) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean sshReader(byte[] key) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] sshWriter() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }
 
 class cryKeyMLDSApoly {
+
+    public final static int[] nttZetas = {
+        0, 25847, -2608894, -518909, 237124, -777960, -876248, 466468,
+        1826347, 2353451, -359251, -2091905, 3119733, -2884855, 3111497, 2680103,
+        2725464, 1024112, -1079900, 3585928, -549488, -1119584, 2619752, -2108549,
+        -2118186, -3859737, -1399561, -3277672, 1757237, -19422, 4010497, 280005,
+        2706023, 95776, 3077325, 3530437, -1661693, -3592148, -2537516, 3915439,
+        -3861115, -3043716, 3574422, -2867647, 3539968, -300467, 2348700, -539299,
+        -1699267, -1643818, 3505694, -3821735, 3507263, -2140649, -1600420, 3699596,
+        811944, 531354, 954230, 3881043, 3900724, -2556880, 2071892, -2797779,
+        -3930395, -1528703, -3677745, -3041255, -1452451, 3475950, 2176455, -1585221,
+        -1257611, 1939314, -4083598, -1000202, -3190144, -3157330, -3632928, 126922,
+        3412210, -983419, 2147896, 2715295, -2967645, -3693493, -411027, -2477047,
+        -671102, -1228525, -22981, -1308169, -381987, 1349076, 1852771, -1430430,
+        -3343383, 264944, 508951, 3097992, 44288, -1100098, 904516, 3958618,
+        -3724342, -8578, 1653064, -3249728, 2389356, -210977, 759969, -1316856,
+        189548, -3553272, 3159746, -1851402, -2409325, -177440, 1315589, 1341330,
+        1285669, -1584928, -812732, -1439742, -3019102, -3881060, -3628969, 3839961,
+        2091667, 3407706, 2316500, 3817976, -3342478, 2244091, -2446433, -3562462,
+        266997, 2434439, -1235728, 3513181, -3520352, -3759364, -1197226, -3193378,
+        900702, 1859098, 909542, 819034, 495491, -1613174, -43260, -522500,
+        -655327, -3122442, 2031748, 3207046, -3556995, -525098, -768622, -3595838,
+        342297, 286988, -2437823, 4108315, 3437287, -3342277, 1735879, 203044,
+        2842341, 2691481, -2590150, 1265009, 4055324, 1247620, 2486353, 1595974,
+        -3767016, 1250494, 2635921, -3548272, -2994039, 1869119, 1903435, -1050970,
+        -1333058, 1237275, -3318210, -1430225, -451100, 1312455, 3306115, -1962642,
+        -1279661, 1917081, -2546312, -1374803, 1500165, 777191, 2235880, 3406031,
+        -542412, -2831860, -1671176, -1846953, -2584293, -3724270, 594136, -3776993,
+        -2013608, 2432395, 2454455, -164721, 1957272, 3369112, 185531, -1207385,
+        -3183426, 162844, 1616392, 3014001, 810149, 1652634, -3694233, -1799107,
+        -3038916, 3523897, 3866901, 269760, 2213111, -975884, 1717735, 472078,
+        -426683, 1723600, -1803090, 1910376, -1667432, -1104333, -260646, -3833893,
+        -2939036, -2235985, -420899, -2286327, 183443, -976891, 1612842, -3545687,
+        -554416, 3919660, -48306, -1362209, 3937738, 1400424, -846154, 1976782
+    };
 
     public int[] coeffs;
 
@@ -528,9 +814,9 @@ class cryKeyMLDSApoly {
     public void uniformEta(byte[] seed, short nonce) {
         int polyUniformEtaNBlocks;
         if (engine.DilithiumEta == 2) {
-            polyUniformEtaNBlocks = ((136 + cryKeyMLDSA.stream256BlockBytes - 1) / cryKeyMLDSA.stream256BlockBytes); // TODO: change with class
+            polyUniformEtaNBlocks = ((136 + cryKeyMLDSA.stream256BlockBytes - 1) / cryKeyMLDSA.stream256BlockBytes);
         } else {
-            polyUniformEtaNBlocks = ((227 + cryKeyMLDSA.stream256BlockBytes - 1) / cryKeyMLDSA.stream256BlockBytes); // TODO: change with class
+            polyUniformEtaNBlocks = ((227 + cryKeyMLDSA.stream256BlockBytes - 1) / cryKeyMLDSA.stream256BlockBytes);
         }
         int buflen = polyUniformEtaNBlocks * cryKeyMLDSA.stream256BlockBytes;
         byte[] buf = new byte[buflen];
@@ -629,7 +915,25 @@ class cryKeyMLDSApoly {
     }
 
     public void invNttToMont() {
-        coeffs = invNttToMont(coeffs);
+        int[] out = new int[coeffs.length];
+        System.arraycopy(coeffs, 0, out, 0, coeffs.length);
+        int k = 256;
+        int j = 0;
+        for (int len = 1; len < cryKeyMLDSA.DilithiumN; len <<= 1) {
+            for (int start = 0; start < cryKeyMLDSA.DilithiumN; start = j + len) {
+                int zeta = (-1) * nttZetas[--k];
+                for (j = start; j < start + len; j++) {
+                    int t = out[j];
+                    out[j] = t + out[j + len];
+                    out[j + len] = t - out[j + len];
+                    out[j + len] = montgomeryReduce((long) ((long) zeta * (long) out[j + len]));
+                }
+            }
+        }
+        for (j = 0; j < cryKeyMLDSA.DilithiumN; j++) {
+            out[j] = montgomeryReduce((long) ((long) 41978 * (long) out[j]));
+        }
+        coeffs = out;
     }
 
     public void conditionalAddQ() {
@@ -1026,88 +1330,31 @@ class cryKeyMLDSApoly {
         }
     }
 
-    final static int[] nttZetas = {
-        0, 25847, -2608894, -518909, 237124, -777960, -876248, 466468,
-        1826347, 2353451, -359251, -2091905, 3119733, -2884855, 3111497, 2680103,
-        2725464, 1024112, -1079900, 3585928, -549488, -1119584, 2619752, -2108549,
-        -2118186, -3859737, -1399561, -3277672, 1757237, -19422, 4010497, 280005,
-        2706023, 95776, 3077325, 3530437, -1661693, -3592148, -2537516, 3915439,
-        -3861115, -3043716, 3574422, -2867647, 3539968, -300467, 2348700, -539299,
-        -1699267, -1643818, 3505694, -3821735, 3507263, -2140649, -1600420, 3699596,
-        811944, 531354, 954230, 3881043, 3900724, -2556880, 2071892, -2797779,
-        -3930395, -1528703, -3677745, -3041255, -1452451, 3475950, 2176455, -1585221,
-        -1257611, 1939314, -4083598, -1000202, -3190144, -3157330, -3632928, 126922,
-        3412210, -983419, 2147896, 2715295, -2967645, -3693493, -411027, -2477047,
-        -671102, -1228525, -22981, -1308169, -381987, 1349076, 1852771, -1430430,
-        -3343383, 264944, 508951, 3097992, 44288, -1100098, 904516, 3958618,
-        -3724342, -8578, 1653064, -3249728, 2389356, -210977, 759969, -1316856,
-        189548, -3553272, 3159746, -1851402, -2409325, -177440, 1315589, 1341330,
-        1285669, -1584928, -812732, -1439742, -3019102, -3881060, -3628969, 3839961,
-        2091667, 3407706, 2316500, 3817976, -3342478, 2244091, -2446433, -3562462,
-        266997, 2434439, -1235728, 3513181, -3520352, -3759364, -1197226, -3193378,
-        900702, 1859098, 909542, 819034, 495491, -1613174, -43260, -522500,
-        -655327, -3122442, 2031748, 3207046, -3556995, -525098, -768622, -3595838,
-        342297, 286988, -2437823, 4108315, 3437287, -3342277, 1735879, 203044,
-        2842341, 2691481, -2590150, 1265009, 4055324, 1247620, 2486353, 1595974,
-        -3767016, 1250494, 2635921, -3548272, -2994039, 1869119, 1903435, -1050970,
-        -1333058, 1237275, -3318210, -1430225, -451100, 1312455, 3306115, -1962642,
-        -1279661, 1917081, -2546312, -1374803, 1500165, 777191, 2235880, 3406031,
-        -542412, -2831860, -1671176, -1846953, -2584293, -3724270, 594136, -3776993,
-        -2013608, 2432395, 2454455, -164721, 1957272, 3369112, 185531, -1207385,
-        -3183426, 162844, 1616392, 3014001, 810149, 1652634, -3694233, -1799107,
-        -3038916, 3523897, 3866901, 269760, 2213111, -975884, 1717735, 472078,
-        -426683, 1723600, -1803090, 1910376, -1667432, -1104333, -260646, -3833893,
-        -2939036, -2235985, -420899, -2286327, 183443, -976891, 1612842, -3545687,
-        -554416, 3919660, -48306, -1362209, 3937738, 1400424, -846154, 1976782
-    };
-
-    static int[] invNttToMont(int[] a) {
-        int[] out = new int[a.length];
-        System.arraycopy(a, 0, out, 0, a.length);
-        int k = 256;
-        int j = 0;
-        for (int len = 1; len < cryKeyMLDSA.DilithiumN; len <<= 1) {
-            for (int start = 0; start < cryKeyMLDSA.DilithiumN; start = j + len) {
-                int zeta = (-1) * nttZetas[--k];
-                for (j = start; j < start + len; j++) {
-                    int t = out[j];
-                    out[j] = t + out[j + len];
-                    out[j + len] = t - out[j + len];
-                    out[j + len] = montgomeryReduce((long) ((long) zeta * (long) out[j + len]));
-                }
-            }
-        }
-        for (j = 0; j < cryKeyMLDSA.DilithiumN; j++) {
-            out[j] = montgomeryReduce((long) ((long) 41978 * (long) out[j]));
-        }
-        return out;
-    }
-
-    static int montgomeryReduce(long a) {
+    public int montgomeryReduce(long a) {
         int t = (int) (a * cryKeyMLDSA.DilithiumQinv);
         t = (int) ((a - ((long) t) * cryKeyMLDSA.DilithiumQ) >>> 32);
         return t;
     }
 
-    static int reduce32(int a) {
+    public int reduce32(int a) {
         int t = (a + (1 << 22)) >> 23;
         t = a - t * cryKeyMLDSA.DilithiumQ;
         return t;
     }
 
-    static int conditionalAddQ(int a) {
+    public int conditionalAddQ(int a) {
         a += (a >> 31) & cryKeyMLDSA.DilithiumQ;
         return a;
     }
 
-    public static int[] power2Round(int a) {
+    public int[] power2Round(int a) {
         int[] out = new int[2];
         out[0] = (a + (1 << (cryKeyMLDSA.DilithiumD - 1)) - 1) >> cryKeyMLDSA.DilithiumD;
         out[1] = a - (out[0] << cryKeyMLDSA.DilithiumD);
         return out;
     }
 
-    public static int[] decompose(int a, int gamma2) {
+    public int[] decompose(int a, int gamma2) {
         int a1 = (a + 127) >> 7;
         if (gamma2 == (cryKeyMLDSA.DilithiumQ - 1) / 32) {
             a1 = (a1 * 1025 + (1 << 21)) >> 22;
@@ -1121,7 +1368,7 @@ class cryKeyMLDSApoly {
         return new int[]{a0, a1};
     }
 
-    public static int makeHint(int a0, int a1, cryKeyMLDSA engine) {
+    public int makeHint(int a0, int a1, cryKeyMLDSA engine) {
         int g2 = engine.DilithiumGamma2, q = cryKeyMLDSA.DilithiumQ;
         if (a0 <= g2 || a0 > q - g2 || (a0 == q - g2 && a1 == 0)) {
             return 0;
@@ -1129,7 +1376,7 @@ class cryKeyMLDSApoly {
         return 1;
     }
 
-    public static int useHint(int a, int hint, int gamma2) {
+    public int useHint(int a, int hint, int gamma2) {
         int[] intArray = decompose(a, gamma2);
         int a0 = intArray[0];
         int a1 = intArray[1];
