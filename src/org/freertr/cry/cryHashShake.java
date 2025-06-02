@@ -54,7 +54,7 @@ public class cryHashShake extends cryHashGeneric {
     }
 
     public int getBlockSize() {
-        return 64;
+        return fixedOutputLength / 4;
     }
 
     public byte[] finish() {
