@@ -14,6 +14,7 @@ scanOne "username" `whoami`
 scanOne "non-ascii" "[^\x00-\x7F]"
 scanOne "override" "\@Override"
 scanOne "exception" "throw new"
+scanOne "this" "this\."
 scanOne "here" "\"here"
 scanOne "stat-fin" "static\ final"
 scanOne "stat-imp" "import\ static"
