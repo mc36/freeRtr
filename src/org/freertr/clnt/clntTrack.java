@@ -524,6 +524,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         l.add("measures|" + (totalUp + totalDn));
         l.add("took|" + (stopTime - startTime));
         l.add("last|" + bits.time2str(cfgAll.timeZoneName, stopTime + cfgAll.timeServerOffset, 3));
+        l.add("ago|" + bits.timePast(stopTime));
         l.add("ups|" + totalUp);
         l.add("downs|" + totalDn);
         l.add("current|" + lastState);

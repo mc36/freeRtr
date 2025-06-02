@@ -1653,7 +1653,7 @@ public class aaaaaaaaa {
         jsgnr.update(message);
         System.out.println("java:" + jsgnr.verify(msgntr));
     }
-    
+
     private static byte[] getEnding(byte[] buf, byte[] beg) {
         byte[] res = new byte[buf.length - beg.length];
         bits.byteCopy(buf, beg.length, res, 0, res.length);
