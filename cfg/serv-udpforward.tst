@@ -47,6 +47,7 @@ server udpfwd fwd
  port 1234
  target vrf v1
  target address 1.1.1.1
+ source port 4321
  target port 4321
  vrf v2
  exit
