@@ -36,7 +36,12 @@ public class servUdpFwd extends servGeneric implements prtServP {
     /**
      * port number
      */
-    public final static int port = 1;
+    public final static int port = 2263;
+
+    /**
+     * source port
+     */
+    public int sourceP = 0;
 
     /**
      * target vrf
@@ -73,7 +78,8 @@ public class servUdpFwd extends servGeneric implements prtServP {
     public final static String[] defaultL = {
         "server udpfwd .*!" + cmds.tabulator + "port " + port,
         "server udpfwd .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target interface",
+        "server udpfwd .*!" + cmds.tabulator + "source port 0",
+        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source interface",
         "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
 
     /**
@@ -87,15 +93,16 @@ public class servUdpFwd extends servGeneric implements prtServP {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         cmds.cfgLine(l, !logging, beg, "logging", "");
+        if (trgIface == null) {
+            l.add(beg + "no source interface");
+        } else {
+            l.add(beg + "source interface " + trgIface.name);
+        }
+        l.add(beg + "source port " + sourceP);
         if (trgVrf == null) {
             l.add(beg + "no target vrf");
         } else {
             l.add(beg + "target vrf " + trgVrf.name);
-        }
-        if (trgIface == null) {
-            l.add(beg + "no target interface");
-        } else {
-            l.add(beg + "target interface " + trgIface.name);
         }
         cmds.cfgLine(l, trgAddr == null, beg, "target address", "" + trgAddr);
         l.add(beg + "target port " + trgPort);
@@ -107,6 +114,23 @@ public class servUdpFwd extends servGeneric implements prtServP {
             logging = true;
             return false;
         }
+        if (a.equals("source")) {
+            a = cmd.word();
+            if (a.equals("interface")) {
+                cfgIfc i = cfgAll.ifcFind(cmd.word(), 0);
+                if (i == null) {
+                    cmd.error("no such interface");
+                    return false;
+                }
+                trgIface = i;
+                return false;
+            }
+            if (a.equals("port")) {
+                sourceP = bits.str2num(cmd.word());
+                return false;
+            }
+            return true;
+        }
         if (a.equals("target")) {
             a = cmd.word();
             if (a.equals("vrf")) {
@@ -116,15 +140,6 @@ public class servUdpFwd extends servGeneric implements prtServP {
                     return false;
                 }
                 trgVrf = v;
-                return false;
-            }
-            if (a.equals("interface")) {
-                cfgIfc i = cfgAll.ifcFind(cmd.word(), 0);
-                if (i == null) {
-                    cmd.error("no such interface");
-                    return false;
-                }
-                trgIface = i;
                 return false;
             }
             if (a.equals("address")) {
@@ -150,6 +165,18 @@ public class servUdpFwd extends servGeneric implements prtServP {
             logging = false;
             return false;
         }
+        if (a.equals("source")) {
+            a = cmd.word();
+            if (a.equals("interface")) {
+                trgIface = null;
+                return false;
+            }
+            if (a.equals("port")) {
+                sourceP = 0;
+                return false;
+            }
+            return true;
+        }
         if (a.equals("target")) {
             a = cmd.word();
             if (a.equals("address")) {
@@ -158,10 +185,6 @@ public class servUdpFwd extends servGeneric implements prtServP {
             }
             if (a.equals("vrf")) {
                 trgVrf = null;
-                return false;
-            }
-            if (a.equals("interface")) {
-                trgIface = null;
                 return false;
             }
             if (a.equals("port")) {
@@ -175,11 +198,14 @@ public class servUdpFwd extends servGeneric implements prtServP {
 
     public void srvHelp(userHelping l) {
         l.add(null, "1 .  logging                      set logging");
+        l.add(null, "1 2  source                       set session source");
+        l.add(null, "2 3    interface                  set source interface");
+        l.add(null, "3 .      <name:ifc>               name of interface");
+        l.add(null, "2 3    port                       set target port");
+        l.add(null, "3 .      <num>                    remote port");
         l.add(null, "1 2  target                       set session target");
         l.add(null, "2 3    vrf                        set source vrf");
         l.add(null, "3 .      <name:vrf>               name of vrf");
-        l.add(null, "2 3    interface                  set source interface");
-        l.add(null, "3 .      <name:ifc>               name of interface");
         l.add(null, "2 3    address                    set target address");
         l.add(null, "3 .      <addr>                   remote address");
         l.add(null, "2 3    port                       set target port");
@@ -274,7 +300,7 @@ public class servUdpFwd extends servGeneric implements prtServP {
         if (trgIface != null) {
             fwdIfc = trgIface.getFwdIfc(trgAddr);
         }
-        serv = udp.packetConnect(this, fwdIfc, trgPort, trgAddr, trgPort, "udpfwd", -1, null, -1, -1);
+        serv = udp.packetConnect(this, fwdIfc, sourceP, trgAddr, trgPort, "udpfwd", -1, null, -1, -1);
         if (serv == null) {
             return true;
         }
