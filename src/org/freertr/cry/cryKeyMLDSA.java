@@ -500,29 +500,75 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return out;
     }
 
-    public void decodePrivateKey(byte[] encoding) {
-        int index = 0;
+    public String algName() {
+        return "mldsa";
+    }
+
+    public boolean privReader(packHolder pck) {
+        encAsn1 a = new encAsn1();
+        if (a.tagRead(pck)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        pck = a.getPack();
+        BigInteger ver = encAsn1.readBigInt(pck);
+        if (ver == null) {
+            return true;
+        }
+        if (a.tagRead(pck)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        packHolder p = a.getPack();
+        if (a.tagRead(p)) {
+            return true;
+        }
+        if (useOid(cryCertificate.objid2int(a))) {
+            return true;
+        }
+        if (a.tagRead(pck)) {
+            return true;
+        }
+        if ((a.cnst) || (a.tag != encAsn1.tagOctetString)) {
+            return true;
+        }
+        p = a.getPack();
+        if (a.tagRead(p)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        p = a.getPack();
+        if (a.tagRead(p)) {
+            return true;
+        }
+        p = a.getPack();
         rho = new byte[SeedBytes];
-        bits.byteCopy(encoding, index, rho, 0, rho.length);
-        index += SeedBytes;
+        p.getCopy(rho, 0, 0, rho.length);
+        p.getSkip(rho.length);
         key = new byte[SeedBytes];
-        bits.byteCopy(encoding, index, key, 0, key.length);
-        index += SeedBytes;
+        p.getCopy(key, 0, 0, key.length);
+        p.getSkip(key.length);
         tr = new byte[TrBytes];
-        bits.byteCopy(encoding, index, tr, 0, tr.length);
-        index += TrBytes;
+        p.getCopy(tr, 0, 0, tr.length);
+        p.getSkip(tr.length);
         int delta = DilithiumL * DilithiumPolyEtaPackedBytes;
         encS1 = new byte[delta];
-        bits.byteCopy(encoding, index, encS1, 0, encS1.length);
-        index += delta;
+        p.getCopy(encS1, 0, 0, encS1.length);
+        p.getSkip(encS1.length);
         delta = DilithiumK * DilithiumPolyEtaPackedBytes;
         encS2 = new byte[delta];
-        bits.byteCopy(encoding, index, encS2, 0, encS2.length);
-        index += delta;
+        p.getCopy(encS2, 0, 0, encS2.length);
+        p.getSkip(encS2.length);
         delta = DilithiumK * DilithiumPolyT0PackedBytes;
         encT0 = new byte[delta];
-        bits.byteCopy(encoding, index, encT0, 0, encT0.length);
-        index += delta;
+        p.getCopy(encT0, 0, 0, encT0.length);
+        p.getSkip(encT0.length);
         cryKeyMLDSAmat aMatrix = new cryKeyMLDSAmat(this);
         cryKeyMLDSAvecL s1 = new cryKeyMLDSAvecL(this);
         cryKeyMLDSAvecK s2 = new cryKeyMLDSAvecK(this);
@@ -540,21 +586,27 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         t1.conditionalAddQ();
         t1.power2Round(t0);
         encT1 = packPublicKey(t1);
-    }
-
-    public String algName() {
-        return "mldsa";
-    }
-
-    public boolean privReader(packHolder pck) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;
     }
 
     private int[] getOid() {
-        int[] oid = new int[cryCertificate.oidMlDss44sha512.length];
-        System.arraycopy(cryCertificate.oidMlDss44sha512, 0, oid, 0, oid.length);
-        oid[oid.length - 1] += (DilithiumCTilde >>> 4) - 2;
-        return oid;
+        return cryCertificate.int2objId(cryCertificate.typMlDss44sha512 + (DilithiumCTilde >>> 4) - 2);
+    }
+
+    private boolean useOid(int oid) {
+        switch (oid) {
+            case cryCertificate.typMlDss44sha512:
+                initMagic(44);
+                return false;
+            case cryCertificate.typMlDss65sha512:
+                initMagic(65);
+                return false;
+            case cryCertificate.typMlDss87sha512:
+                initMagic(87);
+                return false;
+            default:
+                return true;
+        }
     }
 
     public void privWriter(packHolder pck) {
@@ -610,18 +662,8 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         if (a.tagRead(p)) {
             return true;
         }
-        switch (cryCertificate.objid2int(a)) {
-            case cryCertificate.typMlDss44sha512:
-                initMagic(44);
-                break;
-            case cryCertificate.typMlDss65sha512:
-                initMagic(65);
-                break;
-            case cryCertificate.typMlDss87sha512:
-                initMagic(87);
-                break;
-            default:
-                return true;
+        if (useOid(cryCertificate.objid2int(a))) {
+            return true;
         }
         if (a.tagRead(pck)) {
             return true;
@@ -688,11 +730,11 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;
     }
 
     public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new byte[0];
     }
 
     public boolean keyMakeName(String nam) {
@@ -732,111 +774,107 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public void keyClntInit() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public void keyServInit() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public void keyClntCalc() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public void keyServCalc() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public byte[] keyCommonTls() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public byte[] keyCommonSsh() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public byte[] keyCommonIke() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public byte[] keyClntTls() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public byte[] keyServTls() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public boolean keyClntTls(byte[] buf, int ofs) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public boolean keyServTls(byte[] buf, int ofs) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public byte[] keyClntSsh() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public byte[] keyServSsh() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public boolean keyClntSsh(byte[] buf, int ofs) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public boolean keyServSsh(byte[] buf, int ofs) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public byte[] keyClntIke() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public byte[] keyServIke() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public boolean keyClntIke(byte[] buf, int ofs) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public boolean keyServIke(byte[] buf, int ofs) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public byte[][] keyParamTls() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public byte[][] keyParamSsh() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public boolean keyParamTls(byte[][] buf) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public boolean keyParamSsh(byte[][] buf) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public boolean sshReader(byte[] key) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;
     }
 
     public byte[] sshWriter() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new byte[0];
     }
 
     public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;
     }
 
     public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new byte[0];
     }
 
 }
