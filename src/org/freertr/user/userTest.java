@@ -613,13 +613,12 @@ public class userTest {
                 cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
             }
             kmldsa.keyMakeSize(44);
-            kmldsa.doKeyPair();
             ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 byte[] buf = init.getBytes();
-                ///kmldsa.doSigning(buf);
-                ///ok |= kmldsa.doVerify(buf);
+                kmldsa.doSigning(buf);
+                ok |= kmldsa.doVerify(buf);
             }
             cmd.error("mldsa: " + kmldsa.keyVerify() + " " + kmldsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {

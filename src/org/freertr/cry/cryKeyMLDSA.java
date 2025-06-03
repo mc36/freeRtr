@@ -26,6 +26,11 @@ public class cryKeyMLDSA extends cryKeyGeneric {
 
     private byte[] encS2;
 
+    /**
+     * signature
+     */
+    protected byte[] sgn;
+
     private cryHashShake256 shakeDigest = new cryHashShake256();
 
     /**
@@ -158,7 +163,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
      */
     protected int PolyUniformGamma1NBlocks;
 
-    public boolean keyMakeSize(int len) {
+    private boolean initMagic(int len) {
         switch (len) {
             case 44:
                 DilithiumK = 4;
@@ -214,28 +219,13 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return false;
     }
 
-    public void initSign() {
-        shakeDigest.init();
-        shakeDigest.update(tr, 0, TrBytes);
-        absorbCtx(false, new byte[0]);
-    }
 
-    public void initVerify() {
-        shakeDigest.init();
-        byte[] mu = new byte[TrBytes];
-        shakeDigest.update(rho, 0, rho.length);
-        shakeDigest.update(encT1, 0, encT1.length);
-        shakeDigest.fillupBuffer(mu, 0, TrBytes);
-        shakeDigest.init();
-        shakeDigest.update(mu, 0, TrBytes);
-        absorbCtx(false, new byte[0]);
-    }
 
-    public void update(byte[] in, int off, int len) {
+    public void doMessage(byte[] in, int off, int len) {
         shakeDigest.update(in, off, len);
     }
 
-    public void doKeyPair() {
+    private void keyMake() {
         shakeDigest.init();
         byte[] seedBuf = new byte[SeedBytes];
         for (int i = 0; i < seedBuf.length; i++) {
@@ -290,7 +280,16 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         }
     }
 
-    public byte[] doSignature() {
+    /**
+     * do signature
+     *
+     * @param msg cleartext
+     */
+    public void doSigning(byte[] msg) {
+        shakeDigest.init();
+        shakeDigest.update(tr, 0, TrBytes);
+        absorbCtx(false, new byte[0]);
+        shakeDigest.update(msg, 0, msg.length);
         byte[] rnd = new byte[RndBytes];
         for (int i = 0; i < rnd.length; i++) {
             rnd[i] = (byte) bits.randomB();
@@ -384,12 +383,28 @@ public class cryKeyMLDSA extends cryKeyGeneric {
                 }
                 outSig[end + DilithiumOmega + i] = (byte) pls;
             }
-            return outSig;
+            sgn = outSig;
+            return;
         }
-        return null;
+        sgn = null;
     }
 
-    public boolean doSignature(byte[] sig) {
+    /**
+     * do verification
+     *
+     * @param msg cleartext
+     * @return false on success, true on error
+     */
+    public boolean doVerify(byte[] msg) {
+        shakeDigest.init();
+        byte[] mu = new byte[TrBytes];
+        shakeDigest.update(rho, 0, rho.length);
+        shakeDigest.update(encT1, 0, encT1.length);
+        shakeDigest.fillupBuffer(mu, 0, TrBytes);
+        shakeDigest.init();
+        shakeDigest.update(mu, 0, TrBytes);
+        absorbCtx(false, new byte[0]);
+        shakeDigest.update(msg, 0, msg.length);
         byte[] buf = new byte[Math.max(CrhBytes + DilithiumK * DilithiumPolyW1PackedBytes, DilithiumCTilde)];
         shakeDigest.fillupBuffer(buf, 0, shakeDigest.getBlockSize());
         shakeDigest.init();
@@ -398,7 +413,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         int end = DilithiumCTilde;
         for (int i = 0; i < DilithiumL; i++) {
             byte[] tmp = new byte[DilithiumPolyZPackedBytes];
-            bits.byteCopy(sig, end + i * DilithiumPolyZPackedBytes, tmp, 0, tmp.length);
+            bits.byteCopy(sgn, end + i * DilithiumPolyZPackedBytes, tmp, 0, tmp.length);
             z.vec[i].zUnpack(tmp);
         }
         end += DilithiumL * DilithiumPolyZPackedBytes;
@@ -407,24 +422,24 @@ public class cryKeyMLDSA extends cryKeyGeneric {
             for (int j = 0; j < DilithiumN; j++) {
                 h.vec[i].coeffs[j] = 0;
             }
-            if ((sig[end + DilithiumOmega + i] & 0xFF) < pls || (sig[end + DilithiumOmega + i] & 0xFF) > DilithiumOmega) {
-                return false;
+            if ((sgn[end + DilithiumOmega + i] & 0xFF) < pls || (sgn[end + DilithiumOmega + i] & 0xFF) > DilithiumOmega) {
+                return true;
             }
-            for (int j = pls; j < (sig[end + DilithiumOmega + i] & 0xFF); j++) {
-                if (j > pls && (sig[end + j] & 0xFF) <= (sig[end + j - 1] & 0xFF)) {
-                    return false;
+            for (int j = pls; j < (sgn[end + DilithiumOmega + i] & 0xFF); j++) {
+                if (j > pls && (sgn[end + j] & 0xFF) <= (sgn[end + j - 1] & 0xFF)) {
+                    return true;
                 }
-                h.vec[i].coeffs[(sig[end + j] & 0xFF)] = 1;
+                h.vec[i].coeffs[(sgn[end + j] & 0xFF)] = 1;
             }
-            pls = (int) (sig[end + DilithiumOmega + i]);
+            pls = (int) (sgn[end + DilithiumOmega + i]);
         }
         for (int j = pls; j < DilithiumOmega; j++) {
-            if ((sig[end + j] & 0xFF) != 0) {
-                return false;
+            if ((sgn[end + j] & 0xFF) != 0) {
+                return true;
             }
         }
         if (z.checkNorm(DilithiumGamma1 - DilithiumBeta)) {
-            return false;
+            return true;
         }
         cryKeyMLDSApoly cp = new cryKeyMLDSApoly(this);
         cryKeyMLDSAmat aMatrix = new cryKeyMLDSAmat(this);
@@ -435,7 +450,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
             bits.byteCopy(encT1, i * DilithiumPolyT1PackedBytes, tmp, 0, tmp.length);
             t1.vec[i].polyt1Unpack(tmp);
         }
-        cp.challenge(sig, 0, DilithiumCTilde);
+        cp.challenge(sgn, 0, DilithiumCTilde);
         aMatrix.expandMatrix(rho);
         z.polyVecNtt();
         aMatrix.pointwiseMontgomery(w1, z);
@@ -453,7 +468,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         shakeDigest.update(buf, 0, CrhBytes + DilithiumK * DilithiumPolyW1PackedBytes);
         shakeDigest.fillupBuffer(buf, 0, DilithiumCTilde);
         shakeDigest.init();
-        return bits.byteComp(sig, 0, buf, 0, DilithiumCTilde) == 0;
+        return bits.byteComp(sgn, 0, buf, 0, DilithiumCTilde) != 0;
     }
 
     private void absorbCtx(boolean isPreHash, byte[] ctx) {
@@ -603,19 +618,27 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean keyMakeName(String nam) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
+    }
+
+    public boolean keyMakeSize(int len) {
+        if (initMagic(len)) {
+            return true;
+        }
+        keyMake();
+        return false;
     }
 
     public boolean keyMakeTls(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public boolean keyMakeIke(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public int keyMakeVal() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return -1;
     }
 
     public boolean keyVerify() {
@@ -627,7 +650,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public String keyDump() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
 
     public void keyClntInit() {
@@ -1599,91 +1622,3 @@ class cryKeyMLDSAmat {
 }
 
 
-/*
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.spec.X509EncodedKeySpec;
-
-public class aaaaaaaaa {
-
-    public static void main(String[] args) throws Exception {
-        oneRound(44);
-        oneRound(65);
-        oneRound(87);
-    }
-
-    private static void oneRound(int mode) throws Exception {
-        byte[] message
-                = ("hello " + mode + " mode").getBytes();
-        System.out.println("------------- "
-                + new String(message));
-        KeyPair jkpg = KeyPairGenerator.getInstance("ML-DSA-"
-                + mode).genKeyPair();
-        PublicKey jpub = jkpg.getPublic();
-        PrivateKey jpriv
-                = jkpg.getPrivate();
-        Signature jsgnr = Signature.getInstance("ML-DSA-" + mode);
-        jsgnr.initSign(jpriv);
-        jsgnr.update(message);
-        byte[] osign = jsgnr.sign();
-        byte[] opriv = getEnding(jpriv.getEncoded(), beginPriv);
-        byte[] opub
-                = getEnding(jpub.getEncoded(), beginPub);
-        jsgnr.initVerify(jpub);
-        jsgnr.update(message);
-        System.out.println("java:" + jsgnr.verify(osign));
-        System.out.println("java:" + opub.length + " " + opriv.length + " "
-                + osign.length);
-
-        cryKeyMLDSA engine = new cryKeyMLDSA();
-        engine.keyMakeSize(mode);
-        engine.doKeyPair();
-        byte[] mpriv = engine.encodePrivateKey();
-        byte[] mpub
-                = engine.encodePublicKey();
-        engine.decodePrivateKey(mpriv);
-        engine.initSign();
-        engine.update(message, 0, message.length);
-        byte[] msgntr
-                = engine.doSignature();
-        System.out.println("self:" + mpub.length + " "
-                + mpriv.length + " " + msgntr.length);
-
-        engine.initVerify();
-        engine.update(message, 0, message.length);
-        System.out.println("self:" + engine.doSignature(msgntr));
-
-        engine.decodePublicKey(opub);
-        engine.initVerify();;
-        engine.update(message, 0,
-                message.length);
-        System.out.println("self:" + engine.doSignature(osign));
-
-        jpub = KeyFactory.getInstance("ML-DSA-" + mode).generatePublic(new X509EncodedKeySpec(bits.byteConcat(beginPub, mpub)));
-        jsgnr
-                = Signature.getInstance("ML-DSA-" + mode);
-        jsgnr.initVerify(jpub);
-        jsgnr.update(message);
-        System.out.println("java:" + jsgnr.verify(msgntr));
-    }
-
-    private static byte[] getEnding(byte[] buf, byte[] beg) {
-        byte[] res = new byte[buf.length - beg.length];
-        bits.byteCopy(buf, beg.length, res, 0, res.length);
-        bits.byteCopy(buf, 0, beg, 0, beg.length);
-        return res;
-    }
-
-    final static byte[] beginPub = new byte[]{(byte) 0x30, (byte) 0x82, (byte) 0x07, (byte) 0xB2, (byte) 0x30, (byte) 0x0B, (byte) 0x06, (byte) 0x09, (byte) 0x60, (byte) 0x86, (byte) 0x48, (byte) 0x01, (byte) 0x65, (byte) 0x03, (byte) 0x04, (byte) 0x03, (byte) 0x12, (byte) 0x03, (byte) 0x82, (byte) 0x07, (byte) 0xA1, (byte) 0x00};
-
-    final static byte[] beginPriv = new byte[]{(byte) 0x30, (byte) 0x82, (byte) 0x0F, (byte) 0xD8, (byte) 0x02, (byte) 0x01, (byte) 0x00, (byte) 0x30, (byte) 0x0B, (byte) 0x06, (byte) 0x09, (byte) 0x60, (byte) 0x86, (byte) 0x48, (byte) 0x01, (byte) 0x65, (byte) 0x03, (byte) 0x04, (byte) 0x03, (byte) 0x12, (byte) 0x04, (byte) 0x82, (byte) 0x0F, (byte) 0xC4, (byte) 0x04, (byte) 0x82, (byte) 0x0F, (byte) 0xC0};
-
-}
-
-///////////hereeee
-
- */

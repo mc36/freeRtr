@@ -172,17 +172,17 @@ public class cryCertificate {
     public final static int[] oidEcDssSha512 = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x04, 0x03, 0x04};
 
     /**
-     * mldss-44 encryption 
+     * mldss-44 encryption
      */
     public final static int[] oidMlDss44 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x11};
 
     /**
-     * mldss-65 encryption 
+     * mldss-65 encryption
      */
     public final static int[] oidMlDss65 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x12};
 
     /**
-     * mldss-87 encryption 
+     * mldss-87 encryption
      */
     public final static int[] oidMlDss87 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x13};
 
@@ -541,6 +541,7 @@ public class cryCertificate {
 
     /**
      * check if header line
+     *
      * @param a string
      * @return result
      */
