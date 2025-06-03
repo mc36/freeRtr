@@ -79,7 +79,7 @@ server sdwan v9
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
- security ecdsakey mldsa
+ security mldsakey mldsa
  hub h
  pool4 p4
  pool6 p6

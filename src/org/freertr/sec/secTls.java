@@ -4,6 +4,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryCertificate;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.pack.packTls;
 import org.freertr.pack.packTlsHndshk;
@@ -61,6 +62,11 @@ public class secTls implements Runnable {
     protected cryKeyECDSA keyecdsa;
 
     /**
+     * mldss key
+     */
+    protected cryKeyMLDSA keymldsa;
+
+    /**
      * rsa certificate
      */
     protected cryCertificate certrsa;
@@ -74,6 +80,11 @@ public class secTls implements Runnable {
      * ecdss certificate
      */
     protected cryCertificate certecdsa;
+
+    /**
+     * mldss certificate
+     */
+    protected cryCertificate certmldsa;
 
     /**
      * client pubkey
@@ -141,18 +152,22 @@ public class secTls implements Runnable {
      * @param rsaK rsa key
      * @param dsaK dss key
      * @param ecdsaK ecdss key
+     * @param mldsaK mldss key
      * @param rsaC rsa certificate
      * @param dsaC dss certificate
      * @param ecdsaC ecdss certificate
+     * @param mldsaC mldss certificate
      */
-    public void startServer(cryKeyRSA rsaK, cryKeyDSA dsaK, cryKeyECDSA ecdsaK, cryCertificate rsaC, cryCertificate dsaC, cryCertificate ecdsaC) {
+    public void startServer(cryKeyRSA rsaK, cryKeyDSA dsaK, cryKeyECDSA ecdsaK, cryKeyMLDSA mldsaK, cryCertificate rsaC, cryCertificate dsaC, cryCertificate ecdsaC, cryCertificate mldsaC) {
         client = false;
         keyrsa = rsaK;
         keydsa = dsaK;
         keyecdsa = ecdsaK;
+        keymldsa = mldsaK;
         certrsa = rsaC;
         certdsa = dsaC;
         certecdsa = ecdsaC;
+        certmldsa = mldsaC;
         if (certrsa == null) {
             certrsa = cryCertificate.createSelfSigned(keyrsa, cfgAll.getFqdn(), 365);
         }
@@ -161,6 +176,9 @@ public class secTls implements Runnable {
         }
         if (certecdsa == null) {
             certecdsa = cryCertificate.createSelfSigned(keyecdsa, cfgAll.getFqdn(), 365);
+        }
+        if (certmldsa == null) {
+            certmldsa = cryCertificate.createSelfSigned(keymldsa, cfgAll.getFqdn(), 365);
         }
         workerStart();
     }

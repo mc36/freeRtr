@@ -800,13 +800,15 @@ public class userTest {
             cryKeyRSA rsa = new cryKeyRSA();
             cryKeyDSA dss = new cryKeyDSA();
             cryKeyECDSA ecdss = new cryKeyECDSA();
+            cryKeyMLDSA mldss = new cryKeyMLDSA();
             rsa.keyMakeSize(1024);
             dss.keyMakeSize(512);
             ecdss.keyMakeSize(128);
+            mldss.keyMakeSize(44);
             pipeLine conn = new pipeLine(65536, false);
             secSsh srvH = new secSsh(conn.getSide(), new pipeLine(65536, false));
             secSsh clnH = new secSsh(conn.getSide(), new pipeLine(65536, false));
-            srvH.startServer(new authConstant(true), rsa, dss, ecdss);
+            srvH.startServer(new authConstant(true), rsa, dss, ecdss, mldss);
             clnH.startClient(null, "c", "c");
             doTestPipe("ssh", srvH.getPipe(), clnH.getPipe(), 1024);
             conn.setClose();
@@ -1095,9 +1097,11 @@ public class userTest {
         cryKeyRSA rsa = new cryKeyRSA();
         cryKeyDSA dss = new cryKeyDSA();
         cryKeyECDSA ecdss = new cryKeyECDSA();
+        cryKeyMLDSA mldss = new cryKeyMLDSA();
         rsa.keyMakeSize(1024);
         dss.keyMakeSize(512);
         ecdss.keyMakeSize(128);
+        mldss.keyMakeSize(44);
         pipeLine conn = new pipeLine(65536, dtls);
         secTls srvH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
         secTls clnH = new secTls(conn.getSide(), new pipeLine(65536, dtls), dtls);
@@ -1105,7 +1109,7 @@ public class userTest {
         srvH.maxVer = 0x300 + max;
         clnH.minVer = srvH.minVer;
         clnH.maxVer = srvH.maxVer;
-        srvH.startServer(rsa, dss, ecdss, null, null, null);
+        srvH.startServer(rsa, dss, ecdss, mldss, null, null, null, null);
         clnH.startClient(null);
         pipeSide pip = srvH.getPipe();
         pip.wait4ready(5000);

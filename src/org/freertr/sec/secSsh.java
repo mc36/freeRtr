@@ -6,6 +6,7 @@ import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.pack.packSsh;
 import org.freertr.pack.packSshAuth;
@@ -77,6 +78,11 @@ public class secSsh implements Runnable {
      * ecdss key
      */
     protected cryKeyECDSA keyecdsa;
+
+    /**
+     * mldss key
+     */
+    protected cryKeyMLDSA keymldsa;
 
     /**
      * client pubkey
@@ -164,13 +170,15 @@ public class secSsh implements Runnable {
      * @param rsa rsa key
      * @param dsa dss key
      * @param ecdsa ecdss key
+     * @param mldsa mldss key
      */
-    public void startServer(authGeneric auth, cryKeyRSA rsa, cryKeyDSA dsa, cryKeyECDSA ecdsa) {
+    public void startServer(authGeneric auth, cryKeyRSA rsa, cryKeyDSA dsa, cryKeyECDSA ecdsa, cryKeyMLDSA mldsa) {
         client = false;
         servAuth = auth;
         keyrsa = rsa;
         keydsa = dsa;
         keyecdsa = ecdsa;
+        keymldsa = mldsa;
         workerStart();
     }
 

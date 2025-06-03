@@ -51,7 +51,7 @@ public class secServer {
                 return pipe;
             case servGeneric.protoSsh:
                 secSsh ssh = new secSsh(pipe, pipeLine.doClone(sample, pipe.isBlockMode()));
-                ssh.startServer(auther, keyrsa, keydsa, keyecdsa);
+                ssh.startServer(auther, keyrsa, keydsa, keyecdsa, keymldsa);
                 return ssh.getPipe();
             case servGeneric.protoTls:
             case servGeneric.protoDtls:
@@ -59,7 +59,7 @@ public class secServer {
                 secTls tls = new secTls(pipe, pipeLine.doClone(sample, pipe.isBlockMode()), dtls);
                 tls.minVer = 0x300 + cfgAll.tlsVerMin;
                 tls.maxVer = 0x300 + cfgAll.tlsVerMax;
-                tls.startServer(keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
+                tls.startServer(keyrsa, keydsa, keyecdsa, keymldsa, certrsa, certdsa, certecdsa, certmldsa);
                 return tls.getPipe();
             case servGeneric.protoTelnet:
                 secTelnet telnet = new secTelnet(pipe, pipeLine.doClone(sample, pipe.isBlockMode()));

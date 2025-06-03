@@ -37,9 +37,11 @@ server pckodtls pou
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
+ security mldsakey mldsa
  security rsacert rsa
  security dsacert dsa
  security ecdsacert ecdsa
+ security mldsacert mldsa
  security protocol dtls
  vrf v1
  exit
