@@ -60,6 +60,7 @@ import org.freertr.cry.cryCertificate;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdRoute;
@@ -833,6 +834,16 @@ public class userConfig {
         l.add(null, "5  .          [size]                 key size in bits");
         l.add(null, "4  .        zeroize                  delete the key");
         l.add(null, "4  .        editor                   import in editor");
+        l.add(null, "2  3    mldsakey                     mldsa key");
+        l.add(null, "3  4      <name:mld>                 name of key");
+        l.add(null, "4  5        import                   import key");
+        l.add(null, "5  .          <text>                 base64 encoded private key");
+        l.add(null, "4  5        external                 load key from file");
+        l.add(null, "5  .          <text>                 file name");
+        l.add(null, "4  5,.      generate                 generate new key");
+        l.add(null, "5  .          [size]                 key size in bits");
+        l.add(null, "4  .        zeroize                  delete the key");
+        l.add(null, "4  .        editor                   import in editor");
         l.add(null, "2  3    certificate                  certificate");
         l.add(null, "3  4      <name:crt>                 name of certificate");
         l.add(null, "4  5        import                   import certificate");
@@ -845,6 +856,9 @@ public class userConfig {
         l.add(null, "5  6          ecdsa                  ecdsa key");
         l.add(null, "6  7            <name:ecd>           name of key");
         l.add(null, "7  .              <text>             base64 encoded certificate");
+        l.add(null, "5  6          mldsa                  mldsa key");
+        l.add(null, "6  7            <name:mld>           name of key");
+        l.add(null, "7  .              <text>             base64 encoded certificate");
         l.add(null, "4  5        external                 load certificate from file");
         l.add(null, "5  6          rsa                    rsa key");
         l.add(null, "6  7            <name:rsa>           name of key");
@@ -855,6 +869,9 @@ public class userConfig {
         l.add(null, "5  6          ecdsa                  ecdsa key");
         l.add(null, "6  7            <name:ecd>           name of key");
         l.add(null, "7  .              <text>             file name");
+        l.add(null, "5  6          mldsa                  mldsa key");
+        l.add(null, "6  7            <name:mld>           name of key");
+        l.add(null, "7  .              <text>             base64 encoded certificate");
         l.add(null, "4  5        generate                 generate new certificate");
         l.add(null, "5  6          rsa                    rsa key");
         l.add(null, "6  7,.          <name:rsa>           name of key");
@@ -868,6 +885,10 @@ public class userConfig {
         l.add(null, "6  7,.          <name:ecd>           name of key");
         l.add(null, "7  8,.            <text>             identifier to give");
         l.add(null, "8  .                <num>            validity in days");
+        l.add(null, "5  6          mldsa                  mldsa key");
+        l.add(null, "6  7            <name:mld>           name of key");
+        l.add(null, "7  8,.            <text>             identifier to give");
+        l.add(null, "8  .                <num>            validity in days");
         l.add(null, "4  .        zeroize                  delete the certificate");
         l.add(null, "4  5        editor                   import in editor");
         l.add(null, "5  6          rsa                    rsa key");
@@ -876,6 +897,8 @@ public class userConfig {
         l.add(null, "6  .            <name:dsa>           name of key");
         l.add(null, "5  6          ecdsa                  ecdsa key");
         l.add(null, "6  .            <name:ecd>           name of key");
+        l.add(null, "5  6          mldsa                  mldsa key");
+        l.add(null, "6  .            <name:mld>           name of key");
         l.add(null, "1  2  xconnect                       define one protocol cross connection");
         l.add(null, "2  .    <name:xcn>                   name of connection");
         l.add(null, "1  2  menu                           define one menu");
@@ -3455,6 +3478,12 @@ public class userConfig {
                 k = cfg.key;
             }
         }
+        if (t.equals("mldsa")) {
+            cfgKey<cryKeyMLDSA> cfg = cfgAll.keyFind(cfgAll.mldsakeys, cmd.word(), false);
+            if (cfg != null) {
+                k = cfg.key;
+            }
+        }
         if (k == null) {
             cmd.error("key not found");
         }
@@ -3473,6 +3502,10 @@ public class userConfig {
         }
         if (a.equals("ecdsakey")) {
             cryptoDoKey(cfgAll.ecdsakeys, new cryKeyECDSA());
+            return;
+        }
+        if (a.equals("mldsakey")) {
+            cryptoDoKey(cfgAll.mldsakeys, new cryKeyMLDSA());
             return;
         }
         if (a.equals("certificate")) {

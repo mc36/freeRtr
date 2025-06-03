@@ -13,6 +13,7 @@ import org.freertr.enc.encBase64;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.ifc.ifcBridge;
 import org.freertr.ifc.ifcBundle;
@@ -325,6 +326,11 @@ public class cfgAll {
      * list of ecdsa keys
      */
     public final static tabGen<cfgKey<cryKeyECDSA>> ecdsakeys = new tabGen<cfgKey<cryKeyECDSA>>();
+
+    /**
+     * list of mldsa keys
+     */
+    public final static tabGen<cfgKey<cryKeyMLDSA>> mldsakeys = new tabGen<cfgKey<cryKeyMLDSA>>();
 
     /**
      * list of ipv4 pools
@@ -3934,6 +3940,7 @@ public class cfgAll {
         servGenList.listGetRun(l, rsakeys, filter);
         servGenList.listGetRun(l, dsakeys, filter);
         servGenList.listGetRun(l, ecdsakeys, filter);
+        servGenList.listGetRun(l, mldsakeys, filter);
         servGenList.listGetRun(l, certs, filter);
         servGenList.listGetRun(l, timemaps, filter);
         servGenList.listGetRun(l, ipsecs, filter);

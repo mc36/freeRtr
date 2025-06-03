@@ -586,7 +586,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         t1.conditionalAddQ();
         t1.power2Round(t0);
         encT1 = packPublicKey(t1);
-        return true;
+        return false;
     }
 
     private int[] getOid() {
@@ -742,6 +742,24 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean keyMakeSize(int len) {
+        int[] sizes = new int[]{44, 65, 87};
+        int p = -1;
+        int o = len;
+        for (int i = sizes.length - 1; i >= 0; i--) {
+            int q = sizes[i] - len;
+            if (q < 0) {
+                q = -q;
+            }
+            if (q >= o) {
+                continue;
+            }
+            o = q;
+            p = i;
+        }
+        if (p < 0) {
+            return true;
+        }
+        len = sizes[p];
         if (initMagic(len)) {
             return true;
         }

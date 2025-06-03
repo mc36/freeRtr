@@ -43,6 +43,7 @@ import org.freertr.cfg.cfgVrf;
 import org.freertr.cfg.cfgXconn;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -342,6 +343,18 @@ public class userHelping {
         if (a.equals("ecd")) {
             for (i = 0; i < cfgAll.ecdsakeys.size(); i++) {
                 cfgKey<cryKeyECDSA> ntry = cfgAll.ecdsakeys.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpingData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("mld")) {
+            for (i = 0; i < cfgAll.mldsakeys.size(); i++) {
+                cfgKey<cryKeyMLDSA> ntry = cfgAll.mldsakeys.get(i);
                 if (ntry == null) {
                     continue;
                 }
