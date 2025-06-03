@@ -396,7 +396,7 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
     }
 
     public boolean keyVerify() {
-        return true;
+        return false;
     }
 
     public int keySize() {

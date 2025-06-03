@@ -219,12 +219,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return false;
     }
 
-
-
-    public void doMessage(byte[] in, int off, int len) {
-        shakeDigest.update(in, off, len);
-    }
-
     private void keyMake() {
         shakeDigest.init();
         byte[] seedBuf = new byte[SeedBytes];
@@ -500,10 +494,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return out;
     }
 
-    public byte[] encodePublicKey() {
-        return bits.byteConcat(rho, encT1);
-    }
-
     public void decodePrivateKey(byte[] encoding) {
         int index = 0;
         rho = new byte[SeedBytes];
@@ -544,6 +534,10 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         t1.conditionalAddQ();
         t1.power2Round(t0);
         encT1 = packPublicKey(t1);
+    }
+
+    public byte[] encodePublicKey() {
+        return bits.byteConcat(rho, encT1);
     }
 
     public void decodePublicKey(byte[] encoding) {
@@ -927,7 +921,7 @@ class cryKeyMLDSApoly {
     public void pointwiseMontgomery(cryKeyMLDSApoly v, cryKeyMLDSApoly w) {
         int i;
         for (i = 0; i < cryKeyMLDSA.DilithiumN; i++) {
-            coeffs[i] = montgomeryReduce((long) ((long) v.coeffs[i] * (long) w.coeffs[i]));
+            coeffs[i] = montgomeryReduce((long) v.coeffs[i] * (long) w.coeffs[i]);
         }
     }
 
@@ -966,12 +960,12 @@ class cryKeyMLDSApoly {
                     int t = out[j];
                     out[j] = t + out[j + len];
                     out[j + len] = t - out[j + len];
-                    out[j + len] = montgomeryReduce((long) ((long) zeta * (long) out[j + len]));
+                    out[j + len] = montgomeryReduce((long) zeta * (long) out[j + len]);
                 }
             }
         }
         for (j = 0; j < cryKeyMLDSA.DilithiumN; j++) {
-            out[j] = montgomeryReduce((long) ((long) 41978 * (long) out[j]));
+            out[j] = montgomeryReduce((long) 41978 * (long) out[j]);
         }
         coeffs = out;
     }
@@ -1004,10 +998,10 @@ class cryKeyMLDSApoly {
 
     public void polyt1Unpack(byte[] a) {
         for (int i = 0; i < cryKeyMLDSA.DilithiumN / 4; i++) {
-            coeffs[4 * i + 0] = (((a[5 * i + 0] & 0xFF) >> 0) | ((int) (a[5 * i + 1] & 0xFF) << 8)) & 0x3FF;
-            coeffs[4 * i + 1] = (((a[5 * i + 1] & 0xFF) >> 2) | ((int) (a[5 * i + 2] & 0xFF) << 6)) & 0x3FF;
-            coeffs[4 * i + 2] = (((a[5 * i + 2] & 0xFF) >> 4) | ((int) (a[5 * i + 3] & 0xFF) << 4)) & 0x3FF;
-            coeffs[4 * i + 3] = (((a[5 * i + 3] & 0xFF) >> 6) | ((int) (a[5 * i + 4] & 0xFF) << 2)) & 0x3FF;
+            coeffs[4 * i + 0] = (((a[5 * i + 0] & 0xFF) >> 0) | ((a[5 * i + 1] & 0xFF) << 8)) & 0x3FF;
+            coeffs[4 * i + 1] = (((a[5 * i + 1] & 0xFF) >> 2) | ((a[5 * i + 2] & 0xFF) << 6)) & 0x3FF;
+            coeffs[4 * i + 2] = (((a[5 * i + 2] & 0xFF) >> 4) | ((a[5 * i + 3] & 0xFF) << 4)) & 0x3FF;
+            coeffs[4 * i + 3] = (((a[5 * i + 3] & 0xFF) >> 6) | ((a[5 * i + 4] & 0xFF) << 2)) & 0x3FF;
         }
     }
 
@@ -1223,13 +1217,12 @@ class cryKeyMLDSApoly {
     }
 
     public void challenge(byte[] seed, int seedOff, int seedLen) {
-        long signs;
         byte[] buf = new byte[cryKeyMLDSA.stream256BlockBytes];
         cryHashShake256 shakeDigest = new cryHashShake256();
         shakeDigest.init();
         shakeDigest.update(seed, seedOff, seedLen);
         shakeDigest.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
-        signs = (long) 0;
+        long signs = (long) 0;
         for (int i = 0; i < 8; i++) {
             signs |= (long) (buf[i] & 0xFF) << 8 * i;
         }
@@ -1248,7 +1241,7 @@ class cryKeyMLDSApoly {
             } while (b > i);
             coeffs[i] = coeffs[b];
             coeffs[b] = (int) (1 - 2 * (signs & 1));
-            signs = (long) (signs >> 1);
+            signs = signs >> 1;
         }
     }
 
@@ -1322,24 +1315,24 @@ class cryKeyMLDSApoly {
         if (engine.DilithiumGamma1 == (1 << 17)) {
             for (int i = 0; i < cryKeyMLDSA.DilithiumN / 4; i++) {
                 coeffs[4 * i + 0]
-                        = (((int) (a[9 * i + 0] & 0xFF)
-                        | (int) ((a[9 * i + 1] & 0xFF) << 8))
-                        | (int) ((a[9 * i + 2] & 0xFF) << 16))
+                        = (((a[9 * i + 0] & 0xFF)
+                        | ((a[9 * i + 1] & 0xFF) << 8))
+                        | ((a[9 * i + 2] & 0xFF) << 16))
                         & 0x3FFFF;
                 coeffs[4 * i + 1]
-                        = (((int) ((a[9 * i + 2] & 0xFF) >>> 2)
-                        | (int) ((a[9 * i + 3] & 0xFF) << 6))
-                        | (int) ((a[9 * i + 4] & 0xFF) << 14))
+                        = ((((a[9 * i + 2] & 0xFF) >>> 2)
+                        | ((a[9 * i + 3] & 0xFF) << 6))
+                        | ((a[9 * i + 4] & 0xFF) << 14))
                         & 0x3FFFF;
                 coeffs[4 * i + 2]
-                        = (((int) ((a[9 * i + 4] & 0xFF) >>> 4)
-                        | (int) ((a[9 * i + 5] & 0xFF) << 4))
-                        | (int) ((a[9 * i + 6] & 0xFF) << 12))
+                        = ((((a[9 * i + 4] & 0xFF) >>> 4)
+                        | ((a[9 * i + 5] & 0xFF) << 4))
+                        | ((a[9 * i + 6] & 0xFF) << 12))
                         & 0x3FFFF;
                 coeffs[4 * i + 3]
-                        = (((int) ((a[9 * i + 6] & 0xFF) >>> 6)
-                        | (int) ((a[9 * i + 7] & 0xFF) << 2))
-                        | (int) ((a[9 * i + 8] & 0xFF) << 10))
+                        = ((((a[9 * i + 6] & 0xFF) >>> 6)
+                        | ((a[9 * i + 7] & 0xFF) << 2))
+                        | ((a[9 * i + 8] & 0xFF) << 10))
                         & 0x3FFFF;
                 coeffs[4 * i + 0] = engine.DilithiumGamma1 - coeffs[4 * i + 0];
                 coeffs[4 * i + 1] = engine.DilithiumGamma1 - coeffs[4 * i + 1];
@@ -1349,14 +1342,14 @@ class cryKeyMLDSApoly {
         } else {
             for (int i = 0; i < cryKeyMLDSA.DilithiumN / 2; i++) {
                 coeffs[2 * i + 0]
-                        = (int) (((((int) (a[5 * i + 0] & 0xFF))
-                        | (int) ((a[5 * i + 1] & 0xFF) << 8))
-                        | (int) ((a[5 * i + 2] & 0xFF) << 16))
+                        = (((((a[5 * i + 0] & 0xFF))
+                        | ((a[5 * i + 1] & 0xFF) << 8))
+                        | ((a[5 * i + 2] & 0xFF) << 16))
                         & 0xFFFFF);
                 coeffs[2 * i + 1]
-                        = (int) (((((int) ((a[5 * i + 2] & 0xFF) >>> 4))
-                        | (int) ((a[5 * i + 3] & 0xFF) << 4))
-                        | (int) ((a[5 * i + 4] & 0xFF) << 12))
+                        = ((((((a[5 * i + 2] & 0xFF) >>> 4))
+                        | ((a[5 * i + 3] & 0xFF) << 4))
+                        | ((a[5 * i + 4] & 0xFF) << 12))
                         & 0xFFFFF);
                 coeffs[2 * i + 0] = engine.DilithiumGamma1 - coeffs[2 * i + 0];
                 coeffs[2 * i + 1] = engine.DilithiumGamma1 - coeffs[2 * i + 1];
@@ -1620,5 +1613,3 @@ class cryKeyMLDSAmat {
     }
 
 }
-
-
