@@ -542,18 +542,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         encT1 = packPublicKey(t1);
     }
 
-    public void decodePublicKey(byte[] encoding) {
-        key = null;
-        tr = null;
-        encS1 = null;
-        encS2 = null;
-        encT0 = null;
-        rho = new byte[SeedBytes];
-        bits.byteCopy(encoding, 0, rho, 0, rho.length);
-        encT1 = new byte[encoding.length - rho.length];
-        bits.byteCopy(encoding, rho.length, encT1, 0, encT1.length);
-    }
-
     public String algName() {
         return "mldsa";
     }
@@ -598,7 +586,71 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean certReader(packHolder pck) {
-        return true;
+        encAsn1 a = new encAsn1();
+        if (a.tagRead(pck)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        pck = a.getPack();
+        if (a.tagRead(pck)) {
+            return true;
+        }
+        if (a.cnst || (a.tag != encAsn1.tagInteger)) {
+            return true;
+        }
+        if (a.tagRead(pck)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        packHolder p = a.getPack();
+        if (a.tagRead(p)) {
+            return true;
+        }
+        switch (cryCertificate.objid2int(a)) {
+            case cryCertificate.typMlDss44sha512:
+                initMagic(44);
+                break;
+            case cryCertificate.typMlDss65sha512:
+                initMagic(65);
+                break;
+            case cryCertificate.typMlDss87sha512:
+                initMagic(87);
+                break;
+            default:
+                return true;
+        }
+        if (a.tagRead(pck)) {
+            return true;
+        }
+        if ((a.cnst) || (a.tag != encAsn1.tagOctetString)) {
+            return true;
+        }
+        p = a.getPack();
+        if (a.tagRead(p)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        p = a.getPack();
+        if (a.tagRead(p)) {
+            return true;
+        }
+        p = a.getPack();
+        key = null;
+        tr = null;
+        encS1 = null;
+        encS2 = null;
+        encT0 = null;
+        rho = new byte[SeedBytes];
+        p.getCopy(rho, 0, 0, rho.length);
+        p.getSkip(rho.length);
+        encT1 = p.getCopy();
+        return false;
     }
 
     public void certWriter(packHolder pck) {
@@ -631,6 +683,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         packHolder pck = new packHolder(true, true);
         pck.putCopy(sgn, 0, 0, sgn.length);
         pck.putSkip(sgn.length);
+        pck.merge2beg();
         return pck.getCopy();
     }
 

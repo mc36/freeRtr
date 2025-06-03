@@ -534,9 +534,11 @@ public class userTest {
             return null;
         }
         if (a.equals("digsig")) {
-            int pmsiz = 1024;
-            int ecsiz = 128;
-            int mlsiz = 512;
+            int lprim = 1024;
+            int lecdh = 128;
+            int lecdsa = 128;
+            int lmlkem = 512;
+            int lmldsa = 44;
             int times = 1;
             boolean showKeys = false;
             for (;;) {
@@ -548,16 +550,24 @@ public class userTest {
                     showKeys = true;
                     continue;
                 }
-                if (a.equals("len")) {
-                    pmsiz = bits.str2num(cmd.word());
+                if (a.equals("prim")) {
+                    lprim = bits.str2num(cmd.word());
                     continue;
                 }
-                if (a.equals("eclen")) {
-                    ecsiz = bits.str2num(cmd.word());
+                if (a.equals("ecdh")) {
+                    lecdh = bits.str2num(cmd.word());
                     continue;
                 }
-                if (a.equals("mllen")) {
-                    mlsiz = bits.str2num(cmd.word());
+                if (a.equals("ecdsa")) {
+                    lecdsa = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("mlkem")) {
+                    lmlkem = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("mldsa")) {
+                    lmldsa = bits.str2num(cmd.word());
                     continue;
                 }
                 if (a.equals("times")) {
@@ -576,7 +586,7 @@ public class userTest {
             cryKeyMLKEM kml = new cryKeyMLKEM();
             final String init = "t3st1ng";
             boolean ok = false;
-            krsa.keyMakeSize(pmsiz);
+            krsa.keyMakeSize(lprim);
             long tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 byte[] buf = init.getBytes();
@@ -588,7 +598,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("rsa: " + krsa.pemWriteStr(true) + " " + krsa.pemWriteStr(false));
             }
-            kdsa.keyMakeSize(pmsiz);
+            kdsa.keyMakeSize(lprim);
             ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
@@ -600,7 +610,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("dsa: " + kdsa.pemWriteStr(true) + " " + kdsa.pemWriteStr(false));
             }
-            kecdsa.keyMakeSize(ecsiz);
+            kecdsa.keyMakeSize(lecdsa);
             ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
@@ -612,7 +622,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
             }
-            kmldsa.keyMakeSize(44);
+            kmldsa.keyMakeSize(lmldsa);
             ok = false;
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
@@ -624,7 +634,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("mldsa: " + kmldsa.pemWriteStr(true) + " " + kmldsa.pemWriteStr(false));
             }
-            kdh.keyMakeSize(pmsiz);
+            kdh.keyMakeSize(lprim);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 kdh.keyServInit();
@@ -636,7 +646,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("dh: " + kdh.pemWriteStr(false));
             }
-            kecdh.keyMakeSize(ecsiz);
+            kecdh.keyMakeSize(lecdh);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 kecdh.keyServInit();
@@ -648,7 +658,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("ecdh: " + kecdh.pemWriteStr(false));
             }
-            kec255.keyMakeSize(ecsiz);
+            kec255.keyMakeSize(lecdh);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 kec255.keyServInit();
@@ -660,7 +670,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("ecdh: " + kec255.pemWriteStr(false));
             }
-            kml.keyMakeSize(mlsiz);
+            kml.keyMakeSize(lmlkem);
             tim = bits.getTime();
             for (int i = 0; i < times; i++) {
                 kml.keyServInit();
@@ -685,7 +695,7 @@ public class userTest {
             if (showKeys) {
                 cmd.error("dcrt: " + cdsa.pemWriteStr());
                 cmd.error("edcrt: " + cecdsa.pemWriteStr());
-                cmd.error("emcrt: " + cmldsa.pemWriteStr());
+                cmd.error("mdcrt: " + cmldsa.pemWriteStr());
                 cmd.error("rcrt: " + crsa.pemWriteStr());
             }
             cmd.error("dsa: " + cdsa);
