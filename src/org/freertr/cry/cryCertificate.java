@@ -174,17 +174,17 @@ public class cryCertificate {
     /**
      * mldss-44 encryption
      */
-    public final static int[] oidMlDss44 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x11};
+    public final static int[] oidMlDss44sha512 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x11};
 
     /**
      * mldss-65 encryption
      */
-    public final static int[] oidMlDss65 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x12};
+    public final static int[] oidMlDss65sha512 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x12};
 
     /**
      * mldss-87 encryption
      */
-    public final static int[] oidMlDss87 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x13};
+    public final static int[] oidMlDss87sha512 = {0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x03, 0x13};
 
     /**
      * rsa encryption
@@ -281,6 +281,21 @@ public class cryCertificate {
      */
     public final static int typEcDssSha512 = 0x3006;
 
+    /**
+     * mldss44 encryption with sha512
+     */
+    public final static int typMlDss44sha512 = 0x4001;
+
+    /**
+     * mldss65 encryption with sha512
+     */
+    public final static int typMlDss65sha512 = 0x4002;
+
+    /**
+     * mldss87 encryption with sha512
+     */
+    public final static int typMlDss87sha512 = 0x4003;
+
     private static boolean compareOid(encAsn1 a, final int[] oid) {
         if (a.buf.length != oid.length) {
             return false;
@@ -360,6 +375,15 @@ public class cryCertificate {
         if (compareOid(a, oidEcDssSha512)) {
             return typEcDssSha512;
         }
+        if (compareOid(a, oidMlDss44sha512)) {
+            return typMlDss44sha512;
+        }
+        if (compareOid(a, oidMlDss65sha512)) {
+            return typMlDss65sha512;
+        }
+        if (compareOid(a, oidMlDss87sha512)) {
+            return typMlDss87sha512;
+        }
         return 0;
     }
 
@@ -409,6 +433,12 @@ public class cryCertificate {
                 return oidEcDssSha384;
             case typEcDssSha512:
                 return oidEcDssSha512;
+            case typMlDss44sha512:
+                return oidMlDss44sha512;
+            case typMlDss65sha512:
+                return oidMlDss65sha512;
+            case typMlDss87sha512:
+                return oidMlDss87sha512;
             default:
                 return null;
         }
@@ -460,6 +490,12 @@ public class cryCertificate {
                 return "ecdssSha384";
             case typEcDssSha512:
                 return "ecdssSha512";
+            case typMlDss44sha512:
+                return "mldss44sha512";
+            case typMlDss65sha512:
+                return "mldss65sha512";
+            case typMlDss87sha512:
+                return "mldss87sha512";
             default:
                 return "unknown=" + i;
         }
@@ -505,6 +541,12 @@ public class cryCertificate {
             case typEcDssSha384:
                 return new cryHashSha2384();
             case typEcDssSha512:
+                return new cryHashSha2512();
+            case typMlDss44sha512:
+                return new cryHashSha2512();
+            case typMlDss65sha512:
+                return new cryHashSha2512();
+            case typMlDss87sha512:
                 return new cryHashSha2512();
             default:
                 return null;

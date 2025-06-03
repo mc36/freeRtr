@@ -12,6 +12,12 @@ import org.freertr.util.bits;
  */
 public class cryKeyMLDSA extends cryKeyGeneric {
 
+    /**
+     * create instance
+     */
+    public cryKeyMLDSA() {
+    }
+
     private byte[] rho;
 
     private byte[] key;
@@ -536,10 +542,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         encT1 = packPublicKey(t1);
     }
 
-    public byte[] encodePublicKey() {
-        return bits.byteConcat(rho, encT1);
-    }
-
     public void decodePublicKey(byte[] encoding) {
         key = null;
         tr = null;
@@ -560,11 +562,18 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    private int[] getOid() {
+        int[] oid = new int[cryCertificate.oidMlDss44sha512.length];
+        System.arraycopy(cryCertificate.oidMlDss44sha512, 0, oid, 0, oid.length);
+        oid[oid.length - 1] += (DilithiumCTilde >>> 4) - 2;
+        return oid;
+    }
+
     public void privWriter(packHolder pck) {
         packHolder p1 = new packHolder(true, true);
         encAsn1.writeBigInt(p1, BigInteger.ONE);
         packHolder p2 = new packHolder(true, true);
-        encAsn1.writeObjectId(p2, cryCertificate.oidMlDss44);
+        encAsn1.writeObjectId(p2, getOid());
         encAsn1.writeSequence(p1, p2);
         p2.clear();
         p2.putCopy(rho, 0, 0, rho.length);
@@ -589,10 +598,28 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean certReader(packHolder pck) {
-        return true;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public void certWriter(packHolder pck) {
+        packHolder p1 = new packHolder(true, true);
+        encAsn1.writeBigInt(p1, BigInteger.ONE);
+        packHolder p2 = new packHolder(true, true);
+        encAsn1.writeObjectId(p2, getOid());
+        encAsn1.writeSequence(p1, p2);
+        p2.clear();
+        p2.clear();
+        p2.putCopy(rho, 0, 0, rho.length);
+        p2.putSkip(rho.length);
+        p2.putCopy(encT1, 0, 0, encT1.length);
+        p2.putSkip(encT1.length);
+        p2.merge2beg();
+        packHolder p3 = new packHolder(true, true);
+        encAsn1.writeOctString(p3, p2);
+        p2.clear();
+        encAsn1.writeSequence(p2, p3);
+        encAsn1.writeOctString(p1, p2);
+        encAsn1.writeSequence(pck, p1);
     }
 
     public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
