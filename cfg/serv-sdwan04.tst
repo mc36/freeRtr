@@ -13,6 +13,7 @@ aaa userlist usr
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 vrf def v1
  rd 1:1
  exit
@@ -43,6 +44,7 @@ server sdwan v9
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
+ security mldsakey mldsa
  pool4 p4
  pool6 p6
  hub h

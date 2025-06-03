@@ -18,16 +18,20 @@ int eth1
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 crypto certificate dsa generate dsa dsa
 crypto certificate rsa generate rsa rsa
 crypto certificate ecdsa generate ecdsa ecdsa
+crypto certificate mldsa generate mldsa mldsa
 server telnet tel
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
+ security mldsakey mldsa
  security rsacert rsa
  security dsacert dsa
  security ecdsacert ecdsa
+ security mldsacert mldsa
  security protocol tls
  vrf v1
  port 666

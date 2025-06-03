@@ -6,9 +6,11 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 crypto certificate dsa generate dsa dsa
 crypto certificate rsa generate rsa rsa
 crypto certificate ecdsa generate ecdsa ecdsa
+crypto certificate mldsa generate mldsa mldsa
 vrf def v1
  rd 1:1
  exit
@@ -31,10 +33,10 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  router pvrp4 1 ena
- router pvrp4 1 encryption ssh rsa dsa ecdsa rsa dsa ecdsa
+ router pvrp4 1 encryption ssh rsa dsa ecdsa mldsa rsa dsa ecdsa mldsa
  ipv6 addr 1234:1::1 ffff:ffff::
  router pvrp6 1 ena
- router pvrp6 1 encryption ssh rsa dsa ecdsa rsa dsa ecdsa
+ router pvrp6 1 encryption ssh rsa dsa ecdsa mldsa rsa dsa ecdsa mldsa
  exit
 !
 
@@ -44,9 +46,11 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 crypto certificate dsa generate dsa dsa
 crypto certificate rsa generate rsa rsa
 crypto certificate ecdsa generate ecdsa ecdsa
+crypto certificate mldsa generate mldsa mldsa
 vrf def v1
  rd 1:1
  exit
@@ -69,10 +73,10 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  router pvrp4 1 ena
- router pvrp4 1 encryption ssh rsa dsa ecdsa rsa dsa ecdsa
+ router pvrp4 1 encryption ssh rsa dsa ecdsa mldsa rsa dsa ecdsa mldsa
  ipv6 addr 1234:1::2 ffff:ffff::
  router pvrp6 1 ena
- router pvrp6 1 encryption ssh rsa dsa ecdsa rsa dsa ecdsa
+ router pvrp6 1 encryption ssh rsa dsa ecdsa mldsa rsa dsa ecdsa mldsa
  exit
 !
 

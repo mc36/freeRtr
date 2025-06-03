@@ -6,9 +6,11 @@ int ser1 ser - $1a$ $1b$
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 crypto certificate dsa generate dsa dsa
 crypto certificate rsa generate rsa rsa
 crypto certificate ecdsa generate ecdsa ecdsa
+crypto certificate mldsa generate mldsa mldsa
 vrf def v1
  rd 1:1
  exit

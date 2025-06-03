@@ -30,11 +30,13 @@ aaa userlist usr
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 server tel tel
  vrf v1
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
+ security mldsakey mldsa
  security protocol ssh
  security authen usr
  exec int di1

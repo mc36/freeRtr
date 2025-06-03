@@ -71,6 +71,7 @@ aaa userlist usr
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 ipv4 pool p4 2.2.2.222 0.0.0.1 3
 ipv6 pool p6 2222::222 ::1 3
 server sdwan v9
@@ -78,6 +79,7 @@ server sdwan v9
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
+ security ecdsakey mldsa
  hub h
  pool4 p4
  pool6 p6

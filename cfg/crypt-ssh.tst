@@ -22,10 +22,12 @@ aaa userlist usr
 crypto rsakey rsa generate 2048
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
+crypto mldsakey mldsa generate 44
 server telnet ssh
  security rsakey rsa
  security dsakey dsa
  security ecdsakey ecdsa
+ security mldsakey mldsa
  security authentication usr
  security protocol ssh
  port 666
