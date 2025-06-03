@@ -37,8 +37,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
      */
     protected byte[] sgn;
 
-    private cryHashShake256 shakeDigest = new cryHashShake256();
-
     /**
      * magic values
      */
@@ -226,7 +224,8 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     private void keyMake() {
-        shakeDigest.init();
+        cryHashShake256 d = new cryHashShake256();
+        d.init();
         byte[] seedBuf = new byte[SeedBytes];
         for (int i = 0; i < seedBuf.length; i++) {
             seedBuf[i] = (byte) bits.randomB();
@@ -241,11 +240,11 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         cryKeyMLDSAvecK s2 = new cryKeyMLDSAvecK(this);
         cryKeyMLDSAvecK t1 = new cryKeyMLDSAvecK(this);
         cryKeyMLDSAvecK t0 = new cryKeyMLDSAvecK(this);
-        shakeDigest.update(seedBuf, 0, SeedBytes);
-        shakeDigest.update((byte) DilithiumK);
-        shakeDigest.update((byte) DilithiumL);
-        shakeDigest.fillupBuffer(buf, 0, 2 * SeedBytes + CrhBytes);
-        shakeDigest.init();
+        d.update(seedBuf, 0, SeedBytes);
+        d.update((byte) DilithiumK);
+        d.update((byte) DilithiumL);
+        d.fillupBuffer(buf, 0, 2 * SeedBytes + CrhBytes);
+        d.init();
         bits.byteCopy(buf, 0, rho, 0, SeedBytes);
         bits.byteCopy(buf, SeedBytes, rhoPrime, 0, CrhBytes);
         bits.byteCopy(buf, SeedBytes + CrhBytes, key, 0, SeedBytes);
@@ -262,10 +261,10 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         t1.conditionalAddQ();
         t1.power2Round(t0);
         encT1 = packPublicKey(t1);
-        shakeDigest.update(rho, 0, rho.length);
-        shakeDigest.update(encT1, 0, encT1.length);
-        shakeDigest.fillupBuffer(tr, 0, TrBytes);
-        shakeDigest.init();
+        d.update(rho, 0, rho.length);
+        d.update(encT1, 0, encT1.length);
+        d.fillupBuffer(tr, 0, TrBytes);
+        d.init();
         encS1 = new byte[DilithiumL * DilithiumPolyEtaPackedBytes];
         for (int i = 0; i < DilithiumL; i++) {
             s1.vec[i].polyEtaPack(encS1, i * DilithiumPolyEtaPackedBytes);
@@ -286,17 +285,18 @@ public class cryKeyMLDSA extends cryKeyGeneric {
      * @param msg cleartext
      */
     public void doSigning(byte[] msg) {
-        shakeDigest.init();
-        shakeDigest.update(tr, 0, TrBytes);
-        absorbCtx(false, new byte[0]);
-        shakeDigest.update(msg, 0, msg.length);
+        cryHashShake256 d = new cryHashShake256();
+        d.init();
+        d.update(tr, 0, TrBytes);
+        absorbCtx(d, false, new byte[0]);
+        d.update(msg, 0, msg.length);
         byte[] rnd = new byte[RndBytes];
         for (int i = 0; i < rnd.length; i++) {
             rnd[i] = (byte) bits.randomB();
         }
         byte[] mu = new byte[CrhBytes];
-        shakeDigest.fillupBuffer(mu, 0, CrhBytes);
-        shakeDigest.init();
+        d.fillupBuffer(mu, 0, CrhBytes);
+        d.init();
         byte[] outSig = new byte[DilithiumCTilde + DilithiumL * DilithiumPolyZPackedBytes + DilithiumPolyVecHPackedBytes];
         byte[] rhoPrime = new byte[CrhBytes];
         short nonce = 0;
@@ -315,9 +315,9 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         bits.byteCopy(key, 0, keyMu, 0, SeedBytes);
         bits.byteCopy(rnd, 0, keyMu, SeedBytes, RndBytes);
         bits.byteCopy(mu, 0, keyMu, SeedBytes + RndBytes, CrhBytes);
-        shakeDigest.update(keyMu, 0, SeedBytes + RndBytes + CrhBytes);
-        shakeDigest.fillupBuffer(rhoPrime, 0, CrhBytes);
-        shakeDigest.init();
+        d.update(keyMu, 0, SeedBytes + RndBytes + CrhBytes);
+        d.fillupBuffer(rhoPrime, 0, CrhBytes);
+        d.init();
         aMatrix.expandMatrix(rho);
         s1.polyVecNtt();
         s2.polyVecNtt();
@@ -334,10 +334,10 @@ public class cryKeyMLDSA extends cryKeyGeneric {
             w1.conditionalAddQ();
             w1.decompose(w0);
             w1.packW1(this, outSig, 0);
-            shakeDigest.update(mu, 0, CrhBytes);
-            shakeDigest.update(outSig, 0, DilithiumK * DilithiumPolyW1PackedBytes);
-            shakeDigest.fillupBuffer(outSig, 0, DilithiumCTilde);
-            shakeDigest.init();
+            d.update(mu, 0, CrhBytes);
+            d.update(outSig, 0, DilithiumK * DilithiumPolyW1PackedBytes);
+            d.fillupBuffer(outSig, 0, DilithiumCTilde);
+            d.init();
             cp.challenge(outSig, 0, DilithiumCTilde);
             cp.polyNtt();
             z.pointwisePolyMontgomery(cp, s1);
@@ -396,18 +396,19 @@ public class cryKeyMLDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean doVerify(byte[] msg) {
-        shakeDigest.init();
+        cryHashShake256 d = new cryHashShake256();
+        d.init();
         byte[] mu = new byte[TrBytes];
-        shakeDigest.update(rho, 0, rho.length);
-        shakeDigest.update(encT1, 0, encT1.length);
-        shakeDigest.fillupBuffer(mu, 0, TrBytes);
-        shakeDigest.init();
-        shakeDigest.update(mu, 0, TrBytes);
-        absorbCtx(false, new byte[0]);
-        shakeDigest.update(msg, 0, msg.length);
+        d.update(rho, 0, rho.length);
+        d.update(encT1, 0, encT1.length);
+        d.fillupBuffer(mu, 0, TrBytes);
+        d.init();
+        d.update(mu, 0, TrBytes);
+        absorbCtx(d, false, new byte[0]);
+        d.update(msg, 0, msg.length);
         byte[] buf = new byte[Math.max(CrhBytes + DilithiumK * DilithiumPolyW1PackedBytes, DilithiumCTilde)];
-        shakeDigest.fillupBuffer(buf, 0, shakeDigest.getBlockSize());
-        shakeDigest.init();
+        d.fillupBuffer(buf, 0, d.getBlockSize());
+        d.init();
         cryKeyMLDSAvecK h = new cryKeyMLDSAvecK(this);
         cryKeyMLDSAvecL z = new cryKeyMLDSAvecL(this);
         int end = DilithiumCTilde;
@@ -464,20 +465,20 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         w1.conditionalAddQ();
         w1.useHint(w1, h);
         w1.packW1(this, buf, CrhBytes);
-        shakeDigest.init();
-        shakeDigest.update(buf, 0, CrhBytes + DilithiumK * DilithiumPolyW1PackedBytes);
-        shakeDigest.fillupBuffer(buf, 0, DilithiumCTilde);
-        shakeDigest.init();
+        d.init();
+        d.update(buf, 0, CrhBytes + DilithiumK * DilithiumPolyW1PackedBytes);
+        d.fillupBuffer(buf, 0, DilithiumCTilde);
+        d.init();
         return bits.byteComp(sgn, 0, buf, 0, DilithiumCTilde) != 0;
     }
 
-    private void absorbCtx(boolean isPreHash, byte[] ctx) {
+    private void absorbCtx(cryHashShake256 d, boolean isPreHash, byte[] ctx) {
         if (ctx == null) {
             return;
         }
-        shakeDigest.update(isPreHash ? (byte) 1 : (byte) 0);
-        shakeDigest.update((byte) ctx.length);
-        shakeDigest.update(ctx, 0, ctx.length);
+        d.update(isPreHash ? (byte) 1 : (byte) 0);
+        d.update((byte) ctx.length);
+        d.update(ctx, 0, ctx.length);
     }
 
     private void unpackSecretKey(cryKeyMLDSAvecK t0, cryKeyMLDSAvecL s1, cryKeyMLDSAvecK s2, byte[] t0Enc, byte[] s1Enc, byte[] s2Enc) {
@@ -950,19 +951,19 @@ class cryKeyMLDSApoly {
     public void uniformBlocks(byte[] seed, short nonce) {
         int buflen = ((768 + cryKeyMLDSA.stream128BlockBytes - 1) / cryKeyMLDSA.stream128BlockBytes) * cryKeyMLDSA.stream128BlockBytes;
         byte[] buf = new byte[buflen + 2];
-        cryHashShake128 digest = new cryHashShake128();
-        digest.init();
-        digest.update(seed, 0, seed.length);
-        digest.update(nonce);
-        digest.update(nonce >> 8);
-        digest.fillupBuffer(buf, 0, buflen);
+        cryHashShake128 d = new cryHashShake128();
+        d.init();
+        d.update(seed, 0, seed.length);
+        d.update(nonce);
+        d.update(nonce >> 8);
+        d.fillupBuffer(buf, 0, buflen);
         int ctr = rejectUniform(this, 0, cryKeyMLDSA.DilithiumN, buf, buflen);
         while (ctr < cryKeyMLDSA.DilithiumN) {
             int off = buflen % 3;
             for (int i = 0; i < off; i++) {
                 buf[i] = buf[buflen - off + i];
             }
-            digest.fillupBuffer(buf, off, cryKeyMLDSA.stream128BlockBytes);
+            d.fillupBuffer(buf, off, cryKeyMLDSA.stream128BlockBytes);
             buflen = cryKeyMLDSA.stream128BlockBytes + off;
             ctr += rejectUniform(this, ctr, cryKeyMLDSA.DilithiumN - ctr, buf, buflen);
         }
@@ -994,15 +995,15 @@ class cryKeyMLDSApoly {
         }
         int buflen = polyUniformEtaNBlocks * cryKeyMLDSA.stream256BlockBytes;
         byte[] buf = new byte[buflen];
-        cryHashShake256 digest = new cryHashShake256();
-        digest.init();
-        digest.update(seed, 0, seed.length);
-        digest.update(nonce);
-        digest.update(nonce >> 8);
-        digest.fillupBuffer(buf, 0, buflen);
+        cryHashShake256 d = new cryHashShake256();
+        d.init();
+        d.update(seed, 0, seed.length);
+        d.update(nonce);
+        d.update(nonce >> 8);
+        d.fillupBuffer(buf, 0, buflen);
         int ctr = rejectEta(this, 0, cryKeyMLDSA.DilithiumN, buf, buflen, engine.DilithiumEta);
         while (ctr < cryKeyMLDSA.DilithiumN) {
-            digest.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
+            d.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
             ctr += rejectEta(this, ctr, cryKeyMLDSA.DilithiumN - ctr, buf, cryKeyMLDSA.stream256BlockBytes, engine.DilithiumEta);
         }
 
@@ -1282,12 +1283,12 @@ class cryKeyMLDSApoly {
 
     public void uniformGamma1(byte[] seed, short nonce) {
         byte[] buf = new byte[engine.PolyUniformGamma1NBlocks * cryKeyMLDSA.stream256BlockBytes];
-        cryHashShake256 digest = new cryHashShake256();
-        digest.init();
-        digest.update(seed, 0, seed.length);
-        digest.update(nonce);
-        digest.update(nonce >> 8);
-        digest.fillupBuffer(buf, 0, engine.PolyUniformGamma1NBlocks * cryKeyMLDSA.stream256BlockBytes);
+        cryHashShake256 d = new cryHashShake256();
+        d.init();
+        d.update(seed, 0, seed.length);
+        d.update(nonce);
+        d.update(nonce >> 8);
+        d.fillupBuffer(buf, 0, engine.PolyUniformGamma1NBlocks * cryKeyMLDSA.stream256BlockBytes);
         unpackZ(buf);
     }
 
@@ -1358,10 +1359,10 @@ class cryKeyMLDSApoly {
 
     public void challenge(byte[] seed, int seedOff, int seedLen) {
         byte[] buf = new byte[cryKeyMLDSA.stream256BlockBytes];
-        cryHashShake256 shakeDigest = new cryHashShake256();
-        shakeDigest.init();
-        shakeDigest.update(seed, seedOff, seedLen);
-        shakeDigest.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
+        cryHashShake256 d = new cryHashShake256();
+        d.init();
+        d.update(seed, seedOff, seedLen);
+        d.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
         long signs = (long) 0;
         for (int i = 0; i < 8; i++) {
             signs |= (long) (buf[i] & 0xFF) << 8 * i;
@@ -1374,7 +1375,7 @@ class cryKeyMLDSApoly {
         for (int i = cryKeyMLDSA.DilithiumN - engine.DilithiumTau; i < cryKeyMLDSA.DilithiumN; i++) {
             do {
                 if (pos >= cryKeyMLDSA.stream256BlockBytes) {
-                    shakeDigest.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
+                    d.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
                     pos = 0;
                 }
                 b = (buf[pos++] & 0xFF);
