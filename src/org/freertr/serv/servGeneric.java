@@ -16,6 +16,7 @@ import org.freertr.cfg.cfgVrf;
 import org.freertr.cry.cryCertificate;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipPrt;
@@ -148,6 +149,11 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
     protected cryKeyECDSA keyecdsa;
 
     /**
+     * mldsa key to use
+     */
+    protected cryKeyMLDSA keymldsa;
+
+    /**
      * rsa certificate to use
      */
     protected cryCertificate certrsa;
@@ -161,6 +167,11 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
      * ecdsa certificate to use
      */
     protected cryCertificate certecdsa;
+
+    /**
+     * mldsa certificate to use
+     */
+    protected cryCertificate certmldsa;
 
     /**
      * security protocol to use
@@ -268,9 +279,11 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security rsakey",
         "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security dsakey",
         "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsakey",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security mldsakey",
         "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security rsacert",
         "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security dsacert",
         "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsacert",
+        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security mldsacert",
         "server .*!" + cmds.tabulator + "access-total 0",
         "server .*!" + cmds.tabulator + "access-peer 0",
         "server .*!" + cmds.tabulator + "access-subnet 0",
@@ -1191,14 +1204,18 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         l.add(null, "2 3    rsakey               set rsa key");
         l.add(null, "3 .      <name:rsa>         name of key");
         l.add(null, "2 3    dsakey               set dsa key");
-        l.add(null, "3 .      <name:rsa>         name of key");
+        l.add(null, "3 .      <name:dsa>         name of key");
         l.add(null, "2 3    ecdsakey             set ecdsa key");
-        l.add(null, "3 .      <name:rsa>         name of key");
+        l.add(null, "3 .      <name:ecd>         name of key");
+        l.add(null, "2 3    mldsakey             set mldsa key");
+        l.add(null, "3 .      <name:mld>         name of key");
         l.add(null, "2 3    rsacert              set rsa certificate");
         l.add(null, "3 .      <name:crt>         name of certificate");
         l.add(null, "2 3    dsacert              set dsa certificate");
         l.add(null, "3 .      <name:crt>         name of certificate");
         l.add(null, "2 3    ecdsacert            set ecdsa certificate");
+        l.add(null, "3 .      <name:crt>         name of certificate");
+        l.add(null, "2 3    mldsacert            set mldsa certificate");
         l.add(null, "3 .      <name:crt>         name of certificate");
         l.add(null, "1 .   " + cmds.upgradeCli + "             embed vrf name to router knob");
         srvHelp(l);
@@ -1244,6 +1261,11 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         } else {
             l.add(cmds.tabulator + "security ecdsakey " + keyecdsa.keyName);
         }
+        if (keymldsa == null) {
+            l.add(cmds.tabulator + "no security mldsakey");
+        } else {
+            l.add(cmds.tabulator + "security mldsakey " + keymldsa.keyName);
+        }
         if (certrsa == null) {
             l.add(cmds.tabulator + "no security rsacert");
         } else {
@@ -1258,6 +1280,11 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
             l.add(cmds.tabulator + "no security ecdsacert");
         } else {
             l.add(cmds.tabulator + "security ecdsacert " + certecdsa.crtName);
+        }
+        if (certmldsa == null) {
+            l.add(cmds.tabulator + "no security mldsacert");
+        } else {
+            l.add(cmds.tabulator + "security mldsacert " + certmldsa.crtName);
         }
         cmds.cfgLine(l, !srvLogDrop, cmds.tabulator, "access-log", "");
         l.add(cmds.tabulator + "access-total " + srvTotLim);
@@ -1437,6 +1464,15 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
                 keyecdsa = cfg.key;
                 return;
             }
+            if (s.equals("mldsakey")) {
+                cfgKey<cryKeyMLDSA> cfg = cfgAll.keyFind(cfgAll.mldsakeys, cmd.word(), false);
+                if (cfg == null) {
+                    cmd.error("no such key");
+                    return;
+                }
+                keymldsa = cfg.key;
+                return;
+            }
             if (s.equals("rsacert")) {
                 cfgCert cfg = cfgAll.certFind(cmd.word(), false);
                 if (cfg == null) {
@@ -1462,6 +1498,15 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
                     return;
                 }
                 certecdsa = cfg.cert;
+                return;
+            }
+            if (s.equals("mldsacert")) {
+                cfgCert cfg = cfgAll.certFind(cmd.word(), false);
+                if (cfg == null) {
+                    cmd.error("no such cert");
+                    return;
+                }
+                certmldsa = cfg.cert;
                 return;
             }
             cmd.badCmd();
@@ -1560,6 +1605,10 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
                 keyecdsa = null;
                 return;
             }
+            if (s.equals("mldsakey")) {
+                keymldsa = null;
+                return;
+            }
             if (s.equals("rsacert")) {
                 certrsa = null;
                 return;
@@ -1570,6 +1619,10 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
             }
             if (s.equals("ecdsacert")) {
                 certecdsa = null;
+                return;
+            }
+            if (s.equals("mldsacert")) {
+                certmldsa = null;
                 return;
             }
             return;
