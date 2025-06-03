@@ -94,6 +94,7 @@ import org.freertr.cry.cryEncrPCBCrc2;
 import org.freertr.cry.cryHashShake128;
 import org.freertr.cry.cryHashShake256;
 import org.freertr.cry.cryKeyCurve25519;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryUtils;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packDnsRes;
@@ -568,6 +569,7 @@ public class userTest {
             cryKeyRSA krsa = new cryKeyRSA();
             cryKeyDSA kdsa = new cryKeyDSA();
             cryKeyECDSA kecdsa = new cryKeyECDSA();
+            cryKeyMLDSA kmldsa = new cryKeyMLDSA();
             cryKeyDH kdh = new cryKeyDH();
             cryKeyECDH kecdh = new cryKeyECDH();
             cryKeyCurve25519 kec255 = new cryKeyCurve25519();
@@ -609,6 +611,19 @@ public class userTest {
             cmd.error("ecdsa: " + kecdsa.keyVerify() + " " + kecdsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
             if (showKeys) {
                 cmd.error("ecdsa: " + kecdsa.pemWriteStr(true) + " " + kecdsa.pemWriteStr(false));
+            }
+            kmldsa.keyMakeSize(44);
+            kmldsa.doKeyPair();
+            ok = false;
+            tim = bits.getTime();
+            for (int i = 0; i < times; i++) {
+                byte[] buf = init.getBytes();
+                ///kmldsa.doSigning(buf);
+                ///ok |= kmldsa.doVerify(buf);
+            }
+            cmd.error("mldsa: " + kmldsa.keyVerify() + " " + kmldsa.keySize() + " " + ok + " in " + (bits.getTime() - tim) + "ms");
+            if (showKeys) {
+                cmd.error("mldsa: " + kmldsa.pemWriteStr(true) + " " + kmldsa.pemWriteStr(false));
             }
             kdh.keyMakeSize(pmsiz);
             tim = bits.getTime();
@@ -660,19 +675,23 @@ public class userTest {
             }
             String sdsa = cryCertificate.createSelfSigned(kdsa, "test", 3650).pemWriteStr();
             String secdsa = cryCertificate.createSelfSigned(kecdsa, "test", 3650).pemWriteStr();
+            String smldsa = cryCertificate.createSelfSigned(kmldsa, "test", 3650).pemWriteStr();
             String srsa = cryCertificate.createSelfSigned(krsa, "test", 3650).pemWriteStr();
             cryCertificate cdsa = new cryCertificate();
             cryCertificate cecdsa = new cryCertificate();
+            cryCertificate cmldsa = new cryCertificate();
             cryCertificate crsa = new cryCertificate();
-            cmd.error("pemio: " + cdsa.pemReadStr(sdsa) + " " + cecdsa.pemReadStr(secdsa) + " " + crsa.pemReadStr(srsa));
-            cmd.error("cert: " + cryCertificate.testClientCert(cdsa, cdsa) + " " + cryCertificate.testClientCert(cecdsa, cecdsa) + " " + cryCertificate.testClientCert(crsa, crsa));
+            cmd.error("pemio: " + cdsa.pemReadStr(sdsa) + " " + cecdsa.pemReadStr(secdsa) + " " + cmldsa.pemReadStr(smldsa) + " " + crsa.pemReadStr(srsa));
+            cmd.error("cert: " + cryCertificate.testClientCert(cdsa, cdsa) + " " + cryCertificate.testClientCert(cecdsa, cecdsa) + " " + cryCertificate.testClientCert(cmldsa, cmldsa) + " " + cryCertificate.testClientCert(crsa, crsa));
             if (showKeys) {
                 cmd.error("dcrt: " + cdsa.pemWriteStr());
                 cmd.error("edcrt: " + cecdsa.pemWriteStr());
+                cmd.error("emcrt: " + cmldsa.pemWriteStr());
                 cmd.error("rcrt: " + crsa.pemWriteStr());
             }
             cmd.error("dsa: " + cdsa);
             cmd.error("ecdsa: " + cecdsa);
+            cmd.error("mldsa: " + cmldsa);
             cmd.error("rsa: " + crsa);
             return null;
         }

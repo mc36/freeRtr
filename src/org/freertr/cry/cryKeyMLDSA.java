@@ -1,5 +1,7 @@
 package org.freertr.cry;
 
+import java.math.BigInteger;
+import org.freertr.enc.encAsn1;
 import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
 
@@ -483,14 +485,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return out;
     }
 
-    public byte[] encodePrivateKey() {
-        byte[] r = bits.byteConcat(rho, key);
-        r = bits.byteConcat(r, tr);
-        r = bits.byteConcat(r, encS1);
-        r = bits.byteConcat(r, encS2);
-        return bits.byteConcat(r, encT0);
-    }
-
     public byte[] encodePublicKey() {
         return bits.byteConcat(rho, encT1);
     }
@@ -558,15 +552,38 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public void privWriter(packHolder pck) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        packHolder p1 = new packHolder(true, true);
+        encAsn1.writeBigInt(p1, BigInteger.ONE);
+        packHolder p2 = new packHolder(true, true);
+        encAsn1.writeObjectId(p2, cryCertificate.oidMlDss44);
+        encAsn1.writeSequence(p1, p2);
+        p2.clear();
+        p2.putCopy(rho, 0, 0, rho.length);
+        p2.putSkip(rho.length);
+        p2.putCopy(key, 0, 0, key.length);
+        p2.putSkip(key.length);
+        p2.putCopy(tr, 0, 0, tr.length);
+        p2.putSkip(tr.length);
+        p2.putCopy(encS1, 0, 0, encS1.length);
+        p2.putSkip(encS1.length);
+        p2.putCopy(encS2, 0, 0, encS2.length);
+        p2.putSkip(encS2.length);
+        p2.putCopy(encT0, 0, 0, encT0.length);
+        p2.putSkip(encT0.length);
+        p2.merge2beg();
+        packHolder p3 = new packHolder(true, true);
+        encAsn1.writeOctString(p3, p2);
+        p2.clear();
+        encAsn1.writeSequence(p2, p3);
+        encAsn1.writeOctString(p1, p2);
+        encAsn1.writeSequence(pck, p1);
     }
 
     public boolean certReader(packHolder pck) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;
     }
 
     public void certWriter(packHolder pck) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
@@ -602,11 +619,11 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean keyVerify() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return false;
     }
 
     public int keySize() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return (DilithiumK * 10) + DilithiumL;
     }
 
     public String keyDump() {
