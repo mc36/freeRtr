@@ -5,6 +5,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryCertificate;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -30,12 +31,14 @@ public class secServer {
      * @param keyrsa rsa key to use
      * @param keydsa dsa key to use
      * @param keyecdsa ecdsa key to use
+     * @param keymldsa mldsa key to use
      * @param certrsa rsa certificate to use
      * @param certdsa dsa certificate to use
      * @param certecdsa ecdsa certificate to use
+     * @param certmldsa mldsa certificate to use
      * @return secure pipeline, null on error
      */
-    public static pipeSide openSec(pipeSide pipe, int proto, pipeLine sample, authGeneric auther, cryKeyRSA keyrsa, cryKeyDSA keydsa, cryKeyECDSA keyecdsa, cryCertificate certrsa, cryCertificate certdsa, cryCertificate certecdsa) {
+    public static pipeSide openSec(pipeSide pipe, int proto, pipeLine sample, authGeneric auther, cryKeyRSA keyrsa, cryKeyDSA keydsa, cryKeyECDSA keyecdsa, cryKeyMLDSA keymldsa, cryCertificate certrsa, cryCertificate certdsa, cryCertificate certecdsa, cryCertificate certmldsa) {
         if (pipe == null) {
             return null;
         }

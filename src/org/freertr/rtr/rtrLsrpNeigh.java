@@ -408,7 +408,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
                 if (debugger.rtrLsrpEvnt) {
                     logger.debug("secure server " + peer);
                 }
-                conn = secServer.openSec(conn, iface.encryptionMethod, new pipeLine(65536, false), new authConstant(true), iface.keyRsa.key, iface.keyDsa.key, iface.keyEcDsa.key, iface.certRsa.cert, iface.certDsa.cert, iface.certEcDsa.cert);
+                conn = secServer.openSec(conn, iface.encryptionMethod, new pipeLine(65536, false), new authConstant(true), iface.keyRsa.key, iface.keyDsa.key, iface.keyEcDsa.key, iface.keyMlDsa.key, iface.certRsa.cert, iface.certDsa.cert, iface.certEcDsa.cert, iface.certMlDsa.cert);
             }
             if (conn == null) {
                 return;

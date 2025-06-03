@@ -520,7 +520,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         if (noneSecKeys()) {
             return null;
         }
-        return secServer.openSec(pipe, proto, sample, auther, keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
+        return secServer.openSec(pipe, proto, sample, auther, keyrsa, keydsa, keyecdsa, keymldsa, certrsa, certdsa, certecdsa, certmldsa);
     }
 
     /**
@@ -1120,7 +1120,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         if (srvCheckAccept(id)) {
             return true;
         }
-        pipe = secServer.openSec(pipe, secProto & protoSec, pipeSample, srvAuther, keyrsa, keydsa, keyecdsa, certrsa, certdsa, certecdsa);
+        pipe = secServer.openSec(pipe, secProto & protoSec, pipeSample, srvAuther, keyrsa, keydsa, keyecdsa, keymldsa, certrsa, certdsa, certecdsa, certmldsa);
         if (pipe == null) {
             return true;
         }

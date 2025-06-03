@@ -12,6 +12,7 @@ import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDSA;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
@@ -240,6 +241,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
     public cfgKey<cryKeyECDSA> keyEcDsa = null;
 
     /**
+     * mldsa key to use
+     */
+    public cfgKey<cryKeyMLDSA> keyMlDsa = null;
+
+    /**
      * rsa certificate to use
      */
     public cfgCert certRsa = null;
@@ -253,6 +259,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
      * ecdsa certificate to use
      */
     public cfgCert certEcDsa = null;
+
+    /**
+     * mldsa certificate to use
+     */
+    public cfgCert certMlDsa = null;
 
     /**
      * security method
@@ -423,7 +434,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
         cmds.cfgLine(l, !connectedCheck, cmds.tabulator, beg + "verify-source", "");
-        cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + certRsa + " " + certDsa + " " + certEcDsa);
+        cmds.cfgLine(l, encryptionMethod <= 0, cmds.tabulator, beg + "encryption", servGeneric.proto2string(encryptionMethod) + " " + keyRsa + " " + keyDsa + " " + keyEcDsa + " " + keyMlDsa + " " + certRsa + " " + certDsa + " " + certEcDsa + " " + certMlDsa);
         cmds.cfgLine(l, authentication == null, cmds.tabulator, beg + "password", authLocal.passwdEncode(authentication, (filter & 2) != 0));
         cmds.cfgLine(l, !authenDisable, cmds.tabulator, beg + "disable-password", "");
         l.add(cmds.tabulator + beg + "sending-tos " + sendingTos);
@@ -502,9 +513,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         l.add(null, "6 7             <name:rsa>              rsa key");
         l.add(null, "7 8               <name:dsa>            dsa key");
         l.add(null, "8 9                 <name:ecd>          ecdsa key");
-        l.add(null, "9 10                  <name:crt>        rsa certificate");
-        l.add(null, "10 11                   <name:crt>      dsa certificate");
-        l.add(null, "11 .                      <name:crt>    ecdsa certificate");
+        l.add(null, "9 10                  <name:mld>        mldsa key");
+        l.add(null, "10 11                   <name:crt>         rsa certificate");
+        l.add(null, "11 12                     <name:crt>       dsa certificate");
+        l.add(null, "12 13                       <name:crt>     ecdsa certificate");
+        l.add(null, "13 .                          <name:crt>   mldsa certificate");
         l.add(null, "4 5         dump                        setup dump file");
         l.add(null, "5 6,.         <file>                    name of file");
         l.add(null, "6 7             <num>                   ms between backup");
@@ -631,9 +644,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
             keyRsa = cfgAll.keyFind(cfgAll.rsakeys, cmd.word(), false);
             keyDsa = cfgAll.keyFind(cfgAll.dsakeys, cmd.word(), false);
             keyEcDsa = cfgAll.keyFind(cfgAll.ecdsakeys, cmd.word(), false);
+            keyMlDsa = cfgAll.keyFind(cfgAll.mldsakeys, cmd.word(), false);
             certRsa = cfgAll.certFind(cmd.word(), false);
             certDsa = cfgAll.certFind(cmd.word(), false);
             certEcDsa = cfgAll.certFind(cmd.word(), false);
+            certMlDsa = cfgAll.certFind(cmd.word(), false);
             return;
         }
         if (a.equals("stub")) {
