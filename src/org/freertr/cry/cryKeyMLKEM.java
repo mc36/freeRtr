@@ -341,7 +341,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
     }
 
     public String algName() {
-        return "mlkem" + (256 * KyberK);
+        return "mlkem";
     }
 
     public boolean certReader(packHolder pck) {

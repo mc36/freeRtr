@@ -555,7 +555,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public String algName() {
-        return "mldsa" + DilithiumK + "" + DilithiumL;
+        return "mldsa";
     }
 
     public boolean privReader(packHolder pck) {
@@ -598,7 +598,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean certReader(packHolder pck) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return true;
     }
 
     public void certWriter(packHolder pck) {
@@ -607,7 +607,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         packHolder p2 = new packHolder(true, true);
         encAsn1.writeObjectId(p2, getOid());
         encAsn1.writeSequence(p1, p2);
-        p2.clear();
         p2.clear();
         p2.putCopy(rho, 0, 0, rho.length);
         p2.putSkip(rho.length);
@@ -623,11 +622,16 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        sgn = sign;
+        return doVerify(hash);
     }
 
     public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        doSigning(hash);
+        packHolder pck = new packHolder(true, true);
+        pck.putCopy(sgn, 0, 0, sgn.length);
+        pck.putSkip(sgn.length);
+        return pck.getCopy();
     }
 
     public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {

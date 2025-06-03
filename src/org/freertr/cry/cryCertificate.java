@@ -835,6 +835,9 @@ public class cryCertificate {
             case 0x3000:
                 key = new cryKeyECDSA();
                 break;
+            case 0x4000:
+                key = new cryKeyMLDSA();
+                break;
             default:
                 return true;
         }
@@ -922,6 +925,9 @@ public class cryCertificate {
         }
         if (s.equals(new cryKeyECDSA().algName())) {
             decAlgo = typEcDssSha256;
+        }
+        if (s.equals(new cryKeyMLDSA().algName())) {
+            decAlgo = typMlDss44sha512;
         }
         binAlgo = new packHolder(true, true);
         encAsn1.writeObjectId(binAlgo, int2objId(decAlgo));
