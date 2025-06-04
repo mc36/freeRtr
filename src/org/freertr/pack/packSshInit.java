@@ -478,8 +478,10 @@ public class packSshInit {
 
     /**
      * fill in values for key exchange message
+     *
+     * @param client set true if client, false on server
      */
-    public void kexInitFill() {
+    public void kexInitFill(boolean client) {
         kexCookie = new byte[16];
         for (int i = 0; i < kexCookie.length; i++) {
             kexCookie[i] = (byte) bits.randomB();
@@ -503,14 +505,6 @@ public class packSshInit {
      * @return false on success, true on error
      */
     public boolean kexInitChoose(packSshInit c, packSshInit s) {
-        if (c == null) {
-            c = new packSshInit(lower);
-            c.kexInitFill();
-        }
-        if (s == null) {
-            s = new packSshInit(lower);
-            s.kexInitFill();
-        }
         kexAlgo = algoChoose(c.kexAlgo, s.kexAlgo);
         kexKeys = algoChoose(c.kexKeys, s.kexKeys);
         kexEncCS = algoChoose(c.kexEncCS, s.kexEncCS);
