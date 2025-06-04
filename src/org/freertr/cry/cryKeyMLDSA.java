@@ -5,7 +5,6 @@ import org.freertr.enc.encAsn1;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packSsh;
 import org.freertr.util.bits;
-import org.freertr.util.logger;
 
 /**
  * module lattice digital signature algorithm
