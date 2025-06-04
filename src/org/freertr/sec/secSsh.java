@@ -227,6 +227,7 @@ public class secSsh implements Runnable {
             return 0;
         }
         packSshInit sgn = new packSshInit(p);
+        sgn.kexInitFill(true, null, null);
         sgn.setupKeyVerifier(pa.password);
         if (pa.pkeySign == null) {
             cryKeyGeneric vrf = sgn.getKeyVerifier();
@@ -449,30 +450,31 @@ public class secSsh implements Runnable {
         }
         packSsh p = new packSsh();
         p.pipe = lower;
-        packSshInit pic = new packSshInit(p);
-        packSshInit pis = new packSshInit(p);
-        pis.exchangeVersion();
+        packSshInit pr = new packSshInit(p);
+        packSshInit pi = new packSshInit(p);
+        pi.exchangeVersion();
         packSshKex pg = new packSshKex(p);
-        pg.hashStr(pis.remoteVersion);
+        pg.hashStr(pi.remoteVersion);
         pg.hashStr(packSshInit.getLocalVersion());
         pg.hashSwap();
-        pis.kexInitFill(false);
-        pis.kexInitCreate(false);
+        pr.kexInitFill(true, null, null);
+        pi.kexInitFill(false, keydsa, keyrsa);
+        pi.kexInitCreate(false);
         pg.hashPck();
         p.packSend();
         doPackRecv(p);
         pg.hashSwap();
         pg.hashPck();
         pg.hashMerge();
-        if (pic.kexInitParse(false)) {
+        if (pr.kexInitParse(false)) {
             return;
         }
-        if (pis.kexInitChoose(pis, pic)) {
+        if (pi.kexInitChoose(pi, pr)) {
             return;
         }
-        pg.keygen = pis.getDHgroup();
-        pg.hasher = pis.getDHhash();
-        cryKeyGeneric key = pis.getKeySigner(keydsa, keyrsa);
+        pg.keygen = pi.getDHgroup();
+        pg.hasher = pi.getDHhash();
+        cryKeyGeneric key = pi.getKeySigner(keydsa, keyrsa);
         pg.cert = key.sshWriter();
         pg.hashInt(pg.cert.length);
         pg.hashBuf(pg.cert);
@@ -496,7 +498,7 @@ public class secSsh implements Runnable {
             pg.keygen.keyServInit();
             pg.keygen.keyServCalc();
             pg.hashCalcDHG();
-            pg.gexReplyFill(pis.getKeyHashAlgo(), pis.getKeyHashAlgn(), key);
+            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
             pg.gexReplyCreate();
             p.packSend();
         } else {
@@ -507,16 +509,16 @@ public class secSsh implements Runnable {
             pg.keygen.keyServInit();
             pg.keygen.keyServCalc();
             pg.hashCalcDHG();
-            pg.gexReplyFill(pis.getKeyHashAlgo(), pis.getKeyHashAlgn(), key);
+            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
             pg.kexReplyCreate();
             p.packSend();
         }
-        if (pis.newKeysExchange()) {
+        if (pi.newKeysExchange()) {
             return;
         }
-        pg.encSetup(pis, false);
-        if (pis.kexExts) {
-            pis.extensInfoCreate();
+        pg.encSetup(pi, false);
+        if (pi.kexExts) {
+            pi.extensInfoCreate();
             p.packSend();
         }
         packSshAuth pa = new packSshAuth(p, pg);
@@ -627,26 +629,27 @@ public class secSsh implements Runnable {
         packSsh p = new packSsh();
         p.pipe = lower;
         packSshKex pg = new packSshKex(p);
-        packSshInit pic = new packSshInit(p);
-        packSshInit pis = new packSshInit(p);
-        pic.exchangeVersion();
+        packSshInit pi = new packSshInit(p);
+        packSshInit pr = new packSshInit(p);
+        pi.exchangeVersion();
         pg.hashStr(packSshInit.getLocalVersion());
-        pg.hashStr(pic.remoteVersion);
-        pic.kexInitFill(true);
-        pic.kexInitCreate(true);
+        pg.hashStr(pi.remoteVersion);
+        pr.kexInitFill(true, null, null);
+        pi.kexInitFill(true, null, null);
+        pi.kexInitCreate(true);
         pg.hashPck();
         p.packSend();
         doPackRecv(p);
         pg.hashPck();
         pg.hashSwap();
-        if (pis.kexInitParse(true)) {
+        if (pr.kexInitParse(true)) {
             return;
         }
-        if (pic.kexInitChoose(pis, pic)) {
+        if (pi.kexInitChoose(pr, pi)) {
             return;
         }
-        pg.keygen = pic.getDHgroup();
-        pg.hasher = pic.getDHhash();
+        pg.keygen = pi.getDHgroup();
+        pg.hasher = pi.getDHhash();
         if (pg.keygen.keyMakeVal() < 1) {
             pg.gexReqFill();
             pg.gexReqCreate();
@@ -693,17 +696,17 @@ public class secSsh implements Runnable {
                 return;
             }
         }
-        cryKeyGeneric key = pic.getKeyVerifier();
+        cryKeyGeneric key = pi.getKeyVerifier();
         if (key.sshReader(pg.cert)) {
             return;
         }
-        if (key.sshVerify(pic.getKeyHashAlgo(), pic.getKeyHashAlgn(), pg.hashVal, pg.sign)) {
+        if (key.sshVerify(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), pg.hashVal, pg.sign)) {
             return;
         }
-        if (pic.newKeysExchange()) {
+        if (pi.newKeysExchange()) {
             return;
         }
-        pg.encSetup(pic, true);
+        pg.encSetup(pi, true);
         packSshAuth pa = new packSshAuth(p, pg);
         pa.servReqCreate(packSsh.serviceAuth);
         p.packSend();

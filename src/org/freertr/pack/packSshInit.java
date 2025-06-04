@@ -1,5 +1,6 @@
 package org.freertr.pack;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
@@ -114,9 +115,19 @@ public class packSshInit {
     public final static String[] hasherAlgs = {"hmac-sha2-512", "hmac-sha2-256", "hmac-sha1", "hmac-md5"};
 
     /**
-     * key algorithms
+     * key algorithm names
      */
-    public final static String[] keySignAlgs = {"rsa-sha2-256", "rsa-sha2-512", cryKeyRSA.sshName, cryKeyDSA.sshName};
+    public String[] keySignAlgs = null;
+
+    /**
+     * key algorithm hashers
+     */
+    public List<cryHashGeneric> keySignHash;
+
+    /**
+     * key algorithms workers
+     */
+    public List<cryKeyGeneric> keySignDoer;
 
     /**
      * compression algorithms
@@ -204,7 +215,7 @@ public class packSshInit {
      * @param rsa rsa key to use
      * @return key signer
      */
-    public cryKeyGeneric getKeySigner(cryKeyGeneric dss, cryKeyGeneric rsa) {
+    public cryKeyGeneric getKeySigner(cryKeyDSA dss, cryKeyRSA rsa) {
         if (kexKeys.length < 1) {
             return null;
         }
@@ -480,12 +491,55 @@ public class packSshInit {
      * fill in values for key exchange message
      *
      * @param client set true if client, false on server
+     * @param dss dss key to use
+     * @param rsa rsa key to use
      */
-    public void kexInitFill(boolean client) {
+    public void kexInitFill(boolean client, cryKeyDSA dss, cryKeyRSA rsa) {
         kexCookie = new byte[16];
         for (int i = 0; i < kexCookie.length; i++) {
             kexCookie[i] = (byte) bits.randomB();
         }
+        List<String> lst = new ArrayList<String>();
+        keySignHash = new ArrayList<cryHashGeneric>();
+        keySignDoer = new ArrayList<cryKeyGeneric>();
+        if (client) {
+            keySignDoer.add(new cryKeyRSA());
+            keySignHash.add(new cryHashSha2256());
+            lst.add("rsa-sha2-256");
+            keySignDoer.add(new cryKeyRSA());
+            keySignHash.add(new cryHashSha2512());
+            lst.add("rsa-sha2-512");
+            keySignDoer.add(new cryKeyRSA());
+            keySignHash.add(new cryHashSha1());
+            lst.add(cryKeyRSA.sshName);
+            keySignDoer.add(new cryKeyDSA());
+            keySignHash.add(new cryHashSha1());
+            lst.add(cryKeyDSA.sshName);
+        } else {
+            if (rsa != null) {
+                keySignDoer.add(rsa);
+                keySignHash.add(new cryHashSha2256());
+                lst.add("rsa-sha2-256");
+                keySignDoer.add(rsa);
+                keySignHash.add(new cryHashSha2512());
+                lst.add("rsa-sha2-512");
+                keySignDoer.add(rsa);
+                keySignHash.add(new cryHashSha1());
+                lst.add(cryKeyRSA.sshName);
+            }
+            if (dss != null) {
+                keySignDoer.add(dss);
+                keySignHash.add(new cryHashSha1());
+                lst.add(cryKeyDSA.sshName);
+            }
+        }
+        keySignAlgs = new String[lst.size()];
+        for (int i = 0; i < keySignAlgs.length; i++) {
+            keySignAlgs[i] = lst.get(i);
+        }
+        
+        keySignAlgs = new String[]{"rsa-sha2-256", "rsa-sha2-512", cryKeyRSA.sshName, cryKeyDSA.sshName};
+        
         kexAlgo = algoFillFull(keyXchgAlgs);
         kexExts = true;
         kexKeys = algoFillFull(keySignAlgs);
