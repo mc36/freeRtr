@@ -501,6 +501,15 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return out;
     }
 
+    /**
+     * get ssh name
+     *
+     * @return name
+     */
+    public String sshName() {
+        return "ssh-mldsa" + DilithiumK + DilithiumL;
+    }
+
     public String algName() {
         return "mldsa";
     }
