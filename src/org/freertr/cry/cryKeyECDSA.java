@@ -53,7 +53,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         return "ecdsa-sha2-" + curveName();
     }
 
-    public String curveName() {
+    private String curveName() {
         return curve.nam.substring(0, curve.nam.length() - 2);
     }
 

@@ -226,7 +226,7 @@ public class secSsh implements Runnable {
         if (!pa.method.equals(packSsh.authenPkey)) {
             return 0;
         }
-        packSshInit sgn = new packSshInit(null);
+        packSshInit sgn = new packSshInit(p);
         sgn.setupKeyVerifier(pa.password);
         if (pa.pkeySign == null) {
             cryKeyGeneric vrf = sgn.getKeyVerifier();
