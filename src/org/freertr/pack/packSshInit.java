@@ -29,6 +29,7 @@ import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyMLKEM;
 import org.freertr.cry.cryKeyPQhybrid;
 import org.freertr.cry.cryKeyRSA;
@@ -448,8 +449,9 @@ public class packSshInit {
      * @param dsa dsa key to use
      * @param rsa rsa key to use
      * @param ecdsa ecdsa key to use
+     * @param mldsa mldsa key to use
      */
-    public void kexInitFill(boolean client, cryKeyDSA dsa, cryKeyRSA rsa, cryKeyECDSA ecdsa) {
+    public void kexInitFill(boolean client, cryKeyDSA dsa, cryKeyRSA rsa, cryKeyECDSA ecdsa, cryKeyMLDSA mldsa) {
         kexCookie = new byte[16];
         for (int i = 0; i < kexCookie.length; i++) {
             kexCookie[i] = (byte) bits.randomB();
@@ -458,19 +460,34 @@ public class packSshInit {
         keySignHash = new ArrayList<cryHashGeneric>();
         keySignDoer = new ArrayList<cryKeyGeneric>();
         if (client) {
+            cryKeyMLDSA ml = new cryKeyMLDSA();
+            ml.keyMakeSize(44);
+            keySignDoer.add(ml);
+            keySignHash.add(ml.sshHash());
+            lst.add(ml.sshName());
+            ml = new cryKeyMLDSA();
+            ml.keyMakeSize(65);
+            keySignDoer.add(ml);
+            keySignHash.add(ml.sshHash());
+            lst.add(ml.sshName());
+            ml = new cryKeyMLDSA();
+            ml.keyMakeSize(87);
+            keySignDoer.add(ml);
+            keySignHash.add(ml.sshHash());
+            lst.add(ml.sshName());
             cryKeyECDSA ec = new cryKeyECDSA();
             ec.keyMakeTls(23);
             keySignDoer.add(ec);
-            keySignHash.add(new cryHashSha2256());
+            keySignHash.add(ec.sshHash());
             lst.add(ec.sshName());
             ec = new cryKeyECDSA();
             ec.keyMakeTls(24);
             keySignDoer.add(ec);
-            keySignHash.add(new cryHashSha2384());
+            keySignHash.add(ec.sshHash());
             lst.add(ec.sshName());
             ec.keyMakeTls(24);
             keySignDoer.add(ec);
-            keySignHash.add(new cryHashSha2512());
+            keySignHash.add(ec.sshHash());
             lst.add(ec.sshName());
             keySignDoer.add(new cryKeyRSA());
             keySignHash.add(new cryHashSha2256());
@@ -485,9 +502,14 @@ public class packSshInit {
             keySignHash.add(new cryHashSha1());
             lst.add(cryKeyDSA.sshName);
         } else {
+            if (mldsa != null) {
+                keySignDoer.add(mldsa);
+                keySignHash.add(mldsa.sshHash());
+                lst.add(mldsa.sshName());
+            }
             if (ecdsa != null) {
                 keySignDoer.add(ecdsa);
-                keySignHash.add(new cryHashSha2512());
+                keySignHash.add(ecdsa.sshHash());
                 lst.add(ecdsa.sshName());
             }
             if (rsa != null) {
@@ -532,11 +554,11 @@ public class packSshInit {
     public boolean kexInitChoose(packSshInit c, packSshInit s) {
         if (c == null) {
             c = new packSshInit(lower);
-            c.kexInitFill(true, null, null, null);
+            c.kexInitFill(true, null, null, null, null);
         }
         if (s == null) {
             s = new packSshInit(lower);
-            s.kexInitFill(true, null, null, null);
+            s.kexInitFill(true, null, null, null, null);
         }
         kexAlgo = algoChoose(c.kexAlgo, s.kexAlgo);
         kexKeys = algoChoose(c.kexKeys, s.kexKeys);

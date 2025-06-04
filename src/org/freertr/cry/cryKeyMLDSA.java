@@ -3,7 +3,9 @@ package org.freertr.cry;
 import java.math.BigInteger;
 import org.freertr.enc.encAsn1;
 import org.freertr.pack.packHolder;
+import org.freertr.pack.packSsh;
 import org.freertr.util.bits;
+import org.freertr.util.logger;
 
 /**
  * module lattice digital signature algorithm
@@ -702,11 +704,22 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         encS1 = null;
         encS2 = null;
         encT0 = null;
+        pubReader(p);
+        return false;
+    }
+
+    private void pubReader(packHolder p) {
         rho = new byte[SeedBytes];
         p.getCopy(rho, 0, 0, rho.length);
         p.getSkip(rho.length);
         encT1 = p.getCopy();
-        return false;
+    }
+
+    private void pubWriter(packHolder p2) {
+        p2.putCopy(rho, 0, 0, rho.length);
+        p2.putSkip(rho.length);
+        p2.putCopy(encT1, 0, 0, encT1.length);
+        p2.putSkip(encT1.length);
     }
 
     public void certWriter(packHolder pck) {
@@ -716,10 +729,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         encAsn1.writeObjectId(p2, getOid());
         encAsn1.writeSequence(p1, p2);
         p2.clear();
-        p2.putCopy(rho, 0, 0, rho.length);
-        p2.putSkip(rho.length);
-        p2.putCopy(encT1, 0, 0, encT1.length);
-        p2.putSkip(encT1.length);
+        pubWriter(p2);
         p2.merge2beg();
         packHolder p3 = new packHolder(true, true);
         encAsn1.writeOctString(p3, p2);
@@ -894,19 +904,52 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean sshReader(byte[] key) {
-        return true;
+        packHolder p = new packHolder(true, true);
+        p.putCopy(key, 0, 0, key.length);
+        p.putSkip(key.length);
+        p.merge2beg();
+        if (!packSsh.stringRead(p).equals(sshName())) {
+            return true;
+        }
+        key = packSsh.bytesRead(p);
+        p.clear();
+        p.putCopy(key, 0, 0, key.length);
+        p.putSkip(key.length);
+        p.merge2beg();
+        pubReader(p);
+        return false;
     }
 
     public byte[] sshWriter() {
-        return new byte[0];
+        packHolder p = new packHolder(true, true);
+        pubWriter(p);
+        p.merge2beg();
+        byte[] buf = p.getCopy();
+        packSsh.stringWrite(p, sshName());
+        packSsh.bytesWrite(p, buf);
+        p.merge2beg();
+        return p.getCopy();
     }
 
     public boolean sshVerify(cryHashGeneric algo, String algn, byte[] hash, byte[] sign) {
-        return true;
+        packHolder p = new packHolder(true, true);
+        p.putCopy(sign, 0, 0, sign.length);
+        p.putSkip(sign.length);
+        p.merge2beg();
+        if (!packSsh.stringRead(p).equals(algn)) {
+            return true;
+        }
+        sgn = packSsh.bytesRead(p);
+        return doVerify(hash);
     }
 
     public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
-        return new byte[0];
+        doSigning(hash);
+        packHolder p = new packHolder(true, true);
+        packSsh.stringWrite(p, algn);
+        packSsh.bytesWrite(p, sgn);
+        p.merge2beg();
+        return p.getCopy();
     }
 
 }
