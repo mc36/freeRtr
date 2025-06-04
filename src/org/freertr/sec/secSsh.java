@@ -8,6 +8,7 @@ import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
+import org.freertr.enc.encBase64;
 import org.freertr.pack.packSsh;
 import org.freertr.pack.packSshAuth;
 import org.freertr.pack.packSshChan;
@@ -685,6 +686,9 @@ public class secSsh implements Runnable {
             pg.hashCalcDHG();
         }
         if (clntPubkey != null) {
+            if (debugger.secSshTraf) {
+                logger.debug("pubkey " + encBase64.encodeBytes(pg.cert));
+            }
             if (clntPubkey.length != pg.cert.length) {
                 return;
             }
