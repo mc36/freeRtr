@@ -501,10 +501,10 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
     /**
      * check keys
      *
-     * @return true if no, false if have all
+     * @return true if no, false if have any
      */
     public boolean noneSecKeys() {
-        return (keydsa == null) || (keyecdsa == null) || (keyrsa == null);
+        return (keydsa == null) && (keyrsa == null) && (keyecdsa == null) && (keymldsa == null);
     }
 
     /**

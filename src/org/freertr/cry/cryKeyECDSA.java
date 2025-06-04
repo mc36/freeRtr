@@ -4,7 +4,6 @@ import org.freertr.enc.encAsn1;
 import java.math.BigInteger;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packSsh;
-import org.freertr.util.bits;
 
 /**
  * elliptic curve digital signature algorithm
@@ -509,6 +508,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         packHolder p = new packHolder(true, true);
         packSsh.bigIntWrite(p, sgnR);
         packSsh.bigIntWrite(p, sgnS);
+        p.merge2beg();
         hash = p.getCopy();
         p.clear();
         packSsh.stringWrite(p, algn);

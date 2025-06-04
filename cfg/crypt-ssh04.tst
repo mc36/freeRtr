@@ -1,4 +1,4 @@
-description ssh test
+description ssh with ecdsa
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -19,15 +19,9 @@ aaa userlist usr
  username c password c
  username c privilege 14
  exit
-crypto rsakey rsa generate 2048
-crypto dsakey dsa generate 1024
-crypto ecdsakey ecdsa generate 256
-crypto mldsakey mldsa generate 44
+crypto ecdsakey ecdsa generate 192
 server telnet ssh
- security rsakey rsa
- security dsakey dsa
  security ecdsakey ecdsa
- security mldsakey mldsa
  security authentication usr
  security protocol ssh
  port 666
