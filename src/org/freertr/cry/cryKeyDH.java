@@ -79,6 +79,10 @@ public class cryKeyDH extends cryKeyGeneric {
         return "diffe-hellman-group" + idNum + "-sha256";
     }
 
+    public cryHashGeneric sshHash() {
+        return new cryHashSha2256();
+    }
+
     public boolean certReader(packHolder pck) {
         return true;
     }

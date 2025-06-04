@@ -52,7 +52,18 @@ public class cryKeyECDH extends cryKeyGeneric {
     }
 
     public String sshName() {
-        return "ecdh-sha2-" + curve.nam.substring(0, curve.nam.length() - 2);
+        return "ecdh-sha2-" + curve.sshName();
+    }
+
+    public cryHashGeneric sshHash() {
+        int i = curve.byteSize();
+        if (i <= 32) {
+            return new cryHashSha2256();
+        }
+        if (i <= 48) {
+            return new cryHashSha2384();
+        }
+        return new cryHashSha2512();
     }
 
     public boolean certReader(packHolder pck) {

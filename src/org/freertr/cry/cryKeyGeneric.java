@@ -42,6 +42,13 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
     public abstract String sshName();
 
     /**
+     * get ssh hash
+     *
+     * @return hasher
+     */
+    public abstract cryHashGeneric sshHash();
+
+    /**
      * read key from asn1 format
      *
      * @param pck packet to read from

@@ -348,6 +348,13 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         return "mlkem" + keySize() + "-sha" + (keySize() < 1024 ? 256 : 384);
     }
 
+    public cryHashGeneric sshHash() {
+        if (keySize() < 1024) {
+            return new cryHashSha2256();
+        }
+        return new cryHashSha2384();
+    }
+
     public boolean certReader(packHolder pck) {
         return true;
     }

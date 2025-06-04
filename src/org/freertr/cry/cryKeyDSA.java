@@ -80,8 +80,22 @@ public class cryKeyDSA extends cryKeyGeneric {
         return "dsa";
     }
 
+    /**
+     * get ssh name
+     *
+     * @return name
+     */
     public String sshName() {
         return sshName;
+    }
+
+    /**
+     * get ssh hash
+     *
+     * @return hasher
+     */
+    public cryHashGeneric sshHash() {
+        return new cryHashSha1();
     }
 
     /**

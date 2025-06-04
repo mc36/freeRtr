@@ -227,7 +227,7 @@ public class secSsh implements Runnable {
             return 0;
         }
         packSshInit sgn = new packSshInit(null);
-        sgn.kexInitFill(true, null, null);
+        sgn.kexInitFill(true, null, null, null);
         sgn.setupKeyVerifier(pa.password);
         if (pa.pkeySign == null) {
             cryKeyGeneric vrf = sgn.getKeyVerifier();
@@ -456,7 +456,7 @@ public class secSsh implements Runnable {
         pg.hashStr(pi.remoteVersion);
         pg.hashStr(packSshInit.getLocalVersion());
         pg.hashSwap();
-        pi.kexInitFill(false, keydsa, keyrsa);
+        pi.kexInitFill(false, keydsa, keyrsa, keyecdsa);
         pi.kexInitCreate(false);
         pg.hashPck();
         p.packSend();
@@ -472,7 +472,7 @@ public class secSsh implements Runnable {
         }
         pg.keygen = pi.getDHgroup();
         pg.hasher = pi.getDHhash();
-        cryKeyGeneric key = pi.getKeySigner(keydsa, keyrsa);
+        cryKeyGeneric key = pi.getKeyVerifier();
         pg.cert = key.sshWriter();
         pg.hashInt(pg.cert.length);
         pg.hashBuf(pg.cert);
@@ -631,7 +631,7 @@ public class secSsh implements Runnable {
         pi.exchangeVersion();
         pg.hashStr(packSshInit.getLocalVersion());
         pg.hashStr(pi.remoteVersion);
-        pi.kexInitFill(true, null, null);
+        pi.kexInitFill(true, null, null, null);
         pi.kexInitCreate(true);
         pg.hashPck();
         p.packSend();

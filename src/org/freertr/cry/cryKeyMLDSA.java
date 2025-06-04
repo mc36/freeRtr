@@ -510,6 +510,10 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return "ssh-mldsa" + DilithiumK + DilithiumL;
     }
 
+    public cryHashGeneric sshHash() {
+        return new cryHashSha2256();
+    }
+
     public String algName() {
         return "mldsa";
     }

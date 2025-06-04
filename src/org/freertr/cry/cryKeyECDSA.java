@@ -50,11 +50,18 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return name
      */
     public String sshName() {
-        return "ecdsa-sha2-" + curveName();
+        return "ecdsa-sha2-" + curve.sshName();
     }
 
-    private String curveName() {
-        return curve.nam.substring(0, curve.nam.length() - 2);
+    public cryHashGeneric sshHash() {
+        int i = curve.byteSize();
+        if (i <= 32) {
+            return new cryHashSha2256();
+        }
+        if (i <= 48) {
+            return new cryHashSha2384();
+        }
+        return new cryHashSha2512();
     }
 
     /**
@@ -244,7 +251,10 @@ public class cryKeyECDSA extends cryKeyGeneric {
     }
 
     public int keyMakeVal() {
-        return -1;
+        if (curve == null) {
+            return -1;
+        }
+        return curve.tls;
     }
 
     private boolean keyMake() {
@@ -399,7 +409,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (!packSsh.stringRead(p).equals(sshName())) {
             return true;
         }
-        if (!packSsh.stringRead(p).equals(curveName())) {
+        if (!packSsh.stringRead(p).equals(curve.sshName())) {
             return true;
         }
         pub = cryKeyECpoint.fromBytesTls(curve, packSsh.bytesRead(p), 0);
@@ -417,7 +427,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
     public byte[] sshWriter() {
         packHolder p = new packHolder(true, true);
         packSsh.stringWrite(p, sshName());
-        packSsh.stringWrite(p, curveName());
+        packSsh.stringWrite(p, curve.sshName());
         packSsh.bytesWrite(p, pub.toBytesTls());
         p.merge2beg();
         return p.getCopy();

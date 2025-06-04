@@ -87,6 +87,15 @@ public class cryKeyECcurve {
     }
 
     /**
+     * ssh name
+     *
+     * @return name
+     */
+    public String sshName() {
+        return nam.substring(0, nam.length() - 2);
+    }
+
+    /**
      * curves
      */
     public final static cryKeyECcurve[] curves = {

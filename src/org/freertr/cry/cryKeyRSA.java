@@ -78,12 +78,26 @@ public class cryKeyRSA extends cryKeyGeneric {
         return (modulus.bitLength() + 7) / 8;
     }
 
+    /**
+     * get ssh name
+     *
+     * @return name
+     */
     public String algName() {
         return "rsa";
     }
 
+    /**
+     * get ssh hash
+     *
+     * @return hasher
+     */
     public String sshName() {
         return sshName;
+    }
+
+    public cryHashGeneric sshHash() {
+        return new cryHashSha2256();
     }
 
     public boolean certReader(packHolder pck) {

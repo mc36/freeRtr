@@ -349,6 +349,10 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
         return "curve25519-sha256";
     }
 
+    public cryHashGeneric sshHash() {
+        return new cryHashSha2256();
+    }
+
     public boolean privReader(packHolder pck) {
         return true;
     }
