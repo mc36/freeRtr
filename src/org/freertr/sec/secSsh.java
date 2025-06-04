@@ -13,7 +13,6 @@ import org.freertr.pack.packSshAuth;
 import org.freertr.pack.packSshChan;
 import org.freertr.pack.packSshInit;
 import org.freertr.pack.packSshKex;
-import org.freertr.pack.packSshSign;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -227,7 +226,8 @@ public class secSsh implements Runnable {
         if (!pa.method.equals(packSsh.authenPkey)) {
             return 0;
         }
-        packSshSign sgn = new packSshSign(pa.password);
+        packSshInit sgn = new packSshInit(null);
+        sgn.setupKeyVerifier(pa.password);
         if (pa.pkeySign == null) {
             cryKeyGeneric vrf = sgn.getKeyVerifier();
             if (vrf == null) {
@@ -471,7 +471,7 @@ public class secSsh implements Runnable {
         }
         pg.keygen = pi.getDHgroup();
         pg.hasher = pi.getDHhash();
-        cryKeyGeneric key = pi.kexKeys.getKeySigner(keydsa, keyrsa);
+        cryKeyGeneric key = pi.getKeySigner(keydsa, keyrsa);
         pg.cert = key.sshWriter();
         pg.hashInt(pg.cert.length);
         pg.hashBuf(pg.cert);
@@ -495,7 +495,7 @@ public class secSsh implements Runnable {
             pg.keygen.keyServInit();
             pg.keygen.keyServCalc();
             pg.hashCalcDHG();
-            pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
+            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
             pg.gexReplyCreate();
             p.packSend();
         } else {
@@ -506,7 +506,7 @@ public class secSsh implements Runnable {
             pg.keygen.keyServInit();
             pg.keygen.keyServCalc();
             pg.hashCalcDHG();
-            pg.gexReplyFill(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), key);
+            pg.gexReplyFill(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), key);
             pg.kexReplyCreate();
             p.packSend();
         }
@@ -691,11 +691,11 @@ public class secSsh implements Runnable {
                 return;
             }
         }
-        cryKeyGeneric key = pi.kexKeys.getKeyVerifier();
+        cryKeyGeneric key = pi.getKeyVerifier();
         if (key.sshReader(pg.cert)) {
             return;
         }
-        if (key.sshVerify(pi.kexKeys.getKeyHashAlgo(), pi.kexKeys.getKeyHashAlgn(), pg.hashVal, pg.sign)) {
+        if (key.sshVerify(pi.getKeyHashAlgo(), pi.getKeyHashAlgn(), pg.hashVal, pg.sign)) {
             return;
         }
         if (pi.newKeysExchange()) {

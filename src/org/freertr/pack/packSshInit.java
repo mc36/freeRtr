@@ -24,10 +24,12 @@ import org.freertr.cry.cryHashSha2384;
 import org.freertr.cry.cryHashSha2512;
 import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryKeyDH;
+import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.cry.cryKeyMLKEM;
 import org.freertr.cry.cryKeyPQhybrid;
+import org.freertr.cry.cryKeyRSA;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -64,7 +66,7 @@ public class packSshInit {
     /**
      * key storage algorithm
      */
-    public packSshSign kexKeys;
+    public int[] kexKeys;
 
     /**
      * encryption algorithm client2server
@@ -112,6 +114,11 @@ public class packSshInit {
     public final static String[] hasherAlgs = {"hmac-sha2-512", "hmac-sha2-256", "hmac-sha1", "hmac-md5"};
 
     /**
+     * key algorithms
+     */
+    public final static String[] keySignAlgs = {cryKeyRSA.sshName2, cryKeyRSA.sshName3, cryKeyRSA.sshName, cryKeyDSA.sshName};
+
+    /**
      * compression algorithms
      */
     public final static String[] compressAlgs = {"none"};
@@ -130,6 +137,109 @@ public class packSshInit {
      */
     public packSshInit(packSsh pack) {
         lower = pack;
+    }
+
+    /**
+     * get chosen key verifier
+     *
+     * @return key verifier
+     */
+    public cryKeyGeneric getKeyVerifier() {
+        if (kexKeys.length < 1) {
+            return null;
+        }
+        switch (kexKeys[0]) {
+            case 0:
+                return new cryKeyRSA();
+            case 1:
+                return new cryKeyRSA();
+            case 2:
+                return new cryKeyRSA();
+            case 3:
+                return new cryKeyDSA();
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * get key hash algorithm
+     *
+     * @return hash
+     */
+    public cryHashGeneric getKeyHashAlgo() {
+        if (kexKeys.length < 1) {
+            return null;
+        }
+        switch (kexKeys[0]) {
+            case 0:
+                return new cryHashSha2256();
+            case 1:
+                return new cryHashSha2512();
+            case 2:
+                return new cryHashSha1();
+            case 3:
+                return new cryHashSha1();
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * get key algorithm name
+     *
+     * @return name
+     */
+    public String getKeyHashAlgn() {
+        if (kexKeys.length < 1) {
+            return null;
+        }
+        switch (kexKeys[0]) {
+            case 0:
+                return cryKeyRSA.sshName2;
+            case 1:
+                return cryKeyRSA.sshName3;
+            case 2:
+                return cryKeyRSA.sshName;
+            case 3:
+                return cryKeyDSA.sshName;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * get chosen key signer
+     *
+     * @param dss dss key to use
+     * @param rsa rsa key to use
+     * @return key signer
+     */
+    public cryKeyGeneric getKeySigner(cryKeyGeneric dss, cryKeyGeneric rsa) {
+        if (kexKeys.length < 1) {
+            return null;
+        }
+        switch (kexKeys[0]) {
+            case 0:
+                return rsa;
+            case 1:
+                return rsa;
+            case 2:
+                return rsa;
+            case 3:
+                return dss;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * populate from algorithm list
+     *
+     * @param s string to read
+     */
+    public void setupKeyVerifier(String s) {
+        kexKeys = packSshInit.algoParseList(s, keySignAlgs);
     }
 
     /**
@@ -359,7 +469,7 @@ public class packSshInit {
             kexExts = algoFindList(a, "ext-info-c");
         }
         kexAlgo = algoParseList(a, keyXchgAlgs);
-        kexKeys = new packSshSign(lower.stringRead());
+        kexKeys = algoParseList(lower.stringRead(), keySignAlgs);
         kexEncCS = algoParseList(lower.stringRead(), cipherAlgs);
         kexEncSC = algoParseList(lower.stringRead(), cipherAlgs);
         kexMacCS = algoParseList(lower.stringRead(), hasherAlgs);
@@ -387,8 +497,7 @@ public class packSshInit {
         }
         kexAlgo = algoFillFull(keyXchgAlgs);
         kexExts = true;
-        kexKeys = new packSshSign("");
-        kexKeys.algo = algoFillFull(packSshSign.keySignAlgs);
+        kexKeys = algoFillFull(keySignAlgs);
         kexEncCS = algoFillFull(cipherAlgs);
         kexEncSC = algoFillFull(cipherAlgs);
         kexMacCS = algoFillFull(hasherAlgs);
@@ -414,14 +523,14 @@ public class packSshInit {
             s.kexInitFill();
         }
         kexAlgo = algoChoose(c.kexAlgo, s.kexAlgo);
-        kexKeys.algo = algoChoose(c.kexKeys.algo, s.kexKeys.algo);
+        kexKeys = algoChoose(c.kexKeys, s.kexKeys);
         kexEncCS = algoChoose(c.kexEncCS, s.kexEncCS);
         kexEncSC = algoChoose(c.kexEncSC, s.kexEncSC);
         kexMacCS = algoChoose(c.kexMacCS, s.kexMacCS);
         kexMacSC = algoChoose(c.kexMacSC, s.kexMacSC);
         kexCompCS = algoChoose(c.kexCompCS, s.kexCompCS);
         kexCompSC = algoChoose(c.kexCompSC, s.kexCompSC);
-        if ((kexAlgo == null) || (kexKeys.algo == null)) {
+        if ((kexAlgo == null) || (kexKeys == null)) {
             return true;
         }
         if ((kexEncCS == null) || (kexEncSC == null)) {
@@ -460,7 +569,7 @@ public class packSshInit {
             }
         }
         lower.stringWrite(a + altoCreateList(kexAlgo, keyXchgAlgs));
-        lower.stringWrite(altoCreateList(kexKeys.algo, packSshSign.keySignAlgs));
+        lower.stringWrite(altoCreateList(kexKeys, keySignAlgs));
         lower.stringWrite(altoCreateList(kexEncCS, cipherAlgs));
         lower.stringWrite(altoCreateList(kexEncSC, cipherAlgs));
         lower.stringWrite(altoCreateList(kexMacCS, hasherAlgs));
@@ -482,7 +591,7 @@ public class packSshInit {
     }
 
     private void kexInitDump(String dir) {
-        logger.debug(dir + " ext=" + kexExts + " kex=" + altoCreateList(kexAlgo, keyXchgAlgs) + " sng=" + altoCreateList(kexKeys.algo, packSshSign.keySignAlgs)
+        logger.debug(dir + " ext=" + kexExts + " kex=" + altoCreateList(kexAlgo, keyXchgAlgs) + " sng=" + altoCreateList(kexKeys, keySignAlgs)
                 + " encCS=" + altoCreateList(kexEncCS, cipherAlgs) + " encSC=" + altoCreateList(kexEncSC, cipherAlgs) + " macCS="
                 + altoCreateList(kexMacCS, hasherAlgs) + " macSC=" + altoCreateList(kexMacSC, hasherAlgs) + " cmpCS="
                 + altoCreateList(kexCompCS, compressAlgs) + " cmpSC=" + altoCreateList(kexCompSC, compressAlgs) + " frst="
@@ -666,9 +775,7 @@ public class packSshInit {
         lower.pckDat.msbPutD(0, 1); // number of extensions
         lower.pckDat.putSkip(4);
         lower.stringWrite("server-sig-algs");
-        packSshSign algs = new packSshSign("");
-        algs.algo = algoFillFull(packSshSign.keySignAlgs);
-        lower.stringWrite(altoCreateList(algs.algo, packSshSign.keySignAlgs));
+        lower.stringWrite(altoCreateList(algoFillFull(keySignAlgs), keySignAlgs));
     }
 
 }
