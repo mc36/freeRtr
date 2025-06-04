@@ -226,7 +226,7 @@ public class secSsh implements Runnable {
         if (!pa.method.equals(packSsh.authenPkey)) {
             return 0;
         }
-        packSshInit sgn = new packSshInit(p);
+        packSshInit sgn = new packSshInit(null);
         sgn.kexInitFill(true, null, null);
         sgn.setupKeyVerifier(pa.password);
         if (pa.pkeySign == null) {
@@ -450,14 +450,12 @@ public class secSsh implements Runnable {
         }
         packSsh p = new packSsh();
         p.pipe = lower;
-        packSshInit pr = new packSshInit(p);
         packSshInit pi = new packSshInit(p);
         pi.exchangeVersion();
         packSshKex pg = new packSshKex(p);
         pg.hashStr(pi.remoteVersion);
         pg.hashStr(packSshInit.getLocalVersion());
         pg.hashSwap();
-        pr.kexInitFill(true, null, null);
         pi.kexInitFill(false, keydsa, keyrsa);
         pi.kexInitCreate(false);
         pg.hashPck();
@@ -466,10 +464,10 @@ public class secSsh implements Runnable {
         pg.hashSwap();
         pg.hashPck();
         pg.hashMerge();
-        if (pr.kexInitParse(false)) {
+        if (pi.kexInitParse(false)) {
             return;
         }
-        if (pi.kexInitChoose(pi, pr)) {
+        if (pi.kexInitChoose(pi, null)) {
             return;
         }
         pg.keygen = pi.getDHgroup();
@@ -630,11 +628,9 @@ public class secSsh implements Runnable {
         p.pipe = lower;
         packSshKex pg = new packSshKex(p);
         packSshInit pi = new packSshInit(p);
-        packSshInit pr = new packSshInit(p);
         pi.exchangeVersion();
         pg.hashStr(packSshInit.getLocalVersion());
         pg.hashStr(pi.remoteVersion);
-        pr.kexInitFill(true, null, null);
         pi.kexInitFill(true, null, null);
         pi.kexInitCreate(true);
         pg.hashPck();
@@ -642,10 +638,10 @@ public class secSsh implements Runnable {
         doPackRecv(p);
         pg.hashPck();
         pg.hashSwap();
-        if (pr.kexInitParse(true)) {
+        if (pi.kexInitParse(true)) {
             return;
         }
-        if (pi.kexInitChoose(pr, pi)) {
+        if (pi.kexInitChoose(null, pi)) {
             return;
         }
         pg.keygen = pi.getDHgroup();

@@ -537,9 +537,14 @@ public class packSshInit {
         for (int i = 0; i < keySignAlgs.length; i++) {
             keySignAlgs[i] = lst.get(i);
         }
-        
+
         keySignAlgs = new String[]{"rsa-sha2-256", "rsa-sha2-512", cryKeyRSA.sshName, cryKeyDSA.sshName};
-        
+
+        if (client) {
+
+        } else {
+
+        }
         kexAlgo = algoFillFull(keyXchgAlgs);
         kexExts = true;
         kexKeys = algoFillFull(keySignAlgs);
@@ -559,6 +564,14 @@ public class packSshInit {
      * @return false on success, true on error
      */
     public boolean kexInitChoose(packSshInit c, packSshInit s) {
+        if (c == null) {
+            c = new packSshInit(lower);
+            c.kexInitFill(true, null, null);
+        }
+        if (s == null) {
+            s = new packSshInit(lower);
+            s.kexInitFill(true, null, null);
+        }
         kexAlgo = algoChoose(c.kexAlgo, s.kexAlgo);
         kexKeys = algoChoose(c.kexKeys, s.kexKeys);
         kexEncCS = algoChoose(c.kexEncCS, s.kexEncCS);
