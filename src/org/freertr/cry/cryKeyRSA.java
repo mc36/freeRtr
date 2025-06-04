@@ -82,6 +82,10 @@ public class cryKeyRSA extends cryKeyGeneric {
         return "rsa";
     }
 
+    public String sshName() {
+        return sshName;
+    }
+
     public boolean certReader(packHolder pck) {
         encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {

@@ -80,6 +80,10 @@ public class cryKeyDSA extends cryKeyGeneric {
         return "dsa";
     }
 
+    public String sshName() {
+        return sshName;
+    }
+
     /**
      * read certificate
      *

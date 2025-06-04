@@ -345,6 +345,10 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
         return "curve25519";
     }
 
+    public String sshName() {
+        return "curve25519-sha256";
+    }
+
     public boolean privReader(packHolder pck) {
         return true;
     }

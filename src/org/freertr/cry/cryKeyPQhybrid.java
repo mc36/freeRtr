@@ -42,6 +42,10 @@ public class cryKeyPQhybrid extends cryKeyGeneric {
         return "x25519mlkem768";
     }
 
+    public String sshName() {
+        return "mlkem768x25519-sha256";
+    }
+
     public boolean privReader(packHolder pck) {
         return true;
     }
