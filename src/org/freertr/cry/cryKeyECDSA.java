@@ -424,7 +424,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
     }
 
     private BigInteger calcZ(BigInteger n, byte[] msg) {
-        BigInteger z = new BigInteger(msg);
+        BigInteger z = cryUtils.buffer2bigInt(msg, 0, msg.length);
         int nl = n.bitLength();
         int zl = z.bitLength();
         if (nl < zl) {
