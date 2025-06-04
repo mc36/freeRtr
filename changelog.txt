@@ -16957,3 +16957,10 @@ failed: udp forwarder server
 ---------------------------------- 2025-06-02 08:04:49 25.6.2
 no failed: udp forwarder server
 qc pass: udp forwarder server
+---------------------------------- 2025-06-04 21:15:20 25.6.4
+no qc pass: ssh test
+qc pass: ssh with everything
+qc pass: ssh with dsa
+qc pass: ssh with rsa
+qc pass: ssh with ecdsa
+qc pass: ssh with mldsa

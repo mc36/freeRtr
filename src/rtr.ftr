@@ -989,7 +989,11 @@ qc pass: skip with aes256ofb
 qc pass: skip with aes128pcbc
 qc pass: skip with aes192pcbc
 qc pass: skip with aes256pcbc
-qc pass: ssh test
+qc pass: ssh with everything
+qc pass: ssh with dsa
+qc pass: ssh with rsa
+qc pass: ssh with ecdsa
+qc pass: ssh with mldsa
 qc pass: swipe over ipv4
 qc pass: swipe over ipv6
 qc pass: swipe over swipe
