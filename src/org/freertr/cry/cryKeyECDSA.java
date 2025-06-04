@@ -50,7 +50,11 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return name
      */
     public String sshName() {
-        return "ssh-ecdsa-sha2-" + curve;
+        return "ecdsa-sha2-" + curveName();
+    }
+
+    public String curveName() {
+        return curve.nam.substring(0, curve.nam.length() - 2);
     }
 
     /**
@@ -395,10 +399,10 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (!packSsh.stringRead(p).equals(sshName())) {
             return true;
         }
-        if (!packSsh.stringRead(p).equals(curve + "")) {
+        if (!packSsh.stringRead(p).equals(curveName())) {
             return true;
         }
-        pub = cryKeyECpoint.fromBytesCert(curve, packSsh.bytesRead(p), 0);
+        pub = cryKeyECpoint.fromBytesTls(curve, packSsh.bytesRead(p), 0);
         if (pub == null) {
             return true;
         }
@@ -413,8 +417,8 @@ public class cryKeyECDSA extends cryKeyGeneric {
     public byte[] sshWriter() {
         packHolder p = new packHolder(true, true);
         packSsh.stringWrite(p, sshName());
-        packSsh.stringWrite(p, "" + curve);
-        packSsh.bytesWrite(p, pub.toBytesCert());
+        packSsh.stringWrite(p, curveName());
+        packSsh.bytesWrite(p, pub.toBytesTls());
         p.merge2beg();
         return p.getCopy();
     }
@@ -458,34 +462,6 @@ public class cryKeyECDSA extends cryKeyGeneric {
     }
 
     /**
-     * convert signature to ssh
-     *
-     * @return byte array of r|s
-     */
-    public byte[] sign2ssh() {
-        int hashBytes = curve.byteSize();
-        byte[] b1 = cryUtils.bigInt2buffer(sgnR, hashBytes);
-        byte[] b2 = cryUtils.bigInt2buffer(sgnS, hashBytes);
-        return bits.byteConcat(b1, b2);
-    }
-
-    /**
-     * convert ssh to signature
-     *
-     * @param sgn r|s byte array
-     * @return false on success, true on error
-     */
-    public boolean ssh2sign(byte[] sgn) {
-        int hashBytes = curve.byteSize();
-        if (sgn.length != hashBytes + hashBytes) {
-            return true;
-        }
-        sgnR = cryUtils.buffer2bigInt(sgn, 0, hashBytes);
-        sgnS = cryUtils.buffer2bigInt(sgn, hashBytes, hashBytes);
-        return false;
-    }
-
-    /**
      * verify ssh signature
      *
      * @param hash hash
@@ -502,7 +478,12 @@ public class cryKeyECDSA extends cryKeyGeneric {
             return true;
         }
         sign = packSsh.bytesRead(p);
-        ssh2sign(sign);
+        p.clear();
+        p.putCopy(sign, 0, 0, sign.length);
+        p.putSkip(sign.length);
+        p.merge2beg();
+        sgnR = packSsh.bigIntRead(p);
+        sgnS = packSsh.bigIntRead(p);
         return doVerify(hash);
     }
 
@@ -515,8 +496,11 @@ public class cryKeyECDSA extends cryKeyGeneric {
     public byte[] sshSigning(cryHashGeneric algo, String algn, byte[] hash) {
         hash = cryHashGeneric.compute(algo, hash);
         doSigning(hash);
-        hash = sign2ssh();
         packHolder p = new packHolder(true, true);
+        packSsh.bigIntWrite(p, sgnR);
+        packSsh.bigIntWrite(p, sgnS);
+        hash = p.getCopy();
+        p.clear();
         packSsh.stringWrite(p, algn);
         packSsh.bytesWrite(p, hash);
         p.merge2beg();

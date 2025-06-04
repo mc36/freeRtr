@@ -116,7 +116,7 @@ public class packSshInit {
     /**
      * key algorithms
      */
-    public final static String[] keySignAlgs = {cryKeyRSA.sshName2, cryKeyRSA.sshName3, cryKeyRSA.sshName, cryKeyDSA.sshName};
+    public final static String[] keySignAlgs = {"rsa-sha2-256", "rsa-sha2-512", cryKeyRSA.sshName, cryKeyDSA.sshName};
 
     /**
      * compression algorithms
@@ -194,18 +194,7 @@ public class packSshInit {
         if (kexKeys.length < 1) {
             return null;
         }
-        switch (kexKeys[0]) {
-            case 0:
-                return cryKeyRSA.sshName2;
-            case 1:
-                return cryKeyRSA.sshName3;
-            case 2:
-                return cryKeyRSA.sshName;
-            case 3:
-                return cryKeyDSA.sshName;
-            default:
-                return null;
-        }
+        return keySignAlgs[kexKeys[0]];
     }
 
     /**

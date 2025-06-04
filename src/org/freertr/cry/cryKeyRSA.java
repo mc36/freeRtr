@@ -25,16 +25,6 @@ public class cryKeyRSA extends cryKeyGeneric {
     public final static String sshName = "ssh-rsa";
 
     /**
-     * ssh name
-     */
-    public final static String sshName2 = "rsa-sha2-256";
-
-    /**
-     * ssh name
-     */
-    public final static String sshName3 = "rsa-sha2-512";
-
-    /**
      * n modulus
      */
     protected BigInteger modulus;
