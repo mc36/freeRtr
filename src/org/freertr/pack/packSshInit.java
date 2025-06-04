@@ -159,18 +159,7 @@ public class packSshInit {
         if (kexKeys.length < 1) {
             return null;
         }
-        switch (kexKeys[0]) {
-            case 0:
-                return new cryKeyRSA();
-            case 1:
-                return new cryKeyRSA();
-            case 2:
-                return new cryKeyRSA();
-            case 3:
-                return new cryKeyDSA();
-            default:
-                return null;
-        }
+        return keySignDoer.get(kexKeys[0]);
     }
 
     /**
@@ -182,18 +171,7 @@ public class packSshInit {
         if (kexKeys.length < 1) {
             return null;
         }
-        switch (kexKeys[0]) {
-            case 0:
-                return new cryHashSha2256();
-            case 1:
-                return new cryHashSha2512();
-            case 2:
-                return new cryHashSha1();
-            case 3:
-                return new cryHashSha1();
-            default:
-                return null;
-        }
+        return keySignHash.get(kexKeys[0]);
     }
 
     /**
@@ -219,18 +197,7 @@ public class packSshInit {
         if (kexKeys.length < 1) {
             return null;
         }
-        switch (kexKeys[0]) {
-            case 0:
-                return rsa;
-            case 1:
-                return rsa;
-            case 2:
-                return rsa;
-            case 3:
-                return dss;
-            default:
-                return null;
-        }
+        return keySignDoer.get(kexKeys[0]);
     }
 
     /**
@@ -536,14 +503,6 @@ public class packSshInit {
         keySignAlgs = new String[lst.size()];
         for (int i = 0; i < keySignAlgs.length; i++) {
             keySignAlgs[i] = lst.get(i);
-        }
-
-        keySignAlgs = new String[]{"rsa-sha2-256", "rsa-sha2-512", cryKeyRSA.sshName, cryKeyDSA.sshName};
-
-        if (client) {
-
-        } else {
-
         }
         kexAlgo = algoFillFull(keyXchgAlgs);
         kexExts = true;
