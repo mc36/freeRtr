@@ -1616,8 +1616,7 @@ public class spfCalc<Ta extends addrType> {
                     x -= sclSX;
                     y *= sclMY;
                     y -= sclSY;
-                    p[0] = "" + (int) x;
-                    p[1] = "" + (int) y;
+                    p = new String[]{"" + (int) x, "" + (int) y};
                 }
                 res.add("\"" + ntry + "\" [pin=true pos=\"" + p[0] + "," + p[1] + "\"]");
             }
