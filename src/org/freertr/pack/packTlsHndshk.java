@@ -23,7 +23,9 @@ import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryKeyDH;
 import org.freertr.cry.cryKeyDSA;
 import org.freertr.cry.cryKeyECDH;
+import org.freertr.cry.cryKeyECDSA;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyMLKEM;
 import org.freertr.cry.cryKeyPQhybrid;
 import org.freertr.cry.cryKeyRSA;
@@ -225,9 +227,19 @@ public class packTlsHndshk {
     public cryKeyRSA keyrsa;
 
     /**
-     * dss key
+     * dsa key
      */
     public cryKeyDSA keydsa;
+
+    /**
+     * ecdsa key
+     */
+    public cryKeyECDSA keyecdsa;
+
+    /**
+     * mldsa key
+     */
+    public cryKeyMLDSA keymldsa;
 
     /**
      * rsa certificate
@@ -235,9 +247,19 @@ public class packTlsHndshk {
     public cryCertificate certrsa;
 
     /**
-     * dss certificate
+     * dsa certificate
      */
     public cryCertificate certdsa;
+
+    /**
+     * ecdsa certificate
+     */
+    public cryCertificate certecdsa;
+
+    /**
+     * mldsa certificate
+     */
+    public cryCertificate certmldsa;
 
     /**
      * datagram mode
@@ -334,6 +356,306 @@ public class packTlsHndshk {
      */
     public final static int typeMsgHsh = 254;
 
+    /**
+     * server name
+     */
+    public final static int extServNama = 0;
+
+    /**
+     * maximum fragment length
+     */
+    public final static int extMaxFrag = 1;
+
+    /**
+     * client certificate url
+     */
+    public final static int extCliCertUrl = 2;
+
+    /**
+     * trusted ca keys
+     */
+    public final static int extTrustCaKey = 3;
+
+    /**
+     * truncated hmac
+     */
+    public final static int extTruncHmac = 4;
+
+    /**
+     * status request
+     */
+    public final static int extStatReq = 5;
+
+    /**
+     * user mapping
+     */
+    public final static int extUserMap = 6;
+
+    /**
+     * client authz
+     */
+    public final static int extCliAuth = 7;
+
+    /**
+     * server authz
+     */
+    public final static int extSrvAuth = 8;
+
+    /**
+     * cert type
+     */
+    public final static int extCertType = 9;
+
+    /**
+     * supported groups
+     */
+    public final static int extSuppGrps = 10;
+
+    /**
+     * ec point format
+     */
+    public final static int extEcPntFrm = 11;
+
+    /**
+     * srp
+     */
+    public final static int extSrp = 12;
+
+    /**
+     * signature algorithms
+     */
+    public final static int extSignAlgo = 13;
+
+    /**
+     * use srtp
+     */
+    public final static int extSrtp = 14;
+
+    /**
+     * heartbeat
+     */
+    public final static int extHrtBeat = 15;
+
+    /**
+     * application layer negotiation
+     */
+    public final static int extAppLayer = 16;
+
+    /**
+     * status request v2
+     */
+    public final static int extStatReq2 = 17;
+
+    /**
+     * signer certificate timestamp
+     */
+    public final static int extCertTime = 18;
+
+    /**
+     * client certificate type
+     */
+    public final static int extCliCertType = 19;
+
+    /**
+     * server certificate type
+     */
+    public final static int extSrvCertType = 20;
+
+    /**
+     * server certificate type
+     */
+    public final static int extPadding = 21;
+
+    /**
+     * encrypt then mac
+     */
+    public final static int extEncrMac = 22;
+
+    /**
+     * extended master secret
+     */
+    public final static int extMastrSec = 23;
+
+    /**
+     * token binding
+     */
+    public final static int extToknBind = 24;
+
+    /**
+     * cached info
+     */
+    public final static int extCachInf = 25;
+
+    /**
+     * tls lts
+     */
+    public final static int extTlsLts = 26;
+
+    /**
+     * compress certificate
+     */
+    public final static int extComprCert = 27;
+
+    /**
+     * record size limit
+     */
+    public final static int extRecLim = 28;
+
+    /**
+     * pwd protect
+     */
+    public final static int extPwdProt = 29;
+
+    /**
+     * pwd clear
+     */
+    public final static int extPwdCler = 30;
+
+    /**
+     * pwd salt
+     */
+    public final static int extPwdSalt = 31;
+
+    /**
+     * ticket pinning
+     */
+    public final static int extTickPin = 32;
+
+    /**
+     * tls cert with psk
+     */
+    public final static int extCertPsk = 33;
+
+    /**
+     * delegated credentinal
+     */
+    public final static int extDelgCrd = 34;
+
+    /**
+     * session ticket
+     */
+    public final static int extSessTick = 35;
+
+    /**
+     * tlmsp
+     */
+    public final static int extTlmsp = 36;
+
+    /**
+     * tlmsp proxy
+     */
+    public final static int extTlmspPrx = 37;
+
+    /**
+     * tlmsp delegate
+     */
+    public final static int extTlmspDel = 38;
+
+    /**
+     * ekt ciphers
+     */
+    public final static int extEktCiph = 39;
+
+    /**
+     * pre shared key
+     */
+    public final static int extPreShrKy = 41;
+
+    /**
+     * early data
+     */
+    public final static int extEarlDat = 42;
+
+    /**
+     * supported versions
+     */
+    public final static int extSuppVers = 43;
+
+    /**
+     * cookie
+     */
+    public final static int extCookie = 44;
+
+    /**
+     * psk key exchange
+     */
+    public final static int extPskKex = 45;
+
+    /**
+     * certificate authoritites
+     */
+    public final static int extCertAuth = 47;
+
+    /**
+     * oid filters
+     */
+    public final static int extOidFilt = 48;
+
+    /**
+     * post handshake auth
+     */
+    public final static int extPstHndAut = 49;
+
+    /**
+     * signature algorithms
+     */
+    public final static int extSignAlgos = 50;
+
+    /**
+     * key shares
+     */
+    public final static int extKeyShare = 51;
+
+    /**
+     * transparency info
+     */
+    public final static int extTrnsInfo = 52;
+
+    /**
+     * connection id
+     */
+    public final static int extConnId = 54;
+
+    /**
+     * external id hash
+     */
+    public final static int extIdHash = 55;
+
+    /**
+     * external session id
+     */
+    public final static int extSessId = 56;
+
+    /**
+     * quic session parameters
+     */
+    public final static int extQuicPara = 57;
+
+    /**
+     * ticket request
+     */
+    public final static int extTickReq = 58;
+
+    /**
+     * dnssec chain
+     */
+    public final static int extDnsChain = 59;
+
+    /**
+     * sequence number encryption algorithm
+     */
+    public final static int extSeqEncr = 60;
+
+    /**
+     * rrc
+     */
+    public final static int extRrc = 61;
+
+    /**
+     * flags
+     */
+    public final static int extFlags = 62;
+
     private final packTls lower;
 
     /**
@@ -384,8 +706,9 @@ public class packTlsHndshk {
      *
      * @param i cipher suite
      * @return decoded format, -1 if unknown format: 0x0000|key|sign|cipher|hash
-     * kex: 1=rsa, 2=dhe sign: 1=rsa, 2=dss cipher: 1=des, 2=3des, 3=aes,
-     * 4=chacha, 5=aesgcm hash: 1=md5, 2=sha1, 3=sha256, 4=sha384, 5=sha512
+     * kex: 1=rsa, 2=dhe sign: 1=rsa, 2=dsa, 3=ecdsa, 4=mldsa cipher: 1=des,
+     * 2=3des, 3=aes, 4=chacha, 5=aesgcm hash: 1=md5, 2=sha1, 3=sha256,
+     * 4=sha384, 5=sha512
      */
     public static int decodeCipherCode(int i) {
         switch (i) {
@@ -453,7 +776,13 @@ public class packTlsHndshk {
                 s += "rsa";
                 break;
             case 0x200:
-                s += "dss";
+                s += "dsa";
+                break;
+            case 0x300:
+                s += "ecdsa";
+                break;
+            case 0x400:
+                s += "mldsa";
                 break;
             default:
                 s += "?";
@@ -690,7 +1019,7 @@ public class packTlsHndshk {
                 logger.debug("extension " + tlv.dump());
             }
             switch (tlv.valTyp) {
-                case 0: // server name
+                case extServNama: // server name
                     int i = bits.msbGetW(tlv.valDat, 3);
                     if (i >= tlv.valSiz) {
                         break;
@@ -699,7 +1028,7 @@ public class packTlsHndshk {
                     bits.byteCopy(tlv.valDat, 5, buf, 0, buf.length);
                     servNam = new String(buf);
                     break;
-                case 43: // supported version
+                case extSuppVers: // supported version
                     if (client) {
                         minVer = bits.msbGetW(tlv.valDat, 0);
                         maxVer = minVer;
@@ -726,7 +1055,7 @@ public class packTlsHndshk {
                         maxVer = lower.verMax;
                     }
                     break;
-                case 10: // supported groups
+                case extSuppGrps: // supported groups
                     if (lower.verMax < 0x304) {
                         break;
                     }
@@ -738,7 +1067,7 @@ public class packTlsHndshk {
                         }
                     }
                     break;
-                case 13: // signature algorithm
+                case extSignAlgo: // signature algorithm
                     if (lower.verMax < 0x304) {
                         break;
                     }
@@ -751,7 +1080,7 @@ public class packTlsHndshk {
                         break;
                     }
                     break;
-                case 51: // key exchange
+                case extKeyShare: // key share
                     if (lower.verMax < 0x304) {
                         break;
                     }
@@ -815,7 +1144,7 @@ public class packTlsHndshk {
         byte[] buf = new byte[2];
         if (lower.verMax < 0x304) {
             bits.msbPutW(buf, 0, 8192);
-            tlv.putBytes(pck, 28, buf); // record size limit
+            tlv.putBytes(pck, extRecLim, buf); // record size limit
         }
         if (client && (servNam != null)) {
             int len = servNam.length();
@@ -824,7 +1153,7 @@ public class packTlsHndshk {
             buf[2] = 0; // name
             bits.msbPutW(buf, 3, len);
             bits.byteCopy(servNam.getBytes(), 0, buf, 5, len);
-            tlv.putBytes(pck, 0, buf); // server name
+            tlv.putBytes(pck, extServNama, buf); // server name
         }
         if (lower.verMax < 0x304) {
             pck.merge2end();
@@ -840,7 +1169,7 @@ public class packTlsHndshk {
             buf = new byte[2];
             bits.msbPutW(buf, 0, maxVer);
         }
-        tlv.putBytes(pck, 43, buf); // supported versions
+        tlv.putBytes(pck, extSuppVers, buf); // supported versions
         if (client) {
             List<Integer> lst = new ArrayList<Integer>();
             for (int i = 0; i < 8; i++) {
@@ -858,7 +1187,7 @@ public class packTlsHndshk {
                 lst.add(o);
             }
             buf = extenList2bytes(lst);
-            tlv.putBytes(pck, 13, buf); // signature algorithms
+            tlv.putBytes(pck, extSignAlgo, buf); // signature algorithms
         } else {
             buf = new byte[2];
             bits.msbPutW(buf, 0, signHsh);
@@ -877,7 +1206,7 @@ public class packTlsHndshk {
                 lst.add(i);
             }
             buf = extenList2bytes(lst);
-            tlv.putBytes(pck, 10, buf); // supported groups
+            tlv.putBytes(pck, extSuppGrps, buf); // supported groups
         }
         byte[] res;
         if (client) {
@@ -907,7 +1236,7 @@ public class packTlsHndshk {
             }
         }
         if (buf != null) {
-            tlv.putBytes(pck, 51, bits.byteConcat(buf, res)); // key share
+            tlv.putBytes(pck, extKeyShare, bits.byteConcat(buf, res)); // key share
         }
         if (!client && (ecDiffHell.keyServTls() == null)) {
             buf = new byte[6];
@@ -1249,6 +1578,12 @@ public class packTlsHndshk {
             case 0x200:
                 certificates.add(certdsa.asn1WriteBuf());
                 break;
+            case 0x300:
+                certificates.add(certecdsa.asn1WriteBuf());
+                break;
+            case 0x400:
+                certificates.add(certmldsa.asn1WriteBuf());
+                break;
             default:
                 break;
         }
@@ -1477,6 +1812,12 @@ public class packTlsHndshk {
                 break;
             case 0x200:
                 signDat = keydsa.tlsSigning(signHsh, paramHsh, paramHash);
+                break;
+            case 0x300:
+                signDat = keyecdsa.tlsSigning(signHsh, paramHsh, paramHash);
+                break;
+            case 0x400:
+                signDat = keymldsa.tlsSigning(signHsh, paramHsh, paramHash);
                 break;
             default:
                 signDat = new byte[0];

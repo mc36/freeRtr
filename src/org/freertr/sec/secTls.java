@@ -515,8 +515,12 @@ public class secTls implements Runnable {
         packTlsHndshk ph = new packTlsHndshk(p, datagram);
         ph.keyrsa = keyrsa;
         ph.keydsa = keydsa;
+        ph.keyecdsa = keyecdsa;
+        ph.keymldsa = keymldsa;
         ph.certrsa = certrsa;
         ph.certdsa = certdsa;
+        ph.certecdsa = certecdsa;
+        ph.certmldsa = certmldsa;
         p.packRecv();
         if (ph.headerParse()) {
             return null;
