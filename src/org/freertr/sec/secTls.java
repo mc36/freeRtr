@@ -168,16 +168,16 @@ public class secTls implements Runnable {
         certdsa = dsaC;
         certecdsa = ecdsaC;
         certmldsa = mldsaC;
-        if (certrsa == null) {
+        if ((certrsa == null) && (keyrsa != null)) {
             certrsa = cryCertificate.createSelfSigned(keyrsa, cfgAll.getFqdn(), 365);
         }
-        if (certdsa == null) {
+        if ((certdsa == null) && (keydsa != null)) {
             certdsa = cryCertificate.createSelfSigned(keydsa, cfgAll.getFqdn(), 365);
         }
-        if (certecdsa == null) {
+        if ((certecdsa == null) && (keyecdsa != null)) {
             certecdsa = cryCertificate.createSelfSigned(keyecdsa, cfgAll.getFqdn(), 365);
         }
-        if (certmldsa == null) {
+        if ((certmldsa == null) && (keymldsa != null)) {
             certmldsa = cryCertificate.createSelfSigned(keymldsa, cfgAll.getFqdn(), 365);
         }
         workerStart();
@@ -644,7 +644,9 @@ public class secTls implements Runnable {
         ph.headerCreate();
         p.apackSend();
         ph.certVrfFill();
-        ph.certVrfCreate();
+        if (ph.certVrfCreate()) {
+            return null;
+        }
         ph.headerCreate();
         p.apackSend();
         ph.finishedFill(true);
