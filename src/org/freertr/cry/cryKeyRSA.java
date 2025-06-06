@@ -622,10 +622,15 @@ public class cryKeyRSA extends cryKeyGeneric {
      * @return padded, null if pss
      */
     public BigInteger doPadding(int ver, cryHashGeneric pkcs, byte[] hash) {
+        if (ver < 0) {
+            return PKCS1t1pad(hash);
+        }
         if (ver < 0x100) {
+            hash = cryHashGeneric.compute(pkcs, hash);
             return PKCS1t1pad(hash);
         }
         if (ver < 0x800) {
+            hash = cryHashGeneric.compute(pkcs, hash);
             return PKCS1t2pad(pkcs.getPkcs(), hash);
         }
         return null;
@@ -638,6 +643,7 @@ public class cryKeyRSA extends cryKeyGeneric {
         if (h != null) {
             return h.compareTo(s) != 0;
         }
+        hash = cryHashGeneric.compute(pkcs, hash);
         byte[] sgn = s.toByteArray();
         if (sgn.length < (hash.length + hash.length + 2)) {
             return true;
@@ -680,6 +686,7 @@ public class cryKeyRSA extends cryKeyGeneric {
             s = s.modPow(privExp, modulus);
             return cryUtils.bigUint2buf(s);
         }
+        hash = cryHashGeneric.compute(pkcs, hash);
         byte[] salt = new byte[hash.length];
         for (int i = 0; i < salt.length; i++) {
             salt[i] = (byte) bits.randomB();

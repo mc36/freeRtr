@@ -573,6 +573,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return false on success, true on error
      */
     public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        hash = cryHashGeneric.compute(pkcs, hash);
         packHolder p = new packHolder(true, true);
         p.putCopy(sign, 0, 0, sign.length);
         p.putSkip(sign.length);
@@ -598,6 +599,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
      * @return signature
      */
     public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
+        hash = cryHashGeneric.compute(pkcs, hash);
         doSigning(hash);
         packHolder p1 = new packHolder(true, true);
         packHolder p2 = new packHolder(true, true);

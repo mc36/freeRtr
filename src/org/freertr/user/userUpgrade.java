@@ -1039,7 +1039,7 @@ class userUpgradeBlob {
             if (ky.pemReadStr(ks, true)) {
                 return "error reading public key!";
             }
-            if (ky.tlsVerify(0, new cryHashSha3512(), getSum(0).getBytes(), buf)) {
+            if (ky.tlsVerify(-1, new cryHashSha3512(), getSum(0).getBytes(), buf)) {
                 return "signature mismatch!";
             }
             return null;
@@ -1051,7 +1051,7 @@ class userUpgradeBlob {
 
     public void doSign(cryKeyRSA k) {
         time = bits.getTime();
-        sign = encBase64.encodeBytes(k.tlsSigning(0, new cryHashSha3512(), getSum(0).getBytes()));
+        sign = encBase64.encodeBytes(k.tlsSigning(-1, new cryHashSha3512(), getSum(0).getBytes()));
     }
 
 }

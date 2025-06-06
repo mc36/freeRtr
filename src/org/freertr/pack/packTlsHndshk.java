@@ -1696,7 +1696,6 @@ public class packTlsHndshk {
         lower.pckDat.getSkip(2);
         signDat = lower.getBytes(2);
         paramHsh = getSignerHash(signHsh);
-        paramHash = cryHashGeneric.compute(paramHsh, paramHash);
         servKexDump();
         certUsed = new cryCertificate();
         if (certUsed.asn1ReadBuf(certificates.get(0))) {
@@ -1718,7 +1717,6 @@ public class packTlsHndshk {
      */
     public void certVrfCreate() {
         paramHsh = getSignerHash(signHsh);
-        paramHash = cryHashGeneric.compute(paramHsh, paramHash);
         servKexSign();
         pckTyp = typeCertVrf;
         lower.pckDat.clear();
@@ -1802,7 +1800,6 @@ public class packTlsHndshk {
             return;
         }
         paramHsh = getSignerHash(signHsh);
-        paramHash = cryHashGeneric.compute(paramHsh, raw);
     }
 
     private void servKexSign() {
