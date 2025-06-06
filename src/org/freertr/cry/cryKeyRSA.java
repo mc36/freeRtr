@@ -600,12 +600,14 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        hash = cryHashGeneric.compute(pkcs, hash);
         BigInteger s = cryUtils.buffer2bigInt(sign, 0, sign.length);
         s = s.modPow(pubExp, modulus);
         return PKCS1t2pad(pkcs.getPkcs(), hash).compareTo(s) != 0;
     }
 
     public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
+        hash = cryHashGeneric.compute(pkcs, hash);
         BigInteger s = PKCS1t2pad(pkcs.getPkcs(), hash);
         s = s.modPow(privExp, modulus);
         return s.toByteArray();

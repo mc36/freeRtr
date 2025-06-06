@@ -739,11 +739,13 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean certVerify(cryHashGeneric pkcs, byte[] hash, byte[] sign) {
+        hash = cryHashGeneric.compute(pkcs, hash);
         sgn = sign;
         return doVerify(hash);
     }
 
     public byte[] certSigning(cryHashGeneric pkcs, byte[] hash) {
+        hash = cryHashGeneric.compute(pkcs, hash);
         doSigning(hash);
         packHolder pck = new packHolder(true, true);
         pck.putCopy(sgn, 0, 0, sgn.length);

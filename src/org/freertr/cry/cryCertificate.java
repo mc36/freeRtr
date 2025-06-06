@@ -858,7 +858,6 @@ public class cryCertificate {
         if (h == null) {
             return null;
         }
-        data = cryHashGeneric.compute(h, data);
         return key.certSigning(h, data);
     }
 
@@ -874,7 +873,6 @@ public class cryCertificate {
         if (h == null) {
             return true;
         }
-        data = cryHashGeneric.compute(h, data);
         return key.certVerify(h, data, sign);
     }
 
