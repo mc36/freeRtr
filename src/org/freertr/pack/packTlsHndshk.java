@@ -272,9 +272,19 @@ public class packTlsHndshk {
     public byte[] paramHash;
 
     /**
-     * server exchange oid
+     * server exchange hash
      */
     public cryHashGeneric paramHsh;
+
+    /**
+     * server exchange sign
+     */
+    public cryKeyGeneric paramSgn;
+
+    /**
+     * server exchange cert
+     */
+    public cryCertificate paramCrt;
 
     /**
      * client hello retried
@@ -597,9 +607,9 @@ public class packTlsHndshk {
     public final static int extPstHndAut = 49;
 
     /**
-     * signature algorithms
+     * signature algorithms certs
      */
-    public final static int extSignAlgos = 50;
+    public final static int extSignCerts = 50;
 
     /**
      * key shares
@@ -1073,7 +1083,8 @@ public class packTlsHndshk {
                     }
                     for (i = 2; i < tlv.valSiz; i += 2) {
                         int o = bits.msbGetW(tlv.valDat, i);
-                        if (getSignerHash(o) == null) {
+                        getSignerHash(o);
+                        if (paramHsh == null) {
                             continue;
                         }
                         signHsh = o;
@@ -1173,15 +1184,17 @@ public class packTlsHndshk {
         if (client) {
             List<Integer> lst = new ArrayList<Integer>();
             for (int i = 0; i < 8; i++) {
-                int o = 0x800 | i; // pss
-                if (getSignerHash(o) == null) {
+                int o = 0x800 | i; // rsa pss
+                getSignerHash(o);
+                if (paramHsh == null) {
                     continue;
                 }
                 lst.add(o);
             }
             for (int i = 0; i < 8; i++) {
-                int o = (i << 8) | 0x1; // pkcs1
-                if (getSignerHash(o) == null) {
+                int o = (i << 8) | 0x1; // rsa pkcs1
+                getSignerHash(o);
+                if (paramHsh == null) {
                     continue;
                 }
                 lst.add(o);
@@ -1695,7 +1708,7 @@ public class packTlsHndshk {
         signHsh = lower.pckDat.msbGetW(0);
         lower.pckDat.getSkip(2);
         signDat = lower.getBytes(2);
-        paramHsh = getSignerHash(signHsh);
+        getSignerHash(signHsh);
         servKexDump();
         certUsed = new cryCertificate();
         if (certUsed.asn1ReadBuf(certificates.get(0))) {
@@ -1716,7 +1729,7 @@ public class packTlsHndshk {
      * create certificate verify
      */
     public void certVrfCreate() {
-        paramHsh = getSignerHash(signHsh);
+        getSignerHash(signHsh);
         servKexSign();
         pckTyp = typeCertVrf;
         lower.pckDat.clear();
@@ -1746,28 +1759,69 @@ public class packTlsHndshk {
         }
     }
 
-    private cryHashGeneric getSignerHash(int signHsh) {
-        switch (signHsh) {
-            case 0x101:
-                return new cryHashMd5();
-            case 0x201:
-                return new cryHashSha1();
-            case 0x301:
-                return new cryHashSha2224();
-            case 0x401:
-                return new cryHashSha2256();
-            case 0x501:
-                return new cryHashSha2384();
-            case 0x601:
-                return new cryHashSha2512();
+    private void getSignerHash(int alg) {
+        paramHsh = null;
+        paramSgn = null;
+        paramCrt = null;
+        if (alg < 0x700) {
+            switch (alg & 0xff) {
+                case 1:
+                    paramSgn = keyrsa;
+                    paramCrt = certrsa;
+                    break;
+                case 2:
+                    paramSgn = keydsa;
+                    paramCrt = certdsa;
+                    break;
+/*
+                case 3:
+                    paramSgn = keyecdsa;
+                    paramCrt = certecdsa;
+                    break;
+*/
+                    default:
+                    return;
+            }
+            switch (alg >>> 8) {
+                case 1:
+                    paramHsh = new cryHashMd5();
+                    break;
+                case 2:
+                    paramHsh = new cryHashSha1();
+                    break;
+                case 3:
+                    paramHsh = new cryHashSha2224();
+                    break;
+                case 4:
+                    paramHsh = new cryHashSha2256();
+                    break;
+                case 5:
+                    paramHsh = new cryHashSha2384();
+                    break;
+                case 6:
+                    paramHsh = new cryHashSha2512();
+                    break;
+                default:
+                    return;
+            }
+            return;
+        }
+        switch (alg) {
             case 0x804:
-                return new cryHashSha2256();
+                paramSgn = keyrsa;
+                paramCrt = certrsa;
+                paramHsh = new cryHashSha2256();
+                break;
             case 0x805:
-                return new cryHashSha2384();
+                paramSgn = keyrsa;
+                paramCrt = certrsa;
+                paramHsh = new cryHashSha2384();
+                break;
             case 0x806:
-                return new cryHashSha2512();
-            default:
-                return null;
+                paramSgn = keyrsa;
+                paramCrt = certrsa;
+                paramHsh = new cryHashSha2512();
+                break;
         }
     }
 
@@ -1799,7 +1853,7 @@ public class packTlsHndshk {
             }
             return;
         }
-        paramHsh = getSignerHash(signHsh);
+        getSignerHash(signHsh);
     }
 
     private void servKexSign() {
