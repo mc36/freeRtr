@@ -664,12 +664,6 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         if (a.tagRead(pck)) {
             return true;
         }
-        if (a.cnst || (a.tag != encAsn1.tagInteger)) {
-            return true;
-        }
-        if (a.tagRead(pck)) {
-            return true;
-        }
         if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
             return true;
         }
@@ -683,21 +677,11 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         if (a.tagRead(pck)) {
             return true;
         }
-        if ((a.cnst) || (a.tag != encAsn1.tagOctetString)) {
+        if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
         p = a.getPack();
-        if (a.tagRead(p)) {
-            return true;
-        }
-        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
-            return true;
-        }
-        p = a.getPack();
-        if (a.tagRead(p)) {
-            return true;
-        }
-        p = a.getPack();
+        p.getSkip(1);
         key = null;
         tr = null;
         encS1 = null;
@@ -723,18 +707,15 @@ public class cryKeyMLDSA extends cryKeyGeneric {
 
     public void certWriter(packHolder pck) {
         packHolder p1 = new packHolder(true, true);
-        encAsn1.writeBigInt(p1, BigInteger.ONE);
         packHolder p2 = new packHolder(true, true);
         encAsn1.writeObjectId(p2, getOid());
         encAsn1.writeSequence(p1, p2);
         p2.clear();
+        p2.putByte(0, 0);
+        p2.putSkip(1);
         pubWriter(p2);
         p2.merge2beg();
-        packHolder p3 = new packHolder(true, true);
-        encAsn1.writeOctString(p3, p2);
-        p2.clear();
-        encAsn1.writeSequence(p2, p3);
-        encAsn1.writeOctString(p1, p2);
+        encAsn1.writeBitString(p1, p2);
         encAsn1.writeSequence(pck, p1);
     }
 
@@ -753,31 +734,13 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
-        packHolder p = new packHolder(true, true);
-        p.putCopy(sign, 0, 0, sign.length);
-        p.putSkip(sign.length);
-        p.merge2beg();
-        encAsn1 a = new encAsn1();
-        if (a.tagRead(p)) {
-            return true;
-        }
-        if ((!a.cnst) || (a.tag != encAsn1.tagOctetString)) {
-            return true;
-        }
-        p = a.getPack();
-        sgn = p.getCopy();
+        sgn = sign;
         return doVerify(hash);
     }
 
     public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
         doSigning(hash);
-        packHolder p1 = new packHolder(true, true);
-        packHolder p2 = new packHolder(true, true);
-        p1.putCopy(sgn, 0, 0, sgn.length);
-        p1.putSkip(sgn.length);
-        p1.merge2beg();
-        encAsn1.writeOctString(p2, p1);
-        return p2.getCopy();
+        return sgn;
     }
 
     public boolean keyMakeName(String nam) {

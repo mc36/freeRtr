@@ -16990,3 +16990,26 @@ failed: tls with ecdsa
 failed: tls with mldsa
 failed: lsrp tls encryption
 failed: pvrp tls encryption
+---------------------------------- 2025-06-06 21:38:17 25.6.6
+no failed: pvrp tls encryption
+no failed: lsrp tls encryption
+no failed: tls with mldsa
+no failed: tls with ecdsa
+no failed: tls version 1.3
+no failed: tls with everything
+no failed: dtls test
+no failed: ppp over tls
+no failed: ppp with packet over dtls
+no failed: ppp with packet over txtls
+no failed: ppp with packet over tls
+qc pass: ppp with packet over tls
+qc pass: ppp with packet over txtls
+qc pass: ppp with packet over dtls
+qc pass: ppp over tls
+qc pass: dtls test
+qc pass: tls with everything
+qc pass: tls version 1.3
+qc pass: tls with ecdsa
+qc pass: tls with mldsa
+qc pass: lsrp tls encryption
+qc pass: pvrp tls encryption
