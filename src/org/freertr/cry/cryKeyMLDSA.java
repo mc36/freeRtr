@@ -753,11 +753,31 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public boolean tlsVerify(int ver, cryHashGeneric pkcs, byte[] hash, byte[] sign) {
-        return true;
+        packHolder p = new packHolder(true, true);
+        p.putCopy(sign, 0, 0, sign.length);
+        p.putSkip(sign.length);
+        p.merge2beg();
+        encAsn1 a = new encAsn1();
+        if (a.tagRead(p)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        p = a.getPack();
+        sgn = p.getCopy();
+        return doVerify(hash);
     }
 
     public byte[] tlsSigning(int ver, cryHashGeneric pkcs, byte[] hash) {
-        return new byte[0];
+        doSigning(hash);
+        packHolder p1 = new packHolder(true, true);
+        packHolder p2 = new packHolder(true, true);
+        p1.putCopy(sgn, 0, 0, sgn.length);
+        p1.putSkip(sgn.length);
+        p1.merge2beg();
+        encAsn1.writeOctString(p2, p1);
+        return p2.getCopy();
     }
 
     public boolean keyMakeName(String nam) {

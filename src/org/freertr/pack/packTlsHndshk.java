@@ -1844,17 +1844,29 @@ public class packTlsHndshk {
         }
         switch (alg) {
             case 0x804:
-                paramSgn = keyrsa;
+                if (cln) {
+                    paramSgn = new cryKeyDSA();
+                } else {
+                    paramSgn = keydsa;
+                }
                 paramCrt = certrsa;
                 paramHsh = new cryHashSha2256();
                 break;
             case 0x805:
-                paramSgn = keyrsa;
+                if (cln) {
+                    paramSgn = new cryKeyDSA();
+                } else {
+                    paramSgn = keydsa;
+                }
                 paramCrt = certrsa;
                 paramHsh = new cryHashSha2384();
                 break;
             case 0x806:
-                paramSgn = keyrsa;
+                if (cln) {
+                    paramSgn = new cryKeyDSA();
+                } else {
+                    paramSgn = keydsa;
+                }
                 paramCrt = certrsa;
                 paramHsh = new cryHashSha2512();
                 break;
