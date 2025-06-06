@@ -1032,7 +1032,8 @@ qc pass: swipe with aes256ofb
 qc pass: swipe with aes128pcbc
 qc pass: swipe with aes192pcbc
 qc pass: swipe with aes256pcbc
-qc pass: tls test
+failed: tls with everything
+qc pass: tls version 1.0
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
 qc pass: wireguard over wireguard

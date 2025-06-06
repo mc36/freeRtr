@@ -1184,6 +1184,14 @@ public class packTlsHndshk {
         if (client) {
             List<Integer> lst = new ArrayList<Integer>();
             for (int i = 0; i < 8; i++) {
+                int o = 0x900 | i; // mldsa
+                selectSignature(o, true);
+                if (paramSgn == null) {
+                    continue;
+                }
+                lst.add(o);
+            }
+            for (int i = 0; i < 8; i++) {
                 int o = (i << 8) | 0x3; // ecdsa
                 selectSignature(o, true);
                 if (paramSgn == null) {
@@ -1615,6 +1623,7 @@ public class packTlsHndshk {
             }
             return;
         }
+        selectSignature(signHsh, false);
         certificates.add(paramCrt.asn1WriteBuf());
     }
 
@@ -1860,27 +1869,27 @@ public class packTlsHndshk {
         switch (alg) {
             case 0x804:
                 if (cln) {
-                    paramSgn = new cryKeyDSA();
+                    paramSgn = new cryKeyRSA();
                 } else {
-                    paramSgn = keydsa;
+                    paramSgn = keyrsa;
                 }
                 paramCrt = certrsa;
                 paramHsh = new cryHashSha2256();
                 break;
             case 0x805:
                 if (cln) {
-                    paramSgn = new cryKeyDSA();
+                    paramSgn = new cryKeyRSA();
                 } else {
-                    paramSgn = keydsa;
+                    paramSgn = keyrsa;
                 }
                 paramCrt = certrsa;
                 paramHsh = new cryHashSha2384();
                 break;
             case 0x806:
                 if (cln) {
-                    paramSgn = new cryKeyDSA();
+                    paramSgn = new cryKeyRSA();
                 } else {
-                    paramSgn = keydsa;
+                    paramSgn = keyrsa;
                 }
                 paramCrt = certrsa;
                 paramHsh = new cryHashSha2512();
@@ -1950,7 +1959,6 @@ public class packTlsHndshk {
         paramHash = raw;
     }
 
-    
     /**
      * check if server key exchange needed
      *
