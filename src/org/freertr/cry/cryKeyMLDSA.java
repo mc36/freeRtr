@@ -761,7 +761,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         if (a.tagRead(p)) {
             return true;
         }
-        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+        if ((!a.cnst) || (a.tag != encAsn1.tagOctetString)) {
             return true;
         }
         p = a.getPack();

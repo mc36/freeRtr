@@ -1600,6 +1600,21 @@ public class packTlsHndshk {
      */
     public void certDatFill() {
         certificates = new ArrayList<byte[]>();
+        if (signHsh < 0) {
+            switch (cipherDecoded & 0xf00) {
+                case 0x100:
+                    certificates.add(certrsa.asn1WriteBuf());
+                    paramSgn = keyrsa;
+                    break;
+                case 0x200:
+                    certificates.add(certdsa.asn1WriteBuf());
+                    paramSgn = keydsa;
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
         certificates.add(paramCrt.asn1WriteBuf());
     }
 
@@ -1920,25 +1935,22 @@ public class packTlsHndshk {
                 case 0x100:
                     paramHash = bits.byteConcat(cryHashGeneric.compute(new cryHashMd5(), raw),
                             cryHashGeneric.compute(new cryHashSha1(), raw));
+                    paramHsh = new cryHashMd5();
                     break;
                 case 0x200:
                     paramHash = cryHashGeneric.compute(new cryHashSha1(), raw);
-                    break;
-                case 0x300:
-                    paramHash = cryHashGeneric.compute(new cryHashSha2256(), raw);
+                    paramHsh = new cryHashSha1();
                     break;
                 default:
                     return;
             }
-            signHsh = cipherDecoded & 0xf00;
-            signHsh |= signHsh >>> 8;
-            selectSignature(signHsh, cln);
             return;
         }
         selectSignature(signHsh, cln);
         paramHash = raw;
     }
 
+    
     /**
      * check if server key exchange needed
      *
